@@ -21,6 +21,7 @@ import logging
 import random
 import re
 import sys
+import requests
 from urllib.parse import urlparse as parse
 
 from django.conf import settings
@@ -280,17 +281,16 @@ def maybe_market_to_user_discord(bounty, event_name):
     try:
         repo = org_name(url) + '/' + repo_name(url)
         subscribers = Profile.objects.filter(discord_repos__contains=[repo])
-        subscribers = subscribers & Profile.objects.exclude(discord_token='', discord_channel='')
+        subscribers = subscribers & Profile.objects.exclude(discord_webhook_url='')
         for subscriber in subscribers:
             try:
-                discord_client = DiscordClient(subscriber.discord_token)
-                discord_client.api_call(
-                    "chat.postMessage",
-                    channel=subscriber.discord_channel,
-                    text=msg,
-                    icon_url=settings.GITCOIN_SLACK_ICON_URL, #check for discord
+                headers = { 'Content-Type': 'application/json' }
+                params = { "content": msg }
+                discord_response = requests.post(
+                    subscriber.webhook_url, headers=headers, params=params
                 )
-                sent = True
+                if discord_response.status_code == 204:
+                    sent = True
             except Exception as e:
                 print(e)
     except Exception as e:

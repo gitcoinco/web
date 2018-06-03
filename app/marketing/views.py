@@ -387,25 +387,16 @@ def discord_settings(request):
         return login_redirect
 
     if request.POST:
-        # Commented out lines below that should be implemented for testing
-        # functionality of discord integration
-
-        # test = request.POST.get('test')
         submit = request.POST.get('submit')
-        token = request.POST.get('token', '')
+        webhook_url = request.POST.get('webhook_url', '')
         repos = request.POST.get('repos', '')
-        channel = request.POST.get('channel', '')
 
-        # if test and token and channel:
-        #     response = validate_discord_integration(token, channel)
-
-        # if submit or (response and response.get('success')):
         if submit:
-            profile.update_discord_integration(token, channel, repos)
+            profile.update_discord_integration(webhook_url, repos)
             profile = record_form_submission(request, profile, 'discord')
             if not response.get('output'):
                 response['output'] = _('Updated your preferences.')
-            ua_type = 'added_discord_integration' if token and channel and repos else 'removed_discord_integration'
+            ua_type = 'added_discord_integration' if webhook_url and repos else 'removed_discord_integration'
             create_user_action(user, ua_type, request, {'channel': channel, 'repos': repos})
 
     context = {

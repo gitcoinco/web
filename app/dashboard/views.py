@@ -47,11 +47,6 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
 from .helpers import handle_bounty_views
 from .models import (
     Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip, Tool,
@@ -59,20 +54,12 @@ from .models import (
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_slack,
-<<<<<<< Updated upstream
-    maybe_market_to_twitter, maybe_market_to_user_slack,
-=======
     maybe_market_to_twitter, maybe_market_to_user_slack, maybe_market_to_user_discord
->>>>>>> Stashed changes
 )
 from .utils import (
     get_bounty, get_bounty_id, get_context, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
 )
 
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 logging.basicConfig(level=logging.DEBUG)
 
 confirm_time_minutes_target = 4
@@ -331,17 +318,9 @@ def uninterested(request, bounty_id, profile_id):
         bounty.interested.remove(interest)
         maybe_market_to_slack(bounty, 'stop_work')
         maybe_market_to_user_slack(bounty, 'stop_work')
-<<<<<<< Updated upstream
-        event_name = "bounty_removed_by_staff" if is_staff else "bounty_removed_by_funder"
-        record_user_action_on_interest(interest, event_name, None)
-=======
-<<<<<<< Updated upstream
-=======
         maybe_market_to_user_discord(bounty, 'stop_work')
         event_name = "bounty_removed_by_staff" if is_staff else "bounty_removed_by_funder"
         record_user_action_on_interest(interest, event_name, None)
->>>>>>> Stashed changes
->>>>>>> Stashed changes
         interest.delete()
     except Interest.DoesNotExist:
         return JsonResponse({
