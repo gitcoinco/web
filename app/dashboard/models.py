@@ -1276,6 +1276,12 @@ class Profile(SuperModel):
         total_earned_eth = float('%.2f' % total_earned_eth)
         total_earned_usd = float('%.2f' % total_earned_usd)
 
+        user_languages = []
+        for bounty in fulfilled_bounties:
+            user_languages += bounty.keywords.split(',')
+            user_languages = set(user_languages)
+            user_no_of_languages = len(user_languages)
+
         return {
             'user_total_earned_eth': total_earned_eth,
             'user_total_earned_usd': total_earned_usd,
