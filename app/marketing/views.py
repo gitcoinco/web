@@ -372,6 +372,7 @@ def slack_settings(request):
     }
     return TemplateResponse(request, 'settings/slack.html', context)
 
+
 def discord_settings(request):
     """Displays and saves user's Discord settings.
 
@@ -397,7 +398,7 @@ def discord_settings(request):
             if not response.get('output'):
                 response['output'] = _('Updated your preferences.')
             ua_type = 'added_discord_integration' if webhook_url and repos else 'removed_discord_integration'
-            create_user_action(user, ua_type, request, {'channel': channel, 'repos': repos})
+            create_user_action(user, ua_type, request, {'webhook_url': webhook_url, 'repos': repos})
 
     context = {
         'repos': profile.get_discord_repos(join=True),

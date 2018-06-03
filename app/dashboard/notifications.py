@@ -284,8 +284,8 @@ def maybe_market_to_user_discord(bounty, event_name):
         subscribers = subscribers & Profile.objects.exclude(discord_webhook_url='')
         for subscriber in subscribers:
             try:
-                headers = { 'Content-Type': 'application/json' }
-                params = { "content": msg }
+                headers = {'Content-Type': 'application/json'}
+                params = {"content": msg}
                 discord_response = requests.post(
                     subscriber.webhook_url, headers=headers, params=params
                 )
