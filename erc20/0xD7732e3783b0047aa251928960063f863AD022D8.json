@@ -1,4 +1,22 @@
 {
-  "symbol": "BRM",
-  "address": "0xD7732e3783b0047aa251928960063f863AD022D8"
+    "symbol": "BRM",
+    "address": "0xD7732e3783b0047aa251928960063f863AD022D8",
+    "overview":{
+        "en": "Brahma OS is an operating system that hosts decentralized networks by enabling the deconstruction of existing services and the use of a wide range of decentralized services.",
+        "zh": "Brahma OS 是一种承载去中心化网络的操作系统，它通过解构已有服务并使用各类去中心化服务和组件得以实现，确保用户可以安全、无障碍的使用区块链之上的服务和应用，还为其上的开发者提供了便于快速构建应用的底层架构和一个完整的生态系统。"
+    },
+    "email": "admin@brahmaos.io",
+    "website": "https://www.brahmaos.io/",
+    "whitepaper": "https://www.brahmaos.io/Brahma_Whitepaper_Latest.pdf",
+    "published_on": "2018-03-10",
+    "initial_price":{
+        "ETH":"0.00013 ETH",
+        "USD": "0.096 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/brahma_os",
+        "telegram": "https://t.me/BrahmaOS",
+        "github": "https://github.com/brahmaos",
+        "medium": "https://medium.com/brahmalabs"
+    }
 }
