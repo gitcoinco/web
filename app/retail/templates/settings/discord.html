@@ -1,0 +1,29 @@
+{% extends 'settings/settings.html' %}
+{% load i18n static %}
+{% block settings_content %}
+<form id="settings" method="POST">
+  <div class="form-group">
+    <h5>{% trans "Discord Integration" %}</h5>
+    <p>
+      {% blocktrans %} Gitcoin can post updates of bounties statuses of your repositories to your team's Discord server.
+      To do this create a new application and bot 
+      <a href="https://discordapp.com/developers/applications/me">here</a>
+      and provide the Discord bot token in the field below. {% endblocktrans %}
+    </p>
+    <label class="form__label" for="token">{% trans "Discord API token" %}</label>
+    <input type="text" name="token" class="form__input" placeholder='API token' value="{{ profile.discord_token }}">
+  </div>
+  <div class="form-group"
+    <label class="form__label" for="repos">{% trans "Github repos to monitor (use full name, like 'gitcoinco/web' for <a href=https://github.com/gitcoinco/web>this repo</a>)" %}</label>
+    <input type="text" name="repos" class="form__input" placeholder='comma, separated, list (gitcoinco/web)' value="{{ repos }}">
+  </div>
+  <div class="form-group">
+    <label class="form__label" for="channel">{% trans "Slack channel to post to" %}</label>
+    <input type="text" name="channel" class="form__input" placeholder='#notif-gitcoin' value="{{ profile.discord_channel }}">
+  </div>
+  {% csrf_token %}
+  <input class='button button--primary' type='submit' name='submit' value="{% trans "Go" %}">
+  <input class='button button--primary' style='margin-left: 0.5em;' type='submit' name='test' value="{% trans "Test" %}">
+</form>
+</div>
+{% endblock %}

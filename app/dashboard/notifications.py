@@ -164,7 +164,7 @@ def maybe_market_to_slack(bounty, event_name):
     if not bounty.is_notification_eligible(var_to_check=settings.SLACK_TOKEN):
         return False
 
-    msg = build_message_for_slack(bounty, event_name)
+    msg = build_message_for_integration(bounty, event_name)
     if not msg:
         return False
 
@@ -183,8 +183,8 @@ def maybe_market_to_slack(bounty, event_name):
     return True
 
 
-def build_message_for_slack(bounty, event_name):
-    """Build message to be posted to slack.
+def build_message_for_integration(bounty, event_name):
+    """Build message to be posted to integrated service (e.g. slack, discord).
 
     Args:
         bounty (dashboard.models.Bounty): The Bounty to be marketed.
@@ -226,7 +226,7 @@ def maybe_market_to_user_slack(bounty, event_name):
     if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
 
-    msg = build_message_for_slack(bounty, event_name)
+    msg = build_message_for_integration(bounty, event_name)
     if not msg:
         return False
 
@@ -253,6 +253,50 @@ def maybe_market_to_user_slack(bounty, event_name):
 
     return sent
 
+
+def maybe_market_to_user_discord(bounty, event_name):
+    """Send a Discord message to the user's discord channel for the specified Bounty.
+
+    Args:
+        bounty (dashboard.models.Bounty): The Bounty to be marketed.
+        event_name (str): The name of the event.
+
+    Returns:
+        bool: Whether or not the Discord notification was sent successfully.
+
+    """
+    from dashboard.models import Profile
+    if bounty.get_natural_value() < 0.0001:
+        return False
+    if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+        return False
+
+    msg = build_message_for_integration(bounty, event_name)
+    if not msg:
+        return False
+
+    url = bounty.github_url
+    sent = False
+    try:
+        repo = org_name(url) + '/' + repo_name(url)
+        subscribers = Profile.objects.filter(discord_repos__contains=[repo])
+        subscribers = subscribers & Profile.objects.exclude(discord_token='', discord_channel='')
+        for subscriber in subscribers:
+            try:
+                discord_client = DiscordClient(subscriber.discord_token)
+                discord_client.api_call(
+                    "chat.postMessage",
+                    channel=subscriber.discord_channel,
+                    text=msg,
+                    icon_url=settings.GITCOIN_SLACK_ICON_URL, #check for discord
+                )
+                sent = True
+            except Exception as e:
+                print(e)
+    except Exception as e:
+        print(e)
+
+    return sent
 
 def maybe_market_tip_to_email(tip, emails):
     """Send an email for the specified Tip.

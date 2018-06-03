@@ -969,6 +969,9 @@ class Profile(SuperModel):
     slack_repos = ArrayField(models.CharField(max_length=200), blank=True, default=[])
     slack_token = models.CharField(max_length=255, default='', blank=True)
     slack_channel = models.CharField(max_length=255, default='', blank=True)
+    discord_repos = ArrayField(models.CharField(max_length=200), blank=True, default=[])
+    discord_token = models.CharField(max_length=255, default='', blank=True)
+    discord_channel = models.CharField(max_length=255, default='', blank=True)
     suppress_leaderboard = models.BooleanField(
         default=False,
         help_text='If this option is chosen, we will remove your profile information from the leaderboard',
@@ -1309,6 +1312,21 @@ class Profile(SuperModel):
         self.slack_token = token
         self.slack_repos = [repo.strip() for repo in repos]
         self.slack_channel = channel
+        self.save()
+
+    def update_discord_integration(self, token, channel, repos):
+        """Update the profile's Discord integration settings.
+
+        Args:
+            token (str): The profile's Discord token.
+            channel (str): The profile's Discord channel.
+            repos (list of str): The profile's github repositories to track.
+
+        """
+        repos = repos.split()
+        self.discord_token = token
+        self.discord_repos = [repo.strip() for repo in repos]
+        self.discord_channel = channel
         self.save()
 
     @staticmethod

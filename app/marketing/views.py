@@ -64,22 +64,25 @@ def get_settings_navs(request):
         'href': reverse('email_settings', args=('', ))
     }, {
         'body': 'Privacy',
-        'href': reverse('privacy_settings'),
+        'href': reverse('privacy_settings')
     }, {
         'body': 'Matching',
-        'href': reverse('matching_settings'),
+        'href': reverse('matching_settings')
     }, {
         'body': 'Feedback',
-        'href': reverse('feedback_settings'),
+        'href': reverse('feedback_settings')
     }, {
         'body': 'Slack',
         'href': reverse('slack_settings'),
     }, {
+        'body': 'Discord',
+        'href': reverse('discord_settings')
+    }, {
         'body': "ENS",
-        'href': reverse('ens_settings'),
+        'href': reverse('ens_settings')
     }, {
         'body': "Account",
-        'href': reverse('account_settings'),
+        'href': reverse('account_settings')
     }]
 
 
@@ -369,6 +372,55 @@ def slack_settings(request):
     }
     return TemplateResponse(request, 'settings/slack.html', context)
 
+def discord_settings(request):
+    """Displays and saves user's Discord settings.
+
+    Returns:
+    TemplateResponse: The user's Discord settings template response.
+
+    """
+    response = {'output': ''}
+    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+
+    if not user or not is_logged_in:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    if request.POST:
+        # Commented out lines below that should be implemented for testing
+        # functionality of discord integration
+
+        # test = request.POST.get('test')
+        submit = request.POST.get('submit')
+        token = request.POST.get('token', '')
+        repos = request.POST.get('repos', '')
+        channel = request.POST.get('channel', '')
+
+        # if test and token and channel:
+        #     response = validate_discord_integration(token, channel)
+
+        # if submit or (response and response.get('success')):
+        if submit:
+            profile.update_discord_integration(token, channel, repos)
+            profile = record_form_submission(request, profile, 'discord')
+            if not response.get('output'):
+                response['output'] = _('Updated your preferences.')
+            ua_type = 'added_discord_integration' if token and channel and repos else 'removed_discord_integration'
+            create_user_action(user, ua_type, request, {'channel': channel, 'repos': repos})
+
+    context = {
+        'repos': profile.get_discord_repos(join=True),
+        'is_logged_in': is_logged_in,
+        'nav': 'internal',
+        'active': '/settings/discord',
+        'title': _('Discord Settings'),
+        'navs': get_settings_navs(request),
+        'es': es,
+        'profile': profile,
+        'msg': response['output'],
+    }
+    return TemplateResponse(request, 'settings/discord.html', context)
+
 def ens_settings(request):
     """Displays and saves user's ENS settings.
 
@@ -385,7 +437,7 @@ def ens_settings(request):
 
     ens_subdomains = ENSSubdomainRegistration.objects.filter(profile=profile).order_by('-pk')
     ens_subdomain = ens_subdomains.first() if ens_subdomains.exists() else None
-    
+
     context = {
         'is_logged_in': is_logged_in,
         'nav': 'internal',
@@ -398,7 +450,6 @@ def ens_settings(request):
         'msg': response['output'],
     }
     return TemplateResponse(request, 'settings/ens.html', context)
-
 
 def account_settings(request):
     """Displays and saves user's Account settings.
