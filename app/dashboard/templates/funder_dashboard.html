@@ -47,9 +47,12 @@
       color: #8e2abe;
     }
 
-    .funder-dashboard__header {
-      background-color: #3e00ff;
+    .text-fd-no-spacing {
+      letter-spacing: 0.100rem;
     }
+
+    .funder-dashboard__header {
+      background-color: #3e00ff;}
 
     .funder-dashboard__header__hero {
       letter-spacing: 0.100rem;
@@ -70,6 +73,7 @@
       height: 64px;
       width: 64px;
       background-color: gray;
+      border-radius: 50%;
     }
 
     .funder-dashboard__whats-next__rocket-text {
@@ -83,6 +87,17 @@
     .funder-dashboard__whats-next__new-comments {
       font-size: 1.2rem;
     }
+
+    .funder-dashboard__latest-on-bounties__top-contributors__contributor {
+      width: 3rem;
+      height: 3rem;
+      background-color: gray;
+      border-radius: 50%;
+    }
+
+    .funder-dashboard__tax-reporting__bounties__print {
+      border-right: 1px solid #6c757d;
+    }
   </style>
   <body>
     {% include 'shared/tag_manager_2.html' %}
@@ -93,7 +108,7 @@
       <div class="funder-dashboard__header container-fluid pt-4 pb-4">
         <div class="row">
           <div class="col">
-            <h1 class="funder-dashboard__header__hero text-white text-center text-capitalize pt-5 pb-4">
+            <h1 class="funder-dashboard__header__hero text-white text-center text-capitalize pt-5 pb-5">
               {% trans "Dashboard" %}
             </h1>
           </div>
@@ -206,8 +221,8 @@
                 <div class="funder-dashboard__payout-history row card mt-4">
                   <div class="col card-body">
                     <div class="d-flex justify-content-between">
-                      <h5>{% trans "Payout History" %}</h5>
-                      <div class="funder-dashboard__payout-history__controls d-flex">
+                      <h4 class="text-capitalize pb-1 pt-0 text-fd-no-spacing">{% trans "Payout History" %}</h4>
+                      <div class="funder-dashboard__payout-history__controls pt-1 d-flex">
                         <div class="funder-dashboard__payout-history__control mr-2
                                     funder-dashboard__payout-history__control--weekly">
                           {% trans "Weekly" %}
@@ -226,8 +241,44 @@
                     </div>
                   </div>
                 </div>
-                <div class="funder-dashboard__tax-reporting row mt-1">
-
+                <div class="funder-dashboard__tax-reporting row card mt-1">
+                  <div class="card-body pb-2">
+                    <div class="funder-dashboard__tax-reporting__title">
+                      <h4 class="text-capitalize pb-1 pt-0 text-fd-no-spacing d-inline-block mr-1">
+                        {% trans "Tax Reporting" %}
+                      </h4>
+                      <span class="text-secondary">
+                        {% trans "Amount to be reported for "%}
+                        <span class="funder-dashboard__tax-reporting__year">2018</span>
+                      </span>
+                    </div>
+                    <div class="funder-dashboard__tax-reporting__bounties
+                                d-flex align-items-center justify-content-between">
+                      <p class="lead pt-0">
+                        <span class="funder-dashboard__tax-reporting__bounties__count">
+                          139
+                        </span>
+                        <span class="funder-dashboard__tax-reporting__bounties__print pr-1">
+                          {% trans "Bounties" %}
+                        </span>
+                        <span class="funder-dashboard__tax-reporting__bounties__worth pl-1">
+                          $34,450
+                        </span>
+                      </p>
+                      <div class="mb-2">
+                        <button class="button text text-white" style="background-color: #8e2abe;">
+                          <i class="fas fa-download pr-1">
+                          </i>
+                          {% trans "Download Report" %}
+                        </button>
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                      <a href="#">
+                        {% trans "View All Bounties" %}
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div class="funder-dashboard__latest-on-bounties
@@ -294,6 +345,15 @@
                         <a href="#" class="funder-dashboard__latest-on-bounties__expired__view
                                            text-capitalize"> {% trans "View" %}</a>
                       </div>
+                    </div>
+                  </div>
+
+                  <div class="funder-dashboard__latest-on-bounties__top-contributors mt-3">
+                    <p class="lead">
+                      {% trans "Top Contributors" %}
+                    </p>
+
+                    <div class="funder-dashboard__latest-on-bounties__top-contributors__contributor">
                     </div>
                   </div>
                 </div>
