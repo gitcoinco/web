@@ -1127,22 +1127,97 @@ class Profile(SuperModel):
             dict : containing the following information
             'user_total_earned_eth': Total earnings of user in ETH.
             'user_total_earned_usd': Total earnings of user in USD.
-            'user_fulfilled_bounties_count': Total bounties fulfilled by user.
+            'user_total_funded_usd': Total value of bounties funded by the user on bounties in done status in USD
+            'user_total_funded_hours': Total hours input by the developers on the fulfillment of bounties created by the user in USD
+            'user_fulfilled_bounties_count': Total bounties fulfilled by user
+            'user_fufilled_bounties': bool, if the user fulfilled bounties
+            'user_funded_bounties_count': Total bounties funded by the user
+            'user_funded_bounties': bool, if the user funded bounties in the last quarter
+            'user_funded_bounty_developers': Unique set of users that fulfilled bounties funded by the user
+            'user_avg_hours_per_funded_bounty': Average hours input by developer on fulfillment per bounty
+            'user_avg_hourly_rate_per_funded_bounty': Average hourly rate in dollars per bounty funded by user
             'user_avg_eth_earned_per_bounty': Average earning in ETH earned by user per bounty
             'user_avg_usd_earned_per_bounty': Average earning in USD earned by user per bounty
             'user_num_completed_bounties': Total no. of bounties completed.
+            'user_num_funded_fulfilled_bounties': Total bounites that were funded by the user and fulfilled
             'user_bounty_completion_percentage': Percentage of bounties successfully completed by the user
+            'user_funded_fulfilled_percentage': Percentage of bounties funded by the user that were fulfilled
             'user_active_in_last_quarter': bool, if the user was active in last quarter
             'user_no_of_languages': No of languages user used while working on bounties.
             'user_languages': Languages that were used in bounties that were worked on.
+            'relevant_bounties': a list of Bounty(s) that would match the skillset input by the user into the Match tab of their settings
         """
         user_active_in_last_quarter = False
+        user_fulfilled_bounties = False
+        user_funded_bounties = False
         last_quarter = datetime.now() - timedelta(days=90)
         bounties = self.bounties.filter(modified_on__gte=last_quarter)
         fulfilled_bounties = [
             bounty for bounty in bounties if bounty.is_hunter(self.handle) and bounty.status == 'done'
         ]
         fulfilled_bounties_count = len(fulfilled_bounties)
+        funded_bounties = [
+            bounty for bounty in bounties if bounty.is_funder(self.handle)
+        ]
+        funded_bounties_count = len(funded_bounties)
+        if funded_bounties_count:
+            total_funded_usd = sum([
+                bounty.value_in_usdt if bounty.value_in_usdt else 0
+                for bounty in funded_bounties
+            ])
+            total_funded_hourly_rate = float(0)
+            hourly_rate_bounties_counted = float(0)
+            for bounty in funded_bounties:
+                hourly_rate = bounty.hourly_rate
+                if hourly_rate:
+                    total_funded_hourly_rate += bounty.hourly_rate
+                    hourly_rate_bounties_counted += 1
+            funded_bounty_fulfillments = []
+            for bounty in funded_bounties:
+                fulfillments = bounty.fulfillments.filter(accepted=True)
+                for fulfillment in fulfillments:
+                    if isinstance(fulfillment, BountyFulfillment):
+                        funded_bounty_fulfillments.append(fulfillment)
+            funded_bounty_fulfillments_count = len(funded_bounty_fulfillments)
+
+            total_funded_hours = 0
+            funded_fulfillments_with_hours_counted = 0
+            if funded_bounty_fulfillments_count:
+                from decimal import Decimal
+                for fulfillment in funded_bounty_fulfillments:
+                    if isinstance(fulfillment.fulfiller_hours_worked, Decimal):
+                        total_funded_hours += fulfillment.fulfiller_hours_worked
+                        funded_fulfillments_with_hours_counted += 1
+
+            user_funded_bounty_developers = []
+            for fulfillment in funded_bounty_fulfillments:
+                user_funded_bounty_developers.append('@' + fulfillment.fulfiller_github_username.lstrip('@'))
+            user_funded_bounty_developers = [*{*user_funded_bounty_developers}]
+            if funded_fulfillments_with_hours_counted:
+                avg_hourly_rate_per_funded_bounty = float(total_funded_hourly_rate) / float(funded_fulfillments_with_hours_counted)
+                avg_hours_per_funded_bounty = float(total_funded_hours) / float(funded_fulfillments_with_hours_counted)
+            else:
+                avg_hourly_rate_per_funded_bounty = 0
+                avg_hours_per_funded_bounty = 0
+            funded_fulfilled_bounties = [
+                bounty for bounty in funded_bounties if bounty.status == 'done'
+            ]
+            num_funded_fulfilled_bounties = len(funded_fulfilled_bounties)
+            funded_fulfilled_percent = float(
+                # Roudn to 0 places of decimals to be displayed in template
+                round(num_funded_fulfilled_bounties * 1.0 / funded_bounties_count, 2) * 100
+            )
+            user_funded_bounties = True
+        else:
+            num_funded_fulfilled_bounties = 0
+            funded_fulfilled_percent = 0
+            user_funded_bounties = False
+            avg_hourly_rate_per_funded_bounty = 0
+            avg_hours_per_funded_bounty = 0
+            total_funded_usd = 0
+            total_funded_hours = 0
+            user_funded_bounty_developers = []
+
         total_earned_eth = sum([
             bounty.value_in_eth if bounty.value_in_eth else 0
             for bounty in fulfilled_bounties
@@ -1156,7 +1231,7 @@ class Profile(SuperModel):
         num_completed_bounties = bounties.filter(idx_status__in=['done']).count()
         terminal_state_bounties = bounties.filter(idx_status__in=Bounty.TERMINAL_STATUSES).count()
         completetion_percent = int(
-            round(num_completed_bounties * 1.0 / terminal_state_bounties, 2) * 100
+            round((num_completed_bounties * 1.0 / terminal_state_bounties * 100), 2) * 100
         ) if terminal_state_bounties != 0 else 0
 
         avg_eth_earned_per_bounty = 0
@@ -1165,15 +1240,7 @@ class Profile(SuperModel):
         if fulfilled_bounties_count:
             avg_eth_earned_per_bounty = total_earned_eth / fulfilled_bounties_count
             avg_usd_earned_per_bounty = total_earned_usd / fulfilled_bounties_count
-
-        if num_completed_bounties or fulfilled_bounties_count:
-            user_active_in_last_quarter = True
-
-        # Round to 2 places of decimals to be diplayed in templates
-        completetion_percent = float('%.2f' % completetion_percent)
-        avg_eth_earned_per_bounty = float('%.2f' % avg_eth_earned_per_bounty)
-        total_earned_eth = float('%.2f' % total_earned_eth)
-        total_earned_usd = float('%.2f' % total_earned_usd)
+            user_fulfilled_bounties = True
 
         user_languages = []
         for bounty in fulfilled_bounties:
@@ -1181,17 +1248,56 @@ class Profile(SuperModel):
         user_languages = set(user_languages)
         user_no_of_languages = len(user_languages)
 
+        if num_completed_bounties or fulfilled_bounties_count:
+            user_active_in_last_quarter = True
+            relevant_bounties = []
+        else:
+            from marketing.utils import get_or_save_email_subscriber
+            user_coding_languages = get_or_save_email_subscriber(self.email, 'internal').keywords
+            if user_coding_languages is not None:
+                potential_bounties = Bounty.objects.all()
+                relevant_bounties = Bounty.objects.none()
+                for keyword in user_coding_languages:
+                    relevant_bounties = relevant_bounties.union(potential_bounties.filter(
+                            network='rinkeby',
+                            current_bounty=True,
+                            metadata__icontains=keyword,
+                            idx_status__in=['open'],
+                            ).order_by('?')
+                    )
+                relevant_bounties = relevant_bounties[:3]
+                relevant_bounties = list(relevant_bounties)
+        # Round to 2 places of decimals to be diplayed in templates
+        completetion_percent = float('%.2f' % completetion_percent)
+        funded_fulfilled_percent = float('%.2f' % funded_fulfilled_percent)
+        avg_eth_earned_per_bounty = float('%.2f' % avg_eth_earned_per_bounty)
+        avg_hourly_rate_per_funded_bounty = float('%.2f' % avg_hourly_rate_per_funded_bounty)
+        avg_hours_per_funded_bounty = float('%.2f' % avg_hours_per_funded_bounty)
+        total_earned_eth = float('%.2f' % total_earned_eth)
+        total_earned_usd = float('%.2f' % total_earned_usd)
+
         return {
             'user_total_earned_eth': total_earned_eth,
             'user_total_earned_usd': total_earned_usd,
+            'user_total_funded_usd': total_funded_usd,
+            'user_total_funded_hours': total_funded_hours,
             'user_fulfilled_bounties_count': fulfilled_bounties_count,
+            'user_fulfilled_bounties': user_fulfilled_bounties,
+            'user_funded_bounties_count': funded_bounties_count,
+            'user_funded_bounties': user_funded_bounties,
+            'user_funded_bounty_developers': user_funded_bounty_developers,
+            'user_avg_hours_per_funded_bounty': avg_hours_per_funded_bounty,
+            'user_avg_hourly_rate_per_funded_bounty': avg_hourly_rate_per_funded_bounty,
             'user_avg_eth_earned_per_bounty': avg_eth_earned_per_bounty,
             'user_avg_usd_earned_per_bounty': avg_usd_earned_per_bounty,
             'user_num_completed_bounties': num_completed_bounties,
+            'user_num_funded_fulfilled_bounties': num_funded_fulfilled_bounties,
             'user_bounty_completion_percentage': completetion_percent,
+            'user_funded_fulfilled_percentage': funded_fulfilled_percent,
             'user_active_in_last_quarter': user_active_in_last_quarter,
             'user_no_of_languages': user_no_of_languages,
-            'user_languages': user_languages
+            'user_languages': user_languages,
+            'relevant_bounties': relevant_bounties
         }
 
     @property
