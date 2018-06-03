@@ -98,6 +98,19 @@
     .funder-dashboard__tax-reporting__bounties__print {
       border-right: 1px solid #6c757d;
     }
+
+    .funder-dashboard__outgoing-funds__funds__fund.funder-dashboard__outgoing-funds__funds__fund--pending
+    .funder-dashboard__outgoing-funds__funds__fund__status {
+        font-style: italic;
+        color: #3e00ff
+    }
+
+    .funder-dashboard__outgoing-funds__funds__fund .funder-dashboard__outgoing-funds__funds__fund__title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
   </style>
   <body>
     {% include 'shared/tag_manager_2.html' %}
@@ -359,13 +372,115 @@
                 </div>
               </div>
             </div>
-            <div class="funder-dasboard__outgoing-funds row" style="height: 300px">
-              <div class="col-12">
+            <div class="funder-dasboard__outgoing-funds row card mt-4">
+              <div class="col card-body">
+                <div class="d-flex justify-content-between">
+                  <h4 class="funder-dashboard__outgoing-funds__title
+                           text-capitalize pt-0 text-fd-no-spacing d-inline-block mr-1">
+                    {% trans "Outgoing Funds" %}
+                  </h4>
+                  <div class="pb-2">
+                    <select class="funder-dashboard__outgoing-funds__filter
+                                   funder-dashboard__outgoing-funds__filter--type-or-status
+                                   custom-select d-inline-block w-auto">
+                      <option selected>{% trans "All" %}</option>
+                      <option>{% trans "Tip" %}</option>
+                      <option>{% trans "Payment" %}</option>
+                      <option>{% trans "Pending" %}</option>
+                      <option>{% trans "Claimed" %}</option>
+                    </select>
+                    <select class="funder-dashboard__outgoing-funds__filter
+                                   funder-dashboard__outgoing-funds__filter--age-or-value
+                                   custom-select d-inline-block w-auto">
+                      <option selected>{% trans "Recent" %}</option>
+                      <option>{% trans "Oldest" %}</option>
+                      <option>{% trans "Highest Value" %}</option>
+                      <option>{% trans "Lowest Value" %}</option>
+                    </select>
+                  </div>
+                </div>
+                <table class="funder-dashboard__outgoing-funds__funds table w-100" style="table-layout: fixed;">
+                  <thead>
+                  <tr class="text-secondary">
+                    <th scope="col" style="width: 10%;">
+                      {% trans "Issue" %}
+                    </th>
+                    <th scope="col" style="max-width: 30%;">
+                      {% trans "Title" %}
+                    </th>
+                    <th scope="col" style="width: 10%">
+                      {% trans "Type" %}
+                    </th>
+                    <th scope="col" style="width: 15%;">
+                      {% trans "Status" %}
+                    </th>
+                    <th scope="col" style="width: 15%;">
+                      {% trans "Issue Details" %}
+                    </th>
+                    <th scope="col" style="width: 20%">
+                      {% trans "Amount" %}
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <!-- TODO: This needs to be real data -->
+                  <tr class="funder-dashboard__outgoing-funds__funds__fund
+                             funder-dashboard__outgoing-funds__funds__fund--pending">
+                    <td>982</td>
+                    <td class="funder-dashboard__outgoing-funds__funds__fund__title">
+                      Feature Idea: Send ETH to Daycare
+                    </td>
+                    <td>Tip</td>
+                    <td class="funder-dashboard__outgoing-funds__funds__fund__status">
+                      Pending
+                    </td>
+                    <td class="text-secondary"><i class="fas mr-1 fa-eye"></i>View Etherscan</td>
+                    <td><span class="mr-2 text-fd-blue--dark">0.5 ETH</span><span class="text-fd-green">41.47 USD</span></td>
+                  </tr>
+                  <tr class="funder-dashboard__outgoing-funds__funds__fund
+                             funder-dashboard__outgoing-funds__funds__fund--pending">
+                    <td>1204</td>
+                     <td class="funder-dashboard__outgoing-funds__funds__fund__title">
+                       Build Python Django Library
+                     </td>
+                    <td>Payment</td>
+                    <td class="funder-dashboard__outgoing-funds__funds__fund__status">Pending</td>
+                    <td class="text-secondary"><i class="fas mr-1 fa-eye"></i>View Etherscan</td>
+                    <td><span class="mr-2 text-fd-blue--dark">0.5 ETH</span><span class="text-fd-green">41.47 USD</span></td>
+                  </tr>
+                  <tr class="funder-dashboard__outgoing-funds__funds__fund">
+                    <td>983</td>
+                    <td class="funder-dashboard__outgoing-funds__funds__fund__title">
+                      Document Content for Python Content
+                    </td>
+                    <td>Payment</td>
+                    <td class="funder-dashboard__outgoing-funds__funds__fund__status">Completed</td>
+                    <td class="text-secondary"><i class="fas mr-1 fa-eye"></i>View Etherscan</td>
+                    <td><span class="mr-2 text-fd-blue--dark">0.5 ETH</span><span class="text-fd-green">41.47 USD</span></td>
+                  </tr>
+                  <tr class="funder-dashboard__outgoing-funds__funds__fund">
+                    <td>1011</td>
+                     <td class="funder-dashboard__outgoing-funds__funds__fund__title">
+                       Feature Idea: Send ETH to Daycare
+                     </td>
+                    <td>Tip</td>
+                    <td class="funder-dashboard__outgoing-funds__funds__fund__status">Completed</td>
+                    <td class="text-secondary"><i class="fas mr-1 fa-eye"></i>View Etherscan</td>
+                    <td><span class="mr-2 text-fd-blue--dark">0.5 ETH</span><span class="text-fd-green">41.47 USD</span></td>
+                  </tr>
+                  </tbody>
+                </table>
+                <hr>
+                <div class="d-flex justify-content-end">
+                  <a href="#">
+                    View All Payments
+                  </a>
+                </div>
               </div>
             </div>
 
             <div class="funder-dashboard__all-bounties row" style="height: 300px">
-              <div class="col-12">
+              <div class="col">
               </div>
             </div>
           </div>
