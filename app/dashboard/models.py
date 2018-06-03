@@ -1231,7 +1231,7 @@ class Profile(SuperModel):
         num_completed_bounties = bounties.filter(idx_status__in=['done']).count()
         terminal_state_bounties = bounties.filter(idx_status__in=Bounty.TERMINAL_STATUSES).count()
         completetion_percent = int(
-            round((num_completed_bounties * 1.0 / terminal_state_bounties * 100), 2) * 100
+            round(num_completed_bounties * 1.0 / terminal_state_bounties, 2) * 100
         ) if terminal_state_bounties != 0 else 0
 
         avg_eth_earned_per_bounty = 0
