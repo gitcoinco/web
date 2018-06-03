@@ -121,3 +121,7 @@ h4 {
   background-color: #F2F6F9;
   color: #6184AC;
 }
+
+#company-avatar-img {
+  width: 2em;
+}
