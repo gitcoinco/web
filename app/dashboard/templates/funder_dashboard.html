@@ -88,6 +88,11 @@
       font-size: 1.2rem;
     }
 
+    .funder-dashboard__payout-history__control--selected {
+      background-color: #4a4a4a;
+      color: white;
+    }
+
     .funder-dashboard__latest-on-bounties__top-contributors__contributor {
       width: 3rem;
       height: 3rem;
@@ -281,23 +286,27 @@
                   <div class="col card-body">
                     <div class="d-flex justify-content-between">
                       <h4 class="text-capitalize pb-1 pt-0 text-fd-no-spacing">{% trans "Payout History" %}</h4>
-                      <div class="funder-dashboard__payout-history__controls pt-1 d-flex">
-                        <div class="funder-dashboard__payout-history__control mr-2
+                      <div class="funder-dashboard__payout-history__controls
+                                  pt-1 d-flex align-items-start text-uppercase">
+                        <small class="funder-dashboard__payout-history__control pl-2 pr-2 mr-2
                                     funder-dashboard__payout-history__control--weekly">
                           {% trans "Weekly" %}
-                        </div>
-                        <div class="funder-dashboard__payout-history__control mr-2
-                                    funder-dashboard__payout-history__control--monthly">
+                        </small>
+                        <small class="funder-dashboard__payout-history__control pl-2 pr-2 mr-2
+                                    funder-dashboard__payout-history__control--monthly
+                                    funder-dashboard__payout-history__control--selected">
                           {% trans "Monthly" %}
-                        </div>
-                        <div class="funder-dashboard__payout-history__control mr-2
+                        </small>
+                        <small class="funder-dashboard__payout-history__control pl-2 pr-2 mr-2
                                     funder-dashboard__payout-history__control--yearly">
                           {% trans "Yearly" %}
-                        </div>
+                        </small>
                       </div>
                     </div>
-                    <div class="funder-dashhboard__payout-history__chart" style="height: 300px; background-color: blue;">
-                    </div>
+                    <canvas id="funder-dashhboard__payout-history__chart"
+                            class="funder-dashhboard__payout-history__chart"
+                            style="width: 100%; height: 15rem;">
+                    </canvas>
                   </div>
                 </div>
                 <div class="funder-dashboard__tax-reporting row card mt-1">
@@ -750,6 +759,49 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js">
+    </script>
+    <script type="text/javascript">
+      $(function () {
+        (function () {
+          var payoutHistory = document.getElementById("funder-dashhboard__payout-history__chart").getContext("2d");
+
+          var data = {
+            datasets: [{
+              data: [80, 305, 50, 105, 405, 105, 150, 200],
+              borderColor: '#3e00ff',
+              backgroundColor: '#eff7fd',
+              lineTension: 0,
+              fillColor: '#eff7fd',
+            }],
+            labels: ["January", "February", "March", "April", "May", "June", "July", "August"],
+          };
+
+          var options = {
+            scales: {
+              yAxes: [
+                {
+                  ticks: {
+                    callback: function (value, index, labels) {
+                      return '$' + value;
+                    }
+                  },
+                }
+              ],
+            },
+            legend: {
+              display: false
+            }
+          };
+
+          var x = new Chart(payoutHistory, {
+            data: data,
+            options: options,
+            type: 'line'
+          });
+        })();
+      });
+    </script>
     {% include 'shared/rollbar.html' %}
     {% include 'shared/messages.html' %}
   </body>
