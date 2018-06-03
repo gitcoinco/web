@@ -1,0 +1,22 @@
+{
+    "symbol": "RTE",
+    "address": "0x436F0F3a982074c4a05084485D421466a994FE53",
+    "overview":{
+        "en": "Rate3 is a decentralised dual protocol for cross-border payment and credit scoring. It is built on both Stellar and Ethereum, due to its cross-chain architecture."
+    },
+    "email": "official@rate3.network",
+    "website": "https://rate3.network",
+    "whitepaper": "https://uploads-ssl.webflow.com/5a7d218d6001ff0001f3d5cc/5afc0d84ab090f5b58d9a7ec_Rate3%20Whitepaper__v2.2.pdf",
+    "state": "LOCKED",
+    "published_on": "2018-04-09",
+    "initial_price": {
+        "ETH":"0.0000625",
+    },
+    "links": {
+        "medium": "https://medium.com/official-rate3",
+        "twitter": "https://twitter.com/officialrate3",
+        "telegram": "https://t.me/officialrate3",
+        "github": "https://github.com/rate-engineering",
+        "reddit": "https://www.reddit.com/r/rate3",
+    }
+}
