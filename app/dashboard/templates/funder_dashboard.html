@@ -105,12 +105,58 @@
         color: #3e00ff
     }
 
-    .funder-dashboard__outgoing-funds__funds__fund .funder-dashboard__outgoing-funds__funds__fund__title {
+    .funder-dashboard__outgoing-funds__funds__fund__title {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
     }
 
+    .funder-dashboard__all-bounties__bounties__bounty__title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .funder-dashboard__all-bounties__bounties__bounty__status {
+      display: flex;
+      align-items: center;
+    }
+
+    .funder-dashboard__all-bounties__bounties__bounty__status__circle {
+      width: 0.7rem;
+      height: 0.7rem;
+      display: inline-block;
+      margin-right: 0.4rem;
+      background-color: white;
+      border-radius: 50%;
+    }
+
+    .funder-dashboard__all-bounties__bounties__bounty--started
+    .funder-dashboard__all-bounties__bounties__bounty__status__circle {
+      border: 2px solid #1a91eb;
+    }
+
+    .funder-dashboard__all-bounties__bounties__bounty--stopped
+    .funder-dashboard__all-bounties__bounties__bounty__status__circle {
+      border: 2px solid #f86b67;
+    }
+
+    .funder-dashboard__all-bounties__bounties__bounty--submitted
+    .funder-dashboard__all-bounties__bounties__bounty__status__circle {
+      border: 2px solid #84b800;
+    }
+
+    .bgc-ethereum {
+      background-color: #ebe5ff;
+      padding-right: 0.2rem;
+      padding-left: 0.2rem;
+    }
+
+    .bgc-dollars {
+      background-color: #e7faf1;
+      padding-right: 0.2rem;
+      padding-left: 0.2rem;
+    }
   </style>
   <body>
     {% include 'shared/tag_manager_2.html' %}
@@ -405,10 +451,10 @@
                     <th scope="col" style="width: 10%;">
                       {% trans "Issue" %}
                     </th>
-                    <th scope="col" style="max-width: 30%;">
+                    <th scope="col" style="max-width: 25%;">
                       {% trans "Title" %}
                     </th>
-                    <th scope="col" style="width: 10%">
+                    <th scope="col" style="width: 15%">
                       {% trans "Type" %}
                     </th>
                     <th scope="col" style="width: 15%;">
@@ -423,7 +469,6 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <!-- TODO: This needs to be real data -->
                   <tr class="funder-dashboard__outgoing-funds__funds__fund
                              funder-dashboard__outgoing-funds__funds__fund--pending">
                     <td>982</td>
@@ -434,53 +479,266 @@
                     <td class="funder-dashboard__outgoing-funds__funds__fund__status">
                       Pending
                     </td>
-                    <td class="text-secondary"><i class="fas mr-1 fa-eye"></i>View Etherscan</td>
-                    <td><span class="mr-2 text-fd-blue--dark">0.5 ETH</span><span class="text-fd-green">41.47 USD</span></td>
+                    <td class="text-secondary">
+                      <i class="fas mr-1 fa-eye"></i>
+                      View Etherscan
+                    </td>
+                    <td>
+                      <span class="mr-2 text-fd-blue--dark">0.5 ETH</span>
+                      <span class="text-fd-green">41.47 USD</span>
+                    </td>
                   </tr>
                   <tr class="funder-dashboard__outgoing-funds__funds__fund
                              funder-dashboard__outgoing-funds__funds__fund--pending">
-                    <td>1204</td>
-                     <td class="funder-dashboard__outgoing-funds__funds__fund__title">
-                       Build Python Django Library
-                     </td>
-                    <td>Payment</td>
-                    <td class="funder-dashboard__outgoing-funds__funds__fund__status">Pending</td>
-                    <td class="text-secondary"><i class="fas mr-1 fa-eye"></i>View Etherscan</td>
-                    <td><span class="mr-2 text-fd-blue--dark">0.5 ETH</span><span class="text-fd-green">41.47 USD</span></td>
+                    <td>
+                      1204
+                    </td>
+                    <td class="funder-dashboard__outgoing-funds__funds__fund__title">
+                      Build Python Django Library
+                    </td>
+                    <td>
+                      Payment
+                    </td>
+                    <td class="funder-dashboard__outgoing-funds__funds__fund__status">
+                      Pending
+                    </td>
+                    <td class="text-secondary"><i class="fas mr-1 fa-eye"></i>
+                      View Etherscan
+                    </td>
+                    <td>
+                      <span class="mr-2 text-fd-blue--dark">0.5 ETH</span>
+                      <span class="text-fd-green">41.47 USD</span>
+                    </td>
                   </tr>
                   <tr class="funder-dashboard__outgoing-funds__funds__fund">
                     <td>983</td>
                     <td class="funder-dashboard__outgoing-funds__funds__fund__title">
                       Document Content for Python Content
                     </td>
-                    <td>Payment</td>
-                    <td class="funder-dashboard__outgoing-funds__funds__fund__status">Completed</td>
-                    <td class="text-secondary"><i class="fas mr-1 fa-eye"></i>View Etherscan</td>
-                    <td><span class="mr-2 text-fd-blue--dark">0.5 ETH</span><span class="text-fd-green">41.47 USD</span></td>
+                    <td>
+                      Payment
+                    </td>
+                    <td class="funder-dashboard__outgoing-funds__funds__fund__status">
+                      Completed
+                    </td>
+                    <td class="text-secondary">
+                      <i class="fas mr-1 fa-eye"></i>
+                      View Etherscan
+                    </td>
+                    <td>
+                      <span class="mr-2 text-fd-blue--dark">0.5 ETH</span>
+                      <span class="text-fd-green">41.47 USD</span>
+                    </td>
                   </tr>
                   <tr class="funder-dashboard__outgoing-funds__funds__fund">
-                    <td>1011</td>
-                     <td class="funder-dashboard__outgoing-funds__funds__fund__title">
-                       Feature Idea: Send ETH to Daycare
-                     </td>
-                    <td>Tip</td>
-                    <td class="funder-dashboard__outgoing-funds__funds__fund__status">Completed</td>
-                    <td class="text-secondary"><i class="fas mr-1 fa-eye"></i>View Etherscan</td>
-                    <td><span class="mr-2 text-fd-blue--dark">0.5 ETH</span><span class="text-fd-green">41.47 USD</span></td>
+                    <td>
+                      1011
+                    </td>
+                    <td class="funder-dashboard__outgoing-funds__funds__fund__title">
+                      Feature Idea: Send ETH to Daycare
+                    </td>
+                    <td>
+                      Tip
+                    </td>
+                    <td class="funder-dashboard__outgoing-funds__funds__fund__status">
+                      Completed
+                    </td>
+                    <td class="text-secondary"><i class="fas mr-1 fa-eye"></i>
+                      View Etherscan
+                    </td>
+                    <td><span class="mr-2 text-fd-blue--dark">0.5 ETH</span>
+                      <span class="text-fd-green">41.47 USD</span>
+                    </td>
                   </tr>
                   </tbody>
                 </table>
                 <hr>
                 <div class="d-flex justify-content-end">
                   <a href="#">
-                    View All Payments
+                   {% trans "View All Payments" %}
                   </a>
                 </div>
               </div>
             </div>
 
-            <div class="funder-dashboard__all-bounties row" style="height: 300px">
-              <div class="col">
+            <div class="funder-dasboard__all-bounties row card mt-4">
+              <div class="col card-body">
+                <div class="d-flex justify-content-between">
+                  <h4 class="funder-dashboard__all-bounties__title
+                             text-capitalize pt-0 text-fd-no-spacing d-inline-block mr-1">
+                    {% trans "All Bounties" %}
+                  </h4>
+                  <div class="pb-2">
+                    <select class="funder-dashboard__all-bounties__filter
+                                   funder-dashboard__all-bounties__filter--type-or-status
+                                   custom-select d-inline-block w-auto">
+                      <option selected>{% trans "All" %}</option>
+                      <option>{% trans "Tip" %}</option>
+                      <option>{% trans "Payment" %}</option>
+                      <option>{% trans "Pending" %}</option>
+                      <option>{% trans "Claimed" %}</option>
+                    </select>
+                    <select class="funder-dashboard__all-bounties__filter
+                                   funder-dashboard__all-bounties__filter--age-or-value
+                                   custom-select d-inline-block w-auto">
+                      <option selected>{% trans "Recent" %}</option>
+                      <option>{% trans "Oldest" %}</option>
+                      <option>{% trans "Highest Value" %}</option>
+                      <option>{% trans "Lowest Value" %}</option>
+                    </select>
+                  </div>
+                </div>
+                <table class="funder-dashboard__all-bounties__bounties table w-100" style="table-layout: fixed;">
+                  <thead>
+                  <tr class="text-secondary">
+                    <th scope="col" style="width: 10%;">
+                      {% trans "Issue" %}
+                    </th>
+                    <th scope="col" style="max-width: 25%;">
+                      {% trans "Title" %}
+                    </th>
+                    <th scope="col" style="width: 15%">
+                      {% trans "Type" %}
+                    </th>
+                    <th scope="col" style="width: 15%;">
+                      {% trans "Status" %}
+                    </th>
+                    <th scope="col" style="width: 15%;">
+                      {% trans "Issue Details" %}
+                    </th>
+                    <th scope="col" style="width: 20%">
+                      {% trans "Amount" %}
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr class="funder-dashboard__all-bounties__bounties__bounty
+                             funder-dashboard__all-bounties__bounties__bounty--started">
+                    <td>
+                      1011
+                    </td>
+                    <td class="funder-dashboard__all-bounties__bounties__bounty__title">
+                      Build New React Component
+                    </td>
+                    <td>
+                      Front-End
+                    </td>
+                    <td class="funder-dashboard__all-bounties__bounties__bounty__status">
+                      <div class="funder-dashboard__all-bounties__bounties__bounty__status__circle"></div>
+                      Work Started
+                    </td>
+                    <td class="text-secondary"><i class="fas mr-1 fa-eye"></i>
+                      View Github
+                    </td>
+                    <td>
+                      <span class="mr-2 text-fd-blue--dark bgc-ethereum">0.5 ETH</span>
+                      <span class="text-fd-green bgc-dollars">41.47 USD</span>
+                    </td>
+                  </tr>
+                  <tr class="funder-dashboard__all-bounties__bounties__bounty
+                             funder-dashboard__all-bounties__bounties__bounty--started">
+                    <td>
+                      1204
+                    </td>
+                     <td class="funder-dashboard__all-bounties__bounties__bounty__title">
+                       Build Python Django Library
+                     </td>
+                    <td>
+                      Back-End
+                    </td>
+                    <td class="funder-dashboard__all-bounties__bounties__bounty__status">
+                      <div class="funder-dashboard__all-bounties__bounties__bounty__status__circle"></div>
+                      Work Started
+                    </td>
+                    <td class="text-secondary">
+                      <i class="fas mr-1 fa-eye"></i>
+                      View Github
+                    </td>
+                    <td>
+                      <span class="mr-2 text-fd-blue--dark bgc-ethereum">0.3 ETH</span>
+                      <span class="text-fd-green bgc-dollars">76.31 USD</span>
+                    </td>
+                  </tr>
+                  <tr class="funder-dashboard__all-bounties__bounties__bounty
+                             funder-dashboard__all-bounties__bounties__bounty--stopped">
+                    <td>
+                      983
+                    </td>
+                    <td class="funder-dashboard__all-bounties__bounties__bounty__title">
+                      Document Content for Python Content
+                    </td>
+                    <td>
+                      Documentation
+                    </td>
+                    <td class="funder-dashboard__all-bounties__bounties__bounty__status">
+                      <div class="funder-dashboard__all-bounties__bounties__bounty__status__circle"></div>
+                      Work Stopped
+                    </td>
+                    <td class="text-secondary">
+                      <i class="fas mr-1 fa-eye"></i>
+                     View Github
+                    </td>
+                    <td>
+                      <span class="mr-2 text-fd-blue--dark bgc-ethereum">1 ETH</span>
+                      <span class="text-fd-green bgc-dollars">210.5 USD</span>
+                    </td>
+                  </tr>
+                  <tr class="funder-dashboard__all-bounties__bounties__bounty
+                             funder-dashboard__all-bounties__bounties__bounty--submitted">
+                    <td>
+                      982
+                    </td>
+                    <td class="funder-dashboard__all-bounties__bounties__bounty__title">
+                      Feature Idea: Send ETH to Daycare
+                    </td>
+                    <td>
+                      Discussion
+                    </td>
+                    <td class="funder-dashboard__all-bounties__bounties__bounty__status">
+                      <div class="funder-dashboard__all-bounties__bounties__bounty__status__circle"></div>
+                      Work Started
+                    </td>
+                    <td class="text-secondary">
+                      <i class="fas mr-1 fa-eye"></i>
+                      View Github
+                    </td>
+                    <td>
+                      <span class="mr-2 text-fd-blue--dark bgc-ethereum">0.1 ETH</span>
+                      <span class="text-fd-green bgc-dollars">41.47 USD</span>
+                    </td>
+                  </tr>
+                  <tr class="funder-dashboard__all-bounties__bounties__bounty
+                             funder-dashboard__all-bounties__bounties__bounty--started">
+                    <td>
+                      975
+                    </td>
+                    <td class="funder-dashboard__all-bounties__bounties__bounty__title">
+                      Clean Up Javascript Loader
+                    </td>
+                    <td>
+                      Front-End
+                    </td>
+                    <td class="funder-dashboard__all-bounties__bounties__bounty__status">
+                      <div class="funder-dashboard__all-bounties__bounties__bounty__status__circle"></div>
+                      Work Started
+                    </td>
+                    <td class="text-secondary">
+                      <i class="fas mr-1 fa-eye"></i>
+                      View Github
+                    </td>
+                    <td>
+                      <span class="mr-2 text-fd-blue--dark bgc-ethereum">0.5 ETH</span>
+                      <span class="text-fd-green bgc-dollars">92.11 USD</span>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+                <hr>
+                <div class="d-flex justify-content-end">
+                  <a href="#">
+                    {% trans "View All Bounties" %}
+                  </a>
+                </div>
               </div>
             </div>
           </div>
