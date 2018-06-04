@@ -198,13 +198,13 @@ AWS_LOG_GROUP = env('AWS_LOG_GROUP', default='Gitcoin')
 AWS_LOG_LEVEL = env('AWS_LOG_LEVEL', default='DEBUG')
 AWS_LOG_STREAM = env('AWS_LOG_STREAM', default=f'{ENV}-web')
 
-# if not ENV in ['local', 'test']:
-boto3_session = Session(
-    aws_access_key_id=AWS_ACCESS_KEY_ID,
-    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
-    region_name=AWS_DEFAULT_REGION)
-
 if ENV not in ['local', 'test']:
+    boto3_session = Session(
+        aws_access_key_id=AWS_ACCESS_KEY_ID,
+        aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+        region_name=AWS_DEFAULT_REGION
+    )
+
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
