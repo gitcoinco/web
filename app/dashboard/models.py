@@ -983,7 +983,7 @@ class Interest(models.Model):
     """Define relationship for profiles expressing interest on a bounty."""
 
     profile = models.ForeignKey('dashboard.Profile', related_name='interested', on_delete=models.CASCADE)
-    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)    
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     issue_message = models.TextField(default='', blank=True)
     pending = models.BooleanField(
         default=False,
