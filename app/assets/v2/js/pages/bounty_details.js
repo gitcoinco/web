@@ -139,7 +139,7 @@ var callbacks = {
     return [ 'bounty_owner_name', result.bounty_owner_name ];
   },
   'permission_type': function(key, val, result) {
-    if(val == 'approval'){
+    if (val == 'approval') {
       val = 'Approval Required';
     }
     return [ 'permission_type', ucwords(val) ];
@@ -640,7 +640,7 @@ var do_actions = function(result) {
         href: result['action_urls']['increase'],
         text: gettext('Add Contribution'),
         parent: 'right_actions',
-        title: gettext('Increase the funding for this issue'),
+        title: gettext('Increase the funding for this issue')
       };
 
       actions.push(_entry);
