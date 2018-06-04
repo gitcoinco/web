@@ -104,15 +104,15 @@ $(document).ready(function() {
   $('.js-select2').each(function() {
     $(this).select2();
   });
-  //removes tooltip
-  $('select').on('change', function (evt) {
-      $('.select2-selection__rendered').removeAttr('title');
+  // removes tooltip
+  $('select').on('change', function(evt) {
+    $('.select2-selection__rendered').removeAttr('title');
   });
-  //removes search field in all but the 'denomination' dropdown
-  $('.select2-container').click(function(){
-      $('.select2-container .select2-search__field').remove();
+  // removes search field in all but the 'denomination' dropdown
+  $('.select2-container').click(function() {
+    $('.select2-container .select2-search__field').remove();
   });
-  //denomination field
+  // denomination field
   $('select[name=deonomination]').select2();
 
 
