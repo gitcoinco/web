@@ -1177,6 +1177,14 @@ input.is-invalid {
   background-color: #FF6700;
 }
 
+.metamask-error img {
+  max-width: 150px;
+}
+
+.metamask-banner #upper_left {
+  height: 100%;
+}
+
 @media (max-width: 1350px) {
   .profile_details .tips li div.details {
     width: 300px;

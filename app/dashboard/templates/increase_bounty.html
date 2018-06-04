@@ -29,13 +29,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <div class="container-fluid header dash">
       {% include 'shared/nav.html' %}
     </div>
-    <div class="row no-gutter">
-      <div class="col-12 body">
-        <div class="container-fluid no-gutter">
+    <div class="container-fluid">
+      <div class="row no-gutters">
+        <div class="col-sm-12 col-lg-3 metamask-banner">
+          {% include 'shared/current_balance.html' %}
+        </div>
+        <div class="col-lg-9 col-sm-12">
+          {% include 'shared/no_issue_error.html' %}
+          {% include 'shared/no_metamask_error.html' %}
+          {% include 'shared/zero_balance_error.html' %}
+          {% include 'shared/unlock_metamask.html' %}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 body">
           <div class="row font-smaller-2" id="form_container">
-            {% include 'shared/no_metamask_error.html' %}
-            {% include 'shared/zero_balance_error.html' %}
-            {% include 'shared/unlock_metamask.html' %}
             <input type="hidden" name="standardBountiesId"
               value="{{bounty.standard_bounties_id}}">
             <input type="hidden" name="bountyOwnerAddress"

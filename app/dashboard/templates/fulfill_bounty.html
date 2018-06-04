@@ -27,16 +27,23 @@
     <div class="container-fluid header dash">
       {% include 'shared/nav.html' %}
     </div>
-    <div class="row no-gutter">
-      <div class="col-12 body">
-        <div class="container-fluid no-gutter">
+    <div class="container-fluid">
+      <div class="row no-gutters">
+        <div class="col-sm-12 col-lg-3 metamask-banner">
+          {% include 'shared/current_balance.html' %}
+        </div>
+        <div class="col-lg-9 col-sm-12">
+          {% include 'shared/no_issue_error.html' %}
+          {% include 'shared/no_metamask_error.html' %}
+          {% include 'shared/zero_balance_error.html' %}
+          {% include 'shared/unlock_metamask.html' %}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 body">
           <div class="row font-smaller-2" id="form_container">
-            {% include 'shared/no_metamask_error.html' %}
-            {% include 'shared/zero_balance_error.html' %}
-            {% include 'shared/unlock_metamask.html' %}
             <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
               <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
-                {% include 'shared/bounty_nav.html' with active_item=3 %}
                 <div class="w-100" style="text-align: center;">
                   <h3>{% trans "Submit Work" %}</h3>
                   <img src="{% static "v2/images/prime.png" %}">
