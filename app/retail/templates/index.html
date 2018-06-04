@@ -31,13 +31,13 @@
     <div id="landing_page_wrapper">
       <div class="container-fluid header">
         {% include 'shared/hero.html' %}
-        <div class="row cta-green p-3 justify-content-center">
-          <span class="text-highlight-gc-blue mr-1">DEVELOPERS!</span>
-          <span class="text-highlight-gc-purple">Want to work on OSS Projects?</span>
+        <div class="row cta-green p-3 justify-content-center font-body">
+          <span class="text-highlight-gc-blue mr-1">{% trans "DEVELOPERS!" %}</span>
+          <span class="text-highlight-gc-purple">{% trans "Want to work on OSS Projects?" %}</span>
           <div class="ml-3 text-highlight-gc-purple">
-            <a class="text-highlight-gc-purple" href="/explorer">View Available Bounties</a>
+            <a class="text-highlight-gc-purple" href="/explorer">{% trans "View Available Bounties" %}</a>
             |
-            <a class="text-highlight-gc-purple" href="">Get Started with Gitcoin</a>
+            <a class="text-highlight-gc-purple" href="">{% trans "Get Started with Gitcoin" %}</a>
           </div>
         </div>
       </div>
@@ -69,12 +69,13 @@
                   </g>
               </g>
             </svg>
-            <h4>Augment Your Team's Workflow</h4>
-            <p>
-              Save time on non-core tasks. Create space for your team to focus on
-              the right problems (better ROI by outsourcing).
-            </p>
-            <a href="">Watch a Video</a>
+            <h4 class="font-title-lg">{% trans "Augment Your Team's Workflow" %}</h4>
+            <p>{% blocktrans %}Save time on non-core tasks, build out interesting features, squash
+              pesky bugs. Create space for your core team to focus on the right
+              problems.{% endblocktrans %}</p>
+            <a href="https://medium.com/gitcoin/tutorial-leverage-gitcoins-firehose-of-talent-to-do-more-faster-dcd39650fc5">
+              {% trans "Read an Article" %}
+            </a>
           </div>
           <div class="benefit">
             <svg width="100px" height="117px" viewBox="0 0 100 117" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -108,12 +109,13 @@
                   </g>
               </g>
             </svg>
-            <h4>Work with Global Talent</h4>
-            <p>
-              Supporting Copy in a few sentences, Hire based on merit and work on
-              your platform.
-            </p>
-            <a href="">Learn About Our Community</a>
+            <h4 class="font-title-lg">{% trans "Hire Global Talent" %}</h4>
+            <p>{% blocktrans %}Gitcoiner’s include designers and developers working in countries all
+              around the world. Get to to know potential talent through the projects
+              that you bounty. What better way to interview?{% endblocktrans %}</p>
+            <a href="https://medium.com/gitcoin/hiring-with-gitcoin-d58679de37ac">
+              {% trans "How To Get Started" %}
+            </a>
           </div>
           <div class="benefit">
             <svg width="100px" height="117px" viewBox="0 0 100 117" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -139,11 +141,10 @@
                   </g>
               </g>
             </svg>
-            <h4>Grow Your Open Source Community</h4>
-            <p>
-              Leverage Gitcoin's firehose of talent. Why should they do this?
-            </p>
-            <a href="">Learn More</a>
+            <h4 class="font-title-lg">{% trans "Grow Your Open Source Community" %}</h4>
+            <p>{% blocktrans %}Kickstart interest on your open source project by posting on
+              Gitcoin, where 3,000+ developers will see what you’re building.{% endblocktrans %}</p>
+            <a href="/bounty/new">{% trans "Post a Bounty" %}</a>
           </div>
         </div>
       </div>
@@ -161,12 +162,14 @@
         <div class="row d-flex justify-content-center align-items-center whatisit mb-4 flex-wrap">
           <div class="col-12 col-md-6 col-lg-5 mb-4">
             <div>
-              <h3>{% trans "A Mission to Grow Open Source." %}</h3>
-              <p class="mb-5">
-                {% trans "A Community for Developers to Collaborate and monetise their skills while working on Open Source projects through bounties" %}
+              <h3 class="mb-3">{% trans "A Mission to Grow Open Source." %}</h3>
+              <p class="mb-4">{% blocktrans %}A community at the intersection of blockchain and open source. 
+                A place for developers to collaborate in a new system, where open source money builds 
+                in monetization for open source repositories.{% endblocktrans %}
               </p>
-              <a class="btn btn-gc-purple mb-5">{% trans "Read More" %}</a>
-              <p>{% trans "Gitcoin does not have a native token." %}</p>
+              <a href="https://medium.com/gitcoin/open-source-money-will-buidl-the-open-source-ecosystem-f4169def8748"
+                class="btn btn-gc-purple mb-4">{% trans "Read More" %}</a>
+              <p>{% trans "Gitcoin is a decentralized application built on Ethereum’s blockchain. However, Gitcoin does nothave a native token." %}</p>
             </div>
           </div>
           <div class="col-12 col-md-6 col-lg-5 d-flex flex-column align-items-center animatedParent youtube">
@@ -175,95 +178,80 @@
         </div>
       </div>
 
-      <div class="container-fluid py-5 px-0 howworks_container">
+      <div class="container-fluid pt-5 px-0 howworks_container">
         <div class="mb-3 howworks-toggle-container">
           <button type="button" id="funder-toggle" class="howworks-section-toggle">
-            Funder
+            {% trans "Funder" %}
           </button>
           <button type="button" id="contributor-toggle" class="howworks-section-toggle active">
-            Contributor
+            {% trans "Contributor" %}
           </button>
           <div id="howworks-toggle-indicator"></div>
         </div>
         <div class="howworks-sections d-flex">
           <div class="howworks-section">
-            <div class="row mb-5">
-              <div class="col text-center">
-                <h1>{% trans "Do This. Easily." %}</h1>
-              </div>
-            </div>
             <div class="howworks-steps">
               <div class="howworks-step">
                 <div class="howworks-step__label">1</div>
-                <h5>Find a Bounty on the Issue Explorer</h5>
-                <p>
-                  Whether it's Bugs, Features, or Security Issues, Gitcoin's
-                  <a href="{% url "explorer" %}">Issue Explorer</a> is the easiest way to find paid work in open source.
-                </p>
+                <h5>{% trans "Post A Bounty." %}</h5>
+                <p>{% blocktrans %}Fund an well specified issue on your Github repo which is a good
+                  candidate for external contribution.{% endblocktrans %}</p>
               </div>
               <div class="howworks-step">
                 <div class="howworks-step__label">2</div>
-                <h5>Build Something Great</h5>
-                <p>
-                  Select an open issue, work on a project, collaborate, build your
-                  skills, and contribute towards the open source projects.
-                </p>
+                <h5>{% trans "Work With A Gitcoiner." %}</h5>
+                <p>{% blocktrans %}Provide a Gitcoiner with a timeline and
+                 collaborate to complete the task.{% endblocktrans %}</p>
               </div>
               <div class="howworks-step">
                 <div class="howworks-step__label">3</div>
-                <h5>Submit Work and Get Paid</h5>
-                <p>
-                  Payments are Ethereum-based, & released automatically after code is
-                  accepted by the bounty submitter.
-                </p>
+                <h5>{% trans "Grow Your Project." %}</h5>
+                <p>{% blocktrans %}Merge the Gitcoiner’s contribution, pay for a job well done,
+                   and grow a healthy open source ecosystem.{% endblocktrans %}</p>
               </div>
             </div>
-            <a href="" class="btn btn-gc-blue m-4">
-              <i class="fas fa-play" aria-hidden="true"></i>
-              How to Use Gitcoin in 30 Seconds
+            <a href="bounty/new" class="btn btn-gc-blue m-4">
+              <i class="fab fa-ethereum" aria-hidden="true"></i>
+              <span class="pl-1">{% trans "Fund an Issue" %}</span>
             </a>
-            <p>Gitcoin is a bounty-based collaboration tool that works easily with Github.
+            <p class="font-body">{% trans "Gitcoin is a bounty-based collaboration tool that works easily with Github" %}
               <i class="fab fa-github" aria-hidden="true"></i>
             </p>
           </div>
 
           <div class="howworks-section">
-            <div class="row mb-5">
-              <div class="col text-center">
-                <h1>{% trans "Do This. Easily." %}</h1>
-              </div>
-            </div>
             <div class="howworks-steps">
               <div class="howworks-step">
                 <div class="howworks-step__label">1</div>
-                <h5>Find a Bounty on the Issue Explorer</h5>
+                <h5>{% trans "Find An Open Bounty." %}</h5>
                 <p>
-                  Whether it's Bugs, Features, or Security Issues, Gitcoin's
-                  <a href="{% url "explorer" %}">Issue Explorer</a> is the easiest way to find paid work in open source.
+                  {% trans "Whether it's Bugs, Features, or Security Issues, Gitcoin's" %}
+                  <a href="{% url "explorer" %}">{% trans "Issue Explorer" %}</a>
+                  {% trans "is the easiest way to find paid work in open source." %}
                 </p>
               </div>
               <div class="howworks-step">
                 <div class="howworks-step__label">2</div>
-                <h5>Build Something Great</h5>
+                <h5>{% trans "Build Something Great." %}</h5>
                 <p>
-                  Select an open issue, work on a project, collaborate, build your
-                  skills, and contribute towards the open source projects.
+                  {% blocktrans %}Select an open issue, work on a project, collaborate, build your
+                  skills, and contribute towards the open source projects.{% endblocktrans %}
                 </p>
               </div>
               <div class="howworks-step">
                 <div class="howworks-step__label">3</div>
-                <h5>Submit Work and Get Paid</h5>
+                <h5>{% trans "Get Paid." %}</h5>
                 <p>
-                  Payments are Ethereum-based, & released automatically after code is
-                  accepted by the bounty submitter.
+                  {% blocktrans %}Payments are Ethereum-based, & released automatically after code is
+                  accepted by the bounty submitter.{% endblocktrans %}
                 </p>
               </div>
             </div>
             <a href="" class="btn btn-gc-blue m-4">
               <i class="fas fa-play" aria-hidden="true"></i>
-              How to Use Gitcoin in 30 Seconds
+              <span class="pl-1">{% trans "How to Use Gitcoin in 30 Seconds" %}</span>
             </a>
-            <p>Gitcoin is a bounty-based collaboration tool that works easily with Github.
+            <p class="font-body">{% trans "Gitcoin is a bounty-based collaboration tool that works easily with Github" %}
               <i class="fab fa-github" aria-hidden="true"></i>
             </p>
           </div>
@@ -277,14 +265,20 @@
           </div>
         </div>
         <ul class="case-studies-list">
-          <li><a href="">{% trans "Case Study 1: Ethereum Foundation Hiring" %}</a></li>
-          <li><a href="">{% trans "Case Study 2: Tim Van Mourik" %}</a></li>
-          <li><a href="">{% trans "Case Study 3: Metamask Bounty Engineer" %}</a></li>
+          <li>
+            <a href="https://medium.com/gitcoin/gitcoin-testimonials-market-protocol-722dbb263d19">
+              {% trans "MARKET Protocol Hires Eswara Sai, A Gitcoiner" %}
+            </a>
+          </li>
+          <li>
+            <a href="https://medium.com/gitcoin/metamask-internationalizes-via-gitcoin-bf1390c0301c">
+              {% trans "MetaMask Internationalizes Via Gitcoin" %}
+            </a>
+          </li>
         </ul>
         <img id="gc-robot" src="/static/v2/images/Robot.png" alt="Gitcoin Robot" />
-        <a class="btn btn-gc-purple" href="">See All Case Studies</a>
+        <a class="btn btn-gc-purple" href="https://docs.google.com/document/d/1M8-5xCGoJ8u-k0C0ncx_dr9LtHwZ32Ccn3KMFtEnsBA/edit">See All Case Studies</a>
       </div>
-
       <div class="container-fluid p-5 pricing_container">
         <div class="row mb-5">
           <div class="col text-center">
@@ -292,47 +286,53 @@
           </div>
         </div>
         <div class="pricing-tiers-container">
-          <div class="text-highlight-light-blue pricing-tier__title">Lite</div>
-          <div class="pricing-tier__subtitle">A Taste of Our Product</div>
+          <div class="text-highlight-light-blue pricing-tier__title font-title">Lite</div>
+          <div class="pricing-tier__subtitle">{% trans "A Taste of Our Product" %}</div>
           <div>
-            <div class="pricing-tier__price">Free</div>
+            <div class="pricing-tier__price">{% trans "Free" %}</div>
           </div>
           <ul class="pricing-tier__features">
-            <li>Do it yourself. You post and manage the bounties.</li>
+            <li>{% trans "Do it yourself. You post and manage the bounties." %}</li>
           </ul>
           <div>
-            <a class="btn btn-outline-gc-green btn-block mb-4" href="">Get Started</a>
+            <a class="btn btn-outline-gc-green btn-block mb-4" href="/bounty/new">{% trans "Get Started" %}</a>
           </div>
 
-          <div class="text-highlight-light-blue pricing-tier__title">Silver</div>
-          <div class="pricing-tier__subtitle">We Manage the Development Flow</div>
+          <div class="text-highlight-light-blue pricing-tier__title font-title">{% trans "Silver" %}</div>
+          <div class="pricing-tier__subtitle">{% trans "We Manage the Development Flow" %}</div>
           <div>
             <div class="pricing-tier__price">$10k</div>
           </div>
           <ul class="pricing-tier__features">
-            <li>Access Gitcoin's torrent of dev flow</li>
-            <li>We manage the project for you</li>
-            <li>We advise on pricing</li>
-            <li>We will monitor it for you</li>
+            <li>{% trans "Access Gitcoin's torrent of dev flow" %}</li>
+            <li>{% trans "We manage the project for you" %}</li>
+            <li>{% trans "We advise on pricing" %}</li>
+            <li>{% trans "We will monitor it for you" %}</li>
           </ul>
           <div>
-            <a class="btn btn-outline-gc-green btn-block mb-4" href="">Get Started</a>
+            <a class="btn btn-outline-gc-green btn-block mb-4"
+              href="mailto:vivek.singh@consensys.net?subject=Silver Package: Gitcoin Bounty Program">
+              {% trans "Get Started" %}
+            </a>
           </div>
 
-          <div class="pricing-tier__title emphasis">Gold</div>
-          <div class="pricing-tier__subtitle emphasis">We Spin Up Projects and Manage Them</div>
+          <div class="pricing-tier__title emphasis font-title">{% trans "Gold" %}</div>
+          <div class="pricing-tier__subtitle emphasis">{% trans "We Spin Up Projects and Manage Them" %}</div>
           <div class="emphasis">
             <div class="pricing-tier__price">$20k</div>
           </div>
           <ul class="pricing-tier__features emphasis">
-            <li>Access Gitcoin's torrent of dev flow</li>
-            <li>We manage the project for you</li>
-            <li>We advise on pricing</li>
-            <li>We will monitor it for you</li>
-            <li>We scope and define the project</li>
+            <li>{% trans "Access Gitcoin's torrent of dev flow" %}</li>
+            <li>{% trans "We manage the project for you" %}</li>
+            <li>{% trans "We advise on pricing" %}</li>
+            <li>{% trans "We will monitor it for you" %}</li>
+            <li>{% trans "We scope and define the project" %}</li>
           </ul>
           <div class="emphasis">
-            <a class="btn btn-gc-green btn-block mb-4" href="">Get Started</a>
+            <a class="btn btn-gc-green btn-block mb-4"
+              href="mailto:vivek.singh@consensys.net?subject=Gold Package: Gitcoin Bounty Program">
+              {% trans "Get Started" %}
+            </a>
           </div>
         </div>
       </div>
@@ -345,103 +345,8 @@
         </div>
         {% include "shared/testimonials.html" %}
       </div>
-
-      <div class="container-fluid pilot_container">
-        <div class="row justify-content-center">
-          <img src="/static/v2/images/truffle-logo.png" alt="Truffle Logo" />
-          <img src="/static/v2/images/ethereum-logo.png" alt="Ethereum Logo" />
-          <img src="/static/v2/images/consensys-logo.png" alt="Consensys Logo" />
-          <img src="/static/v2/images/metamask-logo.png" alt="Metamask Logo" />
-          <img src="/static/v2/images/tilt-ethereum-logo.png" alt="Logo" />
-        </div>
-      </div>
-
-        <div class="container-fluid p-5 press_container ">
-          <div class="row mb-5">
-            <div class="col text-center">
-              <h2>{% trans "Press" %}</h2>
-            </div>
-          </div>
-          <div class="row press">
-            <a href="https://twit.tv/shows/floss-weekly/episodes/474" target="_blank" rel="noopener noreferrer">
-              <div class="explain-img-wrapper">
-                <img src="{% static "v2/images/press/floss_weekly.jpg" %}">
-              </div>
-            </a>
-            <a href="https://btcmanager.com/solve-software-problems-git-bounty/" target="_blank" rel="noopener noreferrer">
-              <div class="explain-img-wrapper">
-                <img src="{% static "v2/images/press/btcmanager2.jpg" %}">
-              </div>
-            </a>
-            <a href="https://pressurecast.simplecast.fm/2adb78e7" target="_blank" rel="noopener noreferrer">
-              <div class="explain-img-wrapper">
-                <img src="{% static "v2/images/press/pressurecast.jpg" %}">
-              </div>
-            </a>
-            <a href="https://www.coloradotechcast.com/kevin-owocki-gitcoin/" target="_blank" rel="noopener noreferrer">
-              <div class="explain-img-wrapper">
-                <img src="{% static "v2/images/press/coloradotechcast.jpg" %}">
-              </div>
-            </a>
-            <a href="http://www.ibtimes.com/how-web-30-will-protect-our-online-identity-2667000" target="_blank" rel="noopener noreferrer">
-              <div class="explain-img-wrapper">
-                <img src="{% static "v2/images/press/ibtimes.jpg" %}">
-              </div>
-            </a>
-            <a href="https://softwareengineeringdaily.com/2018/04/03/gitcoin-open-source-bounties-with-kevin-owocki/" target="_blank" rel="noopener noreferrer">
-              <div class="explain-img-wrapper">
-                <img src="{% static "v2/images/press/se_daily.png" %}">
-              </div>
-            </a>
-            <a href="https://www.youtube.com/watch?v=8TKWY5JFTCM" target="_blank" rel="noopener noreferrer">
-              <div class="explain-img-wrapper">
-                <img src="{% static "v2/images/press/coincrunch.png" %}">
-              </div>
-            </a>
-            <a href="http://www.builtincolorado.com/2017/10/19/boulder-tech-gitcoin-open-source-software" target="_blank" rel="noopener noreferrer">
-              <div class="explain-img-wrapper">
-                <img src="{% static "v2/images/press/builtin.jpg" %}">
-              </div>
-            </a>
-            <a href="https://www.forbes.com/sites/curtissilver/2017/09/25/gitcoin-launches-today-pushing-open-source-forward-with-cryptocurrency-bounties/" target="_blank" rel="noopener noreferrer">
-              <div class="explain-img-wrapper">
-                <img src="{% static "v2/images/press/forbes.jpg" %}">
-              </div>
-            </a>
-            <a href="https://www.youtube.com/watch?v=CTLIrsL5el4" target="_blank" rel="noopener noreferrer">
-              <div class="explain-img-wrapper">
-                <img src="{% static "v2/images/press/codingblonde.png" %}">
-              </div>
-            </a>
-            <a href="https://thebitcoinpodcast.com/an-ethereum-podcast-episode-8/" target="_blank" rel="noopener noreferrer">
-              <div class="explain-img-wrapper">
-                <img src="{% static "v2/images/press/btc_podcast.jpg" %}">
-              </div>
-            </a>
-            <a href="https://www.youtube.com/watch?v=xvu1mUdYcuw" target="_blank" rel="noopener noreferrer">
-              <div class="explain-img-wrapper">
-                <img src="{% static "v2/images/press/devhour.jpg" %}">
-              </div>
-            </a>
-            <a href="https://changelog.com/podcast/281" target="_blank" rel="noopener noreferrer">
-              <div class="explain-img-wrapper">
-                <img src="{% static "v2/images/press/changelog.jpg" %}">
-              </div>
-            </a>
-            <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6" target="_blank" rel="noopener noreferrer">
-              <div class="explain-img-wrapper">
-                <img src="{% static "v2/images/consensys-logo-dark-small.png" %}" >
-              </div>
-            </a>
-          </div>
-          <div class="col d-flex flex-column align-items-center">
-            <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
-              <a href="https://www.youtube.com/watch?v=pdoa09b_2J4" target="_blank" rel="noopener noreferrer">
-                <img src="{% static "v2/images/press/ethereal.png" %}">
-              </a>
-            </div>
-          </div>
-        </div>
+      {% include 'landing/pilot.html' %}
+      {% include 'landing/press.html' %}
       {% include 'shared/footer.html' %}
       </div>
     </div>

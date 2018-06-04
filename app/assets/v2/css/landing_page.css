@@ -1,13 +1,24 @@
 html {
   overflow: hidden;
 }
+
+h1 {
+  font-size: 2rem;
+}
+
 body {
   height: 100vh;
   color: var(--text-dark);
 }
+
 .navbar {
   flex-shrink: 0;
 }
+
+.youtube iframe {
+  max-width: 100%;
+}
+
 #landing_page_wrapper {
   overflow-y: scroll;
 }
@@ -18,31 +29,35 @@ body {
   position: relative;
   overflow: visible !important;
 }
+
 .case-studies-list {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   list-style-type: none;
   text-align: left;
   margin-bottom: 4rem;
   padding-left: 0;
   margin-left: calc(20vw - 100px);
 }
+
 .case-studies-list li {
   margin-bottom: 1rem;
 }
+
 .case-studies-list a {
-  color: var(--gc-blue);
+  text-decoration: none;
 }
 
 #gc-robot {
   position: absolute;
   top: -50px;
-  right: calc(5vw - 50px);
-  max-width: 30vw;
+  right: 15px;
+  max-width: 20vw;
   will-change: transform;
 }
 
 #gc-tree {
   max-width: 100%;
+  width: 20rem;
   will-change: transform;
 }
 
@@ -56,6 +71,7 @@ body {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
 }
+
 .howworks-toggle-container {
   position: relative;
   display: grid;
@@ -64,6 +80,7 @@ body {
   grid-template-rows: min-content 5px;
   justify-content: center;
 }
+
 .howworks-section-toggle {
   background: transparent;
   outline: none;
@@ -71,7 +88,11 @@ body {
   cursor: pointer;
   color: var(--gc-purple);
   padding: 0;
+  padding-left: 8px;
+  padding-right: 8px;
+  padding-bottom: 2px;
 }
+
 #howworks-toggle-indicator {
   background: var(--gc-blue);
   transition: transform .3s, left .3s;
@@ -80,6 +101,7 @@ body {
   grid-column: 1;
   position: relative;
 }
+
 .howworks-section-toggle:hover, .howworks-section-toggle:active, .howworks-section-toggle:focus {
   color: var(--gc-blue) !important;
 }
@@ -93,25 +115,36 @@ body {
   position: relative;
   left: 0;
   transition: left .3s;
+  margin-top: 5rem;
 }
+
 .howworks-sections.contributor-section {
   left: -100%;
 }
+
 .howworks-section {
   width: 100%;
   flex-shrink: 0;
   padding: 0 2rem;
 }
+
 .howworks-step {
   position: relative;
   border-top: 1px solid #E1E8EE;
   padding: 2rem 1rem;
 }
+
 .howworks-step h5 {
   color: var(--gc-purple);
   margin-top: 1rem;
   margin-bottom: 1rem;
+  font-size: 1.2rem;
 }
+
+.howworks-step p {
+  font-size: 15px;
+}
+
 .howworks-step__label {
   border-radius: 50%;
   height: 2rem;
@@ -145,24 +178,31 @@ body {
 .benefit {
   background-color: white;
   text-align: center;
-  padding: 3rem 1rem;
+  padding: 3rem;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
 }
+
 .benefit > p {
   flex-grow: 1;
 }
+
 .benefit > h4 {
   padding-top: 2rem;
+  padding-bottom:  1rem;
 }
 
 .pilot_container {
   background: white;
 }
+
 .pilot_container img {
   margin: 1.5rem 3rem;
+  width: auto;
+  height: 5rem;
 }
+
 .pricing_container {
   background-color: #F9F9F9;
 }
@@ -170,6 +210,7 @@ body {
 .press_container {
   background: #F9F9F9;
 }
+
 .press {
   display: grid;
   grid-template-columns: repeat(auto-fill, 150px);
@@ -177,6 +218,7 @@ body {
   grid-gap: 5px;
   justify-content: center;
 }
+
 .explain-img-wrapper {
   height: 100%;
   background: white;
@@ -188,18 +230,6 @@ body {
 .press_container img {
   max-width: 90%;
   max-height: 100px;
-  filter: grayscale(100%);
-  -moz-filter: grayscale(100%);
-  -ms-filter: grayscale(100%);
-  -o-filter: grayscale(100%);
-  transition: filter 0.3s;
-}
-
-.explain-img-wrapper:hover img {
-  filter: grayscale(0%);
-  -moz-filter: grayscale(0%);
-  -ms-filter: grayscale(0%);
-  -o-filter: grayscale(0%);
 }
 
 .pricing-tiers-container {
@@ -214,9 +244,11 @@ body {
   overflow: hidden;
   text-align: center;
 }
+
 .pricing-tier__title {
   padding-top: 2rem !important;
 }
+
 .pricing-tiers-container > * {
   padding: 1rem 2rem;
   background: white;
@@ -225,19 +257,23 @@ body {
 .pricing-tier__subtitle {
   padding-top: 0;
 }
+
 .emphasis {
   background: var(--gc-blue);
   color: white;
 }
+
 .pricing-tier__features {
   text-align: left;
   padding-left: 4rem;
   margin-bottom: 0;
   list-style-image: url("/static/v2/images/check_green.svg");
 }
+
 .pricing-tier__features li {
   margin-bottom: 1em;
 }
+
 .pricing-tier__price {
   font-size: 3rem;
   line-height: 1em;
@@ -259,15 +295,19 @@ body {
 .whatisit {
   height: min-content;
 }
+
+.whatisit p {
+  font-weight: lighter
+}
+
 .whatisit .youtube {
   height: 100%;
 }
+
 .whatisit_container iframe {
-  min-height: 400px;
+  min-height: 300px;
   width: 100%;
-  /* height: 20vw; */
   height: 100%;
-  /* min-height: 100%; */
 }
 
 /* Landing Page Animations */
@@ -275,22 +315,27 @@ body {
   animation: rotate-blades 8s linear infinite;
   transform-origin: 48.5px 56px;
 }
+
 .globe-longitude {
   animation: rotate-globe 6s linear infinite;
   transform-origin: center;
 }
+
 #long-1 {
   animation-delay: 2s;
 }
+
 #long-2 {
   animation-delay: 4s;
 }
+
 #globe-center-fill {
   animation: globe-center-fill 2s linear infinite;
   transform-origin: center;
   animation-delay: 2s;
   transform: scaleX(0);
 }
+
 #pot-leaves {
   animation: swaying-leaves 8s ease-in-out infinite;
   transform-origin: center 60%;
@@ -299,12 +344,14 @@ body {
 .navbar.following .nav-link {
   display: none;
 }
+
 .navbar__cta {
   color: white;
   opacity: 0;
   display: none;
   transition: opacity .3s;
 }
+
 .navbar.following .navbar__cta {
   opacity: 1;
   display: inline;
@@ -322,6 +369,7 @@ body {
     transform: rotate(360deg) translate(27px, 28px);
   }
 }
+
 @keyframes rotate-globe {
   from {
     transform: rotateY(0);
@@ -330,6 +378,7 @@ body {
     transform: rotateY(180deg);
   }
 }
+
 @keyframes globe-center-fill {
   0%, 39% {
     transform: scaleX(0) translateX(-7px);
@@ -341,6 +390,7 @@ body {
     transform: scaleX(0) translateX(7px);
   }
 }
+
 @keyframes swaying-leaves {
   0%, 100% {
     transform: rotate(-10deg);
@@ -355,12 +405,19 @@ body {
     min-height: 250px;
   }
 }
+
 @media (max-width: 869px) {
   .benefit_list {
     grid-template-columns: 1fr;
   }
 }
-@media (max-width: 769px) {
+
+@media (max-width: 768px) {
+
+  .benefit {
+    padding: 3rem 1rem;
+  }
+
   .pricing-tiers-container {
     grid-template-columns: 1fr;
     grid-template-rows: repeat(15, min-content);
@@ -369,7 +426,22 @@ body {
   .case-studies-list {
     margin-left: 0;
   }
+
   .howworks-steps {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+  .howworks-steps {
+    margin-left: 6rem;
+    margin-right: 6rem;
+  }
+}
+
+@media (min-width: 992px) {
+  .howworks-steps {
+    margin-left: 10rem;
+    margin-right: 10rem;
   }
 }

@@ -16,7 +16,11 @@
 }
 
 .carousel .author, .carousel .org {
-  font-size: .75rem;
+  font-size: 0.9rem;
+}
+
+.carousel .author a {
+  text-decoration: none;
 }
 
 .carousel .org {

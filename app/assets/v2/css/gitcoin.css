@@ -184,6 +184,10 @@ h4,
   font-size: 0.9rem !important;
 }
 
+.font-title-lg {
+  font-size: 22px;
+}
+
 .font-title {
   font-size: 20px;
 }
@@ -257,16 +261,14 @@ div.button-pink {
   color: white;
   font-family: Muli, sans-serif;
   font-size: 3em;
-  font-weight: 500;
-  font-style: italic;
-  letter-spacing: 0.1em;
+  font-weight: 900;
+  letter-spacing: 0em;
 }
 
 .subheader-line {
   color: #70efbe;
   font-family: Muli, sans-serif;
-  font-size: 2em;
-  font-weight: 500;
+  font-size: 1.2em;
   font-style: italic;
 }
 

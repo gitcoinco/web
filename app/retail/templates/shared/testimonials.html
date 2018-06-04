@@ -1,17 +1,11 @@
 {% load i18n static %}
 <div class="container-fluid carousel p-0">
   <div class="row mb-0">
-    <!-- <div class="offset-lg-2 offset-md-1 offset-sm-0 hidden-xs-down col-sm-1 prev" align="center">
-      <button class="control" onclick="prevSlide()">
-        <i class="fas fa-chevron-left" aria-hidden="true"></i>
-      </button>
-    </div> -->
     <div class="d-flex align-items-center" id="slides">
       {% for slide in slides %}
         <div class="slide d-flex justify-content-center flex-wrap">
           <div class="avatar mb-4" style="background-image: url('{{slide.1}}');"></div>
-
-          <div class="testimonial ml-3 d-flex">
+          <div class="testimonial d-flex">
             <div class="decorated-quote p-0 font-italic mr-3">"</div>
             <div class="content">
               <p>{{slide.2}}</p>
@@ -26,10 +20,5 @@
         </div>
       {% endfor %}
     </div>
-    <!-- <div class="hidden-xs-down col-sm-1 next" align="center">
-      <button class="control" onclick="nextSlide()">
-        <i class="fas fa-chevron-right" aria-hidden="true"></i>
-      </button>
-    </div> -->
   </div>
 </div>
