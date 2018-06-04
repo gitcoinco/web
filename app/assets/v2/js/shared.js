@@ -202,7 +202,6 @@ var mutate_interest = function(bounty_pk, direction, data) {
   $.post(request_url, data).then(function(result) {
     result = sanitizeAPIResults(result);
     if (result.success) {
-      console.log(result);
       if (direction === 'new') {
         _alert({ message: result.msg }, 'success');
         $('#interest a').attr('id', 'btn-white');
