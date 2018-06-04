@@ -21,6 +21,7 @@
 <head>
   {% include 'shared/head.html' %}
   {% include 'shared/cards.html' %}
+  <link rel="stylesheet" href={% static "v2/css/submit_bounty.css" %}>
 </head>
 
 <body class="interior {{active}}" style="background-color: #FFFFFF;">
@@ -28,6 +29,7 @@
   <div class="container-fluid header dash">
     {% include 'shared/nav.html' %}
   </div>
+
   <div class="container-fluid">
     <div class="row no-gutters">
       <div class="col-sm-12 col-lg-3">
@@ -44,97 +46,120 @@
       <div class="col-sm-12 col-lg-12">
         <div id="form_container">
           <div class="row d-flex justify-content-center my-5">
-            <div id="primary_form" class="col-lg-5 col-sm-12">
-              <form id="submitBounty" class="submit_bounty_form">
-                <h1>{% trans "Fund an Issue" %}</h1>
-                <label class="form__label" for=issueURL>{% trans "Issue URL" %}</label>
-                <input name='issueURL' id="issueURL" class="form__input" type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
-                <label class="form__label" for="title">{% trans "Issue Title" %}</label>
-                <input name='title' id="title"  class="form__input" type="text" placeholder="Deploy the Foo to The Bar" value="{{issue_title}}" />
-                <label class="form__label" for="description">{% trans "Issue Description" %}</label>
-                <textarea name="description" class="form__input" id="description" placeholder="Add some new feature."></textarea>
-                <label class="form__label" for="keywords">{% trans "Keywords" %}</label>
-                <input name='keywords' id='keywords'  class="form__input" type="text" placeholder="python, solidity, html, javascript, react (optional)" value="{{keywords}}" />
-                <label class="form__label" for="expirationTimeDelta">{% trans "Expires in" %}</label>
-                <div class="form__select2">
-                  <select class="js-select2" name="expirationTimeDelta">
-                    <option value="86400">{% trans "1 day" %}</option>
-                    <option value="259200">{% trans "3 days" %}</option>
-                    <option value="604800">{% trans "1 week" %}</option>
-                    <option value="1209600">{% trans "2 weeks" %}</option>
-                    <option value="2592000">{% trans "1 month" %}</option>
-                    <option value="7776000">{% trans "3 months" %}</option>
-                    <option value="15552000">{% trans "6 months" %}</option>
-                    <option value="31536000" selected="">{% trans "1 year" %}</option>
-                    <option value="9999999999">{% trans "Never" %}</option>
-                  </select>
+            <div id="primary_form" class="col-lg-7 col-sm-12">
+              <h1 class="text-center">{% trans "Fund Issue" %}</h1>
+              <form id="submitBounty" class="submit_bounty_form px-5 pt-5">
+                <div id="about-section">
+                  <h5 class="font-title">{% trans "About" %}</h5>
+                  <label class="form__label" for=issueURL>{% trans "Github Issue URL" %}</label>
+                  <input name='issueURL' id="issueURL" class="form__input" type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
+                  <label class="form__label" for="title">{% trans "Github Issue Title" %}</label>
+                  <input name='title' id="title"  class="form__input" type="text" placeholder="Deploy the Foo to The Bar" value="{{issue_title}}" />
+                  <label class="form__label" for="description">{% trans "Description" %}</label>
+                  <textarea name="description" class="form__input" id="description" placeholder="Add some new feature."></textarea>
+                  <label class="form__label" for="keywords">{% trans "Keywords" %}</label>
+                  <input name='keywords' id='keywords'  class="form__input" type="text" placeholder="python, solidity, html, javascript, react (optional)" value="{{keywords}}" />
+                  <hr>
                 </div>
-                <div>
-                  <label class="form__label">{% trans "Issue Details" %}</label>
-                </div>
-                <div class="form__group">
-                  <div class="form__select2 form__group-item">
-                    <select class="js-select2" name="experienceLevel">
-                      <option value="">{% trans "Experience Level" %}</option>
-                      <option>{% trans "Beginner" %}</option>
-                      <option>{% trans "Intermediate" %}</option>
-                      <option>{% trans "Advanced" %}</option>
-                    </select>
+                <div id="details-section">
+                  <h5 class="font-title">{% trans "Details" %}</h5>
+                  <div>
+                    <label class="form__label">{% trans "Issue Details" %}</label>
                   </div>
-                  <div class="form__select2 form__group-item">
-                    <select class="js-select2" name="projectLength">
-                      <option value="Unknown">{% trans "Project Length" %}</option>
-                      <option>{% trans "Hours" %}</option>
-                      <option>{% trans "Days" %}</option>
-                      <option>{% trans "Weeks" %}</option>
-                      <option>{% trans "Months" %}</option>
-                    </select>
-                  </div>
-                  <div class="form__select2 form__group-item">
-                    <select class="js-select2" name="bountyType">
-                      <option value="">{% trans "Bounty Type" %}</option>
-                      <option>{% trans "Bug" %}</option>
-                      <option>{% trans "Feature" %}</option>
-                      <option>{% trans "Security" %}</option>
-                      <option>{% trans "Other" %}</option>
-                    </select>
-                  </div>
-                </div>
-                <label class="form__label" for="project_type">{% trans "Project Type" %}</label>
-                <div class="form__select2">
-                  <select class="js-select2" name="project_type">
-                    <option value="traditional">{% trans "Traditional -- 1 worker at a time, 1 is paid out" %}</option>
-                    <option value="contest">{% trans "Contest -- many workers at a time, 1 is paid out" %}</option>
-                    <option value="cooperative">{% trans "Cooperative -- many workers at a time, many are paid out" %}</option>
-                  </select>
-                </div>
-                <label class="form__label" for="permission_type">{% trans "Permissions" %}</label>
-                <div class="form__select2">
-                  <select class="js-select2" name="permission_type">
-                    <option value="permissionless">{% trans "Permissionless - Anyone can start work." %}</option>
-                    <option value="approval" selected>{% trans "Approval Required - I will approve bounty hunters." %}</option>
-                  </select>
-                </div>
-
-                <label class="form__label" for="amount">{% trans "Amount" %}</label>
-                <div class="form__flex-group">
-                  <div class="form__amount-wrapper">
-                    <input name='amount' id='amount'  class="form__input" type="number" value="{{amount|default:'0.001'}}" step="0.001" min="0.001"/>
-                  </div>
-                  <div class="form__group-item">
-                    <div class="form__select2">
-                      <select name='deonomination' id='token'></select>
+                  <div class="form__group">
+                    <div class="form__select2 form__group-item">
+                      <select class="js-select2" name="experienceLevel">
+                        <option value="">{% trans "Experience Level" %}</option>
+                        <option>{% trans "Beginner" %}</option>
+                        <option>{% trans "Intermediate" %}</option>
+                        <option>{% trans "Advanced" %}</option>
+                      </select>
+                    </div>
+                    <div class="form__select2 form__group-item">
+                      <select class="js-select2" name="projectLength">
+                        <option value="Unknown">{% trans "Project Length" %}</option>
+                        <option>{% trans "Hours" %}</option>
+                        <option>{% trans "Days" %}</option>
+                        <option>{% trans "Weeks" %}</option>
+                        <option>{% trans "Months" %}</option>
+                      </select>
+                    </div>
+                    <div class="form__select2 form__group-item">
+                      <select class="js-select2" name="bountyType">
+                        <option value="">{% trans "Bounty Type" %}</option>
+                        <option>{% trans "Bug" %}</option>
+                        <option>{% trans "Feature" %}</option>
+                        <option>{% trans "Security" %}</option>
+                        <option>{% trans "Other" %}</option>
+                      </select>
                     </div>
                   </div>
+                  <label class="form__label" for="project_type">{% trans "Project Type" %}</label>
+                  <div class="form__select2">
+                    <select class="js-select2" name="project_type">
+                      <option value="traditional">{% trans "Traditional -- 1 worker at a time, 1 is paid out" %}</option>
+                      <option value="contest">{% trans "Contest -- many workers at a time, 1 is paid out" %}</option>
+                      <option value="cooperative">{% trans "Cooperative -- many workers at a time, many are paid out" %}</option>
+                    </select>
+                  </div>
+                  <label class="form__label" for="permission_type">{% trans "Permissions" %}</label>
+                  <div class="form__select2">
+                    <select class="js-select2" name="permission_type">
+                      <option value="permissionless">{% trans "Permissionless - Anyone can start work." %}</option>
+                      <option value="approval" selected>{% trans "Approval Required - I will approve bounty hunters." %}</option>
+                    </select>
+                  </div>
+                  <hr/>
                 </div>
-                <div>
-                  <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
+                <div id="deadline-section">
+                  <h5 class="font-title">{% trans "Deadline" %}</h5>
+                  <label class="form__label" for="expirationTimeDelta">{% trans "Expires in" %}</label>
+                  <div class="form__select2">
+                    <select class="js-select2" name="expirationTimeDelta">
+                      <option value="86400">{% trans "1 day" %}</option>
+                      <option value="259200">{% trans "3 days" %}</option>
+                      <option value="604800">{% trans "1 week" %}</option>
+                      <option value="1209600">{% trans "2 weeks" %}</option>
+                      <option value="2592000">{% trans "1 month" %}</option>
+                      <option value="7776000">{% trans "3 months" %}</option>
+                      <option value="15552000">{% trans "6 months" %}</option>
+                      <option value="31536000" selected="">{% trans "1 year" %}</option>
+                      <option value="9999999999">{% trans "Never" %}</option>
+                    </select>
+                  </div>
+                  <hr>
                 </div>
-                <h4 class="mt-5">{% trans "Creator Details" %}</h4>
-                {% include 'shared/github_username.html' %}
-                {% include 'shared/notification_email.html' with show_information_publicly_checkbox=1 %}
-                {% include 'shared/name.html' %}
-                <div id="advanced_container"></div>
+                <div id="contact-section">
+                  <h5 class="font-title">{% trans "Contact" %}</h5>
+                  {% include 'shared/github_username.html' %}
+                  {% include 'shared/notification_email.html' with show_information_publicly_checkbox=1 %}
+                  {% include 'shared/name.html' %}
+                  <div id="advanced_container"></div>
+                  <hr>
+                </div>
+                <div id="funding-section">
+                  <h5 class="font-tile">{% trans "Funding" %}</h5>
+                  <label class="form__label" for="amount">{% trans "Amount" %}</label>
+                  <div class="form__flex-group">
+                    <div class="form__amount-wrapper">
+                      <input name='amount' id='amount'  class="form__input" type="number" value="{{amount|default:'0.001'}}" step="0.001" min="0.001"/>
+                    </div>
+                    <div class="form__group-item">
+                      <div class="form__select2">
+                        <select name='deonomination' id='token'></select>
+                      </div>
+                      <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
+                    </div>
+                  </div>
+                  <hr class="mt-5">
+                </div>
+                <div id="gas-section">
+                  <h5 class="font-title">{% trans "Gas Settings" %}</h4>
+                  <div>
+                    {% include 'shared/bounty_actions_hidden_vars.html' %}
+                    {% include 'shared/wallet_estimate.html' %}
+                  </div>
+                </div>
                 <div class="terms_container">
                   <div class="form__checkbox">
                     <input name='terms' id='terms' type="checkbox" value=1 />
@@ -150,14 +175,9 @@
                       Gitcoin Core, will be able to take my funds or change this information.{% endblocktrans %}</label>
                   </div>
                 </div>
-                <h4>{% trans "Gas Settings" %}</h4>
-                <div>
-                  {% include 'shared/bounty_actions_hidden_vars.html' %}
-                  {% include 'shared/wallet_estimate.html' %}
-                  <div class="form__footer form__footer--right">
-                    <button class="button button--primary btn-block js-submit" type="submit">Fund Issue</button>
-                    <a target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
-                  </div>
+                <div class="form__footer form__footer--right">
+                  <button class="button button--primary btn-block js-submit" type="submit">Fund Issue</button>
+                  <a target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
                 </div>
               </form>
             </div>

@@ -1,0 +1,11 @@
+.submit_bounty .container-fluid {
+  background-color: #f2f6f9;
+}
+
+.submit_bounty .submit_bounty_form {
+  background-color: #FFFFFF;
+}
+
+.submit_bounty_form textarea[name=description] {
+  height: 20rem;
+}
