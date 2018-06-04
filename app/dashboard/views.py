@@ -688,7 +688,8 @@ def helper_handle_approvals(request, bounty):
         if is_funder or is_staff:
             interests = bounty.interested.filter(pending=True, profile__handle=worker)
             if not interests.exists():
-                messages.warning(request,
+                messages.warning(
+                    request,
                     _('This worker does not exist or is not in a pending state. Please check your link and try again.'))
                 return
             interest = interests.first()

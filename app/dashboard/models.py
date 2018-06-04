@@ -449,7 +449,7 @@ class Bounty(SuperModel):
                     return 'expired'
                 # If its not expired or done, it must be cancelled.
                 return 'cancelled'
-            # per https://github.com/gitcoinco/web/pull/1098 , 
+            # per https://github.com/gitcoinco/web/pull/1098 ,
             # contests are open no matter how much started/submitted work they have
             if self.pk and self.project_type == 'contest':
                 return 'open'
@@ -726,7 +726,6 @@ class Bounty(SuperModel):
         if self.network == 'mainnet' and (settings.DEBUG or settings.ENV != 'prod'):
             return False
         return True
-
 
     @property
     def is_project_type_fulfilled(self):
@@ -1095,7 +1094,7 @@ class Profile(SuperModel):
         from github.utils import get_user
         from app.utils import add_contributors
         # TODO: maybe rewrite this so it doesnt have to go to the internet to get the info
-        # but in a way that is respectful of db size too 
+        # but in a way that is respectful of db size too
         repos_data = get_user(self.handle, '/repos')
         repos_data = sorted(repos_data, key=lambda repo: repo['stargazers_count'], reverse=True)
         repos_data = [add_contributors(repo_data) for repo_data in repos_data]

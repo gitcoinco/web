@@ -15,11 +15,10 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.models import Bounty, Interest
+from dashboard.models import Interest
 from marketing.mails import start_work_applicant_about_to_expire, start_work_applicant_expired, start_work_approved
 
 THRESHOLD_HOURS_AUTO_APPROVE = 3 * 24
@@ -40,7 +39,7 @@ def helper_execute_emails(threshold, func_to_execute, action_str):
     interests = Interest.objects.filter(pending=True, created__gt=start_time, created__lt=end_time)
     print(f"{interests.count()} {action_str}")
     for interest in interests:
-        bounty = interest.bounties.first() #TODO is this right? is this how i get the bounty?
+        bounty = interest.bounties.first()  # TODO is this right? is this how i get the bounty?
         print(f"- {interest.pk} {action_str}")
         func_to_execute(interest, bounty)
 
@@ -51,8 +50,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        # warninings
+        # warnings
         helper_execute_emails(THRESHOLD_HOURS_AUTO_APPROVE_WARNING, start_work_applicant_about_to_expire, 'warning')
-        
-       # auto approval
+
+        # auto approval
         helper_execute_emails(THRESHOLD_HOURS_AUTO_APPROVE, start_work_applicant_expired_executer, 'auto approval')
