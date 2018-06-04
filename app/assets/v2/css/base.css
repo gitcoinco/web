@@ -1194,6 +1194,15 @@ input.is-invalid {
   font-size: 0.85rem;
 }
 
+#robot_error {
+  width: 25%;
+  margin: 0 auto;
+}
+
+#robot_error img {
+  width: 100%;
+}
+
 @media (max-width: 1350px) {
   .profile_details .tips li div.details {
     width: 300px;
