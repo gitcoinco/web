@@ -1,0 +1,12 @@
+{
+  "symbol": "BSP",
+  "address": "0x5d551fa77ec2c7dd1387b626c4f33235c3885199",
+  "overview":{
+        "en":"Blockchain Sports and Health Data Ecological Platform",
+        "zh":"区块链运动健康数据生态平台"
+  },
+  "email": "corp@blocksports.io",
+  "website": "http://blocksports.io/",
+  "whitepaper": "http://blocksports.io/doc/BSP_white_paper_cn.pdf",
+  "published_on": "2018-05-17"
+}
