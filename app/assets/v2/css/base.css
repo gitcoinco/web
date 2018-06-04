@@ -1178,11 +1178,20 @@ input.is-invalid {
 }
 
 .metamask-error img {
-  max-width: 150px;
+  max-width: 100px;
 }
 
 .metamask-banner #upper_left {
   height: 100%;
+}
+
+.metamask-banner h3 {
+  letter-spacing: 0;
+}
+
+.metamask-banner p,
+.metamask-banner li {
+  font-size: 0.85rem;
 }
 
 @media (max-width: 1350px) {

@@ -15,24 +15,19 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-<div id="zero_balance_error" class="submit-notification metamask-error container-fluid" style="display: none;">
+<div id="no_issue_error" class="submit-notification container-fluid" style="display: block; background-color: #fe006a;">
   <div class="row align-items-center px-4 pt-2 text-center text-lg-left">
     <div class="col-lg-10 col-sm-12">
-      <h3>{% trans "You're almost there!" %}</h3>
+      <h3>{% trans "Accepting a Submission is Exciting" %}</h3>
       <p>
         <ol>
-          <li>{% trans "In order to continue, you'll need some Ether." %}</li>
-          <li>{% trans "'Ether' is a digital asset that can be used to pay for the computational resources needed to run an application or program. In this case, Gitcoin." %}</li>
-          <li>{% trans "The easiest way to get Ether is to request it via the Gitcoin Faucet:" %}</li>
+          <li>{% trans "Make sure the submitter has completed the requirements to the specifications of your bounty." %}</li>
+          <li>{% trans "Feedbacks and gratitude are always nice ways to continue a relationship." %}</li>
         </ol>
       </p>
     </div>
     <div class="col-lg-2 col-sm-12">
-      <p>
-        <a class="button button--primary mt-3 pulseClick" role="button" id="submit" href="{% url 'faucet' %}" target="_blank" rel="noopener noreferrer">{% trans "View Faucet" %}</a>
-        <br><br>
-        <a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">{% trans "Can't get web3 to work?  Get help here." %}</a>
-      </p>
+      <img src="{% static "v2/images/Box.svg" %}">
     </div>
   </div>
 </div>
