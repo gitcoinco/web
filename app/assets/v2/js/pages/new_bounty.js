@@ -2,6 +2,36 @@
 /* eslint-disable nonblock-statement-body-position */
 load_tokens();
 
+/* Check if quickstart page is to be shown */
+var localStorage;
+var quickstartURL = document.location.origin + '/bounty/quickstart';
+
+try {
+  localStorage = window.localStorage;
+} catch (e) {
+  localStorage = {};
+}
+
+if (localStorage['quickstart_dontshow'] !== 'true' &&
+    doShowQuickstart(document.referrer) &&
+    doShowQuickstart(document.URL)) {
+  window.location = quickstartURL;
+}
+
+function doShowQuickstart(url) {
+  var fundingURL = document.location.origin + '/funding/new\\?';
+  var bountyURL = document.location.origin + '/bounty/new\\?';
+  var blacklist = [ fundingURL, bountyURL, quickstartURL ];
+
+  for (var i = 0; i < blacklist.length; i++) {
+    if (url.match(blacklist[i])) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 // Wait until page is loaded, then run the function
 $(document).ready(function() {
   // Load sidebar radio buttons from localStorage

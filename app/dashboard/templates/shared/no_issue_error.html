@@ -14,10 +14,20 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n %}
-  <div class="w-100 mt-2 terms_container">
-    <div class="form__checkbox">
-      <input name='{{id}}' id='{{id}}' type="checkbox" value=1 checked="" />
-      <label class="form__label" for="{{id}}">{% trans "It's okay to show this information publicly on Gitcoin" %}</label>
+{% load i18n static %}
+<div id="no_issue_error" class="submit-notification container-fluid" style="display: block; background-color: #3d00fd;">
+  <div class="row align-items-center px-4 pt-2 text-center text-lg-left">
+    <div class="col-lg-10 col-sm-12">
+      <h3>{% trans "Tips for Funding an Issue" %}</h3>
+      <p>
+        <ol>
+          <li>{% trans "Create an issue on Github so that we can reference the details of the issue." %}</li>
+          <li>{% trans "What to fund? A new feature, feature improvements, bug fixes, code review, design and more." %}</li>
+        </ol>
+      </p>
+    </div>
+    <div class="col-lg-2 col-sm-12">
+      <img src="{% static "v2/images/Lightbulb.svg" %}">
     </div>
   </div>
+</div>

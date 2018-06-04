@@ -1,178 +1,174 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    {% include 'shared/head.html' %}
-    {% include 'shared/cards.html' %}
+  {% include 'shared/head.html' %}
+  {% include 'shared/cards.html' %}
 </head>
 
-<body class="interior {{active}}">
-    {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
-        {% include 'shared/nav.html' %}
-    </div>
+<body class="interior {{active}}" style="background-color: #FFFFFF;">
+  {% include 'shared/tag_manager_2.html' %}
+  <div class="container-fluid header dash">
+    {% include 'shared/nav.html' %}
+  </div>
 
-    <div class="row no-gutter">
-        <div class="col-12 body">
-            <div class="container-fluid no-gutter">
-                <div class="row font-smaller-2" id="form_container">
-                    {% include 'shared/no_metamask_error.html' %}
-                    {% include 'shared/zero_balance_error.html' %}
-                    {% include 'shared/unlock_metamask.html' %}
-                    <div id="primary_form">
-                        <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
-                            <form id="submitBounty">
-                                {% include 'shared/bounty_nav.html' with active_item=1 %}
-                                <div class="w-100" style="text-align: center;">
-                                    <h3>{% trans "Fund an Issue" %}</h3>
-                                    <img src="{% static "v2/images/prime.png" %}">
-                                </div>
-                                {% include 'shared/network_status.html' %}
-                                <div class="w-100">
-                                    <label class="form__label" for=issueURL>{% trans "Issue URL" %}</label>
-                                    <input required name='issueURL' id="issueURL" class="w-100 form__input" type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" />
-                                </div>
-                                <div class="w-100 mt-2 amount_container">
-                                    <label class="form__label" for="amount">{% trans "Amount" %}</label>
-                                    <div class="form__flex-group">
-                                        <div class="col-6 form__amount-wrapper">
-                                            <input name='amount' id='amount'  class="form__input" type="number" value="{{amount|default:'0.001'}}" step="0.001" min="0.001" />
-                                        </div>
-                                        <div class="col-6 form__group-item">
-                                            <div class="form__select2">
-                                                <select name='deonomination' id='token'></select>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
-                                </div>
-                                {% include 'shared/github_username.html' %}
-                                {% include 'shared/notification_email.html' with show_information_publicly_checkbox=1 %}
-                                {% include 'shared/name.html' %}
-                                <div id="advanced_container">
-                                    <div class="w-100 mt-2">
-                                        <label class="form__label" for="title">{% trans "Issue Title" %}</label>
-                                        <input name='title' id="title"  class="w-100 form__input" type="text" placeholder="Deploy the Foo to The Bar" value="{{issue_title}}" />
-                                    </div>
-                                    <div class="w-100 mt-2">
-                                        <label class="form__label" for="description">{% trans "Issue Description" %}</label>
-                                        <textarea required name="description" class="w-100 form__input" id="description" placeholder="Add some new feature."></textarea>
-                                </div>
-                                    <div class="w-100 mt-2">
-                                        <label class="form__label" for="keywords">{% trans "Keywords" %}</label>
-                                        <input name='keywords' id='keywords'  class="w-100 form__input" type="text" placeholder="python, solidity, html, javascript, react (optional)" value="{{keywords}}" />
-                                    </div>
-                                    <div class="w-100 mt-2">
-                                        <label class="form__label" for="expirationTimeDelta">{% trans "Expires in" %}</label>
-                                        <div class="form__select2">
-                                            <select class="w-100 js-select2" name="expirationTimeDelta">
-                                                <option value="86400">{% trans "1 day" %}</option>
-                                                <option value="259200">{% trans "3 days" %}</option>
-                                                <option value="604800">{% trans "1 week" %}</option>
-                                                <option value="1209600">{% trans "2 weeks" %}</option>
-                                                <option value="2592000">{% trans "1 month" %}</option>
-                                                <option value="7776000">{% trans "3 months" %}</option>
-                                                <option value="15552000">{% trans "6 months" %}</option>
-                                                <option value="31536000" selected="">{% trans "1 year" %}</option>
-                                                <option value="9999999999">{% trans "Never" %}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="w-100 mt-2 d-flex">
-                                        <div class="w-50 mt-2 mr-3 d-flex flex-column">
-                                            <label class="form__label">{% trans "Issue Details" %}</label>
-                                        </div>
-                                    </div>
-                                    <div class="form__group">
-                                        <div class="form__select2 form__group-item">
-                                            <select class="w-100 js-select2" name="experienceLevel">
-                                                <option value="">{% trans "Experience Level" %}</option>
-                                                <option>{% trans "Beginner" %}</option>
-                                                <option>{% trans "Intermediate" %}</option>
-                                                <option>{% trans "Advanced" %}</option>
-                                            </select>
-                                        </div>
-                                        <div class="form__select2 form__group-item">
-                                            <select class="w-100 js-select2" name="projectLength">
-                                                <option value="Unknown">{% trans "Project Length" %}</option>
-                                                <option>{% trans "Hours" %}</option>
-                                                <option>{% trans "Days" %}</option>
-                                                <option>{% trans "Weeks" %}</option>
-                                                <option>{% trans "Months" %}</option>
-                                            </select>
-                                        </div>
-                                        <div class="form__select2 form__group-item">
-                                            <select class="w-100 js-select2" name="bountyType">
-                                                <option value="">{% trans "Bounty Type" %}</option>
-                                                <option>{% trans "Bug" %}</option>
-                                                <option>{% trans "Feature" %}</option>
-                                                <option>{% trans "Security" %}</option>
-                                                <option>{% trans "Other" %}</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="w-100 mt-2 terms_container">
-                                    <div class="form__checkbox">
-                                        <input name='terms' id='terms' type="checkbox" value=1 required />
-                                        <label class="form__label" for=terms>{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>.{% endblocktrans %}</label>
-                                    </div>
-                                </div>
-                                <div class="w-100 mt-2 terms_container">
-                                    <div class="form__checkbox">
-                                        <input name='blockchain_tos' id='blockchain_tos' type="checkbox" value=1 required />
-                                        <label class="form__label" for=blockchain_tos>{% blocktrans %}I understand that this information is being submitted to a public, immutable, blockchain.  No one, including Gitcoin Core, will be able to take my funds or change this information. {% endblocktrans %}</label>
-                                    </div>
-                                </div>
-                                {% include 'shared/bounty_actions_hidden_vars.html' %}
-                                {% include 'shared/wallet_estimate.html' %}
-                                <div class="form__footer form__footer--right">
-                                    <button class="button button--primary js-submit" type="submit">{% trans "Fund Issue" %}</button>
-                                    <br />
-                                    <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp" target="_blank" rel="noopener noreferrer">{% trans "Having trouble?  Click here." %}</a>
-                                </div>
-                            </form>
-                            {% include 'shared/newsletter.html' %}
-                        </div>
-                    </div>
+  <div class="container-fluid">
+    <div class="row no-gutters">
+      <div class="col-sm-12 col-lg-3">
+        {% include 'shared/current_balance.html' %}
+      </div>
+      <div class="col-lg-9 col-sm-12">
+        {% include 'shared/no_issue_error.html' %}
+        {% include 'shared/no_metamask_error.html' %}
+        {% include 'shared/zero_balance_error.html' %}
+        {% include 'shared/unlock_metamask.html' %}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-lg-12">
+        <div id="form_container">
+          <div class="row d-flex justify-content-center my-5">
+            <div id="primary_form" class="col-lg-5 col-sm-12">
+              <form id="submitBounty" class="submit_bounty_form">
+                <h1>{% trans "Fund an Issue" %}</h1>
+                <label class="form__label" for=issueURL>{% trans "Issue URL" %}</label>
+                <input name='issueURL' id="issueURL" class="form__input" type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
+                <label class="form__label" for="title">{% trans "Issue Title" %}</label>
+                <input name='title' id="title"  class="form__input" type="text" placeholder="Deploy the Foo to The Bar" value="{{issue_title}}" />
+                <label class="form__label" for="description">{% trans "Issue Description" %}</label>
+                <textarea name="description" class="form__input" id="description" placeholder="Add some new feature."></textarea>
+                <label class="form__label" for="keywords">{% trans "Keywords" %}</label>
+                <input name='keywords' id='keywords'  class="form__input" type="text" placeholder="python, solidity, html, javascript, react (optional)" value="{{keywords}}" />
+                <label class="form__label" for="expirationTimeDelta">{% trans "Expires in" %}</label>
+                <div class="form__select2">
+                  <select class="js-select2" name="expirationTimeDelta">
+                    <option value="86400">{% trans "1 day" %}</option>
+                    <option value="259200">{% trans "3 days" %}</option>
+                    <option value="604800">{% trans "1 week" %}</option>
+                    <option value="1209600">{% trans "2 weeks" %}</option>
+                    <option value="2592000">{% trans "1 month" %}</option>
+                    <option value="7776000">{% trans "3 months" %}</option>
+                    <option value="15552000">{% trans "6 months" %}</option>
+                    <option value="31536000" selected="">{% trans "1 year" %}</option>
+                    <option value="9999999999">{% trans "Never" %}</option>
+                  </select>
                 </div>
+                <div>
+                  <label class="form__label">{% trans "Issue Details" %}</label>
+                </div>
+                <div class="form__group">
+                  <div class="form__select2 form__group-item">
+                    <select class="js-select2" name="experienceLevel">
+                      <option value="">{% trans "Experience Level" %}</option>
+                      <option>{% trans "Beginner" %}</option>
+                      <option>{% trans "Intermediate" %}</option>
+                      <option>{% trans "Advanced" %}</option>
+                    </select>
+                  </div>
+                  <div class="form__select2 form__group-item">
+                    <select class="js-select2" name="projectLength">
+                      <option value="Unknown">{% trans "Project Length" %}</option>
+                      <option>{% trans "Hours" %}</option>
+                      <option>{% trans "Days" %}</option>
+                      <option>{% trans "Weeks" %}</option>
+                      <option>{% trans "Months" %}</option>
+                    </select>
+                  </div>
+                  <div class="form__select2 form__group-item">
+                    <select class="js-select2" name="bountyType">
+                      <option value="">{% trans "Bounty Type" %}</option>
+                      <option>{% trans "Bug" %}</option>
+                      <option>{% trans "Feature" %}</option>
+                      <option>{% trans "Security" %}</option>
+                      <option>{% trans "Other" %}</option>
+                    </select>
+                  </div>
+                </div>
+                <label class="form__label" for="amount">{% trans "Amount" %}</label>
+                <div class="form__flex-group">
+                  <div class="form__amount-wrapper">
+                    <input name='amount' id='amount'  class="form__input" type="number" value="{{amount|default:'0.001'}}" step="0.001" min="0.001"/>
+                  </div>
+                  <div class="form__group-item">
+                    <div class="form__select2">
+                      <select name='deonomination' id='token'></select>
+                    </div>
+                    <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
+                  </div>
+                </div>
+                <h4 class="mt-5">{% trans "Creator Details" %}</h4>
+                {% include 'shared/github_username.html' %}
+                {% include 'shared/notification_email.html' with show_information_publicly_checkbox=1 %}
+                {% include 'shared/name.html' %}
+                <div id="advanced_container"></div>
+                <div class="terms_container">
+                  <div class="form__checkbox">
+                    <input name='terms' id='terms' type="checkbox" value=1 />
+                      <label class="form__label" for=terms>{% trans "I have read, understand, and agree to, the" %}
+                        <a href="{% url "terms" %}" target="_blank" rel="noopener noreferrer">{% trans "Terms of Service" %}</a>.
+                    </label>
+                  </div>
+                </div>
+                <div class="w-100 mt-2 terms_container">
+                  <div class="form__checkbox">
+                    <input name='blockchain_tos' id='blockchain_tos' type="checkbox" value=1 required />
+                    <label class="form__label" for=blockchain_tos>{% blocktrans %}I understand that this information is being submitted to a public, immutable, blockchain. No one, including
+                      Gitcoin Core, will be able to take my funds or change this information.{% endblocktrans %}</label>
+                  </div>
+                </div>
+                <h4>{% trans "Gas Settings" %}</h4>
+                <div>
+                  {% include 'shared/bounty_actions_hidden_vars.html' %}
+                  {% include 'shared/wallet_estimate.html' %}
+                  <div class="form__footer form__footer--right">
+                    <button class="button button--primary btn-block js-submit" type="submit">Fund Issue</button>
+                    <a target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
+                  </div>
+                </div>
+              </form>
             </div>
+          </div>
         </div>
+      </div>
     </div>
-    {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/rollbar.html' %}
-    {% include 'shared/footer.html' %}
-    {% include 'shared/messages.html' %}
-
+    <div class="row">
+      <div class="col-12 py-5">
+      {% include 'shared/newsletter.html' %}
+      </div>
+    </div>
+  </div>
+  {% include 'shared/bottom_notification.html' %}
+  {% include 'shared/analytics.html' %}
+  {% include 'shared/footer_scripts.html' %}
+  {% include 'shared/rollbar.html' %}
+  {% include 'shared/footer.html' %}
+  {% include 'shared/messages.html' %}
 </body>
 
 <!-- jQuery -->
-<script src="{% static "v2/js/shared.js" %}"></script>
 <script src="{% static "v2/js/ipfs-api.js" %}"></script>
 <script src="{% static "v2/js/ipfs.js" %}"></script>
 <script src="{% static "v2/js/amounts.js" %}"></script>
 <script src="{% static "v2/js/abi.js" %}"></script>
 <script src="{% static "v2/js/tokens.js" %}"></script>
+<script src="{% static "v2/js/shared.js" %}"></script>
 <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
 <script src="{% static "v2/js/pages/new_bounty.js" %}"></script>
 
