@@ -28,10 +28,7 @@ logger = logging.getLogger(__name__)
 
 def m2m_changed_interested(sender, instance, action, reverse, model, **kwargs):
     """Handle changes to Bounty interests."""
-    profile_handles = []
-
-    for profile in instance.interested.select_related('profile').all().order_by('pk'):
-        profile_handles.append((profile.profile.handle, profile.profile.absolute_url))
+    profile_handles = instance.profile_pairs
 
     if action in ['post_add', 'post_remove']:
         maybe_market_to_github(instance, 'work_started',

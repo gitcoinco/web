@@ -112,6 +112,14 @@ def maybe_market_to_twitter(bounty, event_name):
         tweet_txts = [
             'Bounty killed on {} {} {}\n{}'
         ]
+    elif event_name == 'worker_rejected':
+        tweet_txts = [
+            'Worked rejected on {} {} {}\n{}'
+        ]
+    elif event_name == 'worker_approved':
+        tweet_txts = [
+            'Worked approved on {} {} {}\n{}'
+        ]
 
     random.shuffle(tweet_txts)
     tweet_txt = tweet_txts[0]
@@ -350,6 +358,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
         bool: Whether or not the Github comment was posted successfully.
 
     """
+    from dashboard.utils import get_ordinal_repr  # hack for circular import issue
     from dashboard.models import BountyFulfillment, Interest
     msg = ''
     usdt_value = ""
@@ -360,17 +369,9 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
     natural_value = round(bounty.get_natural_value(), 4)
     absolute_url = bounty.get_absolute_url()
     amount_open_work = "{:,}".format(amount_usdt_open_work())
-    profiles = ""
     bounty_owner = f"@{bounty.bounty_owner_github_username}" if bounty.bounty_owner_github_username else ""
     status_header = get_status_header(bounty)
 
-    if profile_pairs:
-        from dashboard.utils import get_ordinal_repr  # hack for circular import issue
-        for i, profile in enumerate(profile_pairs, start=1):
-            show_dibs = event_name == 'work_started' and len(profile_pairs) > 1
-            dibs = f" ({get_ordinal_repr(i)} precedence)" if show_dibs else ""
-            profiles = profiles + f"\n {i}. [@{profile[0]}]({profile[1]}) {dibs}"
-        profiles += "\n\n"
     if event_name == 'new_bounty':
         msg = f"{status_header}__This issue now has a funding of {natural_value} " \
               f"{bounty.token_name} {usdt_value} attached to it.__\n\n * If you would " \
@@ -399,21 +400,44 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
               "* Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * " \
               f"${amount_open_work} more funded OSS Work available on the [Gitcoin Issue Explorer](https://gitcoin.co/explorer)\n"
     elif event_name == 'work_started':
+        interested = bounty.interested.all().order_by('created')
+        # interested_plural = "s" if interested.count() != 0 else ""
         from_now = naturaltime(bounty.expires_date)
-        msg = f"{status_header}__Work has been started__.\n{profiles} has committed to working on this project to be " \
-              f"completed {from_now}.\n\n"
+        started_work = bounty.interested.filter(pending=False).all()
+        # pending_approval = bounty.interested.filter(pending=True).all()
         bounty_owner_clear = f"@{bounty.bounty_owner_github_username}" if bounty.bounty_owner_github_username else ""
-        try:
-            if profile_pairs:
-                msg += f"\n{bounty_owner_clear}, __please see the below comments / questions regarding approach for " \
-                        "this ticket from the bounty hunter(s):__ "
-                for profile in profile_pairs:
-                    interests = Interest.objects.filter(profile__handle=profile[0], bounty=bounty)
-                    for interest in interests:
-                        if interest.issue_message.strip():
-                            msg += f"\n- [@{profile[0]}]({profile[1]}): {interest.issue_message}\n\n"
-        except Exception as e:
-            print(e)
+        approval_required = bounty.permission_type == 'approval'
+
+        if started_work.exists():
+            msg = f"{status_header}__Work has been started__.\n\n"
+        else:
+            msg = f"{status_header}__Workers have applied to start work__.\n\n"
+
+        msg += f"\nThese users each claimed they can complete the work by {from_now}. " \
+               "Please review their questions below:\n\n"
+
+        for i, interest in enumerate(interested, start=1):
+
+            profile_link = f"[{interest.profile.handle}]({interest.profile.url})"
+            action = "started work"
+            if interest.pending:
+                action = 'applied to start work'
+                action += f" _(Funders only: [approve worker]({bounty.approve_worker_url(interest.profile.handle)})"
+                action += f" | [reject worker]({bounty.reject_worker_url(interest.profile.handle)}))_"
+            if not interest.pending and approval_required:
+                action = 'been approved to start work'
+
+            show_dibs = len(interested.count()) > 1 and bounty.project_type == 'traditional'
+            dibs = f" ({get_ordinal_repr(i)} dibs)" if show_dibs else ""
+
+            msg += f"\n{i}. {profile_link} has {action}{dibs}. "
+
+            issue_message = interest.issue_message.strip()
+            if issue_message:
+                msg += f"\t\n * Q: " \
+                       f"{issue_message}"
+            msg += "\n\n"
+
     elif event_name == 'work_submitted':
         sub_msg = ""
         if bounty.fulfillments.exists():
@@ -423,6 +447,13 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
                 username = "@"+bf.fulfiller_github_username if bf.fulfiller_github_username else bf.fulfiller_address
                 link_to_work = f"[PR]({bf.fulfiller_github_url})" if bf.fulfiller_github_url else "(Link Not Provided)"
                 sub_msg += f"* {link_to_work} by {username}\n"
+
+        profiles = ""
+        if profile_pairs:
+            for i, profile in enumerate(profile_pairs, start=1):
+                profiles = profiles + f"\n {i}. [@{profile[0]}]({profile[1]})"
+            profiles += "\n\n"
+
 
         msg = f"{status_header}__Work for {natural_value} {bounty.token_name} {usdt_value} has been submitted by__:\n" \
               f"{profiles}{sub_msg}\n<hr>\n\n* Learn more [on the Gitcoin Issue Details page]({absolute_url})\n" \

@@ -42,6 +42,22 @@ $(document).ready(function() {
   } else if (localStorage['issueURL']) {
     $('input[name=issueURL]').val(localStorage['issueURL']);
   }
+  if (localStorage['project_type']) {
+    $('select[name=project_type] option').prop('selected', false);
+    $(
+      "select[name=project_type] option[value='" +
+        localStorage['project_type'] +
+        "']"
+    ).prop('selected', true);
+  }
+  if (localStorage['permission_type']) {
+    $('select[name=permission_type] option').prop('selected', false);
+    $(
+      "select[name=permission_type] option[value='" +
+        localStorage['permission_type'] +
+        "']"
+    ).prop('selected', true);
+  }
   if (localStorage['expirationTimeDelta']) {
     $('select[name=expirationTimeDelta] option').prop('selected', false);
     $(
@@ -84,10 +100,21 @@ $(document).ready(function() {
   }
   $('input[name=issueURL]').focus();
 
-  $('select[name=deonomination]').select2();
+  // all js select 2 fields
   $('.js-select2').each(function() {
     $(this).select2();
   });
+  // removes tooltip
+  $('select').on('change', function(evt) {
+    $('.select2-selection__rendered').removeAttr('title');
+  });
+  // removes search field in all but the 'denomination' dropdown
+  $('.select2-container').click(function() {
+    $('.select2-container .select2-search__field').remove();
+  });
+  // denomination field
+  $('select[name=deonomination]').select2();
+
 
   $('#advancedLink a').click(function(e) {
     e.preventDefault();
@@ -172,6 +199,10 @@ $(document).ready(function() {
             githubUsername: metadata.githubUsername,
             address: '' // Fill this in later
           },
+          schemes: {
+            project_type: data.project_type,
+            permission_type: data.permission_type
+          },
           privacy_preferences: privacy_preferences,
           funders: [],
           categories: metadata.issueKeywords.split(','),
@@ -196,6 +227,8 @@ $(document).ready(function() {
       $(this).attr('disabled', 'disabled');
 
       // save off local state for later
+      localStorage['project_type'] = data.project_type;
+      localStorage['permission_type'] = data.permission_type;
       localStorage['issueURL'] = issueURL;
       localStorage['amount'] = amount;
       localStorage['notificationEmail'] = notificationEmail;
