@@ -10,7 +10,7 @@
   height: 100%;
 }
 
-#upper_left svg {
+#upper_left i {
   border-radius: 100%;
   height: 30px;
   width: 30px;
@@ -22,6 +22,16 @@
 #sidebar_head {
   text-align: center;
   line-height: 1.3em;
+}
+
+#sidebar_head .fa-battery-empty::before,
+#sidebar_head .fa-wifi::before {
+  position: relative;
+  top: 1px;
+}
+
+#sidebar_head .fa-wifi::before {
+  font-size: 15px;
 }
 
 #sidebar_p {
@@ -59,7 +69,7 @@
   font-size: 10px !important;
 }
 
-#upper_left.disabled #sidebar_head svg {
+#upper_left.disabled #sidebar_head i {
   color: #ff3232;
   background-color: white;
 }
