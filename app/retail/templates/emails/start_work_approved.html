@@ -23,21 +23,21 @@
 
 <h1>{% trans "Request to Work" %}</h1>
 <div style="text-align: left! important">
-    <p>
-        {% trans "Hello" %} @{{interest.profile.handle}},
-    </p>
-    <p>
-        {% trans "Good news! The funder has accepted your request to work on"%} <a href="{{bounty.url}}">{% trans "this bounty" %}</a>.  {% trans "You can go ahead and start working on the issue and as a courtesy provide an update to the maintainer every few days." %}
-    </p>
-    <br>
-    {% include 'emails/bounty.html' with bounty=bounty %}
-    <p>
-        {% trans "As always, if you have questions, please reach out to the project owner!" %}
-    </p>
-    <p>
-        {% blocktrans %}
-        - Gitcoin Team
-        {% endblocktrans %}
-    </p>
+  <p>
+    {% trans "Hello" %} @{{interest.profile.handle}},
+  </p>
+  <p>
+    {% trans "Good news! The funder has accepted your request to work on"%} <a href="{{bounty.url}}">{% trans "this bounty" %}</a>.  {% trans "You can go ahead and start working on the issue and as a courtesy provide an update to the maintainer every few days." %}
+  </p>
+  <br>
+  {% include 'emails/bounty.html' with bounty=bounty %}
+  <p>
+    {% trans "As always, if you have questions, please reach out to the project owner!" %}
+  </p>
+  <p>
+    {% blocktrans %}
+    - Gitcoin Team
+    {% endblocktrans %}
+  </p>
 </div>
 {% endblock %}

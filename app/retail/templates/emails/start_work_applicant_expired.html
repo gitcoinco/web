@@ -23,18 +23,18 @@
 
 <h1>{% trans "A Worker was Auto Approved" %}</h1>
 <div style="text-align: left! important">
-    <p>
-        {% trans "Hello" %},
-    </p>
-    <p>
-        <a href="{{interest.profile.url}}">@{{interest.profile.handle}}</a> {% trans "was automatically approved to work on "%}<a href="{{bounty.url}}">{% trans "this bounty" %}</a>.  {% trans "Please work together to complete the project." %}
-    </p>
-    <br>
-    {% include 'emails/bounty.html' with bounty=bounty  %}
-    <p>
-        {% blocktrans %}
-        - Gitcoin Team
-        {% endblocktrans %}
-    </p>
+  <p>
+    {% trans "Hello" %},
+  </p>
+  <p>
+    <a href="{{interest.profile.url}}">@{{interest.profile.handle}}</a> {% trans "was automatically approved to work on "%}<a href="{{bounty.url}}">{% trans "this bounty" %}</a>.  {% trans "Please work together to complete the project." %}
+  </p>
+  <br>
+  {% include 'emails/bounty.html' with bounty=bounty  %}
+  <p>
+    {% blocktrans %}
+    - Gitcoin Team
+    {% endblocktrans %}
+  </p>
 </div>
 {% endblock %}
