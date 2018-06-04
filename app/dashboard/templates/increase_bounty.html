@@ -35,7 +35,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           {% include 'shared/current_balance.html' %}
         </div>
         <div class="col-lg-10 col-sm-12">
-          {% include 'shared/no_issue_error.html' %}
+            {% include 'shared/no_issue_error.html' with page='submit_bounty' %}
           {% include 'shared/no_metamask_error.html' %}
           {% include 'shared/zero_balance_error.html' %}
           {% include 'shared/unlock_metamask.html' %}
