@@ -1,0 +1,21 @@
+{
+  "symbol": "PAI",
+  "address": "0xB9bb08AB7E9Fa0A1356bd4A39eC0ca267E03b0b3",
+  "overview":{
+        "en":"The first native multichain system that supports EVM in the world.Making large scale blockchain applications possible",
+        "cn":"Pchain (PAI)是一种新型的原生多链系统，使得区块链智能合约的大规模行业应用成为可能。Pchain的主要技术创新包括:世界上第一个支持EVM的原生多链、多层次分治(Sharding)共识流水线、智能数据(Smart Data)的智能合约以及跨链调用和交易."
+  },
+  "email": "king@pchain.org",
+  "website": "https://pchain.org/",
+  "whitepaper": "https://pchain.org/js/generic/web/viewer.html",
+  "state": "UNLOCKED",
+  "published_on": "2018-05-24",
+  "initial_price":{
+        "ETH":"0.0001 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/pchain_org",
+    "telegram": "https://t.me/pchain_org",
+    "github": "https://github.com/pchain-org"
+  }
+}
