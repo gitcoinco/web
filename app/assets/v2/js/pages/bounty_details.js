@@ -139,7 +139,10 @@ var callbacks = {
     return [ 'bounty_owner_name', result.bounty_owner_name ];
   },
   'permission_type': function(key, val, result) {
-    return [ 'permission_type', ucwords(result.permission_type) ];
+    if(val == 'approval'){
+      val = 'Approval Required';
+    }
+    return [ 'permission_type', ucwords(val) ];
   },
   'project_type': function(key, val, result) {
     return [ 'project_type', ucwords(result.project_type) ];
@@ -638,7 +641,6 @@ var do_actions = function(result) {
         text: gettext('Add Contribution'),
         parent: 'right_actions',
         title: gettext('Increase the funding for this issue'),
-        color: 'white'
       };
 
       actions.push(_entry);
