@@ -537,7 +537,7 @@ input[type=text].loading {
   padding: 0 2em;
 }
 
-#primary_form .submit_bounty_form {
+.submit_bounty #primary_form {
   max-width: none;
 }
 
@@ -1162,13 +1162,12 @@ input.is-invalid {
 }
 
 .submit-notification a {
-  color: #fff;
+  color: #FFF;
 }
 
 .metamask-error {
   background-color: #FF6700;
 }
-
 
 @media (max-width: 1350px) {
   .profile_details .tips li div.details {
