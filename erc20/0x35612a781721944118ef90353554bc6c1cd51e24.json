@@ -11,7 +11,8 @@
   "state": "NORMAL",
   "published_on": "2018-02-09",
   "initial_price":{
-        "CNY":"3 ETH"
+        "BTC":"0.00005 BTC",
+        "USD":"0.6 USD"
   },
   "links": {
     "twitter": "https://twitter.com/TRIP22341701",
