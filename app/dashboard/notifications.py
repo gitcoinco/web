@@ -358,6 +358,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
         bool: Whether or not the Github comment was posted successfully.
 
     """
+    from dashboard.utils import get_ordinal_repr  # hack for circular import issue
     from dashboard.models import BountyFulfillment, Interest
     msg = ''
     usdt_value = ""
@@ -399,7 +400,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
               "* Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * " \
               f"${amount_open_work} more funded OSS Work available on the [Gitcoin Issue Explorer](https://gitcoin.co/explorer)\n"
     elif event_name == 'work_started':
-        interested = bounty.interested.all()
+        interested = bounty.interested.all().order_by('created')
         # interested_plural = "s" if interested.count() != 0 else ""
         from_now = naturaltime(bounty.expires_date)
         started_work = bounty.interested.filter(pending=False).all()
@@ -426,7 +427,10 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
             if not interest.pending and approval_required:
                 action = 'been approved to start work'
 
-            msg += f"\n{i}. {profile_link} has {action}. "
+            show_dibs = len(interested.count()) > 1 and bounty.project_type == 'traditional'
+            dibs = f" ({get_ordinal_repr(i)} dibs)" if show_dibs else ""
+
+            msg += f"\n{i}. {profile_link} has {action}{dibs}. "
 
             issue_message = interest.issue_message.strip()
             if issue_message:
@@ -446,11 +450,8 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
 
         profiles = ""
         if profile_pairs:
-            from dashboard.utils import get_ordinal_repr  # hack for circular import issue
             for i, profile in enumerate(profile_pairs, start=1):
-                show_dibs = event_name == 'work_started' and len(profile_pairs) > 1
-                dibs = f" ({get_ordinal_repr(i)} precedence)" if show_dibs else ""
-                profiles = profiles + f"\n {i}. [@{profile[0]}]({profile[1]}) {dibs}"
+                profiles = profiles + f"\n {i}. [@{profile[0]}]({profile[1]})"
             profiles += "\n\n"
 
 
