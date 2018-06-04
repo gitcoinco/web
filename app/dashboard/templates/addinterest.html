@@ -45,9 +45,9 @@
               <span class="checkbox"></span>
               <div class="filter-label">
                 <label for="checkbox2">
-                  {% if bounty and bounty.permission_type == 'contest' %}
+                  {% if bounty and bounty.project_type == 'contest' %}
                     {% trans "I understand that this bounty is a *contest* and that other bounty hunters may be working in parallel with me." %}
-                  {% elif bounty and bounty.permission_type == 'cooperative' %}
+                  {% elif bounty and bounty.project_type == 'cooperative' %}
                     {% trans "I understand that this bounty is a multi-worker *cooperative* bounty.  Other bounty hunters may be working in parallel with me, but the funder has indicated they will pay the bounty to multiple of us." %}
                   {% else %}
                     {% trans "I understand that if anyone has started work on this ticket before me, they may have precedence." %}
