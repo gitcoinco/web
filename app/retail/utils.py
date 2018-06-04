@@ -24,6 +24,7 @@ from django.conf import settings
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+import pytz
 from marketing.models import Alumni, LeaderboardRank, Stat
 from requests_oauthlib import OAuth2Session
 
@@ -67,7 +68,7 @@ def get_bounty_history_row(label, date):
 
 def get_bounty_history_at_date(statuses, date):
     try:
-        keys = [f'bounties_{status}_total' for status in statuses]
+        keys = [f'bounties_{status}_value' for status in statuses]
         base_stats = Stat.objects.filter(
             key__in=keys,
             ).order_by('-pk')
@@ -123,14 +124,14 @@ def build_stat_results():
         ["April 2018", 5349, "Open", 5203, "Started", 26390, "Completed", 3153],
         ["May 2018", 6702, "Open", 4290, "Started", 37342, "Completed", 4281],
       ]
-    for year in range(2018, 202):
+    for year in range(2018, 2025):
         months = range(1, 12)
         if year == 2018:
             months = range(6, 12)
         for month in months:
-            then = timezone.datetime(year, month, 3)
+            then = timezone.datetime(year, month, 3).replace(tzinfo=pytz.UTC)
             if then < timezone.now():
-                row = get_bounty_history_row(then.strftime("%M/%y"), then)
+                row = get_bounty_history_row(then.strftime("%B %Y"), then)
                 context['bounty_history'].append(row)
     context['bounty_history'] = json.dumps(context['bounty_history'])
 

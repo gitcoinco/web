@@ -524,21 +524,6 @@ input[type=text].loading {
   background-size: 30px;
 }
 
-.blocking_error {
-  padding: 0 4em;
-  text-align: center;
-  margin: 100px auto;
-  max-width: 100%;
-}
-
-.blocking_error img {
-  max-width: 150px;
-  filter: grayscale(80%);
-  -moz-filter: grayscale(80%);
-  -ms-filter: grayscale(80%);
-  -o-filter: grayscale(80%);
-}
-
 #no_metamask_error img {
   filter: grayscale(100%);
   -moz-filter: grayscale(100%);
@@ -550,6 +535,10 @@ input[type=text].loading {
   max-width: 500px;
   margin: 0 auto;
   padding: 0 2em;
+}
+
+.submit_bounty #primary_form {
+  max-width: none;
 }
 
 .submit_bounty .select2-search,
@@ -1166,6 +1155,26 @@ input.is-invalid {
 .ui-button:focus {
   border: 1px solid #0D0764 !important;
   background: #FAFAFA !important;
+}
+
+.submit-notification {
+  color: #fff;
+  font-family: 'Muli', sans-serif;
+  font-size: 10px !important;
+  min-height: 100px;
+}
+
+.submit-notification h3 {
+  font-size: 20px !important;
+  text-transform: capitalize;
+}
+
+.submit-notification a {
+  color: #FFF;
+}
+
+.metamask-error {
+  background-color: #FF6700;
 }
 
 @media (max-width: 1350px) {

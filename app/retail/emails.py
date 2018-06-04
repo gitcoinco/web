@@ -369,6 +369,86 @@ def render_gdpr_update(to_email):
     return response_html, response_txt, subject
 
 
+def render_start_work_approved(interest, bounty):
+    to_email = interest.profile.email
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'interest': interest,
+        'bounty': bounty,
+        'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
+    }
+
+    subject = "Request Accepted "
+    response_html = premailer_transform(render_to_string("emails/start_work_approved.html", params))
+    response_txt = render_to_string("emails/start_work_approved.txt", params)
+
+    return response_html, response_txt, subject
+
+
+def render_start_work_rejected(interest, bounty):
+    to_email = interest.profile.email
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'interest': interest,
+        'bounty': bounty,
+        'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
+    }
+
+    subject = "Work Request Denied"
+    response_html = premailer_transform(render_to_string("emails/start_work_rejected.html", params))
+    response_txt = render_to_string("emails/start_work_rejected.txt", params)
+
+    return response_html, response_txt, subject
+
+
+def render_start_work_new_applicant(interest, bounty):
+    to_email = bounty.bounty_owner_email
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'interest': interest,
+        'bounty': bounty,
+        'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
+    }
+
+    subject = "A new request to work on your bounty"
+    response_html = premailer_transform(render_to_string("emails/start_work_new_applicant.html", params))
+    response_txt = render_to_string("emails/start_work_new_applicant.txt", params)
+
+    return response_html, response_txt, subject
+
+
+def render_start_work_applicant_about_to_expire(interest, bounty):
+    to_email = bounty.bounty_owner_email
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'interest': interest,
+        'bounty': bounty,
+        'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
+    }
+
+    subject = "24 Hrs to Approve"
+    response_html = premailer_transform(render_to_string("emails/start_work_applicant_about_to_expire.html", params))
+    response_txt = render_to_string("emails/start_work_applicant_about_to_expire.txt", params)
+
+    return response_html, response_txt, subject
+
+
+def render_start_work_applicant_expired(interest, bounty):
+    to_email = bounty.bounty_owner_email
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'interest': interest,
+        'bounty': bounty,
+        'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
+    }
+
+    subject = "A Worker was Auto Approved"
+    response_html = premailer_transform(render_to_string("emails/start_work_applicant_expired.html", params))
+    response_txt = render_to_string("emails/start_work_applicant_expired.txt", params)
+
+    return response_html, response_txt, subject
+
+
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
@@ -615,4 +695,49 @@ def quarterly_roundup(request):
 @staff_member_required
 def gdpr_reconsent(request):
     response_html, _ = render_gdpr_reconsent(settings.CONTACT_EMAIL)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def start_work_approved(request):
+    from dashboard.models import Interest, Bounty
+    interest = Interest.objects.last()
+    bounty = Bounty.objects.last()
+    response_html, _, _ = render_start_work_approved(interest, bounty)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def start_work_rejected(request):
+    from dashboard.models import Interest, Bounty
+    interest = Interest.objects.last()
+    bounty = Bounty.objects.last()
+    response_html, _, _ = render_start_work_rejected(interest, bounty)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def start_work_new_applicant(request):
+    from dashboard.models import Interest, Bounty
+    interest = Interest.objects.last()
+    bounty = Bounty.objects.last()
+    response_html, _, _ = render_start_work_new_applicant(interest, bounty)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def start_work_applicant_about_to_expire(request):
+    from dashboard.models import Interest, Bounty
+    interest = Interest.objects.last()
+    bounty = Bounty.objects.last()
+    response_html, _, _ = render_start_work_applicant_about_to_expire(interest, bounty)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def start_work_applicant_expired(request):
+    from dashboard.models import Interest, Bounty
+    interest = Interest.objects.last()
+    bounty = Bounty.objects.last()
+    response_html, _, _ = render_start_work_applicant_expired(interest, bounty)
     return HttpResponse(response_html)

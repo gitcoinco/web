@@ -95,6 +95,12 @@ var sanitizeAPIResults = function(results) {
   return results;
 };
 
+function ucwords(str) {
+  return (str + '').replace(/^([a-z])|\s+([a-z])/g, function($1) {
+    return $1.toUpperCase();
+  });
+}
+
 var sanitize = function(str) {
   if (typeof str != 'string') {
     return str;
@@ -202,9 +208,18 @@ var mutate_interest = function(bounty_pk, direction, data) {
     $('#interest a').attr('id', '');
   }
   
+
   $.post(request_url, data).then(function(result) {
     result = sanitizeAPIResults(result);
     if (result.success) {
+      if (direction === 'new') {
+        _alert({ message: result.msg }, 'success');
+        $('#interest a').attr('id', 'btn-white');
+      } else if (direction === 'remove') {
+        _alert({ message: result.msg }, 'success');
+        $('#interest a').attr('id', '');
+      }
+
       pull_interest_list(bounty_pk);
       return true;
     }
@@ -513,13 +528,13 @@ var randomElement = function(array) {
 
 var trigger_sidebar_web3_disabled = function() {
   $('#upper_left').addClass('disabled');
-  $('#sidebar_head').html('<i class="fa fa-question"></i>');
+  $('#sidebar_head').html('<i class="fas fa-question"></i>');
   $('#sidebar_p').html('<p>Web3 disabled</p><p>Please install <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a> <br> <a href="/web3" target="_blank" rel="noopener noreferrer">What is Metamask and why do I need it?</a>.</p>');
 };
 
 var trigger_sidebar_web3_locked = function() {
   $('#upper_left').addClass('disabled');
-  $('#sidebar_head').html('<i class="fa fa-lock"></i>');
+  $('#sidebar_head').html('<i class="fas fa-lock"></i>');
   $('#sidebar_p').html('<p>Web3 locked</p><p>Please unlock <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>.<p>');
 };
 
@@ -556,11 +571,11 @@ var trigger_sidebar_web3 = function(network) {
 
   if (is_supported_network) {
     $('#upper_left').removeClass('disabled');
-    $('#sidebar_head').html("<i class='fa fa-wifi'></i>");
+    $('#sidebar_head').html("<i class='fas fa-wifi'></i>");
     $('#sidebar_p').html('<p>Web3 enabled<p>' + sidebar_p);
   } else {
     $('#upper_left').addClass('disabled');
-    $('#sidebar_head').html("<i class='fa fa-battery-empty'></i>");
+    $('#sidebar_head').html("<i class='fas fa-battery-empty'></i>");
     sidebar_p += '<p>(try ' + recommended_network + ')</p>';
     $('#sidebar_p').html('<p>Unsupported network</p>' + sidebar_p);
   }
@@ -579,19 +594,23 @@ var trigger_primary_form_web3_hooks = function() {
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#primary_form').addClass('hidden');
+      $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('No Metamask Error', params);
     } else if (!web3.eth.coinbase) {
       $('#unlock_metamask_error').css('display', 'block');
       $('#primary_form').addClass('hidden');
+      $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('Unlock Metamask Error', params);
     } else if (is_zero_balance_not_okay && document.balance == 0) {
       $('#zero_balance_error').css('display', 'block');
       $('#primary_form').addClass('hidden');
+      $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('Zero Balance Metamask Error', params);
     } else {
       $('#zero_balance_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
+      $('#no_issue_error').css('display', 'block');
       $('#primary_form').removeClass('hidden');
     }
   }
