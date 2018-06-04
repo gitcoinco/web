@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import logging
 import socket
 
 from django.http import Http404
@@ -24,6 +25,7 @@ from django.utils.translation import gettext_lazy as _
 
 import environ
 import rollbar
+from boto3.session import Session
 from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
 
 root = environ.Path(__file__) - 2  # Set the base directory to two levels.
@@ -189,37 +191,63 @@ LOCALE_PATHS = ('locale', )
 
 LANGUAGES = [('en', _('English'))]
 
-if not ENV in ['local', 'test']:
+AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
+AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
+AWS_DEFAULT_REGION = env('AWS_DEFAULT_REGION', default='us-west-2')
+AWS_LOG_GROUP = env('AWS_LOG_GROUP', default='Gitcoin')
+AWS_LOG_LEVEL = env('AWS_LOG_LEVEL', default='DEBUG')
+AWS_LOG_STREAM = env('AWS_LOG_STREAM', default=f'{ENV}-web')
+
+# if not ENV in ['local', 'test']:
+boto3_session = Session(
+    aws_access_key_id=AWS_ACCESS_KEY_ID,
+    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+    region_name=AWS_DEFAULT_REGION)
+
+if ENV not in ['local', 'test']:
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
+        'root': {
+            'level': 'ERROR',
+            'handlers': ['console'],
+        },
         'filters': {
             'require_debug_is_false': {
                 '()': 'django.utils.log.RequireDebugFalse'
             },
         },
-        'handlers': {
-            'rotatingfilehandler': {
-                'level': 'DEBUG',
-                'class': 'logging.handlers.RotatingFileHandler',
-                'filename': '/var/log/django/debug.log',
-                'maxBytes': 1024 * 1024 * 10,  # 10 MB
-                'backupCount': 100,  # max 100 logs
+        'formatters': {
+            'simple': {
+                'format': '%(asctime)s %(name)-12s [%(levelname)-8s] %(message)s',
+                'datefmt': '%Y-%m-%d %H:%M:%S'
             },
-            'mail_admins': {
-                'level': 'ERROR',
-                'class': 'django.utils.log.AdminEmailHandler',
-                'include_html': True,
+            'cloudwatch': {
+                'format': '%(name)-12s [%(levelname)-8s] %(message)s',
+            },
+        },
+        'handlers': {
+            'console': {
+                'class': 'logging.StreamHandler',
+            },
+            'watchtower': {
+                'level': AWS_LOG_LEVEL,
+                'class': 'watchtower.django.DjangoCloudWatchLogHandler',
+                'boto3_session': boto3_session,
+                'log_group': AWS_LOG_GROUP,
+                'stream_name': AWS_LOG_STREAM,
+                'formatter': 'cloudwatch',
             },
         },
         'loggers': {
             'django': {
-                'handlers': ['rotatingfilehandler', 'mail_admins'],
+                'handlers': ['watchtower'],
                 'propagate': True,
                 'filters': ['require_debug_is_false'],
             },
         },
     }
+
     LOGGING['loggers']['django.request'] = LOGGING['loggers']['django']
     for ia in INSTALLED_APPS:
         LOGGING['loggers'][ia] = LOGGING['loggers']['django']
@@ -447,9 +475,6 @@ IGNORE_COMMENTS_FROM = [
 ]
 
 # optional: only needed if you run the activity-report management command
-AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
-AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
-
 AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='')
 AWS_S3_OBJECT_PARAMETERS = env.dict('AWS_S3_OBJECT_PARAMETERS', default={'CacheControl': 'max-age=86400'})
 S3_USE_SIGV4 = env.bool('S3_USE_SIGV4', default=True)
