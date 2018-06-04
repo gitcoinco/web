@@ -983,12 +983,13 @@ class Interest(models.Model):
     """Define relationship for profiles expressing interest on a bounty."""
 
     profile = models.ForeignKey('dashboard.Profile', related_name='interested', on_delete=models.CASCADE)
-    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)    
     issue_message = models.TextField(default='', blank=True)
     pending = models.BooleanField(
         default=False,
         help_text='If this option is chosen, this interest is pending and not yet active',
         )
+    acceptance_date = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         """Define the string representation of an interested profile."""

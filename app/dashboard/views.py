@@ -116,11 +116,13 @@ def helper_handle_access_token(request, access_token):
 
 def create_new_interest_helper(bounty, user, issue_message):
     approval_required = bounty.permission_type == 'approval'
+    acceptance_date = timezone.now() if not approval_required else None
     profile_id = user.profile.pk
     interest = Interest.objects.create(
         profile_id=profile_id,
         issue_message=issue_message,
         pending=approval_required,
+        acceptance_date=acceptance_date,
         )
     bounty.interested.add(interest)
     record_user_action(user, 'start_work', interest)
@@ -696,6 +698,7 @@ def helper_handle_approvals(request, bounty):
 
             if mutate_worker_action == 'approve':
                 interest.pending = False
+                interest.acceptance_date = timezone.now()
                 interest.save()
 
                 start_work_approved(interest, bounty)
