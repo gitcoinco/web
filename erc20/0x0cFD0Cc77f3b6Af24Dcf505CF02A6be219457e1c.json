@@ -1,0 +1,21 @@
+{
+  "symbol": "ACNC",
+  "address": "0x0cFD0Cc77f3b6Af24Dcf505CF02A6be219457e1c",
+  "overview":{
+        "en":"ACNC is a blockchain commercial digital application digital asset based on the Ethereum ERC20 token, It is issued by Singapore ACNC Foundation Ltd.",
+        "zh":"ACNC是基于以太坊ERC20令牌开发的区块链商业数字化应用型数字资产,它是由新加坡ACNC私募基金会（ACNC Foundation Ltd）发行。"
+  },
+  "email": "acncsupport@foxmail.com",
+  "website": "http://acnc.sg/",
+  "whitepaper": "http://acnc.sg/Project/index.html",
+  "state": "LOCKED",
+  "published_on": "2018-05-01",
+  "initial_price":{
+        "ACNC":"0.0002 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/BEETOP5?s=05",
+    "telegram": "https://t.me/joinchat/G7OdWw_eLYIfdY24nuDkxA",
+    "facebook": "https://m.facebook.com/groups/614674365566302"
+  }
+}
