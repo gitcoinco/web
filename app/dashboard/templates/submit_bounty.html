@@ -56,8 +56,8 @@
                 <label class="form__label" for="keywords">{% trans "Keywords" %}</label>
                 <input name='keywords' id='keywords'  class="form__input" type="text" placeholder="python, solidity, html, javascript, react (optional)" value="{{keywords}}" />
                 <label class="form__label" for="expirationTimeDelta">{% trans "Expires in" %}</label>
-                <div class="form__select2">
-                  <select class="js-select2" name="expirationTimeDelta">
+                <div>
+                  <select name="expirationTimeDelta">
                     <option value="86400">{% trans "1 day" %}</option>
                     <option value="259200">{% trans "3 days" %}</option>
                     <option value="604800">{% trans "1 week" %}</option>
@@ -73,16 +73,16 @@
                   <label class="form__label">{% trans "Issue Details" %}</label>
                 </div>
                 <div class="form__group">
-                  <div class="form__select2 form__group-item">
-                    <select class="js-select2" name="experienceLevel">
+                  <div class="form__group-item">
+                    <select name="experienceLevel">
                       <option value="">{% trans "Experience Level" %}</option>
                       <option>{% trans "Beginner" %}</option>
                       <option>{% trans "Intermediate" %}</option>
                       <option>{% trans "Advanced" %}</option>
                     </select>
                   </div>
-                  <div class="form__select2 form__group-item">
-                    <select class="js-select2" name="projectLength">
+                  <div class="form__group-item">
+                    <select name="projectLength">
                       <option value="Unknown">{% trans "Project Length" %}</option>
                       <option>{% trans "Hours" %}</option>
                       <option>{% trans "Days" %}</option>
@@ -90,8 +90,8 @@
                       <option>{% trans "Months" %}</option>
                     </select>
                   </div>
-                  <div class="form__select2 form__group-item">
-                    <select class="js-select2" name="bountyType">
+                  <div class="form__group-item">
+                    <select name="bountyType">
                       <option value="">{% trans "Bounty Type" %}</option>
                       <option>{% trans "Bug" %}</option>
                       <option>{% trans "Feature" %}</option>
@@ -101,28 +101,28 @@
                   </div>
                 </div>
                 <label class="form__label" for="project_type">{% trans "Project Type" %}</label>
-                <div class="form__select2">
-                  <select class="js-select2" name="project_type">
+                <div>
+                  <select name="project_type">
                     <option value="traditional">{% trans "Traditional -- 1 worker at a time, 1 is paid out" %}</option>
                     <option value="contest">{% trans "Contest -- many workers at a time, 1 is paid out" %}</option>
                     <option value="cooperative">{% trans "Cooperative -- many workers at a time, many are paid out" %}</option>
                   </select>
                 </div>
                 <label class="form__label" for="permission_type">{% trans "Permissions" %}</label>
-                <div class="form__select2">
-                  <select class="js-select2" name="permission_type">
+                <div>
+                  <select name="permission_type">
                     <option value="permissionless">{% trans "Permissionless - Anyone can start work." %}</option>
                     <option value="approval" selected>{% trans "Approval Required - I will approve bounty hunters." %}</option>
                   </select>
                 </div>
 
                 <label class="form__label" for="amount">{% trans "Amount" %}</label>
-                <div class="form__flex-group">
+                <div class="form__flex-group form__select2">
                   <div class="form__amount-wrapper">
                     <input name='amount' id='amount'  class="form__input" type="number" value="{{amount|default:'0.001'}}" step="0.001" min="0.001"/>
                   </div>
                   <div class="form__group-item">
-                    <div class="form__select2">
+                    <div>
                       <select name='deonomination' id='token'></select>
                     </div>
                     <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
