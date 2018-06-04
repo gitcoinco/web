@@ -71,6 +71,7 @@ urlpatterns = [
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
 
     # action URLs
+    re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
@@ -153,9 +154,13 @@ urlpatterns = [
     url(r'^sync/get_issue_details?', dashboard.helpers.issue_details, name='helpers_issue_details'),
     url(r'^sync/search_save?', dashboard.views.save_search, name='save_search'),
 
+    # modals
+    re_path(r'^modal/get_quickstart_video?', dashboard.views.get_quickstart_video, name='get_quickstart_video'),
+
     # brochureware views
     url(r'^about/?', retail.views.about, name='about'),
     url(r'^mission/?', retail.views.mission, name='mission'),
+    re_path(r'^results/?', retail.views.results, name='results'),
     url(r'^get/?', retail.views.get_gitcoin, name='get_gitcoin'),
     url(r'^$', retail.views.index, name='index'),
     url(r'^help/dev/?', retail.views.help_dev, name='help_dev'),
