@@ -777,7 +777,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
 
                 params['bounty_pk'] = bounty.pk
                 params['network'] = bounty.network
-                params['stdbounties_id'] = bounty.standard_bounties_id
+                params['stdbounties_id'] = bounty.standard_bounties_id if not stdbounties_id else stdbounties_id
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.get_avatar_url(True)
 
@@ -791,6 +791,11 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
             logging.error(e)
 
     return TemplateResponse(request, 'bounty_details.html', params)
+
+
+def quickstart(request):
+    """Display quickstart guide."""
+    return TemplateResponse(request, 'quickstart.html', {})
 
 
 class ProfileHiddenException(Exception):
@@ -910,9 +915,20 @@ def save_search(request):
 
     context = {
         'active': 'save',
-        'title': 'Save Search',
+        'title': _('Save Search'),
     }
     return TemplateResponse(request, 'save_search.html', context)
+
+
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def get_quickstart_video(request):
+    """Show quickstart video."""
+    context = {
+        'active': 'video',
+        'title': _('Quickstart Video'),
+    }
+    return TemplateResponse(request, 'quickstart_video.html', context)
 
 
 @require_POST

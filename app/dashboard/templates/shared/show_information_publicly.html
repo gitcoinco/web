@@ -15,5 +15,9 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n %}
-  <input type="checkbox" name="{{id}}" id={{id}} value="1" checked="" >
-  <label class="form__label" for="{{id}}">{% trans "It's okay to show this information publicly on Gitcoin" %}</label>
+  <div class="w-100 mt-2 terms_container">
+    <div class="form__checkbox">
+      <input name='{{id}}' id='{{id}}' type="checkbox" value=1 checked="" />
+      <label class="form__label" for="{{id}}">{% trans "It's okay to show this information publicly on Gitcoin" %}</label>
+    </div>
+  </div>

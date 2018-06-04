@@ -39,7 +39,6 @@ class MarketingMailsTest(TestCase):
             handle='user1',
             last_sync_date=timezone.now(),
             data={},
-            repos_data={}
         )
         self.user.save()
 

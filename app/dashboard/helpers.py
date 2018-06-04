@@ -474,6 +474,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 override_status=latest_old_bounty.override_status if latest_old_bounty else '',
                 last_comment_date=latest_old_bounty.last_comment_date if latest_old_bounty else None,
                 snooze_warnings_for_days=latest_old_bounty.snooze_warnings_for_days if latest_old_bounty else 0,
+                admin_override_and_hide=latest_old_bounty.admin_override_and_hide if latest_old_bounty else 0,
+                
             )
             new_bounty.fetch_issue_item()
 
