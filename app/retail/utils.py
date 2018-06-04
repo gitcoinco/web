@@ -19,12 +19,12 @@
 import cgi
 import json
 import re
-import pytz
 
 from django.conf import settings
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+import pytz
 from marketing.models import Alumni, LeaderboardRank, Stat
 from requests_oauthlib import OAuth2Session
 
