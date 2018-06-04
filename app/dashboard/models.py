@@ -20,7 +20,7 @@ from __future__ import unicode_literals
 
 import collections
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 from urllib.parse import urlsplit
 
 from django.conf import settings
@@ -60,11 +60,11 @@ class BountyQuerySet(models.QuerySet):
 
     def current(self):
         """Filter results down to current bounties only."""
-        return self.filter(current_bounty=True)
+        return self.filter(current_bounty=True, admin_override_and_hide=False)
 
     def stats_eligible(self):
         """Exclude results that we don't want to track in statistics."""
-        return self.exclude(idx_status__in=['unknown', 'cancelled'])
+        return self.exclude(current_bounty=True, idx_status__in=['unknown', 'cancelled'])
 
     def exclude_by_status(self, excluded_statuses=None):
         """Exclude results with a status matching the provided list."""
@@ -72,6 +72,15 @@ class BountyQuerySet(models.QuerySet):
             excluded_statuses = []
 
         return self.exclude(idx_status__in=excluded_statuses)
+
+    def filter_by_status(self, filtered_status=None):
+        """Filter results with a status matching the provided list."""
+        if filtered_status is None:
+            filtered_status = list()
+        elif isinstance(filtered_status, list):
+            return self.filter(idx_status__in=filtered_status)
+        else:
+            return
 
 
 class Bounty(SuperModel):
@@ -83,9 +92,19 @@ class Bounty(SuperModel):
         STATUS_CHOICES (list of tuples): The valid status stages.
         OPEN_STATUSES (list of str): The list of status types considered open.
         CLOSED_STATUSES (list of str): The list of status types considered closed.
+        TERMINAL_STATUSES (list of str): The list of status types considered terminal states.
 
     """
 
+    PERMISSION_TYPES = [
+        ('permissionless', 'permissionless'),
+        ('approval', 'approval'),
+    ]
+    PROJECT_TYPES = [
+        ('traditional', 'traditional'),
+        ('contest', 'contest'),
+        ('cooperative', 'cooperative'),
+    ]
     BOUNTY_TYPES = [
         ('Bug', 'Bug'),
         ('Security', 'Security'),
@@ -117,6 +136,7 @@ class Bounty(SuperModel):
     )
     OPEN_STATUSES = ['open', 'started', 'submitted']
     CLOSED_STATUSES = ['expired', 'unknown', 'cancelled', 'done']
+    TERMINAL_STATUSES = ['done', 'expired', 'cancelled']
 
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=255)
@@ -134,7 +154,7 @@ class Bounty(SuperModel):
     bounty_owner_github_username = models.CharField(max_length=255, blank=True)
     bounty_owner_name = models.CharField(max_length=255, blank=True)
     bounty_owner_profile = models.ForeignKey(
-        'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='bounties_funded'
+        'dashboard.Profile', null=True, on_delete=models.SET_NULL, related_name='bounties_funded', blank=True
     )
     is_open = models.BooleanField(help_text=_('Whether the bounty is still open for fulfillments.'))
     expires_date = models.DateTimeField()
@@ -162,6 +182,8 @@ class Bounty(SuperModel):
     fulfillment_submitted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_started_on = models.DateTimeField(null=True, blank=True)
     canceled_on = models.DateTimeField(null=True, blank=True)
+    project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional')
+    permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless')
     snooze_warnings_for_days = models.IntegerField(default=0)
 
     token_value_time_peg = models.DateTimeField(blank=True, null=True)
@@ -171,6 +193,7 @@ class Bounty(SuperModel):
     value_in_eth = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     value_true = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     privacy_preferences = JSONField(default={}, blank=True)
+    admin_override_and_hide = models.BooleanField(default=False, help_text=_('Admin override to hide the bounty from the system'))
 
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
@@ -193,6 +216,15 @@ class Bounty(SuperModel):
         if self.bounty_owner_github_username:
             self.bounty_owner_github_username = self.bounty_owner_github_username.lstrip('@')
         super().save(*args, **kwargs)
+
+    @property
+    def profile_pairs(self):
+        profile_handles = []
+
+        for profile in self.interested.select_related('profile').all().order_by('pk'):
+            profile_handles.append((profile.profile.handle, profile.profile.absolute_url))
+
+        return profile_handles
 
     def get_absolute_url(self):
         """Get the absolute URL for the Bounty.
@@ -243,6 +275,30 @@ class Bounty(SuperModel):
 
         """
         return f'{self.get_absolute_url()}?snooze={num_days}'
+
+    def approve_worker_url(self, worker):
+        """Get the bounty work approval URL.
+
+        Args:
+            worker (string): The handle to approve
+
+        Returns:
+            str: The work approve URL based on the worker name
+
+        """
+        return f'{self.get_absolute_url()}?mutate_worker_action=approve&worker={worker}'
+
+    def reject_worker_url(self, worker):
+        """Get the bounty work rejection URL.
+
+        Args:
+            worker (string): The handle to reject
+
+        Returns:
+            str: The work reject URL based on the worker name
+
+        """
+        return f'{self.get_absolute_url()}?mutate_worker_action=reject&worker={worker}'
 
     @property
     def can_submit_after_expiration_date(self):
@@ -381,40 +437,29 @@ class Bounty(SuperModel):
         if self.override_status:
             return self.override_status
         if self.is_legacy:
-            # TODO: Remove following full deprecation of legacy bounties
-            try:
-                fulfillments = self.fulfillments \
-                    .exclude(fulfiller_address='0x0000000000000000000000000000000000000000') \
-                    .exists()
-                if not self.is_open:
-                    if timezone.now() > self.expires_date and fulfillments:
-                        return 'expired'
+            return self.idx_status
+
+        # standard bounties
+        try:
+            if not self.is_open:
+                if self.accepted:
                     return 'done'
-                elif not fulfillments:
-                    if self.pk and self.interested.exists():
-                        return 'started'
-                    return 'open'
-                return 'submitted'
-            except Exception as e:
-                logger.warning(e)
-                return 'unknown'
-        else:
-            try:
-                if not self.is_open:
-                    if self.accepted:
-                        return 'done'
-                    elif self.past_hard_expiration_date:
-                        return 'expired'
-                    # If its not expired or done, it must be cancelled.
-                    return 'cancelled'
-                if self.num_fulfillments == 0:
-                    if self.pk and self.interested.exists():
-                        return 'started'
-                    return 'open'
-                return 'submitted'
-            except Exception as e:
-                logger.warning(e)
-                return 'unknown'
+                elif self.past_hard_expiration_date:
+                    return 'expired'
+                # If its not expired or done, it must be cancelled.
+                return 'cancelled'
+            # per https://github.com/gitcoinco/web/pull/1098 ,
+            # contests are open no matter how much started/submitted work they have
+            if self.pk and self.project_type == 'contest':
+                return 'open'
+            if self.num_fulfillments == 0:
+                if self.pk and self.interested.filter(pending=False).exists():
+                    return 'started'
+                return 'open'
+            return 'submitted'
+        except Exception as e:
+            logger.warning(e)
+            return 'unknown'
 
     @property
     def get_value_true(self):
@@ -667,6 +712,36 @@ class Bounty(SuperModel):
             urls.update({item: f'/issue/{item}?{params}'})
         return urls
 
+    def is_notification_eligible(self, var_to_check=True):
+        """Determine whether or not a notification is eligible for transmission outside of production.
+
+        Returns:
+            bool: Whether or not the Bounty is eligible for outbound notifications.
+
+        """
+        if not var_to_check or self.get_natural_value() < 0.0001 or (
+           self.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+            return False
+        if self.network == 'mainnet' and (settings.DEBUG or settings.ENV != 'prod'):
+            return False
+        return True
+
+    @property
+    def is_project_type_fulfilled(self):
+        """Determine whether or not the Project Type is currently fulfilled.
+
+        Todo:
+            * Add remaining Project Type fulfillment handling.
+
+        Returns:
+            bool: Whether or not the Bounty Project Type is fully staffed.
+
+        """
+        fulfilled = False
+        if self.project_type == 'traditional':
+            fulfilled = self.interested.filter(pending=False).exists()
+        return fulfilled
+
 
 class BountyFulfillmentQuerySet(models.QuerySet):
     """Handle the manager queryset for BountyFulfillments."""
@@ -849,6 +924,19 @@ class Tip(SuperModel):
             return "RECEIVED"
         return "PENDING"
 
+    def is_notification_eligible(self, var_to_check=True):
+        """Determine whether or not a notification is eligible for transmission outside of production.
+
+        Returns:
+            bool: Whether or not the Tip is eligible for outbound notifications.
+
+        """
+        if not var_to_check or self.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+            return False
+        if self.network == 'mainnet' and (settings.DEBUG or settings.ENV != 'prod'):
+            return False
+        return True
+
 
 # @receiver(pre_save, sender=Bounty, dispatch_uid="normalize_usernames")
 # def normalize_usernames(sender, instance, **kwargs):
@@ -896,10 +984,19 @@ class Interest(models.Model):
     profile = models.ForeignKey('dashboard.Profile', related_name='interested', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     issue_message = models.TextField(default='', blank=True)
+    pending = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, this interest is pending and not yet active',
+        )
+    acceptance_date = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         """Define the string representation of an interested profile."""
-        return self.profile.handle
+        return f"{self.profile.handle} / pending: {self.pending}"
+
+    @property
+    def bounties(self):
+        return Bounty.objects.filter(interested=self)
 
 
 @receiver(post_save, sender=Interest, dispatch_uid="psave_interest")
@@ -925,7 +1022,7 @@ class Profile(SuperModel):
     last_sync_date = models.DateTimeField(null=True)
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
-    pref_lang_code = models.CharField(max_length=2, choices=settings.LANGUAGES)
+    pref_lang_code = models.CharField(max_length=2, choices=settings.LANGUAGES, blank=True)
     slack_repos = ArrayField(models.CharField(max_length=200), blank=True, default=[])
     slack_token = models.CharField(max_length=255, default='', blank=True)
     slack_channel = models.CharField(max_length=255, default='', blank=True)
@@ -941,14 +1038,16 @@ class Profile(SuperModel):
         default=False,
         help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
     )
+    form_submission_records = JSONField(default=[], blank=True)
     # Sample data: https://gist.github.com/mbeacom/ee91c8b0d7083fa40d9fa065125a8d48
-    # Sample repos_data: https://gist.github.com/mbeacom/c9e4fda491987cb9728ee65b114d42c7
-    repos_data = JSONField(default={}, blank=True)
     max_num_issues_start_work = models.IntegerField(default=3)
 
     @property
     def is_org(self):
-        return self.data['type'] == 'Organization'
+        try:
+            return self.data['type'] == 'Organization'
+        except:
+            return False
 
     @property
     def bounties(self):
@@ -976,34 +1075,6 @@ class Profile(SuperModel):
         return user_actions.exists()
 
     @property
-    def authors(self):
-        auto_include_contributors_with_count_gt = 40
-        limit_to_num = 10
-
-        _return = []
-
-        for repo in sorted(self.repos_data, key=lambda repo: repo.get('contributions', -1), reverse=True):
-            for c in repo.get('contributors', []):
-                if isinstance(c, dict) and c.get('contributions', 0) > auto_include_contributors_with_count_gt:
-                    _return.append(c['login'])
-
-        include_gitcoin_users = len(_return) < limit_to_num
-        if include_gitcoin_users:
-            for b in self.bounties:
-                vals = [b.bounty_owner_github_username]
-                for val in vals:
-                    if val:
-                        _return.append(val.lstrip('@'))
-            for t in self.tips:
-                vals = [t.username]
-                for val in vals:
-                    if val:
-                        _return.append(val.lstrip('@'))
-        _return = list(set(_return))
-        _return.sort()
-        return _return[:limit_to_num]
-
-    @property
     def desc(self):
         stats = self.stats
         role = stats[0][0]
@@ -1018,6 +1089,16 @@ class Profile(SuperModel):
         created_on = datetime.strptime(self.data['created_at'], '%Y-%m-%dT%H:%M:%SZ')
         return created_on.replace(tzinfo=pytz.UTC)
 
+    @property
+    def repos_data(self):
+        from github.utils import get_user
+        from app.utils import add_contributors
+        # TODO: maybe rewrite this so it doesnt have to go to the internet to get the info
+        # but in a way that is respectful of db size too
+        repos_data = get_user(self.handle, '/repos')
+        repos_data = sorted(repos_data, key=lambda repo: repo['stargazers_count'], reverse=True)
+        repos_data = [add_contributors(repo_data) for repo_data in repos_data]
+        return repos_data
 
     @property
     def is_moderator(self):
@@ -1043,8 +1124,14 @@ class Profile(SuperModel):
     def stats(self):
         bounties = self.bounties.stats_eligible()
         loyalty_rate = 0
-        total_funded = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_funder(self.handle)])
-        total_fulfilled = sum([bounty.value_in_usdt if bounty.value_in_usdt else 0 for bounty in bounties if bounty.is_hunter(self.handle)])
+        total_funded = sum([
+            bounty.value_in_usdt if bounty.value_in_usdt else 0
+            for bounty in bounties if bounty.is_funder(self.handle)
+        ])
+        total_fulfilled = sum([
+            bounty.value_in_usdt if bounty.value_in_usdt else 0
+            for bounty in bounties if bounty.is_hunter(self.handle)
+        ])
         print(total_funded, total_fulfilled)
         role = 'newbie'
         if total_funded > total_fulfilled:
@@ -1090,6 +1177,81 @@ class Profile(SuperModel):
         ]
 
     @property
+    def get_quarterly_stats(self):
+        """Generate last 90 days stats for this user.
+
+        Returns:
+            dict : containing the following information
+            'user_total_earned_eth': Total earnings of user in ETH.
+            'user_total_earned_usd': Total earnings of user in USD.
+            'user_fulfilled_bounties_count': Total bounties fulfilled by user.
+            'user_avg_eth_earned_per_bounty': Average earning in ETH earned by user per bounty
+            'user_avg_usd_earned_per_bounty': Average earning in USD earned by user per bounty
+            'user_num_completed_bounties': Total no. of bounties completed.
+            'user_bounty_completion_percentage': Percentage of bounties successfully completed by the user
+            'user_active_in_last_quarter': bool, if the user was active in last quarter
+            'user_no_of_languages': No of languages user used while working on bounties.
+            'user_languages': Languages that were used in bounties that were worked on.
+        """
+        user_active_in_last_quarter = False
+        last_quarter = datetime.now() - timedelta(days=90)
+        bounties = self.bounties.filter(modified_on__gte=last_quarter)
+        fulfilled_bounties = [
+            bounty for bounty in bounties if bounty.is_hunter(self.handle) and bounty.status == 'done'
+        ]
+        fulfilled_bounties_count = len(fulfilled_bounties)
+        total_earned_eth = sum([
+            bounty.value_in_eth if bounty.value_in_eth else 0
+            for bounty in fulfilled_bounties
+        ])
+        total_earned_eth /= 10**18
+        total_earned_usd = sum([
+            bounty.value_in_usdt if bounty.value_in_usdt else 0
+            for bounty in fulfilled_bounties
+        ])
+
+        num_completed_bounties = bounties.filter(idx_status__in=['done']).count()
+        terminal_state_bounties = bounties.filter(idx_status__in=Bounty.TERMINAL_STATUSES).count()
+        completetion_percent = int(
+            round(num_completed_bounties * 1.0 / terminal_state_bounties, 2) * 100
+        ) if terminal_state_bounties != 0 else 0
+
+        avg_eth_earned_per_bounty = 0
+        avg_usd_earned_per_bounty = 0
+
+        if fulfilled_bounties_count:
+            avg_eth_earned_per_bounty = total_earned_eth / fulfilled_bounties_count
+            avg_usd_earned_per_bounty = total_earned_usd / fulfilled_bounties_count
+
+        if num_completed_bounties or fulfilled_bounties_count:
+            user_active_in_last_quarter = True
+
+        # Round to 2 places of decimals to be diplayed in templates
+        completetion_percent = float('%.2f' % completetion_percent)
+        avg_eth_earned_per_bounty = float('%.2f' % avg_eth_earned_per_bounty)
+        total_earned_eth = float('%.2f' % total_earned_eth)
+        total_earned_usd = float('%.2f' % total_earned_usd)
+
+        user_languages = []
+        for bounty in fulfilled_bounties:
+            user_languages += bounty.keywords.split(',')
+        user_languages = set(user_languages)
+        user_no_of_languages = len(user_languages)
+
+        return {
+            'user_total_earned_eth': total_earned_eth,
+            'user_total_earned_usd': total_earned_usd,
+            'user_fulfilled_bounties_count': fulfilled_bounties_count,
+            'user_avg_eth_earned_per_bounty': avg_eth_earned_per_bounty,
+            'user_avg_usd_earned_per_bounty': avg_usd_earned_per_bounty,
+            'user_num_completed_bounties': num_completed_bounties,
+            'user_bounty_completion_percentage': completetion_percent,
+            'user_active_in_last_quarter': user_active_in_last_quarter,
+            'user_no_of_languages': user_no_of_languages,
+            'user_languages': user_languages
+        }
+
+    @property
     def github_url(self):
         return f"https://github.com/{self.handle}"
 
@@ -1115,20 +1277,6 @@ class Profile(SuperModel):
             handle = self.handle
         return handle
 
-    def has_repo(self, full_name):
-        """Check if user has access to repo.
-
-        Args:
-            full_name (str): Repository name, like gitcoin/web.
-
-        Returns:
-            bool: Whether or not user has access to repository.
-
-        """
-        for repo in self.repos_data:
-            if repo['full_name'] == full_name:
-                return True
-        return False
 
     def is_github_token_valid(self):
         """Check whether or not a Github OAuth token is valid.
@@ -1162,6 +1310,10 @@ class Profile(SuperModel):
 
     def get_absolute_url(self):
         return settings.BASE_URL + self.get_relative_url(preceding_slash=False)
+
+    @property
+    def url(self):
+        return self.get_absolute_url()
 
     def get_access_token(self, save=True):
         """Get the Github access token from User.
@@ -1222,12 +1374,18 @@ class Profile(SuperModel):
 
     @staticmethod
     def get_network():
-        return 'mainnet'
+        return 'mainnet' if not settings.DEBUG else 'rinkeby'
 
     def get_fulfilled_bounties(self, network=None):
         network = network or self.get_network()
         fulfilled_bounty_ids = self.fulfilled.all().values_list('bounty_id', flat=True)
-        bounties = Bounty.objects.filter(pk__in=fulfilled_bounty_ids, current_bounty=True, network=network)
+        bounties = Bounty.objects.filter(pk__in=fulfilled_bounty_ids, accepted=True, current_bounty=True, network=network)
+        return bounties
+
+    def get_orgs_bounties(self, network=None):
+        network = network or self.get_network()
+        url = f"https://github.com/{self.handle}"
+        bounties = Bounty.objects.filter(current_bounty=True, network=network, github_url__contains=url)
         return bounties
 
     def get_leaderboard_index(self, key='quarterly_earners'):
@@ -1237,7 +1395,7 @@ class Profile(SuperModel):
                 active=True,
                 github_username=self.handle,
             ).latest('id')
-            score = LeaderboardRank.objects.filter(active=True, leaderboard=key, amount__gt=rank.amount).count()
+            return rank.rank
         except LeaderboardRank.DoesNotExist:
             score = 0
         return score
@@ -1247,6 +1405,9 @@ class Profile(SuperModel):
 
     def get_funder_leaderboard_index(self):
         return self.get_leaderboard_index('quarterly_payers')
+
+    def get_org_leaderboard_index(self):
+        return self.get_leaderboard_index('quarterly_orgs')
 
     def get_eth_sum(self, sum_type='collected', network='mainnet'):
         """Get the sum of collected or funded ETH based on the provided type.
@@ -1260,14 +1421,22 @@ class Profile(SuperModel):
             float: The total sum of all ETH of the provided type.
 
         """
-        if sum_type == 'funded':
-            obj = self.bounties_funded.filter(network=network)
-        elif sum_type == 'collected':
-            obj = self.get_fulfilled_bounties()
+        eth_sum = 0
 
-        eth_sum = obj.aggregate(
-            Sum('value_in_eth')
-        )['value_in_eth__sum'] / 10**18 if obj.exists() else 0
+        if sum_type == 'funded':
+            obj = self.get_funded_bounties(network=network)
+        elif sum_type == 'collected':
+            obj = self.get_fulfilled_bounties(network=network)
+        elif sum_type == 'org':
+            obj = self.get_orgs_bounties(network=network)
+
+        try:
+            if obj.exists():
+                eth_sum = obj.aggregate(
+                    Sum('value_in_eth')
+                )['value_in_eth__sum'] / 10**18
+        except Exception:
+            pass
 
         return eth_sum
 
@@ -1287,8 +1456,18 @@ class Profile(SuperModel):
             obj = self.bounties_funded.filter(network=network)
         elif work_type == 'collected':
             obj = self.get_fulfilled_bounties()
+        elif work_type == 'org':
+            obj = self.get_orgs_bounties()
 
-        profiles = [bounty.org_name for bounty in obj if bounty.org_name]
+        if work_type != 'org':
+            profiles = [bounty.org_name for bounty in obj if bounty.org_name]
+        else:
+            profiles = []
+            for bounty in obj:
+                for bf in bounty.fulfillments.filter(accepted=True):
+                    if bf.fulfiller_github_username:
+                        profiles.append(bf.fulfiller_github_username)
+
         profiles_dict = {profile: 0 for profile in profiles}
         for profile in profiles:
             profiles_dict[profile] += 1
@@ -1297,6 +1476,27 @@ class Profile(SuperModel):
         for ele in sorted(profiles_dict.items(), key=lambda x: x[1], reverse=True):
             ordered_profiles_dict[ele[0]] = ele[1]
         return ordered_profiles_dict
+
+
+    def get_funded_bounties(self, network='mainnet'):
+        """Get the bounties that this user has funded
+
+        Args:
+            network (string): the network to look at.
+                Defaults to: mainnet.
+
+
+        Returns:
+            queryset: list of bounties
+
+        """
+
+        funded_bounties = Bounty.objects.current().filter(
+            Q(bounty_owner_github_username__iexact=self.handle) |
+            Q(bounty_owner_github_username__iexact=f'@{self.handle}')
+        )
+        funded_bounties = funded_bounties.filter(network=network)
+        return funded_bounties
 
 
     def to_dict(self, activities=True, leaderboards=True, network=None, tips=True):
@@ -1332,11 +1532,17 @@ class Profile(SuperModel):
         sum_eth_collected = self.get_eth_sum(**query_kwargs)
         works_with_funded = self.get_who_works_with(work_type='funded', **query_kwargs)
         works_with_collected = self.get_who_works_with(work_type='collected', **query_kwargs)
+        funded_bounties = self.get_funded_bounties(network=network)
 
-        funded_bounties = Bounty.objects.current().filter(
-            Q(bounty_owner_github_username__iexact=self.handle) |
-            Q(bounty_owner_github_username__iexact=f'@{self.handle}')
-        )
+        # org only
+        works_with_org = []
+        count_bounties_on_repo = 0
+        sum_eth_on_repos = 0
+        if self.is_org:
+            works_with_org = self.get_who_works_with(work_type='org', **query_kwargs)
+            count_bounties_on_repo = self.get_orgs_bounties(network=network).count()
+            sum_eth_on_repos = self.get_eth_sum(sum_type='org', **query_kwargs)
+
 
         params = {
             'title': f"@{self.handle}",
@@ -1347,21 +1553,27 @@ class Profile(SuperModel):
             'avatar_url': self.avatar_url_with_gitcoin_logo,
             'profile': self,
             'bounties': self.bounties,
-            'count_bounties_completed': self.fulfilled.filter(accepted=True).count(),
+            'count_bounties_completed': self.fulfilled.filter(accepted=True, bounty__network=network).count(),
             'sum_eth_collected': sum_eth_collected,
             'sum_eth_funded': sum_eth_funded,
             'works_with_collected': works_with_collected,
             'works_with_funded': works_with_funded,
             'funded_bounties_count': funded_bounties.count(),
-            'activities': [{'title': _('No data available.')}]
+            'activities': [{'title': _('No data available.')}],
+            'sum_eth_on_repos': sum_eth_on_repos,
+            'works_with_org': works_with_org,
+            'count_bounties_on_repo': count_bounties_on_repo,
         }
 
         if activities:
-            fulfilled = self.fulfilled.select_related('bounty').all().order_by('-created_on')
-            completed = [fulfillment.bounty for fulfillment in fulfilled.exclude(accepted=False)]
-            submitted = [fulfillment.bounty for fulfillment in fulfilled.exclude(accepted=True)]
-            started = self.interested.prefetch_related('bounty_set').all().order_by('-created')
-            started_bounties = [interest.bounty_set.last() for interest in started]
+            fulfilled = self.fulfilled.filter(
+                bounty__network=network
+            ).select_related('bounty').all().order_by('-created_on')
+            completed = list(set([fulfillment.bounty for fulfillment in fulfilled.exclude(accepted=False)]))
+            submitted = list(set([fulfillment.bounty for fulfillment in fulfilled.exclude(accepted=True)]))
+            started = self.interested.prefetch_related('bounty_set') \
+                .filter(bounty__network=network).all().order_by('-created')
+            started_bounties = list(set([interest.bounty_set.last() for interest in started]))
 
             if completed or submitted or started:
                 params['activities'] = [{
@@ -1377,6 +1589,8 @@ class Profile(SuperModel):
         if leaderboards:
             params['scoreboard_position_contributor'] = self.get_contributor_leaderboard_index()
             params['scoreboard_position_funder'] = self.get_funder_leaderboard_index()
+            if self.is_org:
+                params['scoreboard_position_org'] = self.get_org_leaderboard_index()
 
         return params
 

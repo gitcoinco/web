@@ -459,6 +459,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 accepted=accepted,
                 interested_comment=interested_comment_id,
                 submissions_comment=submissions_comment_id,
+                project_type=bounty_payload.get('schemes', {}).get('project_type', 'traditional'),
+                permission_type=bounty_payload.get('schemes', {}).get('permission_type', 'permissionless'),
                 privacy_preferences=bounty_payload.get('privacy_preferences', {}),
                 # These fields are after initial bounty creation, in bounty_details.js
                 expires_date=timezone.make_aware(
@@ -472,6 +474,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 override_status=latest_old_bounty.override_status if latest_old_bounty else '',
                 last_comment_date=latest_old_bounty.last_comment_date if latest_old_bounty else None,
                 snooze_warnings_for_days=latest_old_bounty.snooze_warnings_for_days if latest_old_bounty else 0,
+                admin_override_and_hide=latest_old_bounty.admin_override_and_hide if latest_old_bounty else 0,
+                
             )
             new_bounty.fetch_issue_item()
 

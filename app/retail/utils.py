@@ -17,10 +17,15 @@
 
 '''
 import cgi
+import json
 import re
 
 from django.conf import settings
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
+import pytz
+from marketing.models import Alumni, LeaderboardRank, Stat
 from requests_oauthlib import OAuth2Session
 
 
@@ -48,3 +53,101 @@ def strip_double_chars(txt, char=' '):
     if new_txt == txt:
         return new_txt
     return strip_double_chars(new_txt, char)
+
+
+def get_bounty_history_row(label, date):
+    return [
+        label,
+        get_bounty_history_at_date(['open'], date),
+        'Open',
+        get_bounty_history_at_date(['started', 'submitted'], date),
+        'Started', get_bounty_history_at_date(['done'], date),
+        'Completed', get_bounty_history_at_date(['cancelled'], date)
+    ]
+
+
+def get_bounty_history_at_date(statuses, date):
+    try:
+        keys = [f'bounties_{status}_value' for status in statuses]
+        base_stats = Stat.objects.filter(
+            key__in=keys,
+            ).order_by('-pk')
+        return base_stats.filter(created_on__lte=date).first().val
+    except Exception as e:
+        print(e)
+        return 0
+
+
+def build_stat_results():
+    from dashboard.models import Bounty
+
+    """Buidl the results page context."""
+    context = {
+        'active': 'results',
+        'title': _('Results'),
+        'card_desc': _('Gitcoin is transparent by design.  Here are some stats about our core bounty product.'),
+    }
+
+    base_bounties = Bounty.objects.current().filter(network='mainnet')
+    context['alumni_count'] = Alumni.objects.count()
+    context['count_open'] = base_bounties.filter(network='mainnet', idx_status__in=['open']).count()
+    context['count_started'] = base_bounties.filter(network='mainnet', idx_status__in=['started', 'submitted']).count()
+    context['count_done'] = base_bounties.filter(network='mainnet', idx_status__in=['done']).count()
+
+    # Leaderboard 
+    context['top_orgs'] = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_orgs').order_by('rank').values_list('github_username', flat=True)
+
+    #community size
+    base_stats = Stat.objects.filter(
+        key='email_subscriberse',
+        ).order_by('-pk')
+    today = base_stats.first().val
+    context['members_history'] = ([
+        ['Year', 'Members'],
+        ['Launch', 0],
+        ['6 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=6*30))).first().val],
+        ['5 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=5*30))).first().val],
+        ['4 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=4*30))).first().val],
+        ['3 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=3*30))).first().val],
+        ['2 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=2*30))).first().val],
+        ['1 month ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=1*30))).first().val],
+        ['Today', today]
+        ])
+    context['members_history'] = json.dumps(context['members_history'])
+
+    # bounties hisotry
+    context['bounty_history'] = [
+        ['', 'Open / Available', {'role': 'annotation'}, 'Claimed / In Progress', { 'role': 'annotation' }, 'Completed', { 'role': 'annotation' }, 'CodeFund Bounties' ],
+        ["January 2018", 903, "Open", 2329, "Started", 5534, "Completed", 1203],
+        ["February 2018", 1290, "Open", 1830, "Started", 15930, "Completed", 1803],
+        ["March 2018", 6903, "Open", 4302, "Started", 16302, "Completed", 2390],
+        ["April 2018", 5349, "Open", 5203, "Started", 26390, "Completed", 3153],
+        ["May 2018", 6702, "Open", 4290, "Started", 37342, "Completed", 4281],
+      ]
+    for year in range(2018, 2025):
+        months = range(1, 12)
+        if year == 2018:
+            months = range(6, 12)
+        for month in months:
+            then = timezone.datetime(year, month, 3).replace(tzinfo=pytz.UTC)
+            if then < timezone.now():
+                row = get_bounty_history_row(then.strftime("%B %Y"), then)
+                context['bounty_history'].append(row)
+    context['bounty_history'] = json.dumps(context['bounty_history'])
+
+    # slack ticks
+    increment = 1000
+    context['slack_ticks'] = list(x * increment for x in range(0, int(today/increment)+1))
+    context['slack_ticks'] = json.dumps(context['slack_ticks'])
+
+    # Bounties
+    # TODO: make this info dynamic
+    context['universe_total_usd'] = sum(base_bounties.filter(network='mainnet').values_list('_val_usd_db', flat=True))
+    context['max_bounty_history'] = float(context['universe_total_usd']) * .7
+    context['bounty_abandonment_rate'] = '9.5%'
+    context['bounty_average_turnaround'] = '2.1 Weeks'
+    context['hourly_rate_distribution'] = '$15 - $120'
+    context['bounty_claimed_completion_rate'] = '82%'
+    context['bounty_median_pickup_time'] = '2.25'
+
+    return context

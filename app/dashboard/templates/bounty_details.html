@@ -5,8 +5,8 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
   </head>
 
   <body class="interior {{active}}">
@@ -18,7 +18,7 @@
       <div class="col-12 col-md-2 left-rails text-center" style="background: #F2F6F9;">
         {% include 'shared/current_balance.html' %}
         <div class="explorer font-body">
-          <a href="{% url 'explorer' %}"><i class="fa fa-chevron-left"></i> {% trans "Back to Issue Explorer" %}</a>
+          <a href="{% url 'explorer' %}"><i class="fas fa-chevron-left"></i> {% trans "Back to Issue Explorer" %}</a>
         </div>
       </div>
 
@@ -98,6 +98,16 @@
                 <div>
                   <span class="bounty-info-heading">{% trans "Issue Type" %} </span>
                   <span class="bounty-info-text" id="bounty_type"></span>
+                </div>
+                <div>
+                  <span class="bounty-info-heading" title='{% include "shared/project_type_tooltip.html" %}'>{% trans "Project Type" %} </span>
+                  <span class="bounty-info-text" id="project_type" title='{% include "shared/project_type_tooltip.html" %}'>></span>
+                  <i class="fas fa-info-circle" title='{% include "shared/project_type_tooltip.html" %}'></i>
+                </div>
+                <div>
+                  <span class="bounty-info-heading" title='{% include "shared/permissions_type_tooltip.html" %}'>{% trans "Permissions" %}</span>
+                  <span class="bounty-info-text" id="permission_type" title='{% include "shared/permissions_type_tooltip.html" %}'>></span>
+                  <i class="fas fa-info-circle" title='{% include "shared/permissions_type_tooltip.html" %}'></i>
                 </div>
               </div>
             </div>
@@ -289,7 +299,6 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
-    {% include 'shared/messages.html' %}
   </body>
 
   <script>

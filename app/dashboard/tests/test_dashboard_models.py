@@ -144,7 +144,7 @@ class DashboardModelsTest(TestCase):
         interest = Interest(
             profile=profile,
         )
-        assert str(interest) == 'foo'
+        assert str(interest) == 'foo / pending: False'
 
     @staticmethod
     def test_profile():
@@ -166,13 +166,11 @@ class DashboardModelsTest(TestCase):
         profile = Profile(
             handle='gitcoinco',
             data={'type': 'Organization'},
-            repos_data=[{'contributors': [{'contributions': 50, 'login': 'foo'}]}],
         )
         assert str(profile) == 'gitcoinco'
         assert profile.is_org is True
         assert profile.bounties.first() == bounty
         assert profile.tips.first() == tip
-        assert profile.authors == ['foo', 'gitcoinco']
         assert profile.desc == '@gitcoinco is a newbie who has participated in 1 funded issue on Gitcoin'
         assert profile.stats == [
             ('newbie', 'Status'),
@@ -198,7 +196,6 @@ class DashboardModelsTest(TestCase):
         profile = Profile.objects.create(
             handle='gitcoinco',
             data={'type': 'Organization'},
-            repos_data=[{'contributors': [{'contributions': 50, 'login': 'foo'}]}],
         )
         vote = ToolVote.objects.create(profile_id=profile.id, value=1)
         tool.votes.add(vote)

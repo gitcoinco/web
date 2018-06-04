@@ -29,6 +29,8 @@ from django.utils.translation import gettext_lazy as _
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 
+from .utils import build_stat_results
+
 
 def index(request):
     slides = [
@@ -176,6 +178,12 @@ def mission(request):
         'avatar_url': static('v2/images/grow_open_source.png'),
     }
     return TemplateResponse(request, 'mission.html', context)
+
+
+def results(request):
+    """Render the Results response."""
+    context = build_stat_results()
+    return TemplateResponse(request, 'results.html', context)
 
 
 def help(request):
@@ -468,9 +476,17 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
         'url': 'https://medium.com/gitcoin/tutorial-leverage-gitcoins-firehose-of-talent-to-do-more-faster-dcd39650fc5',
         'title': _('Leverage Gitcoin’s Firehose of Talent to Do More Faster'),
     }, {
+        'img': static('v2/images/tools/api.jpg'),
+        'url': 'https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e',
+        'title': _('How to Price Work on Gitcoin'),
+    }, {
         'img': static('v2/images/help/tools.png'),
         'url': 'https://medium.com/gitcoin/tutorial-post-a-bounty-in-90-seconds-a7d1a8353f75',
         'title': _('Post a Bounty in 90 Seconds'),
+    }, {
+        'img': static('v2/images/tldr/tips_noborder.jpg'),
+        'url': 'https://medium.com/gitcoin/tutorial-send-a-tip-to-any-github-user-in-60-seconds-2eb20a648bc8',
+        'title': _('Send a Tip to any Github user in 60 seconds'),
     }]
 
     context = {
