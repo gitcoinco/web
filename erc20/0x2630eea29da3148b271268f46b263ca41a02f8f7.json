@@ -1,0 +1,17 @@
+{
+  "symbol": "GOX",
+  "address": "0xfd0d510dc25535112af6478fd8dcab0df9fa4b5e",
+  "overview":{
+        "en":"GoldBox.io - Global Digital Asset Management Expert"
+  },
+  "email": "service@goldbox.io",
+  "website": "https://goldbox.io",
+  "whitepaper": "http://resource.goldbox.io/pdf/whitepaper_zh_v1.pdf",
+  "state": "LOCKED",
+  "published_on": "2018-06-03",
+  "links": {
+    "twitter": "https://twitter.com/Goldbox20",
+    "telegram": "https://t.me/joinchat/your-awesome-project",
+    "facebook": "https://www.facebook.com/profile.php?id=100026026059716"
+  }
+}
