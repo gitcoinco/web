@@ -306,6 +306,11 @@ body {
   height: 100%;
 }
 
+.index #gitcoin-background {
+  width: 100vw;
+  height: 100vh;
+}
+
 /* Landing Page Animations */
 #WindmillBlades {
   animation: rotate-blades 8s linear infinite;

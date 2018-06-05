@@ -162,17 +162,25 @@ h4,
   color: lightgray !important
 }
 
-body.index,
 .header {
-  background-image: url("/static/v2/images/header-bg.png");
+  background-image: url('/static/v2/images/header-bg.png');
   background-color: #0d023b;
-  background-position: 0 0;
-  background-repeat: no-repeat;
   background-size: cover;
+  background-position: 0px 0px;
+  background-repeat: no-repeat;
 }
 
-.header {
-  background-position: 0 -37px;
+#gitcoin-background {
+  background-image: url("/static/v2/images/header-bg.png");
+  background-size: 2000px;
+  background-position: 0 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  will-change: transform;
+  overflow-y: hidden;
+  overflow-x: hidden;
 }
 
 .nav-link {
