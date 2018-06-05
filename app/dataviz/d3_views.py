@@ -74,10 +74,12 @@ def data_viz_helper_get_data_responses(request, visual_type):
 
         elif visual_type == 'repos':
             value = bounty.value_in_usdt_then
+            bounty_org_name = getattr(bounty, 'org_name', '')
+            bounty_repo_name = getattr(bounty, 'github_repo_name', '')
 
             response = [
-                bounty.org_name.replace('-', ''),
-                bounty.github_repo_name.replace('-', ''),
+                bounty_org_name.replace('-', ''),
+                bounty_repo_name.replace('-', ''),
                 str(bounty.github_issue_number),
             ]
 
@@ -641,9 +643,8 @@ def viz_draggable(request, key='email_open'):
     bfs = BountyFulfillment.objects.filter(accepted=True)
     limit = 50
     usernames = list(
-        bfs.exclude(fulfiller_github_username='').distinct('fulfiller_github_username').values_list(
-            'fulfiller_github_username', flat=True
-        )
+        bfs.exclude(fulfiller_github_username=''
+                    ).distinct('fulfiller_github_username').values_list('fulfiller_github_username', flat=True)
     )[0:limit]
     if request.GET.get('data'):
         output = []

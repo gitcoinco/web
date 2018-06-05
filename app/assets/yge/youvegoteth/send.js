@@ -95,9 +95,6 @@ window.onload = function() {
   if (localStorage['email']) {
     $('email').value = localStorage['email'];
   }
-  if (localStorage['fromName']) {
-    $('fromName').value = localStorage['fromName'];
-  }
   if (localStorage['fromEmail']) {
     $('fromEmail').value = localStorage['fromEmail'];
   }
@@ -203,7 +200,6 @@ window.onload = function() {
     localStorage['amount'] = amountInEth;
     localStorage['username'] = username;
     localStorage['issueURL'] = github_url;
-    localStorage['fromName'] = from_name;
     localStorage['fromEmail'] = from_email;
     localStorage['email'] = email;
     localStorage['comments_priv'] = comments_priv;

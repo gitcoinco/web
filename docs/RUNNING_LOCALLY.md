@@ -84,5 +84,11 @@ Navigate to `http://localhost:8000/`.
 This can be useful if you'd like data to test with:
 
 ```shell
-./manage.py sync_geth mainnet 40 99999999999
+./manage.py sync_geth
+```
+
+or equivalently:
+
+```shell
+./manage.py sync_geth rinkeby 402 99999999999
 ```

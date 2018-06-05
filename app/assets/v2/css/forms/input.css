@@ -15,24 +15,25 @@
 .form__input + label.error {
   color: #D50000;
   margin-bottom: 0;
-  margin-top: .5rem 0;
   display: block;
   font-size: 12px;
 }
 
 .form__input.error {
+  padding-right: 2.8rem;
   color: #D50000;
   background-image: url('/static/v2/images/close-red.png');
   background-repeat: no-repeat;
   background-size: auto 1.313rem;
-  background-position: top 0.4375rem right 1.25rem;
+  background-position: top 0.3rem right 0.5rem;
 }
 
 .form__input.valid {
+  padding-right: 2.8rem;
   background-image: url('/static/v2/images/success.png');
   background-repeat: no-repeat;
   background-size: auto 1.313rem;
-  background-position: top 0.4375rem right 1.25rem;
+  background-position: top 0.3rem right 0.5rem;
 }
 
 .form__input::-webkit-input-placeholder {
