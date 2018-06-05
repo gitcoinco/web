@@ -97,6 +97,23 @@ $(document).ready(function() {
   $('input[name=issueURL]').blur(retrieveIssueDetails);
   setTimeout(setUsdAmount, 1000);
 
+  // revision action buttons
+  $('#subtractAction').on('click', function() {
+    var revision = parseInt($('input[name=revisions]').val());
+  
+    revision = revision - 1;
+    if (revision > 0) {
+      $('input[name=revisions]').val(revision);
+    }
+  });
+
+  $('#addAction').on('click', function() {
+    var revision = parseInt($('input[name=revisions]').val());
+  
+    revision = revision + 1;
+    $('input[name=revisions]').val(revision);
+  });
+
   if ($('input[name=issueURL]').val() != '') {
     retrieveIssueDetails();
   }

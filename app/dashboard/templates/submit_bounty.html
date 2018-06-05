@@ -30,7 +30,7 @@
     {% include 'shared/nav.html' %}
   </div>
 
-  <div class="container-fluid">
+  <div class="container-fluid submit_bounty_content">
     <div class="row no-gutters">
       <div class="col-sm-12 col-lg-3">
         {% include 'shared/current_balance.html' %}
@@ -63,9 +63,6 @@
                 </div>
                 <div id="details-section">
                   <h5 class="font-title">{% trans "Details" %}</h5>
-                  <div>
-                    <label class="form__label">{% trans "Issue Details" %}</label>
-                  </div>
                   <label class="form__label" for="project_type">{% trans "Project Type" %}</label>
                   <div class="form__select2">
                     <select class="js-select2" name="project_type">
@@ -95,9 +92,9 @@
                     <div class="form__group-item">
                       <label class="form__label" for="revisions">{% trans "Revisions" %}</label>
                       <div class="form__input revisions d-flex">
-                        <span class="form__input-action">-</span>
+                        <span class="form__input-action" id="subtractAction">-</span>
                         <input name='revisions' type="text" value="1" step="1" min="1"/>
-                        <span class="form__input-action">+</span>
+                        <span class="form__input-action" id="addAction">+</span>
                       </div>
                     </div>
                   </div>
