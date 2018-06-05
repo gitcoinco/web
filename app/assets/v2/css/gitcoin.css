@@ -261,14 +261,16 @@ div.button-pink {
   color: white;
   font-family: Muli, sans-serif;
   font-size: 3em;
-  font-weight: 900;
-  letter-spacing: 0em;
+  font-weight: 500;
+  font-style: italic;
+  letter-spacing: 0.1em;
 }
 
 .subheader-line {
   color: #70efbe;
   font-family: Muli, sans-serif;
-  font-size: 1.2em;
+  font-size: 2em;
+  font-weight: 500;
   font-style: italic;
 }
 

@@ -2,10 +2,6 @@ html {
   overflow: hidden;
 }
 
-h1 {
-  font-size: 2rem;
-}
-
 body {
   height: 100vh;
   color: var(--text-dark);
@@ -31,7 +27,7 @@ body {
 }
 
 .case-studies-list {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   list-style-type: none;
   text-align: left;
   margin-bottom: 4rem;
@@ -44,20 +40,20 @@ body {
 }
 
 .case-studies-list a {
+  color: var(--gc-blue);
   text-decoration: none;
 }
 
 #gc-robot {
   position: absolute;
   top: -50px;
-  right: 15px;
-  max-width: 20vw;
+  right: calc(5vw - 50px);
+  max-width: 30vw;
   will-change: transform;
 }
 
 #gc-tree {
   max-width: 100%;
-  width: 20rem;
   will-change: transform;
 }
 
@@ -88,9 +84,6 @@ body {
   cursor: pointer;
   color: var(--gc-purple);
   padding: 0;
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-bottom: 2px;
 }
 
 #howworks-toggle-indicator {
@@ -115,7 +108,6 @@ body {
   position: relative;
   left: 0;
   transition: left .3s;
-  margin-top: 5rem;
 }
 
 .howworks-sections.contributor-section {
@@ -138,11 +130,6 @@ body {
   color: var(--gc-purple);
   margin-top: 1rem;
   margin-bottom: 1rem;
-  font-size: 1.2rem;
-}
-
-.howworks-step p {
-  font-size: 15px;
 }
 
 .howworks-step__label {
@@ -175,10 +162,11 @@ body {
   grid-template-columns: repeat(3, 1fr);
   margin: 0 auto;
 }
+
 .benefit {
   background-color: white;
   text-align: center;
-  padding: 3rem;
+  padding: 3rem 1rem;
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
@@ -230,6 +218,18 @@ body {
 .press_container img {
   max-width: 90%;
   max-height: 100px;
+  filter: grayscale(100%);
+  transition: filter 0.3s;
+  -moz-filter: grayscale(100%);
+  -ms-filter: grayscale(100%);
+  -o-filter: grayscale(100%);
+}
+
+.press_container img:hover {
+  filter: grayscale(0%);
+  -moz-filter: grayscale(0%);
+  -ms-filter: grayscale(0%);
+  -o-filter: grayscale(0%);
 }
 
 .pricing-tiers-container {
@@ -296,16 +296,12 @@ body {
   height: min-content;
 }
 
-.whatisit p {
-  font-weight: lighter
-}
-
 .whatisit .youtube {
   height: 100%;
 }
 
 .whatisit_container iframe {
-  min-height: 300px;
+  min-height: 400px;
   width: 100%;
   height: 100%;
 }
@@ -413,10 +409,6 @@ body {
 }
 
 @media (max-width: 768px) {
-
-  .benefit {
-    padding: 3rem 1rem;
-  }
 
   .pricing-tiers-container {
     grid-template-columns: 1fr;
