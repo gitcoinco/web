@@ -51,6 +51,7 @@ from rest_framework import serializers
 from web3 import Web3
 
 from .signals import m2m_changed_interested
+from .utils import clean_bounty_url
 
 logger = logging.getLogger(__name__)
 
