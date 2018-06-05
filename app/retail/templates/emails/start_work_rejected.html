@@ -1,4 +1,4 @@
-{% extends "admin/base_site.html" %}
+{% extends 'emails/template.html' %}
 {% comment %}
     Copyright (C) 2017 Gitcoin Core
 
@@ -16,27 +16,26 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-
-{% load i18n admin_static %}
-
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
-
-{% block coltype %}colMS{% endblock %}
-
-{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
-
-{% block breadcrumbs %}{% endblock %}
+{% load i18n humanize %}
+{% load static %}
 
 {% block content %}
 
-<h1>Process {{obj}}</h1>
-<form method=POST>
-    {% csrf_token %}
-<input type="text" name="pk" value="{{pk}}" placeholder="pk">
-<br>
-<input type="text" name="email" value="" placeholder="email">
-<br>
-<input type="submit" name="submit" value="Submit">
-</form>
-
+<h1>{% trans "Work Request Rejected" %}</h1>
+<div style="text-align: left! important">
+  <p>
+    {% trans "Hello" %} @{{interest.profile.handle}},
+  </p>
+  <p>
+    {% trans "The funder has denied your request to work on "%}<a href="{{bounty.url}}">{% trans "this bounty" %}</a>.  {% trans "Checkout the issue explorer for other projects on the platform!" %}
+  </p>
+  <p style="text-align: center; margin: 30px 50px;">
+    <a class="button" href="https://gitcon.co/explorer">Issue Explorer</a>
+  </p>
+  <p>
+    {% blocktrans %}
+    - Gitcoin Team
+    {% endblocktrans %}
+  </p>
+</div>
 {% endblock %}

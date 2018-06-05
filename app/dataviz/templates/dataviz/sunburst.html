@@ -20,7 +20,7 @@
 
 {% load i18n admin_static static %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 
@@ -103,7 +103,7 @@
 <script type="text/javascript">
   // Hack to make this example display correctly in an iframe on bl.ocks.org
   d3.select(self.frameElement).style("height", "700px");
-</script> 
+</script>
 
 
 {% endblock %}

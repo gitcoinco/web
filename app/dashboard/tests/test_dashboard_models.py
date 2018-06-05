@@ -144,7 +144,7 @@ class DashboardModelsTest(TestCase):
         interest = Interest(
             profile=profile,
         )
-        assert str(interest) == 'foo'
+        assert str(interest) == 'foo / pending: False'
 
     @staticmethod
     def test_profile():

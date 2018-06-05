@@ -59,6 +59,8 @@ var rows = [
   'token_value_time_peg',
   'web3_created',
   'status',
+  'project_type',
+  'permission_type',
   'bounty_owner_address',
   'bounty_owner_email',
   'issue_description',
@@ -135,6 +137,15 @@ var callbacks = {
   'bounty_owner_github_username': gitcoin_ize,
   'bounty_owner_name': function(key, val, result) {
     return [ 'bounty_owner_name', result.bounty_owner_name ];
+  },
+  'permission_type': function(key, val, result) {
+    if (val == 'approval') {
+      val = 'Approval Required';
+    }
+    return [ 'permission_type', ucwords(val) ];
+  },
+  'project_type': function(key, val, result) {
+    return [ 'project_type', ucwords(result.project_type) ];
   },
   'issue_keywords': function(key, val, result) {
     if (!result.keywords || result.keywords.length == 0)
@@ -416,7 +427,7 @@ var attach_work_actions = function() {
     e.preventDefault();
     if ($(this).attr('href') == '/interested') {
       show_interest_modal.call(this);
-    } else if (confirm(gettext('Are you sure you want to remove your interest?'))) {
+    } else if (confirm(gettext('Are you sure you want to stop work?'))) {
       $(this).attr('href', '/interested');
       $(this).find('span').text('Start Work');
       remove_interest(document.result['pk']);
@@ -429,7 +440,9 @@ var show_interest_modal = function() {
   var self = this;
 
   setTimeout(function() {
-    $.get('/interest/modal?redirect=' + window.location.pathname, function(newHTML) {
+    var url = '/interest/modal?redirect=' + window.location.pathname + '&pk=' + document.result['pk'];
+
+    $.get(url, function(newHTML) {
       var modal = $(newHTML).appendTo('body').modal({
         modalClass: 'modal add-interest-modal'
       });
@@ -538,7 +551,8 @@ var do_actions = function(result) {
   pull_interest_list(result['pk'], function(is_interested) {
 
     // which actions should we show?
-    var show_start_stop_work = is_still_on_happy_path;
+    var should_block_from_starting_work = !is_interested && result['project_type'] == 'traditional' && (result['status'] == 'started' || result['status'] == 'submitted');
+    var show_start_stop_work = is_still_on_happy_path && !should_block_from_starting_work;
     var show_github_link = result['github_url'].substring(0, 4) == 'http';
     var show_submit_work = true;
     var show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
@@ -626,8 +640,7 @@ var do_actions = function(result) {
         href: result['action_urls']['increase'],
         text: gettext('Add Contribution'),
         parent: 'right_actions',
-        title: gettext('Increase the funding for this issue'),
-        color: 'white'
+        title: gettext('Increase the funding for this issue')
       };
 
       actions.push(_entry);
@@ -746,7 +759,7 @@ var render_activity = function(result) {
       activities.push({
         profileId: _interested.profile.id,
         name: _interested.profile.handle,
-        text: gettext('Work Started'),
+        text: _interested.pending ? gettext('Worker Applied') : gettext('Work Started'),
         created_on: _interested.created,
         age: timeDifference(new Date(result['now']), new Date(_interested.created)),
         status: 'started',
