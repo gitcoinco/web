@@ -1191,7 +1191,7 @@ class Profile(SuperModel):
 
             user_funded_bounty_developers = []
             for fulfillment in funded_bounty_fulfillments:
-                user_funded_bounty_developers.append('@' + fulfillment.fulfiller_github_username.lstrip('@'))
+                user_funded_bounty_developers.append(fulfillment.fulfiller_github_username.lstrip('@'))
             user_funded_bounty_developers = [*{*user_funded_bounty_developers}]
             if funded_fulfillments_with_hours_counted:
                 avg_hourly_rate_per_funded_bounty = float(total_funded_hourly_rate) / float(funded_fulfillments_with_hours_counted)
@@ -1271,6 +1271,7 @@ class Profile(SuperModel):
         completetion_percent = float('%.2f' % completetion_percent)
         funded_fulfilled_percent = float('%.2f' % funded_fulfilled_percent)
         avg_eth_earned_per_bounty = float('%.2f' % avg_eth_earned_per_bounty)
+        avg_usd_earned_per_bounty = float('%.2f' % avg_usd_earned_per_bounty)
         avg_hourly_rate_per_funded_bounty = float('%.2f' % avg_hourly_rate_per_funded_bounty)
         avg_hours_per_funded_bounty = float('%.2f' % avg_hours_per_funded_bounty)
         total_earned_eth = float('%.2f' % total_earned_eth)
