@@ -1259,7 +1259,7 @@ class Profile(SuperModel):
                 relevant_bounties = Bounty.objects.none()
                 for keyword in user_coding_languages:
                     relevant_bounties = relevant_bounties.union(potential_bounties.filter(
-                            network='rinkeby',
+                            network=Profile.get_network(),
                             current_bounty=True,
                             metadata__icontains=keyword,
                             idx_status__in=['open'],
