@@ -426,10 +426,17 @@ def ens():
 
 def tips():
     from dashboard.models import Tip
+    tips = Tip.objects.filter(network='mainnet')
+    val = sum(tip.value_in_usdt for tip in tips if tip.value_in_usdt)
 
     Stat.objects.create(
         key='tips',
-        val=(Tip.objects.filter(network='mainnet').count()),
+        val=(tips.count()),
+        )
+
+    Stat.objects.create(
+        key='tips_value',
+        val=val,
         )
 
 

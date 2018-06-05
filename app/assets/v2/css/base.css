@@ -1632,7 +1632,7 @@ input.is-invalid {
   font-size: 1.2rem;
 }
 
-.results .bounty_status .yellow_box, .green_box, .blue_box, .pink_box {
+.results .bounty_status .yellow_box, .green_box, .blue_box, .pink_box, .lblue_box {
   float: left;
   width: 1rem;
   height: 1rem;
@@ -1653,6 +1653,11 @@ input.is-invalid {
 .blue_box {
   color: #3E00FF;
   border: 10px solid #3E00FF;
+}
+
+.lblue_box {
+  color: #fbd0e6;
+  border: 10px solid #fbd0e6;
 }
 
 .pink_box {
