@@ -22,9 +22,4 @@ class Migration(migrations.Migration):
             name='discord_webhook_url',
             field=models.CharField(blank=True, default='', max_length=400),
         ),
-        migrations.AlterField(
-            model_name='bounty',
-            name='bounty_owner_profile',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='bounties_funded', to='dashboard.Profile'),
-        ),
     ]

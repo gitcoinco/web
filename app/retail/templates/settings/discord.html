@@ -11,7 +11,7 @@
       and provide the Discord webhook url in the field below. {% endblocktrans %}
     </p>
     <label class="form__label" for="webhook_url">{% trans "Discord Webhook URL" %}</label>
-    <input type="text" name="webhook_url" class="form__input" placeholder='Webhook URL' value="{{ profile.webhook_url }}">
+    <input type="text" name="webhook_url" class="form__input" placeholder='Webhook URL' value="{{ profile.discord_webhook_url }}">
   </div>
   <div class="form-group"
     <label class="form__label" for="repos">{% trans "Github repos to monitor (use full name, like 'gitcoinco/web' for <a href=https://github.com/gitcoinco/web>this repo</a>)" %}</label>
@@ -19,7 +19,6 @@
   </div>
   {% csrf_token %}
   <input class='button button--primary' type='submit' name='submit' value="{% trans "Go" %}">
-  <input class='button button--primary' style='margin-left: 0.5em;' type='submit' name='test' value="{% trans "Test" %}">
 </form>
 </div>
 {% endblock %}

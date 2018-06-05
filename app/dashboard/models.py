@@ -1294,7 +1294,7 @@ class Profile(SuperModel):
 
         """
         if join:
-            repos = ','.join(self.slack_repos)
+            repos = ', '.join(self.slack_repos)
             return repos
         return self.slack_repos
 
@@ -1307,11 +1307,28 @@ class Profile(SuperModel):
             repos (list of str): The profile's github repositories to track.
 
         """
-        repos = repos.split()
+        repos = repos.split(',')
         self.slack_token = token
         self.slack_repos = [repo.strip() for repo in repos]
         self.slack_channel = channel
         self.save()
+
+    def get_discord_repos(self, join=False):
+        """Get the profile's Discord tracked repositories.
+
+        Args:
+            join (bool): Whether or not to return a joined string representation.
+                Defaults to: False.
+
+        Returns:
+            list of str: If joined is False, a list of discord repositories.
+            str: If joined is True, a combined string of discord repositories.
+
+        """
+        if join:
+            repos = ', '.join(self.discord_repos)
+            return repos
+        return self.discord_repos
 
     def update_discord_integration(self, webhook_url, repos):
         """Update the profile's Discord integration settings.
@@ -1321,7 +1338,7 @@ class Profile(SuperModel):
             repos (list of str): The profile's github repositories to track.
 
         """
-        repos = repos.split()
+        repos = repos.split(',')
         self.discord_webhook_url = webhook_url
         self.discord_repos = [repo.strip() for repo in repos]
         self.save()
