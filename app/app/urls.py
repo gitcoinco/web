@@ -71,6 +71,7 @@ urlpatterns = [
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
 
     # action URLs
+    re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
@@ -153,9 +154,13 @@ urlpatterns = [
     url(r'^sync/get_issue_details?', dashboard.helpers.issue_details, name='helpers_issue_details'),
     url(r'^sync/search_save?', dashboard.views.save_search, name='save_search'),
 
+    # modals
+    re_path(r'^modal/get_quickstart_video?', dashboard.views.get_quickstart_video, name='get_quickstart_video'),
+
     # brochureware views
     url(r'^about/?', retail.views.about, name='about'),
     url(r'^mission/?', retail.views.mission, name='mission'),
+    re_path(r'^results/?', retail.views.results, name='results'),
     url(r'^get/?', retail.views.get_gitcoin, name='get_gitcoin'),
     url(r'^$', retail.views.index, name='index'),
     url(r'^help/dev/?', retail.views.help_dev, name='help_dev'),
@@ -218,6 +223,7 @@ urlpatterns = [
     url(r'^_administration/email/faucet$', retail.emails.faucet, name='email_faucet'),
     url(r'^_administration/email/new_tip$', retail.emails.new_tip, name='new_tip'),
     url(r'^_administration/email/new_match$', retail.emails.new_match, name='new_match'),
+    url(r'^_administration/email/quarterly_roundup$', retail.emails.quarterly_roundup, name='quarterly_roundup'),
     url(r'^_administration/email/new_work_submission$', retail.emails.new_work_submission, name='new_work_submission'),
     url(
         r'^_administration/email/new_bounty_rejection$',
@@ -248,7 +254,38 @@ urlpatterns = [
         tdi.views.process_accesscode_request,
         name='process_accesscode_request'
     ),
-    url(
+    re_path(
+        r'^_administration/process_faucet_request/(.*)$',
+        faucet.views.process_faucet_request,
+        name='process_faucet_request'
+    ),
+    re_path(
+        r'^_administration/email/start_work_approved$', retail.emails.start_work_approved, name='start_work_approved'
+    ),
+    re_path(
+        r'^_administration/email/start_work_rejected$', retail.emails.start_work_rejected, name='start_work_rejected'
+    ),
+    re_path(
+        r'^_administration/email/start_work_new_applicant$',
+        retail.emails.start_work_new_applicant,
+        name='start_work_new_applicant'
+    ),
+    re_path(
+        r'^_administration/email/start_work_applicant_about_to_expire$',
+        retail.emails.start_work_applicant_about_to_expire,
+        name='start_work_applicant_about_to_expire'
+    ),
+    re_path(
+        r'^_administration/email/start_work_applicant_expired$',
+        retail.emails.start_work_applicant_expired,
+        name='start_work_applicant_expired'
+    ),
+    re_path(
+        r'^_administration/process_accesscode_request/(.*)$',
+        tdi.views.process_accesscode_request,
+        name='process_accesscode_request'
+    ),
+    re_path(
         r'^_administration/process_faucet_request/(.*)$',
         faucet.views.process_faucet_request,
         name='process_faucet_request'

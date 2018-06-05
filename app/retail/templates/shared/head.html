@@ -18,11 +18,9 @@
 
 {% include 'shared/tag_manager_1.html' %}
 <meta charset="utf-8">
-<script>
-  FontAwesomeConfig = { searchPseudoElements: true };
-</script>
-<script defer src="{% static "v2/js/fontawesome-all.min.js" %}"></script>
+<link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
 <link rel="stylesheet" href="{% static "v2/css/bootstrap.min.css" %}" crossorigin="anonymous">
+
 <link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/base.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
@@ -37,22 +35,22 @@
 <link rel="stylesheet" href="{% static "v2/css/ideas.css" %}" />
 
 <!-- Forms -->
-<link rel="stylesheet" href="{% static "v2/css/forms/button.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/forms/checkbox.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/forms/form.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/forms/input.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/forms/label.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/forms/radio.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/forms/select.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/external_bounties/checkboxes.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/forms/button.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/forms/checkbox.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/forms/form.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/forms/input.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/forms/label.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/forms/radio.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/forms/select.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/external_bounties/checkboxes.css" %}">
 
 
 <!-- Cookie Consent -->
-<link rel="stylesheet" href="{% static "cookielaw/css/cookielaw.css" %}" />
+<link rel="stylesheet" href="{% static "cookielaw/css/cookielaw.css" %}">
 
 {% if active == 'offchain' %}
 <!-- External Bounties -->
-<link rel="stylesheet" href="{% static "v2/css/external_bounties/bounties.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/external_bounties/bounties.css" %}">
 {% endif %}
 
 {% if request.path == '/ios' %}

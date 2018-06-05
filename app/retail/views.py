@@ -35,6 +35,8 @@ from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from retail.models import Idea, IdeaSerializer
 
+from .utils import build_stat_results
+
 
 def index(request):
     slides = [
@@ -182,6 +184,12 @@ def mission(request):
         'avatar_url': static('v2/images/grow_open_source.png'),
     }
     return TemplateResponse(request, 'mission.html', context)
+
+
+def results(request):
+    """Render the Results response."""
+    context = build_stat_results()
+    return TemplateResponse(request, 'results.html', context)
 
 
 def help(request):

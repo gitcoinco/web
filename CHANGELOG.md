@@ -72,7 +72,7 @@
 - Epic 1 [\#1125](https://github.com/gitcoinco/web/issues/1125)
 - nginx Doesn't Seem to Recognize \(or Direct Properly\) www.gitcoin.co  [\#1122](https://github.com/gitcoinco/web/issues/1122)
 - As a user, I want to be prompted to authenticate before seeing a start work modal [\#1107](https://github.com/gitcoinco/web/issues/1107)
-- How to surface work schemes to the community [\#1106](https://github.com/gitcoinco/web/issues/1106)
+- How to surface Project Types to the community [\#1106](https://github.com/gitcoinco/web/issues/1106)
 - Make Image a Thumbnail for Long Descriptions [\#1105](https://github.com/gitcoinco/web/issues/1105)
 - BUILD - As a funder \(Project recruiter\), I want a place where I can track all my stuff, so i can have a flow of web3.0 talent [\#1092](https://github.com/gitcoinco/web/issues/1092)
 - As a member of the community, I want these Profile Privacy Features, so I can be more private [\#1091](https://github.com/gitcoinco/web/issues/1091)
