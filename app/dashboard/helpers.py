@@ -43,6 +43,7 @@ from pytz import UTC
 from ratelimit.decorators import ratelimit
 
 from .models import Profile
+from .utils import clean_bounty_url
 
 logger = logging.getLogger(__name__)
 
@@ -196,6 +197,7 @@ def issue_details(request):
 
     try:
         repo_url = None
+        url = clean_bounty_url(url)
         if '/pull' in url:
             repo_url = url.split('/pull')[0]
         if '/issue' in url:
@@ -475,7 +477,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 last_comment_date=latest_old_bounty.last_comment_date if latest_old_bounty else None,
                 snooze_warnings_for_days=latest_old_bounty.snooze_warnings_for_days if latest_old_bounty else 0,
                 admin_override_and_hide=latest_old_bounty.admin_override_and_hide if latest_old_bounty else 0,
-                
+
             )
             new_bounty.fetch_issue_item()
 
