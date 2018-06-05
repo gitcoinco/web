@@ -34,9 +34,9 @@
           <span class="text-highlight-gc-blue mr-1">{% trans "DEVELOPERS!" %}</span>
           <span class="text-highlight-gc-purple">{% trans "Want to work on OSS Projects?" %}</span>
           <div class="ml-3 text-highlight-gc-purple">
-            <a class="text-highlight-gc-purple" href="/explorer">{% trans "View Available Bounties" %}</a>
+            <a class="text-highlight-gc-purple" href="{% url "explorer" %}">{% trans "View Available Bounties" %}</a>
             |
-            <a class="text-highlight-gc-purple" href="">{% trans "Get Started with Gitcoin" %}</a>
+            <a class="text-highlight-gc-purple" href="/bounty/new">{% trans "Get Started with Gitcoin" %}</a>
           </div>
         </div>
       </div>
@@ -214,7 +214,7 @@
                    and grow a healthy open source ecosystem.{% endblocktrans %}</p>
               </div>
             </div>
-            <a href="bounty/new" class="btn btn-gc-blue m-4">
+            <a href="/bounty/new" class="btn btn-gc-blue m-4">
               <i class="fab fa-ethereum" aria-hidden="true"></i>
               <span class="pl-1">{% trans "Fund an Issue" %}</span>
             </a>
