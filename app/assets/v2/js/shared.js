@@ -745,6 +745,16 @@ var setUsdAmount = function(event) {
   var amount = $('input[name=amount]').val();
   var denomination = $('#token option:selected').text();
   var estimate = getUSDEstimate(amount, denomination, function(estimate) {
-    $('#usd_amount').html(estimate);
+    $('#usd_amount').val(estimate['value']);
+    $('#usd_amount_text').html(estimate['rate_text']);
+  });
+};
+
+var usdToAmount = function(event) {
+  var usdAmount = $('input[name=usd_amount').val();
+  var denomination = $('#token option:selected').text();
+  var estimate = getAmountEstimate(usdAmount, denomination, function(amountEstimate) {
+    $('#amount').val(amountEstimate['value']);
+    $('#usd_amount_text').html(amountEstimate['rate_text']);
   });
 };

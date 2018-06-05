@@ -9,3 +9,40 @@
 .submit_bounty_form textarea[name=description] {
   height: 20rem;
 }
+
+#primary_form .revisions {
+  min-height: 37px;
+  padding: 0;
+  width: 55%;
+  justify-content: space-around;
+  text-align: center;
+  align-items: center;
+}
+
+.revisions input {
+  width: 35%;
+  height: 35px;
+  text-align: center;
+  border-left: 1px solid #0D0764;
+  border-top: 0;
+  border-bottom: 0;
+  border-right: 1px solid #0D0764;
+}
+
+.revisions .form__input-action {
+  width: 30%;
+  cursor: pointer;
+}
+
+#pricing-section .form__amount-wrapper {
+  width: 33%;
+}
+
+#pricing-section .form__flex-group {
+  justify-content: space-between;
+}
+
+#pricing-section .form__input,
+#pricing-section .form__select2 {
+  height: 37px;
+}

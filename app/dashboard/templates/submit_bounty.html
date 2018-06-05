@@ -66,34 +66,6 @@
                   <div>
                     <label class="form__label">{% trans "Issue Details" %}</label>
                   </div>
-                  <div class="form__group">
-                    <div class="form__select2 form__group-item">
-                      <select class="js-select2" name="experienceLevel">
-                        <option value="">{% trans "Experience Level" %}</option>
-                        <option>{% trans "Beginner" %}</option>
-                        <option>{% trans "Intermediate" %}</option>
-                        <option>{% trans "Advanced" %}</option>
-                      </select>
-                    </div>
-                    <div class="form__select2 form__group-item">
-                      <select class="js-select2" name="projectLength">
-                        <option value="Unknown">{% trans "Project Length" %}</option>
-                        <option>{% trans "Hours" %}</option>
-                        <option>{% trans "Days" %}</option>
-                        <option>{% trans "Weeks" %}</option>
-                        <option>{% trans "Months" %}</option>
-                      </select>
-                    </div>
-                    <div class="form__select2 form__group-item">
-                      <select class="js-select2" name="bountyType">
-                        <option value="">{% trans "Bounty Type" %}</option>
-                        <option>{% trans "Bug" %}</option>
-                        <option>{% trans "Feature" %}</option>
-                        <option>{% trans "Security" %}</option>
-                        <option>{% trans "Other" %}</option>
-                      </select>
-                    </div>
-                  </div>
                   <label class="form__label" for="project_type">{% trans "Project Type" %}</label>
                   <div class="form__select2">
                     <select class="js-select2" name="project_type">
@@ -109,7 +81,27 @@
                       <option value="approval" selected>{% trans "Approval Required - I will approve bounty hunters." %}</option>
                     </select>
                   </div>
-                  <hr/>
+                  <div class="form__group">
+                    <div class="form__group-item">
+                      <label class="form__label" for="experienceLevel">{% trans "Difficulty" %}</label>
+                      <div class="form__select2">
+                        <select class="js-select2" name="experienceLevel">
+                          <option value="beginner">{% trans "Beginner" %}</option>
+                          <option value="intermediate">{% trans "Intermediate" %}</option>
+                          <option value="advanced">{% trans "Advanced" %}</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form__group-item">
+                      <label class="form__label" for="revisions">{% trans "Revisions" %}</label>
+                      <div class="form__input revisions d-flex">
+                        <span class="form__input-action">-</span>
+                        <input name='revisions' type="text" value="1" step="1" min="1"/>
+                        <span class="form__input-action">+</span>
+                      </div>
+                    </div>
+                  </div>
+                  <hr class="mt-5"/>
                 </div>
                 <div id="deadline-section">
                   <h5 class="font-title">{% trans "Deadline" %}</h5>
@@ -137,20 +129,25 @@
                   <div id="advanced_container"></div>
                   <hr>
                 </div>
-                <div id="funding-section">
-                  <h5 class="font-tile">{% trans "Funding" %}</h5>
-                  <label class="form__label" for="amount">{% trans "Amount" %}</label>
+                <div id="pricing-section">
+                  <h5 class="font-tile">{% trans "Pricing" %}</h5>
                   <div class="form__flex-group">
                     <div class="form__amount-wrapper">
-                      <input name='amount' id='amount'  class="form__input" type="number" value="{{amount|default:'0.001'}}" step="0.001" min="0.001"/>
-                    </div>
-                    <div class="form__group-item">
+                      <label class="form__label" for="amount">{% trans "Denomination" %}</label>
                       <div class="form__select2">
                         <select name='deonomination' id='token'></select>
                       </div>
-                      <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
+                    </div>
+                    <div class="form__amount-wrapper">
+                      <label class="form__label" for="amount">{% trans "Amount" %}</label>
+                      <input name='amount' id='amount'  class="form__input" type="number" value="{{amount|default:'0.001'}}" step="0.001" min="0.001"/>
+                    </div>
+                    <div class="form__amount-wrapper">
+                      <label class="form__label" for="usd_amount">{% trans "USD" %}</label>
+                      <input name='usd_amount' id='usd_amount'  class="form__input" type="text" min="0.01"/>
                     </div>
                   </div>
+                  <small class="form__input-help form__input-help--dynamic" id="usd_amount_text"></small>
                   <hr class="mt-5">
                 </div>
                 <div id="gas-section">

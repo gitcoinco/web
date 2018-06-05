@@ -91,6 +91,8 @@ $(document).ready(function() {
   // fetch issue URL related info
   $('input[name=amount]').keyup(setUsdAmount);
   $('input[name=amount]').blur(setUsdAmount);
+  $('input[name=usd_amount]').keyup(usdToAmount);
+  $('input[name=usd_amount]').blur(usdToAmount);
   $('select[name=deonomination]').change(setUsdAmount);
   $('input[name=issueURL]').blur(retrieveIssueDetails);
   setTimeout(setUsdAmount, 1000);
@@ -105,7 +107,7 @@ $(document).ready(function() {
     $(this).select2();
   });
   // removes tooltip
-  $('select').on('change', function(evt) {
+  $('.submit_bounty select').each(function(evt) {
     $('.select2-selection__rendered').removeAttr('title');
   });
   // removes search field in all but the 'denomination' dropdown
