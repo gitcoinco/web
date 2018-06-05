@@ -51,7 +51,6 @@ from rest_framework import serializers
 from web3 import Web3
 
 from .signals import m2m_changed_interested
-from .utils import clean_bounty_url
 
 logger = logging.getLogger(__name__)
 
@@ -215,6 +214,7 @@ class Bounty(SuperModel):
 
     def save(self, *args, **kwargs):
         """Define custom handling for saving bounties."""
+        from .utils import clean_bounty_url
         if self.bounty_owner_github_username:
             self.bounty_owner_github_username = self.bounty_owner_github_username.lstrip('@')
         self.github_url = clean_bounty_url(self.github_url)

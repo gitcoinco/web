@@ -43,7 +43,6 @@ from pytz import UTC
 from ratelimit.decorators import ratelimit
 
 from .models import Profile
-from .utils import clean_bounty_url
 
 logger = logging.getLogger(__name__)
 
@@ -143,6 +142,7 @@ def issue_details(request):
         JsonResponse: A JSON response containing the Github issue or PR keywords.
 
     """
+    from .utils import clean_bounty_url
     response = {}
 
     url = request.GET.get('url')
