@@ -155,10 +155,30 @@
     </div>
 
 
-    <script>
-        document.platform_stats = [  [ 'Repo', 'Bounties' ], [ 'Open Bounties', {{ count_open }}],  [ 'Bounties w. started work', {{ count_started }}],  [ 'Completed bounties', {{ count_done }} ] ];
-    </script>
+    <div style="background-color: white;">
+      <div class="container" id="price_per_hour">
+        <div class="row py-5 animatedParent">
+          <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
+            <h2>{% trans "Hourly Rates of Bounties" %}</h2>
+          </div>
+        </div>
 
+        <div class="row mt-5 pb-5 animatedParent text-center">
+          <div class="col animated pulse fast">
+            <img src="{% static 'v2/images/results/price_per_hour.png' %}" >
+            <p style="font-size: 10px;">(Updated 6/5/2018)</p>
+          </div>
+        </div>
+
+        <div class="row mt-5 pb-5 animatedParent text-center">
+          <div class="col animated pulse fast">
+            <a class="button button--primary" role="button" href="https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e">{% trans "Read More about Pricing on Gitcoin" %}</a>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
     <div style="background-color: #F2F6F9;">
       <div class="container" id="bounty_universe">
         <div class="row py-5 animatedParent">
@@ -178,11 +198,12 @@
         <div class="row mt-5 pb-5 animatedParent text-center">
           <div class="col animated pulse fast">
             <p class="mt-5 mb-5"> {% trans "Meet software developers, futurists, and funders who are building web3" %} </p>
-            <a class="button button--primary" role="button" href="{% url "slack" %}">{% trans "# Join Our Slack" %}</a>
+            <a class="button button--primary" role="button" href="{% url "slack" %}">{% trans "Join Our Slack" %}</a>
           </div>
         </div>
       </div>
     </div>
+
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}

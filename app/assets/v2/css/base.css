@@ -1632,6 +1632,10 @@ input.is-invalid {
   font-size: 1.2rem;
 }
 
+.results #price_per_hour img{
+  width: 100%;
+}
+
 .results .bounty_status .yellow_box, .green_box, .blue_box, .pink_box, .lblue_box {
   float: left;
   width: 1rem;
