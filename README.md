@@ -38,7 +38,7 @@ git clone git@github.com:xxxxxxxx/token-profile.git
 You're totally responsible for your commit, so please make sure that the information and logo are real and valid.
 
 ### Logo design
-- Size: 132x132 pixels
+- Size: 120x120 pixels
 - Transparent background PNG
 - Brand identity
 
