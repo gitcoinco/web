@@ -13,7 +13,8 @@ const moveBackground = RAFThrottle(e => {
   const newvalueX = movementStrength / $(window).width() * pageX - 10;
   let newvalueY = movementStrength / $(window).height() * pageY;
 
-  $('#gitcoin-background').css('transform', `translate(${newvalueX}px, ${newvalueY}px)`);
+  // TODO : Evaluate if the scrolling effect is needed
+  // $('.header').css('transform', `translate(${newvalueX}px, ${newvalueY}px)`);
 });
 
 $(document).ready(function() {

@@ -126,7 +126,7 @@ body {
   font-family: Muli, sans-serif;
   overflow-x: hidden;
   width: 100%;
-  background-color: #0d023b;
+  background-color: #fff;
 }
 
 h4,
@@ -162,17 +162,17 @@ h4,
   color: lightgray !important
 }
 
-#gitcoin-background {
+body.index,
+.header {
   background-image: url("/static/v2/images/header-bg.png");
-  background-size: 2000px;
+  background-color: #0d023b;
   background-position: 0 0;
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  will-change: transform;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.header {
+  background-position: 0 -37px;
 }
 
 .nav-link {
