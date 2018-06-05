@@ -1,0 +1,24 @@
+{
+  "symbol": "TEL",
+  "address": "0x85e076361cc813A908Ff672F9BAd1541474402b2",
+  "overview":{
+        "en": "Telcoin is a new cryptocurrency based on the Ethereum blockchain that will be distributed and accepted by telecom operators, therefore available to billions of users worldwide without extra registration, only using their mobile phones. Our unique positioning at the frontier of telecom and cryptocurrencies allows us to overcome 3 major difficulties that have prevented many other cryptocurrencies from succeeding on a mass scale: Trust, Market reach, and KYC compliance issues.\n\nWe will provide Telcoin for free (Distribution of 50% of our supply over 10 years) to partnering mobile networks in exchange for distributing it to their subscribers. Doing so, we will provide telecom operators with a big financial incentive to work with us rather  than our competitors. Also, being available simply worldwide will naturally make Telcoin the first cryptocurrency being used by everyone on a daily basis. Having access to a large number of users naturally opens the door to a clear business case, international remittances. A $501B market absent from the mobile economy, with only 1% of it going through mobile devices. Our business model is simple, we charge a 0.5% fee when Telcoin is buy or sold by an operator to a subscriber."
+  },
+  "email": "hello@telco.in",
+  "website": "https://www.telco.in/",
+  "whitepaper": "https://www.telco.in/docs/whitepaper.pdf",
+  "published_on": "2017-12-11",
+  "initial_price":{
+        "ETH": "0.000001816484866 ETH",
+        "USD": "0.0013 USD",
+        "BTC": "0.00000009765549794 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/telcoin_team",
+    "telegram": "https://t.me/telcoincommunity",
+    "github": "https://github.com/telcoin",
+    "facebook": "https://www.facebook.com/telcoin/",
+    "reddit": "https://www.reddit.com/r/Telcoin/",
+    "medium": "https://medium.com/@telcoin"
+  }
+}
