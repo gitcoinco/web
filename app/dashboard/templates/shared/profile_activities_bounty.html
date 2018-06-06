@@ -1,7 +1,7 @@
 <a class="row result bounty_row {{ bounty.network }}" target="_blank"
  {% if bounty.url %} href="{{ bounty.url }}"
  {% elif bounty.github_url %} href="{{ bounty.github_url }}"
- {% endif %} </a>
+ {% endif %}>
   <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
     <img class="avatar" src="{% url 'avatar' %}?repo=https://github.com/{{ bounty.bounty_owner_github_username }}">
   </div>

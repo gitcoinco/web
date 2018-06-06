@@ -18,7 +18,7 @@
         <div class="row">
           <div class="col-12 col-lg-4 profile-header__main-infos">
             <div class="clearfix">
-              <img class="profile-header__avatar mr-4" src="{{profile.avatar_url}}">
+              <img class="profile-header__avatar mb-4 mr-4" src="{{profile.avatar_url}}">
               <p class="profile-header__handle font-title">
                 {% if profile.data.name %}
                   {{ profile.data.name }}
@@ -118,7 +118,7 @@
                   {% endif %}
                   <li class="works_with_list">
                     {% if works_with_funded|length %}
-                        <span class="font-body">( <i class="fab fa-ethereum"></i> ) </i> Funds:</span>
+                        <span class="font-body">( <i class="fab fa-ethereum"></i> ) </i> {% trans "Funds" %}:</span>
                         {% if works_with_funded|length > 2 %}
                         <br>
                         {% endif %}
@@ -272,11 +272,7 @@
                           <i class="far fa-check-circle"></i>
                           <span class="pl-1">
                             {% trans "Completed" %} {{ group.completed|length }}
-                            {% if group.completed|length > 1 %}
-                              {% trans "Bounties" %}
-                            {% else %}
-                              {% trans "Bounty" %}
-                            {% endif %}
+                            Bount{{ group.completed|pluralize:"y,ies" }}
                           </span>
                         </div>
                         {% for bounty in group.completed %}
@@ -295,11 +291,7 @@
                           <i class="fas fa-code-branch"></i>
                           <span class="pl-1">
                             {% trans "Submitted" %} {{ group.submitted|length }}
-                            {% if group.submitted|length > 1 %}
-                              {% trans "Bounties" %}
-                            {% else %}
-                              {% trans "Bounty" %}
-                            {% endif %}
+                            Bount{{ group.submitted|pluralize:"y,ies" }}
                           </span>
                         </div>
                         {% for bounty in group.submitted %}
@@ -314,7 +306,10 @@
                   <div class="container">
                     <div class="row mb-3 p-2">
                       <div class="col-12">
-                        <div class="profile-bounties__group-title">{% trans "Started" %} {{ group.started|length }} {% if group.started|length > 1 %}{% trans "Bounties" %}{% else %}{% trans "Bounty" %}{% endif %}</div>
+                        <div class="profile-bounties__group-title">
+                          {% trans "Started" %} {{ group.started|length }}
+                          Bount{{ group.started|pluralize:"y,ies" }}
+                        </div>
                         {% for bounty in group.started %}
                           {% include "shared/profile_activities_bounty.html" %}
                         {% endfor %}
