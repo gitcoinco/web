@@ -33,7 +33,7 @@ span {
   border-radius: 2px;
 }
 
-.nav-link.login svg {
+.nav-link.login i {
   font-size: 1.5em;
   position: relative;
   top: 3px;
@@ -48,7 +48,7 @@ span {
   color: #4aeaa7 !important;
 }
 
-.navbar a.slack svg {
+.navbar a.slack i {
   margin-right: 3px;
 }
 
@@ -184,7 +184,7 @@ span {
   color: white;
 }
 
-#mc_embed_signup_scroll #mc-embedded-subscribe svg {
+#mc_embed_signup_scroll #mc-embedded-subscribe i {
   margin-left: 5px;
 }
 
@@ -524,21 +524,6 @@ input[type=text].loading {
   background-size: 30px;
 }
 
-.blocking_error {
-  padding: 0 4em;
-  text-align: center;
-  margin: 100px auto;
-  max-width: 100%;
-}
-
-.blocking_error img {
-  max-width: 150px;
-  filter: grayscale(80%);
-  -moz-filter: grayscale(80%);
-  -ms-filter: grayscale(80%);
-  -o-filter: grayscale(80%);
-}
-
 #no_metamask_error img {
   filter: grayscale(100%);
   -moz-filter: grayscale(100%);
@@ -550,6 +535,10 @@ input[type=text].loading {
   max-width: 500px;
   margin: 0 auto;
   padding: 0 2em;
+}
+
+.submit_bounty #primary_form {
+  max-width: none;
 }
 
 .submit_bounty .select2-search,
@@ -1010,12 +999,20 @@ input[type=text].loading {
   color: #666666;
 }
 
+.text-highlight-purple {
+  color: #8E2ABE;
+}
+
 .text-highlight-green {
   color: #12c971;
 }
 
 .text-highlight-dark-blue {
   color: #220e90;
+}
+
+.text-highlight-light-blue {
+  color: #3E00FF;
 }
 
 .text-highlight-pink {
@@ -1158,6 +1155,26 @@ input.is-invalid {
 .ui-button:focus {
   border: 1px solid #0D0764 !important;
   background: #FAFAFA !important;
+}
+
+.submit-notification {
+  color: #fff;
+  font-family: 'Muli', sans-serif;
+  font-size: 10px !important;
+  min-height: 100px;
+}
+
+.submit-notification h3 {
+  font-size: 20px !important;
+  text-transform: capitalize;
+}
+
+.submit-notification a {
+  color: #FFF;
+}
+
+.metamask-error {
+  background-color: #FF6700;
 }
 
 @media (max-width: 1350px) {
@@ -1587,4 +1604,77 @@ input.is-invalid {
 
 .notify_policy_update .button {
   padding: 0.25rem 1.25rem;
+}
+
+/* Results */
+.results {
+  font-family: 'Muli', sans-serif;
+}
+.results h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.results h3 {
+  font-weight: 700;
+}
+
+.results h5 {
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.results .bounty_status {
+  margin-top: 1.5rem;
+}
+
+.results .bounty_status p {
+  font-size: 1.2rem;
+}
+
+.results #price_per_hour img{
+  width: 100%;
+}
+
+.results .bounty_status .yellow_box, .green_box, .blue_box, .pink_box, .lblue_box {
+  float: left;
+  width: 1rem;
+  height: 1rem;
+  margin-top: .2rem;
+  margin-right: 1rem;
+}
+
+.yellow_box {
+  color: #FFCE08;
+  border: 10px solid #FFCE08;
+}
+
+.green_box {
+  color: #F2F6F9;
+  border: 10px solid #25E899;
+}
+
+.blue_box {
+  color: #3E00FF;
+  border: 10px solid #3E00FF;
+}
+
+.lblue_box {
+  color: #fbd0e6;
+  border: 10px solid #fbd0e6;
+}
+
+.pink_box {
+  color: #F9006C;
+  border: 10px solid #F9006C;
+}
+
+.results .icon {
+  height: 6rem;
+  width: auto;
+}
+
+.results p {
+  font-size: 1.3rem;
+  font-weight: 500;
 }

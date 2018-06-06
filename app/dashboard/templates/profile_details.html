@@ -20,7 +20,9 @@
             <div class="clearfix">
               <img class="profile-header__avatar mr-4" src="{{profile.avatar_url}}">
               <span class="profile-header__handle">
-                {{ profile.data.name }}<br>
+                {% if profile.data.name %}
+                    {{ profile.data.name }}<br>
+                {% endif %}
                 <small>{{ profile.handle }}</small>
               </span>
             </div>
@@ -51,6 +53,37 @@
               </li>
             </ul>
           </div>
+        {% if profile.is_org %}
+          <div class="col-12 col-lg-3">
+            <div class="profile-header__stats profile-header__stats--contributor card mb-4">
+              <div class="card-header">
+                {% trans "Organization" %}
+              </div>
+              <div class="card-body">
+                <ul>
+                  <li><span class="highlight">{{ count_bounties_on_repo }}</span> {% trans "bounties" %}</li>
+                  <li><span class="highlight">{{ sum_eth_on_repos|floatformat:2 }}</span> {% trans "ETH" %}</li>
+                  {% if scoreboard_position_org %}
+                      <li><span class="highlight">#{{ scoreboard_position_org }}</span> {% trans "org" %}</li>
+                  {% endif %}
+                  <li class="works_with_list">
+                    {% if works_with_org|length != 0 %}
+                        Contributors:
+                        {% if works_with_org|length > 2 %}
+                        <br>
+                        {% endif %}
+                        {% for profile, num_times in works_with_org.items %}
+                            <a href="{% url 'profile' profile %} ">
+                                <img src='/static/avatar/{{profile}}' title="{{profile}}: {{num_times}} times">
+                            </a>
+                        {% endfor %}
+                    {% endif %}
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        {% else %}
           <div class="col-12 col-lg-3">
             <div class="profile-header__stats profile-header__stats--contributor card mb-4">
               <div class="card-header">
@@ -109,6 +142,8 @@
               </div>
             </div>
           </div>
+        {% endif %}
+
         </div>
       </div>
     </div>
@@ -139,6 +174,16 @@
       </div>
       <div class="row">
         <div class="container profile-bounties profile-bounties--completed profile-bounties--loading">
+          <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">{% trans "Show all" %}</button>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="col py-4">{% trans "Bounties" %}</div>
+      </div>
+      <div class="row">
+        <div class="container profile-bounties profile-bounties--all profile-bounties--loading">
           <button type="button" class="profile-bounties__btn-show-all btn btn-outline-secondary btn-block mt-1 py-2 hidden">{% trans "Show all" %}</button>
         </div>
       </div>
@@ -395,14 +440,26 @@
           });
         }
 
-        // Fetch user bounties: "in progress" / actively started.
-        fetchBountiesAndAddToList('network=mainnet&started={{ profile.handle }}&status__in=started,submitted', '.profile-bounties--in-progress');
+        {% if profile.is_org %}
+            // Fetch bounties user is fulfiller
+            fetchBountiesAndAddToList('network=mainnet&org={{ profile.handle }}', '.profile-bounties--all');
+            $('.profile-bounties--in-progress').parents('.container').remove();
+            $('.profile-bounties--funded').parents('.container').remove();
+            $('.profile-bounties--completed').parents('.container').remove();
+            $('.profile-bounties--activities').parents('.container').remove();
 
-        // Fetch bounties user is owner
-        fetchBountiesAndAddToList('network=mainnet&bounty_owner_github_username={{ profile.handle }}', '.profile-bounties--funded');
+        {% else %}
+            $('.profile-bounties--all').parents('.container').remove();
+            // Fetch user bounties: "in progress" / actively started.
+            fetchBountiesAndAddToList('network=mainnet&started={{ profile.handle }}&status__in=started,submitted', '.profile-bounties--in-progress');
 
-        // Fetch bounties user is fulfiller
-        fetchBountiesAndAddToList('network=mainnet&started={{ profile.handle }}&idx_status=done', '.profile-bounties--completed');
+            // Fetch bounties user is owner
+            fetchBountiesAndAddToList('network=mainnet&bounty_owner_github_username={{ profile.handle }}', '.profile-bounties--funded');
+
+            // Fetch bounties user is fulfiller
+            fetchBountiesAndAddToList('network=mainnet&fulfiller_github_username_done={{ profile.handle }}&idx_status=done', '.profile-bounties--completed');
+      {% endif %}
+
       });
     </script>
   </body>

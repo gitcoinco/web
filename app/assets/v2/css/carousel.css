@@ -41,7 +41,7 @@
   float: left;
 }
 
-.carousel .control svg {
+.carousel .control i {
   position: relative;
   top: 2px;
 }
@@ -51,7 +51,7 @@
   margin-left: 70px;
 }
 
-.carousel .avatar svg {
+.carousel .avatar i {
   color: #36e69a;
 }
 
@@ -122,7 +122,7 @@
   opacity: 0.5;
 }
 
-.carousel .author svg {
+.carousel .author i {
   font-size: 7px;
 }
 
@@ -130,11 +130,11 @@
   cursor: pointer;
 }
 
-.carousel .prev .control svg {
+.carousel .prev .control i {
   right: 1px;
 }
 
-.carousel .next .control svg {
+.carousel .next .control i {
   left: 1px;
 }
 
@@ -231,7 +231,7 @@
     margin: 0 -20px;
   }
 
-  .carousel .next .control svg {
+  .carousel .next .control i {
     left: 2px;
   }
 }

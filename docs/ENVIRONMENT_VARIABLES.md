@@ -1,4 +1,4 @@
-# Recognoized Environment Variables
+# Recognized Environment Variables
 
 The following environment variables are currently accepted by the local web application.
 You can overwrite the default values for these environment variables by adding them to the `web/app/app/.env` file.
