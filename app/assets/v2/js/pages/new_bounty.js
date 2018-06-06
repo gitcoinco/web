@@ -137,7 +137,7 @@ $(document).ready(function() {
         _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
         return;
       }
-      
+
       var data = {};
       var disabled = $(form)
         .find(':input:disabled')
@@ -153,7 +153,7 @@ $(document).ready(function() {
       // setup
       loading_button($('.js-submit'));
       var githubUsername = data.githubUsername;
-      var issueURL = data.issueURL;
+      var issueURL = data.issueURL.replace(/#.*$/, '');
       var notificationEmail = data.notificationEmail;
       var amount = data.amount;
       var tokenAddress = data.deonomination;
@@ -352,7 +352,7 @@ $(document).ready(function() {
 
         // bounty is a web3.js eth.contract address
         // The Ethereum network requires using ether to do stuff on it
-        // issueAndActivateBounty is a method definied in the StandardBounties solidity contract.
+        // issueAndActivateBounty is a method defined in the StandardBounties solidity contract.
 
         var eth_amount = isETH ? amount : 0;
         var _paysTokens = !isETH;
