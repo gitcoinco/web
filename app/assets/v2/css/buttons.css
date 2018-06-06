@@ -153,6 +153,14 @@ button:focus {
   color: white;
 }
 
+.btn-outline-gc-green.btn-outline-gc-grey {
+  border-color: var(--text-dark);
+}
+
+.btn-outline-gc-green.btn-outline-gc-grey:hover {
+  border-color: var(--gc-green--hover);
+}
+
 .btn-gc-purple {
   background-color: var(--gc-purple);
 }

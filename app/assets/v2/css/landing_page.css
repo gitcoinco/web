@@ -52,11 +52,6 @@ body {
   will-change: transform;
 }
 
-#gc-tree {
-  max-width: 100%;
-  will-change: transform;
-}
-
 .howworks_container {
   background-color: #F9F9F9;
   text-align: center;
@@ -147,7 +142,7 @@ body {
 
 .whatisit_container {
   background-color: var(--gc-blue);
-  color: var(--text-light);
+  color: #fff;
 }
 
 .benefits_container {
@@ -232,6 +227,11 @@ body {
   -o-filter: grayscale(0%);
 }
 
+#gc-tree img {
+  max-width: 100%;
+  will-change: transform;
+}
+
 .pricing-tiers-container {
   background: #F9F9F9;
   box-shadow: 4px 5px 10px 3px rgba(0, 0, 0, 0.1);
@@ -307,8 +307,8 @@ body {
 }
 
 .index #gitcoin-background {
-  width: 100vw;
-  height: 100vh;
+  min-width: 100vw;
+  min-height: 1000vh;
 }
 
 /* Landing Page Animations */
@@ -414,6 +414,23 @@ body {
 }
 
 @media (max-width: 768px) {
+
+  .howworks-section {
+    padding: 0 3rem;
+  }
+
+  #hero_cta > div {
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+  #hero_cta > div .btn {
+    margin-left: 0 !important;
+  }
+
+  #gc-robot {
+    right: 10px;
+  }
 
   .pricing-tiers-container {
     grid-template-columns: 1fr;

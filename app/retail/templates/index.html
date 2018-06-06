@@ -149,7 +149,10 @@
       </div>
 
       <div class="container-fluid p-5 tree_container white-bg">
-        <img id="gc-tree" src="/static/v2/images/gc-tree.png" alt="Gitcoin Tree" />
+        <div id="gc-tree">
+          <img src="/static/v2/images/gc-tree.png" alt="Gitcoin Tree" />
+          <h2 class="mt-4">Grow Open Source</h2>
+        </div>
       </div>
 
       <div class="container-fluid p-5 whatisit_container">
@@ -177,8 +180,8 @@
         </div>
       </div>
 
-      <div class="container-fluid pt-5 px-0 howworks_container">
-        <div class="mb-3 howworks-toggle-container">
+      <div class="container-fluid p-5 howworks_container">
+        <div class="howworks-toggle-container">
           <button type="button" id="funder-toggle" class="howworks-section-toggle">
             {% trans "Funder" %}
           </button>
@@ -189,9 +192,9 @@
         </div>
         <div class="howworks-sections d-flex">
           <div class="howworks-section">
-            <div class="row mb-5">
+            <div class="row mt-5 mb-5">
               <div class="col text-center">
-                <h1>{% trans "Do This. Easily." %}</h1>
+                <h1>{% trans "Fund An Issue. Grow Your Project." %}</h1>
               </div>
             </div>
             <div class="howworks-steps">
@@ -224,9 +227,9 @@
           </div>
 
           <div class="howworks-section">
-            <div class="row mb-5">
+            <div class="row mt-5 mb-5">
               <div class="col text-center">
-                <h1>{% trans "Do This. Easily." %}</h1>
+                <h1>{% trans "Contribute to Open Source. Get Paid." %}</h1>
               </div>
             </div>
             <div class="howworks-steps">
@@ -256,9 +259,9 @@
                 </p>
               </div>
             </div>
-            <a href="" class="btn btn-gc-blue m-4">
-              <i class="fas fa-play" aria-hidden="true"></i>
-              <span class="pl-1">{% trans "How to Use Gitcoin in 30 Seconds" %}</span>
+            <a href="{% url "explorer" %}" class="btn btn-gc-blue m-4">
+              <i class="fab fa-ethereum" aria-hidden="true"></i>
+              <span class="pl-1">{% trans "Browse the Issue Explorer!'" %}</span>
             </a>
             <p class="font-body">{% trans "Gitcoin is a bounty-based collaboration tool that works easily with Github" %}
               <i class="fab fa-github" aria-hidden="true"></i>
@@ -304,7 +307,7 @@
             <li>{% trans "Do it yourself. You post and manage the bounties." %}</li>
           </ul>
           <div>
-            <a class="btn btn-outline-gc-green btn-block mb-4" href="/bounty/new">{% trans "Get Started" %}</a>
+            <a class="btn btn-outline-gc-green btn-outline-gc-grey btn-block mb-4" href="/bounty/new">{% trans "Get Started" %}</a>
           </div>
 
           <div class="text-highlight-light-blue pricing-tier__title font-title">{% trans "Silver" %}</div>
@@ -319,7 +322,7 @@
             <li>{% trans "We will monitor it for you" %}</li>
           </ul>
           <div>
-            <a class="btn btn-outline-gc-green btn-block mb-4"
+            <a class="btn btn-outline-gc-green btn-outline-gc-grey btn-block mb-4"
               href="mailto:vivek.singh@consensys.net?subject=Silver Package: Gitcoin Bounty Program">
               {% trans "Get Started" %}
             </a>

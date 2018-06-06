@@ -277,7 +277,7 @@ div.button-pink {
 .subheader-line {
   color: #70efbe;
   font-family: Muli, sans-serif;
-  font-size: 2em;
+  font-size: 1.75em;
   font-weight: 500;
   font-style: italic;
 }
@@ -557,6 +557,14 @@ div.button-pink {
   margin-left: 0px;
   margin-right: 20px;
   width: 15px;
+}
+
+
+@media (min-width: 768px) and (max-width: 1024px) {
+
+  .nav-link {
+    text-align: center;
+  }
 }
 
 /* TODO: Remove Post landing revamp */
