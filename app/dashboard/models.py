@@ -217,7 +217,8 @@ class Bounty(SuperModel):
         from .utils import clean_bounty_url
         if self.bounty_owner_github_username:
             self.bounty_owner_github_username = self.bounty_owner_github_username.lstrip('@')
-        self.github_url = clean_bounty_url(self.github_url)
+        if self.github_url:
+            self.github_url = clean_bounty_url(self.github_url)
         super().save(*args, **kwargs)
 
     @property
