@@ -1,0 +1,15 @@
+{
+  "symbol": "CWIOS",
+  "address": "0x002ACD33D758FcbDc72242A86Ed27eFA0006d42f",
+  "overview":{
+        "en":"Based on the core concept of blockchain, CWIOS will launch an intelligent investment and care system platform to help users rationally manage funds and venture capital.",
+        "zh":"基于区块链的核心理念， CWIOS将推出智能投顾系统平台，帮助用户合理管理资金和风投控制。"
+  },
+  "links": {
+        "facebook": "https://www.facebook.com/cwios/"
+   },
+  "email": "support@cwios.com",
+  "website": "http://www.cwios.net/",
+  "whitepaper": "http://www.cwios.net/CWIOS.pdf",
+  "published_on": "2018-06-10"
+}
