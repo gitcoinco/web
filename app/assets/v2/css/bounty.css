@@ -138,6 +138,10 @@ body {
   flex-wrap: wrap;
 }
 
+.bounty-info > div {
+  margin-bottom: 4px;
+}
+
 .bounty-info div {
   display: inline;
   margin-right: 15px;
