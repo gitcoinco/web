@@ -52,15 +52,15 @@ function prePopulateFunderFields() {
   if (localStorage['amount']) {
     $('amount').value = localStorage['amount'];
   }
+
   if (localStorage['issueURL']) {
     $('issueURL').value = localStorage['issueURL'];
   }
-  if (localStorage['fromName']) {
-    $('fromName').value = localStorage['fromName'];
-  }
+
   if (localStorage['fromEmail']) {
     $('fromEmail').value = localStorage['fromEmail'];
   }
+
   if (localStorage['expires']) {
     $('expires').selectedIndex = localStorage['expires'];
   }
@@ -187,7 +187,6 @@ window.onload = function() {
       localStorage.setItem('amount', amountInEth);
       localStorage.setItem('username', username);
       localStorage.setItem('issueURL', github_url);
-      localStorage.setItem('fromName', from_name);
       localStorage.setItem('fromEmail', from_email);
       localStorage.setItem('email', email);
       localStorage.setItem('comments_priv', comments_priv);

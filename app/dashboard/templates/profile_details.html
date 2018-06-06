@@ -20,7 +20,9 @@
             <div class="clearfix">
               <img class="profile-header__avatar mr-4" src="{{profile.avatar_url}}">
               <span class="profile-header__handle">
-                {{ profile.data.name }}<br>
+                {% if profile.data.name %}
+                    {{ profile.data.name }}<br>
+                {% endif %}
                 <small>{{ profile.handle }}</small>
               </span>
             </div>

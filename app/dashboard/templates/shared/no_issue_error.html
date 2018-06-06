@@ -1,0 +1,33 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<div id="no_issue_error" class="submit-notification container-fluid" style="display: block; background-color: #3d00fd;">
+  <div class="row align-items-center px-4 pt-2 text-center text-lg-left">
+    <div class="col-lg-10 col-sm-12">
+      <h3>{% trans "Tips for Funding an Issue" %}</h3>
+      <p>
+        <ol>
+          <li>{% trans "Create an issue on Github so that we can reference the details of the issue." %}</li>
+          <li>{% trans "What to fund? A new feature, feature improvements, bug fixes, code review, design and more." %}</li>
+        </ol>
+      </p>
+    </div>
+    <div class="col-lg-2 col-sm-12">
+      <img src="{% static "v2/images/Lightbulb.svg" %}">
+    </div>
+  </div>
+</div>
