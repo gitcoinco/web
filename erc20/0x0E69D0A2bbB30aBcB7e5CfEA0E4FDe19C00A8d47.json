@@ -1,0 +1,19 @@
+{
+  "symbol": "IOV",
+  "address": "0x0E69D0A2bbB30aBcB7e5CfEA0E4FDe19C00A8d47",
+  "overview":{
+        "en": "CarLive Chain is a vertical application of blockchain technology in the field of vehicle networking. It provides services to 1.3 billion vehicle users worldwide and the trillion-dollar-scale automobile consumer market.",
+        "zh": "CarLive Chain是区块链技术在车联网领域的垂直应用，CarLive Chain致力于建立一条汽车消费领域的区块链价值公链。面向全球13亿辆汽车的用户群体和万亿美元级规模汽车消费市场提供服务，为用户带来全新、快乐的车生活体验。"
+  },
+  "email": "contact@carlive.io",
+  "website": "www.carlive.io",
+  "whitepaper": "http://www.carlive.io/wp/CarLive%20Chain%20WhitePaper-EN-pubic.pdf?v=20180529",
+  "links": {
+    "twitter": "https://twitter.com/CarliveChain",
+    "telegram": "https://t.me/CarLiveChainofficial",
+    "github": "https://github.com/CarLiveChain",
+    "facebook": "https://www.facebook.com/CarLiveChain/",
+    "reddit": "https://www.reddit.com/user/carlivechain",
+    "medium": "https://medium.com/carlive-chain"
+  }
+}
