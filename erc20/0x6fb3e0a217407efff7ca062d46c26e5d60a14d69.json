@@ -1,0 +1,23 @@
+{
+  "symbol": "IOTX",
+  "address": "0x6fb3e0a217407efff7ca062d46c26e5d60a14d69",
+  "overview":{
+        "en": "IoTeX is the auto-scalable and privacy-centric blockchain infrastructure for the Internet of Things (IoT). It brings autonomous device coordination to the masses by “connecting the physical world, block by block.”",
+        "zh": "IoTeX是面向物联网的可自动扩展和以隐私为中心的区块链基础架构，致力于实现异构计算，Roll-DPoS共识机制和轻量级隐私等底层创新，推动物联网区块链3.0生态系统。"
+  },
+  "email": "hello@iotex.io",
+  "website": "https://iotex.io",
+  "whitepaper": "https://iotex.io/white-paper",
+  "state": "NORMAL",
+  "published_on": "2018-05-23",
+  "initial_price":{
+        "ETH":"0.0000125 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/iotex_io",
+    "telegram": "https://t.me/IoTeXGroup",
+    "github": "https://github.com/iotexproject",
+    "reddit": "https://www.reddit.com/r/IoTeX/",
+    "medium": "https://medium.com/@iotex"
+  }
+}
