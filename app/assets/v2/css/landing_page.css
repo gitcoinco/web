@@ -17,6 +17,7 @@ body {
 
 #landing_page_wrapper {
   overflow-y: scroll;
+  background-color: #F9F9F9;
 }
 
 .case-studies-container {
@@ -188,6 +189,7 @@ body {
 
 .pricing_container {
   background-color: #F9F9F9;
+  padding-bottom: 50rem;
 }
 
 .press_container {

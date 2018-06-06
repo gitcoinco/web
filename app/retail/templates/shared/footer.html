@@ -58,7 +58,6 @@
   <div class="footer__main d-flex justify-content-end flex-wrap pl-4 pr-5 pb-5">
     <div class="sitenav sitenav__product">
       <h5>{% trans "Product" %}</h5>
-      <a href="">{% trans "How it Works" %}</a>
       <a href="{% url "explorer" %}">{% trans "Issue Explorer" %}</a>
       <a href="{% url "tools" %}">{% trans "Tools" %}</a>
       <a href="">{% trans "FAQ" %}</a>
@@ -72,7 +71,6 @@
     </div>
     <div class="sitenav">
       <h5>{% trans "Community" %}</h5>
-      <a href="">Developers</a>
       <a class="slack{% if active == 'slack' %} selected{% endif %}" href="{% url "slack" %}">
         Slack ({{num_slack}})
       </a>
