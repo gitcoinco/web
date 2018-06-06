@@ -16,7 +16,7 @@
     "initial_price":{
         "ETH":"0.00089 ETH"        
     },
-    "whitepaper":"https://github.com/truechain/wiki/tree/master/paper/white_paper",
+    "whitepaper":"https://github.com/truechain/wiki/tree/master/paper/white_paper/",
     "address":"0xa4d17ab1ee0efdd23edc2869e7ba96b89eecf9ab",
     "email":"true@truechain.pro"
 }
