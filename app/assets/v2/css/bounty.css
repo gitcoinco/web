@@ -133,6 +133,15 @@ body {
   font-size: 14px;
 }
 
+.bounty-info {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.bounty-info > div {
+  margin-bottom: 4px;
+}
+
 .bounty-info div {
   display: inline;
   margin-right: 15px;
@@ -191,15 +200,17 @@ body {
   padding: 5px;
 }
 
+.red_warning, 
 #network {
   background-color: #fbe0d6;
   color: #fb9470;
   padding: 5px 10px;
   border-radius: 2px;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
   display: block;
 }
 
+.red_warning a,
 #network a{
   color: #fb9470;
   font-weight: bold;
@@ -248,7 +259,7 @@ body {
   font-weight: 600;
 }
 
-.contributor-box svg {
+.contributor-box i {
   font-size: 24px;
   margin-top: 15px;
   margin-bottom: 10px;
@@ -336,7 +347,7 @@ a.btn {
   color: #717171;
 }
 
-.activity .activity-status svg {
+.activity .activity-status i {
   margin-left: 10px;
   color: #0ECF7C;
 }
@@ -382,16 +393,16 @@ a.btn {
 #started_owners_username a,
 #fulfilled_owners_username a,
 #submitted_owners_username a,
-#started_owners_username svg,
-#fulfilled_owners_username svg,
-#submitted_owners_username svg {
+#started_owners_username i,
+#fulfilled_owners_username i,
+#submitted_owners_username i {
   margin-left: 5px;
   margin-right: 5px;
 }
 
-#started_owners_username svg,
-#fulfilled_owners_username svg,
-#submitted_owners_username svg {
+#started_owners_username i,
+#fulfilled_owners_username i,
+#submitted_owners_username i {
   margin-top: 5px;
 }
 

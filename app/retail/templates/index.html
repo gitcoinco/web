@@ -14,7 +14,8 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static cookielaw_tags %}
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -27,6 +28,7 @@
       {% include 'shared/nav.html' %}
       {% include 'shared/hero.html' %}
     </div>
+    {% cookielaw_banner %}
     <div class="container-fluid mt-3 whatisit_container">
       <div class="row pb-1">
         <div class="col text-center">
@@ -412,6 +414,20 @@
             <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
               <a href="https://www.youtube.com/watch?v=xvu1mUdYcuw" target="_blank" rel="noopener noreferrer">
                 <img src="{% static "v2/images/press/devhour.jpg" %}">
+              </a>
+            </div>
+          </div>
+          <div class="col d-flex flex-column align-items-center">
+            <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
+              <a href="https://www.youtube.com/watch?v=pdoa09b_2J4" target="_blank" rel="noopener noreferrer">
+                <img src="{% static "v2/images/press/ethereal.png" %}">
+              </a>
+            </div>
+          </div>
+          <div class="col d-flex flex-column align-items-center">
+            <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
+              <a href="https://www.coindesk.com/meet-dapp-market-twist-open-source-winning-developers/" target="_blank" rel="noopener noreferrer">
+                <img src="{% static "v2/images/press/coindesk.png" %}">
               </a>
             </div>
           </div>

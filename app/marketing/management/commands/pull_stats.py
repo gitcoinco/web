@@ -311,6 +311,7 @@ def bounties_by_status():
         eligible_bounties = Bounty.objects.filter(current_bounty=True, network='mainnet', web3_created__lt=(timezone.now() - timezone.timedelta(days=7)))
         numerator_bounties = eligible_bounties.filter(idx_status=status)
         val = int(100 * (numerator_bounties.count()) / (eligible_bounties.count()))
+        val_rev = sum(numerator_bounties.values_list('_val_usd_db', flat=True))
 
         Stat.objects.create(
             key='bounties_{}_pct'.format(status),
@@ -320,6 +321,11 @@ def bounties_by_status():
         Stat.objects.create(
             key='bounties_{}_total'.format(status),
             val=numerator_bounties.count(),
+            )
+
+        Stat.objects.create(
+            key='bounties_{}_value'.format(status),
+            val=val_rev,
             )
 
 
@@ -409,12 +415,28 @@ def bounties_fulfilled():
         )
 
 
+def ens():
+    from enssubdomain.models import ENSSubdomainRegistration
+
+    Stat.objects.create(
+        key='ens_subdomains',
+        val=(ENSSubdomainRegistration.objects.count()),
+        )
+
+
 def tips():
     from dashboard.models import Tip
+    tips = Tip.objects.filter(network='mainnet')
+    val = sum(tip.value_in_usdt for tip in tips if tip.value_in_usdt)
 
     Stat.objects.create(
         key='tips',
-        val=(Tip.objects.filter(network='mainnet').count()),
+        val=(tips.count()),
+        )
+
+    Stat.objects.create(
+        key='tips_value',
+        val=val,
         )
 
 
@@ -556,6 +578,7 @@ class Command(BaseCommand):
             faucet,
             email_events,
             bounties_hourly_rate,
+            ens,
         ]
 
         for f in fs:

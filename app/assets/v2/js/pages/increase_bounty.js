@@ -48,8 +48,6 @@ $(document).ready(function() {
     if ($('#terms:checked').length == 0) {
       _alert({ message: gettext('Please accept the terms of service.') });
       isError = true;
-    } else {
-      localStorage['acceptTOS'] = true;
     }
     var is_issueURL_invalid = issueURL == '' ||
         issueURL.indexOf('http') != 0 ||

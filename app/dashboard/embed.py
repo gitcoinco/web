@@ -2,6 +2,7 @@ import os
 
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_exempt
 
 import requests
 from dashboard.models import Bounty, Profile
@@ -11,7 +12,6 @@ from PIL import Image, ImageDraw, ImageFont, ImageOps
 from ratelimit.decorators import ratelimit
 from svgutils.compose import SVG, Figure, Line
 from svgutils.transform import fromstring
-from django.views.decorators.csrf import csrf_exempt
 
 AVATAR_BASE = 'assets/other/avatars/'
 
@@ -359,16 +359,22 @@ def add_gitcoin_logo_blend(avatar, icon_size):
     return img
 
 
+def get_err_response(request, blank_img=False):
+    if not blank_img:
+        return avatar(request, 'Self')
+
+    could_not_find = Image.new('RGBA', (1, 1), (0, 0, 0, 0))
+    err_response = HttpResponse(content_type="image/jpeg")
+    could_not_find.save(err_response, "PNG")
+    return err_response()
+
+
 def avatar(request, _org_name=None, add_gitcoincologo=None):
     # config
     icon_size = (215, 215)
     avatar_component_size = (899.2, 1415.7)
     print(_org_name, add_gitcoincologo)
     # default response
-    could_not_find = Image.new('RGBA', (1, 1), (0, 0, 0, 0))
-    err_response = HttpResponse(content_type="image/jpeg")
-    could_not_find.save(err_response, "PNG")
-
     # Gitcoin avatar
     COMPONENT_BASE = 'assets/v2/images/avatar/'
     def avcomponent(path):
@@ -401,7 +407,7 @@ def avatar(request, _org_name=None, add_gitcoincologo=None):
     # params
     repo_url = request.GET.get('repo', False)
     if not _org_name and (not repo_url or 'github.com' not in repo_url):
-        return err_response
+        return get_err_response(request, blank_img=(_org_name == 'Self'))
 
     try:
         # get avatar of repo
@@ -429,7 +435,8 @@ def avatar(request, _org_name=None, add_gitcoincologo=None):
         return response
     except (AttributeError, IOError, SyntaxError) as e:
         print(e)
-        return err_response
+        return get_err_response(request, blank_img=(_org_name == 'Self'))
+
 
 @csrf_exempt
 def set_avatar(request):

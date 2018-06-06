@@ -13,12 +13,6 @@ window.onload = function() {
     if (typeof localStorage['notificationEmail'] != 'undefined') {
       $('input[name=notificationEmail]').val(localStorage['notificationEmail']);
     }
-    if (
-      typeof localStorage['acceptTOS'] != 'undefined' &&
-      localStorage['acceptTOS']
-    ) {
-      $('input[name=terms]').attr('checked', 'checked');
-    }
     if (getParam('source')) {
       $('input[name=issueURL]').val(getParam('source'));
     }

@@ -22,6 +22,8 @@ import logging
 import subprocess
 import time
 
+from django.conf import settings
+
 import ipfsapi
 import requests
 import rollbar
@@ -186,6 +188,10 @@ def getBountyContract(network):
 
 
 def get_bounty(bounty_enum, network):
+    if (settings.DEBUG or settings.ENV != 'prod') and network == 'mainnet':
+        # This block will return {} if env isn't prod and the network is mainnet.
+        return {}
+
     standard_bounties = getBountyContract(network)
 
     try:
@@ -253,6 +259,12 @@ def get_bounty(bounty_enum, network):
 
 # processes a bounty returned by get_bounty
 def web3_process_bounty(bounty_data):
+    """Process web3 bounty data by creating new or updated Bounty objects."""
+    # Check whether or not the bounty data payload is for mainnet and env is prod or other network and not mainnet.
+    if not bounty_data or (settings.DEBUG or settings.ENV != 'prod') and bounty_data.get('network') == 'mainnet':
+        # This block will return None if running in debug/non-prod env and the network is mainnet.
+        return None
+
     did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
 
     if did_change and new_bounty:
@@ -409,3 +421,25 @@ def get_context(ref_object=None, github_username='', user=None, confirm_time_min
     if update is not None and isinstance(update, dict):
         context.update(update)
     return context
+
+
+def clean_bounty_url(url):
+    """Clean the Bounty URL of unsavory characters.
+
+    The primary utility of this method is to drop #issuecomment blocks from
+    Github issue URLs copy/pasted via comments.
+
+    Args:
+        url (str): The Bounty VC URL.
+
+    TODO:
+        * Deprecate this in favor of Django forms.
+
+    Returns:
+        str: The cleaned Bounty URL.
+
+    """
+    try:
+        return url.split('#')[0]
+    except Exception:
+        return url

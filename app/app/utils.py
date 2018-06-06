@@ -11,6 +11,7 @@ from django.db.models.fields import Field
 from django.utils import timezone
 from django.utils.translation import LANGUAGE_SESSION_KEY
 
+import geoip2.database
 import requests
 import rollbar
 from dashboard.models import Profile
@@ -121,14 +122,9 @@ def sync_profile(handle, user=None, hide_profile=True):
         rollbar.report_message('Failed to fetch github username', 'warning', extra_data=data)
         return None
 
-    repos_data = get_user(handle, '/repos')
-    repos_data = sorted(repos_data, key=lambda repo: repo['stargazers_count'], reverse=True)
-    repos_data = [add_contributors(repo_data) for repo_data in repos_data]
-
     defaults = {
         'last_sync_date': timezone.now(),
         'data': data,
-        'repos_data': repos_data,
         'hide_profile': hide_profile,
     }
 
@@ -184,7 +180,7 @@ def fetch_mails_since_id(email_id, password, since_id=None, host='imap.gmail.com
     all_ids = all_ids[0].decode("utf-8").split()
     print(all_ids)
     if since_id:
-        ids = all_ids[all_ids.index(str(since_id))+1:]
+        ids = all_ids[all_ids.index(str(since_id)) + 1:]
     else:
         ids = all_ids
     emails = {}
@@ -267,3 +263,23 @@ def get_location_from_ip(ip_address):
     except Exception as e:
         logger.warning(f'Encountered ({e}) while attempting to retrieve a user\'s geolocation')
     return city
+
+
+def get_country_from_ip(ip_address, db=None):
+    """Get the user's country information from the provided IP address."""
+    country = {}
+    if db is None:
+        db = f'{settings.GEOIP_PATH}GeoLite2-Country.mmdb'
+
+    if not ip_address:
+        return country
+
+    try:
+        reader = geoip2.database.Reader(db)
+        country = reader.country(ip_address)
+    except AddressNotFoundError:
+        pass
+    except Exception as e:
+        logger.warning(f'Encountered ({e}) while attempting to retrieve a user\'s geolocation')
+
+    return country
