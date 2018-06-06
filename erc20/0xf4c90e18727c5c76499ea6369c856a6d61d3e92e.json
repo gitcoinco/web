@@ -1,0 +1,24 @@
+{
+  "symbol": "INK",
+  "address": "0xf4c90e18727c5c76499ea6369c856a6d61d3e92e",
+  "overview":{
+	"zh":"INK项目是一个面向大文化行业的分布式解决方案。通过自主研发的可定制联盟链、跨链技术、文化资产交易平台，打通全球化的公有链和本土化的文创联盟链，链接全球多元的文化商业环境以及由此构建的分布式经济生态。",
+        "en":"Ink is a decentralised solution harnessing the combined power of Consortium Blockchain, Public Blockchain and Cross-chain Interoperability for the global Creative Industry. It consists of \n -Sovereign Consortium Blockchain for use cases in any region \n -Infrastructure for decentralised content production \n -Token issuance, applications and ecosystem based on a globally renowned public blockchain \n -Intellectual Property Asset Exchange \n -Cross-chain Protocol, technical and business solution for industrial implementation."
+  },
+  "email": "foundation@ink.one",
+  "website": "https://ink.one",
+  "whitepaper": "https://ink.one/statics/pdf/ink_whitepaper_en.pdf",
+  "published_on": "2017-11",
+  "initial_price":{
+        "ETH":"0.0004 ETH",
+        "USD":"0.125 USD",
+        "BTC":"0.000017 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/inklabsfound",
+    "github": "https://github.com/inklabsfoundation",
+    "facebook": "https://www.facebook.com/Ink-Labs-Foundation-346197675805778/",
+    "reddit": "https://www.reddit.com/r/InkLabsFoundation/",
+    "medium": "https://medium.com/@inklabsfoundation"
+  }
+}
