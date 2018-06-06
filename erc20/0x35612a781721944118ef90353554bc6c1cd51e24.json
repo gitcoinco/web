@@ -1,0 +1,21 @@
+{
+  "symbol": "TRIP",
+  "address": "0x35612a781721944118ef90353554bc6c1cd51e24",
+  "overview":{
+        "en":"Trip.org is a new business model of tourism service platform: taking hotels, air tickets and train tickets as the entry point, it is committed to building a blockchain travel consumption ecology and creating a truly C-terminal travel service platform that subverts traditional companies. With minority shareholders enjoying the rights and interests of the company, the real user is the owner.",
+        "zh":"Trip.org是一个新型商业模式的旅游服务平台：以酒店、机票、火车票等为切入点，致力于构建区块链旅行消费生态，打造出一个真正属于C端的旅游服务平台，颠覆了传统公司由少数股东享有公司权益的格局，真正实现了使用者即为所有者。"
+  },
+  "email": "contact@trip.org",
+  "website": "http://trip.org",
+  "whitepaper": "http://trip.org/download/Trip%20White%20Paper%20V1.0.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-02-09",
+  "initial_price":{
+        "BTC":"0.00005 BTC",
+        "USD":"0.6 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/TRIP22341701",
+    "telegram": "https://t.me/triporg"
+  }
+}
