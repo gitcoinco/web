@@ -122,8 +122,8 @@ var callbacks = {
   'issue_description': function(key, val, result) {
     var converter = new showdown.Converter();
 
-    val = val.replace(/script/ig, 'scr_i_pt');
-    var ui_body = val;
+    var ui_body = val.replace(/script/ig, 'scr_i_pt')
+      .replace(/&lt;!--[\s\S]*--&gt;/gm, ''); // remove comments
 
     ui_body = converter.makeHtml(ui_body);
 
