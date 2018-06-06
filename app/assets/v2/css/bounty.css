@@ -133,6 +133,11 @@ body {
   font-size: 14px;
 }
 
+.bounty-info {
+  display: flex;
+  flex-wrap: wrap;
+}
+
 .bounty-info div {
   display: inline;
   margin-right: 15px;
