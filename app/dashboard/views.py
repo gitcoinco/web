@@ -345,13 +345,14 @@ def uninterested(request, bounty_id, profile_id):
             {'error': 'Only bounty funders are allowed to remove users!'},
             status=401)
 
+    slashed = request.POST['slashed'] == 'true'
     try:
         interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
         bounty.interested.remove(interest)
         maybe_market_to_slack(bounty, 'stop_work')
         maybe_market_to_user_slack(bounty, 'stop_work')
         if is_staff:
-            event_name = "bounty_removed_slashed_by_staff" if request.POST['slashed'] == 'true' else "bounty_removed_by_staff"
+            event_name = "bounty_removed_slashed_by_staff" if slashed else "bounty_removed_by_staff"
         else:
             event_name = "bounty_removed_by_funder"
         record_user_action_on_interest(interest, event_name, None)
