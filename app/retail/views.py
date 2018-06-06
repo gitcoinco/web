@@ -43,6 +43,12 @@ def index(request):
         ("John Maurelian", static("v2/images/testimonials/maurelian.jpg"),
          _("Gitcoin helps us to finally close out the issues we've been meaning to get around to for too long"),
          "https://consensys.github.io/smart-contract-best-practices/", 'Consensys Diligence -- Documentation Bounties'),
+        ("Kames CG", static("v2/images/testimonials/kames.jpg"),
+         _("uPort is still in the process of Open Sourcing all of our code, so Gitcoin at the present moment, helps uPort plant seeds within the growing Ethereum developer community, that we expect will blossom into flourishing opportunities in the future. Put simply, as opposed to running marketing campaign, we can use bounties to stay present in front of potential developers we want to engage with."),
+         'https://github.com/KamesCG', 'Uport'),
+        ("Piper", static("v2/images/testimonials/pipermerriam.jpg"),
+         _("Although we’ve only hired two developers, there is no doubt that we could have sourced more. Gitcoin has been the strongest hiring signal in all of the hiring I’ve ever done."),
+         'https://github.com/pipermerriam', 'Pipermerriam'),
     ]
     context = {
         'slides': slides,

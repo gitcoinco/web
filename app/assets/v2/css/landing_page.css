@@ -303,7 +303,7 @@ body {
 }
 
 .whatisit_container iframe {
-  min-height: 400px;
+  min-height: 300px;
   width: 100%;
   height: 100%;
 }
