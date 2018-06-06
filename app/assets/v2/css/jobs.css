@@ -11,16 +11,76 @@ h4 {
   text-align: left;
 }
 
+#filter {
+  color: #3e24fb;
+}
+
+#matches {
+  font-family: 'Muli', sans-serif;
+  font-weight: 300;
+  padding-left: 10px;
+}
+
+.title {
+  text-transform: capitalize;
+}
+
+.title-row {
+  display: flex;
+  margin-top: 2em;
+  padding-bottom: 5px;
+  border-bottom: 2px solid #3E24FB;
+}
+
+.body .row {
+    margin-left: 0px;
+}
+
+.body .avatar {
+    max-height: 50px;
+    max-width: 50px;
+}
+
+.job-row {
+  color: #000000;
+  text-decoration: none;
+  padding: 10px 20px 10px 4em;
+}
+
+.job-row:hover {
+  background-color: #F9F9F9;
+}
+
+.job-row .avatar-container {
+  text-align: right;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.job-row img {
+  margin-top: 6px;
+  margin-right: 20px;
+}
+
+.job-row .title {
+  margin-bottom: 2px;
+}
+
+.job-company-detail {
+    text-align: right;
+}
+
+.job-info {
+  top: 4px;
+  text-align: right;
+}
+
 .job-title {
   padding-top: 2em;
 }
 
 .job-header {
   padding-bottom: 6em;
-}
-
-.job-row {
-  padding: 1em;
 }
 
 #job-board-title {
@@ -34,9 +94,9 @@ h4 {
   color: #717171;
 }
 
-.job-details {
-  padding-top: 1em;
-  display: flex;
+.job-detail {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .job-type {
@@ -47,6 +107,7 @@ h4 {
 
 .job-location {
   flex-grow: 1;
+  color: #666666;
 }
 
 .flex-grow-8 {
@@ -77,7 +138,13 @@ h4 {
 }
 
 .job-company {
-  flex-grow: 1;
+  margin-right: 5px;
+  font-weight: bold;
+  color: #666666;
+}
+
+.job-skill {
+  color: #666666;
 }
 
 .job-tags {
@@ -122,6 +189,16 @@ h4 {
   color: #6184AC;
 }
 
-#company-avatar-img {
-  width: 2em;
+@media (max-width: 768px) {
+
+    .job-info {
+      top: 10px;
+      font-size: 10px;
+      text-align: left;
+    }
+
+    .job-row {
+      padding-left: 1em;
+      padding-right: 2em;
+    }
 }

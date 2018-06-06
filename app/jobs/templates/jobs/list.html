@@ -49,7 +49,7 @@
                   <span id="filter" class="font-title"></span>
                   <span id="matches" class="font-subheading"></span>
                 </div>
-                <div class="col-sm-5 col-md-7 bounty-info" id="listing-info">
+                <div class="col-sm-5 col-md-7 job-info" id="listing-info">
                 </div>
               </div>
             </div>
@@ -74,31 +74,28 @@
     <!-- JSRender stuff -->
     <script id="result" type="text/x-jsrender">
       <div class="row result job-row [[:network]]" href="[[:action]]">
-          [[if avatar_url]]
+          [[if company_avatar]]
             <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
-              <img src='[[:avatar_url]]' class='avatar'>
+              <img src='[[:company_avatar]]' class='avatar'>
             </div>
           [[else]]
             <div class="avatar-container col-1 justify-content-center">
                 <div class="experience [[:experience_level]]">&nbsp;</div>
             </div>
           [[/if]]
-        <div class="col-12 col-md-8 d-flex flex-column">
-          <div class="job-details col-12">
-            <div class="job-avatar">
-              <img src="[[:company_avatar]]" />
-            </div>
+        <div class="col-12 col-md-10 d-flex flex-row">
+          <div class="job-detail col-10">
             <div class="title font-subheader">
               [[:title]]
             </div>
-            <div class="col-12">
+            <div class="col-12 d-flex flex-row">
                 <div class="job-company">[[:job_company]]</div>
                 <div class="job-skill">[[:job_skill]]</div>
             </div>
-            <div>
-                <div class="job-type">[[:job_type]]</div>
-                <div class="job-location">[[:location]]</div>
-            </div>
+          </div>
+          <div class="job-company-detail col-2">
+              <div class="job-type">[[:job_type]]</div>
+              <div class="job-location">[[:location]]</div>
           </div>
         </div>
       </div>
