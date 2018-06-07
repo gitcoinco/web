@@ -987,12 +987,15 @@ class Interest(models.Model):
 
     profile = models.ForeignKey('dashboard.Profile', related_name='interested', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    leaved = models.DateTimeField(blank=True, null=True)
+    has_question = models.BooleanField(default=False)
     issue_message = models.TextField(default='', blank=True)
     pending = models.BooleanField(
         default=False,
         help_text='If this option is chosen, this interest is pending and not yet active',
         )
     acceptance_date = models.DateTimeField(blank=True, null=True)
+
 
     def __str__(self):
         """Define the string representation of an interested profile."""
