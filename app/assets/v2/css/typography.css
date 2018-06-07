@@ -1,0 +1,27 @@
+.text-highlight-purple {
+  color: #8E2ABE;
+}
+
+.text-highlight-green {
+  color: #12c971;
+}
+
+.text-highlight-dark-blue {
+  color: #220e90;
+}
+
+.text-highlight-gc-purple {
+  color: var(--gc-purple);
+}
+
+.text-highlight-gc-blue {
+  color: var(--gc-blue);
+}
+
+.text-highlight-light-blue {
+  color: #1A96D5;
+}
+
+.text-highlight-pink {
+  color: #da086b;
+}

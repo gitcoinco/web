@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="11px" viewBox="0 0 16 11" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>Icon</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Module-02-Templates" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Gitcoin-Landing-Final" transform="translate(-940.000000, -4935.000000)" fill="#86D35D">
+            <g id="Price-Plans" transform="translate(150.000000, 4576.000000)">
+                <g id="Business" transform="translate(760.000000, 0.000000)">
+                    <path d="M45.8620603,359.780759 L45.1957147,359.13406 C45.0117167,358.955313 44.7133671,358.955313 44.5293691,359.13406 L35.9332287,367.479263 C35.7492307,367.65801 35.450881,367.65801 35.2668831,367.479263 L31.4711602,363.794321 C31.2871623,363.615574 30.988342,363.615574 30.8048146,363.794321 L30.1379985,364.441019 C29.9540005,364.619766 29.9540005,364.909428 30.1379985,365.088176 L34.9219457,369.731936 C35.2894711,370.088972 35.8856998,370.089431 36.2541663,369.732853 L45.8615897,360.428373 C46.0460583,360.249626 46.0460583,359.959506 45.8620603,359.780759" id="Icon"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
