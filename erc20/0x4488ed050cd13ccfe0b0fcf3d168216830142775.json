@@ -3,17 +3,16 @@
   "address": "0x4488ed050cd13ccfe0b0fcf3d168216830142775",
   "overview":{
         "en":"Netkiller eBook Reader Coin.",
-	"cn":"Netkiller 电子书读者币"
+	"zh":"Netkiller 电子书读者币"
   },
   "email": "netkiller@msn.com",
   "website": "https://www.netkiller.cn/",
   "whitepaper": "https://www.netkiller.cn/file.pdf",
-  "state": "LOCKED",
   "published_on": "2018-06-01",
   "initial_price":{
         "ETH":"0.001 ETH",
-        "USD":"0.7 USD",
-        "BTC":"0.00004137 BTC"
+        "USD":"0.007 USD",
+        "BTC":"0.007 BTC"
   },
   "links": {
     "blog": "https://my.oschina.net/neochen/blog",
