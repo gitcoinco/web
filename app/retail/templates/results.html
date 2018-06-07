@@ -116,6 +116,9 @@
           <div class="col-12 col-md-6">
             <div id="repo_chart"></div>
           </div>
+          <script type="text/javascript">
+          document.platform_stats = [  [ 'Repo', 'Bounties' ], [ 'Open Bounties', {{ count_open }}],  [ 'Bounties w. started work', {{ count_started }}],  [ 'Completed bounties', {{ count_done }} ] ];  
+        </script>
 
           <div class="col-md-6 py-5 bounty_status">
             {% blocktrans %}
