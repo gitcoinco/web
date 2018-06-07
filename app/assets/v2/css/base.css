@@ -1177,6 +1177,37 @@ input.is-invalid {
   background-color: #FF6700;
 }
 
+.metamask-error img {
+  max-width: 100px;
+}
+
+.metamask-banner #upper_left {
+  height: 100%;
+}
+
+.metamask-banner h3 {
+  letter-spacing: 0;
+  padding-bottom: 4px;
+}
+
+.metamask-banner p {
+  margin-bottom: 0 !important;
+}
+
+.metamask-banner p,
+.metamask-banner li {
+  font-size: 0.85rem;
+}
+
+#robot_error {
+  width: 25%;
+  margin: 0 auto;
+}
+
+#robot_error img {
+  width: 100%;
+}
+
 @media (max-width: 1350px) {
   .profile_details .tips li div.details {
     width: 300px;
@@ -1413,6 +1444,11 @@ input.is-invalid {
   #primary_form {
     max-width: 100%;
   }
+
+  .no_issue_error ol {
+    padding-left: 1px;
+    padding-right: 1px;
+  }
 }
 
 @media (max-width: 481px) {
@@ -1583,6 +1619,24 @@ input.is-invalid {
 
   .bounty_nav li {
     display: block;
+  }
+
+  .metamask-banner ol {
+    margin-bottom: 0;
+  }
+
+  .metamask-banner h3 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .metamask-banner li {
+    text-align: left;
+    margin-top: 0.5rem;
+  }
+  
+  .metamask-banner img {
+    margin-bottom: 5px;
   }
 }
 

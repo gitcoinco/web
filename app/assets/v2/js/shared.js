@@ -575,17 +575,29 @@ var trigger_primary_form_web3_hooks = function() {
 
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
+      $('#zero_balance_error').css('display', 'none');
+      $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
+      $('.submit_bounty .newsletter').addClass('hidden');
+      $('#unlock_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('No Metamask Error', params);
     } else if (!web3.eth.coinbase) {
       $('#unlock_metamask_error').css('display', 'block');
+      $('#zero_balance_error').css('display', 'none');
+      $('#no_metamask_error').css('display', 'none');
+      $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
+      $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('Unlock Metamask Error', params);
     } else if (is_zero_balance_not_okay && document.balance == 0) {
       $('#zero_balance_error').css('display', 'block');
+      $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
+      $('.submit_bounty .newsletter').addClass('hidden');
+      $('#unlock_metamask_error').css('display', 'none');
+      $('#no_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('Zero Balance Metamask Error', params);
     } else {
@@ -593,7 +605,9 @@ var trigger_primary_form_web3_hooks = function() {
       $('#unlock_metamask_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'block');
+      $('#robot_error').addClass('hidden');
       $('#primary_form').removeClass('hidden');
+      $('.submit_bounty .newsletter').removeClass('hidden');
     }
   }
 };
