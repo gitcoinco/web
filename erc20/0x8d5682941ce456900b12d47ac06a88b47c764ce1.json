@@ -1,0 +1,25 @@
+{
+  "symbol": "RMESH",
+  "address": "0x8d5682941ce456900b12d47ac06a88b47c764ce1",
+  "overview":{
+        "en": "At the heart of RightMesh is a mesh networking protocol that allows direct, P2P connections between disparate devices, and a cryptocurrency protocol that incentivizes people to share mobile device resources such as bandwidth, data and storage with those who lack access. Developers can use our platform and SDK to integrate RightMesh technology into their applications, thereby increasing global connectivity and facilitating international communication and commerce.",
+        "zh": "RightMesh的核心是一个网状网络协议，该协议允许不同设备之间直接、P2P的连接，以及一个加密货币协议，该协议激励人们与缺乏访问权限的人共享带宽、数据和存储等移动设备资源。 开发人员可以使用我们的平台和SDK将RightMesh技术整合到他们的应用程序中，从而增加全球连通性并促进国际通信和商务"
+  },
+  "email": "contact@rightmesh.io",
+  "website": "https://rightmesh.io/",
+  "whitepaper": "https://rightmesh.io/whitepaper",
+  "state": "NORMAL",
+  "published_on": "2018-05-31",
+  "initial_price":{
+        "ETH":"0.00178890877 ETH",
+        "USD":"1.0 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Right_Mesh",
+    "telegram": "https://t.me/RightMesh_Official",
+    "github": "https://medium.com/rightmesh",
+    "facebook": "https://www.facebook.com/TheRightMesh/",
+    "reddit": "http://reddit.com/r/rightmesh",
+    "medium": "https://medium.com/rightmesh"
+  }
+}
