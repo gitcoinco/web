@@ -7,5 +7,10 @@
   },
   "website": "https://www.ieec.co/",
   "whitepaper": "https://www.ieec.co/entropyenergychainwhitepaper.pdf",
-  "published_on": "2018-06-01"
+  "published_on": "2018-06-01",
+  "links": {
+    "twitter": "https://twitter.com/LucasLoe1",
+    "github": "https://gist.github.com/masminmin/",
+    "facebook": "https://www.facebook.com/?sk=welcome"
+  }
 }
