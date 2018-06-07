@@ -453,8 +453,8 @@ class Bounty(SuperModel):
                 # If its not expired or done, it must be cancelled.
                 return 'cancelled'
             # per https://github.com/gitcoinco/web/pull/1098 ,
-            # contests are open no matter how much started/submitted work they have
-            if self.pk and self.project_type == 'contest':
+            # cooperative/contest are open no matter how much started/submitted work they have
+            if self.pk and self.project_type in ['contest', 'cooperative']:
                 return 'open'
             if self.num_fulfillments == 0:
                 if self.pk and self.interested.filter(pending=False).exists():
