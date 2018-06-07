@@ -344,7 +344,9 @@ body {
   transform-origin: center 60%;
 }
 
-.navbar.following .nav-link {
+.navbar.following .nav-link,
+.navbar.following img,
+.navbar.following .nav-item {
   display: none;
 }
 
