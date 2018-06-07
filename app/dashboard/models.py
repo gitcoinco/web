@@ -97,6 +97,15 @@ class Bounty(SuperModel):
 
     """
 
+    PERMISSION_TYPES = [
+        ('permissionless', 'permissionless'),
+        ('approval', 'approval'),
+    ]
+    PROJECT_TYPES = [
+        ('traditional', 'traditional'),
+        ('contest', 'contest'),
+        ('cooperative', 'cooperative'),
+    ]
     BOUNTY_TYPES = [
         ('Bug', 'Bug'),
         ('Security', 'Security'),
@@ -174,6 +183,8 @@ class Bounty(SuperModel):
     fulfillment_submitted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_started_on = models.DateTimeField(null=True, blank=True)
     canceled_on = models.DateTimeField(null=True, blank=True)
+    project_type = models.CharField(max_length=50, choices=PROJECT_TYPES, default='traditional')
+    permission_type = models.CharField(max_length=50, choices=PERMISSION_TYPES, default='permissionless')
     snooze_warnings_for_days = models.IntegerField(default=0)
 
     token_value_time_peg = models.DateTimeField(blank=True, null=True)
@@ -203,9 +214,21 @@ class Bounty(SuperModel):
 
     def save(self, *args, **kwargs):
         """Define custom handling for saving bounties."""
+        from .utils import clean_bounty_url
         if self.bounty_owner_github_username:
             self.bounty_owner_github_username = self.bounty_owner_github_username.lstrip('@')
+        if self.github_url:
+            self.github_url = clean_bounty_url(self.github_url)
         super().save(*args, **kwargs)
+
+    @property
+    def profile_pairs(self):
+        profile_handles = []
+
+        for profile in self.interested.select_related('profile').all().order_by('pk'):
+            profile_handles.append((profile.profile.handle, profile.profile.absolute_url))
+
+        return profile_handles
 
     def get_absolute_url(self):
         """Get the absolute URL for the Bounty.
@@ -256,6 +279,30 @@ class Bounty(SuperModel):
 
         """
         return f'{self.get_absolute_url()}?snooze={num_days}'
+
+    def approve_worker_url(self, worker):
+        """Get the bounty work approval URL.
+
+        Args:
+            worker (string): The handle to approve
+
+        Returns:
+            str: The work approve URL based on the worker name
+
+        """
+        return f'{self.get_absolute_url()}?mutate_worker_action=approve&worker={worker}'
+
+    def reject_worker_url(self, worker):
+        """Get the bounty work rejection URL.
+
+        Args:
+            worker (string): The handle to reject
+
+        Returns:
+            str: The work reject URL based on the worker name
+
+        """
+        return f'{self.get_absolute_url()}?mutate_worker_action=reject&worker={worker}'
 
     @property
     def can_submit_after_expiration_date(self):
@@ -394,40 +441,29 @@ class Bounty(SuperModel):
         if self.override_status:
             return self.override_status
         if self.is_legacy:
-            # TODO: Remove following full deprecation of legacy bounties
-            try:
-                fulfillments = self.fulfillments \
-                    .exclude(fulfiller_address='0x0000000000000000000000000000000000000000') \
-                    .exists()
-                if not self.is_open:
-                    if timezone.now() > self.expires_date and fulfillments:
-                        return 'expired'
+            return self.idx_status
+
+        # standard bounties
+        try:
+            if not self.is_open:
+                if self.accepted:
                     return 'done'
-                elif not fulfillments:
-                    if self.pk and self.interested.exists():
-                        return 'started'
-                    return 'open'
-                return 'submitted'
-            except Exception as e:
-                logger.warning(e)
-                return 'unknown'
-        else:
-            try:
-                if not self.is_open:
-                    if self.accepted:
-                        return 'done'
-                    elif self.past_hard_expiration_date:
-                        return 'expired'
-                    # If its not expired or done, it must be cancelled.
-                    return 'cancelled'
-                if self.num_fulfillments == 0:
-                    if self.pk and self.interested.exists():
-                        return 'started'
-                    return 'open'
-                return 'submitted'
-            except Exception as e:
-                logger.warning(e)
-                return 'unknown'
+                elif self.past_hard_expiration_date:
+                    return 'expired'
+                # If its not expired or done, it must be cancelled.
+                return 'cancelled'
+            # per https://github.com/gitcoinco/web/pull/1098 ,
+            # contests are open no matter how much started/submitted work they have
+            if self.pk and self.project_type == 'contest':
+                return 'open'
+            if self.num_fulfillments == 0:
+                if self.pk and self.interested.filter(pending=False).exists():
+                    return 'started'
+                return 'open'
+            return 'submitted'
+        except Exception as e:
+            logger.warning(e)
+            return 'unknown'
 
     @property
     def get_value_true(self):
@@ -694,6 +730,22 @@ class Bounty(SuperModel):
             return False
         return True
 
+    @property
+    def is_project_type_fulfilled(self):
+        """Determine whether or not the Project Type is currently fulfilled.
+
+        Todo:
+            * Add remaining Project Type fulfillment handling.
+
+        Returns:
+            bool: Whether or not the Bounty Project Type is fully staffed.
+
+        """
+        fulfilled = False
+        if self.project_type == 'traditional':
+            fulfilled = self.interested.filter(pending=False).exists()
+        return fulfilled
+
 
 class BountyFulfillmentQuerySet(models.QuerySet):
     """Handle the manager queryset for BountyFulfillments."""
@@ -936,10 +988,19 @@ class Interest(models.Model):
     profile = models.ForeignKey('dashboard.Profile', related_name='interested', on_delete=models.CASCADE)
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     issue_message = models.TextField(default='', blank=True)
+    pending = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, this interest is pending and not yet active',
+        )
+    acceptance_date = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         """Define the string representation of an interested profile."""
-        return self.profile.handle
+        return f"{self.profile.handle} / pending: {self.pending}"
+
+    @property
+    def bounties(self):
+        return Bounty.objects.filter(interested=self)
 
 
 @receiver(post_save, sender=Interest, dispatch_uid="psave_interest")
@@ -1037,7 +1098,7 @@ class Profile(SuperModel):
         from github.utils import get_user
         from app.utils import add_contributors
         # TODO: maybe rewrite this so it doesnt have to go to the internet to get the info
-        # but in a way that is respectful of db size too 
+        # but in a way that is respectful of db size too
         repos_data = get_user(self.handle, '/repos')
         repos_data = sorted(repos_data, key=lambda repo: repo['stargazers_count'], reverse=True)
         repos_data = [add_contributors(repo_data) for repo_data in repos_data]
@@ -1253,6 +1314,10 @@ class Profile(SuperModel):
 
     def get_absolute_url(self):
         return settings.BASE_URL + self.get_relative_url(preceding_slash=False)
+
+    @property
+    def url(self):
+        return self.get_absolute_url()
 
     def get_access_token(self, save=True):
         """Get the Github access token from User.

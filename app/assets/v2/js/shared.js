@@ -95,6 +95,12 @@ var sanitizeAPIResults = function(results) {
   return results;
 };
 
+function ucwords(str) {
+  return (str + '').replace(/^([a-z])|\s+([a-z])/g, function($1) {
+    return $1.toUpperCase();
+  });
+}
+
 var sanitize = function(str) {
   if (typeof str != 'string') {
     return str;
@@ -193,17 +199,17 @@ var mutate_interest = function(bounty_pk, direction, data) {
     .toggleClass('button')
     .toggleClass('button--primary');
 
-  if (direction === 'new') {
-    _alert({ message: gettext("Thanks for letting us know that you're ready to start work.") }, 'success');
-    $('#interest a').attr('id', 'btn-white');
-  } else if (direction === 'remove') {
-    _alert({ message: gettext("You've stopped working on this, thanks for letting us know.") }, 'success');
-    $('#interest a').attr('id', '');
-  }
-
   $.post(request_url, data).then(function(result) {
     result = sanitizeAPIResults(result);
     if (result.success) {
+      if (direction === 'new') {
+        _alert({ message: result.msg }, 'success');
+        $('#interest a').attr('id', 'btn-white');
+      } else if (direction === 'remove') {
+        _alert({ message: result.msg }, 'success');
+        $('#interest a').attr('id', '');
+      }
+
       pull_interest_list(bounty_pk);
       return true;
     }
@@ -569,17 +575,29 @@ var trigger_primary_form_web3_hooks = function() {
 
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
+      $('#zero_balance_error').css('display', 'none');
+      $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
+      $('.submit_bounty .newsletter').addClass('hidden');
+      $('#unlock_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('No Metamask Error', params);
     } else if (!web3.eth.coinbase) {
       $('#unlock_metamask_error').css('display', 'block');
+      $('#zero_balance_error').css('display', 'none');
+      $('#no_metamask_error').css('display', 'none');
+      $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
+      $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('Unlock Metamask Error', params);
     } else if (is_zero_balance_not_okay && document.balance == 0) {
       $('#zero_balance_error').css('display', 'block');
+      $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
+      $('.submit_bounty .newsletter').addClass('hidden');
+      $('#unlock_metamask_error').css('display', 'none');
+      $('#no_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('Zero Balance Metamask Error', params);
     } else {
@@ -587,7 +605,9 @@ var trigger_primary_form_web3_hooks = function() {
       $('#unlock_metamask_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'block');
+      $('#robot_error').addClass('hidden');
       $('#primary_form').removeClass('hidden');
+      $('.submit_bounty .newsletter').removeClass('hidden');
     }
   }
 };

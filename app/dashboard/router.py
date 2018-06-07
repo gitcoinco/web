@@ -47,7 +47,7 @@ class InterestSerializer(serializers.ModelSerializer):
         """Define the Interest serializer metadata."""
 
         model = Interest
-        fields = ('profile', 'created')
+        fields = ('profile', 'created', 'pending')
 
 
 # Serializers define the API representation.
@@ -88,6 +88,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'github_issue_number', 'github_org_name', 'github_repo_name',
             'idx_status', 'token_value_time_peg', 'fulfillment_accepted_on', 'fulfillment_submitted_on',
             'fulfillment_started_on', 'canceled_on', 'action_urls',
+            'project_type', 'permission_type',
         )
 
     def create(self, validated_data):
@@ -130,7 +131,8 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         # filtering
         for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_owner_address',
-                    'idx_status', 'network', 'bounty_owner_github_username', 'standard_bounties_id']:
+                    'idx_status', 'network', 'bounty_owner_github_username', 'standard_bounties_id',
+                    'permission_type', 'project_type']:
             if key in param_keys:
                 # special hack just for looking up bounties posted by a certain person
                 request_key = key if key != 'bounty_owner_address' else 'coinbase'
@@ -148,6 +150,11 @@ class BountyViewSet(viewsets.ModelViewSet):
         # filter by PK
         if 'pk__gt' in param_keys:
             queryset = queryset.filter(pk__gt=self.request.query_params.get('pk__gt'))
+
+        # filter by standard_bounties_id
+        if 'standard_bounties_id__in' in param_keys:
+            statuses = self.request.query_params.get('standard_bounties_id__in').split(',')
+            queryset = queryset.filter(standard_bounties_id__in=statuses)
 
         # filter by statuses
         if 'status__in' in param_keys:

@@ -28,14 +28,13 @@
   <div class="container-fluid header dash">
     {% include 'shared/nav.html' %}
   </div>
-
   <div class="container-fluid">
-    <div class="row no-gutters">
-      <div class="col-sm-12 col-lg-3">
+    <div class="row no-gutters metamask-banner">
+      <div class="col-sm-12 col-lg-2">
         {% include 'shared/current_balance.html' %}
       </div>
-      <div class="col-lg-9 col-sm-12">
-        {% include 'shared/no_issue_error.html' %}
+      <div class="col-lg-10 col-sm-12">
+        {% include 'shared/no_issue_error.html' with page='submit_bounty' %}
         {% include 'shared/no_metamask_error.html' %}
         {% include 'shared/zero_balance_error.html' %}
         {% include 'shared/unlock_metamask.html' %}
@@ -45,6 +44,9 @@
       <div class="col-sm-12 col-lg-12">
         <div id="form_container">
           <div class="row d-flex justify-content-center my-5">
+            <div id="robot_error" class="hidden">
+              <img src="{% static "v2/images/prime.png" %}">
+            </div>
             <div id="primary_form" class="col-lg-5 col-sm-12">
               <form id="submitBounty" class="submit_bounty_form">
                 <h1>{% trans "Fund an Issue" %}</h1>
@@ -101,6 +103,22 @@
                     </select>
                   </div>
                 </div>
+                <label class="form__label" for="project_type">{% trans "Project Type" %}</label>
+                <div class="form__select2">
+                  <select class="js-select2" name="project_type">
+                    <option value="traditional">{% trans "Traditional -- 1 worker at a time, 1 is paid out" %}</option>
+                    <option value="contest">{% trans "Contest -- many workers at a time, 1 is paid out" %}</option>
+                    <option value="cooperative">{% trans "Cooperative -- many workers at a time, many are paid out" %}</option>
+                  </select>
+                </div>
+                <label class="form__label" for="permission_type">{% trans "Permissions" %}</label>
+                <div class="form__select2">
+                  <select class="js-select2" name="permission_type">
+                    <option value="permissionless">{% trans "Permissionless - Anyone can start work." %}</option>
+                    <option value="approval" selected>{% trans "Approval Required - I will approve bounty hunters." %}</option>
+                  </select>
+                </div>
+
                 <label class="form__label" for="amount">{% trans "Amount" %}</label>
                 <div class="form__flex-group">
                   <div class="form__amount-wrapper">
@@ -110,8 +128,10 @@
                     <div class="form__select2">
                       <select name='deonomination' id='token'></select>
                     </div>
-                    <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
                   </div>
+                </div>
+                <div>
+                  <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
                 </div>
                 <h4 class="mt-5">{% trans "Creator Details" %}</h4>
                 {% include 'shared/github_username.html' %}

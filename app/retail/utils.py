@@ -24,6 +24,7 @@ from django.conf import settings
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+import pytz
 from marketing.models import Alumni, LeaderboardRank, Stat
 from requests_oauthlib import OAuth2Session
 
@@ -57,19 +58,29 @@ def strip_double_chars(txt, char=' '):
 def get_bounty_history_row(label, date):
     return [
         label,
+        get_tip_history_at_date(date),
         get_bounty_history_at_date(['open'], date),
-        'Open',
         get_bounty_history_at_date(['started', 'submitted'], date),
-        'Started', get_bounty_history_at_date(['done'], date),
-        'Completed', get_bounty_history_at_date(['cancelled'], date)
+        get_bounty_history_at_date(['done'], date),
+        get_bounty_history_at_date(['cancelled'], date),
     ]
 
 
 def get_bounty_history_at_date(statuses, date):
     try:
-        keys = [f'bounties_{status}_total' for status in statuses]
+        keys = [f'bounties_{status}_value' for status in statuses]
         base_stats = Stat.objects.filter(
             key__in=keys,
+            ).order_by('-pk')
+        return base_stats.filter(created_on__lte=date).first().val
+    except Exception as e:
+        print(e)
+        return 0
+
+def get_tip_history_at_date(date):
+    try:
+        base_stats = Stat.objects.filter(
+            key='tips_value',
             ).order_by('-pk')
         return base_stats.filter(created_on__lte=date).first().val
     except Exception as e:
@@ -116,21 +127,21 @@ def build_stat_results():
 
     # bounties hisotry
     context['bounty_history'] = [
-        ['', 'Open / Available', {'role': 'annotation'}, 'Claimed / In Progress', { 'role': 'annotation' }, 'Completed', { 'role': 'annotation' }, 'CodeFund Bounties' ],
-        ["January 2018", 903, "Open", 2329, "Started", 5534, "Completed", 1203],
-        ["February 2018", 1290, "Open", 1830, "Started", 15930, "Completed", 1803],
-        ["March 2018", 6903, "Open", 4302, "Started", 16302, "Completed", 2390],
-        ["April 2018", 5349, "Open", 5203, "Started", 26390, "Completed", 3153],
-        ["May 2018", 6702, "Open", 4290, "Started", 37342, "Completed", 4281],
+        ['', 'Tips',  'Open / Available',  'Started / In Progress',  'Completed', 'Cancelled' ],
+        ["January 2018", 2011, 903, 2329, 5534, 1203],
+        ["February 2018", 5093, 1290, 1830, 15930, 1803],
+        ["March 2018", 7391, 6903, 4302, 16302, 2390],
+        ["April 2018", 8302, 5349, 5203, 26390, 3153],
+        ["May 2018", 10109, 6702, 4290, 37342, 4281],
       ]
-    for year in range(2018, 202):
+    for year in range(2018, 2025):
         months = range(1, 12)
         if year == 2018:
             months = range(6, 12)
         for month in months:
-            then = timezone.datetime(year, month, 3)
+            then = timezone.datetime(year, month, 3).replace(tzinfo=pytz.UTC)
             if then < timezone.now():
-                row = get_bounty_history_row(then.strftime("%M/%y"), then)
+                row = get_bounty_history_row(then.strftime("%B %Y"), then)
                 context['bounty_history'].append(row)
     context['bounty_history'] = json.dumps(context['bounty_history'])
 

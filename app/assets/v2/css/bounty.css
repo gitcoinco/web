@@ -133,6 +133,15 @@ body {
   font-size: 14px;
 }
 
+.bounty-info {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.bounty-info > div {
+  margin-bottom: 4px;
+}
+
 .bounty-info div {
   display: inline;
   margin-right: 15px;
@@ -191,6 +200,7 @@ body {
   padding: 5px;
 }
 
+.red_warning, 
 #network {
   background-color: #fbe0d6;
   color: #fb9470;
@@ -200,6 +210,7 @@ body {
   display: block;
 }
 
+.red_warning a,
 #network a{
   color: #fb9470;
   font-weight: bold;

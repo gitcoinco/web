@@ -25,10 +25,6 @@ span {
   z-index: 9999999999;
 }
 
-.navbar {
-  font-family: futura-pt, sans-serif;
-}
-
 .navbar-nav .nav-link {
   border-radius: 2px;
 }
@@ -50,17 +46,6 @@ span {
 
 .navbar a.slack i {
   margin-right: 3px;
-}
-
-.footer .nav-link:hover {
-  border-radius: 2px;
-  background-color: rgba(255, 255, 255, 0.2);
-}
-
-.footer img {
-  width: 25px;
-  height: 25px;
-  filter: invert(100%);
 }
 
 .modal {
@@ -214,56 +199,8 @@ span {
   padding-bottom: 20px;
 }
 
-.whatisit_container,
-.howworks_container {
-  background-color: white;
-  padding-bottom: 40px;
-  margin-top: 0 !important;
-}
-
-.whatisit,
-.howworks {
-  margin-top: 20px;
-}
-
-.whatisit ol,
-.howworks ol {
-  list-style: none;
-}
-
-.whatisit ol li,
-.howworks ol li {
-  margin-bottom: 20px;
-}
-
-.whatisit ol li img,
-.howworks ol li img {
-  float: left;
-  width: 50px;
-  height: 50px;
-  margin-right: 20px;
-}
-
-.whatisit ol li.third img,
-.howworks ol li.third img {
-  height: 40px;
-}
-
-.whatisit iframe,
-.howworks iframe {
-  width: 560px;
-  height: 315px;
-}
-
-.why_gitcoin_cta {
-  padding-bottom: 60px !important;
-}
-
-.bg-darkBlue{
-  background-color: #0d023b;
-}
-.bg-darkBlue a {
-  color: #eee;
+#feature_videos {
+  background: white;
 }
 #feature_videos .video {
   text-align: center;
@@ -404,6 +341,12 @@ p a {
 
 .btn:focus {
   box-shadow: none;
+}
+
+.cta-green {
+  background-color: var(--gc-green);
+  text-align: center;
+  font-weight: bold;
 }
 
 #hero_cta a.btn-warning {
@@ -867,28 +810,6 @@ input[type=text].loading {
   color: black;
 }
 
-.press_container {
-  background: white;
-}
-
-.press_container img {
-  max-width: 200px;
-  max-height: 100px;
-  filter: grayscale(100%);
-  -moz-filter: grayscale(100%);
-  -ms-filter: grayscale(100%);
-  -o-filter: grayscale(100%);
-}
-
-.press_container img:hover {
-  max-width: 200px;
-  max-height: 100px;
-  filter: grayscale(0%);
-  -moz-filter: grayscale(0%);
-  -ms-filter: grayscale(0%);
-  -o-filter: grayscale(0%);
-}
-
 .body {
   padding-bottom: 4em;
 }
@@ -902,135 +823,6 @@ input[type=text].loading {
   padding-left: 18px;
   margin-right: 10px;
   display: inline-block;
-}
-
-/* Mission Page */
-
-.mission {
-  font-family: futura-pt, sans-serif;
-}
-
-.mission p {
-  font-family: futura-pt, sans-serif;
-  font-size: 20px;
-  font-weight: 500;
-  color: #666666;
-}
-
-.mission .icon {
-  width: 5rem;
-  float: left;
-  margin-right: 4rem;
-}
-
-.mission .divider {
-  border-bottom: 2px solid #3e24fb;
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
-.mission .icon-small {
-  height: 4rem;
-  width: auto;
-}
-
-.mission .header-text {
-  font-weight: 700;
-}
-
-.mission .falcon-wrapper {
-  position: relative;
-  height: 100%;
-}
-
-.mission .falcon-wrapper .falcon-pull, .mission .falcon {
-  float: right;
-}
-
-@media(min-width: 768px) and (max-width: 991px)  {
-  .mission .falcon-wrapper .falcon {
-    width: 28rem;
-    height: auto;
-  }
-}
-
-@media(min-width: 992px) and (max-width: 1199px)  {
-  .mission .falcon-wrapper .falcon {
-    width: 25rem;
-    height: auto;
-  }
-}
-
-@media(min-width: 1200px) {
-  .mission .falcon-wrapper .falcon {
-    width: 30rem;
-    height: auto;
-  }
-}
-
-@media(min-width: 768px) and (max-width: 991px)  {
-  .mission .falcon-wrapper .falcon-pull {
-    width: 22rem;
-    height: auto;
-    margin-top: -18rem;
-  }
-}
-
-@media(min-width: 992px) and (max-width: 1199px)  {
-  .mission .falcon-wrapper .falcon-pull {
-    width: 30rem;
-    height: auto;
-    margin-top: -18rem;
-  }
-}
-
-@media(min-width: 1200px) {
-  .mission .falcon-wrapper .falcon-pull {
-    width: 30rem;
-    height: auto;
-    margin-top: -22rem;
-  }
-}
-
-.mission .icon-text {
-  font-weight: 500;
-  font-size: 18px;
-  font-family: futura-pt, sans-serif;
-  color: #666666;
-}
-
-.text-highlight-purple {
-  color: #8E2ABE;
-}
-
-.text-highlight-green {
-  color: #12c971;
-}
-
-.text-highlight-dark-blue {
-  color: #220e90;
-}
-
-.text-highlight-light-blue {
-  color: #3E00FF;
-}
-
-.text-highlight-pink {
-  color: #da086b;
-}
-
-#mission_hero .text {
-  margin-left: 2rem;
-}
-
-#mission_hero .font-bigger-4 {
-  letter-spacing: 0.15rem;
-}
-
-#we_want,
-#we_value,
-#we_interact {
-  padding: 0 10vw;
 }
 
 #interest_list {
@@ -1177,6 +969,37 @@ input.is-invalid {
   background-color: #FF6700;
 }
 
+.metamask-error img {
+  max-width: 100px;
+}
+
+.metamask-banner #upper_left {
+  height: 100%;
+}
+
+.metamask-banner h3 {
+  letter-spacing: 0;
+  padding-bottom: 4px;
+}
+
+.metamask-banner p {
+  margin-bottom: 0 !important;
+}
+
+.metamask-banner p,
+.metamask-banner li {
+  font-size: 0.85rem;
+}
+
+#robot_error {
+  width: 25%;
+  margin: 0 auto;
+}
+
+#robot_error img {
+  width: 100%;
+}
+
 @media (max-width: 1350px) {
   .profile_details .tips li div.details {
     width: 300px;
@@ -1222,12 +1045,6 @@ input.is-invalid {
 
   .profile_details .repos li p.meta {
     display: none;
-  }
-
-  .whatisit iframe,
-  .howworks iframe {
-    width: 460px;
-    height: 258px;
   }
 
   .advisor {
@@ -1281,7 +1098,6 @@ input.is-invalid {
 }
 
 @media (max-width: 769px) {
-
   #gitcoinTestimonials {
     height: 202px;
     width: 350px;
@@ -1324,19 +1140,12 @@ input.is-invalid {
     max-width: 100%;
   }
 
-  .row.whatisit .explainer {
-    margin-top: 30px;
-  }
-
   .bounty_def {
     height: 160px;
   }
 
   #team .row,
-  #team .row .d-flex,
-  .row.whatisit .d-flex,
-  .row.whatisit .row.howworks .d-flex,
-  .row.howworks {
+  #team .row .d-flex {
     display: block;
     width: 100%;
   }
@@ -1347,12 +1156,6 @@ input.is-invalid {
 
   #team .row img.img-fluid {
     float: none !important;
-  }
-
-  .whatisit iframe,
-  .howworks iframe {
-    width: 460px;
-    height: 250px;
   }
 
   .advisor {
@@ -1412,6 +1215,11 @@ input.is-invalid {
 @media (max-width: 540px) {
   #primary_form {
     max-width: 100%;
+  }
+
+  .no_issue_error ol {
+    padding-left: 1px;
+    padding-right: 1px;
   }
 }
 
@@ -1474,25 +1282,6 @@ input.is-invalid {
     display: block;
     width: 100%;
     text-align: center;
-  }
-
-  .row.whatisit .d-flex,
-  .row.whatisit,
-  .row.howworks .d-flex,
-  .row.howworks {
-    text-align: left;
-  }
-
-  .row.whatisit .font-bigger-2,
-  .row.howworks .font-bigger-2 {
-    font-size: 1rem;
-  }
-
-  .row.whatisit iframe,
-  .row.howworks iframe {
-    width: 280px;
-    height: 170px;
-    margin: 0 auto;
   }
 
   #get .row {
@@ -1584,6 +1373,24 @@ input.is-invalid {
   .bounty_nav li {
     display: block;
   }
+
+  .metamask-banner ol {
+    margin-bottom: 0;
+  }
+
+  .metamask-banner h3 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .metamask-banner li {
+    text-align: left;
+    margin-top: 0.5rem;
+  }
+  
+  .metamask-banner img {
+    margin-bottom: 5px;
+  }
 }
 
 @media (max-width: 991.98px) {
@@ -1605,6 +1412,7 @@ input.is-invalid {
 .notify_policy_update .button {
   padding: 0.25rem 1.25rem;
 }
+/* End TODO */
 
 /* Results */
 .results {
@@ -1632,7 +1440,11 @@ input.is-invalid {
   font-size: 1.2rem;
 }
 
-.results .bounty_status .yellow_box, .green_box, .blue_box, .pink_box {
+.results #price_per_hour img{
+  width: 100%;
+}
+
+.results .bounty_status .yellow_box, .green_box, .blue_box, .pink_box, .lblue_box {
   float: left;
   width: 1rem;
   height: 1rem;
@@ -1653,6 +1465,11 @@ input.is-invalid {
 .blue_box {
   color: #3E00FF;
   border: 10px solid #3E00FF;
+}
+
+.lblue_box {
+  color: #fbd0e6;
+  border: 10px solid #fbd0e6;
 }
 
 .pink_box {
