@@ -559,6 +559,13 @@ div.button-pink {
   width: 15px;
 }
 
+@media (max-width: 389.9px) {
+
+  .footer__main {
+    padding-left: 1em !important;
+    padding-right: 1em !important;
+  }
+}
 
 @media (min-width: 768px) and (max-width: 1024px) {
 
