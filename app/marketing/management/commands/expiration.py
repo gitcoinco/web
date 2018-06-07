@@ -46,4 +46,4 @@ class Command(BaseCommand):
                         email_list.append(fulfiller.fulfiller_email)
                     elif fulfiller.profile and fulfiller.profile.email:
                         email_list.append(fulfiller.profile.email)
-                bounty_expire_warning(b, email_list)
+                bounty_expire_warning(b, set(email_list))
