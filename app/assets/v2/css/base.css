@@ -1187,6 +1187,11 @@ input.is-invalid {
 
 .metamask-banner h3 {
   letter-spacing: 0;
+  padding-bottom: 4px;
+}
+
+.metamask-banner p {
+  margin-bottom: 0 !important;
 }
 
 .metamask-banner p,
@@ -1439,6 +1444,11 @@ input.is-invalid {
   #primary_form {
     max-width: 100%;
   }
+
+  .no_issue_error ol {
+    padding-left: 1px;
+    padding-right: 1px;
+  }
 }
 
 @media (max-width: 481px) {
@@ -1609,6 +1619,24 @@ input.is-invalid {
 
   .bounty_nav li {
     display: block;
+  }
+
+  .metamask-banner ol {
+    margin-bottom: 0;
+  }
+
+  .metamask-banner h3 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .metamask-banner li {
+    text-align: left;
+    margin-top: 0.5rem;
+  }
+  
+  .metamask-banner img {
+    margin-bottom: 5px;
   }
 }
 
