@@ -123,25 +123,10 @@
 } */
 
 body {
-  font-family: 'futura-pt', Futura, sans-serif;
+  font-family: Muli, sans-serif;
   overflow-x: hidden;
   width: 100%;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-.h1,
-.h2,
-.h3,
-.h4,
-.h5,
-.h6 {
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
+  background-color: #fff;
 }
 
 h4,
@@ -170,11 +155,11 @@ h4,
 }
 
 .blue {
-  color: #3e24fb;
+  color: #3e24fb
 }
 
 .gitcoin-gray {
-  color: lightgray !important;
+  color: lightgray !important
 }
 
 .header {
@@ -185,6 +170,19 @@ h4,
   background-repeat: no-repeat;
 }
 
+#gitcoin-background {
+  background-image: url("/static/v2/images/header-bg.png");
+  background-size: 2000px;
+  background-position: 0 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  will-change: transform;
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
 .nav-link {
   color: #eff4ee !important;
   text-transform: uppercase;
@@ -192,6 +190,10 @@ h4,
   padding-right: 1rem !important;
   padding-left: 1rem !important;
   font-size: 0.9rem !important;
+}
+
+.font-title-lg {
+  font-size: 22px;
 }
 
 .font-title {
@@ -210,9 +212,6 @@ h4,
   font-size: 12px;
 }
 
-.footer .nav-link {
-  font-size: 0.8rem !important;
-}
 
 .nav-link:visited {
   color: #eff4ee;
@@ -268,18 +267,17 @@ div.button-pink {
 
 .header-line {
   color: white;
-  font-family: Futura, sans-serif;
+  font-family: Muli, sans-serif;
   font-size: 3em;
   font-weight: 500;
   font-style: italic;
-  text-transform: uppercase;
   letter-spacing: 0.1em;
 }
 
 .subheader-line {
   color: #70efbe;
-  font-family: Futura, sans-serif;
-  font-size: 2em;
+  font-family: Muli, sans-serif;
+  font-size: 1.75em;
   font-weight: 500;
   font-style: italic;
 }
@@ -297,6 +295,7 @@ div.button-pink {
 }
 
 .white-light-bg {
+  background-color: white;
   background-image: url('/static/v2/images/light-bg.png');
   background-size: contain;
   background-position: bottom;
@@ -353,14 +352,6 @@ div.button-pink {
   height: 600px;
 }
 
-.explain-img-wrapper {
-  height: 150px;
-}
-
-.explain-img-wrapper img {
-  max-height: 150px;
-}
-
 .mission-img-wrapper {
   height: 250px;
 }
@@ -396,15 +387,62 @@ div.button-pink {
   letter-spacing: 0.1em;
 }
 
-.footer {
-  overflow: hidden;
-  height: 300px;
+.footer__main {
   background-image: url('/static/v2/images/footer.jpg');
   background-color: #0d023b;
   background-size: contain;
   background-position: bottom;
   background-repeat: no-repeat;
-  z-index: 5;
+  max-width: 1000px;
+  margin: 0 auto;
+  min-height: 300px;
+}
+.footer__top {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.footer__social {
+  /* flex-grow: 1; */
+}
+.footer__social .nav-link {
+  margin-bottom: 1rem;
+}
+.footer .navbar-brand {
+  flex-grow: 1;
+}
+.footer {
+  background-color: #0d023b;
+}
+.footer .nav-link {
+  font-size: 0.8rem !important;
+  margin-right: 0.5rem;
+}
+.footer .nav-link:hover {
+  border-radius: 2px;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.footer .nav-link img {
+  width: 25px;
+  height: 25px;
+  filter: invert(100%);
+}
+.footer__consensys {
+  border-top: 1px solid var(--gc-green);
+  background: black;
+}
+.sitenav {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  color: white;
+  margin: 0 1rem;
+  width: 7rem;
+  margin-bottom: 1rem;
+}
+.sitenav a {
+  color: var(--text-light);
+  margin-bottom: 0.5rem;
 }
 
 .lil-white-button {
@@ -479,16 +517,12 @@ div.button-pink {
 }
 
 .accordion:after {
-  display: none;
   /* stylelint-disable-next-line */
-  font-family: 'Font Awesome 5 Solid';
+  font-family: 'Font Awesome 5 Free';
   content: '\f107';
-}
-
-.accordion svg {
   font-size: 16px;
-  margin-right: 6px;
-  margin-top: 4px;
+  margin-right: auto;
+  margin-top: auto;
   float: right;
 }
 
@@ -518,11 +552,26 @@ div.button-pink {
   color: #FFFFFF;
 }
 
-.dropdown-menu .dropdown-item svg {
+.dropdown-menu .dropdown-item i {
   text-align: center;
   margin-left: 0px;
   margin-right: 20px;
   width: 15px;
+}
+
+@media (max-width: 389.9px) {
+
+  .footer__main {
+    padding-left: 1em !important;
+    padding-right: 1em !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+
+  .nav-link {
+    text-align: center;
+  }
 }
 
 /* TODO: Remove Post landing revamp */
@@ -556,14 +605,6 @@ div.button-pink {
 #ios .row .left a {
   font-family: 'Muli', sans-serif;
   font-size: 14px;
-}
-
-#ios .row .explain-img-wrapper {
-  height: auto;
-}
-
-#ios .row .explain-img-wrapper a img {
-  min-height: 12.5rem;
 }
 
 @media (max-width: 767.98px) {

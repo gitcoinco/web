@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
 
+from corsheaders.signals import check_request_enabled
+
 from .notifications import maybe_market_to_github
 
 logger = logging.getLogger(__name__)
@@ -26,10 +28,7 @@ logger = logging.getLogger(__name__)
 
 def m2m_changed_interested(sender, instance, action, reverse, model, **kwargs):
     """Handle changes to Bounty interests."""
-    profile_handles = []
-
-    for profile in instance.interested.select_related('profile').all().order_by('pk'):
-        profile_handles.append((profile.profile.handle, profile.profile.absolute_url))
+    profile_handles = instance.profile_pairs
 
     if action in ['post_add', 'post_remove']:
         maybe_market_to_github(instance, 'work_started',
@@ -50,3 +49,10 @@ def changed_fulfillments(sender, instance, action, reverse, model, **kwargs):
 
     if action in ['post_add', 'post_remove']:
         maybe_market_to_github(instance, event_name, profile_pairs=profile_handles)
+
+
+def allow_all_bounties(sender, request, **kwargs):
+    return request.method == 'GET' and request.path.startswith('/api/v0.1/bounties/')
+
+
+check_request_enabled.connect(allow_all_bounties)

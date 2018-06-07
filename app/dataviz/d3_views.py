@@ -57,8 +57,7 @@ def data_viz_helper_get_data_responses(request, visual_type):
                 continue
             response = []
             prev_bounties = Bounty.objects.filter(
-                standard_bounties_id=bounty.standard_bounties_id,
-                network=network
+                standard_bounties_id=bounty.standard_bounties_id, network=network
             ).exclude(pk=bounty.pk).order_by('created_on')
             if prev_bounties.exists() and prev_bounties.first().status == 'started':
                 response.append('open')  # mock for status changes not mutating status
@@ -75,10 +74,12 @@ def data_viz_helper_get_data_responses(request, visual_type):
 
         elif visual_type == 'repos':
             value = bounty.value_in_usdt_then
+            bounty_org_name = getattr(bounty, 'org_name', '')
+            bounty_repo_name = getattr(bounty, 'github_repo_name', '')
 
             response = [
-                bounty.org_name.replace('-', ''),
-                bounty.github_repo_name.replace('-', ''),
+                bounty_org_name.replace('-', ''),
+                bounty_repo_name.replace('-', ''),
                 str(bounty.github_issue_number),
             ]
 
@@ -88,17 +89,13 @@ def data_viz_helper_get_data_responses(request, visual_type):
                 for fulfillment in bounty.fulfillments.filter(accepted=1):
                     value = bounty.value_in_usdt_then
 
-                    response = [
-                        fulfillment.fulfiller_github_username.replace('-', '')
-                    ]
+                    response = [fulfillment.fulfiller_github_username.replace('-', '')]
 
         elif visual_type == 'funders':
             value = bounty.value_in_usdt_then
             response = []
             if bounty.bounty_owner_github_username and value:
-                response = [
-                    bounty.bounty_owner_github_username.replace('-', '')
-                ]
+                response = [bounty.bounty_owner_github_username.replace('-', '')]
 
         if response:
             response = '-'.join(response)
@@ -149,11 +146,11 @@ def viz_chord(request, key='bounties_paid'):
     type_options = ['bounties_paid']
 
     if request.GET.get('data'):
-        rows = [
-            ['creditor', 'debtor', 'amount', 'risk']
-        ]
+        rows = [['creditor', 'debtor', 'amount', 'risk']]
         network = 'mainnet'
-        for bounty in Bounty.objects.filter(network=network, web3_type='bounties_network', current_bounty=True, idx_status='done'):
+        for bounty in Bounty.objects.filter(
+            network=network, web3_type='bounties_network', current_bounty=True, idx_status='done'
+        ):
             weight = bounty.value_in_usdt_then
             if weight:
                 for fulfillment in bounty.fulfillments.filter(accepted=True):
@@ -196,9 +193,7 @@ def viz_steamgraph(request, key='open'):
         key = type_options[0]
 
     if request.GET.get('data'):
-        rows = [
-            ['key', 'value', 'date']
-        ]
+        rows = [['key', 'value', 'date']]
         network = 'mainnet'
         bounties = Bounty.objects.filter(network=network, web3_type='bounties_network', idx_status=key)
         org_names = set([bounty.org_name for bounty in bounties])
@@ -211,11 +206,15 @@ def viz_steamgraph(request, key='open'):
             for org_name in org_names:
                 if org_name:
                     _bounties = bounties.filter(github_url__contains=org_name)
-                    weight = round(sum(bounty.value_in_usdt_then for bounty in _bounties if bounty.value_in_usdt_then and bounty.was_active_at(current_date)), 2)
+                    weight = round(
+                        sum(
+                            bounty.value_in_usdt_then for bounty in _bounties
+                            if bounty.value_in_usdt_then and bounty.was_active_at(current_date)
+                        ), 2
+                    )
                     output_date = current_date.strftime(('%m/%d/%y'))
                     rows.append([org_name, str(weight), output_date])
             current_date = next_date
-
 
         output_rows = []
         for row in rows:
@@ -252,9 +251,7 @@ def viz_heatmap(request, key='email_open', template='heatmap'):
 
     """
     time_now = timezone.now()
-    stats = Stat.objects.filter(
-        created_on__lt=time_now,
-    )
+    stats = Stat.objects.filter(created_on__lt=time_now, )
     if template == 'calendar':
         stats = stats.filter(created_on__hour=1)
     else:
@@ -276,9 +273,7 @@ def viz_heatmap(request, key='email_open', template='heatmap'):
             # Example output: https://gist.github.com/mbeacom/44f0114666d69bb5bf2756216c43b64d
             return JsonResponse(output)
         #csv
-        rows = [
-            ['Date', 'Value']
-        ]
+        rows = [['Date', 'Value']]
         _max = max([stat.val_since_yesterday for stat in stats])
         for stat in stats:
             date = stat.created_on.strftime("%Y-%m-%d")
@@ -383,9 +378,7 @@ def data_viz_helper_get_json_output(key, value, depth=0):
     keys = key.replace('_', '').split('-')
     result = {'name': keys[0]}
     if len(keys) > 1:
-        result['children'] = [
-            data_viz_helper_get_json_output("-".join(keys[1:]), value, depth + 1)
-        ]
+        result['children'] = [data_viz_helper_get_json_output("-".join(keys[1:]), value, depth + 1)]
     else:
         result['size'] = int(value)
     return result
@@ -423,8 +416,13 @@ def viz_sunburst(request, visual_type, template='sunburst'):
     elif visual_type == 'repos':
         title = "Github Structure of All Bounties"
         comment = 'of bounties value with this github structure'
-        categories = [bounty.org_name.replace('-', '') for bounty in Bounty.objects.filter(network='mainnet') if bounty.org_name]
-        categories += [bounty.github_repo_name.replace('-', '') for bounty in Bounty.objects.filter(network='mainnet') if bounty.github_repo_name]
+        categories = [
+            bounty.org_name.replace('-', '') for bounty in Bounty.objects.filter(network='mainnet') if bounty.org_name
+        ]
+        categories += [
+            bounty.github_repo_name.replace('-', '') for bounty in Bounty.objects.filter(network='mainnet')
+            if bounty.github_repo_name
+        ]
         categories += [str(bounty.github_issue_number) for bounty in Bounty.objects.filter(network='mainnet')]
     elif visual_type == 'fulfillers':
         title = "Fulfillers"
@@ -454,11 +452,7 @@ def viz_sunburst(request, visual_type, template='sunburst'):
             return HttpResponse(output)
 
         if _format == 'json':
-            output = {
-                'name': 'data',
-                'children': [
-                ]
-            }
+            output = {'name': 'data', 'children': []}
             for key, val in data_dict.items():
                 if val:
                     output['children'].append(data_viz_helper_get_json_output(key, val))
@@ -503,10 +497,14 @@ def viz_graph(request, _type, template='graph'):
     hide_pii = True
     page_route = 'graph'
     if template == 'square_graph':
-        _type_options = ['fulfillments_accepted_only'] #for performance reasons, since this graph can't handle too many nodes
+        _type_options = [
+            'fulfillments_accepted_only'
+        ]  # for performance reasons, since this graph can't handle too many nodes
     else:
         _type_options = ['fulfillments_accepted_only', 'all', 'fulfillments', 'what_future_could_look_like']
-        _type_options = _type_options + list(DataPayload.objects.filter(key=page_route).values_list('report', flat=True))
+        _type_options = _type_options + list(
+            DataPayload.objects.filter(key=page_route).values_list('report', flat=True)
+        )
     _type_options.sort()
     datapayloads = DataPayload.objects.filter(key=page_route, report=_type)
     comments = '' if not datapayloads.exists() else datapayloads.first().comments
@@ -521,10 +519,7 @@ def viz_graph(request, _type, template='graph'):
             return JsonResponse(output)
 
         # setup response
-        output = {
-            "nodes": [],
-            "links": []
-        }
+        output = {"nodes": [], "links": []}
 
         # gather info
         types = {}
@@ -575,7 +570,6 @@ def viz_graph(request, _type, template='graph'):
                         names[target] = None
                     edges.append((source, target, weight, created))
 
-
         if _type in ['what_future_could_look_like', 'all']:
             last_node = None
             created = 1525147679
@@ -596,7 +590,6 @@ def viz_graph(request, _type, template='graph'):
                         target = helper_hide_pii(target)
                     edges.append((target, node, weight, created))
                 last_node = node
-
 
         for key, val in values.items():
             if val > 40:
@@ -649,7 +642,10 @@ def viz_draggable(request, key='email_open'):
     type_options = []
     bfs = BountyFulfillment.objects.filter(accepted=True)
     limit = 50
-    usernames = list(bfs.exclude(fulfiller_github_username='').distinct('fulfiller_github_username').values_list('fulfiller_github_username', flat=True))[0:limit]
+    usernames = list(
+        bfs.exclude(fulfiller_github_username=''
+                    ).distinct('fulfiller_github_username').values_list('fulfiller_github_username', flat=True)
+    )[0:limit]
     if request.GET.get('data'):
         output = []
         for username in usernames:
@@ -661,14 +657,14 @@ def viz_draggable(request, key='email_open'):
             val_usdt = 0
             for i in range(1, 180):
                 current_date = start_date + timezone.timedelta(days=i)
-                prev_date = start_date + timezone.timedelta(days=(i-1))
+                prev_date = start_date + timezone.timedelta(days=(i - 1))
                 these_bounties_before_date = these_bounties.filter(created_on__lt=current_date)
                 these_bounties_in_range = these_bounties.filter(created_on__lt=current_date, created_on__gt=prev_date)
                 val_usdt += sum(bf.bounty.value_in_usdt for bf in these_bounties_in_range if bf.bounty.value_in_usdt)
                 num_bounties = these_bounties_before_date.distinct('bounty').count()
-                income.append([i, val_usdt]) # x axis
-                lifeExpectancy.append([i, num_bounties]) #y axis
-                population.append([i, 10000000 * num_bounties]) # size
+                income.append([i, val_usdt])  # x axis
+                lifeExpectancy.append([i, num_bounties])  # y axis
+                population.append([i, 10000000 * num_bounties])  # size
                 print(username, i, num_bounties, val_usdt)
             output.append({
                 'name': username,
@@ -676,7 +672,7 @@ def viz_draggable(request, key='email_open'):
                 'income': income,
                 'population': population,
                 'lifeExpectancy': lifeExpectancy,
-                })
+            })
 
         return JsonResponse(output, safe=False)
 
@@ -704,9 +700,7 @@ def viz_scatterplot(request, key='hourly_rate'):
     stats = []
     type_options = ['hourly_rate']
     if request.GET.get('data'):
-        rows = [
-            ['hourlyRate', 'daysBack', 'username', 'weight']
-        ]
+        rows = [['hourlyRate', 'daysBack', 'username', 'weight']]
         for bf in BountyFulfillment.objects.filter(accepted=True).exclude(fulfiller_hours_worked=None):
             print(bf.pk, bf.created_on)
             try:

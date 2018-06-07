@@ -74,7 +74,7 @@
         </div>
         <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
           <img class="img-fluid" src="{% static "v2/images/about/grow_open_source.png" %}" />
-          <h4 class="caption font-title">{% trans "Goal: Grow Open Source" %}</h4>
+          <h4 class="caption font-title">{% trans "Mission: Grow Open Source" %}</h4>
           <p>
             {% blocktrans %}<strong>Gitcoin</strong> is a project that combines the #givefirst mantra of the Boulder community with capitalistic incentives to write great software. By enabling <span>Repo Maintainers</span>, <span>developers</span>, and <span>financiers</span> to find one another, Gitcoin grows open source software.{% endblocktrans %}
           </p>
@@ -143,14 +143,14 @@
         <div class="col-12 col-md-6 left">
           <p class="font-heading">{% trans "Open Gitcoin Roles" %}</p>
           <p>
-            {% trans "Front End Developer" %}
+            {% trans "Product Developer" %}
             <a  class="title font-caption" href="https://consensys.net/open-positions/?gh_jid=924578">
               {% trans "Learn More" %}
             </a>
           </p>
           <p>
-            {% trans "Technical Business Development Lead" %}
-            <a  class="title font-caption" href="https://consensys.net/open-positions/?gh_jid=1025695">
+            {% trans "Entrepeneur In Residence" %}
+            <a  class="title font-caption" href="https://consensys.net/open-positions/?gh_jid=1086781">
               {% trans "Learn More" %}
             </a>
           </p>
@@ -172,10 +172,6 @@
         </div>
       </div>
     </div>
-  </div>
-  <div id='note'>
-    &nbsp;
-  </div>
     <div class="container-fluid text-center white-light-bg" id="features">
       <div class="row pb-1 pt-4">
         <div class="col text-center">
@@ -224,7 +220,8 @@
       </div>
       <div class="row mt-5 pb-3 animatedParent">
         <div class="col animated pulse fast">
-          <a class="btn btn-lg btn-warning" role="button" href="{% url "get_gitcoin" %}">{% trans "Get Started" %}</a>
+          <p>and many more.. Click below to view our toolbox:</p>
+          <a class="btn btn-lg btn-warning" role="button" href="{% url "tools" %}">{% trans "View our Toolbox" %}</a>
         </div>
       </div>
     </div>
@@ -238,13 +235,13 @@
       <div class=" row animatedParent grow_hero">
         <div class="col d-flex flex-column p-5 animated fadeIn ">
           <div class="pl-5 pr-5" style="text-align: center;">
-            <img src="{% static "v2/images/mission/grow_hero.png" %}" />
+            <img src="{% static "v2/images/about/grow_hero.png" %}" />
           </div>
         </div>
       </div>
       <div class="row mt-5 pb-3 animatedParent">
         <div class="col animated pulse fast">
-          <a class="btn btn-lg btn-warning" role="button" href="{% url "get_gitcoin" %}">{% trans "Get Started" %}</a>
+          <a class="btn btn-lg btn-warning" role="button" href="{% url "mission" %}">{% trans "Read about our Mission" %}</a>
         </div>
       </div>
     </div>
