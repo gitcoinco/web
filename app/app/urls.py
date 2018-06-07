@@ -84,7 +84,7 @@ urlpatterns = [
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
     path('actions/bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
     path(
-        'actions/bounty/<int:bounty_id>/interest/<int:profile_id>/uninterested/<int:slash>/',
+        'actions/bounty/<int:bounty_id>/interest/<int:profile_id>/uninterested/',
         dashboard.views.uninterested,
         name='uninterested'
     ),

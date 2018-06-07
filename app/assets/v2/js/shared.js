@@ -230,16 +230,18 @@ var mutate_interest = function(bounty_pk, direction, data) {
 };
 
 
-var uninterested = function(bounty_pk, profileId, slash = false) {
+var uninterested = function(bounty_pk, profileId, slash) {
+  var data = {}
   var success_message = 'Contributor removed from bounty.';
 
   if (slash) {
     success_message = 'Contributor removed from bounty and slashed';
+    data.slashed = true;
   }
 
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + profileId + '/uninterested/';
 
-  $.post(request_url, {slashed: slash}, function(result) {
+  $.post(request_url, data, function(result) {
     result = sanitizeAPIResults(result);
     if (result.success) {
       _alert({ message: gettext(success_message) }, 'success');

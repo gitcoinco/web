@@ -345,7 +345,7 @@ def uninterested(request, bounty_id, profile_id):
             {'error': 'Only bounty funders are allowed to remove users!'},
             status=401)
 
-    slashed = request.POST['slashed'] == 'true'
+    slashed = request.POST.get('slashed')
     try:
         interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
         bounty.interested.remove(interest)
