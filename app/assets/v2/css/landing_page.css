@@ -229,6 +229,12 @@ body {
   -o-filter: grayscale(0%);
 }
 
+.navbar.following .nav-link,
+.navbar.following img,
+.navbar.following .nav-item {
+  display: none;
+}
+
 #gc-tree img {
   max-width: 100%;
   will-change: transform;
@@ -342,10 +348,6 @@ body {
 #pot-leaves {
   animation: swaying-leaves 8s ease-in-out infinite;
   transform-origin: center 60%;
-}
-
-.navbar.following .nav-link {
-  display: none;
 }
 
 .navbar__cta {
