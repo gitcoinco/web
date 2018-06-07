@@ -8,7 +8,7 @@
   "email": "contact@moochain.com",
   "website": "https://www.artval.io",
   "whitepaper": "https://www.artval.io/images/Artval_whitepaper_en.pdf",
-  "state": "LOCKED | NORMAL",
+  "state": "NORMAL",
   "published_on": "2018-04-19",
   "initial_price":{
         "USD":"0.16 USD"
