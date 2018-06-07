@@ -511,4 +511,9 @@ if ENABLE_SILK:
             'function': 'index',
             'name': 'Index View',
         }]
-    SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int('SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)
+    SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int(
+        'SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)
+
+# DISQUS
+DISQUS_PUBLIC_KEY = env('DISQUS_PUBLIC_KEY', default='')
+DISQUS_FORUM_NAME = env('DISQUS_FORUM_NAME', default='')
