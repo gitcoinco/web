@@ -105,7 +105,7 @@ var sanitize = function(str) {
   if (typeof str != 'string') {
     return str;
   }
-  result = str.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  result = DOMPurify.sanitize(str);
   return result;
 };
 

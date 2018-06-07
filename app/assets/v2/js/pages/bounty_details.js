@@ -122,11 +122,7 @@ var callbacks = {
   'issue_description': function(key, val, result) {
     var converter = new showdown.Converter();
 
-    val = val.replace(/script/ig, 'scr_i_pt');
-    var ui_body = val;
-
-    ui_body = converter.makeHtml(ui_body);
-
+    ui_body = converter.makeHtml(val);
     return [ 'issue_description', ui_body ];
   },
   'bounty_owner_address': address_ize,
