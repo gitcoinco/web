@@ -133,6 +133,9 @@ $(document).ready(function() {
   });
   // denomination field
   $('select[name=deonomination]').select2();
+  if ($('input[name=amount]').val().trim().length > 0) {
+    setUsdAmount();
+  }
 
 
   $('#advancedLink a').click(function(e) {

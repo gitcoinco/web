@@ -78,25 +78,42 @@
                       <option value="approval" selected>{% trans "Approval Required - I will approve bounty hunters." %}</option>
                     </select>
                   </div>
+                  <div>
+                    <label class="form__label">{% trans "Issue Details" %}</label>
+                  </div>
                   <div class="form__group">
-                    <div class="form__group-item">
-                      <label class="form__label" for="experienceLevel">{% trans "Difficulty" %}</label>
-                      <div class="form__select2">
-                        <select class="js-select2" name="experienceLevel">
-                          <option value="beginner">{% trans "Beginner" %}</option>
-                          <option value="intermediate">{% trans "Intermediate" %}</option>
-                          <option value="advanced">{% trans "Advanced" %}</option>
-                        </select>
-                      </div>
+                    <div class="form__select2 form__group-item">
+                      <select class="js-select2" name="experienceLevel">
+                        <option value="">{% trans "Experience Level" %}</option>
+                        <option>{% trans "Beginner" %}</option>
+                        <option>{% trans "Intermediate" %}</option>
+                        <option>{% trans "Advanced" %}</option>
+                      </select>
                     </div>
-                    <div class="form__group-item">
-                      <label class="form__label" for="revisions">{% trans "Revisions" %}</label>
-                      <div class="form__input revisions d-flex">
-                        <span class="form__input-action" id="subtractAction">-</span>
-                        <input name='revisions' type="text" value="1" step="1" min="1"/>
-                        <span class="form__input-action" id="addAction">+</span>
-                      </div>
+                    <div class="form__select2 form__group-item">
+                      <select class="js-select2" name="projectLength">
+                        <option value="Unknown">{% trans "Project Length" %}</option>
+                        <option>{% trans "Hours" %}</option>
+                        <option>{% trans "Days" %}</option>
+                        <option>{% trans "Weeks" %}</option>
+                        <option>{% trans "Months" %}</option>
+                      </select>
                     </div>
+                    <div class="form__select2 form__group-item">
+                      <select class="js-select2" name="bountyType">
+                        <option value="">{% trans "Bounty Type" %}</option>
+                        <option>{% trans "Bug" %}</option>
+                        <option>{% trans "Feature" %}</option>
+                        <option>{% trans "Security" %}</option>
+                        <option>{% trans "Other" %}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <label class="form__label" for="revisions">{% trans "Revisions" %}</label>
+                  <div class="form__input revisions d-flex">
+                    <span class="form__input-action" id="subtractAction">-</span>
+                    <input name='revisions' type="text" value="1" step="1" min="1"/>
+                    <span class="form__input-action" id="addAction">+</span>
                   </div>
                   <hr class="mt-5"/>
                 </div>
