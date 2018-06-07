@@ -8,8 +8,7 @@
   "email": "support@asmchain.io",
   "website": "https://asmchain.io/",
   "whitepaper": "https://asmchain.io/asm.pdf",
-  "state": "LOCKED",
-  "published_on": "2018-05-28",
+  "published_on": "2018-04-26",
   "initial_price":{
         "ETH":"0.0004 ETH",
         "USD":"0.24 USD"
