@@ -362,16 +362,6 @@ function timeDifference(current, previous, remaining, now_threshold_seconds) {
   return amt + ' ' + unit + plural + ' ago';
 }
 
-
-var sidebar_redirect_triggers = function() {
-  $('.sidebar_search input[type=radio], .sidebar_search label').change(function(e) {
-    if (document.location.href.indexOf('/dashboard') == -1 && document.location.href.indexOf('/explorer') == -1) {
-      document.location.href = '/explorer';
-      e.preventDefault();
-    }
-  });
-};
-
 var attach_change_element_type = function() {
   (function($) {
     $.fn.changeElementType = function(newType) {
@@ -387,19 +377,6 @@ var attach_change_element_type = function() {
     };
   })(jQuery);
 };
-
-var attach_close_button = function() {
-  $('body').delegate('.alert .closebtn', 'click', function(e) {
-    $(this).parents('.alert').remove();
-    $('.alert').each(function() {
-      var old_top = $(this).css('top');
-      var new_top = (parseInt(old_top.replace('px')) - 66) + 'px';
-
-      $(this).css('top', new_top);
-    });
-  });
-};
-
 
 // callbacks that can retrieve various metadata about a github issue URL
 
@@ -745,11 +722,7 @@ var actions_page_warn_if_not_on_same_network = function() {
   }
 };
 
-$(document).ready(function() {
-  sidebar_redirect_triggers();
-  attach_change_element_type();
-  attach_close_button();
-});
+attach_change_element_type();
 
 window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 300);
