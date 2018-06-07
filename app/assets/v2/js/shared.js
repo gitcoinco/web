@@ -231,7 +231,7 @@ var mutate_interest = function(bounty_pk, direction, data) {
 
 
 var uninterested = function(bounty_pk, profileId, slash) {
-  var data = {}
+  var data = {};
   var success_message = 'Contributor removed from bounty.';
 
   if (slash) {
