@@ -1,28 +1,4 @@
 {
     "symbol": "ADE",
-    "address": "0x54a2a7c9ff039af7412223405534c174d304d835",
-    "overview": {
-        "en": "",
-        "zh": ""
-    },
-    "email": "",
-    "website": "",
-    "whitepaper": "",
-    "state": "LOCKED",
-    "published_on": "2018-06-08",
-    "initial_price": {
-        "ETH": "",
-        "USD": "",
-        "BTC": ""
-    },
-    "links": {
-        "blog": "",
-        "twitter": "",
-        "telegram": "",
-        "github": "",
-        "facebook": "",
-        "reddit": "",
-        "slack": "",
-        "medium": ""
-    }
+    "address": "0x54a2a7c9ff039af7412223405534c174d304d835"
 }
