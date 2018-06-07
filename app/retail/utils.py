@@ -77,6 +77,7 @@ def get_bounty_history_at_date(statuses, date):
         print(e)
         return 0
 
+
 def get_tip_history_at_date(date):
     try:
         base_stats = Stat.objects.filter(
@@ -86,6 +87,26 @@ def get_tip_history_at_date(date):
     except Exception as e:
         print(e)
         return 0
+
+
+def get_history(base_stats, copy):
+    today = base_stats.first().val
+
+    # slack ticks
+    increment = 1000
+    ticks = json.dumps(list(x * increment for x in range(0, int(today/increment)+1)))
+    history = json.dumps([
+        ['When', copy],
+        ['Launch', 0],
+        ['6 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=6*30))).first().val],
+        ['5 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=5*30))).first().val],
+        ['4 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=4*30))).first().val],
+        ['3 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=3*30))).first().val],
+        ['2 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=2*30))).first().val],
+        ['1 month ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=1*30))).first().val],
+        ['Today', today],
+        ])
+    return history, ticks
 
 
 def build_stat_results():
@@ -111,19 +132,14 @@ def build_stat_results():
     base_stats = Stat.objects.filter(
         key='email_subscriberse',
         ).order_by('-pk')
-    today = base_stats.first().val
-    context['members_history'] = ([
-        ['Year', 'Members'],
-        ['Launch', 0],
-        ['6 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=6*30))).first().val],
-        ['5 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=5*30))).first().val],
-        ['4 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=4*30))).first().val],
-        ['3 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=3*30))).first().val],
-        ['2 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=2*30))).first().val],
-        ['1 month ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=1*30))).first().val],
-        ['Today', today]
-        ])
-    context['members_history'] = json.dumps(context['members_history'])
+    context['members_history'], context['slack_ticks'] = get_history(base_stats, "Members")
+
+    #jdi history
+    base_stats = Stat.objects.filter(
+        key='joe_dominance_index_30_value',
+        ).order_by('-pk')
+    context['jdi_history'], jdi_ticks = get_history(base_stats, 'Percentage')
+
 
     # bounties hisotry
     context['bounty_history'] = [
@@ -144,11 +160,6 @@ def build_stat_results():
                 row = get_bounty_history_row(then.strftime("%B %Y"), then)
                 context['bounty_history'].append(row)
     context['bounty_history'] = json.dumps(context['bounty_history'])
-
-    # slack ticks
-    increment = 1000
-    context['slack_ticks'] = list(x * increment for x in range(0, int(today/increment)+1))
-    context['slack_ticks'] = json.dumps(context['slack_ticks'])
 
     # Bounties
     # TODO: make this info dynamic

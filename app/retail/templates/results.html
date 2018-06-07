@@ -158,6 +158,30 @@
     </div>
 
 
+
+    <div>
+      <div class="container" id="bounty_jdi">
+        <div class="row py-5 animatedParent">
+          <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
+            <h2>{% trans "Joe Dominance Index" %}</h2>
+          </div>
+        </div>
+        <div class="row py-1 animatedParent">
+          <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
+            <p style="text-align: center; font-size: 0.9rem;">Gitcoin is a double sided market of funders and developers.  In order to jump start the marketplace and dogfood our own product, we've funded some work on the platform ourselves.  The Joe Dominance Index (a portmeanteau of the <a href="https://coinmarketcap.com/charts/#dominance-percentage">Bitcoin Dominance Index</a> and Gitcoin's largest investor, Consensys's CEO <a href="https://twitter.com/ethereumjoseph">Joe Lubin</a>) is a measure of the percentage of work on the platform that is funded by us.   </p>
+          </div>
+          <script>
+            document.jdi_ticks = [0, 20, 40, 60, 80, 100];
+            document.jdi_history = {{jdi_history|safe}};
+          </script>
+
+          <div class="col-12">
+            <div id="jdi_chart" height="600"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div style="background-color: white;">
       <div class="container" id="price_per_hour">
         <div class="row py-5 animatedParent">
@@ -178,10 +202,9 @@
             <a class="button button--primary" role="button" href="https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e">{% trans "Read More about Pricing on Gitcoin" %}</a>
           </div>
         </div>
-
-
       </div>
     </div>
+
     <div style="background-color: #F2F6F9;">
       <div class="container" id="bounty_universe">
         <div class="row py-5 animatedParent">
@@ -206,6 +229,7 @@
         </div>
       </div>
     </div>
+
 
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
