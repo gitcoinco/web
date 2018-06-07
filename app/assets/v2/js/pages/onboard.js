@@ -65,8 +65,8 @@ onboard.watchMetamask = function() {
 };
 
 onboard.getFilters = function(savedKeywords) {
-  $('.suggested-tag input[type=checkbox]:checked + span svg').attr('data-icon', 'check');
-  $('.suggested-tag input[type=checkbox]:not(:checked) + span svg').attr('data-icon', 'plus');
+  $('.suggested-tag input[type=checkbox]:checked + span i').removeClass('fa-plus').addClass('fa-check');
+  $('.suggested-tag input[type=checkbox]:not(:checked) + span i').removeClass('fa-check').addClass('fa-plus');
 
   var _filters = [];
   var _words = [];

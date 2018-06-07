@@ -20,7 +20,7 @@
 
 {% load i18n admin_static static %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 
@@ -78,7 +78,7 @@ rect {
     <h2>Date</h2>
 </div>
 <script>
-var getColor =function (d) { 
+var getColor =function (d) {
 //if(d.avatar){
 //    return "white";
 //}
@@ -94,7 +94,7 @@ if(d.type =='independent'){
 if(d.type =='target'){
     return "#000000";
 }
-return d.type =='source' ?  ( d.type =='independent' ? "#ffffff" : '#1f77b4') : '#000000'; 
+return d.type =='source' ?  ( d.type =='independent' ? "#ffffff" : '#1f77b4') : '#000000';
 }
 
 var grow_over_time = function(){
@@ -104,7 +104,7 @@ var grow_over_time = function(){
         $('#myRange').val(new_val);
         console.log(new_val);
         load_data();
-    }, 500)    
+    }, 500)
 }
 
 

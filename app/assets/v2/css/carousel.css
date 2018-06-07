@@ -1,237 +1,55 @@
 .carousel {
-  background: white;
-  padding: 5px 0;
-  z-index: 0;
-  overflow-y: hidden;
-}
-
-.carousel .row {
-  margin-top: 60px;
-  margin-bottom: 40px;
-}
-
-.carousel .control {
-  border-radius: 100%;
-  border: 2px solid #15003e;
-  transition: none;
-  background-color: #ffce08;
-  color: #15003e;
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
-  position: relative;
-  top: 80px;
-}
-
-.carousel .control:hover {
-  border-radius: 100%;
-  background-color: #15003e;
-  color: #ffce08;
-}
-
-.carousel .flex-container {
-  display: flex;
-}
-
-.carousel .prev .control {
-  float: right;
-}
-
-.carousel .next .control {
-  float: left;
-}
-
-.carousel .control svg {
-  position: relative;
-  top: 2px;
-}
-
-.carousel .avatar {
-  margin-right: 30px;
-  margin-left: 70px;
-}
-
-.carousel .avatar svg {
-  color: #36e69a;
-}
-
-.carousel .avatar .circles {
-  position: absolute;
-}
-
-.carousel .avatar .closed {
-  position: relative;
-  top: -38px;
-  left: 98px;
-  font-size: 8px;
-}
-
-.carousel .avatar .circle-small {
-  position: relative;
-  top: 20px;
-  left: 71px;
-  font-size: 20px;
-  z-index: -1;
-}
-
-.carousel .avatar .circle-large {
-  position: relative;
-  top: -12px;
-  left: 96px;
-  font-size: 30px;
-}
-
-.carousel .avatar img {
-  max-width: 120px;
-  border-radius: 10px;
-  background-color: #FAFAFA;
-}
-
-.carousel .upper-line,
-.carousel .lower-line {
-  position: relative;
-  height: 0;
-  border: 1px solid #f3126d;
-  transform: rotate(-45deg);
-}
-
-.carousel .upper-line {
-  left: -16px;
-  width: 60%;
-}
-
-.carousel .lower-line {
-  float: right;
-  top: -6px;
-  left: 12px;
-  width: 40%;
-  z-index: -1;
-}
-
-.carousel .testimonial {
-  font-family: futura-pt, sans-serif !important;
-  font-weight: bold;
-  padding-right: 30px;
-}
-
-.carousel .author {
-  font-size: 12px;
-  text-transform: uppercase;
-  margin-left: 10px;
-  color: #3e00ff;
-  opacity: 0.5;
-}
-
-.carousel .author svg {
-  font-size: 7px;
-}
-
-.carousel .author a {
-  cursor: pointer;
-}
-
-.carousel .prev .control svg {
-  right: 1px;
-}
-
-.carousel .next .control svg {
-  left: 1px;
-}
-
-.carousel .content {
-  border-left: 4px solid #3e00ff;
-  padding-left: 10px;
-  text-align: left;
+  overflow: hidden;
 }
 
 #slides {
-  margin: 0;
-  padding: 0;
+  transition: transform .75s ease-in-out;
 }
 
-.slide {
-  min-height: 200px;
-  position: absolute;
-  left: 0px;
-  top: 0px;
-  width: 100%;
-  height: 100%;
-  display: none;
-  opacity: 0;
+.carousel .avatar {
+  width: 120px;
+  height: 120px;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+  border-radius: 50%;
 }
 
-.showing {
-  position: relative;
-  opacity: 1;
-  display: inline;
-  animation: fadeIn 1.25s;
+.carousel .author, .carousel .org {
+  font-size: 0.9rem;
 }
 
-.hide {
-  animation: fadeOut 1.25s;
+.carousel .author a {
+  text-decoration: none;
 }
 
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-    display: none;
-  }
-
-  100% {
-    opacity: 1;
-    display: inline;
-  }
+.carousel .org {
+  color: #999;
 }
 
-@keyframes fadeOut {
-  0% {
-    opacity: 1;
-    display: inline;
-  }
-
-  100% {
-    opacity: 0;
-    display: none;
-  }
+.carousel .slide {
+  width: 100vw;
+  padding: 0 2rem;
 }
-
-.carousel .pilot_projects img {
-  max-height: 100px;
+.carousel .content {
   max-width: 100%;
 }
 
-@media (max-width: 576px) {
-  .prev,
-  .next {
-    visibility: hidden;
-  }
-
-  .carousel .flex-container {
-    flex-direction: column;
-  }
-
-  .carousel .avatar {
-    max-width: 30%;
-    border-radius: 10px;
-    margin-left: 35%;
-  }
-
-  .carousel .content {
-    border-left: 0;
-  }
-
-  .carousel .author,
-  .carousel .content {
-    text-align: center;
-  }
+.testimonial {
+  max-width: 40rem;
 }
 
-@media (max-width: 768px) {
-  .carousel .control {
-    margin: 0 -20px;
-  }
+.carousel .slide:hover {
+  box-shadow: none;
+}
 
-  .carousel .next .control svg {
-    left: 2px;
-  }
+.showing {
+  opacity: 1;
+}
+
+.decorated-quote {
+  color: var(--gc-blue);
+  font-size: 6rem;
+  align-self: flex-start;
+  line-height: .6;
 }
