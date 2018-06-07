@@ -1,0 +1,19 @@
+{
+  "symbol": "LNQ",
+  "address": "0x27aebC51AF422525461b9DdBE74e4A9a5995D015",
+  "overview":{
+        "en": "Based on Ethereum, distributed, mobile social blockchain investors to exchange community",
+        "zh": "基于以太坊、分布式、移动社交类的区块链投资者交流社区"
+  },
+  "email": "dev@lianqu.top",
+  "website": "https://www.lianqu.top",
+  "state": "NORMAL",
+  "published_on": "2018-05-31",
+  "initial_price":{
+        "ETH":"0.000155555 ETH",
+        "USD":"0.1 USD"
+  },
+  "links": {
+    "github": "https://github.com/lianqulbs"
+  }
+}
