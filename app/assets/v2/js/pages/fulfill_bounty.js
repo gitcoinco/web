@@ -146,22 +146,60 @@ window.onload = function() {
                 result = results[0];
                 if (result == null) {
                   _alert({
-                    message: 'No active bounty found for this Github URL.'
+                    message: gettext('No active bounty found for this Github URL.')
                   });
                   unloading_button($('.js-submit'));
                   return;
                 }
 
                 var bountyId = result['standard_bounties_id'];
+                var bountyNetwork = result['network'];
 
-                bounty.fulfillBounty(
-                  bountyId,
-                  document.ipfsDataHash,
-                  {
-                    gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
-                  },
-                  web3Callback
-                );
+                // before committing to transaction prompt,
+                // retrieve bounty owner's address since a
+                // creator cannot fulfill their own bounty.
+                var fromAddress = result['bounty_owner_address'];
+
+                if (fromAddress == account) {
+                  _alert({ message: gettext('The address that funded an issue cannot fulfill it.') }, 'error');
+                  unloading_button($('.js-submit'));
+                  return;
+                }
+
+                browserNetworkIs(bountyNetwork, function(matchingNetworks) {
+                  if (!matchingNetworks) {
+                    _alert({ message: gettext('Expected browser to be connected to the Ethereum network' +
+                      ' that the bounty was deployed to, ie. \'' + bountyNetwork + '\'.') }, 'error');
+                    unloading_button($('.js-submit'));
+                    return;
+                  }
+
+                  bounty.getBounty.call(bountyId, (errStr, bountyParams) => {
+                    var curTime = Math.floor(Date.now() / 1000.0);
+                    var deadlineTime = bountyParams[1].toNumber();
+
+                    if (bountyParams[4] != bountyStageEnum['Active']) {
+                      errStr = 'The bounty for this Github URL is not active.';
+                    } else if (deadlineTime < curTime) {
+                      errStr = 'The bounty for this Github URL has expired.';
+                    }
+                    if (errStr) {
+                      _alert({ message: errStr });
+                      unloading_button($('.js-submit'));
+                      return;
+                    }
+
+                    // If all tests pass, attempt tx
+                    bounty.fulfillBounty(
+                      bountyId,
+                      document.ipfsDataHash,
+                      {
+                        gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
+                      },
+                      web3Callback
+                    );
+                  });
+                });
               });
             }
           }
