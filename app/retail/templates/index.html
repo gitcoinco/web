@@ -143,7 +143,7 @@
             <h4 class="font-title-lg">{% trans "Grow Your Open Source Community" %}</h4>
             <p>{% blocktrans %}Kickstart interest on your open source project by posting on
               Gitcoin, where 3,000+ developers will see what you’re building.{% endblocktrans %}</p>
-            <a href="/bounty/new">{% trans "Post a Bounty" %}</a>
+            <a href="{% url "new_bounty" %}">{% trans "Post a Bounty" %}</a>
           </div>
         </div>
       </div>
@@ -307,7 +307,7 @@
             <li>{% trans "Do it yourself. You post and manage the bounties." %}</li>
           </ul>
           <div>
-            <a class="btn btn-outline-gc-green btn-outline-gc-grey btn-block mb-4" href="/bounty/new">{% trans "Get Started" %}</a>
+            <a class="btn btn-outline-gc-green btn-outline-gc-grey btn-block mb-4" href="{% url "new_bounty" %}">{% trans "Get Started" %}</a>
           </div>
 
           <div class="text-highlight-light-blue pricing-tier__title font-title">{% trans "Silver" %}</div>
