@@ -7,9 +7,10 @@
     "email": "community@globcoin.io",
     "website": "https://globcoin.io/",
     "whitepaper": "https://globcoin.io/assets/whitepaper-GCP-v2.0.pdf",
-    "state": "UNLOCKED",
     "published_on": "2018-02-09",
-    "initial_price": "10000:1 ETH",
+    "initial_price": {
+          "ETH":"0.0001 ETH",
+     },
     "links": {
       "blog": "https://medium.com/@globcoin_io",
       "twitter": "https://twitter.com/Globcoin_io",
