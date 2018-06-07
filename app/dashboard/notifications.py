@@ -285,9 +285,9 @@ def maybe_market_to_user_discord(bounty, event_name):
         for subscriber in subscribers:
             try:
                 headers = {'Content-Type': 'application/json'}
-                params = {"content": msg}
+                body = {"content": msg}
                 discord_response = requests.post(
-                    subscriber.webhook_url, headers=headers, params=params
+                    subscriber.discord_webhook_url, headers=headers, json=body
                 )
                 if discord_response.status_code == 204:
                     sent = True
