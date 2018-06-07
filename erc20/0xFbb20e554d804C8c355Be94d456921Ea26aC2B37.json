@@ -1,0 +1,21 @@
+{
+  "symbol": "ASM",
+  "address": "0xFbb20e554d804C8c355Be94d456921Ea26aC2B37",
+  "overview":{
+        "en":"Artificial Intelligence Super Medical Chain.",
+        "zh":"以超级算力提供智能生活。"
+  },
+  "email": "support@asmchain.io",
+  "website": "https://asmchain.io/",
+  "whitepaper": "https://asmchain.io/asm.pdf",
+  "published_on": "2018-04-26",
+  "initial_price":{
+        "ETH":"0.0004 ETH",
+        "USD":"0.24 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/asmchain",
+    "telegram": "https://t.me/AsmChainio",
+    "github": "https://github.com/asmchain"
+  }
+}
