@@ -10,9 +10,7 @@
   "whitepaper": "http://www.culturetravel.io/static/pdf/LeooyWhitepaperEn-draft.pdf",
   "state": "LOCKED",
   "published_on": "2018-05-01",
-  "initial_price":{
-        "CTC":"0.0001 ETH",
-  },
+  "initial_price":{"CTC":"0.0001 ETH"},
   "links": {
     "twitter": "https://twitter.com/CTCleou?s=0",
     "telegram": "https://m.facebook.com/groups/642365836107284",
