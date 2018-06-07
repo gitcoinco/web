@@ -46,14 +46,13 @@
       </a>
       <a class="nav-link{% if active == 'help' %} selected{% endif %}" href="{% url "help" %}">{% trans "Help" %}</a>
     </nav>
-      {% if request.path == '/' %}
-        <a href="{% url "new_funding" %}" class="btn btn-gc-blue">
-          <i class="fab fa-ethereum" role="aria-hidden"></i>
-          Fund an Issue
-        </a>
-      {% else %}
-        <img class="d-none d-md-block" src="{% static "v2/images/spaceship.png" %}" width="52" height="45" />
-        {% include 'shared/nav_auth.html' with source='authed' %}
-      {% endif %}
+    <img class="d-none d-md-block" src="{% static "v2/images/spaceship.png" %}" width="52" height="45" />
+    {% include 'shared/nav_auth.html' with source='authed' %}
+    {% if request.path == '/' %}
+      <a href="{% url "new_funding" %}" class="btn btn-gc-blue">
+        <i class="fab fa-ethereum" role="aria-hidden"></i>
+        Fund an Issue
+      </a>
+    {% endif %}
   </div>
 </nav>
