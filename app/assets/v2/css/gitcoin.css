@@ -197,19 +197,23 @@ h4,
 }
 
 .font-title {
-  font-size: 20px;
+  font-size: 1.25rem;
+}
+
+.font-header {
+  font-size: 1.125rem;
 }
 
 .font-subheader {
-  font-size: 16px;
+  font-size: 1rem;
 }
 
 .font-body {
-  font-size: 14px;
+  font-size: 0.875rem;
 }
 
 .font-caption {
-  font-size: 12px;
+  font-size: 0.75rem;
 }
 
 
