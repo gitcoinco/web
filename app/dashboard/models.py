@@ -1857,5 +1857,3 @@ class TokenApproval(SuperModel):
     def coinbase_short(self):
         coinbase_short = f"{self.coinbase[0:5]}...{self.coinbase[-4:]}"
         return coinbase_short
-
-

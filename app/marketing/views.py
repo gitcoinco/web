@@ -37,12 +37,12 @@ from django.utils import timezone, translation
 from django.utils.translation import LANGUAGE_SESSION_KEY
 from django.utils.translation import gettext_lazy as _
 
-from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from app.utils import sync_profile
 from chartit import Chart, DataPool
-from dashboard.models import Bounty, Profile, Tip, UserAction, TokenApproval
+from dashboard.models import Profile, TokenApproval
 from dashboard.utils import create_user_action
 from enssubdomain.models import ENSSubdomainRegistration
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from mailchimp3 import MailChimp
 from marketing.mails import new_feedback
 from marketing.models import (
@@ -394,7 +394,6 @@ def token_settings(request):
         approved_address = request.POST.get('contract_address')
         token_address = request.POST.get('token_address')
         token_name = request.POST.get('token_name')
-        contract_name = request.POST.get('contract_name')
         txid = request.POST.get('txid')
         network = request.POST.get('network')
 
@@ -409,8 +408,6 @@ def token_settings(request):
             network=network,
             )
         msg = "Token approval completed"
-
-        pass
 
     context = {
         'is_logged_in': is_logged_in,
@@ -442,7 +439,7 @@ def ens_settings(request):
 
     ens_subdomains = ENSSubdomainRegistration.objects.filter(profile=profile).order_by('-pk')
     ens_subdomain = ens_subdomains.first() if ens_subdomains.exists() else None
-    
+
     context = {
         'is_logged_in': is_logged_in,
         'nav': 'internal',
