@@ -1,13 +1,13 @@
 .newsletter {
   margin-top: 1em;
   border-top: 1px solid #eee;
-  font-family: 'OpenSans', sans-serif;
+  font-family: Muli, sans-serif;
 }
 
 .newsletter h4 {
   letter-spacing: 0;
   font-size: 20px;
-  font-family: 'OpenSans', sans-serif;
+  font-family: Muli, sans-serif;
   font-weight: 700;
   text-transform: none;
 }
@@ -65,7 +65,6 @@
 
 @media (max-width: 575px) {
   .newsletter h4 {
-    font-family: 'OpenSans', sans-serif;
     font-weight: 600;
   }
 }

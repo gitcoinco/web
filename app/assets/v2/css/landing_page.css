@@ -11,6 +11,19 @@ body {
   flex-shrink: 0;
 }
 
+.navbar-nav > img {
+  display: none !important;
+}
+
+.navbar-nav .nav-link:last-child {
+  padding-right: 0 !important;
+}
+
+.landing__newsletter {
+  width: 100%;
+  margin: auto;
+}
+
 .youtube iframe {
   max-width: 100%;
 }
@@ -114,6 +127,7 @@ body {
   width: 100%;
   flex-shrink: 0;
   padding: 0 2rem;
+  margin: 0 1rem;
 }
 
 .howworks-step {
@@ -183,8 +197,8 @@ body {
 
 .pilot_container img {
   margin: 1.5rem 3rem;
-  width: auto;
   height: 5rem;
+  width: 5rem;
 }
 
 .pricing_container {
@@ -451,6 +465,7 @@ body {
 }
 
 @media (min-width: 768px) and (max-width: 991.98px) {
+
   .howworks-steps {
     margin-left: 6rem;
     margin-right: 6rem;
@@ -458,8 +473,47 @@ body {
 }
 
 @media (min-width: 992px) {
+
   .howworks-steps {
     margin-left: 10rem;
     margin-right: 10rem;
+  }
+}
+
+@media (max-width: 575.98px) {
+
+  h1 {
+    font-size: 2rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
+  .pricing-tier__price {
+    font-size: 2.5rem;
+  }
+
+  .case-studies-list {
+    font-size: 1.25rem;
+  }
+
+  #gc-robot {
+    display: none;
+  }
+
+  .howworks_container {
+    padding-left: .5rem !important;
+    padding-right: .5rem !important;
+  }
+
+  .howworks-section {
+    padding: 0 .5rem;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .whatisit_container iframe {
+    min-height: 0;
   }
 }
