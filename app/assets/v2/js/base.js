@@ -174,3 +174,42 @@ $(document).ready(function() {
 $(window).scroll(function() {
   var scrollPos = $(document).scrollTop();
 });
+
+/* TODO : Remove after GDPR */
+if ($('#is-authenticated').val() === 'True' && !localStorage['notify_policy_update']) {
+  localStorage['notify_policy_update'] = true;
+
+  var content = $.parseHTML(
+    '<div><div class="row">' +
+      '<div class="col-12 closebtn">' +
+        '<a rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
+          '<span aria-hidden="true">&times;</span>' +
+        '</a>' +
+      '</div>' +
+      '<div class="col-12 pt-2 pb-2 text-center">' +
+        '<h2 class="font-title">' + gettext('We Care About Your Privacy') + '</h2>' +
+      '</div>' +
+      '<div class="col-12 pt-2 pb-2 font-body">' +
+        '<p>' + gettext('As a Web 3.0 company, we think carefully about user data and privacy ' +
+          'and how the internet is evolving. We hope Web 3.0 will bring more control ' +
+          'of data to users. With this ethos in mind, we are always careful about how ' +
+          'we use your information.') + '</p>' +
+        '<p>' + gettext('We recently reviewed our Privacy Policy to comply with requirements of ' +
+          'General Data Protection Regulation (GDPR), improving our Terms of Use, ' +
+          'Privacy Policy and Cookie Policy. These changes will go into effect on May 25, ' +
+          '2018, and your continued use of the Gitcoin after May 25, 2018 will be ' +
+          'subject to our updated Terms of Use and Privacy Policy.') +
+        '</p>' +
+      '</div>' +
+      '<div class="col-12 font-caption"><a href="/legal/policy" target="_blank">' +
+        gettext('Read Our Updated Terms') +
+      '</a></div>' +
+      '<div class="col-12 mt-4 mb-2 text-right font-caption">' +
+        '<a rel="modal:close" href="javascript:void" aria-label="Close dialog" class="button button--primary">Ok</a>' +
+      '</div>' +
+    '</div></div>');
+
+  var modal = $(content).appendTo('body').modal({
+    modalClass: 'modal notify_policy_update'
+  });
+}

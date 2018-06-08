@@ -54,7 +54,7 @@ Here's how to get started with bounties:
 - Repo Owner? Accelerate your dev progress by posting a bounty of your own at https://gitcoin.co/new
 - Send a tip to any github username with https://gitcoin.co/tip
 
-We have more details in our onboarding guide at https://gitcoin.co/onboard . We also have a FAQ and tutorials available at https://gitcoin.co/help
+We have more details in our onboarding guide at https://gitcoin.co/docs/onboard . We also have a FAQ and tutorials available at https://gitcoin.co/help
 
 If you have any feedback for the team, or just want to say hi, this is them:
 - @owocki, @vivek, @Pixelant, @mbeacom, @coderberry, @justin-bean

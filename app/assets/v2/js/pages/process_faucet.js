@@ -21,7 +21,8 @@ $(document).ready(function() {
     web3.eth.sendTransaction({
       from: fundingAccount,
       to: destinationAccount,
-      value: web3.toWei(faucetAmount, 'ether')
+      value: web3.toWei(faucetAmount, 'ether'),
+      gasPrice: web3.toHex(document.gas_price * Math.pow(10, 9))
     }, post_receipt);
   });
 });

@@ -35,7 +35,7 @@ window.onload = function() {
 
   $('neweth').onclick = _click;
   if (getParam('batch')) {
-    _alert({message: 'batch mode enabled'}, 'info');
+    _alert({ message: gettext('batch mode enabled') }, 'info');
     $('batches').style.display = 'block';
   }
   if (getParam('username')) {

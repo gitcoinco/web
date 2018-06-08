@@ -20,7 +20,7 @@
 
 {% load i18n admin_static static %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 
@@ -82,11 +82,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Days Hours Heatmap</title>    
+    <title>Days Hours Heatmap</title>
     <meta charset="utf-8"/>
     <script type="text/javascript" src="//d3js.org/d3.v3.js"></script>
     <script src="{% static "v2/js/jquery.js" %}"></script>
-    <link rel="stylesheet" href="/static/v2/js/dataviz/heatmap.css"/>
+    <link rel="stylesheet" href="/static/v2/js/dataviz/heatmap.css">
   </head>
   <body>
     <a href="..">&lt; back</a>
@@ -100,7 +100,7 @@
           <div role="description" class="description">
             <label>Less</label>
             <label>More</label>
-          </div>        
+          </div>
         </div>
         <div role="toggleDisplay" class="display-control">
           <div>
@@ -109,14 +109,14 @@
           </div>
           <div>
             <input type="radio" name="displayType"/>
-            <label>daily</label> 
+            <label>daily</label>
           </div>
         </div>
       </div>
       <!-- heatmap -->
       <svg role="heatmap" class="heatmap"></svg>
     </div>
-    
+
     <script type="text/javascript" src="/static/v2/js/dataviz/heatmap.js"></script>
   </body>
 </html>

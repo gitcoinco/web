@@ -36,6 +36,7 @@ class Command(BaseCommand):
             eles = soup.findAll("tr",)
             print(f'syncing {len(eles)} eles')
             if len(eles) < 10:
+                print(response)
                 raise
             for ele in eles:
                 if ele.find('th'):
