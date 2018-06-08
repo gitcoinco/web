@@ -32,8 +32,8 @@
       <label for="newsletter-input">({% trans "Emails once a week max, & we never sell your data" %})</label>
     {% endif %}
     <div class="col-12">
-      <input name="EMAIL" id="newsletter-input" required>
-      <button id="newsletter-subscribe" type="submit" class="addon subscribe"><i class="fas fa-paper-plane" aria-hidden="true"></i></button>
+      <input name="EMAIL" id="newsletter-input" placeholder="Enter your email" required>
+      <button id="newsletter-subscribe" type="submit" class="button button--primary subscribe">Subscribe</button>
     </div>
     {% if not hide_newsletter_consent %}
       <span style="display: block; margin-top: 3px; font-size: 10px;">

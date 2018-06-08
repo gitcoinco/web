@@ -500,7 +500,8 @@ body {
 
   #newsletter-subscribe {
     height: 46px;
-    top: -1px;
+    top: -2px;
+    position: relative;
   }
 }
 
