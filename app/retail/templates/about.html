@@ -74,7 +74,7 @@
         </div>
         <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
           <img class="img-fluid" src="{% static "v2/images/about/grow_open_source.png" %}" />
-          <h4 class="caption font-title">{% trans "Goal: Grow Open Source" %}</h4>
+          <h4 class="caption font-title">{% trans "Mission: Grow Open Source" %}</h4>
           <p>
             {% blocktrans %}<strong>Gitcoin</strong> is a project that combines the #givefirst mantra of the Boulder community with capitalistic incentives to write great software. By enabling <span>Repo Maintainers</span>, <span>developers</span>, and <span>financiers</span> to find one another, Gitcoin grows open source software.{% endblocktrans %}
           </p>
@@ -92,7 +92,17 @@
           <img class="img-fluid" src="{% static "v2/images/about/grow_community.png" %}" />
           <h4 class="caption font-title">Goal: To grow the community</h4>
           <p>
-          {% blocktrans %}The founder of Gitcoin, <a href="http://linkedin.com/in/owocki/">Kevin Owocki</a> has experience as an organizer of <a href="http://boulderstartupweek.com">Boulder Startup Week</a>, <a href="http://igniteboulder.com">Ignite Boulder</a>, <a href="https://startupcto.io">StartupCTO.io</a>, <a href="https://www.meetup.com/Boulder-Blockchain/">Boulder Blockchain Meetup</a> and the open source projects <a href="https://github.com/owocki/pytrader">pytrader</a>, <a href="https://github.com/owocki/adblock-to-bitcoin">adblock-to-bitcoin</a>, <a href="https://github.com/youvegoteth/youvegoteth.github.io/">YouveGotETH</a>, & <a href="https://github.com/owocki/coloradocoin">ColoradoCoin</a>. The stronger the community is, the more successful open source projects are. The stronger open source projects are, the stronger the community is.{% endblocktrans %}
+          {% blocktrans %}The founder of Gitcoin, 
+            <a href="http://linkedin.com/in/owocki/" target="_blank" rel="noopener noreferrer">Kevin Owocki</a> has experience as an organizer of 
+            <a href="http://boulderstartupweek.com" target="_blank" rel="noopener noreferrer">Boulder Startup Week</a>, 
+            <a href="http://igniteboulder.com" target="_blank" rel="noopener noreferrer">Ignite Boulder</a>, 
+            <a href="https://startupcto.io" target="_blank" rel="noopener noreferrer">StartupCTO.io</a>, 
+            <a href="https://www.meetup.com/Boulder-Blockchain/" target="_blank" rel="noopener noreferrer">Boulder Blockchain Meetup</a> and the open source projects 
+            <a href="https://github.com/owocki/pytrader" target="_blank" rel="noopener noreferrer">pytrader</a>, 
+            <a href="https://github.com/owocki/adblock-to-bitcoin" target="_blank" rel="noopener noreferrer">adblock-to-bitcoin</a>, 
+            <a href="https://github.com/youvegoteth/youvegoteth.github.io/" target="_blank" rel="noopener noreferrer">YouveGotETH</a>, & 
+            <a href="https://github.com/owocki/coloradocoin" target="_blank" rel="noopener noreferrer">ColoradoCoin</a>. The stronger the community is, the more successful open source projects are. The stronger open source projects are, the stronger the community is.
+          {% endblocktrans %}
           </p>
         </div>
       </div>
@@ -122,35 +132,17 @@
                   <span class="desc">{{food}}</span>
                 </p>
                 <div class="social-links">
-                  <a href="https://www.linkedin.com/in/{{linkedin}}"><i class="fab fa-linkedin"></i></a>
+                  <a href="https://www.linkedin.com/in/{{linkedin}}" target="_blank" rel="noopener noreferrer"><i class="fab fa-linkedin"></i></a>
                   <a href="https://gitcoin.co/profile/{{handle}}"><div class="gitcoin-svg"></div></a>
-                  <a href="https://github.com/{{handle}}"><i class="fab fa-github"></i></a>
+                  <a href="https://github.com/{{handle}}" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
                 </div>
               </div>
             </div>
           {% endfor %}
         </div>
       </div>
-      <div class="row">
-        <div class="col pb-4">
-          <h4>{% trans "Community" %}</h4>
-          <h6 style="text-align: center;" >{% trans "Gitcoin's Top Community Members" %}</h6>
-        </div>
-      </div>
-      <div class="row animatedParent">
-        <div class="col pb-4 flex-column text-center animated fadeInLeftShort">
-          {% for avatar, name, handle in community_members %}
-          <div class="communityProfile mr-1 ml-1">
-            <img class="communityProfileAvatar img-fluid" src="{{avatar}}">
-            <p>
-              <span class="font-bigger-1 font-weight-300"><strong>{{name}}</strong></span>
-            </p>
-            <a href="https://gitcoin.co/profile/{{handle}}"><img class="communityProfileAvatarSocialImg" src="{% static "v2/images/social/gitcoin.png" %}"></a>
-            <a href="https://github.com/{{handle}}"><img class="communityProfileAvatarSocialImg" src="{% static "v2/images/social/github.png" %}"></a>
-          </div>
-          {% endfor %}
-        </div>
-      </div>
+      {% include 'community.html' with h1="Community"  h2="Gitcoin's Top Community Members" community_members=community_members %}
+      {% include 'community.html' with h1="Alumni"  h2="Community Members that've 'graduated' into more work in the space" community_members=alumni %}
     </div>
     <div class="row" id="jobs">
       <div class="col-12 row section font-body">
@@ -161,21 +153,21 @@
         <div class="col-12 col-md-6 left">
           <p class="font-heading">{% trans "Open Gitcoin Roles" %}</p>
           <p>
-            {% trans "Front End Developer" %}
-            <a  class="title font-caption" href="https://consensys.net/open-positions/?gh_jid=924578">
+            {% trans "Product Developer" %}
+            <a  class="title font-caption" href="https://consensys.net/open-positions/?gh_jid=924578" target="_blank" rel="noopener noreferrer">
               {% trans "Learn More" %}
             </a>
           </p>
           <p>
-            {% trans "Technical Business Development Lead" %}
-            <a  class="title font-caption" href="https://consensys.net/open-positions/?gh_jid=1025695">
+            {% trans "Entrepeneur In Residence" %}
+            <a  class="title font-caption" href="https://consensys.net/open-positions/?gh_jid=1086781" target="_blank" rel="noopener noreferrer">
               {% trans "Learn More" %}
             </a>
           </p>
           <p>
-            {% trans "Entrepreneur In Residence" %}
-            <a class="title font-caption" href="https://new.consensys.net/careers/?gh_jid=1086781">
-              {% trans "Learn More" %}
+            {% trans "Technical Project Manager" %}
+            <a class="title font-caption" href="mailto:founders@gitcoin.co">
+              {% trans "Contact us" %}
             </a>
           </p>
         </div>
@@ -183,17 +175,13 @@
           <p class="font-heading">{% trans "Open Bounties.Network Roles" %}</p>
           <p>
             {% trans "Data Scientist" %}
-            <a class="title font-caption" href="https://consensys.net/open-positions/?gh_jid=945245">
+            <a class="title font-caption" href="https://consensys.net/open-positions/?gh_jid=945245" target="_blank" rel="noopener noreferrer">
               {% trans "Learn More" %}
             </a>
           </p>
         </div>
       </div>
     </div>
-  </div>
-  <div id='note'>
-    &nbsp;
-  </div>
     <div class="container-fluid text-center white-light-bg" id="features">
       <div class="row pb-1 pt-4">
         <div class="col text-center">
@@ -242,7 +230,8 @@
       </div>
       <div class="row mt-5 pb-3 animatedParent">
         <div class="col animated pulse fast">
-          <a class="btn btn-lg btn-warning" role="button" href="{% url "get_gitcoin" %}">{% trans "Get Started" %}</a>
+          <p>and many more.. Click below to view our toolbox:</p>
+          <a class="btn btn-lg btn-warning" role="button" href="{% url "tools" %}">{% trans "View our Toolbox" %}</a>
         </div>
       </div>
     </div>
@@ -256,13 +245,13 @@
       <div class=" row animatedParent grow_hero">
         <div class="col d-flex flex-column p-5 animated fadeIn ">
           <div class="pl-5 pr-5" style="text-align: center;">
-            <img src="{% static "v2/images/mission/grow_hero.png" %}" />
+            <img src="{% static "v2/images/about/grow_hero.png" %}" />
           </div>
         </div>
       </div>
       <div class="row mt-5 pb-3 animatedParent">
         <div class="col animated pulse fast">
-          <a class="btn btn-lg btn-warning" role="button" href="{% url "get_gitcoin" %}">{% trans "Get Started" %}</a>
+          <a class="btn btn-lg btn-warning" role="button" href="{% url "mission" %}">{% trans "Read about our Mission" %}</a>
         </div>
       </div>
     </div>
@@ -270,5 +259,6 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/rollbar.html' %}
+    {% include 'shared/messages.html' %}
   </body>
 </html>

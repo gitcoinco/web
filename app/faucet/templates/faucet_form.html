@@ -86,6 +86,8 @@
               {% include 'svgs/success.svg' %}
               <div class="fail_header"></div>
               <div class="fail_message">{% trans "Your request for a faucet distribution has been received. An administrator will review your request shortly (up to 24 hours on weekdays, on next business day if on weekends / holidays) and arrange a deposit if approved." %}
+              <br>
+              {% trans "While you wait, why not create an *free* Gitcoin ENS name?" %} <a href="{% url 'ens' %}">{{user.username}}.gitcoin.eth is available.  Click here to register it!</a>
               </div>
             </div>
             <div id="fail_container" class="faucet_response">
@@ -108,6 +110,7 @@
     {% include 'shared/ga.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
 
   {% csrf_token %}
   <script type="text/javascript">

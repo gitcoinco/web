@@ -13,12 +13,6 @@ window.onload = function() {
     if (typeof localStorage['notificationEmail'] != 'undefined') {
       $('input[name=notificationEmail]').val(localStorage['notificationEmail']);
     }
-    if (
-      typeof localStorage['acceptTOS'] != 'undefined' &&
-      localStorage['acceptTOS']
-    ) {
-      $('input[name=terms]').attr('checked', 'checked');
-    }
     if (getParam('source')) {
       $('input[name=issueURL]').val(getParam('source'));
     }
@@ -137,7 +131,7 @@ window.onload = function() {
                     error: error
                   });
                   console.error('err', error);
-                  _alert({ message: 'There was an error' });
+                  _alert({ message: gettext('There was an error') });
                   unloading_button($('.js-submit'));
                 } else {
                   next();

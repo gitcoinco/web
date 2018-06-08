@@ -15,7 +15,9 @@ var sidebar_keys = [
   'bounty_filter',
   'network',
   'idx_status',
-  'tech_stack'
+  'tech_stack',
+  'project_type',
+  'permission_type'
 ];
 
 var localStorage;
@@ -53,24 +55,19 @@ var save_sidebar_latest = function() {
   for (var i = 0; i < sidebar_keys.length; i++) {
     var key = sidebar_keys[i];
 
-    if (key !== 'tech_stack') {
-      localStorage[key] = $('input[name=' + key + ']:checked').val();
-    } else {
-      localStorage[key] = '';
+    localStorage[key] = '';
 
-      $('input[name=' + key + ']:checked').each(function() {
-        localStorage[key] += $(this).val() + ',';
-      });
+    $('input[name="' + key + '"]:checked').each(function() {
+      localStorage[key] += $(this).val() + ',';
+    });
 
-      // Removing the start and last comma to avoid empty element when splitting with comma
-      localStorage[key] = localStorage[key].replace(/^,|,\s*$/g, '');
-    }
+    // Removing the start and last comma to avoid empty element when splitting with comma
+    localStorage[key] = localStorage[key].replace(/^,|,\s*$/g, '');
   }
 };
 
 // saves search information default
 var set_sidebar_defaults = function() {
-
   // Special handling to support adding keywords from url query param
   var q = getParam('q');
   var keywords;
@@ -100,13 +97,12 @@ var set_sidebar_defaults = function() {
     var key = sidebar_keys[i];
 
     if (localStorage[key]) {
-      if (key !== 'tech_stack') {
-        $('input[name=' + key + '][value=' + localStorage[key] + ']').prop('checked', true);
-      } else {
-        localStorage[key].split(',').forEach(function(v, k) {
-          $('input[name=' + key + '][value=' + v + ']').prop('checked', true);
-        });
-      }
+      localStorage[key].split(',').forEach(function(v, k) {
+        $('input[name="' + key + '"][value="' + v + '"]').prop('checked', true);
+      });
+
+      if ($('input[name="' + key + '"][value!=any]:checked').length > 0)
+        $('input[name="' + key + '"][value=any]').prop('checked', false);
     }
   }
 };
@@ -118,28 +114,49 @@ var set_filter_header = function() {
   $('#filter').html(filter_status);
 };
 
-// TODO: Refactor function :
-// Deselect option 'any' when another filter is selected
-// Selects option 'any' when no filter is applied
-// TODO : Disable other filters when 'any' is selected
-var disableAny = function() {
-  for (var i = 0; i < sidebar_keys.length; i++) {
-    var key = sidebar_keys[i];
-    var tag = ($('input[name=' + key + '][value]'));
+var toggleAny = function(event) {
+  if (!event)
+    return;
+  var key = event.target.name;
+  var anyOption = $('input[name="' + key + '"][value=any]');
 
-    tag.map(function(index, input) {
-      if ($(input).prop('checked')) {
-        if (input.value === 'any') {
-          $('input[name=' + key + '][value=any]').prop('checked', true);
-        } else {
-          $('input[name=' + key + '][value=any]').prop('checked', false);
-        }
-      }
-    });
+  // Selects option 'any' when no filter is applied
+  if ($('input[name="' + key + '"]:checked').length === 0) {
+    anyOption.prop('checked', true);
+    return;
+  }
+  if (event.target.value === 'any') {
+    // Deselect other filters when 'any' is selected
+    $('input[name="' + key + '"][value!=any]').prop('checked', false);
+  } else {
+    // Deselect option 'any' when another filter is selected
+    anyOption.prop('checked', false);
+  }
+};
 
-    if ($('input[name=' + key + ']:checked').length === 0) {
-      $('input[name=' + key + '][value=any]').prop('checked', true);
+var addTechStackKeywordFilters = function(value) {
+  var isTechStack = false;
+
+  technologies.forEach(function(v, k) {
+    if (v.toLowerCase() === value) {
+      isTechStack = true;
+
+      $('.filter-tags').append('<a class="filter-tag tech_stack"><span>' + value + '</span>' +
+        '<i class="fas fa-times" onclick="removeFilter(\'tech_stack\', \'' + value + '\')"></i></a>');
+
+      $('input[name="tech_stack"][value=' + value + ']').prop('checked', true);
     }
+  });
+
+  if (!isTechStack) {
+    if (localStorage['keywords']) {
+      localStorage['keywords'] += ',' + value;
+    } else {
+      localStorage['keywords'] += value;
+    }
+
+    $('.filter-tags').append('<a class="filter-tag keywords"><span>' + value + '</span>' +
+      '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + value + '\')"></i></a>');
   }
 };
 
@@ -149,10 +166,10 @@ var getFilters = function() {
   for (var i = 0; i < sidebar_keys.length; i++) {
     var key = sidebar_keys[i];
 
-    $.each($('input[name=' + key + ']:checked'), function() {
+    $.each($('input[name="' + key + '"]:checked'), function() {
       if ($(this).attr('val-ui')) {
         _filters.push('<a class="filter-tag ' + key + '"><span>' + $(this).attr('val-ui') + '</span>' +
-          '<i class="fa fa-times" onclick="removeFilter(\'' + key + '\', \'' + $(this).attr('value') + '\')"></i></a>');
+          '<i class="fas fa-times" onclick="removeFilter(\'' + key + '\', \'' + $(this).attr('value') + '\')"></i></a>');
       }
     });
   }
@@ -160,7 +177,7 @@ var getFilters = function() {
   if (localStorage['keywords']) {
     localStorage['keywords'].split(',').forEach(function(v, k) {
       _filters.push('<a class="filter-tag keywords"><span>' + v + '</span>' +
-        '<i class="fa fa-times" onclick="removeFilter(\'keywords\', \'' + v + '\')"></i></a>');
+        '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + v + '\')"></i></a>');
     });
   }
 
@@ -169,7 +186,7 @@ var getFilters = function() {
 
 var removeFilter = function(key, value) {
   if (key !== 'keywords') {
-    $('input[name=' + key + '][value=' + value + ']').prop('checked', false);
+    $('input[name="' + key + '"][value="' + value + '"]').prop('checked', false);
   } else {
     localStorage['keywords'] = localStorage['keywords'].replace(value, '').replace(',,', ',');
 
@@ -188,9 +205,9 @@ var get_search_URI = function() {
     var key = sidebar_keys[i];
     var filters = [];
 
-    $.each ($('input[name=' + key + ']:checked'), function() {
+    $.each ($('input[name="' + key + '"]:checked'), function() {
       if (key === 'tech_stack' && $(this).val()) {
-        keywords += $(this).val() + ', ';
+        keywords += $(this).val() + ',';
       } else if ($(this).val()) {
         filters.push($(this).val());
       }
@@ -216,7 +233,7 @@ var get_search_URI = function() {
         }
 
         if (_value !== 'any')
-          uri += '&' + _key + '=' + _value;
+          uri += _key + '=' + _value + '&';
       });
 
       // TODO: Check if value myself is needed for coinbase
@@ -229,13 +246,16 @@ var get_search_URI = function() {
     if (val !== 'any' &&
         key !== 'bounty_filter' &&
         key !== 'bounty_owner_address') {
-      uri += '&' + key + '=' + val;
+      uri += key + '=' + val + '&';
     }
   }
 
   if (localStorage['keywords']) {
-    localStorage['keywords'].split(',').forEach(function(v, k) {
-      keywords += v + ', ';
+    localStorage['keywords'].split(',').forEach(function(v, pos, arr) {
+      keywords += v;
+      if (arr.length > pos + 1) {
+        keywords += ',';
+      }
     });
   }
 
@@ -306,11 +326,11 @@ var process_stats = function(results) {
       break;
     case 1:
       matchesEl.html(num + gettext(' Matching Result'));
-      fundingInfoEl.html("<span id='modifiers'>Funded Issue</span><span id='stats' class='font-body'>(" + stats + ')</span>');
+      fundingInfoEl.html('<span id="modifiers">Funded Issue</span><span id="stats" class="font-caption">(' + stats + ')</span>');
       break;
     default:
       matchesEl.html(num + gettext(' Matching Results'));
-      fundingInfoEl.html("<span id='modifiers'>Funded Issues</span><span id='stats' class='font-body'>(" + stats + ')</span>');
+      fundingInfoEl.html('<span id="modifiers">Funded Issues</span><span id="stats" class="font-caption">(' + stats + ')</span>');
   }
 };
 
@@ -336,7 +356,7 @@ var paint_bounties_in_viewport = function(start, max) {
   });
   document.is_painting_now = false;
 
-  if (document.referrer.search('/onboard') != -1) {
+  if (localStorage['referrer'] === 'onboard') {
     $('.bounty_row').each(function(index) {
       if (index > 2)
         $(this).addClass('hidden');
@@ -368,10 +388,21 @@ var trigger_scroll = debounce(function() {
 $(window).scroll(trigger_scroll);
 $('body').bind('touchmove', trigger_scroll);
 
-var refreshBounties = function() {
+var refreshBounties = function(event) {
+
+  // Allow search for freeform text
+  var searchInput = $('#keywords')[0];
+
+  if (searchInput.value.length > 0) {
+    addTechStackKeywordFilters(searchInput.value.trim());
+    searchInput.value = '';
+    searchInput.blur();
+    $('.close-icon').hide();
+  }
+
   save_sidebar_latest();
   set_filter_header();
-  disableAny();
+  toggleAny(event);
   getFilters();
 
   $('.nonefound').css('display', 'none');
@@ -391,7 +422,12 @@ var refreshBounties = function() {
     results = sanitizeAPIResults(results);
 
     if (results.length === 0) {
-      $('.nonefound').css('display', 'block');
+      if (localStorage['referrer'] === 'onboard') {
+        $('.no-results').removeClass('hidden');
+        $('#dashboard-content').addClass('hidden');
+      } else {
+        $('.nonefound').css('display', 'block');
+      }
     }
 
     document.is_painting_now = false;
@@ -423,10 +459,10 @@ var refreshBounties = function() {
       result.action = result['url'];
       result['title'] = result['title'] ? result['title'] : result['github_url'];
 
-      var timeLeft = timeDifference(new Date(result['expires_date']), new Date(), true);
+      var project_type = ucwords(result['project_type']) + ' &bull; ';
 
-      result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
-
+      result['p'] = project_type + (result['experience_level'] ? result['experience_level'] + ' &bull; ' : '');
+      
       if (result['status'] === 'done')
         result['p'] += 'Done';
       if (result['fulfillment_accepted_on']) {
@@ -447,11 +483,15 @@ var refreshBounties = function() {
       } else if (is_expired) {
         var time_ago = timeDifference(new Date(), new Date(result['expires_date']), true);
 
-        result['p'] += ('Expired ' + time_ago + ' ago');
+        result['p'] += (' Expired ' + time_ago + ' ago');
       } else {
         var opened_when = timeDifference(new Date(), new Date(result['web3_created']), true);
 
-        result['p'] += ('Opened ' + opened_when + ' ago, Expires in ' + timeLeft);
+        var timeLeft = timeDifference(new Date(), new Date(result['expires_date']));
+        var expiredExpires = new Date() < new Date(result['expires_date']) ? 'Expires' : 'Expired';
+        var softOrNot = result['can_submit_after_expiration_date'] ? 'Soft ' : '';
+
+        result['p'] += ('Opened ' + opened_when + ' ago, ' + softOrNot + expiredExpires + ' ' + timeLeft);
       }
 
       result['watch'] = 'Watch';
@@ -467,7 +507,7 @@ var refreshBounties = function() {
 
     process_stats(results);
   }).fail(function() {
-    _alert({message: 'got an error. please try again, or contact support@gitcoin.co'}, 'error');
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
   }).always(function() {
     $('.loading').css('display', 'none');
   });
@@ -497,38 +537,55 @@ function getURLParams(k) {
 var resetFilters = function() {
   for (var i = 0; i < sidebar_keys.length; i++) {
     var key = sidebar_keys[i];
-    var tag = ($('input[name=' + key + '][value]'));
+    var tag = ($('input[name="' + key + '"][value]'));
 
     for (var j = 0; j < tag.length; j++) {
       if (tag[j].value == 'any')
-        $('input[name=' + key + '][value=any]').prop('checked', true);
+        $('input[name="' + key + '"][value="any"]').prop('checked', true);
       else
-        $('input[name=' + key + '][value=' + tag[j].value + ']').prop('checked', false);
+        $('input[name="' + key + '"][value="' + tag[j].value + '"]').prop('checked', false);
     }
+  }
+
+  if (localStorage['keywords']) {
+    localStorage['keywords'].split(',').forEach(function(v, k) {
+      removeFilter('keywords', v);
+    });
   }
 };
 
 (function() {
-  if (document.referrer.search('/onboard') != -1) {
+  if (localStorage['referrer'] === 'onboard') {
     $('#sidebar_container').addClass('invisible');
     $('#dashboard-title').addClass('hidden');
     $('#onboard-dashboard').removeClass('hidden');
+    $('#onboard-footer').removeClass('hidden');
     resetFilters();
     $('input[name=idx_status][value=open]').prop('checked', true);
     $('.search-area input[type=text]').text(getURLParams('q'));
-    document.referrer = '';
 
     $('#onboard-alert').click(function(e) {
+
+      if (!$('.no-results').hasClass('hidden'))
+        $('.nonefound').css('display', 'block');
+
       $('.bounty_row').each(function(index) {
         $(this).removeClass('hidden');
       });
+
       $('#onboard-dashboard').addClass('hidden');
+      $('#onboard-footer').addClass('hidden');
       $('#sidebar_container').removeClass('invisible');
       $('#dashboard-title').removeClass('hidden');
+      $('#dashboard-content').removeClass('hidden');
+
+      localStorage['referrer'] = '';
       e.preventDefault();
     });
   } else {
+    $('#dashboard-content').removeClass('hidden');
     $('#onboard-dashboard').addClass('hidden');
+    $('#onboard-footer').addClass('hidden');
     $('#sidebar_container').removeClass('invisible');
     $('#dashboard-title').removeClass('hidden');
   }
@@ -554,13 +611,15 @@ $(document).ready(function() {
   }
 
   technologies.forEach(function(v, k) {
-    $('#tech-stack-options').append('<div class="checkbox_container">\n' +
-      '<input name="tech_stack" id="' + v.toLowerCase() + '" type="checkbox" value="' + v.toLowerCase() + '" val-ui="' + v + '"/>' +
-      '<span class="checkbox"></span>' +
-      '<div class="filter-label">' +
-      '<label for="' + v.toLowerCase() + '">' + v + '</label>' +
-      '</div>' +
-      '</div>');
+    $('#tech-stack-options').append(
+      '<div class="checkbox_container">' +
+        '<input name="tech_stack" id="' + v.toLowerCase() + '" type="checkbox" value="' + v.toLowerCase() + '" val-ui="' + v + '"/>' +
+        '<span class="checkbox"></span>' +
+        '<div class="filter-label">' +
+          '<label for="' + v.toLowerCase() + '">' + v + '</label>' +
+        '</div>' +
+      '</div>'
+    );
   });
 
   // Handle search input clear
@@ -597,7 +656,6 @@ $(document).ready(function() {
       },
       select: function(event, ui) {
         var terms = split(this.value);
-        var isTechStack = false;
 
         $('.close-icon').hide();
 
@@ -610,30 +668,9 @@ $(document).ready(function() {
         // add placeholder to get the comma-and-space at the end
         terms.push('');
 
-        // this.value = terms.join(', ');
         this.value = '';
 
-        technologies.forEach(function(v, k) {
-          if (v.toLowerCase() === ui.item.value) {
-            isTechStack = true;
-
-            $('.filter-tags').append('<a class="filter-tag tech_stack"><span>' + ui.item.value + '</span>' +
-              '<i class="fa fa-times" onclick="removeFilter(\'tech_stack\', \'' + ui.item.value + '\')"></i></a>');
-
-            $('input[name="tech_stack"][value=' + ui.item.value + ']').prop('checked', true);
-          }
-        });
-
-        if (!isTechStack) {
-          if (localStorage['keywords']) {
-            localStorage['keywords'] += ',' + ui.item.value;
-          } else {
-            localStorage['keywords'] += ui.item.value;
-          }
-
-          $('.filter-tags').append('<a class="filter-tag keywords"><span>' + ui.item.value + '</span>' +
-            '<i class="fa fa-times" onclick="removeFilter(\'keywords\', \'' + ui.item.value + '\')"></i></a>');
-        }
+        addTechStackKeywordFilters(ui.item.value);
 
         return false;
       }
@@ -642,19 +679,7 @@ $(document).ready(function() {
   // sidebar clear
   $('.dashboard #clear').click(function(e) {
     e.preventDefault();
-
-    for (var i = 0; i < sidebar_keys.length; i++) {
-      var key = sidebar_keys[i];
-      var tag = ($('input[name=' + key + '][value]'));
-
-      for (var j = 0; j < tag.length; j++) {
-        if (tag[j].value === 'any')
-          $('input[name=' + key + '][value=any]').prop('checked', true);
-        else
-          $('input[name=' + key + '][value=' + tag[j].value + ']').prop('checked', false);
-      }
-    }
-
+    resetFilters();
     refreshBounties();
   });
 
@@ -679,7 +704,7 @@ $(document).ready(function() {
 
   // sidebar filters
   $('.sidebar_search input[type=checkbox], .sidebar_search label').change(function(e) {
-    refreshBounties();
+    refreshBounties(e);
     e.preventDefault();
   });
 
@@ -715,10 +740,10 @@ $(document).ready(function() {
         var status = response['status'];
 
         if (status == 200) {
-          _alert({message: gettext("You're in! Keep an eye on your inbox for the next funding listing.")}, 'success');
+          _alert({ message: gettext("You're in! Keep an eye on your inbox for the next funding listing.") }, 'success');
           $.modal.close();
         } else {
-          _alert({message: response['msg']}, 'error');
+          _alert({ message: response['msg'] }, 'error');
         }
       });
     }

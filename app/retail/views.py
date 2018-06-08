@@ -26,36 +26,29 @@ from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
-from marketing.models import LeaderboardRank
+from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
+
+from .utils import build_stat_results
 
 
 def index(request):
     slides = [
-        ("Zack Coburn, EtherDelta", static("v2/images/testimonials/zack.jpg"),
-         _("Gitcoin is the catalyst open source development needs to move forward. The process is seamless and the results speak for themselves."),
-         'https://github.com/zackcoburn'),
-        ("Piper Merriam, web3py", static("v2/images/testimonials/piper.jpg"),
-         _("We have been trying out the Gitcoin bounty program in the Web3.py project and are very pleased with the results so far.  We’ve closed out four bountied issues ranging from smaller cleanup tasks to full fledged feature development.  So far the platform looks promising as a valuable addition to our development process."),
-         'https://github.com/pipermerriam'),
-        ("Phil Elsasser, Market", static("v2/images/testimonials/phil.jpg"),
-         _("Our first experiences with Gitcoin have been very positive.  It has helped MARKET to get new people involved quickly and in a cost effective manner.  Having fresh ideas and outside perspectives contribute to a new project is unbelievably valuable."),
-         'http://www.marketprotocol.io/'),
-        ("Aditya Anand", static("v2/images/testimonials/aditya.jpg"),
-         _("It’s been a while since something has gotten me this riled up ! Love the concept and definitely sticking around to see this project through. Awesome community  + open source work + bounties"),
-         "https://github.com/thelostone-mc"),
-        ("Daniel Merrill", static("v2/images/testimonials/daniel.jpg"),
-         _("Now that the internet of value is starting to be a thing, Gitcoin is adding a new layer of incentives into open source development, helping both the projects, by powering up their capacity, and the developers, by paying for their work."),
-         "https://github.com/dmerrill6"),
-        ("Maurelian", static("v2/images/testimonials/maurelian.jpg"),
-         _("Gitcoin helps us to finally close out the issues we’ve been meaning to get around to for too long."),
-         "https://github.com/maurelian"),
-        ("Mark Beacom", static("v2/images/testimonials/mark.jpg"),
-         _("Gitcoin is precisely what I’ve been looking for! It gives every developer a vehicle to make extra money or move their open source project ahead."),
-         "https://github.com/mbeacom"),
-        ("Isaac Serafino", static("v2/images/testimonials/isaac.jpg"),
-         _("I feel it is so awesome to have the opportunity through Gitcoin to do what I love and get paid for it, and to have reasonable freedom about the way I work, that it already seems too good to be true. "),
-         "https://github.com/isaacserafino"),
+        ("Dan Finlay", static("v2/images/testimonials/dan.jpg"),
+         _("Once we had merged in multiple language support from a bounty, it unblocked the path to all other translations, and what better way to get lots of dif erent translations than with bounties from our community? A single tweet of publicity and we had something like 20 language requests, and 10 language pull requests. It’s been total magic."),
+         'https://github.com/danfinlay', "Metamask -- Internationalization"),
+        ("Phil Elsasser", static("v2/images/testimonials/phil.jpg"),
+         _("​By design or not, there is an element of trust inherent within Gitcoin. This isn’t the bad kind of “trust” that we are all trying to move away from in a centralized world, but a much better sense of community trust that gets established through the bounty process."),
+         'http://www.marketprotocol.io/', 'Market'),
+        ("John Maurelian", static("v2/images/testimonials/maurelian.jpg"),
+         _("Gitcoin helps us to finally close out the issues we've been meaning to get around to for too long"),
+         "https://consensys.github.io/smart-contract-best-practices/", 'Consensys Diligence -- Documentation Bounties'),
+        ("Kames CG", static("v2/images/testimonials/kames.jpg"),
+         _("uPort is still in the process of Open Sourcing all of our code, so Gitcoin at the present moment, helps uPort plant seeds within the growing Ethereum developer community, that we expect will blossom into flourishing opportunities in the future. Put simply, as opposed to running marketing campaign, we can use bounties to stay present in front of potential developers we want to engage with."),
+         'https://github.com/KamesCG', 'Uport'),
+        ("Piper", static("v2/images/testimonials/pipermerriam.jpg"),
+         _("Although we’ve only hired two developers, there is no doubt that we could have sourced more. Gitcoin has been the strongest hiring signal in all of the hiring I’ve ever done."),
+         'https://github.com/pipermerriam', 'Pipermerriam'),
     ]
     context = {
         'slides': slides,
@@ -123,18 +116,43 @@ def about(request):
             "Gitcoin Requests",
             "Tangerine Gelato"
         ),
+        (
+            static("v2/images/team/aditya-anand.jpg"),
+            "Aditya Anand M C",
+            "Engineering",
+            "thelostone-mc",
+            "aditya-anand-m-c-95855b65",
+            "The Community",
+            "Cocktail Samosa"
+        ),
+        (
+            static("v2/images/team/saptaks.jpg"),
+            "Saptak Sengupta",
+            "Engineering",
+            "saptaks",
+            "saptaks",
+            "Everything Open Source",
+            "daab chingri"
+        ),
     ]
     exclude_community = ['kziemiane', 'owocki', 'mbeacom']
     community_members = [
     ]
     leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount')[0: 15]
     for lr in leadeboardranks:
-        package = (lr.avatar_url, lr.github_username, lr.github_username)
+        package = (lr.avatar_url, lr.github_username, lr.github_username, '')
         community_members.append(package)
+
+    alumnis = [
+    ]
+    for alumni in Alumni.objects.select_related('profile').filter(public=True).exclude(organization='gitcoinco'):
+        package = (alumni.profile.avatar_url, alumni.profile.username, alumni.profile.username, alumni.organization)
+        alumnis.append(package)
 
     context = {
         'core_team': core_team,
         'community_members': community_members,
+        'alumni': alumnis,
         'active': 'about',
         'title': 'About',
     }
@@ -151,6 +169,12 @@ def mission(request):
         'avatar_url': static('v2/images/grow_open_source.png'),
     }
     return TemplateResponse(request, 'mission.html', context)
+
+
+def results(request):
+    """Render the Results response."""
+    context = build_stat_results()
+    return TemplateResponse(request, 'results.html', context)
 
 
 def help(request):
@@ -443,9 +467,17 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
         'url': 'https://medium.com/gitcoin/tutorial-leverage-gitcoins-firehose-of-talent-to-do-more-faster-dcd39650fc5',
         'title': _('Leverage Gitcoin’s Firehose of Talent to Do More Faster'),
     }, {
+        'img': static('v2/images/tools/api.jpg'),
+        'url': 'https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e',
+        'title': _('How to Price Work on Gitcoin'),
+    }, {
         'img': static('v2/images/help/tools.png'),
         'url': 'https://medium.com/gitcoin/tutorial-post-a-bounty-in-90-seconds-a7d1a8353f75',
         'title': _('Post a Bounty in 90 Seconds'),
+    }, {
+        'img': static('v2/images/tldr/tips_noborder.jpg'),
+        'url': 'https://medium.com/gitcoin/tutorial-send-a-tip-to-any-github-user-in-60-seconds-2eb20a648bc8',
+        'title': _('Send a Tip to any Github user in 60 seconds'),
     }]
 
     context = {
@@ -543,8 +575,7 @@ def browser_extension_firefox(request):
 
 
 def itunes(request):
-    return HttpResponse(_('<h1>Coming soon!</h1> If youre seeing this page its because apple is reviewing the app... and release is imminent :)'))
-    return redirect('https://itunes.apple.com/us/app/gitcoin/idXXXXXXXXX')
+    return redirect('https://itunes.apple.com/us/app/gitcoin/id1319426014')
 
 
 def ios(request):
@@ -632,7 +663,7 @@ def github(request):
 
 
 def youtube(request):
-    return redirect('https://www.youtube.com/watch?v=DJartWzDn0E')
+    return redirect('https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w')
 
 
 def web3(request):

@@ -129,7 +129,7 @@ class DashboardModelsTest(TestCase):
             created_on=date.today(),
             tokenAddress='0x0000000000000000000000000000000000000000',
         )
-        assert str(tip) == '(net) - PENDING 7 ETH to fred, created: today, expires: tomorrow'
+        assert str(tip) == '(net) - PENDING 7 ETH to fred from NA, created: today, expires: tomorrow'
         assert tip.get_natural_value() == 7e-18
         assert tip.value_in_eth == 7
         assert tip.value_in_usdt == 14
@@ -144,7 +144,7 @@ class DashboardModelsTest(TestCase):
         interest = Interest(
             profile=profile,
         )
-        assert str(interest) == 'foo'
+        assert str(interest) == 'foo / pending: False'
 
     @staticmethod
     def test_profile():
@@ -166,19 +166,18 @@ class DashboardModelsTest(TestCase):
         profile = Profile(
             handle='gitcoinco',
             data={'type': 'Organization'},
-            repos_data=[{'contributors': [{'contributions': 50, 'login': 'foo'}]}],
         )
         assert str(profile) == 'gitcoinco'
         assert profile.is_org is True
         assert profile.bounties.first() == bounty
         assert profile.tips.first() == tip
-        assert profile.authors == ['foo', 'gitcoinco']
         assert profile.desc == '@gitcoinco is a newbie who has participated in 1 funded issue on Gitcoin'
         assert profile.stats == [
             ('newbie', 'Status'),
             (1, 'Total Funded Issues'),
             (1, 'Open Funded Issues'),
             ('0x', 'Loyalty Rate'),
+            (0, 'Bounties completed'),
         ]
         assert profile.github_url == 'https://github.com/gitcoinco'
         assert profile.get_relative_url() == '/profile/gitcoinco'
@@ -197,9 +196,55 @@ class DashboardModelsTest(TestCase):
         profile = Profile.objects.create(
             handle='gitcoinco',
             data={'type': 'Organization'},
-            repos_data=[{'contributors': [{'contributions': 50, 'login': 'foo'}]}],
         )
         vote = ToolVote.objects.create(profile_id=profile.id, value=1)
         tool.votes.add(vote)
         assert tool.vote_score() == 11
         assert tool.link_url == 'http://gitcoin.co/explorer'
+
+    @staticmethod
+    def test_bounty_snooze_url():
+        """Test the dashboard Bounty model snooze_url method."""
+        bounty = Bounty(
+            title='foo',
+            value_in_token=3,
+            token_name='ETH',
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12',
+            token_address='0x0',
+            issue_description='hello world',
+            bounty_owner_github_username='flintstone',
+            is_open=False,
+            accepted=False,
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            idx_project_length=5,
+            project_length='Months',
+            bounty_type='Feature',
+            experience_level='Intermediate',
+            raw_data={},
+        )
+        assert bounty.snooze_url(1) == f'{bounty.get_absolute_url()}?snooze=1'
+
+    @staticmethod
+    def test_bounty_clean_gh_url_on_save():
+        """Test the dashboard Bounty model with clean_github_url in save method."""
+        bounty = Bounty.objects.create(
+            title='foo',
+            value_in_token=3,
+            token_name='ETH',
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/9999#issuecomment-999999999',
+            token_address='0x0',
+            issue_description='hello world',
+            bounty_owner_github_username='flintstone',
+            is_open=False,
+            accepted=False,
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            idx_project_length=5,
+            project_length='Months',
+            bounty_type='Feature',
+            experience_level='Intermediate',
+            raw_data={},
+        )
+        assert bounty.github_url == 'https://github.com/gitcoinco/web/issues/9999'
+        bounty.delete()

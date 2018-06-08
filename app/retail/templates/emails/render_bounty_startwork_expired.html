@@ -24,36 +24,36 @@
 
 
 <p>
-    {% trans "Hey there," %}
+  {% trans "Hey there," %}
 
-    <br>
-    <br>
+  <br>
+  <br>
 
-     You <strong>started work upon</strong> a funded issue {{interest.created | naturaltime}}.  But we haven't heard from you on the github thread{% if time_delta_days %} in {{time_delta_days}} days{%endif%}.
+   You <strong>started work upon</strong> a funded issue {{interest.created | naturaltime}}.  But we haven't heard from you on the github thread{% if time_delta_days %} in {{time_delta_days}} days{%endif%}.
 
-    <br>
-    <br>
-    {% trans "Since we have a responsibility to the community to keep the list of claimees for this issue current, Gitcoin removed you from the task." %}
-    <br>
-    <br>
+  <br>
+  <br>
+  {% trans "Since we have a responsibility to the community to keep the list of claimees for this issue current, Gitcoin removed you from the task." %}
+  <br>
+  <br>
 
-    {% trans "Do you still want to work on this?  No big deal!  We can help with that:" %}
+  {% trans "Do you still want to work on this?  No big deal!  We can help with that:" %}
 
-    <br>
-    <br>
+  <br>
+  <br>
 
-    {% trans "Please leave a comment on the github thread to check in." %}
-    <br>
-    -{% trans "AND" %}-
-    <br>
-    {% blocktrans %}Click 'Start Work' on the <a href="{{bounty.absolute_url}}">issue detail page</a>.{% endblocktrans %}
+  {% trans "Please leave a comment on the github thread to check in." %}
+  <br>
+  -{% trans "AND" %}-
+  <br>
+  {% blocktrans %}Click 'Start Work' on the <a href="{{bounty.absolute_url}}">issue detail page</a>.{% endblocktrans %}
 
-    <br>
-    <br>
-    {% blocktrans %}If you have any questions, feel free to reach out <a href="https://gitcoin.co/slack">on slack</a>.{% endblocktrans %}
+  <br>
+  <br>
+  {% blocktrans %}If you have any questions, feel free to reach out <a href="https://gitcoin.co/slack">on slack</a>.{% endblocktrans %}
 
-    <br>
-    <h5>{% trans "Funded Issue Details" %}</h5>
+  <br>
+  <h5>{% trans "Funded Issue Details" %}</h5>
 </p>
 
 <br>

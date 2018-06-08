@@ -19,7 +19,7 @@
 
 {% load i18n admin_static static %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 
@@ -33,7 +33,7 @@
     <h1>{% trans "Process Faucet Request" %} {{obj.pk}}</h1>
     <div style="border: 1px solid black; padding: 5px;">
         {% trans "Github Profile" %}: <a href="https://github.com/{{obj.github_username}}
-        ">@{{obj.github_username}}</a>
+        " target="_blank" rel="noopener noreferrer">@{{obj.github_username}}</a>
         <br>
         {% trans "Comments" %} {{obj.comment}}
     </div>
@@ -76,6 +76,9 @@
 
 {% endblock %}
 {% block extrahead %}{{ block.super }}
+  <script>
+    document.gas_price = {{recommend_gas_price}};
+  </script>
   <script src="{% static "v2/js/jquery.js" %}"></script>
   <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/pages/process_faucet.js" %}"></script>

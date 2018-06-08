@@ -22,13 +22,32 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.models import Bounty
-from marketing.mails import new_bounty
+from marketing.mails import new_bounty_daily
 from marketing.models import EmailSubscriber
+
+
+def get_bounties_for_keywords(keywords, hours_back):
+    new_bounties_pks = []
+    all_bounties_pks = []
+    for keyword in keywords:
+        relevant_bounties = Bounty.objects.filter(
+            network='mainnet',
+            current_bounty=True,
+            metadata__icontains=keyword,
+            idx_status__in=['open'],
+            )
+        for bounty in relevant_bounties.filter(web3_created__gt=(timezone.now() - timezone.timedelta(hours=hours_back))):
+                new_bounties_pks.append(bounty.pk)
+        for bounty in relevant_bounties:
+                all_bounties_pks.append(bounty.pk)
+    new_bounties = Bounty.objects.filter(pk__in=new_bounties_pks)
+    all_bounties = Bounty.objects.filter(pk__in=all_bounties_pks).exclude(pk__in=new_bounties_pks).order_by('?')
+    return new_bounties, all_bounties
 
 
 class Command(BaseCommand):
 
-    help = 'sends new_bounty _emails'
+    help = 'sends new_bounty_daily _emails'
 
     def handle(self, *args, **options):
         if settings.DEBUG:
@@ -43,21 +62,11 @@ class Command(BaseCommand):
                 if not keywords:
                     continue
                 to_email = es.email
-                bounties_pks = []
-                for keyword in keywords:
-                    for bounty in Bounty.objects.filter(
-                        network='mainnet',
-                        web3_created__gt=(timezone.now() - timezone.timedelta(hours=hours_back)),
-                        current_bounty=True,
-                        metadata__icontains=keyword,
-                        idx_status__in=['open', 'started'],
-                        ):
-                            bounties_pks.append(bounty.pk)
-                bounties = Bounty.objects.filter(pk__in=bounties_pks)
-                #print("{}/{}: got {} bounties".format(to_email, keywords, bounties.count()))
-                if bounties.count():
+                new_bounties, all_bounties = get_bounties_for_keywords(keywords, hours_back)
+                print("{}/{}: got {} new bounties & {} all bounties".format(to_email, keywords, new_bounties.count(), all_bounties.count()))
+                if new_bounties.count():
                     print(f"sent to {to_email}")
-                    new_bounty(bounties, [to_email])
+                    new_bounty_daily(new_bounties, all_bounties, [to_email])
             except Exception as e:
                 logging.exception(e)
                 print(e)

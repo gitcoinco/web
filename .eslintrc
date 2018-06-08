@@ -12,9 +12,7 @@
     "jQuery": true,
     "$": true
   },
-  "plugins": [
-    "html"
-  ],
+  "plugins": [],
   "parser": "babel-eslint",
   "parserOptions": {
     "sourceType": "module",

@@ -28,11 +28,14 @@
     <script src="{% static "v2/js/jquery.validate.min.js" %}"></script>
     <script src="{% static "v2/js/jsrender.js" %}"></script>
     <script src="{% static "v2/js/base.js" %}"></script>
+    <script src="{% static "v2/js/purify.min.js" %}"></script>
+    <script src="{% static "v2/js/shared.js" %}"></script>
     <script src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
     <script src="{% static "v2/js/animate.min.js" %}"></script>
     <script src="{% static "v2/js/note.js" %}"></script>
     <script src="{% static "v2/js/pages/carousel.js" %}"></script>
     <script src="{% static "v2/js/portis.js" %}"></script>
+    <script src="{% static "cookielaw/js/cookielaw.js" %}"></script>
 
     {% if recommend_gas_price %}
         <script type="text/javascript">
@@ -55,3 +58,4 @@
     <script>
         document.contxt = {{json_context | safe}};
     </script>
+    {% include 'shared/messages.html' %}

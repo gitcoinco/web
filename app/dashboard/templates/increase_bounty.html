@@ -29,13 +29,24 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <div class="container-fluid header dash">
       {% include 'shared/nav.html' %}
     </div>
-    <div class="row no-gutter">
-      <div class="col-12 body">
-        <div class="container-fluid no-gutter">
+    <div class="container-fluid">
+      <div class="row no-gutters metamask-banner">
+        <div class="col-sm-12 col-lg-2">
+          {% include 'shared/current_balance.html' %}
+        </div>
+        <div class="col-lg-10 col-sm-12">
+            {% include 'shared/no_issue_error.html' with page='submit_bounty' %}
+          {% include 'shared/no_metamask_error.html' %}
+          {% include 'shared/zero_balance_error.html' %}
+          {% include 'shared/unlock_metamask.html' %}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 body">
           <div class="row font-smaller-2" id="form_container">
-            {% include 'shared/no_metamask_error.html' %}
-            {% include 'shared/zero_balance_error.html' %}
-            {% include 'shared/unlock_metamask.html' %}
+            <div id="robot_error" class="hidden">
+              <img src="{% static "v2/images/prime.png" %}">
+            </div>
             <input type="hidden" name="standardBountiesId"
               value="{{bounty.standard_bounties_id}}">
             <input type="hidden" name="bountyOwnerAddress"
@@ -52,7 +63,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 {% include 'shared/network_status.html' %}
                 <div class="w-100">
                   <label class="form__label" for=issueURL>Issue URL</label>
-                  <input name='issueURL' id="issueURL" class="w-100 form__input" type="url" placeholder="https://github.com/user/repo/pull/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" disabled/>
+                  <input name='issueURL' id="issueURL" class="w-100 form__input" type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" disabled/>
                 </div>
                 <div class="w-100 mt-2">
                   <label class="form__label" for="amount">Amount</label>
@@ -71,7 +82,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 <div class="w-100 mt-2 terms_container" style="padding-top:5px;">
                   <div class="form__checkbox">
                     <input name='terms' id='terms' type="checkbox" value=1 />
-                    <label class="form__label" for=terms>I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>:</label>
+                    <label class="form__label" for=terms>I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>.</label>
                   </div>
                 </div>
                 {% include 'shared/wallet_estimate.html' %}
@@ -92,6 +103,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
 
   </body>
 

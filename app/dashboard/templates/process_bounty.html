@@ -28,16 +28,26 @@
     <div class="container-fluid header dash">
       {% include 'shared/nav.html' %}
     </div>
-    <div class="row no-gutter">
-      <div class="col-12 body">
-        <div class="container-fluid no-gutter">
+    <div class="container-fluid">
+      <div class="row no-gutters metamask-banner">
+        <div class="col-sm-12 col-lg-2">
+          {% include 'shared/current_balance.html' %}
+        </div>
+        <div class="col-lg-10 col-sm-12">
+            {% include 'shared/no_issue_error.html' with page='process_bounty' %}
+          {% include 'shared/no_metamask_error.html' %}
+          {% include 'shared/zero_balance_error.html' %}
+          {% include 'shared/unlock_metamask.html' %}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 body">
           <div class="row font-smaller-2" id="form_container">
-            {% include 'shared/no_metamask_error.html' %}
-            {% include 'shared/zero_balance_error.html' %}
-            {% include 'shared/unlock_metamask.html' %}
+            <div id="robot_error" class="hidden">
+              <img src="{% static "v2/images/prime.png" %}">
+            </div>
             <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
               <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
-                {% include 'shared/bounty_nav.html' with active_item=4 %}
                 <div class="w-100" style="text-align: center;">
                   <h3>{% trans "Accept Bounty Fulfillment" %}</h3>
                   <img src="{% static "v2/images/prime.png" %}">
@@ -45,7 +55,7 @@
                 {% include 'shared/network_status.html' %}
                 <div class="w-100">
                   <label for=issueURL>{% trans "Issue URL:" %}</label>
-                  <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input" type="text" placeholder="https://github.com/user/repo/pull/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" />
+                  <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input" type="text" placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" />
                 </div>
                 <div class="w-100 mt-2">
                   <label for=bountyFulfillment>{% trans "Bounty Submission:" %}</label>
@@ -55,7 +65,7 @@
                 </div>
                 <div class="w-100 mt-2 terms_container">
                   <input name='terms' id='terms' type="checkbox" value=1 />
-                  <label for=terms>{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>:{% endblocktrans %}</label>
+                  <label for=terms>{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>.{% endblocktrans %}</label>
                 </div>
                 {% include 'shared/bounty_actions_hidden_vars.html' %}
                 {% include 'shared/wallet_estimate.html' %}
@@ -78,6 +88,7 @@
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
   </body>
 
   <!-- jQuery -->

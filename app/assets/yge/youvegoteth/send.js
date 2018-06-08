@@ -20,7 +20,7 @@ var unPackAddresses = function() {
 
   document.addresses = addresses;
   if (!addresses || addresses.length == 0) {
-    _alert({message: 'Invalid addresses generated. Please try again from the first page.'}, 'warning');
+    _alert({ message: gettext('Invalid addresses generated. Please try again from the first page.') }, 'warning');
     setTimeout(function() {
       if (document.location.href.indexOf('send') != -1) {
         document.location.href = '/tip/send';
@@ -62,9 +62,6 @@ window.onload = function() {
   }
   if (localStorage['email']) {
     $('email').value = localStorage['email'];
-  }
-  if (localStorage['fromName']) {
-    $('fromName').value = localStorage['fromName'];
   }
   if (localStorage['fromEmail']) {
     $('fromEmail').value = localStorage['fromEmail'];
@@ -134,15 +131,15 @@ window.onload = function() {
 
     // validation
     if (hasEmail && !validateEmail(email)) {
-      _alert({message: 'To Email is optional, but if you enter an email, you must enter a valid email!'}, 'warning');
+      _alert({ message: gettext('To Email is optional, but if you enter an email, you must enter a valid email!') }, 'warning');
       return;
     }
     if (from_email != '' && !validateEmail(from_email)) {
-      _alert({message: 'From Email is optional, but if you enter an email, you must enter a valid email!'}, 'warning');
+      _alert({ message: gettext('From Email is optional, but if you enter an email, you must enter a valid email!') }, 'warning');
       return;
     }
     if (!isNumeric(amount) || amount == 0) {
-      _alert({message: 'You must enter an number for the amount!'}, 'warning');
+      _alert({ message: gettext('You must enter an number for the amount!') }, 'warning');
       return;
     }
     var min_amount = min_send_amt_wei * 1.0 / weiConvert;
@@ -152,26 +149,25 @@ window.onload = function() {
       max_amount = 1000;
     }
     if (amountInEth > max_amount) {
-      _alert({message: 'You can only send a maximum of ' + max_amount + ' ' + tokenName + '.'}, 'warning');
+      _alert({ message: gettext('You can only send a maximum of ' + max_amount + ' ' + tokenName + '.') }, 'warning');
       return;
     }
     if (amountInEth < min_amount) {
-      _alert({message: 'You can only send a minimum of ' + min_amount + ' ' + tokenName + '.'}, 'warning');
+      _alert({ message: gettext('You can only send a minimum of ' + min_amount + ' ' + tokenName + '.') }, 'warning');
       return;
     }
     if (username == '') {
-      _alert({message: 'You must enter a username.'}, 'warning');
+      _alert({ message: gettext('You must enter a username.') }, 'warning');
       return;
     }
     if (!accept_tos) {
-      _alert({message: 'You must accept the terms.'}, 'warning');
+      _alert({ message: gettext('You must accept the terms.') }, 'warning');
       return;
     }
 
     localStorage['amount'] = amountInEth;
     localStorage['username'] = username;
     localStorage['issueURL'] = github_url;
-    localStorage['fromName'] = from_name;
     localStorage['fromEmail'] = from_email;
     localStorage['email'] = email;
     localStorage['comments_priv'] = comments_priv;
@@ -191,7 +187,7 @@ window.onload = function() {
         if (error) {
           console.log(error);
           mixpanel.track('Tip Step 2 Error', {step: 'final', error: error});
-          _alert({message: 'got an error :('}, 'error');
+          _alert({ message: gettext('got an error :(') }, 'error');
           unloading_button(jQuery('#send'));
         } else {
           dataLayer.push({'event': 'sendtip'});
@@ -253,7 +249,7 @@ window.onload = function() {
       var erc20_callback = function(error, result) {
         if (error) {
           console.error(error);
-          _alert({message: 'got an error :('}, 'error');
+          _alert({ message: gettext('got an error :(') }, 'error');
           unloading_button(jQuery('#send'));
         } else {
           var approve_amount = amount * numBatches;

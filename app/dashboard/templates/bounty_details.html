@@ -5,8 +5,8 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
   </head>
 
   <body class="interior {{active}}">
@@ -18,7 +18,7 @@
       <div class="col-12 col-md-2 left-rails text-center" style="background: #F2F6F9;">
         {% include 'shared/current_balance.html' %}
         <div class="explorer font-body">
-          <a href="{% url 'explorer' %}"><i class="fa fa-chevron-left"></i> {% trans "Back to Issue Explorer" %}</a>
+          <a href="{% url 'explorer' %}"><i class="fas fa-chevron-left"></i> {% trans "Back to Issue Explorer" %}</a>
         </div>
       </div>
 
@@ -54,7 +54,7 @@
           <div class="quote-container">
             <div class="quote_text"></div>
             <div class="quote_author"></div>
-            <input id="quoteRefresh" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" >
+            <input id="quoteRefresh" class="button button--primary" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" >
           </div>
         </div>
 
@@ -98,6 +98,16 @@
                 <div>
                   <span class="bounty-info-heading">{% trans "Issue Type" %} </span>
                   <span class="bounty-info-text" id="bounty_type"></span>
+                </div>
+                <div>
+                  <span class="bounty-info-heading" title='{% include "shared/project_type_tooltip.html" %}'>{% trans "Project Type" %} </span>
+                  <span class="bounty-info-text" id="project_type" title='{% include "shared/project_type_tooltip.html" %}'>></span>
+                  <i class="fas fa-info-circle" title='{% include "shared/project_type_tooltip.html" %}'></i>
+                </div>
+                <div>
+                  <span class="bounty-info-heading" title='{% include "shared/permissions_type_tooltip.html" %}'>{% trans "Permissions" %}</span>
+                  <span class="bounty-info-text" id="permission_type" title='{% include "shared/permissions_type_tooltip.html" %}'>></span>
+                  <i class="fas fa-info-circle" title='{% include "shared/permissions_type_tooltip.html" %}'></i>
                 </div>
               </div>
             </div>
@@ -242,7 +252,7 @@
             <div>
               <span class="bounty-subheading">{% trans "ETH Address" %} :</span>
               <span class="bounty-text">
-                <a href="https://etherscan.io/address/[[:address]]">[[:address]]</a>
+                <a href="https://etherscan.io/address/[[:address]]" target="_blank" rel="noopener noreferrer">[[:address]]</a>
               </span>
             </div>
             <div>
@@ -262,7 +272,7 @@
               [[:text]]
             </div>
             [[if uninterest_possible]]
-              <div>
+              <div class="stop-work">
                 <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty</div>">
                   <a id="remove-[[:name]]" class="button button--primary" role="button" href="remove-handle">
                     <span class="font-smaller-4">Stop work</span>
@@ -295,7 +305,7 @@
     document.issueURL = '{{issueURL}}';
     document.issueNetwork = '{{network}}';
     document.issue_stdbounties_id = '{{stdbounties_id}}';
-    document.isStaff = '{{is_staff}}';
+    document.isStaff = '{{is_staff}}' != 'False';
   </script>
 
   <!-- jQuery -->
