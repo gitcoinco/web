@@ -48,14 +48,14 @@
         <span class="nav-link__icon hidden"><i class="fas fa-info"></i></span>
         <span class="nav-link__text">{% trans " Help" %}</span>
       </a>
+      {% if request.path == '/' %}
+        <a href="{% url "new_funding" %}" class="btn btn-gc-blue">
+          <i class="fab fa-ethereum" role="aria-hidden"></i>
+          Fund an Issue
+        </a>
+      {% endif %}
       <img class="d-none d-md-block img__spaceship" src="{% static "v2/images/spaceship.png" %}" width="52" height="45" />
       {% include 'shared/nav_auth.html' with source='authed' %}
     </nav>
-    {% if request.path == '/' %}
-      <a href="{% url "new_funding" %}" class="btn btn-gc-blue">
-        <i class="fab fa-ethereum" role="aria-hidden"></i>
-        Fund an Issue
-      </a>
-    {% endif %}
   </div>
 </nav>

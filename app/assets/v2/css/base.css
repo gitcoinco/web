@@ -19,14 +19,27 @@ span {
 
 .nav_avatar {
   cursor: pointer;
+  border-radius: 50%;
 }
 
-.dropdown-menu{
+#navbarDropdown {
+  text-transform: none;
+}
+
+.dropdown-menu {
   z-index: 9999999999;
 }
 
 .navbar-nav .nav-link {
   border-radius: 2px;
+}
+
+.nav_avatar,
+.navbar__cta,
+.nav-item.dropdown,
+.navbar-nav .nav-link {
+  margin-top: auto;
+  margin-bottom: auto;
 }
 
 .nav-link.login i {

@@ -54,6 +54,9 @@ def index(request):
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'home',
+        'hide_newsletter_caption': True,
+        'hide_newsletter_consent': True,
+        'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter."),
     }
     return TemplateResponse(request, 'index.html', context)
 
