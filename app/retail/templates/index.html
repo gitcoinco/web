@@ -148,6 +148,10 @@
         </div>
       </div>
 
+      <div class="container-fluid pb-5 mb-2 landing__newsletter">
+        {% include 'shared/newsletter.html' %}
+      </div>
+
       <div class="container-fluid p-5 tree_container white-bg">
         <div id="gc-tree">
           <img src="{% static "v2/images/gc-tree.png" %}" alt="Gitcoin Tree" />
@@ -171,7 +175,7 @@
               </p>
               <a href="https://medium.com/gitcoin/open-source-money-will-buidl-the-open-source-ecosystem-f4169def8748"
                 class="btn btn-gc-purple mb-4" target="_blank" rel="noopener noreferrer">{% trans "Read More" %}</a>
-              <p>{% trans "Gitcoin is a decentralized application built on Ethereum’s blockchain. However, Gitcoin does nothave a native token." %}</p>
+              <p>{% trans "Gitcoin is a decentralized application built on Ethereum’s blockchain. However, Gitcoin does not have a native token." %}</p>
             </div>
           </div>
           <div class="col-12 col-md-6 col-lg-5 d-flex flex-column align-items-center animatedParent youtube">
@@ -361,11 +365,6 @@
       </div>
       {% include 'landing/pilot.html' %}
       {% include 'landing/press.html' %}
-      <div class="row landing__newsletter">
-        <div class="col-12 pb-5">
-        {% include 'shared/newsletter.html' %}
-        </div>
-      </div>
       {% include 'shared/footer.html' %}
       </div>
     </div>
