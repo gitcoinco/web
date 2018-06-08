@@ -46,29 +46,18 @@ var updateEstimate = function(e) {
 var promptForAuth = function(event) {
   var denomination = jQuery('#token option:selected').text();
   var tokenAddress = jQuery('#token option:selected').val();
-  if (denomination != 'ETH'){
+  if (denomination == 'ETH'){
+    $('input, textarea, select').prop('disabled','');
+  } else {
       var from = web3.eth.coinbase;
       var to = contract().address;
       token_contract(tokenAddress).allowance.call(from, to, function(error, result){
         if(error || result.toNumber() == 0){
-          _alert({ message: gettext("You have not yet enabled this token.  To enable this token, please sign this .approve() transaction in metamask. (this is only needed one time per token you use)")});
-          var amount = (2**256)-1; // uint256
-          var amount = 10 * 18 * 9999999999999999999999999999999999999999999999999999; // uint256
-          token_contract(tokenAddress).approve(
-            to,
-            amount,
-            {
-              from: from,
-              value: 0,
-              gasPrice: web3.toHex(defaultGasPrice),
-            },function(error,result){
-              var link_url = etherscan_tx_url(result);
-              var msg = "Once <a href="+link_url+">this transaction</a> is confirmed, you will be able to use this token on Gitcoin."
-              _alert({ message: gettext(msg)},'success');
-            });
+          _alert("You have not yet enabled this token.  To enable this token, go to the <a style='padding-left:5px;' href='/settings/tokens'> Token Settings page and enable it</a>. (this is only needed one time per token)");
+          $('input, textarea, select').prop('disabled','disabled');
+          $('select[name=deonomination]').prop('disabled','');
           }
       })
-
   }
 };
 
@@ -288,11 +277,7 @@ window.onload = function() {
         amountETHToSend = parseInt(amount + fees);
       } else {
         amountETHToSend = parseInt(min_send_amt_wei + fees);
-        if (i == 0) { // only need to call approve once for amount * numbatches
-          next_callback = final_callback;
-        } else {
-          next_callback = final_callback;
-        }
+        next_callback = final_callback;
       }
       var _gas = recommendGas;
 
