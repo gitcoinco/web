@@ -301,7 +301,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Ethos of Ethereal | Gitcoin Core Grows "
+    subject = "Gitcoin Project Types | EF Hires Gitcoiner’s "
 
     intro = '''
 
@@ -309,49 +309,54 @@ def render_new_bounty_roundup(to_email):
     Hi there
 </p>
 <p>
-This week, we released <a href="https://medium.com/gitcoin/personalize-your-own-gitcoin-ens-name-f8e5d7438e3e">Gitcoin ENS subdomains!</a> Want to enjoy the benefits of an human readable ENS domain,
-without having to deal with the upkeep? A Gitcoin subdomain could be a happy medium. We're excited to see
-more <you>.gitcoin.eth's out in the world, soon!
+This week, <a href="https://medium.com/gitcoin/we-listened-announcing-project-types-965a02603559">we shipped project types</a> which adds flexibility to the Gitcoin platform.
+Whether you want to run contests, post hackathon bounties, or have developers apply for work, Project Types provides you optionality.
+We’re hopeful this will lead to a better experience for developers and funders. Thanks for providing the feedback which led to these changes!
 </p>
 <p>
-Additionally, we released our OKR's <a href="https://medium.com/gitcoin/grow-open-source-ethereum-foundation-grant-d393802fe9aa">our Ethereum Foundation grant!</a>
-Have an open source project which is moving forward Ethereum's infrastructure? We have $25K in budget to bounty issues that developers would love to solve.
+Also, <a href="https://gitcoin.co/issue/JoinColony/colonyHackathon/4">The Colony Global Hackathon</a> kicked off this week! We're looking for creative, brilliant minds
+to build on, integrate, and extend Colony with the colonyJS library. Many folks are currently looking for teammates and ideas.
+Submit your project by 11:59 pm GMT on Sunday, June 24th for a chance to win prizes totaling $25,000 paid in DAI, via Gitcoin.
 </p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-<a href="https://medium.com/gitcoin/gitcoin-grows-by-1-90a718672c8">Gitcoin Core grows again!</a> We're excited to welcome Aditya, one of our oldest contributors, to the Core team.
+<a href="https://medium.com/@scott.moore/growing-open-source-web3-1ae85840da6d">Scott Moore joined Gitcoin Core!</a> Scott's expereience with the Web 3 development ecosystem
+is a big step for Gitcoin as we look to partner with more open source projects to #BUIDL.
         </li>
         <li>
-<a href="http://gitcoin.co/livestream">The Gitcoin Livestream</a> is back as regularly scheduled today at 5PM ET. Guests include Dharma Protocol, who just launched to mainnet.
-It'll be guaranteed blockchain nerdery. Come hang!
+The Ethereum Foundation’s Python team has grown via Gitcoin! <a href="https://medium.com/gitcoin/gitcoin-testimonials-ethereum-foundation-web3py-py-evm-561cd4da92a6">Read their hiring testimonial</a>
+explaining how Gitcoin helped them hire.
+        </li>
+        <li>
+<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is back as regularly scheduled today at 5PM ET. Ujo Music, Truffle, and XLNT will be on to demo their products. Join us!
         </li>
     </ul>
 </p>
 <p>
-Let's grow open source together,
+Back to building,
 </p>
 '''
     highlights = [
         {
-            'who': 'darkdarkdragon',
+            'who': 'bakoah',
             'who_link': True,
-            'what': 'Helped CodeFund build a Slack integration!',
-            'link': 'https://gitcoin.co/issue/gitcoinco/codefund/93/435',
+            'what': 'Worked on the first WALLETH bounty and completed it in a day!',
+            'link': 'https://gitcoin.co/issue/walleth/kethereum/33/575',
             'link_copy': 'See more',
         },
         {
-            'who': 'cryptomental',
+            'who': 'IRus',
             'who_link': True,
-            'what': 'Ran Augur smart contracts through Solidity SMTChecker. Truly amazing work!',
-            'link': 'https://gitcoin.co/issue/AugurProject/augur-core/607/283',
+            'what': 'Made Circle Ci Docker builds cacheable for CyberCongress!',
+            'link': 'https://gitcoin.co/issue/cybercongress/cyber-search/184/577',
             'link_copy': 'View more',
         },
         {
-            'who': 'pfilippi24',
+            'who': 'isatou',
             'who_link': True,
-            'what': 'Worked with MARKETProtocol on their CheckERC20 Contract!',
-            'link': 'https://gitcoin.co/issue/MARKETProtocol/dApp/170/487',
+            'what': 'Included categories in the Bounties Network analytics endpoint.',
+            'link': 'https://gitcoin.co/issue/Bounties-Network/BountiesAPI/49/516',
             'link_copy': 'View more',
         },
     ]
@@ -359,16 +364,16 @@ Let's grow open source together,
     try:
         bounties = [
             {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/Bounties-Network/BountiesAPI/issues/45'),
-                'primer': 'Work with the Bounties Network team on Analytics Dashboard updates!',
+                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/uport-bounties/issues/2'),
+                'primer': 'Integrate uPort with Colony and have a chance to win big during the Colony Hackathon!',
             },
             {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/ethereumjs/ethereumjs-devp2p/issues/19'),
-                'primer': 'Our biggest bounty is making Node Discovery possible in ethereumJS.',
+                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/paritytech/parity/issues/7427'),
+                'primer': 'Help Parity add tests for sending Whisper messages.',
             },
             {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/livepeer/livepeerjs/issues/44'),
-                'primer': 'Livepeer is working on improving streams in full screen mode.',
+                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/ipfs/js-ipfs/issues/1283'),
+                'primer': 'Add support for Rabin Fingerprinting to js-ipfs on the IPFS project!',
             },
         ]
     except:
