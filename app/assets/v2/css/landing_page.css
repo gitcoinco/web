@@ -11,7 +11,7 @@ body {
   flex-shrink: 0;
 }
 
-.navbar-nav > img {
+.navbar-nav > .img__spaceship {
   display: none !important;
 }
 
