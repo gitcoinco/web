@@ -1,0 +1,23 @@
+{
+  "symbol": "AT",
+  "address": "0xaa26931ebba45b69834eb35fe3315cab4b1e97fe",
+  "overview":{
+        "en": "Connecting people with all digital assets as its mission and AWARE of Good Token as its slogan, AWARE is creating a distributed search and community platform for blockchain projects and is committed to becoming the super portal of future digital assets.",
+        "zh": "AWARE先知以“连接人与一切数字资产”为使命，以“好币我先知”为口号，打造全球领先的分布式区块链项目搜索和社群平台，致力于成为未来数字资产的超级入口。"
+  },
+  "email": "contract@at.top",
+  "website": "https://at.top",
+  "whitepaper": "https://at.top/pdf/AWARE_Whitepaper_4.0.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-02",
+  "initial_price":{
+        "ETH":"0.00005053 ETH",
+        "BTC":"0.000004 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/AWARE__Official",
+    "telegram": "https://t.me/AWARECn",
+    "github": "https://github.com/AwareFoundation",
+    "facebook": "https://facebook.com/AwareCapital"
+  }
+}
