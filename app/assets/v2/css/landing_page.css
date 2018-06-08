@@ -495,10 +495,11 @@ body {
     padding: 10px !important;
     min-width: 18rem !important;
     font-size: 16px !important;
+    border: 1px solid #888 !important;
   }
 
   #newsletter-subscribe {
-    height: 44px;
+    height: 46px;
     top: -1px;
   }
 }
