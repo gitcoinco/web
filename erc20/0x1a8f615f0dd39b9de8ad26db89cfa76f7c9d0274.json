@@ -9,20 +9,13 @@
   "website": "http://utour.io/",
   "whitepaper": "http://utour.io/files/UTour_WhitePaper_EN.pdf",
   "state": "LOCKED | NORMAL",
-  "published_on": "2018-01-01",
-  "initial_price":{
-        "ETH":"0.00166666 ETH",
-        "USD":"2.0 USD",
-        "BTC":"0.00004137 BTC"
-  },
+  "published_on": "2018-05-30",
   "links": {
     "blog": "https://weibo.com/u/6515047685",
     "twitter": "https://twitter.com/UTourDTS",
     "telegram": "https://t.me/UTourDTS_CN",
     "github": "https://github.com/UTourDTS/UTO.git",
     "facebook": "https://www.facebook.com/UTour-DTS-499041390492488",
-    "reddit": "https://www.reddit.com/r/your-awesome-project/",
-    "slack": "https://your-awesome-project.slack.com",
     "medium": "https://medium.com/@utourdts"
   }
 }
