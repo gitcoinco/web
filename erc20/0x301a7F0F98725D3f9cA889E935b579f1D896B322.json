@@ -1,0 +1,22 @@
+{
+  "symbol": "HUM",
+  "address": "0x301a7F0F98725D3f9cA889E935b579f1D896B322",
+  "overview":{
+      "en": "Our mission is to cure incurable diseases, by curating personal health data. To make it, We are building a blockchain-powered patient network, especially for those with rare and chronic diseases."
+  },
+  "email": "support@humanscape.io",
+  "website": "https://humanscape.io/",
+  "whitepaper": "https://humanscape.io/whitepaper/Humanscape_Whitepaper_EN.pdf",
+  "published_on": "2018-05-31",
+  "initial_price":{
+      "USD":"0.01 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Humanscape_ICO",
+    "telegram": "https://t.me/Humanscape",
+    "github": "https://github.com/humanscape",
+    "facebook": "https://www.facebook.com/humanscape",
+    "reddit": "https://www.reddit.com/r/Humanscape_official",
+    "medium": "https://medium.com/humanscape-ico/"
+  }
+}
