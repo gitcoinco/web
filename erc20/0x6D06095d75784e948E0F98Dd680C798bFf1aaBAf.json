@@ -1,0 +1,16 @@
+{
+  "symbol": "EEC",
+  "address": "0x6D06095d75784e948E0F98Dd680C798bFf1aaBAf",
+  "overview":{
+        "en":"Services to cloud computing, big data, artificial intelligence, financial settlement, insurance, distributed digital asset exchange centralized ecosystem platform.",
+        "zh":"服务于云计算、大数据、人工智能、金融结算、保险业、分布式数字资产交易所的去中心化生态系统平台."
+  },
+  "website": "https://www.ieec.co/",
+  "whitepaper": "https://www.ieec.co/entropyenergychainwhitepaper.pdf",
+  "published_on": "2018-06-01",
+  "links": {
+    "twitter": "https://twitter.com/LucasLoe1",
+    "github": "https://gist.github.com/masminmin/",
+    "facebook": "https://www.facebook.com/?sk=welcome"
+  }
+}
