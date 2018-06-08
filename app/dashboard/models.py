@@ -728,6 +728,9 @@ class Bounty(SuperModel):
             return False
         if self.network == 'mainnet' and (settings.DEBUG or settings.ENV != 'prod'):
             return False
+        if (settings.DEBUG or settings.ENV != 'prod') and settings.GITHUB_API_USER != self.github_org_name:
+            return False
+
         return True
 
     @property
@@ -928,6 +931,13 @@ class Tip(SuperModel):
             return "RECEIVED"
         return "PENDING"
 
+    @property
+    def github_org_name(self):
+        try:
+            return org_name(self.github_url)
+        except Exception:
+            return None
+
     def is_notification_eligible(self, var_to_check=True):
         """Determine whether or not a notification is eligible for transmission outside of production.
 
@@ -938,6 +948,8 @@ class Tip(SuperModel):
         if not var_to_check or self.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
             return False
         if self.network == 'mainnet' and (settings.DEBUG or settings.ENV != 'prod'):
+            return False
+        if (settings.DEBUG or settings.ENV != 'prod') and settings.GITHUB_API_USER != self.github_org_name:
             return False
         return True
 
