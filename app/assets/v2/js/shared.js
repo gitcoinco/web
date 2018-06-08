@@ -753,7 +753,7 @@ var promptForAuth = function(event) {
               _alert(msg,'success');
             });
           }
-      })
+      });
 
   }
 };
