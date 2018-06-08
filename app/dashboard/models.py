@@ -1459,9 +1459,9 @@ class Profile(SuperModel):
         if work_type == 'funded':
             obj = self.bounties_funded.filter(network=network)
         elif work_type == 'collected':
-            obj = self.get_fulfilled_bounties()
+            obj = self.get_fulfilled_bounties(network=network)
         elif work_type == 'org':
-            obj = self.get_orgs_bounties()
+            obj = self.get_orgs_bounties(network=network)
 
         if work_type != 'org':
             profiles = [bounty.org_name for bounty in obj if bounty.org_name]
