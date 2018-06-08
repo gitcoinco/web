@@ -23,11 +23,6 @@ body {
   background-color:#0ECF7C;
 }
 
-.landing__newsletter {
-  width: 100%;
-  margin: auto;
-}
-
 .youtube iframe {
   max-width: 100%;
 }
@@ -193,6 +188,22 @@ body {
 .benefit > h4 {
   padding-top: 2rem;
   padding-bottom:  1rem;
+}
+
+.landing__newsletter {
+  width: 100%;
+  margin: auto;
+}
+
+.landing__newsletter .newsletter {
+  border-top: none;
+  margin-top: 0;
+}
+
+.landing__newsletter .newsletter h4 {
+  padding-top: 1.25rem;
+  padding-bottom: 0.5rem;
+  font-weight: normal;
 }
 
 .pilot_container {
@@ -482,6 +493,10 @@ body {
   .howworks-steps {
     margin-left: 10rem;
     margin-right: 10rem;
+  }
+
+  #newsletter-input {
+    min-width: 18rem;
   }
 }
 
