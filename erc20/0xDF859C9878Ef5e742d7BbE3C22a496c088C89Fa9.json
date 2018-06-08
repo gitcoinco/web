@@ -1,9 +1,9 @@
 {
     "website":"http://qufen.top/",
-    "links": {
+    "links":{
         "telegram":"https://t.me/qufenfind",
     },
-    "overview": {
+    "overview":{
         "en":"FIND is a blockchain investment platform focused on distributed evaluation.",
         "zh":"区分（FIND） 是一个以分布式评测为核心的区块链投资平台。"
     },
