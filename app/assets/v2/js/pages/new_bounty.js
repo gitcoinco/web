@@ -62,29 +62,29 @@ $(document).ready(function() {
     $('select[name=expirationTimeDelta] option').prop('selected', false);
     $(
       "select[name=expirationTimeDelta] option[value='" +
-        localStorage['expirationTimeDelta'] +
-        "']"
+      localStorage['expirationTimeDelta'] +
+      "']"
     ).prop('selected', true);
   }
   if (localStorage['experienceLevel']) {
     $(
       'select[name=experienceLevel] option:contains(' +
-        localStorage['experienceLevel'] +
-        ')'
+      localStorage['experienceLevel'] +
+      ')'
     ).prop('selected', true);
   }
   if (localStorage['projectLength']) {
     $(
       'select[name=projectLength] option:contains(' +
-        localStorage['projectLength'] +
-        ')'
+      localStorage['projectLength'] +
+      ')'
     ).prop('selected', true);
   }
   if (localStorage['bountyType']) {
     $(
       'select[name=bountyType] option:contains(' +
-        localStorage['bountyType'] +
-        ')'
+      localStorage['bountyType'] +
+      ')'
     ).prop('selected', true);
   }
 
@@ -356,7 +356,35 @@ $(document).ready(function() {
 
         var eth_amount = isETH ? amount : 0;
         var _paysTokens = !isETH;
-        var bountyIndex = bounty.issueAndActivateBounty(
+        var batch = web3.createBatch();
+
+        if (_paysTokens) {
+          batch.add(token_contract.approve(
+            bounty_address(),
+            amount,
+            {
+              from: account,
+              value: 0,
+              gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
+            },
+            function(error, result) {
+              if (error) {
+                console.error(error);
+                _alert(
+                  {
+                    message:
+                      gettext('There was an error.  Please try again or contact support.')
+                  },
+                  'error'
+                );
+                unloading_button($('.js-submit'));
+                return;
+              }
+            }
+          ));
+        }
+
+        batch.add(bounty.issueAndActivateBounty(
           account, // _issuer
           mock_expire_date, // _deadline
           result, // _data (ipfs hash)
@@ -374,52 +402,13 @@ $(document).ready(function() {
             gasLimit: web3.toHex(318730)
           },
           web3Callback // callback for web3
-        );
+        ));
+
+        batch.execute();
       }
 
-      var approve_success_callback = function(callback) {
-        // Add data to IPFS and kick off all the callbacks.
-        ipfsBounty.payload.issuer.address = account;
-        ipfs.addJson(ipfsBounty, newIpfsCallback);
-      };
-
-      if (isETH) {
-        // no approvals needed for ETH
-        approve_success_callback();
-      } else {
-        token_contract.approve(
-          bounty_address(),
-          amount,
-          {
-            from: account,
-            value: 0,
-            gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
-          },
-          function(error, result) {
-            if (error) {
-              console.error(error);
-              _alert(
-                {
-                  message:
-                    gettext('There was an error.  Please try again or contact support.')
-                },
-                'error'
-              );
-              unloading_button($('.js-submit'));
-              return;
-            }
-            var txid = result;
-            var link_url = etherscan_tx_url(txid);
-
-            _alert({ message: gettext('Token approval transaction (1 of 2) has been sent to web3.  <a target=new href="' +
-              link_url + '">Once that tx is confirmed</a>, you will be prompted to confirm submission of this bounty (tx 2 of 2)') }, 'info');
-            callFunctionWhenTransactionMined(txid, function() {
-              _alert({ message: gettext('Tx 1 of 2 confirmed.  Please confirm the second transaction.') }, 'success');
-              approve_success_callback();
-            });
-          }
-        );
-      }
+      ipfsBounty.payload.issuer.address = account;
+      ipfs.addJson(ipfsBounty, newIpfsCallback);
     }
   });
 });
