@@ -42,25 +42,26 @@ var updateEstimate = function(e) {
   });
 
 };
-// TODO: DRY 
+// TODO: DRY
 var promptForAuth = function(event) {
   var denomination = jQuery('#token option:selected').text();
   var tokenAddress = jQuery('#token option:selected').val();
-  if (denomination == 'ETH'){
-    $('input, textarea, select').prop('disabled','');
+
+  if (denomination == 'ETH') {
+    $('input, textarea, select').prop('disabled', '');
   } else {
-      var from = web3.eth.coinbase;
-      var to = contract().address;
-      token_contract(tokenAddress).allowance.call(from, to, function(error, result){
-        if(error || result.toNumber() == 0){
-          _alert("You have not yet enabled this token.  To enable this token, go to the <a style='padding-left:5px;' href='/settings/tokens'> Token Settings page and enable it</a>. (this is only needed one time per token)");
-          $('input, textarea, select').prop('disabled','disabled');
-          $('select[name=deonomination]').prop('disabled','');
-          }
-      })
+    var from = web3.eth.coinbase;
+    var to = contract().address;
+
+    token_contract(tokenAddress).allowance.call(from, to, function(error, result) {
+      if (error || result.toNumber() == 0) {
+        _alert("You have not yet enabled this token.  To enable this token, go to the <a style='padding-left:5px;' href='/settings/tokens'> Token Settings page and enable it</a>. (this is only needed one time per token)");
+        $('input, textarea, select').prop('disabled', 'disabled');
+        $('select[name=deonomination]').prop('disabled', '');
+      }
+    });
   }
 };
-
 
 
 window.onload = function() {
@@ -265,7 +266,6 @@ window.onload = function() {
           }
         }
       };
-
 
 
       // send transfer to web3

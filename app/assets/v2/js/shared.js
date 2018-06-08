@@ -731,19 +731,21 @@ window.addEventListener('load', function() {
 var promptForAuth = function(event) {
   var denomination = $('#token option:selected').text();
   var tokenAddress = $('#token option:selected').val();
-  if (denomination == 'ETH'){
-    $('input, textarea, select').prop('disabled','');
+
+  if (denomination == 'ETH') {
+    $('input, textarea, select').prop('disabled', '');
   } else {
-      var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-      var from = web3.eth.coinbase;
-      var to = bounty_address();
-      token_contract.allowance.call(from, to, function(error, result){
-        if(error || result.toNumber() == 0){
-          _alert("You have not yet enabled this token.  To enable this token, go to the <a style='padding-left:5px;' href='/settings/tokens'> Token Settings page and enable it</a>. (this is only needed one time per token)");
-          $('input, textarea, select').prop('disabled','disabled');
-          $('select[name=deonomination]').prop('disabled','');
-          }
-      });
+    var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+    var from = web3.eth.coinbase;
+    var to = bounty_address();
+
+    token_contract.allowance.call(from, to, function(error, result) {
+      if (error || result.toNumber() == 0) {
+        _alert("You have not yet enabled this token.  To enable this token, go to the <a style='padding-left:5px;' href='/settings/tokens'> Token Settings page and enable it</a>. (this is only needed one time per token)");
+        $('input, textarea, select').prop('disabled', 'disabled');
+        $('select[name=deonomination]').prop('disabled', '');
+      }
+    });
 
   }
 };
