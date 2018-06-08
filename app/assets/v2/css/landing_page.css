@@ -15,10 +15,6 @@ body {
   display: none !important;
 }
 
-.navbar-nav .nav-link:last-child {
-  padding-right: 0 !important;
-}
-
 .banner--green {
   background-color:#0ECF7C;
 }
@@ -495,8 +491,15 @@ body {
     margin-right: 10rem;
   }
 
-  #newsletter-input {
-    min-width: 18rem;
+  .newsletter #newsletter-input {
+    padding: 10px !important;
+    min-width: 18rem !important;
+    font-size: 16px !important;
+  }
+
+  #newsletter-subscribe {
+    height: 44px;
+    top: -1px;
   }
 }
 
