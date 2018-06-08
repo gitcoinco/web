@@ -337,6 +337,10 @@ def joe_dominance_index():
     joe_addresses = joe_addresses + ['0x60206c1F2B51Ac470cB0f71323474f7f9e4772e1'.lower()]  # vivek
     joe_addresses = joe_addresses + ['0x93d0deF1d76B510e2a7A6d01Cf18c54ec23f4253'.lower()]  # mark beacom
     joe_addresses = joe_addresses + ['0x58dC037f0A5c6C03D0f9477aea3198648CF0D263'.lower()]  # alisa
+    joe_addresses = joe_addresses + ['0x5Df67Bdf139ABc95b0B3A5851875a73A5e722c0E'.lower()]  # alisa
+    joe_addresses = joe_addresses + ['0x0A998a744351604887c70D2BA633d2e68021A8E1'.lower()]  # saptak
+    joe_addresses = joe_addresses + ['0x5DA565AD870ee827608fC764f76ab8055B3E8474'.lower()]  # justin
+    joe_addresses = joe_addresses + ['0x5cdb35fADB8262A3f88863254c870c2e6A848CcA'.lower()]  # aditya
 
     for days in [7, 30, 90, 360]:
         all_bounties = Bounty.objects.filter(current_bounty=True, network='mainnet', web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))

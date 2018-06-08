@@ -214,8 +214,11 @@ class Bounty(SuperModel):
 
     def save(self, *args, **kwargs):
         """Define custom handling for saving bounties."""
+        from .utils import clean_bounty_url
         if self.bounty_owner_github_username:
             self.bounty_owner_github_username = self.bounty_owner_github_username.lstrip('@')
+        if self.github_url:
+            self.github_url = clean_bounty_url(self.github_url)
         super().save(*args, **kwargs)
 
     @property
@@ -450,8 +453,8 @@ class Bounty(SuperModel):
                 # If its not expired or done, it must be cancelled.
                 return 'cancelled'
             # per https://github.com/gitcoinco/web/pull/1098 ,
-            # contests are open no matter how much started/submitted work they have
-            if self.pk and self.project_type == 'contest':
+            # cooperative/contest are open no matter how much started/submitted work they have
+            if self.pk and self.project_type in ['contest', 'cooperative']:
                 return 'open'
             if self.num_fulfillments == 0:
                 if self.pk and self.interested.filter(pending=False).exists():
@@ -1456,9 +1459,9 @@ class Profile(SuperModel):
         if work_type == 'funded':
             obj = self.bounties_funded.filter(network=network)
         elif work_type == 'collected':
-            obj = self.get_fulfilled_bounties()
+            obj = self.get_fulfilled_bounties(network=network)
         elif work_type == 'org':
-            obj = self.get_orgs_bounties()
+            obj = self.get_orgs_bounties(network=network)
 
         if work_type != 'org':
             profiles = [bounty.org_name for bounty in obj if bounty.org_name]

@@ -151,6 +151,14 @@ class BountyViewSet(viewsets.ModelViewSet):
         if 'pk__gt' in param_keys:
             queryset = queryset.filter(pk__gt=self.request.query_params.get('pk__gt'))
 
+        # Filter by a list of PKs
+        if 'pk__in' in param_keys:
+            try:
+                list_of_pks = self.request.query_params.get('pk__in').split(',')
+                queryset = queryset.filter(pk__in=list_of_pks)
+            except Exception:
+                pass
+
         # filter by standard_bounties_id
         if 'standard_bounties_id__in' in param_keys:
             statuses = self.request.query_params.get('standard_bounties_id__in').split(',')

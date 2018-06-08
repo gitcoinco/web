@@ -105,7 +105,7 @@ var sanitize = function(str) {
   if (typeof str != 'string') {
     return str;
   }
-  result = str.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  result = DOMPurify.sanitize(str);
   return result;
 };
 
@@ -362,16 +362,6 @@ function timeDifference(current, previous, remaining, now_threshold_seconds) {
   return amt + ' ' + unit + plural + ' ago';
 }
 
-
-var sidebar_redirect_triggers = function() {
-  $('.sidebar_search input[type=radio], .sidebar_search label').change(function(e) {
-    if (document.location.href.indexOf('/dashboard') == -1 && document.location.href.indexOf('/explorer') == -1) {
-      document.location.href = '/explorer';
-      e.preventDefault();
-    }
-  });
-};
-
 var attach_change_element_type = function() {
   (function($) {
     $.fn.changeElementType = function(newType) {
@@ -387,19 +377,6 @@ var attach_change_element_type = function() {
     };
   })(jQuery);
 };
-
-var attach_close_button = function() {
-  $('body').delegate('.alert .closebtn', 'click', function(e) {
-    $(this).parents('.alert').remove();
-    $('.alert').each(function() {
-      var old_top = $(this).css('top');
-      var new_top = (parseInt(old_top.replace('px')) - 66) + 'px';
-
-      $(this).css('top', new_top);
-    });
-  });
-};
-
 
 // callbacks that can retrieve various metadata about a github issue URL
 
@@ -575,17 +552,29 @@ var trigger_primary_form_web3_hooks = function() {
 
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
+      $('#zero_balance_error').css('display', 'none');
+      $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
+      $('.submit_bounty .newsletter').addClass('hidden');
+      $('#unlock_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('No Metamask Error', params);
     } else if (!web3.eth.coinbase) {
       $('#unlock_metamask_error').css('display', 'block');
+      $('#zero_balance_error').css('display', 'none');
+      $('#no_metamask_error').css('display', 'none');
+      $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
+      $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('Unlock Metamask Error', params);
     } else if (is_zero_balance_not_okay && document.balance == 0) {
       $('#zero_balance_error').css('display', 'block');
+      $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
+      $('.submit_bounty .newsletter').addClass('hidden');
+      $('#unlock_metamask_error').css('display', 'none');
+      $('#no_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('Zero Balance Metamask Error', params);
     } else {
@@ -593,7 +582,9 @@ var trigger_primary_form_web3_hooks = function() {
       $('#unlock_metamask_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'block');
+      $('#robot_error').addClass('hidden');
       $('#primary_form').removeClass('hidden');
+      $('.submit_bounty .newsletter').removeClass('hidden');
     }
   }
 };
@@ -731,11 +722,7 @@ var actions_page_warn_if_not_on_same_network = function() {
   }
 };
 
-$(document).ready(function() {
-  sidebar_redirect_triggers();
-  attach_change_element_type();
-  attach_close_button();
-});
+attach_change_element_type();
 
 window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 300);

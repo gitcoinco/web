@@ -544,9 +544,10 @@ def gas(request):
 
 def new_bounty(request):
     """Create a new bounty."""
+    from .utils import clean_bounty_url
     bounty_params = {
         'newsletter_headline': _('Be the first to know about new funded issues.'),
-        'issueURL': request.GET.get('source') or request.GET.get('url', ''),
+        'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
         'amount': request.GET.get('amount'),
     }
 
@@ -738,19 +739,20 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         django.template.response.TemplateResponse: The Bounty details template response.
 
     """
+    from .utils import clean_bounty_url
     is_user_authenticated = request.user.is_authenticated
+    request_url = clean_bounty_url(request.GET.get('url', ''))
     if is_user_authenticated and hasattr(request.user, 'profile'):
         _access_token = request.user.profile.get_access_token()
     else:
         _access_token = request.session.get('access_token')
-    issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request.GET.get('url')
+    issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request_url
 
     # try the /pulls url if it doesnt exist in /issues
     try:
         assert Bounty.objects.current().filter(github_url=issue_url).exists()
     except Exception:
-        issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/pull/' + ghissue if ghissue else request.GET.get('url')
-        print(issue_url)
+        issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/pull/' + ghissue if ghissue else request_url
 
     params = {
         'issueURL': issue_url,
