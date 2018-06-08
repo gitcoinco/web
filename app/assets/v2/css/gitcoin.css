@@ -216,7 +216,6 @@ h4,
   font-size: 0.75rem;
 }
 
-
 .nav-link:visited {
   color: #eff4ee;
 }
@@ -575,6 +574,23 @@ div.button-pink {
 
   .nav-link {
     text-align: center;
+  }
+
+  .nav-link__icon.hidden {
+    display: inline !important;
+  }
+
+  .nav-link__text {
+    display: none;
+  }
+
+  .navbar-brand img {
+    width: 140px;
+    height: 47.6px;
+  }
+
+  .nav-link.login i {
+    font-size: 1.3em !important;
   }
 }
 
