@@ -3,7 +3,7 @@
 
 var sidebar_keys = [
   'employment_type',
-  'job_type',
+  'job_type'
 ];
 
 var localStorage;
