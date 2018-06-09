@@ -24,22 +24,22 @@
       </div>
       <div class="col-12 options">
         <div class="form__radio option">
-          <input name="idx_status" id="days-1" type="radio" value="open" val-ui='1' checked />
+          <input name="job_posted" id="days-1" type="radio" value="1" val-ui='24 hours' checked />
           <label class="filter-label" for=days-1>{% trans "24 hours" %}</label>
         </div>
 
         <div class="form__radio option">
-          <input name="idx_status" id="days-3" type="radio" value="started" val-ui='3' />
+          <input name="job_posted" id="days-3" type="radio" value="3" val-ui='3 days' />
           <label class="filter-label" for=days-3>{% trans "3 days" %}</label>
         </div>
 
         <div class="form__radio option">
-          <input name="idx_status" id="days-7" type="radio" value="submitted" val-ui='7' />
+          <input name="job_posted" id="days-7" type="radio" value="4" val-ui='7 days' />
           <label class="filter-label" for=days-7>{% trans "7 days" %}</label>
         </div>
 
         <div class="form__radio option">
-          <input name="idx_status" id="days=30" type="radio" value="done" val-ui='30' />
+          <input name="job_posted" id="days=30" type="radio" value="30" val-ui='30 days' />
           <label class="filter-label" for=days=30>{% trans "30 days" %}</label>
         </div>
 
@@ -50,28 +50,28 @@
       <div class="col-12 subheading font-body accordion">{% trans "Employment Type" %}</div>
       <div class="col-12 panel options">
         <div class="checkbox_container">
-          <input name="experience_level" id="full_time" type="checkbox" value="full_time" val-ui='full_time' />
+          <input name="employment_type" id="full_time" type="checkbox" value="full_time" val-ui='Full Time' />
           <span class="checkbox"></span>
           <div class="filter-label">
             <label for=full_time>{% trans "Full Time" %}</label>
           </div>
         </div>
         <div class="checkbox_container">
-          <input name="experience_level" id="part_time" type="checkbox" value="part_time" val-ui='part_time' />
+          <input name="employment_type" id="part_time" type="checkbox" value="part_time" val-ui='Part Time' />
           <span class="checkbox"></span>
           <div class="filter-label">
             <label for=part_time>{% trans "Part Time" %}</label>
           </div>
         </div>
         <div class="checkbox_container">
-          <input name="experience_level" id="contract" type="checkbox" value="contract" val-ui='contract' />
+          <input name="employment_type" id="contract" type="checkbox" value="contract" val-ui='Contract' />
           <span class="checkbox"></span>
           <div class="filter-label">
             <label for=contract>{% trans "Contractor" %}</label>
           </div>
         </div>
         <div class="checkbox_container">
-          <input name="experience_level" id="any_xp" type="checkbox" value="any" checked />
+          <input name="employment_type" id="intern" type="checkbox" value="intern" val-ui='Intern' />
           <span class="checkbox"></span>
           <div class="filter-label">
             <label for=any_xp>{% trans "Intern" %}</label>

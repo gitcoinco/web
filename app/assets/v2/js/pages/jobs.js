@@ -1,21 +1,9 @@
 /* eslint-disable no-loop-func */
 // helper functions
-var technologies = [
-  '.NET', 'ASP .NET', 'Angular', 'Backbone', 'Bootstrap', 'C', 'C#', 'C++', 'CSS', 'CSS3',
-  'CoffeeScript', 'Dart', 'Django', 'Drupal', 'DynamoDB', 'ElasticSearch', 'Ember', 'Erlang', 'Express', 'Go', 'Groovy',
-  'Grunt', 'HTML', 'Hadoop', 'Jasmine', 'Java', 'JavaScript', 'Jekyll', 'Knockout', 'LaTeX', 'Mocha', 'MongoDB',
-  'MySQL', 'NoSQL', 'Node.js', 'Objective-C', 'Oracle', 'PHP', 'Perl', 'Polymer', 'Postgres', 'Python', 'R', 'Rails',
-  'React', 'Redis', 'Redux', 'Ruby', 'SASS', 'Scala', 'Sqlite', 'Swift', 'TypeScript', 'Websockets', 'WordPress', 'jQuery'
-];
 
 var sidebar_keys = [
-  'experience_level',
-  'project_length',
-  'bounty_type',
-  'bounty_filter',
-  'network',
-  'idx_status',
-  'tech_stack'
+  'employment_type',
+  'job_type',
 ];
 
 var localStorage;
@@ -520,16 +508,6 @@ $(document).ready(function() {
     return split(term).pop();
   }
 
-  technologies.forEach(function(v, k) {
-    $('#tech-stack-options').append('<div class="checkbox_container">\n' +
-      '<input name="tech_stack" id="' + v.toLowerCase() + '" type="checkbox" value="' + v.toLowerCase() + '" val-ui="' + v + '"/>' +
-      '<span class="checkbox"></span>' +
-      '<div class="filter-label">' +
-      '<label for="' + v.toLowerCase() + '">' + v + '</label>' +
-      '</div>' +
-      '</div>');
-  });
-
   // Handle search input clear
   $('.close-icon')
     .on('click', function(e) {
@@ -579,17 +557,6 @@ $(document).ready(function() {
 
         // this.value = terms.join(', ');
         this.value = '';
-
-        technologies.forEach(function(v, k) {
-          if (v.toLowerCase() === ui.item.value) {
-            isTechStack = true;
-
-            $('.filter-tags').append('<a class="filter-tag tech_stack"><span>' + ui.item.value + '</span>' +
-              '<i class="fa fa-times" onclick="removeFilter(\'tech_stack\', \'' + ui.item.value + '\')"></i></a>');
-
-            $('input[name="tech_stack"][value=' + ui.item.value + ']').prop('checked', true);
-          }
-        });
 
         if (!isTechStack) {
           if (localStorage['keywords']) {
