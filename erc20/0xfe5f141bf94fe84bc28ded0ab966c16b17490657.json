@@ -1,0 +1,28 @@
+{
+  "symbol": "LBA",
+  "address": "0xfe5f141bf94fe84bc28ded0ab966c16b17490657",
+  "overview":{
+        "en": "Libra Credit is a decentralized lending ecosystem that facilitates open access to credit anywhere and anytime based on the Ethereum blockchain. ",
+        "zh": "Libra Credit提供基于加密币的借贷服务，凭借其行业领先的信用管理能力及伙伴关系网络形成一个世界级借贷生态系统，提供基于以太坊的信用服务，并致力于促进其信用开放使用。"
+  },
+  "email": "info@libracredit.io",
+  "website": "https://www.libracredit.io/",
+  "whitepaper": "https://www.libracredit.io/page/Libra%20Credit%20Whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-05-01",
+  "initial_price":{
+        "ETH":"0.0001491 ETH",
+        "USD":"0.1 USD",
+        "BTC":"0.00001085 BTC"
+  },
+  "links": {
+    "blog": "https://medium.com/libracredit",
+    "twitter": "https://twitter.com/LibraCredit",
+    "telegram": "https://t.me/libraofficial",
+    "github": "https://github.com/libracredit",
+    "facebook": "https://www.facebook.com/Libra-credit-network-191105808142986/",
+    "reddit": "https://www.reddit.com/r/Libra_Credit/",
+    "slack": "https://libracredit.slack.com/messages",
+    "medium": "https://medium.com/libracredit"
+  }
+}
