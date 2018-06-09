@@ -55,19 +55,8 @@ jsonFileNames
       parseErr = e
     }
 
-    // try to format first
     if (parseErr) {
-      try {
-        contentConverted = content.replace(/\s+/g, '').replace(/,\}/g, '}')
-        obj = JSON.parse(contentConverted)
-        fs.writeFileSync(`./erc20/${addr}.json`, JSON.stringify(obj, null, 4))
-      } catch (e) {
-        parseErr = e
-      }
-    }
-
-    if (parseErr) {
-      exitWithMsg(`ERROR! json file name ${jsonFileName} parse error, please check first`)
+      exitWithMsg(`ERROR! json file name ${jsonFileName} parse error, please check first (maybe has some unnecessary space or comma symbol like ",")`)
     }
 
     if (!imageAddrs.includes(addr.toLowerCase())) {
