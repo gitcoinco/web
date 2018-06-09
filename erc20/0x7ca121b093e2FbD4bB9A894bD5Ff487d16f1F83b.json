@@ -1,0 +1,24 @@
+{
+  "symbol": "LESS",
+  "address": "0x7ca121b093e2FbD4bB9A894bD5Ff487d16f1F83b",
+  "overview":{
+        "en": "LORDLESS is a blockchain-based programmable parallel world that builds traffic-ecology and reflects the value of creation. The construction of LORDLESS is grounded on a real-world geography scene. On this basis,developers can add additional virtual scenes and services via programming. ",
+        "zh": "LORDLESS (⽆主之城)是基于区块链的可编程平⾏世界，构建流量⽣态并体现创造价值。 LORDLESS 的构建基于真实世界的地理场景，在此基础上开发者通过编程的⽅式可以添加额外的虚拟场景与服务。"
+  },
+  "email": "eury@lordless.io",
+  "website": "http://lordless.io",
+  "whitepaper": "http://lordless.io/whitepaper-en.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-05-01",
+  "initial_price":{
+        "ETH":"0.000024 ETH",
+        "USD":"0.02 USD",
+        "BTC":"0.000017904 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/LordLessIo",
+    "telegram": "https://t.me/lordlessio",
+    "github": "https://github.com/lordlessio",
+    "medium": "https://medium.com/@LordLessIo"
+  }
+}
