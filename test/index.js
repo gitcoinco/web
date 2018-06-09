@@ -1,5 +1,6 @@
 const fs = require('fs')
 const PNG = require('pngjs').PNG
+const chalk = require('chalk')
 
 
 const dateExp = /^\d{4}-\d{2}(-\d{2})?$/
@@ -22,8 +23,12 @@ const isStringWithCharacter = (str) => {
 const isUrl = (url) => isStringWithCharacter(url) && url.match(urlExp)
 
 const exitWithMsg = (msg) => {
-  console.log(msg)
+  console.log(chalk.red(msg))
   process.exit(1)
+}
+
+const notice = (msg) => {
+  console.log(chalk.yellow(msg))
 }
 
 const jsonFileNames = fs.readdirSync('./erc20')
@@ -37,7 +42,7 @@ jsonFileNames
   .forEach(jsonFileName => {
     const addr = jsonFileName.replace('.json', '')
     if (!isAddress(addr)) {
-      exitWithMsg(`commit-msg: ERROR! json file name ${jsonFileName} is not like a address.json`)
+      exitWithMsg(`ERROR! json file name ${jsonFileName} is not like a address.json`)
     }
 
     const content = fs.readFileSync(`./erc20/${addr}.json`).toString()
@@ -62,68 +67,68 @@ jsonFileNames
     }
 
     if (parseErr) {
-      exitWithMsg(`commit-msg: ERROR! json file name ${jsonFileName} parse error, please check first`)
+      exitWithMsg(`ERROR! json file name ${jsonFileName} parse error, please check first`)
     }
 
     if (!imageAddrs.includes(addr.toLowerCase())) {
-      exitWithMsg(`commit-msg: ERROR! dose not have ${addr + '.png'} in images dir, please check first`) 
+      exitWithMsg(`ERROR! dose not have ${addr + '.png'} in images dir, please check first`) 
     }
 
     if (!obj.symbol) {
-      exitWithMsg(`commit-msg: ERROR! json file ${jsonFileName} content must have symbol field`)
+      exitWithMsg(`ERROR! json file ${jsonFileName} content must have symbol field`)
     }
 
     if (!obj.address) {
-      exitWithMsg(`commit-msg: ERROR! json file ${jsonFileName} content must have address field`)
+      exitWithMsg(`ERROR! json file ${jsonFileName} content must have address field`)
     }
 
     if (!isAddress(obj.address)) {
-      exitWithMsg(`commit-msg: ERROR! json file ${jsonFileName} address field must be an ethereum address`)
+      exitWithMsg(`ERROR! json file ${jsonFileName} address field must be an ethereum address`)
     }
 
     if (obj.address.toLowerCase() !== addr.toLowerCase()) {
-      exitWithMsg(`commit-msg: ERROR! json file ${jsonFileName} should be the same with address field ${obj.address}`)
+      exitWithMsg(`ERROR! json file ${jsonFileName} should be the same with address field ${obj.address}`)
     }
 
     if (obj.published_on !== undefined) {
       if (obj.published_on.search(dateExp) === -1) {
-        exitWithMsg(`commit-msg: ERROR! json file ${jsonFileName}'s published_on field ${obj.published_on} must be format of YYYY-MM-DD or YYYY-MM-DD`)
+        exitWithMsg(`ERROR! json file ${jsonFileName}'s published_on field ${obj.published_on} must be format of YYYY-MM-DD or YYYY-MM-DD`)
       }
     }
 
     if (obj.email !== undefined) {
       if (obj.email.search(emailExp) === -1) {
-        exitWithMsg(`commit-msg: ERROR! json file ${jsonFileName}'s email field ${obj.email} must be an email`)
+        exitWithMsg(`ERROR! json file ${jsonFileName}'s email field ${obj.email} must be an email`)
       }
     }
 
     if (obj.overview !== undefined) {
       if (!['zh', 'en'].every(isStringWithCharacter)) {
-        exitWithMsg(`commit-msg: ERROR! json file ${jsonFileName}'s overview field must have zh and en field, and must be a string (not empty)`)
+        exitWithMsg(`ERROR! json file ${jsonFileName}'s overview field must have zh and en field, and must be a string (not empty)`)
       }
     }
   
     if (obj.links !== undefined) {
       if (!Object.keys(obj.links).every(k => isUrl(obj.links[k]))) {
-        exitWithMsg(`commit-msg: ERROR! json file ${jsonFileName}'s links every field must be an url`)
+        exitWithMsg(`ERROR! json file ${jsonFileName}'s links every field must be an url`)
       }
     }
 
     if (obj.state !== undefined) {
       if (!['LOCKED', 'NORMAL'].includes(obj.state)) {
-        exitWithMsg(`commit-msg: ERROR! json file ${jsonFileName}'s state field ${obj.state} must be 'LOCKED' or 'NORMAL'`)
+        exitWithMsg(`ERROR! json file ${jsonFileName}'s state field ${obj.state} must be 'LOCKED' or 'NORMAL'`)
       }
     }
 
     if (obj.initial_price !== undefined) {
       const keys = Object.keys(obj.initial_price)
       if (keys.some(k => !['BTC', 'ETH', 'USD'].includes(k))) {
-        exitWithMsg(`commit-msg: ERROR! json file ${jsonFileName}'s initial_price field ${JSON.stringify(obj.initial_price)} only support BTC ETH USD`)
+        exitWithMsg(`ERROR! json file ${jsonFileName}'s initial_price field ${JSON.stringify(obj.initial_price)} only support BTC ETH USD`)
       }
 
       keys.forEach(k => {
         if (!obj.initial_price[k].endsWith(k)) {
-          exitWithMsg(`commit-msg: ERROR! json file ${jsonFileName}'s initial_price field ${obj.initial_price[k]} must end with ${'space+' + k}, just see example`)
+          exitWithMsg(`ERROR! json file ${jsonFileName}'s initial_price field ${obj.initial_price[k]} must end with ${'space+' + k}, just see example`)
         }
       })
     }
@@ -131,7 +136,7 @@ jsonFileNames
     ['website', 'whitepaper'].forEach(k => {
       if (obj[k] !== undefined) {
         if (!isUrl(obj[k])) {
-          exitWithMsg(`commit-msg: ERROR! json file ${jsonFileName}'s ${k} field ${obj[k]} must an url`)
+          exitWithMsg(`ERROR! json file ${jsonFileName}'s ${k} field ${obj[k]} must an url`)
         }
       }
     })
@@ -146,7 +151,7 @@ imageFileNames.forEach(n => {
         exitWithMsg(`${n} image width ${metadata.width} !== height ${metadata.height}`)
       }
       if (metadata.width !== 120 || metadata.height !== 80) {
-        exitWithMsg(`${n} image width and height ${metadata.width} must be 80px or 120px`)
+        notice(`${n} image width and height ${metadata.width} must be 80px or 120px`)
       }
       if (!metadata.alpha) {
         exitWithMsg(`${n} image must have transparent background`)

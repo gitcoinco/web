@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "dependencies": {
+    "chalk": "^2.4.1",
     "pngjs": "^3.3.3"
   },
   "scripts": {
