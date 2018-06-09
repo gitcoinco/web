@@ -414,7 +414,7 @@ var refreshjobs = function(event) {
 
       result['job_company'] = ((result['company'] ? result['company'] : 'Company Hidden') + ' &bull; ');
 
-      result['job_skill'] += result['skills'] ? result['skills'] : '';
+      result['job_skill'] = result['skills'] ? result['skills'] : '';
 
       result['watch'] = 'Watch';
 
