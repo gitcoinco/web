@@ -9,9 +9,10 @@ from django.utils.translation import ugettext_lazy as _
 # Create your models here.
 
 JOB_TYPE_CHOICES = (
-    ('Full Time', 'Full-Time'),
-    ('Part Time', 'Part-Time'),
-    ('Contract', 'Contract'),
+    ('full_time', _('Full-Time')),
+    ('part_time', _('Part-Time')),
+    ('contract', _('Contract')),
+    ('intern', _('Intern')),
 )
 
 

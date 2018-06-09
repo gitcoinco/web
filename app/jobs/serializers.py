@@ -8,6 +8,7 @@ from .models import Job
 
 class JobSerializer(serializers.ModelSerializer):
     company_avatar = serializers.SerializerMethodField()
+    job_type = serializers.CharField(source='get_job_type_display')
 
     def get_company_avatar(self, obj):
         return reverse('org_avatar', args=[obj.posted_by_gitcoin_username])
