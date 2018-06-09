@@ -61,6 +61,100 @@ def index(request):
     }
     return TemplateResponse(request, 'index.html', context)
 
+def contributor_landing(request):
+    slides = [
+        ("Dan Finlay", static("v2/images/testimonials/dan.jpg"),
+         _("Once we had merged in multiple language support from a bounty, it unblocked the path to all other translations, and what better way to get lots of dif erent translations than with bounties from our community? A single tweet of publicity and we had something like 20 language requests, and 10 language pull requests. It’s been total magic."),
+         'https://github.com/danfinlay', "Metamask -- Internationalization"),
+        ("Phil Elsasser", static("v2/images/testimonials/phil.jpg"),
+         _("​By design or not, there is an element of trust inherent within Gitcoin. This isn’t the bad kind of “trust” that we are all trying to move away from in a centralized world, but a much better sense of community trust that gets established through the bounty process."),
+         'http://www.marketprotocol.io/', 'Market'),
+        ("John Maurelian", static("v2/images/testimonials/maurelian.jpg"),
+         _("Gitcoin helps us to finally close out the issues we've been meaning to get around to for too long"),
+         "https://consensys.github.io/smart-contract-best-practices/", 'Consensys Diligence -- Documentation Bounties'),
+        ("Kames CG", static("v2/images/testimonials/kames.jpg"),
+         _("uPort is still in the process of Open Sourcing all of our code, so Gitcoin at the present moment, helps uPort plant seeds within the growing Ethereum developer community, that we expect will blossom into flourishing opportunities in the future. Put simply, as opposed to running marketing campaign, we can use bounties to stay present in front of potential developers we want to engage with."),
+         'https://github.com/KamesCG', 'Uport'),
+        ("Piper", static("v2/images/testimonials/pipermerriam.jpg"),
+         _("Although we’ve only hired two developers, there is no doubt that we could have sourced more. Gitcoin has been the strongest hiring signal in all of the hiring I’ve ever done."),
+         'https://github.com/pipermerriam', 'Pipermerriam'),
+    ]
+
+    projects = [
+        {
+            'name': 'Augur Logo',
+            'source': 'v2/images/project_logos/augur.png'
+        },
+        {
+            'name': 'Bounties Logo',
+            'source': 'v2/images/project_logos/bounties.png'
+        },
+        {
+            'name': 'Balance Logo',
+            'source': 'v2/images/project_logos/balance.png'
+        },
+        {
+            'name': 'Metamask Logo',
+            'source': 'v2/images/project_logos/metamask.png'
+        },
+        {
+            'name': 'uPort Logo',
+            'source': 'v2/images/project_logos/uport.png'
+        },
+        {
+            'name': 'Market Protocol Logo',
+            'source': 'v2/images/project_logos/market.png'
+        },
+        {
+            'name': 'Trust Wallet Logo',
+            'source': 'v2/images/project_logos/trust.png'
+        },
+        {
+            'name': 'MCrypto Logo',
+            'source': 'v2/images/project_logos/mycrypto.png'
+        },
+        {
+            'name': 'Truffle Logo',
+            'source': 'v2/images/project_logos/truffle.png'
+        },
+        {
+            'name': 'Solidity Logo',
+            'source': 'v2/images/project_logos/solidity.png'
+        },
+        {
+            'name': 'Casper Logo',
+            'source': 'v2/images/project_logos/casper.png'
+        },
+        {
+            'name': 'Wyvern Logo',
+            'source': 'v2/images/project_logos/wyvern.png'
+        },
+        {
+            'name': 'Ethereum Logo',
+            'source': 'v2/images/project_logos/eth.png'
+        },
+        {
+            'name': 'Livepeer Logo',
+            'source': 'v2/images/project_logos/livepeer.png'
+        },
+        {
+            'name': 'Raiden Logo',
+            'source': 'v2/images/project_logos/raiden.png'
+        },
+        {
+            'name': 'Databroker Logo',
+            'source': 'v2/images/project_logos/databroker.png'
+        }
+    ]
+
+    context = {
+        'slides': slides,
+        'slideDurationInMs': 6000,
+        'active': 'home',
+        'projects': projects
+    }
+
+    return TemplateResponse(request, 'contributor_landing.html', context)
 
 def robotstxt(request):
     return TemplateResponse(request, 'robots.txt', {})
