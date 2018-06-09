@@ -8,6 +8,11 @@
 	</div>
 */
 
+.filter-label {
+  display: inline-block;
+  margin-left: 10px;
+}
+
 .checkbox_container .checkbox:after {
   left: 4px;
   top: 0px;

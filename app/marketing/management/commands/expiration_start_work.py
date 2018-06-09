@@ -67,6 +67,7 @@ class Command(BaseCommand):
                 bounties = Bounty.objects.filter(
                     interested=interest,
                     current_bounty=True,
+                    project_type='traditional',
                     network='mainnet',
                     idx_status__in=['open', 'started']
                     )
@@ -98,7 +99,7 @@ class Command(BaseCommand):
 
                             # some small calcs
                             snooze_time = timezone.timedelta(days=bounty.snooze_warnings_for_days)
-                            delta_now_vs_last_action = timezone.now() + snooze_time - last_action_by_user
+                            delta_now_vs_last_action = timezone.now() - snooze_time - last_action_by_user
                             last_heard_from_user_days = delta_now_vs_last_action.days
 
                             # decide action params

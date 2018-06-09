@@ -40,26 +40,32 @@ def default_ranks():
         'weekly_all': {},
         'weekly_payers': {},
         'weekly_earners': {},
+        'weekly_orgs': {},
         'monthly_fulfilled': {},
         'monthly_all': {},
         'monthly_payers': {},
         'monthly_earners': {},
+        'monthly_orgs': {},
         'quarterly_fulfilled': {},
         'quarterly_all': {},
         'quarterly_payers': {},
         'quarterly_earners': {},
+        'quarterly_orgs': {},
         'yearly_fulfilled': {},
         'yearly_all': {},
         'yearly_payers': {},
         'yearly_earners': {},
+        'yearly_orgs': {},
         'all_fulfilled': {},
         'all_all': {},
         'all_payers': {},
         'all_earners': {},
+        'all_orgs': {},
     }
 
 
 ranks = default_ranks()
+counts = default_ranks()
 
 
 def add_element(key, username, amount):
@@ -68,7 +74,10 @@ def add_element(key, username, amount):
         return
     if username not in ranks[key].keys():
         ranks[key][username] = 0
+    if username not in counts[key].keys():
+        counts[key][username] = 0
     ranks[key][username] += round(float(amount), 2)
+    counts[key][username] += 1
 
 
 def sum_bounties(b, usernames):
@@ -78,6 +87,8 @@ def sum_bounties(b, usernames):
             add_element('all_fulfilled', username, b._val_usd_db)
             if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
                 add_element('all_payers', username, b._val_usd_db)
+            if username == b.org_name and username not in IGNORE_PAYERS:
+                add_element('all_orgs', username, b._val_usd_db)
             if username in fulfiller_usernames and username not in IGNORE_EARNERS:
                 add_element('all_earners', username, b._val_usd_db)
             if b.created_on > weekly_cutoff:
@@ -86,24 +97,32 @@ def sum_bounties(b, usernames):
                     add_element('weekly_payers', username, b._val_usd_db)
                 if username in fulfiller_usernames and username not in IGNORE_EARNERS:
                     add_element('weekly_earners', username, b._val_usd_db)
+                if username == b.org_name and username not in IGNORE_EARNERS:
+                    add_element('weekly_orgs', username, b._val_usd_db)
             if b.created_on > monthly_cutoff:
                 add_element('monthly_fulfilled', username, b._val_usd_db)
                 if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
                     add_element('monthly_payers', username, b._val_usd_db)
                 if username in fulfiller_usernames and username not in IGNORE_EARNERS:
                     add_element('monthly_earners', username, b._val_usd_db)
+                if username == b.org_name and username not in IGNORE_EARNERS:
+                    add_element('monthly_orgs', username, b._val_usd_db)
             if b.created_on > quarterly_cutoff:
                 add_element('quarterly_fulfilled', username, b._val_usd_db)
                 if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
                     add_element('quarterly_payers', username, b._val_usd_db)
                 if username in fulfiller_usernames and username not in IGNORE_EARNERS:
                     add_element('quarterly_earners', username, b._val_usd_db)
+                if username == b.org_name and username not in IGNORE_EARNERS:
+                    add_element('quarterly_orgs', username, b._val_usd_db)
             if b.created_on > yearly_cutoff:
                 add_element('yearly_fulfilled', username, b._val_usd_db)
                 if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
                     add_element('yearly_payers', username, b._val_usd_db)
                 if username in fulfiller_usernames and username not in IGNORE_EARNERS:
                     add_element('yearly_earners', username, b._val_usd_db)
+                if username == b.org_name and username not in IGNORE_EARNERS:
+                    add_element('yearly_orgs', username, b._val_usd_db)
 
         add_element('all_all', username, b._val_usd_db)
         if b.created_on > weekly_cutoff:
@@ -156,7 +175,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # get bounties
-        bounties = Bounty.objects.current()
+        bounties = Bounty.objects.current().filter(network='mainnet')
 
         # iterate
         for b in bounties:
@@ -166,6 +185,8 @@ class Command(BaseCommand):
             usernames = []
             if not should_suppress_leaderboard(b.bounty_owner_github_username):
                 usernames.append(b.bounty_owner_github_username)
+                if b.org_name:
+                    usernames.append(b.org_name)
             for fulfiller in b.fulfillments.all():
                 if not should_suppress_leaderboard(fulfiller.fulfiller_github_username):
                     usernames.append(fulfiller.fulfiller_github_username)
@@ -191,11 +212,16 @@ class Command(BaseCommand):
 
         # save new LR in DB
         for key, rankings in ranks.items():
-            for username, amount in rankings.items():
+            rank = 1
+            for username, amount in sorted(rankings.items(), key=lambda x: x[1], reverse=True):
+                count = counts[key][username]
                 LeaderboardRank.objects.create(
                     github_username=username,
                     leaderboard=key,
                     amount=amount,
+                    count=count,
                     active=True,
+                    rank=rank,
                     )
-                print(key, username, amount)
+                rank += 1
+                print(key, username, amount, count, rank)

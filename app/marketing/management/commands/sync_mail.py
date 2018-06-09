@@ -41,7 +41,7 @@ def pull_to_db():
         process_email(match.email, 'match')
 
     get_size = 50
-    client = MailChimp(settings.MAILCHIMP_USER, settings.MAILCHIMP_API_KEY)
+    client = MailChimp(mc_user=settings.MAILCHIMP_USER, mc_api=settings.MAILCHIMP_API_KEY)
 
     print('mailchimp')
     for i in range(0, 90000):

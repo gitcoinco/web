@@ -1,8 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.models import Bounty, BountyFulfillment
-from github.utils import get_issues, get_user
+from dashboard.models import Bounty
 from marketing.models import Stat
 
 
@@ -24,7 +23,7 @@ class Command(BaseCommand):
                 try:
                     hours += bounty.fulfillments.filter(accepted=True).first().fulfiller_hours_worked
                     value += bounty.value_in_usdt
-                except:
+                except Exception:
                     pass
             print(that_time, bounties.count(), value, hours)
             if value and hours:
@@ -36,5 +35,5 @@ class Command(BaseCommand):
                         key=key,
                         val=(val),
                         )
-                except:
+                except Exception:
                     pass

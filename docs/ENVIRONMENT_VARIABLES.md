@@ -1,4 +1,4 @@
-# Recognoized Environment Variables
+# Recognized Environment Variables
 
 The following environment variables are currently accepted by the local web application.
 You can overwrite the default values for these environment variables by adding them to the `web/app/app/.env` file.
@@ -12,6 +12,13 @@ All of the environment variables used by this application conform to the [`djang
 | DATABASE_URL | The [`django-environ`](https://django-environ.readthedocs.io/en/latest/#supported-types) compatible uri to your database. | `str` | psql://postgres:postgres@db:5432/postgres |
 | DEBUG | Whether or not to run the environment in Debug mode. | `bool` | True |
 | SECRET_KEY | The secret key to use for your Django environment. | `str` | TODO |
+
+## Project / Entry Specific
+
+| Variable | Description | Type | Default |
+| --- | --- | --- | --- |
+| FORCE_PROVISION | Whether or not to force provisioning even if the container has been previously provisioned | `bool` | False |
+| FORCE_GET_PRICES | Whether or not to force pulling fresh conversion rate data from etherdelta and poloniex | `bool` | False |
 
 ## Amazon Web Services
 
