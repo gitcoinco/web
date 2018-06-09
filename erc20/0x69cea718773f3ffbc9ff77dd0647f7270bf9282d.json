@@ -11,9 +11,9 @@
     "state": "NORMAL",
     "published_on": "2018-05-25",
     "initial_price": {
-        "ETH": "0.00036666ETH",
-        "USD": "0.1562USD",
-        "BTC": "0.000008437BTC"
+        "ETH": "0.00036666 ETH",
+        "USD": "0.1562 USD",
+        "BTC": "0.000008437 BTC"
     },
     "links": {
         "twitter": "https://twitter.com/etulab_io",
