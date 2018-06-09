@@ -1,0 +1,21 @@
+{
+  "symbol": "UTO",
+  "address": "0x1a8f615f0dd39b9de8ad26db89cfa76f7c9d0274",
+  "overview":{
+        "en": "UTour Token",
+        "zh": "UTour Token"
+  },
+  "email": "hi@utour.io",
+  "website": "http://utour.io/",
+  "whitepaper": "http://utour.io/files/UTour_WhitePaper_EN.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-05-30",
+  "links": {
+    "blog": "https://weibo.com/u/6515047685",
+    "twitter": "https://twitter.com/UTourDTS",
+    "telegram": "https://t.me/UTourDTS_CN",
+    "github": "https://github.com/UTourDTS/UTO.git",
+    "facebook": "https://www.facebook.com/UTour-DTS-499041390492488",
+    "medium": "https://medium.com/@utourdts"
+  }
+}
