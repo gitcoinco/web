@@ -1,0 +1,24 @@
+{
+  "symbol": "LUC",
+  "address": "0x5dbe296f97b23c4a6aa6183d73e574d02ba5c719",
+  "overview":{
+        "en": "Play2Live platform introduces a full-blown ecosystem for eSports and gaming industries with a focus on content generation and practical needs of streamers, providing unqiue interactive opportunities for all participants of the ecosystem - eSports tournament organizers, the streamers and the viewers.",
+        "zh": "Play2Live平台为电子竞技和游戏引入了全面的生态系统，重点是内容生成和流行的实际需求，而电子竞技和游戏中的大多数项目都集中在具体的解决方案上，只解决了电竞市场"
+  },
+  "email": "press@p2l.tv",
+  "website": "https://play2live.io",
+  "whitepaper": "https://play2live.io/storage/b/2/Whitepaper_eng.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-03-15",
+  "initial_price":{
+        "USD":"0.05 USD"
+  },
+  "links": {
+    "blog": "https://play2live.io/en/#media",
+    "twitter": "https://twitter.com/play_2_live",
+    "telegram": "https://t.me/play2live",
+    "github": "https://github.com/play2live",
+    "facebook": "https://www.facebook.com/play2live.io/",
+    "medium": "https://medium.com/play2live"
+  }
+}
