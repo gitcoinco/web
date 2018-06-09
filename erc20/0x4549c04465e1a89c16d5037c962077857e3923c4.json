@@ -10,11 +10,6 @@
   "whitepaper": "https://evaio.github.io/EVA_White_Paper.pdf",
   "state": "NORMAL",
   "published_on": "2018-05-06",
-  "initial_price":{
-        "ETH":"",
-        "USD":"",
-        "BTC":""
-  },
   "links": {
     "blog": "https://evaio.github.io/blog.html",
     "twitter": "https://twitter.com/EVAprogram",
