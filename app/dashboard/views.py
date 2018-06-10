@@ -522,13 +522,12 @@ def contributor_onboard(request):
 
 def dashboard(request):
     """Handle displaying the dashboard."""
-    kens = BountyRequest.objects.all()
-    print(kens)
+    requests = BountyRequest.objects.all()
     params = {
         'active': 'dashboard',
         'title': _('Issue Explorer'),
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
-        'kens': kens,
+        'requests': requests,
     }
     return TemplateResponse(request, 'dashboard.html', params)
 

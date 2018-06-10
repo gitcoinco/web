@@ -66,30 +66,30 @@
                 to be notified when results do appear.{% endblocktrans %}
               </p>
           </div>
-          {% if kens %}
-            {% for ken in kens %}
+          {% if requests %}
+            {% for bounty_request in requests %}
             <a href="#" class="row kenneth rinkeby" style="padding: 10px 20px 10px 4em; text-decoration: none; color: #000000;">
               <div class="avatar-container col-1 justify-content-center hide_min_viewport">
-                <img src="http://localhost:8000/static/avatar/KennethAshley" class="avatar" />
+                <img class="avatar" src="/static/avatar/{{ bounty_request.creator.username }}">
               </div>
               <div class="col-12 col-md-8 d-flex flex-column">
                 <div class="bounty-detail">
                   <div class="title font-subheader">
-                    {{ ken.github_url }}
+                    {{ bounty_request.github_url }}
                   </div>
                 </div>
                 <div class="bounty-summary col-12">
                   <div class="info font-caption">
-                    Bounty Request • {{ ken.status }}
+                    Bounty Request • {{ bounty_request.status }}
                   </div>
                 </div>
               </div>
               <div class="col-12 col-md-2 tags font-caption align-items-center">
                 <div class="tag network_warning">
-                  <p><span>rinkeby</span></p>
+                  <p><span>request</span></p>
                 </div>
                 <div class="tag token">
-                  <p>{{ ken.amount }} <span>{{ ken.denomination }}</span></p>
+                  <p>{{ bounty_request.amount }} <span>{{ bounty_request.denomination }}</span></p>
                 </div>
               </div>
             </a>
