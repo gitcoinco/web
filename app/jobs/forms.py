@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django import forms
 
 from dashboard.views import profile_keywords_helper
+
 from .models import Job
 
 

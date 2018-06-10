@@ -33,12 +33,12 @@ h4 {
 }
 
 .body .row {
-    margin-left: 0px;
+  margin-left: 0px;
 }
 
 .body .avatar {
-    max-height: 50px;
-    max-width: 50px;
+  max-height: 50px;
+  max-width: 50px;
 }
 
 .job-row {
@@ -191,14 +191,14 @@ h4 {
 
 @media (max-width: 768px) {
 
-    .job-info {
-      top: 10px;
-      font-size: 10px;
-      text-align: left;
-    }
+  .job-info {
+    top: 10px;
+    font-size: 10px;
+    text-align: left;
+  }
 
-    .job-row {
-      padding-left: 1em;
-      padding-right: 2em;
-    }
+  .job-row {
+    padding-left: 1em;
+    padding-right: 2em;
+  }
 }

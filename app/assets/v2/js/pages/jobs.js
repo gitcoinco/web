@@ -102,6 +102,7 @@ var set_sidebar_defaults = function() {
 var set_filter_header = function() {
   var idxStatusEl = $('input[name=idx_status]:checked');
   var filter_status = idxStatusEl.attr('val-ui') ? idxStatusEl.attr('val-ui') : 'All';
+
   // TODO: See what all filters are to be displayed from designs
 
   $('#filter').html('All');

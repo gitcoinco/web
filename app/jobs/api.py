@@ -1,6 +1,6 @@
-from rest_framework import viewsets, mixins
+from rest_framework import mixins, viewsets
 
-from . import models, serializers, filters
+from . import filters, models, serializers
 
 
 class JobViewSet(mixins.ListModelMixin,
