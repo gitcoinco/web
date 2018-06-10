@@ -192,6 +192,15 @@ body {
   text-align: center;
 }
 
+#bounty_details .activity-tags {
+  float: left;
+  text-align: center;
+}
+
+#bounty_details .activity-tag-first {
+  margin-right: 0.2em;
+}
+
 #bounty_details .tag {
   display: inline-block;
 }
@@ -200,7 +209,7 @@ body {
   padding: 5px;
 }
 
-.red_warning, 
+.red_warning,
 #network {
   background-color: #fbe0d6;
   color: #fb9470;

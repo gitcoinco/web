@@ -245,7 +245,7 @@
             </a>
           </div>
         </div>
-        [[if status == 'accepted']]
+        [[if activity_type == 'work_done']]
           <div class="col-12 col-md-7 fulfilled">
             <div class="activity-status">
               [[:text]]
@@ -254,13 +254,13 @@
             <div>
               <span class="bounty-subheading">{% trans "ETH Address" %} :</span>
               <span class="bounty-text">
-                <a href="https://etherscan.io/address/[[:address]]" target="_blank" rel="noopener noreferrer">[[:address]]</a>
+                <a href="https://etherscan.io/address/[[:fulfiller_address]]" target="_blank" rel="noopener noreferrer">[[:fulfiller_address]]</a>
               </span>
             </div>
             <div>
               <span class="bounty-subheading">{% trans "Email" %} :</span>
               <span class="bounty-text">
-                <a href="mailto:[[:email]]">[[:email]]</a>
+                <a href="mailto:[[:fulfiller_email]]">[[:fulfiller_email]]</a>
               </span>
             </div>
             <div>
@@ -268,7 +268,7 @@
               <span class="bounty-text">[[:fulfillment_id]]</span>
             </div>
           </div>
-        [[else status == 'started']]
+        [[else activity_type == 'start_work']]
           <div class="col-12 col-md-7 started-status-column">
             <div class="activity-status">
               [[:text]]
@@ -291,6 +291,77 @@
                 </div>
               [[/if]]
             [[/if]]
+          </div>
+        [[else activity_type == 'worker_applied']]
+          <div class="col-12 col-md-7 started-status-column">
+            <div class="activity-status">
+              [[:text]]
+            </div>
+            [[if can_approve_worker ]]
+              <div class="stop-work">
+                <span title="<div class='tooltip-info tooltip-sm'>Reject worker</div>">
+                  <a target="_blank" href="[[:reject_worker_url]]">
+                    <span class="font-smaller-4">Reject worker</span>
+                  </a>
+                </span>
+              </div>
+              <div class="stop-work">
+                <span title="<div class='tooltip-info tooltip-sm'>Approve worker</div>">
+                  <a target="_blank" href="[[:approve_worker_url]]">
+                    <span class="font-smaller-4">Approve worker</span>
+                  </a>
+                </span>
+              </div>
+            [[/if]]
+          </div>
+        [[else activity_type == 'worker_approved' ]]
+          <div class="col-12 col-md-7 started-status-column">
+            <div class="activity-status">
+              Worker
+              <a href="https://gitcoin.co/profile/[[:worker_handle]]" target="_blank">
+                [[:worker_handle]]
+              </a>
+              Approved
+            </div>
+          </div>
+        [[else activity_type == 'worker_rejected']]
+          <div class="col-12 col-md-7 started-status-column">
+            <div class="activity-status">
+              Worker
+              <a href="https://gitcoin.co/profile/[[:worker_handle]]" target="_blank">
+                [[:worker_handle]]
+              </a>
+              Rejected
+            </div>
+          </div>
+        [[else activity_type == 'work_submitted']]
+          <div class="col-12 col-md-7">
+            <div class="activity-status">
+              [[:text]]
+              [[if fulfiller_github_url]]
+              <a target="_blank" href="[[:fulfiller_github_url]]">[View Work]</a>
+              [[/if]]
+            </div>
+          </div>
+        [[else activity_type == 'increased_bounty']]
+          <div class="col-12 col-md-7">
+            <div class="activity-tags activity-tag-first align-items-center">
+              [[:text]]
+              from
+              <div class="tag token">
+                <p>
+                  <span>[[:value_in_token_old]] [[:token_name]]</span>
+                </p>
+              </div>
+            </div>
+            <div class="activity-tags align-items-center">
+              to
+              <div class="tag token">
+                <p>
+                  <span>[[:value_in_token_new]] [[:token_name]]</span>
+                </p>
+              </div>
+            </div>
           </div>
         [[else]]
           <div class="col-12 col-md-7">
