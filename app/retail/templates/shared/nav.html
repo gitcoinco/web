@@ -46,8 +46,8 @@
       <a class="nav-link{% if active == 'dashboard' %} selected{% endif %} interior" href="{% url "explorer" %}">{% trans "Issue Explorer" %}</a>
       {% else %}
       <a class="nav-link{% if active == 'dashboard' %} selected{% endif %} interior" href="{% url "explorer" %}">{% trans "Issue Explorer" %}</a>
-      <a class="nav-link{% if active == 'tools' %} selected{% endif %}" href="{% url "tools" %}">{% trans "Tools" %}</a>
-      <a class="nav-link{% if active == 'help' %} selected{% endif %}" href="{% url "help" %}">
+      <a class="nav-link{% if active == 'tools' %} selected{% endif %} interior" href="{% url "tools" %}">{% trans "Tools" %}</a>
+      <a class="nav-link{% if active == 'help' %} selected{% endif %} interior" href="{% url "help" %}">
         <span class="nav-link__icon hidden"><i class="fas fa-info"></i></span>
         <span class="nav-link__text">{% trans " Help" %}</span>
       </a>

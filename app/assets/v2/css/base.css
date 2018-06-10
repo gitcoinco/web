@@ -34,10 +34,18 @@ span {
   border-radius: 2px;
   color: #7c78a4;
 }
-.interior, .interior a,
+.navbar .interior, .navbar .interior a,
 .nav-link.interior, .nav-link.interior a {
   color: white !important;
 }
+
+.navbar .interior .dropdown-item{
+  color: black !important;
+}
+.navbar .interior .dropdown-item:hover{
+  color: white !important;
+}
+
 
 .nav_avatar,
 .navbar__cta,
