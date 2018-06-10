@@ -391,6 +391,9 @@ body {
 .navbar:not(.following) .btn {
   background: transparent;
 }
+.navbar:not(.following) .btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
 
 @keyframes rotate-blades {
   from {

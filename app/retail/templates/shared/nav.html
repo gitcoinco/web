@@ -53,13 +53,23 @@
       </a>
       {% endif %}
       {% if request.path == '/' %}
-        <a href="{% url "new_funding" %}" class="btn btn-gc-blue interior">
-          <i class="fab fa-ethereum" role="aria-hidden"></i>
-          Fund an Issue
-        </a>
+        {% if user.is_authenticated %}
+          <a href="{% url "new_funding" %}" class="btn btn-gc-blue interior">
+            <i class="fab fa-ethereum" role="aria-hidden"></i>
+            Fund an Issue
+          </a>
+        
+        {% else %}
+          <a href="{% url 'social:begin' 'github' %}?next={% url "new_funding" %}"   class="btn btn-gc-blue interior">
+            <i class="fab fa-ethereum" role="aria-hidden"></i>
+            Login &amp; Fund an Issue
+          </a>
+        {% endif %}
       {% endif %}
-      <img class="d-none d-md-block img__spaceship" src="{% static "v2/images/spaceship.png" %}" width="52" height="45" />
-      {% include 'shared/nav_auth.html' with source='authed' %}
+      {% if request.path != '/' or user.is_authenticated %}
+        <img class="d-none d-md-block img__spaceship" src="{% static "v2/images/spaceship.png" %}" width="52" height="45" />
+        {% include 'shared/nav_auth.html' with source='authed' %}
+      {% endif %}
     </nav>
   </div>
 </nav>
