@@ -159,6 +159,8 @@
     <script src="{% static "v2/js/pages/quickstart.js" %}"></script>
     <script src="{% static "v2/js/shared.js" %}"></script>
     <script>
-        document.keywords = {{keywords | safe}};
+      {% if keywords %}
+        document.keywords = {{ keywords|safe }};
+      {% endif %}
     </script>
   </body>
