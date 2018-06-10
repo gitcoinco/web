@@ -184,7 +184,7 @@ h4,
 }
 
 .nav-link {
-  color: #eff4ee !important;
+  color: #eff4ee;
   text-transform: uppercase;
   text-decoration: none;
   padding-right: 1rem !important;
