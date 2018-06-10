@@ -18,7 +18,8 @@
     "symbol": "EGT",
     "initial_price": {
         "ETH": "0.00001429 ETH",
-        "USD": "0.0082882 USD"
+        "USD": "0.0082882 USD",
+        "BTC": "0.00000111 BTC"
     },
     "whitepaper": "https://github.com/egretia/whitepaper",
     "address": "0x8e1b448EC7aDFc7Fa35FC2e885678bD323176E34",
