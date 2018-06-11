@@ -60,7 +60,7 @@ jsonFileNames
     }
 
     if (!imageAddrs.includes(addr.toLowerCase())) {
-      exitWithMsg(`ERROR! dose not have ${addr + '.png'} in images dir, please check first`) 
+      notice(`ERROR! dose not have ${addr + '.png'} in images dir, please check first`) 
     }
 
     if (!obj.symbol) {
@@ -116,7 +116,7 @@ jsonFileNames
       }
 
       keys.forEach(k => {
-        if (!obj.initial_price[k].endsWith(k)) {
+        if (!obj.initial_price[k].endsWith(` ${k}`)) {
           exitWithMsg(`ERROR! json file ${jsonFileName}'s initial_price field ${obj.initial_price[k]} must end with ${'space+' + k}, just see example`)
         }
       })
@@ -134,21 +134,24 @@ jsonFileNames
 imageFileNames.forEach(n => {
   const path = `./images/${n}`
   
-  fs.createReadStream(path)
-    .pipe(new PNG()).on('metadata', (metadata) => {
-      if (metadata.width !== metadata.height) {
-        exitWithMsg(`${n} image width ${metadata.width} !== height ${metadata.height}`)
-      }
-      if (metadata.width !== 120 || metadata.height !== 80) {
-        notice(`${n} image width and height ${metadata.width} must be 80px or 120px`)
-      }
-      if (!metadata.alpha) {
-        exitWithMsg(`${n} image must have transparent background`)
-      }
-    }).on('error', (err) => {
-      exitWithMsg(`${n} image parse error ${err.message}`)
-    })
-
+  if (n.endsWith('.png')) {
+    fs.createReadStream(path)
+      .pipe(new PNG()).on('metadata', (metadata) => {
+        if (metadata.width !== metadata.height) {
+          notice(`${n} image width ${metadata.width} !== height ${metadata.height}`)
+        }
+        // if (metadata.width !== 120 || metadata.height !== 80) {
+        //   notice(`${n} image width and height ${metadata.width} must be 80px or 120px`)
+        // }
+        if (!metadata.alpha) {
+          notice(`${n} image must have transparent background`)
+        }
+      }).on('error', (err) => {
+        exitWithMsg(`${n} image parse error ${err.message}`)
+      })
+  } else {
+    notice(`${n} image must be png`)
+  }
 })
 
 // process.exit(0)
