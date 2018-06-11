@@ -1,0 +1,23 @@
+{
+  "name": "token-profile",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "chalk": "^2.4.1",
+    "pngjs": "^3.3.3"
+  },
+  "scripts": {
+    "test": "node ./test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/consenlabs/token-profile.git"
+  },
+  "author": "imToken PTE. LTD",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/consenlabs/token-profile/issues"
+  },
+  "homepage": "https://github.com/consenlabs/token-profile#readme"
+}

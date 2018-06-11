@@ -7,14 +7,8 @@
   },
   "email": "contact@eospace.io",
   "website": "https://eospace.io",
-  "whitepaper": "",
   "state": "NORMAL",
   "published_on": "2018-06-01",
-  "initial_price":{
-    "ETH":"",
-    "USD":"",
-    "BTC":""
-  },
   "links": {
     "blog": "https://eospace.io",
     "telegram": "https://t.me/eospace",

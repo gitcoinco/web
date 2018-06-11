@@ -1,11 +1,10 @@
-
 {
-  "symbol": "CG",
-  "address": "0x25b553b8b8D88Af11e2f9B2798D944ad24139e09",
-  "overview":{
-        "en":"Computer Graphic"
-  },
-  "website": "https://cgtoken.io/",
-  "whitepaper": "http://p4uedu3v7.bkt.clouddn.com/CGtoken-WhitePaper-CN5.1.pdf",
-  "published_on": "2018-04-20",
+    "symbol": "CG",
+    "address": "0x25b553b8b8D88Af11e2f9B2798D944ad24139e09",
+    "overview": {
+        "en": "Computer Graphic"
+    },
+    "website": "https://cgtoken.io/",
+    "whitepaper": "http://p4uedu3v7.bkt.clouddn.com/CGtoken-WhitePaper-CN5.1.pdf",
+    "published_on": "2018-04-20"
 }

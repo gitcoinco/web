@@ -11,18 +11,14 @@
   "state": "NORMAL",
   "published_on": "2018-05-31",
   "initial_price":{
-        "ETH":"0.0625ETH",
-        "USD":"",
-        "BTC":""
+        "ETH":"0.0625 ETH"
   },
   "links": {
     "blog": "http://www.hashpower.vip/?n=1528426256202",
     "twitter": "https://twitter.com/power_hash?lang=en",
     "telegram": "https://t.me/HashPowerVip",
-    "github": "",
     "facebook": "https://www.facebook.com/power.hash.5",
     "reddit": "https://www.reddit.com/user/hash_power",
-    "slack": "",
     "medium": "https://medium.com/@powerhash"
   }
 }

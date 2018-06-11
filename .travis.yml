@@ -1,0 +1,10 @@
+language: node_js
+sudo: enabled
+
+node_js:
+  - "node"
+  - "9.3.0"
+
+cache:
+  directories:
+    - "node_modules"
