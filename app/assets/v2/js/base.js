@@ -18,6 +18,7 @@ $(document).ready(function() {
 
   $('.nav-link.dropdown-toggle, .nav_avatar').click(function(e) {
     var parent = $(this).parents('.nav-item');
+
     if (parent.find('.dropdown-menu').css('display') == 'block') {
       parent.find('.dropdown-menu').css('display', 'none');
     } else {
