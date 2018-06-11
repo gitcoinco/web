@@ -1,15 +1,14 @@
 {
-  "symbol": "Baer",
+  "symbol": "BRC",
   "address": "0x21ab6c9fac80c59d401b37cb43f81ea9dde7fe34",
   "overview":{
-        "en":"Baer Chain, the world’s first technology-driven block chain game ecosystem.\nBaer Chain will serve the global game market and target at constructing a blockchain sharing platform to reshape the game ecological pattern, transforming behaviors and credits of all people into digital assets, thus to realise business value and circulation in the whole ecosystem.\nWith high-performance technologies , Baer Chain will promote effectiveness of game application to realize rich types and great game experience.\nAs the media of circulation of the whole Baer Chain ecological chain, use of BRC can finish various of transactions in the Baer Chain. As the user scale growth, BRC can realize value enhancement and globalization\n【Prospective of Baer Chain】\nBaer Chain is devoted to making outstanding technical contributions to application of blockchain in the global game industry!",
-        "zh":"贝尔链（Baer Chain）是全球首款以技术驱动的区块链游戏产业生态平台。\n贝尔链的打造将服务于全球游戏市场，旨在通过区块链技术构建一个去中心化共享平台重塑游戏生态格局，并且把所有人的行为、信用都转变为数字化资产，从而产生商业价值并且流通于整个游戏生态圈，实现价值传递。\n技术方面，贝尔链的高性能提升了区块链游戏应用的效能，让区块链游戏回归丰富类型与强体验的游戏本质。\n贝尔币（BRC）作为贝尔链生态价值流通的媒介，可以完成贝尔链上各种数字资产交易，随着用户规模增长实现价值提升与全球化。\n【贝尔链的愿景】\n致力于为全球游戏产业区块链应用做出杰出技术贡献！",
+        "en":"Baer Chain, the world’s first technology-driven block chain game ecosystem.Baer Chain will serve the global game market and target at constructing a blockchain sharing platform to reshape the game ecological pattern, transforming behaviors and credits of all people into digital assets, thus to realise business value and circulation in the whole ecosystem.With high-performance technologies , Baer Chain will promote effectiveness of game application to realize rich types and great game experience.As the media of circulation of the whole Baer Chain ecological chain, use of BRC can finish various of transactions in the Baer Chain. As the user scale growth, BRC can realize value enhancement and globalization\n【Prospective of Baer Chain】\nBaer Chain is devoted to making outstanding technical contributions to application of blockchain in the global game industry!",
+        "zh":"贝尔链（Baer Chain）是全球首款以技术驱动的区块链游戏产业生态平台。贝尔链将服务于全球游戏市场，旨在通过区块链技术构建一个去中心化共享平台重塑游戏生态格局，并且把所有人的行为、信用都转变为数字化资产，从而产生商业价值并且流通于整个游戏生态圈，实现价值传递。\n技术方面，贝尔链的高性能提升了区块链游戏应用的效能，让区块链游戏回归丰富类型与强体验的游戏本质。贝尔币（BRC）作为贝尔链生态价值流通的媒介，可以完成贝尔链上各种数字资产交易，随着用户规模增长实现价值提升与全球化。【贝尔链的愿景】致力于为全球游戏产业区块链应用做出杰出技术贡献！",
   },
   "email": "baerchain@baerchain.net",
   "website": "http://baerchain.com/",
   "whitepaper": "http://www.baerchain.com/templets/bel/media/baer_whitepaper.pdf",
   "links": {
-    "blog": "https://your-awesome-project.com/blog",
     "twitter": "https://twitter.com/BaerChain?s=05",
     "telegram": "https://0.plus/BaerChainCN",
   }
