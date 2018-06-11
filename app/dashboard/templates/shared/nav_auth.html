@@ -23,22 +23,6 @@
       {{ user }}
     </a>
     <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-      {% if source == 'authed' %}
-        <a class="dropdown-item" href="{% url "tip" %}">
-          <i class="far fa-paper-plane"></i>
-          {% trans "Send Tip" %}
-        </a>
-        <a class="dropdown-item" href="{% url "new_funding" %}">
-          <i class="fas fa-credit-card"></i>
-          {% trans "Fund Issue" %}
-        </a>
-      {% else %}
-        <a class="dropdown-item" href="{% url "get_gitcoin" %}">
-          <i class="fas fa-bolt"></i>
-          {% trans "Get Started" %}
-        </a>
-      {% endif %}
-      <div class="dropdown-divider"></div>
       <a class="dropdown-item" href="{% url "profile" %}">
         <i class="fas fa-user"></i>
         {% trans "View Profile" %}

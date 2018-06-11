@@ -46,7 +46,54 @@
       <a class="nav-link{% if active == 'dashboard' %} selected{% endif %} interior" href="{% url "explorer" %}">{% trans "Issue Explorer" %}</a>
       {% else %}
       <a class="nav-link{% if active == 'dashboard' %} selected{% endif %} interior" href="{% url "explorer" %}">{% trans "Issue Explorer" %}</a>
-      <a class="nav-link{% if active == 'tools' %} selected{% endif %} interior" href="{% url "tools" %}">{% trans "Tools" %}</a>
+
+      <div class="nav-item dropdown interior">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          TOOLS
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="{% url "tip" %}">
+            <i class="far fa-paper-plane"></i>
+            {% trans "Send Tip" %}
+          </a>
+          <a class="dropdown-item" href="{% url "new_funding" %}">
+            <i class="fas fa-credit-card"></i>
+            {% trans "Fund Issue" %}
+          </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{% url "_leaderboard" %}">
+            <i class="fas fa-space-shuttle"></i>
+            {% trans "Leaderboard" %}
+          </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{% url "universe_index" %}">
+            <i class="fas fa-globe"></i>
+            {% trans "Bounties Universe" %}
+          </a>
+          <a class="dropdown-item" href="{% url "faucet" %}">
+            <i class="fas fa-tint"></i>
+            {% trans "Mainnet Faucet" %}
+          </a>
+          <a class="dropdown-item" href="https://github.com/gitcoinco/web/blob/master/docs/API.md">
+            <i class="fas fa-terminal"></i>
+            {% trans "API" %}
+          </a>
+          <a class="dropdown-item" href="{% url "ens" %}">
+            <i class="fas fa-server"></i>
+            {% trans "ENS Subdomains" %}
+          </a>
+          <a class="dropdown-item" href="https://codefund.io">
+            <i class="fas fa-ship"></i>
+            {% trans "Code Fund" %}
+          </a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{% url "tools" %}">
+            {% trans "View All Tools" %}
+          </a>
+        </div>
+      </div>
+
       <a class="nav-link{% if active == 'help' %} selected{% endif %} interior" href="{% url "help" %}">
         <span class="nav-link__icon hidden"><i class="fas fa-info"></i></span>
         <span class="nav-link__text">{% trans " Help" %}</span>
