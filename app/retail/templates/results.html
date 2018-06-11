@@ -96,6 +96,7 @@
 
           <div class="col-md-4 py-5 bounty_status">
             <h5>{% trans "Bounty Status" %}</h5>
+            <p><span class="lblue_box"></span> {% trans "Tips" %}</p>
             <p><span class="yellow_box"></span> {% trans "Open / Available" %}</p>
             <p><span class="green_box"></span> {% trans "Started / In Progress" %}</p>
             <p><span class="blue_box"></span> {% trans "Completed" %}</p>
@@ -115,6 +116,9 @@
           <div class="col-12 col-md-6">
             <div id="repo_chart"></div>
           </div>
+          <script type="text/javascript">
+          document.platform_stats = [  [ 'Repo', 'Bounties' ], [ 'Open Bounties', {{ count_open }}],  [ 'Bounties w. started work', {{ count_started }}],  [ 'Completed bounties', {{ count_done }} ] ];  
+        </script>
 
           <div class="col-md-6 py-5 bounty_status">
             {% blocktrans %}
@@ -135,7 +139,7 @@
       <div class="container" id="bounty_universe">
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
-            <h2 class="text-center">
+            <h2 class="text-center pb-5">
               TOP REPOS
             </h2>
           </div>
@@ -143,8 +147,8 @@
           <div class="col-md-12">
             <div id="repo_repos">
                 {% for org in top_orgs %}
-                    <a href="/profile/{{org}}">
-                        <img src="/static/avatar/{{org}}" style="max-width: 100px; max-height: 100px; margin 5px; border-radius: 50px;">
+                    <a href="/profile/{{org}}" title="{{org}}">
+                        <img src="/static/avatar/{{org}}" alts="{{org}}" style="max-width: 100px; max-height: 100px; margin 5px; border-radius: 50px;">
                     </a>
                 {% endfor %}
             </div>
@@ -154,9 +158,53 @@
     </div>
 
 
-    <script>
-        document.platform_stats = [  [ 'Repo', 'Bounties' ], [ 'Open Bounties', {{ count_open }}],  [ 'Bounties w. started work', {{ count_started }}],  [ 'Completed bounties', {{ count_done }} ] ];
-    </script>
+
+    <div>
+      <div class="container" id="bounty_jdi">
+        <div class="row py-5 animatedParent">
+          <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
+            <h2>{% trans "Joe Dominance Index" %}</h2>
+          </div>
+        </div>
+        <div class="row py-1 animatedParent">
+          <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
+            <p style="text-align: center; font-size: 0.9rem;">Gitcoin is a double sided market of funders and developers.  In order to jump start the marketplace and dogfood our own product, we've funded some work on the platform ourselves.  The Joe Dominance Index (a portmeanteau of the <a href="https://coinmarketcap.com/charts/#dominance-percentage">Bitcoin Dominance Index</a> and Gitcoin's largest investor, Consensys's CEO <a href="https://twitter.com/ethereumjoseph">Joe Lubin</a>) is a measure of the percentage of work on the platform that is funded by us.   </p>
+          </div>
+          <script>
+            document.jdi_ticks = [0, 20, 40, 60, 80, 100];
+            document.jdi_history = {{jdi_history|safe}};
+          </script>
+
+          <div class="col-12">
+            <div id="jdi_chart" height="600"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background-color: white;">
+      <div class="container" id="price_per_hour">
+        <div class="row py-5 animatedParent">
+          <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
+            <h2>{% trans "Hourly Rates of Bounties" %}</h2>
+          </div>
+        </div>
+
+        <div class="row mt-5 pb-5 animatedParent text-center">
+          <div class="col animated pulse fast">
+            <img src="{% static 'v2/images/results/price_per_hour.png' %}" >
+            <p style="font-size: 10px;">(Updated 6/5/2018)</p>
+          </div>
+        </div>
+
+        <div class="row mt-5 pb-5 animatedParent text-center">
+          <div class="col animated pulse fast">
+            <a class="button button--primary" role="button" href="https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e"
+              target="_blank" rel="noopener noreferrer">{% trans "Read More about Pricing on Gitcoin" %}</a>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <div style="background-color: #F2F6F9;">
       <div class="container" id="bounty_universe">
@@ -177,11 +225,13 @@
         <div class="row mt-5 pb-5 animatedParent text-center">
           <div class="col animated pulse fast">
             <p class="mt-5 mb-5"> {% trans "Meet software developers, futurists, and funders who are building web3" %} </p>
-            <a class="button button--primary" role="button" href="{% url "slack" %}">{% trans "# Join Our Slack" %}</a>
+            <a class="button button--primary" role="button" href="{% url "slack" %}">{% trans "Join Our Slack" %}</a>
           </div>
         </div>
       </div>
     </div>
+
+
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}

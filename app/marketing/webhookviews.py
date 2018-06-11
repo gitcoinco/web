@@ -64,6 +64,6 @@ def process(request):
             pass
 
         
-    #EmailEvent.objects.bulk_create(events)
+    EmailEvent.objects.bulk_create(events)
 
     return HttpResponse('Thanks!')

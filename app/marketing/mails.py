@@ -29,7 +29,9 @@ from retail.emails import (
     render_bounty_expire_warning, render_bounty_feedback, render_bounty_startwork_expire_warning,
     render_bounty_unintersted, render_faucet_rejected, render_faucet_request, render_gdpr_reconsent, render_gdpr_update,
     render_match_email, render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection,
-    render_new_bounty_roundup, render_new_work_submission, render_quarterly_stats, render_tip_email,
+    render_new_bounty_roundup, render_new_work_submission, render_quarterly_stats,
+    render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
+    render_start_work_new_applicant, render_start_work_rejected, render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
@@ -457,6 +459,76 @@ def bounty_uninterested(to_email, bounty, interest):
         setup_lang(to_email)
         html, text = render_bounty_unintersted(to_email, bounty, interest)
         subject = "Funder has removed you from the task: '{}' ? ".format(bounty.title_or_desc)
+
+        if not should_suppress_notification_email(to_email, 'bounty'):
+            send_mail(from_email, to_email, subject, text, html)
+    finally:
+        translation.activate(cur_language)
+
+
+def start_work_approved(interest, bounty):
+    from_email = settings.CONTACT_EMAIL
+    to_email = interest.profile.email
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_start_work_approved(interest, bounty)
+
+        if not should_suppress_notification_email(to_email, 'bounty'):
+            send_mail(from_email, to_email, subject, text, html)
+    finally:
+        translation.activate(cur_language)
+
+
+def start_work_rejected(interest, bounty):
+    from_email = settings.CONTACT_EMAIL
+    to_email = interest.profile.email
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_start_work_rejected(interest, bounty)
+
+        if not should_suppress_notification_email(to_email, 'bounty'):
+            send_mail(from_email, to_email, subject, text, html)
+    finally:
+        translation.activate(cur_language)
+
+
+def start_work_new_applicant(interest, bounty):
+    from_email = settings.CONTACT_EMAIL
+    to_email = bounty.bounty_owner_email
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_start_work_new_applicant(interest, bounty)
+
+        if not should_suppress_notification_email(to_email, 'bounty'):
+            send_mail(from_email, to_email, subject, text, html)
+    finally:
+        translation.activate(cur_language)
+
+
+def start_work_applicant_about_to_expire(interest, bounty):
+    from_email = settings.CONTACT_EMAIL
+    to_email = bounty.bounty_owner_email
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_start_work_applicant_about_to_expire(interest, bounty)
+
+        if not should_suppress_notification_email(to_email, 'bounty'):
+            send_mail(from_email, to_email, subject, text, html)
+    finally:
+        translation.activate(cur_language)
+
+
+def start_work_applicant_expired(interest, bounty):
+    from_email = settings.CONTACT_EMAIL
+    to_email = bounty.bounty_owner_email
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_start_work_applicant_expired(interest, bounty)
 
         if not should_suppress_notification_email(to_email, 'bounty'):
             send_mail(from_email, to_email, subject, text, html)

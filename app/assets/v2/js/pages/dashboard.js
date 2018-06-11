@@ -15,7 +15,9 @@ var sidebar_keys = [
   'bounty_filter',
   'network',
   'idx_status',
-  'tech_stack'
+  'tech_stack',
+  'project_type',
+  'permission_type'
 ];
 
 var localStorage;
@@ -140,7 +142,7 @@ var addTechStackKeywordFilters = function(value) {
       isTechStack = true;
 
       $('.filter-tags').append('<a class="filter-tag tech_stack"><span>' + value + '</span>' +
-        '<i class="fa fa-times" onclick="removeFilter(\'tech_stack\', \'' + value + '\')"></i></a>');
+        '<i class="fas fa-times" onclick="removeFilter(\'tech_stack\', \'' + value + '\')"></i></a>');
 
       $('input[name="tech_stack"][value=' + value + ']').prop('checked', true);
     }
@@ -154,7 +156,7 @@ var addTechStackKeywordFilters = function(value) {
     }
 
     $('.filter-tags').append('<a class="filter-tag keywords"><span>' + value + '</span>' +
-      '<i class="fa fa-times" onclick="removeFilter(\'keywords\', \'' + value + '\')"></i></a>');
+      '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + value + '\')"></i></a>');
   }
 };
 
@@ -167,7 +169,7 @@ var getFilters = function() {
     $.each($('input[name="' + key + '"]:checked'), function() {
       if ($(this).attr('val-ui')) {
         _filters.push('<a class="filter-tag ' + key + '"><span>' + $(this).attr('val-ui') + '</span>' +
-          '<i class="fa fa-times" onclick="removeFilter(\'' + key + '\', \'' + $(this).attr('value') + '\')"></i></a>');
+          '<i class="fas fa-times" onclick="removeFilter(\'' + key + '\', \'' + $(this).attr('value') + '\')"></i></a>');
       }
     });
   }
@@ -175,7 +177,7 @@ var getFilters = function() {
   if (localStorage['keywords']) {
     localStorage['keywords'].split(',').forEach(function(v, k) {
       _filters.push('<a class="filter-tag keywords"><span>' + v + '</span>' +
-        '<i class="fa fa-times" onclick="removeFilter(\'keywords\', \'' + v + '\')"></i></a>');
+        '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + v + '\')"></i></a>');
     });
   }
 
@@ -457,9 +459,10 @@ var refreshBounties = function(event) {
       result.action = result['url'];
       result['title'] = result['title'] ? result['title'] : result['github_url'];
 
+      var project_type = ucwords(result['project_type']) + ' &bull; ';
 
-      result['p'] = ((result['experience_level'] ? result['experience_level'] + ' &bull; ' : ''));
-
+      result['p'] = project_type + (result['experience_level'] ? result['experience_level'] + ' &bull; ' : '');
+      
       if (result['status'] === 'done')
         result['p'] += 'Done';
       if (result['fulfillment_accepted_on']) {

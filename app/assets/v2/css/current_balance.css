@@ -6,6 +6,10 @@
   color: #000000;
 }
 
+.submit_bounty #upper_left {
+  height: 100%;
+}
+
 #upper_left i {
   border-radius: 100%;
   height: 30px;

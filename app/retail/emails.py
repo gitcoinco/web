@@ -369,11 +369,91 @@ def render_gdpr_update(to_email):
     return response_html, response_txt, subject
 
 
+def render_start_work_approved(interest, bounty):
+    to_email = interest.profile.email
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'interest': interest,
+        'bounty': bounty,
+        'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
+    }
+
+    subject = "Request Accepted "
+    response_html = premailer_transform(render_to_string("emails/start_work_approved.html", params))
+    response_txt = render_to_string("emails/start_work_approved.txt", params)
+
+    return response_html, response_txt, subject
+
+
+def render_start_work_rejected(interest, bounty):
+    to_email = interest.profile.email
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'interest': interest,
+        'bounty': bounty,
+        'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
+    }
+
+    subject = "Work Request Denied"
+    response_html = premailer_transform(render_to_string("emails/start_work_rejected.html", params))
+    response_txt = render_to_string("emails/start_work_rejected.txt", params)
+
+    return response_html, response_txt, subject
+
+
+def render_start_work_new_applicant(interest, bounty):
+    to_email = bounty.bounty_owner_email
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'interest': interest,
+        'bounty': bounty,
+        'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
+    }
+
+    subject = "A new request to work on your bounty"
+    response_html = premailer_transform(render_to_string("emails/start_work_new_applicant.html", params))
+    response_txt = render_to_string("emails/start_work_new_applicant.txt", params)
+
+    return response_html, response_txt, subject
+
+
+def render_start_work_applicant_about_to_expire(interest, bounty):
+    to_email = bounty.bounty_owner_email
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'interest': interest,
+        'bounty': bounty,
+        'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
+    }
+
+    subject = "24 Hrs to Approve"
+    response_html = premailer_transform(render_to_string("emails/start_work_applicant_about_to_expire.html", params))
+    response_txt = render_to_string("emails/start_work_applicant_about_to_expire.txt", params)
+
+    return response_html, response_txt, subject
+
+
+def render_start_work_applicant_expired(interest, bounty):
+    to_email = bounty.bounty_owner_email
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'interest': interest,
+        'bounty': bounty,
+        'approve_worker_url': bounty.approve_worker_url(interest.profile.handle),
+    }
+
+    subject = "A Worker was Auto Approved"
+    response_html = premailer_transform(render_to_string("emails/start_work_applicant_expired.html", params))
+    response_txt = render_to_string("emails/start_work_applicant_expired.txt", params)
+
+    return response_html, response_txt, subject
+
+
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "How to Price Work on Gitcoin | Colony Hackathon "
+    subject = "Gitcoin Project Types | EF Hires Gitcoiner’s "
 
     intro = '''
 
@@ -381,59 +461,54 @@ def render_new_bounty_roundup(to_email):
     Hi there
 </p>
 <p>
-This week, we shipped a <a href='https://medium.com/gitcoin/funder-guide-how-to-price-work-on-gitcoin-49bafcdd201e'>data-driven pricing guide for posting work on Gitcoin</a>. We share what we’ve learned about pricing for our first 300 bounties and look forward to continuing the analysis as time passes.  
+This week, <a href="https://medium.com/gitcoin/we-listened-announcing-project-types-965a02603559">we shipped project types</a> which adds flexibility to the Gitcoin platform.
+Whether you want to run contests, post hackathon bounties, or have developers apply for work, Project Types provides you optionality.
+We’re hopeful this will lead to a better experience for developers and funders. Thanks for providing the feedback which led to these changes!
 </p>
 <p>
-We’ve proudly <a href='http://bit.ly/2LsssHG'>partnered up with our friends at Colony for their hackathon</a>! Colony is the Ethereum-based blockchain project building a platform for the future of work. The hackathon features $25K in prizes (paid in Dai) and an all-star panel of 16 judges from the ecosystem.
-</p>
-<p>
-The online hackathon runs June 5th - June 24th and celebrates the release of the colonyJS library—tools that allow developers to leverage the power of Colony’s smart contracts in their own applications.
-</p>
-<p>
-<a href='http://bit.ly/2LsssHG'>You can register here. </a>
-</p>
-<p style="text-align:center;">
-<a href='http://bit.ly/2LsssHG'>
-<img style="margin: 0px auto" src='https://gitcoin.co/static/v2/images/colony.png?1' width='450', height='184'>
-</a>
+Also, <a href="https://gitcoin.co/issue/JoinColony/colonyHackathon/4">The Colony Global Hackathon</a> kicked off this week! We're looking for creative, brilliant minds
+to build on, integrate, and extend Colony with the colonyJS library. Many folks are currently looking for teammates and ideas.
+Submit your project by 11:59 pm GMT on Sunday, June 24th for a chance to win prizes totaling $25,000 paid in DAI, via Gitcoin.
 </p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-We released Richard Burton’s demo of Balance on the Gitcoin Livestream channel on YouTube. <a href=https://www.youtube.com/watch?v=SoIJ6JJdO8o&t=4s</a>Check it out here!</a>
+<a href="https://medium.com/@scott.moore/growing-open-source-web3-1ae85840da6d">Scott Moore joined Gitcoin Core!</a> Scott's expereience with the Web 3 development ecosystem
+is a big step for Gitcoin as we look to partner with more open source projects to #BUIDL.
         </li>
         <li>
-I did a 2 minute interview  on Gitcoin at Ethereal 2018. <a href='https://www.youtube.com/watch?v=pdoa09b_2J4'>See it here.</a>
+The Ethereum Foundation’s Python team has grown via Gitcoin! <a href="https://medium.com/gitcoin/gitcoin-testimonials-ethereum-foundation-web3py-py-evm-561cd4da92a6">Read their hiring testimonial</a>
+explaining how Gitcoin helped them hire.
         </li>
         <li>
-<a href='https://gitcoin.co/livestream'>The Gitcoin Livestream </a>is back as regularly scheduled today at 5PM ET. Colony will be joining to speak further on their hackathon alongside Livepeer, a fully decentralized live-video streaming service! 
+<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is back as regularly scheduled today at 5PM ET. Ujo Music, Truffle, and XLNT will be on to demo their products. Join us!
         </li>
     </ul>
 </p>
 <p>
-Back to BUIDLing, 
+Back to building,
 </p>
 '''
     highlights = [
         {
-            'who': 'dilatebrave',
+            'who': 'bakoah',
             'who_link': True,
-            'what': 'Worked with Bounties Network on Weekly Graph Support',
-            'link': 'https://gitcoin.co/issue/Bounties-Network/StdBountiesAnaltyics/4/515',
+            'what': 'Worked on the first WALLETH bounty and completed it in a day!',
+            'link': 'https://gitcoin.co/issue/walleth/kethereum/33/575',
             'link_copy': 'See more',
         },
         {
-            'who': 'iamonuwa',
+            'who': 'IRus',
             'who_link': True,
-            'what': 'Created a Smart Contract search engine with AbieFund!',
-            'link': 'https://gitcoin.co/issue/AbieFund/abie/5/508',
+            'what': 'Made Circle Ci Docker builds cacheable for CyberCongress!',
+            'link': 'https://gitcoin.co/issue/cybercongress/cyber-search/184/577',
             'link_copy': 'View more',
         },
         {
-            'who': 'antonper',
+            'who': 'isatou',
             'who_link': True,
-            'what': 'Cleaned up an error rejection messages on MetaMask! ',
-            'link': 'https://gitcoin.co/issue/MetaMask/metamask-extension/1546/499',
+            'what': 'Included categories in the Bounties Network analytics endpoint.',
+            'link': 'https://gitcoin.co/issue/Bounties-Network/BountiesAPI/49/516',
             'link_copy': 'View more',
         },
     ]
@@ -441,16 +516,16 @@ Back to BUIDLing,
     try:
         bounties = [
             {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/XLNT/gnarly/issues/8'),
-                'primer': 'Ethereum Foundation grantee XLNT needs help with their Gas Price Oracle Reducer!',
+                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/uport-bounties/issues/2'),
+                'primer': 'Integrate uPort with Colony and have a chance to win big during the Colony Hackathon!',
             },
             {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/buidlbox/issues/17'),
-                'primer': 'uPort aims to build a Transaction Manager ',
+                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/paritytech/parity/issues/7427'),
+                'primer': 'Help Parity add tests for sending Whisper messages.',
             },
             {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/paritytech/parity/issues/8725'),
-                'primer': 'Contribute to Parity Tech, a leading Ethereum client',
+                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/ipfs/js-ipfs/issues/1283'),
+                'primer': 'Add support for Rabin Fingerprinting to js-ipfs on the IPFS project!',
             },
         ]
     except:
@@ -615,4 +690,49 @@ def quarterly_roundup(request):
 @staff_member_required
 def gdpr_reconsent(request):
     response_html, _ = render_gdpr_reconsent(settings.CONTACT_EMAIL)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def start_work_approved(request):
+    from dashboard.models import Interest, Bounty
+    interest = Interest.objects.last()
+    bounty = Bounty.objects.last()
+    response_html, _, _ = render_start_work_approved(interest, bounty)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def start_work_rejected(request):
+    from dashboard.models import Interest, Bounty
+    interest = Interest.objects.last()
+    bounty = Bounty.objects.last()
+    response_html, _, _ = render_start_work_rejected(interest, bounty)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def start_work_new_applicant(request):
+    from dashboard.models import Interest, Bounty
+    interest = Interest.objects.last()
+    bounty = Bounty.objects.last()
+    response_html, _, _ = render_start_work_new_applicant(interest, bounty)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def start_work_applicant_about_to_expire(request):
+    from dashboard.models import Interest, Bounty
+    interest = Interest.objects.last()
+    bounty = Bounty.objects.last()
+    response_html, _, _ = render_start_work_applicant_about_to_expire(interest, bounty)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def start_work_applicant_expired(request):
+    from dashboard.models import Interest, Bounty
+    interest = Interest.objects.last()
+    bounty = Bounty.objects.last()
+    response_html, _, _ = render_start_work_applicant_expired(interest, bounty)
     return HttpResponse(response_html)

@@ -70,11 +70,11 @@
       </a>
     </div>
   </div>
-<img class="nav_avatar" width=50 height=50
+<img class="nav_avatar" width=40 height=40
   src="/static/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}">
 {% else %}
 <a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
   onclick="dataLayer.push({'event': 'login'});">
-  <i class="fab fa-github"></i>{% trans "Login" %}
+  <i class="fab fa-github"></i><span class="nav-link__text">{% trans "Login" %}</span>
 </a>
 {% endif %}

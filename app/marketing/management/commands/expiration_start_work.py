@@ -67,6 +67,7 @@ class Command(BaseCommand):
                 bounties = Bounty.objects.filter(
                     interested=interest,
                     current_bounty=True,
+                    project_type='traditional',
                     network='mainnet',
                     idx_status__in=['open', 'started']
                     )
