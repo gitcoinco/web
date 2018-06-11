@@ -1,0 +1,28 @@
+{
+    "symbol": "GMR",
+    "address": "0x9b8d5f3402f74c7a61d9f09c32d3ca07b45c1466",
+    "overview": {
+        "en": "Gimmer is designing the most sophisticated decentralized trading platform available today, incorporating advanced trading indicators and Artificial Intelligence (AI) decision-making tools in Gimmer auto trading bots. The platform is quick and easy to use and accessible to all customers, no matter what their background or level of trading experience.",
+        "zh": "Gimmer正在設計當今最先進的分散交易平台，它將先進的交易指標和人工智能（AI）決策工具整合到Gimmer汽車交易機器人中。 無論其背景或交易經驗水平如何，該平台都可以快速輕鬆地被所有客戶使用和訪問。"
+    },
+    "email": "team@gimmer.net",
+    "website": "https://token.gimmer.net",
+    "whitepaper": "https://token.gimmer.net/#whitepaper",
+    "state": "NORMAL",
+    "published_on": "2018-06-05",
+    "initial_price": {
+        "ETH": "0.00033276 ETH",
+        "USD": "0.2 USD",
+        "BTC": "0.00002594 BTC"
+    },
+    "links": {
+        "blog": "https://blog.gimmer.net",
+        "twitter": "https://twitter.com/GimmerBot",
+        "telegram": "https://t.me/gimmertoken",
+        "github": "https://github.com/GimmerBot",
+        "facebook": "https://www.facebook.com/gimmerbot/",
+        "reddit": "https://www.reddit.com/user/GimmerBot/",
+        "slack": "",
+        "medium": "https://medium.com/@GimmerBot"
+    }
+}
