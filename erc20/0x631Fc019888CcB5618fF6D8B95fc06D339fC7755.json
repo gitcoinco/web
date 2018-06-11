@@ -1,0 +1,17 @@
+{
+    "symbol": "RECH",
+    "address": "0x631Fc019888CcB5618fF6D8B95fc06D339fC7755",
+    "overview": {
+        "en": "Recycle Chain",
+        "zh": "Recycle Chain"
+    },
+    "email": "service@recyclechain.net",
+    "website": "http://recyclechain.net/",
+    "whitepaper": "http://recyclechain.net/recyclechain.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-06-08",
+    "links": {
+        "twitter": "https://twitter.com/recyclechain1",
+        "facebook": "https://www.facebook.com/recycle.chain"
+    }
+}

@@ -1,0 +1,21 @@
+{
+  "symbol": "BCST",
+  "address": "0xeFCAfD4A1e76d392d683d4A79cD0E4a751d0BE75",
+  "overview":{
+        "en": "BCST is the token of BlockChainStore Dapp",
+        "zh": "BCST是BCS商城交易代币，具备BCS商城交易货币属性"
+  },
+  "email": "bcs@bcschain.io",
+  "website": "https://bcschain.io/",
+  "whitepaper": "https://bcschain.io/wp-content/uploads/BCS-White-Paper.pdf",
+  "initial_price":{
+        "USD":"0.8 USD"
+  },
+  "links": {
+    "blog": "https://bcschain.io/en/#!/blog",
+    "telegram": "https://t.me/blockchainstore",
+    "github": "https://github.com/BlockChainStore",
+    "facebook": "https://www.facebook.com/bcschain.io/",
+    "twitter": "https://twitter.com/bcschain"
+  }
+}

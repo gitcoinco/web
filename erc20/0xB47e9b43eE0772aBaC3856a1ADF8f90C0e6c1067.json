@@ -1,0 +1,25 @@
+{
+  "symbol": "FAS",
+  "address": "0xB47e9b43eE0772aBaC3856a1ADF8f90C0e6c1067",
+  "overview": {
+    "en": "Faxport is a sports business service and funding platform. Faxport will utilise naturally decentralised and unalterable distributed ledger technology to increase security and mutual trust levels, whilst also reducing abuse and establish a trust system for the global sports industry. Thereby, we provide a platform for participants with a user experience based on trust and security.",
+    "zh": "FAXPORT 是基于区块链的体育商业服务与投资平台，通过去中心化的区块链网络直接连接全球体育商业参与者、服务者与消费者，促进全球体育商业市场积极流动，构建基于信任、激励、快捷、零佣金的全新体育商业服务生态。"
+  },
+  "email": "hi@faxport.io",
+  "website": "https://faxport.io",
+  "whitepaper": "https://faxport.io/other/Faxport%20Whitepaper%20zh.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-02-28",
+  "initial_price": {
+    "ETH": "0.00033209 ETH",
+    "USD": "0.2 USD",
+    "BTC": "0.00001901 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Faxport_EN",
+    "telegram": "https://t.me/Faxportglobal",
+    "github": "https://github.com/faxport",
+    "facebook": "https://www.facebook.com/Faxport_Global-150461205635116",
+    "medium": "https://medium.com/@faxport"
+  }
+}

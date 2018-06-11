@@ -1,0 +1,14 @@
+{
+    "symbol": "BOX5",
+    "address": "0x6fF9FF021B978605DEA99b35d212AE950e9EA36e",
+    "overview": {
+        "en": "BOXFIVE is a project dedicated to creating more convenient and convenient services for consumers and members. It provides a variety of services for a large number of users of the BOXFIVE business complex and the users of other joint businesses through the implementation of consumer payment, preferential purchase, and currency exchange.",
+        "zh": "BOXFIVE是一个致力于为消费者、会员创造更优惠、便捷服务的项目。它通过实现消费支付、优惠买单、代币兑换等线上线下使用场景，为BOXFIVE商业综合体的大量用户，及其他联合商家的用户，提供多样化的服务，并实现各商家之间的积分兑换流通。"
+    },
+    "email": "13558683@qq.com",
+    "state": "NORMAL",
+    "published_on": "2018-06-01",
+    "initial_price": {
+        "USD": "0.01558 USD"
+    }
+}

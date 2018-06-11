@@ -1,0 +1,22 @@
+{
+    "symbol": "OPC",
+    "address": "0x134a2b5b1a1e3f3c3c7cfed71000035a53d4d127",
+    "overview": {
+        "en": "Octopaul is based on the SEER public chain framework developed by the next generation of decentralized reality forecasting market platform.",
+        "zh": "基于seer的预测竞猜dapp，将以足球为切入点布局全球泛娱乐产业。打造全球最顶尖的竞猜娱乐平台"
+    },
+    "email": "octopaul.io@gmail.com",
+    "website": "http://octopuspaul.io",
+    "whitepaper": "http://octopuspaul.io/whitepapers/whitepapers-octopaul-cn.pdf",
+    "published_on": "2018-06-01",
+    "initial_price": {
+        "ETH": "0.00002062 ETH",
+        "USD": "0.125 USD",
+        "BTC": "0.00000163 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/octopaul_seer",
+        "telegram": "https://t.me/octopaulglobal",
+        "facebook": "https://www.facebook.com/octopaul.info"
+    }
+}

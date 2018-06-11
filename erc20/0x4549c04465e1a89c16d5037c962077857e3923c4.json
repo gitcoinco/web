@@ -1,0 +1,18 @@
+{
+  "symbol": "EVA",
+  "address": "0x4549c04465e1a89c16d5037c962077857e3923c4",
+  "overview":{
+        "en": "EVA (Evangel Program)is a system platform based on EOS open source code design, it aims to set up a community where all citizens can participate and make decisions.",
+        "zh": "EVA（Evangel Program，福音计划）是基于EOS开源代码设计的一套区块链主网，旨在打造一个全民参与、全民决策的平台。"
+  },
+  "email": "EvangelIO@protonmail.com",
+  "website": "https://evaio.github.io/",
+  "whitepaper": "https://evaio.github.io/EVA_White_Paper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-05-06",
+  "links": {
+    "blog": "https://evaio.github.io/blog.html",
+    "twitter": "https://twitter.com/EVAprogram",
+    "github": "https://github.com/evaio"
+  }
+}

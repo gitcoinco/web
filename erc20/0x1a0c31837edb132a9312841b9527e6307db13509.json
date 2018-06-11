@@ -1,0 +1,24 @@
+{
+  "symbol": "HPC",
+  "address": "0x1a0c31837edb132a9312841b9527e6307db13509",
+  "overview":{
+        "en": "Hash Power Token",
+        "zh": "算力坊"
+  },
+  "email": "hashpower@163.com",
+  "website": "http://www.hashpower.vip/",
+  "whitepaper": "http://www.hashpower.vip/doc/%E7%AE%97%E5%8A%9B%E5%9D%8A%E7%99%BD%E7%9A%AE%E4%B9%A6V2.0.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-05-31",
+  "initial_price":{
+        "ETH":"0.0625 ETH"
+  },
+  "links": {
+    "blog": "http://www.hashpower.vip/?n=1528426256202",
+    "twitter": "https://twitter.com/power_hash?lang=en",
+    "telegram": "https://t.me/HashPowerVip",
+    "facebook": "https://www.facebook.com/power.hash.5",
+    "reddit": "https://www.reddit.com/user/hash_power",
+    "medium": "https://medium.com/@powerhash"
+  }
+}

@@ -1,0 +1,22 @@
+{
+    "website": "http://yepchain.io",
+    "published_on": "2018-04-15",
+    "links": {
+        "github": "https://github.com/yepchain",
+        "telegram": "https://t.me/yepchain",
+        "twitter": "https://www.twitter.com/Yep_Chain",
+        "facebook": "https://www.facebook.com/YepChain"
+    },
+    "overview": {
+        "en": "Yep Chain takes the quick evolution of the ecosystem as the first priority. It builds the best platform tech stack to help people and organizations plug into its ecosystem. Yep Chain Platform Tech Stack provides the 4 core tools: Yep Crypto Sensors, Yep Public Data Importer, Yep Interactive Programming Interface and Yep Profile Binder helps to develop on the Yep Chain Platform.",
+        "zh": "Yep Chain 致力于开发一个全新的区块链生态系统。现有的区块链局限于产生新的线上数据和数字资产，而Yep Chain从诞生之初就把快速接入真实世界作为使命 - We Plug Into Real World and We Transfer Real Value。 我们定义了一组帮助真实世界接入Yep Blockchain的技术栈，包括YCS (Yep Crypto Sensor, Yep加密传感器)、YPDI (Yep Public Data Importer, Yep公共信息导入器)、和 YIPI (Yep Interactive Programming Interface, Yep互动编程接口)。这组技术栈是区块链伸向真实世界的触角，Yep Chain上的 Core Contract (智能合约在Yep Chain上的实现) 将不会局限于线上数据和数字资产，而是更好地和真实世界进行接入。Yep Chain还将提供Yep档案绑定 (Yep Profile Binder, YPB) - 将接入Yep Chain的区块链地址和真实的档案进行永久且透明的绑定，任何人都无法窜改。"
+    },
+    "symbol": "YP",
+    "initial_price": {
+        "ETH": "0.000130606 ETH",
+        "USD": "0.073 USD"
+    },
+    "whitepaper": "http://yepchain.io/static/white_paper_en.pdf",
+    "address": "0x02E2C716230C6750208F7Cb1Af34049472C91527",
+    "email": "info@yepchain.io"
+}

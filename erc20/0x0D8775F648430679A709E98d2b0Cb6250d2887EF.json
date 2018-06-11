@@ -3,7 +3,8 @@
     "published_on": "2017-05-30",
     "links": {
         "reddit": "https://www.reddit.com/r/BATProject/",
-        "twitter": "https://twitter.com/@attentiontoken"
+        "twitter": "https://twitter.com/@attentiontoken",
+        "medium": "https://medium.com/@attentiontoken"
     },
     "overview": {
         "en": "The Basic Attention Token is the new token for the digital advertising industry.",
@@ -14,6 +15,5 @@
         "ETH": "0.00018025 ETH",
         "USD": "0.04 USD"
     },
-    "address": "0x0D8775F648430679A709E98d2b0Cb6250d2887EF",
-    "email": "https://medium.com/@attentiontoken"
+    "address": "0x0D8775F648430679A709E98d2b0Cb6250d2887EF"
 }

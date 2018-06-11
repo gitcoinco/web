@@ -1,0 +1,23 @@
+{
+    "symbol": "GCP",
+    "address": "0xdb0F69306FF8F949f258E83f6b87ee5D052d0b23",
+    "overview": {
+        "en": "Globcoin Crypto Platform"
+    },
+    "email": "community@globcoin.io",
+    "website": "https://globcoin.io/",
+    "whitepaper": "https://globcoin.io/assets/whitepaper-GCP-v2.0.pdf",
+    "published_on": "2018-02-09",
+    "initial_price": {
+        "ETH": "0.0001 ETH"
+    },
+    "links": {
+        "blog": "https://medium.com/@globcoin_io",
+        "twitter": "https://twitter.com/Globcoin_io",
+        "telegram": "https://t.me/globcoin",
+        "github": "https://github.com/Globcoin",
+        "facebook": "https://www.facebook.com/globcoin.io",
+        "reddit": "https://www.reddit.com/r/globcoin/",
+        "medium": "https://medium.com/@globcoin_io"
+    }
+}

@@ -1,0 +1,25 @@
+{
+  "symbol": "WIN",
+  "address": "0xBfaA8cF522136C6FAfC1D53Fe4b85b4603c765b8",
+  "overview": {
+    "en": "Winchain is a blockchain-based underlying system developed by the Winchain Open Source Technology Foundation Team (“WOST team”) from Silicon Valley to support the operation of national-level lottery systems. With its in-depth blockchain technology know-how and unmatched industry exposure, the WOST Foundation team is trying to revolutionize the lottery industry through decentralized technology, and further develop the blockchain-based lottery technology into a new standard of underlying system behind lotteries around the world.",
+    "zh": "Winchain 是由硅谷 Winchain Open Source Technology Foundation 团队（简称“WOST”团队）基于区块链构架研 发的国家级底层彩票系统。团队凭借卓越的区块链技术及领先的行业资源，用去中心化的思 维革新彩票行业，将 Winchain 区块链彩票发展成为世界彩票底层系统的标准。"
+  },
+  "email": "master@winchainos.com",
+  "website": "http://www.winchainos.com",
+  "whitepaper": "http://www.winchainos.com/pdf/Whitepaper-EN.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-05",
+  "initial_price": {
+    "ETH": "0.0000047619 ETH"
+  },
+  "links": {
+    "blog": "http://weibo.com/winchain",
+    "twitter": "https://twitter.com/winchainos",
+    "telegram": "https://t.me/WinChainOfficial",
+    "github": "https://github.com/WinchainOS",
+    "facebook": "https://www.facebook.com/WinChain-221397975279385/",
+    "reddit": "https://www.reddit.com/r/winchain/",
+    "medium": "https://medium.com/@winchainofficial"
+  }
+}

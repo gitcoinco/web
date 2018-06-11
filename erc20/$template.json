@@ -2,12 +2,13 @@
   "symbol": "Token symbol",
   "address": "Contract Address",
   "overview":{
-        "en":"Token Description."
+        "en": "Token Description.",
+        "zh": ""
   },
   "email": "Email",
   "website": "https://your-awesome-project.com/",
   "whitepaper": "https://your-awesome-project.com/file.pdf",
-  "state": "LOCKED",
+  "state": "LOCKED | NORMAL",
   "published_on": "2018-01-01",
   "initial_price":{
         "ETH":"0.00166666 ETH",

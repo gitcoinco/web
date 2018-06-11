@@ -1,0 +1,20 @@
+{
+  "symbol": "QKC",
+  "address": "0xEA26c4aC16D4a5A106820BC8AEE85fd0b7b2b664",
+  "overview":{
+        "en":"A secure, decentralized and scalable blockchain solution to deliver 100,000+ on-chain TPS",
+	"zh": "一个安全、去中心化的、可扩展的，具有每秒10w+链上交易处理能力的区块链"
+  },
+  "email": "contact@quarkchain.io",
+  "website": "https://quarkchain.io",
+  "whitepaper": "https://quarkchain.io/QUARK%20CHAIN%20Public%20Version%200.3.5.pdf",
+  "published_on": "2018-06-04",
+  "initial_price":{
+        "ETH":"0.000031713 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Quark_Chain",
+    "telegram": "https://t.me/quarkchainio",
+    "github": "https://github.com/QuarkChain"
+  }
+}

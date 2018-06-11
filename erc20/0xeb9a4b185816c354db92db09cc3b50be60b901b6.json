@@ -1,0 +1,24 @@
+{
+  "symbol": "ORS",
+  "address": "0xeb9a4b185816c354db92db09cc3b50be60b901b6",
+  "overview":{
+        "en": "A blockchain based sports betting platform",
+        "zh": "基于区块链技术的体育赛事竞猜平台"
+  },
+  "email": "contact@originsport.io",
+  "website": "https://www.originsport.io/",
+  "whitepaper": "https://www.originsport.io/Origin%20Sport%20WhitepaperV5.0.pdf",
+  "published_on": "2018-05-17",
+  "initial_price":{
+        "ETH":"0.00016666 ETH"
+  },
+  "links": {
+    "blog": "https://medium.com/origin-sport",
+    "twitter": "https://twitter.com/OriginSport_io",
+    "telegram": "https://t.me/OriginSport_EN",
+    "github": "https://github.com/originsport",
+    "facebook": "https://www.facebook.com/originsport.io/",
+    "reddit": "https://www.reddit.com/r/OriginSport/",
+    "medium": "https://medium.com/origin-sport"
+  }
+}

@@ -1,0 +1,22 @@
+{
+    "symbol": "ETUex",
+    "address": "0x69cea718773f3ffbc9ff77dd0647f7270bf9282d",
+    "overview": {
+        "en": "EUT Exchange to build a subdivide crypto exchange, powering the future of Digital Asset.",
+        "zh": "以联交易所建设细分领域的加密币交易所，专注数字资产管理"
+    },
+    "email": "service@etulab.io",
+    "website": "http://etulab.io",
+    "whitepaper": "http://etulab.io/etuexchangewhitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-05-25",
+    "initial_price": {
+        "ETH": "0.00036666 ETH",
+        "USD": "0.1562 USD",
+        "BTC": "0.000008437 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/etulab_io",
+        "telegram": "https://t.me/etulab_io"
+    }
+}

@@ -1,0 +1,17 @@
+{
+  "symbol": "EOP",
+  "address": "0xb562ec0261a9cb550a5fbcb46030088f1d6a53cf",
+  "overview":{
+    "en": "EOP is super ecosystem token for constructing and improving EOS ecosystem. EOP will develop necessary DAPPs needed for EOS basic ecosystem like EOS wallet, EOS browser, and EOS decentralized exchange etc. Besides, EOP will cooperate with other famous venture capital funds all over the world to invest and support other DAPPs in EOS ecosystem, so as to strengthen EOS ecosystem. EOP will be given to EOS community users by airdrop. Currently, EOP has finished EOS wallet and EOS browser beta version, and reached strategic cooperation with famous Singapore angel investment institution Quest Ventures.",
+    "zh": "EOP是一套由EOSpace发起的、为完善EOS生态而构建的超级生态糖果，将和新加坡、德国、美国、澳大利亚和韩国的风险投资基金合作，共同投资和扶持EOS生态上的DAPP，以促进EOS生态的壮大。EOP将以空投方式赠予EOS社区用户，目前已完成EOS钱包及EOS浏览器beta版，并和东南亚最大的早期天使投资机构Quest Ventures达成战略合作。"
+  },
+  "email": "contact@eospace.io",
+  "website": "https://eospace.io",
+  "state": "NORMAL",
+  "published_on": "2018-06-01",
+  "links": {
+    "blog": "https://eospace.io",
+    "telegram": "https://t.me/eospace",
+    "github": "https://github.com/EOSBlock"
+  }
+}

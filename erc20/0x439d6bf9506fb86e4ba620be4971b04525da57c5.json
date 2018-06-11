@@ -1,0 +1,28 @@
+{
+  "symbol": "ENJOY",
+  "address": "0x439d6bf9506fb86e4ba620be4971b04525da57c5",
+  "overview":{
+        "en": "SINGAPORE ENJOY FOUNDATION PTE.LTD",
+        "zh": "新加坡吉享币"
+  },
+  "email": "34072604@qq.com",
+  "website": "http://www.singaporeenjoy.io",
+  "whitepaper": "http://www.singaporeenjoy.io/upload/whitepager1.0.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-01",
+  "initial_price":{
+        "ETH":"0.00166666 ETH",
+        "USD":"0.7 USD",
+        "BTC":"0.00004137 BTC"
+  },
+  "links": {
+    "blog": "https://www.singaporeenjoy.com/blog",
+    "twitter": "https://twitter.com/singaporeenjoy",
+    "telegram": "https://t.me/joinchat/singaporeenjoy",
+    "github": "https://github.com/singaporeenjoy",
+    "facebook": "https://www.facebook.com/singaporeenjoy",
+    "reddit": "https://www.reddit.com/r/singaporeenjoy/",
+    "slack": "https://singaporeenjoy.slack.com",
+    "medium": "https://medium.com/singaporeenjoy"
+  }
+}

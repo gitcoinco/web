@@ -1,0 +1,22 @@
+{
+    "website":"https://www.truechain.pro/",
+    "published_on":"2018-01-18",
+    "state": "NORMAL",
+    "links":{ 
+        "github":"https://github.com/truechain",        
+        "telegram":"http://www.t.me/truechainglobal",
+        "twitter":"https://twitter.com/truechaingroup?lang=en",
+        "facebook":"https://www.facebook.com/TrueChaingroup/"
+    },
+    "overview":{
+        "en":"True Chain is the first public chain in the world which brings about the technology of hybrid consensus combining PBFT and POW. Many public chains based on single consensus mechanism such as PoW or PoS, are having a bottleneck in efficiency. One the other hand, those based on dPos or dBFT have been improved in efficiency, but are having problems in decentralization. That being said, True Chain, while keeps the essence of decentralization, can also deliver fast and highly efficient performance. As one may know, the scalability and security are the core issues confronting the consensus mechanism of PoW and PBFT respectively. True Chain, by combining the two together, has solved the most important problem of public chain -- the co-existence of decentralization and efficiency. PBFT protocol ensures the transmission of value as well as the speed and efficiency needed by commercial activities of DApps, and PBFT with PoW together ensures True Chain to be a public chain, ie to be decentralized. True Chain aims to be the best public chain. The complete matrix of products allow users and institutions to interact with the chain conveniently. Included in the product matrix are Stellar -- the platform for the DApp developers to create smart contracts and manage the life cycle of the contracts; DApp warehouse -- the warehouse for decentralized applications on True Chain; TrueScan explorer; True Light Purse, etc. The leading research and engineering team of True Chain come from the U.S., India and China. True Chain is a committee member of China’s National Cloud Industry Strategic Innovation Alliance, a member of the National Chain-Web Innovation Center of China; and is also one of the few block chain projects that have been reported by China’s authoritative media - CCTV, and also participated in the research work of the white paper released by the Ministry of Industry and Information Technology of the Chinese government.",
+        "zh":"初链（TrueChain）是全球最早实现PBFT-POW混合共识的公链之一。POW/POS等单一共识公有链，目前遇到性能瓶颈的问题，而DPOS/dBFT等基于单一共识的改进型公有链，有中心化的问题。初链既具备高性能，也足够去中心化。众所周知，POW及PBFT共识机制的规模化和安全性久经考验。初链混合共识将PBFT和POW结合在一起，解决了公有链最重要的问题: 去中心化和性能之间的矛盾。PBFT协议保证价值流通和商业应用所需要的性能，而PBFT-POW混合共识保证初链是一条公有链。初链是最好用的公链，完善的产品体系让用户和企业能够便捷地与区块链进行交互，发布和管理智能合约的全生命周期，包括Stellar ——初链合约全生命周期管理平台；Dapp Warehouse ——初链去中心化应用仓库；TrueScan Explorer；初链轻钱包等。初链的研究和工程团队主要分布在美国、印度和中国。初链是中国国家云产业体系战略创新联盟理事单位，国家链网中心成员；也是为数不多的、接受过中国中央电视台等权威媒体报道的区块链项目，并参与工信部区块链白皮书调研。"
+    },
+    "symbol":"TRUE",
+    "initial_price":{
+        "ETH":"0.00089 ETH"        
+    },
+    "whitepaper":"https://github.com/truechain/wiki/tree/master/paper/white_paper/",
+    "address":"0xa4d17ab1ee0efdd23edc2869e7ba96b89eecf9ab",
+    "email":"true@truechain.pro"
+}

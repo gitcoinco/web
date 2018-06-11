@@ -1,0 +1,18 @@
+{
+    "symbol": "HAC",
+    "address": "0x7Ed172530F9822cd0573B895853E3f745f4108B4",
+    "overview": {
+        "en": "HadesCoin solve the Identity mapping anonymity.It use the ERC223, which is a more secure, reliable, efficient, and convenient protocol template than ERC20.No ico, no pre sale,no public sale.",
+        "zh": ""
+    },
+    "email": "manager@hadescoin.net",
+    "website": "http://hadescoin.net/",
+    "state": "NORMAL",
+    "published_on": "2018-05-30",
+    "links": {
+        "twitter": "https://twitter.com/Hades_Offical",
+        "telegram": "https://t.me/HadesCoinOfficalGroup",
+        "github": "https://github.com/HadesCoin",
+        "facebook": "https://www.facebook.com/HadesCoinOffical"
+    }
+}

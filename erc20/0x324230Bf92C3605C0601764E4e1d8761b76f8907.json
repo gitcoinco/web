@@ -1,0 +1,17 @@
+{
+    "symbol": "OTC",
+    "address": "0x324230Bf92C3605C0601764E4e1d8761b76f8907",
+    "overview": {
+        "en": "OTChain can provide identify service of the industry subject  on block chain, identify products' owner, check the authenticity and track source. OTChain build a big data record of digitised products.",
+        "zh": "提供行业主体上链认证，商品身份鉴权，商品防伪检测溯源追踪，商品大数据档案及数字化等服务。"
+    },
+    "website": "http://www.otchain.org.cn/",
+    "state": "NORMAL",
+    "published_on": "2018-06-07",
+    "initial_price": {
+        "USD": "0.0006259 USD"
+    },
+    "links": {
+        "facebook": "https://www.facebook.com/otchain/"
+    }
+}

@@ -1,0 +1,24 @@
+{
+  "symbol": "XIN",
+  "address": "0xA974c709cFb4566686553a20790685A47acEAA33",
+  "overview":{
+        "en": "Mixin is a free and lightning fast peer-to-peer transactional network for all popular digital assets.",
+        "zh": "Mixin 是一款免费且闪电般快速的点对点交易网络，适用于所有流行的数字资产。"
+  },
+  "email": "contact@mixin.one",
+  "website": "https://mixin.one/",
+  "whitepaper": "https://mixin.one/assets/Mixin-Draft-2018-06-04.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-12-25",
+  "initial_price":{
+        "ETH":"0.229 ETH",
+        "USD":"160 USD",
+        "BTC":"0.011 BTC"
+  },
+  "links": {
+    "blog": "https://mixin.one/logs",
+    "twitter": "https://twitter.com/MixinMessenger",
+    "github": "https://github.com/MixinMessenger",
+    "facebook": "https://www.facebook.com/MixinMessenger"
+  }
+}

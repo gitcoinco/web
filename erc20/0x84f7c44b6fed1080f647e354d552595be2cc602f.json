@@ -1,0 +1,24 @@
+{
+  "symbol": "BBO",
+  "address": "0x84f7c44b6fed1080f647e354d552595be2cc602f",
+  "overview": {
+    "en": "Bigbom Eco serves as a decentralized advertising ecosystem for all parties involved in online advertising, inclusive of advertisers, service providers, content publishers, advertising channels, platforms"
+  },
+  "email": "support@bigbom.com",
+  "website": "https://bigbom.com",
+  "whitepaper": "https://bigbom.sgp1.digitaloceanspaces.com/files/landing-page/OFFICIAL-BIGBOM-WHITEPAPER-EN-1.1.1-Draft.pdf",
+  "published_on": "2018-04-04",
+  "initial_price": {
+    "ETH": "0.00005 ETH",
+    "USD": "0.03 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/bigbomglobal",
+    "telegram": "https://t.me/bigbomicogroup",
+    "github": "https://github.com/bigbomio",
+    "facebook": "https://www.facebook.com/bigbom.global/",
+    "reddit": "https://www.reddit.com/r/Bigbom/",
+    "slack": "https://your-awesome-project.slack.com",
+    "medium": "https://medium.com/your-awesome-project"
+  }
+}

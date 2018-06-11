@@ -1,0 +1,21 @@
+{
+  "symbol": "ABA",
+  "address": "0x7C2AF3a86B4bf47E6Ee63AD9bde7B3B0ba7F95da",
+  "overview":{
+        "en":"Ecoball is a new, open and compatible multi-chain parallel blockchain operating system, adopting CPoW+DPoS+PoT consensus algorithm that combines the simplicity of blockchain ledger with the fast identification of DAG (Directed Acyclic Graph) to solve the problem of fast volume expansion and low throughput in systems such as Bitcoin and Ethereum effectively. It also has creatively designed a flexible cross-link mechanism to dismantle communication barriers between different blockchains to achieve diversified digital asset management for users. It is a truly commercial blockchain operating ecosystem.",
+        "zh": "生态球是一个全新的、开放兼容的多链并行区块链操作系统，它采用CPoW+DPoS+PoT的共识算法，结合了区块链超级账簿（Hyperledger)简单明了和DAG快速确认的优点，有效解决比特币和以太坊等系统的体积快速膨胀与低吞吐量问题。生态球还设计了一个柔性跨链机制，破除不同区块链之间的壁垒，实现用户数字资产多元化管理，是一个可真正商业化的区块链生态系统。"
+  },
+  "email": "service@ecoball.org",
+  "website": "http://www.quachain.com",
+  "whitepaper": "http://www.ecoball.org/download/EcoBallWhitepaperZH.pdf",
+  "published_on": "2018-01-15",
+  "initial_price":{
+        "ETH":"0.00033 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Ecoball3",
+    "telegram": "http://t.me/ecoballofficial",
+    "github": "https://github.com/ecoball",
+    "facebook": "https://twitter.com/Ecoball3"
+  }
+}

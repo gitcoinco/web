@@ -1,0 +1,23 @@
+{
+  "symbol": "IFTC",
+  "address": "0xaab29ecc3783acb436a6679919f22d30932e93f2",
+  "overview":{
+        "en": "IFT provides standard underlying operating systems that can be used as infrastructure, on which different ecological environment can be created, and various commercial application scenarios are extended. It establishes account systems for commercial organizations based on guaranteed payments, issues digital cryptocurrencies, creates payment/clearing systems for transactions and develops open-source codes and solutions for decentralized digital asset exchanges, in order that these organizations can possess their own business models and architectures.",
+        "zh": "IFT 提供标准的项目底层操作系统，可以作为基础设施，在上面构建各种生态， 延伸了各种商业的使用场景，为有需求的商业机构建立基于担保支付的账户体系、 加密数字子货币发行、支付交易结算系统及用于去中心化的数字货币交易所开源 的代码及实施方案，实现自己的商业模式架构。"
+  },
+  "email": "support@iftc.io",
+  "website": "https://iftc.io",
+  "whitepaper": "https://iftc.io/IFTWhitePaper.doc",
+  "state": "NORMAL",
+  "published_on": "2018-06-07",
+  "initial_price":{
+    "ETH":"0.000666667 ETH",
+    "USD":"0.4061 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/iftc_io",
+    "telegram": "https://t.me/iftcio",
+    "facebook": "https://www.facebook.com/InternetFintech",
+    "github": "https://github.com/InternetFintech"
+  }
+}

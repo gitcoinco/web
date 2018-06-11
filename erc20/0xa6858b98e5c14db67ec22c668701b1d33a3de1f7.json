@@ -1,0 +1,21 @@
+{
+  "symbol": "TMAC",
+  "address": "0xa6858b98e5c14db67ec22c668701b1d33a3de1f7",
+  "overview":{
+        "en":"Promote a low cost and high efficiency communication channel between people by using block chain technology which will help to create an open and transparent trust mechanism.",
+        "zh":"利用区块链技术打造公开透明的信任机制，促进人与人之间低成本、高效率的交流。"
+  },
+  "email": "tac@tac.fund",
+  "website": "http://tac.fund",
+  "whitepaper": "http://tac.fund/pdf/TAChain_en.pdf",
+  "published_on": "2018-05-28",
+  "initial_price":{
+        "ETH":"0.1 ETH",
+        "BTC":"0.01 BTC"
+  },
+  "links": {
+    "telegram": "https://t.me/TACFUND",
+    "facebook": "https://www.facebook.com/Tacfund-525835771111964/",
+    "twitter": "https://twitter.com/TacFund"
+  }
+}

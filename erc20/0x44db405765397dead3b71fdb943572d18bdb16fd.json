@@ -1,0 +1,21 @@
+{
+  "symbol": "GAMT",
+  "address": "0x44db405765397dead3b71fdb943572d18bdb16fd",
+  "overview":{
+        "en":"GA-ME block chain game platform",
+        "zh": "GA-ME区块链游戏平台"
+  },
+  "email": "game@ga-me.io",
+  "website": "http://ga-me.io/",
+  "whitepaper": "http://ga-me.io/white-paper",
+  "published_on": "2018-06-02",
+  "initial_price":{
+        "ETH":"0.000001 ETH",
+        "USD":"0.0007 USD",
+        "BTC":"0.000000067 BTC"
+  },
+  "links": {
+    "blog": "http://ga-me.io/ga-me-1",
+    "github": "https://github.com/ga-me/ga-me.git"
+  }
+}

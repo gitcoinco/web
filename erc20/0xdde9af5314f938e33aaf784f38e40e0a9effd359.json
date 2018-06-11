@@ -1,0 +1,22 @@
+{
+  "symbol": "ATA",
+  "address": "0xdde9af5314f938e33aaf784f38e40e0a9effd359",
+  "overview":{
+        "en": "Decentralized pricing platform for artworks",
+        "zh": "艺术品去中心化定价平台"
+  },
+  "email": "contact@moochain.com",
+  "website": "https://www.artval.io",
+  "whitepaper": "https://www.artval.io/images/Artval_whitepaper_en.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-04-19",
+  "initial_price":{
+        "USD":"0.16 USD"
+  },
+  "links": {
+    "twitter": "https://www.twitter.com/artval_io",
+    "telegram": "https://t.me/artval_io",
+    "github": "https://github.com/artval-blockchain",
+    "facebook": "https://www.facebook.com/artval.io"
+  }
+}
