@@ -1,0 +1,27 @@
+{
+    "website": "https://www.egretia.io",
+    "published_on": "2018-05-26",
+    "links": {
+        "telegram": "https://t.me/Egretia",
+        "reddit": "https://www.reddit.com/r/Egretia/",
+        "github": "https://github.com/egretia",
+        "facebook": "https://www.facebook.com/Egretia.io/",
+        "twitter": "https://twitter.com/Egretia_io",
+        "blog": "http://blog.egretia.io",
+        "linkedin": "https://www.linkedin.com/company/egretia/",
+        "instagram": "https://www.instagram.com/egretia_io/"
+    },
+    "overview": {
+        "en": "Egretia, the world's first HTML5 blockchain platform. Throughout our ecosystem, more than 200,000 developers worldwide can use the Egretia HTML5 Blockchain Tools and SDK to rapidly develop blockchain games and applications, through which digital token EGT will reach over a billion users, circulating in all aspects of HTML5 content, virtual props platform, advertising platform and communities.",
+        "zh": "Egretia将打造全球第一个HTML5区块链平台。在整个生态系统中，全球超过20万的开发商可以运用Egretia提供的HTML区块链工具及SDK快速开发区块链游戏及应用，数字代币EGT将在通过这些HTML5内容，覆盖超过10亿用户，在Egretia提供的全球游戏分发平台、虚拟道具平台、广告平台、社区等各个生态环节中流通。"
+    },
+    "symbol": "EGT",
+    "initial_price": {
+        "ETH": "0.00001429 ETH",
+        "USD": "0.0082882 USD",
+        "BTC": "0.00000111 BTC"
+    },
+    "whitepaper": "https://github.com/egretia/whitepaper",
+    "address": "0x8e1b448EC7aDFc7Fa35FC2e885678bD323176E34",
+    "email": "contact@egretia.io"
+}
