@@ -90,7 +90,7 @@ window.onload = function() {
   var min_send_amt_wei = 6000000;
 
   prePopulateFunderFields();
-  if (!isSendTipPage) {
+  if (!isSendTipPage()) {
     prePopulateGitcoinerFields();
   }
 
