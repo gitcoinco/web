@@ -437,7 +437,7 @@ var refreshBounties = function(event) {
     for (var i = 0; i < results.length; i++) {
       // setup
       var result = results[i];
-      var related_token_details = tokenAddressToDetails(result['token_address']);
+      var related_token_details = tokenAddressToDetailsByNetwork(result['token_address'], result['network']);
       var decimals = 18;
 
       if (related_token_details && related_token_details.decimals) {
