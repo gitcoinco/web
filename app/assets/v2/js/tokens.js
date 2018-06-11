@@ -212,16 +212,16 @@ var tokens = function(network_id) {
 };
 
 var tokenAddressToDetails = function(addr) {
-      return tokenAddressToDetailsByNetwork(addr,document.web3network);
-}
+  return tokenAddressToDetailsByNetwork(addr, document.web3network);
+};
 
 var tokenAddressToDetailsByNetwork = function(addr, network) {
   var _tokens = tokens(network);
 
   for (var i = 0; i < _tokens.length; i += 1) {
     if (_tokens[i].addr && addr) {
-      if(_tokens[i].addr.toLowerCase() == addr.toLowerCase()){
-            return _tokens[i];
+      if (_tokens[i].addr.toLowerCase() == addr.toLowerCase()) {
+        return _tokens[i];
       }
     }
   }
