@@ -20,7 +20,7 @@
 from django.core.management.base import BaseCommand
 
 from dashboard.models import Bounty
-from dashboard.notifications import maybe_market_to_twitter
+from dashboard.notifications import maybe_market_to_slack, maybe_market_to_twitter
 
 
 class Command(BaseCommand):
@@ -28,8 +28,7 @@ class Command(BaseCommand):
     help = 'sends bounties quotes to twitter'
 
     def handle(self, *args, **options):
-        bounties = Bounty.objects.filter(
-            current_bounty=True,
+        bounties = Bounty.objects.current().filter(
             network='mainnet',
             idx_status='open')
         if bounties.count() < 3:
@@ -43,4 +42,6 @@ class Command(BaseCommand):
 
         print(bounty)
         did_tweet = maybe_market_to_twitter(bounty, 'remarket_bounty')
+        did_slack = maybe_market_to_slack(bounty, 'this bounty could use some action!')
         print("did tweet", did_tweet)
+        print("did slack", did_slack)
