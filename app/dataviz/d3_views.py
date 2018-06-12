@@ -482,7 +482,7 @@ def helper_hide_pii(username):
     return new_username
 
 
-@staff_member_required
+# PUBLIC VIEW!
 def viz_graph(request, _type, template='graph'):
     """Render a graph visualization of the Gitcoin Network.
 
@@ -625,7 +625,10 @@ def viz_graph(request, _type, template='graph'):
         'page_route': page_route,
         'max_time': int(time.time()),
     }
-    return TemplateResponse(request, f'dataviz/{template}.html', params)
+
+    response = TemplateResponse(request, f'dataviz/{template}.html', params)
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
 
 
 def viz_draggable(request, key='email_open'):

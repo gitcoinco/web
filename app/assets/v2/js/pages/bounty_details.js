@@ -474,7 +474,7 @@ var build_detail_page = function(result) {
 
   // setup
   var decimals = 18;
-  var related_token_details = tokenAddressToDetails(result['token_address']);
+  var related_token_details = tokenAddressToDetailsByNetwork(result['token_address'], result['network']);
 
   if (related_token_details && related_token_details.decimals) {
     decimals = related_token_details.decimals;
