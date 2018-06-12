@@ -38,7 +38,6 @@ $(document).ready(function() {
 
     token_contract.allowance.call(from, to, function(error, result) {
       if (error || result.toNumber() == 0) {
-        var amount = (2 ** 256) - 1; // uint256
         var amount = 10 * 18 * 9999999999999999999999999999999999999999999999999999; // uint256
 
         token_contract.approve(
