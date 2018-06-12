@@ -422,7 +422,6 @@ var attach_work_actions = function() {
       $(this).find('span').text('Start Work');
       remove_interest(document.result['pk']);
     }
-
   });
 };
 
@@ -753,7 +752,8 @@ var render_activity = function(result) {
         created_on: _interested.created,
         age: timeDifference(new Date(result['now']), new Date(_interested.created)),
         status: 'started',
-        uninterest_possible: isBountyOwner(result) || document.isStaff
+        uninterest_possible: isBountyOwner(result) || document.isStaff,
+        slash_possible: document.isStaff
       });
     });
   }
@@ -776,6 +776,10 @@ var render_activity = function(result) {
   }).forEach(function(activity) {
     $('#remove-' + activity.name).click(() => {
       uninterested(result.pk, activity.profileId);
+      return false;
+    });
+    $('#remove-slash-' + activity.name).click(() => {
+      uninterested(result.pk, activity.profileId, true);
       return false;
     });
   });

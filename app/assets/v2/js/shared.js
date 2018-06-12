@@ -194,11 +194,12 @@ var add_interest = function(bounty_pk, data) {
 };
 
 /** Remove the current profile from the interested profiles list. */
-var remove_interest = function(bounty_pk) {
+var remove_interest = function(bounty_pk, slash = false) {
   if (!document.interested) {
     return;
   }
-  mutate_interest(bounty_pk, 'remove');
+
+  mutate_interest(bounty_pk, 'remove', slash);
 };
 
 /** Helper function -- mutates interests in either direction. */
@@ -210,6 +211,15 @@ var mutate_interest = function(bounty_pk, direction, data) {
     .toggleClass('btn-small')
     .toggleClass('button')
     .toggleClass('button--primary');
+
+  if (direction === 'new') {
+    _alert({ message: gettext("Thanks for letting us know that you're ready to start work.") }, 'success');
+    $('#interest a').attr('id', 'btn-white');
+  } else if (direction === 'remove') {
+    _alert({ message: gettext("You've stopped working on this, thanks for letting us know.") }, 'success');
+    $('#interest a').attr('id', '');
+  }
+  
 
   $.post(request_url, data).then(function(result) {
     result = sanitizeAPIResults(result);
@@ -232,13 +242,21 @@ var mutate_interest = function(bounty_pk, direction, data) {
 };
 
 
-var uninterested = function(bounty_pk, profileId) {
+var uninterested = function(bounty_pk, profileId, slash) {
+  var data = {};
+  var success_message = 'Contributor removed from bounty.';
+
+  if (slash) {
+    success_message = 'Contributor removed from bounty and slashed';
+    data.slashed = true;
+  }
+
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + profileId + '/uninterested/';
 
-  $.post(request_url, function(result) {
+  $.post(request_url, data, function(result) {
     result = sanitizeAPIResults(result);
     if (result.success) {
-      _alert({ message: gettext('Contributor removed from bounty.') }, 'success');
+      _alert({ message: gettext(success_message) }, 'success');
       pull_interest_list(bounty_pk);
       return true;
     }

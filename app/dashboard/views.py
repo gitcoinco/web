@@ -204,7 +204,7 @@ def new_interest(request, bounty_id):
             'success': False},
             status=401)
 
-    if profile.has_been_removed_by_staff():
+    if profile.has_been_slashed_by_staff():
         return JsonResponse({
             'error': _('Because a staff member has had to remove you from a bounty in the past, you are unable to start'
                        'more work at this time. Please leave a message on slack if you feel this message is in error.'),
@@ -326,6 +326,9 @@ def uninterested(request, bounty_id, profile_id):
         bounty_id (int): ID of the Bounty
         profile_id (int): ID of the interested profile
 
+    Params:
+        slashed (str): if the user will be slashed or not
+
     Returns:
         dict: The success key with a boolean value and accompanying error.
     """
@@ -342,12 +345,16 @@ def uninterested(request, bounty_id, profile_id):
             {'error': 'Only bounty funders are allowed to remove users!'},
             status=401)
 
+    slashed = request.POST.get('slashed')
     try:
         interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
         bounty.interested.remove(interest)
         maybe_market_to_slack(bounty, 'stop_work')
         maybe_market_to_user_slack(bounty, 'stop_work')
-        event_name = "bounty_removed_by_staff" if is_staff else "bounty_removed_by_funder"
+        if is_staff:
+            event_name = "bounty_removed_slashed_by_staff" if slashed else "bounty_removed_by_staff"
+        else:
+            event_name = "bounty_removed_by_funder"
         record_user_action_on_interest(interest, event_name, None)
         interest.delete()
     except Interest.DoesNotExist:

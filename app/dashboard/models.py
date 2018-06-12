@@ -1083,10 +1083,10 @@ class Profile(SuperModel):
         tipped_for = Tip.objects.filter(username__iexact=self.handle).order_by('-id')
         return on_repo | tipped_for
 
-    def has_been_removed_by_staff(self):
+    def has_been_slashed_by_staff(self):
         user_actions = UserAction.objects.filter(
             profile=self,
-            action='bounty_removed_by_staff',
+            action='bounty_removed_slashed_by_staff',
             )
         return user_actions.exists()
 

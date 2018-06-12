@@ -415,6 +415,7 @@ a.btn {
 
 .stop-work {
   float: right;
+  padding-left: 5px;
 }
 
 @media (max-width: 575px) {
