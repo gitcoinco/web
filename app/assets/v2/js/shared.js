@@ -247,7 +247,7 @@ var uninterested = function(bounty_pk, profileId, slash) {
   var success_message = 'Contributor removed from bounty.';
 
   if (slash) {
-    success_message = 'Contributor removed from bounty and slashed';
+    success_message = 'Contributor removed from bounty and rep dinged';
     data.slashed = true;
   }
 

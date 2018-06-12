@@ -562,6 +562,10 @@ input[type=text].loading {
   text-align: left;
 }
 
+.admin-only{
+  background-color: #800000 !important;
+}
+
 /* The alert message box */
 
 .alert {
