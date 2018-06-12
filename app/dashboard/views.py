@@ -675,6 +675,30 @@ def cancel_bounty(request):
     return TemplateResponse(request, 'kill_bounty.html', params)
 
 
+def helper_handle_admin_override_and_hide(request, bounty):
+    admin_override_and_hide = request.GET.get('admin_override_and_hide', False)
+    if admin_override_and_hide:
+        is_staff = request.user.is_staff
+        if is_staff:
+            bounty.admin_override_and_hide = True
+            bounty.save()
+            messages.success(request, _(f'Bounty is now hidden'))
+        else:
+            messages.warning(request, _('Only the funder of this bounty may do this.'))
+
+
+def helper_handle_suspend_auto_approval(request, bounty):
+    suspend_auto_approval = request.GET.get('suspend_auto_approval', False)
+    if suspend_auto_approval:
+        is_staff = request.user.is_staff
+        if is_staff:
+            bounty.admin_override_suspend_auto_approval = True
+            bounty.save()
+            messages.success(request, _(f'Bounty auto approvals are now suspended'))
+        else:
+            messages.warning(request, _('Only the funder of this bounty may do this.'))
+
+
 def helper_handle_snooze(request, bounty):
     snooze_days = int(request.GET.get('snooze', 0))
     if snooze_days:
@@ -685,7 +709,7 @@ def helper_handle_snooze(request, bounty):
             bounty.save()
             messages.success(request, _(f'Warning messages have been snoozed for {snooze_days} days'))
         else:
-            messages.warning(request, _('Only the funder of this bounty may snooze warnings.'))
+            messages.warning(request, _('Only the funder of this bounty may do this.'))
 
 
 def helper_handle_approvals(request, bounty):
@@ -796,6 +820,8 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
 
                 helper_handle_snooze(request, bounty)
                 helper_handle_approvals(request, bounty)
+                helper_handle_admin_override_and_hide(request, bounty)
+                helper_handle_suspend_auto_approval(request, bounty)
 
         except Bounty.DoesNotExist:
             pass

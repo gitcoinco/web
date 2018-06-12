@@ -551,7 +551,9 @@ var do_actions = function(result) {
     var start_stop_work_enabled = !isBountyOwner(result);
     var increase_bounty_enabled = isBountyOwner(result);
     var show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
-
+    var show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
+    var show_admin_override_and_hide = document.isStaff;
+    
     if (is_legacy) {
       show_start_stop_work = false;
       show_github_link = true;
@@ -651,6 +653,36 @@ var do_actions = function(result) {
         title: gettext('View issue details and comments on Github'),
         comments: result['github_comments'],
         color: 'white'
+      };
+
+      actions.push(_entry);
+    }
+    if (show_suspend_auto_approval) {
+      var url = result['url'] + '?suspend_auto_approval=1';
+
+      var _entry = {
+        enabled: true,
+        href: url,
+        text: gettext('Suspend Auto Approval'),
+        parent: 'right_actions',
+        title: gettext('Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty'),
+        color: 'white',
+        buttonclass: 'admin-only',
+      };
+
+      actions.push(_entry);
+    }
+    if (show_admin_override_and_hide) {
+      var url = result['url'] + '?admin_override_and_hide=1';
+
+      var _entry = {
+        enabled: true,
+        href: url,
+        text: gettext('Hide Bounty'),
+        parent: 'right_actions',
+        title: gettext('Hides Bounty from Active Bounties'),
+        color: 'white',
+        buttonclass: 'admin-only',
       };
 
       actions.push(_entry);
