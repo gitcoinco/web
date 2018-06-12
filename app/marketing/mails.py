@@ -99,7 +99,7 @@ def admin_contact_funder(bounty, text, from_user):
         html, text = render_admin_contact_funder(bounty, text, from_user)
         cc_emails = [from_email]
         if not should_suppress_notification_email(to_email, 'admin_contact_funder'):
-            send_mail(from_email, to_email, subject, text, cc_emails=cc_emails, from_name="Kevin Owocki (Gitcoin.co)")
+            send_mail(from_email, to_email, subject, text, cc_emails=cc_emails, from_name=from_email)
     finally:
         translation.activate(cur_language)
 
