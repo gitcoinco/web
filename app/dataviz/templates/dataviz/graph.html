@@ -51,7 +51,7 @@ rect {
   </head>
 
 
-<body>
+<body id="body" style="zoom: 1;">
 
 <p>{{comments}}
 </p>
@@ -93,8 +93,8 @@ $('#myRange').change(function(){
     load_data();
 });
 
-var width = $(window).width(),
-    height = $(window).height()
+var width = $(window).width() - 15,
+    height = $(window).height() + 30;
 
 
 var fill = d3.scale.category20();
@@ -202,7 +202,36 @@ node.append("image")
 
 $(document).ready(function(){
   load_data();
+
+
 });
+function MouseWheelHandler(e) {
+
+  // cross-browser wheel delta
+  var e = window.event || e; // old IE support
+  var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+
+  var zoom = $('body').css('zoom');
+  var new_zoom = parseFloat(zoom) + parseFloat(delta * 3 / 100.0);
+  if(new_zoom<1){
+    new_zoom=1;
+  }
+  $('body').css('zoom', new_zoom);
+  e.preventDefault();
+  return false;
+}
+
+var mybody = document.getElementById("body");
+if (mybody.addEventListener) {
+  // IE9, Chrome, Safari, Opera
+  mybody.addEventListener("mousewheel", MouseWheelHandler, false);
+  // Firefox
+  mybody.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
+}
+// IE 6/7/8
+else mybody.attachEvent("onmousewheel", MouseWheelHandler);
+
+
 
 </script>
 
