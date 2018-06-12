@@ -41,7 +41,9 @@ from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_pri
 from github.utils import (
     get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
 )
-from marketing.mails import bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected
+from marketing.mails import (
+    admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
+)
 from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
@@ -687,6 +689,18 @@ def helper_handle_admin_override_and_hide(request, bounty):
             messages.warning(request, _('Only the funder of this bounty may do this.'))
 
 
+def helper_handle_admin_contact_funder(request, bounty):
+    admin_contact_funder_txt = request.GET.get('admin_contact_funder', False)
+    if admin_contact_funder_txt:
+        is_staff = request.user.is_staff
+        if is_staff:
+            # contact funder
+            admin_contact_funder(bounty, admin_contact_funder_txt, request.user)
+            messages.success(request, _(f'Bounty message has been sent'))
+        else:
+            messages.warning(request, _('Only the funder of this bounty may do this.'))
+
+
 def helper_handle_mark_as_remarket_ready(request, bounty):
     admin_mark_as_remarket_ready = request.GET.get('admin_toggle_as_remarket_ready', False)
     if admin_mark_as_remarket_ready:
@@ -838,6 +852,8 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 helper_handle_admin_override_and_hide(request, bounty)
                 helper_handle_suspend_auto_approval(request, bounty)
                 helper_handle_mark_as_remarket_ready(request, bounty)
+                helper_handle_admin_contact_funder(request, bounty)
+        
         except Bounty.DoesNotExist:
             pass
         except Exception as e:

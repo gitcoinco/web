@@ -425,6 +425,17 @@ var attach_work_actions = function() {
   });
 };
 
+var attach_contact_funder_options = function() {
+  $('body').delegate('a.contact_bounty_hunter', 'click', function(e) {
+    e.preventDefault();
+    var text = window.prompt('What would you like to say to the funder?', '');
+    var url = document.location + '?admin_contact_funder=' + text;
+
+    document.location.href = url;
+  });
+};
+
+
 var show_interest_modal = function() {
   var self = this;
 
@@ -554,7 +565,8 @@ var do_actions = function(result) {
     var show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
     var show_admin_override_and_hide = document.isStaff;
     var show_admin_toggle_remarket = document.isStaff;
-    
+    var show_admin_contact_user = document.isStaff;
+
     if (is_legacy) {
       show_start_stop_work = false;
       show_github_link = true;
@@ -706,6 +718,22 @@ var do_actions = function(result) {
       actions.push(_entry);
     }
 
+    if (show_admin_contact_user) {
+      var url = '';
+
+      var _entry = {
+        enabled: true,
+        href: url,
+        text: gettext('Contact Funder'),
+        parent: 'right_actions',
+        title: gettext('Contact Funder via Email'),
+        color: 'white',
+        buttonclass: 'admin-only contact_bounty_hunter'
+      };
+
+      actions.push(_entry);
+    }
+
     render_actions(actions);
   });
 };
@@ -840,6 +868,7 @@ var main = function() {
   setTimeout(function() {
     // setup
     attach_work_actions();
+    attach_contact_funder_options();
 
     // pull issue URL
     if (typeof document.issueURL == 'undefined') {
