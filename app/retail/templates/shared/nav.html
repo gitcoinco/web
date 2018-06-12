@@ -36,7 +36,7 @@
       {% if request.path == '/' %}
         <span class="navbar__cta mr-2">Want to get help on your repo? Easily get started!</span>
       {% endif %}
-      {% if is_outside %}
+      {% if not user.is_authenticated %}
       <a class="nav-link {% if active == 'about' %}selected{%endif%}" href="{% url "about" %}">{% trans "About" %}</a>
       <a class="nav-link{% if active == 'mission' %} selected{% endif %}" href="{% url "mission" %}">{% trans "Mission" %}</a>
       <a class="nav-link{% if active == 'results' %} selected{% endif %}" href="{% url "results" %}">{% trans "Results" %}</a>
