@@ -2,24 +2,23 @@
   background: #fefefe;
 }
 
+.interior #logo {
+  width: auto;
+}
+
+.ios .iphone {
+  max-width: 14rem;
+}
+
 .ios .header {
   background: none;
 }
 
-.ios-hero__container .nav-link--active,
-.ios-hero__container .nav-link:visited .nav-link--active {
-  background: #FFF;
-  border-radius: .5rem;
-  color: #8E2ABE !important;
+.ios .white-line {
+  background: #fff;
+  height:7px;
+  margin:30px 0;
 }
-
-/* stylelint-disable no-descending-specificity */
-
-.ios-hero__container .nav-link--active:hover {
-  color: #FFF !important;
-}
-
-/* stylelint-enable */
 
 .ios-hero__container {
   background: -webkit-linear-gradient(138deg, #8E2ABE 0%, #37EA9C 100%);
@@ -28,6 +27,22 @@
   height: 750px;
   min-height: 750px;
   margin-bottom: 225px;
+}
+
+.ios-hero__container .nav-link--active {
+  background: #FFF;
+  border-radius: .5rem;
+  color: #8E2ABE !important;
+}
+
+.ios-hero__container .nav-link--active:hover {
+  color: #FFF !important;
+}
+
+.ios-hero__container .nav-link:visited .nav-link--active {
+  background: #FFF;
+  border-radius: .5rem;
+  color: #8E2ABE !important;
 }
 
 .ios-hero__container .header-line p {
@@ -58,16 +73,7 @@
 
 .ios .footer {
   border-top: 1px solid #eff3ee;
-  background: #fff;
   padding: 0 15px;
-}
-
-.ios .footer .nav-link {
-  color: black !important;
-}
-
-.ios .footer img {
-  filter: none;
 }
 
 .ios .video {
@@ -95,21 +101,9 @@
   background-position: center;
 }
 
-.card .content .title {
-  font-size: 2rem;
-  letter-spacing: normal;
-  font-weight: bold;
-}
-
-.card .content .description {
-  color: #474747;
-  font-size: 1.2rem;
-  height: auto;
-}
-
 .ios-emoji {
   padding-top: 20px;
-  font-size: 4.5rem;
+  font-size: 3rem;
 }
 
 .ios .tag-line {
@@ -122,12 +116,26 @@
   font-weight: bold;
 }
 
-.cards {
+.ios .cards {
   display: block;
 }
 
-.card {
+.ios .card {
+  min-height: 20rem;
   margin: 1em 0 1em 0;
+  box-shadow: 4px 5px 10px 3px rgba(0, 0, 0, 0.1);
+  height: auto;
+}
+
+.ios .card .content .title {
+  letter-spacing: 0;
+  font-weight: bold;
+}
+
+.ios .card .content .description {
+  color: #474747;
+  font-size: 1rem;
+  height: auto;
 }
 
 .line-break {
@@ -141,8 +149,13 @@
 }
 
 @media (max-width: 1025px) {
+
   .ios-hero__container .header-line {
     padding-top: 0;
+  }
+
+  .ios .header-line {
+    padding: 1rem 4rem 0;
   }
 
   .ios-hero__container {
@@ -161,24 +174,42 @@
 }
 
 @media (max-width: 991px) {
+
   .col-md-4 {
     flex: 0 0 100%;
     max-width: 100%;
   }
 
   .card {
-    width: 80%;
-    margin: 1em 0 1em 0;
-    padding: 2em;
-    height: auto;
+    margin: 1rem;
+    padding: 1rem;
   }
 
-  .card .content .description {
-    font-size: 1.5rem;
+  .ios-hero__container {
+    min-height: 0
+  }
+
+  .ios .video {
+    padding-left: 2rem;
+    padding-right: 2rem;
   }
 }
 
 @media (max-width: 768px) {
+
+  .ios .white-line {
+    display: none;
+  }
+
+  .ios .header-line h3 {
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .ios-hero__container {
+    text-align: center;
+  }
+
   .ios .btn-outline-info {
     text-align: center;
     margin: 15px 40% 0;
