@@ -58,10 +58,12 @@
             Fund an Issue
           </a>
         
+        {% if not user.is_authenticated %}
           <a href="{% url 'social:begin' 'github' %}?next=/"   class="btn btn-gc-blue interior">
             <i class="fab fa-ethereum" role="aria-hidden"></i>
             Login
           </a>
+        {% endif %}
       {% endif %}
       {% if request.path != '/' or user.is_authenticated %}
         <img class="d-none d-md-block img__spaceship" src="{% static "v2/images/spaceship.png" %}" width="52" height="45" />
