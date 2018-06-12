@@ -60,7 +60,7 @@ jsonFileNames
     }
 
     if (!imageAddrs.includes(addr.toLowerCase())) {
-      notice(`ERROR! dose not have ${addr + '.png'} in images dir, please check first`) 
+      notice(`Warning! dose not have ${addr + '.png'} in images dir, please check first`) 
     }
 
     if (!obj.symbol) {
