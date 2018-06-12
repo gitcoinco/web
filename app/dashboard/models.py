@@ -1836,3 +1836,24 @@ class ToolVote(models.Model):
 
     def __str__(self):
         return f"{self.profile} | {self.value} | {self.tool}"
+
+
+class TokenApproval(SuperModel):
+    """A token approval."""
+
+    profile = models.ForeignKey('dashboard.Profile', related_name='token_approvals', on_delete=models.CASCADE)
+    coinbase = models.CharField(max_length=50)
+    token_name = models.CharField(max_length=50)
+    token_address = models.CharField(max_length=50)
+    approved_address = models.CharField(max_length=50)
+    approved_name = models.CharField(max_length=50)
+    tx = models.CharField(max_length=255, default='')
+    network = models.CharField(max_length=255, default='')
+
+    def __str__(self):
+        return f"{self.coinbase} | {self.token_name} | {self.profile}"
+
+    @property
+    def coinbase_short(self):
+        coinbase_short = f"{self.coinbase[0:5]}...{self.coinbase[-4:]}"
+        return coinbase_short
