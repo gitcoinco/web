@@ -17,11 +17,10 @@ $(document).ready(function() {
   force_no_www();
 
   $('.nav-link.dropdown-toggle, .nav_avatar').click(function(e) {
-    var parent = $(this).parents('.nav-item');
-    if (parent.find('.dropdown-menu').css('display') == 'block') {
-      parent.find('.dropdown-menu').css('display', 'none');
+    if ($('.dropdown-menu').css('display') == 'block') {
+      $('.dropdown-menu').css('display', 'none');
     } else {
-      parent.find('.dropdown-menu').css('display', 'block');
+      $('.dropdown-menu').css('display', 'block');
     }
     e.preventDefault();
   });
