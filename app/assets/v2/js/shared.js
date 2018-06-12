@@ -41,6 +41,18 @@ var loading_button = function(button) {
   button.prepend('<img src=/static/v2/images/loading_white.gif style="max-width:20px; max-height: 20px">').addClass('disabled');
 };
 
+var attach_close_button = function() {
+  $('body').delegate('.alert .closebtn', 'click', function(e) {
+    $(this).parents('.alert').remove();
+    $('.alert').each(function() {
+      var old_top = $(this).css('top');
+      var new_top = (parseInt(old_top.replace('px')) - 66) + 'px';
+
+      $(this).css('top', new_top);
+    });
+  });
+};
+
 
 var update_metamask_conf_time_and_cost_estimate = function() {
   var confTime = 'unknown';
@@ -726,6 +738,7 @@ attach_change_element_type();
 
 window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 300);
+  attach_close_button();
 });
 
 var promptForAuth = function(event) {
