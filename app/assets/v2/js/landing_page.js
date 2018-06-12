@@ -54,7 +54,6 @@ $(document).ready(function() {
   // Preserve scroll position if user was just here
   if (prevScroll && lastAccessed && new Date().getTime() - lastAccessed < 60 * 1000) {
     scrollContainer.scrollTop(prevScroll);
-    moveWithScroll({});
   }
   // before the current page goes away, save the menu position
   $(window).on('beforeunload', function() {
