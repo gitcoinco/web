@@ -198,7 +198,11 @@ var tokens = function(network_id) {
     ];
   }
 
-  _priorityTokens = _tokens.filter(token => token.priority > 0).sort((a, b) => b.priority - a.priority);
+  _priorityTokens = _tokens.filter(function(token) {
+    return token.priority > 0;
+  }).sort(function(a, b) {
+    return b.priority - a.priority;
+  });
   _priorityTokens.push({ 'divider': true });
 
   _tokens.sort(function(a, b) {
