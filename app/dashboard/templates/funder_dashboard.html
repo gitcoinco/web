@@ -199,14 +199,18 @@
                     <!-- should be a default message saying they have no expiring bounties in the next 7 days if they
                      don't have any -->
                     <div class="funder-dashboard__whats-next__expiring-bounties">
-                      You have 2 bounties expiring in 3 days!
-                      <a href="#" class="text-fd-blue--dark">view bounties</a>
+                      {% blocktrans with expiring_bounties="2" expiring_days="3"%}
+                      You have {{expiring_bounties}} bounties expiring in {{expiring_days}} days!
+                      {% endblocktrans %}
+                      <a href="#" class="text-fd-blue--dark">{% trans "view bounties" %}</a>
                     </div>
                     <!-- should have a default message saying they don't have any new comments on their funded
                     issues -->
                     <div class="funder-dashboard__whats-next__new-comments">
-                      3 contributors have commented on your open issues.
-                      <a href="#" class="text-fd-blue--dark">view comments</a>
+                      {% blocktrans with new_contributor_comments="3" %}
+                      {{ new_contributor_comments }} contributors have commented on your open issues.
+                      {% endblocktrans %}
+                      <a href="#" class="text-fd-blue--dark">{% trans "view comments" %}</a>
                     </div>
                   </div>
                 </div>
@@ -219,7 +223,9 @@
                             col-6 p-0 col-lg mr-lg-3 card">
                     <div class="card-body pb-2 text-center lead">
                       <h4 class="card-title pt-0 font-weight-bold">
-                        394
+                        {% with submitted_bounties_count=394 %}
+                        {{ submitted_bounties_count }}
+                        {% endwith %}
                       </h4>
                       <small class="card-text text-fd-blue--light text-uppercase">
                         {% trans "Bounties Submitted" %}
@@ -234,7 +240,9 @@
                             col-6 p-0 col-lg mr-lg-3 card">
                     <div class="card-body pb-2 text-center lead">
                       <h4 class="card-title pt-0 font-weight-bold">
-                        142
+                        {% with total_contributors_count=142 %}
+                        {{ total_contributors_count }}
+                        {% endwith %}
                       </h4>
                       <small class="card-text text-fd-blue--light text-uppercase">
                         {% trans "Total Contributors" %}
@@ -249,9 +257,13 @@
                             col-6 p-0 col-lg mr-lg-3 card">
                     <div class="card-body pb-2 text-center lead">
                       <h5 class="card-title pt-0 font-weight-bold">
-                        $50.890
+                        {% with total_paid_dollars="50.890" %}
+                        ${{ total_paid_dollars }}
+                        {% endwith %}
                         <small class="text-fd-blue--dark d-block">
-                          100 ETH
+                          {% with total_paid_eth=100 %}
+                          {{total_paid_eth}} ETH
+                          {% endwith %}
                         </small>
                       </h5>
                       <small class="card-text text-fd-orange text-uppercase">
@@ -260,16 +272,22 @@
                     </div>
                     <small class="funder-dashboard__stats__stat__footer
                                 card-footer text-uppercase text-center p0 text-muted">
-                      {% trans "As of May 5. 2018" %}
+                      {% with total_paid_used_date="May 5. 2018" %}
+                      {% trans "As of" %} {{total_paid_used_date}}
+                      {% endwith %}
                     </small>
                   </div>
                   <div class="funder-dashboard__stats__stat funder-dashboard__stats__stat--total-budget
                             col-6 p-0 col-lg card">
                     <div class="card-body d-flex flex-column lead justify-content-center pb-2 text-center">
                       <h5 class="card-title pt-0 font-weight-bold">
-                        $90K
+                        {% with total_budget_dollars="90K" %}
+                        ${{ total_budget_dollars }}
+                        {% endwith %}
                         <small class="text-fd-blue--dark d-block">
-                          200 ETH
+                          {% with total_budget_eth="200" %}
+                          {{ total_budget_eth }} ETH
+                          {% endwith %}
                         </small>
                       </h5>
                       <small class="card-text text-fd-green mb-5 text-uppercase">
@@ -317,20 +335,28 @@
                       </h4>
                       <span class="text-secondary">
                         {% trans "Amount to be reported for "%}
-                        <span class="funder-dashboard__tax-reporting__year">2018</span>
+                        <span class="funder-dashboard__tax-reporting__year">
+                          {% with tax_year=2018 %}
+                          {{ tax_year }}
+                          {% endwith %}
+                        </span>
                       </span>
                     </div>
                     <div class="funder-dashboard__tax-reporting__bounties
                                 d-flex align-items-center justify-content-between">
                       <p class="lead pt-0">
                         <span class="funder-dashboard__tax-reporting__bounties__count">
-                          139
+                          {% with tax_year_bounties_count=139 %}
+                          {{ tax_year_bounties_count }}
+                          {% endwith %}
                         </span>
                         <span class="funder-dashboard__tax-reporting__bounties__print pr-1">
                           {% trans "Bounties" %}
                         </span>
                         <span class="funder-dashboard__tax-reporting__bounties__worth pl-1">
-                          $34,450
+                          {% with tax_year_bounties_worth="34.450" %}
+                          {{ tax_year_bounties_worth }}
+                          {% endwith %}
                         </span>
                       </p>
                       <div class="mb-2">
@@ -362,14 +388,16 @@
                         {% trans "Reclaim Your Funds" %}
                       </div>
                       <div>
+                        {% with expired_issues_count=3 expired_issues_worth="$548.23"%}
                         You have
                         <span class="funder-dashboard__latest-on-bounties__reclaim-funds__funds-count
-                                     text-danger">3</span>
+                                     text-danger">{{expired_issues_count}}</span>
                         <span class="text-danger">{% trans "Expired Issues" %},</span>
                         funds worth <span class="funder-dashboard__latest-on-bounties__reclaim-funds__worth
-                                                 font-weight-bold">$548.23</span>
-                        <span class="funder-dashboard__latest-on-bounties__reclaim-funds__reclaim
-                                    text-fd-blue--light ml-1">{% trans "Reclaim Now" %}</span>
+                                                 font-weight-bold">{{expired_issues_worth}}</span>
+                        <a href="#" class="funder-dashboard__latest-on-bounties__reclaim-funds__reclaim
+                                    text-fd-blue--light ml-1">{% trans "Reclaim Now" %}</a>
+                        {% endwith %}
                       </div>
                     </div>
                   </div>
@@ -377,7 +405,9 @@
                     <div class="card-body pb-1">
                       <div class="lead">
                         <span class="funder-dashboard__latest-on-bounties__active__count font-weight-bold">
-                          154
+                          {% with active_bounties_count=154 %}
+                          {{active_bounties_count}}
+                          {% endwith %}
                         </span>
                         <span class="text-fd-blue--dark text-uppercase"> {% trans "active bounties" %}</span>
                       </div>
@@ -391,7 +421,9 @@
                     <div class="card-body pb-1">
                       <div class="lead">
                         <span class="funder-dashboard__latest-on-bounties__completed__count font-weight-bold">
-                            174
+                          {% with completed_bounties_count=174 %}
+                          {{completed_bounties_count}}
+                          {% endwith %}
                         </span>
                         <span class="text-fd-green text-uppercase"> {% trans "completed bounties" %}</span>
                       </div>
@@ -405,7 +437,9 @@
                     <div class="card-body pb-1">
                       <div class="lead">
                         <span class="funder-dashboard__latest-on-bounties__expired__count font-weight-bold">
-                          8
+                          {% with expired_bounties_count=8 %}
+                          {{expired_bounties_count}}
+                          {% endwith %}
                         </span>
                         <span class="text-fd-red text-uppercase">{% trans "expired bounties" %}</span>
                       </div>
@@ -421,8 +455,13 @@
                       {% trans "Top Contributors" %}
                     </p>
 
-                    <div class="funder-dashboard__latest-on-bounties__top-contributors__contributor">
-                    </div>
+                    {% with '1 2 3' as contributors %}
+                        {% for o in contributors %}
+                            <div class="funder-dashboard__latest-on-bounties__top-contributors__contributor d-inline-block">
+                              <!-- TODO: each object should have the picture of the contributor -->
+                            </div>
+                        {% endfor %}
+                    {% endwith %}
                   </div>
                 </div>
               </div>
@@ -763,7 +802,7 @@
     </script>
     <script type="text/javascript">
       $(function () {
-        (function () {
+        function activateChart() {
           var payoutHistory = document.getElementById("funder-dashhboard__payout-history__chart").getContext("2d");
 
           var data = {
@@ -799,7 +838,15 @@
             options: options,
             type: 'line'
           });
-        })();
+        };
+
+        function activateTotalBudget() {
+          var $totalBudget = $('.funder-dashboard__stats__stat--total-budget').find('.funder-dashboard__stats__stat__footer');
+          console.log($totalBudget);
+        };
+
+        activateChart();
+        activateTotalBudget();
       });
     </script>
     {% include 'shared/rollbar.html' %}
