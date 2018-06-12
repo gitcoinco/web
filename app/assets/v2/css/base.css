@@ -30,9 +30,22 @@ span {
   z-index: 9999999999;
 }
 
-.navbar-nav .nav-link {
+.navbar-dark .navbar-nav .nav-link {
   border-radius: 2px;
+  color: #7c78a4;
 }
+.navbar .interior, .navbar .interior a,
+.nav-link.interior, .nav-link.interior a {
+  color: white !important;
+}
+
+.navbar .interior .dropdown-item{
+  color: black !important;
+}
+.navbar .interior .dropdown-item:hover{
+  color: white !important;
+}
+
 
 .nav_avatar,
 .navbar__cta,
@@ -54,7 +67,7 @@ span {
 }
 
 .navbar-nav a.nav-link.selected {
-  color: #4aeaa7 !important;
+  border-bottom: 1px solid;
 }
 
 .navbar a.slack i {
