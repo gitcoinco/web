@@ -757,6 +757,8 @@ var promptForAuth = function(event) {
         _alert("You have not yet enabled this token.  To enable this token, go to the <a style='padding-left:5px;' href='/settings/tokens'> Token Settings page and enable it</a>. (this is only needed one time per token)");
         $('input, textarea, select').prop('disabled', 'disabled');
         $('select[name=deonomination]').prop('disabled', '');
+      } else {
+        $('input, textarea, select').prop('disabled', '');
       }
     });
 
