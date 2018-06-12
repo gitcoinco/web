@@ -553,6 +553,7 @@ var do_actions = function(result) {
     var show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
     var show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
     var show_admin_override_and_hide = document.isStaff;
+    var show_admin_toggle_remarket = document.isStaff;
     
     if (is_legacy) {
       show_start_stop_work = false;
@@ -667,11 +668,12 @@ var do_actions = function(result) {
         parent: 'right_actions',
         title: gettext('Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty'),
         color: 'white',
-        buttonclass: 'admin-only',
+        buttonclass: 'admin-only'
       };
 
       actions.push(_entry);
     }
+
     if (show_admin_override_and_hide) {
       var url = result['url'] + '?admin_override_and_hide=1';
 
@@ -682,7 +684,23 @@ var do_actions = function(result) {
         parent: 'right_actions',
         title: gettext('Hides Bounty from Active Bounties'),
         color: 'white',
-        buttonclass: 'admin-only',
+        buttonclass: 'admin-only'
+      };
+
+      actions.push(_entry);
+    }
+
+    if (show_admin_toggle_remarket) {
+      var url = result['url'] + '?admin_toggle_as_remarket_ready=1';
+
+      var _entry = {
+        enabled: true,
+        href: url,
+        text: gettext('Toggle Remarket Ready'),
+        parent: 'right_actions',
+        title: gettext('Sets Remarket Ready if not already remarket ready.  Unsets it if already remarket ready.'),
+        color: 'white',
+        buttonclass: 'admin-only'
       };
 
       actions.push(_entry);

@@ -36,6 +36,11 @@ class Command(BaseCommand):
             print('count is only {}. exiting'.format(bounties.count()))
             return
         bounty = bounties.order_by('?').first()
+
+        remarket_bounties = bounties.filter(admin_mark_as_remarket_ready=True)
+        if remarket_bounties.exists():
+            bounty = remarket_bounties.order_by('?').first()
+
         print(bounty)
         did_tweet = maybe_market_to_twitter(bounty, 'remarket_bounty')
         print("did tweet", did_tweet)

@@ -687,6 +687,21 @@ def helper_handle_admin_override_and_hide(request, bounty):
             messages.warning(request, _('Only the funder of this bounty may do this.'))
 
 
+def helper_handle_mark_as_remarket_ready(request, bounty):
+    admin_mark_as_remarket_ready = request.GET.get('admin_toggle_as_remarket_ready', False)
+    if admin_mark_as_remarket_ready:
+        is_staff = request.user.is_staff
+        if is_staff:
+            bounty.admin_mark_as_remarket_ready = not bounty.admin_mark_as_remarket_ready
+            bounty.save()
+            if bounty.admin_mark_as_remarket_ready:
+                messages.success(request, _(f'Bounty is now remarket ready'))
+            else:
+                messages.success(request, _(f'Bounty is now NOT remarket ready'))
+        else:
+            messages.warning(request, _('Only the funder of this bounty may do this.'))
+
+
 def helper_handle_suspend_auto_approval(request, bounty):
     suspend_auto_approval = request.GET.get('suspend_auto_approval', False)
     if suspend_auto_approval:
@@ -822,7 +837,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 helper_handle_approvals(request, bounty)
                 helper_handle_admin_override_and_hide(request, bounty)
                 helper_handle_suspend_auto_approval(request, bounty)
-
+                helper_handle_mark_as_remarket_ready(request, bounty)
         except Bounty.DoesNotExist:
             pass
         except Exception as e:
