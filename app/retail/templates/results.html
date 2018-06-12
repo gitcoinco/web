@@ -32,7 +32,7 @@
       <div class="container" id="results_hero">
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center">
-            <h2 class="text-center">{% trans "GITCOIN PLATFORM STATS" %}</h2>
+            <h2 class="text-center">{% trans "Gitcoin Platform Stats" %}</h2>
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
@@ -80,7 +80,7 @@
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
             <h2 class="text-center">
               ${{ universe_total_usd|intcomma }} of {% blocktrans %}
-               BOUNTY HISTORY
+               Bounty History
               {% endblocktrans %}
             </h2>
           </div>
@@ -110,7 +110,7 @@
       <div class="container" id="repo_transaction">
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center">
-            <h2 class="text-center">GITCOIN {% trans "STATUS BREAKDOWN" %}</h2>
+            <h2 class="text-center">Gitcoin {% trans "Status Breakdown" %}</h2>
           </div>
 
           <div class="col-12 col-md-6">
@@ -140,7 +140,7 @@
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
             <h2 class="text-center pb-5">
-              TOP REPOS
+              Top Repos
             </h2>
           </div>
 
@@ -210,7 +210,7 @@
       <div class="container" id="bounty_universe">
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
-            <h2>{% trans "COMMUNITY GROWTH" %}</h2>
+            <h2>{% trans "Community Growth" %}</h2>
           </div>
           <script>
             document.slack_ticks = {{slack_ticks|safe}};
@@ -228,8 +228,36 @@
             <a class="button button--primary" role="button" href="{% url "slack" %}">{% trans "Join Our Slack" %}</a>
           </div>
         </div>
+
       </div>
     </div>
+
+    <div style="background-color: white;">
+      <div class="container" id="mesh_network_jobs" style="width: 85%; max-width: 85%; height: 1100px;">
+        <div class="row py-5 animatedParent">
+          <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
+            <h2>{% trans "TLDR - We're building a Mesh Network of Jobs" %}</h2>
+          </div>
+        </div>
+
+        <div class="row mt-2 pb-2 animatedParent text-center">
+          <div class="col animated pulse fast" style="height: 600px;">
+            <div id="mesh_network_jobs_holder"
+          </div>
+        </div>
+
+        <div class="row mt-5 pb-5 animatedParent text-center">
+          <div class="col animated pulse fast">
+            <p class="mt-2 mb-5"> {% trans "Want to learn more about where our little web3 pirate ship is going?" %} </p>
+            <a class="button button--primary" role="button" href="https://medium.com/gitcoin/open-source-money-will-buidl-the-open-source-ecosystem-f4169def8748">{% trans "Get Mesh-ey; Read our Vision" %}</a>
+          </div>
+        </div>
+
+
+      </div>
+    </div>
+  </div>
+
 
 
     {% include 'shared/footer.html' %}
@@ -240,4 +268,8 @@
   </body>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="{% static "v2/js/pages/results.js" %}"></script>
+  <script>
+    $("#mesh_network_jobs_holder").html('<iframe src="{% url 'viz_graph' %}" style="width: 100%; height: 600px; border-left: 1px #dddddd solid; border-bottom: 1px #dddddd solid;  " frameBorder="0">');
+  </script>
 </html>
+

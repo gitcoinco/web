@@ -172,7 +172,7 @@ var tokens = function(network_id) {
       { 'addr': '0xfa6f7881E52fDF912c4a285D78a3141B089cE859', 'name': 'AVO', 'decimals': 18 },
       { 'addr': '0x58b6a8a3302369daec383334672404ee733ab239', 'name': 'LPT', 'decimals': 18 },
       { 'addr': '0x09617f6fd6cf8a71278ec86e23bbab29c04353a7', 'name': 'ULT', 'decimals': 18 },
-      {'addr': '0x4CEdA7906a5Ed2179785Cd3A40A69ee8bc99C466', 'name': 'AION', 'decimals': 18}
+      {'addr': '0x4CEdA7906a5Ed2179785Cd3A40A69ee8bc99C466', 'name': 'AION', 'decimals': 8}
 
     ];
   } else if (network_id == 'ropsten') { // ropsten
@@ -212,11 +212,17 @@ var tokens = function(network_id) {
 };
 
 var tokenAddressToDetails = function(addr) {
-  var _tokens = tokens(document.web3network);
+  return tokenAddressToDetailsByNetwork(addr, document.web3network);
+};
+
+var tokenAddressToDetailsByNetwork = function(addr, network) {
+  var _tokens = tokens(network);
 
   for (var i = 0; i < _tokens.length; i += 1) {
-    if (_tokens[i].addr == addr) {
-      return _tokens[i];
+    if (_tokens[i].addr && addr) {
+      if (_tokens[i].addr.toLowerCase() == addr.toLowerCase()) {
+        return _tokens[i];
+      }
     }
   }
   return null;
