@@ -436,6 +436,17 @@ var attach_contact_funder_options = function() {
 };
 
 
+var attach_snoozee_options = function() {
+  $('body').delegate('a.snooze_gitcoin_bot', 'click', function(e) {
+    e.preventDefault();
+    var text = window.prompt('How many days do you want to snooze?', '');
+    var url = document.location + '?snooze=' + text;
+
+    document.location.href = url;
+  });
+};
+
+
 var show_interest_modal = function() {
   var self = this;
 
@@ -566,6 +577,7 @@ var do_actions = function(result) {
     var show_admin_override_and_hide = document.isStaff;
     var show_admin_toggle_remarket = document.isStaff;
     var show_admin_contact_user = document.isStaff;
+    var show_admin_snooze = document.isStaff;
 
     if (is_legacy) {
       show_start_stop_work = false;
@@ -734,6 +746,22 @@ var do_actions = function(result) {
       actions.push(_entry);
     }
 
+    if (show_admin_snooze) {
+      var url = '';
+
+      var _entry = {
+        enabled: true,
+        href: url,
+        text: gettext('Snooze Gitcoinbot'),
+        parent: 'right_actions',
+        title: gettext('Snooze Gitcoinbot reminders'),
+        color: 'white',
+        buttonclass: 'admin-only snooze_gitcoin_bot'
+      };
+
+      actions.push(_entry);
+    }
+
     render_actions(actions);
   });
 };
@@ -869,6 +897,7 @@ var main = function() {
     // setup
     attach_work_actions();
     attach_contact_funder_options();
+    attach_snoozee_options();
 
     // pull issue URL
     if (typeof document.issueURL == 'undefined') {
