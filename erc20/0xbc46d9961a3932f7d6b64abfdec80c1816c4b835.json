@@ -1,20 +1,20 @@
-﻿{
-	"symbol": "LXT",
-	"address": "0xbc46d9961a3932f7d6b64abfdec80c1816c4b835",
-	"overview": {
-		"en": "LITEX is an off-chain solution built on a multi-layered network (LTXN) that connects to all public blockchains supporting Lightning Network (or equivalent) protocols and smart contracts. It provides faster and cheaper transactions, enables cross-chain smart contracts interoperability and facilitates atomic-swaps between cryptocurrencies. By connecting public blockchains, LTXN is able to generate network effect. LITEX aims to become the infrastructure of the future ditial world.",
-		"zh": "LITEX 是去中心化的价值交换生态，以第二层网络——LITEX Network为基础，承载小微支付、去中心化交易所等上层应用，打通数字世界与现实世界的连接，实现加密货币互换、智能合约跨链交互，连接公链孤岛形成网络效应。LITEX是未来数字世界的基础设施。"
-	},
-	"email": "contact@litex.io",
-	"website": "litex.io",
-	"whitepaper": "http://litex.io/wp_en.pdf",
-	"state": "NORMAL",
-	"links": {
-		"twitter": "http://twitter.com/litex_io",
-		"telegram": "https://t.me/litex_official",
-		"github": "https://github.com/litexio/LiteXToken",
-		"facebook": "http://facebook.com/litex.io",
-		"weibo": "http://weibo.com/litexlxt",
-		"medium": "https://medium.com/@litex"
-	}
+{
+  "symbol": "LXT",
+  "address": "0xbc46d9961a3932f7d6b64abfdec80c1816c4b835",
+  "overview": {
+    "en": "LITEX is an off-chain solution built on a multi-layered network (LTXN) that connects to all public blockchains supporting Lightning Network (or equivalent) protocols and smart contracts. It provides faster and cheaper transactions, enables cross-chain smart contracts interoperability and facilitates atomic-swaps between cryptocurrencies. By connecting public blockchains, LTXN is able to generate network effect. LITEX aims to become the infrastructure of the future ditial world.",
+    "zh": "LITEX 是去中心化的价值交换生态，以第二层网络——LITEX Network为基础，承载小微支付、去中心化交易所等上层应用，打通数字世界与现实世界的连接，实现加密货币互换、智能合约跨链交互，连接公链孤岛形成网络效应。LITEX是未来数字世界的基础设施。"
+  },
+  "email": "contact@litex.io",
+  "website": "litex.io",
+  "whitepaper": "http://litex.io/wp_en.pdf",
+  "state": "NORMAL",
+  "links": {
+    "twitter": "http://twitter.com/litex_io",
+    "telegram": "https://t.me/litex_official",
+    "github": "https://github.com/litexio/LiteXToken",
+    "facebook": "http://facebook.com/litex.io",
+    "weibo": "http://weibo.com/litexlxt",
+    "medium": "https://medium.com/@litex"
+  }
 }
