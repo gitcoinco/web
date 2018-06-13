@@ -22,7 +22,7 @@ $(document).ready(function() {
     if (parent.find('.dropdown-menu').css('display') == 'block') {
       parent.find('.dropdown-menu').css('display', 'none');
     } else {
-      $('.dropdown-menu').css('display', 'block');
+      parent.find('.dropdown-menu').css('display', 'block');
     }
     e.preventDefault();
   });
