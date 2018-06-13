@@ -104,11 +104,8 @@ def new_user_welcome(event):
         channel = sc.api_call('im.open', user=user)
         channel_id = channel['channel']['id']
         sc.api_call(
-            'chat.postMessage',
-            channel=channel_id,
-            unfurl_links=False,
-            text=MESSAGE,
-            as_user=True)
+            'chat.postMessage', link_names=1, channel=channel_id, unfurl_links=False, text=MESSAGE, as_user=True
+        )
 
 
 # Serve the slack welcomebot flask app.

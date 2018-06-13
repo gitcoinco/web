@@ -765,6 +765,7 @@ def maybe_notify_bounty_user_escalated_to_slack(bounty, username, last_heard_fro
         channel = 'notif-gitcoin'
         sc.api_call(
             "chat.postMessage",
+            link_names=1,
             channel=channel,
             text=msg,
             icon_url=settings.GITCOIN_SLACK_ICON_URL,
