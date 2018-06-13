@@ -39,7 +39,7 @@ def helper_execute(threshold, func_to_execute, action_str):
     interests = Interest.objects.filter(pending=True, created__gt=start_time, created__lt=end_time)
     print(f"{interests.count()} {action_str}")
     for interest in interests:
-        bounty = interest.bounties.first() 
+        bounty = interest.bounties.first()
         if bounty.admin_override_suspend_auto_approval:  # skip bounties where this flag is set
             continue
         print(f"- {interest.pk} {action_str}")

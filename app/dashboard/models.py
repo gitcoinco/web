@@ -194,9 +194,15 @@ class Bounty(SuperModel):
     value_in_eth = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     value_true = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     privacy_preferences = JSONField(default={}, blank=True)
-    admin_override_and_hide = models.BooleanField(default=False, help_text=_('Admin override to hide the bounty from the system'))
-    admin_override_suspend_auto_approval = models.BooleanField(default=False, help_text=_('Admin override to suspend work auto approvals'))
-    admin_mark_as_remarket_ready = models.BooleanField(default=False, help_text=_('Admin override to mark as remarketing ready'))
+    admin_override_and_hide = models.BooleanField(
+        default=False, help_text=_('Admin override to hide the bounty from the system')
+    )
+    admin_override_suspend_auto_approval = models.BooleanField(
+        default=False, help_text=_('Admin override to suspend work auto approvals')
+    )
+    admin_mark_as_remarket_ready = models.BooleanField(
+        default=False, help_text=_('Admin override to mark as remarketing ready')
+    )
 
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()

@@ -853,7 +853,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 helper_handle_suspend_auto_approval(request, bounty)
                 helper_handle_mark_as_remarket_ready(request, bounty)
                 helper_handle_admin_contact_funder(request, bounty)
-        
+
         except Bounty.DoesNotExist:
             pass
         except Exception as e:
