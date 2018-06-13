@@ -244,7 +244,11 @@ urlpatterns = [
     url(r'^_administration/email/start_work_expired$', retail.emails.start_work_expired, name='start_work_expired'),
     re_path(r'^_administration/email/gdpr_reconsent$', retail.emails.gdpr_reconsent, name='gdpr_reconsent'),
     url(r'^_administration/email/new_tip/resend$', retail.emails.resend_new_tip, name='resend_new_tip'),
-    path('_administration/email/day_email_campaign/<int:day>', marketing.views.day_email_campaign, name='day_email_campaign'),
+    path(
+        '_administration/email/day_email_campaign/<int:day>',
+        marketing.views.day_email_campaign,
+        name='day_email_campaign'
+    ),
     url(
         r'^_administration/process_accesscode_request/(.*)$',
         tdi.views.process_accesscode_request,
