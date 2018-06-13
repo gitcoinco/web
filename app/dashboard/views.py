@@ -926,6 +926,7 @@ def save_search(request):
 def funder_dashboard(request):
     return TemplateResponse(request, 'funder_dashboard.html', {})
 
+
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def get_quickstart_video(request):
