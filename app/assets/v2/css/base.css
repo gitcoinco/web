@@ -32,11 +32,11 @@ span {
 
 .navbar-dark .navbar-nav .nav-link {
   border-radius: 2px;
-  color: #7c78a4;
+  color: white;
 }
 .navbar .interior, .navbar .interior a,
 .nav-link.interior, .nav-link.interior a {
-  color: white !important;
+  color: white ;
 }
 
 .navbar .interior .dropdown-item{
