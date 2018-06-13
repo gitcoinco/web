@@ -91,11 +91,11 @@
   transform: scale(1.5);
 }
 
-.bounty__fiat-price .icon svg {
+.bounty__fiat-price .icon i {
   fill: #15D17C;
 }
 
-.bounty-container .bounty__crypto-price .icon svg {
+.bounty-container .bounty__crypto-price .icon i {
   fill: #5F5FB6;
 }
 

@@ -421,3 +421,25 @@ def get_context(ref_object=None, github_username='', user=None, confirm_time_min
     if update is not None and isinstance(update, dict):
         context.update(update)
     return context
+
+
+def clean_bounty_url(url):
+    """Clean the Bounty URL of unsavory characters.
+
+    The primary utility of this method is to drop #issuecomment blocks from
+    Github issue URLs copy/pasted via comments.
+
+    Args:
+        url (str): The Bounty VC URL.
+
+    TODO:
+        * Deprecate this in favor of Django forms.
+
+    Returns:
+        str: The cleaned Bounty URL.
+
+    """
+    try:
+        return url.split('#')[0]
+    except Exception:
+        return url

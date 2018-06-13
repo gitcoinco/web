@@ -2,6 +2,36 @@
 /* eslint-disable nonblock-statement-body-position */
 load_tokens();
 
+/* Check if quickstart page is to be shown */
+var localStorage;
+var quickstartURL = document.location.origin + '/bounty/quickstart';
+
+try {
+  localStorage = window.localStorage;
+} catch (e) {
+  localStorage = {};
+}
+
+if (localStorage['quickstart_dontshow'] !== 'true' &&
+    doShowQuickstart(document.referrer) &&
+    doShowQuickstart(document.URL)) {
+  window.location = quickstartURL;
+}
+
+function doShowQuickstart(url) {
+  var fundingURL = document.location.origin + '/funding/new\\?';
+  var bountyURL = document.location.origin + '/bounty/new\\?';
+  var blacklist = [ fundingURL, bountyURL, quickstartURL ];
+
+  for (var i = 0; i < blacklist.length; i++) {
+    if (url.match(blacklist[i])) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 // Wait until page is loaded, then run the function
 $(document).ready(function() {
   // Load sidebar radio buttons from localStorage
@@ -11,6 +41,22 @@ $(document).ready(function() {
     $('input[name=issueURL]').val(getParam('url'));
   } else if (localStorage['issueURL']) {
     $('input[name=issueURL]').val(localStorage['issueURL']);
+  }
+  if (localStorage['project_type']) {
+    $('select[name=project_type] option').prop('selected', false);
+    $(
+      "select[name=project_type] option[value='" +
+        localStorage['project_type'] +
+        "']"
+    ).prop('selected', true);
+  }
+  if (localStorage['permission_type']) {
+    $('select[name=permission_type] option').prop('selected', false);
+    $(
+      "select[name=permission_type] option[value='" +
+        localStorage['permission_type'] +
+        "']"
+    ).prop('selected', true);
   }
   if (localStorage['expirationTimeDelta']) {
     $('select[name=expirationTimeDelta] option').prop('selected', false);
@@ -46,18 +92,31 @@ $(document).ready(function() {
   $('input[name=amount]').keyup(setUsdAmount);
   $('input[name=amount]').blur(setUsdAmount);
   $('select[name=deonomination]').change(setUsdAmount);
+  $('select[name=deonomination]').change(promptForAuth);
   $('input[name=issueURL]').blur(retrieveIssueDetails);
   setTimeout(setUsdAmount, 1000);
+  setTimeout(promptForAuth, 1000);
 
   if ($('input[name=issueURL]').val() != '') {
     retrieveIssueDetails();
   }
   $('input[name=issueURL]').focus();
 
-  $('select[name=deonomination]').select2();
+  // all js select 2 fields
   $('.js-select2').each(function() {
     $(this).select2();
   });
+  // removes tooltip
+  $('select').on('change', function(evt) {
+    $('.select2-selection__rendered').removeAttr('title');
+  });
+  // removes search field in all but the 'denomination' dropdown
+  $('.select2-container').click(function() {
+    $('.select2-container .select2-search__field').remove();
+  });
+  // denomination field
+  $('select[name=deonomination]').select2();
+
 
   $('#advancedLink a').click(function(e) {
     e.preventDefault();
@@ -80,7 +139,7 @@ $(document).ready(function() {
         _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
         return;
       }
-      
+
       var data = {};
       var disabled = $(form)
         .find(':input:disabled')
@@ -96,7 +155,7 @@ $(document).ready(function() {
       // setup
       loading_button($('.js-submit'));
       var githubUsername = data.githubUsername;
-      var issueURL = data.issueURL;
+      var issueURL = data.issueURL.replace(/#.*$/, '');
       var notificationEmail = data.notificationEmail;
       var amount = data.amount;
       var tokenAddress = data.deonomination;
@@ -142,6 +201,10 @@ $(document).ready(function() {
             githubUsername: metadata.githubUsername,
             address: '' // Fill this in later
           },
+          schemes: {
+            project_type: data.project_type,
+            permission_type: data.permission_type
+          },
           privacy_preferences: privacy_preferences,
           funders: [],
           categories: metadata.issueKeywords.split(','),
@@ -166,6 +229,8 @@ $(document).ready(function() {
       $(this).attr('disabled', 'disabled');
 
       // save off local state for later
+      localStorage['project_type'] = data.project_type;
+      localStorage['permission_type'] = data.permission_type;
       localStorage['issueURL'] = issueURL;
       localStorage['amount'] = amount;
       localStorage['notificationEmail'] = notificationEmail;
@@ -289,7 +354,7 @@ $(document).ready(function() {
 
         // bounty is a web3.js eth.contract address
         // The Ethereum network requires using ether to do stuff on it
-        // issueAndActivateBounty is a method definied in the StandardBounties solidity contract.
+        // issueAndActivateBounty is a method defined in the StandardBounties solidity contract.
 
         var eth_amount = isETH ? amount : 0;
         var _paysTokens = !isETH;
@@ -314,49 +379,13 @@ $(document).ready(function() {
         );
       }
 
-      var approve_success_callback = function(callback) {
+      var do_bounty = function(callback) {
         // Add data to IPFS and kick off all the callbacks.
         ipfsBounty.payload.issuer.address = account;
         ipfs.addJson(ipfsBounty, newIpfsCallback);
       };
 
-      if (isETH) {
-        // no approvals needed for ETH
-        approve_success_callback();
-      } else {
-        token_contract.approve(
-          bounty_address(),
-          amount,
-          {
-            from: account,
-            value: 0,
-            gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
-          },
-          function(error, result) {
-            if (error) {
-              console.error(error);
-              _alert(
-                {
-                  message:
-                    gettext('There was an error.  Please try again or contact support.')
-                },
-                'error'
-              );
-              unloading_button($('.js-submit'));
-              return;
-            }
-            var txid = result;
-            var link_url = etherscan_tx_url(txid);
-
-            _alert({ message: gettext('Token approval transaction (1 of 2) has been sent to web3.  <a target=new href="' +
-              link_url + '">Once that tx is confirmed</a>, you will be prompted to confirm submission of this bounty (tx 2 of 2)') }, 'info');
-            callFunctionWhenTransactionMined(txid, function() {
-              _alert({ message: gettext('Tx 1 of 2 confirmed.  Please confirm the second transaction.') }, 'success');
-              approve_success_callback();
-            });
-          }
-        );
-      }
+      do_bounty();
     }
   });
 });

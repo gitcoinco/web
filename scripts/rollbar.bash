@@ -1,7 +1,8 @@
 #!/bin/bash
 
-# shellcheck disable=SC2163
-while read -r line; do export "$line"; done < ./app/app/.env
+# Load the .env file into the local environment.
+# shellcheck disable=SC2046
+export $(grep -v '^#' app/app/.env | xargs)
 
 REVISION=$(git rev-parse --verify HEAD)
 USER=$(whoami)

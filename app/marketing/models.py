@@ -59,6 +59,8 @@ class EmailSubscriber(SuperModel):
         on_delete=models.CASCADE,
         related_name='email_subscriptions',
         null=True)
+    form_submission_records = JSONField(default=[], blank=True)
+
 
     def __str__(self):
         return self.email
@@ -67,6 +69,10 @@ class EmailSubscriber(SuperModel):
         self.priv = token_hex(16)[:29]
 
     def should_send_email_type_to(self, email_type):
+        is_on_global_suppression_list = EmailSupressionList.objects.filter(email__iexact=self.email).exists()
+        if is_on_global_suppression_list:
+            return False
+
         should_suppress = self.preferences.get('suppression_preferences', {}).get(email_type, False)
         return not should_suppress
 
@@ -246,7 +252,14 @@ class EmailEvent(SuperModel):
 
     email = models.EmailField(max_length=255, db_index=True)
     event = models.CharField(max_length=255, db_index=True)
-    payload = JSONField(default={})
+    ip_address = models.GenericIPAddressField(default=None, null=True)
 
     def __str__(self):
         return f"{self.email} - {self.event} - {self.created_on}"
+
+
+class EmailSupressionList(SuperModel):
+
+    email = models.EmailField(max_length=255)
+    metadata = JSONField(default={}, blank=True)
+    comments = models.TextField(max_length=5000, blank=True)

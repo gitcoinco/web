@@ -55,7 +55,7 @@ documentation.
 You must install [pre-commit](https://pre-commit.com/#install) in order to enable our
 precommit hooks and `pre-commit install` from your `gitcoinco/web` root directory.
 
-In order to make use of the `pre-commit` hooks used for this repository, you should have a valid installation of `node`/`npm`, `isort` (`pip install isort`), `stylelint` (`npm install -g stylelint`), and `eslint` (`npm install -g eslint`).
+In order to make use of the `pre-commit` hooks used for this repository, you should have a valid installation of `node`/`npm`, `isort` (`pip install isort`), `yapf` (`pip install yapf`), `stylelint` (`npm install -g stylelint`), and `eslint` (`npm install -g eslint`).
 
 User facing copy / text should be run through [Django Translation Framework](https://docs.djangoproject.com/en/2.0/topics/i18n/translation/). For example,
 

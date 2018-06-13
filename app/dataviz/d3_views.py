@@ -482,7 +482,7 @@ def helper_hide_pii(username):
     return new_username
 
 
-@staff_member_required
+# PUBLIC VIEW!
 def viz_graph(request, _type, template='graph'):
     """Render a graph visualization of the Gitcoin Network.
 
@@ -625,7 +625,10 @@ def viz_graph(request, _type, template='graph'):
         'page_route': page_route,
         'max_time': int(time.time()),
     }
-    return TemplateResponse(request, f'dataviz/{template}.html', params)
+
+    response = TemplateResponse(request, f'dataviz/{template}.html', params)
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
 
 
 def viz_draggable(request, key='email_open'):
@@ -643,9 +646,8 @@ def viz_draggable(request, key='email_open'):
     bfs = BountyFulfillment.objects.filter(accepted=True)
     limit = 50
     usernames = list(
-        bfs.exclude(fulfiller_github_username='').distinct('fulfiller_github_username').values_list(
-            'fulfiller_github_username', flat=True
-        )
+        bfs.exclude(fulfiller_github_username=''
+                    ).distinct('fulfiller_github_username').values_list('fulfiller_github_username', flat=True)
     )[0:limit]
     if request.GET.get('data'):
         output = []

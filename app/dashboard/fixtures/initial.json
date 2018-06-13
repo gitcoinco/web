@@ -15,7 +15,6 @@
     "slack_channel": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }, {
@@ -35,7 +34,6 @@
     "slack_channel": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }, {
@@ -55,7 +53,6 @@
     "slack_channel": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }, {
@@ -75,7 +72,6 @@
     "slack_channel": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }, {
@@ -95,7 +91,6 @@
     "slack_channel": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }, {
@@ -115,7 +110,6 @@
     "slack_channel": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }, {
@@ -135,7 +129,6 @@
     "slack_channel": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }, {
@@ -155,7 +148,6 @@
     "slack_channel": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }, {
@@ -175,7 +167,6 @@
     "slack_channel": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }, {
@@ -195,7 +186,6 @@
     "slack_channel": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }, {
@@ -215,7 +205,6 @@
     "slack_channel": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }, {
@@ -235,7 +224,6 @@
     "slack_channel": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }]

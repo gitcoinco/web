@@ -52,6 +52,11 @@
       {% trans "To Github Username" %}:
       <input type="text" placeholder="@username" id="username" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
     </div>
+    <div>
+        {% trans "From Github Username" %} (<a href="{% url 'social:begin' 'github' %}?next=/tip">{% trans "Login" %}</a>)
+        <input type="text" placeholder="@username" id="fromName" value="{% if user.is_authenticated  %}{{ user }}{% endif %}" style="width: 400px; margin-left: auto; margin-right: auto; background-color: #eee;" disabled="disabled"  >
+    </div>
+
     <div id="advanced_toggle">
       <a onClick="advancedToggle()" >{% trans "Advanced" %} >></a>
     </div>
@@ -63,10 +68,6 @@
       <div>
         {% trans "To Email address" %} ({% trans "optional" %}):
         <input type="text" placeholder="foo@bar.it" id="email" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
-      </div>
-      <div>
-        {% trans "From Name" %} ({% trans "optional" %}):
-        <input type="text" placeholder="Bobby Tables" id="fromName" value="{% if from_handle %}{{ from_handle }}{% endif %}" style="width: 400px; margin-left: auto; margin-right: auto;">
       </div>
       <div>
         {% trans "From Email" %} ({% trans "optional" %}):

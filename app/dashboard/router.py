@@ -47,7 +47,7 @@ class InterestSerializer(serializers.ModelSerializer):
         """Define the Interest serializer metadata."""
 
         model = Interest
-        fields = ('profile', 'created')
+        fields = ('profile', 'created', 'pending')
 
 
 # Serializers define the API representation.
@@ -88,6 +88,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'github_issue_number', 'github_org_name', 'github_repo_name',
             'idx_status', 'token_value_time_peg', 'fulfillment_accepted_on', 'fulfillment_submitted_on',
             'fulfillment_started_on', 'canceled_on', 'action_urls',
+            'project_type', 'permission_type',
         )
 
     def create(self, validated_data):
@@ -130,24 +131,39 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         # filtering
         for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_owner_address',
-                    'idx_status', 'network', 'bounty_owner_github_username', 'standard_bounties_id']:
+                    'idx_status', 'network', 'bounty_owner_github_username', 'standard_bounties_id',
+                    'permission_type', 'project_type']:
             if key in param_keys:
                 # special hack just for looking up bounties posted by a certain person
                 request_key = key if key != 'bounty_owner_address' else 'coinbase'
                 val = self.request.query_params.get(request_key, '')
 
                 vals = val.strip().split(',')
-                _queryset = queryset.none()
-                for val in vals:
-                    if val.strip():
+                vals = [val for val in vals if val and val.strip()]
+                if len(vals):
+                    _queryset = queryset.none()
+                    for val in vals:
                         args = {}
                         args['{}__icontains'.format(key)] = val.strip()
                         _queryset = _queryset | queryset.filter(**args)
-                queryset = _queryset
+                    queryset = _queryset
 
         # filter by PK
         if 'pk__gt' in param_keys:
             queryset = queryset.filter(pk__gt=self.request.query_params.get('pk__gt'))
+
+        # Filter by a list of PKs
+        if 'pk__in' in param_keys:
+            try:
+                list_of_pks = self.request.query_params.get('pk__in').split(',')
+                queryset = queryset.filter(pk__in=list_of_pks)
+            except Exception:
+                pass
+
+        # filter by standard_bounties_id
+        if 'standard_bounties_id__in' in param_keys:
+            statuses = self.request.query_params.get('standard_bounties_id__in').split(',')
+            queryset = queryset.filter(standard_bounties_id__in=statuses)
 
         # filter by statuses
         if 'status__in' in param_keys:
@@ -167,6 +183,12 @@ class BountyViewSet(viewsets.ModelViewSet):
         if 'github_url' in param_keys:
             urls = self.request.query_params.get('github_url').split(',')
             queryset = queryset.filter(github_url__in=urls)
+
+        # filter by urls
+        if 'org' in param_keys:
+            org = self.request.query_params.get('org')
+            url = f"https://github.com/{org}"
+            queryset = queryset.filter(github_url__contains=url)
 
         # Retrieve all fullfilled bounties by fulfiller_username
         if 'fulfiller_github_username' in param_keys:

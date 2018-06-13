@@ -124,7 +124,7 @@
   width: 20px;
 }
 
-.search_area--append .icon svg {
+.search_area--append .icon i {
   fill: #000;
   width: 100%
 }
@@ -408,7 +408,7 @@ label {
   margin-right: 0.5rem;
 }
 
-.bounty__crypto-price .icon svg {
+.bounty__crypto-price .icon i {
   fill: #fff;
   height: auto;
   width: 100%;

@@ -1,16 +1,6 @@
 // preloading all images on a small interval
 var interval = 500;
 
-document.preloads = [];
-
-setInterval(function() {
-  if (document.preloads.length) {
-    var url = document.preloads.pop();
-
-    $.get(url);
-  }
-}, interval);
-
 $(document).ready(function() {
   $.fn.isInViewport = function() {
     var elementTop = $(this).offset().top;
@@ -21,10 +11,6 @@ $(document).ready(function() {
     return elementBottom > viewportTop && elementTop < viewportBottom;
   };
 
-  $('.cards .img img').each(function(index, element) {
-    document.preloads.push($(element).data('hover'));
-
-  });
   $(window).scroll(function() {
     var scrollPos = $(document).scrollTop();
 

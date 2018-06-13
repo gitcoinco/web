@@ -1,6 +1,6 @@
 body {
-  background-color: #FFFFFF;
-  font-family: 'Muli', sans-serif;
+  background-color: #fff;
+  font-family: Muli, sans-serif;
 }
 
 h2, h3 {
@@ -28,6 +28,9 @@ h3 {
   margin-top: 1em;
   padding: 30px 10px 0;
   border-radius: 2px;
+  max-width: 44rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .show {
@@ -65,15 +68,16 @@ h3 {
 
 #onboarding .controls {
   float: right;
-  margin-right: 15px;
+  margin-right: 4rem;
   overflow: auto;
+  position: relative;
 }
 
-.step svg {
+.step i {
   font-size: 1.8em;
 }
 
-.step a svg {
+.step a i {
   font-size: 16px;
 }
 
@@ -97,7 +101,7 @@ h3 {
   margin-bottom: 10px;
 }
 
-.step .logged-in svg {
+.step .logged-in i {
   font-size: 1.2em
 }
 
@@ -169,6 +173,7 @@ h3 {
   border-radius: 50%;
   width: 50px;
   height: 50px;
+  border: 0.1rem solid #1AB56D;
 }
 
 .fa-check-circle {
@@ -222,8 +227,8 @@ h3 {
   margin: 5px;
 }
 
-.suggested-tag .text svg,
-.step .filter-tag svg {
+.suggested-tag .text i,
+.step .filter-tag i {
   font-size: 9px;
   margin-right: 8px;
 }
@@ -374,8 +379,38 @@ h3 {
     text-align: center;
   }
 
-  #step-3 div.pl-0 {
+  #skills div.pl-0 {
     padding-left: 15px !important;
     padding-right: 15px !important;
+  }
+
+  #skills {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+@media (min-width: 1200px) {
+  h3 {
+    font-size: 1rem;
+  }
+
+  .step .label {
+    font-size: 0.8rem;
+  }
+
+  .step a {
+    font-size: 0.9rem;
+  }
+
+  #onboarding .controls p {
+    font-size: 0.8rem;
+  }
+}
+
+@media (min-width: 1400px) {
+  .suggested-tag .text,
+  .step .filter-tag {
+    font-size: 0.8rem;
   }
 }

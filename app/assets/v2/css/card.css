@@ -1,15 +1,9 @@
-@font-face {
-  font-family: 'OpenSans';
-  src: url('/static/v2/fonts/OpenSans/Regular.ttf');
-  font-weight: 400;
-}
-
 .toggle {
   margin-top: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'OpenSans', sans-serif;
+  font-family: Muli, sans-serif;
   font-weight: 600;
 }
 
@@ -119,7 +113,7 @@
 
 .card .content {
   margin: 15px 20px;
-  height: 140px;
+  min-height: 140px;
   position: relative;
 }
 
