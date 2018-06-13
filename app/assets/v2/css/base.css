@@ -1015,12 +1015,12 @@ input.is-invalid {
 }
 
 #robot_error {
-  width: 25%;
-  margin: 0 auto;
+  margin: auto;
 }
 
 #robot_error img {
-  width: 100%;
+  max-height: 18rem;
+  width: auto;
 }
 
 @media (max-width: 1350px) {
