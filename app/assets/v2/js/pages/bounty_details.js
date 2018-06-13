@@ -425,6 +425,28 @@ var attach_work_actions = function() {
   });
 };
 
+var attach_contact_funder_options = function() {
+  $('body').delegate('a.contact_bounty_hunter', 'click', function(e) {
+    e.preventDefault();
+    var text = window.prompt('What would you like to say to the funder?', '');
+    var url = document.location + '?admin_contact_funder=' + text;
+
+    document.location.href = url;
+  });
+};
+
+
+var attach_snoozee_options = function() {
+  $('body').delegate('a.snooze_gitcoin_bot', 'click', function(e) {
+    e.preventDefault();
+    var text = window.prompt('How many days do you want to snooze?', '');
+    var url = document.location + '?snooze=' + text;
+
+    document.location.href = url;
+  });
+};
+
+
 var show_interest_modal = function() {
   var self = this;
 
@@ -551,6 +573,11 @@ var do_actions = function(result) {
     var start_stop_work_enabled = !isBountyOwner(result);
     var increase_bounty_enabled = isBountyOwner(result);
     var show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
+    var show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
+    var show_admin_override_and_hide = document.isStaff;
+    var show_admin_toggle_remarket = document.isStaff;
+    var show_admin_contact_user = document.isStaff;
+    var show_admin_snooze = document.isStaff;
 
     if (is_legacy) {
       show_start_stop_work = false;
@@ -651,6 +678,85 @@ var do_actions = function(result) {
         title: gettext('View issue details and comments on Github'),
         comments: result['github_comments'],
         color: 'white'
+      };
+
+      actions.push(_entry);
+    }
+    if (show_suspend_auto_approval) {
+      var url = result['url'] + '?suspend_auto_approval=1';
+
+      var _entry = {
+        enabled: true,
+        href: url,
+        text: gettext('Suspend Auto Approval'),
+        parent: 'right_actions',
+        title: gettext('Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty'),
+        color: 'white',
+        buttonclass: 'admin-only'
+      };
+
+      actions.push(_entry);
+    }
+
+    if (show_admin_override_and_hide) {
+      var url = result['url'] + '?admin_override_and_hide=1';
+
+      var _entry = {
+        enabled: true,
+        href: url,
+        text: gettext('Hide Bounty'),
+        parent: 'right_actions',
+        title: gettext('Hides Bounty from Active Bounties'),
+        color: 'white',
+        buttonclass: 'admin-only'
+      };
+
+      actions.push(_entry);
+    }
+
+    if (show_admin_toggle_remarket) {
+      var url = result['url'] + '?admin_toggle_as_remarket_ready=1';
+
+      var _entry = {
+        enabled: true,
+        href: url,
+        text: gettext('Toggle Remarket Ready'),
+        parent: 'right_actions',
+        title: gettext('Sets Remarket Ready if not already remarket ready.  Unsets it if already remarket ready.'),
+        color: 'white',
+        buttonclass: 'admin-only'
+      };
+
+      actions.push(_entry);
+    }
+
+    if (show_admin_contact_user) {
+      var url = '';
+
+      var _entry = {
+        enabled: true,
+        href: url,
+        text: gettext('Contact Funder'),
+        parent: 'right_actions',
+        title: gettext('Contact Funder via Email'),
+        color: 'white',
+        buttonclass: 'admin-only contact_bounty_hunter'
+      };
+
+      actions.push(_entry);
+    }
+
+    if (show_admin_snooze) {
+      var url = '';
+
+      var _entry = {
+        enabled: true,
+        href: url,
+        text: gettext('Snooze Gitcoinbot'),
+        parent: 'right_actions',
+        title: gettext('Snooze Gitcoinbot reminders'),
+        color: 'white',
+        buttonclass: 'admin-only snooze_gitcoin_bot'
       };
 
       actions.push(_entry);
@@ -790,6 +896,8 @@ var main = function() {
   setTimeout(function() {
     // setup
     attach_work_actions();
+    attach_contact_funder_options();
+    attach_snoozee_options();
 
     // pull issue URL
     if (typeof document.issueURL == 'undefined') {

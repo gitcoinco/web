@@ -41,7 +41,9 @@ from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_pri
 from github.utils import (
     get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
 )
-from marketing.mails import bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected
+from marketing.mails import (
+    admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
+)
 from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
@@ -675,6 +677,57 @@ def cancel_bounty(request):
     return TemplateResponse(request, 'kill_bounty.html', params)
 
 
+def helper_handle_admin_override_and_hide(request, bounty):
+    admin_override_and_hide = request.GET.get('admin_override_and_hide', False)
+    if admin_override_and_hide:
+        is_staff = request.user.is_staff
+        if is_staff:
+            bounty.admin_override_and_hide = True
+            bounty.save()
+            messages.success(request, _(f'Bounty is now hidden'))
+        else:
+            messages.warning(request, _('Only the funder of this bounty may do this.'))
+
+
+def helper_handle_admin_contact_funder(request, bounty):
+    admin_contact_funder_txt = request.GET.get('admin_contact_funder', False)
+    if admin_contact_funder_txt:
+        is_staff = request.user.is_staff
+        if is_staff:
+            # contact funder
+            admin_contact_funder(bounty, admin_contact_funder_txt, request.user)
+            messages.success(request, _(f'Bounty message has been sent'))
+        else:
+            messages.warning(request, _('Only the funder of this bounty may do this.'))
+
+
+def helper_handle_mark_as_remarket_ready(request, bounty):
+    admin_mark_as_remarket_ready = request.GET.get('admin_toggle_as_remarket_ready', False)
+    if admin_mark_as_remarket_ready:
+        is_staff = request.user.is_staff
+        if is_staff:
+            bounty.admin_mark_as_remarket_ready = not bounty.admin_mark_as_remarket_ready
+            bounty.save()
+            if bounty.admin_mark_as_remarket_ready:
+                messages.success(request, _(f'Bounty is now remarket ready'))
+            else:
+                messages.success(request, _(f'Bounty is now NOT remarket ready'))
+        else:
+            messages.warning(request, _('Only the funder of this bounty may do this.'))
+
+
+def helper_handle_suspend_auto_approval(request, bounty):
+    suspend_auto_approval = request.GET.get('suspend_auto_approval', False)
+    if suspend_auto_approval:
+        is_staff = request.user.is_staff
+        if is_staff:
+            bounty.admin_override_suspend_auto_approval = True
+            bounty.save()
+            messages.success(request, _(f'Bounty auto approvals are now suspended'))
+        else:
+            messages.warning(request, _('Only the funder of this bounty may do this.'))
+
+
 def helper_handle_snooze(request, bounty):
     snooze_days = int(request.GET.get('snooze', 0))
     if snooze_days:
@@ -685,7 +738,7 @@ def helper_handle_snooze(request, bounty):
             bounty.save()
             messages.success(request, _(f'Warning messages have been snoozed for {snooze_days} days'))
         else:
-            messages.warning(request, _('Only the funder of this bounty may snooze warnings.'))
+            messages.warning(request, _('Only the funder of this bounty may do this.'))
 
 
 def helper_handle_approvals(request, bounty):
@@ -796,6 +849,10 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
 
                 helper_handle_snooze(request, bounty)
                 helper_handle_approvals(request, bounty)
+                helper_handle_admin_override_and_hide(request, bounty)
+                helper_handle_suspend_auto_approval(request, bounty)
+                helper_handle_mark_as_remarket_ready(request, bounty)
+                helper_handle_admin_contact_funder(request, bounty)
 
         except Bounty.DoesNotExist:
             pass
