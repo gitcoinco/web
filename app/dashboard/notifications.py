@@ -758,14 +758,13 @@ def maybe_notify_bounty_user_escalated_to_slack(bounty, username, last_heard_fro
     if not bounty.is_notification_eligible(var_to_check=settings.SLACK_TOKEN):
         return False
 
-    msg = f"@vivek, {bounty.github_url} is being escalated to you, due to inactivity for {last_heard_from_user_days} days from @{username} on the github thread."
+    msg = f"<@U88M8173P>, {bounty.github_url} is being escalated to you, due to inactivity for {last_heard_from_user_days} days from <@{username}> on the github thread."
 
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
         channel = 'notif-gitcoin'
         sc.api_call(
             "chat.postMessage",
-            link_names=1,
             channel=channel,
             text=msg,
             icon_url=settings.GITCOIN_SLACK_ICON_URL,
