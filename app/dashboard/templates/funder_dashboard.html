@@ -518,22 +518,31 @@
                   </thead>
                   <tbody>
                   <tr class="funder-dashboard__outgoing-funds__funds__fund
+                             funder-dashboard__outgoing-funds__funds__template
                              funder-dashboard__outgoing-funds__funds__fund--pending">
-                    <td>982</td>
+                    <td class="funder-dashbard__outgoing-funds__funds__fund__id">
+                      982
+                    </td>
                     <td class="funder-dashboard__outgoing-funds__funds__fund__title">
                       Feature Idea: Send ETH to Daycare
                     </td>
-                    <td>Tip</td>
+                    <td class="funder-dashboard__outgoing-funds__funds__fund__type">
+                      Tip
+                    </td>
                     <td class="funder-dashboard__outgoing-funds__funds__fund__status">
                       Pending
                     </td>
-                    <td class="text-secondary">
+                    <td class="funder-dashboard__outgoing-funds__fund__view-etherscan text-secondary">
                       <i class="fas mr-1 fa-eye"></i>
                       View Etherscan
                     </td>
-                    <td>
-                      <span class="mr-2 text-fd-blue--dark">0.5 ETH</span>
-                      <span class="text-fd-green">41.47 USD</span>
+                    <td class="funder-dashboard__outgoing-funds__fund__worth">
+                      <span class="funder-dashboard__outgoing-funds__fund__worth__eth mr-2 text-fd-blue--dark">
+                        0.5 ETH
+                      </span>
+                      <span class="funder-dashboard__outgoing-funds__fund__worth__dollars text-fd-green">
+                        41.47 USD
+                      </span>
                     </td>
                   </tr>
                   <tr class="funder-dashboard__outgoing-funds__funds__fund
@@ -845,8 +854,72 @@
           console.log($totalBudget);
         };
 
+        function activateOutgoingFunds() {
+          var $container = $('.funder-dashboard__outgoing-funds__funds');
+          var $template = $('.funder-dashboard__outgoing-funds__funds__template');
+          var funds = getFunds();
+
+          renderFundsFromTemplate(funds, $container, $template);
+
+          function renderFundsFromTemplate(funds, $container, $template) {
+            var selectorBase = '.funder-dashboard__outgoing-funds__funds__fund';
+            var $clone = $template.clone();
+
+            for (var i = 0; i < funds.length(); ++i) {
+              var fund = funds[i];
+              update($clone.find(selectorBase + '__id'), fund.id);
+              update($clone.find(selectorBase + '__title'), fund.title);
+              update($clone.find(selectorBase + '__type'), fund.type);
+              update($clone.find(selectorBase + '__status'), fund.status);
+              update($clone.find(selectorBase + '__view-etherscan'), fund.etherscanLink);
+              update($clone.find(selectorBase + '__worth-dollars'), fund.worthDollars);
+              update($clone.find(selectorBase + '__worth-eth'), fund.worthEth);
+
+              if (fund.status === 'Pending') {
+                $clone.addClass(selectorBase + '--pending')
+              }
+
+              $container.append($clone);
+            }
+          }
+
+          function update($el, htmlContent) {
+            $el.html(htmlContent);
+          }
+
+          // call the API
+          function getFunds() {
+            var funds = [];
+
+            for (var i = 0; i < 5; ++i) {
+              funds.push(new Fund(
+                123 + i,
+                "Feature idea: send ETH to Daycare",
+                "Tip",
+                "Pending",
+                "#",
+                41.47,
+                0.5
+              ))
+            }
+
+            return funds;
+          }
+
+          function Fund(id, title, type, status, etherscanLink, worthDollars, worthEth) {
+            this.id = id;
+            this.title = title;
+            this.type = type;
+            this.status = status;
+            this.etherscanLink = etherscanLink;
+            this.worthDollars = worthDollars;
+            this.worthEth = worthEth;
+          }
+        };
+
         activateChart();
         activateTotalBudget();
+        activateOutgoingFunds();
       });
     </script>
     {% include 'shared/rollbar.html' %}
