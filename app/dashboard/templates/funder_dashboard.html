@@ -355,7 +355,7 @@
                         </span>
                         <span class="funder-dashboard__tax-reporting__bounties__worth pl-1">
                           {% with tax_year_bounties_worth="34.450" %}
-                          {{ tax_year_bounties_worth }}
+                          ${{ tax_year_bounties_worth }}
                           {% endwith %}
                         </span>
                       </p>
@@ -389,7 +389,7 @@
                       </div>
                       <div>
                         {% with expired_issues_count=3 expired_issues_worth="$548.23"%}
-                        You have
+                        {% trans "You have" %}
                         <span class="funder-dashboard__latest-on-bounties__reclaim-funds__funds-count
                                      text-danger">{{expired_issues_count}}</span>
                         <span class="text-danger">{% trans "Expired Issues" %},</span>
