@@ -910,31 +910,6 @@ def profile(request, handle):
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def save_search(request):
-    """Save the search."""
-    email = request.POST.get('email')
-    if email:
-        raw_data = request.POST.get('raw_data')
-        Subscription.objects.create(
-            email=email,
-            raw_data=raw_data,
-            ip=get_ip(request),
-        )
-        response = {
-            'status': 200,
-            'msg': 'Success!',
-        }
-        return JsonResponse(response)
-
-    context = {
-        'active': 'save',
-        'title': _('Save Search'),
-    }
-    return TemplateResponse(request, 'save_search.html', context)
-
-
-@csrf_exempt
-@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def get_quickstart_video(request):
     """Show quickstart video."""
     context = {

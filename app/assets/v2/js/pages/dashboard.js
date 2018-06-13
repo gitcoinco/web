@@ -19,6 +19,8 @@ var sidebar_keys = [
   'project_type',
   'permission_type'
 ];
+var local_storage_keys = JSON.parse(JSON.stringify(sidebar_keys)); ;
+local_storage_keys.push('keywords')
 
 var localStorage;
 
@@ -64,7 +66,96 @@ var save_sidebar_latest = function() {
     // Removing the start and last comma to avoid empty element when splitting with comma
     localStorage[key] = localStorage[key].replace(/^,|,\s*$/g, '');
   }
+
 };
+
+// saves search info in local storage
+var save_search = function() {
+  if(typeof localStorage['searches'] == 'undefined'){
+    localStorage['searches'] = '0';
+  }
+  searches = localStorage['searches'].split(',')
+  max = parseInt(Math.max.apply(Math, searches));
+  next = max + 1
+  searches = searches + "," + next
+  console.log('save', next);
+  localStorage['searches'] = searches;
+  // save each key
+  for (var i = 0; i < local_storage_keys.length; i++) {
+    var key = local_storage_keys[i];
+    var new_key = "_" + key + "_" + next
+
+    localStorage[new_key] = localStorage[key];
+  }
+
+  // save the name
+  var names = []
+  var eles = $(".filter-tag");
+  for (var i = 0; i < eles.length; i++) {
+    var ele = eles[i];
+    names.push(ele.text.toLowerCase())
+  }
+  names = names.join(",");
+  var new_key = "_name_" + next
+  localStorage[new_key] = names;
+
+}
+
+var get_search_tab_name = function(n){
+  var new_key = "_name_" + n;
+  return localStorage[new_key];
+
+}
+
+var paint_search_tabs = function(){
+  var container = $("#dashboard-title");
+  var target = $("#search_nav");
+
+  searches = localStorage['searches'].split(',');
+  var html = "<ul class='nav nav-tabs'>";
+  for(var i=0; i < searches.length; i++){
+    var search_no = searches[i];
+    var title = get_search_tab_name(search_no);
+    if(title){
+      html += "<li class='nav-item' data-num='"+search_no+"'><span>"+title+"</span><a>X</a></li>";
+    }
+  }
+  html += "</ul>";
+  target.html(html);
+
+}
+
+
+// gets available searches
+var get_available_searches = function() {
+  if(typeof localStorage['searches'] == 'undefined'){
+    localStorage['searches'] = '';
+  }
+  return localStorage['searches'].split(',')
+}
+
+// loads search info from local storage
+var load_search = function(n) {
+
+  for (var i = 0; i < local_storage_keys.length; i++) {
+    var key = local_storage_keys[i];
+    var new_key = "_" + key + "_" + n;
+    localStorage[key] = localStorage[new_key];
+  }
+}
+
+// removes this search
+var remove_search = function(n) {
+  var is_last_element = ("0" + "," + n) == localStorage['searches'];
+  if (is_last_element){
+    localStorage['searches'] = "0";
+    return;
+  }
+  search_str = "," + n + ",";
+  replace_str = ",";
+  localStorage['searches'] = localStorage['searches'].replace(search_str, replace_str);
+}
+
 
 // saves search information default
 var set_sidebar_defaults = function() {
@@ -194,7 +285,7 @@ var removeFilter = function(key, value) {
     localStorage['keywords'] = localStorage['keywords'].replace(/^,|,\s*$/g, '');
   }
 
-  refreshBounties();
+  refreshBounties(true);
 };
 
 var get_search_URI = function() {
@@ -387,7 +478,7 @@ var trigger_scroll = debounce(function() {
 $(window).scroll(trigger_scroll);
 $('body').bind('touchmove', trigger_scroll);
 
-var refreshBounties = function(event) {
+var refreshBounties = function(do_save_search) {
 
   // Allow search for freeform text
   var searchInput = $('#keywords')[0];
@@ -403,6 +494,11 @@ var refreshBounties = function(event) {
   set_filter_header();
   toggleAny(event);
   getFilters();
+  if(do_save_search){
+    save_search();
+  }
+  paint_search_tabs();
+
 
   $('.nonefound').css('display', 'none');
   $('.loading').css('display', 'block');
@@ -514,7 +610,7 @@ var refreshBounties = function(event) {
 
 window.addEventListener('load', function() {
   set_sidebar_defaults();
-  refreshBounties();
+  refreshBounties(false);
 });
 
 var getNextDayOfWeek = function(date, dayOfWeek) {
@@ -595,7 +691,7 @@ $(document).ready(function() {
   // Sort select menu
   $('#sort_option').selectmenu({
     select: function(event, ui) {
-      refreshBounties();
+      refreshBounties(true);
       event.preventDefault();
     }
   });
@@ -679,47 +775,47 @@ $(document).ready(function() {
   $('.dashboard #clear').click(function(e) {
     e.preventDefault();
     resetFilters();
-    refreshBounties();
+    refreshBounties(true);
   });
 
   // search bar
   $('#bounties').delegate('#new_search', 'click', function(e) {
-    refreshBounties();
+    refreshBounties(true);
     e.preventDefault();
   });
 
+  // search bar -- remove bounty
+  $('#bounties').delegate('#search_nav li a', 'click', function(e) {
+    var n = $(this).parents("li").data('num');
+    remove_search(n);
+    paint_search_tabs();
+  });
+
+  // search bar
+  $('#bounties').delegate('#search_nav li span', 'click', function(e) {
+    var n = $(this).parents("li").data('num');
+    load_search(n);
+    refreshBounties(false);
+  });
+
+
   $('.search-area input[type=text]').keypress(function(e) {
     if (e.which == 13) {
-      refreshBounties();
+      refreshBounties(true);
       e.preventDefault();
     }
   });
 
   // sidebar filters
   $('.sidebar_search input[type=radio], .sidebar_search label').change(function(e) {
-    refreshBounties();
+    refreshBounties(true);
     e.preventDefault();
   });
 
   // sidebar filters
   $('.sidebar_search input[type=checkbox], .sidebar_search label').change(function(e) {
-    refreshBounties(e);
+    refreshBounties(true);
     e.preventDefault();
-  });
-
-  // email subscribe functionality
-  $('.save_search').click(function(e) {
-    e.preventDefault();
-    $('#save').remove();
-    var url = '/sync/search_save';
-
-    setTimeout(function() {
-      $.get(url, function(newHTML) {
-        $(newHTML).appendTo('body').modal();
-        $('#save').append("<input type='hidden' name='raw_data' value='" + get_search_URI() + "'>");
-        $('#save_email').focus();
-      });
-    }, 300);
   });
 
   var emailSubscribe = function() {
