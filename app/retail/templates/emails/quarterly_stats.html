@@ -260,15 +260,17 @@
                {% for developer in user_funded_bounty_developers %}{% if forloop.counter == user_num_funded_bounty_developers %} &amp; {% elif forloop.first %}{% else %}, {% endif %}<a href="https://github.com/{{ developer }}">@{{ developer }}</a>{% endfor %}</p>
 	    </div>
         </div>
+        {% if user_total_funded_hours %}
         <div class="centered-contents stat-box row">
             <div class="stat-img">
 	      <p class="content bounty-img">{{ user_total_funded_hours | intcomma }} hours</p>
 	      <p class="content bounty-fund-img">{{ user_total_funded_usd | intcomma }} USD</p>
             </div>
             <div class="stat-contents">
-		    <p>Developers worked an average of {{ user_avg_hours_per_funded_bounty }} hours per issue on your projects. You funded a total of ${{ user_total_funded_usd | intcomma }} USD of work at an average rate of ${{ user_avg_hourly_rate_per_funded_bounty }} USD / hour..</p>
+		    <p>Developers worked an average of {{ user_avg_hours_per_funded_bounty }} hours per issue on your projects (only applies to bounties where users entered their hours). You funded a total of ${{ user_total_funded_usd | intcomma }} USD of work at an average rate of ${{ user_avg_hourly_rate_per_funded_bounty }} USD / hour..</p>
             </div>
         </div>
+        {% endif %}
 
         <div class="button-action">
             <a class="button" href="{% url 'dashboard' %}">{% trans "Share my stats" %}</a>

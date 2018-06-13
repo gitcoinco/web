@@ -1166,7 +1166,6 @@ class Profile(SuperModel):
                 for bounty in funded_bounties
             ])
             total_funded_hourly_rate = float(0)
-            #TODO: Explain to the user that we only counted Bounties that developers entered # of hours worked on
             hourly_rate_bounties_counted = float(0)
             for bounty in funded_bounties:
                 hourly_rate = bounty.hourly_rate
@@ -1175,7 +1174,6 @@ class Profile(SuperModel):
                     hourly_rate_bounties_counted += 1
             funded_bounty_fulfillments = []
             for bounty in funded_bounties:
-                #TODO: Check that all bounty fulfillments have acceptance and that there are no bounties that have skipped the Acceptance in fulfillment step of workflow
                 fulfillments = bounty.fulfillments.filter(accepted=True)
                 for fulfillment in fulfillments:
                     if isinstance(fulfillment, BountyFulfillment):
@@ -1202,7 +1200,6 @@ class Profile(SuperModel):
                 avg_hourly_rate_per_funded_bounty = 0
                 avg_hours_per_funded_bounty = 0
             funded_fulfilled_bounties = [
-                #TODO: Change this to check for terminal statuses instead?
                 bounty for bounty in funded_bounties if bounty.status == 'done'
             ]
             num_funded_fulfilled_bounties = len(funded_fulfilled_bounties)
@@ -1266,7 +1263,6 @@ class Profile(SuperModel):
                             current_bounty=True,
                             metadata__icontains=keyword,
                             idx_status__in=['open'],
-                            #TODO: Identify the random sampling method used, see if it sending mass emails becomes slow
                             ).order_by('?') 
                     )
                 relevant_bounties = relevant_bounties[:3]
