@@ -57,7 +57,7 @@ Here's how to get started with bounties:
 We have more details in our onboarding guide at https://gitcoin.co/docs/onboard . We also have a FAQ and tutorials available at https://gitcoin.co/help
 
 If you have any feedback for the team, or just want to say hi, this is them:
-- <@U55F2LT5L>, <@U88M8173P>, <@U8J2TK1L6>, <@U87BL3KS6>, <@U7Z23ATPB>, <@U9UKDGS01>
+- <@U55F2LT5L>, <@U88M8173P>, <@U8J2TK1L6>, <@U87BL3KS6>, <@U7Z23ATPB>, <@U9UKDGS01>, <@U88BVQAJD>, <@U9PL1BSAC>, <@U7J5ZPCPQ>, <@U85EFS1MM>
 
 See you around! :spock-hand:
 Welcome_bot (and the Gitcoin Team)
