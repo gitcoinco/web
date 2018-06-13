@@ -34,18 +34,33 @@ span {
   border-radius: 2px;
   color: white;
 }
+
 .navbar .interior, .navbar .interior a,
 .nav-link.interior, .nav-link.interior a {
   color: white ;
 }
 
-.navbar .interior .dropdown-item{
+.navbar .interior .dropdown-item {
   color: black !important;
+  font-size: 0.9rem;
 }
-.navbar .interior .dropdown-item:hover{
+.navbar .interior .dropdown-item:hover {
   color: white !important;
 }
 
+#navbarSupportedContent {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.navbar-nav .btn-gc-blue {
+  margin-right: 0 !important;
+  font-size: 0.9rem;
+}
+
+.navbar-nav .dropdown-menu {
+  min-width: 9rem;
+}
 
 .nav_avatar,
 .navbar__cta,
@@ -67,7 +82,7 @@ span {
 }
 
 .navbar-nav a.nav-link.selected {
-  border-bottom: 1px solid;
+  color: #4aeaa7 !important;
 }
 
 .navbar a.slack i {

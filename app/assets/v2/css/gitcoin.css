@@ -555,6 +555,10 @@ div.button-pink {
   color: #FFFFFF;
 }
 
+#why-gitcoin .dropdown-item {
+  padding-left: 15px;
+}
+
 .dropdown-menu .dropdown-item i {
   text-align: center;
   margin-left: 0px;

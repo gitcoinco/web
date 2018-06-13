@@ -42,19 +42,16 @@
           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           WHY GITCOIN
         </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item {% if active == 'about' %} selected{% endif %}" href="{% url "about" %}">
-              <i class="fas fa-info-circle"></i>
-              {% trans "About" %}
-            </a>
-            <a class="dropdown-item {% if active == 'mission' %} selected{% endif %}" href="{% url "mission" %}">
-              <i class="fas fa-infinity"></i>
-              {% trans "Mission" %}
-            </a>
-            <a class="dropdown-item {% if active == 'results' %} selected{% endif %}" href="{% url "results" %}">
-              <i class="fas fa-chart-line"></i>
-              {% trans "Results" %}
-            </a>
+        <div class="dropdown-menu" id="why-gitcoin" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item {% if active == 'about' %} selected{% endif %}" href="{% url "about" %}">
+            {% trans "About" %}
+          </a>
+          <a class="dropdown-item {% if active == 'mission' %} selected{% endif %}" href="{% url "mission" %}">
+            {% trans "Mission" %}
+          </a>
+          <a class="dropdown-item {% if active == 'results' %} selected{% endif %}" href="{% url "results" %}">
+            {% trans "Results" %}
+          </a>
         </div>
       </div>
       {% endif %}
@@ -68,21 +65,21 @@
       {% endif %}
       {% if request.path != '/' %}
         <a href="{% url "new_funding" %}" class="nav-link interior">
-          <i class="fab fa-ethereum" role="aria-hidden"></i>
-          FUND ISSUE
+          <i class="fab fa-ethereum mr-1" role="aria-hidden"></i>
+          {% trans "FUND ISSUE" %}
         </a>
       {% else %}
         <a href="{% url "new_funding" %}" class="btn btn-gc-blue interior">
-          <i class="fab fa-ethereum" role="aria-hidden"></i>
-          FUND ISSUE
+          <i class="fab fa-ethereum mr-1" role="aria-hidden"></i>
+          {% trans "FUND ISSUE" %}
         </a>
       {% endif %}
 
       {% if request.path == '/' %}
         {% if not user.is_authenticated %}
-          <a href="{% url 'social:begin' 'github' %}?next=/"   class="btn btn-gc-blue interior">
-            <i class="fab fa-ethereum" role="aria-hidden"></i>
-            LOG IN
+          <a href="{% url 'social:begin' 'github' %}?next=/" class="nav-link interior">
+            <i class="fab fa-github mr-1" role="aria-hidden"></i>
+            {% trans "LOG IN" %}
           </a>
         {% endif %}
       {% endif %}
