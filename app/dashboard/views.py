@@ -892,6 +892,7 @@ def profile(request, handle):
         handle (str): The profile handle.
 
     """
+    show_hidden_profile = False
     try:
         if not handle and not request.user.is_authenticated:
             return redirect('index')
@@ -900,8 +901,22 @@ def profile(request, handle):
             profile = request.user.profile
         else:
             profile = profile_helper(handle)
+    except Http404:
+        show_hidden_profile = True
     except ProfileHiddenException:
-        raise Http404
+        show_hidden_profile = True
+    if show_hidden_profile:
+        params = {
+            'hidden': True,
+            'profile': {
+                'handle': handle,
+                'avatar_url': f"/static/avatar/Self",
+                'data': {
+                    'name': f"@{handle}",
+                },
+            },
+        }
+        return TemplateResponse(request, 'profile_details.html', params)
 
     params = profile.to_dict()
 
