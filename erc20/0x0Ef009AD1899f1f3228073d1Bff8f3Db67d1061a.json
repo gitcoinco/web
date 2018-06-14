@@ -1,0 +1,15 @@
+{
+  "symbol": "BTB",
+  "address": "0x0Ef009AD1899f1f3228073d1Bff8f3Db67d1061a",
+  "overview":{
+        "en": "BTB.COM（BiT Brothers交易平台）是一家依法注册于白俄罗斯共和国的全球化数字资产综合交易平台，提供币币交易、合约交易、债券、数字资产托管与清算、大数据分析、数字资产专业管理等综合服务。",
+        "zh": "BTB.COM(BiT Brothers Exchange) is willing to improve the operating experience of users on traditional exchanges and enhance their sense of belonging."
+  },
+  "email": "service@btb.com",
+  "website": "https://www.btb.com/",
+  "whitepaper": "https://btb-idx.oss-cn-hongkong.aliyuncs.com/BTB.COM_Whitepaper_zh_cn.pdf",
+  "published_on": "2018-04-06",
+  "links": {
+    "facebook": "https://www.facebook.com/brothers.bit.7"
+  }
+}
