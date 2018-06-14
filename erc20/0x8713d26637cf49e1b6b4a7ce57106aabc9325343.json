@@ -11,11 +11,11 @@
   "state": "NORMAL",
   "published_on": "2018-02-01",
   "initial_price":{
-        "ETH":"0.000001 ETH",
+        "ETH":"0.000001 ETH"
   },
   "links": {
     "twitter": "https://twitter.com/CNN_Blockchain",
     "telegram": "https://t.me/cnn_cn_community",
-    "github": "https://github.com/cnntoken",
+    "github": "https://github.com/cnntoken"
   }
 }
