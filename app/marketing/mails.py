@@ -26,11 +26,12 @@ from economy.utils import convert_token_to_usdt
 from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
 from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
-    render_bounty_expire_warning, render_bounty_feedback, render_bounty_startwork_expire_warning,
-    render_bounty_unintersted, render_faucet_rejected, render_faucet_request, render_gdpr_reconsent, render_gdpr_update,
-    render_match_email, render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection,
-    render_new_bounty_roundup, render_new_work_submission, render_nth_day_email_campaign, render_quarterly_stats,
-    render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
+    render_admin_contact_funder, render_bounty_expire_warning, render_bounty_feedback,
+    render_bounty_startwork_expire_warning, render_bounty_unintersted, render_faucet_rejected, render_faucet_request,
+    render_gdpr_reconsent, render_gdpr_update, render_match_email, render_new_bounty, render_new_bounty_acceptance,
+    render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission, render_quarterly_stats,
+    render_nth_day_email_campaign, render_start_work_applicant_about_to_expire,
+    render_start_work_applicant_expired, render_start_work_approved,
     render_start_work_new_applicant, render_start_work_rejected, render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
@@ -86,6 +87,22 @@ def send_mail(from_email, _to_email, subject, body, html=False,
         print(f'-- Sendgrid Mail failure - {e}')
 
     return response
+
+
+def admin_contact_funder(bounty, text, from_user):
+    from_email = from_user.email
+    to_email = bounty.bounty_owner_email
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+
+        subject = bounty.url
+        html, text = render_admin_contact_funder(bounty, text, from_user)
+        cc_emails = [from_email]
+        if not should_suppress_notification_email(to_email, 'admin_contact_funder'):
+            send_mail(from_email, to_email, subject, text, cc_emails=cc_emails, from_name=from_email)
+    finally:
+        translation.activate(cur_language)
 
 
 def bounty_feedback(bounty, persona='fulfiller', previous_bounties=[]):
