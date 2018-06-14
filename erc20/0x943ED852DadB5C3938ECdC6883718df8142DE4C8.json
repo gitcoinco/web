@@ -1,0 +1,21 @@
+{
+ "symbol": "FTI",
+ "address": "0x943ED852DadB5C3938ECdC6883718df8142DE4C8",
+ "overview": {
+   "en": "FansTime",
+   "zh": "粉丝时代"
+ },
+ "email": "PR@fanstime.org",
+ "website": "https://fanstime.org/",
+ "whitepaper": "https://fanstime.org/FansTime-tc.pdf",
+ "state": "LOCKED",
+ "published_on": "2018-05-31",
+ "initial_price": {
+   "ETH": "0.00002 ETH"
+ },
+ "links": {
+   "twitter": "https://twitter.com/FansTime_FTI",
+   "telegram": "http://t.me/fanstimeofficial",
+   "facebook": "https://fb.me/FansTime.FTI"
+ }
+}
