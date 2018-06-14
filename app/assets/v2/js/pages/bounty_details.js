@@ -429,8 +429,8 @@ var attach_contact_funder_options = function() {
   $('body').delegate('a.contact_bounty_hunter', 'click', function(e) {
     e.preventDefault();
     var text = window.prompt('What would you like to say to the funder?', '');
-    var connector_char = document.location.indexOf('?') == -1  ? '?' : '&'
-    var url = document.location + connector_char + 'admin_contact_funder=' + text;
+    var connector = document.location.href.indexOf('?') === -1 ? '?' : '&';
+    var url = document.location + connector + 'admin_contact_funder=' + text;
 
     document.location.href = url;
   });
@@ -441,8 +441,8 @@ var attach_snoozee_options = function() {
   $('body').delegate('a.snooze_gitcoin_bot', 'click', function(e) {
     e.preventDefault();
     var text = window.prompt('How many days do you want to snooze?', '');
-    var connector_char = document.location.indexOf('?') == -1  ? '?' : '&'
-    var url = document.location + connector_char + 'snooze=' + text;
+    var connector = document.location.href.indexOf('?') === -1 ? '?' : '&';
+    var url = document.location + connector + 'snooze=' + text;
 
     document.location.href = url;
   });
