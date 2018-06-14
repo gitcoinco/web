@@ -21,6 +21,8 @@
     </a>
 </div>
 
+<link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
+
 {% if user.is_authenticated %}
 <div class="nav-link login">
   <img class="nav_avatar" width=25 height=25
@@ -28,8 +30,6 @@
   {{ user }}
 </div>
 {% else %}
-<link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
-
 <a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">
   <i class="fab fa-github"></i>{% trans "Login" %}
 </a>
