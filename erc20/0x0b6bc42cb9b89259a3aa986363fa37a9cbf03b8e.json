@@ -1,0 +1,19 @@
+{
+  "symbol": "CLC",
+  "address": "0x0b6bc42cb9b89259a3aa986363fa37a9cbf03b8e",
+  "overview":{
+        "en": "ContractLand is a global liquidity provider for tokenized assets that aims to standardize the sale, issurence, listing, exchange, and management of tokenized assets through our technology foundation and ecosystem partners.",
+        "zh": "ContractLand(合约大陆)是基于Terra-Chain的全球性数字资产流动性提供者，合约大陆旨在通过我们的领先技术和生态系统伙伴为数字资产的销售、发行、上市、交易和管理提供标准化解决方案。"
+  },
+  "email": "team@contractland.io",
+  "website": "http://www.contractland.io/",
+  "whitepaper": "http://www.contractland.io/whitepapers/Whitepaper-english.pdf",
+  "published_on": "2018-05-09",
+  "links": {
+    "twitter": "https://twitter.com/ContractLand",
+    "telegram": "https://t.me/contractlandio",
+    "github": "https://github.com/ContractLand",
+    "reddit": "https://www.reddit.com/r/ContractLand/",
+    "medium": "https://medium.com/contractland"
+  }
+}
