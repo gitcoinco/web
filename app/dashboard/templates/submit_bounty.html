@@ -47,10 +47,10 @@
         <div id="form_container">
           <div class="row d-flex justify-content-center my-5">
             <div id="primary_form" class="col-lg-7 col-sm-12">
-              <h1 class="text-center">{% trans "Fund Issue" %}</h1>
+              <h1 class="text-center title">{% trans "Fund Issue" %}</h1>
               <form id="submitBounty" class="submit_bounty_form px-5 pt-5">
                 <div id="about-section">
-                  <h5 class="font-title">{% trans "About" %}</h5>
+                  <h5 class="font-subheader">{% trans "About" %}</h5>
                   <label class="form__label" for=issueURL>{% trans "Github Issue URL" %}</label>
                   <input name='issueURL' id="issueURL" class="form__input" type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
                   <label class="form__label" for="title">{% trans "Github Issue Title" %}</label>
@@ -62,7 +62,7 @@
                   <hr>
                 </div>
                 <div id="details-section">
-                  <h5 class="font-title">{% trans "Details" %}</h5>
+                  <h5 class="font-subheader">{% trans "Details" %}</h5>
                   <label class="form__label" for="project_type">{% trans "Project Type" %}</label>
                   <div class="form__select2">
                     <select class="js-select2" name="project_type">
@@ -122,7 +122,7 @@
                   <hr class="mt-5"/>
                 </div>
                 <div id="deadline-section">
-                  <h5 class="font-title">{% trans "Deadline" %}</h5>
+                  <h5 class="font-subheader">{% trans "Deadline" %}</h5>
                   <label class="form__label" for="expirationTimeDelta">{% trans "Expires in" %}</label>
                   <div class="form__select2">
                     <select class="js-select2" name="expirationTimeDelta">
@@ -140,7 +140,7 @@
                   <hr>
                 </div>
                 <div id="contact-section">
-                  <h5 class="font-title">{% trans "Contact" %}</h5>
+                  <h5 class="font-subheader">{% trans "Contact" %}</h5>
                   {% include 'shared/github_username.html' %}
                   {% include 'shared/notification_email.html' with show_information_publicly_checkbox=1 %}
                   {% include 'shared/name.html' %}
@@ -169,13 +169,13 @@
                   <hr class="mt-5">
                 </div>
                 <div id="gas-section">
-                  <h5 class="font-title">{% trans "Gas Settings" %}</h4>
+                  <h5 class="font-subheader">{% trans "Gas Settings" %}</h4>
                   <div>
                     {% include 'shared/bounty_actions_hidden_vars.html' %}
                     {% include 'shared/wallet_estimate.html' %}
                   </div>
                 </div>
-                <div class="terms_container">
+                <div class="terms_container pt-4">
                   <div class="form__checkbox">
                     <input name='terms' id='terms' type="checkbox" value=1 />
                       <label class="form__label" for=terms>{% trans "I have read, understand, and agree to, the" %}
@@ -190,7 +190,7 @@
                       Gitcoin Core, will be able to take my funds or change this information.{% endblocktrans %}</label>
                   </div>
                 </div>
-                <div class="form__footer form__footer--right">
+                <div class="form__footer form__footer--right pb-5">
                   <button class="button button--primary btn-block js-submit" type="submit">Fund Issue</button>
                   <a target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
                 </div>

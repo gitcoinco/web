@@ -23,6 +23,14 @@ h1, h2, h3, h4, h5 {
   align-items: center;
 }
 
+#primary_form .title {
+  text-transform: none;
+}
+
+#primary_form .font-subheader {
+  color: #666666;
+}
+
 .revisions input {
   width: 35%;
   height: 35px;
