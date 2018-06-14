@@ -429,7 +429,7 @@ var attach_contact_funder_options = function() {
   $('body').delegate('a.contact_bounty_hunter', 'click', function(e) {
     e.preventDefault();
     var text = window.prompt('What would you like to say to the funder?', '');
-    var connector_char = document.location.href.indexOf('?') == -1  ? '?' : '&'
+    var connector_char = document.location.href.indexOf('?') == -1 ? '?' : '&';
     var url = document.location + connector_char + 'admin_contact_funder=' + text;
 
     document.location.href = url;
@@ -441,8 +441,19 @@ var attach_snoozee_options = function() {
   $('body').delegate('a.snooze_gitcoin_bot', 'click', function(e) {
     e.preventDefault();
     var text = window.prompt('How many days do you want to snooze?', '');
-    var connector_char = document.location.href.indexOf('?') == -1  ? '?' : '&'
+    var connector_char = document.location.href.indexOf('?') == -1 ? '?' : '&';
     var url = document.location + connector_char + 'snooze=' + text;
+
+    document.location.href = url;
+  });
+};
+
+var attach_override_status = function() {
+  $('body').delegate('a.admin_override_satatus', 'click', function(e) {
+    e.preventDefault();
+    var text = window.prompt('What new status (valid choices: "open", "started", "submitted", "done", "expired", "cancelled", "" to remove override )?', '');
+    var connector_char = document.location.href.indexOf('?') == -1 ? '?' : '&';
+    var url = document.location + connector_char + 'admin_override_satatus=' + text;
 
     document.location.href = url;
   });
@@ -576,10 +587,7 @@ var do_actions = function(result) {
     var increase_bounty_enabled = isBountyOwner(result);
     var show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
     var show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
-    var show_admin_override_and_hide = document.isStaff;
-    var show_admin_toggle_remarket = document.isStaff;
-    var show_admin_contact_user = document.isStaff;
-    var show_admin_snooze = document.isStaff;
+    var show_admin_methods = document.isStaff;
 
     if (is_legacy) {
       show_start_stop_work = false;
@@ -685,7 +693,7 @@ var do_actions = function(result) {
       actions.push(_entry);
     }
     if (show_suspend_auto_approval) {
-      var connector_char = result['url'].indexOf('?') == -1  ? '?' : '&'
+      var connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
       var url = result['url'] + connector_char + 'suspend_auto_approval=1';
 
       var _entry = {
@@ -701,8 +709,8 @@ var do_actions = function(result) {
       actions.push(_entry);
     }
 
-    if (show_admin_override_and_hide) {
-      var connector_char = result['url'].indexOf('?') == -1  ? '?' : '&'
+    if (show_admin_methods) {
+      var connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
       var url = result['url'] + connector_char + 'admin_override_and_hide=1';
 
       var _entry = {
@@ -718,8 +726,8 @@ var do_actions = function(result) {
       actions.push(_entry);
     }
 
-    if (show_admin_toggle_remarket) {
-      var connector_char = result['url'].indexOf('?') == -1  ? '?' : '&'
+    if (show_admin_methods) {
+      var connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
       var url = result['url'] + connector_char + 'admin_toggle_as_remarket_ready=1';
 
       var _entry = {
@@ -735,7 +743,7 @@ var do_actions = function(result) {
       actions.push(_entry);
     }
 
-    if (show_admin_contact_user) {
+    if (show_admin_methods) {
       var url = '';
 
       var _entry = {
@@ -751,7 +759,7 @@ var do_actions = function(result) {
       actions.push(_entry);
     }
 
-    if (show_admin_snooze) {
+    if (show_admin_methods) {
       var url = '';
 
       var _entry = {
@@ -762,6 +770,22 @@ var do_actions = function(result) {
         title: gettext('Snooze Gitcoinbot reminders'),
         color: 'white',
         buttonclass: 'admin-only snooze_gitcoin_bot'
+      };
+
+      actions.push(_entry);
+    }
+
+    if (show_admin_methods) {
+      var url = '';
+
+      var _entry = {
+        enabled: true,
+        href: url,
+        text: gettext('Override Status'),
+        parent: 'right_actions',
+        title: gettext('Override Status with a status of your choosing'),
+        color: 'white',
+        buttonclass: 'admin-only admin_override_satatus'
       };
 
       actions.push(_entry);
@@ -903,6 +927,7 @@ var main = function() {
     attach_work_actions();
     attach_contact_funder_options();
     attach_snoozee_options();
+    attach_override_status();
 
     // pull issue URL
     if (typeof document.issueURL == 'undefined') {
