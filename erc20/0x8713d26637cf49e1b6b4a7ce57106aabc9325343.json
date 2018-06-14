@@ -1,0 +1,21 @@
+{
+  "symbol": "CNN",
+  "address": "0x8713d26637cf49e1b6b4a7ce57106aabc9325343",
+  "overview":{
+        "en": "Content Neutrality Network",
+        "zh": "内容中立网络（Content Neutrality Network）"
+  },
+  "email": "business@cnntoken.io",
+  "website": "https://cnntoken.io",
+  "whitepaper": "https://cnntoken.io/files/CNN_Whitepaper_en.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-02-01",
+  "initial_price":{
+        "ETH":"0.000001 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/CNN_Blockchain",
+    "telegram": "https://t.me/cnn_cn_community",
+    "github": "https://github.com/cnntoken"
+  }
+}
