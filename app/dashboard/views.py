@@ -533,10 +533,13 @@ def dashboard(request):
 def bounty_request_details(request, bounty_request_id):
     """Display the request details."""
 
+    bounty_request = BountyRequest.objects.get(pk=bounty_request_id)
+
     params = {
         'active': 'dashboard',
         'title': 'Bounty Request Details',
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+        'bounty_request': bounty_request,
     }
 
     return TemplateResponse(request, 'bounty_request_details.html', params)
