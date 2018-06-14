@@ -1,0 +1,17 @@
+{
+    "symbol": "ZIB",
+    "address": "0x357aAc74D5Fc24f271E5652Ec6Bdd8AbfE048505",
+    "overview":{
+          "en": "ZIB is a platform for content sharing which is for blockchain investors, driven by Ethereum smart contracts.",
+          "zh": "ZIB 是由以太坊智能合约驱动的面向区块链投资者的内容分享交流平台."
+    },
+    "email": "wangzilong@zhib.net",
+    "website": "http://zhib.net",
+    "whitepaper": "http://www.zhib.net/white_paper.pdf",
+    "published_on": "2018-05-22",
+    "links": {
+      "telegram": "https://t.me/zbzib",
+      "weibo": "https://weibo.com/Zhibzib"
+    }
+  }
+  
