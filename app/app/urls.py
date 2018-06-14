@@ -130,6 +130,12 @@ urlpatterns = [
     url(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
     url(r'^legal/?', dashboard.views.terms, name='legal'),
 
+    url(
+        r'^request/(?P<bounty_request_id>.*)/',
+        dashboard.views.bounty_request_details, 
+        name='bounty_request_details'
+    ),
+
     # Alpha functionality
     url(r'^profile/(.*)?', dashboard.views.profile, name='profile'),
     url(r'^toolbox/?', dashboard.views.toolbox, name='toolbox'),

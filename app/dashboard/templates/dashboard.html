@@ -68,7 +68,7 @@
           </div>
           {% if requests %}
             {% for bounty_request in requests %}
-            <a href="#" class="row kenneth rinkeby" style="padding: 10px 20px 10px 4em; text-decoration: none; color: #000000;">
+            <a href="{% url 'bounty_request_details' bounty_request.id %}" class="row rinkeby" style="padding: 10px 20px 10px 4em; text-decoration: none; color: #000000;">
               <div class="avatar-container col-1 justify-content-center hide_min_viewport">
                 <img class="avatar" src="/static/avatar/{{ bounty_request.creator.username }}">
               </div>

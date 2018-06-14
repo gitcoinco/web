@@ -113,7 +113,6 @@ def helper_handle_access_token(request, access_token):
     profile = Profile.objects.filter(handle__iexact=request.session['handle']).first()
     request.session['profile_id'] = profile.pk
 
-
 def create_new_interest_helper(bounty, user, issue_message):
     approval_required = bounty.permission_type == 'approval'
     acceptance_date = timezone.now() if not approval_required else None
@@ -530,6 +529,17 @@ def dashboard(request):
         'requests': requests,
     }
     return TemplateResponse(request, 'dashboard.html', params)
+
+def bounty_request_details(request, bounty_request_id):
+    """Display the request details."""
+
+    params = {
+        'active': 'dashboard',
+        'title': 'Bounty Request Details',
+        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+    }
+
+    return TemplateResponse(request, 'bounty_request_details.html', params)
 
 def new_bounty_request(request):
     """Create a new bounty."""
