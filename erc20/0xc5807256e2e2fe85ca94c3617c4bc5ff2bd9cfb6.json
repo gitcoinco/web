@@ -1,0 +1,19 @@
+{
+  "symbol": "DST",
+  "address": "0xc5807256e2e2fe85ca94c3617c4bc5ff2bd9cfb6",
+  "overview":{
+        "en": "DST is an ERC20 utility token issued based on a series of dragon-theme games. Blockchain game HyperDragons is the first game with DST token economy.",
+        "zh": "DST是基于龙的系列游戏产品发行的ERC20 token，游戏云斗龙HyperDragons 是DST首个落地应用场景"
+  },
+  "email": "dst@hyperdragons.com",
+  "website": "https://hyperdragons.alfakingdom.com/",
+  "whitepaper": "https://storage.googleapis.com/hyperdragons-imgs/file/DST-WhitePaper(ch)-Update%20V1.1.pdf",
+  "state": "LOCKED",
+  "published_on": "2018-04-28",   
+  "links": {
+    "twitter": "https://twitter.com/jadezha12611572",
+    "telegram": "https://t.me/HyperDragons",
+    "facebook": "https://www.facebook.com/MixHyperDragons/"
+  }
+}
+  
