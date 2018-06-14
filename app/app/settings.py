@@ -206,20 +206,24 @@ if not ENV in ['local', 'test']:
                 'maxBytes': 1024 * 1024 * 10,  # 10 MB
                 'backupCount': 100,  # max 100 logs
             },
-            'mail_admins': {
-                'level': 'ERROR',
-                'class': 'django.utils.log.AdminEmailHandler',
-                'include_html': True,
-            },
         },
         'loggers': {
             'django': {
-                'handlers': ['rotatingfilehandler', 'mail_admins'],
+                'handlers': ['rotatingfilehandler', ],
                 'propagate': True,
                 'filters': ['require_debug_is_false'],
             },
         },
     }
+
+    if ENV == 'prod':
+        LOGGING['handlers']['mail_admins'] = {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
+        }
+        LOGGING['loggers']['django']['handlers'].append('mail_admins')
+
     LOGGING['loggers']['django.request'] = LOGGING['loggers']['django']
     for ia in INSTALLED_APPS:
         LOGGING['loggers'][ia] = LOGGING['loggers']['django']

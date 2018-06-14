@@ -252,3 +252,10 @@ body {
     display: none !important;
   }
 }
+
+@media (min-width: 768px) {
+
+  .bounty-detail {
+    margin-right: 4rem;
+  }
+}

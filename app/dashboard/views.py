@@ -41,7 +41,9 @@ from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_pri
 from github.utils import (
     get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
 )
-from marketing.mails import bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected
+from marketing.mails import (
+    admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
+)
 from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
@@ -204,7 +206,7 @@ def new_interest(request, bounty_id):
             'success': False},
             status=401)
 
-    if profile.has_been_removed_by_staff():
+    if profile.no_times_slashed_by_staff():
         return JsonResponse({
             'error': _('Because a staff member has had to remove you from a bounty in the past, you are unable to start'
                        'more work at this time. Please leave a message on slack if you feel this message is in error.'),
@@ -326,6 +328,9 @@ def uninterested(request, bounty_id, profile_id):
         bounty_id (int): ID of the Bounty
         profile_id (int): ID of the interested profile
 
+    Params:
+        slashed (str): if the user will be slashed or not
+
     Returns:
         dict: The success key with a boolean value and accompanying error.
     """
@@ -342,12 +347,16 @@ def uninterested(request, bounty_id, profile_id):
             {'error': 'Only bounty funders are allowed to remove users!'},
             status=401)
 
+    slashed = request.POST.get('slashed')
     try:
         interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
         bounty.interested.remove(interest)
         maybe_market_to_slack(bounty, 'stop_work')
         maybe_market_to_user_slack(bounty, 'stop_work')
-        event_name = "bounty_removed_by_staff" if is_staff else "bounty_removed_by_funder"
+        if is_staff:
+            event_name = "bounty_removed_slashed_by_staff" if slashed else "bounty_removed_by_staff"
+        else:
+            event_name = "bounty_removed_by_funder"
         record_user_action_on_interest(interest, event_name, None)
         interest.delete()
     except Interest.DoesNotExist:
@@ -668,6 +677,57 @@ def cancel_bounty(request):
     return TemplateResponse(request, 'kill_bounty.html', params)
 
 
+def helper_handle_admin_override_and_hide(request, bounty):
+    admin_override_and_hide = request.GET.get('admin_override_and_hide', False)
+    if admin_override_and_hide:
+        is_staff = request.user.is_staff
+        if is_staff:
+            bounty.admin_override_and_hide = True
+            bounty.save()
+            messages.success(request, _(f'Bounty is now hidden'))
+        else:
+            messages.warning(request, _('Only the funder of this bounty may do this.'))
+
+
+def helper_handle_admin_contact_funder(request, bounty):
+    admin_contact_funder_txt = request.GET.get('admin_contact_funder', False)
+    if admin_contact_funder_txt:
+        is_staff = request.user.is_staff
+        if is_staff:
+            # contact funder
+            admin_contact_funder(bounty, admin_contact_funder_txt, request.user)
+            messages.success(request, _(f'Bounty message has been sent'))
+        else:
+            messages.warning(request, _('Only the funder of this bounty may do this.'))
+
+
+def helper_handle_mark_as_remarket_ready(request, bounty):
+    admin_mark_as_remarket_ready = request.GET.get('admin_toggle_as_remarket_ready', False)
+    if admin_mark_as_remarket_ready:
+        is_staff = request.user.is_staff
+        if is_staff:
+            bounty.admin_mark_as_remarket_ready = not bounty.admin_mark_as_remarket_ready
+            bounty.save()
+            if bounty.admin_mark_as_remarket_ready:
+                messages.success(request, _(f'Bounty is now remarket ready'))
+            else:
+                messages.success(request, _(f'Bounty is now NOT remarket ready'))
+        else:
+            messages.warning(request, _('Only the funder of this bounty may do this.'))
+
+
+def helper_handle_suspend_auto_approval(request, bounty):
+    suspend_auto_approval = request.GET.get('suspend_auto_approval', False)
+    if suspend_auto_approval:
+        is_staff = request.user.is_staff
+        if is_staff:
+            bounty.admin_override_suspend_auto_approval = True
+            bounty.save()
+            messages.success(request, _(f'Bounty auto approvals are now suspended'))
+        else:
+            messages.warning(request, _('Only the funder of this bounty may do this.'))
+
+
 def helper_handle_snooze(request, bounty):
     snooze_days = int(request.GET.get('snooze', 0))
     if snooze_days:
@@ -678,7 +738,7 @@ def helper_handle_snooze(request, bounty):
             bounty.save()
             messages.success(request, _(f'Warning messages have been snoozed for {snooze_days} days'))
         else:
-            messages.warning(request, _('Only the funder of this bounty may snooze warnings.'))
+            messages.warning(request, _('Only the funder of this bounty may do this.'))
 
 
 def helper_handle_approvals(request, bounty):
@@ -789,6 +849,10 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
 
                 helper_handle_snooze(request, bounty)
                 helper_handle_approvals(request, bounty)
+                helper_handle_admin_override_and_hide(request, bounty)
+                helper_handle_suspend_auto_approval(request, bounty)
+                helper_handle_mark_as_remarket_ready(request, bounty)
+                helper_handle_admin_contact_funder(request, bounty)
 
         except Bounty.DoesNotExist:
             pass
@@ -885,6 +949,7 @@ def profile(request, handle):
         handle (str): The profile handle.
 
     """
+    show_hidden_profile = False
     try:
         if not handle and not request.user.is_authenticated:
             return redirect('index')
@@ -893,8 +958,22 @@ def profile(request, handle):
             profile = request.user.profile
         else:
             profile = profile_helper(handle)
+    except Http404:
+        show_hidden_profile = True
     except ProfileHiddenException:
-        raise Http404
+        show_hidden_profile = True
+    if show_hidden_profile:
+        params = {
+            'hidden': True,
+            'profile': {
+                'handle': handle,
+                'avatar_url': f"/static/avatar/Self",
+                'data': {
+                    'name': f"@{handle}",
+                },
+            },
+        }
+        return TemplateResponse(request, 'profile_details.html', params)
 
     params = profile.to_dict()
 

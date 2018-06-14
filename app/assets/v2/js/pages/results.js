@@ -2,8 +2,7 @@ google.charts.load('current', { packages: [ 'corechart', 'bar' ]});
 google.charts.setOnLoadCallback(drawChart);
 google.charts.setOnLoadCallback(repoChart);
 google.charts.setOnLoadCallback(communityChart);
-
-// TODO: Implement Real Data for Graphs
+google.charts.setOnLoadCallback(jdiChart);
 
 function drawChart() {
   var data = google.visualization.arrayToDataTable(document.bounty_history);
@@ -60,7 +59,27 @@ function communityChart() {
   chart.draw(data, options);
 }
 
+// TODO: DRY
+function jdiChart() {
+  var data = google.visualization.arrayToDataTable(document.jdi_history);
+
+  var options = {
+    curveType: 'function',
+    legend: { position: 'none' },
+    backgroundColor: 'transparent',
+    height: 400,
+    vAxis: { ticks: document.jdi_ticks, gridlines: { color: 'transparent' } },
+    hAxis: { ticks: [ 'LAUNCH', 'TODAY' ], scaleType: 'log' },
+    series: { 0: { color: '#15003E' } }
+  };
+
+  var chart = new google.visualization.LineChart(document.getElementById('jdi_chart'));
+
+  chart.draw(data, options);
+}
+
 $(window).resize(function() {
+  jdiChart();
   drawChart();
   repoChart();
   communityChart();
