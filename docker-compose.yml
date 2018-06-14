@@ -47,12 +47,5 @@ services:
       - "8545:8545"
     command: "-a 1 --seed 2"
 
-  node:
-    image: node:9.11-alpine
-    working_dir: /node
-    volumes:
-      - .:/node
-    command: bin/docker-node.sh
-
 volumes:
   pgdata:
