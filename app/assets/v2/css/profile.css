@@ -146,6 +146,10 @@
   color: #FFCE08;
 }
 
+.profile-section-title {
+  border-bottom: 2px solid #3E24FB;
+}
+
 .profile-bounties--loading {
   background-image: url('/static/v2/images/loading_v2.gif');
   background-repeat: no-repeat;
@@ -159,7 +163,7 @@
   max-height: 3.125rem;
   margin-right: auto;
   margin-left: auto;
-  border: 1px solid #e1e1e1;
+  border: 1px solid #E1E1E1;
   border-radius: 100%;
 }
 
