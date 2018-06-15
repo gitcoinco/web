@@ -96,7 +96,7 @@ def get_upload_filename(instance, filename):
     from os.path import basename
     salt = token_hex(16)
     file_path = basename(filename)
-    return f"{getattr(instance, '_path', '')}/{salt}/{file_path}"
+    return f"avatars/{getattr(instance, '_path', '')}/{salt}/{file_path}"
 
 
 def get_svg_templates():
