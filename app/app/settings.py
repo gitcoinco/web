@@ -68,7 +68,6 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.sites',
     'django_extensions',
-    'manifesto',
     'pipeline',
     'easy_thumbnails',
     'app',
