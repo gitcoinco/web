@@ -240,6 +240,7 @@ THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.static_storage.SilentFileStorage')
+# STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
 STATICFILES_DIRS = env.tuple('STATICFILES_DIRS', default=('assets/', ))
 STATICFILES_FINDERS = (
@@ -253,14 +254,15 @@ STATIC_HOST = env('STATIC_HOST', default='')
 STATIC_URL = STATIC_HOST + env('STATIC_URL', default='/static/')
 
 PIPELINE = {
-    'PIPELINE_ENABLED': False,
+    'PIPELINE_ENABLED': True,
+    'PIPELINE_COLLECTOR_ENABLED': True,
     'COMPILERS': ('pipeline.compilers.es6.ES6Compiler', ),
     'CSS_COMPRESSOR': 'pipeline.compressors.yuglify.YuglifyCompressor',
-    'JS_COMPRESSOR': 'pipeline.compressors.yuglify.YuglifyCompressor',
+    'JS_COMPRESSOR': 'pipeline.compressors.uglifyjs.UglifyJSCompressor',
     'JAVASCRIPT': {
         'external_bounties': {
-            'source_filenames': ('v2/js/tokens.js', 'v2/js/pages/offchain_bounties.js', 'v2/js/shared.js'),
-            'output_filename': 'v2/dist/js/external_bounties.js',
+            'source_filenames': ('v2/js/tokens.js', 'v2/js/pages/offchain_bounties.js'),
+            'output_filename': 'v2/js/externalbounties.min.js',
         }
     }
 }
