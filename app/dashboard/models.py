@@ -194,7 +194,15 @@ class Bounty(SuperModel):
     value_in_eth = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     value_true = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     privacy_preferences = JSONField(default={}, blank=True)
-    admin_override_and_hide = models.BooleanField(default=False, help_text=_('Admin override to hide the bounty from the system'))
+    admin_override_and_hide = models.BooleanField(
+        default=False, help_text=_('Admin override to hide the bounty from the system')
+    )
+    admin_override_suspend_auto_approval = models.BooleanField(
+        default=False, help_text=_('Admin override to suspend work auto approvals')
+    )
+    admin_mark_as_remarket_ready = models.BooleanField(
+        default=False, help_text=_('Admin override to mark as remarketing ready')
+    )
 
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
@@ -1083,12 +1091,26 @@ class Profile(SuperModel):
         tipped_for = Tip.objects.filter(username__iexact=self.handle).order_by('-id')
         return on_repo | tipped_for
 
-    def has_been_removed_by_staff(self):
+    def no_times_slashed_by_staff(self):
+        user_actions = UserAction.objects.filter(
+            profile=self,
+            action='bounty_removed_slashed_by_staff',
+            )
+        return user_actions.count()
+
+    def no_times_been_removed_by_funder(self):
+        user_actions = UserAction.objects.filter(
+            profile=self,
+            action='bounty_removed_by_funder',
+            )
+        return user_actions.count()
+
+    def no_times_been_removed_by_staff(self):
         user_actions = UserAction.objects.filter(
             profile=self,
             action='bounty_removed_by_staff',
             )
-        return user_actions.exists()
+        return user_actions.count()
 
     @property
     def desc(self):
@@ -1559,7 +1581,7 @@ class Profile(SuperModel):
             count_bounties_on_repo = self.get_orgs_bounties(network=network).count()
             sum_eth_on_repos = self.get_eth_sum(sum_type='org', **query_kwargs)
 
-
+        no_times_been_removed = self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff() + self.no_times_slashed_by_staff()
         params = {
             'title': f"@{self.handle}",
             'active': 'profile_details',
@@ -1576,6 +1598,7 @@ class Profile(SuperModel):
             'works_with_funded': works_with_funded,
             'funded_bounties_count': funded_bounties.count(),
             'activities': [{'title': _('No data available.')}],
+            'no_times_been_removed': no_times_been_removed,
             'sum_eth_on_repos': sum_eth_on_repos,
             'works_with_org': works_with_org,
             'count_bounties_on_repo': count_bounties_on_repo,
@@ -1836,3 +1859,24 @@ class ToolVote(models.Model):
 
     def __str__(self):
         return f"{self.profile} | {self.value} | {self.tool}"
+
+
+class TokenApproval(SuperModel):
+    """A token approval."""
+
+    profile = models.ForeignKey('dashboard.Profile', related_name='token_approvals', on_delete=models.CASCADE)
+    coinbase = models.CharField(max_length=50)
+    token_name = models.CharField(max_length=50)
+    token_address = models.CharField(max_length=50)
+    approved_address = models.CharField(max_length=50)
+    approved_name = models.CharField(max_length=50)
+    tx = models.CharField(max_length=255, default='')
+    network = models.CharField(max_length=255, default='')
+
+    def __str__(self):
+        return f"{self.coinbase} | {self.token_name} | {self.profile}"
+
+    @property
+    def coinbase_short(self):
+        coinbase_short = f"{self.coinbase[0:5]}...{self.coinbase[-4:]}"
+        return coinbase_short

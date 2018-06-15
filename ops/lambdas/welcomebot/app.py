@@ -57,7 +57,7 @@ Here's how to get started with bounties:
 We have more details in our onboarding guide at https://gitcoin.co/docs/onboard . We also have a FAQ and tutorials available at https://gitcoin.co/help
 
 If you have any feedback for the team, or just want to say hi, this is them:
-- @owocki, @vivek, @Pixelant, @mbeacom, @coderberry, @justin-bean
+- <@U55F2LT5L>, <@U88M8173P>, <@U8J2TK1L6>, <@U87BL3KS6>, <@U7Z23ATPB>, <@U9UKDGS01>, <@U88BVQAJD>, <@U9PL1BSAC>, <@U7J5ZPCPQ>, <@U85EFS1MM>
 
 See you around! :spock-hand:
 Welcome_bot (and the Gitcoin Team)
@@ -104,11 +104,8 @@ def new_user_welcome(event):
         channel = sc.api_call('im.open', user=user)
         channel_id = channel['channel']['id']
         sc.api_call(
-            'chat.postMessage',
-            channel=channel_id,
-            unfurl_links=False,
-            text=MESSAGE,
-            as_user=True)
+            'chat.postMessage', channel=channel_id, unfurl_links=False, text=MESSAGE, as_user=True
+        )
 
 
 # Serve the slack welcomebot flask app.

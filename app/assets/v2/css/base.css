@@ -30,8 +30,36 @@ span {
   z-index: 9999999999;
 }
 
-.navbar-nav .nav-link {
+.navbar-dark .navbar-nav .nav-link {
   border-radius: 2px;
+  color: white;
+}
+
+.navbar .interior, .navbar .interior a,
+.nav-link.interior, .nav-link.interior a {
+  color: white ;
+}
+
+.navbar .interior .dropdown-item {
+  color: black !important;
+  font-size: 0.9rem;
+}
+.navbar .interior .dropdown-item:hover {
+  color: white !important;
+}
+
+#navbarSupportedContent {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.navbar-nav .btn-gc-blue {
+  margin-right: 0 !important;
+  font-size: 0.9rem;
+}
+
+.navbar-nav .dropdown-menu {
+  min-width: 9rem;
 }
 
 .nav_avatar,
@@ -562,6 +590,12 @@ input[type=text].loading {
   text-align: left;
 }
 
+.admin-only{
+  background-color: #800000 !important;
+  color:white !important;
+  border: 1px solid white !important;
+}
+
 /* The alert message box */
 
 .alert {
@@ -1011,12 +1045,12 @@ input.is-invalid {
 }
 
 #robot_error {
-  width: 25%;
-  margin: 0 auto;
+  margin: auto;
 }
 
 #robot_error img {
-  width: 100%;
+  max-height: 18rem;
+  width: auto;
 }
 
 @media (max-width: 1350px) {

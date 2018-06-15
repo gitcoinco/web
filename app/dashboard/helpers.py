@@ -477,6 +477,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 last_comment_date=latest_old_bounty.last_comment_date if latest_old_bounty else None,
                 snooze_warnings_for_days=latest_old_bounty.snooze_warnings_for_days if latest_old_bounty else 0,
                 admin_override_and_hide=latest_old_bounty.admin_override_and_hide if latest_old_bounty else 0,
+                admin_override_suspend_auto_approval=latest_old_bounty.admin_override_suspend_auto_approval if latest_old_bounty else 0,
+                admin_mark_as_remarket_ready=latest_old_bounty.admin_mark_as_remarket_ready if latest_old_bounty else 0,
 
             )
             new_bounty.fetch_issue_item()

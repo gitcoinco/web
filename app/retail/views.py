@@ -51,6 +51,7 @@ def index(request):
          'https://github.com/pipermerriam', 'Pipermerriam'),
     ]
     context = {
+        'is_outside': True,
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'home',
@@ -158,6 +159,7 @@ def about(request):
         'alumni': alumnis,
         'active': 'about',
         'title': 'About',
+        'is_outside': True,
     }
     return TemplateResponse(request, 'about.html', context)
 
@@ -165,6 +167,7 @@ def about(request):
 def mission(request):
     """Render the Mission response."""
     context = {
+        'is_outside': True,
         'active': 'mission',
         'title': 'Mission',
         'card_title': _('Gitcoin is a mission-driven organization.'),
@@ -177,6 +180,7 @@ def mission(request):
 def results(request):
     """Render the Results response."""
     context = build_stat_results()
+    context['is_outside'] = True
     return TemplateResponse(request, 'results.html', context)
 
 

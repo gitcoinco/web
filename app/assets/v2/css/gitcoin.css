@@ -184,7 +184,7 @@ h4,
 }
 
 .nav-link {
-  color: #eff4ee !important;
+  color: #eff4ee;
   text-transform: uppercase;
   text-decoration: none;
   padding-right: 1rem !important;
@@ -553,6 +553,10 @@ div.button-pink {
 .dropdown-menu .dropdown-item:hover {
   background-color: #0D0764;
   color: #FFFFFF;
+}
+
+#why-gitcoin .dropdown-item {
+  padding-left: 15px;
 }
 
 .dropdown-menu .dropdown-item i {

@@ -205,7 +205,7 @@
               <span class="font-caption">[[:text]] ( [[:pending_acceptance]] )</span>
             </a>
           [[else color == 'white']]
-            <a class="btn btn-small" id="btn-white" role="button" target="_blank" href="[[:href]]" target="[[:target]]">
+            <a class="btn btn-small [[:buttonclass]]" id="btn-white" role="button" target="_blank" href="[[:href]]" target="[[:target]]">
               [[if comments]]
                 <span class="font-caption">
                   [[:text]]
@@ -221,7 +221,7 @@
               [[/if]]
             </a>
           [[else]]
-            <a class="button button--primary" role="button" href="[[:href]]" target="[[:target]]">
+            <a class="button button--primary [[:buttonclass]]" role="button" href="[[:href]]" target="[[:target]]">
               <span class="font-caption">[[:text]]</span>
             </a>
           [[/if]]
@@ -279,6 +279,15 @@
                   </a>
                 </span>
               </div>
+              [[if slash_possible]]
+                <div class="stop-work">
+                  <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty and ding rep</div>">
+                    <a id="remove-slash-[[:name]]" class="button button--primary admin-only" role="button" href="remove-handle">
+                      <span class="font-smaller-4">Stop work + Ding Rep</span>
+                    </a>
+                  </span>
+                </div>
+              [[/if]]
             [[/if]]
           </div>
         [[else]]

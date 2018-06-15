@@ -47,6 +47,7 @@
               </div>
             {% endif %}
           </div>
+        {% if not hidden %}
         {% if profile.is_org %}
           <div class="col-12 col-lg-4">
             <div class="profile-header__stats profile-header__stats--contributor card mb-4">
@@ -84,6 +85,9 @@
                 <ul>
                   <li><span class="highlight">{{ count_bounties_completed }}</span> {% trans "bounties completed" %}</li>
                   <li><span class="highlight">{{ sum_eth_collected|floatformat:2 }}</span> {% trans "ETH collected" %}</li>
+                  {% if no_times_been_removed %}
+                      <li> - {% trans "removed from" %} <span class="highlight">{{ no_times_been_removed }}</span> {% trans "bounties" %}</li>
+                  {% endif %}
                   {% if scoreboard_position_contributor %}
                       <li><span class="highlight">#{{ scoreboard_position_contributor }}</span> {% trans "contributor" %}</li>
                   {% endif %}
@@ -134,11 +138,34 @@
             </div>
           </div>
         {% endif %}
+        {% endif %}
 
         </div>
       </div>
     </div>
     <div class="container">
+    {% if hidden %}
+      <div class="row">
+        <div class="col pt-4">
+          <h2>{% trans "Four oh Four" %}</h2>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col pb-4">
+          <h5>{% trans "This profile is not available." %}</h5>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col pb-4">
+          <p>{% trans "This profile is either doesn't exist, is not a member of Gitcoin, or the user has chosen not to make their profile available." %}</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col pb-4">
+          <p><a href="https://github.com/{{profile.handle}}">{% trans "Try looking for their profile on Github" %}</a> or <a href="{% url 'slack' %}">{% trans "Contact us on Slack" %}</a></p>
+        </div>
+      </div>
+    {% else %}
       <div class="row">
         <div class="col py-4">{% trans "Bounties in progress" %}</div>
       </div>
@@ -322,6 +349,7 @@
           </div>
         </div>
       {% endif %}
+    {% endif %}
     </div>
 
     {% include 'shared/result.html' %}
