@@ -19,16 +19,18 @@
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.http import HttpResponse, JsonResponse
+from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
+from dashboard.utils import create_user_action
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 
+from .models import LivestreamSession
 from .utils import build_stat_results
 
 
@@ -586,8 +588,6 @@ def itunes(request):
 
 
 def ios(request):
-    #return HttpResponse('<h1>Coming soon!</h1> If youre seeing this page its because apple is reviewing the app... and release is imminent :)')
-
     context = {
         'active': 'ios',
         'title': 'iOS',
@@ -643,6 +643,20 @@ def reddit(request):
 
 def livestream(request):
     return redirect('https://calendar.google.com/calendar/r?cid=N3JxN2dhMm91YnYzdGs5M2hrNjdhZ2R2ODhAZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ')
+
+
+def livestream_session(request):
+    if not request.user.is_authenticated:
+        return redirect('social:begin', backend='github')
+
+    try:
+        live_stream = LivestreamSession.objects.latest('created_on')
+    except Exception:
+        raise Http404
+
+    create_user_action(request.user, 'joined_livestream', request, {'livestream_id': live_stream.id})
+    live_stream.attendees.add(request.user.profile)
+    return redirect(live_stream.zoom_url)
 
 
 def twitter(request):
