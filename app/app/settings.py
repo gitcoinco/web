@@ -258,6 +258,46 @@ PIPELINE = {
     'COMPILERS': ('pipeline.compilers.es6.ES6Compiler', ),
     'CSS_COMPRESSOR': 'pipeline.compressors.yuglify.YuglifyCompressor',
     'JS_COMPRESSOR': 'pipeline.compressors.uglifyjs.UglifyJSCompressor',
+    'STYLESHEETS': {
+        'head': {
+            'source_filenames': (
+                'v2/css/fontawesome-all.min.css',
+                'v2/css/bootstrap.min.css',
+                'v2/css/gitcoin.css',
+                'v2/css/base.css',
+                'v2/css/jquery-ui.css',
+                'v2/css/jquery.modal.min.css',
+                'v2/css/jquery.select2.min.css',
+                'v2/css/animate.min.css',
+                'v2/css/rain.css',
+                'v2/css/buttons.css',
+                'v2/css/timeline.css',
+                'v2/css/carousel.css',
+                'v2/css/faucet.css',
+                'v2/css/colors.css',
+                'v2/css/typography.css',
+                # Forms
+                'v2/css/forms/button.css',
+                'v2/css/forms/checkbox.css',
+                'v2/css/forms/form.css',
+                'v2/css/forms/input.css',
+                'v2/css/forms/label.css',
+                'v2/css/forms/radio.css',
+                'v2/css/forms/select.css',
+                'v2/css/external_bounties/checkboxes.css',
+                'cookielaw/css/cookielaw.css',
+            ),
+            'output_filename': 'v2/css/head.min.css',
+        },
+        'ios': {
+            'source_filenames': (
+                'v2/css/toolbox.css',
+                'v2/css/card.css',
+                'v2/css/ios.css',
+            ),
+            'output_filename': 'v2/css/ios.min.css',
+        }
+    },
     'JAVASCRIPT': {
         'external_bounties': {
             'source_filenames': ('v2/js/tokens.js', 'v2/js/pages/offchain_bounties.js'),
