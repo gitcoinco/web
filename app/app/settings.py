@@ -262,7 +262,41 @@ PIPELINE = {
         'external_bounties': {
             'source_filenames': ('v2/js/tokens.js', 'v2/js/pages/offchain_bounties.js'),
             'output_filename': 'v2/js/externalbounties.min.js',
-        }
+        },
+        'footer_full': {
+            'source_filenames': (
+                'v2/js/jquery.js',
+                'v2/js/jquery.cookie.js',
+                'v2/js/jquery-ui.js',
+                'v2/js/tooltip.js',
+                'v2/js/jquery.modal.min.js',
+                'v2/js/jquery.select2.min.js',
+                'v2/js/jquery.validate.min.js',
+                'v2/js/jsrender.js',
+                'v2/js/base.js',
+                'v2/js/purify.min.js',
+                'v2/js/work_with_gitcoin.js',
+                'v2/js/animate.min.js',
+                'cookielaw/js/cookielaw.js',
+            ),
+            'output_filename': 'v2/js/footer.min.js',
+        },
+        'footer_slim': {
+            'source_filenames': (
+                'v2/js/jquery.js',
+                'v2/js/jquery.cookie.js',
+                'v2/js/jquery.modal.min.js',
+                'v2/js/jquery.select2.min.js',
+                'v2/js/jquery.validate.min.js',
+                'v2/js/jsrender.js',
+                'v2/js/base.js',
+                'v2/js/purify.min.js',
+                'v2/js/work_with_gitcoin.js',
+                'v2/js/animate.min.js',
+                'cookielaw/js/cookielaw.js',
+            ),
+            'output_filename': 'v2/js/slim_footer.min.js',
+        },
     }
 }
 
