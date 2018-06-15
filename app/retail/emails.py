@@ -471,7 +471,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Gitcoin Project Types | EF Hires Gitcoiner’s "
+    subject = "Paying in ERC-20 Tokens | MakerDAO + ECF Partnerships "
 
     intro = '''
 
@@ -479,27 +479,23 @@ def render_new_bounty_roundup(to_email):
     Hi there
 </p>
 <p>
-This week, <a href="https://medium.com/gitcoin/we-listened-announcing-project-types-965a02603559">we shipped project types</a> which adds flexibility to the Gitcoin platform.
-Whether you want to run contests, post hackathon bounties, or have developers apply for work, Project Types provides you optionality.
-We’re hopeful this will lead to a better experience for developers and funders. Thanks for providing the feedback which led to these changes!
+This week, we shipped <a href="https://medium.com/gitcoin/feature-alert-paying-in-erc20-tokens-is-10x-easier-30fabf74a418">ERC-20 token updates</a> which make paying in native tokens magnitudes easier on Gitcoin!
+Whether you want to fund in Dai, MakerDAO's stablecoin, or your own native token, Gitcoin is a place where you can do so. We also hope the UX work we did is useful to others who hope to accept
+ERC-20 tokens. The beauty of open source!
 </p>
 <p>
-Also, <a href="https://gitcoin.co/issue/JoinColony/colonyHackathon/4">The Colony Global Hackathon</a> kicked off this week! We're looking for creative, brilliant minds
-to build on, integrate, and extend Colony with the colonyJS library. Many folks are currently looking for teammates and ideas.
-Submit your project by 11:59 pm GMT on Sunday, June 24th for a chance to win prizes totaling $25,000 paid in DAI, via Gitcoin.
+Speaking of MakerDAO, <a href="https://medium.com/gitcoin/stable-fund-makerdao-gitcoin-ef-infrastructure-bounties-c58bcffabfc4">we provided an update on our $10K partnership.</a>
+With the first 2,000 Dai, we were able to post bounties on Solidity, Casper FFG, and a number of other Ethereum repo's. There's some great dev work being done on Ethereum via Gitcoin. In addition,
+the Ethereum Community Fund (ECF) announced the <a href="https://medium.com/ecf-review/announcing-the-ecf-web-3-0-infrastructure-fund-pilot-program-ab8894af35fa">ECF Web 3.0 Infrastructure Fund pilot program.</a>
+We're excited to put another 5,000 in Dai towards Ethereum infrastructure, building upon momentum created via the Ethereum Foundation grant and the MakerDAO partnership.
 </p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-<a href="https://medium.com/@scott.moore/growing-open-source-web3-1ae85840da6d">Scott Moore joined Gitcoin Core!</a> Scott's expereience with the Web 3 development ecosystem
-is a big step for Gitcoin as we look to partner with more open source projects to #BUIDL.
+<a href="https://medium.com/gitcoin/gitcoin-testimonials-uport-1510222f3744">uPort's building with Gitcoin!</a> We spoke with Kames Cox-Geraghty on how Gitcoin bounties have gone thus far and what uPort has planned next.
         </li>
         <li>
-The Ethereum Foundation’s Python team has grown via Gitcoin! <a href="https://medium.com/gitcoin/gitcoin-testimonials-ethereum-foundation-web3py-py-evm-561cd4da92a6">Read their hiring testimonial</a>
-explaining how Gitcoin helped them hire.
-        </li>
-        <li>
-<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is back as regularly scheduled today at 5PM ET. Ujo Music, Truffle, and XLNT will be on to demo their products. Join us!
+<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is back as regularly scheduled today at 5PM ET. Prysmatic Labs joins to discuss sharding, and their geth implementation. Join us!
         </li>
     </ul>
 </p>
@@ -509,24 +505,24 @@ Back to building,
 '''
     highlights = [
         {
-            'who': 'bakoah',
+            'who': 'travisdmathis',
             'who_link': True,
-            'what': 'Worked on the first WALLETH bounty and completed it in a day!',
-            'link': 'https://gitcoin.co/issue/walleth/kethereum/33/575',
+            'what': 'The largest Gitcoin bounty ever completed! Integrated Balance and Dharma in a big way.',
+            'link': 'https://gitcoin.co/issue/balance-io/balance-manager/195/553',
             'link_copy': 'See more',
+        },
+        {
+            'who': 'bradysheridan',
+            'who_link': True,
+            'what': 'Integrated Netlify CMS and created the new MARKET Protocol blog!',
+            'link': 'https://gitcoin.co/issue/MARKETProtocol/website/136/581',
+            'link_copy': 'View more',
         },
         {
             'who': 'IRus',
             'who_link': True,
-            'what': 'Made Circle Ci Docker builds cacheable for CyberCongress!',
+            'what': 'Made CircleCI builds cacheable for Cyber Congress.',
             'link': 'https://gitcoin.co/issue/cybercongress/cyber-search/184/577',
-            'link_copy': 'View more',
-        },
-        {
-            'who': 'isatou',
-            'who_link': True,
-            'what': 'Included categories in the Bounties Network analytics endpoint.',
-            'link': 'https://gitcoin.co/issue/Bounties-Network/BountiesAPI/49/516',
             'link_copy': 'View more',
         },
     ]
@@ -534,16 +530,16 @@ Back to building,
     try:
         bounties = [
             {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/uport-bounties/issues/2'),
-                'primer': 'Integrate uPort with Colony and have a chance to win big during the Colony Hackathon!',
+                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/zeppelinos/labs/issues/102'),
+                'primer': 'Work on ZeppelinOS and make it easier to create upgradeable smart contracts!',
             },
             {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/paritytech/parity/issues/7427'),
-                'primer': 'Help Parity add tests for sending Whisper messages.',
+                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/ConsenSys/Linnia-Smart-Contracts/issues/35'),
+                'primer': 'Help Linnia create  decentralized policy-based permissions.',
             },
             {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/ipfs/js-ipfs/issues/1283'),
-                'primer': 'Add support for Rabin Fingerprinting to js-ipfs on the IPFS project!',
+                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://gitcoin.co/issue/uport-project/uport-bounties/2/590'),
+                'primer': 'The Colony Hackathon continues! Use uPort and earn extra ETH if you win a prize.',
             },
         ]
     except:
