@@ -538,7 +538,7 @@ Back to building,
                 'primer': 'Help Linnia create  decentralized policy-based permissions.',
             },
             {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://gitcoin.co/issue/uport-project/uport-bounties/2/590'),
+                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/uport-bounties/issues/2'),
                 'primer': 'The Colony Hackathon continues! Use uPort and earn extra ETH if you win a prize.',
             },
         ]
