@@ -192,8 +192,7 @@
 
         <div class="row mt-5 pb-5 animatedParent text-center">
           <div class="col animated pulse fast">
-            <img src="{% static 'v2/images/results/price_per_hour.png' %}" >
-            <p style="font-size: 10px;">(Updated 6/5/2018)</p>
+            <iframe src="{% url 'viz_sscatterplot' %}" style="width: 100%; height: 600px; overflow-x: hidden; overflow-y: hidden;" frameBorder="0"></iframe>
           </div>
         </div>
 
