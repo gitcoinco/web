@@ -29,7 +29,11 @@ var get_rates_estimate = function(usd_amount) {
     rates_addon.push('' + hours + ' hrs at $' + rate + '/hr');
   }
   rates_addon = rates_addon.join(', ');
-  return rates_addon;
+
+  var help_addon = ' <a href="https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e" target="_blank" rel="noopener noreferrer">[Read our pricing guide]</a>';
+  var final_text = rates_addon + help_addon;
+
+  return final_text;
 };
 
 var getUSDEstimate = function(amount, denomination, callback) {

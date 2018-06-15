@@ -34,6 +34,7 @@ var hide_if_empty = function(key, val, result) {
 };
 var unknown_if_empty = function(key, val, result) {
   if (!_truthy(val)) {
+    $('#' + key).parent().hide();
     return [ key, 'Unknown' ];
   }
   return [ key, val ];
@@ -58,6 +59,8 @@ var rows = [
   'token_value_time_peg',
   'web3_created',
   'status',
+  'project_type',
+  'permission_type',
   'bounty_owner_address',
   'bounty_owner_email',
   'issue_description',
@@ -119,11 +122,7 @@ var callbacks = {
   'issue_description': function(key, val, result) {
     var converter = new showdown.Converter();
 
-    val = val.replace(/script/ig, 'scr_i_pt');
-    var ui_body = val;
-
-    ui_body = converter.makeHtml(ui_body);
-
+    ui_body = converter.makeHtml(val);
     return [ 'issue_description', ui_body ];
   },
   'bounty_owner_address': address_ize,
@@ -134,6 +133,15 @@ var callbacks = {
   'bounty_owner_github_username': gitcoin_ize,
   'bounty_owner_name': function(key, val, result) {
     return [ 'bounty_owner_name', result.bounty_owner_name ];
+  },
+  'permission_type': function(key, val, result) {
+    if (val == 'approval') {
+      val = 'Approval Required';
+    }
+    return [ 'permission_type', ucwords(val) ];
+  },
+  'project_type': function(key, val, result) {
+    return [ 'project_type', ucwords(result.project_type) ];
   },
   'issue_keywords': function(key, val, result) {
     if (!result.keywords || result.keywords.length == 0)
@@ -301,7 +309,14 @@ var callbacks = {
 var isBountyOwner = function(result) {
   var bountyAddress = result['bounty_owner_address'];
 
-  return (typeof web3 != 'undefined' && (web3.eth.coinbase == bountyAddress));
+  if (typeof web3 == 'undefined') {
+    return false;
+  }
+  if (typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
+    return false;
+  }
+
+  return (web3.eth.coinbase.toLowerCase() == bountyAddress.toLowerCase());
 };
 
 var update_title = function() {
@@ -338,12 +353,6 @@ var showWarningMessage = function(txid) {
 
   $('.transaction-status').show();
   $('.waiting_room_entertainment').show();
-
-  var radioButtons = $('.sidebar_search input');
-
-  for (var i = radioButtons.length - 1; i >= 0; i--) {
-    radioButtons[i].disabled = true;
-  }
 
   var secondsBetweenQuoteChanges = 30;
 
@@ -408,7 +417,7 @@ var attach_work_actions = function() {
     e.preventDefault();
     if ($(this).attr('href') == '/interested') {
       show_interest_modal.call(this);
-    } else if (confirm(gettext('Are you sure you want to remove your interest?'))) {
+    } else if (confirm(gettext('Are you sure you want to stop work?'))) {
       $(this).attr('href', '/interested');
       $(this).find('span').text('Start Work');
       remove_interest(document.result['pk']);
@@ -421,7 +430,9 @@ var show_interest_modal = function() {
   var self = this;
 
   setTimeout(function() {
-    $.get('/interest/modal?redirect=' + window.location.pathname, function(newHTML) {
+    var url = '/interest/modal?redirect=' + window.location.pathname + '&pk=' + document.result['pk'];
+
+    $.get(url, function(newHTML) {
       var modal = $(newHTML).appendTo('body').modal({
         modalClass: 'modal add-interest-modal'
       });
@@ -429,7 +440,7 @@ var show_interest_modal = function() {
       modal.on('submit', function(event) {
         event.preventDefault();
 
-        var issue_message = event.target[0].value;
+        var issue_message = event.target[0].value.trim();
         var agree_precedence = event.target[1].checked;
         var agree_not_to_abandon = event.target[2].checked;
 
@@ -500,6 +511,20 @@ var build_detail_page = function(result) {
     }
   }
 
+  $('#bounty_details #issue_description img').on('click', function() {
+
+    var content = $.parseHTML(
+      '<div><div class="row"><div class="col-12 closebtn">' +
+        '<a id="" rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
+          '<span aria-hidden="true">&times;</span>' +
+        '</a>' +
+      '</div>' +
+      '<div class="col-12 pt-2 pb-2"><img class="magnify" src="' + $(this).attr('src') + '"/></div></div></div>');
+
+    var modal = $(content).appendTo('body').modal({
+      modalClass: 'modal magnify'
+    });
+  });
 };
 
 var do_actions = function(result) {
@@ -516,7 +541,8 @@ var do_actions = function(result) {
   pull_interest_list(result['pk'], function(is_interested) {
 
     // which actions should we show?
-    var show_start_stop_work = is_still_on_happy_path;
+    var should_block_from_starting_work = !is_interested && result['project_type'] == 'traditional' && (result['status'] == 'started' || result['status'] == 'submitted');
+    var show_start_stop_work = is_still_on_happy_path && !should_block_from_starting_work;
     var show_github_link = result['github_url'].substring(0, 4) == 'http';
     var show_submit_work = true;
     var show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
@@ -525,7 +551,7 @@ var do_actions = function(result) {
     var submit_work_enabled = !isBountyOwner(result);
     var start_stop_work_enabled = !isBountyOwner(result);
     var increase_bounty_enabled = isBountyOwner(result);
-    var show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done && !is_status_expired;
+    var show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
 
     if (is_legacy) {
       show_start_stop_work = false;
@@ -604,8 +630,7 @@ var do_actions = function(result) {
         href: result['action_urls']['increase'],
         text: gettext('Add Contribution'),
         parent: 'right_actions',
-        title: gettext('Increase the funding for this issue'),
-        color: 'white'
+        title: gettext('Increase the funding for this issue')
       };
 
       actions.push(_entry);
@@ -683,7 +708,7 @@ var pull_bounty_from_api = function() {
       $('.nonefound').css('display', 'block');
     }
   }).fail(function() {
-    _alert({message: gettext('got an error. please try again, or contact support@gitcoin.co')}, 'error');
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
     $('#primary_view').css('display', 'none');
   }).always(function() {
     $('.loading').css('display', 'none');
@@ -724,7 +749,7 @@ var render_activity = function(result) {
       activities.push({
         profileId: _interested.profile.id,
         name: _interested.profile.handle,
-        text: gettext('Work Started'),
+        text: _interested.pending ? gettext('Worker Applied') : gettext('Work Started'),
         created_on: _interested.created,
         age: timeDifference(new Date(result['now']), new Date(_interested.created)),
         status: 'started',

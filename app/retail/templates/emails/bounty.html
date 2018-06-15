@@ -127,8 +127,13 @@
             {% endif %}
         </div>
     </div>
-
+    {% if action == 'custom' %}
+    <div style="margin-bottom: 1.5em;">
+        <a class="button" href="{{action_url}}">{{action_copy}}</a>
+    </div>
+    {% else %}
     <div style="margin-bottom: 1.5em;">
         <a class="button" href="{{bounty.absolute_url}}">{% trans "View on Gitcoin.co" %}</a>
     </div>
+    {% endif %}
 </div>

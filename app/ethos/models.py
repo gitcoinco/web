@@ -113,7 +113,7 @@ class Hop(SuperModel):
         """Return the next hop"""
         try:
             return Hop.objects.get(previous_hop=self)
-        except:
+        except Hop.DoesNotExist:
             return None
 
     def hop_number(self):

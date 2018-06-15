@@ -10,3 +10,4 @@ isort
 responses
 requests_mock
 django-test-plus
+yapf

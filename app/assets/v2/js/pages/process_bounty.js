@@ -8,9 +8,6 @@ window.onload = function() {
     if (getParam('source')) {
       $('input[name=issueURL]').val(getParam('source'));
     }
-    if (typeof localStorage['acceptTOS'] != 'undefined' && localStorage['acceptTOS']) {
-      $('input[name=terms]').attr('checked', 'checked');
-    }
 
     var bountyDetails = [];
 
@@ -76,14 +73,14 @@ window.onload = function() {
       e.preventDefault();
       var whatAction = $(this).html().trim();
       var issueURL = $('input[name=issueURL]').val();
-      var fulfillmentId = $('select[name=bountyFulfillment').val();
+      var fulfillmentId = $('select[name=bountyFulfillment]').val();
 
       console.log(fulfillmentId);
 
       var isError = false;
 
       if ($('#terms:checked').length == 0) {
-        _alert({ message: 'Please accept the terms of service.' }, 'warning');
+        _alert({ message: gettext('Please accept the terms of service.') }, 'warning');
         isError = true;
       } else {
         localStorage['acceptTOS'] = true;

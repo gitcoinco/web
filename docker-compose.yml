@@ -30,7 +30,7 @@ services:
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/code/app
     env_file:
-      - app/app/local.env
+      - app/app/.env
     build: .
     volumes:
       - .:/code

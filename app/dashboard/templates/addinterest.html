@@ -25,14 +25,17 @@
     <div class="col-12">
       <h5 class="text-center font-title">{% trans "Great to see that you're interested in this project!" %}</h5>
     </div>
+    {% if bounty and bounty.permission_type == 'approval' %}
+        <div class="col-12">
+          <p class="red_warning">{% trans "The funder is approving workers for this issue.  Please submit the form below, and if you are selected to work on this bouty, you will be notified via email." %}</p>
+        </div>
+    {% endif %}
     {% if user_logged_in %}
       <div class="col-12">
         <form class="font-body">
           <div>
             <label for="issue-message">
-              <span>{% trans "Please provide an action plan and any initial questions you have for this ticket." %}</span>
-              <br>
-              <span>{% trans "This will be reflected in a comment on the Github issue." %}</span>
+              <span>{% trans "Provide an action plan and any initial questions you have for this ticket." %} <span class="font-smaller-4">({% trans "Your response will be reflected in a comment on the Github issue." %})</span></span>
             </label>
             <textarea id="issue-message" class="form__input"></textarea>
           </div>
@@ -42,7 +45,13 @@
               <span class="checkbox"></span>
               <div class="filter-label">
                 <label for="checkbox2">
-                  {% trans "I understand that if anyone has started work on this ticket before me, they may have precedence." %}
+                  {% if bounty and bounty.project_type == 'contest' %}
+                    {% trans "I understand that this bounty is a *contest* and that other bounty hunters may be working in parallel with me." %}
+                  {% elif bounty and bounty.project_type == 'cooperative' %}
+                    {% trans "I understand that this bounty is a multi-worker *cooperative* bounty.  Other bounty hunters may be working in parallel with me, but the funder has indicated they will pay the bounty to multiple of us." %}
+                  {% else %}
+                    {% trans "I understand that if anyone has started work on this ticket before me, they may have precedence." %}
+                  {% endif %}
                 </label>
               </div>
             </div>

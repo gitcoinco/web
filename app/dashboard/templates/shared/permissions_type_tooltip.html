@@ -1,0 +1,34 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+<div class="tooltip-info">
+  <p class="font-subheader">{% trans "Permissions" %}</p>
+  <div class="font-body">
+    <div class="row">
+      <div class="col-1 num">1</div>
+      <div class="col-11">
+        <strong>{% trans "Permissionless" %}:</strong> {% trans "Anyone can start work" %}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-1">2</div>
+      <div class="col-11">
+        <strong>{% trans "Approval Required" %}:</strong> {% trans "Submitter will approve bounty hunters can start work." %}
+      </div>
+    </div>
+  </div>
+</div>
