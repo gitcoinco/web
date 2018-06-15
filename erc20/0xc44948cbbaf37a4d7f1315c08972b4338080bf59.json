@@ -1,0 +1,25 @@
+{
+  "symbol": "TUP",
+  "address": "0xc44948cbbaf37a4d7f1315c08972b4338080bf59",
+  "overview":{
+        "en":"Turepay - New generation of super-payment, using DAG directed acyclic graph technology to make digital currency faster to pay!",
+        "zh":"Turepay---新一代超级支付，采用DAG有向无环图技术，让数字货币更快速支付！"
+  },
+  "email": "info@turepay.com",
+  "website": "https://www.turepay.com",
+  "whitepaper": "https://www.turepay.com/cn/whitepaper-cn.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-05-24",
+  "initial_price":{
+        "ETH":"0.0000125 ETH",
+        "USD":"0.00781 USD",
+        "BTC":"0.0000017 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/turepaydotcom",
+    "telegram": "https://telegram.com/turepay",
+    "facebook": "https://www.facebook.com/turepay",
+	"github": "https://github.com/turepay",
+	"reddit": "https://www.reddit.com/user/turepay"
+  }
+}
