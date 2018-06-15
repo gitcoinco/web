@@ -3,10 +3,18 @@ ENV PYTHONUNBUFFERED 1
 RUN mkdir /code && \
     apt-get update && \
     apt-get install build-essential -y && \
-    apt-get install -y --no-install-recommends apt-utils && \
+    apt-get install -y --no-install-recommends apt-utils sudo && \
     apt-get install -y --no-install-recommends pgtop libsecp256k1-dev libsecp256k1-0 gettext graphviz libgraphviz-dev wget git dos2unix gcc libc6-dev libc-dev libssl-dev make automake libtool autoconf pkg-config libffi-dev libgdal-dev gdal-bin libgdal20 python3-gdal && \
     pip install --upgrade pip wheel setuptools && \
     pip3 install dumb-init && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install curl -y && \
+    curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - && \
+    apt-get install -y nodejs && \
+    npm install -g yuglify && \
+    npm install --save-dev babel-cli babel-preset-env && \
+    apt-get remove curl -y && \
     rm -rf /var/lib/apt/lists/*
 
 RUN git clone --recursive https://github.com/maxmind/libmaxminddb.git && \

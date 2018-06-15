@@ -59,6 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
+    'pipeline',
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'storages',
@@ -68,7 +69,6 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.sites',
     'django_extensions',
-    'pipeline',
     'easy_thumbnails',
     'app',
     'retail',
@@ -253,13 +253,16 @@ STATIC_HOST = env('STATIC_HOST', default='')
 STATIC_URL = STATIC_HOST + env('STATIC_URL', default='/static/')
 
 PIPELINE = {
-    'PIPELINE_ENABLED': True,
-    'JAVASCRIPT': {},
-    'COMPILERS': {
-        'pipeline.compilers.es6.ES6Compiler',
-    },
+    'PIPELINE_ENABLED': False,
+    'COMPILERS': ('pipeline.compilers.es6.ES6Compiler', ),
     'CSS_COMPRESSOR': 'pipeline.compressors.yuglify.YuglifyCompressor',
     'JS_COMPRESSOR': 'pipeline.compressors.yuglify.YuglifyCompressor',
+    'JAVASCRIPT': {
+        'external_bounties': {
+            'source_filenames': ('v2/js/tokens.js', 'v2/js/pages/offchain_bounties.js', 'v2/js/shared.js'),
+            'output_filename': 'v2/dist/js/external_bounties.js',
+        }
+    }
 }
 
 THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + (

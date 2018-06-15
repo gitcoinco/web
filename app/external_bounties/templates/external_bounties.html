@@ -1,5 +1,5 @@
 {% load i18n humanize %}
-{% load static %}
+{% load static pipeline %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -160,10 +160,6 @@
     {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
-
-    <script src="{% static "v2/js/tokens.js" %}"></script>
-    <script src="{% static "v2/js/pages/offchain_bounties.js" %}"></script>
-    <script src="{% static "v2/js/shared.js" %}"></script>
-
+    {% javascript 'external_bounties' %}
   </body>
 </html>
