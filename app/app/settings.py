@@ -68,6 +68,7 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.sites',
     'django_extensions',
+    'compressor',
     'easy_thumbnails',
     'app',
     'retail',
@@ -239,6 +240,11 @@ THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.static_storage.SilentFileStorage')
 STATICFILES_DIRS = env.tuple('STATICFILES_DIRS', default=('assets/', ))
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
 STATIC_ROOT = root('static')
 
 STATIC_HOST = env('STATIC_HOST', default='')
