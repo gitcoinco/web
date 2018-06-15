@@ -35,7 +35,6 @@ from faucet.models import FaucetRequest
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from marketing.mails import new_faucet_request, processed_faucet_request, reject_faucet_request
 
-
 @require_GET
 def faucet(request):
     params = {
@@ -126,7 +125,7 @@ def process_faucet_request(request, pk):
     if request.POST.get('destinationAccount'):
         faucet_request.fulfilled = True
         faucet_request.fulfill_date = timezone.now()
-        faucet_request.amount = faucet_amount
+        faucet_request.amount = faucet_amount + recommend_min_gas_price_to_confirm_in_time(5)
         faucet_request.save()
         processed_faucet_request(faucet_request)
         messages.success(request, 'sent')
