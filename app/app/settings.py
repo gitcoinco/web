@@ -259,6 +259,20 @@ PIPELINE = {
     'CSS_COMPRESSOR': 'pipeline.compressors.yuglify.YuglifyCompressor',
     'JS_COMPRESSOR': 'pipeline.compressors.uglifyjs.UglifyJSCompressor',
     'STYLESHEETS': {
+        'ens': {
+            'source_filenames': (
+                'v2/css/bootstrap.min.css',
+                'v2/css/gitcoin.css',
+                'yge/css/main.css',
+                'v2/css/box_redeem.css',
+                'v2/css/rain.css',
+                'v2/css/forms/button.css',
+                'v2/css/external_bounties/checkboxes.css',
+                'v2/css/jquery.select2.min.css',
+                'cookielaw/css/cookielaw.css',
+            ),
+            'output_filename': 'v2/css/ens.min.css',
+        },
         'head': {
             'source_filenames': (
                 'v2/css/fontawesome-all.min.css',
@@ -315,11 +329,8 @@ PIPELINE = {
         },
         'ethos': {
             'source_filenames': (
-                # 'yge/ethereumjs/ethereumjs-accounts.js',
                 'yge/ethereumjs/web3.js',
                 'yge/ethereumjs/hooked-web3-provider.js',
-                # 'yge/ethereumjs/tx.js',
-                # 'yge/youvegoteth/index.js',
                 'yge/youvegoteth/tokens.js',
                 'yge/youvegoteth/pre.js',
                 'yge/redeem_ethos.js',
