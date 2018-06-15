@@ -537,6 +537,19 @@ input[type=text].loading {
   border-bottom: solid 1px darkgray;
 }
 
+div#repo_repos {
+  justify-content: space-around;
+  display: flex;
+  flex-wrap: wrap;
+
+  & a {
+    margin: 1rem;
+    &:hover {
+      border: 1px solid #XXX;
+    }
+  }
+}
+
 .submit_bounty .select2-results__option,
 .fulfill_bounty .select2-results__option {
   padding-left: 0.625rem;

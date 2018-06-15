@@ -44,7 +44,7 @@
           <div class="col-6 col-md-4 text-center py-4">
             <img class="icon" src="{% static "v2/images/results/completed_bounties.svg" %}" />
             <h3 class="text-highlight-purple mt-3">{{ bounty_claimed_completion_rate }}</h3>
-            <p>{% trans "Claimed Bounty Completion Rate" %}</p>
+            <p>{% trans "Started Bounty Completion Rate" %}</p>
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
@@ -56,7 +56,7 @@
           <div class="col-6 col-md-4 text-center py-4">
             <img class="icon" src="{% static "v2/images/results/calendar_icon.svg" %}" />
             <h3 class="text-highlight-green mt-3">{{ bounty_average_turnaround }}</h3>
-            <p>{% trans "Average Bounty Turnaround Time" %}</p>
+            <p>{% trans "Median Bounty Turnaround Time" %}</p>
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
@@ -80,7 +80,7 @@
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
             <h2 class="text-center">
               ${{ universe_total_usd|intcomma }} of {% blocktrans %}
-               Bounty History
+               Cumulative Bounty History
               {% endblocktrans %}
             </h2>
           </div>
@@ -192,8 +192,7 @@
 
         <div class="row mt-5 pb-5 animatedParent text-center">
           <div class="col animated pulse fast">
-            <img src="{% static 'v2/images/results/price_per_hour.png' %}" >
-            <p style="font-size: 10px;">(Updated 6/5/2018)</p>
+            <iframe src="{% url 'viz_sscatterplot' %}" style="width: 100%; height: 600px; overflow-x: hidden; overflow-y: hidden;" frameBorder="0"></iframe>
           </div>
         </div>
 
