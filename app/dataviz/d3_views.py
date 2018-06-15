@@ -33,6 +33,7 @@ from marketing.models import Stat
 from .models import DataPayload
 
 
+@staff_member_required
 def data_viz_helper_get_data_responses(request, visual_type):
     """Handle visualization of the request response data based on type.
 
@@ -631,6 +632,7 @@ def viz_graph(request, _type, template='graph'):
     return response
 
 
+@staff_member_required
 def viz_draggable(request, key='email_open'):
     """Render a draggable graph visualization.
 
@@ -690,6 +692,7 @@ def viz_draggable(request, key='email_open'):
     return TemplateResponse(request, 'dataviz/draggable.html', params)
 
 
+@staff_member_required
 def viz_scatterplot(request, key='hourly_rate'):
     """Render a scatterplot visualization.
 
