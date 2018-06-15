@@ -114,7 +114,7 @@ def get_completion_rate():
     from dashboard.models import Bounty
     base_bounties = Bounty.objects.current().filter(network='mainnet').filter(idx_status__in=['done', 'expired', 'cancelled'])
     eligible_bounties = base_bounties.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=60)))
-
+    eligible_bounties = eligible_bounties.exclude(interested__isnull=True)
     completed_bounties = eligible_bounties.filter(idx_status__in=['done']).count()
     not_completed_bounties = eligible_bounties.filter(idx_status__in=['expired', 'cancelled']).count()
     total_bounties = completed_bounties + not_completed_bounties
@@ -196,6 +196,6 @@ def build_stat_results():
     context['bounty_average_turnaround'] = str(round(get_bounty_median_turnaround_time('turnaround_time_submitted')/24, 1)) + " days"
     context['hourly_rate_distribution'] = '$15 - $120'
     context['bounty_claimed_completion_rate'] = f'{completion_rate}%'
-    context['bounty_median_pickup_time'] = round(get_bounty_median_turnaround_time('turnaround_time_started'), 2)
+    context['bounty_median_pickup_time'] = round(get_bounty_median_turnaround_time('turnaround_time_started'), 1)
 
     return context
