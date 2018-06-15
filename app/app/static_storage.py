@@ -4,7 +4,7 @@ from pipeline.storage import PipelineMixin
 from whitenoise.storage import CompressedManifestStaticFilesStorage
 
 
-class SilentFileStorage(CompressedManifestStaticFilesStorage, PipelineMixin):
+class SilentFileStorage(PipelineMixin, CompressedManifestStaticFilesStorage):
     """Define the static storage using whitenoise with hashing.
 
     If Django cannot find a referenced url in an asset, it will silently pass.

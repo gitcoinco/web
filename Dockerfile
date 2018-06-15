@@ -12,7 +12,7 @@ RUN mkdir /code && \
 RUN apt-get update && apt-get install curl -y && \
     curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash - && \
     apt-get install -y nodejs && \
-    npm install -g yuglify && \
+    npm install -g yuglify uglify-js && \
     npm install --save-dev babel-cli babel-preset-env && \
     apt-get remove curl -y && \
     rm -rf /var/lib/apt/lists/*

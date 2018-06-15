@@ -240,7 +240,6 @@ THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.static_storage.SilentFileStorage')
-# STATICFILES_STORAGE = 'pipeline.storage.PipelineCachedStorage'
 
 STATICFILES_DIRS = env.tuple('STATICFILES_DIRS', default=('assets/', ))
 STATICFILES_FINDERS = (
