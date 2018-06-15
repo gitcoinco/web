@@ -104,7 +104,7 @@ def process_faucet_request(request, pk):
         raise Http404
 
     """Converting gwei to eth by dividing the gwei amount by 1000000000"""
-    faucet_amount = settings.FAUCET_AMOUNT + (recommend_min_gas_price_to_confirm_in_time(5) / 1000000000)
+    faucet_amount = settings.FAUCET_AMOUNT * recommend_min_gas_price_to_confirm_in_time(5)
 
     if faucet_request.fulfilled:
         messages.info(request, 'already fulfilled')
