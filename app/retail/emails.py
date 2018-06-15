@@ -489,7 +489,7 @@ Back to building,
         {
             'who': 'travisdmathis',
             'who_link': True,
-            'what': 'The largest Gitcoin bounty ever completed! Integrated Balance and Dharma.',
+            'what': 'The largest Gitcoin bounty ever completed! Integrated Balance and Dharma in a big way.',
             'link': 'https://gitcoin.co/issue/balance-io/balance-manager/195/553',
             'link_copy': 'See more',
         },
