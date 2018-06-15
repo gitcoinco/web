@@ -19,6 +19,7 @@
 import cgi
 import json
 import re
+import statistics
 
 from django.conf import settings
 from django.utils import timezone
@@ -109,6 +110,32 @@ def get_history(base_stats, copy):
     return history, ticks
 
 
+def get_completion_rate():
+    from dashboard.models import Bounty
+    base_bounties = Bounty.objects.current().filter(network='mainnet').filter(idx_status__in=['done', 'expired', 'cancelled'])
+    eligible_bounties = base_bounties.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=60)))
+
+    completed_bounties = eligible_bounties.filter(idx_status__in=['done']).count()
+    not_completed_bounties = eligible_bounties.filter(idx_status__in=['expired', 'cancelled']).count()
+    total_bounties = completed_bounties + not_completed_bounties
+
+    return round((completed_bounties * 1.0 / total_bounties), 3) * 100
+
+
+def get_bounty_median_turnaround_time(func='turnaround_time_started'):
+    from dashboard.models import Bounty
+    base_bounties = Bounty.objects.current().filter(network='mainnet')
+    eligible_bounties = base_bounties.exclude(idx_status='open').filter(created_on__gt=(timezone.now() - timezone.timedelta(days=60)))
+    pickup_time_hours = []
+    for bounty in eligible_bounties:
+        tat = getattr(bounty, func)
+        if tat:
+            pickup_time_hours.append(tat / 60 / 60)
+
+    pickup_time_hours.sort()
+    return statistics.median(pickup_time_hours)
+
+
 def build_stat_results():
     from dashboard.models import Bounty
 
@@ -140,7 +167,6 @@ def build_stat_results():
         ).order_by('-pk')
     context['jdi_history'], jdi_ticks = get_history(base_stats, 'Percentage')
 
-
     # bounties hisotry
     context['bounty_history'] = [
         ['', 'Tips',  'Open / Available',  'Started / In Progress',  'Completed', 'Cancelled' ],
@@ -162,13 +188,14 @@ def build_stat_results():
     context['bounty_history'] = json.dumps(context['bounty_history'])
 
     # Bounties
-    # TODO: make this info dynamic
+    completion_rate = get_completion_rate()
+    bounty_abandonment_rate = round(100 - completion_rate, 1)
     context['universe_total_usd'] = sum(base_bounties.filter(network='mainnet').values_list('_val_usd_db', flat=True))
     context['max_bounty_history'] = float(context['universe_total_usd']) * .7
-    context['bounty_abandonment_rate'] = '9.5%'
-    context['bounty_average_turnaround'] = '2.1 Weeks'
+    context['bounty_abandonment_rate'] = f'{bounty_abandonment_rate}%'
+    context['bounty_average_turnaround'] = str(round(get_bounty_median_turnaround_time('turnaround_time_submitted')/24, 1)) + " days"
     context['hourly_rate_distribution'] = '$15 - $120'
-    context['bounty_claimed_completion_rate'] = '82%'
-    context['bounty_median_pickup_time'] = '2.25'
+    context['bounty_claimed_completion_rate'] = f'{completion_rate}%'
+    context['bounty_median_pickup_time'] = round(get_bounty_median_turnaround_time('turnaround_time_started'), 2)
 
     return context
