@@ -251,6 +251,14 @@ STATIC_ROOT = root('static')
 STATIC_HOST = env('STATIC_HOST', default='')
 STATIC_URL = STATIC_HOST + env('STATIC_URL', default='/static/')
 
+PIPELINE = {
+    'PIPELINE_ENABLED': True,
+    'JAVASCRIPT': {},
+    'COMPILERS': {
+        'pipeline.compilers.es6.ES6Compiler',
+    }
+}
+
 THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + (
     'ethos.thumbnail_processors.circular_processor',
 )
