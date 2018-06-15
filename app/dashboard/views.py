@@ -729,6 +729,24 @@ def helper_handle_suspend_auto_approval(request, bounty):
             messages.warning(request, _('Only the funder of this bounty may do this.'))
 
 
+def helper_handle_override_status(request, bounty):
+    admin_override_satatus = request.GET.get('admin_override_satatus', False)
+    if admin_override_satatus != False:
+        is_staff = request.user.is_staff
+        if is_staff:
+            valid_statuses = [ele[0] for ele in Bounty.STATUS_CHOICES]
+            valid_statuses = valid_statuses + [""]
+            valid_statuses_str = ",".join(valid_statuses)
+            if admin_override_satatus not in valid_statuses:
+                messages.warning(request, str(_('Not a valid status choice.  Please choose a valid status (no quotes): ')) + valid_statuses_str)
+            else:
+                bounty.override_status = admin_override_satatus
+                bounty.save()
+                messages.success(request, _(f'Status updated to "{admin_override_satatus}" '))
+        else:
+            messages.warning(request, _('Only the funder of this bounty may do this.'))
+
+
 def helper_handle_snooze(request, bounty):
     snooze_days = int(request.GET.get('snooze', 0))
     if snooze_days:
@@ -854,7 +872,8 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 helper_handle_suspend_auto_approval(request, bounty)
                 helper_handle_mark_as_remarket_ready(request, bounty)
                 helper_handle_admin_contact_funder(request, bounty)
-
+                helper_handle_override_status(request, bounty)
+                
         except Bounty.DoesNotExist:
             pass
         except Exception as e:
