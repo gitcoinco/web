@@ -159,6 +159,8 @@
   max-height: 3.125rem;
   margin-right: auto;
   margin-left: auto;
+  border: 1px solid #e1e1e1;
+  border-radius: 100%;
 }
 
 .profile-bounties .bounty_row {

@@ -420,6 +420,8 @@ p a {
 .dashboard .body .avatar {
   max-height: 50px;
   max-width: 50px;
+  border: 1px solid #e1e1e1;
+  border-radius: 100%;
 }
 
 .body .nonefound {
