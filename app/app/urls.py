@@ -80,6 +80,9 @@ urlpatterns = [
     path('issue/increase', dashboard.views.increase_bounty, name='increase_bounty'),
     path('issue/cancel', dashboard.views.cancel_bounty, name='kill_bounty'),
 
+    # Avatars
+    path('avatar/', include('avatar.urls', namespace='avatar')),
+
     # Interests
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
     path('actions/bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
@@ -147,7 +150,6 @@ urlpatterns = [
     re_path(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
     re_path(r'^funding/avatar/?', dashboard.embed.avatar, name='avatar'),
     re_path(r'^static/avatar/(.*)/(.*)?', dashboard.embed.avatar, name='org_avatar'),
-    re_path(r'^set_avatar', dashboard.embed.set_avatar, name='set_avatar'),
     re_path(r'^static/viz/graph/(.*)?$', dataviz.d3_views.viz_graph, name='viz_graph'),
 
     # sync methods

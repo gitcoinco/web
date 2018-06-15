@@ -1,19 +1,15 @@
-import os
-
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
-from django.views.decorators.csrf import csrf_exempt
 
 import requests
-from dashboard.models import Bounty, Profile
+from dashboard.models import Bounty
 from economy.utils import convert_token_to_usdt
 from github.utils import get_user, org_name
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 from ratelimit.decorators import ratelimit
-from svgutils.compose import SVG, Figure, Line
-from svgutils.transform import fromstring
 
 AVATAR_BASE = 'assets/other/avatars/'
+
 
 def wrap_text(text, w=30):
     new_text = ""
@@ -372,38 +368,8 @@ def get_err_response(request, blank_img=False):
 def avatar(request, _org_name=None, add_gitcoincologo=None):
     # config
     icon_size = (215, 215)
-    avatar_component_size = (899.2, 1415.7)
     print(_org_name, add_gitcoincologo)
     # default response
-    # Gitcoin avatar
-    COMPONENT_BASE = 'assets/v2/images/avatar/'
-    def avcomponent(path):
-        scaleFactor = icon_size[1] / avatar_component_size[1]
-        newWidth = avatar_component_size[0] * scaleFactor
-        icon_center = icon_size[0] / 2
-        avatar_center = newWidth / 2
-        x_to_center = icon_center - avatar_center
-        return SVG(COMPONENT_BASE + path).scale(scaleFactor).move(x_to_center, 0)
-
-    final_avatar = Figure(icon_size[0], icon_size[1],
-        # Background
-        Line([(0, icon_size[1] / 2), (icon_size[0], icon_size[1] / 2)], width='%spx'%(icon_size[1]), color="#785623"),
-        # Other layers
-        avcomponent('Clothing/cardigan-43B9F9.svg'),
-        avcomponent('Ears/0-3F2918.svg'),
-        avcomponent('Head/0-3F2918.svg'),
-        avcomponent('Eyes/0.svg'),
-        avcomponent('Mouth/0.svg'),
-        avcomponent('Nose/0.svg'),
-    )
-    resultPath = COMPONENT_BASE + 'test.svg'
-    final_avatar.save(resultPath)
-    file = open(resultPath)
-    response = HttpResponse(file, content_type='image/svg+xml')
-    file.close()
-    os.remove(resultPath)
-    return response
-
     # params
     repo_url = request.GET.get('repo', False)
     if not _org_name and (not repo_url or 'github.com' not in repo_url):
@@ -436,9 +402,3 @@ def avatar(request, _org_name=None, add_gitcoincologo=None):
     except (AttributeError, IOError, SyntaxError) as e:
         print(e)
         return get_err_response(request, blank_img=(_org_name == 'Self'))
-
-
-@csrf_exempt
-def set_avatar(request):
-    print(request, request.user)
-    return HttpResponse('hello there! %s' % (request.user))

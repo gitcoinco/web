@@ -182,9 +182,12 @@ function setOption(option, value, target) {
 }
 
 function saveAvatar() {
-  fetch('/set_avatar', {
-    method: 'POST',
-    body: JSON.stringify(options)
+  var request = $.ajax({
+    url: '/avatar/save',
+    type: 'POST',
+    data: JSON.stringify(options),
+    dataType: 'json',
+    contentType: 'application/json; charset=utf-8'
   });
 }
 

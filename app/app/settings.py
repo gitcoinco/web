@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'easy_thumbnails',
     'app',
+    'avatar',
     'retail',
     'rest_framework',
     'bootstrap3',
