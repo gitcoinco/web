@@ -31,7 +31,7 @@ from retail.emails import (
     render_gdpr_reconsent, render_gdpr_update, render_match_email, render_new_bounty, render_new_bounty_acceptance,
     render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission, render_quarterly_stats,
     render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
-    render_start_work_new_applicant, render_start_work_rejected, render_tip_email,
+    render_start_work_new_applicant, render_start_work_rejected, render_tip_email, render_suggested_bounties
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
@@ -264,6 +264,28 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
         finally:
             translation.activate(cur_language)
 
+
+def suggested_bounties(bounties, to_email=None):
+    if not bounties:
+        return
+    max_bounties = 3
+    if len(bounties) > max_bounties:
+        bounties = bounties[0:max_bounties]
+
+    if to_email is None:
+        to_email = []
+        cur_language = translation.get_language()
+        try:
+            setup_lang(to_email)
+            from_email = settings.CONTACT_EMAIL
+            html, text = render_suggested_bounties(to_email, bounties)
+            subject = _(f"Welcome to the Gitcoin family! We've curated 3 bounties for you to start with.")
+
+            if not should_suppress_notification_email(to_email, 'suggested_bounties_notifications'):
+                send_mail(from_email, to_email, subject, text, html)
+
+        finally:
+            translation.activate(cur_language)
 
 def weekly_roundup(to_emails=None):
     if to_emails is None:

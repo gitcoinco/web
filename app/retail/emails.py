@@ -213,6 +213,18 @@ def render_admin_contact_funder(bounty, text, from_user):
     return response_html, response_txt
 
 
+def render_suggested_bounties(to_email, bounties):
+    sub = get_or_save_email_subscriber(to_email, 'internal')
+    params = {
+        'bounties': bounties,
+        'keywords': ",".join(sub.keywords),
+    }
+
+    response_html = premailer_transform(render_to_string("emails/suggested_bounties.html", params))
+    response_txt = render_to_string("emails/suggested_bounties.txt", params)
+
+    return response_html, response_txt
+
 
 def render_new_bounty(to_email, bounties, old_bounties):
     sub = get_or_save_email_subscriber(to_email, 'internal')
@@ -614,6 +626,15 @@ def resend_new_tip(request):
         return redirect('/_administration')
 
     return TemplateResponse(request, 'resend_tip.html', params)
+
+
+# @staff_member_required
+def suggested_bounties(request):
+    from dashboard.models import Bounty
+    # TODO : Update to fetch based on users keyword
+    bounties = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3]
+    response_html, _ = render_suggested_bounties(settings.CONTACT_EMAIL, bounties)
+    return HttpResponse(response_html)
 
 
 @staff_member_required

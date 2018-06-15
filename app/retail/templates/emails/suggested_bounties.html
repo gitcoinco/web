@@ -1,0 +1,34 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+  Copyright (C) 2017 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n humanize %}
+
+{% block content %}
+
+<h1>{% trans "We've found 3 issues that match your skills and interest!" %}</h1>
+
+{% for bounty in bounties %}
+  <br>{% include 'emails/bounty.html' with bounty=bounty %}
+{% endfor %}
+
+<div style="text-align: left;">
+  <p>{% trans "Welcome to the Gitcoin family & Good Luck!" %} </p>
+  <p style="font-weight: bold;">- Gitcoin team</p>
+</div>
+
+{% endblock %}
