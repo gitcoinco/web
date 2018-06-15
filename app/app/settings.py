@@ -303,6 +303,31 @@ PIPELINE = {
             'source_filenames': ('v2/js/tokens.js', 'v2/js/pages/offchain_bounties.js'),
             'output_filename': 'v2/js/externalbounties.min.js',
         },
+        'faucet': {
+            'source_filenames': (
+                'v2/js/amounts.js',
+                'v2/js/abi.js',
+                'v2/js/tokens.js',
+                'v2/js/pages/faucet_form.js',
+                'v2/js/pages/process_faucet.js',
+            ),
+            'output_filename': 'v2/js/faucet.min.js',
+        },
+        'ethos': {
+            'source_filenames': (
+                # 'yge/ethereumjs/ethereumjs-accounts.js',
+                'yge/ethereumjs/web3.js',
+                'yge/ethereumjs/hooked-web3-provider.js',
+                # 'yge/ethereumjs/tx.js',
+                # 'yge/youvegoteth/index.js',
+                'yge/youvegoteth/tokens.js',
+                'yge/youvegoteth/pre.js',
+                'yge/redeem_ethos.js',
+                'yge/youvegoteth/confetti.js',
+                'yge/youvegoteth/web3alert.js',
+            ),
+            'output_filename': 'v2/js/ethos.min.js',
+        },
         'footer_full': {
             'source_filenames': (
                 'v2/js/jquery.js',

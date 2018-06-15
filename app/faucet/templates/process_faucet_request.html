@@ -17,7 +17,7 @@
 
 {% endcomment %}
 
-{% load i18n admin_static static %}
+{% load i18n admin_static static pipeline %}
 
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
 
@@ -81,5 +81,5 @@
   </script>
   <script src="{% static "v2/js/jquery.js" %}"></script>
   <script src="{% static "v2/js/shared.js" %}"></script>
-  <script src="{% static "v2/js/pages/process_faucet.js" %}"></script>
+  {% javascript 'faucet' %}
 {% endblock %}
