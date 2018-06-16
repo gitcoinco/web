@@ -217,6 +217,7 @@ def build_stat_results():
 
     # Bounties
     completion_rate = get_completion_rate()
+    pp.profile_time('completion_rate')
     bounty_abandonment_rate = round(100 - completion_rate, 1)
     context['universe_total_usd'] = sum(base_bounties.filter(network='mainnet').values_list('_val_usd_db', flat=True))
     pp.profile_time('universe_total_usd')
