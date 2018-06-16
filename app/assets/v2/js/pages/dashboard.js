@@ -79,12 +79,11 @@ var save_search = function() {
   max = parseInt(Math.max.apply(Math, searches));
   next = max + 1;
   searches = searches + ',' + next;
-  console.log('save', next);
   localStorage['searches'] = searches;
   // save each key
-  for (var i = 0; i < local_storage_keys.length; i++) {
+  for (let i = 0; i < local_storage_keys.length; i++) {
     var key = local_storage_keys[i];
-    var new_key = '_' + key + '_' + next;
+    let new_key = '_' + key + '_' + next;
 
     localStorage[new_key] = localStorage[key];
   }
@@ -93,13 +92,13 @@ var save_search = function() {
   var names = [];
   var eles = $('.filter-tag');
 
-  for (var i = 0; i < eles.length; i++) {
+  for (let i = 0; i < eles.length; i++) {
     var ele = eles[i];
 
     names.push(ele.text.toLowerCase());
   }
   names = names.join(',');
-  var new_key = '_name_' + next;
+  let new_key = '_name_' + next;
 
   localStorage[new_key] = names;
 
@@ -120,6 +119,10 @@ var paint_search_tabs = function() {
   var target = $('#search_nav');
 
   searches = localStorage['searches'].split(',');
+
+  if (searches.length <= 1)
+    return target.html('');
+
   var html = "<ul class='nav'><i class='fas fa-history'></i>";
 
   for (var i = 0; i < searches.length; i++) {
@@ -132,7 +135,6 @@ var paint_search_tabs = function() {
   }
   html += '</ul>';
   target.html(html);
-
 };
 
 
@@ -157,7 +159,7 @@ var load_search = function(n) {
 
 // removes this search
 var remove_search = function(n) {
-  var is_last_element = ('0' + ',' + n) == localStorage['searches'];
+  var is_last_element = ('0,' + n) == localStorage['searches'];
 
   if (is_last_element) {
     localStorage['searches'] = '0';
