@@ -85,6 +85,7 @@ class BountyQuerySet(models.QuerySet):
 
 class Bounty(SuperModel):
     """Define the structure of a Bounty.
+
     Attributes:
         BOUNTY_TYPES (list of tuples): The valid bounty types.
         EXPERIENCE_LEVELS (list of tuples): The valid experience levels.

@@ -52,7 +52,8 @@
     }
 
     .funder-dashboard__header {
-      background-color: #3e00ff;}
+      background-color: #3e00ff;
+    }
 
     .funder-dashboard__header__hero {
       letter-spacing: 0.100rem;
@@ -114,6 +115,10 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+
+    .funder-dashboard__outgoing-funds__funds__fund--template  {
+      display: none;
     }
 
     .funder-dashboard__all-bounties__bounties__bounty__title {
@@ -477,23 +482,23 @@
                     <select class="funder-dashboard__outgoing-funds__filter
                                    funder-dashboard__outgoing-funds__filter--type-or-status
                                    custom-select d-inline-block w-auto">
-                      <option selected>{% trans "All" %}</option>
-                      <option>{% trans "Tip" %}</option>
-                      <option>{% trans "Payment" %}</option>
-                      <option>{% trans "Pending" %}</option>
-                      <option>{% trans "Claimed" %}</option>
+                      <option value="All" selected>{% trans "All" %}</option>
+                      <option value="Tip">{% trans "Tip" %}</option>
+                      <option value="Payment">{% trans "Payment" %}</option>
+                      <option value="Pending">{% trans "Pending" %}</option>
+                      <option value="Claimed">{% trans "Claimed" %}</option>
                     </select>
                     <select class="funder-dashboard__outgoing-funds__filter
                                    funder-dashboard__outgoing-funds__filter--age-or-value
                                    custom-select d-inline-block w-auto">
-                      <option selected>{% trans "Recent" %}</option>
-                      <option>{% trans "Oldest" %}</option>
-                      <option>{% trans "Highest Value" %}</option>
-                      <option>{% trans "Lowest Value" %}</option>
+                      <option value="Recent" selected>{% trans "Recent" %}</option>
+                      <option value="Oldest">{% trans "Oldest" %}</option>
+                      <option value="Highest Value">{% trans "Highest Value" %}</option>
+                      <option value="Lowest Value">{% trans "Lowest Value" %}</option>
                     </select>
                   </div>
                 </div>
-                <table class="funder-dashboard__outgoing-funds__funds table w-100" style="table-layout: fixed;">
+                <table class="funder-dashboard__outgoing-funds__funds-wrapper table w-100" style="table-layout: fixed;">
                   <thead>
                   <tr class="text-secondary">
                     <th scope="col" style="width: 10%;">
@@ -516,95 +521,30 @@
                     </th>
                   </tr>
                   </thead>
-                  <tbody>
+                  <tbody class="funder-dashboard__outgoing-funds__funds">
                   <tr class="funder-dashboard__outgoing-funds__funds__fund
-                             funder-dashboard__outgoing-funds__funds__template
-                             funder-dashboard__outgoing-funds__funds__fund--pending">
-                    <td class="funder-dashbard__outgoing-funds__funds__fund__id">
-                      982
+                             funder-dashboard__outgoing-funds__funds__fund--template">
+                    <td class="funder-dashboard__outgoing-funds__funds__fund__id">
                     </td>
                     <td class="funder-dashboard__outgoing-funds__funds__fund__title">
-                      Feature Idea: Send ETH to Daycare
                     </td>
                     <td class="funder-dashboard__outgoing-funds__funds__fund__type">
-                      Tip
                     </td>
                     <td class="funder-dashboard__outgoing-funds__funds__fund__status">
-                      Pending
-                    </td>
-                    <td class="funder-dashboard__outgoing-funds__fund__view-etherscan text-secondary">
-                      <i class="fas mr-1 fa-eye"></i>
-                      View Etherscan
-                    </td>
-                    <td class="funder-dashboard__outgoing-funds__fund__worth">
-                      <span class="funder-dashboard__outgoing-funds__fund__worth__eth mr-2 text-fd-blue--dark">
-                        0.5 ETH
-                      </span>
-                      <span class="funder-dashboard__outgoing-funds__fund__worth__dollars text-fd-green">
-                        41.47 USD
-                      </span>
-                    </td>
-                  </tr>
-                  <tr class="funder-dashboard__outgoing-funds__funds__fund
-                             funder-dashboard__outgoing-funds__funds__fund--pending">
-                    <td>
-                      1204
-                    </td>
-                    <td class="funder-dashboard__outgoing-funds__funds__fund__title">
-                      Build Python Django Library
-                    </td>
-                    <td>
-                      Payment
-                    </td>
-                    <td class="funder-dashboard__outgoing-funds__funds__fund__status">
-                      Pending
-                    </td>
-                    <td class="text-secondary"><i class="fas mr-1 fa-eye"></i>
-                      View Etherscan
-                    </td>
-                    <td>
-                      <span class="mr-2 text-fd-blue--dark">0.5 ETH</span>
-                      <span class="text-fd-green">41.47 USD</span>
-                    </td>
-                  </tr>
-                  <tr class="funder-dashboard__outgoing-funds__funds__fund">
-                    <td>983</td>
-                    <td class="funder-dashboard__outgoing-funds__funds__fund__title">
-                      Document Content for Python Content
-                    </td>
-                    <td>
-                      Payment
-                    </td>
-                    <td class="funder-dashboard__outgoing-funds__funds__fund__status">
-                      Completed
                     </td>
                     <td class="text-secondary">
                       <i class="fas mr-1 fa-eye"></i>
-                      View Etherscan
+                      <span class="funder-dashboard__outgoing-funds__funds__fund__view-etherscan">
+                        View Etherscan
+                      </span>
                     </td>
-                    <td>
-                      <span class="mr-2 text-fd-blue--dark">0.5 ETH</span>
-                      <span class="text-fd-green">41.47 USD</span>
-                    </td>
-                  </tr>
-                  <tr class="funder-dashboard__outgoing-funds__funds__fund">
-                    <td>
-                      1011
-                    </td>
-                    <td class="funder-dashboard__outgoing-funds__funds__fund__title">
-                      Feature Idea: Send ETH to Daycare
-                    </td>
-                    <td>
-                      Tip
-                    </td>
-                    <td class="funder-dashboard__outgoing-funds__funds__fund__status">
-                      Completed
-                    </td>
-                    <td class="text-secondary"><i class="fas mr-1 fa-eye"></i>
-                      View Etherscan
-                    </td>
-                    <td><span class="mr-2 text-fd-blue--dark">0.5 ETH</span>
-                      <span class="text-fd-green">41.47 USD</span>
+                    <td class="funder-dashboard__outgoing-funds__fund__worth">
+                      <span class="mr-2 text-fd-blue--dark">
+                        <span class="funder-dashboard__outgoing-funds__funds__fund__worth__eth"></span> USD
+                      </span>
+                      <span class=" text-fd-green">
+                        <span class="funder-dashboard__outgoing-funds__funds__fund__worth__dollars"></span> ETH
+                      </span>
                     </td>
                   </tr>
                   </tbody>
@@ -851,46 +791,56 @@
 
         function activateTotalBudget() {
           var $totalBudget = $('.funder-dashboard__stats__stat--total-budget').find('.funder-dashboard__stats__stat__footer');
-          console.log($totalBudget);
         };
 
         function activateOutgoingFunds() {
           var $container = $('.funder-dashboard__outgoing-funds__funds');
-          var $template = $('.funder-dashboard__outgoing-funds__funds__template');
-          var funds = getFunds();
+          var $fundTemplate = $('.funder-dashboard__outgoing-funds__funds__fund--template');
+         
+          var fundBaseSel = 'funder-dashboard__outgoing-funds__funds__fund';
+          var cbRenderFunds = renderOutgoingFunds.bind(this, $container, $fundTemplate, fundBaseSel);
 
-          renderFundsFromTemplate(funds, $container, $template);
+          getOutgoingFunds(cbRenderFunds);
+          $('.funder-dashboard__outgoing-funds__filter').change(function() {
+            clearFunds();
+            getOutgoingFunds(cbRenderFunds);
+          });
 
-          function renderFundsFromTemplate(funds, $container, $template) {
-            var selectorBase = '.funder-dashboard__outgoing-funds__funds__fund';
-            var $clone = $template.clone();
+          function clearFunds() {
+            $container.find(classSel(fundBaseSel + ':not(' + classSel(fundBaseSel) + '--template)')).remove();
+          }
 
-            for (var i = 0; i < funds.length(); ++i) {
+          function renderOutgoingFunds($container, $fundTemplate, fundBaseSel, funds) {
+            for (var i = 0; i < funds.length; ++i) {
+              var $clone = $fundTemplate.clone();
               var fund = funds[i];
-              update($clone.find(selectorBase + '__id'), fund.id);
-              update($clone.find(selectorBase + '__title'), fund.title);
-              update($clone.find(selectorBase + '__type'), fund.type);
-              update($clone.find(selectorBase + '__status'), fund.status);
-              update($clone.find(selectorBase + '__view-etherscan'), fund.etherscanLink);
-              update($clone.find(selectorBase + '__worth-dollars'), fund.worthDollars);
-              update($clone.find(selectorBase + '__worth-eth'), fund.worthEth);
+
+              updateBemElementInParent($clone, fundBaseSel, 'id', fund.id);
+              updateBemElementInParent($clone, fundBaseSel, 'title', fund.title);
+              updateBemElementInParent($clone, fundBaseSel, 'type', fund.type);
+              updateBemElementInParent($clone, fundBaseSel, 'status', fund.status);
+              updateBemElementInParent($clone, fundBaseSel, 'view-etherscan', fund.etherscanLink);
+              updateBemElementInParent($clone, fundBaseSel, 'worth__dollars', fund.worthDollars);
+              updateBemElementInParent($clone, fundBaseSel, 'worth__eth', fund.worthEth);
 
               if (fund.status === 'Pending') {
-                $clone.addClass(selectorBase + '--pending')
+                $clone.addClass(fundBaseSel + '--pending')
               }
 
+              $clone.removeClass(fundBaseSel + '--template');
               $container.append($clone);
             }
           }
 
-          function update($el, htmlContent) {
-            $el.html(htmlContent);
-          }
-
           // call the API
-          function getFunds() {
+          function getOutgoingFunds(cbRenderFunds) {
             var funds = [];
 
+            var filterBaseSel = 'funder-dashboard__outgoing-funds__filter';
+
+            // below should be an endpoint call, these 2 should be query params 
+            var typeOrStatus = getTypeOrStatusFilterValue(filterBaseSel);
+            var ageOrValue = getAgeOrValueFilterValue(filterBaseSel);
             for (var i = 0; i < 5; ++i) {
               funds.push(new Fund(
                 123 + i,
@@ -900,10 +850,18 @@
                 "#",
                 41.47,
                 0.5
-              ))
+              ));
             }
 
-            return funds;
+            function getTypeOrStatusFilterValue(filterBaseSel) {
+              return $(classSel(filterBaseSel) + '--type-or-status').find(':selected').text();
+            }
+
+            function getAgeOrValueFilterValue(filterBaseSel) {
+              return $(classSel(filterBaseSel) + '--age-or-value').find(':selected').text();
+            }
+
+            cbRenderFunds(funds);
           }
 
           function Fund(id, title, type, status, etherscanLink, worthDollars, worthEth) {
@@ -915,11 +873,29 @@
             this.worthDollars = worthDollars;
             this.worthEth = worthEth;
           }
-        };
+        }
+
+        function updateBemElementInParent($parent, classSelectorBase, elementName, elementValue) {
+          var $element = $parent.find(classSel(classSelectorBase) + '__' + elementName);
+          update($element, elementValue);
+
+          function update($el, htmlContent) {
+            $el.html(htmlContent);
+          }
+        }
+
+        function classSel(className) {
+          return '.' + className;
+        }
+
+        function activateAllBounties() {
+
+        }
 
         activateChart();
         activateTotalBudget();
         activateOutgoingFunds();
+        activateAllBounties();
       });
     </script>
     {% include 'shared/rollbar.html' %}
