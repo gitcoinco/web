@@ -535,7 +535,7 @@
                     <td class="text-secondary">
                       <i class="fas mr-1 fa-eye"></i>
                       <span class="funder-dashboard__outgoing-funds__funds__fund__view-etherscan">
-                        View Etherscan
+                       {% trans "View Etherscan" %}
                       </span>
                     </td>
                     <td class="funder-dashboard__outgoing-funds__fund__worth">
@@ -799,11 +799,12 @@
          
           var fundBaseSel = 'funder-dashboard__outgoing-funds__funds__fund';
           var cbRenderFunds = renderOutgoingFunds.bind(this, $container, $fundTemplate, fundBaseSel);
-
-          getOutgoingFunds(cbRenderFunds);
+          var getFunds = getOutgoingFunds.bind(this, cbRenderFunds);
+          
+          getFunds();
           $('.funder-dashboard__outgoing-funds__filter').change(function() {
             clearFunds();
-            getOutgoingFunds(cbRenderFunds);
+            getFunds();
           });
 
           function clearFunds() {
