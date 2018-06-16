@@ -113,18 +113,21 @@ var get_search_tab_name = function(n) {
 };
 
 var paint_search_tabs = function() {
+  if (!localStorage['searches'])
+    return;
+
   var container = $('#dashboard-title');
   var target = $('#search_nav');
 
   searches = localStorage['searches'].split(',');
-  var html = "<ul class='nav nav-tabs'>";
+  var html = "<ul class='nav'><i class='fas fa-history'></i>";
 
   for (var i = 0; i < searches.length; i++) {
     var search_no = searches[i];
     var title = get_search_tab_name(search_no);
 
     if (title) {
-      html += "<li class='nav-item' data-num='" + search_no + "'><span>" + title + '</span><a>X</a></li>';
+      html += "<li class='nav-item' data-num='" + search_no + "'><span>" + title + '</span><a><i class="fas fa-times"></i></a></li>';
     }
   }
   html += '</ul>';
