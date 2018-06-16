@@ -20,6 +20,7 @@ import cgi
 import json
 import re
 import statistics
+import time
 
 from django.conf import settings
 from django.utils import timezone
@@ -28,6 +29,24 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 from marketing.models import Alumni, LeaderboardRank, Stat
 from requests_oauthlib import OAuth2Session
+
+
+class PerformanceProfiler:
+
+    last_time = None
+    start_time = None
+
+    def profile_time(self, name):
+        if not self.last_time:
+            self.last_time = time.time()
+            self.start_time = time.time()
+            return
+
+        self.end_time = time.time()
+        this_time = self.end_time - self.last_time
+        total_time = self.end_time - self.start_time
+        print(f"pulled {name} in {round(this_time,2)} seconds (total: {round(total_time,2)} sec)")
+        self.last_time = time.time()
 
 
 def get_github_user_profile(token):
@@ -145,15 +164,19 @@ def build_stat_results():
         'title': _('Results'),
         'card_desc': _('Gitcoin is transparent by design.  Here are some stats about our core bounty product.'),
     }
-
+    pp = PerformanceProfiler()
+    pp.profile_time('start')
     base_bounties = Bounty.objects.current().filter(network='mainnet')
     context['alumni_count'] = Alumni.objects.count()
+    pp.profile_time('alumni')
     context['count_open'] = base_bounties.filter(network='mainnet', idx_status__in=['open']).count()
     context['count_started'] = base_bounties.filter(network='mainnet', idx_status__in=['started', 'submitted']).count()
     context['count_done'] = base_bounties.filter(network='mainnet', idx_status__in=['done']).count()
+    pp.profile_time('count_*')
 
     # Leaderboard 
     context['top_orgs'] = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_orgs').order_by('rank').values_list('github_username', flat=True)
+    pp.profile_time('orgs')
 
     #community size
     base_stats = Stat.objects.filter(
@@ -161,11 +184,15 @@ def build_stat_results():
         ).order_by('-pk')
     context['members_history'], context['slack_ticks'] = get_history(base_stats, "Members")
 
+    pp.profile_time('Stats1')
+    
     #jdi history
     base_stats = Stat.objects.filter(
         key='joe_dominance_index_30_value',
         ).order_by('-pk')
     context['jdi_history'], jdi_ticks = get_history(base_stats, 'Percentage')
+
+    pp.profile_time('Stats2')
 
     # bounties hisotry
     context['bounty_history'] = [
@@ -186,16 +213,21 @@ def build_stat_results():
                 row = get_bounty_history_row(then.strftime("%B %Y"), then)
                 context['bounty_history'].append(row)
     context['bounty_history'] = json.dumps(context['bounty_history'])
+    pp.profile_time('bounty_history')
 
     # Bounties
     completion_rate = get_completion_rate()
     bounty_abandonment_rate = round(100 - completion_rate, 1)
     context['universe_total_usd'] = sum(base_bounties.filter(network='mainnet').values_list('_val_usd_db', flat=True))
+    pp.profile_time('universe_total_usd')
     context['max_bounty_history'] = float(context['universe_total_usd']) * .7
     context['bounty_abandonment_rate'] = f'{bounty_abandonment_rate}%'
     context['bounty_average_turnaround'] = str(round(get_bounty_median_turnaround_time('turnaround_time_submitted')/24, 1)) + " days"
+    pp.profile_time('bounty_average_turnaround')
     context['hourly_rate_distribution'] = '$15 - $120'
     context['bounty_claimed_completion_rate'] = f'{completion_rate}%'
     context['bounty_median_pickup_time'] = round(get_bounty_median_turnaround_time('turnaround_time_started'), 1)
+    pp.profile_time('bounty_median_pickup_time')
+    pp.profile_time('final')
 
     return context
