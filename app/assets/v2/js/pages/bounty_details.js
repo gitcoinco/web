@@ -578,6 +578,8 @@ var do_actions = function(result) {
     var should_block_from_starting_work = !is_interested && result['project_type'] == 'traditional' && (result['status'] == 'started' || result['status'] == 'submitted');
     var show_start_stop_work = is_still_on_happy_path && !should_block_from_starting_work;
     var show_github_link = result['github_url'].substring(0, 4) == 'http';
+    var show_job_description = result['attached_job_description'] && result['attached_job_description'].substring(0, 4) == 'http';
+
     var show_submit_work = true;
     var show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
     var show_increase_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
@@ -687,6 +689,21 @@ var do_actions = function(result) {
         parent: 'right_actions',
         title: gettext('View issue details and comments on Github'),
         comments: result['github_comments'],
+        color: 'white'
+      };
+
+      actions.push(_entry);
+    }
+
+    if (show_job_description) {
+      var url = result['attached_job_description'];
+
+      var _entry = {
+        enabled: true,
+        href: url,
+        text: gettext('View Attached Job Description'),
+        parent: 'right_actions',
+        title: gettext('This bounty hunter is hiring for a full time, part time, or contract role and has attached that to this bounty.'),
         color: 'white'
       };
 

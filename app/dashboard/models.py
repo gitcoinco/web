@@ -203,6 +203,7 @@ class Bounty(SuperModel):
     admin_mark_as_remarket_ready = models.BooleanField(
         default=False, help_text=_('Admin override to mark as remarketing ready')
     )
+    attached_job_description = models.URLField(blank=True, null=True)
 
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()

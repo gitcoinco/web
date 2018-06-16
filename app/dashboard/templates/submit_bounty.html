@@ -137,7 +137,20 @@
                 {% include 'shared/github_username.html' %}
                 {% include 'shared/notification_email.html' with show_information_publicly_checkbox=1 %}
                 {% include 'shared/name.html' %}
+                <div class="w-100 mt-2">
+                  <label class="form__label" for="hiringRightNow">{% trans "Hiring right now?" %}</label>
+                  <div class="hiring_container">
+                    <div class="form__checkbox">
+                      <input name='hiringRightNow' id='hiringRightNow' type="checkbox" value=1 />
+                        <label class="form__label" for=hiringRightNow>{% trans "I am hiring for a full time, part time, or contract position, right now and would like Gitcoin to attach this job description to the bounty." %}
+                      </label>
+                    </div>
+                  </div>
+                  <input name='jobDescription' id='jobDescription' type="url" class="w-100 form__input hidden" type="text" placeholder="https://link.to/job/description" value="" />
+                </div>
+
                 <div id="advanced_container"></div>
+                <h4 class="mt-5">{% trans "Terms" %}</h4>
                 <div class="terms_container">
                   <div class="form__checkbox">
                     <input name='terms' id='terms' type="checkbox" value=1 />
