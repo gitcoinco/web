@@ -800,7 +800,7 @@
           var fundBaseSel = 'funder-dashboard__outgoing-funds__funds__fund';
           var cbRenderFunds = renderOutgoingFunds.bind(this, $container, $fundTemplate, fundBaseSel);
           var getFunds = getOutgoingFunds.bind(this, cbRenderFunds);
-          
+
           getFunds();
           $('.funder-dashboard__outgoing-funds__filter').change(function() {
             clearFunds();
@@ -842,6 +842,7 @@
             // below should be an endpoint call, these 2 should be query params 
             var typeOrStatus = getTypeOrStatusFilterValue(filterBaseSel);
             var ageOrValue = getAgeOrValueFilterValue(filterBaseSel);
+
             for (var i = 0; i < 5; ++i) {
               funds.push(new Fund(
                 123 + i,
@@ -855,11 +856,11 @@
             }
 
             function getTypeOrStatusFilterValue(filterBaseSel) {
-              return $(classSel(filterBaseSel) + '--type-or-status').find(':selected').text();
+              return $(classSel(filterBaseSel) + '--type-or-status').find(':selected').val();
             }
 
             function getAgeOrValueFilterValue(filterBaseSel) {
-              return $(classSel(filterBaseSel) + '--age-or-value').find(':selected').text();
+              return $(classSel(filterBaseSel) + '--age-or-value').find(':selected').val();
             }
 
             cbRenderFunds(funds);
