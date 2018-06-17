@@ -89,6 +89,10 @@
       font-size: 1.2rem;
     }
 
+    .funder-dashboard__payout-history__control {
+      cursor: pointer;
+    }
+
     .funder-dashboard__payout-history__control--selected {
       background-color: #4a4a4a;
       color: white;
@@ -665,41 +669,111 @@
     <script type="text/javascript">
       $(function () {
         function activateChart() {
-          var payoutHistory = document.getElementById("funder-dashhboard__payout-history__chart").getContext("2d");
+          var chart = updateChart(null);
 
-          var data = {
-            datasets: [{
-              data: [80, 305, 50, 105, 405, 105, 150, 200],
-              borderColor: '#3e00ff',
-              backgroundColor: '#eff7fd',
-              lineTension: 0,
-              fillColor: '#eff7fd',
-            }],
-            labels: ["January", "February", "March", "April", "May", "June", "July", "August"],
-          };
+          var $currentChartFilter = null;
+          handleChartChange();
 
-          var options = {
-            scales: {
-              yAxes: [
-                {
-                  ticks: {
-                    callback: function (value, index, labels) {
-                      return '$' + value;
-                    }
-                  },
-                }
-              ],
-            },
-            legend: {
-              display: false
+          function handleChartChange() {
+            $('.funder-dashboard__payout-history__control').click(function() {
+              if ($(this) !== $currentChartFilter) {
+                var classSelected = 'funder-dashboard__payout-history__control--selected';
+                $('.funder-dashboard__payout-history__control').removeClass(classSelected);
+                $currentChartFilter = $(this);
+                $currentChartFilter.addClass(classSelected);
+                chart = updateChart(chart);
+              }
+            });
+          }
+
+          function updateChart(oldChart) {
+            if (oldChart) {
+              oldChart.clear();
             }
-          };
+            return renderChart();
+          }
 
-          var x = new Chart(payoutHistory, {
-            data: data,
-            options: options,
-            type: 'line'
-          });
+          function renderChart() {
+            var chartSettings = getChartSettings();
+            return new Chart(chartSettings.context2d, {
+              data: chartSettings.data,
+              options: chartSettings.options,
+              type: 'line'
+            });
+          }
+
+          function getChartSettings() {
+            var monthlyData = {
+              data: [80, 305, 50, 105, 405, 150, 200, 300],
+              labels: ["January", "February", "March", "April", "May", "June", "July", "August"]
+            };
+
+            var weeklyData = {
+              data: [50, 105, 405, 150, 200, 300, 80, 305],
+              labels: [1, 2, 3, 4, 5, 6, 7, 8]
+            };
+
+            var yearlyData = {
+              data: [50000, 70000, 90000, 30000],
+              labels: [2016, 2017, 2018, 30000]
+            }
+
+            var filterBaseSel = 'funder-dashboard__payout-history__control';
+
+            var $selected = $(classSel(filterBaseSel) + '--selected');
+            var isWeekly = $selected.hasClass(filterBaseSel + '--weekly');
+            var isMonthly = $selected.hasClass(filterBaseSel + '--monthly');
+            var isYearly = $selected.hasClass(filterBaseSel + '--yearly');
+
+            var plotData = null;
+            var labels = null;
+            if (isWeekly) {
+              plotData = weeklyData.data;
+              labels = weeklyData.labels;
+            } else if (isMonthly) {
+              plotData = monthlyData.data;
+              labels = monthlyData.labels;
+            } else if (isYearly) {
+              plotData = yearlyData.data;
+              labels = yearlyData.labels;
+            }
+
+            var data = {
+              datasets: [{
+                data: plotData,
+                borderColor: '#3e00ff',
+                backgroundColor: '#eff7fd',
+                lineTension: 0,
+                fillColor: '#eff7fd',
+              }],
+              labels: labels,
+            };
+
+            var options = {
+              scales: {
+                yAxes: [
+                  {
+                    ticks: {
+                      callback: function (value, index, labels) {
+                        return '$' + value;
+                      }
+                    },
+                  }
+                ],
+              },
+              legend: {
+                display: false
+              }
+            };
+
+            var context2d = document.getElementById("funder-dashhboard__payout-history__chart").getContext("2d");
+
+            return {
+              data: data,
+              options: options,
+              context2d: context2d
+            }
+          }
         };
 
         function activateTotalBudget() {
