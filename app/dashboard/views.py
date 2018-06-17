@@ -933,6 +933,24 @@ def funder_dashboard(request):
 
     top_contributors = [contributor1]
 
+    # Data for the line chart
+    # Each one of these dictionaries is composed of 2 arrays that should have the same length.
+    # Each data[i] labels[i] represents a X Y coordinate (plot point)
+    payout_history_weekly = {
+        "data": [50, 105, 405, 150, 200, 300, 80, 305],
+        "labels": [1, 2, 3, 4, 5, 6, 7, 8]
+    }
+
+    payout_history_monthly = {
+        "data": [80, 305, 50, 105, 405, 150, 200, 300],
+        "labels": ["January", "February", "March", "April", "May", "June", "July", "August"]
+    }
+
+    payout_history_yearly = {
+        "data": [50000, 70000, 90000, 30000],
+        "labels": [2016, 2017, 2018, 30000]
+    }
+
     context = {
         # Header
         "expiring_bounties_count": "2",
@@ -946,6 +964,10 @@ def funder_dashboard(request):
         "total_paid_date_used_to_say_since": _("May 5. 2018"),
         "total_budget_dollars": "90K",
         "total_budget_eth": "200",
+        # Payout History
+        "payout_history_weekly": json.dumps(payout_history_weekly, ensure_ascii=False),
+        "payout_history_monthly": json.dumps(payout_history_monthly, ensure_ascii=False),
+        "payout_history_yearly": json.dumps(payout_history_yearly, ensure_ascii=False),
         # Tax Reporting
         "tax_year": "2018",
         "tax_year_bounties_count": "139",
@@ -978,8 +1000,22 @@ def funder_dashboard_outgoing_funds(request):
     includeOnly = request.REQUEST['includeOnly']
     orderBy = request.REQUEST['orderBy']
 
+    funds = [];
+    for i in range(5):
+        fund = {
+            "id": "1234",
+            "title": "Write Some Docs",
+            "type": "Tip", # "Tip" || "Payment"
+            "status": "Pending", # "Pending" || "Claimed"
+            "etherscanLink": "#", # link to etherscan
+            "worthDollars": "41.47", # this should be formatted for displaying, no $ needed
+            "worthEth": "0.5" # same as dollars, no "ETH" needed
+        }
+        funds.append(fund)
+
     response = {
         'status': '200',
+        'funds': funds
     }
 
     return JsonResponse(response, status=response['status'])
@@ -1001,8 +1037,22 @@ def funder_dashboard_bounties(request):
     includeOnly = request.REQUEST['includeOnly']
     orderBy = request.REQUEST['orderBy']
 
+    bounties = [];
+    for i in range(5):
+        bounty = {
+            "id": "1234",
+            "title": "Write Some Docs",
+            "type": "Tip",  # "Tip" || "Payment"
+            "status": "Started",  # "Started" || "Stopped" || "Submitted"
+            "githubLink": "https://github.com",  # link to github issue
+            "worthDollars": "41.47",  # this should be formatted for displaying, no $ needed
+            "worthEth": "0.5"  # same as dollars, no "ETH" needed
+        }
+        bounties.append(bounty)
+
     response = {
         'status': '200',
+        'bounties': bounties
     }
 
     return JsonResponse(response, status=result['status'])

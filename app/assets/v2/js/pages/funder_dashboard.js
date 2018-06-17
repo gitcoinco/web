@@ -152,28 +152,19 @@ $(function () {
       }
     }
 
-    // call the API
     function getOutgoingFunds(cbRenderFunds) {
       var filterBaseSel = 'funder-dashboard__outgoing-funds__filter';
 
       // below should be an endpoint call, these 2 should be query params: typeOrStatus and ageOrValue
-      var typeOrStatus = getTypeOrStatusFilterValue(filterBaseSel);
-      var ageOrValue = getAgeOrValueFilterValue(filterBaseSel);
+      var includeOnly = getTypeOrStatusFilterValue(filterBaseSel);
+      var orderBy = getAgeOrValueFilterValue(filterBaseSel);
 
-      var funds = [];
-      for (var i = 0; i < 5; ++i) {
-        funds.push(new Fund(
-          123 + i,
-          "Feature idea: send ETH to Daycare",
-          "Tip",
-          "Pending",
-          "#",
-          41.47,
-          0.5
-        ));
-      }
+      var postUrl = window.funderDashboardUrls.outgoingFundsUrl + "?includeOnly=" + includeOnly + "&orderBy=" + orderBy;
 
-      cbRenderFunds(funds);
+      $.post(postUrl, function(data) {
+        var funds = $.parseJSON(data.funds);
+        cbRenderFunds(funds);
+      });
 
       function getTypeOrStatusFilterValue(filterBaseSel) {
         return $(classSel(filterBaseSel) + '--type-or-status').find(':selected').val();
@@ -182,16 +173,6 @@ $(function () {
       function getAgeOrValueFilterValue(filterBaseSel) {
         return $(classSel(filterBaseSel) + '--age-or-value').find(':selected').val();
       }
-    }
-
-    function Fund(id, title, type, status, etherscanLink, worthDollars, worthEth) {
-      this.id = id;
-      this.title = title;
-      this.type = type;
-      this.status = status;
-      this.etherscanLink = etherscanLink;
-      this.worthDollars = worthDollars;
-      this.worthEth = worthEth;
     }
   }
 
@@ -260,20 +241,12 @@ $(function () {
       var includeOnly = getTypeOrStatusFilterValue(filterBaseSel);
       var orderBy = getAgeOrValueFilterValue(filterBaseSel);
 
-      var bounties = [];
-      for (var i = 0; i < 5; ++i) {
-        bounties.push(new Bounty(
-          234 + i,
-          'Harry Potter and the book',
-          'Documentation',
-          'Started',
-          'https://github.com',
-          0.5,
-          41.47
-        ));
-      }
+      var postUrl = window.funderDashboardUrls.bountiesUrl + "?includeOnly=" + includeOnly + "&orderBy=" + orderBy;
 
-      cbRenderBounties(bounties);
+      $.post(postUrl, function(data) {
+        var bounties = $.parseJSON(data.bounties);
+        cbRenderBounties(bounties);
+      });
 
       function getTypeOrStatusFilterValue(filterBaseSel) {
         return $(classSel(filterBaseSel) + '--type-or-status').find(':selected').val();
@@ -282,16 +255,6 @@ $(function () {
       function getAgeOrValueFilterValue(filterBaseSel) {
         return $(classSel(filterBaseSel) + '--age-or-value').find(':selected').val();
       }
-    }
-
-    function Bounty(id, title, type, status, githubLink, worthEth, worthDollars) {
-      this.id = id;
-      this.title = title;
-      this.type = type;
-      this.status = status; // "Work Started" || "Work Stopped" || "Work Submitted"
-      this.githubLink = githubLink;
-      this.worthEth = worthEth;
-      this.worthDollars = worthDollars;
     }
   }
 
