@@ -19,7 +19,7 @@
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
-    <link rel="stylesheet" href="{% static "v2/css/funder_dashboard.css" %}"
+    <link rel="stylesheet" href="{% static "v2/css/funder_dashboard.css" %}">
   </head>
 
   <style>
@@ -914,8 +914,8 @@
           function getAllBounties(cbRenderBounties) {
             var filterBaseSel = 'funder-dashboard__all-bounties__filter';
 
-            var typeOrStatus = getTypeOrStatusFilterValue(filterBaseSel);
-            var ageOrValue = getAgeOrValueFilterValue(filterBaseSel);
+            var includeOnly = getTypeOrStatusFilterValue(filterBaseSel);
+            var orderBy = getAgeOrValueFilterValue(filterBaseSel);
 
             var bounties = [];
             for (var i = 0; i < 5; ++i) {
@@ -945,7 +945,7 @@
             this.id = id;
             this.title = title;
             this.type = type;
-            this.status = status; // "Started" || "Stopped" || "Submitted"
+            this.status = status; // "Work Started" || "Work Stopped" || "Work Submitted"
             this.githubLink = githubLink;
             this.worthEth = worthEth;
             this.worthDollars = worthDollars;

@@ -961,6 +961,53 @@ def funder_dashboard(request):
     return TemplateResponse(request, 'funder_dashboard.html', context)
 
 
+@require_POST
+@csrf_exempt
+@ratelimit(key='ip', rate='5/s', method=ratelimit.UNSAFE, block=True)
+def funder_dashboard_outgoing_funds(request):
+    """
+    Gets all outgoing funds.
+    Pending transfers/ syncing to the blockchain will show at the top of the list.
+    Unclaimed tips will be shown as pending.
+    Two query params are used:
+        includeOnly: "All" || "Tip" || "Payment" || "Pending" || "Claimed"
+            if not all, will filter by fund type - "Tip" / "Payment"
+            or by fund status - "Pending" / "Claimed"
+        orderBy: "Recent" || "Oldest" || "Highest Value" || "Lowest Value"
+    """
+    includeOnly = request.REQUEST['includeOnly']
+    orderBy = request.REQUEST['orderBy']
+
+    response = {
+        'status': '200',
+    }
+
+    return JsonResponse(response, status=response['status'])
+
+
+@require_POST
+@csrf_exempt
+@ratelimit(key='ip', rate='5/s', method=ratelimit.UNSAFE, block=True)
+def funder_dashboard_bounties(request):
+    """
+    Gets bounties that are being funded by the user.
+    Two query params are used:
+        includeOnly: "All" || "Tip" || "Payment" || "Started" || "Stopped" || "Submitted"
+             if not all, will filter by bounty type - "Tip" / "Payment"
+            or by bounty status - "Started" / "Stopped" / "Submitted"
+        orderBy: "Recent" || "Oldest" || "Highest Value" || "Lowest Value"
+    """
+
+    includeOnly = request.REQUEST['includeOnly']
+    orderBy = request.REQUEST['orderBy']
+
+    response = {
+        'status': '200',
+    }
+
+    return JsonResponse(response, status=result['status'])
+
+
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def get_quickstart_video(request):
