@@ -924,7 +924,41 @@ def save_search(request):
     return TemplateResponse(request, 'save_search.html', context)
 
 def funder_dashboard(request):
-    return TemplateResponse(request, 'funder_dashboard.html', {})
+    """ Render the funder dashboard"""
+
+    contributor1 = {
+        "githubLink": "https://github.com",
+        "profilePictureSrc": "/static/avatar/NedelescuVlad",
+    }
+
+    top_contributors = [contributor1]
+
+    context = {
+        # Header
+        "expiring_bounties_count": "2",
+        "expiring_days_count": "3",
+        "new_contributor_comments_count": "3",
+        # Stats
+        "submitted_bounties_count": "394",
+        "total_contributors_count": "142",
+        "total_paid_dollars": "50.890",
+        "total_paid_eth": "100",
+        "total_paid_date_used_to_say_since": _("May 5. 2018"),
+        "total_budget_dollars": "90K",
+        "total_budget_eth": "200",
+        # Tax Reporting
+        "tax_year": "2018",
+        "tax_year_bounties_count": "139",
+        "tax_year_bounties_worth_dollars": "34.450",
+        # Latest on your bounties
+        "expired_issues_count": "3",
+        "expired_issues_worth_dollars": "548.28",
+        "active_bounties_count": "154",
+        "completed_bounties_count": "174",
+        "expired_bounties_count": "8",
+        "top_contributors": top_contributors
+    }
+    return TemplateResponse(request, 'funder_dashboard.html', context)
 
 
 @csrf_exempt
