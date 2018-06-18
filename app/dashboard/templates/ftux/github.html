@@ -18,16 +18,9 @@
 {% load i18n static %}
 <div class="row">
   <div class="col-12">
-    <h2>{% trans "Get started with Gitcoin!" %}</h2>
+    <h2>{% trans "Get Started with Gitcoin!" %}</h2>
   </div>
   <div class="col-12 col-md-8 offset-md-2">
-    {% blocktrans %}
-      <h3>Use gitcoin to find paid work real world problems
-          in the blockchain / web3 ecosystem.</h3>
-      <h3>Receive payment in Ether,a leading cryptocurrency.</h3>
-      <h3>Meet new people. Learn New Skills. Contribute to
-          the open source community.</h3>
-    {% endblocktrans %}
     <div class="row icons">
       <div class="col-3">
         <i class="fas fa-wrench"></i>
@@ -42,12 +35,19 @@
         <p>{% trans "Network" %}</p>
       </div>
     </div>
+    {% blocktrans %}
+      <h3>Use Gitcoin to find paid work and solve real world problems
+          in the blockchain/web3 ecosystem.</h3>
+      <h3>Receive payment in Ether, a leading cryptocurrency.</h3>
+      <h3>Meet new people. Learn new skills. Contribute to
+          the open source community.</h3>
+    {% endblocktrans %}
     <div class="col-12 mt-4">
       {% if github_handle %}
         <div class="logged-in">
           <h3>
-            <i class="far fa-check-circle"></i>
             {% trans "You are logged in!" %}
+            <i class="far fa-check-circle"></i>
           </h3>
           <div class="font-caption row">
             <div class="col-12">

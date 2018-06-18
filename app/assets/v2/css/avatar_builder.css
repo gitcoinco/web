@@ -12,11 +12,12 @@
   flex-wrap: wrap;
   flex-basis: 100%;
   justify-content: center;
+  margin-top:3.5rem;
 }
 #avatar-builder__sections li {
   width: 10rem;
   padding: 5px;
-  color: #15003E;
+  color: #15003e;
   text-decoration: none;
 }
 #avatar-builder__sections li.open {
@@ -40,7 +41,7 @@
 }
 #avatar-preview {
   width: 250px;
-  height: 250px;
+  height: 256px;
   background-color: #D8D8D8;
   flex-shrink: 0;
   position: relative;
@@ -177,7 +178,7 @@ button.avatar-option {
   }
   .options-section {
     overflow: auto;
-    max-height: 255px;
+    max-height: 264px;
     justify-content: flex-start;
   }
   #color-picker {

@@ -60,7 +60,7 @@ onboard.watchMetamask = function() {
       </div>`
     );
   } else {
-    $('.step #metamask').html('<div class="unlocked"><img src="/static/v2/images/metamask.svg" %}><span>' + gettext('Unlocked') + '</span></div>');
+    $('.step #metamask').html('<div class="unlocked"><img src="/static/v2/images/metamask.svg" %}><span class="mr-1">' + gettext('Unlocked') + '</span><i class="far fa-check-circle"></i></div>');
   }
 };
 

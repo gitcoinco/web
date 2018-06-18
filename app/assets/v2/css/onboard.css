@@ -10,13 +10,12 @@ h2, h3 {
 h2 {
   font-size: 22px;
   margin-bottom: 2em;
-  text-transform: capitalize;
 }
 
 h3 {
   font-size: 14px;
   margin-bottom: 2em;
-  font-weight: 500;
+  font-weight: lighter;
   margin-top: 10px;
   line-height: 1.5em;
   text-align: left;
@@ -101,8 +100,9 @@ h3 {
   margin-bottom: 10px;
 }
 
-.step .logged-in i {
-  font-size: 1.2em
+.step .logged-in i,
+.step .unlocked i {
+  font-size: 1em
 }
 
 .step .logged-in a {
@@ -110,17 +110,21 @@ h3 {
 }
 
 #onboarding .controls p {
-  border: 1px solid #D6D6D6;
-  padding: 3px 16px;
+  border: 1px solid #d6d6d6;
+  padding: 6px 22px;
 }
 
 #next-btn,
 #prev-btn {
   display: inline-block;
-  margin: 5px;
+  margin: 5px 0 5px 5px;
   text-transform: capitalize;
   border-radius: 3px;
   cursor: pointer;
+}
+
+#next-btn {
+  margin-left: 0;
 }
 
 .step #metamask {
@@ -155,7 +159,6 @@ h3 {
   margin: 20px 2px;
   background-color: #CACACA;
   border: none;
-  border-radius: 2px;
   display: inline-block;
   opacity: 0.5;
 }

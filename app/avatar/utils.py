@@ -35,7 +35,7 @@ def get_avatar_context():
         'defaultSkinTone': 'AE7242',
         'defaultHairColor': '000000',
         'defaultClothingColor': 'CCCCCC',
-        'defaultBackground': 'FFFFFF',
+        'defaultBackground': '25E899',
         'optionalSections': ['HairStyle', 'FacialHair', 'Accessories'],
         'sections': [{
             'name': 'Head',
