@@ -19,6 +19,7 @@
 import cgi
 import json
 import re
+import statistics
 
 from django.conf import settings
 from django.utils import timezone
@@ -58,11 +59,11 @@ def strip_double_chars(txt, char=' '):
 def get_bounty_history_row(label, date):
     return [
         label,
+        get_tip_history_at_date(date),
         get_bounty_history_at_date(['open'], date),
-        'Open',
         get_bounty_history_at_date(['started', 'submitted'], date),
-        'Started', get_bounty_history_at_date(['done'], date),
-        'Completed', get_bounty_history_at_date(['cancelled'], date)
+        get_bounty_history_at_date(['done'], date),
+        get_bounty_history_at_date(['cancelled'], date),
     ]
 
 
@@ -76,6 +77,63 @@ def get_bounty_history_at_date(statuses, date):
     except Exception as e:
         print(e)
         return 0
+
+
+def get_tip_history_at_date(date):
+    try:
+        base_stats = Stat.objects.filter(
+            key='tips_value',
+            ).order_by('-pk')
+        return base_stats.filter(created_on__lte=date).first().val
+    except Exception as e:
+        print(e)
+        return 0
+
+
+def get_history(base_stats, copy):
+    today = base_stats.first().val
+
+    # slack ticks
+    increment = 1000
+    ticks = json.dumps(list(x * increment for x in range(0, int(today/increment)+1)))
+    history = json.dumps([
+        ['When', copy],
+        ['Launch', 0],
+        ['6 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=6*30))).first().val],
+        ['5 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=5*30))).first().val],
+        ['4 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=4*30))).first().val],
+        ['3 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=3*30))).first().val],
+        ['2 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=2*30))).first().val],
+        ['1 month ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=1*30))).first().val],
+        ['Today', today],
+        ])
+    return history, ticks
+
+
+def get_completion_rate():
+    from dashboard.models import Bounty
+    base_bounties = Bounty.objects.current().filter(network='mainnet').filter(idx_status__in=['done', 'expired', 'cancelled'])
+    eligible_bounties = base_bounties.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=60)))
+    eligible_bounties = eligible_bounties.exclude(interested__isnull=True)
+    completed_bounties = eligible_bounties.filter(idx_status__in=['done']).count()
+    not_completed_bounties = eligible_bounties.filter(idx_status__in=['expired', 'cancelled']).count()
+    total_bounties = completed_bounties + not_completed_bounties
+
+    return round((completed_bounties * 1.0 / total_bounties), 3) * 100
+
+
+def get_bounty_median_turnaround_time(func='turnaround_time_started'):
+    from dashboard.models import Bounty
+    base_bounties = Bounty.objects.current().filter(network='mainnet')
+    eligible_bounties = base_bounties.exclude(idx_status='open').filter(created_on__gt=(timezone.now() - timezone.timedelta(days=60)))
+    pickup_time_hours = []
+    for bounty in eligible_bounties:
+        tat = getattr(bounty, func)
+        if tat:
+            pickup_time_hours.append(tat / 60 / 60)
+
+    pickup_time_hours.sort()
+    return statistics.median(pickup_time_hours)
 
 
 def build_stat_results():
@@ -101,28 +159,22 @@ def build_stat_results():
     base_stats = Stat.objects.filter(
         key='email_subscriberse',
         ).order_by('-pk')
-    today = base_stats.first().val
-    context['members_history'] = ([
-        ['Year', 'Members'],
-        ['Launch', 0],
-        ['6 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=6*30))).first().val],
-        ['5 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=5*30))).first().val],
-        ['4 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=4*30))).first().val],
-        ['3 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=3*30))).first().val],
-        ['2 months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=2*30))).first().val],
-        ['1 month ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=1*30))).first().val],
-        ['Today', today]
-        ])
-    context['members_history'] = json.dumps(context['members_history'])
+    context['members_history'], context['slack_ticks'] = get_history(base_stats, "Members")
+
+    #jdi history
+    base_stats = Stat.objects.filter(
+        key='joe_dominance_index_30_value',
+        ).order_by('-pk')
+    context['jdi_history'], jdi_ticks = get_history(base_stats, 'Percentage')
 
     # bounties hisotry
     context['bounty_history'] = [
-        ['', 'Open / Available', {'role': 'annotation'}, 'Claimed / In Progress', { 'role': 'annotation' }, 'Completed', { 'role': 'annotation' }, 'CodeFund Bounties' ],
-        ["January 2018", 903, "Open", 2329, "Started", 5534, "Completed", 1203],
-        ["February 2018", 1290, "Open", 1830, "Started", 15930, "Completed", 1803],
-        ["March 2018", 6903, "Open", 4302, "Started", 16302, "Completed", 2390],
-        ["April 2018", 5349, "Open", 5203, "Started", 26390, "Completed", 3153],
-        ["May 2018", 6702, "Open", 4290, "Started", 37342, "Completed", 4281],
+        ['', 'Tips',  'Open / Available',  'Started / In Progress',  'Completed', 'Cancelled' ],
+        ["January 2018", 2011, 903, 2329, 5534, 1203],
+        ["February 2018", 5093, 1290, 1830, 15930, 1803],
+        ["March 2018", 7391, 6903, 4302, 16302, 2390],
+        ["April 2018", 8302, 5349, 5203, 26390, 3153],
+        ["May 2018", 10109, 6702, 4290, 37342, 4281],
       ]
     for year in range(2018, 2025):
         months = range(1, 12)
@@ -135,19 +187,15 @@ def build_stat_results():
                 context['bounty_history'].append(row)
     context['bounty_history'] = json.dumps(context['bounty_history'])
 
-    # slack ticks
-    increment = 1000
-    context['slack_ticks'] = list(x * increment for x in range(0, int(today/increment)+1))
-    context['slack_ticks'] = json.dumps(context['slack_ticks'])
-
     # Bounties
-    # TODO: make this info dynamic
+    completion_rate = get_completion_rate()
+    bounty_abandonment_rate = round(100 - completion_rate, 1)
     context['universe_total_usd'] = sum(base_bounties.filter(network='mainnet').values_list('_val_usd_db', flat=True))
     context['max_bounty_history'] = float(context['universe_total_usd']) * .7
-    context['bounty_abandonment_rate'] = '9.5%'
-    context['bounty_average_turnaround'] = '2.1 Weeks'
+    context['bounty_abandonment_rate'] = f'{bounty_abandonment_rate}%'
+    context['bounty_average_turnaround'] = str(round(get_bounty_median_turnaround_time('turnaround_time_submitted')/24, 1)) + " days"
     context['hourly_rate_distribution'] = '$15 - $120'
-    context['bounty_claimed_completion_rate'] = '82%'
-    context['bounty_median_pickup_time'] = '2.25'
+    context['bounty_claimed_completion_rate'] = f'{completion_rate}%'
+    context['bounty_median_pickup_time'] = round(get_bounty_median_turnaround_time('turnaround_time_started'), 1)
 
     return context

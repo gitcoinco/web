@@ -31,6 +31,11 @@ class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
 
+class EmailEventAdmin(admin.ModelAdmin):
+    search_fields = ['email', 'event' ]
+    ordering = ['-id']
+
+
 class GithubEventAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile']
     ordering = ['-id']
@@ -106,7 +111,7 @@ admin.site.register(Alumni, AlumniAdmin)
 admin.site.register(GithubEvent, GithubEventAdmin)
 admin.site.register(Match, MatchAdmin)
 admin.site.register(Stat, GeneralAdmin)
-admin.site.register(EmailEvent, GeneralAdmin)
+admin.site.register(EmailEvent, EmailEventAdmin)
 admin.site.register(EmailSubscriber, EmailSubscriberAdmin)
 admin.site.register(LeaderboardRank, GeneralAdmin)
 admin.site.register(SlackUser, SlackUserAdmin)

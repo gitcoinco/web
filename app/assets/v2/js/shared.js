@@ -41,6 +41,18 @@ var loading_button = function(button) {
   button.prepend('<img src=/static/v2/images/loading_white.gif style="max-width:20px; max-height: 20px">').addClass('disabled');
 };
 
+var attach_close_button = function() {
+  $('body').delegate('.alert .closebtn', 'click', function(e) {
+    $(this).parents('.alert').remove();
+    $('.alert').each(function() {
+      var old_top = $(this).css('top');
+      var new_top = (parseInt(old_top.replace('px')) - 66) + 'px';
+
+      $(this).css('top', new_top);
+    });
+  });
+};
+
 
 var update_metamask_conf_time_and_cost_estimate = function() {
   var confTime = 'unknown';
@@ -130,7 +142,7 @@ var sanitize = function(str) {
   if (typeof str != 'string') {
     return str;
   }
-  result = str.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  result = DOMPurify.sanitize(str);
   return result;
 };
 
@@ -207,11 +219,12 @@ var add_interest = function(bounty_pk, data) {
 };
 
 /** Remove the current profile from the interested profiles list. */
-var remove_interest = function(bounty_pk) {
+var remove_interest = function(bounty_pk, slash = false) {
   if (!document.interested) {
     return;
   }
-  mutate_interest(bounty_pk, 'remove');
+
+  mutate_interest(bounty_pk, 'remove', slash);
 };
 
 /** Helper function -- mutates interests in either direction. */
@@ -223,6 +236,15 @@ var mutate_interest = function(bounty_pk, direction, data) {
     .toggleClass('btn-small')
     .toggleClass('button')
     .toggleClass('button--primary');
+
+  if (direction === 'new') {
+    _alert({ message: gettext("Thanks for letting us know that you're ready to start work.") }, 'success');
+    $('#interest a').attr('id', 'btn-white');
+  } else if (direction === 'remove') {
+    _alert({ message: gettext("You've stopped working on this, thanks for letting us know.") }, 'success');
+    $('#interest a').attr('id', '');
+  }
+  
 
   $.post(request_url, data).then(function(result) {
     result = sanitizeAPIResults(result);
@@ -245,13 +267,21 @@ var mutate_interest = function(bounty_pk, direction, data) {
 };
 
 
-var uninterested = function(bounty_pk, profileId) {
+var uninterested = function(bounty_pk, profileId, slash) {
+  var data = {};
+  var success_message = 'Contributor removed from bounty.';
+
+  if (slash) {
+    success_message = 'Contributor removed from bounty and rep dinged';
+    data.slashed = true;
+  }
+
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + profileId + '/uninterested/';
 
-  $.post(request_url, function(result) {
+  $.post(request_url, data, function(result) {
     result = sanitizeAPIResults(result);
     if (result.success) {
-      _alert({ message: gettext('Contributor removed from bounty.') }, 'success');
+      _alert({ message: gettext(success_message) }, 'success');
       pull_interest_list(bounty_pk);
       return true;
     }
@@ -387,16 +417,6 @@ function timeDifference(current, previous, remaining, now_threshold_seconds) {
   return amt + ' ' + unit + plural + ' ago';
 }
 
-
-var sidebar_redirect_triggers = function() {
-  $('.sidebar_search input[type=radio], .sidebar_search label').change(function(e) {
-    if (document.location.href.indexOf('/dashboard') == -1 && document.location.href.indexOf('/explorer') == -1) {
-      document.location.href = '/explorer';
-      e.preventDefault();
-    }
-  });
-};
-
 var attach_change_element_type = function() {
   (function($) {
     $.fn.changeElementType = function(newType) {
@@ -412,19 +432,6 @@ var attach_change_element_type = function() {
     };
   })(jQuery);
 };
-
-var attach_close_button = function() {
-  $('body').delegate('.alert .closebtn', 'click', function(e) {
-    $(this).parents('.alert').remove();
-    $('.alert').each(function() {
-      var old_top = $(this).css('top');
-      var new_top = (parseInt(old_top.replace('px')) - 66) + 'px';
-
-      $(this).css('top', new_top);
-    });
-  });
-};
-
 
 // callbacks that can retrieve various metadata about a github issue URL
 
@@ -600,17 +607,29 @@ var trigger_primary_form_web3_hooks = function() {
 
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
+      $('#zero_balance_error').css('display', 'none');
+      $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
+      $('.submit_bounty .newsletter').addClass('hidden');
+      $('#unlock_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('No Metamask Error', params);
     } else if (!web3.eth.coinbase) {
       $('#unlock_metamask_error').css('display', 'block');
+      $('#zero_balance_error').css('display', 'none');
+      $('#no_metamask_error').css('display', 'none');
+      $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
+      $('.submit_bounty .newsletter').addClass('hidden');
       $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('Unlock Metamask Error', params);
     } else if (is_zero_balance_not_okay && document.balance == 0) {
       $('#zero_balance_error').css('display', 'block');
+      $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
+      $('.submit_bounty .newsletter').addClass('hidden');
+      $('#unlock_metamask_error').css('display', 'none');
+      $('#no_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('Zero Balance Metamask Error', params);
     } else {
@@ -618,7 +637,9 @@ var trigger_primary_form_web3_hooks = function() {
       $('#unlock_metamask_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'block');
+      $('#robot_error').addClass('hidden');
       $('#primary_form').removeClass('hidden');
+      $('.submit_bounty .newsletter').removeClass('hidden');
     }
   }
 };
@@ -756,15 +777,36 @@ var actions_page_warn_if_not_on_same_network = function() {
   }
 };
 
-$(document).ready(function() {
-  sidebar_redirect_triggers();
-  attach_change_element_type();
-  attach_close_button();
-});
+attach_change_element_type();
 
 window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 300);
+  attach_close_button();
 });
+
+var promptForAuth = function(event) {
+  var denomination = $('#token option:selected').text();
+  var tokenAddress = $('#token option:selected').val();
+
+  if (denomination == 'ETH') {
+    $('input, textarea, select').prop('disabled', '');
+  } else {
+    var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+    var from = web3.eth.coinbase;
+    var to = bounty_address();
+
+    token_contract.allowance.call(from, to, function(error, result) {
+      if (error || result.toNumber() == 0) {
+        _alert("You have not yet enabled this token.  To enable this token, go to the <a style='padding-left:5px;' href='/settings/tokens'> Token Settings page and enable it</a>. (this is only needed one time per token)");
+        $('input, textarea, select').prop('disabled', 'disabled');
+        $('select[name=deonomination]').prop('disabled', '');
+      } else {
+        $('input, textarea, select').prop('disabled', '');
+      }
+    });
+
+  }
+};
 
 var setUsdAmount = function(event) {
   var amount = $('input[name=amount]').val();
