@@ -87,7 +87,7 @@ class Hop(SuperModel):
     grey = (122, 122, 122, 0)
     size = (1000, 1000)
     center = (int(size[0]/2), int(size[1]/2))
-    font = 'assets/v2/fonts/futura/FuturaStd-Medium.otf'
+    font = 'assets/v2/fonts/OpenSans/Regular.ttf'
 
     # Model variables
     ip = models.GenericIPAddressField(protocol='IPv4', blank=True, null=True)
