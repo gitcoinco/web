@@ -58,38 +58,3 @@ h1, h2, h3, h4, h5 {
 #pricing-section .form__select2 {
   height: 37px;
 }
-
-#gas-section .gas-image {
-  height: 5rem;
-}
-
-#gas-section .font-body {
-  margin: 0;
-}
-
-#gas-section .recommended-prices {
-  cursor: pointer;
-}
-
-#gas-section .gas-dark-bg {
-  background-color: #FAFAFA
-}
-
-#gas-section .gas-rates .active {
-  font-weight: bolder;
-  background-color: #0ECF7C;
-}
-
-#gas-section #metamask_context {
-  display: none;
-}
-
-#gas-section #accordion-set-own-limit {
-  cursor: pointer;
-  border-bottom: 1px solid rgba(0,0,0,.1);
-  border-top: 1px solid rgba(0,0,0,.1);
-}
-
-#gas-section #accordion-set-own-limit i {
-  float: right;
-}
