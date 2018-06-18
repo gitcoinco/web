@@ -70,7 +70,7 @@ var save_sidebar_latest = function() {
 
 };
 
-var get_this_search_name = function(){
+var get_this_search_name = function() {
   var names = [];
   var eles = $('.filter-tag');
 
@@ -81,22 +81,23 @@ var get_this_search_name = function(){
   }
   names = names.join(',');
   return names;
-}
+};
 
-var is_search_already_saved = function(){
+var is_search_already_saved = function() {
   var this_search = get_this_search_name();
 
   for (let i = 0; i < 100; i++) {
     var new_key = '_name_' + i;
     var result = localStorage[new_key];
-    if(typeof result != 'undefined'){
-      if(this_search == result){
+
+    if (typeof result != 'undefined') {
+      if (this_search == result) {
         return true;
       }
     }
   }
   return false;
-}
+};
 
 // saves search info in local storage
 var save_search = function() {
@@ -188,6 +189,7 @@ var remove_search = function(n) {
   replace_str = ',';
   localStorage['searches'] = localStorage['searches'].replace(search_str, replace_str);
   var key = '_name_' + n;
+
   localStorage.removeItem(key);
 };
 
@@ -530,7 +532,7 @@ var refreshBounties = function(do_save_search) {
   toggleAny(event);
   getFilters();
   if (do_save_search) {
-    if(!is_search_already_saved()){
+    if (!is_search_already_saved()) {
       save_search();
     }
   }
