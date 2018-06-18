@@ -366,9 +366,19 @@ def get_err_response(request, blank_img=False):
 
 
 def avatar(request, _org_name=None, add_gitcoincologo=None):
+    from dashboard.models import Profile
     # config
     icon_size = (215, 215)
     print(_org_name, add_gitcoincologo)
+
+    if _org_name:
+        try:
+            profile = Profile.objects.select_related('avatar').filter(handle__iexact=_org_name)
+            if profile.avatar and profile.avatar.svg:
+                return HttpResponse(profile.avatar.svg.file, content_type='image/svg+xml')
+        except Exception as e:
+            print(f'Exception in avatar view with handle: {e}')
+
     # default response
     # params
     repo_url = request.GET.get('repo', False)
