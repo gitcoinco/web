@@ -15,11 +15,11 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-<div class="w-100 mt-2 p-2" id="recommended_settings">
+<div class="w-100 mt-2 p-2" id="recommended_settings" style="border-top: 1px solid rgba(0,0,0,0.1);">
   {% if recommend_gas_price > 30 %}
     <div class="warning mb-2">{% trans "Warning: the ethereum network is quite congested at the moment." %} <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[{% trans "Stats" %}]</a></div>
   {% endif %}
-  <div class="row">
+  <div class="row" style="margin: auto -8px">
     <div class="col-lg-5 d-flex gas-dark-bg py-3">
       <img class="gas-image" src="{% static "v2/images/gas.png" %}">
       <div id="gas-fee-details" class="text-center pl-3">
@@ -39,7 +39,7 @@
 <div id="accordion-set-own-limit" class="py-2">
   Set my own gas limit <i class="fa fa-angle-down"></i>
 </div>
-<div class="w-100 mt-2 p-2" id="metamask_context">
+<div class="w-100 mt-2 p-2" id="metamask_context" style="border-bottom: 1px solid rgba(0,0,0,0.1);">
   {% if recommend_gas_price > 30 %}
     <div class="warning mb-2">{% trans "Warning: the ethereum network is quite congested at the moment." %} <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[{% trans "Stats" %}]</a></div>
   {% endif %}
