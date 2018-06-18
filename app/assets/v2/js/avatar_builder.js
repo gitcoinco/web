@@ -58,6 +58,15 @@ function changeSection(section) {
   changeColorPicker(section);
 }
 
+function getStaticPath(url, color) {
+  const pathSegments = url.split('/');
+  const filename = pathSegments.pop();
+  const baseOption = filename.split('-').slice(0, -1).join('-');
+
+  pathSegments.push(baseOption + '-' + color + '.svg');
+  return pathSegments.join('/');
+}
+
 function changeColor(palette, color) {
   $(`#picker-${options[palette]}`).removeClass('selected');
   options[palette] = color;
@@ -66,12 +75,19 @@ function changeColor(palette, color) {
   $(`.${palette}-dependent`).each(function(idx, elem) {
     const background = $(elem).css('background-image');
     const url = background.split('"')[1];
-    const pathSegments = url.split('/');
-    const filename = pathSegments.pop();
-    const baseOption = filename.split('-').slice(0, -1).join('-');
+    const backgroundNewPath = getStaticPath(url, color);
 
-    pathSegments.push(baseOption + '-' + color + '.svg');
-    $(elem).css('background-image', `url(${pathSegments.join('/')})`);
+    $(elem).css('background-image', `url(${backgroundNewPath})`);
+
+    if ($(elem).data('path')) {
+      const pathData = $(elem).data('path');
+      const pathNewData = getStaticPath(pathData, color);
+
+      $(elem).data('path', pathNewData);
+      if ($(elem).parent().hasClass('selected')) {
+        $(elem).parent().trigger('click').trigger('click');
+      }
+    }
   });
 }
 
