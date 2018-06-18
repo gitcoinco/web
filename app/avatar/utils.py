@@ -178,7 +178,7 @@ def build_temporary_avatar_component(
     return svg
 
 
-def build_avatar_svg(svg_path='test.svg', line_color='#781623', icon_size=None, payload=None, temp=False):
+def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None, payload=None, temp=False):
     icon_size = icon_size or (215, 215)
     icon_width = icon_size[0]
     icon_height = icon_size[1]
@@ -235,11 +235,11 @@ def build_avatar_svg(svg_path='test.svg', line_color='#781623', icon_size=None, 
 
     for component in flat_components:
         if component in payload:
-            components.append(build_avatar_component(f"{component}/{payload.get(component, '0')}.svg", icon_size))
+            components.append(build_avatar_component(f"{component.title()}/{payload.get(component, '0')}.svg", icon_size))
 
     for component in multi_components:
         if component in payload:
-            components.append(build_avatar_component(f"{component}/{payload.get(component)}"))
+            components.append(build_avatar_component(f"{component.title()}/{payload.get(component)}"))
 
     final_avatar = Figure(*components)
 
