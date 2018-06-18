@@ -157,14 +157,6 @@ button.avatar-option {
   border: 2px solid #150069 !important;
 }
 
-.button {
-  border: 1px solid #150069;
-  color: #150069;
-}
-.button:hover {
-  text-decoration: underline;
-  color: #150069;
-}
 #save-button {
   background-color: #150069;
   color: white;
