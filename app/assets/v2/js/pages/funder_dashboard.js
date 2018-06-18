@@ -165,7 +165,7 @@ $(function () {
         url: postUrl,
         type: 'POST',
         success: function (data) {
-          var funds = $.parseJSON(data.funds);
+          var funds = data.funds;
           cbRenderFunds(funds);
         }
       });
@@ -252,7 +252,7 @@ $(function () {
         url: postUrl,
         type: 'POST',
         success: function (data) {
-          var bounties = $.parseJSON(data.bounties);
+          var bounties = data.bounties;
           cbRenderBounties(bounties);
         }
       });
@@ -272,3 +272,4 @@ $(function () {
   activateOutgoingFunds();
   activateAllBounties();
 });
+
