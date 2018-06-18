@@ -489,14 +489,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js">
     </script>
     <script type="text/javascript">
-      (function() {
-        var funderDashboardUrls = {
-          outgoingFundsUrl: {% url "funder_dashboard_outgoing_funds" %},
-          bountiesUrl: {% url "funder_dashboard_bounties" %}
-        }
-
-        window.funderDashboardUrls = funderDashboardUrls;
-      })();
+      window.funderDashboardUrls = {
+        outgoingFundsUrl: "{% url "funder_dashboard_outgoing_funds" %}",
+        bountiesUrl: "{% url "funder_dashboard_bounties" %}"
+      };
     </script>
     <script src="{% static "v2/js/funder_dashboard.js" %}"></script>
     {% include 'shared/rollbar.html' %

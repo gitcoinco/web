@@ -1,12 +1,12 @@
 $(function () {
-  function activateChart() {
+  function activatePayoutHistory() {
     var chart = updateChart(null);
 
     var $currentChartFilter = null;
     handleChartChange();
 
     function handleChartChange() {
-      $('.funder-dashboard__payout-history__control').click(function() {
+      $('.funder-dashboard__payout-history__control').click(function () {
         if ($(this) !== $currentChartFilter) {
           var classSelected = 'funder-dashboard__payout-history__control--selected';
           $('.funder-dashboard__payout-history__control').removeClass(classSelected);
@@ -121,7 +121,7 @@ $(function () {
     var getFunds = getOutgoingFunds.bind(this, cbRenderFunds);
 
     getFunds();
-    $('.funder-dashboard__outgoing-funds__filter').change(function() {
+    $('.funder-dashboard__outgoing-funds__filter').change(function () {
       clearFunds();
       getFunds();
     });
@@ -155,15 +155,19 @@ $(function () {
     function getOutgoingFunds(cbRenderFunds) {
       var filterBaseSel = 'funder-dashboard__outgoing-funds__filter';
 
-      // below should be an endpoint call, these 2 should be query params: typeOrStatus and ageOrValue
       var includeOnly = getTypeOrStatusFilterValue(filterBaseSel);
       var orderBy = getAgeOrValueFilterValue(filterBaseSel);
 
-      var postUrl = window.funderDashboardUrls.outgoingFundsUrl + "?includeOnly=" + includeOnly + "&orderBy=" + orderBy;
+      var postUrl =
+        window.funderDashboardUrls.outgoingFundsUrl + "?includeOnly=" + includeOnly + "&orderBy=" + orderBy;
 
-      $.post(postUrl, function(data) {
-        var funds = $.parseJSON(data.funds);
-        cbRenderFunds(funds);
+      $.ajax({
+        url: postUrl,
+        type: 'POST',
+        success: function (data) {
+          var funds = $.parseJSON(data.funds);
+          cbRenderFunds(funds);
+        }
       });
 
       function getTypeOrStatusFilterValue(filterBaseSel) {
@@ -198,7 +202,7 @@ $(function () {
     var getBounties = getAllBounties.bind(this, cbRenderBounties);
 
     getBounties();
-    $('.funder-dashboard__all-bounties__filter').change(function() {
+    $('.funder-dashboard__all-bounties__filter').change(function () {
       clearBounties();
       getBounties();
     });
@@ -241,11 +245,16 @@ $(function () {
       var includeOnly = getTypeOrStatusFilterValue(filterBaseSel);
       var orderBy = getAgeOrValueFilterValue(filterBaseSel);
 
-      var postUrl = window.funderDashboardUrls.bountiesUrl + "?includeOnly=" + includeOnly + "&orderBy=" + orderBy;
+      var postUrl =
+        window.funderDashboardUrls.bountiesUrl + "?includeOnly=" + includeOnly + "&orderBy=" + orderBy;
 
-      $.post(postUrl, function(data) {
-        var bounties = $.parseJSON(data.bounties);
-        cbRenderBounties(bounties);
+      $.ajax({
+        url: postUrl,
+        type: 'POST',
+        success: function (data) {
+          var bounties = $.parseJSON(data.bounties);
+          cbRenderBounties(bounties);
+        }
       });
 
       function getTypeOrStatusFilterValue(filterBaseSel) {
@@ -258,7 +267,7 @@ $(function () {
     }
   }
 
-  activateChart();
+  activatePayoutHistory();
   activateTotalBudget();
   activateOutgoingFunds();
   activateAllBounties();

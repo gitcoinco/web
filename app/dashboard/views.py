@@ -978,7 +978,7 @@ def funder_dashboard(request):
         "active_bounties_count": "154",
         "completed_bounties_count": "174",
         "expired_bounties_count": "8",
-        "top_contributors": top_contributors
+        'top_contributors': top_contributors
     }
     return TemplateResponse(request, 'funder_dashboard.html', context)
 
