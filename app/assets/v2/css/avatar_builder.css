@@ -157,20 +157,6 @@ button.avatar-option {
   border: 2px solid #150069 !important;
 }
 
-#save-button {
-  background-color: #150069;
-  color: white;
-}
-#save-button[disabled] {
-  color: #CCC;
-  border-color: #CCC;
-  cursor: default;
-  background-color: inherit;
-}
-#save-button[disabled]:hover {
-  text-decoration: none;
-}
-
 @media (min-width: 500px) {
   #avatar-builder {
     flex-wrap: nowrap !important;

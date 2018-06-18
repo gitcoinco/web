@@ -198,12 +198,26 @@ function setOption(option, value, target) {
 }
 
 function saveAvatar() {
+  $(document).ajaxStart(function() {
+    loading_button($('#save-avatar'));
+  });
+
+  $(document).ajaxStop(function() {
+    unloading_button($('#save-avatar'));
+  });
+
   var request = $.ajax({
     url: '/avatar/save',
     type: 'POST',
     data: JSON.stringify(options),
     dataType: 'json',
-    contentType: 'application/json; charset=utf-8'
+    contentType: 'application/json; charset=utf-8',
+    success: function(response) {
+      _alert({ message: gettext('Avatar has been saved!')}, 'success');
+    },
+    error: function() {
+      _alert({ message: gettext('Error occured while saving. Please try again.')}, 'error');
+    }
   });
 }
 
