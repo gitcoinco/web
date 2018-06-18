@@ -33,6 +33,7 @@ from marketing.models import Stat
 from .models import DataPayload
 
 
+@staff_member_required
 def data_viz_helper_get_data_responses(request, visual_type):
     """Handle visualization of the request response data based on type.
 
@@ -475,10 +476,10 @@ def viz_sankey(request, _type, template='square_graph'):
     return viz_graph(request, _type, template)
 
 
-def helper_hide_pii(username):
+def helper_hide_pii(username, num_chars=3):
     if not username:
         return None
-    new_username = str(username)[0:3] + "*******"
+    new_username = str(username)[0:num_chars] + "*******"
     return new_username
 
 
@@ -631,6 +632,7 @@ def viz_graph(request, _type, template='graph'):
     return response
 
 
+@staff_member_required
 def viz_draggable(request, key='email_open'):
     """Render a draggable graph visualization.
 
@@ -690,7 +692,12 @@ def viz_draggable(request, key='email_open'):
     return TemplateResponse(request, 'dataviz/draggable.html', params)
 
 
-def viz_scatterplot(request, key='hourly_rate'):
+def viz_scatterplot_stripped(request, key='hourly_rate'):
+    return viz_scatterplot(request, 'hourly_rate', 'dataviz/scatterplot_stripped.html', True)
+
+
+@staff_member_required
+def viz_scatterplot(request, key='hourly_rate', template='dataviz/scatterplot.html', hide_usernames=False):
     """Render a scatterplot visualization.
 
     Args:
@@ -708,10 +715,13 @@ def viz_scatterplot(request, key='hourly_rate'):
             print(bf.pk, bf.created_on)
             try:
                 weight = math.log(bf.bounty.value_in_usdt, 10) / 4
+                username = bf.bounty.org_name
+                if hide_usernames:
+                    username = "repo: " + helper_hide_pii(username.lower(), 1)
                 row = [
                     str(bf.bounty.hourly_rate),
                     str((timezone.now() - bf.accepted_on).days),
-                    bf.bounty.org_name,
+                    username,
                     str(weight),
                 ]
                 if bf.bounty.hourly_rate:
@@ -733,4 +743,6 @@ def viz_scatterplot(request, key='hourly_rate'):
         'type_options': type_options,
         'viz_type': key,
     }
-    return TemplateResponse(request, 'dataviz/scatterplot.html', params)
+    response = TemplateResponse(request, template, params)
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
