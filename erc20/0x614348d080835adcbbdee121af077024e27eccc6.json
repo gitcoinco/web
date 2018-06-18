@@ -1,0 +1,23 @@
+{
+  "symbol": "LDG",
+  "address": "0x614348d080835adcbbdee121af077024e27eccc6",
+  "overview":{
+        "en": "A Blockchain-as-a-service (BaaS) platform offering transparent provenance solutions for authentication and legacy heritage solutions with the integration of Smart Application Platform, Smart Contracts & Smart Reward System",
+        "zh": "区块链即服务平台 (BaaS) 通过集成了智能应用平台、智能合约和智能奖励系统，为认证和传承遗产提供透明的出处解决方案。"
+  },
+  "website": "https://ledgit.com/",
+  "whitepaper": "https://ledgit.com/html/whitepaper/ledgit_whitepaper_en.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-08-08",
+  "initial_price":{
+        "ETH":"0.00041152 ETH",
+        "USD":"0.20 USD",
+        "BTC":"0.00003070 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/OfficialLedgit",
+    "telegram": "https://web.telegram.org/#/im?p=@icoledgit",
+    "github": "https://github.com/ledgitblockchain/ico",
+    "facebook": "https://www.facebook.com/LEDGITapps/"
+  }
+}
