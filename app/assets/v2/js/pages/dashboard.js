@@ -187,6 +187,8 @@ var remove_search = function(n) {
   search_str = ',' + n + ',';
   replace_str = ',';
   localStorage['searches'] = localStorage['searches'].replace(search_str, replace_str);
+  var key = '_name_' + n;
+  localStorage.removeItem(key);
 };
 
 
