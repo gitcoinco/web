@@ -619,6 +619,9 @@ input[type=text].loading {
   align-items: center;
   display: flex;
 }
+.alert .message .content{
+  display: inline;
+}
 
 .alert .message::before {
   content: url('/static/v2/images/info.svg');
