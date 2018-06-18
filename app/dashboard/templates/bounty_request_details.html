@@ -20,5 +20,9 @@
 <html lang="en">
   <body>
     {{ bounty_request.github_url }}
+    <form action="/issues/accept" method="POST">
+      {% csrf_token %}
+      <button>Submit</button>
+    </form>
   </body>
 </html>

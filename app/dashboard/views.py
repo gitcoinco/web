@@ -50,7 +50,7 @@ from web3 import HTTPProvider, Web3
 from .helpers import handle_bounty_views
 from .models import (
     Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip, Tool,
-    ToolVote, UserAction, BountyRequest,
+    ToolVote, UserAction, BountyRequest
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_github,
@@ -59,6 +59,8 @@ from .notifications import (
 from .utils import (
     get_bounty, get_bounty_id, get_context, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
 )
+
+from .router import BountySerializer
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -528,12 +530,15 @@ def dashboard(request):
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
         'requests': requests,
     }
+
     return TemplateResponse(request, 'dashboard.html', params)
 
 def bounty_request_details(request, bounty_request_id):
     """Display the request details."""
 
     bounty_request = BountyRequest.objects.get(pk=bounty_request_id)
+
+    logging.error(bounty_request)
 
     params = {
         'active': 'dashboard',
@@ -544,8 +549,20 @@ def bounty_request_details(request, bounty_request_id):
 
     return TemplateResponse(request, 'bounty_request_details.html', params)
 
+def accept_bounty_request(request):
+    if request.method == "POST":
+        bounty_request = BountyRequest.objects.get(pk=3)
+
+    response = {
+        'status': 200,
+        'message': 'ken',
+    }
+
+    return JsonResponse(response)
+
 def new_bounty_request(request):
     """Create a new bounty."""
+
     profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
     profile = Profile.objects.get(pk=profile_id)
 

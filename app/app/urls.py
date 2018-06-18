@@ -72,7 +72,8 @@ urlpatterns = [
 
     # action URLs
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
-    url(r'^bounty/request/?', dashboard.views.new_bounty_request, name='new_request'),
+    re_path(r'^bounty/request/?', dashboard.views.new_bounty_request, name='new_request'),
+    path('request/accept', dashboard.views.accept_bounty_request, name='accept_request'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
@@ -130,9 +131,9 @@ urlpatterns = [
     url(r'^legal/apitos/?', dashboard.views.apitos, name='apitos'),
     url(r'^legal/?', dashboard.views.terms, name='legal'),
 
-    url(
+    re_path(
         r'^request/(?P<bounty_request_id>.*)/',
-        dashboard.views.bounty_request_details, 
+        dashboard.views.bounty_request_details,
         name='bounty_request_details'
     ),
 
