@@ -40,10 +40,10 @@ logs: ## Print and actively tail the docker compose logs.
 	@docker-compose logs -f
 
 pytest: ## Run pytest (Backend)
-	@docker-compose exec web pytest -p no:ethereum
+	@docker-compose exec web DJANGO_SETTINGS_MODULE="app.settings";pytest -p no:ethereum
 
 pytest-pdb: ## Run pytest with pdb support (Backend)
-	@docker-compose exec web pytest -p no:ethereum --pdb --pdbcls=IPython.terminal.debugger:Pdb
+	@docker-compose exec web DJANGO_SETTINGS_MODULE="app.settings";pytest -p no:ethereum --pdb --pdbcls=IPython.terminal.debugger:Pdb
 
 stylelint: ## Run stylelint against the project directory. Requires node, npm, and project dependencies.
 	@npm run stylelint

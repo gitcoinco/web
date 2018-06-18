@@ -35,6 +35,7 @@ from faucet.models import FaucetRequest
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from marketing.mails import new_faucet_request, processed_faucet_request, reject_faucet_request
 
+
 @require_GET
 def faucet(request):
     params = {
