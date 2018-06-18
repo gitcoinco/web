@@ -698,6 +698,10 @@ def viz_scatterplot_stripped(request, key='hourly_rate'):
 
 @staff_member_required
 def viz_scatterplot(request, key='hourly_rate', template='dataviz/scatterplot.html', hide_usernames=False):
+    return viz_scatterplot_helper(request, key, template, hide_usernames)
+
+
+def viz_scatterplot_helper(request, key='hourly_rate', template='dataviz/scatterplot.html', hide_usernames=False):
     """Render a scatterplot visualization.
 
     Args:

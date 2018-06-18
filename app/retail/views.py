@@ -586,11 +586,12 @@ def itunes(request):
 
 
 def ios(request):
-    #return HttpResponse('<h1>Coming soon!</h1> If youre seeing this page its because apple is reviewing the app... and release is imminent :)')
 
     context = {
         'active': 'ios',
-        'title': 'iOS',
+        'title': 'iOS app',
+        'card_title': 'Gitcoin has an iOS app!',
+        'card_desc': 'Gitcoin aims to make it easier to grow open source from anywhere in the world, anytime.  We’re proud to announce our iOS app, which brings us a step closer to this north star!Browse open bounties on the go, express interest, and coordinate your work on the move.',
     }
     return TemplateResponse(request, 'ios.html', context)
 
