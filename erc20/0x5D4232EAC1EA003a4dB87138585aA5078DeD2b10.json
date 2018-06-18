@@ -2,14 +2,11 @@
   "symbol": "GCB",
   "address": "0x5D4232EAC1EA003a4dB87138585aA5078DeD2b10",
   "overview":{
-        "en": "The purpose of the Gong Bo Chuang Shi coin is to exchange the gold beans in the emall, and then to get through the exchange channels of system credits and ecological integration, so as to achieve the purpose of exchange between systems, the sharing of the users and the common ecological prosperity.",
-        "zh": "公博创世币的用途定位是作为和商城内积分金豆进行兑换，进而打通和其他商城、生态积分的兑换渠道，达到积分互换、用户共享、生态共同繁荣的目的。"
+        "en": "The purpose of GCB is to exchange credits with the mall, so as to achieve the transfer and payment of credits.",
+        "zh": "公博创世币的用途和商城内积分进行兑换，实现积分的流转和支付。"
   },
   "email": "rolins88@163.com",
-  "website": "http://www.gzgongbo.com/app/index.php?i=14&c=entry&m=ewei_shopv2&do=mobile&r=companyweb&from=singlemessage&isappinstalled=0",
+  "website": "www.gzgongbo.com",
   "state": "NORMAL",
-  "published_on": "2018-06-11",
-  "initial_price":{
-        "USD":"0.01558 USD"
-  }
+  "published_on": "2018-06-11"
 }
