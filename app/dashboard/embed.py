@@ -373,7 +373,7 @@ def avatar(request, _org_name=None, add_gitcoincologo=None):
 
     if _org_name:
         try:
-            profile = Profile.objects.select_related('avatar').filter(handle__iexact=_org_name)
+            profile = Profile.objects.select_related('avatar').get(handle__iexact=_org_name)
             if profile.avatar and profile.avatar.svg:
                 return HttpResponse(profile.avatar.svg.file, content_type='image/svg+xml')
         except Exception as e:
