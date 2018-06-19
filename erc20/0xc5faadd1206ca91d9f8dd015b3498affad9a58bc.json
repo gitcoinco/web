@@ -16,13 +16,13 @@
         "BTC":"0 BTC"
   },
   "links": {
-    "blog": "",
-    "twitter": "",
-    "telegram": "",
-    "github": "",
-    "facebook": "",
-    "reddit": "",
-    "slack": "",
-    "medium": ""
+    "blog": "https://www.google.com",
+    "twitter": "https://www.google.com",
+    "telegram": "https://www.google.com",
+    "github": "https://www.google.com",
+    "facebook": "https://www.google.com",
+    "reddit": "https://www.google.com",
+    "slack": "https://www.google.com",
+    "medium": "https://www.google.com"
   }
 }
