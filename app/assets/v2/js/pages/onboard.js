@@ -111,6 +111,7 @@ onboard.getFilters = function(savedKeywords) {
   }
 
   $.each($('input[type=checkbox][name=tech-stack]:checked'), function() {
+    $('.suggested-tag input[type=checkbox]:checked + span i').removeClass('fa-plus').addClass('fa-check');
     var value = $(this).attr('value');
 
     _words.push(value);
