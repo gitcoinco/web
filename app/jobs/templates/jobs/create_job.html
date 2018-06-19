@@ -22,10 +22,6 @@
 <head>
     {% include 'shared/head.html' %}
     <style>
-      #new-job-form {
-        padding-left: 200px;
-      }
-
       .job-header {
         padding-bottom: 6em;
       }
@@ -50,53 +46,70 @@
       <div id="job-board-title">Post a Job</div>
     </div>
 
-    <div class="row no-gutter">
-        <div class="col-12 body">
-            <div class="container-fluid no-gutter">
-                <div class="row font-smaller-2" id="form_container">
-                    <form id="new-job-form" method="POST" action="#">
-                      {% csrf_token %}
-                        <div class="col-6">
-                          <div class="col-12">{{ form.title.label_tag }}</div>
-                          <div class="col-12 w-100">
-                            {{ form.title.errors }}
-                            {{ form.title }}
-                          </div>
+    <div class="row">
+      <div class="col-sm-12 col-lg-12">
+        <div id="form_container">
+          <div class="row d-flex justify-content-center my-5">
+            <div id="primary_form" class="col-lg-5 col-sm-12">
+              <form id="new-job-form" method="POST" action="#">
+                {% csrf_token %}
+                    <label class="form__label">{{ form.title.label_tag }}</label>
+                    <input name='jobTitle' id="jobTitle" class="form__input" type="url" placeholder="Enter Job Title" value="{% if form.title.value  %}{{ form.title.value }}{%endif%}" />
+                    <div class="col-12 w-100">
+                      {{ form.title.errors }}
+                    </div>
 
-                          <div class="col-12">{{ form.job_type.label_tag }}</div>
-                          <div class="col-12 w-100">
-                            {{ form.job_type.errors }}
-                            {{ form.job_type }}
-                          </div>
+                    <label class="form__label">{{ form.job_type.label_tag }}</label>
+                    <div class="form__select2">
+                      <select class="js-select2" name="jobType">
+                        <option value="full_time">{% trans 'Full-Time' %}</option>
+                        <option value="part_time">{% trans 'Part-Time' %}</option>
+                        <option value="contract">{% trans 'Contract' %}</option>
+                        <option value="intern">{% trans 'Intern' %}</option>
+                      </select>
+                    </div>
+                    <div class="col-12 w-100">
+                      {{ form.job_type.errors }}
+                      <!-- {{ form.job_type }} -->
+                    </div>
 
-                          <div class="col-12">{{ form.location.label_tag }}</div>
-                          <div class="col-12 w-100">
-                            {{ form.location.errors }}
-                            {{ form.location }}
-                          </div>
+                    <label class="form__label">{{ form.location.label_tag }}</label>
+                    <input name='jobTitle' id="jobLocation" class="form__input" type="url" placeholder="Enter Job Location" value="{% if form.location.value  %}{{ form.location.value }}{%endif%}" />
+                    <div class="col-12 w-100">
+                      {{ form.location.errors }}
+                    </div>
 
-                          <div class="col-12">{{ form.skills.label_tag }}</div>
-                          <div class="col-12 w-100">
-                            {{ form.skills.errors }}
-                            {{ form.skills }}
-                          </div>
+                    <label class="form__label">{{ form.skills.label_tag }}</label>
+                    <div class="form__select2">
+                      <select class="js-select2" name="jobSkill">
+                        <option value="java">{% trans 'Java' %}</option>
+                        <option value="python">{% trans 'Python' %}</option>
+                      </select>
+                    </div>
+                    <div class="col-12 w-100">
+                      {{ form.skills.errors }}
+                      <!-- {{ form.skills }} -->
+                    </div>
 
-                          <div class="col-12">{{ form.company.label_tag }}</div>
-                          <div class="col-12 w-100">
-                            {{ form.company.errors }}
-                            {{ form.company }}
-                          </div>
+                    <label class="form__label">{{ form.company.label_tag }}</label>
+                    <input name='jobTitle' id="jobCompany" class="form__input" type="url" placeholder="Enter Job Location" value="{% if form.company.value  %}{{ form.company.value }}{%endif%}" />
+                    <div class="col-12 w-100">
+                      {{ form.company.errors }}
+                    </div>
 
-                          <div class="col-12">{{ form.description.label_tag }}</div>
-                          <div class="col-12 w-100">
-                            {{ form.description.errors }}
-                            {{ form.description }}
-                          </div>
-                          <button type="submit">Submit</button>
-                    </form>
-                </div>
+                    <label class="form__label">{{ form.description.label_tag }}</label>
+                    <textarea name="description" class="form__input" id="description" placeholder="Add some new feature." value="{% if form.description.value  %}{{ form.description.value }}{%endif%}"></textarea>
+                    <div class="col-12 w-100">
+                      {{ form.description.errors }}
+                    </div>
+                    <div class="form__footer form__footer--right">
+                      <button class="button button--primary btn-block js-submit" type="submit">Submit</button>
+                    </div>
+              </form>
             </div>
+          </div>
         </div>
+      </div>
     </div>
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
