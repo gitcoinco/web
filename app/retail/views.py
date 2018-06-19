@@ -61,6 +61,7 @@ def index(request):
     }
     return TemplateResponse(request, 'index.html', context)
 
+
 def how_it_works(request):
     """Show How it Works / Funder page."""
     context = {
