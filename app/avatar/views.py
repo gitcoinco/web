@@ -77,33 +77,12 @@ def avatar(request):
         return response
 
 
-# @csrf_exempt
-# def save_avatar(request):
-#     """Save the Avatar configuration."""
-#     if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile'):
-#         messages.info(request, _('You must be authenticated to build an avatar.'))
-#         return redirect(reverse('social:begin', args=('github')))
-
-#     profile = request.user.profile
-#     payload = handle_avatar_payload(request)
-#     try:
-#         profile.avatar = Avatar.objects.create(config=payload)
-#         profile.avatar.create_from_config(svg_name=profile.handle)
-#         profile.avatar_id = avatar.id
-#         profile.save()
-#         messages.success(request, _(''))
-#     except Exception as e:
-#         logger.error(e)
-#         messages.error(request, _('An error occurred.  We\'re looking into it!'))
-#     return HttpResponse(profile.avatar.svg.file, content_type='image/svg+xml')
-
-
 @csrf_exempt
 def save_avatar(request):
     """Save the Avatar configuration."""
     response = {'status': 200, 'message': 'Avatar saved'}
     if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile'):
-        return redirect(reverse('social:begin', args=('github')))
+        return JsonResponse({'status': 405, 'message': 'Authentication required'}, status=405)
 
     profile = request.user.profile
     payload = handle_avatar_payload(request)

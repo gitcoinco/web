@@ -30,6 +30,7 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
@@ -521,6 +522,9 @@ def send_tip_2(request):
 
 def contributor_onboard(request):
     """Handle displaying the first time user experience flow."""
+    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile'):
+        return redirect('social:begin', backend='github')
+
     params = {
         'title': _('Onboarding Flow'),
         'steps': ['github', 'metamask', 'avatar', 'skills'],
@@ -873,7 +877,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 helper_handle_mark_as_remarket_ready(request, bounty)
                 helper_handle_admin_contact_funder(request, bounty)
                 helper_handle_override_status(request, bounty)
-                
+
         except Bounty.DoesNotExist:
             pass
         except Exception as e:
