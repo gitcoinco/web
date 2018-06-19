@@ -51,7 +51,7 @@
           </h3>
           <div class="font-caption row">
             <div class="col-12">
-              <img class="github-avatar" src="{% url "avatar" %}?repo=https://github.com/{{ github_handle }}">
+              <img class="github-avatar" src="{% url "org_avatar" github_handle %}?repo=https://github.com/{{ github_handle }}">
               <span>
                 <p>{{ github_handle }}</p>
                 <a href="{% url "logout" %}?next={{ request.get_full_path }}">
