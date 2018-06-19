@@ -16,6 +16,10 @@ onboard.showTab = function(num) {
   else
     $('#prev-btn').show();
 
+  if (num === 1) {
+    $('.controls').hide();
+  }
+
   if (num == ($('.step').length) - 1) {
     $('#next-btn').html(gettext('Done'));
     $('#next-btn').attr('onclick', 'redirectURL()');
@@ -50,6 +54,9 @@ onboard.watchMetamask = function() {
         </a>
       </div>`
     );
+    if (current === 1) {
+      $('.controls').hide();
+    }
   } else if (!web3.eth.coinbase) {
     $('.step #metamask').html(`
       <div class="locked">
@@ -59,8 +66,14 @@ onboard.watchMetamask = function() {
         </a>
       </div>`
     );
+    if (current === 1) {
+      $('.controls').hide();
+    }
   } else {
     $('.step #metamask').html('<div class="unlocked"><img src="/static/v2/images/metamask.svg" %}><span class="mr-1">' + gettext('Unlocked') + '</span><i class="far fa-check-circle"></i></div>');
+    if (current === 1) {
+      $('.controls').show();
+    }
   }
 };
 

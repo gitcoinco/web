@@ -42,10 +42,12 @@
               {% include 'ftux/'|add:step|add:'.html' %}
             </div>
           {% endfor %}
+          {% if github_handle %}
           <div class="controls">
             <p id="prev-btn" class= ""onclick="changeStep(-1)">{% trans "Previous" %}</p>
             <p id="next-btn" onclick="changeStep(1)">{% trans "Next" %}</p>
           </div>
+          {% endif %}
         </form>
       </div>
     </div>
