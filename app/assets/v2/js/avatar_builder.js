@@ -27,9 +27,41 @@ const sectionPalettes = {
   Clothing: 'ClothingColor'
 };
 
+let localStorage;
+
+try {
+  localStorage = window.localStorage;
+} catch (e) {
+  localStorage = {};
+}
+
 layers.forEach(name => {
   options[name] = null;
+  if (localStorage[name]) {
+    const targetId = getIdFromPath(localStorage[name], name);
+    const color = getColorFromPath(localStorage[name]);
+
+    $(targetId).trigger('click');
+    const pallete = $('#preview-' + name).attr('class').replace('preview-section ', '').replace('-dependent', '');
+
+    if (color) {
+      changeColor(pallete, color);
+    }
+    options[name] = localStorage[name];
+  }
 });
+
+function getIdFromPath(path, option) {
+  const optionChoice = path.split('.')[0].split('/').slice(-1)[0].split('-')[0];
+
+  return '#avatar-option-' + option + '-' + optionChoice;
+}
+
+function getColorFromPath(path) {
+  const color = path.split('.')[0].split('/').slice(-1)[0].split('-')[1];
+
+  return color;
+}
 
 function changeColorPicker(section) {
   const palette = sectionPalettes[section];
@@ -98,6 +130,7 @@ function changeImage(option, path) {
     if (path) {
       elem.css('background-image', `url(/static/${path})`);
       options[option] = path;
+      localStorage[option] = path;
     } else {
       elem.remove();
       options[option] = null;
@@ -114,6 +147,7 @@ function changeImage(option, path) {
 
     $('#avatar-preview').append(newEl);
     options[option] = path;
+    localStorage[option] = path;
   }
 }
 
