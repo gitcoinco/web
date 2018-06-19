@@ -68,11 +68,13 @@ onboard.watchMetamask = function() {
     );
     if (current === 1) {
       $('.controls').hide();
+      $('#metamask-video').show();
     }
   } else {
     $('.step #metamask').html('<div class="unlocked"><img src="/static/v2/images/metamask.svg" %}><span class="mr-1">' + gettext('Unlocked') + '</span><i class="far fa-check-circle"></i></div>');
     if (current === 1) {
       $('.controls').show();
+      $('#metamask-video').hide();
     }
   }
 };
