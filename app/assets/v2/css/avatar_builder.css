@@ -1,6 +1,7 @@
 #avatar-builder {
   display: flex;
   flex-flow: row wrap;
+  align-items: flex-start;
 }
 #avatar-builder__sections {
   text-align: left;
@@ -146,13 +147,14 @@ button.avatar-option {
 }
 #color-picker {
   text-align: center;
+  display: flex;
   line-height: 1;
 }
 .options-Background__option {
-  width: 51px;
   height: 28px;
   border: 1px solid #C4C4C4;
   cursor: pointer;
+  flex-grow: 1;
 }
 .selected, .avatar-option:active, .options-Background__option:active {
   border: 2px solid #150069 !important;
@@ -172,6 +174,7 @@ button.avatar-option {
   #avatar-area {
     flex-wrap: nowrap !important;
     justify-content: flex-start !important;
+    max-width: 525px;
   }
   #section-title {
     text-align: left;
