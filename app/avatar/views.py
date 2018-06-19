@@ -27,6 +27,8 @@ from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
+from dashboard.utils import create_user_action
+
 from .models import Avatar
 from .utils import build_avatar_svg, handle_avatar_payload
 
@@ -114,8 +116,8 @@ def save_avatar(request):
             profile.avatar.save()
         response['message'] = 'Avatar updated'
         profile.avatar.create_from_config(svg_name=profile.handle)
+        create_user_action(profile.user, 'updated_avatar', request)
     except Exception as e:
-        print('E: ', e)
         response['status'] = 400
         response['message'] = 'Bad Request'
         logger.error(e)

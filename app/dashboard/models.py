@@ -1710,6 +1710,7 @@ class UserAction(SuperModel):
         ('Logout', 'Logout'),
         ('added_slack_integration', 'Added Slack Integration'),
         ('removed_slack_integration', 'Removed Slack Integration'),
+        ('updated_avatar', 'Updated Avatar'),
     ]
     action = models.CharField(max_length=50, choices=ACTION_TYPES)
     user = models.ForeignKey(User, related_name='actions', on_delete=models.SET_NULL, null=True)
