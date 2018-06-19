@@ -20,17 +20,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import logging
 from tempfile import NamedTemporaryFile
 
-from django.contrib import messages
-from django.http import Http404, HttpResponse, JsonResponse
-from django.shortcuts import redirect
-from django.urls import reverse
-from django.utils.translation import gettext_lazy as _
+from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.utils import create_user_action
+from github.utils import org_name
+from PIL import Image, ImageOps
 
 from .models import Avatar
-from .utils import build_avatar_svg, handle_avatar_payload
+from .utils import add_gitcoin_logo_blend, build_avatar_svg, get_avatar, get_err_response, handle_avatar_payload
 
 logger = logging.getLogger(__name__)
 
@@ -101,3 +99,50 @@ def save_avatar(request):
         response['message'] = 'Bad Request'
         logger.error(e)
     return JsonResponse(response, status=response['status'])
+
+
+def handle_avatar(request, _org_name=None, add_gitcoincologo=None):
+    from dashboard.models import Profile
+    icon_size = (215, 215)
+
+    if _org_name:
+        try:
+            profile = Profile.objects.select_related('avatar').get(handle__iexact=_org_name)
+            if profile.avatar and profile.avatar.svg:
+                return HttpResponse(profile.avatar.svg.file, content_type='image/svg+xml')
+        except Exception as e:
+            logger.error(e)
+
+    # default response
+    # params
+    repo_url = request.GET.get('repo', False)
+    if not _org_name and (not repo_url or 'github.com' not in repo_url):
+        return get_err_response(request, blank_img=(_org_name == 'Self'))
+
+    try:
+        # get avatar of repo
+        if not _org_name:
+            _org_name = org_name(repo_url)
+
+        filepath = get_avatar(_org_name)
+
+        # new image
+        img = Image.new('RGBA', icon_size, (255, 255, 255))
+
+        # execute
+        avatar = Image.open(filepath, 'r').convert("RGBA")
+        avatar = ImageOps.fit(avatar, icon_size, Image.ANTIALIAS)
+        offset = 0, 0
+        img.paste(avatar, offset, avatar)
+
+        # Determine if we should add the Gitcoin logo
+        add_gitcoincologo = add_gitcoincologo and _org_name != 'gitcoinco'
+        if add_gitcoincologo:
+            img = add_gitcoin_logo_blend(avatar, icon_size)
+
+        response = HttpResponse(content_type='image/png')
+        img.save(response, 'PNG')
+        return response
+    except (AttributeError, IOError, SyntaxError) as e:
+        logger.error(e)
+        return get_err_response(request, blank_img=(_org_name == 'Self'))

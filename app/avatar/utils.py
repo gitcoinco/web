@@ -21,9 +21,12 @@ import json
 import os
 from tempfile import NamedTemporaryFile
 
-from django.core.files import File
+from django.http import HttpResponse, JsonResponse
 from django.template import loader
 
+import requests
+from github.utils import get_user
+from PIL import Image, ImageOps
 from svgutils.compose import SVG, Figure, Line
 
 AVATAR_BASE = 'assets/other/avatars/'
@@ -269,3 +272,72 @@ def handle_avatar_payload(request):
         elif v and k in valid_color_keys:
             avatar_dict[k] = v
     return avatar_dict
+
+
+def get_avatar(_org_name):
+    avatar = None
+    filename = f"{_org_name}.png"
+    filepath = AVATAR_BASE + filename
+    if _org_name == 'gitcoinco':
+        filepath = AVATAR_BASE + '../../v2/images/helmet.png'
+    try:
+        avatar = Image.open(filepath, 'r').convert("RGBA")
+    except IOError:
+        remote_user = get_user(_org_name)
+        if not remote_user.get('avatar_url', False):
+            return JsonResponse({'msg': 'invalid user'}, status=422)
+        remote_avatar_url = remote_user['avatar_url']
+
+        r = requests.get(remote_avatar_url, stream=True)
+        chunk_size = 20000
+        with open(filepath, 'wb') as fd:
+            for chunk in r.iter_content(chunk_size):
+                fd.write(chunk)
+        avatar = Image.open(filepath, 'r').convert("RGBA")
+
+        # make transparent
+        datas = avatar.getdata()
+
+        new_data = []
+        for item in datas:
+            if item[0] == 255 and item[1] == 255 and item[2] == 255:
+                new_data.append((255, 255, 255, 0))
+            else:
+                new_data.append(item)
+
+        avatar.putdata(new_data)
+        avatar.save(filepath, "PNG")
+    return filepath
+
+
+def add_gitcoin_logo_blend(avatar, icon_size):
+    # setup
+    sub_avatar_size = 50
+    sub_avatar_offset = (165, 165)
+
+    # get image for sub avatar
+    gitcoin_filepath = get_avatar('gitcoinco')
+    gitcoin_avatar = Image.open(gitcoin_filepath, 'r').convert("RGBA")
+    gitcoin_avatar = ImageOps.fit(gitcoin_avatar, (sub_avatar_size, sub_avatar_size), Image.ANTIALIAS)
+
+    # build new avatar
+    img2 = Image.new("RGBA", icon_size)
+    img2.paste(gitcoin_avatar, sub_avatar_offset)
+
+    # blend these two images together
+    img = Image.new("RGBA", avatar.size, (255, 255, 255))
+    img = Image.alpha_composite(img, avatar)
+    img = Image.alpha_composite(img, img2)
+
+    return img
+
+
+def get_err_response(request, blank_img=False):
+    from .views import handle_avatar
+    if not blank_img:
+        return handle_avatar(request, 'Self')
+
+    could_not_find = Image.new('RGBA', (1, 1), (0, 0, 0, 0))
+    err_response = HttpResponse(content_type="image/jpeg")
+    could_not_find.save(err_response, "PNG")
+    return err_response

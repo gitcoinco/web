@@ -24,6 +24,7 @@ from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
 from django.views.i18n import JavaScriptCatalog
 
+import avatar.views
 import credits.views
 import dashboard.embed
 import dashboard.helpers
@@ -149,8 +150,8 @@ urlpatterns = [
 
     # images
     re_path(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
-    re_path(r'^funding/avatar/?', dashboard.embed.avatar, name='avatar'),
-    re_path(r'^static/avatar/(.*)/(.*)?', dashboard.embed.avatar, name='org_avatar'),
+    re_path(r'^funding/avatar/?', avatar.views.handle_avatar, name='avatar'),
+    re_path(r'^static/avatar/(.*)/(.*)?', avatar.views.handle_avatar, name='org_avatar'),
     re_path(r'^static/viz/graph/(.*)?$', dataviz.d3_views.viz_graph, name='viz_graph'),
     re_path(r'^static/viz/sscatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot_stripped, name='viz_sscatterplot'),
 
