@@ -17,12 +17,20 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import logging
 from tempfile import NamedTemporaryFile
 
-from django.http import Http404, HttpResponse
+from django.contrib import messages
+from django.http import Http404, HttpResponse, JsonResponse
+from django.shortcuts import redirect
+from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
+from .models import Avatar
 from .utils import build_avatar_svg, handle_avatar_payload
+
+logger = logging.getLogger(__name__)
 
 
 def avatar(request):
@@ -67,21 +75,48 @@ def avatar(request):
         return response
 
 
+# @csrf_exempt
+# def save_avatar(request):
+#     """Save the Avatar configuration."""
+#     if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile'):
+#         messages.info(request, _('You must be authenticated to build an avatar.'))
+#         return redirect(reverse('social:begin', args=('github')))
+
+#     profile = request.user.profile
+#     payload = handle_avatar_payload(request)
+#     try:
+#         profile.avatar = Avatar.objects.create(config=payload)
+#         profile.avatar.create_from_config(svg_name=profile.handle)
+#         profile.avatar_id = avatar.id
+#         profile.save()
+#         messages.success(request, _(''))
+#     except Exception as e:
+#         logger.error(e)
+#         messages.error(request, _('An error occurred.  We\'re looking into it!'))
+#     return HttpResponse(profile.avatar.svg.file, content_type='image/svg+xml')
+
+
 @csrf_exempt
 def save_avatar(request):
     """Save the Avatar configuration."""
-    from .models import Avatar
+    response = {'status': 200, 'message': 'Avatar saved'}
     if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile'):
-        raise Http404
+        return redirect(reverse('social:begin', args=('github')))
 
     profile = request.user.profile
     payload = handle_avatar_payload(request)
     try:
-        avatar = Avatar.objects.create(config=payload)
-        avatar.create_from_config(svg_name=profile.handle)
-        profile.avatar_id = avatar.id
-        profile.save()
+        if not profile.avatar:
+            profile.avatar = Avatar.objects.create(config=payload)
+            profile.save()
+        else:
+            profile.avatar.config = payload
+            profile.avatar.save()
+        response['message'] = 'Avatar updated'
+        profile.avatar.create_from_config(svg_name=profile.handle)
     except Exception as e:
-        print(f'Exception in save_avatar: {e}')
-        raise Http404
-    return HttpResponse(profile.avatar.svg.file, content_type='image/svg+xml')
+        print('E: ', e)
+        response['status'] = 400
+        response['message'] = 'Bad Request'
+        logger.error(e)
+    return JsonResponse(response, status=response['status'])

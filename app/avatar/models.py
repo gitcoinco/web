@@ -78,7 +78,7 @@ class Avatar(SuperModel):
             icon_width, icon_height,
             Line([(0, icon_height / 2), (icon_width, icon_height / 2)],
                  width=f'{icon_height}px',
-                 color=payload.get('Background'))
+                 color=f"#{payload.get('Background')}")
         ]
 
         for k, v in payload.items():
@@ -91,4 +91,6 @@ class Avatar(SuperModel):
             avatar = Figure(*components)
             avatar.save(tmp.name)
             with open(tmp.name) as file:
+                if self.profile_set.exists():
+                    svg_name = self.profile_set.last().handle
                 self.svg.save(f"{svg_name}.svg", File(file), save=True)
