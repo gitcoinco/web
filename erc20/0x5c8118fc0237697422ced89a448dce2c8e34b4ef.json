@@ -1,0 +1,22 @@
+{
+  "symbol": "LTH",
+  "address": "0x5c8118fc0237697422ced89a448dce2c8e34b4ef",
+  "overview":{
+        "en": "A MODULARIZED AND HIGH-EFFICIENCY BLOCKCHAIN INFRASTRUCTURE.LUTHERCHAIN IS NOT ONLY A PUBLIC BLOCKCHAIN INFRASTRUCTURE, BUT ALSO A CONSORTIUM BLOCKCHAIN INFRASTRUCTURE.",
+        "zh": "一个模块化的高效率区块链基础设施。路德链不单是公有链基础设施，同时也是联盟链基础设施；路德致力于服务广大创业者建立公有链，并服务于企业、集团、银行、政府机构建立联盟链。"
+  },
+  "email": "admin@lth.one",
+  "website": "https://lth.one",
+  "whitepaper": "https://lth.one/file/luther_whitepaper_en_v1.0.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-08",
+  "initial_price":{
+        "ETH":"0.000071 ETH",
+        "USD":"0.0469 USD"
+  },
+  "links": {
+    "telegram": "https://t.me/luther_cn",
+    "github": "https://github.com/lutherchain",
+    "facebook": "https://www.facebook.com/profile.php?id=100026060372031"
+  }
+}
