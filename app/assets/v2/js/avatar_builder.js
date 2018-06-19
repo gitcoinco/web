@@ -40,11 +40,14 @@ layers.forEach(name => {
   if (localStorage[name]) {
     const targetId = getIdFromPath(localStorage[name], name);
     const color = getColorFromPath(localStorage[name]);
+    let pallete = null;
 
     $(targetId).trigger('click');
-    const pallete = $('#preview-' + name).attr('class').replace('preview-section ', '').replace('-dependent', '');
+    if ($('#preview-' + name).attr('class')) {
+      pallete = $('#preview-' + name).attr('class').replace('preview-section ', '').replace('-dependent', '');
+    }
 
-    if (color) {
+    if (color && pallete) {
       changeColor(pallete, color);
     }
     options[name] = localStorage[name];
@@ -220,6 +223,9 @@ function setOption(option, value, target) {
   if (deselectingFlag) {
     $(target).addClass('selected');
   }
+  if ($('#options-' + option).find('.selected').length === 0) {
+    $('#nav-' + option).removeClass('complete');
+  }
 
   // Check for completion
   const complete = requiredLayers.
@@ -247,7 +253,7 @@ function saveAvatar() {
     dataType: 'json',
     contentType: 'application/json; charset=utf-8',
     success: function(response) {
-      _alert({ message: gettext('Avatar has been saved!')}, 'success');
+      _alert({ message: gettext('Your Avatar Has Been Saved To your Gitcoin Profile.!')}, 'success');
     },
     error: function() {
       _alert({ message: gettext('Error occured while saving. Please try again.')}, 'error');

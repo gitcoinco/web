@@ -13,7 +13,7 @@
   flex-wrap: wrap;
   flex-basis: 100%;
   justify-content: center;
-  margin-top:3.5rem;
+  margin-top: 2.5rem;
 }
 #avatar-builder__sections li {
   width: 10rem;
@@ -33,6 +33,7 @@
 #section-title {
   flex-basis: 100%;
   text-align: center;
+  margin-bottom: 1rem;
 }
 .section-title__content {
   display: none;
@@ -144,6 +145,7 @@ button.avatar-option {
 #avatar-builder__actions {
   text-align: right;
   margin-top: 2rem;
+  width: 100%;
 }
 #color-picker {
   text-align: center;

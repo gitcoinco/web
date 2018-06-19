@@ -148,6 +148,7 @@ var changeStep = function(n) {
 
   $(steps[current]).removeClass('show');
   $(steps[current]).removeClass('block');
+  $('.alert').remove();
 
   current += n;
   onboard.showTab(current);
