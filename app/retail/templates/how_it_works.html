@@ -36,31 +36,39 @@
         {% endif %}
       </div>
 
-      <div class="container-fluid py-5 px-0 testimonial-container">
-        <div class="row mb-4">
+      <div class="container-fluid py-5 px-0 in-some-cases-container">
+        <div class="row mb-4 ">
           <div class="col text-center">
-            <h2 class="light">{% trans "Gitcoin Community" %}</h2>
+            <h2 class="light">{% trans "In some cases..." %}</h2>
+          </div>
+        </div>
+        <div class="row mb-4 justify-content-around">
+          <div class="col d-none d-md-block">
+          </div>
+          <div class="col text-center px-4 px-md-4">
+              <img src="/static/v2/images/landing/contributor/howitworks_bottom_1.png" alt="expired" />
+            <div class="text-center">{% trans "Work that has not been completed and is past the expiration date is considered expired." %}</div>
+          </div>
+          <div class="col text-center px-4 px-md-4">
+              <img src="/static/v2/images/landing/contributor/howitworks_bottom_2.png" alt="expired" />
+            <div class="text-center">{% trans "A project can be cancelled by a bounty funder. The funds will then be reclaimed by the bounty owner." %}</div>
+          </div>
+          <div class="col d-none d-md-block">
           </div>
         </div>
       </div>
 
 
-      <div class="container-fluid py-5 px-0 contributors-cta-container">
+      <div class="container-fluid py-5 px-0 how-it-works-footer">
         <div class="row mb-4">
-          <div class="col text-center text-white">
-            <h2>{% trans "<span class=\"light\">All that's left is to do join</span> <strong>Gitcoin</strong>" %}</h2>
-            <div class="mt-4 contributors-cta-text">Start exploring <strong>12,345</strong> bounties worth <strong>$123,456</strong></div>
-            <div class="text-center mt-4">
-              <a class="btn btn-gc-green text-purple" role="button" href="#" target="_blank" rel="noopener noreferrer">
-                <span>{% trans "Get Started" %}</span>
-              </a>
-            </div>
+          <div class="col text-center text-white how-it-works-footer">
+            <div class="mt-4 contributors-cta-text">For more details, please see repo maintainer's guide or the
+              <a target="_blank" href="https://github.com/gitcoinco/web/blob/contributing/CONTRIBUTING.md">developer guide</a>.</div>
           </div>
         </div>
       </div>
 
       {% include 'shared/footer.html' %}
-      </div>
     </div>
     {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/rollbar.html' %}

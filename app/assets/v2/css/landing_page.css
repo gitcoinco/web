@@ -340,6 +340,13 @@ body {
   background-color: #F0F0F0;
 }
 
+.in-some-cases-container {
+  background-color: #F2F6F9;
+}
+.how-it-works-footer {
+  background-color: #0D0764;
+}
+
 .tree_container {
   background: white;
   text-align: center;
@@ -629,6 +636,16 @@ body {
   line-height: 26px;
   border-radius: 100%;
   background: #05B66A;
+  color: #333333;
+}
+
+.how-it-works__step-exclamation {
+  margin-top: 1em;
+  width: 30px;
+  height: 30px;
+  line-height: 26px;
+  border-radius: 100%;
+  background: #F9006C;
   color: #333333;
 }
 
