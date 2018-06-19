@@ -1156,15 +1156,11 @@ class Profile(SuperModel):
             bounty for bounty in bounties if bounty.is_hunter(self.handle) and bounty.status == 'done'
         ]
         fulfilled_bounties_count = len(fulfilled_bounties)
-        funded_bounties = [
-            bounty for bounty in bounties if bounty.is_funder(self.handle)
-        ]
-        funded_bounties_count = len(funded_bounties)
+        funded_bounties = self.get_funded_bounties()
+        funded_bounties_count = funded_bounties.count()
+        from django.db.models import Sum
         if funded_bounties_count:
-            total_funded_usd = sum([
-                bounty.value_in_usdt if bounty.value_in_usdt else 0
-                for bounty in funded_bounties
-            ])
+            total_funded_usd = funded_bounties.all().aggregate(Sum('value_in_usdt'))
             total_funded_hourly_rate = float(0)
             #TODO: Explain to the user that we only counted Bounties that developers entered # of hours worked on
             hourly_rate_bounties_counted = float(0)
@@ -1196,8 +1192,10 @@ class Profile(SuperModel):
                 user_funded_bounty_developers.append(fulfillment.fulfiller_github_username.lstrip('@'))
             user_funded_bounty_developers = [*{*user_funded_bounty_developers}]
             if funded_fulfillments_with_hours_counted:
-                avg_hourly_rate_per_funded_bounty = float(total_funded_hourly_rate) / float(funded_fulfillments_with_hours_counted)
-                avg_hours_per_funded_bounty = float(total_funded_hours) / float(funded_fulfillments_with_hours_counted)
+                avg_hourly_rate_per_funded_bounty = \
+                    float(total_funded_hourly_rate) / float(funded_fulfillments_with_hours_counted)
+                avg_hours_per_funded_bounty = \
+                        float(total_funded_hours) / float(funded_fulfillments_with_hours_counted)
             else:
                 avg_hourly_rate_per_funded_bounty = 0
                 avg_hours_per_funded_bounty = 0

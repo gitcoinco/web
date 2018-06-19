@@ -230,7 +230,13 @@
             </div>
             <div class="stat-contents">
                 <p>You've boosted your skills in {{ user_no_of_languages }} different areas:
-                  {% for language in user_languages %}{% if forloop.counter == user_no_of_languages %} and {% elif forloop.first %}{% else %},{% endif %} {{ language }}{% endfor %}!
+                    {% for language in user_languages %}
+		  	{% if forloop.counter == user_no_of_languages %} 
+			    {% if not forloop.first %} and {% endif %}
+			{% else %},
+			{% endif %} 
+			{{ language }}
+	            {% endfor %}!
                 </p>
             </div>
         </div>
@@ -245,10 +251,10 @@
         <h4>An overview of your OSS project's stats from the last 3 months.</h4>
         <div class="centered-contents stat-box row">
             <div class="stat-img full-bordered-circle percent-content col-sm-12">
-                <p class="content">{{ user_funded_fulfilled_percentage}} %</p>
+                <p class="content">{{ user_funded_fulfilled_percentage }} %</p>
             </div>
             <div class="stat-contents col-sm-12">
-		    <p>Of the {{ user_funded_bounties_count | intcomma }} issue{%if user_funded_bounties_count > 1 %}s{% endif %} that you funded a bounty for, {{ user_num_funded_fulfilled_bounties | intcomma }} were fulfilled -- that's a {{ user_funded_fulfilled_percentage}}% success rate!</p>
+		    <p>Of the {{ user_funded_bounties_count | intcomma }} issue{{ user_funded_bounties_count|pluralize }} that you funded a bounty for, {{ user_num_funded_fulfilled_bounties | intcomma }} were fulfilled -- that's a {{ user_funded_fulfilled_percentage}}% success rate!</p>
             </div>
         </div>
         <div class="centered-contents stat-box row">
@@ -256,8 +262,14 @@
 	      <p class="content">{{ user_funded_bounty_developers | length }} contributors</p>
 	   </div>
             <div class="stat-contents col-sm-12">
-               <p>The following {{ user_funded_bounty_developers | length }} developers have made contributions to your OSS projects this quarter:
-               {% for developer in user_funded_bounty_developers %}{% if forloop.counter == user_num_funded_bounty_developers %} &amp; {% elif forloop.first %}{% else %}, {% endif %}<a href="https://github.com/{{ developer }}">@{{ developer }}</a>{% endfor %}</p>
+		    <p>The following {{ user_funded_bounty_developers | length }} developer{{ user_funded_bounty_developers|pluralize }} have made contributions to your OSS projects this quarter:
+               {% for developer in user_funded_bounty_developers %}
+	           {% if forloop.counter == user_num_funded_bounty_developers %} &amp; 
+		   {% elif forloop.first %}
+		   {% else %}, 
+		   {% endif %}
+		   <a href="https://github.com/{{ developer }}">@{{ developer }}</a>
+	       {% endfor %}</p>
 	    </div>
         </div>
         <div class="centered-contents stat-box row">
