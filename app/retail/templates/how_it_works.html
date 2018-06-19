@@ -46,12 +46,20 @@
           <div class="col d-none d-md-block">
           </div>
           <div class="col text-center px-4 px-md-4">
-              <img src="/static/v2/images/landing/contributor/howitworks_bottom_1.png" alt="expired" />
-            <div class="text-center">{% trans "Work that has not been completed and is past the expiration date is considered expired." %}</div>
+            <img class="position-relative" style="left: 39px;"
+              src="{% static "v2/images/landing/contributor/howitworks_bottom_1.png" %}"
+              alt="expired" />
+            <div class="text-center">{% blocktrans %}Work that has not been completed and is past the \
+              expiration date is considered expired.{% endblocktrans %}</div>
           </div>
           <div class="col text-center px-4 px-md-4">
-              <img src="/static/v2/images/landing/contributor/howitworks_bottom_2.png" alt="expired" />
-            <div class="text-center">{% trans "A project can be cancelled by a bounty funder. The funds will then be reclaimed by the bounty owner." %}</div>
+            <div class="position-relative">
+              <img class="position-relative" style="left: 37px;"
+                src="{% static "v2/images/landing/contributor/howitworks_bottom_2.png" %}" alt="expired" />
+              <div class="how-it-works__fake_but">Cancel Bounty</div>
+            </div>
+            <div class="text-center">{% blocktrans %}A project can be cancelled by a bounty funder.
+              The funds will then be reclaimed by the bounty owner.{% endblocktrans %}</div>
           </div>
           <div class="col d-none d-md-block">
           </div>
@@ -62,8 +70,11 @@
       <div class="container-fluid py-5 px-0 how-it-works-footer">
         <div class="row mb-4">
           <div class="col text-center text-white how-it-works-footer">
-            <div class="mt-4 contributors-cta-text">For more details, please see repo maintainer's guide or the
-              <a target="_blank" href="https://github.com/gitcoinco/web/blob/contributing/CONTRIBUTING.md">developer guide</a>.</div>
+            <div class="mt-4 contributors-cta-text">{% blocktrans %}For more details,
+              please see repo maintainer's guide or the
+              <a target="_blank" href="https://github.com/gitcoinco/web/blob/contributing/CONTRIBUTING.md">
+                developer guide</a>.{% endblocktrans %}
+            </div>
           </div>
         </div>
       </div>

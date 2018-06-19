@@ -629,7 +629,40 @@ body {
   align-items: center;
 }
 
+.how-it-works__hor-line {
+  height: 7px;
+}
+
+.how-it-works__vert-line {
+  position: absolute;
+  background-color:rgba(0, 0, 0, 0.05);
+  width: 8px;
+  margin-left: 11px;
+  z-index: 0;
+  top: 1em;
+  bottom: -4em;
+}
+
+.how-it-works__fake_but {
+  border: none;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 14px;
+  font-family: 'Muli', sans-serif;
+  font-weight: 300;
+  padding: 10px 20px;
+  -webkit-appearance: none;
+  background-color: #0D0764;
+  margin-right: -2em;
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+}
+
 .how-it-works__step-number {
+  position: relative;
+  z-index: 1;
   margin-top: 1em;
   width: 30px;
   height: 30px;
