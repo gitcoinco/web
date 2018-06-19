@@ -17,19 +17,24 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import logging
 from tempfile import NamedTemporaryFile
 
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.core.files import File
+from django.core.files.base import ContentFile
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from django_extensions.db.fields import AutoSlugField
 from easy_thumbnails.fields import ThumbnailerImageField
 from economy.models import SuperModel
+from github.utils import get_user
 from svgutils.compose import SVG, Figure, Line
 
 from .utils import build_avatar_component, get_svg_templates, get_upload_filename
+
+logger = logging.getLogger(__name__)
 
 
 class Avatar(SuperModel):
@@ -37,7 +42,9 @@ class Avatar(SuperModel):
 
     ICON_SIZE = (215, 215)
     config = JSONField(default=dict)
+    png = models.ImageField(upload_to=get_upload_filename, null=True, blank=True)
     svg = models.FileField(upload_to=get_upload_filename, null=True, blank=True)
+    use_github_avatar = models.BooleanField(default=True)
 
     def get_color(self, key='Background', with_hashbang=False):
         if key not in ['Background', 'ClothingColor', 'HairColor', 'ClothingColor', 'SkinTone']:
@@ -62,6 +69,38 @@ class Avatar(SuperModel):
 
     def to_dict(self):
         return self.config
+
+    def pull_github_avatar(self):
+        """Pull the latest avatar from Github and store in Avatar.png.
+
+        Returns:
+            str: The stored Github avatar URL.
+
+        """
+        from avatar.utils import get_github_avatar
+        handle = self.profile_set.last().handle
+        temp_avatar = get_github_avatar(handle)
+        if not temp_avatar:
+            return ''
+
+        try:
+            self.png.save(handle, ContentFile(temp_avatar.getvalue()), save=True)
+            return self.png.url
+        except Exception as e:
+            logger.error(e)
+        return ''
+
+    @property
+    def avatar_url(self):
+        """Return the appropriate avatar URL."""
+        if self.use_github_avatar and not self.png:
+            return self.pull_github_avatar()
+        elif self.use_github_avatar and self.png:
+            return self.png.url
+
+        if self.svg:
+            return self.svg.url
+        return ''
 
     def create_from_config(self, svg_name='avatar'):
         """Create an avatar SVG from the configuration.

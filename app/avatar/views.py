@@ -101,7 +101,7 @@ def save_avatar(request):
     return JsonResponse(response, status=response['status'])
 
 
-def handle_avatar(request, _org_name=None, add_gitcoincologo=None):
+def handle_avatar(request, _org_name='', add_gitcoincologo=False):
     from dashboard.models import Profile
     icon_size = (215, 215)
 
@@ -136,8 +136,7 @@ def handle_avatar(request, _org_name=None, add_gitcoincologo=None):
         img.paste(avatar, offset, avatar)
 
         # Determine if we should add the Gitcoin logo
-        add_gitcoincologo = add_gitcoincologo and _org_name != 'gitcoinco'
-        if add_gitcoincologo:
+        if add_gitcoincologo and _org_name != 'gitcoinco':
             img = add_gitcoin_logo_blend(avatar, icon_size)
 
         response = HttpResponse(content_type='image/png')

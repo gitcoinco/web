@@ -18,7 +18,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import json
+import logging
 import os
+from io import BytesIO
 from tempfile import NamedTemporaryFile
 
 from django.http import HttpResponse, JsonResponse
@@ -31,6 +33,8 @@ from svgutils.compose import SVG, Figure, Line
 
 AVATAR_BASE = 'assets/other/avatars/'
 COMPONENT_BASE = 'assets/v2/images/avatar/'
+
+logger = logging.getLogger(__name__)
 
 
 def get_avatar_context():
@@ -341,3 +345,43 @@ def get_err_response(request, blank_img=False):
     err_response = HttpResponse(content_type="image/jpeg")
     could_not_find.save(err_response, "PNG")
     return err_response
+
+
+def get_temp_image_file(url):
+    """Fetch an image from a remote URL and hold in temporary IO.
+
+    Args:
+        url (str): The remote image URL.
+
+    Returns:
+        BytesIO: The temporary BytesIO containing the image.
+
+    """
+    temp_io = None
+    try:
+        response = requests.get(url)
+        img = Image.open(BytesIO(response.content)).convert('RGBA')
+        temp_io = BytesIO()
+        img.save(temp_io, format=img.format)
+    except Exception as e:
+        logger.error(e)
+    return temp_io
+
+
+def get_github_avatar(handle):
+    """Pull the latest avatar from Github and store in Avatar.png.
+
+    Returns:
+        bool: Whether or not the Github avatar was updated.
+
+    """
+    remote_user = get_user(handle)
+    avatar_url = remote_user.get('avatar_url')
+    if not avatar_url:
+        return False
+
+    temp_avatar = get_temp_image_file(avatar_url)
+    if not temp_avatar:
+        return False
+
+    return temp_avatar
