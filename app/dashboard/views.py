@@ -376,7 +376,7 @@ def uninterested(request, bounty_id, profile_id):
         Interest.objects.filter(pk__in=list(interest_ids)).delete()
 
     profile = Profile.objects.get(id=profile_id)
-    if profile.user and profile.user.email:
+    if profile.user and profile.user.email and interest:
         bounty_uninterested(profile.user.email, bounty, interest)
     else:
         print("no email sent -- user was not found")
@@ -872,7 +872,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 helper_handle_mark_as_remarket_ready(request, bounty)
                 helper_handle_admin_contact_funder(request, bounty)
                 helper_handle_override_status(request, bounty)
-                
+
         except Bounty.DoesNotExist:
             pass
         except Exception as e:
