@@ -16,44 +16,82 @@
     padding: 20px;
   }
 
-  .major_button_container input,
-  .major_button_container a {
-    float: right;
+  .form-group .major_button_container input,
+  .form-group .major_button_container a {
     color: #FFFFFF !important;
     width: 7rem;
     text-align: center;
   }
 
-  .major_button_container .warning {
-      background-color: #ca001a;
+  .major_button_container input,
+  .major_button_container a {
+    float: right;
   }
 
-  .major_button_container p {
+  .major_button_container .warning {
+    background-color: #ca001a;
+  }
+
+  .form-group .major_button_container p {
     margin-bottom: 0;
   }
+
+  .major_button_container input {
+    width: 7rem;
+  }
+
+  .profile-avatar {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  .profile-avatar img {
+    width: 7.5rem;
+    border-radius: 50%;
+    border: 0.2rem solid #1AB56D;
+  }
 </style>
-<div class="form-group">
-  <h4 class="font-title mb-4 text-left">{% trans "Account Preferences" %}</h5>
-</div>
-<div class="form-group mb-4">
-  <div class="major_button_container">
-    <form id="disconnect" method="POST" action="{% url 'account_settings' %}">
-      {% csrf_token %}
-      <input type="submit" class="button button--primary" name="disconnect" value="Disconnect">
-    </form>
-    <h5 class="font-subheader">{% trans "Github" %}</h5>
-    <p class="font-body">{% trans "Connected as " %}{{ github_handle }}</p>
+<div>
+  <h4 class="font-title mb-4 text-left">{% trans "Profile Photo" %}</h4>
+  <div class="profile-avatar row mx-0 px-0 major_button_container">
+    <div class="col-12 col-md-5 pl-0 pr-0 text-center">
+      <img src="{% if user.profile.avatar %}{{ user.profile.avatar.svg.url }}{% else %}/static/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
+    </div>
+    <div class="col-12 col-md-7 row">
+      <div class="col-12 mt-2 mb-2">
+        <a class="button button--primary-o">
+          <i class="mr-2 fab fa-github"></i>Use Github Avatar
+        </a>
+      </div>
+      <div class="col-12">
+        <a class="button button--primary-o">
+          <i class="mr-2 fas fa-wrench"></i>Build Your Avatar</a>
+      </div>
+    </div>
   </div>
-</div>
-<div class="form-group">
-  <div class="major_button_container">
-    <form id="delete" method="POST" action="{% url 'account_settings' %}">
-      {% csrf_token %}
-      <a id="delete_account" class="button button--primary warning">{% trans "Delete" %}</a>
-      <input type='hidden' class="button button--primary warning" name="delete" value="Delete">
-    </form>
-    <h5 class="font-subheader">{% trans "Delete My Account" %}</h5>
-    <p class="font-body">{% trans "This action deletes all of your data" %}</p>
+  <div class="form-group">
+    <h4 class="font-title mb-4 text-left">{% trans "Account Preferences" %}</h4>
+  </div>
+  <div class="form-group mb-4">
+    <div class="major_button_container">
+      <form id="disconnect" method="POST" action="{% url 'account_settings' %}">
+        {% csrf_token %}
+        <input type="submit" class="button button--primary" name="disconnect" value="Disconnect">
+      </form>
+      <h5 class="font-subheader">{% trans "Github" %}</h5>
+      <p class="font-body">{% trans "Connected as " %}{{ github_handle }}</p>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="major_button_container">
+      <form id="delete" method="POST" action="{% url 'account_settings' %}">
+        {% csrf_token %}
+        <a id="delete_account" class="button button--primary warning">{% trans "Delete" %}</a>
+        <input type='hidden' class="button button--primary warning" name="delete" value="Delete">
+      </form>
+      <h5 class="font-subheader">{% trans "Delete My Account" %}</h5>
+      <p class="font-body">{% trans "This action deletes all of your data" %}</p>
+    </div>
   </div>
 </div>
 {% endblock %}
