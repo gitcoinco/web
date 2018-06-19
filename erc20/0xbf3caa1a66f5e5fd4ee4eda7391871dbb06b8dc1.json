@@ -1,0 +1,18 @@
+{
+  "symbol": "TOT",
+  "address": "0xbf3caa1a66f5e5fd4ee4eda7391871dbb06b8dc1",
+  "overview":{
+        "en": "Btt Token",
+        "zh": ""
+  },
+  "email": "yangsong@yobtc.com",
+  "website": "http://www.btt.top",
+  "state": "NORMAL",
+  "published_on": "2018-06-15",
+  "initial_price":{
+        "USD":"0.001531 USD"
+  },
+  "links": {
+    "blog": "http://weibo.com/u/6459023186",
+  }
+}
