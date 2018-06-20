@@ -1,5 +1,5 @@
 {
-  "symbol": "EGT(EnjoyGame)",
+  "symbol": "EGT",
   "address": "0xc5faadd1206ca91d9f8dd015b3498affad9a58bc",
   "overview":{
         "en": "Enjoy Game Chain Token",
@@ -9,20 +9,5 @@
   "website": "http://www.egchain.io",
   "whitepaper": "http://www.egchain.io/wpaper.html",
   "state": "NORMAL",
-  "published_on": "2018-06-10",
-  "initial_price":{
-        "ETH":"0 ETH",
-        "USD":"0 USD",
-        "BTC":"0 BTC"
-  },
-  "links": {
-    "blog": "https://www.google.com",
-    "twitter": "https://www.google.com",
-    "telegram": "https://www.google.com",
-    "github": "https://www.google.com",
-    "facebook": "https://www.google.com",
-    "reddit": "https://www.google.com",
-    "slack": "https://www.google.com",
-    "medium": "https://www.google.com"
-  }
+  "published_on": "2018-06-10"
 }
