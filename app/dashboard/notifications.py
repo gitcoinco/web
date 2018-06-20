@@ -293,7 +293,7 @@ def maybe_market_to_user_discord(bounty, event_name):
         for subscriber in subscribers:
             try:
                 headers = {'Content-Type': 'application/json'}
-                body = {"content": msg}
+                body = {"content": msg, "avatar_url": "https://gitcoin.co/static/v2/images/helmet.png"}
                 discord_response = requests.post(
                     subscriber.discord_webhook_url, headers=headers, json=body
                 )
