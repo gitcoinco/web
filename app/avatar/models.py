@@ -65,7 +65,7 @@ class Avatar(SuperModel):
 
     @property
     def skin_tone(self):
-        return self.get_color(key='SkinTone') or '3F2918'
+        return self.get_color(key='SkinTone') or 'EEE3C1'
 
     def to_dict(self):
         return self.config
