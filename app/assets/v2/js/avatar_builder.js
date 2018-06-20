@@ -278,6 +278,8 @@ function saveAvatar() {
     unloading_button($('#save-avatar'));
   });
 
+  $('#later-button').hide();
+
   var request = $.ajax({
     url: '/avatar/save',
     type: 'POST',
@@ -288,6 +290,7 @@ function saveAvatar() {
       _alert({ message: gettext('Your Avatar Has Been Saved To your Gitcoin Profile.!')}, 'success');
     },
     error: function() {
+      $('#later-button').show();
       _alert({ message: gettext('Error occured while saving. Please try again.')}, 'error');
     }
   });
