@@ -71,7 +71,8 @@ function prefill_recommended_prices() {
   var slow_data = get_updated_metamask_conf_time_and_cost(parseInt($('#slow-recommended-gas').data('amount')));
   var avg_data = get_updated_metamask_conf_time_and_cost(parseInt($('#average-recommended-gas').data('amount')));
   var fast_data = get_updated_metamask_conf_time_and_cost(parseInt($('#fast-recommended-gas').data('amount')));
-  
+
+  $('#gasPriceRecommended').val($('#average-recommended-gas').data('amount'));
   // Slow recommendation prefills
   $('#slow-recommended-gas').html('Slow $' + slow_data['usd'] + ' ~' + slow_data['time'] + ' minutes');
   $('#slow-recommended-gas').data('amount', slow_data['usd']);
@@ -83,5 +84,7 @@ function prefill_recommended_prices() {
   // Fast recommendation prefills
   $('#fast-recommended-gas').html('Fast $' + fast_data['usd'] + ' ~' + fast_data['time'] + ' minutes');
   $('#fast-recommended-gas').data('amount', fast_data['usd']);
+  $('#gas-usd').html('$' + avg_data['usd']);
+  $('#gas-eth').html(avg_data['eth'] + 'ETH');
 }
 
