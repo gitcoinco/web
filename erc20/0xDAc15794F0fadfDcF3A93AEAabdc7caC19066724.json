@@ -1,0 +1,28 @@
+{
+  "symbol": "GEX",
+  "address": "0xDAc15794F0fadfDcF3A93AEAabdc7caC19066724",
+  "overview":{
+        "en": "The World’s Most Sophisticated Green Energy Network",
+        "zh": "世界上最强大的绿色能源网络"
+  },
+  "email": "hello@greenx.network",
+  "website": "https://greenx.network/",
+  "whitepaper": "https://drive.google.com/open?id=1rNMpBTW6VyuF6isuZt_FHUR5NdXcKwSI",
+  "state": "LOCKED",
+  "published_on": "2018-05-15",
+  "initial_price":{
+        "ETH":"0.000333 ETH",
+        "USD":"0.2 USD",
+        "BTC":"0.000031 BTC"
+  },
+  "links": {
+    "blog": "https://greenx.network",
+    "twitter": "https://twitter.com/GreenXOfficial",
+    "telegram": "http://t.me/GreenXOfficial",
+    "github": "https://github.com/GreenXNetwork",
+    "facebook": "https://www.facebook.com/GreenXOfficial",
+    "reddit": "https://www.reddit.com/r/CryptoMarkets/comments/8mnsk9/greenx_ico_greenx_token_green_energy_crypto/?utm_content=title&utm_medium=front&utm_source=reddit&utm_name=CryptoMarkets",
+    "slack": "https://greenxtech.slack.com",
+    "medium": "https://medium.com/greenx"
+  }
+}
