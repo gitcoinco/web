@@ -42,7 +42,7 @@ try {
 
 layers.concat('Background').forEach(name => {
   options[name] = null;
-  if (localStorage[name] && localStorage[name] !== 'null') {
+  if (localStorage[name] && localStorage[name] !== 'null' && localStorage[name + 'Id'] && localStorage[name + 'Id'] !== 'null') {
     let optionName = name;
 
     if (parentLayers[optionName]) {
