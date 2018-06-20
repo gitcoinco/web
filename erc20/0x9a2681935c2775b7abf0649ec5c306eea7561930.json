@@ -1,0 +1,25 @@
+{
+    "symbol": "EOPT",
+    "address": "0x9a2681935c2775b7abf0649ec5c306eea7561930",
+    "overview": {
+        "en": "EasyOption.io is a worldwide shared Cryptocurrency Options Trading Platform. Meanwhile, it is a tokenized and community-based autonomous organization. All people owning EOPT have power to decide the platform in the future.",
+        "zh": "EasyOptioin.io 是一个全世界共享的数字货币期权交易平台，同时也是一个用Token构建的社区型自治组织。所有EOPT的持有者将共同参与决策平台的未来。"
+    },
+    "email": "hi@easyoption.io",
+    "website": "https://www.easyoption.io/",
+    "whitepaper": "http://file.easyoption.io/whitepaper.html",
+    "state": "NORMAL",
+    "published_on": "2018-06-15",
+    "initial_price": {
+        "ETH": "0.00006 ETH",
+        "USD": "0.03 USD",
+        "BTC": "0.000005 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/easyoption_io",
+        "telegram": "https://t.me/easyoption",
+        "github": "https://github.com/EasyOption",
+        "facebook": "https://www.facebook.com/easyoption.io",
+        "medium": "https://medium.com/@EasyOption.io"
+    }
+}
