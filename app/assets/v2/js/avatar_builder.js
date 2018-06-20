@@ -26,6 +26,11 @@ const sectionPalettes = {
   FacialHair: 'HairColor', Beard: 'HairColor', Mustache: 'HairColor',
   Clothing: 'ClothingColor'
 };
+const parentLayers = {
+  HairShort: 'HairStyle', HairLong: 'HairStyle', Beard: 'FacialHair', Mustache: 'FacialHair',
+  EarringBack: 'Accessories', Earring: 'Accessories', HatLong: 'Accessories', HatShort: 'Accessories',
+  Glasses: 'Accessories'
+};
 
 let localStorage;
 
@@ -35,16 +40,24 @@ try {
   localStorage = {};
 }
 
-layers.forEach(name => {
+layers.concat('Background').forEach(name => {
   options[name] = null;
-  if (localStorage[name]) {
-    const targetId = getIdFromPath(localStorage[name], name);
-    const color = getColorFromPath(localStorage[name]);
+  if (localStorage[name] && localStorage[name] !== 'null') {
+    let optionName = name;
+
+    if (parentLayers[optionName]) {
+      optionName = parentLayers[optionName];
+    }
+    if (name === 'EarringBack') {
+      return true;
+    }
+    const targetId = localStorage[name + 'Id'].replace(/(['"])/g, '\\$1');
+    const color = getColorFromPath(localStorage[name], optionName);
     let pallete = null;
 
-    $(targetId).trigger('click');
-    if ($('#preview-' + name).attr('class')) {
-      pallete = $('#preview-' + name).attr('class').replace('preview-section ', '').replace('-dependent', '');
+    $($("[id='" + targetId + "']")).trigger('click');
+    if ($('#preview-' + optionName).attr('class')) {
+      pallete = $('#preview-' + optionName).attr('class').replace('preview-section ', '').replace('-dependent', '');
     }
 
     if (color && pallete) {
@@ -55,13 +68,25 @@ layers.forEach(name => {
 });
 
 function getIdFromPath(path, option) {
-  const optionChoice = path.split('.')[0].split('/').slice(-1)[0].split('-')[0];
+  let optionChoice = '';
+
+  if (option === 'FacialHair' || option === 'Accessories') {
+    optionChoice = path.split('.')[0].split('/').slice(-1)[0].split('-')[1];
+  } else {
+    optionChoice = path.split('.')[0].split('/').slice(-1)[0].split('-')[0];
+  }
 
   return '#avatar-option-' + option + '-' + optionChoice;
 }
 
-function getColorFromPath(path) {
-  const color = path.split('.')[0].split('/').slice(-1)[0].split('-')[1];
+function getColorFromPath(path, option) {
+  let color = '';
+
+  if (option === 'FacialHair' || option === 'Accessories') {
+    color = path.split('.')[0].split('/').slice(-1)[0].split('-')[2];
+  } else {
+    color = path.split('.')[0].split('/').slice(-1)[0].split('-')[1];
+  }
 
   return color;
 }
@@ -137,6 +162,7 @@ function changeImage(option, path) {
     } else {
       elem.remove();
       options[option] = null;
+      localStorage[option] = null;
     }
   } else if (path) { // option was previously blank
     const newEl = $.parseHTML(`<div id="preview-${option}"
@@ -176,6 +202,7 @@ function setOption(option, value, target) {
     case 'Ears':
     case 'Mouth':
     case 'Clothing':
+      localStorage[option + 'Id'] = $(target).attr('id');
       changeImage(option, deselectingFlag && $(target).children().data('path'));
       break;
     case 'Accessories':
@@ -187,6 +214,7 @@ function setOption(option, value, target) {
         const optionDiv = $(target).children()[idx];
 
         $(`button[id*="${category}"]`, section).removeClass('selected');
+        localStorage[category + 'Id'] = $(target).attr('id');
         changeImage(category, deselectingFlag && $(optionDiv).data('path'));
       });
       break;
@@ -196,6 +224,7 @@ function setOption(option, value, target) {
 
         $(target).children().each((elemIdx, elem) => {
           if (idx === parseInt(elem.classList[0])) {
+            localStorage[layer + 'Id'] = $(target).attr('id');
             changeImage(layer, deselectingFlag && $(elem).data('path'));
             found = true;
           }
@@ -211,11 +240,14 @@ function setOption(option, value, target) {
       var optionDiv = $(target).children()[0];
 
       $(`button[id*="${layer}"]`, section).removeClass('selected');
+      localStorage[layer + 'Id'] = $(target).attr('id');
       changeImage(layer, deselectingFlag && $(optionDiv).data('path'));
       break;
     case 'Background':
       $('#avatar-preview').css('background-color', '#' + value);
       options['Background'] = value;
+      localStorage['Background'] = value;
+      localStorage['BackgroundId'] = $(target).attr('id');
       break;
   }
 
