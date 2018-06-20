@@ -522,9 +522,6 @@ def send_tip_2(request):
 
 def contributor_onboard(request):
     """Handle displaying the first time user experience flow."""
-    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile'):
-        return redirect('social:begin', backend='github')
-
     params = {
         'title': _('Onboarding Flow'),
         'steps': ['github', 'metamask', 'avatar', 'skills'],

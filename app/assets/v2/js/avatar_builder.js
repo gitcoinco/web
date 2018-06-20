@@ -287,11 +287,11 @@ function saveAvatar() {
     dataType: 'json',
     contentType: 'application/json; charset=utf-8',
     success: function(response) {
-      _alert({ message: gettext('Your Avatar Has Been Saved To your Gitcoin Profile.!')}, 'success');
+      _alert({ message: gettext('Your Avatar Has Been Saved To your Gitcoin Profile!')}, 'success');
     },
     error: function() {
       $('#later-button').show();
-      _alert({ message: gettext('Error occured while saving. Please try again.')}, 'error');
+      _alert({ message: gettext('Error occurred while saving. Please try again.')}, 'error');
     }
   });
 }
