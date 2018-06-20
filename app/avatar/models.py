@@ -84,10 +84,17 @@ class Avatar(SuperModel):
             return ''
 
         try:
-            self.png.save(handle, ContentFile(temp_avatar.getvalue()), save=True)
+            self.png.save(f'{handle}.png', ContentFile(temp_avatar.getvalue()), save=True)
             return self.png.url
         except Exception as e:
             logger.error(e)
+        return ''
+
+    @property
+    def github_avatar_url(self):
+        """Return the Github avatar URL."""
+        if self.png and self.png.url:
+            return self.png.url
         return ''
 
     @property

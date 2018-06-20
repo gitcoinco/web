@@ -362,7 +362,7 @@ def get_temp_image_file(url):
         response = requests.get(url)
         img = Image.open(BytesIO(response.content)).convert('RGBA')
         temp_io = BytesIO()
-        img.save(temp_io, format=img.format)
+        img.save(temp_io, format='PNG')
     except Exception as e:
         logger.error(e)
     return temp_io

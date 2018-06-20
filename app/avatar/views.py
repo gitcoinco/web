@@ -83,6 +83,14 @@ def save_avatar(request):
         return JsonResponse({'status': 405, 'message': 'Authentication required'}, status=405)
 
     profile = request.user.profile
+
+    if request.body and 'use_github_avatar' in str(request.body):
+        profile.avatar.use_github_avatar = True
+        avatar_url = profile.avatar.pull_github_avatar()
+        response['message'] = 'Avatar updated'
+        response['avatar_url'] = avatar_url
+        return JsonResponse(response, status=200)
+
     payload = handle_avatar_payload(request)
     try:
         if not profile.avatar:
