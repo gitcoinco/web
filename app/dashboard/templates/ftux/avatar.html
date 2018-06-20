@@ -92,7 +92,9 @@
   </div>
   <!-- Button Row -->
   <div id="avatar-builder__actions">
-    <a href="#" class="button button--primary-o">{% trans "Do This Later" %}</a>
+    <button type="button" id="later-button" class="button button--primary-o" onclick="changeStep(1)">
+      {% trans "Do This Later" %}
+    </button>
     <button disabled type="button" id="save-button" class="button button--primary" onclick="saveAvatar()">
       {% trans "Save Avatar" %}
     </button>
