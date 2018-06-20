@@ -26,7 +26,7 @@
 .how-it-works__vert-line {
   position: absolute;
   background-color:rgba(0, 0, 0, 0.05);
-  width: 8px;
+  width: 6px;
   margin-left: 11px;
   z-index: 0;
   top: 1em;
@@ -41,10 +41,10 @@
   font-size: 14px;
   font-family: 'Muli', sans-serif;
   font-weight: 300;
-  padding: 10px 20px;
+  padding: 8px 16px;
   -webkit-appearance: none;
   background-color: #0D0764;
-  margin-right: -2em;
+  margin-bottom: 1em;
   position: absolute;
   right: 0px;
   bottom: 0px;
