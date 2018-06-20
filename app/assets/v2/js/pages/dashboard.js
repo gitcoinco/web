@@ -90,7 +90,7 @@ var set_sidebar_defaults = function() {
 
   if (localStorage['order_by']) {
     $('#sort_option').val(localStorage['order_by']);
-    $('#sort_option').selectmenu('refresh');
+    $('#sort_option').selectmenu().selectmenu('refresh');
   }
 
   for (var i = 0; i < sidebar_keys.length; i++) {
