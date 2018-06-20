@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Define the clean_url template tag to allow cleaning up url in templates.
+"""Define the add_url_schema template tag to allow cleaning up url in templates.
 
 Copyright (C) 2018 Gitcoin Core
 
@@ -18,23 +18,25 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import re
+
 from django import template
 
 register = template.Library()
 
 
 @register.filter
-def clean_url(url):
-    """Returns url with the scheme if it isn't already present.
+def add_url_schema(url):
+    """Return the provided URL with the scheme (http) if it isn't already present.
 
     Args:
-        url (string): A URL.
+        url (str): The URL to be cleaned.
+
     Usage:
-        {% '<url>'|clean_url%}
+        {{ url|clean_url }}
 
     Returns:
         string: url with the scheme attached.
 
     """
     pattern = re.compile(r'https?://')
-    return url if pattern.match(url) else 'http://' + url
+    return url if pattern.match(url) else f'http://{url}'
