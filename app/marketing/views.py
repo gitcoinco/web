@@ -388,6 +388,7 @@ def discord_settings(request):
         return login_redirect
 
     if request.POST:
+        test = request.POST.get('test')
         submit = request.POST.get('submit')
         webhook_url = request.POST.get('webhook_url', '')
         repos = request.POST.get('repos', '')

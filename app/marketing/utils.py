@@ -100,6 +100,7 @@ def validate_slack_integration(token, channel, message=None, icon_url=''):
         result['output'] = _('An error has occurred.')
     return result
 
+
 def validate_discord_integration(webhook_url, message=None, icon_url=''):
     """Validate the Discord webhook URL by posting a message.
 
