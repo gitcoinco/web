@@ -94,10 +94,11 @@ def save_avatar(request):
     payload = handle_avatar_payload(request)
     try:
         if not profile.avatar:
-            profile.avatar = Avatar.objects.create(config=payload)
+            profile.avatar = Avatar.objects.create(config=payload, use_github_avatar=False)
             profile.save()
         else:
             profile.avatar.config = payload
+            profile.avatar.use_github_avatar = False
             profile.avatar.save()
         response['message'] = 'Avatar updated'
         profile.avatar.create_from_config(svg_name=profile.handle)
