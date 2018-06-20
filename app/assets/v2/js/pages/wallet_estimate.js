@@ -72,6 +72,21 @@ function prefill_recommended_prices() {
   var avg_data = get_updated_metamask_conf_time_and_cost(parseInt($('#average-recommended-gas').data('amount')));
   var fast_data = get_updated_metamask_conf_time_and_cost(parseInt($('#fast-recommended-gas').data('amount')));
 
+  if (fast_data['time'] == 'unknown') {
+    $('#default-recommended-gas').show();
+    $('#default-recommended-gas').html('The confirmation time is unknown. However we recommend a gas price of $' + fast_data['usd']);
+    $('#default-recommended-gas').data('amount', fast_data['usd']);
+    $('#slow-recommended-gas').hide();
+    $('#average-recommended-gas').hide();
+    $('#fast-recommended-gas').hide();
+  } else if (fast_data['time'] < 10) {
+    $('#slow-recommended-gas').hide();
+    $('#average-recommended-gas').hide();
+    $('.message').html('Good news! Gas is pretty fast right now').show();
+    $('#fast-recommended-gas').html('Fast $' + fast_data['usd'] + ' ~' + fast_data['time'] + ' minutes').addClass('active');
+    $('#fast-recommended-gas').data('amount', fast_data['usd']);
+  }
+
   $('#gasPriceRecommended').val($('#average-recommended-gas').data('amount'));
   // Slow recommendation prefills
   $('#slow-recommended-gas').html('Slow $' + slow_data['usd'] + ' ~' + slow_data['time'] + ' minutes');

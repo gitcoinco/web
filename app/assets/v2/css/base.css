@@ -371,6 +371,11 @@ p a {
   float: right;
 }
 
+#gas-section #default-recommended-gas,
+#gas-section .message {
+  display: none;
+}
+
 .btn-warning,
 .btn-success,
 .btn-info {
