@@ -26,7 +26,7 @@ register = template.Library()
 
 @register.filter
 def add_url_schema(url):
-    """Return the provided URL with the scheme (http) if it isn't already present.
+    """Clean the provided URL to include the scheme (http) if no scheme is present.
 
     Args:
         url (str): The URL to be cleaned.
@@ -35,7 +35,7 @@ def add_url_schema(url):
         {{ url|clean_url }}
 
     Returns:
-        string: url with the scheme attached.
+        str: The URL with the scheme attached.
 
     """
     pattern = re.compile(r'https?://')
