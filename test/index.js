@@ -49,6 +49,10 @@ jsonFileNames
     let obj = null
     let parseErr = null
 
+    if (content.indexOf('�') !== -1) {
+      exitWithMsg(`ERROR! json file name ${jsonFileName} must be utf-8 encoding`)
+    }
+
     try {
       obj = JSON.parse(content)
     } catch (e) {
