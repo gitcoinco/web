@@ -289,6 +289,7 @@ function saveAvatar() {
     contentType: 'application/json; charset=utf-8',
     success: function(response) {
       _alert({ message: gettext('Your Avatar Has Been Saved To your Gitcoin Profile!')}, 'success');
+      changeStep(1);
     },
     error: function() {
       $('#later-button').show();
