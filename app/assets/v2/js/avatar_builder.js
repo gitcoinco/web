@@ -272,6 +272,7 @@ function setOption(option, value, target) {
 function saveAvatar() {
   $(document).ajaxStart(function() {
     loading_button($('#save-avatar'));
+    $('#do-later').attr('disabled', 'disabled');
   });
 
   $(document).ajaxStop(function() {

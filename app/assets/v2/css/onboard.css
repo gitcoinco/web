@@ -83,6 +83,8 @@ h3 {
 .step .button {
   padding-left: 25px;
   padding-right: 25px;
+  font-size: 12px;
+  box-shadow: none;
 }
 
 .step a span {
@@ -109,11 +111,6 @@ h3 {
   display: block;
 }
 
-#onboarding .controls p {
-  border: 1px solid #d6d6d6;
-  padding: 6px 22px;
-}
-
 #next-btn,
 #prev-btn {
   display: inline-block;
@@ -121,6 +118,7 @@ h3 {
   text-transform: capitalize;
   border-radius: 3px;
   cursor: pointer;
+  box-shadow: none;
 }
 
 #next-btn {
@@ -404,10 +402,6 @@ h3 {
 
   .step a {
     font-size: 0.9rem;
-  }
-
-  #onboarding .controls p {
-    font-size: 0.8rem;
   }
 }
 

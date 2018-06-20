@@ -11,13 +11,15 @@ onboard.showTab = function(num) {
   $($('.step')[num]).addClass('show');
   window.history.pushState('', '', '/onboard/' + flow + '/' + $($('.step')[num]).attr('link'));
 
-  if (num == 0)
+  if (num === 0)
     $('#prev-btn').hide();
   else
     $('#prev-btn').show();
 
-  if (num === 1) {
+  if (num === 1 || num === 2) {
     $('.controls').hide();
+  } else {
+    $('.controls').show();
   }
 
   if (num == ($('.step').length) - 1) {
