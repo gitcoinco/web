@@ -693,7 +693,7 @@ def viz_draggable(request, key='email_open'):
 
 
 def viz_scatterplot_stripped(request, key='hourly_rate'):
-    return viz_scatterplot(request, 'hourly_rate', 'dataviz/scatterplot_stripped.html', True)
+    return viz_scatterplot_helper(request, 'hourly_rate', 'dataviz/scatterplot_stripped.html', True)
 
 
 @staff_member_required

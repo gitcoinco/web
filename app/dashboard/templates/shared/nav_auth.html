@@ -52,7 +52,7 @@
         {% for tip in unclaimed_tips %}
           <a class="dropdown-item" href="{{ tip.url }}">
             <i class="fas fa-dollar-sign"></i>
-            {% blocktrans %}Claim ${{ tip.value_in_usdt_now }} Tip {% endblocktrans %}
+            {% trans "Claim" %} ${{ tip.value_in_usdt_now }} {% trans "Tip" %} 
           </a>
         {% endfor %}
       {% endif %}

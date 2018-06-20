@@ -1,6 +1,4 @@
-{% load i18n email_obfuscator %}
-{% load humanize %}
-{% load static %}
+{% load i18n email_obfuscator humanize static add_url_schema %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -26,11 +24,11 @@
               </p>
               <p class="mb-0">{{ profile.handle }}</p>
               <p class="profile-header__links clearfix mt-1">
-                <a href="{{profile.data.html_url}}?tab=repositories">
+                <a href="{{ profile.data.html_url }}?tab=repositories" target="_blank" rel="noopener noreferrer" >
                   <i class="fab fa-github"></i>
                 </a>
                 {% if profile.data.blog and user.is_authenticated %}
-                  <a href="{{ profile.data.blog }}">
+                  <a href="{{ profile.data.blog|add_url_schema }}" target="_blank" rel="noopener noreferrer" >
                     <i class="fas fa-home"></i>
                   </a>
                 {% endif %}
