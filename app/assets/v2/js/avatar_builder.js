@@ -53,15 +53,15 @@ layers.concat('Background').forEach(name => {
     }
     const targetId = localStorage[name + 'Id'].replace(/(['"])/g, '\\$1');
     const color = getColorFromPath(localStorage[name], optionName);
-    let pallete = null;
+    let palette = null;
 
     $($("[id='" + targetId + "']")).trigger('click');
     if ($('#preview-' + optionName).attr('class')) {
-      pallete = $('#preview-' + optionName).attr('class').replace('preview-section ', '').replace('-dependent', '');
+      palette = $('#preview-' + optionName).attr('class').replace('preview-section ', '').replace('-dependent', '');
     }
 
-    if (color && pallete) {
-      changeColor(pallete, color);
+    if (color && palette) {
+      changeColor(palette, color);
     }
     options[name] = localStorage[name];
   }
