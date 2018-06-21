@@ -804,6 +804,19 @@ input[type=text].loading {
   text-align: center;
 }
 
+.transation-header {
+  font-family: 'Muli', sans-serif;
+  display: block;
+  position: relative;
+  width: 80%;
+  left: 10%;
+  top: 30px;
+  margin-bottom: 30px;
+  border-radius: 2px;
+  padding: 3vh 5vw;
+  text-align: center;
+}
+
 .waiting_room_entertainment {
   font-style: italic;
   text-align: center;
@@ -826,6 +839,29 @@ input[type=text].loading {
   color: #70EFBE;
   margin: 1rem auto;
   font-style: italic;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 0.75px;
+}
+
+.bounty_details .quote-container {
+  width: 65%;
+  margin: 5% auto;
+  font-style: normal;
+}
+
+.bounty_details .quote_text {
+  color: #4A4A4A;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 22px;
+  letter-spacing: 0.75px;
+}
+
+.bounty_details .quote_author {
+  color: #4A4A4A;
+  margin: 1rem auto;
+  font-style: normal;
   font-weight: 700;
   font-size: 22px;
   letter-spacing: 0.75px;
