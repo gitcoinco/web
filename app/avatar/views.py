@@ -117,8 +117,11 @@ def handle_avatar(request, _org_name='', add_gitcoincologo=False):
     if _org_name:
         try:
             profile = Profile.objects.select_related('avatar').get(handle__iexact=_org_name)
-            if profile.avatar and profile.avatar.svg:
-                return HttpResponse(profile.avatar.svg.file, content_type='image/svg+xml')
+            if profile.avatar:
+                if profile.avatar.use_github_avatar and profile.avatar.png:
+                    return HttpResponse(profile.avatar.png.file, content_type='image/png')
+                elif profile.avatar.svg and not profile.avatar.use_github_avatar:
+                    return HttpResponse(profile.avatar.svg.file, content_type='image/svg+xml')
         except Exception as e:
             logger.error(e)
 
