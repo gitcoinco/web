@@ -16,7 +16,7 @@ onboard.showTab = function(num) {
   else
     $('#prev-btn').show();
 
-  if (num === 1 || num === 2) {
+  if (num === 1 || num === 2 || $($('.step')[num]).attr('link') === 'avatar') {
     $('.controls').hide();
   } else {
     $('.controls').show();
@@ -150,6 +150,16 @@ var changeStep = function(n) {
     return;
 
   var steps = $('.step');
+
+  if ((current + n) > (steps.length - 1)) {
+    redirectURL();
+  } else {
+    $(steps[current]).removeClass('show');
+    $(steps[current]).removeClass('block');
+    $('.alert').remove();
+    current += n;
+    onboard.showTab(current);
+  }
 
   $(steps[current]).removeClass('show');
   $(steps[current]).removeClass('block');
