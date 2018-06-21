@@ -535,7 +535,7 @@ def funder_onboard(request):
     """Handle displaying the first time user experience for funders."""
     params = {
         'title': _('Onboarding Flow'),
-        'steps': ['github', 'metamask', 'avatar', 'skills'],
+        'steps': ['github', 'metamask', 'avatar'],
         'flow': 'funder',
     }
     params.update(get_avatar_context())

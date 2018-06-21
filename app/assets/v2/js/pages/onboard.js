@@ -159,12 +159,16 @@ var changeStep = function(n) {
 
   var steps = $('.step');
 
-  $(steps[current]).removeClass('show');
-  $(steps[current]).removeClass('block');
-  $('.alert').remove();
+  if ((current + n) > (steps.length - 1)) {
+    redirectURL();
+  } else {
+    $(steps[current]).removeClass('show');
+    $(steps[current]).removeClass('block');
+    $('.alert').remove();
 
-  current += n;
-  onboard.showTab(current);
+    current += n;
+    onboard.showTab(current);
+  }
 };
 
 steps.forEach(function(step, index) {
