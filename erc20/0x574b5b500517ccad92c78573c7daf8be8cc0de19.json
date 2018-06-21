@@ -1,0 +1,24 @@
+{
+  "symbol": "FCS",
+  "address": "0x574b5b500517ccad92c78573c7daf8be8cc0de19",
+  "overview":{
+        "en": "Five Color Stone is based on the block chain technology game ecology chain, Five Color Stone is committed to establishing a block chain value chain in the game area. It provides services for the global game industry and the trillions of dollars game market, bringing new and happy gaming experience to users.",
+		"zh": "Five Color Stone 是基于区块链技术游戏生态链，Five Color Stone 致力于建立一条游戏领域的区块链价值公链。面向全球游戏产业和万亿美元的游戏市场提供服务，为用户带来全新、快乐的游戏娱乐体验。"
+  },
+  "email": "stonefivecolor@gmail.com",
+  "website": "http://www.fcs.one",
+  "whitepaper": "http://www.fcs.one/ComShowWebsite/img/FCS519.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-12",
+  "initial_price":{
+        "ETH":"0.00007528 ETH",
+        "USD":"0.04 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/StoneFiveColor",
+    "telegram": "https://t.me/fivecolorstone",
+    "github": "https://github.com/fcscolorstone",
+    "facebook": "https://www.facebook.com/FiveColorStone.FCS",
+    "reddit": "https://www.reddit.com/user/FiveColorStone"
+  }
+}
