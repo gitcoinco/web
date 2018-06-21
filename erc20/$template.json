@@ -1,19 +1,19 @@
 {
-  "symbol": "SOW",
-  "address": "0x3109af90eedbeeba9df921a23dc6ac45188b4366",
+  "symbol": "Token symbol",
+  "address": "Contract Address",
   "overview":{
-        "en": "Seed of  Wisdom",
-        "zh": "智豆"
+        "en": "Token Description.",
+        "zh": ""
   },
-  "email": "3436938218@qq.com",
-  "website": "https://teachchain.io/",
-  "whitepaper": "https://teachchain.io/static/SOW-Whitepaper.pdf",
+  "email": "Email",
+  "website": "https://your-awesome-project.com/",
+  "whitepaper": "https://your-awesome-project.com/file.pdf",
   "state": "LOCKED | NORMAL",
-  "published_on": "2018-01-28",
+  "published_on": "2018-01-01",
   "initial_price":{
-        "ETH":"0.0000063012 ETH",
-        "USD":"0.0031545741 USD",
-        "BTC":"0.0000004753 BTC"
+        "ETH":"0.00166666 ETH",
+        "USD":"0.7 USD",
+        "BTC":"0.00004137 BTC"
   },
   "links": {
     "blog": "https://your-awesome-project.com/blog",
