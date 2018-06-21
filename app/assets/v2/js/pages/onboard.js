@@ -11,10 +11,16 @@ onboard.showTab = function(num) {
   $($('.step')[num]).addClass('show');
   window.history.pushState('', '', '/onboard/' + flow + '/' + $($('.step')[num]).attr('link'));
 
-  if (num == 0)
+  if (num === 0)
     $('#prev-btn').hide();
   else
     $('#prev-btn').show();
+
+  if (num === 1 || num === 2) {
+    $('.controls').hide();
+  } else {
+    $('.controls').show();
+  }
 
   if (num == ($('.step').length) - 1) {
     $('#next-btn').html(gettext('Done'));
@@ -50,6 +56,9 @@ onboard.watchMetamask = function() {
         </a>
       </div>`
     );
+    if (current === 1) {
+      $('.controls').hide();
+    }
   } else if (!web3.eth.coinbase) {
     $('.step #metamask').html(`
       <div class="locked">
@@ -59,8 +68,16 @@ onboard.watchMetamask = function() {
         </a>
       </div>`
     );
+    if (current === 1) {
+      $('.controls').hide();
+      $('#metamask-video').show();
+    }
   } else {
-    $('.step #metamask').html('<div class="unlocked"><img src="/static/v2/images/metamask.svg" %}><span>' + gettext('Unlocked') + '</span></div>');
+    $('.step #metamask').html('<div class="unlocked"><img src="/static/v2/images/metamask.svg" %}><span class="mr-1">' + gettext('Unlocked') + '</span><i class="far fa-check-circle"></i></div>');
+    if (current === 1) {
+      $('.controls').show();
+      $('#metamask-video').hide();
+    }
   }
 };
 
@@ -96,6 +113,7 @@ onboard.getFilters = function(savedKeywords) {
   }
 
   $.each($('input[type=checkbox][name=tech-stack]:checked'), function() {
+    $('.suggested-tag input[type=checkbox]:checked + span i').removeClass('fa-plus').addClass('fa-check');
     var value = $(this).attr('value');
 
     _words.push(value);
@@ -135,6 +153,7 @@ var changeStep = function(n) {
 
   $(steps[current]).removeClass('show');
   $(steps[current]).removeClass('block');
+  $('.alert').remove();
 
   current += n;
   onboard.showTab(current);

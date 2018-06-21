@@ -175,7 +175,9 @@ var _alert = function(msg, _class) {
     return (
       `<div class="alert ${_class}" style="top: ${top}px">
         <div class="message">
-          ${alertMessage(msg)}
+          <div class="content">
+            ${alertMessage(msg)}
+          </div>
         </div>
         ${closeButton(msg)}
       </div>;`

@@ -1,0 +1,1 @@
+<svg id="Layer_1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 899.2 1415.7"><style>.st1{fill:#aa9f17}</style><path fill="none" d="M147.7 570.4h603.7v241.5H147.7z"/><circle class="st1" cx="774.9" cy="768.9" r="18.9"/><circle class="st1" cx="124.3" cy="768.9" r="18.9"/></svg>
