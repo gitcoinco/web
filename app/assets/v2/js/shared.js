@@ -81,6 +81,31 @@ var update_metamask_conf_time_and_cost_estimate = function() {
   $('#confTime').html(confTime);
 };
 
+var get_updated_metamask_conf_time_and_cost = function(gasPrice) {
+  
+  var confTime = 'unknown';
+  var ethAmount = 'unknown';
+  var usdAmount = 'unknown';
+
+  var gasLimit = parseInt($('#gasLimit').val());
+
+  if (gasPrice) {
+    ethAmount = Math.round(1000000 * gasLimit * gasPrice / Math.pow(10, 9)) / 1000000;
+    usdAmount = Math.round(10 * ethAmount * document.eth_usd_conv_rate) / 10;
+  }
+
+  for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
+    var this_ele = (document.conf_time_spread[i]);
+    var next_ele = (document.conf_time_spread[i + 1]);
+
+    if (gasPrice <= parseFloat(next_ele[0]) && gasPrice > parseFloat(this_ele[0])) {
+      confTime = Math.round(10 * next_ele[1]) / 10;
+    }
+  }
+
+  return {'eth': ethAmount, 'usd': usdAmount, 'time': confTime};
+};
+
 var unloading_button = function(button) {
   button.prop('disabled', false);
   button.removeClass('disabled');
@@ -789,6 +814,16 @@ var setUsdAmount = function(event) {
   var amount = $('input[name=amount]').val();
   var denomination = $('#token option:selected').text();
   var estimate = getUSDEstimate(amount, denomination, function(estimate) {
-    $('#usd_amount').html(estimate);
+    $('#usd_amount').val(estimate['value']);
+    $('#usd_amount_text').html(estimate['rate_text']);
+  });
+};
+
+var usdToAmount = function(event) {
+  var usdAmount = $('input[name=usd_amount').val();
+  var denomination = $('#token option:selected').text();
+  var estimate = getAmountEstimate(usdAmount, denomination, function(amountEstimate) {
+    $('#amount').val(amountEstimate['value']);
+    $('#usd_amount_text').html(amountEstimate['rate_text']);
   });
 };
