@@ -84,7 +84,7 @@ function prefill_recommended_prices() {
     $('#gasPrice').val($('#average-recommended-gas').data('amount'));
     $('#gas-usd').html('$' + avg_data['usd']);
     $('#gas-eth').html(avg_data['eth'] + 'ETH');
-  } else if (fast_data['time'] < 10) {
+  } else if (slow_data['time'] < 20 && parseInt($('#slow-recommended-gas').data('amount')) < 2) {
     $('#slow-recommended-gas').hide();
     $('#default-recommended-gas').hide();
     $('#average-recommended-gas').hide();
