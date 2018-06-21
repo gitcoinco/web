@@ -2,11 +2,11 @@
   "symbol": "CEN",
   "address": "0x778608c4ac424522180a43329ff5145400b9d409",
   "overview":{
-        "en": "Token Description.",
-        "zh": ""
+        "en": "Chainclub Ecosystem Network",
+        "zh": "区块链研习社生态网络"
   },
   "email": "Email",
-  "website": "https://your-awesome-project.com/",
+  "website": "https://CEN.com/",
   "whitepaper": "https://your-awesome-project.com/file.pdf",
   "state": "NORMAL",
   "published_on": "2018-01-01",
