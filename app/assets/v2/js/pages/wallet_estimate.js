@@ -81,6 +81,9 @@ function prefill_recommended_prices() {
     $('#slow-recommended-gas').hide();
     $('#average-recommended-gas').hide();
     $('#fast-recommended-gas').hide();
+    $('#gasPrice').val($('#average-recommended-gas').data('amount'));
+    $('#gas-usd').html('$' + avg_data['usd']);
+    $('#gas-eth').html(avg_data['eth'] + 'ETH');
   } else if (fast_data['time'] < 10) {
     $('#slow-recommended-gas').hide();
     $('#default-recommended-gas').hide();
@@ -93,11 +96,13 @@ function prefill_recommended_prices() {
     $('#gasPrice').val($('#average-recommended-gas').data('amount'));
     $('#gas-usd').html('$' + fast_data['usd']);
     $('#gas-eth').html(fast_data['eth'] + 'ETH');
+  } else {
+    $('#fast-recommended-gas').parent().addClass('justify-content-between').removeClass('justify-content-around');
+    $('#gasPrice').val($('#average-recommended-gas').data('amount'));
+    $('#gas-usd').html('$' + avg_data['usd']);
+    $('#gas-eth').html(avg_data['eth'] + 'ETH');
   }
-  $('#fast-recommended-gas').parent().addClass('justify-content-between').removeClass('justify-content-around');
 
-
-  $('#gasPrice').val($('#average-recommended-gas').data('amount'));
   // Slow recommendation prefills
   $('#slow-recommended-gas').html('Slow $' + slow_data['usd'] + ' ~' + slow_data['time'] + ' minutes');
   $('#slow-recommended-gas').data('amount', slow_data['usd']);
@@ -109,7 +114,5 @@ function prefill_recommended_prices() {
   // Fast recommendation prefills
   $('#fast-recommended-gas').html('Fast $' + fast_data['usd'] + ' ~' + fast_data['time'] + ' minutes');
   $('#fast-recommended-gas').data('amount', fast_data['usd']);
-  $('#gas-usd').html('$' + avg_data['usd']);
-  $('#gas-eth').html(avg_data['eth'] + 'ETH');
 }
 
