@@ -85,6 +85,9 @@ def save_avatar(request):
     profile = request.user.profile
 
     if request.body and 'use_github_avatar' in str(request.body):
+        if not profile.avatar:
+            profile.avatar = Avatar.objects.create()
+            profile.save()
         profile.avatar.use_github_avatar = True
         avatar_url = profile.avatar.pull_github_avatar()
         response['message'] = 'Avatar updated'
