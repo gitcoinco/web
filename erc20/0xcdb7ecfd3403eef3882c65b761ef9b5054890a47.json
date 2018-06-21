@@ -1,0 +1,24 @@
+{
+  "symbol": "HUR",
+  "address": "0xcdb7ecfd3403eef3882c65b761ef9b5054890a47",
+  "overview":{
+        "en": "A Decentralized platform for IOT solution development."
+  },
+  "email": "contact@hurify.co",
+  "website": "https://hurify.co/",
+  "whitepaper": "https://hurify.co/whitepaper",
+  "published_on": "2017-12-07",
+  "initial_price":{
+        "ETH":"0.0001818 ETH"
+  },
+  "links":{
+    "blog": "https://hurify.co/blog",
+    "twitter": "https://twitter.com/Hurify_hur",
+    "telegram": "https://t.me/joinchat/hurifyico",
+    "github": "https://github.com/HurifyPlatform",
+    "facebook": "https://www.facebook.com/hurify",
+    "reddit": "https://www.reddit.com/user/Hurify/",
+    "slack": "https://hurify.slack.com/",
+    "medium": "https://medium.com/@Hurify"
+  }
+}
