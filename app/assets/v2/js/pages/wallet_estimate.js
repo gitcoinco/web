@@ -8,6 +8,7 @@ window.addEventListener('load', function() {
 
   $(document).on('click', '#accordion-set-own-limit', function() {
     $('#metamask_context').toggle();
+    $('#gas-section .recommended-prices').removeClass('active');
     if ($('#accordion-set-own-limit i').hasClass('fa-angle-down')) {
       $('#accordion-set-own-limit i').removeClass('fa-angle-down').addClass('fa-angle-up');
     } else {
@@ -76,16 +77,25 @@ function prefill_recommended_prices() {
     $('#default-recommended-gas').show();
     $('#default-recommended-gas').html('The confirmation time is unknown. However we recommend a gas price of $' + fast_data['usd']);
     $('#default-recommended-gas').data('amount', fast_data['usd']);
+    $('#gasPriceRecommended').val($('#average-recommended-gas').data('amount'));
     $('#slow-recommended-gas').hide();
     $('#average-recommended-gas').hide();
     $('#fast-recommended-gas').hide();
   } else if (fast_data['time'] < 10) {
     $('#slow-recommended-gas').hide();
+    $('#default-recommended-gas').hide();
     $('#average-recommended-gas').hide();
+    $('#fast-recommended-gas').show();
     $('.message').html('Good news! Gas is pretty fast right now').show();
     $('#fast-recommended-gas').html('Fast $' + fast_data['usd'] + ' ~' + fast_data['time'] + ' minutes').addClass('active');
     $('#fast-recommended-gas').data('amount', fast_data['usd']);
+    $('#fast-recommended-gas').parent().removeClass('justify-content-between').addClass('justify-content-around');
+    $('#gasPriceRecommended').val($('#average-recommended-gas').data('amount'));
+    $('#gas-usd').html('$' + fast_data['usd']);
+    $('#gas-eth').html(fast_data['eth'] + 'ETH');
   }
+  $('#fast-recommended-gas').parent().addClass('justify-content-between').removeClass('justify-content-around');
+
 
   $('#gasPriceRecommended').val($('#average-recommended-gas').data('amount'));
   // Slow recommendation prefills

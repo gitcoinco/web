@@ -29,6 +29,11 @@ h1, h2, h3, h4, h5 {
 
 #primary_form .font-subheader {
   color: #666666;
+  font-weight: bold;
+}
+
+#primary_form .form__input-help {
+  font-size: 13px;
 }
 
 .revisions input {

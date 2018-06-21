@@ -374,6 +374,7 @@ p a {
 #gas-section #default-recommended-gas,
 #gas-section .message {
   display: none;
+  text-align: center;
 }
 
 .btn-warning,
