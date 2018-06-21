@@ -115,6 +115,8 @@
                       </select>
                     </div>
                   </div>
+                  {% comment %}
+                  <!-- TODO: Re-enable this once we get clarification on what a Revision should entail -->
                   <label class="form__label" for="revisions">{% trans "Revisions" %}</label>
                   <div class="form__input revisions d-flex">
                     <span class="form__input-action" id="subtractAction">-</span>
@@ -122,6 +124,7 @@
                     <span class="form__input-action" id="addAction">+</span>
                   </div>
                   <hr class="mt-4"/>
+                  {% endcomment %}
                 </div>
                 <div id="deadline-section" class="pt-2">
                   <h5 class="font-subheader">{% trans "Deadline" %}</h5>
