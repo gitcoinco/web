@@ -522,9 +522,15 @@ def send_tip_2(request):
 
 def contributor_onboard(request):
     """Handle displaying the first time user experience flow."""
+    steps = []
+    if request.GET:
+        steps = request.GET.get('steps', [])
+        if steps:
+            steps = steps.split(',')
+
     params = {
         'title': _('Onboarding Flow'),
-        'steps': ['github', 'metamask', 'avatar', 'skills'],
+        'steps': steps or ['github', 'metamask', 'avatar', 'skills'],
         'flow': 'contributor',
     }
     params.update(get_avatar_context())
