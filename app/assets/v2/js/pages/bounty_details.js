@@ -352,7 +352,9 @@ var showWarningMessage = function(txid) {
   $('#bounty_detail').hide();
 
   $('.transaction-status').show();
+  $('.transation-header').show();
   $('.waiting_room_entertainment').show();
+  $('.issue-url').html(document.issueURL);
 
   var secondsBetweenQuoteChanges = 30;
 

@@ -79,13 +79,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   </div>
                   <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
                 </div>
+                <div id="gas-section">
+                  {% include 'shared/wallet_estimate.html' %}
+                </div>
                 <div class="w-100 mt-2 terms_container" style="padding-top:5px;">
                   <div class="form__checkbox">
                     <input name='terms' id='terms' type="checkbox" value=1 />
                     <label class="form__label" for=terms>I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>.</label>
                   </div>
                 </div>
-                {% include 'shared/wallet_estimate.html' %}
                 <div class="form__footer form__footer--right">
                   <button class="button button--primary" type="submit" id="submitBounty">Increase Funding</button>
                   <br />
