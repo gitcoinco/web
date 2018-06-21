@@ -531,6 +531,17 @@ def contributor_onboard(request):
     return TemplateResponse(request, 'ftux/onboard.html', params)
 
 
+def funder_onboard(request):
+    """Handle displaying the first time user experience for funders."""
+    params = {
+        'title': _('Onboarding Flow'),
+        'steps': ['github', 'metamask', 'avatar', 'skills'],
+        'flow': 'funder',
+    }
+    params.update(get_avatar_context())
+    return TemplateResponse(request, 'ftux/onboard.html', params)
+
+
 def dashboard(request):
     """Handle displaying the dashboard."""
     params = {
