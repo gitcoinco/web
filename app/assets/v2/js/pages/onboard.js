@@ -151,22 +151,16 @@ var changeStep = function(n) {
 
   var steps = $('.step');
 
-  if ((current + n) > (steps.length - 1)) {
-    redirectURL();
-  } else {
-    $(steps[current]).removeClass('show');
-    $(steps[current]).removeClass('block');
-    $('.alert').remove();
-    current += n;
-    onboard.showTab(current);
-  }
-
   $(steps[current]).removeClass('show');
   $(steps[current]).removeClass('block');
   $('.alert').remove();
 
   current += n;
-  onboard.showTab(current);
+  if (current > steps.length - 1) {
+    redirectURL();
+  } else {
+    onboard.showTab(current);
+  }
 };
 
 steps.forEach(function(step, index) {
