@@ -52,7 +52,7 @@
         {% for tip in unclaimed_tips %}
           <a class="dropdown-item" href="{{ tip.url }}">
             <i class="fas fa-dollar-sign"></i>
-            {% blocktrans %}Claim ${{ tip.value_in_usdt_now }} Tip {% endblocktrans %}
+            {% trans "Claim" %} ${{ tip.value_in_usdt_now }} {% trans "Tip" %}
           </a>
         {% endfor %}
       {% endif %}
@@ -71,7 +71,7 @@
     </div>
   </div>
 <img class="nav_avatar" width=40 height=40
-  src="/static/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}">
+  src="{% if user.profile.avatar %}{{ user.profile.avatar.avatar_url }}{% else %}/static/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
 {% else %}
 <a class="nav-link login interior" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
   onclick="dataLayer.push({'event': 'login'});">

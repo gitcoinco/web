@@ -50,7 +50,7 @@ Here's how to get started in the community
 We believe that a great way to build new skills is to learn by doing, and Gitcoin's core product (Bounties) supports that.
 
 Here's how to get started with bounties:
-- Developer? Check out the open bounties at https://gitcoin.co/explorer
+- Developer? Start by completing the contributor onboarding at https://gitcoin.co/onboard/contributor and check out the open bounties at https://gitcoin.co/explorer
 - Repo Owner? Accelerate your dev progress by posting a bounty of your own at https://gitcoin.co/new
 - Send a tip to any github username with https://gitcoin.co/tip
 

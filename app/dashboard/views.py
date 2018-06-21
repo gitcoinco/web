@@ -30,6 +30,7 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
@@ -37,6 +38,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import ellipses, sync_profile
+from avatar.utils import get_avatar_context
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from github.utils import (
     get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
@@ -376,7 +378,7 @@ def uninterested(request, bounty_id, profile_id):
         Interest.objects.filter(pk__in=list(interest_ids)).delete()
 
     profile = Profile.objects.get(id=profile_id)
-    if profile.user and profile.user.email:
+    if profile.user and profile.user.email and interest:
         bounty_uninterested(profile.user.email, bounty, interest)
     else:
         print("no email sent -- user was not found")
@@ -518,7 +520,6 @@ def send_tip_2(request):
     return TemplateResponse(request, 'yge/send2.html', params)
 
 
-@staff_member_required
 def contributor_onboard(request):
     """Handle displaying the first time user experience flow."""
     params = {
@@ -526,6 +527,7 @@ def contributor_onboard(request):
         'steps': ['github', 'metamask', 'avatar', 'skills'],
         'flow': 'contributor',
     }
+    params.update(get_avatar_context())
     return TemplateResponse(request, 'ftux/onboard.html', params)
 
 
@@ -872,7 +874,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 helper_handle_mark_as_remarket_ready(request, bounty)
                 helper_handle_admin_contact_funder(request, bounty)
                 helper_handle_override_status(request, bounty)
-                
+
         except Bounty.DoesNotExist:
             pass
         except Exception as e:
