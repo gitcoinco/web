@@ -58,8 +58,8 @@ def build_auth_dict(oauth_token):
     """
     return {
         'api_url': settings.GITHUB_API_BASE_URL,
-        'client_id': settings.GITHUB_CLIENT_ID,
-        'client_secret': settings.GITHUB_CLIENT_SECRET,
+        'client_id': '90532f168702758eafe5',
+        'client_secret': 'd75a5b667a479d7e831f2f7ed4b577b6c9db968e',
         'oauth_token': oauth_token
     }
 
@@ -188,7 +188,7 @@ def get_auth_url(redirect_uri='/'):
     redirect_uri = urlencode(redirect_params, quote_via=quote_plus)
 
     params = {
-        'client_id': settings.GITHUB_CLIENT_ID,
+        'client_id': '90532f168702758eafe5',
         'scope': settings.GITHUB_SCOPE,
         'next': f'{BASE_URI}{github_callback}?{redirect_uri}'
     }
@@ -201,8 +201,8 @@ def get_github_user_token(code, **kwargs):
     """Get the Github authorization token."""
     _params = {
         'code': code,
-        'client_id': settings.GITHUB_CLIENT_ID,
-        'client_secret': settings.GITHUB_CLIENT_SECRET
+        'client_id': '90532f168702758eafe5',
+        'client_secret': 'd75a5b667a479d7e831f2f7ed4b577b6c9db968e'
     }
     # Add additional parameters to the request paramaters.
     _params.update(kwargs)

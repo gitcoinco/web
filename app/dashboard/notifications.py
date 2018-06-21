@@ -88,7 +88,7 @@ def maybe_market_to_twitter(bounty, event_name):
             "Hot off the blockchain! 🔥🔥🔥 There's a new task worth {} {} {} \n\n{}",
             "💰 New Task Alert.. 💰 Earn {} {} {} for working on this 👇 \n\n{}",
         ]
-    elif event_name == 'increase_payout':
+    elif event_name == 'increased_bounty':
         tweet_txts = [
             'Increased Payout on {} {} {}\n{}'
         ]
