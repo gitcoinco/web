@@ -1,0 +1,21 @@
+{
+  "symbol": "DAG",
+  "address": "0xf761f2dd63889885f4717056bdc32cc07c06dbbf",
+  "overview":{
+        "en":"VALUE EXCHANGE NETWORKS.",
+        "zh":"基于DAG的价值互联与交换网络"
+  },
+  "email": "dagx@bsure.io",
+  "website": "https://dagx.io/",
+  "whitepaper": "https://dagx.io/dagx.pdf",
+  "published_on": "2018-06-07",
+  "initial_price":{
+        "ETH":"0.0001 ETH",
+        "USD":"0.05 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/bsureio",
+    "telegram": "https://t.me/bsuregroup",
+    "github": "https://t.me/bsuregroup"
+  }
+}
