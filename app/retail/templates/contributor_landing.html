@@ -37,26 +37,7 @@
       </div>
 
       <div class="container-fluid p-5 whatisit_container">
-        <div class="row mb-5">
-          <div class="col text-center">
-            <h1>{% trans "What is Gitcoin?" %}</h1>
-          </div>
-        </div>
-        <div class="row d-flex justify-content-center align-items-center whatisit mb-4 flex-wrap">
-          <div class="col-12 col-md-6 col-lg-5 mb-4">
-            <div>
-              <h3 class="mb-3">{% trans "A Mission to Grow Open Source." %}</h3>
-              <p class="mb-4">{% blocktrans %}A community for developers to collaborate and monetize their skills while working on Open Source projects through bounties.{% endblocktrans %}
-              </p>
-              <a href="https://medium.com/gitcoin/open-source-money-will-buidl-the-open-source-ecosystem-f4169def8748"
-                class="btn btn-gc-purple mb-4" target="_blank" rel="noopener noreferrer">{% trans "Read More" %}</a>
-              <p>{% trans "Gitcoin does <strong>not</strong> have a native token." %}</p>
-            </div>
-          </div>
-          <div class="col-12 col-md-6 col-lg-5 d-flex flex-column align-items-center animatedParent youtube">
-            <iframe src="https://www.youtube.com/embed/DJartWzDn0E" frameborder="0" allowfullscreen></iframe>
-          </div>
-        </div>
+        {% include 'shared/what_is_gitcoin.html' %}
       </div>
 
       <div class="container-fluid p-5 howworks-container howworks-container-contributors">

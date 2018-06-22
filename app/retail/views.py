@@ -50,6 +50,11 @@ def index(request):
          _("Although we’ve only hired two developers, there is no doubt that we could have sourced more. Gitcoin has been the strongest hiring signal in all of the hiring I’ve ever done."),
          'https://github.com/pipermerriam', 'Pipermerriam'),
     ]
+
+    gitcoin_description = _(
+        "A community at the intersection of blockchain and open source. A place for developers to collaborate in a new system, where open source money builds in monetization for open source repositories."
+    )
+
     context = {
         'is_outside': True,
         'slides': slides,
@@ -57,7 +62,8 @@ def index(request):
         'active': 'home',
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
-        'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter."),
+        'gitcoin_description': gitcoin_description,
+        'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter.")
     }
     return TemplateResponse(request, 'index.html', context)
 
@@ -79,6 +85,10 @@ def contributor_landing(request):
          _("Although we’ve only hired two developers, there is no doubt that we could have sourced more. Gitcoin has been the strongest hiring signal in all of the hiring I’ve ever done."),
          'https://github.com/pipermerriam', 'Pipermerriam'),
     ]
+
+    gitcoin_description = _(
+        "A community for developers to collaborate and monetize their skills while working on Open Source projects through bounties."
+    )
 
     projects = [
         {
@@ -151,7 +161,8 @@ def contributor_landing(request):
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'home',
-        'projects': projects
+        'projects': projects,
+        'gitcoin_description': gitcoin_description
     }
 
     return TemplateResponse(request, 'contributor_landing.html', context)
