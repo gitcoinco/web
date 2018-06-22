@@ -9,7 +9,7 @@
   "website": "http://lpchain.io",
   "whitepaper": "http://lpchain.io/1.pdf",
   "state": "NORMAL",
-  "published_on": "2018-6-21",
+  "published_on": "2018-06-21",
   "initial_price":{
         "ETH":"0.00003 ETH"  
   },
