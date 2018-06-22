@@ -1,0 +1,22 @@
+{
+  "symbol": "BSS",
+  "address": "0x6fc22d1f6852af2bcea6cb749033ccb6b4d3177a",
+  "overview":{
+        "en": "BitSTD Shares",
+        "zh": "标准币指"
+  },
+  "email": "bitstandard@gmail.com",
+  "website": "https://www.bitstd.org",
+  "whitepaper": "https://www.bitstd.org/u/BitSTDWhitePaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-02-05",
+  "initial_price":{
+        "USD":"0.1 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/bitstandard",
+    "telegram": "https://t.me/joinchat/bitstd",
+    "github": "https://github.com/bitstd",
+    "facebook": "https://www.facebook.com/standard.bit.5"
+  }
+}
