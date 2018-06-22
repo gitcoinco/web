@@ -27,7 +27,7 @@
     <p><i class="fas fa-circle"></i>{% trans "When you're finished and ready to review. Click Submit Work." %}</p>
     <p><i class="fas fa-circle"></i>{% trans "Can't finish the project ? Click stop work" %}</p>
     <p>{% trans "Need more help? Checkout the" %}
-      <a target="_blank" rel="noopener noreferrer" href="docs/onboard">{% trans "Quickstart Guide" %}</a>
+      <a target="_blank" rel="noopener noreferrer" href="{% url "onboard_doc" %}">{% trans "Get Started" %}</a>
     </p>
     <a id="onboard-alert" class="button button--primary" role="button" href="" target="">
       <span class="font-caption">{% trans "Got It!" %}</span>
