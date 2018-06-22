@@ -11,10 +11,10 @@
   "state": "NORMAL",
   "published_on": "2018-6-21",
   "initial_price":{
-        "ETH":"0.00003 ETH",     
+        "ETH":"0.00003 ETH"  
   },
   "links": {   
     "twitter": "https://twitter.com/bitzoneapp",
-    "telegram": "https://0.plus/bitzoneapp",  
+    "telegram": "https://0.plus/bitzoneapp" 
   }
 }
