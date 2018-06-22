@@ -1,0 +1,15 @@
+{
+  "symbol": "HTHC",
+  "address": "0x35e308668391dAaB398FFc0e60D13d65c7793fEd",
+  "overview":{
+        "en": "Health Coin HTC has block chain asset characteristics, constant issuance, never additional issuance, exchange, gift and other forms to the platform core users and platform contributors. It is not only necessary for members to save service charges, but also the exchange platform enterprise value-added services the only pass. The Health Coin HTC user demand is innumerable, mobile space continues, its appreciation potential is unthinkable.",
+        "zh": "健康币HTCH拥有区块链资产特性，恒量发行，永不增发，以兑换，赠送等形式赋予平台核心用户及平台贡献者。它不仅是会员必备的节省手续费的优惠利器，也是兑换平台企业增值服务的唯一通行证。健康币HTC用户需求不计其数，流动空间延续不断，其升值潜力不可想象。"
+  },
+  "website": "http://www.health-chain.top",
+  "whitepaper": "http://17023552.s21d-17.faiusrd.com/0/ABUIABA9GAAgsbOr2QUo9te0MA?f=%E5%81%A5%E5%BA%B7%E9%93%BE.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-20",
+  "initial_price":{
+        "ETH":"0.00186186 ETH"
+  }
+}
