@@ -760,6 +760,10 @@ dl dd {
   border-left: 0;
 }
 
+.pull-request-link:hover {
+  color: #FFFFFF;
+}
+
 /* Wrapper */
 
 #wrapper {

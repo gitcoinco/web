@@ -195,6 +195,24 @@ PS - i've got some new gitcoin schwag on order. send me your mailing address and
     return response_html, response_txt
 
 
+def render_admin_contact_funder(bounty, text, from_user):
+    txt = f"""
+{bounty.url}
+
+{text}
+
+{from_user}
+
+"""
+    params = {
+        'txt': txt,
+    }
+    response_html = premailer_transform(render_to_string("emails/txt.html", params))
+    response_txt = txt
+
+    return response_html, response_txt
+
+
 
 def render_new_bounty(to_email, bounties, old_bounties):
     sub = get_or_save_email_subscriber(to_email, 'internal')

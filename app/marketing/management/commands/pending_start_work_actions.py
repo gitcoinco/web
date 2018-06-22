@@ -33,13 +33,20 @@ def start_work_applicant_expired_executer(interest, bounty):
     interest.save()
 
 
-def helper_execute_emails(threshold, func_to_execute, action_str):
+def helper_execute(threshold, func_to_execute, action_str):
     start_time = timezone.now() - timezone.timedelta(hours=(threshold+1))
     end_time = timezone.now() - timezone.timedelta(hours=(threshold))
     interests = Interest.objects.filter(pending=True, created__gt=start_time, created__lt=end_time)
     print(f"{interests.count()} {action_str}")
     for interest in interests:
-        bounty = interest.bounties.first()  # TODO is this right? is this how i get the bounty?
+        bounty = interest.bounties.first()
+        has_approved_worker_already = bounty.interested.filter(pending=False).exists()
+        if bounty.admin_override_suspend_auto_approval:  # skip bounties where this flag is set
+            print("skipped bc of admin_override_suspend_auto_approval")
+            continue
+        if has_approved_worker_already:
+            print("skipped bc of has_approved_worker_already")
+            continue
         print(f"- {interest.pk} {action_str}")
         func_to_execute(interest, bounty)
 
@@ -51,7 +58,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         # warnings
-        helper_execute_emails(THRESHOLD_HOURS_AUTO_APPROVE_WARNING, start_work_applicant_about_to_expire, 'warning')
+        helper_execute(THRESHOLD_HOURS_AUTO_APPROVE_WARNING, start_work_applicant_about_to_expire, 'warning')
 
         # auto approval
-        helper_execute_emails(THRESHOLD_HOURS_AUTO_APPROVE, start_work_applicant_expired_executer, 'auto approval')
+        helper_execute(THRESHOLD_HOURS_AUTO_APPROVE, start_work_applicant_expired_executer, 'auto approval')
