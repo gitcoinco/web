@@ -516,7 +516,7 @@ Back to building,
         {
             'who': 'justpixel',
             'who_link': True,
-            'what': 'Created a great animation of the Grow Open Source tree!'
+            'what': 'Created a great animation of the Grow Open Source tree!',
             'link': 'https://gitcoin.co/issue/gitcoinco/web/1462/626',
             'link_copy': 'View more',
         },
