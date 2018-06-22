@@ -1,0 +1,20 @@
+{
+  "symbol": "MX",
+  "address": "0x11eef04c884e24d9b7b4760e7476d06ddf797f36",
+  "overview":{
+        "en": "MXC is a trading platform created by a group of digital asset enthusiasts to focus on blockchain assets.",
+        "zh": "MXC是一群数字资产爱好者创建而成的一个专注区块链资产的交易平台。"
+  },
+  "email": "service@mxc.com",
+  "website": "https://www.mxc.com/",
+  "state": "NORMAL",
+  "published_on": "2018-06-21",
+  "initial_price":{
+        "ETH":"0.000002 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/MXC_Exchange",
+    "telegram": "https://t.me/mxc_support",
+    "facebook": "https://www.facebook.com/MXC.ExchangeCenter"
+  }
+}
