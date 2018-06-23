@@ -1,0 +1,22 @@
+{
+    "symbol": "GSE",
+    "address": "0xe530441f4f73bDB6DC2fA5aF7c3fC5fD551Ec838",
+    "overview": {
+        "en": "GSENetwork aims to build a transparent and secure network designed for decentralized economies. Leveraging on IoT technology, blockchain-powered incentivization, a two-asset price stability mechanism and robust smart contracts, GSENetwork aims to be a deeply scalable token ecosystem that encourages high performance recording of on-chain sharing transactions, bringing real-world trust into the digital world.",
+        "zh": "GSENetwork致力于建立一个透明安全的现象级去中心化信用网络，借助物联网技术、通证激励体系、复合通证经济设计及智能合约服务，由共享经济切入实现信用上链，为中心化服务（DService）提供底层区块链平台，重新定义古典共享经济中参与者的生产关系。"
+    },
+    "email": "info@gselab.org",
+    "website": "http://www.gse.network/",
+    "whitepaper": "http://www.gse.network/static/media/wp-gsenetwork-0.3.ee85c4d0.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-06-20",
+    "initial_price": {
+        "ETH": "0.000005 ETH"
+    },
+    "links": {
+        "twitter": "https://twitter.com/gselabofficial",
+        "telegram": "https://t.me/GSENetworkOfficial",
+        "facebook": "https://www.facebook.com/gselabofficial/",
+        "medium": "https://medium.com/@gselabofficial"
+    }
+}
