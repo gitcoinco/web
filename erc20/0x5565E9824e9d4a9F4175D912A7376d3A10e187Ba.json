@@ -8,8 +8,8 @@
   "website": "https://www.pwcc.top",
   "whitepaper": "http://infinitepay.cn/pwcc.pdf",
   "state": "NORMAL",
-  "published_on": "2018-06-6",
+  "published_on": "2018-06-06",
   "initial_price":{
-        "USD":"0.3 USD"
-  } 
+        "USD":"0.25 USD"
+  }
 }
