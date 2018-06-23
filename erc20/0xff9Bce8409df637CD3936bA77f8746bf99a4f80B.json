@@ -1,0 +1,23 @@
+{
+    "website": "http://dechain.io",
+    "published_on": "2018-06-18",
+    "links": {
+        "telegram": "https://t.me/decToken",
+        "forum": "http://bbs.decchain.io",
+        "twitter": "https://twitter.com/DEChain4",
+        "reddit": "https://www.reddit.com/user/DEChainOfficial",
+        "facebook": "https://www.facebook.com/dec.chain.5"
+    },
+    "overview": {
+        "en": "Decentralized Ecosystem Cooperation.",
+        "zh": "DEC 是去中心化任务协作平台，可以在这个平台上衍生出极为丰富的生态。"
+    },
+    "symbol": "DEC",
+    "initial_price": {
+        "ETH": "0.00003 ETH",
+        "USD": "0.02 USD"
+    },
+    "address": "0xff9Bce8409df637CD3936bA77f8746bf99a4f80B",
+    "whitepaper": "http://www.dechain.io/DEC-whitepaper-0.1.pdf",
+    "email": "dec@dechain.io"
+}
