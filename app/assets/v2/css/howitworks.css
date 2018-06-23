@@ -20,7 +20,7 @@
 }
 
 .how-it-works__hor-line {
-  height: 7px;
+  height: 5px;
 }
 
 .how-it-works__vert-line {
@@ -78,7 +78,13 @@
 
 .how-it-works__step-title,
 .how-it-works__step-text {
-  margin-top: 0.5em;
+  padding-top: 0.4em;
+  background: white;
+  z-index: 2;
+}
+
+.how-it-works__step-text {
+  padding-bottom: 6px;
 }
 
 .how-it-works__step-icon {

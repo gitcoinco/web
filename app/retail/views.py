@@ -65,7 +65,7 @@ def index(request):
 def how_it_works(request):
     """Show How it Works / Funder page."""
     context = {
-        'active': 'how_it_works_funder' if request.path == '/funder' else 'how_it_works_contributor',
+        'active': 'how_it_works_funder' if request.path == '/how/funder' else 'how_it_works_contributor',
     }
     return TemplateResponse(request, 'how_it_works.html', context)
 
