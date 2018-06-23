@@ -11,7 +11,7 @@
   "state": "NORMAL",
   "published_on": "2018-01-01",
   "initial_price":{
-        "CNY":"0.1 CNY",
+        "CNY":"0.1 CNY"
   },
   "links": {
     "github": "https://github.com/BlockChainClub"
