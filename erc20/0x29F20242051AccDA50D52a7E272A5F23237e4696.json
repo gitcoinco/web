@@ -1,0 +1,22 @@
+{
+  "symbol": "IDHUB",
+  "address": "0x29F20242051AccDA50D52a7E272A5F23237e4696",
+  "overview":{
+        "en": "As an important factor in the IDHub Trusted Digital Ecosystem, the primary purpose of IDHUB(token name is idhub) is to prove user identities and allocate storage space for identity attributes.  IDHUB(token name is idhub) will be applied to IDHub core business – authentication of identity, and expanding of business scope, such as loans (based on credit score) and advertising (based on real identity). The value proposition of IDHub is to reduce the cost of authentication, so the application of  IDHUB(token name is idhub) can greatly cut down the time and labor costs.  IDHUB(token name is idhub)will help identity requesters complete the entire process of identity attributes issuing, authentication verifying and authentication encouraging. Achieving intrinsic value of the ecosystem while looping IDHUB(token name is idhub), IDHub will ensure that all parties in the authentication stage have power to drive the system opreating autonomously.",
+        "zh": "作为IDHub可信数字生态系统的重要因子，“花瓣”的主要用途是证明用户身份，并为身份属性分配存储空间。“花瓣”将被应用于IDHub核心业务——身份认证，以及扩展业务范围，比如贷款（基于信用评分）和广告（基于真实身份）之中。IDHub的价值主张是降低身份认证成本，因此，应用IDH可以大大减低身份验证的时间和人力成本。IDH将帮助身份认证需求方完成从身份属性发放、验证核实到认证激励的整个流程，在实现“花瓣”流转闭环的同时，充分提升IDHub生态系统的内在价值，保证身份认证环节中的各方都有动力驱动系统自主运行。"
+  },
+  "email": "support@idhub.network",
+  "website": "http://www.idhub.network/",
+  "whitepaper": "http://www.idhub.network/data/IDHub_whitepaper_v0.4.2_cn.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-04-16",
+  "initial_price":{
+        "ETH":"0.00025 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/IDHUBOFFICIAL",
+    "telegram": "https://t.me/IDHUBOFFICIAL",
+    "github": "https://github.com/idhubnetwork",
+    "facebook": "https://www.facebook.com/IdhubOfficial"
+  }
+}
