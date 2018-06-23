@@ -1,0 +1,16 @@
+{
+  "symbol": "KBI",
+  "address": "0x6f6eef16939b8327d53afdcaf08a72bba99c1a7f",
+  "overview":{
+        "en": "By securely sharing health data with the global health-care industry through blockchain technology and digital assetization, Lifechain is to become the world's No.1 health data sharing service provider. It has built a universal digital asset (KBI) for the global health-care industry, which can be used to pay for global wisdom, super health-care, health data, and super technology. ",
+        "zh": "Lifechain通过区块链技术以及数字资产化将健康数据安全的共享给全球医养产业，成为全球第一的健康数据共享服务商。Lifechain针对全球康养产业构建了一个通用的数字资产康币（简称KBI），可用于支付全球性的智慧康养、超能医护、健康数据、超级技术等费用"
+  },
+  "email": "lifechainx@gmail.com",
+  "website": "http://lifechain.pro",
+  "whitepaper": "http://lifechain.pro/pdf/pdf/viewer.html",
+  "state": "LOCKED",
+  "published_on": "2018-06-14",
+  "initial_price":{
+        "ETH":"0.00004 ETH"
+  }
+}
