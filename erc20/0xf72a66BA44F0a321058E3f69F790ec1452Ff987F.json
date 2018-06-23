@@ -1,0 +1,17 @@
+{
+  "symbol": "MCY",
+  "address": "0xf72a66BA44F0a321058E3f69F790ec1452Ff987F",
+  "overview":{
+        "en": "Marine Chain"
+  },
+  "email": "mycchain@163.com",
+  "website": "http://www.mcy-chain.com",
+  "whitepaper": "http://mcy-chain.com/uploadfile/2018/0611/20180611114853882.zip",
+  "state": "NORMAL",
+  "published_on": "2018-05-31",
+  "initial_price":{
+        "ETH":"0.00 ETH",
+        "USD":"0.00 USD",
+        "BTC":"0.00 BTC"
+  }
+}
