@@ -44,8 +44,8 @@
           {% endfor %}
           {% if github_handle %}
           <div class="controls">
-            <p id="prev-btn" class="button button--primary-o" onclick="changeStep(-1)">{% trans "Previous" %}</p>
-            <p id="next-btn" class="button button--primary" onclick="changeStep(1)">{% trans "Next" %}</p>
+            <p id="prev-btn" class="button button--primary-o button--controls" onclick="changeStep(-1)">{% trans "Previous" %}</p>
+            <p id="next-btn" class="button button--primary button--controls" onclick="changeStep(1)">{% trans "Next" %}</p>
           </div>
           {% endif %}
         </form>

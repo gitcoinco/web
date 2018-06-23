@@ -60,8 +60,7 @@ h3 {
 .step .filter-tag,
 .step a span,
 .step .label,
-#next-btn,
-#prev-btn {
+.button--controls {
   font-size: 12px;
 }
 
@@ -112,8 +111,12 @@ h3 {
   display: block;
 }
 
-#next-btn,
-#prev-btn {
+#navbarSupportedContent .nav-link,
+#navbarSupportedContent img {
+  visibility: hidden;
+}
+
+.button--controls {
   display: inline-block;
   margin: 5px 0 5px 5px;
   text-transform: capitalize;
@@ -332,10 +335,6 @@ h3 {
   background-color: #1AB56D;
   margin: 5px;
   border-radius: 3px;
-}
-
-#navbarSupportedContent {
-  visibility: hidden;
 }
 
 .completed {

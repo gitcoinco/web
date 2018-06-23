@@ -2,6 +2,11 @@ var onboard = {};
 var current = 0;
 var words = [];
 
+if ($('.logged-in').length) {
+  $('.nav-item.dropdown #navbarDropdown').css('visibility', 'visible');
+  $('img.nav_avatar').css('visibility', 'visible');
+}
+
 $('.js-select2').each(function() {
   $(this).select2();
 });
