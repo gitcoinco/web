@@ -1,0 +1,12 @@
+{
+  "symbol": "CFCB",
+  "address": "0x28Ed591C567Ab57aC3a885DF7770eBfd82D8Cd3e",
+  "email": "carfriendchain@gmail.com",
+  "website": "http://www.carfriendchain.com/",
+  "whitepaper": "http://www.carfriendchain.com/CFCB%E5%95%86%E4%B8%9A%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-22",
+  "initial_price":{
+        "ETH":"0.00181818 ETH"
+  }
+}
