@@ -8,7 +8,7 @@
   "state": "NORMAL",
   "published_on": "2018-06-01",
   "initial_price":{
-        "CNY":"0.1 CNY"
+        "ETH":"0.00003 ETH"
   },
   "links": {
     "github": "https://github.com/BlockChainClub"
