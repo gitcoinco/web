@@ -404,12 +404,16 @@ def record_user_action_on_interest(interest, event_name, last_heard_from_user_da
 
 
 def get_context(ref_object=None, github_username='', user=None, confirm_time_minutes_target=4,
-                active='', title='', update=None):
+                confirm_time_slow=90, confirm_time_avg=30, confirm_time_fast=1, active='',
+                title='', update=None):
     """Get the context dictionary for use in view."""
     context = {
         'githubUsername': github_username,  # TODO: Deprecate this field.
         'active': active,
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(confirm_time_slow),
+        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(confirm_time_avg),
+        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(confirm_time_fast),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
         'email': getattr(user, 'email', ''),
@@ -421,3 +425,25 @@ def get_context(ref_object=None, github_username='', user=None, confirm_time_min
     if update is not None and isinstance(update, dict):
         context.update(update)
     return context
+
+
+def clean_bounty_url(url):
+    """Clean the Bounty URL of unsavory characters.
+
+    The primary utility of this method is to drop #issuecomment blocks from
+    Github issue URLs copy/pasted via comments.
+
+    Args:
+        url (str): The Bounty VC URL.
+
+    TODO:
+        * Deprecate this in favor of Django forms.
+
+    Returns:
+        str: The cleaned Bounty URL.
+
+    """
+    try:
+        return url.split('#')[0]
+    except Exception:
+        return url

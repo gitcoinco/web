@@ -17,49 +17,74 @@
 {% endcomment %}
 {% load i18n static %}
 {% block body %}
-<div class="container-fluid" style="">
-  <div class=" row ">
-    <div class="col-4 pb-4">
-      <div class="align-items-right justify-content-right" style="text-align: right;">
-        <img src="{% static "v2/images/tree/dark.png" %}" style="max-width:80%; margin: 0px auto;">
+<style>
+  .slack--brand-tree {
+    max-width:80%;
+    margin: 0px auto;
+  }
+
+  .slack--robot {
+    max-width:60%;
+    margin: 0px auto;
+  }
+
+  h4 p {
+    background-color: #fee856;
+    padding: 5px 10px;
+  }
+
+  @media (max-width: 768px) {
+    .form_container {
+      padding-left: 1.6rem !important;
+      padding-right: 1.6rem !important;
+    }
+  }
+
+  @media (max-width: 992px) {
+    .slack--brand-tree {
+      max-width: 100%;
+    }
+  }
+
+</style>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12 col-md-5 pb-4">
+      <div class="align-items-right justify-content-right">
+        <img class="slack--brand-tree" src="{% static "v2/images/tree/dark.png" %}">
       </div>
     </div>
-    <div class="col-1 pb-4"></div>
-    <div class="col-6 pr-2 pl-2 pb-4 form_container">
-      <div>
-        <div style="max-width: 500px; margin: 0px auto;">
-          <h4>
-            <i class="fab fa-slack-hash" aria-hidden="true" style="position:relative; top: 2px; margin-right: 5px;"></i>{% trans "Gitcoin Slack Community" %}
-          </h4>
-          <h4 class="font-smaller-1 pt-0">({{ num_slack }} online)</h4>
-          {% if msg %}
-            <p style="background-color: #fee856; padding: 5px 10px;">
-              {{ msg | safe }}
-            </p>
-          {% endif %}
-          {% if success %}
-            <div style="text-align: center; margin-bottom: 10px">
-              <img src="{% static "v2/images/tree/party_robot.jpg" %}" style="max-width:60%; margin: 0px auto;">
-            </div>
-          {% endif %}
-          <form class="mt-5" id="whitepaper" method="POST">
-            <div class="form-group">
-              <p>{% trans "Meet software developers, futurists, and funders who are building web3." %}</p>
-              <label class="form__label" for="email">{% trans "Email address" %}</label>
-              <input type="email" name="email" class="form__input" placeholder='you@somewhere' value="{% if email %}{{ email }}{% endif %}" required>
-              <small id="emailHelp" class="form__input-help">{% trans "Gitcoin will never share your email with anyone else." %}</small>
-            </div>
-            {% csrf_token %}
-            <input class='button button--primary joinslack mt-2' type='submit' name='submit' value="Sign Up">
-          </form>
-          <div class="text-center mt-5">
-            <p>Already a member? <a href="https://gitcoincommunity.slack.com">{% trans "Sign in here" %}</a>.</p>
+    <div class="col-12 col-md-6 pr-2 pl-2 pb-4 form_container">
+      <div style="max-width: 500px; margin: 0px auto;">
+        <h4>
+          <i class="fab fa-slack-hash" aria-hidden="true" style="position:relative; top: 2px; margin-right: 5px;"></i>{% trans "Gitcoin Slack Community" %}
+        </h4>
+        <h4 class="font-smaller-1 pt-0">({{ num_slack }} online)</h4>
+        {% if msg %}
+          <p>
+            {{ msg | safe }}
+          </p>
+        {% endif %}
+        {% if success %}
+          <div style="text-align: center; margin-bottom: 10px">
+            <img src="{% static "v2/images/tree/party_robot.jpg" %}">
           </div>
-          {% endblock %}
+        {% endif %}
+        <form class="mt-5" id="whitepaper" method="POST">
+          <div class="form-group">
+            <p>{% trans "Meet software developers, futurists, and funders who are building web3." %}</p>
+            <label class="form__label" for="email">{% trans "Email address" %}</label>
+            <input type="email" name="email" class="form__input" placeholder='you@somewhere' value="{% if email %}{{ email }}{% endif %}" required>
+            <small id="emailHelp" class="form__input-help">{% trans "Gitcoin will never share your email with anyone else." %}</small>
+          </div>
+          {% csrf_token %}
+          <input class='button button--primary joinslack mt-2' type='submit' name='submit' value="Sign Up">
+        </form>
+        <div class="text-center mt-5">
+          <p>Already a member? <a href="https://gitcoincommunity.slack.com">{% trans "Sign in here" %}</a>.</p>
         </div>
+        {% endblock %}
       </div>
-    </div>
-    <div class="col-1 pb-4">
     </div>
   </div>
 </div>

@@ -53,7 +53,7 @@
       <input type="text" placeholder="@username" id="username" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
     </div>
     <div>
-        {% trans "From Github Username" %} (<a href="{% url 'social:begin' 'github' %}?next=/tip">{% trans "Login" %}</a>)
+        {% trans "From Github Username" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next=/tip">{% trans "Login" %}</a>) {%endif%}
         <input type="text" placeholder="@username" id="fromName" value="{% if user.is_authenticated  %}{{ user }}{% endif %}" style="width: 400px; margin-left: auto; margin-right: auto; background-color: #eee;" disabled="disabled"  >
     </div>
 

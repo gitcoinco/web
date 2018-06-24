@@ -195,6 +195,24 @@ PS - i've got some new gitcoin schwag on order. send me your mailing address and
     return response_html, response_txt
 
 
+def render_admin_contact_funder(bounty, text, from_user):
+    txt = f"""
+{bounty.url}
+
+{text}
+
+{from_user}
+
+"""
+    params = {
+        'txt': txt,
+    }
+    response_html = premailer_transform(render_to_string("emails/txt.html", params))
+    response_txt = txt
+
+    return response_html, response_txt
+
+
 
 def render_new_bounty(to_email, bounties, old_bounties):
     sub = get_or_save_email_subscriber(to_email, 'internal')
@@ -453,7 +471,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "How to Price Work on Gitcoin | Colony Hackathon "
+    subject = "iOS App Launches | Avatar Builder Launches "
 
     intro = '''
 
@@ -461,59 +479,63 @@ def render_new_bounty_roundup(to_email):
     Hi there
 </p>
 <p>
-This week, we shipped a <a href='https://medium.com/gitcoin/funder-guide-how-to-price-work-on-gitcoin-49bafcdd201e'>data-driven pricing guide for posting work on Gitcoin</a>. We share what we’ve learned about pricing for our first 300 bounties and look forward to continuing the analysis as time passes.  
+This week, our subject line can't capture everything we shipped! On Monday, we released
+ <a href="https://medium.com/gitcoin/gitcoin-ios-app-launches-3c5722170c4d">our iOS app!</a> You can now browse Gitcoin issues anywhere, anytime and
+ express interest in working ones which fit your skill sets. We're very excited about the opportunity to 'Grow Open Source' and see how to contribute
+ to leading projects without needing to be at your computer.
 </p>
+We also released <a href="https://medium.com/gitcoin/new-onboarding-flow-build-your-own-gitcoin-avatar-7b7a656955f9">Gitcoin Avatar Builder!</a> The Avatar Builder
+allows every Gitcoin user to customize their profile to their preferences, while also adding details on their skill sets and issues which interest them. We're excited
+to see everyone's beautiful (Avatar) faces on <a href="https://gitcoin.co/leaderboard">Gitcoin's Leaderboard</a> soon.
 <p>
-We’ve proudly <a href='http://bit.ly/2LsssHG'>partnered up with our friends at Colony for their hackathon</a>! Colony is the Ethereum-based blockchain project building a platform for the future of work. The hackathon features $25K in prizes (paid in Dai) and an all-star panel of 16 judges from the ecosystem.
-</p>
-<p>
-The online hackathon runs June 5th - June 24th and celebrates the release of the colonyJS library—tools that allow developers to leverage the power of Colony’s smart contracts in their own applications.
-</p>
-<p>
-<a href='http://bit.ly/2LsssHG'>You can register here. </a>
-</p>
-<p style="text-align:center;">
-<a href='http://bit.ly/2LsssHG'>
-<img style="margin: 0px auto" src='https://gitcoin.co/static/v2/images/colony.png?1' width='450', height='184'>
-</a>
+We've begun deploying funds from the <a href="https://medium.com/ecf-review/announcing-the-ecf-web-3-0-infrastructure-fund-pilot-program-ab8894af35fa">ECF Web 3.0 Infrastructure Fund pilot program.</a>
+It's an exciting addition to our MakerDAO + Ethereum Foundation grants. In tandem, $40,000 has been dedicated towards open source, and we're just at the beginning!
 </p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-We released Richard Burton’s demo of Balance on the Gitcoin Livestream channel on YouTube. <a href=https://www.youtube.com/watch?v=SoIJ6JJdO8o&t=4s</a>Check it out here!</a>
+We explained <a href="https://medium.com/gitcoin/why-gitcoin-didnt-launch-with-a-token-f24af0b54ded">why Gitcoin didn't launch with a token.</a>
         </li>
         <li>
-I did a 2 minute interview  on Gitcoin at Ethereal 2018. <a href='https://www.youtube.com/watch?v=pdoa09b_2J4'>See it here.</a>
+<a href="https://medium.com/gitcoin/gitcoin-testimonials-balance-6d027fe01b9f">Balance and Dharma Protocol</a> tell us how the largest Gitcoin bounty ever got completed in less than two weeks.
         </li>
         <li>
-<a href='https://gitcoin.co/livestream'>The Gitcoin Livestream </a>is back as regularly scheduled today at 5PM ET. Colony will be joining to speak further on their hackathon alongside Livepeer, a fully decentralized live-video streaming service! 
+The Colony Hackathon deadline approaches on Sunday evening! You've still got time to enter and sprint to the finish.
+<a href="https://blog.colony.io/the-deadline-approaches-4c02b78939c1">Here's a full submission guide</a> to help you get your winning project shipped.
+        </li>
+        <li>
+<a href="https://hatchcrypto.io">Hatch</a> has launched a fantastic Blockchain Engineering curriculum. We encourage anyone interested in furthering their blockchain development
+ability to <a href="https://hatchcrypto.io/developer-form/">check it out here!</a>
+        </li>
+        <li>
+<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET. Mitch Kosowoski joins to discuss ETHPrize, we'll demo Avatar Builder and more. Join us!
         </li>
     </ul>
 </p>
 <p>
-Back to BUIDLing, 
+Back to building,
 </p>
 '''
     highlights = [
         {
-            'who': 'dilatebrave',
+            'who': 'cryptomental',
             'who_link': True,
-            'what': 'Worked with Bounties Network on Weekly Graph Support',
-            'link': 'https://gitcoin.co/issue/Bounties-Network/StdBountiesAnaltyics/4/515',
+            'what': 'Set up Travis and Testing with Truffle + Ethereum-Bridge on MARKET Protocol.',
+            'link': 'https://gitcoin.co/issue/MARKETProtocol/MARKET.js/33/656',
             'link_copy': 'See more',
         },
         {
-            'who': 'iamonuwa',
+            'who': 'scsaba',
             'who_link': True,
-            'what': 'Created a Smart Contract search engine with AbieFund!',
-            'link': 'https://gitcoin.co/issue/AbieFund/abie/5/508',
+            'what': 'Made possible to view address of an added token on MetaMask!',
+            'link': 'https://gitcoin.co/issue/MetaMask/metamask-extension/4440/644',
             'link_copy': 'View more',
         },
         {
-            'who': 'antonper',
+            'who': 'justpixel',
             'who_link': True,
-            'what': 'Cleaned up an error rejection messages on MetaMask! ',
-            'link': 'https://gitcoin.co/issue/MetaMask/metamask-extension/1546/499',
+            'what': 'Created a great animation of the Grow Open Source tree!',
+            'link': 'https://gitcoin.co/issue/gitcoinco/web/1462/626',
             'link_copy': 'View more',
         },
     ]
@@ -521,16 +543,16 @@ Back to BUIDLing,
     try:
         bounties = [
             {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/XLNT/gnarly/issues/8'),
-                'primer': 'Ethereum Foundation grantee XLNT needs help with their Gas Price Oracle Reducer!',
+                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/WalletConnect/js-walletconnect-core/issues/4'),
+                'primer': 'Build in support for EIP681 for transaction requests on WalletConnect',
             },
             {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/buidlbox/issues/17'),
-                'primer': 'uPort aims to build a Transaction Manager ',
+                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/web3j/web3j/issues/359'),
+                'primer': 'Have Java experience? Work on the Ethereum web3j client!',
             },
             {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/paritytech/parity/issues/8725'),
-                'primer': 'Contribute to Parity Tech, a leading Ethereum client',
+                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/paritytech/polkadot/issues/187'),
+                'primer': 'Want to get rolling with Rust? Build in a Libp2p network subsystem for Parity.',
             },
         ]
     except:

@@ -760,6 +760,10 @@ dl dd {
   border-left: 0;
 }
 
+.pull-request-link:hover {
+  color: #FFFFFF;
+}
+
 /* Wrapper */
 
 #wrapper {
@@ -863,4 +867,3 @@ span.emoji {
   width: 0.85em;
   display: inline-block;
 }
-

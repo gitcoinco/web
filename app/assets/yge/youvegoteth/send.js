@@ -35,13 +35,35 @@ var updateEstimate = function(e) {
   var amount = jQuery('#amount').val();
 
   getUSDEstimate(amount, denomination, function(usdAmount) {
-    if (usdAmount) {
-      jQuery('#usd_amount').html(usdAmount);
+    if (usdAmount && usdAmount['full_text']) {
+      jQuery('#usd_amount').html(usdAmount['full_text']);
     } else {
       jQuery('#usd_amount').html('</br>');
     }
   });
 
+};
+// TODO: DRY
+var promptForAuth = function(event) {
+  var denomination = jQuery('#token option:selected').text();
+  var tokenAddress = jQuery('#token option:selected').val();
+
+  if (denomination == 'ETH') {
+    $('input, textarea, select').prop('disabled', '');
+  } else {
+    var from = web3.eth.coinbase;
+    var to = contract().address;
+
+    token_contract(tokenAddress).allowance.call(from, to, function(error, result) {
+      if (error || result.toNumber() == 0) {
+        _alert("You have not yet enabled this token.  To enable this token, go to the <a style='padding-left:5px;' href='/settings/tokens'> Token Settings page and enable it</a>. (this is only needed one time per token)");
+        $('input, textarea, select').prop('disabled', 'disabled');
+        $('select[name=deonomination]').prop('disabled', '');
+      } else {
+        $('input, textarea, select').prop('disabled', '');
+      }
+    });
+  }
 };
 
 function isSendTipPage() {
@@ -84,6 +106,7 @@ function prePopulateGitcoinerFields() {
 window.onload = function() {
   jQuery('#amount').on('keyup blur change', updateEstimate);
   jQuery('#token').on('change', updateEstimate);
+  jQuery('#token').on('change', promptForAuth);
 
   unPackAddresses();
 
@@ -267,32 +290,6 @@ window.onload = function() {
         }
       };
 
-      // set up callback for web3 call to erc20 callback
-      var erc20_callback = function(error, result) {
-        if (error) {
-          console.error(error);
-          _alert({ message: gettext('got an error :(') }, 'error');
-          unloading_button(jQuery('#send'));
-        } else {
-          var approve_amount = amount * numBatches;
-
-          token_contract(token).approve.estimateGas(contract_address(), approve_amount, function(error, result) {
-            var _gas = result;
-
-            if (_gas > maxGas) {
-              _gas = maxGas;
-            }
-            var _gasLimit = parseInt(_gas * 1.01);
-
-            token_contract(token).approve.sendTransaction(
-              contract_address(),
-              approve_amount,
-              {from: fromAccount, gas: web3.toHex(gas), gasLimit: web3.toHex(gasLimit)},
-              final_callback);
-          });
-        }
-      };
-
 
       // send transfer to web3
       var next_callback = null;
@@ -303,11 +300,7 @@ window.onload = function() {
         amountETHToSend = parseInt(amount + fees);
       } else {
         amountETHToSend = parseInt(min_send_amt_wei + fees);
-        if (i == 0) { // only need to call approve once for amount * numbatches
-          next_callback = erc20_callback;
-        } else {
-          next_callback = final_callback;
-        }
+        next_callback = final_callback;
       }
       var _gas = recommendGas;
 
