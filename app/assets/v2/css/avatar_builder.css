@@ -1,3 +1,9 @@
+#later-button {
+  margin:0;
+  position:absolute;
+  right:0;
+}
+
 #avatar-builder {
   display: flex;
   flex-flow: row wrap;
