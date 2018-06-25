@@ -17,6 +17,7 @@ window.addEventListener('load', function() {
   });
 
   $(document).on('click', '#gas-section .recommended-prices', function() {
+    var gasLimit = parseInt($('#gasLimit').val());
     var usdAmount = $(this).data('amount');
     var ethAmount = Math.round(1000000 * usdAmount / document.eth_usd_conv_rate) / 1000000;
     var gasPrice = Math.round(10 * ethAmount * Math.pow(10, 9) / gasLimit) / 10;

@@ -462,6 +462,7 @@ p a {
 .dashboard .body .avatar {
   max-height: 50px;
   max-width: 50px;
+  border-radius: 100%;
 }
 
 .body .nonefound {
@@ -1374,6 +1375,7 @@ input.is-invalid {
 
   .header .row.ml-5 {
     margin-left: 0 !important;
+    margin-right: 0;
   }
 
   .header .header-line {
