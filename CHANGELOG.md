@@ -65,6 +65,7 @@
 
 - Add Link to Access Avatar Builder  [\#1520](https://github.com/gitcoinco/web/issues/1520)
 - Outstanding Funder Form Updates [\#1519](https://github.com/gitcoinco/web/issues/1519)
+- Put Admin Controls on one line [\#1511](https://github.com/gitcoinco/web/issues/1511)
 - Outstanding avatar issues [\#1504](https://github.com/gitcoinco/web/issues/1504)
 - Disable Gitcoin Bot Responses  [\#1498](https://github.com/gitcoinco/web/issues/1498)
 - travis fails with 'The command "pytest -p no:ethereum" exited with 1.' [\#1492](https://github.com/gitcoinco/web/issues/1492)
@@ -92,6 +93,7 @@
 - empty user comments should be handled on gitcoinbot  [\#1336](https://github.com/gitcoinco/web/issues/1336)
 - fontawesome : Revert to css [\#1331](https://github.com/gitcoinco/web/issues/1331)
 - 'Email us' link in New funding page throws 404 [\#1320](https://github.com/gitcoinco/web/issues/1320)
+- Tip form pre-populates with last sent tip information [\#1315](https://github.com/gitcoinco/web/issues/1315)
 - Gitcoin $50K Creative :\)  [\#1312](https://github.com/gitcoinco/web/issues/1312)
 - ValueError: {'code': -32000, 'message': 'replacement transaction underpriced'} [\#1302](https://github.com/gitcoinco/web/issues/1302)
 - code - as a community member, i want a public gitcoin.co/results page, so I can show off that the system is working [\#1300](https://github.com/gitcoinco/web/issues/1300)
@@ -201,6 +203,8 @@
 
 **Merged pull requests:**
 
+- Fix localstorage issue  in firefox [\#1540](https://github.com/gitcoinco/web/pull/1540) ([SaptakS](https://github.com/SaptakS))
+- all admin actions are in a new line [\#1539](https://github.com/gitcoinco/web/pull/1539) ([thelostone-mc](https://github.com/thelostone-mc))
 - minor changes: added  [\#1538](https://github.com/gitcoinco/web/pull/1538) ([thelostone-mc](https://github.com/thelostone-mc))
 - Update how it works to use one url [\#1536](https://github.com/gitcoinco/web/pull/1536) ([mbeacom](https://github.com/mbeacom))
 - ftux : further changes [\#1533](https://github.com/gitcoinco/web/pull/1533) ([thelostone-mc](https://github.com/thelostone-mc))
@@ -269,6 +273,7 @@
 - UX/UI for new results page [\#1327](https://github.com/gitcoinco/web/pull/1327) ([travisdmathis](https://github.com/travisdmathis))
 - show pricing guide on new bounty form [\#1322](https://github.com/gitcoinco/web/pull/1322) ([owocki](https://github.com/owocki))
 - Fix email link in newsletter and mailchimp templates [\#1321](https://github.com/gitcoinco/web/pull/1321) ([arun1595](https://github.com/arun1595))
+- Don't save tip information in local storage except current user's [\#1318](https://github.com/gitcoinco/web/pull/1318) ([arun1595](https://github.com/arun1595))
 - docker-compose was wrong [\#1317](https://github.com/gitcoinco/web/pull/1317) ([owocki](https://github.com/owocki))
 - Fix primary button style in receive tip success page [\#1314](https://github.com/gitcoinco/web/pull/1314) ([arun1595](https://github.com/arun1595))
 - org profiles [\#1310](https://github.com/gitcoinco/web/pull/1310) ([owocki](https://github.com/owocki))
