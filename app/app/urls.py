@@ -180,8 +180,7 @@ urlpatterns = [
     url(r'^extension/chrome?', retail.views.browser_extension_chrome, name='browser_extension_chrome'),
     url(r'^extension/firefox?', retail.views.browser_extension_firefox, name='browser_extension_firefox'),
     url(r'^extension/?', retail.views.browser_extension_chrome, name='browser_extension'),
-    path('how/funder', retail.views.how_it_works, name='how_it_works_funder'),
-    path('how/contributor', retail.views.how_it_works, name='how_it_works_contributor'),
+    path('how/<str:work_type>', retail.views.how_it_works, name='how_it_works'),
 
     # basic redirect retail views
     url(r'^press/?', retail.views.presskit, name='press'),
