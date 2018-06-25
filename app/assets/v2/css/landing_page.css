@@ -164,7 +164,7 @@ body {
   justify-items: center;
 }
 
-.benefits-list {
+.benefit-list {
   grid-gap: 1rem;
   max-width: 70rem;
   display: grid;
@@ -464,7 +464,7 @@ body {
 }
 
 @media (max-width: 869px) {
-  .benefits-list {
+  .benefit-list {
     grid-template-columns: 1fr;
   }
 }
