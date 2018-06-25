@@ -389,6 +389,11 @@ h3 {
     margin-left: 0;
     margin-right: 0;
   }
+
+  #navbarSupportedContent .nav-link,
+  #navbarSupportedContent img {
+    visibility: visible;
+  }
 }
 
 @media (min-width: 1200px) {
