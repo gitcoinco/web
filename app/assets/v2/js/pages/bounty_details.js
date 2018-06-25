@@ -689,7 +689,8 @@ var do_actions = function(result) {
         parent: 'right_actions',
         title: gettext('View issue details and comments on Github'),
         comments: result['github_comments'],
-        color: 'white'
+        color: 'white',
+        is_last_non_admin_action: true
       };
 
       actions.push(_entry);
