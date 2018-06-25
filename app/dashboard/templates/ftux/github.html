@@ -35,6 +35,13 @@
         <p>{% trans "Network" %}</p>
       </div>
     </div>
+    {% if flow == 'funder' %}
+    {% blocktrans %}
+      <h3>Use Gitcoin to reach a pool of talented developers to contribute to your open source project.</h3>
+      <h3>Pay out in Ether, a leading cryptocurrency, or your native token!</h3>
+      <h3>Meet new people. Create a natural hiring pipeline. Grow open source.</h3>
+    {% endblocktrans %}
+    {% else %}
     {% blocktrans %}
       <h3>Use Gitcoin to find paid work and solve real world problems
           in the blockchain/web3 ecosystem.</h3>
@@ -42,6 +49,7 @@
       <h3>Meet new people. Learn new skills. Contribute to
           the open source community.</h3>
     {% endblocktrans %}
+    {% endif %}
     <div class="col-12 mt-4">
       {% if github_handle %}
         <div class="logged-in">
