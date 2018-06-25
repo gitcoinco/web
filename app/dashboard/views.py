@@ -525,9 +525,9 @@ def onboard(request, onboard_type):
     if onboard_type not in ['funder', 'contributor']:
         raise Http404
     elif onboard_type == 'funder':
-        onboard_steps = ['github', 'metamask', 'avatar', 'skills']
-    elif onboard_type == 'contributor':
         onboard_steps = ['github', 'metamask', 'avatar']
+    elif onboard_type == 'contributor':
+        onboard_steps = ['github', 'metamask', 'avatar', 'skills']
 
     steps = []
     if request.GET:
