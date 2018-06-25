@@ -32,7 +32,7 @@ const parentLayers = {
   Glasses: 'Accessories'
 };
 
-let localStorage;
+var localStorage;
 
 try {
   localStorage = window.localStorage;
