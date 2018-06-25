@@ -520,8 +520,15 @@ def send_tip_2(request):
     return TemplateResponse(request, 'yge/send2.html', params)
 
 
-def contributor_onboard(request):
+def onboard(request, onboard_type):
     """Handle displaying the first time user experience flow."""
+    if onboard_type not in ['funder', 'contributor']:
+        raise Http404
+    elif onboard_type == 'funder':
+        onboard_steps = ['github', 'metamask', 'avatar', 'skills']
+    elif onboard_type == 'contributor':
+        onboard_steps = ['github', 'metamask', 'avatar']
+
     steps = []
     if request.GET:
         steps = request.GET.get('steps', [])
@@ -530,19 +537,8 @@ def contributor_onboard(request):
 
     params = {
         'title': _('Onboarding Flow'),
-        'steps': steps or ['github', 'metamask', 'avatar', 'skills'],
-        'flow': 'contributor',
-    }
-    params.update(get_avatar_context())
-    return TemplateResponse(request, 'ftux/onboard.html', params)
-
-
-def funder_onboard(request):
-    """Handle displaying the first time user experience for funders."""
-    params = {
-        'title': _('Onboarding Flow'),
-        'steps': ['github', 'metamask', 'avatar'],
-        'flow': 'funder',
+        'steps': steps or onboard_steps,
+        'flow': onboard_type,
     }
     params.update(get_avatar_context())
     return TemplateResponse(request, 'ftux/onboard.html', params)

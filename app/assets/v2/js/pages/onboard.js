@@ -158,7 +158,7 @@ var changeStep = function(n) {
     return;
 
   var steps = $('.step');
-  
+
   $(steps[current]).removeClass('show');
   $(steps[current]).removeClass('block');
   $('.alert').remove();
