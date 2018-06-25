@@ -283,16 +283,6 @@ urlpatterns = [
         retail.emails.start_work_applicant_expired,
         name='start_work_applicant_expired'
     ),
-    re_path(
-        r'^_administration/process_accesscode_request/(.*)$',
-        tdi.views.process_accesscode_request,
-        name='process_accesscode_request'
-    ),
-    re_path(
-        r'^_administration/process_faucet_request/(.*)$',
-        faucet.views.process_faucet_request,
-        name='process_faucet_request'
-    ),
 
     # settings
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),
