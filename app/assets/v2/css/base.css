@@ -633,8 +633,8 @@ input[type=text].loading {
   text-align: left;
 }
 
-.admin-only{
-  background-color: #800000 !important;
+.admin-only {
+  background-color: #5495E1 !important;
   color:white !important;
   border: 1px solid white !important;
 }
