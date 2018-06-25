@@ -27,6 +27,14 @@ onboard.showTab = function(num) {
     $('.controls').show();
   }
 
+  // if (flow === 'funder' && num === 3) {
+  //   $('#onboarding').parent().removeClass('offset-sm-1 col-sm-10 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6');
+  //   $('#onboarding').css('max-width', 'none');
+  // } else {
+  //   $('#onboarding').parent().addClass('offset-sm-1 col-sm-10 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6');
+  //   $('#onboarding').css('max-width', 'auto');
+  // }
+
   if (num == ($('.step').length) - 1) {
     $('#next-btn').html(gettext('Done'));
     $('#next-btn').attr('onclick', 'redirectURL()');
@@ -216,10 +224,16 @@ $('.search-area input[type=text]').keypress(function(e) {
 });
 
 var redirectURL = function() {
-  var level = $('#experienceLevel').find(':selected').val();
+  var url = '';
 
-  localStorage['experience_level'] = level;
-  var url = '/explorer?q=' + words.join(',');
+  if (flow === 'contributor') {
+    var level = $('#experienceLevel').find(':selected').val();
+
+    localStorage['experience_level'] = level;
+    url = '/explorer?q=' + words.join(',');
+  } else if (flow === 'funder') {
+    url = '/funding/new';
+  }
 
   localStorage['referrer'] = 'onboard';
   document.location.href = url;
