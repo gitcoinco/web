@@ -17,7 +17,11 @@
 {% load i18n static %}
 <div class="row">
   <div class="col-12">
-    <h2>{% trans "Build Your Gitcoin Avatar" %}</h2>
+    <h2>{% trans "Build Your Gitcoin Avatar" %}
+      <button type="button" id="later-button" class="button button--primary-o" onclick="changeStep(1)">
+        {% trans "Do This Later" %}
+      </button>
+    </h2>
   </div>
   <div id="avatar-builder">
     <!-- Navigation Links -->
@@ -92,10 +96,7 @@
   </div>
   <!-- Button Row -->
   <div id="avatar-builder__actions">
-    <p id="prev-btn" class="button button--primary-o" onclick="changeStep(-1)" style="float: left;">{% trans "Previous" %}</p>
-    <button type="button" id="later-button" class="button button--primary-o" onclick="changeStep(1)">
-      {% trans "Do This Later" %}
-    </button>
+    <p class="button button--primary-o button--controls" onclick="changeStep(-1)">{% trans "Previous" %}</p>
     <button disabled type="button" id="save-button" class="button button--primary" onclick="saveAvatar()">
       {% trans "Save Avatar" %}
     </button>
