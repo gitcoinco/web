@@ -1,0 +1,15 @@
+{
+    "symbol": "CAL",
+    "address": "0xdd7790ef5e928e683a79b2a1f49bd9f0a5c6daa8",
+    "overview": {
+        "en": "CoAlpha chain is a standard cryptocurrency asset management protocol. Through the CoAlpha Smart Contract, individual investors 'funds are automatically escrowed to a third-party custodians (exchange) who, by analyzing data service providers' information, running strategies, and sending trading orders, manipulate custodian accounts, with transaction records and performance retained in the blockchain. Strategy developers do not need the open source strategy source code, but the executable file that conforms to standard interface running on the server. ",
+        "zh": "coalpha是一个基于区块链技术的数字资产管理协议，致力于解决数字资产管理、基金行业不透明、低效、运行成本高、安全性低的问题，通过资金端到交易端的基金协议，我们可以颠覆现有数字资产管理市场的混乱落后模式，重构一个可靠高效的数字资产管理市场。"
+    },
+    "email": "CoAlpha@mail.coalpha.ai",
+    "website": "http://coalpha.ai",
+    "published_on": "2018-06-11",
+    "links": {
+        "telegram": "https://t.me/joinchat/HDFkSA989hw5iHQvGkfd2A",
+        "github": "https://github.com/CoalphaIO"
+    }
+}
