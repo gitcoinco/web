@@ -61,10 +61,10 @@
           How it works
         </a>
         <div class="dropdown-menu" id="how-it-works" aria-labelledby="navbarDropdownHow">
-          <a class="dropdown-item {% if active == 'how_it_works_funder' %} selected{% endif %}" href="{% url "how_it_works_funder" %}">
+          <a class="dropdown-item {% if active == 'how_it_works_funder' %} selected{% endif %}" href="{% url "how_it_works" "funder" %}">
             {% trans "Funder" %}
           </a>
-          <a class="dropdown-item {% if active == 'how_it_works_contributor' %} selected{% endif %}" href="{% url "how_it_works_contributor" %}">
+          <a class="dropdown-item {% if active == 'how_it_works_contributor' %} selected{% endif %}" href="{% url "how_it_works" "contributor" %}">
             {% trans "Contributor" %}
           </a>
         </div>
