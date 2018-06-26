@@ -776,9 +776,12 @@ def helper_handle_snooze(request, bounty):
 
 def helper_handle_approvals(request, bounty):
     mutate_worker_action = request.GET.get('mutate_worker_action', None)
-    mutate_worker_action_past_tense = 'approved' if mutate_worker_action == 'approve' else "rejected"
+    mutate_worker_action_past_tense = 'approved' if mutate_worker_action == 'approve' else 'rejected'
     worker = request.GET.get('worker', None)
     if mutate_worker_action:
+        if not request.user.is_authenticated:
+            messages.warning(request, _('You must be logged in to approve or reject worker submissions. Please login and try again.'))
+            return
         is_funder = bounty.is_funder(request.user.username.lower())
         is_staff = request.user.is_staff
         if is_funder or is_staff:
@@ -841,7 +844,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         _access_token = request.session.get('access_token')
     issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request_url
 
-    # try the /pulls url if it doesnt exist in /issues
+    # try the /pulls url if it doesn't exist in /issues
     try:
         assert Bounty.objects.current().filter(github_url=issue_url).exists()
     except Exception:
@@ -887,7 +890,6 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 helper_handle_mark_as_remarket_ready(request, bounty)
                 helper_handle_admin_contact_funder(request, bounty)
                 helper_handle_override_status(request, bounty)
-
         except Bounty.DoesNotExist:
             pass
         except Exception as e:
