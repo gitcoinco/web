@@ -1,0 +1,21 @@
+{
+  "symbol": "CIT",
+  "address": "0xc54083e77f913a4f99e1232ae80c318ff03c9d17",
+  "overview":{
+        "en": "CariNet Project is a digital finance and free trade system for the Caribbean Area, initiated by the Caribbean Free Trade Zone. The project will establish a blockchain payment and digital finance infrastructures, construct a blockchain intelligent international trading platform and attract blockchain industry companies’ registration. It will enable the Caribbean Area to become a global digital financial center and free trade zone in the new era, and create new power for economic growth within the area. ",
+        "zh": "CariNet 加勒比数字金融与自由贸易体系，由加勒比自由贸易区发起，通过建设区块链基础支付设施、数字金融基础设施、区块链智能国际贸易平台，吸引各种区块链产业落户，让加勒比地区成为新时代全球数字金融中心与自由贸易枢纽，为加勒比地区创造新的经济增长点。"
+  },
+  "email": "official@carinet.vip",
+  "website": "http://www.carinet.io",
+  "whitepaper": "http://www.carinet.io/CariNetWhitePaper-CNv1.0.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-05-10",
+  "initial_price":{
+        "ETH":"0.00294 ETH"
+  },
+  "links": {
+    "blog": "https://weibo.com/u/6561970050",
+    "twitter": "https://twitter.com/CariNet_io",
+    "telegram": "https://t.me/CariNetClub1"
+  }
+}
