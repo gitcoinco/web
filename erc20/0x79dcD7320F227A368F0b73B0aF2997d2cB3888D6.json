@@ -1,0 +1,22 @@
+{
+  "symbol": "MAYA",
+  "address": "0x79dcD7320F227A368F0b73B0aF2997d2cB3888D6",
+  "overview":{
+        "en": "Maya is New data services for base at the block chain prediction system, improve the ease of participation and data transparency of the traditional forecast marke.",
+        "zh": " "
+  },
+  "email": "maya.token@gmail.com",
+  "website": "https://www.maya.ceo",
+  "whitepaper": "https://www.maya.ceo/MAYA_white_paper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-23",
+  "initial_price":{
+        "ETH":"0.000385 ETH",
+        "USD":"0.18 USD",
+        "BTC":"0.0000293 BTC"
+  },
+  "links": {
+    "telegram": "https://t.me/maya_token",
+    "facebook": "https://www.facebook.com/maya.token.5"
+  }
+}
