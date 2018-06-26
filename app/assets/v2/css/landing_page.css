@@ -276,9 +276,21 @@ body {
   display: none;
 }
 
-#gc-tree img {
-  max-width: 100%;
-  will-change: transform;
+#gc-tree {
+  text-align: center;
+}
+
+#gc-tree .lines {
+  animation-play-state: running;
+}
+
+#gc-tree .cls-4 {
+  animation-play-state: running;
+}
+
+.pause-animation {
+  animation-play-state: paused !important;
+  -webkit-animation-play-state: paused !important;
 }
 
 .pricing-tiers-container {
