@@ -11,12 +11,12 @@
   "state": "NORMAL",
   "published_on": "2018-02-01",
   "initial_price":{
-        "ETH":"0.00001ETH",
+        "ETH":"0.00001 ETH"
   },
   "links": {
     "telegram": "https://t.me/UTXO_com",
     "telegram": "https://t.me/utxoofficial",
     "telegram": "https://t.me/UTXOOfficialEnglishGroup",
-    "telegram": "https://t.me/UTXO_official",
+    "telegram": "https://t.me/UTXO_official"
   }
 }
