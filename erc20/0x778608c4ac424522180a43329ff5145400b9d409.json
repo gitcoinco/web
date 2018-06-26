@@ -1,0 +1,13 @@
+{
+  "symbol": "CEN",
+  "address": "0x778608c4ac424522180a43329ff5145400b9d409",
+  "overview":{
+        "en": "Chainclub Ecosystem Network",
+        "zh": "区块链研习社生态网络"
+  },
+  "state": "NORMAL",
+  "published_on": "2018-06-01",
+  "links": {
+    "github": "https://github.com/BlockChainClub"
+  }
+}
