@@ -1,0 +1,15 @@
+{
+  "symbol": "PWCC",
+  "address": "0x5565E9824e9d4a9F4175D912A7376d3A10e187Ba",
+  "overview":{
+        "zh": "PWCC 是一种基于去中心化全球区块链公益事业平台实现的结算数字货币，用于在全球区块链公益事业平台上兑换、结算其他货币。公益链在全球区块链公益事业平台为用户交易提供的交易媒介。"
+  },
+  "email": "642643434@qq.com",
+  "website": "https://www.pwcc.top",
+  "whitepaper": "http://infinitepay.cn/pwcc.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-06",
+  "initial_price":{
+        "USD":"0.25 USD"
+  }
+}
