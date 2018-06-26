@@ -1,0 +1,21 @@
+{
+    "website": "https://www.iogenesis.org",
+    "published_on": "2018-05-30",
+    "links": {
+        "telegram": "https://t.me/IOGENESIS",
+        "github": "https://github.com/iogenesis",
+        "twitter": "https://twitter.com/IOGOfficialTeam"
+    },
+    "overview": {
+        "en": "IOGENESIS aims to build an intelligent collaborative development application platform for low cost and high security interconnection of everything.",
+        "zh": "IOGENESIS旨在构建一个低成本、高安全性的智能协同开发应用平台。"
+    },
+    "symbol": "IOG",
+    "initial_price": {
+        "ETH": "0.0000016ETH",
+        "USD": "0.001USD"
+    },
+    "whitepaper": "https://www.iogenesis.org",
+    "address": "0xe7d84cbee9b2234e53bde7ea093e7d1e198ca46a",
+    "email": "iogenesisteam@gmail.com"
+}
