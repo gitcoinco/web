@@ -1,0 +1,22 @@
+{
+  "symbol": "ATNL",
+  "address": "0x3b8d5facff748c4525cdc1796990c8170a6206f1",
+  "overview":{
+        "en": "A publicly accessible DApp with traceability solution specially designed for animal husbandry industry to create a trustworthy farm-to-table ecosystem.",
+        "zh": "一个可公开访问的牧业溯源DApp，创建一个值得信赖的从农场到餐桌的生态系统。"
+  },
+  "email": "g250313606@icloud.com",
+  "website": "http://www.atunala.org",
+  "whitepaper": "http://www.atunala.org/res/ATNLwhitepaper-en.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-04-14",
+  "initial_price":{
+        "ETH":"0.045 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/ATNLcommunity",
+    "telegram": "https://t.me/ATNLcommunity",
+    "github": "https://github.com/your-awesome-project",
+    "facebook": "https://www.facebook.com/ATNLcommunity"
+  }
+}
