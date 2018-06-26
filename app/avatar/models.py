@@ -40,6 +40,11 @@ logger = logging.getLogger(__name__)
 class Avatar(SuperModel):
     """Store the options necessary to render a Gitcoin avatar."""
 
+    class Meta:
+        """Define the metadata associated with Avatar."""
+
+        verbose_name_plural = 'Avatars'
+
     ICON_SIZE = (215, 215)
     config = JSONField(default=dict)
     png = models.ImageField(upload_to=get_upload_filename, null=True, blank=True)
