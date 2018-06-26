@@ -8,11 +8,10 @@
   "email": "contact@sophon.in",
   "website": "http://www.sophoncapital.com/",
   "whitepaper": "http://www.sophoncapital.com/pdf/%E6%99%BA%E5%AD%90%E6%8A%95%E9%A1%BE%E7%A4%BE%E5%8C%BAICO%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf",
-  },
   "links": {
     "telegram": "http://t.me/SophonChinese",
     "Facebook":"https://www.facebook.com/Sophon.Cap",
     "Twitter":"https://twitter.com/SophonCap",
-    "github": "https://github.com/SophonCap",
+    "github": "https://github.com/SophonCap"
   }
 }
