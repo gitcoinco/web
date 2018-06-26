@@ -10,19 +10,19 @@ from ratelimit.decorators import ratelimit
 AVATAR_BASE = 'assets/other/avatars/'
 SVG_BADGE = ''\
     '<svg xmlns="http://www.w3.org/2000/svg" '\
-    'xmlns:xlink="http://www.w3.org/1999/xlink" width="192" height="32">'\
+    'xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="32">'\
     '<clipPath id="a">'\
     '<rect width="100%" height="100%" rx="3"/>'\
     '</clipPath>'\
     '<g clip-path="url(#a)">'\
-    '<rect fill="#0d0764" x="0" y="0" width="122" height="100%"/>'\
-    '<rect fill="#70efbe" width="70" height="100%" x="122" y="0"/>'\
+    '<rect fill="#0d0764" x="0" y="0" width="130" height="100%"/>'\
+    '<rect fill="#70efbe" x="130" y="0" width="70" height="100%"/>'\
     '</g>'\
     '<g fill="#fff" text-anchor="middle" '\
-    'font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="160">'\
-    '<text x="600" y="214" transform="scale(.1)">Open bounties</text>'\
-    '<text x="1570" y="224" fill="#0f0f0f" fill-opacity=".3" '\
-    'transform="scale(.1)">N_BOUNTIES</text>'\
+    'font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="16">'\
+    '<text x="65" y="22">Open bounties</text>'\
+    '<text x="165" y="22" fill="#0f0f0f" fill-opacity=".3">'\
+    'N_BOUNTIES</text>'\
     '</g>'\
     '</svg>'
 
