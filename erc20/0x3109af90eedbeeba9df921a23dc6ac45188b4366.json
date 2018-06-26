@@ -1,0 +1,18 @@
+{
+"symbol": "SOW",
+"address": "0x3109af90eedbeeba9df921a23dc6ac45188b4366",
+"overview":{
+"en": "Seed of Wisdom",
+"zh": "智豆"
+},
+"email": "3436938218@qq.com",
+"website": "https://teachchain.io/",
+"whitepaper": "https://teachchain.io/static/SOW-Whitepaper.pdf",
+"state": "NORMAL",
+"published_on": "2018-01-28",
+"initial_price":{
+"ETH":"0.0000063012 ETH",
+"USD":"0.0031545741 USD",
+"BTC":"0.0000004753 BTC"
+}
+}
