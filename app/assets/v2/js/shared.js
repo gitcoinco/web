@@ -808,9 +808,9 @@ var setUsdAmount = function(event) {
   var denomination = $('#token option:selected').text();
   var estimate = getUSDEstimate(amount, denomination, function(estimate) {
     if(estimate['value']){
-      $('#usd_amount').val(estimate['value']);
+      $('#usd_amount').val(estimate['value_unrounded']);
       $('#usd_amount_text').html(estimate['rate_text']);
-      $('#usd_amount').removeProp('disabled'); 
+      $('#usd_amount').removeAttr('disabled'); 
     } else {
       $('#usd_amount_text').html('');
       $('#usd_amount').prop('disabled', true); 

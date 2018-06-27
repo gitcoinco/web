@@ -70,7 +70,8 @@ var getUSDEstimate = function(amount, denomination, callback) {
     var estimate_obj = {
       'full_text': return_text,
       'rate_text': rate_estimate,
-      'value': usd_estimate['value']
+      'value': usd_estimate['value'],
+      'value_unrounded': amount
     };
 
     return callback(estimate_obj);
@@ -93,7 +94,8 @@ var getUSDEstimate = function(amount, denomination, callback) {
     var estimate_obj = {
       'full_text': return_text,
       'rate_text': rate_estimate,
-      'value': usd_estimate['value']
+      'value': usd_estimate['value'],
+      'value_unrounded': amount
     };
 
     return callback(estimate_obj);
@@ -115,12 +117,13 @@ var getAmountEstimate = function(usd_amount, denomination, callback) {
   }
   if (document.conversion_rates && document.conversion_rates[denomination]) {
     conv_rate = document.conversion_rates[denomination];
+    var amount = Math.round(usd_amount / conv_rate, 3);
     var amount_estimate = usdToAmountEstimate(usd_amount, conv_rate);
 
-    rate_estimate = get_rates_estimate(amount_estimate * conv_rate);
+    rate_estimate = get_rates_estimate(amount * conv_rate);
     var estimate_obj = {
       'rate_text': rate_estimate,
-      'value': amount_estimate
+      'value': amount
     };
 
     return callback(estimate_obj);
