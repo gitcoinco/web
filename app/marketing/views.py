@@ -47,7 +47,7 @@ from marketing.mails import new_feedback
 from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
 )
-from marketing.utils import get_or_save_email_subscriber, validate_slack_integration, validate_discord_integration
+from marketing.utils import get_or_save_email_subscriber, validate_slack_integration
 from retail.emails import ALL_EMAILS
 from retail.helpers import get_ip
 
@@ -392,10 +392,7 @@ def discord_settings(request):
         webhook_url = request.POST.get('webhook_url', '')
         repos = request.POST.get('repos', '')
 
-        if test and webhook_url:
-            response = validate_discord_integration(webhook_url)
-
-        if submit or (response and response.get('success')):
+        if submit:
             profile.update_discord_integration(webhook_url, repos)
             profile = record_form_submission(request, profile, 'discord')
             if not response.get('output'):
