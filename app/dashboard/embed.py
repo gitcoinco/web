@@ -1,5 +1,6 @@
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
+from django.template import loader
 
 import requests
 from dashboard.models import Bounty
@@ -8,23 +9,7 @@ from PIL import Image, ImageDraw, ImageFont
 from ratelimit.decorators import ratelimit
 
 AVATAR_BASE = 'assets/other/avatars/'
-SVG_BADGE = ''\
-    '<svg xmlns="http://www.w3.org/2000/svg" '\
-    'xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="32">'\
-    '<clipPath id="a">'\
-    '<rect width="100%" height="100%" rx="3"/>'\
-    '</clipPath>'\
-    '<g clip-path="url(#a)">'\
-    '<rect fill="#0d0764" x="0" y="0" width="130" height="100%"/>'\
-    '<rect fill="#70efbe" x="130" y="0" width="70" height="100%"/>'\
-    '</g>'\
-    '<g fill="#fff" text-anchor="middle" '\
-    'font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="16">'\
-    '<text x="65" y="22">Open bounties</text>'\
-    '<text x="165" y="22" fill="#0f0f0f" fill-opacity=".3">'\
-    'N_BOUNTIES</text>'\
-    '</g>'\
-    '</svg>'
+
 
 def wrap_text(text, w=30):
     new_text = ""
@@ -126,8 +111,9 @@ def embed(request):
                     idx_status__in=['open']
                 )
 
+            tmpl = loader.get_template('svg_badge.txt')
             return HttpResponse(
-                SVG_BADGE.replace('N_BOUNTIES', str(len(open_bounties))),
+                tmpl.render({'bounties_count': open_bounties.count()}),
                 content_type='image/svg+xml')
 
         # get avatar of repo
