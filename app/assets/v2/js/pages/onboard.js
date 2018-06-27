@@ -233,6 +233,8 @@ var redirectURL = function() {
     url = '/explorer?q=' + words.join(',');
   } else if (flow === 'funder') {
     url = '/funding/new';
+  } else if (flow === 'profile') {
+    url = '/profile';
   }
 
   localStorage['referrer'] = 'onboard';

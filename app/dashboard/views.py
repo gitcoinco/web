@@ -522,12 +522,14 @@ def send_tip_2(request):
 
 def onboard(request, flow):
     """Handle displaying the first time user experience flow."""
-    if flow not in ['funder', 'contributor']:
+    if flow not in ['funder', 'contributor', 'profile']:
         raise Http404
     elif flow == 'funder':
         onboard_steps = ['github', 'metamask', 'avatar']
     elif flow == 'contributor':
         onboard_steps = ['github', 'metamask', 'avatar', 'skills']
+    elif flow == 'profile':
+        onboard_steps = ['avatar']
 
     steps = []
     if request.GET:
