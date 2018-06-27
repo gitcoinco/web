@@ -51,6 +51,10 @@ class Avatar(SuperModel):
     svg = models.FileField(upload_to=get_upload_filename, null=True, blank=True)
     use_github_avatar = models.BooleanField(default=True)
 
+    def __str__(self):
+        """Define the string representation of Avatar."""
+        return f"Avatar ({self.pk}) - Profile: {self.profile_set.last().handle if self.profile_set.exists() else 'N/A'}"
+
     def get_color(self, key='Background', with_hashbang=False):
         if key not in ['Background', 'ClothingColor', 'HairColor', 'ClothingColor', 'SkinTone']:
             return None
