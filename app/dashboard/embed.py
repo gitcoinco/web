@@ -1,6 +1,6 @@
 from django.http import HttpResponse, JsonResponse
-from django.utils import timezone
 from django.template import loader
+from django.utils import timezone
 
 import requests
 from dashboard.models import Bounty
