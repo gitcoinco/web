@@ -807,8 +807,15 @@ var setUsdAmount = function(event) {
   var amount = $('input[name=amount]').val();
   var denomination = $('#token option:selected').text();
   var estimate = getUSDEstimate(amount, denomination, function(estimate) {
-    $('#usd_amount').val(estimate['value']);
-    $('#usd_amount_text').html(estimate['rate_text']);
+    if(estimate['value']){
+      $('#usd_amount').val(estimate['value']);
+      $('#usd_amount_text').html(estimate['rate_text']);
+      $('#usd_amount').removeProp('disabled'); 
+    } else {
+      $('#usd_amount_text').html('');
+      $('#usd_amount').prop('disabled', true); 
+      $('#usd_amount').val(''); 
+    }
   });
 };
 
@@ -816,7 +823,9 @@ var usdToAmount = function(event) {
   var usdAmount = $('input[name=usd_amount').val();
   var denomination = $('#token option:selected').text();
   var estimate = getAmountEstimate(usdAmount, denomination, function(amountEstimate) {
-    $('#amount').val(amountEstimate['value']);
-    $('#usd_amount_text').html(amountEstimate['rate_text']);
+    if(amountEstimate['value']){
+      $('#amount').val(amountEstimate['value']);
+      $('#usd_amount_text').html(amountEstimate['rate_text']);
+    }
   });
 };
