@@ -1,0 +1,23 @@
+{
+  "symbol": "LIKE",
+  "address": "0x02F61Fd266DA6E8B102D4121f5CE7b992640CF98",
+  "overview":{
+        "en": "LikeCoin aims to reinvent the Like by realigning creativity and reward. We enable attribution and cross-application collaboration on creative contents. With a reinvented Like button and our unique LikeRank algorithm, we trace content footprint and reward content creators by Proof of Creativity mechanism.",
+        "zh": "LikeCoin的目標是通過重整創意和報酬，重塑點讚機制。我們針對創意內容套用歸屬和跨應用協作協議，利用重塑的新Like鍵和我們獨特的LikeRank演算法，通過創造力證明機制追踪內容足跡，並回饋內容創作者。"
+  },
+  "email": "team@like.co",
+  "website": "https://like.co",
+  "whitepaper": "https://like.co/in/likecoin-whitepaper-en.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-05-22",
+  "initial_price":{
+        "ETH":"0.000025 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/likecoin_fdn",
+    "telegram": "https://t.me/likecoin",
+    "github": "https://github.com/likecoin",
+    "facebook": "https://www.facebook.com/LikeCoin.Foundation",
+    "medium": "https://medium.com/likecoin"
+  }
+}
