@@ -354,7 +354,7 @@ var showWarningMessage = function(txid) {
   $('.transaction-status').show();
   $('.transation-header').show();
   $('.waiting_room_entertainment').show();
-  $('.issue-url').html(document.issueURL);
+  $('.issue-url').html('<a href="' + document.issueURL + '">' + document.issueURL + '</a>');
 
   var secondsBetweenQuoteChanges = 30;
 
