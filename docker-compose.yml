@@ -26,7 +26,6 @@ services:
   web:
     restart: unless-stopped
     environment:
-      - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/code/app
     env_file:
