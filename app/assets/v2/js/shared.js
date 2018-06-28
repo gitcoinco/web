@@ -44,11 +44,13 @@ var loading_button = function(button) {
 var attach_close_button = function() {
   $('body').delegate('.alert .closebtn', 'click', function(e) {
     $(this).parents('.alert').remove();
-    $('.alert').each(function() {
-      var old_top = $(this).css('top');
-      var new_top = (parseInt(old_top.replace('px')) - 66) + 'px';
+    $('.alert').each(function(index) {
+      if (index == 0) $(this).css('top', 0);
+      else {
+        var new_top = (index * 66) + 'px';
 
-      $(this).css('top', new_top);
+        $(this).css('top', new_top);
+      }
     });
   });
 };
@@ -180,7 +182,7 @@ var _alert = function(msg, _class) {
           </div>
         </div>
         ${closeButton(msg)}
-      </div>;`
+      </div>`
     );
   };
 
