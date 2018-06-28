@@ -1,4 +1,5 @@
 from django.http import HttpResponse, JsonResponse
+from django.template import loader
 from django.utils import timezone
 
 import requests
@@ -101,6 +102,20 @@ def embed(request):
         return err_response
 
     try:
+        badge = request.GET.get('badge', False)
+        if badge:
+            open_bounties = Bounty.objects.current() \
+                .filter(
+                    github_url__startswith=repo_url,
+                    network='mainnet',
+                    idx_status__in=['open']
+                )
+
+            tmpl = loader.get_template('svg_badge.txt')
+            return HttpResponse(
+                tmpl.render({'bounties_count': open_bounties.count()}),
+                content_type='image/svg+xml')
+
         # get avatar of repo
         _org_name = org_name(repo_url)
 
