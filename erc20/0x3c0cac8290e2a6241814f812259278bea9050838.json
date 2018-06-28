@@ -8,7 +8,7 @@
   "email": "support@bostoken.co",
   "website": "http://www.bostoken.co/",
   "whitepaper": "https://bostoken.github.io/file/whitepaper.pdf",
-  "state": "LOCKED | NORMAL",
+  "state": "NORMAL",
   "published_on": "2018-06-19",
   "initial_price":{
         "ETH":"0.00005 ETH",
