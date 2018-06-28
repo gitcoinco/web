@@ -522,6 +522,11 @@ def send_tip_2(request):
 
 def contributor_onboard(request):
     """Handle displaying the first time user experience flow."""
+
+    if not request.user or not request.user.is_authenticated:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
     steps = []
     if request.GET:
         steps = request.GET.get('steps', [])
