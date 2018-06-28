@@ -25,6 +25,7 @@ jobs:
       script:
         # Setup Env.
         - cp app/app/travis.env app/app/.env
+        - pip install pip setuptools --upgrade
         - pip install codecov
         # Install Node and Python dependencies.
         - npm install
