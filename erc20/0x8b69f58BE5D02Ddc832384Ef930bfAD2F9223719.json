@@ -1,0 +1,19 @@
+{
+  "symbol": "N2C",
+  "address": "0x8b69f58BE5D02Ddc832384Ef930bfAD2F9223719",
+  "overview":{
+        "en": "Next Generation Decentralized Distributed Storage Cloud",
+        "zh": "下一代去中心化的分布式存储云"
+  },
+  "email": "wg@n2yun.com",
+  "website": "https://www.n2chain.io/",
+  "whitepaper": "http://www.n2chain.io/download/N2C–Whitebook-V1.0-201804-zh.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-26",
+  "initial_price":{
+        "ETH":"0.0 ETH"
+  },
+  "links": {
+    "blog": "https://www.n2chain.io/blog"
+  }
+}
