@@ -11,9 +11,9 @@
   "state": "NORMAL",
   "published_on": "2018-06-26",
   "initial_price":{
-        "ETH":"0.0 ETH",
+        "ETH":"0.0 ETH"
   },
   "links": {
-    "blog": "https://www.n2chain.io/blog",
+    "blog": "https://www.n2chain.io/blog"
   }
 }
