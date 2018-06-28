@@ -44,6 +44,7 @@ span {
   color: black !important;
   font-size: 0.9rem;
 }
+
 .navbar .interior .dropdown-item:hover {
   color: white !important;
 }
@@ -87,6 +88,32 @@ span {
 
 .navbar a.slack i {
   margin-right: 3px;
+}
+
+.navbar-network {
+  border: 1px solid #828282;
+  color: #fff;
+  border-radius: 25px;
+  font-size: 0.6rem;
+  font-weight: lighter;
+}
+
+.navbar-network i {
+  font-size: 7px;
+  position: relative;
+  top: -1px;
+}
+
+.navbar-network a {
+  text-decoration: underline;
+}
+
+.green {
+  color: #26cd7f;
+}
+
+.red {
+  color: #ff3232;
 }
 
 .modal {

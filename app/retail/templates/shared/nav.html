@@ -23,9 +23,13 @@
     {% if request.path == '/ios' %}
       <img id="logo" src="{% static "v2/images/ios/gitcoin.svg" %}" data-hover="{% static "v2/images/ios/gitcoin_hover.gif" %}" height="50" />
     {% else %}
-      <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="180" height="60" />
+      <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
     {% endif %}
   </a>
+  <div class="navbar-network ml-5 py-1 px-2 hidden">
+    <i class="fas fa-circle pr-1"></i>
+    <span id="current-network"></span>
+  </div>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
