@@ -55,7 +55,7 @@
         </div>
       </div>
       {% endif %}
-      {% if request.path == "/explorer" or request.path == "/dashboard" %}
+      {% if not request.path == "/" %}
         <div class="nav-item dropdown interior">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownHow" role="button"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
