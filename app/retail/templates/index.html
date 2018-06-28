@@ -36,13 +36,13 @@
           <div class="ml-3 text-highlight-gc-purple">
             <a class="text-highlight-gc-purple" href="{% url "explorer" %}">{% trans "View Available Bounties" %}</a>
             |
-            <a class="text-highlight-gc-purple" href="{% url "new_bounty" %}">{% trans "Get Started with Gitcoin" %}</a>
+            <a class="text-highlight-gc-purple" href="{% url "onboard" "contributor" %}">{% trans "Get Started with Gitcoin" %}</a>
           </div>
         </div>
       </div>
 
       <div class="container-fluid p-5 benefits_container">
-        <div class="benefit_list">
+        <div class="benefit-list">
           <div class="benefit">
             <svg width="100px" height="117px" viewBox="0 0 100 117" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
               <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
@@ -154,7 +154,7 @@
 
       <div class="container-fluid p-5 tree_container white-bg">
         <div id="gc-tree">
-          <img src="{% static "v2/images/gc-tree.png" %}" alt="Gitcoin Tree" />
+          {% include 'shared/tree.html' %}
           <h2 class="mt-4">Grow Open Source</h2>
         </div>
       </div>
@@ -184,7 +184,7 @@
         </div>
       </div>
 
-      <div class="container-fluid p-5 howworks_container">
+      <div class="container-fluid p-5 howworks-container">
         <div class="howworks-toggle-container">
           <button type="button" id="funder-toggle" class="howworks-section-toggle">
             {% trans "Funder" %}
@@ -291,6 +291,11 @@
               {% trans "MetaMask Internationalizes Via Gitcoin" %}
             </a>
           </li>
+          <li>
+            <a href="https://medium.com/gitcoin/gitcoin-testimonials-balance-6d027fe01b9f" target="_blank" rel="noopener noreferrer">
+              {% trans "Balance: Building Open Source Banking" %}
+            </a>
+          </li>
         </ul>
         <img id="gc-robot" src="{% static "v2/images/Robot.png" %}" alt="Gitcoin Robot" />
         <a class="btn btn-gc-purple" href="https://docs.google.com/document/d/1M8-5xCGoJ8u-k0C0ncx_dr9LtHwZ32Ccn3KMFtEnsBA/edit"
@@ -354,8 +359,8 @@
           </div>
         </div>
       </div>
-     
-      <div class="container-fluid py-5 px-0 testimonial_container">
+
+      <div class="container-fluid py-5 px-0 testimonial-container">
         <div class="row mb-4">
           <div class="col text-center">
             <h2>{% trans "Who's Using Gitcoin?" %}</h2>
@@ -365,8 +370,8 @@
       </div>
       {% include 'landing/pilot.html' %}
       {% include 'landing/press.html' %}
+      {% include 'landing/ios_banner.html' %}
       {% include 'shared/footer.html' %}
-      </div>
     </div>
     {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/rollbar.html' %}

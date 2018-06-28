@@ -26,7 +26,7 @@ fix-stylelint: ## Run stylelint --fix against the project directory. Requires no
 	@npm run stylelint:fix
 
 fix-yapf: ## Run yapf against any included or newly introduced Python code.
-	@docker-compose exec web yapf -i -r -e "app/**/migrations/*.py" -p app/dataviz/ app/app/ app/enssubdomain/
+	@docker-compose exec web yapf -i -r -e "app/**/migrations/*.py" -p app/dataviz/ app/app/ app/enssubdomain/ app/avatar/
 
 fix: fix-eslint fix-stylelint fix-isort fix-yapf ## Attempt to run all fixes against the project directory.
 
@@ -40,10 +40,10 @@ logs: ## Print and actively tail the docker compose logs.
 	@docker-compose logs -f
 
 pytest: ## Run pytest (Backend)
-	@docker-compose exec web pytest -p no:ethereum
+	@docker-compose exec web DJANGO_SETTINGS_MODULE="app.settings";pytest -p no:ethereum
 
 pytest-pdb: ## Run pytest with pdb support (Backend)
-	@docker-compose exec web pytest -p no:ethereum --pdb --pdbcls=IPython.terminal.debugger:Pdb
+	@docker-compose exec web DJANGO_SETTINGS_MODULE="app.settings";pytest -p no:ethereum --pdb --pdbcls=IPython.terminal.debugger:Pdb
 
 stylelint: ## Run stylelint against the project directory. Requires node, npm, and project dependencies.
 	@npm run stylelint

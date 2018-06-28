@@ -962,6 +962,12 @@ class Tip(SuperModel):
         return True
 
 
+@receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
+def psave_tip(sender, instance, **kwargs):
+    # when a new tip is saved, make sure it doesnt have whitespace in it
+    instance.username = instance.username.replace(' ', '')
+
+
 # @receiver(pre_save, sender=Bounty, dispatch_uid="normalize_usernames")
 # def normalize_usernames(sender, instance, **kwargs):
 #     if instance.bounty_owner_github_username:
@@ -1043,6 +1049,7 @@ class Profile(SuperModel):
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = JSONField()
     handle = models.CharField(max_length=255, db_index=True)
+    avatar = models.ForeignKey('avatar.Avatar', on_delete=models.SET_NULL, null=True)
     last_sync_date = models.DateTimeField(null=True)
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
@@ -1709,6 +1716,7 @@ class UserAction(SuperModel):
         ('Logout', 'Logout'),
         ('added_slack_integration', 'Added Slack Integration'),
         ('removed_slack_integration', 'Removed Slack Integration'),
+        ('updated_avatar', 'Updated Avatar'),
     ]
     action = models.CharField(max_length=50, choices=ACTION_TYPES)
     user = models.ForeignKey(User, related_name='actions', on_delete=models.SET_NULL, null=True)

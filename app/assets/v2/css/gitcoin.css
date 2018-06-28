@@ -135,6 +135,10 @@ h4,
   padding-top: 40px;
 }
 
+.lighter {
+  font-weight: lighter;
+}
+
 .no-gutter {
   margin-right: 0;
   margin-left: 0;
@@ -600,15 +604,24 @@ div.button-pink {
 
 /* TODO: Remove Post landing revamp */
 
-#ios {
+#ios-banner {
   background-color: #FFFFFF;
 }
 
-#ios .row .right {
+#ios-banner > .row {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#ios-banner img {
+  max-height: 14rem;
+}
+
+#ios-banner .row .right {
   text-align: right;
 }
 
-#ios .row .left {
+#ios-banner .row .left {
   text-align: left;
   margin-top: auto;
   margin-bottom: auto;
@@ -616,30 +629,39 @@ div.button-pink {
   letter-spacing: 0;
 }
 
-#ios .row .left h5 {
+#ios-banner .row .left h5 {
   text-transform: capitalize;
   letter-spacing: 0;
 }
 
-#ios .row .left h5 ,
-#ios .row .left a {
+#ios-banner .row .left h5 ,
+#ios-banner .row .left a {
   font-weight: bold;
 }
 
-#ios .row .left a {
+#ios-banner .row .left a {
   font-family: 'Muli', sans-serif;
   font-size: 14px;
 }
 
 @media (max-width: 767.98px) {
-  #ios .row .right,
-  #ios .row .left {
+  #ios-banner .row .right,
+  #ios-banner .row .left {
     text-align: center;
   }
 
-  #ios .row .left {
+  #ios-banner .row .left {
     margin-top: 0.625rem;
     margin-bottom: 1rem;
+  }
+
+  #ios-banner h5 {
+    font-size: 1.2rem;
+    padding-bottom: 0.2rem;
+  }
+
+  #ios-banner > .row {
+    margin-bottom: 2rem;
   }
 }
 /* TODO: End */

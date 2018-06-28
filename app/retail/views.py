@@ -19,7 +19,7 @@
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.http import HttpResponse, JsonResponse
+from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -60,6 +60,17 @@ def index(request):
         'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter."),
     }
     return TemplateResponse(request, 'index.html', context)
+
+
+def how_it_works(request, work_type):
+    """Show How it Works / Funder page."""
+    if work_type not in ['funder', 'contributor']:
+        raise Http404
+
+    context = {
+        'active': f'how_it_works_{work_type}',
+    }
+    return TemplateResponse(request, 'how_it_works.html', context)
 
 
 def robotstxt(request):
@@ -586,11 +597,12 @@ def itunes(request):
 
 
 def ios(request):
-    #return HttpResponse('<h1>Coming soon!</h1> If youre seeing this page its because apple is reviewing the app... and release is imminent :)')
 
     context = {
         'active': 'ios',
-        'title': 'iOS',
+        'title': 'iOS app',
+        'card_title': 'Gitcoin has an iOS app!',
+        'card_desc': 'Gitcoin aims to make it easier to grow open source from anywhere in the world, anytime.  We’re proud to announce our iOS app, which brings us a step closer to this north star!Browse open bounties on the go, express interest, and coordinate your work on the move.',
     }
     return TemplateResponse(request, 'ios.html', context)
 

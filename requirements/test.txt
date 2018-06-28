@@ -1,5 +1,5 @@
 -r base.txt
-pytest
+pytest>3.5.0
 pytest-cov
 pytest-isort
 pytest-django

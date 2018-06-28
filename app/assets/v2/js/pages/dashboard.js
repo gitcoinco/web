@@ -90,7 +90,7 @@ var set_sidebar_defaults = function() {
 
   if (localStorage['order_by']) {
     $('#sort_option').val(localStorage['order_by']);
-    $('#sort_option').selectmenu('refresh');
+    $('#sort_option').selectmenu().selectmenu('refresh');
   }
 
   for (var i = 0; i < sidebar_keys.length; i++) {
@@ -144,7 +144,7 @@ var addTechStackKeywordFilters = function(value) {
       $('.filter-tags').append('<a class="filter-tag tech_stack"><span>' + value + '</span>' +
         '<i class="fas fa-times" onclick="removeFilter(\'tech_stack\', \'' + value + '\')"></i></a>');
 
-      $('input[name="tech_stack"][value=' + value + ']').prop('checked', true);
+      $('input[name="tech_stack"][value="' + value + '"]').prop('checked', true);
     }
   });
 

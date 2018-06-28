@@ -30,6 +30,7 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
@@ -37,6 +38,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import ellipses, sync_profile
+from avatar.utils import get_avatar_context
 from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
 from github.utils import (
     get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
@@ -376,7 +378,7 @@ def uninterested(request, bounty_id, profile_id):
         Interest.objects.filter(pk__in=list(interest_ids)).delete()
 
     profile = Profile.objects.get(id=profile_id)
-    if profile.user and profile.user.email:
+    if profile.user and profile.user.email and interest:
         bounty_uninterested(profile.user.email, bounty, interest)
     else:
         print("no email sent -- user was not found")
@@ -518,14 +520,29 @@ def send_tip_2(request):
     return TemplateResponse(request, 'yge/send2.html', params)
 
 
-@staff_member_required
-def contributor_onboard(request):
+def onboard(request, flow):
     """Handle displaying the first time user experience flow."""
+    if flow not in ['funder', 'contributor', 'profile']:
+        raise Http404
+    elif flow == 'funder':
+        onboard_steps = ['github', 'metamask', 'avatar']
+    elif flow == 'contributor':
+        onboard_steps = ['github', 'metamask', 'avatar', 'skills']
+    elif flow == 'profile':
+        onboard_steps = ['avatar']
+
+    steps = []
+    if request.GET:
+        steps = request.GET.get('steps', [])
+        if steps:
+            steps = steps.split(',')
+
     params = {
         'title': _('Onboarding Flow'),
-        'steps': ['github', 'metamask', 'avatar', 'skills'],
-        'flow': 'contributor',
+        'steps': steps or onboard_steps,
+        'flow': flow,
     }
+    params.update(get_avatar_context())
     return TemplateResponse(request, 'ftux/onboard.html', params)
 
 
@@ -761,9 +778,12 @@ def helper_handle_snooze(request, bounty):
 
 def helper_handle_approvals(request, bounty):
     mutate_worker_action = request.GET.get('mutate_worker_action', None)
-    mutate_worker_action_past_tense = 'approved' if mutate_worker_action == 'approve' else "rejected"
+    mutate_worker_action_past_tense = 'approved' if mutate_worker_action == 'approve' else 'rejected'
     worker = request.GET.get('worker', None)
     if mutate_worker_action:
+        if not request.user.is_authenticated:
+            messages.warning(request, _('You must be logged in to approve or reject worker submissions. Please login and try again.'))
+            return
         is_funder = bounty.is_funder(request.user.username.lower())
         is_staff = request.user.is_staff
         if is_funder or is_staff:
@@ -826,7 +846,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         _access_token = request.session.get('access_token')
     issue_url = 'https://github.com/' + ghuser + '/' + ghrepo + '/issues/' + ghissue if ghissue else request_url
 
-    # try the /pulls url if it doesnt exist in /issues
+    # try the /pulls url if it doesn't exist in /issues
     try:
         assert Bounty.objects.current().filter(github_url=issue_url).exists()
     except Exception:
@@ -872,7 +892,6 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 helper_handle_mark_as_remarket_ready(request, bounty)
                 helper_handle_admin_contact_funder(request, bounty)
                 helper_handle_override_status(request, bounty)
-                
         except Bounty.DoesNotExist:
             pass
         except Exception as e:

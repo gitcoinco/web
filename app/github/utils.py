@@ -496,7 +496,10 @@ def repo_url(issue_url):
         str: The repository URL.
 
     """
-    return '/'.join(issue_url.split('/')[:-2])
+    try:
+        return '/'.join(issue_url.split('/')[:-2])
+    except IndexError:
+        return ''
 
 
 def org_name(issue_url):
@@ -509,7 +512,10 @@ def org_name(issue_url):
         str: The Github organization name.
 
     """
-    return issue_url.split('/')[3]
+    try:
+        return issue_url.split('/')[3]
+    except IndexError:
+        return ''
 
 
 def repo_name(issue_url):
@@ -522,7 +528,10 @@ def repo_name(issue_url):
         str: The Github repo name.
 
     """
-    return issue_url.split('/')[4]
+    try:
+        return issue_url.split('/')[4]
+    except IndexError:
+        return ''
 
 
 def issue_number(issue_url):
@@ -535,4 +544,7 @@ def issue_number(issue_url):
         str: The Github issue_number
 
     """
-    return issue_url.split('/')[6]
+    try:
+        return issue_url.split('/')[6]
+    except IndexError:
+        return ''

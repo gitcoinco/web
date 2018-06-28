@@ -17,12 +17,14 @@
 '''
 from django.conf import settings
 from django.conf.urls import include, url
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, re_path
 from django.views.i18n import JavaScriptCatalog
 
+import avatar.views
 import credits.views
 import dashboard.embed
 import dashboard.helpers
@@ -66,7 +68,7 @@ urlpatterns = [
     url(r'^universe/new/?', external_bounties.views.external_bounties_new, name="universe_new"),
     url(r'^universe/(?P<issuenum>.*)/(?P<slug>.*)/?', external_bounties.views.external_bounties_show, name='universe'),
     url(r'^universe/?', external_bounties.views.external_bounties_index, name="universe_index"),
-    re_path(r'^onboard/contributor/?', dashboard.views.contributor_onboard, name='contributor_onboard'),
+    re_path(r'^onboard/(?P<flow>\w+)/$', dashboard.views.onboard, name='onboard'),
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
 
@@ -79,6 +81,9 @@ urlpatterns = [
     path('issue/accept', dashboard.views.accept_bounty, name='process_funding'),
     path('issue/increase', dashboard.views.increase_bounty, name='increase_bounty'),
     path('issue/cancel', dashboard.views.cancel_bounty, name='kill_bounty'),
+
+    # Avatars
+    path('avatar/', include('avatar.urls', namespace='avatar')),
 
     # Interests
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
@@ -145,9 +150,10 @@ urlpatterns = [
 
     # images
     re_path(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
-    re_path(r'^funding/avatar/?', dashboard.embed.avatar, name='avatar'),
-    re_path(r'^static/avatar/(.*)/(.*)?', dashboard.embed.avatar, name='org_avatar'),
+    re_path(r'^funding/avatar/?', avatar.views.handle_avatar, name='avatar'),
+    re_path(r'^static/avatar/(.*)/(.*)?', avatar.views.handle_avatar, name='org_avatar'),
     re_path(r'^static/viz/graph/(.*)?$', dataviz.d3_views.viz_graph, name='viz_graph'),
+    re_path(r'^static/viz/sscatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot_stripped, name='viz_sscatterplot'),
 
     # sync methods
     url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),
@@ -174,6 +180,7 @@ urlpatterns = [
     url(r'^extension/chrome?', retail.views.browser_extension_chrome, name='browser_extension_chrome'),
     url(r'^extension/firefox?', retail.views.browser_extension_firefox, name='browser_extension_firefox'),
     url(r'^extension/?', retail.views.browser_extension_chrome, name='browser_extension'),
+    path('how/<str:work_type>', retail.views.how_it_works, name='how_it_works'),
 
     # basic redirect retail views
     url(r'^press/?', retail.views.presskit, name='press'),
@@ -276,16 +283,6 @@ urlpatterns = [
         retail.emails.start_work_applicant_expired,
         name='start_work_applicant_expired'
     ),
-    re_path(
-        r'^_administration/process_accesscode_request/(.*)$',
-        tdi.views.process_accesscode_request,
-        name='process_accesscode_request'
-    ),
-    re_path(
-        r'^_administration/process_faucet_request/(.*)$',
-        faucet.views.process_faucet_request,
-        name='process_faucet_request'
-    ),
 
     # settings
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),
@@ -350,6 +347,9 @@ urlpatterns = [
 
 if settings.ENABLE_SILK:
     urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
+
+if settings.ENV == 'local' and not settings.AWS_STORAGE_BUCKET_NAME:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler403 = 'retail.views.handler403'
 handler404 = 'retail.views.handler404'
