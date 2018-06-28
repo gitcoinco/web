@@ -645,6 +645,12 @@ div.button-pink {
 }
 
 @media (max-width: 767.98px) {
+
+  .navbar-nav .button--fund {
+    padding-left: 1rem;
+    text-align: left;
+  }
+
   #ios-banner .row .right,
   #ios-banner .row .left {
     text-align: center;

@@ -80,12 +80,12 @@
       <a class="nav-link{% if active == 'tools' %} selected{% endif %} interior" href="{% url "tools" %}">{% trans "Tools" %}</a>
       {% endif %}
       {% if request.path != '/' %}
-        <a href="{% url "new_funding" %}" class="nav-link interior">
+        <a href="{% url "new_funding" %}" class="nav-link interior button--fund">
           <i class="fab fa-ethereum mr-1" role="aria-hidden"></i>
           {% trans "FUND ISSUE" %}
         </a>
       {% else %}
-        <a href="{% url "new_funding" %}" class="btn btn-gc-blue interior">
+        <a href="{% url "new_funding" %}" class="btn btn-gc-blue interior button--fund">
           <i class="fab fa-ethereum mr-1" role="aria-hidden"></i>
           {% trans "FUND ISSUE" %}
         </a>
