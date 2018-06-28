@@ -1,0 +1,21 @@
+{
+	"symbol": "HDCT",
+	"address": "0x5b4e0b60f6f3725628d831057c8a624422b2e9af",
+	"overview": {
+		"en": "The world's first decentralized digital chronic disease management platform",
+		"zh": "全球首个去中心化的慢性病数字医疗平台"
+	},
+	"email": "hdc@hdchain.io",
+	"website": "https://www.hdchain.io",
+	"whitepaper": "https://www.hdchain.io/HealthDataChain.pdf",
+	"state": "NORMAL",
+	"published_on": "2018-05-26",
+	"initial_price": {
+		"ETH": "0.000011111111111111 ETH"
+	},
+	"links": {
+		"twitter": "https://twitter.com/hdchain",
+		"telegram": "https://t.me/hdchain",
+		"facebook": "https://www.facebook.com/hdchain"
+	}
+}
