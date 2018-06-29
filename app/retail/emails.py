@@ -471,7 +471,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "iOS App Launches | Avatar Builder Launches "
+    subject = "Getting Started With Gitcoin | Gitcoin Profiles"
 
     intro = '''
 
@@ -479,36 +479,34 @@ def render_new_bounty_roundup(to_email):
     Hi there
 </p>
 <p>
-This week, our subject line can't capture everything we shipped! On Monday, we released
- <a href="https://medium.com/gitcoin/gitcoin-ios-app-launches-3c5722170c4d">our iOS app!</a> You can now browse Gitcoin issues anywhere, anytime and
- express interest in working ones which fit your skill sets. We're very excited about the opportunity to 'Grow Open Source' and see how to contribute
- to leading projects without needing to be at your computer.
+This week, we shipped <a href="https://medium.com/gitcoin/getting-started-with-gitcoin-fa7149f2461a">
+Getting Started With Gitcoin.</a>
+In this post designed for our Gitcoin contributors, you’ll find all the info you
+need to set up your Gitcoin account and get to work contributing to open source projects!
 </p>
-We also released <a href="https://medium.com/gitcoin/new-onboarding-flow-build-your-own-gitcoin-avatar-7b7a656955f9">Gitcoin Avatar Builder!</a> The Avatar Builder
-allows every Gitcoin user to customize their profile to their preferences, while also adding details on their skill sets and issues which interest them. We're excited
-to see everyone's beautiful (Avatar) faces on <a href="https://gitcoin.co/leaderboard">Gitcoin's Leaderboard</a> soon.
-<p>
-We've begun deploying funds from the <a href="https://medium.com/ecf-review/announcing-the-ecf-web-3-0-infrastructure-fund-pilot-program-ab8894af35fa">ECF Web 3.0 Infrastructure Fund pilot program.</a>
-It's an exciting addition to our MakerDAO + Ethereum Foundation grants. In tandem, $40,000 has been dedicated towards open source, and we're just at the beginning!
-</p>
+We also published our first installment of
+<a href="https://medium.com/gitcoin/gitcoiner-profile-kenneth-ashley-b8f6e8b458a6">Gitcoin Profiles.</a>
+Gitcoiner Profiles are our way of saying thank you to our great community of open source developers for
+all of their hard work.
+This week's profile features Kenneth Ashley who has worked with Market Protocol, MyCrypto, CodeFund, and Gitcoin.
+
 <h3>What else is new?</h3>
     <ul>
         <li>
-We explained <a href="https://medium.com/gitcoin/why-gitcoin-didnt-launch-with-a-token-f24af0b54ded">why Gitcoin didn't launch with a token.</a>
+<a href="https://youtu.be/_VJcqY2t_4U">A Dharma Protocol demo</a> featuring Nadav Hollander is now up on our
+Youtube channel.
         </li>
         <li>
-<a href="https://medium.com/gitcoin/gitcoin-testimonials-balance-6d027fe01b9f">Balance and Dharma Protocol</a> tell us how the largest Gitcoin bounty ever got completed in less than two weeks.
+<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET.
+This week features Matt Lockyer of ERC-998 protocol and Jay Rush of QuickBlocks!
         </li>
         <li>
-The Colony Hackathon deadline approaches on Sunday evening! You've still got time to enter and sprint to the finish.
-<a href="https://blog.colony.io/the-deadline-approaches-4c02b78939c1">Here's a full submission guide</a> to help you get your winning project shipped.
+Want to join a global blockchain hack summit and compete for $100k in prizes? Use code "gitcoin" during sign
+up at <a href="https://hacksummit.org/hackathon">hacksummit.org/hackathon</a> to join for free!
         </li>
         <li>
-<a href="https://hatchcrypto.io">Hatch</a> has launched a fantastic Blockchain Engineering curriculum. We encourage anyone interested in furthering their blockchain development
-ability to <a href="https://hatchcrypto.io/developer-form/">check it out here!</a>
-        </li>
-        <li>
-<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET. Mitch Kosowoski joins to discuss ETHPrize, we'll demo Avatar Builder and more. Join us!
+Are you a Go developer looking for a role in Ethereum? Respond to this email and we'll let you know about
+some interesting opportunities!
         </li>
     </ul>
 </p>
@@ -518,10 +516,10 @@ Back to building,
 '''
     highlights = [
         {
-            'who': 'cryptomental',
+            'who': 'iamonuwa',
             'who_link': True,
-            'what': 'Set up Travis and Testing with Truffle + Ethereum-Bridge on MARKET Protocol.',
-            'link': 'https://gitcoin.co/issue/MARKETProtocol/MARKET.js/33/656',
+            'what': 'Added a protocol restriction to limit bonding to one transcoder on Livepeer.',
+            'link': 'https://gitcoin.co/issue/livepeer/livepeerjs/94/652',
             'link_copy': 'See more',
         },
         {
@@ -532,10 +530,10 @@ Back to building,
             'link_copy': 'View more',
         },
         {
-            'who': 'justpixel',
+            'who': 'palevoo',
             'who_link': True,
-            'what': 'Created a great animation of the Grow Open Source tree!',
-            'link': 'https://gitcoin.co/issue/gitcoinco/web/1462/626',
+            'what': 'Worked with Balance to display non-fungible tokens in their wallet.',
+            'link': 'https://gitcoin.co/issue/balance-io/balance-manager/240/571',
             'link_copy': 'View more',
         },
     ]
@@ -543,16 +541,25 @@ Back to building,
     try:
         bounties = [
             {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/WalletConnect/js-walletconnect-core/issues/4'),
-                'primer': 'Build in support for EIP681 for transaction requests on WalletConnect',
+                'obj': Bounty.objects.get(
+                    current_bounty=True,
+                    github_url__iexact='https://github.com/zeppelinos/labs/issues/102'
+                ),
+                'primer': 'Help build the future of non-fungible protocols with ZeppelinOS',
             },
             {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/web3j/web3j/issues/359'),
-                'primer': 'Have Java experience? Work on the Ethereum web3j client!',
+                'obj': Bounty.objects.get(
+                    current_bounty=True,
+                    github_url__iexact='https://github.com/AugurProject/augur-core/issues/689'
+                ),
+                'primer': 'Put the finishing touches on Augur less than a month before their main net launch!',
             },
             {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/paritytech/polkadot/issues/187'),
-                'primer': 'Want to get rolling with Rust? Build in a Libp2p network subsystem for Parity.',
+                'obj': Bounty.objects.get(
+                    current_bounty=True,
+                    github_url__iexact='https://github.com/paritytech/polkadot/issues/212'
+                ),
+                'primer': 'Contribute to Parity Tech, a leading Ethereum client.',
             },
         ]
     except:
