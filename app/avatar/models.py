@@ -40,11 +40,20 @@ logger = logging.getLogger(__name__)
 class Avatar(SuperModel):
     """Store the options necessary to render a Gitcoin avatar."""
 
+    class Meta:
+        """Define the metadata associated with Avatar."""
+
+        verbose_name_plural = 'Avatars'
+
     ICON_SIZE = (215, 215)
     config = JSONField(default=dict)
     png = models.ImageField(upload_to=get_upload_filename, null=True, blank=True)
     svg = models.FileField(upload_to=get_upload_filename, null=True, blank=True)
     use_github_avatar = models.BooleanField(default=True)
+
+    def __str__(self):
+        """Define the string representation of Avatar."""
+        return f"Avatar ({self.pk}) - Profile: {self.profile_set.last().handle if self.profile_set.exists() else 'N/A'}"
 
     def get_color(self, key='Background', with_hashbang=False):
         if key not in ['Background', 'ClothingColor', 'HairColor', 'ClothingColor', 'SkinTone']:
