@@ -624,6 +624,7 @@ var currentNetwork = function(network) {
 
       $('.navbar-network i').addClass('red');
       $('.navbar-network i').removeClass('green');
+      $('#navbar-network-banner').addClass('network-banner--warning');
 
       if ($('.ui-tooltip.ui-corner-all.ui-widget-shadow.ui-widget.ui-widget-content').length == 0) {
         $('.navbar-network').attr('title', tooltip_info);
@@ -648,6 +649,7 @@ var currentNetwork = function(network) {
 
       $('.navbar-network i').addClass('red');
       $('.navbar-network i').removeClass('green');
+      $('#navbar-network-banner').addClass('network-banner--warning');
 
       if ($('.ui-tooltip.ui-corner-all.ui-widget-shadow.ui-widget.ui-widget-content').length == 0) {
         $('.navbar-network').attr('title', tooltip_info);
