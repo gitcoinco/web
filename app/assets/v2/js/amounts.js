@@ -71,7 +71,7 @@ var getUSDEstimate = function(amount, denomination, callback) {
       'full_text': return_text,
       'rate_text': rate_estimate,
       'value': usd_estimate['value'],
-      'value_unrounded': amount
+      'value_unrounded': Math.round(amount * conv_rate, 2)
     };
 
     return callback(estimate_obj);
@@ -95,7 +95,7 @@ var getUSDEstimate = function(amount, denomination, callback) {
       'full_text': return_text,
       'rate_text': rate_estimate,
       'value': usd_estimate['value'],
-      'value_unrounded': amount
+      'value_unrounded': Math.round(amount * conv_rate, 2)
     };
 
     return callback(estimate_obj);
