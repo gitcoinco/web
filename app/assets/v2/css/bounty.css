@@ -366,6 +366,9 @@ a.btn {
   max-height: 30rem;
   max-width: 30rem;
   cursor: pointer;
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 #bounty_details #issue_description h1,
@@ -412,6 +415,7 @@ a.btn {
 
 .stop-work {
   float: right;
+  padding-left: 5px;
 }
 
 @media (max-width: 575px) {

@@ -51,9 +51,13 @@ def index(request):
          'https://github.com/pipermerriam', 'Pipermerriam'),
     ]
     context = {
+        'is_outside': True,
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'home',
+        'hide_newsletter_caption': True,
+        'hide_newsletter_consent': True,
+        'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter."),
     }
     return TemplateResponse(request, 'index.html', context)
 
@@ -155,6 +159,7 @@ def about(request):
         'alumni': alumnis,
         'active': 'about',
         'title': 'About',
+        'is_outside': True,
     }
     return TemplateResponse(request, 'about.html', context)
 
@@ -162,6 +167,7 @@ def about(request):
 def mission(request):
     """Render the Mission response."""
     context = {
+        'is_outside': True,
         'active': 'mission',
         'title': 'Mission',
         'card_title': _('Gitcoin is a mission-driven organization.'),
@@ -174,6 +180,7 @@ def mission(request):
 def results(request):
     """Render the Results response."""
     context = build_stat_results()
+    context['is_outside'] = True
     return TemplateResponse(request, 'results.html', context)
 
 
@@ -579,11 +586,12 @@ def itunes(request):
 
 
 def ios(request):
-    #return HttpResponse('<h1>Coming soon!</h1> If youre seeing this page its because apple is reviewing the app... and release is imminent :)')
 
     context = {
         'active': 'ios',
-        'title': 'iOS',
+        'title': 'iOS app',
+        'card_title': 'Gitcoin has an iOS app!',
+        'card_desc': 'Gitcoin aims to make it easier to grow open source from anywhere in the world, anytime.  We’re proud to announce our iOS app, which brings us a step closer to this north star!Browse open bounties on the go, express interest, and coordinate your work on the move.',
     }
     return TemplateResponse(request, 'ios.html', context)
 

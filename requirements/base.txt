@@ -2,7 +2,7 @@ bs4
 ccxt
 cryptocompare==0.6
 cryptography==2.1.4
-django==2.0.5
+django==2.0.6
 django-bootstrap3==8.2.3
 django-cors-headers==2.2.0
 django-filter
@@ -49,6 +49,7 @@ geoip2==2.8.0
 django-silk==2.0.0
 django-extensions==2.0.6
 ipdb==0.11
+svgutils==0.3.0
 Werkzeug[watchdog]==0.14.1
 matplotlib
 imageio
