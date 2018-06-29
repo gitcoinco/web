@@ -10,38 +10,27 @@ var waitforWeb3 = function(callback) {
   }
 };
 
+function getNetwork(id) {
+  var networks = {
+    '1': 'mainnet',
+    '2': 'morden',
+    '3': 'ropsten',
+    '4': 'rinkeby',
+    '42': 'kovan'
+  };
+
+  return networks[id] || 'custom network';
+}
+
 // figure out what version of web3 this is
 window.addEventListener('load', function() {
   var timeout_value = 100;
 
   setTimeout(function() {
     if (typeof web3 != 'undefined') {
-      web3.version.getNetwork((error, netId) => {
+      web3.version.getNetwork(function(error, netId) {
         if (!error) {
-
-          // figure out which network we're on
-          var network = 'unknown';
-
-          switch (netId) {
-            case '1':
-              network = 'mainnet';
-              break;
-            case '2':
-              network = 'morden';
-              break;
-            case '3':
-              network = 'ropsten';
-              break;
-            case '4':
-              network = 'rinkeby';
-              break;
-            case '42':
-              network = 'kovan';
-              break;
-            default:
-              network = 'custom network';
-          }
-          document.web3network = network;
+          document.web3network = getNetwork(netId);
         }
       });
     }

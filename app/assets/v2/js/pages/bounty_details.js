@@ -354,7 +354,7 @@ var showWarningMessage = function(txid) {
   $('.transaction-status').show();
   $('.transation-header').show();
   $('.waiting_room_entertainment').show();
-  $('.issue-url').html(document.issueURL);
+  $('.issue-url').html('<a href="' + document.issueURL + '">' + document.issueURL + '</a>');
 
   var secondsBetweenQuoteChanges = 30;
 
@@ -689,7 +689,8 @@ var do_actions = function(result) {
         parent: 'right_actions',
         title: gettext('View issue details and comments on Github'),
         comments: result['github_comments'],
-        color: 'white'
+        color: 'white',
+        is_last_non_admin_action: true
       };
 
       actions.push(_entry);

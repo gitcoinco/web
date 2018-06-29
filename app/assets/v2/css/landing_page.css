@@ -61,10 +61,14 @@ body {
   will-change: transform;
 }
 
-.howworks_container {
+.howworks-container {
   background-color: #F9F9F9;
   text-align: center;
   color: var(--text-dark);
+}
+
+.howworks-container-contributors {
+  background: #ffffff;
 }
 
 .howworks-steps {
@@ -160,12 +164,16 @@ body {
   justify-items: center;
 }
 
-.benefit_list {
+.benefit-list {
   grid-gap: 1rem;
   max-width: 70rem;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   margin: 0 auto;
+}
+
+.benefits-list-contributors {
+  grid-template-columns: repeat(4, 1fr);
 }
 
 .benefit {
@@ -202,14 +210,22 @@ body {
   font-weight: normal;
 }
 
-.pilot_container {
+.pilot-container {
   background: white;
 }
 
-.pilot_container img {
+.pilot-container img {
   margin: 1.5rem 3rem;
   height: 5rem;
   width: 5rem;
+}
+
+.pilot-container .image--rounded {
+  border-radius: 100%;
+}
+
+.contributors-cta-container {
+  background: #3E00FF;
 }
 
 .pricing_container {
@@ -260,9 +276,21 @@ body {
   display: none;
 }
 
-#gc-tree img {
-  max-width: 100%;
-  will-change: transform;
+#gc-tree {
+  text-align: center;
+}
+
+#gc-tree .lines {
+  animation-play-state: running;
+}
+
+#gc-tree .cls-4 {
+  animation-play-state: running;
+}
+
+.pause-animation {
+  animation-play-state: paused !important;
+  -webkit-animation-play-state: paused !important;
 }
 
 .pricing-tiers-container {
@@ -315,8 +343,15 @@ body {
   border-bottom: 1px solid #E1E8EE;
 }
 
-.testimonial_container {
+.testimonial-container {
   background-color: #F0F0F0;
+}
+
+.in-some-cases-container {
+  background-color: #FAFCFD;
+}
+.how-it-works-footer {
+  background-color: #0D0764;
 }
 
 .tree_container {
@@ -441,7 +476,7 @@ body {
 }
 
 @media (max-width: 869px) {
-  .benefit_list {
+  .benefit-list {
     grid-template-columns: 1fr;
   }
 }
@@ -530,7 +565,7 @@ body {
     display: none;
   }
 
-  .howworks_container {
+  .howworks-container {
     padding-left: .5rem !important;
     padding-right: .5rem !important;
   }
@@ -543,5 +578,59 @@ body {
 
   .whatisit_container iframe {
     min-height: 0;
+  }
+}
+
+/** Contributor landing page **/
+
+.explore-bounties-link {
+  text-align: left;
+}
+
+/* .get-started-btn {
+  min-width: 206px;
+} */
+
+.contributor-hero-bg {
+  position: relative;
+  background: url('../images/landing/contributor/hero_laptop.png') no-repeat;
+  background-size: 100% 100%;
+  height: 100%;
+  margin-right: -15px;
+  max-height: 350px;
+}
+
+.ethereum-icon {
+  position: absolute;
+  top: -2em;
+  height: 50px;
+  width: 30px;
+  left: -1.2em;
+  background: url('../images/landing/contributor/hero_whiteeth.png') no-repeat;
+  background-position: center;
+  background-size: cover;
+}
+
+.text-purple {
+  color: #3f00ff;
+}
+
+@media (max-width: 767px) {
+  .contributors-hero-container {
+    margin-left: 1em !important;
+  }
+
+  .join-slack-btn {
+    margin-left: 0 !important;
+  }
+}
+
+@media (max-width: 440px) {
+  .join-slack-btn {
+    margin-top: 1em;
+  }
+
+  .explore-bounties-link {
+    text-align: center;
   }
 }
