@@ -504,6 +504,10 @@ This week features Matt Lockyer of ERC-998 protocol and Jay Rush of QuickBlocks!
 Want to join a global blockchain hack summit and compete for $100k in prizes? Use code "gitcoin" during sign
 up at <a href="https://hacksummit.org/hackathon">hacksummit.org/hackathon</a> to join for free!
         </li>
+        <li>
+Are you a Go developer looking for a role in Ethereum? Respond to this email and we'll let you know about
+some interesting opportunities!
+        </li>
     </ul>
 </p>
 <p>
