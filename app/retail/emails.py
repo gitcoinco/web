@@ -479,18 +479,22 @@ def render_new_bounty_roundup(to_email):
     Hi there
 </p>
 <p>
-This week, we shipped <a href="https://medium.com/gitcoin/getting-started-with-gitcoin-fa7149f2461a">Getting Started With Gitcoin.</a>
+This week, we shipped <a href="https://medium.com/gitcoin/getting-started-with-gitcoin-fa7149f2461a">
+Getting Started With Gitcoin.</a>
 In this post designed for our Gitcoin contributors, you’ll find all the info you
 need to set up your Gitcoin account and get to work contributing to open source projects!
 </p>
-We also published our first installment of <a href="https://medium.com/gitcoin/gitcoiner-profile-kenneth-ashley-b8f6e8b458a6">Gitcoin Profiles.</a>
-Gitcoiner Profiles are our way of saying thank you to our great community of open source developers for all of their hard work.
+We also published our first installment of
+<a href="https://medium.com/gitcoin/gitcoiner-profile-kenneth-ashley-b8f6e8b458a6">Gitcoin Profiles.</a>
+Gitcoiner Profiles are our way of saying thank you to our great community of open source developers for
+all of their hard work.
 This week's profile features Kenneth Ashley who has worked with Market Protocol, MyCrypto, CodeFund, and Gitcoin.
 
 <h3>What else is new?</h3>
     <ul>
         <li>
-<a href="https://youtu.be/_VJcqY2t_4U">A Dharma Protocol demo</a> featuring Nadav Hollander is now up on our Youtube channel.
+<a href="https://youtu.be/_VJcqY2t_4U">A Dharma Protocol demo</a> featuring Nadav Hollander is now up on our
+Youtube channel.
         </li>
         <li>
 <a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET.
@@ -520,7 +524,7 @@ Back to building,
         {
             'who': 'palevoo',
             'who_link': True,
-            'what': 'Worked with Balance to display non-fungible tokens in their wallet.'
+            'what': 'Worked with Balance to display non-fungible tokens in their wallet.',
             'link': 'https://gitcoin.co/issue/balance-io/balance-manager/240/571',
             'link_copy': 'View more',
         },
@@ -529,15 +533,24 @@ Back to building,
     try:
         bounties = [
             {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/zeppelinos/labs/issues/102'),
+                'obj': Bounty.objects.get(
+                    current_bounty=True,
+                    github_url__iexact='https://github.com/zeppelinos/labs/issues/102'
+                ),
                 'primer': 'Help build the future of non-fungible protocols with ZeppelinOS',
             },
             {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/AugurProject/augur-core/issues/689'),
+                'obj': Bounty.objects.get(
+                    current_bounty=True,
+                    github_url__iexact='https://github.com/AugurProject/augur-core/issues/689'
+                ),
                 'primer': 'Put the finishing touches on Augur less than a month before their main net launch!',
             },
             {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/paritytech/polkadot/issues/212'),
+                'obj': Bounty.objects.get(
+                    current_bounty=True,
+                    github_url__iexact='https://github.com/paritytech/polkadot/issues/212'
+                ),
                 'primer': 'Contribute to Parity Tech, a leading Ethereum client.',
             },
         ]
