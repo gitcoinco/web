@@ -481,7 +481,7 @@ def render_new_bounty_roundup(to_email):
 <p>
 This week, we shipped <a href="https://medium.com/gitcoin/getting-started-with-gitcoin-fa7149f2461a">Getting Started With Gitcoin.</a>
 In this post designed for our Gitcoin contributors, you’ll find all the info you
-need to set up your Gitcoin account and get to work contributing to open source projects.
+need to set up your Gitcoin account and get to work contributing to open source projects!
 </p>
 We also published our first installment of <a href="https://medium.com/gitcoin/gitcoiner-profile-kenneth-ashley-b8f6e8b458a6">Gitcoin Profiles.</a>
 Gitcoiner Profiles are our way of saying thank you to our great community of open source developers for all of their hard work.
