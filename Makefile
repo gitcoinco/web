@@ -34,16 +34,16 @@ fresh: ## Completely destroy all compose assets and start compose with a fresh b
 	@docker-compose down -v; docker-compose up -d --build;
 
 load_initial_data: ## Load initial development fixtures.
-	@docker-compose exec web python3 app/manage.py loaddata initial
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py loaddata initial
 
 logs: ## Print and actively tail the docker compose logs.
 	@docker-compose logs -f
 
 pytest: ## Run pytest (Backend)
-	@docker-compose exec web DJANGO_SETTINGS_MODULE="app.settings";pytest -p no:ethereum
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web pytest -p no:ethereum
 
 pytest-pdb: ## Run pytest with pdb support (Backend)
-	@docker-compose exec web DJANGO_SETTINGS_MODULE="app.settings";pytest -p no:ethereum --pdb --pdbcls=IPython.terminal.debugger:Pdb
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web pytest -p no:ethereum --pdb --pdbcls=IPython.terminal.debugger:Pdb
 
 stylelint: ## Run stylelint against the project directory. Requires node, npm, and project dependencies.
 	@npm run stylelint
@@ -51,23 +51,26 @@ stylelint: ## Run stylelint against the project directory. Requires node, npm, a
 tests: pytest eslint stylelint ## Run the full test suite.
 
 migrate: ## Migrate the database schema with the latest unapplied migrations.
-	@docker-compose exec web python3 app/manage.py migrate
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py migrate
 
 migrations: ## Generate migration files for schema changes.
-	@docker-compose exec web python3 app/manage.py makemigrations
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py makemigrations
 
 compilemessages: ## Execute compilemessages for translations on the web container.
-	@docker-compose exec web python3 app/manage.py compilemessages
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py compilemessages
 
 makemessages: ## Execute makemessages for translations on the web container.
-	@docker-compose exec web python3 app/manage.py makemessages
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py makemessages
 
 get_ipdb_shell: ## Drop into the active Django shell for inspection via ipdb.
 	@echo "Attaching to container: ($(CONTAINER_NAME)) - ($(WEB_CONTAINER_ID))"
 	@docker attach $(WEB_CONTAINER_ID)
 
 get_django_shell: ## Open a standard Django shell.
-	@docker-compose exec web python3 app/manage.py shell
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py shell
+
+get_shell_plus: ## Open a standard Django shell.
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py shell_plus
 
 pgactivity: ## Run pg_activivty against the local postgresql instance.
 	@docker-compose exec web scripts/pg_activity.bash

@@ -44,11 +44,13 @@ var loading_button = function(button) {
 var attach_close_button = function() {
   $('body').delegate('.alert .closebtn', 'click', function(e) {
     $(this).parents('.alert').remove();
-    $('.alert').each(function() {
-      var old_top = $(this).css('top');
-      var new_top = (parseInt(old_top.replace('px')) - 66) + 'px';
+    $('.alert').each(function(index) {
+      if (index == 0) $(this).css('top', 0);
+      else {
+        var new_top = (index * 66) + 'px';
 
-      $(this).css('top', new_top);
+        $(this).css('top', new_top);
+      }
     });
   });
 };
@@ -180,7 +182,7 @@ var _alert = function(msg, _class) {
           </div>
         </div>
         ${closeButton(msg)}
-      </div>;`
+      </div>`
     );
   };
 
@@ -807,14 +809,20 @@ var setUsdAmount = function(event) {
   var amount = $('input[name=amount]').val();
   var denomination = $('#token option:selected').text();
   var estimate = getUSDEstimate(amount, denomination, function(estimate) {
-    if(estimate['value']){
+    if (estimate['value']) {
+      $('#usd-amount-wrapper').css('visibility', 'visible');
+      $('#usd_amount_text').css('visibility', 'visible');
+
       $('#usd_amount').val(estimate['value_unrounded']);
       $('#usd_amount_text').html(estimate['rate_text']);
-      $('#usd_amount').removeAttr('disabled'); 
+      $('#usd_amount').removeAttr('disabled');
     } else {
+      $('#usd-amount-wrapper').css('visibility', 'hidden');
+      $('#usd_amount_text').css('visibility', 'hidden');
+
       $('#usd_amount_text').html('');
-      $('#usd_amount').prop('disabled', true); 
-      $('#usd_amount').val(''); 
+      $('#usd_amount').prop('disabled', true);
+      $('#usd_amount').val('');
     }
   });
 };
@@ -823,7 +831,7 @@ var usdToAmount = function(event) {
   var usdAmount = $('input[name=usd_amount').val();
   var denomination = $('#token option:selected').text();
   var estimate = getAmountEstimate(usdAmount, denomination, function(amountEstimate) {
-    if(amountEstimate['value']){
+    if (amountEstimate['value']) {
       $('#amount').val(amountEstimate['value']);
       $('#usd_amount_text').html(amountEstimate['rate_text']);
     }

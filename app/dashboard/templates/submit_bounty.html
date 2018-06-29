@@ -165,7 +165,7 @@
                       <label class="form__label" for="amount">{% trans "Amount" %}</label>
                       <input name='amount' id='amount'  class="form__input" type="number" value="{{amount|default:'0.001'}}" step="0.001" min="0.001"/>
                     </div>
-                    <div class="form__amount-wrapper">
+                    <div class="form__amount-wrapper" id="usd-amount-wrapper">
                       <label class="form__label" for="usd_amount">{% trans "USD" %}</label>
                       <input name='usd_amount' id='usd_amount'  class="form__input" type="text" min="0.00"/>
                     </div>
