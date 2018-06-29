@@ -1,3 +1,9 @@
+#later-button {
+  margin:0;
+  position:absolute;
+  right:0;
+}
+
 #avatar-builder {
   display: flex;
   flex-flow: row wrap;
@@ -207,7 +213,7 @@ button.avatar-option {
   #avatar-area {
     flex-wrap: nowrap !important;
     justify-content: flex-start !important;
-    max-width: 525px;
+    max-width: 534px;
   }
 
   #section-title {

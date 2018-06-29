@@ -68,7 +68,7 @@ urlpatterns = [
     url(r'^universe/new/?', external_bounties.views.external_bounties_new, name="universe_new"),
     url(r'^universe/(?P<issuenum>.*)/(?P<slug>.*)/?', external_bounties.views.external_bounties_show, name='universe'),
     url(r'^universe/?', external_bounties.views.external_bounties_index, name="universe_index"),
-    re_path(r'^onboard/contributor/?', dashboard.views.contributor_onboard, name='contributor_onboard'),
+    re_path(r'^onboard/(?P<flow>\w+)/$', dashboard.views.onboard, name='onboard'),
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
 
@@ -180,6 +180,7 @@ urlpatterns = [
     url(r'^extension/chrome?', retail.views.browser_extension_chrome, name='browser_extension_chrome'),
     url(r'^extension/firefox?', retail.views.browser_extension_firefox, name='browser_extension_firefox'),
     url(r'^extension/?', retail.views.browser_extension_chrome, name='browser_extension'),
+    path('how/<str:work_type>', retail.views.how_it_works, name='how_it_works'),
 
     # basic redirect retail views
     url(r'^press/?', retail.views.presskit, name='press'),
@@ -281,16 +282,6 @@ urlpatterns = [
         r'^_administration/email/start_work_applicant_expired$',
         retail.emails.start_work_applicant_expired,
         name='start_work_applicant_expired'
-    ),
-    re_path(
-        r'^_administration/process_accesscode_request/(.*)$',
-        tdi.views.process_accesscode_request,
-        name='process_accesscode_request'
-    ),
-    re_path(
-        r'^_administration/process_faucet_request/(.*)$',
-        faucet.views.process_faucet_request,
-        name='process_faucet_request'
     ),
 
     # settings

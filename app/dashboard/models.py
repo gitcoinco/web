@@ -962,6 +962,12 @@ class Tip(SuperModel):
         return True
 
 
+@receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
+def psave_tip(sender, instance, **kwargs):
+    # when a new tip is saved, make sure it doesnt have whitespace in it
+    instance.username = instance.username.replace(' ', '')
+
+
 # @receiver(pre_save, sender=Bounty, dispatch_uid="normalize_usernames")
 # def normalize_usernames(sender, instance, **kwargs):
 #     if instance.bounty_owner_github_username:

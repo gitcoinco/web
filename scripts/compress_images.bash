@@ -25,7 +25,7 @@ cd app/assets/ || { echo "Environment misconfigured! Couldn't find assets direct
 
 echo "Optimizing project images...  This might take a while..."
 echo "Optimizing PNG files..."
-find ./ -type f -name '*.png' -exec optipng -o4 {} \;
+find ./ -type f -name '*.png' -exec optipng -o7 {} \;
 
 echo "Squashing SVG files..."
 find ./ -type f -name '*.svg' -exec svgo {} \;
