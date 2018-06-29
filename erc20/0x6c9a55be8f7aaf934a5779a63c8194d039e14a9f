@@ -1,0 +1,28 @@
+{
+        "symbol": "MUCC",
+            "address": "0x6c9a55be8f7aaf934a5779a63c8194d039e14a9f",
+            "overview":{
+        "en": "Music Coin，A change in the field of cultural copyright",
+                "zh": "音乐链，一场文化版权领域的变革"
+    },
+        "email": "admin@muccion.com",
+            "website": "http://www.muccion.com/index_en.html",
+            "whitepaper": "http://www.muccion.com/images/whitePaperV2.1.0.pdf",
+            "state": "NORMAL",
+            "published_on": "2018-06-03",
+            "initial_price":{
+
+        "USD":"0.2 USD",
+
+    },
+        "links": {
+        "blog": "http://www.muccion.com/index_en.html",
+                "twitter": "https://twitter.com/muccion",
+                "telegram": "https://t.me/joinchat/muccion",
+                "github": "https://github.com/muccion",
+                "facebook": "https://www.facebook.com/muccion",
+                "reddit": "https://www.reddit.com/r/muccion/",
+                "slack": "https://muccion.slack.com",
+
+    }
+    }
