@@ -500,6 +500,10 @@ Youtube channel.
 <a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET.
 This week features Matt Lockyer of ERC-998 protocol and Jay Rush of QuickBlocks!
         </li>
+        <li>
+Want to join a global blockchain hack summit and compete for $100k in prizes? Use code "gitcoin" during sign
+up at <a href="https://hacksummit.org/hackathon">hacksummit.org/hackathon</a> to join for free!
+        </li>
     </ul>
 </p>
 <p>
