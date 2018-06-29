@@ -579,13 +579,6 @@ input[type=text].loading {
   background-size: 30px;
 }
 
-#no_metamask_error img {
-  filter: grayscale(100%);
-  -moz-filter: grayscale(100%);
-  -ms-filter: grayscale(100%);
-  -o-filter: grayscale(100%);
-}
-
 #primary_form {
   max-width: 550px;
   margin: 0 auto;
@@ -1117,6 +1110,7 @@ input.is-invalid {
   font-family: 'Muli', sans-serif;
   font-size: 10px !important;
   min-height: 100px;
+  padding: 0.6rem;
 }
 
 .submit-notification h3 {
