@@ -538,32 +538,36 @@ Back to building,
         },
     ]
 
-    try:
-        bounties = [
-            {
-                'obj': Bounty.objects.get(
-                    current_bounty=True,
-                    github_url__iexact='https://github.com/zeppelinos/labs/issues/102'
-                ),
-                'primer': 'Help build the future of non-fungible protocols with ZeppelinOS',
-            },
-            {
-                'obj': Bounty.objects.get(
-                    current_bounty=True,
-                    github_url__iexact='https://github.com/AugurProject/augur-core/issues/689'
-                ),
-                'primer': 'Put the finishing touches on Augur less than a month before their main net launch!',
-            },
-            {
-                'obj': Bounty.objects.get(
-                    current_bounty=True,
-                    github_url__iexact='https://github.com/paritytech/polkadot/issues/212'
-                ),
-                'primer': 'Contribute to Parity Tech, a leading Ethereum client.',
-            },
-        ]
-    except:
-        bounties = []
+    bounties_spec = [
+        {
+            'url': 'https://github.com/zeppelinos/labs/issues/102',
+            'primer': 'Help build the future of non-fungible protocols with ZeppelinOS',
+        },
+        {
+            'url': 'https://github.com/AugurProject/augur-core/issues/689',
+            'primer': 'Put the finishing touches on Augur less than a month before their main net launch!',
+        },
+        {
+            'url': 'https://github.com/paritytech/polkadot/issues/212',
+            'primer': 'Contribute to Parity Tech, a leading Ethereum client.',
+        },
+    ]
+
+    #### don't need to edit anything below this line
+
+    bounties = []
+    for nb in bounties_spec:
+        try:
+            bounty = Bounty.objects.get(
+                current_bounty=True,
+                github_url__iexact=nb['url'],
+            )
+            bounties.append({
+                'obj': bounty,
+                'primer': nb['primer']
+                })
+        except:
+            pass
 
     ecosystem_bounties = ExternalBounty.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(weeks=1)).order_by('?')[0:5]
 
