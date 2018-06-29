@@ -36,7 +36,7 @@
           <div class="ml-3 text-highlight-gc-purple">
             <a class="text-highlight-gc-purple" href="{% url "explorer" %}">{% trans "View Available Bounties" %}</a>
             |
-            <a class="text-highlight-gc-purple" href="{% url "contributor_onboard" %}">{% trans "Get Started with Gitcoin" %}</a>
+            <a class="text-highlight-gc-purple" href="{% url "onboard" "contributor" %}">{% trans "Get Started with Gitcoin" %}</a>
           </div>
         </div>
       </div>
@@ -154,7 +154,7 @@
 
       <div class="container-fluid p-5 tree_container white-bg">
         <div id="gc-tree">
-          <img src="{% static "v2/images/gc-tree.png" %}" alt="Gitcoin Tree" />
+          {% include 'shared/tree.html' %}
           <h2 class="mt-4">Grow Open Source</h2>
         </div>
       </div>
@@ -270,6 +270,11 @@
               {% trans "MetaMask Internationalizes Via Gitcoin" %}
             </a>
           </li>
+          <li>
+            <a href="https://medium.com/gitcoin/gitcoin-testimonials-balance-6d027fe01b9f" target="_blank" rel="noopener noreferrer">
+              {% trans "Balance: Building Open Source Banking" %}
+            </a>
+          </li>
         </ul>
         <img id="gc-robot" src="{% static "v2/images/Robot.png" %}" alt="Gitcoin Robot" />
         <a class="btn btn-gc-purple" href="https://docs.google.com/document/d/1M8-5xCGoJ8u-k0C0ncx_dr9LtHwZ32Ccn3KMFtEnsBA/edit"
@@ -333,7 +338,7 @@
           </div>
         </div>
       </div>
-     
+
       <div class="container-fluid py-5 px-0 testimonial-container">
         <div class="row mb-4">
           <div class="col text-center">

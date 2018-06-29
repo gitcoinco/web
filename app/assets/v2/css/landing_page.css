@@ -289,9 +289,21 @@ body {
   display: none;
 }
 
-#gc-tree img {
-  max-width: 100%;
-  will-change: transform;
+#gc-tree {
+  text-align: center;
+}
+
+#gc-tree .lines {
+  animation-play-state: running;
+}
+
+#gc-tree .cls-4 {
+  animation-play-state: running;
+}
+
+.pause-animation {
+  animation-play-state: paused !important;
+  -webkit-animation-play-state: paused !important;
 }
 
 .pricing-tiers-container {
@@ -350,6 +362,13 @@ body {
 
 .testimonial-container {
   background-color: #F0F0F0;
+}
+
+.in-some-cases-container {
+  background-color: #FAFCFD;
+}
+.how-it-works-footer {
+  background-color: #0D0764;
 }
 
 .tree_container {
@@ -727,10 +746,6 @@ body {
 .explore-bounties-link {
   text-align: left;
 }
-
-/* .get-started-btn {
-  min-width: 206px;
-} */
 
 .contributor-hero-bg {
   position: relative;

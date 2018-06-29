@@ -44,11 +44,13 @@ var loading_button = function(button) {
 var attach_close_button = function() {
   $('body').delegate('.alert .closebtn', 'click', function(e) {
     $(this).parents('.alert').remove();
-    $('.alert').each(function() {
-      var old_top = $(this).css('top');
-      var new_top = (parseInt(old_top.replace('px')) - 66) + 'px';
+    $('.alert').each(function(index) {
+      if (index == 0) $(this).css('top', 0);
+      else {
+        var new_top = (index * 66) + 'px';
 
-      $(this).css('top', new_top);
+        $(this).css('top', new_top);
+      }
     });
   });
 };
@@ -180,7 +182,7 @@ var _alert = function(msg, _class) {
           </div>
         </div>
         ${closeButton(msg)}
-      </div>;`
+      </div>`
     );
   };
 
@@ -709,6 +711,18 @@ var trigger_form_hooks = function() {
   trigger_faucet_form_web3_hooks();
 };
 
+function getNetwork(id) {
+  var networks = {
+    '1': 'mainnet',
+    '2': 'morden',
+    '3': 'ropsten',
+    '4': 'rinkeby',
+    '42': 'kovan'
+  };
+
+  return networks[id] || 'custom network';
+}
+
 // figure out what version of web3 this is, whether we're logged in, etc..
 var listen_for_web3_changes = function() {
 
@@ -731,32 +745,13 @@ var listen_for_web3_changes = function() {
       }
     });
 
-    web3.version.getNetwork((error, netId) => {
+    web3.version.getNetwork(function(error, netId) {
       if (error) {
         trigger_sidebar_web3_disabled();
       } else {
         // figure out which network we're on
-        var network = 'unknown';
+        var network = getNetwork(netId);
 
-        switch (netId) {
-          case '1':
-            network = 'mainnet';
-            break;
-          case '2':
-            network = 'morden';
-            break;
-          case '3':
-            network = 'ropsten';
-            break;
-          case '4':
-            network = 'rinkeby';
-            break;
-          case '42':
-            network = 'kovan';
-            break;
-          default:
-            network = 'custom network';
-        }
         trigger_sidebar_web3(network);
         trigger_form_hooks();
       }
@@ -814,8 +809,21 @@ var setUsdAmount = function(event) {
   var amount = $('input[name=amount]').val();
   var denomination = $('#token option:selected').text();
   var estimate = getUSDEstimate(amount, denomination, function(estimate) {
-    $('#usd_amount').val(estimate['value']);
-    $('#usd_amount_text').html(estimate['rate_text']);
+    if (estimate['value']) {
+      $('#usd-amount-wrapper').css('visibility', 'visible');
+      $('#usd_amount_text').css('visibility', 'visible');
+
+      $('#usd_amount').val(estimate['value_unrounded']);
+      $('#usd_amount_text').html(estimate['rate_text']);
+      $('#usd_amount').removeAttr('disabled');
+    } else {
+      $('#usd-amount-wrapper').css('visibility', 'hidden');
+      $('#usd_amount_text').css('visibility', 'hidden');
+
+      $('#usd_amount_text').html('');
+      $('#usd_amount').prop('disabled', true);
+      $('#usd_amount').val('');
+    }
   });
 };
 
@@ -823,7 +831,9 @@ var usdToAmount = function(event) {
   var usdAmount = $('input[name=usd_amount').val();
   var denomination = $('#token option:selected').text();
   var estimate = getAmountEstimate(usdAmount, denomination, function(amountEstimate) {
-    $('#amount').val(amountEstimate['value']);
-    $('#usd_amount_text').html(amountEstimate['rate_text']);
+    if (amountEstimate['value']) {
+      $('#amount').val(amountEstimate['value']);
+      $('#usd_amount_text').html(amountEstimate['rate_text']);
+    }
   });
 };

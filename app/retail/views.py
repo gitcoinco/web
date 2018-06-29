@@ -19,7 +19,7 @@
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.http import HttpResponse, JsonResponse
+from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -166,6 +166,17 @@ def contributor_landing(request):
     }
 
     return TemplateResponse(request, 'contributor_landing.html', context)
+
+def how_it_works(request, work_type):
+    """Show How it Works / Funder page."""
+    if work_type not in ['funder', 'contributor']:
+        raise Http404
+
+    context = {
+        'active': f'how_it_works_{work_type}',
+    }
+    return TemplateResponse(request, 'how_it_works.html', context)
+
 
 def robotstxt(request):
     return TemplateResponse(request, 'robots.txt', {})
