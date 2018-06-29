@@ -8,7 +8,7 @@
   "email": "sdcpoker@163.com",
   "website": "http://www.sdcpoker.com/",
   "whitepaper": "http://www.sdcpoker.com/SDPokeren1.2.pdf",
-  "state": "LOCKED | NORMAL",
+  "state": "NORMAL",
   "published_on": "2018-03-11",
   "initial_price":{
         "ETH":"0.0000125 ETH",
