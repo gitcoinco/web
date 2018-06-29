@@ -32,7 +32,7 @@
       <div class="container" id="results_hero">
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center">
-            <h2 class="text-center">{% trans "Gitcoin Platform Stats" %}</h2>
+            <h2 class="text-center">{% trans "Gitcoin Platform Stats" %} {% if keyword %}({{keyword}}){%endif%}</h2>
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
@@ -82,6 +82,7 @@
               ${{ universe_total_usd|intcomma }} of {% blocktrans %}
                Cumulative Bounty History
               {% endblocktrans %}
+              {% if keyword %}({{keyword}}){%endif%}
             </h2>
           </div>
           <script>
@@ -110,7 +111,7 @@
       <div class="container" id="repo_transaction">
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center">
-            <h2 class="text-center">Gitcoin {% trans "Status Breakdown" %}</h2>
+            <h2 class="text-center">Gitcoin {% trans "Status Breakdown" %} {% if keyword %}({{keyword}}){%endif%}</h2>
           </div>
 
           <div class="col-12 col-md-6">
@@ -140,7 +141,7 @@
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
             <h2 class="text-center pb-5">
-              Top Repos
+              {% trans "Top Repos" %} {% if keyword %}({{keyword}}){%endif%}
             </h2>
           </div>
 
@@ -163,7 +164,7 @@
       <div class="container" id="bounty_jdi">
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
-            <h2>{% trans "Joe Dominance Index" %}</h2>
+            <h2>{% trans "Joe Dominance Index" %} {% if keyword %}({{keyword}}){%endif%}</h2>
           </div>
         </div>
         <div class="row py-1 animatedParent">
@@ -208,7 +209,7 @@
       <div class="container" id="price_per_hour">
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
-            <h2>{% trans "Hourly Rates of Bounties" %}</h2>
+            <h2>{% trans "Hourly Rates of Bounties" %} {% if keyword %}({{keyword}}){%endif%}</h2>
           </div>
         </div>
 
@@ -231,7 +232,7 @@
       <div class="container" id="bounty_universe">
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
-            <h2>{% trans "Community Growth" %}</h2>
+            <h2>{% trans "Community Growth" %} {% if keyword %}({{keyword}}){%endif%}</h2>
           </div>
           <script>
             document.slack_ticks = {{slack_ticks|safe}};
@@ -257,7 +258,7 @@
       <div class="container" id="mesh_network_jobs" style="width: 85%; max-width: 85%; height: 1100px;">
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
-            <h2>{% trans "TLDR - We're building a Mesh Network of Jobs" %}</h2>
+            <h2>{% trans "TLDR - We're building a Mesh Network of Jobs" %} {% if keyword %}({{keyword}}){%endif%}</h2>
           </div>
         </div>
 

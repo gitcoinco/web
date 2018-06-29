@@ -177,9 +177,9 @@ def mission(request):
     return TemplateResponse(request, 'mission.html', context)
 
 
-def results(request):
+def results(request, keyword):
     """Render the Results response."""
-    context = build_stat_results()
+    context = build_stat_results(keyword)
     context['is_outside'] = True
     return TemplateResponse(request, 'results.html', context)
 
