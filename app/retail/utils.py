@@ -23,6 +23,7 @@ import statistics
 import time
 
 from django.conf import settings
+from django.core.cache import cache
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
@@ -156,6 +157,19 @@ def get_bounty_median_turnaround_time(func='turnaround_time_started'):
 
 
 def build_stat_results():
+    timeout = 60 * 60 * 24
+    key = 'build_stat_results'
+    results = cache.get(key)
+    if results:
+        return results
+
+    results = build_stat_results_helper()
+    cache.set(key, results, timeout)
+
+    return results
+
+
+def build_stat_results_helper():
     from dashboard.models import Bounty
 
     """Buidl the results page context."""
