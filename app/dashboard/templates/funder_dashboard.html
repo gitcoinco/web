@@ -38,10 +38,10 @@
       </div>
 
       <div class="funder-dashboard__dashboard__wrapper container-fluid">
-        <div class="row">
-          <div class="col-lg">
+        <div class="row ml-1 mr-1 m-lg-0">
+          <div class="col-xl">
           </div>
-          <div class=" funder-dashboard__dashboard col-12 col-lg-9">
+          <div class=" funder-dashboard__dashboard col-12 col-xl-10">
             <div class="funder-dashboard__whats-next card row pt-1 pb-1">
               <div class="card-body col">
                 <div class="row">
@@ -78,7 +78,7 @@
               <div class="col-12 col-lg-8 funder-dashboard__left-column-wrapper">
                 <div class="funder-dashboard__stats row">
                   <div class="funder-dashboard__stats__stat funder-dashboard__stats__stat--bounties
-                            col-6 p-0 col-lg mr-lg-3 card">
+                            col-6 p-0 col-lg mr-lg-3 card mb-3 mb-lg-0">
                     <div class="card-body pb-2 text-center lead">
                       <h4 class="card-title pt-0 font-weight-bold">
                         {{ submitted_bounties_count }}
@@ -93,7 +93,7 @@
                     </small>
                   </div>
                   <div class="funder-dashboard__stats__stat funder-dashboard__stats__stat--contributors
-                            col-6 p-0 col-lg mr-lg-3 card">
+                            col-6 p-0 col-lg mr-lg-3 card mb-3 mb-lg-0">
                     <div class="card-body pb-2 text-center lead">
                       <h4 class="card-title pt-0 font-weight-bold">
                         {{ total_contributors_count }}
@@ -108,7 +108,7 @@
                     </small>
                   </div>
                   <div class="funder-dashboard__stats__stat funder-dashboard__stats__stat--total-spent
-                            col-6 p-0 col-lg mr-lg-3 card">
+                            col-6 p-0 col-lg mr-lg-3 card mb-3 mb-lg-0">
                     <div class="card-body pb-2 text-center lead">
                       <h5 class="card-title pt-0 font-weight-bold">
                         ${{ total_paid_dollars }}
@@ -128,7 +128,7 @@
                     </small>
                   </div>
                   <div class="funder-dashboard__stats__stat funder-dashboard__stats__stat--total-budget
-                            col-6 p-0 col-lg card">
+                            col-6 p-0 col-lg card mb-3 mb-lg-0">
                     <div class="card-body d-flex flex-column lead justify-content-center pb-2 text-center">
                       <h5 class="card-title pt-0 font-weight-bold">
                         ${{ total_budget_dollars }}
@@ -148,10 +148,10 @@
                 </div>
                 <div class="funder-dashboard__payout-history row card mt-4">
                   <div class="col card-body">
-                    <div class="d-flex justify-content-between">
+                    <div class="d-block d-sm-flex justify-content-between">
                       <h4 class="text-capitalize pb-1 pt-0 text-fd-no-spacing">{% trans "Payout History" %}</h4>
                       <div class="funder-dashboard__payout-history__controls
-                                  pt-1 d-flex align-items-start text-uppercase">
+                                  pt-1 d-flex align-items-start text-uppercase mb-4 mb-sm-0">
                         <small class="funder-dashboard__payout-history__control pl-2 pr-2 mr-2
                                     funder-dashboard__payout-history__control--weekly">
                           {% trans "Weekly" %}
@@ -169,7 +169,7 @@
                     </div>
                     <canvas id="funder-dashhboard__payout-history__chart"
                             class="funder-dashhboard__payout-history__chart"
-                            style="width: 100%; height: 15rem;">
+                            style="width: 100%; height: 20rem;">
                     </canvas>
                   </div>
                 </div>
@@ -217,7 +217,7 @@
                 </div>
               </div>
               <div class="funder-dashboard__latest-on-bounties
-                          col card p-1 pt-0 ml-3">
+                          col card p-1 pt-0 ml-lg-3 mt-3 mt-lg-0">
                 <div class="card-body">
                   <div class="text-capitalize lead">
                     {% trans "Latest on Your Bounties" %}
@@ -303,7 +303,7 @@
             </div>
             <div class="funder-dasboard__outgoing-funds row card mt-4">
               <div class="col card-body">
-                <div class="d-flex justify-content-between">
+                <div class="d-sm-flex d-block justify-content-between">
                   <h4 class="funder-dashboard__outgoing-funds__title
                            text-capitalize pt-0 text-fd-no-spacing d-inline-block mr-1">
                     {% trans "Outgoing Funds" %}
@@ -354,21 +354,47 @@
                   <tbody class="funder-dashboard__outgoing-funds__funds">
                   <tr class="funder-dashboard__outgoing-funds__funds__fund
                              funder-dashboard__outgoing-funds__funds__fund--template">
-                    <td class="funder-dashboard__outgoing-funds__funds__fund__id">
-                    </td>
-                    <td class="funder-dashboard__outgoing-funds__funds__fund__title">
-                    </td>
-                    <td class="funder-dashboard__outgoing-funds__funds__fund__type">
-                    </td>
-                    <td class="funder-dashboard__outgoing-funds__funds__fund__status">
-                    </td>
                     <td class="">
+                      <span class="table-header--inline">
+                          {% trans "Issue:" %}
+                      </span>
+                      <span class="funder-dashboard__outgoing-funds__funds__fund__id">
+                      </span>
+                    </td>
+                    <td>
+                      <span class="table-header--inline">
+                          {% trans "Title:" %}
+                      </span>
+                      <span class="funder-dashboard__outgoing-funds__funds__fund__title">
+                      </span>
+                    </td>
+                    <td>
+                      <span class="table-header--inline">
+                        {% trans "Type:" %}
+                      </span>
+                      <span class="funder-dashboard__outgoing-funds__funds__fund__type">
+                      </span>
+                    </td>
+                    <td>
+                      <span class="table-header--inline">
+                        {% trans "Status:" %}
+                      </span>
+                      <span class="funder-dashboard__outgoing-funds__funds__fund__status">
+                      </span>
+                    </td>
+                    <td>
+                      <span class="table-header--inline">
+                          {% trans "Issue Details:" %}
+                      </span>
                       <a href="#" class="funder-dashboard__outgoing-funds__funds__fund__view-etherscan text-secondary">
                         <i class="fas mr-1 fa-eye"></i>
                         {% trans "View Etherscan" %}
                       </a>
                     </td>
                     <td class="funder-dashboard__outgoing-funds__fund__worth">
+                      <span class="table-header--inline">
+                          {% trans "Amount:" %}
+                      </span>
                       <span class="mr-2 text-fd-blue--dark">
                         <span class="funder-dashboard__outgoing-funds__funds__fund__worth__eth"></span> USD
                       </span>
@@ -390,7 +416,7 @@
 
             <div class="funder-dasboard__all-bounties row card mt-4">
               <div class="col card-body">
-                <div class="d-flex justify-content-between">
+                <div class="d-sm-flex d-block justify-content-between">
                   <h4 class="funder-dashboard__all-bounties__title
                              text-capitalize pt-0 text-fd-no-spacing d-inline-block mr-1">
                     {% trans "All Bounties" %}
@@ -441,24 +467,50 @@
                   <tbody class="funder-dashboard__all-bounties__bounties">
                   <tr class="funder-dashboard__all-bounties__bounties__bounty
                              funder-dashboard__all-bounties__bounties__bounty--template">
-                    <td class="funder-dashboard__all-bounties__bounties__bounty__id">
+                    <td>
+                      <span class="table-header--inline">
+                          {% trans "Issue:" %}
+                      </span>
+                      <span class="funder-dashboard__all-bounties__bounties__bounty__id">
+                      </span>
                     </td>
-                    <td class="funder-dashboard__all-bounties__bounties__bounty__title">
+                    <td>
+                      <span class="table-header--inline">
+                          {% trans "Title:" %}
+                      </span>
+                      <span class="funder-dashboard__all-bounties__bounties__bounty__title">
+                      </span>
                     </td>
-                    <td class="funder-dashboard__all-bounties__bounties__bounty__type">
+                    <td>
+                      <span class="table-header--inline">
+                        {% trans "Type:" %}
+                      </span>
+                      <span class="funder-dashboard__all-bounties__bounties__bounty__type">
+                      </span>
                     </td>
-                    <td class="">
+                    <td>
+                      <span class="table-header--inline">
+                        {% trans "Status:" %}
+                      </span>
                       <div class="funder-dashboard__all-bounties__bounties__bounty__status__circle"></div>
                       <span class="funder-dashboard__all-bounties__bounties__bounty__status d-inline-block">
                       </span>
                     </td>
                     <td>
+                      <span class="table-header--inline">
+                          {% trans "Issue Details:" %}
+                      </span>
                       <a href="#" class="funder-dashboard__all-bounties__bounties__bounty__view-github text-secondary">
                         <i class="fas mr-1 fa-eye"></i>
                         {% trans "View Github" %}
                       </a>
                     </td>
-                    <td class="funder-dashboard__all-bounties__bounties__bounty__worth">
+                    <td>
+                      <span class="table-header--inline">
+                          {% trans "Amount:" %}
+                      </span>
+                      <span class="funder-dashboard__all-bounties__bounties__bounty__worth">
+                      </span>
                       <span class="mr-2 text-fd-blue--dark bgc-ethereum">
                         <span class="funder-dashboard__all-bounties__bounties__bounty__worth__eth"></span> ETH
                       </span>
@@ -478,7 +530,7 @@
               </div>
             </div>
           </div>
-          <div class="col-lg">
+          <div class="col-xl">
           </div>
         </div>
       </div>

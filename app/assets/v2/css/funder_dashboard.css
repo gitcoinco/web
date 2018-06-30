@@ -63,6 +63,17 @@
   font-size: 1.2rem;
 }
 
+.funder-dashboard__payout-history__chart {
+  width: 100%;
+  height: 15rem;
+}
+
+@media (max-width: 576px) {
+  .funder-dashboard__payout-history__chart {
+    height: 25rem;
+  }
+}
+
 .funder-dashboard__payout-history__control {
   cursor: pointer;
 }
@@ -122,10 +133,6 @@
   flex-direction: column;
 }
 
-.funder-dashboard__left-column-wrapper > div {
-  flex: 1;
-}
-
 .funder-dashboard__all-bounties__bounties__bounty__status__circle {
   width: 0.7rem;
   height: 0.7rem;
@@ -160,4 +167,58 @@
   background-color: #e7faf1;
   padding-right: 0.2rem;
   padding-left: 0.2rem;
+}
+
+.table-header--inline {
+  font-size: 1.2rem;
+  margin-right: 1rem;
+  display: none;
+}
+
+/*
+This query will take effect for any screen smaller than 760px
+and also iPads specifically.
+*/
+@media
+only screen and (max-width: 760px),
+(min-device-width: 768px) and (max-device-width: 1024px)  {
+
+	/* Force table to not be like tables anymore */
+	table, thead, tbody, th, td, tr {
+		display: block;
+	}
+
+	/* Hide table headers (but not display: none;, for accessibility) */
+	thead tr {
+		position: absolute;
+		top: -9999px;
+		left: -9999px;
+	}
+
+	tr {
+    border: 1px solid #ccc;
+    margin-bottom: 0.5rem;
+  }
+
+	td {
+		/* Behave  like a "row" */
+		border: none;
+		border-bottom: 1px solid #eee;
+		position: relative;
+		padding-left: 50%;
+	}
+
+	td:before {
+		/* Now like a table header */
+		/* Top/left values mimic padding */
+		top: 6px;
+		left: 6px;
+		width: 45%;
+		padding-right: 10px;
+		white-space: nowrap;
+	}
+
+  .table-header--inline {
+    display: unset;
+  }
 }
