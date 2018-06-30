@@ -30,7 +30,7 @@ from django.utils import timezone
 
 import requests
 from bs4 import BeautifulSoup
-from dashboard.models import Bounty, BountyFulfillment, BountySyncRequest, UserAction, Activity
+from dashboard.models import Activity, Bounty, BountyFulfillment, BountySyncRequest, UserAction
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
     maybe_market_to_user_slack,

@@ -18,9 +18,9 @@
 
 from django.core.management.base import BaseCommand
 
+from dashboard import helpers
 from dashboard.models import Bounty
 from dashboard.views import record_bounty_activity
-from dashboard import helpers
 
 
 def set_created(activity, date):
