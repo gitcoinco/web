@@ -1504,6 +1504,20 @@ input.is-invalid {
   margin-top: .2rem;
   margin-right: 1rem;
 }
+.results ul#programming_languages{
+  text-align: center;
+}
+.results ul#programming_languages li{
+  list-style: none;
+  padding: 10px 50px;
+  margin-bottom: 20px;
+  display: inline-block;
+  background-color: #eee;
+  border: 1px solid black;
+}
+.results ul#programming_languages li.selected{
+  background-color: #ccc;
+}
 
 .yellow_box {
   color: #FFCE08;

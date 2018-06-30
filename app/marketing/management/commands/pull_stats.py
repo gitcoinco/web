@@ -304,33 +304,40 @@ def bounties_hourly_rate():
             pass
 
 
-def bounties_by_status():
+def bounties_by_status_and_keyword():
     from dashboard.models import Bounty
+    from retail.utils import programming_languages
+    keywords = [''] + programming_languages
     statuses = Bounty.objects.distinct('idx_status').values_list('idx_status', flat=True)
     for status in statuses:
-        eligible_bounties = Bounty.objects.filter(current_bounty=True, network='mainnet', web3_created__lt=(timezone.now() - timezone.timedelta(days=7)))
-        numerator_bounties = eligible_bounties.filter(idx_status=status)
-        val = int(100 * (numerator_bounties.count()) / (eligible_bounties.count()))
-        val_rev = sum(numerator_bounties.values_list('_val_usd_db', flat=True))
+        for keyword in keywords:
+            eligible_bounties = Bounty.objects.filter(current_bounty=True, network='mainnet')
+            if keyword:
+                eligible_bounties = eligible_bounties.filter(raw_data__icontains=keyword)
+            numerator_bounties = eligible_bounties.filter(idx_status=status)
+            val = int(100 * (numerator_bounties.count()) / (eligible_bounties.count()))
+            val_rev = sum(numerator_bounties.values_list('_val_usd_db', flat=True))
 
-        Stat.objects.create(
-            key='bounties_{}_pct'.format(status),
-            val=val,
-            )
+            key_connector = '_' if keyword else ''
+            key_prefix = f'bounties_{status}{key_connector}{keyword}'
+            stats_to_create = [
+                (f'{key_prefix}_pct', val),
+                (f'{key_prefix}_total', numerator_bounties.count()),
+                (f'{key_prefix}_value', val_rev),
+                ]
 
-        Stat.objects.create(
-            key='bounties_{}_total'.format(status),
-            val=numerator_bounties.count(),
-            )
-
-        Stat.objects.create(
-            key='bounties_{}_value'.format(status),
-            val=val_rev,
-            )
+            for stat in stats_to_create:
+                #print(stat)
+                Stat.objects.create(
+                    key=stat[0],
+                    val=stat[1],
+                    )
 
 
 def joe_dominance_index():
     from dashboard.models import Bounty
+    from retail.utils import programming_languages
+    keywords = [''] + programming_languages
 
     joe_addresses = ['0x4331B095bC38Dc3bCE0A269682b5eBAefa252929'.lower(), '0xe93d33CF8AaF56C64D23b5b248919EabD8c3c41E'.lower()]  # kevin
     joe_addresses = joe_addresses + ['0x28e21609ca8542Ce5A363CBf339529204b043eDe'.lower()]  # eric
@@ -343,24 +350,30 @@ def joe_dominance_index():
     joe_addresses = joe_addresses + ['0x5cdb35fADB8262A3f88863254c870c2e6A848CcA'.lower()]  # aditya
 
     for days in [7, 30, 90, 360]:
-        all_bounties = Bounty.objects.filter(current_bounty=True, network='mainnet', web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
-        joe_bounties = all_bounties.filter(bounty_owner_address__in=joe_addresses)
-        if not all_bounties.count():
-            continue
+        for keyword in keywords:
+            all_bounties = Bounty.objects.filter(current_bounty=True, network='mainnet', web3_created__gt=(timezone.now() - timezone.timedelta(days=days)))
+            if keyword:
+                all_bounties = all_bounties.filter(raw_data__icontains=keyword)
+            joe_bounties = all_bounties.filter(bounty_owner_address__in=joe_addresses)
+            if not all_bounties.count():
+                continue
 
-        val = int(100 * (joe_bounties.count()) / (all_bounties.count()))
+            val = int(100 * (joe_bounties.count()) / (all_bounties.count()))
+            val_val = int(100 * sum([(b.value_in_usdt_now if b.value_in_usdt_now else 0) for b in joe_bounties]) / sum([(b.value_in_usdt_now if b.value_in_usdt_now else 0) for b in all_bounties]))
 
-        Stat.objects.create(
-            key='joe_dominance_index_{}_count'.format(days),
-            val=val,
-            )
+            key_connector = '_' if keyword else ''
+            key_prefix = f'joe_dominance_index_{days}{key_connector}{keyword}'
+            stats_to_create = [
+                (f'{key_prefix}_count', val),
+                (f'{key_prefix}_value', val_val),
+                ]
 
-        val = int(100 * sum([(b.value_in_usdt_now if b.value_in_usdt_now else 0) for b in joe_bounties]) / sum([(b.value_in_usdt_now if b.value_in_usdt_now else 0) for b in all_bounties]))
-        Stat.objects.create(
-            key='joe_dominance_index_{}_value'.format(days),
-            val=val,
-            )
-
+            for stat in stats_to_create:
+                #print(stat)
+                Stat.objects.create(
+                    key=stat[0],
+                    val=stat[1],
+                    )
 
 def avg_time_bounty_turnaround():
     import statistics
@@ -433,15 +446,17 @@ def tips():
     tips = Tip.objects.filter(network='mainnet')
     val = sum(tip.value_in_usdt for tip in tips if tip.value_in_usdt)
 
-    Stat.objects.create(
-        key='tips',
-        val=(tips.count()),
-        )
+    stats_to_create = [
+        ('tips', tips.count()),
+        ('tips_value', val),
+        ]
 
-    Stat.objects.create(
-        key='tips_value',
-        val=val,
-        )
+    for stat in stats_to_create:
+        #print(stat)
+        Stat.objects.create(
+            key=stat[0],
+            val=stat[1],
+            )
 
 
 def tips_received():
@@ -535,7 +550,7 @@ def get_bounty_keyword_counts():
 def email_events():
     from marketing.models import EmailEvent
 
-    events = EmailEvent.objects.distinct('event').values_list('event',flat=True)
+    events = EmailEvent.objects.distinct('event').values_list('event', flat=True)
     for event in events:
         val = EmailEvent.objects.filter(event=event).count()
         print(val)
@@ -573,7 +588,7 @@ class Command(BaseCommand):
             tips_received,
             bounties_fulfilled,
             bounties_open,
-            bounties_by_status,
+            bounties_by_status_and_keyword,
             subs_active,
             subs_newsletter,
             joe_dominance_index,

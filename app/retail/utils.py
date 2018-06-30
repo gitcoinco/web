@@ -32,7 +32,7 @@ import pytz
 from marketing.models import Alumni, LeaderboardRank, Stat
 from requests_oauthlib import OAuth2Session
 
-programming_languages = ['css', 'solidity', 'python', 'javascript', 'ruby', 'django', 'html', 'design']
+programming_languages = ['css', 'solidity', 'python', 'javascript', 'ruby', 'html', 'design']
 
 
 class PerformanceProfiler:
@@ -91,11 +91,9 @@ def get_bounty_history_row(label, date, keyword):
 
 
 def get_bounty_history_at_date(statuses, date, keyword):
-    if keyword:
-        # TODO - fix this
-        return 0
+    keyword_with_prefix = f"_{keyword}" if keyword else ""
     try:
-        keys = [f'bounties_{status}_value' for status in statuses]
+        keys = [f'bounties_{status}{keyword_with_prefix}_value' for status in statuses]
         base_stats = Stat.objects.filter(
             key__in=keys,
             ).order_by('-pk')
@@ -107,7 +105,7 @@ def get_bounty_history_at_date(statuses, date, keyword):
 
 def get_tip_history_at_date(date, keyword):
     if keyword:
-        # TODO - fix this
+        # TODO - attribute tips to specific keywords
         return 0
     try:
         base_stats = Stat.objects.filter(
@@ -204,9 +202,9 @@ def get_bounty_median_turnaround_time(func='turnaround_time_started', keyword=No
 def build_stat_results(keyword=None):
     timeout = 60 * 60 * 24
     key = f'build_stat_results_{keyword}'
-    #results = cache.get(key)
-    #if results:
-    #    return results
+    results = cache.get(key)
+    if results:
+        return results
 
     results = build_stat_results_helper(keyword)
     cache.set(key, results, timeout)
@@ -236,8 +234,9 @@ def build_stat_results_helper(keyword=None):
         base_bounties = base_bounties.filter(raw_data__icontains=keyword)
         profile_pks = base_profiles.values_list('profile', flat=True)
         profile_usernames = base_profiles.values_list('profile__handle', flat=True)
+        profile_usernames = list(profile_usernames) + list([bounty.github_repo_name for bounty in base_bounties])
         base_alumni = base_alumni.filter(profile__in=profile_pks)
-        base_leaderboard = base_leaderboard.filter(github_username__in=profile_usernames) #TODO: need a better way to filter the leaderbaord
+        base_leaderboard = base_leaderboard.filter(github_username__in=profile_usernames)
 
     context['alumni_count'] = base_alumni.count()
     pp.profile_time('alumni')
@@ -260,8 +259,9 @@ def build_stat_results_helper(keyword=None):
     pp.profile_time('Stats1')
     
     #jdi history
+    key = f'joe_dominance_index_30_{keyword}_value' if keyword else 'joe_dominance_index_30_value'
     base_stats = Stat.objects.filter(
-        key='joe_dominance_index_30_value', #TODO - JDI by keywords
+        key=key,
         ).order_by('-pk')
     context['jdi_history'], jdi_ticks = get_history(base_stats, 'Percentage')
 
@@ -308,5 +308,6 @@ def build_stat_results_helper(keyword=None):
     pp.profile_time('bounty_median_pickup_time')
     pp.profile_time('final')
     context['keyword'] = keyword
-
+    context['title'] = f"{keyword.capitalize() if keyword else ''} Results"
+    context['programming_languages'] = ['All'] + programming_languages
     return context
