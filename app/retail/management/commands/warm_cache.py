@@ -15,14 +15,15 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.conf import settings
-from django.core.management.base import BaseCommand
-from retail.utils import programming_languages
-from django.conf import settings
-from django.utils import timezone
-from django.urls import reverse
 import logging
 import warnings
+
+from django.conf import settings
+from django.core.management.base import BaseCommand
+from django.urls import reverse
+from django.utils import timezone
+
+from retail.utils import programming_languages
 
 warnings.filterwarnings("ignore", category=DeprecationWarning) 
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -53,4 +54,3 @@ class Command(BaseCommand):
         print(f"starting at {timezone.now()}")
         for path in paths:
             self.warm_path(path)
-

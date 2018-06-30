@@ -26,10 +26,9 @@ from django.conf import settings
 from django.core.cache import cache
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from marketing.models import EmailSubscriber
 
 import pytz
-from marketing.models import Alumni, LeaderboardRank, Stat
+from marketing.models import Alumni, EmailSubscriber, LeaderboardRank, Stat
 from requests_oauthlib import OAuth2Session
 
 programming_languages = ['css', 'solidity', 'python', 'javascript', 'ruby', 'html', 'design']
