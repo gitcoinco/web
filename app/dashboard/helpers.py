@@ -606,7 +606,7 @@ def get_fulfillment_data_for_activity(fulfillment):
     return data
 
 
-def record_bounty_activity(event_name, old_bounty, new_bounty):
+def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None):
     """Records activity based on bounty changes
 
     Args:
@@ -621,18 +621,19 @@ def record_bounty_activity(event_name, old_bounty, new_bounty):
         None
     """
     user_profile = None
-    fulfillment = None
+    fulfillment = _fulfillment
     try:
         user_profile = Profile.objects.filter(handle__iexact=new_bounty.bounty_owner_github_username).first()
-        fulfillment = new_bounty.fulfillments.order_by('-pk').first()
-        if event_name == 'work_done':
-            fulfillment = new_bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
+        if not fulfillment:
+            fulfillment = new_bounty.fulfillments.order_by('-pk').first()
+            if event_name == 'work_done':
+                fulfillment = new_bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
 
     except Exception as e:
         logging.error(f'{e} during record_bounty_activity for {new_bounty}')
 
     if user_profile:
-        Activity.objects.create(
+        return Activity.objects.create(
             profile=user_profile,
             activity_type=event_name,
             bounty=new_bounty,

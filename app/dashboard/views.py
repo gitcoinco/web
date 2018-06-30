@@ -141,13 +141,13 @@ def record_bounty_activity(bounty, user, event_name, interest=None):
         return
 
     if event_name == 'worker_applied':
-            kwargs['metadata']['approve_worker_url'] = bounty.approve_worker_url(user.profile)
-            kwargs['metadata']['reject_worker_url'] = bounty.reject_worker_url(user.profile)
+        kwargs['metadata']['approve_worker_url'] = bounty.approve_worker_url(user.profile)
+        kwargs['metadata']['reject_worker_url'] = bounty.reject_worker_url(user.profile)
     if event_name in ['worker_approved', 'worker_rejected'] and interest:
         kwargs['metadata']['worker_handle'] = interest.profile.handle
 
     try:
-        Activity.objects.create(**kwargs)
+        return Activity.objects.create(**kwargs)
     except Exception as e:
         logging.error(f"error in record_bounty_activity: {e} - {event_name} - {bounty} - {user}")
 
