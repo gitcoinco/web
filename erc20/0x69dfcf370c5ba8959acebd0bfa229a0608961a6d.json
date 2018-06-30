@@ -1,0 +1,15 @@
+{
+  "website": "https://www.tokenbook.one/",
+  "overview": {
+    "en": "Let the world embrace the blockchain.",
+    "zh": "让世界拥抱区块链"
+  },
+  "symbol": "TBCoin",
+  "address": "0x69dfcf370c5ba8959acebd0bfa229a0608961a6d",
+  "initial_price": {
+    "ETH": "0.00026 ETH",
+    "USD": "0.117 USD"
+  },
+  "whitepaper": "https://www.tokenbook.one/assets/download/TokenBook_WhitePaper_V1.5.pdf",
+  "email": "suxun@tokenbook.vip"
+}
