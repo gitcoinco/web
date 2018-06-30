@@ -1,0 +1,19 @@
+{
+    "symbol": "TKGN",
+    "address": "0x78a806a3bef5f9afcaa0f3b31fc07617a284516b",
+    "overview":{
+        "en": "Token Guardian is a blockchain project dedicated to the digital asset security market.",
+        "zh": "托肯卫士是一家致力于数字资产安全市场的区块链项目。"
+    },
+    "email": "410713640@qq.com",
+    "website": "http://www.tonkenguard.com",
+    "whitepaper": "http://tonkenguard.com/Uploads/images/2018/06/13/1528869155_header_bj.pdf",
+    "published_on": "2018-06-23",
+    "initial_price":{
+        "ETH":"0.00033 ETH",
+        "USD":"0.16 USD"
+    },
+    "links": {
+      "telegram": "https://0.plus/joinchat/HWiyLE0lElQnI1Gp4N_HJw"
+    }
+  }
