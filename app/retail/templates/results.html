@@ -215,7 +215,7 @@
 
         <div class="row mt-5 pb-5 animatedParent text-center">
           <div class="col animated pulse fast">
-            <iframe src="{% url 'viz_sscatterplot' %}" style="width: 100%; height: 600px; overflow-x: hidden; overflow-y: hidden;" frameBorder="0"></iframe>
+            <iframe src="{% url 'viz_sscatterplot' %}?keyword={{keyword}}" style="width: 100%; height: 600px; overflow-x: hidden; overflow-y: hidden;" frameBorder="0"></iframe>
           </div>
         </div>
 
@@ -258,7 +258,7 @@
       <div class="container" id="mesh_network_jobs" style="width: 85%; max-width: 85%; height: 1100px;">
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
-            <h2>{% trans "TLDR - We're building a Mesh Network of Jobs" %} {% if keyword %}({{keyword}}){%endif%}</h2>
+            <h2>{% trans "TLDR - We're building a Mesh Network of" %} {{keyword}} {% trans "Jobs" %}</h2>
           </div>
         </div>
 
@@ -291,7 +291,7 @@
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="{% static "v2/js/pages/results.js" %}"></script>
   <script>
-    $("#mesh_network_jobs_holder").html('<iframe src="{% url 'viz_graph' %}" style="width: 100%; height: 600px; border-left: 1px #dddddd solid; border-bottom: 1px #dddddd solid;  " frameBorder="0">');
+    $("#mesh_network_jobs_holder").html('<iframe src="{% url 'viz_graph' %}?keyword={{keyword}}" style="width: 100%; height: 600px; border-left: 1px #dddddd solid; border-bottom: 1px #dddddd solid;  " frameBorder="0">');
   </script>
 </html>
 

@@ -32,6 +32,8 @@ import pytz
 from marketing.models import Alumni, LeaderboardRank, Stat
 from requests_oauthlib import OAuth2Session
 
+programming_languages = ['css', 'solidity', 'python', 'javascript', 'ruby', 'django', 'html', 'design']
+
 
 class PerformanceProfiler:
 
@@ -129,11 +131,12 @@ def get_history(base_stats, copy):
         ]
     for i in [6, 5, 4, 3, 2, 1]:
         try:
-            history = history + [[f'{i} months ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=i*30))).first().val],]
+            plural = 's' if i != 1 else ''
+            history = history + [[f'{i} month{plural} ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=i*30))).first().val],]
         except:
             pass
 
-    history = history + ['Today', today]
+    history = history + [['Today', today], ]
     history = json.dumps(history)
     return history, ticks
 
@@ -228,7 +231,7 @@ def build_stat_results_helper(keyword=None):
 
     pp.profile_time('filters')
     if keyword:
-        base_email_subscribers = EmailSubscriber.objects.filter(keywords__icontains=[keyword])
+        base_email_subscribers = EmailSubscriber.objects.filter(keywords__icontains=keyword)
         base_profiles = base_email_subscribers.select_related('profile')
         base_bounties = base_bounties.filter(raw_data__icontains=keyword)
         profile_pks = base_profiles.values_list('profile', flat=True)
