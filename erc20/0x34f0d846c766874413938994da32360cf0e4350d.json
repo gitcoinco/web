@@ -1,0 +1,17 @@
+{
+  "symbol": "SAIT",
+  "address": "0x34f0d846c766874413938994da32360cf0e4350d",
+  "overview":{
+        "en": "The Sophon token is the usage credential for community services and will become a universal token for transactions in all scenarios in the community.The Sophon Capital Community is a digital asset service community based on blockchain and artificial intelligence,it aims to solve pain points in the digital asset industry and information chaos by providing highly efficient, more intelligent, more precise,and more responsive investment advisory services. This will enable investors to rationally understand the risk and benefits of investing in digital assets and provide value screening, rational investing, and a guide to digital assets.",
+        "zh": "智子币是智子社区服务的使用凭证，会成为社区中所有场景下用于交易的通用代币。智子社区是一个基于区块链与人工智能的数字资产服务社区，旨在解决数字资产行业痛点和资讯乱象，为数字资产交易提供更高效、更智能、更精准、响应更迅速的投顾服务，为投资者更理性地把握数字资产投资风险和收益，为数字资产价值筛选，理性投资保驾护航。"
+  },
+  "email": "contact@sophon.in",
+  "website": "http://www.sophoncapital.com/",
+  "whitepaper": "http://www.sophoncapital.com/pdf/%E6%99%BA%E5%AD%90%E6%8A%95%E9%A1%BE%E7%A4%BE%E5%8C%BAICO%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf",
+  "links": {
+    "telegram": "http://t.me/SophonChinese",
+    "Facebook":"https://www.facebook.com/Sophon.Cap",
+    "Twitter":"https://twitter.com/SophonCap",
+    "github": "https://github.com/SophonCap"
+  }
+}
