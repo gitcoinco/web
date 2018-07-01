@@ -14,6 +14,7 @@ The JS image is responsive.  Here are some screenshots of it:
 
 <img src='imgs/example.png' width="300">
 <img src='imgs/example2.png' width="300">
+<img src='https://gitcoin.co/funding/embed/?repo=https://github.com/gitcoinco/web&badge=1' width="300">
 
 ### Example
 
@@ -113,6 +114,10 @@ Example:
 ```
 
 ### More Examples
+
+<a href="https://gitcoin.co/explorer?q=metamask">
+    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/MetaMask/metamask-extension/issues/2350&badge=1">
+</a>
 
 <a href="https://gitcoin.co/explorer?q=metamask">
     <img src="https://gitcoin.co/funding/embed?repo=https://github.com/MetaMask/metamask-extension/issues/2350">
