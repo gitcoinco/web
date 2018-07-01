@@ -22,6 +22,7 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href="{% static "v2/css/landing_page.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/howitworks.css" %}" />
   </head>
   <body class="index d-flex flex-column">
     {% include 'shared/tag_manager_2.html' %}
@@ -41,7 +42,7 @@
       </div>
 
       <div class="container-fluid p-5 howworks-container howworks-container-contributors">
-        {% include "landing/contributor/how_it_works.html" %}
+        {% include "how_it_works_contributor.html" %}
       </div>
 
       <div class="container-fluid p-5 pilot-container projects-container">
