@@ -60,7 +60,10 @@
                       {% blocktrans %}
                       You have {{expiring_bounties_count}} bounties expiring in {{expiring_days_count}} days!
                       {% endblocktrans %}
-                      <a href="#" class="text-fd-blue--dark">{% trans "view bounties" %}</a>
+                      <a href="{% url "explorer" %}"
+                         class="issue-explorer-link issue-explorer-link--bounties--expiring  text-fd-blue--dark">
+                        {% trans "view bounties" %}
+                      </a>
                     </div>
                     <!-- should have a default message saying they don't have any new comments on their funded
                     issues -->
@@ -68,7 +71,10 @@
                       {% blocktrans %}
                       {{ new_contributor_comments_count }} contributors have commented on your open issues.
                       {% endblocktrans %}
-                      <a href="#" class="text-fd-blue--dark">{% trans "view comments" %}</a>
+                      <a href="{% url "explorer" %}"
+                         class="issue-explorer-link issue-explorer-link--contributors-comments text-fd-blue--dark">
+                        {% trans "view comments" %}
+                      </a>
                     </div>
                   </div>
                 </div>
@@ -209,7 +215,8 @@
                       </div>
                     </div>
                     <div class="d-flex justify-content-end">
-                      <a href="#">
+                      <a href="{% url "explorer" %}"
+                         class="issue-explorer-link issue-explorer-link--bounties--all">
                         {% trans "View All Bounties" %}
                       </a>
                     </div>
@@ -229,15 +236,19 @@
                         {% trans "Reclaim Your Funds" %}
                       </div>
                       <div>
-                        {% blocktrans %}
+                        {% url "explorer" as explorer_url %}
+                        {% blocktrans with explorer_url=explorer_url%}
                         You have
                         <span class="funder-dashboard__latest-on-bounties__reclaim-funds__funds-count
                                      text-danger">{{expired_issues_count}}</span>
                         <span class="text-danger">Expired Issues,</span>
                         funds worth<span class="funder-dashboard__latest-on-bounties__reclaim-funds__worth
                                                  font-weight-bold">${{expired_issues_worth_dollars}}</span>
-                        <a href="#" class="funder-dashboard__latest-on-bounties__reclaim-funds__reclaim
-                                    text-fd-blue--light ml-1">Reclaim Now</a>
+                        <a href="{{explorer_url}}"
+                           class="funder-dashboard__latest-on-bounties__reclaim-funds__reclaim
+                                   issue-explorer-link issue-explorer-link--bounties--expired text-fd-blue--light ml-1">
+                          Reclaim Now
+                        </a>
                         {% endblocktrans %}
                       </div>
                     </div>
@@ -248,11 +259,16 @@
                         <span class="funder-dashboard__latest-on-bounties__active__count font-weight-bold">
                           {{active_bounties_count}}
                         </span>
-                        <span class="text-fd-blue--dark text-uppercase"> {% trans "active bounties" %}</span>
+                        <span class="text-fd-blue--dark text-uppercase">
+                          {% trans "active bounties" %}
+                        </span>
                       </div>
                       <div class="w-100 text-right">
-                        <a href="#" class="funder-dashboard__latest-on-bounties__active__view
-                                           text-capitalize"> {% trans "View" %}</a>
+                        <a href="{% url "explorer" %}"
+                           class="funder-dashboard__latest-on-bounties__active__view text-capitalize
+                                  issue-explorer-link issue-explorer-link--bounties--active">
+                          {% trans "View" %}
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -265,8 +281,11 @@
                         <span class="text-fd-green text-uppercase"> {% trans "completed bounties" %}</span>
                       </div>
                       <div class="w-100 text-right">
-                          <a href="#" class="funder-dashboard__latest-on-bounties__completed__view
-                                             text-capitalize">{% trans "View" %}</a>
+                          <a href="{% url "explorer" %}"
+                             class="funder-dashboard__latest-on-bounties__completed__view text-capitalize
+                             issue-explorer-link issue-explorer-link--bounties--completed">
+                            {% trans "View" %}
+                          </a>
                       </div>
                     </div>
                   </div>
@@ -279,8 +298,11 @@
                         <span class="text-fd-red text-uppercase">{% trans "expired bounties" %}</span>
                       </div>
                       <div class="w-100 text-right">
-                        <a href="#" class="funder-dashboard__latest-on-bounties__expired__view
-                                           text-capitalize"> {% trans "View" %}</a>
+                        <a href="{% url "explorer" %}"
+                           class="funder-dashboard__latest-on-bounties__expired__view
+                                  text-capitalize issue-explorer-link issue-explorer-link--bounties--expired">
+                          {% trans "View" %}
+                        </a>
                       </div>
                     </div>
                   </div>
@@ -407,8 +429,9 @@
                 </table>
                 <hr>
                 <div class="d-flex justify-content-end">
-                  <a href="#">
-                   {% trans "View All Payments" %}
+                  <a href="{% url "explorer" %}"
+                     class="issue-explorer-link issue-explorer-link--payments--all">
+                    {% trans "View All Payments" %}
                   </a>
                 </div>
               </div>
@@ -523,7 +546,8 @@
                 </table>
                 <hr>
                 <div class="d-flex justify-content-end">
-                  <a href="#">
+                  <a href="{% url "explorer" %}"
+                     class="issue-explorer-link issue-explorer-link--bounties--all">
                     {% trans "View All Bounties" %}
                   </a>
                 </div>

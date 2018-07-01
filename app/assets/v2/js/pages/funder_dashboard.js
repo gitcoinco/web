@@ -267,9 +267,93 @@ $(function () {
     }
   }
 
+  function activateLinksToIssueExplorer() {
+    var localStorage;
+
+    try {
+      localStorage = window.localStorage;
+    } catch (e) {
+      // Won't throw an error when doing things with localStorage, but will be useless when redirecting to issueExplorer.
+      // Not a big issue, but funders with no localStorage support will just get redirected to the explorer
+      // without applied filters
+      localStorage = {};
+    }
+
+    var baseLinkSel = 'issue-explorer-link';
+    var $links = $('.' + baseLinkSel);
+
+    $links.click(function(e) {
+      e.preventDefault();
+      var $this = $(this);
+      var href = $this.attr('href');
+
+      resetFilters();
+
+      if ($this.hasClass(baseLinkSel + '--bounties--expiring')) {
+        addToLocalStorage('bounty_owner_github_username', document.contxt.github_handle);
+        addToLocalStorage('idx_status', 'open');
+        addToLocalStorage('order_by', 'web3_created');
+      } else if ($this.hasClass(baseLinkSel + '--bounties--active')) {
+        addToLocalStorage('bounty_owner_github_username', document.contxt.github_handle);
+        addToLocalStorage('idx_status', 'open');
+      } else if ($this.hasClass(baseLinkSel + '--bounties--completed')) {
+        addToLocalStorage('bounty_owner_github_username', document.contxt.github_handle);
+        addToLocalStorage('idx_status', 'done');
+      } else if ($this.hasClass(baseLinkSel + '--bounties--expired')) {
+        addToLocalStorage('bounty_owner_github_username', document.contxt.github_handle);
+        addToLocalStorage('idx_status', 'expired');
+      } else if ($this.hasClass(baseLinkSel + '--contributors-comments')) {
+        addToLocalStorage('bounty_owner_github_username', document.contxt.github_handle);
+        // TODO: How do I get the issues with new comments? Or is it fine to just redirect to open issues?
+        addToLocalStorage('idx_status', 'open');
+      } else if ($this.hasClass(baseLinkSel + '--payments--all')) {
+        addToLocalStorage('bounty_owner_github_username', document.contxt.github_handle);
+        // TODO: I need something similar to status_in. Also, is "paid" the same as "done"?
+      } else if ($this.hasClass(baseLinkSel + '--bounties--all')) {
+        addToLocalStorage('bounty_owner_github_username', document.contxt.github_handle);
+      }
+
+      function addToLocalStorage(key, value) {
+        localStorage[key] = value;
+      }
+
+      window.location.href = href;
+    });
+
+    var sidebar_keys = [
+      'experience_level',
+      'project_length',
+      'bounty_type',
+      'bounty_filter',
+      'network',
+      'idx_status',
+      'tech_stack',
+      'project_type',
+      'permission_type'
+    ];
+
+    var resetFilters = function() {
+      for (var i = 0; i < sidebar_keys.length; i++) {
+        var key = sidebar_keys[i];
+        localStorage[key] = null;
+      }
+
+      localStorage['bounty_owner_github_username'] = null;
+
+      if (localStorage['keywords']) {
+        localStorage['keywords'].split(',').forEach(function (v, k) {
+          localStorage['keywords'] = localStorage['keywords'].replace(v, '').replace(',,', ',');
+          // Removing the start and last comma to avoid empty element when splitting with comma
+          localStorage['keywords'] = localStorage['keywords'].replace(/^,|,\s*$/g, '');
+        });
+      }
+    };
+  }
+
   activatePayoutHistory();
   activateTotalBudget();
   activateOutgoingFunds();
   activateAllBounties();
+  activateLinksToIssueExplorer();
 });
 
