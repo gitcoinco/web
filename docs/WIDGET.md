@@ -113,19 +113,37 @@ Example:
 </a>
 ```
 
+Also, if you add `&badge=1` to the image URL, a la 
+
+```html
+<a href="https://gitcoin.co/explorer?q=gitcoinco">
+    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/gitcoinco/web&badge=1">
+</a>
+```
+
+you will see a badge version of this widget.
+
 ### More Examples
+
+#### Badge
 
 <a href="https://gitcoin.co/explorer?q=metamask">
     <img src="https://gitcoin.co/funding/embed?repo=https://github.com/MetaMask/metamask-extension/issues/2350&badge=1">
 </a>
 
+#### Metamask Widget
+
 <a href="https://gitcoin.co/explorer?q=metamask">
     <img src="https://gitcoin.co/funding/embed?repo=https://github.com/MetaMask/metamask-extension/issues/2350">
 </a>
 
+#### Ethereum web3py Widget
+
 <a href="https://gitcoin.co/explorer?q=web3">
     <img src="https://gitcoin.co/funding/embed?repo=https://github.com/ethereum/web3.py">
 </a>
+
+#### Market Protocol Widget
 
 <a href="https://gitcoin.co/explorer?q=MARKETProtocol">
     <img src="https://gitcoin.co/funding/embed?repo=https://github.com/MARKETProtocol/MARKETProtocol">
