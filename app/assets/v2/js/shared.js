@@ -610,6 +610,7 @@ var currentNetwork = function(network) {
       $('#current-network').text('Main Ethereum Network');
       $('.navbar-network i').addClass('green');
       $('.navbar-network i').removeClass('red');
+      $('#navbar-network-banner').removeClass('network-banner--warning');
     } else {
       if (!network) {
         tooltip_info = '<div class="tooltip-info tooltip-xs">Web3 disabled. Please install <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a></div>';
@@ -635,6 +636,7 @@ var currentNetwork = function(network) {
       $('#current-network').text('Rinkeby Network');
       $('.navbar-network i').addClass('green');
       $('.navbar-network i').removeClass('red');
+      $('#navbar-network-banner').removeClass('network-banner--warning');
     } else {
       if (!network) {
         tooltip_info = '<div class="tooltip-info tooltip-xs">Web3 disabled. Please install <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a></div>';
