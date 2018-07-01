@@ -29,6 +29,8 @@ from django.utils.translation import gettext_lazy as _
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 
+from dashboard.notifications import open_bounties, amount_usdt_open_work
+
 from .utils import build_stat_results
 
 
@@ -157,12 +159,17 @@ def contributor_landing(request):
         }
     ]
 
+    available_bounties_count = open_bounties().count()
+    available_bounties_worth = amount_usdt_open_work()
+
     context = {
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'home',
         'projects': projects,
-        'gitcoin_description': gitcoin_description
+        'gitcoin_description': gitcoin_description,
+        'available_bounties_count': available_bounties_count,
+        'available_bounties_worth': available_bounties_worth
     }
 
     return TemplateResponse(request, 'contributor_landing.html', context)
