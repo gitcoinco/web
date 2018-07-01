@@ -793,11 +793,6 @@ dl dd {
   z-index: 2;
 }
 
-#wrapper:before {
-  content: '';
-  display: block;
-}
-
 @media screen and (max-width: 360px) {
   #wrapper {
     padding: 0.75em;
