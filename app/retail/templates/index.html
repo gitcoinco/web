@@ -30,13 +30,14 @@
     <div id="landing_page_wrapper">
       <div class="container-fluid header">
         {% include 'shared/hero.html' %}
-        <div class="row banner--green p-3 justify-content-center">
-          <span class="text-highlight-gc-blue mr-1">{% trans "DEVELOPERS!" %}</span>
-          <span class="text-highlight-gc-purple">{% trans "Want to work on OSS Projects?" %}</span>
-          <div class="ml-3 text-highlight-gc-purple">
+        <div class="row banner--green px-3 py-4 justify-content-center">
+          <p class="col-12 mb-2 white text-center">{% trans "DEVELOPERS! Looking for work on OSS Projects?" %}</p>
+          <div class="col-12 text-highlight-gc-purple font-body text-center">
             <a class="text-highlight-gc-purple" href="{% url "explorer" %}">{% trans "View Available Bounties" %}</a>
             |
             <a class="text-highlight-gc-purple" href="{% url "onboard" "contributor" %}">{% trans "Get Started with Gitcoin" %}</a>
+            |
+            <a class="text-highlight-gc-purple" href="/contributor">{% trans "Learn More" %}</a>
           </div>
         </div>
       </div>

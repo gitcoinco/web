@@ -75,7 +75,7 @@ def contributor_landing(request):
          _("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque orci ante, cursus sed maximus in, sodales ut orci. Fusce ornare, nulla quis ornare condimentum, tortor augue hendrerit nunc, in varius lacus lectus id dolor. Donec pretium, est quis placerat malesuada, dolor magna commodo justo, sit amet laoreet elit est nec mauris. Aliquam convallis varius suscipit. Curabitur rutrum libero eget nunc porta, quis cursus tortor cursus."),
          'https://github.com/travisdmathis'),
         ("CryptoMental", static("v2/images/testimonials/gitcoiners/cryptomental.png"),
-         _("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque orci ante, cursus sed maximus in, sodales ut orci. Fusce ornare, nulla quis ornare condimentum, tortor augue hendrerit nunc, in varius lacus lectus id dolor. Donec pretium, est quis placerat malesuada, dolor magna commodo justo, sit amet laoreet elit est nec mauris."),
+         _(" think the great thing about GitCoin is how easy it is for projects to reach out to worldwide talent. GitCoin helps to find people who have time to contribute and increase speed of project development. Thanks to GitCoin a bunch of interesting OpenSource projects got my attention!"),
          'https://github.com/cryptomental'),
         ("Random Internet Cat", static("v2/images/testimonials/gitcoiners/meowingtwurtle.png"),
          _("Integer viverra consectetur neque non maximus. Aenean hendrerit eros nunc, quis fringilla quam sodales et. Sed convallis massa ut lacus congue, sed maximus ligula venenatis. Vivamus maximus viverra tortor et dictum. Sed at ex tellus. Sed vel neque quis quam ultrices dictum."),
