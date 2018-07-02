@@ -1,0 +1,19 @@
+{
+  "symbol": "TUR",
+  "address": "0x026b2693a7c724e8ed0122f39ab6fbc4d5a4fb22",
+  "overview":{
+        "en": "The Uniex distributed exchange aims to create a chain based trading platform based on a Turing chain to achieve distributed storage of cold node account assets, which effectively improves platform security and excellent user experience.",
+        "zh": "Uniex分布式交易所旨在打造基于图灵公链的链上交易平台，实现了分布式的冷节点账户资产存储，该系统有效提升了平台安全性以及优秀的用户体验"
+  },
+  "email": "uniexofficial@uniex.one",
+  "website": "https://uniex.one/",
+  "whitepaper": "https://uniex.one/file/Uniex.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-10",
+  "initial_price":{
+        "ETH":"0.0001 ETH"
+  },
+  "links": {
+    "telegram": "https://t.me/TuringNetworkCNs"
+  }
+}
