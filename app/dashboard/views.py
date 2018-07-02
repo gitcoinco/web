@@ -537,6 +537,11 @@ def onboard(request, flow):
         if steps:
             steps = steps.split(',')
 
+    if (steps and 'github' not in steps) or 'github' not in onboard_steps:
+        if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile'):
+            login_redirect = redirect('/login/github?next=' + request.get_full_path())
+            return login_redirect
+
     params = {
         'title': _('Onboarding Flow'),
         'steps': steps or onboard_steps,
