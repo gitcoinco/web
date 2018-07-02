@@ -253,7 +253,7 @@ STATIC_URL = STATIC_HOST + env('STATIC_URL', default='/static/')
 PIPELINE = {
     'PIPELINE_ENABLED': True,
     'PIPELINE_COLLECTOR_ENABLED': True,
-    'COMPILERS': ('pipeline.compilers.es6.ES6Compiler', ),
+    'COMPILERS': ('app.compilers.ES6Compiler', ),
     'CSS_COMPRESSOR': 'pipeline.compressors.yuglify.YuglifyCompressor',
     'JS_COMPRESSOR': 'pipeline.compressors.uglifyjs.UglifyJSCompressor',
     'STYLESHEETS': {
