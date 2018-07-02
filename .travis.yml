@@ -21,6 +21,8 @@ jobs:
   include:
     # Lint and test the repository.
     - stage: lint-test
+      before_script:
+        - psql -c 'create database testdb;' -U postgres
       script:
         # Setup Env.
         - cp app/app/travis.env app/app/.env
