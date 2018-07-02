@@ -731,4 +731,4 @@ def tokens(request):
     for network in networks:
         key = f"{network}_tokens"
         context[key] = Token.objects.filter(network=network, approved=True)
-    return TemplateResponse(request, 'tokens_js.txt', context, type='text/javascript')
+    return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
