@@ -1135,6 +1135,11 @@ input.is-invalid {
   width: auto;
 }
 
+.filter-label {
+  display: inline-block;
+  margin-left: 10px;
+}
+
 @media (max-width: 1350px) {
   .profile_details .tips li div.details {
     width: 300px;
@@ -1523,7 +1528,7 @@ input.is-invalid {
     text-align: left;
     margin-top: 0.5rem;
   }
-  
+
   .metamask-banner img {
     margin-bottom: 5px;
   }

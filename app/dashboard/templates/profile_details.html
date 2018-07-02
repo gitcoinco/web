@@ -228,6 +228,27 @@
       </div>
     </div>
     <div class="container">
+      <div class="row">
+        <div class="col py-4">{% trans "Mentor details" %}</div>
+      </div>
+      <div class="col-12">
+        <div class="row mb-2"><strong class="mr-2">{% trans "Organization" %}: </strong>{{profile.org}}</div>
+        <div class="row mb-2"><strong class="mr-2">{% trans "About" %}: </strong>{{profile.about}}</div>
+        <div class="row mb-2"><strong class="mr-2">{% trans "Experience" %}: </strong>{{profile.experience_display}}</div>
+        <div class="row mb-2"><strong class="mr-2">{% trans "Commitment per week" %}: </strong>{{profile.commitment_per_week_display}}</div>
+        <div class="row mb-2"><strong class="mr-2">{% trans "Skills offered" %}: </strong>
+          {% for skill in mentor_serializer.skills_offered_list.value %}
+            <span class="badge badge-primary mr-2">{{skill}}</span>
+          {% endfor %}
+        </div>
+        <div class="row mb-2"><strong class="mr-2">{% trans "Skills needed" %}: </strong>
+          {% for skill in mentor_serializer.skills_needed_list.value %}
+            <span class="badge badge-primary mr-2">{{skill}}</span>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+    <div class="container">
       {% if tips|length > 0 %}
         <div class="row">
           <div class="col py-4">

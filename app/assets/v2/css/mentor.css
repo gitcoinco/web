@@ -1,0 +1,22 @@
+.badge {
+  padding: 5px
+}
+
+h4 {
+  margin-bottom: 40px;
+}
+
+h2 {
+  letter-spacing: 1px;
+  font-size: 16px;
+  margin-top: 15px;
+  text-transform: none;
+}
+
+p {
+  font-size: 14px;
+}
+
+.mentor-link {
+  cursor: pointer;
+}

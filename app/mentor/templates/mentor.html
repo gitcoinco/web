@@ -1,0 +1,65 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+{% load rest_framework %}
+<html land="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/mentor.css" %}>
+  </head>
+  <body class="interior">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+    </div>
+    <div class="body">
+      <div class="container" style="padding-top:20px">
+        <div class="row">
+          <div class="col-xs-12 col-md-8">
+            <div class="row no-gutter">
+              <h3>{% trans "Join the mentoring community" %} <span id="alpha">Alpha</span></h3>
+              <p>
+                {% blocktrans %} Whether you want to learn or teach, this is place to be.
+                Tell us a little about yourself and what you're hoping to get out of being
+                part of the community. {% endblocktrans %}
+              </p>
+            </div>
+            <form method="POST"  action="{% url "mentor_details" pk=request.user.profile.id%}">
+              {% render_form serializer %}
+              <div>
+                {% csrf_token %}
+                <input class='button button--primary float-right' type='submit' name='submit' value="Submit">
+              </div>
+            </form>
+          </div>
+          <div class="col-4 d-none d-md-block" style="padding-top:300px">
+            <img id='side_img' src="{% static "v2/images/regulus.png" %}" style="max-width:300px;">
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  {% include 'shared/analytics.html' %}
+  {% include 'shared/footer_scripts.html' %}
+  {% include 'shared/rollbar.html' %}
+  {% include 'shared/footer.html' %}
+
+  <script src="{% static "v2/js/shared.js" %}"></script>
+</html>

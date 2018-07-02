@@ -75,6 +75,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'bootstrap3',
     'marketing',
+    'mentor',
     'economy',
     'dashboard',
     'enssubdomain',
@@ -92,6 +93,7 @@ INSTALLED_APPS = [
     'dataviz',
     'ethos',
     'impersonate',
+    'taggit',
 ]
 
 MIDDLEWARE = [
@@ -126,6 +128,7 @@ TEMPLATES = [
             'retail/templates/',
             'external_bounties/templates/',
             'dataviz/templates',
+            'mentor/templates/'
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -522,3 +525,6 @@ if ENABLE_SILK:
             'name': 'Index View',
         }]
     SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT = env.int('SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT', default=10)
+
+# Taggit
+TAGGIT_CASE_INSENSITIVE = True

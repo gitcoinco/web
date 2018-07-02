@@ -1,0 +1,13 @@
+<div class="form-group">
+  <label class="form__label">{{field.label}}</label>
+  <div class="form__select">
+    <select name="{{field.name}}">
+      {% for value, displayable in field.choices.items %}
+        <option value="{{value}}"
+          {% if value == field.value %}selected="selected"{% endif %}>
+          {{displayable}}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+</div>

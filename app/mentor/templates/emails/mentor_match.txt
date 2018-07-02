@@ -1,0 +1,9 @@
+You've got a match!
+{% for match in matched_mentors %}
+Name: {{match.0.name}}
+You matched on these skills:
+{% for skill in match.1 %}
+  {{skill}},
+{% endfor %}
+Get in contact at: {{match.0.email}}
+{% endfor %}

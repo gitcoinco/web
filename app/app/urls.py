@@ -343,6 +343,8 @@ urlpatterns = [
     # gitcoinbot
     url(settings.GITHUB_EVENT_HOOK_URL, gitcoinbot.views.payload, name='payload'),
     url(r'^impersonate/', include('impersonate.urls')),
+    path('mentor/', include('mentor.urls'))
+
 ]
 
 if settings.ENABLE_SILK:
