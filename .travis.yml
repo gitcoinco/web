@@ -64,4 +64,8 @@ jobs:
         - docker push gitcoin/web:stable
 
 addons:
-  postgresql: "9.6"
+  postgresql: "10"
+  apt:
+    packages:
+    - postgresql-10
+    - postgresql-client-10
