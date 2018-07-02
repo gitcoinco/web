@@ -593,9 +593,9 @@ def render_change_payout_amount(bounty, value):
     subject = 'Change payout amount'
     form_link = reverse('request_change_payout', kwargs={'value': value, 'pk': bounty.id, 'network': bounty.network})
 
-    response_text = "There is someone trying to increase the bounty on {value} on your issue," +
-    " can you change the payout amount of the bounty? The form to do it: {form_link}. You can " +
-    "increase the payout amount in the value {value}."
+    response_text = """There is someone trying to increase the bounty on {value} on your issue,
+    can you change the payout amount of the bounty? The form to do it: {form_link}. You can
+    increase the payout amount in the value {value}."""
 
     return response_text, subject
 

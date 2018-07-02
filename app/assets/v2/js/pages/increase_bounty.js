@@ -114,8 +114,6 @@ $(document).ready(function() {
 
       if (document.changePayoutAmount) {
         $.get('/issue/increase/changepayout/' + amount + '/?pk=' + bountyId + '&network=' + document.web3network)
-          .fail(function(error) {
-          });
       }
     }
 
