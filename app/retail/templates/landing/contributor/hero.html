@@ -40,17 +40,17 @@
     <div class="col d-flex mt-2 mb-5 mr-5">
       <div class="text-center">
         <div>
-          <a class="btn btn-gc-green text-purple get-started-btn" role="button" href="/explorer" target="_blank" rel="noopener noreferrer">
+          <a class="btn btn-gc-green text-purple get-started-btn" role="button" href="/onboard/contributor" target="_blank" rel="noopener noreferrer">
             <span>{% trans "Get Started" %}</span>
           </a>
-          <a class="btn btn-outline-white join-slack-btn ml-3" role="button" href="/slack">
+          <a class="btn btn-outline-white join-slack-btn ml-3" role="button" href="{% url "slack" %}" target="_blank" rel="noopener noreferrer">
             <i class="fab fa-slack-hash mr-1" aria-hidden="true"></i>
             <span>{% trans "Join Gitcoin Slack" %}</span>
           </a>
         </div>
         <div class="explore-bounties-link text-white mt-4">
           Or
-          <a href="/explorer" class="text-white underline">
+          <a href="{% url "explorer" %}" rel="noopener noreferrer" class="text-white underline">
             <span>Explore Bounties</span>
           </a>
         </div>

@@ -18,6 +18,8 @@
 
 <div class="row justify-content-center">
   {% for project in projects %}
-    <img src="{% static project.source %}" alt="{{ project.name }}" />
+    <div class="project">
+      <img src="{% static project.source %}" alt="{{ project.name }}" />
+    </div>
   {% endfor %}
 </div>

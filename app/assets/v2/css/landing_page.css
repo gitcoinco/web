@@ -214,10 +214,16 @@ body {
   background: white;
 }
 
-.pilot-container img {
+.pilot-container img,
+.project  {
   margin: 1.5rem 3rem;
   height: 5rem;
   width: 5rem;
+}
+
+.project img {
+  width: auto;
+  margin: 0
 }
 
 .pilot-container .image--rounded {
