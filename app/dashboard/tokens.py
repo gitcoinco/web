@@ -19,7 +19,7 @@
 
 def get_tokens():
     from economy.models import Token
-    return [token.to_dict for token in Token.objects.filter(network='mainnet').all()]
+    return [token.to_dict for token in Token.objects.filter(network='mainnet', approved=True).all()]
 
 
 def addr_to_token(addr):
