@@ -1,0 +1,18 @@
+{
+  "symbol": "PTN",
+  "address": "0xfe76be9cec465ed3219a9972c21655d57d21aec6",
+  "overview":{
+        "en": "PalletOne: Protocol for Abstract-Level Ledger Ecosystem and High Performance Public Chain",
+        "zh": "PalletOne: 区块链世界的IP协议，高性能分布式账本"
+  },
+  "email": "contact@pallet.one",
+  "website": "https://pallet.one",
+  "whitepaper": "https://pallet.one/doc/PalletOne_whitepaper_zh-cn.pdf",
+  "initial_price":{
+        "ETH":"0.00014286 ETH"
+  },
+  "links": {
+    "telegram": "https://t.me/palletchinese",
+    "github": "https://github.com/PalletOne"
+  }
+}
