@@ -191,7 +191,8 @@ body {
 
 .benefit > h4 {
   padding-top: 2rem;
-  padding-bottom:  1rem;
+  padding-bottom: 1rem;
+  height: 6rem;
 }
 
 .landing__newsletter {
