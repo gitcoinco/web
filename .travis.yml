@@ -11,6 +11,7 @@ os:
 
 services:
   - docker
+  - postgresql
 
 cache:
   directories:
@@ -64,10 +65,3 @@ jobs:
         - docker push gitcoin/web:${TRAVIS_BUILD_NUMBER}
         - docker tag gitcoin/web:${TRAVIS_BUILD_NUMBER} gitcoin/web:stable
         - docker push gitcoin/web:stable
-
-addons:
-  postgresql: "10"
-  apt:
-    packages:
-    - postgresql-10
-    - postgresql-client-10
