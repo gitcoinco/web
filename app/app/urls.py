@@ -154,6 +154,7 @@ urlpatterns = [
     re_path(r'^static/avatar/(.*)/(.*)?', avatar.views.handle_avatar, name='org_avatar'),
     re_path(r'^static/viz/graph/(.*)?$', dataviz.d3_views.viz_graph, name='viz_graph'),
     re_path(r'^static/viz/sscatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot_stripped, name='viz_sscatterplot'),
+    re_path(r'^static/v2/js/tokens_dynamic.js$', retail.views.tokens, name='tokens'),
 
     # sync methods
     url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),
@@ -187,6 +188,7 @@ urlpatterns = [
     url(r'^presskit/?', retail.views.presskit, name='presskit'),
     url(r'^community/?', retail.views.community, name='community'),
     url(r'^slack/?', retail.views.slack, name='slack'),
+    url(r'^submittoken/?', retail.views.newtoken, name='newtoken'),
     url(r'^iosfeedback/?', retail.views.iosfeedback, name='iosfeedback'),
     url(r'^ios/?', retail.views.ios, name='ios'),
     url(r'^itunes/?', retail.views.itunes, name='itunes'),

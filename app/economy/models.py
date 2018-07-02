@@ -26,6 +26,9 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
 from django.utils.timezone import localtime
+from django.contrib.postgres.fields import JSONField
+from django.urls import reverse
+from django.utils.html import escape
 
 
 def get_time():
@@ -48,6 +51,11 @@ class SuperModel(models.Model):
         """Override the SuperModel save to handle modified_on logic."""
         self.modified_on = get_time()
         return super(SuperModel, self).save(*args, **kwargs)
+
+    @property
+    def admin_url(self):
+        url = reverse('admin:{0}_{1}_change'.format(self._meta.app_label, self._meta.model_name), args=[self.id])
+        return '{0}'.format(url, escape(str(self)))
 
 
 class ConversionRate(SuperModel):
@@ -85,3 +93,34 @@ def reverse_conversion_rate(sender, instance, **kwargs):
             from_currency=instance.to_currency,
             to_currency=instance.from_currency
         )
+
+
+class Token(SuperModel):
+    """Define the Token model."""
+
+    address = models.CharField(max_length=255, db_index=True)
+    symbol = models.CharField(max_length=10, db_index=True)
+    network = models.CharField(max_length=25, db_index=True)
+    decimals = models.IntegerField(default=18)
+    priority = models.IntegerField(default=1)
+    metadata =JSONField(null=True, default={}, blank=True)
+    approved = models.BooleanField(default=True)
+
+    def __str__(self):
+        """Define the string representation of a conversion rate."""
+        return f"{self.symbol} on {self.network}"
+
+    @property
+    def to_dict(self):
+        return {'addr': self.address, 'name': self.symbol, 'decimals': self.decimals, 'priority': self.priority}
+
+    @property
+    def to_json(self):
+        import json
+        return json.dumps(self.to_dict)
+
+
+    @property
+    def email(self):
+        return self.metadata.get('email', None)
+

@@ -1,0 +1,33 @@
+var tokens = function(network_id) {
+  var _tokens = null;
+
+  if (network_id == 'mainnet') {
+  {{mainnet_tokens.0}}
+    _tokens = {% for token in mainnet_tokens %}{{token.to_json | safe}},{%endfor%};
+  } else if (network_id == 'ropsten') { // ropsten
+    _tokens = {% for token in ropsten_tokens %}{{token.to_json}},{%endfor%};
+  } else if (network_id == 'rinkeby') { // ropsten
+    _tokens = {% for token in rinkeby_tokens %}{{token.to_json}},{%endfor%};
+  } else if (network_id == 'custom network') { // testrpc
+    _tokens = {% for token in custom_tokens %}{{token.to_json}},{%endfor%};
+  } else {
+    _tokens = {% for token in unknown_tokens %}{{token.to_json}},{%endfor%};
+  }
+
+  _priorityTokens = _tokens.filter(function(token) {
+    return token.priority > 0;
+  }).sort(function(a, b) {
+    return b.priority - a.priority;
+  });
+  _priorityTokens.push({ 'divider': true });
+
+  _tokens.sort(function(a, b) {
+    if (a.name[0] < b.name[0]) {
+      return -1;
+    }
+    return 1;
+  });
+
+  return _priorityTokens.concat(_tokens);
+};
+

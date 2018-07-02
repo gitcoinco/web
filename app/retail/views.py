@@ -23,11 +23,14 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
+from retail.helpers import get_ip
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
+from economy.models import Token
 
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
+from marketing.mails import new_token_request
 
 from .utils import build_stat_results
 
@@ -645,6 +648,39 @@ def slack(request):
     return TemplateResponse(request, 'slack.html', context)
 
 
+def newtoken(request):
+    context = {
+        'active': 'newtoken',
+        'msg': None,
+    }
+
+    if request.POST:
+        required_fields = ['email', 'terms', 'not_security', 'address', 'symbol', 'decimals', 'network']
+        validtion_passed = True
+        for key in required_fields:
+            if not request.POST.get(key):
+                context['msg'] = str(_('You must provide the following fields: ')) + key
+                validtion_passed = False
+        if validtion_passed:
+            ip = get_ip(request)
+            obj = Token.objects.create(
+                address=request.POST['address'],
+                symbol=request.POST['symbol'],
+                decimals=request.POST['decimals'],
+                network=request.POST['network'],
+                approved=False,
+                priority=1,
+                metadata={
+                    'ip': get_ip(request),
+                    'email': request.POST['email'],
+                    }
+                )
+            new_token_request(obj)
+            context['msg'] = str(_('Your token has been submitted and will be listed within 2 business days if it is accepted.'))
+    
+    return TemplateResponse(request, 'newtoken.html', context)
+
+
 def btctalk(request):
     return redirect('https://bitcointalk.org/index.php?topic=2206663')
 
@@ -687,3 +723,13 @@ def youtube(request):
 
 def web3(request):
     return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')
+
+
+def tokens(request):
+    context = {}
+    networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']
+    for network in networks:
+        key = f"{network}_tokens"
+        context[key] = Token.objects.filter(network=network)
+    return TemplateResponse(request, 'tokens_js.txt', context, type='text/javascript')
+
