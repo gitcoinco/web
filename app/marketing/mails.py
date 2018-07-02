@@ -31,7 +31,7 @@ from retail.emails import (
     render_gdpr_reconsent, render_gdpr_update, render_match_email, render_new_bounty, render_new_bounty_acceptance,
     render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission, render_quarterly_stats,
     render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
-    render_start_work_new_applicant, render_start_work_rejected, render_tip_email,
+    render_start_work_new_applicant, render_start_work_rejected, render_tip_email, render_change_payout_amount
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
@@ -548,6 +548,18 @@ def start_work_applicant_expired(interest, bounty):
 
         if not should_suppress_notification_email(to_email, 'bounty'):
             send_mail(from_email, to_email, subject, text, html)
+    finally:
+        translation.activate(cur_language)
+
+
+def change_payout_amount(bounty, value):
+    from_email = settings.CONTACT_EMAIL
+    to_email = bounty.bounty_owner_email
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        text, subject = render_change_payout_amount(bounty, value)
+        send_mail(from_email, to_email, subject, text)
     finally:
         translation.activate(cur_language)
 

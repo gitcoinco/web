@@ -45,6 +45,7 @@ from github.utils import (
 )
 from marketing.mails import (
     admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
+    change_payout_amount
 )
 from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
@@ -665,13 +666,27 @@ def increase_bounty(request):
 
     """
     bounty = handle_bounty_views(request)
+    user = request.user if request.user.is_authenticated else None
+    if user:
+        is_funder = bounty.is_funder(user.username.lower())
+    else:
+        is_funder = False
+
     params = get_context(
         ref_object=bounty,
-        user=request.user if request.user.is_authenticated else None,
+        user=user,
         confirm_time_minutes_target=confirm_time_minutes_target,
         active='increase_bounty',
         title=_('Increase Bounty'),
     )
+    change_payout_amount = request.GET.get('change_payout_amount')
+    if change_payout_amount:
+        params['change_payout_amount'] = change_payout_amount
+    else:
+        params['change_payout_amount'] = False
+
+    params['is_funder'] = is_funder
+
     return TemplateResponse(request, 'increase_bounty.html', params)
 
 
@@ -1122,6 +1137,16 @@ def sync_web3(request):
 
     return JsonResponse(result, status=result['status'])
 
+
+def request_change_payout_amount(request, amount):
+    bounty = handle_bounty_views(request)
+    change_payout_amount(bounty, amount)
+    result = {
+        'status': '200',
+        'msg': 'email sent'
+    }
+
+    return JsonResponse(result, status=result['status'])
 
 # LEGAL
 
