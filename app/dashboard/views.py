@@ -44,8 +44,8 @@ from github.utils import (
     get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
 )
 from marketing.mails import (
-    admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
-    change_payout_amount
+    admin_contact_funder, bounty_uninterested, change_payout_amount, start_work_approved, start_work_new_applicant,
+    start_work_rejected,
 )
 from marketing.models import Keyword
 from ratelimit.decorators import ratelimit
