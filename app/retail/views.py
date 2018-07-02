@@ -71,21 +71,21 @@ def index(request):
 
 def contributor_landing(request):
     slides = [
-        ("Travis Mathis", static("v2/images/testimonials/gitcoiners/travis.png"),
-         _("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque orci ante, cursus sed maximus in, sodales ut orci. Fusce ornare, nulla quis ornare condimentum, tortor augue hendrerit nunc, in varius lacus lectus id dolor. Donec pretium, est quis placerat malesuada, dolor magna commodo justo, sit amet laoreet elit est nec mauris. Aliquam convallis varius suscipit. Curabitur rutrum libero eget nunc porta, quis cursus tortor cursus."),
-         'https://github.com/travisdmathis'),
+        ("Daniel", static("v2/images/testimonials/gitcoiners/daniel.jpeg"),
+         _("When I found Gitcoin I was gladly surprised that it took one thing and did it well.  It took the Ethereum tech and used it as a bridge to technology with open source Jobs.  Even though Gitcoin is still in it’s early stages, I think it’s filled with potential to grow."),
+         'https://github.com/dmerrill6'),
         ("CryptoMental", static("v2/images/testimonials/gitcoiners/cryptomental.png"),
          _(" think the great thing about GitCoin is how easy it is for projects to reach out to worldwide talent. GitCoin helps to find people who have time to contribute and increase speed of project development. Thanks to GitCoin a bunch of interesting OpenSource projects got my attention!"),
          'https://github.com/cryptomental'),
-        ("Random Internet Cat", static("v2/images/testimonials/gitcoiners/meowingtwurtle.png"),
-         _("Integer viverra consectetur neque non maximus. Aenean hendrerit eros nunc, quis fringilla quam sodales et. Sed convallis massa ut lacus congue, sed maximus ligula venenatis. Vivamus maximus viverra tortor et dictum. Sed at ex tellus. Sed vel neque quis quam ultrices dictum."),
-         "https://github.com/meowingtwurtle"),
-        ("Bakaoh", static("v2/images/testimonials/gitcoiners/bakaoh.png"),
-         _("Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque orci ante, cursus sed maximus in, sodales ut orci. Fusce ornare, nulla quis ornare condimentum, tortor augue hendrerit nunc, in varius lacus lectus id dolor. Donec pretium, est quis placerat malesuada, dolor magna commodo justo, sit amet laoreet elit est nec mauris."),
-         'https://github.com/bakaoh'),
-        ("Nikita Kudryavtsev", static("v2/images/testimonials/gitcoiners/nikita.jpeg"),
-         _("Integer viverra consectetur neque non maximus. Aenean hendrerit eros nunc, quis fringilla quam sodales et. Sed convallis massa ut lacus congue, sed maximus ligula venenatis. Vivamus maximus viverra tortor et dictum. Sed at ex tellus. Sed vel neque quis quam ultrices dictum."),
-         'https://github.com/palevoo'),
+        ("Elan", static("v2/images/testimonials/gitcoiners/elan.jpeg"),
+         _("The bounty process with Gitcoin is pretty amazing.  Just go on the website, find an issue you can work on, you claim it.  All you do then is submit your code to Github, get the code merged.  Once it’s merged, the smart contract kicks in and sends the money to your Ethereum account.  The whole process is pretty smooth.  There’s a giant slack community.  It puts the freelance market back in the hands of the community!"),
+         "https://github.com/elaniobro"),
+        ("Jack", static("v2/images/testimonials/gitcoiners/jack.jpeg"),
+         _("I really like Gitcoin because it’s allowed me to get involved in some really interesting Open Source Projects.  I’ve written code for MyEtherWallet and Gitcoin itself.  I think Gitcoin is becoming a great asset for the Ethereum ecosystem."),
+         'https://github.com/jclancy93'),
+        ("Miguel Angel Rodriguez Bermudez", static("v2/images/testimonials/gitcoiners/miguel.jpeg"),
+         _("I came across Gitcoin 3 months ago.  I was hearing lots of ideas about projects involving cryptocurrencies, and I kept thinking \"what about open source projects?\".  I see Gitcoin as the next level of freelance, where you can not only help repos on Github, but get money out of it.  It is that simple and it works."),
+         'https://github.com/marbrb'),
     ]
 
     gitcoin_description = _(
