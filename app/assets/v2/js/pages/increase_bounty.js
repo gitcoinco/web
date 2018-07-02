@@ -113,7 +113,7 @@ $(document).ready(function() {
       }, 1000);
 
       if (document.changePayoutAmount) {
-        $.get('/issue/increase/changepayout/' + amount + '/?pk=' + bountyId + '&network=' + document.web3network)
+        $.get('/issue/increase/changepayout/' + amount + '/?pk=' + bountyId + '&network=' + document.web3network);
       }
     }
 
