@@ -1,0 +1,21 @@
+{
+  "symbol": "GVC",
+  "address": "0xA57392548087453deC6106e670bBFB849276b358",
+  "overview":{
+        "en": "An asset used to access the GemVault Assets provided by GemVault.",
+        "zh": "用于访问由GemVault提供的GemVault资产"
+  },
+  "email": "edwin.rice1@gmail.com",
+  "website": "https://www.gemvault.io./",
+  "whitepaper": "https://gemvault.io/GembankWhitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-21",
+  "initial_price":{
+        "ETH":"0.0009 ETH",
+        "USD":"0.325 USD",
+        "BTC":"0.00005313 BTC"
+  },
+  "links": {
+    "github": "https://gist.github.com/GemVaultCoin/27447c8d77a8d8be3684f4daa2a1ab3b"
+  }
+}
