@@ -68,6 +68,9 @@
             <a class="dropdown-item {% if active == 'how_it_works_contributor' %} selected{% endif %}" href="{% url "how_it_works" "contributor" %}">
               {% trans "Contributor" %}
             </a>
+            <a class="dropdown-item {% if active == 'help' %} selected{% endif %}" href="{% url "help" %}">
+              {% trans "Help" %}
+            </a>
           </div>
         </div>
       {% endif %}
