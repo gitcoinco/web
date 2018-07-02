@@ -110,6 +110,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   </body>
 
 
+  <script>
+    document.isFunder = '{{is_funder}}' != 'False';
+    document.changePayoutAmount = '{{change_payout_amount}}' != 'False';
+  </script>
+
   <!-- jQuery -->
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>

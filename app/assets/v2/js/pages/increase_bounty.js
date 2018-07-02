@@ -111,6 +111,13 @@ $(document).ready(function() {
         mixpanel.track('Submit New Bounty Success', {});
         document.location.href = '/funding/details/?url=' + issueURL;
       }, 1000);
+
+      if (document.changePayoutAmount) {
+        $.get('/issue/increase/changepayout/' + amount + '/?pk=' + bountyId + '&network=' + document.web3network)
+          .fail(function(error) {
+            console.log(error);
+          });
+      }
     }
 
     var bountyAmount = parseInt($('input[name=valueInToken]').val(), 10);
@@ -123,9 +130,6 @@ $(document).ready(function() {
     if (bountyAmount == 0 || open == false) {
       errormsg = gettext('No active funded issue found at this address on ' + document.web3network + '. Are you sure this is an active funded issue?');
     }
-    if (fromAddress != web3.eth.coinbase) {
-      errormsg = gettext('Only the address that submitted this funded issue may increase the payout.');
-    }
 
     if (errormsg) {
       _alert({ message: errormsg });
@@ -134,17 +138,43 @@ $(document).ready(function() {
     }
 
     function do_bounty() {
-      bounty.increasePayout(
-        bountyId,
-        bountyAmount + amount,
-        amount,
-        {
-          from: account,
-          value: ethAmount,
-          gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
-        },
-        web3Callback
-      );
+      if (document.isFunder) {
+        if (document.changePayoutAmount) {
+          bounty.changeBountyFulfillmentAmount(
+            bountyId,
+            bountyAmount + amount,
+            {
+              from: account,
+              value: 0,
+              gasPrice: web3.toHex($('#gasPrice').val() + Math.pow(10, 9))
+            },
+            web3Callback
+          );
+        } else {
+          bounty.increasePayout(
+            bountyId,
+            bountyAmount + amount,
+            amount,
+            {
+              from: account,
+              value: ethAmount,
+              gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
+            },
+            web3Callback
+          );
+        }
+      } else {
+        bounty.contribute(
+          bountyId,
+          amount,
+          {
+            from: account,
+            value: ethAmount,
+            gasPrice: web3.toHex($('#gasPrice').val() + Math.pow(10, 9))
+          },
+          web3Callback
+        );
+      }
     }
 
     do_bounty();
