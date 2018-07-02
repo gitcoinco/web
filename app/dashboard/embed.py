@@ -163,7 +163,7 @@ def embed(request):
         # config
         bounty_height = 200
         bounty_width = 572
-        font = 'assets/v2/fonts/futura/FuturaStd-Medium.otf'
+        font = 'assets/v2/fonts/OpenSans/Regular.ttf'
         width = 1776
         height = 576
 

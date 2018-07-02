@@ -2,14 +2,6 @@
 /* stylelint-disable no-descending-specificity */
 
 /* ...because sometimes descending-specificity is a PIA to clean up */
-
-/* Futura */
-
-@font-face {
-  font-family: 'futura-pt';
-  src: url('/static/v2/fonts/futura/font4.ttf')/* TTF file for CSS3 browsers */
-}
-
 /* Muli Regular */
 
 @font-face {
@@ -20,7 +12,7 @@
 
 body {
   line-height: 1;
-  font-family: futura-pt, sans-serif !important;
+  font-family: Muli, sans-serif !important;
   -webkit-text-size-adjust: none;
   overflow: hidden;
   width: 100%;
