@@ -23,14 +23,14 @@ from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
-from retail.helpers import get_ip
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
-from economy.models import Token
 
+from economy.models import Token
+from marketing.mails import new_token_request
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
-from marketing.mails import new_token_request
+from retail.helpers import get_ip
 
 from .utils import build_stat_results
 
@@ -732,4 +732,3 @@ def tokens(request):
         key = f"{network}_tokens"
         context[key] = Token.objects.filter(network=network)
     return TemplateResponse(request, 'tokens_js.txt', context, type='text/javascript')
-
