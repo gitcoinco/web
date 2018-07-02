@@ -96,6 +96,8 @@ span {
   border-radius: 25px;
   font-size: 0.6rem;
   font-weight: lighter;
+  position: relative;
+  top: 7px;
 }
 
 .navbar-network i {

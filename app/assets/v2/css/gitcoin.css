@@ -214,9 +214,7 @@ h4,
 }
 
 .network-banner--warning {
-  background: red;
-  width: 100%;
-  height: 5px;
+  border-bottom: solid 5px #ff3232;
 }
 
 .font-title-lg {

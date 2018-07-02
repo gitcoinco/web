@@ -600,6 +600,7 @@ var trigger_sidebar_web3 = function(network) {
 };
 
 var currentNetwork = function(network) {
+  var is_marketing_page = ["/", "/contributor", "/about" , "/mission", "/results", "/slack"].includes(document.location.pathname);
 
   $('.navbar-network').removeClass('hidden');
   let tooltip_info;
@@ -610,7 +611,7 @@ var currentNetwork = function(network) {
       $('#current-network').text('Main Ethereum Network');
       $('.navbar-network i').addClass('green');
       $('.navbar-network i').removeClass('red');
-      $('#navbar-network-banner').removeClass('network-banner--warning');
+      $('.navbar').removeClass('network-banner--warning');
     } else {
       if (!network) {
         tooltip_info = '<div class="tooltip-info tooltip-xs">Web3 disabled. Please install <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a></div>';
@@ -625,7 +626,8 @@ var currentNetwork = function(network) {
 
       $('.navbar-network i').addClass('red');
       $('.navbar-network i').removeClass('green');
-      $('#navbar-network-banner').addClass('network-banner--warning');
+      if(!is_marketing_page)
+        $('.navbar').addClass('network-banner--warning');
 
       if ($('.ui-tooltip.ui-corner-all.ui-widget-shadow.ui-widget.ui-widget-content').length == 0) {
         $('.navbar-network').attr('title', tooltip_info);
@@ -636,7 +638,7 @@ var currentNetwork = function(network) {
       $('#current-network').text('Rinkeby Network');
       $('.navbar-network i').addClass('green');
       $('.navbar-network i').removeClass('red');
-      $('#navbar-network-banner').removeClass('network-banner--warning');
+      $('.navbar').removeClass('network-banner--warning');
     } else {
       if (!network) {
         tooltip_info = '<div class="tooltip-info tooltip-xs">Web3 disabled. Please install <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a></div>';
@@ -651,7 +653,8 @@ var currentNetwork = function(network) {
 
       $('.navbar-network i').addClass('red');
       $('.navbar-network i').removeClass('green');
-      $('#navbar-network-banner').addClass('network-banner--warning');
+      if(!is_marketing_page)
+        $('.navbar').addClass('network-banner--warning');
 
       if ($('.ui-tooltip.ui-corner-all.ui-widget-shadow.ui-widget.ui-widget-content').length == 0) {
         $('.navbar-network').attr('title', tooltip_info);
