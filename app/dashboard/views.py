@@ -522,11 +522,6 @@ def send_tip_2(request):
 
 def onboard(request, flow):
     """Handle displaying the first time user experience flow."""
-
-    if not request.user or not request.user.is_authenticated:
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
-        return login_redirect
-
     if flow not in ['funder', 'contributor', 'profile']:
         raise Http404
     elif flow == 'funder':
@@ -541,6 +536,11 @@ def onboard(request, flow):
         steps = request.GET.get('steps', [])
         if steps:
             steps = steps.split(',')
+
+    if (steps and 'github' not in steps) or 'github' not in onboard_steps:
+        if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile'):
+            login_redirect = redirect('/login/github?next=' + request.get_full_path())
+            return login_redirect
 
     params = {
         'title': _('Onboarding Flow'),
