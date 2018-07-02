@@ -28,6 +28,7 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext as _
+from django.urls import reverse
 
 import cssutils
 import premailer
