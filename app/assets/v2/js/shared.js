@@ -544,58 +544,9 @@ var randomElement = function(array) {
   return array[randomIndex];
 };
 
-var trigger_sidebar_web3_disabled = function() {
-  $('#upper_left').addClass('disabled');
-  $('#sidebar_head').html('<i class="fas fa-question"></i>');
-  $('#sidebar_p').html('<p>Web3 disabled</p><p>Please install <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a> <br> <a href="/web3" target="_blank" rel="noopener noreferrer">What is Metamask and why do I need it?</a>.</p>');
-};
-
-var trigger_sidebar_web3_locked = function() {
-  $('#upper_left').addClass('disabled');
-  $('#sidebar_head').html('<i class="fas fa-lock"></i>');
-  $('#sidebar_p').html('<p>Web3 locked</p><p>Please unlock <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>.<p>');
-};
-
 var mixpanel_track_once = function(event, params) {
   if (document.listen_for_web3_iterations == 1 && mixpanel) {
     mixpanel.track(event, params);
-  }
-};
-
-var trigger_sidebar_web3 = function(network) {
-  document.web3network = network;
-
-  // is this a supported networK?
-  var is_supported_network = true;
-
-  var recommended_network = 'mainnet or rinkeby';
-
-  if (network == 'kovan' || network == 'ropsten') {
-    is_supported_network = false;
-  }
-  if (document.location.href.indexOf('https://gitcoin.co') != -1) {
-    if (network != 'mainnet' && network != 'rinkeby') {
-      is_supported_network = false;
-      recommended_network = 'mainnet or rinkeby';
-    }
-  }
-  if (network == 'mainnet') {
-    if (document.location.href.indexOf('https://gitcoin.co') == -1) {
-      is_supported_network = false;
-      recommended_network = 'custom rpc via ganache-cli / rinkeby';
-    }
-  }
-  var sidebar_p = '<p>Connected to ' + network + '.</p>';
-
-  if (is_supported_network) {
-    $('#upper_left').removeClass('disabled');
-    $('#sidebar_head').html("<i class='fas fa-wifi'></i>");
-    $('#sidebar_p').html('<p>Web3 enabled<p>' + sidebar_p);
-  } else {
-    $('#upper_left').addClass('disabled');
-    $('#sidebar_head').html("<i class='fas fa-battery-empty'></i>");
-    sidebar_p += '<p>(try ' + recommended_network + ')</p>';
-    $('#sidebar_p').html('<p>Unsupported network</p>' + sidebar_p);
   }
 };
 
@@ -796,11 +747,9 @@ var listen_for_web3_changes = function() {
   }
 
   if (typeof web3 == 'undefined') {
-    trigger_sidebar_web3_disabled();
     currentNetwork();
     trigger_form_hooks();
   } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
-    trigger_sidebar_web3_locked();
     currentNetwork('locked');
     trigger_form_hooks();
   } else {
@@ -812,13 +761,9 @@ var listen_for_web3_changes = function() {
 
     web3.version.getNetwork(function(error, netId) {
       if (error) {
-        trigger_sidebar_web3_disabled();
         currentNetwork();
       } else {
-        // figure out which network we're on
         var network = getNetwork(netId);
-        
-        trigger_sidebar_web3(network);
         currentNetwork(network);
         trigger_form_hooks();
       }
