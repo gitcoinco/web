@@ -187,6 +187,10 @@ body {
   top: 2px;
 }
 
+.transation-header > h2 {
+  color: #ffffff;
+}
+
 #bounty_details .tags {
   float: right;
   text-align: center;
@@ -554,9 +558,35 @@ a.btn {
 }
 
 
-.loading {
+.open {
   background-image: url("/static/v2/images/bounty_details.png");
   background-repeat: no-repeat;
   background-size: 100% 50%;
 }
 
+
+
+.ethereum-issue {
+  width:100%;
+  font-size: 18px;
+  color: #ffffff;
+}
+
+.rocket {
+  position: absolute;
+  left: 64rem;
+  top: 18rem;
+  width: 5rem;
+  animation: MoveUpDown 3s infinite alternate;
+  -webkit-animation: MoveUpDown 3s infinite alternate;
+}
+
+
+@keyframes MoveUpDown {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-3rem); }
+}
+@-webkit-keyframes MoveUpDown {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-3rem); }
+}

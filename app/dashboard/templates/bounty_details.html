@@ -23,23 +23,7 @@
       </div>
 
       <div class="col-12 offset-md-1 col-md-8 body">
-        <div class="transation-header" style="display: none;">
-            <h2 style="color: #ffffff;">Transaction Processing</h2>
-          </div>
-          <div class="transaction-status" style="display:none;">
-              <div style='width:100%; font-size: 18px; color: #ffffff;'>
-                {% trans "Your issue is being posted to the Ethereum Blockchain." %}
-                <br>
-                {% trans "This page will automatically update when the sync is completed." %}
-              </div>
-          </div>
-          <div class="row justify-content-center align-items-center p-3">
-            <h3 class="issue-url"></h3>
-          </div>
-        <div class="row justify-content-center align-items-center loading_img p-5">
-          <img src="{% static "v2/images/loading_v2.gif" %}" style="max-width: 200px;">
-        </div>
-
+        {% include 'shared/bounty_hero.html' %}
         <div class="row nonefound" style="display:none;">
           <img src="{% static "v2/images/shrug_bot.png" %}">
           <h3>{% trans "No funded issue found." %}</h3>
