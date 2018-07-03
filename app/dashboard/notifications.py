@@ -35,6 +35,8 @@ from marketing.models import GithubOrgToTwitterHandleMapping
 from pyshorteners import Shortener
 from slackclient import SlackClient
 
+from .utils import humanize
+
 
 def github_org_to_twitter_tags(github_org):
     """Build a string of github organization twitter tags.
@@ -211,9 +213,10 @@ def build_message_for_slack(bounty, event_name):
         pass  # no USD conversion rate
 
     title = bounty.title if bounty.title else bounty.github_url
-    msg = f"{event_name.replace('bounty', 'funded_issue')} worth {round(bounty.get_natural_value(), 4)} {bounty.token_name} " \
-          f"{usdt_details}" \
-          f"{bounty.token_name}: {title} \n\n{bounty.get_absolute_url()}"
+    msg = f"*{humanize(event_name.replace('bounty', 'funded_issue'))}*" \
+          f"\n*Bounty worth*: {round(bounty.get_natural_value(), 4)} {bounty.token_name} {usdt_details}" \
+          f"\n*Title*: {title}" \
+          f"\n{bounty.get_absolute_url()}"
     return msg
 
 
@@ -841,7 +844,7 @@ def maybe_notify_bounty_user_warned_removed_to_slack(bounty, username, last_hear
     if not bounty.is_notification_eligible(var_to_check=settings.SLACK_TOKEN):
         return False
 
-    msg = f"@{username} has been warned about inactivity ({last_heard_from_user_days} days) on {bounty.github_url}"
+    msg = f"*@{username}* has been warned about inactivity ({last_heard_from_user_days} days) on {bounty.github_url}"
 
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
