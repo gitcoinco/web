@@ -55,6 +55,16 @@ class NoBountiesException(Exception):
     pass
 
 
+def humanize(text):
+    """Clean a notification string of underscores and capitalize it.
+
+    Returns:
+        str: The cleaned representation of the string.
+
+    """
+    return text.replace('_', ' ').upper()
+
+
 def create_user_action(user, action_type, request=None, metadata=None):
     """Create a UserAction for the specified action type.
 
@@ -404,12 +414,16 @@ def record_user_action_on_interest(interest, event_name, last_heard_from_user_da
 
 
 def get_context(ref_object=None, github_username='', user=None, confirm_time_minutes_target=4,
-                active='', title='', update=None):
+                confirm_time_slow=90, confirm_time_avg=30, confirm_time_fast=1, active='',
+                title='', update=None):
     """Get the context dictionary for use in view."""
     context = {
         'githubUsername': github_username,  # TODO: Deprecate this field.
         'active': active,
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(confirm_time_slow),
+        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(confirm_time_avg),
+        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(confirm_time_fast),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
         'email': getattr(user, 'email', ''),

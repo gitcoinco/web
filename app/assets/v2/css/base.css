@@ -30,8 +30,36 @@ span {
   z-index: 9999999999;
 }
 
-.navbar-nav .nav-link {
+.navbar-dark .navbar-nav .nav-link {
   border-radius: 2px;
+  color: white;
+}
+
+.navbar .interior, .navbar .interior a,
+.nav-link.interior, .nav-link.interior a {
+  color: white ;
+}
+
+.navbar .interior .dropdown-item {
+  color: black !important;
+  font-size: 0.9rem;
+}
+.navbar .interior .dropdown-item:hover {
+  color: white !important;
+}
+
+#navbarSupportedContent {
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.navbar-nav .btn-gc-blue {
+  margin-right: 0 !important;
+  font-size: 0.9rem;
+}
+
+.navbar-nav .dropdown-menu {
+  min-width: 9rem;
 }
 
 .nav_avatar,
@@ -307,6 +335,49 @@ p a {
   filter: invert(100%);
 }
 
+
+#gas-section .gas-image {
+  height: 5rem;
+}
+
+#gas-section .font-body {
+  margin: 0;
+}
+
+#gas-section .recommended-prices {
+  cursor: pointer;
+}
+
+#gas-section .gas-dark-bg {
+  background-color: #FAFAFA;
+  min-width: 205px;
+}
+
+#gas-section .gas-rates .active {
+  font-weight: bolder;
+  background-color: #0ECF7C;
+}
+
+#gas-section #metamask_context {
+  display: none;
+}
+
+#gas-section #accordion-set-own-limit {
+  cursor: pointer;
+  border-bottom: 1px solid rgba(0,0,0,.1);
+  border-top: 1px solid rgba(0,0,0,.1);
+}
+
+#gas-section #accordion-set-own-limit i {
+  float: right;
+}
+
+#gas-section #default-recommended-gas,
+#gas-section .message {
+  display: none;
+  text-align: center;
+}
+
 .btn-warning,
 .btn-success,
 .btn-info {
@@ -392,6 +463,7 @@ p a {
 .dashboard .body .avatar {
   max-height: 50px;
   max-width: 50px;
+  border-radius: 100%;
 }
 
 .body .nonefound {
@@ -488,7 +560,7 @@ input[type=text].loading {
 }
 
 #primary_form {
-  max-width: 500px;
+  max-width: 550px;
   margin: 0 auto;
   padding: 0 2em;
 }
@@ -562,6 +634,12 @@ input[type=text].loading {
   text-align: left;
 }
 
+.admin-only {
+  background-color: #5495E1 !important;
+  color:white !important;
+  border: 1px solid white !important;
+}
+
 /* The alert message box */
 
 .alert {
@@ -584,6 +662,9 @@ input[type=text].loading {
 .alert .message {
   align-items: center;
   display: flex;
+}
+.alert .message .content{
+  display: inline;
 }
 
 .alert .message::before {
@@ -728,6 +809,19 @@ input[type=text].loading {
   text-align: center;
 }
 
+.transation-header {
+  font-family: 'Muli', sans-serif;
+  display: block;
+  position: relative;
+  width: 80%;
+  left: 10%;
+  top: 30px;
+  margin-bottom: 30px;
+  border-radius: 2px;
+  padding: 3vh 5vw;
+  text-align: center;
+}
+
 .waiting_room_entertainment {
   font-style: italic;
   text-align: center;
@@ -750,6 +844,29 @@ input[type=text].loading {
   color: #70EFBE;
   margin: 1rem auto;
   font-style: italic;
+  font-weight: 700;
+  font-size: 22px;
+  letter-spacing: 0.75px;
+}
+
+.bounty_details .quote-container {
+  width: 65%;
+  margin: 5% auto;
+  font-style: normal;
+}
+
+.bounty_details .quote_text {
+  color: #4A4A4A;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 22px;
+  letter-spacing: 0.75px;
+}
+
+.bounty_details .quote_author {
+  color: #4A4A4A;
+  margin: 1rem auto;
+  font-style: normal;
   font-weight: 700;
   font-size: 22px;
   letter-spacing: 0.75px;
@@ -1011,12 +1128,12 @@ input.is-invalid {
 }
 
 #robot_error {
-  width: 25%;
-  margin: 0 auto;
+  margin: auto;
 }
 
 #robot_error img {
-  width: 100%;
+  max-height: 18rem;
+  width: auto;
 }
 
 @media (max-width: 1350px) {
@@ -1259,6 +1376,7 @@ input.is-invalid {
 
   .header .row.ml-5 {
     margin-left: 0 !important;
+    margin-right: 0;
   }
 
   .header .header-line {

@@ -1,161 +1,175 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2017 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
 {% load i18n static %}
-<!doctype html><html>
+<!DOCTYPE html>
+<html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="x-apple-disable-message-reformatting" />
 
 <style>
-    @font-face {
-        font-family: 'Muli', sans-serif;
-        src: url("{% static "v2/fonts/Muli/Muli.ttf" %}") /* TTF file for CSS3 browsers */
-    }
-    body {
-      font-family: 'Muli', sans-serif !important;
-      margin: 0px;
-      padding: 0px;
-    }
+  @font-face {
+    font-family: 'Muli', sans-serif;
+    src: url("{% static "v2/fonts/Muli/Muli.ttf" %}") /* TTF file for CSS3 browsers */
+  }
 
-    h1, h2, h3, h4, h5, h6,
-    .h1, .h2, .h3, .h4, .h5, .h6 {
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      font-weight: lighter;
-      line-height: 1.2em;
-    }
-    h3 {
-        line-height: 30px;
-    }
-    h1 {
-      font-size: 1.8rem;
-    }
-    h2 {
-      font-size: 1.6rem;
-    }
-    h3 {
-      font-size: 1.3rem;
-    }
-    h4 {
-      font-size: 1.1rem;
-    }
-    h4, .h4 {
-      text-align: center;
-      padding-top: 40px;
-    }
+  body {
+    font-family: 'Muli', sans-serif !important;
+    margin: 0px;
+    padding: 0px;
+  }
 
-    body {
-        {% if override_back_color %}
-            background-color: {{override_back_color}};
-        {% else %}
-            background-color: #f2f6f9;
-        {% endif %}
-    }
+  h1, h2, h3, h4, h5, h6,
+  .h1, .h2, .h3, .h4, .h5, .h6 {
+    text-transform: capitalize;
+    font-weight: lighter;
+  }
 
-    a.button{
-        color: #fff;
-        background-color: #15003e;
-        box-shadow: 0px 2px rgba(0, 0, 0, 0.5);
-        padding: 6px 20px;
-        font-size: 14px;
-        line-height: 1.5;
-        text-align: center;
-        text-decoration: none;
-    }
+  h3 {
+    line-height: 30px;
+  }
 
-    #logo {
-        vertical-align: middle;
-        display: inline-block;
-        max-height: 120px;
-        max-width: 100%;
-    }
+  h1 {
+    font-size: 1.8rem;
+  }
 
-    #grow-oss {
-        display: inline-block;
-        max-width: 100%;
-    }
+  h2 {
+    font-size: 1.6rem;
+  }
 
-    #header {
-        height: 200px;
-    }
-    #header, #footer {
-        color: white;
-        background-color: #15003e;
-        align-content: center;
-        text-align: center;
-        padding: 2em;
-    }
-    #footer p, #footer a{
-        color: #ccc;
-    }
+  h3 {
+    font-size: 1.3rem;
+  }
 
-    #copyright, #legal-contact {
-        padding-top: 0.5em;
-    }
+  h4 {
+    font-size: 1.1rem;
+  }
 
-    @media screen and (min-width: 35.5em) {
-        .social-img {
-            max-height: 50px;
-            max-width: 50px;
-        }
-    }
-    @media screen and (max-width: 35.5em) {
-        .social-img {
-            max-height: 45px;
-            max-width: 45px;
-        }
-    }
+  h4, .h4 {
+    text-align: center;
+    padding-top: 40px;
+  }
 
-    a {
-        color: #70b2ff;
-        text-decoration: none;
-    }
-    p, a, span, ul, ol, li{
-        font-size: 14px;
-        letter-spacing: 0.1em;
-        line-height: 18px;
-    }
+  body {
+    {% if override_back_color %}
+      background-color: {{override_back_color}};
+    {% else %}
+      background-color: #f2f6f9;
+    {% endif %}
+  }
 
-    .centered-contents {
-        text-align: center;
+  a.button{
+    color: #fff;
+    background-color: #15003e;
+    border-radius: 5px;
+    padding: 15px 20px;
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  #logo {
+    vertical-align: middle;
+    display: inline-block;
+    max-height: 120px;
+    max-width: 100%;
+  }
+
+  #grow-oss {
+    display: inline-block;
+    max-width: 100%;
+  }
+
+  #header {
+    height: 200px;
+  }
+
+  #header, #footer {
+    color: white;
+    background-color: #15003e;
+    align-content: center;
+    text-align: center;
+    padding: 2em;
+  }
+
+  #footer p, #footer a{
+    color: #ccc;
+  }
+
+  #copyright, #legal-contact {
+    padding-top: 0.5em;
+  }
+
+  a {
+    color: #70b2ff;
+    text-decoration: none;
+  }
+
+  p,
+  a,
+  span,
+  ul,
+  ol,
+  li {
+    font-size: 15px;
+  }
+
+  .centered-contents {
+    text-align: center;
+  }
+
+  .primary-content {
+    padding: 2em;
+    background-color: white;
+  }
+
+  @media screen and (min-width: 35.5em) {
+    .social-img {
+      max-height: 50px;
+      max-width: 50px;
     }
 
     .primary-content {
-        padding: 2em;
-        background-color: white;
+      margin-left: 20%;
+      margin-right: 20%;
     }
-    @media screen and (min-width: 35.5em) {
-        .primary-content {
-            margin-left: 20%;
-            margin-right: 20%;
-        }
+  }
+
+  @media screen and (max-width: 35.5em) {
+    .social-img {
+      max-height: 45px;
+      max-width: 45px;
     }
-    @media screen and (min-width: 48em) {
-        .primary-content {
-            margin-left: 10%;
-            margin-right: 10%;
-        }
+  }
+
+  @media screen and (min-width: 48em) {
+    .primary-content {
+      margin-left: 10%;
+      margin-right: 10%;
     }
-    @media screen and (max-width: 48em) {
-        .primary-content {
-            margin-left: 0;
-            margin-right: 0;
-        }
+  }
+
+  @media screen and (max-width: 48em) {
+    .primary-content {
+      margin-left: 0;
+      margin-right: 0;
     }
+  }
 </style>
 
 <body>

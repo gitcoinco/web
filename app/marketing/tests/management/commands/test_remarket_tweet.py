@@ -19,14 +19,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from unittest.mock import patch
 
-from marketing.management.commands.remarket_tweet import Command
+from marketing.management.commands.remarket_bounties import Command
 from test_plus.test import TestCase
 
 
 class TestRemarketTweet(TestCase):
     """Define tests for remarket tweet."""
 
-    @patch('marketing.management.commands.remarket_tweet.maybe_market_to_twitter')
+    @patch('marketing.management.commands.remarket_bounties.maybe_market_to_twitter')
     def test_handle_no_bounties(self, mock_func):
         """Test command remarket tweet with no bounties."""
         Command().handle()

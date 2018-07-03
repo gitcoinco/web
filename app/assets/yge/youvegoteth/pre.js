@@ -49,11 +49,5 @@ waitforWeb3(function() {
 
 if (typeof Accounts != 'undefined') {
   Accounts = new Accounts();
-
-  // Extend the web3 object
-  Accounts.log = function(msg) {
-    console.log(msg);
-  };
-
+  document.Accounts = Accounts;
 }
-document.Accounts = Accounts;

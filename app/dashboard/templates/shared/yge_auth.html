@@ -21,15 +21,15 @@
     </a>
 </div>
 
+<link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
+
 {% if user.is_authenticated %}
 <div class="nav-link login">
   <img class="nav_avatar" width=25 height=25
-    src="/static/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}">
+    src="{% if user.profile.avatar %}{{ user.profile.avatar.svg.url }}{% else %}/static/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
   {{ user }}
 </div>
 {% else %}
-<link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
-
 <a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">
   <i class="fab fa-github"></i>{% trans "Login" %}
 </a>
@@ -45,7 +45,9 @@
   top:15px;
   right: 15px;
 }
-
+.nav-link.login:hover {
+  color: #FFFFFF;
+}
 .nav-link.login i {
   margin-right: 15px;
 }
