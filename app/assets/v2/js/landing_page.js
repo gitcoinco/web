@@ -64,4 +64,23 @@ $(document).ready(function() {
     localStorage.setItem('scrollTop', scrollContainer.scrollTop());
     localStorage.setItem('lastAccessed', new Date().getTime());
   });
+
+  $("#gc-tree").click(function(){
+    $("#gc-tree .cls-4").each(function(){
+      if(Math.random() < 0.2){
+        var new_colors = ['#25e899', '#ffce08', '#eff4ee', '#f9006c', '#8e2abe', '#3e00ff', '#15003e'];
+        var new_color = new_colors[Math.floor(Math.random()*new_colors.length)];
+        $(this).css('fill', new_color);
+        var sizes = [7, 8, 9, 10, 11, 12];
+        var size = sizes[Math.floor(Math.random()*sizes.length)];
+        $(this).css('r', size);
+        $(this).css('animation', 'none');
+        //var ele = $(this);
+        //setTimeout(function(){
+        //  ele.css('animation', 'resize 0.3s ease-in 0s forwards');
+        //},1000);
+      }
+    });
+  });
+
 });

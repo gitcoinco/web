@@ -298,6 +298,7 @@ body {
 
 #gc-tree {
   text-align: center;
+  cursor: pointer;
 }
 
 #gc-tree .lines {
