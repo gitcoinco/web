@@ -86,7 +86,7 @@ def contributor_landing(request):
         ("Miguel Angel Rodriguez Bermudez", static("v2/images/testimonials/gitcoiners/miguel.jpeg"),
          _("I came across Gitcoin 3 months ago.  I was hearing lots of ideas about projects involving cryptocurrencies, and I kept thinking \"what about open source projects?\".  I see Gitcoin as the next level of freelance, where you can not only help repos on Github, but get money out of it.  It is that simple and it works."),
          'https://github.com/marbrb'),
-          ("Octavio Amuchástegui", static("v2/images/testimonials/gitcoiners/octavioamu.jpeg"),
+        ("Octavio Amuchástegui", static("v2/images/testimonials/gitcoiners/octavioamu.jpeg"),
          _("I'm in love with Gitcoin. It isn't only a platform, it's a community that gives me the opportunity to open my network and work with amazing top technology projects and earn some money in a way I'm visible to the dev community and work opportunities. Open source is amazing, and is even better to make a living from it, I think is the future of development."),
          'https://github.com/octavioamu')
     ]
