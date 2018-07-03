@@ -149,6 +149,15 @@ def about(request):
             "Everything Open Source",
             "daab chingri"
         ),
+        (
+            static("v2/images/team/scott.jpg"),
+            "Scott Moore",
+            "Biz Dev",
+            "ceresstation",
+            "scott-moore-a2970075",
+            "Issue Explorer",
+            "Teriyaki Chicken"
+        ),
     ]
     exclude_community = ['kziemiane', 'owocki', 'mbeacom']
     community_members = [
