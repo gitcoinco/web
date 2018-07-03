@@ -699,11 +699,15 @@ def viz_draggable(request, key='email_open'):
 
 
 def viz_scatterplot_stripped(request, key='hourly_rate'):
-    return viz_scatterplot(request, 'hourly_rate', 'dataviz/scatterplot_stripped.html', True)
+    return viz_scatterplot_helper(request, 'hourly_rate', 'dataviz/scatterplot_stripped.html', True)
 
 
 @staff_member_required
 def viz_scatterplot(request, key='hourly_rate', template='dataviz/scatterplot.html', hide_usernames=False):
+    return viz_scatterplot_helper(request, key, template, hide_usernames)
+
+
+def viz_scatterplot_helper(request, key='hourly_rate', template='dataviz/scatterplot.html', hide_usernames=False):
     """Render a scatterplot visualization.
 
     Args:

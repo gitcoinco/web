@@ -471,7 +471,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Paying in ERC-20 Tokens | MakerDAO + ECF Partnerships "
+    subject = "Getting Started With Gitcoin | Gitcoin Profiles"
 
     intro = '''
 
@@ -479,23 +479,34 @@ def render_new_bounty_roundup(to_email):
     Hi there
 </p>
 <p>
-This week, we shipped <a href="https://medium.com/gitcoin/feature-alert-paying-in-erc20-tokens-is-10x-easier-30fabf74a418">ERC-20 token updates</a> which make paying in native tokens magnitudes easier on Gitcoin!
-Whether you want to fund in Dai, MakerDAO's stablecoin, or your own native token, Gitcoin is a place where you can do so. We also hope the UX work we did is useful to others who hope to accept
-ERC-20 tokens. The beauty of open source!
+This week, we shipped <a href="https://medium.com/gitcoin/getting-started-with-gitcoin-fa7149f2461a">
+Getting Started With Gitcoin.</a>
+In this post designed for our Gitcoin contributors, you’ll find all the info you
+need to set up your Gitcoin account and get to work contributing to open source projects!
 </p>
-<p>
-Speaking of MakerDAO, <a href="https://medium.com/gitcoin/stable-fund-makerdao-gitcoin-ef-infrastructure-bounties-c58bcffabfc4">we provided an update on our $10K partnership.</a>
-With the first 2,000 Dai, we were able to post bounties on Solidity, Casper FFG, and a number of other Ethereum repo's. There's some great dev work being done on Ethereum via Gitcoin. In addition,
-the Ethereum Community Fund (ECF) announced the <a href="https://medium.com/ecf-review/announcing-the-ecf-web-3-0-infrastructure-fund-pilot-program-ab8894af35fa">ECF Web 3.0 Infrastructure Fund pilot program.</a>
-We're excited to put another 5,000 in Dai towards Ethereum infrastructure, building upon momentum created via the Ethereum Foundation grant and the MakerDAO partnership.
-</p>
+We also published our first installment of
+<a href="https://medium.com/gitcoin/gitcoiner-profile-kenneth-ashley-b8f6e8b458a6">Gitcoin Profiles.</a>
+Gitcoiner Profiles are our way of saying thank you to our great community of open source developers for
+all of their hard work.
+This week's profile features Kenneth Ashley who has worked with Market Protocol, MyCrypto, CodeFund, and Gitcoin.
+
 <h3>What else is new?</h3>
     <ul>
         <li>
-<a href="https://medium.com/gitcoin/gitcoin-testimonials-uport-1510222f3744">uPort's building with Gitcoin!</a> We spoke with Kames Cox-Geraghty on how Gitcoin bounties have gone thus far and what uPort has planned next.
+<a href="https://youtu.be/_VJcqY2t_4U">A Dharma Protocol demo</a> featuring Nadav Hollander is now up on our
+Youtube channel.
         </li>
         <li>
-<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is back as regularly scheduled today at 5PM ET. Prysmatic Labs joins to discuss sharding, and their geth implementation. Join us!
+<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET.
+This week features Matt Lockyer of ERC-998 protocol and Jay Rush of QuickBlocks!
+        </li>
+        <li>
+Want to join a global blockchain hack summit and compete for $100k in prizes? Use code "gitcoin" during sign
+up at <a href="https://hacksummit.org/hackathon">hacksummit.org/hackathon</a> to join for free!
+        </li>
+        <li>
+Are you a Go developer looking for a role in Ethereum? Respond to this email and we'll let you know about
+some interesting opportunities!
         </li>
     </ul>
 </p>
@@ -505,45 +516,58 @@ Back to building,
 '''
     highlights = [
         {
-            'who': 'travisdmathis',
+            'who': 'iamonuwa',
             'who_link': True,
-            'what': 'The largest Gitcoin bounty ever completed! Integrated Balance and Dharma in a big way.',
-            'link': 'https://gitcoin.co/issue/balance-io/balance-manager/195/553',
+            'what': 'Added a protocol restriction to limit bonding to one transcoder on Livepeer.',
+            'link': 'https://gitcoin.co/issue/livepeer/livepeerjs/94/652',
             'link_copy': 'See more',
         },
         {
-            'who': 'bradysheridan',
+            'who': 'scsaba',
             'who_link': True,
-            'what': 'Integrated Netlify CMS and created the new MARKET Protocol blog!',
-            'link': 'https://gitcoin.co/issue/MARKETProtocol/website/136/581',
+            'what': 'Made possible to view address of an added token on MetaMask!',
+            'link': 'https://gitcoin.co/issue/MetaMask/metamask-extension/4440/644',
             'link_copy': 'View more',
         },
         {
-            'who': 'IRus',
+            'who': 'palevoo',
             'who_link': True,
-            'what': 'Made CircleCI builds cacheable for Cyber Congress.',
-            'link': 'https://gitcoin.co/issue/cybercongress/cyber-search/184/577',
+            'what': 'Worked with Balance to display non-fungible tokens in their wallet.',
+            'link': 'https://gitcoin.co/issue/balance-io/balance-manager/240/571',
             'link_copy': 'View more',
         },
     ]
 
-    try:
-        bounties = [
-            {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/zeppelinos/labs/issues/102'),
-                'primer': 'Work on ZeppelinOS and make it easier to create upgradeable smart contracts!',
-            },
-            {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/ConsenSys/Linnia-Smart-Contracts/issues/35'),
-                'primer': 'Help Linnia create  decentralized policy-based permissions.',
-            },
-            {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/uport-bounties/issues/2'),
-                'primer': 'The Colony Hackathon continues! Use uPort and earn extra ETH if you win a prize.',
-            },
-        ]
-    except:
-        bounties = []
+    bounties_spec = [
+        {
+            'url': 'https://github.com/zeppelinos/labs/issues/102',
+            'primer': 'Help build the future of non-fungible protocols with ZeppelinOS',
+        },
+        {
+            'url': 'https://github.com/AugurProject/augur-core/issues/689',
+            'primer': 'Put the finishing touches on Augur less than a month before their main net launch!',
+        },
+        {
+            'url': 'https://github.com/paritytech/polkadot/issues/212',
+            'primer': 'Contribute to Parity Tech, a leading Ethereum client.',
+        },
+    ]
+
+    #### don't need to edit anything below this line
+
+    bounties = []
+    for nb in bounties_spec:
+        try:
+            bounty = Bounty.objects.get(
+                current_bounty=True,
+                github_url__iexact=nb['url'],
+            )
+            bounties.append({
+                'obj': bounty,
+                'primer': nb['primer']
+                })
+        except:
+            pass
 
     ecosystem_bounties = ExternalBounty.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(weeks=1)).order_by('?')[0:5]
 
