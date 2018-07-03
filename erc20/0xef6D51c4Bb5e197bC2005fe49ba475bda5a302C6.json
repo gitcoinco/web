@@ -1,0 +1,15 @@
+{
+  "symbol": "CPS",
+  "address": "0xef6D51c4Bb5e197bC2005fe49ba475bda5a302C6",
+  "overview": {
+        "en": "CPS based on the ERC20 standard of Ethereum,is an new type encrypted digital asset,which is circulating and consuming in CoinPaws World.",
+        "zh": "CPS是一种基于ERC20协议开发，用于币爪世界平台游戏内流通消耗的新型加密数字资产。"
+  },
+  "state": "NORMAL",
+  "links": {
+    "telegram": "https://0.plus/coinpawsl",
+    "github": "https://github.com/bizhua/bizhuaProject"
+  },
+  "website": "http://www.coinpaws.com/",
+  "whitepaper": "http://www.coinpaws.com/Public/whitePaper.pdf"
+}
