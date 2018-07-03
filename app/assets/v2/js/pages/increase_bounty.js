@@ -134,47 +134,55 @@ $(document).ready(function() {
       return;
     }
 
-    function do_bounty() {
-      if (document.isFunder) {
-        if (document.changePayoutAmount) {
-          bounty.changeBountyFulfillmentAmount(
-            bountyId,
-            bountyAmount + amount,
-            {
-              from: account,
-              value: 0,
-              gasPrice: web3.toHex($('#gasPrice').val() + Math.pow(10, 9))
-            },
-            web3Callback
-          );
-        } else {
-          bounty.increasePayout(
-            bountyId,
-            bountyAmount + amount,
-            amount,
-            {
-              from: account,
-              value: ethAmount,
-              gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
-            },
-            web3Callback
-          );
-        }
-      } else {
-        bounty.contribute(
-          bountyId,
-          amount,
-          {
-            from: account,
-            value: ethAmount,
-            gasPrice: web3.toHex($('#gasPrice').val() + Math.pow(10, 9))
-          },
-          web3Callback
-        );
-      }
+    function do_bounty_as_funder_changingFulfillment() {
+      bounty.changeBountyFulfillmentAmount(
+        bountyId,
+        bountyAmount + amount,
+        {
+          from: account,
+          value: 0,
+          gasPrice: web3.toHex($('#gasPrice').val() + Math.pow(10, 9))
+        },
+        web3Callback
+      );
     }
 
-    do_bounty();
+    function do_bounty_as_funder_increasingPayout() {
+      bounty.increasePayout(
+        bountyId,
+        bountyAmount + amount,
+        amount,
+        {
+          from: account,
+          value: ethAmount,
+          gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))
+        },
+        web3Callback
+      );
+    }
+
+    function do_bounty_as_contributor() {
+      bounty.contribute(
+        bountyId,
+        amount,
+        {
+          from: account,
+          value: ethAmount,
+          gasPrice: web3.toHex($('#gasPrice').val() + Math.pow(10, 9))
+        },
+        web3Callback
+      );
+    }
+
+    if (document.isFunder) {
+      if (document.changePayoutAmount) {
+        do_bounty_as_funder_increasingPayout();
+      } else {
+        do_bounty_as_funder_changingFulfillment();
+      }
+    } else {
+      do_bounty_as_contributor();
+    }
 
   });
 });
