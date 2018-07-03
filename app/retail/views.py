@@ -26,10 +26,9 @@ from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
+from dashboard.notifications import amount_usdt_open_work, open_bounties
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
-
-from dashboard.notifications import open_bounties, amount_usdt_open_work
 
 from .utils import build_stat_results
 
