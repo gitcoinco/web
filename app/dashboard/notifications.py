@@ -35,8 +35,6 @@ from marketing.models import GithubOrgToTwitterHandleMapping
 from pyshorteners import Shortener
 from slackclient import SlackClient
 
-from .utils import humanize
-
 
 def github_org_to_twitter_tags(github_org):
     """Build a string of github organization twitter tags.
@@ -204,6 +202,7 @@ def build_message_for_slack(bounty, event_name):
         str: Message to post to slack.
 
     """
+    from dashboard.utils import humanize
     conv_details = ""
     usdt_details = ""
     try:
