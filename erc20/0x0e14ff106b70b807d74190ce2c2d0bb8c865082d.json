@@ -1,0 +1,21 @@
+{
+  "symbol": "STBI",
+  "address": "0x0e14ff106b70b807d74190ce2c2d0bb8c865082d",
+  "overview":{
+        "en": "We are determined to build a trusted and distributed business environment with transparent, collaborative, and high-value transmission. STBI integrates the resources and information of upstream and downstream enterprises, users and governments in the industry to the greatest extent. Cooperation achieves true digital and systematic operation, and the corresponding value flow is synchronously executed, so that the overall cost of the industry and even the whole society is reduced, the efficiency is improved, and the resources can be optimally distributed and distributed, which will inevitably bring various new Birth of business model",
+        "zh": "我们将立志搭建資訊透明、協同高效、價值高速傳輸的可信任分佈式商業環境,STBI 將行業的上下游企業、用戶、政府的資源和資訊最大程 度的整合在一起，讓各方之間的協同合作做到真正的數位化、系統化操作，相對應的價值 流轉 同步執行，從而使行業甚至整個社會整體成本降低，效率提高，資源可以被分佈式的 最優化部 署，這必然會帶來各種新的商業模式的誕生"
+  },
+  "email": "stbi-coin@stbi-coin.com",
+  "website": "https://www.stbi-coin.com/",
+  "whitepaper": "https://www.stbi-coin.com/STBI.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-07",
+  "initial_price":{
+        "ETH":"0.0000000 ETH",
+        "USD":"0.0 USD",
+        "BTC":"0.00000000 BTC"
+  },
+  "links": {
+    "telegram": "https://0.plus/#/stbigroup"
+  }
+}
