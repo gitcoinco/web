@@ -55,6 +55,16 @@ class NoBountiesException(Exception):
     pass
 
 
+def humanize(text):
+    """Clean a notification string of underscores and capitalize it.
+
+    Returns:
+        str: The cleaned representation of the string.
+
+    """
+    return text.replace('_', ' ').upper()
+
+
 def create_user_action(user, action_type, request=None, metadata=None):
     """Create a UserAction for the specified action type.
 

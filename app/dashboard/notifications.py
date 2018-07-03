@@ -35,6 +35,8 @@ from marketing.models import GithubOrgToTwitterHandleMapping
 from pyshorteners import Shortener
 from slackclient import SlackClient
 
+from .utils import humanize
+
 
 def github_org_to_twitter_tags(github_org):
     """Build a string of github organization twitter tags.
@@ -857,7 +859,3 @@ def maybe_notify_bounty_user_warned_removed_to_slack(bounty, username, last_hear
         print(e)
         return False
     return True
-
-
-def humanize(text):
-    return text.replace('_', ' ').upper()
