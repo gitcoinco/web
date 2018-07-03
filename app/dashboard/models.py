@@ -203,6 +203,7 @@ class Bounty(SuperModel):
     admin_mark_as_remarket_ready = models.BooleanField(
         default=False, help_text=_('Admin override to mark as remarketing ready')
     )
+    idx_keywords = ArrayField(models.CharField(max_length=200), blank=True, default=[])
 
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
@@ -417,6 +418,14 @@ class Bounty(SuperModel):
             return self.metadata.get('issueKeywords', False)
         except Exception:
             return False
+
+    @property
+    def keywords_list(self):
+        keywords = self.keywords
+        if not keywords:
+            return []
+        else:
+            return [keyword.strip() for keyword in keywords.split(",")]
 
     @property
     def now(self):
@@ -1006,7 +1015,7 @@ def psave_bounty(sender, instance, **kwargs):
     instance.value_in_usdt = instance.get_value_in_usdt
     instance.value_in_eth = instance.get_value_in_eth
     instance.value_true = instance.get_value_true
-
+    instance.idx_keywords = instance.keywords_list
 
 class Interest(models.Model):
     """Define relationship for profiles expressing interest on a bounty."""

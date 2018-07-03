@@ -29,17 +29,16 @@ from marketing.models import EmailSubscriber
 def get_bounties_for_keywords(keywords, hours_back):
     new_bounties_pks = []
     all_bounties_pks = []
-    for keyword in keywords:
-        relevant_bounties = Bounty.objects.filter(
-            network='mainnet',
-            current_bounty=True,
-            metadata__icontains=keyword,
-            idx_status__in=['open'],
-            )
-        for bounty in relevant_bounties.filter(web3_created__gt=(timezone.now() - timezone.timedelta(hours=hours_back))):
-                new_bounties_pks.append(bounty.pk)
-        for bounty in relevant_bounties:
-                all_bounties_pks.append(bounty.pk)
+    relevant_bounties = Bounty.objects.filter(
+        network='mainnet',
+        current_bounty=True,
+        idx_keywords__ioverlap=keywords, #TODO: do we search the title/desc too?
+        idx_status__in=['open'],
+        )
+    for bounty in relevant_bounties.filter(web3_created__gt=(timezone.now() - timezone.timedelta(hours=hours_back))):
+            new_bounties_pks.append(bounty.pk)
+    for bounty in relevant_bounties:
+            all_bounties_pks.append(bounty.pk)
     new_bounties = Bounty.objects.filter(pk__in=new_bounties_pks)
     all_bounties = Bounty.objects.filter(pk__in=all_bounties_pks).exclude(pk__in=new_bounties_pks).order_by('?')
 
