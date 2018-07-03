@@ -551,7 +551,7 @@ var mixpanel_track_once = function(event, params) {
 };
 
 var currentNetwork = function(network) {
-  var is_marketing_page = ["/", "/contributor", "/about" , "/mission", "/results", "/slack"].includes(document.location.pathname);
+  var is_marketing_page = [ '/', '/contributor', '/about', '/mission', '/results', '/slack' ].includes(document.location.pathname);
 
   $('.navbar-network').removeClass('hidden');
   let tooltip_info;
@@ -577,7 +577,7 @@ var currentNetwork = function(network) {
 
       $('.navbar-network i').addClass('red');
       $('.navbar-network i').removeClass('green');
-      if(!is_marketing_page)
+      if (!is_marketing_page)
         $('.navbar').addClass('network-banner--warning');
 
       if ($('.ui-tooltip.ui-corner-all.ui-widget-shadow.ui-widget.ui-widget-content').length == 0) {
@@ -604,7 +604,7 @@ var currentNetwork = function(network) {
 
       $('.navbar-network i').addClass('red');
       $('.navbar-network i').removeClass('green');
-      if(!is_marketing_page)
+      if (!is_marketing_page)
         $('.navbar').addClass('network-banner--warning');
 
       if ($('.ui-tooltip.ui-corner-all.ui-widget-shadow.ui-widget.ui-widget-content').length == 0) {
@@ -764,6 +764,7 @@ var listen_for_web3_changes = function() {
         currentNetwork();
       } else {
         var network = getNetwork(netId);
+
         currentNetwork(network);
         trigger_form_hooks();
       }
