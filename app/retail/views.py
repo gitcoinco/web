@@ -71,27 +71,44 @@ def index(request):
 def contributor_landing(request):
     slides = [
         ("Daniel", static("v2/images/testimonials/gitcoiners/daniel.jpeg"),
-         _("When I found Gitcoin I was gladly surprised that it took one thing and did it well.  It took the Ethereum tech and used it as a bridge to technology with open source Jobs.  Even though Gitcoin is still in it’s early stages, I think it’s filled with potential to grow."),
+         _("When I found Gitcoin I was gladly surprised that it took one thing and did it well. \
+         It took the Ethereum tech and used it as a bridge to technology with open source Jobs.  \
+         Even though Gitcoin is still in it’s early stages, I think it’s filled with potential to grow."),
          'https://github.com/dmerrill6'),
         ("CryptoMental", static("v2/images/testimonials/gitcoiners/cryptomental.png"),
-         _(" think the great thing about GitCoin is how easy it is for projects to reach out to worldwide talent. GitCoin helps to find people who have time to contribute and increase speed of project development. Thanks to GitCoin a bunch of interesting OpenSource projects got my attention!"),
+         _(" think the great thing about GitCoin is how easy it is for projects to reach out to worldwide talent. \
+         GitCoin helps to find people who have time to contribute and increase speed of project development. \
+         Thanks to GitCoin a bunch of interesting OpenSource projects got my attention!"),
          'https://github.com/cryptomental'),
         ("Elan", static("v2/images/testimonials/gitcoiners/elan.jpeg"),
-         _("The bounty process with Gitcoin is pretty amazing.  Just go on the website, find an issue you can work on, you claim it.  All you do then is submit your code to Github, get the code merged.  Once it’s merged, the smart contract kicks in and sends the money to your Ethereum account.  The whole process is pretty smooth.  There’s a giant slack community.  It puts the freelance market back in the hands of the community!"),
+         _("The bounty process with Gitcoin is pretty amazing.  Just go on the website, find an issue you can \
+         work on, you claim it.  All you do then is submit your code to Github, get the code merged.  \
+         Once it’s merged, the smart contract kicks in and sends the money to your Ethereum account.  \
+         The whole process is pretty smooth.  There’s a giant slack community.  It puts the freelance \
+         market back in the hands of the community!"),
          "https://github.com/elaniobro"),
         ("Jack", static("v2/images/testimonials/gitcoiners/jack.jpeg"),
-         _("I really like Gitcoin because it’s allowed me to get involved in some really interesting Open Source Projects.  I’ve written code for MyEtherWallet and Gitcoin itself.  I think Gitcoin is becoming a great asset for the Ethereum ecosystem."),
+         _("I really like Gitcoin because it’s allowed me to get involved in some really interesting \
+         Open Source Projects.  I’ve written code for MyEtherWallet and Gitcoin itself.  \
+         I think Gitcoin is becoming a great asset for the Ethereum ecosystem."),
          'https://github.com/jclancy93'),
         ("Miguel Angel Rodriguez Bermudez", static("v2/images/testimonials/gitcoiners/miguel.jpeg"),
-         _("I came across Gitcoin 3 months ago.  I was hearing lots of ideas about projects involving cryptocurrencies, and I kept thinking \"what about open source projects?\".  I see Gitcoin as the next level of freelance, where you can not only help repos on Github, but get money out of it.  It is that simple and it works."),
+         _("I came across Gitcoin 3 months ago.  I was hearing lots of ideas about projects involving \
+         cryptocurrencies, and I kept thinking \"what about open source projects?\".  I see Gitcoin as \
+         the next level of freelance, where you can not only help repos on Github, but get money out of \
+         it.  It is that simple and it works."),
          'https://github.com/marbrb'),
         ("Octavio Amuchástegui", static("v2/images/testimonials/gitcoiners/octavioamu.jpeg"),
-         _("I'm in love with Gitcoin. It isn't only a platform, it's a community that gives me the opportunity to open my network and work with amazing top technology projects and earn some money in a way I'm visible to the dev community and work opportunities. Open source is amazing, and is even better to make a living from it, I think is the future of development."),
+         _("I'm in love with Gitcoin. It isn't only a platform, it's a community that gives me the \
+         opportunity to open my network and work with amazing top technology projects and earn some \
+         money in a way I'm visible to the dev community and work opportunities. Open source is amazing, \
+         and is even better to make a living from it, I think is the future of development."),
          'https://github.com/octavioamu')
     ]
 
     gitcoin_description = _(
-        "A community for developers to collaborate and monetize their skills while working on Open Source projects through bounties."
+        "A community for developers to collaborate and monetize their skills while working \
+        on Open Source projects through bounties."
     )
 
     projects = [
