@@ -1,0 +1,17 @@
+{
+  "symbol": "DTO",
+  "address": "0xdeaddb9958627b660b0feefcae6b60349e10a4f5",
+  "email": "botadmin@bottos.org",
+  "website": "https://www.bottos.org/",
+  "whitepaper": "https://github.com/bottos-project/magiccube/blob/master/BottosWhitepaper_EN.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-29",
+  "links": {
+    "blog": "https://www.botfans.org",
+    "twitter": "https://twitter.com/bottos_ai",
+    "telegram": "https://t.me/bottosworld",
+    "github": "https://github.com/bottos-project",
+    "facebook": "https://www.facebook.com/bottos.org",
+    "medium": "https://medium.com/bottos"
+  }
+}
