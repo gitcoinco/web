@@ -9,20 +9,9 @@
   "website": "https://idag.space/",
   "whitepaper": "https://img1.wsimg.com/blobby/go/77708ad8-4c96-4354-b1c1-9e1cb8a2fc91/downloads/1cf1o5k31_888665.pdf",
   "state": "NORMAL",
-  "published_on": "",
-  "initial_price":{
-        "ETH":"",
-        "USD":"",
-        "BTC":""
-  },
   "links": {
-    "blog": "",
-    "twitter": "",
     "telegram": "https://t.me/idagspace",
     "github": "https://github.com/iDagSpace/core",
-    "facebook": "https://www.facebook.com/idagspace",
-    "reddit": "",
-    "slack": "",
-    "medium": ""
+    "facebook": "https://www.facebook.com/idagspace"
   }
 }
