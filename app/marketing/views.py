@@ -381,7 +381,7 @@ def discord_settings(request):
     """Displays and saves user's Discord settings.
 
     Returns:
-    TemplateResponse: The user's Discord settings template response.
+        TemplateResponse: The user's Discord settings template response.
 
     """
     response = {'output': ''}
