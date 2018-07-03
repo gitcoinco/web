@@ -686,7 +686,8 @@ def increase_bounty(request):
     else:
         params['change_payout_amount'] = False
 
-    params['is_funder'] = is_funder
+    params['is_funder'] = json.dumps(is_funder)
+    params['change_payout_amount'] = json.dumps(params['change_payout_amount'])
 
     return TemplateResponse(request, 'increase_bounty.html', params)
 
