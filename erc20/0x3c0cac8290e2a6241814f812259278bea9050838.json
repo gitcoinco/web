@@ -1,0 +1,28 @@
+{
+  "symbol": "BOS",
+  "address": "0x3c0cac8290e2a6241814f812259278bea9050838",
+  "overview":{
+        "en": "BOS Blockchain for Financial Services Bring trust, simplicity and efficiency to transactions through the establishment of new financial services infrastructure and processes with Ethereum Blockchain..",
+        "zh": ""
+  },
+  "email": "support@bostoken.co",
+  "website": "http://www.bostoken.co/",
+  "whitepaper": "https://bostoken.github.io/file/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-19",
+  "initial_price":{
+        "ETH":"0.00005 ETH",
+        "USD":"0.000005 USD",
+        "BTC":"0.0000005 BTC"
+  },
+  "links": {
+    "blog": "http://www.bostoken.co",
+    "twitter": "https://twitter.com/bosblockchain",
+    "telegram": "https://t.me/bostokenofficial",
+    "github": "https://github.com/bostoken",
+    "facebook": "https://www.facebook.com/BOS-Blockhain-439172769828110",
+    "reddit": "https://www.reddit.com/r/bostoken/",
+    "slack": "https://bostoken.slack.com",
+    "medium": "https://medium.com/@bostoken"
+  }
+}
