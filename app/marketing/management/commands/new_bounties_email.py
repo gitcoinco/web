@@ -42,6 +42,10 @@ def get_bounties_for_keywords(keywords, hours_back):
                 all_bounties_pks.append(bounty.pk)
     new_bounties = Bounty.objects.filter(pk__in=new_bounties_pks)
     all_bounties = Bounty.objects.filter(pk__in=all_bounties_pks).exclude(pk__in=new_bounties_pks).order_by('?')
+
+    new_bounties = new_bounties.order_by('-admin_mark_as_remarket_ready')
+    all_bounties = all_bounties.order_by('-admin_mark_as_remarket_ready')
+
     return new_bounties, all_bounties
 
 

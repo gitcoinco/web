@@ -36,6 +36,7 @@ jobs:
         - codecov
       env:
         - PYTHONPATH="${TRAVIS_BUILD_DIR}/app/"
+        - DJANGO_SETTINGS_MODULE="app.settings"
     # Deploy to Docker Hub and initiate a rolling update for web.
     - stage: deploy-stage
       if: branch = master AND NOT type = pull_request

@@ -39,9 +39,10 @@ from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
 from chartit import Chart, DataPool
-from dashboard.models import Bounty, Profile, Tip, UserAction
+from dashboard.models import Profile, TokenApproval
 from dashboard.utils import create_user_action
 from enssubdomain.models import ENSSubdomainRegistration
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from mailchimp3 import MailChimp
 from marketing.mails import new_feedback
 from marketing.models import (
@@ -82,7 +83,10 @@ def get_settings_navs(request):
         'href': reverse('ens_settings')
     }, {
         'body': "Account",
-        'href': reverse('account_settings')
+        'href': reverse('account_settings'),
+    }, {
+        'body': "Token",
+        'href': reverse('token_settings'),
     }]
 
 
@@ -412,6 +416,56 @@ def discord_settings(request):
         'msg': response['output'],
     }
     return TemplateResponse(request, 'settings/discord.html', context)
+
+
+def token_settings(request):
+    """Displays and saves user's token settings.
+
+    Returns:
+        TemplateResponse: The user's token settings template response.
+
+    """
+    msg = ""
+    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+
+    if not user or not is_logged_in:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    if request.POST:
+        coinbase = request.POST.get('coinbase')
+        approved_name = request.POST.get('contract_name')
+        approved_address = request.POST.get('contract_address')
+        token_address = request.POST.get('token_address')
+        token_name = request.POST.get('token_name')
+        txid = request.POST.get('txid')
+        network = request.POST.get('network')
+
+        TokenApproval.objects.create(
+            profile=profile,
+            coinbase=coinbase,
+            token_name=token_name,
+            token_address=token_address,
+            approved_address=approved_address,
+            approved_name=approved_name,
+            tx=txid,
+            network=network,
+            )
+        msg = "Token approval completed"
+
+    context = {
+        'is_logged_in': is_logged_in,
+        'nav': 'internal',
+        'active': '/settings/tokens',
+        'title': _('Token Settings'),
+        'navs': get_settings_navs(request),
+        'es': es,
+        'profile': profile,
+        'msg': msg,
+        'gas_price': round(recommend_min_gas_price_to_confirm_in_time(1), 1),
+    }
+    return TemplateResponse(request, 'settings/tokens.html', context)
+
 
 def ens_settings(request):
     """Displays and saves user's ENS settings.

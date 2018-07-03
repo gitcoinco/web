@@ -195,6 +195,24 @@ PS - i've got some new gitcoin schwag on order. send me your mailing address and
     return response_html, response_txt
 
 
+def render_admin_contact_funder(bounty, text, from_user):
+    txt = f"""
+{bounty.url}
+
+{text}
+
+{from_user}
+
+"""
+    params = {
+        'txt': txt,
+    }
+    response_html = premailer_transform(render_to_string("emails/txt.html", params))
+    response_txt = txt
+
+    return response_html, response_txt
+
+
 
 def render_new_bounty(to_email, bounties, old_bounties):
     sub = get_or_save_email_subscriber(to_email, 'internal')
@@ -453,7 +471,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Gitcoin Project Types | EF Hires Gitcoiner’s "
+    subject = "Getting Started With Gitcoin | Gitcoin Profiles"
 
     intro = '''
 
@@ -461,27 +479,34 @@ def render_new_bounty_roundup(to_email):
     Hi there
 </p>
 <p>
-This week, <a href="https://medium.com/gitcoin/we-listened-announcing-project-types-965a02603559">we shipped project types</a> which adds flexibility to the Gitcoin platform.
-Whether you want to run contests, post hackathon bounties, or have developers apply for work, Project Types provides you optionality.
-We’re hopeful this will lead to a better experience for developers and funders. Thanks for providing the feedback which led to these changes!
+This week, we shipped <a href="https://medium.com/gitcoin/getting-started-with-gitcoin-fa7149f2461a">
+Getting Started With Gitcoin.</a>
+In this post designed for our Gitcoin contributors, you’ll find all the info you
+need to set up your Gitcoin account and get to work contributing to open source projects!
 </p>
-<p>
-Also, <a href="https://gitcoin.co/issue/JoinColony/colonyHackathon/4">The Colony Global Hackathon</a> kicked off this week! We're looking for creative, brilliant minds
-to build on, integrate, and extend Colony with the colonyJS library. Many folks are currently looking for teammates and ideas.
-Submit your project by 11:59 pm GMT on Sunday, June 24th for a chance to win prizes totaling $25,000 paid in DAI, via Gitcoin.
-</p>
+We also published our first installment of
+<a href="https://medium.com/gitcoin/gitcoiner-profile-kenneth-ashley-b8f6e8b458a6">Gitcoin Profiles.</a>
+Gitcoiner Profiles are our way of saying thank you to our great community of open source developers for
+all of their hard work.
+This week's profile features Kenneth Ashley who has worked with Market Protocol, MyCrypto, CodeFund, and Gitcoin.
+
 <h3>What else is new?</h3>
     <ul>
         <li>
-<a href="https://medium.com/@scott.moore/growing-open-source-web3-1ae85840da6d">Scott Moore joined Gitcoin Core!</a> Scott's expereience with the Web 3 development ecosystem
-is a big step for Gitcoin as we look to partner with more open source projects to #BUIDL.
+<a href="https://youtu.be/_VJcqY2t_4U">A Dharma Protocol demo</a> featuring Nadav Hollander is now up on our
+Youtube channel.
         </li>
         <li>
-The Ethereum Foundation’s Python team has grown via Gitcoin! <a href="https://medium.com/gitcoin/gitcoin-testimonials-ethereum-foundation-web3py-py-evm-561cd4da92a6">Read their hiring testimonial</a>
-explaining how Gitcoin helped them hire.
+<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET.
+This week features Matt Lockyer of ERC-998 protocol and Jay Rush of QuickBlocks!
         </li>
         <li>
-<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is back as regularly scheduled today at 5PM ET. Ujo Music, Truffle, and XLNT will be on to demo their products. Join us!
+Want to join a global blockchain hack summit and compete for $100k in prizes? Use code "gitcoin" during sign
+up at <a href="https://hacksummit.org/hackathon">hacksummit.org/hackathon</a> to join for free!
+        </li>
+        <li>
+Are you a Go developer looking for a role in Ethereum? Respond to this email and we'll let you know about
+some interesting opportunities!
         </li>
     </ul>
 </p>
@@ -491,45 +516,58 @@ Back to building,
 '''
     highlights = [
         {
-            'who': 'bakoah',
+            'who': 'iamonuwa',
             'who_link': True,
-            'what': 'Worked on the first WALLETH bounty and completed it in a day!',
-            'link': 'https://gitcoin.co/issue/walleth/kethereum/33/575',
+            'what': 'Added a protocol restriction to limit bonding to one transcoder on Livepeer.',
+            'link': 'https://gitcoin.co/issue/livepeer/livepeerjs/94/652',
             'link_copy': 'See more',
         },
         {
-            'who': 'IRus',
+            'who': 'scsaba',
             'who_link': True,
-            'what': 'Made Circle Ci Docker builds cacheable for CyberCongress!',
-            'link': 'https://gitcoin.co/issue/cybercongress/cyber-search/184/577',
+            'what': 'Made possible to view address of an added token on MetaMask!',
+            'link': 'https://gitcoin.co/issue/MetaMask/metamask-extension/4440/644',
             'link_copy': 'View more',
         },
         {
-            'who': 'isatou',
+            'who': 'palevoo',
             'who_link': True,
-            'what': 'Included categories in the Bounties Network analytics endpoint.',
-            'link': 'https://gitcoin.co/issue/Bounties-Network/BountiesAPI/49/516',
+            'what': 'Worked with Balance to display non-fungible tokens in their wallet.',
+            'link': 'https://gitcoin.co/issue/balance-io/balance-manager/240/571',
             'link_copy': 'View more',
         },
     ]
 
-    try:
-        bounties = [
-            {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/uport-bounties/issues/2'),
-                'primer': 'Integrate uPort with Colony and have a chance to win big during the Colony Hackathon!',
-            },
-            {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/paritytech/parity/issues/7427'),
-                'primer': 'Help Parity add tests for sending Whisper messages.',
-            },
-            {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/ipfs/js-ipfs/issues/1283'),
-                'primer': 'Add support for Rabin Fingerprinting to js-ipfs on the IPFS project!',
-            },
-        ]
-    except:
-        bounties = []
+    bounties_spec = [
+        {
+            'url': 'https://github.com/zeppelinos/labs/issues/102',
+            'primer': 'Help build the future of non-fungible protocols with ZeppelinOS',
+        },
+        {
+            'url': 'https://github.com/AugurProject/augur-core/issues/689',
+            'primer': 'Put the finishing touches on Augur less than a month before their main net launch!',
+        },
+        {
+            'url': 'https://github.com/paritytech/polkadot/issues/212',
+            'primer': 'Contribute to Parity Tech, a leading Ethereum client.',
+        },
+    ]
+
+    #### don't need to edit anything below this line
+
+    bounties = []
+    for nb in bounties_spec:
+        try:
+            bounty = Bounty.objects.get(
+                current_bounty=True,
+                github_url__iexact=nb['url'],
+            )
+            bounties.append({
+                'obj': bounty,
+                'primer': nb['primer']
+                })
+        except:
+            pass
 
     ecosystem_bounties = ExternalBounty.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(weeks=1)).order_by('?')[0:5]
 

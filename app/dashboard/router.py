@@ -139,13 +139,14 @@ class BountyViewSet(viewsets.ModelViewSet):
                 val = self.request.query_params.get(request_key, '')
 
                 vals = val.strip().split(',')
-                _queryset = queryset.none()
-                for val in vals:
-                    if val.strip():
+                vals = [val for val in vals if val and val.strip()]
+                if len(vals):
+                    _queryset = queryset.none()
+                    for val in vals:
                         args = {}
                         args['{}__icontains'.format(key)] = val.strip()
                         _queryset = _queryset | queryset.filter(**args)
-                queryset = _queryset
+                    queryset = _queryset
 
         # filter by PK
         if 'pk__gt' in param_keys:

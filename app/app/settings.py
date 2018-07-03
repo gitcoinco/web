@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'easy_thumbnails',
     'app',
+    'avatar',
     'retail',
     'rest_framework',
     'bootstrap3',
@@ -206,20 +207,24 @@ if not ENV in ['local', 'test']:
                 'maxBytes': 1024 * 1024 * 10,  # 10 MB
                 'backupCount': 100,  # max 100 logs
             },
-            'mail_admins': {
-                'level': 'ERROR',
-                'class': 'django.utils.log.AdminEmailHandler',
-                'include_html': True,
-            },
         },
         'loggers': {
             'django': {
-                'handlers': ['rotatingfilehandler', 'mail_admins'],
+                'handlers': ['rotatingfilehandler', ],
                 'propagate': True,
                 'filters': ['require_debug_is_false'],
             },
         },
     }
+
+    if ENV == 'prod':
+        LOGGING['handlers']['mail_admins'] = {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+            'include_html': True,
+        }
+        LOGGING['loggers']['django']['handlers'].append('mail_admins')
+
     LOGGING['loggers']['django.request'] = LOGGING['loggers']['django']
     for ia in INSTALLED_APPS:
         LOGGING['loggers'][ia] = LOGGING['loggers']['django']
@@ -227,9 +232,6 @@ else:
     LOGGING = {}
 
 GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
-
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
@@ -462,6 +464,14 @@ AWS_S3_FILE_OVERWRITE = env.bool('AWS_S3_FILE_OVERWRITE', default=True)
 
 S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='')  # TODO
 S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='')  # TODO
+
+# Handle local file storage
+if ENV == 'local' and not AWS_STORAGE_BUCKET_NAME:
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = root('media')
+else:
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
 
 INSTALLED_APPS += env.list('DEBUG_APPS', default=[])
 
