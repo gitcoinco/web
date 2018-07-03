@@ -214,7 +214,11 @@ h4,
 }
 
 .network-banner--warning {
-  border-bottom: solid 5px #ff3232;
+  background: red;
+  width: 100%;
+  height: 27px;
+  color: white;
+  text-align: center;
 }
 
 .font-title-lg {
