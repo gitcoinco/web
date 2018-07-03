@@ -23,19 +23,21 @@
       </div>
 
       <div class="col-12 offset-md-1 col-md-8 body">
-        <div class="transation-header" style="display:none;">
-          <h3>Your Issue is Posting: </h3>
-          <h3 class="issue-url"></h3>
-        </div>
-        <div class="row loading justify-content-center align-items-center loading_img">
-          <img src="{% static "v2/images/loading_v2.gif" %}" style="max-width: 200px;">
-        </div>
-        <div class="transaction-status" style="display:none;">
-          <div style='width:100%; font-size: 20px; color: #3d3d46;'>
-            {% trans "Your transaction is being posted to the Ethereum blockchain" %}
-            <br>
-            {% trans "Your page will automatically update when the information has been synced to Web3" %}
+        <div class="transation-header" style="display: none;">
+            <h2 style="color: #ffffff;">Transaction Processing</h2>
           </div>
+          <div class="transaction-status" style="display:none;">
+              <div style='width:100%; font-size: 18px; color: #ffffff;'>
+                {% trans "Your issue is being posted to the Ethereum Blockchain." %}
+                <br>
+                {% trans "This page will automatically update when the sync is completed." %}
+              </div>
+          </div>
+          <div class="row justify-content-center align-items-center p-3">
+            <h3 class="issue-url"></h3>
+          </div>
+        <div class="row justify-content-center align-items-center loading_img p-5">
+          <img src="{% static "v2/images/loading_v2.gif" %}" style="max-width: 200px;">
         </div>
 
         <div class="row nonefound" style="display:none;">
@@ -53,7 +55,7 @@
             <img src="{% static "v2/images/quotes.png" %}" style="float: left;" />
             <div class="quote_text"></div>
             <div class="quote_author"></div>
-            <input id="quoteRefresh" class="button button--primary" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" >
+            <!-- <input id="quoteRefresh" class="button button--primary" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" > -->
           </div>
         </div>
 

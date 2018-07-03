@@ -200,6 +200,10 @@ body {
   padding: 5px;
 }
 
+.issue-url > a {
+  color: #ffffff;
+}
+
 .red_warning, 
 #network {
   background-color: #fbe0d6;
@@ -548,3 +552,11 @@ a.btn {
   width: auto;
   max-width: 100%;
 }
+
+
+.loading {
+  background-image: url("/static/v2/images/bounty_details.png");
+  background-repeat: no-repeat;
+  background-size: 100% 50%;
+}
+
