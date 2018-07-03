@@ -552,10 +552,19 @@ def amount_usdt_open_work():
         float: The sum of all USDT values rounded to the nearest 2 decimals.
 
     """
-    from dashboard.models import Bounty
-    bounties = Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
+    bounties = open_bounties()
     return round(sum([b.value_in_usdt_now for b in bounties if b.value_in_usdt_now]), 2)
 
+
+def open_bounties():
+    """Get all current open and submitted work.
+
+    Returns:
+        QuerySet: The mainnet Bounty objects which are of open and submitted work statuses.
+
+    """
+    from dashboard.models import Bounty
+    return Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
 
 def maybe_market_tip_to_github(tip):
     """Post a Github comment for the specified Tip.
