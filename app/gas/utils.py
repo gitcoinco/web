@@ -4,7 +4,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.utils import timezone
 
 from economy.utils import convert_amount
-from gas.models import GasProfile
+from gas.models import GasAdvisory, GasProfile
 
 
 def recommend_min_gas_price_to_confirm_in_time(minutes, default=5):
@@ -36,11 +36,18 @@ def eth_usd_conv_rate():
 
 def conf_time_spread(max_gas_price=9999):
     try:
-        minutes = 31
-        gp = GasProfile.objects.filter(
-            created_on__gt=(timezone.now()-timezone.timedelta(minutes=minutes)),
-            gas_price__lte=max_gas_price,
-            ).distinct('gas_price').order_by('gas_price').values_list('gas_price', 'mean_time_to_confirm_minutes')
-        return json.dumps(list(gp), cls=DjangoJSONEncoder)
+        for minutes in [1, 11, 21, 31]:
+            gp = GasProfile.objects.filter(
+                created_on__gt=(timezone.now()-timezone.timedelta(minutes=minutes)),
+                gas_price__lte=max_gas_price,
+                ).distinct('gas_price').order_by('gas_price').values_list('gas_price', 'mean_time_to_confirm_minutes')
+            if len(gp):
+                return json.dumps(list(gp), cls=DjangoJSONEncoder)
     except Exception:
-        return json.dumps([])
+        pass
+    return json.dumps([])
+
+
+def gas_advisories():
+    gas_advisories = GasAdvisory.objects.filter(active=True, active_until__gt=timezone.now())
+    return gas_advisories

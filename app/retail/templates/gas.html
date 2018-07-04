@@ -62,6 +62,9 @@ div.tooltip {
         </a>
     </span>
 </header>
+
+{% include 'shared/gas_advisories.html' %}
+
 <h1> {% trans "Predicted Confirmation Times vs Gas Usage" %} <span id="alpha">{% trans "Alpha" %}</span> </h1>
 
 {% if conf_time_spread == '[]' %}
