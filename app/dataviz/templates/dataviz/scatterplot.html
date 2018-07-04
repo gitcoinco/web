@@ -89,7 +89,8 @@ var svg = d3.select("body").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-var url = document.location.href + '?data=1&format=csv';
+var connector_char = document.location.href.indexOf('?') == -1 ? '?' : '&';
+var url = document.location.href + connector_char + 'data=1&format=csv&keyword={{keyword}}';
 d3.csv(url, function(error, data) {
   if (error) throw error;
 

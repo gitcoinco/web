@@ -39,7 +39,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import ellipses, sync_profile
 from avatar.utils import get_avatar_context
-from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
+from gas.utils import conf_time_spread, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from github.utils import (
     get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
 )
@@ -567,6 +567,7 @@ def gas(request):
     if recommended_gas_price < 2:
         _cts = conf_time_spread(recommended_gas_price)
     context = {
+        'gas_advisories': gas_advisories(),
         'conf_time_spread': _cts,
         'title': 'Live Gas Usage => Predicted Conf Times'
     }
