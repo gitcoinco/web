@@ -551,7 +551,6 @@ var mixpanel_track_once = function(event, params) {
 };
 
 var currentNetwork = function(network) {
-  var is_marketing_page = [ '/', '/contributor', '/about', '/mission', '/results', '/slack' ].includes(document.location.pathname);
 
   $('.navbar-network').removeClass('hidden');
   let tooltip_info;
@@ -566,16 +565,18 @@ var currentNetwork = function(network) {
       $('#navbar-network-banner').addClass('hidden');
     } else {
       if (!network) {
-        info = 'Web3 disabled. Please install <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
-        $('#current-network').text('Metamask Not Enabled');
+        info = gettext('Web3 disabled. Please install ') +
+          '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
+        $('#current-network').text(gettext('Metamask Not Enabled'));
         $('#navbar-network-banner').html(info);
       } else if (network == 'locked') {
-        info = 'Web3 locked. Please unlock <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
-        $('#current-network').text('Metamask Locked');
+        info = gettext('Web3 locked. Please unlock ') +
+          '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
+        $('#current-network').text(gettext('Metamask Locked'));
         $('#navbar-network-banner').html(info);
       } else {
-        info = 'Connect to Mainnet via Metamask';
-        $('#current-network').text('Unsupported Network');
+        info = gettext('Connect to Mainnet via Metamask');
+        $('#current-network').text(gettext('Unsupported Network'));
         $('#navbar-network-banner').html(info);
       }
 
@@ -597,16 +598,18 @@ var currentNetwork = function(network) {
       $('#navbar-network-banner').addClass('hidden');
     } else {
       if (!network) {
-        info = 'Web3 disabled. Please install <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
-        $('#current-network').text('Metamask Not Enabled');
+        info = gettext('Web3 disabled. Please install ') +
+          '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
+        $('#current-network').text(gettext('Metamask Not Enabled'));
         $('#navbar-network-banner').html(info);
       } else if (network == 'locked') {
-        info = 'Web3 locked. Please unlock <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
-        $('#current-network').text('Metamask Locked');
+        info = gettext('Web3 locked. Please unlock ') +
+          '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
+        $('#current-network').text(gettext('Metamask Locked'));
         $('#navbar-network-banner').html(info);
       } else {
-        info = 'Connect to Rinkeby / Custom RPC via Metamask';
-        $('#current-network').text('Unsupported Network');
+        info = gettext('Connect to Rinkeby / Custom RPC via Metamask');
+        $('#current-network').text(gettext('Unsupported Network'));
         $('#navbar-network-banner').html(info);
       }
 
