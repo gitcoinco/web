@@ -867,3 +867,18 @@ span.emoji {
   width: 0.85em;
   display: inline-block;
 }
+
+.red_warning {
+  background-color: #fbe0d6;
+  color: #fb9470;
+  padding: 5px 10px;
+  border-radius: 2px;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.red_warning a {
+  color: #fb9470 !important;
+  font-weight: bold;
+  text-decoration: underline;
+}
