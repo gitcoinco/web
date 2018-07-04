@@ -29,8 +29,8 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import translation
-from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext
 
 from marketing.mails import send_mail, setup_lang
 from marketing.utils import invite_to_slack

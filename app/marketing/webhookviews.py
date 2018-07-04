@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 import pytz
 from marketing.models import EmailEvent
 
+
 # https://sendgrid.com/docs/API_Reference/Webhooks/event.html
 example = """
 [
