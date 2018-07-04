@@ -115,4 +115,6 @@
     </nav>
   </div>
 </nav>
-<p id="navbar-network-banner" class="p-0 m-0"></p>
+{% if not request.path|is_in_list:"/,/contributor,/about,/mission,/results,/slack" %}
+  <p id="navbar-network-banner" class="px-0 py-1 m-0 font-caption hidden"></p>
+{% endif %}
