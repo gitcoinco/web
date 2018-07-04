@@ -23,7 +23,7 @@ $(document).ready(function() {
     var parentSiblings = parent.siblings('.nav-item');
 
     parent.find('.dropdown-menu').toggle();
-    parentSiblings.find('.dropdown-menu').hide();  
+    parentSiblings.find('.dropdown-menu').hide();
   });
 
   // get started modal
