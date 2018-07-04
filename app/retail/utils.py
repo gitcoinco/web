@@ -117,7 +117,7 @@ def get_tip_history_at_date(date, keyword):
 
 
 def get_history(base_stats, copy):
-    today = base_stats.first().val
+    today = base_stats.first().val if base_stats.exists() else 0
 
     # slack ticks
     increment = 1000
