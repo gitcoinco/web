@@ -1,0 +1,14 @@
+{
+  "symbol": "XCC",
+  "address": "0xb6d945cac888ffc1c76fdbe28e9f50e8b3b8252a",
+  "overview":{
+        "en":"The objective of XCC is establishing a global medical data sharing platform based on blockchain. The platform integrates the isolated global medical data through blockchain technology instead of the traditional credit mechanism to ensure privacy and reliability of data sources as well as security and legitimacy of data retrieval.",
+        "zh":"XCC 的目标是通过区块链建立起一个全球性的医疗数据共享平台。通过区块链基础设施将全球医疗信息孤岛联为一体，用区块链技术而非信任，保证数据源的隐私性、可靠性和数据调取的安全性、合规性。"
+  },
+  "email": "xcc@xcc.space",
+  "website": "http://xcc.space",
+  "whitepaper": "http://xcc.space/txt/XCC%20white%20paper.Beta1.5.CN.pdf",
+  "links": {
+    "telegram": "https://t.me/xcc_space"
+  }
+}

@@ -1,0 +1,18 @@
+{
+    "website": "http://www.geekchain.org/",
+    "published_on": "2018-05-20",
+    "links": {
+        "twitter": "https://twitter.com/chain_geek?s=05"
+    },
+    "overview": {
+        "en": "GeekChain shares human resources collaboration networks based on blockchain to address services on the commercial technology chain.",
+        "zh": "GeekChain 基于区块链共享人力协作网络，解决商业技术链上服务。"
+    },
+    "symbol": "GEEK",
+    "initial_price": {
+        "USD": "0.0001 USD"
+    },
+    "whitepaper": "http://www.geekchain.org/GEEK-WhitePaper1.2.pdf",
+    "address": "0x40da2788fb49ebd0a6dce38c83baf71bc1ed2699",
+    "email": "service@geekchain.org"
+}
