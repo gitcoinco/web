@@ -550,6 +550,7 @@ var mixpanel_track_once = function(event, params) {
   }
 };
 
+/* eslint-disable no-lonely-if */
 var currentNetwork = function(network) {
 
   $('.navbar-network').removeClass('hidden');
@@ -624,6 +625,7 @@ var currentNetwork = function(network) {
     }
   }
 };
+/* eslint-enable no-lonely-if */
 
 var trigger_primary_form_web3_hooks = function() {
   // detect web3, and if not, display a form telling users they must be web3 enabled.
