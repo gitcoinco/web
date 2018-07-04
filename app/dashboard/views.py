@@ -130,8 +130,8 @@ def create_new_interest_helper(bounty, user, issue_message):
         )
     bounty.interested.add(interest)
     record_user_action(user, 'start_work', interest)
-    maybe_market_to_slack(bounty, 'start_work')
-    maybe_market_to_user_slack(bounty, 'start_work')
+    maybe_market_to_slack(bounty, 'work_started')
+    maybe_market_to_user_slack(bounty, 'work_started')
     maybe_market_to_twitter(bounty, 'start_work')
     return interest
 
@@ -292,8 +292,8 @@ def remove_interest(request, bounty_id):
         record_user_action(request.user, 'stop_work', interest)
         bounty.interested.remove(interest)
         interest.delete()
-        maybe_market_to_slack(bounty, 'stop_work')
-        maybe_market_to_user_slack(bounty, 'stop_work')
+        maybe_market_to_slack(bounty, 'work_stopped')
+        maybe_market_to_user_slack(bounty, 'work_stopped')
         maybe_market_to_twitter(bounty, 'stop_work')
     except Interest.DoesNotExist:
         return JsonResponse({
@@ -353,8 +353,8 @@ def uninterested(request, bounty_id, profile_id):
     try:
         interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
         bounty.interested.remove(interest)
-        maybe_market_to_slack(bounty, 'stop_work')
-        maybe_market_to_user_slack(bounty, 'stop_work')
+        maybe_market_to_slack(bounty, 'work_stopped')
+        maybe_market_to_user_slack(bounty, 'work_stopped')
         if is_staff:
             event_name = "bounty_removed_slashed_by_staff" if slashed else "bounty_removed_by_staff"
         else:
