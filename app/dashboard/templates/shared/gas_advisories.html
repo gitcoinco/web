@@ -1,0 +1,12 @@
+{% load humanize %}
+
+{% for ga in gas_advisories %}
+  <div class='gas_advisory red_warning'>
+    <strong>
+      {{ga.created_on | naturaltime}} 
+    </strong> | 
+    <span>
+      {{ga.body | safe}}
+    </span>
+  </div>
+{% endfor %}

@@ -774,6 +774,21 @@ input[type=text].loading {
   display: inline-block;
 }
 
+#metamask_context .red_warning {
+  background-color: #fbe0d6;
+  color: #fb9470;
+  padding: 5px 10px;
+  border-radius: 2px;
+  margin-bottom: 15px;
+  display: block;
+}
+
+#metamask_context .red_warning a {
+  color: #fb9470 !important;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
 #metamask_context {
   background-color: #fafafa;
   border-radius: 5px;
