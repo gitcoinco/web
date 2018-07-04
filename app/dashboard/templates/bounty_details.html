@@ -23,7 +23,7 @@
       </div>
 
       <div class="col-12 offset-md-1 col-md-8 body">
-        {% include 'shared/bounty_hero.html' %}
+        {% include 'shared/bounty_waiting_state.html' %}
         <div class="row nonefound" style="display:none;">
           <img src="{% static "v2/images/shrug_bot.png" %}">
           <h3>{% trans "No funded issue found." %}</h3>
@@ -39,7 +39,6 @@
             <img src="{% static "v2/images/quotes.png" %}" style="float: left;" />
             <div class="quote_text"></div>
             <div class="quote_author"></div>
-            <!-- <input id="quoteRefresh" class="button button--primary" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" > -->
           </div>
         </div>
 
