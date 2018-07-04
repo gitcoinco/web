@@ -176,9 +176,9 @@ $(document).ready(function() {
 
     if (document.isFunder) {
       if (document.changePayoutAmount) {
-        do_bounty_as_funder_increasingPayout();
-      } else {
         do_bounty_as_funder_changingFulfillment();
+      } else {
+        do_bounty_as_funder_increasingPayout();
       }
     } else {
       do_bounty_as_contributor();

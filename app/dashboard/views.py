@@ -682,7 +682,7 @@ def increase_bounty(request):
     )
     change_payout_amount = request.GET.get('change_payout_amount')
     if change_payout_amount:
-        params['change_payout_amount'] = change_payout_amount
+        params['change_payout_amount'] = True if change_payout_amount == 'true' else False
     else:
         params['change_payout_amount'] = False
 
