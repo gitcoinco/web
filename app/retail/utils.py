@@ -200,7 +200,8 @@ def get_bounty_median_turnaround_time(func='turnaround_time_started', keyword=No
 
 def build_stat_results(keyword=None):
     timeout = 60 * 60 * 24
-    key = f'build_stat_results_{keyword}'
+    key_salt = '1'
+    key = f'build_stat_results_{keyword}_{salt}'
     results = cache.get(key)
     if results and not settings.DEBUG:
         return results
