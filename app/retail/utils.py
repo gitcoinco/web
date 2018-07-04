@@ -179,8 +179,8 @@ def get_hourly_rate_distribution(keyword):
         min_hourly_rate = '15'
         max_hourly_rate = '120'
     else:
-        min_hourly_rate = int(min(hourly_rates))
-        max_hourly_rate = int(max(hourly_rates))
+        min_hourly_rate = int(min(hourly_rates)) if len(hourly_rates) else 'n/a'
+        max_hourly_rate = int(max(hourly_rates)) if len(hourly_rates) else 'n/a'
     return f'${min_hourly_rate} - ${max_hourly_rate}'
 
 
