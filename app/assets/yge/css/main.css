@@ -788,7 +788,8 @@ dl dd {
   -ms-perspective: 1000px;
   perspective: 1000px;
   position: relative;
-  min-height: 100%;
+  height: 100%;
+  overflow-y: scroll;
   padding: 1.5em;
   z-index: 2;
 }
