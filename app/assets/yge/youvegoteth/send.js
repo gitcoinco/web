@@ -104,6 +104,7 @@ function prePopulateGitcoinerFields() {
 }
 
 window.onload = function() {
+  $('yge').style.overflow='scroll';
   jQuery('#amount').on('keyup blur change', updateEstimate);
   jQuery('#token').on('change', updateEstimate);
   jQuery('#token').on('change', promptForAuth);
