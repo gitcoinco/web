@@ -23,21 +23,19 @@
       </div>
 
       <div class="col-12 offset-md-1 col-md-8 body">
-        <div class="alert info transaction-status" style="display:none;">
-          <div style='width:100%; font-size: 16px;'>
-            <strong style="font-size: 22px;">{% trans "Your transaction has been posted to web3" %}</strong>
-            <br>
-            {% blocktrans %}Please wait a minute or two for web3 to sync
-            <a target="_blank" href="javascript:void(0)" id="transaction_url">this transaction</a>.{% endblocktrans %}
-            <br>
-            <br>
-            {% trans "This page will automatically refresh as soon as the blockchain is updated." %}
-            ({% trans "You may close the browser tab." %})
-          </div>
+        <div class="transation-header" style="display:none;">
+          <h3>Your Issue is Posting: </h3>
+          <h3 class="issue-url"></h3>
         </div>
-
         <div class="row loading justify-content-center align-items-center loading_img">
-          <img src="{% static "v2/images/loading_v2.gif" %}">
+          <img src="{% static "v2/images/loading_v2.gif" %}" style="max-width: 200px;">
+        </div>
+        <div class="transaction-status" style="display:none;">
+          <div style='width:100%; font-size: 20px; color: #3d3d46;'>
+            {% trans "Your transaction is being posted to the Ethereum blockchain" %}
+            <br>
+            {% trans "Your page will automatically update when the information has been synced to Web3" %}
+          </div>
         </div>
 
         <div class="row nonefound" style="display:none;">
@@ -52,6 +50,7 @@
         <div class="row ml-2 mr-2 pl-4 pr-4 waiting_room_entertainment" style="display: none;">
           {% include 'shared/rain.html' with class="color" %}
           <div class="quote-container">
+            <img src="{% static "v2/images/quotes.png" %}" style="float: left;" />
             <div class="quote_text"></div>
             <div class="quote_author"></div>
             <input id="quoteRefresh" class="button button--primary" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" >
@@ -198,7 +197,7 @@
 
     <script id="action" type="text/x-jsrender">
       [[if enabled]]
-        <span id="[[:id]]" [[if id == 'submit']] [[if !work_started]] class="none" [[/if]] [[/if]]
+        <span [[if id]] id="[[:id]]" [[if id == 'submit']] [[if !work_started]] class="none" [[/if]] [[/if]] [[/if]]
           title='<div class="tooltip-info tooltip-sm">[[:title]]</div>'>
           [[if pending_acceptance]]
             <a class="button button--primary accept" role="button" href="[[:href]]" target="[[:target]]">
@@ -226,6 +225,9 @@
             </a>
           [[/if]]
         </span>
+        [[if is_last_non_admin_action]]
+          <br>
+        [[/if]]
       [[/if]]
     </script>
 

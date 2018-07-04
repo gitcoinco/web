@@ -15,7 +15,32 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-<div class="w-100 mt-2 p-2" id="metamask_context">
+<div class="w-100 mt-2 p-2" id="recommended_settings" style="border-top: 1px solid rgba(0,0,0,0.1);">
+  {% if recommend_gas_price > 30 %}
+    <div class="warning mb-2">{% trans "Warning: the ethereum network is quite congested at the moment." %} <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[{% trans "Stats" %}]</a></div>
+  {% endif %}
+  <div class="row" style="margin: auto -8px">
+    <div class="col-md-5 d-flex gas-dark-bg py-3">
+      <img class="gas-image" src="{% static "v2/images/gas.png" %}">
+      <div id="gas-fee-details" class="text-center pl-3">
+        <h5 class="font-subheader green">Your Gas Fee:</h5>
+        <p class="font-body" id="gas-usd"></p>
+        <p class="font-body" id="gas-eth"></p>
+      </div>
+    </div>
+    <div class="col-md-7 gas-rates d-flex flex-column justify-content-between">
+      <div class="message"></div>
+      <div id="default-recommended-gas" data-amount="{{recommend_gas_price_avg | floatformat}}" class="py-1 pl-5 recommended-prices"></div>
+      <div id="slow-recommended-gas" data-amount="{{recommend_gas_price_slow | floatformat}}" class="py-1 pl-5 recommended-prices"></div>
+      <div id="average-recommended-gas" data-amount="{{recommend_gas_price_avg | floatformat}}" class="active py-1 pl-5 recommended-prices"></div>
+      <div id="fast-recommended-gas" data-amount="{{recommend_gas_price_fast | floatformat}}" class="py-1 pl-5 recommended-prices"></div>
+    </div>
+  </div>
+</div>
+<div id="accordion-set-own-limit" class="py-2">
+  Set my own gas limit <i class="fa fa-angle-down mt-1"></i>
+</div>
+<div class="w-100 mt-2 p-2" id="metamask_context" style="border-bottom: 1px solid rgba(0,0,0,0.1);">
   {% if recommend_gas_price > 30 %}
     <div class="warning mb-2">{% trans "Warning: the ethereum network is quite congested at the moment." %} <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[{% trans "Stats" %}]</a></div>
   {% endif %}
@@ -32,7 +57,7 @@
     <label class="form__label" for="gasPrice">{% trans "Gas Price (gwei)" %}</label>
     <input max=100 min=0 name='gasPrice' id='gasPrice' class="form__input" type="number" value="{{recommend_gas_price | floatformat}}" step="0.5" />
   </div>
-  <div>
+  <div class="mt-3">
     <strong>{% trans "Help" %}:</strong>
     <ul>
       <li>

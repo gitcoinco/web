@@ -22,6 +22,8 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
     <link rel="stylesheet" href={% static "v2/css/onboard.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/avatar_builder.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/quickstart.css" %}>
   </head>
   <body>
     {% include 'shared/tag_manager_2.html' %}
@@ -41,10 +43,12 @@
               {% include 'ftux/'|add:step|add:'.html' %}
             </div>
           {% endfor %}
+          {% if github_handle %}
           <div class="controls">
-            <p id="prev-btn" class= ""onclick="changeStep(-1)">{% trans "Previous" %}</p>
-            <p id="next-btn" onclick="changeStep(1)">{% trans "Next" %}</p>
+            <p id="prev-btn" class="button button--primary-o button--controls" onclick="changeStep(-1)">{% trans "Previous" %}</p>
+            <p id="next-btn" class="button button--primary button--controls" onclick="changeStep(1)">{% trans "Next" %}</p>
           </div>
+          {% endif %}
         </form>
       </div>
     </div>
@@ -66,4 +70,7 @@
   </script>
   <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/pages/onboard.js" %}"></script>
+  <script src="{% static "v2/js/avatar_builder.js" %}" defer></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/pages/quickstart.js" %}"></script>
 </html>
