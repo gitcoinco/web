@@ -330,6 +330,7 @@ def bounties_by_status_and_keyword(created_before=timezone.now()):
             for stat in stats_to_create:
                 #print(stat, created_before)
                 Stat.objects.create(
+                    created_on=created_before,
                     key=stat[0],
                     val=stat[1],
                     )
@@ -371,7 +372,7 @@ def joe_dominance_index(created_before=timezone.now()):
                 ]
 
             for stat in stats_to_create:
-                #print(stat, created_before)
+                print(stat, created_before)
                 Stat.objects.create(
                     created_on=created_before,
                     key=stat[0],

@@ -129,7 +129,9 @@ def get_history(base_stats, copy):
     for i in [6, 5, 4, 3, 2, 1]:
         try:
             plural = 's' if i != 1 else ''
-            history = history + [[f'{i} month{plural} ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=i*30))).first().val],]
+            before_then = (timezone.now() - timezone.timedelta(days=i*30))
+            val = base_stats.filter(created_on__lt=before_then).order_by('-created_on').first().val
+            history = history + [[f'{i} month{plural} ago', val],]
         except:
             pass
 
