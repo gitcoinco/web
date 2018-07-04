@@ -43,7 +43,7 @@
 
           <div class="col-6 col-md-4 text-center py-4">
             <img class="icon" src="{% static "v2/images/results/completed_bounties.svg" %}" />
-            <h3 class="text-highlight-purple mt-3">{{ bounty_claimed_completion_rate }}</h3>
+            <h3 class="text-highlight-purple mt-3">{{ bounty_claimed_completion_rate|floatformat:1 }}%</h3>
             <p>{% trans "Started Bounty Completion Rate" %}</p>
           </div>
 
@@ -61,7 +61,7 @@
 
           <div class="col-6 col-md-4 text-center py-4">
             <img class="icon" src="{% static "v2/images/results/abandoned_bounties.svg" %}" />
-            <h3 class="text-highlight-purple mt-3">{{ bounty_abandonment_rate }}</h3>
+            <h3 class="text-highlight-purple mt-3">{{ bounty_abandonment_rate | floatformat:1 }}%</h3>
             <p>{% trans "Bounty Abandonment Rate" %}</p>
           </div>
 
