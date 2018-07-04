@@ -50,6 +50,9 @@ def index(request):
         ("Piper", static("v2/images/testimonials/pipermerriam.jpg"),
          _("Although we’ve only hired two developers, there is no doubt that we could have sourced more. Gitcoin has been the strongest hiring signal in all of the hiring I’ve ever done."),
          'https://github.com/pipermerriam', 'Pipermerriam'),
+        ("Joseph Schiarizzi", static("v2/images/testimonials/jschiarizzi.jpeg"),
+         _("On a Friday I needed a front end done for a project due in 48 hours.  When everyone I knew was busy, gitcoiners were able to help me make my deadline, with fast, affordable, & high quality work."),
+         'https://github.com/jschiarizzi', 'Fourth Wave')
     ]
 
     gitcoin_description = _(
