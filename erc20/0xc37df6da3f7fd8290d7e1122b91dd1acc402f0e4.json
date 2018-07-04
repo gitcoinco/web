@@ -1,14 +1,17 @@
 ﻿{
-	"website": "http://www.winbtc.top",
-	"links": {
-		"facebook": "https://www.facebook.com/btc.win.7",
-		"telegram": "https://t.me/joinchat/JFedCUchyg-2wImSu7q5TA"
-	},
-	"overview": {
-		"en": "Gambling",
-		"zh": "数字货币撮合交易平台"
-	},
-	"symbol": "RVF",
-	"address": "0xc37df6da3f7fd8290d7e1122b91dd1acc402f0e4",
-	"email": "support@winbtc.top"
+  "symbol": "RVF",
+  "address": "0xc37df6da3f7fd8290d7e1122b91dd1acc402f0e4",
+  "overview":{
+        "en": "Gambling",
+        "zh": "RVF"
+  },
+  "email": "support@winbtc.top",
+  "website": "http://winbtc.top",
+  "whitepaper": "http://winbtc.top",
+  "state": "NORMAL",
+  "published_on": "2018-06-15",
+  "links": {
+    "github": "https://github.com/aboluoyes/token-profile",
+    "facebook": "https://www.facebook.com/btc.win.7"
+  }
 }
