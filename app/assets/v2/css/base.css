@@ -349,7 +349,8 @@ p a {
 }
 
 #gas-section .gas-dark-bg {
-  background-color: #FAFAFA
+  background-color: #FAFAFA;
+  min-width: 205px;
 }
 
 #gas-section .gas-rates .active {
@@ -559,7 +560,7 @@ input[type=text].loading {
 }
 
 #primary_form {
-  max-width: 500px;
+  max-width: 550px;
   margin: 0 auto;
   padding: 0 2em;
 }
