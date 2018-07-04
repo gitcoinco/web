@@ -2,12 +2,9 @@
   "symbol": "SET",
   "address": "0xd2C6738D45b090ec05210fE8DCeEF4D8fc392892",
   "overview":{
-        "en": "PointSet is a Underlying network based on distributed technology to build a decentralized network system. 
-From the underlying data multi-channel acquisition and high-performance storage, to the processing and chain recording of the middle-level data, to the application layer to provide api and sdk, 
-to build a bridge between the underlying data and the upper application for developers and users, in the information exchange and value Transfer plays an important role. 
-The SET under the token economy model is the ecological value transfer medium, 
-and the multi-layer Incentives mechanism can guarantee the virtuous circle of the whole ecology.",
-        "zh": "点集(PointSet)作为一个底层网络，以分布式技术为基础，构建一个去中心化网络体系。从底层数据多渠道获取和高性能存储，到中间层数据的处理和链上记录，再到应用层提供api和sdk，为开发者和用户构建底层数据与上层应用的桥梁，在信息交换和价值转移上发挥着重要的作用。通证经济模型下的SET是生态的价值转移媒介，多层挖矿机制能够保证整个生态的良性循环。"
+        "en": "PointSet is a Underlying network based on distributed technology to build a decentralized network system. From the underlying data multi-channel acquisition and high-performance storage, to the processing and chain recording of the middle-level data, to the application layer to provide api and sdk, to build a bridge between the underlying data and the upper application for developers and users, in the information exchange and value Transfer plays an important role.The SET under the token economy model is the ecological value transfer medium,and the multi-layer Incentives mechanism can guarantee the virtuous circle of the whole ecology.",
+        "zh": "点集(PointSet)作为一个底层网络，以分布式技术为基础，构建一个去中心化网络体系。从底层数据多渠道获取和高性能存储，到中
+间层数据的处理和链上记录，再到应用层提供api和sdk，为开发者和用户构建底层数据与上层应用的桥梁，在信息交换和价值转移上发挥着重要的作>用。通证经济模型下的SET是生态的价值转移媒介，多层挖矿机制能够保证整个生态的良性循环。"
   },
   "email": "set@pointset.org",
   "website": "http://www.pointset.org/",
@@ -15,9 +12,9 @@ and the multi-layer Incentives mechanism can guarantee the virtuous circle of th
   "state": "NORMAL",
   "published_on": "2018-06-29",
   "initial_price":{
-        "ETH":"0.00166666 ETH",
-        "USD":"0.7 USD",
-        "BTC":"0.00004137 BTC"
+        "ETH":"0.00000625 ETH",
+        "USD":"0.00000028 USD",
+        "BTC":"0.00000045 BTC"
   },
   "links": {
     "blog": "http://blog.pointset.org",
