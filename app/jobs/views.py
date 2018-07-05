@@ -27,4 +27,5 @@ def create_job(request):
             form.save()
     else:
         form = JobForm(user=request.user)
-    return render(request, 'jobs/create_job.html', {'form': form})
+    context = {'form': form}
+    return render(request, 'jobs/create_job.html', context)

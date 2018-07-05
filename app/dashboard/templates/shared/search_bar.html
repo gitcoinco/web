@@ -27,13 +27,17 @@
         <a class="button button--primary" role="button" id="new_search" href="#">{% trans "Search" %}</a>
       </div>
       <div class="col-10 col-md-5 col-lg-4 font-caption order_by">
-        <div class="heading">{% trans "SORT" %} </div>
-        <select name="sort_option" id="sort_option">
-          <option value="-web3_created">{% trans "Created: Recent" %}</option>
-          <option value="web3_created">{% trans "Created: Oldest" %}</option>
-          <option value="-_val_usd_db">{% trans "Value: Highest" %}</option>
-          <option value="_val_usd_db">{% trans "Value: Lowest" %}</option>
-        </select>
+        {% if jobs_board %}
+          <div class="heading"><a href="{% url 'job-create-template' %}">{% trans "Create New Job" %}</a></div>
+        {% else %}
+          <div class="heading">{% trans "SORT" %} </div>
+          <select name="sort_option" id="sort_option">
+            <option value="-web3_created">{% trans "Created: Recent" %}</option>
+            <option value="web3_created">{% trans "Created: Oldest" %}</option>
+            <option value="-_val_usd_db">{% trans "Value: Highest" %}</option>
+            <option value="_val_usd_db">{% trans "Value: Lowest" %}</option>
+          </select>
+        {% endif %}
       </div>
     </div>
     <div class="row">
@@ -41,7 +45,10 @@
         <div class="filter-tags"></div> <!-- Populate the filters -->
       </div>
       <div class="col-12 col-md-2">
+        {% if jobs_board %}
+        {% else %}
         <a class="save_search font-caption" href="/save_search">{% trans "Save Search" %}</a>
+        {% endif %}
       </div>
     </div>
   </div>
