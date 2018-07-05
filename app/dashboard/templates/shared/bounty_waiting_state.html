@@ -15,21 +15,23 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-<div class="transation-header" style="display: none;">
-  <h2>Transaction Processing</h2>
-</div>
-<div class="transaction-status" style="display:none;">
-  <div class="ethereum-issue">
-    {% trans "Your issue is being posted to the Ethereum Blockchain." %}
-    <br>
-    {% trans "This page will automatically update when the sync is completed." %}
+<div class="bg-container">
+  <div class="transation-header mt-5" style="display: none;">
+    <h2 class="my-2">Transaction Processing</h2>
   </div>
-</div>
-<div class="row loading justify-content-center align-items-center">
-  <h3 class="issue-url"></h3>
-</div>
-<div class="rocket">
-  <img src="{% static "v2/images/rocket.svg" %}" class="svg" alt="Gitcoin Rocket">
+  <div class="transaction-status" style="display:none;">
+    <div class="ethereum-issue">
+      {% trans "Your issue is being posted to the Ethereum Blockchain." %}
+      <br>
+      {% trans "This page will automatically update when the sync is completed." %}
+    </div>
+  </div>
+  <div class="row loading justify-content-center align-items-center">
+    <h3 class="issue-url"></h3>
+  </div>
+  <div class="rocket">
+    <img src="{% static "v2/images/rocket.svg" %}" class="svg" alt="Gitcoin Rocket">
+  </div>
 </div>
 <div class="row loading justify-content-center align-items-center loading_img">
   <img src="{% static "v2/images/loading_v2.gif" %}">

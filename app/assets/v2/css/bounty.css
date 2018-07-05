@@ -189,6 +189,7 @@ body {
 
 .transation-header > h2 {
   color: #ffffff;
+  font-size: 2rem;
 }
 
 #bounty_details .tags {
@@ -321,6 +322,7 @@ a.btn {
 
 .loading_img > img {
   max-width: 200px;
+  padding-top: 4rem;
 }
 
 #btn-white img {
@@ -570,8 +572,12 @@ a.btn {
 
 .ethereum-issue {
   width:100%;
-  font-size: 18px;
   color: #ffffff;
+}
+
+.ethereum-issue,
+.issue-url {
+  font-size: 1rem;
 }
 
 .rocket {
@@ -584,23 +590,6 @@ a.btn {
 }
 
 @media (min-width: 1441px) and (max-width: 2560px) {
-  .transation-header {
-    margin-bottom: 60px;
-    top: 60px;
-    padding: 10vh 5vw;
-  }
-
-  .transation-header > h2 {
-    font-size: 6rem;
-  }
-
-  .ethereum-issue {
-    font-size: 2.5rem;
-  }
-
-  .issue-url {
-    font-size: 3rem;
-  }
 
   .loading_img > img {
     max-width: 400px;
@@ -614,21 +603,6 @@ a.btn {
 }
 
 @media (min-width: 1025px) and (max-width: 1440px) {
-  .transation-header {
-    bottom: 30px;
-  }
-  .transation-header > h2 {
-    font-size: 3rem;
-  }
-
-  .ethereum-issue {
-    font-size: 1.75rem;
-  }
-
-  .issue-url {
-    font-size: 1.9rem;
-  }
-
   .rocket {
     left: 65rem;
     top: 22rem;
@@ -637,15 +611,6 @@ a.btn {
 }
 
 @media (min-width: 769px) and (max-width: 1024px) {
-  .transation-header {
-    margin-bottom: 0px;
-    padding: 2vh 5vw;
-  }
-
-  .issue-url {
-    font-size: 1rem;
-  }
-
   .rocket {
     left: 43rem;
     top: 13rem;
@@ -654,27 +619,44 @@ a.btn {
 
   .loading_img > img {
     max-width: 200px;
+    padding-top: 0;
+  }
+
+  .bg-container {
+    position: relative;
+    top: -3rem;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .bg-container {
+    background-color: #3f24f9;
+    position: relative;
+    top: -3rem;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-bottom: 2rem;
+  }
+
+  .open {
+    background-size: 0% 0%;
+  }
+
+  .loading_img img {
+    padding-top: 0;
+  }
+
+  .issue-url {
+    margin-top: 15px;
   }
 }
 
 @media (min-width: 426px) and (max-width: 768px) {
-  .transation-header {
-    margin-bottom: 0px;
-    padding: 0vh 0vw;
-  }
-
-  .issue-url {
-    font-size: .7rem;
-  }
-
-  .ethereum-issue {
-    font-size: .5rem;
-  }
-
   .rocket {
-    left: 26rem;
+    left: 1rem;
     top: 9.5rem;
-    width: 1rem;
+    width: 3rem;
   }
 
   .loading_img > img {
@@ -683,33 +665,16 @@ a.btn {
 }
 
 @media (min-width: 320px) and (max-width: 425px) {
-  .transation-header {
-    margin-bottom: 0px;
-    padding: 0vh 0vw;
-    top: 15px;
-  }
 
-  .transation-header > h2 {
-    font-size: 1rem;
+  .rocket {
+    left: 1rem;
+    top: 6rem;
+    width: 3rem;
   }
 
   .transaction-status {
     margin-bottom: 30px;
     padding: 0vh 0vw;
-  }
-
-  .issue-url {
-    font-size: .5rem;
-  }
-
-  .ethereum-issue {
-    font-size: .5rem;
-  }
-
-  .rocket {
-    left: 17.4rem;
-    top: 6rem;
-    width: 1rem;
   }
 
   .loading_img > img {
