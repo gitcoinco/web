@@ -69,22 +69,17 @@ def stats(request):
         types = filter_types(types, _filters)
     if _filter == 'KPI':
         _filters = [
-            'browser_ext_chrome',
-            'medium_subscribers',
-            'github_stargazers_count',
-            'slack_users',
-            'email_subscribers_active',
-            'bounties_open',
-            'bounties_ful',
-            'joe_dominance_index_30_count',
-            'joe_dominance_index_30_value',
-            'turnaround_time_hours_30_days_back',
-            'tips',
-            'twitter',
-            'user_action_Login',
-            'bounties_hourly_rate_inusd_last_24_hours',
         ]
-        types = filter_types(types, _filters)
+        types = [
+            'email_subscribers_active',
+            'joe_dominance_index_30_value',
+            'bounties_value',
+            'bounties_done_value',
+            'bounties_hourly_rate_inusd_last_24_hours',
+            'bounties_open_total',
+            'slack_users_active',
+            'twitter_followers',
+        ]
 
     # params
     params = {
