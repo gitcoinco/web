@@ -1160,7 +1160,7 @@ class Profile(SuperModel):
         funded_bounties_count = funded_bounties.count()
         from django.db.models import Sum
         if funded_bounties_count:
-            total_funded_usd = funded_bounties.all().aggregate(Sum('value_in_usdt'))
+            total_funded_usd = funded_bounties.all().aggregate(Sum('value_in_usdt'))['value_in_usdt__sum']
             total_funded_hourly_rate = float(0)
             hourly_rate_bounties_counted = float(0)
             for bounty in funded_bounties:
