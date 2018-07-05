@@ -36,20 +36,33 @@ from .utils import build_stat_results
 def index(request):
     slides = [
         ("Dan Finlay", static("v2/images/testimonials/dan.jpg"),
-         _("Once we had merged in multiple language support from a bounty, it unblocked the path to all other translations, and what better way to get lots of dif erent translations than with bounties from our community? A single tweet of publicity and we had something like 20 language requests, and 10 language pull requests. It’s been total magic."),
+         _("Once we had merged in multiple language support from a bounty, it unblocked the \
+         path to all other translations, and what better way to get lots of dif erent \
+         translations than with bounties from our community? A single tweet of publicity \
+         and we had something like 20 language requests, and 10 language pull requests. It’s been total magic."),
          'https://github.com/danfinlay', "Metamask -- Internationalization"),
         ("Phil Elsasser", static("v2/images/testimonials/phil.jpg"),
-         _("​By design or not, there is an element of trust inherent within Gitcoin. This isn’t the bad kind of “trust” that we are all trying to move away from in a centralized world, but a much better sense of community trust that gets established through the bounty process."),
+         _("​By design or not, there is an element of trust inherent within Gitcoin. This isn’t \
+         the bad kind of “trust” that we are all trying to move away from in a centralized world, \
+         but a much better sense of community trust that gets established through the bounty process."),
          'http://www.marketprotocol.io/', 'Market'),
         ("John Maurelian", static("v2/images/testimonials/maurelian.jpg"),
          _("Gitcoin helps us to finally close out the issues we've been meaning to get around to for too long"),
          "https://consensys.github.io/smart-contract-best-practices/", 'Consensys Diligence -- Documentation Bounties'),
         ("Kames CG", static("v2/images/testimonials/kames.jpg"),
-         _("uPort is still in the process of Open Sourcing all of our code, so Gitcoin at the present moment, helps uPort plant seeds within the growing Ethereum developer community, that we expect will blossom into flourishing opportunities in the future. Put simply, as opposed to running marketing campaign, we can use bounties to stay present in front of potential developers we want to engage with."),
+         _("uPort is still in the process of Open Sourcing all of our code, so Gitcoin at the present moment, \
+         helps uPort plant seeds within the growing Ethereum developer community, that we expect will blossom \
+         into flourishing opportunities in the future. Put simply, as opposed to running marketing campaign, \
+         we can use bounties to stay present in front of potential developers we want to engage with."),
          'https://github.com/KamesCG', 'Uport'),
         ("Piper", static("v2/images/testimonials/pipermerriam.jpg"),
-         _("Although we’ve only hired two developers, there is no doubt that we could have sourced more. Gitcoin has been the strongest hiring signal in all of the hiring I’ve ever done."),
+         _("Although we’ve only hired two developers, there is no doubt that we could have sourced more. \
+         Gitcoin has been the strongest hiring signal in all of the hiring I’ve ever done."),
          'https://github.com/pipermerriam', 'Pipermerriam'),
+        ("Joseph Schiarizzi", static("v2/images/testimonials/jschiarizzi.jpeg"),
+         _("On a Friday I needed a front end done for a project due in 48 hours.  When everyone I knew was busy, \
+         gitcoiners were able to help me make my deadline, with fast, affordable, & high quality work."),
+         'https://github.com/jschiarizzi', 'Fourth Wave')
     ]
 
     gitcoin_description = _(
@@ -328,9 +341,9 @@ def mission(request):
     return TemplateResponse(request, 'mission.html', context)
 
 
-def results(request):
+def results(request, keyword=None):
     """Render the Results response."""
-    context = build_stat_results()
+    context = build_stat_results(keyword)
     context['is_outside'] = True
     return TemplateResponse(request, 'results.html', context)
 

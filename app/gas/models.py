@@ -18,3 +18,10 @@ class GasProfile(SuperModel):
         if not self:
             return "none"
         return f"gas_price: {self.gas_price}, mean_time_to_confirm_minutes: {self.mean_time_to_confirm_minutes} "
+
+
+class GasAdvisory(SuperModel):
+
+    body = models.TextField(default='', blank=True)
+    active_until = models.DateTimeField()
+    active = models.BooleanField(default=False)
