@@ -129,7 +129,9 @@ def get_history(base_stats, copy):
     for i in [6, 5, 4, 3, 2, 1]:
         try:
             plural = 's' if i != 1 else ''
-            history = history + [[f'{i} month{plural} ago', base_stats.filter(created_on__lt=(timezone.now() - timezone.timedelta(days=i*30))).first().val],]
+            before_then = (timezone.now() - timezone.timedelta(days=i*30))
+            val = base_stats.filter(created_on__lt=before_then).order_by('-created_on').first().val
+            history = history + [[f'{i} month{plural} ago', val],]
         except:
             pass
 
@@ -149,7 +151,7 @@ def get_completion_rate(keyword):
     not_completed_bounties = eligible_bounties.filter(idx_status__in=['expired', 'cancelled']).count()
     total_bounties = completed_bounties + not_completed_bounties
 
-    return round((completed_bounties * 1.0 / total_bounties), 3) * 100
+    return ((completed_bounties * 1.0 / total_bounties)) * 100
 
 
 def get_base_done_bounties(keyword):
@@ -200,9 +202,10 @@ def get_bounty_median_turnaround_time(func='turnaround_time_started', keyword=No
 
 def build_stat_results(keyword=None):
     timeout = 60 * 60 * 24
-    key = f'build_stat_results_{keyword}'
+    key_salt = '2'
+    key = f'build_stat_results_{keyword}_{key_salt}'
     results = cache.get(key)
-    if results:
+    if results and not settings.DEBUG:
         return results
 
     results = build_stat_results_helper(keyword)
@@ -298,11 +301,11 @@ def build_stat_results_helper(keyword=None):
     context['universe_total_usd'] = sum(base_bounties.filter(network='mainnet').values_list('_val_usd_db', flat=True))
     pp.profile_time('universe_total_usd')
     context['max_bounty_history'] = float(context['universe_total_usd']) * .7
-    context['bounty_abandonment_rate'] = f'{bounty_abandonment_rate}%'
+    context['bounty_abandonment_rate'] = bounty_abandonment_rate
     context['bounty_average_turnaround'] = str(round(get_bounty_median_turnaround_time('turnaround_time_submitted', keyword)/24, 1)) + " days"
     pp.profile_time('bounty_average_turnaround')
     context['hourly_rate_distribution'] = get_hourly_rate_distribution(keyword)
-    context['bounty_claimed_completion_rate'] = f'{completion_rate}%'
+    context['bounty_claimed_completion_rate'] = completion_rate
     context['bounty_median_pickup_time'] = round(get_bounty_median_turnaround_time('turnaround_time_started', keyword), 1)
     pp.profile_time('bounty_median_pickup_time')
     pp.profile_time('final')

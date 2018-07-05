@@ -349,7 +349,7 @@ def data_viz_helper_merge_json_trees(output):
         name = this_child['name']
         if name in processed_names.keys():
             target_idx = processed_names[name]
-            print(target_idx)
+            #print(target_idx)
             for this_childs_child in this_child['children']:
                 new_output['children'][target_idx]['children'].append(this_childs_child)
         else:
@@ -676,7 +676,7 @@ def viz_draggable(request, key='email_open'):
                 income.append([i, val_usdt])  # x axis
                 lifeExpectancy.append([i, num_bounties])  # y axis
                 population.append([i, 10000000 * num_bounties])  # size
-                print(username, i, num_bounties, val_usdt)
+                #print(username, i, num_bounties, val_usdt)
             output.append({
                 'name': username,
                 'region': username,
@@ -727,7 +727,7 @@ def viz_scatterplot_helper(request, key='hourly_rate', template='dataviz/scatter
             filter_bounties = Bounty.objects.filter(raw_data__icontains=keyword)
             fulfillments = fulfillments.filter(bounty__in=filter_bounties)
         for bf in fulfillments:
-            print(bf.pk, bf.created_on)
+            #print(bf.pk, bf.created_on)
             try:
                 weight = math.log(bf.bounty.value_in_usdt, 10) / 4
                 username = bf.bounty.org_name
