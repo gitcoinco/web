@@ -1,17 +1,43 @@
----
-name: Feature request
-about: Suggest an idea for this project
+<!--
+Hello Gitcoiner!
 
----
+Please use the template below for issue ideas or bugs found within Gitcoin.
+If it is general support you need, reach out to us at
+gitcoin.co/slack
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+Provide a general summary of the issue in the title above and use relevant fields below to define the problem.
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+-->
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+### User Story
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+[comment]: # (As a <user type>, I want to <task> so that <goal>.)
+
+### Why Is this Needed
+
+[comment]: # (Describe the problem and why this task is needed. Provide description of the current state, what you would like to happen, and what actually happen)
+*Summary*:
+
+### Description
+
+[comment]: # (Feature or Bug? i.e Type: Bug)
+*Type*:
+
+### Current Behavior
+[comment]: # (Describe what actually happened.)
+
+### Expected Behavior
+[comment]: # (Describe what you expected to happen.)
+
+### Reproduction
+[comment]: # (Describe how we can replicate the bug step by step.)
+
+### Solution
+[comment]: # (Provide a summary of the solution and a task list on what needs to be fixed.)
+*Summary*:
+
+### Definition of Done
+[comment]: # (Any other information that would be useful, bullets are helpful.)
+
+### Additional Information
+[comment]: # (Any other information that would be useful, content, screenshots, etc.)
