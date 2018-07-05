@@ -1,6 +1,6 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
+name: Custom Issue
+about: Have an issue to report that doesn't fit elsewhere? Use this template.
 
 ---
 
