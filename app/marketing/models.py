@@ -263,3 +263,13 @@ class EmailSupressionList(SuperModel):
     email = models.EmailField(max_length=255)
     metadata = JSONField(default={}, blank=True)
     comments = models.TextField(max_length=5000, blank=True)
+
+
+class ProgrammingLanguage(SuperModel):
+
+    name = models.CharField(max_length=255, db_index=True)
+
+    def __str__(self):
+        return f"{self.name}"
+
+

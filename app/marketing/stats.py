@@ -306,7 +306,7 @@ def bounties_hourly_rate():
 def bounties_by_status_and_keyword(created_before=timezone.now()):
     from dashboard.models import Bounty
     from retail.utils import programming_languages
-    keywords = [''] + programming_languages
+    keywords = [''] + programming_languages()
     statuses = Bounty.objects.distinct('idx_status').values_list('idx_status', flat=True)
     days_back = 9999
     created_after = created_before - timezone.timedelta(days=days_back)
@@ -339,7 +339,7 @@ def bounties_by_status_and_keyword(created_before=timezone.now()):
 def joe_dominance_index(created_before=timezone.now()):
     from dashboard.models import Bounty
     from retail.utils import programming_languages
-    keywords = [''] + programming_languages
+    keywords = [''] + programming_languages()
 
     joe_addresses = ['0x4331B095bC38Dc3bCE0A269682b5eBAefa252929'.lower(), '0xe93d33CF8AaF56C64D23b5b248919EabD8c3c41E'.lower()]  # kevin
     joe_addresses = joe_addresses + ['0x28e21609ca8542Ce5A363CBf339529204b043eDe'.lower()]  # eric

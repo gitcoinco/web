@@ -28,10 +28,12 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 import pytz
-from marketing.models import Alumni, EmailSubscriber, LeaderboardRank, Stat
+from marketing.models import Alumni, EmailSubscriber, LeaderboardRank, Stat, ProgrammingLanguage
 from requests_oauthlib import OAuth2Session
 
-programming_languages = ['css', 'solidity', 'python', 'javascript', 'ruby', 'html', 'design']
+
+def programming_languages():
+    return list(ProgrammingLanguage.objects.all().order_by('name').values_list('name', flat=True))
 
 
 class PerformanceProfiler:
@@ -311,5 +313,5 @@ def build_stat_results_helper(keyword=None):
     pp.profile_time('final')
     context['keyword'] = keyword
     context['title'] = f"{keyword.capitalize() if keyword else ''} Results"
-    context['programming_languages'] = ['All'] + programming_languages
+    context['programming_languages'] = ['All'] + programming_languages()
     return context

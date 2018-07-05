@@ -47,7 +47,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         # build path list
-        paths = [reverse('results') + f"/{pl}" for pl in programming_languages]
+        paths = [reverse('results') + f"/{pl}" for pl in programming_languages()]
         paths.append(reverse('results'))
 
         # warm the paths

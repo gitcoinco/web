@@ -1,5 +1,6 @@
 /* eslint-disable no-loop-func */
 // helper functions
+// TODO: pull this from the DB marketing/ProgrammingLanguages (DRY)
 var technologies = [
   '.NET', 'ASP .NET', 'Angular', 'Backbone', 'Bootstrap', 'C', 'C#', 'C++', 'CSS', 'CSS3',
   'CoffeeScript', 'Dart', 'Django', 'Drupal', 'DynamoDB', 'ElasticSearch', 'Ember', 'Erlang', 'Express', 'Go', 'Groovy',
