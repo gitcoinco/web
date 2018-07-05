@@ -1193,7 +1193,7 @@ class Profile(SuperModel):
                 avg_hourly_rate_per_funded_bounty = \
                     float(total_funded_hourly_rate) / float(funded_fulfillments_with_hours_counted)
                 avg_hours_per_funded_bounty = \
-                        float(total_funded_hours) / float(funded_fulfillments_with_hours_counted)
+                    float(total_funded_hours) / float(funded_fulfillments_with_hours_counted)
             else:
                 avg_hourly_rate_per_funded_bounty = 0
                 avg_hours_per_funded_bounty = 0
