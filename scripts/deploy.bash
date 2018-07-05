@@ -37,7 +37,7 @@ MIGRATE_DB=${MIGRATE_DB:-$5}
 CREATE_CACHE_TABLE=${CREATE_CACHE_TABLE:-$6}
 
 # shellcheck disable=SC1091
-source ../gitcoin-3/bin/activate
+source ../gitcoin-37/bin/activate
 
 # pull from git
 git add .
