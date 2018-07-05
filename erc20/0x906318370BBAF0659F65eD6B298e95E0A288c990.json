@@ -1,0 +1,18 @@
+{
+  "symbol": "ADCC",
+  "address": "0x906318370BBAF0659F65eD6B298e95E0A288c990",
+  "overview":{
+    "en": "ADCC is a global distributed DIAMOND value network, aimed at combining new block CHAIN technology and the DIAMOND market, set up a CHAIN of the global DIAMOND trade blocks based financial ecosystem, rapid advance global DIAMOND CHAIN block technology to the world the speed of the completed application.",
+    "zh": "钻石链（DIAMOND CHAIN） 是一个全球分布式钻石价值网络，旨在通过新型区块链技术与钻石市场结合，搭建一个基于全球钻石交易的区块链金融生态圈，快速推进全球钻石区块链技术向世界应用落地的步伐。"
+  },
+  "email": "15627265058@163.com",
+  "website": "http://dcc.pub",
+  "whitepaper": "http://dcc.pub/adcc.pdf",
+  "state": "LOCKED",
+  "published_on": "2018-04-06",
+  "initial_price":{
+    "USD":"0.73 USD"
+  },
+  "links": {
+  }
+}
