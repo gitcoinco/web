@@ -352,8 +352,8 @@ var showWarningMessage = function(txid) {
   $('#bounty_details').hide();
   $('#bounty_detail').hide();
 
-  $('.transaction-status').show();
-  $('.transation-header').show();
+  $('.bg-container').show();
+  $('.loading_img').addClass('waiting-state ');
   $('.waiting_room_entertainment').show();
   $('.issue-url').html('<a href="' + document.issueURL + '">' + document.issueURL + '</a>');
 

@@ -831,65 +831,6 @@ input[type=text].loading {
   margin-left: 5px;
 }
 
-.transaction-status {
-  font-family: 'Muli', sans-serif;
-  display: block;
-  position: relative;
-  width: 80%;
-  left: 10%;
-  top: 30px;
-  margin-bottom: 30px;
-  border-radius: 2px;
-  padding: 3vh 5vw;
-  text-align: center;
-}
-
-.transation-header {
-  font-family: 'Muli', sans-serif;
-  display: block;
-  position: relative;
-  width: 80%;
-  left: 10%;
-  top: 30px;
-  padding: 3vh 5vw;
-  text-align: center;
-}
-
-.waiting_room_entertainment {
-  text-align: center;
-}
-
-.quote-container {
-  width: 55%;
-  margin: 5% auto;
-}
-
-.quote_text {
-  color: #4A4A4A;
-}
-
-.quote_author {
-  color: #70EFBE;
-  margin: 1rem auto;
-}
-
-.bounty_details .quote-container {
-  width: 55%;
-  margin: 5% auto;
-  font-weight: 700;
-}
-
-.bounty_details .quote_text {
-  font-size: 1.1rem;
-  color: #4A4A4A;
-}
-
-.bounty_details .quote_author {
-  color: #4A4A4A;
-  margin: 1rem auto;
-  font-size: 1rem;
-}
-
 #gitcoin_buttons #example img {
   width: 500px;
   max-width: 100%

@@ -185,11 +185,6 @@ body {
   top: 2px;
 }
 
-.transation-header > h2 {
-  color: #ffffff;
-  font-size: 2rem;
-}
-
 #bounty_details .tags {
   float: right;
   text-align: center;
@@ -318,9 +313,28 @@ a.btn {
   position: relative;
 }
 
-.loading_img > img {
-  max-width: 200px;
-  padding-top: 4rem;
+.waiting-state {
+  position: relative;
+  top: -6rem;
+}
+
+.loading_img::before {
+  content: '';
+  width: 12rem;
+  height: 12rem;
+  background: #fff;
+  position: absolute;
+  border-radius: 50%;
+  top: 0;
+}
+
+.loading_img img {
+  position: absolute;
+  max-width: 100%;
+  width: 13rem;
+  z-index: 2;
+  top: -2rem;
+  padding-right: 1rem;
 }
 
 #btn-white img {
@@ -367,6 +381,11 @@ a.btn {
 .activity .bounty-subheading,
 .activity .bounty-text {
   font-size: 12px;
+}
+
+.transaction-header h2 {
+  color: #ffffff;
+  font-size: 2rem;
 }
 
 #bounty_details {
@@ -430,17 +449,6 @@ a.btn {
   padding-left: 5px;
 }
 
-@media (max-width: 575px) {
-
-  #timer {
-    margin-bottom: 10px;
-  }
-
-  .bounty-info div {
-    width: 100%;
-  }
-}
-
 @media (max-width: 767px) {
 
   #title {
@@ -477,18 +485,6 @@ a.btn {
 
   .actions {
     margin-bottom: 20px;
-  }
-}
-
-@media (max-width: 991.98px) {
-  .explorer {
-    display: none;
-  }
-}
-
-@media (min-width: 768px) {
-  .activity-time {
-    margin-left: 0.625rem !important;
   }
 }
 
@@ -561,11 +557,57 @@ a.btn {
   max-width: 100%;
 }
 
+.bg-container {
+  background-color: #3f24f9;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10rem;
+}
 
-.open {
-  background-image: url("/static/v2/images/bounty_details.png");
-  background-repeat: no-repeat;
-  background-size: contain;
+.transaction-status {
+  font-family: 'Muli', sans-serif;
+  display: block;
+  position: relative;
+  width: 80%;
+  left: 10%;
+  top: 30px;
+  margin-bottom: 30px;
+  border-radius: 2px;
+  padding: 3vh 5vw;
+  text-align: center;
+}
+
+.transaction-header {
+  font-family: 'Muli', sans-serif;
+  display: block;
+  position: relative;
+  width: 80%;
+  left: 10%;
+  top: 30px;
+  padding: 3vh 5vw;
+  text-align: center;
+}
+
+.waiting_room_entertainment {
+  text-align: center;
+}
+
+.bounty_details .quote-container {
+  width: 55%;
+  margin: 4rem auto;
+  font-weight: 700;
+  z-index: 2;
+}
+
+.bounty_details .quote_text {
+  font-size: 1.1rem;
+  color: #4A4A4A;
+}
+
+.bounty_details .quote_author {
+  color: #4A4A4A;
+  margin: 1rem auto;
+  font-size: 1rem;
 }
 
 .ethereum-issue {
@@ -575,108 +617,63 @@ a.btn {
 
 .ethereum-issue,
 .issue-url {
-  font-size: 1rem;
+  font-size: 1.2rem;
+  text-align: center;
 }
 
 .rocket {
   position: absolute;
-  left: 60rem;
-  top: 18rem;
-  width: 5rem;
+  top: 10rem;
+  width: 4rem;
   animation: MoveUpDown 3s infinite alternate;
   -webkit-animation: MoveUpDown 3s infinite alternate;
 }
 
-@media (min-width: 1441px) and (max-width: 2560px) {
+@media (max-width: 575.98px) {
 
-  .loading_img > img {
-    max-width: 400px;
+  #timer {
+    margin-bottom: 10px;
+  }
+
+  .bounty-info div {
+    width: 100%;
+  }
+
+  .loading .issue-url {
+    font-size: 1rem;
   }
 
   .rocket {
-    left: 125rem;
-    top: 35rem;
-    width: 10rem;
-  }
-}
-
-@media (min-width: 1025px) and (max-width: 1440px) {
-  .rocket {
-    left: 65rem;
-    top: 22rem;
-    width: 4rem;
-  }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-  .rocket {
-    left: 43rem;
-    top: 13rem;
-    width: 3rem;
-  }
-
-  .loading_img > img {
-    max-width: 200px;
-    padding-top: 0;
-  }
-
-  .bg-container {
-    position: relative;
-    top: -3rem;
+    width: 3.5rem;
   }
 }
 
 @media (max-width: 768px) {
-
-  .bg-container {
-    background-color: #3f24f9;
-    position: relative;
-    top: -3rem;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-bottom: 2rem;
-  }
-
-  .open {
-    background-size: 0% 0%;
-  }
-
-  .loading_img img {
-    padding-top: 0;
-  }
-
   .issue-url {
     margin-top: 15px;
   }
 }
 
-@media (min-width: 426px) and (max-width: 768px) {
-  .rocket {
-    left: 1rem;
-    top: 9.5rem;
-    width: 3rem;
-  }
-
-  .loading_img > img {
-    max-width: 100px;
+@media (max-width: 991.98px) {
+  .explorer {
+    display: none;
   }
 }
 
-@media (min-width: 320px) and (max-width: 425px) {
+@media (min-width: 768px) {
+  .activity-time {
+    margin-left: 0.625rem !important;
+  }
 
   .rocket {
-    left: 1rem;
-    top: 6rem;
-    width: 3rem;
+    right: 15rem;
   }
+}
 
-  .transaction-status {
-    margin-bottom: 30px;
-    padding: 0vh 0vw;
-  }
+@media (min-width: 1441px) and (max-width: 2560px) {
 
-  .loading_img > img {
-    max-width: 50px;
+  .bounty_details .quote-container {
+    margin-top: 1rem;
   }
 }
 
@@ -684,6 +681,7 @@ a.btn {
   0% { transform: translateY(0); }
   100% { transform: translateY(-3rem); }
 }
+
 @-webkit-keyframes MoveUpDown {
   0% { transform: translateY(0); }
   100% { transform: translateY(-3rem); }
