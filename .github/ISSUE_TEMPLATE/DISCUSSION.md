@@ -11,5 +11,4 @@ Provide a general summary of the issue in the title above and use relevant field
 
 ### Discussion
 
-[comment]: # (What convo would you like to facilitate?)
-
+[comment]: # (What conversation would you like to facilitate?)
