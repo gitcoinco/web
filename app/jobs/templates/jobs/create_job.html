@@ -43,6 +43,13 @@
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash job-header">
       {% include 'shared/nav.html' %}
+      {% if messages %}
+      <ul class="messages">
+          {% for message in messages %}
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+          {% endfor %}
+      </ul>
+      {% endif %}
       <div id="job-board-title">Post a Job</div>
     </div>
 
@@ -54,7 +61,7 @@
               <form id="new-job-form" method="POST" action="#">
                 {% csrf_token %}
                     <label class="form__label">{{ form.title.label_tag }}</label>
-                    <input name='jobTitle' id="jobTitle" class="form__input" type="text" placeholder="Enter Job Title" value="{% if form.title.value  %}{{ form.title.value }}{%endif%}" />
+                    <input name='title' id="jobTitle" class="form__input" type="text" placeholder="Enter Job Title" value="{% if form.title.value  %}{{ form.title.value }}{%endif%}" />
                     <div class="col-12 w-100">
                       {{ form.title.errors }}
                     </div>
@@ -66,7 +73,7 @@
                     </div>
 
                     <label class="form__label">{{ form.location.label_tag }}</label>
-                    <input name='jobLocation' id="jobLocation" class="form__input" type="text" placeholder="Enter Job Location" value="{% if form.location.value  %}{{ form.location.value }}{%endif%}" />
+                    <input name='location' id="jobLocation" class="form__input" type="text" placeholder="Enter Job Location" value="{% if form.location.value  %}{{ form.location.value }}{%endif%}" />
                     <div class="col-12 w-100">
                       {{ form.location.errors }}
                     </div>
@@ -78,7 +85,7 @@
                     </div>
 
                     <label class="form__label">{{ form.company.label_tag }}</label>
-                    <input name='jobCompany' id="jobCompany" class="form__input" type="text" placeholder="Enter Company" value="{% if form.company.value  %}{{ form.company.value }}{%endif%}" />
+                    <input name='company' id="jobCompany" class="form__input" type="text" placeholder="Enter Company" value="{% if form.company.value  %}{{ form.company.value }}{%endif%}" />
                     <div class="col-12 w-100">
                       {{ form.company.errors }}
                     </div>

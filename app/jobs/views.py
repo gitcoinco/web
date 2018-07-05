@@ -1,4 +1,5 @@
 # Third-Party imports
+from django.contrib import messages
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 
@@ -20,12 +21,13 @@ def job_detail(request, pk):
 
 
 def create_job(request):
+    context = dict()
     if request.method == 'POST':
         form = JobForm(user=request.user, data=request.POST)
-        # TODO: Use message here to user after successful submission
         if form.is_valid():
             form.save()
+            messages.success(request, 'Job has been submitted!')
     else:
         form = JobForm(user=request.user)
-    context = {'form': form}
+    context['form'] = form
     return render(request, 'jobs/create_job.html', context)
