@@ -20,15 +20,15 @@
     <div class="warning mb-2">{% trans "Warning: the ethereum network is quite congested at the moment." %} <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[{% trans "Stats" %}]</a></div>
   {% endif %}
   <div class="row" style="margin: auto -8px">
-    <div class="col-lg-5 d-flex gas-dark-bg py-3">
+    <div class="col-md-5 d-flex gas-dark-bg py-3">
       <img class="gas-image" src="{% static "v2/images/gas.png" %}">
       <div id="gas-fee-details" class="text-center pl-3">
         <h5 class="font-subheader green">Your Gas Fee:</h5>
-        <p class="font-body" id="gas-usd">$0.095</p>
-        <p class="font-body" id="gas-eth">0.000105ETH</p>
+        <p class="font-body" id="gas-usd"></p>
+        <p class="font-body" id="gas-eth"></p>
       </div>
     </div>
-    <div class="col-lg-7 gas-rates d-flex flex-column justify-content-between">
+    <div class="col-md-7 gas-rates d-flex flex-column justify-content-between">
       <div class="message"></div>
       <div id="default-recommended-gas" data-amount="{{recommend_gas_price_avg | floatformat}}" class="py-1 pl-5 recommended-prices"></div>
       <div id="slow-recommended-gas" data-amount="{{recommend_gas_price_slow | floatformat}}" class="py-1 pl-5 recommended-prices"></div>
@@ -44,6 +44,7 @@
   {% if recommend_gas_price > 30 %}
     <div class="warning mb-2">{% trans "Warning: the ethereum network is quite congested at the moment." %} <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[{% trans "Stats" %}]</a></div>
   {% endif %}
+  {% include 'shared/gas_advisories.html' %}
   <label id="metamask_label" style="display:none"><img src="{% url "avatar" %}?repo=https://github.com/MetaMask&v=3" width="20px" height="20px">{% blocktrans %}The following MetaMask settings should give a <span id="confTime">5</span> min confirmation for <span id="ethAmount">unknown</span> ETH (<span id="usdAmount">unknown</span> USD){% endblocktrans %} <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[{% trans "view graph" %}]</a> :
   </label>
   <label id="trust_label" style="display:none"><img src="{% url "avatar" %}?repo=https://github.com/TrustWallet&v=3" width="20px" height="20px">{% blocktrans %}The following Trust settings should give a <span id="confTime">5</span> min confirmation for <span id="ethAmount">unknown</span> ETH (<span id="usdAmount">unknown</span> USD){% endblocktrans %} <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[{% trans "view graph" %}]</a> :

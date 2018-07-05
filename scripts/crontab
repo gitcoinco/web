@@ -41,6 +41,9 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 15 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash pending_start_work_actions  >> /var/log/gitcoin/pending_start_work_actions.log  2>&1
 #0 0 1 */3 * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash send_quarterly_stats --live  >> /var/log/gitcoin/send_quarterly_stats.log  2>&1
 
+## INFRASTRUCTURE
+*/15 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash warm_cache  >> /var/log/gitcoin/warm_cache.log  2>&1
+
 
 11 10 * * * cd gitcoin/coin; bash scripts/run_management_command.bash expiration_tip  >> /var/log/gitcoin/expiration_tip.log  2>&1
 1 10 * * 1 cd gitcoin/coin; bash scripts/run_management_command.bash assemble_leaderboards  >> /var/log/gitcoin/assemble_leaderboards.log  2>&1

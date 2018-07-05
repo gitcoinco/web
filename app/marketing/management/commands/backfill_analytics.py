@@ -1,8 +1,27 @@
+# -*- coding: utf-8 -*-
+'''
+    Copyright (C) 2018 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+'''
+
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.models import Bounty
-from marketing.models import Stat
+import marketing.stats as stats
+import pytz
 
 
 class Command(BaseCommand):
@@ -10,30 +29,10 @@ class Command(BaseCommand):
     help = 'backfills analytics that havent been pull by pull stats'
 
     def handle(self, *args, **options):
-
-        that_time = timezone.now()
-        while True:
-            that_time = that_time - timezone.timedelta(hours=1)
-            bounties = Bounty.objects.filter(
-                fulfillment_accepted_on__gt=(that_time - timezone.timedelta(hours=24)),
-                fulfillment_accepted_on__lt=that_time)
-            hours = 0
-            value = 0
-            for bounty in bounties:
-                try:
-                    hours += bounty.fulfillments.filter(accepted=True).first().fulfiller_hours_worked
-                    value += bounty.value_in_usdt
-                except Exception:
-                    pass
-            print(that_time, bounties.count(), value, hours)
-            if value and hours:
-                val = round(float(value)/float(hours), 2)
-                try:
-                    key = 'bounties_hourly_rate_inusd_last_24_hours'
-                    Stat.objects.create(
-                        created_on=that_time,
-                        key=key,
-                        val=(val),
-                        )
-                except Exception:
-                    pass
+        target_date = timezone.now() - timezone.timedelta(days=180)
+        now = timezone.now()
+        that_time = timezone.datetime(now.year, now.month, now.day, 1, 1, 1, tzinfo=pytz.UTC)
+        while that_time > target_date:
+            that_time = that_time - timezone.timedelta(days=1)
+            stats.joe_dominance_index(that_time)
+            stats.bounties_by_status_and_keyword(that_time)

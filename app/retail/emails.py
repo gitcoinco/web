@@ -552,8 +552,22 @@ Back to building,
             'primer': 'Build out Windows support for the Rotkehlchen asset management platform.',
         },
     ]
-    except:
-        bounties = []
+
+    #### don't need to edit anything below this line
+
+    bounties = []
+    for nb in bounties_spec:
+        try:
+            bounty = Bounty.objects.get(
+                current_bounty=True,
+                github_url__iexact=nb['url'],
+            )
+            bounties.append({
+                'obj': bounty,
+                'primer': nb['primer']
+                })
+        except:
+            pass
 
     ecosystem_bounties = ExternalBounty.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(weeks=1)).order_by('?')[0:5]
 
