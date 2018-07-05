@@ -26,7 +26,7 @@
       <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
     {% endif %}
   </a>
-  {% if not request.path|is_in_list:"/,/contributor,/about,/mission,/results,/slack" %}
+  {% if not request.path|is_in_list:"/,/contributor,/about,/mission,/results,/slack,/help,/how/funder,/how/contributor,/tools" %}
     <div class="navbar-network ml-5 py-1 px-2 hidden">
       <i class="fas fa-circle pr-1"></i>
       <span id="current-network"></span>
@@ -115,6 +115,6 @@
     </nav>
   </div>
 </nav>
-{% if not request.path|is_in_list:"/,/contributor,/about,/mission,/results,/slack" %}
+{% if not request.path|is_in_list:"/,/contributor,/about,/mission,/results,/slack,/help,/how/funder,/how/contributor,/tools" %}
   <p id="navbar-network-banner" class="px-0 py-1 m-0 font-caption hidden"></p>
 {% endif %}
