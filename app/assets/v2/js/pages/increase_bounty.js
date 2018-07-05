@@ -112,7 +112,7 @@ $(document).ready(function() {
         document.location.href = '/funding/details/?url=' + issueURL;
       }, 1000);
 
-      if (document.changePayoutAmount) {
+      if (!document.isFunder) {
         $.get('/issue/increase/changepayout/' + amount + '/?pk=' + bountyId + '&network=' + document.web3network);
       }
     }
