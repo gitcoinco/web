@@ -28,7 +28,7 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 import pytz
-from marketing.models import Alumni, EmailSubscriber, LeaderboardRank, Stat, ProgrammingLanguage
+from marketing.models import Alumni, EmailSubscriber, LeaderboardRank, ProgrammingLanguage, Stat
 from requests_oauthlib import OAuth2Session
 
 

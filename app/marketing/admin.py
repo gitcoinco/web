@@ -23,7 +23,7 @@ from django.utils.safestring import mark_safe
 
 from .models import (
     Alumni, EmailEvent, EmailSubscriber, EmailSupressionList, GithubEvent, GithubOrgToTwitterHandleMapping,
-    LeaderboardRank, Match, SlackPresence, SlackUser, Stat, ProgrammingLanguage,
+    LeaderboardRank, Match, ProgrammingLanguage, SlackPresence, SlackUser, Stat,
 )
 
 
