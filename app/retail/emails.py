@@ -471,7 +471,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Getting Started With Gitcoin | Gitcoin Profiles"
+    subject = "Gitcoin Q2 Update | Augur Testimonial"
 
     intro = '''
 
@@ -479,35 +479,35 @@ def render_new_bounty_roundup(to_email):
     Hi there
 </p>
 <p>
-This week, we shipped <a href="https://medium.com/gitcoin/getting-started-with-gitcoin-fa7149f2461a">
-Getting Started With Gitcoin.</a>
-In this post designed for our Gitcoin contributors, you’ll find all the info you
-need to set up your Gitcoin account and get to work contributing to open source projects!
+This week, we shipped <a href="https://medium.com/gitcoin/gitcoin-q2-update-c31e751889c8">Q2 updates.</a>
+In this update, we discuss our OKR’s for Q2, how we performed, and our goals moving forward into Q3.
 </p>
-We also published our first installment of
-<a href="https://medium.com/gitcoin/gitcoiner-profile-kenneth-ashley-b8f6e8b458a6">Gitcoin Profiles.</a>
-Gitcoiner Profiles are our way of saying thank you to our great community of open source developers for
-all of their hard work.
-This week's profile features Kenneth Ashley who has worked with Market Protocol, MyCrypto, CodeFund, and Gitcoin.
 
+<p>
+In addition to that, we highlighted <a href="https://medium.com/gitcoin/gitcoin-testimonials-augur-9bfe97368a30">
+Augur's work on the Gitcoin platform.</a>
+In this post, we briefly discuss what the goal of the Augur project is, how the team has used Gitcoin
+to build it, and some specifics about the important bounties they’ve had completed by the Gitcoin community.
+Special shout out to Tom Kysar and @cryptomental for their input on this one!
+</p>
+
+<p>
+Finally, we pushed our
+<a href="https://medium.com/p/804c18dc91da/edit">second installment of Gitcoiner profiles.</a>
+This weeks profile features UX ninja Will Goi. Will has worked closely with the Gitcoin team over the past
+few months to help us build out design features such as the new user profile page and the funds requested interface.
+</p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-<a href="https://youtu.be/_VJcqY2t_4U">A Dharma Protocol demo</a> featuring Nadav Hollander is now up on our
-Youtube channel.
+Our livestream recording featuring Andy Tudhope of Status has been added to the Gitcoin Youtube channel.
+<a href="https://www.youtube.com/watch?v=JiL0aPao50I&t=13s">Check it out!</a>
         </li>
         <li>
 <a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET.
-This week features Matt Lockyer of ERC-998 protocol and Jay Rush of QuickBlocks!
+This week features John Paller of Opolis!
         </li>
-        <li>
-Want to join a global blockchain hack summit and compete for $100k in prizes? Use code "gitcoin" during sign
-up at <a href="https://hacksummit.org/hackathon">hacksummit.org/hackathon</a> to join for free!
-        </li>
-        <li>
-Are you a Go developer looking for a role in Ethereum? Respond to this email and we'll let you know about
-some interesting opportunities!
-        </li>
+
     </ul>
 </p>
 <p>
@@ -516,52 +516,42 @@ Back to building,
 '''
     highlights = [
         {
-            'who': 'iamonuwa',
+            'who': 'subramanianv',
             'who_link': True,
-            'what': 'Added a protocol restriction to limit bonding to one transcoder on Livepeer.',
-            'link': 'https://gitcoin.co/issue/livepeer/livepeerjs/94/652',
-            'link_copy': 'See more',
-        },
-        {
-            'who': 'scsaba',
-            'who_link': True,
-            'what': 'Made possible to view address of an added token on MetaMask!',
-            'link': 'https://gitcoin.co/issue/MetaMask/metamask-extension/4440/644',
+            'what': 'Created a full test suite for Market Protocol’s Collateral.Ts',
+            'link': 'https://gitcoin.co/issue/MARKETProtocol/MARKET.js/53/708',
             'link_copy': 'View more',
         },
         {
-            'who': 'palevoo',
+            'who': 'HPrivakos',
             'who_link': True,
-            'what': 'Worked with Balance to display non-fungible tokens in their wallet.',
-            'link': 'https://gitcoin.co/issue/balance-io/balance-manager/240/571',
+            'what': 'Helped Decentraland create a tutorial for creating a static scene in their VR world.',
+            'link': 'https://gitcoin.co/issue/decentraland/MANA-community-fund-learning-content/8/707',
+            'link_copy': 'View more',
+        },
+        {
+            'who': 'subramanianv',
+            'who_link': True,
+            'what': 'Also improved the Livepeer UX by alerting users when their funds are too low to broadcast.',
+            'link': 'https://gitcoin.co/issue/livepeer/livepeerjs/125/703',
             'link_copy': 'View more',
         },
     ]
 
-    try:
-        bounties = [
-            {
-                'obj': Bounty.objects.get(
-                    current_bounty=True,
-                    github_url__iexact='https://github.com/zeppelinos/labs/issues/102'
-                ),
-                'primer': 'Help build the future of non-fungible protocols with ZeppelinOS',
-            },
-            {
-                'obj': Bounty.objects.get(
-                    current_bounty=True,
-                    github_url__iexact='https://github.com/AugurProject/augur-core/issues/689'
-                ),
-                'primer': 'Put the finishing touches on Augur less than a month before their main net launch!',
-            },
-            {
-                'obj': Bounty.objects.get(
-                    current_bounty=True,
-                    github_url__iexact='https://github.com/paritytech/polkadot/issues/212'
-                ),
-                'primer': 'Contribute to Parity Tech, a leading Ethereum client.',
-            },
-        ]
+    bounties_spec = [
+        {
+            'url': 'https://github.com/MARKETProtocol/MARKET.js/issues/60',
+            'primer': 'Help the Market Protocol team validate deposits and withdrawals before a transaction is created.',
+        },
+        {
+            'url': 'https://github.com/MetaMask/metamask-extension/issues/4161',
+            'primer': 'Contribute to MetaMask by building a feature for account and network changes when using a Web 3.0 plugin.',
+        },
+        {
+            'url': 'https://github.com/rotkehlchenio/rotkehlchen/issues/28',
+            'primer': 'Build out Windows support for the Rotkehlchen asset management platform.',
+        },
+    ]
     except:
         bounties = []
 
