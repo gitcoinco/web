@@ -17,11 +17,11 @@
 {% load i18n static %}
 {% if page == 'submit_bounty' %}
 <div id="no_issue_error" class="submit-notification container-fluid" style="display: block; background-color: #3d00fd;">
-  <div class="row align-items-center px-4 text-center text-lg-left">
-      <div class="col-lg-10 col-sm-12 pt-3">
+  <div class="row align-items-center px-4 py-2 text-center text-lg-left">
+      <div class="col-lg-10 col-sm-12 py-2 px-5">
         <h3>{% trans "Tips for Funding an Issue" %}</h3>
         <p>
-          <ol>
+          <ol class="pl-3 mb-0">
             <li>{% trans "Create an issue on Github so that we can reference the details of the issue." %}</li>
             <li>{% trans "What to fund? A new feature, feature improvements, bug fixes, code review, design and more." %}</li>
           </ol>
@@ -34,8 +34,8 @@
 </div>
 {% elif page == 'kill_bounty' %}
 <div id="no_issue_error" class="submit-notification container-fluid" style="display: block; background-color: #4a4a4a;">
-  <div class="row align-items-center px-4 pt-2 text-center text-lg-left">
-    <div class="col-lg-10 col-sm-12">
+  <div class="row align-items-center px-4 py-2 text-center text-lg-left">
+    <div class="col-lg-10 col-sm-12 py-2 px-5">
       <h3>{% trans "Cancelling a Bounty is Sometimes Necessary" %}</h3>
       <p>
         {% trans "Don't forget once you cancel you will receive the funds & can reuse it on your next bounty." %}
@@ -48,11 +48,11 @@
 </div>
 {% elif page == 'process_bounty' %}
 <div id="no_issue_error" class="submit-notification container-fluid" style="display: block; background-color: #fe006a;">
-  <div class="row align-items-center px-4 pt-2 text-center text-lg-left">
-    <div class="col-lg-10 col-sm-12">
+  <div class="row align-items-center px-4 py-2 text-center text-lg-left">
+    <div class="col-lg-10 col-sm-12 py-2 px-5">
       <h3>{% trans "Accepting a Submission is Exciting" %}</h3>
       <p>
-        <ol>
+        <ol class="pl-3 mb-0">
           <li>{% trans "Make sure the submitter has completed the requirements to the specifications of your bounty." %}</li>
           <li>{% trans "Feedbacks and gratitude are always nice ways to continue a relationship." %}</li>
         </ol>
@@ -65,8 +65,8 @@
 </div>
 {% elif page == 'fulfill_bounty' %}
 <div id="no_issue_error" class="submit-notification container-fluid" style="display: block; background-color: #3d00fd;">
-  <div class="row align-items-center px-4 pt-2 text-center text-lg-left">
-    <div class="col-lg-10 col-sm-12 mt-3">
+  <div class="row align-items-center px-4 py-2 text-center text-lg-left">
+    <div class="col-lg-10 col-sm-12 py-2 px-5">
       <h3>{% trans "Submit Work" %}</h3>
       <p>
         {% trans "You have worked really hard! Time to submit work and get paid" %}

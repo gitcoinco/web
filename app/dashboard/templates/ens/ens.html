@@ -1,6 +1,7 @@
 {% extends 'ens/base.html' %}
 {% load i18n static %}
 {% block 'scripts' %}
+  <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
   <script src="{% static 'v2/js/shared.js' %}"></script>
   <script src="{% static 'ens/index.js' %}"></script>
   {% block 'ens_script' %}
@@ -8,10 +9,6 @@
 {% endblock %}
 <!-- Main -->
 {% block 'main' %}
-  <section>
-    {% include 'shared/current_balance.html' %}
-  </section>
-  <br>
   <section id="main" class="mt-2">
     <header>
       <span class="avatar">

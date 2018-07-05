@@ -44,6 +44,7 @@ span {
   color: black !important;
   font-size: 0.9rem;
 }
+
 .navbar .interior .dropdown-item:hover {
   color: white !important;
 }
@@ -87,6 +88,32 @@ span {
 
 .navbar a.slack i {
   margin-right: 3px;
+}
+
+.navbar-network {
+  border: 1px solid #828282;
+  color: #fff;
+  border-radius: 25px;
+  font-size: 0.6rem;
+  font-weight: lighter;
+}
+
+.navbar-network i {
+  font-size: 7px;
+  position: relative;
+  top: -1px;
+}
+
+.navbar-network a {
+  text-decoration: underline;
+}
+
+.green {
+  color: #26cd7f;
+}
+
+.red {
+  color: #ff3232;
 }
 
 .modal {
@@ -550,13 +577,6 @@ input[type=text].loading {
   background-repeat: no-repeat;
   background-position: right;
   background-size: 30px;
-}
-
-#no_metamask_error img {
-  filter: grayscale(100%);
-  -moz-filter: grayscale(100%);
-  -ms-filter: grayscale(100%);
-  -o-filter: grayscale(100%);
 }
 
 #primary_form {
@@ -1105,6 +1125,7 @@ input.is-invalid {
   font-family: 'Muli', sans-serif;
   font-size: 10px !important;
   min-height: 100px;
+  padding: 0.6rem;
 }
 
 .submit-notification h3 {
