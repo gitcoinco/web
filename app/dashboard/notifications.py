@@ -202,6 +202,7 @@ def build_message_for_slack(bounty, event_name):
         str: Message to post to slack.
 
     """
+    from dashboard.utils import humanize
     conv_details = ""
     usdt_details = ""
     try:
@@ -211,9 +212,10 @@ def build_message_for_slack(bounty, event_name):
         pass  # no USD conversion rate
 
     title = bounty.title if bounty.title else bounty.github_url
-    msg = f"{event_name.replace('bounty', 'funded_issue')} worth {round(bounty.get_natural_value(), 4)} {bounty.token_name} " \
-          f"{usdt_details}" \
-          f"{bounty.token_name}: {title} \n\n{bounty.get_absolute_url()}"
+    msg = f"*{humanize(event_name.replace('bounty', 'funded_issue'))}*" \
+          f"\n*Bounty worth*: {round(bounty.get_natural_value(), 4)} {bounty.token_name} {usdt_details}" \
+          f"\n*Title*: {title}" \
+          f"\n{bounty.get_absolute_url()}"
     return msg
 
 
@@ -552,10 +554,19 @@ def amount_usdt_open_work():
         float: The sum of all USDT values rounded to the nearest 2 decimals.
 
     """
-    from dashboard.models import Bounty
-    bounties = Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
+    bounties = open_bounties()
     return round(sum([b.value_in_usdt_now for b in bounties if b.value_in_usdt_now]), 2)
 
+
+def open_bounties():
+    """Get all current open and submitted work.
+
+    Returns:
+        QuerySet: The mainnet Bounty objects which are of open and submitted work statuses.
+
+    """
+    from dashboard.models import Bounty
+    return Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
 
 def maybe_market_tip_to_github(tip):
     """Post a Github comment for the specified Tip.
@@ -758,7 +769,7 @@ def maybe_notify_bounty_user_escalated_to_slack(bounty, username, last_heard_fro
     if not bounty.is_notification_eligible(var_to_check=settings.SLACK_TOKEN):
         return False
 
-    msg = f"@vivek, {bounty.github_url} is being escalated to you, due to inactivity for {last_heard_from_user_days} days from @{username} on the github thread."
+    msg = f"<@U88M8173P>, {bounty.github_url} is being escalated to you, due to inactivity for {last_heard_from_user_days} days from <@{username}> on the github thread."
 
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
@@ -832,7 +843,7 @@ def maybe_notify_bounty_user_warned_removed_to_slack(bounty, username, last_hear
     if not bounty.is_notification_eligible(var_to_check=settings.SLACK_TOKEN):
         return False
 
-    msg = f"@{username} has been warned about inactivity ({last_heard_from_user_days} days) on {bounty.github_url}"
+    msg = f"*@{username}* has been warned about inactivity ({last_heard_from_user_days} days) on {bounty.github_url}"
 
     try:
         sc = SlackClient(settings.SLACK_TOKEN)

@@ -33,7 +33,7 @@
     <h1>{% trans "Process Faucet Request" %} {{obj.pk}}</h1>
     <div style="border: 1px solid black; padding: 5px;">
         {% trans "Github Profile" %}: <a href="https://github.com/{{obj.github_username}}
-        ">@{{obj.github_username}}</a>
+        " target="_blank" rel="noopener noreferrer">@{{obj.github_username}}</a>
         <br>
         {% trans "Comments" %} {{obj.comment}}
     </div>

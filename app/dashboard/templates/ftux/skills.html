@@ -18,14 +18,14 @@
 {% load i18n static %}
 <div id="skills" class="row">
   <div class="col-12">
-    <h2>{% trans "What's your skill set?" %}</h2>
+    <h2>{% trans "What's Your Skill Set?" %}</h2>
   </div>
   <div class="col-12 offset-md-2 col-md-8 font-body pl-0 pr-0">
-    <p class="font-caption label">{% trans "Suggested" %}</p>
+    <p class="font-caption label">{% trans "Select Skills that Apply" %}</p>
     <div id="suggested-tags"></div>
   </div>
   <div class="search col-12 offset-md-2 col-md-8 pl-0 pr-0">
-    <p class="font-caption label">{% trans "Add Skill" %}</p>
+    <p class="font-caption label">{% trans "Add Skills" %}</p>
     <div class="search-area col-12">
       <input class="focus-effect form__input form__input_lg" id="keywords" type="text" placeholder="{% trans 'List out : Skill 1, Skill 2 ...' %}" />
       <span class="focus-border">
@@ -43,9 +43,9 @@
     <div class="form__select2 col-12 col-md-8 col-lg-9 pl-0 pr-0">
         <select class="w-100 js-select2" id="experienceLevel">
             <option value="">{% trans "Any" %}</option>
-            <option value="beginner">{% trans "Beginner ( < 4 years Experience )" %}</option>
-            <option value="intermediate">{% trans "Intermediate ( 4 - 5 years Experience )" %}</option>
-            <option value="advanced">{% trans "Advanced ( > 5 years Experience )" %}</option>
+            <option value="beginner">{% trans "Beginner ( < 3 years Experience )" %}</option>
+            <option value="intermediate">{% trans "Intermediate ( 4 - 6 years Experience )" %}</option>
+            <option value="advanced">{% trans "Advanced ( 7+ years Experience )" %}</option>
         </select>
     </div>
   </div>

@@ -15,53 +15,77 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-<div class="nav-link logo">
-    <a href="/">
-    <img class="nav_avatar" title='Gitcoin' alt="Gitcoin" width=25 height=25 src="{% static "v2/images/helmet_icon.png" %}">
-    </a>
-</div>
 
-{% if user.is_authenticated %}
-<div class="nav-link login">
-  <img class="nav_avatar" width=25 height=25
-    src="/static/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}">
-  {{ user }}
-</div>
-{% else %}
 <link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
+<link rel="stylesheet" href="{% static "v2/css/base.css" %}">
 
-<a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">
-  <i class="fab fa-github"></i>{% trans "Login" %}
-</a>
-{% endif %}
+<div class="navbar navbar-expand-md w-100 p-0 m-0 mb-2">
+  <a class="navbar-brand py-0" href="/">
+    <img id="logo" src="{% static "v2/images/logo_large.png" %}" width="150" height="50" />
+  </a>
+
+  <div class="navbar-network ml-5 py-1 px-2 hidden">
+    <i class="fas fa-circle pr-1"></i>
+    <span id="current-network"></span>
+  </div>
+  
+  {% if user.is_authenticated %}
+  <div class="nav-link login">
+    <img class="nav_avatar" width=25 height=25
+      src="{% if user.profile.avatar %}{{ user.profile.avatar.svg.url }}{% else %}/static/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
+    {{ user }}
+  </div>
+  {% else %}
+  <a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">
+    <i class="fab fa-github"></i>{% trans "Login" %}
+  </a>
+  {% endif %}
+</div>
+
 <style>
-
-.nav_avatar {
-  border-radius: 1px;
-  margin-bottom: -7px;
-}
-.nav-link.login {
-  position: absolute;
-  top:15px;
-  right: 15px;
-}
-
-.nav-link.login i {
-  margin-right: 15px;
-}
-.nav-link.logo {
-  position: absolute;
-  top:20px;
-  left: 20px;
-}
-
-
-@media screen and (max-width: 600px) {
-  .nav-link.login,
-  .nav_avatar {
-    display: none;
+  .navbar {
+    justify-content: initial;
   }
-}
 
+  .nav_avatar {
+    margin-bottom: -7px;
+    margin-right: 10px;
+  }
 
+  .navbar-network {
+    position: initial;
+    border-color: #fff;
+  }
+
+  .nav-link.login {
+    position: absolute;
+    top:15px;
+    right: 15px;
+    text-transform: none;
+  }
+
+  .nav-link.login:hover {
+    color: #FFFFFF;
+  }
+
+  .nav-link.login i {
+    margin-right: 15px;
+  }
+
+  .nav-link.logo {
+    position: absolute;
+    top:20px;
+    left: 20px;
+  }
+
+  @media screen and (max-width: 600px) {
+    .nav-link.login,
+    .nav_avatar {
+      display: none;
+    }
+  }
 </style>
+
+<script src="{% static "v2/js/tooltip.js" %}"></script>
+<script src="{% static "v2/js/base.js" %}"></script>

@@ -82,7 +82,7 @@ docker-compose exec web python3 app/manage.py sync_geth rinkeby 402 99999999999
 You can ensure your project will pass all Travis tests by running:
 
 ```shell
-make tests # docker-compose exec web pytest -p no:ethereum; npm run eslint;
+make tests # docker-compose exec -e DJANGO_SETTINGS_MODULE=app.settings web pytest -p no:ethereum; npm run eslint;
 ```
 
 The above make command will run `eslint` and `pytest`.

@@ -22,6 +22,7 @@
 
 {% include 'shared/head.html' %}
 {% include 'shared/cards_pic.html' %}
+<link rel="stylesheet" href="{% static "v2/css/mission.css" %}" />
 
 <body class="{{ active }}">
 {% include 'shared/tag_manager_2.html' %}
@@ -29,7 +30,6 @@
   {% include 'shared/nav.html' %}
   {% include 'shared/minihero.html' with h1='Mission' position_h1_below_logo=1 %}
 </div>
-
 
 <div class="container-fluid" style="background: white;" id="mission_hero">
   <div class="row p-5 p-5 animatedParent">
@@ -126,7 +126,65 @@
   </div>
 </div>
 
-<div class="container-fluid" style="background-color: #fff;" id="we_value">
+<div class="container-fluid" id="we_believe">
+  <div class="row">
+    <div class="col pb-4">
+      <h4 class="text-left text-uppercase">
+        {% blocktrans %}
+        <span class="text-highlight-green">We</span> Believe
+        {% endblocktrans %}
+      </h4>
+    </div>
+  </div>
+
+  <div class="row animatedParent we-want">
+    <div class="col-md-12 col-lg-8 col-xl-6 animated fadeInLeftShort">
+      <div class="row mb-5">
+        <div class="col-md-12 d-flex align-items-center">
+          <img
+            class="icon"
+            src="{% static "v2/images/mission/believe/bounty.png" %}"
+          />
+          <span class="icon-text">
+          {% blocktrans %}
+           We believe in open standards and fat protocols, and have built Gitcoin with StandardBounties -- an Open, Free, Fair, Bounty Protocol on Ethereum.
+          {% endblocktrans %}
+          </span>
+        </div>
+      </div>
+
+      <div class="row mb-5">
+        <div class="col-md-12 d-flex align-items-center">
+          <img
+            class="icon"
+            src="{% static "v2/images/mission/believe/no_token.png" %}"
+          />
+          <span class="icon-text">
+          {% blocktrans %}
+            We believe that an ICO and tokenization is not the best business model for our dapp. We dot not have a token
+          {% endblocktrans %}
+          </span>
+        </div>
+      </div>
+
+      <div class="row mb-5">
+        <div class="col-md-12 d-flex align-items-center">
+          <img
+            class="icon"
+            src="{% static "v2/images/mission/believe/blockchain.png" %}"
+          />
+          <span class="icon-text">
+            {% trans "We believe that blockchain is a game-changer for funding of Open Source. We believe that Open Source Funding and Open Source Jobs will be built on Open Source Money" %}
+          </span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<div class="container-fluid" style="background-color: #f2f6f9;" id="we_value">
   <div class="row">
     <div class="col pb-4">
       <h4 class="text-left text-uppercase">
@@ -137,7 +195,7 @@
     </div>
   </div>
 
-  <div class="row animatedParent mb-5">
+  <div class="row animatedParent">
     <div class="col-md-12 col-lg-6">
       <div class="row">
         <div class="col-6">
@@ -234,7 +292,7 @@
   </div>
 </div>
 
-<div class="container-fluid" style="background-color: #f2f6f9;" id="we_interact">
+<div class="container-fluid" id="we_interact">
   <div class="row">
     <div class="col pb-4">
       <h4 class="text-left text-uppercase">
