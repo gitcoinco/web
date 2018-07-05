@@ -230,6 +230,7 @@ urlpatterns = [
     url(r'^_administration/email/new_match$', retail.emails.new_match, name='new_match'),
     url(r'^_administration/email/quarterly_roundup$', retail.emails.quarterly_roundup, name='quarterly_roundup'),
     url(r'^_administration/email/new_work_submission$', retail.emails.new_work_submission, name='new_work_submission'),
+    path('_administration/email/suggested_bounties', retail.emails.suggested_bounties, name='suggested_bounties'),
     url(
         r'^_administration/email/new_bounty_rejection$',
         retail.emails.new_bounty_rejection,

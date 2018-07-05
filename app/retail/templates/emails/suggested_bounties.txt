@@ -1,0 +1,8 @@
+We've found 3 issues that match your skills and interest!
+
+{% for bounty in bounties %}
+  {% include 'emails/bounty.txt' with bounty=bounty %}
+{% endfor %}
+
+Good Luck!
+- Gitcoin team
