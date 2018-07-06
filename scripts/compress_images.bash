@@ -31,6 +31,6 @@ echo "Squashing SVG files..."
 find ./ -type f -name '*.svg' -exec svgo {} \;
 
 echo "Compressing JPG files..."
-find ./ -type f -name '*.jpg' -exec jpeg-recompress -a -s -c {} {} \;
+find ./ -type f -name '*.jpg' -exec jpeg-recompress -n 30 -x 75 -l 128 -a -s -c {} {} \;
 
 echo "Image processing completed!"

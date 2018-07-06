@@ -44,6 +44,7 @@ span {
   color: black !important;
   font-size: 0.9rem;
 }
+
 .navbar .interior .dropdown-item:hover {
   color: white !important;
 }
@@ -87,6 +88,32 @@ span {
 
 .navbar a.slack i {
   margin-right: 3px;
+}
+
+.navbar-network {
+  border: 1px solid #828282;
+  color: #fff;
+  border-radius: 25px;
+  font-size: 0.6rem;
+  font-weight: lighter;
+}
+
+.navbar-network i {
+  font-size: 7px;
+  position: relative;
+  top: -1px;
+}
+
+.navbar-network a {
+  text-decoration: underline;
+}
+
+.green {
+  color: #26cd7f;
+}
+
+.red {
+  color: #ff3232;
 }
 
 .modal {
@@ -552,13 +579,6 @@ input[type=text].loading {
   background-size: 30px;
 }
 
-#no_metamask_error img {
-  filter: grayscale(100%);
-  -moz-filter: grayscale(100%);
-  -ms-filter: grayscale(100%);
-  -o-filter: grayscale(100%);
-}
-
 #primary_form {
   max-width: 550px;
   margin: 0 auto;
@@ -772,6 +792,21 @@ input[type=text].loading {
 .metamask_recc {
   width: 45%;
   display: inline-block;
+}
+
+#metamask_context .red_warning {
+  background-color: #fbe0d6;
+  color: #fb9470;
+  padding: 5px 10px;
+  border-radius: 2px;
+  margin-bottom: 15px;
+  display: block;
+}
+
+#metamask_context .red_warning a {
+  color: #fb9470 !important;
+  font-weight: bold;
+  text-decoration: underline;
 }
 
 #metamask_context {
@@ -1090,6 +1125,7 @@ input.is-invalid {
   font-family: 'Muli', sans-serif;
   font-size: 10px !important;
   min-height: 100px;
+  padding: 0.6rem;
 }
 
 .submit-notification h3 {
@@ -1587,6 +1623,20 @@ input.is-invalid {
   height: 1rem;
   margin-top: .2rem;
   margin-right: 1rem;
+}
+.results ul#programming_languages{
+  text-align: center;
+}
+.results ul#programming_languages li{
+  list-style: none;
+  padding: 10px 50px;
+  margin-bottom: 20px;
+  display: inline-block;
+  background-color: #eee;
+  border: 1px solid black;
+}
+.results ul#programming_languages li.selected{
+  background-color: #ccc;
 }
 
 .yellow_box {

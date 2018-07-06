@@ -132,7 +132,6 @@ def process_faucet_request(request, pk):
         messages.success(request, 'sent')
         return redirect(reverse('admin:index'))
 
-    faucet_amount = settings.FAUCET_AMOUNT
     context = {
         'obj': faucet_request,
         'faucet_amount': faucet_amount,

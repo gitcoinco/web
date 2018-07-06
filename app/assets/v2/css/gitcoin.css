@@ -466,6 +466,7 @@ div.button-pink {
   border-top: 1px solid var(--gc-green);
   background: black;
 }
+
 .sitenav {
   display: flex;
   flex-direction: column;
@@ -475,9 +476,26 @@ div.button-pink {
   width: 7rem;
   margin-bottom: 1rem;
 }
+
 .sitenav a {
   color: var(--text-light);
   margin-bottom: 0.5rem;
+}
+
+.network-banner--warning {
+  background: #ff3232;
+  width: 100%;
+  color: white;
+  text-align: center;
+}
+
+.network-banner--warning a {
+  color: white;
+  text-decoration: none;
+}
+
+.network-banner--warning a:hover {
+  text-decoration: underline;
 }
 
 .lil-white-button {
