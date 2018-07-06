@@ -290,7 +290,7 @@
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center">
             <ul id="programming_languages">
               {% for pl in programming_languages %}
-                <li class="{% if pl == keyword or pl == 'All' and keyword == '' %}selected{%endif%}">
+                <li class="button button--primary-o {% if pl == keyword or pl == 'All' and keyword == '' %}selected{%endif%}">
                   <a href="{% url 'results' %}/{% if pl != 'All' %}{{pl}}{%endif%}">
                     {{pl}}
                   </a>

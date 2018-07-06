@@ -94,8 +94,7 @@ span {
   border: 1px solid #828282;
   color: #fff;
   border-radius: 25px;
-  font-size: 0.6rem;
-  font-weight: lighter;
+  font-size: 0.65rem;
 }
 
 .navbar-network i {
@@ -1624,19 +1623,21 @@ input.is-invalid {
   margin-top: .2rem;
   margin-right: 1rem;
 }
-.results ul#programming_languages{
+
+.results ul#programming_languages {
   text-align: center;
 }
-.results ul#programming_languages li{
+
+.results ul#programming_languages li {
   list-style: none;
-  padding: 10px 50px;
-  margin-bottom: 20px;
+  padding: 0.5rem 2rem;
+  margin-bottom: 1.5rem;
   display: inline-block;
-  background-color: #eee;
-  border: 1px solid black;
+  border: 1px solid #999;
 }
+
 .results ul#programming_languages li.selected{
-  background-color: #ccc;
+  background-color: #eee;
 }
 
 .yellow_box {
