@@ -68,8 +68,7 @@ def stats(request):
         ]
         types = filter_types(types, _filters)
     if _filter == 'KPI':
-        _filters = [
-        ]
+        _filters = []
         types = [
             'email_subscribers_active',
             'joe_dominance_index_30_value',
