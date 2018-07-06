@@ -174,7 +174,7 @@ var tokens = function(network_id) {
       { 'addr': '0x09617f6fd6cf8a71278ec86e23bbab29c04353a7', 'name': 'ULT', 'decimals': 18 },
       { 'addr': '0x4CEdA7906a5Ed2179785Cd3A40A69ee8bc99C466', 'name': 'AION', 'decimals': 8 },
       { 'addr': '0x4162178B78D6985480A308B2190EE5517460406D', 'name': 'CLN', 'decimals': 18 },
-      { 'addr': '0x7338809d1a2c6fbb6e755470ab2a28e8c5dac63c', 'name': 'OZR', 'decimals': 18}
+      { 'addr': '0x7338809d1a2c6fbb6e755470ab2a28e8c5dac63c', 'name': 'OZR', 'decimals': 18},
       { "addr": "0xc324a2f6b05880503444451b8b27e6f9e63287cb", "name": "XUC", "decimals": 18},
     ];
   } else if (network_id == 'ropsten') { // ropsten
