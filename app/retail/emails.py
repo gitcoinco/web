@@ -493,7 +493,7 @@ Special shout out to Tom Kysar and @cryptomental for their input on this one!
 
 <p>
 Finally, we pushed our
-<a href="https://medium.com/p/804c18dc91da/edit">second installment of Gitcoiner profiles.</a>
+<a href="https://medium.com/p/804c18dc91da">second installment of Gitcoiner profiles.</a>
 This weeks profile features UX ninja Will Goi. Will has worked closely with the Gitcoin team over the past
 few months to help us build out design features such as the new user profile page and the funds requested interface.
 </p>
