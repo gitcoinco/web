@@ -1,0 +1,15 @@
+{
+  "symbol": "VMC",
+  "address": "0xCC55cf17d21c758E52b87113a7143116e4d9EB10",
+  "overview":{
+        "en": "Vending Machine Chain (VMC) , is the world's first commercialized public chain for unmanned vending equipment, combining IoT technology and blockchain technology to create a blockchain + unmanned new retail solution.",
+        "zh": "新零链（Vending Machine Chain），是全球首个针对无人自动售卖设备的商业化公有链，结合物联网技术与区块链技术，打造区块链+无人新零售解决方案。"
+  },
+  "email": "vmc@vem.im",
+  "website": "http://vem.im/",
+  "whitepaper": "http://vem.im/upload/VMC-Vending-Machine-Chain.pdf",
+  "published_on": "2018-07-04",
+  "initial_price":{
+        "ETH":"0.0000125 ETH"
+  }
+}
