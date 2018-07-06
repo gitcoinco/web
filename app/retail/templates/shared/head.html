@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static is_in_list %}
 {% include 'shared/tag_manager_1.html' %}
 <meta charset="utf-8">
 <link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
@@ -62,7 +62,7 @@
 <title>{% if title %}{{title}}{% else %}{% trans "Grow Open Source" %}{% endif %} | Gitcoin</title>
 {% include 'shared/favicon.html' %}
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-{% if env == 'prod' %}
+{% if env|is_in_list:'prod,stage' %}
 <!-- Hotjar Tracking Code for gitcoin.co -->
 <script>
   (function(h,o,t,j,a,r){
