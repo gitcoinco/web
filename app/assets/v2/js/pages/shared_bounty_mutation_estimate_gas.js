@@ -3,7 +3,7 @@ $(document).ready(function() {
   var gasLimitEstimate = 0;
   // new new funding page
 
-  if (document.location.href.indexOf('funding/fulfill') != -1) {
+  if (document.location.href.indexOf('issue/fulfill') != -1) {
     gasLimitEstimate = 207103;
   }
   // new fulfill funding page
@@ -11,15 +11,15 @@ $(document).ready(function() {
     gasLimitEstimate = 318730;
   }
   // new fulfill funding page
-  if (document.location.href.indexOf('funding/increase') != -1) {
+  if (document.location.href.indexOf('issue/increase') != -1) {
     gasLimitEstimate = 56269;
   }
   // new process funding page
-  if (document.location.href.indexOf('funding/process') != -1) {
+  if (document.location.href.indexOf('issue/accept') != -1) {
     gasLimitEstimate = 103915;
   }
   // new kill funding page
-  if (document.location.href.indexOf('funding/kill') != -1) {
+  if (document.location.href.indexOf('issue/cancel') != -1) {
     gasLimitEstimate = 67327;
   }
 

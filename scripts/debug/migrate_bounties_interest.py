@@ -17,6 +17,6 @@ for current_bounty in current_bounties:
                 print(f"=========== {github_url} =========")
                 print(other_bounties.first().interested.all())
                 print(current_bounty.interested.all())
-                print(f"would be changing the bounties for this one right now")
+                print("would be changing the bounties for this one right now")
         else:
             current_bounty.save()

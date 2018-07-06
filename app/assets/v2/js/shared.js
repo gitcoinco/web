@@ -41,6 +41,20 @@ var loading_button = function(button) {
   button.prepend('<img src=/static/v2/images/loading_white.gif style="max-width:20px; max-height: 20px">').addClass('disabled');
 };
 
+var attach_close_button = function() {
+  $('body').delegate('.alert .closebtn', 'click', function(e) {
+    $(this).parents('.alert').remove();
+    $('.alert').each(function(index) {
+      if (index == 0) $(this).css('top', 0);
+      else {
+        var new_top = (index * 66) + 'px';
+
+        $(this).css('top', new_top);
+      }
+    });
+  });
+};
+
 
 var update_metamask_conf_time_and_cost_estimate = function() {
   var confTime = 'unknown';
@@ -69,6 +83,31 @@ var update_metamask_conf_time_and_cost_estimate = function() {
   $('#confTime').html(confTime);
 };
 
+var get_updated_metamask_conf_time_and_cost = function(gasPrice) {
+  
+  var confTime = 'unknown';
+  var ethAmount = 'unknown';
+  var usdAmount = 'unknown';
+
+  var gasLimit = parseInt($('#gasLimit').val());
+
+  if (gasPrice) {
+    ethAmount = Math.round(1000000 * gasLimit * gasPrice / Math.pow(10, 9)) / 1000000;
+    usdAmount = Math.round(10 * ethAmount * document.eth_usd_conv_rate) / 10;
+  }
+
+  for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
+    var this_ele = (document.conf_time_spread[i]);
+    var next_ele = (document.conf_time_spread[i + 1]);
+
+    if (gasPrice <= parseFloat(next_ele[0]) && gasPrice > parseFloat(this_ele[0])) {
+      confTime = Math.round(10 * next_ele[1]) / 10;
+    }
+  }
+
+  return {'eth': ethAmount, 'usd': usdAmount, 'time': confTime};
+};
+
 var unloading_button = function(button) {
   button.prop('disabled', false);
   button.removeClass('disabled');
@@ -95,11 +134,17 @@ var sanitizeAPIResults = function(results) {
   return results;
 };
 
+function ucwords(str) {
+  return (str + '').replace(/^([a-z])|\s+([a-z])/g, function($1) {
+    return $1.toUpperCase();
+  });
+}
+
 var sanitize = function(str) {
   if (typeof str != 'string') {
     return str;
   }
-  result = str.replace(/>/g, '&gt;').replace(/</g, '&lt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+  result = DOMPurify.sanitize(str);
   return result;
 };
 
@@ -132,10 +177,12 @@ var _alert = function(msg, _class) {
     return (
       `<div class="alert ${_class}" style="top: ${top}px">
         <div class="message">
-          ${alertMessage(msg)}
+          <div class="content">
+            ${alertMessage(msg)}
+          </div>
         </div>
         ${closeButton(msg)}
-      </div>;`
+      </div>`
     );
   };
 
@@ -168,23 +215,24 @@ var showLoading = function() {
 };
 
 /** Add the current profile to the interested profiles list. */
-var add_interest = function(bounty_pk) {
+var add_interest = function(bounty_pk, data) {
   if (document.interested) {
     return;
   }
-  mutate_interest(bounty_pk, 'new');
+  mutate_interest(bounty_pk, 'new', data);
 };
 
 /** Remove the current profile from the interested profiles list. */
-var remove_interest = function(bounty_pk) {
+var remove_interest = function(bounty_pk, slash = false) {
   if (!document.interested) {
     return;
   }
-  mutate_interest(bounty_pk, 'remove');
+
+  mutate_interest(bounty_pk, 'remove', slash);
 };
 
 /** Helper function -- mutates interests in either direction. */
-var mutate_interest = function(bounty_pk, direction) {
+var mutate_interest = function(bounty_pk, direction, data) {
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + direction + '/';
 
   $('#submit').toggleClass('none');
@@ -194,16 +242,25 @@ var mutate_interest = function(bounty_pk, direction) {
     .toggleClass('button--primary');
 
   if (direction === 'new') {
-    _alert({message: "Thanks for letting us know that you're ready to start work."}, 'success');
+    _alert({ message: gettext("Thanks for letting us know that you're ready to start work.") }, 'success');
     $('#interest a').attr('id', 'btn-white');
   } else if (direction === 'remove') {
-    _alert({message: "You've stopped working on this, thanks for letting us know."}, 'success');
+    _alert({ message: gettext("You've stopped working on this, thanks for letting us know.") }, 'success');
     $('#interest a').attr('id', '');
   }
+  
 
-  $.post(request_url, function(result) {
+  $.post(request_url, data).then(function(result) {
     result = sanitizeAPIResults(result);
     if (result.success) {
+      if (direction === 'new') {
+        _alert({ message: result.msg }, 'success');
+        $('#interest a').attr('id', 'btn-white');
+      } else if (direction === 'remove') {
+        _alert({ message: result.msg }, 'success');
+        $('#interest a').attr('id', '');
+      }
+
       pull_interest_list(bounty_pk);
       return true;
     }
@@ -214,19 +271,27 @@ var mutate_interest = function(bounty_pk, direction) {
 };
 
 
-var uninterested = function(bounty_pk, profileId) {
+var uninterested = function(bounty_pk, profileId, slash) {
+  var data = {};
+  var success_message = 'Contributor removed from bounty.';
+
+  if (slash) {
+    success_message = 'Contributor removed from bounty and rep dinged';
+    data.slashed = true;
+  }
+
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + profileId + '/uninterested/';
 
-  $.post(request_url, function(result) {
+  $.post(request_url, data, function(result) {
     result = sanitizeAPIResults(result);
     if (result.success) {
-      _alert({message: 'Contributor removed from bounty.'}, 'success');
+      _alert({ message: gettext(success_message) }, 'success');
       pull_interest_list(bounty_pk);
       return true;
     }
     return false;
   }).fail(function(result) {
-    _alert({message: 'got an error. please try again, or contact support@gitcoin.co'}, 'error');
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
   });
 };
 
@@ -356,16 +421,6 @@ function timeDifference(current, previous, remaining, now_threshold_seconds) {
   return amt + ' ' + unit + plural + ' ago';
 }
 
-
-var sidebar_redirect_triggers = function() {
-  $('.sidebar_search input[type=radio], .sidebar_search label').change(function(e) {
-    if (document.location.href.indexOf('/dashboard') == -1 && document.location.href.indexOf('/explorer') == -1) {
-      document.location.href = '/explorer';
-      e.preventDefault();
-    }
-  });
-};
-
 var attach_change_element_type = function() {
   (function($) {
     $.fn.changeElementType = function(newType) {
@@ -381,19 +436,6 @@ var attach_change_element_type = function() {
     };
   })(jQuery);
 };
-
-var attach_close_button = function() {
-  $('body').delegate('.alert .closebtn', 'click', function(e) {
-    $(this).parents('.alert').remove();
-    $('.alert').each(function() {
-      var old_top = $(this).css('top');
-      var new_top = (parseInt(old_top.replace('px')) - 66) + 'px';
-
-      $(this).css('top', new_top);
-    });
-  });
-};
-
 
 // callbacks that can retrieve various metadata about a github issue URL
 
@@ -502,61 +544,90 @@ var randomElement = function(array) {
   return array[randomIndex];
 };
 
-var trigger_sidebar_web3_disabled = function() {
-  $('#upper_left').addClass('disabled');
-  $('#sidebar_head').html('<i class="fa fa-question"></i>');
-  $('#sidebar_p').html('<p>Web3 disabled</p><p>Please install <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a> <br> <a href="/web3" target="_blank" rel="noopener noreferrer">What is Metamask and why do I need it?</a>.</p>');
-};
-
-var trigger_sidebar_web3_locked = function() {
-  $('#upper_left').addClass('disabled');
-  $('#sidebar_head').html('<i class="fa fa-lock"></i>');
-  $('#sidebar_p').html('<p>Web3 locked</p><p>Please unlock <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>.<p>');
-};
-
 var mixpanel_track_once = function(event, params) {
   if (document.listen_for_web3_iterations == 1 && mixpanel) {
     mixpanel.track(event, params);
   }
 };
 
-var trigger_sidebar_web3 = function(network) {
+/* eslint-disable no-lonely-if */
+var currentNetwork = function(network) {
+
+  $('.navbar-network').removeClass('hidden');
+  let tooltip_info;
+
   document.web3network = network;
+  if (document.location.href.startsWith('https://gitcoin.co')) { // Live
+    if (network == 'mainnet') {
+      $('#current-network').text('Main Ethereum Network');
+      $('.navbar-network').attr('title', '');
+      $('.navbar-network i').addClass('green');
+      $('.navbar-network i').removeClass('red');
+      $('#navbar-network-banner').removeClass('network-banner--warning');
+      $('#navbar-network-banner').addClass('hidden');
+    } else {
+      if (!network) {
+        info = gettext('Web3 disabled. Please install ') +
+          '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
+        $('#current-network').text(gettext('Metamask Not Enabled'));
+        $('#navbar-network-banner').html(info);
+      } else if (network == 'locked') {
+        info = gettext('Web3 locked. Please unlock ') +
+          '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
+        $('#current-network').text(gettext('Metamask Locked'));
+        $('#navbar-network-banner').html(info);
+      } else {
+        info = gettext('Connect to Mainnet via Metamask');
+        $('#current-network').text(gettext('Unsupported Network'));
+        $('#navbar-network-banner').html(info);
+      }
 
-  // is this a supported networK?
-  var is_supported_network = true;
+      $('.navbar-network i').addClass('red');
+      $('.navbar-network i').removeClass('green');
+      $('#navbar-network-banner').addClass('network-banner--warning');
+      $('#navbar-network-banner').removeClass('hidden');
 
-  var recommended_network = 'mainnet or rinkeby';
-
-  if (network == 'kovan' || network == 'ropsten') {
-    is_supported_network = false;
-  }
-  if (document.location.href.indexOf('https://gitcoin.co') != -1) {
-    if (network != 'mainnet' && network != 'rinkeby') {
-      is_supported_network = false;
-      recommended_network = 'mainnet or rinkeby';
+      if ($('.ui-tooltip.ui-corner-all.ui-widget-shadow.ui-widget.ui-widget-content').length == 0) {
+        $('.navbar-network').attr('title', '<div class="tooltip-info tooltip-xs">' + info + '</div>');
+      }
     }
-  }
-  if (network == 'mainnet') {
-    if (document.location.href.indexOf('https://gitcoin.co') == -1) {
-      is_supported_network = false;
-      recommended_network = 'custom rpc via ganache-cli / rinkeby';
-    }
-  }
-  var sidebar_p = '<p>Connected to ' + network + '.</p>';
+  } else { // Staging
+    if (network == 'rinkeby') {
+      $('#current-network').text('Rinkeby Network');
+      $('.navbar-network').attr('title', '');
+      $('.navbar-network i').addClass('green');
+      $('.navbar-network i').removeClass('red');
+      $('#navbar-network-banner').removeClass('network-banner--warning');
+      $('#navbar-network-banner').addClass('hidden');
+    } else {
+      if (!network) {
+        info = gettext('Web3 disabled. Please install ') +
+          '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
+        $('#current-network').text(gettext('Metamask Not Enabled'));
+        $('#navbar-network-banner').html(info);
+      } else if (network == 'locked') {
+        info = gettext('Web3 locked. Please unlock ') +
+          '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
+        $('#current-network').text(gettext('Metamask Locked'));
+        $('#navbar-network-banner').html(info);
+      } else {
+        info = gettext('Connect to Rinkeby / Custom RPC via Metamask');
+        $('#current-network').text(gettext('Unsupported Network'));
+        $('#navbar-network-banner').html(info);
+      }
 
-  if (is_supported_network) {
-    $('#upper_left').removeClass('disabled');
-    $('#sidebar_head').html("<i class='fa fa-wifi'></i>");
-    $('#sidebar_p').html('<p>Web3 enabled<p>' + sidebar_p);
-  } else {
-    $('#upper_left').addClass('disabled');
-    $('#sidebar_head').html("<i class='fa fa-battery-empty'></i>");
-    sidebar_p += '<p>(try ' + recommended_network + ')</p>';
-    $('#sidebar_p').html('<p>Unsupported network</p>' + sidebar_p);
+      $('.navbar-network i').addClass('red');
+      $('.navbar-network i').removeClass('green');
+      $('#navbar-network-banner').addClass('network-banner--warning');
+      $('#navbar-network-banner').removeClass('hidden');
+
+      if ($('.ui-tooltip.ui-corner-all.ui-widget-shadow.ui-widget.ui-widget-content').length == 0) {
+        $('.navbar-network').attr('title', '<div class="tooltip-info tooltip-xs">' + info + '</div>');
+      }
+    }
   }
 };
-
+/* eslint-enable no-lonely-if */
 
 var trigger_primary_form_web3_hooks = function() {
   // detect web3, and if not, display a form telling users they must be web3 enabled.
@@ -569,21 +640,39 @@ var trigger_primary_form_web3_hooks = function() {
 
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
+      $('#zero_balance_error').css('display', 'none');
+      $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
+      $('.submit_bounty .newsletter').addClass('hidden');
+      $('#unlock_metamask_error').css('display', 'none');
+      $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('No Metamask Error', params);
     } else if (!web3.eth.coinbase) {
       $('#unlock_metamask_error').css('display', 'block');
+      $('#zero_balance_error').css('display', 'none');
+      $('#no_metamask_error').css('display', 'none');
+      $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
+      $('.submit_bounty .newsletter').addClass('hidden');
+      $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('Unlock Metamask Error', params);
     } else if (is_zero_balance_not_okay && document.balance == 0) {
       $('#zero_balance_error').css('display', 'block');
+      $('#robot_error').removeClass('hidden');
       $('#primary_form').addClass('hidden');
+      $('.submit_bounty .newsletter').addClass('hidden');
+      $('#unlock_metamask_error').css('display', 'none');
+      $('#no_metamask_error').css('display', 'none');
+      $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('Zero Balance Metamask Error', params);
     } else {
       $('#zero_balance_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
+      $('#no_issue_error').css('display', 'block');
+      $('#robot_error').addClass('hidden');
       $('#primary_form').removeClass('hidden');
+      $('.submit_bounty .newsletter').removeClass('hidden');
     }
   }
 };
@@ -651,6 +740,18 @@ var trigger_form_hooks = function() {
   trigger_faucet_form_web3_hooks();
 };
 
+function getNetwork(id) {
+  var networks = {
+    '1': 'mainnet',
+    '2': 'morden',
+    '3': 'ropsten',
+    '4': 'rinkeby',
+    '42': 'kovan'
+  };
+
+  return networks[id] || 'custom network';
+}
+
 // figure out what version of web3 this is, whether we're logged in, etc..
 var listen_for_web3_changes = function() {
 
@@ -661,10 +762,10 @@ var listen_for_web3_changes = function() {
   }
 
   if (typeof web3 == 'undefined') {
-    trigger_sidebar_web3_disabled();
+    currentNetwork();
     trigger_form_hooks();
   } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
-    trigger_sidebar_web3_locked();
+    currentNetwork('locked');
     trigger_form_hooks();
   } else {
     web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
@@ -673,53 +774,94 @@ var listen_for_web3_changes = function() {
       }
     });
 
-    web3.version.getNetwork((error, netId) => {
+    web3.version.getNetwork(function(error, netId) {
       if (error) {
-        trigger_sidebar_web3_disabled();
+        currentNetwork();
       } else {
-        // figure out which network we're on
-        var network = 'unknown';
+        var network = getNetwork(netId);
 
-        switch (netId) {
-          case '1':
-            network = 'mainnet';
-            break;
-          case '2':
-            network = 'morden';
-            break;
-          case '3':
-            network = 'ropsten';
-            break;
-          case '4':
-            network = 'rinkeby';
-            break;
-          case '42':
-            network = 'kovan';
-            break;
-          default:
-            network = 'custom network';
-        }
-        trigger_sidebar_web3(network);
+        currentNetwork(network);
         trigger_form_hooks();
       }
     });
   }
 };
 
-$(document).ready(function() {
-  sidebar_redirect_triggers();
-  attach_change_element_type();
-  attach_close_button();
-});
+var actions_page_warn_if_not_on_same_network = function() {
+  var user_network = document.web3network;
+
+  if (typeof user_network == 'undefined') {
+    user_network = 'no network';
+  }
+  var bounty_network = $('input[name=network]').val();
+
+  if (bounty_network != user_network) {
+    var msg = 'Warning: You are on ' + user_network + ' and this bounty is on the ' + bounty_network + ' network.  Please change your network to the ' + bounty_network + ' network.';
+
+    _alert({ message: gettext(msg) }, 'error');
+  }
+};
+
+attach_change_element_type();
 
 window.addEventListener('load', function() {
   setInterval(listen_for_web3_changes, 300);
+  attach_close_button();
 });
+
+var promptForAuth = function(event) {
+  var denomination = $('#token option:selected').text();
+  var tokenAddress = $('#token option:selected').val();
+
+  if (denomination == 'ETH') {
+    $('input, textarea, select').prop('disabled', '');
+  } else {
+    var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+    var from = web3.eth.coinbase;
+    var to = bounty_address();
+
+    token_contract.allowance.call(from, to, function(error, result) {
+      if (error || result.toNumber() == 0) {
+        _alert("You have not yet enabled this token.  To enable this token, go to the <a style='padding-left:5px;' href='/settings/tokens'> Token Settings page and enable it</a>. (this is only needed one time per token)");
+        $('input, textarea, select').prop('disabled', 'disabled');
+        $('select[name=deonomination]').prop('disabled', '');
+      } else {
+        $('input, textarea, select').prop('disabled', '');
+      }
+    });
+
+  }
+};
 
 var setUsdAmount = function(event) {
   var amount = $('input[name=amount]').val();
   var denomination = $('#token option:selected').text();
   var estimate = getUSDEstimate(amount, denomination, function(estimate) {
-    $('#usd_amount').html(estimate);
+    if (estimate['value']) {
+      $('#usd-amount-wrapper').css('visibility', 'visible');
+      $('#usd_amount_text').css('visibility', 'visible');
+
+      $('#usd_amount').val(estimate['value_unrounded']);
+      $('#usd_amount_text').html(estimate['rate_text']);
+      $('#usd_amount').removeAttr('disabled');
+    } else {
+      $('#usd-amount-wrapper').css('visibility', 'hidden');
+      $('#usd_amount_text').css('visibility', 'hidden');
+
+      $('#usd_amount_text').html('');
+      $('#usd_amount').prop('disabled', true);
+      $('#usd_amount').val('');
+    }
+  });
+};
+
+var usdToAmount = function(event) {
+  var usdAmount = $('input[name=usd_amount').val();
+  var denomination = $('#token option:selected').text();
+  var estimate = getAmountEstimate(usdAmount, denomination, function(amountEstimate) {
+    if (amountEstimate['value']) {
+      $('#amount').val(amountEstimate['value']);
+      $('#usd_amount_text').html(amountEstimate['rate_text']);
+    }
   });
 };

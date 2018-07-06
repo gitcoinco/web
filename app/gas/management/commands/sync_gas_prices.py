@@ -30,12 +30,13 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         with transaction.atomic():
-
-            response = requests.get('http://ethgasstation.info/predictionTable.php')
+            url = 'https://ethgasstation.info/predictionTable.php'
+            response = requests.get(url)
             soup = BeautifulSoup(response.text, 'html.parser')
             eles = soup.findAll("tr",)
             print(f'syncing {len(eles)} eles')
             if len(eles) < 10:
+                print(response)
                 raise
             for ele in eles:
                 if ele.find('th'):

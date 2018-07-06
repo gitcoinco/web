@@ -2,6 +2,7 @@
 window.onload = function() {
   // a little time for web3 injection
   setTimeout(function() {
+    waitforWeb3(actions_page_warn_if_not_on_same_network);
     var account = web3.eth.accounts[0];
 
     if (typeof localStorage['githubUsername'] != 'undefined') {
@@ -12,18 +13,19 @@ window.onload = function() {
     if (typeof localStorage['notificationEmail'] != 'undefined') {
       $('input[name=notificationEmail]').val(localStorage['notificationEmail']);
     }
-    if (
-      typeof localStorage['acceptTOS'] != 'undefined' &&
-      localStorage['acceptTOS']
-    ) {
-      $('input[name=terms]').attr('checked', 'checked');
-    }
     if (getParam('source')) {
       $('input[name=issueURL]').val(getParam('source'));
     }
 
     $('#submitBounty').validate({
       submitHandler: function(form) {
+        try {
+          bounty_address();
+        } catch (exception) {
+          _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
+          return;
+        }
+
         var data = {};
         var disabled = $(form)
           .find(':input:disabled')
@@ -42,6 +44,7 @@ window.onload = function() {
         var issueURL = data.issueURL;
         var notificationEmail = data.notificationEmail;
         var githubPRLink = data.githubPRLink;
+        var hoursWorked = data.hoursWorked;
 
         localStorage['githubUsername'] = githubUsername;
 
@@ -70,6 +73,7 @@ window.onload = function() {
             sourceDirectoryHash: '',
             fulfiller: {
               githubPRLink: githubPRLink,
+              hoursWorked: hoursWorked,
               email: notificationEmail,
               githubUsername: githubUsername,
               address: account
@@ -127,7 +131,7 @@ window.onload = function() {
                     error: error
                   });
                   console.error('err', error);
-                  _alert({ message: 'There was an error' });
+                  _alert({ message: gettext('There was an error') });
                   unloading_button($('.js-submit'));
                 } else {
                   next();
@@ -135,7 +139,7 @@ window.onload = function() {
               };
 
               // Get bountyId from the database
-              var uri = '/api/v0.1/bounties/?github_url=' + issueURL;
+              var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
 
               $.get(uri, function(results, status) {
                 results = sanitizeAPIResults(results);

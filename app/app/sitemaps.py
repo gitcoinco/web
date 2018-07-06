@@ -15,7 +15,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
         return [
             'dashboard',
             'new_funding',
-            'fulfill_funding',
+            'fulfill_bounty',
             'process_funding',
             'funding_details',
             'tip',
@@ -35,6 +35,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
             'mission',
             'slack',
             'universe_index',
+            'results',
         ]
 
     def location(self, item):
@@ -60,13 +61,29 @@ class ProfileSitemap(Sitemap):
     priority = 0.8
 
     def items(self):
-        return Profile.objects.filter()
+        return Profile.objects.filter(hide_profile=False).all()
 
     def lastmod(self, obj):
         return obj.modified_on
 
     def location(self, item):
         return item.get_relative_url()
+
+
+class ResultsSitemap(Sitemap):
+    changefreq = "weekly"
+    priority = 0.6
+
+    def items(self):
+        from retail.utils import programming_languages
+        return programming_languages
+
+    def lastmod(self, obj):
+        from django.utils import timezone
+        return timezone.now()
+
+    def location(self, item):
+        return f'/results/{item}'
 
 
 class ExternalBountySitemap(Sitemap):
@@ -84,6 +101,7 @@ class ExternalBountySitemap(Sitemap):
 
 
 sitemaps = {
+    'results': ResultsSitemap,
     'static': StaticViewSitemap,
     'issues': IssueSitemap,
     'universe': ExternalBountySitemap,

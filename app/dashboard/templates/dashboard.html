@@ -31,22 +31,24 @@
     <div class="container-fluid header dash">
       {% include 'shared/nav.html' %}
     </div>
-    <div class="row no-gutter">
-      <div class="col-12 col-lg-3 col-xl-2" id="sidebar_container" style="background: #F2F6F9;">
-        {% include 'shared/current_balance.html' %}
+    {% include '_dashboard/ftux.html' %}
+    <div id="dashboard-content" class="row no-gutter">
+      <div class="col-12 col-lg-3 col-xl-2 invisible" id="sidebar_container" style="background: #F2F6F9;">
         {% include 'shared/sidebar_search.html' %}
       </div>
 
       <div class="col-12 col-lg-9 col-xl-10 body">
         <div class="container-fluid" id="bounties">
-          {% include 'shared/search_bar.html' %}
-          <div class="row mt-2 mb-2">
-            <div class="col-12 offset-md-1 col-md-10 title-row">
-              <div class="col-12 col-sm-7 col-md-5">
-                <span id="filter" class="font-title"></span>
-                <span id="matches" class="font-subheading"></span>
-              </div>
-              <div class="col-sm-5 col-md-7 bounty-info" id="funding-info">
+          <div id="dashboard-title" class="hidden">
+            {% include 'shared/search_bar.html' %}
+            <div class="row mt-2 mb-2">
+              <div class="col-12 offset-lg-1 col-lg-10 title-row">
+                <div class="col-12 col-md-4">
+                  <span id="filter" class="font-title"></span>
+                  <span id="matches" class="font-body"></span>
+                </div>
+                <div class="col-12 col-md-8 bounty-info" id="funding-info">
+                </div>
               </div>
             </div>
           </div>
@@ -67,66 +69,23 @@
       </div>
     </div>
 
-    <!-- JSRender stuff -->
-    <script id="result" type="text/x-jsrender">
-      <div class="row result bounty_row [[:network]]" href="[[:action]]">
-          [[if avatar_url]]
-            <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
-              <img src='[[:avatar_url]]' class='avatar'>
-            </div>
-          [[else]]
-            <div class="avatar-container col-1 justify-content-center">
-                <div class="experience [[:experience_level]]">&nbsp;</div>
-            </div>
-          [[/if]]
-        <div class="col-12 col-md-8 d-flex flex-column">
-          <div class="bounty-detail">
-            <div class="title font-subheader">
-              [[if network != 'mainnet']]
-                [[[:network]]]
-              [[/if]]
-              [[:title]]
-            </div>
-            <div class="bounty-summary col-12">
-              [[if github_comments]]
-                <div class="col-xs-1">
-                  <img src={% static "v2/images/comment.svg" %}>
-                  <span class="github-comment font-caption">[[:github_comments]]</span>
-                </div>
-              [[/if]]
-              <div class="info font-caption">
-                [[:p]]
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 col-md-2 tags font-caption align-items-center">
-          <div class="tag token">
-            <p>
-              [[:rounded_amount]]
-              <span>[[:token_name]]</span>
-            </p>
-          </div>
-          [[if value_in_usdt]]
-            <div class="tag usd">
-              <p>
-                [[:value_in_usdt]]
-                <span>USD</span>
-              </p>
-            </div>
-          [[/if]]
-        </div>
+    <div id="onboard-footer" class="row hidden font-body">
+      <div class="col-12">
+        <p>{% trans "Want to Fund an issue ? " %}
+          <a target="_blank" rel="noopener noreferrer" href="{% url "new_funding_short" %}">{% trans "Get Started!" %}</a>
+        </p>
       </div>
-    </script>
+    </div>
+    {% include 'shared/result.html' %}
 
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
 
     <script src="{% static "v2/js/tokens.js" %}"></script>
     <script src="{% static "v2/js/pages/dashboard.js" %}"></script>
-    <script src="{% static "v2/js/shared.js" %}"></script>
     <script>
         document.keywords = {{keywords | safe}};
     </script>

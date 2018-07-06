@@ -33,12 +33,31 @@ GITHUB_API_TOKEN=xxx
 GITHUB_API_USER=xxx
 ```
 
+Make sure you disable gitcoinbot notifications on your local, unless you are specifically testing that feature
+By default, we disable outbound GitHub notifications to any repository that isn't under the `GITHUB_API_USER` repositories.
+
+For example, if `settings.GITHUB_API_USER == gitcoinco` only `github.com/gitcoinco/<repos>` bounties and associated tips will post Github comments.
+
+```
+# Be VERY CAREFUL when changing this setting.  You don't want to accidently
+# send a bunch of github notifications :)
+ENABLE_NOTIFICATIONS_ON_NETWORK=None
+```
+
 ## Gitcoinbot Installation Instructions
 
 ### This integration requires the Github OAuth2 App Integration
 
 Navigate to: [Gitcoinbot Github App](https://github.com/apps/gitcoinbot)
 Copy the application ID found on the page as the `GITCOINBOT_APP_ID` environment variable.
+
+Make sure you disable gitcoinbot notifications on your local, unless you are specifically testing that feature
+
+```
+# Be VERY CAREFUL when changing this setting.  You don't want to accidentally
+# send a bunch of github notifications :)
+ENABLE_NOTIFICATIONS_ON_NETWORK=None
+```
 
 The following environment variables must be set for gitcoinbot to work correctly:
 

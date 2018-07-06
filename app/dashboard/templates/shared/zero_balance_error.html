@@ -15,25 +15,24 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-<div id="zero_balance_error" class="blocking_error" style="display: none; min-height: 500px;">
-  {% include 'shared/bounty_nav.html' with active_item=1 %}
-  <img src="{% static "v2/images/prime.png" %}">
-  <br>
-  <h3>{% trans "You're almost there!" %}</h3>
-  <p>
-    {% trans "In order to continue, you'll need some Ether." %}
-  </p>
-  <p>
-    {% trans "'Ether' is a digital asset that can be used to pay for the computational resources needed to run an application or program. In this case, Gitcoin." %}
-  </p>
-  <p>
-    {% trans "The easiest way to get Ether is to request it via the Gitcoin Faucet:" %}
-  </p>
-  <p class="float-right">
-    <a class="btn btn-sm btn-info mt-3 pulseClick" role="button" id="submit" href="/faucet" target="_blank" rel="noopener noreferrer">{% trans "View Faucet" %}</a>
-    <br>
-    - {% trans "or" %} -
-    <br>
-    <a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">{% trans "Can't get web3 to work?  Get help here." %}</a>
-  </p>
+<div id="zero_balance_error" class="submit-notification metamask-error container-fluid" style="display: none;">
+  <div class="row align-items-center px-4 py-2 text-center text-lg-left">
+    <div class="col-lg-10 col-sm-12 py-2 px-5">
+      <h3>{% trans "You're almost there!" %}</h3>
+      <p>
+        <ol class="pl-3 mb-0">
+          <li>{% trans "In order to continue, you'll need some Ether." %}</li>
+          <li>{% trans "'Ether' is a digital asset that can be used to pay for the computational resources needed to run an application or program. In this case, Gitcoin." %}</li>
+          <li>{% trans "The easiest way to get Ether is to request it via the Gitcoin Faucet:" %}</li>
+        </ol>
+      </p>
+    </div>
+    <div class="col-lg-2 col-sm-12">
+      <p class="mt-4">
+        <a class="button button--primary mt-2 pulseClick" role="button" id="submit" href="{% url 'faucet' %}" target="_blank" rel="noopener noreferrer">{% trans "View Faucet" %}</a>
+        <br><br>
+        <a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">{% trans "Can't get web3 to work?  Get help here." %}</a>
+      </p>
+    </div>
+  </div>
 </div>

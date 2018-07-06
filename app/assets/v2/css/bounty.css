@@ -8,8 +8,6 @@ body {
 }
 
 .explorer {
-  font-family: 'Muli', sans-serif;
-  font-weight: 600;
   margin-top: 2em;
   color: #3E00FF;
 }
@@ -36,6 +34,7 @@ body {
   height: 2px;
   width: 50%;
 }
+
 .progress-bar.expired .progress {
   background-color: #f7981b;
 }
@@ -132,6 +131,15 @@ body {
   font-size: 14px;
 }
 
+.bounty-info {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.bounty-info > div {
+  margin-bottom: 4px;
+}
+
 .bounty-info div {
   display: inline;
   margin-right: 15px;
@@ -190,6 +198,22 @@ body {
   padding: 5px;
 }
 
+.red_warning, 
+#network {
+  background-color: #fbe0d6;
+  color: #fb9470;
+  padding: 5px 10px;
+  border-radius: 2px;
+  margin-bottom: 15px;
+  display: block;
+}
+
+.red_warning a,
+#network a{
+  color: #fb9470;
+  font-weight: bold;
+}
+
 .bounty-actions {
   margin-top: 2.5em;
   display: inherit;
@@ -233,7 +257,7 @@ body {
   font-weight: 600;
 }
 
-.contributor-box svg {
+.contributor-box i {
   font-size: 24px;
   margin-top: 15px;
   margin-bottom: 10px;
@@ -278,6 +302,7 @@ a.btn {
 }
 
 #btn-white {
+  background-color: #FFFFFF;
   border: 1px solid #979797;
   color: #0D0764;
   border-radius: 3px;
@@ -286,11 +311,11 @@ a.btn {
 
 #btn-white img {
   position: absolute;
-  width: 20px;
-  top: 5px;
-  right: 8px;
+  width: 1.313rem;
+  top: 0.4375rem;
+  right: 0.4375rem;
 }
- 
+
 .comment {
   border-left: 1px solid #979797;
   padding-right: 20px;
@@ -300,10 +325,11 @@ a.btn {
 #btn-white .github-comment {
   color: #FFFFFF;
   position: absolute;
-  font-size: 10px;
+  font-size: 0.625rem;
   text-align: center;
-  width: 20px;
-  right: 8px;
+  width: 1.25rem;
+  top: 0.4375rem;
+  right: 0.5rem;
 }
 
 .activity {
@@ -319,7 +345,7 @@ a.btn {
   color: #717171;
 }
 
-.activity .activity-status svg {
+.activity .activity-status i {
   margin-left: 10px;
   color: #0ECF7C;
 }
@@ -335,7 +361,12 @@ a.btn {
 }
 
 #bounty_details #issue_description img {
-  max-width: 100%;
+  max-height: 30rem;
+  max-width: 30rem;
+  cursor: pointer;
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 #bounty_details #issue_description h1,
@@ -363,21 +394,26 @@ a.btn {
 #started_owners_username a,
 #fulfilled_owners_username a,
 #submitted_owners_username a,
-#started_owners_username svg,
-#fulfilled_owners_username svg,
-#submitted_owners_username svg {
+#started_owners_username i,
+#fulfilled_owners_username i,
+#submitted_owners_username i {
   margin-left: 5px;
   margin-right: 5px;
 }
 
-#started_owners_username svg,
-#fulfilled_owners_username svg,
-#submitted_owners_username svg {
+#started_owners_username i,
+#fulfilled_owners_username i,
+#submitted_owners_username i {
   margin-top: 5px;
 }
 
 .uninterest-button {
   margin: 5px;
+}
+
+.stop-work {
+  float: right;
+  padding-left: 5px;
 }
 
 @media (max-width: 575px) {
@@ -434,4 +470,79 @@ a.btn {
   .explorer {
     display: none;
   }
+}
+
+@media (min-width: 768px) {
+  .activity-time {
+    margin-left: 0.625rem !important;
+  }
+}
+
+#add_interest form > div {
+  margin-top: 10px;
+}
+
+.add-interest-modal {
+  height: auto;
+  width: 100%;
+}
+
+#add_interest form {
+  padding: 1em;
+  width: 100%;
+}
+
+#issue-message {
+  min-height: 6em;
+}
+
+.add-interest-options {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+}
+
+#add_interest .login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 1rem auto;
+}
+
+#add_interest .login__text {
+  margin-bottom: 1rem;
+}
+
+#add_interest .login__button .fa-github {
+  margin-right: 0.4rem;
+}
+
+#add_interest .login__button span {
+  padding-left: 0.5rem;
+  border-left: 1px solid #fff;
+}
+
+#add_interest form .filter-label {
+  display: inline;
+  margin-left: 0.625rem;
+}
+
+.add-interest-options > .option {
+  width: auto;
+}
+
+.btn-interested {
+  float: right;
+  padding: 0.375rem 0.9375rem;
+  font-size: 12px;
+}
+
+.close:hover, .close:focus {
+  box-shadow: none;
+}
+
+.modal.magnify,
+.modal .magnify {
+  width: auto;
+  max-width: 100%;
 }

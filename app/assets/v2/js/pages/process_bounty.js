@@ -2,13 +2,11 @@
 window.onload = function() {
   // a little time for web3 injection
   setTimeout(function() {
+    waitforWeb3(actions_page_warn_if_not_on_same_network);
     var account = web3.eth.accounts[0];
 
     if (getParam('source')) {
       $('input[name=issueURL]').val(getParam('source'));
-    }
-    if (typeof localStorage['acceptTOS'] != 'undefined' && localStorage['acceptTOS']) {
-      $('input[name=terms]').attr('checked', 'checked');
     }
 
     var bountyDetails = [];
@@ -49,9 +47,12 @@ window.onload = function() {
     };
 
     var issueURL = $('input[name=issueURL]').val();
-    var uri = '/api/v0.1/bounties/?github_url=' + issueURL;
 
-    $.get(uri, fulfillmentCallback);
+    waitforWeb3(function() {
+      var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + document.web3network;
+
+      $.get(uri, fulfillmentCallback);
+    });
 
     $('#goBack').click(function(e) {
       var url = window.location.href;
@@ -61,18 +62,25 @@ window.onload = function() {
     });
 
     $('#acceptBounty').click(function(e) {
+      try {
+        bounty_address();
+      } catch (exception) {
+        _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
+        return;
+      }
+
       mixpanel.track('Process Bounty Clicked', {});
       e.preventDefault();
       var whatAction = $(this).html().trim();
       var issueURL = $('input[name=issueURL]').val();
-      var fulfillmentId = $('select[name=bountyFulfillment').val();
+      var fulfillmentId = $('select[name=bountyFulfillment]').val();
 
       console.log(fulfillmentId);
 
       var isError = false;
 
       if ($('#terms:checked').length == 0) {
-        _alert({ message: 'Please accept the terms of service.' }, 'warning');
+        _alert({ message: gettext('Please accept the terms of service.') }, 'warning');
         isError = true;
       } else {
         localStorage['acceptTOS'] = true;
@@ -104,7 +112,7 @@ window.onload = function() {
         results = sanitizeAPIResults(results);
         result = results[0];
         if (result == null) {
-          _alert({ message: gettext('No active bounty found for this Github URL.') }, 'info');
+          _alert({ message: gettext('No active bounty found for this Github URL on ' + document.web3network + '.') }, 'info');
           unloading_button($('.submitBounty'));
           return;
         }
@@ -164,9 +172,12 @@ window.onload = function() {
 
       };
       // Get bountyId from the database
-      var uri = '/api/v0.1/bounties/?github_url=' + issueURL;
 
-      $.get(uri, apiCallback);
+      waitforWeb3(function() {
+        var uri = '/api/v0.1/bounties/?github_url=' + issueURL + '&network=' + $('input[name=network]').val() + '&standard_bounties_id=' + $('input[name=standard_bounties_id]').val();
+
+        $.get(uri, apiCallback);
+      });
       e.preventDefault();
     });
   }, 100);

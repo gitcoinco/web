@@ -19,6 +19,11 @@
   color: #00A55E;
 }
 
+.tag.network_warning {
+  background-color: #fbe0d6;
+  color: #fbaf95;
+}
+
 .tag.token {
   background-color: #E7F0FA;
   color: #775EC7;

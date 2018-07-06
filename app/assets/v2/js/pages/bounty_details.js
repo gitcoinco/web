@@ -34,6 +34,7 @@ var hide_if_empty = function(key, val, result) {
 };
 var unknown_if_empty = function(key, val, result) {
   if (!_truthy(val)) {
+    $('#' + key).parent().hide();
     return [ key, 'Unknown' ];
   }
   return [ key, val ];
@@ -58,11 +59,14 @@ var rows = [
   'token_value_time_peg',
   'web3_created',
   'status',
+  'project_type',
+  'permission_type',
   'bounty_owner_address',
   'bounty_owner_email',
   'issue_description',
   'bounty_owner_github_username',
   'fulfillments',
+  'network',
   'experience_level',
   'project_length',
   'bounty_type',
@@ -118,11 +122,7 @@ var callbacks = {
   'issue_description': function(key, val, result) {
     var converter = new showdown.Converter();
 
-    val = val.replace(/script/ig, 'scr_i_pt');
-    var ui_body = val;
-
-    ui_body = converter.makeHtml(ui_body);
-
+    ui_body = converter.makeHtml(val);
     return [ 'issue_description', ui_body ];
   },
   'bounty_owner_address': address_ize,
@@ -132,14 +132,23 @@ var callbacks = {
   'bounty_type': unknown_if_empty,
   'bounty_owner_github_username': gitcoin_ize,
   'bounty_owner_name': function(key, val, result) {
-    return [ 'bounty_owner_name', result.metadata.fullName ];
+    return [ 'bounty_owner_name', result.bounty_owner_name ];
+  },
+  'permission_type': function(key, val, result) {
+    if (val == 'approval') {
+      val = 'Approval Required';
+    }
+    return [ 'permission_type', ucwords(val) ];
+  },
+  'project_type': function(key, val, result) {
+    return [ 'project_type', ucwords(result.project_type) ];
   },
   'issue_keywords': function(key, val, result) {
-    var keywords = result.metadata.issueKeywords.split(',');
-    var tags = [];
-
-    if (result.metadata.issueKeywords.length == 0)
+    if (!result.keywords || result.keywords.length == 0)
       return [ 'issue_keywords', null ];
+
+    var keywords = result.keywords.split(',');
+    var tags = [];
 
     keywords.forEach(function(keyword) {
       tags.push('<a href="/explorer/?q=' + keyword.trim() + '"><div class="tag keyword">' + keyword + '</div></a>');
@@ -156,6 +165,10 @@ var callbacks = {
     if (val === null) {
       return [ null, null ];
     }
+    var rates_estimate = get_rates_estimate(val);
+
+    $('#value_in_usdt_wrapper').attr('title', '<div class="tooltip-info tooltip-sm">' + rates_estimate + '</div>');
+
     return [ 'Amount_usd', val ];
   },
   'fulfillment_accepted_on': function(key, val, result) {
@@ -166,6 +179,15 @@ var callbacks = {
     var timePeg = timeDifference(new Date(), new Date(val), false, 60 * 60);
 
     return [ 'fulfillment_accepted_on', timePeg ];
+  },
+  'network': function(key, val, result) {
+    if (val == 'mainnet') {
+      $('#network').addClass('hidden');
+      return [ null, null ];
+    }
+    var warning = 'WARNING: this is a ' + val + ' network bounty, and is NOT real money.  To see mainnet bounties, go to <a href="/explorer">the bounty explorer</a> and search for mainnet bounties.  ';
+
+    return [ 'network', warning ];
   },
   'token_value_time_peg': function(key, val, result) {
     if (val === null || typeof val == 'undefined') {
@@ -206,7 +228,9 @@ var callbacks = {
     if (expires_date < new Date()) {
       label = 'expired';
       if (result['is_open']) {
-        $('.timeleft').text('Expired');
+        var soft = result['can_submit_after_expiration_date'] ? 'Soft ' : '';
+
+        $('.timeleft').text(soft + 'Expired');
         $('.progress-bar').addClass('expired');
         response = '<span title="This issue is past its expiration date, but it is still active.  Check with the submitter to see if they still want to see it fulfilled.">' + response.join(' ') + '</span>';
       } else {
@@ -285,7 +309,14 @@ var callbacks = {
 var isBountyOwner = function(result) {
   var bountyAddress = result['bounty_owner_address'];
 
-  return (typeof web3 != 'undefined' && (web3.eth.coinbase == bountyAddress));
+  if (typeof web3 == 'undefined') {
+    return false;
+  }
+  if (typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
+    return false;
+  }
+
+  return (web3.eth.coinbase.toLowerCase() == bountyAddress.toLowerCase());
 };
 
 var update_title = function() {
@@ -321,13 +352,9 @@ var showWarningMessage = function(txid) {
   $('#bounty_detail').hide();
 
   $('.transaction-status').show();
+  $('.transation-header').show();
   $('.waiting_room_entertainment').show();
-
-  var radioButtons = $('.sidebar_search input');
-
-  for (var i = radioButtons.length - 1; i >= 0; i--) {
-    radioButtons[i].disabled = true;
-  }
+  $('.issue-url').html('<a href="' + document.issueURL + '">' + document.issueURL + '</a>');
 
   var secondsBetweenQuoteChanges = 30;
 
@@ -360,7 +387,11 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
 
             // clear local data
             localStorage[document.issueURL] = '';
-            document.location.href = document.location.href;
+            if (response['url']) {
+              document.location.href = response['url'];
+            } else {
+              document.location.href = document.location.href;
+            }
           } else {
             console.log('error from sync/web', response);
             error(response);
@@ -387,10 +418,8 @@ var attach_work_actions = function() {
   $('body').delegate('a[href="/interested"], a[href="/uninterested"]', 'click', function(e) {
     e.preventDefault();
     if ($(this).attr('href') == '/interested') {
-      $(this).attr('href', '/uninterested');
-      $(this).find('span').text('Stop Work');
-      add_interest(document.result['pk']);
-    } else {
+      show_interest_modal.call(this);
+    } else if (confirm(gettext('Are you sure you want to stop work?'))) {
       $(this).attr('href', '/interested');
       $(this).find('span').text('Start Work');
       remove_interest(document.result['pk']);
@@ -398,11 +427,90 @@ var attach_work_actions = function() {
   });
 };
 
+var attach_contact_funder_options = function() {
+  $('body').delegate('a.contact_bounty_hunter', 'click', function(e) {
+    e.preventDefault();
+    var text = window.prompt('What would you like to say to the funder?', '');
+    var connector_char = document.location.href.indexOf('?') == -1 ? '?' : '&';
+    var url = document.location + connector_char + 'admin_contact_funder=' + text;
+
+    document.location.href = url;
+  });
+};
+
+
+var attach_snoozee_options = function() {
+  $('body').delegate('a.snooze_gitcoin_bot', 'click', function(e) {
+    e.preventDefault();
+    var text = window.prompt('How many days do you want to snooze?', '');
+    var connector_char = document.location.href.indexOf('?') == -1 ? '?' : '&';
+    var url = document.location + connector_char + 'snooze=' + text;
+
+    document.location.href = url;
+  });
+};
+
+var attach_override_status = function() {
+  $('body').delegate('a.admin_override_satatus', 'click', function(e) {
+    e.preventDefault();
+    var text = window.prompt('What new status (valid choices: "open", "started", "submitted", "done", "expired", "cancelled", "" to remove override )?', '');
+    var connector_char = document.location.href.indexOf('?') == -1 ? '?' : '&';
+    var url = document.location + connector_char + 'admin_override_satatus=' + text;
+
+    document.location.href = url;
+  });
+};
+
+
+var show_interest_modal = function() {
+  var self = this;
+
+  setTimeout(function() {
+    var url = '/interest/modal?redirect=' + window.location.pathname + '&pk=' + document.result['pk'];
+
+    $.get(url, function(newHTML) {
+      var modal = $(newHTML).appendTo('body').modal({
+        modalClass: 'modal add-interest-modal'
+      });
+
+      modal.on('submit', function(event) {
+        event.preventDefault();
+
+        var issue_message = event.target[0].value.trim();
+        var agree_precedence = event.target[1].checked;
+        var agree_not_to_abandon = event.target[2].checked;
+
+        if (!issue_message) {
+          _alert({message: gettext('Please provide an action plan for this ticket.')}, 'error');
+          return false;
+        }
+
+        if (!agree_precedence) {
+          _alert({message: gettext('You must agree to the precedence clause.')}, 'error');
+          return false;
+        }
+        if (!agree_not_to_abandon) {
+          _alert({message: gettext('You must agree to keep the funder updated on your progress.')}, 'error');
+          return false;
+        }
+
+        $(self).attr('href', '/uninterested');
+        $(self).find('span').text(gettext('Stop Work'));
+        add_interest(document.result['pk'], {
+          issue_message
+        });
+        $.modal.close();
+      });
+    });
+  });
+};
+
+
 var build_detail_page = function(result) {
 
   // setup
   var decimals = 18;
-  var related_token_details = tokenAddressToDetails(result['token_address']);
+  var related_token_details = tokenAddressToDetailsByNetwork(result['token_address'], result['network']);
 
   if (related_token_details && related_token_details.decimals) {
     decimals = related_token_details.decimals;
@@ -412,7 +520,6 @@ var build_detail_page = function(result) {
 
   // title
   result['title'] = result['title'] ? result['title'] : result['github_url'];
-  result['title'] = result['network'] != 'mainnet' ? '(' + result['network'] + ') ' + result['title'] : result['title'];
   $('.title').html(gettext('Funded Issue Details: ') + result['title']);
 
   // insert table onto page
@@ -440,6 +547,20 @@ var build_detail_page = function(result) {
     }
   }
 
+  $('#bounty_details #issue_description img').on('click', function() {
+
+    var content = $.parseHTML(
+      '<div><div class="row"><div class="col-12 closebtn">' +
+        '<a id="" rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
+          '<span aria-hidden="true">&times;</span>' +
+        '</a>' +
+      '</div>' +
+      '<div class="col-12 pt-2 pb-2"><img class="magnify" src="' + $(this).attr('src') + '"/></div></div></div>');
+
+    var modal = $(content).appendTo('body').modal({
+      modalClass: 'modal magnify'
+    });
+  });
 };
 
 var do_actions = function(result) {
@@ -456,7 +577,8 @@ var do_actions = function(result) {
   pull_interest_list(result['pk'], function(is_interested) {
 
     // which actions should we show?
-    var show_start_stop_work = is_still_on_happy_path;
+    var should_block_from_starting_work = !is_interested && result['project_type'] == 'traditional' && (result['status'] == 'started' || result['status'] == 'submitted');
+    var show_start_stop_work = is_still_on_happy_path && !should_block_from_starting_work;
     var show_github_link = result['github_url'].substring(0, 4) == 'http';
     var show_submit_work = true;
     var show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
@@ -465,7 +587,9 @@ var do_actions = function(result) {
     var submit_work_enabled = !isBountyOwner(result);
     var start_stop_work_enabled = !isBountyOwner(result);
     var increase_bounty_enabled = isBountyOwner(result);
-    var show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done && !is_status_expired;
+    var show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
+    var show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
+    var show_admin_methods = document.isStaff;
 
     if (is_legacy) {
       show_start_stop_work = false;
@@ -482,7 +606,7 @@ var do_actions = function(result) {
       var enabled = submit_work_enabled;
       var _entry = {
         enabled: enabled,
-        href: '/funding/fulfill?source=' + result['github_url'],
+        href: result['action_urls']['fulfill'],
         text: gettext('Submit Work'),
         parent: 'right_actions',
         title: gettext('Submit work for the funder to review'),
@@ -512,7 +636,7 @@ var do_actions = function(result) {
       var enabled = kill_bounty_enabled;
       var _entry = {
         enabled: enabled,
-        href: '/funding/kill?source=' + result['github_url'],
+        href: result['action_urls']['cancel'],
         text: gettext('Cancel Bounty'),
         parent: 'right_actions',
         title: gettext('Cancel bounty and reclaim funds for this issue')
@@ -527,7 +651,7 @@ var do_actions = function(result) {
       var enabled = show_accept_submission;
       var _entry = {
         enabled: enabled,
-        href: '/funding/process?source=' + result['github_url'],
+        href: result['action_urls']['accept'],
         text: gettext('Accept Submission'),
         title: gettext('This will payout the bounty to the submitter.'),
         parent: 'right_actions',
@@ -541,11 +665,10 @@ var do_actions = function(result) {
       var enabled = increase_bounty_enabled;
       var _entry = {
         enabled: enabled,
-        href: '/funding/increase?source=' + result['github_url'],
+        href: result['action_urls']['increase'],
         text: gettext('Add Contribution'),
         parent: 'right_actions',
-        title: gettext('Increase the funding for this issue'),
-        color: 'white'
+        title: gettext('Increase the funding for this issue')
       };
 
       actions.push(_entry);
@@ -566,7 +689,106 @@ var do_actions = function(result) {
         parent: 'right_actions',
         title: gettext('View issue details and comments on Github'),
         comments: result['github_comments'],
-        color: 'white'
+        color: 'white',
+        is_last_non_admin_action: true
+      };
+
+      actions.push(_entry);
+    }
+    if (show_suspend_auto_approval) {
+      var connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
+      var url = result['url'] + connector_char + 'suspend_auto_approval=1';
+
+      var _entry = {
+        enabled: true,
+        href: url,
+        text: gettext('Suspend Auto Approval'),
+        parent: 'right_actions',
+        title: gettext('Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty'),
+        color: 'white',
+        buttonclass: 'admin-only'
+      };
+
+      actions.push(_entry);
+    }
+
+    if (show_admin_methods) {
+      var connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
+      var url = result['url'] + connector_char + 'admin_override_and_hide=1';
+
+      var _entry = {
+        enabled: true,
+        href: url,
+        text: gettext('Hide Bounty'),
+        parent: 'right_actions',
+        title: gettext('Hides Bounty from Active Bounties'),
+        color: 'white',
+        buttonclass: 'admin-only'
+      };
+
+      actions.push(_entry);
+    }
+
+    if (show_admin_methods) {
+      var connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
+      var url = result['url'] + connector_char + 'admin_toggle_as_remarket_ready=1';
+
+      var _entry = {
+        enabled: true,
+        href: url,
+        text: gettext('Toggle Remarket Ready'),
+        parent: 'right_actions',
+        title: gettext('Sets Remarket Ready if not already remarket ready.  Unsets it if already remarket ready.'),
+        color: 'white',
+        buttonclass: 'admin-only'
+      };
+
+      actions.push(_entry);
+    }
+
+    if (show_admin_methods) {
+      var url = '';
+
+      var _entry = {
+        enabled: true,
+        href: url,
+        text: gettext('Contact Funder'),
+        parent: 'right_actions',
+        title: gettext('Contact Funder via Email'),
+        color: 'white',
+        buttonclass: 'admin-only contact_bounty_hunter'
+      };
+
+      actions.push(_entry);
+    }
+
+    if (show_admin_methods) {
+      var url = '';
+
+      var _entry = {
+        enabled: true,
+        href: url,
+        text: gettext('Snooze Gitcoinbot'),
+        parent: 'right_actions',
+        title: gettext('Snooze Gitcoinbot reminders'),
+        color: 'white',
+        buttonclass: 'admin-only snooze_gitcoin_bot'
+      };
+
+      actions.push(_entry);
+    }
+
+    if (show_admin_methods) {
+      var url = '';
+
+      var _entry = {
+        enabled: true,
+        href: url,
+        text: gettext('Override Status'),
+        parent: 'right_actions',
+        title: gettext('Override Status with a status of your choosing'),
+        color: 'white',
+        buttonclass: 'admin-only admin_override_satatus'
       };
 
       actions.push(_entry);
@@ -589,6 +811,12 @@ var render_actions = function(actions) {
 var pull_bounty_from_api = function() {
   var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL;
 
+  if (typeof document.issueNetwork != 'undefined') {
+    uri = uri + '&network=' + document.issueNetwork;
+  }
+  if (typeof document.issue_stdbounties_id != 'undefined') {
+    uri = uri + '&standard_bounties_id=' + document.issue_stdbounties_id;
+  }
   $.get(uri, function(results) {
     results = sanitizeAPIResults(results);
     var nonefound = true;
@@ -617,7 +845,7 @@ var pull_bounty_from_api = function() {
       $('.nonefound').css('display', 'block');
     }
   }).fail(function() {
-    _alert({message: gettext('got an error. please try again, or contact support@gitcoin.co')}, 'error');
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
     $('#primary_view').css('display', 'none');
   }).always(function() {
     $('.loading').css('display', 'none');
@@ -658,11 +886,12 @@ var render_activity = function(result) {
       activities.push({
         profileId: _interested.profile.id,
         name: _interested.profile.handle,
-        text: gettext('Work Started'),
+        text: _interested.pending ? gettext('Worker Applied') : gettext('Work Started'),
         created_on: _interested.created,
         age: timeDifference(new Date(result['now']), new Date(_interested.created)),
         status: 'started',
-        uninterest_possible: isBountyOwner(result)
+        uninterest_possible: isBountyOwner(result) || document.isStaff,
+        slash_possible: document.isStaff
       });
     });
   }
@@ -687,6 +916,10 @@ var render_activity = function(result) {
       uninterested(result.pk, activity.profileId);
       return false;
     });
+    $('#remove-slash-' + activity.name).click(() => {
+      uninterested(result.pk, activity.profileId, true);
+      return false;
+    });
   });
 
 };
@@ -695,6 +928,9 @@ var main = function() {
   setTimeout(function() {
     // setup
     attach_work_actions();
+    attach_contact_funder_options();
+    attach_snoozee_options();
+    attach_override_status();
 
     // pull issue URL
     if (typeof document.issueURL == 'undefined') {

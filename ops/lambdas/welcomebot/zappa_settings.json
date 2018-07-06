@@ -1,0 +1,24 @@
+{
+    "welcomebot": {
+        "app_function": "app.app",
+        "aws_region": "us-west-2",
+        "profile_name": "default",
+        "project_name": "welcomebot",
+        "runtime": "python3.6",
+        "s3_bucket": "",
+        "domain": "",
+        "slim_handler": true,
+        "certificate_arn": "",
+        "cloudwatch_log_level": "ERROR",
+        "exclude": [
+            "Makefile",
+            "README.md",
+            "requirements.txt",
+            "zappa_settings.json"
+        ],
+        "timeout_seconds": 30,
+        "keep_warm": true,
+        "keep_warm_expression": "rate(5 minutes)",
+        "memory_size": 128
+    }
+}

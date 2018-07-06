@@ -1,13 +1,27 @@
-from datetime import datetime
+# -*- coding: utf-8 -*-
+'''
+    Copyright (C) 2018 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+'''
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
+import marketing.stats as stats
 import pytz
-from economy.models import ConversionRate
-from gas.models import GasProfile
-from github.utils import get_issues, get_user
-from marketing.models import Stat
 
 
 class Command(BaseCommand):
@@ -15,42 +29,10 @@ class Command(BaseCommand):
     help = 'backfills analytics that havent been pull by pull stats'
 
     def handle(self, *args, **options):
-
-        repos = [
-        ]
-
-        for org in ['bitcoin', 'gitcoinco', 'ethereum']:
-            for repo in get_user(org, '/repos'):
-                repos.append((org, repo['name']))
-        print(repos)
-        for org, repo in repos:
-            issues = []
-            cont = True
-            page = 1
-            while cont:
-                new_issues = get_issues(org, repo, page, 'all')
-                issues = issues + new_issues
-                page += 1
-                cont = len(new_issues)
-            print(len(issues))
-
-            for x in range(0, len(issues)):
-                issues[x]['created_at'] = datetime.strptime(issues[x]['created_at'], "%Y-%m-%dT%H:%M:%SZ")
-                issues[x]['created_at'] = issues[x]['created_at'].replace(tzinfo=pytz.utc)
-
-            that_time = timezone.now()
-            while True:
-                that_time = that_time - timezone.timedelta(hours=1)
-                val = len([x for x in issues if x['created_at'] < that_time])
-                key = f"github_issues_{org}_{repo}"
-                try:
-                    Stat.objects.create(
-                        created_on=that_time,
-                        key=key,
-                        val=(val),
-                        )
-                except:
-                    pass
-                if not val:
-                    break
-                print(that_time, key, val)
+        target_date = timezone.now() - timezone.timedelta(days=180)
+        now = timezone.now()
+        that_time = timezone.datetime(now.year, now.month, now.day, 1, 1, 1, tzinfo=pytz.UTC)
+        while that_time > target_date:
+            that_time = that_time - timezone.timedelta(days=1)
+            stats.joe_dominance_index(that_time)
+            stats.bounties_by_status_and_keyword(that_time)

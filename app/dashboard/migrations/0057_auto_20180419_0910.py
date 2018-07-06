@@ -5,7 +5,7 @@ from django.db import migrations
 def insert_tools(apps, schema_editor):
     Tool = apps.get_model('dashboard', 'Tool')
 
-    #basics
+    # basics
     issue_explorer = Tool(name="Issue Explorer", category="BASIC", img="v2/images/why-different/code_great.png", description='''A searchable index of all of the funded work available in
                             the system.''', url_name="explorer", link_copy="Try It", active = True, stat_graph = "bounties_fulfilled" )
     issue_explorer.save()
@@ -18,7 +18,7 @@ def insert_tools(apps, schema_editor):
     url_name="tip", link_copy="Try It", active = False, stat_graph = "tips" )
     tips.save()
 
-    #advanced
+    # advanced
     chrome_extension = Tool(name="Chrome Browser Extension", category="ADVANCED", img="v2/images/tools/browser_extension.png", description='''Browse Gitcoin where you already work.
                     On Github''',
     url_name="browser_extension", link_copy="Try It", active = False, stat_graph = "browser_ext_chrome" )
@@ -27,9 +27,9 @@ def insert_tools(apps, schema_editor):
     gitcoin_bot = Tool(name="gitcoinbot", category="ADVANCED", img="v2/images/helmet.png", description='''Chat Interface available on Github''',
     link="https://github.com/gitcoinco/web/tree/master/app/gitcoinbot", link_copy="Try It", active = False, stat_graph = "bot" )
     gitcoin_bot.save()
-    
-    
-    #community
+
+
+    # community
     slack_community = Tool(name="Slack Community", category="COMMUNITY", img="v2/images/social/slack2.png", description='''Questions / Discussion / Just say hi ? Swing by
                                 our slack channel.''',
     url_name="slack", link_copy="Try It", active = False, stat_graph = "slack_users" )
@@ -41,7 +41,7 @@ def insert_tools(apps, schema_editor):
     gitter_community.save()
 
 
-    #tools to build
+    # tools to build
 
     github = Tool(name="Github Repos", category="TOOLS_TO_BUILD", img="v2/images/social/github.png", description='''All of our development is open source, and managed
               via Github.''',
@@ -90,7 +90,7 @@ def insert_tools(apps, schema_editor):
     bounties.save()
 
 
-    #coming soon
+    # coming soon
     ios_app = Tool(name="iOS app", category="COMING_SOON", img="v2/images/tools/iOS.png", description='''Gitcoin has an iOS app in alpha. Install it to
                     browse funded work on-the-go.''',
     url_name="ios", link_copy="Details", active = False, stat_graph = "ios_app_users" )
@@ -137,7 +137,7 @@ def insert_tools(apps, schema_editor):
     cold_outreach.save()
 
 
-    #fun
+    # fun
     wallpapers = Tool(name="Ethwallpaper", category="COMING_SOON", img="v2/images/tools/ethwallpaper.png", description='''Repository of
                         Ethereum wallpapers.''',
     link="https://ethwallpaper.co", link_copy="Try It", active = False, stat_graph = "google_analytics_sessions_ethwallpaper" )

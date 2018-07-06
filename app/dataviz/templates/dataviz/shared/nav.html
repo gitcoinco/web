@@ -1,0 +1,14 @@
+    <select id="type">
+        {% for t in type_options %}
+            <option {% if t == viz_type %}selected{% endif %} >{{t}}</option>
+        {% endfor %}
+    </select>
+<script>
+    setTimeout(function(){
+        $("#type").change(function(){
+            var _t = $(this).val();
+            document.location.href = '/_administration/viz/'+'{{page_route}}'+'/'+_t;
+        });
+    },2000);
+
+</script>

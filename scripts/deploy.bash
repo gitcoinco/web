@@ -1,66 +1,90 @@
-'''
-    Copyright (C) 2018 Gitcoin Core
+#!/bin/bash
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+: <<'END'
+Copyright (C) 2018 Gitcoin Core
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-'''
-
-BRANCH=$1
-DISTID=$2
-ISFRONTENDPUSH=$3
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+END
 
 # deploy script
 # assumes that gitcoin repo lives at $HOME/gitcoin
 # and that gitcoinenv is the virtualenv under which it lives
 
 # setup
-cd
-cd gitcoin/coin
-source ../gitcoin-3/bin/activate
+cd || echo "Cannot find directory!"
+cd gitcoin/coin || echo "Cannot find coin directory!"
+
+# Load the .env file into the local environment.
+# shellcheck disable=SC2046
+export $(grep -v '^#' app/app/.env | xargs)
+
+BRANCH=$1
+DISTID=$2
+ISFRONTENDPUSH=$3
+UPDATE_CRONTAB=${UPDATE_CRONTAB:-$4}
+MIGRATE_DB=${MIGRATE_DB:-$5}
+CREATE_CACHE_TABLE=${CREATE_CACHE_TABLE:-$6}
+
+# shellcheck disable=SC1091
+source ../gitcoin-37/bin/activate
 
 # pull from git
 git add .
 git stash
-# If no $BRANCH is specified, it will use the current one
-git checkout $BRANCH
-git pull origin $BRANCH
 
-#deploy hooks
+# If no $BRANCH is specified, it will use the current one
+git checkout "$BRANCH"
+git pull origin "$BRANCH"
+
+# deploy hooks
 echo "- install req"
-pip install -r requirements/base.txt 2>&1 >> /dev/null
+{ pip3 install -r requirements/base.txt >> /dev/null; } 2>&1
+
 echo "- cleaning up pyc files"
 find . -name \*.pyc -delete
-echo "- install crontab"
-crontab scripts/crontab
-cd app
-echo "- collect static"
-if [ $ISFRONTENDPUSH ]; then
-    ./manage.py collectstatic --noinput -i other;
+
+if [ "$UPDATE_CRONTAB" ]; then
+    echo "- updating crontab"
+    crontab scripts/crontab
 fi
+
+cd app || echo "Cannot find app directory!"
+echo "- collect static"
+if [ "$ISFRONTENDPUSH" ]; then
+    python3 manage.py collectstatic --noinput -i other;
+fi
+
 rm -Rf ~/gitcoin/coin/app/static/other
-echo "- db"
-./manage.py migrate
-./manage.py createcachetable
+
+if [ "$MIGRATE_DB" ]; then
+    echo "- db"
+    python3 manage.py migrate
+fi
+
+if [ "$CREATE_CACHE_TABLE" ]; then
+    echo "- creating cache table"
+    python3 manage.py createcachetable
+fi
 
 # let gunicorn know its ok to restart
 echo "- gunicorn"
 sudo systemctl restart gunicorn
 
 # invalidate cloudfront
-if [ $ISFRONTENDPUSH ]; then
-    if [ $DISTID ]; then
-        cd ~/gitcoin/coin; bash scripts/bustcache.bash $DISTID
+if [ "$ISFRONTENDPUSH" ]; then
+    if [ "$DISTID" ]; then
+        cd ~/gitcoin/coin || echo "Cannot find coin directory!"; bash scripts/bustcache.bash "$DISTID"
     fi
 fi
 
@@ -68,5 +92,8 @@ fi
 cd ~/gitcoin/coin || echo "Cannot find coin directory!"
 bash scripts/run_management_command.bash ping_google
 
-# Handle rollbar deployment
-bash scripts/rollbar.bash
+if [ "$ENV" = "prod" ]; then
+    # Handle rollbar deployment
+    echo "- publishing deployment information to Rollbar"
+    bash scripts/rollbar.bash
+fi

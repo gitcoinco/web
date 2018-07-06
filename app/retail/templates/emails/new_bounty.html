@@ -21,12 +21,23 @@
 {% block content %}
 
 <h1>{{bounties | length}} {% trans "New Funded Issue" %}{% if bounties|length != 1 %}s{%endif%}</h1>
-
+<h3>Matching your profile</h3>
 
 {% for bounty in bounties %}
     <br>
     {% include 'emails/bounty.html' with bounty=bounty %}
 {% endfor %}
+
+{% if old_bounties %}
+
+<h1>{{old_bounties | length}} {% trans "Other Open Funded Issue" %}{% if old_bounties|length != 1 %}s{%endif%}</h1>
+<h3>Matching your profile</h3>
+    {% for bounty in old_bounties %}
+        <br>
+        {% include 'emails/bounty.html' with bounty=bounty %}
+    {% endfor %}
+
+{% endif %}
 
 <p>
     {% if keywords %}

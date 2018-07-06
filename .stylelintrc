@@ -18,12 +18,14 @@
       "em",
       "rem",
       "s",
+      "ms",
       "%",
       "deg",
       "vw",
       "vh",
       "pt",
-      "vmin"
+      "vmin",
+      "fr"
     ]
   }
 }

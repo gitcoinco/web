@@ -51,14 +51,14 @@ def insert_settings(request):
         'env': settings.ENV,
         'email_key': email_key,
         'profile_id': profile.id if profile else '',
+        'hotjar': settings.HOTJAR_CONFIG,
     }
     context['json_context'] = json.dumps(context)
 
     if context['github_handle']:
         context['unclaimed_tips'] = Tip.objects.filter(
-            expires_date__gte=timezone.now(),
-            receive_txid='',
-            username__iexact=context['github_handle'])
+            expires_date__gte=timezone.now(), receive_txid='', username__iexact=context['github_handle']
+        )
         if not settings.DEBUG:
             context['unclaimed_tips'] = context['unclaimed_tips'].filter(network='mainnet')
 
