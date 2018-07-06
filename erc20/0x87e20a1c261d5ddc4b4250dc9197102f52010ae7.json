@@ -7,21 +7,13 @@
   },
   "email": "22coinexchange@gmail.com",
   "website": "http://www.22coin.com/",
-  "whitepaper": "",
   "published_on": "2018-07-03",
-  "initial_price":{
-    "ETH":"",
-    "USD":"",
-    "BTC":""
-  },
   "links": {
-    "blog": "",
     "twitter": "https://twitter.com/22_coin",
     "telegram": "https://t.me/coin22coin",
-    "github": "",
     "facebook": "https://www.facebook.com/twotwo.coin.50",
     "reddit": "https://www.reddit.com/user/22CoinEx",
-    "slack": "https://22coin.slack.com/messages/DBHFJU29F/",
+    "slack": "https://22coin.slack.com/messages/DBHFJU29F",
     "medium": "https://medium.com/@twotwocoin"
   }
 }
