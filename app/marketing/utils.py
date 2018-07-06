@@ -16,7 +16,6 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-import requests
 import logging
 from datetime import datetime, timedelta
 
@@ -24,6 +23,7 @@ from django.conf import settings
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
+import requests
 from slackclient import SlackClient
 from slackclient.exceptions import SlackClientError
 

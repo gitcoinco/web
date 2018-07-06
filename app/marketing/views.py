@@ -48,7 +48,7 @@ from marketing.mails import new_feedback
 from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
 )
-from marketing.utils import get_or_save_email_subscriber, validate_slack_integration, validate_discord_integration
+from marketing.utils import get_or_save_email_subscriber, validate_discord_integration, validate_slack_integration
 from retail.emails import ALL_EMAILS
 from retail.helpers import get_ip
 
