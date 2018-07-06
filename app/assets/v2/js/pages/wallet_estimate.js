@@ -110,10 +110,10 @@ function prefill_recommended_prices() {
 
   // Avg recommendation prefills
   $('#average-recommended-gas').html('Average $' + parseFloat(avg_data['usd']).toFixed(2) + ' ~' + avg_data['time'] + ' minutes');
-  $('#average-recommended-gas').data('amount', parseFloat(slow_data['usd']).toFixed(2));
+  $('#average-recommended-gas').data('amount', parseFloat(avg_data['usd']).toFixed(2));
 
   // Fast recommendation prefills
   $('#fast-recommended-gas').html('Fast $' + parseFloat(fast_data['usd']).toFixed(2) + ' ~' + fast_data['time'] + ' minutes');
-  $('#fast-recommended-gas').data('amount', parseFloat(slow_data['usd']).toFixed(2));
+  $('#fast-recommended-gas').data('amount', parseFloat(fast_data['usd']).toFixed(2));
 }
 
