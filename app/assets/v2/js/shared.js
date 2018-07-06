@@ -560,6 +560,7 @@ var currentNetwork = function(network) {
   if (document.location.href.startsWith('https://gitcoin.co')) { // Live
     if (network == 'mainnet') {
       $('#current-network').text('Main Ethereum Network');
+      $('.navbar-network').attr('title', '');
       $('.navbar-network i').addClass('green');
       $('.navbar-network i').removeClass('red');
       $('#navbar-network-banner').removeClass('network-banner--warning');
@@ -593,6 +594,7 @@ var currentNetwork = function(network) {
   } else { // Staging
     if (network == 'rinkeby') {
       $('#current-network').text('Rinkeby Network');
+      $('.navbar-network').attr('title', '');
       $('.navbar-network i').addClass('green');
       $('.navbar-network i').removeClass('red');
       $('#navbar-network-banner').removeClass('network-banner--warning');
