@@ -1,6 +1,6 @@
 {
-    "symbol": "LEMO-Old",
-    "address": "0xB5AE848EdB296C21259b7467331467d2647eEcDf",
+    "symbol": "LEMO",
+    "address": "0x60C24407d01782C2175D32fe7C8921ed732371D1",
     "overview": {
         "en": "Decentralized Business Data Circulation Infrastructure.",
         "zh": "去中心化商业数据确权及流通平台"
@@ -16,7 +16,7 @@
         "twitter": "https://twitter.com/LemoChain",
         "telegram": "https://t.me/lemochain",
         "github": "https://github.com/LemoFoundationLtd",
-        "facebook": "https://www.facebook.com/your-awesome-project",
+        "facebook": "https://www.facebook.com/LemoChain",
         "reddit": "https://www.reddit.com/user/LemoChain/",
         "medium": "https://medium.com/@lemochain"
     }
