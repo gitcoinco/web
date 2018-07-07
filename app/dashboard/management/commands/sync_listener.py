@@ -43,31 +43,34 @@ class Command(BaseCommand):
         network = options['network']
         web3 = get_web3(network)
         contract_address = getStandardBountiesContractAddresss(network)
-        latest_block_hash = None
+        last_block_hash = None
 
         while True:
             # wait for a new block
             block = web3.eth.getBlock('latest')
-            blockHash = block['hash']
+            block_hash = block['hash']
 
-            if latest_block_hash == blockHash:
+            if last_block_hash == block_hash:
                 time.sleep(1)
                 continue
 
-            latest_block_hash = blockHash
-            print('got new block %s' % web3.toHex(latest_block_hash))
+            print('got new block %s' % web3.toHex(block_hash))
 
             # get txs
             transactions = block['transactions']
             for tx in transactions:
                 tx = web3.eth.getTransaction(tx)
-                if tx['to'] == contract_address:
-                    print('found a stdbounties tx')
-                    data = tx['input']
-                    method_id = data[:10]
-                    if method_id != '0x1e688c14':
-                        print('method_id != fulfillBounty')
-                        continue
-                    bounty_id = int(data[10: 74], 16)
-                    print('process_bounty %d' % bounty_id)
-                    process_bounty(bounty_id, network)
+                if not tx or tx['to'] != contract_address:
+                    continue
+
+                print('found a stdbounties tx')
+                data = tx['input']
+                method_id = data[:10]
+                if method_id != '0x1e688c14':
+                    print('method_id != fulfillBounty')
+                    continue
+                bounty_id = int(data[10:74], 16)
+                print('process_bounty %d' % bounty_id)
+                process_bounty(bounty_id, network)
+
+            last_block_hash = block_hash
