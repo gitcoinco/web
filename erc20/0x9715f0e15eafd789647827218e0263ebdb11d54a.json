@@ -8,7 +8,7 @@
   "email": "admin@cryptomagz.info",
   "website": "https://cryptomagz.info",
   "whitepaper": "https://cryptomagz.info/WHITE%20PAPER%20V1.pdf",
-  "state": "LOCKED",
+  "state": "NORMAL",
   "published_on": "2018-03-15",
   "initial_price":{
         "ETH":"0.00251222 ETH",
