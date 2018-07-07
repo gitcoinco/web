@@ -1,0 +1,15 @@
+{
+  "symbol": "PVP",
+  "address": "0x0A4218FAd9113e134190D77Bff8C2F68B93F593b",
+  "overview":{
+        "en": "PVPChain is a global e-sports ecosystem. Based on blockchain technologies, PVPChain is now in the way of integrating e-sports resources all around the world, overturning the e-sports history and re-building a governance-shared events-centralized e-sports ecosystem.PVP protocol is a public chain in PVPChain ecosystem, providing rights guarantee and protection to the e-sport games, event organizers, executors, clubs, players and brands in the ecosystem, with high-level trustworthy, safety, concurrency, extensibility and reliability.",
+        "zh": "PVPChain 是一个基于区块链技术的全球电竞生态体系，能够整合全球电竞资源，颠覆历史，重新构建一个以赛事共治为核心的电竞生态体系。PVP 协议是 PVPChain 生态体系中的一条公链，它具有可行、安全、高并发、高扩展、高可靠性的特点，为生态体系中的电竞游戏、赛事方、执行方、俱乐部、选手、观众、品牌等提供权益保障。"
+  },
+  "website": "http://pvp.io",
+  "whitepaper": "http://pvp.io/static/pdf/PVPChain_Whitepaper_V1.0.2_English.pdf",
+  "published_on": "2018-07-03",
+  "links": {
+    "twitter": "https://twitter.com/PVPCHAINIO",
+    "telegram": "https://t.me/joinchat/FU6caxKB6EvCjSE2I0hCXQ"
+  }
+}
