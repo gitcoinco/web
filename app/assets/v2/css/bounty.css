@@ -629,6 +629,62 @@ a.btn {
   -webkit-animation: MoveUpDown 3s infinite alternate;
 }
 
+.circle,
+.cross {
+  position: absolute;
+  width: 1.8rem;
+  z-index: 0;
+}
+
+#c1 {
+  top: 25%;
+  right: 11%;
+}
+
+#c2 {
+  top: 35%;
+  left: 10%;
+}
+
+#c3 {
+  top: 22%;
+  left: 13%;
+}
+
+#c4 {
+  top: 40%;
+  right: 10%;
+}
+
+#cs1 {
+  top: 14%;
+  left: 10%;
+  transform: rotate(75deg)
+}
+
+#cs2 {
+  top: 40%;
+  left: 25%;
+}
+
+#cs3 {
+  top: 40%;
+  right: 35%;
+  transform: rotate(25deg)
+}
+
+#cs4 {
+  top: 30%;
+  right: 20%;
+}
+
+#cloud {
+  position: relative;
+  right: 2rem;
+  float: right;
+  top: 7rem;
+}
+
 @media (max-width: 575.98px) {
 
   #timer {
@@ -660,13 +716,13 @@ a.btn {
   }
 }
 
-@media (min-width: 768px) {
+@media (min-width: 769px) {
   .activity-time {
     margin-left: 0.625rem !important;
   }
 
   .rocket {
-    right: 15rem;
+    right: 11rem;
   }
 }
 
