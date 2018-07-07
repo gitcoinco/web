@@ -1,0 +1,24 @@
+{
+  "symbol": "SCC",
+  "address": "0x74fd51a98a4a1ecbef8cc43be801cce630e260bd",
+  "overview":{
+        "en": "The SiaCashCoin ecosystem will bring about a revolution in the way your precious data will be stored, secured, and protected."
+  },
+  "email": "Contact@SiaCashCoin.com",
+  "website": "https://siacashcoin.com/",
+  "whitepaper": "https://siacashcoin.com/#whitepaper",
+  "state": "NORMAL",
+  "published_on": "2018-01-01",
+  "initial_price":{
+        "ETH":"0 ETH",
+        "USD":"0 USD",
+        "BTC":"0 BTC"
+  },
+  "links": {
+    "Discord": "https://discord.gg/yZSkdFV",
+    "twitter": "https://twitter.com/Siacashcoin",
+    "telegram": "https://t.me/SiaCashCoinChat",
+    "BitcoinTalk": "https://bitcointalk.org/index.php?topic=4188747.new#new",
+    "reddit": "https://redd.it/8luz5q"
+  }
+}
