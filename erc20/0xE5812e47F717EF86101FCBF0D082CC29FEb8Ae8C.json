@@ -1,0 +1,23 @@
+{
+  "symbol": "ARM",
+  "address": "0xE5812e47F717EF86101FCBF0D082CC29FEb8Ae8C",
+  "overview":{
+        "en": "ERC20 Token of Armors.io",
+        "zh": ""
+  },
+  "email": "contact@armors.io",
+  "website": "https://armors.io/",
+  "whitepaper": "https://armors.io/armors.whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-07-01",
+  "initial_price":{
+        "ETH":"0.000005 ETH"
+  },
+  "links": {
+    "blog": "https://blog.armors.io",
+    "twitter": "https://twitter.com/LabsArmors",
+    "telegram": "https://t.me/ArmorsLabs",
+    "github": "https://github.com/armors",
+    "facebook": "https://www.facebook.com/ArmorsLabs"
+  }
+}
