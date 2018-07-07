@@ -1,6 +1,6 @@
 {
   "symbol": "MFT",
-  "address": "0xDF2C7238198Ad8B389666574f2d8bc411A4b7428.",
+  "address": "0xDF2C7238198Ad8B389666574f2d8bc411A4b7428",
   "overview":{
         "en": "Mainframe is a privacy focused, p2p decentralized data relay network that empowers developers to create unstoppable, untrackable, and private web3 applications for the world of tomorrow.",
         "zh": ""
@@ -20,7 +20,6 @@
     "twitter": "https://twitter.com/Mainframe_HQ",
     "telegram": "https://t.me/mainframehq",
     "github": "https://github.com/MainframeHQ",
-    "facebook": "https://www.facebook.com/MainframeHQ",
-    "medium": "https://blog.mainframe.com/"
+    "facebook": "https://www.facebook.com/MainframeHQ"
   }
 }
