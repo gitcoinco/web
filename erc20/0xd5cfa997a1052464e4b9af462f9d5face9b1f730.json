@@ -1,0 +1,23 @@
+{
+  "symbol": "YOBTC",
+  "address": "0xd5cfa997a1052464e4b9af462f9d5face9b1f730",
+  "overview":{
+        "en": "YOBTC is the core token in the YOBTC ecology. It not only has circulation value, but also an important token based on YOBTC community consensus.",
+        "zh": "YOBTC是YOBTC区块链生态的核心令牌。它不仅具有流通价值，同样也是基于YOBTC社群共识的重要代币。"
+  },
+  "email": "shengyao@yobtc.com",
+  "website": "http://www.yobtc.com",
+  "whitepaper": "https://m.btt.top/static/pdf/YOBTCwhitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-25",
+  "initial_price":{
+        "USD":"0.001531 USD"
+  },
+  "links": {
+    "blog": "https://weibo.com/u/5904079291?refer_flag=1001030102_",
+	"twitter": "https://twitter.com/YOBTC_Community",
+    "telegram": "https://t.me/yobtc001",
+    "facebook": "https://www.facebook.com/yobtc.top",
+    "reddit": "https://www.reddit.com/user/YOBTC-TOP"
+  }
+}
