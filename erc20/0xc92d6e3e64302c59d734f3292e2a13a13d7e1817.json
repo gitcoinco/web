@@ -1,0 +1,22 @@
+{
+  "symbol": "FXC",
+  "address": "0xc92d6e3e64302c59d734f3292e2a13a13d7e1817",
+  "overview":{
+        "en": "FUTURAX is project of cryptocurrencies exchanger platfrom, we focused to build modern Crypto Market with many feature and benefit to Trader."
+  },
+  "email": "support@futurax.global",
+  "website": "https://futurax.global/",
+  "whitepaper": "https://futurax.global/Futurax.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-07-04",
+  "initial_price":{
+        "ETH":"0.00000005 ETH"
+  },
+  "links": {
+    "medium": "https://medium.com/@FuturaxProject",
+    "twitter": "https://twitter.com/FuturaxProject",
+    "telegram": "https://t.me/futurax",
+    "github": "https://github.com/futuraxproject",
+    "facebook": "https://www.facebook.com/futuraxproject/"
+  }
+}
