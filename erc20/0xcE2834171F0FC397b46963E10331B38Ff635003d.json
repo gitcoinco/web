@@ -1,0 +1,19 @@
+{
+  "symbol": "UTB",
+  "address": "0xcE2834171F0FC397b46963E10331B38Ff635003d",
+  "overview":{
+        "en": "World's First Utility Token Exchange",
+        "zh": "首家区块链落地应用数字资产交易平台"
+  },
+  "email": "utxoinfo@yeah.net",
+  "website": "https://www.utxo.com/",
+  "whitepaper": "https://utxo.zendesk.com/hc/en-us/article_attachments/360007339433/UTXO_WhitePaper_EN2_v2.0.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-02-01",
+  "initial_price":{
+        "ETH":"0.0001 ETH"
+  },
+  "links": {
+    "telegram": "https://t.me/UTXO_com"
+  }
+}
