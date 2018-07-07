@@ -1,5 +1,5 @@
 {
-  "symbol": "SDCION",
+  "symbol": "SDCOIN",
   "address": "0xe85ed250e3d91fde61bf32e22c54f04754e695c5",
   "overview":{
         "en": "the SD Poker chain applies (i) blockchain technology to solve concerns about the fairness and true randomness of card dealing by poker platforms and the circulation of virtual currency, (ii) the Short Deck play mode to solve existing disadvantages of Texas Hold'em, (iii) smart contracts to create modes more favorable to operating by individuals and organizations, and (iv) common protocols to build a more healthy and long-lasting ecological environment",
@@ -7,7 +7,7 @@
   },
   "email": "sdcpoker@163.com",
   "website": "http://www.sdcpoker.com/",
-  "whitepaper": "http://www.sdcpoker.com/SDPokeren1.2.pdf",
+  "whitepaper": "http://www.sdcpoker.com/SDPokeren3.0.pdf",
   "state": "NORMAL",
   "published_on": "2018-03-11",
   "initial_price":{
