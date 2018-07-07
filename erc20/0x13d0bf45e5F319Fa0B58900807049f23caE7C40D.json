@@ -1,0 +1,23 @@
+{
+  "symbol": "READ",
+  "address": "0x13d0bf45e5F319Fa0B58900807049f23caE7C40D",
+  "overview":{
+        "en": "The SuperString is an original content protocol based on blockchain technology, committed to creating a worldwide online original content incentive system by blockchain technology. SuperString covers original content distribution and incentives, copyright investment, copyright derivatives trading and other fields.The first goal of the SuperString will start from the field of online literature, with the block chain to redefine the online literary ecology, and then gradually expand to comic, online drama and other original content areas.",
+        "zh": "超玄是一个基于区块链技术的原创内容协议，致力于通过区块链技术，打造一个全球范围内的网生原创内容激励体系。超玄覆盖原创内容分发和激励、版权投资与交易、版权周边衍生品交易等领域。超玄的首个目标是从网络文学领域切入，用区块链重新定义网络文学生态，以此为基础，逐步拓展到漫画、网剧等网生原创内容领域。"
+  },
+  "email": "qi.cheng.qing.mr@gmail.com",
+  "website": "https://read.io/",
+  "whitepaper": "https://github.com/rockxie/LianZai/blob/master/SuperString.md",
+  "state": "NORMAL",
+  "published_on": "2017-07-07",
+  "initial_price":{
+        "ETH":"0.0000000 ETH",
+        "USD":"0.0 USD",
+        "BTC":"0.00000000 BTC"
+  },
+  "links": {
+    "telegram": "https://t.me/readgroup",
+    "twitter": "https://twitter.com/READ_Token",
+    "facebook": "https://www.facebook.com/100023928350527"
+  }
+}
