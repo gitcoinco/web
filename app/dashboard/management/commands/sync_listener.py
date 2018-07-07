@@ -26,9 +26,11 @@ from dashboard.utils import get_bounty, get_web3, getStandardBountiesContractAdd
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
+
 def process_bounty(bounty_id, network):
     bounty = get_bounty(bounty_id, network)
     web3_process_bounty(bounty)
+
 
 class Command(BaseCommand):
     help = 'listens for bounty changes '
