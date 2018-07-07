@@ -1,0 +1,18 @@
+{
+  "symbol": "NASH",
+  "address": "0x0a255f700b16c0acf5673565c757b94fb38b27f2",
+  "overview":{
+        "en": "NeoWorld is a MMO sanbox game based on blockchain technology. It is a 3D virtual world created by global players. NASH, a.k.a NeoWorld Cash, is the only currency supported in NeoWorld.",
+        "zh": "NeoWorld是一个基于区块链技术的多人联网沙盒游戏，也是一个由全球用户共同协作创建的3D虚拟世界。NASH 的全名为 NeoWorld Cash, 是 NeoWorld 的唯一货币。"
+  },
+  "email": "info@neoworld.io",
+  "website": "https://neoworld.io",
+  "whitepaper": "https://neoworld.io/download/NeoWorld_v9.0CN.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-05-24",
+  "initial_price":{
+  },
+  "links": {
+    "blog": "http://blog.neoworld.io/"
+  }
+}
