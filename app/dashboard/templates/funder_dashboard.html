@@ -230,6 +230,7 @@
                     {% trans "Latest on Your Bounties" %}
                   </div>
                   <hr>
+                  {% if expired_issues_count|add:"0" > 0 %}
                   <div class="funder-dashboard__latest-on-bounties__reclaim-funds card">
                     <div class="card-body pb-1">
                       <div class="text-capitalize lead">
@@ -240,19 +241,20 @@
                         {% blocktrans with explorer_url=explorer_url%}
                         You have
                         <span class="funder-dashboard__latest-on-bounties__reclaim-funds__funds-count
-                                     text-danger">{{expired_issues_count}}</span>
+                                             text-danger">{{expired_issues_count}}</span>
                         <span class="text-danger">Expired Issues,</span>
-                        funds worth<span class="funder-dashboard__latest-on-bounties__reclaim-funds__worth
-                                                 font-weight-bold">${{expired_issues_worth_dollars}}</span>
+                        funds worth <span class="funder-dashboard__latest-on-bounties__reclaim-funds__worth
+                                                         font-weight-bold">${{expired_issues_worth_dollars}}</span>
                         <a href="{{explorer_url}}"
                            class="funder-dashboard__latest-on-bounties__reclaim-funds__reclaim
-                                   issue-explorer-link issue-explorer-link--bounties--expired text-fd-blue--light ml-1">
+                                           issue-explorer-link issue-explorer-link--bounties--expired text-fd-blue--light ml-1">
                           Reclaim Now
                         </a>
                         {% endblocktrans %}
                       </div>
                     </div>
                   </div>
+                  {% endif %}
                   <div class="funder-dashboard__latest-on-bounties__active card mt-3">
                     <div class="card-body pb-1">
                       <div class="lead">
