@@ -146,10 +146,13 @@
                         {% trans "Total budget" %}
                       </small>
                     </div>
-                    <small class="funder-dashboard__stats__stat__footer
+                    <div class="funder-dashboard__stats__stat__footer
                                 card-footer text-uppercase text-center p0 text-muted">
-                      {% trans "All Time" %}
-                    </small>
+                      <small class="pr-1">
+                          {% trans "Budget: " %}
+                      </small>
+                      <input class="funder-dashboard__stats__stat--total-budget__budget-input mw-100" type="text"/>
+                    </div>
                   </div>
                 </div>
                 <div class="funder-dashboard__payout-history row card mt-4">
