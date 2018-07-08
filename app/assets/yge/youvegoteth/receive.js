@@ -165,6 +165,8 @@ window.onload = function() {
         var payloadData = data; // ??
         var fromAccount = _idx; // ???
         var gas = estimate;
+
+        alert(gas);
         // maximize the gas price
 
         if (balance > (gas * gasPrice)) {
