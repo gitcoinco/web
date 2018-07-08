@@ -97,7 +97,15 @@ $(function () {
   };
 
   function activateTotalBudget() {
-    var $totalBudget = $('.funder-dashboard__stats__stat--total-budget').find('.funder-dashboard__stats__stat__footer');
+    var $totalBudget = $('.funder-dashboard__stats__stat--total-budget__budget-input');
+
+    $totalBudget.keypress(function(e) {
+      if (e.key == "Enter") {
+        console.log("User inputted total budget: \r\n" + this.value);
+      }
+    });
+
+    console.log($totalBudget.val());
   };
 
   function activateOutgoingFunds() {
