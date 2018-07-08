@@ -43,9 +43,10 @@
         <i class="fas fa-user"></i>
         {% trans "View Profile" %}
       </a>
+      <!-- TODO: Funder dashboard check if user is funder -->
       <a class="dropdown-item" href="{% url "funder_dashboard" %}">
-          <i class="fas fa-chart-line"></i>
-          {% trans "Funder Dashboard" %}
+        <i class="fas fa-chart-line"></i>
+        {% trans "Funder Dashboard" %}
       </a>
       <a class="dropdown-item" href="{% url "email_settings" email_key %}">
         <i class="fas fa-cog"></i>
