@@ -8,7 +8,7 @@
   "email": "support@bitedu.one",
   "website": "http://www.bitedu.one",
   "whitepaper": "http://www.bitedu.one/static/BitEDU-WP-EN.pdf",
-  "state": "LOCKED | NORMAL",
+  "state": "NORMAL",
   "published_on": "2018-06-06",
   "initial_price":{
     "ETH":"0.000078164 ETH",
