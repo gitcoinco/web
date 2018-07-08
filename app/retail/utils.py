@@ -173,8 +173,9 @@ def get_hourly_rate_distribution(keyword):
         max_hourly_rate = median + int(stddev/2)
     elif methodology == 'quartile':
         hourly_rates.sort()
-        first_quarter = int(len(hourly_rates)/4)
-        third_quarter = first_quarter * 3
+        num_quarters = 12
+        first_quarter = int(len(hourly_rates)/num_quarters)
+        third_quarter = first_quarter * (num_quarters-1)
         min_hourly_rate = int(hourly_rates[first_quarter])
         max_hourly_rate = int(hourly_rates[third_quarter])
     elif methodology == 'hardcode':
