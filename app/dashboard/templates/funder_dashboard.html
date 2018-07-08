@@ -569,6 +569,14 @@
         outgoingFundsUrl: "{% url "funder_dashboard_outgoing_funds" %}",
         bountiesUrl: "{% url "funder_dashboard_bounties" %}"
       };
+
+      console.log('kappa');
+
+      window.funderDashboardPayoutChartData = {
+        weeklyData: {{payout_history_weekly | safe}},
+        monthlyData: {{payout_history_monthly | safe}},
+        yearlyData: {{payout_history_yearly | safe}}
+      };
     </script>
     <script src="{% static "v2/js/funder_dashboard.js" %}"></script>
     {% include 'shared/rollbar.html' %}

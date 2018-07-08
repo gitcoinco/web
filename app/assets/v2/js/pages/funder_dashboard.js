@@ -34,21 +34,9 @@ $(function () {
     }
 
     function getChartSettings() {
-      // TODO: Get these from the server
-      var monthlyData = {
-        data: [80, 305, 50, 105, 405, 150, 200, 300],
-        labels: ["January", "February", "March", "April", "May", "June", "July", "August"]
-      };
-
-      var weeklyData = {
-        data: [50, 105, 405, 150, 200, 300, 80, 305],
-        labels: [1, 2, 3, 4, 5, 6, 7, 8]
-      };
-
-      var yearlyData = {
-        data: [50000, 70000, 90000, 30000],
-        labels: [2016, 2017, 2018, 30000]
-      }
+      var monthlyData = window.funderDashboardPayoutChartData.monthlyData;
+      var weeklyData = window.funderDashboardPayoutChartData.weeklyData;
+      var yearlyData = window.funderDashboardPayoutChartData.yearlyData;
 
       var filterBaseSel = 'funder-dashboard__payout-history__control';
 
