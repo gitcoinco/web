@@ -391,6 +391,10 @@ GOOGLE_ANALYTICS_AUTH_JSON = {
         env('GA_AUTH_PROVIDER_X509_CERT_URL', default='https://www.googleapis.com/oauth2/v1/certs'),
     'client_x509_cert_url': env('GA_CLIENT_X509_CERT_URL', default='')
 }
+HOTJAR_CONFIG = {
+    'hjid': env.int('HOTJAR_ID', default=0),
+    'hjsv': env.int('HOTJAR_SV', default=0),
+}
 
 # Rollbar - https://rollbar.com/docs/notifier/pyrollbar/#django
 ROLLBAR_CLIENT_TOKEN = env('ROLLBAR_CLIENT_TOKEN', default='')  # post_client_item

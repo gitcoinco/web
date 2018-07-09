@@ -39,7 +39,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import ellipses, sync_profile
 from avatar.utils import get_avatar_context
-from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
+from gas.utils import conf_time_spread, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from github.utils import (
     get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
 )
@@ -58,7 +58,7 @@ from .models import (
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_github,
-    maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_slack,
+    maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from .utils import (
     get_bounty, get_bounty_id, get_context, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
@@ -132,6 +132,7 @@ def create_new_interest_helper(bounty, user, issue_message):
     record_user_action(user, 'start_work', interest)
     maybe_market_to_slack(bounty, 'start_work')
     maybe_market_to_user_slack(bounty, 'start_work')
+    maybe_market_to_user_discord(bounty, 'start_work')
     maybe_market_to_twitter(bounty, 'start_work')
     return interest
 
@@ -294,6 +295,7 @@ def remove_interest(request, bounty_id):
         interest.delete()
         maybe_market_to_slack(bounty, 'stop_work')
         maybe_market_to_user_slack(bounty, 'stop_work')
+        maybe_market_to_user_discord(bounty, 'stop_work')
         maybe_market_to_twitter(bounty, 'stop_work')
     except Interest.DoesNotExist:
         return JsonResponse({
@@ -355,6 +357,7 @@ def uninterested(request, bounty_id, profile_id):
         bounty.interested.remove(interest)
         maybe_market_to_slack(bounty, 'stop_work')
         maybe_market_to_user_slack(bounty, 'stop_work')
+        maybe_market_to_user_discord(bounty, 'stop_work')
         if is_staff:
             event_name = "bounty_removed_slashed_by_staff" if slashed else "bounty_removed_by_staff"
         else:
@@ -537,6 +540,11 @@ def onboard(request, flow):
         if steps:
             steps = steps.split(',')
 
+    if (steps and 'github' not in steps) or 'github' not in onboard_steps:
+        if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile'):
+            login_redirect = redirect('/login/github?next=' + request.get_full_path())
+            return login_redirect
+
     params = {
         'title': _('Onboarding Flow'),
         'steps': steps or onboard_steps,
@@ -562,6 +570,7 @@ def gas(request):
     if recommended_gas_price < 2:
         _cts = conf_time_spread(recommended_gas_price)
     context = {
+        'gas_advisories': gas_advisories(),
         'conf_time_spread': _cts,
         'title': 'Live Gas Usage => Predicted Conf Times'
     }

@@ -349,7 +349,7 @@ def data_viz_helper_merge_json_trees(output):
         name = this_child['name']
         if name in processed_names.keys():
             target_idx = processed_names[name]
-            print(target_idx)
+            #print(target_idx)
             for this_childs_child in this_child['children']:
                 new_output['children'][target_idx]['children'].append(this_childs_child)
         else:
@@ -495,6 +495,7 @@ def viz_graph(request, _type, template='graph'):
         TemplateResponse: If data param not provided, return the populated data visualization template.
 
     """
+    keyword = request.GET.get('keyword', None)
     hide_pii = True
     page_route = 'graph'
     if template == 'square_graph':
@@ -528,7 +529,11 @@ def viz_graph(request, _type, template='graph'):
         values = {}
         avatars = {}
         edges = []
-        for bounty in Bounty.objects.filter(network='mainnet', current_bounty=True):
+        bounties = Bounty.objects.filter(network='mainnet', current_bounty=True)
+        if keyword:
+            bounties = bounties.filter(raw_data__icontains=keyword)
+
+        for bounty in bounties:
             if bounty.value_in_usdt_then:
                 weight = bounty.value_in_usdt_then
                 source = bounty.org_name
@@ -625,6 +630,7 @@ def viz_graph(request, _type, template='graph'):
         'type_options': _type_options,
         'page_route': page_route,
         'max_time': int(time.time()),
+        'keyword': keyword,
     }
 
     response = TemplateResponse(request, f'dataviz/{template}.html', params)
@@ -670,7 +676,7 @@ def viz_draggable(request, key='email_open'):
                 income.append([i, val_usdt])  # x axis
                 lifeExpectancy.append([i, num_bounties])  # y axis
                 population.append([i, 10000000 * num_bounties])  # size
-                print(username, i, num_bounties, val_usdt)
+                #print(username, i, num_bounties, val_usdt)
             output.append({
                 'name': username,
                 'region': username,
@@ -712,11 +718,16 @@ def viz_scatterplot_helper(request, key='hourly_rate', template='dataviz/scatter
 
     """
     stats = []
+    keyword = request.GET.get('keyword', None)
     type_options = ['hourly_rate']
     if request.GET.get('data'):
         rows = [['hourlyRate', 'daysBack', 'username', 'weight']]
-        for bf in BountyFulfillment.objects.filter(accepted=True).exclude(fulfiller_hours_worked=None):
-            print(bf.pk, bf.created_on)
+        fulfillments = BountyFulfillment.objects.filter(accepted=True).exclude(fulfiller_hours_worked=None)
+        if keyword:
+            filter_bounties = Bounty.objects.filter(raw_data__icontains=keyword)
+            fulfillments = fulfillments.filter(bounty__in=filter_bounties)
+        for bf in fulfillments:
+            #print(bf.pk, bf.created_on)
             try:
                 weight = math.log(bf.bounty.value_in_usdt, 10) / 4
                 username = bf.bounty.org_name
@@ -746,6 +757,7 @@ def viz_scatterplot_helper(request, key='hourly_rate', template='dataviz/scatter
         'page_route': 'scatterplot',
         'type_options': type_options,
         'viz_type': key,
+        'keyword': keyword,
     }
     response = TemplateResponse(request, template, params)
     response['X-Frame-Options'] = 'SAMEORIGIN'

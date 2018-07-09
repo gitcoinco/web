@@ -87,7 +87,7 @@ class AlumniAdmin(GeneralAdmin):
 class EmailSubscriberAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile']
     ordering = ['-id']
-    search_fields = ['email', 'source']
+    search_fields = ['email', 'source', 'keywords']
     list_display = ['email', 'created_on', 'source']
 
 

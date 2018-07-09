@@ -1,3 +1,4 @@
+
 var tokenAddressToDetails = function(addr) {
   return tokenAddressToDetailsByNetwork(addr, document.web3network);
 };

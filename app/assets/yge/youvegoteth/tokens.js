@@ -1,5 +1,6 @@
 /* eslint-disable nonblock-statement-body-position */
 
+
 var tokenAddressToDetails = function(addr) {
   var _tokens = tokens(document.web3network);
 
