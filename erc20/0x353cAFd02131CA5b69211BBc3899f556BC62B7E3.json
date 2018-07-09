@@ -1,0 +1,21 @@
+{
+  "symbol": "BEU",
+  "address": "0x353cAFd02131CA5b69211BBc3899f556BC62B7E3",
+  "overview":{
+    "en": "The World’s first ecosystem for education and sharing educaiton.",
+    "zh": "全球首个分布式共享教育生态，围绕终身学习需求，研发新一代教育行业底层设施，打造一个开源的区块链，任何人都可以将其作为开发与推广应用的基础，全面助力教育行业的数字化与资产化，以应用匹配流量，以流量构建场景，多场景形成生态，通过BEU作为生态体系流通结算与权益证明，发挥充分的普惠作用和普惠价值，让所有参与者在同一个生态系统中获得充分的价值流转与价值体现"
+  },
+  "email": "support@bitedu.one",
+  "website": "http://www.bitedu.one",
+  "whitepaper": "http://www.bitedu.one/static/BitEDU-WP-EN.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-06",
+  "initial_price":{
+    "ETH":"0.000078164 ETH",
+    "USD":"0.037714130 USD",
+    "BTC":"0.000005635 BTC"
+  },
+  "links": {
+    "telegram": "http://t.me/biteduChinese"
+  }
+}
