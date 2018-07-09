@@ -17,13 +17,8 @@
 {% endcomment %}
 {% load i18n static %}
 {% block 'scripts' %}
-<script src="{% static "yge/ethereumjs/ethereumjs-accounts.js" %}"></script>
-<script src="{% static "yge/ethereumjs/web3.js" %}"></script>
-<script src="{% static "yge/ethereumjs/hooked-web3-provider.js" %}"></script>
-<script src="{% static "yge/youvegoteth/web3alert.js" %}"></script>
-<script src="{% static "yge/youvegoteth/index.js" %}"></script>
-<script src="{% static "yge/youvegoteth/pre.js" %}"></script>
-<script src="{% static "yge/youvegoteth/new.js" %}"></script>
+<script src="{% static "v2/js/amounts.js" %}"></script>
+<script src="{% static "yge/js/web3alert.js" %}"></script>
 {% endblock %}
 <!-- Main -->
 {% block 'main' %}
@@ -46,6 +41,6 @@
         <option value="50">50 {% trans "receipients" %}</option>
       </select>
 	</header>
-  <a href="#" id="neweth" class="button button--primary">{% trans "Send Ether" %} <span class="emoji">💰</span></a>
+  <a href="{% url "send_tip_2" %}" id="neweth" class="button button--primary">{% trans "Send Ether" %} <span class="emoji">💰</span></a>
 </section>
 {% endblock %}

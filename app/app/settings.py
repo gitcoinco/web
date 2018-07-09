@@ -58,7 +58,7 @@ INSTALLED_APPS = [
     'storages', 'social_django', 'cookielaw', 'django.contrib.humanize', 'django.contrib.sitemaps',
     'django.contrib.sites', 'django_extensions', 'easy_thumbnails', 'app', 'avatar', 'retail', 'rest_framework',
     'bootstrap3', 'marketing', 'economy', 'dashboard', 'enssubdomain', 'faucet', 'tdi', 'gas', 'github', 'legacy',
-    'chartit', 'email_obfuscator', 'linkshortener', 'credits', 'gitcoinbot', 'external_bounties', 'dataviz', 'ethos',
+    'chartit', 'email_obfuscator', 'linkshortener', 'credits', 'gitcoinbot', 'external_bounties', 'dataviz',
     'impersonate',
 ]
 
@@ -191,7 +191,7 @@ STATIC_HOST = env('STATIC_HOST', default='')
 STATIC_URL = STATIC_HOST + env('STATIC_URL', default='/static/')
 
 THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + (
-    'ethos.thumbnail_processors.circular_processor',
+    'app.thumbnail_processors.circular_processor',
 )
 
 THUMBNAIL_ALIASES = {
@@ -407,16 +407,6 @@ WEB3_HTTP_PROVIDER = env('WEB3_HTTP_PROVIDER', default='https://rinkeby.infura.i
 # COLO Coin
 COLO_ACCOUNT_ADDRESS = env('COLO_ACCOUNT_ADDRESS', default='')  # TODO
 COLO_ACCOUNT_PRIVATE_KEY = env('COLO_ACCOUNT_PRIVATE_KEY', default='')  # TODO
-
-# EthOS
-ETHOS_CONTRACT_ADDRESS = env('ETHOS_CONTRACT_ADDRESS', default='')  # TODO
-ETHOS_ACCOUNT_ADDRESS = env('ETHOS_ACCOUNT_ADDRESS', default='')  # TODO
-ETHOS_ACCOUNT_PRIVATE_KEY = env('ETHOS_ACCOUNT_PRIVATE_KEY', default='')  # TODO
-
-ETHOS_TWITTER_CONSUMER_KEY = env('ETHOS_TWITTER_CONSUMER_KEY', default='')  # TODO
-ETHOS_TWITTER_CONSUMER_SECRET = env('ETHOS_TWITTER_CONSUMER_SECRET', default='')  # TODO
-ETHOS_TWITTER_ACCESS_TOKEN = env('ETHOS_TWITTER_ACCESS_TOKEN', default='')  # TODO
-ETHOS_TWITTER_ACCESS_SECRET = env('ETHOS_TWITTER_ACCESS_SECRET', default='')  # TODO
 
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
