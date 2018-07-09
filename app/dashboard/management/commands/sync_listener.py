@@ -66,9 +66,9 @@ class Command(BaseCommand):
                 print('found a stdbounties tx')
                 data = tx['input']
                 method_id = data[:10]
-                if method_id != '0x1e688c14':
-                    print('method_id != fulfillBounty')
-                    continue
+                #if method_id != '0x1e688c14':
+                #    print('method_id != fulfillBounty')
+                #    continue
                 bounty_id = int(data[10:74], 16)
                 print('process_bounty %d' % bounty_id)
                 process_bounty(bounty_id, network)
