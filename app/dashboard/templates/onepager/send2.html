@@ -1,4 +1,4 @@
-{% extends 'yge/base.html' %}
+{% extends 'onepager/base.html' %}
 {% comment %}
   Copyright (C) 2018 Gitcoin Core
 
@@ -18,7 +18,7 @@
 {% load i18n static %}
 {% block 'scripts' %}
 <script src="{% static "v2/js/amounts.js" %}"></script>
-<script src="{% static "yge/js/web3alert.js" %}"></script>
+<script src="{% static "onepager/js/web3alert.js" %}"></script>
 {% endblock %}
 <!-- Main -->
 {% block 'main' %}
@@ -102,7 +102,7 @@
     <p id="loading_trans">
       <a href="" target="_blank" rel="noopener noreferrer" id="trans_link2" >{% trans "The transaction is still pending." %}</a><br>{% trans "This page will auto-update when the transaction is confirmed" %} <br>({% trans "but you can close the browser window if you want" %}).
       <br>
-      <img src="{% static "yge/images/loading_v2.gif" %}" style="max-width: 70px; max-height: 70px;">
+      <img src="{% static "onepager/images/loading_v2.gif" %}" style="max-width: 70px; max-height: 70px;">
     </p>
     <hr>
     <h1>{% blocktrans %}<span id="new_username"></span> has been notified{% endblocktrans %}</h1>

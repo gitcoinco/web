@@ -1,4 +1,4 @@
-{% extends 'yge/base.html' %}
+{% extends 'onepager/base.html' %}
 {% comment %}
   Copyright (C) 2018 Gitcoin Core
 
@@ -18,7 +18,7 @@
 {% load i18n static %}
 {% block 'scripts' %}
 <script src="{% static "v2/js/amounts.js" %}"></script>
-<script src="{% static "yge/js/web3alert.js" %}"></script>
+<script src="{% static "onepager/js/web3alert.js" %}"></script>
 {% endblock %}
 <!-- Main -->
 {% block 'world' %}
@@ -35,7 +35,7 @@
   </header>
   <div id="loading">
     <h1>{% trans "Loading" %}</h1>
-    <img src="{% static "yge/images/loading.gif" %}" style="max-width: 70px; max-height: 70px;">
+    <img src="{% static "onepager/images/loading.gif" %}" style="max-width: 70px; max-height: 70px;">
     <p id="loading_txt">{% trans "waiting for web3..." %}</p>
   </div>
   <div id="step_zero" style="display:none;">

@@ -80,7 +80,7 @@ def send_tip(request):
         'class': 'send',
     }
 
-    return TemplateResponse(request, 'yge/send1.html', params)
+    return TemplateResponse(request, 'onepager/send1.html', params)
 
 
 def record_user_action(user, event_name, instance):
@@ -502,7 +502,7 @@ def receive_tip(request):
         'gas_price': round(recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target), 1),
     }
 
-    return TemplateResponse(request, 'yge/receive.html', params)
+    return TemplateResponse(request, 'onepager/receive.html', params)
 
 
 @csrf_exempt
@@ -597,7 +597,7 @@ def send_tip_2(request):
         'from_handle': from_username,
     }
 
-    return TemplateResponse(request, 'yge/send2.html', params)
+    return TemplateResponse(request, 'onepager/send2.html', params)
 
 
 def onboard(request, flow):
