@@ -60,9 +60,20 @@ class Command(BaseCommand):
 
     help = 'creates activity records for current bounties'
 
-    def handle(self, *args, **options):
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '-force', '--force',
+            action='store_true',
+            dest='force_refresh',
+            default=False,
+            help='Force the refresh'
+        )
 
+    def handle(self, *args, **options):
+        force_refresh = options['force_refresh']
         bounties = Bounty.objects.filter(current_bounty=True)
         for bounty in bounties:
-            if not bounty.activities.count():
+            if force_refresh:
+                bounty.activities.clear()
+            if force_refresh or not bounty.activities.count():
                 create_activities(bounty)
