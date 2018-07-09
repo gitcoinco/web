@@ -846,6 +846,7 @@ class Subscription(SuperModel):
 
 class Tip(SuperModel):
 
+    web3_type = models.CharField(max_length=50, default='yge')
     emails = JSONField()
     url = models.CharField(max_length=255, default='')
     tokenName = models.CharField(max_length=255)
