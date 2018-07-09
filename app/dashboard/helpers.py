@@ -627,7 +627,7 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
     fulfillment = _fulfillment
     try:
         user_profile = Profile.objects.filter(handle__iexact=new_bounty.bounty_owner_github_username).first()
-        funder_actions = ['new_bounty', 'worker_approved']
+        funder_actions = ['new_bounty', 'worker_approved', 'killed_bounty', 'increased_bounty', 'worker_rejected']
         if event_name not in funder_actions:
             if not fulfillment:
                 fulfillment = new_bounty.fulfillments.order_by('-pk').first()
