@@ -599,6 +599,7 @@ a.btn {
   margin: 4rem auto;
   font-weight: 700;
   z-index: 2;
+  padding-top: 100px;
 }
 
 .bounty_details .quote_text {
