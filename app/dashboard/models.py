@@ -898,7 +898,10 @@ class Tip(SuperModel):
         if self.web3_type == 'yge':
             return self.url
 
-        return f"{settings.BASE_URL}tip/receive/v2/?key={self.metadata.priv_key}"
+        pk = self.metadata['priv_key']
+        txid = self.txid
+        network = self.network
+        return f"{settings.BASE_URL}tip/receive/v2/{pk}/{txid}/{network}"
 
     # TODO: DRY
     @property

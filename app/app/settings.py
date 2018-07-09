@@ -190,9 +190,7 @@ STATIC_ROOT = root('static')
 STATIC_HOST = env('STATIC_HOST', default='')
 STATIC_URL = STATIC_HOST + env('STATIC_URL', default='/static/')
 
-THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + (
-    'app.thumbnail_processors.circular_processor',
-)
+THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + ('app.thumbnail_processors.circular_processor', )
 
 THUMBNAIL_ALIASES = {
     '': {

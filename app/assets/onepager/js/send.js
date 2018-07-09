@@ -3,20 +3,20 @@
 $(document).ready(function() {
 
   // jquery bindings
-  $("#advanced_toggle").click(function(){
+  $('#advanced_toggle').click(function() {
     advancedToggle();
   });
   $('#amount').on('keyup blur change', updateEstimate);
   $('#token').on('change', updateEstimate);
-  $("#send").click(function(e){
+  $('#send').click(function(e) {
     return send(e);
   });
 
 });
 
 function advancedToggle() {
-  $('#advanced_toggle').css('display', 'none')
-  $('#advanced').css('display', 'block')
+  $('#advanced_toggle').css('display', 'none');
+  $('#advanced').css('display', 'block');
   return false;
 }
 
@@ -29,7 +29,6 @@ function validateEmail(email) {
 function isNumeric(n) {
   return !isNaN(parseFloat(n)) && isFinite(n);
 }
-
 
 
 function send(e) {
@@ -98,13 +97,14 @@ function send(e) {
   }
 
   const url = '/tip/send/3';
+
   fetch(url, {
     method: 'POST',
     body: JSON.stringify({
       username: username,
       email: email,
       tokenName: tokenName,
-      amount: amountInWei,
+      amount: amountInEth,
       comments_priv: comments_priv,
       comments_public: comments_public,
       expires_date: expires,
@@ -120,26 +120,29 @@ function send(e) {
   }).then(function(json) {
     var is_success = json['status'] == 'OK';
     var _class = is_success ? 'info' : 'error';
-    if(!is_success){
+
+    if (!is_success) {
       _alert(json, _class);
     } else {
       var destinationAccount = json.payload.address;
-      var post_send_callback = function(errors, txid){
-        if(errors){
+      var post_send_callback = function(errors, txid) {
+        if (errors) {
           _alert({ message: gettext('There was an error.') }, 'warning');
         } else {
           const url = '/tip/send/4';
+
           fetch(url, {
             method: 'POST',
             body: JSON.stringify({
               destinationAccount: destinationAccount,
-              txid: txid,
+              txid: txid
             })
           }).then(function(response) {
             return response.json();
           }).then(function(json) {
             var is_success = json['status'] == 'OK';
-            if(!is_success){
+
+            if (!is_success) {
               _alert(json, _class);
             } else {
               $('#loading_trans').html('This transaction has been sent 👌');
@@ -147,19 +150,21 @@ function send(e) {
               $('#send_eth_done').css('display', 'block');
               $('#tokenName').html(tokenName);
               $('#new_username').html(username);
-              $('#trans_link').attr('href','https://' + etherscanDomain() + '/tx/' + txid);
-              $('#trans_link2').attr('href','https://' + etherscanDomain() + '/tx/'+ txid);
+              $('#trans_link').attr('href', 'https://' + etherscanDomain() + '/tx/' + txid);
+              $('#trans_link2').attr('href', 'https://' + etherscanDomain() + '/tx/' + txid);
             }
           });
         }
       };
-      if(isSendingETH){
+
+      if (isSendingETH) {
         web3.eth.sendTransaction({
           to: destinationAccount,
-          value: amountInWei,
+          value: amountInWei
         }, post_send_callback);
       } else {
         var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+
         token_contract(tokenAddress).transfer(destinationAccount, amountInWei, {value: gas_money}, post_send_callback);
       }
     }
@@ -178,7 +183,7 @@ var updateEstimate = function(e) {
     } else {
       $('#usd_amount').html('</br>');
     }
-  })
+  });
 };
 
 var etherscanDomain = function() {

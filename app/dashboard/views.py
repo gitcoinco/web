@@ -36,9 +36,10 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
-from dashboard.utils import generate_pub_priv_keypair
+
 from app.utils import ellipses, sync_profile
 from avatar.utils import get_avatar_context
+from dashboard.utils import generate_pub_priv_keypair
 from gas.utils import conf_time_spread, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from github.utils import (
     get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
@@ -469,7 +470,7 @@ def uninterested(request, bounty_id, profile_id):
 
 @csrf_exempt
 @ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
-def receive_tip(request):
+def receive_tip_legacy(request):
     """Receive a tip."""
     if request.body:
         status = 'OK'
@@ -502,6 +503,50 @@ def receive_tip(request):
         'class': 'receive',
         'title': _('Receive Tip'),
         'gas_price': round(recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target), 1),
+    }
+
+    return TemplateResponse(request, 'onepager/receive_legacy.html', params)
+
+
+@csrf_exempt
+@ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
+def receive_tip_v2(request, pk, txid, network):
+
+    tip = Tip.objects.get(web3_type='v2', metadata__priv_key=pk, txid=txid, network=network)
+
+    """Receive a tip."""
+    if request.body:
+        status = 'OK'
+        message = _('Tip has been received')
+        params = json.loads(request.body)
+
+        # db mutations
+        try:
+            tip = Tip.objects.get(txid=params['txid'])
+            tip.receive_address = params['receive_address']
+            tip.receive_txid = params['receive_txid']
+            tip.received_on = timezone.now()
+            tip.save()
+            record_user_action(tip.username, 'receive_tip', tip)
+            record_tip_activity(tip, tip.username, 'receive_tip')
+        except Exception as e:
+            status = 'error'
+            message = str(e)
+
+        # http response
+        response = {
+            'status': status,
+            'message': message,
+        }
+
+        return JsonResponse(response)
+
+    params = {
+        'issueURL': request.GET.get('source'),
+        'class': 'receive',
+        'title': _('Receive Tip'),
+        'gas_price': round(recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target), 1),
+        'tip': tip,
     }
 
     return TemplateResponse(request, 'onepager/receive.html', params)
@@ -1408,4 +1453,3 @@ def vote_tool_down(request, tool_id):
         tool.votes.add(vote)
         score_delta = -1
     return JsonResponse({'success': True, 'score_delta': score_delta})
-
