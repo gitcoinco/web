@@ -29,6 +29,7 @@ from django.http import Http404, JsonResponse
 from django.utils import timezone
 
 import requests
+from app.utils import sync_profile
 from bs4 import BeautifulSoup
 from dashboard.models import Activity, Bounty, BountyFulfillment, BountySyncRequest, UserAction
 from dashboard.notifications import (
@@ -631,9 +632,9 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
             if event_name == 'work_done':
                 fulfillment = new_bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
         if fulfillment:
-            maybe_user_profile = Profile.objects.filter(handle__iexact=fulfillment.fulfiller_github_username).first()
-            if maybe_user_profile:
-                user_profile = maybe_user_profile
+            user_profile = Profile.objects.filter(handle__iexact=fulfillment.fulfiller_github_username).first()
+            if not user_profile:
+                 user_profile = sync_profile(fulfillment.fulfiller_github_username)
 
     except Exception as e:
         logging.error(f'{e} during record_bounty_activity for {new_bounty}')
