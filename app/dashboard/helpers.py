@@ -634,7 +634,7 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
         if fulfillment:
             user_profile = Profile.objects.filter(handle__iexact=fulfillment.fulfiller_github_username).first()
             if not user_profile:
-                 user_profile = sync_profile(fulfillment.fulfiller_github_username)
+                user_profile = sync_profile(fulfillment.fulfiller_github_username)
 
     except Exception as e:
         logging.error(f'{e} during record_bounty_activity for {new_bounty}')
