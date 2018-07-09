@@ -204,6 +204,8 @@ class Command(BaseCommand):
             network='mainnet',
             created_on__gte=options['start_date'],
             created_on__lte=options['end_date']
+        ).exclude(
+            txid='',
         ).order_by('created_on', 'id')
         formatted_tips = imap(self.format_tip, tips)
 

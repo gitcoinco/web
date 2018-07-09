@@ -846,7 +846,7 @@ class Subscription(SuperModel):
 
 class Tip(SuperModel):
 
-    web3_type = models.CharField(max_length=50, default='yge')
+    web3_type = models.CharField(max_length=50, default='v2')
     emails = JSONField()
     url = models.CharField(max_length=255, default='')
     tokenName = models.CharField(max_length=255)
@@ -868,17 +868,20 @@ class Tip(SuperModel):
     from_address = models.CharField(max_length=255, default='', blank=True)
     receive_address = models.CharField(max_length=255, default='', blank=True)
     recipient_profile = models.ForeignKey(
-        'dashboard.Profile', related_name='received_tips', on_delete=models.SET_NULL, null=True
+        'dashboard.Profile', related_name='received_tips', on_delete=models.SET_NULL, null=True, blank=True
     )
     sender_profile = models.ForeignKey(
-        'dashboard.Profile', related_name='sent_tips', on_delete=models.SET_NULL, null=True
+        'dashboard.Profile', related_name='sent_tips', on_delete=models.SET_NULL, null=True, blank=True
     )
+    metadata = JSONField(default={}, blank=True)
 
     def __str__(self):
         """Return the string representation for a tip."""
-        return f"({self.network}) - {self.status}{' ORPHAN' if not self.emails else ''} " \
+        if self.web3_type == 'yge':
+            return f"({self.network}) - {self.status}{' ORPHAN' if not self.emails else ''} " \
                f"{self.amount} {self.tokenName} to {self.username} from {self.from_name or 'NA'}, " \
                f"created: {naturalday(self.created_on)}, expires: {naturalday(self.expires_date)}"
+        return f"{'funded' if self.txid else '(not funded)'} {self.amount} {self.tokenName} to {self.username} from {self.from_name or 'NA'}"
 
     # TODO: DRY
     def get_natural_value(self):
@@ -889,6 +892,13 @@ class Tip(SuperModel):
     @property
     def value_true(self):
         return self.get_natural_value()
+
+    @property
+    def receive_url(self):
+        if self.web3_type == 'yge':
+            return self.url
+
+        return f"{settings.BASE_URL}tip/receive/v2/?key={self.metadata.priv_key}"
 
     # TODO: DRY
     @property

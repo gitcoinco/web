@@ -8,7 +8,6 @@ $(document).ready(function() {
   });
   $('#amount').on('keyup blur change', updateEstimate);
   $('#token').on('change', updateEstimate);
-  $('#token').on('change', promptForAuth);
   $("#send").click(function(e){
     return send(e);
   });
@@ -55,20 +54,20 @@ function send(e) {
   }
   var _disableDeveloperTip = true;
   var accept_tos = $('#tos').is(':checked');
-  var token = $('#token').val();
-  var fees = 0;
+  var tokenAddress = $('#token').val();
+  var gas_money = Math.pow(10, (9 + 5)) * ((defaultGasPrice * 1.001) / Math.pow(10, 9));
   var expires = parseInt($('#expires').val());
-  var isSendingETH = (token == '0x0' || token == '0x0000000000000000000000000000000000000000');
-  var tokenDetails = tokenAddressToDetails(token);
+  var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
+  var tokenDetails = tokenAddressToDetails(tokenAddress);
   var tokenName = 'ETH';
-  var weiConvert = 10 ** 9;
+  var weiConvert = Math.pow(10, 18);
 
   if (!isSendingETH) {
     tokenName = tokenDetails.name;
     weiConvert = Math.pow(10, tokenDetails.decimals);
   }
-  var amount = $('#amount').val() * weiConvert;
-  var amountInEth = amount * 1.0 / weiConvert;
+  var amountInEth = parseFloat($('#amount').val());
+  var amountInWei = amountInEth * 1.0 * weiConvert;
   var comments_priv = $('#comments_priv').val();
   var comments_public = $('#comments_public').val();
   var from_email = $('#fromEmail').val();
@@ -85,24 +84,8 @@ function send(e) {
     _alert({ message: gettext('From Email is optional, but if you enter an email, you must enter a valid email!') }, 'warning');
     return;
   }
-  if (!isNumeric(amount) || amount == 0) {
+  if (!isNumeric(amountInWei) || amountInWei == 0) {
     _alert({ message: gettext('You must enter an number for the amount!') }, 'warning');
-    return;
-  }
-
-  var min_send_amt_wei = 0;
-  var min_amount = min_send_amt_wei * 1.0 / weiConvert;
-  var max_amount = 5;
-
-  if (!isSendingETH) {
-    max_amount = 1000;
-  }
-  if (amountInEth > max_amount) {
-    _alert({ message: gettext('You can only send a maximum of ' + max_amount + ' ' + tokenName + '.') }, 'warning');
-    return;
-  }
-  if (amountInEth < min_amount) {
-    _alert({ message: gettext('You can only send a minimum of ' + min_amount + ' ' + tokenName + '.') }, 'warning');
     return;
   }
   if (username == '') {
@@ -114,8 +97,75 @@ function send(e) {
     return;
   }
 
+  const url = '/tip/send/3';
+  fetch(url, {
+    method: 'POST',
+    body: JSON.stringify({
+      username: username,
+      email: email,
+      tokenName: tokenName,
+      amount: amountInWei,
+      comments_priv: comments_priv,
+      comments_public: comments_public,
+      expires_date: expires,
+      github_url: github_url,
+      from_email: from_email,
+      from_name: from_name,
+      tokenAddress: tokenAddress,
+      network: document.web3network,
+      from_address: fromAccount
+    })
+  }).then(function(response) {
+    return response.json();
+  }).then(function(json) {
+    var is_success = json['status'] == 'OK';
+    var _class = is_success ? 'info' : 'error';
+    if(!is_success){
+      _alert(json, _class);
+    } else {
+      var destinationAccount = json.payload.address;
+      var post_send_callback = function(errors, txid){
+        if(errors){
+          _alert({ message: gettext('There was an error.') }, 'warning');
+        } else {
+          const url = '/tip/send/4';
+          fetch(url, {
+            method: 'POST',
+            body: JSON.stringify({
+              destinationAccount: destinationAccount,
+              txid: txid,
+            })
+          }).then(function(response) {
+            return response.json();
+          }).then(function(json) {
+            var is_success = json['status'] == 'OK';
+            if(!is_success){
+              _alert(json, _class);
+            } else {
+              $('#loading_trans').html('This transaction has been sent 👌');
+              $('#send_eth').css('display', 'none');
+              $('#send_eth_done').css('display', 'block');
+              $('#tokenName').html(tokenName);
+              $('#new_username').html(username);
+              $('#trans_link').attr('href','https://' + etherscanDomain() + '/tx/' + txid);
+              $('#trans_link2').attr('href','https://' + etherscanDomain() + '/tx/'+ txid);
+            }
+          });
+        }
+      };
+      if(isSendingETH){
+        web3.eth.sendTransaction({
+          to: destinationAccount,
+          value: amountInWei,
+        }, post_send_callback);
+      } else {
+        var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+        token_contract(tokenAddress).transfer(destinationAccount, amountInWei, {value: gas_money}, post_send_callback);
+      }
+    }
+  });
 
-  alert("todo");
+
 }
 
 var updateEstimate = function(e) {
@@ -131,16 +181,17 @@ var updateEstimate = function(e) {
   })
 };
 
-// TODO: DRY
-var promptForAuth = function(event) {
-  var denomination = $('#token option:selected').text();
-  var tokenAddress = $('#token option:selected').val();
+var etherscanDomain = function() {
+  var etherscanDomain = 'etherscan.io';
 
-  if (denomination == 'ETH') {
-    $('input, textarea, select').prop('disabled', '');
+  if (document.web3network == 'custom network') {
+    // testrpc
+    etherscanDomain = 'localhost';
+  } else if (document.web3network == 'rinkeby') {
+    // rinkeby
+    etherscanDomain = 'rinkeby.etherscan.io';
   } else {
-    var from = web3.eth.coinbase;
-    var to = contract().address;
-    alert('todo');
+    // mainnet
   }
+  return etherscanDomain;
 };

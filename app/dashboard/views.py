@@ -36,7 +36,7 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
-
+from dashboard.utils import generate_pub_priv_keypair
 from app.utils import ellipses, sync_profile
 from avatar.utils import get_avatar_context
 from gas.utils import conf_time_spread, gas_advisories, recommend_min_gas_price_to_confirm_in_time
@@ -169,6 +169,8 @@ def record_tip_activity(tip, github_handle, event_name):
     }
     try:
         kwargs['profile'] = Profile.objects.get(handle=github_handle)
+    except Profile.MultipleObjectsReturned:
+        kwargs['profile'] = Profile.objects.filter(handle__iexact=github_handle).first()
     except Profile.DoesNotExist:
         logging.error(f"error in record_tip_activity: profile with github name {github_handle} not found")
         return
@@ -506,7 +508,132 @@ def receive_tip(request):
 
 
 @csrf_exempt
-@ratelimit(key='ip', rate='1/m', method=ratelimit.UNSAFE, block=True)
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def send_tip_4(request):
+    """Handle the fourth stage of sending a tip (the POST)
+
+    Returns:
+        JsonResponse: response with success state.
+
+    """
+    response = {
+        'status': 'OK',
+        'message': _('Tip Sent'),
+    }
+
+    is_user_authenticated = request.user.is_authenticated
+    from_username = request.user.username if is_user_authenticated else ''
+    primary_from_email = request.user.email if is_user_authenticated else ''
+    access_token = request.user.profile.get_access_token() if is_user_authenticated else ''
+    to_emails = []
+
+    params = json.loads(request.body)
+    txid = params['txid']
+    destinationAccount = params['destinationAccount']
+    tip = Tip.objects.get(metadata__address=destinationAccount)
+    is_authenticated_for_this_via_login = (tip.from_username and tip.from_username == from_username)
+    is_authenticated_for_this_via_ip = tip.ip == get_ip(request)
+    is_authed = is_authenticated_for_this_via_ip or is_authenticated_for_this_via_login
+    if not is_authed:
+        response = {
+            'status': 'error',
+            'message': _('Permission Denied'),
+        }
+        return JsonResponse(response)
+
+    # db mutations
+    tip.txid = txid
+    tip.save()
+
+    # notifications
+    maybe_market_tip_to_github(tip)
+    maybe_market_tip_to_slack(tip, 'new_tip')
+    maybe_market_tip_to_email(tip, to_emails)
+    record_user_action(tip.username, 'send_tip', tip)
+    record_tip_activity(tip, tip.from_name, 'new_tip')
+
+    return JsonResponse(response)
+
+
+
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def send_tip_3(request):
+    """Handle the third stage of sending a tip (the POST)
+
+    Returns:
+        JsonResponse: response with success state.
+
+    """
+    response = {
+        'status': 'OK',
+        'message': _('Tip Created'),
+    }
+
+    is_user_authenticated = request.user.is_authenticated
+    from_username = request.user.username if is_user_authenticated else ''
+    primary_from_email = request.user.email if is_user_authenticated else ''
+    access_token = request.user.profile.get_access_token() if is_user_authenticated else ''
+    to_emails = []
+
+    params = json.loads(request.body)
+
+    to_username = params['username'].lstrip('@')
+    try:
+        to_profile = Profile.objects.get(handle__iexact=to_username)
+    except Profile.MultipleObjectsReturned:
+        to_profile = Profile.objects.filter(handle__iexact=to_username).first()
+    except Profile.DoesNotExist:
+        to_profile = None
+    if to_profile:
+        if to_profile.email:
+            to_emails.append(to_profile.email)
+        if to_profile.github_access_token:
+            to_emails = get_github_emails(to_profile.github_access_token)
+
+    if params.get('email'):
+        to_emails.append(params['email'])
+
+    # If no primary email in session, try the POST data. If none, fetch from GH.
+    if params.get('fromEmail'):
+        primary_from_email = params['fromEmail']
+    elif access_token and not primary_from_email:
+        primary_from_email = get_github_primary_email(access_token)
+
+    to_emails = list(set(to_emails))
+    expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
+    priv_key, pub_key, address = generate_pub_priv_keypair()
+
+    # db mutations
+    tip = Tip.objects.create(
+        emails=to_emails,
+        tokenName=params['tokenName'],
+        amount=params['amount'],
+        comments_priv=params['comments_priv'],
+        comments_public=params['comments_public'],
+        ip=get_ip(request),
+        expires_date=expires_date,
+        github_url=params['github_url'],
+        from_name=params['from_name'],
+        from_email=params['from_email'],
+        from_username=from_username,
+        username=params['username'],
+        network=params['network'],
+        tokenAddress=params['tokenAddress'],
+        from_address=params['from_address'],
+        metadata={
+            'priv_key': priv_key,
+            'pub_key': pub_key,
+            'address': address,
+        }
+    )
+    response['payload'] = {
+        'address': address,
+    }
+    return JsonResponse(response)
+
+
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def send_tip_2(request):
     """Handle the second stage of sending a tip.
 
@@ -518,75 +645,10 @@ def send_tip_2(request):
         TemplateResponse: Render the submission form.
 
     """
+
     is_user_authenticated = request.user.is_authenticated
     from_username = request.user.username if is_user_authenticated else ''
     primary_from_email = request.user.email if is_user_authenticated else ''
-    access_token = request.user.profile.get_access_token() if is_user_authenticated else ''
-    to_emails = []
-
-    if request.body:
-        # http response
-        response = {
-            'status': 'OK',
-            'message': _('Notification has been sent'),
-        }
-        params = json.loads(request.body)
-
-        to_username = params['username'].lstrip('@')
-        try:
-            to_profile = Profile.objects.get(handle__iexact=to_username)
-            if to_profile.email:
-                to_emails.append(to_profile.email)
-            if to_profile.github_access_token:
-                to_emails = get_github_emails(to_profile.github_access_token)
-        except Profile.DoesNotExist:
-            pass
-
-        if params.get('email'):
-            to_emails.append(params['email'])
-
-        # If no primary email in session, try the POST data. If none, fetch from GH.
-        if params.get('fromEmail'):
-            primary_from_email = params['fromEmail']
-        elif access_token and not primary_from_email:
-            primary_from_email = get_github_primary_email(access_token)
-
-        to_emails = list(set(to_emails))
-        expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
-
-        # db mutations
-        tip = Tip.objects.create(
-            emails=to_emails,
-            url=params['url'],
-            tokenName=params['tokenName'],
-            amount=params['amount'],
-            comments_priv=params['comments_priv'],
-            comments_public=params['comments_public'],
-            ip=get_ip(request),
-            expires_date=expires_date,
-            github_url=params['github_url'],
-            from_name=params['from_name'],
-            from_email=params['from_email'],
-            from_username=from_username,
-            username=params['username'],
-            network=params['network'],
-            tokenAddress=params['tokenAddress'],
-            txid=params['txid'],
-            from_address=params['from_address'],
-        )
-        # notifications
-        maybe_market_tip_to_github(tip)
-        maybe_market_tip_to_slack(tip, 'new_tip')
-        maybe_market_tip_to_email(tip, to_emails)
-        record_user_action(tip.username, 'send_tip', tip)
-        record_tip_activity(tip, params['from_name'], 'new_tip')
-        if not to_emails:
-            response['status'] = 'error'
-            response['message'] = _(
-                'Uh oh! No email addresses for this user were found via Github API.  Youll have to let the tipee know '
-                'manually about their tip.')
-
-        return JsonResponse(response)
 
     params = {
         'issueURL': request.GET.get('source'),

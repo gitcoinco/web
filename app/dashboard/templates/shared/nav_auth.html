@@ -54,7 +54,7 @@
       {% if unclaimed_tips %}
         <div class="dropdown-divider"></div>
         {% for tip in unclaimed_tips %}
-          <a class="dropdown-item" href="{{ tip.url }}">
+          <a class="dropdown-item" href="{{ tip.receive_url }}">
             <i class="fas fa-dollar-sign"></i>
             {% trans "Claim" %} ${{ tip.value_in_usdt_now }} {% trans "Tip" %}
           </a>

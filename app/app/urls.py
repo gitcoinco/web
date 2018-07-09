@@ -119,6 +119,8 @@ urlpatterns = [
 
     # Tips
     url(r'^tip/receive/?', dashboard.views.receive_tip, name='receive_tip'),
+    url(r'^tip/send/4/?', dashboard.views.send_tip_4, name='send_tip_4'),
+    url(r'^tip/send/3/?', dashboard.views.send_tip_3, name='send_tip_3'),
     url(r'^tip/send/2/?', dashboard.views.send_tip_2, name='send_tip_2'),
     url(r'^tip/send/?', dashboard.views.send_tip, name='send_tip'),
     url(r'^send/?', dashboard.views.send_tip, name='tip'),
