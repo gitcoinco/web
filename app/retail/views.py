@@ -343,7 +343,7 @@ def mission(request):
 
 def results(request, keyword=None):
     """Render the Results response."""
-    if keyword and not keyword in programming_languages:
+    if keyword and keyword not in programming_languages:
         raise Http404
     context = build_stat_results(keyword)
     context['is_outside'] = True
