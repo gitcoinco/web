@@ -86,13 +86,14 @@ class Hop(SuperModel):
     black = (0, 0, 0, 0)
     grey = (122, 122, 122, 0)
     size = (1000, 1000)
-    center = (int(size[0]/2), int(size[1]/2))
+    center = (int(size[0] / 2), int(size[1] / 2))
     font = 'assets/v2/fonts/futura/FuturaStd-Medium.otf'
 
     # Model variables
     ip = models.GenericIPAddressField(protocol='IPv4', blank=True, null=True)
     twitter_profile = models.ForeignKey(
-        'ethos.TwitterProfile', on_delete=models.SET_NULL, null=True, related_name='hops')
+        'ethos.TwitterProfile', on_delete=models.SET_NULL, null=True, related_name='hops'
+    )
     txid = models.CharField(max_length=255, default='', blank=True)
     web3_address = models.CharField(max_length=255, blank=True)
     previous_hop = models.ForeignKey("self", on_delete=models.SET_NULL, blank=True, null=True)
@@ -125,16 +126,15 @@ class Hop(SuperModel):
         draw.line(loc, fill=self.grey, width=width)
         return img
 
-    def add_node_helper(self, img, name, loc, node_image=None, size=30, font='',
-                        font_size=12):
+    def add_node_helper(self, img, name, loc, node_image=None, size=30, font='', font_size=12):
         font = font or self.font
         x, y = loc
         font = ImageFont.truetype(font, font_size, encoding="unic")
         draw = ImageDraw.Draw(img)
-        x0 = x - int((size/2))
-        x1 = x + int((size/2))
-        y0 = y - int((size/2))
-        y1 = y + int((size/2))
+        x0 = x - int((size / 2))
+        x1 = x + int((size / 2))
+        y0 = y - int((size / 2))
+        y1 = y + int((size / 2))
         loc = [x0, y0, x1, y1]
 
         if not node_image:
@@ -161,7 +161,7 @@ class Hop(SuperModel):
         if previous_hop:
             edge_size += previous_hop.edge_size()
 
-        time_lapsed = round((self.created_on - previous_hop.created_on).total_seconds()/60) if previous_hop else 100
+        time_lapsed = round((self.created_on - previous_hop.created_on).total_seconds() / 60) if previous_hop else 100
         this_edge_size = 0
         if 0 < time_lapsed < 30:
             this_edge_size = time_lapsed * 10
@@ -172,7 +172,6 @@ class Hop(SuperModel):
 
         edge_size += this_edge_size
         return edge_size
-
 
     def draw_hop(self, img):
         node_image = None
@@ -198,8 +197,7 @@ class Hop(SuperModel):
 
         return img
 
-    def build_graph(self, save=True, root_node='Genesis', size=None,
-                    background_color=None, latest=True):
+    def build_graph(self, save=True, root_node='Genesis', size=None, background_color=None, latest=True):
         """Build the Hop graph."""
 
         file_system_cache_file = f"assets/tmp/{self.pk}.gif"
@@ -246,13 +244,8 @@ class Hop(SuperModel):
 class TwitterProfile(SuperModel):
     """Define the Twitter Profile."""
 
-    profile_picture = ThumbnailerImageField(
-        upload_to='ethos/twitter_profiles/',
-        blank=True,
-        null=True,
-        max_length=255)
-    node_image = models.ImageField(
-        upload_to='ethos/node_images/', blank=True, null=True, max_length=255)
+    profile_picture = ThumbnailerImageField(upload_to='ethos/twitter_profiles/', blank=True, null=True, max_length=255)
+    node_image = models.ImageField(upload_to='ethos/node_images/', blank=True, null=True, max_length=255)
     username = models.CharField(max_length=255)
 
     class Meta:

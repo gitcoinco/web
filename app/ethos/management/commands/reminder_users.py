@@ -25,8 +25,15 @@ from django.core.management.base import BaseCommand
 from ethos.models import Hop, ShortCode, TwitterProfile
 from ethos.utils import get_twitter_api
 
-already_sent = ['132','Munair','134','kauri_io','138','Jbschweitzer','139','Kavitagupta19','133','matrick','135','heyomarks','135','Consensys','134','craastad','132','owocki','140','ferrarijetpack','138','Somemikesena','135','leahfeuer','137','saintkamini','134','simondlr','138','elise_ransom','132','namdar','131','Gnsps','132','ThessyMehrain','Ezelby','Owocki','Kamescg', 'bsmokes_', 'Untra', 'tokenfoundry', 'everett_muzzy', 'Vladzamfir']
+already_sent = [
+    '132', 'Munair', '134', 'kauri_io', '138', 'Jbschweitzer', '139', 'Kavitagupta19', '133', 'matrick', '135',
+    'heyomarks', '135', 'Consensys', '134', 'craastad', '132', 'owocki', '140', 'ferrarijetpack', '138', 'Somemikesena',
+    '135', 'leahfeuer', '137', 'saintkamini', '134', 'simondlr', '138', 'elise_ransom', '132', 'namdar', '131', 'Gnsps',
+    '132', 'ThessyMehrain', 'Ezelby', 'Owocki', 'Kamescg', 'bsmokes_', 'Untra', 'tokenfoundry', 'everett_muzzy',
+    'Vladzamfir'
+]
 already_sent = [ele.lower() for ele in already_sent]
+
 
 class Command(BaseCommand):
     """Define the management command to generate Ethos reminder tweets."""
@@ -49,7 +56,9 @@ class Command(BaseCommand):
             if options['live']:
                 twitter_api = get_twitter_api()
                 try:
-                    twitter_api.PostUpdate(tweet, media='https://cdn-images-1.medium.com/max/1440/1*gAG6JvDK-Al_c1xEn1VHpA.jpeg')
+                    twitter_api.PostUpdate(
+                        tweet, media='https://cdn-images-1.medium.com/max/1440/1*gAG6JvDK-Al_c1xEn1VHpA.jpeg'
+                    )
                 except Exception as e:
                     print(e)
                 time.sleep(10)

@@ -45,9 +45,7 @@ class AvatarAdmin(GeneralAdmin):
     ordering = ['-id']
     fields = ['config', 'use_github_avatar', 'svg_asset', 'png_asset', 'created_on', 'modified_on']
     readonly_fields = ['svg_asset', 'png_asset', 'created_on', 'modified_on']
-    inlines = [
-        ProfileInline,
-    ]
+    inlines = [ProfileInline, ]
 
     def svg_asset(self, instance):
         """Define the avatar SVG tag to be displayed in the admin."""

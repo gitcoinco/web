@@ -123,13 +123,7 @@ def viz_spiral(request, key='email_open'):
     stats = Stat.objects.filter(created_on__hour=1)
     type_options = stats.distinct('key').values_list('key', flat=True)
     stats = stats.filter(key=key).order_by('created_on')
-    params = {
-        'stats': stats,
-        'key': key,
-        'page_route': 'spiral',
-        'type_options': type_options,
-        'viz_type': key,
-    }
+    params = {'stats': stats, 'key': key, 'page_route': 'spiral', 'type_options': type_options, 'viz_type': key, }
     return TemplateResponse(request, 'dataviz/spiral.html', params)
 
 
@@ -169,12 +163,7 @@ def viz_chord(request, key='bounties_paid'):
         output = "\n".join(output_rows)
         return HttpResponse(output)
 
-    params = {
-        'key': key,
-        'page_route': 'spiral',
-        'type_options': type_options,
-        'viz_type': key,
-    }
+    params = {'key': key, 'page_route': 'spiral', 'type_options': type_options, 'viz_type': key, }
     return TemplateResponse(request, 'dataviz/chord.html', params)
 
 
@@ -225,12 +214,7 @@ def viz_steamgraph(request, key='open'):
         output = "\n".join(output_rows)
         return HttpResponse(output)
 
-    params = {
-        'key': key,
-        'page_route': 'steamgraph',
-        'type_options': type_options,
-        'viz_type': key,
-    }
+    params = {'key': key, 'page_route': 'steamgraph', 'type_options': type_options, 'viz_type': key, }
     return TemplateResponse(request, 'dataviz/steamgraph.html', params)
 
 
@@ -287,13 +271,7 @@ def viz_heatmap(request, key='email_open', template='heatmap'):
 
         output = "\n".join(output_rows)
         return HttpResponse(output)
-    params = {
-        'stats': stats,
-        'key': key,
-        'page_route': template,
-        'type_options': type_options,
-        'viz_type': key,
-    }
+    params = {'stats': stats, 'key': key, 'page_route': template, 'type_options': type_options, 'viz_type': key, }
     return TemplateResponse(request, f'dataviz/{template}.html', params)
 
 
@@ -333,9 +311,7 @@ def data_viz_helper_merge_json_trees(output):
         dict: The merged data dictionary.
 
     """
-    new_output = {
-        'name': output['name'],
-    }
+    new_output = {'name': output['name'], }
     if not output.get('children'):
         new_output['size'] = output['size']
         return new_output
@@ -401,12 +377,7 @@ def viz_sunburst(request, visual_type, template='sunburst'):
         TemplateResponse: If data param not provided, return the populated data visualization template.
 
     """
-    visual_type_options = [
-        'status_progression',
-        'repos',
-        'fulfillers',
-        'funders',
-    ]
+    visual_type_options = ['status_progression', 'repos', 'fulfillers', 'funders', ]
     if visual_type not in visual_type_options:
         visual_type = visual_type_options[0]
 
@@ -733,12 +704,7 @@ def viz_scatterplot_helper(request, key='hourly_rate', template='dataviz/scatter
                 username = bf.bounty.org_name
                 if hide_usernames:
                     username = "repo: " + helper_hide_pii(username.lower(), 1)
-                row = [
-                    str(bf.bounty.hourly_rate),
-                    str((timezone.now() - bf.accepted_on).days),
-                    username,
-                    str(weight),
-                ]
+                row = [str(bf.bounty.hourly_rate), str((timezone.now() - bf.accepted_on).days), username, str(weight), ]
                 if bf.bounty.hourly_rate:
                     rows.append(row)
             except Exception:
