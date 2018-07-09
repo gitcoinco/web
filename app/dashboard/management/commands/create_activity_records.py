@@ -19,7 +19,7 @@
 from django.core.management.base import BaseCommand
 
 from dashboard import helpers
-from dashboard.models import Bounty, Activity
+from dashboard.models import Activity, Bounty
 from dashboard.views import record_bounty_activity
 
 
