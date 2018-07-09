@@ -576,7 +576,9 @@ a.btn {
   padding: 3vh 5vw;
   text-align: center;
 }
-
+.transaction-status a{
+  color: white;
+}
 .transaction-header {
   font-family: 'Muli', sans-serif;
   display: block;
