@@ -419,6 +419,14 @@ class Bounty(SuperModel):
             return False
 
     @property
+    def keywords_list(self):
+        keywords = self.keywords
+        if not keywords:
+            return []
+        else:
+            return [keyword.strip() for keyword in keywords.split(",")]
+
+    @property
     def now(self):
         """Return the time now in the current timezone."""
         return timezone.now()
