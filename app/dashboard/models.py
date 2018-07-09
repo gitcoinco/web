@@ -1078,7 +1078,7 @@ class Activity(models.Model):
     def __str__(self):
         """Define the string representation of an interested profile."""
         return f"{self.profile.handle} type: {self.activity_type}" \
-               f"created: {naturalday(self.created_on)}"
+               f"created: {naturalday(self.created)}"
 
 
 class Profile(SuperModel):
