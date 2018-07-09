@@ -17,8 +17,18 @@
 {% endcomment %}
 {% load i18n static %}
 {% block 'scripts' %}
-<script src="{% static "v2/js/amounts.js" %}"></script>
-<script src="{% static "onepager/js/web3alert.js" %}"></script>
+<script src="{% static "onepager/js/quarantine/ethereumjs-accounts.js" %}"></script>
+<script src="{% static "onepager/js/quarantine/web3.js" %}"></script>
+<script src="{% static "onepager/js/quarantine/hooked-web3-provider.js" %}"></script>
+<script src="{% static "onepager/js/quarantine/tx.js" %}"></script>
+<script src="{% static "onepager/js/quarantine/index.js" %}"></script>
+<script src="{% static "onepager/js/quarantine/tokens.js" %}"></script>
+<script src="{% static "onepager/js/quarantine/pre.js" %}"></script>
+<script src="{% static "onepager/js/quarantine/receive.js" %}"></script>
+<script src="{% static "onepager/js/quarantine/confetti.js" %}"></script>
+<script src="{% static "onepager/js/quarantine/web3alert.js" %}"></script>
+<script src="{% static "onepager/js/quarantine/lightwallet.min.js" %}"></script>
+
 {% endblock %}
 <!-- Main -->
 {% block 'world' %}
