@@ -1268,6 +1268,12 @@ input.is-invalid {
   }
 }
 
+@media (max-width: 991.98px) {
+  #sidebar_container {
+    display: none;
+  }
+}
+
 @media (max-width: 769px) {
   #gitcoinTestimonials {
     height: 202px;
@@ -1379,6 +1385,63 @@ input.is-invalid {
   }
 
   .tooltip-info {
+    display: none;
+  }
+
+  .bounty_nav {
+    padding-left: 0;
+  }
+
+  .bounty_nav li {
+    display: block;
+  }
+
+  .metamask-banner ol {
+    margin-bottom: 0;
+  }
+
+  .metamask-banner h3 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .metamask-banner li {
+    text-align: left;
+    margin-top: 0.5rem;
+  }
+
+  .metamask-banner img {
+    margin-bottom: 5px;
+  }
+
+  .navbar-network {
+    display: none;
+  }
+}
+
+@media (max-width: 576px) {
+
+  .profile_details #stats {
+    padding-right: 10px;
+  }
+
+  .profile_details .repos {
+    padding-right: 40px;
+  }
+
+  .profile_details .repos li {
+    margin-bottom: 1em;
+  }
+
+  .issue_details {
+    flex-direction: column;
+  }
+
+  .issue_details div {
+    width: 100% !important;
+  }
+
+  .profile_details .tips li div.url {
     display: none;
   }
 }
@@ -1507,67 +1570,6 @@ input.is-invalid {
 
   .bounty_def h5 {
     font-size: .8rem;
-  }
-}
-
-@media (max-width: 576px) {
-
-  .profile_details #stats {
-    padding-right: 10px;
-  }
-
-  .profile_details .repos {
-    padding-right: 40px;
-  }
-
-  .profile_details .repos li {
-    margin-bottom: 1em;
-  }
-
-  .issue_details {
-    flex-direction: column;
-  }
-
-  .issue_details div {
-    width: 100% !important;
-  }
-
-  .profile_details .tips li div.url {
-    display: none;
-  }
-}
-
-@media (max-width: 768px) {
-  .bounty_nav {
-    padding-left: 0;
-  }
-
-  .bounty_nav li {
-    display: block;
-  }
-
-  .metamask-banner ol {
-    margin-bottom: 0;
-  }
-
-  .metamask-banner h3 {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .metamask-banner li {
-    text-align: left;
-    margin-top: 0.5rem;
-  }
-  
-  .metamask-banner img {
-    margin-bottom: 5px;
-  }
-}
-
-@media (max-width: 991.98px) {
-  #sidebar_container {
-    display: none;
   }
 }
 
