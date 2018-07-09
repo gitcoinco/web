@@ -21,7 +21,9 @@ import time
 
 from django.core.management.base import BaseCommand
 
-from dashboard.utils import get_bounty, get_web3, getStandardBountiesContractAddresss, web3_process_bounty
+from dashboard.utils import (
+    get_bounty, get_web3, getBountyContract, getStandardBountiesContractAddresss, web3_process_bounty,
+)
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
@@ -29,7 +31,7 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 def process_bounty(bounty_id, network):
     bounty = get_bounty(bounty_id, network)
-    web3_process_bounty(bounty)
+    return web3_process_bounty(bounty)
 
 
 class Command(BaseCommand):
@@ -43,6 +45,7 @@ class Command(BaseCommand):
         network = options['network']
         web3 = get_web3(network)
         contract_address = getStandardBountiesContractAddresss(network)
+        contract = getBountyContract(network)
         last_block_hash = None
 
         while True:
@@ -66,11 +69,14 @@ class Command(BaseCommand):
                 print('found a stdbounties tx')
                 data = tx['input']
                 method_id = data[:10]
-                #if method_id != '0x1e688c14':
-                #    print('method_id != fulfillBounty')
-                #    continue
-                bounty_id = int(data[10:74], 16)
+                if method_id == '0x7e9e511d':
+                    # issueAndActivateBounty
+                    bounty_id = contract.functions.getNumBounties().call() - 1
+                else:
+                    # any other method
+                    bounty_id = int(data[10:74], 16)
                 print('process_bounty %d' % bounty_id)
                 process_bounty(bounty_id, network)
+                print('done process_bounty %d' % bounty_id)
 
             last_block_hash = block_hash
