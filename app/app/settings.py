@@ -70,6 +70,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'easy_thumbnails',
     'app',
+    'avatar',
     'retail',
     'rest_framework',
     'bootstrap3',
@@ -232,9 +233,6 @@ else:
 
 GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
 
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.static_storage.SilentFileStorage')
@@ -393,6 +391,10 @@ GOOGLE_ANALYTICS_AUTH_JSON = {
         env('GA_AUTH_PROVIDER_X509_CERT_URL', default='https://www.googleapis.com/oauth2/v1/certs'),
     'client_x509_cert_url': env('GA_CLIENT_X509_CERT_URL', default='')
 }
+HOTJAR_CONFIG = {
+    'hjid': env.int('HOTJAR_ID', default=0),
+    'hjsv': env.int('HOTJAR_SV', default=0),
+}
 
 # Rollbar - https://rollbar.com/docs/notifier/pyrollbar/#django
 ROLLBAR_CLIENT_TOKEN = env('ROLLBAR_CLIENT_TOKEN', default='')  # post_client_item
@@ -466,6 +468,14 @@ AWS_S3_FILE_OVERWRITE = env.bool('AWS_S3_FILE_OVERWRITE', default=True)
 
 S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='')  # TODO
 S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='')  # TODO
+
+# Handle local file storage
+if ENV == 'local' and not AWS_STORAGE_BUCKET_NAME:
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = root('media')
+else:
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
 
 INSTALLED_APPS += env.list('DEBUG_APPS', default=[])
 

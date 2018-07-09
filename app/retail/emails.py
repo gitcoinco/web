@@ -493,7 +493,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Gitcoin Project Types | EF Hires Gitcoiner’s "
+    subject = "Gitcoin Q2 Update | Augur Testimonial"
 
     intro = '''
 
@@ -501,28 +501,35 @@ def render_new_bounty_roundup(to_email):
     Hi there
 </p>
 <p>
-This week, <a href="https://medium.com/gitcoin/we-listened-announcing-project-types-965a02603559">we shipped project types</a> which adds flexibility to the Gitcoin platform.
-Whether you want to run contests, post hackathon bounties, or have developers apply for work, Project Types provides you optionality.
-We’re hopeful this will lead to a better experience for developers and funders. Thanks for providing the feedback which led to these changes!
+This week, we shipped <a href="https://medium.com/gitcoin/gitcoin-q2-update-c31e751889c8">Q2 updates.</a>
+In this update, we discuss our OKR’s for Q2, how we performed, and our goals moving forward into Q3.
 </p>
+
 <p>
-Also, <a href="https://gitcoin.co/issue/JoinColony/colonyHackathon/4">The Colony Global Hackathon</a> kicked off this week! We're looking for creative, brilliant minds
-to build on, integrate, and extend Colony with the colonyJS library. Many folks are currently looking for teammates and ideas.
-Submit your project by 11:59 pm GMT on Sunday, June 24th for a chance to win prizes totaling $25,000 paid in DAI, via Gitcoin.
+In addition to that, we highlighted <a href="https://medium.com/gitcoin/gitcoin-testimonials-augur-9bfe97368a30">
+Augur's work on the Gitcoin platform.</a>
+In this post, we briefly discuss what the goal of the Augur project is, how the team has used Gitcoin
+to build it, and some specifics about the important bounties they’ve had completed by the Gitcoin community.
+Special shout out to Tom Kysar and @cryptomental for their input on this one!
+</p>
+
+<p>
+Finally, we pushed our
+<a href="https://medium.com/p/804c18dc91da">second installment of Gitcoiner profiles.</a>
+This weeks profile features UX ninja Will Goi. Will has worked closely with the Gitcoin team over the past
+few months to help us build out design features such as the new user profile page and the funds requested interface.
 </p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-<a href="https://medium.com/@scott.moore/growing-open-source-web3-1ae85840da6d">Scott Moore joined Gitcoin Core!</a> Scott's expereience with the Web 3 development ecosystem
-is a big step for Gitcoin as we look to partner with more open source projects to #BUIDL.
+Our livestream recording featuring Andy Tudhope of Status has been added to the Gitcoin Youtube channel.
+<a href="https://www.youtube.com/watch?v=JiL0aPao50I&t=13s">Check it out!</a>
         </li>
         <li>
-The Ethereum Foundation’s Python team has grown via Gitcoin! <a href="https://medium.com/gitcoin/gitcoin-testimonials-ethereum-foundation-web3py-py-evm-561cd4da92a6">Read their hiring testimonial</a>
-explaining how Gitcoin helped them hire.
+<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET.
+This week features John Paller of Opolis!
         </li>
-        <li>
-<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is back as regularly scheduled today at 5PM ET. Ujo Music, Truffle, and XLNT will be on to demo their products. Join us!
-        </li>
+
     </ul>
 </p>
 <p>
@@ -531,45 +538,58 @@ Back to building,
 '''
     highlights = [
         {
-            'who': 'bakoah',
+            'who': 'subramanianv',
             'who_link': True,
-            'what': 'Worked on the first WALLETH bounty and completed it in a day!',
-            'link': 'https://gitcoin.co/issue/walleth/kethereum/33/575',
-            'link_copy': 'See more',
-        },
-        {
-            'who': 'IRus',
-            'who_link': True,
-            'what': 'Made Circle Ci Docker builds cacheable for CyberCongress!',
-            'link': 'https://gitcoin.co/issue/cybercongress/cyber-search/184/577',
+            'what': 'Created a full test suite for Market Protocol’s Collateral.Ts',
+            'link': 'https://gitcoin.co/issue/MARKETProtocol/MARKET.js/53/708',
             'link_copy': 'View more',
         },
         {
-            'who': 'isatou',
+            'who': 'HPrivakos',
             'who_link': True,
-            'what': 'Included categories in the Bounties Network analytics endpoint.',
-            'link': 'https://gitcoin.co/issue/Bounties-Network/BountiesAPI/49/516',
+            'what': 'Helped Decentraland create a tutorial for creating a static scene in their VR world.',
+            'link': 'https://gitcoin.co/issue/decentraland/MANA-community-fund-learning-content/8/707',
+            'link_copy': 'View more',
+        },
+        {
+            'who': 'subramanianv',
+            'who_link': True,
+            'what': 'Also improved the Livepeer UX by alerting users when their funds are too low to broadcast.',
+            'link': 'https://gitcoin.co/issue/livepeer/livepeerjs/125/703',
             'link_copy': 'View more',
         },
     ]
 
-    try:
-        bounties = [
-            {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/uport-bounties/issues/2'),
-                'primer': 'Integrate uPort with Colony and have a chance to win big during the Colony Hackathon!',
-            },
-            {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/paritytech/parity/issues/7427'),
-                'primer': 'Help Parity add tests for sending Whisper messages.',
-            },
-            {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/ipfs/js-ipfs/issues/1283'),
-                'primer': 'Add support for Rabin Fingerprinting to js-ipfs on the IPFS project!',
-            },
-        ]
-    except:
-        bounties = []
+    bounties_spec = [
+        {
+            'url': 'https://github.com/MARKETProtocol/MARKET.js/issues/60',
+            'primer': 'Help the Market Protocol team validate deposits and withdrawals before a transaction is created.',
+        },
+        {
+            'url': 'https://github.com/MetaMask/metamask-extension/issues/4161',
+            'primer': 'Contribute to MetaMask by building a feature for account and network changes when using a Web 3.0 plugin.',
+        },
+        {
+            'url': 'https://github.com/rotkehlchenio/rotkehlchen/issues/28',
+            'primer': 'Build out Windows support for the Rotkehlchen asset management platform.',
+        },
+    ]
+
+    #### don't need to edit anything below this line
+
+    bounties = []
+    for nb in bounties_spec:
+        try:
+            bounty = Bounty.objects.get(
+                current_bounty=True,
+                github_url__iexact=nb['url'],
+            )
+            bounties.append({
+                'obj': bounty,
+                'primer': nb['primer']
+                })
+        except:
+            pass
 
     ecosystem_bounties = ExternalBounty.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(weeks=1)).order_by('?')[0:5]
 

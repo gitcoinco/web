@@ -30,19 +30,20 @@
     <div id="landing_page_wrapper">
       <div class="container-fluid header">
         {% include 'shared/hero.html' %}
-        <div class="row banner--green p-3 justify-content-center">
-          <span class="text-highlight-gc-blue mr-1">{% trans "DEVELOPERS!" %}</span>
-          <span class="text-highlight-gc-purple">{% trans "Want to work on OSS Projects?" %}</span>
-          <div class="ml-3 text-highlight-gc-purple">
+        <div class="row banner--green px-3 py-4 justify-content-center">
+          <p class="col-12 mb-2 white text-center">{% trans "DEVELOPERS! Looking for work on OSS Projects?" %}</p>
+          <div class="col-12 text-highlight-gc-purple font-body text-center">
             <a class="text-highlight-gc-purple" href="{% url "explorer" %}">{% trans "View Available Bounties" %}</a>
             |
-            <a class="text-highlight-gc-purple" href="{% url "new_bounty" %}">{% trans "Get Started with Gitcoin" %}</a>
+            <a class="text-highlight-gc-purple" href="{% url "onboard" "contributor" %}">{% trans "Get Started with Gitcoin" %}</a>
+            |
+            <a class="text-highlight-gc-purple" href="/contributor">{% trans "Learn More" %}</a>
           </div>
         </div>
       </div>
 
       <div class="container-fluid p-5 benefits_container">
-        <div class="benefit_list">
+        <div class="benefits-list">
           <div class="benefit">
             <svg width="100px" height="117px" viewBox="0 0 100 117" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
               <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
@@ -109,7 +110,7 @@
               </g>
             </svg>
             <h4 class="font-title-lg">{% trans "Hire Global Talent" %}</h4>
-            <p class="pt-4">{% blocktrans %}Gitcoiner’s include designers and developers working in countries all
+            <p>{% blocktrans %}Gitcoiner’s include designers and developers working in countries all
               around the world. Get to to know potential talent through the projects
               that you bounty. What better way to interview?{% endblocktrans %}</p>
             <a href="https://medium.com/gitcoin/hiring-with-gitcoin-d58679de37ac" target="_blank" rel="noopener noreferrer">
@@ -143,7 +144,7 @@
             <h4 class="font-title-lg">{% trans "Grow Your Open Source Community" %}</h4>
             <p>{% blocktrans %}Kickstart interest on your open source project by posting on
               Gitcoin, where 3,000+ developers will see what you’re building.{% endblocktrans %}</p>
-            <a href="{% url "new_bounty" %}">{% trans "Post a Bounty" %}</a>
+            <a href="{% url "new_funding" %}">{% trans "Post a Bounty" %}</a>
           </div>
         </div>
       </div>
@@ -154,37 +155,16 @@
 
       <div class="container-fluid p-5 tree_container white-bg">
         <div id="gc-tree">
-          <img src="{% static "v2/images/gc-tree.png" %}" alt="Gitcoin Tree" />
+          {% include 'shared/tree.html' %}
           <h2 class="mt-4">Grow Open Source</h2>
         </div>
       </div>
 
       <div class="container-fluid p-5 whatisit_container">
-        <div class="row mb-5">
-          <div class="col text-center">
-            <h1>{% trans "What is Gitcoin?" %}</h1>
-          </div>
-        </div>
-        <div class="row d-flex justify-content-center align-items-center whatisit mb-4 flex-wrap">
-          <div class="col-12 col-md-6 col-lg-5 mb-4">
-            <div>
-              <h3 class="mb-3">{% trans "A Mission to Grow Open Source." %}</h3>
-              <p class="mb-4">{% blocktrans %}A community at the intersection of blockchain and open source.
-                A place for developers to collaborate in a new system, where open source money builds
-                in monetization for open source repositories.{% endblocktrans %}
-              </p>
-              <a href="https://medium.com/gitcoin/open-source-money-will-buidl-the-open-source-ecosystem-f4169def8748"
-                class="btn btn-gc-purple mb-4" target="_blank" rel="noopener noreferrer">{% trans "Read More" %}</a>
-              <p>{% trans "Gitcoin is a decentralized application built on Ethereum’s blockchain. However, Gitcoin does not have a native token." %}</p>
-            </div>
-          </div>
-          <div class="col-12 col-md-6 col-lg-5 d-flex flex-column align-items-center animatedParent youtube">
-            <iframe src="https://www.youtube.com/embed/DJartWzDn0E" frameborder="0" allowfullscreen></iframe>
-          </div>
-        </div>
+        {% include 'shared/what_is_gitcoin.html' %}
       </div>
 
-      <div class="container-fluid p-5 howworks_container">
+      <div class="container-fluid p-5 howworks-container">
         <div class="howworks-toggle-container">
           <button type="button" id="funder-toggle" class="howworks-section-toggle">
             {% trans "Funder" %}
@@ -221,7 +201,7 @@
                    and grow a healthy open source ecosystem.{% endblocktrans %}</p>
               </div>
             </div>
-            <a href="{% url "new_bounty" %}" class="btn btn-gc-blue m-4">
+            <a href="{% url "new_funding" %}" class="btn btn-gc-blue m-4">
               <i class="fab fa-ethereum" aria-hidden="true"></i>
               <span class="pl-1">{% trans "Fund an Issue" %}</span>
             </a>
@@ -291,6 +271,11 @@
               {% trans "MetaMask Internationalizes Via Gitcoin" %}
             </a>
           </li>
+          <li>
+            <a href="https://medium.com/gitcoin/gitcoin-testimonials-balance-6d027fe01b9f" target="_blank" rel="noopener noreferrer">
+              {% trans "Balance: Building Open Source Banking" %}
+            </a>
+          </li>
         </ul>
         <img id="gc-robot" src="{% static "v2/images/Robot.png" %}" alt="Gitcoin Robot" />
         <a class="btn btn-gc-purple" href="https://docs.google.com/document/d/1M8-5xCGoJ8u-k0C0ncx_dr9LtHwZ32Ccn3KMFtEnsBA/edit"
@@ -354,8 +339,8 @@
           </div>
         </div>
       </div>
-     
-      <div class="container-fluid py-5 px-0 testimonial_container">
+
+      <div class="container-fluid py-5 px-0 testimonial-container">
         <div class="row mb-4">
           <div class="col text-center">
             <h2>{% trans "Who's Using Gitcoin?" %}</h2>
@@ -365,8 +350,8 @@
       </div>
       {% include 'landing/pilot.html' %}
       {% include 'landing/press.html' %}
+      {% include 'landing/ios_banner.html' %}
       {% include 'shared/footer.html' %}
-      </div>
     </div>
     {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/rollbar.html' %}

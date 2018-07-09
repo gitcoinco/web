@@ -40,7 +40,12 @@ def helper_execute(threshold, func_to_execute, action_str):
     print(f"{interests.count()} {action_str}")
     for interest in interests:
         bounty = interest.bounties.first()
+        has_approved_worker_already = bounty.interested.filter(pending=False).exists()
         if bounty.admin_override_suspend_auto_approval:  # skip bounties where this flag is set
+            print("skipped bc of admin_override_suspend_auto_approval")
+            continue
+        if has_approved_worker_already:
+            print("skipped bc of has_approved_worker_already")
             continue
         print(f"- {interest.pk} {action_str}")
         func_to_execute(interest, bounty)

@@ -8,8 +8,6 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
 
   pgweb:
     image: sosedoff/pgweb
@@ -26,7 +24,6 @@ services:
   web:
     restart: unless-stopped
     environment:
-      - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/code/app
     env_file:
@@ -46,13 +43,6 @@ services:
     ports:
       - "8545:8545"
     command: "-a 1 --seed 2"
-
-  node:
-    image: node:9.11-alpine
-    working_dir: /node
-    volumes:
-      - .:/node
-    command: bin/docker-node.sh
 
 volumes:
   pgdata:

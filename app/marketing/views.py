@@ -48,7 +48,7 @@ from marketing.mails import new_feedback
 from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
 )
-from marketing.utils import get_or_save_email_subscriber, validate_slack_integration
+from marketing.utils import get_or_save_email_subscriber, validate_discord_integration, validate_slack_integration
 from retail.emails import ALL_EMAILS, render_nth_day_email_campaign
 from retail.helpers import get_ip
 
@@ -65,19 +65,22 @@ def get_settings_navs(request):
         'href': reverse('email_settings', args=('', ))
     }, {
         'body': 'Privacy',
-        'href': reverse('privacy_settings'),
+        'href': reverse('privacy_settings')
     }, {
         'body': 'Matching',
-        'href': reverse('matching_settings'),
+        'href': reverse('matching_settings')
     }, {
         'body': 'Feedback',
-        'href': reverse('feedback_settings'),
+        'href': reverse('feedback_settings')
     }, {
         'body': 'Slack',
         'href': reverse('slack_settings'),
     }, {
+        'body': 'Discord',
+        'href': reverse('discord_settings')
+    }, {
         'body': "ENS",
-        'href': reverse('ens_settings'),
+        'href': reverse('ens_settings')
     }, {
         'body': "Account",
         'href': reverse('account_settings'),
@@ -374,12 +377,55 @@ def slack_settings(request):
     return TemplateResponse(request, 'settings/slack.html', context)
 
 
-def token_settings(request):
-    """Displays and saves user's token settings.
+def discord_settings(request):
+    """Displays and saves user's Discord settings.
 
     Returns:
-        TemplateResponse: The user's token settings template response.
+        TemplateResponse: The user's Discord settings template response.
 
+    """
+    response = {'output': ''}
+    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+
+    if not user or not is_logged_in:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    if request.POST:
+        test = request.POST.get('test')
+        submit = request.POST.get('submit')
+        webhook_url = request.POST.get('webhook_url', '')
+        repos = request.POST.get('repos', '')
+
+        if test and webhook_url:
+            response = validate_discord_integration(webhook_url)
+
+        if submit or (response and response.get('success')):
+            profile.update_discord_integration(webhook_url, repos)
+            profile = record_form_submission(request, profile, 'discord')
+            if not response.get('output'):
+                response['output'] = _('Updated your preferences.')
+            ua_type = 'added_discord_integration' if webhook_url and repos else 'removed_discord_integration'
+            create_user_action(user, ua_type, request, {'webhook_url': webhook_url, 'repos': repos})
+
+    context = {
+        'repos': profile.get_discord_repos(join=True),
+        'is_logged_in': is_logged_in,
+        'nav': 'internal',
+        'active': '/settings/discord',
+        'title': _('Discord Settings'),
+        'navs': get_settings_navs(request),
+        'es': es,
+        'profile': profile,
+        'msg': response['output'],
+    }
+    return TemplateResponse(request, 'settings/discord.html', context)
+
+
+def token_settings(request):
+    """Displays and saves user's token settings.
+    Returns:
+        TemplateResponse: The user's token settings template response.
     """
     msg = ""
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
@@ -452,7 +498,6 @@ def ens_settings(request):
         'msg': response['output'],
     }
     return TemplateResponse(request, 'settings/ens.html', context)
-
 
 def account_settings(request):
     """Displays and saves user's Account settings.
