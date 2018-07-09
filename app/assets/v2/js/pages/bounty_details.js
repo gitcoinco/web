@@ -586,7 +586,6 @@ var do_actions = function(result) {
     var kill_bounty_enabled = isBountyOwner(result);
     var submit_work_enabled = !isBountyOwner(result);
     var start_stop_work_enabled = !isBountyOwner(result);
-    var increase_bounty_enabled = isBountyOwner(result);
     var show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
     var show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
     var show_admin_methods = document.isStaff;
@@ -662,9 +661,8 @@ var do_actions = function(result) {
     }
 
     if (show_increase_bounty) {
-      var enabled = increase_bounty_enabled;
       var _entry = {
-        enabled: enabled,
+        enabled: true,
         href: result['action_urls']['increase'],
         text: gettext('Add Contribution'),
         parent: 'right_actions',
