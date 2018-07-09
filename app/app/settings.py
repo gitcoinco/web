@@ -69,6 +69,8 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django_extensions',
     'easy_thumbnails',
+    'crispy_forms',
+    'account',
     'app',
     'avatar',
     'retail',
@@ -109,6 +111,8 @@ MIDDLEWARE = [
     'social_django.middleware.SocialAuthExceptionMiddleware',
     'impersonate.middleware.ImpersonateMiddleware',
 ]
+
+CRISPY_TEMPLATE_PACK = env('CRISPY_TEMPLATE_PACK', default='bootstrap4')
 
 CORS_ORIGIN_ALLOW_ALL = False
 

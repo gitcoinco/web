@@ -286,6 +286,9 @@ urlpatterns = [
         name='start_work_applicant_expired'
     ),
 
+    # Account
+    re_path(r'^account/', include('account.urls', namespace='account')),
+
     # settings
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),
     re_path(r'^settings/privacy/?', marketing.views.privacy_settings, name='privacy_settings'),
