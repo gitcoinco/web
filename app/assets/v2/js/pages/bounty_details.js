@@ -821,7 +821,7 @@ const render_actions = function(actions) {
   }
 };
 
-const build_uri_for_pull_bounty_from_api = function(not_current) {
+const build_uri_for_pull_bounty_from_api = function() {
   let uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL;
 
   if (typeof document.issueNetwork != 'undefined') {
@@ -830,20 +830,16 @@ const build_uri_for_pull_bounty_from_api = function(not_current) {
   if (typeof document.issue_stdbounties_id != 'undefined') {
     uri = uri + '&standard_bounties_id=' + document.issue_stdbounties_id;
   }
-  if (not_current) {
-    uri = uri + '&not_current=1';
-  }
   return uri;
 };
 
 var pull_bounty_from_api = function() {
   let all_results = [];
 
-  $.get(build_uri_for_pull_bounty_from_api(true)).then(results => {
+  $.get(build_uri_for_pull_bounty_from_api()).then(results => {
     all_results = sanitizeAPIResults(results);
-    return $.get(build_uri_for_pull_bounty_from_api());
+    return all_results;
   }).then(function(results) {
-    results = sanitizeAPIResults(results);
     let nonefound = true;
     // potentially make this a lot faster by only pulling the specific issue required
 
