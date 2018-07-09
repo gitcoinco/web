@@ -339,7 +339,9 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                 'githubUsername', '')
         if github_username:
             try:
-                kwargs['profile_id'] = Profile.objects.get(handle=github_username).pk
+                kwargs['profile_id'] = Profile.objects.get(handle__iexact=github_username).pk
+            except Profile.MultipleObjectsReturned:
+                kwargs['profile_id'] = Profile.objects.filter(handle__iexact=github_username).first().pk
             except Profile.DoesNotExist:
                 pass
         if fulfillment.get('accepted'):
