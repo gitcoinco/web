@@ -627,14 +627,16 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
     fulfillment = _fulfillment
     try:
         user_profile = Profile.objects.filter(handle__iexact=new_bounty.bounty_owner_github_username).first()
-        if not fulfillment:
-            fulfillment = new_bounty.fulfillments.order_by('-pk').first()
-            if event_name == 'work_done':
-                fulfillment = new_bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
-        if fulfillment:
-            user_profile = Profile.objects.filter(handle__iexact=fulfillment.fulfiller_github_username).first()
-            if not user_profile:
-                user_profile = sync_profile(fulfillment.fulfiller_github_username)
+        funder_actions = ['new_bounty', 'worker_approved']
+        if event_name not in funder_actions:
+            if not fulfillment:
+                fulfillment = new_bounty.fulfillments.order_by('-pk').first()
+                if event_name == 'work_done':
+                    fulfillment = new_bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
+            if fulfillment:
+                user_profile = Profile.objects.filter(handle__iexact=fulfillment.fulfiller_github_username).first()
+                if not user_profile:
+                    user_profile = sync_profile(fulfillment.fulfiller_github_username)
 
     except Exception as e:
         logging.error(f'{e} during record_bounty_activity for {new_bounty}')
