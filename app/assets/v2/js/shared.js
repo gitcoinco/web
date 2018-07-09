@@ -299,13 +299,16 @@ var uninterested = function(bounty_pk, profileId, slash) {
 /** Pulls the list of interested profiles from the server. */
 var pull_interest_list = function(bounty_pk, callback) {
   document.interested = false;
-  var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL;
+  var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL + '&not_current=1';
   var started = [];
 
   $.get(uri, function(results) {
-    render_activity(results[0]);
-    if (results[0].interested) {
-      var interested = results[0].interested;
+    results = sanitizeAPIResults(results);
+    const current = results.find(result => result.current_bounty);
+
+    render_activity(current, results);
+    if (current.interested) {
+      var interested = current.interested;
 
       interested.forEach(function(_interested) {
         started.push(
