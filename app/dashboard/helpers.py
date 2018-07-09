@@ -630,6 +630,10 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
             fulfillment = new_bounty.fulfillments.order_by('-pk').first()
             if event_name == 'work_done':
                 fulfillment = new_bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
+        if fulfillment:
+            maybe_user_profile = Profile.objects.filter(handle__iexact=fulfillment.fulfiller_github_username).first()
+            if maybe_user_profile:
+                user_profile = maybe_user_profile
 
     except Exception as e:
         logging.error(f'{e} during record_bounty_activity for {new_bounty}')
