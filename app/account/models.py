@@ -19,24 +19,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from __future__ import unicode_literals
 
-import os
-
 from django.contrib.postgres.fields import JSONField
-from django.core.files.temp import NamedTemporaryFile
 from django.db import models
 from django.urls import reverse
 
-import requests
-from app.storage import asset_storage, get_avatar_path
 from django_extensions.db.fields import AutoSlugField
 from economy.models import SuperModel
-from PIL import Image, ImageOps
 
 
 class Organization(SuperModel):
     """Define the structure of an Organization."""
 
-    avatar = models.ImageField(storage=asset_storage, upload_to=get_avatar_path)
+    avatar = models.ForeignKey('avatar.Avatar', on_delete=models.SET_NULL, null=True, blank=True)
     description = models.TextField(blank=True)
     followers = models.ManyToManyField('dashboard.Profile', related_name='follows_org')
     gh_repos_data = JSONField(default={})
