@@ -1,0 +1,28 @@
+{
+  "symbol": "CMZ",
+  "address": "0x9715f0e15eafd789647827218e0263ebdb11d54a",
+  "overview":{
+        "en": "Cryptomagz is a platform for the future of funding that is built on trust and reputation with the ERC20 Ethereum ecosystem.",
+        "zh": ""
+  },
+  "email": "admin@cryptomagz.info",
+  "website": "https://cryptomagz.info",
+  "whitepaper": "https://cryptomagz.info/WHITE%20PAPER%20V1.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-03-15",
+  "initial_price":{
+        "ETH":"0.00251222 ETH",
+        "USD":"1.7 USD",
+        "BTC":"0.00017922 BTC"
+  },
+  "links": {
+    "blog": "https://cryptomagz.info/news/index.php",
+    "twitter": "https://twitter.com/CryptomagzMedia",
+    "telegram": "https://t.me/joinchat/AAAAAFHMTvhlqMZhWvuL6A",
+    "github": "https://github.com/cryptomagz",
+    "facebook": "https://www.facebook.com/cryptomagz.info/",
+    "reddit": "https://www.reddit.com/user/cryptomagz",
+    "slack": "https://cryptomagz-group.slack.com/",
+    "medium": "https://medium.com/@cryptomagz"
+  }
+}

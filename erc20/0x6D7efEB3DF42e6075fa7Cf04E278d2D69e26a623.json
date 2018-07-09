@@ -1,0 +1,20 @@
+{
+  "symbol": "LKY",
+  "address": "0x6D7efEB3DF42e6075fa7Cf04E278d2D69e26a623",
+  "overview":{
+        "en": "Lucky you is a entirely decentralized lottery game running Ehereum blockchain.",
+        "zh": "Lucky you是一个完全去中心去人化的彩票系统。"
+  },
+  "email": "info@luckyyou.io",
+  "website": "https://luckyyou.io/",
+  "state": "NORMAL",
+  "published_on": "2018-07-01",
+  "initial_price":{
+        "ETH":"0.00005 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Luckyyoio",
+    "telegram": "https://t.me/LuckyYou_en",
+    "github": "https://github.com/luckyyousc/luckyyou"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "symbol": "SAC",
+  "address": "0xabc1280a0187a2020cc675437aed400185f86db6",
+  "overview":{
+        "en": "Smart Application Chain: Build a developer-friendly public chain accessed to the system in order to provide whole KYC tools, user system and application management suite，combining blockchain and artificial intelligence to create a self-evolving decentralized application ecosystem.",
+        "zh": "SAC旨在打造开发者友好的公链接入系统，为开发者提供完整的KYC工具，用户体系，以及应用管理套件，通过对用户数据的处理以及深度学习，为开发者提供标准化数据模块，将区块链与人工智能相结合，打造自我进化的去中心化应用生态。"
+},
+
+  "email": "sachainservice@gmail.com",
+  "website": "http://sachain.net/",
+  "whitepaper": "http://sachain.net/static/v_1.1_en.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-05-07",
+  "initial_price":{
+        "ETH":"0.004 ETH",
+        "USD":"2.4 USD",
+        "BTC":"0.00035 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/SACchain",
+    "telegram": "https://t.me/SACgroup",
+    "facebook": "https://www.facebook.com/SACchain"
+    }
+}

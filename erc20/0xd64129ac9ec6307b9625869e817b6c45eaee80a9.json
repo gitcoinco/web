@@ -1,0 +1,18 @@
+{
+  "symbol": "FFC",
+  "address": "0xd64129ac9ec6307b9625869e817b6c45eaee80a9",
+  "overview":{
+        "en":"",
+        "zh":"FreeFairChain 是一个通过区块链技术结合区块链功能构建一个全新博弈电子竞技游戏平 台及支付系统一站式服务生态链。 全球博弈市场逐年增长，全球博弈平台超过8000家。 全美线上博弈市场的规模预计已达数百亿美元，其中线上博弈游戏总消费中约25 亿美元这一巨大商机的市场仍以每年 5-7%的速度持续增长中，由此可见，传统博弈正在逐步往线上转战，可以预期未来三年线上博弈总消费会继续强势增长。但是博弈行业仍存在很多问题，如接入平台困难，信息不安全，支付流程繁琐，游戏存在不公平性，用户信息不安全，用户注册复杂，游戏单一。在博弈游戏开发中，为解决围绕上述痛点产生着大量的成本。我们借助区块链颠覆性力量，超越传统和常规意义上的信任机制，实现“机器信任“，将突破传统认知，从多维度将公平博弈游戏推向极致。FFC将改变博弈行业信任机制现状与支付格局。重新打造一个一个健康的博弈生态系统。"
+  },
+  "links": {
+        "facebook": "https://www.facebook.com/cwios/",
+        "twitter":"https://twitter.com/FreeFairChain",
+        "github": "https://github.com/freefairchain/",
+        "reddit": "https://www.reddit.com/user/FreeFairChain/"
+   },
+  "email": "ffc@freefairchain.com",
+  "website": "https://www.freefairchain.com/",
+  "whitepaper": "https://www.freefairchain.com/freefairchain-whitepaper.pdf",
+  "published_on": "2018-07-10"
+}

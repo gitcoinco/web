@@ -1,0 +1,16 @@
+{
+  "symbol": "AGGCE Token",
+  "address": "0xdde9e8b471aa9086a2fcfcb30b8744ffc76ff8b5",
+   "overview":{
+        "en": "AGGCE Token is the network that enables interconnection between all ordinary physical objects which can be located independently.",
+        "zh": "AGGCE Token是能够独立地定位所有普通物理对象之间的互连的网络。"
+  },
+  "email": "wxlovegogou@gmail.com",
+  "website": "http://www.ffgwmc.com/",
+  "whitepaper": "http://www.ffgwmc.com/whitepaper/AGGWHITEPAPER.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-05",
+  "links": {
+    "github": "https://github.com/aggce"
+  }
+}

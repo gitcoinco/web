@@ -1,0 +1,20 @@
+{
+  "symbol": "GAX",
+  "address": "0x79fF677aF16e0e173C55ae571E5d9852A1c8f2Ff",
+  "overview":{
+        "en": "Global Assets Chain.",
+        "zh": "AssetsChain基于区块链的数字化资产生态链，致力于创建去中化数字资产交易平台，以数字资产金融社群的形态，实现数字化资产全球化金融借贷。"
+  },
+  "email": "wsbmaster@assetschain.co",
+  "website": "https://www.assetschain.co/",
+  "whitepaper": "https://www.assetschain.co/AssetsChain_EN.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-28",
+  "initial_price":{
+        "ETH":"0.00004566 ETH",
+        "USD":"0.02 USD"
+  },
+  "links": {
+    "blog": "https://www.assetschain.co/blog"
+  }
+}

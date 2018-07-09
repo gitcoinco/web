@@ -1,0 +1,17 @@
+{
+  "symbol": "PGE",
+  "address": "0xbdF2e5D2DaCD341c2aaD8E73c83495FaBFFf3E5f",
+  "overview":{
+        "en": "Plutaneum Gaming Exchange",
+        "zh": "PGE"
+  },
+  "email": "myfogo@gmail.com",
+  "website": "https://plutaneum.io/",
+  "whitepaper": "https://plutaneum.io",
+  "state": "NORMAL",
+  "published_on": "2018-07-02",
+  "links": {
+    "github": "https://github.com/kokleongyip",
+    "facebook": "https://www.facebook.com/pge"
+  }
+}

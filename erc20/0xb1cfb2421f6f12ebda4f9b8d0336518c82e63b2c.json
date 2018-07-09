@@ -1,0 +1,14 @@
+{
+  "symbol": "VOC",
+  "address": "0xb1cfb2421f6f12ebda4f9b8d0336518c82e63b2c",
+  "links": {
+    "telegram": "https://0.plus/vocgroup"
+  },
+  "overview":{
+        "en": "The Vocal Chain is a block-chain technology-based voice data and manual identification information storage tool.Users provide voice data of different dialects and different meanings for mining, solves the data bottlenecks faced by AI voice development, It is also the application of blockchain technology in the field of big data applications. The Vocal Chain is dedicated to building a global linguistic resource platform, and provides the world's largest, richest, most accurate training data source for the development of AI voice recognition through the power of community members to achieve the world's largest decentralized human voice Data eco vision. The data is truly taken from the people and used by the people, and the real value of big data originates from the people and is returned to the people.",
+        "zh": "VOC 语音链是基于区块链技术的语音资料与人工标识信息存储工具，致力于解决 AI 语音发展面临的数据瓶颈，也是目前区块链技术应用中大数据领域最落地的场景应用。VOC 语音链致力于建设辐射全球的语料资源平台，通过社群成员协作的力量为 AI 语音识别的发展提供全球最大、最丰富、最精准的训练数据源，实现打造全球最大的去中心化人类语音数据生态愿景。真正让数据取之于民，用之于民，并让大数据的变现价值源自于民，归还于民。"
+  },
+  "email": "vocalchain@gmail.com",
+  "website": "http://vocalchain.io",
+  "whitepaper": "https://pan.baidu.com/s/18dkmElDXNp-v0ZaXaumCHA?errno=0&errmsg=Auth%20Login%20Sucess&&bduss=&ssnerror=0&traceid="
+}

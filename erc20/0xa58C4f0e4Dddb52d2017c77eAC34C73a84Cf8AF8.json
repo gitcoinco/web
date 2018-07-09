@@ -1,0 +1,18 @@
+{
+  "symbol": "JEO",
+  "address": "0xa58C4f0e4Dddb52d2017c77eAC34C73a84Cf8AF8",
+  "overview": {
+    "en": "Joy Go EOS is a community centered platform for tourism reviews based on block chains",
+    "zh": "Joy Go EOS 是基于区块链的去中心化旅游点评社区平台"
+  },
+  "email": "service@joygo.pro",
+  "website": "http://joygo.pro/",
+  "whitepaper": "http://joygo.pro/JEO_bps.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-13",
+  "links": {
+    "twitter": "https://twitter.com/EosJoygo",
+    "telegram": "https://0.plus/#/jeocn",
+    "github": "https://github.com/joygoeos/"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "symbol": "BTMC",
+  "address": "0x4a8f44be523580a11cdb20e2c7c470adf44ec9bb",
+  "overview":{
+        "en": "Decentralized integrated service platform of AI chips.",
+        "zh": "AI芯片的分散式综合服务平台."
+  },
+  "email": "1763931136@qq.com",
+  "website": "http://btmc.co/",
+  "whitepaper": "http://btmc.co/BTMC-whitepaper-V2.1.pdf",
+  "published_on": "2018-01-01",
+  "initial_price":{
+        "ETH":"0.0001 ETH",
+        "USD":"0.046 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/BIT_MINER_CHAIN",
+    "github": "https://github.com/btmc-code",
+    "facebook": "https://www.facebook.com/BITMINERINGCHAIN/"
+  }
+}

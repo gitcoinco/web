@@ -1,0 +1,20 @@
+{
+  "symbol": "LMM",
+  "address": "0xe99ddae9181957e91b457e4c79a1b577e55a5742",
+  "overview": {
+    "en": "Link Management Chain utilizes blockchain technology to provide an optimal solution for the security vulnerabilities,  privacy concerns,and high operating costs existing in the Internet of Things (IoT).The major drawback of IoT is that it lacks a trust mechanism between devices. All devices are required to cross-check with a central server database. As a result, instabilities in the central database will have significant repercussions on the entire IoT system. On the other hand, Link Management Chain’s distributed network architecture provides a mechanism to ensure devices stay connected and avoid verification with a central server. As a result, the data in the whole system is still secure even if one or multiple nodes are attacked. Rather than relying on a central processor, Link Management Chain provides a point-to-point connection to transfer data between devices. Distributed computation allows the system to process millions of transactions concurrently.In addition, Link Management Chain introduces smart contracts into blockchain, which will transform every smart device into an independent and self-maintained node. These nodes are capable of executing code automatically to exchange data or verify identification. As a result, operation and maintenance costs will be reduced regardless of product cycle length.Link Management Chain plans to integrate this technology with various product chains, such as agricultural and industrial production. This will allow producers to have comprehensive monitoring and automation of their manufacturing and distribution processes. All members in the product chain (e.g. consumers, distributors, carriers) will also be to provide feedback amongst each other to regularly improve and perfect the entire process.",
+    "zh": "针对物联网安全隐患、保护用户隐私、运营成本等弊端，结合区块链技术的解决方案。物联网安全性的核心缺陷，就是缺乏设备与设备之间相互的信任机制，所有的设备都需要和物联网中心的数据进行核对，一旦数据库崩塌，会对整个物联网造成很大的破坏。而区块链分布式的网络结构提供一种机制，使得设备之间保持共识，无需与中心进行验证，这样即使一个或多个节点被攻破，整体网络体系的数据依然是可靠、安全的。区块链技术可以为物联网提供点对点直接互联的方式来传输数据，而不是通过中央处理器，这样分布式的计算就可以处理数以亿计的交易了。同时，还可以充分利用分布在不同位置的数以亿计闲置设备的计算力、存储容量和带宽，用于交易处理，大幅度降低计算和储存的成本。另外，区块链技术叠加智能合约可将每个智能设备变成可以自我维护调节的独立的网络节点，这些节点可在事先规定或植入的规则基础上执行与其他节点交换信息或核实身份等功能。这样无论设备生命周期有多长，物联网产品都不会过时，节省了大量的设备维护成本。项目计划与多种产业链（如农业、工业）相结合，以便实现生产、分销等环节流程全面自动化追踪。产业链中所有的成员（如消费者、分销、运营商）也将紧密联合，定期追踪和完善整个过程。"
+  },
+  "email": "contact@linkmanagement.io",
+  "website": "https://linkmanagement.io/",
+  "whitepaper": "https://linkmanagement.io/pdf/LMM_Whitepaper_v1.0.0.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-05-27",
+  "initial_price": {
+    "USD": "0.0075625 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/linkmanagement5",
+    "telegram": "https://t.me/linkmanagementchain"
+  }
+}

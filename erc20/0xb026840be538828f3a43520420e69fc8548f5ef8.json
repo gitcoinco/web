@@ -1,0 +1,20 @@
+{
+    "website": "https://foodsc.io",
+    "published_on": "2018-06-20",
+    "links": {
+        "github": "https://github.com/foodsc",
+        "telegram": "https://t.me/fsc_service_english"
+    },
+    "overview": {
+        "en": "Food safety blockchain utilizes the unique and non-tampered distributed ledger recording features of blockchains. It strives to build the world's largest food and drug safety public chain, builds low-level communications nodes, traceability cloud platforms, and distributed storage clouds. The service, as well as the cloud intelligence examination, intelligent outpatient robot, through the multiple sensors and real clinical data on the chain, the user's physical condition for accurate detection and bad habits supervision services.",
+        "zh": "药食同源区块链是利用区块链独有的不可篡改的分布式账本记录特性，致力于打造全球最大的食品及药品安全公有链，构建底层通讯节点，溯源云平台，分布式存储云服务，以及云智能体检，智能门诊机器人，通过多重传感器及链上的真实临床数据，对用户的身体状况进行精确检测及不良习惯监督服务。"
+    },
+    "symbol": "FSC",
+    "initial_price": {
+        "ETH": "0.0001471 ETH",
+        "USD": "0.0773 USD"
+    },
+    "whitepaper": "https://foodsc.io/static/white_paper_zh.pdf",
+    "address": "0xb026840be538828f3a43520420e69fc8548f5ef8",
+    "email": "support@foodsc.io"
+}

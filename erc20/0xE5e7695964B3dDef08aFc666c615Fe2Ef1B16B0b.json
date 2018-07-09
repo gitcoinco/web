@@ -1,0 +1,22 @@
+
+{
+  "symbol": "GAEA",
+  "address": "0xE5e7695964B3dDef08aFc666c615Fe2Ef1B16B0b",
+  "overview":{
+        "en": "Through the establishment of a global digital asset derivatives trading platform, the GAEA team has introduced derivative products such as global digital asset indices, futures and options to provide the majority of investors with more abundant investment strategy, avoid digital asset market trading, improve the digital asset market liquidity, reduce irrational activities of digital asset market, and promote the healthy and stable development of the global asset markets.",
+        "zh": "GAEA 团队通过构建全球数字资产衍生品交易平台，推出全球数字资产期货、期权等金融衍生产品，为广大投资者提供更加丰富的投资策略，规避数字资产市场的交易风险，提高数字资产市场的流动性，降低数字资产市场的非理性活动， 促进全球数字资产市场的健康稳定发展。"
+  },
+  "email": "staff-supp@gmex.io",
+  "website": "https://gmex.io/",
+  "whitepaper": "https://gmex.io/GAEAwhitepaper/gaeaExchange.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-03-03",
+  "initial_price":{
+        "ETH":" ETH",
+        "USD":"0.066666 USD",
+        "BTC":" BTC"
+  },
+  "links": {
+    "blog": "https://weibo.com/p/1006066572609191"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "symbol": "TOT",
+  "address": "0xbf3caa1a66f5e5fd4ee4eda7391871dbb06b8dc1",
+  "overview":{
+        "en": "TOT is the token of the blockchain products of the YOBTC. It not only has the circulation value, but also the necessary cryptocurrency based on the B headline.",
+        "zh": "TOT是YOBTC区块链产品的象征。它不仅具有流通价值，同样也是基于B头条的重要代币。"
+  },
+  "email": "yangsong@yobtc.com",
+  "website": "http://www.btt.top",
+  "whitepaper": "http://yobtc-btt-static-resource.oss-cn-hangzhou.aliyuncs.com/v2%2FTOT.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-15",
+  "initial_price":{
+        "USD":"0.001531 USD"
+  },
+  "links": {
+    "blog": "http://weibo.com/u/6459023186",
+	"twitter": "https://twitter.com/BTT_newsflash",
+    "telegram": "https://t.me/joinchat/GBW-HRI9PiLfsoRbvz0NqA",
+    "facebook": "https://www.facebook.com/Bttnewsflash",
+    "reddit": "https://www.reddit.com/user/BTT-TOP"
+  }
+}

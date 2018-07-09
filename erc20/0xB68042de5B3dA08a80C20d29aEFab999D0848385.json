@@ -1,0 +1,17 @@
+{
+  "symbol": "iDAG",
+  "address": "0xB68042de5B3dA08a80C20d29aEFab999D0848385",
+  "overview":{
+        "en": "IDAG is the representative of the next generation of encrypted money. By combining the block chain with the directed acyclic graph (DAG) technology, a point to point electronic cash system is created, and solve the problem which the transaction speed is too slow and the formalities are too high. IDAG creatively introduces blocks and main chains in the DAG entanglement network, realizes the POW consensus mechanism, and is based on a thorough solution to the impossible triangulation of centralization, security and efficiency. In the future, we will introduce various technologies such as Turing's complete intelligent contract and zero knowledge proof.",
+        "zh": "iDAG是下一代加密货币的代表，通过将区块链（Blockchain）与有向无环图（DAG）技术完美结合，创造一个点对点的电子现金系统，并且一举解决比特币交易速度太慢、手续费过高等问题。IDAG创造性地在DAG缠结网络中引入区块与主链，实现了POW共识机制，立足于彻底解决去中心化、安全性、高效率的不可能三角。未来还将视社区意见，引入图灵完备智能合约、零知识证明等多种技术。"
+  },
+  "email": "admin@idag.space",
+  "website": "https://idag.space/",
+  "whitepaper": "https://img1.wsimg.com/blobby/go/77708ad8-4c96-4354-b1c1-9e1cb8a2fc91/downloads/1cf1o5k31_888665.pdf",
+  "state": "NORMAL",
+  "links": {
+    "telegram": "https://t.me/idagspace",
+    "github": "https://github.com/iDagSpace/core",
+    "facebook": "https://www.facebook.com/idagspace"
+  }
+}

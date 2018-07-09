@@ -1,0 +1,20 @@
+{
+  "symbol": "Energy Source",
+  "address": "0x1f9232e7f1318abf91366e6081d57fa3c1bcde88",
+  "overview":{
+        "en": "能量源区块链数字货币是基于以太坊智能合约2.0开发，由旗下基金会神淘天使之翼基金会发起，通过公司的三大产业：文化艺术品资本市场运营和人工智能产业以及神淘天下数字电商平台实现能量源的实体运用，能量源数字货币不仅可以通过人工智能终端设备运营流通，还可以通过电商平台和文化艺术品资本市场实现消费增值，让能量源区块链数字货币真正的实现实际运用。",
+        "zh": "Project introduction: the block chain digital cash of energy source is developed basing on the Aether Internet Intelligent version 2.0, It is sponsored by the Fund of Angel's and it  can be realized Through the three major i business of the company: the operation of the cultural art capital market, the artificial intelligence industry and the Shen Tao digital e-commerce platform.It can not only circulate through the artificial intelligence terminal equipment, but also can increase the consumption value through the e-commerce platform and the cultural art capital market to realize it applying"
+  },
+  "email": "3173210835@qq.com",
+  "website": "https://www.zndyl.com",
+  "whitepaper": "http://www.zndyl.com/baipishu.pdf",
+  "state": "LOCKED",
+  "published_on": "2018-06-04",
+  "initial_price":{
+        "ETH":"0.00004 ETH",
+        "USD":"0.0008 USD"
+  },
+  "links": {
+    "facebook": "https://www.facebook.com/totly.michael.1/"
+  }
+}

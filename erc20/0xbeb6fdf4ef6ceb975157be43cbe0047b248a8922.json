@@ -1,0 +1,18 @@
+{
+  "symbol": "ARP",
+  "address": "0xbeb6fdf4ef6ceb975157be43cbe0047b248a8922",
+  "overview": {
+    "en": "ARP is a value exchange protocol which exchanging “ARP” Resources which stand for “App Rendering Power” - the ability of devices to run applications intelligently.Through the ARP value protocol, users be able to share their smart devices (mobile phones, computers, routers, tablets, smart TVs, etc.) to participate in “mining” to gain profits; on the other hand, by integrating ARP, users be able to conduct cloud computing, sharing and creating a rich usage scenario, such as providing customers with free download, installation-free game play etc.",
+    "zh": "ARP·阿普协议是一个价值交易协议，交易的是“ARP”资源。ARP即App Rendering Power，是智能设备运行应用的能力，比如手机运行抖音，PC运行浏览器等。ARP·阿普协议通过鼓励普通用户将智能设备共享出来，将现实生活中的智能设备充分利用，把闲置的ARP资源通过共享经济+区块链技术得到充分流动。"
+  },
+  "email": "foundation@arpnetwork.org",
+  "website": "https://arpnetwork.org/",
+  "whitepaper": "https://github.com/arpnetwork/whitepaper",
+  "state": "NORMAL",
+  "published_on": "2018-05-15",
+  "links": {
+    "twitter": "https://twitter.com/arp_network",
+    "telegram": "https://0.plus/arpnetwork",
+    "github": "https://github.com/arpnetwork/"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "symbol": "OLC",
+  "address": "0xf686439C38D621DAB5C02Ff572cA4E3A2EAFb265",
+  "overview":{
+        "en": "ONLYLOVECHAIN is a chain application that stores love, a block chain network application that is not only for material but for feelings.",
+        "zh": "链恋 ONLYLOVECHAIN 是一个存储爱的链上应用，一个不为物质，只为情怀而生的区块链网络应用。可微信搜索小程序：链恋OLC，或访问http://onlylovechain.love使用。"
+  },
+  "website": "http://onlylovechain.io/",
+  "whitepaper": "http://onlylovechain.io/bp/OnlyLoveChainWhitePaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-07-03"
+}

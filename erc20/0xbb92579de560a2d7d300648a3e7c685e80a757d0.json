@@ -1,0 +1,22 @@
+{
+  "symbol": "NTN",
+  "address": "0xbb92579de560a2d7d300648a3e7c685e80a757d0",
+  "overview":{
+        "en": "Neutron Token",
+        "zh": "中子币"
+  },
+  "email": "liuzong@turingfuture.com",
+  "website": "http://www.h3.ai/",
+  "whitepaper": "http://www.h3.ai/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-05-31",
+  "initial_price":{
+        "ETH":"0.00001606 ETH",
+        "USD":"0.00746269 USD",
+        "BTC":"0.00000115 BTC"
+  },
+  "links": {
+    "telegram": "https://t.me/Ntn01",
+    "github": "https://github.com/h3ai/forexsns"
+  }
+}

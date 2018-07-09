@@ -1,0 +1,19 @@
+{
+    "website":"http://www.ubitpro.io/",
+    "published_on":"2018-06-21",
+    "links":{
+     "facebook":"https://www.facebook.com/ubit.vip",
+    "twitter": "https://twitter.com/Ubitvip",
+    "telegram": "https://t.me/UBIT_EX"
+    },
+    "overview":{
+        "en":"UBIT PRO exchange is a platform for global digital asset lovers to provide localized, one-stop high quality digital asset purchase services. The UBIT PRO exchange adopts the transaction mining innovation award mechanism, and proceeds to share dividends from users participating in the exchange through UPO.",
+        "zh":"UBIT PRO交易所，是为全球数字资产爱好者提供本地化、一站式的优质数字资产购买服务的交易平台。UBIT PRO交易所采用交易即挖矿的创新奖励机制，通过权益证明UPO对参与交易所建设的用户进行分红回馈。"
+    },
+    "symbol":"UPO",
+    "initial_price":{
+        "USD":"0.0150 USD"
+    },
+    "address":"0xbd95145EE25E4203d90592834c688C92653532A6",
+    "email":"service@ubit.vip"
+}

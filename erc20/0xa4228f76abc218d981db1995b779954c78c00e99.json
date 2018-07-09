@@ -1,0 +1,17 @@
+{
+  "symbol": "GOX",
+  "address": "0xa4228f76abc218d981db1995b779954c78c00e99",
+  "overview":{
+    "en":"GoldBox（金盒）is an integrated application that provides users with safe storage, digital asset mortgages, legal currency loans, and digital asset management. It also provides users with another way to exchange digital currency and real-life currency,relying on blockchain technology . The inconvenience of storing multiple types of digital currency, the complexity of redemption transaction process, poor value transmission, insufficient blockchain performance, and insufficient application scenarios, combined with its own blockchain and artificial intelligence technology to provide a powerful automated operating system , To create a world-class digital asset management platform based on user-centric ecology.",
+    "zh":"GoldBox（金盒）是一款为用户提供安全存储、数字资产抵押获得法币贷款、数字资产管理的综合应用，依托区块链技术为用户提供数字货币与现实生活法币兑现的另外一种途径，旨在解决用户存储多种类型数字货币的不便、兑换交易过程繁杂、价值传输不畅、区块链性能不足、以及应用场景不足的问题，并结合自有的区块链与人工智能技术提供强大的自动化操作系统，打造世界级的以用户为核心生态的数字资产管理平台。"
+  },
+  "email": "service@goldbox.io",
+  "website": "https://goldbox.io",
+  "whitepaper": "http://resource.goldbox.io/pdf/whitepaper_en_v1.pdf",
+  "published_on": "2018-06-12",
+  "links": {
+    "twitter": "https://twitter.com/Goldbox20",
+    "telegram": "https://t.me/Goldboxtoken",
+    "facebook": "https://www.facebook.com/profile.php?id=100026026059716"
+  }
+}

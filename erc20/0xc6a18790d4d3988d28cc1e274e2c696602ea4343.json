@@ -1,0 +1,20 @@
+{
+  "symbol": "ROBOT",
+  "address": "0xc6a18790d4d3988d28cc1e274e2c696602ea4343",
+  "overview":{
+        "en": "The Coinrobots brand began in 2016. The Coinrobots team focused on digital asset automated trading robots, multi-year trading strategy development and risk control experience, and the team has developed a number of finished product virtual currency trading strategy software, such as Martingale spot version, CHBTC spot arbitrage version, Martingale contract version and cross-platform spread arbitrage WEB version, which constitute a variety of customized strategies for customers.The Coinrobots team combines leading R&D capabilities with blockchain technology to create a one-stop quantified trading system in a transaction-like trading platform model to provide investors with a richer trading strategy and to avoid trading risks in the digital asset market. Committed to improving the liquidity of the digital asset market, integrating exchanges, market makers, and general customers into the Coinrobots ecological chain, and promotes the sustainable development of the global digital currency market!",
+        "zh": "Coinrobots品牌始于2016年，Coinrobots团队专注于数字资产自动化交易机器人，多年交易策略研发与风控经验，团队已先后开发出多款成品虚拟币交易策略软件，如OKCOIN火币马丁格尔现货版、中国比特币现货套利版、OKEX合约马丁格尔版及跨平台差价套利WEB版，为客户定制策略多款。Coinrobots团队将领先的研发能力与区块链技术结合在一起，精心打造类交易平台模式的一站式量化交易系统，致力于提高数字交易市场的流动性，将交易所、做市商、普通客户整合到Coinrobots生态链中，促进全球数字货币市场的可持续发展！"
+  },
+  "email": "support@coinrobots.com",
+  "website": "https://www.coinrobots.io/",
+  "whitepaper": "https://drive.google.com/file/d/1Pfq4Wo_-8Wm5lTD5o4wvSZK5dUULHRPb/",
+  "state": "NORMAL",
+  "initial_price":{
+        "ETH":"0.0001 ETH"
+  },
+  "links": {
+    "twitter": "https://www.facebook.com/coinrobots",
+    "facebook": "https://www.facebook.com/coinrobots",
+    "github": "https://github.com/coinrobots"
+  }
+}

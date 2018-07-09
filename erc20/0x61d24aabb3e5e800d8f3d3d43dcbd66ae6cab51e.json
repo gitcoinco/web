@@ -1,0 +1,18 @@
+{
+  "symbol": "BRB",
+  "address": "0x61d24aabb3e5e800d8f3d3d43dcbd66ae6cab51e",
+  "overview":{
+    "zh": "BRB是比特兔(BitRabbit)官方发行的唯一平台币。",
+    "en": "BRB is the only platform currency officially issued by BitRabbit."
+  },
+  "email": "biz@bitrabbit.com",
+  "state": "NORMAL",
+  "published_on": "2018-03-05",
+  "links": {
+    "twitter": "https://twitter.com/Bitrabbit_Team",
+    "facebook": "https://www.facebook.com/BitRabbitTeam/",
+    "telegram": "https://t.me/bitrabbit_zh",
+    "github": "https://github.com/brickbitindex",
+    "reddit": "https://www.reddit.com/user/BitRabbit_Team/"
+  }
+}

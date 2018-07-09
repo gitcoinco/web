@@ -1,21 +1,21 @@
 {
-  "symbol": "ACNC",
-  "address": "0x0cFD0Cc77f3b6Af24Dcf505CF02A6be219457e1c",
-  "overview":{
-        "en":"ACNC is a blockchain commercial digital application digital asset based on the Ethereum ERC20 token, It is issued by Singapore ACNC Foundation Ltd.",
-        "zh":"ACNCÊÇ»ùÓÚÒÔÌ«·»ERC20ÁîÅÆ¿ª·¢µÄÇø¿éÁ´ÉÌÒµÊı×Ö»¯Ó¦ÓÃĞÍÊı×Ö×Ê²ú,ËüÊÇÓÉĞÂ¼ÓÆÂACNCË½Ä¼»ù½ğ»á£¨ACNC Foundation Ltd£©·¢ĞĞ¡£"
-  },
-  "email": "acncsupport@foxmail.com",
-  "website": "http://acnc.sg/",
-  "whitepaper": "http://acnc.sg/Project/index.html",
-  "state": "LOCKED",
-  "published_on": "2018-05-01",
-  "initial_price":{
-        "ETH":"0.0002 ETH"
-  },
-  "links": {
-    "twitter": "https://twitter.com/BEETOP5?s=05",
-    "telegram": "https://t.me/joinchat/G7OdWw_eLYIfdY24nuDkxA",
-    "facebook": "https://m.facebook.com/groups/614674365566302"
-  }
+    "symbol": "ACNC",
+    "address": "0x0cFD0Cc77f3b6Af24Dcf505CF02A6be219457e1c",
+    "overview": {
+        "en": "ACNC is a blockchain commercial digital application digital asset based on the Ethereum ERC20 token, It is issued by Singapore ACNC Foundation Ltd.",
+        "zh": "ACNCæ˜¯åŸºäºä»¥å¤ªåŠERC20ä»¤ç‰Œå¼€å‘çš„åŒºå—é“¾å•†ä¸šæ•°å­—åŒ–åº”ç”¨å‹æ•°å­—èµ„äº§,å®ƒæ˜¯ç”±æ–°åŠ å¡ACNCç§å‹ŸåŸºé‡‘ä¼šï¼ˆACNC Foundation Ltdï¼‰å‘è¡Œã€‚"
+    },
+    "email": "acncsupport@foxmail.com",
+    "website": "http://acnc.sg/",
+    "whitepaper": "http://acnc.sg/Project/index.html",
+    "state": "LOCKED",
+    "published_on": "2018-05-01",
+    "initial_price": {
+        "ETH": "0.0002 ETH"
+    },
+    "links": {
+        "twitter": "https://twitter.com/BEETOP5?s=05",
+        "telegram": "https://t.me/joinchat/G7OdWw_eLYIfdY24nuDkxA",
+        "facebook": "https://m.facebook.com/groups/614674365566302"
+    }
 }

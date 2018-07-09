@@ -1,0 +1,16 @@
+{
+  "symbol": "YGO",
+  "address": "0xbab6f30c81209433a3ced28ca8e19256440547d9",
+  "overview":{
+        "en":"YGO.im."
+  },
+  "email": "zk@ygo.im",
+  "website": "http://www.ygo.im/",
+  "whitepaper": "http://ygo.im/uploads/soft/YGO_V3.2.5.pptx",
+  "published_on": "2018-06-01",
+  "initial_price":{
+        "ETH":"0.001 ETH",
+        "USD":"0.007 USD",
+        "BTC":"0.00004 BTC"
+  }
+}

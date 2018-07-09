@@ -1,0 +1,26 @@
+{
+  "symbol": "ACG",
+  "address": "0x984C134A8809571993Fd1573fB99F06Dc61E216f",
+  "overview":{
+        "en": "ArtChain Global, ACG is a revolution in registration, tracking, protection and accountability for artwork. Based on open, extendable blockchain technology, the ArtChain Global, ACG platform synchronizes digital and offline assets for anyone involved in trading, collecting or producing works of art.",
+        "zh": "艺术全球（ArtChain Global）志在打造基于开放且可扩展底层区块链技术的全球艺术资产生态系统，联合艺术家、拍卖行、美术馆、博物馆、收藏家以及消费者等共同创建一个弱中心化、分布式的艺术资产登记, 艺术注册, 交易, 溯源的公共系统，实现线下艺术资产与线上数字资产的链接流通."
+  },
+  "email": "info@artchain.world",
+  "website": "https://www.artchain.world/",
+  "whitepaper": "https://www.artchain.world/wp-content/uploads/2018/05/White-Paper-English-V1.32018.pdf",
+  "published_on": "2018-05-30",
+  "initial_price":{
+        "ETH": "0.0000616 ETH",
+        "USD": "0.03 USD",
+        "BTC": "0.0000045987 BTC"
+  },
+  "links": {
+    "blog": "https://www.artchain.world/blog-news/",
+    "twitter": "https://twitter.com/artchainglobal",
+    "telegram": "https://t.me/acgenglishofficial",
+    "github": "https://github.com/ArtChainGlobal",
+    "facebook": "https://www.facebook.com/artchain.world",
+    "instagram": "https://www.instagram.com/art_chain_global/",
+    "wechat": "https://www.artchain.world/wechat"
+  }
+}

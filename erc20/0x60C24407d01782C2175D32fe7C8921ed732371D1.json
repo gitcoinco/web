@@ -1,0 +1,23 @@
+{
+    "symbol": "LEMO",
+    "address": "0x60C24407d01782C2175D32fe7C8921ed732371D1",
+    "overview": {
+        "en": "Decentralized Business Data Circulation Infrastructure.",
+        "zh": "去中心化商业数据确权及流通平台"
+    },
+    "email": "foundation@lemochain.com",
+    "website": "https://www.lemochain.com",
+    "whitepaper": "https://lemochip.hellobyebye.com/LemoChain_WhitePaper_v2.3_zh.pdf",
+    "published_on": "2018-05-25",
+    "initial_price": {
+        "ETH": "0.00011111 ETH"
+    },
+    "links": {
+        "twitter": "https://twitter.com/LemoChain",
+        "telegram": "https://t.me/lemochain",
+        "github": "https://github.com/LemoFoundationLtd",
+        "facebook": "https://www.facebook.com/LemoChain",
+        "reddit": "https://www.reddit.com/user/LemoChain/",
+        "medium": "https://medium.com/@lemochain"
+    }
+}

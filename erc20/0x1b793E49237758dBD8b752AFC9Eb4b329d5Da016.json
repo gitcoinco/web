@@ -1,0 +1,23 @@
+{
+  "symbol": "VITE",
+  "address": "0x1b793E49237758dBD8b752AFC9Eb4b329d5Da016",
+  "overview":{
+        "en": "Vite: A Next Generation High-performance Decentralized Application Platform",
+        "zh": "Vite 新一代高性能去中心化应用平台"
+  },
+  "email": "info@vite.org",
+  "website": "https://www.vite.org",
+  "whitepaper": "https://www.vite.org/whitepaper/vite_en.pdf",
+  "published_on": "2018-05-01",
+  "initial_price":{
+        "ETH":"0.00014286 ETH"
+  },
+  "links": {
+    "blog": "https://vite.blog",
+    "twitter": "https://twitter.com/vitelabs",
+    "telegram": "https://t.me/vite_en",
+    "github": "https://github.com/vitelabs",
+    "reddit": "https://www.reddit.com/r/vitelabs",
+    "medium": "https://medium.com/vitelabs"
+  }
+}

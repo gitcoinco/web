@@ -1,0 +1,18 @@
+{
+  "symbol": "GWT_Old",
+  "address": "0x5136c475c553fe6abfbb9fd31c90a5fc9fdff5d3",
+  "overview":{
+        "en": "GWT is a distributed token developed based on the Ethereum ERC20 contract standard. It is the synergy of the wine e-commerce platform, which will be solved by the consumers, the source-to-source sales of the business, the rights of the stakeholders' consensus premiums, and the community’s sustainable development of ecological rights incentives. The bottom layer uses the programming, distribution, guarantee and transaction functions of the Ethereum chain to ensure that the rights of the co-constructors are not lost and the interests of the shareholder are not compromised.",
+        "zh": "GWT是基于以太坊ERC20合约标准开发的一个分布式令牌。是协同红酒电商平台美酒惠解决消费者关注购买，商家溯源售出，利益相关方共识溢价确权，社区持续发展的生态权益激励的通证。其底层借助以太坊公链的编程，分发，担保及交易功能确保共建者权利不缺失，共享者利益不受损。"
+  },
+  "email": "goodwinetoken@sina.com",
+  "website": "http://www.meijiuhui.com.au/",
+  "whitepaper": "http://www.meijiuhui.com.au/GOODWINE.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-08",
+  "initial_price":{
+        "ETH":"0.000025 ETH"
+  },
+  "links": {
+  }
+}

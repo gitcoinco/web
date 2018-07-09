@@ -1,0 +1,18 @@
+{
+    "symbol": "CBB",
+    "address": "0x86e92c595de61fd22c0f0a0458c6eaa63d0b06ef",
+    "overview": {
+        "en": "A multi-cryptocurrencies preservation and payment wallet with enhancement of smart contract control. It supports mainstream cryptocurrencies such as ETH, EOS, BCH, the advanced control of smart contract and tokens.",
+        "zh": "链宝智能钱包,一款数字资产的保存和支付工具，强化支持智能合约操控的多币种智能钱包。支持 ETH，EOS，BTC, BCH 等主要基础货币，对智能合约 DAPP 全面支持。"
+    },
+    "email": "support@chainbow.io",
+    "website": "https://chainbow.io/",
+    "state": "NORMAL",
+    "published_on": "2018-06-15",
+    "links": {
+      "twitter": "https://twitter.com/ChainBowWallet",
+      "telegram": "https://t.me/chainbow_io",
+      "github": "https://github.com/chainbow"
+    }
+  }
+  

@@ -1,0 +1,23 @@
+{
+  "symbol": "BITX",
+  "address": "0xff2b3353c3015E9f1FBF95B9Bda23F58Aa7cE007",
+  "overview":{
+        "en": "BitScreener, one of the best real-time crypto-tracking platforms, has served more than 1,2 million traders and investors worldwide to track their investments since launch in 2017. It is now integrating crowdsourcing financial data and content ecosystem on blockchain through token BITX. BITX works as the payment method for financial traders and investors to buy advanced data services and the incentive method for the value contributors of the ecosystem."
+  },
+  "email": "contact@bitscreener.com",
+  "website": "https://bitscreener.com/",
+  "whitepaper": "https://files.bitscreener.com/tokensale/BitScreener_Whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-01-01",
+  "initial_price":{
+        "ETH":"0.000133 ETH"
+  },
+  "links": {
+    "blog": "https://bitscreener.com",
+    "twitter": "https://twitter.com/BitScreener",
+    "telegram": "https://t.me/BitScreener",
+    "github": "https://github.com/BitScreenerTech",
+    "facebook": "https://www.facebook.com/bitscreenercom",
+    "medium": "https://medium.com/@BitScreener"
+  }
+}

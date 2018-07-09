@@ -1,0 +1,24 @@
+
+{
+  "symbol": "Rating",
+  "address": "0xe8663a64a96169ff4d95b4299e7ae9a76b905b31",
+  "overview":{
+        "en":"Construct a token incentive ecosystem based on quantitative rating for cryptocurrency investors.",
+        "zh":"以量化评级为核心，构建激励型数字货币投资者服务生态。"
+  },
+  "email": "service@dprating.com",
+  "website": "http://dprating.com",
+  "whitepaper": "https://dprating.oss-cn-shanghai.aliyuncs.com/prod/token/Whitepaper-cn-0.7.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-01",
+  "initial_price":{
+        "ETH":"0.000005 ETH",
+        "USD":"0.003 USD"
+   },
+ "links": {
+    "twitter": "https://twitter.com/dprating",
+    "telegram": "https://t.me/DPRating",
+    "github": "https://github.com/DPRating",
+    "medium": "https://medium.com/@dprating"
+  }
+}

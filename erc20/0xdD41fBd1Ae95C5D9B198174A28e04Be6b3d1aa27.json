@@ -1,0 +1,22 @@
+{
+    "website": "http://lightyearstoken.com",
+    "published_on": "2017-12-12",
+    "links": {
+        "github": "https://github.com/LIGHTYEARS-LYS",
+        "telegram": "https://t.me/LIGHTYEARSToken",
+        "twitter": "https://twitter.com/LIGHTYEARStoken",
+        "facebook": "https://www.facebook.com/LIGHTYEARS.TokenLYS/"
+    },
+    "overview": {
+        "en": "Lightyears Token as a form of rewards utility Token. A functional digital asset to minimize liquidity costs while improving their customer experience. Our main function for Lightyears Token is to replace convention method for purchasing ticket to travel on any airlines around the world , Earn Lightyears token as you travel while Cutting down cost for agents and middle man fees ..",
+        "ch": "使用光年硬币作为奖励实用程序令牌的一种形式。一种功能性数字资产，用于最大限度地降低流动性成本，同时改善客户体验我们的光年硬币的主要功能是取代常规方式购买机票，以便在世界各地的任何航空公司旅行，在旅行时赚取年硬币，同时降低代理商和中间人费用。"
+    },
+    "symbol": "LYS",
+    "initial_price": {
+        "ETH": "0.0013 ETH",
+        "USD": "0.060 USD"
+    },
+    "whitepaper": "http://lightyearstoken.com/download",
+    "address": "0xdD41fBd1Ae95C5D9B198174A28e04Be6b3d1aa27",
+    "email": "info@lightyearstoken.com"
+}

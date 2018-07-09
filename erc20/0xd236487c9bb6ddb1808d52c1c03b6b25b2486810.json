@@ -1,0 +1,20 @@
+{
+  "symbol": "LP",
+  "address": "0xd236487c9bb6ddb1808d52c1c03b6b25b2486810",
+  "overview":{
+        "en": "LP is the value medium for connecting network behavior and real-world assets. LPChain is committed to building a value Internet system with LP-Token as the core. We can pass the effective value of various network behavior that has been quantified by designing  the encryption algorithm and consensus mechanism, thus realizing the value equivalence between the network world and the real world.",
+        "zh": "LP是连接网络行为与现实资产的价值媒介，LPChain致力于构建以LP通证为核心的价值互联网体系，通过加密算法和共识机制，量化并传递各类网络行为的有效价值，从而实现网络世界和现实世界的价值对等。"
+  },
+  "email": "admin@ababtc.com",
+  "website": "http://lpchain.io",
+  "whitepaper": "http://lpchain.io/1.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-21",
+  "initial_price":{
+        "ETH":"0.00003 ETH"  
+  },
+  "links": {   
+    "twitter": "https://twitter.com/bitzoneapp",
+    "telegram": "https://0.plus/bitzoneapp" 
+  }
+}

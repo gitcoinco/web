@@ -1,0 +1,24 @@
+{
+    "symbol": "SET",
+    "address": "0xd2C6738D45b090ec05210fE8DCeEF4D8fc392892",
+    "overview":{
+        "en": "PointSet is a Underlying network based on distributed technology to build a decentralized network system..",
+        "zh": "点集(PointSet)作为一个底层网络，以分布式技术为基础，构建一个去中心化网络体系。"
+    },
+    "email": "set@pointset.org",
+    "website": "http://www.pointset.org/",
+    "whitepaper": "http://www.pointset.org/white",
+    "state": "NORMAL",
+    "published_on": "2018-06-29",
+    "initial_price":{
+        "ETH":"0.00000625 ETH",
+        "USD":"0.00000028 USD",
+        "BTC":"0.00000045 BTC"
+    },
+    "links": {
+      "blog": "http://blog.pointset.org",
+      "twitter": "https://twitter.com/PointSet_org",
+      "telegram": "https://t.me/PointSet_org",
+      "facebook": "https://www.facebook.com/PointSetorg"
+    }
+}
