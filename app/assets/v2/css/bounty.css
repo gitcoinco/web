@@ -211,8 +211,24 @@ body {
   color: #ffffff;
 }
 
+.transaction-status {
+  font-family: 'Muli', sans-serif;
+  display: block;
+  position: relative;
+  width: 80%;
+  left: 10%;
+  top: 30px;
+  margin-bottom: 30px;
+  border-radius: 2px;
+  padding: 3vh 5vw;
+  text-align: center;
+}
+.transaction-status a{
+  color: white;
+}
+
+
 .red_warning, 
-.red_warning,
 #network {
   background-color: #fbe0d6;
   color: #fb9470;
@@ -574,21 +590,6 @@ a.btn {
   padding-bottom: 10rem;
 }
 
-.transaction-status {
-  font-family: 'Muli', sans-serif;
-  display: block;
-  position: relative;
-  width: 80%;
-  left: 10%;
-  top: 30px;
-  margin-bottom: 30px;
-  border-radius: 2px;
-  padding: 3vh 5vw;
-  text-align: center;
-}
-.transaction-status a{
-  color: white;
-}
 .transaction-header {
   font-family: 'Muli', sans-serif;
   display: block;
