@@ -8,8 +8,11 @@
   "email": "contact@artwook.com",
   "website": "https://artwook.com",
   "whitepaper": "https://static.artwook.com/whitepaper/ARTWOOK_whitepaper_en.pdf",
-  "state": "LOCKED",
+  "state": "NORMAL",
   "published_on": "2018-06-15",
+  "initial_price":{
+        "ETH":"0.00033333 ETH"
+  },
   "links": {
     "twitter": "https://twitter.com/artwook_akc",
     "telegram": "https://t.me/artwook",
