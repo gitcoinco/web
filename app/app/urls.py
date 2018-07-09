@@ -353,7 +353,6 @@ urlpatterns = [
     path('jobs', jobs.views.list_jobs, name='job-list-template'),
     path('jobs/<int:pk>/', jobs.views.job_detail, name='job-detail-template'),
     path('jobs/new/', jobs.views.create_job, name='job-create-template'),
-
     url(r'^impersonate/', include('impersonate.urls')),
 ]
 
