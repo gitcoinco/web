@@ -15,7 +15,6 @@ jQuery(document).ready(function() {
   jQuery('.target').each(function() {
     var target = jQuery(this).val();
 
-    console.log(target);
     jQuery(this).parents('tr').find('.gas_needed').val(gas_amount(target));
   });
   jQuery('.gas_cost').keyup(function() {
