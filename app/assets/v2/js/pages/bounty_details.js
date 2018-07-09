@@ -345,6 +345,7 @@ var update_title = function() {
 var showWarningMessage = function(txid) {
 
   update_title();
+  $('.interior .body').addClass('open');
   $('.interior .body').addClass('loading');
 
   if (typeof txid != 'undefined' && txid.indexOf('0x') != -1) {
@@ -358,8 +359,8 @@ var showWarningMessage = function(txid) {
   $('#bounty_details').hide();
   $('#bounty_detail').hide();
 
-  $('.transaction-status').show();
-  $('.transation-header').show();
+  $('.bg-container').show();
+  $('.loading_img').addClass('waiting-state ');
   $('.waiting_room_entertainment').show();
   $('.issue-url').html('<a href="' + document.issueURL + '">' + document.issueURL + '</a>');
 

@@ -22,21 +22,7 @@
       </div>
 
       <div class="col-12 offset-md-1 col-md-8 body">
-        <div class="transation-header" style="display:none;">
-          <h3>Your Issue is Posting: </h3>
-          <h3 class="issue-url"></h3>
-        </div>
-        <div class="row loading justify-content-center align-items-center loading_img">
-          <img src="{% static "v2/images/loading_v2.gif" %}" style="max-width: 200px;">
-        </div>
-        <div class="transaction-status" style="display:none;">
-          <div style='width:100%; font-size: 20px; color: #3d3d46;'>
-            {% trans "Your transaction is being posted to the Ethereum blockchain" %}
-            <br>
-            {% trans "Your page will automatically update when the information has been synced to Web3" %}
-          </div>
-        </div>
-
+        {% include 'shared/bounty_waiting_state.html' %}
         <div class="row nonefound" style="display:none;">
           <img src="{% static "v2/images/shrug_bot.png" %}">
           <h3>{% trans "No funded issue found." %}</h3>
@@ -49,7 +35,7 @@
         <div class="row ml-2 mr-2 pl-4 pr-4 waiting_room_entertainment" style="display: none;">
           {% include 'shared/rain.html' with class="color" %}
           <div class="quote-container">
-            <img src="{% static "v2/images/quotes.png" %}" style="float: left;" />
+            <img src="{% static "v2/images/quotes.png" %}" style="float: left; max-width: 22px;" />
             <div class="quote_text"></div>
             <div class="quote_author"></div>
             <input id="quoteRefresh" class="button button--primary" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" >
