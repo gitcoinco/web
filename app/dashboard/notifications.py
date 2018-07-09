@@ -214,8 +214,8 @@ def build_message_for_integration(bounty, event_name):
 
     title = bounty.title if bounty.title else bounty.github_url
     msg = f"*{humanize(event_name.replace('bounty', 'funded_issue'))}*" \
-          f"\n*Bounty value*: {round(bounty.get_natural_value(), 4)} {bounty.token_name} {usdt_details}" \
           f"\n*Title*: {title}" \
+          f"\n*Bounty value*: {round(bounty.get_natural_value(), 4)} {bounty.token_name} {usdt_details}" \
           f"\n{bounty.get_absolute_url()}"
     return msg
 
