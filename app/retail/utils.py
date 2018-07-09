@@ -173,8 +173,9 @@ def get_hourly_rate_distribution(keyword):
         max_hourly_rate = median + int(stddev/2)
     elif methodology == 'quartile':
         hourly_rates.sort()
-        first_quarter = int(len(hourly_rates)/4)
-        third_quarter = first_quarter * 3
+        num_quarters = 12
+        first_quarter = int(len(hourly_rates)/num_quarters)
+        third_quarter = first_quarter * (num_quarters-1)
         min_hourly_rate = int(hourly_rates[first_quarter])
         max_hourly_rate = int(hourly_rates[third_quarter])
     elif methodology == 'hardcode':
@@ -202,7 +203,7 @@ def get_bounty_median_turnaround_time(func='turnaround_time_started', keyword=No
 
 def build_stat_results(keyword=None):
     timeout = 60 * 60 * 24
-    key_salt = '2'
+    key_salt = '3'
     key = f'build_stat_results_{keyword}_{key_salt}'
     results = cache.get(key)
     if results and not settings.DEBUG:

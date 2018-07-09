@@ -30,7 +30,7 @@ from dashboard.notifications import amount_usdt_open_work, open_bounties
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 
-from .utils import build_stat_results
+from .utils import build_stat_results, programming_languages
 
 
 def index(request):
@@ -343,6 +343,8 @@ def mission(request):
 
 def results(request, keyword=None):
     """Render the Results response."""
+    if keyword and keyword not in programming_languages:
+        raise Http404
     context = build_stat_results(keyword)
     context['is_outside'] = True
     return TemplateResponse(request, 'results.html', context)

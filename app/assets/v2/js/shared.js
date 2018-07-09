@@ -299,13 +299,16 @@ var uninterested = function(bounty_pk, profileId, slash) {
 /** Pulls the list of interested profiles from the server. */
 var pull_interest_list = function(bounty_pk, callback) {
   document.interested = false;
-  var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL;
+  var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL + '&not_current=1';
   var started = [];
 
   $.get(uri, function(results) {
-    render_activity(results[0]);
-    if (results[0].interested) {
-      var interested = results[0].interested;
+    results = sanitizeAPIResults(results);
+    const current = results.find(result => result.current_bounty);
+
+    render_activity(current, results);
+    if (current.interested) {
+      var interested = current.interested;
 
       interested.forEach(function(_interested) {
         started.push(
@@ -560,6 +563,7 @@ var currentNetwork = function(network) {
   if (document.location.href.startsWith('https://gitcoin.co')) { // Live
     if (network == 'mainnet') {
       $('#current-network').text('Main Ethereum Network');
+      $('.navbar-network').attr('title', '');
       $('.navbar-network i').addClass('green');
       $('.navbar-network i').removeClass('red');
       $('#navbar-network-banner').removeClass('network-banner--warning');
@@ -593,6 +597,7 @@ var currentNetwork = function(network) {
   } else { // Staging
     if (network == 'rinkeby') {
       $('#current-network').text('Rinkeby Network');
+      $('.navbar-network').attr('title', '');
       $('.navbar-network i').addClass('green');
       $('.navbar-network i').removeClass('red');
       $('#navbar-network-banner').removeClass('network-banner--warning');

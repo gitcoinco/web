@@ -41,7 +41,7 @@ def conf_time_spread(max_gas_price=9999):
                 created_on__gt=(timezone.now()-timezone.timedelta(minutes=minutes)),
                 gas_price__lte=max_gas_price,
                 ).distinct('gas_price').order_by('gas_price').values_list('gas_price', 'mean_time_to_confirm_minutes')
-            if len(gp):
+            if gp:
                 return json.dumps(list(gp), cls=DjangoJSONEncoder)
     except Exception:
         pass

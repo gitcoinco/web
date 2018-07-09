@@ -27,54 +27,8 @@
       {% include 'shared/nav.html' %}
       {% include 'shared/minihero.html' with h1=title position_h1_below_logo=1 %}
     </div>
-    
-    <div style="background: white;">
-      <div class="container" id="results_hero">
-        <div class="row py-5 animatedParent">
-          <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center">
-            <h2 class="text-center">{% trans "Gitcoin Platform Stats" %} {% if keyword %}({{keyword}}){%endif%}</h2>
-          </div>
 
-          <div class="col-6 col-md-4 text-center py-4">
-            <img class="icon" src="{% static "v2/images/results/clock.svg" %}" />
-            <h3 class="text-highlight-green mt-3">{{ bounty_median_pickup_time }} {% trans "Hours" %}</h3>
-            <p>{% trans "Median Bounty Pickup Time" %}</p>
-          </div>
-
-          <div class="col-6 col-md-4 text-center py-4">
-            <img class="icon" src="{% static "v2/images/results/completed_bounties.svg" %}" />
-            <h3 class="text-highlight-purple mt-3">{{ bounty_claimed_completion_rate|floatformat:1 }}%</h3>
-            <p>{% trans "Started Bounty Completion Rate" %}</p>
-          </div>
-
-          <div class="col-6 col-md-4 text-center py-4">
-            <img class="icon" src="{% static "v2/images/results/hourly_rate_distribution.svg" %}" />
-            <h3 class="text-highlight-light-blue mt-3">{{ hourly_rate_distribution }}</h3>
-            <p>{% trans "Hourly Rate Distribution" %}</p>
-          </div>
-
-          <div class="col-6 col-md-4 text-center py-4">
-            <img class="icon" src="{% static "v2/images/results/calendar_icon.svg" %}" />
-            <h3 class="text-highlight-green mt-3">{{ bounty_average_turnaround }}</h3>
-            <p>{% trans "Median Bounty Turnaround Time" %}</p>
-          </div>
-
-          <div class="col-6 col-md-4 text-center py-4">
-            <img class="icon" src="{% static "v2/images/results/abandoned_bounties.svg" %}" />
-            <h3 class="text-highlight-purple mt-3">{{ bounty_abandonment_rate | floatformat:1 }}%</h3>
-            <p>{% trans "Bounty Abandonment Rate" %}</p>
-          </div>
-
-          <div class="col-6 col-md-4 text-center py-4">
-            <img class="icon" src="{% static "v2/images/results/gitcoin_alumni.svg" %}" />
-            <h3 class="text-highlight-light-blue mt-3">{{ alumni_count }}</h3>
-            <p>GitCoin {% trans "Bounty Hunters Hired Full Time" %}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div style="background-color: #F2F6F9;">
+    <div style="background-color: white;">
       <div class="container" id="bounty_universe">
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
@@ -102,6 +56,59 @@
             <p><span class="green_box"></span> {% trans "Started / In Progress" %}</p>
             <p><span class="blue_box"></span> {% trans "Completed" %}</p>
             <p><span class="pink_box"></span> {% trans "Cancelled Bounties" %}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div style="background: #F2F6F9;">
+      <div class="container" id="results_hero">
+        <div class="row py-5 animatedParent">
+          <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center">
+            <h2 class="text-center">{% trans "Gitcoin Platform Stats" %} {% if keyword %}({{keyword}}){%endif%}</h2>
+          </div>
+
+          <div class="col-6 col-md-4 text-center py-4">
+            <img class="icon" src="{% static "v2/images/results/clock.svg" %}" />
+            <h3 class="text-highlight-green mt-3">{{ bounty_median_pickup_time }} {% trans "Hours" %}</h3>
+            <p>{% trans "Median Bounty Start Time" %}</p>
+            <span class="mt-0">(after Funding)</span>
+          </div>
+
+          <div class="col-6 col-md-4 text-center py-4">
+            <img class="icon" src="{% static "v2/images/results/completed_bounties.svg" %}" />
+            <h3 class="text-highlight-purple mt-3">{{ bounty_claimed_completion_rate|floatformat:1 }}%</h3>
+            <p>{% trans "Bounty Completion Rate" %}</p>
+            <span class="mt-0">(after Start Work)</span>
+          </div>
+
+          <div class="col-6 col-md-4 text-center py-4">
+            <img class="icon" src="{% static "v2/images/results/hourly_rate_distribution.svg" %}" />
+            <h3 class="text-highlight-light-blue mt-3">{{ hourly_rate_distribution }}</h3>
+            <p>{% trans "Hourly Rate Distribution" %}</p>
+            <span class="mt-0">(<a target="_blank" href="https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e">more details here</a>)</span>
+          </div>
+
+          <div class="col-6 col-md-4 text-center py-4">
+            <img class="icon" src="{% static "v2/images/results/calendar_icon.svg" %}" />
+            <h3 class="text-highlight-green mt-3">{{ bounty_average_turnaround }}</h3>
+            <p>{% trans "Median Bounty Turnaround Time" %}</p>
+            <span class="mt-0">(after Start Work)</span>
+          </div>
+
+          <div class="col-6 col-md-4 text-center py-4">
+            <img class="icon" src="{% static "v2/images/results/abandoned_bounties.svg" %}" />
+            <h3 class="text-highlight-purple mt-3">{{ bounty_abandonment_rate | floatformat:1 }}%</h3>
+            <p>{% trans "Bounty Abandonment Rate" %}</p>
+            <span class="mt-0">(after Start Work)</span>
+          </div>
+
+          <div class="col-6 col-md-4 text-center py-4">
+            <img class="icon" src="{% static "v2/images/results/gitcoin_alumni.svg" %}" />
+            <h3 class="text-highlight-light-blue mt-3">{{ alumni_count }}</h3>
+            <p>GitCoin {% trans "Bounty Hunters Hired Full Time" %}</p>
+            <span class="mt-0">(that we know of, at least 🤷‍♀️)</span>
           </div>
         </div>
       </div>
@@ -290,7 +297,7 @@
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center">
             <ul id="programming_languages">
               {% for pl in programming_languages %}
-                <li class="{% if pl == keyword or pl == 'All' and keyword == '' %}selected{%endif%}">
+                <li class="button button--primary-o {% if pl == keyword or pl == 'All' and keyword == '' %}selected{%endif%}">
                   <a href="{% url 'results' %}/{% if pl != 'All' %}{{pl}}{%endif%}">
                     {{pl}}
                   </a>
