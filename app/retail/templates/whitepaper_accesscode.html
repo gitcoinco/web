@@ -40,12 +40,12 @@
         <form id="whitepaper" method="POST">
           <div class="form-group">
             <label for="email">{% trans "Email address" %}</label>
-            <input type=text name="email" class="form-control" placeholder="you@somewhere"  value="{{ email }}" required>
+            <input type="text" name="email" class="form-control" placeholder="you@somewhere"  value="{% if email %}{{ email }}{% endif %}" required>
             <small id="emailHelp" class="form-text text-muted">{% trans "Gitcoin will never share your email with anyone else." %}</small>
           </div>
           <div class="form-group">
             <label for="accesskey">{% trans "Access Code" %}</label>
-            <input type="text" class="form-control" name="accesskey" id="accesskey" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxx" value="{{ accesskey }}" >
+            <input type="text" class="form-control" name="accesskey" id="accesskey" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxx" value="{% if accesskey %}{{ accesskey }}{% endif %}" >
           </div>
           {% csrf_token %}
           <input class="btn btn-sm btn-success" type="submit" name="submit" value="Go">
