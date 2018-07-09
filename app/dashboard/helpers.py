@@ -421,12 +421,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 admin_override_suspend_auto_approval=latest_old_bounty.admin_override_suspend_auto_approval if latest_old_bounty else 0,
                 admin_mark_as_remarket_ready=latest_old_bounty.admin_mark_as_remarket_ready if latest_old_bounty else 0,
             )
-            new_bounty.fetch_issue_item()
-            try:
-                issue_kwargs = get_url_dict(new_bounty.github_url)
-                new_bounty.github_issue_details = get_gh_issue_details(**issue_kwargs)
-            except Exception as e:
-                logger.error(e)
+            new_bounty.fetch_issue_and_update()
 
             # migrate data objects from old bounty
             if latest_old_bounty:
