@@ -560,6 +560,31 @@ def accept_bounty(request):
     return TemplateResponse(request, 'process_bounty.html', params)
 
 
+def bulk_payout_bounty(request):
+    """Payout the bounty.
+
+    Args:
+        pk (int): The primary key of the bounty to be accepted.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The accept bounty view.
+
+    """
+    bounty = handle_bounty_views(request)
+
+    params = get_context(
+        ref_object=bounty,
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='payout_bounty',
+        title=_('Payout Bounty'),
+    )
+    return TemplateResponse(request, 'payout_bounty.html', params)
+
+
 @require_GET
 def fulfill_bounty(request):
     """Fulfill a bounty.
