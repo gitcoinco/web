@@ -881,7 +881,9 @@ class Tip(SuperModel):
             return f"({self.network}) - {self.status}{' ORPHAN' if not self.emails else ''} " \
                f"{self.amount} {self.tokenName} to {self.username} from {self.from_name or 'NA'}, " \
                f"created: {naturalday(self.created_on)}, expires: {naturalday(self.expires_date)}"
-        return f"{'funded' if self.txid else '(not funded)'} {self.amount} {self.tokenName} to {self.username} from {self.from_name or 'NA'}"
+        status = 'funded' if self.txid else 'not funded'
+        status = status if not self.receive_txid else 'received'
+        return f"{status} {self.amount} {self.tokenName} to {self.username} from {self.from_name or 'NA'}"
 
     # TODO: DRY
     def get_natural_value(self):
@@ -904,7 +906,7 @@ class Tip(SuperModel):
     @property
     def amount_in_wei(self):
         token = addr_to_token(self.tokenAddress)
-        decimals = token['decimals']
+        decimals = token['decimals'] if token else 18
         return float(self.amount) * 10**decimals
 
     @property

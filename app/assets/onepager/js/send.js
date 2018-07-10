@@ -12,6 +12,16 @@ $(document).ready(function() {
     return send(e);
   });
 
+  waitforWeb3(function() {
+    tokens(document.web3network).forEach(function(ele) {
+      if(ele && ele.addr){
+        var html = "<option value="+ele.addr+">"+ele.name+"</option>"
+        $('#token').append(html)
+      }
+    });
+    jQuery('#token').select2();
+  });
+
 });
 
 function advancedToggle() {
@@ -54,7 +64,7 @@ function send(e) {
   var _disableDeveloperTip = true;
   var accept_tos = $('#tos').is(':checked');
   var tokenAddress = $('#token').val();
-  var gas_money = Math.pow(10, (9 + 5)) * ((defaultGasPrice * 1.001) / Math.pow(10, 9));
+  var gas_money = parseInt(Math.pow(10, (9 + 5)) * ((defaultGasPrice * 1.001) / Math.pow(10, 9)));
   var expires = parseInt($('#expires').val());
   var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
   var tokenDetails = tokenAddressToDetails(tokenAddress);
@@ -145,6 +155,7 @@ function send(e) {
             if (!is_success) {
               _alert(json, _class);
             } else {
+              startConfetti();
               $('#loading_trans').html('This transaction has been sent 👌');
               $('#send_eth').css('display', 'none');
               $('#send_eth_done').css('display', 'block');
@@ -163,9 +174,14 @@ function send(e) {
           value: amountInWei
         }, post_send_callback);
       } else {
-        var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-
-        token_contract(tokenAddress).transfer(destinationAccount, amountInWei, {value: gas_money}, post_send_callback);
+      _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer.') }, 'info');
+        web3.eth.sendTransaction({
+          to: destinationAccount,
+          value: gas_money
+        }, function(){
+          var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+          token_contract.transfer(destinationAccount, amountInWei, post_send_callback);
+        });
       }
     }
   });

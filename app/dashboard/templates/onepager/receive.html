@@ -24,7 +24,9 @@
 {% endblock %}
 <!-- Main -->
 {% block 'world' %}
-<canvas id="world" style="position:absolute; top:0px; left: 0px;"></canvas>
+<div>
+  <canvas id="world" style="position:absolute; top:0px; left: 0px;"></canvas>
+</div>
 {% endblock %}
 {% block 'main' %}
 <section id="main">
@@ -55,7 +57,7 @@
     <h1>{% trans "Congrats!" %}</h1>
     <p>You've received {{tip.amount}} {{tip.tokenName}} via transaction <span id="trans_id">{{tip.receive_txid}}</span>.</p>
   </div>
-{% if tip.receive_txid and not disable_inputs %}
+{% if tip.receive_txid %}
   <script>
     setTimeout(function(){
       startConfetti();

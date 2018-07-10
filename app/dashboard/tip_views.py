@@ -27,9 +27,10 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
-from dashboard.views import record_tip_activity, record_user_action
-from dashboard.utils import generate_pub_priv_keypair, get_web3, has_tx_mined
+
 from dashboard.abi import erc20_abi
+from dashboard.utils import generate_pub_priv_keypair, get_web3, has_tx_mined
+from dashboard.views import record_tip_activity, record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from github.utils import (
     get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
@@ -111,6 +112,12 @@ def receive_tip_legacy(request):
 @csrf_exempt
 @ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
 def receive_tip_v2(request, pk, txid, network):
+    """Handle the receiving of a tip (the POST)
+
+    Returns:
+        TemplateResponse: the UI with the tip confirmed
+
+    """
 
     tip = Tip.objects.get(web3_type='v2', metadata__priv_key=pk, txid=txid, network=network)
 
@@ -138,15 +145,18 @@ def receive_tip_v2(request, pk, txid, network):
             is_erc20 = tip.tokenName.lower() != 'eth'
             amount = int(tip.amount_in_wei)
             gasPrice = recommend_min_gas_price_to_confirm_in_time(25) * 10**9
-            nonce = 0 # w3.eth.getTransactionCount(tip.metadata['address'])
+            from_address = Web3.toChecksumAddress(tip.metadata['address'])
+            nonce = w3.eth.getTransactionCount(from_address)
             if is_erc20:
                 # ERC20 contract receive
-                gas = 100000
-                contract = w3.eth.contract(tip.tokenAddress, abi=erc20_abi)
+                balance = w3.eth.getBalance(from_address)
+                contract = w3.eth.contract(Web3.toChecksumAddress(tip.tokenAddress), abi=erc20_abi)
+                gas = contract.functions.transfer(address, amount).estimateGas() + 1
+                gasPrice = gasPrice if ((gas * gasPrice) < balance) else (balance * 1.0 / gas)
                 tx = contract.functions.transfer(address, amount).buildTransaction({
                     'nonce': nonce,
                     'gas': w3.toHex(gas),
-                    'gasPrice': w3.toHex(gasPrice),
+                    'gasPrice': w3.toHex(int(gasPrice)),
                 })
             else:
                 # ERC20 contract receive
@@ -338,4 +348,3 @@ def send_tip_2(request):
     }
 
     return TemplateResponse(request, 'onepager/send2.html', params)
-
