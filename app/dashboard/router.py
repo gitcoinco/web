@@ -227,7 +227,7 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         # order
         order_by = self.request.query_params.get('order_by')
-        if order_by:
+        if order_by and order_by != 'null':
             queryset = queryset.order_by(order_by)
 
         queryset = queryset.distinct()
