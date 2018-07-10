@@ -214,7 +214,7 @@ urlpatterns = [
     url(r'^credit/(.*)$/?', credits.views.credits, name='credit'),
 
     # token distribution event
-    url(r'^whitepaper/accesscode?', tdi.views.whitepaper_access, name='whitepaper_access'),
+    url(r'^whitepaper/accesscode/?', tdi.views.whitepaper_access, name='whitepaper_access'),
     url(r'^whitepaper/?', tdi.views.whitepaper_new, name='whitepaper'),
 
     # faucet views
