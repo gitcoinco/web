@@ -1016,25 +1016,74 @@ def psave_bounty(sender, instance, **kwargs):
     instance.value_true = instance.get_value_true
 
 
+class InterestQuerySet(models.QuerySet):
+    """Handle the manager queryset for Interests."""
+
+    def needs_review(self):
+        """Filter results to Interest objects requiring review by moderators."""
+        return self.filter(status=Interest.STATUS_REVIEW)
+
+    def warned(self):
+        """Filter results to Interest objects that are currently in warning."""
+        return self.filter(status=Interest.STATUS_WARNED)
+
+
 class Interest(models.Model):
     """Define relationship for profiles expressing interest on a bounty."""
 
+    STATUS_REVIEW = 'review'
+    STATUS_WARNED = 'warned'
+    STATUS_OKAY = 'okay'
+    STATUS_SNOOZED = 'snoozed'
+    STATUS_PENDING = 'pending'
+
+    WORK_STATUSES = (
+        (STATUS_REVIEW, 'Needs Review'),
+        (STATUS_WARNED, 'Hunter Warned'),
+        (STATUS_OKAY, 'Okay'),
+        (STATUS_SNOOZED, 'Snoozed'),
+        (STATUS_PENDING, 'Pending'),
+    )
+
     profile = models.ForeignKey('dashboard.Profile', related_name='interested', on_delete=models.CASCADE)
-    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    issue_message = models.TextField(default='', blank=True)
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name=_('Date Created'))
+    issue_message = models.TextField(default='', blank=True, verbose_name=_('Issue Comment'))
     pending = models.BooleanField(
         default=False,
-        help_text='If this option is chosen, this interest is pending and not yet active',
-        )
-    acceptance_date = models.DateTimeField(blank=True, null=True)
+        help_text=_('If this option is chosen, this interest is pending and not yet active'),
+        verbose_name=_('Pending'),
+    )
+    acceptance_date = models.DateTimeField(blank=True, null=True, verbose_name=_('Date Accepted'))
+    status = models.CharField(
+        choices=WORK_STATUSES,
+        default=STATUS_OKAY,
+        max_length=7,
+        help_text=_('Whether or not the interest requires review'),
+        verbose_name=_('Needs Review'))
+
+    # Interest QuerySet Manager
+    objects = InterestQuerySet.as_manager()
 
     def __str__(self):
         """Define the string representation of an interested profile."""
-        return f"{self.profile.handle} / pending: {self.pending}"
+        return f"{self.profile.handle} / pending: {self.pending} / status: {self.status}"
 
     @property
     def bounties(self):
         return Bounty.objects.filter(interested=self)
+
+    def change_status(self, status=None):
+        if status is None or status not in self.WORK_STATUSES:
+            return self
+        self.status = status
+        self.save()
+        return self
+
+    def mark_for_review(self):
+        """Flag the Interest for review by the moderation team."""
+        self.status = self.STATUS_REVIEW
+        self.save()
+        return self
 
 
 @receiver(post_save, sender=Interest, dispatch_uid="psave_interest")
