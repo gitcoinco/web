@@ -1,0 +1,26 @@
+{
+  "symbol": "PATH",
+  "address": "0x7b94a1281db0335c9efd68aca5c98b494d775c70",
+  "overview": {
+    "en":
+      "Path is revolutionizing the uptime and performance monitoring industry by using blockchain technology and smart contracts. Powerful analytic tools combined with user powered monitoring nodes give unprecedented global coverage and invaluable insight into website, application, and network uptime and performance.",
+    "zh":
+      "Path通过使用区块链技术和智能合同革新了运行时间和性能监控行业。强大的分析工具与用户支持的监控节点结合在一起，提供了前所未有的全球覆盖，以及对网站、应用程序和网络正常运行时间和性能的无价洞察。"
+  },
+  "email": "contact@path.network",
+  "website": "https://path.network",
+  "whitepaper": "https://path.network/docs/Path-Whitepaper.pdf?v=0.9.3.1",
+  "state": "LOCKED",
+  "published_on": "2018-07-08",
+  "initial_price": {
+    "USD": "1.0 USD"
+  },
+  "links": {
+    "blog": "https://medium.com/@pathnetwork",
+    "twitter": "https://twitter.com/path_network",
+    "telegram": "https://t.me/pathnetwork",
+    "github": "https://github.com/path-network-token",
+    "facebook": "https://www.facebook.com/pathtoken",
+    "medium": "https://medium.com/@pathnetwork"
+  }
+}
