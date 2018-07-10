@@ -1,0 +1,18 @@
+{
+    "symbol": "WPAY",
+    "address": "0x9caaa528c4f8adcfffc8063c736c05f211908e0d",
+    "overview": {
+        "en": "Wpay is a global and open international fast payment system based on block-chain business application solutions",
+        "zh": "Wpay 是基于区块链商业应用解决方案的全球性与开放性的国际全新快捷支付系统"
+    },
+    "email": "nfc@nfcandy.io",
+    "website": "http://wpay.ink/",
+    "whitepaper": "http://wpay.ink/Info/wpay.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-15",
+    "links": {
+        "china.a-gov": "http://www.china.a-gov.com/caijing/4512.html",
+        "news.7yey": "http://news.7yey.com/news/629.html",
+        "news.hqzxnews":"http://news.hqzxnews.com/news/2018/05/17/1939.html"
+    }
+}
