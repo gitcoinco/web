@@ -14,9 +14,10 @@ $(document).ready(function() {
 
   waitforWeb3(function() {
     tokens(document.web3network).forEach(function(ele) {
-      if(ele && ele.addr){
-        var html = "<option value="+ele.addr+">"+ele.name+"</option>"
-        $('#token').append(html)
+      if (ele && ele.addr) {
+        var html = '<option value=' + ele.addr + '>' + ele.name + '</option>';
+
+        $('#token').append(html);
       }
     });
     jQuery('#token').select2();
@@ -174,12 +175,13 @@ function send(e) {
           value: amountInWei
         }, post_send_callback);
       } else {
-      _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer.') }, 'info');
+        _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer.') }, 'info');
         web3.eth.sendTransaction({
           to: destinationAccount,
           value: gas_money
-        }, function(){
+        }, function() {
           var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+
           token_contract.transfer(destinationAccount, amountInWei, post_send_callback);
         });
       }
