@@ -815,7 +815,8 @@ window.addEventListener('load', function() {
 var promptForAuth = function(event) {
   var denomination = $('#token option:selected').text();
   var tokenAddress = $('#token option:selected').val();
-  if(!denomination){
+
+  if (!denomination) {
     return;
   }
 

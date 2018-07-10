@@ -97,7 +97,9 @@ $(document).ready(function() {
   $('select[name=deonomination]').change(promptForAuth);
   $('input[name=issueURL]').blur(retrieveIssueDetails);
   setTimeout(setUsdAmount, 1000);
-  waitforWeb3(function(){promptForAuth()})
+  waitforWeb3(function() {
+    promptForAuth();
+  });
 
   // revision action buttons
   $('#subtractAction').on('click', function() {
