@@ -1,0 +1,25 @@
+{
+  "symbol": "MFT",
+  "address": "0xDF2C7238198Ad8B389666574f2d8bc411A4b7428",
+  "overview":{
+        "en": "Mainframe is a privacy focused, p2p decentralized data relay network that empowers developers to create unstoppable, untrackable, and private web3 applications for the world of tomorrow.",
+        "zh": ""
+  },
+  "email": "contact@mainframe.com",
+  "website": "https://mainframe.com/",
+  "whitepaper": "https://mainframe.docsend.com/view/j39qpui",
+  "state": "NORMAL",
+  "published_on": "2018-07-04",
+  "initial_price":{
+        "ETH":"0.00000647 ETH",
+        "USD":"0.003 USD",
+        "BTC":"0.00000046 BTC"
+  },
+  "links": {
+    "blog": "https://blog.mainframe.com/",
+    "twitter": "https://twitter.com/Mainframe_HQ",
+    "telegram": "https://t.me/mainframehq",
+    "github": "https://github.com/MainframeHQ",
+    "facebook": "https://www.facebook.com/MainframeHQ"
+  }
+}
