@@ -210,7 +210,8 @@ def contributor_landing(request):
         'projects': projects,
         'gitcoin_description': gitcoin_description,
         'available_bounties_count': available_bounties_count,
-        'available_bounties_worth': available_bounties_worth
+        'available_bounties_worth': available_bounties_worth,
+        'tech_stack': 'python', # TODO: Dynamic / Predefined List ?
     }
 
     return TemplateResponse(request, 'contributor_landing.html', context)

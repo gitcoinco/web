@@ -40,6 +40,12 @@
         {% include 'landing/contributor/hero.html' %}
       </div>
 
+      {% if tech_stack %}
+        <div class="container-fluid p-5 open-bounties">
+          {% include 'landing/contributor/explorer.html' %}
+        </div>
+      {% endif %}
+
       <div class="container-fluid p-5 benefits_container">
         {% include 'landing/contributor/benefits.html' %}
       </div>
@@ -95,6 +101,17 @@
     {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/rollbar.html' %}
   </body>
-  {% block scripts %}{% endblock %}
+  {% include 'shared/analytics.html' %}
+  {% if tech_stack %}
+    <script src="{% static "v2/js/tokens.js" %}"></script>
+    <script>
+      var uri;
+      if(document.location.href.startsWith('https://gitcoin.co'))
+        uri = 'network=mainnet&idx_status=open&raw_data={{ tech_stack }}';
+      else
+        uri = 'idx_status=open&raw_data={{ tech_stack }}';
+      fetchBountiesAndAddToList(uri, '.featured-bounties', 5);
+    </script>
+  {% endif %}
 </html>
 
