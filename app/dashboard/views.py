@@ -957,7 +957,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         try:
             bounties = Bounty.objects.current().filter(github_url=issue_url)
             if stdbounties_id:
-                bounties.filter(standard_bounties_id=stdbounties_id)
+                bounties = bounties.filter(standard_bounties_id=stdbounties_id)
             if bounties:
                 bounty = bounties.order_by('-pk').first()
                 if bounties.count() > 1 and bounties.filter(network='mainnet').count() > 1:
