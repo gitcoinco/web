@@ -894,6 +894,24 @@ class Tip(SuperModel):
         return self.get_natural_value()
 
     @property
+    def amount_in_wei(self):
+        return float(self.amount)
+
+    @property
+    def amount_in_whole_units(self):
+        return float(self.get_natural_value())
+
+    @property
+    def amount_in_wei(self):
+        token = addr_to_token(self.tokenAddress)
+        decimals = token['decimals']
+        return float(self.amount) * 10**decimals
+
+    @property
+    def amount_in_whole_units(self):
+        return float(self.amount)
+
+    @property
     def receive_url(self):
         if self.web3_type == 'yge':
             return self.url

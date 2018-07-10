@@ -30,6 +30,7 @@ import dashboard.embed
 import dashboard.helpers
 import dashboard.ios
 import dashboard.views
+import dashboard.tip_views
 import dataviz.d3_views
 import dataviz.views
 import enssubdomain.views
@@ -118,14 +119,14 @@ urlpatterns = [
     url(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
 
     # Tips
-    url(r'^tip/receive/v2/(?P<pk>.*)/(?P<txid>.*)/(?P<network>.*)?', dashboard.views.receive_tip_v2, name='receive_tip'),
-    url(r'^tip/receive/?', dashboard.views.receive_tip_legacy, name='receive_tip_legacy'),
-    url(r'^tip/send/4/?', dashboard.views.send_tip_4, name='send_tip_4'),
-    url(r'^tip/send/3/?', dashboard.views.send_tip_3, name='send_tip_3'),
-    url(r'^tip/send/2/?', dashboard.views.send_tip_2, name='send_tip_2'),
-    url(r'^tip/send/?', dashboard.views.send_tip, name='send_tip'),
-    url(r'^send/?', dashboard.views.send_tip, name='tip'),
-    url(r'^tip/?', dashboard.views.send_tip, name='tip'),
+    url(r'^tip/receive/v2/(?P<pk>.*)/(?P<txid>.*)/(?P<network>.*)?', dashboard.tip_views.receive_tip_v2, name='receive_tip'),
+    url(r'^tip/receive/?', dashboard.tip_views.receive_tip_legacy, name='receive_tip_legacy'),
+    url(r'^tip/send/4/?', dashboard.tip_views.send_tip_4, name='send_tip_4'),
+    url(r'^tip/send/3/?', dashboard.tip_views.send_tip_3, name='send_tip_3'),
+    url(r'^tip/send/2/?', dashboard.tip_views.send_tip_2, name='send_tip_2'),
+    url(r'^tip/send/?', dashboard.tip_views.send_tip, name='send_tip'),
+    url(r'^send/?', dashboard.tip_views.send_tip, name='tip'),
+    url(r'^tip/?', dashboard.tip_views.send_tip, name='tip'),
 
     # Legal
     url(r'^terms/?', dashboard.views.terms, name='_terms'),
