@@ -16,7 +16,7 @@ $(document).ready(function() {
 
   force_no_www();
 
-  $('.nav-link.dropdown-toggle, .nav_avatar').click(function(e) {
+  $('.nav-link.dropdown-toggle').click(function(e) {
     e.preventDefault();
     var parent = $(this).parents('.nav-item');
 

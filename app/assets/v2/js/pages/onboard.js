@@ -4,7 +4,7 @@ var words = [];
 
 if ($('.logged-in').length) {
   $('.nav-item.dropdown #navbarDropdown').css('visibility', 'visible');
-  $('img.nav_avatar').css('visibility', 'visible');
+  $('.nav_avatar').css('visibility', 'visible');
 }
 
 $('.js-select2').each(function() {
