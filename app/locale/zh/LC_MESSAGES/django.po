@@ -2515,7 +2515,7 @@ msgstr "提取Twitter帐户时出错。请再试一次"
 #: ethos/views.py:221
 #, python-brace-format
 msgid "Error while tweeting to Twitter. {e}"
-msgstr "发微博时发生错误。 {E}"
+msgstr "发微博时发生错误。 {e}"
 
 #: ethos/views.py:233
 msgid "Error while creating transaction. Please try again"
@@ -2604,7 +2604,7 @@ msgid ""
 "Page %(bounties_paginator.number)s of "
 "%(bounties_paginator.paginator.num_pages)s."
 msgstr ""
-"％（bounties_paginator.paginator.num_pages）s的页％（bounties_paginator.number）s。"
+"%(bounties_paginator.paginator.num_pages)s 的页 %(bounties_paginator.number)s。"
 
 #: external_bounties/templates/external_bounties.html:144
 msgid "next"
@@ -2756,7 +2756,7 @@ msgid ""
 "    %(obj.github_username)s with a wallet address of %(obj.address)s"
 msgstr ""
 "通过资助这个水龙头请求，你将把 %(faucet_amount)s ETH转移到\n"
-"    钱包地址为％（obj.address）的％（obj.github_username）s"
+"    钱包地址为 %(obj.address)s 的 %(obj.github_username)s"
 
 #: faucet/templates/process_faucet_request.html:70
 msgid ""
@@ -3780,7 +3780,7 @@ msgstr "提醒：提示即将过期"
 #, python-format
 msgid ""
 "%(tip.from_name)s sent you a tip worth %(amount)s %(warning)s %(tokenName)s"
-msgstr "％（tip.from_name）向您发送了一条值得 %(amount)s %(warning)s %(tokenName)s的提示"
+msgstr "%(tip.from_name)s 向您发送了一条值得 %(amount)s %(warning)s %(tokenName)s 的提示"
 
 #: retail/templates/emails/new_tip.html:53
 #, python-format
@@ -4032,7 +4032,7 @@ msgstr "从这个列表中。"
 #: retail/templates/error.html:22
 #, python-format
 msgid "Error %(code)s."
-msgstr "错误代码__。"
+msgstr "错误代码 %(code)s。"
 
 #: retail/templates/error.html:23
 msgid ""
