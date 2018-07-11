@@ -1,0 +1,12 @@
+{
+  "symbol": "HCT",
+  "address": "0x26d00D339B22Db44A4a057B39513c1e12D140594",
+  "overview":{
+        "en": "The HCT (HCoin Token) is centered on the anchor and the audience, allowing the community to participate in a decentralized, trusted way.The pay and return of the person are fair, reasonable, and not exploited.",
+		"zh": "HCT (红币)以主播和观众为核心，通过去中心化的、可信任的方式让社区参与者的付出和回报是公平的、合理的、不受剥削的。"
+  },
+  "website": "http://www.hcoin.im",
+  "whitepaper": "http://www.hcoin.im/hcoin_whitepaper_v1.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-07-06"
+}
