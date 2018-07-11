@@ -30,7 +30,7 @@ import rollbar
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
 from dashboard.models import Bounty, UserAction
 from eth_utils import to_checksum_address
-from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
+from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
 from ipfsapi.exceptions import CommunicationError
 from web3 import HTTPProvider, Web3
@@ -429,6 +429,7 @@ def get_context(ref_object=None, github_username='', user=None, confirm_time_min
         'email': getattr(user, 'email', ''),
         'handle': getattr(user, 'username', ''),
         'title': title,
+        'gas_advisories': gas_advisories(),
     }
     if ref_object is not None:
         context.update({f'{ref_object.__class__.__name__}'.lower(): ref_object})

@@ -187,7 +187,7 @@ window.onload = function() {
     var max_amount = 5;
 
     if (!isSendingETH) {
-      max_amount = 1000;
+      max_amount = 10000;
     }
     if (amountInEth > max_amount) {
       _alert({ message: gettext('You can only send a maximum of ' + max_amount + ' ' + tokenName + '.') }, 'warning');

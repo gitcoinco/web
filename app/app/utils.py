@@ -122,11 +122,7 @@ def sync_profile(handle, user=None, hide_profile=True):
         rollbar.report_message('Failed to fetch github username', 'warning', extra_data=data)
         return None
 
-    defaults = {
-        'last_sync_date': timezone.now(),
-        'data': data,
-        'hide_profile': hide_profile,
-    }
+    defaults = {'last_sync_date': timezone.now(), 'data': data, 'hide_profile': hide_profile, }
 
     if user and isinstance(user, User):
         defaults['user'] = user

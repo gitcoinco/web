@@ -8,8 +8,6 @@ body {
 }
 
 .explorer {
-  font-family: 'Muli', sans-serif;
-  font-weight: 600;
   margin-top: 2em;
   color: #3E00FF;
 }
@@ -192,6 +190,15 @@ body {
   text-align: center;
 }
 
+#bounty_details .activity-tags {
+  float: left;
+  text-align: center;
+}
+
+#bounty_details .activity-tag-first {
+  margin-right: 0.2em;
+}
+
 #bounty_details .tag {
   display: inline-block;
 }
@@ -199,6 +206,27 @@ body {
 #bounty_details .tag p {
   padding: 5px;
 }
+
+.issue-url > a {
+  color: #ffffff;
+}
+
+.transaction-status {
+  font-family: 'Muli', sans-serif;
+  display: block;
+  position: relative;
+  width: 80%;
+  left: 10%;
+  top: 30px;
+  margin-bottom: 30px;
+  border-radius: 2px;
+  padding: 3vh 5vw;
+  text-align: center;
+}
+.transaction-status a{
+  color: white;
+}
+
 
 .red_warning, 
 #network {
@@ -311,6 +339,30 @@ a.btn {
   position: relative;
 }
 
+.waiting-state {
+  position: relative;
+  top: -6rem;
+}
+
+.loading_img::before {
+  content: '';
+  width: 12rem;
+  height: 12rem;
+  background: #fff;
+  position: absolute;
+  border-radius: 50%;
+  top: 0;
+}
+
+.loading_img img {
+  position: absolute;
+  max-width: 100%;
+  width: 13rem;
+  z-index: 2;
+  top: 2rem;
+  padding-right: 1rem;
+}
+
 #btn-white img {
   position: absolute;
   width: 1.313rem;
@@ -355,6 +407,11 @@ a.btn {
 .activity .bounty-subheading,
 .activity .bounty-text {
   font-size: 12px;
+}
+
+.transaction-header h2 {
+  color: #ffffff;
+  font-size: 2rem;
 }
 
 #bounty_details {
@@ -418,17 +475,6 @@ a.btn {
   padding-left: 5px;
 }
 
-@media (max-width: 575px) {
-
-  #timer {
-    margin-bottom: 10px;
-  }
-
-  .bounty-info div {
-    width: 100%;
-  }
-}
-
 @media (max-width: 767px) {
 
   #title {
@@ -465,18 +511,6 @@ a.btn {
 
   .actions {
     margin-bottom: 20px;
-  }
-}
-
-@media (max-width: 991.98px) {
-  .explorer {
-    display: none;
-  }
-}
-
-@media (min-width: 768px) {
-  .activity-time {
-    margin-left: 0.625rem !important;
   }
 }
 
@@ -547,4 +581,178 @@ a.btn {
 .modal .magnify {
   width: auto;
   max-width: 100%;
+}
+
+.bg-container {
+  background-color: #3f24f9;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10rem;
+}
+
+.transaction-header {
+  font-family: 'Muli', sans-serif;
+  display: block;
+  position: relative;
+  width: 80%;
+  left: 10%;
+  top: 30px;
+  padding: 3vh 5vw;
+  text-align: center;
+}
+
+.waiting_room_entertainment {
+  text-align: center;
+}
+
+.bounty_details .quote-container {
+  width: 55%;
+  margin: 4rem auto;
+  font-weight: 700;
+  z-index: 2;
+  padding-top: 100px;
+}
+
+.bounty_details .quote_text {
+  font-size: 1.1rem;
+  color: #4A4A4A;
+}
+
+.bounty_details .quote_author {
+  color: #4A4A4A;
+  margin: 1rem auto;
+  font-size: 1rem;
+}
+
+.ethereum-issue {
+  width:100%;
+  color: #ffffff;
+}
+
+.ethereum-issue,
+.issue-url {
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.rocket {
+  position: absolute;
+  top: 10rem;
+  width: 4rem;
+  animation: MoveUpDown 3s infinite alternate;
+  -webkit-animation: MoveUpDown 3s infinite alternate;
+}
+
+.circle,
+.cross {
+  position: absolute;
+  width: 1.8rem;
+  z-index: 0;
+}
+
+#c1 {
+  top: 25%;
+  right: 11%;
+}
+
+#c2 {
+  top: 35%;
+  left: 10%;
+}
+
+#c3 {
+  top: 22%;
+  left: 13%;
+}
+
+#c4 {
+  top: 40%;
+  right: 10%;
+}
+
+#cs1 {
+  top: 14%;
+  left: 10%;
+  transform: rotate(75deg)
+}
+
+#cs2 {
+  top: 40%;
+  left: 25%;
+}
+
+#cs3 {
+  top: 40%;
+  right: 35%;
+  transform: rotate(25deg)
+}
+
+#cs4 {
+  top: 30%;
+  right: 20%;
+}
+
+#cloud {
+  position: relative;
+  right: 2rem;
+  float: right;
+  top: 7rem;
+}
+
+@media (max-width: 575.98px) {
+
+  #timer {
+    margin-bottom: 10px;
+  }
+
+  .bounty-info div {
+    width: 100%;
+  }
+
+  .loading .issue-url {
+    font-size: 1rem;
+  }
+
+  .rocket {
+    width: 3.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .issue-url {
+    margin-top: 15px;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .explorer {
+    display: none;
+  }
+}
+
+@media (min-width: 769px) {
+  .activity-time {
+    margin-left: 0.625rem !important;
+  }
+
+  .rocket {
+    right: 11rem;
+  }
+}
+
+@media (min-width: 1441px) and (max-width: 2560px) {
+
+  .bounty_details .quote-container {
+    margin-top: 1rem;
+  }
+}
+
+@keyframes MoveUpDown {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-3rem); }
+}
+
+@-webkit-keyframes MoveUpDown {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-3rem); }
 }

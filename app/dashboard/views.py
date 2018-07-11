@@ -39,7 +39,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import ellipses, sync_profile
 from avatar.utils import get_avatar_context
-from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
+from gas.utils import conf_time_spread, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from github.utils import (
     get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
 )
@@ -51,14 +51,14 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
-from .helpers import handle_bounty_views
+from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
-    Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip, Tool,
-    ToolVote, UserAction,
+    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip,
+    Tool, ToolVote, UserAction,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_github,
-    maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_slack,
+    maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from .utils import (
     get_bounty, get_bounty_id, get_context, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
@@ -109,6 +109,76 @@ def record_user_action(user, event_name, instance):
         logging.error(f"error in record_action: {e} - {event_name} - {instance}")
 
 
+def record_bounty_activity(bounty, user, event_name, interest=None):
+    """Creates Activity object.
+
+    Args:
+        bounty (dashboard.models.Bounty): Bounty
+        user (string): User name
+        event_name (string): Event name
+        interest (dashboard.models.Interest): Interest
+
+    Raises:
+        None
+
+    Returns:
+        None
+    """
+    kwargs = {
+        'activity_type': event_name,
+        'bounty': bounty,
+        'metadata': get_bounty_data_for_activity(bounty)
+    }
+    if isinstance(user, str):
+        try:
+            user = User.objects.get(username=user)
+        except User.DoesNotExist:
+            return
+
+    if hasattr(user, 'profile'):
+        kwargs['profile'] = user.profile
+    else:
+        return
+
+    if event_name == 'worker_applied':
+        kwargs['metadata']['approve_worker_url'] = bounty.approve_worker_url(user.profile)
+        kwargs['metadata']['reject_worker_url'] = bounty.reject_worker_url(user.profile)
+    if event_name in ['worker_approved', 'worker_rejected'] and interest:
+        kwargs['metadata']['worker_handle'] = interest.profile.handle
+
+    try:
+        return Activity.objects.create(**kwargs)
+    except Exception as e:
+        logging.error(f"error in record_bounty_activity: {e} - {event_name} - {bounty} - {user}")
+
+
+def record_tip_activity(tip, github_handle, event_name):
+    kwargs = {
+        'activity_type': event_name,
+        'tip': tip,
+        'metadata': {
+            'amount': str(tip.amount),
+            'token_name': tip.tokenName,
+            'value_in_eth': str(tip.value_in_eth),
+            'value_in_usdt_now': str(tip.value_in_usdt_now),
+            'github_url': tip.github_url,
+            'to_username': tip.username,
+            'from_name': tip.from_name,
+            'received_on': str(tip.received_on) if tip.received_on else None
+        }
+    }
+    try:
+        kwargs['profile'] = Profile.objects.get(handle=github_handle)
+    except Profile.DoesNotExist:
+        logging.error(f"error in record_tip_activity: profile with github name {github_handle} not found")
+        return
+
+    try:
+        Activity.objects.create(**kwargs)
+    except Exception as e:
+        logging.error(f"error in record_tip_activity: {e} - {event_name} - {tip} - {github_handle}")
+
+
 def helper_handle_access_token(request, access_token):
     # https://gist.github.com/owocki/614a18fbfec7a5ed87c97d37de70b110
     # interest API via token
@@ -122,16 +192,18 @@ def create_new_interest_helper(bounty, user, issue_message):
     approval_required = bounty.permission_type == 'approval'
     acceptance_date = timezone.now() if not approval_required else None
     profile_id = user.profile.pk
+    record_bounty_activity(bounty, user, 'start_work' if not approval_required else 'worker_applied')
     interest = Interest.objects.create(
         profile_id=profile_id,
         issue_message=issue_message,
         pending=approval_required,
         acceptance_date=acceptance_date,
-        )
+    )
     bounty.interested.add(interest)
     record_user_action(user, 'start_work', interest)
-    maybe_market_to_slack(bounty, 'work_started')
-    maybe_market_to_user_slack(bounty, 'work_started')
+    maybe_market_to_slack(bounty, 'start_work')
+    maybe_market_to_user_slack(bounty, 'start_work')
+    maybe_market_to_user_discord(bounty, 'start_work')
     maybe_market_to_twitter(bounty, 'start_work')
     return interest
 
@@ -249,7 +321,7 @@ def new_interest(request, bounty_id):
         'success': True,
         'profile': ProfileSerializer(interest.profile).data,
         'msg': msg,
-        })
+    })
 
 
 @csrf_exempt
@@ -290,10 +362,12 @@ def remove_interest(request, bounty_id):
     try:
         interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
         record_user_action(request.user, 'stop_work', interest)
+        record_bounty_activity(bounty, request.user, 'stop_work')
         bounty.interested.remove(interest)
         interest.delete()
-        maybe_market_to_slack(bounty, 'work_stopped')
-        maybe_market_to_user_slack(bounty, 'work_stopped')
+        maybe_market_to_slack(bounty, 'stop_work')
+        maybe_market_to_user_slack(bounty, 'stop_work')
+        maybe_market_to_user_discord(bounty, 'stop_work')
         maybe_market_to_twitter(bounty, 'stop_work')
     except Interest.DoesNotExist:
         return JsonResponse({
@@ -314,7 +388,7 @@ def remove_interest(request, bounty_id):
     return JsonResponse({
         'success': True,
         'msg': _("You've stopped working on this, thanks for letting us know."),
-        })
+    })
 
 
 @require_POST
@@ -353,13 +427,15 @@ def uninterested(request, bounty_id, profile_id):
     try:
         interest = Interest.objects.get(profile_id=profile_id, bounty=bounty)
         bounty.interested.remove(interest)
-        maybe_market_to_slack(bounty, 'work_stopped')
-        maybe_market_to_user_slack(bounty, 'work_stopped')
+        maybe_market_to_slack(bounty, 'stop_work')
+        maybe_market_to_user_slack(bounty, 'stop_work')
+        maybe_market_to_user_discord(bounty, 'stop_work')
         if is_staff:
             event_name = "bounty_removed_slashed_by_staff" if slashed else "bounty_removed_by_staff"
         else:
             event_name = "bounty_removed_by_funder"
         record_user_action_on_interest(interest, event_name, None)
+        record_bounty_activity(bounty, interest.profile.user, 'stop_work')
         interest.delete()
     except Interest.DoesNotExist:
         return JsonResponse({
@@ -386,7 +462,7 @@ def uninterested(request, bounty_id, profile_id):
     return JsonResponse({
         'success': True,
         'msg': _("You've stopped working on this, thanks for letting us know."),
-        })
+    })
 
 
 @csrf_exempt
@@ -406,6 +482,7 @@ def receive_tip(request):
             tip.received_on = timezone.now()
             tip.save()
             record_user_action(tip.username, 'receive_tip', tip)
+            record_tip_activity(tip, tip.username, 'receive_tip')
         except Exception as e:
             status = 'error'
             message = str(e)
@@ -502,9 +579,12 @@ def send_tip_2(request):
         maybe_market_tip_to_slack(tip, 'new_tip')
         maybe_market_tip_to_email(tip, to_emails)
         record_user_action(tip.username, 'send_tip', tip)
+        record_tip_activity(tip, params['from_name'], 'new_tip')
         if not to_emails:
             response['status'] = 'error'
-            response['message'] = _('Uh oh! No email addresses for this user were found via Github API.  Youll have to let the tipee know manually about their tip.')
+            response['message'] = _(
+                'Uh oh! No email addresses for this user were found via Github API.  Youll have to let the tipee know '
+                'manually about their tip.')
 
         return JsonResponse(response)
 
@@ -518,6 +598,10 @@ def send_tip_2(request):
     }
 
     return TemplateResponse(request, 'yge/send2.html', params)
+
+
+def onboard_avatar(request):
+    return redirect('/onboard/contributor?steps=avatar')
 
 
 def onboard(request, flow):
@@ -567,6 +651,7 @@ def gas(request):
     if recommended_gas_price < 2:
         _cts = conf_time_spread(recommended_gas_price)
     context = {
+        'gas_advisories': gas_advisories(),
         'conf_time_spread': _cts,
         'title': 'Live Gas Usage => Predicted Conf Times'
     }
@@ -759,7 +844,8 @@ def helper_handle_override_status(request, bounty):
             valid_statuses = valid_statuses + [""]
             valid_statuses_str = ",".join(valid_statuses)
             if admin_override_satatus not in valid_statuses:
-                messages.warning(request, str(_('Not a valid status choice.  Please choose a valid status (no quotes): ')) + valid_statuses_str)
+                messages.warning(request, str(
+                    _('Not a valid status choice.  Please choose a valid status (no quotes): ')) + valid_statuses_str)
             else:
                 bounty.override_status = admin_override_satatus
                 bounty.save()
@@ -811,10 +897,12 @@ def helper_handle_approvals(request, bounty):
                 maybe_market_to_slack(bounty, 'worker_approved')
                 maybe_market_to_user_slack(bounty, 'worker_approved')
                 maybe_market_to_twitter(bounty, 'worker_approved')
+                record_bounty_activity(bounty, request.user, 'worker_approved', interest)
 
             else:
                 start_work_rejected(interest, bounty)
 
+                record_bounty_activity(bounty, request.user, 'worker_rejected', interest)
                 bounty.interested.remove(interest)
                 interest.delete()
 
@@ -873,7 +961,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         try:
             bounties = Bounty.objects.current().filter(github_url=issue_url)
             if stdbounties_id:
-                bounties.filter(standard_bounties_id=stdbounties_id)
+                bounties = bounties.filter(standard_bounties_id=stdbounties_id)
             if bounties:
                 bounty = bounties.order_by('-pk').first()
                 if bounties.count() > 1 and bounties.filter(network='mainnet').count() > 1:

@@ -299,13 +299,16 @@ var uninterested = function(bounty_pk, profileId, slash) {
 /** Pulls the list of interested profiles from the server. */
 var pull_interest_list = function(bounty_pk, callback) {
   document.interested = false;
-  var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL;
+  var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL + '&not_current=1';
   var started = [];
 
   $.get(uri, function(results) {
-    render_activity(results[0]);
-    if (results[0].interested) {
-      var interested = results[0].interested;
+    results = sanitizeAPIResults(results);
+    const current = results.find(result => result.current_bounty);
+
+    render_activity(current, results);
+    if (current.interested) {
+      var interested = current.interested;
 
       interested.forEach(function(_interested) {
         started.push(
@@ -544,61 +547,90 @@ var randomElement = function(array) {
   return array[randomIndex];
 };
 
-var trigger_sidebar_web3_disabled = function() {
-  $('#upper_left').addClass('disabled');
-  $('#sidebar_head').html('<i class="fas fa-question"></i>');
-  $('#sidebar_p').html('<p>Web3 disabled</p><p>Please install <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a> <br> <a href="/web3" target="_blank" rel="noopener noreferrer">What is Metamask and why do I need it?</a>.</p>');
-};
-
-var trigger_sidebar_web3_locked = function() {
-  $('#upper_left').addClass('disabled');
-  $('#sidebar_head').html('<i class="fas fa-lock"></i>');
-  $('#sidebar_p').html('<p>Web3 locked</p><p>Please unlock <a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>.<p>');
-};
-
 var mixpanel_track_once = function(event, params) {
   if (document.listen_for_web3_iterations == 1 && mixpanel) {
     mixpanel.track(event, params);
   }
 };
 
-var trigger_sidebar_web3 = function(network) {
+/* eslint-disable no-lonely-if */
+var currentNetwork = function(network) {
+
+  $('.navbar-network').removeClass('hidden');
+  let tooltip_info;
+
   document.web3network = network;
+  if (document.location.href.startsWith('https://gitcoin.co')) { // Live
+    if (network == 'mainnet') {
+      $('#current-network').text('Main Ethereum Network');
+      $('.navbar-network').attr('title', '');
+      $('.navbar-network i').addClass('green');
+      $('.navbar-network i').removeClass('red');
+      $('#navbar-network-banner').removeClass('network-banner--warning');
+      $('#navbar-network-banner').addClass('hidden');
+    } else {
+      if (!network) {
+        info = gettext('Web3 disabled. Please install ') +
+          '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
+        $('#current-network').text(gettext('Metamask Not Enabled'));
+        $('#navbar-network-banner').html(info);
+      } else if (network == 'locked') {
+        info = gettext('Web3 locked. Please unlock ') +
+          '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
+        $('#current-network').text(gettext('Metamask Locked'));
+        $('#navbar-network-banner').html(info);
+      } else {
+        info = gettext('Connect to Mainnet via Metamask');
+        $('#current-network').text(gettext('Unsupported Network'));
+        $('#navbar-network-banner').html(info);
+      }
 
-  // is this a supported networK?
-  var is_supported_network = true;
+      $('.navbar-network i').addClass('red');
+      $('.navbar-network i').removeClass('green');
+      $('#navbar-network-banner').addClass('network-banner--warning');
+      $('#navbar-network-banner').removeClass('hidden');
 
-  var recommended_network = 'mainnet or rinkeby';
-
-  if (network == 'kovan' || network == 'ropsten') {
-    is_supported_network = false;
-  }
-  if (document.location.href.indexOf('https://gitcoin.co') != -1) {
-    if (network != 'mainnet' && network != 'rinkeby') {
-      is_supported_network = false;
-      recommended_network = 'mainnet or rinkeby';
+      if ($('.ui-tooltip.ui-corner-all.ui-widget-shadow.ui-widget.ui-widget-content').length == 0) {
+        $('.navbar-network').attr('title', '<div class="tooltip-info tooltip-xs">' + info + '</div>');
+      }
     }
-  }
-  if (network == 'mainnet') {
-    if (document.location.href.indexOf('https://gitcoin.co') == -1) {
-      is_supported_network = false;
-      recommended_network = 'custom rpc via ganache-cli / rinkeby';
-    }
-  }
-  var sidebar_p = '<p>Connected to ' + network + '.</p>';
+  } else { // Staging
+    if (network == 'rinkeby') {
+      $('#current-network').text('Rinkeby Network');
+      $('.navbar-network').attr('title', '');
+      $('.navbar-network i').addClass('green');
+      $('.navbar-network i').removeClass('red');
+      $('#navbar-network-banner').removeClass('network-banner--warning');
+      $('#navbar-network-banner').addClass('hidden');
+    } else {
+      if (!network) {
+        info = gettext('Web3 disabled. Please install ') +
+          '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
+        $('#current-network').text(gettext('Metamask Not Enabled'));
+        $('#navbar-network-banner').html(info);
+      } else if (network == 'locked') {
+        info = gettext('Web3 locked. Please unlock ') +
+          '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
+        $('#current-network').text(gettext('Metamask Locked'));
+        $('#navbar-network-banner').html(info);
+      } else {
+        info = gettext('Connect to Rinkeby / Custom RPC via Metamask');
+        $('#current-network').text(gettext('Unsupported Network'));
+        $('#navbar-network-banner').html(info);
+      }
 
-  if (is_supported_network) {
-    $('#upper_left').removeClass('disabled');
-    $('#sidebar_head').html("<i class='fas fa-wifi'></i>");
-    $('#sidebar_p').html('<p>Web3 enabled<p>' + sidebar_p);
-  } else {
-    $('#upper_left').addClass('disabled');
-    $('#sidebar_head').html("<i class='fas fa-battery-empty'></i>");
-    sidebar_p += '<p>(try ' + recommended_network + ')</p>';
-    $('#sidebar_p').html('<p>Unsupported network</p>' + sidebar_p);
+      $('.navbar-network i').addClass('red');
+      $('.navbar-network i').removeClass('green');
+      $('#navbar-network-banner').addClass('network-banner--warning');
+      $('#navbar-network-banner').removeClass('hidden');
+
+      if ($('.ui-tooltip.ui-corner-all.ui-widget-shadow.ui-widget.ui-widget-content').length == 0) {
+        $('.navbar-network').attr('title', '<div class="tooltip-info tooltip-xs">' + info + '</div>');
+      }
+    }
   }
 };
-
+/* eslint-enable no-lonely-if */
 
 var trigger_primary_form_web3_hooks = function() {
   // detect web3, and if not, display a form telling users they must be web3 enabled.
@@ -733,10 +765,10 @@ var listen_for_web3_changes = function() {
   }
 
   if (typeof web3 == 'undefined') {
-    trigger_sidebar_web3_disabled();
+    currentNetwork();
     trigger_form_hooks();
   } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
-    trigger_sidebar_web3_locked();
+    currentNetwork('locked');
     trigger_form_hooks();
   } else {
     web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
@@ -747,12 +779,11 @@ var listen_for_web3_changes = function() {
 
     web3.version.getNetwork(function(error, netId) {
       if (error) {
-        trigger_sidebar_web3_disabled();
+        currentNetwork();
       } else {
-        // figure out which network we're on
         var network = getNetwork(netId);
 
-        trigger_sidebar_web3(network);
+        currentNetwork(network);
         trigger_form_hooks();
       }
     });
@@ -785,6 +816,10 @@ var promptForAuth = function(event) {
   var denomination = $('#token option:selected').text();
   var tokenAddress = $('#token option:selected').val();
 
+  if (!denomination) {
+    return;
+  }
+
   if (denomination == 'ETH') {
     $('input, textarea, select').prop('disabled', '');
   } else {
@@ -794,7 +829,7 @@ var promptForAuth = function(event) {
 
     token_contract.allowance.call(from, to, function(error, result) {
       if (error || result.toNumber() == 0) {
-        _alert("You have not yet enabled this token.  To enable this token, go to the <a style='padding-left:5px;' href='/settings/tokens'> Token Settings page and enable it</a>. (this is only needed one time per token)");
+        _alert("You have not yet enabled this token.  To enable this token, go to the <a style='padding-left:5px;' href='/settings/tokens'> Token Settings page and enable it</a>. (this is only needed one time per token)", 'warning');
         $('input, textarea, select').prop('disabled', 'disabled');
         $('select[name=deonomination]').prop('disabled', '');
       } else {

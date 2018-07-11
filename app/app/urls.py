@@ -69,6 +69,7 @@ urlpatterns = [
     url(r'^universe/(?P<issuenum>.*)/(?P<slug>.*)/?', external_bounties.views.external_bounties_show, name='universe'),
     url(r'^universe/?', external_bounties.views.external_bounties_index, name="universe_index"),
     re_path(r'^onboard/(?P<flow>\w+)/$', dashboard.views.onboard, name='onboard'),
+    re_path(r'^onboard/contributor/avatar/?$', dashboard.views.onboard_avatar, name='onboard_avatar'),
     url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
 
@@ -167,6 +168,7 @@ urlpatterns = [
     # brochureware views
     url(r'^about/?', retail.views.about, name='about'),
     url(r'^mission/?', retail.views.mission, name='mission'),
+    re_path(r'^results/?(?P<keyword>.*)/?', retail.views.results, name='results_by_keyword'),
     re_path(r'^results/?', retail.views.results, name='results'),
     url(r'^get/?', retail.views.get_gitcoin, name='get_gitcoin'),
     url(r'^$', retail.views.index, name='index'),
@@ -213,7 +215,7 @@ urlpatterns = [
     url(r'^credit/(.*)$/?', credits.views.credits, name='credit'),
 
     # token distribution event
-    url(r'^whitepaper/accesscode?', tdi.views.whitepaper_access, name='whitepaper_access'),
+    url(r'^whitepaper/accesscode/?', tdi.views.whitepaper_access, name='whitepaper_access'),
     url(r'^whitepaper/?', tdi.views.whitepaper_new, name='whitepaper'),
 
     # faucet views
@@ -291,6 +293,7 @@ urlpatterns = [
     re_path(r'^settings/matching/?', marketing.views.matching_settings, name='matching_settings'),
     re_path(r'^settings/feedback/?', marketing.views.feedback_settings, name='feedback_settings'),
     re_path(r'^settings/slack/?', marketing.views.slack_settings, name='slack_settings'),
+    re_path(r'^settings/discord/?', marketing.views.discord_settings, name='discord_settings'),
     re_path(r'^settings/ens/?', marketing.views.ens_settings, name='ens_settings'),
     re_path(r'^settings/account/?', marketing.views.account_settings, name='account_settings'),
     re_path(r'^settings/tokens/?', marketing.views.token_settings, name='token_settings'),

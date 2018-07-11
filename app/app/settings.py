@@ -53,60 +53,22 @@ ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default
 
 # Application definition
 INSTALLED_APPS = [
-    'corsheaders',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'whitenoise.runserver_nostatic',
-    'django.contrib.staticfiles',
-    'storages',
-    'social_django',
-    'cookielaw',
-    'django.contrib.humanize',
-    'django.contrib.sitemaps',
-    'django.contrib.sites',
-    'django_extensions',
-    'easy_thumbnails',
-    'app',
-    'avatar',
-    'retail',
-    'rest_framework',
-    'bootstrap3',
-    'marketing',
-    'economy',
-    'dashboard',
-    'enssubdomain',
-    'faucet',
-    'tdi',
-    'gas',
-    'github',
-    'legacy',
-    'chartit',
-    'email_obfuscator',
-    'linkshortener',
-    'credits',
-    'gitcoinbot',
-    'external_bounties',
-    'dataviz',
-    'ethos',
+    'corsheaders', 'django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes',
+    'django.contrib.sessions', 'django.contrib.messages', 'whitenoise.runserver_nostatic', 'django.contrib.staticfiles',
+    'storages', 'social_django', 'cookielaw', 'django.contrib.humanize', 'django.contrib.sitemaps',
+    'django.contrib.sites', 'django_extensions', 'easy_thumbnails', 'app', 'avatar', 'retail', 'rest_framework',
+    'bootstrap3', 'marketing', 'economy', 'dashboard', 'enssubdomain', 'faucet', 'tdi', 'gas', 'github', 'legacy',
+    'chartit', 'email_obfuscator', 'linkshortener', 'credits', 'gitcoinbot', 'external_bounties', 'dataviz', 'ethos',
     'impersonate',
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'ratelimit.middleware.RatelimitMiddleware',
-    'social_django.middleware.SocialAuthExceptionMiddleware',
+    'corsheaders.middleware.CorsMiddleware', 'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', 'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware', 'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware', 'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware', 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'ratelimit.middleware.RatelimitMiddleware', 'social_django.middleware.SocialAuthExceptionMiddleware',
     'impersonate.middleware.ImpersonateMiddleware',
 ]
 
@@ -119,28 +81,19 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            'retail/templates/',
-            'external_bounties/templates/',
-            'dataviz/templates',
+TEMPLATES = [{
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'DIRS': ['retail/templates/', 'external_bounties/templates/', 'dataviz/templates', ],
+    'APP_DIRS': True,
+    'OPTIONS': {
+        'context_processors': [
+            'django.template.context_processors.debug', 'django.template.context_processors.request',
+            'django.contrib.auth.context_processors.auth', 'django.contrib.messages.context_processors.messages',
+            'app.context.insert_settings', 'social_django.context_processors.backends',
+            'social_django.context_processors.login_redirect',
         ],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'app.context.insert_settings',
-                'social_django.context_processors.backends',
-                'social_django.context_processors.login_redirect',
-            ],
-        },
     },
-]
+}, ]
 
 SITE_ID = env.int('SITE_ID', default=1)
 WSGI_APPLICATION = env('WSGI_APPLICATION', default='app.wsgi.application')
@@ -151,20 +104,15 @@ DATABASES = {'default': env.db()}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
+AUTH_PASSWORD_VALIDATORS = [{
+    'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+}, {
+    'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+}, {
+    'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+}, {
+    'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+}, ]
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
@@ -323,22 +271,13 @@ SOCIAL_AUTH_GITHUB_KEY = GITHUB_CLIENT_ID
 SOCIAL_AUTH_GITHUB_SECRET = GITHUB_CLIENT_SECRET
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'last_name', 'email']
-SOCIAL_AUTH_GITHUB_SCOPE = [
-    'read:public_repo',
-    'read:user',
-    'user:email',
-]
+SOCIAL_AUTH_GITHUB_SCOPE = ['read:public_repo', 'read:user', 'user:email', ]
 
 SOCIAL_AUTH_PIPELINE = (
-    'social_core.pipeline.social_auth.social_details',
-    'social_core.pipeline.social_auth.social_uid',
-    'social_core.pipeline.social_auth.auth_allowed',
-    'social_core.pipeline.social_auth.social_user',
-    'social_core.pipeline.user.get_username',
-    'social_core.pipeline.user.create_user',
-    'app.pipeline.save_profile',
-    'social_core.pipeline.social_auth.associate_user',
-    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.social_auth.social_details', 'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed', 'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username', 'social_core.pipeline.user.create_user', 'app.pipeline.save_profile',
+    'social_core.pipeline.social_auth.associate_user', 'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
 )
 
@@ -391,6 +330,7 @@ GOOGLE_ANALYTICS_AUTH_JSON = {
         env('GA_AUTH_PROVIDER_X509_CERT_URL', default='https://www.googleapis.com/oauth2/v1/certs'),
     'client_x509_cert_url': env('GA_CLIENT_X509_CERT_URL', default='')
 }
+HOTJAR_CONFIG = {'hjid': env.int('HOTJAR_ID', default=0), 'hjsv': env.int('HOTJAR_SV', default=0), }
 
 # Rollbar - https://rollbar.com/docs/notifier/pyrollbar/#django
 ROLLBAR_CLIENT_TOKEN = env('ROLLBAR_CLIENT_TOKEN', default='')  # post_client_item
@@ -407,28 +347,10 @@ if ROLLBAR_SERVER_TOKEN and ENV not in ['local', 'test']:
         'capture_ip': 'anonymize',
         'capture_username': True,
         'scrub_fields': [
-            'pw',
-            'passwd',
-            'password',
-            'secret',
-            'confirm_password',
-            'confirmPassword',
-            'password_confirmation',
-            'passwordConfirmation',
-            'access_token',
-            'accessToken',
-            'auth',
-            'authentication',
-            'github_access_token',
-            'github_client_secret',
-            'secret_key',
-            'twitter_access_token',
-            'twitter_access_secret',
-            'twitter_consumer_secret',
-            'mixpanel_token',
-            'slack_verification_token',
-            'redirect_state',
-            'slack_token',
+            'pw', 'passwd', 'password', 'secret', 'confirm_password', 'confirmPassword', 'password_confirmation',
+            'passwordConfirmation', 'access_token', 'accessToken', 'auth', 'authentication', 'github_access_token',
+            'github_client_secret', 'secret_key', 'twitter_access_token', 'twitter_access_secret',
+            'twitter_consumer_secret', 'mixpanel_token', 'slack_verification_token', 'redirect_state', 'slack_token',
             'priv_key',
         ],
     }
@@ -444,9 +366,7 @@ if ROLLBAR_SERVER_TOKEN and ENV not in ['local', 'test']:
     rollbar.init(**ROLLBAR)
 
 # List of github usernames to not count as comments on an issue
-IGNORE_COMMENTS_FROM = [
-    'gitcoinbot',
-]
+IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
 
 # optional: only needed if you run the activity-report management command
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
