@@ -68,6 +68,8 @@ var update_metamask_conf_time_and_cost_estimate = function() {
     ethAmount = Math.round(1000 * gasLimit * gasPrice / Math.pow(10, 9)) / 1000;
     usdAmount = Math.round(10 * ethAmount * document.eth_usd_conv_rate) / 10;
   }
+  
+  if(typeof document.conf_time_spread == 'undefined') return;
 
   for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
     var this_ele = (document.conf_time_spread[i]);
