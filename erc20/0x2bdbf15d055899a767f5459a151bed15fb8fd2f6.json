@@ -1,0 +1,18 @@
+{
+  "symbol": "UST",
+  "address": "0x2bdbf15d055899a767f5459a151bed15fb8fd2f6",
+  "overview":{
+        "en": "Ultra Salescloud is next-generation intelligent marketing ecosystem based on blockchain technology. It offers an innovative solution to overcome key pain points in digital marketing by adopting decentralized, intelligent, trusted, traceable blockchain technology.",
+        "zh": "链云是基于区块链技术的新一代数字营销应用链，运用区块链去中心化、可信任、可溯源的技术特性，结合数字营销、大数据及人工智能技术，破解中长尾流量市场中流量欺诈、虚假广告及作弊等行业问题，建立一个健康协调、可持续的数字营销生态系统。"
+  },
+  "email": "Info@ust.top",
+  "website": "https://www.ust.top/",
+  "whitepaper": "https://www.ust.top/file/2018-05/UST_Whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-07-07",
+  "links": {
+    "twitter": "https://twitter.com/UltraSalescloud",
+    "telegram": "https://t.me/UST_official",
+    "facebook": "https://www.facebook.com/UltraSalescloud"
+  }
+}
