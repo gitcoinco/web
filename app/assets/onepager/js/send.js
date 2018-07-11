@@ -9,7 +9,22 @@ $(document).ready(function() {
   $('#amount').on('keyup blur change', updateEstimate);
   $('#token').on('change', updateEstimate);
   $('#send').click(function(e) {
-    return send(e);
+    e.preventDefault();
+
+    // get form data
+    var email = $('#email').val();
+    var github_url = $('#issueURL').val();
+    var from_name = $('#fromName').val();
+    var username = $('#username').val();
+    var amountInEth = parseFloat($('#amount').val());
+    var comments_priv = $('#comments_priv').val();
+    var comments_public = $('#comments_public').val();
+    var from_email = $('#fromEmail').val();
+    var accept_tos = $('#tos').is(':checked');
+    var tokenAddress = $('#token').val();
+    var expires = parseInt($('#expires').val());
+
+    return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires);
   });
 
   waitforWeb3(function() {
@@ -42,10 +57,9 @@ function isNumeric(n) {
 }
 
 
-function send(e) {
+function sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires) {
 
   mixpanel.track('Tip Step 2 Click', {});
-  e.preventDefault();
   if (typeof web3 == 'undefined') {
     _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
     return;
@@ -53,20 +67,11 @@ function send(e) {
   // setup
   var fromAccount = web3.eth.accounts[0];
 
-  // get form data
-  var email = $('#email').val();
-  var github_url = $('#issueURL').val();
-  var from_name = $('#fromName').val();
-  var username = $('#username').val();
-
   if (username.indexOf('@') == -1) {
     username = '@' + username;
   }
   var _disableDeveloperTip = true;
-  var accept_tos = $('#tos').is(':checked');
-  var tokenAddress = $('#token').val();
   var gas_money = parseInt(Math.pow(10, (9 + 5)) * ((defaultGasPrice * 1.001) / Math.pow(10, 9)));
-  var expires = parseInt($('#expires').val());
   var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
   var tokenDetails = tokenAddressToDetails(tokenAddress);
   var tokenName = 'ETH';
@@ -76,11 +81,7 @@ function send(e) {
     tokenName = tokenDetails.name;
     weiConvert = Math.pow(10, tokenDetails.decimals);
   }
-  var amountInEth = parseFloat($('#amount').val());
   var amountInWei = amountInEth * 1.0 * weiConvert;
-  var comments_priv = $('#comments_priv').val();
-  var comments_public = $('#comments_public').val();
-  var from_email = $('#fromEmail').val();
   // validation
   var hasEmail = email != '';
   var hasUsername = username != '';
@@ -187,8 +188,6 @@ function send(e) {
       }
     }
   });
-
-
 }
 
 var updateEstimate = function(e) {

@@ -10,22 +10,6 @@ $(document).ready(function($) {
     return id_num + id_str;
   };
 
-  var make_table = function() {
-    var tbl = '';
-
-    tbl += '<table class="table table-hover" id ="payout_table">';
-    tbl += '<thead>';
-    tbl += '<tr>';
-    tbl += '<th>Github Username</th>';
-    tbl += '<th>Percent(%)</th>';
-    tbl += '<th>Amount</th>';
-    tbl += '<th></th>';
-    tbl += '</tr>';
-    tbl += '</thead>';
-    tbl += '<tbody>';
-    $(document).find('.tbl_user_data').html(tbl);
-  };
-
   $(document).on('blur', '#amount', function(event) {
     event.preventDefault();
     update_registry();
@@ -67,6 +51,40 @@ $(document).ready(function($) {
     $(this).parents('tr').remove();
     $(this).focus();
   });
+
+  var sendTransaction = function(transaction){
+
+    if(transaction['type'] == 'cancel'){
+
+    } else {
+      // get form data
+      var email = $('#email').val();
+      var github_url = $('#issueURL').val();
+      var from_name = $('#fromName').val();
+      var username = $('#username').val();
+      var amountInEth = parseFloat($('#amount').val());
+      var comments_priv = $('#comments_priv').val();
+      var comments_public = $('#comments_public').val();
+      var from_email = $('#fromEmail').val();
+      var accept_tos = $('#tos').is(':checked');
+      var tokenAddress = $('#token').val();
+      var expires = parseInt($('#expires').val());
+
+      return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires);
+    }
+  }
+
+  $('#acceptBounty').click(function(e) {
+    e.preventDefault();
+
+    for(var i=0; i<document.transactions.length; i++){
+      var transaction = document.transactions[i];
+      $(".entry").removeClass('active');
+      $(".entry_" + transaction['id']).addClass('active');
+      sendTransaction(transaction);
+    }
+  });
+
 
 
   var get_amount = function(percent) {
@@ -117,8 +135,9 @@ $(document).ready(function($) {
 
     first_transaction = {
       'id': 1,
+      'type': 'cancel',
       'reason': 'Refund of Bounty Stake',
-      'amount': '+' + original_amount + ' ' + denomination
+      'amount': '+' + original_amount + ' ' + denomination,
     };
     transactions.push(first_transaction);
     for (var i = 1; i < num_rows; i += 1) {
@@ -128,14 +147,22 @@ $(document).ready(function($) {
 
       transaction = {
         'id': i + 1,
+        'type': 'tip',
         'reason': 'Payment to ' + username,
-        'amount': '-' + amount + ' ' + denomination
+        'amount': '-' + amount + ' ' + denomination,
+        'data': {
+          'to': username,
+          'amount': amount,
+          'denomination': denomination,
+          'token_address': $("#token_address").val(),
+        }
       };
       var is_error = !$.isNumeric(amount) || amount <= 0 || username == '' || username == '@';
 
       if (!is_error)
         transactions.push(transaction);
     }
+
     // paint on screen
     $('#transaction_registry tr.entry').remove();
     for (var i = 0; i < transactions.length; i += 1) {
@@ -145,11 +172,10 @@ $(document).ready(function($) {
       $('#transaction_registry').append(html);
     }
 
-    document.transactions_preview = transactions;
+    document.transactions = transactions;
   };
 
   $('document').ready(function() {
-    make_table();
     add_row();
     update_registry();
 
