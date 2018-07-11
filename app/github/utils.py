@@ -37,11 +37,7 @@ _AUTH = (settings.GITHUB_API_USER, settings.GITHUB_API_TOKEN)
 BASE_URI = settings.BASE_URL.rstrip('/')
 HEADERS = {'Accept': 'application/vnd.github.squirrel-girl-preview'}
 V3HEADERS = {'Accept': 'application/vnd.github.v3.text-match+json'}
-JSON_HEADER = {
-    'Accept': 'application/json',
-    'User-Agent': settings.GITHUB_APP_NAME,
-    'Origin': settings.BASE_URL
-}
+JSON_HEADER = {'Accept': 'application/json', 'User-Agent': settings.GITHUB_APP_NAME, 'Origin': settings.BASE_URL}
 TIMELINE_HEADERS = {'Accept': 'application/vnd.github.mockingbird-preview'}
 TOKEN_URL = '{api_url}/applications/{client_id}/tokens/{oauth_token}'
 
@@ -85,10 +81,7 @@ def check_github(profile):
 
 def search_github(q):
 
-    params = (
-        ('q', q),
-        ('sort', 'updated'),
-    )
+    params = (('q', q), ('sort', 'updated'), )
     response = requests.get('https://api.github.com/search/users', headers=HEADERS, params=params)
     return response.json()
 
@@ -199,15 +192,10 @@ def get_auth_url(redirect_uri='/'):
 
 def get_github_user_token(code, **kwargs):
     """Get the Github authorization token."""
-    _params = {
-        'code': code,
-        'client_id': settings.GITHUB_CLIENT_ID,
-        'client_secret': settings.GITHUB_CLIENT_SECRET
-    }
+    _params = {'code': code, 'client_id': settings.GITHUB_CLIENT_ID, 'client_secret': settings.GITHUB_CLIENT_SECRET}
     # Add additional parameters to the request paramaters.
     _params.update(kwargs)
-    response = requests.get(
-        settings.GITHUB_TOKEN_URL, headers=JSON_HEADER, params=_params)
+    response = requests.get(settings.GITHUB_TOKEN_URL, headers=JSON_HEADER, params=_params)
     response = response.json()
     scope = response.get('scope', None)
     if scope:
@@ -289,13 +277,9 @@ def search(query):
         request.Response: The github search response.
 
     """
-    params = (
-        ('q', query),
-        ('sort', 'updated'),
-    )
+    params = (('q', query), ('sort', 'updated'), )
 
-    response = requests.get('https://api.github.com/search/users',
-                            auth=_AUTH, headers=V3HEADERS, params=params)
+    response = requests.get('https://api.github.com/search/users', auth=_AUTH, headers=V3HEADERS, params=params)
     return response.json()
 
 
@@ -331,13 +315,7 @@ def get_issue_comments(owner, repo, issue=None, comment_id=None):
 
 def get_issues(owner, repo, page=1, state='open'):
     """Get the open issues on a respository."""
-    params = {
-        'state': state,
-        'sort': 'created',
-        'direction': 'desc',
-        'page': page,
-        'per_page': 100,
-    }
+    params = {'state': state, 'sort': 'created', 'direction': 'desc', 'page': page, 'per_page': 100, }
     url = f'https://api.github.com/repos/{owner}/{repo}/issues'
 
     response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
@@ -359,12 +337,7 @@ def get_issue_timeline_events(owner, repo, issue, page=1):
     Returns:
         requests.Response: The GitHub timeline response.
     """
-    params = {
-        'sort': 'created',
-        'direction': 'desc',
-        'per_page': 100,
-        'page': page,
-    }
+    params = {'sort': 'created', 'direction': 'desc', 'per_page': 100, 'page': page, }
     url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue}/timeline'
     # Set special header to access timeline preview api
     response = requests.get(url, auth=_AUTH, headers=TIMELINE_HEADERS, params=params)
@@ -373,10 +346,7 @@ def get_issue_timeline_events(owner, repo, issue, page=1):
 
 
 def get_interested_actions(github_url, username, email=''):
-    activity_event_types = [
-        'commented', 'cross-referenced', 'merged', 'referenced',
-        'review_requested',
-    ]
+    activity_event_types = ['commented', 'cross-referenced', 'merged', 'referenced', 'review_requested', ]
 
     owner = org_name(github_url)
     repo = repo_name(github_url)
@@ -460,9 +430,14 @@ def patch_issue_comment(comment_id, owner, repo, comment):
     if response.status_code == 200:
         return response.json()
     rollbar.report_message(
-        'Github issue comment patch returned non-200 status code', 'warning',
+        'Github issue comment patch returned non-200 status code',
+        'warning',
         request=response.request,
-        extra_data={'status_code': response.status_code, 'reason': response.reason})
+        extra_data={
+            'status_code': response.status_code,
+            'reason': response.reason
+        }
+    )
     return {}
 
 
@@ -473,7 +448,9 @@ def delete_issue_comment(comment_id, owner, repo):
         response = requests.delete(url, auth=_AUTH)
         return response.json()
     except ValueError:
-        logger.error(f"could not delete issue comment because JSON response could not be decoded: {comment_id}, {owner}, {repo}.  {response.status_code}, {response.text} ")
+        logger.error(
+            f"could not delete issue comment because JSON response could not be decoded: {comment_id}, {owner}, {repo}.  {response.status_code}, {response.text} "
+        )
     except Exception:
         return {}
 
@@ -481,8 +458,7 @@ def delete_issue_comment(comment_id, owner, repo):
 def post_issue_comment_reaction(owner, repo, comment_id, content):
     """React to an issue comment."""
     url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions'
-    response = requests.post(
-        url, data=json.dumps({'content': content}), auth=_AUTH, headers=HEADERS)
+    response = requests.post(url, data=json.dumps({'content': content}), auth=_AUTH, headers=HEADERS)
     return response.json()
 
 
@@ -496,7 +472,10 @@ def repo_url(issue_url):
         str: The repository URL.
 
     """
-    return '/'.join(issue_url.split('/')[:-2])
+    try:
+        return '/'.join(issue_url.split('/')[:-2])
+    except IndexError:
+        return ''
 
 
 def org_name(issue_url):
@@ -509,7 +488,10 @@ def org_name(issue_url):
         str: The Github organization name.
 
     """
-    return issue_url.split('/')[3]
+    try:
+        return issue_url.split('/')[3]
+    except IndexError:
+        return ''
 
 
 def repo_name(issue_url):
@@ -522,7 +504,10 @@ def repo_name(issue_url):
         str: The Github repo name.
 
     """
-    return issue_url.split('/')[4]
+    try:
+        return issue_url.split('/')[4]
+    except IndexError:
+        return ''
 
 
 def issue_number(issue_url):
@@ -535,4 +520,7 @@ def issue_number(issue_url):
         str: The Github issue_number
 
     """
-    return issue_url.split('/')[6]
+    try:
+        return issue_url.split('/')[6]
+    except IndexError:
+        return ''

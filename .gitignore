@@ -12,6 +12,7 @@ app/assets/other/wp.pdf
 app/assets/tmp/*
 app/assets/other/avatars/
 app/gcoin/
+app/media/
 .idea/
 venv/
 .coverage

@@ -51,6 +51,7 @@ def insert_settings(request):
         'env': settings.ENV,
         'email_key': email_key,
         'profile_id': profile.id if profile else '',
+        'hotjar': settings.HOTJAR_CONFIG,
     }
     context['json_context'] = json.dumps(context)
 

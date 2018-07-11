@@ -2,9 +2,11 @@ scrollContainer = $('#landing_page_wrapper');
 
 // Header and Nav
 $(document).ready(function() {
+  $('#gc-tree #tree-svg .lines').addClass('pause-animation');
+  $('#gc-tree #tree-svg .cls-4').addClass('pause-animation');
+
   const $navbar = $('.navbar');
   const $gcRobot = $('#gc-robot');
-  const $gcTree = $('#gc-tree');
 
   const followStateHeight = 500;
   let navFollowState = scrollContainer.scrollTop() > followStateHeight;
@@ -20,7 +22,9 @@ $(document).ready(function() {
       navFollowState = false;
     }
     $gcRobot.css('transform', `translateY(${$gcRobot.parent()[0].getBoundingClientRect().top - 100}px)`);
-    $gcTree.css('transform', `translateY(${$gcTree.parent()[0].getBoundingClientRect().top / 2 - 50}px)`);
+    $('#gc-tree #tree-svg .lines').removeClass('pause-animation');
+    $('#gc-tree #tree-svg .cls-4').removeClass('pause-animation');
+
   }));
   moveBackground({});
 
@@ -54,7 +58,6 @@ $(document).ready(function() {
   // Preserve scroll position if user was just here
   if (prevScroll && lastAccessed && new Date().getTime() - lastAccessed < 60 * 1000) {
     scrollContainer.scrollTop(prevScroll);
-    moveWithScroll({});
   }
   // before the current page goes away, save the menu position
   $(window).on('beforeunload', function() {

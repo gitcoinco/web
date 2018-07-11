@@ -27,44 +27,73 @@ var unPackAddresses = function() {
       }
     }, 3000);
   }
-  localStorage.setItem('addresses', null);
+  localStorage.setItem('addresses', '');
 };
+
 var updateEstimate = function(e) {
   var denomination = jQuery('#token option:selected').text();
   var amount = jQuery('#amount').val();
 
   getUSDEstimate(amount, denomination, function(usdAmount) {
-    if (usdAmount) {
-      jQuery('#usd_amount').html(usdAmount);
+    if (usdAmount && usdAmount['full_text']) {
+      jQuery('#usd_amount').html(usdAmount['full_text']);
     } else {
       jQuery('#usd_amount').html('</br>');
     }
   });
 
 };
+// TODO: DRY
+var promptForAuth = function(event) {
+  var denomination = jQuery('#token option:selected').text();
+  var tokenAddress = jQuery('#token option:selected').val();
 
-window.onload = function() {
-  jQuery('#amount').on('keyup blur change', updateEstimate);
-  jQuery('#token').on('change', updateEstimate);
+  if (denomination == 'ETH') {
+    $('input, textarea, select').prop('disabled', '');
+  } else {
+    var from = web3.eth.coinbase;
+    var to = contract().address;
 
-  unPackAddresses();
+    token_contract(tokenAddress).allowance.call(from, to, function(error, result) {
+      if (error || result.toNumber() == 0) {
+        _alert({'message': "You have not yet enabled this token.  To enable this token, go to the <a style='padding-left:5px;' href='/settings/tokens'> Token Settings page and enable it</a>. (this is only needed one time per token)"}, 'warning');
+        $('input, textarea, select').prop('disabled', 'disabled');
+        $('select[name=deonomination]').prop('disabled', '');
+      } else {
+        $('input, textarea, select').prop('disabled', '');
+      }
+    });
+  }
+};
 
-  var min_send_amt_wei = 6000000;
+function isSendTipPage() {
+  return (/\/tip\/send/).test(window.location.pathname);
+}
 
+function prePopulateFunderFields() {
   if (localStorage['amount']) {
     $('amount').value = localStorage['amount'];
   }
-  if (localStorage['username']) {
-    $('username').value = localStorage['username'];
-  }
+
   if (localStorage['issueURL']) {
     $('issueURL').value = localStorage['issueURL'];
   }
-  if (localStorage['email']) {
-    $('email').value = localStorage['email'];
-  }
+
   if (localStorage['fromEmail']) {
     $('fromEmail').value = localStorage['fromEmail'];
+  }
+
+  if (localStorage['expires']) {
+    $('expires').selectedIndex = localStorage['expires'];
+  }
+}
+
+function prePopulateGitcoinerFields() {
+  if (localStorage['username']) {
+    $('username').value = localStorage['username'];
+  }
+  if (localStorage['email']) {
+    $('email').value = localStorage['email'];
   }
   if (localStorage['comments_priv']) {
     $('comments_priv').value = localStorage['comments_priv'];
@@ -72,8 +101,20 @@ window.onload = function() {
   if (localStorage['comments_public']) {
     $('comments_public').value = localStorage['comments_public'];
   }
-  if (localStorage['expires']) {
-    $('expires').selectedIndex = localStorage['expires'];
+}
+
+window.onload = function() {
+  jQuery('#amount').on('keyup blur change', updateEstimate);
+  jQuery('#token').on('change', updateEstimate);
+  jQuery('#token').on('change', promptForAuth);
+
+  unPackAddresses();
+
+  var min_send_amt_wei = 6000000;
+
+  prePopulateFunderFields();
+  if (!isSendTipPage()) {
+    prePopulateGitcoinerFields();
   }
 
   waitforWeb3(function() {
@@ -146,7 +187,7 @@ window.onload = function() {
     var max_amount = 5;
 
     if (!isSendingETH) {
-      max_amount = 1000;
+      max_amount = 10000;
     }
     if (amountInEth > max_amount) {
       _alert({ message: gettext('You can only send a maximum of ' + max_amount + ' ' + tokenName + '.') }, 'warning');
@@ -165,14 +206,18 @@ window.onload = function() {
       return;
     }
 
-    localStorage['amount'] = amountInEth;
-    localStorage['username'] = username;
-    localStorage['issueURL'] = github_url;
-    localStorage['fromEmail'] = from_email;
-    localStorage['email'] = email;
-    localStorage['comments_priv'] = comments_priv;
-    localStorage['comments_public'] = comments_public;
-    localStorage['expires'] = $('expires').selectedIndex;
+    try {
+      localStorage.setItem('amount', amountInEth);
+      localStorage.setItem('username', username);
+      localStorage.setItem('issueURL', github_url);
+      localStorage.setItem('fromEmail', from_email);
+      localStorage.setItem('email', email);
+      localStorage.setItem('comments_priv', comments_priv);
+      localStorage.setItem('comments_public', comments_public);
+      localStorage.setItem('expires', $('expires').selectedIndex);
+    } catch (error) {
+      console.log('Could not save values in local storage');
+    }
 
     loading_button(jQuery('#send'));
     var numBatches = document.addresses.length;
@@ -245,32 +290,6 @@ window.onload = function() {
         }
       };
 
-      // set up callback for web3 call to erc20 callback
-      var erc20_callback = function(error, result) {
-        if (error) {
-          console.error(error);
-          _alert({ message: gettext('got an error :(') }, 'error');
-          unloading_button(jQuery('#send'));
-        } else {
-          var approve_amount = amount * numBatches;
-
-          token_contract(token).approve.estimateGas(contract_address(), approve_amount, function(error, result) {
-            var _gas = result;
-
-            if (_gas > maxGas) {
-              _gas = maxGas;
-            }
-            var _gasLimit = parseInt(_gas * 1.01);
-
-            token_contract(token).approve.sendTransaction(
-              contract_address(),
-              approve_amount,
-              {from: fromAccount, gas: web3.toHex(gas), gasLimit: web3.toHex(gasLimit)},
-              final_callback);
-          });
-        }
-      };
-
 
       // send transfer to web3
       var next_callback = null;
@@ -281,11 +300,7 @@ window.onload = function() {
         amountETHToSend = parseInt(amount + fees);
       } else {
         amountETHToSend = parseInt(min_send_amt_wei + fees);
-        if (i == 0) { // only need to call approve once for amount * numbatches
-          next_callback = erc20_callback;
-        } else {
-          next_callback = final_callback;
-        }
+        next_callback = final_callback;
       }
       var _gas = recommendGas;
 

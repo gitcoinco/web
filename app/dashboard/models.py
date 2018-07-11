@@ -82,6 +82,22 @@ class BountyQuerySet(models.QuerySet):
         else:
             return
 
+    def keyword(self, keyword):
+        """Filter results to all Bounty objects containing the keywords.
+
+        Args:
+            keyword (str): The keyword to search title, issue description, and issue keywords by.
+
+        Returns:
+            dashboard.models.BountyQuerySet: The QuerySet of bounties filtered by keyword.
+
+        """
+        return self.filter(
+            Q(metadata__issueKeywords__icontains=keyword) | \
+            Q(title__icontains=keyword) | \
+            Q(issue_description__icontains=keyword)
+        )
+
 
 class Bounty(SuperModel):
     """Define the structure of a Bounty.
@@ -194,7 +210,15 @@ class Bounty(SuperModel):
     value_in_eth = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     value_true = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     privacy_preferences = JSONField(default={}, blank=True)
-    admin_override_and_hide = models.BooleanField(default=False, help_text=_('Admin override to hide the bounty from the system'))
+    admin_override_and_hide = models.BooleanField(
+        default=False, help_text=_('Admin override to hide the bounty from the system')
+    )
+    admin_override_suspend_auto_approval = models.BooleanField(
+        default=False, help_text=_('Admin override to suspend work auto approvals')
+    )
+    admin_mark_as_remarket_ready = models.BooleanField(
+        default=False, help_text=_('Admin override to mark as remarketing ready')
+    )
 
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
@@ -411,6 +435,14 @@ class Bounty(SuperModel):
             return False
 
     @property
+    def keywords_list(self):
+        keywords = self.keywords
+        if not keywords:
+            return []
+        else:
+            return [keyword.strip() for keyword in keywords.split(",")]
+
+    @property
     def now(self):
         """Return the time now in the current timezone."""
         return timezone.now()
@@ -453,8 +485,8 @@ class Bounty(SuperModel):
                 # If its not expired or done, it must be cancelled.
                 return 'cancelled'
             # per https://github.com/gitcoinco/web/pull/1098 ,
-            # contests are open no matter how much started/submitted work they have
-            if self.pk and self.project_type == 'contest':
+            # cooperative/contest are open no matter how much started/submitted work they have
+            if self.pk and self.project_type in ['contest', 'cooperative']:
                 return 'open'
             if self.num_fulfillments == 0:
                 if self.pk and self.interested.filter(pending=False).exists():
@@ -728,6 +760,9 @@ class Bounty(SuperModel):
             return False
         if self.network == 'mainnet' and (settings.DEBUG or settings.ENV != 'prod'):
             return False
+        if (settings.DEBUG or settings.ENV != 'prod') and settings.GITHUB_API_USER != self.github_org_name:
+            return False
+
         return True
 
     @property
@@ -928,6 +963,13 @@ class Tip(SuperModel):
             return "RECEIVED"
         return "PENDING"
 
+    @property
+    def github_org_name(self):
+        try:
+            return org_name(self.github_url)
+        except Exception:
+            return None
+
     def is_notification_eligible(self, var_to_check=True):
         """Determine whether or not a notification is eligible for transmission outside of production.
 
@@ -939,7 +981,15 @@ class Tip(SuperModel):
             return False
         if self.network == 'mainnet' and (settings.DEBUG or settings.ENV != 'prod'):
             return False
+        if (settings.DEBUG or settings.ENV != 'prod') and settings.GITHUB_API_USER != self.github_org_name:
+            return False
         return True
+
+
+@receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
+def psave_tip(sender, instance, **kwargs):
+    # when a new tip is saved, make sure it doesnt have whitespace in it
+    instance.username = instance.username.replace(' ', '')
 
 
 # @receiver(pre_save, sender=Bounty, dispatch_uid="normalize_usernames")
@@ -1012,6 +1062,41 @@ def psave_interest(sender, instance, **kwargs):
         bounty.save()
 
 
+class Activity(models.Model):
+    """Represent Start work/Stop work event.
+
+    Attributes:
+        ACTIVITY_TYPES (list of tuples): The valid activity types.
+
+    """
+
+    ACTIVITY_TYPES = [
+        ('new_bounty', 'New Bounty'),
+        ('start_work', 'Work Started'),
+        ('stop_work', 'Work Stopped'),
+        ('work_submitted', 'Work Submitted'),
+        ('work_done', 'Work Done'),
+        ('worker_approved', 'Worker Approved'),
+        ('worker_rejected', 'Worker Rejected'),
+        ('worker_applied', 'Worker Applied'),
+        ('increased_bounty', 'Increased Funding'),
+        ('killed_bounty', 'Canceled Bounty'),
+        ('new_tip', 'New Tip'),
+        ('receive_tip', 'Tip Received'),
+    ]
+    profile = models.ForeignKey('dashboard.Profile', related_name='activities', on_delete=models.CASCADE)
+    bounty = models.ForeignKey(Bounty, related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
+    tip = models.ForeignKey(Tip, related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True)
+    metadata = JSONField(default={})
+
+    def __str__(self):
+        """Define the string representation of an interested profile."""
+        return f"{self.profile.handle} type: {self.activity_type}" \
+               f"created: {naturalday(self.created)}"
+
+
 class Profile(SuperModel):
     """Define the structure of the user profile.
 
@@ -1023,6 +1108,7 @@ class Profile(SuperModel):
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = JSONField()
     handle = models.CharField(max_length=255, db_index=True)
+    avatar = models.ForeignKey('avatar.Avatar', on_delete=models.SET_NULL, null=True, blank=True)
     last_sync_date = models.DateTimeField(null=True)
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
@@ -1030,6 +1116,8 @@ class Profile(SuperModel):
     slack_repos = ArrayField(models.CharField(max_length=200), blank=True, default=[])
     slack_token = models.CharField(max_length=255, default='', blank=True)
     slack_channel = models.CharField(max_length=255, default='', blank=True)
+    discord_repos = ArrayField(models.CharField(max_length=200), blank=True, default=[])
+    discord_webhook_url = models.CharField(max_length=400, default='', blank=True)
     suppress_leaderboard = models.BooleanField(
         default=False,
         help_text='If this option is chosen, we will remove your profile information from the leaderboard',
@@ -1071,12 +1159,26 @@ class Profile(SuperModel):
         tipped_for = Tip.objects.filter(username__iexact=self.handle).order_by('-id')
         return on_repo | tipped_for
 
-    def has_been_removed_by_staff(self):
+    def no_times_slashed_by_staff(self):
+        user_actions = UserAction.objects.filter(
+            profile=self,
+            action='bounty_removed_slashed_by_staff',
+            )
+        return user_actions.count()
+
+    def no_times_been_removed_by_funder(self):
+        user_actions = UserAction.objects.filter(
+            profile=self,
+            action='bounty_removed_by_funder',
+            )
+        return user_actions.count()
+
+    def no_times_been_removed_by_staff(self):
         user_actions = UserAction.objects.filter(
             profile=self,
             action='bounty_removed_by_staff',
             )
-        return user_actions.exists()
+        return user_actions.count()
 
     @property
     def desc(self):
@@ -1357,7 +1459,7 @@ class Profile(SuperModel):
 
         """
         if join:
-            repos = ','.join(self.slack_repos)
+            repos = ', '.join(self.slack_repos)
             return repos
         return self.slack_repos
 
@@ -1370,10 +1472,40 @@ class Profile(SuperModel):
             repos (list of str): The profile's github repositories to track.
 
         """
-        repos = repos.split()
+        repos = repos.split(',')
         self.slack_token = token
         self.slack_repos = [repo.strip() for repo in repos]
         self.slack_channel = channel
+        self.save()
+
+    def get_discord_repos(self, join=False):
+        """Get the profile's Discord tracked repositories.
+
+        Args:
+            join (bool): Whether or not to return a joined string representation.
+                Defaults to: False.
+
+        Returns:
+            list of str: If joined is False, a list of discord repositories.
+            str: If joined is True, a combined string of discord repositories.
+
+        """
+        if join:
+            repos = ', '.join(self.discord_repos)
+            return repos
+        return self.discord_repos
+
+    def update_discord_integration(self, webhook_url, repos):
+        """Update the profile's Discord integration settings.
+
+        Args:
+            webhook_url (str): The profile's Discord webhook url.
+            repos (list of str): The profile's github repositories to track.
+
+        """
+        repos = repos.split(',')
+        self.discord_webhook_url = webhook_url
+        self.discord_repos = [repo.strip() for repo in repos]
         self.save()
 
     @staticmethod
@@ -1459,9 +1591,9 @@ class Profile(SuperModel):
         if work_type == 'funded':
             obj = self.bounties_funded.filter(network=network)
         elif work_type == 'collected':
-            obj = self.get_fulfilled_bounties()
+            obj = self.get_fulfilled_bounties(network=network)
         elif work_type == 'org':
-            obj = self.get_orgs_bounties()
+            obj = self.get_orgs_bounties(network=network)
 
         if work_type != 'org':
             profiles = [bounty.org_name for bounty in obj if bounty.org_name]
@@ -1547,7 +1679,7 @@ class Profile(SuperModel):
             count_bounties_on_repo = self.get_orgs_bounties(network=network).count()
             sum_eth_on_repos = self.get_eth_sum(sum_type='org', **query_kwargs)
 
-
+        no_times_been_removed = self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff() + self.no_times_slashed_by_staff()
         params = {
             'title': f"@{self.handle}",
             'active': 'profile_details',
@@ -1564,6 +1696,7 @@ class Profile(SuperModel):
             'works_with_funded': works_with_funded,
             'funded_bounties_count': funded_bounties.count(),
             'activities': [{'title': _('No data available.')}],
+            'no_times_been_removed': no_times_been_removed,
             'sum_eth_on_repos': sum_eth_on_repos,
             'works_with_org': works_with_org,
             'count_bounties_on_repo': count_bounties_on_repo,
@@ -1674,6 +1807,7 @@ class UserAction(SuperModel):
         ('Logout', 'Logout'),
         ('added_slack_integration', 'Added Slack Integration'),
         ('removed_slack_integration', 'Removed Slack Integration'),
+        ('updated_avatar', 'Updated Avatar'),
     ]
     action = models.CharField(max_length=50, choices=ACTION_TYPES)
     user = models.ForeignKey(User, related_name='actions', on_delete=models.SET_NULL, null=True)
@@ -1824,3 +1958,24 @@ class ToolVote(models.Model):
 
     def __str__(self):
         return f"{self.profile} | {self.value} | {self.tool}"
+
+
+class TokenApproval(SuperModel):
+    """A token approval."""
+
+    profile = models.ForeignKey('dashboard.Profile', related_name='token_approvals', on_delete=models.CASCADE)
+    coinbase = models.CharField(max_length=50)
+    token_name = models.CharField(max_length=50)
+    token_address = models.CharField(max_length=50)
+    approved_address = models.CharField(max_length=50)
+    approved_name = models.CharField(max_length=50)
+    tx = models.CharField(max_length=255, default='')
+    network = models.CharField(max_length=255, default='')
+
+    def __str__(self):
+        return f"{self.coinbase} | {self.token_name} | {self.profile}"
+
+    @property
+    def coinbase_short(self):
+        coinbase_short = f"{self.coinbase[0:5]}...{self.coinbase[-4:]}"
+        return coinbase_short

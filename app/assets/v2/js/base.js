@@ -17,12 +17,13 @@ $(document).ready(function() {
   force_no_www();
 
   $('.nav-link.dropdown-toggle, .nav_avatar').click(function(e) {
-    if ($('.dropdown-menu').css('display') == 'block') {
-      $('.dropdown-menu').css('display', 'none');
-    } else {
-      $('.dropdown-menu').css('display', 'block');
-    }
     e.preventDefault();
+    var parent = $(this).parents('.nav-item');
+
+    var parentSiblings = parent.siblings('.nav-item');
+
+    parent.find('.dropdown-menu').toggle();
+    parentSiblings.find('.dropdown-menu').hide();
   });
 
   // get started modal

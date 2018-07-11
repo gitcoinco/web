@@ -195,6 +195,24 @@ PS - i've got some new gitcoin schwag on order. send me your mailing address and
     return response_html, response_txt
 
 
+def render_admin_contact_funder(bounty, text, from_user):
+    txt = f"""
+{bounty.url}
+
+{text}
+
+{from_user}
+
+"""
+    params = {
+        'txt': txt,
+    }
+    response_html = premailer_transform(render_to_string("emails/txt.html", params))
+    response_txt = txt
+
+    return response_html, response_txt
+
+
 
 def render_new_bounty(to_email, bounties, old_bounties):
     sub = get_or_save_email_subscriber(to_email, 'internal')
@@ -453,7 +471,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "How to Price Work on Gitcoin | Colony Hackathon "
+    subject = "Gitcoin Q2 Update | Augur Testimonial"
 
     intro = '''
 
@@ -461,80 +479,95 @@ def render_new_bounty_roundup(to_email):
     Hi there
 </p>
 <p>
-This week, we shipped a <a href='https://medium.com/gitcoin/funder-guide-how-to-price-work-on-gitcoin-49bafcdd201e'>data-driven pricing guide for posting work on Gitcoin</a>. We share what we’ve learned about pricing for our first 300 bounties and look forward to continuing the analysis as time passes.  
+This week, we shipped <a href="https://medium.com/gitcoin/gitcoin-q2-update-c31e751889c8">Q2 updates.</a>
+In this update, we discuss our OKR’s for Q2, how we performed, and our goals moving forward into Q3.
 </p>
+
 <p>
-We’ve proudly <a href='http://bit.ly/2LsssHG'>partnered up with our friends at Colony for their hackathon</a>! Colony is the Ethereum-based blockchain project building a platform for the future of work. The hackathon features $25K in prizes (paid in Dai) and an all-star panel of 16 judges from the ecosystem.
+In addition to that, we highlighted <a href="https://medium.com/gitcoin/gitcoin-testimonials-augur-9bfe97368a30">
+Augur's work on the Gitcoin platform.</a>
+In this post, we briefly discuss what the goal of the Augur project is, how the team has used Gitcoin
+to build it, and some specifics about the important bounties they’ve had completed by the Gitcoin community.
+Special shout out to Tom Kysar and @cryptomental for their input on this one!
 </p>
+
 <p>
-The online hackathon runs June 5th - June 24th and celebrates the release of the colonyJS library—tools that allow developers to leverage the power of Colony’s smart contracts in their own applications.
-</p>
-<p>
-<a href='http://bit.ly/2LsssHG'>You can register here. </a>
-</p>
-<p style="text-align:center;">
-<a href='http://bit.ly/2LsssHG'>
-<img style="margin: 0px auto" src='https://gitcoin.co/static/v2/images/colony.png?1' width='450', height='184'>
-</a>
+Finally, we pushed our
+<a href="https://medium.com/p/804c18dc91da">second installment of Gitcoiner profiles.</a>
+This weeks profile features UX ninja Will Goi. Will has worked closely with the Gitcoin team over the past
+few months to help us build out design features such as the new user profile page and the funds requested interface.
 </p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-We released Richard Burton’s demo of Balance on the Gitcoin Livestream channel on YouTube. <a href=https://www.youtube.com/watch?v=SoIJ6JJdO8o&t=4s</a>Check it out here!</a>
+Our livestream recording featuring Andy Tudhope of Status has been added to the Gitcoin Youtube channel.
+<a href="https://www.youtube.com/watch?v=JiL0aPao50I&t=13s">Check it out!</a>
         </li>
         <li>
-I did a 2 minute interview  on Gitcoin at Ethereal 2018. <a href='https://www.youtube.com/watch?v=pdoa09b_2J4'>See it here.</a>
+<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET.
+This week features John Paller of Opolis!
         </li>
-        <li>
-<a href='https://gitcoin.co/livestream'>The Gitcoin Livestream </a>is back as regularly scheduled today at 5PM ET. Colony will be joining to speak further on their hackathon alongside Livepeer, a fully decentralized live-video streaming service! 
-        </li>
+
     </ul>
 </p>
 <p>
-Back to BUIDLing, 
+Back to building,
 </p>
 '''
     highlights = [
         {
-            'who': 'dilatebrave',
+            'who': 'subramanianv',
             'who_link': True,
-            'what': 'Worked with Bounties Network on Weekly Graph Support',
-            'link': 'https://gitcoin.co/issue/Bounties-Network/StdBountiesAnaltyics/4/515',
-            'link_copy': 'See more',
-        },
-        {
-            'who': 'iamonuwa',
-            'who_link': True,
-            'what': 'Created a Smart Contract search engine with AbieFund!',
-            'link': 'https://gitcoin.co/issue/AbieFund/abie/5/508',
+            'what': 'Created a full test suite for Market Protocol’s Collateral.Ts',
+            'link': 'https://gitcoin.co/issue/MARKETProtocol/MARKET.js/53/708',
             'link_copy': 'View more',
         },
         {
-            'who': 'antonper',
+            'who': 'HPrivakos',
             'who_link': True,
-            'what': 'Cleaned up an error rejection messages on MetaMask! ',
-            'link': 'https://gitcoin.co/issue/MetaMask/metamask-extension/1546/499',
+            'what': 'Helped Decentraland create a tutorial for creating a static scene in their VR world.',
+            'link': 'https://gitcoin.co/issue/decentraland/MANA-community-fund-learning-content/8/707',
+            'link_copy': 'View more',
+        },
+        {
+            'who': 'subramanianv',
+            'who_link': True,
+            'what': 'Also improved the Livepeer UX by alerting users when their funds are too low to broadcast.',
+            'link': 'https://gitcoin.co/issue/livepeer/livepeerjs/125/703',
             'link_copy': 'View more',
         },
     ]
 
-    try:
-        bounties = [
-            {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/XLNT/gnarly/issues/8'),
-                'primer': 'Ethereum Foundation grantee XLNT needs help with their Gas Price Oracle Reducer!',
-            },
-            {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/buidlbox/issues/17'),
-                'primer': 'uPort aims to build a Transaction Manager ',
-            },
-            {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/paritytech/parity/issues/8725'),
-                'primer': 'Contribute to Parity Tech, a leading Ethereum client',
-            },
-        ]
-    except:
-        bounties = []
+    bounties_spec = [
+        {
+            'url': 'https://github.com/MARKETProtocol/MARKET.js/issues/60',
+            'primer': 'Help the Market Protocol team validate deposits and withdrawals before a transaction is created.',
+        },
+        {
+            'url': 'https://github.com/MetaMask/metamask-extension/issues/4161',
+            'primer': 'Contribute to MetaMask by building a feature for account and network changes when using a Web 3.0 plugin.',
+        },
+        {
+            'url': 'https://github.com/rotkehlchenio/rotkehlchen/issues/28',
+            'primer': 'Build out Windows support for the Rotkehlchen asset management platform.',
+        },
+    ]
+
+    #### don't need to edit anything below this line
+
+    bounties = []
+    for nb in bounties_spec:
+        try:
+            bounty = Bounty.objects.get(
+                current_bounty=True,
+                github_url__iexact=nb['url'],
+            )
+            bounties.append({
+                'obj': bounty,
+                'primer': nb['primer']
+                })
+        except:
+            pass
 
     ecosystem_bounties = ExternalBounty.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(weeks=1)).order_by('?')[0:5]
 

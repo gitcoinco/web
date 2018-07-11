@@ -64,9 +64,9 @@ class Command(BaseCommand):
             )
             print(f'day {day} got {interests.count()} interests')
             for interest in interests:
-                bounties = Bounty.objects.filter(
+                bounties = Bounty.objects.current().filter(
                     interested=interest,
-                    current_bounty=True,
+                    project_type='traditional',
                     network='mainnet',
                     idx_status__in=['open', 'started']
                     )

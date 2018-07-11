@@ -48,7 +48,7 @@ body {
 }
 
 #onboard-dashboard .tips .fa-circle {
-  font-size: 0.35rem;
+  font-size: 5.7px;
   margin-right: 0.4rem;
   top: -2px;
   position: relative;
@@ -250,5 +250,12 @@ body {
 
   .bounty_row .avatar-container {
     display: none !important;
+  }
+}
+
+@media (min-width: 768px) {
+
+  .bounty-detail {
+    margin-right: 4rem;
   }
 }

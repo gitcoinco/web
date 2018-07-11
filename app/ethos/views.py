@@ -84,7 +84,8 @@ abi = json.loads(
     '"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],'
     '"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from",'
     '"type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value",'
-    '"type":"uint256"}],"name":"Transfer","type":"event"}]')
+    '"type":"uint256"}],"name":"Transfer","type":"event"}]'
+)
 
 # Instantiate EthOS contract
 try:
@@ -155,7 +156,7 @@ def redeem_coin(request, shortcode):
 
             twitter_profile, __ = TwitterProfile.objects.prefetch_related('hops').get_or_create(username=username)
             ethos = ShortCode.objects.get(shortcode=shortcode)
-            previous_hop = None 
+            previous_hop = None
 
             if address:
                 address = Web3.toChecksumAddress(address)
@@ -176,7 +177,7 @@ def redeem_coin(request, shortcode):
 
                 previous_hop = Hop.objects.select_related('shortcode').filter(shortcode=ethos).order_by('-id').first()
                 if previous_hop:
-                    time_lapsed = round((timezone.now() - previous_hop.created_on).total_seconds()/60)
+                    time_lapsed = round((timezone.now() - previous_hop.created_on).total_seconds() / 60)
                     n = 5
 
                     if time_lapsed < 25:
@@ -191,12 +192,7 @@ def redeem_coin(request, shortcode):
                 signed = w3.eth.account.signTransaction(tx, settings.ETHOS_ACCOUNT_PRIVATE_KEY)
                 message = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
 
-            hop = Hop(
-                shortcode=ethos,
-                ip=get_ip(request),
-                created_on=timezone.now(),
-                twitter_profile=twitter_profile,
-            )
+            hop = Hop(shortcode=ethos, ip=get_ip(request), created_on=timezone.now(), twitter_profile=twitter_profile, )
             if message and message.startswith('0x'):
                 hop.txid = message
             if address and address.startswith('0x'):
@@ -240,10 +236,7 @@ def redeem_coin(request, shortcode):
             message = str(e)
 
         # API Response
-        response = {
-            'status': status,
-            'message': message,
-        }
+        response = {'status': status, 'message': message, }
 
         if status == 'OK':
             response['num_scans'] = num_scans
@@ -257,10 +250,6 @@ def redeem_coin(request, shortcode):
     except ShortCode.DoesNotExist:
         raise Http404
 
-    params = {
-        'class': 'redeem',
-        'title': _('EthOS Coin'),
-        'hide_send_tip': True
-    }
+    params = {'class': 'redeem', 'title': _('EthOS Coin'), 'hide_send_tip': True}
 
     return TemplateResponse(request, 'redeem_ethos.html', params)
