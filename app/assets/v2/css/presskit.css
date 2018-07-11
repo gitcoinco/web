@@ -1,0 +1,43 @@
+.presskit {
+  color: #4a4a4a;
+}
+
+.presskit .presskit_section:nth-of-type(even) {
+  background-color: #f9f9f9;
+}
+
+.presskit h2 {
+  font-family: "Muli";
+  color: #43484d;
+}
+
+.color-card > .card-header {
+  height: 12rem;
+}
+
+.color-card p {
+  font-size: 75%;
+  color: #4a4a4a;
+}
+
+.color-card span {
+  font-size: 75%;
+}
+
+.usage_caption {
+  text-transform: uppercase;
+  font-size: 75%;
+  color: #4a4a4a;
+}
+
+.usage_caption > span {
+  color: #f9006c;
+}
+
+.illustration-card img {
+  height: 280px;
+}
+
+.presskit__resources .card-text {
+  font-size: 80%;
+}
