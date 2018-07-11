@@ -36,6 +36,10 @@
   background-color: #1B0050;
 }
 
+.button--full {
+  width: 100%;
+}
+
 .button--primary-o {
   background-color: #fff;
   border: 1px solid #0D0764;

@@ -39,7 +39,16 @@ from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import ellipses, sync_profile
 from avatar.utils import get_avatar_context
-from gas.utils import conf_time_spread, gas_advisories, recommend_min_gas_price_to_confirm_in_time
+from dashboard.models import (
+    Bounty, CoinRedemption, CoinRedemptionRequest, Grant, Interest, Profile, ProfileSerializer, Subscription, Tip, Tool,
+    ToolVote, UserAction,
+)
+from dashboard.notifications import (
+    maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_slack,
+    maybe_market_to_twitter,
+)
+from dashboard.utils import get_bounty, get_bounty_id, has_tx_mined, web3_process_bounty
+from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from github.utils import (
     get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
 )
@@ -644,6 +653,56 @@ def dashboard(request):
     }
     return TemplateResponse(request, 'dashboard.html', params)
 
+def grant_show(request, grant_id):
+    grant = Grant.objects.get(pk=grant_id)
+
+    params = {
+        'active': 'dashboard',
+        'title': 'Grant Show',
+        'grant': grant,
+        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+    }
+    return TemplateResponse(request, 'grants/show.html', params)
+
+def new_grant(request):
+    """Handle new grant."""
+    profile_id = request.session.get('profile_id')
+    profile = Profile.objects.get(pk=profile_id)
+
+    if request.method == "POST":
+        grant = Grant()
+
+        grant.title = request.POST.get('title')
+        grant.pitch = request.POST.get('pitch')
+        grant.description = request.POST.get('description')
+        grant.reference_url = request.POST.get('reference_url');
+        grant.goal_funding = request.POST.get('goal_funding')
+        grant.profile = profile
+
+        grant.save()
+    else:
+        grant = {}
+
+    params = {
+        'active': 'dashboard',
+        'title': 'New Grant',
+        'grant': grant,
+        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+    }
+
+    return TemplateResponse(request, 'grants/new.html', params)
+
+def grants(request):
+    """Handle grants explorer."""
+    grants = Grant.objects.all()
+
+    params = {
+        'active': 'dashboard',
+        'title': 'Grants Explorer',
+        'grants': grants,
+        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+    }
+    return TemplateResponse(request, 'grants/index.html', params)
 
 def gas(request):
     _cts = conf_time_spread()
