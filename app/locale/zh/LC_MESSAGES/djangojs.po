@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-15 13:29+0000\n"
+"POT-Creation-Date: 2018-07-11 13:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,169 +21,316 @@ msgstr ""
 msgid "Approx: "
 msgstr "约："
 
-#: assets/v2/js/amounts.js:13 assets/v2/js/amounts.js:72
+#: assets/v2/js/amounts.js:13 assets/v2/js/amounts.js:103
+#: assets/v2/js/amounts.js:152
 msgid "Approx: Unknown amount"
 msgstr "约：未知数量"
 
-#: assets/v2/js/amounts.js:43
+#: assets/v2/js/amounts.js:62 assets/v2/js/amounts.js:116
 msgid "Incorrect amount"
 msgstr "数量不正确"
 
-#: assets/v2/js/pages/bounty_details.js:79
+#: assets/v2/js/avatar_builder.js:291
+msgid "Your Avatar Has Been Saved To your Gitcoin Profile!"
+msgstr "您的头像已保存到您的Gitcoin个人资料！"
+
+#: assets/v2/js/avatar_builder.js:296
+msgid "Error occurred while saving. Please try again."
+msgstr "保存时出错。请再试一次。"
+
+#: assets/v2/js/base.js:191
+msgid "We Care About Your Privacy"
+msgstr "我们关心您的隐私"
+
+#: assets/v2/js/base.js:194
+msgid ""
+"As a Web 3.0 company, we think carefully about user data and privacy and how"
+" the internet is evolving. We hope Web 3.0 will bring more control of data "
+"to users. With this ethos in mind, we are always careful about how we use "
+"your information."
+msgstr ""
+"作为一家Web 3.0公司，我们会仔细考虑用户数据和隐私以及互联网的发展方式。我们希望Web "
+"3.0能够为用户带来更多的数据控制。考虑到这种精神，我们始终关注我们如何使用您的信息。"
+
+#: assets/v2/js/base.js:198
+msgid ""
+"We recently reviewed our Privacy Policy to comply with requirements of "
+"General Data Protection Regulation (GDPR), improving our Terms of Use, "
+"Privacy Policy and Cookie Policy. These changes will go into effect on May "
+"25, 2018, and your continued use of the Gitcoin after May 25, 2018 will be "
+"subject to our updated Terms of Use and Privacy Policy."
+msgstr ""
+"我们最近审核了我们的隐私政策，以遵守通用数据保护法规（GDPR）的要求，改进了我们的使用条款，隐私政策和Cookie政策。这些更改将于2018年5月25日生效，您在2018年5月25日之后继续使用Gitcoin将受到我们更新的使用条款和隐私政策的约束。"
+
+#: assets/v2/js/base.js:206
+msgid "Read Our Updated Terms"
+msgstr "阅读我们的更新条款"
+
+#: assets/v2/js/pages/bounty_details.js:89
 msgid "Issue"
 msgstr "问题"
 
-#: assets/v2/js/pages/bounty_details.js:80
+#: assets/v2/js/pages/bounty_details.js:90
 msgid "Issue Funding Info"
 msgstr "发行资金信息"
 
-#: assets/v2/js/pages/bounty_details.js:81
+#: assets/v2/js/pages/bounty_details.js:91
 msgid "Funder"
 msgstr "出资者"
 
-#: assets/v2/js/pages/bounty_details.js:82
+#: assets/v2/js/pages/bounty_details.js:92
 msgid "Submitter"
 msgstr "提交"
 
-#: assets/v2/js/pages/bounty_details.js:83
+#: assets/v2/js/pages/bounty_details.js:93
 msgid "Meta"
 msgstr "元"
 
-#: assets/v2/js/pages/bounty_details.js:103
+#: assets/v2/js/pages/bounty_details.js:113
 msgid "OPEN ISSUE"
 msgstr "开放问题"
 
-#: assets/v2/js/pages/bounty_details.js:106
+#: assets/v2/js/pages/bounty_details.js:116
 msgid "work started"
 msgstr "工作开始了"
 
-#: assets/v2/js/pages/bounty_details.js:109
+#: assets/v2/js/pages/bounty_details.js:119
 msgid "work submitted"
 msgstr "已提交工作"
 
-#: assets/v2/js/pages/bounty_details.js:112
+#: assets/v2/js/pages/bounty_details.js:122
 msgid "done"
 msgstr "DONE"
 
-#: assets/v2/js/pages/bounty_details.js:115
+#: assets/v2/js/pages/bounty_details.js:125
 msgid "cancelled"
 msgstr "取消"
 
-#: assets/v2/js/pages/bounty_details.js:411
-msgid "Are you sure you want to remove your interest?"
-msgstr "你确定要删除你的兴趣吗？"
+#: assets/v2/js/pages/bounty_details.js:430
+#, fuzzy
+#| msgid "Are you sure you want to remove your interest?"
+msgid "Are you sure you want to stop work?"
+msgstr "你确定要停止工作吗？"
 
-#: assets/v2/js/pages/bounty_details.js:437
-msgid "Please provide an action plan for this ticket."
-msgstr "请提供此门票的行动计划。"
-
-#: assets/v2/js/pages/bounty_details.js:442
-msgid "You must agree to the precedence clause."
-msgstr "您必须同意优先条款。"
-
-#: assets/v2/js/pages/bounty_details.js:446
-msgid "You must agree to keep the funder updated on your progress."
-msgstr "您必须同意让出资者更新您的进度。"
-
-#: assets/v2/js/pages/bounty_details.js:451
-#: assets/v2/js/pages/bounty_details.js:561
-msgid "Stop Work"
-msgstr "停止工作"
-
-#: assets/v2/js/pages/bounty_details.js:476
-msgid "Funded Issue Details: "
-msgstr "资助的问题详情："
-
-#: assets/v2/js/pages/bounty_details.js:546
-msgid "Submit Work"
-msgstr "提交工作"
-
-#: assets/v2/js/pages/bounty_details.js:548
-msgid "Submit work for the funder to review"
-msgstr "提交工作供资助者审查"
-
-#: assets/v2/js/pages/bounty_details.js:561
+#: assets/v2/js/pages/bounty_details.js:432
+#: assets/v2/js/pages/bounty_details.js:640
 msgid "Start Work"
 msgstr "开始工作"
 
-#: assets/v2/js/pages/bounty_details.js:563
+#: assets/v2/js/pages/bounty_details.js:492
+msgid "Please provide an action plan for this ticket."
+msgstr "请提供此门票的行动计划。"
+
+#: assets/v2/js/pages/bounty_details.js:497
+msgid "You must agree to the precedence clause."
+msgstr "您必须同意优先条款。"
+
+#: assets/v2/js/pages/bounty_details.js:501
+msgid "You must agree to keep the funder updated on your progress."
+msgstr "您必须同意让出资者更新您的进度。"
+
+#: assets/v2/js/pages/bounty_details.js:506
+#: assets/v2/js/pages/bounty_details.js:640
+msgid "Stop Work"
+msgstr "停止工作"
+
+#: assets/v2/js/pages/bounty_details.js:531
+msgid "Funded Issue Details: "
+msgstr "资助的问题详情："
+
+#: assets/v2/js/pages/bounty_details.js:625
+msgid "Submit Work"
+msgstr "提交工作"
+
+#: assets/v2/js/pages/bounty_details.js:627
+msgid "Submit work for the funder to review"
+msgstr "提交工作供资助者审查"
+
+#: assets/v2/js/pages/bounty_details.js:642
 msgid "Notify the funder that you will not be working on this project"
 msgstr "通知资助者你不会在这个项目上工作"
 
-#: assets/v2/js/pages/bounty_details.js:563
+#: assets/v2/js/pages/bounty_details.js:642
 msgid "Notify the funder that you would like to take on this project"
 msgstr "通知你想要参与这个项目的资助者"
 
-#: assets/v2/js/pages/bounty_details.js:576
+#: assets/v2/js/pages/bounty_details.js:655
 msgid "Cancel Bounty"
 msgstr "取消赏金"
 
-#: assets/v2/js/pages/bounty_details.js:578
+#: assets/v2/js/pages/bounty_details.js:657
 msgid "Cancel bounty and reclaim funds for this issue"
 msgstr "取消赏金并为此问题回收资金"
 
-#: assets/v2/js/pages/bounty_details.js:591
+#: assets/v2/js/pages/bounty_details.js:670
 msgid "Accept Submission"
 msgstr "接受提交"
 
-#: assets/v2/js/pages/bounty_details.js:592
+#: assets/v2/js/pages/bounty_details.js:671
 msgid "This will payout the bounty to the submitter."
 msgstr "这将支付提交者的赏金。"
 
-#: assets/v2/js/pages/bounty_details.js:605
+#: assets/v2/js/pages/bounty_details.js:684
 msgid "Add Contribution"
 msgstr "添加贡献"
 
-#: assets/v2/js/pages/bounty_details.js:607
+#: assets/v2/js/pages/bounty_details.js:686
 msgid "Increase the funding for this issue"
 msgstr "增加这个问题的资金"
 
-#: assets/v2/js/pages/bounty_details.js:620
-#: assets/v2/js/pages/bounty_details.js:627
-msgid "View issue details and comments on Github"
-msgstr "在Github上查看问题的详细信息和评论"
-
-#: assets/v2/js/pages/bounty_details.js:625
+#: assets/v2/js/pages/bounty_details.js:702
 msgid "View On Github"
 msgstr "在Github上查看"
 
-#: assets/v2/js/pages/bounty_details.js:686
+#: assets/v2/js/pages/bounty_details.js:704
+msgid "View issue details and comments on Github"
+msgstr "在Github上查看问题的详细信息和评论"
+
+#: assets/v2/js/pages/bounty_details.js:719
+msgid "Suspend Auto Approval"
+msgstr "暂停自动批准"
+
+#: assets/v2/js/pages/bounty_details.js:721
+msgid ""
+"Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty"
+msgstr "暂停*自动批准*已申请此赏金的赏金猎人"
+
+#: assets/v2/js/pages/bounty_details.js:736
+#, fuzzy
+#| msgid "Cancel Bounty"
+msgid "Hide Bounty"
+msgstr "隐藏赏金"
+
+#: assets/v2/js/pages/bounty_details.js:738
+msgid "Hides Bounty from Active Bounties"
+msgstr "从活跃赏金中隐藏赏金"
+
+#: assets/v2/js/pages/bounty_details.js:753
+msgid "Toggle Remarket Ready"
+msgstr "切换市场准备就绪"
+
+#: assets/v2/js/pages/bounty_details.js:755
+msgid ""
+"Sets Remarket Ready if not already remarket ready.  Unsets it if already "
+"remarket ready."
+msgstr "如果尚未准备好再上市，则设置Remarket Ready。如果已经准备就绪，请将其取消。"
+
+#: assets/v2/js/pages/bounty_details.js:769
+#, fuzzy
+#| msgid "Funder"
+msgid "Contact Funder"
+msgstr "联系Funder"
+
+#: assets/v2/js/pages/bounty_details.js:771
+msgid "Contact Funder via Email"
+msgstr "通过电子邮件联系Funder"
+
+#: assets/v2/js/pages/bounty_details.js:785
+msgid "Snooze Gitcoinbot"
+msgstr "贪睡Gitcoinbot"
+
+#: assets/v2/js/pages/bounty_details.js:787
+msgid "Snooze Gitcoinbot reminders"
+msgstr "贪睡Gitcoinbot提醒"
+
+#: assets/v2/js/pages/bounty_details.js:801
+msgid "Override Status"
+msgstr "覆盖状态"
+
+#: assets/v2/js/pages/bounty_details.js:803
+msgid "Override Status with a status of your choosing"
+msgstr "使用您选择的状态覆盖状态"
+
+#: assets/v2/js/pages/bounty_details.js:869
+#: assets/v2/js/pages/dashboard.js:509 assets/v2/js/shared.js:294
 msgid "got an error. please try again, or contact support@gitcoin.co"
 msgstr "出错了。请重试，或联系support@gitcoin.co"
 
-#: assets/v2/js/pages/bounty_details.js:707
-msgid "Work Accepted"
-msgstr "接受工作"
+#: assets/v2/js/pages/bounty_details.js:879
+#, fuzzy
+#| msgid "Cancel Bounty"
+msgid "New Bounty"
+msgstr "新赏金"
 
-#: assets/v2/js/pages/bounty_details.js:714
-msgid "Work Submitted"
-msgstr "作品已提交"
-
-#: assets/v2/js/pages/bounty_details.js:727
+#: assets/v2/js/pages/bounty_details.js:880
 msgid "Work Started"
 msgstr "开始工作"
 
-#: assets/v2/js/pages/bounty_details.js:740
+#: assets/v2/js/pages/bounty_details.js:881
+#, fuzzy
+#| msgid "Work Started"
+msgid "Work Stopped"
+msgstr "工作停止了"
+
+#: assets/v2/js/pages/bounty_details.js:882
+msgid "Work Submitted"
+msgstr "作品已提交"
+
+#: assets/v2/js/pages/bounty_details.js:883
+#, fuzzy
+#| msgid "Done"
+msgid "Work Done"
+msgstr "完工"
+
+#: assets/v2/js/pages/bounty_details.js:884
+#, fuzzy
+#| msgid "Work Accepted"
+msgid "Worker Approved"
+msgstr "工人批准"
+
+#: assets/v2/js/pages/bounty_details.js:885
+#, fuzzy
+#| msgid "Work Accepted"
+msgid "Worker Rejected"
+msgstr "工人被拒绝"
+
+#: assets/v2/js/pages/bounty_details.js:886
+#, fuzzy
+#| msgid "Work Accepted"
+msgid "Worker Applied"
+msgstr "工人应用"
+
+#: assets/v2/js/pages/bounty_details.js:887
+#, fuzzy
+#| msgid "Issue Funding Info"
+msgid "Increased Funding"
+msgstr "增加资金"
+
+#: assets/v2/js/pages/bounty_details.js:888
+#, fuzzy
+#| msgid "Cancel Bounty"
+msgid "Canceled Bounty"
+msgstr "取消赏金"
+
+#: assets/v2/js/pages/bounty_details.js:889
+msgid "New Tip"
+msgstr "新提示"
+
+#: assets/v2/js/pages/bounty_details.js:890
+msgid "Tip Received"
+msgstr "提示已收到"
+
+#: assets/v2/js/pages/bounty_details.js:977
 msgid "There's no activity yet!"
 msgstr "还没有活动！"
 
-#: assets/v2/js/pages/dashboard.js:322
+#: assets/v2/js/pages/dashboard.js:323
 msgid "No Results"
 msgstr "没有结果"
 
-#: assets/v2/js/pages/dashboard.js:326
+#: assets/v2/js/pages/dashboard.js:327
 msgid " Matching Result"
 msgstr "匹配结果"
 
-#: assets/v2/js/pages/dashboard.js:330
+#: assets/v2/js/pages/dashboard.js:331
 msgid " Matching Results"
 msgstr "匹配结果"
 
-#: assets/v2/js/pages/dashboard.js:707
+#: assets/v2/js/pages/dashboard.js:731
 msgid "Please enter a valid email address."
 msgstr "请输入有效的电子邮件地址。"
 
-#: assets/v2/js/pages/dashboard.js:718
+#: assets/v2/js/pages/dashboard.js:742
 msgid "You're in! Keep an eye on your inbox for the next funding listing."
 msgstr "你在！留意下一个资金列表的收件箱。"
 
@@ -199,34 +346,51 @@ msgstr "请确保填写所有字段。"
 msgid "Got an unexpected error"
 msgstr "有一个意外的错误"
 
-#: assets/v2/js/pages/fulfill_bounty.js:31
-#: assets/v2/js/pages/increase_bounty.js:27
-#: assets/v2/js/pages/kill_bounty.js:23 assets/v2/js/pages/new_bounty.js:80
-#: assets/v2/js/pages/process_bounty.js:71
+#: assets/v2/js/pages/fulfill_bounty.js:25
+#: assets/v2/js/pages/increase_bounty.js:29
+#: assets/v2/js/pages/kill_bounty.js:17 assets/v2/js/pages/new_bounty.js:163
+#: assets/v2/js/pages/process_bounty.js:68
 msgid ""
 "You are on an unsupported network.  Please change your network to a "
 "supported network."
 msgstr "您位于不受支持的网络上。请将您的网络更改为支持的网络。"
 
-#: assets/v2/js/pages/fulfill_bounty.js:111
+#: assets/v2/js/pages/fulfill_bounty.js:105
 msgid "Could not get bounty details."
 msgstr "无法获得赏金细节。"
 
-#: assets/v2/js/pages/fulfill_bounty.js:127
+#: assets/v2/js/pages/fulfill_bounty.js:121
 msgid "Fulfillment submitted to web3."
 msgstr "履行提交给web3。"
+
+#: assets/v2/js/pages/fulfill_bounty.js:134
+#: assets/v2/js/pages/kill_bounty.js:106
+#: assets/v2/js/pages/process_bounty.js:163
+msgid "There was an error"
+msgstr "有一个错误"
+
+#: assets/v2/js/pages/increase_bounty.js:51
+#: assets/v2/js/pages/process_bounty.js:83
+msgid "Please accept the terms of service."
+msgstr "请接受服务条款。"
 
 #: assets/v2/js/pages/increase_bounty.js:61
 msgid "Please enter a valid github issue URL."
 msgstr "请输入有效的github问题URL。"
 
+#: assets/v2/js/pages/increase_bounty.js:65
+#, fuzzy
+#| msgid "Please enter a fulfillment Id."
+msgid "Please enter an amount."
+msgstr "请输入金额。"
+
 #: assets/v2/js/pages/increase_bounty.js:97
-#: assets/v2/js/pages/new_bounty.js:252 assets/v2/js/pages/new_bounty.js:278
-#: assets/v2/js/pages/new_bounty.js:342
+#: assets/v2/js/pages/new_bounty.js:340 assets/v2/js/pages/new_bounty.js:366
 msgid "There was an error.  Please try again or contact support."
 msgstr "有一个错误。请重试或联系支持。"
 
 #: assets/v2/js/pages/increase_bounty.js:109
+#: assets/v2/js/pages/new_bounty.js:321
 msgid "Submission sent to web3."
 msgstr "提交给web3。"
 
@@ -239,84 +403,115 @@ msgid ""
 "Only the address that submitted this funded issue may increase the payout."
 msgstr "只有提交此资助问题的地址可能会增加支出。"
 
-#: assets/v2/js/pages/kill_bounty.js:50
-#: assets/v2/js/pages/process_bounty.js:110
+#: assets/v2/js/pages/kill_bounty.js:44
+#: assets/v2/js/pages/process_bounty.js:107
 msgid "Could not get bounty details"
 msgstr "无法获得赏金细节"
 
-#: assets/v2/js/pages/kill_bounty.js:59
-#: assets/v2/js/pages/process_bounty.js:118
+#: assets/v2/js/pages/kill_bounty.js:53
+#: assets/v2/js/pages/process_bounty.js:115
 msgid "No active bounty found for this Github URL on "
 msgstr "在此Github网址上找不到有效的赏金"
 
-#: assets/v2/js/pages/kill_bounty.js:76
+#: assets/v2/js/pages/kill_bounty.js:70
 msgid ""
 "No active funded issue found at this address.  Are you sure this is an "
 "active funded issue?"
 msgstr "在此地址找不到有效的资金问题。你确定这是一个积极的资助问题吗？"
 
-#: assets/v2/js/pages/kill_bounty.js:80
+#: assets/v2/js/pages/kill_bounty.js:74
 msgid "Only the address that submitted this funded issue may kill the bounty."
 msgstr "只有提交此资助问题的地址才能杀死赏金。"
 
-#: assets/v2/js/pages/kill_bounty.js:99
+#: assets/v2/js/pages/kill_bounty.js:93
 msgid "Kill bounty submitted to web3."
 msgstr "杀死赏金提交给web3。"
 
-#: assets/v2/js/pages/kill_bounty.js:112
-#: assets/v2/js/pages/process_bounty.js:166
-msgid "There was an error"
-msgstr "有一个错误"
-
-#: assets/v2/js/pages/onboard.js:21
+#: assets/v2/js/pages/onboard.js:39
 msgid "Done"
 msgstr "完成"
 
-#: assets/v2/js/pages/onboard.js:28
+#: assets/v2/js/pages/onboard.js:46
 msgid "Next"
 msgstr "下一个"
 
-#: assets/v2/js/pages/onboard.js:51
+#: assets/v2/js/pages/onboard.js:68
 msgid "Install Metamask"
 msgstr "安装Metamask"
 
-#: assets/v2/js/pages/onboard.js:60
+#: assets/v2/js/pages/onboard.js:80
 msgid "Unlock Metamask"
 msgstr "解锁Metamask"
 
-#: assets/v2/js/pages/process_bounty.js:20
+#: assets/v2/js/pages/process_bounty.js:17
 msgid "Could not get fulfillment details"
 msgstr "无法获得履行细节"
 
-#: assets/v2/js/pages/process_bounty.js:28
+#: assets/v2/js/pages/process_bounty.js:25
 msgid "No bounty fulfillments found for this Github URL."
 msgstr "没有为此Github网址找到赏金实现。"
 
-#: assets/v2/js/pages/process_bounty.js:92
+#: assets/v2/js/pages/process_bounty.js:89
 msgid "Please enter a issue URL."
 msgstr "请输入问题网址。"
 
-#: assets/v2/js/pages/process_bounty.js:96
+#: assets/v2/js/pages/process_bounty.js:93
 msgid "Please enter a fulfillment Id."
 msgstr "请输入履行ID。"
 
-#: assets/v2/js/pages/process_bounty.js:133
+#: assets/v2/js/pages/process_bounty.js:130
 msgid ""
 "No active funding found at this address.  Are you sure this is an active "
 "funded issue?"
 msgstr "在此地址找不到有效的资金。你确定这是一个积极的资助问题吗？"
 
-#: assets/v2/js/pages/process_bounty.js:135
+#: assets/v2/js/pages/process_bounty.js:132
 msgid "No claimee found for this bounty."
 msgstr "没有找到这种赏金的claimee。"
 
-#: assets/v2/js/pages/process_bounty.js:137
+#: assets/v2/js/pages/process_bounty.js:134
 msgid "You can only process a funded issue if you submitted it initially."
 msgstr "如果您最初提交资金，则只能处理资金问题。"
 
-#: assets/v2/js/pages/process_bounty.js:156
+#: assets/v2/js/pages/process_bounty.js:153
 msgid "Submitted transaction to web3."
 msgstr "将交易提交给web3。"
+
+#: assets/v2/js/shared.js:245
+msgid "Thanks for letting us know that you're ready to start work."
+msgstr "感谢您告诉我们您已准备好开始工作了。"
+
+#: assets/v2/js/shared.js:248
+msgid "You've stopped working on this, thanks for letting us know."
+msgstr "你已经停止了这项工作，谢谢你让我们知道。"
+
+#: assets/v2/js/shared.js:573 assets/v2/js/shared.js:607
+msgid "Web3 disabled. Please install "
+msgstr "Web3已禁用。请安装"
+
+#: assets/v2/js/shared.js:575 assets/v2/js/shared.js:609
+msgid "Metamask Not Enabled"
+msgstr "Metamask未启用"
+
+#: assets/v2/js/shared.js:578 assets/v2/js/shared.js:612
+msgid "Web3 locked. Please unlock "
+msgstr "Web3已锁定。请解锁"
+
+#: assets/v2/js/shared.js:580 assets/v2/js/shared.js:614
+msgid "Metamask Locked"
+msgstr "Metamask锁定"
+
+#: assets/v2/js/shared.js:583
+msgid "Connect to Mainnet via Metamask"
+msgstr "通过Metamask连接到Mainnet"
+
+#: assets/v2/js/shared.js:584 assets/v2/js/shared.js:618
+msgid "Unsupported Network"
+msgstr "不受支持的网络"
+
+#: assets/v2/js/shared.js:617
+msgid "Connect to Rinkeby / Custom RPC via Metamask"
+msgstr "通过Metamask连接到Rinkeby / Custom RPC"
 
 #: assets/v2/js/waiting_room_entertainment.js:4
 msgid ""
@@ -516,6 +711,18 @@ msgid ""
 "and autonomy."
 msgstr "在大型组织中，重新关注释放工人的创造性和创新潜力，指向了与企业家社会相同的方向，即拥有所有权，责任和自主权的新思维。"
 
+#: assets/yge/redeem_coin.js:25 assets/yge/youvegoteth/receive.js:100
+#, fuzzy
+#| msgid "Not a valid forwarding address"
+msgid "Not a valid forwarding address."
+msgstr "不是有效的转发地址。"
+
+#: assets/yge/redeem_coin.js:48
+#, fuzzy
+#| msgid "Please enter a valid email address."
+msgid "Please enter a valid checksum address."
+msgstr "请输入有效的校验和地址。"
+
 #: assets/yge/redeem_ethos.js:23
 msgid "Not a valid forwarding address"
 msgstr "不是有效的转发地址"
@@ -523,3 +730,68 @@ msgstr "不是有效的转发地址"
 #: assets/yge/redeem_ethos.js:29
 msgid "Please enter your Twitter username"
 msgstr "请输入你的Twitter用户名"
+
+#: assets/yge/youvegoteth/new.js:38
+msgid "batch mode enabled"
+msgstr "批处理模式已启用"
+
+#: assets/yge/youvegoteth/receive.js:105 assets/yge/youvegoteth/receive.js:109
+msgid "Invalid Link.  Please check your link and try again"
+msgstr "无效的链接。请检查您的链接，然后重试"
+
+#: assets/yge/youvegoteth/receive.js:118 assets/yge/youvegoteth/send.js:235
+msgid "got an error :("
+msgstr "得到一个错误:("
+
+#: assets/yge/youvegoteth/receive.js:153
+msgid "You must wait until the senders transaction confirms."
+msgstr "您必须等到发件人交易确认。"
+
+#: assets/yge/youvegoteth/send.js:23
+msgid "Invalid addresses generated. Please try again from the first page."
+msgstr "生成的地址无效。请从第一页再试一次。"
+
+#: assets/yge/youvegoteth/send.js:175
+msgid ""
+"To Email is optional, but if you enter an email, you must enter a valid "
+"email!"
+msgstr "电子邮件是可选的，但如果您输入电子邮件，则必须输入有效的电子邮件！"
+
+#: assets/yge/youvegoteth/send.js:179
+msgid ""
+"From Email is optional, but if you enter an email, you must enter a valid "
+"email!"
+msgstr "来自电子邮件是可选的，但如果您输入电子邮件，则必须输入有效的电子邮件！"
+
+#: assets/yge/youvegoteth/send.js:183
+msgid "You must enter an number for the amount!"
+msgstr "您必须输入金额的数字！"
+
+#: assets/yge/youvegoteth/send.js:193
+msgid "You can only send a maximum of "
+msgstr "您最多只能发送"
+
+#: assets/yge/youvegoteth/send.js:197
+msgid "You can only send a minimum of "
+msgstr "你只能发送至少"
+
+#: assets/yge/youvegoteth/send.js:201
+msgid "You must enter a username."
+msgstr "您必须输入用户名。"
+
+#: assets/yge/youvegoteth/send.js:205
+#, fuzzy
+#| msgid "You must agree to the precedence clause."
+msgid "You must accept the terms."
+msgstr "您必须接受这些条款。"
+
+#: assets/yge/youvegoteth/web3alert.js:29
+msgid ""
+"You must install <a href=https://metamask.io/>Metamask</a> to use this tool."
+msgstr "您必须安装<a href=https://metamask.io/> Metamask </a>才能使用此工具。"
+
+#: assets/yge/youvegoteth/web3alert.js:33
+#, fuzzy
+#| msgid "Unlock Metamask"
+msgid "Please unlock Metamask."
+msgstr "请解锁Metamask。"

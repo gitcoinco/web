@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-05-15 13:29+0000\n"
+"POT-Creation-Date: 2018-07-11 13:26+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,169 +22,319 @@ msgstr ""
 msgid "Approx: "
 msgstr "대략 :"
 
-#: assets/v2/js/amounts.js:13 assets/v2/js/amounts.js:72
+#: assets/v2/js/amounts.js:13 assets/v2/js/amounts.js:103
+#: assets/v2/js/amounts.js:152
 msgid "Approx: Unknown amount"
 msgstr "대략 : 알 수없는 금액"
 
-#: assets/v2/js/amounts.js:43
+#: assets/v2/js/amounts.js:62 assets/v2/js/amounts.js:116
 msgid "Incorrect amount"
 msgstr "부정확 한 금액"
 
-#: assets/v2/js/pages/bounty_details.js:79
+#: assets/v2/js/avatar_builder.js:291
+msgid "Your Avatar Has Been Saved To your Gitcoin Profile!"
+msgstr "아바타가 Gitcoin 프로필에 저장되었습니다!"
+
+#: assets/v2/js/avatar_builder.js:296
+msgid "Error occurred while saving. Please try again."
+msgstr "저장하는 동안 오류가 발생했습니다. 다시 시도하십시오."
+
+#: assets/v2/js/base.js:191
+msgid "We Care About Your Privacy"
+msgstr "개인 정보 보호에 대해"
+
+#: assets/v2/js/base.js:194
+msgid ""
+"As a Web 3.0 company, we think carefully about user data and privacy and how"
+" the internet is evolving. We hope Web 3.0 will bring more control of data "
+"to users. With this ethos in mind, we are always careful about how we use "
+"your information."
+msgstr ""
+"Web 3.0 회사로서, 우리는 사용자 데이터 및 개인 정보와 인터넷이 어떻게 진화하고 있는지에 대해 신중히 생각합니다. Web 3.0이"
+" 사용자에게 더 많은 데이터를 제어 할 수 있기를 바랍니다. 이러한 정신을 염두에두고 우리는 귀하의 정보를 어떻게 사용하는지 항상 신중히"
+" 생각합니다."
+
+#: assets/v2/js/base.js:198
+msgid ""
+"We recently reviewed our Privacy Policy to comply with requirements of "
+"General Data Protection Regulation (GDPR), improving our Terms of Use, "
+"Privacy Policy and Cookie Policy. These changes will go into effect on May "
+"25, 2018, and your continued use of the Gitcoin after May 25, 2018 will be "
+"subject to our updated Terms of Use and Privacy Policy."
+msgstr ""
+"Google은 최근 GDP (일반 데이터 보호 규정)의 요구 사항을 준수하고 Google의 이용 약관, 개인 정보 취급 방침 및 쿠키 "
+"정책을 개선하기 위해 개인 정보 취급 방침을 검토했습니다. 이 변경 사항은 2018 년 5 월 25 일부터 적용되며 2018 년 5 월 "
+"25 일 이후에 Gitcoin을 계속 사용하려면 업데이트 된 이용 약관 및 개인 정보 취급 방침이 적용됩니다."
+
+#: assets/v2/js/base.js:206
+msgid "Read Our Updated Terms"
+msgstr "업데이트 된 이용 약관 읽기"
+
+#: assets/v2/js/pages/bounty_details.js:89
 msgid "Issue"
 msgstr "발행물"
 
-#: assets/v2/js/pages/bounty_details.js:80
+#: assets/v2/js/pages/bounty_details.js:90
 msgid "Issue Funding Info"
 msgstr "발행 자금 정보"
 
-#: assets/v2/js/pages/bounty_details.js:81
+#: assets/v2/js/pages/bounty_details.js:91
 msgid "Funder"
 msgstr "Funder"
 
-#: assets/v2/js/pages/bounty_details.js:82
+#: assets/v2/js/pages/bounty_details.js:92
 msgid "Submitter"
 msgstr "제출자"
 
-#: assets/v2/js/pages/bounty_details.js:83
+#: assets/v2/js/pages/bounty_details.js:93
 msgid "Meta"
 msgstr "메타"
 
-#: assets/v2/js/pages/bounty_details.js:103
+#: assets/v2/js/pages/bounty_details.js:113
 msgid "OPEN ISSUE"
 msgstr "OPEN ISSUE"
 
-#: assets/v2/js/pages/bounty_details.js:106
+#: assets/v2/js/pages/bounty_details.js:116
 msgid "work started"
 msgstr "일이 시작되었습니다."
 
-#: assets/v2/js/pages/bounty_details.js:109
+#: assets/v2/js/pages/bounty_details.js:119
 msgid "work submitted"
 msgstr "제출 된 작품"
 
-#: assets/v2/js/pages/bounty_details.js:112
+#: assets/v2/js/pages/bounty_details.js:122
 msgid "done"
 msgstr "끝난"
 
-#: assets/v2/js/pages/bounty_details.js:115
+#: assets/v2/js/pages/bounty_details.js:125
 msgid "cancelled"
 msgstr "취소 된"
 
-#: assets/v2/js/pages/bounty_details.js:411
-msgid "Are you sure you want to remove your interest?"
-msgstr "관심을 제거 하시겠습니까?"
+#: assets/v2/js/pages/bounty_details.js:430
+#, fuzzy
+#| msgid "Are you sure you want to remove your interest?"
+msgid "Are you sure you want to stop work?"
+msgstr "일을 중지 하시겠습니까?"
 
-#: assets/v2/js/pages/bounty_details.js:437
-msgid "Please provide an action plan for this ticket."
-msgstr "이 티켓에 대한 실천 계획을 제공하십시오."
-
-#: assets/v2/js/pages/bounty_details.js:442
-msgid "You must agree to the precedence clause."
-msgstr "우선권 조항에 동의해야합니다."
-
-#: assets/v2/js/pages/bounty_details.js:446
-msgid "You must agree to keep the funder updated on your progress."
-msgstr "귀하는 귀하의 진척 상황에 대한 재정적 지원을 유지하는 것에 동의해야합니다."
-
-#: assets/v2/js/pages/bounty_details.js:451
-#: assets/v2/js/pages/bounty_details.js:561
-msgid "Stop Work"
-msgstr "작업 중지"
-
-#: assets/v2/js/pages/bounty_details.js:476
-msgid "Funded Issue Details: "
-msgstr "자금 이슈 세부 사항 :"
-
-#: assets/v2/js/pages/bounty_details.js:546
-msgid "Submit Work"
-msgstr "작업 제출"
-
-#: assets/v2/js/pages/bounty_details.js:548
-msgid "Submit work for the funder to review"
-msgstr "후원사가 검토 할 수 있도록 작업 제출"
-
-#: assets/v2/js/pages/bounty_details.js:561
+#: assets/v2/js/pages/bounty_details.js:432
+#: assets/v2/js/pages/bounty_details.js:640
 msgid "Start Work"
 msgstr "일을 시작하다"
 
-#: assets/v2/js/pages/bounty_details.js:563
+#: assets/v2/js/pages/bounty_details.js:492
+msgid "Please provide an action plan for this ticket."
+msgstr "이 티켓에 대한 실천 계획을 제공하십시오."
+
+#: assets/v2/js/pages/bounty_details.js:497
+msgid "You must agree to the precedence clause."
+msgstr "우선권 조항에 동의해야합니다."
+
+#: assets/v2/js/pages/bounty_details.js:501
+msgid "You must agree to keep the funder updated on your progress."
+msgstr "귀하는 귀하의 진척 상황에 대한 재정적 지원을 유지하는 것에 동의해야합니다."
+
+#: assets/v2/js/pages/bounty_details.js:506
+#: assets/v2/js/pages/bounty_details.js:640
+msgid "Stop Work"
+msgstr "작업 중지"
+
+#: assets/v2/js/pages/bounty_details.js:531
+msgid "Funded Issue Details: "
+msgstr "자금 이슈 세부 사항 :"
+
+#: assets/v2/js/pages/bounty_details.js:625
+msgid "Submit Work"
+msgstr "작업 제출"
+
+#: assets/v2/js/pages/bounty_details.js:627
+msgid "Submit work for the funder to review"
+msgstr "후원사가 검토 할 수 있도록 작업 제출"
+
+#: assets/v2/js/pages/bounty_details.js:642
 msgid "Notify the funder that you will not be working on this project"
 msgstr "이 프로젝트에서 일하지 않을 것이라고 기금업자에게 알리십시오."
 
-#: assets/v2/js/pages/bounty_details.js:563
+#: assets/v2/js/pages/bounty_details.js:642
 msgid "Notify the funder that you would like to take on this project"
 msgstr "이 프로젝트를 수행하고 싶다는 것을 초청자에게 알리십시오."
 
-#: assets/v2/js/pages/bounty_details.js:576
+#: assets/v2/js/pages/bounty_details.js:655
 msgid "Cancel Bounty"
 msgstr "현상금 취소"
 
-#: assets/v2/js/pages/bounty_details.js:578
+#: assets/v2/js/pages/bounty_details.js:657
 msgid "Cancel bounty and reclaim funds for this issue"
 msgstr "현상금을 취소하고이 문제에 대한 자금 회수"
 
-#: assets/v2/js/pages/bounty_details.js:591
+#: assets/v2/js/pages/bounty_details.js:670
 msgid "Accept Submission"
 msgstr "제출을 수락하십시오"
 
-#: assets/v2/js/pages/bounty_details.js:592
+#: assets/v2/js/pages/bounty_details.js:671
 msgid "This will payout the bounty to the submitter."
 msgstr "현상금을 제출자에게 지불합니다."
 
-#: assets/v2/js/pages/bounty_details.js:605
+#: assets/v2/js/pages/bounty_details.js:684
 msgid "Add Contribution"
 msgstr "기고 추가"
 
-#: assets/v2/js/pages/bounty_details.js:607
+#: assets/v2/js/pages/bounty_details.js:686
 msgid "Increase the funding for this issue"
 msgstr "이 문제에 대한 자금 지원 확대"
 
-#: assets/v2/js/pages/bounty_details.js:620
-#: assets/v2/js/pages/bounty_details.js:627
-msgid "View issue details and comments on Github"
-msgstr "Github에 대한 문제 세부 정보 및 의견보기"
-
-#: assets/v2/js/pages/bounty_details.js:625
+#: assets/v2/js/pages/bounty_details.js:702
 msgid "View On Github"
 msgstr "Github에서보기"
 
-#: assets/v2/js/pages/bounty_details.js:686
+#: assets/v2/js/pages/bounty_details.js:704
+msgid "View issue details and comments on Github"
+msgstr "Github에 대한 문제 세부 정보 및 의견보기"
+
+#: assets/v2/js/pages/bounty_details.js:719
+msgid "Suspend Auto Approval"
+msgstr "자동 승인 일시 중지"
+
+#: assets/v2/js/pages/bounty_details.js:721
+msgid ""
+"Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty"
+msgstr "이 현상금에 적용된 현상금 사냥꾼의 일시 중지 * 자동 승인 *"
+
+#: assets/v2/js/pages/bounty_details.js:736
+#, fuzzy
+#| msgid "Cancel Bounty"
+msgid "Hide Bounty"
+msgstr "현상금 숨기기"
+
+#: assets/v2/js/pages/bounty_details.js:738
+msgid "Hides Bounty from Active Bounties"
+msgstr "활발한 현상금에서 현상금을 숨 깁니다."
+
+#: assets/v2/js/pages/bounty_details.js:753
+msgid "Toggle Remarket Ready"
+msgstr "리 마케팅 준비 전환"
+
+#: assets/v2/js/pages/bounty_details.js:755
+msgid ""
+"Sets Remarket Ready if not already remarket ready.  Unsets it if already "
+"remarket ready."
+msgstr "이미 리 마케팅 준비가되어 있지 않으면 리 마케팅 준비를 설정합니다. 이미 리 마케팅 준비가 완료되면 설정을 해제합니다."
+
+#: assets/v2/js/pages/bounty_details.js:769
+#, fuzzy
+#| msgid "Funder"
+msgid "Contact Funder"
+msgstr "Funder에게 연락하기"
+
+#: assets/v2/js/pages/bounty_details.js:771
+msgid "Contact Funder via Email"
+msgstr "전자 메일을 통해 Funder에 문의하십시오."
+
+#: assets/v2/js/pages/bounty_details.js:785
+msgid "Snooze Gitcoinbot"
+msgstr "스누즈 Gitcoinbot"
+
+#: assets/v2/js/pages/bounty_details.js:787
+msgid "Snooze Gitcoinbot reminders"
+msgstr "Gitcoinbot 알리미를 스누즈하기"
+
+#: assets/v2/js/pages/bounty_details.js:801
+msgid "Override Status"
+msgstr "재정의 상태"
+
+#: assets/v2/js/pages/bounty_details.js:803
+msgid "Override Status with a status of your choosing"
+msgstr "원하는 상태로 상태 재정의"
+
+#: assets/v2/js/pages/bounty_details.js:869
+#: assets/v2/js/pages/dashboard.js:509 assets/v2/js/shared.js:294
 msgid "got an error. please try again, or contact support@gitcoin.co"
 msgstr "오류가 발생했습니다. 다시 시도하거나 support@gitcoin.co에 문의하십시오."
 
-#: assets/v2/js/pages/bounty_details.js:707
-msgid "Work Accepted"
-msgstr "허용 된 작업"
+#: assets/v2/js/pages/bounty_details.js:879
+#, fuzzy
+#| msgid "Cancel Bounty"
+msgid "New Bounty"
+msgstr "새로운 현상금"
 
-#: assets/v2/js/pages/bounty_details.js:714
-msgid "Work Submitted"
-msgstr "제출 된 작업"
-
-#: assets/v2/js/pages/bounty_details.js:727
+#: assets/v2/js/pages/bounty_details.js:880
 msgid "Work Started"
 msgstr "작업 시작"
 
-#: assets/v2/js/pages/bounty_details.js:740
+#: assets/v2/js/pages/bounty_details.js:881
+#, fuzzy
+#| msgid "Work Started"
+msgid "Work Stopped"
+msgstr "작업 중지됨"
+
+#: assets/v2/js/pages/bounty_details.js:882
+msgid "Work Submitted"
+msgstr "제출 된 작업"
+
+#: assets/v2/js/pages/bounty_details.js:883
+#, fuzzy
+#| msgid "Done"
+msgid "Work Done"
+msgstr "업무 완료"
+
+#: assets/v2/js/pages/bounty_details.js:884
+#, fuzzy
+#| msgid "Work Accepted"
+msgid "Worker Approved"
+msgstr "근로자 승인"
+
+#: assets/v2/js/pages/bounty_details.js:885
+#, fuzzy
+#| msgid "Work Accepted"
+msgid "Worker Rejected"
+msgstr "노동자 거부 됨"
+
+#: assets/v2/js/pages/bounty_details.js:886
+#, fuzzy
+#| msgid "Work Accepted"
+msgid "Worker Applied"
+msgstr "노동자 적용"
+
+#: assets/v2/js/pages/bounty_details.js:887
+#, fuzzy
+#| msgid "Issue Funding Info"
+msgid "Increased Funding"
+msgstr "증가한 기금"
+
+#: assets/v2/js/pages/bounty_details.js:888
+#, fuzzy
+#| msgid "Cancel Bounty"
+msgid "Canceled Bounty"
+msgstr "현상금 취소됨"
+
+#: assets/v2/js/pages/bounty_details.js:889
+msgid "New Tip"
+msgstr "새로운 팁"
+
+#: assets/v2/js/pages/bounty_details.js:890
+msgid "Tip Received"
+msgstr "팁 받음"
+
+#: assets/v2/js/pages/bounty_details.js:977
 msgid "There's no activity yet!"
 msgstr "아직 활동이 없습니다!"
 
-#: assets/v2/js/pages/dashboard.js:322
+#: assets/v2/js/pages/dashboard.js:323
 msgid "No Results"
 msgstr "결과 없음"
 
-#: assets/v2/js/pages/dashboard.js:326
+#: assets/v2/js/pages/dashboard.js:327
 msgid " Matching Result"
 msgstr "매칭 결과"
 
-#: assets/v2/js/pages/dashboard.js:330
+#: assets/v2/js/pages/dashboard.js:331
 msgid " Matching Results"
 msgstr "결과 매칭"
 
-#: assets/v2/js/pages/dashboard.js:707
+#: assets/v2/js/pages/dashboard.js:731
 msgid "Please enter a valid email address."
 msgstr "유효한 이메일 주소를 입력하세요."
 
-#: assets/v2/js/pages/dashboard.js:718
+#: assets/v2/js/pages/dashboard.js:742
 msgid "You're in! Keep an eye on your inbox for the next funding listing."
 msgstr "당신은 포함 됐어! 다음 기금 상장을 위해받은 편지함을 주시하십시오."
 
@@ -200,34 +350,51 @@ msgstr "모든 입력란을 작성하십시오."
 msgid "Got an unexpected error"
 msgstr "예기치 않은 오류가 발생했습니다."
 
-#: assets/v2/js/pages/fulfill_bounty.js:31
-#: assets/v2/js/pages/increase_bounty.js:27
-#: assets/v2/js/pages/kill_bounty.js:23 assets/v2/js/pages/new_bounty.js:80
-#: assets/v2/js/pages/process_bounty.js:71
+#: assets/v2/js/pages/fulfill_bounty.js:25
+#: assets/v2/js/pages/increase_bounty.js:29
+#: assets/v2/js/pages/kill_bounty.js:17 assets/v2/js/pages/new_bounty.js:163
+#: assets/v2/js/pages/process_bounty.js:68
 msgid ""
 "You are on an unsupported network.  Please change your network to a "
 "supported network."
 msgstr "지원되지 않는 네트워크에 있습니다. 네트워크를 지원되는 네트워크로 변경하십시오."
 
-#: assets/v2/js/pages/fulfill_bounty.js:111
+#: assets/v2/js/pages/fulfill_bounty.js:105
 msgid "Could not get bounty details."
 msgstr "현상금 세부 사항을 얻을 수 없었습니다."
 
-#: assets/v2/js/pages/fulfill_bounty.js:127
+#: assets/v2/js/pages/fulfill_bounty.js:121
 msgid "Fulfillment submitted to web3."
 msgstr "웹 2.0으로 제출 완료."
+
+#: assets/v2/js/pages/fulfill_bounty.js:134
+#: assets/v2/js/pages/kill_bounty.js:106
+#: assets/v2/js/pages/process_bounty.js:163
+msgid "There was an error"
+msgstr "오류가있었습니다"
+
+#: assets/v2/js/pages/increase_bounty.js:51
+#: assets/v2/js/pages/process_bounty.js:83
+msgid "Please accept the terms of service."
+msgstr "서비스 약관에 동의하십시오."
 
 #: assets/v2/js/pages/increase_bounty.js:61
 msgid "Please enter a valid github issue URL."
 msgstr "유효한 github 문제 URL을 입력하십시오."
 
+#: assets/v2/js/pages/increase_bounty.js:65
+#, fuzzy
+#| msgid "Please enter a fulfillment Id."
+msgid "Please enter an amount."
+msgstr "금액을 입력하십시오."
+
 #: assets/v2/js/pages/increase_bounty.js:97
-#: assets/v2/js/pages/new_bounty.js:252 assets/v2/js/pages/new_bounty.js:278
-#: assets/v2/js/pages/new_bounty.js:342
+#: assets/v2/js/pages/new_bounty.js:340 assets/v2/js/pages/new_bounty.js:366
 msgid "There was an error.  Please try again or contact support."
 msgstr "오류가있었습니다. 다시 시도하거나 지원 팀에 문의하십시오."
 
 #: assets/v2/js/pages/increase_bounty.js:109
+#: assets/v2/js/pages/new_bounty.js:321
 msgid "Submission sent to web3."
 msgstr "제출이 web3으로 전송되었습니다."
 
@@ -240,84 +407,115 @@ msgid ""
 "Only the address that submitted this funded issue may increase the payout."
 msgstr "이 자금 문제를 제출 한 주소 만 지불금을 높일 수 있습니다."
 
-#: assets/v2/js/pages/kill_bounty.js:50
-#: assets/v2/js/pages/process_bounty.js:110
+#: assets/v2/js/pages/kill_bounty.js:44
+#: assets/v2/js/pages/process_bounty.js:107
 msgid "Could not get bounty details"
 msgstr "현상금 세부 사항을 얻을 수 없었다."
 
-#: assets/v2/js/pages/kill_bounty.js:59
-#: assets/v2/js/pages/process_bounty.js:118
+#: assets/v2/js/pages/kill_bounty.js:53
+#: assets/v2/js/pages/process_bounty.js:115
 msgid "No active bounty found for this Github URL on "
 msgstr "에 대한 Github URL에 대한 활성 현상금이 없습니다."
 
-#: assets/v2/js/pages/kill_bounty.js:76
+#: assets/v2/js/pages/kill_bounty.js:70
 msgid ""
 "No active funded issue found at this address.  Are you sure this is an "
 "active funded issue?"
 msgstr "이 주소에는 적극적인 자금 문제가 없습니다. 이것이 적극적인 자금 문제입니까?"
 
-#: assets/v2/js/pages/kill_bounty.js:80
+#: assets/v2/js/pages/kill_bounty.js:74
 msgid "Only the address that submitted this funded issue may kill the bounty."
 msgstr "이 자금 문제를 제출 한 주소 만이 현상금을 죽일 수 있습니다."
 
-#: assets/v2/js/pages/kill_bounty.js:99
+#: assets/v2/js/pages/kill_bounty.js:93
 msgid "Kill bounty submitted to web3."
 msgstr "현상금을 web3에 제출하십시오."
 
-#: assets/v2/js/pages/kill_bounty.js:112
-#: assets/v2/js/pages/process_bounty.js:166
-msgid "There was an error"
-msgstr "오류가있었습니다"
-
-#: assets/v2/js/pages/onboard.js:21
+#: assets/v2/js/pages/onboard.js:39
 msgid "Done"
 msgstr "끝난"
 
-#: assets/v2/js/pages/onboard.js:28
+#: assets/v2/js/pages/onboard.js:46
 msgid "Next"
 msgstr "다음 것"
 
-#: assets/v2/js/pages/onboard.js:51
+#: assets/v2/js/pages/onboard.js:68
 msgid "Install Metamask"
 msgstr "메타 마스크 설치"
 
-#: assets/v2/js/pages/onboard.js:60
+#: assets/v2/js/pages/onboard.js:80
 msgid "Unlock Metamask"
 msgstr "Metamask 잠금 해제"
 
-#: assets/v2/js/pages/process_bounty.js:20
+#: assets/v2/js/pages/process_bounty.js:17
 msgid "Could not get fulfillment details"
 msgstr "이행 세부 정보를 가져올 수 없음"
 
-#: assets/v2/js/pages/process_bounty.js:28
+#: assets/v2/js/pages/process_bounty.js:25
 msgid "No bounty fulfillments found for this Github URL."
 msgstr "이 Github URL에는 현상금이 없습니다."
 
-#: assets/v2/js/pages/process_bounty.js:92
+#: assets/v2/js/pages/process_bounty.js:89
 msgid "Please enter a issue URL."
 msgstr "문제 URL을 입력하십시오."
 
-#: assets/v2/js/pages/process_bounty.js:96
+#: assets/v2/js/pages/process_bounty.js:93
 msgid "Please enter a fulfillment Id."
 msgstr "이행 ID를 입력하십시오."
 
-#: assets/v2/js/pages/process_bounty.js:133
+#: assets/v2/js/pages/process_bounty.js:130
 msgid ""
 "No active funding found at this address.  Are you sure this is an active "
 "funded issue?"
 msgstr "이 주소에 활성 자금이 없습니다. 이것이 적극적인 자금 문제입니까?"
 
-#: assets/v2/js/pages/process_bounty.js:135
+#: assets/v2/js/pages/process_bounty.js:132
 msgid "No claimee found for this bounty."
 msgstr "이 현상금에 claimee는 발견되지 않았습니다."
 
-#: assets/v2/js/pages/process_bounty.js:137
+#: assets/v2/js/pages/process_bounty.js:134
 msgid "You can only process a funded issue if you submitted it initially."
 msgstr "처음 제출 한 경우에만 자금 지원 문제를 처리 할 수 ​​있습니다."
 
-#: assets/v2/js/pages/process_bounty.js:156
+#: assets/v2/js/pages/process_bounty.js:153
 msgid "Submitted transaction to web3."
 msgstr "웹 3에 제출 된 트랜잭션."
+
+#: assets/v2/js/shared.js:245
+msgid "Thanks for letting us know that you're ready to start work."
+msgstr "작업을 시작할 준비가되었음을 알려 주셔서 감사합니다."
+
+#: assets/v2/js/shared.js:248
+msgid "You've stopped working on this, thanks for letting us know."
+msgstr "이 작업을 중단했습니다. 알려 주셔서 감사합니다."
+
+#: assets/v2/js/shared.js:573 assets/v2/js/shared.js:607
+msgid "Web3 disabled. Please install "
+msgstr "Web3가 사용 중지되었습니다. 설치하십시오"
+
+#: assets/v2/js/shared.js:575 assets/v2/js/shared.js:609
+msgid "Metamask Not Enabled"
+msgstr "메타 마스크를 사용할 수 없음"
+
+#: assets/v2/js/shared.js:578 assets/v2/js/shared.js:612
+msgid "Web3 locked. Please unlock "
+msgstr "Web3 잠김. 잠금을 해제하십시오."
+
+#: assets/v2/js/shared.js:580 assets/v2/js/shared.js:614
+msgid "Metamask Locked"
+msgstr "메타 마스크 잠김"
+
+#: assets/v2/js/shared.js:583
+msgid "Connect to Mainnet via Metamask"
+msgstr "Metamask를 통해 Mainnet에 연결"
+
+#: assets/v2/js/shared.js:584 assets/v2/js/shared.js:618
+msgid "Unsupported Network"
+msgstr "지원되지 않는 네트워크"
+
+#: assets/v2/js/shared.js:617
+msgid "Connect to Rinkeby / Custom RPC via Metamask"
+msgstr "Metamask를 통해 Rinkeby / Custom RPC에 연결하십시오."
 
 #: assets/v2/js/waiting_room_entertainment.js:4
 msgid ""
@@ -555,6 +753,18 @@ msgstr ""
 "대기업에서는 창의적이고 혁신적인 잠재력을 기업가 정신과 동일한 방향, 즉 소유권, 책임 및 자율성에 대한 새로운 사고 방식으로 끌어들이는"
 " 데 새롭게 중점을 둡니다."
 
+#: assets/yge/redeem_coin.js:25 assets/yge/youvegoteth/receive.js:100
+#, fuzzy
+#| msgid "Not a valid forwarding address"
+msgid "Not a valid forwarding address."
+msgstr "유효한 전달 주소가 아닙니다."
+
+#: assets/yge/redeem_coin.js:48
+#, fuzzy
+#| msgid "Please enter a valid email address."
+msgid "Please enter a valid checksum address."
+msgstr "올바른 체크섬 주소를 입력하십시오."
+
 #: assets/yge/redeem_ethos.js:23
 msgid "Not a valid forwarding address"
 msgstr "유효한 전달 주소가 아닙니다."
@@ -562,3 +772,68 @@ msgstr "유효한 전달 주소가 아닙니다."
 #: assets/yge/redeem_ethos.js:29
 msgid "Please enter your Twitter username"
 msgstr "Twitter 사용자 이름을 입력하십시오."
+
+#: assets/yge/youvegoteth/new.js:38
+msgid "batch mode enabled"
+msgstr "배치 모드 사용"
+
+#: assets/yge/youvegoteth/receive.js:105 assets/yge/youvegoteth/receive.js:109
+msgid "Invalid Link.  Please check your link and try again"
+msgstr "유효하지 않은 링크. 링크를 확인한 후 다시 시도하십시오."
+
+#: assets/yge/youvegoteth/receive.js:118 assets/yge/youvegoteth/send.js:235
+msgid "got an error :("
+msgstr "오류가 발생했습니다."
+
+#: assets/yge/youvegoteth/receive.js:153
+msgid "You must wait until the senders transaction confirms."
+msgstr "보낸 사람 트랜잭션이 확인할 때까지 기다려야합니다."
+
+#: assets/yge/youvegoteth/send.js:23
+msgid "Invalid addresses generated. Please try again from the first page."
+msgstr "잘못된 주소가 생성되었습니다. 첫 페이지에서 다시 시도하십시오."
+
+#: assets/yge/youvegoteth/send.js:175
+msgid ""
+"To Email is optional, but if you enter an email, you must enter a valid "
+"email!"
+msgstr "전자 메일로 보내는 것은 선택 사항이지만 전자 메일을 입력하는 경우 유효한 전자 메일을 입력해야합니다."
+
+#: assets/yge/youvegoteth/send.js:179
+msgid ""
+"From Email is optional, but if you enter an email, you must enter a valid "
+"email!"
+msgstr "전자 메일은 선택 사항이지만 전자 메일을 입력하는 경우 유효한 전자 메일을 입력해야합니다."
+
+#: assets/yge/youvegoteth/send.js:183
+msgid "You must enter an number for the amount!"
+msgstr "금액을 입력해야합니다!"
+
+#: assets/yge/youvegoteth/send.js:193
+msgid "You can only send a maximum of "
+msgstr "최대 금액 만 보낼 수 있습니다."
+
+#: assets/yge/youvegoteth/send.js:197
+msgid "You can only send a minimum of "
+msgstr "최소 금액 만 보낼 수 있습니다."
+
+#: assets/yge/youvegoteth/send.js:201
+msgid "You must enter a username."
+msgstr "사용자 이름을 입력해야합니다."
+
+#: assets/yge/youvegoteth/send.js:205
+#, fuzzy
+#| msgid "You must agree to the precedence clause."
+msgid "You must accept the terms."
+msgstr "이용 약관에 동의해야합니다."
+
+#: assets/yge/youvegoteth/web3alert.js:29
+msgid ""
+"You must install <a href=https://metamask.io/>Metamask</a> to use this tool."
+msgstr "이 도구를 사용하려면 <a href=https://metamask.io/> Metamask </a>를 설치해야합니다."
+
+#: assets/yge/youvegoteth/web3alert.js:33
+#, fuzzy
+#| msgid "Unlock Metamask"
+msgid "Please unlock Metamask."
+msgstr "Metamask를 잠금 해제하십시오."
