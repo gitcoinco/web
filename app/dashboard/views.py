@@ -600,6 +600,10 @@ def send_tip_2(request):
     return TemplateResponse(request, 'yge/send2.html', params)
 
 
+def onboard_avatar(request):
+    return redirect('/onboard/contributor?steps=avatar')
+
+
 def onboard(request, flow):
     """Handle displaying the first time user experience flow."""
     if flow not in ['funder', 'contributor', 'profile']:
