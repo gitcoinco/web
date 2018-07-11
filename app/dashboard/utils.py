@@ -55,15 +55,29 @@ class NoBountiesException(Exception):
     pass
 
 
-def humanize(text):
-    """Clean a notification string of underscores and capitalize it.
+def humanize_event_name(name):
+    """Humanize an event name.
+
+    Args:
+      name (str): The event name
 
     Returns:
-        str: The cleaned representation of the string.
+        str: The humanized representation.
 
     """
-    return text.replace('_', ' ').upper()
+    humanized_event_names = {
+        'new_bounty': 'New funded issue',
+        'start_work': 'Work started',
+        'stop_work': 'Work stopped',
+        'work_submitted': 'Work submitted',
+        'increased_bounty': 'Increased funds for issue',
+        'killed_bounty': 'Cancelled funded issue',
+        'worker_approved': 'Worker approved',
+        'worker_rejected': 'Worker rejected',
+        'work_done': 'Work done'
+    }
 
+    return humanized_event_names.get(name, name).upper()
 
 def create_user_action(user, action_type, request=None, metadata=None):
     """Create a UserAction for the specified action type.
