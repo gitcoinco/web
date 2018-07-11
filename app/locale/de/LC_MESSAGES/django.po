@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-11 13:26+0000\n"
+"POT-Creation-Date: 2018-07-11 17:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,16 +42,6 @@ msgstr "Italienisch"
 msgid "Korean"
 msgstr "Koreanisch"
 
-#: app/settings.py:146
-#, fuzzy
-#| msgid "English"
-msgid "Polish"
-msgstr "Polieren"
-
-#: app/settings.py:147
-msgid "Chinese"
-msgstr "Chinesisch"
-
 #: dashboard/models.py:176
 msgid "Whether the bounty is still open for fulfillments."
 msgstr "Ob das Kopfgeld noch offen ist für Erfüllungen."
@@ -79,7 +69,7 @@ msgid "Admin override to mark as remarketing ready"
 msgstr "Admin überschreiben, um als Remarketing bereit zu markieren"
 
 #: dashboard/models.py:1686 dashboard/templates/shared/bounty_def.html:24
-#: dashboard/views.py:661 dashboard/views.py:952
+#: dashboard/views.py:665 dashboard/views.py:956
 #: retail/templates/save_search.html:29
 msgid "Be the first to know about new funded issues."
 msgstr "Seien Sie der Erste, der über neue finanzierte Themen informiert."
@@ -381,7 +371,7 @@ msgid "Funder"
 msgstr "Geldgeber"
 
 #: dashboard/templates/bounty_details.html:168
-#: dashboard/templates/bounty_details.html:246
+#: dashboard/templates/bounty_details.html:246 marketing/views.py:64
 msgid "Email"
 msgstr "Email"
 
@@ -749,7 +739,7 @@ msgstr "Fortgeschrittene (7+ Jahre Erfahrung)"
 #: dashboard/templates/fulfill_bounty.html:48
 #: dashboard/templates/fulfill_bounty.html:78
 #: dashboard/templates/shared/bounty_nav.html:41
-#: dashboard/templates/shared/no_issue_error.html:70 dashboard/views.py:730
+#: dashboard/templates/shared/no_issue_error.html:70 dashboard/views.py:734
 #: retail/templates/how_it_works_contributor.html:82
 msgid "Submit Work"
 msgstr "Arbeit einreichen"
@@ -852,7 +842,7 @@ msgstr "Kopfgeld zurücknehmen und Gelder zurückfordern"
 msgid "(Issue Submitters only)"
 msgstr "(Nur Problemeinreicher)"
 
-#: dashboard/templates/kill_bounty.html:69 dashboard/views.py:778
+#: dashboard/templates/kill_bounty.html:69 dashboard/views.py:782
 msgid "Cancel Bounty"
 msgstr "Kopfgeld stornieren"
 
@@ -1565,7 +1555,7 @@ msgstr "Wert: Höchster"
 msgid "Value: Lowest"
 msgstr "Wert: Niedrigster"
 
-#: dashboard/templates/shared/search_bar.html:44 dashboard/views.py:1130
+#: dashboard/templates/shared/search_bar.html:44 dashboard/views.py:1134
 #: retail/templates/save_search.html:41
 msgid "Save Search"
 msgstr "Sichere Suche"
@@ -1670,7 +1660,7 @@ msgstr "Mittlere"
 
 #: dashboard/templates/shared/sidebar_search.html:108
 #: dashboard/templates/submit_bounty.html:89
-#: dashboard/templates/yge/send2.html:61 dashboard/views.py:1244
+#: dashboard/templates/yge/send2.html:61 dashboard/views.py:1248
 msgid "Advanced"
 msgstr "Fortgeschritten"
 
@@ -1938,7 +1928,7 @@ msgstr "Permissionless - Jeder kann mit der Arbeit beginnen."
 msgid "Approval Required - I will approve bounty hunters."
 msgstr "Genehmigung erforderlich - Ich werde Kopfgeldjäger genehmigen."
 
-#: dashboard/templates/submit_bounty.html:81 dashboard/views.py:946
+#: dashboard/templates/submit_bounty.html:81 dashboard/views.py:950
 msgid "Issue Details"
 msgstr "Details zum Problem"
 
@@ -2063,7 +2053,7 @@ msgstr ""
 "Ich verstehe, dass diese Informationen einer öffentlichen, unveränderlichen Blockchain übermittelt werden. Niemand, einschließlich\n"
 "                      Gitcoin Core, wird in der Lage sein, mein Geld zu nehmen oder diese Informationen zu ändern."
 
-#: dashboard/templates/toolbox.html:37 dashboard/views.py:1285
+#: dashboard/templates/toolbox.html:37 dashboard/views.py:1289
 msgid "Toolbox"
 msgstr "Werkzeugkasten"
 
@@ -2374,73 +2364,74 @@ msgstr ""
 "Oh oh! Über die Github API wurden keine E-Mail-Adressen für diesen Benutzer "
 "gefunden. Sie müssen den Tipee manuell über ihren Tipp wissen lassen."
 
-#: dashboard/views.py:626
+#: dashboard/views.py:630
 msgid "Onboarding Flow"
 msgstr "Onboarding-Fluss"
 
-#: dashboard/views.py:638 retail/templates/index.html:225
-#: retail/templates/shared/footer.html:61 retail/templates/shared/nav.html:83
+#: dashboard/views.py:642 retail/templates/emails/start_work_rejected.html:33
+#: retail/templates/index.html:225 retail/templates/shared/footer.html:61
+#: retail/templates/shared/nav.html:83
 msgid "Issue Explorer"
 msgstr "Problem-Explorer"
 
-#: dashboard/views.py:670
+#: dashboard/views.py:674
 msgid "Create Funded Issue"
 msgstr "Erstellen Sie ein finanziertes Problem"
 
-#: dashboard/views.py:700
+#: dashboard/views.py:704
 msgid "Process Issue"
 msgstr "Prozessproblem"
 
-#: dashboard/views.py:754
+#: dashboard/views.py:758
 msgid "Increase Bounty"
 msgstr "Bounty erhöhen"
 
-#: dashboard/views.py:790
+#: dashboard/views.py:794
 msgid "Bounty is now hidden"
 msgstr "Kopfgeld ist jetzt versteckt"
 
-#: dashboard/views.py:792 dashboard/views.py:804 dashboard/views.py:819
-#: dashboard/views.py:831 dashboard/views.py:850 dashboard/views.py:863
+#: dashboard/views.py:796 dashboard/views.py:808 dashboard/views.py:823
+#: dashboard/views.py:835 dashboard/views.py:854 dashboard/views.py:867
 #, fuzzy
 #| msgid "Only the funder of this bounty may snooze warnings."
 msgid "Only the funder of this bounty may do this."
 msgstr "Nur der Geldgeber dieser Prämie darf dies tun."
 
-#: dashboard/views.py:802
+#: dashboard/views.py:806
 #, fuzzy
 #| msgid "Your invite has been sent."
 msgid "Bounty message has been sent"
 msgstr "Bounty-Nachricht wurde gesendet"
 
-#: dashboard/views.py:815
+#: dashboard/views.py:819
 msgid "Bounty is now remarket ready"
 msgstr "Bounty ist jetzt Remarket bereit"
 
-#: dashboard/views.py:817
+#: dashboard/views.py:821
 msgid "Bounty is now NOT remarket ready"
 msgstr "Bounty ist jetzt NICHT Remarket bereit"
 
-#: dashboard/views.py:829
+#: dashboard/views.py:833
 msgid "Bounty auto approvals are now suspended"
 msgstr "Bounty Auto-Genehmigungen sind jetzt ausgesetzt"
 
-#: dashboard/views.py:844
+#: dashboard/views.py:848
 msgid "Not a valid status choice.  Please choose a valid status (no quotes): "
 msgstr ""
 "Keine gültige Statusauswahl. Bitte wählen Sie einen gültigen Status (keine "
 "Anführungszeichen):"
 
-#: dashboard/views.py:848
+#: dashboard/views.py:852
 #, python-brace-format
 msgid "Status updated to \"{admin_override_satatus}\" "
 msgstr "Status auf \"{admin_override_satatus}\" aktualisiert"
 
-#: dashboard/views.py:861
+#: dashboard/views.py:865
 #, python-brace-format
 msgid "Warning messages have been snoozed for {snooze_days} days"
 msgstr "Warnmeldungen wurden für {snooze_days} Tage verschoben"
 
-#: dashboard/views.py:872
+#: dashboard/views.py:876
 msgid ""
 "You must be logged in to approve or reject worker submissions. Please login "
 "and try again."
@@ -2448,7 +2439,7 @@ msgstr ""
 "Sie müssen angemeldet sein, um Mitarbeitereinreichungen zu genehmigen oder "
 "abzulehnen. Bitte logge dich ein und versuche es erneut."
 
-#: dashboard/views.py:881
+#: dashboard/views.py:885
 msgid ""
 "This worker does not exist or is not in a pending state. Please check your "
 "link and try again."
@@ -2457,69 +2448,69 @@ msgstr ""
 "ausstehenden Status. Bitte überprüfen Sie Ihren Link und versuchen Sie es "
 "erneut."
 
-#: dashboard/views.py:909
+#: dashboard/views.py:913
 #, python-brace-format
 msgid "{worker} has been {mutate_worker_action_past_tense}"
 msgstr "{worker} wurde {mutate_worker_action_past_tense}"
 
-#: dashboard/views.py:911
+#: dashboard/views.py:915
 #, fuzzy
 #| msgid "Only the funder of this bounty may snooze warnings."
 msgid "Only the funder of this bounty may perform this action."
 msgstr "Nur der Geldgeber dieses Bounty darf diese Aktion ausführen."
 
-#: dashboard/views.py:947
+#: dashboard/views.py:951
 msgid "Funded Issue Details | Gitcoin"
 msgstr "Funded Details zum Thema | Gitcoin"
 
-#: dashboard/views.py:1141
+#: dashboard/views.py:1145
 msgid "Quickstart Video"
 msgstr "Schnellstart Video"
 
-#: dashboard/views.py:1240
+#: dashboard/views.py:1244
 msgid "Basics"
 msgstr "Grundlagen"
 
-#: dashboard/views.py:1241 dashboard/views.py:1288
+#: dashboard/views.py:1245 dashboard/views.py:1292
 msgid "Accelerate your dev workflow with Gitcoin's incentivization tools."
 msgstr ""
 "Beschleunigen Sie Ihren Entwicklungsprozess mit Gitcoins "
 "Incentivierungswerkzeugen."
 
-#: dashboard/views.py:1245
+#: dashboard/views.py:1249
 msgid "Take your OSS game to the next level!"
 msgstr "Bringen Sie Ihr OSS-Spiel auf die nächste Stufe!"
 
-#: dashboard/views.py:1248 retail/templates/shared/footer.html:72
+#: dashboard/views.py:1252 retail/templates/shared/footer.html:72
 msgid "Community"
 msgstr "Gemeinschaft"
 
-#: dashboard/views.py:1249
+#: dashboard/views.py:1253
 msgid "Friendship, mentorship, and community are all part of the process."
 msgstr ""
 "Freundschaft, Mentorschaft und Gemeinschaft sind Teil dieses Prozesses."
 
-#: dashboard/views.py:1252
+#: dashboard/views.py:1256
 msgid "Tools to BUIDL Gitcoin"
 msgstr "Werkzeuge zu BUIDL Gitcoin"
 
-#: dashboard/views.py:1253
+#: dashboard/views.py:1257
 msgid "Gitcoin is built using Gitcoin.  Purdy cool, huh? "
 msgstr "Gitcoin wird mit Gitcoin gebaut. Purdy cool, nicht wahr?"
 
-#: dashboard/views.py:1256
+#: dashboard/views.py:1260
 msgid "Tools in Alpha"
 msgstr "Werkzeuge in Alpha"
 
-#: dashboard/views.py:1257
+#: dashboard/views.py:1261
 msgid "These fresh new tools are looking for someone to test ride them!"
 msgstr "Diese neuen, neuen Tools suchen jemanden, der sie testen kann!"
 
-#: dashboard/views.py:1260
+#: dashboard/views.py:1264
 msgid "Tools Coming Soon"
 msgstr "Werkzeuge, die bald kommen"
 
-#: dashboard/views.py:1261
+#: dashboard/views.py:1265
 msgid ""
 "These tools will be ready soon.  They'll get here sooner if you help BUIDL "
 "them :)"
@@ -2527,37 +2518,37 @@ msgstr ""
 "Diese Werkzeuge werden bald fertig sein. Sie werden früher hier ankommen, "
 "wenn Sie BUIDL ihnen helfen :)"
 
-#: dashboard/views.py:1264
+#: dashboard/views.py:1268
 msgid "Just for Fun"
 msgstr "Nur zum Spaß"
 
-#: dashboard/views.py:1265
+#: dashboard/views.py:1269
 msgid "Some tools that the community built *just because* they should exist."
 msgstr ""
 "Einige Tools, die die Community gebaut hat, nur weil * sie existieren "
 "sollten."
 
-#: dashboard/views.py:1286
+#: dashboard/views.py:1290
 msgid "Gitcoin Toolbox"
 msgstr "Gitcoin-Toolbox"
 
-#: dashboard/views.py:1290
+#: dashboard/views.py:1294
 msgid "Don't Miss New Tools!"
 msgstr "Verpasse keine neuen Werkzeuge!"
 
-#: dashboard/views.py:1394 ethos/views.py:225
+#: dashboard/views.py:1398 ethos/views.py:225
 msgid "Bad request"
 msgstr "Ungültige Anforderung"
 
-#: dashboard/views.py:1412
+#: dashboard/views.py:1416
 msgid "Coin Redemption"
 msgstr "Einlösung von Münzen"
 
-#: dashboard/views.py:1413
+#: dashboard/views.py:1417
 msgid "PENDING"
 msgstr "STEHT AUS"
 
-#: dashboard/views.py:1420
+#: dashboard/views.py:1424
 msgid "INITIAL"
 msgstr "INITIALE"
 
@@ -3145,6 +3136,34 @@ msgstr "Die Gitcoin Discord Integration funktioniert gut."
 msgid "The test message was sent to Discord."
 msgstr "Die Testnachricht wurde an Discord gesendet."
 
+#: marketing/views.py:67 retail/templates/shared/footer.html:81
+#: retail/templates/shared/footer.html:86
+msgid "Privacy"
+msgstr "Privatsphäre"
+
+#: marketing/views.py:70
+#, fuzzy
+#| msgid "Match"
+msgid "Matching"
+msgstr "Übereinstimmung"
+
+#: marketing/views.py:73 marketing/views.py:246
+#: retail/templates/settings/feedback.html:7
+msgid "Feedback"
+msgstr "Feedback"
+
+#: marketing/views.py:85
+#, fuzzy
+#| msgid "Amount"
+msgid "Account"
+msgstr "Konto"
+
+#: marketing/views.py:88
+#, fuzzy
+#| msgid "Tokens"
+msgid "Token"
+msgstr "Zeichen"
+
 #: marketing/views.py:163
 msgid "Privacy Settings"
 msgstr "Datenschutzeinstellungen"
@@ -3163,10 +3182,6 @@ msgstr "Passende Einstellungen"
 #: marketing/views.py:241
 msgid "We've received your feedback."
 msgstr "Wir haben Ihr Feedback erhalten."
-
-#: marketing/views.py:246 retail/templates/settings/feedback.html:7
-msgid "Feedback"
-msgstr "Feedback"
 
 #: marketing/views.py:288
 msgid "Invalid Email"
@@ -4518,7 +4533,7 @@ msgstr "Fallstudien anzeigen"
 msgid "Featured Videos"
 msgstr "Empfohlene Videos"
 
-#: retail/templates/help.html:84
+#: retail/templates/help.html:84 retail/templates/shared/nav.html:68
 msgid "How it works"
 msgstr "Wie es funktioniert"
 
@@ -5616,8 +5631,8 @@ msgid "Frequency"
 msgstr "Frequenz"
 
 #: retail/templates/settings/email.html:37
-msgid "Preferred language"
-msgstr "Bevorzugte Sprache"
+msgid "Preferred language - Non-English currently in Alpha"
+msgstr "Bevorzugte Sprache - Nicht-Englisch derzeit in Alpha"
 
 #: retail/templates/settings/ens.html:8
 msgid ""
@@ -5876,11 +5891,6 @@ msgstr "Legal"
 msgid "Terms"
 msgstr "Begriffe"
 
-#: retail/templates/shared/footer.html:81
-#: retail/templates/shared/footer.html:86
-msgid "Privacy"
-msgstr "Privatsphäre"
-
 #: retail/templates/shared/footer.html:84
 msgid "Home"
 msgstr "Zuhause"
@@ -5907,6 +5917,10 @@ msgstr "um Anreize zu schaffen oder die Arbeit zu monetarisieren."
 msgid "(Emails once a week max, &amp; we never sell your data.)"
 msgstr ""
 "(E-Mails maximal einmal pro Woche, und wir verkaufen Ihre Daten niemals.)"
+
+#: retail/templates/shared/nav.html:43
+msgid "Want to get help on your repo? Easily get started!"
+msgstr "Möchten Sie Hilfe zu Ihrem Repo erhalten? Einfach loslegen!"
 
 #: retail/templates/shared/nav.html:94 retail/templates/shared/nav.html:99
 msgid "FUND ISSUE"
@@ -7095,6 +7109,16 @@ msgstr "Kevin von Gitcoin.co"
 #: tdi/views.py:251
 msgid "Invite sent"
 msgstr "Einladung gesendet"
+
+#, fuzzy
+#~ msgid "Polish"
+#~ msgstr "Polieren"
+
+#~ msgid "Chinese"
+#~ msgstr "Chinesisch"
+
+#~ msgid "Preferred language"
+#~ msgstr "Bevorzugte Sprache"
 
 #~ msgid ""
 #~ "Please wait a minute or two for web3 to sync\n"

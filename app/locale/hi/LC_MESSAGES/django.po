@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-11 13:26+0000\n"
+"POT-Creation-Date: 2018-07-11 17:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,14 +42,6 @@ msgstr "इतालवी"
 msgid "Korean"
 msgstr "कोरियाई"
 
-#: app/settings.py:146
-msgid "Polish"
-msgstr "पोलिश"
-
-#: app/settings.py:147
-msgid "Chinese"
-msgstr "चीनी"
-
 #: dashboard/models.py:176
 msgid "Whether the bounty is still open for fulfillments."
 msgstr "चाहे उपहार के लिए अभी भी बक्षीस खुला है।"
@@ -76,7 +68,7 @@ msgstr ""
 "रीमार्केटिंग तैयार के रूप में चिह्नित करने के लिए व्यवस्थापक ओवरराइड करें"
 
 #: dashboard/models.py:1686 dashboard/templates/shared/bounty_def.html:24
-#: dashboard/views.py:661 dashboard/views.py:952
+#: dashboard/views.py:665 dashboard/views.py:956
 #: retail/templates/save_search.html:29
 msgid "Be the first to know about new funded issues."
 msgstr "नए वित्त पोषित मुद्दों के बारे में जानने वाले पहले व्यक्ति बनें।"
@@ -368,7 +360,7 @@ msgid "Funder"
 msgstr "Funder"
 
 #: dashboard/templates/bounty_details.html:168
-#: dashboard/templates/bounty_details.html:246
+#: dashboard/templates/bounty_details.html:246 marketing/views.py:64
 msgid "Email"
 msgstr "ईमेल"
 
@@ -726,7 +718,7 @@ msgstr "उन्नत (7+ वर्ष का अनुभव)"
 #: dashboard/templates/fulfill_bounty.html:48
 #: dashboard/templates/fulfill_bounty.html:78
 #: dashboard/templates/shared/bounty_nav.html:41
-#: dashboard/templates/shared/no_issue_error.html:70 dashboard/views.py:730
+#: dashboard/templates/shared/no_issue_error.html:70 dashboard/views.py:734
 #: retail/templates/how_it_works_contributor.html:82
 msgid "Submit Work"
 msgstr "कार्य सबमिट करें"
@@ -823,7 +815,7 @@ msgstr "बाउंटी रद्द करें और फंड पुन�
 msgid "(Issue Submitters only)"
 msgstr "(केवल समस्या सबमिट करने वाले)"
 
-#: dashboard/templates/kill_bounty.html:69 dashboard/views.py:778
+#: dashboard/templates/kill_bounty.html:69 dashboard/views.py:782
 msgid "Cancel Bounty"
 msgstr "बाउंटी रद्द करें"
 
@@ -1519,7 +1511,7 @@ msgstr "मूल्य: सर्वोच्च"
 msgid "Value: Lowest"
 msgstr "मूल्य: सबसे कम"
 
-#: dashboard/templates/shared/search_bar.html:44 dashboard/views.py:1130
+#: dashboard/templates/shared/search_bar.html:44 dashboard/views.py:1134
 #: retail/templates/save_search.html:41
 msgid "Save Search"
 msgstr "खोज संग्रहित करें"
@@ -1623,7 +1615,7 @@ msgstr "मध्यम"
 
 #: dashboard/templates/shared/sidebar_search.html:108
 #: dashboard/templates/submit_bounty.html:89
-#: dashboard/templates/yge/send2.html:61 dashboard/views.py:1244
+#: dashboard/templates/yge/send2.html:61 dashboard/views.py:1248
 msgid "Advanced"
 msgstr "उन्नत"
 
@@ -1886,7 +1878,7 @@ msgstr "अनुमतिहीन - कोई भी काम शुरू �
 msgid "Approval Required - I will approve bounty hunters."
 msgstr "स्वीकृति आवश्यक - मैं बाउंटी शिकारी को मंजूरी दे दूंगा।"
 
-#: dashboard/templates/submit_bounty.html:81 dashboard/views.py:946
+#: dashboard/templates/submit_bounty.html:81 dashboard/views.py:950
 msgid "Issue Details"
 msgstr "अंक विवरण"
 
@@ -2011,7 +2003,7 @@ msgstr ""
 "मैं समझता हूं कि यह जानकारी सार्वजनिक, अपरिवर्तनीय, ब्लॉकचेन को जमा की जा रही है। सहित कोई भी नहीं\n"
 "                      गिटकोइन कोर, मेरे फंड लेने या इस जानकारी को बदलने में सक्षम हो जाएगा।"
 
-#: dashboard/templates/toolbox.html:37 dashboard/views.py:1285
+#: dashboard/templates/toolbox.html:37 dashboard/views.py:1289
 msgid "Toolbox"
 msgstr "उपकरण बॉक्स"
 
@@ -2314,71 +2306,72 @@ msgstr ""
 "उह ओह! इस उपयोगकर्ता के लिए कोई ईमेल पता नहीं मिला Github API के माध्यम से। "
 "आपको टिप को मैन्युअल रूप से उनकी टिप के बारे में जानना होगा।"
 
-#: dashboard/views.py:626
+#: dashboard/views.py:630
 msgid "Onboarding Flow"
 msgstr "ऑनबोर्डिंग प्रवाह"
 
-#: dashboard/views.py:638 retail/templates/index.html:225
-#: retail/templates/shared/footer.html:61 retail/templates/shared/nav.html:83
+#: dashboard/views.py:642 retail/templates/emails/start_work_rejected.html:33
+#: retail/templates/index.html:225 retail/templates/shared/footer.html:61
+#: retail/templates/shared/nav.html:83
 msgid "Issue Explorer"
 msgstr "समस्या एक्सप्लोरर"
 
-#: dashboard/views.py:670
+#: dashboard/views.py:674
 msgid "Create Funded Issue"
 msgstr "वित्त पोषित मुद्दा बनाएं"
 
-#: dashboard/views.py:700
+#: dashboard/views.py:704
 msgid "Process Issue"
 msgstr "प्रक्रिया समस्या"
 
-#: dashboard/views.py:754
+#: dashboard/views.py:758
 msgid "Increase Bounty"
 msgstr "बाउंटी बढ़ाएं"
 
-#: dashboard/views.py:790
+#: dashboard/views.py:794
 msgid "Bounty is now hidden"
 msgstr "बाउंटी अब छुपा हुआ है"
 
-#: dashboard/views.py:792 dashboard/views.py:804 dashboard/views.py:819
-#: dashboard/views.py:831 dashboard/views.py:850 dashboard/views.py:863
+#: dashboard/views.py:796 dashboard/views.py:808 dashboard/views.py:823
+#: dashboard/views.py:835 dashboard/views.py:854 dashboard/views.py:867
 #, fuzzy
 #| msgid "Only the funder of this bounty may snooze warnings."
 msgid "Only the funder of this bounty may do this."
 msgstr "केवल इस बक्षीस का निधि ही ऐसा कर सकता है।"
 
-#: dashboard/views.py:802
+#: dashboard/views.py:806
 #, fuzzy
 #| msgid "Your invite has been sent."
 msgid "Bounty message has been sent"
 msgstr "बाउंटी संदेश भेजा गया है"
 
-#: dashboard/views.py:815
+#: dashboard/views.py:819
 msgid "Bounty is now remarket ready"
 msgstr "बाउंटी अब रीमार्केटिंग तैयार है"
 
-#: dashboard/views.py:817
+#: dashboard/views.py:821
 msgid "Bounty is now NOT remarket ready"
 msgstr "बाउंटी अब रीमार्केटिंग तैयार नहीं है"
 
-#: dashboard/views.py:829
+#: dashboard/views.py:833
 msgid "Bounty auto approvals are now suspended"
 msgstr "बाउंटी ऑटो अनुमोदन अब निलंबित कर दिए गए हैं"
 
-#: dashboard/views.py:844
+#: dashboard/views.py:848
 msgid "Not a valid status choice.  Please choose a valid status (no quotes): "
 msgstr "मान्य स्थिति पसंद नहीं है। कृपया वैध स्थिति चुनें (कोई उद्धरण नहीं):"
 
-#: dashboard/views.py:848
+#: dashboard/views.py:852
 #, python-brace-format
 msgid "Status updated to \"{admin_override_satatus}\" "
 msgstr "स्थिति \"{admin_override_satatus}\" पर अपडेट की गई"
 
-#: dashboard/views.py:861
+#: dashboard/views.py:865
 #, python-brace-format
 msgid "Warning messages have been snoozed for {snooze_days} days"
 msgstr "{snooze_days} दिनों के लिए चेतावनी संदेश स्नूज़ किए गए हैं"
 
-#: dashboard/views.py:872
+#: dashboard/views.py:876
 msgid ""
 "You must be logged in to approve or reject worker submissions. Please login "
 "and try again."
@@ -2386,7 +2379,7 @@ msgstr ""
 "कार्यकर्ता सबमिशन को स्वीकार या अस्वीकार करने के लिए आपको लॉग इन होना चाहिए।"
 " कृपया पुनः लॉगिन करें और पुनः प्रयास करें।"
 
-#: dashboard/views.py:881
+#: dashboard/views.py:885
 msgid ""
 "This worker does not exist or is not in a pending state. Please check your "
 "link and try again."
@@ -2394,66 +2387,66 @@ msgstr ""
 "यह कार्यकर्ता मौजूद नहीं है या लंबित राज्य में नहीं है। कृपया अपना लिंक "
 "जांचें और पुनः प्रयास करें।"
 
-#: dashboard/views.py:909
+#: dashboard/views.py:913
 #, python-brace-format
 msgid "{worker} has been {mutate_worker_action_past_tense}"
 msgstr "{worker} {mutate_worker_action_past_tense} रहा है"
 
-#: dashboard/views.py:911
+#: dashboard/views.py:915
 #, fuzzy
 #| msgid "Only the funder of this bounty may snooze warnings."
 msgid "Only the funder of this bounty may perform this action."
 msgstr "केवल इस बक्षीस का निधि ही इस क्रिया को कर सकता है।"
 
-#: dashboard/views.py:947
+#: dashboard/views.py:951
 msgid "Funded Issue Details | Gitcoin"
 msgstr "वित्त पोषित अंक विवरण | Gitcoin"
 
-#: dashboard/views.py:1141
+#: dashboard/views.py:1145
 msgid "Quickstart Video"
 msgstr "क्विकस्टार्ट वीडियो"
 
-#: dashboard/views.py:1240
+#: dashboard/views.py:1244
 msgid "Basics"
 msgstr "मूल बातें"
 
-#: dashboard/views.py:1241 dashboard/views.py:1288
+#: dashboard/views.py:1245 dashboard/views.py:1292
 msgid "Accelerate your dev workflow with Gitcoin's incentivization tools."
 msgstr "गिटकोइन के प्रोत्साहन उपकरण के साथ अपने देव वर्कफ़्लो को तेज करें।"
 
-#: dashboard/views.py:1245
+#: dashboard/views.py:1249
 msgid "Take your OSS game to the next level!"
 msgstr "अपने ओएसएस खेल को अगले स्तर पर ले जाएं!"
 
-#: dashboard/views.py:1248 retail/templates/shared/footer.html:72
+#: dashboard/views.py:1252 retail/templates/shared/footer.html:72
 msgid "Community"
 msgstr "समुदाय"
 
-#: dashboard/views.py:1249
+#: dashboard/views.py:1253
 msgid "Friendship, mentorship, and community are all part of the process."
 msgstr "मैत्री, परामर्श, और समुदाय प्रक्रिया का हिस्सा हैं।"
 
-#: dashboard/views.py:1252
+#: dashboard/views.py:1256
 msgid "Tools to BUIDL Gitcoin"
 msgstr "BUIDL Gitcoin के लिए उपकरण"
 
-#: dashboard/views.py:1253
+#: dashboard/views.py:1257
 msgid "Gitcoin is built using Gitcoin.  Purdy cool, huh? "
 msgstr "गिटकोइन गिटकोइन का उपयोग करके बनाया गया है। शांत ठंडा, हुह?"
 
-#: dashboard/views.py:1256
+#: dashboard/views.py:1260
 msgid "Tools in Alpha"
 msgstr "अल्फा में उपकरण"
 
-#: dashboard/views.py:1257
+#: dashboard/views.py:1261
 msgid "These fresh new tools are looking for someone to test ride them!"
 msgstr "ये ताजा नए उपकरण किसी को सवारी करने के लिए किसी की तलाश कर रहे हैं!"
 
-#: dashboard/views.py:1260
+#: dashboard/views.py:1264
 msgid "Tools Coming Soon"
 msgstr "उपकरण जल्द ही आ रहा है"
 
-#: dashboard/views.py:1261
+#: dashboard/views.py:1265
 msgid ""
 "These tools will be ready soon.  They'll get here sooner if you help BUIDL "
 "them :)"
@@ -2461,35 +2454,35 @@ msgstr ""
 "ये उपकरण जल्द ही तैयार हो जाएंगे। यदि आप उन्हें बुडेल की मदद करते हैं तो वे "
 "जल्द ही यहां आ जाएंगे :)"
 
-#: dashboard/views.py:1264
+#: dashboard/views.py:1268
 msgid "Just for Fun"
 msgstr "सिर्फ मनोरंजन के लिए"
 
-#: dashboard/views.py:1265
+#: dashboard/views.py:1269
 msgid "Some tools that the community built *just because* they should exist."
 msgstr "कुछ उपकरण जो समुदाय ने बनाया * बस क्योंकि * वे मौजूद होना चाहिए।"
 
-#: dashboard/views.py:1286
+#: dashboard/views.py:1290
 msgid "Gitcoin Toolbox"
 msgstr "गिटकोइन टूलबॉक्स"
 
-#: dashboard/views.py:1290
+#: dashboard/views.py:1294
 msgid "Don't Miss New Tools!"
 msgstr "नए उपकरण याद मत करो!"
 
-#: dashboard/views.py:1394 ethos/views.py:225
+#: dashboard/views.py:1398 ethos/views.py:225
 msgid "Bad request"
 msgstr "खराब अनुरोध"
 
-#: dashboard/views.py:1412
+#: dashboard/views.py:1416
 msgid "Coin Redemption"
 msgstr "सिक्का मोचन"
 
-#: dashboard/views.py:1413
+#: dashboard/views.py:1417
 msgid "PENDING"
 msgstr "लंबित"
 
-#: dashboard/views.py:1420
+#: dashboard/views.py:1424
 msgid "INITIAL"
 msgstr "प्रारंभिक"
 
@@ -3050,6 +3043,34 @@ msgstr "गिटकोइन डिस्कॉर्ड एकीकरण ठ
 msgid "The test message was sent to Discord."
 msgstr "टेस्ट संदेश डिस्कॉर्ड को भेजा गया था।"
 
+#: marketing/views.py:67 retail/templates/shared/footer.html:81
+#: retail/templates/shared/footer.html:86
+msgid "Privacy"
+msgstr "एकांत"
+
+#: marketing/views.py:70
+#, fuzzy
+#| msgid "Match"
+msgid "Matching"
+msgstr "मेल मिलाना"
+
+#: marketing/views.py:73 marketing/views.py:246
+#: retail/templates/settings/feedback.html:7
+msgid "Feedback"
+msgstr "प्रतिक्रिया"
+
+#: marketing/views.py:85
+#, fuzzy
+#| msgid "Amount"
+msgid "Account"
+msgstr "लेखा"
+
+#: marketing/views.py:88
+#, fuzzy
+#| msgid "Tokens"
+msgid "Token"
+msgstr "टोकन"
+
 #: marketing/views.py:163
 msgid "Privacy Settings"
 msgstr "गोपनीय सेटिंग"
@@ -3066,10 +3087,6 @@ msgstr "मिलान सेटिंग्स"
 #: marketing/views.py:241
 msgid "We've received your feedback."
 msgstr "हमें आपकी प्रतिक्रिया मिली है।"
-
-#: marketing/views.py:246 retail/templates/settings/feedback.html:7
-msgid "Feedback"
-msgstr "प्रतिक्रिया"
 
 #: marketing/views.py:288
 msgid "Invalid Email"
@@ -3937,8 +3954,8 @@ msgstr "अनुस्मारक: युक्ति जल्द ही स�
 msgid ""
 "%(tip.from_name)s sent you a tip worth %(amount)s %(warning)s %(tokenName)s"
 msgstr ""
-"%(tip.from_name)s ने आपको %(amount)s %(warning)s %(tokenName)s के एक टिप भेजा"
-" है"
+"%(tip.from_name)s ने आपको %(amount)s %(warning)s %(tokenName)s के एक टिप "
+"भेजा है"
 
 #: retail/templates/emails/new_tip.html:53
 #, python-format
@@ -4398,7 +4415,7 @@ msgstr "केस स्टडीज देखें"
 msgid "Featured Videos"
 msgstr "विशेष रुप से प्रदर्शित वीडियोज़"
 
-#: retail/templates/help.html:84
+#: retail/templates/help.html:84 retail/templates/shared/nav.html:68
 msgid "How it works"
 msgstr "यह काम किस प्रकार करता है"
 
@@ -5485,8 +5502,8 @@ msgid "Frequency"
 msgstr "आवृत्ति"
 
 #: retail/templates/settings/email.html:37
-msgid "Preferred language"
-msgstr "पसंदीदा भाषा"
+msgid "Preferred language - Non-English currently in Alpha"
+msgstr "पसंदीदा भाषा - वर्तमान में अल्फा में गैर-अंग्रेज़ी"
 
 #: retail/templates/settings/ens.html:8
 msgid ""
@@ -5739,11 +5756,6 @@ msgstr "कानूनी"
 msgid "Terms"
 msgstr "शर्तें"
 
-#: retail/templates/shared/footer.html:81
-#: retail/templates/shared/footer.html:86
-msgid "Privacy"
-msgstr "एकांत"
-
 #: retail/templates/shared/footer.html:84
 msgid "Home"
 msgstr "होम"
@@ -5769,6 +5781,10 @@ msgstr "काम को प्रोत्साहन या मुद्र�
 #: retail/templates/shared/mailchimp.html:5
 msgid "(Emails once a week max, &amp; we never sell your data.)"
 msgstr "(सप्ताह में एक बार अधिकतम ईमेल, और हम आपका डेटा कभी नहीं बेचते हैं।)"
+
+#: retail/templates/shared/nav.html:43
+msgid "Want to get help on your repo? Easily get started!"
+msgstr "अपने रेपो पर मदद लेना चाहते हैं? आसानी से शुरू करें!"
 
 #: retail/templates/shared/nav.html:94 retail/templates/shared/nav.html:99
 msgid "FUND ISSUE"
@@ -6938,6 +6954,15 @@ msgstr "Gitcoin.co से केविन"
 #: tdi/views.py:251
 msgid "Invite sent"
 msgstr "आमंत्रण भेज दिया"
+
+#~ msgid "Polish"
+#~ msgstr "पोलिश"
+
+#~ msgid "Chinese"
+#~ msgstr "चीनी"
+
+#~ msgid "Preferred language"
+#~ msgstr "पसंदीदा भाषा"
 
 #~ msgid ""
 #~ "Please wait a minute or two for web3 to sync\n"

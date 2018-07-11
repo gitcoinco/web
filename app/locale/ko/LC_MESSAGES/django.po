@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-11 13:26+0000\n"
+"POT-Creation-Date: 2018-07-11 17:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,14 +42,6 @@ msgstr "이탈리아 사람"
 msgid "Korean"
 msgstr "한국어"
 
-#: app/settings.py:146
-msgid "Polish"
-msgstr "광택"
-
-#: app/settings.py:147
-msgid "Chinese"
-msgstr "중국말"
-
 #: dashboard/models.py:176
 msgid "Whether the bounty is still open for fulfillments."
 msgstr "현상금이 아직 이행을 위해 열려 있는지 여부."
@@ -75,7 +67,7 @@ msgid "Admin override to mark as remarketing ready"
 msgstr "리 마케팅 준비로 표시 할 관리 우선 적용"
 
 #: dashboard/models.py:1686 dashboard/templates/shared/bounty_def.html:24
-#: dashboard/views.py:661 dashboard/views.py:952
+#: dashboard/views.py:665 dashboard/views.py:956
 #: retail/templates/save_search.html:29
 msgid "Be the first to know about new funded issues."
 msgstr "새로운 자금 지원 문제에 대해 먼저 알아보십시오."
@@ -355,7 +347,7 @@ msgid "Funder"
 msgstr "Funder"
 
 #: dashboard/templates/bounty_details.html:168
-#: dashboard/templates/bounty_details.html:246
+#: dashboard/templates/bounty_details.html:246 marketing/views.py:64
 msgid "Email"
 msgstr "이메일"
 
@@ -708,7 +700,7 @@ msgstr "고급 (7 년 이상 경험)"
 #: dashboard/templates/fulfill_bounty.html:48
 #: dashboard/templates/fulfill_bounty.html:78
 #: dashboard/templates/shared/bounty_nav.html:41
-#: dashboard/templates/shared/no_issue_error.html:70 dashboard/views.py:730
+#: dashboard/templates/shared/no_issue_error.html:70 dashboard/views.py:734
 #: retail/templates/how_it_works_contributor.html:82
 msgid "Submit Work"
 msgstr "작업 제출"
@@ -801,7 +793,7 @@ msgstr "현상금 취소 및 자금 회수"
 msgid "(Issue Submitters only)"
 msgstr "(발행자 문제 만)"
 
-#: dashboard/templates/kill_bounty.html:69 dashboard/views.py:778
+#: dashboard/templates/kill_bounty.html:69 dashboard/views.py:782
 msgid "Cancel Bounty"
 msgstr "현상금 취소"
 
@@ -1483,7 +1475,7 @@ msgstr "값 : 최고"
 msgid "Value: Lowest"
 msgstr "값 : 최저"
 
-#: dashboard/templates/shared/search_bar.html:44 dashboard/views.py:1130
+#: dashboard/templates/shared/search_bar.html:44 dashboard/views.py:1134
 #: retail/templates/save_search.html:41
 msgid "Save Search"
 msgstr "검색 저장"
@@ -1587,7 +1579,7 @@ msgstr "중급"
 
 #: dashboard/templates/shared/sidebar_search.html:108
 #: dashboard/templates/submit_bounty.html:89
-#: dashboard/templates/yge/send2.html:61 dashboard/views.py:1244
+#: dashboard/templates/yge/send2.html:61 dashboard/views.py:1248
 msgid "Advanced"
 msgstr "많은"
 
@@ -1849,7 +1841,7 @@ msgstr "무허가 - 누구나 시작할 수 있습니다."
 msgid "Approval Required - I will approve bounty hunters."
 msgstr "승인 필요 - 나는 현상금 사냥꾼을 승인 할 것입니다."
 
-#: dashboard/templates/submit_bounty.html:81 dashboard/views.py:946
+#: dashboard/templates/submit_bounty.html:81 dashboard/views.py:950
 msgid "Issue Details"
 msgstr "문제 세부 정보"
 
@@ -1974,7 +1966,7 @@ msgstr ""
 "본인은이 정보가 공개적이고 불변 인 블록 체인에 제출되었음을 이해합니다. 아무도 포함해서\n"
 "                      Gitcoin Core는 내 자금을 가져 오거나이 정보를 변경할 수 있습니다."
 
-#: dashboard/templates/toolbox.html:37 dashboard/views.py:1285
+#: dashboard/templates/toolbox.html:37 dashboard/views.py:1289
 msgid "Toolbox"
 msgstr "도구 상자"
 
@@ -2264,176 +2256,177 @@ msgid ""
 "have to let the tipee know manually about their tip."
 msgstr "어 오! Github API를 통해이 사용자의 이메일 주소를 찾을 수 없습니다. 팁은 팁을 수동으로 알려야합니다."
 
-#: dashboard/views.py:626
+#: dashboard/views.py:630
 msgid "Onboarding Flow"
 msgstr "온 보딩 플로우"
 
-#: dashboard/views.py:638 retail/templates/index.html:225
-#: retail/templates/shared/footer.html:61 retail/templates/shared/nav.html:83
+#: dashboard/views.py:642 retail/templates/emails/start_work_rejected.html:33
+#: retail/templates/index.html:225 retail/templates/shared/footer.html:61
+#: retail/templates/shared/nav.html:83
 msgid "Issue Explorer"
 msgstr "이슈 탐색기"
 
-#: dashboard/views.py:670
+#: dashboard/views.py:674
 msgid "Create Funded Issue"
 msgstr "자금 이체 작성"
 
-#: dashboard/views.py:700
+#: dashboard/views.py:704
 msgid "Process Issue"
 msgstr "프로세스 문제"
 
-#: dashboard/views.py:754
+#: dashboard/views.py:758
 msgid "Increase Bounty"
 msgstr "현상금 증액"
 
-#: dashboard/views.py:790
+#: dashboard/views.py:794
 msgid "Bounty is now hidden"
 msgstr "현상금이 이제 숨겨져 있습니다."
 
-#: dashboard/views.py:792 dashboard/views.py:804 dashboard/views.py:819
-#: dashboard/views.py:831 dashboard/views.py:850 dashboard/views.py:863
+#: dashboard/views.py:796 dashboard/views.py:808 dashboard/views.py:823
+#: dashboard/views.py:835 dashboard/views.py:854 dashboard/views.py:867
 #, fuzzy
 #| msgid "Only the funder of this bounty may snooze warnings."
 msgid "Only the funder of this bounty may do this."
 msgstr "이 현상금을 기금을 모으는 사람 만이 할 수 있습니다."
 
-#: dashboard/views.py:802
+#: dashboard/views.py:806
 #, fuzzy
 #| msgid "Your invite has been sent."
 msgid "Bounty message has been sent"
 msgstr "현상금 메시지가 전송되었습니다."
 
-#: dashboard/views.py:815
+#: dashboard/views.py:819
 msgid "Bounty is now remarket ready"
 msgstr "현상금이 이제 리 마케팅 준비 됨입니다."
 
-#: dashboard/views.py:817
+#: dashboard/views.py:821
 msgid "Bounty is now NOT remarket ready"
 msgstr "Bounty는 이제 리 마케팅 준비가 완료되지 않았습니다."
 
-#: dashboard/views.py:829
+#: dashboard/views.py:833
 msgid "Bounty auto approvals are now suspended"
 msgstr "Bounty 자동 승인이 이제 일시 중지되었습니다."
 
-#: dashboard/views.py:844
+#: dashboard/views.py:848
 msgid "Not a valid status choice.  Please choose a valid status (no quotes): "
 msgstr "유효한 상태 선택 사항이 아닙니다. 유효한 상태 (따옴표 제외)를 선택하십시오."
 
-#: dashboard/views.py:848
+#: dashboard/views.py:852
 #, python-brace-format
 msgid "Status updated to \"{admin_override_satatus}\" "
 msgstr "상태가 '{admin_override_satatus}'(으)로 업데이트되었습니다."
 
-#: dashboard/views.py:861
+#: dashboard/views.py:865
 #, python-brace-format
 msgid "Warning messages have been snoozed for {snooze_days} days"
 msgstr "{snooze_days} 일 동안 경고 메시지가 일시 중지되었습니다."
 
-#: dashboard/views.py:872
+#: dashboard/views.py:876
 msgid ""
 "You must be logged in to approve or reject worker submissions. Please login "
 "and try again."
 msgstr "작업자 제출을 승인하거나 거절하려면 로그인해야합니다. 로그인하여 다시 시도하십시오."
 
-#: dashboard/views.py:881
+#: dashboard/views.py:885
 msgid ""
 "This worker does not exist or is not in a pending state. Please check your "
 "link and try again."
 msgstr "이 작업자가 없거나 보류 상태에 있지 않습니다. 링크를 확인하고 다시 시도하십시오."
 
-#: dashboard/views.py:909
+#: dashboard/views.py:913
 #, python-brace-format
 msgid "{worker} has been {mutate_worker_action_past_tense}"
 msgstr "{worker} 님이 {mutate_worker_action_past_tense}되었습니다."
 
-#: dashboard/views.py:911
+#: dashboard/views.py:915
 #, fuzzy
 #| msgid "Only the funder of this bounty may snooze warnings."
 msgid "Only the funder of this bounty may perform this action."
 msgstr "이 현상금의 자금 조달 자만이 행동을 수행 할 수 있습니다."
 
-#: dashboard/views.py:947
+#: dashboard/views.py:951
 msgid "Funded Issue Details | Gitcoin"
 msgstr "자금 이슈 세부 사항 | Gitcoin"
 
-#: dashboard/views.py:1141
+#: dashboard/views.py:1145
 msgid "Quickstart Video"
 msgstr "빠른 시작 비디오"
 
-#: dashboard/views.py:1240
+#: dashboard/views.py:1244
 msgid "Basics"
 msgstr "기초"
 
-#: dashboard/views.py:1241 dashboard/views.py:1288
+#: dashboard/views.py:1245 dashboard/views.py:1292
 msgid "Accelerate your dev workflow with Gitcoin's incentivization tools."
 msgstr "Gitcoin의 인센티브 도구를 사용하여 개발 워크 플로우를 가속화하십시오."
 
-#: dashboard/views.py:1245
+#: dashboard/views.py:1249
 msgid "Take your OSS game to the next level!"
 msgstr "OSS 게임을 한 단계 업그레이드하십시오!"
 
-#: dashboard/views.py:1248 retail/templates/shared/footer.html:72
+#: dashboard/views.py:1252 retail/templates/shared/footer.html:72
 msgid "Community"
 msgstr "커뮤니티"
 
-#: dashboard/views.py:1249
+#: dashboard/views.py:1253
 msgid "Friendship, mentorship, and community are all part of the process."
 msgstr "우정, 멘토십 및 커뮤니티는 모두 프로세스의 일부입니다."
 
-#: dashboard/views.py:1252
+#: dashboard/views.py:1256
 msgid "Tools to BUIDL Gitcoin"
 msgstr "BUIDL Gitcoin 도구"
 
-#: dashboard/views.py:1253
+#: dashboard/views.py:1257
 msgid "Gitcoin is built using Gitcoin.  Purdy cool, huh? "
 msgstr "Gitcoin은 Gitcoin을 사용하여 만들어졌습니다. 퍼디, 응?"
 
-#: dashboard/views.py:1256
+#: dashboard/views.py:1260
 msgid "Tools in Alpha"
 msgstr "알파의 도구"
 
-#: dashboard/views.py:1257
+#: dashboard/views.py:1261
 msgid "These fresh new tools are looking for someone to test ride them!"
 msgstr "이 새롭고 새로운 도구는 누군가를 타고 그들을 테스트 해보기를 원합니다!"
 
-#: dashboard/views.py:1260
+#: dashboard/views.py:1264
 msgid "Tools Coming Soon"
 msgstr "곧 나오는 도구들"
 
-#: dashboard/views.py:1261
+#: dashboard/views.py:1265
 msgid ""
 "These tools will be ready soon.  They'll get here sooner if you help BUIDL "
 "them :)"
 msgstr "이 도구들은 곧 준비 될 것입니다. BUIDL을 도와 주면 빨리 여기에 올거야 :)"
 
-#: dashboard/views.py:1264
+#: dashboard/views.py:1268
 msgid "Just for Fun"
 msgstr "재미로"
 
-#: dashboard/views.py:1265
+#: dashboard/views.py:1269
 msgid "Some tools that the community built *just because* they should exist."
 msgstr "* 그들이 존재해야만하기 때문에 커뮤니티가 만든 도구."
 
-#: dashboard/views.py:1286
+#: dashboard/views.py:1290
 msgid "Gitcoin Toolbox"
 msgstr "Gitcoin 도구 상자"
 
-#: dashboard/views.py:1290
+#: dashboard/views.py:1294
 msgid "Don't Miss New Tools!"
 msgstr "새로운 도구를 놓치지 마세요!"
 
-#: dashboard/views.py:1394 ethos/views.py:225
+#: dashboard/views.py:1398 ethos/views.py:225
 msgid "Bad request"
 msgstr "잘못된 요청"
 
-#: dashboard/views.py:1412
+#: dashboard/views.py:1416
 msgid "Coin Redemption"
 msgstr "동전 보너스"
 
-#: dashboard/views.py:1413
+#: dashboard/views.py:1417
 msgid "PENDING"
 msgstr "보류 중"
 
-#: dashboard/views.py:1420
+#: dashboard/views.py:1424
 msgid "INITIAL"
 msgstr "머리 글자"
 
@@ -2977,6 +2970,34 @@ msgstr "Gitcoin Discord 통합은 잘 작동합니다."
 msgid "The test message was sent to Discord."
 msgstr "테스트 메시지가 Discord로 전송되었습니다."
 
+#: marketing/views.py:67 retail/templates/shared/footer.html:81
+#: retail/templates/shared/footer.html:86
+msgid "Privacy"
+msgstr "은둔"
+
+#: marketing/views.py:70
+#, fuzzy
+#| msgid "Match"
+msgid "Matching"
+msgstr "어울리는"
+
+#: marketing/views.py:73 marketing/views.py:246
+#: retail/templates/settings/feedback.html:7
+msgid "Feedback"
+msgstr "피드백"
+
+#: marketing/views.py:85
+#, fuzzy
+#| msgid "Amount"
+msgid "Account"
+msgstr "계정"
+
+#: marketing/views.py:88
+#, fuzzy
+#| msgid "Tokens"
+msgid "Token"
+msgstr "토큰"
+
 #: marketing/views.py:163
 msgid "Privacy Settings"
 msgstr "개인 정보 설정"
@@ -2993,10 +3014,6 @@ msgstr "일치하는 설정"
 #: marketing/views.py:241
 msgid "We've received your feedback."
 msgstr "귀하의 의견이 접수되었습니다."
-
-#: marketing/views.py:246 retail/templates/settings/feedback.html:7
-msgid "Feedback"
-msgstr "피드백"
 
 #: marketing/views.py:288
 msgid "Invalid Email"
@@ -4249,7 +4266,7 @@ msgstr "사례 연구보기"
 msgid "Featured Videos"
 msgstr "추천 동영상"
 
-#: retail/templates/help.html:84
+#: retail/templates/help.html:84 retail/templates/shared/nav.html:68
 msgid "How it works"
 msgstr "작동 원리"
 
@@ -5319,8 +5336,8 @@ msgid "Frequency"
 msgstr "회수"
 
 #: retail/templates/settings/email.html:37
-msgid "Preferred language"
-msgstr "선호하는 언어"
+msgid "Preferred language - Non-English currently in Alpha"
+msgstr "기본 언어 - 현재 알파가 아닌 언어"
 
 #: retail/templates/settings/ens.html:8
 msgid ""
@@ -5554,11 +5571,6 @@ msgstr "적법한"
 msgid "Terms"
 msgstr "자귀"
 
-#: retail/templates/shared/footer.html:81
-#: retail/templates/shared/footer.html:86
-msgid "Privacy"
-msgstr "은둔"
-
 #: retail/templates/shared/footer.html:84
 msgid "Home"
 msgstr "집"
@@ -5584,6 +5596,10 @@ msgstr "인센티브를 주거나 직장에서 돈을 벌 수 있습니다."
 #: retail/templates/shared/mailchimp.html:5
 msgid "(Emails once a week max, &amp; we never sell your data.)"
 msgstr "(이메일은 일주일에 한 번만 최대, Google은 절대 데이터를 판매하지 않습니다.)"
+
+#: retail/templates/shared/nav.html:43
+msgid "Want to get help on your repo? Easily get started!"
+msgstr "레포에 대한 도움을 받고 싶습니까? 쉽게 시작할 수 있습니다!"
 
 #: retail/templates/shared/nav.html:94 retail/templates/shared/nav.html:99
 msgid "FUND ISSUE"
@@ -6688,6 +6704,15 @@ msgstr "Gitcoin.co의 Kevin"
 #: tdi/views.py:251
 msgid "Invite sent"
 msgstr "초대장을 보냈습니다."
+
+#~ msgid "Polish"
+#~ msgstr "광택"
+
+#~ msgid "Chinese"
+#~ msgstr "중국말"
+
+#~ msgid "Preferred language"
+#~ msgstr "선호하는 언어"
 
 #~ msgid ""
 #~ "Please wait a minute or two for web3 to sync\n"

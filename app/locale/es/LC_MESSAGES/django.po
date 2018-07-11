@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-11 13:26+0000\n"
+"POT-Creation-Date: 2018-07-11 17:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,14 +42,6 @@ msgstr "italiano"
 msgid "Korean"
 msgstr "coreano"
 
-#: app/settings.py:146
-msgid "Polish"
-msgstr "polaco"
-
-#: app/settings.py:147
-msgid "Chinese"
-msgstr "chino"
-
 #: dashboard/models.py:176
 msgid "Whether the bounty is still open for fulfillments."
 msgstr "Si la recompensa todavía está abierta para cumplimientos."
@@ -76,7 +68,7 @@ msgid "Admin override to mark as remarketing ready"
 msgstr "Anulación del administrador para marcar como remarketing listo"
 
 #: dashboard/models.py:1686 dashboard/templates/shared/bounty_def.html:24
-#: dashboard/views.py:661 dashboard/views.py:952
+#: dashboard/views.py:665 dashboard/views.py:956
 #: retail/templates/save_search.html:29
 msgid "Be the first to know about new funded issues."
 msgstr "Sé el primero en conocer los nuevos problemas financiados."
@@ -371,7 +363,7 @@ msgid "Funder"
 msgstr "Financiador"
 
 #: dashboard/templates/bounty_details.html:168
-#: dashboard/templates/bounty_details.html:246
+#: dashboard/templates/bounty_details.html:246 marketing/views.py:64
 msgid "Email"
 msgstr "Email"
 
@@ -729,7 +721,7 @@ msgstr "Avanzado (más de 7 años de experiencia)"
 #: dashboard/templates/fulfill_bounty.html:48
 #: dashboard/templates/fulfill_bounty.html:78
 #: dashboard/templates/shared/bounty_nav.html:41
-#: dashboard/templates/shared/no_issue_error.html:70 dashboard/views.py:730
+#: dashboard/templates/shared/no_issue_error.html:70 dashboard/views.py:734
 #: retail/templates/how_it_works_contributor.html:82
 msgid "Submit Work"
 msgstr "Enviar trabajo"
@@ -827,7 +819,7 @@ msgstr "Cancelar Bounty y Recuperar Fondos"
 msgid "(Issue Submitters only)"
 msgstr "(Emitir remitentes solamente)"
 
-#: dashboard/templates/kill_bounty.html:69 dashboard/views.py:778
+#: dashboard/templates/kill_bounty.html:69 dashboard/views.py:782
 msgid "Cancel Bounty"
 msgstr "Cancelar Bounty"
 
@@ -1534,7 +1526,7 @@ msgstr "Valor: más alto"
 msgid "Value: Lowest"
 msgstr "Valor: más bajo"
 
-#: dashboard/templates/shared/search_bar.html:44 dashboard/views.py:1130
+#: dashboard/templates/shared/search_bar.html:44 dashboard/views.py:1134
 #: retail/templates/save_search.html:41
 msgid "Save Search"
 msgstr "Guardar búsqueda"
@@ -1638,7 +1630,7 @@ msgstr "Intermedio"
 
 #: dashboard/templates/shared/sidebar_search.html:108
 #: dashboard/templates/submit_bounty.html:89
-#: dashboard/templates/yge/send2.html:61 dashboard/views.py:1244
+#: dashboard/templates/yge/send2.html:61 dashboard/views.py:1248
 msgid "Advanced"
 msgstr "Avanzado"
 
@@ -1907,7 +1899,7 @@ msgstr "Permitido: cualquier persona puede comenzar a trabajar."
 msgid "Approval Required - I will approve bounty hunters."
 msgstr "Se requiere aprobación: aprobaré cazarrecompensas."
 
-#: dashboard/templates/submit_bounty.html:81 dashboard/views.py:946
+#: dashboard/templates/submit_bounty.html:81 dashboard/views.py:950
 msgid "Issue Details"
 msgstr "Detalles del problema"
 
@@ -2032,7 +2024,7 @@ msgstr ""
 "Entiendo que esta información se envía a un blockchain público, inmutable. Nadie, incluyendo\n"
 "                      Gitcoin Core, podrá tomar mis fondos o cambiar esta información."
 
-#: dashboard/templates/toolbox.html:37 dashboard/views.py:1285
+#: dashboard/templates/toolbox.html:37 dashboard/views.py:1289
 msgid "Toolbox"
 msgstr "Caja de instrumento"
 
@@ -2338,74 +2330,75 @@ msgstr ""
 "usuario a través de Github API. Tendrá que avisarle al tipee de forma manual"
 " sobre su propina."
 
-#: dashboard/views.py:626
+#: dashboard/views.py:630
 msgid "Onboarding Flow"
 msgstr "Flujo de incorporación"
 
-#: dashboard/views.py:638 retail/templates/index.html:225
-#: retail/templates/shared/footer.html:61 retail/templates/shared/nav.html:83
+#: dashboard/views.py:642 retail/templates/emails/start_work_rejected.html:33
+#: retail/templates/index.html:225 retail/templates/shared/footer.html:61
+#: retail/templates/shared/nav.html:83
 msgid "Issue Explorer"
 msgstr "Issue Explorer"
 
-#: dashboard/views.py:670
+#: dashboard/views.py:674
 msgid "Create Funded Issue"
 msgstr "Crear un problema financiado"
 
-#: dashboard/views.py:700
+#: dashboard/views.py:704
 msgid "Process Issue"
 msgstr "Problema de proceso"
 
-#: dashboard/views.py:754
+#: dashboard/views.py:758
 msgid "Increase Bounty"
 msgstr "Aumentar Bounty"
 
-#: dashboard/views.py:790
+#: dashboard/views.py:794
 msgid "Bounty is now hidden"
 msgstr "Bounty ahora está oculto"
 
-#: dashboard/views.py:792 dashboard/views.py:804 dashboard/views.py:819
-#: dashboard/views.py:831 dashboard/views.py:850 dashboard/views.py:863
+#: dashboard/views.py:796 dashboard/views.py:808 dashboard/views.py:823
+#: dashboard/views.py:835 dashboard/views.py:854 dashboard/views.py:867
 #, fuzzy
 #| msgid "Only the funder of this bounty may snooze warnings."
 msgid "Only the funder of this bounty may do this."
 msgstr "Solo el financiador de esta recompensa puede hacer esto."
 
-#: dashboard/views.py:802
+#: dashboard/views.py:806
 #, fuzzy
 #| msgid "Your invite has been sent."
 msgid "Bounty message has been sent"
 msgstr "Bounty mensaje ha sido enviado"
 
-#: dashboard/views.py:815
+#: dashboard/views.py:819
 msgid "Bounty is now remarket ready"
 msgstr "Bounty ahora está listo para el mercado"
 
-#: dashboard/views.py:817
+#: dashboard/views.py:821
 msgid "Bounty is now NOT remarket ready"
 msgstr "Bounty ahora NO está listo para el mercado"
 
-#: dashboard/views.py:829
+#: dashboard/views.py:833
 msgid "Bounty auto approvals are now suspended"
 msgstr "Las aprobaciones automáticas de Bounty ahora están suspendidas"
 
-#: dashboard/views.py:844
+#: dashboard/views.py:848
 msgid "Not a valid status choice.  Please choose a valid status (no quotes): "
 msgstr ""
 "No es una opción de estado válida. Por favor, elija un estado válido (sin "
 "comillas):"
 
-#: dashboard/views.py:848
+#: dashboard/views.py:852
 #, python-brace-format
 msgid "Status updated to \"{admin_override_satatus}\" "
 msgstr "Estado actualizado a \"{admin_override_satatus}\""
 
-#: dashboard/views.py:861
+#: dashboard/views.py:865
 #, python-brace-format
 msgid "Warning messages have been snoozed for {snooze_days} days"
 msgstr ""
 "Los mensajes de advertencia se han pospuesto durante {snooze_days} días"
 
-#: dashboard/views.py:872
+#: dashboard/views.py:876
 msgid ""
 "You must be logged in to approve or reject worker submissions. Please login "
 "and try again."
@@ -2413,7 +2406,7 @@ msgstr ""
 "Debe iniciar sesión para aprobar o rechazar las presentaciones de los "
 "trabajadores. Por favor inicie sesión e intente de nuevo."
 
-#: dashboard/views.py:881
+#: dashboard/views.py:885
 msgid ""
 "This worker does not exist or is not in a pending state. Please check your "
 "link and try again."
@@ -2421,68 +2414,68 @@ msgstr ""
 "Este trabajador no existe o no está en un estado pendiente. Por favor revise"
 " su enlace y vuelva a intentarlo."
 
-#: dashboard/views.py:909
+#: dashboard/views.py:913
 #, python-brace-format
 msgid "{worker} has been {mutate_worker_action_past_tense}"
 msgstr "{worker} ha sido {mutate_worker_action_past_tense}"
 
-#: dashboard/views.py:911
+#: dashboard/views.py:915
 #, fuzzy
 #| msgid "Only the funder of this bounty may snooze warnings."
 msgid "Only the funder of this bounty may perform this action."
 msgstr "Solo el financiador de esta recompensa puede realizar esta acción."
 
-#: dashboard/views.py:947
+#: dashboard/views.py:951
 msgid "Funded Issue Details | Gitcoin"
 msgstr "Detalles del problema financiado | Gitcoin"
 
-#: dashboard/views.py:1141
+#: dashboard/views.py:1145
 msgid "Quickstart Video"
 msgstr "Video de inicio rápido"
 
-#: dashboard/views.py:1240
+#: dashboard/views.py:1244
 msgid "Basics"
 msgstr "Lo esencial"
 
-#: dashboard/views.py:1241 dashboard/views.py:1288
+#: dashboard/views.py:1245 dashboard/views.py:1292
 msgid "Accelerate your dev workflow with Gitcoin's incentivization tools."
 msgstr ""
 "Acelere su flujo de trabajo de desarrollo con las herramientas de incentivo "
 "de Gitcoin."
 
-#: dashboard/views.py:1245
+#: dashboard/views.py:1249
 msgid "Take your OSS game to the next level!"
 msgstr "¡Lleva tu juego OSS al siguiente nivel!"
 
-#: dashboard/views.py:1248 retail/templates/shared/footer.html:72
+#: dashboard/views.py:1252 retail/templates/shared/footer.html:72
 msgid "Community"
 msgstr "Comunidad"
 
-#: dashboard/views.py:1249
+#: dashboard/views.py:1253
 msgid "Friendship, mentorship, and community are all part of the process."
 msgstr "La amistad, la tutoría y la comunidad son parte del proceso."
 
-#: dashboard/views.py:1252
+#: dashboard/views.py:1256
 msgid "Tools to BUIDL Gitcoin"
 msgstr "Herramientas para BUIDL Gitcoin"
 
-#: dashboard/views.py:1253
+#: dashboard/views.py:1257
 msgid "Gitcoin is built using Gitcoin.  Purdy cool, huh? "
 msgstr "Gitcoin está construido usando Gitcoin. Purdy genial, ¿eh?"
 
-#: dashboard/views.py:1256
+#: dashboard/views.py:1260
 msgid "Tools in Alpha"
 msgstr "Herramientas en Alpha"
 
-#: dashboard/views.py:1257
+#: dashboard/views.py:1261
 msgid "These fresh new tools are looking for someone to test ride them!"
 msgstr "¡Estas nuevas herramientas están buscando a alguien que las pruebe!"
 
-#: dashboard/views.py:1260
+#: dashboard/views.py:1264
 msgid "Tools Coming Soon"
 msgstr "Herramientas Próximamente"
 
-#: dashboard/views.py:1261
+#: dashboard/views.py:1265
 msgid ""
 "These tools will be ready soon.  They'll get here sooner if you help BUIDL "
 "them :)"
@@ -2490,36 +2483,36 @@ msgstr ""
 "Estas herramientas estarán listas pronto. Llegarán aquí antes si ayudas a "
 "BUIDL :)"
 
-#: dashboard/views.py:1264
+#: dashboard/views.py:1268
 msgid "Just for Fun"
 msgstr "Solo por diversión"
 
-#: dashboard/views.py:1265
+#: dashboard/views.py:1269
 msgid "Some tools that the community built *just because* they should exist."
 msgstr ""
 "Algunas herramientas que la comunidad creó * solo porque * deberían existir."
 
-#: dashboard/views.py:1286
+#: dashboard/views.py:1290
 msgid "Gitcoin Toolbox"
 msgstr "Caja de herramientas de Gitcoin"
 
-#: dashboard/views.py:1290
+#: dashboard/views.py:1294
 msgid "Don't Miss New Tools!"
 msgstr "¡No te pierdas nuevas herramientas!"
 
-#: dashboard/views.py:1394 ethos/views.py:225
+#: dashboard/views.py:1398 ethos/views.py:225
 msgid "Bad request"
 msgstr "Solicitud incorrecta"
 
-#: dashboard/views.py:1412
+#: dashboard/views.py:1416
 msgid "Coin Redemption"
 msgstr "Redención de monedas"
 
-#: dashboard/views.py:1413
+#: dashboard/views.py:1417
 msgid "PENDING"
 msgstr "PENDIENTE"
 
-#: dashboard/views.py:1420
+#: dashboard/views.py:1424
 msgid "INITIAL"
 msgstr "INICIAL"
 
@@ -3089,6 +3082,34 @@ msgstr "La integración de Gitcoin Discord está funcionando bien."
 msgid "The test message was sent to Discord."
 msgstr "El mensaje de prueba fue enviado a Discord."
 
+#: marketing/views.py:67 retail/templates/shared/footer.html:81
+#: retail/templates/shared/footer.html:86
+msgid "Privacy"
+msgstr "Intimidad"
+
+#: marketing/views.py:70
+#, fuzzy
+#| msgid "Match"
+msgid "Matching"
+msgstr "Pareo"
+
+#: marketing/views.py:73 marketing/views.py:246
+#: retail/templates/settings/feedback.html:7
+msgid "Feedback"
+msgstr "Realimentación"
+
+#: marketing/views.py:85
+#, fuzzy
+#| msgid "Amount"
+msgid "Account"
+msgstr "Cuenta"
+
+#: marketing/views.py:88
+#, fuzzy
+#| msgid "Tokens"
+msgid "Token"
+msgstr "Simbólico"
+
 #: marketing/views.py:163
 msgid "Privacy Settings"
 msgstr "La configuración de privacidad"
@@ -3105,10 +3126,6 @@ msgstr "Configuraciones coincidentes"
 #: marketing/views.py:241
 msgid "We've received your feedback."
 msgstr "Hemos recibido sus comentarios."
-
-#: marketing/views.py:246 retail/templates/settings/feedback.html:7
-msgid "Feedback"
-msgstr "Realimentación"
 
 #: marketing/views.py:288
 msgid "Invalid Email"
@@ -4275,7 +4292,7 @@ msgstr "de esta lista."
 #: retail/templates/error.html:22
 #, python-format
 msgid "Error %(code)s."
-msgstr ""
+msgstr "Errore %(code)s."
 
 #: retail/templates/error.html:23
 msgid ""
@@ -4461,7 +4478,7 @@ msgstr "Ver casos de estudio"
 msgid "Featured Videos"
 msgstr "Vídeos destacados"
 
-#: retail/templates/help.html:84
+#: retail/templates/help.html:84 retail/templates/shared/nav.html:68
 msgid "How it works"
 msgstr "Cómo funciona"
 
@@ -5553,8 +5570,8 @@ msgid "Frequency"
 msgstr "Frecuencia"
 
 #: retail/templates/settings/email.html:37
-msgid "Preferred language"
-msgstr "Idioma preferido"
+msgid "Preferred language - Non-English currently in Alpha"
+msgstr "Idioma preferido - No inglés actualmente en Alpha"
 
 #: retail/templates/settings/ens.html:8
 msgid ""
@@ -5810,11 +5827,6 @@ msgstr "Legal"
 msgid "Terms"
 msgstr "Condiciones"
 
-#: retail/templates/shared/footer.html:81
-#: retail/templates/shared/footer.html:86
-msgid "Privacy"
-msgstr "Intimidad"
-
 #: retail/templates/shared/footer.html:84
 msgid "Home"
 msgstr "Casa"
@@ -5843,6 +5855,10 @@ msgid "(Emails once a week max, &amp; we never sell your data.)"
 msgstr ""
 "(Correos electrónicos una vez por semana como máximo, y nunca vendemos sus "
 "datos)."
+
+#: retail/templates/shared/nav.html:43
+msgid "Want to get help on your repo? Easily get started!"
+msgstr "¿Quieres obtener ayuda sobre tu repositorio? ¡Comience fácilmente!"
 
 #: retail/templates/shared/nav.html:94 retail/templates/shared/nav.html:99
 msgid "FUND ISSUE"
@@ -7031,6 +7047,15 @@ msgstr "Kevin de Gitcoin.co"
 #: tdi/views.py:251
 msgid "Invite sent"
 msgstr "Invitar enviado"
+
+#~ msgid "Polish"
+#~ msgstr "polaco"
+
+#~ msgid "Chinese"
+#~ msgstr "chino"
+
+#~ msgid "Preferred language"
+#~ msgstr "Idioma preferido"
 
 #~ msgid ""
 #~ "Please wait a minute or two for web3 to sync\n"

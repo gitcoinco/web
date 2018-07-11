@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-11 13:26+0000\n"
+"POT-Creation-Date: 2018-07-11 17:21+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -41,14 +41,6 @@ msgstr "意大利"
 msgid "Korean"
 msgstr "朝鲜的"
 
-#: app/settings.py:146
-msgid "Polish"
-msgstr "抛光"
-
-#: app/settings.py:147
-msgid "Chinese"
-msgstr "中文"
-
 #: dashboard/models.py:176
 msgid "Whether the bounty is still open for fulfillments."
 msgstr "赏金是否仍然可以兑现。"
@@ -74,7 +66,7 @@ msgid "Admin override to mark as remarketing ready"
 msgstr "管理员覆盖以标记为再营销准备就绪"
 
 #: dashboard/models.py:1686 dashboard/templates/shared/bounty_def.html:24
-#: dashboard/views.py:661 dashboard/views.py:952
+#: dashboard/views.py:665 dashboard/views.py:956
 #: retail/templates/save_search.html:29
 msgid "Be the first to know about new funded issues."
 msgstr "成为第一个了解新资助问题的人。"
@@ -348,7 +340,7 @@ msgid "Funder"
 msgstr "出资者"
 
 #: dashboard/templates/bounty_details.html:168
-#: dashboard/templates/bounty_details.html:246
+#: dashboard/templates/bounty_details.html:246 marketing/views.py:64
 msgid "Email"
 msgstr "电子邮件"
 
@@ -702,7 +694,7 @@ msgstr "高级（7年以上经验）"
 #: dashboard/templates/fulfill_bounty.html:48
 #: dashboard/templates/fulfill_bounty.html:78
 #: dashboard/templates/shared/bounty_nav.html:41
-#: dashboard/templates/shared/no_issue_error.html:70 dashboard/views.py:730
+#: dashboard/templates/shared/no_issue_error.html:70 dashboard/views.py:734
 #: retail/templates/how_it_works_contributor.html:82
 msgid "Submit Work"
 msgstr "提交工作"
@@ -793,7 +785,7 @@ msgstr "取消赏金和回收资金"
 msgid "(Issue Submitters only)"
 msgstr "（仅限发布提交者）"
 
-#: dashboard/templates/kill_bounty.html:69 dashboard/views.py:778
+#: dashboard/templates/kill_bounty.html:69 dashboard/views.py:782
 msgid "Cancel Bounty"
 msgstr "取消赏金"
 
@@ -1473,7 +1465,7 @@ msgstr "价值：最高"
 msgid "Value: Lowest"
 msgstr "值：最低"
 
-#: dashboard/templates/shared/search_bar.html:44 dashboard/views.py:1130
+#: dashboard/templates/shared/search_bar.html:44 dashboard/views.py:1134
 #: retail/templates/save_search.html:41
 msgid "Save Search"
 msgstr "保存搜索"
@@ -1577,7 +1569,7 @@ msgstr "中间"
 
 #: dashboard/templates/shared/sidebar_search.html:108
 #: dashboard/templates/submit_bounty.html:89
-#: dashboard/templates/yge/send2.html:61 dashboard/views.py:1244
+#: dashboard/templates/yge/send2.html:61 dashboard/views.py:1248
 msgid "Advanced"
 msgstr "高级"
 
@@ -1835,7 +1827,7 @@ msgstr "无权 - 任何人都可以开始工作。"
 msgid "Approval Required - I will approve bounty hunters."
 msgstr "需要批准 - 我会批准赏金猎人。"
 
-#: dashboard/templates/submit_bounty.html:81 dashboard/views.py:946
+#: dashboard/templates/submit_bounty.html:81 dashboard/views.py:950
 msgid "Issue Details"
 msgstr "问题详情"
 
@@ -1960,7 +1952,7 @@ msgstr ""
 "据我所知，这些信息正在提交给公共的，不可变的区块链。没人，包括\n"
 "                      Gitcoin Core，将能够拿走我的资金或更改这些信息。"
 
-#: dashboard/templates/toolbox.html:37 dashboard/views.py:1285
+#: dashboard/templates/toolbox.html:37 dashboard/views.py:1289
 msgid "Toolbox"
 msgstr "工具箱"
 
@@ -2248,176 +2240,177 @@ msgid ""
 "have to let the tipee know manually about their tip."
 msgstr "呃哦！没有通过Github API找到该用户的电子邮件地址。你必须让Tipee手动了解他们的提示。"
 
-#: dashboard/views.py:626
+#: dashboard/views.py:630
 msgid "Onboarding Flow"
 msgstr "入职流程"
 
-#: dashboard/views.py:638 retail/templates/index.html:225
-#: retail/templates/shared/footer.html:61 retail/templates/shared/nav.html:83
+#: dashboard/views.py:642 retail/templates/emails/start_work_rejected.html:33
+#: retail/templates/index.html:225 retail/templates/shared/footer.html:61
+#: retail/templates/shared/nav.html:83
 msgid "Issue Explorer"
 msgstr "问题浏览器"
 
-#: dashboard/views.py:670
+#: dashboard/views.py:674
 msgid "Create Funded Issue"
 msgstr "创建资助问题"
 
-#: dashboard/views.py:700
+#: dashboard/views.py:704
 msgid "Process Issue"
 msgstr "流程问题"
 
-#: dashboard/views.py:754
+#: dashboard/views.py:758
 msgid "Increase Bounty"
 msgstr "增加赏金"
 
-#: dashboard/views.py:790
+#: dashboard/views.py:794
 msgid "Bounty is now hidden"
 msgstr "赏金现在被隐藏了"
 
-#: dashboard/views.py:792 dashboard/views.py:804 dashboard/views.py:819
-#: dashboard/views.py:831 dashboard/views.py:850 dashboard/views.py:863
+#: dashboard/views.py:796 dashboard/views.py:808 dashboard/views.py:823
+#: dashboard/views.py:835 dashboard/views.py:854 dashboard/views.py:867
 #, fuzzy
 #| msgid "Only the funder of this bounty may snooze warnings."
 msgid "Only the funder of this bounty may do this."
 msgstr "只有这个赏金的出资者可以做到这一点。"
 
-#: dashboard/views.py:802
+#: dashboard/views.py:806
 #, fuzzy
 #| msgid "Your invite has been sent."
 msgid "Bounty message has been sent"
 msgstr "已发送赏金消息"
 
-#: dashboard/views.py:815
+#: dashboard/views.py:819
 msgid "Bounty is now remarket ready"
 msgstr "赏金现在已经准备就绪了"
 
-#: dashboard/views.py:817
+#: dashboard/views.py:821
 msgid "Bounty is now NOT remarket ready"
 msgstr "赏金现在还没有准备就绪"
 
-#: dashboard/views.py:829
+#: dashboard/views.py:833
 msgid "Bounty auto approvals are now suspended"
 msgstr "Bounty汽车批准现已暂停"
 
-#: dashboard/views.py:844
+#: dashboard/views.py:848
 msgid "Not a valid status choice.  Please choose a valid status (no quotes): "
 msgstr "不是有效的状态选择。请选择有效状态（无引号）："
 
-#: dashboard/views.py:848
+#: dashboard/views.py:852
 #, python-brace-format
 msgid "Status updated to \"{admin_override_satatus}\" "
 msgstr "状态已更新为“{admin_override_satatus}”"
 
-#: dashboard/views.py:861
+#: dashboard/views.py:865
 #, python-brace-format
 msgid "Warning messages have been snoozed for {snooze_days} days"
 msgstr "警告讯息已延期{snooze_days}天"
 
-#: dashboard/views.py:872
+#: dashboard/views.py:876
 msgid ""
 "You must be logged in to approve or reject worker submissions. Please login "
 "and try again."
 msgstr "您必须登录才能批准或拒绝工作人员提交。请登录并重试。"
 
-#: dashboard/views.py:881
+#: dashboard/views.py:885
 msgid ""
 "This worker does not exist or is not in a pending state. Please check your "
 "link and try again."
 msgstr "此工作程序不存在或未处于暂挂状态。请检查您的链接，然后重试。"
 
-#: dashboard/views.py:909
+#: dashboard/views.py:913
 #, python-brace-format
 msgid "{worker} has been {mutate_worker_action_past_tense}"
 msgstr "{worker}已经{mutate_worker_action_past_tense}"
 
-#: dashboard/views.py:911
+#: dashboard/views.py:915
 #, fuzzy
 #| msgid "Only the funder of this bounty may snooze warnings."
 msgid "Only the funder of this bounty may perform this action."
 msgstr "只有这个赏金的出资者可以执行此操作。"
 
-#: dashboard/views.py:947
+#: dashboard/views.py:951
 msgid "Funded Issue Details | Gitcoin"
 msgstr "资金问题详情| Gitcoin"
 
-#: dashboard/views.py:1141
+#: dashboard/views.py:1145
 msgid "Quickstart Video"
 msgstr "快速入门视频"
 
-#: dashboard/views.py:1240
+#: dashboard/views.py:1244
 msgid "Basics"
 msgstr "基本"
 
-#: dashboard/views.py:1241 dashboard/views.py:1288
+#: dashboard/views.py:1245 dashboard/views.py:1292
 msgid "Accelerate your dev workflow with Gitcoin's incentivization tools."
 msgstr "使用Gitcoin的激励工具加速您的开发工作流程。"
 
-#: dashboard/views.py:1245
+#: dashboard/views.py:1249
 msgid "Take your OSS game to the next level!"
 msgstr "把你的OSS游戏提升到一个新的水平！"
 
-#: dashboard/views.py:1248 retail/templates/shared/footer.html:72
+#: dashboard/views.py:1252 retail/templates/shared/footer.html:72
 msgid "Community"
 msgstr "社区"
 
-#: dashboard/views.py:1249
+#: dashboard/views.py:1253
 msgid "Friendship, mentorship, and community are all part of the process."
 msgstr "友谊，指导和社区都是这个过程的一部分。"
 
-#: dashboard/views.py:1252
+#: dashboard/views.py:1256
 msgid "Tools to BUIDL Gitcoin"
 msgstr "BUIDL Gitcoin的工具"
 
-#: dashboard/views.py:1253
+#: dashboard/views.py:1257
 msgid "Gitcoin is built using Gitcoin.  Purdy cool, huh? "
 msgstr "Gitcoin使用Gitcoin构建。 Purdy很酷，是吧？"
 
-#: dashboard/views.py:1256
+#: dashboard/views.py:1260
 msgid "Tools in Alpha"
 msgstr "Alpha中的工具"
 
-#: dashboard/views.py:1257
+#: dashboard/views.py:1261
 msgid "These fresh new tools are looking for someone to test ride them!"
 msgstr "这些新的新工具正在寻找人来测试他们！"
 
-#: dashboard/views.py:1260
+#: dashboard/views.py:1264
 msgid "Tools Coming Soon"
 msgstr "工具即将推出"
 
-#: dashboard/views.py:1261
+#: dashboard/views.py:1265
 msgid ""
 "These tools will be ready soon.  They'll get here sooner if you help BUIDL "
 "them :)"
 msgstr "这些工具即将准备就绪。如果你帮助BUIDL他们会更快到达这里:)"
 
-#: dashboard/views.py:1264
+#: dashboard/views.py:1268
 msgid "Just for Fun"
 msgstr "只是为了好玩"
 
-#: dashboard/views.py:1265
+#: dashboard/views.py:1269
 msgid "Some tools that the community built *just because* they should exist."
 msgstr "一些社区建立的工具*仅仅是因为它们应该存在。"
 
-#: dashboard/views.py:1286
+#: dashboard/views.py:1290
 msgid "Gitcoin Toolbox"
 msgstr "Gitcoin工具箱"
 
-#: dashboard/views.py:1290
+#: dashboard/views.py:1294
 msgid "Don't Miss New Tools!"
 msgstr "不要错过新工具！"
 
-#: dashboard/views.py:1394 ethos/views.py:225
+#: dashboard/views.py:1398 ethos/views.py:225
 msgid "Bad request"
 msgstr "错误的请求"
 
-#: dashboard/views.py:1412
+#: dashboard/views.py:1416
 msgid "Coin Redemption"
 msgstr "硬币赎回"
 
-#: dashboard/views.py:1413
+#: dashboard/views.py:1417
 msgid "PENDING"
 msgstr "PENDING"
 
-#: dashboard/views.py:1420
+#: dashboard/views.py:1424
 msgid "INITIAL"
 msgstr "初始"
 
@@ -2957,6 +2950,34 @@ msgstr "Gitcoin Discord集成工作正常。"
 msgid "The test message was sent to Discord."
 msgstr "测试消息已发送到Discord。"
 
+#: marketing/views.py:67 retail/templates/shared/footer.html:81
+#: retail/templates/shared/footer.html:86
+msgid "Privacy"
+msgstr "隐私"
+
+#: marketing/views.py:70
+#, fuzzy
+#| msgid "Match"
+msgid "Matching"
+msgstr "匹配"
+
+#: marketing/views.py:73 marketing/views.py:246
+#: retail/templates/settings/feedback.html:7
+msgid "Feedback"
+msgstr "反馈"
+
+#: marketing/views.py:85
+#, fuzzy
+#| msgid "Amount"
+msgid "Account"
+msgstr "帐户"
+
+#: marketing/views.py:88
+#, fuzzy
+#| msgid "Tokens"
+msgid "Token"
+msgstr "代币"
+
 #: marketing/views.py:163
 msgid "Privacy Settings"
 msgstr "隐私设置"
@@ -2973,10 +2994,6 @@ msgstr "匹配设置"
 #: marketing/views.py:241
 msgid "We've received your feedback."
 msgstr "我们已收到您的反馈。"
-
-#: marketing/views.py:246 retail/templates/settings/feedback.html:7
-msgid "Feedback"
-msgstr "反馈"
 
 #: marketing/views.py:288
 msgid "Invalid Email"
@@ -4205,7 +4222,7 @@ msgstr "查看案例研究"
 msgid "Featured Videos"
 msgstr "精选视频"
 
-#: retail/templates/help.html:84
+#: retail/templates/help.html:84 retail/templates/shared/nav.html:68
 msgid "How it works"
 msgstr "怎么运行的"
 
@@ -5273,8 +5290,8 @@ msgid "Frequency"
 msgstr "频率"
 
 #: retail/templates/settings/email.html:37
-msgid "Preferred language"
-msgstr "首选语言"
+msgid "Preferred language - Non-English currently in Alpha"
+msgstr "首选语言 - 目前在Alpha中的非英语"
 
 #: retail/templates/settings/ens.html:8
 msgid ""
@@ -5505,11 +5522,6 @@ msgstr "法律"
 msgid "Terms"
 msgstr "条款"
 
-#: retail/templates/shared/footer.html:81
-#: retail/templates/shared/footer.html:86
-msgid "Privacy"
-msgstr "隐私"
-
 #: retail/templates/shared/footer.html:84
 msgid "Home"
 msgstr "家"
@@ -5535,6 +5547,10 @@ msgstr "激励工作或货币化。"
 #: retail/templates/shared/mailchimp.html:5
 msgid "(Emails once a week max, &amp; we never sell your data.)"
 msgstr "（每周最多发送一次电子邮件，我们绝不会出售您的数据。）"
+
+#: retail/templates/shared/nav.html:43
+msgid "Want to get help on your repo? Easily get started!"
+msgstr "想要获得有关回购的帮助吗？轻松上手！"
 
 #: retail/templates/shared/nav.html:94 retail/templates/shared/nav.html:99
 msgid "FUND ISSUE"
@@ -6606,6 +6622,15 @@ msgstr "凯文从Gitcoin.co"
 #: tdi/views.py:251
 msgid "Invite sent"
 msgstr "邀请已发送"
+
+#~ msgid "Polish"
+#~ msgstr "抛光"
+
+#~ msgid "Chinese"
+#~ msgstr "中文"
+
+#~ msgid "Preferred language"
+#~ msgstr "首选语言"
 
 #~ msgid ""
 #~ "Please wait a minute or two for web3 to sync\n"

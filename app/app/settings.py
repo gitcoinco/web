@@ -143,8 +143,8 @@ LANGUAGES = [
     ('hi', _('Hindi')),
     ('it', _('Italian')),
     ('ko', _('Korean')),
-    ('po', _('Polish')),
-    ('zh', _('Chinese')),
+    # ('po', _('Polish')),
+    # ('zh', _('Chinese')),
 ]
 
 if not ENV in ['local', 'test']:
