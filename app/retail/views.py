@@ -198,7 +198,7 @@ def contributor_landing(request):
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'home',
-        'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter."),
+        'newsletter_headline': _("Be the first to find out about newly posted bounties."),
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
         'projects': projects,
