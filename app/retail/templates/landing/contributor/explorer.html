@@ -21,12 +21,12 @@
 <div>
   <div class="col text-center">
     <!-- TODO : Language Logo  -->
-    <h2>Open Funded {{ tech_stack|capfirst }} Work</h2>
+    <h2>{% trans "Open Funded" %} {{ tech_stack|capfirst }} {% trans "Work" %}</h2>
   </div>
   <div class="mb-4 col offset-lg-1 col-lg-10 profile-bounties featured-bounties profile-bounties--loading ">
   </div>
   <div class="col text-center">
-    <a href="explorer" class="button button--primary" target="_blank" rel="noopener noreferrer">Get Started With {{ tech_stack|capfirst }} </a> <!-- TODO: Need to invoke resetFilters & set localStorage props -->
+    <a href="{% url "explorer" %}" class="button button--primary" target="_blank" rel="noopener noreferrer">{% trans "Get Started With" %} {{ tech_stack|capfirst }} </a> <!-- TODO: Need to invoke resetFilters & set localStorage props -->
   </div>
 </div>
 {% include 'shared/result.html' %}

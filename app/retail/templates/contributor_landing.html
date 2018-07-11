@@ -85,9 +85,9 @@
 
           <div class="col-12 col-md-8 col-lg-6 text-center text-white">
             <h2 class="join-gitcoin-heading">{% trans "<span class=\"light\">All that's left to do is to join</span> <strong>Gitcoin</strong>" %}</h2>
-            <div class="mt-4 contributors-cta-text light">Start exploring <strong>{{available_bounties_count}}</strong> bounties worth <strong>${{available_bounties_worth}}</strong></div>
+            <div class="mt-4 contributors-cta-text light">{% trans "Start exploring" %} <strong>{{ available_bounties_count }}</strong> {% trans "bounties worth" %} <strong>${{ available_bounties_worth }}</strong></div>
             <div class="mt-5">
-              <a class="btn btn-gc-purple text-purple" role="button" href="onboard/contributor" target="_blank" rel="noopener noreferrer">
+              <a class="btn btn-gc-purple text-purple" role="button" href="{% url "onboard" "contributor" %}" target="_blank" rel="noopener noreferrer">
                 <span class="text-white">{% trans "Get Started" %}</span>
               </a>
             </div>
@@ -107,9 +107,9 @@
     <script>
       var uri;
       if(document.location.href.startsWith('https://gitcoin.co'))
-        uri = 'network=mainnet&idx_status=open&raw_data={{ tech_stack }}';
+        uri = 'network=mainnet&idx_status=open&keyword={{ tech_stack }}';
       else
-        uri = 'idx_status=open&raw_data={{ tech_stack }}';
+        uri = 'idx_status=open&keyword={{ tech_stack }}';
       fetchBountiesAndAddToList(uri, '.featured-bounties', 5);
     </script>
   {% endif %}
