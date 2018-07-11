@@ -82,6 +82,22 @@ class BountyQuerySet(models.QuerySet):
         else:
             return
 
+    def keyword(self, keyword):
+        """Filter results to all Bounty objects containing the keywords.
+
+        Args:
+            keyword (str): The keyword to search title, issue description, and issue keywords by.
+
+        Returns:
+            dashboard.models.BountyQuerySet: The QuerySet of bounties filtered by keyword.
+
+        """
+        return self.filter(
+            Q(metadata__issueKeywords__icontains=keyword) | \
+            Q(title__icontains=keyword) | \
+            Q(issue_description__icontains=keyword)
+        )
+
 
 class Bounty(SuperModel):
     """Define the structure of a Bounty.
