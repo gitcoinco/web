@@ -359,7 +359,7 @@ a.btn {
   max-width: 100%;
   width: 13rem;
   z-index: 2;
-  top: -2rem;
+  top: 2rem;
   padding-right: 1rem;
 }
 

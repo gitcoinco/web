@@ -41,6 +41,9 @@ class Command(BaseCommand):
         parser.add_argument('network', default='rinkeby', type=str)
 
     def handle(self, *args, **options):
+        # config
+        block = 'latest'
+
         # setup
         network = options['network']
         web3 = get_web3(network)
@@ -50,7 +53,7 @@ class Command(BaseCommand):
 
         while True:
             # wait for a new block
-            block = web3.eth.getBlock('latest')
+            block = web3.eth.getBlock(block)
             block_hash = block['hash']
 
             if last_block_hash == block_hash:
