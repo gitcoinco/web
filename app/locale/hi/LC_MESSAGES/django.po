@@ -2397,7 +2397,7 @@ msgstr ""
 #: dashboard/views.py:909
 #, python-brace-format
 msgid "{worker} has been {mutate_worker_action_past_tense}"
-msgstr "{कर्मचारी} {mutate_worker_action_past_tense} रहा है"
+msgstr "{worker} {mutate_worker_action_past_tense} रहा है"
 
 #: dashboard/views.py:911
 #, fuzzy
@@ -3937,7 +3937,7 @@ msgstr "अनुस्मारक: युक्ति जल्द ही स�
 msgid ""
 "%(tip.from_name)s sent you a tip worth %(amount)s %(warning)s %(tokenName)s"
 msgstr ""
-"% (tip.from_name) ने आपको %(amount)s %(warning)s %(tokenName)sके एक टिप भेजा"
+"%(tip.from_name)s ने आपको %(amount)s %(warning)s %(tokenName)s के एक टिप भेजा"
 " है"
 
 #: retail/templates/emails/new_tip.html:53
@@ -4215,7 +4215,7 @@ msgstr "इस सूची से।"
 #: retail/templates/error.html:22
 #, python-format
 msgid "Error %(code)s."
-msgstr "एरर कोड__।"
+msgstr "एरर %(code)s."
 
 #: retail/templates/error.html:23
 msgid ""

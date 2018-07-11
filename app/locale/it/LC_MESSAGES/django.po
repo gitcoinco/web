@@ -2617,7 +2617,7 @@ msgstr ""
 #: ethos/views.py:221
 #, python-brace-format
 msgid "Error while tweeting to Twitter. {e}"
-msgstr "Errore durante il tweeting su Twitter. {E}"
+msgstr "Errore durante il tweeting su Twitter. {e}"
 
 #: ethos/views.py:233
 msgid "Error while creating transaction. Please try again"
@@ -2708,8 +2708,8 @@ msgid ""
 "Page %(bounties_paginator.number)s of "
 "%(bounties_paginator.paginator.num_pages)s."
 msgstr ""
-"Pagina% (bounties_paginator.number) s di% "
-"(bounties_paginator.paginator.num_pages) s."
+"Pagina %(bounties_paginator.number)s di "
+"%(bounties_paginator.paginator.num_pages)s."
 
 #: external_bounties/templates/external_bounties.html:144
 msgid "next"
@@ -2867,8 +2867,8 @@ msgid ""
 "    %(obj.github_username)s with a wallet address of %(obj.address)s"
 msgstr ""
 "Finanziamento di questa richiesta di rubinetto, trasferirete "
-"%(faucet_amount)s ETH a% (obj.github_username) s con un indirizzo di "
-"portafogli di% (obj.address) s"
+"%(faucet_amount)s ETH a %(obj.github_username)s con un indirizzo di "
+"portafogli di %(obj.address)s"
 
 #: faucet/templates/process_faucet_request.html:70
 msgid ""
@@ -3989,7 +3989,7 @@ msgstr "Promemoria: la punta scade presto"
 msgid ""
 "%(tip.from_name)s sent you a tip worth %(amount)s %(warning)s %(tokenName)s"
 msgstr ""
-"% (tip.from_name) ha inviato un suggerimento per %(amount)s %(warning)s "
+"%(tip.from_name)s ha inviato un suggerimento per %(amount)s %(warning)s "
 "%(tokenName)s"
 
 #: retail/templates/emails/new_tip.html:53
@@ -4273,7 +4273,7 @@ msgstr "da questa lista."
 #: retail/templates/error.html:22
 #, python-format
 msgid "Error %(code)s."
-msgstr "Codice di errore__."
+msgstr "Errore %(code)s"
 
 #: retail/templates/error.html:23
 msgid ""

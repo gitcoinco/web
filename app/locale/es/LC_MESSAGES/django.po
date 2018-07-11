@@ -5939,7 +5939,7 @@ msgid ""
 "(more on this here) </a>"
 msgstr ""
 "en ser <i> implacablemente impulsado por la misión </ i>. <a "
-"href=\"_missionurl__\"> (más sobre esto aquí) </a>"
+"href=\"%(missionurl)s\"> (más sobre esto aquí) </a>"
 
 #: retail/templates/whitepaper_new.html:45
 msgid ""

@@ -2532,7 +2532,7 @@ msgstr "Twitter 계정을 가져 오는 중에 오류가 발생했습니다. 다
 #: ethos/views.py:221
 #, python-brace-format
 msgid "Error while tweeting to Twitter. {e}"
-msgstr "트위터에 트윗하는 동안 오류가 발생했습니다. {이자형}"
+msgstr "트위터에 트윗하는 동안 오류가 발생했습니다. {e}"
 
 #: ethos/views.py:233
 msgid "Error while creating transaction. Please try again"
@@ -2621,8 +2621,8 @@ msgid ""
 "Page %(bounties_paginator.number)s of "
 "%(bounties_paginator.paginator.num_pages)s."
 msgstr ""
-"% (bounties_paginator.paginator.num_pages)의 페이지 % "
-"(bounties_paginator.number) s."
+"%(bounties_paginator.paginator.num_pages)s 의 페이지 "
+"%(bounties_paginator.number)s."
 
 #: external_bounties/templates/external_bounties.html:144
 msgid "next"
@@ -2776,7 +2776,7 @@ msgid ""
 "    %(obj.github_username)s with a wallet address of %(obj.address)s"
 msgstr ""
 "이 수도꼭지 요청에 자금을 제공하면 %(faucet_amount)s ETH를 (으)로 이전합니다.\n"
-"    % (obj.address) s의 지갑 주소가있는 % (obj.github_username) s"
+"    %(obj.address)s 의 지갑 주소가있는 %(obj.github_username)s"
 
 #: faucet/templates/process_faucet_request.html:70
 msgid ""
@@ -3815,7 +3815,7 @@ msgstr "알림 : 팁이 곧 만료됩니다."
 #, python-format
 msgid ""
 "%(tip.from_name)s sent you a tip worth %(amount)s %(warning)s %(tokenName)s"
-msgstr "% (tip.from_name) 님이 팁을 보냈습니다 %(amount)s %(warning)s %(tokenName)s"
+msgstr "%(tip.from_name)s 님이 팁을 보냈습니다 %(amount)s %(warning)s %(tokenName)s"
 
 #: retail/templates/emails/new_tip.html:53
 #, python-format
@@ -4071,7 +4071,7 @@ msgstr "이 목록에서."
 #: retail/templates/error.html:22
 #, python-format
 msgid "Error %(code)s."
-msgstr "에러 코드__."
+msgstr "에러 %(code)s."
 
 #: retail/templates/error.html:23
 msgid ""
