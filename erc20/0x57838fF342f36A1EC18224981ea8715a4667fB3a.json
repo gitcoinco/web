@@ -1,0 +1,20 @@
+{
+  "symbol": "QUBE",
+  "address": "0x57838fF342f36A1EC18224981ea8715a4667fB3a",
+  "overview":{
+        "en": "QUantitative Bitcoin Exchange, referred to as QUBE. QUBE intelligent quantitative analysis engine, based on data large-scale processing and deep learning algorithm data reduction, noise removal, feature extraction, model training and other processes, after the neural network quantization factor optimization blame, the final result output. The core is to process massive data, including blockchain data, various trading platform data, network information public opinion data, etc. Through the training of the series of algorithm models under the artificial intelligence technology system, the game behavior of the digital money market is finally carried out. Model prediction and data quantification.",
+        "zh": "QUantitative Bitcoin Exchange，简称QUBE。QUBE智能量化分析引擎，解决方案基于数据大规模处理和深度学习算法的数据降维、 噪点去除、特征提取、模型训练等过程，在神经网络量化因子优化归壹后，形成最终结 果输出。其核心是对海量数据进行处理，包括区块链数据、各类交易平台数据，网络信息舆情数据等，通过人工智能技术体系下的壹系列算法模型训练， 最终对数字货币市场各类博弈行为进行模型预测和数据量化。"
+  },
+  "email": "info@qube.vip",
+  "website": "https://www.qube.vip",
+  "whitepaper": "http://www.qube.vip/download/QUBE_White_Paper_A_Bloomberg_for_Blockchain_cn.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-01-16",
+  "initial_price":{
+  },
+  "links": {
+    "twitter": "https://twitter.com/QUBEofficial_",
+    "telegram": "https://t.me/qubefans",
+    "facebook": "https://www.facebook.com/Qubevip-360748657755035/"
+  }
+}
