@@ -68,9 +68,9 @@ div.tooltip {
 
 {% include 'shared/gas_advisories.html' %}
 
-<h1> {% trans "Predicted Confirmation Times vs Gas Usage" %} <span id="alpha">{% trans "Alpha" %}</span> </h1>
+<h1> {% trans "Gas History to confirm below" %} {{below}} mins ({{breakdown}}) <span id="alpha">{% trans "Alpha" %}</span> </h1>
 
-{% if conf_time_spread == '[]' %}
+{% if gas_histories == '[]' %}
   <p>
     {% blocktrans %} We are unable to sync gas data at this time.  We recommend you check out <a href="https://ethgasstation.info/predictionTable.php" target="_blank" rel="noopener noreferrer">ETH Gas Station</a> instead.{% endblocktrans %}
   </p>
@@ -84,7 +84,7 @@ div.tooltip {
     .attr("class", "tooltip")
     .style("opacity", 0);
 
-  var source = {{conf_time_spread | safe}};
+  var source = {{gas_histories | safe}};
   var gas_times = source;
   data = []
   source.forEach(function(d) {
@@ -98,7 +98,7 @@ div.tooltip {
       width = 960 - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom;
 
-  var x = d3.scaleLinear().range([0, width]);
+  var x = d3.scaleLinear().range([width, 0]);
   var y = d3.scaleLinear().range([height, 0]);
 
   // define the line
@@ -130,7 +130,7 @@ div.tooltip {
     .on('mouseover', function(d) {
       var tooltip_msg = '<div>';
       tooltip_msg = `Gas Price: ${d.gas_price}`;
-      tooltip_msg = tooltip_msg + `<br/>Confirmation time: ${d.confirmation_time} min`;
+      tooltip_msg = tooltip_msg + `<br/>Time ago: ${d.confirmation_time} {{breakdown_ui}}`;
       tooltip_msg = tooltip_msg + '</div>';
       tooltip.transition().style("opacity", 1);
       tooltip.html(tooltip_msg).style("left", (d3.event.pageX + 15) + "px").style("top", (d3.event.pageY - 28) + "px");
@@ -151,7 +151,7 @@ div.tooltip {
                            (height + margin.top + 20) + ")")
       .style("text-anchor", "middle")
       .attr("class", "axis")
-      .text("Confirmation Time (minutes)");
+      .text("{{breakdown_ui}}-ago");
 
   // y Axis
   svg.append("g")
@@ -179,116 +179,29 @@ div.tooltip {
   }
   </style>
 
-  <h2>{% trans "Gitcoin Bounties Gas Estimator" %}</h2>
-  <div style="text-align:center; ">
-    <table id="estimateTable">
-       <tr>
-          <td>
-            Gas Price (gwei)
-          </td>
-          <td>
-            Product
-          </td>
-          <td>
-            Persona
-          </td>
-          <td>
-            Action
-          </td>
-          <td>
-            Gas Needed (wei)
-          </td>
-          <td>
-            Total Cost (eth)
-          </td>
-          <td>
-            Total Cost (USD)
-          </td>
-          <td>
-            Conf Time (minutes)
-          </td>
-       </tr>
-       <tr class="all">
-          <td>
-            <input class="gas_cost" type="number" min=0 value="{{start_gas_cost |floatformat:0}}" style="border: 1px solid red; ">
-          </td>
-          <td>
-            N/A
-          </td>
-          <td>
-            N/A
-          </td>
-          <td>
-            N/A
-          </td>
-          <td>
-            N/A
-          </td>
-          <td>
-            N/A
-          </td>
-          <td>
-            N/A
-          </td>
-          <td>
-            N/A
-          </td>
-       </tr>
-       {% for action in actions %}
-         <tr class="new_bounty">
-            <td>
-                Please Edit above ^^
-            </td>
-            <td>
-              {{action.product}}
-            </td>
-            <td>
-              {{action.persona}}
-            </td>
-            <td>
-              <span class="name">{{action.name}}</span>
-              <input type="hidden" class="target" value="{{action.target}}" />
-            </td>
-            <td>
-              <input class="gas_needed" type="text" disabled="disabled">
-            </td>
-            <td>
-              <input class="total_cost_eth" type="text" disabled="disabled">
-            </td>
-            <td>
-              <input class="total_cost_usd" type="text" disabled="disabled">
-            </td>
-            <td>
-              <input class="total_time" type="text" disabled="disabled">
-            </td>
-         </tr>
-       {% endfor %}
+  <div style="font-size: 8px;">
+  Other Options:
+  <BR>
+  <BR>
 
-    </table>
+  Granularity: 
+  {% for granularity in granularity_options %}
+  (<a href="{%url 'gas_history_view'%}?breakdown={{granularity}}&below={{below}}">{{granularity}}</a>)
+  {% endfor %}
+  <BR>
+  Below: 
+  {% for below in below_options %}
+  (<a href="{%url 'gas_history_view'%}?breakdown={{breakdown}}&below={{below}}">{{below}} mins</a>)
+  {% endfor %}
+
+  </div>
+
   </div>
   <script>
-    document.eth_to_usd = {{eth_to_usd}};
   </script>
-
-  
-  <h2>{% trans "Useful Links" %}</h2>
-  {% blocktrans %}To see the data in table format, check out <a href="https://ethgasstation.info/predictionTable.php" target="_blank" rel="noopener noreferrer">ETH Gas Station</a>{% endblocktrans %}
-
-  <br>
-  {% blocktrans %}To see this information persisted in-browser check out <a href=https://chrome.google.com/webstore/detail/ethereum-gas-price-extens/innfmlnnhfcebjcnfopadflecemoddnp target="_blank" rel="noopener noreferrer">this chrome extension</a>{% endblocktrans %}
-
-  <br>
-  {% blocktrans %}To see the gas price history{% endblocktrans %} <a href="{% url 'gas_history_view' %}">click here</a>
 
 
 {% endif %}
-
-<h2>{% trans "FAQ" %}</h2>
-<a href="https://github.com/gitcoinco/gitcoinco/issues/5" target="_blank" rel="noopener noreferrer">{% trans "Why do we need to pay gas?" %}</a>
-<br>
-<a href="https://github.com/gitcoinco/gitcoinco/issues/14" target="_blank" rel="noopener noreferrer">{% trans "What are the advantages of Ethereum-based applications??" %}</a>
-<br>
-<a href="https://github.com/gitcoinco/gitcoinco/issues/4" target="_blank" rel="noopener noreferrer">{% trans "I can't figure this out.  Help!" %}</a>
 
 </section>
 
