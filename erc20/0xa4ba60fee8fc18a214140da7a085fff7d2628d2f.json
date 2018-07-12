@@ -1,0 +1,18 @@
+{
+  "symbol": "ESA",
+  "address": "0xa4ba60fee8fc18a214140da7a085fff7d2628d2f",
+  "overview":{
+        "en": "E-sports Alliance Chain is an ecological system based on public blockchain technology, which provides event and game access services to global event organizers and game developers, and provides players with rich content and one-stop service experience of e-sports, aiming to build the world's first decentralized ecosphere of e-sports alliances.",
+        "zh": "E-sports Alliance Chain电子竞技联盟公有链是以公有链技术为基础，面向全球赛事举办商、游戏开发商提供赛事、游戏接入服务的生态体系，为玩家提供丰富多彩的竞技内容及竞技游戏的一站式服务体验，打造全球首款去中心化的竞技联盟生态圈。"
+  },
+  "email": "esports.alliance.chain@gmail.com",
+  "website": "https://www.esportschain.pro/",
+  "whitepaper": "https://www.esportschain.pro/img/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-10",
+  "initial_price":{
+  },
+  "links": {
+    "telegram": "https://t.me/EsportsAllianceChain"
+  }
+}
