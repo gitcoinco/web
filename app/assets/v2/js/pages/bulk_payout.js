@@ -199,7 +199,7 @@ $(document).ready(function($) {
     first_transaction = {
       'id': 1,
       'type': 'cancel',
-      'reason': 'Refund of Bounty Stake',
+      'reason': 'Bounty Stake',
       'amount': '+' + original_amount + ' ' + denomination
     };
     transactions.push(first_transaction);

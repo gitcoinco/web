@@ -46,7 +46,7 @@
     </div>
   </div>
 </div>
-{% elif page == 'process_bounty' or page == 'payout_bounty' %}
+{% elif page == 'process_bounty' %}
 <div id="no_issue_error" class="submit-notification container-fluid" style="display: block; background-color: #fe006a;">
   <div class="row align-items-center px-4 py-2 text-center text-lg-left">
     <div class="col-lg-10 col-sm-12 py-2 px-5">
@@ -54,7 +54,24 @@
       <p>
         <ol class="pl-3 mb-0">
           <li>{% trans "Make sure the submitter has completed the requirements to the specifications of your bounty." %}</li>
-          <li>{% trans "Feedbacks and gratitude are always nice ways to continue a relationship." %}</li>
+          <li>{% trans "Feedback and gratitude are always nice ways to continue a relationship." %}</li>
+        </ol>
+      </p>
+    </div>
+    <div class="col-lg-2 col-sm-12">
+      <img src="{% static "v2/images/box.svg" %}">
+    </div>
+  </div>
+</div>
+{% elif page == 'payout_bounty' %}
+<div id="no_issue_error" class="submit-notification container-fluid" style="display: block; background-color: #fe006a;">
+  <div class="row align-items-center px-4 py-2 text-center text-lg-left">
+    <div class="col-lg-10 col-sm-12 py-2 px-5">
+      <h3>{% trans "Paying out a bounty is Excciting" %}</h3>
+      <p>
+        <ol class="pl-3 mb-0">
+          <li>{% trans "Make sure the submitters have completed the requirements to the specifications of your bounty." %}</li>
+          <li>{% trans "Feedback and gratitude are always nice ways to continue a relationship." %}</li>
         </ol>
       </p>
     </div>
