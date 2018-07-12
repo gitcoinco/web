@@ -22,16 +22,55 @@ import time
 from django.core.management.base import BaseCommand
 
 from dashboard.utils import (
-    get_bounty, get_web3, getBountyContract, getStandardBountiesContractAddresss, web3_process_bounty,
+    Web3, get_bounty, get_web3, getBountyContract, getStandardBountiesContractAddresss, web3_process_bounty,
 )
 
-logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
+logging.getLogger("web3.RequestManager").setLevel(logging.WARNING)
+logging.getLogger("web3.providers.WebsocketProvider").setLevel(logging.WARNING)
+logging.getLogger("websockets").setLevel(logging.WARNING)
 
 
-def process_bounty(bounty_id, network):
-    bounty = get_bounty(bounty_id, network)
-    return web3_process_bounty(bounty)
+EVENTS = [
+    'BountyIssued',
+    'BountyActivated',
+    'ContributionAdded',
+    'BountyFulfilled',
+    'FulfillmentAccepted',
+    'BountyChanged',
+    'BountyKilled',
+    'PayoutIncreased',
+    'FulfillmentUpdated',
+    'DeadlineExtended',
+    'IssuerTransferred'
+]
+
+
+def process_entry(entry, network):
+    event = entry.event
+    tx_hash = Web3.toHex(entry.transactionHash)
+    bounty_id = entry.args.get('bountyId') or entry.args.get('_bountyId')
+    subdomain = ''
+    if network != 'mainnet':
+        subdomain = f'{network}.'
+    print(f'{event} {bounty_id} https://{subdomain}etherscan.io/tx/{tx_hash}')
+    print(entry.args)
+
+    try:
+        bounty = get_bounty(bounty_id, network)
+        did_change, old_bounty, new_bounty = web3_process_bounty(bounty)
+        tx_hashes = new_bounty.tx_hashes
+        hashes_list = tx_hashes.get(event, [])
+        if tx_hash not in hashes_list:
+            hashes_list.append(tx_hash)
+            tx_hashes[event] = hashes_list
+            new_bounty.save()
+        return True
+    except Exception as e:
+        print(e)
+        return False
+
+    return True
 
 
 class Command(BaseCommand):
@@ -39,47 +78,49 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('network', default='rinkeby', type=str)
+        parser.add_argument('block', default=-1, type=int)
 
     def handle(self, *args, **options):
         # config
-        block = 'latest'
+        network = options['network']
+        block = options['block']
+        if block == -1:
+            block = 'latest'
 
         # setup
-        network = options['network']
         web3 = get_web3(network)
-        contract_address = getStandardBountiesContractAddresss(network)
         contract = getBountyContract(network)
-        last_block_hash = None
+        # contract.eventFilter('FulfillmentAccepted', { 'fromBlock': block })
+        event_listeners = {}
 
         while True:
-            # wait for a new block
-            block = web3.eth.getBlock('latest')
-            block_hash = block['hash']
+            for event_name in EVENTS:
+                bootstrap = False
+                listener, last_block = event_listeners.get(event_name, (None, None))
 
-            if last_block_hash == block_hash:
+                if not last_block:
+                    last_block = block
+
+                if not listener:
+                    listener = contract.events[event_name].createFilter(fromBlock=last_block)
+                    # bootstrap with get_all_entries
+                    # because get_new_entries does not return events from 'old' transactions
+                    bootstrap = True
+
+                try:
+                    if bootstrap:
+                        entries = listener.get_all_entries()
+                    else:
+                        entries = listener.get_new_entries()
+
+                    print(f'processing {event_name} bootstrap={bootstrap} len={len(entries)} last_block={last_block}')
+                    for entry in entries:
+                        process_entry(entry, network)
+                        last_block = entry.blockNumber
+                    print(f'last_block={last_block}')
+                except Exception as e:
+                    print(f'{event_name} : {e}')
+                    listener = None
+
+                event_listeners[event_name] = (listener, last_block)
                 time.sleep(1)
-                continue
-
-            print('got new block %s' % web3.toHex(block_hash))
-
-            # get txs
-            transactions = block['transactions']
-            for tx in transactions:
-                tx = web3.eth.getTransaction(tx)
-                if not tx or tx['to'] != contract_address:
-                    continue
-
-                print('found a stdbounties tx')
-                data = tx['input']
-                method_id = data[:10]
-                if method_id == '0x7e9e511d':
-                    # issueAndActivateBounty
-                    bounty_id = contract.functions.getNumBounties().call() - 1
-                else:
-                    # any other method
-                    bounty_id = int(data[10:74], 16)
-                print('process_bounty %d' % bounty_id)
-                process_bounty(bounty_id, network)
-                print('done process_bounty %d' % bounty_id)
-
-            last_block_hash = block_hash

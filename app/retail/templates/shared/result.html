@@ -63,6 +63,10 @@
         </div>
       [[/if]]
       </div>
+      [[if is_profile_page && tx_hashes]]
+        <div class="arrow" onclick="toggleExpandableBounty(event)">
+        </div>
+      [[/if]]
     </div>
     [[if tokens]]
       <div class="col-md-12 tags expandable funding">
@@ -79,6 +83,23 @@
             </div>
           [[/for]]
         [[/props]]
+      </div>
+    [[/if]]
+    [[if is_profile_page && tx_hashes]]
+      <div class="expandable row">
+        <div class="col-1"></div>
+        <div class="col-12 col-md-10 d-flex flex-column bounty-detail">
+          <p class="title font-caption">Etherscan</p>
+          [[props tx_hashes ~network=network]]
+            [[for prop ~event=key]]
+              <p class="title font-caption">[[:~event]]:
+                <a target="_blank" href="https://[[if ~network != 'mainnet']][[:~network]].[[/if]]etherscan.io/tx/[[:#data]]">
+                  [[:#data]]
+                </a>
+              </p>
+            [[/for]]
+          [[/props]]
+        </div>
       </div>
     [[/if]]
   </div>

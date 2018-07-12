@@ -27,8 +27,10 @@ from dashboard.helpers import UnsupportedSchemaException
 from dashboard.utils import BountyNotFoundException, get_bounty, getBountyContract, web3_process_bounty
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
-logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
+logging.getLogger("web3.RequestManager").setLevel(logging.WARNING)
+logging.getLogger("web3.providers.WebsocketProvider").setLevel(logging.WARNING)
+logging.getLogger("websockets").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 default_start_id = 0 if not settings.DEBUG else 402

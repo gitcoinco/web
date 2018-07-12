@@ -281,6 +281,8 @@ class Bounty(SuperModel):
     )
     attached_job_description = models.URLField(blank=True, null=True)
 
+    tx_hashes = JSONField(default={})
+
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
 

@@ -26,7 +26,7 @@ slackclient
 eth-tester
 websockets
 eth-abi==1.1.1
-web3==4.0.0b10
+web3==4.7.2
 mailchimp3
 django_chartit==0.2.9
 MechanicalSoup==0.9.0.post4
@@ -38,7 +38,7 @@ boto==2.49.0
 google-api-python-client
 django-environ==0.4.5
 ipfsapi
-eth-utils==1.0.0b2
+eth-utils==1.2.2
 jsondiff==1.1.1
 social-auth-app-django==2.1.0
 django-ipware==2.0.2

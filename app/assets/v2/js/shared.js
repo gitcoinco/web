@@ -1060,6 +1060,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
       result['watch'] = 'Watch';
     } else {
       result['hidden'] = (i > 4);
+      result['is_profile_page'] = window.location.pathname === '/profile/';
     }
 
     html += tmpl.render(result);

@@ -31,8 +31,9 @@ from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
 from ipfsapi.exceptions import CommunicationError
-from web3 import HTTPProvider, Web3
+from web3 import Web3, WebsocketProvider
 from web3.exceptions import BadFunctionCallOutput
+from web3.middleware import geth_poa_middleware
 
 logger = logging.getLogger(__name__)
 
@@ -188,6 +189,9 @@ def ipfs_cat_requests(key):
         return None, 500
 
 
+WEB3_INSTANCES = {}
+
+
 def get_web3(network):
     """Get a Web3 session for the provided network.
 
@@ -203,7 +207,15 @@ def get_web3(network):
 
     """
     if network in ['mainnet', 'rinkeby', 'ropsten']:
-        return Web3(HTTPProvider(f'https://{network}.infura.io'))
+        w3 = WEB3_INSTANCES.get(network)
+        if w3:
+            return w3
+
+        w3 = Web3(WebsocketProvider(f'wss://{network}.infura.io/_ws'))
+        # http://web3py.readthedocs.io/en/stable/middleware.html#geth-style-proof-of-authority
+        w3.middleware_stack.inject(geth_poa_middleware, layer=0)
+        WEB3_INSTANCES[network] = w3
+        return w3
     raise UnsupportedNetworkException(network)
 
 
