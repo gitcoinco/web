@@ -1,0 +1,171 @@
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not,see
+    <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+
+{% include 'shared/head.html' %}
+{% include 'shared/cards_pic.html' %}
+<link rel="stylesheet" href="{% static "v2/css/vision.css" %}" />
+
+
+<body class="{{ active }}">
+{% include 'shared/tag_manager_2.html' %}
+<div class="container-fluid header">
+  {% include 'shared/nav.html' %}
+  {% include 'shared/minihero.html' with h1='Our Vision' position_h1_below_logo=1 suppress_logo=1 %}
+</div>
+
+<div class="container-fluid" >
+  <div class="row">
+    <div class="col pt-5 text-center">
+      {% blocktrans %}
+      <h2>Blockchain is the TCP of money</h2>
+      {% endblocktrans %}
+    </div>
+  </div>
+  <div class="row p-5 align-items-center animatedParent">
+    
+    <div class="col-lg-6 animated fadeInLeftShort">
+      <img
+            class="mw-100 mb-5"
+            src="{% static "v2/images/vision/blockchain.jpg" %}"
+          />
+    </div>
+    <div class="col-lg-6 animated fadeInLeftShort">
+      <h3>{% trans "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dolor tortor, imperdiet quis." %}</h3>
+      <p>{% trans "In in egestas elit. Integer dignissim pulvinar nulla auctor laoreet. Fusce vel congue augue, nec pretium velit." %}</p>
+      <p>{% trans "Praesent ultrices, mauris id faucibus commodo, lectus lorem maximus lectus, id iaculis ex neque et mi. Sed ultricies pulvinar eros, eu consectetur dolor aliquam non. Quisque venenatis metus sit amet lobortis aliquam." %}</p>
+      <p>{% trans "Fusce ac consectetur eros. Vivamus iaculis varius pellentesque." %}</p>
+
+
+    </div>
+  </div>
+</div>
+<section class="container-fluid">
+  <div class="row">
+    <div class="col pt-5 text-center">
+      {% blocktrans %}
+      <h1>Using Markets for Good</h1>
+      {% endblocktrans %}
+
+    </div>
+  </div>
+  <div class="row">
+      <div class="col">
+          <div class="card">
+            Using markets for good
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dolor tortor, imperdiet quis porta vitae, porttitor eu eros.
+          </div>
+        </div>
+    
+        <div class="col">
+          We want to make sure it'll be easy to find good jobs in the future
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
+        </div>
+        <div class="col">
+            <img 
+              class="icon" 
+              src="{% static "v2/images/mission/interact/people_care.svg" %}"
+            />
+      
+            Futuristic Humanitarians
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dolor tortor, imperdiet quis porta vitae, porttitor eu eros.
+          </div>
+
+  </div>
+</section>
+
+  
+  <img 
+  class="icon" 
+    src="{% static "v2/images/vision/triangle.png" %}"
+    />
+
+<section>
+    Blockchain evolving over time
+    This is our best bet as to how the space is going to evolve. By building a map of where we think its going, we can map out how Gitcoin can help
+
+    <div class="tl-component">
+      <div class="tl">
+        <div class="tl-event" data-time="2018">
+          Now
+          <ul class="list-special">
+            <li class="macro">Sharding / POS in research stage</li>
+            <li class="market">Bear Market</li>
+            <li class="gitcoin">Gitcoin is doing some Revenue Testing (Tokenization, Secret Project, CodeFund, Grants, Bounties)</li>
+          </ul>
+        </div>
+    
+        <div class="tl-event" data-time="2019">
+          1 Year out
+          <ul class="list-special">
+            <li class="macro">Sharding / POS goes live.</li>
+            <li class="macro">Stablecoins are an accepted store of value.</li>
+            <li class="market">Sideways Market</li>
+            <li class="market">Some ICOs will launch / many will fail to get market traction / most ICOs will fail altogether</li>
+            <li class="consensys">Consensys hits 1k people</li>
+            <li class="gitcoin">Gitcoin has figured out a scalable Revenue model. Starting to scale.</li>
+          </ul>
+        </div>
+
+        <div class="tl-event" data-time="2021">
+          3 Years out
+          <ul class="list-special">
+            <li class="macro">Ethereum hits 1 billion tx / day</li>
+            <li class="macro">The flippening happens</li>
+            <li class="macro">Blockchain disrupts the dollar for store of wealth for nation states. To subvert sanctions at first and weaken the influence of he US dollar for countries like Russia</li>
+            <li class="macro">Identity on blockchain because a very big deal</li>
+            <li class="market">Megabull Market</li>
+            <li class="consensys">Consensys is tokenized</li>
+            <li class="gitcoin">Gitcoin is a $20mm / year business.</li>  
+          </ul>
+        </div>
+
+        <div class="tl-event" data-time="2023">
+          5 Years out
+          <ul class="list-special">
+            <li class="macro">It is as easy for a software developer to find work as it is for an Uber driver to find a ride 10 years ago.</li>
+            <li class="gitcoin">Gitcoin is a $50mm / year business.</li>
+          </ul>
+        </div>
+
+        <div class="tl-event" data-time="2028">
+          10 Years out
+          <ul class="list-special">
+            <li class="macro">Whether or not ETH ‘wins’, xyz cryptocurrency will be utilized for a non-trivial amount of total currency transactions. (i.e. at least 10% of total M1 money supply)</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="twit">
+        <img src="{% static "v2/images/vision/twit.png" %}" alt="twit-roadmap">
+      </div>
+    </div>
+
+</section>
+
+{% include 'shared/footer.html' %}
+{% include 'shared/analytics.html' %}
+{% include 'shared/footer_scripts.html' %}
+{% include 'shared/rollbar.html' %}
+{% include 'shared/messages.html' %}
+</body>
+</html>
