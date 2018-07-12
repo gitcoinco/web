@@ -37,7 +37,16 @@ faith and everyone is working towards a common goal.
 
 Issues in `gitcoin/web` are the primary means by which bug reports and
 general discussions are made. A contributor is allowed to create an issue,
-discuss and provide a fix if needed.
+discuss, and provide a fix if needed.
+
+Before opening an issue, https://waffle.io/gitcoinco/web is a good place to go to see if there are any current issues with similar key words. This helps us cut down on duplicate tickets.
+
+When you [open an issue](https://github.com/gitcoinco/web), you'll notice four templates (bug, custom, discussion, feature) with the user-story format we like for our issue reports. When starting a new issue, please do your best to be as detailed and specific as possible.
+
+1. Bug report - use this to create a bug report to help us improve Gitcoin
+2. Discussion - use this template to start a discussion
+3. Feature request - use this to suggest a project idea
+4. Custom report - use this to report an issue that doesn't fall under any other category
 
 ## Discussions And General Help
 

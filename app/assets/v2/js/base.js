@@ -173,7 +173,7 @@ $(document).ready(function() {
 });
 
 $(window).scroll(function() {
-  var scrollPos = $(document).scrollTop();
+  var scrollPos = jQuery(document).scrollTop();
 });
 
 /* TODO : Remove after GDPR */

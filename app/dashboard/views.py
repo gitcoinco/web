@@ -39,7 +39,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import ellipses, sync_profile
 from avatar.utils import get_avatar_context
-from dashboard.utils import generate_pub_priv_keypair, get_web3
+from economy.utils import convert_amount
 from gas.utils import conf_time_spread, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from github.utils import (
     get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
@@ -507,7 +507,48 @@ def gas(request):
     recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target)
     if recommended_gas_price < 2:
         _cts = conf_time_spread(recommended_gas_price)
+
+    actions = [{
+        'name': 'New Bounty',
+        'target': '/new',
+        'persona': 'funder',
+        'product': 'bounties',
+    }, {
+        'name': 'Fulfill Bounty',
+        'target': 'issue/fulfill',
+        'persona': 'developer',
+        'product': 'bounties',
+    }, {
+        'name': 'Increase Funding',
+        'target': 'issue/increase',
+        'persona': 'funder',
+        'product': 'bounties',
+    }, {
+        'name': 'Accept Submission',
+        'target': 'issue/accept',
+        'persona': 'funder',
+        'product': 'bounties',
+    }, {
+        'name': 'Cancel Funding',
+        'target': 'issue/cancel',
+        'persona': 'funder',
+        'product': 'bounties',
+    }, {
+        'name': 'Send tip',
+        'target': 'tip/send/2/',
+        'persona': 'funder',
+        'product': 'tips',
+    }, {
+        'name': 'Receive tip',
+        'target': 'tip/receive',
+        'persona': 'developer',
+        'product': 'tips',
+    }
+    ]
     context = {
+        'actions': actions,
+        'eth_to_usd': round(convert_amount(1, 'ETH', 'USDT'), 0),
+        'start_gas_cost': recommended_gas_price,
         'gas_advisories': gas_advisories(),
         'conf_time_spread': _cts,
         'title': 'Live Gas Usage => Predicted Conf Times'
