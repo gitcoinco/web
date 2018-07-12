@@ -1,0 +1,20 @@
+{
+  "symbol": "LULU",
+  "address": "0x01cd3d9df5869ca7954745663bd6201c571e05cf",
+  "overview":{
+        "en": "LULU is a token issued by the BTCLULU platform with a total distribution of 100 billion and guaranteed never to be added, and LULU is the decentral block chain digital asset issued on ETH. It is based on the ETH ERC 20 standard token.",
+        "zh": "LULU是BTCLULU平台发行的代币，其发行总量为1千亿个，且保证永不增发，LULU是具体以太坊发行的去中心化的区块链数字资产，它是基于以太坊区块链的ERC 20标准代币。"
+  },
+  "email": "btclulu0@gmail.com",
+  "website": "http://btclulu.com",
+  "whitepaper": "https://bit.ly/2Jkvk84",
+  "published_on": "2018-06-15",
+  "initial_price":{
+        "ETH":"0.0 ETH",
+        "USD":"0.0 USD",
+        "BTC":"0.0 BTC"
+  },
+  "links": {
+    "blog": "http://btclulu.com"
+  }
+}
