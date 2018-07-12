@@ -26,6 +26,7 @@ from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
+from dashboard.models import Activity
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
@@ -351,6 +352,25 @@ def results(request, keyword=None):
     context = build_stat_results(keyword)
     context['is_outside'] = True
     return TemplateResponse(request, 'results.html', context)
+
+
+def activity(request):
+    """Render the Activity response."""
+    icons = {
+        'new_tip': 'fa-thumbs-up',
+        'start_work': 'fa-lightbulb',
+        'new_bounty': 'fa-money-bill-alt',
+        'work_done': 'fa-check-circle',
+    }
+    def add_view_props(activity):
+        activity.icon = icons.get(activity.activity_type, 'fa-check-circle')
+        return activity
+
+    context = {}
+
+    context["activities"] = [add_view_props(a) for a in Activity.objects.all().order_by('-created')]
+
+    return TemplateResponse(request, 'activity.html', context)
 
 
 def help(request):
