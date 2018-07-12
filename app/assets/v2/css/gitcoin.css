@@ -127,6 +127,10 @@ body {
   overflow-x: hidden;
   width: 100%;
   background-color: #fff;
+
+  /* better font render */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h4,
