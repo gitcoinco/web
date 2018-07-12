@@ -61,7 +61,7 @@ def gas_history(breakdown, mean_time_to_confirm_minutes):
     gas_profiles = GasProfile.objects.filter(
         created_on__gt=start_date,
         mean_time_to_confirm_minutes__lte=mean_time_to_confirm_minutes,
-        )
+        ).order_by('-created_on')
 
     # collapse into best gas price per time period
     results = {}
