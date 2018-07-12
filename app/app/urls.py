@@ -168,6 +168,7 @@ urlpatterns = [
     # brochureware views
     url(r'^about/?', retail.views.about, name='about'),
     url(r'^mission/?', retail.views.mission, name='mission'),
+    url(r'^vision/?', retail.views.vision, name='vision'),
     re_path(r'^results/?(?P<keyword>.*)/?', retail.views.results, name='results_by_keyword'),
     re_path(r'^results/?', retail.views.results, name='results'),
     url(r'^get/?', retail.views.get_gitcoin, name='get_gitcoin'),

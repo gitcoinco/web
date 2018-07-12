@@ -1,0 +1,109 @@
+:root {
+  --tl-color: white;
+  --tl-bg: #3E00FF;
+  --tl-date-color: var(--gc-green-hover);
+}
+
+.tl-component {
+  display: grid;
+  background-color: var(--tl-bg);
+  background-image:url(/static/v2/images/vision/illu.png);
+  background-repeat: no-repeat;
+  background-position: center bottom;
+
+  font-size: 20px;
+
+}
+
+.tl {
+  position: relative;
+  width: 100%;
+  grid-column: 1/4;
+}
+
+.tl:after {
+  content: "";
+  position: absolute;
+  width: 3px;
+  height: 100%;
+  background: var(--tl-color);
+  top: 0;
+  left: 4.4em;
+  border-radius: 10px;
+}
+
+.tl-event {
+  color: var(--tl-color);
+  margin: 1em;
+  margin-left: 8em;
+  float: left;
+  padding: 1em;
+  clear: both;
+  
+}
+
+.tl-event:before {
+  content: attr(data-time);
+  width: 98px;
+  height: 98px;
+  background: var(--tl-bg);
+  position: absolute;
+  left: calc(3em - 48px);
+  margin-top: -50px;
+  border-radius: 50px;
+  border: 3px solid var(--tl-color);
+  z-index: 1;
+  color: var(--tl-date-color);
+  font-size: 24px;
+  text-align: center;
+  padding: 1.1em 0;
+
+}
+
+.tl-event > span {
+  display: block;
+}
+
+@media (min-width: 992px) {
+
+  .tl:after {
+    left: 50%;
+  }
+
+  .tl-event:before {
+    left: calc(50% - 48px);
+  }
+
+  .tl-event {
+    margin-left: 1em;
+    width: 43%;
+  }
+
+  .tl-event:nth-child(odd) {
+    float: right;
+  }
+}
+
+
+.list-special {
+  padding-left: 20px;
+}
+
+li.consensys {
+  list-style-image: url(/static/v2/images/vision/consensys.svg);
+}
+li.gitcoin {
+  list-style-image: url(/static/v2/images/vision/gitcoin.svg);
+}
+li.macro {
+  list-style-image: url(/static/v2/images/vision/macro.svg);
+}
+li.market {
+  list-style-image: url(/static/v2/images/vision/market.svg);
+}
+
+.twit {
+  grid-column: 1/4;
+  margin: 3em;
+  text-align: center;
+}

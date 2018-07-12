@@ -55,13 +55,16 @@
           <a class="dropdown-item {% if active == 'mission' %} selected{% endif %}" href="{% url "mission" %}">
             {% trans "Mission" %}
           </a>
+          <a class="dropdown-item {% if active == 'vision' %} selected{% endif %}" href="{% url "vision" %}">
+            {% trans "Vision" %}
+          </a>
           <a class="dropdown-item {% if active == 'results' %} selected{% endif %}" href="{% url "results" %}">
             {% trans "Results" %}
           </a>
         </div>
       </div>
       {% endif %}
-      {% if not request.path|is_in_list:"/,/contributor,/about,/mission,/results,/slack" %}
+      {% if not request.path|is_in_list:"/,/contributor,/about,/mission,/vision,/results,/slack" %}
         <div class="nav-item dropdown interior">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownHow" role="button"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
