@@ -33,3 +33,7 @@
   font-size: 30px;
   color: #0D0764;
 }
+
+#activity_stream .tag {
+  display: inline-block;
+}
