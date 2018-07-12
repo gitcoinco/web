@@ -141,6 +141,7 @@ urlpatterns = [
     path('actions/tool/<int:tool_id>/voteUp', dashboard.views.vote_tool_up, name='vote_tool_up'),
     path('actions/tool/<int:tool_id>/voteDown', dashboard.views.vote_tool_down, name='vote_tool_down'),
     url(r'^tools/?', dashboard.views.toolbox, name='tools'),
+    url(r'^gas/history?', dashboard.views.gas_history_view, name='gas_history_view'),
     url(r'^gas/?', dashboard.views.gas, name='gas'),
 
     # redeem coin
