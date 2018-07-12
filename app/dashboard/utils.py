@@ -419,6 +419,7 @@ def get_context(ref_object=None, github_username='', user=None, confirm_time_min
     """Get the context dictionary for use in view."""
     context = {
         'githubUsername': github_username,  # TODO: Deprecate this field.
+        'action_urls': ref_object.action_urls() if hasattr(ref_object, 'action_urls') else None,
         'active': active,
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(confirm_time_slow),

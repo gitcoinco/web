@@ -603,7 +603,7 @@ var do_actions = function(result) {
   const start_stop_work_enabled = !isBountyOwner(result);
   const increase_bounty_enabled = isBountyOwner(result);
   let show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
-  let show_advanced_payout = isBountyOwner(result) && !is_status_expired && !is_status_done && result['project_type'] != 'traditional' && result['token_name'] == 'ETH';
+  let show_advanced_payout = isBountyOwner(result) && !is_status_expired && !is_status_done;
   const show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
   const show_admin_methods = document.isStaff;
 

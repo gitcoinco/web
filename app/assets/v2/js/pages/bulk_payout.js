@@ -1,6 +1,12 @@
 var round = function(num, decimals) {
   return Math.round(num * 10 ** decimals) / 10 ** decimals;
 };
+var normalizeUsername = function(username) {
+  if (username.indexOf('@') != 0) {
+    return '@' + username;
+  }
+  return username;
+};
 
 $(document).ready(function($) {
   var random_id = function() {
@@ -52,39 +58,75 @@ $(document).ready(function($) {
     $(this).focus();
   });
 
-  var sendTransaction = function(transaction){
+  var sendTransaction = function(i) {
 
-    if(transaction['type'] == 'cancel'){
+    var transaction = document.transactions[i];
+
+    if (!transaction) {
+      _alert('All transactions have been sent.  Your bounty is now paid out.', 'info');
+      return;
+    }
+    $('.entry').removeClass('active');
+    $('.entry_' + transaction['id']).addClass('active');
+
+    // cancel bounty
+    if (transaction['type'] == 'cancel') {
+      var callback = function(error, txid) {
+        if (error) {
+          _alert({ message: error }, 'error');
+        } else {
+          var url = 'https://' + etherscanDomain() + '/tx/' + txid;
+          var msg = 'This tx has been sent 👌 <a href="' + url + '">[Etherscan Link]</a>';
+
+          _alert(msg, 'info');
+          sendTransaction(i + 1);
+        }
+      };
+      var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
+      var gas_dict = { gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)) };
+
+      bounty.killBounty(
+        $('#standard_bounties_id').val(),
+        gas_dict,
+        callback
+      );
 
     } else {
       // get form data
-      var email = $('#email').val();
+      var email = '';
       var github_url = $('#issueURL').val();
-      var from_name = $('#fromName').val();
-      var username = $('#username').val();
-      var amountInEth = parseFloat($('#amount').val());
-      var comments_priv = $('#comments_priv').val();
-      var comments_public = $('#comments_public').val();
-      var from_email = $('#fromEmail').val();
-      var accept_tos = $('#tos').is(':checked');
-      var tokenAddress = $('#token').val();
-      var expires = parseInt($('#expires').val());
+      var from_name = '';
+      var username = transaction['data']['to'];
+      var amountInEth = transaction['data']['amount'];
+      var comments_priv = '';
+      var comments_public = '';
+      var from_email = '';
+      var accept_tos = $('#terms').is(':checked');
+      var tokenAddress = transaction['data']['token_address'];
+      var expires = 9999999999;
 
-      return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires);
+      var success_callback = function(txid) {
+        var url = 'https://' + etherscanDomain() + '/tx/' + txid;
+        var msg = 'This payment has been sent 👌 <a href="' + url + '">[Etherscan Link]</a>';
+
+        _alert(msg, 'info');
+        sendTransaction(i + 1);
+      };
+
+      return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback);
     }
-  }
+  };
 
   $('#acceptBounty').click(function(e) {
     e.preventDefault();
-
-    for(var i=0; i<document.transactions.length; i++){
-      var transaction = document.transactions[i];
-      $(".entry").removeClass('active');
-      $(".entry_" + transaction['id']).addClass('active');
-      sendTransaction(transaction);
+    
+    if (!$('#terms').is(':checked')) {
+      _alert('Please accept the TOS.', 'error');
+      return;
     }
-  });
 
+    sendTransaction(0);
+  });
 
 
   var get_amount = function(percent) {
@@ -95,7 +137,7 @@ $(document).ready(function($) {
 
   var add_row = function() {
     var num_rows = $('#payout_table').find('tr').length;
-    var percent = num_rows <= 1 ? 100 : 0;
+    var percent = num_rows <= 1 ? 100 : '';
     var denomination = $('#token_name').text();
     var amount = get_amount(percent);
     var html = '<tr><td><div class=username contenteditable="true">@</div></td><td><div class="percent" contenteditable="true">' + percent + '</div></td><td><div><span class=amount>' + amount + '</span> <span class=denomination>' + denomination + '</span></div></td><td><a class=remove href=#>X</a></td></tr>';
@@ -107,8 +149,9 @@ $(document).ready(function($) {
   var get_total_cost = function() {
     var num_rows = $('#payout_table').find('tr').length;
     var total = 0;
+    var i = 1;
 
-    for (var i = 1; i < num_rows; i += 1) {
+    for (i = 1; i < num_rows; i += 1) {
       var $row = $('#payout_table').find('tr:nth-child(' + i + ')');
       var amount = parseFloat($row.find('.amount').text());
       var username = $row.find('.username').text();
@@ -137,10 +180,12 @@ $(document).ready(function($) {
       'id': 1,
       'type': 'cancel',
       'reason': 'Refund of Bounty Stake',
-      'amount': '+' + original_amount + ' ' + denomination,
+      'amount': '+' + original_amount + ' ' + denomination
     };
     transactions.push(first_transaction);
-    for (var i = 1; i < num_rows; i += 1) {
+    var i = 1;
+
+    for (i = 1; i < num_rows; i += 1) {
       var $row = $('#payout_table').find('tr:nth-child(' + i + ')');
       var amount = parseFloat($row.find('.amount').text());
       var username = $row.find('.username').text();
@@ -148,13 +193,13 @@ $(document).ready(function($) {
       transaction = {
         'id': i + 1,
         'type': 'tip',
-        'reason': 'Payment to ' + username,
+        'reason': 'Payment to ' + normalizeUsername(username),
         'amount': '-' + amount + ' ' + denomination,
         'data': {
           'to': username,
           'amount': amount,
           'denomination': denomination,
-          'token_address': $("#token_address").val(),
+          'token_address': $('#token_address').val()
         }
       };
       var is_error = !$.isNumeric(amount) || amount <= 0 || username == '' || username == '@';
@@ -165,8 +210,10 @@ $(document).ready(function($) {
 
     // paint on screen
     $('#transaction_registry tr.entry').remove();
-    for (var i = 0; i < transactions.length; i += 1) {
-      var trans = transactions[i];
+    var k = 0;
+
+    for (k = 0; k < transactions.length; k += 1) {
+      var trans = transactions[k];
       var html = "<tr class='entry entry_" + trans['id'] + "'><td>" + trans['id'] + '</td><td>' + trans['amount'] + '</td><td>' + trans['reason'] + '</td></tr>';
 
       $('#transaction_registry').append(html);

@@ -80,6 +80,8 @@ class TipAdmin(admin.ModelAdmin):
             return 'n/a'
         if not instance.txid:
             return 'n/a'
+        if instance.receive_txid:
+            return 'n/a'
         html = format_html('<a href="{}">claim</a>', instance.receive_url)
         return html
 

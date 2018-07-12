@@ -24,7 +24,31 @@ $(document).ready(function() {
     var tokenAddress = $('#token').val();
     var expires = parseInt($('#expires').val());
 
-    return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires);
+    // derived info
+    var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
+    var tokenDetails = tokenAddressToDetails(tokenAddress);
+    var tokenName = 'ETH';
+    var weiConvert = Math.pow(10, 18);
+
+    if (!isSendingETH) {
+      tokenName = tokenDetails.name;
+    }
+
+    var success_callback = function(txid) {
+
+      startConfetti();
+      var url = 'https://' + etherscanDomain() + '/tx/' + txid;
+
+      $('#loading_trans').html('This transaction has been sent 👌');
+      $('#send_eth').css('display', 'none');
+      $('#send_eth_done').css('display', 'block');
+      $('#tokenName').html(tokenName);
+      $('#new_username').html(username);
+      $('#trans_link').attr('href', url);
+      $('#trans_link2').attr('href', url);
+    };
+
+    return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback);
   });
 
   waitforWeb3(function() {
@@ -57,7 +81,7 @@ function isNumeric(n) {
 }
 
 
-function sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires) {
+function sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback) {
 
   mixpanel.track('Tip Step 2 Click', {});
   if (typeof web3 == 'undefined') {
@@ -157,14 +181,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
             if (!is_success) {
               _alert(json, _class);
             } else {
-              startConfetti();
-              $('#loading_trans').html('This transaction has been sent 👌');
-              $('#send_eth').css('display', 'none');
-              $('#send_eth_done').css('display', 'block');
-              $('#tokenName').html(tokenName);
-              $('#new_username').html(username);
-              $('#trans_link').attr('href', 'https://' + etherscanDomain() + '/tx/' + txid);
-              $('#trans_link2').attr('href', 'https://' + etherscanDomain() + '/tx/' + txid);
+              success_callback(txid);
             }
           });
         }

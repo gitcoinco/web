@@ -37,7 +37,7 @@
           {% include 'shared/unlock_metamask.html' %}
         </div>
       </div>
-      <div class="row">
+      <div class="row content">
         <div class="col-12 body">
           <div class="row font-smaller-2" id="form_container">
             <div id="robot_error" class="hidden">
@@ -47,9 +47,8 @@
               <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
                 <div class="w-100" style="text-align: center;">
                   <h3>{% trans "Advanced Payout" %}</h3>
-                  <img src="{% static "v2/images/prime.png" %}">
+                  <p><a href="{{action_urls.accept}}">Switch to Basic Payout</a></p>
                 </div>
-                {% include 'shared/network_status.html' %}
                 <div class="w-100">
                   <label for=issueURL>{% trans "Issue URL:" %}</label>
                   <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input" type="text" placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" disabled="" />
@@ -57,33 +56,37 @@
                 <div class="w-100 mt-2">
                   <label for=amount>{% trans "Amount:" %}</label>
                   <input name='amount' id="amount" class="w-20 gc-round-text-input" type="number" placeholder="amount" value="{{bounty.value_true}}" disabled="disabled" />
+                  <input type="hidden" id="standard_bounties_id" value="{{bounty.standard_bounties_id}}">
                   <input type="hidden" id="token_address" value="{{bounty.token_address}}">
                   <input type="hidden" id="original_amount" value="{{bounty.value_true}}">
                   <span id="token_name">{{bounty.token_name}}</span>
                 </div>
                 <div class="w-100 mt-2">
                   <label for=bountyFulfillment>{% trans "Payout" %}</label>
-                  <div class="w-100 mt-2">
-                    {% include 'shared/bulk_payout_form.html' %}
-                  </div>
-                  <div class="w-100 mt-2" id="trans_preview">
-                    <h5>{% trans 'Transactions Preview'%}</h5>
-                    <p class="mb-0">{% trans 'Refunded'%}: <span id="total_returned">{{bounty.value_true}} {{bounty.token_name}}</span></p>
-                    <p class="mb-0">{% trans 'Paid'%}: -<span id="total_cost"></span></p>
-                    <p class="mb-0">{% trans 'Net'%}: <span id="total_net"></span></p>
-                    <table id="transaction_registry">
-                      <tr>
-                        <td>
-                          #
-                        </td>
-                        <td>
-                          {% trans 'Amount'%}
-                        </td>
-                        <td>
-                          {% trans 'Reason'%}
-                        </td>
-                      </tr>
-                    </table>
+                  <div>
+                    <div class="w-100 mt-2" style="display: inline-block;">
+                      {% include 'shared/bulk_payout_form.html' %}
+                    </div>
+                    <div class="mt-2" id="trans_preview">
+                      <h5>{% trans 'Payout Preview'%}</h5>
+                      <p class="mb-0">{% trans 'Refunded'%}: <span id="total_returned">{{bounty.value_true}} {{bounty.token_name}}</span></p>
+                      <p class="mb-0">{% trans 'Paid'%}: -<span id="total_cost"></span></p>
+                      <p class="mb-0">{% trans 'Net'%}: <span id="total_net"></span></p>
+                      <p class="mt-1 mb-0">{% trans 'Transactions:'%}</p>
+                      <table id="transaction_registry">
+                        <tr>
+                          <td>
+                            #
+                          </td>
+                          <td>
+                            {% trans 'Amount'%}
+                          </td>
+                          <td>
+                            {% trans 'Reason'%}
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
                   </div>
                   <div id="gas-section">
                     {% include 'shared/bounty_actions_hidden_vars.html' %}
@@ -117,7 +120,37 @@
         padding: 5px;
         border-radius: 3px; 
         background-color: #eeeeee;
+        position: fixed;
+        top: 200px;
+        left: 72%;
+        width: 25%;
       }
+      #primary_form{
+        margin: 0px 25%;
+      }
+      @media (max-width: 1100px) {
+        #primary_form{
+          margin: 0px 15%;
+        }
+      }
+      @media (max-width: 900px) {
+        #primary_form{
+          margin: 0px 5%;
+        }
+      }
+      @media (max-width: 750px) {
+        #trans_preview{
+          position: unset;
+          top: 200px;
+          left: 72%;
+          width: 100%;
+        }
+        #primary_form{
+          margin: 0px auto;
+        }
+      }
+
+
       tr div{
         border-radius: 3px; 
         padding: 5px;
