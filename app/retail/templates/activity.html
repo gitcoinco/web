@@ -20,6 +20,7 @@
   <head>
     {% include 'shared/head.html' %}
     <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
   </head>
 
   <body class="{{ active }}">
@@ -49,7 +50,16 @@
             <div class="activity-status">
               {{ row.i18n_name }}
             </div>
-            <div>{{ row.created }}</div>
+            <div>
+              <div class="activity-tags activity-tag-first align-items-center">
+                <div class="tag token">
+                  <p>
+                    <span>{{row.metadata.value_in_token_old}}  - {{row.metadata.value_in_token}}  {{row.metadata.token_name}}</span>
+                  </p>
+                </div>
+              </div>
+              {{ row.created }}
+            </div>
           </div>
 
           <div class="col-12 col-md-2">
