@@ -1,9 +1,20 @@
 :root {
   --tl-color: white;
   --tl-bg: #3E00FF;
+  --bg-grey: #F9F9F9;
   --tl-date-color: var(--gc-green-hover);
 }
 
+.bg-blue {
+  background-color: var(--tl-bg);
+  color: white;
+}
+
+.bg-grey {
+  background-color: var(--bg-grey);
+}
+
+/* Timeline */
 .tl-component {
   display: grid;
   background-color: var(--tl-bg);
@@ -28,35 +39,35 @@
   height: 100%;
   background: var(--tl-color);
   top: 0;
-  left: 4.4em;
+  left: 1.6rem;
   border-radius: 10px;
 }
 
 .tl-event {
   color: var(--tl-color);
-  margin: 1em;
-  margin-left: 8em;
+  margin: 1rem;
+  margin-left: 2rem;
   float: left;
-  padding: 1em;
+  padding: 1rem;
   clear: both;
   
 }
 
 .tl-event:before {
   content: attr(data-time);
-  width: 98px;
-  height: 98px;
+  width: 4rem;
+  height: 4rem;
   background: var(--tl-bg);
   position: absolute;
-  left: calc(3em - 48px);
+  left: calc(4.6rem - 5rem);
   margin-top: -50px;
   border-radius: 50px;
   border: 3px solid var(--tl-color);
   z-index: 1;
   color: var(--tl-date-color);
-  font-size: 24px;
+  font-size: 1.2rem;
   text-align: center;
-  padding: 1.1em 0;
+  padding: 1rem 0;
 
 }
 
@@ -71,12 +82,17 @@
   }
 
   .tl-event:before {
-    left: calc(50% - 48px);
+    left: calc(50% - 3rem);
+    width: 6rem;
+    height: 6rem;
+    font-size: 1.6rem;
+    padding: 1.7rem 0;
   }
 
   .tl-event {
-    margin-left: 1em;
+    margin-left: 1rem;
     width: 43%;
+
   }
 
   .tl-event:nth-child(odd) {
@@ -85,6 +101,7 @@
 }
 
 
+/* Special lists icons */
 .list-special {
   padding-left: 20px;
 }
@@ -104,6 +121,6 @@ li.market {
 
 .twit {
   grid-column: 1/4;
-  margin: 3em;
+  margin: 3rem;
   text-align: center;
 }
