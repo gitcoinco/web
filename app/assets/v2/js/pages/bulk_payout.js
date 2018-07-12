@@ -63,7 +63,13 @@ $(document).ready(function($) {
     var transaction = document.transactions[i];
 
     if (!transaction) {
+      // msg
       _alert('All transactions have been sent.  Your bounty is now paid out.', 'info');
+
+      // show green checkmark
+      $("#success_container").css('display','block');
+      $(".row.content").css('display','none');
+
       return;
     }
     $('.entry').removeClass('active');
@@ -78,8 +84,19 @@ $(document).ready(function($) {
           var url = 'https://' + etherscanDomain() + '/tx/' + txid;
           var msg = 'This tx has been sent 👌 <a href="' + url + '">[Etherscan Link]</a>';
 
+          // send msg to frontend
           _alert(msg, 'info');
           sendTransaction(i + 1);
+
+          // tell frontend that this issue has a pending tx
+          localStorage[$('#issueURL').val()] = JSON.stringify({
+            timestamp: timestamp(),
+            dataHash: null,
+            issuer: web3.eth.coinbase,
+            txid: txid
+          });
+
+
         }
       };
       var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
@@ -109,7 +126,10 @@ $(document).ready(function($) {
         var url = 'https://' + etherscanDomain() + '/tx/' + txid;
         var msg = 'This payment has been sent 👌 <a href="' + url + '">[Etherscan Link]</a>';
 
+          // send msg to frontend
         _alert(msg, 'info');
+
+        // text transaction
         sendTransaction(i + 1);
       };
 
