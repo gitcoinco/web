@@ -9,9 +9,13 @@
   color: white;
 }
 
-
 .vision h1 {
   font-size: 3.2rem;
+}
+
+.vision .header-line {
+  color: #fff;
+  font-weight: normal;
 }
 
 /* Timeline */
@@ -21,9 +25,7 @@
   background-image:url(/static/v2/images/vision/illu.png);
   background-repeat: no-repeat;
   background-position: center bottom;
-
   font-size: 20px;
-
 }
 
 .tl {
@@ -52,6 +54,7 @@
   clear: both;
   font-weight: 200;
 }
+
 .tl-event b {
   font-size: 1.8rem;
   font-weight: 800;  
@@ -75,50 +78,10 @@
   font-weight: 800;
   text-align: center;
   padding: 1rem 0;
-
 }
 
 .tl-event > span {
   display: block;
-}
-
-@media (min-width: 992px) {
-
-  .tl:after {
-    left: 50%;
-  }
-
-  .tl-event:before {
-    left: calc(50% - 3rem);
-    width: 6rem;
-    height: 6rem;
-    font-size: 1.6rem;
-    padding: 1.6rem 0;
-    margin-top: -1.6rem;
-  }
-
-  .tl-event {
-    margin-left: 1rem;
-    width: 43%;
-
-  }
-
-  .tl-event:nth-child(odd) {
-    float: right;
-  }
-
-  .tl-event:nth-child(even) b:before {
-    content: '';
-    display: block;
-    border-bottom: 1px solid;
-    border-style: dashed;
-    border-top: none;
-    position: absolute;
-    right: 56%;
-    left: 0;
-    margin-top: 1em;
-    margin-left: 13rem;
-  }
 }
 
 
@@ -152,8 +115,42 @@ li.market {
 
 @media (min-width: 992px) {
 
+  .tl:after {
+    left: 50%;
+  }
+
+  .tl-event:before {
+    left: calc(50% - 3rem);
+    width: 6rem;
+    height: 6rem;
+    font-size: 1.6rem;
+    padding: 1.6rem 0;
+    margin-top: -1.6rem;
+  }
+
+  .tl-event {
+    margin-left: 1rem;
+    width: 43%;
+  }
+
+  .tl-event:nth-child(odd) {
+    float: right;
+  }
+
+  .tl-event:nth-child(even) b:before {
+    content: '';
+    display: block;
+    border-bottom: 1px solid;
+    border-style: dashed;
+    border-top: none;
+    position: absolute;
+    right: 56%;
+    left: 0;
+    margin-top: 1em;
+    margin-left: 13rem;
+  }
+
   .parag-center {
     max-width: 25%;
   }
-
 }
