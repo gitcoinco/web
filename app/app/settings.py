@@ -165,14 +165,6 @@ if not ENV in ['local', 'test']:
         },
     }
 
-    if ENV == 'prod':
-        LOGGING['handlers']['mail_admins'] = {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler',
-            'include_html': True,
-        }
-        LOGGING['loggers']['django']['handlers'].append('mail_admins')
-
     LOGGING['loggers']['django.request'] = LOGGING['loggers']['django']
     for ia in INSTALLED_APPS:
         LOGGING['loggers'][ia] = LOGGING['loggers']['django']
