@@ -58,7 +58,7 @@
     </div>
   </div>
 </div>
-<section class="container-fluid">
+<section class="container-fluid bg-grey">
   <div class="row">
     <div class="col pt-5 text-center">
       {% blocktrans %}
@@ -68,98 +68,163 @@
     </div>
   </div>
   <div class="row">
-      <div class="col">
-          <div class="card">
-            Using markets for good
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dolor tortor, imperdiet quis porta vitae, porttitor eu eros.
-          </div>
+    <div class="col">
+      <div class="card-deck">
+        <div class="card">
+          Using markets for good
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dolor tortor, imperdiet quis porta vitae, porttitor eu eros.
         </div>
-    
-        <div class="col">
+        
+        <div class="card">
           We want to make sure it'll be easy to find good jobs in the future
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
         </div>
-        <div class="col">
-            <img 
-              class="icon" 
-              src="{% static "v2/images/mission/interact/people_care.svg" %}"
-            />
+        <div class="card">
+          <img class="mw-100" src="{% static "v2/images/mission/interact/people_care.svg" %}"/>
+          
+          Futuristic Humanitarians
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dolor tortor, imperdiet quis porta vitae, porttitor eu eros.
+        </div>
+      </div>
+    </div>
       
-            Futuristic Humanitarians
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dolor tortor, imperdiet quis porta vitae, porttitor eu eros.
-          </div>
-
+  </div>
+</section>
+  
+<section class="container-fluid">
+  <div class="text-center p-5">
+    <img class="mw-100" src="{% static "v2/images/vision/triangle.png" %}"/>
   </div>
 </section>
 
+<section class="container-fluid bg-blue">
+  <div class="row">
+    <div class="col pt-5 text-center">
+      {% blocktrans %}
+      <h1>Blockchain evolving over time</h1>
+      <p>This is our best bet as to how the space is going to evolve. By building a map of where we think its going, we can map out how Gitcoin can help</p>
+      {% endblocktrans %}
+    </div>
+  </div>
+
+  <div class="tl-component pt-5">
+    <div class="tl">
+      <div class="tl-event" data-time="2018">
+        Now
+        <ul class="list-special">
+          <li class="macro">Sharding / POS in research stage</li>
+          <li class="market">Bear Market</li>
+          <li class="gitcoin">Gitcoin is doing some Revenue Testing (Tokenization, Secret Project, CodeFund, Grants, Bounties)</li>
+        </ul>
+      </div>
   
-  <img 
-  class="icon" 
-    src="{% static "v2/images/vision/triangle.png" %}"
-    />
-
-<section>
-    Blockchain evolving over time
-    This is our best bet as to how the space is going to evolve. By building a map of where we think its going, we can map out how Gitcoin can help
-
-    <div class="tl-component">
-      <div class="tl">
-        <div class="tl-event" data-time="2018">
-          Now
-          <ul class="list-special">
-            <li class="macro">Sharding / POS in research stage</li>
-            <li class="market">Bear Market</li>
-            <li class="gitcoin">Gitcoin is doing some Revenue Testing (Tokenization, Secret Project, CodeFund, Grants, Bounties)</li>
-          </ul>
-        </div>
-    
-        <div class="tl-event" data-time="2019">
-          1 Year out
-          <ul class="list-special">
-            <li class="macro">Sharding / POS goes live.</li>
-            <li class="macro">Stablecoins are an accepted store of value.</li>
-            <li class="market">Sideways Market</li>
-            <li class="market">Some ICOs will launch / many will fail to get market traction / most ICOs will fail altogether</li>
-            <li class="consensys">Consensys hits 1k people</li>
-            <li class="gitcoin">Gitcoin has figured out a scalable Revenue model. Starting to scale.</li>
-          </ul>
-        </div>
-
-        <div class="tl-event" data-time="2021">
-          3 Years out
-          <ul class="list-special">
-            <li class="macro">Ethereum hits 1 billion tx / day</li>
-            <li class="macro">The flippening happens</li>
-            <li class="macro">Blockchain disrupts the dollar for store of wealth for nation states. To subvert sanctions at first and weaken the influence of he US dollar for countries like Russia</li>
-            <li class="macro">Identity on blockchain because a very big deal</li>
-            <li class="market">Megabull Market</li>
-            <li class="consensys">Consensys is tokenized</li>
-            <li class="gitcoin">Gitcoin is a $20mm / year business.</li>  
-          </ul>
-        </div>
-
-        <div class="tl-event" data-time="2023">
-          5 Years out
-          <ul class="list-special">
-            <li class="macro">It is as easy for a software developer to find work as it is for an Uber driver to find a ride 10 years ago.</li>
-            <li class="gitcoin">Gitcoin is a $50mm / year business.</li>
-          </ul>
-        </div>
-
-        <div class="tl-event" data-time="2028">
-          10 Years out
-          <ul class="list-special">
-            <li class="macro">Whether or not ETH ‘wins’, xyz cryptocurrency will be utilized for a non-trivial amount of total currency transactions. (i.e. at least 10% of total M1 money supply)</li>
-          </ul>
-        </div>
-
+      <div class="tl-event" data-time="2019">
+        1 Year out
+        <ul class="list-special">
+          <li class="macro">Sharding / POS goes live.</li>
+          <li class="macro">Stablecoins are an accepted store of value.</li>
+          <li class="market">Sideways Market</li>
+          <li class="market">Some ICOs will launch / many will fail to get market traction / most ICOs will fail altogether</li>
+          <li class="consensys">Consensys hits 1k people</li>
+          <li class="gitcoin">Gitcoin has figured out a scalable Revenue model. Starting to scale.</li>
+        </ul>
       </div>
 
-      <div class="twit">
-        <img src="{% static "v2/images/vision/twit.png" %}" alt="twit-roadmap">
+      <div class="tl-event" data-time="2021">
+        3 Years out
+        <ul class="list-special">
+          <li class="macro">Ethereum hits 1 billion tx / day</li>
+          <li class="macro">The flippening happens</li>
+          <li class="macro">Blockchain disrupts the dollar for store of wealth for nation states. To subvert sanctions at first and weaken the influence of he US dollar for countries like Russia</li>
+          <li class="macro">Identity on blockchain because a very big deal</li>
+          <li class="market">Megabull Market</li>
+          <li class="consensys">Consensys is tokenized</li>
+          <li class="gitcoin">Gitcoin is a $20mm / year business.</li>  
+        </ul>
       </div>
+
+      <div class="tl-event" data-time="2023">
+        5 Years out
+        <ul class="list-special">
+          <li class="macro">It is as easy for a software developer to find work as it is for an Uber driver to find a ride 10 years ago.</li>
+          <li class="gitcoin">Gitcoin is a $50mm / year business.</li>
+        </ul>
+      </div>
+
+      <div class="tl-event" data-time="2028">
+        10 Years out
+        <ul class="list-special">
+          <li class="macro">Whether or not ETH ‘wins’, xyz cryptocurrency will be utilized for a non-trivial amount of total currency transactions. (i.e. at least 10% of total M1 money supply)</li>
+        </ul>
+      </div>
+
     </div>
 
+    <div class="twit">
+      <img class="mw-100" src="{% static "v2/images/vision/twit.png" %}" alt="twit-roadmap">
+    </div>
+  </div>
+
+</section>
+
+<section class="container-fluid">
+  <div class="row">
+    <div class="col pt-5 text-center">
+      {% blocktrans %}
+      <h1>Open Questions about the Future</h1>
+      <p>We're not sure about these parts of the blockchain-ized world.</p>
+      {% endblocktrans %}
+
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col">
+      <div class="media">
+        <img class="align-self-center mr-3" src="{% static "v2/images/vision/blockchain.png" %}" alt="twit-roadmap">
+        <div class="media-body">  
+          <h5>Blockchain</h5>
+          <p>Will blockchain be in everyone's wallet (Browser), or will it be hidden in the back? (Linux)</p>
+          <p>What will Identity on web3 look like?  Will there be a dfb (decentralized facebook)</p>
+          <p>What web3 wallet will everyone use?</p>
+          <p>What will maturation/consolidation in the blockchain space look like?</p>    
+        </div>
+      </div>
+
+      <div class="media">
+        <img class="align-self-center mr-3" src="{% static "v2/images/vision/oss.png" %}" alt="twit-roadmap">
+        <div class="media-body">  
+          <h5>OSS</h5>
+          <p>What is a scalable funding model for developers (esp OSS) in a blockchain world?</p>
+          <p>Can blockchain solve The Software Paradox?</p>
+          <p>Is Github’s centralization a problem?</p>
+        </div>
+      </div>
+
+      <div class="media">
+          <img class="align-self-center mr-3" src="{% static "v2/images/vision/future.png" %}" alt="">
+          <div class="media-body">
+            <h5 class="mt-0">The Future Of Work</h5>
+            <p>Will software developers find work as easily as Uber drivers do today?</p>
+            <p>In that scenario, how will ancillary services (Retirement, Insurance, Health Care) build around a ‘future of work’ scenario? I’d imagine, more so, than just making it economically feasible to work 4-5 OSS projects as a full time job, many people wouldn’t want to give up benefits that they accrue in their day-to-day lives.</p>
+            <p>Are these government based, “employer” based, or none of the above?</p>
+            
+          </div>
+      </div>
+
+      
+
+    </div>
+  </div>
+  <div class="row">
+    <div class="col">
+        Got input that can inform our vision?
+        <button class="btn">GET IN TOUCH</button>
+    </div>
+  </div>
+
+  
+  
 </section>
 
 {% include 'shared/footer.html' %}
