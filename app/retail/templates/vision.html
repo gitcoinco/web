@@ -32,69 +32,73 @@
   {% include 'shared/minihero.html' with h1='Our Vision' position_h1_below_logo=1 suppress_logo=1 %}
 </div>
 
-<div class="container-fluid" >
+<section class="container-fluid" >
+
   <div class="row">
     <div class="col pt-5 text-center">
       {% blocktrans %}
-      <h2>Blockchain is the TCP of money</h2>
+      <h1>Blockchain is the TCP of money</h1>
       {% endblocktrans %}
     </div>
   </div>
+
   <div class="row p-5 align-items-center animatedParent">
-    
-    <div class="col-lg-6 animated fadeInLeftShort">
-      <img
-            class="mw-100 mb-5"
-            src="{% static "v2/images/vision/blockchain.jpg" %}"
-          />
+    <div class="col-lg-6 text-center animated fadeInLeftShort">
+      <img class="mw-100 mb-5" src="{% static "v2/images/vision/blockchain.jpg" %}"/>
     </div>
     <div class="col-lg-6 animated fadeInLeftShort">
       <h3>{% trans "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dolor tortor, imperdiet quis." %}</h3>
       <p>{% trans "In in egestas elit. Integer dignissim pulvinar nulla auctor laoreet. Fusce vel congue augue, nec pretium velit." %}</p>
       <p>{% trans "Praesent ultrices, mauris id faucibus commodo, lectus lorem maximus lectus, id iaculis ex neque et mi. Sed ultricies pulvinar eros, eu consectetur dolor aliquam non. Quisque venenatis metus sit amet lobortis aliquam." %}</p>
       <p>{% trans "Fusce ac consectetur eros. Vivamus iaculis varius pellentesque." %}</p>
-
-
     </div>
   </div>
-</div>
-<section class="container-fluid bg-grey">
+</section>
+
+<section class="container-fluid bg-light">
+
   <div class="row">
-    <div class="col pt-5 text-center">
+    <div class="col pt-5 mb-5 text-center">
       {% blocktrans %}
       <h1>Using Markets for Good</h1>
       {% endblocktrans %}
-
     </div>
   </div>
-  <div class="row">
-    <div class="col">
+
+  <div class="row justify-content-md-center">
+    <div class="col-11 pb-5">
       <div class="card-deck">
-        <div class="card">
-          Using markets for good
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dolor tortor, imperdiet quis porta vitae, porttitor eu eros.
+
+        <div class="card text-center p-5 m-3 border-0">
+          <img class="mw-100 mx-auto mb-4 mt-4" width="100" src="{% static "v2/images/vision/hand-plus.png" %}"/>
+          <h2 class="mb-3">Using markets for good</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dolor tortor, imperdiet quis porta vitae, porttitor eu eros.</p>
         </div>
         
-        <div class="card">
-          We want to make sure it'll be easy to find good jobs in the future
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam
+        <div class="card text-center p-5 m-3 border-0">
+          <img class="mw-100 mx-auto mb-4 mt-4" width="100" src="{% static "v2/images/vision/search-brief.png" %}"/>
+          <h2 class="mb-3">We want to make sure it'll be easy to find good jobs in the future</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam</p>
         </div>
-        <div class="card">
-          <img class="mw-100" src="{% static "v2/images/mission/interact/people_care.svg" %}"/>
+
+        <div class="card text-center p-5 m-3 border-0">
+          <img class="mw-100 mx-auto mb-4 mt-4" width="100" src="{% static "v2/images/mission/interact/people_care.svg" %}"/>
           
-          Futuristic Humanitarians
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dolor tortor, imperdiet quis porta vitae, porttitor eu eros.
+          <h2 class="mb-3">Futuristic Humanitarians</h2>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dolor tortor, imperdiet quis porta vitae, porttitor eu eros.\</p>
         </div>
       </div>
     </div>
-      
   </div>
+
 </section>
   
 <section class="container-fluid">
+
   <div class="text-center p-5">
     <img class="mw-100" src="{% static "v2/images/vision/triangle.png" %}"/>
   </div>
+
 </section>
 
 <section class="container-fluid bg-blue">
@@ -102,7 +106,7 @@
     <div class="col pt-5 text-center">
       {% blocktrans %}
       <h1>Blockchain evolving over time</h1>
-      <p>This is our best bet as to how the space is going to evolve. By building a map of where we think its going, we can map out how Gitcoin can help</p>
+      <p class="parag-center">This is our best bet as to how the space is going to evolve. By building a map of where we think its going, we can map out how Gitcoin can help</p>
       {% endblocktrans %}
     </div>
   </div>
@@ -110,7 +114,7 @@
   <div class="tl-component pt-5">
     <div class="tl">
       <div class="tl-event" data-time="2018">
-        Now
+        <b>Now</b>
         <ul class="list-special">
           <li class="macro">Sharding / POS in research stage</li>
           <li class="market">Bear Market</li>
@@ -119,7 +123,7 @@
       </div>
   
       <div class="tl-event" data-time="2019">
-        1 Year out
+        <b>1 Year out</b>
         <ul class="list-special">
           <li class="macro">Sharding / POS goes live.</li>
           <li class="macro">Stablecoins are an accepted store of value.</li>
@@ -131,7 +135,7 @@
       </div>
 
       <div class="tl-event" data-time="2021">
-        3 Years out
+        <b>3 Years out</b>
         <ul class="list-special">
           <li class="macro">Ethereum hits 1 billion tx / day</li>
           <li class="macro">The flippening happens</li>
@@ -144,7 +148,7 @@
       </div>
 
       <div class="tl-event" data-time="2023">
-        5 Years out
+        <b>5 Years out</b>
         <ul class="list-special">
           <li class="macro">It is as easy for a software developer to find work as it is for an Uber driver to find a ride 10 years ago.</li>
           <li class="gitcoin">Gitcoin is a $50mm / year business.</li>
@@ -152,7 +156,7 @@
       </div>
 
       <div class="tl-event" data-time="2028">
-        10 Years out
+        <b>10 Years out</b>
         <ul class="list-special">
           <li class="macro">Whether or not ETH ‘wins’, xyz cryptocurrency will be utilized for a non-trivial amount of total currency transactions. (i.e. at least 10% of total M1 money supply)</li>
         </ul>
@@ -167,23 +171,25 @@
 
 </section>
 
-<section class="container-fluid">
+<section class="container-fluid bg-light">
   <div class="row">
-    <div class="col pt-5 text-center">
+    <div class="col pt-5 mb-5 text-center">
       {% blocktrans %}
-      <h1>Open Questions about the Future</h1>
+      <h1 class="light mb-3">Open Questions about the Future</h1>
       <p>We're not sure about these parts of the blockchain-ized world.</p>
       {% endblocktrans %}
 
     </div>
   </div>
 
-  <div class="row">
-    <div class="col">
-      <div class="media">
-        <img class="align-self-center mr-3" src="{% static "v2/images/vision/blockchain.png" %}" alt="twit-roadmap">
+  <div class="row justify-content-md-center">
+    <div class="col-11">
+      <div class="media shadow-sm p-5 mb-5 bg-white rounded flex-column flex-md-row">
+        <div class="w-25 align-self-center text-center mr-md-3 mb-3">
+          <img class="mw-100" src="{% static "v2/images/vision/blockchain.png" %}" alt="twit-roadmap">
+        </div>
         <div class="media-body">  
-          <h5>Blockchain</h5>
+          <h3 class="mb-4">Blockchain</h3>
           <p>Will blockchain be in everyone's wallet (Browser), or will it be hidden in the back? (Linux)</p>
           <p>What will Identity on web3 look like?  Will there be a dfb (decentralized facebook)</p>
           <p>What web3 wallet will everyone use?</p>
@@ -191,25 +197,29 @@
         </div>
       </div>
 
-      <div class="media">
-        <img class="align-self-center mr-3" src="{% static "v2/images/vision/oss.png" %}" alt="twit-roadmap">
+      <div class="media shadow-sm p-5 mb-5 bg-white rounded flex-column flex-md-row">
+        <div class="w-25 align-self-center text-center mr-md-3 mb-3">
+          <img class="mw-100" src="{% static "v2/images/vision/oss.png" %}" alt="twit-roadmap">
+        </div>
         <div class="media-body">  
-          <h5>OSS</h5>
+          <h3 class="mb-4">OSS</h3>
           <p>What is a scalable funding model for developers (esp OSS) in a blockchain world?</p>
           <p>Can blockchain solve The Software Paradox?</p>
           <p>Is Github’s centralization a problem?</p>
         </div>
       </div>
 
-      <div class="media">
-          <img class="align-self-center mr-3" src="{% static "v2/images/vision/future.png" %}" alt="">
-          <div class="media-body">
-            <h5 class="mt-0">The Future Of Work</h5>
-            <p>Will software developers find work as easily as Uber drivers do today?</p>
-            <p>In that scenario, how will ancillary services (Retirement, Insurance, Health Care) build around a ‘future of work’ scenario? I’d imagine, more so, than just making it economically feasible to work 4-5 OSS projects as a full time job, many people wouldn’t want to give up benefits that they accrue in their day-to-day lives.</p>
-            <p>Are these government based, “employer” based, or none of the above?</p>
-            
-          </div>
+      <div class="media shadow-sm p-5 mb-5 bg-white rounded flex-column flex-md-row">
+        <div class="w-25 align-self-center text-center mr-md-3 mb-3">
+          <img class="mw-100" src="{% static "v2/images/vision/future.png" %}" alt="">
+        </div>
+        <div class="media-body">
+          <h3 class="mb-4">The Future Of Work</h3>
+          <p>Will software developers find work as easily as Uber drivers do today?</p>
+          <p>In that scenario, how will ancillary services (Retirement, Insurance, Health Care) build around a ‘future of work’ scenario? I’d imagine, more so, than just making it economically feasible to work 4-5 OSS projects as a full time job, many people wouldn’t want to give up benefits that they accrue in their day-to-day lives.</p>
+          <p>Are these government based, “employer” based, or none of the above?</p>
+          
+        </div>
       </div>
 
       

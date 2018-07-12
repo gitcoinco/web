@@ -1,7 +1,6 @@
 :root {
   --tl-color: white;
   --tl-bg: #3E00FF;
-  --bg-grey: #F9F9F9;
   --tl-date-color: var(--gc-green-hover);
 }
 
@@ -10,8 +9,9 @@
   color: white;
 }
 
-.bg-grey {
-  background-color: var(--bg-grey);
+
+.vision h1 {
+  font-size: 3.2rem;
 }
 
 /* Timeline */
@@ -36,9 +36,9 @@
   content: "";
   position: absolute;
   width: 3px;
-  height: 100%;
+  top: 0.5rem;
+  bottom: 7rem;
   background: var(--tl-color);
-  top: 0;
   left: 1.6rem;
   border-radius: 10px;
 }
@@ -46,11 +46,17 @@
 .tl-event {
   color: var(--tl-color);
   margin: 1rem;
-  margin-left: 2rem;
+  margin-left: 4rem;
   float: left;
   padding: 1rem;
   clear: both;
-  
+  font-weight: 200;
+}
+.tl-event b {
+  font-size: 1.8rem;
+  font-weight: 800;  
+  margin-bottom: 1rem;
+  display: block;
 }
 
 .tl-event:before {
@@ -66,6 +72,7 @@
   z-index: 1;
   color: var(--tl-date-color);
   font-size: 1.2rem;
+  font-weight: 800;
   text-align: center;
   padding: 1rem 0;
 
@@ -86,7 +93,8 @@
     width: 6rem;
     height: 6rem;
     font-size: 1.6rem;
-    padding: 1.7rem 0;
+    padding: 1.6rem 0;
+    margin-top: -1.6rem;
   }
 
   .tl-event {
@@ -97,6 +105,19 @@
 
   .tl-event:nth-child(odd) {
     float: right;
+  }
+
+  .tl-event:nth-child(even) b:before {
+    content: '';
+    display: block;
+    border-bottom: 1px solid;
+    border-style: dashed;
+    border-top: none;
+    position: absolute;
+    right: 56%;
+    left: 0;
+    margin-top: 1em;
+    margin-left: 13rem;
   }
 }
 
@@ -123,4 +144,16 @@ li.market {
   grid-column: 1/4;
   margin: 3rem;
   text-align: center;
+}
+
+.parag-center {
+  margin: auto;
+}
+
+@media (min-width: 992px) {
+
+  .parag-center {
+    max-width: 25%;
+  }
+
 }
