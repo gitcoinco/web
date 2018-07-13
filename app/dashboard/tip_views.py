@@ -198,10 +198,10 @@ def receive_tip_v2(request, pk, txid, network):
             else:
                 # ERC20 contract receive
                 gas = 100000
-                amount -= gas * gasPrice
+                amount -= gas * int(gasPrice)
                 tx = dict(
                     nonce=nonce,
-                    gasPrice=w3.toHex(gasPrice),
+                    gasPrice=w3.toHex(int(gasPrice)),
                     gas=w3.toHex(gas),
                     to=address,
                     value=w3.toHex(amount),
