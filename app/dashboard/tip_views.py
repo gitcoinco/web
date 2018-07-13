@@ -96,7 +96,7 @@ def record_tip_activity(tip, github_handle, event_name):
         logging.error(f"error in record_tip_activity: profile with github name {github_handle} not found")
         return
     try:
-        kwargs['bounty'] = Bounty.objects.get(current_bounty=True, network=tip.network, github_url=tip.github_url)
+        kwargs['bounty'] = tip.bounty
     except:
         pass
 

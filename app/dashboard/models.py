@@ -1027,6 +1027,13 @@ class Tip(SuperModel):
             return False
         return True
 
+    @property
+    def bounty(self):
+        try:
+            return Bounty.objects.current().filter(github__iexact=self.github_url, network=self.network).order_by('-web3_created').first()
+        except:
+            return None
+
 
 @receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
 def psave_tip(sender, instance, **kwargs):
