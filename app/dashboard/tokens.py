@@ -27,3 +27,10 @@ def addr_to_token(addr):
         if(token['addr'].lower() == addr.lower()):
             return token
     return False
+
+
+def token_by_name(name):
+    for token in tokens:
+        if token['name'].lower() == name.lower():
+            return token
+    return False

@@ -119,10 +119,8 @@ class GithubUtilitiesTest(TestCase):
         }
         params = urlencode(params, quote_via=quote_plus)
         url = settings.GITHUB_TOKEN_URL + '?' + params
-        responses.add(responses.GET, settings.GITHUB_TOKEN_URL,
-                      json=data, headers=JSON_HEADER, status=200)
-        responses.add(responses.GET, settings.GITHUB_TOKEN_URL,
-                      json={}, headers=JSON_HEADER, status=200)
+        responses.add(responses.GET, settings.GITHUB_TOKEN_URL, json=data, headers=JSON_HEADER, status=200)
+        responses.add(responses.GET, settings.GITHUB_TOKEN_URL, json={}, headers=JSON_HEADER, status=200)
         result = get_github_user_token(self.callback_code)
         result_no_token = get_github_user_token(self.callback_code)
 
@@ -136,8 +134,7 @@ class GithubUtilitiesTest(TestCase):
         """Test the github utility get_github_user_data method."""
         headers = dict({'Authorization': f'token {self.user_oauth_token}'}, **JSON_HEADER)
         data = {'login': 'gitcoin'}
-        responses.add(responses.GET, 'https://api.github.com/user',
-                      json=data, headers=headers, status=200)
+        responses.add(responses.GET, 'https://api.github.com/user', json=data, headers=headers, status=200)
         result = get_github_user_data(self.user_oauth_token)
 
         assert result == data
@@ -147,8 +144,7 @@ class GithubUtilitiesTest(TestCase):
         """Test the github utility get_github_user_data method."""
         headers = dict({'Authorization': f'token {self.user_oauth_token}'}, **JSON_HEADER)
         data = {'login': 'gitcoin'}
-        responses.add(responses.GET, 'https://api.github.com/user',
-                      json=data, headers=headers, status=404)
+        responses.add(responses.GET, 'https://api.github.com/user', json=data, headers=headers, status=404)
         result = get_github_user_data(self.user_oauth_token)
 
         assert result == {}
@@ -173,10 +169,7 @@ class GithubUtilitiesTest(TestCase):
     @responses.activate
     def test_get_github_primary_email(self):
         """Test the github utility get_github_primary_email method."""
-        data = [
-            {'primary': True, 'email': 'test@gitcoin.co'},
-            {'email': 'test2@gitcoin.co'}
-        ]
+        data = [{'primary': True, 'email': 'test@gitcoin.co'}, {'email': 'test2@gitcoin.co'}]
         url = 'https://api.github.com/user/emails'
         responses.add(responses.GET, url, json=data, headers=HEADERS, status=200)
         responses.add(responses.GET, url, json=data, headers=HEADERS, status=404)
@@ -190,11 +183,7 @@ class GithubUtilitiesTest(TestCase):
     def test_get_github_emails(self):
         """Test the github utility get_github_emails method."""
         headers = dict({'Authorization': f'token {self.user_oauth_token}'}, **JSON_HEADER)
-        data = [
-            {'email': 'test@gitcoin.co'},
-            {'email': 'test2@gitcoin.co'},
-            {'email': 'testing@noreply.github.com'}
-        ]
+        data = [{'email': 'test@gitcoin.co'}, {'email': 'test2@gitcoin.co'}, {'email': 'testing@noreply.github.com'}]
         url = 'https://api.github.com/user/emails'
         responses.add(responses.GET, url, json=data, headers=headers, status=200)
         responses.add(responses.GET, url, json=data, headers=headers, status=404)
@@ -208,11 +197,7 @@ class GithubUtilitiesTest(TestCase):
     @responses.activate
     def test_get_issue_comments(self):
         """Test the github utility get_issue_comments method."""
-        params = {
-            'sort': 'created',
-            'direction': 'desc',
-            'per_page': 100,
-        }
+        params = {'sort': 'created', 'direction': 'desc', 'per_page': 100, }
         params = urlencode(params, quote_via=quote_plus)
         owner = 'gitcoinco'
         repo = 'web'
@@ -225,11 +210,7 @@ class GithubUtilitiesTest(TestCase):
     @responses.activate
     def test_get_issue_comments_issue(self):
         """Test the github utility get_issue_comments_issue method."""
-        params = {
-            'sort': 'created',
-            'direction': 'desc',
-            'per_page': 100,
-        }
+        params = {'sort': 'created', 'direction': 'desc', 'per_page': 100, }
         params = urlencode(params, quote_via=quote_plus)
         owner = 'gitcoinco'
         repo = 'web'
@@ -244,12 +225,7 @@ class GithubUtilitiesTest(TestCase):
     @responses.activate
     def test_get_issue_timeline_events(self):
         """Test the github utility get_issue_timeline_events method."""
-        params = {
-            'sort': 'created',
-            'direction': 'desc',
-            'per_page': 100,
-            'page': 1
-        }
+        params = {'sort': 'created', 'direction': 'desc', 'per_page': 100, 'page': 1}
         params = urlencode(params, quote_via=quote_plus)
         owner = 'gitcoinco'
         repo = 'web'

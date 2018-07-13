@@ -68,6 +68,8 @@ var update_metamask_conf_time_and_cost_estimate = function() {
     ethAmount = Math.round(1000 * gasLimit * gasPrice / Math.pow(10, 9)) / 1000;
     usdAmount = Math.round(10 * ethAmount * document.eth_usd_conv_rate) / 10;
   }
+  
+  if (typeof document.conf_time_spread == 'undefined') return;
 
   for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
     var this_ele = (document.conf_time_spread[i]);
@@ -299,13 +301,16 @@ var uninterested = function(bounty_pk, profileId, slash) {
 /** Pulls the list of interested profiles from the server. */
 var pull_interest_list = function(bounty_pk, callback) {
   document.interested = false;
-  var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL;
+  var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL + '&not_current=1';
   var started = [];
 
   $.get(uri, function(results) {
-    render_activity(results[0]);
-    if (results[0].interested) {
-      var interested = results[0].interested;
+    results = sanitizeAPIResults(results);
+    const current = results.find(result => result.current_bounty);
+
+    render_activity(current, results);
+    if (current.interested) {
+      var interested = current.interested;
 
       interested.forEach(function(_interested) {
         started.push(
@@ -813,6 +818,10 @@ var promptForAuth = function(event) {
   var denomination = $('#token option:selected').text();
   var tokenAddress = $('#token option:selected').val();
 
+  if (!denomination) {
+    return;
+  }
+
   if (denomination == 'ETH') {
     $('input, textarea, select').prop('disabled', '');
   } else {
@@ -822,7 +831,7 @@ var promptForAuth = function(event) {
 
     token_contract.allowance.call(from, to, function(error, result) {
       if (error || result.toNumber() == 0) {
-        _alert("You have not yet enabled this token.  To enable this token, go to the <a style='padding-left:5px;' href='/settings/tokens'> Token Settings page and enable it</a>. (this is only needed one time per token)");
+        _alert("You have not yet enabled this token.  To enable this token, go to the <a style='padding-left:5px;' href='/settings/tokens'> Token Settings page and enable it</a>. (this is only needed one time per token)", 'warning');
         $('input, textarea, select').prop('disabled', 'disabled');
         $('select[name=deonomination]').prop('disabled', '');
       } else {

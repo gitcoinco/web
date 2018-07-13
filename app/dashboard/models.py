@@ -82,6 +82,22 @@ class BountyQuerySet(models.QuerySet):
         else:
             return
 
+    def keyword(self, keyword):
+        """Filter results to all Bounty objects containing the keywords.
+
+        Args:
+            keyword (str): The keyword to search title, issue description, and issue keywords by.
+
+        Returns:
+            dashboard.models.BountyQuerySet: The QuerySet of bounties filtered by keyword.
+
+        """
+        return self.filter(
+            Q(metadata__issueKeywords__icontains=keyword) | \
+            Q(title__icontains=keyword) | \
+            Q(issue_description__icontains=keyword)
+        )
+
 
 class Bounty(SuperModel):
     """Define the structure of a Bounty.
@@ -203,6 +219,7 @@ class Bounty(SuperModel):
     admin_mark_as_remarket_ready = models.BooleanField(
         default=False, help_text=_('Admin override to mark as remarketing ready')
     )
+    attached_job_description = models.URLField(blank=True, null=True)
 
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
@@ -419,6 +436,14 @@ class Bounty(SuperModel):
             return False
 
     @property
+    def keywords_list(self):
+        keywords = self.keywords
+        if not keywords:
+            return []
+        else:
+            return [keyword.strip() for keyword in keywords.split(",")]
+
+    @property
     def now(self):
         """Return the time now in the current timezone."""
         return timezone.now()
@@ -458,7 +483,10 @@ class Bounty(SuperModel):
                     return 'done'
                 elif self.past_hard_expiration_date:
                     return 'expired'
-                # If its not expired or done, it must be cancelled.
+                has_tips = Tip.objects.filter(network=self.network, github_url=self.github_url).exclude(txid='').exists()
+                if has_tips:
+                    return 'done'
+                # If its not expired or done, and no tips, it must be cancelled.
                 return 'cancelled'
             # per https://github.com/gitcoinco/web/pull/1098 ,
             # cooperative/contest are open no matter how much started/submitted work they have
@@ -720,7 +748,7 @@ class Bounty(SuperModel):
         """
         params = f'pk={self.pk}&network={self.network}'
         urls = {}
-        for item in ['fulfill', 'increase', 'accept', 'cancel']:
+        for item in ['fulfill', 'increase', 'accept', 'cancel', 'payout']:
             urls.update({item: f'/issue/{item}?{params}'})
         return urls
 
@@ -838,6 +866,7 @@ class Subscription(SuperModel):
 
 class Tip(SuperModel):
 
+    web3_type = models.CharField(max_length=50, default='v2')
     emails = JSONField()
     url = models.CharField(max_length=255, default='')
     tokenName = models.CharField(max_length=255)
@@ -859,17 +888,22 @@ class Tip(SuperModel):
     from_address = models.CharField(max_length=255, default='', blank=True)
     receive_address = models.CharField(max_length=255, default='', blank=True)
     recipient_profile = models.ForeignKey(
-        'dashboard.Profile', related_name='received_tips', on_delete=models.SET_NULL, null=True
+        'dashboard.Profile', related_name='received_tips', on_delete=models.SET_NULL, null=True, blank=True
     )
     sender_profile = models.ForeignKey(
-        'dashboard.Profile', related_name='sent_tips', on_delete=models.SET_NULL, null=True
+        'dashboard.Profile', related_name='sent_tips', on_delete=models.SET_NULL, null=True, blank=True
     )
+    metadata = JSONField(default={}, blank=True)
 
     def __str__(self):
         """Return the string representation for a tip."""
-        return f"({self.network}) - {self.status}{' ORPHAN' if not self.emails else ''} " \
+        if self.web3_type == 'yge':
+            return f"({self.network}) - {self.status}{' ORPHAN' if not self.emails else ''} " \
                f"{self.amount} {self.tokenName} to {self.username} from {self.from_name or 'NA'}, " \
                f"created: {naturalday(self.created_on)}, expires: {naturalday(self.expires_date)}"
+        status = 'funded' if self.txid else 'not funded'
+        status = status if not self.receive_txid else 'received'
+        return f"{status} {self.amount} {self.tokenName} to {self.username} from {self.from_name or 'NA'}"
 
     # TODO: DRY
     def get_natural_value(self):
@@ -880,6 +914,34 @@ class Tip(SuperModel):
     @property
     def value_true(self):
         return self.get_natural_value()
+
+    @property
+    def amount_in_wei(self):
+        return float(self.amount)
+
+    @property
+    def amount_in_whole_units(self):
+        return float(self.get_natural_value())
+
+    @property
+    def amount_in_wei(self):
+        token = addr_to_token(self.tokenAddress)
+        decimals = token['decimals'] if token else 18
+        return float(self.amount) * 10**decimals
+
+    @property
+    def amount_in_whole_units(self):
+        return float(self.amount)
+
+    @property
+    def receive_url(self):
+        if self.web3_type == 'yge':
+            return self.url
+
+        pk = self.metadata['priv_key']
+        txid = self.txid
+        network = self.network
+        return f"{settings.BASE_URL}tip/receive/v2/{pk}/{txid}/{network}"
 
     # TODO: DRY
     @property
@@ -1036,6 +1098,44 @@ def psave_interest(sender, instance, **kwargs):
     print("signal: updating bounties psave_interest")
     for bounty in Bounty.objects.filter(interested=instance):
         bounty.save()
+
+
+class Activity(models.Model):
+    """Represent Start work/Stop work event.
+
+    Attributes:
+        ACTIVITY_TYPES (list of tuples): The valid activity types.
+
+    """
+
+    ACTIVITY_TYPES = [
+        ('new_bounty', 'New Bounty'),
+        ('start_work', 'Work Started'),
+        ('stop_work', 'Work Stopped'),
+        ('work_submitted', 'Work Submitted'),
+        ('work_done', 'Work Done'),
+        ('worker_approved', 'Worker Approved'),
+        ('worker_rejected', 'Worker Rejected'),
+        ('worker_applied', 'Worker Applied'),
+        ('increased_bounty', 'Increased Funding'),
+        ('killed_bounty', 'Canceled Bounty'),
+        ('new_tip', 'New Tip'),
+        ('receive_tip', 'Tip Received'),
+    ]
+    profile = models.ForeignKey('dashboard.Profile', related_name='activities', on_delete=models.CASCADE)
+    bounty = models.ForeignKey(Bounty, related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
+    tip = models.ForeignKey(Tip, related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True)
+    metadata = JSONField(default={})
+
+    def __str__(self):
+        """Define the string representation of an interested profile."""
+        return f"{self.profile.handle} type: {self.activity_type}" \
+               f"created: {naturalday(self.created)}"
+
+    def i18n_name(self):
+        return _(next((x[1] for x in self.ACTIVITY_TYPES if x[0] == self.activity_type), 'Unknown type'))
 
 
 class Profile(SuperModel):
@@ -1811,9 +1911,11 @@ class Tool(SuperModel):
     CAT_COMING_SOON = 'CS'
     CAT_COMMUNITY = 'CO'
     CAT_FOR_FUN = 'FF'
+    GAS_TOOLS = "TO"
 
     TOOL_CATEGORIES = (
         (CAT_ADVANCED, 'advanced'),
+        (GAS_TOOLS, 'gas'),
         (CAT_ALPHA, 'alpha'),
         (CAT_BASIC, 'basic'),
         (CAT_BUILD, 'tools to build'),

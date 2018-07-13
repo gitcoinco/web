@@ -97,7 +97,9 @@ $(document).ready(function() {
   $('select[name=deonomination]').change(promptForAuth);
   $('input[name=issueURL]').blur(retrieveIssueDetails);
   setTimeout(setUsdAmount, 1000);
-  setTimeout(promptForAuth, 1000);
+  waitforWeb3(function() {
+    promptForAuth();
+  });
 
   // revision action buttons
   $('#subtractAction').on('click', function() {
@@ -138,6 +140,19 @@ $(document).ready(function() {
   if ($('input[name=amount]').val().trim().length > 0) {
     setUsdAmount();
   }
+
+  $('#hiringRightNow').click(function() {
+    setTimeout(function() {
+      var hiringRightNow = $('#hiringRightNow').is(':checked');
+
+      if (hiringRightNow) {
+        $('#jobDescription').removeClass('hidden');
+        $('#jobDescription').focus();
+      } else {
+        $('#jobDescription').addClass('hidden');
+      }
+    }, 10);
+  });
 
 
   $('#advancedLink a').click(function(e) {
@@ -226,6 +241,10 @@ $(document).ready(function() {
           schemes: {
             project_type: data.project_type,
             permission_type: data.permission_type
+          },
+          hiring: {
+            hiringRightNow: data.hiringRightNow,
+            jobDescription: data.jobDescription
           },
           privacy_preferences: privacy_preferences,
           funders: [],
@@ -362,7 +381,7 @@ $(document).ready(function() {
           console.error(error);
           _alert({
             message: gettext('There was an error.  Please try again or contact support.')
-          });
+          }, 'error');
           unloading_button($('.js-submit'));
           return;
         }
