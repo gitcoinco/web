@@ -1,0 +1,18 @@
+{
+  "symbol": "MCAC",
+  "address": "0x328d97fc7d4d0ab304c6f7d636cc59765197e7cb",
+  "overview":{
+        "en": "MCAC is the first blockchain and a decentralized development platform in manufacturing industry in the world. With MCAC users, especially for those less-experienced users in the development of blockchain, are able to develop various decentralized APPs for manufacturing sectors very fast and easily, such as “smart contracts”, “blockchain token”, “invoicing system”, “blockchain ERP”, etc., which will create more potential commercial values and promote the enterprise development.",
+        "zh": "MCAC是全球首个基于区块链且服务于制造业的去中心化开发平台，使用者可以利用该平台快速、简单的开发各种适用于制造业的各种去中心化应用，比如“智能合约”“区块链代币”“智能进销存”“区块链ERP”等等。并且让不具有区块链开发经验的普通制造业从业人员能快速使用它，为现存商业创造挖掘出更多潜在价值，助力企业发展。"
+  },
+  "email": "sdq@teedq.com",
+  "website": "http://mcac.pro/",
+  "whitepaper": "http://mcac.pro/UploadFiles/down/MCAC%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-03-01",
+  "initial_price":{  
+        "ETH":"0.0000656598818 ETH"
+  }
+}
+
+
