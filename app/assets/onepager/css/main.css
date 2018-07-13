@@ -20,7 +20,7 @@
 
 body {
   line-height: 1;
-  font-family: futura-pt, sans-serif !important;
+  font-family: 'Muli', sans-serif !important;
   -webkit-text-size-adjust: none;
   overflow: hidden;
   width: 100%;
@@ -264,8 +264,6 @@ textarea {
   color: #000000;
   font-size: 18px;
   font-weight: 400;
-  line-height: 2;
-  letter-spacing: 0.1em;
 }
 
 @media screen and (max-width: 1680px) {
