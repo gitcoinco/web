@@ -483,7 +483,10 @@ class Bounty(SuperModel):
                     return 'done'
                 elif self.past_hard_expiration_date:
                     return 'expired'
-                # If its not expired or done, it must be cancelled.
+                has_tips = Tip.objects.filter(network=self.network, github_url=self.github_url).exclude(txid='').exists()
+                if has_tips:
+                    return 'done'
+                # If its not expired or done, and no tips, it must be cancelled.
                 return 'cancelled'
             # per https://github.com/gitcoinco/web/pull/1098 ,
             # cooperative/contest are open no matter how much started/submitted work they have
