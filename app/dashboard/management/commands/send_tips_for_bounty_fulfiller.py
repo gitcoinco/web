@@ -55,25 +55,30 @@ class Command(BaseCommand):
                             cloned_tip = bpt
                             cloned_tip.pk = None #effectively clones the bpt and inserts a new one
                             cloned_tip.receive_txid = ''
-                            cloned_tip.is_for_bounty_fulfiller = false
+                            cloned_tip.receive_address = ''
+                            cloned_tip.recipient_profile = None
+                            cloned_tip.is_for_bounty_fulfiller = False
+                            cloned_tip.username = bpt.username
+                            cloned_tip.emails = {}
                             cloned_tip.metadata = {
                                 'priv_key': tip.metadata['priv_key'],
                                 'pub_key': tip.metadata['pub_key'],
                                 'address': tip.metadata['address'],
                                 'debug_info': f'created in order to facilitate payout of a crowdfund tip {tip.pk}'
                             }
+                            # only send tx onchain
+                            if bpt.receive_address:
+                                cloned_tip.receive_txid = cloned_tip.payout_to(bpt.receive_address)
                             cloned_tip.save()
 
-                        tip.payout_to(fulfillment.fulfiller_address)
+                        tip.receive_txid = f'cloned-and-paid-via-clones-:{bpts_ids}'
                         tip.metadata['payout_comments'] = f'auto paid out on {timezone.now()} to via recipients of {bpt_ids}; as done bounty w no bountyfulfillment'
                         tip.save()
-
-                        pass
 
                 if bounty.status == 'cancelled':
                     ######################################################
                     # return to funder
                     ######################################################
-                    tip.payout_to(bounty.bounty_owner_address)
+                    tip.receive_txid = tip.payout_to(bounty.bounty_owner_address)
                     tip.metadata['payout_comments'] = f'auto paid out on {timezone.now()}; as cancelled bounty'
                     tip.save()
