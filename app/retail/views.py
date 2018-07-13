@@ -19,6 +19,7 @@
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.core.paginator import Paginator
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -358,11 +359,14 @@ def results(request, keyword=None):
 def activity(request):
     """Render the Activity response."""
     icons = {
+        'title': 'Activity',
         'new_tip': 'fa-thumbs-up',
         'start_work': 'fa-lightbulb',
         'new_bounty': 'fa-money-bill-alt',
         'work_done': 'fa-check-circle',
     }
+
+
     def add_view_props(activity):
         activity.icon = icons.get(activity.activity_type, 'fa-check-circle')
         obj = activity.metadata
@@ -379,14 +383,21 @@ def activity(request):
             activity.value_in_usdt_now = obj['value_in_usdt_now']
         if 'token_name' in obj:
             activity.token = token_by_name(obj['token_name'])
-            if 'value_in_token' in obj:
+            if 'value_in_token' in obj and activity.token:
                 activity.value_in_token_disp = round((float(obj['value_in_token']) /
                                                       10 ** activity.token['decimals']) * 1000) / 1000
         return activity
 
-    context = {}
+    activities = Activity.objects.all().order_by('-created')
+    p = Paginator(activities, 300)
+    page = request.GET.get('page', 1)
 
-    context["activities"] = [add_view_props(a) for a in Activity.objects.all().order_by('-created')]
+    context = {
+        'p': p,
+        'page': p.get_page(page),
+        'title': 'Activity Feed',
+    }
+    context["activities"] = [add_view_props(a) for a in p.get_page(page)]
 
     return TemplateResponse(request, 'activity.html', context)
 

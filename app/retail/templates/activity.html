@@ -32,6 +32,7 @@
 
     <div style="background-color: white;">
       <div class="container" id="activity_stream">
+        {% include 'shared/pagination.html' %}
       {% for row in activities %}
         <div class="row box activity mt-4">
           <div class="col-12 col-md-1">
@@ -90,6 +91,7 @@
           </div>
         </div>
       {% endfor %}
+      {% include 'shared/pagination.html' %}
       </div>
     </div>
 
