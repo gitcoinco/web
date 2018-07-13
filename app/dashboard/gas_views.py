@@ -40,7 +40,7 @@ def get_history_cached(breakdown, i):
     key_salt = '0'
     key = f'get_history_cached_{breakdown}_{i}_{key_salt}'
     results = cache.get(key)
-    if results and not settings.DEBUG:
+    if results:
         return results
 
     results = gas_history(breakdown, i)
