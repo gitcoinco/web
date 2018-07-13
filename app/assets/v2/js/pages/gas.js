@@ -4,8 +4,8 @@ jQuery(document).ready(function() {
     for (var i = 0; i < gas_times.length; i++) {
       var d = gas_times[i];
 
-      if (gas_price < d['gas_price']) {
-        return d['confirmation_time'];
+      if (gas_price < (parseInt(d[0]) + 0.1) && gas_price > (parseInt(d[0]) - 0.1) ) {
+        return d[1];
       }
     }
     return 'n/a';

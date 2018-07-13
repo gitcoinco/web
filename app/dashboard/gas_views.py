@@ -91,7 +91,6 @@ def gas_faucet_list(request):
 def gas_calculator(request):
     recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target)
     _cts = conf_time_spread()
-    recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target)
 
     actions = [{
         'name': 'New Bounty',
