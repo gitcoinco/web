@@ -501,7 +501,7 @@ This talks features Jay Rush of Quickblocks.
         </li>
         <li>
 <a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET.
-This week features ****NEEDS LIVESTREAM GUESTS****!
+This week features David Sneider of Deco Network, a project focused on decentralizing the knowledge economy!
         </li>
 
     </ul>
