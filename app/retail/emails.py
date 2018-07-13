@@ -556,13 +556,13 @@ Back to building,
         try:
             bounty = Bounty.objects.current().filter(
                 github_url__iexact=nb['url'],
-            ).order_by('-web3_created'),first()
+            ).order_by('-web3_created').first()
             bounties.append({
                 'obj': bounty,
                 'primer': nb['primer']
                 })
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
     ecosystem_bounties = ExternalBounty.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(weeks=1)).order_by('?')[0:5]
 
