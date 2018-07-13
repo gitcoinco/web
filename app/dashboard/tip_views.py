@@ -64,6 +64,7 @@ def send_tip(request):
     params = {
         'issueURL': request.GET.get('source'),
         'title': _('Send Tip'),
+        'card_desc': _('Send a tip to any github user at the click of a button.'),
         'class': 'send',
     }
 
@@ -379,6 +380,8 @@ def send_tip_2(request):
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'from_email': primary_from_email,
         'from_handle': from_username,
+        'title': 'Send Tip | Gitcoin',
+        'card_desc': 'Send a tip to any github user at the click of a button.',
     }
 
     return TemplateResponse(request, 'onepager/send2.html', params)

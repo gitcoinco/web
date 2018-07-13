@@ -23,6 +23,7 @@ import logging
 from django.conf import settings
 from django.core.cache import cache
 from django.template.response import TemplateResponse
+from django.utils.translation import gettext_lazy as _
 
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
@@ -55,6 +56,8 @@ def gas(request):
         _cts = conf_time_spread(recommended_gas_price)
 
     context = {
+        'title': _('Live Gas Tool'),
+        'card_desc': _('See the Live Network Conditions for the Ethereum Network'),
         'eth_to_usd': round(convert_amount(1, 'ETH', 'USDT'), 0),
         'start_gas_cost': recommended_gas_price,
         'gas_advisories': gas_advisories(),
@@ -68,7 +71,8 @@ def gas(request):
 def gas_faq(request):
 
     context = {
-        'title': 'Gas FAQ',
+        'title': _('Gas FAQ'),
+        'card_desc': _('FAQ about Gas'),
         'hide_send_tip': True,
     }
     return TemplateResponse(request, 'gas_faq.html', context)
@@ -117,6 +121,8 @@ def gas_calculator(request):
     }
     ]
     context = {
+        'title': _('Gas Estimator'),
+        'card_desc': _('See what popular Gitcoin methods cost at different Gas Prices'),
         'actions': actions,
         'conf_time_spread': _cts,
         'eth_to_usd': round(convert_amount(1, 'ETH', 'USDT'), 0),
@@ -144,7 +150,8 @@ def gas_history_view(request):
             max_y = max(gh[0], max_y)
     breakdown_ui = breakdown.replace('ly', '') if breakdown != 'daily' else 'day'
     context = {
-        'title': 'Gas History',
+        'title': _('Gas History'),
+        'card_desc': _('View the history of ethereum network gas prices'),
         'max': max_y,
         'lines': lines,
         'gas_histories': gas_histories,
