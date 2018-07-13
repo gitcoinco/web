@@ -540,7 +540,7 @@ Back to building,
             'primer': 'Help the Spacemesh team in developing the alpha of their seed implementation to ship apps cross-platform.',
         },
         {
-            'url': 'https://gitcoin.co/issue/MARKETProtocol/dApp/227/762',
+            'url': 'https://github.com/MARKETProtocol/dApp/issues/227',
             'primer': 'Implement the new explorer UI/UX design in Market Protocol.',
         },
         {
