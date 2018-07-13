@@ -485,7 +485,7 @@ to go from opening a Gitcoin account to funding your first issue.
 </p>
 
 <p>
-In addition to that, we published a longer thought piece on <a href="https://medium.com/p/1149968a7b05/edit">
+In addition to that, we published a longer thought piece on <a href="https://medium.com/gitcoin/building-a-platform-that-maximizes-freedom-1149968a7b05">
 building platforms that maximize freedom.</a>
 As cryptoeconomics and decentralized technology matures, we are fast approaching the intersection of
 intrinsic and extrinsic motivations in fields such as open source.
