@@ -1,0 +1,14 @@
+{
+  "symbol": "T9",
+  "address": "0xd9e2fd73b1fe445ac7ed133e03d7983a7e660b50",
+  "website": "https://www.9coin.com/",
+  "state": "NORMAL",
+  "published_on": "2018-07-06",
+  "initial_price": {
+    "ETH": "0.000086 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/9coincom",
+    "telegram": "https://t.me/ninecoin"
+  }
+}
