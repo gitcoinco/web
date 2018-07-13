@@ -19,6 +19,7 @@
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.core.paginator import Paginator
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -26,7 +27,9 @@ from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
+from dashboard.models import Activity, Bounty
 from dashboard.notifications import amount_usdt_open_work, open_bounties
+from dashboard.tokens import token_by_name
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 
@@ -351,6 +354,52 @@ def results(request, keyword=None):
     context = build_stat_results(keyword)
     context['is_outside'] = True
     return TemplateResponse(request, 'results.html', context)
+
+
+def activity(request):
+    """Render the Activity response."""
+    icons = {
+        'title': 'Activity',
+        'new_tip': 'fa-thumbs-up',
+        'start_work': 'fa-lightbulb',
+        'new_bounty': 'fa-money-bill-alt',
+        'work_done': 'fa-check-circle',
+    }
+
+
+    def add_view_props(activity):
+        activity.icon = icons.get(activity.activity_type, 'fa-check-circle')
+        obj = activity.metadata
+        if 'new_bounty' in activity.metadata:
+            obj = activity.metadata['new_bounty']
+        activity.title = obj.get('title', '')
+        if 'id' in obj:
+            activity.bounty_url = Bounty.objects.get(pk=obj['id']).get_relative_url()
+            if activity.title:
+                activity.urled_title = f'<a href="{activity.bounty_url}">{activity.title}</a>'
+            else:
+                activity.urled_title = activity.title
+        if 'value_in_usdt_now' in obj:
+            activity.value_in_usdt_now = obj['value_in_usdt_now']
+        if 'token_name' in obj:
+            activity.token = token_by_name(obj['token_name'])
+            if 'value_in_token' in obj and activity.token:
+                activity.value_in_token_disp = round((float(obj['value_in_token']) /
+                                                      10 ** activity.token['decimals']) * 1000) / 1000
+        return activity
+
+    activities = Activity.objects.all().order_by('-created')
+    p = Paginator(activities, 300)
+    page = request.GET.get('page', 1)
+
+    context = {
+        'p': p,
+        'page': p.get_page(page),
+        'title': 'Activity Feed',
+    }
+    context["activities"] = [add_view_props(a) for a in p.get_page(page)]
+
+    return TemplateResponse(request, 'activity.html', context)
 
 
 def help(request):

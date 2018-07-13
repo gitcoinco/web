@@ -1,0 +1,104 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not,see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load humanize i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
+  </head>
+
+  <body class="{{ active }}">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header">
+      {% include 'shared/nav.html' %}
+      {% include 'shared/minihero.html' with h1='Activity Stream' position_h1_below_logo=1 %}
+    </div>
+
+    <div style="background-color: white;">
+      <div class="container" id="activity_stream">
+        {% include 'shared/pagination.html' %}
+      {% for row in activities %}
+        <div class="row box activity mt-4">
+          <div class="col-12 col-md-1">
+            <div class="activity-avatar">
+              <img class="avatar" src="/funding/avatar?repo=https://github.com/{{ row.profile.handle }}"/>
+            </div>
+          </div>
+          <div class="col-12 col-md-10">
+            <div class="activity-status">
+              <a href="https://gitcoin.co/profile/{{ row.profile.handle }}" target="_blank">
+                @{{ row.profile.handle }}
+              </a>
+              {% if row.activity_type == 'new_tip' %}
+                {% trans "tipped" %}
+                <a href="https://gitcoin.co/profile/{{ row.metadata.to_username }}" target="_blank">
+                  @{{ row.metadata.to_username }}
+                </a>
+              {% elif row.activity_type == 'new_bounty' %}
+                {% trans "funded a new issue: " %}{{ row.urled_title | safe }}
+              {% elif row.activity_type == 'start_work' %}
+                {% trans "started work: " %}{{ row.urled_title | safe }}
+              {% elif row.activity_type == 'stop_work' %}
+                {% trans "stopped work: " %}{{ row.urled_title | safe }}
+              {% elif row.activity_type == 'killed_bounty' %}
+                {% trans "canceled bounty: " %}{{ row.urled_title | safe }}
+              {% elif row.activity_type == 'increased_bounty' %}
+                {% trans "increased funding: " %}{{ row.urled_title | safe }}
+              {% else %}
+                {{ row.i18n_name }}{% if row.urled_title %}: {{ row.urled_title | safe }}{% endif %}
+              {% endif %}
+            </div>
+            <div class="font-caption" >
+              <div class="activity-tags activity-tag-first align-items-center">
+                <div class="tag token">
+                  <p>
+                    {% if row.value_in_token_disp %}
+                    <span>{{ row.value_in_token_disp }} {{row.metadata.token_name}} XX</span>
+                    {% elif row.metadata.value_in_eth %}
+                    <span>{{ row.metadata.value_in_eth }} {{row.metadata.token_name}} XX</span>
+                    {% else %}
+                    <span>{{row.metadata.value_in_token_old}}  - {{row.metadata.value_in_token}}  {{row.metadata.token_name}}</span>
+                    {% endif %}
+                  </p>
+                </div>
+                <div class="tag usd">
+                  <p>
+                    <span>{{ row.value_in_usdt_now }} USD</span>
+                  </p>
+                </div>
+                {{ row.created }}
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-1">
+            <i class="far {{ row.icon }} last-icon"></i>
+          </div>
+        </div>
+      {% endfor %}
+      {% include 'shared/pagination.html' %}
+      </div>
+    </div>
+
+    {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/rollbar.html' %}
+    {% include 'shared/messages.html' %}
+  </body>
+</html>

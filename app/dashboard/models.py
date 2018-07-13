@@ -1131,6 +1131,9 @@ class Activity(models.Model):
         return f"{self.profile.handle} type: {self.activity_type}" \
                f"created: {naturalday(self.created)}"
 
+    def i18n_name(self):
+        return _(next((x[1] for x in self.ACTIVITY_TYPES if x[0] == self.activity_type), 'Unknown type'))
+
 
 class Profile(SuperModel):
     """Define the structure of the user profile.
