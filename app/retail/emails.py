@@ -554,7 +554,7 @@ Back to building,
     bounties = []
     for nb in bounties_spec:
         try:
-            bounty = Bounty.objects.current().(
+            bounty = Bounty.objects.current().filter(
                 github_url__iexact=nb['url'],
             ).order_by('-web3_created'),first()
             bounties.append({
