@@ -16,22 +16,35 @@
 {% endcomment %}
 {% load humanize %}
 <style>
-  #gas_nav {
+  .gas_nav {
     list-style: none; 
     border-bottom: #333 1px solid;
   }
-  #gas_nav li{
+  .gas_nav li{
     display: inline-block;
     border-top: 1px solid black;
     border-left: 1px solid black;
     border-right: 1px solid black;
     padding: 5px 10px;
   }
-  #gas_nav li a{
+  .gas_nav li a{
     color: black !important;
   }
+  .gas_nav.small {
+    border-bottom: #aaaaaa 1px solid;
+  }
+  .gas_nav.small li{
+    border-top: 1px solid #aaaaaa;
+    border-left: 1px solid #aaaaaa;
+    border-right: 1px solid #aaaaaa;
+    padding: 3px 3px;
+  }
+  .gas_nav.small li a {
+    font-size: 12px;
+    color: #aaaaaa;
+  }
 </style>
-<ul id="gas_nav">
+<ul class="gas_nav">
   <li>
     <a href="{% url 'gas' %}"> Live Gas Tool</a>
   </li>
@@ -44,5 +57,4 @@
   <li>
     <a href="{% url 'gas_faq' %}"> Gas FAQ</a>
   </li>
-
 </ul>

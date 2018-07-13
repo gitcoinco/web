@@ -68,6 +68,16 @@ div.tooltip {
 {% include 'shared/gas_nav.html' %}
 
 <h1> {% trans "Gas History" %} ({{breakdown}}) <span id="alpha">{% trans "Alpha" %}</span> </h1>
+
+  <ul class="gas_nav small">
+    {% for granularity in granularity_options %}
+    <li>
+      <a href="{%url 'gas_history_view'%}?breakdown={{granularity}}">{{granularity}} view</a>
+    </li>
+    {% endfor %}
+  </ul>
+
+
   <div id="key">
     {% for key, val in lines.items %}
     <p style="color:{{val}}">Gas needed to confirm within {{key}} minute{{key|pluralize}}</p>
@@ -157,30 +167,6 @@ div.tooltip {
 
 
   </script>
-  <style>
-  #estimateTable{
-    margin: 0px auto; border: 1px solid black;    
-  }
-  #estimateTable tr td{
-    border: 1px solid #ccc;    
-    padding: 5px 10px; 
-  }
-  </style>
-
-  <div>
-  Other Options:
-  <BR>
-  <BR>
-
-  Granularity: 
-  {% for granularity in granularity_options %}
-  (<a href="{%url 'gas_history_view'%}?breakdown={{granularity}}">Show in {{granularity}} view</a>)
-  {% endfor %}
-
-  <br>
-  <br>
-  <a href="{% url 'gas' %}">&lt; Back to Current Gas Stats </a>
-
   </div>
 
   </div>
