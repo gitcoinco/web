@@ -1,0 +1,20 @@
+{
+  "symbol": "HTA",
+  "address": "0xab85900cfa8a8a577fa5371cb7968af0906b902d",
+  "overview":{
+        "en": "The world's first digital capital focused on industrial investment, health, science and technology, and agriculture are the three major industry sectors that facilitate parallel investment in the traditional and digital sectors.",
+        "zh": "全球首个专注行业投资的数字基金，大健康，科技，农业三大行业板块，助力在传统和数字领域进行平行投资。"
+  },
+  "email": "info@htadc.io",
+  "website": "https://www.htadc.io",
+  "whitepaper": "https://www.htadc.io/HTA-WP-V3.3.1-EN.pdf",
+  "state": "LOCKED",
+  "published_on": "2018-03-29",
+  "initial_price":{
+        "USD":"0.48 USD"
+  },
+  "links": {
+    "github": "https://github.com/htadc/hta-abi",
+    "facebook": "https://web.facebook.com/HTA-Digital-Capital-442320889554188"
+  }
+}
