@@ -30,7 +30,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.abi import erc20_abi
 from dashboard.utils import generate_pub_priv_keypair, get_web3, has_tx_mined
-from dashboard.views import record_tip_activity, record_user_action
+from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from github.utils import (
     get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
@@ -68,6 +68,40 @@ def send_tip(request):
     }
 
     return TemplateResponse(request, 'onepager/send1.html', params)
+
+
+def record_tip_activity(tip, github_handle, event_name):
+    kwargs = {
+        'activity_type': event_name,
+        'tip': tip,
+        'metadata': {
+            'amount': str(tip.amount),
+            'token_name': tip.tokenName,
+            'value_in_eth': str(tip.value_in_eth),
+            'value_in_usdt_now': str(tip.value_in_usdt_now),
+            'github_url': tip.github_url,
+            'to_username': tip.username,
+            'from_name': tip.from_name,
+            'received_on': str(tip.received_on) if tip.received_on else None
+        }
+    }
+    try:
+        kwargs['profile'] = Profile.objects.get(handle=github_handle)
+    except Profile.MultipleObjectsReturned:
+        kwargs['profile'] = Profile.objects.filter(handle__iexact=github_handle).first()
+    except Profile.DoesNotExist:
+        logging.error(f"error in record_tip_activity: profile with github name {github_handle} not found")
+        return
+    try:
+        kwargs['bounty'] = Bounty.objects.get(current_bounty=True, network=tip.network, github_url=tip.github_url)
+    except:
+        pass
+
+    try:
+        Activity.objects.create(**kwargs)
+    except Exception as e:
+        logging.error(f"error in record_tip_activity: {e} - {event_name} - {tip} - {github_handle}")
+
 
 @csrf_exempt
 @ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
