@@ -1,0 +1,12 @@
+{
+  "symbol": "CXMF",
+  "address": "0xd408Df4116248a737cEF94917Ab6C609B37280BC",
+  "overview":{
+        "en": "CXMF is a comprehensive platform based on Ethereum's decentralized, social, all-open source, reserve gold and other resources, and has a collection of entertainment consumption.",
+        "zh": "CXMF 是一个基于以太坊的去中心化、社交性的、全开源的、储备黄金与其他资源、并有娱乐消费集合为一的综合性平台。"
+  },
+  "state": "NORMAL",
+  "website": "http://cxmf.pro/",
+  "whitepaper": "http://cxmf.pro/whitebook.pdf",
+  "published_on": "2018-05-01"
+}
