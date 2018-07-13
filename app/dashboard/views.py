@@ -1355,6 +1355,10 @@ def toolbox(request):
         "description": _("Accelerate your dev workflow with Gitcoin\'s incentivization tools."),
         "tools": tools.filter(category=Tool.CAT_BASIC)
     }, {
+        "title": _("Gas Tools"),
+        "description": _("Paying Gas is a part of using Ethereum.  It's much easier with our suite of gas tools."),
+        "tools": tools.filter(category=Tool.GAS_TOOLS)
+    }, {
         "title": _("Advanced"),
         "description": _("Take your OSS game to the next level!"),
         "tools": tools.filter(category=Tool.CAT_ADVANCED)
