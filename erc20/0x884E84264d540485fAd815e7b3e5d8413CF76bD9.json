@@ -1,0 +1,23 @@
+{
+  "symbol": "MBTC",
+  "address": "0x884E84264d540485fAd815e7b3e5d8413CF76bD9",
+  "overview": {
+    "zh": "MBTC是基于区块链建立的一个去中心化、分布式、可信任的高性能应用数据交换价值网络。",
+    "en": "MBTC is a decentralized, distributed, and trusted high-performance application data exchange value network based on blockchain."
+  },
+  "email": "support@mbite.io",
+  "website": "http://www.mbite.io/",
+  "whitepaper": "http://mbite.io/MBTC.White.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-04-28",
+  "initial_price": {
+    "ETH": "0.00013333333 ETH",
+    "USD": "0.06 USD"
+  },
+  "links": {
+    "blog": "https://www.weibo.com/u/6585480609",
+    "twitter": "https://twitter.com/@mbtc00",
+    "github": "https://github.com/MyBestMBTC",
+    "telegram": "https://t.me/+85252245552"
+  }
+}
