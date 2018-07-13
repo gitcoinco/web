@@ -1,5 +1,5 @@
 -r base.txt
-pytest==3.5.0
+pytest>3.5.0
 pytest-cov
 pytest-isort
 pytest-django
@@ -10,4 +10,4 @@ isort
 responses
 requests_mock
 django-test-plus
-yapf
+git+https://github.com/google/yapf.git#egg=yapf

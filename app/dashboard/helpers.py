@@ -29,11 +29,12 @@ from django.http import Http404, JsonResponse
 from django.utils import timezone
 
 import requests
+from app.utils import sync_profile
 from bs4 import BeautifulSoup
-from dashboard.models import Bounty, BountyFulfillment, BountySyncRequest, UserAction
+from dashboard.models import Activity, Bounty, BountyFulfillment, BountySyncRequest, UserAction
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
-    maybe_market_to_user_slack,
+    maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from dashboard.tokens import addr_to_token
 from economy.utils import convert_amount
@@ -339,7 +340,9 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                 'githubUsername', '')
         if github_username:
             try:
-                kwargs['profile_id'] = Profile.objects.get(handle=github_username).pk
+                kwargs['profile_id'] = Profile.objects.get(handle__iexact=github_username).pk
+            except Profile.MultipleObjectsReturned:
+                kwargs['profile_id'] = Profile.objects.filter(handle__iexact=github_username).first().pk
             except Profile.DoesNotExist:
                 pass
         if fulfillment.get('accepted'):
@@ -484,11 +487,16 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             )
             new_bounty.fetch_issue_item()
 
-            # Pull the interested parties off the last old_bounty
+            # migrate data objects from old bounty
             if latest_old_bounty:
+                # Pull the interested parties off the last old_bounty
                 for interest in latest_old_bounty.interested.all():
                     new_bounty.interested.add(interest)
 
+                # pull the activities off the last old bounty 
+                for activity in latest_old_bounty.activities.all():
+                    new_bounty.activities.add(activity)
+                
             # set cancel date of this bounty
             canceled_on = latest_old_bounty.canceled_on if latest_old_bounty and latest_old_bounty.canceled_on else None
             if not canceled_on and new_bounty.status == 'cancelled':
@@ -552,6 +560,103 @@ def process_bounty_details(bounty_details):
     if new_bounty:
         return (did_change, latest_old_bounty, new_bounty)
     return (did_change, latest_old_bounty, latest_old_bounty)
+
+
+def get_bounty_data_for_activity(bounty):
+    """Get data from bounty to be saved in activity records
+
+    Args:
+        bounty (dashboard.models.Bounty): Bounty
+
+    Raises:
+        None
+
+    Returns:
+        object: object filled in with bounty data
+    """
+    data = {
+        'id': bounty.pk,
+        'value_in_eth': str(bounty.value_in_eth),
+        'value_in_usdt_now': str(bounty.value_in_usdt_now),
+        'value_in_token': str(bounty.value_in_token),
+        'token_name': bounty.token_name,
+        'token_value_time_peg': str(bounty.token_value_time_peg),
+        'token_value_in_usdt': str(bounty.token_value_in_usdt),
+        'title': bounty.title,
+    }
+    return data
+
+
+def get_fulfillment_data_for_activity(fulfillment):
+    """Get data from fulfillment to be saved in activity records
+
+    Args:
+        fulfillment (dashboard.models.BountyFulfillment): Fulfillment
+
+    Raises:
+        None
+
+    Returns:
+        object: object filled in with fulfillment data
+    """
+    data = {
+        'id': fulfillment.pk,
+        'fulfiller_address': fulfillment.fulfiller_address,
+        'fulfiller_email': fulfillment.fulfiller_email,
+        'fulfiller_github_username': fulfillment.fulfiller_github_username,
+        'fulfiller_name': fulfillment.fulfiller_name,
+        'fulfiller_metadata': fulfillment.fulfiller_metadata,
+        'fulfillment_id': fulfillment.fulfillment_id,
+        'fulfiller_hours_worked': str(fulfillment.fulfiller_hours_worked),
+        'fulfiller_github_url': fulfillment.fulfiller_github_url,
+        'accepted': fulfillment.accepted,
+        'accepted_on': str(fulfillment.accepted_on)
+    }
+    return data
+
+
+def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None):
+    """Records activity based on bounty changes
+
+    Args:
+        event_name (string): the event
+        old_bounty (dashboard.models.Bounty): The old Bounty object.
+        new_bounty (dashboard.models.Bounty): The new Bounty object.
+
+    Raises:
+        None
+
+    Returns:
+        None
+    """
+    user_profile = None
+    fulfillment = _fulfillment
+    try:
+        user_profile = Profile.objects.filter(handle__iexact=new_bounty.bounty_owner_github_username).first()
+        funder_actions = ['new_bounty', 'worker_approved', 'killed_bounty', 'increased_bounty', 'worker_rejected']
+        if event_name not in funder_actions:
+            if not fulfillment:
+                fulfillment = new_bounty.fulfillments.order_by('-pk').first()
+                if event_name == 'work_done':
+                    fulfillment = new_bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
+            if fulfillment:
+                user_profile = Profile.objects.filter(handle__iexact=fulfillment.fulfiller_github_username).first()
+                if not user_profile:
+                    user_profile = sync_profile(fulfillment.fulfiller_github_username)
+
+    except Exception as e:
+        logging.error(f'{e} during record_bounty_activity for {new_bounty}')
+
+    if user_profile:
+        return Activity.objects.create(
+            profile=user_profile,
+            activity_type=event_name,
+            bounty=new_bounty,
+            metadata={
+                'new_bounty': get_bounty_data_for_activity(new_bounty) if new_bounty else None,
+                'old_bounty': get_bounty_data_for_activity(old_bounty) if old_bounty else None,
+                'fulfillment': get_fulfillment_data_for_activity(fulfillment) if fulfillment else None,
+            })
 
 
 def record_user_action(event_name, old_bounty, new_bounty):
@@ -619,8 +724,6 @@ def process_bounty_changes(old_bounty, new_bounty):
         event_name = 'new_bounty'
     elif old_bounty.num_fulfillments < new_bounty.num_fulfillments:
         event_name = 'work_submitted'
-    elif old_bounty.value_in_token < new_bounty.value_in_token:
-        event_name = 'increase_payout'
     elif old_bounty.is_open and not new_bounty.is_open:
         if new_bounty.status in ['cancelled', 'expired']:
             event_name = 'killed_bounty'
@@ -636,6 +739,7 @@ def process_bounty_changes(old_bounty, new_bounty):
 
     # record a useraction for this
     record_user_action(event_name, old_bounty, new_bounty)
+    record_bounty_activity(event_name, old_bounty, new_bounty)
 
     # Build profile pairs list
     if new_bounty.fulfillments.exists():
@@ -647,6 +751,7 @@ def process_bounty_changes(old_bounty, new_bounty):
         did_post_to_twitter = maybe_market_to_twitter(new_bounty, event_name)
         did_post_to_slack = maybe_market_to_slack(new_bounty, event_name)
         did_post_to_user_slack = maybe_market_to_user_slack(new_bounty, event_name)
+        did_post_to_user_discord = maybe_market_to_user_discord(new_bounty, event_name)
         did_post_to_github = maybe_market_to_github(new_bounty, event_name, profile_pairs)
         did_post_to_email = maybe_market_to_email(new_bounty, event_name)
         print("============ done posting ==============")
@@ -658,6 +763,7 @@ def process_bounty_changes(old_bounty, new_bounty):
             'did_post_to_github': did_post_to_github,
             'did_post_to_slack': did_post_to_slack,
             'did_post_to_user_slack': did_post_to_user_slack,
+            'did_post_to_user_discord': did_post_to_user_discord,
             'did_post_to_twitter': did_post_to_twitter,
         }
 

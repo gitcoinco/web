@@ -35,6 +35,7 @@ from faucet.models import FaucetRequest
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from marketing.mails import new_faucet_request, processed_faucet_request, reject_faucet_request
 
+
 @require_GET
 def faucet(request):
     params = {
@@ -103,7 +104,7 @@ def process_faucet_request(request, pk):
     except FaucetRequest.DoesNotExist:
         raise Http404
 
-    faucet_amount = settings.FAUCET_AMOUNT * recommend_min_gas_price_to_confirm_in_time(5)
+    faucet_amount = float(settings.FAUCET_AMOUNT) * float(recommend_min_gas_price_to_confirm_in_time(5))
 
     if faucet_request.fulfilled:
         messages.info(request, 'already fulfilled')
@@ -131,7 +132,6 @@ def process_faucet_request(request, pk):
         messages.success(request, 'sent')
         return redirect(reverse('admin:index'))
 
-    faucet_amount = settings.FAUCET_AMOUNT
     context = {
         'obj': faucet_request,
         'faucet_amount': faucet_amount,

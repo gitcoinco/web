@@ -44,6 +44,7 @@ span {
   color: black !important;
   font-size: 0.9rem;
 }
+
 .navbar .interior .dropdown-item:hover {
   color: white !important;
 }
@@ -87,6 +88,32 @@ span {
 
 .navbar a.slack i {
   margin-right: 3px;
+}
+
+.navbar-network {
+  border: 1px solid #828282;
+  color: #fff;
+  border-radius: 25px;
+  font-size: 0.65rem;
+  text-align: center;
+}
+
+.navbar-network i {
+  font-size: 7px;
+  position: relative;
+  top: -1px;
+}
+
+.navbar-network a {
+  text-decoration: underline;
+}
+
+.green {
+  color: #26cd7f;
+}
+
+.red {
+  color: #ff3232;
 }
 
 .modal {
@@ -335,6 +362,48 @@ p a {
   filter: invert(100%);
 }
 
+
+#gas-section .gas-image {
+  height: 5rem;
+}
+
+#gas-section .font-body {
+  margin: 0;
+}
+
+#gas-section .recommended-prices {
+  cursor: pointer;
+}
+
+#gas-section .gas-dark-bg {
+  background-color: #FAFAFA;
+}
+
+#gas-section .gas-rates .active {
+  font-weight: bolder;
+  background-color: #0ECF7C;
+}
+
+#gas-section #metamask_context {
+  display: none;
+}
+
+#gas-section #accordion-set-own-limit {
+  cursor: pointer;
+  border-bottom: 1px solid rgba(0,0,0,.1);
+  border-top: 1px solid rgba(0,0,0,.1);
+}
+
+#gas-section #accordion-set-own-limit i {
+  float: right;
+}
+
+#gas-section #default-recommended-gas,
+#gas-section .message {
+  display: none;
+  text-align: center;
+}
+
 .btn-warning,
 .btn-success,
 .btn-info {
@@ -420,6 +489,7 @@ p a {
 .dashboard .body .avatar {
   max-height: 50px;
   max-width: 50px;
+  border-radius: 100%;
 }
 
 .body .nonefound {
@@ -508,15 +578,8 @@ input[type=text].loading {
   background-size: 30px;
 }
 
-#no_metamask_error img {
-  filter: grayscale(100%);
-  -moz-filter: grayscale(100%);
-  -ms-filter: grayscale(100%);
-  -o-filter: grayscale(100%);
-}
-
 #primary_form {
-  max-width: 500px;
+  max-width: 550px;
   margin: 0 auto;
   padding: 0 2em;
 }
@@ -590,8 +653,8 @@ input[type=text].loading {
   text-align: left;
 }
 
-.admin-only{
-  background-color: #800000 !important;
+.admin-only {
+  background-color: #5495E1 !important;
   color:white !important;
   border: 1px solid white !important;
 }
@@ -618,6 +681,9 @@ input[type=text].loading {
 .alert .message {
   align-items: center;
   display: flex;
+}
+.alert .message .content{
+  display: inline;
 }
 
 .alert .message::before {
@@ -727,6 +793,21 @@ input[type=text].loading {
   display: inline-block;
 }
 
+#metamask_context .red_warning {
+  background-color: #fbe0d6;
+  color: #fb9470;
+  padding: 5px 10px;
+  border-radius: 2px;
+  margin-bottom: 15px;
+  display: block;
+}
+
+#metamask_context .red_warning a {
+  color: #fb9470 !important;
+  font-weight: bold;
+  text-decoration: underline;
+}
+
 #metamask_context {
   background-color: #fafafa;
   border-radius: 5px;
@@ -747,46 +828,6 @@ input[type=text].loading {
   color: white;
   text-decoration: underline;
   margin-left: 5px;
-}
-
-.transaction-status {
-  font-family: 'Muli', sans-serif;
-  display: block;
-  position: relative;
-  width: 80%;
-  left: 10%;
-  top: 30px;
-  margin-bottom: 30px;
-  border-radius: 2px;
-  padding: 3vh 5vw;
-  text-align: center;
-}
-
-.waiting_room_entertainment {
-  font-style: italic;
-  text-align: center;
-}
-
-.quote-container {
-  width: 65%;
-  margin: 5% auto;
-}
-
-.quote_text {
-  color: #4A4A4A;
-  font-style: italic;
-  font-weight: 700;
-  font-size: 22px;
-  letter-spacing: 0.75px;
-}
-
-.quote_author {
-  color: #70EFBE;
-  margin: 1rem auto;
-  font-style: italic;
-  font-weight: 700;
-  font-size: 22px;
-  letter-spacing: 0.75px;
 }
 
 #gitcoin_buttons #example img {
@@ -1007,6 +1048,7 @@ input.is-invalid {
   font-family: 'Muli', sans-serif;
   font-size: 10px !important;
   min-height: 100px;
+  padding: 0.6rem;
 }
 
 .submit-notification h3 {
@@ -1150,6 +1192,12 @@ input.is-invalid {
   }
 }
 
+@media (max-width: 991.98px) {
+  #sidebar_container {
+    display: none;
+  }
+}
+
 @media (max-width: 769px) {
   #gitcoinTestimonials {
     height: 202px;
@@ -1263,6 +1311,63 @@ input.is-invalid {
   .tooltip-info {
     display: none;
   }
+
+  .bounty_nav {
+    padding-left: 0;
+  }
+
+  .bounty_nav li {
+    display: block;
+  }
+
+  .metamask-banner ol {
+    margin-bottom: 0;
+  }
+
+  .metamask-banner h3 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .metamask-banner li {
+    text-align: left;
+    margin-top: 0.5rem;
+  }
+
+  .metamask-banner img {
+    margin-bottom: 5px;
+  }
+
+  .navbar-network {
+    display: none;
+  }
+}
+
+@media (max-width: 576px) {
+
+  .profile_details #stats {
+    padding-right: 10px;
+  }
+
+  .profile_details .repos {
+    padding-right: 40px;
+  }
+
+  .profile_details .repos li {
+    margin-bottom: 1em;
+  }
+
+  .issue_details {
+    flex-direction: column;
+  }
+
+  .issue_details div {
+    width: 100% !important;
+  }
+
+  .profile_details .tips li div.url {
+    display: none;
+  }
 }
 
 @media (max-width: 540px) {
@@ -1293,6 +1398,7 @@ input.is-invalid {
 
   .header .row.ml-5 {
     margin-left: 0 !important;
+    margin-right: 0;
   }
 
   .header .header-line {
@@ -1391,67 +1497,6 @@ input.is-invalid {
   }
 }
 
-@media (max-width: 576px) {
-
-  .profile_details #stats {
-    padding-right: 10px;
-  }
-
-  .profile_details .repos {
-    padding-right: 40px;
-  }
-
-  .profile_details .repos li {
-    margin-bottom: 1em;
-  }
-
-  .issue_details {
-    flex-direction: column;
-  }
-
-  .issue_details div {
-    width: 100% !important;
-  }
-
-  .profile_details .tips li div.url {
-    display: none;
-  }
-}
-
-@media (max-width: 768px) {
-  .bounty_nav {
-    padding-left: 0;
-  }
-
-  .bounty_nav li {
-    display: block;
-  }
-
-  .metamask-banner ol {
-    margin-bottom: 0;
-  }
-
-  .metamask-banner h3 {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .metamask-banner li {
-    text-align: left;
-    margin-top: 0.5rem;
-  }
-  
-  .metamask-banner img {
-    margin-bottom: 5px;
-  }
-}
-
-@media (max-width: 991.98px) {
-  #sidebar_container {
-    display: none;
-  }
-}
-
 /* TODO : Remove after GDPR */
 .modal h2 {
   letter-spacing: 0;
@@ -1505,6 +1550,22 @@ input.is-invalid {
   margin-right: 1rem;
 }
 
+.results ul#programming_languages {
+  text-align: center;
+}
+
+.results ul#programming_languages li {
+  list-style: none;
+  padding: 0.5rem 2rem;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  border: 1px solid #999;
+}
+
+.results ul#programming_languages li.selected{
+  background-color: #eee;
+}
+
 .yellow_box {
   color: #FFCE08;
   border: 10px solid #FFCE08;
@@ -1538,4 +1599,5 @@ input.is-invalid {
 .results p {
   font-size: 1.3rem;
   font-weight: 500;
+  margin-bottom: 0.5rem;
 }

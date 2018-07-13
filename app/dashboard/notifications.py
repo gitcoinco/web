@@ -26,6 +26,7 @@ from urllib.parse import urlparse as parse
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 
+import requests
 import rollbar
 import twitter
 from economy.utils import convert_token_to_usdt
@@ -88,7 +89,7 @@ def maybe_market_to_twitter(bounty, event_name):
             "Hot off the blockchain! 🔥🔥🔥 There's a new task worth {} {} {} \n\n{}",
             "💰 New Task Alert.. 💰 Earn {} {} {} for working on this 👇 \n\n{}",
         ]
-    elif event_name == 'increase_payout':
+    elif event_name == 'increased_bounty':
         tweet_txts = [
             'Increased Payout on {} {} {}\n{}'
         ]
@@ -172,7 +173,7 @@ def maybe_market_to_slack(bounty, event_name):
     if not bounty.is_notification_eligible(var_to_check=settings.SLACK_TOKEN):
         return False
 
-    msg = build_message_for_slack(bounty, event_name)
+    msg = build_message_for_integration(bounty, event_name)
     if not msg:
         return False
 
@@ -191,8 +192,8 @@ def maybe_market_to_slack(bounty, event_name):
     return True
 
 
-def build_message_for_slack(bounty, event_name):
-    """Build message to be posted to slack.
+def build_message_for_integration(bounty, event_name):
+    """Build message to be posted to integrated service (e.g. slack, discord).
 
     Args:
         bounty (dashboard.models.Bounty): The Bounty to be marketed.
@@ -202,6 +203,7 @@ def build_message_for_slack(bounty, event_name):
         str: Message to post to slack.
 
     """
+    from dashboard.utils import humanize
     conv_details = ""
     usdt_details = ""
     try:
@@ -211,9 +213,10 @@ def build_message_for_slack(bounty, event_name):
         pass  # no USD conversion rate
 
     title = bounty.title if bounty.title else bounty.github_url
-    msg = f"{event_name.replace('bounty', 'funded_issue')} worth {round(bounty.get_natural_value(), 4)} {bounty.token_name} " \
-          f"{usdt_details}" \
-          f"{bounty.token_name}: {title} \n\n{bounty.get_absolute_url()}"
+    msg = f"*{humanize(event_name.replace('bounty', 'funded_issue'))}*" \
+          f"\n*Title*: {title}" \
+          f"\n*Bounty value*: {round(bounty.get_natural_value(), 4)} {bounty.token_name} {usdt_details}" \
+          f"\n{bounty.get_absolute_url()}"
     return msg
 
 
@@ -234,7 +237,7 @@ def maybe_market_to_user_slack(bounty, event_name):
     if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
 
-    msg = build_message_for_slack(bounty, event_name)
+    msg = build_message_for_integration(bounty, event_name)
     if not msg:
         return False
 
@@ -261,6 +264,49 @@ def maybe_market_to_user_slack(bounty, event_name):
 
     return sent
 
+
+def maybe_market_to_user_discord(bounty, event_name):
+    """Send a Discord message to the user's discord channel for the specified Bounty.
+
+    Args:
+        bounty (dashboard.models.Bounty): The Bounty to be marketed.
+        event_name (str): The name of the event.
+
+    Returns:
+        bool: Whether or not the Discord notification was sent successfully.
+
+    """
+    from dashboard.models import Profile
+    if bounty.get_natural_value() < 0.0001:
+        return False
+    if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+        return False
+
+    msg = build_message_for_integration(bounty, event_name)
+    if not msg:
+        return False
+
+    url = bounty.github_url
+    sent = False
+    try:
+        repo = org_name(url) + '/' + repo_name(url)
+        subscribers = Profile.objects.filter(discord_repos__contains=[repo])
+        subscribers = subscribers & Profile.objects.exclude(discord_webhook_url='')
+        for subscriber in subscribers:
+            try:
+                headers = {'Content-Type': 'application/json'}
+                body = {"content": msg, "avatar_url": "https://gitcoin.co/static/v2/images/helmet.png"}
+                discord_response = requests.post(
+                    subscriber.discord_webhook_url, headers=headers, json=body
+                )
+                if discord_response.status_code == 204:
+                    sent = True
+            except Exception as e:
+                print(e)
+    except Exception as e:
+        print(e)
+
+    return sent
 
 def maybe_market_tip_to_email(tip, emails):
     """Send an email for the specified Tip.
@@ -552,10 +598,19 @@ def amount_usdt_open_work():
         float: The sum of all USDT values rounded to the nearest 2 decimals.
 
     """
-    from dashboard.models import Bounty
-    bounties = Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
+    bounties = open_bounties()
     return round(sum([b.value_in_usdt_now for b in bounties if b.value_in_usdt_now]), 2)
 
+
+def open_bounties():
+    """Get all current open and submitted work.
+
+    Returns:
+        QuerySet: The mainnet Bounty objects which are of open and submitted work statuses.
+
+    """
+    from dashboard.models import Bounty
+    return Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
 
 def maybe_market_tip_to_github(tip):
     """Post a Github comment for the specified Tip.
@@ -832,7 +887,7 @@ def maybe_notify_bounty_user_warned_removed_to_slack(bounty, username, last_hear
     if not bounty.is_notification_eligible(var_to_check=settings.SLACK_TOKEN):
         return False
 
-    msg = f"@{username} has been warned about inactivity ({last_heard_from_user_days} days) on {bounty.github_url}"
+    msg = f"*@{username}* has been warned about inactivity ({last_heard_from_user_days} days) on {bounty.github_url}"
 
     try:
         sc = SlackClient(settings.SLACK_TOKEN)

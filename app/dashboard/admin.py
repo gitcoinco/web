@@ -68,11 +68,21 @@ class ProfileAdmin(admin.ModelAdmin):
 class TipAdmin(admin.ModelAdmin):
     raw_id_fields = ['recipient_profile', 'sender_profile']
     ordering = ['-id']
-    readonly_fields = ['resend']
+    readonly_fields = ['resend', 'claim']
     search_fields = ['tokenName', 'comments_public', 'comments_priv', 'from_name', 'username', 'network', 'github_url', 'url', 'emails']
 
     def resend(self, instance):
         html = format_html('<a href="/_administration/email/new_tip/resend?pk={}">resend</a>', instance.pk)
+        return html
+
+    def claim(self, instance):
+        if instance.web3_type != 'v2':
+            return 'n/a'
+        if not instance.txid:
+            return 'n/a'
+        if instance.receive_txid:
+            return 'n/a'
+        html = format_html('<a href="{}">claim</a>', instance.receive_url)
         return html
 
 
