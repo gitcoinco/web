@@ -1,0 +1,20 @@
+{
+    "symbol": "MOTE",
+    "address": "0x6885fc6a8166d6b875cc9884ea9fcf76745f8b51",
+    "overview":{
+          "en": "MonetChain是一个来自新加坡的项目团队，基于MonetChain基金会进行统筹管理，莫奈链是一个独特的垂直领域公有链系统，数据处理及并发的实现基于石墨烯工具组，首创GPOS共识机制设计。联合全球多点权威机构及有限的政府机构资源参与，实现政府、机构、个人三个维度共同参与。形成适应未来发展的落地化，垂直化区块链系统，为商户，用户及研发实施伙伴提供合作共赢的基础商业运作模式，打造商业与应用两个完整的闭环生态系统",
+          "zh": "MonetChain is a project team from Singapore based on the integrated management of the MonetChain foundation.The Monet chain is a unique vertical domain public chain system. Data processing and concurrency implementation are based on graphene tool group, which pioneered the design of GPOS consensus mechanism. Joint global multi-point authority and limited government agencies to participate in resources to achieve the three dimensions of government, institutions and individuals to participate. In order to form the ground to adapt to the future development, the vertical block chain system will provide the business, the users and the R & D partners to provide the cooperative and win-win basic business operation mode, and create two complete closed loop ecosystem for business and application"
+    },
+    "email": "business@monetchain.io",
+    "website": "https://www.monetchain.io",
+    "whitepaper": "https://www.monetchain.io/static/MonetChain_Whitepaper_EN.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-07-07",
+    "links": {
+      "twitter": "https://twitter.com/MonetChain",
+      "telegram": "https://t.me/monetchain",
+      "github": "https://github.com/MonetChain-Project",
+      "facebook": "https://www.facebook.com/Monet-Blockchain-195737864572809/",
+      "reddit": "https://www.reddit.com/user/Monet_Blockchain/posts/"
+    }
+  }
