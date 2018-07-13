@@ -48,7 +48,7 @@ $(document).ready(function() {
       $('#trans_link2').attr('href', url);
     };
 
-    return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback);
+    return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, false);
   });
 
   waitforWeb3(function() {
@@ -81,7 +81,7 @@ function isNumeric(n) {
 }
 
 
-function sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback) {
+function sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, is_for_bounty_fulfiller) {
 
   mixpanel.track('Tip Step 2 Click', {});
   if (typeof web3 == 'undefined') {
@@ -149,7 +149,8 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
       from_name: from_name,
       tokenAddress: tokenAddress,
       network: document.web3network,
-      from_address: fromAccount
+      from_address: fromAccount,
+      is_for_bounty_fulfiller: is_for_bounty_fulfiller
     })
   }).then(function(response) {
     return response.json();

@@ -112,7 +112,7 @@ $(document).ready(function($) {
       // get form data
       var email = '';
       var github_url = $('#issueURL').val();
-      var from_name = '';
+      var from_name = document.contxt['github_handle'];
       var username = transaction['data']['to'];
       var amountInEth = transaction['data']['amount'];
       var comments_priv = '';
@@ -133,7 +133,7 @@ $(document).ready(function($) {
         sendTransaction(i + 1);
       };
 
-      return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback);
+      return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, false);
     }
   };
 

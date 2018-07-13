@@ -138,7 +138,7 @@ $(document).ready(function() {
       // get form data
       var email = '';
       var github_url = $('#issueURL').val();
-      var from_name = '';
+      var from_name = document.contxt['github_handle'];
       var username = '';
       var amountInEth = amount / decimalDivisor;
       var comments_priv = '';
@@ -162,7 +162,7 @@ $(document).ready(function() {
 
       };
 
-      return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback);
+      return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, true);
 
     }
 

@@ -894,6 +894,10 @@ class Tip(SuperModel):
         'dashboard.Profile', related_name='sent_tips', on_delete=models.SET_NULL, null=True, blank=True
     )
     metadata = JSONField(default={}, blank=True)
+    is_for_bounty_fulfiller = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, this tip will be automatically paid to the bounty fulfiller, not self.usernameusername.',
+        )
 
     def __str__(self):
         """Return the string representation for a tip."""

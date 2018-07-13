@@ -347,6 +347,7 @@ def send_tip_3(request):
         network=params['network'],
         tokenAddress=params['tokenAddress'],
         from_address=params['from_address'],
+        is_for_bounty_fulfiller=params['is_for_bounty_fulfiller'],
         metadata={
             'priv_key': priv_key,
             'pub_key': pub_key,
