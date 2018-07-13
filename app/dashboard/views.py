@@ -22,12 +22,12 @@ import json
 import logging
 import time
 
-from django.core.cache import cache
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.core.cache import cache
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -695,6 +695,31 @@ def gas(request):
     if recommended_gas_price < 2:
         _cts = conf_time_spread(recommended_gas_price)
 
+    context = {
+        'eth_to_usd': round(convert_amount(1, 'ETH', 'USDT'), 0),
+        'start_gas_cost': recommended_gas_price,
+        'gas_advisories': gas_advisories(),
+        'conf_time_spread': _cts,
+        'hide_send_tip': True,
+        'title': 'Live Gas Usage => Predicted Conf Times'
+    }
+    return TemplateResponse(request, 'gas.html', context)
+
+
+def gas_faq(request):
+
+    context = {
+        'title': 'Gas FAQ',
+        'hide_send_tip': True,
+    }
+    return TemplateResponse(request, 'gas_faq.html', context)
+
+
+def gas_calculator(request):
+    recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target)
+    _cts = conf_time_spread()
+    recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target)
+
     actions = [{
         'name': 'New Bounty',
         'target': '/new',
@@ -734,13 +759,13 @@ def gas(request):
     ]
     context = {
         'actions': actions,
+        'conf_time_spread': _cts,
         'eth_to_usd': round(convert_amount(1, 'ETH', 'USDT'), 0),
         'start_gas_cost': recommended_gas_price,
-        'gas_advisories': gas_advisories(),
-        'conf_time_spread': _cts,
-        'title': 'Live Gas Usage => Predicted Conf Times'
+        'title': 'Gas Calculator',
+        'hide_send_tip': True,
     }
-    return TemplateResponse(request, 'gas.html', context)
+    return TemplateResponse(request, 'gas_calculator.html', context)
 
 
 def new_bounty(request):

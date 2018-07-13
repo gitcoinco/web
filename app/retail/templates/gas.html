@@ -57,18 +57,12 @@ div.tooltip {
 {% block 'main' %}
 
 <section id=main>
-
-<header>
-    <span class="avatar">
-        <a href='/'>
-            <img src="{% static "v2/images/helmet.png" %}" style="background-color: white; max-width: 100px; max-height: 100px;" />
-        </a>
-    </span>
-</header>
+{% include 'shared/gas_nav.html' %}
 
 {% include 'shared/gas_advisories.html' %}
 
-<h1> {% trans "Predicted Confirmation Times vs Gas Usage" %} <span id="alpha">{% trans "Alpha" %}</span> </h1>
+<h1> {% trans "Live Gas Tool" %} <span id="alpha">{% trans "Alpha" %}</span> </h1>
+<h2> {% trans "Predicted Confirmation Times (x axis) vs Gas Usage (y axis)" %} </h2>
 
 {% if conf_time_spread == '[]' %}
   <p>
@@ -179,96 +173,6 @@ div.tooltip {
   }
   </style>
 
-  <h2>{% trans "Gitcoin Bounties Gas Estimator" %}</h2>
-  <div style="text-align:center; ">
-    <table id="estimateTable">
-       <tr>
-          <td>
-            Gas Price (gwei)
-          </td>
-          <td>
-            Product
-          </td>
-          <td>
-            Persona
-          </td>
-          <td>
-            Action
-          </td>
-          <td>
-            Gas Needed (wei)
-          </td>
-          <td>
-            Total Cost (eth)
-          </td>
-          <td>
-            Total Cost (USD)
-          </td>
-          <td>
-            Conf Time (minutes)
-          </td>
-       </tr>
-       <tr class="all">
-          <td>
-            <input class="gas_cost" type="number" min=0 value="{{start_gas_cost |floatformat:0}}" style="border: 1px solid red; ">
-          </td>
-          <td>
-            N/A
-          </td>
-          <td>
-            N/A
-          </td>
-          <td>
-            N/A
-          </td>
-          <td>
-            N/A
-          </td>
-          <td>
-            N/A
-          </td>
-          <td>
-            N/A
-          </td>
-          <td>
-            N/A
-          </td>
-       </tr>
-       {% for action in actions %}
-         <tr class="new_bounty">
-            <td>
-                Please Edit above ^^
-            </td>
-            <td>
-              {{action.product}}
-            </td>
-            <td>
-              {{action.persona}}
-            </td>
-            <td>
-              <span class="name">{{action.name}}</span>
-              <input type="hidden" class="target" value="{{action.target}}" />
-            </td>
-            <td>
-              <input class="gas_needed" type="text" disabled="disabled">
-            </td>
-            <td>
-              <input class="total_cost_eth" type="text" disabled="disabled">
-            </td>
-            <td>
-              <input class="total_cost_usd" type="text" disabled="disabled">
-            </td>
-            <td>
-              <input class="total_time" type="text" disabled="disabled">
-            </td>
-         </tr>
-       {% endfor %}
-
-    </table>
-  </div>
-  <script>
-    document.eth_to_usd = {{eth_to_usd}};
-  </script>
 
   
   <h2>{% trans "Useful Links" %}</h2>

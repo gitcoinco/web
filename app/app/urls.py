@@ -141,6 +141,10 @@ urlpatterns = [
     path('actions/tool/<int:tool_id>/voteUp', dashboard.views.vote_tool_up, name='vote_tool_up'),
     path('actions/tool/<int:tool_id>/voteDown', dashboard.views.vote_tool_down, name='vote_tool_down'),
     url(r'^tools/?', dashboard.views.toolbox, name='tools'),
+
+    # gas views
+    url(r'^gas/faq/?', dashboard.views.gas_faq, name='gas_faq'),
+    url(r'^gas/calculator/?', dashboard.views.gas_calculator, name='gas_calculator'),
     url(r'^gas/history/?', dashboard.views.gas_history_view, name='gas_history_view'),
     url(r'^gas/?', dashboard.views.gas, name='gas'),
 

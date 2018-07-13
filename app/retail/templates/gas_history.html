@@ -65,15 +65,7 @@ div.tooltip {
 {% block 'main' %}
 
 <section id=main>
-<header>
-    <span class="avatar">
-        <a href='/'>
-            <img src="{% static "v2/images/helmet.png" %}" style="background-color: white; max-width: 100px; max-height: 100px;" />
-        </a>
-    </span>
-</header>
-
-{% include 'shared/gas_advisories.html' %}
+{% include 'shared/gas_nav.html' %}
 
 <h1> {% trans "Gas History" %} ({{breakdown}}) <span id="alpha">{% trans "Alpha" %}</span> </h1>
   <div id="key">
