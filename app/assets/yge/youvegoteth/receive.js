@@ -9,6 +9,13 @@ window.onload = function() {
       $('send_eth').style.display = 'none';
       $('loading').style.display = 'none';
     } else {
+      var network = getParam('n');
+
+      if (network && network !== document.web3network) {
+        _alert({ message: 'Please change your network in Metamask. The tip is on ' + network + ' and you are on ' + document.web3network }, 'error');
+        return;
+      }
+
       txid = getParam('txid');
       var link = 'https://' + etherscanDomain() + '/tx/' + txid;
 
