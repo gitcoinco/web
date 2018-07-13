@@ -14,7 +14,7 @@ var tokens = function(network_id) {
   }
 
   _priorityTokens = _tokens.filter(function(token) {
-    return token.priority > 0;
+    return token.priority > 20;
   }).sort(function(a, b) {
     return b.priority - a.priority;
   });
