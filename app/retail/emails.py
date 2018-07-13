@@ -554,10 +554,9 @@ Back to building,
     bounties = []
     for nb in bounties_spec:
         try:
-            bounty = Bounty.objects.get(
-                current_bounty=True,
+            bounty = Bounty.objects.current().(
                 github_url__iexact=nb['url'],
-            )
+            ).order_by('-web3_created'),first()
             bounties.append({
                 'obj': bounty,
                 'primer': nb['primer']
