@@ -149,7 +149,7 @@ $(document).ready(function() {
       );
     }
 
-    if (document.isFunder) {
+    if (document.is_funder_github_user_same && fromAddress == web3.eth.coinbase) {
       do_as_funder();
     } else {
       do_as_crowd();
