@@ -72,7 +72,7 @@ div.tooltip {
 
   <div id="key">
     {% for key, val in lines.items %}
-    <p style="color:{{val}}">Gas price needed to confirm within {{key}} minute{{key|pluralize}}</p>
+    <p style="color:{{val}}">{% trans "Gas price needed to confirm within" %} {{key}} {% trans "minute" %}{{key|pluralize}}</p>
     {% endfor %}
   </div>
 
