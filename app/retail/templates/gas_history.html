@@ -24,12 +24,11 @@
   stroke: steelblue;
   stroke-width: 2px;
 }
-.line.line_5 {
-  stroke: red;
+{% for key, val in lines.items %}
+.line.line_{{key}} {
+  stroke: {{val}};
 }
-.line.line_60 {
-  stroke: black;
-}
+{% endfor %}
 div.tooltip {
   position: absolute;
   max-width: 300px;
@@ -78,9 +77,9 @@ div.tooltip {
 
 <h1> {% trans "Gas History" %} ({{breakdown}}) <span id="alpha">{% trans "Alpha" %}</span> </h1>
   <div id="key">
-    <p style="color:red">Gas needed to confirm within 5 minutes</p>
-    <p style="color:black">Gas needed to confirm within 60 minutes</p>
-    <p style="color:steelblue">Gas needed to confirm within 180 minutes</p>
+    {% for key, val in lines.items %}
+    <p style="color:{{val}}">Gas needed to confirm within {{key}} minute{{key|pluralize}}</p>
+    {% endfor %}
   </div>
 
 {% if gas_histories == '[]' %}

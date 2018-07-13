@@ -22,6 +22,7 @@ import json
 import logging
 import time
 
+from django.core.cache import cache
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -646,18 +647,40 @@ def dashboard(request):
     return TemplateResponse(request, 'dashboard.html', params)
 
 
+def get_history_cached(breakdown, i):
+    timeout = 60 * 60 * 3
+    key_salt = '0'
+    key = f'get_history_cached_{breakdown}_{i}_{key_salt}'
+    results = cache.get(key)
+    if results and not settings.DEBUG:
+        return results
+
+    results = gas_history(breakdown, i)
+    cache.set(key, results, timeout)
+
+    return results
+
+
 def gas_history_view(request):
     breakdown = request.GET.get('breakdown', 'hourly')
     gas_histories = {}
     max_y = 0
-    for i in [5, 60, 180]:
-        gas_histories[i] = gas_history(breakdown, i)
+    lines = {
+        1: 'red',
+        5: 'orange',
+        60: 'green',
+        120: 'steelblue',
+        180: 'purple',
+    }
+    for i in lines.keys():
+        gas_histories[i] = get_history_cached(breakdown, i)
         for gh in gas_histories[i]:
             max_y = max(gh[0], max_y)
     breakdown_ui = breakdown.replace('ly', '') if breakdown != 'daily' else 'day'
     context = {
         'title': 'Gas History',
         'max': max_y,
+        'lines': lines,
         'gas_histories': gas_histories,
         'breakdown': breakdown,
         'breakdown_ui': breakdown_ui,
