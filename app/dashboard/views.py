@@ -27,6 +27,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.core.cache import cache
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -40,7 +41,7 @@ from django.views.decorators.http import require_GET, require_POST
 from app.utils import ellipses, sync_profile
 from avatar.utils import get_avatar_context
 from economy.utils import convert_amount
-from gas.utils import conf_time_spread, gas_advisories, recommend_min_gas_price_to_confirm_in_time
+from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
 from github.utils import (
     get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
 )
@@ -500,79 +501,6 @@ def dashboard(request):
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'dashboard.html', params)
-
-
-def gas(request):
-    _cts = conf_time_spread()
-    recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target)
-    if recommended_gas_price < 2:
-        _cts = conf_time_spread(recommended_gas_price)
-
-    actions = [{
-        'name': 'New Bounty',
-        'target': '/new',
-        'persona': 'funder',
-        'product': 'bounties',
-    }, {
-        'name': 'Fulfill Bounty',
-        'target': 'issue/fulfill',
-        'persona': 'developer',
-        'product': 'bounties',
-    }, {
-        'name': 'Increase Funding',
-        'target': 'issue/increase',
-        'persona': 'funder',
-        'product': 'bounties',
-    }, {
-        'name': 'Accept Submission',
-        'target': 'issue/accept',
-        'persona': 'funder',
-        'product': 'bounties',
-    }, {
-        'name': 'Cancel Funding',
-        'target': 'issue/cancel',
-        'persona': 'funder',
-        'product': 'bounties',
-    }, {
-        'name': 'Send tip',
-        'target': 'tip/send/2/',
-        'persona': 'funder',
-        'product': 'tips',
-    }, {
-        'name': 'Receive tip',
-        'target': 'tip/receive',
-        'persona': 'developer',
-        'product': 'tips',
-    }
-    ]
-    context = {
-        'actions': actions,
-        'eth_to_usd': round(convert_amount(1, 'ETH', 'USDT'), 0),
-        'start_gas_cost': recommended_gas_price,
-        'gas_advisories': gas_advisories(),
-        'conf_time_spread': _cts,
-        'title': 'Live Gas Usage => Predicted Conf Times'
-    }
-    return TemplateResponse(request, 'gas.html', context)
-
-
-def new_bounty(request):
-    """Create a new bounty."""
-    from .utils import clean_bounty_url
-    bounty_params = {
-        'newsletter_headline': _('Be the first to know about new funded issues.'),
-        'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
-        'amount': request.GET.get('amount'),
-    }
-
-    params = get_context(
-        user=request.user if request.user.is_authenticated else None,
-        confirm_time_minutes_target=confirm_time_minutes_target,
-        active='submit_bounty',
-        title=_('Create Funded Issue'),
-        update=bounty_params,
-    )
-    return TemplateResponse(request, 'submit_bounty.html', params)
 
 
 def accept_bounty(request):
@@ -1168,6 +1096,10 @@ def toolbox(request):
         "description": _("Accelerate your dev workflow with Gitcoin\'s incentivization tools."),
         "tools": tools.filter(category=Tool.CAT_BASIC)
     }, {
+        "title": _("Gas Tools"),
+        "description": _("Paying Gas is a part of using Ethereum.  It's much easier with our suite of gas tools."),
+        "tools": tools.filter(category=Tool.GAS_TOOLS)
+    }, {
         "title": _("Advanced"),
         "description": _("Take your OSS game to the next level!"),
         "tools": tools.filter(category=Tool.CAT_ADVANCED)
@@ -1273,3 +1205,97 @@ def vote_tool_down(request, tool_id):
         tool.votes.add(vote)
         score_delta = -1
     return JsonResponse({'success': True, 'score_delta': score_delta})
+
+
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def redeem_coin(request, shortcode):
+    if request.body:
+        status = 'OK'
+
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        address = body['address']
+
+        try:
+            coin = CoinRedemption.objects.get(shortcode=shortcode)
+            address = Web3.toChecksumAddress(address)
+
+            if hasattr(coin, 'coinredemptionrequest'):
+                status = 'error'
+                message = 'Bad request'
+            else:
+                abi = json.loads('[{"constant":true,"inputs":[],"name":"mintingFinished","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"name","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_value","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"totalSupply","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_from","type":"address"},{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transferFrom","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"decimals","outputs":[{"name":"","type":"uint8"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_amount","type":"uint256"}],"name":"mint","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"version","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_subtractedValue","type":"uint256"}],"name":"decreaseApproval","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"name":"balance","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[],"name":"finishMinting","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[],"name":"owner","outputs":[{"name":"","type":"address"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":true,"inputs":[],"name":"symbol","outputs":[{"name":"","type":"string"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"_to","type":"address"},{"name":"_value","type":"uint256"}],"name":"transfer","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":false,"inputs":[{"name":"_spender","type":"address"},{"name":"_addedValue","type":"uint256"}],"name":"increaseApproval","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"},{"constant":true,"inputs":[{"name":"_owner","type":"address"},{"name":"_spender","type":"address"}],"name":"allowance","outputs":[{"name":"","type":"uint256"}],"payable":false,"stateMutability":"view","type":"function"},{"constant":false,"inputs":[{"name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"payable":false,"stateMutability":"nonpayable","type":"function"},{"payable":false,"stateMutability":"nonpayable","type":"fallback"},{"anonymous":false,"inputs":[{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"amount","type":"uint256"}],"name":"Mint","type":"event"},{"anonymous":false,"inputs":[],"name":"MintFinished","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"previousOwner","type":"address"},{"indexed":true,"name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"owner","type":"address"},{"indexed":true,"name":"spender","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"name":"from","type":"address"},{"indexed":true,"name":"to","type":"address"},{"indexed":false,"name":"value","type":"uint256"}],"name":"Transfer","type":"event"}]')
+
+                # Instantiate Colorado Coin contract
+                contract = w3.eth.contract(coin.contract_address, abi=abi)
+
+                tx = contract.functions.transfer(address, coin.amount * 10**18).buildTransaction({
+                    'nonce': w3.eth.getTransactionCount(settings.COLO_ACCOUNT_ADDRESS),
+                    'gas': 100000,
+                    'gasPrice': recommend_min_gas_price_to_confirm_in_time(5) * 10**9
+                })
+
+                signed = w3.eth.account.signTransaction(tx, settings.COLO_ACCOUNT_PRIVATE_KEY)
+                transaction_id = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+
+                CoinRedemptionRequest.objects.create(
+                    coin_redemption=coin,
+                    ip=get_ip(request),
+                    sent_on=timezone.now(),
+                    txid=transaction_id,
+                    txaddress=address
+                )
+
+                message = transaction_id
+        except CoinRedemption.DoesNotExist:
+            status = 'error'
+            message = _('Bad request')
+        except Exception as e:
+            status = 'error'
+            message = str(e)
+
+        # http response
+        response = {
+            'status': status,
+            'message': message,
+        }
+
+        return JsonResponse(response)
+
+    try:
+        coin = CoinRedemption.objects.get(shortcode=shortcode)
+
+        params = {
+            'class': 'redeem',
+            'title': _('Coin Redemption'),
+            'coin_status': _('PENDING')
+        }
+
+        try:
+            coin_redeem_request = CoinRedemptionRequest.objects.get(coin_redemption=coin)
+            params['colo_txid'] = coin_redeem_request.txid
+        except CoinRedemptionRequest.DoesNotExist:
+            params['coin_status'] = _('INITIAL')
+
+        return TemplateResponse(request, 'yge/redeem_coin.html', params)
+    except CoinRedemption.DoesNotExist:
+        raise Http404
+
+def new_bounty(request):
+    """Create a new bounty."""
+    from .utils import clean_bounty_url
+    bounty_params = {
+        'newsletter_headline': _('Be the first to know about new funded issues.'),
+        'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
+        'amount': request.GET.get('amount'),
+    }
+
+    params = get_context(
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='submit_bounty',
+        title=_('Create Funded Issue'),
+        update=bounty_params,
+    )
+    return TemplateResponse(request, 'submit_bounty.html', params)

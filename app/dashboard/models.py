@@ -1904,9 +1904,11 @@ class Tool(SuperModel):
     CAT_COMING_SOON = 'CS'
     CAT_COMMUNITY = 'CO'
     CAT_FOR_FUN = 'FF'
+    GAS_TOOLS = "TO"
 
     TOOL_CATEGORIES = (
         (CAT_ADVANCED, 'advanced'),
+        (GAS_TOOLS, 'gas'),
         (CAT_ALPHA, 'alpha'),
         (CAT_BASIC, 'basic'),
         (CAT_BUILD, 'tools to build'),

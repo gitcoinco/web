@@ -2,8 +2,6 @@
 {% load i18n static %}
 {% block 'scripts' %}
 <script src="{% static "v2/js/jquery.js"%}"></script>
-<script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
-<script src="{% static "v2/js/pages/gas.js" %}"></script>
 
 <style> /* set the CSS */
 
@@ -17,11 +15,11 @@
   stroke: steelblue;
   stroke-width: 2px;
 }
-
-.dot {
-  fill: steelblue;
+{% for key, val in lines.items %}
+.line.line_{{key}} {
+  stroke: {{val}};
 }
-
+{% endfor %}
 div.tooltip {
   position: absolute;
   max-width: 300px;
@@ -34,6 +32,17 @@ div.tooltip {
   border-radius: 3px;
   pointer-events: none;
   z-index: 9999;
+}
+#key{
+  float: right;
+  position: absolute;
+  right: 100px;
+  top: 270px;
+  text-align: right;
+}
+#key p{
+  margin: 0px;
+  font-size: 12px;
 }
 
 </style>
@@ -50,12 +59,24 @@ div.tooltip {
 <section id=main>
 {% include 'shared/gas_nav.html' %}
 
-{% include 'shared/gas_advisories.html' %}
+<h1> {% trans "Gas History" %} ({{breakdown}}) <span id="alpha">{% trans "Alpha" %}</span> </h1>
 
-<h1> {% trans "Live Gas Tool" %} <span id="alpha">{% trans "Alpha" %}</span> </h1>
-<h2> {% trans "Predicted Confirmation Times (x axis) vs Gas Usage (y axis)" %} </h2>
+  <ul class="gas_nav small">
+    {% for granularity in granularity_options %}
+    <li>
+      <a href="{%url 'gas_history_view'%}?breakdown={{granularity}}">{{granularity}} view</a>
+    </li>
+    {% endfor %}
+  </ul>
 
-{% if conf_time_spread == '[]' %}
+
+  <div id="key">
+    {% for key, val in lines.items %}
+    <p style="color:{{val}}">Gas needed to confirm within {{key}} minute{{key|pluralize}}</p>
+    {% endfor %}
+  </div>
+
+{% if gas_histories == '[]' %}
   <p>
     {% blocktrans %} We are unable to sync gas data at this time.  We recommend you check out <a href="https://ethgasstation.info/predictionTable.php" target="_blank" rel="noopener noreferrer">ETH Gas Station</a> instead.{% endblocktrans %}
   </p>
@@ -69,21 +90,11 @@ div.tooltip {
     .attr("class", "tooltip")
     .style("opacity", 0);
 
-  var source = {{conf_time_spread | safe}};
-  var gas_times = source;
-  data = []
-  source.forEach(function(d) {
-      d['confirmation_time'] = parseFloat(d[1])
-      d['gas_price'] = parseFloat(d[0]);
-      d.splice(0,2);
-      data.push(d);
-  });
-
   var margin = {top: 20, right: 20, bottom: 50, left: 70},
       width = 960 - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom;
 
-  var x = d3.scaleLinear().range([0, width]);
+  var x = d3.scaleLinear().range([width, 0]);
   var y = d3.scaleLinear().range([height, 0]);
 
   // define the line
@@ -98,31 +109,25 @@ div.tooltip {
     .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  x.domain([0, d3.max(data, function(d) { return d.confirmation_time; })]).nice();
-  y.domain([0, d3.max(data, function(d) { return d.gas_price; })]).nice();
-
-  svg.append("path")
-    .data([data])
-    .attr("class", "line")
-    .attr("d", valueline);
-
-  svg.selectAll('circle').data(data)
-    .enter().append('circle')
-    .attr('class', 'dot')
-    .attr('r', 3)
-    .attr('cx', d => x(d.confirmation_time))
-    .attr('cy', d => y(d.gas_price))
-    .on('mouseover', function(d) {
-      var tooltip_msg = '<div>';
-      tooltip_msg = `Gas Price: ${d.gas_price}`;
-      tooltip_msg = tooltip_msg + `<br/>Confirmation time: ${d.confirmation_time} min`;
-      tooltip_msg = tooltip_msg + '</div>';
-      tooltip.transition().style("opacity", 1);
-      tooltip.html(tooltip_msg).style("left", (d3.event.pageX + 15) + "px").style("top", (d3.event.pageY - 28) + "px");
-    })
-    .on('mouseout', function(d) {
-      tooltip.style("opacity", 0);
+  {% for key, gas_history in gas_histories.items %}
+    var source = {{gas_history | safe}};
+    data = []
+    source.forEach(function(d) {
+        d['confirmation_time'] = parseFloat(d[1])
+        d['gas_price'] = parseFloat(d[0]);
+        d.splice(0,2);
+        data.push(d);
     });
+
+    x.domain([0, d3.max(data, function(d) { return d.confirmation_time; })]).nice();
+    y.domain([0, d3.max(data, function(d) { return {{max}}; })]).nice();
+
+    svg.append("path")
+      .data([data])
+      .attr("class", "line line_{{key}}")
+      .attr("d", valueline);
+
+  {% endfor %}
 
   // x Axis
   svg.append("g")
@@ -136,7 +141,7 @@ div.tooltip {
                            (height + margin.top + 20) + ")")
       .style("text-anchor", "middle")
       .attr("class", "axis")
-      .text("Confirmation Time (minutes)");
+      .text("{{breakdown_ui}}-ago");
 
   // y Axis
   svg.append("g")
@@ -154,27 +159,14 @@ div.tooltip {
 
 
   </script>
-  <style>
-  #estimateTable{
-    margin: 0px auto; border: 1px solid black;    
-  }
-  #estimateTable tr td{
-    border: 1px solid #ccc;    
-    padding: 5px 10px; 
-  }
-  </style>
+  </div>
 
-
-  
-  <h2>{% trans "Useful Links" %}</h2>
-  {% blocktrans %}To see the data in table format, check out <a href="https://ethgasstation.info/predictionTable.php" target="_blank" rel="noopener noreferrer">ETH Gas Station</a>{% endblocktrans %}
-
-  <br>
-  {% blocktrans %}To see this information persisted in-browser check out <a href=https://chrome.google.com/webstore/detail/ethereum-gas-price-extens/innfmlnnhfcebjcnfopadflecemoddnp target="_blank" rel="noopener noreferrer">this chrome extension</a>{% endblocktrans %}
+  </div>
+  <script>
+  </script>
 
 
 {% endif %}
-
 
 </section>
 

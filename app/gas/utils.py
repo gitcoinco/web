@@ -48,6 +48,54 @@ def conf_time_spread(max_gas_price=9999):
     return json.dumps([])
 
 
+def gas_history(breakdown, mean_time_to_confirm_minutes):
+
+    days = 30 * 8 # 8 months
+    if breakdown == 'hourly':
+        days = 10
+    if breakdown == 'daily':
+        days = 30 * 2
+    if breakdown == 'weekly':
+        days = 30 * 8
+    start_date = (timezone.now()-timezone.timedelta(days=days))
+    gas_profiles = GasProfile.objects.filter(
+        created_on__gt=start_date,
+        mean_time_to_confirm_minutes__lte=mean_time_to_confirm_minutes,
+        ).order_by('-created_on')
+
+    # collapse into best gas price per time period
+    results = {}
+    for gp in gas_profiles:
+        if not gp.created_on.minute < 10:
+            continue
+        if not gp.created_on.hour < 1 and breakdown in ['daily', 'weekly']:
+            continue
+        if not gp.created_on.weekday() < 1 and breakdown in ['weekly']:
+            continue
+        key = gp.created_on.strftime("%Y-%m-%dT%H:00:00")
+        package = {'created_on': key, 'gas_price': float(gp.gas_price), 'mean_time_to_confirm_minutes': float(gp.mean_time_to_confirm_minutes)}
+        if key not in results.keys():
+            results[key] = package
+        else:
+            key_package = results[key]
+            if package['mean_time_to_confirm_minutes'] > key_package['mean_time_to_confirm_minutes']:
+                results[key] = package
+            elif package['mean_time_to_confirm_minutes'] == key_package['mean_time_to_confirm_minutes']:
+                if package['gas_price'] < key_package['gas_price']:
+                    results[key] = package
+    # for debugging
+    # for key, result in results.items():
+    #    print(result['created_on'], result['gas_price'], result['mean_time_to_confirm_minutes'])
+    
+    # collapse into array that the frontend can understand
+    results_array = []
+    i = 0
+    for key, val in results.items():
+        results_array.append([val['gas_price'], i])
+        i += 1
+    return results_array
+
+
 def gas_advisories():
     gas_advisories = GasAdvisory.objects.filter(active=True, active_until__gt=timezone.now())
     return gas_advisories

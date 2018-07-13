@@ -27,6 +27,7 @@ from django.views.i18n import JavaScriptCatalog
 import avatar.views
 import credits.views
 import dashboard.embed
+import dashboard.gas_views
 import dashboard.helpers
 import dashboard.ios
 import dashboard.tip_views
@@ -149,7 +150,12 @@ urlpatterns = [
     path('actions/tool/<int:tool_id>/voteUp', dashboard.views.vote_tool_up, name='vote_tool_up'),
     path('actions/tool/<int:tool_id>/voteDown', dashboard.views.vote_tool_down, name='vote_tool_down'),
     url(r'^tools/?', dashboard.views.toolbox, name='tools'),
-    url(r'^gas/?', dashboard.views.gas, name='gas'),
+
+    # gas views
+    url(r'^gas/faq/?', dashboard.gas_views.gas_faq, name='gas_faq'),
+    url(r'^gas/calculator/?', dashboard.gas_views.gas_calculator, name='gas_calculator'),
+    url(r'^gas/history/?', dashboard.gas_views.gas_history_view, name='gas_history_view'),
+    url(r'^gas/?', dashboard.gas_views.gas, name='gas'),
 
     # images
     re_path(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
