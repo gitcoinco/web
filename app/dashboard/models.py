@@ -41,8 +41,10 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 import requests
 from dashboard.tokens import addr_to_token
+from dashboard.utils import generate_pub_priv_keypair, get_web3, has_tx_mined
 from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from github.utils import (
     _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, issue_number, org_name, repo_name,
 )
@@ -846,6 +848,18 @@ class BountyFulfillment(SuperModel):
             'name': self.fulfiller_name,
         }
 
+    @property
+    def tips(self):
+        try:
+            return Tip.objects.filter(github__iexact=self.github_url, network=self.network).order_by('-created_on')
+        except:
+            return Tip.objects.none()
+
+    @property
+    def bulk_payout_tips(self):
+        queryset = self.tips.filter(is_for_bounty_fulfiller=False)
+        return (queryset.filter(bounty_owner_address=self.from_address) + queryset.filter(from_name=self.bounty_owner_github_username))
+
 
 class BountySyncRequest(SuperModel):
     """Define the structure for bounty syncing."""
@@ -1034,6 +1048,48 @@ class Tip(SuperModel):
         except:
             return None
 
+    def payout_to(self, address, amount_override=None):
+        if not address or address == '0x0':
+            raise Exception('bad forwarding address')
+        if self.web3_type == 'yge':
+            raise Exception('bad web3_type')
+        if self.receive_txid:
+            raise Exception('already received')
+
+        # send tokens
+        tip = self
+        address = Web3.toChecksumAddress(address)
+        w3 = get_web3(tip.network)
+        is_erc20 = tip.tokenName.lower() != 'eth'
+        amount = int(tip.amount_in_wei) if not amount_override else int(amount_override)
+        gasPrice = recommend_min_gas_price_to_confirm_in_time(25) * 10**9
+        from_address = Web3.toChecksumAddress(tip.metadata['address'])
+        nonce = w3.eth.getTransactionCount(from_address)
+        if is_erc20:
+            # ERC20 contract receive
+            balance = w3.eth.getBalance(from_address)
+            contract = w3.eth.contract(Web3.toChecksumAddress(tip.tokenAddress), abi=erc20_abi)
+            gas = contract.functions.transfer(address, amount).estimateGas() + 1
+            gasPrice = gasPrice if ((gas * gasPrice) < balance) else (balance * 1.0 / gas)
+            tx = contract.functions.transfer(address, amount).buildTransaction({
+                'nonce': nonce,
+                'gas': w3.toHex(gas),
+                'gasPrice': w3.toHex(int(gasPrice)),
+            })
+        else:
+            # ERC20 contract receive
+            gas = 100000
+            amount -= gas * int(gasPrice)
+            tx = dict(
+                nonce=nonce,
+                gasPrice=w3.toHex(int(gasPrice)),
+                gas=w3.toHex(gas),
+                to=address,
+                value=w3.toHex(amount),
+                data=b'',
+              )
+        signed = w3.eth.account.signTransaction(tx, tip.metadata['priv_key'])
+        receive_txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
 
 @receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
 def psave_tip(sender, instance, **kwargs):

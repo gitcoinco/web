@@ -21,6 +21,7 @@ from django.utils import timezone
 
 from dashboard.models import Bounty, Tip
 
+import math
 
 class Command(BaseCommand):
 
@@ -35,14 +36,44 @@ class Command(BaseCommand):
                 if bounty.status == 'done':
                     fulfillment = new_bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
                     if fulfillment:
+                        ######################################################
                         # send to fulfiller
-                        # TODO
-                        pass
+                        ######################################################
+                        tip.payout_to(fulfillment.fulfiller_address)
+                        tip.metadata['payout_comments'] = f'auto paid out on {timezone.now()} to fulfillment {fulfillment.pk}; as done bountyfulfillment'
+                        tip.save()
                     else:
+                        ######################################################
                         # was sent with bulk payout.  send to bulk payout_ees
-                        # TODO
+                        ######################################################
+                        bpts = bounty.bulk_payout_tips
+                        bpts_ids = bpts.values_list('pk', flat=True)
+                        num_payees = bpts.count()
+
+                        amount_to_pay = math.floor(tip.amount_in_wei / num_payees)
+                        for bpt in bpts:
+                            cloned_tip = bpt
+                            cloned_tip.pk = None #effectively clones the bpt and inserts a new one
+                            cloned_tip.receive_txid = ''
+                            cloned_tip.is_for_bounty_fulfiller = false
+                            cloned_tip.metadata = {
+                                'priv_key': tip.metadata['priv_key'],
+                                'pub_key': tip.metadata['pub_key'],
+                                'address': tip.metadata['address'],
+                                'debug_info': f'created in order to facilitate payout of a crowdfund tip {tip.pk}'
+                            }
+                            cloned_tip.save()
+
+                        tip.payout_to(fulfillment.fulfiller_address)
+                        tip.metadata['payout_comments'] = f'auto paid out on {timezone.now()} to via recipients of {bpt_ids}; as done bounty w no bountyfulfillment'
+                        tip.save()
+
                         pass
 
                 if bounty.status == 'cancelled':
-                    # return to user
-                    pass
+                    ######################################################
+                    # return to funder
+                    ######################################################
+                    tip.payout_to(bounty.bounty_owner_address)
+                    tip.metadata['payout_comments'] = f'auto paid out on {timezone.now()}; as cancelled bounty'
+                    tip.save()

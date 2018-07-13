@@ -29,7 +29,6 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.abi import erc20_abi
-from dashboard.utils import generate_pub_priv_keypair, get_web3, has_tx_mined
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from github.utils import (
@@ -172,46 +171,8 @@ def receive_tip_v2(request, pk, txid, network):
         # db mutations
         try:
             address = params['forwarding_address']
-            if not address or address == '0x0':
-                raise Exception('bad forwarding address')
-
-            # send tokens
-
-            address = Web3.toChecksumAddress(address)
-            w3 = get_web3(tip.network)
-            is_erc20 = tip.tokenName.lower() != 'eth'
-            amount = int(tip.amount_in_wei)
-            gasPrice = recommend_min_gas_price_to_confirm_in_time(25) * 10**9
-            from_address = Web3.toChecksumAddress(tip.metadata['address'])
-            nonce = w3.eth.getTransactionCount(from_address)
-            if is_erc20:
-                # ERC20 contract receive
-                balance = w3.eth.getBalance(from_address)
-                contract = w3.eth.contract(Web3.toChecksumAddress(tip.tokenAddress), abi=erc20_abi)
-                gas = contract.functions.transfer(address, amount).estimateGas() + 1
-                gasPrice = gasPrice if ((gas * gasPrice) < balance) else (balance * 1.0 / gas)
-                tx = contract.functions.transfer(address, amount).buildTransaction({
-                    'nonce': nonce,
-                    'gas': w3.toHex(gas),
-                    'gasPrice': w3.toHex(int(gasPrice)),
-                })
-            else:
-                # ERC20 contract receive
-                gas = 100000
-                amount -= gas * int(gasPrice)
-                tx = dict(
-                    nonce=nonce,
-                    gasPrice=w3.toHex(int(gasPrice)),
-                    gas=w3.toHex(gas),
-                    to=address,
-                    value=w3.toHex(amount),
-                    data=b'',
-                  )
-            signed = w3.eth.account.signTransaction(tx, tip.metadata['priv_key'])
-            receive_txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
-
-            tip.receive_address = params['forwarding_address']
-            tip.receive_txid = receive_txid
+            tip.receive_txid = tip.payout_to(address)
+            tip.receive_address = address
             tip.received_on = timezone.now()
             tip.save()
             record_user_action(tip.username, 'receive_tip', tip)
