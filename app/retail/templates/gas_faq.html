@@ -5,18 +5,13 @@
 {% endblock %}
 <!-- Main -->
 
-{% block 'world' %}
-    <canvas id="world" style="position:absolute; top:0px; left: 0px;">
-    </canvas>
-{% endblock %}
-
 {% block 'main' %}
 
 <section id=main>
 {% include 'shared/gas_nav.html' %}
 
 <h1>{% trans "FAQ" %}</h1>
-<a href="{% url 'faucet' %}" target="_blank" rel="noopener noreferrer">{% trans "I need gas money, where can I get it?" %}</a>
+<a href="{% url 'gas_faucet_list' %}" target="_blank" rel="noopener noreferrer">{% trans "I need gas money, where can I get it?" %}</a>
 <br>
 <a href="https://github.com/gitcoinco/gitcoinco/issues/5" target="_blank" rel="noopener noreferrer">{% trans "Why do we need to pay gas?" %}</a>
 <br>
