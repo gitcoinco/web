@@ -647,146 +647,6 @@ def dashboard(request):
     return TemplateResponse(request, 'dashboard.html', params)
 
 
-def get_history_cached(breakdown, i):
-    timeout = 60 * 60 * 3
-    key_salt = '0'
-    key = f'get_history_cached_{breakdown}_{i}_{key_salt}'
-    results = cache.get(key)
-    if results and not settings.DEBUG:
-        return results
-
-    results = gas_history(breakdown, i)
-    cache.set(key, results, timeout)
-
-    return results
-
-
-def gas_history_view(request):
-    breakdown = request.GET.get('breakdown', 'hourly')
-    gas_histories = {}
-    max_y = 0
-    lines = {
-        1: 'red',
-        5: 'orange',
-        60: 'green',
-        120: 'steelblue',
-        180: 'purple',
-    }
-    for i in lines.keys():
-        gas_histories[i] = get_history_cached(breakdown, i)
-        for gh in gas_histories[i]:
-            max_y = max(gh[0], max_y)
-    breakdown_ui = breakdown.replace('ly', '') if breakdown != 'daily' else 'day'
-    context = {
-        'title': 'Gas History',
-        'max': max_y,
-        'lines': lines,
-        'gas_histories': gas_histories,
-        'breakdown': breakdown,
-        'breakdown_ui': breakdown_ui,
-        'granularity_options': ['hourly', 'daily', 'weekly'],
-    }
-    return TemplateResponse(request, 'gas_history.html', context)
-
-
-def gas(request):
-    _cts = conf_time_spread()
-    recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target)
-    if recommended_gas_price < 2:
-        _cts = conf_time_spread(recommended_gas_price)
-
-    context = {
-        'eth_to_usd': round(convert_amount(1, 'ETH', 'USDT'), 0),
-        'start_gas_cost': recommended_gas_price,
-        'gas_advisories': gas_advisories(),
-        'conf_time_spread': _cts,
-        'hide_send_tip': True,
-        'title': 'Live Gas Usage => Predicted Conf Times'
-    }
-    return TemplateResponse(request, 'gas.html', context)
-
-
-def gas_faq(request):
-
-    context = {
-        'title': 'Gas FAQ',
-        'hide_send_tip': True,
-    }
-    return TemplateResponse(request, 'gas_faq.html', context)
-
-
-def gas_calculator(request):
-    recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target)
-    _cts = conf_time_spread()
-    recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target)
-
-    actions = [{
-        'name': 'New Bounty',
-        'target': '/new',
-        'persona': 'funder',
-        'product': 'bounties',
-    }, {
-        'name': 'Fulfill Bounty',
-        'target': 'issue/fulfill',
-        'persona': 'developer',
-        'product': 'bounties',
-    }, {
-        'name': 'Increase Funding',
-        'target': 'issue/increase',
-        'persona': 'funder',
-        'product': 'bounties',
-    }, {
-        'name': 'Accept Submission',
-        'target': 'issue/accept',
-        'persona': 'funder',
-        'product': 'bounties',
-    }, {
-        'name': 'Cancel Funding',
-        'target': 'issue/cancel',
-        'persona': 'funder',
-        'product': 'bounties',
-    }, {
-        'name': 'Send tip',
-        'target': 'tip/send/2/',
-        'persona': 'funder',
-        'product': 'tips',
-    }, {
-        'name': 'Receive tip',
-        'target': 'tip/receive',
-        'persona': 'developer',
-        'product': 'tips',
-    }
-    ]
-    context = {
-        'actions': actions,
-        'conf_time_spread': _cts,
-        'eth_to_usd': round(convert_amount(1, 'ETH', 'USDT'), 0),
-        'start_gas_cost': recommended_gas_price,
-        'title': 'Gas Calculator',
-        'hide_send_tip': True,
-    }
-    return TemplateResponse(request, 'gas_calculator.html', context)
-
-
-def new_bounty(request):
-    """Create a new bounty."""
-    from .utils import clean_bounty_url
-    bounty_params = {
-        'newsletter_headline': _('Be the first to know about new funded issues.'),
-        'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
-        'amount': request.GET.get('amount'),
-    }
-
-    params = get_context(
-        user=request.user if request.user.is_authenticated else None,
-        confirm_time_minutes_target=confirm_time_minutes_target,
-        active='submit_bounty',
-        title=_('Create Funded Issue'),
-        update=bounty_params,
-    )
-    return TemplateResponse(request, 'submit_bounty.html', params)
-
-
 def accept_bounty(request):
     """Process the bounty.
 
@@ -1540,3 +1400,21 @@ def redeem_coin(request, shortcode):
         return TemplateResponse(request, 'yge/redeem_coin.html', params)
     except CoinRedemption.DoesNotExist:
         raise Http404
+
+def new_bounty(request):
+    """Create a new bounty."""
+    from .utils import clean_bounty_url
+    bounty_params = {
+        'newsletter_headline': _('Be the first to know about new funded issues.'),
+        'issueURL': clean_bounty_url(request.GET.get('source') or request.GET.get('url', '')),
+        'amount': request.GET.get('amount'),
+    }
+
+    params = get_context(
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='submit_bounty',
+        title=_('Create Funded Issue'),
+        update=bounty_params,
+    )
+    return TemplateResponse(request, 'submit_bounty.html', params)

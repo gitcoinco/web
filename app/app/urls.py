@@ -27,6 +27,7 @@ from django.views.i18n import JavaScriptCatalog
 import avatar.views
 import credits.views
 import dashboard.embed
+import dashboard.gas_views
 import dashboard.helpers
 import dashboard.ios
 import dashboard.views
@@ -143,10 +144,10 @@ urlpatterns = [
     url(r'^tools/?', dashboard.views.toolbox, name='tools'),
 
     # gas views
-    url(r'^gas/faq/?', dashboard.views.gas_faq, name='gas_faq'),
-    url(r'^gas/calculator/?', dashboard.views.gas_calculator, name='gas_calculator'),
-    url(r'^gas/history/?', dashboard.views.gas_history_view, name='gas_history_view'),
-    url(r'^gas/?', dashboard.views.gas, name='gas'),
+    url(r'^gas/faq/?', dashboard.gas_views.gas_faq, name='gas_faq'),
+    url(r'^gas/calculator/?', dashboard.gas_views.gas_calculator, name='gas_calculator'),
+    url(r'^gas/history/?', dashboard.gas_views.gas_history_view, name='gas_history_view'),
+    url(r'^gas/?', dashboard.gas_views.gas, name='gas'),
 
     # redeem coin
     url(r'^coin/redeem/(.*)/?', dashboard.views.redeem_coin, name='redeem'),
