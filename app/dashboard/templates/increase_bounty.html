@@ -38,7 +38,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           {% include 'shared/unlock_metamask.html' %}
         </div>
       </div>
-      <div class="row">
+      {% include 'shared/success_container.html' %}
+      <div class="row content">
         <div class="col-12 body">
           <div class="row font-smaller-2" id="form_container">
             <div id="robot_error" class="hidden">
@@ -86,7 +87,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                   </div>
                 </div>
                 <div class="form__footer form__footer--right">
-                  <button class="button button--primary" type="submit" id="submitBounty">Increase Funding</button>
+                  <button class="button button--primary" type="submit" id="increaseFunding">Increase Funding</button>
                   <br />
                   <a target=new href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
                 </div>
@@ -121,6 +122,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
   <script src="{% static "v2/js/pages/increase_bounty.js" %}"></script>
+  <script src="{% static "onepager/js/send.js" %}"></script>
 
 
 </html>

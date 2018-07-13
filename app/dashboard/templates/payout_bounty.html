@@ -37,17 +37,7 @@
           {% include 'shared/unlock_metamask.html' %}
         </div>
       </div>
-      <div class="row" id="success_container" style="display: none; min-height: 500px;">
-        <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
-          <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
-            <h3>{% trans "Payment(s) Sent" %}</h3>
-            {% include 'svgs/success.svg' %}
-            <a class="button button--primary mt-3 w-75" href="{{bounty.url}}" > 
-                {% trans "Back to Bounty" %}
-            </a>
-          </div>
-        </div>
-      </div>
+      {% include 'shared/success_container.html' %}
       <div class="row content">
         <div class="col-12 body">
           <div class="row font-smaller-2" id="form_container">
