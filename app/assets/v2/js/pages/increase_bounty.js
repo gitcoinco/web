@@ -111,10 +111,6 @@ $(document).ready(function() {
         mixpanel.track('Submit New Bounty Success', {});
         document.location.href = '/funding/details/?url=' + issueURL;
       }, 1000);
-
-      if (document.changePayoutAmount) {
-        $.get('/issue/increase/changepayout/' + amount + '/?pk=' + bountyId + '&network=' + document.web3network);
-      }
     }
 
     var bountyAmount = parseInt($('input[name=valueInToken]').val(), 10);
@@ -134,20 +130,12 @@ $(document).ready(function() {
       return;
     }
 
-    function do_bounty_as_funder_changingFulfillment() {
-      bounty.changeBountyFulfillmentAmount(
-        bountyId,
-        bountyAmount + amount,
-        {
-          from: account,
-          value: 0,
-          gasPrice: web3.toHex($('#gasPrice').val() + Math.pow(10, 9))
-        },
-        web3Callback
-      );
+    function do_as_crowd() {
+      _alert('crowdfunding is cool');
+      unloading_button($('#submitBounty'));
     }
 
-    function do_bounty_as_funder_increasingPayout() {
+    function do_as_funder() {
       bounty.increasePayout(
         bountyId,
         bountyAmount + amount,
@@ -161,27 +149,10 @@ $(document).ready(function() {
       );
     }
 
-    function do_bounty_as_contributor() {
-      bounty.contribute(
-        bountyId,
-        amount,
-        {
-          from: account,
-          value: ethAmount,
-          gasPrice: web3.toHex($('#gasPrice').val() + Math.pow(10, 9))
-        },
-        web3Callback
-      );
-    }
-
     if (document.isFunder) {
-      if (document.changePayoutAmount) {
-        do_bounty_as_funder_increasingPayout();
-      } else {
-        do_bounty_as_funder_changingFulfillment();
-      }
+      do_as_funder();
     } else {
-      do_bounty_as_contributor();
+      do_as_crowd();
     }
 
   });
