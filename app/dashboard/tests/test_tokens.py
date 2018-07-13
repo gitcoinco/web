@@ -30,7 +30,7 @@ class DashboardTokensTest(TestCase):
         """Test the dashboard tokens variable to ensure it can be read properly."""
         assert isinstance(tokens, list)
         assert isinstance(tokens[0], dict)
-        assert len(tokens[0]) == 3
+        assert len(tokens[0]) == 4
 
     def test_addr_to_token_valid(self):
         """Test the dashboard token lookup utility with a valid token."""

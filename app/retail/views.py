@@ -27,11 +27,11 @@ from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
-from economy.models import Token
-from marketing.mails import new_token_request
 from dashboard.models import Activity, Bounty
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from dashboard.tokens import token_by_name
+from economy.models import Token
+from marketing.mails import new_token_request
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from retail.helpers import get_ip
