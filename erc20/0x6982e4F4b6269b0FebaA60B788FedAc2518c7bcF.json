@@ -1,0 +1,25 @@
+{
+  "symbol": "ODT",
+  "address": "0x6982e4F4b6269b0FebaA60B788FedAc2518c7bcF",
+  "overview":{
+        "en": "OD network is a decentralized digital asset management network built on blockchain smart contract.  Performance, asset, operation, and revenue are all recorded through smart contract on chain. It is committed to providing users with efficient, secure and reliable digital asset management services.",
+        "zh": "OD网络是基于区块链智能合约自我运行的去中心化数字资管网络，记录、资金、操作、收益上链运行，致力于为用户提供高效、安全、可信的的数字资产管理服务。"
+  },
+  "email": "info@olddriver.com",
+  "website": "http://olddriver.com/",
+  "whitepaper": "http://olddriver.com/pdf/OD%20Whitepaper.pdf",
+  "state": "LOCKED",
+  "published_on": "2018-06-13",
+  "initial_price":{
+        "ETH":"0 ETH",
+        "USD":"0 USD",
+        "BTC":"0 BTC"
+  },
+  "links": {
+    "blog": "https://weibo.com/6552660791/profile?rightmod=1&wvr=6&mod=personinfo&is_all=1",
+    "telegram": "https://0.plus/olddriverchinese",
+    "github": "https://github.com/codeistrust",
+    "facebook": "https://www.facebook.com/OldDriverNetwork/"
+  }
+}
+
