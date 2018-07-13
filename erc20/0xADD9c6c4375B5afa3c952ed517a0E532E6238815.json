@@ -1,0 +1,23 @@
+{
+  "symbol": "HCToken",
+  "address": "0xADD9c6c4375B5afa3c952ed517a0E532E6238815",
+  "overview":{
+        "en": "HCToken is the first personal digital currency exchange platform in the world.",
+        "zh": "HCToken 是全球首家个人数字货币交换平台。"
+  },
+  "email": "hczhangforwork@163.com",
+  "website": "https://your-awesome-project.com/",
+  "whitepaper": "https://your-awesome-project.com/file.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-07-01",
+  "links": {
+    "blog": "https://your-awesome-project.com/blog",
+    "twitter": "https://twitter.com/your-awesome-project",
+    "telegram": "https://t.me/joinchat/your-awesome-project",
+    "github": "https://github.com/your-awesome-project",
+    "facebook": "https://www.facebook.com/your-awesome-project",
+    "reddit": "https://www.reddit.com/r/your-awesome-project/",
+    "slack": "https://your-awesome-project.slack.com",
+    "medium": "https://medium.com/your-awesome-project"
+  }
+}
