@@ -350,6 +350,8 @@ def joe_dominance_index(created_before=timezone.now()):
     joe_addresses = joe_addresses + ['0x0A998a744351604887c70D2BA633d2e68021A8E1'.lower()]  # saptak
     joe_addresses = joe_addresses + ['0x5DA565AD870ee827608fC764f76ab8055B3E8474'.lower()]  # justin
     joe_addresses = joe_addresses + ['0x5cdb35fADB8262A3f88863254c870c2e6A848CcA'.lower()]  # aditya
+    joe_addresses = joe_addresses + ['0x00de4b13153673bcae2616b67bf822500d325fc3'.lower()]  # kevin
+
 
     for days in [7, 30, 90, 360]:
         created_after = created_before - timezone.timedelta(days=days)
@@ -447,7 +449,7 @@ def ens():
 
 def tips():
     from dashboard.models import Tip
-    tips = Tip.objects.filter(network='mainnet')
+    tips = Tip.objects.filter(network='mainnet').exclude(txid='')
     val = sum(tip.value_in_usdt for tip in tips if tip.value_in_usdt)
 
     stats_to_create = [
@@ -468,7 +470,7 @@ def tips_received():
 
     Stat.objects.create(
         key='tips_received',
-        val=(Tip.objects.filter(network='mainnet').exclude(receive_txid='').count()),
+        val=(Tip.objects.filter(network='mainnet').exclude(txid='').exclude(receive_txid='').count()),
         )
 
 

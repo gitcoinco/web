@@ -217,8 +217,7 @@ def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None
 
     # Build the list of avatar components
     components = [
-        icon_width,
-        icon_height,
+        icon_width, icon_height,
         Line([(0, icon_height / 2), (icon_width, icon_height / 2)],
              width=f'{icon_height}px',
              color=payload.get('background_color')),
@@ -270,10 +269,7 @@ def handle_avatar_payload(request):
     for k, v in body.items():
         if v and k in valid_component_keys:
             component_type, svg_asset = v.lstrip('v2/images/avatar/').split('/')
-            avatar_dict[k] = {
-                'component_type': component_type,
-                'svg_asset': svg_asset,
-            }
+            avatar_dict[k] = {'component_type': component_type, 'svg_asset': svg_asset, }
         elif v and k in valid_color_keys:
             avatar_dict[k] = v
     return avatar_dict

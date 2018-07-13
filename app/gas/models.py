@@ -42,7 +42,7 @@ class GasProfile(SuperModel):
         """Define the string representation of GasProfile."""
         if not self:
             return "none"
-        return f"gas_price: {self.gas_price}, mean_time_to_confirm_minutes: {self.mean_time_to_confirm_minutes} "
+        return f"gas_price: {self.gas_price}, mean_time_to_confirm_minutes: {self.mean_time_to_confirm_minutes} @ {self.created_on} "
 
 
 class GasAdvisory(SuperModel):

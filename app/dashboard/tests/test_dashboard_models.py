@@ -128,6 +128,7 @@ class DashboardModelsTest(TestCase):
             expires_date=date.today() + timedelta(days=1),
             created_on=date.today(),
             tokenAddress='0x0000000000000000000000000000000000000000',
+            web3_type='yge',
         )
         assert str(tip) == '(net) - PENDING 7 ETH to fred from NA, created: today, expires: tomorrow'
         assert tip.get_natural_value() == 7e-18

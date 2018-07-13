@@ -94,8 +94,8 @@ span {
   border: 1px solid #828282;
   color: #fff;
   border-radius: 25px;
-  font-size: 0.6rem;
-  font-weight: lighter;
+  font-size: 0.65rem;
+  text-align: center;
 }
 
 .navbar-network i {
@@ -377,7 +377,6 @@ p a {
 
 #gas-section .gas-dark-bg {
   background-color: #FAFAFA;
-  min-width: 205px;
 }
 
 #gas-section .gas-rates .active {
@@ -831,82 +830,6 @@ input[type=text].loading {
   margin-left: 5px;
 }
 
-.transaction-status {
-  font-family: 'Muli', sans-serif;
-  display: block;
-  position: relative;
-  width: 80%;
-  left: 10%;
-  top: 30px;
-  margin-bottom: 30px;
-  border-radius: 2px;
-  padding: 3vh 5vw;
-  text-align: center;
-}
-
-.transation-header {
-  font-family: 'Muli', sans-serif;
-  display: block;
-  position: relative;
-  width: 80%;
-  left: 10%;
-  top: 30px;
-  margin-bottom: 30px;
-  border-radius: 2px;
-  padding: 3vh 5vw;
-  text-align: center;
-}
-
-.waiting_room_entertainment {
-  font-style: italic;
-  text-align: center;
-}
-
-.quote-container {
-  width: 65%;
-  margin: 5% auto;
-}
-
-.quote_text {
-  color: #4A4A4A;
-  font-style: italic;
-  font-weight: 700;
-  font-size: 22px;
-  letter-spacing: 0.75px;
-}
-
-.quote_author {
-  color: #70EFBE;
-  margin: 1rem auto;
-  font-style: italic;
-  font-weight: 700;
-  font-size: 22px;
-  letter-spacing: 0.75px;
-}
-
-.bounty_details .quote-container {
-  width: 65%;
-  margin: 5% auto;
-  font-style: normal;
-}
-
-.bounty_details .quote_text {
-  color: #4A4A4A;
-  font-weight: 700;
-  font-style: normal;
-  font-size: 22px;
-  letter-spacing: 0.75px;
-}
-
-.bounty_details .quote_author {
-  color: #4A4A4A;
-  margin: 1rem auto;
-  font-style: normal;
-  font-weight: 700;
-  font-size: 22px;
-  letter-spacing: 0.75px;
-}
-
 #gitcoin_buttons #example img {
   width: 500px;
   max-width: 100%
@@ -1269,6 +1192,12 @@ input.is-invalid {
   }
 }
 
+@media (max-width: 991.98px) {
+  #sidebar_container {
+    display: none;
+  }
+}
+
 @media (max-width: 769px) {
   #gitcoinTestimonials {
     height: 202px;
@@ -1380,6 +1309,63 @@ input.is-invalid {
   }
 
   .tooltip-info {
+    display: none;
+  }
+
+  .bounty_nav {
+    padding-left: 0;
+  }
+
+  .bounty_nav li {
+    display: block;
+  }
+
+  .metamask-banner ol {
+    margin-bottom: 0;
+  }
+
+  .metamask-banner h3 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .metamask-banner li {
+    text-align: left;
+    margin-top: 0.5rem;
+  }
+
+  .metamask-banner img {
+    margin-bottom: 5px;
+  }
+
+  .navbar-network {
+    display: none;
+  }
+}
+
+@media (max-width: 576px) {
+
+  .profile_details #stats {
+    padding-right: 10px;
+  }
+
+  .profile_details .repos {
+    padding-right: 40px;
+  }
+
+  .profile_details .repos li {
+    margin-bottom: 1em;
+  }
+
+  .issue_details {
+    flex-direction: column;
+  }
+
+  .issue_details div {
+    width: 100% !important;
+  }
+
+  .profile_details .tips li div.url {
     display: none;
   }
 }
@@ -1511,67 +1497,6 @@ input.is-invalid {
   }
 }
 
-@media (max-width: 576px) {
-
-  .profile_details #stats {
-    padding-right: 10px;
-  }
-
-  .profile_details .repos {
-    padding-right: 40px;
-  }
-
-  .profile_details .repos li {
-    margin-bottom: 1em;
-  }
-
-  .issue_details {
-    flex-direction: column;
-  }
-
-  .issue_details div {
-    width: 100% !important;
-  }
-
-  .profile_details .tips li div.url {
-    display: none;
-  }
-}
-
-@media (max-width: 768px) {
-  .bounty_nav {
-    padding-left: 0;
-  }
-
-  .bounty_nav li {
-    display: block;
-  }
-
-  .metamask-banner ol {
-    margin-bottom: 0;
-  }
-
-  .metamask-banner h3 {
-    margin-top: 0.5rem;
-    margin-bottom: 0.5rem;
-  }
-
-  .metamask-banner li {
-    text-align: left;
-    margin-top: 0.5rem;
-  }
-  
-  .metamask-banner img {
-    margin-bottom: 5px;
-  }
-}
-
-@media (max-width: 991.98px) {
-  #sidebar_container {
-    display: none;
-  }
-}
-
 /* TODO : Remove after GDPR */
 .modal h2 {
   letter-spacing: 0;
@@ -1624,19 +1549,21 @@ input.is-invalid {
   margin-top: .2rem;
   margin-right: 1rem;
 }
-.results ul#programming_languages{
+
+.results ul#programming_languages {
   text-align: center;
 }
-.results ul#programming_languages li{
+
+.results ul#programming_languages li {
   list-style: none;
-  padding: 10px 50px;
-  margin-bottom: 20px;
+  padding: 0.5rem 2rem;
+  margin-bottom: 1.5rem;
   display: inline-block;
-  background-color: #eee;
-  border: 1px solid black;
+  border: 1px solid #999;
 }
+
 .results ul#programming_languages li.selected{
-  background-color: #ccc;
+  background-color: #eee;
 }
 
 .yellow_box {
@@ -1672,4 +1599,5 @@ input.is-invalid {
 .results p {
   font-size: 1.3rem;
   font-weight: 500;
+  margin-bottom: 0.5rem;
 }
