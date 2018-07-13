@@ -74,17 +74,6 @@ confirm_time_minutes_target = 4
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 
-def send_tip(request):
-    """Handle the first stage of sending a tip."""
-    params = {
-        'issueURL': request.GET.get('source'),
-        'title': _('Send Tip'),
-        'class': 'send',
-    }
-
-    return TemplateResponse(request, 'yge/send1.html', params)
-
-
 def record_user_action(user, event_name, instance):
     instance_class = instance.__class__.__name__.lower()
     kwargs = {
@@ -171,6 +160,8 @@ def record_tip_activity(tip, github_handle, event_name):
     }
     try:
         kwargs['profile'] = Profile.objects.get(handle=github_handle)
+    except Profile.MultipleObjectsReturned:
+        kwargs['profile'] = Profile.objects.filter(handle__iexact=github_handle).first()
     except Profile.DoesNotExist:
         logging.error(f"error in record_tip_activity: profile with github name {github_handle} not found")
         return
@@ -467,141 +458,6 @@ def uninterested(request, bounty_id, profile_id):
     })
 
 
-@csrf_exempt
-@ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
-def receive_tip(request):
-    """Receive a tip."""
-    if request.body:
-        status = 'OK'
-        message = _('Tip has been received')
-        params = json.loads(request.body)
-
-        # db mutations
-        try:
-            tip = Tip.objects.get(txid=params['txid'])
-            tip.receive_address = params['receive_address']
-            tip.receive_txid = params['receive_txid']
-            tip.received_on = timezone.now()
-            tip.save()
-            record_user_action(tip.username, 'receive_tip', tip)
-            record_tip_activity(tip, tip.username, 'receive_tip')
-        except Exception as e:
-            status = 'error'
-            message = str(e)
-
-        # http response
-        response = {
-            'status': status,
-            'message': message,
-        }
-
-        return JsonResponse(response)
-
-    params = {
-        'issueURL': request.GET.get('source'),
-        'class': 'receive',
-        'title': _('Receive Tip'),
-        'gas_price': round(recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target), 1),
-    }
-
-    return TemplateResponse(request, 'yge/receive.html', params)
-
-
-@csrf_exempt
-@ratelimit(key='ip', rate='1/m', method=ratelimit.UNSAFE, block=True)
-def send_tip_2(request):
-    """Handle the second stage of sending a tip.
-
-    TODO:
-        * Convert this view-based logic to a django form.
-
-    Returns:
-        JsonResponse: If submitting tip, return response with success state.
-        TemplateResponse: Render the submission form.
-
-    """
-    is_user_authenticated = request.user.is_authenticated
-    from_username = request.user.username if is_user_authenticated else ''
-    primary_from_email = request.user.email if is_user_authenticated else ''
-    access_token = request.user.profile.get_access_token() if is_user_authenticated else ''
-    to_emails = []
-
-    if request.body:
-        # http response
-        response = {
-            'status': 'OK',
-            'message': _('Notification has been sent'),
-        }
-        params = json.loads(request.body)
-
-        to_username = params['username'].lstrip('@')
-        try:
-            to_profile = Profile.objects.get(handle__iexact=to_username)
-            if to_profile.email:
-                to_emails.append(to_profile.email)
-            if to_profile.github_access_token:
-                to_emails = get_github_emails(to_profile.github_access_token)
-        except Profile.DoesNotExist:
-            pass
-
-        if params.get('email'):
-            to_emails.append(params['email'])
-
-        # If no primary email in session, try the POST data. If none, fetch from GH.
-        if params.get('fromEmail'):
-            primary_from_email = params['fromEmail']
-        elif access_token and not primary_from_email:
-            primary_from_email = get_github_primary_email(access_token)
-
-        to_emails = list(set(to_emails))
-        expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
-
-        # db mutations
-        tip = Tip.objects.create(
-            emails=to_emails,
-            url=params['url'],
-            tokenName=params['tokenName'],
-            amount=params['amount'],
-            comments_priv=params['comments_priv'],
-            comments_public=params['comments_public'],
-            ip=get_ip(request),
-            expires_date=expires_date,
-            github_url=params['github_url'],
-            from_name=params['from_name'],
-            from_email=params['from_email'],
-            from_username=from_username,
-            username=params['username'],
-            network=params['network'],
-            tokenAddress=params['tokenAddress'],
-            txid=params['txid'],
-            from_address=params['from_address'],
-        )
-        # notifications
-        maybe_market_tip_to_github(tip)
-        maybe_market_tip_to_slack(tip, 'new_tip')
-        maybe_market_tip_to_email(tip, to_emails)
-        record_user_action(tip.username, 'send_tip', tip)
-        record_tip_activity(tip, params['from_name'], 'new_tip')
-        if not to_emails:
-            response['status'] = 'error'
-            response['message'] = _(
-                'Uh oh! No email addresses for this user were found via Github API.  Youll have to let the tipee know '
-                'manually about their tip.')
-
-        return JsonResponse(response)
-
-    params = {
-        'issueURL': request.GET.get('source'),
-        'class': 'send2',
-        'title': _('Send Tip'),
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
-        'from_email': primary_from_email,
-        'from_handle': from_username,
-    }
-
-    return TemplateResponse(request, 'yge/send2.html', params)
-
-
 def onboard_avatar(request):
     return redirect('/onboard/contributor?steps=avatar')
 
@@ -675,6 +531,31 @@ def accept_bounty(request):
         update=bounty_params,
     )
     return TemplateResponse(request, 'process_bounty.html', params)
+
+
+def bulk_payout_bounty(request):
+    """Payout the bounty.
+
+    Args:
+        pk (int): The primary key of the bounty to be accepted.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The accept bounty view.
+
+    """
+    bounty = handle_bounty_views(request)
+
+    params = get_context(
+        ref_object=bounty,
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='payout_bounty',
+        title=_('Multi-Party Payout'),
+    )
+    return TemplateResponse(request, 'payout_bounty.html', params)
 
 
 @require_GET
