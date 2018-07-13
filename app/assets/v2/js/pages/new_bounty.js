@@ -381,7 +381,7 @@ $(document).ready(function() {
           console.error(error);
           _alert({
             message: gettext('There was an error.  Please try again or contact support.')
-          });
+          }, 'error');
           unloading_button($('.js-submit'));
           return;
         }
