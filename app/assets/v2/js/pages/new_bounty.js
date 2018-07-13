@@ -141,16 +141,17 @@ $(document).ready(function() {
     setUsdAmount();
   }
 
-  $('#hiringRightNow').click(function(){
-    setTimeout(function(){
+  $('#hiringRightNow').click(function() {
+    setTimeout(function() {
       var hiringRightNow = $('#hiringRightNow').is(':checked');
-      if(hiringRightNow){
-        $("#jobDescription").removeClass('hidden');
-        $("#jobDescription").focus();
+
+      if (hiringRightNow) {
+        $('#jobDescription').removeClass('hidden');
+        $('#jobDescription').focus();
       } else {
-        $("#jobDescription").addClass('hidden');
+        $('#jobDescription').addClass('hidden');
       }
-    },10);
+    }, 10);
   });
 
 

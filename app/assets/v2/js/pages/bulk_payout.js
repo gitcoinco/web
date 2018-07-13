@@ -67,8 +67,8 @@ $(document).ready(function($) {
       _alert('All transactions have been sent.  Your bounty is now paid out.', 'info');
 
       // show green checkmark
-      $("#success_container").css('display','block');
-      $(".row.content").css('display','none');
+      $('#success_container').css('display', 'block');
+      $('.row.content').css('display', 'none');
 
       return;
     }
@@ -126,7 +126,7 @@ $(document).ready(function($) {
         var url = 'https://' + etherscanDomain() + '/tx/' + txid;
         var msg = 'This payment has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
 
-          // send msg to frontend
+        // send msg to frontend
         _alert(msg, 'info');
 
         // text transaction
