@@ -77,11 +77,14 @@ def gas_history(breakdown, mean_time_to_confirm_minutes):
         if key not in results.keys():
             results[key] = package
         else:
-            other_package = results[key]
-            if package['mean_time_to_confirm_minutes'] > other_package['mean_time_to_confirm_minutes']:
+            key_package = results[key]
+            if package['mean_time_to_confirm_minutes'] == key_package['mean_time_to_confirm_minutes']:
+                if package['gas_price'] < key_package['gas_price']:
+                    results[key] = package
+            elif package['mean_time_to_confirm_minutes'] > key_package['mean_time_to_confirm_minutes']:
                 results[key] = package
 
-    # ollapse into array that the frontend can understand
+    # collapse into array that the frontend can understand
     results_array = []
     i = 0
     for key, val in results.items():

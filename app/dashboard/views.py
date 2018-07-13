@@ -648,16 +648,16 @@ def dashboard(request):
 
 def gas_history_view(request):
     breakdown = request.GET.get('breakdown', 'hourly')
-    below = request.GET.get('below', 180)
-    gas_histories = gas_history(breakdown, below)
-
+    gas_histories = {}
+    for i in [5, 60, 180]:
+        gas_histories[i] = gas_history(breakdown, i)
+    breakdown_ui = breakdown.replace('ly', '') if breakdown != 'daily' else 'day'
     context = {
+        'title': 'Gas History',
         'gas_histories': gas_histories,
         'breakdown': breakdown,
-        'below': below,
-        'breakdown_ui': breakdown.replace('ly',''),
+        'breakdown_ui': breakdown_ui,
         'granularity_options': ['hourly', 'daily', 'weekly'],
-        'below_options': range(0, 100) 
     }
     return TemplateResponse(request, 'gas_history.html', context)
 

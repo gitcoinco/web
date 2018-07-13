@@ -11,8 +11,6 @@
 <script src="{% static "yge/youvegoteth/pre.js" %}"></script>
 <script src="{% static "yge/youvegoteth/web3alert.js" %}"></script>
 <script src="{% static "yge/lightwallet.min.js" %}"></script>
-<script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
-<script src="{% static "v2/js/pages/gas.js" %}"></script>
 
 <style> /* set the CSS */
 
@@ -26,11 +24,12 @@
   stroke: steelblue;
   stroke-width: 2px;
 }
-
-.dot {
-  fill: steelblue;
+.line.line_5 {
+  stroke: red;
 }
-
+.line.line_60 {
+  stroke: black;
+}
 div.tooltip {
   position: absolute;
   max-width: 300px;
@@ -43,6 +42,16 @@ div.tooltip {
   border-radius: 3px;
   pointer-events: none;
   z-index: 9999;
+}
+#key{
+  float: right;
+  position: absolute;
+  right: 100px;
+  top: 240px;
+  text-align: right;
+}
+#key p{
+  margin: 0px;
 }
 
 </style>
@@ -57,7 +66,6 @@ div.tooltip {
 {% block 'main' %}
 
 <section id=main>
-
 <header>
     <span class="avatar">
         <a href='/'>
@@ -68,7 +76,12 @@ div.tooltip {
 
 {% include 'shared/gas_advisories.html' %}
 
-<h1> {% trans "Gas History to confirm below" %} {{below}} mins ({{breakdown}}) <span id="alpha">{% trans "Alpha" %}</span> </h1>
+<h1> {% trans "Gas History" %} ({{breakdown}}) <span id="alpha">{% trans "Alpha" %}</span> </h1>
+  <div id="key">
+    <p style="color:red">Gas needed to confirm within 5 minutes</p>
+    <p style="color:black">Gas needed to confirm within 60 minutes</p>
+    <p style="color:steelblue">Gas needed to confirm within 180 minutes</p>
+  </div>
 
 {% if gas_histories == '[]' %}
   <p>
@@ -83,16 +96,6 @@ div.tooltip {
   tooltip = d3.select("body").append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
-
-  var source = {{gas_histories | safe}};
-  var gas_times = source;
-  data = []
-  source.forEach(function(d) {
-      d['confirmation_time'] = parseFloat(d[1])
-      d['gas_price'] = parseFloat(d[0]);
-      d.splice(0,2);
-      data.push(d);
-  });
 
   var margin = {top: 20, right: 20, bottom: 50, left: 70},
       width = 960 - margin.left - margin.right,
@@ -113,31 +116,25 @@ div.tooltip {
     .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  x.domain([0, d3.max(data, function(d) { return d.confirmation_time; })]).nice();
-  y.domain([0, d3.max(data, function(d) { return d.gas_price; })]).nice();
-
-  svg.append("path")
-    .data([data])
-    .attr("class", "line")
-    .attr("d", valueline);
-
-  svg.selectAll('circle').data(data)
-    .enter().append('circle')
-    .attr('class', 'dot')
-    .attr('r', 3)
-    .attr('cx', d => x(d.confirmation_time))
-    .attr('cy', d => y(d.gas_price))
-    .on('mouseover', function(d) {
-      var tooltip_msg = '<div>';
-      tooltip_msg = `Gas Price: ${d.gas_price}`;
-      tooltip_msg = tooltip_msg + `<br/>Time ago: ${d.confirmation_time} {{breakdown_ui}}`;
-      tooltip_msg = tooltip_msg + '</div>';
-      tooltip.transition().style("opacity", 1);
-      tooltip.html(tooltip_msg).style("left", (d3.event.pageX + 15) + "px").style("top", (d3.event.pageY - 28) + "px");
-    })
-    .on('mouseout', function(d) {
-      tooltip.style("opacity", 0);
+  {% for key, gas_history in gas_histories.items %}
+    var source = {{gas_history | safe}};
+    data = []
+    source.forEach(function(d) {
+        d['confirmation_time'] = parseFloat(d[1])
+        d['gas_price'] = parseFloat(d[0]);
+        d.splice(0,2);
+        data.push(d);
     });
+
+    x.domain([0, d3.max(data, function(d) { return d.confirmation_time; })]).nice();
+    y.domain([0, d3.max(data, function(d) { return d.gas_price; })]).nice();
+
+    svg.append("path")
+      .data([data])
+      .attr("class", "line line_{{key}}")
+      .attr("d", valueline);
+
+  {% endfor %}
 
   // x Axis
   svg.append("g")
@@ -179,20 +176,19 @@ div.tooltip {
   }
   </style>
 
-  <div style="font-size: 8px;">
+  <div>
   Other Options:
   <BR>
   <BR>
 
   Granularity: 
   {% for granularity in granularity_options %}
-  (<a href="{%url 'gas_history_view'%}?breakdown={{granularity}}&below={{below}}">{{granularity}}</a>)
+  (<a href="{%url 'gas_history_view'%}?breakdown={{granularity}}">Show in {{granularity}} view</a>)
   {% endfor %}
-  <BR>
-  Below: 
-  {% for below in below_options %}
-  (<a href="{%url 'gas_history_view'%}?breakdown={{breakdown}}&below={{below}}">{{below}} mins</a>)
-  {% endfor %}
+
+  <br>
+  <br>
+  <a href="{% url 'gas' %}">&lt; Back to Current Gas Stats </a>
 
   </div>
 
