@@ -683,8 +683,8 @@ var do_actions = function(result) {
     const _entry = {
       enabled: enabled,
       href: result['action_urls']['payout'],
-      text: gettext('Advanced Payout'),
-      title: gettext('Advanced payout: pay out to many people at once.'),
+      text: gettext('Multi-Party Payout'),
+      title: gettext('Used to pay out to many people at once.'),
       parent: 'right_actions',
       pending_acceptance: pending_acceptance
     };

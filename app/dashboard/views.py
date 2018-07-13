@@ -553,7 +553,7 @@ def bulk_payout_bounty(request):
         user=request.user if request.user.is_authenticated else None,
         confirm_time_minutes_target=confirm_time_minutes_target,
         active='payout_bounty',
-        title=_('Advanced Payout'),
+        title=_('Multi-Party Payout'),
     )
     return TemplateResponse(request, 'payout_bounty.html', params)
 
