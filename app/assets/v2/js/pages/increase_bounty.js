@@ -51,6 +51,10 @@ $(document).ready(function() {
       _alert({ message: gettext('Please accept the terms of service.') });
       isError = true;
     }
+    if (amount <= 0) {
+      _alert({ message: gettext('Invalid Amount.') });
+      isError = true;
+    }
     var is_issueURL_invalid = issueURL == '' ||
         issueURL.indexOf('http') != 0 ||
         issueURL.indexOf('github') == -1 ||
