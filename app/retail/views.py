@@ -350,8 +350,8 @@ def vision(request):
         'is_outside': True,
         'active': 'vision',
         'title': 'Vision',
-        'card_title': _('Gitcoin is a mission-driven organization.'),
-        'card_desc': _('Our mission is to grow open source.'),
+        'card_title': _("Gitcoin's Vision for a web3 world"),
+        'card_desc': _("Gitcoin's Vision for a web3 world is a positive vision of a future in which it's easy for developers to find paid work in open source."),
         'avatar_url': static('v2/images/grow_open_source.png'),
     }
     return TemplateResponse(request, 'vision.html', context)
