@@ -82,7 +82,7 @@ $(document).ready(function($) {
           _alert({ message: error }, 'error');
         } else {
           var url = 'https://' + etherscanDomain() + '/tx/' + txid;
-          var msg = 'This tx has been sent 👌 <a href="' + url + '">[Etherscan Link]</a>';
+          var msg = 'This tx has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
 
           // send msg to frontend
           _alert(msg, 'info');
@@ -124,7 +124,7 @@ $(document).ready(function($) {
 
       var success_callback = function(txid) {
         var url = 'https://' + etherscanDomain() + '/tx/' + txid;
-        var msg = 'This payment has been sent 👌 <a href="' + url + '">[Etherscan Link]</a>';
+        var msg = 'This payment has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
 
           // send msg to frontend
         _alert(msg, 'info');
