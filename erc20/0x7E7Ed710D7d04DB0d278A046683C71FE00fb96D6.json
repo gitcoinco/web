@@ -1,0 +1,21 @@
+{
+	"symbol": "LP",
+	"address": "0x7E7Ed710D7d04DB0d278A046683C71FE00fb96D6",
+	"overview": {
+		"en": "LP coins are digital currencies issued based on all businesses in the lianpai. Its core business includes: the lianpai community, the lianpai business school and the Btrise exchange.LP coins are the only intermediary for all businesses on the lianpai chain.Can be used in all trading activities of the lianpai business.",
+		"zh": "LP 币是基于链派生态圈所有业务而发行的数字货币。其核心业务包含：链派社区、链派商学院以及币涨交易所 。LP币作为链派链上所有业务唯一中介的 TOKEN。 可用在链派业务的所有交易行为上。 "
+	},
+	"email": "admin@btrise.com",
+	"website": "www.lianpai999.com",
+	"whitepaper": "https://www.btrise.com/paperwhite/",
+	"state": "NORMAL",
+	"published_on": "2018-07-04",
+	"initial_price": {
+		"ETH": "0.00024589 ETH",
+		"USD": "0.1136 USD",
+		"BTC": "0.00001752 BTC"
+	},
+	"links": {
+		"blog": "https://m.weibo.cn/p/1005056452794640"
+	}
+}
