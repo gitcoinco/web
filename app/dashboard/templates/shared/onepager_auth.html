@@ -15,14 +15,19 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
+{% load is_in_list %}
 
 <link rel="stylesheet" href="{% static "v2/css/fontawesome-all.min.css" %}">
 <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/base.css" %}">
 
 <div class="navbar navbar-expand-md w-100 p-0 m-0 mb-2">
-  <a class="navbar-brand py-0" href="/">
+  <a class="navbar-brand py-0" href="/" style="text-align: center;">
     <img id="logo" src="{% static "v2/images/logo_large.png" %}" width="150" height="50" />
+    {% if request.path|is_in_list:"/gas,/gas/history,/gas/calculator,/gas/faq,/gas/faucets" %}
+    <img id="addon" src="{% static "v2/images/gas_white.gif" %}"/>
+    <p style="color:white; font-size: 12px;">Gas Station</p>
+    {% endif %}
   </a>
 
   <div class="navbar-network ml-5 py-1 px-2 hidden">
@@ -44,6 +49,9 @@
 </div>
 
 <style>
+  #addon{
+    max-height: 30px;
+  }
   .navbar {
     justify-content: initial;
   }

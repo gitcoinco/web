@@ -152,7 +152,6 @@ urlpatterns = [
     url(r'^tools/?', dashboard.views.toolbox, name='tools'),
 
     # gas views
-
     url(r'^gas/faucets/?', dashboard.gas_views.gas_faucet_list, name='gas_faucet_list'),
     url(r'^gas/faq/?', dashboard.gas_views.gas_faq, name='gas_faq'),
     url(r'^gas/calculator/?', dashboard.gas_views.gas_calculator, name='gas_calculator'),
