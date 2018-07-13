@@ -58,6 +58,8 @@ logging.basicConfig(level=logging.DEBUG)
 
 confirm_time_minutes_target = 4
 
+logger = logging.getLogger(__name__)
+
 
 def send_tip(request):
     """Handle the first stage of sending a tip."""
@@ -217,6 +219,7 @@ def receive_tip_v2(request, pk, txid, network):
             messages.success(request, 'This tip has been received')
         except Exception as e:
             messages.error(request, str(e))
+            logger.exception(e)
 
     params = {
         'issueURL': request.GET.get('source'),
