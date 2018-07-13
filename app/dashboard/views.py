@@ -649,11 +649,15 @@ def dashboard(request):
 def gas_history_view(request):
     breakdown = request.GET.get('breakdown', 'hourly')
     gas_histories = {}
+    max_y = 0
     for i in [5, 60, 180]:
         gas_histories[i] = gas_history(breakdown, i)
+        for gh in gas_histories[i]:
+            max_y = max(gh[0], max_y)
     breakdown_ui = breakdown.replace('ly', '') if breakdown != 'daily' else 'day'
     context = {
         'title': 'Gas History',
+        'max': max_y,
         'gas_histories': gas_histories,
         'breakdown': breakdown,
         'breakdown_ui': breakdown_ui,

@@ -127,7 +127,7 @@ div.tooltip {
     });
 
     x.domain([0, d3.max(data, function(d) { return d.confirmation_time; })]).nice();
-    y.domain([0, d3.max(data, function(d) { return d.gas_price; })]).nice();
+    y.domain([0, d3.max(data, function(d) { return {{max}}; })]).nice();
 
     svg.append("path")
       .data([data])

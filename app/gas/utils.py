@@ -83,7 +83,10 @@ def gas_history(breakdown, mean_time_to_confirm_minutes):
             elif package['mean_time_to_confirm_minutes'] == key_package['mean_time_to_confirm_minutes']:
                 if package['gas_price'] < key_package['gas_price']:
                     results[key] = package
-
+    # for debugging
+    # for key, result in results.items():
+    #    print(result['created_on'], result['gas_price'], result['mean_time_to_confirm_minutes'])
+    
     # collapse into array that the frontend can understand
     results_array = []
     i = 0
