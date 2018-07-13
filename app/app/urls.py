@@ -27,13 +27,14 @@ from django.views.i18n import JavaScriptCatalog
 import avatar.views
 import credits.views
 import dashboard.embed
+import dashboard.gas_views
 import dashboard.helpers
 import dashboard.ios
+import dashboard.tip_views
 import dashboard.views
 import dataviz.d3_views
 import dataviz.views
 import enssubdomain.views
-import ethos.views
 import external_bounties.views
 import faucet.views
 import gitcoinbot.views
@@ -80,6 +81,7 @@ urlpatterns = [
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
     path('issue/fulfill', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
     path('issue/accept', dashboard.views.accept_bounty, name='process_funding'),
+    path('issue/payout', dashboard.views.bulk_payout_bounty, name='bulk_payout_bounty'),
     path('issue/increase', dashboard.views.increase_bounty, name='increase_bounty'),
     path('issue/cancel', dashboard.views.cancel_bounty, name='kill_bounty'),
 
@@ -120,11 +122,18 @@ urlpatterns = [
     url(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
 
     # Tips
-    url(r'^tip/receive/?', dashboard.views.receive_tip, name='receive_tip'),
-    url(r'^tip/send/2/?', dashboard.views.send_tip_2, name='send_tip_2'),
-    url(r'^tip/send/?', dashboard.views.send_tip, name='send_tip'),
-    url(r'^send/?', dashboard.views.send_tip, name='tip'),
-    url(r'^tip/?', dashboard.views.send_tip, name='tip'),
+    url(
+        r'^tip/receive/v2/(?P<pk>.*)/(?P<txid>.*)/(?P<network>.*)?',
+        dashboard.tip_views.receive_tip_v2,
+        name='receive_tip'
+    ),
+    url(r'^tip/receive/?', dashboard.tip_views.receive_tip_legacy, name='receive_tip_legacy'),
+    url(r'^tip/send/4/?', dashboard.tip_views.send_tip_4, name='send_tip_4'),
+    url(r'^tip/send/3/?', dashboard.tip_views.send_tip_3, name='send_tip_3'),
+    url(r'^tip/send/2/?', dashboard.tip_views.send_tip_2, name='send_tip_2'),
+    url(r'^tip/send/?', dashboard.tip_views.send_tip, name='send_tip'),
+    url(r'^send/?', dashboard.tip_views.send_tip, name='tip'),
+    url(r'^tip/?', dashboard.tip_views.send_tip, name='tip'),
 
     # Legal
     url(r'^terms/?', dashboard.views.terms, name='_terms'),
@@ -141,13 +150,12 @@ urlpatterns = [
     path('actions/tool/<int:tool_id>/voteUp', dashboard.views.vote_tool_up, name='vote_tool_up'),
     path('actions/tool/<int:tool_id>/voteDown', dashboard.views.vote_tool_down, name='vote_tool_down'),
     url(r'^tools/?', dashboard.views.toolbox, name='tools'),
-    url(r'^gas/?', dashboard.views.gas, name='gas'),
 
-    # redeem coin
-    url(r'^coin/redeem/(.*)/?', dashboard.views.redeem_coin, name='redeem'),
-
-    # EthOS
-    path('ethos/', include('ethos.urls', namespace='ethos')),
+    # gas views
+    url(r'^gas/faq/?', dashboard.gas_views.gas_faq, name='gas_faq'),
+    url(r'^gas/calculator/?', dashboard.gas_views.gas_calculator, name='gas_calculator'),
+    url(r'^gas/history/?', dashboard.gas_views.gas_history_view, name='gas_history_view'),
+    url(r'^gas/?', dashboard.gas_views.gas, name='gas'),
 
     # images
     re_path(r'^funding/embed/?', dashboard.embed.embed, name='embed'),

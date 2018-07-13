@@ -433,6 +433,7 @@ def get_context(ref_object=None, github_username='', user=None, confirm_time_min
     """Get the context dictionary for use in view."""
     context = {
         'githubUsername': github_username,  # TODO: Deprecate this field.
+        'action_urls': ref_object.action_urls() if hasattr(ref_object, 'action_urls') else None,
         'active': active,
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(confirm_time_slow),
@@ -472,3 +473,46 @@ def clean_bounty_url(url):
         return url.split('#')[0]
     except Exception:
         return url
+
+
+def generate_pub_priv_keypair():
+    # Thanks https://github.com/vkobel/ethereum-generate-wallet/blob/master/LICENSE.md
+    from ecdsa import SigningKey, SECP256k1
+    import sha3
+
+    def checksum_encode(addr_str):
+        keccak = sha3.keccak_256()
+        out = ''
+        addr = addr_str.lower().replace('0x', '')
+        keccak.update(addr.encode('ascii'))
+        hash_addr = keccak.hexdigest()
+        for i, c in enumerate(addr):
+            if int(hash_addr[i], 16) >= 8:
+                out += c.upper()
+            else:
+                out += c
+        return '0x' + out
+
+    keccak = sha3.keccak_256()
+
+    priv = SigningKey.generate(curve=SECP256k1)
+    pub = priv.get_verifying_key().to_string()
+
+    keccak.update(pub)
+    address = keccak.hexdigest()[24:]
+
+    def test(addrstr):
+        assert(addrstr == checksum_encode(addrstr))
+
+    test('0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed')
+    test('0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359')
+    test('0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB')
+    test('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb')
+    test('0x7aA3a964CC5B0a76550F549FC30923e5c14EDA84')
+
+    # print("Private key:", priv.to_string().hex())
+    # print("Public key: ", pub.hex())
+    # print("Address:    ", checksum_encode(address))
+    # return priv key, pub key, address
+
+    return priv.to_string().hex(), pub.hex(), checksum_encode(address)

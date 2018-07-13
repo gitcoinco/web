@@ -65,7 +65,7 @@ def premailer_transform(html):
 def render_tip_email(to_email, tip, is_new):
     warning = tip.network if tip.network != 'mainnet' else ""
     params = {
-        'link': tip.url,
+        'link': tip.receive_url,
         'amount': round(tip.amount, 5),
         'tokenName': tip.tokenName,
         'comments_priv': tip.comments_priv,

@@ -603,6 +603,7 @@ var do_actions = function(result) {
   const start_stop_work_enabled = !isBountyOwner(result);
   const increase_bounty_enabled = isBountyOwner(result);
   let show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
+  let show_advanced_payout = isBountyOwner(result) && !is_status_expired && !is_status_done;
   const show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
   const show_admin_methods = document.isStaff;
 
@@ -669,6 +670,21 @@ var do_actions = function(result) {
       href: result['action_urls']['accept'],
       text: gettext('Accept Submission'),
       title: gettext('This will payout the bounty to the submitter.'),
+      parent: 'right_actions',
+      pending_acceptance: pending_acceptance
+    };
+
+    actions.push(_entry);
+  }
+
+
+  if (show_advanced_payout) {
+    const enabled = show_advanced_payout;
+    const _entry = {
+      enabled: enabled,
+      href: result['action_urls']['payout'],
+      text: gettext('Multi-Party Payout'),
+      title: gettext('Used to pay out to many people at once.'),
       parent: 'right_actions',
       pending_acceptance: pending_acceptance
     };
