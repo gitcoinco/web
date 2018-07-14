@@ -48,6 +48,7 @@ class Command(BaseCommand):
                             ######################################################
                             # send to fulfiller
                             ######################################################
+                            print(" - 1 ")
                             tip.receive_txid = tip.payout_to(fulfillment.fulfiller_address)
                             msg = f'auto paid out on {timezone.now()} to fulfillment {fulfillment.pk}; as done bountyfulfillment'
                             print("     " + msg)
@@ -57,17 +58,21 @@ class Command(BaseCommand):
                             ######################################################
                             # was sent with bulk payout.  send to bulk payout_ees
                             ######################################################
+                            print(" - 2 ")
                             bpts = bounty.bulk_payout_tips
                             bpts_ids = bpts.values_list('pk', flat=True)
                             num_payees = bpts.count()
 
-                            # TODO: make this number disproportionate
+                            # TODO: make this number disproportionate, instead of equal parts
                             amount_to_pay = math.floor(tip.amount_in_wei / num_payees)
+                            amount = math.floor(tip.amount / num_payees)
 
                             for bpt in bpts:
+                                print(f"    - {bpt.pk} ")
                                 cloned_tip = bpt
-                                cloned_tip.pk = None #effectively clones the bpt and inserts a new one
+                                cloned_tip.pk = None # effectively clones the bpt and inserts a new one
                                 cloned_tip.receive_txid = ''
+                                cloned_tip.amount = amount
                                 cloned_tip.receive_address = ''
                                 cloned_tip.recipient_profile = None
                                 cloned_tip.is_for_bounty_fulfiller = False
@@ -81,7 +86,7 @@ class Command(BaseCommand):
                                 }
                                 # only send tx onchain
                                 if bpt.receive_address:
-                                    cloned_tip.receive_txid = cloned_tip.payout_to(bpt.receive_address)
+                                    cloned_tip.receive_txid = cloned_tip.payout_to(bpt.receive_address, amount_to_pay)
                                 cloned_tip.save()
 
                             tip.receive_txid = f'cloned-and-paid-via-clones-:{bpts_ids}'
@@ -94,6 +99,7 @@ class Command(BaseCommand):
                         ######################################################
                         # return to funder
                         ######################################################
+                        print(" - 3 ")
                         tip.receive_txid = tip.payout_to(bounty.bounty_owner_address)
                         msg = f'auto paid out on {timezone.now()}; as cancelled bounty'
                         print("     " + msg)

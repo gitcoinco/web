@@ -1080,6 +1080,7 @@ class Tip(SuperModel):
         gasPrice = recommend_min_gas_price_to_confirm_in_time(60) * 10**9
         from_address = Web3.toChecksumAddress(tip.metadata['address'])
         nonce = w3.eth.getTransactionCount(from_address)
+        #print(from_address)
         if is_erc20:
             # ERC20 contract receive
             balance = w3.eth.getBalance(from_address)
