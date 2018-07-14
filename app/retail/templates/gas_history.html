@@ -34,16 +34,17 @@ div.tooltip {
   z-index: 9999;
 }
 #key{
-  float: right;
-  position: absolute;
-  right: 100px;
-  top: 270px;
   text-align: right;
+  list-style-type: none;
 }
-#key p{
+#key li {
   margin: 0px;
   font-size: 12px;
 }
+
+/* @media only screen and (max-width: 479px){
+    .svg { }
+} */
 
 </style>
 {% endblock %}
@@ -56,7 +57,7 @@ div.tooltip {
 
 {% block 'main' %}
 
-<section id=main>
+<section id="main">
 {% include 'shared/gas_nav.html' %}
 
 <h1> {% trans "Gas History" %} ({{breakdown}}) <span id="alpha">{% trans "Alpha" %}</span> </h1>
@@ -70,11 +71,11 @@ div.tooltip {
   </ul>
 
 
-  <div id="key">
+  <ul id="key">
     {% for key, val in lines.items %}
-    <p style="color:{{val}}">{% trans "Gas price needed to confirm within" %} {{key}} {% trans "minute" %}{{key|pluralize}}</p>
+      <li style="color:{{val}}">{% trans "Gas price needed to confirm within" %} {{key}} {% trans "minute" %}{{key|pluralize}}</li>
     {% endfor %}
-  </div>
+  </ul>
 
 {% if gas_histories == '[]' %}
   <p>
@@ -83,6 +84,36 @@ div.tooltip {
 {% else %}
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script>
+  /*
+    @function responsivefy
+    Copy pasta a la: https://brendansudol.com/writing/responsive-d3
+  */
+  function responsivefy(svg) {
+    // get container + svg aspect ratio
+    var container = d3.select(svg.node().parentNode),
+      width = parseInt(svg.style("width")),
+      height = parseInt(svg.style("height")),
+      aspect = width / height;
+
+    // add viewBox and preserveAspectRatio properties,
+    // and call resize so that svg resizes on inital page load
+    svg.attr("viewBox", "0 0 " + width + " " + height)
+      .attr("perserveAspectRatio", "xMinYMid")
+      .call(resize);
+
+    // to register multiple listeners for same event type,
+    // you need to add namespace, i.e., 'click.foo'
+    // necessary if you call invoke this function for multiple svgs
+    // api docs: https://github.com/mbostock/d3/wiki/Selections#on
+    d3.select(window).on("resize." + container.attr("id"), resize);
+
+    // get width of container and resize svg to fit it
+    function resize() {
+      var targetWidth = parseInt(container.style("width"));
+      svg.attr("width", targetWidth);
+      svg.attr("height", Math.round(targetWidth / aspect));
+    }
+  }
 
   var tooltip;
 
@@ -106,6 +137,7 @@ div.tooltip {
     .append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
+      .call(responsivefy)
     .append("g")
       .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 

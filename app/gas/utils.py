@@ -33,7 +33,6 @@ def eth_usd_conv_rate():
     to_currency = 'USDT'
     return convert_amount(from_amount, from_currency, to_currency)
 
-
 def conf_time_spread(max_gas_price=9999):
     try:
         for minutes in [1, 11, 21, 31]:
@@ -86,7 +85,7 @@ def gas_history(breakdown, mean_time_to_confirm_minutes):
     # for debugging
     # for key, result in results.items():
     #    print(result['created_on'], result['gas_price'], result['mean_time_to_confirm_minutes'])
-    
+
     # collapse into array that the frontend can understand
     results_array = []
     i = 0
