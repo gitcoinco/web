@@ -28,7 +28,6 @@ from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.abi import erc20_abi
 from dashboard.utils import generate_pub_priv_keypair, has_tx_mined
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time

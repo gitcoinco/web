@@ -1063,6 +1063,7 @@ class Tip(SuperModel):
 
     def payout_to(self, address, amount_override=None):
         from dashboard.utils import get_web3
+        from dashboard.abi import erc20_abi
         if not address or address == '0x0':
             raise Exception('bad forwarding address')
         if self.web3_type == 'yge':
@@ -1076,7 +1077,7 @@ class Tip(SuperModel):
         w3 = get_web3(tip.network)
         is_erc20 = tip.tokenName.lower() != 'eth'
         amount = int(tip.amount_in_wei) if not amount_override else int(amount_override)
-        gasPrice = recommend_min_gas_price_to_confirm_in_time(25) * 10**9
+        gasPrice = recommend_min_gas_price_to_confirm_in_time(60) * 10**9
         from_address = Web3.toChecksumAddress(tip.metadata['address'])
         nonce = w3.eth.getTransactionCount(from_address)
         if is_erc20:
@@ -1104,6 +1105,7 @@ class Tip(SuperModel):
               )
         signed = w3.eth.account.signTransaction(tx, tip.metadata['priv_key'])
         receive_txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+        return receive_txid
 
 @receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
 def psave_tip(sender, instance, **kwargs):

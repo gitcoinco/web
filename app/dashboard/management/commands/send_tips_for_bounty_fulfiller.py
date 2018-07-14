@@ -33,15 +33,17 @@ class Command(BaseCommand):
         for tip in tips:
             bounty = tip.bounty
             if bounty:
-                print(f"{tip.pk} / {bounty.pk} / {bounty.status}")
+                print(f" - tip {tip.pk} / {bounty.pk} / {bounty.status}")
                 if bounty.status == 'done':
-                    fulfillment = new_bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
+                    fulfillment = bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
                     if fulfillment:
                         ######################################################
                         # send to fulfiller
                         ######################################################
-                        tip.payout_to(fulfillment.fulfiller_address)
-                        tip.metadata['payout_comments'] = f'auto paid out on {timezone.now()} to fulfillment {fulfillment.pk}; as done bountyfulfillment'
+                        tip.receive_txid = tip.payout_to(fulfillment.fulfiller_address)
+                        msg = f'auto paid out on {timezone.now()} to fulfillment {fulfillment.pk}; as done bountyfulfillment'
+                        print("     " + msg)
+                        tip.metadata['payout_comments'] = msg
                         tip.save()
                     else:
                         ######################################################
@@ -73,7 +75,9 @@ class Command(BaseCommand):
                             cloned_tip.save()
 
                         tip.receive_txid = f'cloned-and-paid-via-clones-:{bpts_ids}'
-                        tip.metadata['payout_comments'] = f'auto paid out on {timezone.now()} to via recipients of {bpt_ids}; as done bounty w no bountyfulfillment'
+                        msg = f'auto paid out on {timezone.now()} to via recipients of {bpt_ids}; as done bounty w no bountyfulfillment'
+                        print("     " + msg)
+                        tip.metadata['payout_comments'] = msg
                         tip.save()
 
                 if bounty.status == 'cancelled':
@@ -81,5 +85,7 @@ class Command(BaseCommand):
                     # return to funder
                     ######################################################
                     tip.receive_txid = tip.payout_to(bounty.bounty_owner_address)
-                    tip.metadata['payout_comments'] = f'auto paid out on {timezone.now()}; as cancelled bounty'
+                    msg = f'auto paid out on {timezone.now()}; as cancelled bounty'
+                    print("     " + msg)
+                    tip.metadata['payout_comments'] = msg
                     tip.save()
