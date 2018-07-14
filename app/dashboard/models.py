@@ -484,7 +484,7 @@ class Bounty(SuperModel):
                     return 'done'
                 elif self.past_hard_expiration_date:
                     return 'expired'
-                has_tips = Tip.objects.filter(network=self.network, github_url=self.github_url).exclude(txid='').exists()
+                has_tips = self.tips.filter(is_for_bounty_fulfiller=False).exclude(txid='').exists()
                 if has_tips:
                     return 'done'
                 # If its not expired or done, and no tips, it must be cancelled.
