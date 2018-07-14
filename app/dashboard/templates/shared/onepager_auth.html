@@ -36,11 +36,11 @@
   </div>
   
   {% if user.is_authenticated %}
-  <div class="nav-link login">
+  <a class="nav-link login" href="{% url 'profile' %}">
     <img class="nav_avatar" width=25 height=25
       src="{% if user.profile.avatar %}{{ user.profile.avatar.svg.url }}{% else %}/static/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
     {{ user }}
-  </div>
+  </a>
   {% else %}
   <a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">
     <i class="fab fa-github"></i>{% trans "Login" %}
