@@ -83,7 +83,8 @@ var rows = [
   'started_owners_username',
   'submitted_owners_username',
   'fulfilled_owners_username',
-  'fulfillment_accepted_on'
+  'fulfillment_accepted_on',
+  'additional_funding_summary',
 ];
 var heads = {
   'avatar_url': gettext('Issue'),
@@ -195,6 +196,22 @@ var callbacks = {
     var warning = 'WARNING: this is a ' + val + ' network bounty, and is NOT real money.  To see mainnet bounties, go to <a href="/explorer">the bounty explorer</a> and search for mainnet bounties.  ';
 
     return [ 'network', warning ];
+  },
+  'additional_funding_summary': function(key, val, result) {
+    var usd_value = val['usd_value'];
+    var tokens = val['tokens'];
+    if(tokens.length == 0){
+      $('.additional_funding_summary').addClass('hidden');
+      return;
+    }
+    var ui_elements = []
+    for (var token in tokens) {
+      var val = tokens[token];
+      ui_elements.push(val + " " + token);
+    }
+    var str = "+ " + ui_elements.join(', ') + " in crowdfunding worth $" + usd_value;
+    $('.additional_funding_summary  p').html(str);
+    return [ 'additional_funding_summary', val ];
   },
   'token_value_time_peg': function(key, val, result) {
     if (val === null || typeof val == 'undefined') {
@@ -709,7 +726,7 @@ var do_actions = function(result) {
   }
 
   if (show_increase_bounty) {
-    const enabled = increase_bounty_enabled;
+    const enabled = true;
     const _entry = {
       enabled: enabled,
       href: result['action_urls']['increase'],

@@ -41,7 +41,6 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 import requests
 from dashboard.tokens import addr_to_token
-from dashboard.utils import generate_pub_priv_keypair, get_web3, has_tx_mined
 from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
@@ -787,6 +786,32 @@ class Bounty(SuperModel):
             fulfilled = self.interested.filter(pending=False).exists()
         return fulfilled
 
+    @property
+    def tips(self):
+        try:
+            return Tip.objects.filter(github_url__iexact=self.github_url, network=self.network).order_by('-created_on')
+        except:
+            return Tip.objects.none()
+
+    @property
+    def bulk_payout_tips(self):
+        queryset = self.tips.filter(is_for_bounty_fulfiller=False)
+        return (queryset.filter(from_address=self.bounty_owner_address) | queryset.filter(from_name=self.bounty_owner_github_username))
+
+    @property
+    def additional_funding_summary(self):
+        return_dict = {
+            'tokens': {},
+            'usd_value': 0,
+        }
+        for tip in self.tips.filter(is_for_bounty_fulfiller=True):
+            key = tip.tokenName
+            if key not in return_dict.keys():
+                return_dict['tokens'][key]=0
+            return_dict['tokens'][key] += tip.amount_in_whole_units
+            return_dict['usd_value'] += tip.value_in_usdt if tip.value_in_usdt else 0
+        return return_dict
+
 
 class BountyFulfillmentQuerySet(models.QuerySet):
     """Handle the manager queryset for BountyFulfillments."""
@@ -847,18 +872,6 @@ class BountyFulfillment(SuperModel):
             'githubUsername': self.fulfiller_github_username,
             'name': self.fulfiller_name,
         }
-
-    @property
-    def tips(self):
-        try:
-            return Tip.objects.filter(github__iexact=self.github_url, network=self.network).order_by('-created_on')
-        except:
-            return Tip.objects.none()
-
-    @property
-    def bulk_payout_tips(self):
-        queryset = self.tips.filter(is_for_bounty_fulfiller=False)
-        return (queryset.filter(bounty_owner_address=self.from_address) + queryset.filter(from_name=self.bounty_owner_github_username))
 
 
 class BountySyncRequest(SuperModel):
@@ -1049,6 +1062,7 @@ class Tip(SuperModel):
             return None
 
     def payout_to(self, address, amount_override=None):
+        from dashboard.utils import get_web3
         if not address or address == '0x0':
             raise Exception('bad forwarding address')
         if self.web3_type == 'yge':
