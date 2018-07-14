@@ -61,7 +61,7 @@ def gas_history(breakdown, mean_time_to_confirm_minutes):
     gas_profiles = GasProfile.objects.filter(
         created_on__gt=start_date,
         mean_time_to_confirm_minutes__lte=mean_time_to_confirm_minutes,
-        )
+        ).order_by('-created_on')
 
     # collapse into best gas price per time period
     results = {}
@@ -77,11 +77,17 @@ def gas_history(breakdown, mean_time_to_confirm_minutes):
         if key not in results.keys():
             results[key] = package
         else:
-            other_package = results[key]
-            if package['mean_time_to_confirm_minutes'] > other_package['mean_time_to_confirm_minutes']:
+            key_package = results[key]
+            if package['mean_time_to_confirm_minutes'] > key_package['mean_time_to_confirm_minutes']:
                 results[key] = package
-
-    # ollapse into array that the frontend can understand
+            elif package['mean_time_to_confirm_minutes'] == key_package['mean_time_to_confirm_minutes']:
+                if package['gas_price'] < key_package['gas_price']:
+                    results[key] = package
+    # for debugging
+    # for key, result in results.items():
+    #    print(result['created_on'], result['gas_price'], result['mean_time_to_confirm_minutes'])
+    
+    # collapse into array that the frontend can understand
     results_array = []
     i = 0
     for key, val in results.items():

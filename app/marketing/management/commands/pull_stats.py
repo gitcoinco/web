@@ -32,7 +32,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        fs =[
+        fs = [
             stats.get_bounty_keyword_counts,
             stats.get_skills_keyword_counts,
             stats.github_issues,

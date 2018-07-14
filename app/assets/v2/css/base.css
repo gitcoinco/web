@@ -377,7 +377,6 @@ p a {
 
 #gas-section .gas-dark-bg {
   background-color: #FAFAFA;
-  min-width: 205px;
 }
 
 #gas-section .gas-rates .active {
@@ -1233,11 +1232,11 @@ input.is-invalid {
     max-width: 90%;
   }
 
-  body.slack .col-4 {
+  body.slack, body.newtoken .col-4 {
     display: none;
   }
 
-  body.slack .col-6 {
+  body.slack, body.newtoken .col-6 {
     flex: 0 0 100%;
     max-width: 100%;
   }

@@ -597,12 +597,14 @@ var do_actions = function(result) {
   let show_github_link = result['github_url'].substring(0, 4) == 'http';
   let show_submit_work = is_open;
   let show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
+  let show_job_description = result['attached_job_description'] && result['attached_job_description'].startsWith('http');
   const show_increase_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
   const kill_bounty_enabled = isBountyOwner(result);
   const submit_work_enabled = !isBountyOwner(result);
   const start_stop_work_enabled = !isBountyOwner(result);
   const increase_bounty_enabled = isBountyOwner(result);
   let show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
+  let show_advanced_payout = isBountyOwner(result) && !is_status_expired && !is_status_done;
   const show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
   const show_admin_methods = document.isStaff;
 
@@ -669,6 +671,36 @@ var do_actions = function(result) {
       href: result['action_urls']['accept'],
       text: gettext('Accept Submission'),
       title: gettext('This will payout the bounty to the submitter.'),
+      parent: 'right_actions',
+      pending_acceptance: pending_acceptance
+    };
+
+    actions.push(_entry);
+  }
+
+  if (show_job_description) {
+    var job_url = result['attached_job_description'];
+
+    var _entry = {
+      enabled: true,
+      href: job_url,
+      text: gettext('View Attached Job Description'),
+      parent: 'right_actions',
+      title: gettext('This bounty hunter is hiring for a full time, part time, or contract role and has attached that to this bounty.'),
+      color: 'white'
+    };
+
+    actions.push(_entry);
+  }
+
+
+  if (show_advanced_payout) {
+    const enabled = show_advanced_payout;
+    const _entry = {
+      enabled: enabled,
+      href: result['action_urls']['payout'],
+      text: gettext('Multi-Party Payout'),
+      title: gettext('Used to pay out to many people at once.'),
       parent: 'right_actions',
       pending_acceptance: pending_acceptance
     };
