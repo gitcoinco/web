@@ -16,12 +16,19 @@
 
 '''
 
+import logging
 import math
+import warnings
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.models import Bounty, Tip
+
+warnings.filterwarnings("ignore", category=DeprecationWarning)
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -31,61 +38,67 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         tips = Tip.objects.filter(is_for_bounty_fulfiller=True, receive_txid='')
         for tip in tips:
-            bounty = tip.bounty
-            if bounty:
-                print(f" - tip {tip.pk} / {bounty.pk} / {bounty.status}")
-                if bounty.status == 'done':
-                    fulfillment = bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
-                    if fulfillment:
+            try:
+                bounty = tip.bounty
+                if bounty:
+                    print(f" - tip {tip.pk} / {bounty.standard_bounties_id} / {bounty.status}")
+                    if bounty.status == 'done':
+                        fulfillment = bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
+                        if fulfillment:
+                            ######################################################
+                            # send to fulfiller
+                            ######################################################
+                            tip.receive_txid = tip.payout_to(fulfillment.fulfiller_address)
+                            msg = f'auto paid out on {timezone.now()} to fulfillment {fulfillment.pk}; as done bountyfulfillment'
+                            print("     " + msg)
+                            tip.metadata['payout_comments'] = msg
+                            tip.save()
+                        else:
+                            ######################################################
+                            # was sent with bulk payout.  send to bulk payout_ees
+                            ######################################################
+                            bpts = bounty.bulk_payout_tips
+                            bpts_ids = bpts.values_list('pk', flat=True)
+                            num_payees = bpts.count()
+
+                            # TODO: make this number disproportionate
+                            amount_to_pay = math.floor(tip.amount_in_wei / num_payees)
+
+                            for bpt in bpts:
+                                cloned_tip = bpt
+                                cloned_tip.pk = None #effectively clones the bpt and inserts a new one
+                                cloned_tip.receive_txid = ''
+                                cloned_tip.receive_address = ''
+                                cloned_tip.recipient_profile = None
+                                cloned_tip.is_for_bounty_fulfiller = False
+                                cloned_tip.username = bpt.username
+                                cloned_tip.emails = {}
+                                cloned_tip.metadata = {
+                                    'priv_key': tip.metadata['priv_key'],
+                                    'pub_key': tip.metadata['pub_key'],
+                                    'address': tip.metadata['address'],
+                                    'debug_info': f'created in order to facilitate payout of a crowdfund tip {tip.pk}'
+                                }
+                                # only send tx onchain
+                                if bpt.receive_address:
+                                    cloned_tip.receive_txid = cloned_tip.payout_to(bpt.receive_address)
+                                cloned_tip.save()
+
+                            tip.receive_txid = f'cloned-and-paid-via-clones-:{bpts_ids}'
+                            msg = f'auto paid out on {timezone.now()} to via recipients of {bpt_ids}; as done bounty w no bountyfulfillment'
+                            print("     " + msg)
+                            tip.metadata['payout_comments'] = msg
+                            tip.save()
+
+                    if bounty.status == 'cancelled':
                         ######################################################
-                        # send to fulfiller
+                        # return to funder
                         ######################################################
-                        tip.receive_txid = tip.payout_to(fulfillment.fulfiller_address)
-                        msg = f'auto paid out on {timezone.now()} to fulfillment {fulfillment.pk}; as done bountyfulfillment'
+                        tip.receive_txid = tip.payout_to(bounty.bounty_owner_address)
+                        msg = f'auto paid out on {timezone.now()}; as cancelled bounty'
                         print("     " + msg)
                         tip.metadata['payout_comments'] = msg
                         tip.save()
-                    else:
-                        ######################################################
-                        # was sent with bulk payout.  send to bulk payout_ees
-                        ######################################################
-                        bpts = bounty.bulk_payout_tips
-                        bpts_ids = bpts.values_list('pk', flat=True)
-                        num_payees = bpts.count()
-
-                        amount_to_pay = math.floor(tip.amount_in_wei / num_payees)
-                        for bpt in bpts:
-                            cloned_tip = bpt
-                            cloned_tip.pk = None #effectively clones the bpt and inserts a new one
-                            cloned_tip.receive_txid = ''
-                            cloned_tip.receive_address = ''
-                            cloned_tip.recipient_profile = None
-                            cloned_tip.is_for_bounty_fulfiller = False
-                            cloned_tip.username = bpt.username
-                            cloned_tip.emails = {}
-                            cloned_tip.metadata = {
-                                'priv_key': tip.metadata['priv_key'],
-                                'pub_key': tip.metadata['pub_key'],
-                                'address': tip.metadata['address'],
-                                'debug_info': f'created in order to facilitate payout of a crowdfund tip {tip.pk}'
-                            }
-                            # only send tx onchain
-                            if bpt.receive_address:
-                                cloned_tip.receive_txid = cloned_tip.payout_to(bpt.receive_address)
-                            cloned_tip.save()
-
-                        tip.receive_txid = f'cloned-and-paid-via-clones-:{bpts_ids}'
-                        msg = f'auto paid out on {timezone.now()} to via recipients of {bpt_ids}; as done bounty w no bountyfulfillment'
-                        print("     " + msg)
-                        tip.metadata['payout_comments'] = msg
-                        tip.save()
-
-                if bounty.status == 'cancelled':
-                    ######################################################
-                    # return to funder
-                    ######################################################
-                    tip.receive_txid = tip.payout_to(bounty.bounty_owner_address)
-                    msg = f'auto paid out on {timezone.now()}; as cancelled bounty'
-                    print("     " + msg)
-                    tip.metadata['payout_comments'] = msg
-                    tip.save()
+            except Exception as e:
+                print(e)
+                logger.exception(e)
