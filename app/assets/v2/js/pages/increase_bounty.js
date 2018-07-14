@@ -4,10 +4,18 @@ load_tokens();
 $(document).ready(function() {
   waitforWeb3(actions_page_warn_if_not_on_same_network);
   
+  var is_funder = function(){
+    return document.is_funder_github_user_same && $('input[name=bountyOwnerAddress]').val() == web3.eth.coinbase;    
+  }
+  waitforWeb3(function(){
+    if(!is_funder()){
+      $('input, select').removeAttr('disabled');
+    }
+  });
+
   $('input[name=amount]').keyup(setUsdAmount);
   $('input[name=amount]').blur(setUsdAmount);
   $('select[name=deonomination]').change(setUsdAmount);
-  $('select[name=deonomination]').change(promptForAuth);
 
 
   $('input[name=amount]').focus();
@@ -180,7 +188,8 @@ $(document).ready(function() {
       );
     }
 
-    if (document.is_funder_github_user_same && fromAddress == web3.eth.coinbase) {
+    var act_as_funder = is_funder();
+    if (act_as_funder) {
       do_as_funder();
     } else {
       do_as_crowd();
