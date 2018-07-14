@@ -200,6 +200,7 @@ var callbacks = {
   'additional_funding_summary': function(key, val, result) {
     var usd_value = val['usd_value'];
     var tokens = val['tokens'];
+    var decimals = 3;
 
     if (tokens.length == 0) {
       $('.additional_funding_summary').addClass('hidden');
@@ -211,7 +212,7 @@ var callbacks = {
       if (token) {
         var val = tokens[token];
 
-        ui_elements.push(val + ' ' + token);
+        ui_elements.push(Math.round(val * 10 ** decimals) / 10 ** decimals + ' ' + token);
       }
     }
     var str = '+ ' + ui_elements.join(', ') + ' in crowdfunding worth $' + usd_value;
@@ -941,6 +942,7 @@ const process_activities = function(result, bounty_activities) {
     worker_applied: gettext('Worker Applied'),
     increased_bounty: gettext('Increased Funding'),
     killed_bounty: gettext('Canceled Bounty'),
+    new_crowdfund: gettext('New Crowdfund Contribution'),
     new_tip: gettext('New Tip'),
     receive_tip: gettext('Tip Received')
   };

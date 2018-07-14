@@ -238,7 +238,7 @@ def send_tip_4(request):
     maybe_market_tip_to_slack(tip, 'new_tip')
     maybe_market_tip_to_email(tip, to_emails)
     record_user_action(tip.username, 'send_tip', tip)
-    record_tip_activity(tip, tip.from_name, 'new_tip')
+    record_tip_activity(tip, tip.from_name, 'new_tip' if tip.username else 'new_crowdfund')
 
     return JsonResponse(response)
 

@@ -46,10 +46,14 @@
                 @{{ row.profile.handle }}
               </a>
               {% if row.activity_type == 'new_tip' %}
-                {% trans "tipped" %}
-                <a href="https://gitcoin.co/profile/{{ row.metadata.to_username }}" target="_blank">
-                  @{{ row.metadata.to_username }}
-                </a>
+                {% if row.metadata.to_username %}
+                  {% trans "tipped" %}
+                  <a href="https://gitcoin.co/profile/{{ row.metadata.to_username }}" target="_blank">
+                    @{{ row.metadata.to_username }}
+                  </a>
+                  {% else %}
+                  created a new crowdfund contribution
+                  {% endif %}
               {% elif row.activity_type == 'new_bounty' %}
                 {% trans "funded a new issue: " %}{{ row.urled_title | safe }}
               {% elif row.activity_type == 'start_work' %}
@@ -69,9 +73,9 @@
                 <div class="tag token">
                   <p>
                     {% if row.value_in_token_disp %}
-                    <span>{{ row.value_in_token_disp }} {{row.metadata.token_name}} XX</span>
+                    <span>{{ row.value_in_token_disp }} {{row.metadata.token_name}}</span>
                     {% elif row.metadata.value_in_eth %}
-                    <span>{{ row.metadata.value_in_eth }} {{row.metadata.token_name}} XX</span>
+                    <span>{{ row.metadata.value_in_eth }} {{row.metadata.token_name}}</span>
                     {% else %}
                     <span>{{row.metadata.value_in_token_old}}  - {{row.metadata.value_in_token}}  {{row.metadata.token_name}}</span>
                     {% endif %}

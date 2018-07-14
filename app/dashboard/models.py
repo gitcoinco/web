@@ -806,8 +806,8 @@ class Bounty(SuperModel):
         }
         for tip in self.tips.filter(is_for_bounty_fulfiller=True):
             key = tip.tokenName
-            if key not in return_dict.keys():
-                return_dict['tokens'][key]=0
+            if key not in return_dict['tokens'].keys():
+                return_dict['tokens'][key] = 0
             return_dict['tokens'][key] += tip.amount_in_whole_units
             return_dict['usd_value'] += tip.value_in_usdt if tip.value_in_usdt else 0
         return return_dict
@@ -1057,7 +1057,7 @@ class Tip(SuperModel):
     @property
     def bounty(self):
         try:
-            return Bounty.objects.current().filter(github__iexact=self.github_url, network=self.network).order_by('-web3_created').first()
+            return Bounty.objects.current().filter(github_url__iexact=self.github_url, network=self.network).order_by('-web3_created').first()
         except:
             return None
 
@@ -1202,6 +1202,7 @@ class Activity(models.Model):
         ('killed_bounty', 'Canceled Bounty'),
         ('new_tip', 'New Tip'),
         ('receive_tip', 'Tip Received'),
+        ('new_crowdfund', 'New Crowdfund Contribution'),
     ]
     profile = models.ForeignKey('dashboard.Profile', related_name='activities', on_delete=models.CASCADE)
     bounty = models.ForeignKey(Bounty, related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
