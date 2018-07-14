@@ -19,18 +19,20 @@
 {% load i18n static %}
 <!DOCTYPE html>
 <html lang="en">
-
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href="{% static "v2/css/vision.css" %}" />
   </head>
+
   <body class="{{ active }}">
+    
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header">
       {% include 'shared/nav.html' %}
       {% include 'shared/minihero.html' with h1='Our Vision' position_h1_below_logo=1 suppress_logo=1 %}
     </div>
+
     <section class="container-fluid" >
       <div class="row">
         <div class="col pt-5 text-center">
@@ -49,6 +51,7 @@
         </div>
       </div>
     </section>
+
     <section class="container-fluid bg-light">
       <div class="row">
         <div class="col pt-5 mb-5 text-center">
@@ -77,11 +80,13 @@
         </div>
       </div>
     </section>
+
     <section class="container-fluid animatedParent">
       <div class="text-center p-5 animated bounceInUp">
         <img class="mw-100" src="{% static "v2/images/vision/triangle.png" %}"/>
       </div>
     </section>
+
     <section class="container-fluid bg-blue">
       <div class="row">
         <div class="col pt-5 text-center">
@@ -141,6 +146,7 @@
         </a>
       </div>
     </section>
+
     <section class="container-fluid bg-light">
       <div class="row">
         <div class="col pt-5 mb-5 text-center">
@@ -195,7 +201,7 @@
         </div>
       </div>
     </section>
-
+    
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
