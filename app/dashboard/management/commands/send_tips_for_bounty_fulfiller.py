@@ -16,12 +16,13 @@
 
 '''
 
+import math
+
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.models import Bounty, Tip
 
-import math
 
 class Command(BaseCommand):
 

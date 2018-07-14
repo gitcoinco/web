@@ -84,7 +84,7 @@ var rows = [
   'submitted_owners_username',
   'fulfilled_owners_username',
   'fulfillment_accepted_on',
-  'additional_funding_summary',
+  'additional_funding_summary'
 ];
 var heads = {
   'avatar_url': gettext('Issue'),
@@ -200,16 +200,22 @@ var callbacks = {
   'additional_funding_summary': function(key, val, result) {
     var usd_value = val['usd_value'];
     var tokens = val['tokens'];
-    if(tokens.length == 0){
+
+    if (tokens.length == 0) {
       $('.additional_funding_summary').addClass('hidden');
       return;
     }
-    var ui_elements = []
+    var ui_elements = [];
+
     for (var token in tokens) {
-      var val = tokens[token];
-      ui_elements.push(val + " " + token);
+      if (token) {
+        var val = tokens[token];
+
+        ui_elements.push(val + ' ' + token);
+      }
     }
-    var str = "+ " + ui_elements.join(', ') + " in crowdfunding worth $" + usd_value;
+    var str = '+ ' + ui_elements.join(', ') + ' in crowdfunding worth $' + usd_value;
+
     $('.additional_funding_summary  p').html(str);
     return [ 'additional_funding_summary', val ];
   },
