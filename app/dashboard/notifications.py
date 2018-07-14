@@ -635,14 +635,18 @@ def maybe_market_tip_to_github(tip):
         value_in_usd = f"({tip.value_in_usdt_now} USD @ ${round(convert_token_to_usdt(tip.tokenName), 2)}/{tip.tokenName})" if tip.value_in_usdt_now else ""
     except Exception:
         pass  # no USD conv rate
-    msg = f"⚡️ A tip worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has been " \
-          f"granted to {username} for this issue{_from}. ⚡️ {_comments}\n\nNice work {username}! To " \
-          "redeem your tip, login to Gitcoin at https://gitcoin.co/explorer and select 'Claim Tip' " \
-          "from dropdown menu in the top right, or check your email for a link to the tip redemption " \
-          f"page. \n\n * ${amount_usdt_open_work()} in Funded OSS Work Available at: " \
-          "https://gitcoin.co/explorer\n * Incentivize contributions to your repo: " \
-          "<a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>" \
-          "Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
+    if tip.username:
+        msg = f"⚡️ A tip worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has been " \
+              f"granted to {username} for this issue{_from}. ⚡️ {_comments}\n\nNice work {username}! " \
+              "To redeem your tip, login to Gitcoin at https://gitcoin.co/explorer and select 'Claim Tip' " \
+              "from dropdown menu in the top right, or check your email for a link to the tip redemption " \
+              f"page. \n\n * ${amount_usdt_open_work()} in Funded OSS Work Available at: " \
+              "https://gitcoin.co/explorer\n * Incentivize contributions to your repo: " \
+              "<a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>" \
+              "Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
+    else:
+        msg = f"💰 A crowdfund contribution worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has been " \
+              f"attached to this funded issue {_from}.💰 {_comments}\n " \
 
     # actually post
     url = tip.github_url

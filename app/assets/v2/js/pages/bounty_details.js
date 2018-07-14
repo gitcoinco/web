@@ -201,10 +201,9 @@ var callbacks = {
     var usd_value = val['usd_value'];
     var tokens = val['tokens'];
     var decimals = 3;
-
-    if (tokens.length == 0) {
+    if (Object.keys(tokens).length == 0) {
       $('.additional_funding_summary').addClass('hidden');
-      return;
+      return [ 'additional_funding_summary', val ];
     }
     var ui_elements = [];
 
