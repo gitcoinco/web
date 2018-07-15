@@ -1,0 +1,20 @@
+{
+  "symbol": "GST",
+  "address": "0x3afa1902b1f8a802abc18e5ad982d1bcd34afe22",
+  "overview":{
+        "en": "Creating a free, open and trustworthy economic life in the era of shared commerce.",
+        "zh": "开创自由、开放、互信的共享商业时代的经济生活"
+  },
+  "website": "https://www.grearn.org/",
+  "whitepaper": "https://www.grearn.org/static/files/white_paper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-04-05",
+  "initial_price":{
+        "USD":"0.04 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/GrEARN_NetWork",
+    "telegram": "https://t.me/GSTchinese",
+    "medium": "https://medium.com/@grearnnetwork"
+  }
+}
