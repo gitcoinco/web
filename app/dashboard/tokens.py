@@ -30,7 +30,7 @@ def addr_to_token(addr):
 
 
 def token_by_name(name):
-    for token in tokens:
+    for token in get_tokens():
         if token['name'].lower() == name.lower():
             return token
     return False
