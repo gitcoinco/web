@@ -1,0 +1,26 @@
+{
+  "symbol": "FAN",
+  "address": "0x90162f41886c0946D09999736f1C15c8a105A421",
+  "overview":{
+        "en": "The first blockchain-powered Social Commerce Community",
+        "zh": "首个基于区块链的社交电商社区"
+  },
+  "email": "tokensale@fanfare.global",
+  "website": "https://tokensale.fanfare.global",
+  "whitepaper": "https://tokensale.fanfare.global/files/Fanfare_Whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-05-17",
+  "initial_price":{
+        "ETH":"0.0001 ETH",
+        "USD":"0.05 USD",
+        "BTC":"0.0000075 BTC"
+  },
+  "links": {
+    "blog": "https://medium.com/fanfareglobal",
+    "twitter": "https://twitter.com/FanFare_Global",
+    "telegram": "https://t.me/FanfareICO",
+    "github": "https://github.com/fanfareglobal",
+    "facebook": "https://www.facebook.com/fanfareglobal",
+    "medium": "https://medium.com/fanfareglobal"
+  }
+}
