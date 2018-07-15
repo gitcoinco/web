@@ -1,0 +1,21 @@
+{
+  "symbol": "BT",
+  "address": "0xfaaf0Ecfb3246902de6A2C77c5B114DA555695A3",
+  "overview":{
+        "en": "BTEX token",
+        "zh": "Btex 平台币"
+  },
+  "email": "bussiness@btex.com",
+  "website": "https://btex.com/",
+  "whitepaper": "http://btex.com/download/BT_whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-07-08",
+  "initial_price":{
+        "ETH":"0.00002000 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/BTEX_COM",
+    "telegram": " https://t.me/btex_com",
+    "github": "https://github.com/btex-dev"
+  }
+}
