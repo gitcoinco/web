@@ -1,0 +1,21 @@
+{
+  "symbol": "NET",
+  "address": "0x4ac6fba17a3961A792E63b5E2d4983C66b79d2Da",
+  "overview":{
+        "en": "NewEra Token.",
+        "zh": ""
+  },
+  "email": "lz@newera.wiki",
+  "website": "http://www.newera.wiki",
+  "whitepaper": "http://www.newera.wiki/Newera_Universityv0.0.2.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-07-08",
+  "initial_price":{
+        "ETH":"0.00166666 ETH",
+        "USD":"0.7 USD",
+        "BTC":"0.00004137 BTC"
+  },
+  "links": {
+    "blog": "http://www.newera.wiki"
+  }
+}
