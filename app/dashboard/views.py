@@ -953,24 +953,24 @@ def funder_dashboard(request):
     }
 
     # expiring at 7 days
-    expiring_bounties_count = "2"
+    expiring_bounties_count = 2
 
     # the date of the first expiration
-    expiring_days_count = "3"
+    expiring_days_count = 3
 
-    new_contributor_comments = "3"
+    new_contributor_comments = 3
 
     # EVER submitted / created
-    submitted_bounties_count = "394"
+    submitted_bounties_count = 394
 
     # number of people who ever contributed
-    total_contributors_count = "142"
+    total_contributors_count = 142
 
     # total amount ever paid in dollars
-    total_paid_dollars = "50.890"
+    total_paid_dollars = 50.890
 
     # total amount ever paid in eth
-    total_paid_eth = "100"
+    total_paid_eth = 100
 
     # total paid date since - date of first submitted bounty
     total_paid_date_since = _("May 5. 2018")
@@ -979,7 +979,7 @@ def funder_dashboard(request):
     total_budget_dollars = "90K"
 
     # total budget in eth
-    total_budget_eth = "100"
+    total_budget_eth = 100
 
     tax_year = 2018
 
@@ -987,15 +987,15 @@ def funder_dashboard(request):
 
     tax_year_bounties_worth_dollars = 34.500
 
-    expired_issues_count = "3"
+    expired_issues_count = 3
 
-    expired_issues_worth_dollars = "548.28"
+    expired_issues_worth_dollars = 548.28
 
-    active_bounties_count = "174"
+    active_bounties_count = 174
 
-    completed_bounties_count = "100"
+    completed_bounties_count = 100
 
-    expired_bounties_count = "8"
+    expired_bounties_count = 8
 
     context = {
         # Header
