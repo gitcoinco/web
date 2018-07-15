@@ -1,0 +1,18 @@
+{
+  "symbol": "YBC",
+  "address": "0x6ef1CDb9AAa7d7ca0dEEa9B542a7Cf3daDa7C996",
+  "overview":{
+        "en": "Based on the characteristics and advantages of the block chain, the cloud shell creates a safer and more reliable and trustworthy ecological system for the efficient investment return of digital assets, establishes a perfect credit management system, and achieves a comprehensive promotion of commercial value.",
+        "zh": "云贝基于区块链的特性和优势，与用户共同打造一个更安全可靠并值得信任的数字资产高效投资回报的生态体系，建立完善信用管理系统，实现商业价值的全面提升。"
+  },
+  "email": "team@yunbeicash.com",
+  "website": "https://www.yunbeicash.com/",
+  "whitepaper": "https://www.yunbeicash.com/static/mobile/file/ybc.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-05-01",
+  "initial_price":{
+        "ETH":"0.0006 ETH",
+        "USD":"0.3 USD",
+        "BTC":"0.00004 BTC"
+  }
+}
