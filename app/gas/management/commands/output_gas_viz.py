@@ -67,8 +67,9 @@ class Command(BaseCommand):
         rotate = True
         last_degrees = 275
         invert_colors = False
+        max_gas = 50
         package = {}
-        for gp in GasProfile.objects.filter(gas_price__lt=100, created_on__gt=timezone.now() - timezone.timedelta(days=7)).order_by('created_on'):
+        for gp in GasProfile.objects.filter(gas_price__lt=max_gas, created_on__gt=timezone.now() - timezone.timedelta(days=7)).order_by('created_on'):
             key = gp.created_on.strftime("%Y-%m-%dT%H:%M:00")
             new_time = datetime.datetime.strptime(key, "%Y-%m-%dT%H:%M:00")
             if key not in package.keys():
@@ -85,7 +86,7 @@ class Command(BaseCommand):
         num_items_to_show_at_a_time = 50
         for j in range(num_items_to_show_at_a_time, len(arr)):
             print(j)
-            key = f"Ethereum Mainnet Gas Tradeoffs\n Gas Prices (x axis) vs Time to Confirm (y axis) vs Time (z axis) \n {keys[j]}"
+            key = f"Ethereum Mainnet Gas Tradeoffs\n Gas Prices (x axis) vs Time to Confirm (y axis) vs Time (z axis) \n {keys[j]}\n\nMade with <3 at Gitcoin.\nhttps://gitcoin..co/gas"
             facecolor = '#274150' if invert_colors else 'white'
             fig = plt.figure(figsize=(16, 9), dpi=200, facecolor=facecolor, edgecolor='k')
             ax = fig.add_subplot(111, projection='3d', title=key, facecolor=facecolor)
