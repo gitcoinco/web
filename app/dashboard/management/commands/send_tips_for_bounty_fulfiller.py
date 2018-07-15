@@ -23,7 +23,7 @@ import warnings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.models import Bounty, Tip
+from dashboard.models import Tip
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -70,7 +70,7 @@ class Command(BaseCommand):
                             for bpt in bpts:
                                 print(f"    - {bpt.pk} ")
                                 cloned_tip = bpt
-                                cloned_tip.pk = None # effectively clones the bpt and inserts a new one
+                                cloned_tip.pk = None  # effectively clones the bpt and inserts a new one
                                 cloned_tip.receive_txid = ''
                                 cloned_tip.amount = amount
                                 cloned_tip.receive_address = ''
@@ -90,12 +90,12 @@ class Command(BaseCommand):
                                 cloned_tip.save()
 
                             tip.receive_txid = f'cloned-and-paid-via-clones-:{bpts_ids}'
-                            msg = f'auto paid out on {timezone.now()} to via recipients of {bpt_ids}; as done bounty w no bountyfulfillment'
-                            print("     " + msg)
+                            msg = f'auto paid out on {timezone.now()} to via recipients of {bpts_ids}; as done ' \
+                                  'bounty w no bountyfulfillment'
+                            print("     ", msg)
                             tip.metadata['payout_comments'] = msg
                             tip.save()
-
-                    if bounty.status == 'cancelled':
+                    elif bounty.status == 'cancelled':
                         ######################################################
                         # return to funder
                         ######################################################
