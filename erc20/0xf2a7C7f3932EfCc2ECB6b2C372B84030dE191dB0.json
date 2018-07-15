@@ -1,0 +1,24 @@
+{
+  "symbol": "SEDA",
+  "address": "0xf2a7C7f3932EfCc2ECB6b2C372B84030dE191dB0",
+  "overview":{
+        "en": "SEDA focuses on creating an ecosystem to facilitate an on demand, secure, verified (REAL & TRUE) and rewarding mechanism for participating parties in the ecosystem - where accreditations and credentials are being verified on the Blockchain.",
+        "zh": "SEDA专注于创建一个通过使用区块链来供应安全和被验证的生态系统，并为参与者提供奖励机制"
+  },
+  "email": "support@getseda.io",
+  "website": "https://www.getseda.io",
+  "whitepaper": "https://drive.google.com/open?id=1k9MrrvV6DiDEC3dFlEX3idXpbu468Q1R",
+  "state": "NORMAL",
+  "published_on": "2018-07-01",
+  "initial_price":{
+        "ETH":"0.00022167 ETH",
+        "USD":"0.1 USD",
+        "BTC":"0.00001574 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/sedarecruitment",
+    "telegram": "https://t.me/sedaann",
+    "github": "https://github.com/sedablockchain",
+    "facebook": "https://www.facebook.com/sedarecruitment/"
+  }
+}
