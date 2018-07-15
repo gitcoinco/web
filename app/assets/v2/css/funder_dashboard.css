@@ -175,6 +175,12 @@
   display: none;
 }
 
+td {
+  overflow: hidden;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+}
+
 /*
 This query will take effect for any screen smaller than 760px
 and also iPads specifically.

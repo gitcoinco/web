@@ -952,33 +952,78 @@ def funder_dashboard(request):
         "labels": [2016, 2017, 2018, 30000]
     }
 
+    # expiring at 7 days
+    expiring_bounties_count = "2"
+
+    # the date of the first expiration
+    expiring_days_count = "3"
+
+    new_contributor_comments = "3"
+
+    # EVER submitted / created
+    submitted_bounties_count = "394"
+
+    # number of people who ever contributed
+    total_contributors_count = "142"
+
+    # total amount ever paid in dollars
+    total_paid_dollars = "50.890"
+
+    # total amount ever paid in eth
+    total_paid_eth = "100"
+
+    # total paid date since - date of first submitted bounty
+    total_paid_date_since = _("May 5. 2018")
+
+    # total budget in dollars, not used currently, we show an input field by default
+    total_budget_dollars = "90K"
+
+    # total budget in eth
+    total_budget_eth = "100"
+
+    tax_year = 2018
+
+    tax_year_bounties_count = 139
+
+    tax_year_bounties_worth_dollars = 34.500
+
+    expired_issues_count = "3"
+
+    expired_issues_worth_dollars = "548.28"
+
+    active_bounties_count = "174"
+
+    completed_bounties_count = "100"
+
+    expired_bounties_count = "8"
+
     context = {
         # Header
-        "expiring_bounties_count": "2",
-        "expiring_days_count": "3",
-        "new_contributor_comments_count": "3",
+        "expiring_bounties_count": expiring_bounties_count,
+        "expiring_days_count": expiring_days_count,
+        "new_contributor_comments_count": new_contributor_comments,
         # Stats
-        "submitted_bounties_count": "394",
-        "total_contributors_count": "142",
-        "total_paid_dollars": "50.890",
-        "total_paid_eth": "100",
-        "total_paid_date_used_to_say_since": _("May 5. 2018"),
-        "total_budget_dollars": "90K",
-        "total_budget_eth": "200",
+        "submitted_bounties_count": submitted_bounties_count,
+        "total_contributors_count": total_contributors_count,
+        "total_paid_dollars": total_paid_dollars,
+        "total_paid_eth": total_paid_eth,
+        "total_paid_date_used_to_say_since": total_paid_date_since,
+        "total_budget_dollars": total_budget_dollars,
+        "total_budget_eth": total_budget_eth,
         # Payout History
         "payout_history_weekly": json.dumps(payout_history_weekly, ensure_ascii=False),
         "payout_history_monthly": json.dumps(payout_history_monthly, ensure_ascii=False),
         "payout_history_yearly": json.dumps(payout_history_yearly, ensure_ascii=False),
         # Tax Reporting
-        "tax_year": "2018",
-        "tax_year_bounties_count": "139",
-        "tax_year_bounties_worth_dollars": "34.450",
+        "tax_year": tax_year,
+        "tax_year_bounties_count": tax_year_bounties_count,
+        "tax_year_bounties_worth_dollars": tax_year_bounties_worth_dollars,
         # Latest on your bounties
-        "expired_issues_count": "3",
-        "expired_issues_worth_dollars": "548.28",
-        "active_bounties_count": "154",
-        "completed_bounties_count": "174",
-        "expired_bounties_count": "8",
+        "expired_issues_count": expired_issues_count,
+        "expired_issues_worth_dollars": expired_issues_worth_dollars,
+        "active_bounties_count": active_bounties_count,
+        "completed_bounties_count": completed_bounties_count,
+        "expired_bounties_count": expired_bounties_count,
         'top_contributors': top_contributors
     }
 
