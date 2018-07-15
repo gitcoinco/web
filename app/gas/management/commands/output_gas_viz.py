@@ -51,6 +51,7 @@ class Command(BaseCommand):
     help = 'gets observations and visualizes them in 3d'
 
     def handle(self, *args, **options):
+        from mpl_toolkits.mplot3d import Axes3D
         import matplotlib
         matplotlib.use('Agg')
         import matplotlib.pyplot as plt
