@@ -1020,3 +1020,12 @@ def tokens(request):
         key = f"{network}_tokens"
         context[key] = Token.objects.filter(network=network, approved=True)
     return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
+
+
+def ui(request):
+    context = {
+        'is_outside': True,
+        'active': 'ui_inventory ',
+        'title': 'UI Inventory',
+    }
+    return TemplateResponse(request, 'ui_inventory.html', context)

@@ -74,6 +74,10 @@ User facing copy / text should be run through [Django Translation Framework](htt
 4. each of the models `help_text`s are internationalized
 5. as are all the emails in `marketing/mails.py`
 
+Take a look at /ui (ui_inventory.html), for a quick reference of user interface components.
+If you are contributing user-facing assets, interface components or other relevant visuals,
+then please add them to our UI Inventory page.
+
 ### Step 1: Fork
 
 Fork the project [on GitHub](https://github.com/gitcoinco/web) and clone your

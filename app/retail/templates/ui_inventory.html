@@ -1,0 +1,818 @@
+{% comment %}
+Copyright (C) 2018 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not,see
+<http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% include 'shared/head.html' %}
+  <link rel="stylesheet" href="{% static "v2/css/toolbox.css" %}">
+  <link rel="stylesheet" href="{% static "v2/css/card.css" %}">
+  <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
+  <link rel="stylesheet" href="{% static "v2/css/tabs.css" %}">
+  <body class="{{ active }}">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header">
+      {% include 'shared/minihero.html' with h1='UI Inventory' position_h1_below_logo=1 %}
+    </div>
+    <style>
+      .card {
+        vertical-align: top;
+      }
+      .assets img,
+      .assets object {
+        max-width: 8em;
+        margin: 0.1em;
+      }
+      .alert {
+        position: relative;
+      }
+      .inventory {
+        max-width: 960px;
+        margin: 0 auto;
+      }
+      .rain,
+      #world {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+      }
+      #codedialog {
+        display: none;
+        position: fixed;
+        top: 0;
+        bottom: 4em;
+        margin: auto;
+        overflow: scroll;
+        z-index: 9999999;
+      }
+    </style>
+    <div id='codedialog' class="white-light-bg modal">
+      <div class="col-12 closebtn">
+        <a rel="modal:close" onclick="closeDialog(event)" class="close" aria-label="Close dialog">
+          <span class="text-highlight-gc-purple" aria-hidden="true">&times;</span>
+        </a>
+      </div>
+      <code class="col-12">
+      </code>
+    </div>
+
+    <canvas id="world"></canvas>
+    <div class="inventory">
+      <div class="container-fluid p-5 bg-white">
+        <h1>{% trans "Buttons" %}</h1>
+        <div class="card text-center">
+          <p class="font-subheader">btn btn-gc-..</p>
+          <div class="p-1">
+            <span class="btn btn-gc-blue">
+              ..blue
+            </span>
+          </div>
+          <div class="p-1">
+            <span class="btn btn-gc-purple">
+              ..purple
+            </span>
+          </div>
+          <div class="p-1">
+            <span class="btn btn-gc-green">
+              ..green
+            </span>
+          </div>
+        </div>
+
+        <div class="card text-center">
+          <p class="font-subheader">btn btn-outline-gc-..</p>
+          <div class="p-1">
+            <span class="btn btn-outline-gc-blue">
+              ..blue
+            </span>
+          </div>
+          <div class="p-1">
+            <span class="btn btn-outline-gc-purple">
+              ..purple
+            </span>
+          </div>
+          <div class="p-1">
+            <span class="btn btn-outline-gc-green">
+              ..green
+            </span>
+          </div>
+        </div>
+
+        <div class="card text-center">
+          <p class="font-subheader">btn btn-..</p>
+          <div class="p-1">
+            <span class="btn btn-info">
+              ..info
+            </span>
+          </div>
+          <div class="p-1">
+            <span class="btn btn-warning">
+              ..warning
+            </span>
+          </div>
+          <div class="p-1">
+            <span class="btn btn-success">
+              ..success
+            </span>
+          </div>
+        </div>
+
+        <div class="card p-1 text-center">
+          <p class="font-subheader">btn btn-gc-purple pulseButton</p>
+          <div class="btn btn-gc-purple pulseButton">pulseButton</div>
+        </div>
+      </div>
+
+      <div class="container-fluid p-5 bg-light">
+        <p class="text-highlight-gc-purple h1">
+          {% trans "Colors" %}
+        </p>
+        <div class="card p-1">
+          <p class="text-highlight-purple">text-highlight-purple</p>
+          <p class="text-highlight-green">text-highlight-green</p>
+          <p class="text-highlight-dark-blue">text-highlight-dark-blue</p>
+          <p class="text-highlight-gc-purple">text-highlight-gc-purple</p>
+          <p class="text-highlight-gc-blue">text-highlight-gc-blue</p>
+          <p class="text-highlight-light-blue">text-highlight-light-blue</p>
+          <p class="text-highlight-pink">text-highlight-pink</p>
+        </div>
+        <div class="card p-1 bg-dark text-highlight-green">
+          class="card p-1 bg-dark text-highlight-green"
+          <p class="text-light">text-light</p>
+        </div>
+        <div class="card p-1 bg-light text-highlight-green">
+          class="card p-1 bg-light text-highlight-green"
+          <p class="text-dark">text-dark</p>
+        </div>
+        <div class="card p-1 bg-white text-highlight-green">class="card p-1 bg-white text-highlight-green"</div>
+      </div>
+
+      <div class="container-fluid p-5 bg-white">
+        <p class="h1">Typography</p>
+        <div class="card p-1 text-center">
+          <p class="h1">h1</p>
+          <p class="h2">h2</p>
+          <p class="h3">h3</p>
+          <p class="h4">h4</p>
+          <p class="h5">h5</p>
+          <p class="h6">h6</p>
+        </div>
+
+        <div class="card p-1 text-center">
+          <p class="font-title-lg">font-title-lg</p>
+          <p class="font-title">font-title</p>
+          <p class="font-header">font-header</p>
+          <p class="font-subheader">font-subheader</p>
+          <p class="font-body">font-body</p>
+          <p class="font-caption">font-caption</p>
+        </div>
+
+        <div class="card p-1 text-center">
+          <p class="font-bigger-1">font-bigger-1</p>
+          <p class="font-bigger-2">font-bigger-2</p>
+          <p class="font-bigger-3">font-bigger-3</p>
+          <p class="font-bigger-4">font-bigger-4</p>
+        </div>
+
+        <div class="card p-1 text-center">
+          <p class="font-smaller-1">font-smaller-1</p>
+          <p class="font-smaller-2">font-smaller-2</p>
+          <p class="font-smaller-3">font-smaller-3</p>
+          <p class="font-smaller-4">font-smaller-4</p>
+          <p class="font-smaller-5">font-smaller-5</p>
+          <p class="font-smaller-6">font-smaller-6</p>
+          <p class="font-smaller-7">font-smaller-7</p>
+        </div>
+      </div>
+
+      <div class="container-fluid p-5">
+        <p class="h1">Tabs</p>
+        <div id="my-tabs" class="tab-container">
+          <button type="button" id="one" class="section-tab">
+            my-tab one
+          </button>
+          <button type="button" id="two" class="section-tab">
+            my-tab two
+          </button>
+          <button type="button" id="three" class="section-tab">
+            my-tab three
+          </button>
+          <div id="my-tabs" class="tab-indicator"></div>
+        </div>
+
+        <div id="my-tabs" class="tab-sections section d-flex">
+          <div id="one" class="tab-section">
+            <div class="row mt-5 mb-5">
+              <div class="col text-center">
+                <h1>One</h1>
+              </div>
+            </div>
+          </div>
+          <div id="two" class="tab-section">
+            <div class="row mt-5 mb-5">
+              <div class="col text-center">
+                <h1>Two</h1>
+              </div>
+            </div>
+          </div>
+          <div id="three" class="tab-section">
+            <div class="row mt-5 mb-5">
+              <div class="col text-center">
+                <h1>Three</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container-fluid p-5 bg-white">
+        <p class="h1">{% trans "Carousel" %}</p>
+        <div class="container-fluid carousel p-0">
+          <div class="row mb-0">
+            <div class="d-flex align-items-center" id="slides">
+              <div class="slide d-flex justify-content-center flex-wrap">
+                <p class="h1">{% trans "Slide One" %}</p>
+              </div>
+
+              <div class="slide d-flex justify-content-center flex-wrap">
+                <p class="h1">{% trans "Slide Two" %}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="container-fluid p-5">
+        <p class="h1">{% trans "Forms" %}</p>
+        <div class="card p-1">
+          <label class="form__label mb-3" for="title">form__label</label>
+          <input class="form__input mb-3" type="text" placeholder="form__input" %}"/>
+          <textarea name="description" class="form__input" placeholder="textarea form__input"></textarea>
+          <div class="checkbox_container m-1">
+            <input type="checkbox" id="checkbox1" class="form__input" value="1">
+            <span class="checkbox"></span>
+            <div class="filter-label">
+              <label for="checkbox1">
+                {% trans "Checkbox" %}
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="card p-1 text-center">
+          <input class="gc-round-text-input m-1" value="gc-round-text-input" %}"/>
+          <textarea class="gc-round-text-form m-1">gc-round-text-form</textarea>
+        </div>
+      </div>
+
+      <div class="container-fluid p-5 bg-white">
+        <p class="h1">{% trans "Banner" %}</p>
+        <div class="alert info" style="top: 0px">
+          <div class="message">
+            <div class="content">
+              <strong></strong>{% trans "info" %}
+            </div>
+          </div>
+          <span class="closebtn">×</span>
+        </div>
+        <div class="alert warning" style="top: 0px">
+          <div class="message">
+            <div class="content">
+              <strong></strong>{% trans "warning" %}
+            </div>
+          </div>
+          <span class="closebtn">×</span>
+        </div>
+        <div class="alert error" style="top: 0px">
+          <div class="message">
+            <div class="content">
+              <strong></strong>{% trans "error" %}
+            </div>
+          </div>
+          <span class="closebtn">×</span>
+        </div>
+      </div>
+
+      <div class="container-fluid p-5">
+        <p class="h1">{% trans "Animations" %}</p>
+        <div class="row pt-5 mb-3 animatedParent">
+          <div class="col d-flex flex-column align-items-center animated fadeInLeftShort go">
+            <div class="mb-3 d-flex justify-content-center align-items-center">
+              <img width="128" style="transform: rotateZ(90deg)" src="{% static "v2/images/regulus_square.png" %}">
+            </div>
+          </div>
+          <div class="col d-flex flex-column align-items-center animated fadeInRightShort go">
+            <div class="mb-3 d-flex justify-content-center align-items-center">
+              <img width="128" style="transform: rotateZ(270deg)" src="{% static "v2/images/regulus_square.png" %}">
+            </div>
+          </div>
+        </div>
+
+        <p>{% trans "Other whole page animations" %}</p>
+        <p>include 'shared/rain.html' with class="purple"</p>
+        {% include 'shared/rain.html' with class="purple" %}
+
+        <button class="btn btn-gc-purple" onclick="startConfetti()">{% trans "Start Confetti" %}</button>
+      </div>
+
+      <div class="container-fluid p-5 bg-white">
+        <p class="h1">{% trans "Other Elements" %}</p>
+        <div class="card p-1">
+          <p class="font-title-lg">progress-bar</p>
+          <span class="progress-bar">
+            <span class="progress" style="width: 32%;"></span>
+          </span>
+        </div>
+        <div class="container-fluid p-5">
+          <p class="h2">{% trans "Quotes" %} | waitingRoomEntertainment()</p>
+          <p class="quote_author"></p>
+          <p class="quote_text"></p>
+        </div>
+      </div>
+
+      <div class="container-fluid p-5">
+        <p class="h1">{% trans "Header" %}</p>
+        <p class="m-3">include 'shared/minihero.html' with h1='shared/minihero.html'</p>
+        <div class="container-fluid header">
+          {% include 'shared/minihero.html' with h1='shared/minihero.html' %}
+        </div>
+        <p class="m-3">include 'shared/hero.html' with h1='shared/hero.html'</p>
+        <div class="container-fluid header">
+          {% include 'shared/hero.html' with h1='shared/hero.html' %}
+        </div>
+      </div>
+
+      <div class="container-fluid p-5 bg-light">
+        <p class="h1">{% trans "Modal Dialog" %}</p>
+        <div class="white-light-bg modal">
+          <div class="col-12 closebtn">
+            <a rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">
+              <span aria-hidden="true">&times;</span>
+            </a>
+          </div>
+          <div class="col-12">
+            <h5 class="text-center font-title">{% trans "Modal Dialog" %}</h5>
+          </div>
+        </div>
+      </div>
+
+      <div class="container-fluid p-5 assets">
+        <p class="h1">{% trans "Iconography" %}</p>
+        <img src="{% static "v2/images/icons/world.png" %}"/>
+        <img src="{% static "v2/images/icons/info.png" %}"/>
+        <img src="{% static "v2/images/icons/ipod.png" %}"/>
+        <img src="{% static "v2/images/icons/gear.png" %}"/>
+        <img src="{% static "v2/images/icons/lock_open.png" %}"/>
+        <img src="{% static "v2/images/icons/rss.png" %}"/>
+        <img src="{% static "v2/images/icons/todo_pencil.png" %}"/>
+        <img src="{% static "v2/images/icons/watch.png" %}"/>
+        <img src="{% static "v2/images/icons/spread_bookmark.png" %}"/>
+        <img src="{% static "v2/images/icons/magnifier_minus.png" %}"/>
+        <img src="{% static "v2/images/icons/sheet_pen.png" %}"/>
+        <img src="{% static "v2/images/icons/sheet_pencil.png" %}"/>
+        <img src="{% static "v2/images/icons/webpage.png" %}"/>
+        <img src="{% static "v2/images/icons/book.png" %}"/>
+        <img src="{% static "v2/images/icons/bolt.png" %}"/>
+        <img src="{% static "v2/images/icons/server.png" %}"/>
+        <img src="{% static "v2/images/icons/server2.png" %}"/>
+        <img src="{% static "v2/images/icons/download.png" %}"/>
+        <img src="{% static "v2/images/icons/clessidre.png" %}"/>
+        <img src="{% static "v2/images/icons/trashcan_full.png" %}"/>
+        <img src="{% static "v2/images/icons/mail.png" %}"/>
+        <img src="{% static "v2/images/icons/todo_txt.png" %}"/>
+        <img src="{% static "v2/images/icons/archive.png" %}"/>
+        <img src="{% static "v2/images/icons/settings.png" %}"/>
+        <img src="{% static "v2/images/icons/pencil_ruler.png" %}"/>
+        <img src="{% static "v2/images/icons/clubs.png" %}"/>
+        <img src="{% static "v2/images/icons/eye_closed.png" %}"/>
+        <img src="{% static "v2/images/icons/key.png" %}"/>
+        <img src="{% static "v2/images/icons/link.png" %}"/>
+        <img src="{% static "v2/images/icons/case.png" %}"/>
+        <img src="{% static "v2/images/icons/postcard.png" %}"/>
+        <img src="{% static "v2/images/icons/ban.png" %}"/>
+        <img src="{% static "v2/images/icons/keyboard.png" %}"/>
+        <img src="{% static "v2/images/icons/lock.png" %}"/>
+        <img src="{% static "v2/images/icons/question.png" %}"/>
+        <img src="{% static "v2/images/icons/helm.png" %}"/>
+        <img src="{% static "v2/images/icons/mail_multiple.png" %}"/>
+        <img src="{% static "v2/images/icons/joypad.png" %}"/>
+        <img src="{% static "v2/images/icons/clouds.png" %}"/>
+        <img src="{% static "v2/images/icons/male.png" %}"/>
+        <img src="{% static "v2/images/icons/sheet_txt.png" %}"/>
+        <img src="{% static "v2/images/icons/headset.png" %}"/>
+        <img src="{% static "v2/images/icons/life_buoy.png" %}"/>
+        <img src="{% static "v2/images/icons/map.png" %}"/>
+        <img src="{% static "v2/images/icons/message_multiple.png" %}"/>
+        <img src="{% static "v2/images/icons/geolocalize-05.png" %}"/>
+        <img src="{% static "v2/images/icons/usb.png" %}"/>
+        <img src="{% static "v2/images/icons/message_txt.png" %}"/>
+        <img src="{% static "v2/images/icons/mail_open.png" %}"/>
+        <img src="{% static "v2/images/icons/trashcan_remove.png" %}"/>
+        <img src="{% static "v2/images/icons/smartphone.png" %}"/>
+        <img src="{% static "v2/images/icons/sheet_multiple.png" %}"/>
+        <img src="{% static "v2/images/icons/chronometer.png" %}"/>
+        <img src="{% static "v2/images/icons/dollar.png" %}"/>
+        <img src="{% static "v2/images/icons/home.png" %}"/>
+        <img src="{% static "v2/images/icons/todo.png" %}"/>
+        <img src="{% static "v2/images/icons/circle.png" %}"/>
+        <img src="{% static "v2/images/icons/cards_diamonds.png" %}"/>
+        <img src="{% static "v2/images/icons/mail_open_text.png" %}"/>
+        <img src="{% static "v2/images/icons/battery_charge.png" %}"/>
+        <img src="{% static "v2/images/icons/book_pencil.png" %}"/>
+        <img src="{% static "v2/images/icons/sheet.png" %}"/>
+        <img src="{% static "v2/images/icons/todo_pen.png" %}"/>
+        <img src="{% static "v2/images/icons/geolocalize-01.png" %}"/>
+        <img src="{% static "v2/images/icons/target.png" %}"/>
+        <img src="{% static "v2/images/icons/spread.png" %}"/>
+        <img src="{% static "v2/images/icons/floppydisk.png" %}"/>
+        <img src="{% static "v2/images/icons/spades.png" %}"/>
+        <img src="{% static "v2/images/icons/magic_mouse.png" %}"/>
+        <img src="{% static "v2/images/icons/archive_full.png" %}"/>
+        <img src="{% static "v2/images/icons/notebook.png" %}"/>
+        <img src="{% static "v2/images/icons/heart.png" %}"/>
+        <img src="{% static "v2/images/icons/exclamation.png" %}"/>
+        <img src="{% static "v2/images/icons/photo.png" %}"/>
+        <img src="{% static "v2/images/icons/todolist_pen.png" %}"/>
+        <img src="{% static "v2/images/icons/postcard_multiple.png" %}"/>
+        <img src="{% static "v2/images/icons/spread_text_bookmark.png" %}"/>
+        <img src="{% static "v2/images/icons/webpage_multiple.png" %}"/>
+        <img src="{% static "v2/images/icons/magnifier_plus.png" %}"/>
+        <img src="{% static "v2/images/icons/alarm.png" %}"/>
+        <img src="{% static "v2/images/icons/folder.png" %}"/>
+        <img src="{% static "v2/images/icons/paperplane.png" %}"/>
+        <img src="{% static "v2/images/icons/gunsight.png" %}"/>
+        <img src="{% static "v2/images/icons/female.png" %}"/>
+        <img src="{% static "v2/images/icons/mouse.png" %}"/>
+        <img src="{% static "v2/images/icons/calculator.png" %}"/>
+        <img src="{% static "v2/images/icons/bookmark.png" %}"/>
+        <img src="{% static "v2/images/icons/webpage_img_txt.png" %}"/>
+        <img src="{% static "v2/images/icons/tablet.png" %}"/>
+        <img src="{% static "v2/images/icons/battery_full.png" %}"/>
+        <img src="{% static "v2/images/icons/diamonds.png" %}"/>
+        <img src="{% static "v2/images/icons/cup.png" %}"/>
+        <img src="{% static "v2/images/icons/book_pen.png" %}"/>
+        <img src="{% static "v2/images/icons/upload.png" %}"/>
+        <img src="{% static "v2/images/icons/mixer2.png" %}"/>
+        <img src="{% static "v2/images/icons/cloud.png" %}"/>
+        <img src="{% static "v2/images/icons/slack.png" %}"/>
+        <img src="{% static "v2/images/icons/cross.png" %}"/>
+        <img src="{% static "v2/images/icons/globe.png" %}"/>
+        <img src="{% static "v2/images/icons/accelerator.png" %}"/>
+        <img src="{% static "v2/images/icons/display.png" %}"/>
+        <img src="{% static "v2/images/icons/pin1.png" %}"/>
+        <img src="{% static "v2/images/icons/folder_multiple.png" %}"/>
+        <img src="{% static "v2/images/icons/laptop.png" %}"/>
+        <img src="{% static "v2/images/icons/notebook_pen.png" %}"/>
+        <img src="{% static "v2/images/icons/calendar.png" %}"/>
+        <img src="{% static "v2/images/icons/heart_broken.png" %}"/>
+        <img src="{% static "v2/images/icons/video.png" %}"/>
+        <img src="{% static "v2/images/icons/magnifier.png" %}"/>
+        <img src="{% static "v2/images/icons/share.png" %}"/>
+        <img src="{% static "v2/images/icons/server_download.png" %}"/>
+        <img src="{% static "v2/images/icons/spread_text.png" %}"/>
+        <img src="{% static "v2/images/icons/eye.png" %}"/>
+        <img src="{% static "v2/images/icons/pin2.png" %}"/>
+        <img src="{% static "v2/images/icons/clockwise.png" %}"/>
+        <img src="{% static "v2/images/icons/signs.png" %}"/>
+        <img src="{% static "v2/images/icons/clock.png" %}"/>
+        <img src="{% static "v2/images/icons/dollarwhite.png" %}"/>
+        <img src="{% static "v2/images/icons/battery_empty.png" %}"/>
+        <img src="{% static "v2/images/icons/picture_multiple.png" %}"/>
+        <img src="{% static "v2/images/icons/compass.png" %}"/>
+        <img src="{% static "v2/images/icons/flag1.png" %}"/>
+        <img src="{% static "v2/images/icons/todolist_pencil.png" %}"/>
+        <img src="{% static "v2/images/icons/trashcan_refresh.png" %}"/>
+        <img src="{% static "v2/images/icons/hammer.png" %}"/>
+        <img src="{% static "v2/images/icons/anchor.png" %}"/>
+        <img src="{% static "v2/images/icons/battery_half.png" %}"/>
+        <img src="{% static "v2/images/icons/star.png" %}"/>
+        <img src="{% static "v2/images/icons/trashcan.png" %}"/>
+        <img src="{% static "v2/images/icons/webpage_txt.png" %}"/>
+        <img src="{% static "v2/images/icons/flag2.png" %}"/>
+        <img src="{% static "v2/images/icons/cards_hearts.png" %}"/>
+        <img src="{% static "v2/images/icons/anticlockwise.png" %}"/>
+        <img src="{% static "v2/images/icons/printer.png" %}"/>
+        <img src="{% static "v2/images/icons/picture.png" %}"/>
+        <img src="{% static "v2/images/icons/pencil_ruler_pen.png" %}"/>
+        <img src="{% static "v2/images/icons/server_upload.png" %}"/>
+        <img src="{% static "v2/images/icons/message.png" %}"/>
+        <img src="{% static "v2/images/icons/smartphonewhite.png" %}"/>
+        <img src="{% static "v2/images/icons/server_cloud.png" %}"/>
+        <img src="{% static "v2/images/icons/notebook_pencil.png" %}"/>
+        <img src="{% static "v2/images/icons/lightbulb.png" %}"/>
+
+        <img src="{% static "v2/images/social/flikr.png" %}"/>
+        <img src="{% static "v2/images/social/rss.png" %}"/>
+        <img src="{% static "v2/images/social/googleplay.png" %}"/>
+        <img src="{% static "v2/images/social/delicious.png" %}"/>
+        <img src="{% static "v2/images/social/digg.png" %}"/>
+        <img src="{% static "v2/images/social/envato.png" %}"/>
+        <img src="{% static "v2/images/social/ok.png" %}"/>
+        <img src="{% static "v2/images/social/bookmate.png" %}"/>
+        <img src="{% static "v2/images/social/mail.png" %}"/>
+        <img src="{% static "v2/images/social/pocket.png" %}"/>
+        <img src="{% static "v2/images/social/send-light.png" %}"/>
+        <img src="{% static "v2/images/social/shopify.png" %}"/>
+        <img src="{% static "v2/images/social/aboutme.png" %}"/>
+        <img src="{% static "v2/images/social/instagram.png" %}"/>
+        <img src="{% static "v2/images/social/youtube-play.png" %}"/>
+        <img src="{% static "v2/images/social/vimeo.png" %}"/>
+        <img src="{% static "v2/images/social/vk.png" %}"/>
+        <img src="{% static "v2/images/social/line-icon.png" %}"/>
+        <img src="{% static "v2/images/social/habrahabr.png" %}"/>
+        <img src="{% static "v2/images/social/map.png" %}"/>
+        <img src="{% static "v2/images/social/500px.png" %}"/>
+        <img src="{% static "v2/images/social/etsy.png" %}"/>
+        <img src="{% static "v2/images/social/vscogrid.png" %}"/>
+        <img src="{% static "v2/images/social/github.png" %}"/>
+        <img src="{% static "v2/images/social/ello.png" %}"/>
+        <img src="{% static "v2/images/social/android.png" %}"/>
+        <img src="{% static "v2/images/social/reddit-light.png" %}"/>
+        <img src="{% static "v2/images/social/yelp.png" %}"/>
+        <img src="{% static "v2/images/social/deviantart.png" %}"/>
+        <img src="{% static "v2/images/social/foursquare.png" %}"/>
+        <img src="{% static "v2/images/social/dropbox.png" %}"/>
+        <img src="{% static "v2/images/social/tripadvisor.png" %}"/>
+        <img src="{% static "v2/images/social/tumblr.png" %}"/>
+        <img src="{% static "v2/images/social/like.png" %}"/>
+        <img src="{% static "v2/images/social/medium.png" %}"/>
+        <img src="{% static "v2/images/social/upwork.png" %}"/>
+        <img src="{% static "v2/images/social/behance.png" %}"/>
+        <img src="{% static "v2/images/social/gitter2.png" %}"/>
+        <img src="{% static "v2/images/social/etsy-short.png" %}"/>
+        <img src="{% static "v2/images/social/apple.png" %}"/>
+        <img src="{% static "v2/images/social/viadeo.png" %}"/>
+        <img src="{% static "v2/images/social/skype.png" %}"/>
+        <img src="{% static "v2/images/social/slack_new.png" %}"/>
+        <img src="{% static "v2/images/social/wordpress.png" %}"/>
+        <img src="{% static "v2/images/social/social-icons.png" %}"/>
+        <img src="{% static "v2/images/social/messenger.png" %}"/>
+        <img src="{% static "v2/images/social/slack.png" %}"/>
+        <img src="{% static "v2/images/social/buffer.png" %}"/>
+        <img src="{% static "v2/images/social/gitter.png" %}"/>
+        <img src="{% static "v2/images/social/twitter.png" %}"/>
+        <img src="{% static "v2/images/social/coub.png" %}"/>
+        <img src="{% static "v2/images/social/linkedin.png" %}"/>
+        <img src="{% static "v2/images/social/reddit_new.png" %}"/>
+        <img src="{% static "v2/images/social/swarm.png" %}"/>
+        <img src="{% static "v2/images/social/web.png" %}"/>
+        <img src="{% static "v2/images/social/dribbble.png" %}"/>
+        <img src="{% static "v2/images/social/codepen.png" %}"/>
+        <img src="{% static "v2/images/social/evernote.png" %}"/>
+        <img src="{% static "v2/images/social/phone.png" %}"/>
+        <img src="{% static "v2/images/social/angellist.png" %}"/>
+        <img src="{% static "v2/images/social/sketch.png" %}"/>
+        <img src="{% static "v2/images/social/producthunt.png" %}"/>
+        <img src="{% static "v2/images/social/reddit.png" %}"/>
+        <img src="{% static "v2/images/social/jsfiddle.png" %}"/>
+        <img src="{% static "v2/images/social/stumbleupon.png" %}"/>
+        <img src="{% static "v2/images/social/windows.png" %}"/>
+        <img src="{% static "v2/images/social/youtube.png" %}"/>
+        <img src="{% static "v2/images/social/medium_new.png" %}"/>
+        <img src="{% static "v2/images/social/slack2.png" %}"/>
+        <img src="{% static "v2/images/social/xing.png" %}"/>
+        <img src="{% static "v2/images/social/photobucket.png" %}"/>
+        <img src="{% static "v2/images/social/twitter_new.png" %}"/>
+        <img src="{% static "v2/images/social/pinterest-light.png" %}"/>
+        <img src="{% static "v2/images/social/stackoverflow.png" %}"/>
+        <img src="{% static "v2/images/social/livejournal.png" %}"/>
+        <img src="{% static "v2/images/social/line.png" %}"/>
+        <img src="{% static "v2/images/social/facebook_new.png" %}"/>
+        <img src="{% static "v2/images/social/pinterest.png" %}"/>
+        <img src="{% static "v2/images/social/facebook.png" %}"/>
+        <img src="{% static "v2/images/social/amazon.png" %}"/>
+        <img src="{% static "v2/images/social/send.png" %}"/>
+        <img src="{% static "v2/images/social/googleplus.png" %}"/>
+        <img src="{% static "v2/images/social/googledrive.png" %}"/>
+        <img src="{% static "v2/images/social/favorite.png" %}"/>
+        <img src="{% static "v2/images/social/quora.png" %}"/>
+        <img src="{% static "v2/images/social/snapchat.png" %}"/>
+        <img src="{% static "v2/images/social/slideshare.png" %}"/>
+        <img src="{% static "v2/images/social/kickstarter.png" %}"/>
+        <img src="{% static "v2/images/social/gitcoin.png" %}"/>
+        <img src="{% static "v2/images/social/periscope.png" %}"/>
+      </div>
+
+      <div class="container-fluid p-5 bg-dark assets">
+        <p class="h1 text-light">{% trans "Static Assets" %}</p>
+        <img src="{% static "v2/images/tree/dark.png" %}"/>
+        <img src="{% static "v2/images/helmet_emoji.png" %}"/>
+        <img src="{% static "v2/images/plus.png" %}"/>
+        <img src="{% static "v2/images/built-by-oss.png" %}"/>
+        <img src="{% static "v2/images/landing/contributor/howitworks3_2.png" %}"/>
+        <img src="{% static "v2/images/landing/contributor/howitworks1_1.png" %}"/>
+        <img src="{% static "v2/images/landing/contributor/howitworks3_1.png" %}"/>
+        <img src="{% static "v2/images/landing/contributor/howitworks1_2.png" %}"/>
+        <img src="{% static "v2/images/landing/contributor/howitworks_bottom_2.png" %}"/>
+        <img src="{% static "v2/images/landing/contributor/how_it_works_time_icon.png" %}"/>
+        <img src="{% static "v2/images/landing/contributor/hero_laptop.png" %}"/>
+        <img src="{% static "v2/images/landing/contributor/howitworks2_2.png" %}"/>
+        <img src="{% static "v2/images/landing/contributor/howitworks_bottom_1.png" %}"/>
+        <img src="{% static "v2/images/landing/contributor/howitworks4_2.png" %}"/>
+        <img src="{% static "v2/images/landing/contributor/how_it_works_excl_icon.png" %}"/>
+        <img src="{% static "v2/images/landing/contributor/robot.png" %}"/>
+        <img src="{% static "v2/images/landing/contributor/howitworks_cant_work_icon.png" %}"/>
+        <img src="{% static "v2/images/landing/contributor/hero_whiteeth.png" %}"/>
+        <img src="{% static "v2/images/landing/contributor/how_it_works_cancel_icon.png" %}"/>
+        <img src="{% static "v2/images/landing/contributor/howitworks_accept_submission_icon.png" %}"/>
+        <img src="{% static "v2/images/favicon.ico/favicon-16x16.png" %}"/>
+        <img src="{% static "v2/images/favicon.ico/android-chrome-192x192.png" %}"/>
+        <img src="{% static "v2/images/favicon.ico/apple-touch-icon.png" %}"/>
+        <img src="{% static "v2/images/favicon.ico/android-chrome-512x512.png" %}"/>
+        <img src="{% static "v2/images/favicon.ico/mstile-150x150.png" %}"/>
+        <img src="{% static "v2/images/favicon.ico/favicon-32x32.png" %}"/>
+        <img src="{% static "v2/images/tools/science.png" %}"/>
+        <img src="{% static "v2/images/tools/leaderboard.png" %}"/>
+        <img src="{% static "v2/images/tools/ens.png" %}"/>
+        <img src="{% static "v2/images/tools/comingsoon.png" %}"/>
+        <img src="{% static "v2/images/tools/crosshairs.png" %}"/>
+        <img src="{% static "v2/images/tools/profiles.png" %}"/>
+        <img src="{% static "v2/images/tools/community1.png" %}"/>
+        <img src="{% static "v2/images/tools/community2.png" %}"/>
+        <img src="{% static "v2/images/404.png" %}"/>
+        <img src="{% static "v2/images/logo_black.png" %}"/>
+        <img src="{% static "v2/images/planet.png" %}"/>
+        <img src="{% static "v2/images/logo.png" %}"/>
+        <img src="{% static "v2/images/favicon_local.ico/favicon-16x16.png" %}"/>
+        <img src="{% static "v2/images/favicon_local.ico/android-chrome-192x192.png" %}"/>
+        <img src="{% static "v2/images/favicon_local.ico/apple-touch-icon.png" %}"/>
+        <img src="{% static "v2/images/favicon_local.ico/mstile-150x150.png" %}"/>
+        <img src="{% static "v2/images/favicon_local.ico/favicon-32x32.png" %}"/>
+        <img src="{% static "v2/images/regulus_square.png" %}"/>
+        <img src="{% static "v2/images/spaceship.png" %}"/>
+        <img src="{% static "v2/images/regulus.png" %}"/>
+        <img src="{% static "v2/images/gitcoinco.png" %}"/>
+        <img src="{% static "v2/images/gitcoin-button.png" %}"/>
+        <img src="{% static "v2/images/close-red.png" %}"/>
+        <img src="{% static "v2/images/home-footer.png" %}"/>
+        <img src="{% static "v2/images/logo_black_med.png" %}"/>
+        <img src="{% static "v2/images/bitcointalk.png" %}"/>
+        <img src="{% static "v2/images/prime.png" %}"/>
+        <img src="{% static "v2/images/github.png" %}"/>
+        <img src="{% static "v2/images/avatar_holiday.png" %}"/>
+        <img src="{% static "v2/images/emailhead.png" %}"/>
+        <img src="{% static "v2/images/grow_open_source_new.png" %}"/>
+        <img src="{% static "v2/images/icon-msg-16.png" %}"/>
+        <img src="{% static "v2/images/helmet_coin.png" %}"/>
+        <img src="{% static "v2/images/about/grow_hero.png" %}"/>
+        <img src="{% static "v2/images/about/robot.png" %}"/>
+        <img src="{% static "v2/images/pink-wordmark.png" %}"/>
+        <img src="{% static "v2/images/getgitcoin/tip-dev.png" %}"/>
+        <img src="{% static "v2/images/getgitcoin/find-work.png" %}"/>
+        <img src="{% static "v2/images/getgitcoin/spaceship.png" %}"/>
+        <img src="{% static "v2/images/getgitcoin/github.png" %}"/>
+        <img src="{% static "v2/images/arrow-down.png" %}"/>
+        <img src="{% static "v2/images/divine.png" %}"/>
+        <img src="{% static "v2/images/ens.png" %}"/>
+        <img src="{% static "v2/images/caret-down.png" %}"/>
+        <img src="{% static "v2/images/background.png" %}"/>
+        <img src="{% static "v2/images/logo_large.png" %}"/>
+        <img src="{% static "v2/images/mission/believe/bounty.png" %}"/>
+        <img src="{% static "v2/images/mission/believe/no_token.png" %}"/>
+        <img src="{% static "v2/images/mission/believe/blockchain.png" %}"/>
+        <img src="{% static "v2/images/icon-msg.png" %}"/>
+        <img src="{% static "v2/images/quotes.png" %}"/>
+        <img src="{% static "v2/images/gas.png" %}"/>
+        <img src="{% static "v2/images/grow_open_source.png" %}"/>
+        <img src="{% static "v2/images/minus.png" %}"/>
+        <img src="{% static "v2/images/avatar.png" %}"/>
+        <img src="{% static "v2/images/why-different/relationships.png" %}"/>
+        <img src="{% static "v2/images/why-different/projects.png" %}"/>
+        <img src="{% static "v2/images/why-different/find-work.png" %}"/>
+        <img src="{% static "v2/images/why-different/spaceship.png" %}"/>
+        <img src="{% static "v2/images/why-different/lock.png" %}"/>
+        <img src="{% static "v2/images/why-different/tools.png" %}"/>
+        <img src="{% static "v2/images/why-different/withdraw.png" %}"/>
+        <img src="{% static "v2/images/why-different/search.png" %}"/>
+        <img src="{% static "v2/images/why-different/heart.png" %}"/>
+        <img src="{% static "v2/images/why-different/boulder.png" %}"/>
+        <img src="{% static "v2/images/why-different/code_great.png" %}"/>
+        <img src="{% static "v2/images/why-different/cash.png" %}"/>
+        <img src="{% static "v2/images/team/kevin-owocki.png" %}"/>
+        <img src="{% static "v2/images/logo.png" %}"/>
+        <img src="{% static "v2/images/helmet_icon.png" %}"/>
+        <img src="{% static "v2/images/promo_buttons/slice_08.png" %}"/>
+        <img src="{% static "v2/images/promo_buttons/slice_04.png" %}"/>
+        <img src="{% static "v2/images/promo_buttons/slice_05.png" %}"/>
+        <img src="{% static "v2/images/promo_buttons/slice_07.png" %}"/>
+        <img src="{% static "v2/images/promo_buttons/slice_06.png" %}"/>
+        <img src="{% static "v2/images/promo_buttons/slice_02.png" %}"/>
+        <img src="{% static "v2/images/promo_buttons/slice_03.png" %}"/>
+        <img src="{% static "v2/images/promo_buttons/slice_01.png" %}"/>
+        <img src="{% static "v2/images/header-bg.png" %}"/>
+        <img src="{% static "v2/images/tree.png" %}"/>
+        <img src="{% static "v2/images/Robot.png" %}"/>
+
+        <img src="{% static "v2/images/footer.png" %}"/>
+        <img src="{% static "v2/images/leaderboard-1.png" %}"/>
+        <img src="{% static "v2/images/leaderboard-3.png" %}"/>
+        <img src="{% static "v2/images/light-bg.png" %}"/>
+        <img src="{% static "v2/images/success.png" %}"/>
+        <img src="{% static "v2/images/gc-tree.png" %}"/>
+        <img src="{% static "v2/images/leaderboard-2.png" %}"/>
+        <img src="{% static "v2/images/helmet.png" %}"/>
+        <img src="{% static "v2/images/gudie_casestudy.png" %}"/>
+        <img src="{% static "v2/images/helmet_front_white.png" %}"/>
+        <img src="{% static "v2/images/close-grey.png" %}"/>
+        <img src="{% static "v2/images/logo_black_small.png" %}"/>
+        <img src="{% static "v2/images/logo_gitcoins.png" %}"/>
+        <img src="{% static "v2/images/helmet_front.png" %}"/>
+        <img src="{% static "v2/images/helmet_X.png" %}"/>
+        <img src="{% static "v2/images/logo_side.png" %}"/>
+        <img src="{% static "v2/images/shrug_bot.png" %}"/>
+        <img src="{% static "v2/images/help/tools.png" %}"/>
+
+        <img src="{% static "v2/images/tree/ladder.jpg" %}"/>
+        <img src="{% static "v2/images/tree/party_robot.jpg" %}"/>
+        <img src="{% static "v2/images/freedom.jpg" %}"/>
+        <img src="{% static "v2/images/landing/contributor/hero_header_bg.jpg" %}"/>
+        <img src="{% static "v2/images/tools/tools_noborder.jpg" %}"/>
+        <img src="{% static "v2/images/tools/tools.jpg" %}"/>
+        <img src="{% static "v2/images/tools/api.jpg" %}"/>
+        <img src="{% static "v2/images/getgitcoin/tip-dev.jpg" %}"/>
+        <img src="{% static "v2/images/getgitcoin/find-work.jpg" %}"/>
+        <img src="{% static "v2/images/getgitcoin/spaceship.jpg" %}"/>
+        <img src="{% static "v2/images/getgitcoin/secure.jpg" %}"/>
+        <img src="{% static "v2/images/getgitcoin/github.jpg" %}"/>
+        <img src="{% static "v2/images/getgitcoin/withdraw.jpg" %}"/>
+        <img src="{% static "v2/images/codesponsor.jpg" %}"/>
+        <img src="{% static "v2/images/dogfood.jpg" %}"/>
+        <img src="{% static "v2/images/why-different/relationships.jpg" %}"/>
+        <img src="{% static "v2/images/why-different/projects.jpg" %}"/>
+        <img src="{% static "v2/images/why-different/find-work.jpg" %}"/>
+        <img src="{% static "v2/images/why-different/spaceship.jpg" %}"/>
+        <img src="{% static "v2/images/why-different/lock.jpg" %}"/>
+        <img src="{% static "v2/images/why-different/tools.jpg" %}"/>
+        <img src="{% static "v2/images/why-different/withdraw.jpg" %}"/>
+        <img src="{% static "v2/images/why-different/search.jpg" %}"/>
+        <img src="{% static "v2/images/why-different/heart.jpg" %}"/>
+        <img src="{% static "v2/images/why-different/boulder.jpg" %}"/>
+        <img src="{% static "v2/images/why-different/code_great.jpg" %}"/>
+        <img src="{% static "v2/images/why-different/cash.jpg" %}"/>
+        <img src="{% static "v2/images/footer.jpg" %}"/>
+        <img src="{% static "v2/images/header-bg-light.jpg" %}"/>
+        <img src="{% static "v2/images/tldr/community.jpg" %}"/>
+        <img src="{% static "v2/images/tldr/earn.jpg" %}"/>
+        <img src="{% static "v2/images/tldr/tips.jpg" %}"/>
+        <img src="{% static "v2/images/tldr/accelerant.jpg" %}"/>
+        <img src="{% static "v2/images/tldr/tips_noborder.jpg" %}"/>
+        <img src="{% static "v2/images/tldr/bounties.jpg" %}"/>
+        <img src="{% static "v2/images/helmet_X.jpg" %}"/>
+        <img src="{% static "v2/images/help/firehose.jpg" %}"/>
+        <img src="{% static "v2/images/icon-msg-red-16.png" %}"/>
+      </div>
+    </div>
+
+    {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' with slideDurationInMs=3000 %}
+    {% include 'shared/rollbar.html' %}
+    {% include 'shared/messages.html' %}
+
+    <script src="{% static "v2/js/pages/tabs.js" %}"></script>
+    <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
+    <script src="{% static "v2/js/showdown.js" %}"></script>
+    <script src="{% static "onepager/js/confetti.js" %}"></script>
+    <script>
+      var dialog = document.querySelector('#codedialog');
+      var code = dialog.querySelector('code');
+      var converter = new showdown.Converter();
+
+      function showDialog(event) {
+        dialog.style.display = 'block';
+        code.innerHTML = converter.makeHtml(event.target.innerHTML);
+      }
+
+      function closeDialog(event) {
+        dialog.style.display = 'none';
+      }
+
+      window.addEventListener('load', function() {
+        setInterval(waitingRoomEntertainment, 3000);
+        setupTabs('#my-tabs');
+
+        var elements = document.querySelector('div.inventory').children;
+        var len = elements.length;
+        while (len-- > 0) {
+          elements[len].onclick = showDialog;
+        }
+      }, false);
+    </script>
+  </body>
+</html>
