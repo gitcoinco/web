@@ -5,11 +5,11 @@ var gas_amount = function(page_url) {
   // new new funding page
 
   if (page_url.indexOf('issue/fulfill') != -1) {
-    gasLimitEstimate = 207103;
+    gasLimitEstimate = 138133;
   }
   // new fulfill funding page
   if (page_url.indexOf('/new') != -1) {
-    gasLimitEstimate = 318730;
+    gasLimitEstimate = 212487;
   }
   // new fulfill funding page
   if (page_url.indexOf('issue/increase') != -1) {
