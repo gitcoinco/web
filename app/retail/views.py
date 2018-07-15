@@ -357,7 +357,8 @@ def vision(request):
         'active': 'vision',
         'title': 'Vision',
         'card_title': _("Gitcoin's Vision for a web3 world"),
-        'card_desc': _("Gitcoin's Vision for a web3 world is a positive vision of a future in which it's easy for developers to find paid work in open source."),
+        'card_desc': _("Gitcoin's Vision for a web3 world is a positive vision\
+            of a future in which it's easy for developers to find paid work in open source."),
         'avatar_url': static('v2/images/grow_open_source.png'),
     }
     return TemplateResponse(request, 'vision.html', context)
@@ -825,7 +826,9 @@ def ios(request):
         'active': 'ios',
         'title': 'iOS app',
         'card_title': 'Gitcoin has an iOS app!',
-        'card_desc': 'Gitcoin aims to make it easier to grow open source from anywhere in the world, anytime.  We’re proud to announce our iOS app, which brings us a step closer to this north star!Browse open bounties on the go, express interest, and coordinate your work on the move.',
+        'card_desc': 'Gitcoin aims to make it easier to grow open source from anywhere in the world,\
+            anytime.  We’re proud to announce our iOS app, which brings us a step closer to this north star!\
+            Browse open bounties on the go, express interest, and coordinate your work on the move.',
     }
     return TemplateResponse(request, 'ios.html', context)
 
