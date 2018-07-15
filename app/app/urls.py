@@ -297,7 +297,7 @@ urlpatterns = [
     re_path(r'^settings/(.*)?', marketing.views.email_settings, name='settings'),
 
     # funder dashboard
-    re_path(r'^funder_dashboard/', dashboard.views.funder_dashboard, name='funder_dashboard'),
+    re_path(r'^funder_dashboard', dashboard.views.funder_dashboard, name='funder_dashboard'),
     re_path(
         r'^funder_dashboard_outgoing_funds',
         dashboard.views.funder_dashboard_outgoing_funds,
