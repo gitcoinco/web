@@ -1462,11 +1462,7 @@ input.is-invalid {
   .bounty_def {
     display: none;
   }
-
-  .search_bar span {
-    display: none;
-  }
-
+  
   .interior .body {
     width: 100%;
     flex: 0 0 100%;
