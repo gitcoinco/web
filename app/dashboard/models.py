@@ -1129,8 +1129,7 @@ class Profile(SuperModel):
             bool: Whether or not the user is a funder.
 
         """
-        # TODO: Funder dashboard
-        return True
+        return self.stats[0][0] == 'funder'
 
     @property
     def stats(self):
