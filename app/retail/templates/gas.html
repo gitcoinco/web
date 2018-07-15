@@ -37,6 +37,10 @@ div.tooltip {
 }
 
 </style>
+<script>
+    var source = {{conf_time_spread | safe}};
+    var gas_times = source;
+</script>
 {% endblock %}
 <!-- Main -->
 
@@ -53,7 +57,6 @@ div.tooltip {
 {% include 'shared/gas_advisories.html' %}
 
 <h1> {% trans "Gas Tradeoff Tool" %} <span id="alpha">{% trans "Alpha" %}</span> </h1>
-<h2> {% trans "Live Predicted Confirmation Times (x axis) vs Gas Usage (y axis)" %} </h2>
 
 <ul class="gas_nav small">
   <li>
@@ -63,13 +66,15 @@ div.tooltip {
     <a href="{% url 'gas' %}?is_3d=1">{% trans "View Historical in 3d" %}</a>
   </li>
 </ul>
-{% if 1 %}
+{% if is_3d == "1" %}
+  <h2> {% trans "Historical Predicted Confirmation Times (x axis) vs Gas Usage (y axis)" %} </h2>
   <br>
   <video width="640" height="480" controls>
   <source src="/static/tmp/gas_price_viz.mp4" type="video/mp4">
 {trans "Your browser does not support the video tag."}
 </video>
 {% else %}
+  <h2> {% trans "Live Predicted Confirmation Times (x axis) vs Gas Usage (y axis)" %} </h2>
   {% if conf_time_spread == '[]' %}
     <p>
       {% blocktrans %} We are unable to sync gas data at this time.  We recommend you check out <a href="https://ethgasstation.info/predictionTable.php" target="_blank" rel="noopener noreferrer">ETH Gas Station</a> instead.{% endblocktrans %}
@@ -84,8 +89,6 @@ div.tooltip {
       .attr("class", "tooltip")
       .style("opacity", 0);
 
-    var source = {{conf_time_spread | safe}};
-    var gas_times = source;
     data = []
     source.forEach(function(d) {
         d['confirmation_time'] = parseFloat(d[1])
