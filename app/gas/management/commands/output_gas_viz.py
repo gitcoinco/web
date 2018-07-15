@@ -1,16 +1,12 @@
-from django.core.management.base import BaseCommand
-import os
-from gas.models import GasProfile
-import matplotlib
-import random
-matplotlib.use('Agg')
-from numpy  import array
-from mpl_toolkits.mplot3d import axes3d
-import matplotlib.pyplot as plt
-from matplotlib import cm
-from django.utils import timezone
 import datetime
+import os
+import random
 
+from django.core.management.base import BaseCommand
+from django.utils import timezone
+
+from gas.models import GasProfile
+from numpy import array
 
 
 def convert_to_movie():
@@ -63,12 +59,10 @@ class Command(BaseCommand):
     help = 'gets observations and visualizes them in 3d'
 
     def handle(self, *args, **options):
-        #X, Y, Z = axes3d.get_test_data(0.05)
-        #if True:
-        #    X = [[x + 1, x + 2, x + 2, x + 2] for x in range(0, 100)]
-        #    Y = [[x + 1, x + 2, x + 2, x + 2] for x in range(10, 110)]
-        #    Z = [[x + 1, x + 2, x + 2, x + 2] for x in range(90, 190)]
-        #for i in range(0, 10):
+        import matplotlib
+        matplotlib.use('Agg')
+        import matplotlib.pyplot as plt
+        from mpl_toolkits.mplot3d import axes3d
         vantage_point = 'med'
         rotate = True
         last_degrees = 275
