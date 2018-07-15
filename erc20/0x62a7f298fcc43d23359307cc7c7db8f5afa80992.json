@@ -1,0 +1,21 @@
+{
+  "symbol": "IOL",
+  "address": "0x62a7f298fcc43d23359307cc7c7db8f5afa80992",
+  "overview":{
+        "en": "Integration Of Credit (IOL) is a financial platform with digital assets as credit. It provides a safe, convenient and low cost pledge loan service for users with digital assets, and enjoy the bonus of digital asset appreciation at the same time of obtaining convenient, safe and low cost loans.",
+        "zh": "Integration Of Credit（简称IOL）是一个以数字资产为信用的金融平台，为持有数字资产的用户提供安全、便捷、低成本的质押借贷服务，在获得便捷，安全， 低成本贷款的同时，享受数字资产增值的红利."
+  },
+  "email": "admin@iolend.io",
+  "website": "https://www.iolend.io/",
+  "whitepaper": "https://www.iolend.io/whitepaper.pdf", 
+  "published_on": "2018-07-08",
+  "initial_price":{
+        "ETH":"0.00004 ETH"       
+  },
+  "links": {   
+    "twitter": "https://twitter.com/iolendio",
+    "telegram": "https://t.me/iolend",
+    "github": "https://github.com/iolend",
+    "facebook": "https://www.facebook.com/Integrtion-of-credit-1993089280702256/"   
+  }
+}
