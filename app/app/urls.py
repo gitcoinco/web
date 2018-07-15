@@ -38,6 +38,7 @@ import enssubdomain.views
 import external_bounties.views
 import faucet.views
 import gitcoinbot.views
+import kudos.views
 import linkshortener.views
 import marketing.views
 import marketing.webhookviews
@@ -51,6 +52,10 @@ from .sitemaps import sitemaps
 
 urlpatterns = [
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
+
+    # kudos
+    url(r'^kudos/marketplace', kudos.views.marketplace, name='kudos_marketplace'),
+    url(r'^kudos', kudos.views.about, name='kudos_about'),
 
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
