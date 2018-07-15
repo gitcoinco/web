@@ -47,7 +47,7 @@ div.tooltip {
 
 {% block 'main' %}
 
-<section id=main>
+<section id="main">
 {% include 'shared/gas_nav.html' %}
 
 {% include 'shared/gas_advisories.html' %}
@@ -62,6 +62,36 @@ div.tooltip {
 {% else %}
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script>
+  /*
+    @function responsivefy
+    Copy pasta a la: https://brendansudol.com/writing/responsive-d3
+  */
+  function responsivefy(svg) {
+    // get container + svg aspect ratio
+    var container = d3.select(svg.node().parentNode),
+      width = parseInt(svg.style("width")),
+      height = parseInt(svg.style("height")),
+      aspect = width / height;
+
+    // add viewBox and preserveAspectRatio properties,
+    // and call resize so that svg resizes on inital page load
+    svg.attr("viewBox", "0 0 " + width + " " + height)
+      .attr("perserveAspectRatio", "xMinYMid")
+      .call(resize);
+
+    // to register multiple listeners for same event type,
+    // you need to add namespace, i.e., 'click.foo'
+    // necessary if you call invoke this function for multiple svgs
+    // api docs: https://github.com/mbostock/d3/wiki/Selections#on
+    d3.select(window).on("resize." + container.attr("id"), resize);
+
+    // get width of container and resize svg to fit it
+    function resize() {
+      var targetWidth = parseInt(container.style("width"));
+      svg.attr("width", targetWidth);
+      svg.attr("height", Math.round(targetWidth / aspect));
+    }
+  }
 
   var tooltip;
 
@@ -95,8 +125,9 @@ div.tooltip {
     .append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
+      .call(responsivefy)
     .append("g")
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      // .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
   x.domain([0, d3.max(data, function(d) { return d.confirmation_time; })]).nice();
   y.domain([0, d3.max(data, function(d) { return d.gas_price; })]).nice();
@@ -156,16 +187,16 @@ div.tooltip {
   </script>
   <style>
   #estimateTable{
-    margin: 0px auto; border: 1px solid black;    
+    margin: 0px auto; border: 1px solid black;
   }
   #estimateTable tr td{
-    border: 1px solid #ccc;    
-    padding: 5px 10px; 
+    border: 1px solid #ccc;
+    padding: 5px 10px;
   }
   </style>
 
 
-  
+
   <h2>{% trans "Useful Links" %}</h2>
   {% blocktrans %}To see the data in table format, check out <a href="https://ethgasstation.info/predictionTable.php" target="_blank" rel="noopener noreferrer">ETH Gas Station</a>{% endblocktrans %}
 
