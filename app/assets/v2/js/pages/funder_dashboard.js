@@ -108,6 +108,46 @@ $(function () {
     console.log($totalBudget.val());
   };
 
+  // used both by bounties and outgoing funds
+  // any object the resulting fns are to be used on must have the created_on and worthDollars properties
+  function getSortFn(sortFilterVal) {
+    switch (sortFilterVal) {
+      case 'Recent':
+        return function(fund1, fund2) {
+          return dateComparison(fund1.created_on, fund2.created_on);
+        }
+      case 'Oldest':
+        return function(fund1, fund2) {
+          return -dateComparison(fund1.created_on, fund2.created_on);
+        }
+      case 'Highest Value':
+        return function(fund1, fund2) {
+          return -(parseFloat(fund1.worthDollars) - parseFloat(fund2.worthDollars));
+        }
+      case 'Lowest Value':
+        return function(fund1, fund2) {
+          return parseFloat(fund1.worthDollars) - parseFloat(fund2.worthDollars);
+        }
+      default:
+        return function() {
+          return 0;
+        }
+    }
+  };
+
+  // TODO: date1 and date2 are datetime objects coming from the api. Need a way to compare them
+  function dateComparison(date1, date2) {
+    if (date1 < date2) {
+      return -1;
+    }
+
+    if (date1 > date2) {
+      return 1;
+    }
+
+    return 0;
+  }
+
   function activateOutgoingFunds(bounties) {
     var $container = $('.funder-dashboard__outgoing-funds__funds');
     var $fundTemplate = $('.funder-dashboard__outgoing-funds__funds__fund--template');
@@ -153,31 +193,26 @@ $(function () {
       }
     }
 
-    function OutgoingFund(bounty) {
-      this.id = bounty.github_issue_number;
-      this.title = bounty.title;
-      this.type = bounty.bounty_type; // TODO: This should be Tip, Payment etc.
-      this.status = bounty.status; // TODO: This should be Pending, Claimed etc
-      this.etherscanLink = bounty.etherscanLink;
-      this.worthDollars = bounty.value_in_usdt;
-      this.worthEth = bounty.value_in_eth;
-    }
-
     function getOutgoingFunds(funds, cbRenderFunds) {
       var filterBaseSel = 'funder-dashboard__outgoing-funds__filter';
 
-      var typeFilterVal = getTypeOrStatusFilterValue(filterBaseSel);
-      var sortFilterVal = getAgeOrValueFilterValue(filterBaseSel);
+      var typeOrStatusFilterVal = getTypeOrStatusFilterValue(filterBaseSel);
+      var sortByFilterVal = getAgeOrValueFilterValue(filterBaseSel);
 
       var filteredFunds = funds.filter(function (fund) {
-        if (typeFilterVal == 'All') {
+        if (typeOrStatusFilterVal.toUpperCase() == 'All'.toUpperCase()) {
           return true;
         }
 
-        return fund.type.toUpperCase() == typeFilterVal.toUpperCase();
+        if (typeOrStatusFilterVal == 'Tip' || typeOrStatusFilterVal == 'Payment') {
+          return fund.type.toUpperCase() == typeOrStatusFilterVal.toUpperCase();
+        } else {
+          // 'Pending' || 'Claimed'
+          return fund.status.toUpperCase() == typeOrStatusFilterVal.toUpperCase();
+        }
       });
 
-      var sortFn = getSortFn(sortFilterVal);
+      var sortFn = getSortFn(sortByFilterVal);
       filteredFunds = filteredFunds.sort(function(fund1, fund2) {
         return sortFn(fund1, fund2);
       });
@@ -192,46 +227,16 @@ $(function () {
         return $(classSel(filterBaseSel) + '--age-or-value').find(':selected').val();
       }
     }
-  }
 
-  // used both by bounties and outgoing funds
-  // any object the resulting fns are to be used on must have the created_on and worthDollars properties
-  function getSortFn(sortFilterVal) {
-    switch (sortFilterVal) {
-      case 'Recent':
-        return function(fund1, fund2) {
-          return dateComparison(fund1.created_on, fund2.created_on);
-        }
-      case 'Oldest':
-        return function(fund1, fund2) {
-          return -dateComparison(fund1.created_on, fund2.created_on);
-        }
-      case 'Highest Value':
-        return function(fund1, fund2) {
-          return -(parseFloat(fund1.worthDollars) - parseFloat(fund2.worthDollars));
-        }
-      case 'Lowest Value':
-        return function(fund1, fund2) {
-          return parseFloat(fund1.worthDollars) - parseFloat(fund2.worthDollars);
-        }
-      default:
-        return function() {
-          return 0;
-        }
+    function OutgoingFund(bounty) {
+      this.id = bounty.github_issue_number;
+      this.title = bounty.title;
+      this.type = bounty.bounty_type; // TODO: This should be Tip, Payment etc.
+      this.status = bounty.status; // TODO: This should be Pending, Claimed etc
+      this.etherscanLink = bounty.etherscanLink;
+      this.worthDollars = bounty.value_in_usdt;
+      this.worthEth = bounty.value_in_eth;
     }
-  };
-
-  // TODO: date1 and date2 are datetime objects coming from the api. Need a way to compare them
-  function dateComparison(date1, date2) {
-    if (date1 < date2) {
-      return -1;
-    }
-
-    if (date1 > date2) {
-      return 1;
-    }
-
-    return 0;
   }
 
   function updateBemElementInParent($parent, classSelectorBase, elementName, elementValue) {
@@ -251,9 +256,13 @@ $(function () {
     var $container = $('.funder-dashboard__all-bounties__bounties');
     var $bountyTemplate = $('.funder-dashboard__all-bounties__bounties__bounty--template');
 
+    var mappedBounties = bounties.map(function(bounty) {
+      return new Bounty(bounty);
+    });
+
     var bountyBaseSel = 'funder-dashboard__all-bounties__bounties__bounty';
     var cbRenderBounties = renderOutgoingFunds.bind(this, $container, $bountyTemplate, bountyBaseSel);
-    var getBounties = getAllBounties.bind(this, cbRenderBounties);
+    var getBounties = getAllBounties.bind(this, mappedBounties, cbRenderBounties);
 
     getBounties();
     $('.funder-dashboard__all-bounties__filter').change(function () {
@@ -278,13 +287,13 @@ $(function () {
         updateBemElementInParent($clone, bountyBaseSel, 'worth__dollars', bounty.worthDollars);
         updateBemElementInParent($clone, bountyBaseSel, 'worth__eth', bounty.worthEth);
 
-        if (bounty.status === 'Started') {
+        if (bounty.status === 'started') {
           $clone.addClass(bountyBaseSel + '--started');
         }
-        else if (bounty.status === 'Stopped') {
+        else if (bounty.status === 'stopped') {
           $clone.addClass(bountyBaseSel + '--stopped');
         }
-        else if (bounty.status === 'Submitted') {
+        else if (bounty.status === 'submitted') {
           $clone.addClass(bountyBaseSel + '--submitted');
         }
 
@@ -293,23 +302,33 @@ $(function () {
       }
     }
 
-    function getAllBounties(cbRenderBounties) {
+    function getAllBounties(bounties, cbRenderBounties) {
       var filterBaseSel = 'funder-dashboard__all-bounties__filter';
 
-      var includeOnly = getTypeOrStatusFilterValue(filterBaseSel);
-      var orderBy = getAgeOrValueFilterValue(filterBaseSel);
+      var typeOrStatusFilterVal = getTypeOrStatusFilterValue(filterBaseSel);
+      var sortByFilterVal = getAgeOrValueFilterValue(filterBaseSel);
 
-      var postUrl =
-        window.funderDashboardUrls.bountiesUrl + "?includeOnly=" + includeOnly + "&orderBy=" + orderBy;
+      var filteredBounties = bounties.filter(function (fund) {
+        if (typeOrStatusFilterVal.toUpperCase() == 'All'.toUpperCase()) {
+          return true;
+        }
 
-      $.ajax({
-        url: postUrl,
-        type: 'POST',
-        success: function (data) {
-          var bounties = data.bounties;
-          cbRenderBounties(bounties);
+        // TODO: Am I getting this right? The filter values for all bounties are the same as the outgoing funds?
+        // Should we filter by status instead and remove either the options of 'Tip'/'Payment' OR 'Pending'/'Claimed'
+        if (typeOrStatusFilterVal == 'Tip' || typeOrStatusFilterVal == 'Payment') {
+          return fund.typeTipOrPayment.toUpperCase() == typeOrStatusFilterVal.toUpperCase();
+        } else {
+          // 'Pending' || 'Claimed'
+          return fund.statusPendingOrClaimed.toUpperCase() == typeOrStatusFilterVal.toUpperCase();
         }
       });
+
+      var sortFn = getSortFn(sortByFilterVal);
+      filteredBounties = filteredBounties.sort(function(fund1, fund2) {
+        return sortFn(fund1, fund2);
+      });
+
+      cbRenderBounties(filteredBounties);
 
       function getTypeOrStatusFilterValue(filterBaseSel) {
         return $(classSel(filterBaseSel) + '--type-or-status').find(':selected').val();
@@ -318,6 +337,18 @@ $(function () {
       function getAgeOrValueFilterValue(filterBaseSel) {
         return $(classSel(filterBaseSel) + '--age-or-value').find(':selected').val();
       }
+    }
+
+    function Bounty(bounty) {
+      this.id = bounty.github_issue_number;
+      this.title = bounty.title;
+      this.type = bounty.bounty_type;
+      this.typeTipOrPayment = ""; // TODO: this will be used to filter a bounty
+      this.status = bounty.status;
+      this.statusPendingOrClaimed = ""; // TODO: this will be used to filter the bounty
+      this.githubLink = bounty.github_url;
+      this.worthDollars = bounty.value_in_usdt;
+      this.worthEth = bounty.value_in_eth;
     }
   }
 
@@ -418,7 +449,7 @@ $(function () {
       });
 
       activateOutgoingFunds(outgoingFunds);
-      activateAllBounties(funderBounties);
+      activateAllBounties(funderBounties.slice(0, 10));
     });
   }
 });

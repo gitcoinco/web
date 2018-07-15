@@ -298,16 +298,6 @@ urlpatterns = [
 
     # funder dashboard
     re_path(r'^funder_dashboard', dashboard.views.funder_dashboard, name='funder_dashboard'),
-    re_path(
-        r'^funder_dashboard_outgoing_funds',
-        dashboard.views.funder_dashboard_outgoing_funds,
-        name='funder_dashboard_outgoing_funds'
-    ),
-    re_path(
-        r'^funder_dashboard_bounties',
-        dashboard.views.funder_dashboard_bounties,
-        name='funder_dashboard_bounties'
-    ),
 
     # marketing views
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
