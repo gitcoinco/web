@@ -57,17 +57,17 @@ div.tooltip {
 
 <ul class="gas_nav small">
   <li>
-    <a href="{% url 'gas' %}?is_3d=0">View Live Data in 2d</a>
+    <a href="{% url 'gas' %}?is_3d=0">{% trans "View Live Data in 2d" %}</a>
   </li>
   <li>
-    <a href="{% url 'gas' %}?is_3d=1">View Historical in 3d</a>
+    <a href="{% url 'gas' %}?is_3d=1">{% trans "View Historical in 3d" %}</a>
   </li>
 </ul>
 {% if 1 %}
   <br>
   <video width="640" height="480" controls>
   <source src="/static/tmp/gas_price_viz.mp4" type="video/mp4">
-Your browser does not support the video tag.
+{trans "Your browser does not support the video tag."}
 </video>
 {% else %}
   {% if conf_time_spread == '[]' %}
@@ -130,7 +130,7 @@ Your browser does not support the video tag.
       .on('mouseover', function(d) {
         var tooltip_msg = '<div>';
         tooltip_msg = `Gas Price: ${d.gas_price}`;
-        tooltip_msg = tooltip_msg + `<br/>Confirmation time: ${d.confirmation_time} min`;
+        tooltip_msg = tooltip_msg + `<br/>{% trans "Confirmation time"%}: ${d.confirmation_time} min`;
         tooltip_msg = tooltip_msg + '</div>';
         tooltip.transition().style("opacity", 1);
         tooltip.html(tooltip_msg).style("left", (d3.event.pageX + 15) + "px").style("top", (d3.event.pageY - 28) + "px");

@@ -1,6 +1,5 @@
 import datetime
 import os
-import random
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -12,13 +11,6 @@ from numpy import array
 def convert_to_movie():
     command = "ffmpeg -framerate 30 -pattern_type glob -i 'cache/frames/*.jpg' -c:v libx264 -pix_fmt yuv420p cache/out.mp4"
     print("converting to movie")
-    os.system(command)
-
-
-def install_ffmpeg():
-    command = 'apt update -y '
-    os.system(command)
-    command = 'apt install ffmpeg libav-tools x264 x265 -y'
     os.system(command)
 
 
@@ -78,7 +70,6 @@ class Command(BaseCommand):
             package[key].append(new_pkg)
 
         clear_cache()
-        #install_ffmpeg()
 
         # Divide into X, Y, Z
         keys = list(package.keys())
@@ -135,8 +126,8 @@ class Command(BaseCommand):
             if vantage_point == 'high':
                 z_angle = 10
             ax.view_init(z_angle, degrees)
-
-            png_file = 'cache/frames/{}.jpg'.format(str(j).rjust(10, '0'))
+            filename = str(j).rjust(10, '0')
+            png_file = f'cache/frames/{filename}.jpg'
             plt.savefig(png_file)
             plt.close()
         convert_to_movie()
