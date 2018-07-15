@@ -37,10 +37,6 @@ div.tooltip {
 }
 
 </style>
-<script>
-    var source = {{conf_time_spread | safe}};
-    var gas_times = source;
-</script>
 {% endblock %}
 <!-- Main -->
 
@@ -89,6 +85,8 @@ div.tooltip {
       .attr("class", "tooltip")
       .style("opacity", 0);
 
+    var source = {{conf_time_spread | safe}};
+    var gas_times = source;
     data = []
     source.forEach(function(d) {
         d['confirmation_time'] = parseFloat(d[1])
