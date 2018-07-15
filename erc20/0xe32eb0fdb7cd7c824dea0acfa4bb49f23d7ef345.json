@@ -1,0 +1,22 @@
+{
+  "symbol": "DSD",
+  "address": "0xe32eb0fdb7cd7c824dea0acfa4bb49f23d7ef345",
+  "overview":{
+        "en": "DSD Token for DSDIN",
+        "zh": "DSD工业智能网络"
+  },
+  "email": "vim.you@gmail.com",
+  "website": "https://github.com/DSD-TECH-FOUNDATION/DSDIN",
+  "whitepaper": "https://github.com/DSD-TECH-FOUNDATION/DSDIN/blob/master/docs/DSDIN-Blockchain-Whitepaper-CN.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-01-01",
+  "initial_price":{
+        "ETH":"0.00004 ETH",
+        "USD":"0.02 USD",
+        "BTC":"0.00000033 BTC"
+  },
+  "links": {
+    "telegram": "https://t.me/joinchat/dsd_official",
+    "github": "https://github.com/DSD-TECH-FOUNDATION/DSDIN"
+  }
+}
