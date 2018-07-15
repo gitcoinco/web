@@ -54,7 +54,6 @@ class Command(BaseCommand):
         import matplotlib
         matplotlib.use('Agg')
         import matplotlib.pyplot as plt
-        from mpl_toolkits.mplot3d import axes3d
         vantage_point = 'med'
         rotate = True
         last_degrees = 275
