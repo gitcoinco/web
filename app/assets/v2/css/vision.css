@@ -9,10 +9,6 @@
   color: white;
 }
 
-.vision h1 {
-  font-size: 3.2rem;
-}
-
 .vision .header-line {
   color: #fff;
   font-weight: normal;
@@ -84,7 +80,6 @@
   display: block;
 }
 
-
 /* Special lists icons */
 .list-special {
   padding-left: 20px;
@@ -152,5 +147,10 @@ li.market {
 
   .parag-center {
     max-width: 25%;
+  }
+
+  .tl-event:nth-child(even) .list-special {
+    text-align: right;
+    list-style-position: inside;
   }
 }
