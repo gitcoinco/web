@@ -21,6 +21,10 @@ $(document).ready(function($) {
     update_registry();
   });
 
+  $(document).on('click', '#close_bounty', function(event) {
+    update_registry();
+  });
+
 
   $(document).on('input', '.percent', function(event) {
     event.preventDefault();
@@ -144,6 +148,10 @@ $(document).ready(function($) {
       _alert('Please accept the TOS.', 'error');
       return;
     }
+    if (!document.transactions.length){
+      _alert('You do not have any transactions to payout.  Please add payees to the form.', 'error');
+      return;
+    }
 
     sendTransaction(0);
   });
@@ -190,6 +198,7 @@ $(document).ready(function($) {
     var denomination = $('#token_name').text();
     var original_amount = $('#original_amount').val();
     var net = round(original_amount - tc, 2);
+    var close_bounty = $('#close_bounty').is(':checked');
 
     $('#total_cost').html(tc + ' ' + denomination);
     $('#total_net').html(net + ' ' + denomination);
@@ -202,10 +211,13 @@ $(document).ready(function($) {
       'reason': 'Bounty Stake',
       'amount': '+' + original_amount + ' ' + denomination
     };
-    transactions.push(first_transaction);
-    var i = 1;
+    var i = 0;
+    if(close_bounty){
+      transactions.push(first_transaction);
+      i += 1;
+    }
 
-    for (i = 1; i < num_rows; i += 1) {
+    for (i = i; i < num_rows; i += 1) {
       var $row = $('#payout_table').find('tr:nth-child(' + i + ')');
       var amount = parseFloat($row.find('.amount').text());
       var username = $row.find('.username').text();
