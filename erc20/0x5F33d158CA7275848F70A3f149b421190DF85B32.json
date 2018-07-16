@@ -1,13 +1,13 @@
 {
   "symbol": "PDX",
-  "address": "0x4375380D11a0A8971F053aebA0629a61392Ec0e7",
+  "address": "0x5F33d158CA7275848F70A3f149b421190DF85B32",
   "overview":{
         "en": "A public blockchain ecosystem",
         "zh": "公共的区块链生态体系"
   },
   "email": "info@pdx.ltd",
   "website": "http://pdx.link/",
-  "whitepaper": "http://pdx.link/whitepaper/pdx-whitepaper-0.4.2-en.pdf",
+  "whitepaper": "http://pdx.link/whitepaper/pdx-whitepaper-0.4.3-en.pdf",
   "state": "NORMAL",
   "published_on": "2018-06-26",
   "initial_price":{
