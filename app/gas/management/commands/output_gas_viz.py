@@ -77,7 +77,7 @@ class Command(BaseCommand):
         num_items_to_show_at_a_time = 50
         for j in range(num_items_to_show_at_a_time, len(arr)):
             print(j)
-            key = f"Ethereum Mainnet Gas Tradeoffs\n Gas Prices (x axis) vs Time to Confirm (y axis) vs Time (z axis) \n {keys[j]}\n\nMade with <3 at Gitcoin.\nhttps://gitcoin..co/gas"
+            key = f"Ethereum Mainnet Gas Tradeoffs\n Gas Prices (x axis) vs Time to Confirm (y axis) vs Time (z axis) \n {keys[j]}\n\nMade with <3 at Gitcoin.\nhttps://gitcoin.co/gas"
             facecolor = '#274150' if invert_colors else 'white'
             fig = plt.figure(figsize=(16, 9), dpi=200, facecolor=facecolor, edgecolor='k')
             ax = fig.add_subplot(111, projection='3d', title=key, facecolor=facecolor)
