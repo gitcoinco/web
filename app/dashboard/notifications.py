@@ -645,8 +645,8 @@ def maybe_market_tip_to_github(tip):
               "<a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>" \
               "Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
     else:
-        msg = f"💰 A crowdfund contribution worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has been " \
-              f"attached to this funded issue {_from}.💰 {_comments}\n " \
+        msg = f"💰 A crowdfund contribution worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has" \
+              f"been attached to this funded issue {_from}.💰 {_comments}\n "
 
     # actually post
     url = tip.github_url

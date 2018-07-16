@@ -796,7 +796,8 @@ class Bounty(SuperModel):
     @property
     def bulk_payout_tips(self):
         queryset = self.tips.filter(is_for_bounty_fulfiller=False)
-        return (queryset.filter(from_address=self.bounty_owner_address) | queryset.filter(from_name=self.bounty_owner_github_username))
+        return (queryset.filter(from_address=self.bounty_owner_address) |
+                queryset.filter(from_name=self.bounty_owner_github_username))
 
     @property
     def additional_funding_summary(self):
@@ -923,8 +924,9 @@ class Tip(SuperModel):
     metadata = JSONField(default={}, blank=True)
     is_for_bounty_fulfiller = models.BooleanField(
         default=False,
-        help_text='If this option is chosen, this tip will be automatically paid to the bounty fulfiller, not self.usernameusername.',
-        )
+        help_text='If this option is chosen, this tip will be automatically paid to the bounty'
+                  ' fulfiller, not self.usernameusername.',
+    )
 
     def __str__(self):
         """Return the string representation for a tip."""
@@ -1057,8 +1059,10 @@ class Tip(SuperModel):
     @property
     def bounty(self):
         try:
-            return Bounty.objects.current().filter(github_url__iexact=self.github_url, network=self.network).order_by('-web3_created').first()
-        except:
+            return Bounty.objects.current().filter(
+                github_url__iexact=self.github_url,
+                network=self.network).order_by('-web3_created').first()
+        except Bounty.DoesNotExist:
             return None
 
     def payout_to(self, address, amount_override=None):
@@ -1080,7 +1084,6 @@ class Tip(SuperModel):
         gasPrice = recommend_min_gas_price_to_confirm_in_time(60) * 10**9
         from_address = Web3.toChecksumAddress(tip.metadata['address'])
         nonce = w3.eth.getTransactionCount(from_address)
-        #print(from_address)
         if is_erc20:
             # ERC20 contract receive
             balance = w3.eth.getBalance(from_address)
@@ -1103,7 +1106,7 @@ class Tip(SuperModel):
                 to=address,
                 value=w3.toHex(amount),
                 data=b'',
-              )
+            )
         signed = w3.eth.account.signTransaction(tx, tip.metadata['priv_key'])
         receive_txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
         return receive_txid
