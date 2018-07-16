@@ -32,7 +32,7 @@ from dashboard.utils import generate_pub_priv_keypair, has_tx_mined
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from github.utils import (
-    get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
+    get_auth_url, get_emails_master, get_github_primary_email, get_github_user_data, is_github_token_valid,
 )
 from marketing.mails import (
     admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
@@ -266,17 +266,7 @@ def send_tip_3(request):
     params = json.loads(request.body)
 
     to_username = params['username'].lstrip('@')
-    try:
-        to_profile = Profile.objects.get(handle__iexact=to_username)
-    except Profile.MultipleObjectsReturned:
-        to_profile = Profile.objects.filter(handle__iexact=to_username).first()
-    except Profile.DoesNotExist:
-        to_profile = None
-    if to_profile:
-        if to_profile.email:
-            to_emails.append(to_profile.email)
-        if to_profile.github_access_token:
-            to_emails = get_github_emails(to_profile.github_access_token)
+    to_profile.emails = get_emails_master(to_username)
 
     if params.get('email'):
         to_emails.append(params['email'])
