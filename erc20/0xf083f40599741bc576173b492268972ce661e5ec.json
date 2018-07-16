@@ -6,7 +6,7 @@
         "zh": "比特价值·艺术银行"
   },
   "email": "bvb@bitvaluebk.com",
-  "website": "https://www.bitvaluebk.com/",
+  "website": "https://www.bitvaluebk.com",
   "whitepaper": "https://www.bitvaluebk.com/WhitePaperBitValueBankCN.pdf",
   "state": "NORMAL",
   "published_on": "2018-01-01",
@@ -16,7 +16,7 @@
         "BTC":"0.00004137 BTC"
   },
   "links": {
-    "blog": "https://cms.bitvaluebk.com/",
+    "blog": "https://cms.bitvaluebk.com",
     "github": "https://github.com/bitvaluebk"
   }
 }
