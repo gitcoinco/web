@@ -171,7 +171,7 @@
         </div>
       </div>
       {% include 'community.html' with h1="Community"  h2="Gitcoin's Top Community Members" community_members=community_members %}
-      {% include 'community.html' with h1="Alumni"  h2="Community Members that've 'graduated' into more work in the space" community_members=alumni %}
+      {% include 'community.html' with h1="Alumni"  h2=total_alumnis|add:" community members have 'graduated' into full time work in the space (at least that we know of!); these are the ones who have opted to be public about it" community_members=alumni %}
     </div>
     <div class="row" id="jobs">
       <div class="col-12 row section font-body">

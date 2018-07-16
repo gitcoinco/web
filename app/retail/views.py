@@ -330,6 +330,7 @@ def about(request):
         'core_team': core_team,
         'community_members': community_members,
         'alumni': alumnis,
+        'total_alumnis': str(Alumni.objects.count()),
         'active': 'about',
         'title': 'About',
         'is_outside': True,
