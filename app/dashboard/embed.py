@@ -1,6 +1,7 @@
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 from django.utils import timezone
+from django.utils.cache import patch_response_headers
 
 import requests
 from dashboard.models import Bounty
@@ -96,6 +97,9 @@ def embed(request):
     err_response = HttpResponse(content_type="image/jpeg")
     could_not_find.save(err_response, "JPEG")
 
+    # Get maxAge GET param if provided, else default on the small side
+    max_age = int(request.GET.get('maxAge', 3600))
+
     # params
     repo_url = request.GET.get('repo', False)
     if not repo_url or 'github.com' not in repo_url:
@@ -112,9 +116,12 @@ def embed(request):
                 )
 
             tmpl = loader.get_template('svg_badge.txt')
-            return HttpResponse(
+            response = HttpResponse(
                 tmpl.render({'bounties_count': open_bounties.count()}),
-                content_type='image/svg+xml')
+                content_type='image/svg+xml',
+            )
+            patch_response_headers(response, cache_timeout=max_age)
+            return response
 
         # get avatar of repo
         _org_name = org_name(repo_url)
@@ -313,6 +320,7 @@ def embed(request):
         # Return image with right content-type
         response = HttpResponse(content_type="image/png")
         img.save(response, "PNG")
+        patch_response_headers(response, cache_timeout=max_age)
         return response
     except IOError as e:
         print(e)

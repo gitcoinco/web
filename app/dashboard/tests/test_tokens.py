@@ -19,17 +19,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from django.test import TestCase
 
-from dashboard.tokens import addr_to_token, tokens
+from dashboard.tokens import addr_to_token, get_tokens
 
 
 class DashboardTokensTest(TestCase):
     """Define tests for Dashboard tokens module."""
 
     def test_tokens(self):
+        tokens = get_tokens()
         """Test the dashboard tokens variable to ensure it can be read properly."""
         assert isinstance(tokens, list)
         assert isinstance(tokens[0], dict)
-        assert len(tokens[0]) == 3
+        assert len(tokens[0]) == 4
 
     def test_addr_to_token_valid(self):
         """Test the dashboard token lookup utility with a valid token."""

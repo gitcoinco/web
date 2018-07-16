@@ -18,6 +18,7 @@
 '''
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.exceptions import ValidationError
+from django.core.paginator import Paginator
 from django.core.validators import validate_email
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
@@ -26,9 +27,14 @@ from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
+from dashboard.models import Activity, Bounty
 from dashboard.notifications import amount_usdt_open_work, open_bounties
+from dashboard.tokens import token_by_name
+from economy.models import Token
+from marketing.mails import new_token_request
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
+from retail.helpers import get_ip
 
 from .utils import build_stat_results, programming_languages
 
@@ -198,7 +204,7 @@ def contributor_landing(request):
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'home',
-        'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter."),
+        'newsletter_headline': _("Be the first to find out about newly posted bounties."),
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
         'projects': projects,
@@ -324,6 +330,7 @@ def about(request):
         'core_team': core_team,
         'community_members': community_members,
         'alumni': alumnis,
+        'total_alumnis': str(Alumni.objects.count()),
         'active': 'about',
         'title': 'About',
         'is_outside': True,
@@ -344,6 +351,19 @@ def mission(request):
     return TemplateResponse(request, 'mission.html', context)
 
 
+def vision(request):
+    """Render the Vision response."""
+    context = {
+        'is_outside': True,
+        'active': 'vision',
+        'avatar_url': static('v2/images/vision/triangle.jpg'),
+        'title': 'Vision',
+        'card_title': _("Gitcoin's Vision for a Web3 World"),
+        'card_desc': _("Gitcoin's Vision for a web3 world is to make it easy for developers to find paid work in open source."),
+    }
+    return TemplateResponse(request, 'vision.html', context)
+
+
 def results(request, keyword=None):
     """Render the Results response."""
     if keyword and keyword not in programming_languages:
@@ -351,6 +371,52 @@ def results(request, keyword=None):
     context = build_stat_results(keyword)
     context['is_outside'] = True
     return TemplateResponse(request, 'results.html', context)
+
+
+def activity(request):
+    """Render the Activity response."""
+    icons = {
+        'title': 'Activity',
+        'new_tip': 'fa-thumbs-up',
+        'start_work': 'fa-lightbulb',
+        'new_bounty': 'fa-money-bill-alt',
+        'work_done': 'fa-check-circle',
+    }
+
+
+    def add_view_props(activity):
+        activity.icon = icons.get(activity.activity_type, 'fa-check-circle')
+        obj = activity.metadata
+        if 'new_bounty' in activity.metadata:
+            obj = activity.metadata['new_bounty']
+        activity.title = obj.get('title', '')
+        if 'id' in obj:
+            activity.bounty_url = Bounty.objects.get(pk=obj['id']).get_relative_url()
+            if activity.title:
+                activity.urled_title = f'<a href="{activity.bounty_url}">{activity.title}</a>'
+            else:
+                activity.urled_title = activity.title
+        if 'value_in_usdt_now' in obj:
+            activity.value_in_usdt_now = obj['value_in_usdt_now']
+        if 'token_name' in obj:
+            activity.token = token_by_name(obj['token_name'])
+            if 'value_in_token' in obj and activity.token:
+                activity.value_in_token_disp = round((float(obj['value_in_token']) /
+                                                      10 ** activity.token['decimals']) * 1000) / 1000
+        return activity
+
+    activities = Activity.objects.all().order_by('-created')
+    p = Paginator(activities, 300)
+    page = request.GET.get('page', 1)
+
+    context = {
+        'p': p,
+        'page': p.get_page(page),
+        'title': 'Activity Feed',
+    }
+    context["activities"] = [add_view_props(a) for a in p.get_page(page)]
+
+    return TemplateResponse(request, 'activity.html', context)
 
 
 def help(request):
@@ -760,7 +826,9 @@ def ios(request):
         'active': 'ios',
         'title': 'iOS app',
         'card_title': 'Gitcoin has an iOS app!',
-        'card_desc': 'Gitcoin aims to make it easier to grow open source from anywhere in the world, anytime.  We’re proud to announce our iOS app, which brings us a step closer to this north star!Browse open bounties on the go, express interest, and coordinate your work on the move.',
+        'card_desc': 'Gitcoin aims to make it easier to grow open source from anywhere in the world,\
+            anytime.  We’re proud to announce our iOS app, which brings us a step closer to this north star!\
+            Browse open bounties on the go, express interest, and coordinate your work on the move.',
     }
     return TemplateResponse(request, 'ios.html', context)
 
@@ -801,6 +869,39 @@ def slack(request):
                 context['msg'] = _('Invalid email')
 
     return TemplateResponse(request, 'slack.html', context)
+
+
+def newtoken(request):
+    context = {
+        'active': 'newtoken',
+        'msg': None,
+    }
+
+    if request.POST:
+        required_fields = ['email', 'terms', 'not_security', 'address', 'symbol', 'decimals', 'network']
+        validtion_passed = True
+        for key in required_fields:
+            if not request.POST.get(key):
+                context['msg'] = str(_('You must provide the following fields: ')) + key
+                validtion_passed = False
+        if validtion_passed:
+            ip = get_ip(request)
+            obj = Token.objects.create(
+                address=request.POST['address'],
+                symbol=request.POST['symbol'],
+                decimals=request.POST['decimals'],
+                network=request.POST['network'],
+                approved=False,
+                priority=1,
+                metadata={
+                    'ip': get_ip(request),
+                    'email': request.POST['email'],
+                    }
+                )
+            new_token_request(obj)
+            context['msg'] = str(_('Your token has been submitted and will be listed within 2 business days if it is accepted.'))
+    
+    return TemplateResponse(request, 'newtoken.html', context)
 
 
 def btctalk(request):
@@ -845,3 +946,12 @@ def youtube(request):
 
 def web3(request):
     return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')
+
+
+def tokens(request):
+    context = {}
+    networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']
+    for network in networks:
+        key = f"{network}_tokens"
+        context[key] = Token.objects.filter(network=network, approved=True)
+    return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
