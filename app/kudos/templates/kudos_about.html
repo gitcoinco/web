@@ -1,53 +1,116 @@
-{% load static %}
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not,see
+    <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static %}
+
 <!DOCTYPE html>
-<html>
-  <head>
+<html lang="en">
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards_pic.html' %}
+  <!-- <head>
     <title>Kudos by Gitcoin</title>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
     <link href='index.css' rel='stylesheet' type='text/css'>
-  </head>
-  <body>
-    <div class="container" id="kudos-top-section">
+  </head> -->
+  <body class="{{ active }}">
+    <header class="container-fluid header" id="kudos-top-section">
+        {% include 'shared/nav.html' %}
 
-      <div class="container" align="center" id="kudos-banner">
+      <div class="container" id="kudos-banner">
         <h1 class="display-4">Kudos</h1>
         <lead>by Gitcoin</lead>
       </div>
+      <div class="row justify-content-center" id="kudos-stream">
 
-      <div class="container" align="center" id="kudos-stream">
-        <div class="row justify-content-center">
-          <div class="card m-2" style="width: 10rem;">
-            <img class="card-img-top" src="{% static "v2/images/kudos/devflare-bugsquasher.svg" %}" alt="Bug Squasher">
-            <div class="card-body">
-              <p class="card-text" align="left">Bug Squasher</p>
+        <div id="carouselExampleFade" class="carousel slide " data-ride="carousel">
+          <div class="carousel-inner">
+
+            <div class="carousel-item active">
+              <div class="card-deck">
+                <div class="card" style="">
+                  <img class="card-img-top" src="{% static "v2/images/kudos/devflare-bugsquasher.svg" %}" alt="Bug Squasher" width="250px">
+                  <div class="card-body">
+                    <p class="card-text">Bug Squasher</p>
+                  </div>
+                </div>
+                <div class="card">
+                  <img class="card-img-top" src="{% static "v2/images/kudos/devflare-collaborationmachine.svg" %}" alt="Collaboration Machine">
+                  <div class="card-body">
+                    <p class="card-text" align="left">Collaboration Machine</p>
+                  </div>
+                </div>
+                <div class="card">
+                  <img class="card-img-top" src="{% static "v2/images/kudos/devflare-designstar.svg" %}" alt="Design Star">
+                  <div class="card-body">
+                    <p class="card-text" align="left">Design Star</p>
+                  </div>
+                </div>
+                <div class="card">
+                  <img class="card-img-top" src="{% static "v2/images/kudos/devflare-fastturnaround.svg" %}" alt="Fast Turn Around">
+                  <div class="card-body">
+                    <p class="card-text" align="left">Fast Turn Around</p>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
-          <div class="card m-2" style="width: 10rem;">
-            <img class="card-img-top" src="{% static "v2/images/kudos/devflare-collaborationmachine.svg" %}" alt="Collaboration Machine">
-            <div class="card-body">
-              <p class="card-text" align="left">Collaboration Machine</p>
+
+            <div class="carousel-item">
+              <div class="card-deck">
+                <div class="card" style="">
+                  <img class="card-img-top" src="{% static "v2/images/kudos/devflare-bugsquasher.svg" %}" alt="Bug Squasher" width="250px">
+                  <div class="card-body">
+                    <p class="card-text">Bug Squasher2</p>
+                  </div>
+                </div>
+                <div class="card">
+                  <img class="card-img-top" src="{% static "v2/images/kudos/devflare-collaborationmachine.svg" %}" alt="Collaboration Machine">
+                  <div class="card-body">
+                    <p class="card-text" align="left">Collaboration Machine2</p>
+                  </div>
+                </div>
+                <div class="card">
+                  <img class="card-img-top" src="{% static "v2/images/kudos/devflare-designstar.svg" %}" alt="Design Star">
+                  <div class="card-body">
+                    <p class="card-text" align="left">Design Star2</p>
+                  </div>
+                </div>
+                <div class="card">
+                  <img class="card-img-top" src="{% static "v2/images/kudos/devflare-fastturnaround.svg" %}" alt="Fast Turn Around">
+                  <div class="card-body">
+                    <p class="card-text" align="left">Fast Turn Around2</p>
+                  </div>
+                </div>
+              </div>  
             </div>
+          
           </div>
-          <div class="card m-2" style="width: 10rem;">
-            <img class="card-img-top" src="{% static "v2/images/kudos/devflare-designstar.svg" %}" alt="Design Star">
-            <div class="card-body">
-              <p class="card-text" align="left">Design Star</p>
-            </div>
-          </div>
-          <div class="card m-2" style="width: 10rem;">
-            <img class="card-img-top" src="{% static "v2/images/kudos/devflare-fastturnaround.svg" %}" alt="Fast Turn Around">
-            <div class="card-body">
-              <p class="card-text" align="left">Fast Turn Around</p>
-            </div>
-          </div>
+         
         </div>
-      </div>
 
-      <div class="container" align="center">
+      </div>
+      <div class="row" align="center">
         <h5><a href="/kudos/marketplace">See more Kudos</a></h4>
       </div>
-    </div>
+    </header>
+
+
+    
 
     <div class="container mt-4" align="center" id="kudos-center-section">
       <div class="container" id="kudos-summary">
@@ -105,10 +168,18 @@
       </div>
     </div>
 
-    <div class="container" align="center" id="kudos-footer">
-      <h3>Footer</h3>
-    </div>
+    
 
+    {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/rollbar.html' %}
+    {% include 'shared/messages.html' %}
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
+
+    
 
 
 
