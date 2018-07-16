@@ -8,6 +8,9 @@
   background-color: var(--tl-bg);
   color: white;
 }
+.bg-blue a{
+  color: white;
+}
 
 .vision .header-line {
   color: #fff;
@@ -106,6 +109,7 @@ li.market {
 
 .parag-center {
   margin: auto;
+  margin-bottom: 5px;
 }
 
 @media (min-width: 992px) {
@@ -146,7 +150,7 @@ li.market {
   }
 
   .parag-center {
-    max-width: 25%;
+    max-width: 45%;
   }
 
   .tl-event:nth-child(even) .list-special {
