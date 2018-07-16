@@ -161,7 +161,7 @@ def receive_tip_v2(request, pk, txid, network):
     if tip.receive_txid:
         messages.info(request, 'This tip has already been received')
 
-    not_mined_yet = not has_tx_mined(tip.txid, tip.network)
+    not_mined_yet = get_web3(tip.network).eth.getBalance(Web3.toChecksumAddress(tip.metadata['address'])) == 0
     if not_mined_yet:
         messages.info(request, f'This tx {tip.txid}, is still mining.  Please wait a moment before submitting the receive form.')
 
