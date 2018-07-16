@@ -148,7 +148,7 @@ $(document).ready(function($) {
       _alert('Please accept the TOS.', 'error');
       return;
     }
-    if (!document.transactions.length){
+    if (!document.transactions.length) {
       _alert('You do not have any transactions to payout.  Please add payees to the form.', 'error');
       return;
     }
@@ -212,12 +212,13 @@ $(document).ready(function($) {
       'amount': '+' + original_amount + ' ' + denomination
     };
     var i = 0;
-    if(close_bounty){
+
+    if (close_bounty) {
       transactions.push(first_transaction);
       i += 1;
     }
 
-    for (i = i; i < num_rows; i += 1) {
+    for (; i < num_rows; i += 1) {
       var $row = $('#payout_table').find('tr:nth-child(' + i + ')');
       var amount = parseFloat($row.find('.amount').text());
       var username = $row.find('.username').text();

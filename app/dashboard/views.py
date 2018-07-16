@@ -701,11 +701,12 @@ def helper_handle_approvals(request, bounty):
         is_funder = bounty.is_funder(request.user.username.lower())
         is_staff = request.user.is_staff
         if is_funder or is_staff:
-            interests = bounty.interested.filter(pending=True, profile__handle=worker)
-            if not interests.exists():
+            interests = bounty.interested.filter(profile__handle=worker)
+            is_interest_invalid = (not interests.filter(pending=True).exists() and mutate_worker_action == 'rejected') or (not interests.exists())
+            if is_interest_invalid:
                 messages.warning(
                     request,
-                    _('This worker does not exist or is not in a pending state. Please check your link and try again.'))
+                    _('This worker does not exist or is not in a pending state. Perhaps they were already approved or rejected? Please check your link and try again.'))
                 return
             interest = interests.first()
 
@@ -779,7 +780,6 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         "newsletter_headline": _("Be the first to know about new funded issues."),
         'is_staff': request.user.is_staff,
     }
-
     if issue_url:
         try:
             bounties = Bounty.objects.current().filter(github_url=issue_url)

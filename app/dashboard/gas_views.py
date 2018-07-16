@@ -63,6 +63,7 @@ def gas(request):
         'gas_advisories': gas_advisories(),
         'conf_time_spread': _cts,
         'hide_send_tip': True,
+        'is_3d': request.GET.get("is_3d", False),
         'title': 'Live Gas Usage => Predicted Conf Times'
     }
     return TemplateResponse(request, 'gas.html', context)

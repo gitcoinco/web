@@ -19,8 +19,8 @@
   {% if recommend_gas_price > 30 %}
     <div class="warning mb-2">{% trans "Warning: the ethereum network is quite congested at the moment." %} <a href="{% url "gas" %}" target="_blank" rel="noopener noreferrer">[{% trans "Stats" %}]</a></div>
   {% endif %}
-  <div class="row" style="margin: auto -8px">
-    <div class="col-md-5 d-flex gas-dark-bg py-3">
+  <div class="row align-items-center" style="margin: auto -8px">
+    <div class="col-md-5 d-flex justify-content-center gas-dark-bg py-3">
       <img class="gas-image" src="{% static "v2/images/gas.png" %}">
       <div id="gas-fee-details" class="text-center pl-3">
         <h5 class="font-subheader green">Your Gas Fee:</h5>
@@ -28,7 +28,7 @@
         <p class="font-body" id="gas-eth"></p>
       </div>
     </div>
-    <div class="col-md-7 gas-rates d-flex flex-column justify-content-between">
+    <div class="col gas-rates">
       <div class="message"></div>
       <div id="default-recommended-gas" data-amount="{{recommend_gas_price_avg | floatformat}}" class="py-1 pl-5 recommended-prices"></div>
       <div id="slow-recommended-gas" data-amount="{{recommend_gas_price_slow | floatformat}}" class="py-1 pl-5 recommended-prices"></div>
