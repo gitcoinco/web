@@ -355,7 +355,7 @@ def vision(request):
     context = {
         'is_outside': True,
         'active': 'vision',
-        'avatar_url': static('/v2/images/vision/triangle.png'),
+        'avatar_url': static('v2/images/vision/triangle.png'),
         'title': 'Vision',
         'card_title': _("Gitcoin's Vision for a Web3 World"),
         'card_desc': _("Gitcoin's Vision for a web3 world is to make it easy for developers to find paid work in open source."),
