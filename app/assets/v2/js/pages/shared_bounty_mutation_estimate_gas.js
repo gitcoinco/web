@@ -25,11 +25,11 @@ var gas_amount = function(page_url) {
   }
   // tip
   if (page_url.indexOf('tip/send') != -1) {
-    gasLimitEstimate = 448057;
+    gasLimitEstimate = 21000;
   }
   // tip
   if (page_url.indexOf('tip/receive') != -1) {
-    gasLimitEstimate = 98390;
+    gasLimitEstimate = 21000;
   }
   return gasLimitEstimate;
 };

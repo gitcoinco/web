@@ -701,8 +701,7 @@ var do_actions = function(result) {
       href: result['action_urls']['payout'],
       text: gettext('Multi-Party Payout'),
       title: gettext('Used to pay out to many people at once.'),
-      parent: 'right_actions',
-      pending_acceptance: pending_acceptance
+      parent: 'right_actions'
     };
 
     actions.push(_entry);
