@@ -27,3 +27,8 @@ def about(request):
 def marketplace(request):
     params = dict()
     return TemplateResponse(request, 'kudos_marketplace.html', params)
+
+
+def details(request):
+    params = dict()
+    return TemplateResponse(request, 'kudos_details.html', params)

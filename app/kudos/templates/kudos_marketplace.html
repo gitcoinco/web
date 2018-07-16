@@ -1,263 +1,71 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Kudos by Gitcoin</title>
+    <title>Kudos Marketplace</title>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
     <link href='index.css' rel='stylesheet' type='text/css'>
   </head>
   <body>
+    <div class="container" align="center" id="kudos-search">
+      <h1 class="display-4">Kudos</h1>
+      <lead>by Gitcoin</lead>
+      <!-- <div class="container my-4" align="center" id="kudos-searchbar"> -->
+        <form>
+          <div class="form-row align-items-center">
+            <div class="col-11 my-4">
+              <label class="sr-only" for="inlineFormInputName">Name</label>
+              <input type="text" class="form-control" id="inlineFormInputName" placeholder="Search for Kudos">
+            </div>
+            <div class="col-1 my-4">
+              <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+          </div>
+        </form>
+      <!-- </div> -->
+    </div>
 
-    <!-- Details Modal -->
-    <div class="modal fade" id="detailsModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Kudos Details</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="form-group row">
-                <label for="staticDetailsKudosId" class="col-sm-5 col-form-label">KudosID</label>
-                <div class="col-sm-5">
-                  <input type="text" readonly class="form-control-plaintext" id="staticDetailsKudosId" value="">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="staticDetailsDescription" class="col-sm-5 col-form-label">Description</label>
-                <div class="col-sm-5">
-                  <input type="text" readonly class="form-control-plaintext" id="staticDetailsDescription" value="">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="staticDetailsRarity" class="col-sm-5 col-form-label">Rarity</label>
-                <div class="col-sm-5">
-                  <input type="text" readonly class="form-control-plaintext" id="staticDetailsRarity" value="">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="staticDetailsPrice" class="col-sm-5 col-form-label">Price</label>
-                <div class="col-sm-5">
-                  <input type="text" readonly class="form-control-plaintext" id="staticDetailsPrice" value="">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="staticDetailsClonesAlowed" class="col-sm-5 col-form-label">Clones Allowed</label>
-                <div class="col-sm-5">
-                  <input type="text" readonly class="form-control-plaintext" id="staticDetailsNumClonesAllowed" value="">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="staticDetailsClonesInWild" class="col-sm-5 col-form-label">Clones In Wild</label>
-                <div class="col-sm-5">
-                  <input type="text" readonly class="form-control-plaintext" id="staticDetailsNumClonesInWild" value="">
-                </div>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
-          </div>
+    <div class="container" align="center" id="kudos-tiles">
+      <div class="row">
+        <div class="col-3">
+          <img src="/static/v2/images/kudos/devflare-bugsquasher.svg" alt="Bug Squasher" class="img-thumbnail">
+          <p><small>Bug Squasher</small></p>
+        </div>
+        <div class="col-3">
+          <img src="/static/v2/images/kudos/devflare-collaborationmachine.svg" alt="Collaboration Machine" class="img-thumbnail">
+          <p><small>Collaboration Machine</small></p>
+        </div>
+        <div class="col-3">
+          <img src="/static/v2/images/kudos/devflare-designstar.svg" alt="Design Star" class="img-thumbnail">
+          <p><small>Design Star</small></p>
+        </div>
+        <div class="col-3">
+          <img src="/static/v2/images/kudos/devflare-fastturnaround.svg" alt="Fast Turn Around" class="img-thumbnail">
+          <p><small>Fast Turn Around</small></p>
+        </div>
+      </div>
+      <div class="row my-2">
+        <div class="col-3">
+          <img src="/static/v2/images/kudos/devflare-helpinghand.svg" alt="Helping Hand" class="img-thumbnail">
+          <p><small>Helping Hand</small></p>
+        </div>
+        <div class="col-3">
+          <img src="/static/v2/images/kudos/devflare-problemsolver.svg" alt="Problem Solver" class="img-thumbnail">
+          <p><small>Problem Solver</small></p>
+        </div>
+        <div class="col-3">
+          <img src="/static/v2/images/kudos/devflare-pythonista.svg" alt="Pythonista" class="img-thumbnail">
+          <p><small>Pythonista</small></p>
+        </div>
+        <div class="col-3">
+          <img src="/static/v2/images/kudos/new_kudos.png" alt="New Kudos" class="img-thumbnail">
+          <p><small>New Kudos</small></p>
         </div>
       </div>
     </div>
 
-    <!-- Clone Modal -->
-    <div class="modal fade" id="cloneModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Clone</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="form-group row">
-                <label for="staticDescription" class="col-sm-5 col-form-label">Name</label>
-                <div class="col-sm-5">
-                  <input type="text" readonly class="form-control-plaintext" id="staticName" value="">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="staticClonesAllowed" class="col-sm-5 col-form-label">Clones allowed</label>
-                <div class="col-sm-5">
-                  <input type="text" readonly class="form-control-plaintext" id="staticClonesAllowed" value="">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label for="staticClonesInWild" class="col-sm-5 col-form-label">Clones in wild</label>
-                <div class="col-sm-5">
-                  <input type="text" readonly class="form-control-plaintext" id="staticClonesInWild" value="">
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="numClonesInput">How many clones?</label>
-                <input type="text" class="form-control" id="numClonesInput" aria-describedby="emailHelp" value="1">
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Exit</button>
-            <button type="button" class="btn btn-primary" id="btnCloneModal">Clone</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Transfer Modal -->
-    <div class="modal fade" id="transferModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Transfer to?</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="form-group row">
-                <label for="staticKudosId" class="col-sm-2 col-form-label">KudosID</label>
-                <div class="col-sm-10">
-                  <input type="text" readonly class="form-control-plaintext" id="staticTransferKudosId" value="">
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="descriptionInput">Address</label>
-                <input type="text" class="form-control" id="addressTransferInput" aria-describedby="emailHelp" placeholder="0x471a22367c00338939Aaaca7D4191AA3117175DF">
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" id="btnTransferModal">Transfer</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Burn Modal -->
-    <div class="modal fade" id="burnModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Burn Kudos</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="form-group row">
-                <label for="staticKudosId" class="col-sm-2 col-form-label">KudosID</label>
-                <div class="col-sm-10">
-                  <input type="text" readonly class="form-control-plaintext" id="staticBurnKudosId" value="">
-                </div>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" id="btnBurnModal">Burn</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Kudos Modal Blank -->
-    <div class="modal fade" id="kudosModalBlank" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Design your Kudos</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="form-group">
-                <label for="nameInput">Name</label>
-                <select class="form-control" id="nameInput">
-                  <option>bugsquasher</option>
-                  <option>collaborationmachine</option>
-                  <option>designstar</option>
-                  <option>fastturnaround</option>
-                  <option>helpinghand</option>
-                  <option>problemsolver</option>
-                  <option>pythonista</option>
-                  <option>meeseeks</option>
-                </select>
-              </div>
-              <div class="form-group row">
-                <label for="staticMintDescription" class="col-sm-5 col-form-label">Description</label>
-                <div class="col-sm-5">
-                  <input type="text" readonly class="form-control-plaintext" id="staticMintDescription" value="">
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="formControlRange">Rarity</label>
-                <input type="range" class="form-control-range" id="rarityInput">
-                <small id="rarityHelp" class="form-text text-muted">0 to 100</small>
-              </div>
-              <div class="form-group">
-                <label for="priceInput">Price</label>
-                <input type="text" class="form-control" id="priceInput" aria-describedby="emailHelp" placeholder="Enter price in ETH" value=".1">
-              </div>
-              <div class="form-group">
-                <label for="numClonesInput">Number of clones allowed</label>
-                <input type="text" class="form-control" id="numClonesAllowedInput" aria-describedby="emailHelp" placeholder="Enter number" value="10">
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" id="mint-modal-blank">Mint</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Mint Gen0 Kudos -->
-    <div class="container" align="center">
-        <div class="card border-0 p-2" style="width: 15rem;">
-          <div class="card-body">
-            <p class="card-text"></p>
-            <button type="button" class="btn btn-success btn-lg mint-button" id=btnMintGen0>Mint Gen0</button>
-
-          </div>
-          <small id=ropstenMsg>Note: Must be on Ropsten network. <br> </small>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- Show kudos in the Marketplace -->
-    <div class="container" align="center">
-      <h1 class="display-2" id=gen0Kudos>Marketplace Kudos</h1>
-      <small>Owner:  0xD386793F1DB5F21609571C0164841E5eA2D33aD8</small>
-    </div>
-    <div class="container">
-        <label></label> <img id="loading" src="loading.gif" height="40px" width="auto" style="visibility: hidden"/>
-        <div class="row justify-content-center" id=marketplace-kudos></div>
-    </div>
-
-    <!-- Spacer -->
-   <!--  <div class="container have-some-margin" align="center">
-    </div> -->
-
-    <!-- Show kudos that you own -->
-    <div class="container" align="center">
-      <h1 class="display-2" id=yourKudos>Your Kudos</h1>
-    </div>
-    <div class="container">
-        <label></label> <img id="loading" src="loading.gif" height="40px" width="auto" style="visibility: hidden"/>
-        <div class="row justify-content-center" id=owner-kudos></div>
+    <div class="container" align="center" id="kudos-footer">
+      <h3>Footer</h3>
     </div>
 
   </body>
