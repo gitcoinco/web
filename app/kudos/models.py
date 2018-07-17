@@ -50,15 +50,15 @@ class MarketPlaceListing(SuperModel):
     lister = models.CharField(max_length=255)  # FK to github profile
 
 
-class KudosToken(SuperModel):
+# class KudosToken(SuperModel):
 
-    # Kudos specific fields -- lines up with Kudos contract
-    name = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
-    rarity = models.IntegerField()
-    price = models.IntegerField()
-    num_clones_allowed = models.IntegerField(null=True, blank=True)
-    num_clones_in_wild = models.IntegerField(null=True, blank=True)
+#     # Kudos specific fields -- lines up with Kudos contract
+#     name = models.CharField(max_length=255)
+#     description = models.CharField(max_length=255)
+#     rarity = models.IntegerField()
+#     price = models.IntegerField()
+#     num_clones_allowed = models.IntegerField(null=True, blank=True)
+#     num_clones_in_wild = models.IntegerField(null=True, blank=True)
 
     # Gitcoin App only fields
     # lister = models.CharField(max_length=255)
