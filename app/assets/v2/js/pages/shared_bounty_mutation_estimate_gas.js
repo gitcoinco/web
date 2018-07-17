@@ -23,6 +23,10 @@ var gas_amount = function(page_url) {
   if (page_url.indexOf('issue/cancel') != -1) {
     gasLimitEstimate = 67327;
   }
+  // bulk payout
+  if (page_url.indexOf('issue/payout') != -1) {
+    gasLimitEstimate = 103915;
+  }
   // tip
   if (page_url.indexOf('tip/send') != -1) {
     gasLimitEstimate = 21000;
