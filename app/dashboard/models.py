@@ -1088,7 +1088,7 @@ class Tip(SuperModel):
             # ERC20 contract receive
             balance = w3.eth.getBalance(from_address)
             contract = w3.eth.contract(Web3.toChecksumAddress(tip.tokenAddress), abi=erc20_abi)
-            gas = contract.functions.transfer(address, amount).estimateGas() + 1
+            gas = contract.functions.transfer(address, amount).estimateGas({'from': from_address}) + 1
             gasPrice = gasPrice if ((gas * gasPrice) < balance) else (balance * 1.0 / gas)
             tx = contract.functions.transfer(address, amount).buildTransaction({
                 'nonce': nonce,
