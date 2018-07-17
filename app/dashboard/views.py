@@ -456,6 +456,13 @@ def onboard(request, flow):
             login_redirect = redirect('/login/github?next=' + request.get_full_path())
             return login_redirect
 
+    if request.GET.get('eth_address') and request.user.is_authenticated and getattr(request.user, 'profile'):
+        profile = request.user.profile
+        eth_address = request.GET.get('eth_address')
+        profile.preferred_payout_address = eth_address
+        profile.save()
+        return JsonResponse({'OK': True})
+
     params = {
         'title': _('Onboarding Flow'),
         'steps': steps or onboard_steps,

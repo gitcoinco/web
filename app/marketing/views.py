@@ -515,7 +515,11 @@ def account_settings(request):
 
     if request.POST:
 
-        if request.POST.get('disconnect', False):
+        if 'preferred_payout_address' in request.POST.keys():
+            profile.preferred_payout_address = request.POST.get('preferred_payout_address', '')
+            profile.save()
+            msg = _('Updated your Address')
+        elif request.POST.get('disconnect', False):
             profile.github_access_token = ''
             profile = record_form_submission(request, profile, 'account-disconnect')
             profile.email = ''
@@ -523,7 +527,7 @@ def account_settings(request):
             messages.success(request, _('Your account has been disconnected from Github'))
             logout_redirect = redirect(reverse('logout') + '?next=/')
             return logout_redirect
-        if request.POST.get('delete', False):
+        elif request.POST.get('delete', False):
             # remove profile
             profile.hide_profile = True
             profile = record_form_submission(request, profile, 'account-delete')

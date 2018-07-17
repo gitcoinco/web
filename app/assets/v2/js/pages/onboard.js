@@ -59,8 +59,11 @@ onboard.highlightStep = function(currentStep) {
   }
 };
 
+document.alreadyFoundMetamask = false;
 onboard.watchMetamask = function() {
-  if (typeof web3 == 'undefined') {
+  if(document.alreadyFoundMetamask){
+    return;
+  } else if (typeof web3 == 'undefined') {
     $('.step #metamask').html(`
       <div class="locked">
         <a class="button button--primary" target="_blank" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">
@@ -86,10 +89,15 @@ onboard.watchMetamask = function() {
       $('#metamask-video').show();
     }
   } else {
-    $('.step #metamask').html('<div class="unlocked"><img src="/static/v2/images/metamask.svg" %}><span class="mr-1">' + gettext('Unlocked') + '</span><i class="far fa-check-circle"></i></div>');
+    $('.step #metamask').html('<div class="unlocked"><img src="/static/v2/images/metamask.svg" %}><span class="mr-1">' + gettext('Unlocked') + '</span><i class="far fa-check-circle"></i></div><div><label for=eth_address>'+gettext('Ethereum Payout Address')+':</label><br><input class="w-100" type=text id=eth_address name=eth_address placeholder="'+gettext('Ethereum Payout Address')+'"" value='+web3.eth.coinbase+'></div>');
     if (current === 1) {
+      document.alreadyFoundMetamask = true;
       $('.controls').show();
       $('#metamask-video').hide();
+      $("#next-btn").click(function(e){
+       var eth_address = $("#eth_address").val();
+       $.get('/onboard/contributor/',{eth_address:eth_address});
+      });
     }
   }
 };
