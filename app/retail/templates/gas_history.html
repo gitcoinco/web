@@ -33,11 +33,20 @@ div.tooltip {
   pointer-events: none;
   z-index: 9999;
 }
+@media screen and (min-width: 901px) {
+  #key {
+    right: 100px;
+    float: right;
+    top: 270px;
+    position: absolute;
+  }
+}
+@media screen and (max-width: 900px) {
+  #key {
+    position: initial;
+  }
+}
 #key{
-  float: right;
-  position: absolute;
-  right: 100px;
-  top: 270px;
   text-align: right;
 }
 #key p{
@@ -72,7 +81,7 @@ div.tooltip {
 
   <div id="key">
     {% for key, val in lines.items %}
-    <p style="color:{{val}}">Gas needed to confirm within {{key}} minute{{key|pluralize}}</p>
+    <p style="color:{{val}}">{% trans "Gas price needed to confirm within" %} {{key}} {% trans "minute" %}{{key|pluralize}}</p>
     {% endfor %}
   </div>
 
@@ -81,6 +90,7 @@ div.tooltip {
     {% blocktrans %} We are unable to sync gas data at this time.  We recommend you check out <a href="https://ethgasstation.info/predictionTable.php" target="_blank" rel="noopener noreferrer">ETH Gas Station</a> instead.{% endblocktrans %}
   </p>
 {% else %}
+  <svg id="graph"></svg>
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script>
 
@@ -91,19 +101,18 @@ div.tooltip {
     .style("opacity", 0);
 
   var margin = {top: 20, right: 20, bottom: 50, left: 70},
-      width = 960 - margin.left - margin.right,
+      width = window.innerWidth - 100 - margin.left - margin.right,
       height = 500 - margin.top - margin.bottom;
-
-  var x = d3.scaleLinear().range([width, 0]);
-  var y = d3.scaleLinear().range([height, 0]);
+  var initialWidth = width;
+  var xScale = d3.scaleLinear().range([width, 0]);
+  var yScale = d3.scaleLinear().range([height, 0]);
 
   // define the line
   var valueline = d3.line()
-      .x(function(d) { return x(d.confirmation_time); })
-      .y(function(d) { return y(d.gas_price); });
+      .x(function(d) { return xScale(d.confirmation_time); })
+      .y(function(d) { return yScale(d.gas_price); });
 
-  var svg = d3.select("section")
-    .append("svg")
+  var svg = d3.select("#graph")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
     .append("g")
@@ -119,8 +128,8 @@ div.tooltip {
         data.push(d);
     });
 
-    x.domain([0, d3.max(data, function(d) { return d.confirmation_time; })]).nice();
-    y.domain([0, d3.max(data, function(d) { return {{max}}; })]).nice();
+    xScale.domain([0, d3.max(data, function(d) { return d.confirmation_time; })]).nice();
+    yScale.domain([0, d3.max(data, function(d) { return {{max}}; })]).nice();
 
     svg.append("path")
       .data([data])
@@ -131,8 +140,9 @@ div.tooltip {
 
   // x Axis
   svg.append("g")
+      .attr("class", "x axis")
       .attr("transform", "translate(0," + height + ")")
-      .call(d3.axisBottom(x));
+      .call(d3.axisBottom(xScale));
 
   // text label for the x axis
   svg.append("text")
@@ -141,11 +151,12 @@ div.tooltip {
                            (height + margin.top + 20) + ")")
       .style("text-anchor", "middle")
       .attr("class", "axis")
+      .attr("class", "x-title")
       .text("{{breakdown_ui}}-ago");
 
   // y Axis
   svg.append("g")
-    .call(d3.axisLeft(y));
+    .call(d3.axisLeft(yScale));
 
   // text label for the y axis
   svg.append("text")
@@ -157,8 +168,35 @@ div.tooltip {
     .style("text-anchor", "middle")
     .text("Gas Price (gwei)");
 
+  function resize() {
+    var newWidth = window.innerWidth - 100 - margin.left - margin.right;
+    var height = 500 - margin.top - margin.bottom;
+    if(newWidth < initialWidth) { // initialWidth determines max width of parent div in a way
+
+      // Update the range of the scale with new width/height
+      xScale.range([newWidth, 0]);
+      yScale.range([height, 0]);
+
+      svg.select(".x.axis") // resizes x axis
+        .attr("transform", "translate(0," + height + ")")
+        .call(d3.axisBottom(xScale));
+
+      svg.select(".x-title") // resizes the positioning of the x axis title
+        .attr("transform","translate(" + (newWidth/2) + " ," + (height + margin.top + 20) + ")")
+        .style("text-anchor", "middle");
+
+      svg.append("path") // updates line data to conform
+        .data([data])
+        .attr("class", "line line_{{key}}")
+        .attr("d", valueline);
+    }
+  }
+  // Call the resize function whenever a resize event occurs
+  d3.select(window).on('resize', resize);
 
   </script>
+  {% include 'shared/disqus.html' %}
+
   </div>
 
   </div>
@@ -169,6 +207,5 @@ div.tooltip {
 {% endif %}
 
 </section>
-
 
 {% endblock %}

@@ -147,3 +147,7 @@ body.quickstart,
   }
 
 }
+
+.flex-column img {
+  margin: auto;
+}

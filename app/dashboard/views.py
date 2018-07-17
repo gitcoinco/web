@@ -143,34 +143,6 @@ def record_bounty_activity(bounty, user, event_name, interest=None):
         logging.error(f"error in record_bounty_activity: {e} - {event_name} - {bounty} - {user}")
 
 
-def record_tip_activity(tip, github_handle, event_name):
-    kwargs = {
-        'activity_type': event_name,
-        'tip': tip,
-        'metadata': {
-            'amount': str(tip.amount),
-            'token_name': tip.tokenName,
-            'value_in_eth': str(tip.value_in_eth),
-            'value_in_usdt_now': str(tip.value_in_usdt_now),
-            'github_url': tip.github_url,
-            'to_username': tip.username,
-            'from_name': tip.from_name,
-            'received_on': str(tip.received_on) if tip.received_on else None
-        }
-    }
-    try:
-        kwargs['profile'] = Profile.objects.get(handle=github_handle)
-    except Profile.MultipleObjectsReturned:
-        kwargs['profile'] = Profile.objects.filter(handle__iexact=github_handle).first()
-    except Profile.DoesNotExist:
-        logging.error(f"error in record_tip_activity: profile with github name {github_handle} not found")
-        return
-
-    try:
-        Activity.objects.create(**kwargs)
-    except Exception as e:
-        logging.error(f"error in record_tip_activity: {e} - {event_name} - {tip} - {github_handle}")
-
 
 def helper_handle_access_token(request, access_token):
     # https://gist.github.com/owocki/614a18fbfec7a5ed87c97d37de70b110
@@ -729,11 +701,12 @@ def helper_handle_approvals(request, bounty):
         is_funder = bounty.is_funder(request.user.username.lower())
         is_staff = request.user.is_staff
         if is_funder or is_staff:
-            interests = bounty.interested.filter(pending=True, profile__handle=worker)
-            if not interests.exists():
+            interests = bounty.interested.filter(profile__handle=worker)
+            is_interest_invalid = (not interests.filter(pending=True).exists() and mutate_worker_action == 'rejected') or (not interests.exists())
+            if is_interest_invalid:
                 messages.warning(
                     request,
-                    _('This worker does not exist or is not in a pending state. Please check your link and try again.'))
+                    _('This worker does not exist or is not in a pending state. Perhaps they were already approved or rejected? Please check your link and try again.'))
                 return
             interest = interests.first()
 
@@ -807,7 +780,6 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         "newsletter_headline": _("Be the first to know about new funded issues."),
         'is_staff': request.user.is_staff,
     }
-
     if issue_url:
         try:
             bounties = Bounty.objects.current().filter(github_url=issue_url)

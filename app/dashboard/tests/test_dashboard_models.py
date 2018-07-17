@@ -84,7 +84,7 @@ class DashboardModelsTest(TestCase):
         assert bounty.is_funder('fred') is False
         assert bounty.is_funder('flintstone') is True
         assert bounty.status == 'done'
-        assert bounty.value_true == 3e-18
+        assert bounty.value_true == 0
         assert bounty.value_in_eth == 3
         assert bounty.value_in_usdt_now == 0
         assert 'ago 5 Feature Intermediate' in bounty.desc

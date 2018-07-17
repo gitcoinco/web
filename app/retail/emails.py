@@ -65,7 +65,7 @@ def premailer_transform(html):
 def render_tip_email(to_email, tip, is_new):
     warning = tip.network if tip.network != 'mainnet' else ""
     params = {
-        'link': tip.receive_url,
+        'link': tip.url,
         'amount': round(tip.amount, 5),
         'tokenName': tip.tokenName,
         'comments_priv': tip.comments_priv,
@@ -471,7 +471,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Gitcoin Q2 Update | Augur Testimonial"
+    subject = "Funding on Gitcoin | OSS Motivations"
 
     intro = '''
 
@@ -479,33 +479,29 @@ def render_new_bounty_roundup(to_email):
     Hi there
 </p>
 <p>
-This week, we shipped <a href="https://medium.com/gitcoin/gitcoin-q2-update-c31e751889c8">Q2 updates.</a>
-In this update, we discuss our OKR’s for Q2, how we performed, and our goals moving forward into Q3.
+This week, we shipped <a href="https://medium.com/gitcoin/fund-an-issue-on-gitcoin-3d7245e9b3f3">'Fund an Issue on Gitcoin.'</a>
+This piece is geared for our open source funders on Gitcoin. We give you a succinct walkthrough of how
+to go from opening a Gitcoin account to funding your first issue.
 </p>
 
 <p>
-In addition to that, we highlighted <a href="https://medium.com/gitcoin/gitcoin-testimonials-augur-9bfe97368a30">
-Augur's work on the Gitcoin platform.</a>
-In this post, we briefly discuss what the goal of the Augur project is, how the team has used Gitcoin
-to build it, and some specifics about the important bounties they’ve had completed by the Gitcoin community.
-Special shout out to Tom Kysar and @cryptomental for their input on this one!
+In addition to that, we published a longer thought piece on <a href="https://medium.com/gitcoin/building-a-platform-that-maximizes-freedom-1149968a7b05">
+building platforms that maximize freedom.</a>
+As cryptoeconomics and decentralized technology matures, we are fast approaching the intersection of
+intrinsic and extrinsic motivations in fields such as open source.
+ In this post, Vivek takes a deep dive into what defines intrinsic and extrinsic motivations and how they will mix in the future of open source.
 </p>
 
-<p>
-Finally, we pushed our
-<a href="https://medium.com/p/804c18dc91da">second installment of Gitcoiner profiles.</a>
-This weeks profile features UX ninja Will Goi. Will has worked closely with the Gitcoin team over the past
-few months to help us build out design features such as the new user profile page and the funds requested interface.
-</p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-Our livestream recording featuring Andy Tudhope of Status has been added to the Gitcoin Youtube channel.
-<a href="https://www.youtube.com/watch?v=JiL0aPao50I&t=13s">Check it out!</a>
+Our livestream recording from a couple weeks prior is now live on the Gitcoin Youtube.
+This talks features Jay Rush of Quickblocks.
+<a href="https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w">Check it out!</a>
         </li>
         <li>
 <a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET.
-This week features John Paller of Opolis!
+This week features David Sneider of Deco Network, a project focused on decentralizing the knowledge economy!
         </li>
 
     </ul>
@@ -516,40 +512,40 @@ Back to building,
 '''
     highlights = [
         {
-            'who': 'subramanianv',
+            'who': 'jvmaia',
             'who_link': True,
-            'what': 'Created a full test suite for Market Protocol’s Collateral.Ts',
-            'link': 'https://gitcoin.co/issue/MARKETProtocol/MARKET.js/53/708',
+            'what': 'Helped us take the first step towards crowdfunding Gitcoin bounties',
+            'link': 'https://gitcoin.co/issue/gitcoinco/web/1380/718',
             'link_copy': 'View more',
         },
         {
-            'who': 'HPrivakos',
+            'who': 'StevenJNPearce',
             'who_link': True,
-            'what': 'Helped Decentraland create a tutorial for creating a static scene in their VR world.',
-            'link': 'https://gitcoin.co/issue/decentraland/MANA-community-fund-learning-content/8/707',
+            'what': 'Assisted the YouveGotEth team in making the app more mobile friendly',
+            'link': 'https://gitcoin.co/issue/youvegoteth/youvegoteth.github.io/15/734',
             'link_copy': 'View more',
         },
         {
-            'who': 'subramanianv',
+            'who': 'perfectmak',
             'who_link': True,
-            'what': 'Also improved the Livepeer UX by alerting users when their funds are too low to broadcast.',
-            'link': 'https://gitcoin.co/issue/livepeer/livepeerjs/125/703',
+            'what': 'Added more functions for Market Protocol parameter checking to improve error reports and debugging',
+            'link': 'https://gitcoin.co/issue/MARKETProtocol/MARKET.js/67/730',
             'link_copy': 'View more',
         },
     ]
 
     bounties_spec = [
         {
-            'url': 'https://github.com/MARKETProtocol/MARKET.js/issues/60',
-            'primer': 'Help the Market Protocol team validate deposits and withdrawals before a transaction is created.',
+            'url': 'https://github.com/spacemeshos/cosmic/issues/2',
+            'primer': 'Help the Spacemesh team in developing the alpha of their seed implementation to ship apps cross-platform.',
         },
         {
-            'url': 'https://github.com/MetaMask/metamask-extension/issues/4161',
-            'primer': 'Contribute to MetaMask by building a feature for account and network changes when using a Web 3.0 plugin.',
+            'url': 'https://github.com/MARKETProtocol/dApp/issues/227',
+            'primer': 'Implement the new explorer UI/UX design in Market Protocol.',
         },
         {
-            'url': 'https://github.com/rotkehlchenio/rotkehlchen/issues/28',
-            'primer': 'Build out Windows support for the Rotkehlchen asset management platform.',
+            'url': 'https://github.com/paritytech/parity/issues/7203',
+            'primer': 'Solve a puzzle with Parity nodes being bumped for TooManyPeers',
         },
     ]
 
@@ -558,16 +554,15 @@ Back to building,
     bounties = []
     for nb in bounties_spec:
         try:
-            bounty = Bounty.objects.get(
-                current_bounty=True,
+            bounty = Bounty.objects.current().filter(
                 github_url__iexact=nb['url'],
-            )
+            ).order_by('-web3_created').first()
             bounties.append({
                 'obj': bounty,
                 'primer': nb['primer']
                 })
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
     ecosystem_bounties = ExternalBounty.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(weeks=1)).order_by('?')[0:5]
 

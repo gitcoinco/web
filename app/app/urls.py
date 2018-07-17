@@ -152,6 +152,7 @@ urlpatterns = [
     url(r'^tools/?', dashboard.views.toolbox, name='tools'),
 
     # gas views
+    url(r'^gas/faucets/?', dashboard.gas_views.gas_faucet_list, name='gas_faucet_list'),
     url(r'^gas/faq/?', dashboard.gas_views.gas_faq, name='gas_faq'),
     url(r'^gas/calculator/?', dashboard.gas_views.gas_calculator, name='gas_calculator'),
     url(r'^gas/history/?', dashboard.gas_views.gas_history_view, name='gas_history_view'),
@@ -163,6 +164,7 @@ urlpatterns = [
     re_path(r'^static/avatar/(.*)/(.*)?', avatar.views.handle_avatar, name='org_avatar'),
     re_path(r'^static/viz/graph/(.*)?$', dataviz.d3_views.viz_graph, name='viz_graph'),
     re_path(r'^static/viz/sscatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot_stripped, name='viz_sscatterplot'),
+    re_path(r'^static/v2/js/tokens_dynamic.js$', retail.views.tokens, name='tokens'),
 
     # sync methods
     url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),
@@ -176,8 +178,10 @@ urlpatterns = [
     # brochureware views
     url(r'^about/?', retail.views.about, name='about'),
     url(r'^mission/?', retail.views.mission, name='mission'),
+    url(r'^vision/?', retail.views.vision, name='vision'),
     re_path(r'^results/?(?P<keyword>.*)/?', retail.views.results, name='results_by_keyword'),
     re_path(r'^results/?', retail.views.results, name='results'),
+    url(r'^activity/?', retail.views.activity, name='activity'),
     url(r'^get/?', retail.views.get_gitcoin, name='get_gitcoin'),
     url(r'^$', retail.views.index, name='index'),
     url(r'^contributor', retail.views.contributor_landing, name='contributor_landing'),
@@ -198,6 +202,7 @@ urlpatterns = [
     url(r'^presskit/?', retail.views.presskit, name='presskit'),
     url(r'^community/?', retail.views.community, name='community'),
     url(r'^slack/?', retail.views.slack, name='slack'),
+    url(r'^submittoken/?', retail.views.newtoken, name='newtoken'),
     url(r'^iosfeedback/?', retail.views.iosfeedback, name='iosfeedback'),
     url(r'^ios/?', retail.views.ios, name='ios'),
     url(r'^itunes/?', retail.views.itunes, name='itunes'),
