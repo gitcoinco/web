@@ -56,7 +56,8 @@ urlpatterns = [
     # kudos
     url(r'^kudos/about', kudos.views.about, name='kudos_about'),
     url(r'^kudos/marketplace', kudos.views.marketplace, name='kudos_marketplace'),
-    url(r'^kudos/\d+', kudos.views.details, name='kudos_details'),
+    url(r'^kudos/mint', kudos.views.mint, name='kudos_mint'),
+    re_path(r'^kudos/\d+', kudos.views.details, name='kudos_details'),
 
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
