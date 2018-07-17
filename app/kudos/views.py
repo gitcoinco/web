@@ -18,6 +18,8 @@
 '''
 from django.template.response import TemplateResponse
 
+from .models import MarketPlaceListing
+
 
 def about(request):
     params = dict()
@@ -25,10 +27,20 @@ def about(request):
 
 
 def marketplace(request):
-    params = dict()
+    params = {"listings": MarketPlaceListing.objects.all()}
+
     return TemplateResponse(request, 'kudos_marketplace.html', params)
 
 
 def details(request):
     params = dict()
+
     return TemplateResponse(request, 'kudos_details.html', params)
+
+
+def mint(request):
+    params = dict()
+    # kt = KudosToken(name='pythonista', description='Zen', rarity=5, price=10, num_clones_allowed=3,
+    #                 num_clones_in_wild=0)
+
+    return TemplateResponse(request, 'kudos_mint.html', params)
