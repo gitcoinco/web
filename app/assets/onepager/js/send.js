@@ -5,9 +5,10 @@ $(document).ready(function() {
   // test of using shamirs secret to break apart a pk
   var new_pk = new Accounts().new()['private'];
   var shares = secrets.share(new_pk, 3, 2);
-  var comb = secrets.combine( shares.slice(1,3) );
+  var comb = secrets.combine(shares.slice(1, 3));
+
   console.log(shares);
-  console.log(shares.slice(1,3));
+  console.log(shares.slice(1, 3));
   console.log(new_pk);
   console.log(comb);
 
