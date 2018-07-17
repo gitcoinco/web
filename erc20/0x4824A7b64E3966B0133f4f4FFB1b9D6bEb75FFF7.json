@@ -1,0 +1,21 @@
+{
+  "symbol": "TCT",
+  "address": "0x4824A7b64E3966B0133f4f4FFB1b9D6bEb75FFF7",
+  "overview":{
+        "en": "TokenClub is a blockchain based cryptocurrency investment platform, which provides investors with professional cryptocurrency market information, investment consulting & strategies and other comprehensive services.",
+        "zh": "TokenClub是一个代币化的数字货币投资服务社区，为投资者提供精准数字货币资讯以及专业投顾咨询服务，并让新手投资者可以跟随高手投资。利用TCT代币解决社区内成员之间的信任和激励问题，同时让专业知识丰富、投资水平高、对社区贡献大的投资者脱颖而出，并获得与其创造价值相匹配的收益，让社区形成健康的价值生态。"
+  },
+  "email": "zd@tokenclub.com",
+  "website": "http://www.tokenclub.com/",
+  "whitepaper": "http://www.tokenclub.com/about/assets/TokenClub_c.pdf",
+  "state": "NORMAL",
+  "published_on": "2017-12-23",
+  "initial_price":{
+        "ETH":"0.00011 ETH",
+        "USD":"0.046 USD"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Token8Club",
+    "telegram": "https://t.me/token_club"
+  }
+}
