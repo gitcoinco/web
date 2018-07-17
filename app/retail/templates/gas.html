@@ -100,13 +100,14 @@ div.tooltip {
         width = window.innerWidth - 100 - margin.left - margin.right,
         height = 500 - margin.top - margin.bottom;
 
+    var initialWidth = width;
     var xScale = d3.scaleLinear().range([0, width]);
     var yScale = d3.scaleLinear().range([height, 0]);
 
     // define the line
     var valueline = d3.line()
-        .x(function(d) { return x(d.confirmation_time); })
-        .y(function(d) { return y(d.gas_price); });
+        .x(function(d) { return xScale(d.confirmation_time); })
+        .y(function(d) { return yScale(d.gas_price); });
 
     var svg = d3.select("#graph")
         .attr("width", width + margin.left + margin.right)
@@ -126,8 +127,8 @@ div.tooltip {
       .enter().append('circle')
       .attr('class', 'dot')
       .attr('r', 3)
-      .attr('cx', d => x(d.confirmation_time))
-      .attr('cy', d => y(d.gas_price))
+      .attr('cx', d => xScale(d.confirmation_time))
+      .attr('cy', d => yScale(d.gas_price))
       .on('mouseover', function(d) {
         var tooltip_msg = '<div>';
         tooltip_msg = `Gas Price: ${d.gas_price}`;
@@ -158,7 +159,7 @@ div.tooltip {
 
     // y Axis
     svg.append("g")
-      .call(d3.axisLeft(y));
+      .call(d3.axisLeft(yScale));
 
     // text label for the y axis
     svg.append("text")
@@ -173,25 +174,46 @@ div.tooltip {
 
 
     function resize() {
+
       var newWidth = window.innerWidth - 100 - margin.left - margin.right;
       var height = 500 - margin.top - margin.bottom;
       if(newWidth < initialWidth) { // prevents overflow
 
         // Update the range of the scale with new width/height
-        xScale.range([newWidth, 0]);
+        xScale.range([0, newWidth]);
         yScale.range([height, 0]);
 
         svg.select(".x.axis").attr("transform", "translate(0," + height + ")").call(d3.axisBottom(xScale));
         svg.select(".x-title").attr("transform","translate(" + (newWidth/2) + " ," + (height + margin.top + 20) + ")")
             .style("text-anchor", "middle");
 
-        svg.append("path")
+        svg.select("path")
             .data([data])
             .attr("class", "line")
             .attr("d", valueline);
+
+        svg.selectAll('circle')
+            .attr('class', 'dot')
+            .attr('r', 3)
+            .attr('cx', d => xScale(d.confirmation_time))
+            .attr('cy', d => yScale(d.gas_price))
+            .on('mouseover', function(d) {
+              var tooltip_msg = '<div>';
+              tooltip_msg = `Gas Price: ${d.gas_price}`;
+              tooltip_msg = tooltip_msg + `<br/>{% trans "Confirmation time"%}: ${d.confirmation_time} min`;
+              tooltip_msg = tooltip_msg + '</div>';
+              tooltip.transition().style("opacity", 1);
+              tooltip.html(tooltip_msg).style("left", (d3.event.pageX + 15) + "px").style("top", (d3.event.pageY - 28) + "px");
+            })
+            .on('mouseout', function(d) {
+              tooltip.style("opacity", 0);
+            });
       }
     }
-    
+
+    // Call the resize function whenever a resize event occurs
+    d3.select(window).on('resize', resize);
+
     </script>
     <style>
     #estimateTable{

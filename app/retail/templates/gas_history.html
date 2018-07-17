@@ -109,8 +109,8 @@ div.tooltip {
 
   // define the line
   var valueline = d3.line()
-      .x(function(d) { return x(d.confirmation_time); })
-      .y(function(d) { return y(d.gas_price); });
+      .x(function(d) { return xScale(d.confirmation_time); })
+      .y(function(d) { return yScale(d.gas_price); });
 
   var svg = d3.select("#graph")
       .attr("width", width + margin.left + margin.right)
