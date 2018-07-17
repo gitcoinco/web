@@ -1,0 +1,10 @@
+{
+    "website": "https://www.ocity.io/", 
+    "published_on": "2018-04-16", 
+    "overview": {
+        "en": "The concept of CITY chain is to 'redefine urban life by applying block chain technology + gamification rules', as the basic public chain of future urban life. All the CITY life scenes chain can be connected to the CITY, you can use the endogenous Token consumer scenarios, different scenarios of Token can be equivalent exchange, through intelligent contracts through the Token transfer of different life scenes, a user in a scenario to earn the Token can be used in other scenarios consumption. The rules of gamification will encourage users to actively participate in urban life, contribute value to urban development, and receive corresponding CITY rewards, thus forming a virtuous cycle.", 
+        "zh": "CITY链的理念是“应用区块链技术+游戏化规则重新定义城市生活”，作为未来城市生活的底层公链。一切城市生活场景均可接入CITY链，消费场景可以使用内生Token进行支付，不同场景的Token可以通过智能合约进行等值兑换，打通不同生活场景的Token流转，用户在一个场景赚取的Token可以在其他场景消费使用。游戏化规则将激励用户积极参与城市生活，为城市发展贡献价值，同时收获相应CITY奖励，由此形成一个良性的循环。"
+    }, 
+    "symbol": "CITY", 
+    "address": "0x08a2246DCB48DB6a5a9e1F6bC082752FCEDdD106"
+}
