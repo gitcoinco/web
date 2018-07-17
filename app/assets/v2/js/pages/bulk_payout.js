@@ -8,6 +8,8 @@ var normalizeUsername = function(username) {
   return username;
 };
 
+
+
 $(document).ready(function($) {
   var random_id = function() {
     var id_num = Math.random().toString(9).substr(2, 3);
@@ -20,6 +22,15 @@ $(document).ready(function($) {
     event.preventDefault();
     update_registry();
   });
+
+  $(document).on('paste', '.username', function(event) {
+    var self = $(this);
+    setTimeout(function(){
+      self.html(self.html().replace(/(<([^>]+)>)/ig,""));
+    },10);
+  });
+
+  
 
   $(document).on('click', '#close_bounty', function(event) {
     update_registry();
