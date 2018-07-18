@@ -11,28 +11,51 @@ var get_smtp_token = function(){
   return token;
 }
 
-var get_metadata = function(callback){
-  // test of using shamirs secret to break apart a pk
-  var account = new Accounts().new();
-  var address = account['address'];
-  var public = account['public'];
-  var private = account['private'];
-  var shares = secrets.share(private, 3, 2);
+var generate_or_get_private_key = function(){
+  if(typeof document.account != 'undefined'){
+    return document.account;
+  }
+  document.account = new Accounts().new();
+  document.account['shares'] = secrets.share(document.account['private'], 3, 2);
+  return document.account;
+};
+
+var clear_metadata = function(){
+  document.account = undefined;
+  document.hash1 = undefined;
+  document.hash2 = undefined;
+}
+
+var set_metadata = function(callback){
+  var account = generate_or_get_private_key();
+  var shares = account['shares'];
 
   ipfs = get_ipfs();
   ipfs.add(shares[1], function(err, hash1) {
     if (err) throw err;
+    document.hash1 = hash1;
     ipfs.add(shares[2], function(err, hash2) {
       if (err) throw err;
-      callback({
-          'pub_key': public,
-          'address': address,
-          'reference_hash_for_funder': hash1,
-          'reference_hash_for_receipient': hash2,
-          'gitcoin_secret': shares[0],
-      });
+      document.hash2 = hash2;
     });
   });
+}
+var wait_for_metadata = function(callback){
+  setTimeout(function(){
+    if(typeof document.hash2 != 'undefined'){
+      var account = generate_or_get_private_key();
+
+      callback({
+          'pub_key': account['public'],
+          'address': account['address'],
+          'reference_hash_for_funder': document.hash1,
+          'reference_hash_for_receipient': document.hash2,
+          'gitcoin_secret': account['shares'][0],
+      });
+    } else {
+      wait_for_metadata(callback);
+    }
+  },500);
 
 }
 
@@ -45,7 +68,7 @@ var send_email = function(){
 }
 
 $(document).ready(function() {
-
+  set_metadata();
   // jquery bindings
   $('#advanced_toggle').click(function() {
     advancedToggle();
@@ -189,7 +212,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
     return;
   }
 
-  get_metadata(function(metadata){
+  wait_for_metadata(function(metadata){
     const url = '/tip/send/3';
 
     fetch(url, {

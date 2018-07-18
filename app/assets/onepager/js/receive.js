@@ -102,7 +102,7 @@ $(document).ready(function() {
 
           web3.eth.estimateGas(rawTx, function(err, gasLimit) {
             rawTx['value'] -= (gasLimit * gas_price_wei); // deduct gas costs from amount to send
-            rawTx['gasPrice'] = document.gas_price;
+            rawTx['gasPrice'] = gas_price_wei;
             rawTx['gasLimit'] = gasLimit;
             sign_and_send(rawTx, success_callback, document.priv_key);
           });
@@ -119,7 +119,7 @@ $(document).ready(function() {
           };
 
           web3.eth.estimateGas(rawTx, function(err, gasLimit) {
-            rawTx['gasPrice'] = document.gas_price;
+            rawTx['gasPrice'] = gas_price_wei;
             rawTx['gasLimit'] = gasLimit;
             var will_fail_at_this_gas_price = (gas_price_wei * gasLimit) > balance;
 

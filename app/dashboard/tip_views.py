@@ -210,7 +210,7 @@ def receive_tip_v3(request, key, txid, network):
     tip = tips.first()
 
     if tip.receive_txid:
-        messages.info(request, 'This tip has already been received')
+        messages.info(request, 'This tip has been received')
 
     not_mined_yet = get_web3(tip.network).eth.getBalance(Web3.toChecksumAddress(tip.metadata['address'])) == 0
 

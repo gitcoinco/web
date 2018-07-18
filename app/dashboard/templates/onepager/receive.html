@@ -72,6 +72,13 @@
       'token_address': '{{tip.tokenAddress}}',
     }
   </script>
+{% if tip.receive_txid %}
+  <script>
+    setTimeout(function(){
+      startConfetti();
+    }, 1000);
+  </script>
+{% endif %}
 </section>
 <script>
   document.network = '{{tip.network}}';
