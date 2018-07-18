@@ -38,9 +38,6 @@ along with this program. If not,see
         max-width: 8em;
         margin: 0.1em;
       }
-      .alert {
-        position: relative;
-      }
       .inventory {
         max-width: 960px;
         margin: 0 auto;
@@ -61,6 +58,10 @@ along with this program. If not,see
         margin: auto;
         overflow: scroll;
         z-index: 9999999;
+      }
+      code {
+        color: #e83e8c !important;
+        word-break: break-word !important;
       }
     </style>
     <div id='codedialog' class="white-light-bg modal">
@@ -283,7 +284,7 @@ along with this program. If not,see
 
       <div class="container-fluid p-5 bg-white">
         <p class="h1">{% trans "Banner" %}</p>
-        <div class="alert info" style="top: 0px">
+        <div class="alert info" style="top: 0; position: relative;">
           <div class="message">
             <div class="content">
               <strong></strong>{% trans "info" %}
@@ -291,7 +292,7 @@ along with this program. If not,see
           </div>
           <span class="closebtn">×</span>
         </div>
-        <div class="alert warning" style="top: 0px">
+        <div class="alert warning" style="top: 0; position: relative;">
           <div class="message">
             <div class="content">
               <strong></strong>{% trans "warning" %}
@@ -299,7 +300,7 @@ along with this program. If not,see
           </div>
           <span class="closebtn">×</span>
         </div>
-        <div class="alert error" style="top: 0px">
+        <div class="alert error" style="top: 0; position: relative;">
           <div class="message">
             <div class="content">
               <strong></strong>{% trans "error" %}
@@ -796,7 +797,7 @@ along with this program. If not,see
 
       function showDialog(event) {
         dialog.style.display = 'block';
-        code.innerHTML = converter.makeHtml(event.target.innerHTML);
+        code.innerHTML = converter.makeHtml('```lang=html\n' + event.target.outerHTML + '\n```');
       }
 
       function closeDialog(event) {
@@ -812,6 +813,8 @@ along with this program. If not,see
         while (len-- > 0) {
           elements[len].onclick = showDialog;
         }
+
+        _alert('Click anywhere on the examples to see the source.', 'info');
       }, false);
     </script>
   </body>
