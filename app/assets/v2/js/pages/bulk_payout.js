@@ -132,8 +132,10 @@ $(document).ready(function($) {
         // text transaction
         sendTransaction(i + 1);
       };
+      var failure_callback = function() {
+      }
 
-      return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, false);
+      return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false);
     }
   };
 

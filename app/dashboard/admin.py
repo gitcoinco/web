@@ -76,13 +76,17 @@ class TipAdmin(admin.ModelAdmin):
         return html
 
     def claim(self, instance):
-        if instance.web3_type != 'v2':
+        if instance.web3_type == 'yge':
             return 'n/a'
         if not instance.txid:
             return 'n/a'
         if instance.receive_txid:
             return 'n/a'
-        html = format_html('<a href="{}">claim</a>', instance.receive_url)
+        html = 'n/a'
+        if instance.web3_type == 'v2':
+            html = format_html('<a href="{}">claim</a>', instance.receive_url)
+        if instance.web3_type == 'v3':
+            html = format_html(f'<a href="{instance.receive_url_for_funder}">claim as funder</a> | <a href="{instance.receive_url_for_recipient}">claim as recipient</a>')
         return html
 
 

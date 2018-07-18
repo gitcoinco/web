@@ -894,7 +894,7 @@ class Subscription(SuperModel):
 
 class Tip(SuperModel):
 
-    web3_type = models.CharField(max_length=50, default='v2')
+    web3_type = models.CharField(max_length=50, default='v3')
     emails = JSONField()
     url = models.CharField(max_length=255, default='')
     tokenName = models.CharField(max_length=255)
@@ -970,11 +970,31 @@ class Tip(SuperModel):
     def receive_url(self):
         if self.web3_type == 'yge':
             return self.url
-
+        if self.web3_type == 'v3':
+            return self.receive_url_for_recipient
+        if self.web3_type != 'v2':
+            raise Exception
+        
         pk = self.metadata['priv_key']
         txid = self.txid
         network = self.network
         return f"{settings.BASE_URL}tip/receive/v2/{pk}/{txid}/{network}"
+
+    @property
+    def receive_url_for_recipient(self):
+        if self.web3_type != 'v3':
+            raise Exception
+
+        key = self.metadata['reference_hash_for_receipient']
+        return f"{settings.BASE_URL}tip/receive/v3/{key}/{self.txid}/{self.network}"
+
+    @property
+    def receive_url_for_funder(self):
+        if self.web3_type != 'v3':
+            raise Exception
+
+        key = self.metadata['reference_hash_for_funder']
+        return f"{settings.BASE_URL}tip/receive/v3/{key}/{self.txid}/{self.network}"
 
     # TODO: DRY
     @property
@@ -1066,6 +1086,7 @@ class Tip(SuperModel):
             return None
 
     def payout_to(self, address, amount_override=None):
+        # TODO: deprecate this after v3 is shipped.
         from dashboard.utils import get_web3
         from dashboard.abi import erc20_abi
         if not address or address == '0x0':

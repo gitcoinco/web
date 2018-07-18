@@ -51,18 +51,7 @@ window.onload = function() {
         var account = web3.eth.coinbase;
         var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
 
-        ipfs.ipfsApi = IpfsApi({
-          host: 'ipfs.infura.io',
-          port: '5001',
-          protocol: 'https',
-          root: '/api/v0'
-        });
-        ipfs.setProvider({
-          host: 'ipfs.infura.io',
-          port: 5001,
-          protocol: 'https',
-          root: '/api/v0'
-        });
+        ipfs.ipfsApi = get_ipfs();
 
         // https://github.com/ConsenSys/StandardBounties/issues/21
         var ipfsFulfill = {

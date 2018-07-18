@@ -303,18 +303,7 @@ $(document).ready(function() {
       // IpfsApi is defined in the ipfs-api.js.
       // Is it better to use this JS file than the node package?  github.com/ipfs/
 
-      ipfs.ipfsApi = IpfsApi({
-        host: 'ipfs.infura.io',
-        port: '5001',
-        protocol: 'https',
-        root: '/api/v0'
-      });
-      ipfs.setProvider({
-        host: 'ipfs.infura.io',
-        port: 5001,
-        protocol: 'https',
-        root: '/api/v0'
-      });
+      ipfs = get_ipfs();
 
       // setup inter page state
       localStorage[issueURL] = JSON.stringify({

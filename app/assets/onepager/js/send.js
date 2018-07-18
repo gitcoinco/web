@@ -11,17 +11,32 @@ var get_smtp_token = function(){
   return token;
 }
 
-var playground = function(){
+var get_metadata = function(callback){
   // test of using shamirs secret to break apart a pk
-  var new_pk = new Accounts().new()['private'];
-  var shares = secrets.share(new_pk, 3, 2);
-  var comb = secrets.combine(shares.slice(1, 3));
+  var account = new Accounts().new();
+  var address = account['address'];
+  var public = account['public'];
+  var private = account['private'];
+  var shares = secrets.share(private, 3, 2);
 
-  console.log(shares);
-  console.log(shares.slice(1, 3));
-  console.log(new_pk);
-  console.log(comb);
+  ipfs = get_ipfs();
+  ipfs.add(shares[1], function(err, hash1) {
+    if (err) throw err;
+    ipfs.add(shares[2], function(err, hash2) {
+      if (err) throw err;
+      callback({
+          'pub_key': public,
+          'address': address,
+          'reference_hash_for_funder': hash1,
+          'reference_hash_for_receipient': hash2,
+          'gitcoin_secret': shares[0],
+      });
+    });
+  });
 
+}
+
+var send_email = function(){
   Email.send("kevin@gitcoin.co",
   "kevin@gitcoin.co",
   "This is a subject",
@@ -39,6 +54,8 @@ $(document).ready(function() {
   $('#token').on('change', updateEstimate);
   $('#send').click(function(e) {
     e.preventDefault();
+    if($(this).hasClass('disabled')) return;
+    loading_button($(this));
 
     // get form data
     var email = $('#email').val();
@@ -75,9 +92,14 @@ $(document).ready(function() {
       $('#new_username').html(username);
       $('#trans_link').attr('href', url);
       $('#trans_link2').attr('href', url);
+      unloading_button($(this));
+    };
+    var failure_callback = function(){
+      unloading_button($("#send"));
     };
 
-    return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, false);
+    return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false);
+
   });
 
   waitforWeb3(function() {
@@ -110,11 +132,12 @@ function isNumeric(n) {
 }
 
 
-function sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, is_for_bounty_fulfiller) {
+function sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, is_for_bounty_fulfiller) {
 
   mixpanel.track('Tip Step 2 Click', {});
   if (typeof web3 == 'undefined') {
     _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
+    failure_callback();
     return;
   }
   // setup
@@ -142,98 +165,106 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
   // validation
   if (hasEmail && !validateEmail(email)) {
     _alert({ message: gettext('To Email is optional, but if you enter an email, you must enter a valid email!') }, 'warning');
+    failure_callback();
     return;
   }
   if (from_email != '' && !validateEmail(from_email)) {
     _alert({ message: gettext('From Email is optional, but if you enter an email, you must enter a valid email!') }, 'warning');
+    failure_callback();
     return;
   }
   if (!isNumeric(amountInWei) || amountInWei == 0) {
     _alert({ message: gettext('You must enter an number for the amount!') }, 'warning');
+    failure_callback();
     return;
   }
   if (username == '') {
     _alert({ message: gettext('You must enter a username.') }, 'warning');
+    failure_callback();
     return;
   }
   if (!accept_tos) {
     _alert({ message: gettext('You must accept the terms.') }, 'warning');
+    failure_callback();
     return;
   }
 
-  const url = '/tip/send/3';
+  get_metadata(function(metadata){
+    const url = '/tip/send/3';
 
-  fetch(url, {
-    method: 'POST',
-    body: JSON.stringify({
-      username: username,
-      email: email,
-      tokenName: tokenName,
-      amount: amountInEth,
-      comments_priv: comments_priv,
-      comments_public: comments_public,
-      expires_date: expires,
-      github_url: github_url,
-      from_email: from_email,
-      from_name: from_name,
-      tokenAddress: tokenAddress,
-      network: document.web3network,
-      from_address: fromAccount,
-      is_for_bounty_fulfiller: is_for_bounty_fulfiller
-    })
-  }).then(function(response) {
-    return response.json();
-  }).then(function(json) {
-    var is_success = json['status'] == 'OK';
-    var _class = is_success ? 'info' : 'error';
+    fetch(url, {
+      method: 'POST',
+      body: JSON.stringify({
+        username: username,
+        email: email,
+        tokenName: tokenName,
+        amount: amountInEth,
+        comments_priv: comments_priv,
+        comments_public: comments_public,
+        expires_date: expires,
+        github_url: github_url,
+        from_email: from_email,
+        from_name: from_name,
+        tokenAddress: tokenAddress,
+        network: document.web3network,
+        from_address: fromAccount,
+        is_for_bounty_fulfiller: is_for_bounty_fulfiller,
+        metadata: metadata,
+      })
+    }).then(function(response) {
+      return response.json();
+    }).then(function(json) {
+      var is_success = json['status'] == 'OK';
+      var _class = is_success ? 'info' : 'error';
 
-    if (!is_success) {
-      _alert(json, _class);
-    } else {
-      var destinationAccount = json.payload.address;
-      var post_send_callback = function(errors, txid) {
-        if (errors) {
-          _alert({ message: gettext('There was an error.') }, 'warning');
+      if (!is_success) {
+        _alert(json, _class);
+      } else {
+        var destinationAccount = metadata['address'];
+        var post_send_callback = function(errors, txid) {
+          if (errors) {
+            _alert({ message: gettext('There was an error.') }, 'warning');
+          } else {
+            const url = '/tip/send/4';
+
+            fetch(url, {
+              method: 'POST',
+              body: JSON.stringify({
+                destinationAccount: destinationAccount,
+                txid: txid
+              })
+            }).then(function(response) {
+              return response.json();
+            }).then(function(json) {
+              var is_success = json['status'] == 'OK';
+
+              if (!is_success) {
+                _alert(json, _class);
+              } else {
+                success_callback(txid);
+              }
+            });
+          }
+        };
+
+        if (isSendingETH) {
+          web3.eth.sendTransaction({
+            to: destinationAccount,
+            value: amountInWei
+          }, post_send_callback);
         } else {
-          const url = '/tip/send/4';
+          _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer.') }, 'info');
+          web3.eth.sendTransaction({
+            to: destinationAccount,
+            value: gas_money
+          }, function() {
+            var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
 
-          fetch(url, {
-            method: 'POST',
-            body: JSON.stringify({
-              destinationAccount: destinationAccount,
-              txid: txid
-            })
-          }).then(function(response) {
-            return response.json();
-          }).then(function(json) {
-            var is_success = json['status'] == 'OK';
-
-            if (!is_success) {
-              _alert(json, _class);
-            } else {
-              success_callback(txid);
-            }
+            token_contract.transfer(destinationAccount, amountInWei, post_send_callback);
           });
         }
-      };
-
-      if (isSendingETH) {
-        web3.eth.sendTransaction({
-          to: destinationAccount,
-          value: amountInWei
-        }, post_send_callback);
-      } else {
-        _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer.') }, 'info');
-        web3.eth.sendTransaction({
-          to: destinationAccount,
-          value: gas_money
-        }, function() {
-          var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-
-          token_contract.transfer(destinationAccount, amountInWei, post_send_callback);
-        });
       }
-    }
+    });
   });
 }
 
