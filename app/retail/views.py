@@ -87,7 +87,9 @@ def index(request):
     }
     return TemplateResponse(request, 'index.html', context)
 
-def contributor_landing(request):
+
+def contributor_landing(request, tech_stack):
+
     slides = [
         ("Daniel", static("v2/images/testimonials/gitcoiners/daniel.jpeg"),
          _("When I found Gitcoin I was gladly surprised that it took one thing and did it well. \
@@ -199,9 +201,9 @@ def contributor_landing(request):
 
     available_bounties_count = open_bounties().count()
     available_bounties_worth = amount_usdt_open_work()
-    tech_stack = request.GET.get('languages', '')
-
+    
     context = {
+        'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else "Open Source Opportunities",
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'home',
