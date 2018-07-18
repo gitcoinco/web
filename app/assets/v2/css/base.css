@@ -745,6 +745,10 @@ input[type=text].loading {
   transition: 0.3s;
 }
 
+.closebtn.purple {
+  content: url('/static/v2/images/close-purple.svg');
+}
+
 /* When moving the mouse over the close button */
 
 .closebtn:hover {
