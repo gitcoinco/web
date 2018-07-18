@@ -1,7 +1,17 @@
 /* eslint-disable no-console */
 
-$(document).ready(function() {
+var get_smtp_token = function(){
+  var local_token = "71b3882d-37fd-4c1c-b510-80e223baa283";
+  var prod_token = "7c625911-27e1-45eb-8e32-7cae47a87840"
+  var stage_token = "b9a30d31-c0d2-4088-8f3e-e97c0bbde3c8";
 
+  var token = local_token;
+  if(document.location.hostname=='gitcoin.co') token=prod_token;
+  if(document.location.hostname=='stage.gitcoin.co') token=stage_token;
+  return token;
+}
+
+var playground = function(){
   // test of using shamirs secret to break apart a pk
   var new_pk = new Accounts().new()['private'];
   var shares = secrets.share(new_pk, 3, 2);
@@ -11,6 +21,15 @@ $(document).ready(function() {
   console.log(shares.slice(1, 3));
   console.log(new_pk);
   console.log(comb);
+
+  Email.send("kevin@gitcoin.co",
+  "kevin@gitcoin.co",
+  "This is a subject",
+  "this is the body",
+  {token: get_smtp_token()});
+}
+
+$(document).ready(function() {
 
   // jquery bindings
   $('#advanced_toggle').click(function() {
