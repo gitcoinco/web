@@ -109,8 +109,12 @@
           <label class="filter-label" for=closed_on_github>{% trans "Closed On Github" %}</label>
         </div>
         <div class="form__radio option">
-          <input name="moderation_filter" id="needs_review" type="radio" value="needs_review" val-ui="Needs Review" checked/>
+          <input name="moderation_filter" id="needs_review" type="radio" value="needs_review" val-ui="Needs Review"/>
           <label class="filter-label" for=needs_review>{% trans "Needs Review" %}</label>
+        </div>
+        <div class="form__radio option">
+          <input name="moderation_filter" id="no_moderation" type="radio" value="" checked/>
+          <label class="filter-label" for=no_moderation>{% trans "No Moderation" %}</label>
         </div>
       </div>
     </div>
