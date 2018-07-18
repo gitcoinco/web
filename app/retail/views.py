@@ -199,6 +199,7 @@ def contributor_landing(request):
 
     available_bounties_count = open_bounties().count()
     available_bounties_worth = amount_usdt_open_work()
+    tech_stack = request.GET.get('languages', '')
 
     context = {
         'slides': slides,
@@ -211,7 +212,7 @@ def contributor_landing(request):
         'gitcoin_description': gitcoin_description,
         'available_bounties_count': available_bounties_count,
         'available_bounties_worth': available_bounties_worth,
-        'tech_stack': 'python', # TODO: Dynamic / Predefined List ?
+        'tech_stack': tech_stack,
     }
 
     return TemplateResponse(request, 'contributor_landing.html', context)
