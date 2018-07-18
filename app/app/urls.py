@@ -132,11 +132,7 @@ urlpatterns = [
         dashboard.tip_views.receive_tip_v3,
         name='receive_tip'
     ),
-    url(
-        r'^tip/address/(?P<handle>.*)',
-        dashboard.tip_views.tipee_address,
-        name='tipee_address'
-    ),
+    url(r'^tip/address/(?P<handle>.*)', dashboard.tip_views.tipee_address, name='tipee_address'),
     url(r'^tip/receive/?', dashboard.tip_views.receive_tip_legacy, name='receive_tip_legacy'),
     url(r'^tip/send/4/?', dashboard.tip_views.send_tip_4, name='send_tip_4'),
     url(r'^tip/send/3/?', dashboard.tip_views.send_tip_3, name='send_tip_3'),

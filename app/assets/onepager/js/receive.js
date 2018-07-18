@@ -69,10 +69,10 @@ $(document).ready(function() {
       if (err) {
         _alert(err.message.split('\n')[0], 'error');
       } else {
-        document.location.href = window.location.href.split('?')[0] + 
-        '?receive_txid=' + txid + 
-        '&forwarding_address=' + $('#forwarding_address').val()
-        '&save_addr=' + ($('#save_addr').is(':checked') ? "1" : "0")
+        document.location.href = window.location.href.split('?')[0] +
+        '?receive_txid=' + txid +
+        '&forwarding_address=' + $('#forwarding_address').val();
+        '&save_addr=' + ($('#save_addr').is(':checked') ? '1' : '0');
       }
     };
 
@@ -100,9 +100,11 @@ $(document).ready(function() {
           _alert('You must wait until the senders transaction confirm before claiming this tip.');
           return;
         }
+        var rawTx;
+
         if (is_eth) {
           // send ETH
-          var rawTx = {
+          rawTx = {
             to: forwarding_address,
             from: holding_address,
             value: amount_in_wei
@@ -118,7 +120,8 @@ $(document).ready(function() {
 
           // send ERC20
           var data = token_contract.transfer.getData(forwarding_address, amount_in_wei);
-          var rawTx = {
+
+          rawTx = {
             nonce: web3.toHex(nonce),
             to: token_address,
             from: holding_address,

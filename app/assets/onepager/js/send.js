@@ -1,18 +1,21 @@
 /* eslint-disable no-console */
 
-var get_smtp_token = function(){
-  var local_token = "71b3882d-37fd-4c1c-b510-80e223baa283";
-  var prod_token = "7c625911-27e1-45eb-8e32-7cae47a87840"
-  var stage_token = "b9a30d31-c0d2-4088-8f3e-e97c0bbde3c8";
+var get_smtp_token = function() {
+  var local_token = '71b3882d-37fd-4c1c-b510-80e223baa283';
+  var prod_token = '7c625911-27e1-45eb-8e32-7cae47a87840';
+  var stage_token = 'b9a30d31-c0d2-4088-8f3e-e97c0bbde3c8';
 
   var token = local_token;
-  if(document.location.hostname=='gitcoin.co') token=prod_token;
-  if(document.location.hostname=='stage.gitcoin.co') token=stage_token;
-  return token;
-}
 
-var generate_or_get_private_key = function(){
-  if(typeof document.account != 'undefined'){
+  if (document.location.hostname == 'gitcoin.co')
+    token = prod_token;
+  if (document.location.hostname == 'stage.gitcoin.co')
+    token = stage_token;
+  return token;
+};
+
+var generate_or_get_private_key = function() {
+  if (typeof document.account != 'undefined') {
     return document.account;
   }
   document.account = new Accounts().new();
@@ -20,52 +23,54 @@ var generate_or_get_private_key = function(){
   return document.account;
 };
 
-var clear_metadata = function(){
+var clear_metadata = function() {
   document.account = undefined;
   document.hash1 = undefined;
   document.hash2 = undefined;
-}
+};
 
-var set_metadata = function(callback){
+var set_metadata = function(callback) {
   var account = generate_or_get_private_key();
   var shares = account['shares'];
 
   ipfs = get_ipfs();
   ipfs.add(shares[1], function(err, hash1) {
-    if (err) throw err;
+    if (err)
+      throw err;
     document.hash1 = hash1;
     ipfs.add(shares[2], function(err, hash2) {
-      if (err) throw err;
+      if (err)
+        throw err;
       document.hash2 = hash2;
     });
   });
-}
-var wait_for_metadata = function(callback){
-  setTimeout(function(){
-    if(typeof document.hash2 != 'undefined'){
+};
+var wait_for_metadata = function(callback) {
+  setTimeout(function() {
+    if (typeof document.hash2 != 'undefined') {
       var account = generate_or_get_private_key();
 
       callback({
-          'pub_key': account['public'],
-          'address': account['address'],
-          'reference_hash_for_funder': document.hash1,
-          'reference_hash_for_receipient': document.hash2,
-          'gitcoin_secret': account['shares'][0],
+        'pub_key': account['public'],
+        'address': account['address'],
+        'reference_hash_for_funder': document.hash1,
+        'reference_hash_for_receipient': document.hash2,
+        'gitcoin_secret': account['shares'][0]
       });
     } else {
       wait_for_metadata(callback);
     }
-  },500);
+  }, 500);
 
-}
+};
 
-var send_email = function(){
-  Email.send("kevin@gitcoin.co",
-  "kevin@gitcoin.co",
-  "This is a subject",
-  "this is the body",
-  {token: get_smtp_token()});
-}
+var send_email = function() {
+  Email.send('kevin@gitcoin.co',
+    'kevin@gitcoin.co',
+    'This is a subject',
+    'this is the body',
+    {token: get_smtp_token()});
+};
 
 $(document).ready(function() {
   set_metadata();
@@ -77,7 +82,8 @@ $(document).ready(function() {
   $('#token').on('change', updateEstimate);
   $('#send').click(function(e) {
     e.preventDefault();
-    if($(this).hasClass('disabled')) return;
+    if ($(this).hasClass('disabled'))
+      return;
     loading_button($(this));
 
     // get form data
@@ -117,8 +123,8 @@ $(document).ready(function() {
       $('#trans_link2').attr('href', url);
       unloading_button($(this));
     };
-    var failure_callback = function(){
-      unloading_button($("#send"));
+    var failure_callback = function() {
+      unloading_button($('#send'));
     };
 
     return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false);
@@ -214,7 +220,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
   }
 
 
-  var got_metadata_callback = function(metadata){
+  var got_metadata_callback = function(metadata) {
     const url = '/tip/send/3';
 
     fetch(url, {
@@ -234,8 +240,8 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
         network: document.web3network,
         from_address: fromAccount,
         is_for_bounty_fulfiller: is_for_bounty_fulfiller,
-        metadata: metadata,
-      }),
+        metadata: metadata
+      })
     }).then(function(response) {
       return response.json();
     }).then(function(json) {
@@ -259,7 +265,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
                 destinationAccount: destinationAccount,
                 txid: txid,
                 is_direct_to_recipient: is_direct_to_recipient,
-                creation_time: creation_time,
+                creation_time: creation_time
               })
             }).then(function(response) {
               return response.json();
@@ -283,16 +289,18 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
         } else {
           var send_erc20 = function() {
             var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+
             token_contract.transfer(destinationAccount, amountInWei, post_send_callback);
           };
-          var send_gas_money_and_erc20=function(){
+          var send_gas_money_and_erc20 = function() {
             _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer.') }, 'info');
             web3.eth.sendTransaction({
               to: destinationAccount,
               value: gas_money
             }, send_erc20);
           };
-          if(is_direct_to_recipient){
+
+          if (is_direct_to_recipient) {
             send_erc20();
           } else {
             send_gas_money_and_erc20();
@@ -309,13 +317,13 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
   fetch(url, {method: 'GET'}).then(function(response) {
     return response.json();
   }).then(function(json) {
-    if(json.addresses.length > 0){
-      //pay out directly
+    if (json.addresses.length > 0) {
+      // pay out directly
       got_metadata_callback({
         'is_direct': true,
         'direct_address': json.addresses[0],
-        'creation_time': creation_time,
-      })
+        'creation_time': creation_time
+      });
     } else {
       // pay out via secret sharing algo
       wait_for_metadata(got_metadata_callback);
