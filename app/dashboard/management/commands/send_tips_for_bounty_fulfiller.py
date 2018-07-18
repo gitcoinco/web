@@ -22,9 +22,10 @@ import warnings
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-from github.utils import get_emails_master
+
 from dashboard.models import Tip
 from dashboard.notifications import maybe_market_tip_to_email
+from github.utils import get_emails_master
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)

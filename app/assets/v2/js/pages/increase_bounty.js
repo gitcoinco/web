@@ -170,9 +170,10 @@ $(document).ready(function() {
         $('.row.content').css('display', 'none');
 
       };
-      failure_callback = function(){
+
+      failure_callback = function() {
         console.log('failed');
-      }
+      };
 
       return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, true);
 

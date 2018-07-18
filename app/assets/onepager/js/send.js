@@ -160,7 +160,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
   var tokenName = 'ETH';
   var weiConvert = Math.pow(10, 18);
   var creation_time = Math.round((new Date()).getTime() / 1000);
-  var salt = parseInt((Math.random()*1000000));
+  var salt = parseInt((Math.random() * 1000000));
 
   if (!isSendingETH) {
     tokenName = tokenDetails.name;
@@ -201,6 +201,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
 
   var got_metadata_callback = function(metadata) {
     const url = '/tip/send/3';
+
     metadata['creation_time'] = creation_time;
     metadata['salt'] = salt;
 
@@ -305,7 +306,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
         'is_direct': true,
         'direct_address': json.addresses[0],
         'creation_time': creation_time,
-        'salt': salt,
+        'salt': salt
       });
     } else {
       // pay out via secret sharing algo
