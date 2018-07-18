@@ -275,7 +275,11 @@ def send_tip_4(request):
     params = json.loads(request.body)
     txid = params['txid']
     destinationAccount = params['destinationAccount']
-    tip = Tip.objects.get(metadata__address=destinationAccount)
+    is_direct_to_recipient = params['is_direct_to_recipient']
+    if is_direct_to_recipient:
+        tip = Tip.objects.get(metadata__direct_address=destinationAccount, metadata__creation_time=params['creation_time'])
+    else:
+        tip = Tip.objects.get(metadata__address=destinationAccount)
     is_authenticated_for_this_via_login = (tip.from_username and tip.from_username == from_username)
     is_authenticated_for_this_via_ip = tip.ip == get_ip(request)
     is_authed = is_authenticated_for_this_via_ip or is_authenticated_for_this_via_login
@@ -288,6 +292,8 @@ def send_tip_4(request):
 
     # db mutations
     tip.txid = txid
+    if is_direct_to_recipient:
+        tip.receive_txid = txid
     tip.save()
 
     # notifications
@@ -304,10 +310,27 @@ def get_profile(handle):
     try:
         to_profile = Profile.objects.get(handle__iexact=handle)
     except Profile.MultipleObjectsReturned:
-        to_profile = Profile.objects.filter(handle__iexact=handle).first()
+        to_profile = Profile.objects.filter(handle__iexact=handle).order_by('-created_on').first()
     except Profile.DoesNotExist:
         to_profile = None
     return to_profile
+
+
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def tipee_address(request, handle):
+    """returns the address, if any, that someone would like to be tipped directly at
+
+    Returns:
+        list of addresse
+
+    """
+    response = {
+        'addresses': []
+    }
+    profile = get_profile(str(handle).replace('@', ''))
+    if profile and profile.preferred_payout_address:
+        response['addresses'].append(profile.preferred_payout_address)
+    return JsonResponse(response)
 
 
 @csrf_exempt

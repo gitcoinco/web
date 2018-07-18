@@ -175,6 +175,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
   var tokenDetails = tokenAddressToDetails(tokenAddress);
   var tokenName = 'ETH';
   var weiConvert = Math.pow(10, 18);
+  var creation_time = Math.round((new Date()).getTime() / 1000);
 
   if (!isSendingETH) {
     tokenName = tokenDetails.name;
@@ -212,7 +213,8 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
     return;
   }
 
-  wait_for_metadata(function(metadata){
+
+  var got_metadata_callback = function(metadata){
     const url = '/tip/send/3';
 
     fetch(url, {
@@ -233,7 +235,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
         from_address: fromAccount,
         is_for_bounty_fulfiller: is_for_bounty_fulfiller,
         metadata: metadata,
-      })
+      }),
     }).then(function(response) {
       return response.json();
     }).then(function(json) {
@@ -243,7 +245,8 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
       if (!is_success) {
         _alert(json, _class);
       } else {
-        var destinationAccount = metadata['address'];
+        var is_direct_to_recipient = metadata['is_direct'];
+        var destinationAccount = is_direct_to_recipient ? metadata['direct_address'] : metadata['address'];
         var post_send_callback = function(errors, txid) {
           if (errors) {
             _alert({ message: gettext('There was an error.') }, 'warning');
@@ -254,7 +257,9 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
               method: 'POST',
               body: JSON.stringify({
                 destinationAccount: destinationAccount,
-                txid: txid
+                txid: txid,
+                is_direct_to_recipient: is_direct_to_recipient,
+                creation_time: creation_time,
               })
             }).then(function(response) {
               return response.json();
@@ -276,18 +281,45 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
             value: amountInWei
           }, post_send_callback);
         } else {
-          _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer.') }, 'info');
-          web3.eth.sendTransaction({
-            to: destinationAccount,
-            value: gas_money
-          }, function() {
+          var send_erc20 = function() {
             var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-
             token_contract.transfer(destinationAccount, amountInWei, post_send_callback);
-          });
+          };
+          var send_gas_money_and_erc20=function(){
+            _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer.') }, 'info');
+            web3.eth.sendTransaction({
+              to: destinationAccount,
+              value: gas_money
+            }, send_erc20);
+          };
+          if(is_direct_to_recipient){
+            send_erc20();
+          } else {
+            send_gas_money_and_erc20();
+          }
+          
         }
       }
     });
+  };
+
+  // send direct, or not?
+  const url = '/tip/address/' + username;
+
+  fetch(url, {method: 'GET'}).then(function(response) {
+    return response.json();
+  }).then(function(json) {
+    if(json.addresses.length > 0){
+      //pay out directly
+      got_metadata_callback({
+        'is_direct': true,
+        'direct_address': json.addresses[0],
+        'creation_time': creation_time,
+      })
+    } else {
+      // pay out via secret sharing algo
+      wait_for_metadata(got_metadata_callback);
+    }
   });
 }
 
