@@ -41,6 +41,11 @@ $(document).ready(function() {
 
     var forwarding_address = $('#forwarding_address').val();
 
+    if (!$('#tos').is(':checked')) {
+      _alert('Please accept TOS.', 'error');
+      unloading_button($(this));
+      return;
+    }
     if (forwarding_address == '0x0' || forwarding_address == '') {
       _alert('Invalid forwarding address.', 'error');
       unloading_button($(this));
@@ -64,7 +69,10 @@ $(document).ready(function() {
       if (err) {
         _alert(err.message.split('\n')[0], 'error');
       } else {
-        document.location.href = window.location.href.split('?')[0] + '?receive_txid=' + txid + '&forwarding_address=' + $('#forwarding_address').val();
+        document.location.href = window.location.href.split('?')[0] + 
+        '?receive_txid=' + txid + 
+        '&forwarding_address=' + $('#forwarding_address').val()
+        '&save_addr=' + ($('#save_addr').is(':checked') ? "1" : "0")
       }
     };
 

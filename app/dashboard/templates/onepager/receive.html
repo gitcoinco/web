@@ -52,6 +52,14 @@
         <input type="text" name="forwarding_address" id="forwarding_address" placeholder="0x0" {% if disable_inputs %}disabled=disabled{%endif%}>
       </div>
       <div>
+        <input type="checkbox" name="save_addr" id="save_addr" value=1 checked="" {% if disable_inputs %}disabled=disabled{%endif%}>
+        <label for=save_addr>{% trans "Save this address as my direct payment address" %}</label>
+        <br>
+        <input type="checkbox" id="tos" value="1" >
+        <label for="tos">{% blocktrans %}I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.{% endblocktrans %}</label>
+
+      </div>
+      <div>
         <br>
         <input id="receive" type='submit' class="button button--primary" value="{% trans "Claim" %} {{tip.tokenName}} 🙌" {% if disable_inputs %}disabled=disabled{%endif%} >
         <br>

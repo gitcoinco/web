@@ -223,6 +223,11 @@ def receive_tip_v3(request, key, txid, network):
 
         # db mutations
         try:
+            if params['save_addr']:
+                profile = get_profile(tip.username)
+                if profile:
+                    profile.preferred_payout_address = params['forwarding_address']
+                    profile.save()
             tip.receive_txid = params['receive_txid']
             tip.receive_address = params['forwarding_address']
             tip.received_on = timezone.now()
@@ -295,6 +300,15 @@ def send_tip_4(request):
     return JsonResponse(response)
 
 
+def get_profile(handle):
+    try:
+        to_profile = Profile.objects.get(handle__iexact=handle)
+    except Profile.MultipleObjectsReturned:
+        to_profile = Profile.objects.filter(handle__iexact=handle).first()
+    except Profile.DoesNotExist:
+        to_profile = None
+    return to_profile
+
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
@@ -319,13 +333,6 @@ def send_tip_3(request):
     params = json.loads(request.body)
 
     to_username = params['username'].lstrip('@')
-    try:
-        to_profile = Profile.objects.get(handle__iexact=to_username)
-    except Profile.MultipleObjectsReturned:
-        to_profile = Profile.objects.filter(handle__iexact=to_username).first()
-    except Profile.DoesNotExist:
-        to_profile = None
-
     to_emails = get_emails_master(to_username)
 
     if params.get('email'):
@@ -359,6 +366,8 @@ def send_tip_3(request):
         from_address=params['from_address'],
         is_for_bounty_fulfiller=params['is_for_bounty_fulfiller'],
         metadata=params['metadata'],
+        recipient_profile=get_profile(to_username),
+        sender_profile=get_profile(from_username),
     )
     response['payload'] = {
     }
