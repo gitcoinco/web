@@ -1,0 +1,16 @@
+{
+  "symbol": "MILK",
+  "address": "0x640c88a3F7dbD2CBeB4821b0436Eb49Af86A2aAd",
+  "overview":{
+    "en": "MILK is the Pass of Purcow Digital Assets Service Community. There is no reservation, no private placement, 100% fair mining, it is the incentive mechanism for the community to achieve autonomy, and it is also the right to the community's corresponding rights and interests; 92% of the community's income dividend will be distributed to MILK's locker holder.",
+    "zh": "MILK 是 Purcow 紫牛数字资产服务社区通证，没有预留，没有私募，100%公平挖矿产生，是社区实现自治的激励机制，是社区相应权益的权证；社区92%的收入分红给MILK锁仓持有者。"
+  },
+  "email": "support@purcow.io",
+  "website": "https://www.purcow.io/",
+  "whitepaper": "https://static2.purcow.io/purcow_whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-07-09",
+  "links": {
+    "telegram": "https://t.me/purcow"
+  }
+}
