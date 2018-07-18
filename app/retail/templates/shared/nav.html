@@ -115,6 +115,6 @@
     </nav>
   </div>
 </nav>
-{% if not request.path|is_in_list:"/,/contributor,/about,/mission,/results,/slack,/help,/how/funder,/how/contributor,/tools" %}
+{% if not request.path|is_in_list:"/,/contributor,/about,/mission,/results,/slack,/kudos/about,/help,/how/funder,/how/contributor,/tools" %}
   <p id="navbar-network-banner" class="px-0 py-1 m-0 font-caption hidden"></p>
 {% endif %}

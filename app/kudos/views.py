@@ -34,6 +34,7 @@ def about(request):
         'card_title': _('Gitcoin is a mission-driven organization.'),
         'card_desc': _('Our mission is to grow open source.'),
         'avatar_url': static('v2/images/grow_open_source.png'),
+        "listings": MarketPlaceListing.objects.all(),
     }
     return TemplateResponse(request, 'kudos_about.html', context)
 
