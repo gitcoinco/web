@@ -59,7 +59,7 @@ INSTALLED_APPS = [
     'django.contrib.sites', 'django_extensions', 'easy_thumbnails', 'app', 'avatar', 'retail', 'rest_framework',
     'bootstrap3', 'marketing', 'economy', 'dashboard', 'enssubdomain', 'faucet', 'tdi', 'gas', 'github', 'legacy',
     'chartit', 'email_obfuscator', 'linkshortener', 'credits', 'gitcoinbot', 'external_bounties', 'dataviz',
-    'impersonate', 'kudos'
+    'impersonate', 'kudos', 'django.contrib.postgres'
 ]
 
 MIDDLEWARE = [

@@ -17,8 +17,10 @@
 
 '''
 from django.template.response import TemplateResponse
+from django.contrib.postgres.search import SearchVector
 
 from .models import MarketPlaceListing
+from .forms import KudosSearchForm
 import re
 
 import logging
@@ -27,32 +29,54 @@ logging.basicConfig(level=logging.INFO)
 
 
 def about(request):
-    params = dict()
-    return TemplateResponse(request, 'kudos_about.html', params)
+    context = dict()
+    return TemplateResponse(request, 'kudos_about.html', context)
 
 
 def marketplace(request):
-    params = {"listings": MarketPlaceListing.objects.all()}
+    q = request.GET.get('q')
+    logging.info(q)
 
-    return TemplateResponse(request, 'kudos_marketplace.html', params)
+    results = MarketPlaceListing.objects.annotate(
+        search=SearchVector('name', 'description', 'tags')
+        ).filter(search=q)
+    logging.info(results)
+
+    if results:
+        context = {"listings": results}
+    else:
+        context = {"listings": MarketPlaceListing.objects.all()}
+
+    return TemplateResponse(request, 'kudos_marketplace.html', context)
+
+
+def search(request):
+    context = {}
+    logging.info(request.GET)
+
+    if request.method == 'GET':
+        form = KudosSearchForm(request.GET)
+        context = {'form': form}
+
+    return TemplateResponse(request, 'kudos_marketplace.html', context)
 
 
 def details(request):
-    params = dict()
+    context = dict()
     kudos_id = request.path.split('/')[-1]
     logging.info(f'kudos id: {kudos_id}')
 
     if not re.match(r'\d+', kudos_id):
         raise ValueError(f'Invalid Kudos ID found.  ID is not a number:  {kudos_id}')
 
-    params = {"kudos": MarketPlaceListing.objects.get(pk=kudos_id)}
+    context = {"kudos": MarketPlaceListing.objects.get(pk=kudos_id)}
 
-    return TemplateResponse(request, 'kudos_details.html', params)
+    return TemplateResponse(request, 'kudos_details.html', context)
 
 
 def mint(request):
-    params = dict()
+    context = dict()
     # kt = KudosToken(name='pythonista', description='Zen', rarity=5, price=10, num_clones_allowed=3,
     #                 num_clones_in_wild=0)
 
-    return TemplateResponse(request, 'kudos_mint.html', params)
+    return TemplateResponse(request, 'kudos_mint.html', context)
