@@ -20,8 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.apps import AppConfig
 
 
-class GithubConfig(AppConfig):
+class GitConfig(AppConfig):
     """Define the Github application configuration."""
 
-    name = 'github'
-    verbose_name = 'Github'
+    name = 'git'
+    verbose_name = 'Git'

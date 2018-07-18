@@ -32,7 +32,7 @@ from dashboard.abi import erc20_abi
 from dashboard.utils import generate_pub_priv_keypair, get_web3, has_tx_mined
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from github.utils import (
+from git.utils import (
     get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
 )
 from marketing.mails import (

@@ -29,6 +29,7 @@ from django.utils import timezone
 import dateutil.parser
 import requests
 import rollbar
+from github import BadCredentialsException, Github
 from requests.exceptions import ConnectionError
 from rest_framework.reverse import reverse
 
@@ -42,6 +43,38 @@ JSON_HEADER = {'Accept': 'application/json', 'User-Agent': settings.GITHUB_APP_N
 TIMELINE_HEADERS = {'Accept': 'application/vnd.github.mockingbird-preview'}
 TOKEN_URL = '{api_url}/applications/{client_id}/tokens/{oauth_token}'
 
+
+def github_connect(token=None):
+    """Authenticate the GH wrapper with Github.
+
+    Args:
+        token (str): The Github token to authenticate with.
+            Defaults to: None.
+
+    """
+    if token is None:
+        token = settings.GITHUB_API_TOKEN
+
+    try:
+        github_client = Github(login_or_token='token', password=token)
+    except BadCredentialsException as e:
+        github_client = None
+        logger.exception(e)
+    return github_client
+
+
+def get_gh_issue_details(org, repo, issue_num):
+    details = {'keywords': []}
+    gh_client = github_connect()
+    org_user = gh_client.get_user(login=org)
+    repo_obj = org_user.get_repo(repo)
+    issue_details = repo_obj.get_issue(issue_num)
+    langs = repo_obj.get_languages()
+    for k, _ in langs.items():
+        details['keywords'].append(k)
+    details['title'] = issue_details.title
+    details['description'] = issue_details.body.replace('\n', '').strip()
+    return details
 
 def build_auth_dict(oauth_token):
     """Collect authentication details.
@@ -81,7 +114,6 @@ def check_github(profile):
 
 
 def search_github(q):
-
     params = (('q', q), ('sort', 'updated'), )
     response = requests.get('https://api.github.com/search/users', headers=HEADERS, params=params)
     return response.json()
@@ -251,7 +283,7 @@ def get_github_emails(oauth_token):
         oauth_token (str): The Github OAuth2 token to use for authentication.
 
     Returns:
-        list of str: All of the user's associated email from github.
+        list of str: All of the user's associated email from git.
 
     """
     emails = []
@@ -465,6 +497,29 @@ def post_issue_comment_reaction(owner, repo, comment_id, content):
     url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions'
     response = requests.post(url, data=json.dumps({'content': content}), auth=_AUTH, headers=HEADERS)
     return response.json()
+
+
+def get_url_dict(issue_url):
+    """Get the URL dictionary with specific data we care about.
+
+    Args:
+        issue_url (str): The Github issue URL.
+
+    Raises:
+        IndexError: The exception is raised if accessing a necessary index fails.
+
+    Returns:
+        dict: A mapping of details for the specified issue URL.
+
+    """
+    try:
+        return {
+            'org': issue_url.split('/')[3],
+            'repo': issue_url.split('/')[4],
+            'issue_num': int(issue_url.split('/')[6]),
+        }
+    except IndexError:
+        return {}
 
 
 def repo_url(issue_url):

@@ -5,7 +5,7 @@ from django.utils.cache import patch_response_headers
 
 import requests
 from dashboard.models import Bounty
-from github.utils import get_user, org_name
+from git.utils import get_user, org_name
 from PIL import Image, ImageDraw, ImageFont
 from ratelimit.decorators import ratelimit
 

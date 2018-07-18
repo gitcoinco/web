@@ -22,7 +22,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.models import Bounty, BountyFulfillment, Interest, Profile, UserAction
-from github.utils import get_user, repo_name
+from git.utils import get_user, repo_name
 from marketing.models import GithubEvent
 
 
