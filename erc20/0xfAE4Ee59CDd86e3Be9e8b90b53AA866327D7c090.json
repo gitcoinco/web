@@ -1,4 +1,25 @@
 {
-  "symbol": "CPC",
-  "address": "0xfAE4Ee59CDd86e3Be9e8b90b53AA866327D7c090"
+    "symbol": "CPC",
+    "address": "0xfAE4Ee59CDd86e3Be9e8b90b53AA866327D7c090",
+    "overview":{
+        "en": "A new distributed infrastructure for next generation IoT",
+        "zh": "新一代分布式物联网系统"
+    },
+    "email": "info@cpchain.io",
+    "website": "https://www.cpchain.io",
+    "whitepaper": "https://www.cpchain.io/CPChain_Whitepaper_English.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-02-08",
+    "initial_price":{
+        "ETH":"0.0001 ETH",
+        "USD":"0.082 USD",
+        "BTC":"0.00001 BTC"
+    },
+    "links": {
+        "twitter": "https://twitter.com/cpchain_io",
+        "telegram": "https://t.me/cpchain",
+        "github": "https://github.com/cpchain",
+        "reddit": "https://www.reddit.com/r/CPChain_Official/",
+        "medium": "https://medium.com/@cpchain",
+    }
 }
