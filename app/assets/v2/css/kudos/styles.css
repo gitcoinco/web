@@ -1,0 +1,36 @@
+.kd-card {
+  position: relative; }
+  .kd-card .img-thumbnail {
+    width: 100%;
+    padding: 3.75rem 2.25rem 2.25rem;
+    transition: all linear .1s; }
+  .kd-card a:hover .img-thumbnail {
+    background-color: rgba(255, 255, 255, 0.9); }
+  .kd-card .kd-name {
+    color: white;
+    font-weight: 300;
+    padding: 0.5em; }
+  .kd-card .kd-price {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 1em; }
+
+.kd-date {
+  font-size: 1.1rem;
+  color: #43484D; }
+
+.listing-kudo a {
+  color: #43484D; }
+
+.full-height {
+  min-height: 100vh; }
+
+.bg-dark-blue {
+  background-color: #0D023B;
+  color: white; }
+
+.lh-3 {
+  line-height: 3rem; }
+
+/*# sourceMappingURL=styles.css.map */
