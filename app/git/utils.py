@@ -29,7 +29,8 @@ from django.utils import timezone
 import dateutil.parser
 import requests
 import rollbar
-from github import BadCredentialsException, Github
+from github import Github
+from github.GithubException import BadCredentialsException
 from requests.exceptions import ConnectionError
 from rest_framework.reverse import reverse
 
