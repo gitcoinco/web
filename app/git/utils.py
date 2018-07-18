@@ -29,8 +29,6 @@ from django.utils import timezone
 import dateutil.parser
 import requests
 import rollbar
-from github import Github
-from github.GithubException import BadCredentialsException
 from requests.exceptions import ConnectionError
 from rest_framework.reverse import reverse
 
@@ -53,6 +51,8 @@ def github_connect(token=None):
             Defaults to: None.
 
     """
+    from github import Github
+    from github.GithubException import BadCredentialsException
     if token is None:
         token = settings.GITHUB_API_TOKEN
 
