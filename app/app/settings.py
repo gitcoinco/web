@@ -126,6 +126,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': []
 }
 
+AUTH_USER_MODEL = 'auth.User'
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 LANGUAGE_CODE = env('LANGUAGE_CODE', default='en-us')

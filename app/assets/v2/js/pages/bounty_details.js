@@ -592,6 +592,7 @@ var do_actions = function(result) {
   var is_status_cancelled = result['status'] == 'cancelled';
   var can_submit_after_expiration_date = result['can_submit_after_expiration_date'];
   var is_still_on_happy_path = result['status'] == 'open' || result['status'] == 'started' || result['status'] == 'submitted' || (can_submit_after_expiration_date && result['status'] == 'expired');
+  var needs_review = result['needs_review'];
   const is_open = result['is_open'];
 
   // Find interest information
@@ -615,6 +616,7 @@ var do_actions = function(result) {
   let show_advanced_payout = isBountyOwner(result) && !is_status_expired && !is_status_done;
   const show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
   const show_admin_methods = document.isStaff;
+  const show_moderator_methods = document.isModerator;
 
   if (is_legacy) {
     show_start_stop_work = false;
@@ -782,7 +784,7 @@ var do_actions = function(result) {
     actions.push(_entry);
   }
 
-  if (show_admin_methods) {
+  if (show_admin_methods || show_moderator_methods) {
     const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
     const url = result['url'] + connector_char + 'admin_toggle_as_remarket_ready=1';
 
@@ -792,6 +794,23 @@ var do_actions = function(result) {
       text: gettext('Toggle Remarket Ready'),
       parent: 'right_actions',
       title: gettext('Sets Remarket Ready if not already remarket ready.  Unsets it if already remarket ready.'),
+      color: 'white',
+      buttonclass: 'admin-only'
+    };
+
+    actions.push(_entry);
+  }
+
+  if ((show_admin_methods || show_moderator_methods) && needs_review) {
+    const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
+    const url = result['url'] + connector_char + 'mark_reviewed=1';
+
+    const _entry = {
+      enabled: true,
+      href: url,
+      text: gettext('Mark as Reviewed'),
+      parent: 'right_actions',
+      title: gettext('Marks the bounty activity as reviewed.'),
       color: 'white',
       buttonclass: 'admin-only'
     };
@@ -815,7 +834,7 @@ var do_actions = function(result) {
     actions.push(_entry);
   }
 
-  if (show_admin_methods) {
+  if (show_admin_methods || show_moderator_methods) {
     const url = '';
 
     const _entry = {
@@ -926,7 +945,12 @@ const process_activities = function(result, bounty_activities) {
     increased_bounty: gettext('Increased Funding'),
     killed_bounty: gettext('Canceled Bounty'),
     new_tip: gettext('New Tip'),
-    receive_tip: gettext('Tip Received')
+    receive_tip: gettext('Tip Received'),
+    bounty_abandonment_escalation_to_mods: gettext('Escalated for Abandonment of Bounty'),
+    bounty_abandonment_warning: gettext('Warned for Abandonment of Bounty'),
+    bounty_removed_slashed_by_staff: gettext('Dinged and Removed from Bounty by Staff'),
+    bounty_removed_by_staff: gettext('Removed from Bounty by Staff'),
+    bounty_removed_by_funder: gettext('Removed from Bounty by Funder')
   };
 
   const now = new Date(result['now']);

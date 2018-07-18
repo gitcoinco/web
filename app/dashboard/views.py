@@ -31,7 +31,6 @@ from django.core.cache import cache
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
@@ -610,13 +609,12 @@ def cancel_bounty(request):
 def helper_handle_admin_override_and_hide(request, bounty):
     admin_override_and_hide = request.GET.get('admin_override_and_hide', False)
     if admin_override_and_hide:
-        is_staff = request.user.is_staff
-        if is_staff:
+        if getattr(request.user, 'profile') and request.user.profile.is_moderator or request.user.is_staff:
             bounty.admin_override_and_hide = True
             bounty.save()
-            messages.success(request, _(f'Bounty is now hidden'))
+            messages.success(request, _('Bounty is now hidden'))
         else:
-            messages.warning(request, _('Only the funder of this bounty may do this.'))
+            messages.warning(request, _('Only moderators may do this.'))
 
 
 def helper_handle_admin_contact_funder(request, bounty):

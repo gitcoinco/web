@@ -101,7 +101,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'github_issue_number', 'github_org_name', 'github_repo_name',
             'idx_status', 'token_value_time_peg', 'fulfillment_accepted_on', 'fulfillment_submitted_on',
             'fulfillment_started_on', 'canceled_on', 'action_urls',
-            'project_type', 'permission_type', 'attached_job_description'
+            'project_type', 'permission_type', 'attached_job_description', 'needs_review',
         )
 
     def create(self, validated_data):
@@ -224,6 +224,21 @@ class BountyViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 interested__profile__handle__iexact=self.request.query_params.get('interested_github_username')
             )
+
+        # Retrieve all mod bounties.
+        # TODO: Should we restrict this to staff only..? Technically I don't think we're worried about that atm?
+        if 'moderation_filter' in param_keys:
+            mod_filter = self.request.query_params.get('moderation_filter')
+            if mod_filter == 'needs_review':
+                queryset = queryset.needs_review()
+            elif mod_filter == 'warned':
+                queryset = queryset.warned()
+            elif mod_filter == 'escalated':
+                queryset = queryset.escalated()
+            elif mod_filter == 'hidden':
+                queryset = queryset.hidden()
+            elif mod_filter == 'not_started':
+                queryset == queryset.not_started()
 
         # order
         order_by = self.request.query_params.get('order_by')

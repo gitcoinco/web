@@ -98,6 +98,51 @@ class BountyQuerySet(models.QuerySet):
             Q(issue_description__icontains=keyword)
         )
 
+    def hidden(self):
+        """Filter results to only bounties that have been manually hidden by moderators."""
+        return self.filter(admin_override_and_hide=True)
+
+    def visible(self):
+        """Filter results to only bounties not marked as hidden."""
+        return self.filter(admin_override_and_hide=False)
+
+    def needs_review(self):
+        """Filter results by bounties that need reviewed."""
+        return self.prefetch_related('activities') \
+            .filter(
+                activities__activity_type__in=['bounty_abandonment_escalation_to_mods', 'bounty_abandonment_warning'],
+                activities__needs_review=True,
+            )
+
+    def reviewed(self):
+        """Filter results by bounties that have been reviewed."""
+        return self.prefetch_related('activities') \
+            .filter(
+                activities__activity_type__in=['bounty_abandonment_escalation_to_mods', 'bounty_abandonment_warning'],
+                activities__needs_review=False,
+            )
+
+    def warned(self):
+        """Filter results by bounties that have been warned for inactivity."""
+        return self.prefetch_related('activities') \
+            .filter(
+                activities__activity_type='bounty_abandonment_warning',
+                activities__needs_review=True,
+            )
+
+    def escalated(self):
+        """Filter results by bounties that have been escalated for review."""
+        return self.prefetch_related('activities') \
+            .filter(
+                activities__activity_type='bounty_abandonment_escalation_to_mods',
+                activities__needs_review=True,
+            )
+
+    def not_started(self):
+        """Filter results by bounties that have not been picked up in 3+ days."""
+        dt = timezone.now() - timedelta(days=3)
+        return self.prefetch_related('interested').filter(interested__isnull=True, created_on__gt=dt)
+
 
 class Bounty(SuperModel):
     """Define the structure of a Bounty.
@@ -785,6 +830,12 @@ class Bounty(SuperModel):
             fulfilled = self.interested.filter(pending=False).exists()
         return fulfilled
 
+    @property
+    def needs_review(self):
+        if self.activities.filter(needs_review=True).exists():
+            return True
+        return False
+
 
 class BountyFulfillmentQuerySet(models.QuerySet):
     """Handle the manager queryset for BountyFulfillments."""
@@ -1145,6 +1196,33 @@ def psave_interest(sender, instance, **kwargs):
         bounty.save()
 
 
+class ActivityQuerySet(models.QuerySet):
+    """Handle the manager queryset for Activities."""
+
+    def needs_review(self):
+        """Filter results to Activity objects to be reviewed by moderators."""
+        return self.select_related('bounty', 'profile').filter(needs_review=True)
+
+    def reviewed(self):
+        """Filter results to Activity objects to be reviewed by moderators."""
+        return self.select_related('bounty', 'profile').filter(
+            needs_review=False,
+            activity_type__in=['bounty_abandonment_escalation_to_mods', 'bounty_abandonment_warning'],
+        )
+
+    def warned(self):
+        """Filter results to Activity objects to be reviewed by moderators."""
+        return self.select_related('bounty', 'profile').filter(
+            activity_type='bounty_abandonment_warning',
+        )
+
+    def escalated_for_removal(self):
+        """Filter results to Activity objects to be reviewed by moderators."""
+        return self.select_related('bounty', 'profile').filter(
+            activity_type='bounty_abandonment_escalation_to_mods',
+        )
+
+
 class Activity(models.Model):
     """Represent Start work/Stop work event.
 
@@ -1166,18 +1244,27 @@ class Activity(models.Model):
         ('killed_bounty', 'Canceled Bounty'),
         ('new_tip', 'New Tip'),
         ('receive_tip', 'Tip Received'),
+        ('bounty_abandonment_escalation_to_mods', 'Escalated for Abandonment of Bounty'),
+        ('bounty_abandonment_warning', 'Warning for Abandonment of Bounty'),
+        ('bounty_removed_slashed_by_staff', 'Dinged and Removed from Bounty by Staff'),
+        ('bounty_removed_by_staff', 'Removed from Bounty by Staff'),
+        ('bounty_removed_by_funder', 'Removed from Bounty by Funder'),
     ]
     profile = models.ForeignKey('dashboard.Profile', related_name='activities', on_delete=models.CASCADE)
-    bounty = models.ForeignKey(Bounty, related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
-    tip = models.ForeignKey(Tip, related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
+    bounty = models.ForeignKey('dashboard.Bounty', related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
+    tip = models.ForeignKey('dashboard.Tip', related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True)
     metadata = JSONField(default={})
+    needs_review = models.BooleanField(default=False)
+
+    # Activity QuerySet Manager
+    objects = ActivityQuerySet.as_manager()
 
     def __str__(self):
         """Define the string representation of an interested profile."""
-        return f"{self.profile.handle} type: {self.activity_type}" \
-               f"created: {naturalday(self.created)}"
+        return f"{self.profile.handle} type: {self.activity_type} created: {naturalday(self.created)} " \
+               f"needs review: {self.needs_review}"
 
     def i18n_name(self):
         return _(next((x[1] for x in self.ACTIVITY_TYPES if x[0] == self.activity_type), 'Unknown type'))
