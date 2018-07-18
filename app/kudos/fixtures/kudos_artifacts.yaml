@@ -4,75 +4,89 @@
   pk: 1
   fields:
     name: Bug Squasher
-    description: The bug terminator
+    description: The bug terminator.
     image: v2/images/kudos/devflare-bugsquasher.svg
     rarity: 67
     price: 10
     num_clones_allowed: 10
     num_clones_in_wild: 0
+    lister:  Gitcoin
+    tags: bug, squash, debug, fix
 
 - model: kudos.MarketPlaceListing
   pk: 2
   fields:
     name: Collaboration Machine
-    description: Plays nice with others
+    description: Plays nice with others.
     image: v2/images/kudos/devflare-collaborationmachine.svg
     rarity: 45
     price: 10
     num_clones_allowed: 10
     num_clones_in_wild: 0
+    lister:  Gitcoin
+    tags: collaboration, helpful, synergy, team player
 
 - model: kudos.MarketPlaceListing
   pk: 3
   fields:
     name: Design Star
-    description: Just so good looking
+    description: Just so good looking.
     image: v2/images/kudos/devflare-designstar.svg
     rarity: 34
     price: 10
     num_clones_allowed: 10
     num_clones_in_wild: 0
+    lister:  Gitcoin
+    tags: design, ui, ux, visual, front-end
 
 - model: kudos.MarketPlaceListing
   pk: 4
   fields:
     name: Fast Turn Around
-    description: Speedy Gonzalez
+    description: Speedy Gonzalez.
     image: v2/images/kudos/devflare-fastturnaround.svg
     rarity: 89
     price: 10
     num_clones_allowed: 10
     num_clones_in_wild: 0
+    lister:  Gitcoin
+    tags: fast, speedy, quick
 
 - model: kudos.MarketPlaceListing
   pk: 5
   fields:
     name: Helping Hand
-    description: Like a good neighbor
+    description: Like a good neighbor.
     image: v2/images/kudos/devflare-helpinghand.svg
     rarity: 34
     price: 10
     num_clones_allowed: 10
     num_clones_in_wild: 0
+    lister:  Gitcoin
+    tags: helpful, hand, reliable
 
 - model: kudos.MarketPlaceListing
   pk: 6
   fields:
     name: Problem Solver
-    description: Nothing is impossible
+    description: Nothing is impossible.
     image: v2/images/kudos/devflare-problemsolver.svg
     rarity: 12
     price: 10
     num_clones_allowed: 10
     num_clones_in_wild: 0
+    lister:  Gitcoin
+    tags: problem, solve, tenacious
 
 - model: kudos.MarketPlaceListing
   pk: 7
   fields:
     name: Pythonista
-    description: Zen
+    description: Zen.
     image: v2/images/kudos/devflare-pythonista.svg
     rarity: 67
     price: 10
     num_clones_allowed: 10
     num_clones_in_wild: 0
+    lister:  Gitcoin
+    tags: python, pep8, experienced
