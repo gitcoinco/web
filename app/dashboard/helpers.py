@@ -28,9 +28,7 @@ from django.db import transaction
 from django.http import Http404, JsonResponse
 from django.utils import timezone
 
-import requests
 from app.utils import sync_profile
-from bs4 import BeautifulSoup
 from dashboard.models import Activity, Bounty, BountyFulfillment, BountySyncRequest, UserAction
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
@@ -38,7 +36,7 @@ from dashboard.notifications import (
 )
 from dashboard.tokens import addr_to_token
 from economy.utils import convert_amount
-from git.utils import _AUTH, get_gh_issue_details, get_url_dict, github_connect, issue_number, org_name, repo_name
+from git.utils import get_gh_issue_details, get_url_dict
 from jsondiff import diff
 from pytz import UTC
 from ratelimit.decorators import ratelimit
