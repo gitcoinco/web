@@ -21,7 +21,15 @@ from __future__ import unicode_literals
 
 from django.contrib import admin
 
-from .models import ConversionRate
+from .models import ConversionRate, Token
+
+
+class TokenAdmin(admin.ModelAdmin):
+    """Define the GeneralAdmin administration layout."""
+
+    ordering = ['-id']
+    search_fields = ['symbol', 'address']
+    list_display = ['approved', 'symbol', 'address']
 
 
 # Register your models here.
@@ -33,3 +41,4 @@ class ConvRateAdmin(admin.ModelAdmin):
 
 
 admin.site.register(ConversionRate, ConvRateAdmin)
+admin.site.register(Token, TokenAdmin)

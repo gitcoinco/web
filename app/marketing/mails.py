@@ -163,6 +163,21 @@ def new_faucet_request(fr):
         translation.activate(cur_language)
 
 
+def new_token_request(obj):
+    to_email = settings.PERSONAL_CONTACT_EMAIL
+    from_email = settings.SERVER_EMAIL
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = _("New Token Request")
+        body_str = _("A new token request was completed. You may fund the token request here")
+        body = f"{body_str}: https://gitcoin.co/{obj.admin_url} \n\n {obj.email}"
+        if not should_suppress_notification_email(to_email, 'faucet'):
+            send_mail(from_email, to_email, subject, body, from_name=_("No Reply from Gitcoin.co"))
+    finally:
+        translation.activate(cur_language)
+
+
 def warn_account_out_of_eth(account, balance, denomination):
     to_email = settings.PERSONAL_CONTACT_EMAIL
     from_email = settings.SERVER_EMAIL

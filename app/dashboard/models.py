@@ -82,6 +82,22 @@ class BountyQuerySet(models.QuerySet):
         else:
             return
 
+    def keyword(self, keyword):
+        """Filter results to all Bounty objects containing the keywords.
+
+        Args:
+            keyword (str): The keyword to search title, issue description, and issue keywords by.
+
+        Returns:
+            dashboard.models.BountyQuerySet: The QuerySet of bounties filtered by keyword.
+
+        """
+        return self.filter(
+            Q(metadata__issueKeywords__icontains=keyword) | \
+            Q(title__icontains=keyword) | \
+            Q(issue_description__icontains=keyword)
+        )
+
 
 class Bounty(SuperModel):
     """Define the structure of a Bounty.
@@ -203,6 +219,7 @@ class Bounty(SuperModel):
     admin_mark_as_remarket_ready = models.BooleanField(
         default=False, help_text=_('Admin override to mark as remarketing ready')
     )
+    attached_job_description = models.URLField(blank=True, null=True)
 
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()
@@ -466,7 +483,10 @@ class Bounty(SuperModel):
                     return 'done'
                 elif self.past_hard_expiration_date:
                     return 'expired'
-                # If its not expired or done, it must be cancelled.
+                has_tips = Tip.objects.filter(network=self.network, github_url=self.github_url).exclude(txid='').exists()
+                if has_tips:
+                    return 'done'
+                # If its not expired or done, and no tips, it must be cancelled.
                 return 'cancelled'
             # per https://github.com/gitcoinco/web/pull/1098 ,
             # cooperative/contest are open no matter how much started/submitted work they have
@@ -728,7 +748,7 @@ class Bounty(SuperModel):
         """
         params = f'pk={self.pk}&network={self.network}'
         urls = {}
-        for item in ['fulfill', 'increase', 'accept', 'cancel']:
+        for item in ['fulfill', 'increase', 'accept', 'cancel', 'payout']:
             urls.update({item: f'/issue/{item}?{params}'})
         return urls
 
@@ -846,6 +866,7 @@ class Subscription(SuperModel):
 
 class Tip(SuperModel):
 
+    web3_type = models.CharField(max_length=50, default='v2')
     emails = JSONField()
     url = models.CharField(max_length=255, default='')
     tokenName = models.CharField(max_length=255)
@@ -867,17 +888,22 @@ class Tip(SuperModel):
     from_address = models.CharField(max_length=255, default='', blank=True)
     receive_address = models.CharField(max_length=255, default='', blank=True)
     recipient_profile = models.ForeignKey(
-        'dashboard.Profile', related_name='received_tips', on_delete=models.SET_NULL, null=True
+        'dashboard.Profile', related_name='received_tips', on_delete=models.SET_NULL, null=True, blank=True
     )
     sender_profile = models.ForeignKey(
-        'dashboard.Profile', related_name='sent_tips', on_delete=models.SET_NULL, null=True
+        'dashboard.Profile', related_name='sent_tips', on_delete=models.SET_NULL, null=True, blank=True
     )
+    metadata = JSONField(default={}, blank=True)
 
     def __str__(self):
         """Return the string representation for a tip."""
-        return f"({self.network}) - {self.status}{' ORPHAN' if not self.emails else ''} " \
+        if self.web3_type == 'yge':
+            return f"({self.network}) - {self.status}{' ORPHAN' if not self.emails else ''} " \
                f"{self.amount} {self.tokenName} to {self.username} from {self.from_name or 'NA'}, " \
                f"created: {naturalday(self.created_on)}, expires: {naturalday(self.expires_date)}"
+        status = 'funded' if self.txid else 'not funded'
+        status = status if not self.receive_txid else 'received'
+        return f"{status} {self.amount} {self.tokenName} to {self.username} from {self.from_name or 'NA'}"
 
     # TODO: DRY
     def get_natural_value(self):
@@ -888,6 +914,34 @@ class Tip(SuperModel):
     @property
     def value_true(self):
         return self.get_natural_value()
+
+    @property
+    def amount_in_wei(self):
+        return float(self.amount)
+
+    @property
+    def amount_in_whole_units(self):
+        return float(self.get_natural_value())
+
+    @property
+    def amount_in_wei(self):
+        token = addr_to_token(self.tokenAddress)
+        decimals = token['decimals'] if token else 18
+        return float(self.amount) * 10**decimals
+
+    @property
+    def amount_in_whole_units(self):
+        return float(self.amount)
+
+    @property
+    def receive_url(self):
+        if self.web3_type == 'yge':
+            return self.url
+
+        pk = self.metadata['priv_key']
+        txid = self.txid
+        network = self.network
+        return f"{settings.BASE_URL}tip/receive/v2/{pk}/{txid}/{network}"
 
     # TODO: DRY
     @property
@@ -902,10 +956,8 @@ class Tip(SuperModel):
     @property
     def value_in_usdt_now(self):
         decimals = 1
-        if self.tokenName == 'USDT':
+        if self.tokenName in ['USDT', 'DAI']:
             return float(self.amount)
-        if self.tokenName == 'DAI':
-            return float(self.amount / 10**18)
         try:
             return round(float(convert_amount(self.amount, self.tokenName, 'USDT')) / decimals, 2)
         except ConversionRateNotFoundError:
@@ -918,10 +970,8 @@ class Tip(SuperModel):
     @property
     def value_in_usdt_then(self):
         decimals = 1
-        if self.tokenName == 'USDT':
+        if self.tokenName in ['USDT', 'DAI']:
             return float(self.amount)
-        if self.tokenName == 'DAI':
-            return float(self.amount / 10 ** 18)
         try:
             return round(float(convert_amount(self.amount, self.tokenName, 'USDT', self.created_on)) / decimals, 2)
         except ConversionRateNotFoundError:
@@ -1079,6 +1129,9 @@ class Activity(models.Model):
         """Define the string representation of an interested profile."""
         return f"{self.profile.handle} type: {self.activity_type}" \
                f"created: {naturalday(self.created)}"
+
+    def i18n_name(self):
+        return _(next((x[1] for x in self.ACTIVITY_TYPES if x[0] == self.activity_type), 'Unknown type'))
 
 
 class Profile(SuperModel):
@@ -1854,9 +1907,11 @@ class Tool(SuperModel):
     CAT_COMING_SOON = 'CS'
     CAT_COMMUNITY = 'CO'
     CAT_FOR_FUN = 'FF'
+    GAS_TOOLS = "TO"
 
     TOOL_CATEGORIES = (
         (CAT_ADVANCED, 'advanced'),
+        (GAS_TOOLS, 'gas'),
         (CAT_ALPHA, 'alpha'),
         (CAT_BASIC, 'basic'),
         (CAT_BUILD, 'tools to build'),

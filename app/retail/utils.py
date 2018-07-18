@@ -31,7 +31,7 @@ import pytz
 from marketing.models import Alumni, EmailSubscriber, LeaderboardRank, Stat
 from requests_oauthlib import OAuth2Session
 
-programming_languages = ['css', 'solidity', 'python', 'javascript', 'ruby', 'html', 'design']
+programming_languages = ['css', 'solidity', 'python', 'javascript', 'ruby', 'rust', 'html', 'design']
 
 
 class PerformanceProfiler:
@@ -216,9 +216,12 @@ def build_stat_results(keyword=None):
 
 
 def build_stat_results_helper(keyword=None):
-    from dashboard.models import Bounty
+    """Buidl the results page context.
 
-    """Buidl the results page context."""
+    Args:
+        keyword (str): The keyword to build statistic results.
+    """
+    from dashboard.models import Bounty
     context = {
         'active': 'results',
         'title': _('Results'),
@@ -248,32 +251,30 @@ def build_stat_results_helper(keyword=None):
     context['count_done'] = base_bounties.filter(network='mainnet', idx_status__in=['done']).count()
     pp.profile_time('count_*')
 
-    # Leaderboard 
+    # Leaderboard
     context['top_orgs'] = base_leaderboard.filter(active=True, leaderboard='quarterly_orgs').order_by('rank').values_list('github_username', flat=True)
     pp.profile_time('orgs')
 
     #community size
     _key = 'email_subscriberse' if not keyword else f"subscribers_with_skill_{keyword}"
-    base_stats = Stat.objects.filter(
-        key=_key,
-        ).order_by('-pk')
+    base_stats = Stat.objects.filter(key=_key).order_by('-pk')
     context['members_history'], context['slack_ticks'] = get_history(base_stats, "Members")
 
     pp.profile_time('Stats1')
-    
+
     #jdi history
     key = f'joe_dominance_index_30_{keyword}_value' if keyword else 'joe_dominance_index_30_value'
     base_stats = Stat.objects.filter(
         key=key,
         ).order_by('-pk')
-    context['jdi_history'], jdi_ticks = get_history(base_stats, 'Percentage')
+    context['jdi_history'], __ = get_history(base_stats, 'Percentage')
 
     pp.profile_time('Stats2')
 
-    # bounties hisotry
+    # bounties history
     context['bounty_history'] = [
-        ['', 'Tips',  'Open / Available',  'Started / In Progress',  'Completed', 'Cancelled' ],
-      ]
+        ['', 'Tips',  'Open / Available',  'Started / In Progress',  'Completed', 'Cancelled'],
+    ]
     initial_stats = [
         ["January 2018", 2011, 903, 2329, 5534, 1203],
         ["February 2018", 5093, 1290, 1830, 15930, 1803],
@@ -290,7 +291,7 @@ def build_stat_results_helper(keyword=None):
         for month in months:
             then = timezone.datetime(year, month, 3).replace(tzinfo=pytz.UTC)
             if then < timezone.now():
-                row = get_bounty_history_row(then.strftime("%B %Y"), then, keyword) 
+                row = get_bounty_history_row(then.strftime("%B %Y"), then, keyword)
                 context['bounty_history'].append(row)
     context['bounty_history'] = json.dumps(context['bounty_history'])
     pp.profile_time('bounty_history')

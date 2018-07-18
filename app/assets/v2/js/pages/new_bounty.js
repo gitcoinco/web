@@ -141,6 +141,19 @@ $(document).ready(function() {
     setUsdAmount();
   }
 
+  $('#hiringRightNow').click(function() {
+    setTimeout(function() {
+      var hiringRightNow = $('#hiringRightNow').is(':checked');
+
+      if (hiringRightNow) {
+        $('#jobDescription').removeClass('hidden');
+        $('#jobDescription').focus();
+      } else {
+        $('#jobDescription').addClass('hidden');
+      }
+    }, 10);
+  });
+
 
   $('#advancedLink a').click(function(e) {
     e.preventDefault();
@@ -228,6 +241,10 @@ $(document).ready(function() {
           schemes: {
             project_type: data.project_type,
             permission_type: data.permission_type
+          },
+          hiring: {
+            hiringRightNow: data.hiringRightNow,
+            jobDescription: data.jobDescription
           },
           privacy_preferences: privacy_preferences,
           funders: [],
@@ -364,7 +381,7 @@ $(document).ready(function() {
           console.error(error);
           _alert({
             message: gettext('There was an error.  Please try again or contact support.')
-          });
+          }, 'error');
           unloading_button($('.js-submit'));
           return;
         }

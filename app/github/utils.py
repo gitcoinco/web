@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import json
 import logging
 from datetime import timedelta
+from json import JSONDecodeError
 from urllib.parse import quote_plus, urlencode
 
 from django.conf import settings
@@ -405,7 +406,11 @@ def get_user(user, sub_path=''):
     url = f'https://api.github.com/users/{user}{sub_path}'
     response = requests.get(url, auth=_AUTH, headers=HEADERS)
 
-    return response.json()
+    try:
+        response_dict = response.json()
+    except JSONDecodeError:
+        response_dict = {}
+    return response_dict
 
 
 def get_notifications():

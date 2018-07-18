@@ -359,8 +359,14 @@ a.btn {
   max-width: 100%;
   width: 13rem;
   z-index: 2;
-  top: 2rem;
   padding-right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.waiting-state img {
+  top: -2rem;
+  transform: none;
 }
 
 #btn-white img {
@@ -417,6 +423,11 @@ a.btn {
 #bounty_details {
   display: none;
   margin-bottom: 2em;
+}
+
+.code-snippet {
+  background-color: #F2F6F9;
+  padding: 1rem;
 }
 
 #bounty_details #issue_description img {
@@ -487,6 +498,10 @@ a.btn {
 
   .bounty-actions .col-12 {
     text-align: center;
+  }
+
+  .loading_img img {
+    width: 10rem;
   }
 
   #bounty_details .tags {
@@ -610,7 +625,6 @@ a.btn {
   margin: 4rem auto;
   font-weight: 700;
   z-index: 2;
-  padding-top: 100px;
 }
 
 .bounty_details .quote_text {

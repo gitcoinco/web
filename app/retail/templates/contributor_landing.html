@@ -21,6 +21,13 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    <style>.async-hide { opacity: 0 !important} </style>
+    <script>(function(a,s,y,n,c,h,i,d,e){s.className+=' '+y;h.start=1*new Date;
+    h.end=i=function(){s.className=s.className.replace(RegExp(' ?'+y),'')};
+    (a[n]=a[n]||[]).hide=h;setTimeout(function(){i();h.end=null},c);h.timeout=c;
+    })(window,document.documentElement,'async-hide','dataLayer',4000,
+    {'GTM-NP2J8TX':true});</script>
+    {% include 'shared/analytics.html' %}
     <link rel="stylesheet" href="{% static "v2/css/landing_page.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/howitworks.css" %}" />
   </head>
@@ -35,6 +42,10 @@
 
       <div class="container-fluid p-5 benefits_container">
         {% include 'landing/contributor/benefits.html' %}
+      </div>
+
+      <div class="container-fluid pt-5 landing__newsletter" style="background-color: var(--gc-green); padding-bottom: 5rem;">
+        {% include 'shared/newsletter.html' %}
       </div>
 
       <div class="container-fluid p-5 whatisit_container">
@@ -71,7 +82,7 @@
             <div class="mt-4 contributors-cta-text light">Start exploring <strong>{{available_bounties_count}}</strong> bounties worth <strong>${{available_bounties_worth}}</strong></div>
             <div class="mt-5">
               <a class="btn btn-gc-purple text-purple" role="button" href="onboard/contributor" target="_blank" rel="noopener noreferrer">
-                <span>{% trans "Get Started" %}</span>
+                <span class="text-white">{% trans "Get Started" %}</span>
               </a>
             </div>
           </div>
@@ -84,7 +95,6 @@
     {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/rollbar.html' %}
   </body>
-  {% include 'shared/analytics.html' %}
   {% block scripts %}{% endblock %}
 </html>
 
