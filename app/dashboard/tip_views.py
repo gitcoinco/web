@@ -275,11 +275,18 @@ def send_tip_4(request):
     params = json.loads(request.body)
     txid = params['txid']
     destinationAccount = params['destinationAccount']
-    is_direct_to_recipient = params['is_direct_to_recipient']
+    is_direct_to_recipient = params.get('is_direct_to_recipient', False)
     if is_direct_to_recipient:
-        tip = Tip.objects.get(metadata__direct_address=destinationAccount, metadata__creation_time=params['creation_time'])
+        tip = Tip.objects.get(
+            metadata__direct_address=destinationAccount, 
+            metadata__creation_time=params['creation_time'],
+            metadata__salt=params['salt'],
+            )
     else:
-        tip = Tip.objects.get(metadata__address=destinationAccount)
+        tip = Tip.objects.get(
+            metadata__address=destinationAccount,
+            metadata__salt=params['salt'],
+            )
     is_authenticated_for_this_via_login = (tip.from_username and tip.from_username == from_username)
     is_authenticated_for_this_via_ip = tip.ip == get_ip(request)
     is_authed = is_authenticated_for_this_via_ip or is_authenticated_for_this_via_login

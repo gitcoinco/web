@@ -1,19 +1,5 @@
 /* eslint-disable no-console */
 
-var get_smtp_token = function() {
-  var local_token = '71b3882d-37fd-4c1c-b510-80e223baa283';
-  var prod_token = '7c625911-27e1-45eb-8e32-7cae47a87840';
-  var stage_token = 'b9a30d31-c0d2-4088-8f3e-e97c0bbde3c8';
-
-  var token = local_token;
-
-  if (document.location.hostname == 'gitcoin.co')
-    token = prod_token;
-  if (document.location.hostname == 'stage.gitcoin.co')
-    token = stage_token;
-  return token;
-};
-
 var generate_or_get_private_key = function() {
   if (typeof document.account != 'undefined') {
     return document.account;
@@ -62,14 +48,6 @@ var wait_for_metadata = function(callback) {
     }
   }, 500);
 
-};
-
-var send_email = function() {
-  Email.send('kevin@gitcoin.co',
-    'kevin@gitcoin.co',
-    'This is a subject',
-    'this is the body',
-    {token: get_smtp_token()});
 };
 
 $(document).ready(function() {
@@ -182,6 +160,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
   var tokenName = 'ETH';
   var weiConvert = Math.pow(10, 18);
   var creation_time = Math.round((new Date()).getTime() / 1000);
+  var salt = parseInt((Math.random()*1000000));
 
   if (!isSendingETH) {
     tokenName = tokenDetails.name;
@@ -222,6 +201,8 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
 
   var got_metadata_callback = function(metadata) {
     const url = '/tip/send/3';
+    metadata['creation_time'] = creation_time;
+    metadata['salt'] = salt;
 
     fetch(url, {
       method: 'POST',
@@ -264,8 +245,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
               body: JSON.stringify({
                 destinationAccount: destinationAccount,
                 txid: txid,
-                is_direct_to_recipient: is_direct_to_recipient,
-                creation_time: creation_time
+                is_direct_to_recipient: is_direct_to_recipient
               })
             }).then(function(response) {
               return response.json();
@@ -275,6 +255,8 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
               if (!is_success) {
                 _alert(json, _class);
               } else {
+                clear_metadata();
+                set_metadata();
                 success_callback(txid);
               }
             });
@@ -322,7 +304,8 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
       got_metadata_callback({
         'is_direct': true,
         'direct_address': json.addresses[0],
-        'creation_time': creation_time
+        'creation_time': creation_time,
+        'salt': salt,
       });
     } else {
       // pay out via secret sharing algo

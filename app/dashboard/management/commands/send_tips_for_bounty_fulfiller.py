@@ -22,14 +22,21 @@ import warnings
 
 from django.core.management.base import BaseCommand
 from django.utils import timezone
-
+from github.utils import get_emails_master
 from dashboard.models import Tip
+from dashboard.notifications import maybe_market_tip_to_email
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
+
+def assign_tip_to(tip, handle):
+    tip.username = handle
+    tip.emails = get_emails_master(to_username)
+    maybe_market_tip_to_email(tip, tip.emails)
+    return tip
 
 class Command(BaseCommand):
 
@@ -49,8 +56,9 @@ class Command(BaseCommand):
                             # send to fulfiller
                             ######################################################
                             print(" - 1 ")
-                            tip.receive_txid = tip.payout_to(fulfillment.fulfiller_address)
-                            msg = f'auto paid out on {timezone.now()} to fulfillment {fulfillment.pk}; as done bountyfulfillment'
+                            # assign tip to fulfiller and email them
+                            tip = assign_tip_to(tip, fulfillment.fulfiller_github_username)
+                            msg = f'auto assigneed on {timezone.now()} to fulfillment {fulfillment.pk}; as done bountyfulfillment'
                             print("     " + msg)
                             tip.metadata['payout_comments'] = msg
                             tip.save()
@@ -78,19 +86,13 @@ class Command(BaseCommand):
                                 cloned_tip.is_for_bounty_fulfiller = False
                                 cloned_tip.username = bpt.username
                                 cloned_tip.emails = {}
-                                cloned_tip.metadata = {
-                                    'priv_key': tip.metadata['priv_key'],
-                                    'pub_key': tip.metadata['pub_key'],
-                                    'address': tip.metadata['address'],
-                                    'debug_info': f'created in order to facilitate payout of a crowdfund tip {tip.pk}'
-                                }
-                                # only send tx onchain
-                                if bpt.receive_address:
-                                    cloned_tip.receive_txid = cloned_tip.payout_to(bpt.receive_address, amount_to_pay)
+                                cloned_tip.metadata['debug_info'] = f'created in order to facilitate payout of a crowdfund tip {tip.pk}'
+                                tip = assign_tip_to(tip, cloned_tip.username)
                                 cloned_tip.save()
+                                tip = cloned_tip(tip, bounty.bounty_owner_address)
 
                             tip.receive_txid = f'cloned-and-paid-via-clones-:{bpts_ids}'
-                            msg = f'auto paid out on {timezone.now()} to via recipients of {bpts_ids}; as done ' \
+                            msg = f'auto assigneed on {timezone.now()} to via recipients of {bpts_ids}; as done ' \
                                   'bounty w no bountyfulfillment'
                             print("     ", msg)
                             tip.metadata['payout_comments'] = msg
@@ -100,8 +102,9 @@ class Command(BaseCommand):
                         # return to funder
                         ######################################################
                         print(" - 3 ")
-                        tip.receive_txid = tip.payout_to(bounty.bounty_owner_address)
-                        msg = f'auto paid out on {timezone.now()}; as cancelled bounty'
+                        # assign tip to fulfiller and email them
+                        tip = assign_tip_to(tip, bounty.bounty_owner_address)
+                        msg = f'auto assigneed on {timezone.now()}; as cancelled bounty'
                         print("     " + msg)
                         tip.metadata['payout_comments'] = msg
                         tip.save()
