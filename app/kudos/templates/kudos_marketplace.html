@@ -29,7 +29,7 @@
       <div class="row">
         {% for listing in listings %}
         <div class="col-3">
-          <img src="{% static listing.image %}" alt="{{ listing.name }}" class="img-thumbnail">
+          <a href="{{ listing.id }}"><img src="{% static listing.image %}" alt="{{ listing.name }}" class="img-thumbnail"></a>
           <p><small>{{ listing.name }}</small></p>
         </div>
         {% if forloop.counter|divisibleby:4 %}

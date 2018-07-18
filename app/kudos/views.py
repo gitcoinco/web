@@ -19,6 +19,11 @@
 from django.template.response import TemplateResponse
 
 from .models import MarketPlaceListing
+import re
+
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 
 def about(request):
@@ -34,6 +39,13 @@ def marketplace(request):
 
 def details(request):
     params = dict()
+    kudos_id = request.path.split('/')[-1]
+    logging.info(f'kudos id: {kudos_id}')
+
+    if not re.match(r'\d+', kudos_id):
+        raise ValueError(f'Invalid Kudos ID found.  ID is not a number:  {kudos_id}')
+
+    params = {"kudos": MarketPlaceListing.objects.get(pk=kudos_id)}
 
     return TemplateResponse(request, 'kudos_details.html', params)
 
