@@ -5,7 +5,7 @@
 Gitcoin Grows Open Source. Learn more at [https://gitcoin.co](https://gitcoin.co)
 
 <a href="https://gitcoin.co/explorer?q=gitcoinco">
-    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/gitcoinco/web&badge=1">
+    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/gitcoinco/web&badge=1&maxAge=60">
 </a>
 
 # web repo
@@ -121,9 +121,7 @@ Gitcoinbot will allow you to add issues straight from github.
 
 ## Adding your token to Gitcoin
 
-Have an ERC20 compatible token that you'ud like to add support for?  Great!
-
-[Here is an example of how to do it](https://github.com/gitcoinco/web/pull/155)
+Have an ERC20 compatible token that you'ud like to add support for?  Great!  Submit [this form](https://gitcoin.co/submittoken) to submit it to the system
 
 ## High Level flow of a Bounty
 

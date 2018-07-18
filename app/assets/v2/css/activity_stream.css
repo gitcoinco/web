@@ -1,0 +1,39 @@
+
+#activity_stream .avatar {
+  width: 50px;
+  height: 50px;
+  margin: 0px auto;
+  border-radius: 50px;
+  margin-top: 0px;
+}
+
+.box {
+  padding: 14px;
+  border: 1px solid #DBDBDB;
+  border-radius: 3px;
+  margin: 0;
+}
+
+#avatar_url .avatar {
+  width: 80px;
+  height: 80px;
+}
+
+.funder-avatar,
+.activity-avatar {
+  text-align: center;
+}
+
+.funder-avatar,
+.activity div {
+  margin: auto;
+}
+
+.last-icon {
+  font-size: 30px;
+  color: #0D0764;
+}
+
+#activity_stream .tag {
+  display: inline-block;
+}

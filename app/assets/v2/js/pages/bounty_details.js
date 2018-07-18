@@ -1,45 +1,50 @@
 /* eslint block-scoped-var: "warn" */
 /* eslint no-redeclare: "warn" */
 
-
 var _truthy = function(val) {
   if (!val || val == '0x0000000000000000000000000000000000000000') {
     return false;
   }
   return true;
 };
-var address_ize = function(key, val, result) {
+
+var address_ize = function(key, val) {
   if (!_truthy(val)) {
     return [ null, null ];
   }
   return [ key, '<a href="https://etherscan.io/address/' + val + '" target="_blank" rel="noopener noreferrer">' + val + '</a>' ];
 };
-var gitcoin_ize = function(key, val, result) {
+
+var gitcoin_ize = function(key, val) {
   if (!_truthy(val)) {
     return [ null, null ];
   }
   return [ key, '<a href="https://gitcoin.co/profile/' + val + '" target="_blank" rel="noopener noreferrer">@' + val.replace('@', '') + '</a>' ];
 };
-var email_ize = function(key, val, result) {
+
+var email_ize = function(key, val) {
   if (!_truthy(val)) {
     return [ null, null ];
   }
   return [ key, '<a href="mailto:' + val + '">' + val + '</a>' ];
 };
-var hide_if_empty = function(key, val, result) {
+
+var hide_if_empty = function(key, val) {
   if (!_truthy(val)) {
     return [ null, null ];
   }
   return [ key, val ];
 };
-var unknown_if_empty = function(key, val, result) {
+
+var unknown_if_empty = function(key, val) {
   if (!_truthy(val)) {
     $('#' + key).parent().hide();
     return [ key, 'Unknown' ];
   }
   return [ key, val ];
 };
-var link_ize = function(key, val, result) {
+
+var link_ize = function(key, val) {
   if (!_truthy(val)) {
     return [ null, null ];
   }
@@ -85,6 +90,7 @@ var rows = [
   'fulfilled_owners_username',
   'fulfillment_accepted_on'
 ];
+
 var heads = {
   'avatar_url': gettext('Issue'),
   'value_in_token': gettext('Issue Funding Info'),
@@ -92,6 +98,7 @@ var heads = {
   'fulfiller_address': gettext('Submitter'),
   'experience_level': gettext('Meta')
 };
+
 var callbacks = {
   'github_url': link_ize,
   'value_in_token': function(key, val, result) {
@@ -513,7 +520,6 @@ var show_interest_modal = function() {
   });
 };
 
-
 var build_detail_page = function(result) {
 
   // setup
@@ -569,6 +575,8 @@ var build_detail_page = function(result) {
       modalClass: 'modal magnify'
     });
   });
+
+  $('#bounty_details #issue_description code').parent().addClass('code-snippet');
 };
 
 const is_current_user_interested = function(result) {
@@ -597,12 +605,14 @@ var do_actions = function(result) {
   let show_github_link = result['github_url'].substring(0, 4) == 'http';
   let show_submit_work = is_open;
   let show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
+  let show_job_description = result['attached_job_description'] && result['attached_job_description'].startsWith('http');
   const show_increase_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
   const kill_bounty_enabled = isBountyOwner(result);
   const submit_work_enabled = !isBountyOwner(result);
   const start_stop_work_enabled = !isBountyOwner(result);
   const increase_bounty_enabled = isBountyOwner(result);
   let show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
+  let show_advanced_payout = isBountyOwner(result) && !is_status_expired && !is_status_done;
   const show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
   const show_admin_methods = document.isStaff;
 
@@ -671,6 +681,35 @@ var do_actions = function(result) {
       title: gettext('This will payout the bounty to the submitter.'),
       parent: 'right_actions',
       pending_acceptance: pending_acceptance
+    };
+
+    actions.push(_entry);
+  }
+
+  if (show_job_description) {
+    var job_url = result['attached_job_description'];
+
+    var _entry = {
+      enabled: true,
+      href: job_url,
+      text: gettext('View Attached Job Description'),
+      parent: 'right_actions',
+      title: gettext('This bounty hunter is hiring for a full time, part time, or contract role and has attached that to this bounty.'),
+      color: 'white'
+    };
+
+    actions.push(_entry);
+  }
+
+
+  if (show_advanced_payout) {
+    const enabled = show_advanced_payout;
+    const _entry = {
+      enabled: enabled,
+      href: result['action_urls']['payout'],
+      text: gettext('Multi-Party Payout'),
+      title: gettext('Used to pay out to many people at once.'),
+      parent: 'right_actions'
     };
 
     actions.push(_entry);
@@ -1045,7 +1084,6 @@ var main = function() {
 
   }, 100);
 };
-
 
 window.addEventListener('load', function() {
   main();
