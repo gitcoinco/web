@@ -4,7 +4,10 @@ from django.db import migrations
 
 def apply_migration(apps, schema_editor):
     Group = apps.get_model('auth', 'Group')
-    Group.objects.create(name='Moderators')
+    Permission = apps.get_model('auth', 'Permission')
+    mod_group = Group.objects.create(name='Moderators')
+    faucet_request = Permission.objects.get(codename='change_faucetrequest')
+    mod_group.permissions.add(faucet_request)
 
 
 def revert_migration(apps, schema_editor):
