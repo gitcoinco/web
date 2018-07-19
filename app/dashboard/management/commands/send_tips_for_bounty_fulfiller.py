@@ -25,7 +25,7 @@ from django.utils import timezone
 
 from dashboard.models import Tip
 from dashboard.notifications import maybe_market_tip_to_email
-from github.utils import get_emails_master
+from git.utils import get_emails_master
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
