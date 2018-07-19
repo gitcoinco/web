@@ -16,7 +16,9 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.template.response import TemplateResponse
+from django.utils.translation import gettext_lazy as _
 from django.contrib.postgres.search import SearchVector
 
 from .models import MarketPlaceListing
@@ -29,7 +31,16 @@ logging.basicConfig(level=logging.INFO)
 
 
 def about(request):
-    context = dict()
+    """Render the about kudos response."""
+    context = {
+        'is_outside': True,
+        'active': 'about',
+        'title': 'About',
+        'card_title': _('Gitcoin is a mission-driven organization.'),
+        'card_desc': _('Our mission is to grow open source.'),
+        'avatar_url': static('v2/images/grow_open_source.png'),
+        "listings": MarketPlaceListing.objects.all(),
+    }
     return TemplateResponse(request, 'kudos_about.html', context)
 
 
