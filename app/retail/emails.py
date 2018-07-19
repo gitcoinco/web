@@ -471,7 +471,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Funding on Gitcoin | OSS Motivations"
+    subject = "Hiring with Gitcoin | Contributor Friendly Repos"
 
     intro = '''
 
@@ -479,73 +479,70 @@ def render_new_bounty_roundup(to_email):
     Hi there
 </p>
 <p>
-This week, we shipped <a href="https://medium.com/gitcoin/fund-an-issue-on-gitcoin-3d7245e9b3f3">'Fund an Issue on Gitcoin.'</a>
-This piece is geared for our open source funders on Gitcoin. We give you a succinct walkthrough of how
-to go from opening a Gitcoin account to funding your first issue.
+This week, we shipped <a href="https://medium.com/gitcoin/hiring-with-gitcoin-just-got-better-259c59aa8e3">'Hiring with Gitcoin.'</a>
+This article discusses a new feature that we added to the Gitcoin interface this past week. Now, bounty funders have the option to attach
+a job description for full-time, part-time, or contract work directly to their bounty. We hope that this makes the hiring-via-Gitcoin process
+even more transparent and conducive to connecting great open source developers with open source projects looking to scale up!
 </p>
 
 <p>
-In addition to that, we published a longer thought piece on <a href="https://medium.com/gitcoin/building-a-platform-that-maximizes-freedom-1149968a7b05">
-building platforms that maximize freedom.</a>
-As cryptoeconomics and decentralized technology matures, we are fast approaching the intersection of
-intrinsic and extrinsic motivations in fields such as open source.
- In this post, Vivek takes a deep dive into what defines intrinsic and extrinsic motivations and how they will mix in the future of open source.
+Additionally, we published <a href="https://medium.com/@owocki/927037f528d9">'Make Your Repo Contributor Friendly.'</a>
+This piece contains an aggregation of all the best practices we’ve seen, throughout
+working in open source, to make your repository most attractive to contributing developers.
+The article covers everything from your README doc to marketing your repo. Hope you find it helpful!
 </p>
 
 <h3>What else is new?</h3>
     <ul>
         <li>
-Our livestream recording from a couple weeks prior is now live on the Gitcoin Youtube.
-This talks features Jay Rush of Quickblocks.
-<a href="https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w">Check it out!</a>
+There will be no Gitcoin Livestream this week. We’ll see everyone back here next Friday @ 5pm!
         </li>
         <li>
-<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET.
-This week features David Sneider of Deco Network, a project focused on decentralizing the knowledge economy!
+Our livestream with Matt Lockyer of ERC-998 protocol standard will be up on the <a href="https://gitcoin.co/youtube">Gitcoin Youtube Channel</a> this week.
         </li>
 
     </ul>
 </p>
 <p>
-Back to building,
+Back to BUIDLing,
 </p>
 '''
     highlights = [
         {
-            'who': 'jvmaia',
+            'who': 'arun1595',
             'who_link': True,
-            'what': 'Helped us take the first step towards crowdfunding Gitcoin bounties',
-            'link': 'https://gitcoin.co/issue/gitcoinco/web/1380/718',
+            'what': 'Helped Market Protocol automate test coverage for TypeScript ABI’s.',
+            'link': 'https://gitcoin.co/issue/MARKETProtocol/types/28/772',
             'link_copy': 'View more',
         },
         {
-            'who': 'StevenJNPearce',
+            'who': 'olafghanizadeh',
             'who_link': True,
-            'what': 'Assisted the YouveGotEth team in making the app more mobile friendly',
-            'link': 'https://gitcoin.co/issue/youvegoteth/youvegoteth.github.io/15/734',
+            'what': 'Improved the Gitcoin homepage by allowing users to interact with the software developer images to get more info.',
+            'link': 'https://gitcoin.co/issue/gitcoinco/web/1682/749',
             'link_copy': 'View more',
         },
         {
-            'who': 'perfectmak',
+            'who': 'dmvt',
             'who_link': True,
-            'what': 'Added more functions for Market Protocol parameter checking to improve error reports and debugging',
-            'link': 'https://gitcoin.co/issue/MARKETProtocol/MARKET.js/67/730',
+            'what': 'Refactored the BigChainDB codebase to minimize the size of the driver',
+            'link': 'https://gitcoin.co/issue/bigchaindb/js-bigchaindb-driver/221/763',
             'link_copy': 'View more',
         },
     ]
 
     bounties_spec = [
         {
-            'url': 'https://github.com/spacemeshos/cosmic/issues/2',
-            'primer': 'Help the Spacemesh team in developing the alpha of their seed implementation to ship apps cross-platform.',
+            'url': 'https://github.com/INFURA/infura/issues/130',
+            'primer': 'Write some documentation for the Infura IPFS API.',
         },
         {
-            'url': 'https://github.com/MARKETProtocol/dApp/issues/227',
-            'primer': 'Implement the new explorer UI/UX design in Market Protocol.',
+            'url': 'https://github.com/MetaMask/metamask-extension/issues/4771',
+            'primer': 'Help make the MetaMask plug-in work with Tor Browser.',
         },
         {
-            'url': 'https://github.com/paritytech/parity/issues/7203',
-            'primer': 'Solve a puzzle with Parity nodes being bumped for TooManyPeers',
+            'url': 'https://github.com/decentraland/MANA-community-fund-learning-content/issues/18',
+            'primer': 'Organize a local game developer meetup and talk about Decentraland',
         },
     ]
 
@@ -557,10 +554,11 @@ Back to building,
             bounty = Bounty.objects.current().filter(
                 github_url__iexact=nb['url'],
             ).order_by('-web3_created').first()
-            bounties.append({
-                'obj': bounty,
-                'primer': nb['primer']
-                })
+            if bounty.exists():
+                bounties.append({
+                    'obj': bounty,
+                    'primer': nb['primer']
+                    })
         except Exception as e:
             print(e)
 

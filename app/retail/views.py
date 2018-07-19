@@ -720,6 +720,18 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
         'img': static('v2/images/tldr/tips_noborder.jpg'),
         'url': 'https://medium.com/gitcoin/tutorial-send-a-tip-to-any-github-user-in-60-seconds-2eb20a648bc8',
         'title': _('Send a Tip to any Github user in 60 seconds'),
+    }, {
+        'img': 'https://cdn-images-1.medium.com/max/1800/1*IShTwIlxOxbVAGYbOEfbYg.png',
+        'url': 'https://medium.com/gitcoin/how-to-build-a-contributor-friendly-project-927037f528d9',
+        'title': _('How To Build A Contributor Friendly Project'),
+    }, {
+        'img': 'https://cdn-images-1.medium.com/max/2000/1*23Zxk9znad1i422nmseCGg.png',
+        'url': 'https://medium.com/gitcoin/fund-an-issue-on-gitcoin-3d7245e9b3f3',
+        'title': _('Fund An Issue on Gitcoin!'),
+    }, {
+        'img': 'https://cdn-images-1.medium.com/max/2000/1*WSyI5qFDmy6T8nPFkrY_Cw.png',
+        'url': 'https://medium.com/gitcoin/getting-started-with-gitcoin-fa7149f2461a',
+        'title': _('Getting Started With Gitcoin'),
     }]
 
     context = {
