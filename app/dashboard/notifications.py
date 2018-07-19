@@ -478,7 +478,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
             issue_message = interest.issue_message.strip()
             if issue_message:
                 msg += f"\t\n * Q: {issue_message}"
-            msg += "\n\nLearn more [on the Gitcoin Issue Details page]({absolute_url})]\n\n"
+            msg += "\n\nLearn more [on the Gitcoin Issue Details page]({absolute_url}).\n\n"
 
     elif event_name == 'work_submitted':
         sub_msg = ""
