@@ -795,13 +795,24 @@ var listen_for_web3_changes = function() {
 var actions_page_warn_if_not_on_same_network = function() {
   var user_network = document.web3network;
 
+  if (user_network === 'locked') {
+    // handled by the unlock MetaMask banner
+    return;
+  }
+
   if (typeof user_network == 'undefined') {
     user_network = 'no network';
   }
   var bounty_network = $('input[name=network]').val();
 
   if (bounty_network != user_network) {
-    var msg = 'Warning: You are on ' + user_network + ' and this bounty is on the ' + bounty_network + ' network.  Please change your network to the ' + bounty_network + ' network.';
+    var msg = 'Warning: You are on ' +
+              user_network +
+              ' and this bounty is on the ' +
+              bounty_network +
+              ' network.  Please change your network to the ' +
+              bounty_network +
+              ' network.';
 
     _alert({ message: gettext(msg) }, 'error');
   }
