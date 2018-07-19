@@ -36,12 +36,14 @@
             <span>[[:network]]</span>
           </p>
         </div>
-      [[elif attached_job_description != null && attached_job_description != '']]
-      <div class="tag hiring shift_left">
-        <p>
-          <span>Hiring</span>
-        </p>
-      </div>
+      [[else]]
+        [[if attached_job_description != null && attached_job_description != '']]
+        <div class="tag hiring shift_left">
+          <p>
+            <span>Hiring</span>
+          </p>
+        </div>
+        [[/if]]
       [[/if]]
       <div class="tag token">
         <p>
