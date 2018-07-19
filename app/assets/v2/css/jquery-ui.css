@@ -811,6 +811,12 @@ button.ui-button::-moz-focus-inner {
   width: 14em;
 }
 
+@media (max-width: 481px) {
+  .ui-selectmenu-button.ui-button {
+    width: 10em;
+  }
+}
+
 .ui-selectmenu-icon.ui-icon {
   float: right;
   margin-top: 0;
