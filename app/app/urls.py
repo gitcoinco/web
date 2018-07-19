@@ -84,6 +84,8 @@ urlpatterns = [
     path('issue/payout', dashboard.views.bulk_payout_bounty, name='bulk_payout_bounty'),
     path('issue/increase', dashboard.views.increase_bounty, name='increase_bounty'),
     path('issue/cancel', dashboard.views.cancel_bounty, name='kill_bounty'),
+    path('issue/contribute', dashboard.views.contribute, name='contribute'),
+    path('issue/social_contribution', dashboard.views.social_contribution, name='social_contribution'),
 
     # Avatars
     path('avatar/', include('avatar.urls', namespace='avatar')),

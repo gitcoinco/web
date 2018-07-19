@@ -736,10 +736,10 @@ var do_actions = function(result) {
     const enabled = true;
     const _entry = {
       enabled: enabled,
-      href: result['action_urls']['increase'],
-      text: gettext('Add Contribution'),
+      href: result['action_urls']['contribute'],
+      text: gettext('Contribute'),
       parent: 'right_actions',
-      title: gettext('Increase the funding for this issue')
+      title: gettext('Help by funding or promoting this issue')
     };
 
     actions.push(_entry);

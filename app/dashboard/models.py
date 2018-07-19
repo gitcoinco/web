@@ -749,7 +749,7 @@ class Bounty(SuperModel):
         """
         params = f'pk={self.pk}&network={self.network}'
         urls = {}
-        for item in ['fulfill', 'increase', 'accept', 'cancel', 'payout']:
+        for item in ['fulfill', 'increase', 'accept', 'cancel', 'payout', 'contribute', 'social_contribution']:
             urls.update({item: f'/issue/{item}?{params}'})
         return urls
 
