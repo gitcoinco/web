@@ -554,7 +554,7 @@ Back to BUIDLing,
             bounty = Bounty.objects.current().filter(
                 github_url__iexact=nb['url'],
             ).order_by('-web3_created').first()
-            if bounty.exists():
+            if bounty:
                 bounties.append({
                     'obj': bounty,
                     'primer': nb['primer']
