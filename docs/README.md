@@ -129,6 +129,11 @@ This is the high level flow of a bounty on Gitcoin:
 
 <img src='bounty_flow.png'>
 
+## High Level flow of a Tip
+
+This is the high level flow of a bounty on Gitcoin:
+
+<img src='tip_flow.png'>
 
 # Legal
 
