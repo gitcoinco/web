@@ -22,7 +22,7 @@ from django.core.management.base import BaseCommand
 
 from dashboard.models import Profile
 from dashboard.views import profile_keywords_helper
-from github.utils import search
+from git.utils import search
 from marketing.models import EmailSubscriber
 
 

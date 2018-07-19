@@ -57,7 +57,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions', 'django.contrib.messages', 'whitenoise.runserver_nostatic', 'django.contrib.staticfiles',
     'storages', 'social_django', 'cookielaw', 'django.contrib.humanize', 'django.contrib.sitemaps',
     'django.contrib.sites', 'django_extensions', 'easy_thumbnails', 'app', 'avatar', 'retail', 'rest_framework',
-    'bootstrap3', 'marketing', 'economy', 'dashboard', 'enssubdomain', 'faucet', 'tdi', 'gas', 'github', 'legacy',
+    'bootstrap3', 'marketing', 'economy', 'dashboard', 'enssubdomain', 'faucet', 'tdi', 'gas', 'git', 'legacy',
     'chartit', 'email_obfuscator', 'linkshortener', 'credits', 'gitcoinbot', 'external_bounties', 'dataviz',
     'impersonate',
 ]

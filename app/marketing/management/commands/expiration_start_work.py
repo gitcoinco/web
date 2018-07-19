@@ -31,7 +31,7 @@ from dashboard.notifications import (
     maybe_notify_user_escalated_github, maybe_warn_user_removed_github,
 )
 from dashboard.utils import record_user_action_on_interest
-from github.utils import get_interested_actions
+from git.utils import get_interested_actions
 from marketing.mails import bounty_startwork_expire_warning, bounty_startwork_expired
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)

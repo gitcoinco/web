@@ -41,9 +41,7 @@ from app.utils import ellipses, sync_profile
 from avatar.utils import get_avatar_context
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
-from github.utils import (
-    get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
-)
+from git.utils import get_auth_url, get_github_user_data, is_github_token_valid
 from marketing.mails import (
     admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
