@@ -1,0 +1,23 @@
+{
+  "symbol": "OLE",
+  "address": "0x9d9223436ddd466fc247e9dbbd20207e640fef58",
+  "overview": {
+    "en": "A decentralized live streaming platform, Olive has equipped with Proof of Transaction(POT) to create a fair and globalized live streaming ecosystem. With this token-powered feature it boosts a profit sharing ratio up to a 90- percent level for channel hosts. Not only the channel hosts will be rewarded, but also every contributor within Olive ecosystem will be rewarded. For instance, there is at least 20% will reward to those audiences who voluntarily share their computational power.",
+    "zh": "Olive是全球第一个代币化泛娱乐生态，其价值循环包含娱乐、线上线下消费和数据资产交易三大板块，代币OLE基于以太坊ERC-20发行，在价值循环生态中具有诸多使用场景，为Olive带来了丰富的价值生态。在娱乐版块，OLE是串联在线直播平台方、主播、用户和广告主等参与方的重要纽带，通过优秀的激励机制达到参与方共赢，也是让Olive在线直播平台区别与目前传统的在线直播平台。"
+  },
+  "email": "official@olivecoin.co",
+  "website": "https://olivecoin.co",
+  "whitepaper": "https://olivecoin.co/static/pdf/Olivewhitepaper.pdf",
+  "published_on": "2018-03-17",
+  "initial_price": {
+    "ETH": "0.0000125 ETH",
+    "USD": "0.008 USD",
+    "BTC": "0.0000009 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/OliveCoinOLE",
+    "telegram": "http://t.me/OliveOfficialOLE",
+    "facebook": "https://www.facebook.com/olivevnofficial/",
+    "reddit": "https://www.reddit.com/user/oliveOLE/.compact"
+  }
+}
