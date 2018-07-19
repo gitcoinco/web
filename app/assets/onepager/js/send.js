@@ -248,7 +248,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
                 txid: txid,
                 is_direct_to_recipient: is_direct_to_recipient,
                 creation_time: creation_time,
-                salt: salt,
+                salt: salt
               })
             }).then(function(response) {
               return response.json();

@@ -223,7 +223,8 @@ var callbacks = {
       }
     }
     var str = '+ ' + ui_elements.join(', ') + ' in crowdfunding';
-    if(usd_value){
+
+    if (usd_value) {
       str += 'worth $' + usd_value;
     }
 
