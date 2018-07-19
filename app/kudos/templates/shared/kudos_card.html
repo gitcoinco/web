@@ -15,15 +15,11 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n %}
-<form action="/kudos/marketplace/" method="get">
-  <div class="form-row align-items-center">
-    <div class="col-9 my-4">
-      <label class="sr-only" for="kudos-search">Name</label>
-      <input type="text" class="form-control form-control-lg" name="q" id="kudos-search" placeholder="Search for Kudos">
-    </div>
-    <div class="col-3 my-4">
-      <button type="submit" class="btn btn-gc-blue">Search</button>
-      <a href="/kudos/marketplace" class="btn">Clear</a>
-    </div>
-  </div>
-</form>
+{% load staticfiles %}
+<div class="kd-card">
+  <a href="/kudos/{{ listing.id }}" class="">
+    <img src="{% static listing.image %}" alt="{{ listing.name }}" class="img-thumbnail" width="250">
+  </a>
+  <span class="kd-price">Ξ 0.0019</span>
+  <div class="kd-name">{{ listing.name }}</div>
+</div>
