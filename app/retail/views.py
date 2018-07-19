@@ -201,7 +201,7 @@ def contributor_landing(request, tech_stack):
 
     available_bounties_count = open_bounties().count()
     available_bounties_worth = amount_usdt_open_work()
-    
+
     context = {
         'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else "Open Source Opportunities",
         'slides': slides,
@@ -904,7 +904,7 @@ def newtoken(request):
                 )
             new_token_request(obj)
             context['msg'] = str(_('Your token has been submitted and will be listed within 2 business days if it is accepted.'))
-    
+
     return TemplateResponse(request, 'newtoken.html', context)
 
 
