@@ -330,6 +330,7 @@ def about(request):
         'core_team': core_team,
         'community_members': community_members,
         'alumni': alumnis,
+        'total_alumnis': str(Alumni.objects.count()),
         'active': 'about',
         'title': 'About',
         'is_outside': True,
@@ -348,6 +349,19 @@ def mission(request):
         'avatar_url': static('v2/images/grow_open_source.png'),
     }
     return TemplateResponse(request, 'mission.html', context)
+
+
+def vision(request):
+    """Render the Vision response."""
+    context = {
+        'is_outside': True,
+        'active': 'vision',
+        'avatar_url': static('v2/images/vision/triangle.jpg'),
+        'title': 'Vision',
+        'card_title': _("Gitcoin's Vision for a Web3 World"),
+        'card_desc': _("Gitcoin's Vision for a web3 world is to make it easy for developers to find paid work in open source."),
+    }
+    return TemplateResponse(request, 'vision.html', context)
 
 
 def results(request, keyword=None):
@@ -812,7 +826,9 @@ def ios(request):
         'active': 'ios',
         'title': 'iOS app',
         'card_title': 'Gitcoin has an iOS app!',
-        'card_desc': 'Gitcoin aims to make it easier to grow open source from anywhere in the world, anytime.  We’re proud to announce our iOS app, which brings us a step closer to this north star!Browse open bounties on the go, express interest, and coordinate your work on the move.',
+        'card_desc': 'Gitcoin aims to make it easier to grow open source from anywhere in the world,\
+            anytime.  We’re proud to announce our iOS app, which brings us a step closer to this north star!\
+            Browse open bounties on the go, express interest, and coordinate your work on the move.',
     }
     return TemplateResponse(request, 'ios.html', context)
 

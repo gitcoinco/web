@@ -29,8 +29,8 @@ import requests
 import rollbar
 from dashboard.models import Bounty
 from dashboard.tokens import get_tokens
+from git.utils import post_issue_comment_reaction
 from gitcoinbot.models import GitcoinBotResponses
-from github.utils import post_issue_comment_reaction
 
 MIN_AMOUNT = 0
 FALLBACK_CURRENCY = 'ETH'

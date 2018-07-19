@@ -29,30 +29,16 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.abi import erc20_abi
-from dashboard.utils import generate_pub_priv_keypair, get_web3, has_tx_mined
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from github.utils import (
-    get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
-)
-from marketing.mails import (
-    admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
-)
+from git.utils import get_github_emails, get_github_primary_email
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import Web3
 
-from .models import (
-    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip,
-    Tool, ToolVote, UserAction,
-)
-from .notifications import (
-    maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_github,
-    maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_discord, maybe_market_to_user_slack,
-)
-from .utils import (
-    get_bounty, get_bounty_id, get_context, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
-)
+from .models import Activity, Bounty, Profile, Tip
+from .notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
+from .utils import generate_pub_priv_keypair, get_web3
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -97,7 +83,7 @@ def record_tip_activity(tip, github_handle, event_name):
         return
     try:
         kwargs['bounty'] = Bounty.objects.get(current_bounty=True, network=tip.network, github_url=tip.github_url)
-    except:
+    except Exception:
         pass
 
     try:
@@ -149,13 +135,12 @@ def receive_tip_legacy(request):
 @csrf_exempt
 @ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
 def receive_tip_v2(request, pk, txid, network):
-    """Handle the receiving of a tip (the POST)
+    """Handle the receiving of a tip (the POST).
 
     Returns:
-        TemplateResponse: the UI with the tip confirmed
+        TemplateResponse: The UI with the tip confirmed.
 
     """
-
     tip = Tip.objects.get(web3_type='v2', metadata__priv_key=pk, txid=txid, network=network)
 
     if tip.receive_txid:
@@ -165,7 +150,6 @@ def receive_tip_v2(request, pk, txid, network):
     if not_mined_yet:
         messages.info(request, f'This tx {tip.txid}, is still mining.  Please wait a moment before submitting the receive form.')
 
-    """Receive a tip."""
     if request.POST and not tip.receive_txid:
         params = request.POST
 
@@ -188,7 +172,7 @@ def receive_tip_v2(request, pk, txid, network):
                 # ERC20 contract receive
                 balance = w3.eth.getBalance(from_address)
                 contract = w3.eth.contract(Web3.toChecksumAddress(tip.tokenAddress), abi=erc20_abi)
-                gas = contract.functions.transfer(address, amount).estimateGas() + 1
+                gas = contract.functions.transfer(address, amount).estimateGas({'from': from_address}) + 1
                 gasPrice = gasPrice if ((gas * gasPrice) < balance) else (balance * 1.0 / gas)
                 tx = contract.functions.transfer(address, amount).buildTransaction({
                     'nonce': nonce,
@@ -206,7 +190,7 @@ def receive_tip_v2(request, pk, txid, network):
                     to=address,
                     value=w3.toHex(amount),
                     data=b'',
-                  )
+                )
             signed = w3.eth.account.signTransaction(tx, tip.metadata['priv_key'])
             receive_txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
 
@@ -236,7 +220,7 @@ def receive_tip_v2(request, pk, txid, network):
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def send_tip_4(request):
-    """Handle the fourth stage of sending a tip (the POST)
+    """Handle the fourth stage of sending a tip (the POST).
 
     Returns:
         JsonResponse: response with success state.
@@ -249,8 +233,6 @@ def send_tip_4(request):
 
     is_user_authenticated = request.user.is_authenticated
     from_username = request.user.username if is_user_authenticated else ''
-    primary_from_email = request.user.email if is_user_authenticated else ''
-    access_token = request.user.profile.get_access_token() if is_user_authenticated else ''
     to_emails = []
 
     params = json.loads(request.body)
@@ -281,11 +263,10 @@ def send_tip_4(request):
     return JsonResponse(response)
 
 
-
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def send_tip_3(request):
-    """Handle the third stage of sending a tip (the POST)
+    """Handle the third stage of sending a tip (the POST).
 
     Returns:
         JsonResponse: response with success state.
@@ -331,7 +312,7 @@ def send_tip_3(request):
     priv_key, pub_key, address = generate_pub_priv_keypair()
 
     # db mutations
-    tip = Tip.objects.create(
+    Tip.objects.create(
         emails=to_emails,
         tokenName=params['tokenName'],
         amount=params['amount'],
@@ -371,7 +352,6 @@ def send_tip_2(request):
         TemplateResponse: Render the submission form.
 
     """
-
     is_user_authenticated = request.user.is_authenticated
     from_username = request.user.username if is_user_authenticated else ''
     primary_from_email = request.user.email if is_user_authenticated else ''
@@ -379,11 +359,10 @@ def send_tip_2(request):
     params = {
         'issueURL': request.GET.get('source'),
         'class': 'send2',
-        'title': _('Send Tip'),
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'from_email': primary_from_email,
         'from_handle': from_username,
-        'title': 'Send Tip | Gitcoin',
+        'title': _('Send Tip | Gitcoin'),
         'card_desc': 'Send a tip to any github user at the click of a button.',
     }
 

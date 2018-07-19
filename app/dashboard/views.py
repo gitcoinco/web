@@ -42,9 +42,7 @@ from app.utils import ellipses, sync_profile
 from avatar.utils import get_avatar_context
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
-from github.utils import (
-    get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
-)
+from git.utils import get_auth_url, get_github_user_data, is_github_token_valid
 from marketing.mails import (
     admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
@@ -701,11 +699,12 @@ def helper_handle_approvals(request, bounty):
         is_funder = bounty.is_funder(request.user.username.lower())
         is_staff = request.user.is_staff
         if is_funder or is_staff:
-            interests = bounty.interested.filter(pending=True, profile__handle=worker)
-            if not interests.exists():
+            interests = bounty.interested.filter(profile__handle=worker)
+            is_interest_invalid = (not interests.filter(pending=True).exists() and mutate_worker_action == 'rejected') or (not interests.exists())
+            if is_interest_invalid:
                 messages.warning(
                     request,
-                    _('This worker does not exist or is not in a pending state. Please check your link and try again.'))
+                    _('This worker does not exist or is not in a pending state. Perhaps they were already approved or rejected? Please check your link and try again.'))
                 return
             interest = interests.first()
 
@@ -779,7 +778,6 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         "newsletter_headline": _("Be the first to know about new funded issues."),
         'is_staff': request.user.is_staff,
     }
-
     if issue_url:
         try:
             bounties = Bounty.objects.current().filter(github_url=issue_url)

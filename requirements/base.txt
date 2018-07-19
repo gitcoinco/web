@@ -63,3 +63,4 @@ pg_activity
 PyYAML==4.2b4
 ecdsa
 pysha3
+pygithub==1.40

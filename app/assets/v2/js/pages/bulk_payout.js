@@ -8,6 +8,7 @@ var normalizeUsername = function(username) {
   return username;
 };
 
+
 $(document).ready(function($) {
   var random_id = function() {
     var id_num = Math.random().toString(9).substr(2, 3);
@@ -20,6 +21,15 @@ $(document).ready(function($) {
     event.preventDefault();
     update_registry();
   });
+
+  $(document).on('paste', '.username', function(event) {
+    var self = $(this);
+
+    setTimeout(function() {
+      self.html(self.html().replace(/(<([^>]+)>)/ig, ''));
+    }, 10);
+  });
+  
 
   $(document).on('click', '#close_bounty', function(event) {
     update_registry();
@@ -211,6 +221,7 @@ $(document).ready(function($) {
       'reason': 'Bounty Stake',
       'amount': '+' + original_amount + ' ' + denomination
     };
+
     var i = 0;
 
     if (close_bounty) {
@@ -218,13 +229,13 @@ $(document).ready(function($) {
       i += 1;
     }
 
-    for (; i < num_rows; i += 1) {
-      var $row = $('#payout_table').find('tr:nth-child(' + i + ')');
+    for (let j = i; j < num_rows; j += 1) {
+      var $row = $('#payout_table').find('tr:nth-child(' + j + ')');
       var amount = parseFloat($row.find('.amount').text());
       var username = $row.find('.username').text();
 
       transaction = {
-        'id': i + 1,
+        'id': j + 1,
         'type': 'tip',
         'reason': 'Payment to ' + normalizeUsername(username),
         'amount': '-' + amount + ' ' + denomination,
