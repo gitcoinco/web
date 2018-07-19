@@ -37,7 +37,7 @@
         {% for listing in listings %}
         <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
           <div class="kd-card">
-            <a href="" class=""><img src="{% static listing.image %}" alt="{{ listing.name }}" class="img-thumbnail kd-shadow border-0" width="250"></a>
+            <a href="/kudos/{{ listing.id }}" class=""><img src="{% static listing.image %}" alt="{{ listing.name }}" class="img-thumbnail kd-shadow border-0" width="250"></a>
             <span class="kd-price">Ξ 0.0019</span>
             <div class="kd-name">{{ listing.name }}</div>
           </div>
@@ -58,10 +58,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
   <!-- <script src="js/web3.min.js"></script> -->
+<<<<<<< HEAD
     <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
     <script src="js/truffle-contract.js"></script>
     <script src="js/app.js"></script>
   </body>
+=======
+  <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+>>>>>>> kudos-v1
 </html>
 
 

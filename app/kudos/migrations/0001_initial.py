@@ -26,6 +26,7 @@ class Migration(migrations.Migration):
                 ('num_clones_allowed', models.IntegerField(blank=True, null=True)),
                 ('num_clones_in_wild', models.IntegerField(blank=True, null=True)),
                 ('lister', models.CharField(max_length=255)),
+                ('tags', models.CharField(max_length=255, null=True)),
             ],
             options={
                 'abstract': False,

@@ -171,7 +171,7 @@
         </div>
       </div>
       {% include 'community.html' with h1="Community"  h2="Gitcoin's Top Community Members" community_members=community_members %}
-      {% include 'community.html' with h1="Alumni"  h2="Community Members that've 'graduated' into more work in the space" community_members=alumni %}
+      {% include 'community.html' with h1="Alumni"  h2=total_alumnis|add:" community members have 'graduated' into full time work in the space (that we know of!)" community_members=alumni %}
     </div>
     <div class="row" id="jobs">
       <div class="col-12 row section font-body">
@@ -259,8 +259,10 @@
       </div>
       <div class="row mt-5 pb-3 animatedParent">
         <div class="col animated pulse fast">
-          <p>and many more.. Click below to view our toolbox:</p>
-          <a class="btn btn-lg btn-warning" role="button" href="{% url "tools" %}">{% trans "View our Toolbox" %}</a>
+          <a class="button button--primary" role="button" href="{% url "tools" %}">
+            <i class="fas fa-wrench mr-2"></i>
+            {% trans "Checkout our Toolbox" %}
+          </a>
         </div>
       </div>
     </div>
@@ -271,16 +273,14 @@
           <h6 style="text-align: center;" >{% trans "Everything we do is to support our mission to 'Grow Open Source'" %}  </h6>
         </div>
       </div>
-      <div class=" row animatedParent grow_hero">
-        <div class="col d-flex flex-column p-5 animated fadeIn ">
-          <div class="pl-5 pr-5" style="text-align: center;">
-            <img src="{% static "v2/images/about/grow_hero.png" %}" />
+      <div class="row">
+        <div class="col d-flex flex-column pb-5">
+          <div class="p-4" style="text-align: center;">
+            {% include 'shared/tree.html' %}
           </div>
-        </div>
-      </div>
-      <div class="row mt-5 pb-3 animatedParent">
-        <div class="col animated pulse fast">
-          <a class="btn btn-lg btn-warning" role="button" href="{% url "mission" %}">{% trans "Read about our Mission" %}</a>
+          <div class="col mb-2">
+            <a class="button button--primary" role="button" href="{% url "mission" %}">{% trans "Read about our Mission" %}</a>
+          </div>
         </div>
       </div>
     </div>

@@ -141,7 +141,7 @@ def user_actions():
 
 
 def github_stars():
-    from github.utils import get_user
+    from git.utils import get_user
     reops = get_user('gitcoinco', '/repos')
     forks_count = sum([repo['forks_count'] for repo in reops])
 
@@ -160,8 +160,8 @@ def github_stars():
 
 def github_issues():
     if settings.DEBUG:
-        return 
-    from github.utils import get_issues, get_user
+        return
+    from git.utils import get_issues, get_user
     repos = []
 
     for org in ['bitcoin', 'gitcoinco', 'ethereum']:
