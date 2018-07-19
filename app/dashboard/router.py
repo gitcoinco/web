@@ -238,7 +238,7 @@ class BountyViewSet(viewsets.ModelViewSet):
             elif mod_filter == 'hidden':
                 queryset = queryset.hidden()
             elif mod_filter == 'not_started':
-                queryset == queryset.not_started()
+                queryset = queryset.not_started()
 
         # order
         order_by = self.request.query_params.get('order_by')
