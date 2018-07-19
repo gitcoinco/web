@@ -18,12 +18,12 @@
 <form action="/kudos/marketplace/" method="get">
   <div class="form-row align-items-center">
     <div class="col-9 my-4">
-      <label class="sr-only" for="kudos-search">Name</label>
-      <input type="text" class="form-control form-control-lg" name="q" id="kudos-search" placeholder="Search for Kudos">
+      <label class="sr-only" for="kudos-search">{% trans "Name" %}</label>
+      <input type="text" class="form-control form-control-lg" name="q" id="kudos-search" placeholder="{% trans "Search for Kudos" %}">
     </div>
     <div class="col-3 my-4">
-      <button type="submit" class="btn btn-gc-blue">Search</button>
-      <a href="/kudos/marketplace" class="btn">Clear</a>
+      <button type="submit" class="btn btn-gc-blue">{% trans "Search" %}</button>
+      <a href="/kudos/marketplace" class="btn">{% trans "Clear" %}</a>
     </div>
   </div>
 </form>

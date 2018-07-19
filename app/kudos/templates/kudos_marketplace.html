@@ -1,4 +1,4 @@
-{% load static %}
+{% load i18n static %}
 <!DOCTYPE html>
 <html>
   <head>
@@ -17,8 +17,10 @@
 
     <section class="container mt-5">
       <div class="row justify-content-between p-3">
-        <div class="">{{listings.count}} Kudos</div> 
-        <div>Sort by: Price <a href="">Low</a> - <a href="">High</a></div>
+        <div class="">{{listings.count}} Kudos</div>
+        {% blocktrans %} 
+          <div>Sort by: Price <a href="">Low</a> - <a href="">High</a></div>
+        {% endblocktrans %}
       </div>
       <div class="row justify-content-center">
         {% for listing in listings %}
@@ -41,14 +43,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
   <!-- <script src="js/web3.min.js"></script> -->
-<<<<<<< HEAD
     <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
     <script src="js/truffle-contract.js"></script>
     <script src="js/app.js"></script>
   </body>
-=======
-  <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
->>>>>>> kudos-v1
 </html>
 
 
