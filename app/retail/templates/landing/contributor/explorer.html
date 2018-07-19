@@ -35,7 +35,7 @@
   <div class="mb-4 col offset-lg-1 col-lg-10 profile-bounties featured-bounties profile-bounties--loading ">
   </div>
   <div class="col text-center">
-    <a href="{% url "explorer" %}" class="button button--primary" target="_blank" rel="noopener noreferrer">{% trans "Get Started With" %} {{ tech_stack|capfirst }} </a> <!-- TODO: Need to invoke resetFilters & set localStorage props -->
+    <a href="/explorer?q={{ tech_stack }}" class="button button--primary" target="_blank" rel="noopener noreferrer">{% trans "Get Started With" %} {{ tech_stack|capfirst }} </a> <!-- TODO: Need to invoke resetFilters & set localStorage props -->
   </div>
 </div>
 {% include 'shared/result.html' %}
