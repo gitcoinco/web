@@ -5,7 +5,8 @@
     padding: 3.75rem 2.25rem 2.25rem;
     transition: all linear .1s; }
   .kd-card a:hover .img-thumbnail {
-    background-color: rgba(255, 255, 255, 0.9); }
+    border-color: #3e00ff;
+    box-shadow: inset 0 0 0px 2px #3e00ff; }
   .kd-card .kd-name {
     font-weight: 300;
     padding: 0.5em; }
