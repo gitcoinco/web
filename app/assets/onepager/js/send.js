@@ -246,7 +246,9 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
               body: JSON.stringify({
                 destinationAccount: destinationAccount,
                 txid: txid,
-                is_direct_to_recipient: is_direct_to_recipient
+                is_direct_to_recipient: is_direct_to_recipient,
+                creation_time: creation_time,
+                salt: salt,
               })
             }).then(function(response) {
               return response.json();

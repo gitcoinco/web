@@ -71,7 +71,7 @@ $(document).ready(function() {
       } else {
         document.location.href = window.location.href.split('?')[0] +
         '?receive_txid=' + txid +
-        '&forwarding_address=' + $('#forwarding_address').val();
+        '&forwarding_address=' + $('#forwarding_address').val() +
         '&save_addr=' + ($('#save_addr').is(':checked') ? '1' : '0');
       }
     };
