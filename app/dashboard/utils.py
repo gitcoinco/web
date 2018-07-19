@@ -228,7 +228,6 @@ def get_bounty(bounty_enum, network):
     arbiter = standard_bounties.functions.getBountyArbiter(bounty_enum).call()
     token = standard_bounties.functions.getBountyToken(bounty_enum).call()
     bounty_data_str = ipfs_cat(bountydata)
-    import ipdb; ipdb.set_trace()
     bounty_data = json.loads(bounty_data_str)
 
     # fulfillments

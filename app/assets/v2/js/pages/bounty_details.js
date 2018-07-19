@@ -222,7 +222,10 @@ var callbacks = {
         ui_elements.push(Math.round(val * 10 ** decimals) / 10 ** decimals + ' ' + token);
       }
     }
-    var str = '+ ' + ui_elements.join(', ') + ' in crowdfunding worth $' + usd_value;
+    var str = '+ ' + ui_elements.join(', ') + ' in crowdfunding';
+    if(usd_value){
+      str += 'worth $' + usd_value;
+    }
 
     $('.additional_funding_summary  p').html(str);
     return [ 'additional_funding_summary', val ];
@@ -674,7 +677,7 @@ var do_actions = function(result) {
       text: is_interested ? gettext('Stop Work') : gettext('Start Work'),
       parent: 'right_actions',
       title: is_interested ? gettext('Notify the funder that you will not be working on this project') : gettext('Notify the funder that you would like to take on this project'),
-      color: is_interested ? 'white' : '',
+      color: is_interested ? '' : '',
       id: 'interest'
     };
 
@@ -705,21 +708,6 @@ var do_actions = function(result) {
       title: gettext('This will payout the bounty to the submitter.'),
       parent: 'right_actions',
       pending_acceptance: pending_acceptance
-    };
-
-    actions.push(_entry);
-  }
-
-  if (show_job_description) {
-    var job_url = result['attached_job_description'];
-
-    var _entry = {
-      enabled: true,
-      href: job_url,
-      text: gettext('View Attached Job Description'),
-      parent: 'right_actions',
-      title: gettext('This bounty hunter is hiring for a full time, part time, or contract role and has attached that to this bounty.'),
-      color: 'white'
     };
 
     actions.push(_entry);
@@ -772,6 +760,23 @@ var do_actions = function(result) {
 
     actions.push(_entry);
   }
+
+  if (show_job_description) {
+    var job_url = result['attached_job_description'];
+
+    var _entry = {
+      enabled: true,
+      href: job_url,
+      text: gettext('View Attached Job Description'),
+      parent: 'right_actions',
+      title: gettext('This bounty hunter is hiring for a full time, part time, or contract role and has attached that to this bounty.'),
+      color: 'white'
+    };
+
+    actions.push(_entry);
+  }
+
+
   if (show_suspend_auto_approval) {
     const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
     const url = result['url'] + connector_char + 'suspend_auto_approval=1';

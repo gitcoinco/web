@@ -795,7 +795,7 @@ class Bounty(SuperModel):
 
     @property
     def bulk_payout_tips(self):
-        queryset = self.tips.filter(is_for_bounty_fulfiller=False)
+        queryset = self.tips.filter(is_for_bounty_fulfiller=False, metadata__is_clone__isnull=True)
         return (queryset.filter(from_address=self.bounty_owner_address) |
                 queryset.filter(from_name=self.bounty_owner_github_username))
 
@@ -896,7 +896,7 @@ class Tip(SuperModel):
 
     web3_type = models.CharField(max_length=50, default='v3')
     emails = JSONField()
-    url = models.CharField(max_length=255, default='')
+    url = models.CharField(max_length=255, default='', blank=True)
     tokenName = models.CharField(max_length=255)
     tokenAddress = models.CharField(max_length=255)
     amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)

@@ -1,4 +1,4 @@
-{% load humanize %}
+{% load humanize i18n %}
 ⚡️ New Tip Alert ⚡️
 
 {% if tip.from_name %}{{tip.from_name}}{% else %}Someone{% endif %} has sent you tip worth {{amount}} {{warning}} {{tokenName}}.

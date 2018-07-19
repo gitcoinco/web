@@ -633,6 +633,7 @@ a.btn {
 }
 
 .bounty_details .quote_text {
+  margin-top: 50px;
   font-size: 1.1rem;
   color: #4A4A4A;
 }

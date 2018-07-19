@@ -348,7 +348,7 @@ def get_emails_master(username):
             to_emails.append(to_profile.email)
     for email in get_github_event_emails(None, username):
         to_emails.append(email)
-    return set(to_emails)
+    return list(set(to_emails))
 
 
 def search(query):

@@ -17,7 +17,6 @@
 '''
 
 import logging
-import math
 import warnings
 
 from django.core.management.base import BaseCommand
@@ -35,8 +34,9 @@ logger = logging.getLogger(__name__)
 
 def assign_tip_to(tip, handle):
     tip.username = handle
-    tip.emails = get_emails_master(to_username)
+    tip.emails = get_emails_master(handle)
     maybe_market_tip_to_email(tip, tip.emails)
+    tip.metadata['is_for_bounty_fulfiller_handled'] = True
     return tip
 
 class Command(BaseCommand):
@@ -44,15 +44,20 @@ class Command(BaseCommand):
     help = 'sends Tips automagically for anyone where is_for_bounty_fulfiller is True '
 
     def handle(self, *args, **options):
-        tips = Tip.objects.filter(is_for_bounty_fulfiller=True, receive_txid='')
+        tips = Tip.objects.filter(
+            is_for_bounty_fulfiller=True,
+            receive_txid='',
+            metadata__is_for_bounty_fulfiller_handled__isnull=True
+            ).exclude(txid='')
         for tip in tips:
             try:
                 bounty = tip.bounty
                 if bounty:
                     print(f" - tip {tip.pk} / {bounty.standard_bounties_id} / {bounty.status}")
                     if bounty.status == 'done':
-                        fulfillment = bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
-                        if fulfillment:
+                        fulfillment = bounty.fulfillments.filter(accepted=True)
+                        if fulfillment.exists():
+                            fulfillment = fulfillment.latest('fulfillment_id')
                             ######################################################
                             # send to fulfiller
                             ######################################################
@@ -70,29 +75,26 @@ class Command(BaseCommand):
                             print(" - 2 ")
                             bpts = bounty.bulk_payout_tips
                             bpts_ids = bpts.values_list('pk', flat=True)
+                            bpts_total_amount = sum(bpts.values_list('amount', flat=True))
                             num_payees = bpts.count()
-
-                            # TODO: make this number disproportionate, instead of equal parts
-                            amount_to_pay = math.floor(tip.amount_in_wei / num_payees)
-                            amount = math.floor(tip.amount / num_payees)
-
                             for bpt in bpts:
                                 print(f"    - {bpt.pk} ")
                                 cloned_tip = bpt
                                 cloned_tip.pk = None  # effectively clones the bpt and inserts a new one
                                 cloned_tip.receive_txid = ''
-                                cloned_tip.amount = amount
+                                cloned_tip.amount = (bpt.amount / bpts_total_amount) * tip.amount
                                 cloned_tip.receive_address = ''
                                 cloned_tip.recipient_profile = None
                                 cloned_tip.is_for_bounty_fulfiller = False
                                 cloned_tip.username = bpt.username
-                                cloned_tip.emails = {}
+                                cloned_tip.emails = []
+                                cloned_tip.metadata['is_clone'] = True
                                 cloned_tip.metadata['debug_info'] = f'created in order to facilitate payout of a crowdfund tip {tip.pk}'
-                                tip = assign_tip_to(tip, cloned_tip.username)
+                                cloned_tip = assign_tip_to(cloned_tip, cloned_tip.username)
                                 cloned_tip.save()
-                                tip = cloned_tip(tip, bounty.bounty_owner_address)
 
                             tip.receive_txid = f'cloned-and-paid-via-clones-:{bpts_ids}'
+                            tip.metadata['is_for_bounty_fulfiller_handled'] = True
                             msg = f'auto assigneed on {timezone.now()} to via recipients of {bpts_ids}; as done ' \
                                   'bounty w no bountyfulfillment'
                             print("     ", msg)
@@ -104,10 +106,13 @@ class Command(BaseCommand):
                         ######################################################
                         print(" - 3 ")
                         # assign tip to fulfiller and email them
-                        tip = assign_tip_to(tip, bounty.bounty_owner_address)
-                        msg = f'auto assigneed on {timezone.now()}; as cancelled bounty'
-                        print("     " + msg)
+                        old_from = tip.from_name
+                        tip.from_name = 'gitcoinbot'
+                        tip = assign_tip_to(tip, old_from)
+                        msg = f'auto assigneed on {timezone.now()}; as cancelled bounty.  tip was from {tip.from_name}'
                         tip.metadata['payout_comments'] = msg
+                        print("     " + msg)
+                        tip.comments_public = "[bot message] This funding was auto-returned to you because the bounty it was associated with was cancelled."
                         tip.save()
             except Exception as e:
                 print(e)
