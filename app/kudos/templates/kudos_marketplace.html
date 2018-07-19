@@ -5,31 +5,15 @@
     <title>Kudos Marketplace</title>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
-    <link href='index.css' rel='stylesheet' type='text/css'>
   </head>
   <body>
-    <div class="container" align="center" id="kudos-search">
-      <h1 class="display-4">Kudos</h1>
-      <lead>by Gitcoin</lead>
-      <!-- <div class="container my-4" align="center" id="kudos-searchbar"> -->
-        <form>
-          <div class="form-row align-items-center">
-            <div class="col-11 my-4">
-              <label class="sr-only" for="inlineFormInputName">Name</label>
-              <input type="text" class="form-control" id="inlineFormInputName" placeholder="Search for Kudos">
-            </div>
-            <div class="col-1 my-4">
-              <button type="submit" class="btn btn-primary">Search</button>
-            </div>
-          </div>
-        </form>
-      <!-- </div> -->
-    </div>
+    {% include 'shared/kudos_banner.html' %}
+    {% include 'shared/kudos_searchbar.html' %}
     <div class="container" align="center" id="kudos-tiles">
       <div class="row">
         {% for listing in listings %}
         <div class="col-3">
-          <img src="{% static listing.image %}" alt="{{ listing.name }}" class="img-thumbnail">
+          <a href="/kudos/{{ listing.id }}"><img src="{% static listing.image %}" alt="{{ listing.name }}" class="img-thumbnail"></a>
           <p><small>{{ listing.name }}</small></p>
         </div>
         {% if forloop.counter|divisibleby:4 %}
@@ -50,8 +34,6 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
   <!-- <script src="js/web3.min.js"></script> -->
   <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
-  <script src="js/truffle-contract.js"></script>
-  <script src="js/app.js"></script>
 </html>
 
 

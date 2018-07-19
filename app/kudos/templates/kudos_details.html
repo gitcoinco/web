@@ -1,16 +1,46 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Kudos by Gitcoin</title>
+    <title>Kudos Detail</title>
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
   </head>
   <body>
+    {% include 'shared/kudos_banner.html' %}
+    {% include 'shared/kudos_searchbar.html' %}
   	<div class="container" align="center" id="kudos-detail-body">
-  		<h3>Kudo Detail</h3>
+      <div class="row">
+        <div class="col-3"></div>
+        <div class="col-3">
+          <img src="{% static kudos.image %}" alt="{{ kudos.name }}">
+        </div>
+        <div class="col-4">
+          <h3 class="text-justify">{{ kudos.name }}</h3>
+          <br>
+          <p class="text-justify">{{ kudos.description }}</p>
+          <p class="text-justify">Rarity: {{ kudos.rarity }}</p>
+          <p class="text-justify">Lister: {{ kudos.lister }}</p>
+          <div class="container">
+            <div class="row justify-content-start">
+              <button type="button" class="btn btn-primary">Get Kudos</button>
+            </div>
+          </div>
+          <hr>
+          <p class="text-justify">These people have them</p>
+          <div class="container">
+            <div class="row">
+              <img src="https://robohash.org/1" style="max-height: 50px;">
+              <img src="https://robohash.org/2" style="max-height: 50px;">
+              <img src="https://robohash.org/3" style="max-height: 50px;">
+            </div>
+          </div>
+        </div>
+          <div class="col-2"></div>
+      </div>
   	</div>
-	<div class="container" align="center" id="kudos-footer">
-	  <h3>Footer</h3>
-	</div>
+    <div class="container my-4" align="center" id="kudos-footer">
+      <h3>Footer</h3>
+    </div>
   </body>
 </html>
