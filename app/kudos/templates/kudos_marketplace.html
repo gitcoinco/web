@@ -2,35 +2,45 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Kudos Marketplace</title>
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
-    <link href='index.css' rel='stylesheet' type='text/css'>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards_pic.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
   </head>
-  <body>
-    <div class="container" align="center" id="kudos-search">
-      <h1 class="display-4">Kudos</h1>
-      <lead>by Gitcoin</lead>
-      <!-- <div class="container my-4" align="center" id="kudos-searchbar"> -->
+  <body class="{{ active }} bg-light">
+    <header class="container-fluid header">
+      {% include 'shared/nav.html' %}
+      <div class="container text-center mb-5 mt-5">
+        <img class="mw-100" src="{% static "v2/images/kudos/logo.svg" %}" alt="Kudos" width="258px">
+      </div>
+      <div class="container pb-5">
         <form>
           <div class="form-row align-items-center">
             <div class="col-11 my-4">
               <label class="sr-only" for="inlineFormInputName">Name</label>
-              <input type="text" class="form-control" id="inlineFormInputName" placeholder="Search for Kudos">
+              <input type="text" class="form-control form-control-lg" id="inlineFormInputName" placeholder="Search for Kudos">
             </div>
             <div class="col-1 my-4">
-              <button type="submit" class="btn btn-primary">Search</button>
+              <button type="submit" class="btn btn-gc-blue">Search</button>
             </div>
           </div>
         </form>
-      <!-- </div> -->
-    </div>
-    <div class="container" align="center" id="kudos-tiles">
-      <div class="row">
+      </div>
+    </header>
+
+    <section class="container mt-5">
+      
+      <div class="row justify-content-between p-3">
+        <div class="">{{listings.count}} Kudos</div> 
+        <div>Sort by: Price <a href="">Low</a> - <a href="">High</a></div>
+      </div>
+      <div class="row justify-content-center">
         {% for listing in listings %}
-        <div class="col-3">
-          <img src="{% static listing.image %}" alt="{{ listing.name }}" class="img-thumbnail">
-          <p><small>{{ listing.name }}</small></p>
+        <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+          <div class="kd-card">
+            <a href="" class=""><img src="{% static listing.image %}" alt="{{ listing.name }}" class="img-thumbnail kd-shadow border-0" width="250"></a>
+            <span class="kd-price">Ξ 0.0019</span>
+            <div class="kd-name">{{ listing.name }}</div>
+          </div>
         </div>
         {% if forloop.counter|divisibleby:4 %}
       </div>
@@ -38,20 +48,20 @@
         {% endif %}
       {% endfor %}
       </div>
-    </div>
+    </section>
 
-    <div class="container" align="center" id="kudos-footer">
-      <h3>Footer</h3>
-    </div>
-
-  </body>
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/rollbar.html' %}
+    {% include 'shared/messages.html' %}
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.2/js/bootstrap.min.js" integrity="sha384-o+RDsa0aLu++PJvFqy8fFScvbHFLtbvScb8AjopnFD+iEQ7wo/CG0xlczd+2O/em" crossorigin="anonymous"></script>
   <!-- <script src="js/web3.min.js"></script> -->
-  <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
-  <script src="js/truffle-contract.js"></script>
-  <script src="js/app.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+    <script src="js/truffle-contract.js"></script>
+    <script src="js/app.js"></script>
+  </body>
 </html>
 
 

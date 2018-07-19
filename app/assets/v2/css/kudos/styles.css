@@ -7,9 +7,10 @@
   .kd-card a:hover .img-thumbnail {
     background-color: rgba(255, 255, 255, 0.9); }
   .kd-card .kd-name {
-    color: white;
     font-weight: 300;
     padding: 0.5em; }
+    header .kd-card .kd-name {
+      color: white; }
   .kd-card .kd-price {
     position: absolute;
     top: 0;
@@ -18,16 +19,19 @@
 
 .kd-date {
   font-size: 1.1rem;
-  color: #43484D; }
+  color: #43484d; }
+
+.kd-shadow {
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); }
 
 .listing-kudo a {
-  color: #43484D; }
+  color: #43484d; }
 
 .full-height {
   min-height: 100vh; }
 
 .bg-dark-blue {
-  background-color: #0D023B;
+  background-color: #0d023b;
   color: white; }
 
 .lh-3 {
