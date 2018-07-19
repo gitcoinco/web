@@ -18,7 +18,7 @@ var sidebar_keys = [
   'tech_stack',
   'project_type',
   'permission_type',
-  'misc',
+  'misc'
 ];
 
 var localStorage;

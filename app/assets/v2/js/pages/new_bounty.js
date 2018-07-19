@@ -82,11 +82,11 @@ $(document).ready(function() {
   }
 
   if (localStorage['jobDescription']) {
-    $("#jobDescription").val(localStorage['jobDescription']);
-    setTimeout(function(){
-        $('#hiringRightNow').attr('checked', 'checked');
-        open_hiring_panel(false);
-    },10);
+    $('#jobDescription').val(localStorage['jobDescription']);
+    setTimeout(function() {
+      $('#hiringRightNow').attr('checked', 'checked');
+      open_hiring_panel(false);
+    }, 10);
   }
   if (localStorage['bountyType']) {
     $(
@@ -154,7 +154,7 @@ $(document).ready(function() {
 
       if (hiringRightNow) {
         $('#jobDescription').removeClass('hidden');
-        if(do_focus){
+        if (do_focus) {
           $('#jobDescription').focus();
         }
       } else {
@@ -162,7 +162,8 @@ $(document).ready(function() {
       }
     }, 10);
   };
-  $('#hiringRightNow').click(function(){
+
+  $('#hiringRightNow').click(function() {
     open_hiring_panel(true);
   });
 
