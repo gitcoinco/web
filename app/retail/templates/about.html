@@ -27,17 +27,46 @@
       {% include 'shared/nav.html' %}
       {% include 'shared/minihero.html' with h1='About' %}
     </div>
-    <div class="container-fluid white-light-bg" style="">
-      <div class="row pb-5 pt-5">
-        <div class="col pb-4">
-          <h4 >{% trans "The Problem" %}</h4>
-          <h6 style="text-align: center;" >{% trans "Incentive problems in Open Source Software." %}</h6>
+    <div class="container">
+      <div class="row pb-5 pt-5 justify-content-center">
+        <div class="col-12 pb-4 text-center">
+          <h2 >{% trans "The Problem" %}</h2>
+          <h6>{% trans "Incentive problems in Open Source Software." %}</h6>
         </div>
-      </div>
-      <div class=" row ">
-        <div class="col pb-4">
-          <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
-            <img class="animated fadeIn" src="{% static "v2/images/about/problem.png" %}" style="max-width: 100%;">
+        <div class="col-12 pb-4">
+          <div class="align-items-center animatedParent">
+            <div class="row align-items-center justify-content-center">
+              <div class="col-auto">
+                <img class="animated fadeIn ing-fluid" height="300" src="{% static "v2/images/about/gitcoin_avatar.svg" %}">
+              </div>
+              <div class="col-lg-6 col-sm-12 text-lg-left text-center">
+                <h2>{% trans "Open Source Software Developers:" %}</h2>
+                <p class="mb-0">{% trans "Create a lot of economic value." %}</p>
+                <p>{% trans "Are Not Properly incentivized." %}</p>
+              </div>
+                <div class="w-100 d-none d-md-block my-3"></div>
+              <div class="col-auto">
+                <img class="animated fadeIn" height="150" src="{% static "v2/images/about/gitcoin_maintainer.svg" %}">
+              </div>
+              <div class="col">
+                <h3>{% trans "Repo Maintainer:" %}</h3>
+                <p>{% trans "Problem: Taming Issues Board" %}</p>
+              </div>
+              <div class="col-auto">
+                <img class="animated fadeIn" height="150" src="{% static "v2/images/about/gitcoin_avatar.svg" %}">
+              </div>
+              <div class="col">
+                <h3>{% trans "Contributor:" %}</h3>
+                <p>{% trans "Problem: Monetization" %}</p>
+              </div>
+              <div class="col-auto">
+                <img class="animated fadeIn" height="150" src="{% static "v2/images/about/gitcoin_jobhunter.svg" %}">
+              </div>
+              <div class="col">
+                <h3>{% trans "Job Hunter" %}</h3>
+                <p>{% trans "Problem: Prioritization" %}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -92,15 +121,15 @@
           <img class="img-fluid" src="{% static "v2/images/about/grow_community.png" %}" />
           <h4 class="caption font-title">Goal: To grow the community</h4>
           <p>
-          {% blocktrans %}The founder of Gitcoin, 
-            <a href="http://linkedin.com/in/owocki/" target="_blank" rel="noopener noreferrer">Kevin Owocki</a> has experience as an organizer of 
-            <a href="http://boulderstartupweek.com" target="_blank" rel="noopener noreferrer">Boulder Startup Week</a>, 
-            <a href="http://igniteboulder.com" target="_blank" rel="noopener noreferrer">Ignite Boulder</a>, 
-            <a href="https://startupcto.io" target="_blank" rel="noopener noreferrer">StartupCTO.io</a>, 
-            <a href="https://www.meetup.com/Boulder-Blockchain/" target="_blank" rel="noopener noreferrer">Boulder Blockchain Meetup</a> and the open source projects 
-            <a href="https://github.com/owocki/pytrader" target="_blank" rel="noopener noreferrer">pytrader</a>, 
-            <a href="https://github.com/owocki/adblock-to-bitcoin" target="_blank" rel="noopener noreferrer">adblock-to-bitcoin</a>, 
-            <a href="https://github.com/youvegoteth/youvegoteth.github.io/" target="_blank" rel="noopener noreferrer">YouveGotETH</a>, & 
+          {% blocktrans %}The founder of Gitcoin,
+            <a href="http://linkedin.com/in/owocki/" target="_blank" rel="noopener noreferrer">Kevin Owocki</a> has experience as an organizer of
+            <a href="http://boulderstartupweek.com" target="_blank" rel="noopener noreferrer">Boulder Startup Week</a>,
+            <a href="http://igniteboulder.com" target="_blank" rel="noopener noreferrer">Ignite Boulder</a>,
+            <a href="https://startupcto.io" target="_blank" rel="noopener noreferrer">StartupCTO.io</a>,
+            <a href="https://www.meetup.com/Boulder-Blockchain/" target="_blank" rel="noopener noreferrer">Boulder Blockchain Meetup</a> and the open source projects
+            <a href="https://github.com/owocki/pytrader" target="_blank" rel="noopener noreferrer">pytrader</a>,
+            <a href="https://github.com/owocki/adblock-to-bitcoin" target="_blank" rel="noopener noreferrer">adblock-to-bitcoin</a>,
+            <a href="https://github.com/youvegoteth/youvegoteth.github.io/" target="_blank" rel="noopener noreferrer">YouveGotETH</a>, &
             <a href="https://github.com/owocki/coloradocoin" target="_blank" rel="noopener noreferrer">ColoradoCoin</a>. The stronger the community is, the more successful open source projects are. The stronger open source projects are, the stronger the community is.
           {% endblocktrans %}
           </p>
@@ -142,7 +171,7 @@
         </div>
       </div>
       {% include 'community.html' with h1="Community"  h2="Gitcoin's Top Community Members" community_members=community_members %}
-      {% include 'community.html' with h1="Alumni"  h2="Community Members that've 'graduated' into more work in the space" community_members=alumni %}
+      {% include 'community.html' with h1="Alumni"  h2=total_alumnis|add:" community members have 'graduated' into full time work in the space (that we know of!)" community_members=alumni %}
     </div>
     <div class="row" id="jobs">
       <div class="col-12 row section font-body">
@@ -230,8 +259,10 @@
       </div>
       <div class="row mt-5 pb-3 animatedParent">
         <div class="col animated pulse fast">
-          <p>and many more.. Click below to view our toolbox:</p>
-          <a class="btn btn-lg btn-warning" role="button" href="{% url "tools" %}">{% trans "View our Toolbox" %}</a>
+          <a class="button button--primary" role="button" href="{% url "tools" %}">
+            <i class="fas fa-wrench mr-2"></i>
+            {% trans "Checkout our Toolbox" %}
+          </a>
         </div>
       </div>
     </div>
@@ -242,16 +273,14 @@
           <h6 style="text-align: center;" >{% trans "Everything we do is to support our mission to 'Grow Open Source'" %}  </h6>
         </div>
       </div>
-      <div class=" row animatedParent grow_hero">
-        <div class="col d-flex flex-column p-5 animated fadeIn ">
-          <div class="pl-5 pr-5" style="text-align: center;">
-            <img src="{% static "v2/images/about/grow_hero.png" %}" />
+      <div class="row">
+        <div class="col d-flex flex-column pb-5">
+          <div class="p-4" style="text-align: center;">
+            {% include 'shared/tree.html' %}
           </div>
-        </div>
-      </div>
-      <div class="row mt-5 pb-3 animatedParent">
-        <div class="col animated pulse fast">
-          <a class="btn btn-lg btn-warning" role="button" href="{% url "mission" %}">{% trans "Read about our Mission" %}</a>
+          <div class="col mb-2">
+            <a class="button button--primary" role="button" href="{% url "mission" %}">{% trans "Read about our Mission" %}</a>
+          </div>
         </div>
       </div>
     </div>

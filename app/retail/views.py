@@ -330,6 +330,7 @@ def about(request):
         'core_team': core_team,
         'community_members': community_members,
         'alumni': alumnis,
+        'total_alumnis': str(Alumni.objects.count()),
         'active': 'about',
         'title': 'About',
         'is_outside': True,
@@ -348,6 +349,19 @@ def mission(request):
         'avatar_url': static('v2/images/grow_open_source.png'),
     }
     return TemplateResponse(request, 'mission.html', context)
+
+
+def vision(request):
+    """Render the Vision response."""
+    context = {
+        'is_outside': True,
+        'active': 'vision',
+        'avatar_url': static('v2/images/vision/triangle.jpg'),
+        'title': 'Vision',
+        'card_title': _("Gitcoin's Vision for a Web3 World"),
+        'card_desc': _("Gitcoin's Vision for a web3 world is to make it easy for developers to find paid work in open source."),
+    }
+    return TemplateResponse(request, 'vision.html', context)
 
 
 def results(request, keyword=None):
@@ -706,6 +720,18 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
         'img': static('v2/images/tldr/tips_noborder.jpg'),
         'url': 'https://medium.com/gitcoin/tutorial-send-a-tip-to-any-github-user-in-60-seconds-2eb20a648bc8',
         'title': _('Send a Tip to any Github user in 60 seconds'),
+    }, {
+        'img': 'https://cdn-images-1.medium.com/max/1800/1*IShTwIlxOxbVAGYbOEfbYg.png',
+        'url': 'https://medium.com/gitcoin/how-to-build-a-contributor-friendly-project-927037f528d9',
+        'title': _('How To Build A Contributor Friendly Project'),
+    }, {
+        'img': 'https://cdn-images-1.medium.com/max/2000/1*23Zxk9znad1i422nmseCGg.png',
+        'url': 'https://medium.com/gitcoin/fund-an-issue-on-gitcoin-3d7245e9b3f3',
+        'title': _('Fund An Issue on Gitcoin!'),
+    }, {
+        'img': 'https://cdn-images-1.medium.com/max/2000/1*WSyI5qFDmy6T8nPFkrY_Cw.png',
+        'url': 'https://medium.com/gitcoin/getting-started-with-gitcoin-fa7149f2461a',
+        'title': _('Getting Started With Gitcoin'),
     }]
 
     context = {
@@ -812,7 +838,9 @@ def ios(request):
         'active': 'ios',
         'title': 'iOS app',
         'card_title': 'Gitcoin has an iOS app!',
-        'card_desc': 'Gitcoin aims to make it easier to grow open source from anywhere in the world, anytime.  We’re proud to announce our iOS app, which brings us a step closer to this north star!Browse open bounties on the go, express interest, and coordinate your work on the move.',
+        'card_desc': 'Gitcoin aims to make it easier to grow open source from anywhere in the world,\
+            anytime.  We’re proud to announce our iOS app, which brings us a step closer to this north star!\
+            Browse open bounties on the go, express interest, and coordinate your work on the move.',
     }
     return TemplateResponse(request, 'ios.html', context)
 

@@ -975,7 +975,7 @@ class Tip(SuperModel):
         if self.web3_type != 'v2':
             raise Exception
         
-        pk = self.metadata['priv_key']
+        pk = self.metadata.get('priv_key')
         txid = self.txid
         network = self.network
         return f"{settings.BASE_URL}tip/receive/v2/{pk}/{txid}/{network}"
@@ -1009,10 +1009,8 @@ class Tip(SuperModel):
     @property
     def value_in_usdt_now(self):
         decimals = 1
-        if self.tokenName == 'USDT':
+        if self.tokenName in ['USDT', 'DAI']:
             return float(self.amount)
-        if self.tokenName == 'DAI':
-            return float(self.amount / 10**18)
         try:
             return round(float(convert_amount(self.amount, self.tokenName, 'USDT')) / decimals, 2)
         except ConversionRateNotFoundError:
@@ -1025,10 +1023,8 @@ class Tip(SuperModel):
     @property
     def value_in_usdt_then(self):
         decimals = 1
-        if self.tokenName == 'USDT':
+        if self.tokenName in ['USDT', 'DAI']:
             return float(self.amount)
-        if self.tokenName == 'DAI':
-            return float(self.amount / 10 ** 18)
         try:
             return round(float(convert_amount(self.amount, self.tokenName, 'USDT', self.created_on)) / decimals, 2)
         except ConversionRateNotFoundError:
@@ -1348,7 +1344,7 @@ class Profile(SuperModel):
 
     @property
     def repos_data(self):
-        from github.utils import get_user
+        from git.utils import get_user
         from app.utils import add_contributors
         # TODO: maybe rewrite this so it doesnt have to go to the internet to get the info
         # but in a way that is respectful of db size too

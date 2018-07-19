@@ -34,8 +34,8 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
 
         result = GasProfile.objects.filter(
-            created_on__lt=self.get_then(30),
-            ).delete()
+            created_on__lt=self.get_then(14),
+            ).exclude(created_on__minute__lt=10).delete()
         print(f'GasProfile: {result}')
 
         result = ConversionRate.objects.filter(

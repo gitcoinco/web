@@ -80,6 +80,14 @@ $(document).ready(function() {
         ')'
     ).prop('selected', true);
   }
+
+  if (localStorage['jobDescription']) {
+    $('#jobDescription').val(localStorage['jobDescription']);
+    setTimeout(function() {
+      $('#hiringRightNow').attr('checked', 'checked');
+      open_hiring_panel(false);
+    }, 10);
+  }
   if (localStorage['bountyType']) {
     $(
       'select[name=bountyType] option:contains(' +
@@ -140,18 +148,23 @@ $(document).ready(function() {
   if ($('input[name=amount]').val().trim().length > 0) {
     setUsdAmount();
   }
-
-  $('#hiringRightNow').click(function() {
+  var open_hiring_panel = function(do_focus) {
     setTimeout(function() {
       var hiringRightNow = $('#hiringRightNow').is(':checked');
 
       if (hiringRightNow) {
         $('#jobDescription').removeClass('hidden');
-        $('#jobDescription').focus();
+        if (do_focus) {
+          $('#jobDescription').focus();
+        }
       } else {
         $('#jobDescription').addClass('hidden');
       }
     }, 10);
+  };
+
+  $('#hiringRightNow').click(function() {
+    open_hiring_panel(true);
   });
 
 
@@ -277,6 +290,7 @@ $(document).ready(function() {
       localStorage['notificationEmail'] = notificationEmail;
       localStorage['githubUsername'] = githubUsername;
       localStorage['tokenAddress'] = tokenAddress;
+      localStorage['jobDescription'] = data.jobDescription;
       localStorage['expirationTimeDelta'] = $(
         'select[name=expirationTimeDelta]'
       ).val();

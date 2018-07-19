@@ -29,7 +29,6 @@ from django.utils.translation import gettext_lazy as _
 from django_extensions.db.fields import AutoSlugField
 from easy_thumbnails.fields import ThumbnailerImageField
 from economy.models import SuperModel
-from github.utils import get_user
 from svgutils.compose import SVG, Figure, Line
 
 from .utils import build_avatar_component, get_svg_templates, get_upload_filename

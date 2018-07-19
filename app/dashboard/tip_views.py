@@ -31,8 +31,8 @@ from django.views.decorators.csrf import csrf_exempt
 from dashboard.utils import generate_pub_priv_keypair, get_web3
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from github.utils import (
-    get_auth_url, get_emails_master, get_github_primary_email, get_github_user_data, is_github_token_valid,
+from git.utils import (
+    get_emails_master, get_github_primary_email,
 )
 from marketing.mails import (
     admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,

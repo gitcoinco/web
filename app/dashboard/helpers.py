@@ -28,9 +28,7 @@ from django.db import transaction
 from django.http import Http404, JsonResponse
 from django.utils import timezone
 
-import requests
 from app.utils import sync_profile
-from bs4 import BeautifulSoup
 from dashboard.models import Activity, Bounty, BountyFulfillment, BountySyncRequest, UserAction
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
@@ -38,7 +36,7 @@ from dashboard.notifications import (
 )
 from dashboard.tokens import addr_to_token
 from economy.utils import convert_amount
-from github.utils import _AUTH
+from git.utils import get_gh_issue_details, get_url_dict
 from jsondiff import diff
 from pytz import UTC
 from ratelimit.decorators import ratelimit
@@ -150,44 +148,6 @@ def issue_details(request):
     url_val = URLValidator()
     try:
         url_val(url)
-    except ValidationError as e:
-        response['message'] = 'invalid arguments'
-        return JsonResponse(response)
-
-    if url.lower()[:19] != 'https://github.com/':
-        response['message'] = 'invalid arguments'
-        return JsonResponse(response)
-
-    # Web format:  https://github.com/jasonrhaas/slackcloud/issues/1
-    # API format:  https://api.github.com/repos/jasonrhaas/slackcloud/issues/1
-    gh_api = url.replace('github.com', 'api.github.com/repos')
-
-    try:
-        api_response = requests.get(gh_api, auth=_AUTH)
-    except ValidationError:
-        response['message'] = 'could not pull back remote response'
-        return JsonResponse(response)
-
-    if api_response.status_code != 200:
-        response['message'] = f'there was a problem reaching the github api, status code {api_response.status_code}'
-        response['github_resopnse'] = api_response.json()
-        return JsonResponse(response)
-
-    try:
-        response = api_response.json()
-        body = response['body']
-    except (KeyError, ValueError) as e:
-        response['message'] = str(e)
-    else:
-        response['description'] = body.replace('\n', '').strip()
-        response['title'] = response['title']
-
-    keywords = []
-
-    url = request.GET.get('url')
-    url_val = URLValidator()
-    try:
-        url_val(url)
     except ValidationError:
         response['message'] = 'invalid arguments'
         return JsonResponse(response)
@@ -197,38 +157,14 @@ def issue_details(request):
         return JsonResponse(response)
 
     try:
-        repo_url = None
-        url = clean_bounty_url(url)
-        if '/pull' in url:
-            repo_url = url.split('/pull')[0]
-        if '/issue' in url:
-            repo_url = url.split('/issue')[0]
-        split_repo_url = repo_url.split('/')
-        keywords.append(split_repo_url[-1])
-        keywords.append(split_repo_url[-2])
-
-        html_response = requests.get(repo_url, auth=_AUTH)
-    except (AttributeError, ValidationError):
-        response['message'] = 'could not pull back remote response'
-        return JsonResponse(response)
-
-    try:
-        soup = BeautifulSoup(html_response.text, 'html.parser')
-
-        eles = soup.findAll("span", {"class": "lang"})
-        for ele in eles:
-            keywords.append(ele.text)
-
-    except ValidationError:
-        response['message'] = 'could not parse html'
-        return JsonResponse(response)
-
-    try:
-        response['keywords'] = keywords
+        url_dict = get_url_dict(clean_bounty_url(url))
+        if url_dict:
+            response = get_gh_issue_details(**url_dict)
+        else:
+            response['message'] = 'could not parse Github url'
     except Exception as e:
-        print(e)
-        response['message'] = 'could not find a title'
-
+        logger.warning(e)
+        response['message'] = 'could not pull back remote response'
     return JsonResponse(response)
 
 
@@ -493,10 +429,10 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 for interest in latest_old_bounty.interested.all():
                     new_bounty.interested.add(interest)
 
-                # pull the activities off the last old bounty 
+                # pull the activities off the last old bounty
                 for activity in latest_old_bounty.activities.all():
                     new_bounty.activities.add(activity)
-                
+
             # set cancel date of this bounty
             canceled_on = latest_old_bounty.canceled_on if latest_old_bounty and latest_old_bounty.canceled_on else None
             if not canceled_on and new_bounty.status == 'cancelled':
