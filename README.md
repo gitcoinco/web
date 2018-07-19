@@ -6,7 +6,7 @@ It will be revealed in imToken 2.0 by going through **Wallet(tab)** -> **Token(f
 
 ![Wallet Tab](tutorial/sample.png)
 
-*Read this in other languages: [English](README.md),[简体中文](README.zh-cn.md).*
+*Read this in other languages: [English](README.md),[简体中文](README.zh-CN.md).*
 
 ## How it works
 1. People make PR to the repo, so that we review and give feedback.

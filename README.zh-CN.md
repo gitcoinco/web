@@ -1,4 +1,4 @@
-如何通过 GitHub 自主提交 token 信息给 imToken？
+# Token Profile
 
 你可以通过这篇教程了解如何通过 Github 自主提交 token 信息到 imToken，以便于你的 token 信息能在 imToken2.0 APP 里面对应的 token profile 页面显示出来。
 
@@ -9,7 +9,7 @@
 
 ![Wallet Tab](tutorial/sample.png)
 
-*其他语言版本: [English](README.md),[简体中文](README.zh-cn.md).*
+*其他语言版本: [English](README.md),[简体中文](README.zh-CN.md).*
 
 ## 具体如何操作？
 
@@ -19,7 +19,6 @@
 
 ```
 git clone git@github.com:xxxxxxxx/token-profile.git
-
 ```
 
 3. 创建并且切换到用你的 token symbol 命名的分支里
