@@ -38,4 +38,27 @@
 .lh-3 {
   line-height: 3rem; }
 
+.cta-square {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  border-radius: .25rem;
+  color: #fff;
+  background-color: #3e00ff;
+  font-size: 2em; }
+  .cta-square:after {
+    content: ' ';
+    padding-top: 100%;
+    display: table; }
+  .cta-square > div {
+    display: flex;
+    flex-direction: column;
+    padding: 0 0.6em 0;
+    line-height: 1.1;
+    align-self: stretch;
+    justify-content: space-evenly; }
+  .cta-square:hover {
+    color: rgba(255, 255, 255, 0.8); }
+
 /*# sourceMappingURL=styles.css.map */

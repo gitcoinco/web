@@ -15,7 +15,7 @@
       </div>
     </header>
 
-    <section class="container mt-5">
+    <section class="container mt-5 pb-5">
       <div class="row justify-content-between p-3">
         <div class="">{{listings.count}} Kudos</div>
         {% blocktrans %} 
@@ -29,9 +29,17 @@
           </div>
         {% if forloop.counter|divisibleby:4 %}
       </div>
-      <div class="row">
+      <div class="row justify-content-center">
         {% endif %}
       {% endfor %}
+        <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+            <a href="" class="cta-square">
+              <div>
+                <span>{% trans "Don’t See One You Like?" %}</span>
+                <small>{% trans "Mint Your Own!" %}</small>
+              </div>
+            </a>
+        </div>
       </div>
     </section>
 

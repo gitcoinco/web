@@ -1,6 +1,22 @@
+// VARS
 $dark-blue: #0d023b;
-$btn-gc-blue: #3e00ff;
+$gc-blue: #3e00ff;
 
+
+// MIXINS
+@mixin square() {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  &:after {
+    content: ' ';
+    padding-top: 100%;
+    display: table;
+  }
+}
+
+// CODE
 .kd-card {
   position: relative;
 
@@ -12,8 +28,8 @@ $btn-gc-blue: #3e00ff;
 
   a:hover {
     .img-thumbnail {
-      border-color: $btn-gc-blue;
-      box-shadow: inset 0 0 0px 2px $btn-gc-blue;
+      border-color: $gc-blue;
+      box-shadow: inset 0 0 0px 2px $gc-blue;
     }
   }
 
@@ -51,6 +67,7 @@ $btn-gc-blue: #3e00ff;
   }
 }
 
+// GENERAL
 .full-height {
   min-height: 100vh;
 }
@@ -62,4 +79,25 @@ $btn-gc-blue: #3e00ff;
 
 .lh-3 {
   line-height: 3rem;
+}
+
+.cta-square {
+  @include square;
+  border-radius: .25rem;
+  color: #fff;
+  background-color: $gc-blue;
+  font-size: 2em;
+
+  > div {
+    display: flex;
+    flex-direction: column;
+    padding: 0 0.6em 0;
+    line-height: 1.1;
+    align-self: stretch;
+    justify-content: space-evenly;
+  }
+
+  &:hover {
+    color:rgba(255,255,255, 0.8)
+  }
 }
