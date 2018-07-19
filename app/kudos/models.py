@@ -27,9 +27,6 @@ from django.db.models import Q, Sum
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 
 from economy.models import SuperModel
-from github.utils import (
-    _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, issue_number, org_name, repo_name,
-)
 
 import logging
 
