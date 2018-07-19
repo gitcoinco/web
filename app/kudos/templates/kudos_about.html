@@ -39,21 +39,21 @@
         </div>
       </div> 
       <div class="row justify-content-center">
-        <a class="btn font-bigger-3 font-weight-300 white m-5" href="/kudos/marketplace">See more Kudos</a>
+        <a class="btn font-bigger-3 font-weight-300 white m-5" href="/kudos/marketplace">{% trans "See more Kudos" %}</a>
       </div>
     </header>
 
     <section class="container mt-5">
       <div class="row">
         <div class="col mb-5">
-          <h3 class="h1 font-weight-300 text-center mb-5">Summary/Intro</h3>
-          <p class="font-bigger-1 font-weight-300 lh-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dignissim, lacus accumsan dignissim sollicitudin, libero arcu viverra odio, in semper ipsum nisi non leo. Quisque augue nisi, elementum ac urna quis, sollicitudin imperdiet dolor. Integer lacus dolor, dapibus a condimentum eget, pulvinar a arcu. Morbi eu lectus sit amet sapien fermentum porta. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dapibus pellentesque lectus, et mattis dui semper a. Donec ut nulla ligula. Suspendisse potenti. Vestibulum neque purus, feugiat vel quam in, dignissim blandit mauris. Praesent laoreet in ex quis eleifend.</p>
+          <h3 class="h1 font-weight-300 text-center mb-5">{% trans "Summary/Intro" %}</h3>
+          <p class="font-bigger-1 font-weight-300 lh-3">{% trans "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dignissim, lacus accumsan dignissim sollicitudin, libero arcu viverra odio, in semper ipsum nisi non leo. Quisque augue nisi, elementum ac urna quis, sollicitudin imperdiet dolor. Integer lacus dolor, dapibus a condimentum eget, pulvinar a arcu. Morbi eu lectus sit amet sapien fermentum porta. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dapibus pellentesque lectus, et mattis dui semper a. Donec ut nulla ligula. Suspendisse potenti. Vestibulum neque purus, feugiat vel quam in, dignissim blandit mauris. Praesent laoreet in ex quis eleifend." %}</p>
         </div>
       </div>
 
       <div class="row">
         <div class="col mb-5">
-          <h3 class="h1 font-weight-300 text-center mb-5">Recent Kudos</h3>
+          <h3 class="h1 font-weight-300 text-center mb-5">{% trans "Recent Kudos" %}</h3>
           <ul class="list-unstyled col-md-8 col-lg-6 mt-5 mx-auto">
             {% for listing in listings|slice:":4" %}
             <li class="media my-3 align-items-center listing-kudo">
@@ -69,7 +69,7 @@
       </div>
 
       <div class="row justify-content-center">
-        <a class="btn font-bigger-1 font-weight-300 m-5" href="/kudos/marketplace">See All Recent Kudos</a>
+        <a class="btn font-bigger-1 font-weight-300 m-5" href="/kudos/marketplace">{% trans "See All Recent Kudos" %}</a>
       </div>
     </section>
 
@@ -77,20 +77,20 @@
       <div class="container">
         <div class="row">
           <div class="col mb-5">
-            <h3 class="h1 font-weight-300 text-center mb-5">What is Kudos?</h3>
-            <p>Kudos is a way of showing your appreciation for another Gitcoin member.  It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star.  Kudos tokens can also be bought and sold on the Kudos Marketplace.</p>
+            <h3 class="h1 font-weight-300 text-center mb-5">{% trans "What is Kudos?" %}</h3>
+            <p>{% trans "Kudos is a way of showing your appreciation for another Gitcoin member.  It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star.  Kudos tokens can also be bought and sold on the Kudos Marketplace." %}</p>
           </div>
         </div>
         <div class="row">
           <div class="col mb-5">
-            <h3 class="h1 font-weight-300 text-center mb-5">How Do I Get One?</h3>
-            <p>Kudos can be gifted to you by any other Gitcoin member.  You can also purchase Kudos through the marketplace and send it to any other Gitcoin user.  When you send a Kudos, they receive an email notication.  After they accept the Kudos, it will be minted on the blockchain and delivered to its recepient.</p>
+            <h3 class="h1 font-weight-300 text-center mb-5">{% trans "How Do I Get One?" %}</h3>
+            <p>{% trans "Kudos can be gifted to you by any other Gitcoin member.  You can also purchase Kudos through the marketplace and send it to any other Gitcoin user.  When you send a Kudos, they receive an email notication.  After they accept the Kudos, it will be minted on the blockchain and delivered to its recepient." %}</p>
           </div>
         </div>
         <div class="row">
           <div class="col mb-5">
-            <h3 class="h1 font-weight-300 text-center mb-5">ERC-721 Details</h3>
-            <p>ERC-721 is a standard developed by the Ethereum Foundation that can be used to create Non-Fungible Tokens (NFT's).  The most well known example of this is Cryptokitties, but there are many other examples.  Here at Gitcoin we believe in the potential of NFT's, so we created our own - Kudos.</p>
+            <h3 class="h1 font-weight-300 text-center mb-5">{% trans "ERC-721 Details" %}</h3>
+            <p>{% trans "ERC-721 is a standard developed by the Ethereum Foundation that can be used to create Non-Fungible Tokens (NFT's).  The most well known example of this is Cryptokitties, but there are many other examples.  Here at Gitcoin we believe in the potential of NFT's, so we created our own - Kudos." %}</p>
           </div>
         </div>
       </div>
