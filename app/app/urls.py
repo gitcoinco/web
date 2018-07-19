@@ -154,6 +154,7 @@ urlpatterns = [
     # gas views
     url(r'^gas/faucets/?', dashboard.gas_views.gas_faucet_list, name='gas_faucet_list'),
     url(r'^gas/faq/?', dashboard.gas_views.gas_faq, name='gas_faq'),
+    url(r'^gas/intro/?', dashboard.gas_views.gas_intro, name='gas_intro'),
     url(r'^gas/calculator/?', dashboard.gas_views.gas_calculator, name='gas_calculator'),
     url(r'^gas/history/?', dashboard.gas_views.gas_history_view, name='gas_history_view'),
     url(r'^gas/?', dashboard.gas_views.gas, name='gas'),
