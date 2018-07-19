@@ -1,0 +1,17 @@
+{
+  "symbol": "CT",
+  "address": "0xa7e9854aa83964a8e4664d0c1a4748aa5eacb58b",
+  "overview":{
+        "en": "CandyTown is a digital asset platform that integrates users and high quality project resources, provides efficient and comprehensive candy airdrop service, and relies on effective data collection and analysis technology to set up a community for high quality users. CT (CandyTown Token) is the ERC Token issued by Candy foundation Ltd., and CT is the only proof of the entire ecological platform of the CandyTown. The application scenario includes the candy airdrop and reward task award, the platform direct incentive, the transaction and the cost deduction.",
+        "zh": "CandyTown糖果小镇是一个整合用户与优质项目资源，提供高效全面糖果空投服务的数字货币资产平台，依托有效数据搜集分析技术，为项目方导流高质量用户，搭建社区。CT( CandyTown Token)是Candy foundation Ltd.发行的ERC Token，CT是CandyTown糖果小镇整个生态平台的唯一权益证明，应用场景包括糖果空投以及赏金任务奖励、平台直接激励、交易和提现手续费抵扣。"
+  },
+  "email": "candytownio@gmail.com",
+  "website": "http://www.candytown.io/",
+  "whitepaper": "http://www.aboutbc.com/file.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-22",
+  "links": {
+    "github": "https://github.com/candytownio/token-profile.git",
+    "facebook": "https://www.facebook.com/town.candy.9"
+  }
+}
