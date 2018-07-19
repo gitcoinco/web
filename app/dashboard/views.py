@@ -473,6 +473,34 @@ def dashboard(request):
     return TemplateResponse(request, 'dashboard.html', params)
 
 
+def admin_bounty_view(request):
+    """Admin Bounty View.
+
+    Args:
+        pk (int): The primary key of the bounty to be accepted.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The accept bounty view.
+
+    """
+    is_staff = request.user.is_staff
+    if not is_staff:
+        raise Http404
+
+    bounty = handle_bounty_views(request)
+
+    params = get_context(
+        ref_object=bounty,
+        user=request.user if request.user.is_authenticated else None,
+        active='accept_bounty',
+        title=_('Admin Processor'),
+    )
+    return TemplateResponse(request, 'admin_bounty_view.html', params)
+
+
 def accept_bounty(request):
     """Process the bounty.
 
