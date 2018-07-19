@@ -1,0 +1,22 @@
+{
+  "symbol": "QCH",
+  "address": "0x687BfC3E73f6af55F0CccA8450114D107E781a0e",
+  "overview":{
+        "en": "QChi is designed for peer to peer transactions aimed at computer, gaming, health and tourism capital market. It enables easy p2p asset transfer based by blockchain.",
+        "zh": "齐锐币(QChi)是专为对等的交易, 针对计算机、游戏、 健康和旅游资本市场。它实现了基于区块链的轻松 p2p 资产转移。"
+  },
+  "email": "support@qchi.mobi",
+  "website": "http://qchi.mobi/",
+  "whitepaper": "http://exchange.qchi.pro/assets/images/QChi_V1.3.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-05-01",
+  "initial_price":{
+        "ETH":"0.00003226 ETH",
+        "USD":"0.015 USD",
+        "BTC":"0.000002325 BTC"
+  },
+  "links": {    
+    "twitter": "https://twitter.com/qchqchi",    
+    "github": "https://github.com/qch-qchi/"
+  }
+}
