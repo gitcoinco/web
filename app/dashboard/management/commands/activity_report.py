@@ -113,7 +113,7 @@ class Command(BaseCommand):
             'type': 'tip',
             'created_on': tip.created_on,
             'last_activity': tip.modified_on,
-            'amount': tip.get_natural_value() * 10**18,
+            'amount': tip.amount_in_whole_units,
             'denomination': tip.tokenName,
             'amount_eth': tip.value_in_eth,
             'amount_usdt': tip.value_in_usdt,
@@ -204,6 +204,8 @@ class Command(BaseCommand):
             network='mainnet',
             created_on__gte=options['start_date'],
             created_on__lte=options['end_date']
+        ).exclude(
+            txid='',
         ).order_by('created_on', 'id')
         formatted_tips = imap(self.format_tip, tips)
 

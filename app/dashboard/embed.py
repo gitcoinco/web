@@ -1,11 +1,12 @@
 from django.http import HttpResponse, JsonResponse
+from django.template import loader
 from django.utils import timezone
+from django.utils.cache import patch_response_headers
 
 import requests
 from dashboard.models import Bounty
-from economy.utils import convert_token_to_usdt
-from github.utils import get_user, org_name
-from PIL import Image, ImageDraw, ImageFont, ImageOps
+from git.utils import get_user, org_name
+from PIL import Image, ImageDraw, ImageFont
 from ratelimit.decorators import ratelimit
 
 AVATAR_BASE = 'assets/other/avatars/'
@@ -48,12 +49,20 @@ def stat(request, key):
     from matplotlib.figure import Figure
     from matplotlib.dates import DateFormatter
     from marketing.models import Stat
-    from django.utils import timezone
     limit = 10
     weekly_stats = Stat.objects.filter(key=key).order_by('created_on')
-    weekly_stats = weekly_stats.filter(created_on__hour=1, created_on__week_day=1).filter(created_on__gt=(timezone.now() - timezone.timedelta(weeks=7)))  # weekly stats only
+    # weekly stats only
+    weekly_stats = weekly_stats.filter(
+        created_on__hour=1,
+        created_on__week_day=1
+    ).filter(
+        created_on__gt=(timezone.now() - timezone.timedelta(weeks=7))
+    )
 
-    daily_stats = Stat.objects.filter(key=key).filter(created_on__gt=(timezone.now() - timezone.timedelta(days=7))).order_by('created_on')
+    daily_stats = Stat.objects.filter(key=key) \
+        .filter(
+            created_on__gt=(timezone.now() - timezone.timedelta(days=7))
+        ).order_by('created_on')
     daily_stats = daily_stats.filter(created_on__hour=1)  # daily stats only
 
     stats = weekly_stats if weekly_stats.count() < limit else daily_stats
@@ -88,12 +97,32 @@ def embed(request):
     err_response = HttpResponse(content_type="image/jpeg")
     could_not_find.save(err_response, "JPEG")
 
+    # Get maxAge GET param if provided, else default on the small side
+    max_age = int(request.GET.get('maxAge', 3600))
+
     # params
     repo_url = request.GET.get('repo', False)
     if not repo_url or 'github.com' not in repo_url:
         return err_response
 
     try:
+        badge = request.GET.get('badge', False)
+        if badge:
+            open_bounties = Bounty.objects.current() \
+                .filter(
+                    github_url__startswith=repo_url,
+                    network='mainnet',
+                    idx_status__in=['open']
+                )
+
+            tmpl = loader.get_template('svg_badge.txt')
+            response = HttpResponse(
+                tmpl.render({'bounties_count': open_bounties.count()}),
+                content_type='image/svg+xml',
+            )
+            patch_response_headers(response, cache_timeout=max_age)
+            return response
+
         # get avatar of repo
         _org_name = org_name(repo_url)
 
@@ -291,114 +320,8 @@ def embed(request):
         # Return image with right content-type
         response = HttpResponse(content_type="image/png")
         img.save(response, "PNG")
+        patch_response_headers(response, cache_timeout=max_age)
         return response
     except IOError as e:
         print(e)
         return err_response
-
-
-def get_avatar(_org_name):
-    avatar = None
-    filename = f"{_org_name}.png"
-    filepath = AVATAR_BASE + filename
-    if _org_name == 'gitcoinco':
-        filepath = AVATAR_BASE + '../../v2/images/helmet.png'
-    try:
-        avatar = Image.open(filepath, 'r').convert("RGBA")
-    except IOError:
-        remote_user = get_user(_org_name)
-        if not remote_user.get('avatar_url', False):
-            return JsonResponse({'msg': 'invalid user'}, status=422)
-        remote_avatar_url = remote_user['avatar_url']
-
-        r = requests.get(remote_avatar_url, stream=True)
-        chunk_size = 20000
-        with open(filepath, 'wb') as fd:
-            for chunk in r.iter_content(chunk_size):
-                fd.write(chunk)
-        avatar = Image.open(filepath, 'r').convert("RGBA")
-
-        # make transparent
-        datas = avatar.getdata()
-
-        new_data = []
-        for item in datas:
-            if item[0] == 255 and item[1] == 255 and item[2] == 255:
-                new_data.append((255, 255, 255, 0))
-            else:
-                new_data.append(item)
-
-        avatar.putdata(new_data)
-        avatar.save(filepath, "PNG")
-    return filepath
-
-
-def add_gitcoin_logo_blend(avatar, icon_size):
-    # setup
-    sub_avatar_size = 50
-    sub_avatar_offset = (165, 165)
-
-    # get image for sub avatar
-    gitcoin_filepath = get_avatar('gitcoinco')
-    gitcoin_avatar = Image.open(gitcoin_filepath, 'r').convert("RGBA")
-    gitcoin_avatar = ImageOps.fit(gitcoin_avatar, (sub_avatar_size, sub_avatar_size), Image.ANTIALIAS)
-
-    # build new avatar
-    img2 = Image.new("RGBA", icon_size)
-    img2.paste(gitcoin_avatar, sub_avatar_offset)
-
-    # blend these two images together
-    img = Image.new("RGBA", avatar.size, (255, 255, 255))
-    img = Image.alpha_composite(img, avatar)
-    img = Image.alpha_composite(img, img2)
-
-    return img
-
-
-def get_err_response(request, blank_img=False):
-    if not blank_img:
-        return avatar(request, 'Self')
-
-    could_not_find = Image.new('RGBA', (1, 1), (0, 0, 0, 0))
-    err_response = HttpResponse(content_type="image/jpeg")
-    could_not_find.save(err_response, "PNG")
-    return err_response()
-
-
-def avatar(request, _org_name=None, add_gitcoincologo=None):
-    # config
-    icon_size = (215, 215)
-    print(_org_name, add_gitcoincologo)
-    # default response
-    # params
-    repo_url = request.GET.get('repo', False)
-    if not _org_name and (not repo_url or 'github.com' not in repo_url):
-        return get_err_response(request, blank_img=(_org_name == 'Self'))
-
-    try:
-        # get avatar of repo
-        if not _org_name:
-            _org_name = org_name(repo_url)
-
-        filepath = get_avatar(_org_name)
-
-        # new image
-        img = Image.new("RGBA", icon_size, (255, 255, 255))
-
-        # execute
-        avatar = Image.open(filepath, 'r').convert("RGBA")
-        avatar = ImageOps.fit(avatar, icon_size, Image.ANTIALIAS)
-        offset = 0, 0
-        img.paste(avatar, offset, avatar)
-
-        # add gitcoinco logo?
-        add_gitcoincologo = add_gitcoincologo and _org_name != 'gitcoinco'
-        if add_gitcoincologo:
-            img = add_gitcoin_logo_blend(avatar, icon_size)
-
-        response = HttpResponse(content_type="image/png")
-        img.save(response, "PNG")
-        return response
-    except (AttributeError, IOError, SyntaxError) as e:
-        print(e)
-        return get_err_response(request, blank_img=(_org_name == 'Self'))

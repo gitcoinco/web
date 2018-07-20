@@ -111,7 +111,10 @@ button:focus {
   padding: .75rem 1.5rem;
 }
 
-.btn-outline-gc-blue, .btn-outline-gc-purple, .btn-outline-gc-green {
+.btn-outline-gc-blue,
+.btn-outline-gc-purple,
+.btn-outline-gc-green,
+.btn-outline-white {
   padding: .75rem 1.5rem;
 }
 
@@ -135,6 +138,16 @@ button:focus {
 .btn-outline-gc-blue:hover {
   background-color: var(--gc-blue);
   color: white;
+}
+
+.btn-outline-white {
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+.btn-outline-white:hover {
+  background: #ffffff;
+  color: #3f00ff;
 }
 
 .btn-gc-green {

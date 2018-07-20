@@ -34,7 +34,6 @@
     {% include '_dashboard/ftux.html' %}
     <div id="dashboard-content" class="row no-gutter">
       <div class="col-12 col-lg-3 col-xl-2 invisible" id="sidebar_container" style="background: #F2F6F9;">
-        {% include 'shared/current_balance.html' %}
         {% include 'shared/sidebar_search.html' %}
       </div>
 
@@ -72,8 +71,8 @@
 
     <div id="onboard-footer" class="row hidden font-body">
       <div class="col-12">
-        <p>{% trans "Want to Fund an issue ? Checkout the" %}
-          <a href="#">{% trans " Getting Starting Guide!" %}</a>
+        <p>{% trans "Want to Fund an issue ? " %}
+          <a target="_blank" rel="noopener noreferrer" href="{% url "new_funding_short" %}">{% trans "Get Started!" %}</a>
         </p>
       </div>
     </div>
@@ -85,9 +84,9 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
 
+    <script src="/static/v2/js/tokens_dynamic.js"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>
     <script src="{% static "v2/js/pages/dashboard.js" %}"></script>
-    <script src="{% static "v2/js/shared.js" %}"></script>
     <script>
         document.keywords = {{keywords | safe}};
     </script>

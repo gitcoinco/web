@@ -1,8 +1,7 @@
-sudo: false
 language: python
-
-python:
-  - 3.6
+python: 3.7
+dist: xenial
+sudo: true
 
 node_js:
   - "9"
@@ -12,6 +11,7 @@ os:
 
 services:
   - docker
+  - postgresql
 
 cache:
   directories:
@@ -22,9 +22,12 @@ jobs:
   include:
     # Lint and test the repository.
     - stage: lint-test
+      before_script:
+        - psql -c 'create database testdb;' -U postgres
       script:
         # Setup Env.
         - cp app/app/travis.env app/app/.env
+        - pip install pip setuptools --upgrade
         - pip install codecov
         # Install Node and Python dependencies.
         - npm install
@@ -36,6 +39,7 @@ jobs:
         - codecov
       env:
         - PYTHONPATH="${TRAVIS_BUILD_DIR}/app/"
+        - DJANGO_SETTINGS_MODULE="app.settings"
     # Deploy to Docker Hub and initiate a rolling update for web.
     - stage: deploy-stage
       if: branch = master AND NOT type = pull_request
@@ -61,6 +65,3 @@ jobs:
         - docker push gitcoin/web:${TRAVIS_BUILD_NUMBER}
         - docker tag gitcoin/web:${TRAVIS_BUILD_NUMBER} gitcoin/web:stable
         - docker push gitcoin/web:stable
-
-addons:
-  postgresql: "9.6"

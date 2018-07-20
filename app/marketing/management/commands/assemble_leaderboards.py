@@ -83,7 +83,7 @@ def add_element(key, username, amount):
 def sum_bounties(b, usernames):
     for username in usernames:
         if b.idx_status == 'done':
-            fulfiller_usernames = list(b.fulfillments.all().values_list('fulfiller_github_username', flat=True))
+            fulfiller_usernames = list(b.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True))
             add_element('all_fulfilled', username, b._val_usd_db)
             if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
                 add_element('all_payers', username, b._val_usd_db)
@@ -187,7 +187,7 @@ class Command(BaseCommand):
                 usernames.append(b.bounty_owner_github_username)
                 if b.org_name:
                     usernames.append(b.org_name)
-            for fulfiller in b.fulfillments.all():
+            for fulfiller in b.fulfillments.filter(accepted=True):
                 if not should_suppress_leaderboard(fulfiller.fulfiller_github_username):
                     usernames.append(fulfiller.fulfiller_github_username)
 

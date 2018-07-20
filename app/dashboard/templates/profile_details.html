@@ -1,6 +1,4 @@
-{% load i18n email_obfuscator %}
-{% load humanize %}
-{% load static %}
+{% load i18n email_obfuscator humanize static add_url_schema %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -18,7 +16,7 @@
         <div class="row">
           <div class="col-12 col-lg-4 profile-header__main-infos">
             <div class="clearfix">
-              <img class="profile-header__avatar mb-4 mr-4" src="{{profile.avatar_url}}">
+              <img class="profile-header__avatar mb-4 mr-4" src="{% if profile.avatar and profile.avatar.avatar_url %}{{ profile.avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}">
               <p class="profile-header__handle font-title">
                 {% if profile.data.name %}
                   {{ profile.data.name }}
@@ -26,11 +24,11 @@
               </p>
               <p class="mb-0">{{ profile.handle }}</p>
               <p class="profile-header__links clearfix mt-1">
-                <a href="{{profile.data.html_url}}?tab=repositories">
+                <a href="{{ profile.data.html_url }}?tab=repositories" target="_blank" rel="noopener noreferrer" >
                   <i class="fab fa-github"></i>
                 </a>
                 {% if profile.data.blog and user.is_authenticated %}
-                  <a href="{{ profile.data.blog }}">
+                  <a href="{{ profile.data.blog|add_url_schema }}" target="_blank" rel="noopener noreferrer" >
                     <i class="fas fa-home"></i>
                   </a>
                 {% endif %}
@@ -66,7 +64,7 @@
                       <span class="font-body">( <i class="fa fa-code"></i> ) Contributors:</span>
                       {% for profile, num_times in works_with_org.items %}
                         <a href="{% url 'profile' profile %} ">
-                          <img src='/static/avatar/{{profile}}' title="<div class='tooltip-info tooltip-xs'>{{profile}}: {{num_times}} times</div>">
+                          <img src='{% if profile.avatar and profile.avatar.svg %}{{ profile.avatar.svg.url }}{% else %}/static/avatar/{{ profile }}{% endif %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
                         </a>
                       {% endfor %}
                     {% endif %}
@@ -99,7 +97,7 @@
                         {% endif %}
                         {% for profile, num_times in works_with_collected.items %}
                             <a href="{% url 'profile' profile %} ">
-                              <img src='/static/avatar/{{profile}}' title="<div class='tooltip-info tooltip-xs'>{{profile}}: {{num_times}} times</div>">
+                              <img src='/static/avatar/{{ profile }}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
                             </a>
                         {% endfor %}
                     {% endif %}
@@ -128,7 +126,7 @@
                         {% endif %}
                         {% for profile, num_times in works_with_funded.items %}
                           <a href="{% url 'profile' profile %} ">
-                            <img src='/static/avatar/{{profile}}' title="<div class='tooltip-info tooltip-xs'>{{profile}}: {{num_times}} times</div>">
+                            <img src='/static/avatar/{{ profile }}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
                           </a>
                         {% endfor %}
                     {% endif %}
@@ -167,7 +165,11 @@
       </div>
     {% else %}
       <div class="row">
-        <div class="col py-4">{% trans "Bounties in progress" %}</div>
+        <div class="col py-4">
+          <div class="pb-2 profile-section-title">
+            {% trans "Bounties in progress" %}
+          </div>
+        </div>
       </div>
       <div class="row">
         <div class="container profile-bounties profile-bounties--in-progress profile-bounties--loading">
@@ -179,7 +181,11 @@
     </div>
     <div class="container">
       <div class="row">
-        <div class="col py-4">{% trans "Bounties funded" %}</div>
+      <div class="col py-4">
+        <div class="pb-2 profile-section-title">
+          {% trans "Bounties funded" %}
+        </div>
+      </div>
       </div>
       <div class="row">
         <div class="container profile-bounties profile-bounties--funded profile-bounties--loading">
@@ -191,7 +197,11 @@
     </div>
     <div class="container">
       <div class="row">
-        <div class="col py-4">{% trans "Bounties completed" %}</div>
+        <div class="col py-4">
+          <div class="pb-2 profile-section-title">
+            {% trans "Bounties completed" %}
+          </div>
+        </div>
       </div>
       <div class="row">
         <div class="container profile-bounties profile-bounties--completed profile-bounties--loading">
@@ -203,7 +213,11 @@
     </div>
     <div class="container">
       <div class="row">
-        <div class="col py-4">{% trans "Bounties" %}</div>
+        <div class="col py-4">
+          <div class="pb-2 profile-section-title">
+            {% trans "Bounties" %}
+          </div>
+        </div>
       </div>
       <div class="row">
         <div class="container profile-bounties profile-bounties--all profile-bounties--loading">
@@ -216,7 +230,11 @@
     <div class="container">
       {% if tips|length > 0 %}
         <div class="row">
-          <div class="col py-4">{% trans "Tips Received" %}</div>
+          <div class="col py-4">
+            <div class="pb-2 profile-section-title">
+              {% trans "Tips Received" %}
+            </div>
+          </div>
         </div>
         <div class="row">
           <div class="container profile-bounties profile-bounties--tips pb-4">
@@ -363,112 +381,12 @@
 
     <!-- jQuery -->
     <script src="{% static "v2/js/abi.js" %}"></script>
+    <script src="/static/v2/js/tokens_dynamic.js"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>
     <script src="{% static "v2/js/pages/profile_details.js" %}"></script>
     <script src="{% static "v2/js/shared.js" %}"></script>
 
     <script type="text/javascript">
-      function renderBountyRowsFromResults(results) {
-        var html = '';
-        var tmpl = $.templates('#result');
-
-        if (results.length == 0) {
-          return false;
-        }
-
-        // Reused code from explorer/dashboard. Should be moved to some shared js.
-        for (var i = 0; i < results.length; i++) {
-            // setup
-            var result = results[i];
-            var related_token_details = tokenAddressToDetails(result['token_address']);
-            var decimals = 18;
-
-            if (related_token_details && related_token_details.decimals) {
-              decimals = related_token_details.decimals;
-            }
-
-            var divisor = Math.pow(10, decimals);
-
-            result['rounded_amount'] = Math.round(result['value_in_token'] / divisor * 100) / 100;
-            var is_expired = new Date(result['expires_date']) < new Date() && !result['is_open'];
-
-            result['action'] = result['url'];
-            result['title'] = result['title'] ? result['title'] : result['github_url'];
-
-            var timeLeft = timeDifference(new Date(result['expires_date']), new Date(), true);
-
-            result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
-
-            if (result['status'] === 'done')
-              result['p'] += 'Done';
-            if (result['fulfillment_accepted_on']) {
-              result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_accepted_on']), false, 60 * 60);
-            } else if (result['status'] === 'started') {
-              result['p'] += 'Started';
-              result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_started_on']), false, 60 * 60);
-            } else if (result['status'] === 'submitted') {
-              result['p'] += 'Submitted';
-              if (result['fulfillment_submitted_on']) {
-                result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_submitted_on']), false, 60 * 60);
-              }
-            } else if (result['status'] == 'cancelled') {
-              result['p'] += 'Cancelled';
-              if (result['canceled_on']) {
-                result['p'] += ' ' + timeDifference(new Date(), new Date(result['canceled_on']), false, 60 * 60);
-              }
-            } else if (is_expired) {
-              var time_ago = timeDifference(new Date(), new Date(result['expires_date']), true);
-
-              result['p'] += ('Expired ' + time_ago + ' ago');
-            } else {
-              var opened_when = timeDifference(new Date(), new Date(result['web3_created']), true);
-
-              result['p'] += ('Opened ' + opened_when + ' ago, Expires in ' + timeLeft);
-            }
-
-            result['hidden'] = (i > 4) ? true : false;
-
-            html += tmpl.render(result);
-          }
-
-          return html;
-      }
-
-      function fetchBountiesAndAddToList(params, target) {
-        $.get('/api/v0.1/bounties/?' + params, function(results) {
-          results = sanitizeAPIResults(results);
-
-          var html = renderBountyRowsFromResults(results);
-
-          if (html) {
-            $(target).prepend(html);
-            $(target).removeClass('profile-bounties--loading');
-
-            if (results.length > 5) {
-              var $button = $(target + ' .profile-bounties__btn-show-all');
-              $button.removeClass('hidden');
-              $button.on('click', function(event) {
-                $(this).remove();
-                $(target + ' .bounty_row').removeClass('bounty_row--hidden');
-              });
-            }
-
-            // Reused code from explorer/dashboard. Should be moved to some shared js.
-            $('div.bounty_row.result').each(function() {
-              var href = $(this).attr('href');
-
-              if (typeof $(this).changeElementType !== 'undefined') {
-                $(this).changeElementType('a'); // hack so that users can right click on the element
-              }
-
-              $(this).attr('href', href);
-            });
-          } else {
-            console.log($(target).parent().closest('.container').addClass('hidden'));
-          }
-        });
-      }
-
       $(document).ready(function() {
         if ($('.profile-bounties--tips .bounty_row--hidden').length > 0) {
           var $button = $('.profile-bounties--tips .profile-bounties__btn-show-all');

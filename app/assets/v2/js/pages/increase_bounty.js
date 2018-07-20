@@ -94,7 +94,7 @@ $(document).ready(function() {
     function web3Callback(error, result) {
       if (error) {
         mixpanel.track('Increase Bounty Error (funder)', {step: 'post_bounty', error: error});
-        _alert({ message: gettext('There was an error.  Please try again or contact support.') });
+        _alert({ message: gettext('There was an error.  Please try again or contact support.') }, 'error');
         unloading_button($('#submitBounty'));
         return;
       }

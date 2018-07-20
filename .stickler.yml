@@ -17,6 +17,6 @@ files:
     - 'docs'
     - 'node_modules/*'
     - 'requirements'
-    - '**/migrations/*.py'
+    - 'app/**/migrations/*.py'
 fixers:
   enable: false

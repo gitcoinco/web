@@ -127,12 +127,20 @@ body {
   overflow-x: hidden;
   width: 100%;
   background-color: #fff;
+
+  /* better font render */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h4,
 .h4 {
   text-align: center;
   padding-top: 40px;
+}
+
+.lighter {
+  font-weight: lighter;
 }
 
 .no-gutter {
@@ -170,6 +178,11 @@ h4,
   background-repeat: no-repeat;
 }
 
+.header-contributor {
+  background-image: url('/static/v2/images/landing/contributor/hero_header_bg.jpg');
+  background-color: #3f00ff;
+}
+
 #gitcoin-background {
   background-image: url("/static/v2/images/header-bg.png");
   background-size: 2000px;
@@ -190,6 +203,18 @@ h4,
   padding-right: 1rem !important;
   padding-left: 1rem !important;
   font-size: 0.9rem !important;
+}
+
+.text-white {
+  color: #ffffff;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.light {
+  font-weight: 200;
 }
 
 .font-title-lg {
@@ -269,12 +294,17 @@ div.button-pink {
 }
 
 .header-line {
-  color: white;
+  color: #12c971;
   font-family: Muli, sans-serif;
   font-size: 3em;
   font-weight: 500;
   font-style: italic;
   letter-spacing: 0.1em;
+}
+
+.header-line-contributors {
+  letter-spacing: 0.5px;
+  font-weight: 700;
 }
 
 .subheader-line {
@@ -283,6 +313,12 @@ div.button-pink {
   font-size: 1.75em;
   font-weight: 500;
   font-style: italic;
+}
+
+.subheader-line-contributors {
+  color: #ffffff;
+  margin-top: 0.6em;
+  font-weight: 100;
 }
 
 .font-weight-300 {
@@ -434,6 +470,7 @@ div.button-pink {
   border-top: 1px solid var(--gc-green);
   background: black;
 }
+
 .sitenav {
   display: flex;
   flex-direction: column;
@@ -443,9 +480,26 @@ div.button-pink {
   width: 7rem;
   margin-bottom: 1rem;
 }
+
 .sitenav a {
   color: var(--text-light);
   margin-bottom: 0.5rem;
+}
+
+.network-banner--warning {
+  background: #ff3232;
+  width: 100%;
+  color: white;
+  text-align: center;
+}
+
+.network-banner--warning a {
+  color: white;
+  text-decoration: none;
+}
+
+.network-banner--warning a:hover {
+  text-decoration: underline;
 }
 
 .lil-white-button {
@@ -600,15 +654,24 @@ div.button-pink {
 
 /* TODO: Remove Post landing revamp */
 
-#ios {
+#ios-banner {
   background-color: #FFFFFF;
 }
 
-#ios .row .right {
+#ios-banner > .row {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#ios-banner img {
+  max-height: 14rem;
+}
+
+#ios-banner .row .right {
   text-align: right;
 }
 
-#ios .row .left {
+#ios-banner .row .left {
   text-align: left;
   margin-top: auto;
   margin-bottom: auto;
@@ -616,30 +679,45 @@ div.button-pink {
   letter-spacing: 0;
 }
 
-#ios .row .left h5 {
+#ios-banner .row .left h5 {
   text-transform: capitalize;
   letter-spacing: 0;
 }
 
-#ios .row .left h5 ,
-#ios .row .left a {
+#ios-banner .row .left h5 ,
+#ios-banner .row .left a {
   font-weight: bold;
 }
 
-#ios .row .left a {
+#ios-banner .row .left a {
   font-family: 'Muli', sans-serif;
   font-size: 14px;
 }
 
 @media (max-width: 767.98px) {
-  #ios .row .right,
-  #ios .row .left {
+
+  .navbar-nav .button--fund {
+    padding-left: 1rem;
+    text-align: left;
+  }
+
+  #ios-banner .row .right,
+  #ios-banner .row .left {
     text-align: center;
   }
 
-  #ios .row .left {
+  #ios-banner .row .left {
     margin-top: 0.625rem;
     margin-bottom: 1rem;
+  }
+
+  #ios-banner h5 {
+    font-size: 1.2rem;
+    padding-bottom: 0.2rem;
+  }
+
+  #ios-banner > .row {
+    margin-bottom: 2rem;
   }
 }
 /* TODO: End */
