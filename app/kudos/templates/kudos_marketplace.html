@@ -1,39 +1,63 @@
-{% load static %}
+{% load i18n static %}
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Kudos Marketplace</title>
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards_pic.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
   </head>
-  <body>
-    {% include 'shared/kudos_banner.html' %}
-    {% include 'shared/kudos_searchbar.html' %}
-    <div class="container" align="center" id="kudos-tiles">
-      <div class="row">
+  <body class="{{ active }} bg-light">
+    <header class="container-fluid header">
+      {% include 'shared/nav.html' %}
+      {% include 'shared/kudos_banner.html' %}
+      <div class="container pb-5">
+        {% include 'shared/kudos_searchbar.html' %}
+      </div>
+    </header>
+
+    <section class="container mt-5 pb-5">
+      <div class="row justify-content-between p-3">
+        <div class="">{{listings.count}} Kudos</div>
+        {% blocktrans %} 
+          <div>Sort by: Price <a href="">Low</a> - <a href="">High</a></div>
+        {% endblocktrans %}
+      </div>
+      <div class="row justify-content-center">
         {% for listing in listings %}
-        <div class="col-3">
-          <a href="/kudos/{{ listing.id }}"><img src="{% static listing.image %}" alt="{{ listing.name }}" class="img-thumbnail"></a>
-          <p><small>{{ listing.name }}</small></p>
-        </div>
+          <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+            {% include 'shared/kudos_card.html' %}
+          </div>
         {% if forloop.counter|divisibleby:4 %}
       </div>
-      <div class="row">
+      <div class="row justify-content-center">
         {% endif %}
       {% endfor %}
+        <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+            <a href="" class="cta-square">
+              <div>
+                <span>{% trans "Don’t See One You Like?" %}</span>
+                <small>{% trans "Mint Your Own!" %}</small>
+              </div>
+            </a>
+        </div>
       </div>
-    </div>
+    </section>
 
-    <div class="container" align="center" id="kudos-footer">
-      <h3>Footer</h3>
-    </div>
-
-  </body>
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+    <script src="{% static "v2/js/popper.min.js" %}"></script>
+    <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+    <script>
+      var bootstrapTooltip = $.fn.tooltip.noConflict()
+    </script>
+    {% include 'shared/rollbar.html' %}
+    {% include 'shared/messages.html' %
   <!-- <script src="js/web3.min.js"></script> -->
-  <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+    <script src="js/truffle-contract.js"></script>
+    <script src="js/app.js"></script>
+  </body>
 </html>
 
 
