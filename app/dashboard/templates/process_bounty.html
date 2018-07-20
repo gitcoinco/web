@@ -61,6 +61,10 @@
                     <option value="">-- {% trans "Submission" %} -- </option>
                   </select>
                 </div>
+                <div class="w-100 mt-2">
+                  <label for=tipPercent>{% trans "(Optional) Add a tip of:" %}</label>
+                  <input name='tipPercent' id="tipPercent" class="gc-round-text-input" style="width: 50px;" type="number" placeholder="" value="0" min="0" /> % worth <span id="tipEstimate">0</span> {{bounty.token_name}} 
+                </div>
                 <div id="gas-section">
                   {% include 'shared/bounty_actions_hidden_vars.html' %}
                   {% include 'shared/wallet_estimate.html' %}
@@ -91,7 +95,19 @@
     {% include 'shared/messages.html' %}
   </body>
 
+  <script>
+    document.bounty_amount_whole = {{bounty.get_value_true}};
+    document.bounty_amount_wei = {{bounty.value_in_token}};
+    document.token_address = {{bounty.token_address}};
+  </script>
+
   <!-- jQuery -->
+  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/secrets.min.js" %}"></script>
+  <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
+  <script src="{% static "onepager/js/send.js" %}"></script>
+
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/static/v2/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
