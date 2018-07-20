@@ -23,7 +23,7 @@
         {% endblocktrans %}
       </div>
       <div class="row justify-content-center">
-        {% for listing in listings %}
+        {% for listing in listing.listings %}
           <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
             {% include 'shared/kudos_card.html' %}
           </div>
@@ -59,7 +59,3 @@
     <script src="js/app.js"></script>
   </body>
 </html>
-
-
-
-

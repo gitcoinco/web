@@ -18,35 +18,35 @@
     <div class="container py-5">
       <a href="/kudos/marketplace">&lt; {% trans "Kudos Marketplace" %}</a>
     </div>
-    
+
   	<section class="container my-5 pb-5">
       <div class="row justify-content-around">
-        <div class="col-md-5">
-          <img src="{% static kudos.image %}" alt="{{ kudos.name }}">
+        <div class="col-md-6 col-lg-5 mb-5">
+          <img src="{% static kudos.image %}" alt="{{ kudos.name }}" class="sticky-top">
         </div>
-        <div class="col-md-5">
+        <div class="col-md-6 col-lg-5">
           <h3 class="display-4">{{ kudos.name }}</h3>
           <div class="mt-4 font-bigger-1 font-weight-300">
             <p class="">{{ kudos.description }}</p>
             <p>Rarity: {{ kudos.rarity }}</p>
             <p>Lister: <a href="" class="btn-link">{{ kudos.lister }}</a></p>
           </div>
-          <div class="row justify-content-start">
+          <div class="row justify-content-start pb-4">
             <div class="col-12">
-              <button type="button" class="btn btn-gc-blue">Get Kudos</button>
+              <button type="button" class="btn btn-gc-blue">{% trans "Get Kudos" %}</button>
             </div>
           </div>
           <hr>
-          <div class="row">
+          <div class="row pt-3">
             <div class="col-12">
-              <p class="text-justify">These people have them</p>
+              <p class="font-bigger-1">{% trans "These people have them" %}</p>
             </div>
           </div>
           <div class="row">
             <div class="col-12">
-              <img src="https://robohash.org/1" width="50" class="rounded-circle border">
-              <img src="https://robohash.org/2" width="50" class="rounded-circle border">
-              <img src="https://robohash.org/3" width="50" class="rounded-circle border">
+              <img src="https://robohash.org/1" width="70" class="rounded-circle border m-1">
+              <img src="https://robohash.org/2" width="70" class="rounded-circle border m-1">
+              <img src="https://robohash.org/3" width="70" class="rounded-circle border m-1">
             </div>
           </div>
         </div>
