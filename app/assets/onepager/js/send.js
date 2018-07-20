@@ -204,6 +204,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
 
     metadata['creation_time'] = creation_time;
     metadata['salt'] = salt;
+    metadata['source_url'] = document.loction.href;
 
     fetch(url, {
       method: 'POST',
