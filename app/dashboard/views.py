@@ -925,11 +925,11 @@ def profile(request, handle):
                 },
             },
         }
-        return TemplateResponse(request, 'profile_details.html', params)
+        return TemplateResponse(request, 'profiles/profile.html', params)
 
     params = profile.to_dict()
 
-    return TemplateResponse(request, 'profile_details.html', params)
+    return TemplateResponse(request, 'profiles/profile.html', params)
 
 
 @csrf_exempt
