@@ -90,7 +90,6 @@ def details(request):
     if not re.match(r'\d+', kudos_id):
         raise ValueError(f'Invalid Kudos ID found.  ID is not a number:  {kudos_id}')
 
-    
     context = {
         'is_outside': True,
         'active': 'details',
