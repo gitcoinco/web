@@ -205,14 +205,14 @@ var callbacks = {
     return [ 'network', warning ];
   },
   'additional_funding_summary': function(key, val, result) {
+    if (typeof val == 'undefined' || Object.keys(val['tokens']).length == 0) {
+      $('.additional_funding_summary').addClass('hidden');
+      return [ 'additional_funding_summary', '' ];
+    }
     var usd_value = val['usd_value'];
     var tokens = val['tokens'];
     var decimals = 3;
 
-    if (Object.keys(tokens).length == 0) {
-      $('.additional_funding_summary').addClass('hidden');
-      return [ 'additional_funding_summary', val ];
-    }
     var ui_elements = [];
 
     for (var token in tokens) {
@@ -934,7 +934,8 @@ var pull_bounty_from_api = function() {
       // is there a pending issue or not?
       $('.nonefound').css('display', 'block');
     }
-  }).fail(function() {
+  }).fail(function(result) {
+    console.log(result);
     _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
     $('#primary_view').css('display', 'none');
   }).always(function() {
