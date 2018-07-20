@@ -27,6 +27,10 @@ def try_to_link_address_to_profile(Profile, username, address):
     return False
 
 
+def backwards_func(apps, schema_editor):
+    pass
+
+
 def forwards_func(apps, schema_editor):
     Profile = apps.get_model('dashboard', 'Profile')
     print('bounty')
@@ -66,6 +70,6 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.RunPython(
-            forwards_func,
+            forwards_func, backwards_func,
         ),
     ]
