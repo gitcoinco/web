@@ -63,6 +63,9 @@ along with this program. If not,see
         color: #e83e8c !important;
         word-break: break-word !important;
       }
+      .alert {
+        top: 0 !important;
+      }
     </style>
     <div id='codedialog' class="white-light-bg modal">
       <div class="col-12 closebtn">
@@ -141,7 +144,7 @@ along with this program. If not,see
         </div>
       </div>
 
-      <div class="container-fluid p-5 bg-light">
+      <div class="container-fluid p-5">
         <p class="text-highlight-gc-purple h1">
           {% trans "Colors" %}
         </p>
@@ -313,12 +316,12 @@ along with this program. If not,see
       <div class="container-fluid p-5">
         <p class="h1">{% trans "Animations" %}</p>
         <div class="row pt-5 mb-3 animatedParent">
-          <div class="col d-flex flex-column align-items-center animated fadeInLeftShort go">
+          <div class="col d-flex flex-column align-items-center animated fadeInLeft go">
             <div class="mb-3 d-flex justify-content-center align-items-center">
               <img width="128" style="transform: rotateZ(90deg)" src="{% static "v2/images/regulus_square.png" %}">
             </div>
           </div>
-          <div class="col d-flex flex-column align-items-center animated fadeInRightShort go">
+          <div class="col d-flex flex-column align-items-center animated fadeInRight go">
             <div class="mb-3 d-flex justify-content-center align-items-center">
               <img width="128" style="transform: rotateZ(270deg)" src="{% static "v2/images/regulus_square.png" %}">
             </div>
@@ -353,13 +356,13 @@ along with this program. If not,see
         <div class="container-fluid header">
           {% include 'shared/minihero.html' with h1='shared/minihero.html' %}
         </div>
-        <p class="m-3">include 'shared/hero.html' with h1='shared/hero.html'</p>
+        <p class="m-3">include 'shared/hero.html'</p>
         <div class="container-fluid header">
-          {% include 'shared/hero.html' with h1='shared/hero.html' %}
+          {% include 'shared/hero.html' %}
         </div>
       </div>
 
-      <div class="container-fluid p-5 bg-light">
+      <div class="container-fluid p-5">
         <p class="h1">{% trans "Modal Dialog" %}</p>
         <div class="white-light-bg modal">
           <div class="col-12 closebtn">
@@ -371,6 +374,92 @@ along with this program. If not,see
             <h5 class="text-center font-title">{% trans "Modal Dialog" %}</h5>
           </div>
         </div>
+      </div>
+
+      <div class="container-fluid p-5 assets">
+        <p class="h1">{% trans "Vector Graphics" %}</p>
+        <img src="{% static "v2/images/quickstart-box.svg" %}"/>
+        <img src="{% static "v2/images/ethereum.svg" %}"/>
+        <img src="{% static "v2/images/metamask.svg" %}"/>
+        <img src="{% static "v2/images/truffle.svg" %}"/>
+        <img src="{% static "v2/images/refund.svg" %}"/>
+        <img src="{% static "v2/images/about/gitcoin_jobhunter.svg" %}"/>
+        <img src="{% static "v2/images/about/gitcoin_maintainer.svg" %}"/>
+        <img src="{% static "v2/images/vision/triangle.svg" %}"/>
+        <img src="{% static "v2/images/vision/gitcoin.svg" %}"/>
+        <img src="{% static "v2/images/vision/macro.svg" %}"/>
+        <img src="{% static "v2/images/vision/consensys.svg" %}"/>
+        <img src="{% static "v2/images/vision/market.svg" %}"/>
+        <img src="{% static "v2/images/plus.svg" %}"/>
+        <img src="{% static "v2/images/check.svg" %}"/>
+        <img src="{% static "v2/images/warning.svg" %}"/>
+        <img src="{% static "v2/images/info.svg" %}"/>
+        <img src="{% static "v2/images/ios/gitcoin.svg" %}"/>
+        <img src="{% static "v2/images/close.svg" %}"/>
+        <img src="{% static "v2/images/mission/value/collaborative.svg" %}"/>
+        <img src="{% static "v2/images/mission/value/humble.svg" %}"/>
+        <img src="{% static "v2/images/mission/value/love_hands.svg" %}"/>
+        <img src="{% static "v2/images/mission/value/falcon_2.svg" %}"/>
+        <img src="{% static "v2/images/mission/value/stress_reducing.svg" %}"/>
+        <img src="{% static "v2/images/mission/value/inclusive.svg" %}"/>
+        <img src="{% static "v2/images/mission/value/give_first.svg" %}"/>
+        <img src="{% static "v2/images/mission/value/empathetic.svg" %}"/>
+        <img src="{% static "v2/images/mission/want/rocket_man.svg" %}"/>
+        <img src="{% static "v2/images/mission/want/incentive.svg" %}"/>
+        <img src="{% static "v2/images/mission/want/falcon_1.svg" %}"/>
+        <img src="{% static "v2/images/mission/want/find_work.svg" %}"/>
+        <img src="{% static "v2/images/mission/interact/book.svg" %}"/>
+        <img src="{% static "v2/images/mission/interact/goal.svg" %}"/>
+        <img src="{% static "v2/images/mission/interact/people_care.svg" %}"/>
+        <img src="{% static "v2/images/mission/interact/scale.svg" %}"/>
+        <img src="{% static "v2/images/mission/interact/world.svg" %}"/>
+        <img src="{% static "v2/images/mission/interact/falcon_3.svg" %}"/>
+        <img src="{% static "v2/images/mission/interact/swiss_army.svg" %}"/>
+        <img src="{% static "v2/images/mission/interact/hammer.svg" %}"/>
+        <img src="{% static "v2/images/mission/interact/microscope.svg" %}"/>
+        <img src="{% static "v2/images/mission/interact/hear.svg" %}"/>
+        <img src="{% static "v2/images/mission/interact/head.svg" %}"/>
+        <img src="{% static "v2/images/check_green.svg" %}"/>
+        <img src="{% static "v2/images/results/completed_bounties.svg" %}"/>
+        <img src="{% static "v2/images/results/abandoned_bounties.svg" %}"/>
+        <img src="{% static "v2/images/results/calendar_icon.svg" %}"/>
+        <img src="{% static "v2/images/results/clock.svg" %}"/>
+        <img src="{% static "v2/images/results/hourly_rate_distribution.svg" %}"/>
+        <img src="{% static "v2/images/results/gitcoin_alumni.svg" %}"/>
+        <img src="{% static "v2/images/Lightbulb.svg" %}"/>
+        <img src="{% static "v2/images/social/social-icons.svg" %}"/>
+        <img src="{% static "v2/images/consensys.svg" %}"/>
+        <img src="{% static "v2/images/box.svg" %}"/>
+        <img src="{% static "v2/images/presskit/GitcoinLogoType.svg" %}"/>
+        <img src="{% static "v2/images/presskit/ZipFile.svg" %}"/>
+        <img src="{% static "v2/images/presskit/GitHubLogo.svg" %}"/>
+        <img src="{% static "v2/images/presskit/illustrations/divine.svg" %}"/>
+        <img src="{% static "v2/images/presskit/illustrations/prime.svg" %}"/>
+        <img src="{% static "v2/images/presskit/illustrations/regulus.svg" %}"/>
+        <img src="{% static "v2/images/presskit/illustrations/helmet.svg" %}"/>
+        <img src="{% static "v2/images/presskit/GitCoinLogo.svg" %}"/>
+        <img src="{% static "v2/images/presskit/usage/gitcoin_logo_restrictions_2.svg" %}"/>
+        <img src="{% static "v2/images/presskit/usage/gitcoin_logo_restrictions_3.svg" %}"/>
+        <img src="{% static "v2/images/presskit/usage/gitcoin_logo_restrictions_1.svg" %}"/>
+        <img src="{% static "v2/images/presskit/usage/gitcoin_logo_restrictions_4.svg" %}"/>
+        <img src="{% static "v2/images/presskit/usage/gitcoin_logo_restrictions_5.svg" %}"/>
+        <img src="{% static "v2/images/presskit/usage/gitcoin_logo_restrictions_6.svg" %}"/>
+        <img src="{% static "v2/images/check-green.svg" %}"/>
+        <img src="{% static "v2/images/quickstart-icons/design-icon.svg" %}"/>
+        <img src="{% static "v2/images/quickstart-icons/list-icon.svg" %}"/>
+        <img src="{% static "v2/images/quickstart-icons/bug-icon.svg" %}"/>
+        <img src="{% static "v2/images/quickstart-icons/newproduct-icon.svg" %}"/>
+        <img src="{% static "v2/images/quickstart-icons/other-icon.svg" %}"/>
+        <img src="{% static "v2/images/quickstart-icons/documentation-icon.svg" %}"/>
+        <img src="{% static "v2/images/quickstart-icons/feature-icon.svg" %}"/>
+        <img src="{% static "v2/images/quickstart-icons/upgrade-icon.svg" %}"/>
+        <img src="{% static "v2/images/quickstart-icons/review-icon.svg" %}"/>
+        <img src="{% static "v2/images/metamask-color.svg" %}"/>
+        <img src="{% static "v2/images/success.svg" %}"/>
+        <img src="{% static "v2/images/comment.svg" %}"/>
+        <img src="{% static "v2/images/rocket.svg" %}"/>
+        <img src="{% static "v2/images/gas.svg" %}"/>
+        <img src="{% static "v2/images/check-dark.svg" %}"/>
       </div>
 
       <div class="container-fluid p-5 assets">
@@ -610,8 +699,16 @@ along with this program. If not,see
         <img src="{% static "v2/images/social/periscope.png" %}"/>
       </div>
 
-      <div class="container-fluid p-5 bg-dark assets">
-        <p class="h1 text-light">{% trans "Static Assets" %}</p>
+      <div class="container-fluid p-5 assets">
+        <p class="h1">{% trans "Animated Static Assets" %}</p>
+        <img src="{% static "v2/images/loading.gif" %}"/>
+        <img src="{% static "v2/images/loading_v2.gif" %}"/>
+        <img src="{% static "v2/images/logo_med_hover.gif" %}"/>
+        <img class="bg-dark" src="{% static "v2/images/loading_white.gif" %}"/>
+      </div>
+
+      <div class="container-fluid p-5 assets">
+        <p class="h1">{% trans "Static Assets" %}</p>
         <img src="{% static "v2/images/tree/dark.png" %}"/>
         <img src="{% static "v2/images/helmet_emoji.png" %}"/>
         <img src="{% static "v2/images/plus.png" %}"/>
@@ -777,6 +874,9 @@ along with this program. If not,see
         <img src="{% static "v2/images/helmet_X.jpg" %}"/>
         <img src="{% static "v2/images/help/firehose.jpg" %}"/>
         <img src="{% static "v2/images/icon-msg-red-16.png" %}"/>
+
+        <img src="{% static "v2/images/tldr/insta-scale.gif" %}"/>
+        <img class="bg-dark" src="{% static "v2/images/gas_white.gif" %}"/>
       </div>
     </div>
 
