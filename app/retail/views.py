@@ -87,7 +87,9 @@ def index(request):
     }
     return TemplateResponse(request, 'index.html', context)
 
-def contributor_landing(request):
+
+def contributor_landing(request, tech_stack):
+
     slides = [
         ("Daniel", static("v2/images/testimonials/gitcoiners/daniel.jpeg"),
          _("When I found Gitcoin I was gladly surprised that it took one thing and did it well. \
@@ -201,6 +203,7 @@ def contributor_landing(request):
     available_bounties_worth = amount_usdt_open_work()
 
     context = {
+        'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else "Open Source Opportunities",
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'home',
@@ -210,7 +213,8 @@ def contributor_landing(request):
         'projects': projects,
         'gitcoin_description': gitcoin_description,
         'available_bounties_count': available_bounties_count,
-        'available_bounties_worth': available_bounties_worth
+        'available_bounties_worth': available_bounties_worth,
+        'tech_stack': tech_stack,
     }
 
     return TemplateResponse(request, 'contributor_landing.html', context)
@@ -912,7 +916,7 @@ def newtoken(request):
                 )
             new_token_request(obj)
             context['msg'] = str(_('Your token has been submitted and will be listed within 2 business days if it is accepted.'))
-    
+
     return TemplateResponse(request, 'newtoken.html', context)
 
 

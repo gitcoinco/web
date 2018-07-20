@@ -45,124 +45,79 @@
               </div>
             {% endif %}
           </div>
-        {% if not hidden %}
-        {% if profile.is_org %}
-          <div class="col-12 col-lg-4">
-            <div class="profile-header__stats profile-header__stats--contributor card mb-4">
-              <div class="card-header font-subheader">
-                {% trans "Organization" %}
-              </div>
-              <div class="card-body font-subheader">
-                <ul>
-                  <li><span class="highlight">{{ count_bounties_on_repo }}</span> {% trans "bounties" %}</li>
-                  <li><span class="highlight">{{ sum_eth_on_repos|floatformat:2 }}</span> {% trans "ETH" %}</li>
-                  {% if scoreboard_position_org %}
-                      <li><span class="highlight">#{{ scoreboard_position_org }}</span> {% trans "org" %}</li>
-                  {% endif %}
-                  <li class="works_with_list">
-                    {% if works_with_org|length != 0 %}
-                      <span class="font-body">( <i class="fa fa-code"></i> ) Contributors:</span>
-                      {% for profile, num_times in works_with_org.items %}
-                        <a href="{% url 'profile' profile %} ">
-                          <img src='{% if profile.avatar and profile.avatar.svg %}{{ profile.avatar.svg.url }}{% else %}/static/avatar/{{ profile }}{% endif %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
-                        </a>
-                      {% endfor %}
-                    {% endif %}
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        {% else %}
-          <div class="col-12 col-lg-4">
-            <div class="profile-header__stats profile-header__stats--contributor card mb-4">
-              <div class="card-header font-subheader">
-                {% trans "Contributor" %}
-              </div>
-              <div class="card-body font-subheader">
-                <ul>
-                  <li><span class="highlight">{{ count_bounties_completed }}</span> {% trans "bounties completed" %}</li>
-                  <li><span class="highlight">{{ sum_eth_collected|floatformat:2 }}</span> {% trans "ETH collected" %}</li>
-                  {% if no_times_been_removed %}
-                      <li> - {% trans "removed from" %} <span class="highlight">{{ no_times_been_removed }}</span> {% trans "bounties" %}</li>
-                  {% endif %}
-                  {% if scoreboard_position_contributor %}
-                      <li><span class="highlight">#{{ scoreboard_position_contributor }}</span> {% trans "contributor" %}</li>
-                  {% endif %}
-                  <li class="works_with_list">
-                    {% if works_with_collected|length != 0 %}
-                        <span class="font-body">( <i class="fa fa-code"></i> ) Contributes To:</span>
-                        {% if works_with_collected|length > 2 %}
-                        <br>
+          {% if not hidden %}
+            {% if profile.is_org %}
+              {% include 'profiles/organization.html' %}
+            {% else %}
+              <div class="col-12 col-lg-4">
+                <div class="profile-header__stats profile-header__stats--contributor card mb-4">
+                  <div class="card-header font-subheader">
+                    {% trans "Contributor" %}
+                  </div>
+                  <div class="card-body font-subheader">
+                    <ul>
+                      <li><span class="highlight">{{ count_bounties_completed }}</span> {% trans "bounties completed" %}</li>
+                      <li><span class="highlight">{{ sum_eth_collected|floatformat:2 }}</span> {% trans "ETH collected" %}</li>
+                      {% if no_times_been_removed %}
+                          <li> - {% trans "removed from" %} <span class="highlight">{{ no_times_been_removed }}</span> {% trans "bounties" %}</li>
+                      {% endif %}
+                      {% if scoreboard_position_contributor %}
+                          <li><span class="highlight">#{{ scoreboard_position_contributor }}</span> {% trans "contributor" %}</li>
+                      {% endif %}
+                      <li class="works_with_list">
+                        {% if works_with_collected|length != 0 %}
+                            <span class="font-body">( <i class="fa fa-code"></i> ) Contributes To:</span>
+                            {% if works_with_collected|length > 2 %}
+                            <br>
+                            {% endif %}
+                            {% for profile, num_times in works_with_collected.items %}
+                                <a href="{% url 'profile' profile %} ">
+                                  <img src='/static/avatar/{{ profile }}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
+                                </a>
+                            {% endfor %}
                         {% endif %}
-                        {% for profile, num_times in works_with_collected.items %}
-                            <a href="{% url 'profile' profile %} ">
-                              <img src='/static/avatar/{{ profile }}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
-                            </a>
-                        {% endfor %}
-                    {% endif %}
-                  </li>
-                </ul>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-          <div class="col-12 col-lg-4">
-            <div class="profile-header__stats profile-header__stats--funder card mb-4">
-              <div class="card-header font-subheader">
-                {% trans "Funder" %}
-              </div>
-              <div class="card-body font-subheader">
-                <ul>
-                  <li><span class="highlight">{{ funded_bounties_count }}</span> {% trans "bounties funded" %}</li>
-                  <li><span class="highlight">{{ sum_eth_funded|floatformat:2 }}</span> {% trans "ETH funded" %}</li>
-                  {% if scoreboard_position_funder %}
-                      <li><span class="highlight">#{{ scoreboard_position_funder }}</span> {% trans "funder" %}</li>
-                  {% endif %}
-                  <li class="works_with_list">
-                    {% if works_with_funded|length %}
-                        <span class="font-body">( <i class="fab fa-ethereum"></i> ) </i> {% trans "Funds" %}:</span>
-                        {% if works_with_funded|length > 2 %}
-                        <br>
+              <div class="col-12 col-lg-4">
+                <div class="profile-header__stats profile-header__stats--funder card mb-4">
+                  <div class="card-header font-subheader">
+                    {% trans "Funder" %}
+                  </div>
+                  <div class="card-body font-subheader">
+                    <ul>
+                      <li><span class="highlight">{{ funded_bounties_count }}</span> {% trans "bounties funded" %}</li>
+                      <li><span class="highlight">{{ sum_eth_funded|floatformat:2 }}</span> {% trans "ETH funded" %}</li>
+                      {% if scoreboard_position_funder %}
+                          <li><span class="highlight">#{{ scoreboard_position_funder }}</span> {% trans "funder" %}</li>
+                      {% endif %}
+                      <li class="works_with_list">
+                        {% if works_with_funded|length %}
+                            <span class="font-body">( <i class="fab fa-ethereum"></i> ) </i> {% trans "Funds" %}:</span>
+                            {% if works_with_funded|length > 2 %}
+                            <br>
+                            {% endif %}
+                            {% for profile, num_times in works_with_funded.items %}
+                              <a href="{% url 'profile' profile %} ">
+                                <img src='/static/avatar/{{ profile }}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
+                              </a>
+                            {% endfor %}
                         {% endif %}
-                        {% for profile, num_times in works_with_funded.items %}
-                          <a href="{% url 'profile' profile %} ">
-                            <img src='/static/avatar/{{ profile }}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
-                          </a>
-                        {% endfor %}
-                    {% endif %}
-                  </li>
-                </ul>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        {% endif %}
-        {% endif %}
-
+            {% endif %}
+          {% endif %}
         </div>
       </div>
     </div>
     <div class="container">
     {% if hidden %}
-      <div class="row">
-        <div class="col pt-4">
-          <h2>{% trans "Four oh Four" %}</h2>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col pb-4">
-          <h5>{% trans "This profile is not available." %}</h5>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col pb-4">
-          <p>{% trans "This profile is either doesn't exist, is not a member of Gitcoin, or the user has chosen not to make their profile available." %}</p>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col pb-4">
-          <p><a href="https://github.com/{{profile.handle}}">{% trans "Try looking for their profile on Github" %}</a> or <a href="{% url 'slack' %}">{% trans "Contact us on Slack" %}</a></p>
-        </div>
-      </div>
+      {% include 'profiles/hidden.html' %}
     {% else %}
       <div class="row">
         <div class="col py-4">
@@ -387,107 +342,6 @@
     <script src="{% static "v2/js/shared.js" %}"></script>
 
     <script type="text/javascript">
-      function renderBountyRowsFromResults(results) {
-        var html = '';
-        var tmpl = $.templates('#result');
-
-        if (results.length == 0) {
-          return false;
-        }
-
-        // Reused code from explorer/dashboard. Should be moved to some shared js.
-        for (var i = 0; i < results.length; i++) {
-            // setup
-            var result = results[i];
-            var related_token_details = tokenAddressToDetails(result['token_address']);
-            var decimals = 18;
-
-            if (related_token_details && related_token_details.decimals) {
-              decimals = related_token_details.decimals;
-            }
-
-            var divisor = Math.pow(10, decimals);
-
-            result['rounded_amount'] = Math.round(result['value_in_token'] / divisor * 100) / 100;
-            var is_expired = new Date(result['expires_date']) < new Date() && !result['is_open'];
-
-            result['action'] = result['url'];
-            result['title'] = result['title'] ? result['title'] : result['github_url'];
-
-            var timeLeft = timeDifference(new Date(result['expires_date']), new Date(), true);
-
-            result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
-
-            if (result['status'] === 'done')
-              result['p'] += 'Done';
-            if (result['fulfillment_accepted_on']) {
-              result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_accepted_on']), false, 60 * 60);
-            } else if (result['status'] === 'started') {
-              result['p'] += 'Started';
-              result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_started_on']), false, 60 * 60);
-            } else if (result['status'] === 'submitted') {
-              result['p'] += 'Submitted';
-              if (result['fulfillment_submitted_on']) {
-                result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_submitted_on']), false, 60 * 60);
-              }
-            } else if (result['status'] == 'cancelled') {
-              result['p'] += 'Cancelled';
-              if (result['canceled_on']) {
-                result['p'] += ' ' + timeDifference(new Date(), new Date(result['canceled_on']), false, 60 * 60);
-              }
-            } else if (is_expired) {
-              var time_ago = timeDifference(new Date(), new Date(result['expires_date']), true);
-
-              result['p'] += ('Expired ' + time_ago + ' ago');
-            } else {
-              var opened_when = timeDifference(new Date(), new Date(result['web3_created']), true);
-
-              result['p'] += ('Opened ' + opened_when + ' ago, Expires in ' + timeLeft);
-            }
-
-            result['hidden'] = (i > 4) ? true : false;
-
-            html += tmpl.render(result);
-          }
-
-          return html;
-      }
-
-      function fetchBountiesAndAddToList(params, target) {
-        $.get('/api/v0.1/bounties/?' + params, function(results) {
-          results = sanitizeAPIResults(results);
-
-          var html = renderBountyRowsFromResults(results);
-
-          if (html) {
-            $(target).prepend(html);
-            $(target).removeClass('profile-bounties--loading');
-
-            if (results.length > 5) {
-              var $button = $(target + ' .profile-bounties__btn-show-all');
-              $button.removeClass('hidden');
-              $button.on('click', function(event) {
-                $(this).remove();
-                $(target + ' .bounty_row').removeClass('bounty_row--hidden');
-              });
-            }
-
-            // Reused code from explorer/dashboard. Should be moved to some shared js.
-            $('div.bounty_row.result').each(function() {
-              var href = $(this).attr('href');
-
-              if (typeof $(this).changeElementType !== 'undefined') {
-                $(this).changeElementType('a'); // hack so that users can right click on the element
-              }
-
-              $(this).attr('href', href);
-            });
-          } else {
-            console.log($(target).parent().closest('.container').addClass('hidden'));
-          }
-        });
-      }
-
       $(document).ready(function() {
         if ($('.profile-bounties--tips .bounty_row--hidden').length > 0) {
           var $button = $('.profile-bounties--tips .profile-bounties__btn-show-all');
