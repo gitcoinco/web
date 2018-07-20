@@ -1,46 +1,67 @@
-{% load static %}
+{% load i18n static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Kudos Detail</title>
-    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link href='https://maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css' rel='stylesheet' type='text/css'>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards_pic.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
   </head>
-  <body>
-    {% include 'shared/kudos_banner.html' %}
-    {% include 'shared/kudos_searchbar.html' %}
-  	<div class="container" align="center" id="kudos-detail-body">
-      <div class="row">
-        <div class="col-3"></div>
-        <div class="col-3">
+  <body class="{{ active }} bg-light">
+    <header class="container-fluid header">
+      {% include 'shared/nav.html' %}
+      {% include 'shared/kudos_banner.html' %}
+      <div class="container pb-5">
+        {% include 'shared/kudos_searchbar.html' %}
+      </div>
+    </header>
+
+    <div class="container py-5">
+      <a href="/kudos/marketplace">&lt; {% trans "Kudos Marketplace" %}</a>
+    </div>
+    
+  	<section class="container my-5 pb-5">
+      <div class="row justify-content-around">
+        <div class="col-md-5">
           <img src="{% static kudos.image %}" alt="{{ kudos.name }}">
         </div>
-        <div class="col-4">
-          <h3 class="text-justify">{{ kudos.name }}</h3>
-          <br>
-          <p class="text-justify">{{ kudos.description }}</p>
-          <p class="text-justify">Rarity: {{ kudos.rarity }}</p>
-          <p class="text-justify">Lister: {{ kudos.lister }}</p>
-          <div class="container">
-            <div class="row justify-content-start">
-              <button type="button" class="btn btn-primary">Get Kudos</button>
+        <div class="col-md-5">
+          <h3 class="display-4">{{ kudos.name }}</h3>
+          <div class="mt-4 font-bigger-1 font-weight-300">
+            <p class="">{{ kudos.description }}</p>
+            <p>Rarity: {{ kudos.rarity }}</p>
+            <p>Lister: <a href="" class="btn-link">{{ kudos.lister }}</a></p>
+          </div>
+          <div class="row justify-content-start">
+            <div class="col-12">
+              <button type="button" class="btn btn-gc-blue">Get Kudos</button>
             </div>
           </div>
           <hr>
-          <p class="text-justify">These people have them</p>
-          <div class="container">
-            <div class="row">
-              <img src="https://robohash.org/1" style="max-height: 50px;">
-              <img src="https://robohash.org/2" style="max-height: 50px;">
-              <img src="https://robohash.org/3" style="max-height: 50px;">
+          <div class="row">
+            <div class="col-12">
+              <p class="text-justify">These people have them</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12">
+              <img src="https://robohash.org/1" width="50" class="rounded-circle border">
+              <img src="https://robohash.org/2" width="50" class="rounded-circle border">
+              <img src="https://robohash.org/3" width="50" class="rounded-circle border">
             </div>
           </div>
         </div>
-          <div class="col-2"></div>
       </div>
-  	</div>
-    <div class="container my-4" align="center" id="kudos-footer">
-      <h3>Footer</h3>
-    </div>
+  	</section>
+    
+    {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' with slim=1 %}
+    <script src="{% static "v2/js/popper.min.js" %}"></script>
+    <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
+    <script>
+      var bootstrapTooltip = $.fn.tooltip.noConflict()
+    </script>
+    {% include 'shared/rollbar.html' %}
+    {% include 'shared/messages.html' %}
   </body>
 </html>
