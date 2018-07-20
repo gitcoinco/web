@@ -27,7 +27,7 @@ from django.http import HttpResponse, JsonResponse
 from django.template import loader
 
 import requests
-from github.utils import get_user
+from git.utils import get_user
 from PIL import Image, ImageOps
 from svgutils.compose import SVG, Figure, Line
 

@@ -64,3 +64,4 @@ PyYAML==4.2b4
 django-crispy-forms==1.7.2
 ecdsa
 pysha3
+pygithub==1.40

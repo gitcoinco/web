@@ -31,7 +31,7 @@ from dashboard.notifications import (
     maybe_notify_user_escalated_github, maybe_warn_user_removed_github,
 )
 from dashboard.utils import record_user_action_on_interest
-from github.utils import get_interested_actions
+from git.utils import get_interested_actions
 from marketing.mails import bounty_startwork_expire_warning, bounty_startwork_expired
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -117,10 +117,10 @@ class Command(BaseCommand):
 
                             # commenting on the GH issue
                             maybe_notify_user_escalated_github(bounty, interest.profile.handle, last_heard_from_user_days)
-                            
+
                             # commenting in slack
                             maybe_notify_bounty_user_escalated_to_slack(bounty, interest.profile.handle, last_heard_from_user_days)
-                            
+
                             # send email
                             bounty_startwork_expired(interest.profile.email, bounty, interest, last_heard_from_user_days)
 
@@ -129,13 +129,13 @@ class Command(BaseCommand):
                             record_user_action_on_interest(interest, 'bounty_abandonment_warning', last_heard_from_user_days)
 
                             print(f'executing should_warn_user for {interest.profile} / {bounty.github_url} ')
-                            
+
                             # commenting on the GH issue
                             maybe_warn_user_removed_github(bounty, interest.profile.handle, last_heard_from_user_days)
-                            
+
                             # commenting in slack
                             maybe_notify_bounty_user_warned_removed_to_slack(bounty, interest.profile.handle, last_heard_from_user_days)
-                            
+
                             # send email
                             bounty_startwork_expire_warning(interest.profile.email, bounty, interest, last_heard_from_user_days)
 

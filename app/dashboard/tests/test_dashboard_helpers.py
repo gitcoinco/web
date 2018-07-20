@@ -47,26 +47,6 @@ class DashboardHelpersTest(TestCase):
         request = self.factory.get('/sync/get_amount', params)
         assert amount(request).content == b'{"eth": 5.0, "usdt": 10.0}'
 
-    def test_issue_details(self):
-        """Test the dashboard helper description method."""
-        sample_url = 'https://github.com/gitcoinco/web/issues/353'
-        params = {'url': sample_url}
-        with requests_mock.Mocker() as m:
-            m.get('https://api.github.com/repos/gitcoinco/web/issues/353',
-                  text='{ "title": "Increase Code Coverage by 4%",'
-                       '"body" : "This bounty will be paid out to anyone '
-                                 'who meaningfully increases the code coverage '
-                                 'of the repository by 4%."}')
-            m.get('https://github.com/gitcoinco/web',
-                  text='<span class="lang">hello</span><span class="lang">world</span>')
-            request = self.factory.get('/sync/get_issue_details', params)
-            response = json.loads(issue_details(request).content)
-            assert response['description'] == "This bounty will be paid out to anyone who " \
-                                              "meaningfully increases the code coverage of " \
-                                              "the repository by 4%."
-            assert response['keywords'] == ["web", "gitcoinco", "hello", "world"]
-            assert response['title'] == "Increase Code Coverage by 4%"
-
     def test_normalize_url(self):
         """Test the dashboard helper normalize_url method."""
         assert normalize_url('https://gitcoin.co/') == 'https://gitcoin.co'
