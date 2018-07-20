@@ -71,8 +71,9 @@ urlpatterns = [
     url(r'^universe/?', external_bounties.views.external_bounties_index, name="universe_index"),
     re_path(r'^onboard/(?P<flow>\w+)/$', dashboard.views.onboard, name='onboard'),
     re_path(r'^onboard/contributor/avatar/?$', dashboard.views.onboard_avatar, name='onboard_avatar'),
-    url(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
-    url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
+    re_path(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
+    re_path(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
+    re_path(r'^organizations/?', dashboard.views.organizations, name='organization'),
 
     # action URLs
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),

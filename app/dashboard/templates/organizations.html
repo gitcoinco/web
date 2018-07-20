@@ -1,0 +1,80 @@
+{% comment %}
+  Copyright (C) 2017 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% include 'shared/head.html' %}
+  <head>
+    <style>
+      .header {
+        color: #fff;
+      }
+
+      .logo {
+        text-align: center;
+      }
+
+      .logo img {
+        height: 7rem;
+        margin-top: 1.4rem;
+        border: 1px solid #cbcbcb;
+        padding: 1rem;
+      }
+
+      .content {
+        display: inline;
+      }
+
+      .org-name {
+        font-size: 1.1rem;
+      }
+    </style>
+  </head>
+  <body class="{{ active }}">
+    {% include 'shared/tag_manager_2.html' %}
+    <body class="interior {{ active }}">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header profile-header dash">
+      {% include 'shared/nav.html' %}
+      <div class="container text-center pt-5 pb-5">
+        <h1>{{ title }}</h1>
+        <p class="font-title mt-4">{{ caption }}</p>
+      </div>
+    </div>
+    <div class="container my-5">
+      <div class="row">
+        {% for org in orgs %}
+          <div class="col-12 col-md-6 row">
+            <div class="logo col-12 col-lg-4">
+              <img src="{% static org.logo %}" alt="{{ org.name }} logo">
+            </div>
+            <div class="content col-12 col-lg-8">
+              <p class="org-name">{{ org.name }}</p>
+              <p class="font-body mb-1">{{ org.about }}</p>
+              <a class="font-body" href="/profile/{{ org.profile }} ">View Bounties ({{ org.bounty_count }})</a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/rollbar.html' %}
+    {% include 'shared/messages.html' %}
+  </body>
+</head>

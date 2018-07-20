@@ -472,6 +472,32 @@ def dashboard(request):
     }
     return TemplateResponse(request, 'dashboard.html', params)
 
+@staff_member_required
+def organizations(request):
+    """Handle displaying the organizations."""
+
+    orgs = [{
+        'name': 'Metamask',
+        'about': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sollicitudin sapien vitae sapien porttitor euismod. Pellentesque fermentum ligula in risus vulputate, in auctor leo tristique. Fusce sollicitudin enim aliquam nunc',
+        'logo': '/v2/images/project_logos/metamask.png',
+        'profile': 'metamask',
+        'bounty_count': 2,
+    }, {
+        'name': 'Angur',
+        'about': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sollicitudin sapien vitae sapien porttitor euismod. Pellentesque fermentum ligula in risus vulputate, in auctor leo tristique. Fusce sollicitudin enim aliquam nunc',
+        'logo': '/v2/images/project_logos/augur.png',
+        'profile': 'augur',
+        'bounty_count': 4,
+    }]
+
+    params = {
+        'active': 'organizations',
+        'title': _('Organizations'),
+        'caption': _('Inspiring Projects that are Pushing Open Source Forward'),
+        'orgs': orgs,
+    }
+    return TemplateResponse(request, 'organizations.html', params)
+
 
 def accept_bounty(request):
     """Process the bounty.
