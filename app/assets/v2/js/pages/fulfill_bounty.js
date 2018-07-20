@@ -1,18 +1,18 @@
 /* eslint-disable no-console */
 window.onload = function() {
 
-    // Check Radio-box
-    $(".rating input:radio").attr("checked", false);
+  // Check Radio-box
+  $('.rating input:radio').attr('checked', false);
 
-    $('.rating input').click(function () {
-        $(".rating span").removeClass('checked');
-        $(this).parent().addClass('checked');
+  $('.rating input').click(function() {
+    $('.rating span').removeClass('checked');
+    $(this).parent().addClass('checked');
+  });
+
+  $('input:radio').change(
+    function() {
+      var userRating = this.value;
     });
-
-    $('input:radio').change(
-      function(){
-        var userRating = this.value;
-    }); 
 
   // a little time for web3 injection
   setTimeout(function() {
