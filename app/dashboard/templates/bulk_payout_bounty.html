@@ -1,19 +1,18 @@
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
 <!DOCTYPE html>
@@ -23,7 +22,7 @@
     {% include 'shared/cards.html' %}
   </head>
 
-  <body class="interior {{active}}">
+  <body class="interior {{ active }}">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
       {% include 'shared/nav.html' %}
@@ -42,7 +41,7 @@
           <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
             <h3>{% trans "Payment(s) Sent" %}</h3>
             {% include 'svgs/success.svg' %}
-            <a class="button button--primary mt-3 w-75" href="{{bounty.action_urls.accept}}" > 
+            <a class="button button--primary mt-3 w-75" href="{{ bounty.action_urls.accept }}" >
                 {% trans "Basic Payout" %}
                 <span>
                 {% trans "Accept one of the submissions for this bounty" %}
@@ -61,19 +60,19 @@
               <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
                 <div class="w-100" style="text-align: center;">
                   <h3>{% trans "Advanced Payout" %}</h3>
-                  <p><a href="{{action_urls.accept}}">Switch to Basic Payout</a></p>
+                  <p><a href="{{ action_urls.accept }}">{% trans "Switch to Basic Payout" %}</a></p>
                 </div>
                 <div class="w-100">
                   <label for=issueURL>{% trans "Issue URL:" %}</label>
-                  <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input" type="text" placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" disabled="" />
+                  <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input" type="text" placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{% endif %}" disabled/>
                 </div>
                 <div class="w-100 mt-2">
                   <label for=amount>{% trans "Amount:" %}</label>
-                  <input name='amount' id="amount" class="w-20 gc-round-text-input" type="number" placeholder="amount" value="{{bounty.value_true}}" disabled="disabled" />
-                  <input type="hidden" id="standard_bounties_id" value="{{bounty.standard_bounties_id}}">
-                  <input type="hidden" id="token_address" value="{{bounty.token_address}}">
-                  <input type="hidden" id="original_amount" value="{{bounty.value_true}}">
-                  <span id="token_name">{{bounty.token_name}}</span>
+                  <input name='amount' id="amount" class="w-20 gc-round-text-input" type="number" placeholder="amount" value="{{ bounty.value_true }}" disabled/>
+                  <input type="hidden" id="standard_bounties_id" value="{{ bounty.standard_bounties_id }}">
+                  <input type="hidden" id="token_address" value="{{ bounty.token_address }}">
+                  <input type="hidden" id="original_amount" value="{{ bounty.value_true }}">
+                  <span id="token_name">{{ bounty.token_name }}</span>
                 </div>
                   <div class="w-100 mt-2 terms_container">
                     <input name='close_bounty' id='close_bounty' type="checkbox" value=1 checked="checked" />
@@ -86,21 +85,21 @@
                       {% include 'shared/bulk_payout_form.html' %}
                     </div>
                     <div class="mt-2" id="trans_preview">
-                      <h5>{% trans 'Payout Preview'%}</h5>
-                      <p class="mb-0">{% trans 'Refunded'%}: <span id="total_returned">{{bounty.value_true}} {{bounty.token_name}}</span></p>
-                      <p class="mb-0">{% trans 'Paid'%}: -<span id="total_cost"></span></p>
-                      <p class="mb-0">{% trans 'Net'%}: <span id="total_net"></span></p>
-                      <p class="mt-1 mb-0">{% trans 'Transactions:'%}</p>
+                      <h5>{% trans 'Payout Preview' %}</h5>
+                      <p class="mb-0">{% trans 'Refunded' %}: <span id="total_returned">{{ bounty.value_true }} {{ bounty.token_name }}</span></p>
+                      <p class="mb-0">{% trans 'Paid' %}: -<span id="total_cost"></span></p>
+                      <p class="mb-0">{% trans 'Net' %}: <span id="total_net"></span></p>
+                      <p class="mt-1 mb-0">{% trans 'Transactions:' %}</p>
                       <table id="transaction_registry">
                         <tr>
                           <td>
                             #
                           </td>
                           <td>
-                            {% trans 'Amount'%}
+                            {% trans 'Amount' %}
                           </td>
                           <td>
-                            {% trans 'Reason'%}
+                            {% trans 'Reason' %}
                           </td>
                         </tr>
                       </table>
@@ -131,12 +130,12 @@
         width: 100%;
       }
       #transaction_registry tr td{
-        padding: 10px; 
+        padding: 10px;
         border: #333 solid 1px;
       }
       #trans_preview{
         padding: 5px;
-        border-radius: 3px; 
+        border-radius: 3px;
         background-color: #fafafa;
         position: absolute;
         top: 5rem;
@@ -172,7 +171,7 @@
 
 
       tr div{
-        border-radius: 3px; 
+        border-radius: 3px;
         padding: 5px;
       }
       .error{

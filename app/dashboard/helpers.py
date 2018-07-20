@@ -493,10 +493,10 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 for interest in latest_old_bounty.interested.all():
                     new_bounty.interested.add(interest)
 
-                # pull the activities off the last old bounty 
+                # pull the activities off the last old bounty
                 for activity in latest_old_bounty.activities.all():
                     new_bounty.activities.add(activity)
-                
+
             # set cancel date of this bounty
             canceled_on = latest_old_bounty.canceled_on if latest_old_bounty and latest_old_bounty.canceled_on else None
             if not canceled_on and new_bounty.status == 'cancelled':
