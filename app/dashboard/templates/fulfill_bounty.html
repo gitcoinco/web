@@ -54,8 +54,8 @@
                     <label class="form__label" for="issueURL">{% trans "Issue URL" %}</label>
                     <input required name='issueURL' id="issueURL" class="form__input" type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" />
                   </div>
-                  <input name='githubUsername' id='githubUsername' class="form__input" type="hidden" placeholder="@you (optional)" value="{% if github_handle %}{{ github_handle }}{% else %}{{githubUsername}}{% endif %}" />
-                  <input name='notificationEmail' id='notificationEmail'  class="form__input" type="hidden" value="{% if from_email %}{{ from_email }}{% elif email %}{{ email }}{% else %}{{ notificationEmail }}{% endif %}" />
+                  <input name="githubUsername" id="githubUsername" class="form__input" type="hidden" placeholder="@{% trans "you (optional)" %}" value="{% if github_handle %}{{ github_handle }}{% else %}{{ githubUsername }}{% endif %}" />
+                  <input name="notificationEmail" id="notificationEmail"  class="form__input" type="hidden" value="{% if from_email %}{{ from_email }}{% elif email %}{{ email }}{% else %}{{ notificationEmail }}{% endif %}" />
 
                   {% include 'shared/github_link.html' %}
                   {% include 'shared/hours_worked.html' %}
