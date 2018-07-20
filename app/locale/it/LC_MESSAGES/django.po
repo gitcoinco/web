@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-11 17:21+0000\n"
+"POT-Creation-Date: 2018-07-20 19:31+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -42,47 +42,114 @@ msgstr "italiano"
 msgid "Korean"
 msgstr "coreano"
 
-#: dashboard/models.py:176
+#: app/settings.py:146
+msgid "Polish"
+msgstr "polacco"
+
+#: app/settings.py:147
+msgid "Simplified Chinese"
+msgstr "Cinese semplificato"
+
+#: app/settings.py:148
+#, fuzzy
+#| msgid "optional"
+msgid "Traditional Chinese"
+msgstr "Cinese tradizionale"
+
+#: dashboard/gas_views.py:59
+msgid "Live Gas Tool"
+msgstr "Strumento di gas dal vivo"
+
+#: dashboard/gas_views.py:60
+msgid "See the Live Network Conditions for the Ethereum Network"
+msgstr "Vedi le condizioni della rete in tempo reale per la rete Ethereum"
+
+#: dashboard/gas_views.py:75
+msgid "Gas Intro"
+msgstr "Intro di gas"
+
+#: dashboard/gas_views.py:76
+msgid "Intro to Web3 / Gas"
+msgstr "Introduzione a Web3 / Gas"
+
+#: dashboard/gas_views.py:85
+msgid "Gas FAQ"
+msgstr "Domande frequenti sul gas"
+
+#: dashboard/gas_views.py:86
+msgid "FAQ about Gas"
+msgstr "FAQ su Gas"
+
+#: dashboard/gas_views.py:96
+#, fuzzy
+#| msgid "Faucet Request"
+msgid "Gas Faucet List"
+msgstr "Elenco dei rubinetti del gas"
+
+#: dashboard/gas_views.py:97
+#, fuzzy
+#| msgid "Gitcoin Faucet"
+msgid "List of Gas Faucets"
+msgstr "Elenco dei rubinetti gas"
+
+#: dashboard/gas_views.py:145
+msgid "Gas Estimator"
+msgstr "Stimatore di gas"
+
+#: dashboard/gas_views.py:146
+msgid "See what popular Gitcoin methods cost at different Gas Prices"
+msgstr ""
+"Scopri quali sono i metodi Gitcoin più popolari a diversi prezzi del gas"
+
+#: dashboard/gas_views.py:174 retail/templates/gas_history.html:71
+msgid "Gas History"
+msgstr "Storia del gas"
+
+#: dashboard/gas_views.py:175
+msgid "View the history of ethereum network gas prices"
+msgstr "Visualizza la cronologia dei prezzi del gas della rete ethereum"
+
+#: dashboard/models.py:174
 msgid "Whether the bounty is still open for fulfillments."
 msgstr "Se la taglia è ancora aperta per gli adempimenti."
 
-#: dashboard/models.py:181
+#: dashboard/models.py:179
 msgid "Whether this bounty is the most current revision one or not"
 msgstr "Se questa taglia è la versione più recente o meno"
 
-#: dashboard/models.py:192
+#: dashboard/models.py:190
 msgid "Whether the bounty has been done"
 msgstr "Se la taglia è stata fatta"
 
-#: dashboard/models.py:214
+#: dashboard/models.py:212
 msgid "Admin override to hide the bounty from the system"
 msgstr ""
 "L'amministratore esegue l'override per nascondere la taglia dal sistema"
 
-#: dashboard/models.py:217
+#: dashboard/models.py:215
 msgid "Admin override to suspend work auto approvals"
 msgstr ""
 "L'amministratore ha la precedenza per sospendere l'approvazione automatica "
 "del lavoro"
 
-#: dashboard/models.py:220
+#: dashboard/models.py:218
 msgid "Admin override to mark as remarketing ready"
 msgstr ""
 "L'amministratore ignora per contrassegnare come pronto per il remarketing"
 
-#: dashboard/models.py:1686 dashboard/templates/shared/bounty_def.html:24
-#: dashboard/views.py:665 dashboard/views.py:956
+#: dashboard/models.py:1721 dashboard/templates/shared/bounty_def.html:24
+#: dashboard/views.py:803 dashboard/views.py:1284
 #: retail/templates/save_search.html:29
 msgid "Be the first to know about new funded issues."
 msgstr "Puoi essere il primo a conoscere le nuove questioni finanziate."
 
-#: dashboard/models.py:1698
+#: dashboard/models.py:1733
 #, fuzzy
 #| msgid "None available"
 msgid "No data available."
 msgstr "Nessun dato disponibile."
 
-#: dashboard/models.py:1717
+#: dashboard/models.py:1752
 #, fuzzy
 #| msgid "Created By Me"
 msgid "By Created Date"
@@ -332,6 +399,7 @@ msgid "Description"
 msgstr "Descrizione"
 
 #: dashboard/templates/bounty_details.html:132
+#: dashboard/templates/profiles/organization.html:32
 msgid "Contributors"
 msgstr "Contributori"
 
@@ -359,8 +427,8 @@ msgstr "Tutte le attività"
 
 #: dashboard/templates/bounty_details.html:156
 #: dashboard/templates/bounty_details.html:164
-#: dashboard/templates/profile_details.html:112
-#: retail/templates/index.html:170 retail/templates/shared/nav.html:72
+#: dashboard/templates/profiles/profile.html:87
+#: retail/templates/index.html:170 retail/templates/shared/nav.html:75
 msgid "Funder"
 msgstr "Funder"
 
@@ -381,6 +449,108 @@ msgstr "Indirizzo ETH"
 #: dashboard/templates/bounty_details.html:252
 msgid "Submission Id"
 msgstr "ID di presentazione"
+
+#: dashboard/templates/bulk_payout_bounty.html:42
+msgid "Payment(s) Sent"
+msgstr "Pagamento / i inviato"
+
+#: dashboard/templates/bulk_payout_bounty.html:45
+#: dashboard/templates/process_bounty.html:49
+msgid "Basic Payout"
+msgstr "Pagamento base"
+
+#: dashboard/templates/bulk_payout_bounty.html:47
+msgid "Accept one of the submissions for this bounty"
+msgstr "Accetta uno dei contributi per questa taglia"
+
+#: dashboard/templates/bulk_payout_bounty.html:62
+#, fuzzy
+#| msgid "Advanced"
+msgid "Advanced Payout"
+msgstr "Pagamento avanzato"
+
+#: dashboard/templates/bulk_payout_bounty.html:63
+msgid "Switch to Basic Payout"
+msgstr "Passa al pagamento di base"
+
+#: dashboard/templates/bulk_payout_bounty.html:66
+#: dashboard/templates/process_bounty.html:55
+msgid "Issue URL:"
+msgstr "URL del problema:"
+
+#: dashboard/templates/bulk_payout_bounty.html:70
+#, fuzzy
+#| msgid "Amount"
+msgid "Amount:"
+msgstr "Quantità:"
+
+#: dashboard/templates/bulk_payout_bounty.html:79
+msgid "Return the bounty stake to me, thereby closing the bounty."
+msgstr "Restituiscimi il palo della taglia, chiudendo così il bottino."
+
+#: dashboard/templates/bulk_payout_bounty.html:82 dashboard/views.py:526
+msgid "Payout"
+msgstr "payout"
+
+#: dashboard/templates/bulk_payout_bounty.html:88
+msgid "Payout Preview"
+msgstr "Anteprima pagamento"
+
+#: dashboard/templates/bulk_payout_bounty.html:89
+#, fuzzy
+#| msgid "Funder"
+msgid "Refunded"
+msgstr "rimborsato"
+
+#: dashboard/templates/bulk_payout_bounty.html:90
+#, fuzzy
+#| msgid "Get Paid"
+msgid "Paid"
+msgstr "Pagato"
+
+#: dashboard/templates/bulk_payout_bounty.html:91
+#, fuzzy
+#| msgid "Next"
+msgid "Net"
+msgstr "Netto"
+
+#: dashboard/templates/bulk_payout_bounty.html:92
+#, fuzzy
+#| msgid "Transaction Failed"
+msgid "Transactions:"
+msgstr "Le operazioni:"
+
+#: dashboard/templates/bulk_payout_bounty.html:99
+#: dashboard/templates/shared/pricing.html:28
+#: retail/templates/shared/bulk_payout_form.html:28
+msgid "Amount"
+msgstr "Quantità"
+
+#: dashboard/templates/bulk_payout_bounty.html:102
+msgid "Reason"
+msgstr "Ragionare"
+
+#: dashboard/templates/bulk_payout_bounty.html:114
+#: dashboard/templates/fulfill_bounty.html:68
+#: dashboard/templates/kill_bounty.html:65
+#: dashboard/templates/process_bounty.html:70
+#, fuzzy, python-format
+#| msgid ""
+#| "I have read, understand, and agree to, the <a href=\"%(termsurl)s\" "
+#| "target=\"_blank\" rel=\"noopener noreferrer\">Terms of Service</a>:"
+msgid ""
+"I have read, understand, and agree to, the <a href=\"%(termsurl)s\" "
+"target=\"_blank\" rel=\"noopener noreferrer\">Terms of Service</a>."
+msgstr ""
+"Ho letto, compreso e accettato i <a href=\"%(termsurl)s\" target=\"_blank\" "
+"rel=\"noopener noreferrer\"> Termini di servizio </a>."
+
+#: dashboard/templates/bulk_payout_bounty.html:118
+#: dashboard/templates/payout_bounty.html:48
+#, fuzzy
+#| msgid "Product Demo: Post a Bounty"
+msgid "Payout Bounty"
+msgstr "Bonus di pagamento"
 
 #: dashboard/templates/dashboard.html:61
 msgid "Please try another query"
@@ -723,7 +893,7 @@ msgstr "Avanzato (7+ ​​anni di esperienza)"
 #: dashboard/templates/fulfill_bounty.html:48
 #: dashboard/templates/fulfill_bounty.html:78
 #: dashboard/templates/shared/bounty_nav.html:41
-#: dashboard/templates/shared/no_issue_error.html:70 dashboard/views.py:734
+#: dashboard/templates/shared/no_issue_error.html:87 dashboard/views.py:580
 #: retail/templates/how_it_works_contributor.html:82
 msgid "Submit Work"
 msgstr "Invia lavoro"
@@ -732,20 +902,6 @@ msgstr "Invia lavoro"
 #: dashboard/templates/kill_bounty.html:55
 msgid "Issue URL"
 msgstr "Emettere URL"
-
-#: dashboard/templates/fulfill_bounty.html:68
-#: dashboard/templates/kill_bounty.html:65
-#: dashboard/templates/process_bounty.html:69
-#, fuzzy, python-format
-#| msgid ""
-#| "I have read, understand, and agree to, the <a href=\"%(termsurl)s\" "
-#| "target=\"_blank\" rel=\"noopener noreferrer\">Terms of Service</a>:"
-msgid ""
-"I have read, understand, and agree to, the <a href=\"%(termsurl)s\" "
-"target=\"_blank\" rel=\"noopener noreferrer\">Terms of Service</a>."
-msgstr ""
-"Ho letto, compreso e accettato i <a href=\"%(termsurl)s\" target=\"_blank\" "
-"rel=\"noopener noreferrer\"> Termini di servizio </a>."
 
 #: dashboard/templates/fulfill_bounty.html:74
 #, fuzzy
@@ -821,199 +977,487 @@ msgstr "Annulla fondi di ricchezza e bonifica"
 msgid "(Issue Submitters only)"
 msgstr "(Solo per chi invia articoli)"
 
-#: dashboard/templates/kill_bounty.html:69 dashboard/views.py:782
+#: dashboard/templates/kill_bounty.html:69 dashboard/views.py:628
 msgid "Cancel Bounty"
 msgstr "Annulla taglia"
 
-#: dashboard/templates/process_bounty.html:49
-msgid "Accept Bounty Fulfillment"
-msgstr "Accetta l&#39;adempimento di taglie"
+#: dashboard/templates/onepager/base.html:65
+#: dashboard/templates/onepager/send1.html:32
+#: dashboard/templates/shared/nav_auth.html:29 dashboard/tip_views.py:54
+msgid "Send Tip"
+msgstr "Invia Suggerimento"
 
-#: dashboard/templates/process_bounty.html:54
-msgid "Issue URL:"
-msgstr "URL del problema:"
+#: dashboard/templates/onepager/receive.html:42
+#, fuzzy
+#| msgid "You've got Ethos!"
+msgid "You've got"
+msgstr "Hai"
 
-#: dashboard/templates/process_bounty.html:58
+#: dashboard/templates/onepager/receive.html:44
+#: dashboard/templates/onepager/receive_legacy.html:70
+msgid "Forward it to a permanent address:"
+msgstr "Inoltra a un indirizzo permanente:"
+
+#: dashboard/templates/onepager/receive.html:51
+#: dashboard/templates/onepager/receive_legacy.html:76
+#: dashboard/templates/shared/nav_auth.html:59
+msgid "Claim"
+msgstr "Richiesta"
+
+#: dashboard/templates/onepager/receive.html:57
+#: dashboard/templates/onepager/receive_legacy.html:81
+msgid "Congrats!"
+msgstr "Congratulazioni!"
+
+#: dashboard/templates/onepager/receive_legacy.html:48
+msgid "Loading"
+msgstr "Caricamento in corso"
+
+#: dashboard/templates/onepager/receive_legacy.html:50
+msgid "waiting for web3..."
+msgstr "aspettando il web3 ..."
+
+#: dashboard/templates/onepager/receive_legacy.html:53
+msgid "You've Got ETH!"
+msgstr "Hai ottenuto ETH!"
+
+#: dashboard/templates/onepager/receive_legacy.html:54
+msgid "To claim it, please install MetaMask and refresh the page."
+msgstr "Per richiederlo, installa MetaMask e aggiorna la pagina."
+
+#: dashboard/templates/onepager/receive_legacy.html:55
+msgid "Install Metamask"
+msgstr "Installa Metamask"
+
+#: dashboard/templates/onepager/receive_legacy.html:58
+msgid "What is Metamask?"
+msgstr "Cos&#39;è Metamask?"
+
+#: dashboard/templates/onepager/receive_legacy.html:62
+msgid "Receive Ethereum Now."
+msgstr "Ricevi Ethereum ora."
+
+#: dashboard/templates/onepager/receive_legacy.html:76
+#: dashboard/templates/shared/nav_auth.html:59
+#: retail/templates/getgitcoin.html:57
+msgid "Tip"
+msgstr "Mancia"
+
+#: dashboard/templates/onepager/receive_legacy.html:82
+msgid "You've received Ethereum via transaction <span id=\"trans_id\"></span>."
+msgstr "Hai ricevuto Ethereum tramite transazione <span id=\"trans_id\"></span> ."
+
+#: dashboard/templates/onepager/send1.html:33
+msgid "It's Fast.  It's Easy.  It's Free.️"
+msgstr "È veloce. È facile. È gratuito"
+
+#: dashboard/templates/onepager/send1.html:34
+msgid "Supports any github username or email address"
+msgstr "Supporta qualsiasi nome utente github o indirizzo email"
+
+#: dashboard/templates/onepager/send1.html:37
+msgid "receipient"
+msgstr "receipient"
+
+#: dashboard/templates/onepager/send1.html:38
+#: dashboard/templates/onepager/send1.html:39
+#: dashboard/templates/onepager/send1.html:40
+#: dashboard/templates/onepager/send1.html:41
+msgid "receipients"
+msgstr "receipients"
+
+#: dashboard/templates/onepager/send1.html:44
+msgid "Send Ether"
+msgstr "Invia Ether"
+
+#: dashboard/templates/onepager/send2.html:42
+msgid "Send Tip."
+msgstr "Invia Suggerimento."
+
+#: dashboard/templates/onepager/send2.html:45
+msgid "Amount of"
+msgstr "Quantità di"
+
+#: dashboard/templates/onepager/send2.html:53
+msgid "To Github Username"
+msgstr "Per Github Username"
+
+#: dashboard/templates/onepager/send2.html:57
+#, fuzzy
+#| msgid "To Github Username"
+msgid "From Github Username"
+msgstr "Da Github Username"
+
+#: dashboard/templates/onepager/send2.html:57
+#: dashboard/templates/shared/github_username.html:21
+#: dashboard/templates/shared/onepager_auth.html:46
+#: faucet/templates/faucet_form.html:60
+msgid "Login"
+msgstr "Accesso"
+
+#: dashboard/templates/onepager/send2.html:62
+#: dashboard/templates/shared/sidebar_search.html:108
+#: dashboard/templates/submit_bounty.html:89 dashboard/views.py:1098
+msgid "Advanced"
+msgstr "Avanzate"
+
+#: dashboard/templates/onepager/send2.html:66
+msgid "Related Github Issue URL"
+msgstr "URL relativo al problema Github"
+
+#: dashboard/templates/onepager/send2.html:66
+#: dashboard/templates/onepager/send2.html:70
+#: dashboard/templates/onepager/send2.html:74
+#: dashboard/templates/onepager/send2.html:92
+#: dashboard/templates/onepager/send2.html:96
+msgid "optional"
+msgstr "opzionale"
+
+#: dashboard/templates/onepager/send2.html:70
+msgid "To Email address"
+msgstr "Per l&#39;indirizzo email"
+
+#: dashboard/templates/onepager/send2.html:74
+msgid "From Email"
+msgstr "Dall&#39;email"
+
+#: dashboard/templates/onepager/send2.html:78
+msgid "Expires"
+msgstr "Scade"
+
+#: dashboard/templates/onepager/send2.html:80 marketing/mails.py:437
+msgid "day"
+msgstr "giorno"
+
+#: dashboard/templates/onepager/send2.html:81
+msgid "days"
+msgstr "giorni"
+
+#: dashboard/templates/onepager/send2.html:82
+msgid "week"
+msgstr "settimana"
+
+#: dashboard/templates/onepager/send2.html:83
+msgid "weeks"
+msgstr "settimane"
+
+#: dashboard/templates/onepager/send2.html:84
+msgid "month"
+msgstr "mese"
+
+#: dashboard/templates/onepager/send2.html:85
+#: dashboard/templates/onepager/send2.html:86
+msgid "months"
+msgstr "mesi"
+
+#: dashboard/templates/onepager/send2.html:87
+msgid "year"
+msgstr "anno"
+
+#: dashboard/templates/onepager/send2.html:88
+#: dashboard/templates/submit_bounty.html:140
+msgid "Never"
+msgstr "Mai"
+
+#: dashboard/templates/onepager/send2.html:92
+msgid "Private Comments"
+msgstr "Commenti privati"
+
+#: dashboard/templates/onepager/send2.html:96
+msgid "Public Comments"
+msgstr "Commenti pubblici"
+
+#: dashboard/templates/onepager/send2.html:103
+msgid ""
+"I understand &amp; agree to the <a href=\"https://gitcoin.co/terms\">terms "
+"of service</a>."
+msgstr ""
+"Comprendo e accetto i <a href=\"https://gitcoin.co/terms\">termini del "
+"servizio</a> ."
+
+#: dashboard/templates/onepager/send2.html:105
+#: dashboard/templates/shared/send_tip_nav.html:25
+msgid "Send"
+msgstr "Inviare"
+
+#: dashboard/templates/onepager/send2.html:108
+msgid "Woo hoo!"
+msgstr "Woo hoo!"
+
+#: dashboard/templates/onepager/send2.html:109
+msgid ""
+"Your <span id=\"tokenName\">ETH</span> has been sent <a href=\"\" "
+"target=\"_blank\" rel=\"noopener noreferrer\" id=\"trans_link\">to the "
+"blockchain</a>."
+msgstr ""
+"Il tuo <span id=\"tokenName\">ETH</span> è stato inviato <a href=\"\" "
+"target=\"_blank\" rel=\"noopener noreferrer\" id=\"trans_link\">alla "
+"blockchain</a> ."
+
+#: dashboard/templates/onepager/send2.html:111
+msgid "The transaction is still pending."
+msgstr "La transazione è ancora in sospeso."
+
+#: dashboard/templates/onepager/send2.html:111
+msgid "This page will auto-update when the transaction is confirmed"
+msgstr ""
+"Questa pagina si aggiornerà automaticamente al momento della conferma della "
+"transazione"
+
+#: dashboard/templates/onepager/send2.html:111
+msgid "but you can close the browser window if you want"
+msgstr "ma puoi chiudere la finestra del browser, se lo desideri"
+
+#: dashboard/templates/onepager/send2.html:116
+msgid "<span id=\"new_username\"></span> has been notified"
+msgstr "<span id=\"new_username\"></span> è stato notificato"
+
+#: dashboard/templates/onepager/send2.html:117
+msgid "with instructions about how to receive their tip."
+msgstr "con le istruzioni su come ricevere il loro consiglio."
+
+#: dashboard/templates/onepager/send2.html:119
+msgid "Start Over"
+msgstr "Ricominciare"
+
+#: dashboard/templates/payout_bounty.html:53
+msgid "Option 1:"
+msgstr "Opzione 1:"
+
+#: dashboard/templates/payout_bounty.html:57
+msgid "Basic Payout."
+msgstr "Pagamento base."
+
+#: dashboard/templates/payout_bounty.html:59
+msgid "Used to accept a bounty hunter's submission. You currently have "
+msgstr ""
+"Utilizzato per accettare la sottomissione di un cacciatore di taglie. Al "
+"momento hai"
+
+#: dashboard/templates/payout_bounty.html:59
+#, fuzzy
+#| msgid "Submission"
+msgid "submission."
+msgstr "sottomissione."
+
+#: dashboard/templates/payout_bounty.html:61
+msgid "This option is currently disabled because you have no submissions."
+msgstr ""
+"Questa opzione è attualmente disabilitata perché non hai sottomissioni."
+
+#: dashboard/templates/payout_bounty.html:63
+#, fuzzy
+#| msgid "Accepting a Submission is Exciting"
+msgid "Accept it using this option."
+msgstr "Accettalo usando questa opzione."
+
+#: dashboard/templates/payout_bounty.html:65
+msgid "Accept one of them using this option."
+msgstr "Accetta uno di loro usando questa opzione."
+
+#: dashboard/templates/payout_bounty.html:71
+msgid "Option 2:"
+msgstr "Opzione 2:"
+
+#: dashboard/templates/payout_bounty.html:75
+#, fuzzy
+#| msgid "Advanced"
+msgid "Advanced Payout."
+msgstr "Pagamento avanzato."
+
+#: dashboard/templates/payout_bounty.html:77
+msgid ""
+"Used to skip the 'submission' step; or when multiple parties need to be paid"
+" out."
+msgstr ""
+"Usato per saltare la fase di 'sottomissione'; o quando più parti devono "
+"essere pagate."
+
+#: dashboard/templates/process_bounty.html:59
 msgid "Bounty Submission:"
 msgstr "Submission Bounty:"
 
-#: dashboard/templates/process_bounty.html:60
+#: dashboard/templates/process_bounty.html:61
 msgid "Submission"
 msgstr "Sottomissione"
 
-#: dashboard/templates/process_bounty.html:73
+#: dashboard/templates/process_bounty.html:74
 msgid "Accept"
 msgstr "Accettare"
 
-#: dashboard/templates/process_bounty.html:77
+#: dashboard/templates/process_bounty.html:78
 msgid "Having trouble? Click here."
 msgstr "Avere problemi? Clicca qui."
 
-#: dashboard/templates/profile_details.html:53
-msgid "Organization"
-msgstr "Organizzazione"
-
-#: dashboard/templates/profile_details.html:57
-#: dashboard/templates/profile_details.html:87
-#, fuzzy
-#| msgid "bounty_skills"
-msgid "bounties"
-msgstr "taglie"
-
-#: dashboard/templates/profile_details.html:58
-msgid "ETH"
-msgstr "ETH"
-
-#: dashboard/templates/profile_details.html:60
-#, fuzzy
-#| msgid "or"
-msgid "org"
-msgstr "org"
-
-#: dashboard/templates/profile_details.html:80 retail/templates/index.html:173
-#: retail/templates/shared/nav.html:75
-#, fuzzy
-#| msgid "Contributors"
-msgid "Contributor"
-msgstr "Collaboratore"
-
-#: dashboard/templates/profile_details.html:84
-msgid "bounties completed"
-msgstr "taglie completate"
-
-#: dashboard/templates/profile_details.html:85
-msgid "ETH collected"
-msgstr "ETH raccolto"
-
-#: dashboard/templates/profile_details.html:87
-msgid "removed from"
-msgstr "rimosso da"
-
-#: dashboard/templates/profile_details.html:90
-#, fuzzy
-#| msgid "Contributors"
-msgid "contributor"
-msgstr "collaboratore"
-
-#: dashboard/templates/profile_details.html:116
-#, fuzzy
-#| msgid "Bounties Universe"
-msgid "bounties funded"
-msgstr "bonifici finanziati"
-
-#: dashboard/templates/profile_details.html:117
-msgid "ETH funded"
-msgstr "ETH finanziato"
-
-#: dashboard/templates/profile_details.html:119
-#, fuzzy
-#| msgid "Funder"
-msgid "funder"
-msgstr "finanziatore"
-
-#: dashboard/templates/profile_details.html:123
-#, fuzzy
-#| msgid "Funder"
-msgid "Funds"
-msgstr "Fondi"
-
-#: dashboard/templates/profile_details.html:148
+#: dashboard/templates/profiles/hidden.html:20
 msgid "Four oh Four"
 msgstr "Quattro o quattro"
 
-#: dashboard/templates/profile_details.html:153
+#: dashboard/templates/profiles/hidden.html:25
 msgid "This profile is not available."
 msgstr "Questo profilo non è disponibile."
 
-#: dashboard/templates/profile_details.html:158
+#: dashboard/templates/profiles/hidden.html:30
+#, fuzzy
+#| msgid ""
+#| "This profile is either doesn't exist, is not a member of Gitcoin, or the "
+#| "user has chosen not to make their profile available."
 msgid ""
-"This profile is either doesn't exist, is not a member of Gitcoin, or the "
-"user has chosen not to make their profile available."
+"This profile either doesn't exist, is not a member of Gitcoin, or the user "
+"has chosen not to make their profile available."
 msgstr ""
-"Questo profilo o non esiste, non è un membro di Gitcoin, o l'utente ha "
-"scelto di non rendere disponibile il proprio profilo."
+"Questo profilo non esiste, non è un membro di Gitcoin, o l'utente ha scelto "
+"di non rendere disponibile il proprio profilo."
 
-#: dashboard/templates/profile_details.html:163
+#: dashboard/templates/profiles/hidden.html:35
 msgid "Try looking for their profile on Github"
 msgstr "Prova a cercare il loro profilo su Github"
 
-#: dashboard/templates/profile_details.html:163
+#: dashboard/templates/profiles/hidden.html:35
 #, fuzzy
 #| msgid "Contact us"
 msgid "Contact us on Slack"
 msgstr "Contattaci su Slack"
 
-#: dashboard/templates/profile_details.html:170
+#: dashboard/templates/profiles/organization.html:21
+msgid "Organization"
+msgstr "Organizzazione"
+
+#: dashboard/templates/profiles/organization.html:25
+#: dashboard/templates/profiles/profile.html:62
+#, fuzzy
+#| msgid "bounty_skills"
+msgid "bounties"
+msgstr "taglie"
+
+#: dashboard/templates/profiles/organization.html:26
+msgid "ETH"
+msgstr "ETH"
+
+#: dashboard/templates/profiles/organization.html:28
+#, fuzzy
+#| msgid "or"
+msgid "org"
+msgstr "org"
+
+#: dashboard/templates/profiles/profile.html:55
+#: retail/templates/index.html:173 retail/templates/shared/nav.html:78
+#, fuzzy
+#| msgid "Contributors"
+msgid "Contributor"
+msgstr "Collaboratore"
+
+#: dashboard/templates/profiles/profile.html:59
+msgid "bounties completed"
+msgstr "taglie completate"
+
+#: dashboard/templates/profiles/profile.html:60
+msgid "ETH collected"
+msgstr "ETH raccolto"
+
+#: dashboard/templates/profiles/profile.html:62
+msgid "removed from"
+msgstr "rimosso da"
+
+#: dashboard/templates/profiles/profile.html:65
+#, fuzzy
+#| msgid "Contributors"
+msgid "contributor"
+msgstr "collaboratore"
+
+#: dashboard/templates/profiles/profile.html:91
+#, fuzzy
+#| msgid "Bounties Universe"
+msgid "bounties funded"
+msgstr "bonifici finanziati"
+
+#: dashboard/templates/profiles/profile.html:92
+msgid "ETH funded"
+msgstr "ETH finanziato"
+
+#: dashboard/templates/profiles/profile.html:94
+#, fuzzy
+#| msgid "Funder"
+msgid "funder"
+msgstr "finanziatore"
+
+#: dashboard/templates/profiles/profile.html:98
+#, fuzzy
+#| msgid "Funder"
+msgid "Funds"
+msgstr "Fondi"
+
+#: dashboard/templates/profiles/profile.html:125
 #, fuzzy
 #| msgid "Bounties Universe"
 msgid "Bounties in progress"
 msgstr "Taglie in corso"
 
-#: dashboard/templates/profile_details.html:177
-#: dashboard/templates/profile_details.html:193
-#: dashboard/templates/profile_details.html:209
-#: dashboard/templates/profile_details.html:225
-#: dashboard/templates/profile_details.html:295
+#: dashboard/templates/profiles/profile.html:132
+#: dashboard/templates/profiles/profile.html:148
+#: dashboard/templates/profiles/profile.html:164
+#: dashboard/templates/profiles/profile.html:180
+#: dashboard/templates/profiles/profile.html:250
 msgid "Show all"
 msgstr "Mostra tutto"
 
-#: dashboard/templates/profile_details.html:186
+#: dashboard/templates/profiles/profile.html:141
 #, fuzzy
 #| msgid "Bounties Universe"
 msgid "Bounties funded"
 msgstr "Taglie finanziate"
 
-#: dashboard/templates/profile_details.html:202
+#: dashboard/templates/profiles/profile.html:157
 #, fuzzy
 #| msgid "Bounties Universe"
 msgid "Bounties completed"
 msgstr "Taglie completate"
 
-#: dashboard/templates/profile_details.html:218
+#: dashboard/templates/profiles/profile.html:173
 #, fuzzy
 #| msgid "Bounties Universe"
 msgid "Bounties"
 msgstr "bounties"
 
-#: dashboard/templates/profile_details.html:235
+#: dashboard/templates/profiles/profile.html:190
 #, fuzzy
 #| msgid "Tip has been received"
 msgid "Tips Received"
 msgstr "Suggerimenti ricevuti"
 
-#: dashboard/templates/profile_details.html:251
+#: dashboard/templates/profiles/profile.html:206
 #: faucet/templates/process_faucet_request.html:38
 #: retail/templates/settings/feedback.html:8
 #: retail/templates/whitepaper_new.html:128
 msgid "Comments"
 msgstr "Commenti"
 
-#: dashboard/templates/profile_details.html:260
+#: dashboard/templates/profiles/profile.html:215
 msgid "an anonymous user"
 msgstr "un utente anonimo"
 
-#: dashboard/templates/profile_details.html:292
+#: dashboard/templates/profiles/profile.html:247
 #, fuzzy
 #| msgid "No tips found"
 msgid "No tips"
 msgstr "Niente mance"
 
-#: dashboard/templates/profile_details.html:303
+#: dashboard/templates/profiles/profile.html:258
 msgid "Latest Activities"
 msgstr "Ultime attività"
 
-#: dashboard/templates/profile_details.html:319
+#: dashboard/templates/profiles/profile.html:274
 #: retail/templates/results.html:57
 msgid "Completed"
 msgstr "Completato"
 
-#: dashboard/templates/profile_details.html:338
+#: dashboard/templates/profiles/profile.html:293
 #, fuzzy
 #| msgid "Submit"
 msgid "Submitted"
 msgstr "Inserito"
 
-#: dashboard/templates/profile_details.html:355
+#: dashboard/templates/profiles/profile.html:310
 #, fuzzy
 #| msgid "Get Started"
 msgid "Started"
@@ -1235,14 +1679,9 @@ msgstr "Link PR Github"
 
 #: dashboard/templates/shared/github_username.html:19
 #: retail/templates/settings/ens.html:15
+#: retail/templates/shared/bulk_payout_form.html:26
 msgid "Github Username"
 msgstr "Nome utente Github"
-
-#: dashboard/templates/shared/github_username.html:21
-#: dashboard/templates/shared/yge_auth.html:41
-#: dashboard/templates/yge/send2.html:56 faucet/templates/faucet_form.html:60
-msgid "Login"
-msgstr "Accesso"
 
 #: dashboard/templates/shared/hours_worked.html:19
 msgid "Hours Worked"
@@ -1252,12 +1691,6 @@ msgstr "Ore lavorate"
 msgid "Full Name"
 msgstr "Nome e cognome"
 
-#: dashboard/templates/shared/nav_auth.html:29
-#: dashboard/templates/yge/base.html:65 dashboard/templates/yge/send1.html:37
-#: dashboard/views.py:79 dashboard/views.py:594
-msgid "Send Tip"
-msgstr "Invia Suggerimento"
-
 #: dashboard/templates/shared/nav_auth.html:33
 #: dashboard/templates/submit_bounty.html:49
 #: retail/templates/getgitcoin.html:50
@@ -1265,11 +1698,11 @@ msgid "Fund Issue"
 msgstr "Emissione di fondi"
 
 #: dashboard/templates/shared/nav_auth.html:38
-#: retail/templates/contributor_landing.html:78
+#: retail/templates/contributor_landing.html:91
 #: retail/templates/index.html:300 retail/templates/index.html:318
 #: retail/templates/index.html:337
-#: retail/templates/landing/contributor/hero.html:44
-#: retail/templates/mission.html:438 retail/views.py:671
+#: retail/templates/landing/contributor/hero.html:45
+#: retail/templates/mission.html:440 retail/views.py:806
 msgid "Get Started"
 msgstr "Iniziare"
 
@@ -1286,17 +1719,6 @@ msgstr "Vedi profilo"
 #: dashboard/templates/shared/nav_auth.html:52
 msgid "Manage Settings"
 msgstr "Gestisci le impostazioni"
-
-#: dashboard/templates/shared/nav_auth.html:59
-#: dashboard/templates/yge/receive.html:74
-#: dashboard/templates/yge/redeem_coin.html:67
-msgid "Claim"
-msgstr "Richiesta"
-
-#: dashboard/templates/shared/nav_auth.html:59
-#: dashboard/templates/yge/receive.html:74 retail/templates/getgitcoin.html:57
-msgid "Tip"
-msgstr "Mancia"
 
 #: dashboard/templates/shared/nav_auth.html:67
 msgid "Administration"
@@ -1401,13 +1823,35 @@ msgstr ""
 "della tua taglia."
 
 #: dashboard/templates/shared/no_issue_error.html:57
+#: dashboard/templates/shared/no_issue_error.html:74
+#, fuzzy
+#| msgid ""
+#| "Feedbacks and gratitude are always nice ways to continue a relationship."
 msgid ""
-"Feedbacks and gratitude are always nice ways to continue a relationship."
+"Feedback and gratitude are always nice ways to continue a relationship."
 msgstr ""
 "Feedback e gratitudine sono sempre dei modi carini per continuare una "
 "relazione."
 
-#: dashboard/templates/shared/no_issue_error.html:72
+#: dashboard/templates/shared/no_issue_error.html:70
+#, fuzzy
+#| msgid "Accepting a Submission is Exciting"
+msgid "Paying out a bounty is Exciting"
+msgstr "Pagare una taglia è emozionante"
+
+#: dashboard/templates/shared/no_issue_error.html:73
+#, fuzzy
+#| msgid ""
+#| "Make sure the submitter has completed the requirements to the specifications"
+#| " of your bounty."
+msgid ""
+"If you are closing the bounty, make sure the submitters have completed the "
+"requirements to the specifications of your bounty."
+msgstr ""
+"Se stai chiudendo la taglia, assicurati che i mittenti abbiano completato i "
+"requisiti per le specifiche della tua taglia."
+
+#: dashboard/templates/shared/no_issue_error.html:89
 msgid "You have worked really hard! Time to submit work and get paid"
 msgstr "Hai lavorato davvero sodo! È ora di inviare lavoro e essere pagato"
 
@@ -1464,6 +1908,20 @@ msgid "Submitter will approve bounty hunters can start work."
 msgstr ""
 "Il mittente approverà che i cacciatori di taglie possono iniziare a "
 "lavorare."
+
+#: dashboard/templates/shared/pricing.html:19
+msgid "Pricing"
+msgstr "Prezzi"
+
+#: dashboard/templates/shared/pricing.html:22
+#, fuzzy
+#| msgid "Administration"
+msgid "Denomination"
+msgstr "Denominazione"
+
+#: dashboard/templates/shared/pricing.html:32
+msgid "USD"
+msgstr "Dollaro statunitense"
 
 #: dashboard/templates/shared/project_type_tooltip.html:19
 #, fuzzy
@@ -1524,7 +1982,7 @@ msgstr "Valore: il più alto"
 msgid "Value: Lowest"
 msgstr "Valore: il più basso"
 
-#: dashboard/templates/shared/search_bar.html:44 dashboard/views.py:1134
+#: dashboard/templates/shared/search_bar.html:44 dashboard/views.py:980
 #: retail/templates/save_search.html:41
 msgid "Save Search"
 msgstr "Salva ricerca"
@@ -1532,11 +1990,6 @@ msgstr "Salva ricerca"
 #: dashboard/templates/shared/send_tip_nav.html:23
 msgid "Sent"
 msgstr "Inviato"
-
-#: dashboard/templates/shared/send_tip_nav.html:25
-#: dashboard/templates/yge/send2.html:104
-msgid "Send"
-msgstr "Inviare"
 
 #: dashboard/templates/shared/send_tip_nav.html:31
 msgid "Fulfilled"
@@ -1626,19 +2079,13 @@ msgstr "Principiante"
 msgid "Intermediate"
 msgstr "Intermedio"
 
-#: dashboard/templates/shared/sidebar_search.html:108
-#: dashboard/templates/submit_bounty.html:89
-#: dashboard/templates/yge/send2.html:61 dashboard/views.py:1248
-msgid "Advanced"
-msgstr "Avanzate"
-
 #: dashboard/templates/shared/sidebar_search.html:185
 msgid "Tech Stack"
 msgstr "Stack di tecnologia"
 
 #: dashboard/templates/shared/sidebar_search.html:190
 #: dashboard/templates/submit_bounty.html:94
-#: retail/templates/emails/bounty.html:120
+#: retail/templates/emails/bounty.html:123
 msgid "Project Length"
 msgstr "Lunghezza del progetto"
 
@@ -1694,10 +2141,19 @@ msgid "Rinkeby"
 msgstr "Rinkeby"
 
 #: dashboard/templates/shared/sidebar_search.html:292
+#: retail/templates/gas_faucet_list.html:15
 msgid "Mainnet"
 msgstr "Mainnet"
 
-#: dashboard/templates/shared/sidebar_search.html:306
+#: dashboard/templates/shared/sidebar_search.html:307
+msgid "Misc"
+msgstr "Varie"
+
+#: dashboard/templates/shared/sidebar_search.html:313
+msgid "Hiring"
+msgstr "Assumere"
+
+#: dashboard/templates/shared/sidebar_search.html:322
 msgid "Reset"
 msgstr "Reset"
 
@@ -1805,8 +2261,8 @@ msgid "Gas Price (gwei)"
 msgstr "Prezzo del gas (gwei)"
 
 #: dashboard/templates/shared/wallet_estimate.html:62
-#: retail/templates/shared/footer.html:76 retail/templates/shared/nav.html:78
-#: retail/views.py:661
+#: retail/templates/shared/footer.html:76 retail/templates/shared/nav.html:81
+#: retail/views.py:743
 msgid "Help"
 msgstr "Aiuto"
 
@@ -1895,7 +2351,7 @@ msgstr "Senza autorizzazione: chiunque può iniziare a lavorare."
 msgid "Approval Required - I will approve bounty hunters."
 msgstr "Approvazione richiesta - Approverò i cacciatori di taglie."
 
-#: dashboard/templates/submit_bounty.html:81 dashboard/views.py:950
+#: dashboard/templates/submit_bounty.html:81 dashboard/views.py:797
 msgid "Issue Details"
 msgstr "Dettagli del problema"
 
@@ -1964,50 +2420,42 @@ msgstr "6 mesi"
 msgid "1 year"
 msgstr "1 anno"
 
-#: dashboard/templates/submit_bounty.html:140
-#: dashboard/templates/yge/send2.html:87
-msgid "Never"
-msgstr "Mai"
-
 #: dashboard/templates/submit_bounty.html:146
 #, fuzzy
 #| msgid "Contact us"
 msgid "Contact"
 msgstr "Contatto"
 
-#: dashboard/templates/submit_bounty.html:154
-msgid "Pricing"
-msgstr "Prezzi"
+#: dashboard/templates/submit_bounty.html:155
+msgid "Hiring right now?"
+msgstr "Assumere adesso?"
 
-#: dashboard/templates/submit_bounty.html:157
-#, fuzzy
-#| msgid "Administration"
-msgid "Denomination"
-msgstr "Denominazione"
-
-#: dashboard/templates/submit_bounty.html:163
-msgid "Amount"
-msgstr "Quantità"
+#: dashboard/templates/submit_bounty.html:159
+msgid ""
+"I am hiring for a full time, part time, or contract position, right now and "
+"would like Gitcoin to attach this job description to the bounty."
+msgstr ""
+"Sto assumendo a tempo pieno, a tempo parziale, o posizione contrattuale, "
+"proprio ora e vorrei che Gitcoin legasse questa descrizione del lavoro alla "
+"taglia."
 
 #: dashboard/templates/submit_bounty.html:167
-msgid "USD"
-msgstr "Dollaro statunitense"
-
-#: dashboard/templates/submit_bounty.html:175
 #, fuzzy
 #| msgid "Email Settings"
 msgid "Gas Settings"
 msgstr "Impostazioni del gas"
 
-#: dashboard/templates/submit_bounty.html:184
+#: dashboard/templates/submit_bounty.html:176
+#: retail/templates/newtoken.html:92
 msgid "I have read, understand, and agree to, the"
 msgstr "Ho letto, capito e accetto, il"
 
-#: dashboard/templates/submit_bounty.html:185
+#: dashboard/templates/submit_bounty.html:177
+#: retail/templates/newtoken.html:93
 msgid "Terms of Service"
 msgstr "Termini di servizio"
 
-#: dashboard/templates/submit_bounty.html:192
+#: dashboard/templates/submit_bounty.html:184
 #, fuzzy
 #| msgid ""
 #| "I understand that this information is being submitted to a public, "
@@ -2020,7 +2468,7 @@ msgstr ""
 "Comprendo che questa informazione è stata sottoposta a una blockchain pubblica, immutabile. Nessuno, incluso\n"
 "                      Gitcoin Core, sarà in grado di prendere i miei fondi o cambiare queste informazioni."
 
-#: dashboard/templates/toolbox.html:37 dashboard/views.py:1289
+#: dashboard/templates/toolbox.html:37 dashboard/views.py:1139
 msgid "Toolbox"
 msgstr "cassetta degli attrezzi"
 
@@ -2034,237 +2482,67 @@ msgstr ""
 msgid "Table of Contents"
 msgstr "Sommario"
 
-#: dashboard/templates/yge/receive.html:46
-#: dashboard/templates/yge/redeem_coin.html:45
-#: ethos/templates/redeem_ethos.html:45
-msgid "Loading"
-msgstr "Caricamento in corso"
-
-#: dashboard/templates/yge/receive.html:48
-#: dashboard/templates/yge/redeem_coin.html:47
-#: ethos/templates/redeem_ethos.html:47
-msgid "waiting for web3..."
-msgstr "aspettando il web3 ..."
-
-#: dashboard/templates/yge/receive.html:51
-msgid "You've Got ETH!"
-msgstr "Hai ottenuto ETH!"
-
-#: dashboard/templates/yge/receive.html:52
-#: dashboard/templates/yge/redeem_coin.html:51
-#: ethos/templates/redeem_ethos.html:51
-msgid "To claim it, please install MetaMask and refresh the page."
-msgstr "Per richiederlo, installa MetaMask e aggiorna la pagina."
-
-#: dashboard/templates/yge/receive.html:53
-#: dashboard/templates/yge/redeem_coin.html:52
-#: ethos/templates/redeem_ethos.html:52
-msgid "Install Metamask"
-msgstr "Installa Metamask"
-
-#: dashboard/templates/yge/receive.html:56
-#: dashboard/templates/yge/redeem_coin.html:55
-#: ethos/templates/redeem_ethos.html:55
-msgid "What is Metamask?"
-msgstr "Cos&#39;è Metamask?"
-
-#: dashboard/templates/yge/receive.html:60
-msgid "Receive Ethereum Now."
-msgstr "Ricevi Ethereum ora."
-
-#: dashboard/templates/yge/receive.html:68
-msgid "Forward it to a permanent address:"
-msgstr "Inoltra a un indirizzo permanente:"
-
-#: dashboard/templates/yge/receive.html:79
-#: dashboard/templates/yge/redeem_coin.html:72
-msgid "Congrats!"
-msgstr "Congratulazioni!"
-
-#: dashboard/templates/yge/receive.html:80
-msgid "You've received Ethereum via transaction <span id=\"trans_id\"></span>."
-msgstr "Hai ricevuto Ethereum tramite transazione <span id=\"trans_id\"></span> ."
-
-#: dashboard/templates/yge/redeem_coin.html:50
-#: dashboard/templates/yge/redeem_coin.html:59
-msgid "You've got 1 COLO!"
-msgstr "Hai 1 COLO!"
-
-#: dashboard/templates/yge/redeem_coin.html:61
-msgid "Enter a forwarding address"
-msgstr "Inserisci un indirizzo di spedizione"
-
-#: dashboard/templates/yge/redeem_coin.html:73
-msgid "You've redeemed 1 COLO."
-msgstr "Hai utilizzato 1 COLO."
-
-#: dashboard/templates/yge/send1.html:38
-msgid "It's Fast.  It's Easy.  It's Free.️"
-msgstr "È veloce. È facile. È gratuito"
-
-#: dashboard/templates/yge/send1.html:39
-msgid "Supports any github username or email address"
-msgstr "Supporta qualsiasi nome utente github o indirizzo email"
-
-#: dashboard/templates/yge/send1.html:42
-msgid "receipient"
-msgstr "receipient"
-
-#: dashboard/templates/yge/send1.html:43 dashboard/templates/yge/send1.html:44
-#: dashboard/templates/yge/send1.html:45 dashboard/templates/yge/send1.html:46
-msgid "receipients"
-msgstr "receipients"
-
-#: dashboard/templates/yge/send1.html:49
-msgid "Send Ether"
-msgstr "Invia Ether"
-
-#: dashboard/templates/yge/send2.html:41
-msgid "Send Tip."
-msgstr "Invia Suggerimento."
-
-#: dashboard/templates/yge/send2.html:44
-msgid "Amount of"
-msgstr "Quantità di"
-
-#: dashboard/templates/yge/send2.html:52
-msgid "To Github Username"
-msgstr "Per Github Username"
-
-#: dashboard/templates/yge/send2.html:56
+#: dashboard/tip_views.py:55
 #, fuzzy
-#| msgid "To Github Username"
-msgid "From Github Username"
-msgstr "Da Github Username"
-
-#: dashboard/templates/yge/send2.html:65
-msgid "Related Github Issue URL"
-msgstr "URL relativo al problema Github"
-
-#: dashboard/templates/yge/send2.html:65 dashboard/templates/yge/send2.html:69
-#: dashboard/templates/yge/send2.html:73 dashboard/templates/yge/send2.html:91
-#: dashboard/templates/yge/send2.html:95
-msgid "optional"
-msgstr "opzionale"
-
-#: dashboard/templates/yge/send2.html:69
-msgid "To Email address"
-msgstr "Per l&#39;indirizzo email"
-
-#: dashboard/templates/yge/send2.html:73
-msgid "From Email"
-msgstr "Dall&#39;email"
-
-#: dashboard/templates/yge/send2.html:77
-msgid "Expires"
-msgstr "Scade"
-
-#: dashboard/templates/yge/send2.html:79 marketing/mails.py:422
-msgid "day"
-msgstr "giorno"
-
-#: dashboard/templates/yge/send2.html:80
-msgid "days"
-msgstr "giorni"
-
-#: dashboard/templates/yge/send2.html:81
-msgid "week"
-msgstr "settimana"
-
-#: dashboard/templates/yge/send2.html:82
-msgid "weeks"
-msgstr "settimane"
-
-#: dashboard/templates/yge/send2.html:83
-msgid "month"
-msgstr "mese"
-
-#: dashboard/templates/yge/send2.html:84 dashboard/templates/yge/send2.html:85
-msgid "months"
-msgstr "mesi"
-
-#: dashboard/templates/yge/send2.html:86
-msgid "year"
-msgstr "anno"
-
-#: dashboard/templates/yge/send2.html:91
-msgid "Private Comments"
-msgstr "Commenti privati"
-
-#: dashboard/templates/yge/send2.html:95
-msgid "Public Comments"
-msgstr "Commenti pubblici"
-
-#: dashboard/templates/yge/send2.html:102
-msgid ""
-"I understand &amp; agree to the <a href=\"https://gitcoin.co/terms\">terms "
-"of service</a>."
+#| msgid "Send a Tip to any Github user in 60 seconds"
+msgid "Send a tip to any github user at the click of a button."
 msgstr ""
-"Comprendo e accetto i <a href=\"https://gitcoin.co/terms\">termini del "
-"servizio</a> ."
+"Invia un consiglio a qualsiasi utente Github con un clic di un pulsante."
 
-#: dashboard/templates/yge/send2.html:107
-msgid "Woo hoo!"
-msgstr "Woo hoo!"
+#: dashboard/tip_views.py:101
+msgid "Tip has been received"
+msgstr "Suggerimento è stato ricevuto"
 
-#: dashboard/templates/yge/send2.html:108
-msgid ""
-"Your <span id=\"tokenName\">ETH</span> has been sent <a href=\"\" "
-"target=\"_blank\" rel=\"noopener noreferrer\" id=\"trans_link\">to the "
-"blockchain</a>."
-msgstr ""
-"Il tuo <span id=\"tokenName\">ETH</span> è stato inviato <a href=\"\" "
-"target=\"_blank\" rel=\"noopener noreferrer\" id=\"trans_link\">alla "
-"blockchain</a> ."
+#: dashboard/tip_views.py:128 dashboard/tip_views.py:211
+msgid "Receive Tip"
+msgstr "Ricevi un suggerimento"
 
-#: dashboard/templates/yge/send2.html:110
-msgid "The transaction is still pending."
-msgstr "La transazione è ancora in sospeso."
+#: dashboard/tip_views.py:231
+#, fuzzy
+#| msgid "Sent"
+msgid "Tip Sent"
+msgstr "Suggerimento inviato"
 
-#: dashboard/templates/yge/send2.html:110
-msgid "This page will auto-update when the transaction is confirmed"
-msgstr ""
-"Questa pagina si aggiornerà automaticamente al momento della conferma della "
-"transazione"
+#: dashboard/tip_views.py:248
+#, fuzzy
+#| msgid "Submission"
+msgid "Permission Denied"
+msgstr "Permesso negato"
 
-#: dashboard/templates/yge/send2.html:110
-msgid "but you can close the browser window if you want"
-msgstr "ma puoi chiudere la finestra del browser, se lo desideri"
+#: dashboard/tip_views.py:277
+#, fuzzy
+#| msgid "Created"
+msgid "Tip Created"
+msgstr "Suggerimento creato"
 
-#: dashboard/templates/yge/send2.html:115
-msgid "<span id=\"new_username\"></span> has been notified"
-msgstr "<span id=\"new_username\"></span> è stato notificato"
+#: dashboard/tip_views.py:365
+#, fuzzy
+#| msgid "Features of Gitcoin"
+msgid "Send Tip | Gitcoin"
+msgstr "Invia Suggerimento | Gitcoin"
 
-#: dashboard/templates/yge/send2.html:116
-msgid "with instructions about how to receive their tip."
-msgstr "con le istruzioni su come ricevere il loro consiglio."
-
-#: dashboard/templates/yge/send2.html:118
-msgid "Start Over"
-msgstr "Ricominciare"
-
-#: dashboard/views.py:224
+#: dashboard/views.py:187
 msgid "Add Interest"
 msgstr "Aggiungi interesse"
 
-#: dashboard/views.py:259 dashboard/views.py:353 faucet/views.py:62
+#: dashboard/views.py:222 dashboard/views.py:316 faucet/views.py:62
 msgid "You must be authenticated via github to use this feature!"
 msgstr "Devi essere autenticato tramite github per usare questa funzione!"
 
-#: dashboard/views.py:269
+#: dashboard/views.py:232
 #, fuzzy
 #| msgid "You have already expressed interest in this bounty!"
 msgid "There is already someone working on this bounty."
 msgstr "C'è già qualcuno che lavora a questa taglia."
 
-#: dashboard/views.py:279
+#: dashboard/views.py:242
 #, python-brace-format
 msgid "You may only work on max of {num_issues} issues at once."
 msgstr ""
 "Puoi lavorare solo su un massimo di {num_issues} problemi "
 "contemporaneamente."
 
-#: dashboard/views.py:285
+#: dashboard/views.py:248
 #, fuzzy
 #| msgid ""
 #| "Because a staff member has had to remove you from a bounty in the past, you "
@@ -2278,17 +2556,17 @@ msgstr ""
 "passato, non puoi più iniziare a lavorare in questo momento. Per favore "
 "lascia un messaggio in sospeso se ritieni che questo messaggio sia errato."
 
-#: dashboard/views.py:293 dashboard/views.py:311
+#: dashboard/views.py:256 dashboard/views.py:274
 #, fuzzy
 #| msgid "You have already expressed interest in this bounty!"
 msgid "You have already started work on this bounty!"
 msgstr "Hai già iniziato a lavorare su questa taglia!"
 
-#: dashboard/views.py:315
+#: dashboard/views.py:278
 msgid "You have started work."
 msgstr "Hai iniziato a lavorare."
 
-#: dashboard/views.py:318
+#: dashboard/views.py:281
 msgid ""
 "You have applied to start work.  If approved, you will be notified via "
 "email."
@@ -2296,102 +2574,82 @@ msgstr ""
 "Hai fatto domanda per iniziare a lavorare. Se approvato, riceverai una "
 "notifica via email."
 
-#: dashboard/views.py:374
+#: dashboard/views.py:337
 msgid "You haven't expressed interest on this bounty."
 msgstr "Non hai espresso interesse per questa taglia."
 
-#: dashboard/views.py:390 dashboard/views.py:464
+#: dashboard/views.py:353 dashboard/views.py:427
 msgid "You've stopped working on this, thanks for letting us know."
 msgstr "Hai smesso di lavorare su questo, grazie per avercelo fatto sapere."
 
-#: dashboard/views.py:474
-msgid "Tip has been received"
-msgstr "Suggerimento è stato ricevuto"
-
-#: dashboard/views.py:501
-msgid "Receive Tip"
-msgstr "Ricevi un suggerimento"
-
-#: dashboard/views.py:531
-msgid "Notification has been sent"
-msgstr "La notifica è stata inviata"
-
-#: dashboard/views.py:586
-msgid ""
-"Uh oh! No email addresses for this user were found via Github API.  Youll "
-"have to let the tipee know manually about their tip."
-msgstr ""
-"Uh Oh! Nessun indirizzo email per questo utente è stato trovato tramite "
-"Github API. Dovrai informare manualmente il tipee del loro consiglio."
-
-#: dashboard/views.py:630
+#: dashboard/views.py:458
 msgid "Onboarding Flow"
 msgstr "Onboarding Flow"
 
-#: dashboard/views.py:642 retail/templates/emails/start_work_rejected.html:33
+#: dashboard/views.py:470 retail/templates/emails/start_work_rejected.html:33
 #: retail/templates/index.html:225 retail/templates/shared/footer.html:61
-#: retail/templates/shared/nav.html:83
+#: retail/templates/shared/nav.html:86
 msgid "Issue Explorer"
 msgstr "Issue Explorer"
 
-#: dashboard/views.py:674
-msgid "Create Funded Issue"
-msgstr "Crea un problema finanziario"
-
-#: dashboard/views.py:704
+#: dashboard/views.py:500
 msgid "Process Issue"
 msgstr "Problema di processo"
 
-#: dashboard/views.py:758
+#: dashboard/views.py:551
+msgid "Multi-Party Payout"
+msgstr "Pagamento multipartito"
+
+#: dashboard/views.py:604
 msgid "Increase Bounty"
 msgstr "Aumenta la taglia"
 
-#: dashboard/views.py:794
+#: dashboard/views.py:640
 msgid "Bounty is now hidden"
 msgstr "Bounty è ora nascosto"
 
-#: dashboard/views.py:796 dashboard/views.py:808 dashboard/views.py:823
-#: dashboard/views.py:835 dashboard/views.py:854 dashboard/views.py:867
+#: dashboard/views.py:642 dashboard/views.py:654 dashboard/views.py:669
+#: dashboard/views.py:681 dashboard/views.py:700 dashboard/views.py:713
 #, fuzzy
 #| msgid "Only the funder of this bounty may snooze warnings."
 msgid "Only the funder of this bounty may do this."
 msgstr "Solo il finanziatore di questa grazia può farlo."
 
-#: dashboard/views.py:806
+#: dashboard/views.py:652
 #, fuzzy
 #| msgid "Your invite has been sent."
 msgid "Bounty message has been sent"
 msgstr "Il messaggio di Bounty è stato inviato"
 
-#: dashboard/views.py:819
+#: dashboard/views.py:665
 msgid "Bounty is now remarket ready"
 msgstr "Bounty è ora pronto per il remarketing"
 
-#: dashboard/views.py:821
+#: dashboard/views.py:667
 msgid "Bounty is now NOT remarket ready"
 msgstr "Bounty ora NON è pronto per il remarketing"
 
-#: dashboard/views.py:833
+#: dashboard/views.py:679
 msgid "Bounty auto approvals are now suspended"
 msgstr "Le auto approvazioni di Bounty sono ora sospese"
 
-#: dashboard/views.py:848
+#: dashboard/views.py:694
 msgid "Not a valid status choice.  Please choose a valid status (no quotes): "
 msgstr ""
 "Non è una scelta valida per lo stato. Si prega di scegliere uno stato valido"
 " (senza virgolette):"
 
-#: dashboard/views.py:852
+#: dashboard/views.py:698
 #, python-brace-format
 msgid "Status updated to \"{admin_override_satatus}\" "
 msgstr "Stato aggiornato a \"{admin_override_satatus}\""
 
-#: dashboard/views.py:865
+#: dashboard/views.py:711
 #, python-brace-format
 msgid "Warning messages have been snoozed for {snooze_days} days"
 msgstr "I messaggi di avviso sono stati posticipati per {snooze_days} giorni"
 
-#: dashboard/views.py:876
+#: dashboard/views.py:722
 msgid ""
 "You must be logged in to approve or reject worker submissions. Please login "
 "and try again."
@@ -2399,76 +2657,94 @@ msgstr ""
 "È necessario effettuare l'accesso per approvare o rifiutare l'invio di "
 "lavoro. Effettua il login e riprova."
 
-#: dashboard/views.py:885
+#: dashboard/views.py:732
+#, fuzzy
+#| msgid ""
+#| "This worker does not exist or is not in a pending state. Please check your "
+#| "link and try again."
 msgid ""
-"This worker does not exist or is not in a pending state. Please check your "
-"link and try again."
+"This worker does not exist or is not in a pending state. Perhaps they were "
+"already approved or rejected? Please check your link and try again."
 msgstr ""
-"Questo worker non esiste o non è in sospeso. Controlla il tuo link e "
-"riprova."
+"Questo worker non esiste o non è in sospeso. Forse erano già approvati o "
+"rifiutati? Controlla il tuo link e riprova."
 
-#: dashboard/views.py:913
+#: dashboard/views.py:760
 #, python-brace-format
 msgid "{worker} has been {mutate_worker_action_past_tense}"
 msgstr "{worker} è stato {mutate_worker_action_past_tense}"
 
-#: dashboard/views.py:915
+#: dashboard/views.py:762
 #, fuzzy
 #| msgid "Only the funder of this bounty may snooze warnings."
 msgid "Only the funder of this bounty may perform this action."
 msgstr "Solo il finanziatore di questa taglia può eseguire questa azione."
 
-#: dashboard/views.py:951
+#: dashboard/views.py:798
 msgid "Funded Issue Details | Gitcoin"
 msgstr "Dettagli emissione finanziata | Gitcoin"
 
-#: dashboard/views.py:1145
+#: dashboard/views.py:991
 msgid "Quickstart Video"
 msgstr "Quickstart Video"
 
-#: dashboard/views.py:1244
+#: dashboard/views.py:1090
 msgid "Basics"
 msgstr "Nozioni di base"
 
-#: dashboard/views.py:1245 dashboard/views.py:1292
+#: dashboard/views.py:1091 dashboard/views.py:1142
 msgid "Accelerate your dev workflow with Gitcoin's incentivization tools."
 msgstr ""
 "Accelerare il flusso di lavoro degli sviluppatori con gli strumenti di "
 "incentivazione di Gitcoin."
 
-#: dashboard/views.py:1249
+#: dashboard/views.py:1094
+#, fuzzy
+#| msgid "Tools"
+msgid "Gas Tools"
+msgstr "Strumenti a gas"
+
+#: dashboard/views.py:1095
+msgid ""
+"Paying Gas is a part of using Ethereum.  It's much easier with our suite of "
+"gas tools."
+msgstr ""
+"Paying Gas fa parte dell'uso di Ethereum. È molto più semplice con la nostra"
+" suite di utensili a gas."
+
+#: dashboard/views.py:1099
 msgid "Take your OSS game to the next level!"
 msgstr "Porta il tuo gioco OSS al livello successivo!"
 
-#: dashboard/views.py:1252 retail/templates/shared/footer.html:72
+#: dashboard/views.py:1102 retail/templates/shared/footer.html:72
 msgid "Community"
 msgstr "Comunità"
 
-#: dashboard/views.py:1253
+#: dashboard/views.py:1103
 msgid "Friendship, mentorship, and community are all part of the process."
 msgstr "Amicizia, tutoraggio e comunità fanno tutti parte del processo."
 
-#: dashboard/views.py:1256
+#: dashboard/views.py:1106
 msgid "Tools to BUIDL Gitcoin"
 msgstr "Strumenti per BUIDL Gitcoin"
 
-#: dashboard/views.py:1257
+#: dashboard/views.py:1107
 msgid "Gitcoin is built using Gitcoin.  Purdy cool, huh? "
 msgstr "Gitcoin è stato creato utilizzando Gitcoin. Purdy fico, eh?"
 
-#: dashboard/views.py:1260
+#: dashboard/views.py:1110
 msgid "Tools in Alpha"
 msgstr "Strumenti in Alpha"
 
-#: dashboard/views.py:1261
+#: dashboard/views.py:1111
 msgid "These fresh new tools are looking for someone to test ride them!"
 msgstr "Questi nuovi strumenti sono alla ricerca di qualcuno per testarli!"
 
-#: dashboard/views.py:1264
+#: dashboard/views.py:1114
 msgid "Tools Coming Soon"
 msgstr "Strumenti disponibili a breve"
 
-#: dashboard/views.py:1265
+#: dashboard/views.py:1115
 msgid ""
 "These tools will be ready soon.  They'll get here sooner if you help BUIDL "
 "them :)"
@@ -2476,39 +2752,43 @@ msgstr ""
 "Questi strumenti saranno pronti presto. Verranno qui prima se li aiuti BUIDL"
 " :)"
 
-#: dashboard/views.py:1268
+#: dashboard/views.py:1118
 msgid "Just for Fun"
 msgstr "Solo per divertimento"
 
-#: dashboard/views.py:1269
+#: dashboard/views.py:1119
 msgid "Some tools that the community built *just because* they should exist."
 msgstr ""
 "Alcuni strumenti che la comunità ha costruito * solo perché * dovrebbero "
 "esistere."
 
-#: dashboard/views.py:1290
+#: dashboard/views.py:1140
 msgid "Gitcoin Toolbox"
 msgstr "Gitcoin Toolbox"
 
-#: dashboard/views.py:1294
+#: dashboard/views.py:1144
 msgid "Don't Miss New Tools!"
 msgstr "Non perdere i nuovi strumenti!"
 
-#: dashboard/views.py:1398 ethos/views.py:225
+#: dashboard/views.py:1248
 msgid "Bad request"
 msgstr "Brutta richiesta"
 
-#: dashboard/views.py:1416
+#: dashboard/views.py:1266
 msgid "Coin Redemption"
 msgstr "Redenzione delle monete"
 
-#: dashboard/views.py:1417
+#: dashboard/views.py:1267
 msgid "PENDING"
 msgstr "IN ATTESA DI"
 
-#: dashboard/views.py:1424
+#: dashboard/views.py:1274
 msgid "INITIAL"
 msgstr "INIZIALE"
+
+#: dashboard/views.py:1293
+msgid "Create Funded Issue"
+msgstr "Crea un problema finanziario"
 
 #: dataviz/models.py:30
 msgid "key for this data report"
@@ -2582,44 +2862,6 @@ msgstr ""
 "La tua richiesta è stata inviata. Per favore attendi che la transazione sia "
 "mia!"
 
-#: ethos/templates/redeem_ethos.html:50
-msgid "You've received an EthOS"
-msgstr "Hai ricevuto un EthOS"
-
-#: ethos/templates/redeem_ethos.html:59
-msgid "You've got Ethos!"
-msgstr "Hai Ethos!"
-
-#: ethos/templates/redeem_ethos.html:60
-msgid "Here's how to play:"
-msgstr "Ecco come giocare:"
-
-#: ethos/templates/redeem_ethos.html:67
-msgid "This experiment is over!"
-msgstr "Questo esperimento è finito!"
-
-#: ethos/views.py:173
-msgid "Duplicate transaction detected"
-msgstr "Rilevata transazione duplicata"
-
-#: ethos/views.py:214
-msgid "Error while fetching Twitter account. Please try again"
-msgstr ""
-"Errore durante il recupero dell&#39;account Twitter. Per favore riprova"
-
-#: ethos/views.py:221
-#, python-brace-format
-msgid "Error while tweeting to Twitter. {e}"
-msgstr "Errore durante il tweeting su Twitter. {e}"
-
-#: ethos/views.py:233
-msgid "Error while creating transaction. Please try again"
-msgstr "Errore durante la creazione della transazione. Per favore riprova"
-
-#: ethos/views.py:253
-msgid "EthOS Coin"
-msgstr "Ethos Coin"
-
 #: external_bounties/models.py:36
 msgid "Where to send interested parties"
 msgstr "Dove inviare le parti interessate"
@@ -2651,7 +2893,9 @@ msgstr "Bounties Universe"
 
 #: external_bounties/templates/external_bounties.html:22
 #: external_bounties/templates/external_bounties_show.html:29
-#: faucet/templates/faucet_form.html:37 retail/templates/gas.html:68
+#: faucet/templates/faucet_form.html:37 retail/templates/gas.html:55
+#: retail/templates/gas_calculator.html:33
+#: retail/templates/gas_history.html:71
 msgid "Alpha"
 msgstr "Alfa"
 
@@ -2985,31 +3229,47 @@ msgstr ""
 "Una nuova richiesta di rubinetto è stata completata. Puoi finanziare la "
 "richiesta qui"
 
-#: marketing/mails.py:161 marketing/mails.py:176 marketing/mails.py:208
+#: marketing/mails.py:161 marketing/mails.py:176 marketing/mails.py:191
+#: marketing/mails.py:223
 msgid "No Reply from Gitcoin.co"
 msgstr "Nessuna risposta da parte di Gitcoin.co"
 
 #: marketing/mails.py:172
+#, fuzzy
+#| msgid "New Faucet Request"
+msgid "New Token Request"
+msgstr "Nuova richiesta token"
+
+#: marketing/mails.py:173
+#, fuzzy
+#| msgid ""
+#| "A new faucet request was completed. You may fund the request here"
+msgid "A new token request was completed. You may fund the token request here"
+msgstr ""
+"Una nuova richiesta di token è stata completata. Puoi finanziare la "
+"richiesta di token qui"
+
+#: marketing/mails.py:187
 msgid " is out of gas"
 msgstr "è senza benzina"
 
-#: marketing/mails.py:173
+#: marketing/mails.py:188
 msgid "is down to "
 msgstr "è giù a"
 
-#: marketing/mails.py:205
+#: marketing/mails.py:220
 msgid "New External Bounty"
 msgstr "Nuova taglia esterna"
 
-#: marketing/mails.py:215 retail/templates/emails/faucet_request.html:24
+#: marketing/mails.py:230 retail/templates/emails/faucet_request.html:24
 msgid "Faucet Request Processed"
 msgstr "Richiesta di rubinetto elaborata"
 
-#: marketing/mails.py:230
+#: marketing/mails.py:245
 msgid "Faucet Request Rejected"
 msgstr "Richiesta di rubinetto respinta"
 
-#: marketing/mails.py:253
+#: marketing/mails.py:268
 msgid ""
 "⚡️  {len(bounties)} New Open Funded Issue{plural}{worth} matching your "
 "profile"
@@ -3017,35 +3277,35 @@ msgstr ""
 "⚡️ {len (taglie)} Nuovo Open Funded Numero {plural} {valore} corrispondente "
 "al tuo profilo"
 
-#: marketing/mails.py:309
+#: marketing/mails.py:324
 msgid "✉️ New Work Submission Inside for {} ✉️"
 msgstr "✉️ Nuova sottomissione del lavoro all&#39;interno per {} ✉️"
 
-#: marketing/mails.py:328
+#: marketing/mails.py:343
 msgid "😕 Work Submission Rejected for {} 😕"
 msgstr "😕 Invio lavoro rifiutato per {} 😕"
 
-#: marketing/mails.py:353
+#: marketing/mails.py:368
 msgid "🌈 Funds Paid for {} 🌈"
 msgstr "🌈 Fondi pagati per {} 🌈"
 
-#: marketing/mails.py:370
+#: marketing/mails.py:385
 msgid "⚡️ {} Meet {}: {}! "
 msgstr "⚡️ {} Meet {}: {}!"
 
-#: marketing/mails.py:425
+#: marketing/mails.py:440
 msgid "hour"
 msgstr "ora"
 
-#: marketing/mails.py:428
+#: marketing/mails.py:443
 msgid "😕 Your Funded Issue ({}) Expires In {} {} ... 😕"
 msgstr "😕 Il tuo importo finanziato ({}) scade tra {} {} ... 😕"
 
-#: marketing/mails.py:447
+#: marketing/mails.py:462
 msgid "Are you still working on '{}' ? "
 msgstr "Stai ancora lavorando su &quot;{}&quot;?"
 
-#: marketing/mails.py:463
+#: marketing/mails.py:478
 msgid "We've removed you from the task: '{}' ? "
 msgstr "Ti abbiamo rimosso dall&#39;attività: &#39;{}&#39;?"
 
@@ -3284,29 +3544,71 @@ msgstr "Il problema"
 msgid "Incentive problems in Open Source Software."
 msgstr "Incentivi problemi nel software Open Source."
 
-#: retail/templates/about.html:48
+#: retail/templates/about.html:43
+#, fuzzy
+#| msgid "Open Source Developer"
+msgid "Open Source Software Developers:"
+msgstr "Sviluppatori di Software Open Source:"
+
+#: retail/templates/about.html:44
+msgid "Create a lot of economic value."
+msgstr "Crea un sacco di valore economico."
+
+#: retail/templates/about.html:45
+msgid "Are Not Properly incentivized."
+msgstr "Non sono adeguatamente incentivati."
+
+#: retail/templates/about.html:52
+#, fuzzy
+#| msgid "Repo Maintainer?"
+msgid "Repo Maintainer:"
+msgstr "Repo Maintainer:"
+
+#: retail/templates/about.html:53
+msgid "Problem: Taming Issues Board"
+msgstr "Problema: Taming Issues Board"
+
+#: retail/templates/about.html:59
+#, fuzzy
+#| msgid "Contributors"
+msgid "Contributor:"
+msgstr "Collaboratore:"
+
+#: retail/templates/about.html:60
+msgid "Problem: Monetization"
+msgstr "Problema: monetizzazione"
+
+#: retail/templates/about.html:66
+msgid "Job Hunter"
+msgstr "Cacciatore di lavoro"
+
+#: retail/templates/about.html:67
+msgid "Problem: Prioritization"
+msgstr "Problema: priorità"
+
+#: retail/templates/about.html:77
 msgid "The Solution"
 msgstr "La soluzione"
 
-#: retail/templates/about.html:49
+#: retail/templates/about.html:78
 msgid "A decentralized App for value creation &amp; value capture."
 msgstr ""
 "Un&#39;app decentralizzata per la creazione di valore e l&#39;acquisizione "
 "di valore."
 
-#: retail/templates/about.html:63
+#: retail/templates/about.html:92
 msgid "The Origin Story"
 msgstr "La storia delle origini"
 
-#: retail/templates/about.html:64
+#: retail/templates/about.html:93
 msgid "Who, what, when, where, and most importantly, why."
 msgstr "Chi, cosa, quando, dove e, soprattutto, perché."
 
-#: retail/templates/about.html:70
+#: retail/templates/about.html:99
 msgid "Built with &lt;3 in Boulder Colorado USA"
 msgstr "Costruito con &lt;3 a Boulder Colorado, USA"
 
-#: retail/templates/about.html:72
+#: retail/templates/about.html:101
 msgid ""
 "<strong>Gitcoin</strong> was borne of the community in Boulder Colorado's "
 "thriving tech scene. One of the most amazing things about the Boulder "
@@ -3320,13 +3622,13 @@ msgstr ""
 "fondatori ha costruito le loro carriere fuori da consigli, tutoraggio e "
 "relazioni nella comunità tecnologica locale."
 
-#: retail/templates/about.html:77
+#: retail/templates/about.html:106
 #, fuzzy
 #| msgid "Goal: Grow Open Source"
 msgid "Mission: Grow Open Source"
 msgstr "Mission: Grow Open Source"
 
-#: retail/templates/about.html:79
+#: retail/templates/about.html:108
 msgid ""
 "<strong>Gitcoin</strong> is a project that combines the #givefirst mantra of"
 " the Boulder community with capitalistic incentives to write great software."
@@ -3340,11 +3642,11 @@ msgstr ""
 "<span>sviluppatori</span> e <span>finanzieri</span> a trovarsi l&#39;un "
 "l&#39;altro, Gitcoin sviluppa software open source."
 
-#: retail/templates/about.html:86
+#: retail/templates/about.html:115
 msgid "Cryptocurrencies provide new, decentralized, opportunities"
 msgstr "Le criptovalute offrono opportunità nuove e decentralizzate"
 
-#: retail/templates/about.html:88
+#: retail/templates/about.html:117
 msgid ""
 "<strong>Gitcoin</strong> is built upon the Ethereum network, and the "
 "solidity smart contract programming language. Ethereum provides "
@@ -3360,7 +3662,7 @@ msgstr ""
 "gli attori sono incentivati ​​a fornire valore e i casi limite vengono "
 "gestiti senza dover coinvolgere meccanismi legacy di applicazione legale."
 
-#: retail/templates/about.html:95
+#: retail/templates/about.html:124
 #, fuzzy
 #| msgid ""
 #| "The founder of Gitcoin, <a href=\"http://linkedin.com/in/owocki/\">Kevin "
@@ -3378,15 +3680,15 @@ msgstr ""
 #| "stronger the community is, the more successful open source projects are. The"
 #| " stronger open source projects are, the stronger the community is."
 msgid ""
-"The founder of Gitcoin, \n"
-"            <a href=\"http://linkedin.com/in/owocki/\" target=\"_blank\" rel=\"noopener noreferrer\">Kevin Owocki</a> has experience as an organizer of \n"
-"            <a href=\"http://boulderstartupweek.com\" target=\"_blank\" rel=\"noopener noreferrer\">Boulder Startup Week</a>, \n"
-"            <a href=\"http://igniteboulder.com\" target=\"_blank\" rel=\"noopener noreferrer\">Ignite Boulder</a>, \n"
-"            <a href=\"https://startupcto.io\" target=\"_blank\" rel=\"noopener noreferrer\">StartupCTO.io</a>, \n"
-"            <a href=\"https://www.meetup.com/Boulder-Blockchain/\" target=\"_blank\" rel=\"noopener noreferrer\">Boulder Blockchain Meetup</a> and the open source projects \n"
-"            <a href=\"https://github.com/owocki/pytrader\" target=\"_blank\" rel=\"noopener noreferrer\">pytrader</a>, \n"
-"            <a href=\"https://github.com/owocki/adblock-to-bitcoin\" target=\"_blank\" rel=\"noopener noreferrer\">adblock-to-bitcoin</a>, \n"
-"            <a href=\"https://github.com/youvegoteth/youvegoteth.github.io/\" target=\"_blank\" rel=\"noopener noreferrer\">YouveGotETH</a>, & \n"
+"The founder of Gitcoin,\n"
+"            <a href=\"http://linkedin.com/in/owocki/\" target=\"_blank\" rel=\"noopener noreferrer\">Kevin Owocki</a> has experience as an organizer of\n"
+"            <a href=\"http://boulderstartupweek.com\" target=\"_blank\" rel=\"noopener noreferrer\">Boulder Startup Week</a>,\n"
+"            <a href=\"http://igniteboulder.com\" target=\"_blank\" rel=\"noopener noreferrer\">Ignite Boulder</a>,\n"
+"            <a href=\"https://startupcto.io\" target=\"_blank\" rel=\"noopener noreferrer\">StartupCTO.io</a>,\n"
+"            <a href=\"https://www.meetup.com/Boulder-Blockchain/\" target=\"_blank\" rel=\"noopener noreferrer\">Boulder Blockchain Meetup</a> and the open source projects\n"
+"            <a href=\"https://github.com/owocki/pytrader\" target=\"_blank\" rel=\"noopener noreferrer\">pytrader</a>,\n"
+"            <a href=\"https://github.com/owocki/adblock-to-bitcoin\" target=\"_blank\" rel=\"noopener noreferrer\">adblock-to-bitcoin</a>,\n"
+"            <a href=\"https://github.com/youvegoteth/youvegoteth.github.io/\" target=\"_blank\" rel=\"noopener noreferrer\">YouveGotETH</a>, &\n"
 "            <a href=\"https://github.com/owocki/coloradocoin\" target=\"_blank\" rel=\"noopener noreferrer\">ColoradoCoin</a>. The stronger the community is, the more successful open source projects are. The stronger open source projects are, the stronger the community is.\n"
 "          "
 msgstr ""
@@ -3401,64 +3703,64 @@ msgstr ""
 "            <a href=\"https://github.com/youvegoteth/youvegoteth.github.io/\" target=\"_blank\" rel=\"noopener noreferrer\"> YouveGotETH </a>, &\n"
 "            <a href=\"https://github.com/owocki/coloradocoin\" target=\"_blank\" rel=\"noopener noreferrer\"> ColoradoCoin </a>. Più forte è la comunità, più i progetti open source di successo sono. I progetti open source più forti sono, più forte è la comunità."
 
-#: retail/templates/about.html:114
+#: retail/templates/about.html:143
 msgid "Team"
 msgstr "Squadra"
 
-#: retail/templates/about.html:115
+#: retail/templates/about.html:144
 msgid "Built By &amp; For Open Source Software Developers"
 msgstr "Sviluppato da e per sviluppatori di software open source"
 
-#: retail/templates/about.html:150
+#: retail/templates/about.html:179
 msgid "Join Us"
 msgstr "Unisciti a noi"
 
-#: retail/templates/about.html:151
+#: retail/templates/about.html:180
 msgid "Want to Grow Open Source? We want to hear from you."
 msgstr "Vuoi far crescere l&#39;open source? Vogliamo sentire da voi."
 
-#: retail/templates/about.html:154
+#: retail/templates/about.html:183
 msgid "Open Gitcoin Roles"
 msgstr "Apri i ruoli di Gitcoin"
 
-#: retail/templates/about.html:156
+#: retail/templates/about.html:185
 msgid "Front End Developer"
 msgstr "Sviluppatore Front End"
 
-#: retail/templates/about.html:158 retail/templates/about.html:164
-#: retail/templates/about.html:179 retail/templates/index.html:40
+#: retail/templates/about.html:187 retail/templates/about.html:193
+#: retail/templates/about.html:208 retail/templates/index.html:40
 msgid "Learn More"
 msgstr "Per saperne di più"
 
-#: retail/templates/about.html:162
+#: retail/templates/about.html:191
 msgid "Entrepeneur In Residence"
 msgstr "Entrepeneur In Residence"
 
-#: retail/templates/about.html:168
+#: retail/templates/about.html:197
 msgid "Technical Project Manager"
 msgstr "Responsabile tecnico di progetto"
 
-#: retail/templates/about.html:170
+#: retail/templates/about.html:199
 msgid "Contact us"
 msgstr "Contattaci"
 
-#: retail/templates/about.html:175
+#: retail/templates/about.html:204
 msgid "Open Bounties.Network Roles"
 msgstr "Open Bounties.Retwork di rete"
 
-#: retail/templates/about.html:177
+#: retail/templates/about.html:206
 msgid "Data Scientist"
 msgstr "Data Scientist"
 
-#: retail/templates/about.html:188
+#: retail/templates/about.html:217
 msgid "Features of Gitcoin"
 msgstr "Caratteristiche di Gitcoin"
 
-#: retail/templates/about.html:197
+#: retail/templates/about.html:226
 msgid "Fund Issues"
 msgstr "Problemi del fondo"
 
-#: retail/templates/about.html:198
+#: retail/templates/about.html:227
 msgid ""
 "Fund a feature, bug, or security issue that you care about, &amp; get "
 "results."
@@ -3466,22 +3768,22 @@ msgstr ""
 "Finanzia un problema di funzionalità, bug o sicurezza che ti interessa e "
 "ottieni risultati."
 
-#: retail/templates/about.html:206
+#: retail/templates/about.html:235
 msgid "Tip Developers"
 msgstr "Sviluppatori di punta"
 
-#: retail/templates/about.html:207
+#: retail/templates/about.html:236
 msgid ""
 "Reward contributors who have added value to your repository with a tip."
 msgstr ""
 "Contribuenti ricompensa che hanno aggiunto valore al tuo repository con un "
 "suggerimento."
 
-#: retail/templates/about.html:217
+#: retail/templates/about.html:246
 msgid "Find Work"
 msgstr "Trovare lavoro"
 
-#: retail/templates/about.html:218
+#: retail/templates/about.html:247
 msgid ""
 "Find interesting projects to work on, interesting people to work with. Try "
 "projects before you fully commit to them. Add value wherever you go."
@@ -3490,11 +3792,11 @@ msgstr ""
 "lavorare. Prova i progetti prima che ti impegni pienamente. Aggiungi valore "
 "ovunque tu vada."
 
-#: retail/templates/about.html:226
+#: retail/templates/about.html:255
 msgid "All on Github.com"
 msgstr "Tutto su Github.com"
 
-#: retail/templates/about.html:227
+#: retail/templates/about.html:256
 msgid ""
 "The best thing about Gitcoin is that it works where you do your work; on "
 "Github."
@@ -3502,27 +3804,57 @@ msgstr ""
 "La cosa migliore di Gitcoin è che funziona dove fai il tuo lavoro; su "
 "Github."
 
-#: retail/templates/about.html:234
+#: retail/templates/about.html:264
 #, fuzzy
 #| msgid "Gitcoin Toolbox"
-msgid "View our Toolbox"
-msgstr "Guarda la nostra Toolbox"
+msgid "Checkout our Toolbox"
+msgstr "Controlla il nostro Toolbox"
 
-#: retail/templates/about.html:241
+#: retail/templates/about.html:272
 msgid "Mission-Driven"
 msgstr "Mission-Driven"
 
-#: retail/templates/about.html:242
+#: retail/templates/about.html:273
 msgid "Everything we do is to support our mission to 'Grow Open Source'"
 msgstr ""
 "Tutto ciò che facciamo è supportare la nostra missione di &quot;Grow Open "
 "Source&quot;"
 
-#: retail/templates/about.html:254
+#: retail/templates/about.html:282
 #, fuzzy
 #| msgid "Read About Our Mission"
 msgid "Read about our Mission"
 msgstr "Leggi la nostra missione"
+
+#: retail/templates/activity.html:49
+msgid "tipped"
+msgstr "tipped"
+
+#: retail/templates/activity.html:54
+#, fuzzy
+#| msgid "Fund an Issue"
+msgid "funded a new issue: "
+msgstr "ha finanziato un nuovo problema:"
+
+#: retail/templates/activity.html:56
+#, fuzzy
+#| msgid "You have started work."
+msgid "started work: "
+msgstr "iniziato il lavoro:"
+
+#: retail/templates/activity.html:58
+msgid "stopped work: "
+msgstr "fermato il lavoro:"
+
+#: retail/templates/activity.html:60
+#, fuzzy
+#| msgid "Cancel Bounty"
+msgid "canceled bounty: "
+msgstr "taglia annullata:"
+
+#: retail/templates/activity.html:62
+msgid "increased funding: "
+msgstr "aumento dei finanziamenti:"
 
 #: retail/templates/admin/index.html:38
 #, python-format
@@ -3557,31 +3889,47 @@ msgstr "Impersona gli utenti"
 msgid "Administrative Tasks"
 msgstr "Attività amministrative"
 
-#: retail/templates/admin/index.html:109
+#: retail/templates/admin/index.html:112
 msgid "Recent Actions"
 msgstr "Azioni recenti"
 
-#: retail/templates/admin/index.html:110
+#: retail/templates/admin/index.html:113
 msgid "My Actions"
 msgstr "Le mie azioni"
 
-#: retail/templates/admin/index.html:114
+#: retail/templates/admin/index.html:117
 msgid "None available"
 msgstr "Nessuno disponibile"
 
-#: retail/templates/admin/index.html:128
+#: retail/templates/admin/index.html:131
 msgid "Unknown content"
 msgstr "Contenuto sconosciuto"
 
-#: retail/templates/contributor_landing.html:59
+#: retail/templates/community.html:7
+msgid "These are the ones who have opted to be public about it"
+msgstr "Questi sono quelli che hanno scelto di essere pubblici al riguardo"
+
+#: retail/templates/contributor_landing.html:72
 #, fuzzy
 #| msgid "Gitcoin Slack Community"
 msgid "Gitcoin Community"
 msgstr "Comunità di Gitcoin"
 
-#: retail/templates/contributor_landing.html:74
+#: retail/templates/contributor_landing.html:87
 msgid "<span class=\\"
 msgstr "<span class = \\"
+
+#: retail/templates/contributor_landing.html:88
+#, fuzzy
+#| msgid "Start Work"
+msgid "Start exploring"
+msgstr "Inizia ad esplorare"
+
+#: retail/templates/contributor_landing.html:88
+#, fuzzy
+#| msgid "bounty_skills"
+msgid "bounties worth"
+msgstr "taglie vale la pena"
 
 #: retail/templates/cookielaw/banner.html:4
 msgid "COOKIE_INFO_HEADER"
@@ -3599,23 +3947,23 @@ msgstr "COOKIE_INFO_OK"
 msgid "Status"
 msgstr "Stato"
 
-#: retail/templates/emails/bounty.html:116
+#: retail/templates/emails/bounty.html:119
 msgid "Expires:"
 msgstr "Scade:"
 
-#: retail/templates/emails/bounty.html:119
+#: retail/templates/emails/bounty.html:122
 msgid "Specs:"
 msgstr "Specifiche:"
 
-#: retail/templates/emails/bounty.html:122
+#: retail/templates/emails/bounty.html:125
 msgid "Type:"
 msgstr "Genere:"
 
-#: retail/templates/emails/bounty.html:124
+#: retail/templates/emails/bounty.html:127
 msgid "Experience Level:"
 msgstr "Livello di esperienza:"
 
-#: retail/templates/emails/bounty.html:135
+#: retail/templates/emails/bounty.html:138
 msgid "View on Gitcoin.co"
 msgstr "Visualizza su Gitcoin.co"
 
@@ -4287,26 +4635,64 @@ msgstr "Annulla l&#39;iscrizione"
 msgid "from this list."
 msgstr "da questa lista."
 
-#: retail/templates/error.html:22
+#: retail/templates/error.html:23
+#, fuzzy
+#| msgid "Know what you're looking for."
+msgid "We can't find the page you are looking for."
+msgstr "Non riusciamo a trovare la pagina che stai cercando."
+
+#: retail/templates/error.html:26
 #, python-format
 msgid "Error %(code)s."
 msgstr "Errore %(code)s"
 
-#: retail/templates/error.html:23
+#: retail/templates/error.html:27
+#, fuzzy
+#| msgid ""
+#| "_Even the bots_ aren't sure what happened, but we'll look into it. <a "
+#| "href=\"mailto:founders@gitcoin.co\">Contact us</a> if you think this is "
+#| "something that shouldn't have happened."
 msgid ""
-"_Even the bots_ aren't sure what happened, but we'll look into it. <a "
-"href=\"mailto:founders@gitcoin.co\">Contact us</a> if you think this is "
-"something that shouldn't have happened."
+"Even the bots aren't sure what happened, but we'll look into it.<br>\n"
+"      <a href=\"mailto:founders@gitcoin.co\">Contact us</a>\n"
+"      if you think this is something that shouldn't have happened.\n"
+"      "
 msgstr ""
-"_ Anche i robot non sono sicuri di quello che è successo, ma lo esamineremo."
-" <a href=\"mailto:founders@gitcoin.co\">Contattaci</a> se pensi che questo "
-"sia qualcosa che non dovrebbe essere successo."
+"Anche i robot non sono sicuri di quello che è successo, ma ci daremo un'occhiata. <br>\n"
+"      <a href=\"mailto:founders@gitcoin.co\"> Contattaci </a>\n"
+"      se pensi che questo sia qualcosa che non dovrebbe essere successo"
 
-#: retail/templates/gas.html:68
-msgid "Predicted Confirmation Times vs Gas Usage"
-msgstr "Tempi di conferma previsti rispetto all&#39;utilizzo del gas"
+#: retail/templates/gas.html:55
+msgid "Gas Tradeoff Tool"
+msgstr "Strumento per il taglio del gas"
 
-#: retail/templates/gas.html:72
+#: retail/templates/gas.html:59
+#, fuzzy
+#| msgid "View Repo Maintainer Guide"
+msgid "View Live Data in 2d"
+msgstr "Visualizza dati in tempo reale in 2d"
+
+#: retail/templates/gas.html:62
+msgid "View Historical in 3d"
+msgstr "Visualizza storico in 3d"
+
+#: retail/templates/gas.html:66
+#, fuzzy
+#| msgid "Predicted Confirmation Times vs Gas Usage"
+msgid "Historical Predicted Confirmation Times (x axis) vs Gas Usage (y axis)"
+msgstr ""
+"Tempi di conferma storici previsti (asse x) rispetto all'utilizzo del gas "
+"(asse y)"
+
+#: retail/templates/gas.html:73
+#, fuzzy
+#| msgid "Predicted Confirmation Times vs Gas Usage"
+msgid "Live Predicted Confirmation Times (x axis) vs Gas Usage (y axis)"
+msgstr ""
+"Tempi di conferma previsti dal vivo (asse x) rispetto all'utilizzo del gas "
+"(asse y)"
+
+#: retail/templates/gas.html:76 retail/templates/gas_history.html:90
 #, fuzzy
 #| msgid ""
 #| "To see the data in chart format, check out <a "
@@ -4322,11 +4708,15 @@ msgstr ""
 "href=\"https://ethgasstation.info/predictionTable.php\" target=\"_blank\" "
 "rel=\"noopener noreferrer\"> ETH Gas Station </a>."
 
-#: retail/templates/gas.html:170
+#: retail/templates/gas.html:135 retail/templates/gas.html:203
+msgid "Confirmation time"
+msgstr "Tempo di conferma"
+
+#: retail/templates/gas.html:231
 msgid "Useful Links"
 msgstr "link utili"
 
-#: retail/templates/gas.html:171
+#: retail/templates/gas.html:232
 #, fuzzy
 #| msgid ""
 #| "To see the data in chart format, check out <a "
@@ -4341,7 +4731,7 @@ msgstr ""
 "href=\"https://ethgasstation.info/predictionTable.php\" target=\"_blank\" "
 "rel=\"noopener noreferrer\"> ETH Gas Station </a>"
 
-#: retail/templates/gas.html:174
+#: retail/templates/gas.html:235
 msgid ""
 "To see this information persisted in-browser check out <a "
 "href=https://chrome.google.com/webstore/detail/ethereum-gas-price-"
@@ -4353,21 +4743,217 @@ msgstr ""
 "extens/innfmlnnhfcebjcnfopadflecemoddnp target=\"_blank\" rel=\"noopener "
 "noreferrer\">questa estensione di Chrome</a>"
 
-#: retail/templates/gas.html:179 retail/templates/help.html:126
+#: retail/templates/gas_calculator.html:33
+msgid "Gitcoin Contract Gas Calculator"
+msgstr "Gitcoin Contract Gas Calculator"
+
+#: retail/templates/gas_faq.html:14 retail/templates/help.html:126
 msgid "FAQ"
 msgstr "FAQ"
 
-#: retail/templates/gas.html:180
+#: retail/templates/gas_faq.html:15
+msgid "I need gas money, where can I get it?"
+msgstr "Ho bisogno di soldi per il gas, dove posso averlo?"
+
+#: retail/templates/gas_faq.html:17
+msgid "Why isn't my Ethereum transaction confirming?"
+msgstr "Perché la transazione di Ethereum non viene confermata?"
+
+#: retail/templates/gas_faq.html:19
+#, fuzzy
+#| msgid "What is Metamask?"
+msgid "What is Ethereum?"
+msgstr "Cos'è Ethereum?"
+
+#: retail/templates/gas_faq.html:21
+#, fuzzy
+#| msgid "Email Address"
+msgid "Ethereum FAQ"
+msgstr "Domande frequenti su Ethereum"
+
+#: retail/templates/gas_faq.html:23
+#, fuzzy
+#| msgid "What is Metamask?"
+msgid "What is gas?"
+msgstr "Cos'è il gas?"
+
+#: retail/templates/gas_faq.html:25
 msgid "Why do we need to pay gas?"
 msgstr "Perché dobbiamo pagare il gas?"
 
-#: retail/templates/gas.html:182
+#: retail/templates/gas_faq.html:27
 msgid "What are the advantages of Ethereum-based applications??"
 msgstr "Quali sono i vantaggi delle applicazioni basate su Ethereum?"
 
-#: retail/templates/gas.html:184
+#: retail/templates/gas_faq.html:29
 msgid "I can't figure this out.  Help!"
 msgstr "Non riesco a capirlo. Aiuto!"
+
+#: retail/templates/gas_faq.html:31
+msgid "Gas Market; Advanced Reading"
+msgstr "Mercato del gas; Lettura avanzata"
+
+#: retail/templates/gas_faq.html:34
+#, fuzzy
+#| msgid "Contact Gitcoin Core"
+msgid "Contact the Gitcoin core team via slack."
+msgstr "Contatta la squadra principale di Gitcoin via libera."
+
+#: retail/templates/gas_faucet_list.html:18
+#, fuzzy
+#| msgid "Gitcoin Faucet"
+msgid "Gitcoin Mainnet Faucet"
+msgstr "Gitcoin Mainnet Faucet"
+
+#: retail/templates/gas_faucet_list.html:22
+#, fuzzy
+#| msgid "Rinkeby"
+msgid "Rinkeby Testnet"
+msgstr "Rinkeby Testnet"
+
+#: retail/templates/gas_faucet_list.html:33
+#, fuzzy
+#| msgid "Ropsten"
+msgid "Ropsten Testnet"
+msgstr "Ropsten Testnet"
+
+#: retail/templates/gas_history.html:84
+msgid "Gas price needed to confirm within"
+msgstr "Prezzo del gas necessario per confermare entro"
+
+#: retail/templates/gas_history.html:84
+msgid "minute"
+msgstr "minuto"
+
+#: retail/templates/gas_intro.html:13
+#, fuzzy
+#| msgid "Featured Videos"
+msgid "Overview Video"
+msgstr "Panoramica video"
+
+#: retail/templates/gas_intro.html:17
+msgid "All about Gas"
+msgstr "Tutto su Gas"
+
+#: retail/templates/gas_intro.html:21
+msgid ""
+"Gas is the payment that is sent to the ethereum node operators (also called "
+"miners), in exchange for execution of a smart contract. Paying miners on "
+"Ether is not unlike how you pay your electric company for electricity."
+msgstr ""
+"Il gas è il pagamento che viene inviato agli operatori del nodo ethereum "
+"(chiamati anche minatori), in cambio dell'esecuzione di un contratto "
+"intelligente. Pagare i minatori su Ether non è diverso da come paghi la tua "
+"compagnia elettrica per l'elettricità."
+
+#: retail/templates/gas_intro.html:23
+msgid ""
+"Gas is denominated in ETH or in 1/10**18 of a ETH, also called a WEI.  You "
+"may also see gas denominated in GWEI, which stands for giga-wei, and is "
+"10**9 of a WEI."
+msgstr ""
+"Il gas è denominato in ETH o in 1/10 ** 18 di un ETH, anche chiamato WEI. Si"
+" può anche vedere il gas denominato in GWEI, che sta per giga-wei, ed è 10 "
+"** 9 di un WEI."
+
+#: retail/templates/gas_intro.html:26
+msgid "Gas & You."
+msgstr "Gas & Tu."
+
+#: retail/templates/gas_intro.html:28
+msgid ""
+"When you submit a new transaction to the ethereum network (example to the "
+"right), you may be asked to input a Gas Price. In most cases, the gas price "
+"will be prefilled for you, but you can also override it to make your "
+"transaction confirm quicker (more gas) or cheaper (less gas)."
+msgstr ""
+"Quando si invia una nuova transazione alla rete ethereum (esempio a destra),"
+" è possibile che venga richiesto di inserire un prezzo gas. Nella maggior "
+"parte dei casi, il prezzo del gas sarà precompilato per te, ma puoi anche "
+"sostituirlo per rendere più rapida la transazione (più gas) o meno (meno "
+"gas)."
+
+#: retail/templates/gas_intro.html:30
+msgid "Gas & Mining"
+msgstr "Gas & Mining"
+
+#: retail/templates/gas_intro.html:32
+msgid ""
+"This quote from website CryptoCompare, articultes some of the design of the "
+"gas system on Ethereum:"
+msgstr ""
+"Questa citazione dal sito web CryptoCompare, articola alcuni dei progetti "
+"del sistema di gas su Ethereum:"
+
+#: retail/templates/gas_intro.html:34
+msgid ""
+"'Gas is the internal pricing for running a transaction or contract in "
+"Ethereum. It's to decouple the unit of Ether (ETH) and its market value from"
+" the unit to measure computational use (gas). Thus, a miner can decide to "
+"increase or decrease the use of gas according to its needs, while if need "
+"be, the price of gas can be increased or decreased accordingly, avoiding a "
+"situation in which an increase in the price of ETH would cause the need to "
+"change all gas prices. This is also a response to the discussion in bitcoin "
+"about fees structure ~ "
+msgstr ""
+"\"Il gas è il prezzo interno per l'esecuzione di una transazione o un "
+"contratto in Ethereum. È per separare l'unità di Ether (ETH) e il suo valore"
+" di mercato dall'unità per misurare l'uso computazionale (gas). Pertanto, un"
+" minatore può decidere di aumentare o diminuire l'uso del gas in base alle "
+"proprie esigenze, mentre, se necessario, il prezzo del gas può essere "
+"aumentato o diminuito di conseguenza, evitando una situazione in cui un "
+"aumento del prezzo dell'Eth causerebbe il bisogno di cambiare tutti i prezzi"
+" del gas. Questa è anche una risposta alla discussione in bitcoin sulla "
+"struttura delle tariffe ~"
+
+#: retail/templates/gas_intro.html:36
+#, fuzzy
+#| msgid "What is the difference between Gitcoin and Gitcoin Core?"
+msgid "What is if the difference between gas price & gas limit?"
+msgstr ""
+"Che cosa succede se la differenza tra il prezzo del gas e il limite del gas?"
+
+#: retail/templates/gas_intro.html:38
+msgid ""
+"Gas limit is how many cycles (think opcodes) your transaction will take.."
+msgstr ""
+"Il limite di gas è il numero di cicli (pensa opcodes) che la transazione "
+"richiederà .."
+
+#: retail/templates/gas_intro.html:40
+msgid "Gas price is how much you'll pay per unit of gas"
+msgstr "Il prezzo del gas è quanto pagherai per unità di gas"
+
+#: retail/templates/gas_intro.html:42
+msgid ""
+"When you multiply the gas price * gas limit, youll get the cost of the tx."
+msgstr ""
+"Quando si moltiplica il prezzo del gas * limite di gas, si otterrà il costo "
+"del tx."
+
+#: retail/templates/gas_intro.html:44
+msgid "Gas & Decentralization"
+msgstr "Gas e decentramento"
+
+#: retail/templates/gas_intro.html:46
+msgid ""
+"Gas is important because it incentivizes miners on the Ethereum network to "
+"process transactions.  Ethereum is a decentralized network, which means your"
+" application is unstoppable.  Unstoppable applications would be possible "
+"without gas!"
+msgstr ""
+"Il gas è importante perché incentiva i minatori della rete Ethereum a "
+"elaborare le transazioni. Ethereum è una rete decentralizzata, il che "
+"significa che la tua applicazione è inarrestabile. Le applicazioni "
+"inarrestabili sarebbero possibili senza gas!"
+
+#: retail/templates/gas_intro.html:48
+msgid ""
+"More questions? Check out the rest of the Gitcoin Gas Station, above, or "
+"reach out on slack."
+msgstr ""
+"Più domande? Controlla il resto della stazione di servizio Gitcoin, sopra, o"
+" allunga la mano."
 
 #: retail/templates/getgitcoin.html:21
 msgid "I Am A:"
@@ -4431,7 +5017,7 @@ msgid "Read Whitepaper"
 msgstr "Leggi il white paper"
 
 #: retail/templates/getgitcoin.html:83
-#: retail/templates/landing/contributor/hero.html:48
+#: retail/templates/landing/contributor/hero.html:49
 #: retail/templates/shared/hero.html:44
 msgid "Join Gitcoin Slack"
 msgstr "Unisciti a Gitcoin Slack"
@@ -4476,7 +5062,7 @@ msgstr "Visualizza casi studio"
 msgid "Featured Videos"
 msgstr "video correlati"
 
-#: retail/templates/help.html:84 retail/templates/shared/nav.html:68
+#: retail/templates/help.html:84 retail/templates/shared/nav.html:71
 msgid "How it works"
 msgstr "Come funziona"
 
@@ -4735,11 +5321,15 @@ msgid "Post A Bounty."
 msgstr "Pubblica un Bounty."
 
 #: retail/templates/index.html:188
+#, fuzzy
+#| msgid ""
+#| "Fund an well specified issue on your Github repo which is a good\n"
+#| "                  candidate for external contribution."
 msgid ""
-"Fund an well specified issue on your Github repo which is a good\n"
+"Fund a well specified issue on your Github repo which is a good\n"
 "                  candidate for external contribution."
 msgstr ""
-"Finanzia un problema ben specificato sul tuo repository Github, che è buono\n"
+"Finanzia un problema ben specificato sul tuo repository Github che è buono\n"
 "                  candidato per contributo esterno."
 
 #: retail/templates/index.html:193
@@ -4953,25 +5543,43 @@ msgstr ""
 "Fatti pagare con ETH o con qualsiasi token ERC-20 per lavorare sulla tua "
 "passione."
 
+#: retail/templates/landing/contributor/explorer.html:33
+#, fuzzy
+#| msgid "Open Funded Issues"
+msgid "Open Funded"
+msgstr "Aperto Finanziato"
+
+#: retail/templates/landing/contributor/explorer.html:33
+#, fuzzy
+#| msgid "Worker"
+msgid "Work"
+msgstr "Lavoro"
+
+#: retail/templates/landing/contributor/explorer.html:38
+#, fuzzy
+#| msgid "Get Started"
+msgid "Get Started With"
+msgstr "Inizia con"
+
 #: retail/templates/landing/contributor/hero.html:23
 #, fuzzy
 #| msgid "Join Gitcoin Slack"
 msgid "Join the Gitcoin"
 msgstr "Unisciti al Gitcoin"
 
-#: retail/templates/landing/contributor/hero.html:25
+#: retail/templates/landing/contributor/hero.html:26
 #, fuzzy
 #| msgid "Community"
 msgid "Developer Community"
 msgstr "Community degli sviluppatori"
 
-#: retail/templates/landing/contributor/hero.html:29
+#: retail/templates/landing/contributor/hero.html:30
 #, fuzzy
 #| msgid "Gitcoin is the easiest way to find paid work in open source."
 msgid "Gitcoin is the easiest way to monetize work"
 msgstr "Gitcoin è il modo più semplice per monetizzare il lavoro"
 
-#: retail/templates/landing/contributor/hero.html:31
+#: retail/templates/landing/contributor/hero.html:32
 #, fuzzy
 #| msgid "Incentive problems in Open Source Software."
 msgid "in Open Source Software."
@@ -5000,128 +5608,155 @@ msgstr "stampa"
 msgid "None found."
 msgstr "Nessuno trovato."
 
-#: retail/templates/mission.html:39
+#: retail/templates/mission.html:41
 #, fuzzy
 #| msgid ""
 #| "GITCOIN IS A <span class=\"text-highlight-dark-blue\">MISSION</span>\n"
 #| "                    AND <span class=\"text-highlight-dark-blue\">VALUE-ORIENTED</span>"
 msgid ""
 "\n"
-"          GITCOIN IS A\n"
-"          <span class=\"text-highlight-dark-blue\">MISSION</span> AND\n"
-"          <span class=\"text-highlight-dark-blue\">VALUE-ORIENTED</span>\n"
-"          "
+"              Gitcoin is a\n"
+"              <span class=\"text-highlight-dark-blue\">mission</span> and\n"
+"              <span class=\"text-highlight-dark-blue\">value-oriented</span>\n"
+"              "
 msgstr ""
 "\n"
-"GITCOIN È A\n"
-"          <span class = \"text-highlight-dark-blue\"> MISSION </ span> AND\n"
-"          <span class = \"text-highlight-dark-blue\"> VALUE-ORIENTED </ span>"
+"Gitcoin è un\n"
+"              <span class = \"text-highlight-dark-blue\"> missione </ span> e\n"
+"              <span class = \"text-highlight-dark-blue\"> orientato al valore </ span>"
 
-#: retail/templates/mission.html:45
+#: retail/templates/mission.html:47
 #, fuzzy
 #| msgid ""
 #| "<span class=\"text-highlight-dark-blue\">DISTRIBUTED MOVEMENT</span> AIMED "
 #| "TO <span class=\"text-highlight-dark-blue\">DRIVE</span>"
 msgid ""
 "\n"
-"          <span class=\"text-highlight-dark-blue\">\n"
-"            DISTRIBUTED MOVEMENT\n"
-"          </span> AIMED TO\n"
-"          <span class=\"text-highlight-dark-blue\">DRIVE</span>\n"
-"          "
+"              <span class=\"text-highlight-dark-blue\">\n"
+"                distributed movement\n"
+"              </span> aimed to\n"
+"              <span class=\"text-highlight-dark-blue\">drive</span>\n"
+"              "
 msgstr ""
 "\n"
 "<span class = \"text-highlight-dark-blue\">\n"
-"            MOVIMENTO DISTRIBUITO\n"
-"          </ span> AIMED TO\n"
-"          <span class = \"text-highlight-dark-blue\"> DRIVE </ span>"
+"                movimento distribuito\n"
+"              </ span> mirato a\n"
+"              <span class = \"text-highlight-dark-blue\"> unità </ span>"
 
-#: retail/templates/mission.html:52
+#: retail/templates/mission.html:54
 #, fuzzy
 #| msgid ""
 #| "<span class=\"text-highlight-dark-blue\">CHANGE</span> AND <span "
 #| "class=\"text-highlight-pink\">GROW OPEN SOURCE</span>"
 msgid ""
 "\n"
-"          <span class=\"text-highlight-dark-blue\"> CHANGE </span> AND\n"
-"          <span class=\"text-highlight-pink\">GROW OPEN SOURCE</span>\n"
-"          "
+"              <span class=\"text-highlight-dark-blue\"> change </span> and\n"
+"              <span class=\"text-highlight-pink\">grow open source</span>\n"
+"              "
 msgstr ""
 "\n"
-"<span class = \"text-highlight-dark-blue\"> CHANGE </ span> AND\n"
-"          <span class = \"text-highlight-pink\"> GROW OPEN SOURCE </ span>"
+"<span class = \"text-highlight-dark-blue\"> cambia </ span> e\n"
+"              <span class = \"text-highlight-pink\"> crescere open source </ span>"
 
-#: retail/templates/mission.html:66
+#: retail/templates/mission.html:68
 #, fuzzy
 #| msgid "<span class=\"text-highlight-green\">We</span> Want"
 msgid ""
 "\n"
-"        <span class=\"text-highlight-green\">We</span> Want\n"
-"        "
+"            <span class=\"text-highlight-green\">We</span> Want\n"
+"            "
 msgstr ""
 "\n"
 "<span class = \"text-highlight-green\"> Noi </ span> Vuoi"
 
-#: retail/templates/mission.html:82
+#: retail/templates/mission.html:83
+#, fuzzy
+#| msgid ""
+#| "\n"
+#| "            We want to build a world in which everyone has the <strong>financial\n"
+#| "            leverage to leave</strong> their job.\n"
+#| "          "
 msgid ""
 "\n"
-"            We want to build a world in which everyone has the <strong>financial\n"
-"            leverage to leave</strong> their job.\n"
-"          "
+"                We want to build a world in which everyone has the <strong>financial\n"
+"                leverage to leave</strong> their job.\n"
+"              "
 msgstr ""
 "\n"
 "Vogliamo costruire un mondo in cui tutti abbiano i <strong> finanziari\n"
-"            sfruttare per lasciare </ strong> il loro lavoro."
+"                sfruttare per lasciare </ strong> il loro lavoro."
 
-#: retail/templates/mission.html:97
+#: retail/templates/mission.html:98
+#, fuzzy
+#| msgid ""
+#| "\n"
+#| "            We want it to be as <strong>easy to find work in software</strong>, as it is for an\n"
+#| "            Uber driver to find a ride today.\n"
+#| "          "
 msgid ""
 "\n"
-"            We want it to be as <strong>easy to find work in software</strong>, as it is for an\n"
-"            Uber driver to find a ride today.\n"
-"          "
+"                We want it to be as <strong>easy to find work in software</strong>, as it is for an\n"
+"                Uber driver to find a ride today.\n"
+"              "
 msgstr ""
 "\n"
 "Vogliamo che sia come <strong> facile trovare lavoro nel software </ strong>, come lo è per un\n"
-"            Uber driver per trovare un passaggio oggi."
+"                Uber driver per trovare un passaggio oggi."
 
-#: retail/templates/mission.html:112
+#: retail/templates/mission.html:113
+#, fuzzy
+#| msgid ""
+#| "We want to build a network with <strong>aligned incentives</strong>, "
+#| "especially between capital &amp; labour."
 msgid ""
-"We want to build a network with <strong>aligned incentives</strong>, "
-"especially between capital &amp; labour."
+"\n"
+"                  We want to build a network with <strong>aligned incentives</strong>, especially between capital &amp; labour.\n"
+"                "
 msgstr ""
-"Vogliamo costruire una rete con <strong> incentivi allineati </ strong>, in "
-"particolare tra capitale & amp; lavoro."
+"\n"
+"Vogliamo costruire una rete con <strong> incentivi allineati </ strong>, in particolare tra capitale & amp; lavoro."
 
-#: retail/templates/mission.html:133
+#: retail/templates/mission.html:136
 #, fuzzy
 #| msgid "<span class=\"text-highlight-green\">We</span> Value"
 msgid ""
 "\n"
-"        <span class=\"text-highlight-green\">We</span> Believe\n"
-"        "
+"            <span class=\"text-highlight-green\">We</span> Believe\n"
+"            "
 msgstr ""
 "\n"
 "<span class = \"text-highlight-green\"> Noi </ span> crediamo"
 
-#: retail/templates/mission.html:149
+#: retail/templates/mission.html:152
+#, fuzzy
+#| msgid ""
+#| "\n"
+#| "           We believe in open standards and fat protocols, and have built Gitcoin with StandardBounties -- an Open, Free, Fair, Bounty Protocol on Ethereum.\n"
+#| "          "
 msgid ""
 "\n"
-"           We believe in open standards and fat protocols, and have built Gitcoin with StandardBounties -- an Open, Free, Fair, Bounty Protocol on Ethereum.\n"
-"          "
+"              We believe in open standards and fat protocols, and have built Gitcoin with StandardBounties -- an Open, Free, Fair, Bounty Protocol on Ethereum.\n"
+"              "
 msgstr ""
 "\n"
 "Crediamo negli standard aperti e nei protocolli grassi e abbiamo creato Gitcoin con StandardBounties - un protocollo aperto, libero, corretto e di qualità su Ethereum."
 
-#: retail/templates/mission.html:163
+#: retail/templates/mission.html:166
+#, fuzzy
+#| msgid ""
+#| "\n"
+#| "            We believe that an ICO and tokenization is not the best business model for our dapp. We dot not have a token\n"
+#| "          "
 msgid ""
 "\n"
-"            We believe that an ICO and tokenization is not the best business model for our dapp. We dot not have a token\n"
-"          "
+"                We believe that an ICO and tokenization is not the best business model for our dapp. We do not have a token\n"
+"              "
 msgstr ""
 "\n"
-"Crediamo che un ICO e la tokenizzazione non siano il miglior modello di business per il nostro dapp. Puntiamo non avere un token"
+"Crediamo che un ICO e la tokenizzazione non siano il miglior modello di business per il nostro dapp. Non abbiamo un token"
 
-#: retail/templates/mission.html:177
+#: retail/templates/mission.html:180
 msgid ""
 "We believe that blockchain is a game-changer for funding of Open Source. We "
 "believe that Open Source Funding and Open Source Jobs will be built on Open "
@@ -5131,97 +5766,281 @@ msgstr ""
 "Source. Crediamo che il finanziamento open source e i lavori open source "
 "saranno basati su open source money"
 
-#: retail/templates/mission.html:191
+#: retail/templates/mission.html:193
 #, fuzzy
 #| msgid "<span class=\"text-highlight-green\">We</span> Value"
 msgid ""
 "\n"
-"        <span class=\"text-highlight-green\">We</span> Value\n"
-"        "
+"            <span class=\"text-highlight-green\">We</span> Value\n"
+"            "
 msgstr ""
 "\n"
 "<span class = \"text-highlight-green\"> Noi </ span> Valore"
 
-#: retail/templates/mission.html:209
+#: retail/templates/mission.html:211
 msgid "Collaboration"
 msgstr "Collaborazione"
 
-#: retail/templates/mission.html:219
+#: retail/templates/mission.html:221
 msgid "Intellectual honesty"
 msgstr "Onestà intellettuale"
 
-#: retail/templates/mission.html:232
+#: retail/templates/mission.html:234
 msgid "Humbleness"
 msgstr "Umiltà"
 
-#: retail/templates/mission.html:243
+#: retail/templates/mission.html:245
 msgid "Empathy"
 msgstr "Empatia"
 
-#: retail/templates/mission.html:256
+#: retail/templates/mission.html:258
 msgid "Stress Reducers"
 msgstr "Riduzione dello stress"
 
-#: retail/templates/mission.html:267
+#: retail/templates/mission.html:269
 #, fuzzy
 #| msgid "Activity"
 msgid "Inclusivity"
 msgstr "inclusività"
 
-#: retail/templates/mission.html:279
+#: retail/templates/mission.html:281
 msgid "Giving first"
 msgstr "Dando prima"
 
-#: retail/templates/mission.html:299
+#: retail/templates/mission.html:301
 #, fuzzy
 #| msgid "<span class=\"text-highlight-green\">We</span> Interact"
 msgid ""
 "\n"
-"        <span class=\"text-highlight-green\">We</span> Interact\n"
-"        "
+"            <span class=\"text-highlight-green\">We</span> Interact\n"
+"            "
 msgstr ""
 "\n"
 "<span class = \"text-highlight-green\"> We </ span> Interact"
 
-#: retail/templates/mission.html:315
+#: retail/templates/mission.html:317
 msgid "We happen to the world. We don't let the world happen to us."
 msgstr "Noi succediamo al mondo. Non lasciamo che il mondo accada a noi."
 
-#: retail/templates/mission.html:324
+#: retail/templates/mission.html:326
 msgid "We show, don't tell."
 msgstr "Mostriamo, non dire."
 
-#: retail/templates/mission.html:336
+#: retail/templates/mission.html:338
 msgid "We are thoughtful, clear, and direct."
 msgstr "Siamo riflessivi, chiari e diretti."
 
-#: retail/templates/mission.html:348
+#: retail/templates/mission.html:350
 msgid "We seek balance."
 msgstr "Cerchiamo l'equilibrio."
 
-#: retail/templates/mission.html:360
+#: retail/templates/mission.html:362
 msgid "We challenge the status quo &amp; are willing to be challenged."
 msgstr "Sfidiamo lo status quo & amp; sono disposti a essere sfidati."
 
-#: retail/templates/mission.html:372
+#: retail/templates/mission.html:374
 msgid "We fix things twice."
 msgstr "Sistemiamo le cose due volte."
 
-#: retail/templates/mission.html:384
+#: retail/templates/mission.html:386
 msgid "We identify and validate our assumptions."
 msgstr "Identifichiamo e convalidiamo le nostre ipotesi."
 
-#: retail/templates/mission.html:396
+#: retail/templates/mission.html:398
 msgid "We care about people (not just tasks)"
 msgstr "Ci preoccupiamo delle persone (non solo dei compiti)"
 
-#: retail/templates/mission.html:408
+#: retail/templates/mission.html:410
 msgid "We listen. "
 msgstr "Noi ascoltiamo."
 
-#: retail/templates/mission.html:420
+#: retail/templates/mission.html:422
 msgid "We value pragmatism over dogmatism."
 msgstr "Apprezziamo il pragmatismo rispetto al dogmatismo."
+
+#: retail/templates/newtoken.html:56
+#, fuzzy
+#| msgid "New Faucet Request"
+msgid "New Token Request Form"
+msgstr "Nuovo modulo di richiesta token"
+
+#: retail/templates/newtoken.html:70 retail/templates/settings/email.html:21
+#: retail/templates/slack.html:76
+#: retail/templates/whitepaper_accesscode.html:42
+#: retail/templates/whitepaper_new.html:109
+msgid "Email address"
+msgstr "Indirizzo email"
+
+#: retail/templates/newtoken.html:74
+#, fuzzy
+#| msgid "ETH Address"
+msgid "Token Address"
+msgstr "Indirizzo del token"
+
+#: retail/templates/newtoken.html:78
+msgid "Token Symbol"
+msgstr "Simbolo del token"
+
+#: retail/templates/newtoken.html:82
+msgid "Token Decimal Places"
+msgstr "Token Decimal Places"
+
+#: retail/templates/newtoken.html:86
+#, fuzzy
+#| msgid "Network"
+msgid "Token Network"
+msgstr "Rete di token"
+
+#: retail/templates/newtoken.html:101
+#, fuzzy
+#| msgid "Gitcoin is *not* a token."
+msgid "This token is not a security token."
+msgstr "Questo token non è un token di sicurezza."
+
+#: retail/templates/presskit.html:32
+#, fuzzy
+#| msgid "Gitcoin Profile"
+msgid "Gitcoin Press Kit"
+msgstr "Gitcoin Press Kit"
+
+#: retail/templates/presskit/colors.html:21
+msgid "Colors"
+msgstr "Colori"
+
+#: retail/templates/presskit/illustrations.html:21
+#, fuzzy
+#| msgid "Collaboration"
+msgid "Illustrations"
+msgstr "Illustrazioni"
+
+#: retail/templates/presskit/illustrations.html:25
+#: retail/templates/presskit/logo.html:31
+#: retail/templates/presskit/logo.html:39
+msgid "Download Logo"
+msgstr "Scarica il logo"
+
+#: retail/templates/presskit/illustrations.html:31
+msgid "Download Regulus"
+msgstr "Scarica Regulus"
+
+#: retail/templates/presskit/illustrations.html:37
+msgid "Download Prime"
+msgstr "Scarica Prime"
+
+#: retail/templates/presskit/illustrations.html:43
+msgid "Download Divine"
+msgstr "Scarica Divine"
+
+#: retail/templates/presskit/logo.html:21
+#, fuzzy
+#| msgid "Logout"
+msgid "Logo"
+msgstr "Logo"
+
+#: retail/templates/presskit/logo.html:23
+msgid ""
+" Gitcoin is a mission and value-oriented distributed movement intended to "
+"drive change and grow open source. The Gitcoin logo may be used per the "
+"following guidelines.  "
+msgstr ""
+"Gitcoin è una missione e un movimento distribuito orientato al valore inteso"
+" a guidare il cambiamento ea crescere nell'open source. Il logo Gitcoin può "
+"essere utilizzato secondo le seguenti linee guida."
+
+#: retail/templates/presskit/logo.html:24
+msgid ""
+"Do not alter the Gitcoin logo or mark in any way, including changing the "
+"colors, angle, or dimension."
+msgstr ""
+"Non alterare il logo o il marchio Gitcoin in alcun modo, inclusa la modifica"
+" di colori, angoli o dimensioni."
+
+#: retail/templates/presskit/logo.html:25
+msgid ""
+"Ensure that the Gitcoin mark and logo type stands out from surrounding text "
+"or is legible."
+msgstr ""
+"Assicurati che il marchio e il logo Gitcoin risalti dal testo circostante o "
+"sia leggibile."
+
+#: retail/templates/presskit/resources.html:21
+#, fuzzy
+#| msgid "source"
+msgid "Resources"
+msgstr "risorse"
+
+#: retail/templates/presskit/resources.html:30
+#, fuzzy
+#| msgid "View Github Repo"
+msgid "GitHub Repo"
+msgstr "GitHub Repo"
+
+#: retail/templates/presskit/resources.html:32
+#, fuzzy
+#| msgid "View Bounty"
+msgid "View repository"
+msgstr "Visualizza repository"
+
+#: retail/templates/presskit/resources.html:34
+msgid "Download repository"
+msgstr "Scarica il repository"
+
+#: retail/templates/presskit/resources.html:48
+#, fuzzy
+#| msgid "Press"
+msgid "Press Kit"
+msgstr "Premere Kit"
+
+#: retail/templates/presskit/resources.html:49
+msgid "dropbox.com, 84 MB"
+msgstr "dropbox.com, 84 MB"
+
+#: retail/templates/presskit/usage.html:22
+msgid "Usage"
+msgstr "uso"
+
+#: retail/templates/presskit/usage.html:24
+msgid ""
+"The Gitcoin logo has been designed to\n"
+"effectively promote the brand in its unaltered state and should not be modified or corrupted in any manner. Improper use of the logo compromises the integrity of our brand and makes legal protection more difficult."
+msgstr ""
+"Il logo Gitcoin è stato progettato per\n"
+"promuovere efficacemente il marchio nel suo stato inalterato e non dovrebbe essere modificato o corrotto in alcun modo. L'uso improprio del logo compromette l'integrità del nostro marchio e rende più difficile la protezione legale."
+
+#: retail/templates/presskit/usage.html:26
+msgid ""
+"These examples represent some of the\n"
+"possible misuses—careful consideration\n"
+"should be given to circumstances that are not illustrated in these examples. "
+msgstr ""
+"Questi esempi rappresentano alcuni dei\n"
+"possibili abusi, attenta considerazione\n"
+"dovrebbe essere dato a circostanze che non sono illustrate in questi esempi."
+
+#: retail/templates/presskit/usage.html:34
+msgid "<span>Do Not</span> Add Elements "
+msgstr "<span> Non </ span> Aggiungi elementi"
+
+#: retail/templates/presskit/usage.html:38
+msgid "<span>Do Not</span> Alter Logo Colors "
+msgstr "<span> Non </ span> Alter Logo Colors"
+
+#: retail/templates/presskit/usage.html:42
+msgid "<span>Do Not</span> DISTORT OR CHANGE PROPORTIONS OF THE LOGO "
+msgstr "<span> Non </ span> DISTORTA O MODIFICA PROPORZIONI DEL LOGO"
+
+#: retail/templates/presskit/usage.html:46
+msgid "<span>Do Not</span>  ADD DROP SHADOW OR FILTER EFFECT "
+msgstr ""
+"<span> Non </ span> AGGIUNGI L'OMBRA DELLA GOCCIA O L'EFFETTO FILTRANTE"
+
+#: retail/templates/presskit/usage.html:50
+msgid "<span>Do Not</span> PLACE THE LOGO ON AN ANGLE "
+msgstr "<span> Non </ span> POSIZIONA IL LOGO SU UN ANGOLO"
+
+#: retail/templates/presskit/usage.html:54
+msgid "<span>Do Not</span> PLACE THE LOGO ON COMPLEX BACKGROUND "
+msgstr "<span> Non </ span> LUOGHI IL LOGO SUL BACKGROUND COMPLESSO"
 
 #: retail/templates/process_accesscode_request.html:32
 msgid "Process"
@@ -5526,12 +6345,6 @@ msgstr "Test"
 msgid "Email Preferences"
 msgstr "preferenze email"
 
-#: retail/templates/settings/email.html:21 retail/templates/slack.html:76
-#: retail/templates/whitepaper_accesscode.html:42
-#: retail/templates/whitepaper_new.html:109
-msgid "Email address"
-msgstr "Indirizzo email"
-
 #: retail/templates/settings/email.html:23
 msgid "We will never share your email with anyone else"
 msgstr "Non condivideremo mai la tua email con nessun altro"
@@ -5772,11 +6585,15 @@ msgstr ""
 "5px;\" href = \"https://medium.com/gitcoin/gitcoin-q2-update-c31e751889c8\">"
 " Aggiornamento Gitcoin Q2 </a>."
 
+#: retail/templates/shared/bulk_payout_form.html:27
+msgid "Percent"
+msgstr "Per cento"
+
 #: retail/templates/shared/footer.html:60
 msgid "Product"
 msgstr "Prodotto"
 
-#: retail/templates/shared/footer.html:62 retail/templates/shared/nav.html:89
+#: retail/templates/shared/footer.html:62 retail/templates/shared/nav.html:92
 msgid "Tools"
 msgstr "Utensili"
 
@@ -5793,8 +6610,8 @@ msgstr "Missione"
 msgid "Careers"
 msgstr "Opportunità di lavoro"
 
-#: retail/templates/shared/footer.html:69 retail/templates/shared/nav.html:59
-#: retail/utils.py:224
+#: retail/templates/shared/footer.html:69 retail/templates/shared/nav.html:62
+#: retail/utils.py:227
 msgid "Results"
 msgstr "risultati"
 
@@ -5836,11 +6653,17 @@ msgstr "(Email una volta a settimana max, e non vendiamo mai i tuoi dati.)"
 msgid "Want to get help on your repo? Easily get started!"
 msgstr "Vuoi ricevere aiuto sul tuo repo? Inizia facilmente!"
 
-#: retail/templates/shared/nav.html:94 retail/templates/shared/nav.html:99
+#: retail/templates/shared/nav.html:59
+#, fuzzy
+#| msgid "Mission"
+msgid "Vision"
+msgstr "Visione"
+
+#: retail/templates/shared/nav.html:97 retail/templates/shared/nav.html:102
 msgid "FUND ISSUE"
 msgstr "FONDO FONDO"
 
-#: retail/templates/shared/nav.html:107
+#: retail/templates/shared/nav.html:110
 msgid "LOG IN"
 msgstr "ACCESSO"
 
@@ -5893,6 +6716,378 @@ msgstr "Gitcoin non condividerà mai la tua email con nessun altro."
 #: retail/templates/slack.html:84
 msgid "Sign in here"
 msgstr "Registrati qui"
+
+#: retail/templates/vision.html:39
+msgid "We believe Blockchain is the TCP/IP of Money"
+msgstr "Crediamo che Blockchain sia il TCP / IP del denaro"
+
+#: retail/templates/vision.html:47
+msgid ""
+"The internet changed the way we exchange information; Blockchain changes the"
+" way we exchange value.."
+msgstr ""
+"Internet ha cambiato il modo in cui scambiamo informazioni; Blockchain "
+"cambia il modo in cui scambiamo valore .."
+
+#: retail/templates/vision.html:48
+msgid ""
+"When the internet came along, p2p content changed the way the world "
+"exchanged information; from our media, to our arts, to how we consume our "
+"news."
+msgstr ""
+"Quando Internet è arrivato, il contenuto di p2p ha cambiato il modo in cui "
+"il mondo scambiava le informazioni; dai nostri media, alle nostre arti, a "
+"come consumiamo le nostre notizie."
+
+#: retail/templates/vision.html:49
+msgid ""
+"We believe that DLT (distributed ledger technology), especially Ethereum, "
+"has the potential to change the way the world exchanges value.s"
+msgstr ""
+"Riteniamo che la tecnologia DLT (distributed ledger technology), in "
+"particolare Ethereum, abbia il potenziale per cambiare il modo in cui il "
+"mondo scambia valore."
+
+#: retail/templates/vision.html:50
+msgid ""
+"What changes will that portend for the world in the 21st century?  We think "
+"that it could change the way we do purchases, make investments, and how we "
+"think about work."
+msgstr ""
+"Quali cambiamenti porteranno per il mondo nel 21 ° secolo? Pensiamo che "
+"potrebbe cambiare il modo in cui facciamo acquisti, facciamo investimenti e "
+"come pensiamo al lavoro."
+
+#: retail/templates/vision.html:51
+msgid ""
+"We are at the beginning of a decades-long shift in how humanity exchanges "
+"value in the network'd age."
+msgstr ""
+"Siamo all'inizio di un decennio in cui l'umanità scambia valore nell'era "
+"della rete."
+
+#: retail/templates/vision.html:59
+msgid "We Believe In Using Markets for Good"
+msgstr "Crediamo nell'usare i mercati per sempre"
+
+#: retail/templates/vision.html:67
+msgid "Using markets for good"
+msgstr "Usare i mercati per sempre"
+
+#: retail/templates/vision.html:68
+msgid ""
+"We belive that markets can be used to create good in the world;  Our network"
+" is a rare 'triple win'; funders get work on demand; workers get more good "
+"work; and Gitcoin builds a viable blockchain business on the core technology"
+" underlying it all."
+msgstr ""
+"Crediamo che i mercati possano essere usati per creare del bene nel mondo; "
+"La nostra rete è una rara \"tripla vittoria\"; i finanziatori ottengono "
+"lavoro su richiesta; i lavoratori ottengono più buon lavoro; e Gitcoin "
+"costruisce una valida attività di blockchain sulla tecnologia di base alla "
+"base di tutto."
+
+#: retail/templates/vision.html:72
+msgid "We want to make sure it'll be easy to find good jobs in the future"
+msgstr ""
+"Vogliamo assicurarci che sia facile trovare buoni posti di lavoro in futuro"
+
+#: retail/templates/vision.html:73
+msgid ""
+"We want to see a world where it's as easy for a developer to find a new job "
+"as it is for an Uber driver to find a rider today.  By creating more "
+"opportunity for developers, we hope to provide more leverage for developers "
+"in the 21st century workplace."
+msgstr ""
+"Vogliamo vedere un mondo in cui è facile per uno sviluppatore trovare un "
+"nuovo lavoro, così come lo è per un pilota Uber trovare un cavaliere oggi. "
+"Creando maggiori opportunità per gli sviluppatori, speriamo di fornire "
+"maggiore leva agli sviluppatori nel luogo di lavoro del 21 ° secolo."
+
+#: retail/templates/vision.html:77
+msgid "Digital Humanitarianism"
+msgstr "Umanitarismo digitale"
+
+#: retail/templates/vision.html:78
+msgid ""
+"In world that can sometimes seem uncertain, gloomy, indifferent, or even "
+"distopian, our vision to embrace humanity's built in capacities of community"
+" and value-creation in our networked future."
+msgstr ""
+"In un mondo che a volte può sembrare incerto, cupo, indifferente o "
+"addirittura distopico, la nostra visione abbraccia le capacità intrinseche "
+"dell'umanità e la creazione di valore nel nostro futuro in rete."
+
+#: retail/templates/vision.html:87
+msgid "We Believe Satisfying Work Is About More Than Just Money"
+msgstr "Crediamo che il lavoro soddisfacente sia più di un semplice denaro"
+
+#: retail/templates/vision.html:97
+msgid "Blockchain will evolve rapidly over time"
+msgstr "Blockchain si evolverà rapidamente nel tempo"
+
+#: retail/templates/vision.html:98
+msgid ""
+"This is our best bet as to how the space is going to evolve. We're visual "
+"thinkers; & by building a map of where we think the world going, we can map "
+"out how Gitcoin can help"
+msgstr ""
+"Questa è la nostra migliore scommessa su come lo spazio si evolverà. Siamo "
+"pensatori visivi; & costruendo una mappa di dove pensiamo che il mondo sta "
+"andando, possiamo delineare come Gitcoin può aiutare"
+
+#: retail/templates/vision.html:99
+msgid ""
+"WARNING: Much of this section is massively speculative; We don't *know* for "
+"sure about any of this, but we think that by putting this timeline out into "
+"the world we can inspire conversation in our community."
+msgstr ""
+"ATTENZIONE: Gran parte di questa sezione è fortemente speculativa; Non "
+"sappiamo * di sicuro su nulla di tutto questo, ma pensiamo che inserendo "
+"questa linea temporale nel mondo possiamo ispirare la conversazione nella "
+"nostra comunità."
+
+#: retail/templates/vision.html:105
+msgid "Now"
+msgstr "Adesso"
+
+#: retail/templates/vision.html:107
+msgid "Sharding / POS in research stage"
+msgstr "Sharding / POS in fase di ricerca"
+
+#: retail/templates/vision.html:108
+#, fuzzy
+#| msgid "Marketing"
+msgid "Bear Market"
+msgstr "Mercato orso"
+
+#: retail/templates/vision.html:109
+msgid ""
+"Gitcoin is doing some Revenue Testing (Tokenization, Secret Project, "
+"CodeFund, Grants, Bounties)"
+msgstr ""
+"Gitcoin sta facendo dei proventi dei ricavi (Tokenizzazione, Progetto "
+"segreto, CodeFund, Sovvenzioni, Taglie)"
+
+#: retail/templates/vision.html:113
+msgid "1 Year out"
+msgstr "1 anno fuori"
+
+#: retail/templates/vision.html:115
+msgid "Sharding / POS goes live."
+msgstr "Sharding / POS diventa live."
+
+#: retail/templates/vision.html:116
+msgid "Stablecoins are an accepted store of value."
+msgstr "Gli Stablecoins sono una riserva di valore accettata."
+
+#: retail/templates/vision.html:117
+msgid "Sideways Market"
+msgstr "Mercato laterale"
+
+#: retail/templates/vision.html:118
+msgid ""
+"Some ICOs will launch / many will fail to get market traction / most ICOs "
+"will fail altogether"
+msgstr ""
+"Alcuni ICO verranno avviati / molti non riusciranno a ottenere la trazione "
+"sul mercato / la maggior parte degli ICO fallirà del tutto"
+
+#: retail/templates/vision.html:119
+msgid "Consensys hits 1k people"
+msgstr "Consensys colpisce 1k persone"
+
+#: retail/templates/vision.html:120
+msgid "Gitcoin has figured out a scalable Revenue model. Starting to scale."
+msgstr ""
+"Gitcoin ha scoperto un modello di entrate scalabile. Iniziando alla scala."
+
+#: retail/templates/vision.html:124
+msgid "3 Years out"
+msgstr "3 anni fuori"
+
+#: retail/templates/vision.html:126
+msgid "Ethereum hits 1 billion tx / day"
+msgstr "Ethereum colpisce 1 miliardo di tx al giorno"
+
+#: retail/templates/vision.html:127
+msgid "The flippening happens"
+msgstr "L'irriverenza accade"
+
+#: retail/templates/vision.html:128
+msgid ""
+"Blockchain disrupts the dollar for store of wealth for nation states. To "
+"subvert sanctions at first and weaken the influence of he US dollar for "
+"countries like Russia"
+msgstr ""
+"Blockchain sconvolge il dollaro per il deposito di ricchezza per gli stati "
+"nazionali. In primo luogo, sovvertire le sanzioni e indebolire l'influenza "
+"del dollaro statunitense in paesi come la Russia"
+
+#: retail/templates/vision.html:129
+msgid "Identity on blockchain becomes a very big deal"
+msgstr "L'identità sulla blockchain diventa un grosso problema"
+
+#: retail/templates/vision.html:130
+msgid "Megabull Market"
+msgstr "Mercato Megabull"
+
+#: retail/templates/vision.html:131
+msgid "Consensys members use tokens everyday"
+msgstr "I membri Consensys usano token ogni giorno"
+
+#: retail/templates/vision.html:132
+msgid "Gitcoin is a $20mm / year business"
+msgstr "Gitcoin è un'azienda da $ 20mm / anno"
+
+#: retail/templates/vision.html:136
+msgid "5 Years out"
+msgstr "5 anni fuori"
+
+#: retail/templates/vision.html:138
+msgid ""
+"It is as easy for a software developer to find work as it is for an Uber "
+"driver to find a ride 10 years ago."
+msgstr ""
+"È facile per uno sviluppatore di software trovare lavoro così come lo è per "
+"un guidatore Uber trovare un passaggio 10 anni fa."
+
+#: retail/templates/vision.html:139
+msgid "Gitcoin is a $50mm / year business."
+msgstr "Gitcoin è un'azienda da $ 50mm / anno."
+
+#: retail/templates/vision.html:143
+msgid "10 Years out"
+msgstr "10 anni fuori"
+
+#: retail/templates/vision.html:145
+#, python-format
+msgid ""
+"Whether or not ETH ‘wins’, cryptocurrency will be utilized for a non-trivial"
+" amount of total currency transactions. (i.e. at least 10%% of total M1 "
+"money supply)"
+msgstr ""
+"Indipendentemente dal fatto che ETH \"vinca\", la criptovaluta verrà "
+"utilizzata per una quantità non trascurabile di transazioni valutarie "
+"totali. (vale a dire almeno il 10 %% della quantità totale di moneta M1)"
+
+#: retail/templates/vision.html:152
+msgid "Easy, right? ;)"
+msgstr "Facile, giusto? ;)"
+
+#: retail/templates/vision.html:163
+msgid "Open Questions about the Web 3.0 Future"
+msgstr "Domande aperte sul futuro del Web 3.0"
+
+#: retail/templates/vision.html:164
+msgid ""
+"We're not quite so sure about these parts of the blockchain-ized world."
+msgstr "Non siamo così sicuri su queste parti del mondo blockchainizzato."
+
+#: retail/templates/vision.html:174
+#, fuzzy
+#| msgid "Blockchain Evangelist"
+msgid "Blockchain"
+msgstr "Blockchain"
+
+#: retail/templates/vision.html:175
+msgid ""
+"Will blockchain be in everyone's wallet (like the Web Browser), or will it "
+"be hidden in the back? (like Linux)"
+msgstr ""
+"Il blockchain sarà nel portafogli di tutti (come il browser Web) o sarà "
+"nascosto nella parte posteriore? (come Linux)"
+
+#: retail/templates/vision.html:176
+msgid ""
+"What will Identity on web3 look like?  Will there be a dFb (decentralized "
+"facebook), and if so, how will it differ from web 2.0 Facebook?"
+msgstr ""
+"Come sarà l'identità su web3? Ci sarà un dFb (Facebook decentralizzato) e, "
+"in caso affermativo, come sarà diverso dal web 2.0 di Facebook?"
+
+#: retail/templates/vision.html:177
+msgid ""
+"What web3 wallet will everyone use? Will they use many?  What will the "
+"marekt for wallets look like as the space matures?"
+msgstr ""
+"Quale portafoglio web3 useranno tutti? Ne useranno molti? Come sarà il "
+"marekt per i portafogli mentre lo spazio matura?"
+
+#: retail/templates/vision.html:178
+msgid "What will maturation/consolidation in the blockchain space look like?"
+msgstr "Come sarà la maturazione / consolidamento nello spazio blockchain?"
+
+#: retail/templates/vision.html:186
+msgid "OSS"
+msgstr "OSS"
+
+#: retail/templates/vision.html:187
+msgid ""
+"What is a scalable funding model for developers (esp OSS) in a blockchain "
+"world?"
+msgstr ""
+"Che cos'è un modello di finanziamento scalabile per gli sviluppatori "
+"(specialmente l'OSS) in un mondo blockchain?"
+
+#: retail/templates/vision.html:188
+msgid "Can blockchain solve"
+msgstr "Può risolvere blockchain"
+
+#: retail/templates/vision.html:189
+msgid ""
+"Is centralization of code hosting a problem?  What would a decentralized "
+"code-collaboration tool look like?"
+msgstr ""
+"La centralizzazione del codice ospita un problema? Come sarebbe uno "
+"strumento di collaborazione tra codice decentralizzato?"
+
+#: retail/templates/vision.html:197
+msgid "The Future Of Work"
+msgstr "Il futuro del lavoro"
+
+#: retail/templates/vision.html:198
+msgid ""
+"In a scenario in which the future of work moves onto the blockchain, how "
+"will ancillary services (Retirement, Insurance, Health Care) works? "
+msgstr ""
+"In uno scenario in cui il futuro del lavoro si sposta sulla blockchain, come"
+" funzionano i servizi ausiliari (pensionamento, assicurazione, assistenza "
+"sanitaria)?"
+
+#: retail/templates/vision.html:199
+msgid "Are these government based, “employer” based, or none of the above?"
+msgstr ""
+"Sono basati su questo governo, \"datore di lavoro\" o nessuno dei "
+"precedenti?"
+
+#: retail/templates/vision.html:200
+msgid ""
+"What will a mesh network of jobs look like?  How will work change in a many-"
+"to-many working-relationship world?"
+msgstr ""
+"Come sarà una rete mesh di lavori? Come cambierà il lavoro in un mondo di "
+"relazioni di lavoro molti-a-molti?"
+
+#: retail/templates/vision.html:208
+msgid ""
+"Got input that can inform our vision?  Want to debate about this?  Want to "
+"nerd out?"
+msgstr ""
+"Hai input che possono informare la nostra visione? Vuoi discutere di questo?"
+" Vuoi nerd fuori?"
+
+#: retail/templates/vision.html:209
+msgid "GET IN TOUCH"
+msgstr "RICEVI IN TOCCO"
+
+#: retail/templates/vision.html:216
+msgid "Want to see how Gitcoin is making our vision come true?"
+msgstr "Vuoi vedere come Gitcoin sta realizzando la nostra visione?"
+
+#: retail/templates/vision.html:217
+msgid "SEE OUR RESULTS"
+msgstr "VEDERE I NOSTRI RISULTATI"
 
 #: retail/templates/whitepaper_accesscode.html:31
 msgid "Got an access code?"
@@ -6090,7 +7285,7 @@ msgstr "Sentiti libero di selezionarne più di uno."
 msgid "Who are you?  What is your interest in the whitepaper?"
 msgstr "Tu chi sei? Qual è il tuo interesse per il white paper?"
 
-#: retail/utils.py:225
+#: retail/utils.py:228
 msgid ""
 "Gitcoin is transparent by design.  Here are some stats about our core bounty"
 " product."
@@ -6098,7 +7293,7 @@ msgstr ""
 "Gitcoin è trasparente per design. Ecco alcune statistiche sul nostro "
 "prodotto principale di taglie."
 
-#: retail/views.py:39
+#: retail/views.py:45
 msgid ""
 "Once we had merged in multiple language support from a bounty, it unblocked "
 "the          path to all other translations, and what better way to get lots"
@@ -6113,7 +7308,7 @@ msgstr ""
 "come 20 richieste di lingua e 10 richieste di estrazione linguistica. È "
 "stata una magia totale."
 
-#: retail/views.py:45
+#: retail/views.py:51
 msgid ""
 "​By design or not, there is an element of trust inherent within Gitcoin. "
 "This isn’t          the bad kind of “trust” that we are all trying to move "
@@ -6126,7 +7321,7 @@ msgstr ""
 "migliore di fiducia della comunità che si stabilisce attraverso il processo "
 "di generosità."
 
-#: retail/views.py:50
+#: retail/views.py:56
 #, fuzzy
 #| msgid ""
 #| "Gitcoin helps us to finally close out the issues we’ve been meaning to get "
@@ -6138,7 +7333,7 @@ msgstr ""
 "Gitcoin ci aiuta a chiudere definitivamente i problemi che intendevamo "
 "aggirare troppo a lungo"
 
-#: retail/views.py:53
+#: retail/views.py:59
 msgid ""
 "uPort is still in the process of Open Sourcing all of our code, so Gitcoin "
 "at the present moment,          helps uPort plant seeds within the growing "
@@ -6154,7 +7349,7 @@ msgstr ""
 "campagne di marketing in corso, possiamo usare le taglie per essere presenti"
 " di fronte ai potenziali sviluppatori con cui vogliamo impegnarci."
 
-#: retail/views.py:59
+#: retail/views.py:65
 msgid ""
 "Although we’ve only hired two developers, there is no doubt that we could "
 "have sourced more.          Gitcoin has been the strongest hiring signal in "
@@ -6164,7 +7359,7 @@ msgstr ""
 "potuto procurarci di più. Gitcoin è stato il segnale di assunzione più forte"
 " in tutte le assunzioni che abbia mai fatto."
 
-#: retail/views.py:63
+#: retail/views.py:69
 msgid ""
 "On a Friday I needed a front end done for a project due in 48 hours.  When "
 "everyone I knew was busy,          gitcoiners were able to help me make my "
@@ -6175,7 +7370,7 @@ msgstr ""
 "grado di aiutarmi a rispettare la scadenza, con un lavoro veloce, "
 "conveniente e di alta qualità."
 
-#: retail/views.py:69
+#: retail/views.py:75
 msgid ""
 "A community at the intersection of blockchain and open source. A place for "
 "developers to collaborate in a new system, where open source money builds in"
@@ -6185,12 +7380,12 @@ msgstr ""
 "sviluppatori possono collaborare in un nuovo sistema, in cui i soldi open "
 "source aumentano nella monetizzazione per i repository open source."
 
-#: retail/views.py:80 retail/views.py:201
+#: retail/views.py:86
 msgid "Get the Latest Gitcoin News! Join Our Newsletter."
 msgstr ""
 "Ricevi le ultime notizie su Gitcoin! Iscriviti alla nostra newsletter."
 
-#: retail/views.py:87
+#: retail/views.py:95
 msgid ""
 "When I found Gitcoin I was gladly surprised that it took one thing and did "
 "it well.          It took the Ethereum tech and used it as a bridge to "
@@ -6203,7 +7398,7 @@ msgstr ""
 "ancora nelle sue fasi iniziali, penso che sia pieno di possibilità di "
 "crescita."
 
-#: retail/views.py:92
+#: retail/views.py:100
 msgid ""
 " think the great thing about GitCoin is how easy it is for projects to reach"
 " out to worldwide talent.          GitCoin helps to find people who have "
@@ -6217,7 +7412,7 @@ msgstr ""
 "Grazie a GitCoin un sacco di interessanti progetti OpenSource hanno attirato"
 " la mia attenzione!"
 
-#: retail/views.py:97
+#: retail/views.py:105
 msgid ""
 "The bounty process with Gitcoin is pretty amazing.  Just go on the website, "
 "find an issue you can          work on, you claim it.  All you do then is "
@@ -6235,7 +7430,7 @@ msgstr ""
 "comunità allentata. Rinnova il mercato delle freelance nelle mani della "
 "comunità!"
 
-#: retail/views.py:104
+#: retail/views.py:112
 msgid ""
 "I really like Gitcoin because it’s allowed me to get involved in some really"
 " interesting          Open Source Projects.  I’ve written code for "
@@ -6247,7 +7442,7 @@ msgstr ""
 "MyEtherWallet e Gitcoin stesso. Penso che Gitcoin stia diventando una grande"
 " risorsa per l'ecosistema di Ethereum."
 
-#: retail/views.py:109
+#: retail/views.py:117
 msgid ""
 "I came across Gitcoin 3 months ago.  I was hearing lots of ideas about "
 "projects involving          cryptocurrencies, and I kept thinking \"what "
@@ -6261,7 +7456,7 @@ msgstr ""
 " in cui non puoi solo aiutare a ripiegare su Github, ma ricavarne dei soldi."
 " È così semplice e funziona."
 
-#: retail/views.py:115
+#: retail/views.py:123
 msgid ""
 "I'm in love with Gitcoin. It isn't only a platform, it's a community that "
 "gives me the          opportunity to open my network and work with amazing "
@@ -6277,7 +7472,7 @@ msgstr ""
 "source è incredibile, ed è anche meglio guadagnarsi da vivere, penso sia il "
 "futuro dello sviluppo."
 
-#: retail/views.py:123
+#: retail/views.py:131
 msgid ""
 "A community for developers to collaborate and monetize their skills while "
 "working         on Open Source projects through bounties."
@@ -6286,22 +7481,46 @@ msgstr ""
 " proprie competenze mentre lavorano a progetti Open Source attraverso le "
 "taglie."
 
-#: retail/views.py:340
+#: retail/views.py:206
+#, fuzzy
+#| msgid "Open Source Repo Maintainer"
+msgid " Open Source Opportunities"
+msgstr "Opportunità open source"
+
+#: retail/views.py:210
+#, fuzzy
+#| msgid "Be the first to know about new funded issues."
+msgid "Be the first to find out about newly posted bounties."
+msgstr "Puoi essere il primo a scoprire le munizioni appena pubblicate."
+
+#: retail/views.py:351
 msgid "Gitcoin is a mission-driven organization."
 msgstr "Gitcoin è un&#39;organizzazione guidata dalla missione."
 
-#: retail/views.py:341
+#: retail/views.py:352
 msgid "Our mission is to grow open source."
 msgstr "La nostra missione è far crescere l&#39;open source."
 
-#: retail/views.py:360
+#: retail/views.py:365
+msgid "Gitcoin's Vision for a Web3 World"
+msgstr "La visione di Gitcoin per un mondo Web3"
+
+#: retail/views.py:366
+msgid ""
+"Gitcoin's Vision for a web3 world is to make it easy for developers to find "
+"paid work in open source."
+msgstr ""
+"La visione di Gitcoin per un mondo web3 è di facilitare agli sviluppatori la"
+" ricerca di lavoro retribuito in open source."
+
+#: retail/views.py:430
 msgid ""
 "I am a developer, I want build more Open Source Software. Where can I start?"
 msgstr ""
 "Sono uno sviluppatore, voglio creare più software Open Source. Dove posso "
 "iniziare?"
 
-#: retail/views.py:361
+#: retail/views.py:431
 msgid ""
 "The <a href=https://gitcoin.co/explorer>Funded Issue Explorer</a> contains a"
 " handful of issues that are ready to be paid out as soon as they are turned "
@@ -6313,11 +7532,11 @@ msgstr ""
 " appena vengono girati. Consulta la guida per gli sviluppatori su <a "
 "href=https://gitcoin.co/help/dev>https://gitcoin.co/help/dev</a> ."
 
-#: retail/views.py:364
+#: retail/views.py:434
 msgid "I am a repo maintainer.  How do I get started?"
 msgstr "Sono un manutentore del repository. Come iniziare?"
 
-#: retail/views.py:365
+#: retail/views.py:435
 msgid ""
 "The best way to get started is to post a funded issue on a task you need "
 "done.  Check out the repo maintainers guide at <a "
@@ -6328,11 +7547,11 @@ msgstr ""
 "all&#39;indirizzo <a "
 "href=https://gitcoin.co/help/repo>https://gitcoin.co/help/repo</a> ."
 
-#: retail/views.py:368
+#: retail/views.py:438
 msgid "What tokens does Gitcoin support?"
 msgstr "Quali token supporta Gitcoin?"
 
-#: retail/views.py:369
+#: retail/views.py:439
 msgid ""
 "Gitcoin supports Ether and all ERC20 tokens.  If the token you'd like to use"
 " is Ethereum based, then Gitcoin supports it."
@@ -6340,11 +7559,11 @@ msgstr ""
 "Gitcoin supporta Ether e tutti i token ERC20. Se il token che desideri "
 "utilizzare è basato su Ethereum, Gitcoin lo supporta."
 
-#: retail/views.py:372
+#: retail/views.py:442
 msgid "What kind of issues are fundable?"
 msgstr "Che tipo di problemi sono finanziabili?"
 
-#: retail/views.py:373
+#: retail/views.py:443
 msgid ""
 "\n"
 "\n"
@@ -6356,11 +7575,11 @@ msgstr ""
 "\n"
 "<p class=\"c5\"> <span class=\"c4 c0\">Gitcoin supporta bug, funzionalità e problemi di sicurezza. Qualsiasi problema che è necessario è un buon candidato per un problema finanziato, a condizione che:</span> </p><ul class=\"c13 lst-kix_twl0y342ii52-0 start\"><li class=\"c5 c11\"> <span class=\"c4 c0\">È aperto oggi</span> </li><li class=\"c5 c11\"> <span class=\"c4 c0\">Il README repo enumera chiaramente come un nuovo sviluppatore dovrebbe essere impostato per contribuire.</span> </li><li class=\"c5 c11\"> <span class=\"c4 c0\">Il compito è ben definito.</span> </li><li class=\"c5 c11\"> <span class=\"c4 c0\">Lo stato finale dell&#39;attività è ben definito.</span> </li><li class=\"c5 c11\"> <span class=\"c4 c0\">Il prezzo dell&#39;attività rispecchia (complessità di mercato * complessità) dell&#39;attività.</span> </li><li class=\"c5 c11\"> <span class=\"c4 c0\">Il problema è sulla tabella di marcia, ma non blocca altri lavori.</span> </li></ul><p class=\"c5 c6\"><span class=\"c4 c0\"></span></p><p class=\"c5\"> <span class=\"c4 c0\">Per iniziare con i problemi finanziati oggi, potrebbe essere utile iniziare in piccolo. C&#39;è un piccolo bug che deve essere risolto? Un problema che è stato aperto per un po &#39;che nessuno sta affrontando? Un compito amministrativo?</span> </p>"
 
-#: retail/views.py:381
+#: retail/views.py:451
 msgid "Whats the difference between tips & funded issues?"
 msgstr "Qual è la differenza tra consigli e problemi finanziari?"
 
-#: retail/views.py:382
+#: retail/views.py:452
 msgid ""
 "\n"
 "\n"
@@ -6382,11 +7601,11 @@ msgstr ""
 "\n"
 "<p> <strong>Un suggerimento</strong> è uno strumento per inviare etere o qualsiasi gettone ethereum a qualsiasi account github. Il flusso per suggerimenti assomiglia a questo: </p><p> &gt; Invia (parte 1) =&gt; riceve (parte 2) </p><p> <strong>I fondi finanziati</strong> sono un modo per finanziare funzionalità, bug o misure di sicurezza open source. Il flusso per i problemi finanziati è simile a questo: </p><p> &gt; Fondo (parte 1) =&gt; richiesta fondi (parte 2) =&gt; accetta (parte 1) </p>"
 
-#: retail/views.py:400
+#: retail/views.py:470
 msgid "What kind of contributors are successful on the Gitcoin network?"
 msgstr "Che tipo di contributori hanno successo sulla rete Gitcoin?"
 
-#: retail/views.py:401
+#: retail/views.py:471
 msgid ""
 "\n"
 "\n"
@@ -6458,7 +7677,7 @@ msgstr ""
 "\n"
 "<p> Se hai una bacheca dei problemi che necessita di triaging, continua a leggere .. </p><p> Se desideri reclutare ingegneri per lavorare sul tuo repository, continua a leggere .. </p><p> Se vuoi creare valore e ricevere in cambio i token Ether, leggi su .. </p><p> Se stai cercando una vittoria rapida, un dollaro facile, o per promuovere qualcosa, per favore girati. </p><p> Apprezziamo la comunicazione che è: </p><ul><li> Collaborative </li><li> Intellettuale e Intellettualmente onesto </li><li> Umile </li><li> empathetic </li><li> Pragmatico </li><li> Riduzione dello stress </li></ul><p> Ecco alcuni dei nostri valori </p><ul><li> Mostra, non dire </li><li> Dare prima </li><li> Sii pensieroso e diretto </li><li> Essere credibile </li><li> Sfida lo status quo ed essere disposto a essere sfidato </li><li> Crea esperienze deliziose </li></ul>"
 
-#: retail/views.py:469
+#: retail/views.py:539
 msgid ""
 "I received a notification about tip / funded issue, but I can't process it."
 "  Help!"
@@ -6466,7 +7685,7 @@ msgstr ""
 "Ho ricevuto una notifica sul problema con la punta / finanziato, ma non "
 "posso elaborarlo. Aiuto!"
 
-#: retail/views.py:470
+#: retail/views.py:540
 msgid ""
 "We'd love to help!  Please email <a "
 "href='mailto:founders@gitcoin.co'>founders@gitcoin.co</a> or join <a "
@@ -6476,14 +7695,14 @@ msgstr ""
 "href='mailto:founders@gitcoin.co'>founders@gitcoin.co</a> o registrati a <a "
 "href=/slack>Gitcoin Community Slack</a> ."
 
-#: retail/views.py:473
+#: retail/views.py:543
 msgid ""
 "Am I allowed to place bounties on projects I don't contribute to or own?"
 msgstr ""
 "Mi è permesso piazzare premi in progetti a cui non contribuisco o che "
 "possiedo?"
 
-#: retail/views.py:474
+#: retail/views.py:544
 msgid ""
 "TLDR: Yes you are.  But as OSS devs ourselves, our experience has been that "
 "if you want to get the product you work on merged into the upstream, you "
@@ -6496,13 +7715,13 @@ msgstr ""
 "proprietari di tale repository. In caso contrario, è sempre possibile "
 "inserire un repository e gestire la propria tabella di marcia."
 
-#: retail/views.py:477
+#: retail/views.py:547
 msgid "I started work on a bounty but someone else has too.  Who gets it?"
 msgstr ""
 "Ho iniziato a lavorare su una taglia, ma anche qualcun altro. Chi lo ha "
 "preso?"
 
-#: retail/views.py:478
+#: retail/views.py:548
 msgid ""
 "As a general rule, we tend to treat the person who 'started work' first as "
 "having precedence over the issue.  The parties involved are all welcome to "
@@ -6517,11 +7736,11 @@ msgstr ""
 "accordo, allora la prima persona che inizierà a lavorare avrà prima sparato "
 "alla taglia."
 
-#: retail/views.py:483
+#: retail/views.py:553
 msgid "Is Gitcoin open source?"
 msgstr "Gitcoin è open source?"
 
-#: retail/views.py:484
+#: retail/views.py:554
 msgid ""
 "Yes, all of Gitcoin's core software systems are open source and available at"
 " <a href=https://github.com/gitcoinco/>https://github.com/gitcoinco/</a>.  "
@@ -6533,11 +7752,11 @@ msgstr ""
 "prega di consultare il file liscense.txt in ogni repository per ulteriori "
 "dettagli."
 
-#: retail/views.py:487
+#: retail/views.py:557
 msgid "Is a token distribution event planned for Gitcoin?"
 msgstr "È programmato un evento di distribuzione di token per Gitcoin?"
 
-#: retail/views.py:488
+#: retail/views.py:558
 msgid ""
 "\n"
 "<p>Gitcoin Core is considering doing a token distribution event (TDI), but at the time is focused first and foremost on providing value in Open Source Software&nbsp;in a lean way.</p>\n"
@@ -6547,11 +7766,11 @@ msgstr ""
 "\n"
 "<p> Gitcoin Core sta prendendo in considerazione l&#39;idea di un evento di distribuzione token (TDI), ma al momento si concentra prima di tutto sulla fornitura di valore nel software Open Source in modo snello. </p><p> Per ulteriori informazioni su un possibile evento di distribuzione di token in arrivo, consulta <a href=\"https://gitcoin.co/whitepaper\">https://gitcoin.co/whitepaper</a> </p><p></p>"
 
-#: retail/views.py:494
+#: retail/views.py:564
 msgid "What is the difference between Gitcoin and Gitcoin Core?"
 msgstr "Qual è la differenza tra Gitcoin e Gitcoin Core?"
 
-#: retail/views.py:495
+#: retail/views.py:565
 msgid ""
 "\n"
 "Gitcoin Core LLC is the legal entity that manages the software development of the Gitcoin Network (Gitcoin).\n"
@@ -6561,11 +7780,11 @@ msgstr ""
 "\n"
 "Gitcoin Core LLC è l&#39;entità legale che gestisce lo sviluppo del software della rete Gitcoin (Gitcoin). La rete Gitcoin è una serie di contratti intelligenti che aiuta a far crescere l&#39;Open Source, ma consente agli sviluppatori di pubblicare e gestire facilmente questioni finanziate."
 
-#: retail/views.py:501
+#: retail/views.py:571
 msgid "Who is the team at Gitcoin Core?"
 msgstr "Chi è il team di Gitcoin Core?"
 
-#: retail/views.py:502
+#: retail/views.py:572
 msgid ""
 "\n"
 "<p>The founder is <a href=\"https://linkedin.com/in/owocki\">Kevin Owocki</a>, a technologist from the Boulder Colorado tech scene. &nbsp; &nbsp;Kevin&nbsp;has a BS in Computer Science, 15 years experience in Open Source Software and Technology Startups. He is a volunteer in the Boulder Community for several community organizations, and an avid open source developer. His work has been featured in&nbsp;<a href=\"http://techcrunch.com/2011/02/10/group-dating-startup-ignighter-raises-3-million/\">TechCrunch</a>,&nbsp;<a href=\"http://www.cnn.com/2011/BUSINESS/03/29/india.online.matchmaking/\">CNN</a>,&nbsp;<a href=\"http://www.inc.com/30under30/2011/profile-adam-sachs-kevin-owocki-and-dan-osit-founders-ignighter.html\">Inc Magazine</a>,&nbsp;<a href=\"http://www.nytimes.com/2011/02/20/business/20ignite.html?_r=4&amp;amp;pagewanted=1&amp;amp;ref=business\">The New York Times</a>,&nbsp;<a href=\"http://boingboing.net/2011/09/24/tosamend-turn-all-online-i-agree-buttons-into-negotiations.html\">BoingBoing</a>,&nbsp;<a href=\"http://www.wired.com/2015/12/kevin-owocki-adblock-to-bitcoin/\">WIRED</a>,&nbsp;<a href=\"https://www.forbes.com/sites/amycastor/2017/08/31/toothpick-takes-top-prize-in-silicon-beach-ethereum-hackathon/#6bf23b7452ad\">Forbes</a>, and&nbsp;<a href=\"http://www.techdigest.tv/2007/08/super_mario_get_1.html\">TechDigest</a>.</p>\n"
@@ -6578,11 +7797,11 @@ msgstr ""
 "\n"
 "<p> Il fondatore è <a href=\"https://linkedin.com/in/owocki\">Kevin Owocki</a> , un tecnologo della scena tecnologica di Boulder Colorado. Kevin ha una laurea in Informatica, 15 anni di esperienza in Software Open Source e Startup tecnologici. È un volontario nella comunità di Boulder per diverse organizzazioni di comunità e uno sviluppatore avido open source. Il suo lavoro è stato presentato su <a href=\"http://techcrunch.com/2011/02/10/group-dating-startup-ignighter-raises-3-million/\">TechCrunch</a> , <a href=\"http://www.cnn.com/2011/BUSINESS/03/29/india.online.matchmaking/\">CNN</a> , <a href=\"http://www.inc.com/30under30/2011/profile-adam-sachs-kevin-owocki-and-dan-osit-founders-ignighter.html\">Inc Magazine</a> , <a href=\"http://www.nytimes.com/2011/02/20/business/20ignite.html?_r=4&amp;amp;pagewanted=1&amp;amp;ref=business\">The New York Times</a> , <a href=\"http://boingboing.net/2011/09/24/tosamend-turn-all-online-i-agree-buttons-into-negotiations.html\">BoingBoing</a> , <a href=\"http://www.wired.com/2015/12/kevin-owocki-adblock-to-bitcoin/\">WIRED</a> , <a href=\"https://www.forbes.com/sites/amycastor/2017/08/31/toothpick-takes-top-prize-in-silicon-beach-ethereum-hackathon/#6bf23b7452ad\">Forbes</a> e <a href=\"http://www.techdigest.tv/2007/08/super_mario_get_1.html\">TechDigest</a> . </p><p> <strong>Gitcoin</strong> è <strong>nato</strong> dalla comunità nella fiorente scena tecnologica di Boulder Colorado. Una delle cose più sorprendenti della comunità di Boulder è il mantra #givefirst. Il team di fondatori ha costruito le loro carriere fuori da consigli, tutoraggio e relazioni nella comunità tecnologica locale. </p><p> Stiamo assumendo. Se vuoi far parte del team, <a href=mailto:founders@gitcoin.co>inviaci un&#39;email</a> ."
 
-#: retail/views.py:511
+#: retail/views.py:581
 msgid "What is the mission of Gitcoin Core?"
 msgstr "Qual è la missione di Gitcoin Core?"
 
-#: retail/views.py:512
+#: retail/views.py:582
 msgid ""
 "\n"
 "The mission of Gitcoin is \"Grow Open Source\".\n"
@@ -6592,11 +7811,11 @@ msgstr ""
 "\n"
 "La missione di Gitcoin è &quot;Grow Open Source&quot;."
 
-#: retail/views.py:518
+#: retail/views.py:588
 msgid "How can I stay in touch with project updates?"
 msgstr "Come posso rimanere in contatto con gli aggiornamenti del progetto?"
 
-#: retail/views.py:519
+#: retail/views.py:589
 msgid ""
 "\n"
 "The best way to stay in touch is to\n"
@@ -6619,13 +7838,13 @@ msgstr ""
 "\n"
 "Il modo migliore per rimanere in contatto è quello di <ul><li> <a href=\"/#mailchimp\">Iscriviti alla mailing list</a> </li><li> <a href=\"/twitter\">Segui il progetto su Twitter</a> </li><li> <a href=\"/slack\">Unisciti al canale allentato</a> </li></ul>"
 
-#: retail/views.py:541
+#: retail/views.py:611
 msgid ""
 "What is the difference between Gitcoin and centralized hiring websites?"
 msgstr ""
 "Qual è la differenza tra Gitcoin e siti web di assunzione centralizzati?"
 
-#: retail/views.py:542
+#: retail/views.py:612
 msgid ""
 "\n"
 "<p>There are many successful centralized hiring resources available on the web. &nbsp;Because these platforms were an&nbsp;efficient way to source, select, and manage a global workforce , millions of dollars was&nbsp;processed through these systems every day.</p>\n"
@@ -6649,11 +7868,11 @@ msgstr ""
 "\n"
 "<p> Ci sono molte risorse di assunzione centralizzate di successo disponibili sul web. Poiché queste piattaforme rappresentavano un modo efficiente per reperire, selezionare e gestire una forza lavoro globale, ogni giorno venivano elaborati milioni di dollari attraverso questi sistemi. </p><p> Gitcoin prende il valore che attraversa questi sistemi e lo rende più efficiente ed equo. Gitcoin è una rete distribuita di contratti intelligenti, basata su Ethereum, che mira a risolvere i problemi con risorse di assunzione centralizzate, vale a dire da </p><ul><li> essendo più aperto, </li><li> essendo più giusto, </li><li> essere più efficiente, </li><li> essere più facile da usare </li><li> facendo leva su una forza lavoro globale, </li><li> tagliando gli intermediari, </li></ul><p> Quando Sir Tim Berners-Lee ha inventato per la prima volta il World Wide Web alla fine degli anni &#39;80 per facilitare la condivisione delle informazioni su Internet, ha fatto qualcosa di molto importante. Ha specificato un protocollo aperto, l&#39;Hypertext Transfer Protocol o HTTP, che chiunque potrebbe utilizzare per rendere disponibili le informazioni e accedere a tali informazioni. </p><p> Gitcoin è similmente costruito su un protocollo aperto di contratti intelligenti. </p><p> Specificando un protocollo, Tim Berners-Lee ha aperto la strada a chiunque di creare software, i cosiddetti server web e browser compatibili con questo protocollo. Specificando un protocollo open source per i problemi di finanziamento e lo scope e il pagamento dello sviluppo del software, il team Gitcoin Core spera di ispirare similmente una generazione di invenzioni nel software del 21 ° secolo. </p><p> Per ulteriori informazioni sulla blockchain, si prega di consultare <a href=\"{}\">questo video su web3</a> o sulla <a href=\"https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp\">scheda Github Issues</a> </p>"
 
-#: retail/views.py:562
+#: retail/views.py:632
 msgid "Why do I need metamask?"
 msgstr "Perché ho bisogno di metamask?"
 
-#: retail/views.py:563
+#: retail/views.py:633
 msgid ""
 "\n"
 "<p>\n"
@@ -6680,11 +7899,11 @@ msgstr ""
 "\n"
 "<p> Hai bisogno di <a href=\"https://metamask.io/\">Metamask</a> per usare Gitcoin. </p><p> Metamask trasforma google chrome in un browser Web3. Web3 è potente perché consente ai siti Web di recuperare i dati dalla blockchain e consente agli utenti di gestire in modo sicuro l&#39;identità. </p><p> Al contrario di web2 in cui le terze parti possiedono i tuoi dati, in web3 possiedi i tuoi dati e hai sempre il controllo. Su web3, i tuoi dati sono protetti sulla blockchain, il che significa che nessuno potrà mai bloccare i tuoi beni o censurare te. </p><p> Scarica Metamask <a href=\"https://metamask.io/\">qui</a> oggi. </p><p> Per ulteriori informazioni su Metamask, si prega di consultare <a href=\"{}\">questo video su web3</a> o sulla <a href=\"https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp\">scheda Problemi di Github</a> </p>"
 
-#: retail/views.py:586
+#: retail/views.py:656
 msgid "Why do I need to pay gas?"
 msgstr "Perché devo pagare il gas?"
 
-#: retail/views.py:587
+#: retail/views.py:657
 msgid ""
 "\n"
 "<p>\n"
@@ -6704,11 +7923,11 @@ msgstr ""
 "\n"
 "<p> &quot;Gas&quot; è il nome di un&#39;unità speciale utilizzata in Ethereum. Misura quanto &quot;funziona&quot; un&#39;azione o una serie di azioni necessarie per eseguire (ad esempio, la memorizzazione di dati in un contratto intelligente). </p><p> Il motivo per cui il gas è importante è che aiuta a garantire che venga pagata una quota appropriata dalle transazioni inviate alla rete. Richiedendo che una transazione paghi per ogni operazione che esegue (o che determini l&#39;esecuzione di un contratto), ci assicuriamo che la rete non si impantaghi eseguendo un intenso lavoro che non è prezioso per nessuno. </p><p> Le commissioni per il gas sono pagate ai maintainer della rete Ethereum, in cambio della sicurezza di tutte le transazioni basate su Ether ed Ethereum nel mondo. Le commissioni per il gas non sono pagate a Gitcoin Core direttamente o indirettamente. </p><p> Per saperne di più sul gas, consulta la <a href=\"https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp\">scheda Github Issues</a> </p>"
 
-#: retail/views.py:603
+#: retail/views.py:673
 msgid "What are the advanages of Ethereum based applications?"
 msgstr "Quali sono i vantaggi delle applicazioni basate su Ethereum?"
 
-#: retail/views.py:604
+#: retail/views.py:674
 msgid ""
 "\n"
 "Here are some of the advantages of Ethereum based applications:\n"
@@ -6739,11 +7958,11 @@ msgstr ""
 "\n"
 "Ecco alcuni dei vantaggi delle applicazioni basate su Ethereum: <ul><li> Abbassare (o non) le tasse </li><li> Nessun intermediario </li><li> Nessuna terza parte possiede o può vendere i tuoi dati </li><li> Nessuna commissione di conversione internazionale </li><li> Ricevi pagati in protocolli, utility o token applicativi; non solo in contanti. </li></ul><p> Per ulteriori informazioni sulle app basate su Ethereum, si prega di consultare <a href=\"{}\">questo video su web3</a> o sulla <a href=\"https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp\">scheda Problemi di Github</a> </p>"
 
-#: retail/views.py:631
+#: retail/views.py:701
 msgid "I still dont get it.  Help!"
 msgstr "Ancora non capisco. Aiuto!"
 
-#: retail/views.py:632
+#: retail/views.py:702
 msgid ""
 "\n"
 "We want to nerd out with you a little bit more.  <a href=\"/slack\">Join the Gitcoin Slack Community</a> and let's talk.\n"
@@ -6753,37 +7972,73 @@ msgstr ""
 "\n"
 "Vogliamo nerd con te un po &#39;di più. <a href=\"/slack\">Unisciti alla community Slit Gitcoin</a> e parliamo.\n"
 
-#: retail/views.py:644
+#: retail/views.py:714
 msgid "Leverage Gitcoin’s Firehose of Talent to Do More Faster"
 msgstr "Fai leva su Firehose of Talent di Gitcoin per fare di più"
 
-#: retail/views.py:648
+#: retail/views.py:718
 msgid "How to Price Work on Gitcoin"
 msgstr "Come valutare i prezzi su Gitcoin"
 
-#: retail/views.py:652
+#: retail/views.py:722
 msgid "Post a Bounty in 90 Seconds"
 msgstr "Pubblica un Bounty in 90 secondi"
 
-#: retail/views.py:656
+#: retail/views.py:726
 msgid "Send a Tip to any Github user in 60 seconds"
 msgstr "Invia un suggerimento a qualsiasi utente Github in 60 secondi"
 
-#: retail/views.py:788
+#: retail/views.py:730
+msgid "How To Build A Contributor Friendly Project"
+msgstr "Come costruire un progetto amichevole per i collaboratori"
+
+#: retail/views.py:734
+#, fuzzy
+#| msgid "Features of Gitcoin"
+msgid "Fund An Issue on Gitcoin!"
+msgstr "Fondi un problema su Gitcoin!"
+
+#: retail/views.py:738
+#, fuzzy
+#| msgid "Get started with Gitcoin!"
+msgid "Getting Started With Gitcoin"
+msgstr "Guida introduttiva a Gitcoin"
+
+#: retail/views.py:798
+#, fuzzy
+#| msgid "Press"
+msgid "Presskit"
+msgstr "Inforequest"
+
+#: retail/views.py:921
 msgid "You must provide an email address"
 msgstr "Devi fornire un indirizzo email"
 
-#: retail/views.py:790
+#: retail/views.py:923
 msgid "Your invite has been sent."
 msgstr "Il tuo invito è stato inviato."
 
-#: retail/views.py:798
+#: retail/views.py:931
 msgid "Unknown error"
 msgstr "Errore sconosciuto"
 
-#: retail/views.py:801
+#: retail/views.py:934
 msgid "Invalid email"
 msgstr "E-mail non valido"
+
+#: retail/views.py:950
+#, fuzzy
+#| msgid "You must provide an email address"
+msgid "You must provide the following fields: "
+msgstr "Devi fornire i seguenti campi:"
+
+#: retail/views.py:967
+msgid ""
+"Your token has been submitted and will be listed within 2 business days if "
+"it is accepted."
+msgstr ""
+"Il token è stato inviato e verrà elencato entro 2 giorni lavorativi se è "
+"accettato."
 
 #: tdi/views.py:56 tdi/views.py:57 tdi/views.py:115 tdi/views.py:116
 msgid "Whitepaper"
@@ -6861,8 +8116,52 @@ msgstr "Kevin di Gitcoin.co"
 msgid "Invite sent"
 msgstr "Invito inviato"
 
-#~ msgid "Polish"
-#~ msgstr "polacco"
+#~ msgid "Accept Bounty Fulfillment"
+#~ msgstr "Accetta l&#39;adempimento di taglie"
+
+#~ msgid "You've got 1 COLO!"
+#~ msgstr "Hai 1 COLO!"
+
+#~ msgid "Enter a forwarding address"
+#~ msgstr "Inserisci un indirizzo di spedizione"
+
+#~ msgid "You've redeemed 1 COLO."
+#~ msgstr "Hai utilizzato 1 COLO."
+
+#~ msgid "Notification has been sent"
+#~ msgstr "La notifica è stata inviata"
+
+#~ msgid ""
+#~ "Uh oh! No email addresses for this user were found via Github API.  Youll "
+#~ "have to let the tipee know manually about their tip."
+#~ msgstr ""
+#~ "Uh Oh! Nessun indirizzo email per questo utente è stato trovato tramite "
+#~ "Github API. Dovrai informare manualmente il tipee del loro consiglio."
+
+#~ msgid "You've received an EthOS"
+#~ msgstr "Hai ricevuto un EthOS"
+
+#~ msgid "Here's how to play:"
+#~ msgstr "Ecco come giocare:"
+
+#~ msgid "This experiment is over!"
+#~ msgstr "Questo esperimento è finito!"
+
+#~ msgid "Duplicate transaction detected"
+#~ msgstr "Rilevata transazione duplicata"
+
+#~ msgid "Error while fetching Twitter account. Please try again"
+#~ msgstr ""
+#~ "Errore durante il recupero dell&#39;account Twitter. Per favore riprova"
+
+#~ msgid "Error while tweeting to Twitter. {e}"
+#~ msgstr "Errore durante il tweeting su Twitter. {e}"
+
+#~ msgid "Error while creating transaction. Please try again"
+#~ msgstr "Errore durante la creazione della transazione. Per favore riprova"
+
+#~ msgid "EthOS Coin"
+#~ msgstr "Ethos Coin"
 
 #~ msgid "Chinese"
 #~ msgstr "Cinese"
@@ -6927,9 +8226,6 @@ msgstr "Invito inviato"
 
 #~ msgid "Relationship"
 #~ msgstr "Relazione"
-
-#~ msgid "Worker"
-#~ msgstr "Lavoratore"
 
 #~ msgid "Repo Owner"
 #~ msgstr "Proprietario Repo"

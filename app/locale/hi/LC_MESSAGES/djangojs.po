@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-07-11 17:21+0000\n"
+"POT-Creation-Date: 2018-07-20 19:34+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,6 +17,96 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: assets/onepager/js/quarantine/receive_legacy.js:100
+#, fuzzy
+#| msgid "Not a valid forwarding address"
+msgid "Not a valid forwarding address."
+msgstr "मान्य अग्रेषण पता नहीं है।"
+
+#: assets/onepager/js/quarantine/receive_legacy.js:105
+#: assets/onepager/js/quarantine/receive_legacy.js:109
+msgid "Invalid Link.  Please check your link and try again"
+msgstr "अमान्य लिंक। कृपया अपना लिंक जांचें और पुनः प्रयास करें"
+
+#: assets/onepager/js/quarantine/receive_legacy.js:118
+msgid "got an error :("
+msgstr "एक त्रुटि मिली :("
+
+#: assets/onepager/js/quarantine/receive_legacy.js:153
+msgid "You must wait until the senders transaction confirms."
+msgstr "प्रेषक लेनदेन की पुष्टि होने तक आपको प्रतीक्षा करनी होगी।"
+
+#: assets/onepager/js/quarantine/web3alert.js:29
+#: assets/onepager/js/web3alert.js:29
+msgid ""
+"You must install <a href=https://metamask.io/>Metamask</a> to use this tool."
+msgstr ""
+"इस टूल का उपयोग करने के लिए आपको <a href=https://metamask.io/> मेटामास्क "
+"</a> इंस्टॉल करना होगा।"
+
+#: assets/onepager/js/quarantine/web3alert.js:33
+#: assets/onepager/js/web3alert.js:33
+#, fuzzy
+#| msgid "Unlock Metamask"
+msgid "Please unlock Metamask."
+msgstr "कृपया मेटामास्क अनलॉक करें।"
+
+#: assets/onepager/js/receive.js:5
+msgid "You are not on the right web3 network.  Please switch to "
+msgstr "आप सही वेब 3 नेटवर्क पर नहीं हैं। कृपया स्विच करें"
+
+#: assets/onepager/js/send.js:88
+msgid ""
+"You must have a web3 enabled browser to do this.  Please download Metamask."
+msgstr ""
+"ऐसा करने के लिए आपके पास एक वेब 3 सक्षम ब्राउज़र होना चाहिए। कृपया मेटामास्क"
+" डाउनलोड करें।"
+
+#: assets/onepager/js/send.js:115
+msgid ""
+"To Email is optional, but if you enter an email, you must enter a valid "
+"email!"
+msgstr ""
+"ईमेल के लिए वैकल्पिक है, लेकिन यदि आप एक ईमेल दर्ज करते हैं, तो आपको एक वैध "
+"ईमेल दर्ज करना होगा!"
+
+#: assets/onepager/js/send.js:119
+msgid ""
+"From Email is optional, but if you enter an email, you must enter a valid "
+"email!"
+msgstr ""
+"ईमेल से वैकल्पिक है, लेकिन यदि आप एक ईमेल दर्ज करते हैं, तो आपको एक वैध ईमेल"
+" दर्ज करना होगा!"
+
+#: assets/onepager/js/send.js:123
+msgid "You must enter an number for the amount!"
+msgstr "आपको राशि के लिए एक संख्या दर्ज करनी होगी!"
+
+#: assets/onepager/js/send.js:127
+msgid "You must enter a username."
+msgstr "आपको एक उपयोगकर्ता नाम दर्ज करना होगा।"
+
+#: assets/onepager/js/send.js:131
+#, fuzzy
+#| msgid "You must agree to the precedence clause."
+msgid "You must accept the terms."
+msgstr "आपको शर्तों को स्वीकार करना होगा।"
+
+#: assets/onepager/js/send.js:166
+#, fuzzy
+#| msgid "There was an error"
+msgid "There was an error."
+msgstr "एक त्रुटि हुई।"
+
+#: assets/onepager/js/send.js:196
+msgid ""
+"You will now be asked to confirm two transactions.  The first is gas money, "
+"so your receipient doesnt have to pay it.  The second is the actual token "
+"transfer."
+msgstr ""
+"अब आप दो लेनदेन की पुष्टि करने के लिए कहा जाएगा। पहला गैस धन है, इसलिए आपके "
+"प्राप्ति को इसका भुगतान नहीं करना पड़ेगा। दूसरा वास्तविक टोकन स्थानांतरण है।"
 
 #: assets/v2/js/amounts.js:11
 msgid "Approx: "
@@ -73,152 +163,168 @@ msgstr ""
 msgid "Read Our Updated Terms"
 msgstr "हमारी अपडेट की गई शर्तें पढ़ें"
 
-#: assets/v2/js/pages/bounty_details.js:89
+#: assets/v2/js/pages/bounty_details.js:95
 msgid "Issue"
 msgstr "मुद्दा"
 
-#: assets/v2/js/pages/bounty_details.js:90
+#: assets/v2/js/pages/bounty_details.js:96
 msgid "Issue Funding Info"
 msgstr "समस्या निधि जानकारी"
 
-#: assets/v2/js/pages/bounty_details.js:91
+#: assets/v2/js/pages/bounty_details.js:97
 msgid "Funder"
 msgstr "Funder"
 
-#: assets/v2/js/pages/bounty_details.js:92
+#: assets/v2/js/pages/bounty_details.js:98
 msgid "Submitter"
 msgstr "सबमिट करने"
 
-#: assets/v2/js/pages/bounty_details.js:93
+#: assets/v2/js/pages/bounty_details.js:99
 msgid "Meta"
 msgstr "मेटा"
 
-#: assets/v2/js/pages/bounty_details.js:113
+#: assets/v2/js/pages/bounty_details.js:120
 msgid "OPEN ISSUE"
 msgstr "खुला मुद्दा"
 
-#: assets/v2/js/pages/bounty_details.js:116
+#: assets/v2/js/pages/bounty_details.js:123
 msgid "work started"
 msgstr "काम शुरू हुआ"
 
-#: assets/v2/js/pages/bounty_details.js:119
+#: assets/v2/js/pages/bounty_details.js:126
 msgid "work submitted"
 msgstr "काम जमा"
 
-#: assets/v2/js/pages/bounty_details.js:122
+#: assets/v2/js/pages/bounty_details.js:129
 msgid "done"
 msgstr "किया हुआ"
 
-#: assets/v2/js/pages/bounty_details.js:125
+#: assets/v2/js/pages/bounty_details.js:132
 msgid "cancelled"
 msgstr "रद्द"
 
-#: assets/v2/js/pages/bounty_details.js:430
+#: assets/v2/js/pages/bounty_details.js:437
 #, fuzzy
 #| msgid "Are you sure you want to remove your interest?"
 msgid "Are you sure you want to stop work?"
 msgstr "क्या आप वाकई काम करना बंद करना चाहते हैं?"
 
-#: assets/v2/js/pages/bounty_details.js:432
-#: assets/v2/js/pages/bounty_details.js:640
+#: assets/v2/js/pages/bounty_details.js:439
+#: assets/v2/js/pages/bounty_details.js:650
 msgid "Start Work"
 msgstr "काम शुरु करें"
 
-#: assets/v2/js/pages/bounty_details.js:492
+#: assets/v2/js/pages/bounty_details.js:499
 msgid "Please provide an action plan for this ticket."
 msgstr "कृपया इस टिकट के लिए एक एक्शन प्लान प्रदान करें।"
 
-#: assets/v2/js/pages/bounty_details.js:497
+#: assets/v2/js/pages/bounty_details.js:504
 msgid "You must agree to the precedence clause."
 msgstr "आपको प्राथमिकता खंड से सहमत होना चाहिए।"
 
-#: assets/v2/js/pages/bounty_details.js:501
+#: assets/v2/js/pages/bounty_details.js:508
 msgid "You must agree to keep the funder updated on your progress."
 msgstr "आपको अपनी प्रगति पर फंडर को अद्यतन रखने के लिए सहमत होना चाहिए।"
 
-#: assets/v2/js/pages/bounty_details.js:506
-#: assets/v2/js/pages/bounty_details.js:640
+#: assets/v2/js/pages/bounty_details.js:513
+#: assets/v2/js/pages/bounty_details.js:650
 msgid "Stop Work"
 msgstr "काम रोको"
 
-#: assets/v2/js/pages/bounty_details.js:531
+#: assets/v2/js/pages/bounty_details.js:537
 msgid "Funded Issue Details: "
 msgstr "वित्त पोषित अंक विवरण:"
 
-#: assets/v2/js/pages/bounty_details.js:625
+#: assets/v2/js/pages/bounty_details.js:635
 msgid "Submit Work"
 msgstr "कार्य सबमिट करें"
 
-#: assets/v2/js/pages/bounty_details.js:627
+#: assets/v2/js/pages/bounty_details.js:637
 msgid "Submit work for the funder to review"
 msgstr "समीक्षा करने के लिए फंडर के लिए काम जमा करें"
 
-#: assets/v2/js/pages/bounty_details.js:642
+#: assets/v2/js/pages/bounty_details.js:652
 msgid "Notify the funder that you will not be working on this project"
 msgstr "निधि को सूचित करें कि आप इस परियोजना पर काम नहीं करेंगे"
 
-#: assets/v2/js/pages/bounty_details.js:642
+#: assets/v2/js/pages/bounty_details.js:652
 msgid "Notify the funder that you would like to take on this project"
 msgstr "इस परियोजना पर आप जिस फंडर को लेना चाहते हैं उसे सूचित करें"
 
-#: assets/v2/js/pages/bounty_details.js:655
+#: assets/v2/js/pages/bounty_details.js:665
 msgid "Cancel Bounty"
 msgstr "बाउंटी रद्द करें"
 
-#: assets/v2/js/pages/bounty_details.js:657
+#: assets/v2/js/pages/bounty_details.js:667
 msgid "Cancel bounty and reclaim funds for this issue"
 msgstr "इस मुद्दे के लिए बक्षीस रद्द करें और धन पुनः प्राप्त करें"
 
-#: assets/v2/js/pages/bounty_details.js:670
-msgid "Accept Submission"
-msgstr "सबमिशन स्वीकार करें"
+#: assets/v2/js/pages/bounty_details.js:679
+msgid "View Attached Job Description"
+msgstr "संलग्न नौकरी विवरण देखें"
 
-#: assets/v2/js/pages/bounty_details.js:671
-msgid "This will payout the bounty to the submitter."
-msgstr "यह जमाकर्ता को बक्षीस का भुगतान करेगा।"
+#: assets/v2/js/pages/bounty_details.js:681
+msgid ""
+"This bounty hunter is hiring for a full time, part time, or contract role "
+"and has attached that to this bounty."
+msgstr ""
+"यह बाउंटी शिकारी एक पूर्णकालिक, अंशकालिक, या अनुबंध भूमिका के लिए भर्ती कर "
+"रहा है और इस बक्षीस से जुड़ा हुआ है।"
 
-#: assets/v2/js/pages/bounty_details.js:684
+#: assets/v2/js/pages/bounty_details.js:694
+#, fuzzy
+#| msgid "Cancel Bounty"
+msgid "Payout Bounty"
+msgstr "पेआउट बाउंटी"
+
+#: assets/v2/js/pages/bounty_details.js:695
+#, fuzzy
+#| msgid "This will payout the bounty to the submitter."
+msgid "Payout the bounty to one or more submitters."
+msgstr "एक या अधिक जमाकर्ताओं को बक्षीस का भुगतान करें।"
+
+#: assets/v2/js/pages/bounty_details.js:707
 msgid "Add Contribution"
 msgstr "योगदान जोड़ें"
 
-#: assets/v2/js/pages/bounty_details.js:686
+#: assets/v2/js/pages/bounty_details.js:709
 msgid "Increase the funding for this issue"
 msgstr "इस मुद्दे के लिए धन बढ़ाएं"
 
-#: assets/v2/js/pages/bounty_details.js:702
+#: assets/v2/js/pages/bounty_details.js:725
 msgid "View On Github"
 msgstr "गीथूब पर देखें"
 
-#: assets/v2/js/pages/bounty_details.js:704
+#: assets/v2/js/pages/bounty_details.js:727
 msgid "View issue details and comments on Github"
 msgstr "गिथब पर समस्या विवरण और टिप्पणियां देखें"
 
-#: assets/v2/js/pages/bounty_details.js:719
+#: assets/v2/js/pages/bounty_details.js:742
 msgid "Suspend Auto Approval"
 msgstr "ऑटो स्वीकृति निलंबित करें"
 
-#: assets/v2/js/pages/bounty_details.js:721
+#: assets/v2/js/pages/bounty_details.js:744
 msgid ""
 "Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty"
 msgstr ""
 "बाउंटी शिकारी के ऑटो स्वीकृति * को निलंबित करें जिन्होंने इस बक्षीस के लिए "
 "आवेदन किया है"
 
-#: assets/v2/js/pages/bounty_details.js:736
+#: assets/v2/js/pages/bounty_details.js:759
 #, fuzzy
 #| msgid "Cancel Bounty"
 msgid "Hide Bounty"
 msgstr "बाउंटी छुपाएं"
 
-#: assets/v2/js/pages/bounty_details.js:738
+#: assets/v2/js/pages/bounty_details.js:761
 msgid "Hides Bounty from Active Bounties"
 msgstr "सक्रिय बाउंटी से बाउंटी छुपाएं"
 
-#: assets/v2/js/pages/bounty_details.js:753
+#: assets/v2/js/pages/bounty_details.js:776
 msgid "Toggle Remarket Ready"
 msgstr "रीमार्केटिंग तैयार टॉगल करें"
 
-#: assets/v2/js/pages/bounty_details.js:755
+#: assets/v2/js/pages/bounty_details.js:778
 msgid ""
 "Sets Remarket Ready if not already remarket ready.  Unsets it if already "
 "remarket ready."
@@ -226,123 +332,123 @@ msgstr ""
 "अगर रीमार्केटिंग तैयार नहीं है तो रीमार्केटिंग तैयार सेट करें। अगर पहले से "
 "ही रीमार्केटिंग तैयार है तो इसे अनसेट करता है।"
 
-#: assets/v2/js/pages/bounty_details.js:769
+#: assets/v2/js/pages/bounty_details.js:792
 #, fuzzy
 #| msgid "Funder"
 msgid "Contact Funder"
 msgstr "संपर्क निधि"
 
-#: assets/v2/js/pages/bounty_details.js:771
+#: assets/v2/js/pages/bounty_details.js:794
 msgid "Contact Funder via Email"
 msgstr "ईमेल के माध्यम से संपर्क निधि"
 
-#: assets/v2/js/pages/bounty_details.js:785
+#: assets/v2/js/pages/bounty_details.js:808
 msgid "Snooze Gitcoinbot"
 msgstr "गिटकोइनबॉट स्नूज़ करें"
 
-#: assets/v2/js/pages/bounty_details.js:787
+#: assets/v2/js/pages/bounty_details.js:810
 msgid "Snooze Gitcoinbot reminders"
 msgstr "गिटकोइनबॉट अनुस्मारक याद दिलाएं"
 
-#: assets/v2/js/pages/bounty_details.js:801
+#: assets/v2/js/pages/bounty_details.js:824
 msgid "Override Status"
 msgstr "स्थिति ओवरराइड करें"
 
-#: assets/v2/js/pages/bounty_details.js:803
+#: assets/v2/js/pages/bounty_details.js:826
 msgid "Override Status with a status of your choosing"
 msgstr "अपनी पसंद की स्थिति के साथ स्थिति ओवरराइड करें"
 
-#: assets/v2/js/pages/bounty_details.js:869
-#: assets/v2/js/pages/dashboard.js:509 assets/v2/js/shared.js:294
+#: assets/v2/js/pages/bounty_details.js:892
+#: assets/v2/js/pages/dashboard.js:510 assets/v2/js/shared.js:296
 msgid "got an error. please try again, or contact support@gitcoin.co"
 msgstr ""
 "एक त्रुटि मिली कृपया पुनः प्रयास करें, या support@gitcoin.co से संपर्क करें"
 
-#: assets/v2/js/pages/bounty_details.js:879
+#: assets/v2/js/pages/bounty_details.js:902
 #, fuzzy
 #| msgid "Cancel Bounty"
 msgid "New Bounty"
 msgstr "नया बाउंटी"
 
-#: assets/v2/js/pages/bounty_details.js:880
+#: assets/v2/js/pages/bounty_details.js:903
 msgid "Work Started"
 msgstr "काम शुरू"
 
-#: assets/v2/js/pages/bounty_details.js:881
+#: assets/v2/js/pages/bounty_details.js:904
 #, fuzzy
 #| msgid "Work Started"
 msgid "Work Stopped"
 msgstr "काम बंद कर दिया"
 
-#: assets/v2/js/pages/bounty_details.js:882
+#: assets/v2/js/pages/bounty_details.js:905
 msgid "Work Submitted"
 msgstr "कार्य सबमिट"
 
-#: assets/v2/js/pages/bounty_details.js:883
+#: assets/v2/js/pages/bounty_details.js:906
 #, fuzzy
 #| msgid "Done"
 msgid "Work Done"
 msgstr "काम किया"
 
-#: assets/v2/js/pages/bounty_details.js:884
+#: assets/v2/js/pages/bounty_details.js:907
 #, fuzzy
 #| msgid "Work Accepted"
 msgid "Worker Approved"
 msgstr "श्रमिक स्वीकृत"
 
-#: assets/v2/js/pages/bounty_details.js:885
+#: assets/v2/js/pages/bounty_details.js:908
 #, fuzzy
 #| msgid "Work Accepted"
 msgid "Worker Rejected"
 msgstr "श्रमिक अस्वीकार कर दिया"
 
-#: assets/v2/js/pages/bounty_details.js:886
+#: assets/v2/js/pages/bounty_details.js:909
 #, fuzzy
 #| msgid "Work Accepted"
 msgid "Worker Applied"
 msgstr "श्रमिक एप्लाइड"
 
-#: assets/v2/js/pages/bounty_details.js:887
+#: assets/v2/js/pages/bounty_details.js:910
 #, fuzzy
 #| msgid "Issue Funding Info"
 msgid "Increased Funding"
 msgstr "बढ़ी हुई धनराशि"
 
-#: assets/v2/js/pages/bounty_details.js:888
+#: assets/v2/js/pages/bounty_details.js:911
 #, fuzzy
 #| msgid "Cancel Bounty"
 msgid "Canceled Bounty"
 msgstr "रद्द बाउंटी"
 
-#: assets/v2/js/pages/bounty_details.js:889
+#: assets/v2/js/pages/bounty_details.js:912
 msgid "New Tip"
 msgstr "नई युक्ति"
 
-#: assets/v2/js/pages/bounty_details.js:890
+#: assets/v2/js/pages/bounty_details.js:913
 msgid "Tip Received"
 msgstr "युक्ति प्राप्त हुई"
 
-#: assets/v2/js/pages/bounty_details.js:977
+#: assets/v2/js/pages/bounty_details.js:1000
 msgid "There's no activity yet!"
 msgstr "अभी तक कोई गतिविधि नहीं है!"
 
-#: assets/v2/js/pages/dashboard.js:323
+#: assets/v2/js/pages/dashboard.js:324
 msgid "No Results"
 msgstr "कोई परिणाम नहीं"
 
-#: assets/v2/js/pages/dashboard.js:327
+#: assets/v2/js/pages/dashboard.js:328
 msgid " Matching Result"
 msgstr "मिलान परिणाम"
 
-#: assets/v2/js/pages/dashboard.js:331
+#: assets/v2/js/pages/dashboard.js:332
 msgid " Matching Results"
 msgstr "मिलान परिणाम"
 
-#: assets/v2/js/pages/dashboard.js:731
+#: assets/v2/js/pages/dashboard.js:732
 msgid "Please enter a valid email address."
 msgstr "कृपया एक वैध ई - मेल एड्रेस डालें।"
 
-#: assets/v2/js/pages/dashboard.js:742
+#: assets/v2/js/pages/dashboard.js:743
 msgid "You're in! Keep an eye on your inbox for the next funding listing."
 msgstr "आप अंदर हैं! अगली वित्त पोषण सूची के लिए अपने इनबॉक्स पर नजर रखें।"
 
@@ -360,7 +466,7 @@ msgstr "एक अनपेक्षित त्रुटि मिली"
 
 #: assets/v2/js/pages/fulfill_bounty.js:25
 #: assets/v2/js/pages/increase_bounty.js:29
-#: assets/v2/js/pages/kill_bounty.js:17 assets/v2/js/pages/new_bounty.js:163
+#: assets/v2/js/pages/kill_bounty.js:17 assets/v2/js/pages/new_bounty.js:189
 #: assets/v2/js/pages/process_bounty.js:68
 msgid ""
 "You are on an unsupported network.  Please change your network to a "
@@ -399,12 +505,12 @@ msgid "Please enter an amount."
 msgstr "कृपया एक राशि दर्ज करें।"
 
 #: assets/v2/js/pages/increase_bounty.js:97
-#: assets/v2/js/pages/new_bounty.js:340 assets/v2/js/pages/new_bounty.js:366
+#: assets/v2/js/pages/new_bounty.js:371 assets/v2/js/pages/new_bounty.js:397
 msgid "There was an error.  Please try again or contact support."
 msgstr "एक त्रुटि हुई। कृपया पुनः प्रयास करें या समर्थन से संपर्क करें।"
 
 #: assets/v2/js/pages/increase_bounty.js:109
-#: assets/v2/js/pages/new_bounty.js:321
+#: assets/v2/js/pages/new_bounty.js:352
 msgid "Submission sent to web3."
 msgstr "सबमिशन वेब 3 पर भेजा गया।"
 
@@ -444,19 +550,19 @@ msgstr "केवल इस पते को प्रस्तुत करन�
 msgid "Kill bounty submitted to web3."
 msgstr "वेब 3 पर सबमिट बक्षीस को मार डालो।"
 
-#: assets/v2/js/pages/onboard.js:39
+#: assets/v2/js/pages/onboard.js:40
 msgid "Done"
 msgstr "किया हुआ"
 
-#: assets/v2/js/pages/onboard.js:46
+#: assets/v2/js/pages/onboard.js:47
 msgid "Next"
 msgstr "आगामी"
 
-#: assets/v2/js/pages/onboard.js:68
+#: assets/v2/js/pages/onboard.js:69
 msgid "Install Metamask"
 msgstr "मेटामास्क स्थापित करें"
 
-#: assets/v2/js/pages/onboard.js:80
+#: assets/v2/js/pages/onboard.js:81
 msgid "Unlock Metamask"
 msgstr "मेटामास्क अनलॉक करें"
 
@@ -465,8 +571,14 @@ msgid "Could not get fulfillment details"
 msgstr "पूरा विवरण नहीं मिला"
 
 #: assets/v2/js/pages/process_bounty.js:25
-msgid "No bounty fulfillments found for this Github URL."
-msgstr "इस गीथब यूआरएल के लिए कोई बक्षीस की पूर्ति नहीं हुई।"
+#, fuzzy
+#| msgid "No bounty fulfillments found for this Github URL."
+msgid ""
+"No bounty fulfillments found for this Github URL.  Please use the multi-"
+"party payout tool instead."
+msgstr ""
+"इस गीथब यूआरएल के लिए कोई बक्षीस की पूर्ति नहीं हुई। कृपया इसके बजाय "
+"बहु-पक्ष पेआउट टूल का उपयोग करें।"
 
 #: assets/v2/js/pages/process_bounty.js:89
 msgid "Please enter a issue URL."
@@ -498,39 +610,39 @@ msgstr ""
 msgid "Submitted transaction to web3."
 msgstr "वेब 3 पर जमा लेनदेन।"
 
-#: assets/v2/js/shared.js:245
+#: assets/v2/js/shared.js:247
 msgid "Thanks for letting us know that you're ready to start work."
 msgstr "हमें यह बताने के लिए धन्यवाद कि आप काम शुरू करने के लिए तैयार हैं।"
 
-#: assets/v2/js/shared.js:248
+#: assets/v2/js/shared.js:250
 msgid "You've stopped working on this, thanks for letting us know."
 msgstr "आपने इस पर काम करना बंद कर दिया है, हमें बताने के लिए धन्यवाद।"
 
-#: assets/v2/js/shared.js:573 assets/v2/js/shared.js:607
+#: assets/v2/js/shared.js:575 assets/v2/js/shared.js:609
 msgid "Web3 disabled. Please install "
 msgstr "वेब 3 अक्षम कृपया स्थापित करें"
 
-#: assets/v2/js/shared.js:575 assets/v2/js/shared.js:609
+#: assets/v2/js/shared.js:577 assets/v2/js/shared.js:611
 msgid "Metamask Not Enabled"
 msgstr "मेटामास्क सक्षम नहीं है"
 
-#: assets/v2/js/shared.js:578 assets/v2/js/shared.js:612
+#: assets/v2/js/shared.js:580 assets/v2/js/shared.js:614
 msgid "Web3 locked. Please unlock "
 msgstr "वेब 3 लॉक कृपया अनलॉक करें"
 
-#: assets/v2/js/shared.js:580 assets/v2/js/shared.js:614
+#: assets/v2/js/shared.js:582 assets/v2/js/shared.js:616
 msgid "Metamask Locked"
 msgstr "मेटामास्क लॉक"
 
-#: assets/v2/js/shared.js:583
+#: assets/v2/js/shared.js:585
 msgid "Connect to Mainnet via Metamask"
 msgstr "मेटामास्क के माध्यम से मेननेट से कनेक्ट करें"
 
-#: assets/v2/js/shared.js:584 assets/v2/js/shared.js:618
+#: assets/v2/js/shared.js:586 assets/v2/js/shared.js:620
 msgid "Unsupported Network"
 msgstr "असमर्थित नेटवर्क"
 
-#: assets/v2/js/shared.js:617
+#: assets/v2/js/shared.js:619
 msgid "Connect to Rinkeby / Custom RPC via Metamask"
 msgstr "मेटामास्क के माध्यम से रिंकबे / कस्टम आरपीसी से कनेक्ट करें"
 
@@ -811,93 +923,27 @@ msgstr ""
 "[उद्यमशील समाज के रूप में] यानी स्वामित्व, जिम्मेदारी और स्वायत्तता की एक नई"
 " मानसिकता को इंगित करने पर एक नया ध्यान केंद्रित किया गया।"
 
-#: assets/yge/redeem_coin.js:25 assets/yge/youvegoteth/receive.js:100
+#~ msgid "Accept Submission"
+#~ msgstr "सबमिशन स्वीकार करें"
+
 #, fuzzy
-#| msgid "Not a valid forwarding address"
-msgid "Not a valid forwarding address."
-msgstr "मान्य अग्रेषण पता नहीं है।"
+#~ msgid "Please enter a valid checksum address."
+#~ msgstr "कृपया एक वैध चेकसम पता दर्ज करें।"
 
-#: assets/yge/redeem_coin.js:48
-#, fuzzy
-#| msgid "Please enter a valid email address."
-msgid "Please enter a valid checksum address."
-msgstr "कृपया एक वैध चेकसम पता दर्ज करें।"
+#~ msgid "Not a valid forwarding address"
+#~ msgstr "मान्य अग्रेषण पता नहीं है"
 
-#: assets/yge/redeem_ethos.js:23
-msgid "Not a valid forwarding address"
-msgstr "मान्य अग्रेषण पता नहीं है"
+#~ msgid "Please enter your Twitter username"
+#~ msgstr "कृपया अपना ट्विटर उपयोगकर्ता नाम दर्ज करें"
 
-#: assets/yge/redeem_ethos.js:29
-msgid "Please enter your Twitter username"
-msgstr "कृपया अपना ट्विटर उपयोगकर्ता नाम दर्ज करें"
+#~ msgid "batch mode enabled"
+#~ msgstr "बैच मोड सक्षम"
 
-#: assets/yge/youvegoteth/new.js:38
-msgid "batch mode enabled"
-msgstr "बैच मोड सक्षम"
+#~ msgid "Invalid addresses generated. Please try again from the first page."
+#~ msgstr "अमान्य पते उत्पन्न हुए। कृपया पहले पृष्ठ से पुनः प्रयास करें।"
 
-#: assets/yge/youvegoteth/receive.js:105 assets/yge/youvegoteth/receive.js:109
-msgid "Invalid Link.  Please check your link and try again"
-msgstr "अमान्य लिंक। कृपया अपना लिंक जांचें और पुनः प्रयास करें"
+#~ msgid "You can only send a maximum of "
+#~ msgstr "आप केवल अधिकतम भेज सकते हैं"
 
-#: assets/yge/youvegoteth/receive.js:118 assets/yge/youvegoteth/send.js:235
-msgid "got an error :("
-msgstr "एक त्रुटि मिली :("
-
-#: assets/yge/youvegoteth/receive.js:153
-msgid "You must wait until the senders transaction confirms."
-msgstr "प्रेषक लेनदेन की पुष्टि होने तक आपको प्रतीक्षा करनी होगी।"
-
-#: assets/yge/youvegoteth/send.js:23
-msgid "Invalid addresses generated. Please try again from the first page."
-msgstr "अमान्य पते उत्पन्न हुए। कृपया पहले पृष्ठ से पुनः प्रयास करें।"
-
-#: assets/yge/youvegoteth/send.js:175
-msgid ""
-"To Email is optional, but if you enter an email, you must enter a valid "
-"email!"
-msgstr ""
-"ईमेल के लिए वैकल्पिक है, लेकिन यदि आप एक ईमेल दर्ज करते हैं, तो आपको एक वैध "
-"ईमेल दर्ज करना होगा!"
-
-#: assets/yge/youvegoteth/send.js:179
-msgid ""
-"From Email is optional, but if you enter an email, you must enter a valid "
-"email!"
-msgstr ""
-"ईमेल से वैकल्पिक है, लेकिन यदि आप एक ईमेल दर्ज करते हैं, तो आपको एक वैध ईमेल"
-" दर्ज करना होगा!"
-
-#: assets/yge/youvegoteth/send.js:183
-msgid "You must enter an number for the amount!"
-msgstr "आपको राशि के लिए एक संख्या दर्ज करनी होगी!"
-
-#: assets/yge/youvegoteth/send.js:193
-msgid "You can only send a maximum of "
-msgstr "आप केवल अधिकतम भेज सकते हैं"
-
-#: assets/yge/youvegoteth/send.js:197
-msgid "You can only send a minimum of "
-msgstr "आप केवल न्यूनतम भेज सकते हैं"
-
-#: assets/yge/youvegoteth/send.js:201
-msgid "You must enter a username."
-msgstr "आपको एक उपयोगकर्ता नाम दर्ज करना होगा।"
-
-#: assets/yge/youvegoteth/send.js:205
-#, fuzzy
-#| msgid "You must agree to the precedence clause."
-msgid "You must accept the terms."
-msgstr "आपको शर्तों को स्वीकार करना होगा।"
-
-#: assets/yge/youvegoteth/web3alert.js:29
-msgid ""
-"You must install <a href=https://metamask.io/>Metamask</a> to use this tool."
-msgstr ""
-"इस टूल का उपयोग करने के लिए आपको <a href=https://metamask.io/> मेटामास्क "
-"</a> इंस्टॉल करना होगा।"
-
-#: assets/yge/youvegoteth/web3alert.js:33
-#, fuzzy
-#| msgid "Unlock Metamask"
-msgid "Please unlock Metamask."
-msgstr "कृपया मेटामास्क अनलॉक करें।"
+#~ msgid "You can only send a minimum of "
+#~ msgstr "आप केवल न्यूनतम भेज सकते हैं"

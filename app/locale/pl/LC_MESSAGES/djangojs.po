@@ -16,88 +16,79 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Plural-Forms: nplurals=4; plural=(n==1 ? 0 : (n%10>=2 && n%10<=4) && (n%100<12 || n%100>14) ? 1 : n!=1 && (n%10>=0 && n%10<=1) || (n%10>=5 && n%10<=9) || (n%100>=12 && n%100<=14) ? 2 : 3);\n"
 
 #: assets/onepager/js/quarantine/receive_legacy.js:100
-#, fuzzy
-#| msgid "Please enter a valid email address."
 msgid "Not a valid forwarding address."
-msgstr "Keine gültige Weiterleitungsadresse."
+msgstr "Nieprawidłowy adres do wysyłki."
 
 #: assets/onepager/js/quarantine/receive_legacy.js:105
 #: assets/onepager/js/quarantine/receive_legacy.js:109
 msgid "Invalid Link.  Please check your link and try again"
-msgstr ""
-"Ungültiger Link. Bitte überprüfen Sie Ihren Link und versuchen Sie es erneut"
+msgstr "Niepoprawny link. Sprawdź swój link i spróbuj ponownie"
 
 #: assets/onepager/js/quarantine/receive_legacy.js:118
 msgid "got an error :("
-msgstr "habe einen Fehler bekommen :("
+msgstr "Wystąpił błąd :("
 
 #: assets/onepager/js/quarantine/receive_legacy.js:153
 msgid "You must wait until the senders transaction confirms."
-msgstr "Sie müssen warten, bis die Transaktion des Absenders bestätigt wird."
+msgstr "Musisz poczekać, aż transakcja nadawcy się potwierdzi."
 
 #: assets/onepager/js/quarantine/web3alert.js:29
 #: assets/onepager/js/web3alert.js:29
 msgid ""
 "You must install <a href=https://metamask.io/>Metamask</a> to use this tool."
 msgstr ""
-"Sie müssen <a href=https://metamask.io/> Metamask </a> installieren, um "
-"dieses Tool zu verwenden."
+"Aby użyć tego narzędzia, musisz zainstalować <a href=https://metamask.io/> "
+"Metamask </a>."
 
 #: assets/onepager/js/quarantine/web3alert.js:33
 #: assets/onepager/js/web3alert.js:33
-#, fuzzy
-#| msgid "Unlock Metamask"
 msgid "Please unlock Metamask."
-msgstr "Bitte entsperre Metamask."
+msgstr "Proszę odblokować Metamask."
 
 #: assets/onepager/js/receive.js:5
 msgid "You are not on the right web3 network.  Please switch to "
-msgstr "Sie sind nicht im richtigen Web3-Netzwerk. Bitte wechseln Sie zu"
+msgstr "Nie jesteś we właściwej sieci web3. Przełącz na"
 
 #: assets/onepager/js/send.js:88
 msgid ""
 "You must have a web3 enabled browser to do this.  Please download Metamask."
 msgstr ""
-"Dazu benötigen Sie einen Web3-fähigen Browser. Bitte lade Metamask herunter."
+"Aby to zrobić, musisz mieć przeglądarkę obsługującą web3. Pobierz Metamask."
 
 #: assets/onepager/js/send.js:115
 msgid ""
 "To Email is optional, but if you enter an email, you must enter a valid "
 "email!"
 msgstr ""
-"Eine E-Mail ist optional, aber wenn Sie eine E-Mail-Adresse eingeben, müssen"
-" Sie eine gültige E-Mail-Adresse eingeben."
+"Do wiadomości e-mail jest opcjonalna, ale jeśli wpiszesz wiadomość e-mail, "
+"musisz podać prawidłowy adres e-mail!"
 
 #: assets/onepager/js/send.js:119
 msgid ""
 "From Email is optional, but if you enter an email, you must enter a valid "
 "email!"
 msgstr ""
-"Von E-Mail ist optional, aber wenn Sie eine E-Mail-Adresse eingeben, müssen "
-"Sie eine gültige E-Mail-Adresse eingeben."
+"Poczta elektroniczna jest opcjonalna, ale jeśli wpiszesz wiadomość e-mail, "
+"musisz podać prawidłowy adres e-mail!"
 
 #: assets/onepager/js/send.js:123
 msgid "You must enter an number for the amount!"
-msgstr "Sie müssen eine Nummer für den Betrag eingeben!"
+msgstr "Musisz podać liczbę dla kwoty!"
 
 #: assets/onepager/js/send.js:127
 msgid "You must enter a username."
-msgstr "Sie müssen einen Benutzernamen eingeben."
+msgstr "Musisz podać nazwę użytkownika."
 
 #: assets/onepager/js/send.js:131
-#, fuzzy
-#| msgid "You must agree to the precedence clause."
 msgid "You must accept the terms."
-msgstr "Sie müssen die Bedingungen akzeptieren."
+msgstr "Musisz zaakceptować warunki."
 
 #: assets/onepager/js/send.js:166
-#, fuzzy
-#| msgid "There was an error"
 msgid "There was an error."
-msgstr "Es gab einen Fehler."
+msgstr "Wystąpił błąd."
 
 #: assets/onepager/js/send.js:196
 msgid ""
@@ -105,34 +96,34 @@ msgid ""
 "so your receipient doesnt have to pay it.  The second is the actual token "
 "transfer."
 msgstr ""
-"Sie werden nun aufgefordert, zwei Transaktionen zu bestätigen. Das erste ist"
-" Gasgeld, also muss Ihr Empfänger es nicht bezahlen. Die zweite ist die "
-"tatsächliche Token-Übertragung."
+"Zostaniesz poproszony o potwierdzenie dwóch transakcji. Pierwszy to pieniądz"
+" gazowy, więc twój odbiorca nie musi go płacić. Drugi to rzeczywisty "
+"transfer tokena."
 
 #: assets/v2/js/amounts.js:11
 msgid "Approx: "
-msgstr "Ca."
+msgstr "Około:"
 
 #: assets/v2/js/amounts.js:13 assets/v2/js/amounts.js:103
 #: assets/v2/js/amounts.js:152
 msgid "Approx: Unknown amount"
-msgstr "Ungefähr: Unbekannte Menge"
+msgstr "Przybliż: nieznana kwota"
 
 #: assets/v2/js/amounts.js:62 assets/v2/js/amounts.js:116
 msgid "Incorrect amount"
-msgstr "Falscher Betrag"
+msgstr "Niepoprawna kwota"
 
 #: assets/v2/js/avatar_builder.js:291
 msgid "Your Avatar Has Been Saved To your Gitcoin Profile!"
-msgstr "Dein Avatar wurde zu deinem Gitcoin-Profil gespeichert!"
+msgstr "Twój Avatar został zapisany w Twoim profilu Gitcoin!"
 
 #: assets/v2/js/avatar_builder.js:296
 msgid "Error occurred while saving. Please try again."
-msgstr "Beim Speichern ist ein Fehler aufgetreten. Bitte versuche es erneut."
+msgstr "Wystąpił błąd podczas zapisywania. Proszę spróbuj ponownie."
 
 #: assets/v2/js/base.js:191
 msgid "We Care About Your Privacy"
-msgstr "Wir kümmern uns um Ihre Privatsphäre"
+msgstr "Dbamy o Twoją prywatność"
 
 #: assets/v2/js/base.js:194
 msgid ""
@@ -141,10 +132,10 @@ msgid ""
 "to users. With this ethos in mind, we are always careful about how we use "
 "your information."
 msgstr ""
-"Als Web 3.0 Unternehmen denken wir sorgfältig über Benutzerdaten und "
-"Privatsphäre nach und wie sich das Internet entwickelt. Wir hoffen, dass Web"
-" 3.0 den Nutzern mehr Kontrolle über die Daten ermöglicht. Mit diesem Ethos "
-"achten wir immer darauf, wie wir Ihre Informationen verwenden."
+"Jako firma Web 3.0 uważnie przyglądamy się danym użytkowników i prywatności "
+"oraz zmianom w Internecie. Mamy nadzieję, że Web 3.0 zapewni użytkownikom "
+"większą kontrolę nad danymi. Mając na uwadze ten etos, zawsze dbamy o to, "
+"jak wykorzystujemy Twoje dane."
 
 #: assets/v2/js/base.js:198
 msgid ""
@@ -154,32 +145,32 @@ msgid ""
 "25, 2018, and your continued use of the Gitcoin after May 25, 2018 will be "
 "subject to our updated Terms of Use and Privacy Policy."
 msgstr ""
-"Wir haben kürzlich unsere Datenschutzerklärung überprüft, um den "
-"Anforderungen der Datenschutzgrundverordnung (DSGVO) zu entsprechen und "
-"unsere Nutzungsbedingungen, Datenschutzrichtlinien und Cookie-Richtlinien zu"
-" verbessern. Diese Änderungen treten am 25. Mai 2018 in Kraft. Ihre "
-"fortgesetzte Nutzung des Gitcoins nach dem 25. Mai 2018 unterliegt unseren "
-"aktualisierten Nutzungsbedingungen und Datenschutzrichtlinien."
+"Niedawno sprawdziliśmy naszą Politykę prywatności, aby spełnić wymagania "
+"Ogólnego Regulaminu Ochrony Danych (RODO), poprawiając nasze Warunki "
+"korzystania, Politykę prywatności i Zasady dotyczące plików cookie. Zmiany "
+"te wejdą w życie 25 maja 2018 r., A dalsze korzystanie z Gitcoin po 25 maja "
+"2018 r. Będzie podlegało naszym zaktualizowanym Warunkom użytkowania i "
+"Polityce prywatności."
 
 #: assets/v2/js/base.js:206
 msgid "Read Our Updated Terms"
-msgstr "Lesen Sie unsere aktualisierten Bedingungen"
+msgstr "Przeczytaj nasze zaktualizowane warunki"
 
 #: assets/v2/js/pages/bounty_details.js:95
 msgid "Issue"
-msgstr "Problem"
+msgstr "Kwestia"
 
 #: assets/v2/js/pages/bounty_details.js:96
 msgid "Issue Funding Info"
-msgstr "Ausgaben-Info ausgeben"
+msgstr "Informacje o finansowaniu emisji"
 
 #: assets/v2/js/pages/bounty_details.js:97
 msgid "Funder"
-msgstr "Geldgeber"
+msgstr "Funder"
 
 #: assets/v2/js/pages/bounty_details.js:98
 msgid "Submitter"
-msgstr "Übermittler"
+msgstr "Przesyłający"
 
 #: assets/v2/js/pages/bounty_details.js:99
 msgid "Meta"
@@ -187,292 +178,261 @@ msgstr "Meta"
 
 #: assets/v2/js/pages/bounty_details.js:120
 msgid "OPEN ISSUE"
-msgstr "OFFENES THEMA"
+msgstr "OTWARTY PROBLEM"
 
 #: assets/v2/js/pages/bounty_details.js:123
 msgid "work started"
-msgstr "die Arbeit begann"
+msgstr "praca zaczęła się"
 
 #: assets/v2/js/pages/bounty_details.js:126
 msgid "work submitted"
-msgstr "Arbeit eingereicht"
+msgstr "przesłana praca"
 
 #: assets/v2/js/pages/bounty_details.js:129
 msgid "done"
-msgstr "erledigt"
+msgstr "Gotowe"
 
 #: assets/v2/js/pages/bounty_details.js:132
 msgid "cancelled"
-msgstr "abgebrochen"
+msgstr "anulowany"
 
 #: assets/v2/js/pages/bounty_details.js:437
-#, fuzzy
-#| msgid "Are you sure you want to remove your interest?"
 msgid "Are you sure you want to stop work?"
-msgstr "Sind Sie sicher, dass Sie aufhören wollen zu arbeiten?"
+msgstr "Czy na pewno chcesz przerwać pracę?"
 
 #: assets/v2/js/pages/bounty_details.js:439
 #: assets/v2/js/pages/bounty_details.js:650
 msgid "Start Work"
-msgstr "Fang an zu arbeiten"
+msgstr "Zacząć pracę"
 
 #: assets/v2/js/pages/bounty_details.js:499
 msgid "Please provide an action plan for this ticket."
-msgstr "Bitte geben Sie einen Aktionsplan für dieses Ticket an."
+msgstr "Proszę podać plan działania dla tego biletu."
 
 #: assets/v2/js/pages/bounty_details.js:504
 msgid "You must agree to the precedence clause."
-msgstr "Sie müssen der Vorrangklausel zustimmen."
+msgstr "Musisz zgodzić się na klauzulę pierwszeństwa."
 
 #: assets/v2/js/pages/bounty_details.js:508
 msgid "You must agree to keep the funder updated on your progress."
-msgstr "Sie müssen zustimmen, den Geldgeber auf dem Laufenden zu halten."
+msgstr ""
+"Musisz wyrazić zgodę na aktualizowanie finansów na temat twoich postępów."
 
 #: assets/v2/js/pages/bounty_details.js:513
 #: assets/v2/js/pages/bounty_details.js:650
 msgid "Stop Work"
-msgstr "Hör auf zu arbeiten"
+msgstr "Przestań pracować"
 
 #: assets/v2/js/pages/bounty_details.js:537
 msgid "Funded Issue Details: "
-msgstr "Fundierte Issue Details:"
+msgstr "Szczegółowe informacje o problemie:"
 
 #: assets/v2/js/pages/bounty_details.js:635
 msgid "Submit Work"
-msgstr "Arbeit einreichen"
+msgstr "Prześlij pracę"
 
 #: assets/v2/js/pages/bounty_details.js:637
 msgid "Submit work for the funder to review"
-msgstr "Reichen Sie Arbeit ein, damit der Geldgeber sie überprüfen kann"
+msgstr "Prześlij pracę do sprawcy do sprawdzenia"
 
 #: assets/v2/js/pages/bounty_details.js:652
 msgid "Notify the funder that you will not be working on this project"
-msgstr ""
-"Benachrichtigen Sie den Geldgeber, dass Sie nicht an diesem Projekt arbeiten"
-" werden"
+msgstr "Powiadom dostawcę, że nie będziesz pracował nad tym projektem"
 
 #: assets/v2/js/pages/bounty_details.js:652
 msgid "Notify the funder that you would like to take on this project"
-msgstr ""
-"Benachrichtigen Sie den Geldgeber, dass Sie an diesem Projekt teilnehmen "
-"möchten"
+msgstr "Powiadom dostawcę, który chciałbyś wziąć na ten projekt"
 
 #: assets/v2/js/pages/bounty_details.js:665
 msgid "Cancel Bounty"
-msgstr "Kopfgeld stornieren"
+msgstr "Anuluj nagrodę"
 
 #: assets/v2/js/pages/bounty_details.js:667
 msgid "Cancel bounty and reclaim funds for this issue"
-msgstr ""
-"Stornieren Sie das Kopfgeld und fordern Sie Gelder für dieses Problem zurück"
+msgstr "Anuluj nagrodę za bounty i odzyskaj środki na ten problem"
 
 #: assets/v2/js/pages/bounty_details.js:679
 msgid "View Attached Job Description"
-msgstr "Angehängte Jobbeschreibung anzeigen"
+msgstr "Wyświetl dołączony opis zadania"
 
 #: assets/v2/js/pages/bounty_details.js:681
 msgid ""
 "This bounty hunter is hiring for a full time, part time, or contract role "
 "and has attached that to this bounty."
 msgstr ""
-"Dieser Kopfgeldjäger sucht eine Vollzeit-, Teilzeit- oder Vertragsrolle und "
-"hat das an diese Prämie geknüpft."
+"Ten łowca nagród zatrudnia na pełnoetatowy, niepełny etat lub kontraktową "
+"rolę i przyłączył to do tej nagrody."
 
 #: assets/v2/js/pages/bounty_details.js:694
-#, fuzzy
-#| msgid "Cancel Bounty"
 msgid "Payout Bounty"
-msgstr "Auszahlungsbonus"
+msgstr "Payout Bounty"
 
 #: assets/v2/js/pages/bounty_details.js:695
-#, fuzzy
-#| msgid "This will payout the bounty to the submitter."
 msgid "Payout the bounty to one or more submitters."
-msgstr "Auszahlung des Kopfgeldes an einen oder mehrere Übergeber."
+msgstr "Wypłać nagrodę do jednego lub kilku dostawców."
 
 #: assets/v2/js/pages/bounty_details.js:707
 msgid "Add Contribution"
-msgstr "Beitrag hinzufügen"
+msgstr "Dodaj wkład"
 
 #: assets/v2/js/pages/bounty_details.js:709
 msgid "Increase the funding for this issue"
-msgstr "Erhöhen Sie die Finanzierung für dieses Problem"
+msgstr "Zwiększ finansowanie dla tego problemu"
 
 #: assets/v2/js/pages/bounty_details.js:725
 msgid "View On Github"
-msgstr "Auf Github ansehen"
+msgstr "Wyświetl na Github"
 
 #: assets/v2/js/pages/bounty_details.js:727
 msgid "View issue details and comments on Github"
-msgstr "Sehen Sie sich die Problemdetails und Kommentare zu Github an"
+msgstr "Zobacz szczegóły wydania i komentarze na Github"
 
 #: assets/v2/js/pages/bounty_details.js:742
 msgid "Suspend Auto Approval"
-msgstr "Automatische Genehmigung aussetzen"
+msgstr "Wstrzymaj automatyczne zatwierdzanie"
 
 #: assets/v2/js/pages/bounty_details.js:744
 msgid ""
 "Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty"
 msgstr ""
-"Suspend * Auto Approval * von Kopfgeldjägern, die diese Bounty beantragt "
-"haben"
+"Zawieszenie * Automatyczne zatwierdzanie * łowców nagród, którzy zastosowali"
+" się do tej nagrody"
 
 #: assets/v2/js/pages/bounty_details.js:759
-#, fuzzy
-#| msgid "Cancel Bounty"
 msgid "Hide Bounty"
-msgstr "Kopfgeld verstecken"
+msgstr "Ukryj Bounty"
 
 #: assets/v2/js/pages/bounty_details.js:761
 msgid "Hides Bounty from Active Bounties"
-msgstr "Versteckt Kopfgeld von aktiven Kopfgeldern"
+msgstr "Hides Bounty z Active Bounties"
 
 #: assets/v2/js/pages/bounty_details.js:776
 msgid "Toggle Remarket Ready"
-msgstr "Toggle Remarket Ready"
+msgstr "Przełącz Remarketing gotowy"
 
 #: assets/v2/js/pages/bounty_details.js:778
 msgid ""
 "Sets Remarket Ready if not already remarket ready.  Unsets it if already "
 "remarket ready."
 msgstr ""
-"Legt Remarket Ready fest, wenn nicht bereits Remarket-fertig. Unset, wenn "
-"bereits Remarket bereit ist."
+"Ustawia Remarketing gotowy, jeśli jeszcze nie jest gotowy do remarketingu. "
+"Usuwa go, jeśli jest już gotowy do remarketingu."
 
 #: assets/v2/js/pages/bounty_details.js:792
-#, fuzzy
-#| msgid "Funder"
 msgid "Contact Funder"
-msgstr "Funder kontaktieren"
+msgstr "Skontaktuj się z Funder"
 
 #: assets/v2/js/pages/bounty_details.js:794
 msgid "Contact Funder via Email"
-msgstr "Kontaktieren Sie Funder per E-Mail"
+msgstr "Skontaktuj się z firmą Funder za pośrednictwem poczty elektronicznej"
 
 #: assets/v2/js/pages/bounty_details.js:808
 msgid "Snooze Gitcoinbot"
-msgstr "Snooze Gitcoinbot"
+msgstr "Drzemka Gitcoinbot"
 
 #: assets/v2/js/pages/bounty_details.js:810
 msgid "Snooze Gitcoinbot reminders"
-msgstr "Snooze Gitcoinbot Erinnerungen"
+msgstr "Odłóż przypomnienia Gitcoinbota"
 
 #: assets/v2/js/pages/bounty_details.js:824
 msgid "Override Status"
-msgstr "Status überschreiben"
+msgstr "Zastąp status"
 
 #: assets/v2/js/pages/bounty_details.js:826
 msgid "Override Status with a status of your choosing"
-msgstr "Überschreiben Sie den Status mit einem Status Ihrer Wahl"
+msgstr "Zastąp status przy wybranym statusie"
 
 #: assets/v2/js/pages/bounty_details.js:892
 #: assets/v2/js/pages/dashboard.js:510 assets/v2/js/shared.js:296
 msgid "got an error. please try again, or contact support@gitcoin.co"
 msgstr ""
-"habe einen Fehler bekommen. Bitte versuchen Sie es erneut oder wenden Sie "
-"sich an support@gitcoin.co"
+"Wystąpił błąd. spróbuj ponownie lub skontaktuj się z support@gitcoin.co"
 
 #: assets/v2/js/pages/bounty_details.js:902
-#, fuzzy
-#| msgid "Cancel Bounty"
 msgid "New Bounty"
-msgstr "Neue Prämie"
+msgstr "Nowa nagroda"
 
 #: assets/v2/js/pages/bounty_details.js:903
 msgid "Work Started"
-msgstr "Arbeit begonnen"
+msgstr "Rozpoczęcie pracy"
 
 #: assets/v2/js/pages/bounty_details.js:904
-#, fuzzy
-#| msgid "Work Started"
 msgid "Work Stopped"
-msgstr "Arbeit gestoppt"
+msgstr "Praca zatrzymana"
 
 #: assets/v2/js/pages/bounty_details.js:905
 msgid "Work Submitted"
-msgstr "Arbeit eingereicht"
+msgstr "Przesłano pracę"
 
 #: assets/v2/js/pages/bounty_details.js:906
-#, fuzzy
-#| msgid "Done"
 msgid "Work Done"
-msgstr "Arbeit erledigt"
+msgstr "Robota skończona"
 
 #: assets/v2/js/pages/bounty_details.js:907
-#, fuzzy
-#| msgid "Work Accepted"
 msgid "Worker Approved"
-msgstr "Arbeiter genehmigt"
+msgstr "Pracownik zatwierdzony"
 
 #: assets/v2/js/pages/bounty_details.js:908
-#, fuzzy
-#| msgid "Work Accepted"
 msgid "Worker Rejected"
-msgstr "Arbeiter abgelehnt"
+msgstr "Pracownik odrzucony"
 
 #: assets/v2/js/pages/bounty_details.js:909
-#, fuzzy
-#| msgid "Work Accepted"
 msgid "Worker Applied"
-msgstr "Arbeiter angewendet"
+msgstr "Pracownik zatrudniony"
 
 #: assets/v2/js/pages/bounty_details.js:910
-#, fuzzy
-#| msgid "Issue Funding Info"
 msgid "Increased Funding"
-msgstr "Erhöhte Finanzierung"
+msgstr "Zwiększone finansowanie"
 
 #: assets/v2/js/pages/bounty_details.js:911
-#, fuzzy
-#| msgid "Cancel Bounty"
 msgid "Canceled Bounty"
-msgstr "Aufgegebenes Kopfgeld"
+msgstr "Anulowano nagrodę Bounty"
 
 #: assets/v2/js/pages/bounty_details.js:912
 msgid "New Tip"
-msgstr "Neuer Tipp"
+msgstr "Nowa wskazówka"
 
 #: assets/v2/js/pages/bounty_details.js:913
 msgid "Tip Received"
-msgstr "Tipp erhalten"
+msgstr "Wskazówka została odebrana"
 
 #: assets/v2/js/pages/bounty_details.js:1000
 msgid "There's no activity yet!"
-msgstr "Es gibt noch keine Aktivitäten!"
+msgstr "Nie ma jeszcze żadnej aktywności!"
 
 #: assets/v2/js/pages/dashboard.js:324
 msgid "No Results"
-msgstr "Keine Ergebnisse"
+msgstr "Brak wyników"
 
 #: assets/v2/js/pages/dashboard.js:328
 msgid " Matching Result"
-msgstr "Übereinstimmendes Ergebnis"
+msgstr "Pasujący wynik"
 
 #: assets/v2/js/pages/dashboard.js:332
 msgid " Matching Results"
-msgstr "Passende Ergebnisse"
+msgstr "Pasujące wyniki"
 
 #: assets/v2/js/pages/dashboard.js:732
 msgid "Please enter a valid email address."
-msgstr "Bitte geben Sie eine gültige E-Mail-Adresse ein."
+msgstr "Proszę wpisać aktualny adres e-mail."
 
 #: assets/v2/js/pages/dashboard.js:743
 msgid "You're in! Keep an eye on your inbox for the next funding listing."
 msgstr ""
-"Du bist in! Behalten Sie Ihren Posteingang für die nächste "
-"Finanzierungsliste im Auge."
+"Jesteś w! Miej oko na swoją skrzynkę odbiorczą na następną listę "
+"finansowania."
 
 #: assets/v2/js/pages/faucet_form.js:31
 msgid "We could not validate that input as an email address"
-msgstr "Wir konnten diese Eingabe nicht als E-Mail-Adresse validieren"
+msgstr "Nie możemy zweryfikować tego wejścia jako adresu e-mail"
 
 #: assets/v2/js/pages/faucet_form.js:59
 msgid "Please make sure to fill out all fields."
-msgstr "Bitte füllen Sie alle Felder aus."
+msgstr "Wypełnij wszystkie pola."
 
 #: assets/v2/js/pages/faucet_form.js:79
 msgid "Got an unexpected error"
-msgstr "Ich habe einen unerwarteten Fehler erhalten"
+msgstr "Wystąpił nieoczekiwany błąd"
 
 #: assets/v2/js/pages/fulfill_bounty.js:25
 #: assets/v2/js/pages/increase_bounty.js:29
@@ -481,188 +441,178 @@ msgstr "Ich habe einen unerwarteten Fehler erhalten"
 msgid ""
 "You are on an unsupported network.  Please change your network to a "
 "supported network."
-msgstr ""
-"Sie befinden sich in einem nicht unterstützten Netzwerk. Bitte ändern Sie "
-"Ihr Netzwerk in ein unterstütztes Netzwerk."
+msgstr "Jesteś w nieobsługiwanej sieci. Zmień sieć na obsługiwaną sieć."
 
 #: assets/v2/js/pages/fulfill_bounty.js:105
 msgid "Could not get bounty details."
-msgstr "Konnte keine Kopfgelddetails erhalten."
+msgstr "Nie można uzyskać szczegółów dotyczących nagrody."
 
 #: assets/v2/js/pages/fulfill_bounty.js:121
 msgid "Fulfillment submitted to web3."
-msgstr "Fulfillment an web3 übermittelt."
+msgstr "Spełnienie przesłano do web3."
 
 #: assets/v2/js/pages/fulfill_bounty.js:134
 #: assets/v2/js/pages/kill_bounty.js:106
 #: assets/v2/js/pages/process_bounty.js:163
 msgid "There was an error"
-msgstr "Es gab einen Fehler"
+msgstr "Wystąpił błąd"
 
 #: assets/v2/js/pages/increase_bounty.js:51
 #: assets/v2/js/pages/process_bounty.js:83
 msgid "Please accept the terms of service."
-msgstr "Bitte akzeptieren Sie die Geschäftsbedingungen."
+msgstr "Proszę zaakceptować warunki korzystania z usługi."
 
 #: assets/v2/js/pages/increase_bounty.js:61
 msgid "Please enter a valid github issue URL."
-msgstr "Bitte geben Sie eine gültige github-Ausgabe-URL ein."
+msgstr "Wprowadź poprawny adres URL wydania github."
 
 #: assets/v2/js/pages/increase_bounty.js:65
-#, fuzzy
-#| msgid "Please enter a fulfillment Id."
 msgid "Please enter an amount."
-msgstr "Bitte geben Sie einen Betrag ein."
+msgstr "Wprowadź kwotę."
 
 #: assets/v2/js/pages/increase_bounty.js:97
 #: assets/v2/js/pages/new_bounty.js:371 assets/v2/js/pages/new_bounty.js:397
 msgid "There was an error.  Please try again or contact support."
 msgstr ""
-"Es gab einen Fehler. Bitte versuchen Sie es erneut oder wenden Sie sich an "
-"den Support."
+"Wystąpił błąd. Spróbuj ponownie lub skontaktuj się z pomocą techniczną."
 
 #: assets/v2/js/pages/increase_bounty.js:109
 #: assets/v2/js/pages/new_bounty.js:352
 msgid "Submission sent to web3."
-msgstr "Einreichung an web3 gesendet."
+msgstr "Przesłanie wysłane do web3."
 
 #: assets/v2/js/pages/increase_bounty.js:124
 msgid "No active funded issue found at this address on "
-msgstr "Kein aktiv finanziertes Problem gefunden unter dieser Adresse auf"
+msgstr ""
+"Nie znaleziono aktywnego pod tym adresem problemu finansowanego pod tym "
+"adresem"
 
 #: assets/v2/js/pages/increase_bounty.js:127
 msgid ""
 "Only the address that submitted this funded issue may increase the payout."
 msgstr ""
-"Nur die Adresse, die dieses finanzierte Problem eingereicht hat, kann die "
-"Auszahlung erhöhen."
+"Tylko adres, który przesłał tę sfinansowaną emisję, może zwiększyć wypłatę."
 
 #: assets/v2/js/pages/kill_bounty.js:44
 #: assets/v2/js/pages/process_bounty.js:107
 msgid "Could not get bounty details"
-msgstr "Konnte keine Kopfgelddetails erhalten"
+msgstr "Nie można uzyskać szczegółów dotyczących nagrody"
 
 #: assets/v2/js/pages/kill_bounty.js:53
 #: assets/v2/js/pages/process_bounty.js:115
 msgid "No active bounty found for this Github URL on "
-msgstr "Kein aktives Bounty für diese Github-URL gefunden"
+msgstr "Nie znaleziono aktywnej nagrody za ten URL Github na"
 
 #: assets/v2/js/pages/kill_bounty.js:70
 msgid ""
 "No active funded issue found at this address.  Are you sure this is an "
 "active funded issue?"
 msgstr ""
-"Unter dieser Adresse wurde kein aktiv finanziertes Problem gefunden. Sind "
-"Sie sicher, dass dies ein aktiv finanziertes Thema ist?"
+"Nie znaleziono aktywnej emisji pod tym adresem. Czy na pewno jest to "
+"aktywnie finansowany problem?"
 
 #: assets/v2/js/pages/kill_bounty.js:74
 msgid "Only the address that submitted this funded issue may kill the bounty."
 msgstr ""
-"Nur die Adresse, die dieses finanzierte Problem eingereicht hat, kann das "
-"Kopfgeld töten."
+"Tylko adres, który przesłał tę sfinansowaną kwestię, może zabić nagrodę."
 
 #: assets/v2/js/pages/kill_bounty.js:93
 msgid "Kill bounty submitted to web3."
-msgstr "Töte Kopfgeld, das an web3 gesendet wurde."
+msgstr "Zabij nagrodę za przekazanie do web3."
 
 #: assets/v2/js/pages/onboard.js:40
 msgid "Done"
-msgstr "Erledigt"
+msgstr "Gotowe"
 
 #: assets/v2/js/pages/onboard.js:47
 msgid "Next"
-msgstr "Nächster"
+msgstr "Kolejny"
 
 #: assets/v2/js/pages/onboard.js:69
 msgid "Install Metamask"
-msgstr "Installieren Sie Metamask"
+msgstr "Zainstaluj Metamask"
 
 #: assets/v2/js/pages/onboard.js:81
 msgid "Unlock Metamask"
-msgstr "Schalte Metamask frei"
+msgstr "Odblokuj Metamask"
 
 #: assets/v2/js/pages/process_bounty.js:17
 msgid "Could not get fulfillment details"
-msgstr "Ausführungsdetails konnten nicht abgerufen werden"
+msgstr "Nie można uzyskać szczegółów realizacji"
 
 #: assets/v2/js/pages/process_bounty.js:25
-#, fuzzy
-#| msgid "No bounty fulfillments found for this Github URL."
 msgid ""
 "No bounty fulfillments found for this Github URL.  Please use the multi-"
 "party payout tool instead."
 msgstr ""
-"Keine Bounty-Erfüllungen für diese Github-URL gefunden. Bitte verwenden Sie "
-"stattdessen das Mehrparteien-Auszahlungstool."
+"Nie znaleziono spełnień bounty dla tego adresu URL Github. Zamiast tego użyj"
+" narzędzia do wypłat wielostronnych."
 
 #: assets/v2/js/pages/process_bounty.js:89
 msgid "Please enter a issue URL."
-msgstr "Bitte geben Sie eine Ausgabe-URL ein."
+msgstr "Wprowadź adres URL problemu."
 
 #: assets/v2/js/pages/process_bounty.js:93
 msgid "Please enter a fulfillment Id."
-msgstr "Bitte geben Sie eine Erfüllungs-ID ein."
+msgstr "Proszę podać identyfikator spełnienia."
 
 #: assets/v2/js/pages/process_bounty.js:130
 msgid ""
 "No active funding found at this address.  Are you sure this is an active "
 "funded issue?"
 msgstr ""
-"Unter dieser Adresse wurde keine aktive Finanzierung gefunden. Sind Sie "
-"sicher, dass dies ein aktiv finanziertes Thema ist?"
+"Nie znaleziono aktywnych funduszy pod tym adresem. Czy na pewno jest to "
+"aktywnie finansowany problem?"
 
 #: assets/v2/js/pages/process_bounty.js:132
 msgid "No claimee found for this bounty."
-msgstr "Kein claimee fand für dieses Kopfgeld."
+msgstr "Nie znaleziono pretendenta do tej nagrody."
 
 #: assets/v2/js/pages/process_bounty.js:134
 msgid "You can only process a funded issue if you submitted it initially."
 msgstr ""
-"Sie können ein finanziertes Problem nur verarbeiten, wenn Sie es "
-"ursprünglich eingereicht haben."
+"Możesz przetwarzać tylko finansowany problem, jeśli przesłałeś go na "
+"początku."
 
 #: assets/v2/js/pages/process_bounty.js:153
 msgid "Submitted transaction to web3."
-msgstr "Eingereichte Transaktion an web3."
+msgstr "Przesłano transakcję do web3."
 
 #: assets/v2/js/shared.js:247
 msgid "Thanks for letting us know that you're ready to start work."
-msgstr ""
-"Danke, dass Sie uns wissen lassen, dass Sie bereit sind, mit der Arbeit zu "
-"beginnen."
+msgstr "Dziękujemy za poinformowanie nas o gotowości do rozpoczęcia pracy."
 
 #: assets/v2/js/shared.js:250
 msgid "You've stopped working on this, thanks for letting us know."
-msgstr ""
-"Sie haben aufgehört, daran zu arbeiten, danke, dass Sie uns wissen lassen."
+msgstr "Przestałeś nad tym pracować, dziękuję za poinformowanie nas."
 
 #: assets/v2/js/shared.js:575 assets/v2/js/shared.js:609
 msgid "Web3 disabled. Please install "
-msgstr "Web3 deaktiviert. Bitte installiere"
+msgstr "Web3 wyłączony. Proszę zainstalować"
 
 #: assets/v2/js/shared.js:577 assets/v2/js/shared.js:611
 msgid "Metamask Not Enabled"
-msgstr "Metamask ist nicht aktiviert"
+msgstr "Metamask nie jest włączony"
 
 #: assets/v2/js/shared.js:580 assets/v2/js/shared.js:614
 msgid "Web3 locked. Please unlock "
-msgstr "Web3 gesperrt. Bitte entsperren"
+msgstr "Web3 zablokowany. Proszę odblokować"
 
 #: assets/v2/js/shared.js:582 assets/v2/js/shared.js:616
 msgid "Metamask Locked"
-msgstr "Metamask gesperrt"
+msgstr "Metamask zablokowany"
 
 #: assets/v2/js/shared.js:585
 msgid "Connect to Mainnet via Metamask"
-msgstr "Verbinden Sie sich über Metamask mit dem Mainnet"
+msgstr "Połącz się z Mainnet poprzez Metamask"
 
 #: assets/v2/js/shared.js:586 assets/v2/js/shared.js:620
 msgid "Unsupported Network"
-msgstr "Nicht unterstütztes Netzwerk"
+msgstr "Nieobsługiwana sieć"
 
 #: assets/v2/js/shared.js:619
 msgid "Connect to Rinkeby / Custom RPC via Metamask"
-msgstr "Verbinden Sie sich über Metamask mit Rinkeby / Custom RPC"
+msgstr "Połącz się z Rinkeby / Custom RPC przez Metamask"
 
 #: assets/v2/js/waiting_room_entertainment.js:4
 msgid ""
@@ -671,10 +621,10 @@ msgid ""
 " software in various areas and is already included in many commercial "
 "software products."
 msgstr ""
-"Open-Source-Software ist zu einem relevanten Teil der Softwareindustrie und "
-"einer Reihe von Software-Ökosystemen geworden. Es ist eine Alternative zu "
-"kommerzieller Software in verschiedenen Bereichen geworden und ist bereits "
-"in vielen kommerziellen Softwareprodukten enthalten."
+"Oprogramowanie open source stało się istotną częścią przemysłu "
+"oprogramowania i wielu ekosystemów oprogramowania. Stało się alternatywą dla"
+" komercyjnego oprogramowania w różnych dziedzinach i jest już zawarte w "
+"wielu komercyjnych programach."
 
 #: assets/v2/js/waiting_room_entertainment.js:5
 msgid ""
@@ -683,10 +633,10 @@ msgid ""
 "catalyst for new software developments and the creation of new software "
 "companies."
 msgstr ""
-"OSS kann die Entwicklung neuer Software unterstützen, da Unternehmen "
-"bestehende Software zur Erstellung ihrer Softwareprodukte verwenden können. "
-"Daher kann es ein Katalysator für neue Softwareentwicklungen und die "
-"Schaffung neuer Softwareunternehmen sein."
+"OSS może wspierać rozwój nowego oprogramowania, ponieważ firmy mogą "
+"wykorzystywać istniejące oprogramowanie do tworzenia oprogramowania. Dlatego"
+" może być katalizatorem nowych rozwiązań programistycznych i tworzenia "
+"nowych firm programistycznych."
 
 #: assets/v2/js/waiting_room_entertainment.js:6
 msgid ""
@@ -695,11 +645,11 @@ msgid ""
 "replaces the standard middleware platform provided by a third party. It "
 "limits costs and, more importantly, dependency to some extent."
 msgstr ""
-"OSS kann ... als ein wichtiger Faktor bei der Wertschöpfung anderer Software"
-" angesehen werden, auch wenn es schwer zu quantifizieren ist. Heute ersetzt "
-"OSS häufig die Standard-Middleware-Plattform, die von einer dritten Partei "
-"bereitgestellt wird. Es begrenzt die Kosten und vor allem die Abhängigkeit "
-"in gewissem Maße."
+"OSS może ... być uważany za ważny czynnik w tworzeniu wartości innego "
+"oprogramowania, nawet jeśli trudno jest je zmierzyć. Obecnie OSS często "
+"zastępuje standardową platformę oprogramowania pośredniego dostarczoną przez"
+" stronę trzecią. Ogranicza w pewnym stopniu koszty i, co ważniejsze, "
+"zależność."
 
 #: assets/v2/js/waiting_room_entertainment.js:7
 msgid ""
@@ -709,11 +659,12 @@ msgid ""
 "can foster the development of new software products as well as the creation "
 "of new software vendors."
 msgstr ""
-"Softwareanbieter, die neue Produkte entwickeln, können Kosten sparen, wenn "
-"sie vorhandene Open-Source-Softwarekomponenten wiederverwenden, anstatt "
-"Software selbst zu entwickeln oder Softwarekomponenten zu kaufen. "
-"Infolgedessen kann Open-Source-Software die Entwicklung neuer "
-"Softwareprodukte sowie die Schaffung neuer Softwareanbieter fördern."
+"Dostawcy oprogramowania, którzy budują nowe produkty, mogą obniżyć koszty, "
+"jeśli ponownie wykorzystają istniejące komponenty oprogramowania open source"
+" zamiast samodzielnie tworzyć oprogramowanie lub kupować komponenty "
+"oprogramowania. W rezultacie oprogramowanie open source może wspierać rozwój"
+" nowych produktów oprogramowania, jak również tworzenie nowych dostawców "
+"oprogramowania."
 
 #: assets/v2/js/waiting_room_entertainment.js:8
 msgid ""
@@ -721,10 +672,9 @@ msgid ""
 "Instead of buying commercial software that may involve the risk of a vendor "
 "lock-in, they just have to share value with the OSS community."
 msgstr ""
-"OSS ermöglicht Unternehmen die einfache Integration von IT in ihre "
-"Wertschöpfungskette. Anstatt kommerzielle Software zu kaufen, die das Risiko"
-" einer Verkäuferbindung mit sich bringen kann, müssen sie nur den Wert mit "
-"der OSS-Community teilen."
+"OSS pozwala firmom na łatwe włączanie IT w ich łańcuch wartości. Zamiast "
+"kupować komercyjne oprogramowanie, które może wiązać się z ryzykiem "
+"zablokowania dostawcy, muszą po prostu dzielić wartość ze społecznością OSS."
 
 #: assets/v2/js/waiting_room_entertainment.js:9
 msgid ""
@@ -732,9 +682,9 @@ msgid ""
 "of software experts contributes time and effort for coding, reviewing and "
 "testing to publicly available source code."
 msgstr ""
-"Das Grundprinzip der Open-Source-Softwareentwicklung ist, dass eine "
-"Gemeinschaft von Softwareexperten Zeit und Aufwand für die Codierung, "
-"Überprüfung und Prüfung von öffentlich verfügbarem Quellcode einbringt."
+"Podstawową zasadą rozwoju oprogramowania typu open source jest to, że "
+"społeczność ekspertów od oprogramowania wnosi swój wkład w kodowanie, "
+"przeglądanie i testowanie publicznie dostępnego kodu źródłowego."
 
 #: assets/v2/js/waiting_room_entertainment.js:10
 msgid ""
@@ -743,10 +693,10 @@ msgid ""
 "very important for the development of emerging technologies and that help "
 "lower the total cost of ownership."
 msgstr ""
-"Open Source kann ... ein wichtiger Erfolgsfaktor für Co-Innovation sein, da "
-"keiner der Teilnehmer die Oberhand behält. OSS kann Standards erstellen, die"
-" für die Entwicklung aufkommender Technologien sehr wichtig sind und dazu "
-"beitragen, die Gesamtbetriebskosten zu senken."
+"Open source może ... być kluczowym czynnikiem sukcesu dla wspólnej "
+"innowacji, ponieważ żaden z uczestników nie będzie miał przewagi. OSS może "
+"tworzyć standardy, które są bardzo ważne dla rozwoju nowych technologii i "
+"które pomagają obniżyć całkowity koszt posiadania."
 
 #: assets/v2/js/waiting_room_entertainment.js:11
 msgid ""
@@ -756,11 +706,12 @@ msgid ""
 "modules: rather than developing from scratch, existing software must become "
 "more easily retrievable, interoperable and usable."
 msgstr ""
-"Zukünftige Software muss leicht aus Komponenten und frei verfügbarer "
-"Software entwickelt werden und ihre Wartung muss von einer breiten Community"
-" unterstützt werden. Dies beinhaltet die Wiederverwendung und "
-"Weiterentwicklung bestehender Software und Module: Statt neu zu entwickeln, "
-"muss vorhandene Software leichter abrufbar, interoperabel und nutzbar sein."
+"Przyszłe oprogramowanie musi być łatwo opracowane na podstawie komponentów i"
+" bezpłatnego oprogramowania, a jego konserwacja musi być wspierana przez "
+"szeroką społeczność. Obejmuje to ponowne wykorzystanie i ewolucję "
+"istniejącego oprogramowania i modułów: zamiast tworzyć od zera, istniejące "
+"oprogramowanie musi stać się łatwiejsze do odzyskania, interoperacyjne i "
+"użyteczne."
 
 #: assets/v2/js/waiting_room_entertainment.js:12
 msgid ""
@@ -769,10 +720,10 @@ msgid ""
 "develop software in a collaborative way. Many enabling technologies for SMAC"
 " have strong OSS roots."
 msgstr ""
-"OSS ist auch ein starker Befürworter von Standards und Interoperabilität. "
-"Diese Offenheit verringert das Risiko einer Verkäuferbindung. OSS basiert "
-"auf Communities, die gemeinsam Software entwickeln. Viele Basistechnologien "
-"für SMAC haben starke OSS-Wurzeln."
+"OSS jest również solidnym promotorem norm i interoperacyjności. Ta otwartość"
+" obniża ryzyko zablokowania dostawcy. OSS opiera się na społecznościach, "
+"które wspólnie tworzą oprogramowanie. Wiele technologii wspierających SMAC "
+"ma silne korzenie OSS."
 
 #: assets/v2/js/waiting_room_entertainment.js:13
 msgid ""
@@ -782,12 +733,11 @@ msgid ""
 "or professional editions that are based on the open source software. "
 "Examples are the providers of the Linux distributions RedHat and Suse."
 msgstr ""
-"Einige kommerzielle Anbieter bieten Open-Source-Software an, um eine große "
-"Benutzergemeinschaft zu schaffen. Sie generieren Einnahmen aus Abonnements "
-"für Support und Updates und / oder Professional Services sowie aus dem "
-"Verkauf von Erweiterungen oder professionellen Editionen, die auf der Open-"
-"Source-Software basieren. Beispiele sind die Anbieter der Linux-"
-"Distributionen RedHat und Suse."
+"Niektórzy komercyjni dostawcy oferują oprogramowanie open source w celu "
+"stworzenia dużej społeczności użytkowników. Generują przychody z subskrypcji"
+" na wsparcie i aktualizacje i / lub profesjonalne usługi, a także ze "
+"sprzedaży rozszerzeń lub profesjonalnych wydań opartych na oprogramowaniu "
+"open source. Przykładami są dostawcy dystrybucji Linuksa RedHat i Suse."
 
 #: assets/v2/js/waiting_room_entertainment.js:14
 msgid ""
@@ -795,10 +745,10 @@ msgid ""
 "technology a part of their business by integrating it into their own "
 "products and by providing professional services for open source software."
 msgstr ""
-"Große kommerzielle Softwareanbieter wie IBM und HP haben die Open-Source-"
-"Technologie zu einem Teil ihres Geschäfts gemacht, indem sie es in ihre "
-"eigenen Produkte integriert und professionelle Dienstleistungen für Open-"
-"Source-Software bereitgestellt haben."
+"Główni komercyjni dostawcy oprogramowania, tacy jak IBM i HP, stworzyli "
+"technologię open source jako część swojej działalności, integrując ją z "
+"własnymi produktami i świadcząc profesjonalne usługi dla oprogramowania open"
+" source."
 
 #: assets/v2/js/waiting_room_entertainment.js:15
 msgid ""
@@ -809,12 +759,12 @@ msgid ""
 "hand, open source software that is free of charge can be an alternative to "
 "commercial application software."
 msgstr ""
-"Viele Geschäftsanwendungen enthalten bereits Open-Source-Software und dies "
-"wird zunehmen. Einige Anbieter können einen Teil ihrer Produkte an eine "
-"Open-Source-Stiftung spenden, um eine größere Nutzergemeinschaft zu "
-"schaffen, die möglicherweise Käufer von kommerziellen Add-Ons oder Diensten "
-"wird. Auf der anderen Seite kann Open-Source-Software, die kostenlos ist, "
-"eine Alternative zu kommerzieller Anwendungssoftware sein."
+"Wiele aplikacji biznesowych zawiera już oprogramowanie open source, a to się"
+" zwiększy. Niektórzy dostawcy mogą przekazać część swoich produktów na "
+"fundację typu open source, aby stworzyć większą społeczność użytkowników, "
+"która potencjalnie stanie się nabywcą komercyjnych dodatków lub usług. Z "
+"drugiej strony darmowe oprogramowanie open source może być alternatywą dla "
+"komercyjnego oprogramowania użytkowego."
 
 #: assets/v2/js/waiting_room_entertainment.js:16
 msgid ""
@@ -825,12 +775,12 @@ msgid ""
 "benefits of open source are reduced project failure and lower cost of code "
 "maintenance."
 msgstr ""
-"Laut Carlo Daffara, Forscher auf dem Gebiet der IT-Ökonomie, der zu mehreren"
-" Forschungsprojekten der Europäischen Kommission mit Open Source beigetragen"
-" hat, spart die europäische Wirtschaft jährlich rund 114 Milliarden Euro "
-"durch den Einsatz von Open-Source-Softwarelösungen. Zu den weiteren "
-"Vorteilen von Open Source gehören neben direkten Kosteneinsparungen auch "
-"weniger Projektfehler und geringere Kosten für die Codewartung."
+"Według Carlo Daffara, naukowca z dziedziny ekonomii IT, który przyczynił się"
+" do kilku projektów badawczych Komisji Europejskiej dotyczących otwartego "
+"źródła, gospodarka europejska oszczędza około 114 miliardów euro rocznie, "
+"korzystając z oprogramowania open source. Poza bezpośrednimi "
+"oszczędnościami, inne korzyści płynące z oprogramowania typu open source to "
+"redukcja liczby projektów i niższe koszty utrzymania kodu."
 
 #: assets/v2/js/waiting_room_entertainment.js:17
 msgid ""
@@ -838,9 +788,9 @@ msgid ""
 "estimates that about 35 per cent of the software  used in the past five "
 "years was directly or indirectly derived from open source."
 msgstr ""
-"Nach verschiedenen Quellen [Carlo Daffara, Forscher in IT-Ökonomie] schätzt "
-"man, dass etwa 35 Prozent der Software, die in den letzten fünf Jahren "
-"genutzt wurde, direkt oder indirekt aus Open Source stammt."
+"Cytując kilka źródeł, [Carlo Daffara, badacz w dziedzinie ekonomii IT] "
+"szacuje, że około 35 procent oprogramowania używanego w ciągu ostatnich "
+"pięciu lat pochodzi bezpośrednio lub pośrednio z oprogramowania open source."
 
 #: assets/v2/js/waiting_room_entertainment.js:18
 msgid ""
@@ -849,10 +799,10 @@ msgid ""
 " autonomous driving technology, as this is highly confidential and highly "
 "relevant for its competitiveness."
 msgstr ""
-"Unternehmen lagern weniger wichtige Aktivitäten aus. Beispielsweise wird ein"
-" Automobilhersteller die hausinterne Softwareentwicklung für seine autonome "
-"Fahrtechnologie kaum auslagern, da diese streng vertraulich und für ihre "
-"Wettbewerbsfähigkeit sehr relevant ist."
+"Firmy zlecają na zewnątrz czynności o mniejszym znaczeniu. Na przykład "
+"producent samochodów prawie nie zleca rozwoju wewnętrznego oprogramowania "
+"dla swojej autonomicznej technologii jazdy, ponieważ jest to bardzo poufne i"
+" bardzo istotne dla jego konkurencyjności."
 
 #: assets/v2/js/waiting_room_entertainment.js:19
 msgid ""
@@ -861,10 +811,9 @@ msgid ""
 "outsourcing in the area of in-house software development are testing and "
 "maintenance."
 msgstr ""
-"Outsourcing kann eine Alternative zur hausinternen Softwareentwicklung sein "
-"und immer mehr Unternehmen nutzen dies. ... Zwei Bereiche des potenziellen "
-"Outsourcing im Bereich der hausinternen Softwareentwicklung sind Test und "
-"Wartung."
+"Outsourcing może być alternatywą dla wewnętrznego oprogramowania i coraz "
+"więcej firm korzysta z tego. ... Dwa obszary potencjalnego outsourcingu w "
+"zakresie rozwoju oprogramowania wewnętrznego to testowanie i konserwacja."
 
 #: assets/v2/js/waiting_room_entertainment.js:20
 msgid ""
@@ -872,9 +821,9 @@ msgid ""
 "ways to outsource such activities due to internal skill shortages and cost "
 "considerations."
 msgstr ""
-"Da die Nachfrage nach individueller Softwareentwicklung steigt, prüfen "
-"Unternehmen Möglichkeiten, solche Aktivitäten aufgrund interner "
-"Fachkräftemangel und Kostenüberlegungen auszulagern."
+"Wraz ze wzrostem zapotrzebowania na rozwój oprogramowania indywidualnego "
+"firmy oceniają sposoby outsourcingu takich działań z powodu wewnętrznych "
+"niedoborów umiejętności i kosztów."
 
 #: assets/v2/js/waiting_room_entertainment.js:22
 msgid ""
@@ -883,10 +832,10 @@ msgid ""
 " and deliver elements of response as to whether the time for a new "
 "entrepreneurial age has come."
 msgstr ""
-"Victor Hugo hat einmal bemerkt: \"Du kannst einer Invasionsarmee "
-"widerstehen; Sie können einer Idee nicht widerstehen, deren Zeit gekommen "
-"ist. Das Drucker Forum wird die Frage stellen und Elemente der Antwort "
-"liefern, ob die Zeit für ein neues unternehmerisches Zeitalter gekommen ist."
+"Victor Hugo powiedział kiedyś: \"Możesz się oprzeć inwazji armii; nie możesz"
+" oprzeć się idei, której czas nadszedł \". Forum Druckera zada pytanie i "
+"dostarczy odpowiedzi na pytanie, czy nadszedł czas na nowy wiek "
+"przedsiębiorczości."
 
 #: assets/v2/js/waiting_room_entertainment.js:23
 msgid ""
@@ -896,11 +845,11 @@ msgid ""
 "creation and sharing and by enabling new forms of continuous learning, all "
 "on a global canvas."
 msgstr ""
-"Die Digitaltechnologie hat eine beschleunigende Rolle in diesem Wandel [zu "
-"einer unternehmerischen Gesellschaft] gespielt, indem sie Eintrittsbarrieren"
-" in vielen Branchen dramatisch gesenkt und neue Werkzeuge für die Verwaltung"
-" von Wissenserzeugung und -austausch sowie für neue Formen des "
-"kontinuierlichen Lernens auf globaler Ebene bereitgestellt hat ."
+"Technologia cyfrowa odegrała coraz większą rolę w tej transformacji [w "
+"społeczeństwie przedsiębiorczym] poprzez radykalne obniżenie barier wejścia "
+"na rynek w wielu branżach oraz poprzez dostarczenie nowych narzędzi do "
+"zarządzania tworzeniem i dzieleniem się wiedzą oraz poprzez umożliwienie "
+"nowych form ciągłego uczenia się, wszystko w globalnym środowisku ."
 
 #: assets/v2/js/waiting_room_entertainment.js:24
 msgid ""
@@ -910,12 +859,11 @@ msgid ""
 "that was once regarded as peripheral, perhaps even a bit suspect, has become"
 " cool, celebrated by politicians and embraced by the new generations."
 msgstr ""
-"Während der Weg zu einer unternehmerischen Gesellschaft keineswegs eine "
-"geradlinige Entwicklung zu einem klar definierten Ziel ist, haben breite "
-"kulturelle Veränderungen den Unternehmergeist in den Mainstream gebracht. "
-"Eine Aktivität, die einst als peripher, vielleicht sogar als etwas "
-"verdächtig galt, ist cool geworden, von Politikern gefeiert und von den "
-"neuen Generationen umarmt."
+"Podczas gdy droga do społeczeństwa przedsiębiorczego nie jest prostą ścieżką"
+" do dobrze określonego celu, szerokie zmiany kulturowe wprowadziły "
+"przedsiębiorczość do głównego nurtu. Działalność, która kiedyś uważana była "
+"za peryferyjną, może nawet nieco podejrzaną, stała się chłodna, celebrowana "
+"przez polityków i objęta przez nowe pokolenia."
 
 #: assets/v2/js/waiting_room_entertainment.js:25
 msgid ""
@@ -924,20 +872,19 @@ msgid ""
 " proliferation of free agents in the form of contractors, freelancers and "
 "self-employed workers on on-demand platforms, for example."
 msgstr ""
-"Das Entstehen einer unternehmerischen Kultur bringt eine breitere "
-"Transformation des wirtschaftlichen Gefüges unserer Gesellschaft mit sich, "
-"wie wir an der raschen Verbreitung freier Agenten in Form von "
-"Auftragnehmern, Freiberuflern und selbständigen Erwerbstätigen auf "
-"Abrufplattformen, z Beispiel."
+"[T] pojawienie się kultury przedsiębiorczości pociąga za sobą szerszą "
+"transformację ekonomicznej tkanki naszego społeczeństwa, jak widzimy w "
+"szybkim rozprzestrzenianiu się wolnych agentów w formie wykonawców, "
+"freelancerów i samozatrudnionych na platformach na żądanie, dla przykład."
 
 #: assets/v2/js/waiting_room_entertainment.js:26
 msgid ""
 "[I]n a world of rapid change frequent job and career moves, switches between"
 " employed and independent roles become the rule rather than the exception."
 msgstr ""
-"[I] In einer Welt des schnellen Wandels werden häufige Job- und "
-"Karriereschritte, Wechsel zwischen angestellten und unabhängigen Rollen, "
-"eher zur Regel als zur Ausnahme."
+"[I] W świecie szybkich zmian, częste zmiany w pracy i karierze, przełączanie"
+" między rolami zatrudnionymi i niezależnymi staje się regułą, a nie "
+"wyjątkiem."
 
 #: assets/v2/js/waiting_room_entertainment.js:27
 msgid ""
@@ -946,38 +893,7 @@ msgid ""
 " entrepreneurial society] i.e. a new mindset of ownership, responsibility "
 "and autonomy."
 msgstr ""
-"In großen Organisationen weist ein erneuter Fokus auf die Freistellung des "
-"kreativen und innovativen Potenzials von Arbeitnehmern in die gleiche "
-"Richtung [wie die der unternehmerischen Gesellschaft] hin, d. H. Eine neue "
-"Denkweise von Eigenverantwortung, Verantwortung und Autonomie."
-
-#~ msgid "Accept Submission"
-#~ msgstr "Akzeptieren Sie die Einreichung"
-
-#, fuzzy
-#~ msgid "Please enter a valid checksum address."
-#~ msgstr "Bitte geben Sie eine gültige Prüfsummenadresse ein."
-
-#, fuzzy
-#~ msgid "Not a valid forwarding address"
-#~ msgstr "Keine gültige Weiterleitungsadresse"
-
-#~ msgid "Please enter your Twitter username"
-#~ msgstr "Bitte geben Sie Ihren Twitter Benutzernamen ein"
-
-#~ msgid "batch mode enabled"
-#~ msgstr "Batch-Modus aktiviert"
-
-#~ msgid "Invalid addresses generated. Please try again from the first page."
-#~ msgstr ""
-#~ "Ungültige Adressen generiert Bitte versuchen Sie es erneut von der ersten "
-#~ "Seite."
-
-#~ msgid "You can only send a maximum of "
-#~ msgstr "Sie können nur maximal senden"
-
-#~ msgid "You can only send a minimum of "
-#~ msgstr "Sie können nur ein Minimum von senden"
-
-#~ msgid "Issue Explorer | Gitcoin"
-#~ msgstr "Problem Explorer | Gitcoin"
+"W dużych organizacjach ponowne skoncentrowanie się na uwolnieniu kreatywnego"
+" i innowacyjnego potencjału pracowników wskazuje na ten sam kierunek [jak na"
+" społeczeństwo przedsiębiorcze], tj. Nowy sposób myślenia o "
+"odpowiedzialności, autonomii i odpowiedzialności."
