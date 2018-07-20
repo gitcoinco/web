@@ -16,7 +16,7 @@ import requests
 import rollbar
 from dashboard.models import Profile
 from geoip2.errors import AddressNotFoundError
-from github.utils import _AUTH, HEADERS, get_user
+from git.utils import _AUTH, HEADERS, get_user
 from ipware.ip import get_real_ip
 from marketing.utils import get_or_save_email_subscriber
 from pyshorteners import Shortener

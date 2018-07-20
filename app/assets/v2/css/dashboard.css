@@ -214,7 +214,7 @@ body {
 
 @media (min-width: 768px) {
 
-  .tag.network_warning {
+  .tag.shift_left {
     margin-left: -100px;
   }
 }

@@ -24,7 +24,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.utils import create_user_action
-from github.utils import org_name
+from git.utils import org_name
 from PIL import Image, ImageOps
 
 from .models import Avatar

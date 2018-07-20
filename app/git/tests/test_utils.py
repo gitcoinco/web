@@ -25,7 +25,7 @@ from django.test.utils import override_settings
 from django.utils import timezone
 
 import responses
-from github.utils import (
+from git.utils import (
     BASE_URI, HEADERS, JSON_HEADER, TOKEN_URL, build_auth_dict, delete_issue_comment, get_auth_url, get_github_emails,
     get_github_primary_email, get_github_user_data, get_github_user_token, get_issue_comments,
     get_issue_timeline_events, get_user, is_github_token_valid, org_name, patch_issue_comment, post_issue_comment,
@@ -38,7 +38,7 @@ from test_plus.test import TestCase
 @override_settings(GITHUB_CLIENT_ID='TEST')
 @override_settings(GITHUB_CLIENT_SECRET='TEST')
 @override_settings(GITHUB_SCOPE='user')
-class GithubUtilitiesTest(TestCase):
+class GitUtilitiesTest(TestCase):
     """Define tests for Github utils."""
 
     def setUp(self):
