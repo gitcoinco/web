@@ -670,22 +670,6 @@ var do_actions = function(result) {
     actions.push(_entry);
   }
 
-  if (show_job_description) {
-    var job_url = result['attached_job_description'];
-
-    var _entry = {
-      enabled: true,
-      href: job_url,
-      text: gettext('View Attached Job Description'),
-      parent: 'right_actions',
-      title: gettext('This bounty hunter is hiring for a full time, part time, or contract role and has attached that to this bounty.'),
-      color: 'white'
-    };
-
-    actions.push(_entry);
-  }
-
-
   if (show_advanced_payout) {
     const enabled = show_advanced_payout;
     const _entry = {
@@ -711,6 +695,22 @@ var do_actions = function(result) {
 
     actions.push(_entry);
   }
+
+  if (show_job_description) {
+    var job_url = result['attached_job_description'];
+
+    var _entry = {
+      enabled: true,
+      href: job_url,
+      text: gettext('View Attached Job Description'),
+      parent: 'right_actions',
+      title: gettext('This bounty hunter is hiring for a full time, part time, or contract role and has attached that to this bounty.'),
+      color: 'white'
+    };
+
+    actions.push(_entry);
+  }
+
 
   if (show_github_link) {
     let github_url = result['github_url'];
