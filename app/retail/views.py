@@ -16,6 +16,8 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+from os import walk as walkdir
+
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
@@ -1023,9 +1025,29 @@ def tokens(request):
 
 
 def ui(request):
+    svgs = []
+    pngs = []
+    gifs = []
+    for path, dirs, files in walkdir('assets/v2/images'):
+        if path.find('/avatar') != -1:
+            continue
+        for f in files:
+            if f.endswith('.svg'):
+                svgs.append(f'{path[7:]}/{f}')
+                continue
+            if f.endswith('.png'):
+                pngs.append(f'{path[7:]}/{f}')
+                continue
+            if f.endswith('.gif'):
+                gifs.append(f'{path[7:]}/{f}')
+                continue
+
     context = {
         'is_outside': True,
         'active': 'ui_inventory ',
         'title': 'UI Inventory',
+        'svgs': svgs,
+        'pngs': pngs,
+        'gifs': gifs,
     }
     return TemplateResponse(request, 'ui_inventory.html', context)
