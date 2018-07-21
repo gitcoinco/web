@@ -219,9 +219,6 @@
 .works_with_list img {
   max-width: 30px;
   border-radius: 50%;
-}
-
-.profile-header__stats--contributor .works_with_list img {
   border: 0.1rem solid #25E899;
 }
 

@@ -14,22 +14,77 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
-<div class="col-12 col-lg-4">
-  <div class="profile-header__stats profile-header__stats--contributor card mb-4">
-    <div class="card-header font-subheader">
-      {% trans "Organization" %}
+{% load i18n email_obfuscator humanize static add_url_schema %}
+<link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
+<div class="col-12 col-md-4 profile-header__main-infos font-body">
+  <div class="clearfix">
+    <p class="profile-header__handle font-title-xl">
+      {% if profile.data.name %}
+        {{ profile.data.name }}
+      {% endif %}
+    </p>
+    <p class="mb-2">{{ profile.handle }}</p>
+    <p class="profile-header__links clearfix mt-2">
+      <a href="{{ profile.data.html_url }}?tab=repositories" target="_blank" rel="noopener noreferrer" >
+        <i class="fab fa-github"></i>
+      </a>
+      {% if profile.data.blog and user.is_authenticated %}
+        <a href="{{ profile.data.blog|add_url_schema }}" target="_blank" rel="noopener noreferrer" >
+          <i class="fas fa-home"></i>
+        </a>
+      {% endif %}
+      {% if profile.data.email and user.is_authenticated %}
+        <a href="mailto:{{profile.data.email | obfuscate}}">
+          <i class="far fa-envelope"></i>
+        </a>
+      {% endif %}
+    </p>
+  </div>
+  <!-- TODO : If condition to check if hiring / not -->
+  <div class="tag org-hiring mt-2">
+    <p>Hiring</p>
+  </div>
+  <!-- END TODO -->
+  <!-- TODO : If condition to show toggle to members --> <!-- END TODO -->
+  <!-- TODO : If condition to check if members are there & populate with them -->
+  <div class="members my-4">
+    <h3 class="font-body">Members</h3>
+    {% for profile, num_times in works_with_org.items %}
+      <a href="{% url 'profile' profile %} " class="mr-2">
+        <img src='{% if profile.avatar and profile.avatar.svg %}{{ profile.avatar.svg.url }}{% else %}/static/avatar/{{ profile }}{% endif %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
+      </a>
+    {% endfor %}
+  </div>
+  <!-- END TODO -->
+  <div class="img-placeholder"></div>
+  <img class="profile-header__avatar" src="{% if profile.avatar and profile.avatar.avatar_url %}{{ profile.avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}">
+</div>
+<div class="col-12 col-md-8">
+  <div class="network-stats mt-4 pt-2">
+    <h2 class="font-body">Network Stats</h2>
+    <div class="row text-center">
+      <p>
+        <span class="stats">{{ count_bounties_on_repo }}</span>
+        <span class="text">{% trans "Bounties" %}</span>
+      </p>
+      <p>
+        <span class="stats">{{ sum_eth_on_repos|floatformat:2 }}</span>
+        <span class="text">{% trans "ETH" %}</span>
+      </p>
+      {% if scoreboard_position_org %}
+        <p>
+          <span class="stats">#{{ scoreboard_position_org }}</span>
+          <span class="text">{% trans "ORG" %}</span>
+        </p>
+      {% endif %}
     </div>
-    <div class="card-body font-subheader">
+  </div>
+  <div class="profile-header__stats mb-4">
+    <div class="font-subheader">
       <ul>
-        <li><span class="highlight">{{ count_bounties_on_repo }}</span> {% trans "bounties" %}</li>
-        <li><span class="highlight">{{ sum_eth_on_repos|floatformat:2 }}</span> {% trans "ETH" %}</li>
-        {% if scoreboard_position_org %}
-          <li><span class="highlight">#{{ scoreboard_position_org }}</span> {% trans "org" %}</li>
-        {% endif %}
         <li class="works_with_list">
           {% if works_with_org|length != 0 %}
-            <span class="font-body">( <i class="fa fa-code"></i> ) {% trans "Contributors" %}:</span>
+            <span class="font-body">{% trans "Contributors" %}</span>
             {% for profile, num_times in works_with_org.items %}
               <a href="{% url 'profile' profile %} ">
                 <img src='{% if profile.avatar and profile.avatar.svg %}{{ profile.avatar.svg.url }}{% else %}/static/avatar/{{ profile }}{% endif %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
@@ -41,3 +96,74 @@
     </div>
   </div>
 </div>
+
+<style>
+  .profile-header__bio,
+  .profile-header__handle,
+  .network-stats h2,
+  .members h3 {
+    font-weight: bolder;
+  }
+
+  .profile-header__handle {
+    text-transform: capitalize;
+    font-weight: bolder;
+    padding-top: 0;
+  }
+
+  .img-placeholder {
+    height: 4rem;
+  }
+
+  .network-stats p {
+    text-transform: uppercase;
+    margin-right: 4rem;
+    margin-left: 1rem;
+    margin-bottom : 2rem;
+  }
+
+  .network-stats .text {
+    position: relative;
+    top: -8px;
+  }
+
+  .network-stats .stats {
+    display: block;
+    font-size: 1.8rem;
+  }
+
+  .profile-header__avatar {
+    padding: 1rem;
+    background: #fff;
+    width: 8rem;
+    height: 8rem;
+    position: absolute;
+    margin-top: -4rem;
+  }
+
+  .org-hiring {
+    font-weight: bold;
+    width: 3rem;
+    min-width: 70px;
+  }
+
+  .org-hiring p {
+    padding: 3px 2px;
+  }
+
+  .members img {
+    max-width: 40px;
+    border-radius: 50%;
+  }
+
+  @media (max-width: 767.98px) {
+    .img-placeholder {
+      height: 0;
+    }
+
+    .profile-header__avatar {
+      position: relative;
+      margin-top: 0;
+    }
+  }
+</style>

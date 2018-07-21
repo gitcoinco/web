@@ -14,7 +14,8 @@
   margin-bottom: 0;
 }
 
-.tag.usd {
+.tag.usd,
+.tag.org-hiring {
   background-color: #d6fbeb;
   color: #00A55E;
 }
