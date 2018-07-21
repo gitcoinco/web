@@ -1,0 +1,18 @@
+{
+  "symbol": "SLT",
+  "address": "0x851017523AE205adc9195e7F97D029f4Cfe7794c",
+  "overview":{
+        "en": "Social Lending Network (SLN) is a decentralized social finance platform based on block chain technology. Its mission is to establish a next generation crypto-currency/token financial loan ecosystem.",
+        "zh": "Social Lending Network(SLN)是一个基于区块链技术的去中心化全球社交金融平台。Social Lending基金会将致力于在数字资产领域，构建一个全新的金融借贷生态系统。"
+  },
+  "email": "customer@sociallending.io",
+  "website": "https://sociallending.io/",
+  "whitepaper": "https://sociallending.io/Whitepaper/Social%20Lending%20White%20Paper%20V3.0.7.1EN.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-07-13",
+  "links": {
+    "twitter": "https://twitter.com/renmaibao",
+    "telegram": "https://t.me/SocialLending",
+    "github": "https://github.com/rdsociallendingio"
+  }
+}
