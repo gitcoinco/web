@@ -387,10 +387,6 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 project_length=metadata.get('projectLength', ''),
                 experience_level=metadata.get('experienceLevel', ''),
                 github_url=url,  # Could also use payload.get('webReferenceURL')
-                bounty_owner_address=bounty_issuer.get('address', ''),
-                bounty_owner_email=bounty_issuer.get('email', ''),
-                bounty_owner_github_username=bounty_issuer.get('githubUsername', ''),
-                bounty_owner_name=bounty_issuer.get('name', ''),
                 is_open=True if (bounty_details.get('bountyStage') == 1 and not accepted) else False,
                 raw_data=bounty_details,
                 metadata=metadata,
@@ -411,6 +407,11 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 standard_bounties_id=bounty_id,
                 balance=bounty_details.get('balance'),
                 num_fulfillments=len(fulfillments),
+                # info to xfr over from latest_old_bounty as override fields (this is because sometimes ppl dont login when they first submit issue and it needs to be overridden)
+                bounty_owner_github_username=bounty_issuer.get('githubUsername', '') if not latest_old_bounty else latest_old_bounty.bounty_owner_github_username,
+                bounty_owner_address=bounty_issuer.get('address', '') if not latest_old_bounty else latest_old_bounty.bounty_owner_address,
+                bounty_owner_email=bounty_issuer.get('email', '') if not latest_old_bounty else latest_old_bounty.bounty_owner_email,
+                bounty_owner_name=bounty_issuer.get('name', '') if not latest_old_bounty else latest_old_bounty.bounty_owner_name,
                 # info to xfr over from latest_old_bounty
                 github_comments=latest_old_bounty.github_comments if latest_old_bounty else 0,
                 override_status=latest_old_bounty.override_status if latest_old_bounty else '',
