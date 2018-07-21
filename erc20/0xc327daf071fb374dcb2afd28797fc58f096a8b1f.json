@@ -1,0 +1,23 @@
+{
+  "symbol": "ART",
+  "address": "0xc327daf071fb374dcb2afd28797fc58f096a8b1f",
+  "overview":{
+        "en": "Aroma's new media chain truly realizes the complete and fair quantification algorithm of the legal benefits of all participants (producers + readers) in the digital content industry chain, creating a new media digital content industry chain ecosystem driven by blockchain technology.",
+        "zh": "Aroma新媒体链真正实现数字内容全产业链上所有参与者（生产者+消费者）的合法收益的完整公平量化，创建在区块链技术驱动下的新媒体数字内容全产业链生态圈。"
+  },
+  "email": "admin@aromatoken.com",
+  "website": "http://www.aromachain.io/",
+  "whitepaper": "http://www.aromachain.io/file/AromaChain_WHITEPAPER_V4.0.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-07-17",
+  "initial_price":{
+        "ETH":"0.00006222 ETH",
+        "USD":"0.029887 USD",
+        "BTC":"0.0000044 BTC"
+  },
+  "links": {
+    "twitter":"https://twitter.com/Aroma56503472",
+    "github":"https://github.com/aromatoken",
+    "telegram":"t.me/aromachain"
+  }
+}
