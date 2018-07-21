@@ -8,7 +8,7 @@
   "email": "oases@oases.pro",
   "website": "http://www.oases.pro",
   "whitepaper": "http://www.oases.pro/frontend/assets/OASES_CHAIN_BUSINESS_WHITE_PAPER-CN.pdf",
-  "state": "LOCKED | NORMAL",
+  "state": "NORMAL",
   "published_on": "2018-06-05",
   "initial_price":{
         "ETH":"0.00000667 ETH",
@@ -21,8 +21,5 @@
     "telegram": "https://t.me/oaseschinese",
     "github": "https://github.com/oaseschain/oaseschain",
     "facebook": "https://www.facebook.com/shen.lin.54966",
-    "reddit": "",
-    "slack": "",
-    "medium": ""
   }
 }
