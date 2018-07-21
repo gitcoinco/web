@@ -272,12 +272,10 @@ def email_settings(request, key):
     email = ''
     level = ''
     msg = ''
-    pref_lang = 'en'
+    pref_lang = 'en' if not profile else profile.get_profile_preferred_language()
     if request.POST and request.POST.get('submit'):
         email = request.POST.get('email')
         level = request.POST.get('level')
-        if profile:
-            pref_lang = profile.get_profile_preferred_language()
         preferred_language = request.POST.get('preferred_language')
         validation_passed = True
         try:

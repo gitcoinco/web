@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import socket
 
 from django.http import Http404
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_noop
 
 import environ
 import rollbar
@@ -137,15 +137,15 @@ TIME_ZONE = env.str('TIME_ZONE', default='UTC')
 LOCALE_PATHS = ('locale', )
 
 LANGUAGES = [
-    ('en', _('English')),
-    ('es', _('Spanish')),
-    ('de', _('German')),
-    ('hi', _('Hindi')),
-    ('it', _('Italian')),
-    ('ko', _('Korean')),
-    ('pl', _('Polish')),
-    ('zh-hans', _('Simplified Chinese')),
-    ('zh-hant', _('Traditional Chinese')),
+    ('en', gettext_noop('English')),
+    ('es', gettext_noop('Spanish')),
+    ('de', gettext_noop('German')),
+    ('hi', gettext_noop('Hindi')),
+    ('it', gettext_noop('Italian')),
+    ('ko', gettext_noop('Korean')),
+    ('pl', gettext_noop('Polish')),
+    ('zh-hans', gettext_noop('Simplified Chinese')),
+    ('zh-hant', gettext_noop('Traditional Chinese')),
 ]
 
 if not ENV in ['local', 'test']:
