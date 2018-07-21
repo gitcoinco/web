@@ -1,0 +1,23 @@
+{
+  "symbol": "BTFM",
+  "address": "0xe4f1bCaE296FF9385842Fc24cc7D18ab94121223",
+  "overview":{
+        "en": "BiTing is a live broadcast platform based on blockchain knowledge, technology, and interpretation of digital currency projects.",
+        "zh": "币听是⼀个基于区块链的知识、技术、数字货币项⽬解读等直播平台。"
+  },
+  "email": "service@bitingfm.com",
+  "website": "http://www.bitingfm.com/",
+  "whitepaper": "http://www.bitingfm.com/Biting_Whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-01",
+  "initial_price":{
+        "ETH":"0.00166666 ETH",
+        "USD":"0.7 USD",
+        "BTC":"0.00004137 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/BTFM1",
+    "telegram": "https://t.me/BitingOfficial",
+    "github": "https://github.com/BitingFM"
+  }
+}
