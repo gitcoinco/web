@@ -16,83 +16,111 @@
 {% endcomment %}
 {% load i18n email_obfuscator humanize static add_url_schema %}
 <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
-<div class="col-12 col-md-4 profile-header__main-infos font-body">
-  <div class="clearfix">
-    <p class="profile-header__handle font-title-xl">
-      {% if profile.data.name %}
-        {{ profile.data.name }}
-      {% endif %}
-    </p>
-    <p class="mb-2">{{ profile.handle }}</p>
-    <p class="profile-header__links clearfix mt-2">
-      <a href="{{ profile.data.html_url }}?tab=repositories" target="_blank" rel="noopener noreferrer" >
-        <i class="fab fa-github"></i>
-      </a>
-      {% if profile.data.blog and user.is_authenticated %}
-        <a href="{{ profile.data.blog|add_url_schema }}" target="_blank" rel="noopener noreferrer" >
-          <i class="fas fa-home"></i>
-        </a>
-      {% endif %}
-      {% if profile.data.email and user.is_authenticated %}
-        <a href="mailto:{{profile.data.email | obfuscate}}">
-          <i class="far fa-envelope"></i>
-        </a>
-      {% endif %}
-    </p>
-  </div>
-  <!-- TODO : If condition to check if hiring / not -->
-  <div class="tag org-hiring mt-2">
-    <p>Hiring</p>
-  </div>
-  <!-- END TODO -->
-  <!-- TODO : If condition to show toggle to members --> <!-- END TODO -->
-  <!-- TODO : If condition to check if members are there & populate with them -->
-  <div class="members my-4">
-    <h3 class="font-body">Members</h3>
-    {% for profile, num_times in works_with_org.items %}
-      <a href="{% url 'profile' profile %} " class="mr-2">
-        <img src='{% if profile.avatar and profile.avatar.svg %}{{ profile.avatar.svg.url }}{% else %}/static/avatar/{{ profile }}{% endif %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
-      </a>
-    {% endfor %}
-  </div>
-  <!-- END TODO -->
-  <div class="img-placeholder"></div>
-  <img class="profile-header__avatar" src="{% if profile.avatar and profile.avatar.avatar_url %}{{ profile.avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}">
-</div>
-<div class="col-12 col-md-8">
-  <div class="network-stats mt-4 pt-2">
-    <h2 class="font-body">Network Stats</h2>
-    <div class="row text-center">
-      <p>
-        <span class="stats">{{ count_bounties_on_repo }}</span>
-        <span class="text">{% trans "Bounties" %}</span>
-      </p>
-      <p>
-        <span class="stats">{{ sum_eth_on_repos|floatformat:2 }}</span>
-        <span class="text">{% trans "ETH" %}</span>
-      </p>
-      {% if scoreboard_position_org %}
-        <p>
-          <span class="stats">#{{ scoreboard_position_org }}</span>
-          <span class="text">{% trans "ORG" %}</span>
-        </p>
-      {% endif %}
+<div class="container-fluid header profile-header dash mb-5">
+  {% include 'shared/nav.html' %}
+  <div class="container">
+    <div class="row">
+      <div class="col-12 col-md-4 profile-header__main-infos font-body">
+        <div class="clearfix">
+          <p class="profile-header__handle font-title-xl">
+            {% if profile.data.name %}
+              {{ profile.data.name }}
+            {% endif %}
+          </p>
+          <p class="mb-2">{{ profile.handle }}</p>
+          <p class="profile-header__links clearfix mt-2">
+            <a href="{{ profile.data.html_url }}?tab=repositories" target="_blank" rel="noopener noreferrer" >
+              <i class="fab fa-github"></i>
+            </a>
+            {% if profile.data.blog and user.is_authenticated %}
+              <a href="{{ profile.data.blog|add_url_schema }}" target="_blank" rel="noopener noreferrer" >
+                <i class="fas fa-home"></i>
+              </a>
+            {% endif %}
+            {% if profile.data.email and user.is_authenticated %}
+              <a href="mailto:{{profile.data.email | obfuscate}}">
+                <i class="far fa-envelope"></i>
+              </a>
+            {% endif %}
+          </p>
+        </div>
+        <!-- TODO : If condition to check if hiring / not -->
+        <div class="tag org-hiring mt-2">
+          <p>Hiring</p>
+        </div>
+        <!-- END TODO -->
+        <!-- TODO : If condition to show toggle to members --> <!-- END TODO -->
+        <!-- TODO : If condition to check if members are there & populate with them -->
+        <div class="members my-4">
+          <h3 class="font-body">Members</h3>
+          {% for profile, num_times in works_with_org.items %}
+            <a href="{% url 'profile' profile %} " class="mr-2">
+              <img src='{% if profile.avatar and profile.avatar.svg %}{{ profile.avatar.svg.url }}{% else %}/static/avatar/{{ profile }}{% endif %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
+            </a>
+          {% endfor %}
+        </div>
+        <!-- END TODO -->
+        <div class="img-placeholder"></div>
+        <img class="profile-header__avatar" src="{% if profile.avatar and profile.avatar.avatar_url %}{{ profile.avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}">
+      </div>
+      <div class="col-12 col-md-8">
+        <div class="network-stats mt-4 pt-2">
+          <h2 class="font-body">Network Stats</h2>
+          <div class="row text-center">
+            <p>
+              <span class="stats">{{ count_bounties_on_repo }}</span>
+              <span class="text">{% trans "Bounties" %}</span>
+            </p>
+            <p>
+              <span class="stats">{{ sum_eth_on_repos|floatformat:2 }}</span>
+              <span class="text">{% trans "ETH" %}</span>
+            </p>
+            {% if scoreboard_position_org %}
+              <p>
+                <span class="stats">#{{ scoreboard_position_org }}</span>
+                <span class="text">{% trans "ORG" %}</span>
+              </p>
+            {% endif %}
+          </div>
+        </div>
+        <div class="profile-header__stats mb-4">
+          <div class="font-subheader">
+            <ul>
+              <li class="works_with_list">
+                {% if works_with_org|length != 0 %}
+                  <span class="font-body">{% trans "Contributors" %}</span>
+                  {% for profile, num_times in works_with_org.items %}
+                    <a href="{% url 'profile' profile %} ">
+                      <img src='{% if profile.avatar and profile.avatar.svg %}{{ profile.avatar.svg.url }}{% else %}/static/avatar/{{ profile }}{% endif %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
+                    </a>
+                  {% endfor %}
+                {% endif %}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-  <div class="profile-header__stats mb-4">
-    <div class="font-subheader">
-      <ul>
-        <li class="works_with_list">
-          {% if works_with_org|length != 0 %}
-            <span class="font-body">{% trans "Contributors" %}</span>
-            {% for profile, num_times in works_with_org.items %}
-              <a href="{% url 'profile' profile %} ">
-                <img src='{% if profile.avatar and profile.avatar.svg %}{{ profile.avatar.svg.url }}{% else %}/static/avatar/{{ profile }}{% endif %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
-              </a>
-            {% endfor %}
-          {% endif %}
-        </li>
-      </ul>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col col-lg-11 my-5 about">
+      <h3 class="font-subheader">
+        The Project
+        <!-- TODO : Check if org owner is logged in -->
+        <i class="fas fa-edit ml-2"></i>
+        <!-- END TODO-->
+      </h3>
+      <p class="font-body">Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        Aenean sollicitudin sapien vitae sapien porttitor euismod.
+        Pellentesque fermentum ligula in risus vulputate, in auctor
+        leo tristique. Fusce sollicitudin enim aliquam nunc elementum,
+        ultricies tincidunt urna ultricies. Cras condimentum
+        tincidunt est, quis sodales justo convallis at.
+        Vestibulum quis odio in est varius tempus quis nec nibh.
+        Nulla dictum ex ut lacus volutpat porttitor. Proin efficitur blandit orci sit amet maximus. Integer mattis, eros tincidunt varius posuere, leo tortor mollis dui, a interdum mi massa in massa.
+        Etiam tincidunt et nisi id elementum.</p>
     </div>
   </div>
 </div>
@@ -154,6 +182,14 @@
   .members img {
     max-width: 40px;
     border-radius: 50%;
+  }
+
+  .about p {
+    line-height: 1.5rem;
+  }
+
+  .about i {
+    color: #3a9ced;
   }
 
   @media (max-width: 767.98px) {

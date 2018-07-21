@@ -10,21 +10,13 @@
   </head>
   <body class="interior {{ active }}">
     {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header profile-header dash {% if profile.is_org %} mb-5 {% endif %}">
-      {% include 'shared/nav.html' %}
-      <div class="container">
-        <div class="row">
-          {% if not hidden %}
-            {% if profile.is_org %}
-              {% include 'profiles/organization.html' %}
-            {% else %}
-              {% include 'profiles/user.html' %}
-            {% endif %}
-          {% endif %}
-        </div>
-      </div>
-    </div>
-    <!-- TODO : Add About section for orgs --> <!-- END TODO-->
+    {% if not hidden %}
+      {% if profile.is_org %}
+        {% include 'profiles/organization.html' %}
+      {% else %}
+        {% include 'profiles/user.html' %}
+      {% endif %}
+    {% endif %}
     <div class="container">
     {% if hidden %}
       {% include 'profiles/hidden.html' %}
