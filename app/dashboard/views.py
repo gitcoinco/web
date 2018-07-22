@@ -987,9 +987,16 @@ def funder_dashboard(request):
 
     total_paid_dollars = 0
     total_paid_eth = 0
+
     for bounty in done_bounties:
-        total_paid_dollars = total_paid_dollars + bounty.get_value_in_usdt
-        total_paid_eth = total_paid_eth + bounty.get_value_in_eth
+        bounty_value_in_usdt = bounty.get_value_in_usdt
+        bounty_value_in_eth = bounty.get_value_in_eth
+
+        if bounty_value_in_usdt is not None:
+            total_paid_dollars = total_paid_dollars + bounty.get_value_in_usdt
+
+        if bounty_value_in_eth is not None:
+            total_paid_eth = total_paid_eth + bounty.get_value_in_eth
 
     # TODO: total paid date since - date of first submitted bounty
     total_paid_date_since = _("May 5. 2018")
@@ -1006,16 +1013,17 @@ def funder_dashboard(request):
     tax_year_bounties_worth_dollars = 34.500
 
     # Latest on your bounties
-    # What's the difference between an 'issue' and a 'bounty'? Just using bounty for these right now..
+    # TODO: What's the difference between an 'issue' and a 'bounty'? Just using bounty for these right now..
     expired_issues_count = expired_bounties.count()
     expired_issues_worth_dollars = 0
     for expired_issue in expired_bounties:
-        expired_issues_worth_dollars = expired_issues_worth_dollars + expired_issue.get_value_in_usdt
+        issue_worth_in_usdt = expired_issue.get_value_in_usdt
+        if issue_worth_in_usdt is not None:
+            expired_issues_worth_dollars = expired_issues_worth_dollars + issue_worth_in_usdt
 
     active_bounties_count = active_bounties.count()
     completed_bounties_count = done_bounties.count()
     expired_bounties_count = expired_bounties.count()
-
 
     outgoing_funds_filters = [
         {
