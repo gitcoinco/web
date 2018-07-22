@@ -45,10 +45,14 @@
 }
 
 .funder-dashboard__whats-next__rocket {
-  height: 64px;
-  width: 64px;
-  background-color: gray;
+  height: 70px;
+  width: 70px;
+  background-image: url("/static/v2/images/rocket.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 3px solid #0ecf7c;
   border-radius: 50%;
+
 }
 
 .funder-dashboard__whats-next__rocket-text {
