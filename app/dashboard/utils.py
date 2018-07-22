@@ -79,6 +79,7 @@ def humanize_event_name(name):
 
     return humanized_event_names.get(name, name).upper()
 
+
 def create_user_action(user, action_type, request=None, metadata=None):
     """Create a UserAction for the specified action type.
 
@@ -190,6 +191,9 @@ def get_web3(network):
     """
     if network in ['mainnet', 'rinkeby', 'ropsten']:
         return Web3(HTTPProvider(f'https://{network}.infura.io'))
+    elif network == 'localhost':
+        return Web3(Web3.HTTPProvider("http://testrpc:8545", request_kwargs={'timeout': 60}))
+
     raise UnsupportedNetworkException(network)
 
 
@@ -413,7 +417,6 @@ def get_ordinal_repr(num):
     else:
         suffix = ordinal_suffixes.get(num % 10, 'th')
     return f'{num}{suffix}'
-
 
 
 def record_user_action_on_interest(interest, event_name, last_heard_from_user_days):

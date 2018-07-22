@@ -146,6 +146,7 @@ def validate_discord_integration(webhook_url, message=None, icon_url=''):
         result['output'] = _('An error has occurred.')
     return result
 
+
 def should_suppress_notification_email(email, email_type):
     from marketing.models import EmailSubscriber
     queryset = EmailSubscriber.objects.filter(email__iexact=email)

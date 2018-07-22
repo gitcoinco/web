@@ -42,10 +42,10 @@ class MarketPlaceListing(SuperModel):
     price = models.IntegerField()
     num_clones_allowed = models.IntegerField(null=True, blank=True)
     num_clones_in_wild = models.IntegerField(null=True, blank=True)
+    lister = models.CharField(max_length=255)  # FK to github profile
     tags = models.CharField(max_length=255, null=True)
 
     # Gitcoin App only fields
-    lister = models.CharField(max_length=255)  # FK to github profile
 
 
 # class KudosToken(SuperModel):
