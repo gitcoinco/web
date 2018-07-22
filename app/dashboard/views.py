@@ -1069,7 +1069,8 @@ def funder_dashboard(request):
         etherscan_link = '#'
 
         # TODO: Should we check if the user has received the bounty instead, similar to a Tip's received_on field?
-        if bounty.interests.exists():
+        # if bounty.interests.exists(): # TODO: interests is not defined, am I using it right?
+        if False:
             pending_or_claimed = 'Claimed'
         else:
             pending_or_claimed = 'Pending'
@@ -1140,7 +1141,8 @@ def funder_dashboard(request):
 
     all_bounties = []
     for bounty in funder_bounties:
-        if bounty.interests.exists():
+        if False:
+        # if bounty.interests.exists(): #  TODO: interests is not defined, am I using it right?
             pending_or_claimed = 'Claimed'
         else:
             # TODO: Is any bounty that's not claimed, in pending status?
