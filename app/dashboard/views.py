@@ -21,6 +21,7 @@ from __future__ import print_function, unicode_literals
 import json
 import logging
 import time
+import datetime
 
 from django.conf import settings
 from django.contrib import messages
@@ -926,12 +927,19 @@ def save_search(request):
 
 def funder_dashboard(request):
     """ Render the funder dashboard"""
+    bounties = request.user.profile.get_funded_bounties()
+
+    active_done_expired_bounties = bounties.filter_by_status(['active', 'done', 'expired'])
+    active_bounties = active_done_expired_bounties.filter_by_status(['active'])
+    done_bounties = active_done_expired_bounties.filter_by_status(['done'])
+    expired_bounties = active_done_expired_bounties.filter_by_status(['expired'])
 
     contributor1 = {
         "githubLink": "https://github.com",
         "profilePictureSrc": "/static/avatar/NedelescuVlad",
     }
 
+    # should use done bounties to get the contributors
     top_contributors = [contributor1]
 
     # Data for the line chart
@@ -952,50 +960,61 @@ def funder_dashboard(request):
         "labels": [2016, 2017, 2018, 30000]
     }
 
-    # expiring at 7 days
-    expiring_bounties_count = 2
+    utc_now = datetime.datetime.now()
+    expiring_bounties = active_bounties.filter(expires_date=[utc_now, utc_now + timedelta(days=7)])
 
-    # the date of the first expiration
-    expiring_days_count = 3
+    # expiring at 7 days
+    expiring_bounties_count = expiring_bounties.count()
+
+    # get the last expiring bounty (farthest away from now, up to 7 days)
+    last_expiring_days_from_now = None
+    for bounty in bounties:
+        delta_days = (bounty.expires_date - utc_now).days
+        if last_expiring_days_from_now is None or delta_days > last_expiring_days_from_now:
+            last_expiring_days_from_now = delta_days
+
+    expiring_days_count = last_expiring_days_from_now
 
     new_contributor_comments = 3
 
     # EVER submitted / created
-    submitted_bounties_count = 394
+    submitted_bounties_count = bounties.count()
 
     # number of people who ever contributed
     total_contributors_count = 142
 
     # total amount ever paid in dollars
-    total_paid_dollars = 50.890
-
+    total_paid_dollars = 0
     # total amount ever paid in eth
-    total_paid_eth = 100
+    total_paid_eth = 0
+    for bounty in done_bounties:
+        total_paid_dollars = total_paid_dollars + bounty.get_value_in_usdt
+        total_paid_eth = total_paid_eth + bounty.get_value_in_eth
 
     # total paid date since - date of first submitted bounty
     total_paid_date_since = _("May 5. 2018")
 
     # total budget in dollars, not used currently, we show an input field by default
-    total_budget_dollars = "90K"
+    total_budget_dollars = ""
 
-    # total budget in eth
-    total_budget_eth = 100
+    # total budget in eth, not used currently, we show an input field by default
+    total_budget_eth = ""
 
+    # Considering the tax year to be 1 Jan to 31 Dec
     tax_year = 2018
-
     tax_year_bounties_count = 139
-
     tax_year_bounties_worth_dollars = 34.500
 
-    expired_issues_count = 3
-
-    expired_issues_worth_dollars = 548.28
-
-    active_bounties_count = 174
-
-    completed_bounties_count = 100
-
-    expired_bounties_count = 8
+    # Latest on your bounties
+    # TODO: expired issues
+    # What's the difference between an 'issue' and a 'bounty'? I'm just using bounty for these right now..
+    expired_issues_count = expired_bounties.count()
+    expired_issues_worth_dollars = 0
+    for expired_issue in expired_bounties:
+        expired_issues_worth_dollars = expired_issues_worth_dollars + expired_issue.get_value_in_usdt
+    active_bounties_count = active_bounties.count()
+    completed_bounties_count = done_bounties.count()
+    expired_bounties_count = expired_bounties.count()
 
     context = {
         # Header
@@ -1024,7 +1043,9 @@ def funder_dashboard(request):
         "active_bounties_count": active_bounties_count,
         "completed_bounties_count": completed_bounties_count,
         "expired_bounties_count": expired_bounties_count,
-        'top_contributors': top_contributors
+        'top_contributors': top_contributors,
+        # Bounties used for the tables
+        'bounties': bounties,
     }
 
     return TemplateResponse(request, 'funder_dashboard.html', context)
