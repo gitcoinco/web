@@ -567,8 +567,7 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.min.js">
-    </script>
+    <script src="{% static "v2/js/chart.min.js" %}"></script>
     <script type="text/javascript">
       window.funderDashboardPayoutChartData = {
         weeklyData: {{payout_history_weekly | safe}},
