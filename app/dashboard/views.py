@@ -1055,6 +1055,45 @@ def funder_dashboard(request):
         },
     ]
 
+    all_bounties = {};
+    all_bounties['filters'] = [
+        {
+            'value': 'All',
+            'value_display': _('All'),
+            'is_all_filter': True,
+            'is_type_filter': False,
+            'is_status_filter': False
+        },
+        {
+            'value': 'Tip',
+            'value_display': _('Tip'),
+            'is_all_filter': False,
+            'is_type_filter': True,
+            'is_status_filter': False
+        },
+        {
+            'value': 'Payment',
+            'value_display': _('Payment'),
+            'is_all_filter': False,
+            'is_type_filter': True,
+            'is_status_filter': False
+        },
+        {
+            'value': 'Pending',
+            'value_display': _('Pending'),
+            'is_all_filter': False,
+            'is_type_filter': False,
+            'is_status_filter': True
+        },
+        {
+            'value': 'Claimed',
+            'value_display': _('Claimed'),
+            'is_all_filter': False,
+            'is_type_filter': False,
+            'is_status_filter': True
+        },
+    ]
+
     context = {
         # Header
         "expiring_bounties_count": expiring_bounties_count,
@@ -1082,10 +1121,10 @@ def funder_dashboard(request):
         "active_bounties_count": active_bounties_count,
         "completed_bounties_count": completed_bounties_count,
         "expired_bounties_count": expired_bounties_count,
-        'outgoing_funds': outgoing_funds,
         'top_contributors': top_contributors,
         # Bounties used for the tables
-        'bounties': bounties,
+        'outgoing_funds': outgoing_funds,
+        'all_bounties': all_bounties
     }
 
     return TemplateResponse(request, 'funder_dashboard.html', context)
