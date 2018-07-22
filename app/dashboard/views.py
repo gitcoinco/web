@@ -1056,9 +1056,7 @@ def funder_dashboard(request):
     ]
 
     outgoing_funds = []
-    # TODO: The all() should be a filter for bounties that are currently in the process of being paid to someone
-    # a.k.a outgoing payments
-    for bounty in funder_bounties.all():
+    for bounty in done_bounties.filter(fulfillment_started_on__isnull=False, fulfillment_submitted_on__isnull=True):
         # TODO: Need the txid to generate this link. Where is it in the bounty object, if at all?
         etherscan_link = '#'
 
