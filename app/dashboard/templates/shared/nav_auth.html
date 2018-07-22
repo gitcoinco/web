@@ -44,6 +44,8 @@
         {% trans "View Profile" %}
       </a>
       <!-- TODO: Funder dashboard check if user is funder -->
+      {% if user.profile.is_funder %}
+      {% endif %}
       <a class="dropdown-item" href="{% url "funder_dashboard" %}">
         <i class="fas fa-chart-line"></i>
         {% trans "Funder Dashboard" %}
