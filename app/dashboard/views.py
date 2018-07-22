@@ -927,9 +927,12 @@ def save_search(request):
 
 def funder_dashboard(request):
     """ Render the funder dashboard"""
-    bounties = request.user.profile.get_funded_bounties()
+    funder_bounties = request.user.profile.get_funded_bounties()
 
-    active_done_expired_bounties = bounties.filter_by_status(['active', 'done', 'expired'])
+    # TODO: Remove, it's just for testing now
+    funder_bounties = Bounty.objects.all()
+
+    active_done_expired_bounties = funder_bounties.filter_by_status(['active', 'done', 'expired'])
     active_bounties = active_done_expired_bounties.filter_by_status(['active'])
     done_bounties = active_done_expired_bounties.filter_by_status(['done'])
     expired_bounties = active_done_expired_bounties.filter_by_status(['expired'])
@@ -939,10 +942,10 @@ def funder_dashboard(request):
         "profilePictureSrc": "/static/avatar/NedelescuVlad",
     }
 
-    # should use done bounties to get the contributors
+    # TODO: use done bounties to get the contributors
     top_contributors = [contributor1]
 
-    # Data for the line chart
+    # TODO: Fill in payout history data for the line chart
     # Each one of these dictionaries is composed of 2 arrays that should have the same length.
     # Each data[i] labels[i] represents a X Y coordinate (plot point)
     payout_history_weekly = {
@@ -960,38 +963,35 @@ def funder_dashboard(request):
         "labels": [2016, 2017, 2018, 30000]
     }
 
-    import ipdb; ipdb.set_trace();
-
     utc_now = datetime.datetime.now(timezone.utc)
     expiring_bounties = active_bounties.filter(expires_date__gte=utc_now, expires_date__lte=utc_now + timezone.timedelta(days=7))
 
     # expiring at 7 days
     expiring_bounties_count = expiring_bounties.count()
     last_expiring_days_from_now = None
-    for bounty in bounties:
+    for bounty in funder_bounties:
         delta_days = (bounty.expires_date - utc_now).days
         if last_expiring_days_from_now is None or delta_days > last_expiring_days_from_now:
             last_expiring_days_from_now = delta_days
 
     expiring_days_count = last_expiring_days_from_now
 
+    # TODO: Count the new comments
     new_contributor_comments = 3
 
     # EVER submitted / created
-    submitted_bounties_count = bounties.count()
+    submitted_bounties_count = funder_bounties.count()
 
-    # number of people who ever contributed
+    # TODO: number of people who ever contributed
     total_contributors_count = 142
 
-    # total amount ever paid in dollars
     total_paid_dollars = 0
-    # total amount ever paid in eth
     total_paid_eth = 0
     for bounty in done_bounties:
         total_paid_dollars = total_paid_dollars + bounty.get_value_in_usdt
         total_paid_eth = total_paid_eth + bounty.get_value_in_eth
 
-    # total paid date since - date of first submitted bounty
+    # TODO: total paid date since - date of first submitted bounty
     total_paid_date_since = _("May 5. 2018")
 
     # total budget in dollars, not used currently, we show an input field by default
@@ -1000,24 +1000,24 @@ def funder_dashboard(request):
     # total budget in eth, not used currently, we show an input field by default
     total_budget_eth = ""
 
-    # Considering the tax year to be 1 Jan to 31 Dec
+    # TODO: Tax year stats - Considering the tax year to be 1 Jan to 31 Dec
     tax_year = 2018
     tax_year_bounties_count = 139
     tax_year_bounties_worth_dollars = 34.500
 
     # Latest on your bounties
-    # TODO: expired issues
-    # What's the difference between an 'issue' and a 'bounty'? I'm just using bounty for these right now..
+    # What's the difference between an 'issue' and a 'bounty'? Just using bounty for these right now..
     expired_issues_count = expired_bounties.count()
     expired_issues_worth_dollars = 0
     for expired_issue in expired_bounties:
         expired_issues_worth_dollars = expired_issues_worth_dollars + expired_issue.get_value_in_usdt
+
     active_bounties_count = active_bounties.count()
     completed_bounties_count = done_bounties.count()
     expired_bounties_count = expired_bounties.count()
 
-    outgoing_funds = {}
-    outgoing_funds['filters'] = [
+
+    outgoing_funds_filters = [
         {
             'value': 'All',
             'value_display': _('All'),
@@ -1055,8 +1055,46 @@ def funder_dashboard(request):
         },
     ]
 
-    all_bounties = {};
-    all_bounties['filters'] = [
+    outgoing_funds = []
+    # TODO: The all() should be a filter for bounties that are currently in the process of being paid to someone
+    # a.k.a outgoing payments
+    for bounty in funder_bounties.all():
+        # TODO: Need the txid to generate this link. Where is it in the bounty object, if at all?
+        etherscan_link = '#'
+
+        # TODO: Should we check if the user has received the bounty instead, similar to a Tip's received_on field?
+        if bounty.interests.exists():
+            pending_or_claimed = 'Claimed'
+        else:
+            pending_or_claimed = 'Pending'
+
+        fund_status = pending_or_claimed
+        fund_type = 'Payment'
+
+        outgoing_funds.push({
+            'id': bounty.github_issue_number,
+            'title': bounty.title,
+            'type': fund_type,
+            'status': fund_status,
+            'etherscanLink': etherscan_link,
+            'worthDollars': bounty.get_value_in_usdt,
+            'worthEth': bounty.get_value_in_eth
+        })
+
+    for tip in Tip.objects.filter(from_email=request.user.profile.email):
+        if tip.status == "PENDING":
+            etherscan_link = "https://etherscan.io/tx/" + tip.txid
+            outgoing_funds.append({
+                'id': 'TODO: Tip id',  # TODO: Get issue number that the tip is for
+                'title': bounty.title, # TODO: Get issue name that the tip is for
+                'type': 'Tip',
+                'status': "Pending",
+                'etherscanLink': etherscan_link,
+                'worthDollars': tip.value_in_usdt,
+                'worthEth': tip.value_in_eth
+            })
+
+    all_bounties_filters = [
         {
             'value': 'All',
             'value_display': _('All'),
@@ -1093,6 +1131,29 @@ def funder_dashboard(request):
             'is_status_filter': True
         },
     ]
+
+    all_bounties = []
+    for bounty in funder_bounties:
+        if bounty.interests.exists():
+            pending_or_claimed = 'Claimed'
+        else:
+            # TODO: Is any bounty that's not claimed, in pending status?
+            pending_or_claimed = 'Pending'
+
+        # TODO: Is the bounty a Tip or a Payment?
+        tip_or_payment = None
+
+        all_bounties.append({
+            'id': bounty.github_issue_number,
+            'title': bounty.title,
+            'type': bounty.bounty_type,
+            'typeTipOrPayment': tip_or_payment,
+            'status': bounty.status,
+            'statusPendingOrClaimed': pending_or_claimed,
+            'githubLink': bounty.github_url,
+            'worthDollars': bounty.get_value_in_usdt,
+            'worthEth': bounty.get_value_in_eth
+        })
 
     context = {
         # Header
@@ -1121,10 +1182,12 @@ def funder_dashboard(request):
         "active_bounties_count": active_bounties_count,
         "completed_bounties_count": completed_bounties_count,
         "expired_bounties_count": expired_bounties_count,
-        'top_contributors': top_contributors,
-        # Bounties used for the tables
-        'outgoing_funds': outgoing_funds,
-        'all_bounties': all_bounties
+        "top_contributors": top_contributors,
+        # Table data - outgoing funds and bounties
+        "outgoing_funds_filters": outgoing_funds_filters,
+        "outgoing_funds": json.dumps(outgoing_funds, ensure_ascii=False),
+        "all_bounties_filters": all_bounties_filters,
+        "all_bounties": json.dumps(all_bounties, ensure_ascii=False)
     }
 
     return TemplateResponse(request, 'funder_dashboard.html', context)

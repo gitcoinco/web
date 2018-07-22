@@ -205,9 +205,9 @@ $(function () {
         }
 
         if (typeStatusFilter.data('is-type-filter')) {
-          return fund.type.toUpperCase() === typeOrStatusFilterVal.toUpperCase();
+          return fund.type.toUpperCase() === typeStatusFilter.val().toUpperCase();
         } else if (typeStatusFilter.data('is-status-filter')) {
-          return fund.status.toUpperCase() === typeOrStatusFilterVal.toUpperCase();
+          return fund.status.toUpperCase() === typeStatusFilter.val().toUpperCase();
         }
       });
 
@@ -304,37 +304,35 @@ $(function () {
     function getAllBounties(bounties, cbRenderBounties) {
       var filterBaseSel = 'funder-dashboard__all-bounties__filter';
 
-      var typeOrStatusFilterVal = getTypeOrStatusFilterValue(filterBaseSel);
-      var sortByFilterVal = getAgeOrValueFilterValue(filterBaseSel);
+      var typeStatusFilter = getTypeOrStatusFilter(filterBaseSel);
+      var sortFilter = getSortByFilter(filterBaseSel);
 
       var filteredBounties = bounties.filter(function (fund) {
-        if (typeOrStatusFilterVal.toUpperCase() == 'All'.toUpperCase()) {
+        if (typeStatusFilter.data('is-all-filter')) {
           return true;
         }
 
-        // TODO: Am I getting this right? The filter values for all bounties are the same as the outgoing funds?
-        // Should we filter by status instead and remove either the options of 'Tip'/'Payment' OR 'Pending'/'Claimed'
-        if (typeOrStatusFilterVal == 'Tip' || typeOrStatusFilterVal == 'Payment') {
-          return fund.typeTipOrPayment.toUpperCase() == typeOrStatusFilterVal.toUpperCase();
-        } else {
+        if (typeStatusFilter.data('is-type-filter')) {
+          return fund.typeTipOrPayment.toUpperCase() === typeStatusFilter.val().toUpperCase();
+        } else if (typeStatusFilter.data('is-status-filter')) {
           // 'Pending' || 'Claimed'
-          return fund.statusPendingOrClaimed.toUpperCase() == typeOrStatusFilterVal.toUpperCase();
+          return fund.statusPendingOrClaimed.toUpperCase() === typeStatusFilter.val().toUpperCase();
         }
       });
 
-      var sortFn = getSortFn(sortByFilterVal);
+      var sortFn = getSortFn(sortFilter.val());
       filteredBounties = filteredBounties.sort(function(fund1, fund2) {
         return sortFn(fund1, fund2);
       });
 
       cbRenderBounties(filteredBounties);
 
-      function getTypeOrStatusFilterValue(filterBaseSel) {
-        return $(classSel(filterBaseSel) + '--type-or-status').find(':selected').val();
+      function getTypeOrStatusFilter(filterBaseSel) {
+        return $(classSel(filterBaseSel) + '--type-or-status').find(':selected');
       }
 
-      function getAgeOrValueFilterValue(filterBaseSel) {
-        return $(classSel(filterBaseSel) + '--age-or-value').find(':selected').val();
+      function getSortByFilter(filterBaseSel) {
+        return $(classSel(filterBaseSel) + '--age-or-value').find(':selected');
       }
     }
 

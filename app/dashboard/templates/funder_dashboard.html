@@ -339,7 +339,7 @@
                     <select class="funder-dashboard__outgoing-funds__filter
                                    funder-dashboard__outgoing-funds__filter--type-or-status
                                    custom-select d-inline-block w-auto">
-                      {% for filter in outgoing_funds.filters %}
+                      {% for filter in outgoing_funds_filters %}
                       <option value="{{filter.value}}"
                               {% if filter.is_all_filter %}
                               selected data-is-all-filter
@@ -462,7 +462,7 @@
                     <select class="funder-dashboard__all-bounties__filter
                                    funder-dashboard__all-bounties__filter--type-or-status
                                    custom-select d-inline-block w-auto">
-                      {% for filter in all_bounties.filters %}
+                      {% for filter in all_bounties_filters %}
                       <option value="{{filter.value}}"
                               {% if filter.is_all_filter %}
                               selected data-is-all-filter
