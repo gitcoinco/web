@@ -148,16 +148,12 @@ $(function () {
     return 0;
   }
 
-  function activateOutgoingFunds(bounties) {
+  function activateOutgoingFunds(outgoingFunds) {
     var $container = $('.funder-dashboard__outgoing-funds__funds');
     var $fundTemplate = $('.funder-dashboard__outgoing-funds__funds__fund--template');
 
     var fundBaseSel = 'funder-dashboard__outgoing-funds__funds__fund';
     var cbRenderFunds = renderOutgoingFunds.bind(this, $container, $fundTemplate, fundBaseSel);
-
-    var outgoingFunds = bounties.map(function(bounty) {
-      return new OutgoingFund(bounty);
-    });
 
     var getFunds = getOutgoingFunds.bind(this, outgoingFunds, cbRenderFunds);
 
@@ -255,13 +251,9 @@ $(function () {
     var $container = $('.funder-dashboard__all-bounties__bounties');
     var $bountyTemplate = $('.funder-dashboard__all-bounties__bounties__bounty--template');
 
-    var mappedBounties = bounties.map(function(bounty) {
-      return new Bounty(bounty);
-    });
-
     var bountyBaseSel = 'funder-dashboard__all-bounties__bounties__bounty';
     var cbRenderBounties = renderOutgoingFunds.bind(this, $container, $bountyTemplate, bountyBaseSel);
-    var getBounties = getAllBounties.bind(this, mappedBounties, cbRenderBounties);
+    var getBounties = getAllBounties.bind(this, bounties, cbRenderBounties);
 
     getBounties();
     $('.funder-dashboard__all-bounties__filter').change(function () {
@@ -438,16 +430,11 @@ $(function () {
 
   var funderEmail = document.contxt.email;
   if (funderEmail) {
-    $.ajax('https://gitcoin.co/api/v0.1/bounties/?&bounty_owner_email=' + funderEmail).then(function(funderBounties) {
-      var outgoingFunds = funderBounties.filter(function (bounty) {
-        // TODO: Is this enough to judge if a bounty is an outgoing fund? There's also a fulfillments object
-        // but that doesn't seem to always have data for these bounties
-        return bounty.status == "done" && bounty.fulfillment_started_on && !bounty.fulfillment_submitted_on;
-      });
+    var outgoingFunds = window.outgoingFunds.items;
+    var funderBounties = window.all_bounties.items;
 
-      activateOutgoingFunds(outgoingFunds);
-      activateAllBounties(funderBounties.slice(0, 10));
-    });
+    activateOutgoingFunds(outgoingFunds);
+    activateAllBounties(funderBounties.slice(0, 10));
   }
 });
 
