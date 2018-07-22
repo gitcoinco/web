@@ -1,6 +1,13 @@
+import json
+
 from django.shortcuts import render
+from django.template.response import TemplateResponse
+
+from dashboard.models import Grant, Profile
+from marketing.models import Keyword
 
 # Create your views here.
+
 
 def grant_show(request, grant_id):
     grant = Grant.objects.get(pk=grant_id)
@@ -24,7 +31,7 @@ def new_grant(request):
         grant.title = request.POST.get('title')
         grant.pitch = request.POST.get('pitch')
         grant.description = request.POST.get('description')
-        grant.reference_url = request.POST.get('reference_url');
+        grant.reference_url = request.POST.get('reference_url')
         grant.goal_funding = request.POST.get('goal_funding')
         grant.profile = profile
 

@@ -1,20 +1,20 @@
 /* eslint-disable no-console */
 window.onload = function() {
   $('#js-drop').on('dragover', function(event) {
-    event.preventDefault();  
+    event.preventDefault();
     event.stopPropagation();
     $(this).addClass('is-dragging');
   });
 
   $('#js-drop').on('dragleave', function(event) {
-    event.preventDefault();  
+    event.preventDefault();
     event.stopPropagation();
     $(this).removeClass('is-dragging');
   });
 
   $('#js-drop').on('drop', function(event) {
     if (event.originalEvent.dataTransfer.files.length) {
-      event.preventDefault();  
+      event.preventDefault();
       event.stopPropagation();
       $(this).removeClass('is-dragging');
     }

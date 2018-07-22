@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from django.urls import re_path
 
-from .views import grants, new_grant, grant_show
+from .views import grant_show, grants, new_grant
 
 app_name = 'grants'
 urlpatterns = [

@@ -1,5 +1,7 @@
 from django.db import models
 
+from economy.models import SuperModel
+
 # Create your models here.
 
 class Grant(SuperModel):

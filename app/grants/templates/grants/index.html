@@ -1,0 +1,76 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'app/dashboard/templates/shared/head.html' %}
+    {% include 'app/dashboard/templates/shared/cards.html' %}
+  </head>
+  <body class="interior {{active}} grant">
+    {% include 'app/dashboard/templates/shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'app/dashboard/templates/shared/nav.html' %}
+    </div>
+
+    <div class="grants-hero text-center">
+      <div class="row">
+        <div class="grants-hero__text col-5">
+          <h1 class="grants-hero__title">Dev Grants</h1>
+          <p class="grants-hero__copy">Support Open Source Projects via Gitcoin's new Dev Grants feature; By leveraging <a href="staketree.com">Staketree</a>, Gitcoin is help facilitate blockchain-based support for some of the best OSS projects in the space. </p>
+          <a class="button button--primary" href="{% url 'new_grant' %}">Create a Grant</a>
+        </div>
+      </div>
+    </div>
+    {% if grants %}
+      <div class="container grants-container">
+        {% for grant in grants %}
+          {% if forloop.counter0|divisibleby:3 %} <div class="row"> {%  endif %}
+            <div class="col-sm-12 col-md-4 bottom-buffer">
+              <a class="grant-item" href="{% url 'grant' grant.id %}">
+                <h4 class="grant-item__title">{{ grant.title|truncatechars:60 }}</h4>
+                <p class="grant-item__pitch">{{ grant.pitch|truncatechars:135 }}</p>
+                <div class="grant-item__footer">
+                  <div class="grant-item__owner">
+                    <div class="grant-item__owner-image">
+                      <img src="{{grant.profile.local_avatar_url}}">
+                    </div>
+                    <div class="grant-item__owner-handle">by <span>{{ grant.profile.handle }}</span></div>
+                  </div>
+                  <div class="progress-bar">
+                    <div class="progress" style="width: {{ grant.percentage_done }}%"></div>
+                  </div>
+                  <div class="grant-item__funding">
+                    <div class="grant-item__funding-item">
+                      <div class="grant-item__funding-number">{{ grant.current_funding|floatformat:2|intcomma }} ETH</div>
+                      <div class="grant-item__funding-label">Current</div>
+                    </div>
+                    <div class="grant-item__funding-item">
+                      <div class="grant-item__funding-number">{{ grant.goal_funding|floatformat:2|intcomma }} ETH</div>
+                      <div class="grant-item__funding-label">Goal</div>
+                    </div>
+                  </div>
+                </div>
+              </a>
+            </div>
+          {%  if forloop.counter|divisibleby:3 or forloop.last %} </div> {%  endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% include 'app/dashboard/templates/shared/bottom_notification.html' %}
+    {% include 'app/dashboard/templates/shared/analytics.html' %}
+    {% include 'app/dashboard/templates/shared/footer_scripts.html' %}
+    {% include 'app/dashboard/templates/shared/rollbar.html' %}
+    {% include 'app/dashboard/templates/shared/footer.html' %}
+  </body>
+
+  <!-- jQuery -->
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+  <script src="{% static "v2/js/pages/new_grant.js" %}"></script>
+  <script src="{% static "v2/js/shared.js" %}"></script>
+  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+
+</html>
