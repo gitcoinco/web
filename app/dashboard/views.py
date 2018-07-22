@@ -960,13 +960,13 @@ def funder_dashboard(request):
         "labels": [2016, 2017, 2018, 30000]
     }
 
-    utc_now = datetime.datetime.now()
-    expiring_bounties = active_bounties.filter(expires_date=[utc_now, utc_now + timedelta(days=7)])
+    import ipdb; ipdb.set_trace();
+
+    utc_now = datetime.datetime.now(timezone.utc)
+    expiring_bounties = active_bounties.filter(expires_date__gte=utc_now, expires_date__lte=utc_now + timezone.timedelta(days=7))
 
     # expiring at 7 days
     expiring_bounties_count = expiring_bounties.count()
-
-    # get the last expiring bounty (farthest away from now, up to 7 days)
     last_expiring_days_from_now = None
     for bounty in bounties:
         delta_days = (bounty.expires_date - utc_now).days
@@ -1082,10 +1082,10 @@ def funder_dashboard(request):
         "active_bounties_count": active_bounties_count,
         "completed_bounties_count": completed_bounties_count,
         "expired_bounties_count": expired_bounties_count,
+        'outgoing_funds': outgoing_funds,
         'top_contributors': top_contributors,
         # Bounties used for the tables
         'bounties': bounties,
-        'outgoing_funds': outgoing_funds
     }
 
     return TemplateResponse(request, 'funder_dashboard.html', context)

@@ -341,10 +341,17 @@
                                    custom-select d-inline-block w-auto">
                       {% for filter in outgoing_funds.filters %}
                           <option value="{{filter.value}}"
-                                  {{filter.is_all_filter|yesno: "selected"}}
-                                  {{filter.is_type_filter|yesno: "data-is-type-filter='true'"}}
-                                  {{filter.is_status_filter|yesno: "data-is-status-filter='true'"}}
-                                  </option>
+                                  {% if filter.is_all_filter %}
+                                  selected data-is-all-filter
+                                  {% endif %}
+                                  {% if filter.is_type_filter %}
+                                  data-is-type-filter
+                                  {% endif %}
+                                  {% if filter.is_status_filter %}
+                                  selected data-is-status-filter
+                                  {% endif %}>
+                            {{filter.value_display}}
+                          </option>
                       {% endfor %}
                     </select>
                     <select class="funder-dashboard__outgoing-funds__filter

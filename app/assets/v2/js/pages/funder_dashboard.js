@@ -196,35 +196,34 @@ $(function () {
     function getOutgoingFunds(funds, cbRenderFunds) {
       var filterBaseSel = 'funder-dashboard__outgoing-funds__filter';
 
-      var typeOrStatusFilterVal = getTypeOrStatusFilterValue(filterBaseSel);
-      var sortByFilterVal = getAgeOrValueFilterValue(filterBaseSel);
+      var typeStatusFilter = getTypeOrStatusFilter(filterBaseSel);
+      var sortFilter = getSortByFilter(filterBaseSel);
 
       var filteredFunds = funds.filter(function (fund) {
-        if (typeOrStatusFilterVal.toUpperCase() == 'All'.toUpperCase()) {
+        if (typeStatusFilter.data('is-all-filter')) {
           return true;
         }
 
-        if (typeOrStatusFilterVal == 'Tip' || typeOrStatusFilterVal == 'Payment') {
-          return fund.type.toUpperCase() == typeOrStatusFilterVal.toUpperCase();
-        } else {
-          // 'Pending' || 'Claimed'
-          return fund.status.toUpperCase() == typeOrStatusFilterVal.toUpperCase();
+        if (typeStatusFilter.data('is-type-filter')) {
+          return fund.type.toUpperCase() === typeOrStatusFilterVal.toUpperCase();
+        } else if (typeStatusFilter.data('is-status-filter')) {
+          return fund.status.toUpperCase() === typeOrStatusFilterVal.toUpperCase();
         }
       });
 
-      var sortFn = getSortFn(sortByFilterVal);
+      var sortFn = getSortFn(sortFilter.val());
       filteredFunds = filteredFunds.sort(function(fund1, fund2) {
         return sortFn(fund1, fund2);
       });
 
       cbRenderFunds(filteredFunds);
 
-      function getTypeOrStatusFilterValue(filterBaseSel) {
-        return $(classSel(filterBaseSel) + '--type-or-status').find(':selected').val();
+      function getTypeOrStatusFilter(filterBaseSel) {
+        return $(classSel(filterBaseSel) + '--type-or-status').find(':selected');
       }
 
-      function getAgeOrValueFilterValue(filterBaseSel) {
-        return $(classSel(filterBaseSel) + '--age-or-value').find(':selected').val();
+      function getSortByFilter(filterBaseSel) {
+        return $(classSel(filterBaseSel) + '--age-or-value').find(':selected');
       }
     }
 
