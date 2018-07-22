@@ -339,11 +339,13 @@
                     <select class="funder-dashboard__outgoing-funds__filter
                                    funder-dashboard__outgoing-funds__filter--type-or-status
                                    custom-select d-inline-block w-auto">
-                      <option value="All" selected>{% trans "All" %}</option>
-                      <option value="Tip">{% trans "Tip" %}</option>
-                      <option value="Payment">{% trans "Payment" %}</option>
-                      <option value="Pending">{% trans "Pending" %}</option>
-                      <option value="Claimed">{% trans "Claimed" %}</option>
+                      {% for filter in outgoing_funds.filters %}
+                          <option value="{{filter.value}}"
+                                  {{filter.is_all_filter|yesno: "selected"}}
+                                  {{filter.is_type_filter|yesno: "data-is-type-filter='true'"}}
+                                  {{filter.is_status_filter|yesno: "data-is-status-filter='true'"}}
+                                  </option>
+                      {% endfor %}
                     </select>
                     <select class="funder-dashboard__outgoing-funds__filter
                                    funder-dashboard__outgoing-funds__filter--age-or-value

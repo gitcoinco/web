@@ -1016,6 +1016,45 @@ def funder_dashboard(request):
     completed_bounties_count = done_bounties.count()
     expired_bounties_count = expired_bounties.count()
 
+    outgoing_funds = {}
+    outgoing_funds['filters'] = [
+        {
+            'value': 'All',
+            'value_display': _('All'),
+            'is_all_filter': True,
+            'is_type_filter': False,
+            'is_status_filter': False
+        },
+        {
+            'value': 'Tip',
+            'value_display': _('Tip'),
+            'is_all_filter': False,
+            'is_type_filter': True,
+            'is_status_filter': False
+        },
+        {
+            'value': 'Payment',
+            'value_display': _('Payment'),
+            'is_all_filter': False,
+            'is_type_filter': True,
+            'is_status_filter': False
+        },
+        {
+            'value': 'Pending',
+            'value_display': _('Pending'),
+            'is_all_filter': False,
+            'is_type_filter': False,
+            'is_status_filter': True
+        },
+        {
+            'value': 'Claimed',
+            'value_display': _('Claimed'),
+            'is_all_filter': False,
+            'is_type_filter': False,
+            'is_status_filter': True
+        },
+    ]
+
     context = {
         # Header
         "expiring_bounties_count": expiring_bounties_count,
@@ -1046,6 +1085,7 @@ def funder_dashboard(request):
         'top_contributors': top_contributors,
         # Bounties used for the tables
         'bounties': bounties,
+        'outgoing_funds': outgoing_funds
     }
 
     return TemplateResponse(request, 'funder_dashboard.html', context)
