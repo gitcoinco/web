@@ -811,6 +811,19 @@ class Bounty(SuperModel):
             return_dict['usd_value'] += tip.value_in_usdt if tip.value_in_usdt else 0
         return return_dict
 
+    @property
+    def additional_funding_summary_sentence(self):
+        afs = self.additional_funding_summary
+        if len(afs['tokens'].keys()) == 0:
+            return ""
+        items = []
+        for token, value in afs['tokens']:
+            items.append(f"{value} {token}")
+        sentence = ", ".join(items)
+        if(afs['usd_value']):
+            sentence += f"worth ${afs['usd_value']}"
+        return sentence
+
 
 class BountyFulfillmentQuerySet(models.QuerySet):
     """Handle the manager queryset for BountyFulfillments."""
