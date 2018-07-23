@@ -14,12 +14,13 @@ $('.js-select2').each(function() {
 onboard.showTab = function(num) {
   $($('.step')[num]).addClass('block').outerWidth();
   $($('.step')[num]).addClass('show');
-  window.history.pushState('', '', '/onboard/' + flow + '/' + $($('.step')[num]).attr('link'));
 
-  if (num === 0)
+  if (num === 0) {
     $('#prev-btn').hide();
-  else
+  } else {
     $('#prev-btn').show();
+    window.history.pushState('', '', '/onboard/' + flow + '/' + $($('.step')[num]).attr('link'));
+  }
 
   if (num === 1 || num === 2 || $($('.step')[num]).attr('link') === 'avatar') {
     $('.controls').hide();

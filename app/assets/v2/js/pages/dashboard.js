@@ -18,7 +18,8 @@ var sidebar_keys = [
   'idx_status',
   'tech_stack',
   'project_type',
-  'permission_type'
+  'permission_type',
+  'misc'
 ];
 
 var localStorage;

@@ -240,6 +240,14 @@ class BountyViewSet(viewsets.ModelViewSet):
             elif mod_filter == 'not_started':
                 queryset = queryset.not_started()
 
+        # All Misc Api things
+        if 'misc' in param_keys:
+            if self.request.query_params.get('misc') == 'hiring':
+                queryset = queryset.exclude(attached_job_description__isnull=True).exclude(attached_job_description='')
+
+        if 'keyword' in param_keys:
+            queryset = queryset.keyword(self.request.query_params.get('keyword'))
+
         # order
         order_by = self.request.query_params.get('order_by')
         if order_by and order_by != 'null':

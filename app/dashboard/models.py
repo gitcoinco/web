@@ -791,7 +791,7 @@ class Bounty(SuperModel):
         """
         params = f'pk={self.pk}&network={self.network}'
         urls = {}
-        for item in ['fulfill', 'increase', 'accept', 'cancel', 'payout']:
+        for item in ['fulfill', 'increase', 'accept', 'cancel', 'payout', 'advanced_payout']:
             urls.update({item: f'/issue/{item}?{params}'})
         return urls
 
@@ -987,7 +987,7 @@ class Tip(SuperModel):
         if self.web3_type == 'yge':
             return self.url
 
-        pk = self.metadata['priv_key']
+        pk = self.metadata.get('priv_key')
         txid = self.txid
         network = self.network
         return f"{settings.BASE_URL}tip/receive/v2/{pk}/{txid}/{network}"

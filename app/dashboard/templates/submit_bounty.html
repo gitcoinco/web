@@ -53,9 +53,9 @@
                   <label class="form__label" for=issueURL>{% trans "Github Issue URL" %}</label>
                   <input name='issueURL' id="issueURL" class="form__input" type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
                   <label class="form__label" for="title">{% trans "Github Issue Title" %}</label>
-                  <input name='title' id="title"  class="form__input" type="text" placeholder="Deploy the Foo to The Bar" value="{{issue_title}}" disabled/>
+                  <input name='title' id="title"  class="form__input" type="text" placeholder="Deploy the Foo to The Bar" value="{{issue_title}}" readonly/>
                   <label class="form__label" for="description">{% trans "Description" %}</label>
-                  <textarea name="description" class="form__input" id="description" placeholder="Add some new feature." disabled></textarea>
+                  <textarea name="description" class="form__input" id="description" placeholder="Add some new feature." readonly></textarea>
                   <label class="form__label" for="keywords">{% trans "Keywords" %}</label>
                   <input name='keywords' id='keywords'  class="form__input" type="text" placeholder="python, solidity, html, javascript, react (optional)" value="{{keywords}}" />
                   <hr class="mt-4">

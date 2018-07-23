@@ -26,6 +26,7 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.models import Activity, Bounty
 from dashboard.notifications import amount_usdt_open_work, open_bounties
@@ -87,7 +88,9 @@ def index(request):
     }
     return TemplateResponse(request, 'index.html', context)
 
-def contributor_landing(request):
+
+def contributor_landing(request, tech_stack):
+
     slides = [
         ("Daniel", static("v2/images/testimonials/gitcoiners/daniel.jpeg"),
          _("When I found Gitcoin I was gladly surprised that it took one thing and did it well. \
@@ -201,6 +204,7 @@ def contributor_landing(request):
     available_bounties_worth = amount_usdt_open_work()
 
     context = {
+        'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else "Open Source Opportunities",
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'home',
@@ -210,7 +214,8 @@ def contributor_landing(request):
         'projects': projects,
         'gitcoin_description': gitcoin_description,
         'available_bounties_count': available_bounties_count,
-        'available_bounties_worth': available_bounties_worth
+        'available_bounties_worth': available_bounties_worth,
+        'tech_stack': tech_stack,
     }
 
     return TemplateResponse(request, 'contributor_landing.html', context)
@@ -720,6 +725,18 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
         'img': static('v2/images/tldr/tips_noborder.jpg'),
         'url': 'https://medium.com/gitcoin/tutorial-send-a-tip-to-any-github-user-in-60-seconds-2eb20a648bc8',
         'title': _('Send a Tip to any Github user in 60 seconds'),
+    }, {
+        'img': 'https://cdn-images-1.medium.com/max/1800/1*IShTwIlxOxbVAGYbOEfbYg.png',
+        'url': 'https://medium.com/gitcoin/how-to-build-a-contributor-friendly-project-927037f528d9',
+        'title': _('How To Build A Contributor Friendly Project'),
+    }, {
+        'img': 'https://cdn-images-1.medium.com/max/2000/1*23Zxk9znad1i422nmseCGg.png',
+        'url': 'https://medium.com/gitcoin/fund-an-issue-on-gitcoin-3d7245e9b3f3',
+        'title': _('Fund An Issue on Gitcoin!'),
+    }, {
+        'img': 'https://cdn-images-1.medium.com/max/2000/1*WSyI5qFDmy6T8nPFkrY_Cw.png',
+        'url': 'https://medium.com/gitcoin/getting-started-with-gitcoin-fa7149f2461a',
+        'title': _('Getting Started With Gitcoin'),
     }]
 
     context = {
@@ -729,6 +746,59 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
         'tutorials': tutorials,
     }
     return TemplateResponse(request, 'help.html', context)
+
+
+def presskit(request):
+
+    brand_colors = [
+        (
+            "Cosmic Teal",
+            "#25e899",
+            "37, 232, 153"
+        ),
+        (
+            "Dark Cosmic Teal",
+            "#0fce7c",
+            "15, 206, 124"
+        ),
+        (
+            "Milky Way Blue",
+            "#15003e",
+            "21, 0, 62"
+        ),
+        (
+            "Stardust Yellow",
+            "#FFCE08",
+            "255,206, 8"
+        ),
+        (
+            "Polaris Blue",
+            "#3E00FF",
+            "62, 0, 255"
+        ),
+        (
+            "Vinus Purple",
+            "#8E2ABE",
+            "142, 42, 190"
+        ),
+        (
+            "Regulus Red",
+            "#F9006C",
+            "249, 0, 108"
+        ),
+        (
+            "Star White",
+            "#FFFFFF",
+            "23, 244, 238"
+        ),
+        ]
+
+    context = {
+        'brand_colors': brand_colors,
+        'active': 'get',
+        'title': _('Presskit'),
+    }
+    return TemplateResponse(request, 'presskit.html', context)
 
 
 def get_gitcoin(request):
@@ -782,10 +852,6 @@ def onboard(request):
 
 def podcast(request):
     return redirect('https://itunes.apple.com/us/podcast/gitcoin-community/id1360536677')
-
-
-def presskit(request):
-    return redirect('https://www.dropbox.com/sh/bsjzbu0li2z0kr1/AACKgnQC3g6m52huYI3Gx3Ega?dl=0')
 
 
 def feedback(request):
@@ -870,7 +936,7 @@ def slack(request):
 
     return TemplateResponse(request, 'slack.html', context)
 
-
+@csrf_exempt
 def newtoken(request):
     context = {
         'active': 'newtoken',
@@ -900,7 +966,7 @@ def newtoken(request):
                 )
             new_token_request(obj)
             context['msg'] = str(_('Your token has been submitted and will be listed within 2 business days if it is accepted.'))
-    
+
     return TemplateResponse(request, 'newtoken.html', context)
 
 

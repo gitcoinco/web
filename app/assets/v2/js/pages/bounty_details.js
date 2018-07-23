@@ -672,17 +672,27 @@ var do_actions = function(result) {
     actions.push(_entry);
   }
 
-  const pending_acceptance = result.fulfillments.filter(fulfillment => fulfillment.accepted == false).length;
-
-  if (show_accept_submission && pending_acceptance > 0) {
-    const enabled = show_accept_submission;
+  if (show_advanced_payout) {
+    const enabled = show_advanced_payout;
     const _entry = {
       enabled: enabled,
-      href: result['action_urls']['accept'],
-      text: gettext('Accept Submission'),
-      title: gettext('This will payout the bounty to the submitter.'),
+      href: result['action_urls']['payout'],
+      text: gettext('Payout Bounty'),
+      title: gettext('Payout the bounty to one or more submitters.'),
+      parent: 'right_actions'
+    };
+
+    actions.push(_entry);
+  }
+
+  if (show_increase_bounty) {
+    const enabled = increase_bounty_enabled;
+    const _entry = {
+      enabled: enabled,
+      href: result['action_urls']['increase'],
+      text: gettext('Add Contribution'),
       parent: 'right_actions',
-      pending_acceptance: pending_acceptance
+      title: gettext('Increase the funding for this issue')
     };
 
     actions.push(_entry);
@@ -703,32 +713,6 @@ var do_actions = function(result) {
     actions.push(_entry);
   }
 
-
-  if (show_advanced_payout) {
-    const enabled = show_advanced_payout;
-    const _entry = {
-      enabled: enabled,
-      href: result['action_urls']['payout'],
-      text: gettext('Multi-Party Payout'),
-      title: gettext('Used to pay out to many people at once.'),
-      parent: 'right_actions'
-    };
-
-    actions.push(_entry);
-  }
-
-  if (show_increase_bounty) {
-    const enabled = increase_bounty_enabled;
-    const _entry = {
-      enabled: enabled,
-      href: result['action_urls']['increase'],
-      text: gettext('Add Contribution'),
-      parent: 'right_actions',
-      title: gettext('Increase the funding for this issue')
-    };
-
-    actions.push(_entry);
-  }
 
   if (show_github_link) {
     let github_url = result['github_url'];

@@ -1095,6 +1095,31 @@ input.is-invalid {
   width: auto;
 }
 
+.bounty_box {
+  border: 5px solid white;
+  width: 100%;
+  display: block;
+  padding: 30px 30px;
+  background-color: #15003e;
+  color: white;
+  text-decoration: none;
+}
+.bounty_box.disabled, .bounty_box.disabled:hover {
+  cursor: not-allowed;
+  background-color: #5f445b;
+  text-decoration: none;
+}
+.bounty_box:hover {
+  background-color: #35305e;
+  text-decoration: none;
+}
+.bounty_box h5{
+  color: white;
+}
+.bounty_box span{
+  color: white;
+}
+
 @media (max-width: 1350px) {
   .profile_details .tips li div.details {
     width: 300px;
