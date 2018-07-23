@@ -78,5 +78,13 @@
       $('#'+key).prop('checked', pref);
     }
   });
+  // bust the cache every time the language changes
+  $("#preferred_language").change(function(e) {
+    var timestamp = Date.now() / 1000 | 0;
+
+    Cookies.set('last_language_change', timestamp);
+  });
+
 </script>
+
 {% endblock %}
