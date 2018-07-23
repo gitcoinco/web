@@ -129,7 +129,7 @@ def create_user_action(user, action_type, request=None, metadata=None):
         return False
 
 
-def get_ipfs(host=settings.IPFS_HOST, port=settings.IPFS_API_PORT):
+def get_ipfs(host=None, port=settings.IPFS_API_PORT):
     """Establish a connection to IPFS.
 
     Args:
@@ -146,6 +146,9 @@ def get_ipfs(host=settings.IPFS_HOST, port=settings.IPFS_API_PORT):
         ipfsapi.client.Client: The IPFS connection client.
 
     """
+    if host is None:
+        host = f'https://{settings.IPFS_HOST}'
+
     try:
         return ipfsapi.connect(host, port)
     except CommunicationError as e:
