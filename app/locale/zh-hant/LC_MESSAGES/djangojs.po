@@ -1,0 +1,774 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-07-20 19:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: assets/onepager/js/quarantine/receive_legacy.js:100
+msgid "Not a valid forwarding address."
+msgstr "不是有效的轉發地址。"
+
+#: assets/onepager/js/quarantine/receive_legacy.js:105
+#: assets/onepager/js/quarantine/receive_legacy.js:109
+msgid "Invalid Link.  Please check your link and try again"
+msgstr "無效的鏈接。請檢查您的鏈接，然後重試"
+
+#: assets/onepager/js/quarantine/receive_legacy.js:118
+msgid "got an error :("
+msgstr "得到一個錯誤:("
+
+#: assets/onepager/js/quarantine/receive_legacy.js:153
+msgid "You must wait until the senders transaction confirms."
+msgstr "您必須等到發件人交易確認。"
+
+#: assets/onepager/js/quarantine/web3alert.js:29
+#: assets/onepager/js/web3alert.js:29
+msgid ""
+"You must install <a href=https://metamask.io/>Metamask</a> to use this tool."
+msgstr "您必須安裝<a href=https://metamask.io/> Metamask </a>才能使用此工具。"
+
+#: assets/onepager/js/quarantine/web3alert.js:33
+#: assets/onepager/js/web3alert.js:33
+msgid "Please unlock Metamask."
+msgstr "請解鎖Metamask。"
+
+#: assets/onepager/js/receive.js:5
+msgid "You are not on the right web3 network.  Please switch to "
+msgstr "您不在正確的web3網絡上。請切換到"
+
+#: assets/onepager/js/send.js:88
+msgid ""
+"You must have a web3 enabled browser to do this.  Please download Metamask."
+msgstr "您必須具有支持Web3的瀏覽器才能執行此操作。請下載Metamask。"
+
+#: assets/onepager/js/send.js:115
+msgid ""
+"To Email is optional, but if you enter an email, you must enter a valid "
+"email!"
+msgstr "電子郵件是可選的，但如果您輸入電子郵件，則必須輸入有效的電子郵件！"
+
+#: assets/onepager/js/send.js:119
+msgid ""
+"From Email is optional, but if you enter an email, you must enter a valid "
+"email!"
+msgstr "來自電子郵件是可選的，但如果您輸入電子郵件，則必須輸入有效的電子郵件！"
+
+#: assets/onepager/js/send.js:123
+msgid "You must enter an number for the amount!"
+msgstr "您必須輸入金額的數字！"
+
+#: assets/onepager/js/send.js:127
+msgid "You must enter a username."
+msgstr "您必須輸入用戶名。"
+
+#: assets/onepager/js/send.js:131
+msgid "You must accept the terms."
+msgstr "您必須接受這些條款。"
+
+#: assets/onepager/js/send.js:166
+msgid "There was an error."
+msgstr "有一個錯誤。"
+
+#: assets/onepager/js/send.js:196
+msgid ""
+"You will now be asked to confirm two transactions.  The first is gas money, "
+"so your receipient doesnt have to pay it.  The second is the actual token "
+"transfer."
+msgstr "現在將要求您確認兩筆交易。首先是燃氣錢，所以你的收據不需要支付。第二個是實際的令牌轉移。"
+
+#: assets/v2/js/amounts.js:11
+msgid "Approx: "
+msgstr "約："
+
+#: assets/v2/js/amounts.js:13 assets/v2/js/amounts.js:103
+#: assets/v2/js/amounts.js:152
+msgid "Approx: Unknown amount"
+msgstr "大約：未知金額"
+
+#: assets/v2/js/amounts.js:62 assets/v2/js/amounts.js:116
+msgid "Incorrect amount"
+msgstr "金額不正確"
+
+#: assets/v2/js/avatar_builder.js:291
+msgid "Your Avatar Has Been Saved To your Gitcoin Profile!"
+msgstr "您的頭像已保存到您的Gitcoin個人資料！"
+
+#: assets/v2/js/avatar_builder.js:296
+msgid "Error occurred while saving. Please try again."
+msgstr "保存時出錯。請再試一次。"
+
+#: assets/v2/js/base.js:191
+msgid "We Care About Your Privacy"
+msgstr "我們關心您的隱私"
+
+#: assets/v2/js/base.js:194
+msgid ""
+"As a Web 3.0 company, we think carefully about user data and privacy and how"
+" the internet is evolving. We hope Web 3.0 will bring more control of data "
+"to users. With this ethos in mind, we are always careful about how we use "
+"your information."
+msgstr ""
+"作為一家Web 3.0公司，我們會仔細考慮用戶數據和隱私以及互聯網的發展方式。我們希望Web "
+"3.0能夠為用戶帶來更多的數據控制。考慮到這種精神，我們始終關注我們如何使用您的信息。"
+
+#: assets/v2/js/base.js:198
+msgid ""
+"We recently reviewed our Privacy Policy to comply with requirements of "
+"General Data Protection Regulation (GDPR), improving our Terms of Use, "
+"Privacy Policy and Cookie Policy. These changes will go into effect on May "
+"25, 2018, and your continued use of the Gitcoin after May 25, 2018 will be "
+"subject to our updated Terms of Use and Privacy Policy."
+msgstr ""
+"我們最近審核了我們的隱私政策，以遵守通用數據保護法規（GDPR）的要求，改進了我們的使用條款，隱私政策和Cookie政策。這些更改將於2018年5月25日生效，您在2018年5月25日之後繼續使用Gitcoin將受到我們更新的使用條款和隱私政策的約束。"
+
+#: assets/v2/js/base.js:206
+msgid "Read Our Updated Terms"
+msgstr "閱讀我們的更新條款"
+
+#: assets/v2/js/pages/bounty_details.js:95
+msgid "Issue"
+msgstr "問題"
+
+#: assets/v2/js/pages/bounty_details.js:96
+msgid "Issue Funding Info"
+msgstr "發布資金信息"
+
+#: assets/v2/js/pages/bounty_details.js:97
+msgid "Funder"
+msgstr "出資者"
+
+#: assets/v2/js/pages/bounty_details.js:98
+msgid "Submitter"
+msgstr "提交"
+
+#: assets/v2/js/pages/bounty_details.js:99
+msgid "Meta"
+msgstr "元"
+
+#: assets/v2/js/pages/bounty_details.js:120
+msgid "OPEN ISSUE"
+msgstr "開放的問題"
+
+#: assets/v2/js/pages/bounty_details.js:123
+msgid "work started"
+msgstr "工作開始了"
+
+#: assets/v2/js/pages/bounty_details.js:126
+msgid "work submitted"
+msgstr "工作提交"
+
+#: assets/v2/js/pages/bounty_details.js:129
+msgid "done"
+msgstr "DONE"
+
+#: assets/v2/js/pages/bounty_details.js:132
+msgid "cancelled"
+msgstr "取消"
+
+#: assets/v2/js/pages/bounty_details.js:437
+msgid "Are you sure you want to stop work?"
+msgstr "你確定要停止工作嗎？"
+
+#: assets/v2/js/pages/bounty_details.js:439
+#: assets/v2/js/pages/bounty_details.js:650
+msgid "Start Work"
+msgstr "開始工作"
+
+#: assets/v2/js/pages/bounty_details.js:499
+msgid "Please provide an action plan for this ticket."
+msgstr "請提供此機票的行動計劃。"
+
+#: assets/v2/js/pages/bounty_details.js:504
+msgid "You must agree to the precedence clause."
+msgstr "您必須同意優先條款。"
+
+#: assets/v2/js/pages/bounty_details.js:508
+msgid "You must agree to keep the funder updated on your progress."
+msgstr "您必須同意讓資助者了解您的進度。"
+
+#: assets/v2/js/pages/bounty_details.js:513
+#: assets/v2/js/pages/bounty_details.js:650
+msgid "Stop Work"
+msgstr "停止工作"
+
+#: assets/v2/js/pages/bounty_details.js:537
+msgid "Funded Issue Details: "
+msgstr "資助問題詳情："
+
+#: assets/v2/js/pages/bounty_details.js:635
+msgid "Submit Work"
+msgstr "提交工作"
+
+#: assets/v2/js/pages/bounty_details.js:637
+msgid "Submit work for the funder to review"
+msgstr "提交資助者的工作進行審核"
+
+#: assets/v2/js/pages/bounty_details.js:652
+msgid "Notify the funder that you will not be working on this project"
+msgstr "通知資助者您不會參與此項目"
+
+#: assets/v2/js/pages/bounty_details.js:652
+msgid "Notify the funder that you would like to take on this project"
+msgstr "通知您想要參與此項目的資助者"
+
+#: assets/v2/js/pages/bounty_details.js:665
+msgid "Cancel Bounty"
+msgstr "取消賞金"
+
+#: assets/v2/js/pages/bounty_details.js:667
+msgid "Cancel bounty and reclaim funds for this issue"
+msgstr "取消賞金並收回此問題的資金"
+
+#: assets/v2/js/pages/bounty_details.js:679
+msgid "View Attached Job Description"
+msgstr "查看附加的職位描述"
+
+#: assets/v2/js/pages/bounty_details.js:681
+msgid ""
+"This bounty hunter is hiring for a full time, part time, or contract role "
+"and has attached that to this bounty."
+msgstr "這個賞金獵人正在招聘一名全職，兼職或合同的角色，並將其附加到這個賞金上。"
+
+#: assets/v2/js/pages/bounty_details.js:694
+msgid "Payout Bounty"
+msgstr "支付賞金"
+
+#: assets/v2/js/pages/bounty_details.js:695
+msgid "Payout the bounty to one or more submitters."
+msgstr "向一個或多個提交者支付獎金。"
+
+#: assets/v2/js/pages/bounty_details.js:707
+msgid "Add Contribution"
+msgstr "添加貢獻"
+
+#: assets/v2/js/pages/bounty_details.js:709
+msgid "Increase the funding for this issue"
+msgstr "增加這個問題的資金"
+
+#: assets/v2/js/pages/bounty_details.js:725
+msgid "View On Github"
+msgstr "在Github上查看"
+
+#: assets/v2/js/pages/bounty_details.js:727
+msgid "View issue details and comments on Github"
+msgstr "在Github上查看問題詳細信息和註釋"
+
+#: assets/v2/js/pages/bounty_details.js:742
+msgid "Suspend Auto Approval"
+msgstr "暫停自動批准"
+
+#: assets/v2/js/pages/bounty_details.js:744
+msgid ""
+"Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty"
+msgstr "暫停*自動批准*已申請此賞金的賞金獵人"
+
+#: assets/v2/js/pages/bounty_details.js:759
+msgid "Hide Bounty"
+msgstr "隱藏賞金"
+
+#: assets/v2/js/pages/bounty_details.js:761
+msgid "Hides Bounty from Active Bounties"
+msgstr "從活躍賞金中隱藏賞金"
+
+#: assets/v2/js/pages/bounty_details.js:776
+msgid "Toggle Remarket Ready"
+msgstr "切換市場準備就緒"
+
+#: assets/v2/js/pages/bounty_details.js:778
+msgid ""
+"Sets Remarket Ready if not already remarket ready.  Unsets it if already "
+"remarket ready."
+msgstr "如果尚未準備好再上市，則設置Remarket Ready。如果已經準備就緒，請將其取消。"
+
+#: assets/v2/js/pages/bounty_details.js:792
+msgid "Contact Funder"
+msgstr "聯繫Funder"
+
+#: assets/v2/js/pages/bounty_details.js:794
+msgid "Contact Funder via Email"
+msgstr "通過電子郵件聯繫Funder"
+
+#: assets/v2/js/pages/bounty_details.js:808
+msgid "Snooze Gitcoinbot"
+msgstr "貪睡Gitcoinbot"
+
+#: assets/v2/js/pages/bounty_details.js:810
+msgid "Snooze Gitcoinbot reminders"
+msgstr "貪睡Gitcoinbot提醒"
+
+#: assets/v2/js/pages/bounty_details.js:824
+msgid "Override Status"
+msgstr "覆蓋狀態"
+
+#: assets/v2/js/pages/bounty_details.js:826
+msgid "Override Status with a status of your choosing"
+msgstr "使用您選擇的狀態覆蓋狀態"
+
+#: assets/v2/js/pages/bounty_details.js:892
+#: assets/v2/js/pages/dashboard.js:510 assets/v2/js/shared.js:296
+msgid "got an error. please try again, or contact support@gitcoin.co"
+msgstr "得到了一個錯誤。請再試一次，或聯繫support@gitcoin.co"
+
+#: assets/v2/js/pages/bounty_details.js:902
+msgid "New Bounty"
+msgstr "新賞金"
+
+#: assets/v2/js/pages/bounty_details.js:903
+msgid "Work Started"
+msgstr "工作開始"
+
+#: assets/v2/js/pages/bounty_details.js:904
+msgid "Work Stopped"
+msgstr "工作停止了"
+
+#: assets/v2/js/pages/bounty_details.js:905
+msgid "Work Submitted"
+msgstr "工作提交"
+
+#: assets/v2/js/pages/bounty_details.js:906
+msgid "Work Done"
+msgstr "完工"
+
+#: assets/v2/js/pages/bounty_details.js:907
+msgid "Worker Approved"
+msgstr "工人批准"
+
+#: assets/v2/js/pages/bounty_details.js:908
+msgid "Worker Rejected"
+msgstr "工人被拒絕"
+
+#: assets/v2/js/pages/bounty_details.js:909
+msgid "Worker Applied"
+msgstr "工人應用"
+
+#: assets/v2/js/pages/bounty_details.js:910
+msgid "Increased Funding"
+msgstr "增加資金"
+
+#: assets/v2/js/pages/bounty_details.js:911
+msgid "Canceled Bounty"
+msgstr "取消賞金"
+
+#: assets/v2/js/pages/bounty_details.js:912
+msgid "New Tip"
+msgstr "新提示"
+
+#: assets/v2/js/pages/bounty_details.js:913
+msgid "Tip Received"
+msgstr "提示已收到"
+
+#: assets/v2/js/pages/bounty_details.js:1000
+msgid "There's no activity yet!"
+msgstr "還沒有活動！"
+
+#: assets/v2/js/pages/dashboard.js:324
+msgid "No Results"
+msgstr "沒有結果"
+
+#: assets/v2/js/pages/dashboard.js:328
+msgid " Matching Result"
+msgstr "匹配結果"
+
+#: assets/v2/js/pages/dashboard.js:332
+msgid " Matching Results"
+msgstr "匹配結果"
+
+#: assets/v2/js/pages/dashboard.js:732
+msgid "Please enter a valid email address."
+msgstr "請輸入有效的電子郵件地址。"
+
+#: assets/v2/js/pages/dashboard.js:743
+msgid "You're in! Keep an eye on your inbox for the next funding listing."
+msgstr "你在！密切關注您的收件箱以獲取下一個資金列表。"
+
+#: assets/v2/js/pages/faucet_form.js:31
+msgid "We could not validate that input as an email address"
+msgstr "我們無法將該輸入驗證為電子郵件地址"
+
+#: assets/v2/js/pages/faucet_form.js:59
+msgid "Please make sure to fill out all fields."
+msgstr "請務必填寫所有字段。"
+
+#: assets/v2/js/pages/faucet_form.js:79
+msgid "Got an unexpected error"
+msgstr "出現意外錯誤"
+
+#: assets/v2/js/pages/fulfill_bounty.js:25
+#: assets/v2/js/pages/increase_bounty.js:29
+#: assets/v2/js/pages/kill_bounty.js:17 assets/v2/js/pages/new_bounty.js:189
+#: assets/v2/js/pages/process_bounty.js:68
+msgid ""
+"You are on an unsupported network.  Please change your network to a "
+"supported network."
+msgstr "您使用的是不受支持的網絡。請將您的網絡更改為支持的網絡。"
+
+#: assets/v2/js/pages/fulfill_bounty.js:105
+msgid "Could not get bounty details."
+msgstr "無法獲得賞金細節。"
+
+#: assets/v2/js/pages/fulfill_bounty.js:121
+msgid "Fulfillment submitted to web3."
+msgstr "履行提交給web3。"
+
+#: assets/v2/js/pages/fulfill_bounty.js:134
+#: assets/v2/js/pages/kill_bounty.js:106
+#: assets/v2/js/pages/process_bounty.js:163
+msgid "There was an error"
+msgstr "有一個錯誤"
+
+#: assets/v2/js/pages/increase_bounty.js:51
+#: assets/v2/js/pages/process_bounty.js:83
+msgid "Please accept the terms of service."
+msgstr "請接受服務條款。"
+
+#: assets/v2/js/pages/increase_bounty.js:61
+msgid "Please enter a valid github issue URL."
+msgstr "請輸入有效的github問題URL。"
+
+#: assets/v2/js/pages/increase_bounty.js:65
+msgid "Please enter an amount."
+msgstr "請輸入金額。"
+
+#: assets/v2/js/pages/increase_bounty.js:97
+#: assets/v2/js/pages/new_bounty.js:371 assets/v2/js/pages/new_bounty.js:397
+msgid "There was an error.  Please try again or contact support."
+msgstr "有一個錯誤。請重試或聯繫支持部門。"
+
+#: assets/v2/js/pages/increase_bounty.js:109
+#: assets/v2/js/pages/new_bounty.js:352
+msgid "Submission sent to web3."
+msgstr "提交發送到web3。"
+
+#: assets/v2/js/pages/increase_bounty.js:124
+msgid "No active funded issue found at this address on "
+msgstr "在此地址沒有發現有效的資助問題"
+
+#: assets/v2/js/pages/increase_bounty.js:127
+msgid ""
+"Only the address that submitted this funded issue may increase the payout."
+msgstr "只有提交此資助問題的地址才能增加支出。"
+
+#: assets/v2/js/pages/kill_bounty.js:44
+#: assets/v2/js/pages/process_bounty.js:107
+msgid "Could not get bounty details"
+msgstr "無法獲得賞金細節"
+
+#: assets/v2/js/pages/kill_bounty.js:53
+#: assets/v2/js/pages/process_bounty.js:115
+msgid "No active bounty found for this Github URL on "
+msgstr "沒有為此Github URL找到活動賞金"
+
+#: assets/v2/js/pages/kill_bounty.js:70
+msgid ""
+"No active funded issue found at this address.  Are you sure this is an "
+"active funded issue?"
+msgstr "此地址未找到有效的資助問題。你確定這是一個積極的資金問題嗎？"
+
+#: assets/v2/js/pages/kill_bounty.js:74
+msgid "Only the address that submitted this funded issue may kill the bounty."
+msgstr "只有提交此資助問題的地址才能殺死賞金。"
+
+#: assets/v2/js/pages/kill_bounty.js:93
+msgid "Kill bounty submitted to web3."
+msgstr "殺死提交給web3的賞金。"
+
+#: assets/v2/js/pages/onboard.js:40
+msgid "Done"
+msgstr "完成"
+
+#: assets/v2/js/pages/onboard.js:47
+msgid "Next"
+msgstr "下一個"
+
+#: assets/v2/js/pages/onboard.js:69
+msgid "Install Metamask"
+msgstr "安裝Metamask"
+
+#: assets/v2/js/pages/onboard.js:81
+msgid "Unlock Metamask"
+msgstr "解鎖Metamask"
+
+#: assets/v2/js/pages/process_bounty.js:17
+msgid "Could not get fulfillment details"
+msgstr "無法獲得履行細節"
+
+#: assets/v2/js/pages/process_bounty.js:25
+msgid ""
+"No bounty fulfillments found for this Github URL.  Please use the multi-"
+"party payout tool instead."
+msgstr "沒有找到此Github URL的賞金履行。請改用多方付款工具。"
+
+#: assets/v2/js/pages/process_bounty.js:89
+msgid "Please enter a issue URL."
+msgstr "請輸入問題網址。"
+
+#: assets/v2/js/pages/process_bounty.js:93
+msgid "Please enter a fulfillment Id."
+msgstr "請輸入履行ID。"
+
+#: assets/v2/js/pages/process_bounty.js:130
+msgid ""
+"No active funding found at this address.  Are you sure this is an active "
+"funded issue?"
+msgstr "在此地址沒有找到有效的資金。你確定這是一個積極的資金問題嗎？"
+
+#: assets/v2/js/pages/process_bounty.js:132
+msgid "No claimee found for this bounty."
+msgstr "這個賞金沒有找到任何人。"
+
+#: assets/v2/js/pages/process_bounty.js:134
+msgid "You can only process a funded issue if you submitted it initially."
+msgstr "如果您最初提交，則只能處理受資助的問題。"
+
+#: assets/v2/js/pages/process_bounty.js:153
+msgid "Submitted transaction to web3."
+msgstr "提交給web3的交易。"
+
+#: assets/v2/js/shared.js:247
+msgid "Thanks for letting us know that you're ready to start work."
+msgstr "感謝您告訴我們您已準備好開始工作了。"
+
+#: assets/v2/js/shared.js:250
+msgid "You've stopped working on this, thanks for letting us know."
+msgstr "你已經停止了這項工作，謝謝你讓我們知道。"
+
+#: assets/v2/js/shared.js:575 assets/v2/js/shared.js:609
+msgid "Web3 disabled. Please install "
+msgstr "Web3已禁用。請安裝"
+
+#: assets/v2/js/shared.js:577 assets/v2/js/shared.js:611
+msgid "Metamask Not Enabled"
+msgstr "Metamask未啟用"
+
+#: assets/v2/js/shared.js:580 assets/v2/js/shared.js:614
+msgid "Web3 locked. Please unlock "
+msgstr "Web3已鎖定。請解鎖"
+
+#: assets/v2/js/shared.js:582 assets/v2/js/shared.js:616
+msgid "Metamask Locked"
+msgstr "Metamask鎖定"
+
+#: assets/v2/js/shared.js:585
+msgid "Connect to Mainnet via Metamask"
+msgstr "通過Metamask連接到Mainnet"
+
+#: assets/v2/js/shared.js:586 assets/v2/js/shared.js:620
+msgid "Unsupported Network"
+msgstr "不受支持的網絡"
+
+#: assets/v2/js/shared.js:619
+msgid "Connect to Rinkeby / Custom RPC via Metamask"
+msgstr "通過Metamask連接到Rinkeby / Custom RPC"
+
+#: assets/v2/js/waiting_room_entertainment.js:4
+msgid ""
+"Open source software has become a relevant part of the software industry and"
+" a number of software ecosystems. It has become an alternative to commercial"
+" software in various areas and is already included in many commercial "
+"software products."
+msgstr "開源軟件已成為軟件行業和許多軟件生態系統的相關部分。它已成為各種領域商業軟件的替代品，並已包含在許多商業軟件產品中。"
+
+#: assets/v2/js/waiting_room_entertainment.js:5
+msgid ""
+"OSS can support the development of new software because companies can use "
+"existing software to create their software products. Therefore, it can be a "
+"catalyst for new software developments and the creation of new software "
+"companies."
+msgstr "OSS可以支持新軟件的開發，因為公司可以使用現有軟件來創建他們的軟件產品。因此，它可以成為新軟件開發和新軟件公司創建的催化劑。"
+
+#: assets/v2/js/waiting_room_entertainment.js:6
+msgid ""
+"OSS can ... be considered as an important factor in the value creation of "
+"other software, even if it is difficult to quantify. Today, OSS often "
+"replaces the standard middleware platform provided by a third party. It "
+"limits costs and, more importantly, dependency to some extent."
+msgstr ""
+"OSS可以被視為其他軟件價值創造的重要因素，即使很難量化。今天，OSS經常取代第三方提供的標準中間件平台。它限制了成本，更重要的是，在某種程度上限制了依賴性。"
+
+#: assets/v2/js/waiting_room_entertainment.js:7
+msgid ""
+"Software vendors that build new products can save costs if they reuse "
+"existing open source software components instead of developing software on "
+"their own or buying software components. As a result, open source software "
+"can foster the development of new software products as well as the creation "
+"of new software vendors."
+msgstr ""
+"構建新產品的軟件供應商如果重用現有的開源軟件組件而不是自己開發軟件或購買軟件組件，則可以節省成本。因此，開源軟件可以促進新軟件產品的開發以及新軟件供應商的創建。"
+
+#: assets/v2/js/waiting_room_entertainment.js:8
+msgid ""
+"OSS allows companies to incorporate IT in their value chain in an easy way. "
+"Instead of buying commercial software that may involve the risk of a vendor "
+"lock-in, they just have to share value with the OSS community."
+msgstr "OSS允許公司以簡單的方式將IT整合到其價值鏈中。他們只需要與OSS社區分享價值，而不是購買可能涉及供應商鎖定風險的商業軟件。"
+
+#: assets/v2/js/waiting_room_entertainment.js:9
+msgid ""
+"The basic principle of open source software development is that a community "
+"of software experts contributes time and effort for coding, reviewing and "
+"testing to publicly available source code."
+msgstr "開源軟件開發的基本原則是，軟件專家社區為編碼，審查和測試公開可用的源代碼貢獻時間和精力。"
+
+#: assets/v2/js/waiting_room_entertainment.js:10
+msgid ""
+"Open source can ... be a key success factor for co-innovation as none of the"
+" participants will have the upper hand. OSS can create standards that are "
+"very important for the development of emerging technologies and that help "
+"lower the total cost of ownership."
+msgstr ""
+"開源可以......是共同創新的關鍵成功因素，因為沒有一個參與者會佔上風。 OSS可以創建對新興技術的開發非常重要的標準，這有助於降低總體擁有成本。"
+
+#: assets/v2/js/waiting_room_entertainment.js:11
+msgid ""
+"Future software must be easily developed from components and freely "
+"available software and its maintenance must be supported by a wide "
+"community. This includes a reuse and evolution of existing software and "
+"modules: rather than developing from scratch, existing software must become "
+"more easily retrievable, interoperable and usable."
+msgstr ""
+"未來的軟件必須能夠從組件和免費軟件輕鬆開發，其維護必須得到廣泛社區的支持。這包括現有軟件和模塊的重用和發展：現有軟件必須變得更容易檢索，互操作和可用，而不是從頭開始。"
+
+#: assets/v2/js/waiting_room_entertainment.js:12
+msgid ""
+"OSS is also a firm promoter of standards and interoperability. This openness"
+" lowers the risk of a vendor lock-in. OSS is based on communities that "
+"develop software in a collaborative way. Many enabling technologies for SMAC"
+" have strong OSS roots."
+msgstr ""
+"OSS也是標準和互操作性的堅定推動者。這種開放性降低了供應商鎖定的風險。 OSS基於以協作方式開發軟件的社區。 "
+"SMAC的許多支持技術具有強大的OSS根源。"
+
+#: assets/v2/js/waiting_room_entertainment.js:13
+msgid ""
+"Some commercial vendors offer open source software in order to create a "
+"large user community. They generate revenues from subscriptions to support "
+"and updates and/or professional services as well as from selling extensions "
+"or professional editions that are based on the open source software. "
+"Examples are the providers of the Linux distributions RedHat and Suse."
+msgstr ""
+"一些商業供應商提供開源軟件以創建大型用戶社區。它們通過訂閱支持和更新和/或專業服務以及銷售基於開源軟件的擴展或專業版產生收入。例如Linux發行版RedHat和Suse的提供者。"
+
+#: assets/v2/js/waiting_room_entertainment.js:14
+msgid ""
+"Major commercial software vendors such as IBM and HP have made open source "
+"technology a part of their business by integrating it into their own "
+"products and by providing professional services for open source software."
+msgstr "IBM和惠普等主要商業軟件供應商通過將開源技術集成到自己的產品中並為開源軟件提供專業服務，使開源技術成為其業務的一部分。"
+
+#: assets/v2/js/waiting_room_entertainment.js:15
+msgid ""
+"Many business applications already include open source software and this is "
+"going to increase. Some vendors may donate part of their products to an open"
+" source foundation in order to create a larger user community that will "
+"potentially become buyers of commercial add-ons or services. On the other "
+"hand, open source software that is free of charge can be an alternative to "
+"commercial application software."
+msgstr ""
+"許多業務應用程序已經包含開源軟件，而且這種情況將會增加。一些供應商可能會將部分產品捐贈給開源基金會，以便創建一個更大的用戶社區，可能成為商業附加組件或服務的購買者。另一方面，免費的開源軟件可以替代商業應用軟件。"
+
+#: assets/v2/js/waiting_room_entertainment.js:16
+msgid ""
+"According to Carlo Daffara, a researcher in the field of IT economics who "
+"contributed to several European Commission research projects involving open "
+"source, the European economy saves around EUR114 billion per year by using "
+"open source software solutions. Apart from direct cost savings, other "
+"benefits of open source are reduced project failure and lower cost of code "
+"maintenance."
+msgstr ""
+"據IT經濟學領域的研究人員Carlo "
+"Daffara所說，歐洲經濟通過使用開源軟件解決方案，每年為歐洲委員會開放的幾個研究項目做出了貢獻。除了直接節省成本外，開源的其他好處還可以減少項目故障並降低代碼維護成本。"
+
+#: assets/v2/js/waiting_room_entertainment.js:17
+msgid ""
+"Quoting several sources, [Carlo Daffara, researcher in IT economics] "
+"estimates that about 35 per cent of the software  used in the past five "
+"years was directly or indirectly derived from open source."
+msgstr "引用幾個消息來源，[IT經濟學研究員Carlo Daffara]估計，過去五年中使用的軟件中約有35％直接或間接來自開源。"
+
+#: assets/v2/js/waiting_room_entertainment.js:18
+msgid ""
+"Companies outsource activities that are less critical. For example, a car "
+"manufacturer will hardly outsource the in-house software development for its"
+" autonomous driving technology, as this is highly confidential and highly "
+"relevant for its competitiveness."
+msgstr "公司外包不那麼重要的活動。例如，汽車製造商很難將自動駕駛技術的內部軟件開發外包，因為這是高度機密的，並且與其競爭力高度相關。"
+
+#: assets/v2/js/waiting_room_entertainment.js:19
+msgid ""
+"Outsourcing can be an alternative to in-house software development and more "
+"and more companies take advantage of this. ... Two areas of potential "
+"outsourcing in the area of in-house software development are testing and "
+"maintenance."
+msgstr "外包可以替代內部軟件開發，越來越多的公司利用這一點。 ......內部軟件開發領域的兩個潛在外包領域是測試和維護。"
+
+#: assets/v2/js/waiting_room_entertainment.js:20
+msgid ""
+"As demand for individual software development increases, companies evaluate "
+"ways to outsource such activities due to internal skill shortages and cost "
+"considerations."
+msgstr "隨著對個人軟件開發的需求增加，公司會因內部技能短缺和成本考慮而評估外包此類活動的方式。"
+
+#: assets/v2/js/waiting_room_entertainment.js:22
+msgid ""
+"Victor Hugo once remarked: 'You can resist an invading army; you cannot "
+"resist an idea whose time has come'. The Drucker Forum will ask the question"
+" and deliver elements of response as to whether the time for a new "
+"entrepreneurial age has come."
+msgstr "維克多雨果曾經說過：'你可以抵抗入侵的軍隊;你無法抗拒時機已到的想法。德魯克論壇將提出問題並提供回應的要素，以確定新創業時代是否已經到來。"
+
+#: assets/v2/js/waiting_room_entertainment.js:23
+msgid ""
+"Digital technology has played an accelerating role in this transformation "
+"[to an entrepreneurial society] by dramatically lowering barriers to entry "
+"in many industries and by providing new tools for managing knowledge "
+"creation and sharing and by enabling new forms of continuous learning, all "
+"on a global canvas."
+msgstr ""
+"數字技術通過大幅降低許多行業的准入門檻，通過提供管理知識創造和分享的新工具，以及通過實現新形式的持續學習，在全球範圍內，在這種向創業社會的轉變中發揮了加速作用。"
+" 。"
+
+#: assets/v2/js/waiting_room_entertainment.js:24
+msgid ""
+"While the journey towards an entrepreneurial society is by no means a "
+"straight-line progression towards a well-defined destination, broad cultural"
+" changes have brought entrepreneurialism into the mainstream. An activity "
+"that was once regarded as peripheral, perhaps even a bit suspect, has become"
+" cool, celebrated by politicians and embraced by the new generations."
+msgstr ""
+"雖然走向創業社會的旅程絕不是向一個定義明確的目的地的直線發展，但廣泛的文化變革已經將創業主義帶入了主流。曾經被視為外圍的活動，甚至可能有點懷疑，已經變得很酷，被政治家們所慶祝，並被新一代人所接受。"
+
+#: assets/v2/js/waiting_room_entertainment.js:25
+msgid ""
+"[T]he emergence of an entrepreneurial culture entails a broader "
+"transformation of the economic fabric of our society, as we see in the rapid"
+" proliferation of free agents in the form of contractors, freelancers and "
+"self-employed workers on on-demand platforms, for example."
+msgstr ""
+"[T]出現一種企業文化需要對我們社會的經濟結構進行更廣泛的轉變，正如我們看到自由代理人在按需平台上以承包商，自由職業者和自營職業者的形式迅速擴散，例。"
+
+#: assets/v2/js/waiting_room_entertainment.js:26
+msgid ""
+"[I]n a world of rapid change frequent job and career moves, switches between"
+" employed and independent roles become the rule rather than the exception."
+msgstr "[I]快速變化的世界頻繁的工作和職業變動，就業和獨立角色之間的轉換成為規則而不是例外。"
+
+#: assets/v2/js/waiting_room_entertainment.js:27
+msgid ""
+"Within large organizations a renewed focus on freeing up the creative and "
+"innovative potential of workers points in the same direction [as that of the"
+" entrepreneurial society] i.e. a new mindset of ownership, responsibility "
+"and autonomy."
+msgstr "在大型組織中，重新關註釋放工人的創造性和創新潛力指向[與創業社會的方向]相同的方向，即所有權，責任和自主權的新思維。"

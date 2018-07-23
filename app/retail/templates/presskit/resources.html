@@ -1,0 +1,58 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<section class="presskit_section py-5">
+  <div class="container presskit__resources">
+    <div class="row my-5">
+      <h2 class="col-12 my-3">{% trans "Resources" %}</h2>
+      <div class="col-lg-6 mb-lg-0 mb-3">
+      <div class="card border-light py-3 my-2 my-md-0">
+        <div class="row">
+          <div class="col-md-4 d-flex justify-content-center">
+            <img class="presskit_svg p-3" src="{% static "v2/images/presskit/GitHubLogo.svg" %}">
+          </div>
+          <div class="col-md-8 px-3">
+            <div class="card-block px-3 text-center text-md-left">
+              <h4 class="card-title text-center text-md-left">{% trans "GitHub Repo" %}</h4>
+              <p class="card-text"><a target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/creative/">https://github.com/gitcoinco/creative</a></p>
+              <a class="my-3 font-weight-bold" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/creative">{% trans "View repository" %}</a>
+              |
+              <a class="my-3 font-weight-bold" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/creative/archive/master.zip">{%trans "Download repository" %}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="card border-light py-3 my-2 my-md-0">
+        <div class="row">
+          <div class="col-md-4 d-flex justify-content-center">
+            <img class="presskit_svg p-3" src="{% static "v2/images/presskit/ZipFile.svg" %}">
+          </div>
+          <div class="col-md-8 px-3">
+            <div class="card-block px-3 text-center text-md-left">
+              <h4 class="card-title text-center text-md-left">{% trans "Press Kit" %}</h4>
+              <p class="card-text">{% trans "dropbox.com, 84 MB" %}</p>
+              <a class="my-3 font-weight-bold" target="_blank" rel="noopener noreferrer" href="https://www.dropbox.com/sh/bsjzbu0li2z0kr1/AACKgnQC3g6m52huYI3Gx3Ega?dl=0">Download Press Kit</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>

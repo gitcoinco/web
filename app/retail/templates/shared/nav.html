@@ -40,7 +40,7 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <nav class="navbar-nav ml-auto mr-3">
       {% if request.path == '/' %}
-        <span class="navbar__cta mr-2">Want to get help on your repo? Easily get started!</span>
+        <span class="navbar__cta mr-2">{% trans "Want to get help on your repo? Easily get started!" %}</span>
       {% endif %}
       {% if not user.is_authenticated %}
       <div class="nav-item dropdown interior">
@@ -68,7 +68,7 @@
         <div class="nav-item dropdown interior">
           <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownHow" role="button"
             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            How it works
+            {% trans "How it works" %}
           </a>
           <div class="dropdown-menu" id="how-it-works" aria-labelledby="navbarDropdownHow">
             <a class="dropdown-item {% if active == 'how_it_works_funder' %} selected{% endif %}" href="{% url "how_it_works" "funder" %}">

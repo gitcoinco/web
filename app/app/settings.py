@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import socket
 
 from django.http import Http404
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_noop
 
 import environ
 import rollbar
@@ -56,10 +56,10 @@ INSTALLED_APPS = [
     'corsheaders', 'django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes',
     'django.contrib.sessions', 'django.contrib.messages', 'whitenoise.runserver_nostatic', 'django.contrib.staticfiles',
     'storages', 'social_django', 'cookielaw', 'django.contrib.humanize', 'django.contrib.sitemaps',
-    'django.contrib.sites', 'django_extensions', 'easy_thumbnails', 'app', 'avatar', 'retail', 'rest_framework',
-    'bootstrap3', 'marketing', 'economy', 'dashboard', 'enssubdomain', 'faucet', 'tdi', 'gas', 'git', 'legacy',
-    'chartit', 'email_obfuscator', 'linkshortener', 'credits', 'gitcoinbot', 'external_bounties', 'dataviz',
-    'impersonate',
+    'django.contrib.sites', 'autotranslate', 'django_extensions', 'easy_thumbnails', 'app', 'avatar', 'retail',
+    'rest_framework', 'bootstrap3', 'marketing', 'economy', 'dashboard', 'enssubdomain', 'faucet', 'tdi', 'gas',
+    'git', 'legacy', 'chartit', 'email_obfuscator', 'linkshortener', 'credits', 'gitcoinbot', 'external_bounties',
+    'dataviz', 'impersonate',
 ]
 
 MIDDLEWARE = [
@@ -136,7 +136,17 @@ TIME_ZONE = env.str('TIME_ZONE', default='UTC')
 
 LOCALE_PATHS = ('locale', )
 
-LANGUAGES = [('en', _('English'))]
+LANGUAGES = [
+    ('en', gettext_noop('English')),
+    ('es', gettext_noop('Spanish')),
+    ('de', gettext_noop('German')),
+    ('hi', gettext_noop('Hindi')),
+    ('it', gettext_noop('Italian')),
+    ('ko', gettext_noop('Korean')),
+    ('pl', gettext_noop('Polish')),
+    ('zh-hans', gettext_noop('Simplified Chinese')),
+    ('zh-hant', gettext_noop('Traditional Chinese')),
+]
 
 if not ENV in ['local', 'test']:
     LOGGING = {
