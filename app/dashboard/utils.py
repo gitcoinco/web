@@ -253,7 +253,7 @@ def get_bounty(bounty_enum, network):
         data = json.loads(data_str)
 
         # validation
-        if 'Failed to get block' in data_str:
+        if 'Failed to get block' in str(data_str):
             raise IPFSCantConnectException("Failed to connect to IPFS")
 
         fulfillments.append({
@@ -264,7 +264,7 @@ def get_bounty(bounty_enum, network):
         })
 
     # validation
-    if 'Failed to get block' in bounty_data_str:
+    if 'Failed to get block' in str(bounty_data_str):
         raise IPFSCantConnectException("Failed to connect to IPFS")
 
     # https://github.com/Bounties-Network/StandardBounties/issues/25
