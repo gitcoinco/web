@@ -272,7 +272,6 @@ def email_settings(request, key):
     email = ''
     level = ''
     msg = ''
-    pref_lang = 'en' if not profile else profile.get_profile_preferred_language()
     if request.POST and request.POST.get('submit'):
         email = request.POST.get('email')
         level = request.POST.get('level')
@@ -315,6 +314,7 @@ def email_settings(request, key):
                     es.metadata['ip'].append(ip)
                 es.save()
             msg = _('Updated your preferences.')
+    pref_lang = 'en' if not profile else profile.get_profile_preferred_language()
     context = {
         'nav': 'internal',
         'active': '/settings/email',
