@@ -427,6 +427,9 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
               f"[here]({absolute_url})"
     learn_more_msg = f"* Learn more [on the Gitcoin Issue Details page]({absolute_url})"
     crowdfund_amount = "(plus a crowdfund of {bounty.additional_funding_summary_sentence})" if bounty.additional_funding_summary_sentence else ""
+    crowdfund_thx = ", ".join(f"@{tip.from_username}" for tip in bounty.tips.filter(is_for_bounty_fulfiller=True) if tip.from_username)
+    if crowdfund_thx:
+        crowdfund_thx = f"Thanks to {crowdfund_thx} for their crowdfunded contributions to this bounty.\n\n"
     if event_name == 'new_bounty':
         msg = f"{status_header}__This issue now has a funding of {natural_value} {crowdfund_amount} " \
               f"{bounty.token_name} {usdt_value} attached to it.__\n\n * If you would " \
@@ -511,7 +514,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
             accepted_fulfiller = ''
 
         msg = f"{status_header}__The funding of {natural_value} {bounty.token_name} {usdt_value} {crowdfund_amount} attached to this " \
-              f"issue has been approved & issued{accepted_fulfiller}.__  \n\n " \
+              f"issue has been approved & issued{accepted_fulfiller}.__  \n\n{crowdfund_thx} " \
               f"{learn_more_msg}\n{help_msg}\n{openwork_msg}\n"
     return msg
 
