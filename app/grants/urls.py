@@ -18,13 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-from django.urls import re_path
+from django.urls import re_path, path
 
 from .views import grant_show, grants, new_grant
 
 app_name = 'grants'
 urlpatterns = [
-    # path('<int:grant_id>', show, name='grant'),
-    # re_path(r'^new', new, name='new_grant'),
-    re_path(r'^grants/?', grants, name='grants')
+    path('', grants, name='grants'),
+    path('<int:grant_id>', grant_show, name='grant'),
+    re_path(r'^new', new_grant, name='new_grant')
 ]

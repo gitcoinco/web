@@ -3,21 +3,21 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    {% include 'app/dashboard/templates/shared/head.html' %}
-    {% include 'app/dashboard/templates/shared/cards.html' %}
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
   </head>
   <body class="interior {{active}} grant">
-    {% include 'app/dashboard/templates/shared/tag_manager_2.html' %}
+    {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
-      {% include 'app/dashboard/templates/shared/nav.html' %}
+      {% include 'shared/nav.html' %}
     </div>
 
     <div class="grants-hero text-center">
       <div class="row">
         <div class="grants-hero__text col-5">
           <h1 class="grants-hero__title">Dev Grants</h1>
-          <p class="grants-hero__copy">Support Open Source Projects via Gitcoin's new Dev Grants feature; By leveraging <a href="staketree.com">Staketree</a>, Gitcoin is help facilitate blockchain-based support for some of the best OSS projects in the space. </p>
-          <a class="button button--primary" href="{% url 'new_grant' %}">Create a Grant</a>
+          <p class="grants-hero__copy">Support Open Source Projects via Gitcoin's new Dev Grants feature; By leveraging <a href="staketree.com">Staketree</a>, Gitcoin is helping facilitate blockchain-based support for some of the best OSS projects in the space. </p>
+          <a class="button button--primary" href="{% url 'grants:new_grant' %}">Create a Grant</a>
         </div>
       </div>
     </div>
@@ -26,7 +26,7 @@
         {% for grant in grants %}
           {% if forloop.counter0|divisibleby:3 %} <div class="row"> {%  endif %}
             <div class="col-sm-12 col-md-4 bottom-buffer">
-              <a class="grant-item" href="{% url 'grant' grant.id %}">
+              <a class="grant-item" href="{% url 'grants:grant' grant.id %}">
                 <h4 class="grant-item__title">{{ grant.title|truncatechars:60 }}</h4>
                 <p class="grant-item__pitch">{{ grant.pitch|truncatechars:135 }}</p>
                 <div class="grant-item__footer">
@@ -57,11 +57,11 @@
       </div>
     {% endif %}
 
-    {% include 'app/dashboard/templates/shared/bottom_notification.html' %}
-    {% include 'app/dashboard/templates/shared/analytics.html' %}
-    {% include 'app/dashboard/templates/shared/footer_scripts.html' %}
-    {% include 'app/dashboard/templates/shared/rollbar.html' %}
-    {% include 'app/dashboard/templates/shared/footer.html' %}
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/rollbar.html' %}
+    {% include 'shared/footer.html' %}
   </body>
 
   <!-- jQuery -->
