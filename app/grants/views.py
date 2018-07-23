@@ -3,9 +3,9 @@ import json
 from django.shortcuts import render
 from django.template.response import TemplateResponse
 
-from .models import Grant
-from dashboard.models import Profile
 from marketing.models import Keyword
+
+from .models import Grant
 
 # Create your views here.
 

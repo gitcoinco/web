@@ -4,6 +4,7 @@ from economy.models import SuperModel
 
 # Create your models here.
 
+
 class Grant(SuperModel):
     """Define the structure of a Grant."""
 
