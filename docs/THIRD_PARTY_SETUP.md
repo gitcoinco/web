@@ -19,7 +19,7 @@ GITHUB_CLIENT_SECRET=xxx
 GITHUB_APP_NAME=MyGitcoinApp
 ```
 
-Restart your `web` container to apply the changes via:  `docker-compose restart web`
+Please `docker-compose down; docker-compose up -d` to have the environment variable changes reflect in your local Gitcoin environment.
 
 ## Setup Github User Integration (Recommended)
 

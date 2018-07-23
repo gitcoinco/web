@@ -151,7 +151,10 @@ def get_completion_rate(keyword):
     not_completed_bounties = eligible_bounties.filter(idx_status__in=['expired', 'cancelled']).count()
     total_bounties = completed_bounties + not_completed_bounties
 
-    return ((completed_bounties * 1.0 / total_bounties)) * 100
+    try:
+        return ((completed_bounties * 1.0 / total_bounties)) * 100
+    except ZeroDivisionError:
+        return 0
 
 
 def get_base_done_bounties(keyword):
