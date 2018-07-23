@@ -2,6 +2,7 @@
 
 from django.db import migrations
 from dashboard.utils import get_web3
+from django.conf import settings
 
 
 def get_profile(Profile, username):
@@ -32,6 +33,8 @@ def backwards_func(apps, schema_editor):
 
 
 def forwards_func(apps, schema_editor):
+    if settings.DEBUG:
+        return
     Profile = apps.get_model('dashboard', 'Profile')
     print('bounty')
     Bounty = apps.get_model('dashboard', 'Bounty')

@@ -1278,6 +1278,8 @@ class Profile(SuperModel):
     # Sample data: https://gist.github.com/mbeacom/ee91c8b0d7083fa40d9fa065125a8d48
     max_num_issues_start_work = models.IntegerField(default=3)
     preferred_payout_address = models.CharField(max_length=255, default='')
+    max_tip_amount_usdt_per_tx = models.DecimalField(default=500, decimal_places=2, max_digits=50)
+    max_tip_amount_usdt_per_week = models.DecimalField(default=1500, decimal_places=2, max_digits=50)
 
     @property
     def is_org(self):

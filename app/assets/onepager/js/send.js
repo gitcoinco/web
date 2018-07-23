@@ -204,10 +204,11 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
 
     metadata['creation_time'] = creation_time;
     metadata['salt'] = salt;
-    metadata['source_url'] = document.loction.href;
+    metadata['source_url'] = document.location.href;
 
     fetch(url, {
       method: 'POST',
+      credentials: 'include',
       body: JSON.stringify({
         username: username,
         email: email,
@@ -232,18 +233,21 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
       var _class = is_success ? 'info' : 'error';
 
       if (!is_success) {
-        _alert(json, _class);
+        _alert(json['message'], _class);
+        failure_callback();
       } else {
         var is_direct_to_recipient = metadata['is_direct'];
         var destinationAccount = is_direct_to_recipient ? metadata['direct_address'] : metadata['address'];
         var post_send_callback = function(errors, txid) {
           if (errors) {
             _alert({ message: gettext('There was an error.') }, 'warning');
+            failure_callback();
           } else {
             const url = '/tip/send/4';
 
             fetch(url, {
               method: 'POST',
+              credentials: 'include',
               body: JSON.stringify({
                 destinationAccount: destinationAccount,
                 txid: txid,
@@ -300,7 +304,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
   // send direct, or not?
   const url = '/tip/address/' + username;
 
-  fetch(url, {method: 'GET'}).then(function(response) {
+  fetch(url, {method: 'GET', credentials: 'include'}).then(function(response) {
     return response.json();
   }).then(function(json) {
     if (json.addresses.length > 0) {

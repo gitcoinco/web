@@ -397,8 +397,26 @@ def send_tip_3(request):
         recipient_profile=get_profile(to_username),
         sender_profile=get_profile(from_username),
     )
-    response['payload'] = {
-    }
+
+
+    is_over_tip_tx_limit = False
+    is_over_tip_weekly_limit = False
+    max_per_tip = request.user.profile.max_tip_amount_usdt_per_tx if request.user.is_authenticated and request.user.profile else 500
+    if tip.value_in_usdt_now:
+        is_over_tip_tx_limit = tip.value_in_usdt_now > max_per_tip
+        if request.user.is_authenticated and request.user.profile:
+            tips_last_week_value = tip.value_in_usdt_now
+            tips_last_week = Tip.objects.exclude(txid='').filter(sender_profile=get_profile(from_username), created_on__gt=timezone.now() - timezone.timedelta(days=7))
+            for this_tip in tips_last_week:
+                if this_tip.value_in_usdt_now:
+                    tips_last_week_value += this_tip.value_in_usdt_now
+            is_over_tip_weekly_limit = tips_last_week_value > request.user.profile.max_tip_amount_usdt_per_week
+    if is_over_tip_tx_limit:
+        response['status'] = 'error'
+        response['message'] = _('This tip is over the per-transaction limit of $') + str(max_per_tip) + ('.  Please try again later or contact support.')
+    elif is_over_tip_weekly_limit:
+        response['status'] = 'error'
+        response['message'] = _('You are over the weekly tip send limit of $') + str(request.user.profile.max_tip_amount_usdt_per_week) + ('.  Please try again later or contact support.')
     return JsonResponse(response)
 
 

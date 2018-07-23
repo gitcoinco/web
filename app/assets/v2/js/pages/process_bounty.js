@@ -9,16 +9,17 @@ window.onload = function() {
       $('input[name=issueURL]').val(getParam('source'));
     }
 
-    $("#tipPercent").change(function(){
-      is_valid = $(this).val() > 0 && !isNaN($(this).val())
-      if(!is_valid){
+    $('#tipPercent').change(function() {
+      is_valid = $(this).val() > 0 && !isNaN($(this).val());
+      if (!is_valid) {
         $(this).val(0);
       }
       var bounty_amount = parseFloat(document.bounty_amount_whole);
-      var pct = parseFloat($(this).val()) * 0.01
-      var estimate = Math.round(bounty_amount * pct * 10**3) / 10**3;
-      $("#tipEstimate").text(estimate);
-    })
+      var pct = parseFloat($(this).val()) * 0.01;
+      var estimate = Math.round(bounty_amount * pct * 10 ** 3) / 10 ** 3;
+
+      $('#tipEstimate').text(estimate);
+    });
 
     var bountyDetails = [];
 
@@ -73,15 +74,15 @@ window.onload = function() {
       window.location.href = new_url;
     });
 
-    var attach_and_send_tip = function(callback){
+    var attach_and_send_tip = function(callback) {
       // get form data
       var bounty_amount = parseFloat(document.bounty_amount_whole);
-      var pct = parseFloat($("#tipPercent").val()) * 0.01
+      var pct = parseFloat($('#tipPercent').val()) * 0.01;
 
       var email = '';
       var github_url = $('#issueURL').val();
       var from_name = document.contxt['github_handle'];
-      var username = $("#bountyFulfillment option:selected").data('username');
+      var username = $('#bountyFulfillment option:selected').data('username');
       var amountInEth = bounty_amount * pct;
       var comments_priv = '';
       var comments_public = '';
@@ -106,7 +107,7 @@ window.onload = function() {
 
       return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false);
 
-    }
+    };
 
 
     $('#acceptBounty').click(function(e) {
@@ -213,10 +214,11 @@ window.onload = function() {
             next();
           }
         };
-        var send = function(){
+        var send = function() {
           bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))}, final_callback);
         };
-        if($("#tipPercent").val() > 0){
+
+        if ($('#tipPercent').val() > 0) {
           attach_and_send_tip(send);
         } else {
           send();
