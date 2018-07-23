@@ -1,0 +1,20 @@
+  {
+      "symbol": "CCHN",
+      "address": "0xe9184c970bcfbb05d8a38762d073320e622a3e28",
+      "overview":{
+          "en": "Celes Chain is a regulated public chain RegTech solution for regulators, institutions and other blockchain applications to help institutions to develop regulated applications and services easier and more efficient, eventually benefiting all users.",
+          "zh": "Celes Chain 是一个为监管机构，机构和其他区块链开发的受监管的区块链公链和监管科技，帮助机构更方便和有效的开发受监管的应用和业务，用户最终获益。"
+      },
+      "email": "info@celeschain.io",
+      "website": "https://www.celeschain.io/",
+      "whitepaper": "https://dn-gmfproductintro.qbox.me/pdf/Celes-Chain-Business-Plan_ch1.pdf",
+      "published_on": "2018-04-17",
+      "links": {
+          "twitter": "https://twitter.com/CelesChain",
+          "telegram": "https://t.me/celeschain",
+          "github": "https://github.com/CelesChain",
+          "facebook": "https://twitter.com/CelesChain",
+          "reddit": "https://www.reddit.com/user/celeschain",
+          "medium": "https://medium.com/@CelesChain"
+      }
+  }
