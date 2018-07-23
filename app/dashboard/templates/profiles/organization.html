@@ -16,6 +16,8 @@
 {% endcomment %}
 {% load i18n email_obfuscator humanize static add_url_schema %}
 <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/switch.css" %}">
+
 <div class="container-fluid header profile-header dash mb-5">
   {% include 'shared/nav.html' %}
   <div class="container">
@@ -45,11 +47,19 @@
           </p>
         </div>
         <!-- TODO : If condition to check if hiring / not -->
-        <div class="tag org-hiring mt-2">
-          <p>Hiring</p>
+        <div class="mt-2">
+          <div class="tag org-hiring">
+            <p>Hiring</p>
+          </div>
+          <!-- END TODO -->
+          <!-- TODO: Show if user is org member-->
+          <span class="ml-2 mr-1 font-weight-300">Hiring</span>
+          <label class="switch mt-2">
+            <input type="checkbox">
+            <span class="slider round"></span>
+          </label>
+          <!-- END TODO -->
         </div>
-        <!-- END TODO -->
-        <!-- TODO : If condition to show toggle to members --> <!-- END TODO -->
         <!-- TODO : If condition to check if members are there & populate with them -->
         <div class="members my-4">
           <h3 class="font-body">Members</h3>
@@ -173,6 +183,11 @@
     font-weight: bold;
     width: 3rem;
     min-width: 70px;
+    display: inline-block;
+  }
+
+  .switch {
+    top: 4px;
   }
 
   .org-hiring p {
@@ -200,6 +215,15 @@
     .profile-header__avatar {
       position: relative;
       margin-top: 0;
+    }
+
+    .network-stats h2,
+    .works_with_list {
+      text-align: center;
+    }
+
+    .network-stats p {
+      margin: auto;
     }
   }
 </style>
