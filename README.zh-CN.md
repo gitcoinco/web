@@ -44,14 +44,17 @@ git clone git@github.com:xxxxxxxx/token-profile.git
 
 ![example](tutorial/logo.png)
 
-## 关于重名及修改合约
+## 常见问题
+
+### 关于重名及修改合约
 
 在 imToken 1.0 里，如果你的项目名称和其它项目重复，我们会在后面加数字，如TFT1、TFT2、TFT3等；如果你希望去掉数字，我们首先声明，这是一个非常危险的操作，修改代币信息后，代币会突然消失，容易引起用户恐慌，原则是对于持币人数多的项目，我们建议项目方推荐用户下载使用 imToken 2.0 ，imToken 2.0 通过代币合约地址来区分代币，所以不存在代币名称重复。
 
 其他情况，如需要修改合约地址，需要项目方在社区发布修改 Symbol 公告，告知用户需要从新搜索添加。并在 github 提交新的 PR，将旧合约 Symbol 增加 _OLD ，如  TFT_OLD, 然后提交新的代币合约和 logo, 如下图所示，并把公告链接在 PR 下留言，我们会核实情况修改。
-![example](tutorial/old.png)
 
-## 无法通过合约搜索
+![old](tutorial/old.png)
+
+### 无法通过合约搜索
 通过合约地址搜索不出来的情况，请查看是否是并未有成功的转账记录，另外请在 [Etherscan](https://etherscan.io/) Verify 你的合约信息，我们可以帮你手动添加。
 
 ## Copyright
