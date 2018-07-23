@@ -414,6 +414,8 @@ IPFS_UTP_PORT = env.int('IPFS_UTP_PORT', default=4002)
 IPFS_API_PORT = env.int('IPFS_API_PORT', default=5001)
 IPFS_GATEWAY_PORT = env.int('IPFS_GATEWAY_PORT', default=8080)
 IPFS_SWARM_WS_PORT = env.int('IPFS_SWARM_WS_PORT', default=8081)
+IPFS_API_ROOT = env('IPFS_API_ROOT', default='/api/v0')
+IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='http')
 
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)

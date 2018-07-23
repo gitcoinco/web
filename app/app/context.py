@@ -55,8 +55,8 @@ def insert_settings(request):
         'ipfs_config': {
             'host': settings.IPFS_HOST,
             'port': settings.IPFS_API_PORT,
-            'protocol': 'https',
-            'root': '/api/v0',
+            'protocol': settings.IPFS_API_SCHEME,
+            'root': settings.IPFS_API_ROOT,
         }
     }
     context['json_context'] = json.dumps(context)
