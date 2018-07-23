@@ -129,7 +129,7 @@
                     <small class="funder-dashboard__stats__stat__footer
                                 card-footer text-uppercase text-center p0 text-muted">
                       {% blocktrans %}
-                      As of {{ total_paid_used_date_to_say_since }}
+                      As of {{ total_paid_date_since }}
                       {% endblocktrans %}
                     </small>
                   </div>
@@ -348,7 +348,7 @@
                               data-is-type-filter
                               {% endif %}
                               {% if filter.is_status_filter %}
-                              selected data-is-status-filter
+                              data-is-status-filter
                               {% endif %}>
                         {{filter.value_display}}
                       </option>
@@ -471,7 +471,7 @@
                               data-is-type-filter
                               {% endif %}
                               {% if filter.is_status_filter %}
-                              selected data-is-status-filter
+                              data-is-status-filter
                               {% endif %}>
                         {{filter.value_display}}
                       </option>
