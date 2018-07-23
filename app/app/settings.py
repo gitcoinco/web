@@ -73,6 +73,9 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = (
+    'load.sumo.com',
+)
 
 ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
 
