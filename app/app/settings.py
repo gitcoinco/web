@@ -74,7 +74,9 @@ MIDDLEWARE = [
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
+    'sumo.com',
     'load.sumo.com',
+    'googleads.g.doubleclick.net',
 )
 
 ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
