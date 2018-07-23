@@ -1,21 +1,22 @@
 # -*- coding: utf-8 -*-
-'''
-    Copyright (C) 2017 Gitcoin Core
+"""Define the Retail utility methods and general logic.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Copyright (C) 2018 Gitcoin Core
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-'''
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
 import cgi
 import json
 import re
@@ -125,14 +126,14 @@ def get_history(base_stats, copy):
     history = [
         ['When', copy],
         ['Launch', 0],
-        ]
+    ]
     for i in [6, 5, 4, 3, 2, 1]:
         try:
             plural = 's' if i != 1 else ''
             before_then = (timezone.now() - timezone.timedelta(days=i*30))
             val = base_stats.filter(created_on__lt=before_then).order_by('-created_on').first().val
-            history = history + [[f'{i} month{plural} ago', val],]
-        except:
+            history = history + [[f'{i} month{plural} ago', val], ]
+        except Exception:
             pass
 
     history = history + [['Today', today], ]
@@ -142,7 +143,7 @@ def get_history(base_stats, copy):
 
 def get_completion_rate(keyword):
     from dashboard.models import Bounty
-    base_bounties = Bounty.objects.current().filter(network='mainnet').filter(idx_status__in=['done', 'expired', 'cancelled'])
+    base_bounties = Bounty.objects.current().filter(network='mainnet', idx_status__in=['done', 'expired', 'cancelled'])
     if keyword:
         base_bounties = base_bounties.filter(raw_data__icontains=keyword)
     eligible_bounties = base_bounties.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=60)))
@@ -159,7 +160,7 @@ def get_completion_rate(keyword):
 
 def get_base_done_bounties(keyword):
     from dashboard.models import Bounty
-    base_bounties = Bounty.objects.current().filter(network='mainnet').filter(idx_status__in=['done', 'expired', 'cancelled'])
+    base_bounties = Bounty.objects.current().filter(network='mainnet', idx_status__in=['done', 'expired', 'cancelled'])
     if keyword:
         base_bounties = base_bounties.filter(raw_data__icontains=keyword)
     return base_bounties
@@ -191,9 +192,9 @@ def get_hourly_rate_distribution(keyword):
 
 
 def get_bounty_median_turnaround_time(func='turnaround_time_started', keyword=None):
-    from dashboard.models import Bounty
     base_bounties = get_base_done_bounties(keyword)
-    eligible_bounties = base_bounties.exclude(idx_status='open').filter(created_on__gt=(timezone.now() - timezone.timedelta(days=60)))
+    eligible_bounties = base_bounties.exclude(idx_status='open') \
+        .filter(created_on__gt=(timezone.now() - timezone.timedelta(days=60)))
     pickup_time_hours = []
     for bounty in eligible_bounties:
         tat = getattr(bounty, func)
@@ -201,7 +202,10 @@ def get_bounty_median_turnaround_time(func='turnaround_time_started', keyword=No
             pickup_time_hours.append(tat / 60 / 60)
 
     pickup_time_hours.sort()
-    return statistics.median(pickup_time_hours)
+    try:
+        return statistics.median(pickup_time_hours)
+    except statistics.StatisticsError:
+        return 0
 
 
 def build_stat_results(keyword=None):
@@ -255,17 +259,18 @@ def build_stat_results_helper(keyword=None):
     pp.profile_time('count_*')
 
     # Leaderboard
-    context['top_orgs'] = base_leaderboard.filter(active=True, leaderboard='quarterly_orgs').order_by('rank').values_list('github_username', flat=True)
+    context['top_orgs'] = base_leaderboard.filter(active=True, leaderboard='quarterly_orgs') \
+        .order_by('rank').values_list('github_username', flat=True)
     pp.profile_time('orgs')
 
-    #community size
+    # community size
     _key = 'email_subscriberse' if not keyword else f"subscribers_with_skill_{keyword}"
     base_stats = Stat.objects.filter(key=_key).order_by('-pk')
     context['members_history'], context['slack_ticks'] = get_history(base_stats, "Members")
 
     pp.profile_time('Stats1')
 
-    #jdi history
+    # jdi history
     key = f'joe_dominance_index_30_{keyword}_value' if keyword else 'joe_dominance_index_30_value'
     base_stats = Stat.objects.filter(
         key=key,
@@ -307,11 +312,13 @@ def build_stat_results_helper(keyword=None):
     pp.profile_time('universe_total_usd')
     context['max_bounty_history'] = float(context['universe_total_usd']) * .7
     context['bounty_abandonment_rate'] = bounty_abandonment_rate
-    context['bounty_average_turnaround'] = str(round(get_bounty_median_turnaround_time('turnaround_time_submitted', keyword)/24, 1)) + " days"
+    bounty_average_turnaround = round(get_bounty_median_turnaround_time('turnaround_time_submitted', keyword) / 24, 1)
+    context['bounty_average_turnaround'] = f'{bounty_average_turnaround} days'
     pp.profile_time('bounty_average_turnaround')
     context['hourly_rate_distribution'] = get_hourly_rate_distribution(keyword)
     context['bounty_claimed_completion_rate'] = completion_rate
-    context['bounty_median_pickup_time'] = round(get_bounty_median_turnaround_time('turnaround_time_started', keyword), 1)
+    context['bounty_median_pickup_time'] = round(
+        get_bounty_median_turnaround_time('turnaround_time_started', keyword), 1)
     pp.profile_time('bounty_median_pickup_time')
     pp.profile_time('final')
     context['keyword'] = keyword
