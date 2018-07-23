@@ -37,6 +37,7 @@ from django.utils.translation import gettext_lazy as _
 from app.utils import sync_profile
 from dashboard.models import Profile, TokenApproval
 from dashboard.utils import create_user_action
+from dashboard.views import profile_keywords_helper
 from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from mailchimp3 import MailChimp
@@ -591,6 +592,8 @@ def leaderboard(request, key=''):
     if not key:
         key = 'quarterly_earners'
 
+    keyword_search = request.GET.get('keyword')
+
     titles = {
         'quarterly_payers': _('Top Payers'),
         'quarterly_earners': _('Top Earners'),
@@ -622,7 +625,13 @@ def leaderboard(request, key=''):
         raise Http404
 
     title = titles[key]
-    leadeboardranks = LeaderboardRank.objects.active().filter(leaderboard=key)
+    if keyword_search:
+        profiles = Profile.objects.all().filter(suppress_leaderboard=False).values_list('handle')
+        profiles_filter = list(filter(lambda profile: keyword_search in profile_keywords_helper(profile), profiles))
+        leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard=key, github_username__in=profiles_filter)
+    else:
+        leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard=key)
+
     amount = leadeboardranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
     items = leadeboardranks.order_by('-amount')
     top_earners = ''
