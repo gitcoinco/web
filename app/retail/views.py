@@ -26,6 +26,7 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.models import Activity, Bounty
 from dashboard.notifications import amount_usdt_open_work, open_bounties
@@ -935,7 +936,7 @@ def slack(request):
 
     return TemplateResponse(request, 'slack.html', context)
 
-
+@csrf_exempt
 def newtoken(request):
     context = {
         'active': 'newtoken',
