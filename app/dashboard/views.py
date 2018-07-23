@@ -617,12 +617,16 @@ def social_contribution(request):
 
 def payout_bounty(request):
     """Payout the bounty.
+
     Args:
         pk (int): The primary key of the bounty to be accepted.
+
     Raises:
         Http404: The exception is raised if no associated Bounty is found.
+
     Returns:
         TemplateResponse: The accept bounty view.
+
     """
     bounty = handle_bounty_views(request)
 
@@ -634,6 +638,7 @@ def payout_bounty(request):
         title=_('Payout'),
     )
     return TemplateResponse(request, 'payout_bounty.html', params)
+
 
 def bulk_payout_bounty(request):
     """Payout the bounty.
