@@ -29,6 +29,7 @@ from django.contrib.humanize.templatetags.humanize import naturaltime
 import requests
 import rollbar
 import twitter
+from django.template.loader import render_to_string
 from economy.utils import convert_token_to_usdt
 from github.utils import delete_issue_comment, org_name, patch_issue_comment, post_issue_comment, repo_name
 from marketing.mails import tip_email
@@ -406,117 +407,117 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
     """
     from dashboard.utils import get_ordinal_repr  # hack for circular import issue
     from dashboard.models import BountyFulfillment, Interest
+    from types import SimpleNamespace 
     msg = ''
-    usdt_value = ""
-    try:
-        usdt_value = f"({round(bounty.value_in_usdt_now, 2)} USD @ ${round(convert_token_to_usdt(bounty.token_name), 2)}/{bounty.token_name})" if bounty.value_in_usdt_now else ""
-    except Exception:
-        pass  # no USD conversion rate available
-    natural_value = round(bounty.get_natural_value(), 4)
-    absolute_url = bounty.get_absolute_url()
-    amount_open_work = "{:,}".format(amount_usdt_open_work())
-    bounty_owner = f"@{bounty.bounty_owner_github_username}" if bounty.bounty_owner_github_username else ""
-    status_header = get_status_header(bounty)
+    #usdt_value = ""
+    #try:
+    #    usdt_value = f"({round(bounty.value_in_usdt_now, 2)} USD @ ${round(convert_token_to_usdt(bounty.token_name), 2)}/{bounty.token_name})" if bounty.value_in_usdt_now else ""
+    #except Exception:
+    #    pass  # no USD conversion rate available
+    #natural_value = round(bounty.get_natural_value(), 4)
+    #absolute_url = bounty.get_absolute_url()
+    #amount_open_work = "{:,}".format(amount_usdt_open_work())
+    #bounty_owner = f"@{bounty.bounty_owner_github_username}" if bounty.bounty_owner_github_username else ""
+    #status_header = get_status_header(bounty)
+    template_path = 'github_comments/'
 
-    if event_name == 'new_bounty':
-        msg = f"{status_header}__This issue now has a funding of {natural_value} " \
-              f"{bounty.token_name} {usdt_value} attached to it.__\n\n * If you would " \
-              f"like to work on this issue you can 'start work' [on the Gitcoin Issue Details page]({absolute_url}).\n " \
-              "* Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or the " \
-              f"<a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${amount_open_work}" \
-              " more funded OSS Work available on the [Gitcoin Issue Explorer](https://gitcoin.co/explorer)\n"
-    if event_name == 'increased_bounty':
-        msg = f"{status_header}__The funding of this issue was increased to {natural_value} " \
-              f"{bounty.token_name} {usdt_value}.__\n\n * If you would " \
-              f"like to work on this issue you can claim it [here]({absolute_url}).\n " \
-              "* If you've completed this issue and want to claim the bounty you can do so " \
-              f"[here]({absolute_url})\n * Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or " \
-              f"the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${amount_open_work}" \
-              " more funded OSS Work available on the [Gitcoin Issue Explorer](https://gitcoin.co/explorer)\n"
+    if event_name in ['new_bounty', 'increased_bounty']:
+        context = {
+                    'bounty': bounty,
+                    'amount_open_work': amount_usdt_open_work(),
+                    'token_value_usdt': convert_token_to_usdt(bounty.token_name)
+                  }
+        msg = render_to_string('github_comments/issue_opened.md', context)
+    #"""
+    #    if event_name == 'increased_bounty':
+    #       msg = f"{status_header}__The funding of this issue was increased to {natural_value} " \
+    #             f"{bounty.token_name} {usdt_value}.__\n\n * If you would " \
+    #             f"like to work on this issue you can claim it [here]({absolute_url}).\n " \
+    #             "* If you've completed this issue and want to claim the bounty you can do so " \
+    #             f"[here]({absolute_url})\n * Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or " \
+    #             f"the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${amount_open_work}" \
+    #             " more funded OSS Work available on the [Gitcoin Issue Explorer](https://gitcoin.co/explorer)\n"
+    #   """
     elif event_name == 'killed_bounty':
-        msg = f"{status_header}__The funding of {natural_value} {bounty.token_name} " \
-              f"{usdt_value} attached to this issue has been **cancelled** by the bounty submitter__\n\n " \
-              "* Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * " \
-              f"${amount_open_work} more funded OSS Work available on the [Gitcoin Issue Explorer](https://gitcoin.co/explorer)\n"
-    elif event_name == 'rejected_claim':
-        msg = f"{status_header}__The work submission for {natural_value} {bounty.token_name} {usdt_value} " \
-              "has been **rejected** and can now be submitted by someone else.__\n\n * If you would " \
-              f"like to work on this issue you can claim it [here]({absolute_url}).\n * If you've " \
-              f"completed this issue and want to claim the bounty you can do so [here]({absolute_url})\n " \
-              "* Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * " \
-              f"${amount_open_work} more funded OSS Work available on the [Gitcoin Issue Explorer](https://gitcoin.co/explorer)\n"
+        if bounty.opened_comment:
+            delete_issue_comment(bounty.opened_comment, username, repo)
+    #   """
+    #   elif event_name == 'rejected_claim':
+    #       msg = f"{status_header}__The work submission for {natural_value} {bounty.token_name} {usdt_value} " \
+    #             "has been **rejected** and can now be submitted by someone else.__\n\n * If you would " \
+    #             f"like to work on this issue you can claim it [here]({absolute_url}).\n * If you've " \
+    #             f"completed this issue and want to claim the bounty you can do so [here]({absolute_url})\n " \
+    #             "* Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * " \
+    #             f"${amount_open_work} more funded OSS Work available on the [Gitcoin Issue Explorer](https://gitcoin.co/explorer)\n"
+    #       context['issue_message'] = interest.issue_message.strip() if interest.issue_message
+    #   """
     elif event_name == 'work_started':
+        
+        msg = {}
         interested = bounty.interested.all().order_by('created')
+        interested_profiles = []
         # interested_plural = "s" if interested.count() != 0 else ""
         from_now = naturaltime(bounty.expires_date)
-        started_work = bounty.interested.filter(pending=False).all()
+        started_work = [interested.profile for interested in bounty.interested.filter(pending=False).select_related('profile').all()]
         # pending_approval = bounty.interested.filter(pending=True).all()
         bounty_owner_clear = f"@{bounty.bounty_owner_github_username}" if bounty.bounty_owner_github_username else ""
-        approval_required = bounty.permission_type == 'approval'
+        pending_interest = [interested.profile for interested in bounty.interested.filter(pending=True).select_related('profile').all()]
+        interest_approve_links = {}
+        interest_reject_links = {}
+        if bounty.permission_type == 'approval':
+            for i, profile in enumerate(pending_interest):
+                   interested_profiles.append(
+                           SimpleNamespace(
+                               profile = pending_interest[i],
+                               approve_link = bounty.approve_worker_url(profile.handle),
+                               reject_link = bounty.reject_worker_url(profile.handle)
+                            )
+                    )
+            context = {
+                'bounty': bounty,
+                'interested': interested_profiles
+            }
+            
+            msg['pending'] = render_to_string('github_comments/express_interest.md', context)
+        if len(started_work):
+            context = {'started_work': started_work}
+            msg['started'] = render_to_string('github_comments/start_work.md', context)
 
-        if started_work.exists():
-            msg = f"{status_header}__Work has been started__.\n\n"
-        else:
-            msg = f"{status_header}__Workers have applied to start work__.\n\n"
-
-        msg += f"\nThese users each claimed they can complete the work by {from_now}. " \
-               "Please review their questions below:\n\n"
-
-        for i, interest in enumerate(interested, start=1):
-
-            profile_link = f"[{interest.profile.handle}]({interest.profile.url})"
-            action = "started work"
-            if interest.pending:
-                action = 'applied to start work'
-                action += f" _(Funders only: [approve worker]({bounty.approve_worker_url(interest.profile.handle)})"
-                action += f" | [reject worker]({bounty.reject_worker_url(interest.profile.handle)}))_"
-            if not interest.pending and approval_required:
-                action = 'been approved to start work'
-
-            show_dibs = interested.count() > 1 and bounty.project_type == 'traditional'
-            dibs = f" ({get_ordinal_repr(i)} dibs)" if show_dibs else ""
-
-            msg += f"\n{i}. {profile_link} has {action}{dibs}. "
-
-            issue_message = interest.issue_message.strip()
-            if issue_message:
-                msg += f"\t\n * Q: " \
-                       f"{issue_message}"
-            msg += "\n\n"
-
+        if (not (len(started_work) and bounty.started_comment == None)) and len(pending_interest) == 0:
+            delete_issue_comment(bounty.started_comment, username, repo)
+            return False
+            #msg = f"{status_header}__Workers have applied to start work__.\n\n"
+    elif event_name == 'stop_work':
+        started_work = [interest.profile for interest in bounty.interested.filter(pending=False).select_related('profile').all()]
+        started_work_handles = [handle for profile in started_work]
+        context = {
+                    'bounty': bounty,
+                    'started_work': started_work,
+                    #stopped_work: [activity.profile for activity in bounty.activities.filter(activity_type='stop_work').all() if activity.profile not in started_work]
+                    'stopped_work': [activity.profile for activity in bounty.activities.filter(activity_type='stop_work').all() if activity.profile.handle not in started_work_handles]
+        }
+        msg = render_to_string('github_comments/stop_work.md', context)
     elif event_name == 'work_submitted':
-        sub_msg = ""
-        if bounty.fulfillments.exists():
-            sub_msg = f"\n\n{bounty_owner if bounty_owner else 'If you are the bounty funder,'} " \
-                       "please take a look at the submitted work:\n"
-            for bf in bounty.fulfillments.all():
-                username = "@"+bf.fulfiller_github_username if bf.fulfiller_github_username else bf.fulfiller_address
-                link_to_work = f"[PR]({bf.fulfiller_github_url})" if bf.fulfiller_github_url else "(Link Not Provided)"
-                sub_msg += f"* {link_to_work} by {username}\n"
+            context = {
+                        'bounty': bounty,
+                        'fulfillments': [fulfillment.profile for fulfillment in bounty.fulfillments.select_related('profile').all()]
+                      }
+            msg = render_to_string('github_comments/submit_work.md', context)
 
-        profiles = ""
-        if profile_pairs:
-            for i, profile in enumerate(profile_pairs, start=1):
-                profiles = profiles + f"\n {i}. [@{profile[0]}]({profile[1]})"
-            profiles += "\n\n"
-
-
-        msg = f"{status_header}__Work for {natural_value} {bounty.token_name} {usdt_value} has been submitted by__:\n" \
-              f"{profiles}{sub_msg}\n<hr>\n\n* Learn more [on the Gitcoin Issue Details page]({absolute_url})\n" \
-              "* Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or the " \
-              f"<a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n${amount_open_work} more funded " \
-              "OSS Work available on the [Gitcoin Issue Explorer](https://gitcoin.co/explorer)\n"
     elif event_name == 'work_done':
+        context = {}
         try:
-            accepted_fulfillment = bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
-            accepted_fulfiller = f' to @{accepted_fulfillment.fulfiller_github_username}'
+            context['accepted_fulfillment'] = bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
+            #accepted_fulfiller = f' to @{accepted_fulfillment.fulfiller_github_username}'
         except BountyFulfillment.DoesNotExist:
-            accepted_fulfiller = ''
+            context['accepted_fulfillment'] = None
 
-        msg = f"{status_header}__The funding of {natural_value} {bounty.token_name} {usdt_value} attached to this " \
-              f"issue has been approved & issued{accepted_fulfiller}.__  \n\n * Learn more at [on the Gitcoin " \
-              f"Issue Details page]({absolute_url})\n * Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>" \
-              f"\n * ${amount_open_work} more funded OSS Work available on the [Gitcoin Issue Explorer](https://gitcoin.co/explorer)\n"
+
+        if bounty.done_comment and bounty.fulfillments.filter(accepted=True).count() == 0:
+            delete_issue_comment(bounty.done_comment, username, repo)
+
+        msg = render_to_string('github_comments/accept_work.md', context)
+        
     return msg
 
 
@@ -552,35 +553,45 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
         repo = uri_array[2]
         issue_num = uri_array[4]
 
-        if event_name == 'work_started':
-            comment_id = bounty.interested_comment
-        elif event_name in ['work_done', 'work_submitted']:
-            comment_id = bounty.submissions_comment
-
-        # Handle creating or updating comments if profiles are provided.
-        if event_name in ['work_started', 'work_submitted'] and profile_pairs:
-            if comment_id is not None:
-                patch_issue_comment(comment_id, username, repo, msg)
+        if event_name in ['new_bounty', 'increased_bounty']:
+            if bounty.opened_comment:
+                patch_issue_comment(bounty.opened_comment, username, repo, msg)
             else:
                 response = post_issue_comment(username, repo, issue_num, msg)
-                if response.get('id'):
-                    if event_name == 'work_started':
-                        bounty.interested_comment = int(response.get('id'))
-                    elif event_name in ['work_done', 'work_submitted']:
-                        bounty.submissions_comment = int(response.get('id'))
-                    bounty.save()
-        # Handle deleting comments if no profiles are provided.
-        elif event_name in ['work_started'] and not profile_pairs:
-            if comment_id:
-                delete_issue_comment(comment_id, username, repo)
-                if event_name == 'work_started':
-                    bounty.interested_comment = None
-                elif event_name == 'work_done':
-                    bounty.submissions_comment = None
-                bounty.save()
+                bounty.opened_comment = int(response.get('id'))
+        elif event_name == 'work_started':
+            if bounty.interested.filter(pending=True).count():
+                if bounty.interested_comment:
+                    patch_issue_comment(bounty.interested_comment, username, repo, msg['pending'])
+                else:
+                    response = post_issue_comment(username, repo, issue_num, msg['pending'])
+                    bounty.interested_comment = int(response.get('id'))
+            if started_work.exists():
+                if bounty.started_comment:
+                    patch_issue_comment(bounty.started_comment, username, repo, msg['started'])
+                else:
+                    response = post_issue_comment(username, repo, issue_num, msg['started'])
+                    bounty.started_comment = int(response.get('id'))
+        elif event_name == 'stop_work':
+            if bounty.stopped_comment:
+                patch_issue_comment(bounty.stopped_comment, username, repo, msg)
+            else:
+                response = post_issue_comment(username, repo, issue_num, msg)
+                bounty.stopped_comment = int(response.get('id'))
+        elif event_name == 'work_submitted':
+            if bounty.submissions_comment:
+                patch_issue_comment(bounty.submissions_comment, username, repo, msg)
+            else:
+                response = post_issue_comment(username, repo, issue_num, msg)
+                bounty.submissions_comment = int(response.get('id'))
+        elif event_name == 'work_done':
+            if bounty.done_comment:
+                patch_issue_comment(bounty.done_comment, username, repo, msg)
+            else:
+                response = post_issue_comment(username, repo, issue_num, msg)
+                bounty.done_comment = int(response.get('id'))
+        bounty.save()
         # If this isn't work_started/done, simply post the issue comment.
-        else:
-            post_issue_comment(username, repo, issue_num, msg)
     except IndexError:
         return False
     except Exception as e:
