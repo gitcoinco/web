@@ -17,7 +17,7 @@
 {% load i18n staticfiles %}
 <div class="kd-card">
   <a href="/kudos/{{ listing.id }}" class="">
-    <img src="{% static listing.image %}" alt="{{ listing.name }}" class="img-thumbnail" width="250">
+    <img src="{% static listing.image %}" alt="{{ listing.name }}" class="img-thumbnail kd-shadow border-transparent" width="250">
   </a>
   <span class="kd-price">Ξ 0.0019</span>
   <div class="kd-name">{{ listing.name }}</div>
