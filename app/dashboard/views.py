@@ -334,6 +334,7 @@ def remove_interest(request, bounty_id):
         maybe_market_to_user_slack(bounty, 'stop_work')
         maybe_market_to_user_discord(bounty, 'stop_work')
         maybe_market_to_twitter(bounty, 'stop_work')
+        maybe_market_to_github(bounty, 'stop_work')
     except Interest.DoesNotExist:
         return JsonResponse({
             'errors': [_('You haven\'t expressed interest on this bounty.')],
