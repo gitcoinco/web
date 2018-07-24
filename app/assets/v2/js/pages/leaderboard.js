@@ -15,7 +15,6 @@ $(document).ready(function() {
   var keyword_search = document.location.href.split('=');
 
   if (keyword_search.length > 1) {
-    console.log(keyword_search[1]);
     $('.filter-tags').append('<a class="filter-tag tech_stack"><span>' + keyword_search[1] + '</span>' +
       '<i class="fas fa-times" onclick="removeFilter()"></i></a>');
   }
