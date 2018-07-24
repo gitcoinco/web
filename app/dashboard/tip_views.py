@@ -23,6 +23,7 @@ import logging
 
 from django.contrib import messages
 from django.http import JsonResponse
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -210,8 +211,15 @@ def receive_tip_v3(request, key, txid, network):
     if tip.receive_txid:
         messages.info(request, 'This tip has been received')
 
-    not_mined_yet = get_web3(tip.network).eth.getBalance(Web3.toChecksumAddress(tip.metadata['address'])) == 0
+    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile'):
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
 
+    is_authed = request.user.username == tip.username
+    if not is_authed:
+        messages.error(request, f'This tip is for {tip.username} but you are logged in as {request.user.username}.  Please logout and log back in as {tip.username}.')
+
+    not_mined_yet = get_web3(tip.network).eth.getBalance(Web3.toChecksumAddress(tip.metadata['address'])) == 0
     if not_mined_yet:
         messages.info(request, f'This tx {tip.txid}, is still mining.  Please wait a moment before submitting the receive form.')
 
@@ -244,7 +252,8 @@ def receive_tip_v3(request, key, txid, network):
         'gas_price': round(recommend_min_gas_price_to_confirm_in_time(120), 1),
         'tip': tip,
         'key': key,
-        'disable_inputs': tip.receive_txid or not_mined_yet,
+        'is_authed': is_authed,
+        'disable_inputs': tip.receive_txid or not_mined_yet or not is_authed,
     }
 
     return TemplateResponse(request, 'onepager/receive.html', params)
