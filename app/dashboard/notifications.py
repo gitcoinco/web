@@ -418,15 +418,15 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
     bounty_owner = f"@{bounty.bounty_owner_github_username}" if bounty.bounty_owner_github_username else ""
     status_header = get_status_header(bounty)
 
-    crowdfund_msg = fs"* Want to chip in? Add your own contribution [here]({absolute_url})."
+    crowdfund_msg = f"* Want to chip in? Add your own contribution [here]({absolute_url})."
     openwork_msg = f"* ${amount_open_work} more funded OSS Work available on the " \
-              f"[Gitcoin Issue Explorer](https://gitcoin.co/explorer)"
+                   f"[Gitcoin Issue Explorer](https://gitcoin.co/explorer)"
     help_msg = "* Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or the " \
-              f"<a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
+        f"<a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
     claim_msg = f"* If you want to claim the bounty you can do so " \
-              f"[here]({absolute_url})"
+                f"[here]({absolute_url})"
     learn_more_msg = f"* Learn more [on the Gitcoin Issue Details page]({absolute_url})"
-    crowdfund_amount = "(plus a crowdfund of {bounty.additional_funding_summary_sentence})" if bounty.additional_funding_summary_sentence else ""
+    crowdfund_amount = f"(plus a crowdfund of {bounty.additional_funding_summary_sentence})" if bounty.additional_funding_summary_sentence else ""
     crowdfund_thx = ", ".join(f"@{tip.from_username}" for tip in bounty.tips.filter(is_for_bounty_fulfiller=True) if tip.from_username)
     if crowdfund_thx:
         crowdfund_thx = f"Thanks to {crowdfund_thx} for their crowdfunded contributions to this bounty.\n\n"
@@ -637,16 +637,16 @@ def maybe_market_tip_to_github(tip):
         pass  # no USD conv rate
     if tip.username:
         msg = f"⚡️ A tip worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has been " \
-              f"granted to {username} for this issue{_from}. ⚡️ {_comments}\n\nNice work {username}! " 
-        redeem_instructions = "To redeem your tip, login to Gitcoin at https://gitcoin.co/explorer and select 'Claim Tip' " \
-              "from dropdown menu in the top right, or check your email for a link to the tip redemption " \
-              f"page. "
+              f"granted to {username} for this issue{_from}. ⚡️ {_comments}\n\nNice work {username}! "
+        redeem_instructions = "To redeem your tip, login to Gitcoin at https://gitcoin.co/explorer and select " \
+                              "'Claim Tip' from dropdown menu in the top right, or check your email for a " \
+                              "link to the tip redemption page. "
         if tip.receive_txid:
             redeem_instructions = "Your tip has automatically been deposited in the ETH address we have on file."
         addon_msg = "\n\n * ${amount_usdt_open_work()} in Funded OSS Work Available at: " \
-              "https://gitcoin.co/explorer\n * Incentivize contributions to your repo: " \
-              "<a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>" \
-              "Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
+                    "https://gitcoin.co/explorer\n * Incentivize contributions to your repo: " \
+                    "<a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>" \
+                    "Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
         msg += redeem_instructions + addon_msg
     else:
         msg = f"💰 A crowdfund contribution worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has" \
