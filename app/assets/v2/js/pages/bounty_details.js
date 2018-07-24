@@ -118,6 +118,16 @@ var callbacks = {
 
     if (ui_status == 'open') {
       ui_status = '<span>' + gettext('OPEN ISSUE') + '</span>';
+
+      let soft = result['can_submit_after_expiration_date'];
+
+      if (soft && is_bounty_expired(result)) {
+        ui_status += '<p class="text-highlight-light-blue" style="text-transform: none;">' +
+          gettext('This issue is past its expiration date, but it is still active.') +
+          '<br>' +
+          gettext('Check with the submitter to see if they still want to see it fulfilled.') +
+          '</p>';
+      }
     }
     if (ui_status == 'started') {
       ui_status = '<span>' + gettext('work started') + '</span>';
@@ -242,11 +252,9 @@ var callbacks = {
     if (expires_date < new Date()) {
       label = 'expired';
       if (result['is_open']) {
-        var soft = result['can_submit_after_expiration_date'] ? 'Soft ' : '';
-
-        $('.timeleft').text(soft + 'Expired');
+        $('.timeleft').text('Expired');
         $('.progress-bar').addClass('expired');
-        response = '<span title="This issue is past its expiration date, but it is still active.  Check with the submitter to see if they still want to see it fulfilled.">' + response.join(' ') + '</span>';
+        response = response.join(' ');
       } else {
         $('#timer').hide();
       }
@@ -1019,6 +1027,13 @@ const render_activity = function(result, all_results) {
     });
   });
 
+};
+
+const is_bounty_expired = function(bounty) {
+  let expires_date = new Date(bounty['expires_date']);
+  let now = new Date(bounty['now']);
+
+  return now.getTime() >= expires_date.getTime();
 };
 
 var main = function() {
