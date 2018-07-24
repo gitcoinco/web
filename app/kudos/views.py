@@ -45,6 +45,7 @@ def about(request):
 
 
 def marketplace(request):
+    """Render the marketplace kudos response."""
     q = request.GET.get('q')
     logging.info(q)
 
@@ -54,10 +55,19 @@ def marketplace(request):
     logging.info(results)
 
     if results:
-        context = {"listings": results}
+        listings = {"listings": results}
     else:
-        context = {"listings": MarketPlaceListing.objects.all()}
+        listings = {"listings": MarketPlaceListing.objects.all()}
 
+    context = {
+        'is_outside': True,
+        'active': 'marketplace',
+        'title': 'Marketplace',
+        'card_title': _('Gitcoin is a mission-driven organization.'),
+        'card_desc': _('Our mission is to grow open source.'),
+        'avatar_url': static('v2/images/grow_open_source.png'),
+        'listing': listings,
+    }
     return TemplateResponse(request, 'kudos_marketplace.html', context)
 
 
@@ -73,14 +83,22 @@ def search(request):
 
 
 def details(request):
-    context = dict()
+    """Render the detail kudos response."""
     kudos_id = request.path.split('/')[-1]
     logging.info(f'kudos id: {kudos_id}')
 
     if not re.match(r'\d+', kudos_id):
         raise ValueError(f'Invalid Kudos ID found.  ID is not a number:  {kudos_id}')
 
-    context = {"kudos": MarketPlaceListing.objects.get(pk=kudos_id)}
+    context = {
+        'is_outside': True,
+        'active': 'details',
+        'title': 'Details',
+        'card_title': _('Gitcoin is a mission-driven organization.'),
+        'card_desc': _('Our mission is to grow open source.'),
+        'avatar_url': static('v2/images/grow_open_source.png'),
+        'kudos': MarketPlaceListing.objects.get(pk=kudos_id),
+    }
 
     return TemplateResponse(request, 'kudos_details.html', context)
 
