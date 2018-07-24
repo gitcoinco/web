@@ -1,0 +1,18 @@
+{
+  "symbol": "SUPT",
+  "address": "0x5403d3AC289322C482cD558014ea3888EF1B1d44",
+  "overview":{
+        "en": "SUPTChain is based on Cloud Operation System public blockchain technology and developed three side chains which focus on smart driving, intelligent transportation, and insurance technology. The purpose of SUPTChain is to build a complete trip ecosystem which is based on trustworthy cloud-computing COS public chain, AI intelligent driving, and IoT-based (Internet of Things-based) three vertical applications. COS public chain is on account of MTP technology and Itsuku PoW (Proof of Work) which is constructed by Merkle Tree. Our blockchain combines PDP technology and form up a trustworthy cloud-computing system.",
+        "zh": "超级出行链（SUPTChain）是在COS（Cloud Operation System ）底层公链技术基础上开发智能驾驶、智慧交通及保险科技三个侧链，打造一个基于可信云计算的COS公链+基于AI智能驾驶和RFID物联网技术的三个垂直应用的完整出行生态，首创的可信云计算的COS公链技术是基于MTP技术和Merkle树构建Itsuku PoW工作量证明技术，而后基于Itsuku PoW构建区块链，并在区块链融合PDP技术，通过PDP技术形成可信云计算。"
+  },
+  "email": "1123460896@qq.com",
+  "website": "http://sutchain.pro",
+  "whitepaper": "http://sutchain.pro/templates/super/images/baipishu.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-15",
+  "initial_price":{
+  },
+  "links": {
+    "medium": "https://www.7234.cn/hangye/65855?from=groupmessage"
+  }
+}
