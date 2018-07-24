@@ -413,6 +413,15 @@ WEB3_HTTP_PROVIDER = env('WEB3_HTTP_PROVIDER', default='https://rinkeby.infura.i
 COLO_ACCOUNT_ADDRESS = env('COLO_ACCOUNT_ADDRESS', default='')  # TODO
 COLO_ACCOUNT_PRIVATE_KEY = env('COLO_ACCOUNT_PRIVATE_KEY', default='')  # TODO
 
+IPFS_HOST = env('IPFS_HOST', default='ipfs')
+IPFS_SWARM_PORT = env.int('IPFS_SWARM_PORT', default=4001)
+IPFS_UTP_PORT = env.int('IPFS_UTP_PORT', default=4002)
+IPFS_API_PORT = env.int('IPFS_API_PORT', default=5001)
+IPFS_GATEWAY_PORT = env.int('IPFS_GATEWAY_PORT', default=8080)
+IPFS_SWARM_WS_PORT = env.int('IPFS_SWARM_WS_PORT', default=8081)
+IPFS_API_ROOT = env('IPFS_API_ROOT', default='/api/v0')
+IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='http')
+
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
 if ENABLE_SILK:
