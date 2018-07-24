@@ -159,13 +159,13 @@ def get_ipfs(host=None, port=settings.IPFS_API_PORT):
 
 def ipfs_cat(key):
     try:
-        # Attempt connecting to IPFS via hosted node
-        response = ipfs_cat_ipfsapi(key)
+        # Attempt connecting to IPFS via Infura
+        response = ipfs_cat_requests(key)
         if response:
             return response
 
-        # Attempt connecting to IPFS via Infura
-        response = ipfs_cat_requests(key)
+        # Attempt connecting to IPFS via hosted node
+        response = ipfs_cat_ipfsapi(key)
         if response:
             return response
 
