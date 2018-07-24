@@ -1,0 +1,21 @@
+{
+  "symbol": "ONOT",
+  "address": "0xB31C219959E06f9aFBeB36b388a4BaD13E802725",
+  "overview":{
+        "en": "ONOT is a kind of cryptocurrency which can freely circulate inside the ONO Value Network; It is the value certification of 'Attention Value' inside ONO SNS; ONOT holder can also obtain a large amount of dividends from the DApps within the ONO Value Network.",
+        "zh": "ONOT是ONO价值网络内自由流通的代币；是ONO SNS内兑现注意力价值的价值凭证；持有ONOT还可以获得ONO价值网络内DApps的大额分红。"
+  },
+  "email": "market@ono.chat",
+  "website": "https://www.ono.chat",
+  "state": "NORMAL",
+  "published_on": "2018-07-19",
+  "initial_price":{
+        "ETH":"0.000001666666667 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/onosocial",
+    "telegram": "https://t.me/ONOUS",
+    "facebook": "https://www.facebook.com/onosocial",
+    "reddit": "https://www.reddit.com/r/onosocial"
+  }
+}
