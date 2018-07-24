@@ -533,6 +533,8 @@ input[type='checkbox']:checked + label::before,
 input[type='radio']:checked + label::before {
   color: #ff7496;
   content: '\f00c';
+  font-family: "Font Awesome 5 free";
+  font-weight: 900;
 }
 
 input[type='checkbox']:focus + label::before,
