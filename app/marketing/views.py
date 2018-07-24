@@ -628,17 +628,17 @@ def leaderboard(request, key=''):
     if keyword_search:
         profiles = Profile.objects.all().filter(suppress_leaderboard=False).values_list('handle')
         profiles_filter = list(filter(lambda profile: keyword_search in profile_keywords_helper(profile), profiles))
-        leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard=key, github_username__in=profiles_filter)
+        ranks = LeaderboardRank.objects.filter(active=True, leaderboard=key, github_username__in=profiles_filter)
     else:
-        leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard=key)
+        ranks = LeaderboardRank.objects.filter(active=True, leaderboard=key)
 
-    amount = leadeboardranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
-    items = leadeboardranks.order_by('-amount')
+    amount = ranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
+    items = ranks.order_by('-amount')
     top_earners = ''
 
     if amount:
         amount_max = amount[0][0]
-        top_earners = leadeboardranks.order_by('-amount')[0:3].values_list('github_username', flat=True)
+        top_earners = ranks.order_by('-amount')[0:3].values_list('github_username', flat=True)
         top_earners = ['@' + username for username in top_earners]
         top_earners = f'The top earners of this period are {", ".join(top_earners)}'
     else:
