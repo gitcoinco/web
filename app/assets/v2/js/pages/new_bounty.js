@@ -112,7 +112,7 @@ $(document).ready(function() {
   // revision action buttons
   $('#subtractAction').on('click', function() {
     var revision = parseInt($('input[name=revisions]').val());
-  
+
     revision = revision - 1;
     if (revision > 0) {
       $('input[name=revisions]').val(revision);
@@ -121,7 +121,7 @@ $(document).ready(function() {
 
   $('#addAction').on('click', function() {
     var revision = parseInt($('input[name=revisions]').val());
-  
+
     revision = revision + 1;
     $('input[name=revisions]').val(revision);
   });
@@ -317,7 +317,8 @@ $(document).ready(function() {
       // IpfsApi is defined in the ipfs-api.js.
       // Is it better to use this JS file than the node package?  github.com/ipfs/
 
-      ipfs = get_ipfs();
+      ipfs.ipfsApi = IpfsApi(ipfsConfig);
+      ipfs.setProvider(ipfsConfig);
 
       // setup inter page state
       localStorage[issueURL] = JSON.stringify({

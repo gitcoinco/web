@@ -96,8 +96,8 @@ class BountyAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
     search_fields = ['raw_data', 'title', 'bounty_owner_github_username', 'token_name']
-    list_display = ['pk', 'img', 'idx_status', 'network_link', 'standard_bounties_id_link', 'what']
-    readonly_fields = ['what', 'img', 'fulfillments_link', 'standard_bounties_id_link', 'network_link']
+    list_display = ['pk', 'img', 'idx_status', 'network_link', 'standard_bounties_id_link', 'bounty_link', 'what']
+    readonly_fields = ['what', 'img', 'fulfillments_link', 'standard_bounties_id_link', 'bounty_link', 'network_link']
 
     def img(self, instance):
         if not instance.avatar_url:
@@ -116,6 +116,11 @@ class BountyAdmin(admin.ModelAdmin):
     def standard_bounties_id_link(self, instance):
         copy = f'{instance.standard_bounties_id}'
         url = f'/_administrationdashboard/bounty/?standard_bounties_id={instance.standard_bounties_id}'
+        return mark_safe(f"<a href={url}>{copy}</a>")
+
+    def bounty_link(self, instance):
+        copy = 'link'
+        url = instance.url
         return mark_safe(f"<a href={url}>{copy}</a>")
 
     def network_link(self, instance):

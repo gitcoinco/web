@@ -449,11 +449,8 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
               f"\n{crowdfund_msg}\n{help_msg}\n{openwork_msg}"
     elif event_name == 'work_started':
         interested = bounty.interested.all().order_by('created')
-        # interested_plural = "s" if interested.count() != 0 else ""
         from_now = naturaltime(bounty.expires_date)
         started_work = bounty.interested.filter(pending=False).all()
-        # pending_approval = bounty.interested.filter(pending=True).all()
-        bounty_owner_clear = f"@{bounty.bounty_owner_github_username}" if bounty.bounty_owner_github_username else ""
         approval_required = bounty.permission_type == 'approval'
 
         if started_work.exists():
@@ -482,9 +479,8 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
 
             issue_message = interest.issue_message.strip()
             if issue_message:
-                msg += f"\t\n * Q: " \
-                       f"{issue_message}"
-            msg += "\n\n"
+                msg += f"\t\n * Q: {issue_message}"
+            msg += f"\n\nLearn more [on the Gitcoin Issue Details page]({absolute_url}).\n\n"
 
     elif event_name == 'work_submitted':
         sub_msg = ""

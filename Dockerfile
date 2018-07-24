@@ -1,4 +1,4 @@
-FROM python:3.7-rc-slim-stretch
+FROM python:3.7-slim-stretch
 ENV PYTHONUNBUFFERED 1
 RUN mkdir /code && \
     apt-get update && \

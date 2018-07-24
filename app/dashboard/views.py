@@ -529,7 +529,7 @@ def contribute(request):
         ref_object=bounty,
         user=request.user if request.user.is_authenticated else None,
         confirm_time_minutes_target=confirm_time_minutes_target,
-        active='payout_bounty',
+        active='contribute_bounty',
         title=_('Contribute'),
     )
     return TemplateResponse(request, 'contribute_bounty.html', params)
@@ -557,12 +557,36 @@ def social_contribution(request):
         ref_object=bounty,
         user=request.user if request.user.is_authenticated else None,
         confirm_time_minutes_target=confirm_time_minutes_target,
-        active='payout_bounty',
+        active='social_contribute',
         title=_('Social Contribute'),
     )
     params['promo_text'] = promo_text
     return TemplateResponse(request, 'social_contribution.html', params)
 
+
+def payout_bounty(request):
+    """Payout the bounty.
+
+    Args:
+        pk (int): The primary key of the bounty to be accepted.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The accept bounty view.
+
+    """
+    bounty = handle_bounty_views(request)
+
+    params = get_context(
+        ref_object=bounty,
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='payout_bounty',
+        title=_('Payout'),
+    )
+    return TemplateResponse(request, 'payout_bounty.html', params)
 
 
 def bulk_payout_bounty(request):
@@ -587,7 +611,7 @@ def bulk_payout_bounty(request):
         active='payout_bounty',
         title=_('Multi-Party Payout'),
     )
-    return TemplateResponse(request, 'payout_bounty.html', params)
+    return TemplateResponse(request, 'bulk_payout_bounty.html', params)
 
 
 @require_GET
@@ -993,11 +1017,11 @@ def profile(request, handle):
                 },
             },
         }
-        return TemplateResponse(request, 'profile_details.html', params)
+        return TemplateResponse(request, 'profiles/profile.html', params)
 
     params = profile.to_dict()
 
-    return TemplateResponse(request, 'profile_details.html', params)
+    return TemplateResponse(request, 'profiles/profile.html', params)
 
 
 @csrf_exempt

@@ -52,6 +52,12 @@ def insert_settings(request):
         'email_key': email_key,
         'profile_id': profile.id if profile else '',
         'hotjar': settings.HOTJAR_CONFIG,
+        'ipfs_config': {
+            'host': settings.IPFS_HOST,
+            'port': settings.IPFS_API_PORT,
+            'protocol': settings.IPFS_API_SCHEME,
+            'root': settings.IPFS_API_ROOT,
+        }
     }
     context['json_context'] = json.dumps(context)
 

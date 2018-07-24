@@ -1,0 +1,972 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-07-20 19:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: assets/onepager/js/quarantine/receive_legacy.js:100
+#, fuzzy
+#| msgid "Not a valid forwarding address"
+msgid "Not a valid forwarding address."
+msgstr "Non è un indirizzo di inoltro valido."
+
+#: assets/onepager/js/quarantine/receive_legacy.js:105
+#: assets/onepager/js/quarantine/receive_legacy.js:109
+msgid "Invalid Link.  Please check your link and try again"
+msgstr "Collegamento invalido. Controlla il tuo link e riprova"
+
+#: assets/onepager/js/quarantine/receive_legacy.js:118
+msgid "got an error :("
+msgstr "ottenuto un errore :("
+
+#: assets/onepager/js/quarantine/receive_legacy.js:153
+msgid "You must wait until the senders transaction confirms."
+msgstr ""
+"È necessario attendere fino alla conferma della transazione dei mittenti."
+
+#: assets/onepager/js/quarantine/web3alert.js:29
+#: assets/onepager/js/web3alert.js:29
+msgid ""
+"You must install <a href=https://metamask.io/>Metamask</a> to use this tool."
+msgstr ""
+"Devi installare <a href=https://metamask.io/> Metamask </a> per utilizzare "
+"questo strumento."
+
+#: assets/onepager/js/quarantine/web3alert.js:33
+#: assets/onepager/js/web3alert.js:33
+#, fuzzy
+#| msgid "Unlock Metamask"
+msgid "Please unlock Metamask."
+msgstr "Si prega di sbloccare Metamask."
+
+#: assets/onepager/js/receive.js:5
+msgid "You are not on the right web3 network.  Please switch to "
+msgstr "Non sei sulla giusta rete web3. Si prega di passare a"
+
+#: assets/onepager/js/send.js:88
+msgid ""
+"You must have a web3 enabled browser to do this.  Please download Metamask."
+msgstr ""
+"È necessario disporre di un browser abilitato a Web3 per eseguire questa "
+"operazione. Si prega di scaricare Metamask."
+
+#: assets/onepager/js/send.js:115
+msgid ""
+"To Email is optional, but if you enter an email, you must enter a valid "
+"email!"
+msgstr ""
+"L'email è facoltativa, ma se inserisci un'email, devi inserire un'e-mail "
+"valida!"
+
+#: assets/onepager/js/send.js:119
+msgid ""
+"From Email is optional, but if you enter an email, you must enter a valid "
+"email!"
+msgstr ""
+"Dall'email è opzionale, ma se inserisci un'e-mail, devi inserire un'e-mail "
+"valida!"
+
+#: assets/onepager/js/send.js:123
+msgid "You must enter an number for the amount!"
+msgstr "Devi inserire un numero per l'importo!"
+
+#: assets/onepager/js/send.js:127
+msgid "You must enter a username."
+msgstr "Devi inserire un nome utente."
+
+#: assets/onepager/js/send.js:131
+#, fuzzy
+#| msgid "You must agree to the precedence clause."
+msgid "You must accept the terms."
+msgstr "Devi accettare i termini."
+
+#: assets/onepager/js/send.js:166
+#, fuzzy
+#| msgid "There was an error"
+msgid "There was an error."
+msgstr "C'era un errore."
+
+#: assets/onepager/js/send.js:196
+msgid ""
+"You will now be asked to confirm two transactions.  The first is gas money, "
+"so your receipient doesnt have to pay it.  The second is the actual token "
+"transfer."
+msgstr ""
+"Ti verrà chiesto di confermare due transazioni. Il primo è il denaro del "
+"gas, quindi il destinatario non deve pagarlo. Il secondo è il vero "
+"trasferimento di token."
+
+#: assets/v2/js/amounts.js:11
+msgid "Approx: "
+msgstr "circa:"
+
+#: assets/v2/js/amounts.js:13 assets/v2/js/amounts.js:103
+#: assets/v2/js/amounts.js:152
+msgid "Approx: Unknown amount"
+msgstr "Approssimativo: importo sconosciuto"
+
+#: assets/v2/js/amounts.js:62 assets/v2/js/amounts.js:116
+msgid "Incorrect amount"
+msgstr "Quantità errata"
+
+#: assets/v2/js/avatar_builder.js:291
+msgid "Your Avatar Has Been Saved To your Gitcoin Profile!"
+msgstr "Il tuo avatar è stato salvato nel tuo profilo Gitcoin!"
+
+#: assets/v2/js/avatar_builder.js:296
+msgid "Error occurred while saving. Please try again."
+msgstr "Si è verificato un errore durante il salvataggio. Per favore riprova."
+
+#: assets/v2/js/base.js:191
+msgid "We Care About Your Privacy"
+msgstr "Ci importa della tua privacy"
+
+#: assets/v2/js/base.js:194
+msgid ""
+"As a Web 3.0 company, we think carefully about user data and privacy and how"
+" the internet is evolving. We hope Web 3.0 will bring more control of data "
+"to users. With this ethos in mind, we are always careful about how we use "
+"your information."
+msgstr ""
+"Come società Web 3.0, pensiamo attentamente ai dati degli utenti e alla "
+"privacy e al modo in cui Internet si sta evolvendo. Speriamo che il Web 3.0 "
+"porterà un maggiore controllo dei dati agli utenti. Con questo ethos in "
+"mente, siamo sempre attenti a come usiamo le tue informazioni."
+
+#: assets/v2/js/base.js:198
+msgid ""
+"We recently reviewed our Privacy Policy to comply with requirements of "
+"General Data Protection Regulation (GDPR), improving our Terms of Use, "
+"Privacy Policy and Cookie Policy. These changes will go into effect on May "
+"25, 2018, and your continued use of the Gitcoin after May 25, 2018 will be "
+"subject to our updated Terms of Use and Privacy Policy."
+msgstr ""
+"Di recente abbiamo esaminato la nostra Informativa sulla privacy per "
+"conformarci ai requisiti del Regolamento generale sulla protezione dei dati "
+"(GDPR), migliorando le nostre Condizioni d'uso, l'Informativa sulla privacy "
+"e la Politica sui cookie. Queste modifiche entreranno in vigore il 25 maggio"
+" 2018 e il tuo uso continuato di Gitcoin dopo il 25 maggio 2018 sarà "
+"soggetto alle nostre Condizioni d'uso e all'informativa sulla privacy "
+"aggiornate."
+
+#: assets/v2/js/base.js:206
+msgid "Read Our Updated Terms"
+msgstr "Leggi i nostri Termini aggiornati"
+
+#: assets/v2/js/pages/bounty_details.js:95
+msgid "Issue"
+msgstr "Problema"
+
+#: assets/v2/js/pages/bounty_details.js:96
+msgid "Issue Funding Info"
+msgstr "Issue Funding Info"
+
+#: assets/v2/js/pages/bounty_details.js:97
+msgid "Funder"
+msgstr "Funder"
+
+#: assets/v2/js/pages/bounty_details.js:98
+msgid "Submitter"
+msgstr "Inviato"
+
+#: assets/v2/js/pages/bounty_details.js:99
+msgid "Meta"
+msgstr "Meta"
+
+#: assets/v2/js/pages/bounty_details.js:120
+msgid "OPEN ISSUE"
+msgstr "QUESTIONE APERTA"
+
+#: assets/v2/js/pages/bounty_details.js:123
+msgid "work started"
+msgstr "il lavoro è iniziato"
+
+#: assets/v2/js/pages/bounty_details.js:126
+msgid "work submitted"
+msgstr "lavoro presentato"
+
+#: assets/v2/js/pages/bounty_details.js:129
+msgid "done"
+msgstr "fatto"
+
+#: assets/v2/js/pages/bounty_details.js:132
+msgid "cancelled"
+msgstr "annullato"
+
+#: assets/v2/js/pages/bounty_details.js:437
+#, fuzzy
+#| msgid "Are you sure you want to remove your interest?"
+msgid "Are you sure you want to stop work?"
+msgstr "Sei sicuro di voler smettere di lavorare?"
+
+#: assets/v2/js/pages/bounty_details.js:439
+#: assets/v2/js/pages/bounty_details.js:650
+msgid "Start Work"
+msgstr "Inizia il lavoro"
+
+#: assets/v2/js/pages/bounty_details.js:499
+msgid "Please provide an action plan for this ticket."
+msgstr "Si prega di fornire un piano d&#39;azione per questo biglietto."
+
+#: assets/v2/js/pages/bounty_details.js:504
+msgid "You must agree to the precedence clause."
+msgstr "Devi accettare la clausola di precedenza."
+
+#: assets/v2/js/pages/bounty_details.js:508
+msgid "You must agree to keep the funder updated on your progress."
+msgstr ""
+"Devi accettare di mantenere il finanziatore aggiornato sui tuoi progressi."
+
+#: assets/v2/js/pages/bounty_details.js:513
+#: assets/v2/js/pages/bounty_details.js:650
+msgid "Stop Work"
+msgstr "Smettere di lavorare"
+
+#: assets/v2/js/pages/bounty_details.js:537
+msgid "Funded Issue Details: "
+msgstr "Dettagli emissione finanziata:"
+
+#: assets/v2/js/pages/bounty_details.js:635
+msgid "Submit Work"
+msgstr "Invia lavoro"
+
+#: assets/v2/js/pages/bounty_details.js:637
+msgid "Submit work for the funder to review"
+msgstr "Invia lavoro per la revisione da parte del finanziatore"
+
+#: assets/v2/js/pages/bounty_details.js:652
+msgid "Notify the funder that you will not be working on this project"
+msgstr "Informare il finanziatore che non lavorerai su questo progetto"
+
+#: assets/v2/js/pages/bounty_details.js:652
+msgid "Notify the funder that you would like to take on this project"
+msgstr "Comunica al finanziatore che vorresti intraprendere questo progetto"
+
+#: assets/v2/js/pages/bounty_details.js:665
+msgid "Cancel Bounty"
+msgstr "Annulla taglia"
+
+#: assets/v2/js/pages/bounty_details.js:667
+msgid "Cancel bounty and reclaim funds for this issue"
+msgstr "Annulla la taglia e richiedi i fondi per questo problema"
+
+#: assets/v2/js/pages/bounty_details.js:679
+msgid "View Attached Job Description"
+msgstr "Visualizza descrizione lavoro allegata"
+
+#: assets/v2/js/pages/bounty_details.js:681
+msgid ""
+"This bounty hunter is hiring for a full time, part time, or contract role "
+"and has attached that to this bounty."
+msgstr ""
+"Questo cacciatore di taglie sta assumendo un ruolo a tempo pieno, a tempo "
+"parziale o a contratto e lo ha allegato a questa taglia."
+
+#: assets/v2/js/pages/bounty_details.js:694
+#, fuzzy
+#| msgid "Cancel Bounty"
+msgid "Payout Bounty"
+msgstr "Bonus di pagamento"
+
+#: assets/v2/js/pages/bounty_details.js:695
+#, fuzzy
+#| msgid "This will payout the bounty to the submitter."
+msgid "Payout the bounty to one or more submitters."
+msgstr "Paga la taglia a uno o più mittenti."
+
+#: assets/v2/js/pages/bounty_details.js:707
+msgid "Add Contribution"
+msgstr "Aggiungi contributo"
+
+#: assets/v2/js/pages/bounty_details.js:709
+msgid "Increase the funding for this issue"
+msgstr "Aumentare i finanziamenti per questo problema"
+
+#: assets/v2/js/pages/bounty_details.js:725
+msgid "View On Github"
+msgstr "Visualizza su Github"
+
+#: assets/v2/js/pages/bounty_details.js:727
+msgid "View issue details and comments on Github"
+msgstr "Visualizza i dettagli del problema e i commenti su Github"
+
+#: assets/v2/js/pages/bounty_details.js:742
+msgid "Suspend Auto Approval"
+msgstr "Sospendi Autoapprovazione"
+
+#: assets/v2/js/pages/bounty_details.js:744
+msgid ""
+"Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty"
+msgstr ""
+"Sospensione * Approvazione automatica * dei cacciatori di taglie che hanno "
+"fatto domanda per questo Bounty"
+
+#: assets/v2/js/pages/bounty_details.js:759
+#, fuzzy
+#| msgid "Cancel Bounty"
+msgid "Hide Bounty"
+msgstr "Nascondi taglia"
+
+#: assets/v2/js/pages/bounty_details.js:761
+msgid "Hides Bounty from Active Bounties"
+msgstr "Nasconde Bounty da Taglie attive"
+
+#: assets/v2/js/pages/bounty_details.js:776
+msgid "Toggle Remarket Ready"
+msgstr "Attiva / disattiva il remarketing"
+
+#: assets/v2/js/pages/bounty_details.js:778
+msgid ""
+"Sets Remarket Ready if not already remarket ready.  Unsets it if already "
+"remarket ready."
+msgstr ""
+"Imposta il mercato pronto se non è già pronto per il remarketing. Lo "
+"disattiva se già pronto per il remarketing."
+
+#: assets/v2/js/pages/bounty_details.js:792
+#, fuzzy
+#| msgid "Funder"
+msgid "Contact Funder"
+msgstr "Contatta Funder"
+
+#: assets/v2/js/pages/bounty_details.js:794
+msgid "Contact Funder via Email"
+msgstr "Contatta il finanziatore tramite e-mail"
+
+#: assets/v2/js/pages/bounty_details.js:808
+msgid "Snooze Gitcoinbot"
+msgstr "Snooze Gitcoinbot"
+
+#: assets/v2/js/pages/bounty_details.js:810
+msgid "Snooze Gitcoinbot reminders"
+msgstr "Posticipa i promemoria di Gitcoinbot"
+
+#: assets/v2/js/pages/bounty_details.js:824
+msgid "Override Status"
+msgstr "Sovrascrivi stato"
+
+#: assets/v2/js/pages/bounty_details.js:826
+msgid "Override Status with a status of your choosing"
+msgstr "Sostituisci lo stato con uno stato a tua scelta"
+
+#: assets/v2/js/pages/bounty_details.js:892
+#: assets/v2/js/pages/dashboard.js:510 assets/v2/js/shared.js:296
+msgid "got an error. please try again, or contact support@gitcoin.co"
+msgstr "ho un errore per favore riprova o contatta support@gitcoin.co"
+
+#: assets/v2/js/pages/bounty_details.js:902
+#, fuzzy
+#| msgid "Cancel Bounty"
+msgid "New Bounty"
+msgstr "Nuova taglia"
+
+#: assets/v2/js/pages/bounty_details.js:903
+msgid "Work Started"
+msgstr "Inizio del lavoro"
+
+#: assets/v2/js/pages/bounty_details.js:904
+#, fuzzy
+#| msgid "Work Started"
+msgid "Work Stopped"
+msgstr "Lavoro fermato"
+
+#: assets/v2/js/pages/bounty_details.js:905
+msgid "Work Submitted"
+msgstr "Lavoro inviato"
+
+#: assets/v2/js/pages/bounty_details.js:906
+#, fuzzy
+#| msgid "Done"
+msgid "Work Done"
+msgstr "Lavoro fatto"
+
+#: assets/v2/js/pages/bounty_details.js:907
+#, fuzzy
+#| msgid "Work Accepted"
+msgid "Worker Approved"
+msgstr "Operaio approvato"
+
+#: assets/v2/js/pages/bounty_details.js:908
+#, fuzzy
+#| msgid "Work Accepted"
+msgid "Worker Rejected"
+msgstr "Lavoratore respinto"
+
+#: assets/v2/js/pages/bounty_details.js:909
+#, fuzzy
+#| msgid "Work Accepted"
+msgid "Worker Applied"
+msgstr "Lavoratore applicato"
+
+#: assets/v2/js/pages/bounty_details.js:910
+#, fuzzy
+#| msgid "Issue Funding Info"
+msgid "Increased Funding"
+msgstr "Aumento dei finanziamenti"
+
+#: assets/v2/js/pages/bounty_details.js:911
+#, fuzzy
+#| msgid "Cancel Bounty"
+msgid "Canceled Bounty"
+msgstr "Bounty annullato"
+
+#: assets/v2/js/pages/bounty_details.js:912
+msgid "New Tip"
+msgstr "Nuovo suggerimento"
+
+#: assets/v2/js/pages/bounty_details.js:913
+msgid "Tip Received"
+msgstr "Suggerimento ricevuto"
+
+#: assets/v2/js/pages/bounty_details.js:1000
+msgid "There's no activity yet!"
+msgstr "Non ci sono ancora attività!"
+
+#: assets/v2/js/pages/dashboard.js:324
+msgid "No Results"
+msgstr "Nessun risultato"
+
+#: assets/v2/js/pages/dashboard.js:328
+msgid " Matching Result"
+msgstr "Risultato della partita"
+
+#: assets/v2/js/pages/dashboard.js:332
+msgid " Matching Results"
+msgstr "Risultati corrispondenti"
+
+#: assets/v2/js/pages/dashboard.js:732
+msgid "Please enter a valid email address."
+msgstr "Si prega di inserire un indirizzo email valido."
+
+#: assets/v2/js/pages/dashboard.js:743
+msgid "You're in! Keep an eye on your inbox for the next funding listing."
+msgstr ""
+"Sei in! Tieni d&#39;occhio la tua casella di posta elettronica per il "
+"prossimo elenco di finanziamenti."
+
+#: assets/v2/js/pages/faucet_form.js:31
+msgid "We could not validate that input as an email address"
+msgstr ""
+"Non è stato possibile convalidare quell&#39;input come indirizzo email"
+
+#: assets/v2/js/pages/faucet_form.js:59
+msgid "Please make sure to fill out all fields."
+msgstr "Assicurati di compilare tutti i campi."
+
+#: assets/v2/js/pages/faucet_form.js:79
+msgid "Got an unexpected error"
+msgstr "Hai un errore inaspettato"
+
+#: assets/v2/js/pages/fulfill_bounty.js:25
+#: assets/v2/js/pages/increase_bounty.js:29
+#: assets/v2/js/pages/kill_bounty.js:17 assets/v2/js/pages/new_bounty.js:189
+#: assets/v2/js/pages/process_bounty.js:68
+msgid ""
+"You are on an unsupported network.  Please change your network to a "
+"supported network."
+msgstr ""
+"Sei su una rete non supportata. Per favore cambia la tua rete in una rete "
+"supportata."
+
+#: assets/v2/js/pages/fulfill_bounty.js:105
+msgid "Could not get bounty details."
+msgstr "Non è possibile ottenere dettagli di taglia."
+
+#: assets/v2/js/pages/fulfill_bounty.js:121
+msgid "Fulfillment submitted to web3."
+msgstr "Soddisfazione inviata a web3."
+
+#: assets/v2/js/pages/fulfill_bounty.js:134
+#: assets/v2/js/pages/kill_bounty.js:106
+#: assets/v2/js/pages/process_bounty.js:163
+msgid "There was an error"
+msgstr "c&#39;era un errore"
+
+#: assets/v2/js/pages/increase_bounty.js:51
+#: assets/v2/js/pages/process_bounty.js:83
+msgid "Please accept the terms of service."
+msgstr "Si prega di accettare i termini di servizio."
+
+#: assets/v2/js/pages/increase_bounty.js:61
+msgid "Please enter a valid github issue URL."
+msgstr "Inserisci un URL di rilascio github valido."
+
+#: assets/v2/js/pages/increase_bounty.js:65
+#, fuzzy
+#| msgid "Please enter a fulfillment Id."
+msgid "Please enter an amount."
+msgstr "Si prega di inserire un importo."
+
+#: assets/v2/js/pages/increase_bounty.js:97
+#: assets/v2/js/pages/new_bounty.js:371 assets/v2/js/pages/new_bounty.js:397
+msgid "There was an error.  Please try again or contact support."
+msgstr ""
+"C&#39;era un errore. Si prega di riprovare o contattare l&#39;assistenza."
+
+#: assets/v2/js/pages/increase_bounty.js:109
+#: assets/v2/js/pages/new_bounty.js:352
+msgid "Submission sent to web3."
+msgstr "Invio inviato a web3."
+
+#: assets/v2/js/pages/increase_bounty.js:124
+msgid "No active funded issue found at this address on "
+msgstr "Nessun problema attivo finanziato trovato su questo indirizzo"
+
+#: assets/v2/js/pages/increase_bounty.js:127
+msgid ""
+"Only the address that submitted this funded issue may increase the payout."
+msgstr ""
+"Solo l&#39;indirizzo che ha presentato questo problema finanziato può "
+"aumentare il pagamento."
+
+#: assets/v2/js/pages/kill_bounty.js:44
+#: assets/v2/js/pages/process_bounty.js:107
+msgid "Could not get bounty details"
+msgstr "Non è possibile ottenere dettagli di taglia"
+
+#: assets/v2/js/pages/kill_bounty.js:53
+#: assets/v2/js/pages/process_bounty.js:115
+msgid "No active bounty found for this Github URL on "
+msgstr "Nessun bounty attivo trovato per questo URL Github su"
+
+#: assets/v2/js/pages/kill_bounty.js:70
+msgid ""
+"No active funded issue found at this address.  Are you sure this is an "
+"active funded issue?"
+msgstr ""
+"Nessun problema attivo finanziato trovato a questo indirizzo. Sei sicuro che"
+" questo sia un problema con fondi attivi?"
+
+#: assets/v2/js/pages/kill_bounty.js:74
+msgid "Only the address that submitted this funded issue may kill the bounty."
+msgstr ""
+"Solo l&#39;indirizzo che ha presentato questo problema finanziato può "
+"uccidere la taglia."
+
+#: assets/v2/js/pages/kill_bounty.js:93
+msgid "Kill bounty submitted to web3."
+msgstr "Uccidi taglie inviate a web3."
+
+#: assets/v2/js/pages/onboard.js:40
+msgid "Done"
+msgstr "Fatto"
+
+#: assets/v2/js/pages/onboard.js:47
+msgid "Next"
+msgstr "Il prossimo"
+
+#: assets/v2/js/pages/onboard.js:69
+msgid "Install Metamask"
+msgstr "Installa Metamask"
+
+#: assets/v2/js/pages/onboard.js:81
+msgid "Unlock Metamask"
+msgstr "Sblocca Metamask"
+
+#: assets/v2/js/pages/process_bounty.js:17
+msgid "Could not get fulfillment details"
+msgstr "Impossibile ottenere dettagli sull&#39;adempimento"
+
+#: assets/v2/js/pages/process_bounty.js:25
+#, fuzzy
+#| msgid "No bounty fulfillments found for this Github URL."
+msgid ""
+"No bounty fulfillments found for this Github URL.  Please use the multi-"
+"party payout tool instead."
+msgstr ""
+"Nessun adempimento di taglie trovato per questo URL Github. Utilizza invece "
+"lo strumento di pagamento multi-party."
+
+#: assets/v2/js/pages/process_bounty.js:89
+msgid "Please enter a issue URL."
+msgstr "Inserisci un URL di problema."
+
+#: assets/v2/js/pages/process_bounty.js:93
+msgid "Please enter a fulfillment Id."
+msgstr "Si prega di inserire un ID di evasione."
+
+#: assets/v2/js/pages/process_bounty.js:130
+msgid ""
+"No active funding found at this address.  Are you sure this is an active "
+"funded issue?"
+msgstr ""
+"Nessun finanziamento attivo trovato a questo indirizzo. Sei sicuro che "
+"questo sia un problema con fondi attivi?"
+
+#: assets/v2/js/pages/process_bounty.js:132
+msgid "No claimee found for this bounty."
+msgstr "Nessun reclamo trovato per questa taglia."
+
+#: assets/v2/js/pages/process_bounty.js:134
+msgid "You can only process a funded issue if you submitted it initially."
+msgstr ""
+"Puoi elaborare un problema finanziato solo se lo hai inviato inizialmente."
+
+#: assets/v2/js/pages/process_bounty.js:153
+msgid "Submitted transaction to web3."
+msgstr "Transazione inviata a web3."
+
+#: assets/v2/js/shared.js:247
+msgid "Thanks for letting us know that you're ready to start work."
+msgstr ""
+"Grazie per averci fatto sapere che sei pronto per iniziare a lavorare."
+
+#: assets/v2/js/shared.js:250
+msgid "You've stopped working on this, thanks for letting us know."
+msgstr "Hai smesso di lavorare su questo, grazie per avercelo fatto sapere."
+
+#: assets/v2/js/shared.js:575 assets/v2/js/shared.js:609
+msgid "Web3 disabled. Please install "
+msgstr "Web3 disabilitato. Si prega di installare"
+
+#: assets/v2/js/shared.js:577 assets/v2/js/shared.js:611
+msgid "Metamask Not Enabled"
+msgstr "Metamask non abilitato"
+
+#: assets/v2/js/shared.js:580 assets/v2/js/shared.js:614
+msgid "Web3 locked. Please unlock "
+msgstr "Web3 bloccato. Si prega di sbloccare"
+
+#: assets/v2/js/shared.js:582 assets/v2/js/shared.js:616
+msgid "Metamask Locked"
+msgstr "Metamask bloccato"
+
+#: assets/v2/js/shared.js:585
+msgid "Connect to Mainnet via Metamask"
+msgstr "Connetti a Mainnet tramite Metamask"
+
+#: assets/v2/js/shared.js:586 assets/v2/js/shared.js:620
+msgid "Unsupported Network"
+msgstr "Rete non supportata"
+
+#: assets/v2/js/shared.js:619
+msgid "Connect to Rinkeby / Custom RPC via Metamask"
+msgstr "Connetti a Rinkeby / Custom RPC tramite Metamask"
+
+#: assets/v2/js/waiting_room_entertainment.js:4
+msgid ""
+"Open source software has become a relevant part of the software industry and"
+" a number of software ecosystems. It has become an alternative to commercial"
+" software in various areas and is already included in many commercial "
+"software products."
+msgstr ""
+"Il software open source è diventato una parte rilevante dell&#39;industria "
+"del software e di numerosi ecosistemi software. È diventato "
+"un&#39;alternativa al software commerciale in varie aree ed è già incluso in"
+" molti prodotti software commerciali."
+
+#: assets/v2/js/waiting_room_entertainment.js:5
+msgid ""
+"OSS can support the development of new software because companies can use "
+"existing software to create their software products. Therefore, it can be a "
+"catalyst for new software developments and the creation of new software "
+"companies."
+msgstr ""
+"OSS può supportare lo sviluppo di nuovi software perché le aziende possono "
+"utilizzare software esistenti per creare i loro prodotti software. Pertanto,"
+" può essere un catalizzatore per i nuovi sviluppi del software e la "
+"creazione di nuove società di software."
+
+#: assets/v2/js/waiting_room_entertainment.js:6
+msgid ""
+"OSS can ... be considered as an important factor in the value creation of "
+"other software, even if it is difficult to quantify. Today, OSS often "
+"replaces the standard middleware platform provided by a third party. It "
+"limits costs and, more importantly, dependency to some extent."
+msgstr ""
+"L&#39;OSS può ... essere considerato un fattore importante nella creazione "
+"di valore di altri software, anche se è difficile da quantificare. Oggi, "
+"l&#39;OSS spesso sostituisce la piattaforma middleware standard fornita da "
+"una terza parte. Limita i costi e, soprattutto, la dipendenza in una certa "
+"misura."
+
+#: assets/v2/js/waiting_room_entertainment.js:7
+msgid ""
+"Software vendors that build new products can save costs if they reuse "
+"existing open source software components instead of developing software on "
+"their own or buying software components. As a result, open source software "
+"can foster the development of new software products as well as the creation "
+"of new software vendors."
+msgstr ""
+"I fornitori di software che creano nuovi prodotti possono risparmiare sui "
+"costi se riutilizzano componenti software open source esistenti anziché "
+"sviluppare software da soli o acquistare componenti software. Di "
+"conseguenza, il software open source può favorire lo sviluppo di nuovi "
+"prodotti software e la creazione di nuovi fornitori di software."
+
+#: assets/v2/js/waiting_room_entertainment.js:8
+msgid ""
+"OSS allows companies to incorporate IT in their value chain in an easy way. "
+"Instead of buying commercial software that may involve the risk of a vendor "
+"lock-in, they just have to share value with the OSS community."
+msgstr ""
+"L&#39;OSS consente alle aziende di integrare l&#39;IT nella propria catena "
+"del valore in modo semplice. Invece di acquistare software commerciale che "
+"potrebbe comportare il rischio di blocco di un fornitore, è sufficiente "
+"condividere il valore con la comunità OSS."
+
+#: assets/v2/js/waiting_room_entertainment.js:9
+msgid ""
+"The basic principle of open source software development is that a community "
+"of software experts contributes time and effort for coding, reviewing and "
+"testing to publicly available source code."
+msgstr ""
+"Il principio di base dello sviluppo del software open source è che una "
+"comunità di esperti software contribuisce con il tempo e gli sforzi per la "
+"codifica, la revisione e il test del codice sorgente disponibile "
+"pubblicamente."
+
+#: assets/v2/js/waiting_room_entertainment.js:10
+msgid ""
+"Open source can ... be a key success factor for co-innovation as none of the"
+" participants will have the upper hand. OSS can create standards that are "
+"very important for the development of emerging technologies and that help "
+"lower the total cost of ownership."
+msgstr ""
+"L&#39;open source può ... essere un fattore chiave di successo per la co-"
+"innovazione in quanto nessuno dei partecipanti avrà il sopravvento. OSS può "
+"creare standard che sono molto importanti per lo sviluppo di tecnologie "
+"emergenti e che aiutano a ridurre il costo totale di proprietà."
+
+#: assets/v2/js/waiting_room_entertainment.js:11
+msgid ""
+"Future software must be easily developed from components and freely "
+"available software and its maintenance must be supported by a wide "
+"community. This includes a reuse and evolution of existing software and "
+"modules: rather than developing from scratch, existing software must become "
+"more easily retrievable, interoperable and usable."
+msgstr ""
+"Il futuro software deve essere facilmente sviluppato da componenti e "
+"software liberamente disponibili e la sua manutenzione deve essere "
+"supportata da un&#39;ampia community. Ciò include un riutilizzo e "
+"l&#39;evoluzione di software e moduli esistenti: piuttosto che sviluppare da"
+" zero, il software esistente deve essere più facilmente recuperabile, "
+"interoperabile e utilizzabile."
+
+#: assets/v2/js/waiting_room_entertainment.js:12
+msgid ""
+"OSS is also a firm promoter of standards and interoperability. This openness"
+" lowers the risk of a vendor lock-in. OSS is based on communities that "
+"develop software in a collaborative way. Many enabling technologies for SMAC"
+" have strong OSS roots."
+msgstr ""
+"OSS è anche un promotore di standard e interoperabilità. Questa apertura "
+"riduce il rischio di un blocco del fornitore. L&#39;OSS è basato su comunità"
+" che sviluppano software in modo collaborativo. Molte tecnologie abilitanti "
+"per SMAC hanno forti radici OSS."
+
+#: assets/v2/js/waiting_room_entertainment.js:13
+msgid ""
+"Some commercial vendors offer open source software in order to create a "
+"large user community. They generate revenues from subscriptions to support "
+"and updates and/or professional services as well as from selling extensions "
+"or professional editions that are based on the open source software. "
+"Examples are the providers of the Linux distributions RedHat and Suse."
+msgstr ""
+"Alcuni venditori commerciali offrono software open source per creare una "
+"grande comunità di utenti. Generano ricavi da abbonamenti a supporto e "
+"aggiornamenti e / o servizi professionali, nonché dalla vendita di "
+"estensioni o edizioni professionali basate sul software open source. Esempi "
+"sono i fornitori delle distribuzioni Linux RedHat e Suse."
+
+#: assets/v2/js/waiting_room_entertainment.js:14
+msgid ""
+"Major commercial software vendors such as IBM and HP have made open source "
+"technology a part of their business by integrating it into their own "
+"products and by providing professional services for open source software."
+msgstr ""
+"I principali fornitori di software commerciali come IBM e HP hanno reso la "
+"tecnologia open source una parte della loro attività integrandola nei propri"
+" prodotti e fornendo servizi professionali per software open source."
+
+#: assets/v2/js/waiting_room_entertainment.js:15
+msgid ""
+"Many business applications already include open source software and this is "
+"going to increase. Some vendors may donate part of their products to an open"
+" source foundation in order to create a larger user community that will "
+"potentially become buyers of commercial add-ons or services. On the other "
+"hand, open source software that is free of charge can be an alternative to "
+"commercial application software."
+msgstr ""
+"Molte applicazioni aziendali includono già software open source e questo "
+"aumenterà. Alcuni fornitori possono donare parte dei loro prodotti a una "
+"fondazione open source al fine di creare una comunità di utenti più ampia "
+"che diventerà potenzialmente acquirenti di componenti aggiuntivi o servizi "
+"commerciali. D&#39;altra parte, il software open source che è gratuito può "
+"essere un&#39;alternativa al software applicativo commerciale."
+
+#: assets/v2/js/waiting_room_entertainment.js:16
+msgid ""
+"According to Carlo Daffara, a researcher in the field of IT economics who "
+"contributed to several European Commission research projects involving open "
+"source, the European economy saves around EUR114 billion per year by using "
+"open source software solutions. Apart from direct cost savings, other "
+"benefits of open source are reduced project failure and lower cost of code "
+"maintenance."
+msgstr ""
+"Secondo Carlo Daffara, ricercatore nel campo dell&#39;IT economia che ha "
+"contribuito a diversi progetti di ricerca della Commissione europea che "
+"coinvolgono l&#39;open source, l&#39;economia europea risparmia circa114 "
+"miliardi di euro all&#39;anno utilizzando soluzioni software open source. "
+"Oltre ai risparmi sui costi diretti, altri vantaggi dell&#39;open source "
+"sono la riduzione del fallimento del progetto e la riduzione dei costi di "
+"manutenzione del codice."
+
+#: assets/v2/js/waiting_room_entertainment.js:17
+msgid ""
+"Quoting several sources, [Carlo Daffara, researcher in IT economics] "
+"estimates that about 35 per cent of the software  used in the past five "
+"years was directly or indirectly derived from open source."
+msgstr ""
+"Citando diverse fonti, [Carlo Daffara, ricercatore in economia IT] stima che"
+" circa il 35 percento del software utilizzato negli ultimi cinque anni sia "
+"stato derivato direttamente o indirettamente dall&#39;open source."
+
+#: assets/v2/js/waiting_room_entertainment.js:18
+msgid ""
+"Companies outsource activities that are less critical. For example, a car "
+"manufacturer will hardly outsource the in-house software development for its"
+" autonomous driving technology, as this is highly confidential and highly "
+"relevant for its competitiveness."
+msgstr ""
+"Le aziende esternalizzano attività meno critiche. Ad esempio, una casa "
+"automobilistica difficilmente esternalizzerà lo sviluppo del software in-"
+"house per la sua tecnologia di guida autonoma, poiché questo è altamente "
+"confidenziale e molto rilevante per la sua competitività."
+
+#: assets/v2/js/waiting_room_entertainment.js:19
+msgid ""
+"Outsourcing can be an alternative to in-house software development and more "
+"and more companies take advantage of this. ... Two areas of potential "
+"outsourcing in the area of in-house software development are testing and "
+"maintenance."
+msgstr ""
+"L&#39;outsourcing può essere un&#39;alternativa allo sviluppo di software "
+"interno e sempre più aziende ne approfittano. ... Due aree di potenziale "
+"esternalizzazione nell&#39;area dello sviluppo di software interno sono test"
+" e manutenzione."
+
+#: assets/v2/js/waiting_room_entertainment.js:20
+msgid ""
+"As demand for individual software development increases, companies evaluate "
+"ways to outsource such activities due to internal skill shortages and cost "
+"considerations."
+msgstr ""
+"Con l&#39;aumento della richiesta di sviluppo del software individuale, le "
+"aziende valutano i modi per esternalizzare tali attività a causa di carenze "
+"di competenze interne e considerazioni sui costi."
+
+#: assets/v2/js/waiting_room_entertainment.js:22
+msgid ""
+"Victor Hugo once remarked: 'You can resist an invading army; you cannot "
+"resist an idea whose time has come'. The Drucker Forum will ask the question"
+" and deliver elements of response as to whether the time for a new "
+"entrepreneurial age has come."
+msgstr ""
+"Victor Hugo una volta osservò: &quot;Puoi resistere a un esercito invasore; "
+"non puoi resistere a un&#39;idea il cui tempo è arrivato &quot;. Il Forum "
+"Drucker porrà la domanda e fornirà elementi di risposta sul fatto che sia "
+"giunto il momento di una nuova era imprenditoriale."
+
+#: assets/v2/js/waiting_room_entertainment.js:23
+msgid ""
+"Digital technology has played an accelerating role in this transformation "
+"[to an entrepreneurial society] by dramatically lowering barriers to entry "
+"in many industries and by providing new tools for managing knowledge "
+"creation and sharing and by enabling new forms of continuous learning, all "
+"on a global canvas."
+msgstr ""
+"La tecnologia digitale ha svolto un ruolo di accelerazione in questa "
+"trasformazione [in una società imprenditoriale] riducendo drasticamente le "
+"barriere all&#39;ingresso in molti settori e fornendo nuovi strumenti per "
+"gestire la creazione e la condivisione della conoscenza e consentendo nuove "
+"forme di apprendimento continuo, il tutto su una tela globale ."
+
+#: assets/v2/js/waiting_room_entertainment.js:24
+msgid ""
+"While the journey towards an entrepreneurial society is by no means a "
+"straight-line progression towards a well-defined destination, broad cultural"
+" changes have brought entrepreneurialism into the mainstream. An activity "
+"that was once regarded as peripheral, perhaps even a bit suspect, has become"
+" cool, celebrated by politicians and embraced by the new generations."
+msgstr ""
+"Mentre il viaggio verso una società imprenditoriale non è affatto una "
+"progressione lineare verso una destinazione ben definita, ampi cambiamenti "
+"culturali hanno portato l&#39;imprenditorialità nella corrente principale. "
+"Un&#39;attività che un tempo era considerata periferica, forse anche un po "
+"&#39;sospetta, è diventata fredda, celebrata dai politici e abbracciata "
+"dalle nuove generazioni."
+
+#: assets/v2/js/waiting_room_entertainment.js:25
+msgid ""
+"[T]he emergence of an entrepreneurial culture entails a broader "
+"transformation of the economic fabric of our society, as we see in the rapid"
+" proliferation of free agents in the form of contractors, freelancers and "
+"self-employed workers on on-demand platforms, for example."
+msgstr ""
+"[T] L&#39;emergere di una cultura imprenditoriale comporta una più ampia "
+"trasformazione del tessuto economico della nostra società, come vediamo "
+"nella rapida proliferazione di agenti liberi sotto forma di appaltatori, "
+"liberi professionisti e lavoratori autonomi su piattaforme on-demand, per "
+"esempio."
+
+#: assets/v2/js/waiting_room_entertainment.js:26
+msgid ""
+"[I]n a world of rapid change frequent job and career moves, switches between"
+" employed and independent roles become the rule rather than the exception."
+msgstr ""
+"[I] mondo di rapidi cambiamenti frequenti di lavoro e carriera, i passaggi "
+"tra ruoli occupati e indipendenti diventano la regola piuttosto che "
+"l&#39;eccezione."
+
+#: assets/v2/js/waiting_room_entertainment.js:27
+msgid ""
+"Within large organizations a renewed focus on freeing up the creative and "
+"innovative potential of workers points in the same direction [as that of the"
+" entrepreneurial society] i.e. a new mindset of ownership, responsibility "
+"and autonomy."
+msgstr ""
+"All&#39;interno delle grandi organizzazioni una rinnovata attenzione a "
+"liberare il potenziale creativo e innovativo dei lavoratori punta nella "
+"stessa direzione [come quella della società imprenditoriale], cioè una nuova"
+" mentalità di proprietà, responsabilità e autonomia."
+
+#~ msgid "Accept Submission"
+#~ msgstr "Accetta invio"
+
+#, fuzzy
+#~ msgid "Please enter a valid checksum address."
+#~ msgstr "Si prega di inserire un indirizzo di checksum valido."
+
+#~ msgid "Not a valid forwarding address"
+#~ msgstr "Non è un indirizzo di inoltro valido"
+
+#~ msgid "Please enter your Twitter username"
+#~ msgstr "Inserisci il tuo nome utente Twitter"
+
+#~ msgid "batch mode enabled"
+#~ msgstr "modalità batch abilitata"
+
+#~ msgid "Invalid addresses generated. Please try again from the first page."
+#~ msgstr ""
+#~ "Indirizzi non validi generati Si prega di riprovare dalla prima pagina."
+
+#~ msgid "You can only send a maximum of "
+#~ msgstr "Puoi inviare solo un massimo di"
+
+#~ msgid "You can only send a minimum of "
+#~ msgstr "Puoi inviare solo un minimo di"

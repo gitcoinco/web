@@ -61,16 +61,16 @@ logger = logging.getLogger(__name__)
 def get_settings_navs(request):
     subdomain = f"{request.user.username}." if request.user.is_authenticated else False
     return [{
-        'body': 'Email',
+        'body': _('Email'),
         'href': reverse('email_settings', args=('', ))
     }, {
-        'body': 'Privacy',
+        'body': _('Privacy'),
         'href': reverse('privacy_settings')
     }, {
-        'body': 'Matching',
+        'body': _('Matching'),
         'href': reverse('matching_settings')
     }, {
-        'body': 'Feedback',
+        'body': _('Feedback'),
         'href': reverse('feedback_settings')
     }, {
         'body': 'Slack',
@@ -79,13 +79,13 @@ def get_settings_navs(request):
         'body': 'Discord',
         'href': reverse('discord_settings')
     }, {
-        'body': "ENS",
+        'body': 'ENS',
         'href': reverse('ens_settings')
     }, {
-        'body': "Account",
+        'body': _('Account'),
         'href': reverse('account_settings'),
     }, {
-        'body': "Token",
+        'body': _('Token'),
         'href': reverse('token_settings'),
     }]
 
@@ -272,12 +272,9 @@ def email_settings(request, key):
     email = ''
     level = ''
     msg = ''
-    pref_lang = 'en'
     if request.POST and request.POST.get('submit'):
         email = request.POST.get('email')
         level = request.POST.get('level')
-        if profile:
-            pref_lang = profile.get_profile_preferred_language()
         preferred_language = request.POST.get('preferred_language')
         validation_passed = True
         try:
@@ -317,6 +314,7 @@ def email_settings(request, key):
                     es.metadata['ip'].append(ip)
                 es.save()
             msg = _('Updated your preferences.')
+    pref_lang = 'en' if not profile else profile.get_profile_preferred_language()
     context = {
         'nav': 'internal',
         'active': '/settings/email',
