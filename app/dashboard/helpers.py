@@ -406,7 +406,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 project_length=metadata.get('projectLength', '') if not latest_old_bounty else latest_old_bounty.project_length,
                 experience_level=metadata.get('experienceLevel', '') if not latest_old_bounty else latest_old_bounty.experience_level,
                 project_type=bounty_payload.get('schemes', {}).get('project_type', 'traditional') if not latest_old_bounty else latest_old_bounty.project_type,
-                permission_type=bounty_payload.get('schemes', {}).get('permission_type', 'permissionless') if not latest_old_bounty else permission_type.attached_job_description,
+                permission_type=bounty_payload.get('schemes', {}).get('permission_type', 'permissionless') if not latest_old_bounty else latest_old_bounty.permission_type,
                 attached_job_description=bounty_payload.get('hiring', {}).get('jobDescription', None) if not latest_old_bounty else latest_old_bounty.attached_job_description,
                 bounty_owner_github_username=bounty_issuer.get('githubUsername', '') if not latest_old_bounty else latest_old_bounty.bounty_owner_github_username,
                 bounty_owner_address=bounty_issuer.get('address', '') if not latest_old_bounty else latest_old_bounty.bounty_owner_address,
