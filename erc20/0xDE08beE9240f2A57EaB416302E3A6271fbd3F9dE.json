@@ -1,0 +1,17 @@
+{
+  "symbol": "DRA",
+  "address": "0xDE08beE9240f2A57EaB416302E3A6271fbd3F9dE",
+  "overview":{
+        "en": "Decentralized medical service infrastructure.",
+        "zh": "去中心化医疗服务基础设施"
+  },
+  "email": "team@dra.ai",
+  "website": "http://dra.ai",
+  "whitepaper": "http://dra.ai/static/dra.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-04-12",
+  "links": {
+    "telegram": "https://t.me/dracn",
+    "github": "https://github.com/DrAgents"
+  }
+}
