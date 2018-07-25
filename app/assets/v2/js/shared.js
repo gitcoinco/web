@@ -116,7 +116,7 @@ var unloading_button = function(button) {
   button.find('img').remove();
 };
 
-var sanitizeDict = function(d) {
+var sanitizeDict = function(d, keyToIgnore) {
   if (typeof d != 'object') {
     return d;
   }
@@ -124,14 +124,18 @@ var sanitizeDict = function(d) {
   for (var i = 0; i < keys.length; i++) {
     var key = keys[i];
 
+    if (key === keyToIgnore) {
+      continue;
+    }
+
     d[key] = sanitize(d[key]);
   }
   return d;
 };
 
-var sanitizeAPIResults = function(results) {
+var sanitizeAPIResults = function(results, keyToIgnore) {
   for (var i = 0; i < results.length; i++) {
-    results[i] = sanitizeDict(results[i]);
+    results[i] = sanitizeDict(results[i], keyToIgnore);
   }
   return results;
 };

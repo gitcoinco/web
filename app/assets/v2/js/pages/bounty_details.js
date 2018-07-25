@@ -146,7 +146,7 @@ var callbacks = {
   'issue_description': function(key, val, result) {
     var converter = new showdown.Converter();
 
-    ui_body = converter.makeHtml(val);
+    ui_body = sanitize(converter.makeHtml(val));
     return [ 'issue_description', ui_body ];
   },
   'bounty_owner_address': address_ize,
@@ -865,11 +865,10 @@ const build_uri_for_pull_bounty_from_api = function() {
 };
 
 var pull_bounty_from_api = function() {
-  let all_results = [];
-
   $.get(build_uri_for_pull_bounty_from_api()).then(results => {
-    all_results = sanitizeAPIResults(results);
-    return all_results;
+    // special case: do not sanitize issue_description
+    // before we pass it to the markdown parser
+    return sanitizeAPIResults(results, 'issue_description');
   }).then(function(results) {
     let nonefound = true;
     // potentially make this a lot faster by only pulling the specific issue required
@@ -885,7 +884,7 @@ var pull_bounty_from_api = function() {
 
         do_actions(result);
 
-        render_activity(result, all_results);
+        render_activity(result, results);
 
         document.result = result;
         return;
