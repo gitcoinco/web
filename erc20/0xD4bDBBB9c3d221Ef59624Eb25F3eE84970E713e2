@@ -1,0 +1,23 @@
+{
+  "symbol": "LCR",
+  "address": "0xD4bDBBB9c3d221Ef59624Eb25F3eE84970E713e2",
+  "overview":{
+        "en": "Loocar",
+        "zh": "行车链"
+  },
+  "email": "admin@mammothcoin.top",
+  "website": "https://www.loocar.net",
+  "whitepaper": "https://www.loocar.net/js/loocar.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-07-17",
+  "initial_price":{
+        "ETH":"0.000096 ETH",
+        "USD":"0.04486 USD",
+        "BTC":"0.0000068 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Loocarcn",
+    "telegram": "https://t.me/Loocar",
+    "facebook": "https://facebook.com/loocarchain",
+  }
+}
