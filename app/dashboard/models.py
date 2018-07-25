@@ -1123,6 +1123,14 @@ class Activity(models.Model):
     def i18n_name(self):
         return _(next((x[1] for x in self.ACTIVITY_TYPES if x[0] == self.activity_type), 'Unknown type'))
 
+    @property
+    def token_name(self):
+        if self.bounty:
+            return self.bounty.token_name
+        if 'token_name' in self.metadata.keys():
+            return self.metadata['token_name']
+        return None
+
 
 class Profile(SuperModel):
     """Define the structure of the user profile.

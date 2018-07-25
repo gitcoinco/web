@@ -69,9 +69,9 @@
                 <div class="tag token">
                   <p>
                     {% if row.value_in_token_disp %}
-                    <span>{{ row.value_in_token_disp }} {{row.metadata.token_name}} XX</span>
+                    <span>{{ row.value_in_token_disp }} {{row.token_name}}</span>
                     {% elif row.metadata.value_in_eth %}
-                    <span>{{ row.metadata.value_in_eth }} {{row.metadata.token_name}} XX</span>
+                    <span>{{ row.metadata.value_in_eth }} {{row.token_name}}</span>
                     {% else %}
                     <span>{{row.metadata.value_in_token_old}}  - {{row.metadata.value_in_token}}  {{row.metadata.token_name}}</span>
                     {% endif %}
@@ -82,7 +82,7 @@
                     <span>{{ row.value_in_usdt_now }} USD</span>
                   </p>
                 </div>
-                {{ row.created }}
+                {{ row.created | naturaltime }}
               </div>
             </div>
           </div>
