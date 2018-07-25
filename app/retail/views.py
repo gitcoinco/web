@@ -217,7 +217,7 @@ def contributor_landing(request, tech_stack):
         'tech_stack': tech_stack,
     }
 
-    #get activity feed
+    # get activity feed
     num_activities = 5
     activities = Activity.objects.filter(bounty__network='mainnet').order_by('-created')
     if tech_stack:
@@ -226,6 +226,7 @@ def contributor_landing(request, tech_stack):
     context['activities'] = [a.view_props for a in activities]
 
     return TemplateResponse(request, 'contributor_landing.html', context)
+
 
 def how_it_works(request, work_type):
     """Show How it Works / Funder page."""
@@ -395,7 +396,7 @@ def activity(request):
     context = {
         'p': p,
         'page': p.get_page(page),
-        'title': 'Activity Feed',
+        'title': _('Activity Feed'),
     }
     context["activities"] = [a.view_props for a in p.get_page(page)]
 

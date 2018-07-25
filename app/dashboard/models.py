@@ -1127,7 +1127,6 @@ class Activity(models.Model):
     def view_props(self):
         from dashboard.tokens import token_by_name
         icons = {
-            'title': 'Activity',
             'new_tip': 'fa-thumbs-up',
             'start_work': 'fa-lightbulb',
             'new_bounty': 'fa-money-bill-alt',
