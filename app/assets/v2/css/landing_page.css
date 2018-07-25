@@ -761,6 +761,20 @@ body {
   height: 100%;
   margin-right: -15px;
   max-height: 350px;
+  max-width: 500px;
+}
+
+.contributors-hero-container {
+  position: relative; 
+  overflow-y: hidden;
+}
+
+.contributor-hero-bg-container{
+  position: absolute;
+  top:100px;
+  right: 0px;
+  height: 500px;
+  width: 500px;
 }
 
 .ethereum-icon {

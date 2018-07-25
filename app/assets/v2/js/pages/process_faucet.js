@@ -18,6 +18,9 @@ $(document).ready(function() {
     var destinationAccount = $('#destinationAccount').val();
     var faucetAmount = $('#faucetAmount').val();
 
+    decimals = 6;
+    faucetAmount = Math.round(faucetAmount * 10 ** decimals) / 10 ** decimals;
+
     web3.eth.sendTransaction({
       from: fundingAccount,
       to: destinationAccount,

@@ -1,4 +1,13 @@
 /* eslint-disable no-console */
+var get_gas_price = function() {
+  if ($('#gasPrice').length) {
+    return $('#gasPrice').val() * Math.pow(10, 9);
+  }
+  if (typeof defaultGasPrice != 'undefined') {
+    return defaultGasPrice;
+  }
+  return 5 * 10 ** 9;
+};
 
 var generate_or_get_private_key = function() {
   if (typeof document.account != 'undefined') {
@@ -274,19 +283,21 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
         if (isSendingETH) {
           web3.eth.sendTransaction({
             to: destinationAccount,
-            value: amountInWei
+            value: amountInWei,
+            gasPrice: web3.toHex(get_gas_price())
           }, post_send_callback);
         } else {
           var send_erc20 = function() {
             var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
 
-            token_contract.transfer(destinationAccount, amountInWei, post_send_callback);
+            token_contract.transfer(destinationAccount, amountInWei, {gasPrice: web3.toHex(get_gas_price())}, post_send_callback);
           };
           var send_gas_money_and_erc20 = function() {
             _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer.') }, 'info');
             web3.eth.sendTransaction({
               to: destinationAccount,
-              value: gas_money
+              value: gas_money,
+              gasPrice: web3.toHex(get_gas_price())
             }, send_erc20);
           };
 
