@@ -377,7 +377,7 @@ $(document).ready(function() {
       }
 
       function newIpfsCallback(error, result) {
-        if (error) {
+          if (error) {
           mixpanel.track('New Bounty Error', {
             step: 'post_ipfs',
             error: error
@@ -403,7 +403,7 @@ $(document).ready(function() {
 
         var eth_amount = isETH ? amount : 0;
         var _paysTokens = !isETH;
-        var bountyIndex = bounty.issueAndActivateBounty(
+          var bountyIndex = bounty.issueAndActivateBounty(
           account, // _issuer
           mock_expire_date, // _deadline
           result, // _data (ipfs hash)

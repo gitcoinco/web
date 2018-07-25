@@ -35,34 +35,37 @@ def backwards_func(apps, schema_editor):
 def forwards_func(apps, schema_editor):
     if settings.DEBUG:
         return
-    Profile = apps.get_model('dashboard', 'Profile')
-    print('bounty')
-    Bounty = apps.get_model('dashboard', 'Bounty')
-    for bounty in Bounty.objects.filter(network='mainnet', current_bounty=True):
-        try_to_link_address_to_profile(Profile, bounty.bounty_owner_github_username, bounty.bounty_owner_address)
-        for fulfillment in bounty.fulfillments.all():
-            try_to_link_address_to_profile(Profile, fulfillment.fulfiller_address, fulfillment.fulfiller_address)
-    print('fr')
-    FaucetRequest = apps.get_model('faucet', 'FaucetRequest')
-    for faucet in FaucetRequest.objects.all():
-        try_to_link_address_to_profile(Profile, faucet.github_username, faucet.address)
-    print('tip')
-    Tip = apps.get_model('dashboard', 'Tip')
-    for tip in Tip.objects.filter(network='mainnet').all():
-        try:
-            try_to_link_address_to_profile(Profile, tip.from_username, tip.from_address)
-            w3 = get_web3(tip.network)
-            tx = w3.eth.getTransaction(tip.receive_txid)
-            if tx:
-                to = tx['to']
-                try_to_link_address_to_profile(Profile, tip.username, to)
-        except:
-            pass
-    print('ens')
-    ENSSubdomainRegistration = apps.get_model('enssubdomain', 'ENSSubdomainRegistration')
-    for ens in ENSSubdomainRegistration.objects.all():
-        if ens.profile:
-            try_to_link_address_to_profile(Profile, ens.profile.handle, ens.subdomain_wallet_address)
+    try:
+        Profile = apps.get_model('dashboard', 'Profile')
+        print('bounty')
+        Bounty = apps.get_model('dashboard', 'Bounty')
+        for bounty in Bounty.objects.filter(network='mainnet', current_bounty=True):
+            try_to_link_address_to_profile(Profile, bounty.bounty_owner_github_username, bounty.bounty_owner_address)
+            for fulfillment in bounty.fulfillments.all():
+                try_to_link_address_to_profile(Profile, fulfillment.fulfiller_address, fulfillment.fulfiller_address)
+        print('fr')
+        FaucetRequest = apps.get_model('faucet', 'FaucetRequest')
+        for faucet in FaucetRequest.objects.all():
+            try_to_link_address_to_profile(Profile, faucet.github_username, faucet.address)
+        print('tip')
+        Tip = apps.get_model('dashboard', 'Tip')
+        for tip in Tip.objects.filter(network='mainnet').all():
+            try:
+                try_to_link_address_to_profile(Profile, tip.from_username, tip.from_address)
+                w3 = get_web3(tip.network)
+                tx = w3.eth.getTransaction(tip.receive_txid)
+                if tx:
+                    to = tx['to']
+                    try_to_link_address_to_profile(Profile, tip.username, to)
+            except:
+                pass
+        print('ens')
+        ENSSubdomainRegistration = apps.get_model('enssubdomain', 'ENSSubdomainRegistration')
+        for ens in ENSSubdomainRegistration.objects.all():
+            if ens.profile:
+                try_to_link_address_to_profile(Profile, ens.profile.handle, ens.subdomain_wallet_address)
+    except Exception as e:
+        print(e)
 
 
 class Migration(migrations.Migration):

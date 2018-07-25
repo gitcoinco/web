@@ -431,13 +431,13 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
     if crowdfund_thx:
         crowdfund_thx = f"Thanks to {crowdfund_thx} for their crowdfunded contributions to this bounty.\n\n"
     if event_name == 'new_bounty':
-        msg = f"{status_header}__This issue now has a funding of {natural_value} {crowdfund_amount} " \
-              f"{bounty.token_name} {usdt_value} attached to it.__\n\n * If you would " \
+        msg = f"{status_header}__This issue now has a funding of {natural_value} {bounty.token_name} {usdt_value} " \
+              f"{crowdfund_amount} attached to it.__\n\n * If you would " \
               f"like to work on this issue you can 'start work' [on the Gitcoin Issue Details page]({absolute_url})." \
               "\n{crowdfund_msg}\n{help_msg}\n{openwork_msg}\n"
     if event_name == 'increased_bounty':
-        msg = f"{status_header}__The funding of this issue was increased to {natural_value} {crowdfund_amount} " \
-              f"{bounty.token_name} {usdt_value}.__\n\n " \
+        msg = f"{status_header}__The funding of this issue was increased to {natural_value} {bounty.token_name} {usdt_value} " \
+              f"{crowdfund_amount}.__\n\n " \
               f"\n{claim_msg}\n{crowdfund_msg}\n{help_msg}\n{openwork_msg}\n"
     elif event_name == 'killed_bounty':
         msg = f"{status_header}__The funding of {natural_value} {bounty.token_name} {crowdfund_amount} " \
