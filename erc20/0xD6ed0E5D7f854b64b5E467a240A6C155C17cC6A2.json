@@ -1,0 +1,23 @@
+{
+  "symbol": "CFun",
+  "address": "0xD6ed0E5D7f854b64b5E467a240A6C155C17cC6A2",
+  "overview": {
+      "en": "CFun is a Dapp platform built on the globally publically avaliable ETH, aiming to becoming a supporting platform that unites global creators. With collaborative community creation fused with smart contracts to measure individual contribution, and complete transactions, realizing a socialized creative network and the generation and transfer of valuable digital assets.",
+      "zh": "CFun是一款搭建在全球公有链以太坊上的去中心化的移动应用，旨在成为全球创作者聚集的创作辅助平台，通过自组织的协同创作，结合智能合约计算创作贡献并完成交易等机制，实现社交化的众创内容生产及个人数字资产的价值传递。"
+  },
+  "email": "contact@cfunproject.com",
+  "website": "https://cfunproject.com/",
+  "whitepaper": "https://cfunproject.com/whitepaper/CFunWHITEPAPER_EN.pdf",
+  "state": "NORMAL",
+  "published_on": "2017-12-18",
+  "initial_price": {
+      "ETH": "0.0000444 ETH",
+      "BTC": "0.0000017 BTC"
+  },
+  "links": {
+      "twitter": "https://twitter.com/CFunproject",
+      "telegram": "https://t.me/CFun_Project_EN",
+      "facebook": "https://www.facebook.com/cfunproject/",
+      "medium": "https://medium.com/@cfunproject"
+  }
+}
