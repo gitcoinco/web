@@ -290,7 +290,7 @@ $(document).ready(function() {
       localStorage['notificationEmail'] = notificationEmail;
       localStorage['githubUsername'] = githubUsername;
       localStorage['tokenAddress'] = tokenAddress;
-      localStorage['jobDescription'] = data.jobDescription;
+      localStorage['jobDescription'] = $('#hiringRightNow').is(':checked') ? data.jobDescription : '';
       localStorage['expirationTimeDelta'] = $(
         'select[name=expirationTimeDelta]'
       ).val();

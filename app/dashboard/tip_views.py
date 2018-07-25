@@ -270,7 +270,6 @@ def send_tip_4(request):
 
     is_user_authenticated = request.user.is_authenticated
     from_username = request.user.username if is_user_authenticated else ''
-    access_token = request.user.profile.get_access_token() if is_user_authenticated else ''
     to_emails = []
 
     params = json.loads(request.body)
