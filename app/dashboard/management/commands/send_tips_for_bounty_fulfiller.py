@@ -88,8 +88,11 @@ class Command(BaseCommand):
                                 cloned_tip.is_for_bounty_fulfiller = False
                                 cloned_tip.username = bpt.username
                                 cloned_tip.emails = []
+                                cloned_tip.metadata = bpt.metadata
                                 cloned_tip.metadata['is_clone'] = True
                                 cloned_tip.metadata['debug_info'] = f'created in order to facilitate payout of a crowdfund tip {tip.pk}'
+                                cloned_tip.save()
+                                print(f"    - {cloned_tip.pk} ")
                                 cloned_tip = assign_tip_to(cloned_tip, cloned_tip.username)
                                 cloned_tip.save()
 

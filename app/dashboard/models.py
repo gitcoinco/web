@@ -795,7 +795,7 @@ class Bounty(SuperModel):
     @property
     def bulk_payout_tips(self):
         """Return the Bulk payout tips associated with this bounty."""
-        queryset = self.tips.filter(is_for_bounty_fulfiller=False, metadata__is_clone__isnull=True)
+        queryset = self.tips.filter(is_for_bounty_fulfiller=False, metadata__is_clone__isnull=True, metadata__direct_address__isnull=True)
         return (queryset.filter(from_address=self.bounty_owner_address) |
                 queryset.filter(from_name=self.bounty_owner_github_username))
 

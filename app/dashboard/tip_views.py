@@ -121,8 +121,8 @@ def receive_tip_legacy(request):
             tip.receive_txid = params['receive_txid']
             tip.received_on = timezone.now()
             tip.save()
-            record_user_action(tip.username, 'receive_tip', tip)
-            record_tip_activity(tip, tip.username, 'receive_tip')
+            record_user_action(tip.from_username, 'receive_tip', tip)
+            record_tip_activity(tip, tip.from_username, 'receive_tip')
         except Exception as e:
             status = 'error'
             message = str(e)
@@ -175,8 +175,8 @@ def receive_tip_v2(request, pk, txid, network):
             tip.receive_address = address
             tip.received_on = timezone.now()
             tip.save()
-            record_user_action(tip.username, 'receive_tip', tip)
-            record_tip_activity(tip, tip.username, 'receive_tip')
+            record_user_action(tip.from_username, 'receive_tip', tip)
+            record_tip_activity(tip, tip.from_username, 'receive_tip')
             messages.success(request, 'This tip has been received')
         except Exception as e:
             messages.error(request, str(e))
@@ -233,8 +233,8 @@ def receive_tip_v3(request, key, txid, network):
             tip.receive_address = params['forwarding_address']
             tip.received_on = timezone.now()
             tip.save()
-            record_user_action(tip.username, 'receive_tip', tip)
-            record_tip_activity(tip, tip.username, 'receive_tip')
+            record_user_action(tip.from_username, 'receive_tip', tip)
+            record_tip_activity(tip, tip.from_username, 'receive_tip')
             messages.success(request, 'This tip has been received')
         except Exception as e:
             messages.error(request, str(e))
@@ -308,8 +308,8 @@ def send_tip_4(request):
     maybe_market_tip_to_github(tip)
     maybe_market_tip_to_slack(tip, 'new_tip')
     maybe_market_tip_to_email(tip, to_emails)
-    record_user_action(tip.username, 'send_tip', tip)
-    record_tip_activity(tip, tip.from_name, 'new_tip' if tip.username else 'new_crowdfund')
+    record_user_action(tip.from_username, 'send_tip', tip)
+    record_tip_activity(tip, tip.from_username, 'new_tip' if tip.username else 'new_crowdfund')
 
     return JsonResponse(response)
 

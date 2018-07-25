@@ -23,13 +23,17 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from .models import (
-    Bounty, BountyFulfillment, BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Interest, Profile,
+    Activity, Bounty, BountyFulfillment, BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Interest, Profile,
     Subscription, Tip, TokenApproval, Tool, ToolVote, UserAction,
 )
 
 
 class BountyFulfillmentAdmin(admin.ModelAdmin):
     raw_id_fields = ['bounty', 'profile']
+    ordering = ['-id']
+
+
+class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
 
@@ -82,11 +86,13 @@ class TipAdmin(admin.ModelAdmin):
             return 'n/a'
         if instance.receive_txid:
             return 'n/a'
-        html = 'n/a'
-        if instance.web3_type == 'v2':
-            html = format_html('<a href="{}">claim</a>', instance.receive_url)
-        if instance.web3_type == 'v3':
-            html = format_html(f'<a href="{instance.receive_url_for_funder}">claim as funder</a> | <a href="{instance.receive_url_for_recipient}">claim as recipient</a>')
+        try:
+            if instance.web3_type == 'v2':
+                html = format_html('<a href="{}">claim</a>', instance.receive_url)
+            if instance.web3_type == 'v3':
+                html = format_html(f'<a href="{instance.receive_url_for_funder}">claim as funder</a> | <a href="{instance.receive_url_for_recipient}">claim as recipient</a>')
+        except:
+            html = 'n/a'
         return html
 
 
@@ -129,6 +135,7 @@ class BountyAdmin(admin.ModelAdmin):
         return mark_safe(f"<a href={url}>{copy}</a>")
 
 
+admin.site.register(Activity, GeneralAdmin)
 admin.site.register(Subscription, GeneralAdmin)
 admin.site.register(UserAction, UserActionAdmin)
 admin.site.register(Interest, InterestAdmin)
