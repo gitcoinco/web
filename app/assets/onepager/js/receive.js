@@ -20,6 +20,9 @@ window.onload = function() {
   waitforWeb3(function() {
     ipfs.ipfsApi = IpfsApi(ipfsConfig);
     ipfs.setProvider(ipfsConfig);
+    if(typeof document.ipfs_key_to_secret == 'undefined'){
+      return;
+    }
     ipfs.catText(document.ipfs_key_to_secret, function(err, key2) {
       if (err) {
         _alert('could not reach IPFS.  please try again later.', 'error');
@@ -39,7 +42,7 @@ window.onload = function() {
 };
 
 $(document).ready(function() {
-  $(document).on('click', '#receive', (function(e) {
+  $(document).on('click', '#receive', function(e) {
     e.preventDefault();
 
     var forwarding_address = $('#forwarding_address').val();
@@ -59,6 +62,11 @@ $(document).ready(function() {
       unloading_button($(this));
       return;
     }
+    if (typeof document.tip == 'undefined') {
+      _alert({ message: gettext('You do not have permission to do that.') }, 'error');
+      return;
+    }
+
     if (document.web3network != document.network) {
       _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
       unloading_button($(this));
