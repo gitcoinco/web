@@ -1,0 +1,18 @@
+{
+  "symbol": "dmb",
+  "address": "0x9dba10ee88d89c5849ae4100517165698fbdb411",
+  "overview":{
+        "en": "Coinzen is a lifelong learning blockchain community incubated platform. It is the world's first community-based gamification and game-based realization platform for incubating communities. Today, in the rise of blockchain technology, it is particularly epoch-making to incubate a blockchain community.The concept of Coinzen comes from the Dharma House and Tokentalk online collaboration teams both derived from the Chainclub. Coinzen inherits the whole systematic approach of the Chainclub. Through advanced screening of knowledge-based interactive games, combined with the new collaboration technology of blockchain and smart contracts as well as external resources, Coinzen will eventually create a future-oriented blockchain community incubated game platform. All blockchain enthusiasts can find their core specialty in the collaborative relationship of the community, develop their negative entropy kernel, show the truest of themselves, find meaningful interpersonal relationships, improve collaboration capabilities, and inspire creativity, gain spiritual and material wealth finally.",
+        "zh": "币须达摩是一款终身学习型区块链社群育成平台，是世界上第一款社群游戏化，游戏现实化的社群类育成平台，在区块链技术兴起的今天，育成区块链社群显得特别具有划时代的意义。币须达摩的概念来自区块链研习社达摩院与币须说在线协作团队，币须达摩总结了区块链研习社的整个社群生态育成的系统方法，通过知识型互动游戏进阶筛选的方式，结合区块链、智能合约的新型协作技术，结合外部资源，最终打造成一个面向未来的区块链社群育成游戏平台。所有的区块链爱好者，都能在社群的协作关系中找到自己的核心特长，打造自己的负熵内核，展现最真实的自己，找到有意义的人际关系，提高协作能力，迸发创造力，最终收获到精神与物质的财富。"
+  },
+  "email": "info@dmb.top",
+  "website": "http://www.coinzen.top/",
+  "whitepaper": "http://coinzen.top/whitepaper/whitepaper_cn.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-01-12",
+  "links": {
+    "twitter": "https://twitter.com/coinzenchina",
+    "telegram": "https://t.me/coinzen",
+    "github": "https://github.com/dharmachain"
+  }
+}
