@@ -17,13 +17,16 @@ var sign_and_send = function(rawTx, success_callback, private_key) {
 };
 
 window.onload = function() {
-  ipfs = get_ipfs();
-  ipfs.catText(document.ipfs_key_to_secret, function(err, key2) {
-    if (err) {
-      _alert('could not reach IPFS.  please try again later.', 'error');
-      return;
-    }
-    document.priv_key = combine_secrets(key2, document.gitcoin_secret);
+  waitforWeb3(function() {
+    ipfs.ipfsApi = IpfsApi(ipfsConfig);
+    ipfs.setProvider(ipfsConfig);
+    ipfs.catText(document.ipfs_key_to_secret, function(err, key2) {
+      if (err) {
+        _alert('could not reach IPFS.  please try again later.', 'error');
+        return;
+      }
+      document.priv_key = combine_secrets(key2, document.gitcoin_secret);
+    });
   });
   waitforWeb3(function() {
     if (document.web3network != document.network) {
@@ -36,7 +39,7 @@ window.onload = function() {
 };
 
 $(document).ready(function() {
-  $('#receive').click(function(e) {
+  $(document).on('click', '#receive', (function(e) {
     e.preventDefault();
 
     var forwarding_address = $('#forwarding_address').val();
@@ -84,7 +87,6 @@ $(document).ready(function() {
     var token_contract = web3.eth.contract(token_abi).at(token_address);
     var holding_address = document.tip['holding_address'];
     var amount_in_wei = document.tip['amount_in_wei'];
-    // find the nonce
 
     web3.eth.getTransactionCount(holding_address, function(error, result) {
       var nonce = result;

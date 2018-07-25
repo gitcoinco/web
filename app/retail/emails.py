@@ -68,7 +68,7 @@ def render_tip_email(to_email, tip, is_new):
     link = tip.url
     if tip.web3_type != 'v2':
         link = tip.receive_url
-    if tip.web3_type != 'v3':
+    elif tip.web3_type != 'v3':
         link = tip.receive_url_for_recipient
     params = {
         'link': link,

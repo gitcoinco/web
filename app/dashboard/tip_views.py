@@ -148,8 +148,8 @@ def receive_tip_legacy(request):
 @csrf_exempt
 @ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
 def receive_tip_v2(request, pk, txid, network):
-    """Handle the receiving of a tip (the POST)
-    TODO: Deprecate after v3 has been live for a month
+    """Handle the receiving of a tip (the POST).
+    TODO: Deprecate after v3 has been live for a month.
     Returns:
         TemplateResponse: the UI with the tip confirmed
 
@@ -275,7 +275,6 @@ def send_tip_4(request):
 
     is_user_authenticated = request.user.is_authenticated
     from_username = request.user.username if is_user_authenticated else ''
-    primary_from_email = request.user.email if is_user_authenticated else ''
     access_token = request.user.profile.get_access_token() if is_user_authenticated else ''
     to_emails = []
 
@@ -449,7 +448,6 @@ def send_tip_2(request):
     params = {
         'issueURL': request.GET.get('source'),
         'class': 'send2',
-        'title': _('Send Tip'),
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'from_email': primary_from_email,
         'from_handle': from_username,

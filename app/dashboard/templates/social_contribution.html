@@ -56,22 +56,18 @@
                 </div>
                 <div class="w-100 mt-2">
                   <h4>{% trans "One Click Social Share Links" %}</h4>
-                  <br>
-
-                  <a class="twitter-share-button button button--primary"
-                    href="https://twitter.com/intent/tweet?text={{promo_text|iriencode}}"
-                    data-size="large">
-                  Tweet</a>                  
-                  <a class="button button--primary"
-                    href="mailto:?subject=New Bounty&body={{promo_text|iriencode}}">
-                  Email</a>                  
-                  <a class="button button--primary"
-                    href="https://www.facebook.com/sharer/sharer.php?u={{bounty.url}}">
-                  Facebook</a>                  
-                  <br>
-                  <br>
-                  <br>
-                  <br>
+                  <div class="mb-5 mt-2">
+                    <a class="twitter-share-button button button--primary"
+                      href="https://twitter.com/intent/tweet?text={{promo_text|iriencode}}"
+                      data-size="large">
+                    Tweet</a>
+                    <a class="button button--primary"
+                      href="mailto:?subject=New Bounty&body={{promo_text|iriencode}}">
+                    Email</a>
+                    <a class="button button--primary"
+                      href="https://www.facebook.com/sharer/sharer.php?u={{bounty.url}}">
+                    Facebook</a>
+                  </div>
                 </div>
               </div>
             </div>

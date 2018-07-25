@@ -786,6 +786,7 @@ class Bounty(SuperModel):
 
     @property
     def tips(self):
+        """Return the tips associated with this bounty."""
         try:
             return Tip.objects.filter(github_url__iexact=self.github_url, network=self.network).order_by('-created_on')
         except:
@@ -793,12 +794,14 @@ class Bounty(SuperModel):
 
     @property
     def bulk_payout_tips(self):
+        """Return the Bulk payout tips associated with this bounty."""
         queryset = self.tips.filter(is_for_bounty_fulfiller=False, metadata__is_clone__isnull=True)
         return (queryset.filter(from_address=self.bounty_owner_address) |
                 queryset.filter(from_name=self.bounty_owner_github_username))
 
     @property
     def additional_funding_summary(self):
+        """Return a dict describing the additional funding from crowdfunding that this object has"""
         return_dict = {
             'tokens': {},
             'usd_value': 0,
@@ -903,6 +906,10 @@ class Subscription(SuperModel):
         return f"{self.email} {self.created_on}"
 
 
+class TipPayoutException(Exception):
+    pass
+
+
 class Tip(SuperModel):
 
     web3_type = models.CharField(max_length=50, default='v3')
@@ -973,9 +980,9 @@ class Tip(SuperModel):
     def receive_url(self):
         if self.web3_type == 'yge':
             return self.url
-        if self.web3_type == 'v3':
+        elif self.web3_type == 'v3':
             return self.receive_url_for_recipient
-        if self.web3_type != 'v2':
+        elif self.web3_type != 'v2':
             raise Exception
         
         pk = self.metadata.get('priv_key')
@@ -1089,11 +1096,11 @@ class Tip(SuperModel):
         from dashboard.utils import get_web3
         from dashboard.abi import erc20_abi
         if not address or address == '0x0':
-            raise Exception('bad forwarding address')
+            raise TipPayoutException('bad forwarding address')
         if self.web3_type == 'yge':
-            raise Exception('bad web3_type')
+            raise TipPayoutException('bad web3_type')
         if self.receive_txid:
-            raise Exception('already received')
+            raise TipPayoutException('already received')
 
         # send tokens
         tip = self

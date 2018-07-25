@@ -20,19 +20,6 @@ var callFunctionWhenTransactionMined = function(txHash, f) {
   });
 };
 
-/**
- * @return {obj} ipfs object
- */
-var get_ipfs = function() {
-  ipfs.ipfsApi = IpfsApi();
-  ipfs.setProvider({
-    host: 'ipfs.infura.io',
-    port: 5001,
-    protocol: 'https',
-    root: '/api/v0'
-  });
-  return ipfs;
-};
 
 /**
  * Looks for web3.  Won't call the fucntion until its there

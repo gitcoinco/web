@@ -28,7 +28,8 @@ var set_metadata = function(callback) {
   var account = generate_or_get_private_key();
   var shares = account['shares'];
 
-  ipfs = get_ipfs();
+  ipfs.ipfsApi = IpfsApi(ipfsConfig);
+  ipfs.setProvider(ipfsConfig);
   ipfs.add(shares[1], function(err, hash1) {
     if (err)
       throw err;

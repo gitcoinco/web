@@ -148,7 +148,7 @@ $(document).ready(function($) {
       };
       var failure_callback = function() {
         // do nothing
-        console.log('satisfy linter');
+        $.noop()
       };
 
       return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false);
