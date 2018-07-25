@@ -762,7 +762,7 @@ var do_actions = function(result) {
       href: job_url,
       text: gettext('View Attached Job Description'),
       parent: 'right_actions',
-      title: gettext('This bounty hunter is hiring for a full time, part time, or contract role and has attached that to this bounty.'),
+      title: gettext('This bounty funder is hiring for a full time, part time, or contract role and has attached that to this bounty.'),
       color: 'white'
     };
 
