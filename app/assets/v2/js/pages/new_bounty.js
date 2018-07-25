@@ -377,7 +377,7 @@ $(document).ready(function() {
       }
 
       function newIpfsCallback(error, result) {
-          if (error) {
+        if (error) {
           mixpanel.track('New Bounty Error', {
             step: 'post_ipfs',
             error: error
@@ -403,7 +403,7 @@ $(document).ready(function() {
 
         var eth_amount = isETH ? amount : 0;
         var _paysTokens = !isETH;
-          var bountyIndex = bounty.issueAndActivateBounty(
+        var bountyIndex = bounty.issueAndActivateBounty(
           account, // _issuer
           mock_expire_date, // _deadline
           result, // _data (ipfs hash)
@@ -413,7 +413,7 @@ $(document).ready(function() {
           tokenAddress, // _tokenContract
           amount, // _value
           {
-            // {from: x, to: y}
+          // {from: x, to: y}
             from: account,
             value: eth_amount,
             gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
@@ -425,7 +425,7 @@ $(document).ready(function() {
       }
 
       var do_bounty = function(callback) {
-        // Add data to IPFS and kick off all the callbacks.
+      // Add data to IPFS and kick off all the callbacks.
         ipfsBounty.payload.issuer.address = account;
         ipfs.addJson(ipfsBounty, newIpfsCallback);
       };

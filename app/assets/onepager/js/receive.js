@@ -20,7 +20,7 @@ window.onload = function() {
   waitforWeb3(function() {
     ipfs.ipfsApi = IpfsApi(ipfsConfig);
     ipfs.setProvider(ipfsConfig);
-    if(typeof document.ipfs_key_to_secret == 'undefined'){
+    if (typeof document.ipfs_key_to_secret == 'undefined') {
       return;
     }
     ipfs.catText(document.ipfs_key_to_secret, function(err, key2) {

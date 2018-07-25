@@ -719,18 +719,6 @@ var do_actions = function(result) {
     actions.push(_entry);
   }
 
-  if (show_advanced_payout) {
-    const enabled = show_advanced_payout;
-    const _entry = {
-      enabled: enabled,
-      href: result['action_urls']['payout'],
-      text: gettext('Multi-Party Payout'),
-      title: gettext('Used to pay out to many people at once.'),
-      parent: 'right_actions'
-    };
-
-    actions.push(_entry);
-  }
 
   if (show_increase_bounty) {
     const enabled = true;
