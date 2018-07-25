@@ -272,7 +272,11 @@ var mutate_interest = function(bounty_pk, direction, data) {
     }
     return false;
   }).fail(function(result) {
-    alert(result.responseJSON.error);
+    _alert({ message: gettext('Network or API error. Please reload the page and try again.') }, 'error');
+
+    if (result) {
+      console.log(result.responseJSON.error);
+    }
   });
 };
 
