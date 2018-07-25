@@ -17,8 +17,9 @@ $(document).ready(function() {
     var fundingAccount = web3.eth.coinbase;
     var destinationAccount = $('#destinationAccount').val();
     var faucetAmount = $('#faucetAmount').val();
+
     decimals = 6;
-    faucetAmount = Math.round(faucetAmount * 10**decimals) / 10**decimals
+    faucetAmount = Math.round(faucetAmount * 10 ** decimals) / 10 ** decimals;
 
     web3.eth.sendTransaction({
       from: fundingAccount,

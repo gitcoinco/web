@@ -1,5 +1,15 @@
 /* eslint-disable no-console */
 
+var get_gas_price = function() {
+  if ($('#gasPrice').length) {
+    return $('#gasPrice').val() * Math.pow(10, 9);
+  }
+  if (typeof defaultGasPrice != 'undefined') {
+    return defaultGasPrice;
+  }
+  return 5 * 10 ** 9;
+};
+
 $(document).ready(function() {
 
   // jquery bindings
@@ -190,17 +200,19 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
       if (isSendingETH) {
         web3.eth.sendTransaction({
           to: destinationAccount,
-          value: amountInWei
+          value: amountInWei,
+          gasPrice: web3.toHex(get_gas_price())
         }, post_send_callback);
       } else {
         _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer.') }, 'info');
         web3.eth.sendTransaction({
           to: destinationAccount,
-          value: gas_money
+          value: gas_money,
+          gasPrice: web3.toHex(get_gas_price())
         }, function() {
           var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
 
-          token_contract.transfer(destinationAccount, amountInWei, post_send_callback);
+          token_contract.transfer(destinationAccount, amountInWei, {gasPrice: web3.toHex(get_gas_price())}, post_send_callback);
         });
       }
     }
