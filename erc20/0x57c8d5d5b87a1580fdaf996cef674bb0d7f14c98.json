@@ -1,0 +1,19 @@
+{
+  "symbol": "ODIN",
+  "address": "0x57c8d5d5b87a1580fdaf996cef674bb0d7f14c98",
+  "overview": {
+    "en": "Odin Chain is a Web ecological public blockchain designed with the help of blockchain technology and the advertising smart contract, which will effectively solve many problems existing in Internet advertising. Developers can develop independent browsers by relying on open public blockchains. Odin Token is the only value carrier that can be transferred in the whole ecology.",
+    "zh": "Odin chain是借助区块链技术和广告智能合约设计的Web生态公链，将有效解决互联网广告存在的诸多问题。开发者可以依托开放的公链接口开发独立的浏览器，odin token是全生态中唯一可以流转的价值载体。"
+  },
+  "email": "support@odinlink.com",
+  "website": "https://www.odinlink.com/",
+  "whitepaper": "https://github.com/odinlink/odin/blob/master/odin_whitepaper_cn.pdf",
+  "state": "NORMAL",
+  "initial_price": {
+    "ETH": "0.00001500 ETH",
+    "USD": "0.0067 USD"
+  },
+  "links": {
+    "telegram": "https://t.me/OdinChain666666"
+  }
+}
