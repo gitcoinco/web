@@ -1124,6 +1124,38 @@ class Activity(models.Model):
         return _(next((x[1] for x in self.ACTIVITY_TYPES if x[0] == self.activity_type), 'Unknown type'))
 
     @property
+    def view_props(self):
+        from dashboard.tokens import token_by_name
+        icons = {
+            'title': 'Activity',
+            'new_tip': 'fa-thumbs-up',
+            'start_work': 'fa-lightbulb',
+            'new_bounty': 'fa-money-bill-alt',
+            'work_done': 'fa-check-circle',
+        }
+
+        activity = self
+        activity.icon = icons.get(activity.activity_type, 'fa-check-circle')
+        obj = activity.metadata
+        if 'new_bounty' in activity.metadata:
+            obj = activity.metadata['new_bounty']
+        activity.title = obj.get('title', '')
+        if 'id' in obj:
+            activity.bounty_url = Bounty.objects.get(pk=obj['id']).get_relative_url()
+            if activity.title:
+                activity.urled_title = f'<a href="{activity.bounty_url}">{activity.title}</a>'
+            else:
+                activity.urled_title = activity.title
+        if 'value_in_usdt_now' in obj:
+            activity.value_in_usdt_now = obj['value_in_usdt_now']
+        if 'token_name' in obj:
+            activity.token = token_by_name(obj['token_name'])
+            if 'value_in_token' in obj and activity.token:
+                activity.value_in_token_disp = round((float(obj['value_in_token']) /
+                                                      10 ** activity.token['decimals']) * 1000) / 1000
+        return activity
+
+    @property
     def token_name(self):
         if self.bounty:
             return self.bounty.token_name
