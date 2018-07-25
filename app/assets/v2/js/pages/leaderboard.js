@@ -12,12 +12,16 @@ var removeFilter = function() {
 };
 
 $(document).ready(function() {
-  var keyword_search = document.location.href.split('=');
+  var keyword_search = new URL(document.location.href);
+  var keyword = keyword_search.searchParams.get('keyword');
 
-  if (keyword_search.length > 1) {
-    $('.filter-tags').append('<a class="filter-tag tech_stack"><span>' + keyword_search[1] + '</span>' +
-      '<i class="fas fa-times" onclick="removeFilter()"></i></a>');
-  }
+  technologies.forEach(function(tech) {
+    if (keyword === tech) {
+      $('.tech-options').append(`<option value="${tech}" selected>${tech}</option>`);
+    } else {
+      $('.tech-options').append(`<option value="${tech}">${tech}</option>`);
+    }
+  });
 
   $('.leaderboard_entry .progress-bar').each(function() {
     const max = parseInt($(this).attr('aria-valuemax'));
@@ -41,14 +45,15 @@ $(document).ready(function() {
     document.location.href = `/leaderboard/${val}`;
   });
 
-  $('#new_search').click(function(e) {
-    var keyword = $('#keywords').val();
+  $('#tech-keyword').change(function() {
+    const keyword = $(this).val();
 
-    if (!technologies.includes(keyword)) {
-      confirm('Please enter a valid technology.');
-      return;
+    if (keyword === 'all') {
+      var new_location = window.location.href.split('?')[0];
+
+      window.location.href = new_location;
+    } else {
+      window.location.href = window.location.href + `?keyword=${keyword}`;
     }
-
-    window.location.href = `/leaderboard?keyword=${keyword}`;
   });
 });
