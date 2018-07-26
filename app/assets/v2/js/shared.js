@@ -20,6 +20,7 @@ var callFunctionWhenTransactionMined = function(txHash, f) {
   });
 };
 
+
 /**
  * Looks for web3.  Won't call the fucntion until its there
  * @callback

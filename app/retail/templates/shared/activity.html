@@ -43,7 +43,10 @@
       {% elif row.activity_type == 'increased_bounty' %}
         {% trans "increased funding: " %}{{ row.urled_title | safe }}
       {% else %}
-        {{ row.i18n_name }}{% if row.urled_title %}: {{ row.urled_title | safe }}{% endif %}
+        {{ row.i18n_name }}
+        {% if row.bounty %}
+          : <a href="{{ row.bounty.url }}">{{ row.bounty.title }}</a>
+        {% endif %}
       {% endif %}
     </div>
     <div class="font-caption" >

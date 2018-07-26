@@ -88,7 +88,8 @@ var rows = [
   'started_owners_username',
   'submitted_owners_username',
   'fulfilled_owners_username',
-  'fulfillment_accepted_on'
+  'fulfillment_accepted_on',
+  'additional_funding_summary'
 ];
 
 var heads = {
@@ -212,6 +213,33 @@ var callbacks = {
     var warning = 'WARNING: this is a ' + val + ' network bounty, and is NOT real money.  To see mainnet bounties, go to <a href="/explorer">the bounty explorer</a> and search for mainnet bounties.  ';
 
     return [ 'network', warning ];
+  },
+  'additional_funding_summary': function(key, val, result) {
+    if (typeof val == 'undefined' || Object.keys(val['tokens']).length == 0) {
+      $('.additional_funding_summary').addClass('hidden');
+      return [ 'additional_funding_summary', '' ];
+    }
+    var usd_value = val['usd_value'];
+    var tokens = val['tokens'];
+    var decimals = 3;
+
+    var ui_elements = [];
+
+    for (var token in tokens) {
+      if (token) {
+        var val = tokens[token];
+
+        ui_elements.push(Math.round(val * 10 ** decimals) / 10 ** decimals + ' ' + token);
+      }
+    }
+    var str = '+ ' + ui_elements.join(', ') + ' in crowdfunding';
+
+    if (usd_value) {
+      str += 'worth $' + usd_value;
+    }
+
+    $('.additional_funding_summary  p').html(str);
+    return [ 'additional_funding_summary', val ];
   },
   'token_value_time_peg': function(key, val, result) {
     if (val === null || typeof val == 'undefined') {
@@ -658,7 +686,7 @@ var do_actions = function(result) {
       text: is_interested ? gettext('Stop Work') : gettext('Start Work'),
       parent: 'right_actions',
       title: is_interested ? gettext('Notify the funder that you will not be working on this project') : gettext('Notify the funder that you would like to take on this project'),
-      color: is_interested ? 'white' : '',
+      color: is_interested ? '' : '',
       id: 'interest'
     };
 
@@ -691,34 +719,19 @@ var do_actions = function(result) {
     actions.push(_entry);
   }
 
+
   if (show_increase_bounty) {
-    const enabled = increase_bounty_enabled;
+    const enabled = true;
     const _entry = {
       enabled: enabled,
-      href: result['action_urls']['increase'],
-      text: gettext('Add Contribution'),
+      href: result['action_urls']['contribute'],
+      text: gettext('Contribute'),
       parent: 'right_actions',
-      title: gettext('Increase the funding for this issue')
+      title: gettext('Help by funding or promoting this issue')
     };
 
     actions.push(_entry);
   }
-
-  if (show_job_description) {
-    var job_url = result['attached_job_description'];
-
-    var _entry = {
-      enabled: true,
-      href: job_url,
-      text: gettext('View Attached Job Description'),
-      parent: 'right_actions',
-      title: gettext('This bounty hunter is hiring for a full time, part time, or contract role and has attached that to this bounty.'),
-      color: 'white'
-    };
-
-    actions.push(_entry);
-  }
-
 
   if (show_github_link) {
     let github_url = result['github_url'];
@@ -740,6 +753,23 @@ var do_actions = function(result) {
 
     actions.push(_entry);
   }
+
+  if (show_job_description) {
+    var job_url = result['attached_job_description'];
+
+    var _entry = {
+      enabled: true,
+      href: job_url,
+      text: gettext('View Attached Job Description'),
+      parent: 'right_actions',
+      title: gettext('This bounty funder is hiring for a full time, part time, or contract role and has attached that to this bounty.'),
+      color: 'white'
+    };
+
+    actions.push(_entry);
+  }
+
+
   if (show_suspend_auto_approval) {
     const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
     const url = result['url'] + connector_char + 'suspend_auto_approval=1';
@@ -895,7 +925,8 @@ var pull_bounty_from_api = function() {
       // is there a pending issue or not?
       $('.nonefound').css('display', 'block');
     }
-  }).fail(function() {
+  }).fail(function(result) {
+    console.log(result);
     _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
     $('#primary_view').css('display', 'none');
   }).always(function() {
@@ -916,6 +947,7 @@ const process_activities = function(result, bounty_activities) {
     worker_applied: gettext('Worker Applied'),
     increased_bounty: gettext('Increased Funding'),
     killed_bounty: gettext('Canceled Bounty'),
+    new_crowdfund: gettext('New Crowdfund Contribution'),
     new_tip: gettext('New Tip'),
     receive_tip: gettext('Tip Received')
   };

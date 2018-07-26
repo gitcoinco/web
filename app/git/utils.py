@@ -277,6 +277,42 @@ def get_github_primary_email(oauth_token):
     return ''
 
 
+def get_github_event_emails(oauth_token, username):
+    """Get all email addresses associated with the github profile.
+
+    Args:
+        oauth_token (str): The Github OAuth2 token to use for authentication.
+
+    Returns:
+        list of str: All of the user's associated email from github.
+
+    """
+    emails = []
+    headers = JSON_HEADER
+    if oauth_token:
+        headers = dict({'Authorization': f'token {oauth_token}'}, **JSON_HEADER)
+    response = requests.get(f'https://api.github.com/users/{username}/events/public', headers=headers)
+
+    userinfo = get_user(username)
+    user_name = userinfo.get('name', '')
+    print(user_name)
+
+    if response.status_code == 200:
+        events = response.json()
+        for event in events:
+            payload = event.get('payload', {})
+            for commit in payload.get('commits', []):
+                author = commit.get('author', {})
+                email = author.get('email', {})
+                name = author.get('name', {})
+                append_email = name.lower() == username.lower() or name.lower() == user_name.lower() \
+                    and email and 'noreply.github.com' not in email
+                if append_email:
+                    emails.append(email)
+
+    return set(emails)
+
+
 def get_github_emails(oauth_token):
     """Get all email addresses associated with the github profile.
 
@@ -299,6 +335,21 @@ def get_github_emails(oauth_token):
                 emails.append(email_address)
 
     return emails
+
+
+def get_emails_master(username):
+    from dashboard.models import Profile
+    to_emails = []
+    to_profiles = Profile.objects.filter(handle__iexact=username)
+    if to_profiles.exists():
+        to_profile = to_profiles.first()
+        if to_profile.github_access_token:
+            to_emails = get_github_emails(to_profile.github_access_token)
+        if to_profile.email:
+            to_emails.append(to_profile.email)
+    for email in get_github_event_emails(None, username):
+        to_emails.append(email)
+    return list(set(to_emails))
 
 
 def search(query):

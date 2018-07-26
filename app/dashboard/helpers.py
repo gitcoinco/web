@@ -385,6 +385,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 # These fields are after initial bounty creation, in bounty_details.js
                 standard_bounties_id=bounty_id,
                 num_fulfillments=len(fulfillments),
+                value_in_token=bounty_details.get('fulfillmentAmount'),
                 # info to xfr over from latest_old_bounty as override fields (this is because sometimes ppl dont login when they first submit issue and it needs to be overridden)
                 web3_created=timezone.make_aware(
                     timezone.datetime.fromtimestamp(bounty_payload.get('created')),
@@ -398,7 +399,6 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     timezone=UTC) if not latest_old_bounty else latest_old_bounty.expires_date,
                 title=bounty_payload.get('title', '') if not latest_old_bounty else latest_old_bounty.title,
                 issue_description=bounty_payload.get('description', ' ') if not latest_old_bounty else latest_old_bounty.issue_description,
-                value_in_token=bounty_details.get('fulfillmentAmount') if not latest_old_bounty else latest_old_bounty.value_in_token,
                 balance=bounty_details.get('balance') if not latest_old_bounty else latest_old_bounty.balance,
                 contract_address=bounty_details.get('token') if not latest_old_bounty else latest_old_bounty.contract_address,
                 network=bounty_details.get('network') if not latest_old_bounty else latest_old_bounty.network,

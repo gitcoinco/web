@@ -43,6 +43,7 @@ import requests
 from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, issue_number, org_name, repo_name
 from marketing.models import LeaderboardRank
 from rest_framework import serializers
@@ -481,7 +482,7 @@ class Bounty(SuperModel):
                     return 'done'
                 elif self.past_hard_expiration_date:
                     return 'expired'
-                has_tips = Tip.objects.filter(network=self.network, github_url=self.github_url).exclude(txid='').exists()
+                has_tips = self.tips.filter(is_for_bounty_fulfiller=False).exclude(txid='').exists()
                 if has_tips:
                     return 'done'
                 # If its not expired or done, and no tips, it must be cancelled.
@@ -746,7 +747,7 @@ class Bounty(SuperModel):
         """
         params = f'pk={self.pk}&network={self.network}'
         urls = {}
-        for item in ['fulfill', 'increase', 'accept', 'cancel', 'payout', 'advanced_payout']:
+        for item in ['fulfill', 'increase', 'accept', 'cancel', 'payout', 'contribute', 'advanced_payout', 'social_contribution']:
             urls.update({item: f'/issue/{item}?{params}'})
         return urls
 
@@ -782,6 +783,49 @@ class Bounty(SuperModel):
         if self.project_type == 'traditional':
             fulfilled = self.interested.filter(pending=False).exists()
         return fulfilled
+
+    @property
+    def tips(self):
+        """Return the tips associated with this bounty."""
+        try:
+            return Tip.objects.filter(github_url__iexact=self.github_url, network=self.network).order_by('-created_on')
+        except:
+            return Tip.objects.none()
+
+    @property
+    def bulk_payout_tips(self):
+        """Return the Bulk payout tips associated with this bounty."""
+        queryset = self.tips.filter(is_for_bounty_fulfiller=False, metadata__is_clone__isnull=True, metadata__direct_address__isnull=True)
+        return (queryset.filter(from_address=self.bounty_owner_address) |
+                queryset.filter(from_name=self.bounty_owner_github_username))
+
+    @property
+    def additional_funding_summary(self):
+        """Return a dict describing the additional funding from crowdfunding that this object has"""
+        return_dict = {
+            'tokens': {},
+            'usd_value': 0,
+        }
+        for tip in self.tips.filter(is_for_bounty_fulfiller=True):
+            key = tip.tokenName
+            if key not in return_dict['tokens'].keys():
+                return_dict['tokens'][key] = 0
+            return_dict['tokens'][key] += tip.amount_in_whole_units
+            return_dict['usd_value'] += tip.value_in_usdt if tip.value_in_usdt else 0
+        return return_dict
+
+    @property
+    def additional_funding_summary_sentence(self):
+        afs = self.additional_funding_summary
+        if len(afs['tokens'].keys()) == 0:
+            return ""
+        items = []
+        for token, value in afs['tokens']:
+            items.append(f"{value} {token}")
+        sentence = ", ".join(items)
+        if(afs['usd_value']):
+            sentence += f"worth ${afs['usd_value']}"
+        return sentence
 
 
 class BountyFulfillmentQuerySet(models.QuerySet):
@@ -862,11 +906,15 @@ class Subscription(SuperModel):
         return f"{self.email} {self.created_on}"
 
 
+class TipPayoutException(Exception):
+    pass
+
+
 class Tip(SuperModel):
 
-    web3_type = models.CharField(max_length=50, default='v2')
+    web3_type = models.CharField(max_length=50, default='v3')
     emails = JSONField()
-    url = models.CharField(max_length=255, default='')
+    url = models.CharField(max_length=255, default='', blank=True)
     tokenName = models.CharField(max_length=255)
     tokenAddress = models.CharField(max_length=255)
     amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
@@ -892,6 +940,11 @@ class Tip(SuperModel):
         'dashboard.Profile', related_name='sent_tips', on_delete=models.SET_NULL, null=True, blank=True
     )
     metadata = JSONField(default={}, blank=True)
+    is_for_bounty_fulfiller = models.BooleanField(
+        default=False,
+        help_text='If this option is chosen, this tip will be automatically paid to the bounty'
+                  ' fulfiller, not self.usernameusername.',
+    )
 
     def __str__(self):
         """Return the string representation for a tip."""
@@ -927,11 +980,31 @@ class Tip(SuperModel):
     def receive_url(self):
         if self.web3_type == 'yge':
             return self.url
-
+        elif self.web3_type == 'v3':
+            return self.receive_url_for_recipient
+        elif self.web3_type != 'v2':
+            raise Exception
+        
         pk = self.metadata.get('priv_key')
         txid = self.txid
         network = self.network
         return f"{settings.BASE_URL}tip/receive/v2/{pk}/{txid}/{network}"
+
+    @property
+    def receive_url_for_recipient(self):
+        if self.web3_type != 'v3':
+            raise Exception
+
+        key = self.metadata['reference_hash_for_receipient']
+        return f"{settings.BASE_URL}tip/receive/v3/{key}/{self.txid}/{self.network}"
+
+    @property
+    def receive_url_for_funder(self):
+        if self.web3_type != 'v3':
+            raise Exception
+
+        key = self.metadata['reference_hash_for_funder']
+        return f"{settings.BASE_URL}tip/receive/v3/{key}/{self.txid}/{self.network}"
 
     # TODO: DRY
     @property
@@ -1009,6 +1082,61 @@ class Tip(SuperModel):
             return False
         return True
 
+    @property
+    def bounty(self):
+        try:
+            return Bounty.objects.current().filter(
+                github_url__iexact=self.github_url,
+                network=self.network).order_by('-web3_created').first()
+        except Bounty.DoesNotExist:
+            return None
+
+    def payout_to(self, address, amount_override=None):
+        # TODO: deprecate this after v3 is shipped.
+        from dashboard.utils import get_web3
+        from dashboard.abi import erc20_abi
+        if not address or address == '0x0':
+            raise TipPayoutException('bad forwarding address')
+        if self.web3_type == 'yge':
+            raise TipPayoutException('bad web3_type')
+        if self.receive_txid:
+            raise TipPayoutException('already received')
+
+        # send tokens
+        tip = self
+        address = Web3.toChecksumAddress(address)
+        w3 = get_web3(tip.network)
+        is_erc20 = tip.tokenName.lower() != 'eth'
+        amount = int(tip.amount_in_wei) if not amount_override else int(amount_override)
+        gasPrice = recommend_min_gas_price_to_confirm_in_time(60) * 10**9
+        from_address = Web3.toChecksumAddress(tip.metadata['address'])
+        nonce = w3.eth.getTransactionCount(from_address)
+        if is_erc20:
+            # ERC20 contract receive
+            balance = w3.eth.getBalance(from_address)
+            contract = w3.eth.contract(Web3.toChecksumAddress(tip.tokenAddress), abi=erc20_abi)
+            gas = contract.functions.transfer(address, amount).estimateGas({'from': from_address}) + 1
+            gasPrice = gasPrice if ((gas * gasPrice) < balance) else (balance * 1.0 / gas)
+            tx = contract.functions.transfer(address, amount).buildTransaction({
+                'nonce': nonce,
+                'gas': w3.toHex(gas),
+                'gasPrice': w3.toHex(int(gasPrice)),
+            })
+        else:
+            # ERC20 contract receive
+            gas = 100000
+            amount -= gas * int(gasPrice)
+            tx = dict(
+                nonce=nonce,
+                gasPrice=w3.toHex(int(gasPrice)),
+                gas=w3.toHex(gas),
+                to=address,
+                value=w3.toHex(amount),
+                data=b'',
+            )
+        signed = w3.eth.account.signTransaction(tx, tip.metadata['priv_key'])
+        receive_txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
+        return receive_txid
 
 @receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
 def psave_tip(sender, instance, **kwargs):
@@ -1107,6 +1235,7 @@ class Activity(models.Model):
         ('killed_bounty', 'Canceled Bounty'),
         ('new_tip', 'New Tip'),
         ('receive_tip', 'Tip Received'),
+        ('new_crowdfund', 'New Crowdfund Contribution'),
     ]
     profile = models.ForeignKey('dashboard.Profile', related_name='activities', on_delete=models.CASCADE)
     bounty = models.ForeignKey(Bounty, related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
@@ -1199,6 +1328,9 @@ class Profile(SuperModel):
     form_submission_records = JSONField(default=[], blank=True)
     # Sample data: https://gist.github.com/mbeacom/ee91c8b0d7083fa40d9fa065125a8d48
     max_num_issues_start_work = models.IntegerField(default=3)
+    preferred_payout_address = models.CharField(max_length=255, default='')
+    max_tip_amount_usdt_per_tx = models.DecimalField(default=500, decimal_places=2, max_digits=50)
+    max_tip_amount_usdt_per_week = models.DecimalField(default=1500, decimal_places=2, max_digits=50)
 
     @property
     def is_org(self):

@@ -290,7 +290,7 @@ $(document).ready(function() {
       localStorage['notificationEmail'] = notificationEmail;
       localStorage['githubUsername'] = githubUsername;
       localStorage['tokenAddress'] = tokenAddress;
-      localStorage['jobDescription'] = data.jobDescription;
+      localStorage['jobDescription'] = $('#hiringRightNow').is(':checked') ? data.jobDescription : '';
       localStorage['expirationTimeDelta'] = $(
         'select[name=expirationTimeDelta]'
       ).val();
@@ -413,7 +413,7 @@ $(document).ready(function() {
           tokenAddress, // _tokenContract
           amount, // _value
           {
-            // {from: x, to: y}
+          // {from: x, to: y}
             from: account,
             value: eth_amount,
             gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
@@ -425,7 +425,7 @@ $(document).ready(function() {
       }
 
       var do_bounty = function(callback) {
-        // Add data to IPFS and kick off all the callbacks.
+      // Add data to IPFS and kick off all the callbacks.
         ipfsBounty.payload.issuer.address = account;
         ipfs.addJson(ipfsBounty, newIpfsCallback);
       };
