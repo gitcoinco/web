@@ -453,6 +453,13 @@ def onboard(request, flow):
             login_redirect = redirect('/login/github?next=' + request.get_full_path())
             return login_redirect
 
+    if request.GET.get('eth_address') and request.user.is_authenticated and getattr(request.user, 'profile'):
+        profile = request.user.profile
+        eth_address = request.GET.get('eth_address')
+        profile.preferred_payout_address = eth_address
+        profile.save()
+        return JsonResponse({'OK': True})
+
     params = {
         'title': _('Onboarding Flow'),
         'steps': steps or onboard_steps,
@@ -500,6 +507,60 @@ def accept_bounty(request):
         update=bounty_params,
     )
     return TemplateResponse(request, 'process_bounty.html', params)
+
+
+def contribute(request):
+    """Contribute to the bounty.
+
+    Args:
+        pk (int): The primary key of the bounty to be accepted.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The accept bounty view.
+
+    """
+    bounty = handle_bounty_views(request)
+
+    params = get_context(
+        ref_object=bounty,
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='contribute_bounty',
+        title=_('Contribute'),
+    )
+    return TemplateResponse(request, 'contribute_bounty.html', params)
+
+
+def social_contribution(request):
+    """Social Contributuion to the bounty.
+
+    Args:
+        pk (int): The primary key of the bounty to be accepted.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The accept bounty view.
+
+    """
+    bounty = handle_bounty_views(request)
+    promo_text = str(_("Check out this bounty that pays out ")) + f"{bounty.get_value_true} {bounty.token_name} {bounty.url}"
+    for keyword in bounty.keywords_list:
+        promo_text += f" #{keyword}"
+
+    params = get_context(
+        ref_object=bounty,
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='social_contribute',
+        title=_('Social Contribute'),
+    )
+    params['promo_text'] = promo_text
+    return TemplateResponse(request, 'social_contribution.html', params)
 
 
 def payout_bounty(request):
@@ -595,13 +656,19 @@ def increase_bounty(request):
 
     """
     bounty = handle_bounty_views(request)
+    user = request.user if request.user.is_authenticated else None
+    is_funder = bounty.is_funder(user.username.lower()) if user else False
+
     params = get_context(
         ref_object=bounty,
-        user=request.user if request.user.is_authenticated else None,
+        user=user,
         confirm_time_minutes_target=confirm_time_minutes_target,
         active='increase_bounty',
         title=_('Increase Bounty'),
     )
+
+    params['is_funder'] = json.dumps(is_funder)
+
     return TemplateResponse(request, 'increase_bounty.html', params)
 
 

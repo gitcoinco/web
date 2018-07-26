@@ -4,6 +4,6 @@
 
 
 
-{% include 'emails/bounty.txt' with bounty=bounty action='custom' action_copy='Approve Worker' action_url=approve_worker_url %}
+{% include 'emails/bounty.txt' with bounty=bounty action='custom' action_copy='Approve Worker' action_url=approve_worker_url action2_url=reject_worker_url action2_copy='Reject Worker' action2='custom' %}
 
 {% trans "As a reminder, after 24 hours any contributor will be auto-approved and can automatically submit a PR against your issue." %}

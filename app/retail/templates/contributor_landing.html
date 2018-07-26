@@ -46,11 +46,17 @@
         </div>
       {% endif %}
 
+      {% if activities|length %}
+        <div class="container-fluid p-5 activity">
+          {% include 'landing/contributor/activity.html' %}
+        </div>
+      {% endif %}
+
       <div class="container-fluid p-5 benefits_container">
         {% include 'landing/contributor/benefits.html' %}
       </div>
 
-      <div class="container-fluid pt-5 landing__newsletter" style="background-color: var(--gc-green); padding-bottom: 5rem;">
+      <div class="container-fluid pb-5 landing__newsletter">
         {% include 'shared/newsletter.html' %}
       </div>
 
@@ -101,7 +107,6 @@
     {% include 'shared/footer_scripts.html' with slim=1 %}
     {% include 'shared/rollbar.html' %}
   </body>
-  {% include 'shared/analytics.html' %}
   {% if tech_stack %}
     <script>
       var uri;

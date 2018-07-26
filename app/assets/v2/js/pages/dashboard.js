@@ -490,9 +490,8 @@ var refreshBounties = function(event) {
 
         var timeLeft = timeDifference(new Date(), new Date(result['expires_date']));
         var expiredExpires = new Date() < new Date(result['expires_date']) ? 'Expires' : 'Expired';
-        var softOrNot = result['can_submit_after_expiration_date'] ? 'Soft ' : '';
 
-        result['p'] += ('Opened ' + opened_when + ' ago, ' + softOrNot + expiredExpires + ' ' + timeLeft);
+        result['p'] += ('Opened ' + opened_when + ' ago, ' + expiredExpires + ' ' + timeLeft);
       }
 
       result['watch'] = 'Watch';
