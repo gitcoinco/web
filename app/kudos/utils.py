@@ -86,6 +86,7 @@ def mint_kudos(network, *args
                uint256 price,
                uint256 numClonesAllowed,
                string tags,
+               string iamge,  // IPFS Hash
                )
     """
 
@@ -114,7 +115,8 @@ def mint_kudos(network, *args
                      num_clones_allowed=kudos[4],
                      num_clones_in_wild=kudos[5],
                      lister=kudos[6],
-                     tags=kudos[7]
+                     tags=kudos[7],
+                     image=kudos[8],
                      )
 
     kudos_db = MarketPlaceListing(pk=kudos_id, **kudos_map)
