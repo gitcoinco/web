@@ -466,10 +466,12 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
 };
 
 var attach_work_actions = function() {
-  $('body').delegate('a[href="/interested"], a[href="/uninterested"]', 'click', function(e) {
+  $('body').delegate('a[href="/interested"], a[href="/uninterested"], a[href="/extend-deadlines"]', 'click', function(e) {
     e.preventDefault();
     if ($(this).attr('href') == '/interested') {
       show_interest_modal.call(this);
+    } else if ($(this).attr('href') === '/extend-deadlines') {
+      show_extend_deadline_modal.call(this);
     } else if (confirm(gettext('Are you sure you want to stop work?'))) {
       $(this).attr('href', '/interested');
       $(this).find('span').text(gettext('Start Work'));
@@ -522,6 +524,62 @@ var show_interest_modal = function() {
     $.get(url, function(newHTML) {
       var modal = $(newHTML).appendTo('body').modal({
         modalClass: 'modal add-interest-modal'
+      });
+
+      modal.on('submit', function(event) {
+        event.preventDefault();
+
+        var issue_message = event.target[0].value.trim();
+        var agree_precedence = event.target[1].checked;
+        var agree_not_to_abandon = event.target[2].checked;
+
+        if (!issue_message) {
+          _alert({message: gettext('Please provide an action plan for this ticket.')}, 'error');
+          return false;
+        }
+
+        if (!agree_precedence) {
+          _alert({message: gettext('You must agree to the precedence clause.')}, 'error');
+          return false;
+        }
+        if (!agree_not_to_abandon) {
+          _alert({message: gettext('You must agree to keep the funder updated on your progress.')}, 'error');
+          return false;
+        }
+
+        $(self).attr('href', '/uninterested');
+        $(self).find('span').text(gettext('Stop Work'));
+        add_interest(document.result['pk'], {
+          issue_message
+        });
+        $.modal.close();
+      });
+    });
+  });
+};
+
+var show_extend_deadline_modal = function() {
+  var self = this;
+
+  setTimeout(function() {
+    var url = '/modal/extend_issue_deadline';
+
+    $.get(url, function(newHTML) {
+      var modal = $(newHTML).appendTo('body').modal({
+        modalClass: 'modal add-interest-modal'
+      });
+
+      // all js select 2 fields
+      $('.js-select2').each(function() {
+        $(this).select2();
+      });
+      // removes tooltip
+      $('.submit_bounty select').each(function(evt) {
+        $('.select2-selection__rendered').removeAttr('title');
+      });
+      // removes search field in all but the 'denomination' dropdown
+      $('.select2-container').click(function() {
+        $('.select2-container .select2-search__field').remove();
       });
 
       modal.on('submit', function(event) {
@@ -649,6 +707,7 @@ var do_actions = function(result) {
   const increase_bounty_enabled = isBountyOwner(result);
   let show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
   let show_advanced_payout = isBountyOwner(result) && !is_status_expired && !is_status_done;
+  let show_extend_deadline = isBountyOwner(result) && !is_status_expired && !is_status_done;
   const show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
   const show_admin_methods = document.isStaff;
 
@@ -728,6 +787,19 @@ var do_actions = function(result) {
       text: gettext('Contribute'),
       parent: 'right_actions',
       title: gettext('Help by funding or promoting this issue')
+    };
+
+    actions.push(_entry);
+  }
+
+  if (show_extend_deadline) {
+    const enabled = true;
+    const _entry = {
+      enabled: enabled,
+      href: '/extend-deadlines',
+      text: gettext('Extend Expiration'),
+      parent: 'right_actions',
+      title: gettext('Extend deadline of an issue')
     };
 
     actions.push(_entry);

@@ -184,6 +184,7 @@ urlpatterns = [
 
     # modals
     re_path(r'^modal/get_quickstart_video?', dashboard.views.get_quickstart_video, name='get_quickstart_video'),
+    re_path(r'^modal/extend_issue_deadline?', dashboard.views.extend_issue_deadline, name='extend_issue_deadline'),
 
     # brochureware views
     re_path(r'^about/?', retail.views.about, name='about'),

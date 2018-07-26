@@ -1060,6 +1060,19 @@ def get_quickstart_video(request):
     return TemplateResponse(request, 'quickstart_video.html', context)
 
 
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def extend_issue_deadline(request):
+    """Show quickstart video."""
+    context = {
+        'active': 'extend_issue_deadline',
+        'title': _('Extend Expiration'),
+        'user_logged_in': request.user.is_authenticated,
+        'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
+    }
+    return TemplateResponse(request, 'extend_issue_deadline.html', context)
+
+
 @require_POST
 @csrf_exempt
 @ratelimit(key='ip', rate='5/s', method=ratelimit.UNSAFE, block=True)
