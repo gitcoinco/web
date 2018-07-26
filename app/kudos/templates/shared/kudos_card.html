@@ -19,6 +19,6 @@
   <a href="/kudos/{{ listing.id }}" class="">
     <img src="{% static listing.image %}" alt="{{ listing.name }}" class="img-thumbnail" width="250">
   </a>
-  <span class="kd-price">Ξ 0.0019</span>
+  <span class="kd-price">Ξ {{ listing.price_in_eth }}</span>
   <div class="kd-name">{{ listing.name }}</div>
 </div>
