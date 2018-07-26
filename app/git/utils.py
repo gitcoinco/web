@@ -75,7 +75,20 @@ def get_gh_issue_details(org, repo, issue_num):
         details['keywords'].append(k)
     details['title'] = issue_details.title
     details['description'] = issue_details.body.replace('\n', '').strip()
+    details['state'] = issue_details.state
+    if issue_details.state == 'closed':
+        details['closed_at'] = issue_details.closed_at
+        details['closed_by'] = issue_details.closed_by.name
     return details
+
+
+def get_gh_issue_state(org, repo, issue_num):
+    gh_client = github_connect()
+    org_user = gh_client.get_user(login=org)
+    repo_obj = org_user.get_repo(repo)
+    issue_details = repo_obj.get_issue(issue_num)
+    return issue_details.state
+
 
 def build_auth_dict(oauth_token):
     """Collect authentication details.

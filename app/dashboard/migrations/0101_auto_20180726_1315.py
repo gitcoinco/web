@@ -26,8 +26,8 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('dashboard', '0096_auto_20180718_1313'),
-        ('faucet', '0008_faucetrequest_profile'),
+        ('dashboard', '0100_auto_20180726_1254'),
+        ('faucet', '0011_auto_20180723_1315'),
     ]
 
     operations = [
