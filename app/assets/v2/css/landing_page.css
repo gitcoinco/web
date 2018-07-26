@@ -195,6 +195,17 @@ body {
   height: 6rem;
 }
 
+.activity.box {
+  border-left: none;
+  border-top: none;
+  border-right: none;
+}
+
+.activity-info {
+  position: relative;
+  top: 7px;
+}
+
 .landing__newsletter {
   width: 100%;
   margin: auto;
@@ -678,6 +689,29 @@ body {
 
   .howworks-steps {
     grid-template-columns: 1fr;
+  }
+
+  .activity {
+    text-align: center;
+  }
+
+  .activity-status a {
+    margin-top: 1rem;
+  }
+
+  .activity-status span {
+    display: block;
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+
+  .activity div.activity-tags {
+    margin-top: 4px;
+    margin-bottom: 1rem;
+  }
+
+  .activity div.activity-tags p {
+    margin-bottom: 0;
   }
 }
 
