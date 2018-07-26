@@ -16,13 +16,13 @@
 
 {% endcomment %}
 {% load humanize i18n static %}
-<div class="row box activity mt-4">
+<div class="row box activity">
   <div class="col-12 col-md-1">
     <div class="activity-avatar">
       <img class="avatar" src="/funding/avatar?repo=https://github.com/{{ row.profile.handle }}"/>
     </div>
   </div>
-  <div class="col-12 col-md-10">
+  <div class="col-12 col-md-10 activity-info">
     <div class="activity-status">
       <a href="https://gitcoin.co/profile/{{ row.profile.handle }}" target="_blank">
         @{{ row.profile.handle }}
@@ -33,15 +33,15 @@
           @{{ row.metadata.to_username }}
         </a>
       {% elif row.activity_type == 'new_bounty' %}
-        {% trans "funded a new issue: " %}{{ row.urled_title | safe }}
+        <span>{% trans "funded a new issue: " %}</span>{{ row.urled_title | safe }}
       {% elif row.activity_type == 'start_work' %}
-        {% trans "started work: " %}{{ row.urled_title | safe }}
+        <span>{% trans "started work: " %}</span>{{ row.urled_title | safe }}
       {% elif row.activity_type == 'stop_work' %}
-        {% trans "stopped work: " %}{{ row.urled_title | safe }}
+        <span>{% trans "stopped work: " %}</span>{{ row.urled_title | safe }}
       {% elif row.activity_type == 'killed_bounty' %}
-        {% trans "canceled bounty: " %}{{ row.urled_title | safe }}
+        <span>{% trans "canceled bounty: " %}</span>{{ row.urled_title | safe }}
       {% elif row.activity_type == 'increased_bounty' %}
-        {% trans "increased funding: " %}{{ row.urled_title | safe }}
+        <span>{% trans "increased funding: " %}</span>{{ row.urled_title | safe }}
       {% else %}
         {{ row.i18n_name }}
         {% if row.bounty %}
