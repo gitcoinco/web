@@ -21,6 +21,7 @@ node_modules/
 gcoin/
 .cache/
 webpack-stats.json
+.sass-cache
 
 # Sensitive environment files
 .env
