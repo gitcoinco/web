@@ -53,22 +53,59 @@ ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default
 
 # Application definition
 INSTALLED_APPS = [
-    'corsheaders', 'django.contrib.admin', 'django.contrib.auth', 'django.contrib.contenttypes',
-    'django.contrib.sessions', 'django.contrib.messages', 'whitenoise.runserver_nostatic', 'django.contrib.staticfiles',
-    'storages', 'social_django', 'cookielaw', 'django.contrib.humanize', 'django.contrib.sitemaps',
-    'django.contrib.sites', 'autotranslate', 'django_extensions', 'easy_thumbnails', 'app', 'avatar', 'retail',
-    'rest_framework', 'bootstrap3', 'marketing', 'economy', 'dashboard', 'enssubdomain', 'faucet', 'tdi', 'gas', 'git',
-    'legacy', 'chartit', 'email_obfuscator', 'linkshortener', 'credits', 'gitcoinbot', 'external_bounties', 'dataviz',
+    'corsheaders',
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'whitenoise.runserver_nostatic',
+    'django.contrib.staticfiles',
+    'storages',
+    'social_django',
+    'cookielaw',
+    'django.contrib.humanize',
+    'django.contrib.sitemaps',
+    'django.contrib.sites',
+    'autotranslate',
+    'django_extensions',
+    'easy_thumbnails',
+    'app',
+    'avatar',
+    'retail',
+    'rest_framework',
+    'marketing',
+    'economy',
+    'dashboard',
+    'enssubdomain',
+    'faucet',
+    'tdi',
+    'gas',
+    'git',
+    'legacy',
+    'chartit',
+    'email_obfuscator',
+    'linkshortener',
+    'credits',
+    'gitcoinbot',
+    'external_bounties',
+    'dataviz',
     'impersonate',
 ]
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware', 'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware', 'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware', 'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware', 'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware', 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'ratelimit.middleware.RatelimitMiddleware', 'social_django.middleware.SocialAuthExceptionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'ratelimit.middleware.RatelimitMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
     'impersonate.middleware.ImpersonateMiddleware',
 ]
 
@@ -94,7 +131,7 @@ TEMPLATES = [{
             'social_django.context_processors.login_redirect',
         ],
     },
-}, ]
+}]
 
 SITE_ID = env.int('SITE_ID', default=1)
 WSGI_APPLICATION = env('WSGI_APPLICATION', default='app.wsgi.application')
@@ -113,7 +150,7 @@ AUTH_PASSWORD_VALIDATORS = [{
     'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
 }, {
     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-}, ]
+}]
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
@@ -137,12 +174,19 @@ TIME_ZONE = env.str('TIME_ZONE', default='UTC')
 
 LOCALE_PATHS = ('locale', )
 
-LANGUAGES = [('en', gettext_noop('English')), ('es', gettext_noop('Spanish')), ('de', gettext_noop('German')),
-             ('hi', gettext_noop('Hindi')), ('it', gettext_noop('Italian')), ('ko', gettext_noop('Korean')),
-             ('pl', gettext_noop('Polish')), ('zh-hans', gettext_noop('Simplified Chinese')),
-             ('zh-hant', gettext_noop('Traditional Chinese')), ]
+LANGUAGES = [
+    ('en', gettext_noop('English')),
+    ('es', gettext_noop('Spanish')),
+    ('de', gettext_noop('German')),
+    ('hi', gettext_noop('Hindi')),
+    ('it', gettext_noop('Italian')),
+    ('ko', gettext_noop('Korean')),
+    ('pl', gettext_noop('Polish')),
+    ('zh-hans', gettext_noop('Simplified Chinese')),
+    ('zh-hant', gettext_noop('Traditional Chinese')),
+]
 
-if not ENV in ['local', 'test']:
+if ENV not in ['local', 'test']:
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
