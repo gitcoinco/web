@@ -12,11 +12,11 @@ var removeFilter = function() {
 };
 
 $(document).ready(function() {
-  var keyword_search = new URL(document.location.href);
-  var keyword = keyword_search.searchParams.get('keyword');
+  var document_url_object = new URL(document.location.href);
+  var keyword_search = document_url_object.searchParams.get('keyword');
 
   technologies.forEach(function(tech) {
-    if (keyword === tech) {
+    if (keyword_search === tech) {
       $('.tech-options').append(`<option value="${tech}" selected>${tech}</option>`);
     } else {
       $('.tech-options').append(`<option value="${tech}">${tech}</option>`);
@@ -53,7 +53,13 @@ $(document).ready(function() {
 
       window.location.href = new_location;
     } else {
-      window.location.href = window.location.href + `?keyword=${keyword}`;
+      var base_url = window.location.href;
+
+      if (keyword_search) {
+        base_url = window.location.href.split('?')[0];
+      }
+
+      window.location.href = base_url + `?keyword=${keyword}`;
     }
   });
 });
