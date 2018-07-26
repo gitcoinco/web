@@ -103,7 +103,7 @@ var force = d3.layout.force()
     .size([width, height])
     .nodes([]) // initialize with a single node
     .linkDistance(100)
-    .charge(-250)
+    .charge(-100)
     .on("tick", tick);
 
 var svg = d3.select("body").append("svg")

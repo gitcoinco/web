@@ -127,7 +127,7 @@ def bounty_feedback(bounty, persona='fulfiller', previous_bounties=[]):
 
 def tip_email(tip, to_emails, is_new):
     round_decimals = 5
-    if not tip or not tip.url or not tip.amount or not tip.tokenName:
+    if not tip or not tip.txid or not tip.amount or not tip.tokenName:
         return
 
     warning = '' if tip.network == 'mainnet' else "({})".format(tip.network)

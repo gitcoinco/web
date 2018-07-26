@@ -162,8 +162,10 @@ def gas_history_view(request):
         1: 'red',
         5: 'orange',
         60: 'green',
-        120: 'steelblue',
-        180: 'purple',
+        90: 'steelblue',
+        105: 'purple',
+        120: '#dddddd',
+        180: 'black',
     }
     for i in lines.keys():
         gas_histories[i] = get_history_cached(breakdown, i)

@@ -112,7 +112,7 @@ $(document).ready(function() {
   // revision action buttons
   $('#subtractAction').on('click', function() {
     var revision = parseInt($('input[name=revisions]').val());
-  
+
     revision = revision - 1;
     if (revision > 0) {
       $('input[name=revisions]').val(revision);
@@ -121,7 +121,7 @@ $(document).ready(function() {
 
   $('#addAction').on('click', function() {
     var revision = parseInt($('input[name=revisions]').val());
-  
+
     revision = revision + 1;
     $('input[name=revisions]').val(revision);
   });
@@ -290,7 +290,7 @@ $(document).ready(function() {
       localStorage['notificationEmail'] = notificationEmail;
       localStorage['githubUsername'] = githubUsername;
       localStorage['tokenAddress'] = tokenAddress;
-      localStorage['jobDescription'] = data.jobDescription;
+      localStorage['jobDescription'] = $('#hiringRightNow').is(':checked') ? data.jobDescription : '';
       localStorage['expirationTimeDelta'] = $(
         'select[name=expirationTimeDelta]'
       ).val();
@@ -317,18 +317,8 @@ $(document).ready(function() {
       // IpfsApi is defined in the ipfs-api.js.
       // Is it better to use this JS file than the node package?  github.com/ipfs/
 
-      ipfs.ipfsApi = IpfsApi({
-        host: 'ipfs.infura.io',
-        port: '5001',
-        protocol: 'https',
-        root: '/api/v0'
-      });
-      ipfs.setProvider({
-        host: 'ipfs.infura.io',
-        port: 5001,
-        protocol: 'https',
-        root: '/api/v0'
-      });
+      ipfs.ipfsApi = IpfsApi(ipfsConfig);
+      ipfs.setProvider(ipfsConfig);
 
       // setup inter page state
       localStorage[issueURL] = JSON.stringify({
@@ -423,7 +413,7 @@ $(document).ready(function() {
           tokenAddress, // _tokenContract
           amount, // _value
           {
-            // {from: x, to: y}
+          // {from: x, to: y}
             from: account,
             value: eth_amount,
             gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
@@ -435,7 +425,7 @@ $(document).ready(function() {
       }
 
       var do_bounty = function(callback) {
-        // Add data to IPFS and kick off all the callbacks.
+      // Add data to IPFS and kick off all the callbacks.
         ipfsBounty.payload.issuer.address = account;
         ipfs.addJson(ipfsBounty, newIpfsCallback);
       };
