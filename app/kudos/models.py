@@ -45,6 +45,14 @@ class MarketPlaceListing(SuperModel):
     lister = models.CharField(max_length=255)  # FK to github profile
     tags = models.CharField(max_length=255, null=True)
 
+    @property
+    def price_in_eth(self):
+        return self.price / 1000
+
+    @property
+    def short_lister(self):
+        return self.lister[2:6] + '...' + self.lister[38:]
+
     # Gitcoin App only fields
 
 
