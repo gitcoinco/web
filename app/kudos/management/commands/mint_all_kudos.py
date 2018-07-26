@@ -27,7 +27,6 @@ from django.core.management.base import BaseCommand
 import rollbar
 from dashboard.helpers import UnsupportedSchemaException
 from django.core.management import call_command
-from dashboard.utils import getIPFS
 from kudos.utils import mint_kudos
 
 import oyaml as yaml
