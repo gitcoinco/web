@@ -60,16 +60,6 @@
   box-shadow: inset 0 -3.25em 0 0 var(--hover);
 }
 
-.slide {
-  --color: #8fc866;
-  --hover: #66c887;
-}
-
-.slide:hover,
-.slide:focus {
-  box-shadow: inset 6.5em 0 0 0 var(--hover);
-}
-
 .offset {
   --color: #19bc8b;
   --hover: #1973bc;

@@ -123,7 +123,17 @@ $gc-blue: #3e00ff;
     color:rgba(255,255,255, 0.8)
   }
 }
-.carousel-control-slim {
+.carousel-control-kudos {
+  .carousel-control-next,
+  .carousel-control-prev {
+    width: 3.3rem;
+    height: 3.3rem;
+    background: #0d023b;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    border-radius: 40px;
+  }
 
   .carousel-control-next-icon, 
   .carousel-control-prev-icon {
