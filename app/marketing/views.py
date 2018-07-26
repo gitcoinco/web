@@ -37,7 +37,6 @@ from django.utils.translation import gettext_lazy as _
 from app.utils import sync_profile
 from dashboard.models import Profile, TokenApproval
 from dashboard.utils import create_user_action
-from dashboard.views import profile_keywords_helper
 from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from mailchimp3 import MailChimp
@@ -626,9 +625,7 @@ def leaderboard(request, key=''):
 
     title = titles[key]
     if keyword_search:
-        profiles = Profile.objects.all().filter(suppress_leaderboard=False).values_list('handle')
-        profiles_filter = list(filter(lambda profile: keyword_search in profile_keywords_helper(profile), profiles))
-        ranks = LeaderboardRank.objects.filter(active=True, leaderboard=key, github_username__in=profiles_filter)
+        ranks = LeaderboardRank.objects.filter(active=True, leaderboard=key, tech_keywords__contains=[keyword_search])
     else:
         ranks = LeaderboardRank.objects.filter(active=True, leaderboard=key)
 
