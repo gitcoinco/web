@@ -57,7 +57,7 @@
                   <a class="bounty_box {% if bounty.fulfillments.count == 0 %}disabled{% endif %}" href="{% if bounty.fulfillments.count > 0 %}{{ bounty.action_urls.accept }}{% else %}#{% endif %}">
                       <h5>{% trans "Basic Payout." %}</h5>
                       <span>
-                        {% trans "Used to accept a bounty hunter's submission. You currently have " %}{{bounty.fulfillments.count}} {% trans "submission." %}{{bounty.fulfillments.count | pluralize}}
+                        {% trans "Used to accept a bounty hunter's submission. You currently have " %}{{bounty.fulfillments.count}} {% trans "submission" %}{{bounty.fulfillments.count | pluralize}}.
                         {% if bounty.fulfillments.count == 0 %}
                         {% trans "This option is currently disabled because you have no submissions." %}
                         {% elif bounty.fulfillments.count == 1 %}

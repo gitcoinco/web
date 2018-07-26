@@ -33,8 +33,7 @@ def backwards_func(apps, schema_editor):
 
 
 def forwards_func(apps, schema_editor):
-    if settings.DEBUG:
-        return
+    return #run me manually
     try:
         Profile = apps.get_model('dashboard', 'Profile')
         print('bounty')

@@ -434,7 +434,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
         msg = f"{status_header}__This issue now has a funding of {natural_value} {bounty.token_name} {usdt_value} " \
               f"{crowdfund_amount} attached to it.__\n\n * If you would " \
               f"like to work on this issue you can 'start work' [on the Gitcoin Issue Details page]({absolute_url})." \
-              "\n{crowdfund_msg}\n{help_msg}\n{openwork_msg}\n"
+              f"\n{crowdfund_msg}\n{help_msg}\n{openwork_msg}\n"
     if event_name == 'increased_bounty':
         msg = f"{status_header}__The funding of this issue was increased to {natural_value} {bounty.token_name} {usdt_value} " \
               f"{crowdfund_amount}.__\n\n " \
@@ -445,7 +445,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
               f"\n{help_msg}\n{openwork_msg}"
     elif event_name == 'rejected_claim':
         msg = f"{status_header}__The work submission for {natural_value} {bounty.token_name} {usdt_value} {crowdfund_amount} " \
-              "has been **rejected** and can now be submitted by someone else.__\n\n{claim_msg}" \
+              f"has been **rejected** and can now be submitted by someone else.__\n\n{claim_msg}" \
               f"\n{crowdfund_msg}\n{help_msg}\n{openwork_msg}"
     elif event_name == 'work_started':
         interested = bounty.interested.all().order_by('created')
@@ -501,7 +501,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
 
         msg = f"{status_header}__Work for {natural_value} {bounty.token_name} {usdt_value} has been submitted by__:\n" \
               f"{profiles}{sub_msg}\n<hr>\n\n" \
-              "{learn_more_msg}\n{crowdfund_msg}\n{help_msg}\n{openwork_msg}"
+              f"{learn_more_msg}\n{crowdfund_msg}\n{help_msg}\n{openwork_msg}"
     elif event_name == 'work_done':
         try:
             accepted_fulfillment = bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
@@ -623,7 +623,7 @@ def maybe_market_tip_to_github(tip):
 
     # prepare message
     username = tip.username if '@' in tip.username else f'@{tip.username}'
-    _from = f" from {tip.from_name}" if tip.from_name else ""
+    _from = f" from @{tip.from_username}" if tip.from_name else ""
     warning = tip.network if tip.network != 'mainnet' else ""
     _comments = "\n\nThe sender had the following public comments: \n> " \
                 f"{tip.comments_public}" if tip.comments_public else ""
@@ -639,16 +639,16 @@ def maybe_market_tip_to_github(tip):
                               "link to the tip redemption page. "
         if tip.receive_txid:
             redeem_instructions = "Your tip has automatically been deposited in the ETH address we have on file."
-        addon_msg = "\n\n * ${amount_usdt_open_work()} in Funded OSS Work Available at: " \
-                    "https://gitcoin.co/explorer\n * Incentivize contributions to your repo: " \
-                    "<a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>" \
-                    "Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
+        addon_msg = f"\n\n * ${amount_usdt_open_work()} in Funded OSS Work Available at: " \
+                    f"https://gitcoin.co/explorer\n * Incentivize contributions to your repo: " \
+                    f"<a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>" \
+                    f"Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
         msg += redeem_instructions + addon_msg
     else:
-        msg = f"💰 A crowdfund contribution worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has" \
+        msg = f"💰 A crowdfund contribution worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has " \
               f"been attached to this funded issue {_from}.💰 {_comments}\n"
         if tip.bounty:
-            msg += "\nWant to chip in also? Add your own contribution [here]({tip.bounty.absolute_url})."
+            msg += f"\nWant to chip in also? Add your own contribution [here]({tip.bounty.absolute_url})."
 
     # actually post
     url = tip.github_url
