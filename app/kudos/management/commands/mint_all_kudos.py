@@ -26,8 +26,11 @@ from django.core.management.base import BaseCommand
 
 import rollbar
 from dashboard.helpers import UnsupportedSchemaException
+from django.core.management import call_command
 from dashboard.utils import getIPFS
 from kudos.utils import mint_kudos
+
+import oyaml as yaml
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -39,17 +42,11 @@ default_start_id = 0 if not settings.DEBUG else 402
 
 class Command(BaseCommand):
 
-    help = 'syncs database with kudos on the blockchain'
+    help = 'mints the initial kudos gen0 set'
 
     def add_arguments(self, parser):
         parser.add_argument('network', default='rinkeby', type=str)
-        parser.add_argument('name', type=str)
-        parser.add_argument('--description', default='', type=str)
-        parser.add_argument('--rarity', default=50, type=int)
-        parser.add_argument('--price', default=1, type=int)
-        parser.add_argument('--numClonesAllowed', default=10, type=int)
-        parser.add_argument('--tags', default='', type=str)
-        parser.add_argument('--image', default='', type=str, help='absolute path to Kudos image')
+        parser.add_argument('yaml_file', help='absolute path to kudos.yaml file', type=str)
 
     def handle(self, *args, **options):
         # config
@@ -59,17 +56,24 @@ class Command(BaseCommand):
         day = datetime.datetime.now().day
         month = datetime.datetime.now().month
 
-        image = options.get('image')
-        if image:
-            # api = getIPFS()
-            # image_ipfs = api.add(image)
-            # image_hash = image_ipfs['Hash']
-            image_path = image
-        else:
-            image_path = ''
+        yaml_file = options['yaml_file']
 
-        args = (options['name'], options['description'], options['rarity'], options['price'],
-                options['numClonesAllowed'], options['tags'], image_path,
-                )
+        with open(yaml_file) as f:
+            all_kudos = yaml.load(f)
 
-        mint_kudos(network, *args)
+        for kudos in all_kudos:
+            image_name = kudos.get('image')
+            if image_name:
+                image_path = 'v2/images/kudos/' + image_name
+                # image_path = yaml_file.replace('kudos.yaml', 'images/') + image_name
+                # api = getIPFS()
+                # image_ipfs = api.add(image_path)
+                # image_hash = image_ipfs['Hash']
+            else:
+                image_path = ''
+
+            args = (kudos['name'], kudos['description'], kudos['rarity'], kudos['price'],
+                    kudos['numClonesAllowed'], kudos['tags'], image_path,
+                    )
+
+            mint_kudos(network, *args)
