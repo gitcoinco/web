@@ -69,6 +69,16 @@ def gas(request):
     return TemplateResponse(request, 'gas.html', context)
 
 
+def gas_intro(request):
+
+    context = {
+        'title': _('Gas Intro'),
+        'card_desc': _('Intro to Web3 / Gas'),
+        'hide_send_tip': True,
+    }
+    return TemplateResponse(request, 'gas_intro.html', context)
+
+
 def gas_faq(request):
 
     context = {
@@ -78,6 +88,7 @@ def gas_faq(request):
     }
     return TemplateResponse(request, 'gas_faq.html', context)
 
+gas_intro
 
 def gas_faucet_list(request):
 
@@ -151,8 +162,10 @@ def gas_history_view(request):
         1: 'red',
         5: 'orange',
         60: 'green',
-        120: 'steelblue',
-        180: 'purple',
+        90: 'steelblue',
+        105: 'purple',
+        120: '#dddddd',
+        180: 'black',
     }
     for i in lines.keys():
         gas_histories[i] = get_history_cached(breakdown, i)

@@ -120,8 +120,7 @@ var doconfetti = function(){
 };
 
 var stopConfetti = function(){
-  var element = $("world");
-  element.parentNode.removeChild(element);
+  $("#world").remove();
   setTimeout(function(){
   },100);
 };
@@ -131,6 +130,6 @@ var startConfetti = function(){
   doconfetti();
   setTimeout(function(){
     stopConfetti();
-  }, 4000);
+  }, 20000);
 };
 

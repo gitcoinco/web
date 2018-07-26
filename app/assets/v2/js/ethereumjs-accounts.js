@@ -19833,7 +19833,7 @@ Usage:
  * @param {Object=} options the options for creating this objects (optional).
  */
 function JSZip(data, options) {
-    // if this constructor is used without `new`, it adds `new` before itself:
+    // if this constructor is used without `new`, it adds `new` before itself:
     if(!(this instanceof JSZip)) return new JSZip(data, options);
 
     // object containing the files :
@@ -21273,7 +21273,7 @@ exports.string2binary = function(str) {
 };
 exports.arrayBuffer2Blob = function(buffer, mimeType) {
     exports.checkSupport("blob");
-	mimeType = mimeType || 'application/zip';
+    mimeType = mimeType || 'application/zip';
 
     try {
         // Blob constructor
@@ -28607,90 +28607,90 @@ var LocalStore = module.exports = {
             this.deps[key] = new Tracker.Dependency;
         }
     },
-	set: function(key, value, options, callback){
+    set: function(key, value, options, callback){
 
         this._ensureDeps(key);
 
-		// USE CHROME STORAGE
-		if(typeof chrome !== 'undefined' && chrome.storage) {
-			var item = {};
-			item[key] = value;
+        // USE CHROME STORAGE
+        if(typeof chrome !== 'undefined' && chrome.storage) {
+            var item = {};
+            item[key] = value;
 
-			// set
-			chrome.storage.local.set(item, function(){
+            // set
+            chrome.storage.local.set(item, function(){
 
-				// re-run reactive functions
-				if((!options || options.reactive !== false)
+                // re-run reactive functions
+                if((!options || options.reactive !== false)
                    && (typeof Tracker != "undefined"))
-	                this.deps[key].changed();
+                    this.deps[key].changed();
 
-	            // run callbacks
-				if(_.isFunction(callback))
-					callback();
-			});
+                // run callbacks
+                if(_.isFunction(callback))
+                    callback();
+            });
 
 
-		// USE LOCALSTORAGE
-		} else {
-			// stringify
-			if(_.isObject(value))
-				value = JSON.stringify(value);
+        // USE LOCALSTORAGE
+        } else {
+            // stringify
+            if(_.isObject(value))
+                value = JSON.stringify(value);
 
-			// set
+            // set
             // use try to prevent warnings from low cache storages
             try {
-    			localStorage.setItem(key, value);
+                localStorage.setItem(key, value);
             } catch(e) {
 
             }
 
-			// re-run reactive functions
-			if((!options || options.reactive !== false)
+            // re-run reactive functions
+            if((!options || options.reactive !== false)
                 && (typeof Tracker !== "undefined"))
                 this.deps[key].changed();
 
-			// run callbacks
-			if(_.isFunction(callback))
-				callback();
-		}
-	},
-	get: function(key, options, callback){
+            // run callbacks
+            if(_.isFunction(callback))
+                callback();
+        }
+    },
+    get: function(key, options, callback){
 
         this._ensureDeps(key);
 
 
         // DEPEND REACTIVE FUNCTIONS
-		if((!options || options.reactive !== false)
+        if((!options || options.reactive !== false)
             && (typeof Tracker !== "undefined"))
             this.deps[key].depend();
 
 
-		// use chrome storage
-		if(typeof chrome !== 'undefined' && chrome.storage) {
+        // use chrome storage
+        if(typeof chrome !== 'undefined' && chrome.storage) {
 
-			// get
-			chrome.storage.local.get(key, callback);
+            // get
+            chrome.storage.local.get(key, callback);
 
 
-		// USE LOCALSTORAGE
-		} else {
-			// get
-			var value = localStorage.getItem(key),
-				retunValue = value;
+        // USE LOCALSTORAGE
+        } else {
+            // get
+            var value = localStorage.getItem(key),
+                retunValue = value;
 
-			// try to parse
+            // try to parse
             if(value && _.isString(value)) {
-            	try {
-	                retunValue = JSON.parse(value);
-            	} catch(error){
-            		retunValue = value;
-            	}
+                try {
+                    retunValue = JSON.parse(value);
+                } catch(error){
+                    retunValue = value;
+                }
             }
 
             return retunValue;
-		}
+        }
 
-	}
+    }
 }
 },{"underscore":108}],107:[function(require,module,exports){
 /* FileSaver.js
@@ -28708,238 +28708,238 @@ var LocalStore = module.exports = {
 /*! @source http://purl.eligrey.com/github/FileSaver.js/blob/master/FileSaver.js */
 
 var saveAs = saveAs || (function(view) {
-	"use strict";
-	
-	// If no view just quit, probably we are in node.js
-	if(typeof view === "undefined") {
-	  	return;
-	}
-	
-	// IE <10 is explicitly unsupported
-	if (typeof navigator !== "undefined" && /MSIE [1-9]\./.test(navigator.userAgent)) {
-		return;
-	}
-	var
-		  doc = view.document
-		  // only get URL when necessary in case Blob.js hasn't overridden it yet
-		, get_URL = function() {
-			return view.URL || view.webkitURL || view;
-		}
-		, save_link = doc.createElementNS("http://www.w3.org/1999/xhtml", "a")
-		, can_use_save_link = "download" in save_link
-		, click = function(node) {
-			var event = doc.createEvent("MouseEvents");
-			event.initMouseEvent(
-				"click", true, false, view, 0, 0, 0, 0, 0
-				, false, false, false, false, 0, null
-			);
-			node.dispatchEvent(event);
-		}
-		, webkit_req_fs = view.webkitRequestFileSystem
-		, req_fs = view.requestFileSystem || webkit_req_fs || view.mozRequestFileSystem
-		, throw_outside = function(ex) {
-			(view.setImmediate || view.setTimeout)(function() {
-				throw ex;
-			}, 0);
-		}
-		, force_saveable_type = "application/octet-stream"
-		, fs_min_size = 0
-		// See https://code.google.com/p/chromium/issues/detail?id=375297#c7 and
-		// https://github.com/eligrey/FileSaver.js/commit/485930a#commitcomment-8768047
-		// for the reasoning behind the timeout and revocation flow
-		, arbitrary_revoke_timeout = 500 // in ms
-		, revoke = function(file) {
-			var revoker = function() {
-				if (typeof file === "string") { // file is an object URL
-					get_URL().revokeObjectURL(file);
-				} else { // file is a File
-					file.remove();
-				}
-			};
-			if (view.chrome) {
-				revoker();
-			} else {
-				setTimeout(revoker, arbitrary_revoke_timeout);
-			}
-		}
-		, dispatch = function(filesaver, event_types, event) {
-			event_types = [].concat(event_types);
-			var i = event_types.length;
-			while (i--) {
-				var listener = filesaver["on" + event_types[i]];
-				if (typeof listener === "function") {
-					try {
-						listener.call(filesaver, event || filesaver);
-					} catch (ex) {
-						throw_outside(ex);
-					}
-				}
-			}
-		}
-		, auto_bom = function(blob) {
-			// prepend BOM for UTF-8 XML and text/* types (including HTML)
-			if (/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(blob.type)) {
-				return new Blob(["\ufeff", blob], {type: blob.type});
-			}
-			return blob;
-		}
-		, FileSaver = function(blob, name) {
-			blob = auto_bom(blob);
-			// First try a.download, then web filesystem, then object URLs
-			var
-				  filesaver = this
-				, type = blob.type
-				, blob_changed = false
-				, object_url
-				, target_view
-				, dispatch_all = function() {
-					dispatch(filesaver, "writestart progress write writeend".split(" "));
-				}
-				// on any filesys errors revert to saving with object URLs
-				, fs_error = function() {
-					// don't create more object URLs than needed
-					if (blob_changed || !object_url) {
-						object_url = get_URL().createObjectURL(blob);
-					}
-					if (target_view) {
-						target_view.location.href = object_url;
-					} else {
-						var new_tab = view.open(object_url, "_blank");
-						if (new_tab == undefined && typeof safari !== "undefined") {
-							//Apple do not allow window.open, see http://bit.ly/1kZffRI
-							view.location.href = object_url
-						}
-					}
-					filesaver.readyState = filesaver.DONE;
-					dispatch_all();
-					revoke(object_url);
-				}
-				, abortable = function(func) {
-					return function() {
-						if (filesaver.readyState !== filesaver.DONE) {
-							return func.apply(this, arguments);
-						}
-					};
-				}
-				, create_if_not_found = {create: true, exclusive: false}
-				, slice
-			;
-			filesaver.readyState = filesaver.INIT;
-			if (!name) {
-				name = "download";
-			}
-			if (can_use_save_link) {
-				object_url = get_URL().createObjectURL(blob);
-				save_link.href = object_url;
-				save_link.download = name;
-				click(save_link);
-				filesaver.readyState = filesaver.DONE;
-				dispatch_all();
-				revoke(object_url);
-				return;
-			}
-			// Object and web filesystem URLs have a problem saving in Google Chrome when
-			// viewed in a tab, so I force save with application/octet-stream
-			// http://code.google.com/p/chromium/issues/detail?id=91158
-			// Update: Google errantly closed 91158, I submitted it again:
-			// https://code.google.com/p/chromium/issues/detail?id=389642
-			if (view.chrome && type && type !== force_saveable_type) {
-				slice = blob.slice || blob.webkitSlice;
-				blob = slice.call(blob, 0, blob.size, force_saveable_type);
-				blob_changed = true;
-			}
-			// Since I can't be sure that the guessed media type will trigger a download
-			// in WebKit, I append .download to the filename.
-			// https://bugs.webkit.org/show_bug.cgi?id=65440
-			if (webkit_req_fs && name !== "download") {
-				name += ".download";
-			}
-			if (type === force_saveable_type || webkit_req_fs) {
-				target_view = view;
-			}
-			if (!req_fs) {
-				fs_error();
-				return;
-			}
-			fs_min_size += blob.size;
-			req_fs(view.TEMPORARY, fs_min_size, abortable(function(fs) {
-				fs.root.getDirectory("saved", create_if_not_found, abortable(function(dir) {
-					var save = function() {
-						dir.getFile(name, create_if_not_found, abortable(function(file) {
-							file.createWriter(abortable(function(writer) {
-								writer.onwriteend = function(event) {
-									target_view.location.href = file.toURL();
-									filesaver.readyState = filesaver.DONE;
-									dispatch(filesaver, "writeend", event);
-									revoke(file);
-								};
-								writer.onerror = function() {
-									var error = writer.error;
-									if (error.code !== error.ABORT_ERR) {
-										fs_error();
-									}
-								};
-								"writestart progress write abort".split(" ").forEach(function(event) {
-									writer["on" + event] = filesaver["on" + event];
-								});
-								writer.write(blob);
-								filesaver.abort = function() {
-									writer.abort();
-									filesaver.readyState = filesaver.DONE;
-								};
-								filesaver.readyState = filesaver.WRITING;
-							}), fs_error);
-						}), fs_error);
-					};
-					dir.getFile(name, {create: false}, abortable(function(file) {
-						// delete file if it already exists
-						file.remove();
-						save();
-					}), abortable(function(ex) {
-						if (ex.code === ex.NOT_FOUND_ERR) {
-							save();
-						} else {
-							fs_error();
-						}
-					}));
-				}), fs_error);
-			}), fs_error);
-		}
-		, FS_proto = FileSaver.prototype
-		, saveAs = function(blob, name) {
-			return new FileSaver(blob, name);
-		}
-	;
-	// IE 10+ (native saveAs)
-	if (typeof navigator !== "undefined" && navigator.msSaveOrOpenBlob) {
-		return function(blob, name) {
-			return navigator.msSaveOrOpenBlob(auto_bom(blob), name);
-		};
-	}
+    "use strict";
+    
+    // If no view just quit, probably we are in node.js
+    if(typeof view === "undefined") {
+        return;
+    }
+    
+    // IE <10 is explicitly unsupported
+    if (typeof navigator !== "undefined" && /MSIE [1-9]\./.test(navigator.userAgent)) {
+        return;
+    }
+    var
+          doc = view.document
+          // only get URL when necessary in case Blob.js hasn't overridden it yet
+        , get_URL = function() {
+            return view.URL || view.webkitURL || view;
+        }
+        , save_link = doc.createElementNS("http://www.w3.org/1999/xhtml", "a")
+        , can_use_save_link = "download" in save_link
+        , click = function(node) {
+            var event = doc.createEvent("MouseEvents");
+            event.initMouseEvent(
+                "click", true, false, view, 0, 0, 0, 0, 0
+                , false, false, false, false, 0, null
+            );
+            node.dispatchEvent(event);
+        }
+        , webkit_req_fs = view.webkitRequestFileSystem
+        , req_fs = view.requestFileSystem || webkit_req_fs || view.mozRequestFileSystem
+        , throw_outside = function(ex) {
+            (view.setImmediate || view.setTimeout)(function() {
+                throw ex;
+            }, 0);
+        }
+        , force_saveable_type = "application/octet-stream"
+        , fs_min_size = 0
+        // See https://code.google.com/p/chromium/issues/detail?id=375297#c7 and
+        // https://github.com/eligrey/FileSaver.js/commit/485930a#commitcomment-8768047
+        // for the reasoning behind the timeout and revocation flow
+        , arbitrary_revoke_timeout = 500 // in ms
+        , revoke = function(file) {
+            var revoker = function() {
+                if (typeof file === "string") { // file is an object URL
+                    get_URL().revokeObjectURL(file);
+                } else { // file is a File
+                    file.remove();
+                }
+            };
+            if (view.chrome) {
+                revoker();
+            } else {
+                setTimeout(revoker, arbitrary_revoke_timeout);
+            }
+        }
+        , dispatch = function(filesaver, event_types, event) {
+            event_types = [].concat(event_types);
+            var i = event_types.length;
+            while (i--) {
+                var listener = filesaver["on" + event_types[i]];
+                if (typeof listener === "function") {
+                    try {
+                        listener.call(filesaver, event || filesaver);
+                    } catch (ex) {
+                        throw_outside(ex);
+                    }
+                }
+            }
+        }
+        , auto_bom = function(blob) {
+            // prepend BOM for UTF-8 XML and text/* types (including HTML)
+            if (/^\s*(?:text\/\S*|application\/xml|\S*\/\S*\+xml)\s*;.*charset\s*=\s*utf-8/i.test(blob.type)) {
+                return new Blob(["\ufeff", blob], {type: blob.type});
+            }
+            return blob;
+        }
+        , FileSaver = function(blob, name) {
+            blob = auto_bom(blob);
+            // First try a.download, then web filesystem, then object URLs
+            var
+                  filesaver = this
+                , type = blob.type
+                , blob_changed = false
+                , object_url
+                , target_view
+                , dispatch_all = function() {
+                    dispatch(filesaver, "writestart progress write writeend".split(" "));
+                }
+                // on any filesys errors revert to saving with object URLs
+                , fs_error = function() {
+                    // don't create more object URLs than needed
+                    if (blob_changed || !object_url) {
+                        object_url = get_URL().createObjectURL(blob);
+                    }
+                    if (target_view) {
+                        target_view.location.href = object_url;
+                    } else {
+                        var new_tab = view.open(object_url, "_blank");
+                        if (new_tab == undefined && typeof safari !== "undefined") {
+                            //Apple do not allow window.open, see http://bit.ly/1kZffRI
+                            view.location.href = object_url
+                        }
+                    }
+                    filesaver.readyState = filesaver.DONE;
+                    dispatch_all();
+                    revoke(object_url);
+                }
+                , abortable = function(func) {
+                    return function() {
+                        if (filesaver.readyState !== filesaver.DONE) {
+                            return func.apply(this, arguments);
+                        }
+                    };
+                }
+                , create_if_not_found = {create: true, exclusive: false}
+                , slice
+            ;
+            filesaver.readyState = filesaver.INIT;
+            if (!name) {
+                name = "download";
+            }
+            if (can_use_save_link) {
+                object_url = get_URL().createObjectURL(blob);
+                save_link.href = object_url;
+                save_link.download = name;
+                click(save_link);
+                filesaver.readyState = filesaver.DONE;
+                dispatch_all();
+                revoke(object_url);
+                return;
+            }
+            // Object and web filesystem URLs have a problem saving in Google Chrome when
+            // viewed in a tab, so I force save with application/octet-stream
+            // http://code.google.com/p/chromium/issues/detail?id=91158
+            // Update: Google errantly closed 91158, I submitted it again:
+            // https://code.google.com/p/chromium/issues/detail?id=389642
+            if (view.chrome && type && type !== force_saveable_type) {
+                slice = blob.slice || blob.webkitSlice;
+                blob = slice.call(blob, 0, blob.size, force_saveable_type);
+                blob_changed = true;
+            }
+            // Since I can't be sure that the guessed media type will trigger a download
+            // in WebKit, I append .download to the filename.
+            // https://bugs.webkit.org/show_bug.cgi?id=65440
+            if (webkit_req_fs && name !== "download") {
+                name += ".download";
+            }
+            if (type === force_saveable_type || webkit_req_fs) {
+                target_view = view;
+            }
+            if (!req_fs) {
+                fs_error();
+                return;
+            }
+            fs_min_size += blob.size;
+            req_fs(view.TEMPORARY, fs_min_size, abortable(function(fs) {
+                fs.root.getDirectory("saved", create_if_not_found, abortable(function(dir) {
+                    var save = function() {
+                        dir.getFile(name, create_if_not_found, abortable(function(file) {
+                            file.createWriter(abortable(function(writer) {
+                                writer.onwriteend = function(event) {
+                                    target_view.location.href = file.toURL();
+                                    filesaver.readyState = filesaver.DONE;
+                                    dispatch(filesaver, "writeend", event);
+                                    revoke(file);
+                                };
+                                writer.onerror = function() {
+                                    var error = writer.error;
+                                    if (error.code !== error.ABORT_ERR) {
+                                        fs_error();
+                                    }
+                                };
+                                "writestart progress write abort".split(" ").forEach(function(event) {
+                                    writer["on" + event] = filesaver["on" + event];
+                                });
+                                writer.write(blob);
+                                filesaver.abort = function() {
+                                    writer.abort();
+                                    filesaver.readyState = filesaver.DONE;
+                                };
+                                filesaver.readyState = filesaver.WRITING;
+                            }), fs_error);
+                        }), fs_error);
+                    };
+                    dir.getFile(name, {create: false}, abortable(function(file) {
+                        // delete file if it already exists
+                        file.remove();
+                        save();
+                    }), abortable(function(ex) {
+                        if (ex.code === ex.NOT_FOUND_ERR) {
+                            save();
+                        } else {
+                            fs_error();
+                        }
+                    }));
+                }), fs_error);
+            }), fs_error);
+        }
+        , FS_proto = FileSaver.prototype
+        , saveAs = function(blob, name) {
+            return new FileSaver(blob, name);
+        }
+    ;
+    // IE 10+ (native saveAs)
+    if (typeof navigator !== "undefined" && navigator.msSaveOrOpenBlob) {
+        return function(blob, name) {
+            return navigator.msSaveOrOpenBlob(auto_bom(blob), name);
+        };
+    }
 
-	FS_proto.abort = function() {
-		var filesaver = this;
-		filesaver.readyState = filesaver.DONE;
-		dispatch(filesaver, "abort");
-	};
-	FS_proto.readyState = FS_proto.INIT = 0;
-	FS_proto.WRITING = 1;
-	FS_proto.DONE = 2;
+    FS_proto.abort = function() {
+        var filesaver = this;
+        filesaver.readyState = filesaver.DONE;
+        dispatch(filesaver, "abort");
+    };
+    FS_proto.readyState = FS_proto.INIT = 0;
+    FS_proto.WRITING = 1;
+    FS_proto.DONE = 2;
 
-	FS_proto.error =
-	FS_proto.onwritestart =
-	FS_proto.onprogress =
-	FS_proto.onwrite =
-	FS_proto.onabort =
-	FS_proto.onerror =
-	FS_proto.onwriteend =
-		null;
+    FS_proto.error =
+    FS_proto.onwritestart =
+    FS_proto.onprogress =
+    FS_proto.onwrite =
+    FS_proto.onabort =
+    FS_proto.onerror =
+    FS_proto.onwriteend =
+        null;
 
-	return saveAs;
+    return saveAs;
 }(
-	   typeof self !== "undefined" && self
-	|| typeof window !== "undefined" && window
-	|| this.content
+       typeof self !== "undefined" && self
+    || typeof window !== "undefined" && window
+    || this.content
 ));
 // `self` is undefined in Firefox for Android content script context
 // while `this` is nsIContentFrameMessageManager
@@ -32286,126 +32286,126 @@ function decodeUtf8Char (str) {
 var lookup = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 ;(function (exports) {
-	'use strict';
+    'use strict';
 
   var Arr = (typeof Uint8Array !== 'undefined')
     ? Uint8Array
     : Array
 
-	var PLUS   = '+'.charCodeAt(0)
-	var SLASH  = '/'.charCodeAt(0)
-	var NUMBER = '0'.charCodeAt(0)
-	var LOWER  = 'a'.charCodeAt(0)
-	var UPPER  = 'A'.charCodeAt(0)
-	var PLUS_URL_SAFE = '-'.charCodeAt(0)
-	var SLASH_URL_SAFE = '_'.charCodeAt(0)
+    var PLUS   = '+'.charCodeAt(0)
+    var SLASH  = '/'.charCodeAt(0)
+    var NUMBER = '0'.charCodeAt(0)
+    var LOWER  = 'a'.charCodeAt(0)
+    var UPPER  = 'A'.charCodeAt(0)
+    var PLUS_URL_SAFE = '-'.charCodeAt(0)
+    var SLASH_URL_SAFE = '_'.charCodeAt(0)
 
-	function decode (elt) {
-		var code = elt.charCodeAt(0)
-		if (code === PLUS ||
-		    code === PLUS_URL_SAFE)
-			return 62 // '+'
-		if (code === SLASH ||
-		    code === SLASH_URL_SAFE)
-			return 63 // '/'
-		if (code < NUMBER)
-			return -1 //no match
-		if (code < NUMBER + 10)
-			return code - NUMBER + 26 + 26
-		if (code < UPPER + 26)
-			return code - UPPER
-		if (code < LOWER + 26)
-			return code - LOWER + 26
-	}
+    function decode (elt) {
+        var code = elt.charCodeAt(0)
+        if (code === PLUS ||
+            code === PLUS_URL_SAFE)
+            return 62 // '+'
+        if (code === SLASH ||
+            code === SLASH_URL_SAFE)
+            return 63 // '/'
+        if (code < NUMBER)
+            return -1 //no match
+        if (code < NUMBER + 10)
+            return code - NUMBER + 26 + 26
+        if (code < UPPER + 26)
+            return code - UPPER
+        if (code < LOWER + 26)
+            return code - LOWER + 26
+    }
 
-	function b64ToByteArray (b64) {
-		var i, j, l, tmp, placeHolders, arr
+    function b64ToByteArray (b64) {
+        var i, j, l, tmp, placeHolders, arr
 
-		if (b64.length % 4 > 0) {
-			throw new Error('Invalid string. Length must be a multiple of 4')
-		}
+        if (b64.length % 4 > 0) {
+            throw new Error('Invalid string. Length must be a multiple of 4')
+        }
 
-		// the number of equal signs (place holders)
-		// if there are two placeholders, than the two characters before it
-		// represent one byte
-		// if there is only one, then the three characters before it represent 2 bytes
-		// this is just a cheap hack to not do indexOf twice
-		var len = b64.length
-		placeHolders = '=' === b64.charAt(len - 2) ? 2 : '=' === b64.charAt(len - 1) ? 1 : 0
+        // the number of equal signs (place holders)
+        // if there are two placeholders, than the two characters before it
+        // represent one byte
+        // if there is only one, then the three characters before it represent 2 bytes
+        // this is just a cheap hack to not do indexOf twice
+        var len = b64.length
+        placeHolders = '=' === b64.charAt(len - 2) ? 2 : '=' === b64.charAt(len - 1) ? 1 : 0
 
-		// base64 is 4/3 + up to two characters of the original data
-		arr = new Arr(b64.length * 3 / 4 - placeHolders)
+        // base64 is 4/3 + up to two characters of the original data
+        arr = new Arr(b64.length * 3 / 4 - placeHolders)
 
-		// if there are placeholders, only get up to the last complete 4 chars
-		l = placeHolders > 0 ? b64.length - 4 : b64.length
+        // if there are placeholders, only get up to the last complete 4 chars
+        l = placeHolders > 0 ? b64.length - 4 : b64.length
 
-		var L = 0
+        var L = 0
 
-		function push (v) {
-			arr[L++] = v
-		}
+        function push (v) {
+            arr[L++] = v
+        }
 
-		for (i = 0, j = 0; i < l; i += 4, j += 3) {
-			tmp = (decode(b64.charAt(i)) << 18) | (decode(b64.charAt(i + 1)) << 12) | (decode(b64.charAt(i + 2)) << 6) | decode(b64.charAt(i + 3))
-			push((tmp & 0xFF0000) >> 16)
-			push((tmp & 0xFF00) >> 8)
-			push(tmp & 0xFF)
-		}
+        for (i = 0, j = 0; i < l; i += 4, j += 3) {
+            tmp = (decode(b64.charAt(i)) << 18) | (decode(b64.charAt(i + 1)) << 12) | (decode(b64.charAt(i + 2)) << 6) | decode(b64.charAt(i + 3))
+            push((tmp & 0xFF0000) >> 16)
+            push((tmp & 0xFF00) >> 8)
+            push(tmp & 0xFF)
+        }
 
-		if (placeHolders === 2) {
-			tmp = (decode(b64.charAt(i)) << 2) | (decode(b64.charAt(i + 1)) >> 4)
-			push(tmp & 0xFF)
-		} else if (placeHolders === 1) {
-			tmp = (decode(b64.charAt(i)) << 10) | (decode(b64.charAt(i + 1)) << 4) | (decode(b64.charAt(i + 2)) >> 2)
-			push((tmp >> 8) & 0xFF)
-			push(tmp & 0xFF)
-		}
+        if (placeHolders === 2) {
+            tmp = (decode(b64.charAt(i)) << 2) | (decode(b64.charAt(i + 1)) >> 4)
+            push(tmp & 0xFF)
+        } else if (placeHolders === 1) {
+            tmp = (decode(b64.charAt(i)) << 10) | (decode(b64.charAt(i + 1)) << 4) | (decode(b64.charAt(i + 2)) >> 2)
+            push((tmp >> 8) & 0xFF)
+            push(tmp & 0xFF)
+        }
 
-		return arr
-	}
+        return arr
+    }
 
-	function uint8ToBase64 (uint8) {
-		var i,
-			extraBytes = uint8.length % 3, // if we have 1 byte left, pad 2 bytes
-			output = "",
-			temp, length
+    function uint8ToBase64 (uint8) {
+        var i,
+            extraBytes = uint8.length % 3, // if we have 1 byte left, pad 2 bytes
+            output = "",
+            temp, length
 
-		function encode (num) {
-			return lookup.charAt(num)
-		}
+        function encode (num) {
+            return lookup.charAt(num)
+        }
 
-		function tripletToBase64 (num) {
-			return encode(num >> 18 & 0x3F) + encode(num >> 12 & 0x3F) + encode(num >> 6 & 0x3F) + encode(num & 0x3F)
-		}
+        function tripletToBase64 (num) {
+            return encode(num >> 18 & 0x3F) + encode(num >> 12 & 0x3F) + encode(num >> 6 & 0x3F) + encode(num & 0x3F)
+        }
 
-		// go through the array every three bytes, we'll deal with trailing stuff later
-		for (i = 0, length = uint8.length - extraBytes; i < length; i += 3) {
-			temp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
-			output += tripletToBase64(temp)
-		}
+        // go through the array every three bytes, we'll deal with trailing stuff later
+        for (i = 0, length = uint8.length - extraBytes; i < length; i += 3) {
+            temp = (uint8[i] << 16) + (uint8[i + 1] << 8) + (uint8[i + 2])
+            output += tripletToBase64(temp)
+        }
 
-		// pad the end with zeros, but make sure to not forget the extra bytes
-		switch (extraBytes) {
-			case 1:
-				temp = uint8[uint8.length - 1]
-				output += encode(temp >> 2)
-				output += encode((temp << 4) & 0x3F)
-				output += '=='
-				break
-			case 2:
-				temp = (uint8[uint8.length - 2] << 8) + (uint8[uint8.length - 1])
-				output += encode(temp >> 10)
-				output += encode((temp >> 4) & 0x3F)
-				output += encode((temp << 2) & 0x3F)
-				output += '='
-				break
-		}
+        // pad the end with zeros, but make sure to not forget the extra bytes
+        switch (extraBytes) {
+            case 1:
+                temp = uint8[uint8.length - 1]
+                output += encode(temp >> 2)
+                output += encode((temp << 4) & 0x3F)
+                output += '=='
+                break
+            case 2:
+                temp = (uint8[uint8.length - 2] << 8) + (uint8[uint8.length - 1])
+                output += encode(temp >> 10)
+                output += encode((temp >> 4) & 0x3F)
+                output += encode((temp << 2) & 0x3F)
+                output += '='
+                break
+        }
 
-		return output
-	}
+        return output
+    }
 
-	exports.toByteArray = b64ToByteArray
-	exports.fromByteArray = uint8ToBase64
+    exports.toByteArray = b64ToByteArray
+    exports.fromByteArray = uint8ToBase64
 }(typeof exports === 'undefined' ? (this.base64js = {}) : exports))
 
 },{}],113:[function(require,module,exports){
@@ -33778,14 +33778,14 @@ exports['RSA-SHA512'] = exports.sha512WithRSAEncryption = {
   id: new Buffer('3051300d060960864801650304020305000440', 'hex')
 }
 exports['RSA-SHA1'] = {
-	sign: 'rsa',
-	hash: 'sha1',
-	id: new Buffer('3021300906052b0e03021a05000414', 'hex')
+    sign: 'rsa',
+    hash: 'sha1',
+    id: new Buffer('3021300906052b0e03021a05000414', 'hex')
 }
 exports['ecdsa-with-SHA1'] = {
-	sign: 'ecdsa',
-	hash: 'sha1',
-	id: new Buffer('', 'hex')
+    sign: 'ecdsa',
+    hash: 'sha1',
+    id: new Buffer('', 'hex')
 }
 exports.DSA = exports['DSA-SHA1'] = exports['DSA-SHA'] = {
   sign: 'dsa',
@@ -38526,30 +38526,30 @@ var elliptic = require('elliptic');
 var BN = require('bn.js');
 
 module.exports = function createECDH(curve) {
-	return new ECDH(curve);
+    return new ECDH(curve);
 };
 
 var aliases = {
-	secp256k1: {
-		name: 'secp256k1',
-		byteLength: 32
-	},
-	secp224r1: {
-		name: 'p224',
-		byteLength: 28
-	},
-	prime256v1: {
-		name: 'p256',
-		byteLength: 32
-	},
-	prime192v1: {
-		name: 'p192',
-		byteLength: 24
-	},
-	ed25519: {
-		name: 'ed25519',
-		byteLength: 32
-	}
+    secp256k1: {
+        name: 'secp256k1',
+        byteLength: 32
+    },
+    secp224r1: {
+        name: 'p224',
+        byteLength: 28
+    },
+    prime256v1: {
+        name: 'p256',
+        byteLength: 32
+    },
+    prime192v1: {
+        name: 'p192',
+        byteLength: 24
+    },
+    ed25519: {
+        name: 'ed25519',
+        byteLength: 32
+    }
 };
 
 aliases.p224 = aliases.secp224r1;
@@ -38557,82 +38557,82 @@ aliases.p256 = aliases.secp256r1 = aliases.prime256v1;
 aliases.p192 = aliases.secp192r1 = aliases.prime192v1;
 
 function ECDH(curve) {
-	this.curveType = aliases[curve];
-	if (!this.curveType ) {
-		this.curveType = {
-			name: curve
-		};
-	}
-	this.curve = new elliptic.ec(this.curveType.name);
-	this.keys = void 0;
+    this.curveType = aliases[curve];
+    if (!this.curveType ) {
+        this.curveType = {
+            name: curve
+        };
+    }
+    this.curve = new elliptic.ec(this.curveType.name);
+    this.keys = void 0;
 }
 
 ECDH.prototype.generateKeys = function (enc, format) {
-	this.keys = this.curve.genKeyPair();
-	return this.getPublicKey(enc, format);
+    this.keys = this.curve.genKeyPair();
+    return this.getPublicKey(enc, format);
 };
 
 ECDH.prototype.computeSecret = function (other, inenc, enc) {
-	inenc = inenc || 'utf8';
-	if (!Buffer.isBuffer(other)) {
-		other = new Buffer(other, inenc);
-	}
-	var otherPub = this.curve.keyFromPublic(other).getPublic();
-	var out = otherPub.mul(this.keys.getPrivate()).getX();
-	return formatReturnValue(out, enc, this.curveType.byteLength);
+    inenc = inenc || 'utf8';
+    if (!Buffer.isBuffer(other)) {
+        other = new Buffer(other, inenc);
+    }
+    var otherPub = this.curve.keyFromPublic(other).getPublic();
+    var out = otherPub.mul(this.keys.getPrivate()).getX();
+    return formatReturnValue(out, enc, this.curveType.byteLength);
 };
 
 ECDH.prototype.getPublicKey = function (enc, format) {
-	var key = this.keys.getPublic(format === 'compressed', true);
-	if (format === 'hybrid') {
-		if (key[key.length - 1] % 2) {
-			key[0] = 7;
-		} else {
-			key [0] = 6;
-		}
-	}
-	return formatReturnValue(key, enc);
+    var key = this.keys.getPublic(format === 'compressed', true);
+    if (format === 'hybrid') {
+        if (key[key.length - 1] % 2) {
+            key[0] = 7;
+        } else {
+            key [0] = 6;
+        }
+    }
+    return formatReturnValue(key, enc);
 };
 
 ECDH.prototype.getPrivateKey = function (enc) {
-	return formatReturnValue(this.keys.getPrivate(), enc);
+    return formatReturnValue(this.keys.getPrivate(), enc);
 };
 
 ECDH.prototype.setPublicKey = function (pub, enc) {
-	enc = enc || 'utf8';
-	if (!Buffer.isBuffer(pub)) {
-		pub = new Buffer(pub, enc);
-	}
-	this.keys._importPublic(pub);
-	return this;
+    enc = enc || 'utf8';
+    if (!Buffer.isBuffer(pub)) {
+        pub = new Buffer(pub, enc);
+    }
+    this.keys._importPublic(pub);
+    return this;
 };
 
 ECDH.prototype.setPrivateKey = function (priv, enc) {
-	enc = enc || 'utf8';
-	if (!Buffer.isBuffer(priv)) {
-		priv = new Buffer(priv, enc);
-	}
-	var _priv = new BN(priv);
-	_priv = _priv.toString(16);
-	this.keys._importPrivate(_priv);
-	return this;
+    enc = enc || 'utf8';
+    if (!Buffer.isBuffer(priv)) {
+        priv = new Buffer(priv, enc);
+    }
+    var _priv = new BN(priv);
+    _priv = _priv.toString(16);
+    this.keys._importPrivate(_priv);
+    return this;
 };
 
 function formatReturnValue(bn, enc, len) {
-	if (!Array.isArray(bn)) {
-		bn = bn.toArray();
-	}
-	var buf = new Buffer(bn);
-	if (len && buf.length < len) {
-		var zeros = new Buffer(len - buf.length);
-		zeros.fill(0);
-		buf = Buffer.concat([zeros, buf]);
-	}
-	if (!enc) {
-		return buf;
-	} else {
-		return buf.toString(enc);
-	}
+    if (!Array.isArray(bn)) {
+        bn = bn.toArray();
+    }
+    var buf = new Buffer(bn);
+    if (len && buf.length < len) {
+        var zeros = new Buffer(len - buf.length);
+        zeros.fill(0);
+        buf = Buffer.concat([zeros, buf]);
+    }
+    if (!enc) {
+        return buf;
+    } else {
+        return buf.toString(enc);
+    }
 }
 
 }).call(this,require("buffer").Buffer)

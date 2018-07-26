@@ -48,7 +48,7 @@
 
     <h3>
         {% if tip.from_name %}
-            {% blocktrans %}{{tip.from_name}} sent you a tip worth {{amount}} {{warning}} {{tokenName}}{% endblocktrans %}
+            {{tip.from_name}} {% blocktrans %} sent you a tip worth {{amount}} {{warning}} {{tokenName}}{% endblocktrans %}
         {% else %}
             {% blocktrans %}Someone sent you a tip worth {{amount}} {{warning}} {{tokenName}}{% endblocktrans %}
         {% endif %}{% if not is_new %} {{tip.created_on | naturaltime}}{%endif%}.
@@ -88,10 +88,13 @@
             </pre>
                 </p>
             {% endif %}
-
-            {% if show_expires %}
+            {% if already_redeemed %}
                 <p>
-                {% trans "The tip expires on" %} <strong>{{tip.expires_date}}, {% trans "in just" %} {{tip.expires_date | naturaltime}}</strong>.{% trans "No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:" %}
+                 {% trans "This tip has been remitted automatically to the Ethereum address on file for your account via txid " %}{{tip.txid}}
+                </p>
+            {% elif show_expires %}
+                <p>
+                {% trans "The tip expires on" %} <strong>{{tip.expires_date}}, {% trans "in just" %} {{tip.expires_date | naturaltime}}</strong>. {% trans "No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:" %}
                 </p>
             {% else %}
                 <p>
@@ -100,10 +103,11 @@
             {% endif %}
         </div>
     </div>
-
-    <div style="margin-bottom: 1.5em;">
-        <a class="button" href="{{link}}">{% trans "Redeem Tip" %}</a>
-    </div>
+    {% if not already_redeemed %}
+      <div style="margin-bottom: 1.5em;">
+          <a class="button" href="{{link}}">{% trans "Redeem Tip" %}</a>
+      </div>
+    {% endif %}
 </div>
 
 {% endblock %}
