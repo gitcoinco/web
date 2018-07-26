@@ -652,6 +652,23 @@ div.button-pink {
   }
 }
 
+.nav-line {
+  
+}
+.nav-tabs .nav-line {
+  color: #4A4A4A;
+  border-width: 0px 0px 3px 0;
+}
+.nav-tabs .nav-line.active {
+  color: #0D0764;
+  border-color: #0D0764;
+  background-color: transparent;
+}
+
+.border-transparent {
+  border-color: transparent;
+}
+
 /* TODO: Remove Post landing revamp */
 
 #ios-banner {

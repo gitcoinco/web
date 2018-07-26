@@ -25,6 +25,21 @@
 .kd-shadow {
   box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1); }
 
+.kd-extended {
+  background: #fff;
+  border-radius: .25rem; }
+  .kd-extended .img-thumbnail {
+    padding: 2.25rem; }
+  .kd-extended .kd-title {
+    font-size: 1.25rem;
+    padding: 0; }
+
+.kd-content {
+  font-size: 0.9rem;
+  padding: 1.3rem 2rem; }
+  .kd-content a {
+    color: #3e00ff; }
+
 .listing-kudo a {
   color: #43484d; }
 

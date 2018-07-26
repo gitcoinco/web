@@ -60,18 +60,21 @@
 </style>
 <ul class="gas_nav">
   <li>
-    <a href="{% url 'gas' %}">Gas Price Tradeoff Tool</a>
+    <a href="{% url 'gas_intro' %}">Intro</a>
   </li>
   <li>
-    <a href="{% url 'gas_history_view' %}"> Gas Price History</a>
+    <a href="{% url 'gas' %}">Price Tradeoff Tool</a>
+  </li>
+  <li>
+    <a href="{% url 'gas_history_view' %}">Price History</a>
   </li>
   <li>
     <a href="{% url 'gas_calculator' %}"> Gitcoin Contract Gas Cost Calculator</a>
   </li>
   <li>
-    <a href="{% url 'gas_faq' %}"> Gas FAQ</a>
+    <a href="{% url 'gas_faq' %}"> FAQ</a>
   </li>
   <li>
-    <a href="{% url 'gas_faucet_list' %}"> Gas Faucets</a>
+    <a href="{% url 'gas_faucet_list' %}"> Get Gas</a>
   </li>
 </ul>

@@ -194,7 +194,7 @@ class Command(BaseCommand):
             sum_bounties(b, usernames)
 
         # tips
-        tips = Tip.objects.all()
+        tips = Tip.objects.exclude(txid='')
 
         for t in tips:
             if not t.value_in_usdt_now:

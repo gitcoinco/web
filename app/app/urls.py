@@ -89,9 +89,12 @@ urlpatterns = [
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
     path('issue/fulfill', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
     path('issue/accept', dashboard.views.accept_bounty, name='process_funding'),
-    path('issue/payout', dashboard.views.bulk_payout_bounty, name='bulk_payout_bounty'),
+    path('issue/advanced_payout', dashboard.views.bulk_payout_bounty, name='bulk_payout_bounty'),
+    path('issue/payout', dashboard.views.payout_bounty, name='payout_bounty'),
     path('issue/increase', dashboard.views.increase_bounty, name='increase_bounty'),
     path('issue/cancel', dashboard.views.cancel_bounty, name='kill_bounty'),
+    path('issue/contribute', dashboard.views.contribute, name='contribute'),
+    path('issue/social_contribution', dashboard.views.social_contribution, name='social_contribution'),
 
     # Avatars
     path('avatar/', include('avatar.urls', namespace='avatar')),
@@ -135,6 +138,12 @@ urlpatterns = [
         dashboard.tip_views.receive_tip_v2,
         name='receive_tip'
     ),
+    url(
+        r'^tip/receive/v3/(?P<key>.*)/(?P<txid>.*)/(?P<network>.*)?',
+        dashboard.tip_views.receive_tip_v3,
+        name='receive_tip'
+    ),
+    url(r'^tip/address/(?P<handle>.*)', dashboard.tip_views.tipee_address, name='tipee_address'),
     url(r'^tip/receive/?', dashboard.tip_views.receive_tip_legacy, name='receive_tip_legacy'),
     url(r'^tip/send/4/?', dashboard.tip_views.send_tip_4, name='send_tip_4'),
     url(r'^tip/send/3/?', dashboard.tip_views.send_tip_3, name='send_tip_3'),
@@ -162,6 +171,7 @@ urlpatterns = [
     # gas views
     url(r'^gas/faucets/?', dashboard.gas_views.gas_faucet_list, name='gas_faucet_list'),
     url(r'^gas/faq/?', dashboard.gas_views.gas_faq, name='gas_faq'),
+    url(r'^gas/intro/?', dashboard.gas_views.gas_intro, name='gas_intro'),
     url(r'^gas/calculator/?', dashboard.gas_views.gas_calculator, name='gas_calculator'),
     url(r'^gas/history/?', dashboard.gas_views.gas_history_view, name='gas_history_view'),
     url(r'^gas/?', dashboard.gas_views.gas, name='gas'),
@@ -192,7 +202,7 @@ urlpatterns = [
     re_path(r'^activity/?', retail.views.activity, name='activity'),
     url(r'^get/?', retail.views.get_gitcoin, name='get_gitcoin'),
     url(r'^$', retail.views.index, name='index'),
-    re_path(r'^contributor', retail.views.contributor_landing, name='contributor_landing'),
+    re_path(r'^contributor/?(?P<tech_stack>.*)/?', retail.views.contributor_landing, name='contributor_landing'),
     url(r'^help/dev/?', retail.views.help_dev, name='help_dev'),
     url(r'^help/repo/?', retail.views.help_repo, name='help_repo'),
     url(r'^help/faq?', retail.views.help_faq, name='help_faq'),

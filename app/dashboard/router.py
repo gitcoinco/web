@@ -101,7 +101,8 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'github_issue_number', 'github_org_name', 'github_repo_name',
             'idx_status', 'token_value_time_peg', 'fulfillment_accepted_on', 'fulfillment_submitted_on',
             'fulfillment_started_on', 'canceled_on', 'action_urls',
-            'project_type', 'permission_type', 'attached_job_description'
+            'project_type', 'permission_type', 'attached_job_description',
+            'additional_funding_summary',
         )
 
     def create(self, validated_data):
@@ -224,6 +225,14 @@ class BountyViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(
                 interested__profile__handle__iexact=self.request.query_params.get('interested_github_username')
             )
+
+        # All Misc Api things
+        if 'misc' in param_keys:
+            if self.request.query_params.get('misc') == 'hiring':
+                queryset = queryset.exclude(attached_job_description__isnull=True).exclude(attached_job_description='')
+
+        if 'keyword' in param_keys:
+            queryset = queryset.keyword(self.request.query_params.get('keyword'))
 
         # order
         order_by = self.request.query_params.get('order_by')

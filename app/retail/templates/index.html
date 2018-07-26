@@ -185,7 +185,7 @@
               <div class="howworks-step">
                 <div class="howworks-step__label">1</div>
                 <h5>{% trans "Post A Bounty." %}</h5>
-                <p>{% blocktrans %}Fund an well specified issue on your Github repo which is a good
+                <p>{% blocktrans %}Fund a well specified issue on your Github repo which is a good
                   candidate for external contribution.{% endblocktrans %}</p>
               </div>
               <div class="howworks-step">
@@ -349,6 +349,11 @@
         {% include "shared/testimonials.html" %}
       </div>
       {% include 'landing/pilot.html' %}
+
+      <div class="container-fluid p-5 activity">
+        {% include 'landing/contributor/activity.html' %}
+      </div>
+
       {% include 'landing/press.html' %}
       {% include 'landing/ios_banner.html' %}
       {% include 'shared/footer.html' %}

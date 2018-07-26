@@ -17,9 +17,14 @@
 {% endcomment %}
 {% load i18n static %}
 {% block 'scripts' %}
+<script src="{% static "v2/js/abi.js" %}"></script>
+<script src="{% static "v2/js/secrets.min.js" %}"></script>
+<script src="{% static "v2/js/ipfs-api.js" %}"></script>
+<script src="{% static "v2/js/ipfs.js" %}"></script>
 <script src="{% static "v2/js/shared.js" %}"></script>
 <script src="{% static "onepager/js/receive.js" %}"></script>
 <script src="{% static "onepager/js/confetti.js" %}"></script>
+<script src="{% static "onepager/js/tx.js" %}"></script>
 
 {% endblock %}
 <!-- Main -->
@@ -47,6 +52,14 @@
         <input type="text" name="forwarding_address" id="forwarding_address" placeholder="0x0" {% if disable_inputs %}disabled=disabled{%endif%}>
       </div>
       <div>
+        <input type="checkbox" name="save_addr" id="save_addr" value=1 checked="" {% if disable_inputs %}disabled=disabled{%endif%}>
+        <label for=save_addr>{% trans "Save this address as my direct payment address" %}</label>
+        <br>
+        <input type="checkbox" id="tos" value="1" >
+        <label for="tos">{% blocktrans %}I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.{% endblocktrans %}</label>
+
+      </div>
+      <div>
         <br>
         <input id="receive" type='submit' class="button button--primary" value="{% trans "Claim" %} {{tip.tokenName}} 🙌" {% if disable_inputs %}disabled=disabled{%endif%} >
         <br>
@@ -57,6 +70,18 @@
     <h1>{% trans "Congrats!" %}</h1>
     <p>You've received {{tip.amount}} {{tip.tokenName}} via transaction <span id="trans_id">{{tip.receive_txid}}</span>.</p>
   </div>
+  {% if not tip.receive_txid and is_authed %}
+    <script>
+      document.gas_price = {{gas_price}};
+      document.ipfs_key_to_secret = '{{key}}';
+      document.gitcoin_secret = '{{tip.metadata.gitcoin_secret}}';
+      document.tip = {
+        'holding_address': '{{tip.metadata.address}}',
+        'amount_in_wei': {{tip.amount_in_wei | floatformat}},
+        'token_address': '{{tip.tokenAddress}}',
+      }
+    </script>
+  {% endif %}
 {% if tip.receive_txid %}
   <script>
     setTimeout(function(){

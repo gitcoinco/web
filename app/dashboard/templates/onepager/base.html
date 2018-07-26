@@ -90,5 +90,14 @@
     </script>
     {% endif %}
     {% include 'shared/messages.html' %}
+
+    <script>
+      var ipfsConfig = {
+        host: "{{ ipfs_config.host }}",
+        port: {{ ipfs_config.port }},
+        protocol: "{{ ipfs_config.protocol }}",
+        root: "{{ ipfs_config.root }}"
+      };
+    </script>
   </body>
 </html>

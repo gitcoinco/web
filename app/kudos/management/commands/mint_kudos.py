@@ -26,6 +26,7 @@ from django.core.management.base import BaseCommand
 
 import rollbar
 from dashboard.helpers import UnsupportedSchemaException
+from dashboard.utils import getIPFS
 from kudos.utils import mint_kudos
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -48,6 +49,7 @@ class Command(BaseCommand):
         parser.add_argument('--price', default=1, type=int)
         parser.add_argument('--numClonesAllowed', default=10, type=int)
         parser.add_argument('--tags', default='', type=str)
+        parser.add_argument('--image', default='', type=str, help='absolute path to Kudos image')
 
     def handle(self, *args, **options):
         # config
@@ -57,8 +59,17 @@ class Command(BaseCommand):
         day = datetime.datetime.now().day
         month = datetime.datetime.now().month
 
+        image = options.get('image')
+        if image:
+            # api = getIPFS()
+            # image_ipfs = api.add(image)
+            # image_hash = image_ipfs['Hash']
+            image_path = image
+        else:
+            image_path = ''
+
         args = (options['name'], options['description'], options['rarity'], options['price'],
-                options['numClonesAllowed'], options['tags'],
+                options['numClonesAllowed'], options['tags'], image_path,
                 )
 
         mint_kudos(network, *args)
