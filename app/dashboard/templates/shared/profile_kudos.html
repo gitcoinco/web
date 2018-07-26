@@ -1,0 +1,130 @@
+{% comment %}
+  Copyright (C) 2017 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n staticfiles %}
+
+
+<ul class="nav nav-tabs my-5" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link nav-line active" id="mykudos-tab" data-toggle="tab" href="#mykudos" role="tab" aria-controls="mykudos" aria-selected="true">{% trans "My Kudos" %} (4)</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link nav-line" id="sentkudos-tab" data-toggle="tab" href="#sentkudos" role="tab" aria-controls="sentkudos" aria-selected="false">{% trans "Sent Kudos" %} (1)</a>
+  </li>
+  <li class="align-self-center ml-auto font-smaller-2">
+    Sort By Recent: <a href="">{% trans "New" %}</a> - <a href="">{% trans "Old" %}</a>
+  </li>
+</ul>
+
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="mykudos" role="tabpanel" aria-labelledby="home-tab">
+    <div class="row justify-content-center">
+      <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+        <div class="kd-card kd-extended">
+          <a href="/kudos/{{ listing.id }}" class="">
+            <img src="{% static '/v2/images/kudos/devflare-bugsquasher.svg' %}" alt="{{ listing.name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
+          </a>
+          <div class="kd-content">
+            <div class="kd-title">{{ 'Jolly Juggler' }}</div>
+            Amazing developer, writes flawless code
+            <div class="mb-2">
+              45/75
+            </div>
+            <a href="" class="d-block mb-1" data-truncatehash title="0x0a2b3a08d5ab70d2091c985933eed7fab9c67022">0x0a2b3a08d5ab70d2091c985933eed7fab9c67022</a>
+            <div>Sent from <a href="">Bob7878</a></div>
+            <p class="mt-2 mb-0">You have an amazing attention to details</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+        <div class="kd-card kd-extended">
+          <a href="/kudos/{{ listing.id }}" class="">
+            <img src="{% static '/v2/images/kudos/devflare-bugsquasher.svg' %}" alt="{{ listing.name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
+          </a>
+          <div class="kd-content">
+            <div class="kd-title">{{ 'Jolly Juggler' }}</div>
+            Amazing developer, writes flawless code
+            <div class="mb-2">
+              45/75
+            </div>
+            <a href="" class="d-block mb-1" data-truncatehash title="0x0a2b3a08d5ab70d2091c985933eed7fab9c67022">0x0a2b3a08d5ab70d2091c985933eed7fab9c67022</a>
+            <div>Sent from <a href="">Bob7878</a></div>
+            <p class="mt-2 mb-0">You have an amazing attention to details</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+        <div class="kd-card kd-extended">
+          <a href="/kudos/{{ listing.id }}" class="">
+            <img src="{% static '/v2/images/kudos/devflare-bugsquasher.svg' %}" alt="{{ listing.name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
+          </a>
+          <div class="kd-content">
+            <div class="kd-title">{{ 'Jolly Juggler' }}</div>
+            Amazing developer, writes flawless code
+            <div class="mb-2">
+              45/75
+            </div>
+            <a href="" class="d-block mb-1" data-truncatehash title="0x0a2b3a08d5ab70d2091c985933eed7fab9c67022">0x0a2b3a08d5ab70d2091c985933eed7fab9c67022</a>
+            <div>Sent from <a href="">Bob7878</a></div>
+            <p class="mt-2 mb-0">You have an amazing attention to details</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+        <div class="kd-card kd-extended">
+          <a href="/kudos/{{ listing.id }}" class="">
+            <img src="{% static '/v2/images/kudos/devflare-bugsquasher.svg' %}" alt="{{ listing.name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
+          </a>
+          <div class="kd-content">
+            <div class="kd-title">{{ 'Jolly Juggler' }}</div>
+            Amazing developer, writes flawless code
+            <div class="mb-2">
+              45/75
+            </div>
+            <a href="" class="d-block mb-1" data-truncatehash title="0x0a2b3a08d5ab70d2091c985933eed7fab9c67022">0x0a2b3a08d5ab70d2091c985933eed7fab9c67022</a>
+            <div>Sent from <a href="">Bob7878</a></div>
+            <p class="mt-2 mb-0">You have an amazing attention to details</p>
+          </div>
+        </div>
+      </div>
+    </div> 
+  </div>
+  
+  <div class="tab-pane fade" id="sentkudos" role="tabpanel" aria-labelledby="sentkudos-tab">
+    <div class="row justify-content-center">
+      <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+        <div class="kd-card kd-extended">
+          <a href="/kudos/{{ listing.id }}" class="">
+            <img src="{% static '/v2/images/kudos/devflare-bugsquasher.svg' %}" alt="{{ listing.name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
+          </a>
+          <div class="kd-content">
+            <div class="kd-title">{{ 'Jolly Juggler' }}</div>
+            Amazing developer, writes flawless code
+            <div class="mb-2">
+              45/75
+            </div>
+            <a href="" class="d-block mb-1" data-truncatehash title="0x0a2b3a08d5ab70d2091c985933eed7fab9c67022">0x0a2b3a08d5ab70d2091c985933eed7fab9c67022</a>
+            <div>Sent from <a href="">Bob7878</a></div>
+            <p class="mt-2 mb-0">You have an amazing attention to details</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
