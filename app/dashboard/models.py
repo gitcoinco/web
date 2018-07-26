@@ -954,7 +954,7 @@ class Tip(SuperModel):
                f"created: {naturalday(self.created_on)}, expires: {naturalday(self.expires_date)}"
         status = 'funded' if self.txid else 'not funded'
         status = status if not self.receive_txid else 'received'
-        return f"{status} {self.amount} {self.tokenName} to {self.username} from {self.from_name or 'NA'}"
+        return f"({self.web3_type}) {status} {self.amount} {self.tokenName} to {self.username} from {self.from_name or 'NA'}"
 
     # TODO: DRY
     def get_natural_value(self):
