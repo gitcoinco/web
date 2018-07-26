@@ -150,7 +150,8 @@ function isNumeric(n) {
 
 
 function sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, is_for_bounty_fulfiller) {
-
+  alert('tips are temporarily disabled.  please check back in a few moments');
+  return;
   mixpanel.track('Tip Step 2 Click', {});
   if (typeof web3 == 'undefined') {
     _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
