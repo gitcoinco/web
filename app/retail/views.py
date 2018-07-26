@@ -39,6 +39,16 @@ from retail.helpers import get_ip
 from .utils import build_stat_results, programming_languages
 
 
+def get_activities(tech_stack=None, num_activities=15):
+    # get activity feed
+
+    activities = Activity.objects.filter(bounty__network='mainnet').order_by('-created')
+    if tech_stack:
+        activities = activities.filter(bounty__metadata__icontains=tech_stack)
+    activities = activities[0:num_activities]
+    return [a.view_props for a in activities]
+
+
 def index(request):
     slides = [
         ("Dan Finlay", static("v2/images/testimonials/dan.jpg"),
@@ -76,6 +86,7 @@ def index(request):
     )
 
     context = {
+        'activities': get_activities(),
         'is_outside': True,
         'slides': slides,
         'slideDurationInMs': 6000,
@@ -203,6 +214,7 @@ def contributor_landing(request, tech_stack):
     available_bounties_worth = amount_usdt_open_work()
 
     context = {
+        'activities': get_activities(tech_stack),
         'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else "Open Source Opportunities",
         'slides': slides,
         'slideDurationInMs': 6000,
@@ -216,14 +228,6 @@ def contributor_landing(request, tech_stack):
         'available_bounties_worth': available_bounties_worth,
         'tech_stack': tech_stack,
     }
-
-    # get activity feed
-    num_activities = 5
-    activities = Activity.objects.filter(bounty__network='mainnet').order_by('-created')
-    if tech_stack:
-        activities = activities.filter(bounty__metadata__icontains=tech_stack)
-    activities = activities[0:num_activities]
-    context['activities'] = [a.view_props for a in activities]
 
     return TemplateResponse(request, 'contributor_landing.html', context)
 

@@ -18,17 +18,23 @@
 <link rel="stylesheet" href={% static "v2/css/activity_stream.css" %}>
 
 {% if activities|length %}
-  <div id=activity_stream>
-    <div class="col text-center">
-      <h2 class="mb-4">{{ tech_stack|capfirst }} {% trans "Activity on Gitcoin" %}</h2>
-    </div>
+  <div class="col text-center mb-2">
+    <h2 class="mb-4">{% trans "Recent" %} {{ tech_stack|capfirst }} {% trans "Activity on Gitcoin" %}</h2>
+  </div>
+  <div id=activity_stream style="max-height: 400px; overflow-y: scroll;">
     <div class="mb-4 col offset-lg-1 col-lg-10">
       {% for row in activities %}
         {% include 'shared/activity.html' %}
       {% endfor %}
     </div>
-    <div class="col text-center">
-      <a href="/explorer?q={{ tech_stack }}" class="button button--primary" target="_blank" rel="noopener noreferrer">{% trans "Get Started With" %} {{ tech_stack|capfirst }} </a> <!-- TODO: Need to invoke resetFilters & set localStorage props -->
-    </div>
+  </div>
+  <div class="col text-center mt-5">
+    <a href="/explorer?q={{ tech_stack }}" class="button button--primary" target="_blank" rel="noopener noreferrer">
+      {% if tech_stack %}
+        {% trans "Get Started With" %} {{ tech_stack|capfirst }}
+      {% else %}
+        {% trans "Get Started" %}
+      {% endif %}
+    </a>
   </div>
 {% endif %}
