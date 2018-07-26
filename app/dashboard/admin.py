@@ -90,7 +90,7 @@ class TipAdmin(admin.ModelAdmin):
             if instance.web3_type == 'v2':
                 html = format_html('<a href="{}">claim</a>', instance.receive_url)
             if instance.web3_type == 'v3':
-                html = format_html(f'<a href="{instance.receive_url_for_funder}">claim as funder</a> | <a href="{instance.receive_url_for_recipient}">claim as recipient</a>')
+                html = format_html(f'<a href="{instance.receive_url_for_recipient}">claim as recipient</a>')
         except:
             html = 'n/a'
         return html

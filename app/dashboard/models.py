@@ -998,14 +998,6 @@ class Tip(SuperModel):
         key = self.metadata['reference_hash_for_receipient']
         return f"{settings.BASE_URL}tip/receive/v3/{key}/{self.txid}/{self.network}"
 
-    @property
-    def receive_url_for_funder(self):
-        if self.web3_type != 'v3':
-            raise Exception
-
-        key = self.metadata['reference_hash_for_funder']
-        return f"{settings.BASE_URL}tip/receive/v3/{key}/{self.txid}/{self.network}"
-
     # TODO: DRY
     @property
     def value_in_eth(self):
