@@ -149,6 +149,9 @@ def getIPFS():
     try:
         return ipfsapi.connect('127.0.0.1', 5001)
     except CommunicationError:
+        # Support ipfs inside docker-compose
+        return ipfsapi.connect('ipfs', 5001)
+    except CommunicationError:
         raise IPFSCantConnectException("IPFS is not running.  try running it with `ipfs daemon` before this script")
 
 

@@ -27,7 +27,7 @@ import re
 
 import logging
 
-logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 def about(request):
@@ -47,17 +47,28 @@ def about(request):
 def marketplace(request):
     """Render the marketplace kudos response."""
     q = request.GET.get('q')
-    logging.info(q)
+    logger.info(q)
 
     results = MarketPlaceListing.objects.annotate(
         search=SearchVector('name', 'description', 'tags')
         ).filter(search=q)
-    logging.info(results)
+    logger.info(results)
 
     if results:
-        listings = {"listings": results}
+        listings = results
     else:
-        listings = {"listings": MarketPlaceListing.objects.all()}
+        listings = MarketPlaceListing.objects.all()
+    
+    # for x in context['listings']:
+    #     x.price = x.price / 1000
+
+    # Adjust the price units.  Change from Finney to ETH
+    # updated_listings = []
+    # for l in listings:
+    #     # l.price = l.price / 1000
+    #     logger.info(f'Price in ETH {l.price_in_eth()}')
+    #     updated_listings.append(l)
+
 
     context = {
         'is_outside': True,
@@ -66,14 +77,16 @@ def marketplace(request):
         'card_title': _('Gitcoin is a mission-driven organization.'),
         'card_desc': _('Our mission is to grow open source.'),
         'avatar_url': static('v2/images/grow_open_source.png'),
-        'listing': listings,
+        'listings': listings
     }
+
+
     return TemplateResponse(request, 'kudos_marketplace.html', context)
 
 
 def search(request):
     context = {}
-    logging.info(request.GET)
+    logger.info(request.GET)
 
     if request.method == 'GET':
         form = KudosSearchForm(request.GET)
@@ -85,7 +98,7 @@ def search(request):
 def details(request):
     """Render the detail kudos response."""
     kudos_id = request.path.split('/')[-1]
-    logging.info(f'kudos id: {kudos_id}')
+    logger.info(f'kudos id: {kudos_id}')
 
     if not re.match(r'\d+', kudos_id):
         raise ValueError(f'Invalid Kudos ID found.  ID is not a number:  {kudos_id}')
