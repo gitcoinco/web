@@ -19,8 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from django.utils import timezone
 from django.http.response import Http404
+from django.utils import timezone
 
 from cacheops import CacheMiss, cache
 from dashboard.models import Bounty, Profile, Tip
