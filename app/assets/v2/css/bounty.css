@@ -22,6 +22,15 @@ body {
   float: right;
 }
 
+#extended-expiration-date p {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+#extended-expiration-date #extended-days {
+  border-bottom: 1px solid black;
+}
+
 .progress-bar {
   background-color: #D8D8D8;
   display: block;

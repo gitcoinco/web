@@ -558,11 +558,25 @@ var show_interest_modal = function() {
   });
 };
 
+var set_extended_time_html = function(extendedDuration, currentExpires) {
+  currentExpires.setTime(currentExpires.getTime() + (extendedDuration * 1000));
+  var date = getFormattedDate(currentExpires);
+  var days = timeDifference(now, currentExpires).split(' ');
+  var time = getTimeFromDate(currentExpires);
+
+  days.shift();
+  days = days.join(' ');
+
+  $('#extended-expiration-date #extended-date').html(date);
+  $('#extended-expiration-date #extended-days').html(days);
+  console.log(date);
+};
+
 var show_extend_deadline_modal = function() {
   var self = this;
 
   setTimeout(function() {
-    var url = '/modal/extend_issue_deadline';
+    var url = '/modal/extend_issue_deadline?pk=' + document.result['pk'];
 
     $.get(url, function(newHTML) {
       var modal = $(newHTML).appendTo('body').modal({
@@ -580,6 +594,16 @@ var show_extend_deadline_modal = function() {
       // removes search field in all but the 'denomination' dropdown
       $('.select2-container').click(function() {
         $('.select2-container .select2-search__field').remove();
+      });
+
+      var extendedDuration = parseInt($('select[name=expirationTimeDelta]').val());
+      var currentExpires = new Date(document.result['expires_date']);
+
+      set_extended_time_html(extendedDuration, currentExpires);
+      $(document).on('change', 'select[name=expirationTimeDelta]', function() {
+        var previousExpires = new Date(document.result['expires_date']);
+
+        set_extended_time_html(parseInt($(this).val()), previousExpires);
       });
 
       modal.on('submit', function(event) {
@@ -1133,6 +1157,7 @@ const render_activity = function(result, all_results) {
 };
 
 const is_bounty_expired = function(bounty) {
+  console.log(bounty['expires_date']);
   let expires_date = new Date(bounty['expires_date']);
   let now = new Date(bounty['now']);
 

@@ -27,24 +27,31 @@
     </div>
     {% if user_logged_in %}
       <div class="col-12">
-        <h5 class="text-center font-subheader">{% trans "Alpha Seed Implementation (New Feature)" %}</h5>
+        <h5 class="text-center font-body">{% trans "Alpha Seed Implementation (New Feature)" %}</h5>
         <form class="font-body">
           <div>
+            <input type="hidden" name="currentExpire" value="{{ bounty.expires_date }}" />
             <div id="deadline-section" class="pt-2">
-                <h5 class="font-subheader">{% trans "Deadline" %}</h5>
-                <label class="form__label" for="expirationTimeDelta">{% trans "Extend by" %}</label>
+                <label class="form__label" for="expirationTimeDelta">{% trans "Extend by:" %}</label>
                 <div class="form__select2">
                     <select class="js-select2" name="expirationTimeDelta">
-                    <option value="86400">{% trans "1 day" %}</option>
-                    <option value="259200">{% trans "3 days" %}</option>
-                    <option value="604800">{% trans "1 week" %}</option>
-                    <option value="1209600">{% trans "2 weeks" %}</option>
-                    <option value="2592000">{% trans "1 month" %}</option>
-                    <option value="7776000">{% trans "3 months" %}</option>
-                    <option value="15552000">{% trans "6 months" %}</option>
-                    <option value="31536000" selected="">{% trans "1 year" %}</option>
-                    <option value="9999999999">{% trans "Never" %}</option>
+                        <option value="86400">{% trans "1 day" %}</option>
+                        <option value="259200">{% trans "3 days" %}</option>
+                        <option value="604800">{% trans "1 week" %}</option>
+                        <option value="1209600">{% trans "2 weeks" %}</option>
+                        <option value="2592000">{% trans "1 month" %}</option>
+                        <option value="7776000">{% trans "3 months" %}</option>
+                        <option value="15552000">{% trans "6 months" %}</option>
+                        <option value="31536000" selected="">{% trans "1 year" %}</option>
+                        <option value="9999999999">{% trans "Never" %}</option>
                     </select>
+                </div>
+            </div>
+            <div id="updated-expiration-section" class="pt-2">
+                <label class="form__label">{% trans "New Expiration:" %}</label>
+                <div id="extended-expiration-date">
+                    <p id="extended-days" class="pb-2 mb-2"></p>
+                    <p id="extended-date"></p>
                 </div>
             </div>
           </div>

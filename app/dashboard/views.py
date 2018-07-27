@@ -1064,9 +1064,12 @@ def get_quickstart_video(request):
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def extend_issue_deadline(request):
     """Show quickstart video."""
+    bounty = Bounty.objects.get(pk=request.GET.get("pk"))
+    print(bounty)
     context = {
         'active': 'extend_issue_deadline',
         'title': _('Extend Expiration'),
+        'bounty': bounty,
         'user_logged_in': request.user.is_authenticated,
         'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
     }

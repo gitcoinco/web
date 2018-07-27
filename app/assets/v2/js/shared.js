@@ -155,6 +155,25 @@ var sanitize = function(str) {
   return result;
 };
 
+var getFormattedDate = function(date) {
+  var monthNames = [
+    "January", "February", "March",
+    "April", "May", "June", "July",
+    "August", "September", "October",
+    "November", "December"
+  ];
+
+  var day = date.getDate();
+  var monthIndex = date.getMonth();
+  var year = date.getFullYear();
+
+  return monthNames[monthIndex] + ' ' + day + ', ' + year;
+};
+
+var getTimeFromDate = function(date) {
+  return date.getHours() + ':' + date.getMinutes();
+};
+
 var waitforWeb3 = function(callback) {
   if (document.web3network) {
     callback();
