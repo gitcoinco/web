@@ -115,10 +115,34 @@
         </div>
       </div>
     </div>
-    <div class="container">
     {% if hidden %}
       {% include 'profiles/hidden.html' %}
     {% else %}
+      {% if not profile.is_org and profile.organizations|length %}
+        <div class="container">
+          <div class="row">
+          <div class="col py-4">
+            <div class="pb-2 profile-section-title">
+              {% trans "Organizations" %}
+            </div>
+          </div>
+          </div>
+          <div class="row">
+            <div class="container profile-organizations">
+              <div class="col-12 text-left">
+                {% for org in profile.organizations %}
+                  <div class="organization">
+                    <a href="{% url 'profile' %}{{org}}" title="{{ org }}">
+                      <img src="/static/avatar/{{ org }}" title="{{ org }}">
+                    </a>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endif %}
+    <div class="container">
       <div class="row">
         <div class="col py-4">
           <div class="pb-2 profile-section-title">

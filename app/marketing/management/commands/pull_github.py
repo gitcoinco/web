@@ -21,7 +21,7 @@ from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 
 from dashboard.models import Profile
-from dashboard.views import profile_keywords_helper
+from dashboard.utils import profile_helper
 from git.utils import search
 from marketing.models import EmailSubscriber
 
@@ -62,7 +62,8 @@ class Command(BaseCommand):
                     ghuser = get_github_user_from_github(es.email)
                     es.github = ghuser['login']
                 if not es.keywords:
-                    es.keywords = profile_keywords_helper(es.github)
+                    profile = profile_helper(es.github, True)
+                    es.keywords = profile.keywords
                 es.save()
                 # print(es.email, es.github, es.keywords)
                 success += 1

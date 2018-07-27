@@ -55,6 +55,15 @@
   margin-right: 0.5em;
   filter: invert(100%);
 }
+.profile-organizations .organization{
+  display: inline-block;
+  max-width: 100px;
+  max-height: 100px;
+}
+
+.profile-bounties--activities{
+  min-height: 200px;
+}
 
 @media (max-width: 767.98px) {
 
@@ -227,4 +236,8 @@
 
 .profile-header__stats--funder .works_with_list img {
   border: 0.1rem solid #FFCE08;
+}
+.profile-organizations .organization img{
+  width: 70px;
+  height: 70px;
 }

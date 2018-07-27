@@ -137,6 +137,19 @@ def sync_profile(handle, user=None, hide_profile=True):
     try:
         profile, created = Profile.objects.update_or_create(handle=handle, defaults=defaults)
         print("Profile:", profile, "- created" if created else "- updated")
+        orgs = get_user(handle, '/orgs')
+        profile.organizations = [ele['login'] for ele in orgs]
+        keywords = []
+        for repo in profile.repos_data:
+            language = repo.get('language') if repo.get('language') else ''
+            _keywords = language.split(',')
+            for key in _keywords:
+                if key != '' and key not in keywords:
+                    keywords.append(key)
+
+        profile.keywords = keywords
+        profile.save()
+
     except Exception as e:
         logger.error(e)
         return None
