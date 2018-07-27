@@ -625,7 +625,7 @@ def leaderboard(request, key=''):
 
     title = titles[key]
     if keyword_search:
-        ranks = LeaderboardRank.objects.filter(active=True, leaderboard=key, tech_keywords__contains=[keyword_search])
+        ranks = LeaderboardRank.objects.filter(active=True, leaderboard=key, tech_keywords__icontains=keyword_search)
     else:
         ranks = LeaderboardRank.objects.filter(active=True, leaderboard=key)
 
