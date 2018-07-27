@@ -76,4 +76,21 @@
   .cta-square:hover {
     color: rgba(255, 255, 255, 0.8); }
 
+.carousel-control-kudos .carousel-control-next,
+.carousel-control-kudos .carousel-control-prev {
+  width: 3.3rem;
+  height: 3.3rem;
+  background: #0d023b;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  border-radius: 40px; }
+.carousel-control-kudos .carousel-control-next-icon,
+.carousel-control-kudos .carousel-control-prev-icon {
+  height: 34px; }
+.carousel-control-kudos .carousel-control-prev-icon {
+  background-image: url("data:image/svg+xml,%0A%3Csvg width='19px' height='34px' viewBox='0 0 19 34' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3C!-- Generator: Sketch 50.2 %2855047%29 - http://www.bohemiancoding.com/sketch --%3E%3Cdesc%3ECreated with Sketch.%3C/desc%3E%3Cdefs%3E%3C/defs%3E%3Cg id='Symbols' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Headers/Header-%239' transform='translate%28-101.000000, -638.000000%29' fill='%23C1C1C1'%3E%3Cpath d='M116.89675,671.709 L101.58275,656.405 C100.80575,655.629 100.80575,654.371 101.58275,653.595 L116.89675,638.291 C117.28475,637.903 117.91475,637.903 118.30275,638.291 L119.70875,639.696 C120.09675,640.084 120.09675,640.713 119.70875,641.101 L106.50275,654.297 C106.11475,654.685 106.11475,655.315 106.50275,655.702 L119.70875,668.899 C120.09675,669.287 120.09675,669.916 119.70875,670.304 L118.30275,671.709 C117.91475,672.097 117.28475,672.097 116.89675,671.709' id='Icon'%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+.carousel-control-kudos .carousel-control-next-icon {
+  background-image: url("data:image/svg+xml,%0A%3Csvg width='19px' height='34px' viewBox='0 0 19 34' version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3C!-- Generator: Sketch 50.2 %2855047%29 - http://www.bohemiancoding.com/sketch --%3E%3Cdesc%3ECreated with Sketch.%3C/desc%3E%3Cdefs%3E%3C/defs%3E%3Cg id='Symbols' stroke='none' stroke-width='1' fill='none' fill-rule='evenodd'%3E%3Cg id='Headers/Header-%239' transform='translate%28-1320.000000, -638.000000%29' fill='%23C1C1C1'%3E%3Cpath d='M1335.89675,671.709 L1320.58275,656.405 C1319.80575,655.629 1319.80575,654.371 1320.58275,653.595 L1335.89675,638.291 C1336.28475,637.903 1336.91475,637.903 1337.30275,638.291 L1338.70875,639.696 C1339.09675,640.084 1339.09675,640.713 1338.70875,641.101 L1325.50275,654.297 C1325.11475,654.685 1325.11475,655.315 1325.50275,655.702 L1338.70875,668.899 C1339.09675,669.287 1339.09675,669.916 1338.70875,670.304 L1337.30275,671.709 C1336.91475,672.097 1336.28475,672.097 1335.89675,671.709' id='Icon' transform='translate%281329.499875, 655.000000%29 scale%28-1, 1%29 translate%28-1329.499875, -655.000000%29 '%3E%3C/path%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
+
 /*# sourceMappingURL=styles.css.map */
