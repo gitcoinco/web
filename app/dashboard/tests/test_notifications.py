@@ -32,11 +32,11 @@ class DashboardNotificationsTest(TestCase):
         """Perform setup for the testcase."""
         self.bounty = Bounty.objects.create(
             title='foo',
-            value_in_token=3,
+            value_in_token=3e18,
             token_name='ETH',
             web3_created=datetime(2008, 10, 31, tzinfo=UTC),
             github_url='https://github.com/gitcoinco/web/issues/11',
-            token_address='0x0',
+            token_address='0x0000000000000000000000000000000000000000',
             issue_description='hello world',
             bounty_owner_github_username='samplegitcoindeveloper1',
             bounty_owner_profile= Profile.objects.filter(handle='samplegitcoindeveloper1').first(),
@@ -59,30 +59,53 @@ class DashboardNotificationsTest(TestCase):
     def test_build_github_notification_new_bounty_traditional_permissionless(self):
         message = build_github_notification(self.bounty, 'new_bounty')
         print(message)
-        return message
+        absolute_url = self.bounty.get_absolute_url()
+        assert f"Funding: " in message 
+        assert f"ETH "
+        assert f"USD @" in message
+        assert f"Start work on this issue on the Gitcoin issue details page" in message
+        assert f"{absolute_url}" in message
+        assert f"Looking for another project? ${self.amount_open_work} more funded OSS work available on the [Gitcoin Issue Explorer]" in message
+        assert f"Questions Checkout [Gitcoin Help](gitcoin_help_url) or [Gitcoin Slack](gitcoin_slack_url)" in message
         
     def test_build_github_notification_new_bounty_traditional_approval(self):
         self.bounty.bounty_type = 'traditional'
         self.bounty.permission_type='approval'
         message = build_github_notification(self.bounty, 'new_bounty')
         print(message)
+        assert f"Funding: {self.bounty.get_natural_value} ETH ({self.bounty.value_in_usdt_now}) USD @" in message
+        assert f"Express interest to work on this issue on the Gitcoin issue details page" in message
+        assert f"{bounty.github_url}" in message
+        assert f"Looking for another project? ${self.amount_open_work} more funded OSS work available on the [Gitcoin Issue Explorer]" in message
+        assert f"Questions Checkout [Gitcoin Help](gitcoin_help_url) or [Gitcoin Slack](gitcoin_slack_url)" in message
 
     def test_build_github_notification_new_bounty_cooperative(self):
         self.bounty.bounty_type = 'cooperative'
         self.bounty.permission_type = 'permissionless'
         message = build_github_notification(self.bounty, 'new_bounty')
         print(message)
+        assert f"Funding: {self.bounty.get_natural_value} ETH ({self.bounty.value_in_usdt_now}) USD @" in message
+        assert f"Start work on this issue on the Gitcoin issue details page" in message
+        assert f"{bounty.github_url}" in message
+        assert f"Looking for another project? ${self.amount_open_work} more funded OSS work available on the [Gitcoin Issue Explorer]" in message
+        assert f"Questions Checkout [Gitcoin Help](gitcoin_help_url) or [Gitcoin Slack](gitcoin_slack_url)" in message
 
     def test_build_github_notification_new_bounty_contest(self):
         self.bounty.bounty_type = 'contest'
         self.bounty.permission_type='permissionless'
         message = build_github_notification(self.bounty, 'new_bounty')
         print(message)
+        assert f"Funding: {self.bounty.get_natural_value} ETH ({self.bounty.value_in_usdt_now}) USD @" in message
+        assert f"Start work on this issue on the Gitcoin issue details page" in message
+        assert f"{bounty.github_url}" in message
+        assert f"Looking for another project? ${self.amount_open_work} more funded OSS work available on the [Gitcoin Issue Explorer]" in message
+        assert f"Questions Checkout [Gitcoin Help](gitcoin_help_url) or [Gitcoin Slack](gitcoin_slack_url)" in message
 
 
     def test_build_github_notification_new_bounty(self):
         """Test the dashboard helper build_github_notification method with new_bounty."""
         message = build_github_notification(self.bounty, 'new_bounty')
+        print(message)
         assert f'__This issue now has a funding of {self.natural_value} {self.bounty.token_name}' in message
         assert self.usdt_value in message
         assert f'This issue now has a funding of' in message
@@ -91,20 +114,26 @@ class DashboardNotificationsTest(TestCase):
     def test_build_github_notification_express_interest_traditional_approval(self):
         self.bounty.bounty_type = 'traditional'
         self.bounty.permission_type='approval'
+        interest_profile = Profile.objects.filter(handle='samplegitcoindeveloper2').first()
         interest = Interest.objects.create(
-               profile=Profile.objects.filter(handle='samplegitcoindeveloper1').first(),
+               profile=interest_profile,
                issue_message='hello world',
                pending=True
         )
         self.bounty.interested.add(interest)
         message = build_github_notification(self.bounty, 'work_started')
+        bounty_approve_worker_url = bounty.approve_worker_url(interest_profile.handle)
+        bounty_reject_worker_url = bounty.reject_worker_url(interest_profile.handle)
         print(message)
+        assert f'[@{interest_profile.handle}]({ interest_profile.url }) has __expressed interest__ in this project.' in message
+        assert f'[@{ self.bounty.bounty_owner_profile.handle }]({ self.bounty.bounty_owner_profile.url }), [Approve Worker]({ bounty_approve_worker_url }) | [Reject Worker]({ bounty_reject_worker_url })' in message
 
     def test_build_github_notification_start_work_traditional_permissionless(self):
         self.bounty.bounty_type='traditional'
         self.bounty.permission_type='permissionless'
+        interest_profile = Profile.objects.filter(handle='samplegitcoindeveloper2').first()
         interest = Interest.objects.create(
-               profile=Profile.objects.filter(handle='samplegitcoindeveloper1').first(),
+               profile=interest_profile,
                issue_message='hello world',
                pending=False,
                acceptance_date=datetime(2018, 11, 30, tzinfo=UTC)
@@ -112,12 +141,15 @@ class DashboardNotificationsTest(TestCase):
         self.bounty.interested.add(interest)
         message = build_github_notification(self.bounty, 'work_started')
         print(message)
+        assert f'[@{ interest_profile.handle }]({ interest_profile.url }) has __started work__ on this project.' in message
+        self.bounty.interested.remove(interest)
 
     def test_build_github_notification_start_work_traditional_approval(self):
         self.bounty.bounty_type='traaditional'
         self.bounty.permission_type='approval'
+        interest_profile = Profile.objects.filter(handle='samplegitcoindeveloper2').first()
         interest = Interest.objects.create(
-               profile=Profile.objects.filter(handle='samplegitcoindeveloper1').first(),
+               profile=interest_profile,
                issue_message='hello world',
                pending=False,
                acceptance_date=datetime(2018, 11, 30, tzinfo=UTC)
@@ -125,19 +157,36 @@ class DashboardNotificationsTest(TestCase):
         self.bounty.interested.add(interest)
         message = build_github_notification(self.bounty, 'work_started')
         print(message)
+        assert f'[@{ interest_profile.handle }]({ interest_profile.url }) has been __approved__ to start work on this project.'
+        self.bounty.interested.remove(interest)
 
     def test_build_github_notification_start_work_cooperative(self):
         self.bounty.bounty_type='cooperative'
         self.bounty.permission_type='permissionless'
+        interest_profile = Profile.objects.filter(handle='oogetyboogety').first()
+        interest_profile2 = Profile.objects.filter(handle='oogetyboogety').first()
         interest = Interest.objects.create(
-               profile=Profile.objects.filter(handle='samplegitcoindeveloper1').first(),
+               profile=interest_profile,
                issue_message='hello world',
                pending=False,
                acceptance_date=datetime(2018, 11, 30, tzinfo=UTC)
         )
         self.bounty.interested.add(interest)
+        interest2 = Interest.objects.create(
+               profile=interest_profile2,
+               issue_message='hello world 2',
+               pending=False,
+               acceptance_date=datetime(2018, 11, 31, tzinfo=UTC)
+        )
+        self.bounty.interested.add(interest2)
         message = build_github_notification(self.bounty, 'work_started')
         print(message)
+        assert f'[@{ interest_profile.handle }]({ interest_profile.url }) has __started work__ on this project.' in message
+        assert f'Comments: hello world' in message
+        assert f'[@{ interest_profile2.handle }]({ interest_profile2.url }) has __started work__ on this project.' in message
+        assert f'Comments: hello world 2' in message
+        self.bounty.interested.remove(interest)
+        self.bounty.interested.remove(interest2)
 
     def test_build_github_notification_start_work_contest(self):
         self.bounty.bounty_type='contest'
@@ -151,77 +200,163 @@ class DashboardNotificationsTest(TestCase):
         self.bounty.interested.add(interest)
         message = build_github_notification(self.bounty, 'work_started')
         print(message)
+        assert f'[@{ interest_profile.handle }]({ interest_profile.url }) has __started work__ on this project.' in message
+        assert f'Comments: helo world' in message
+        self.bounty.interested.remove(interest)
 
     def test_build_github_notification_stop_work_contest(self):
         self.bounty.bounty_type='traditional'
         self.bounty.permission_type='permissionless'
+        activity_profile = Profile.objects.filter(handle='samplegitcoindeveloper1').first()
         activity = Activity.objects.create(
-               profile=Profile.objects.filter(handle='samplegitcoindeveloper1').first(),
+               profile=activity_profile,
                activity_type='stop_work',
                bounty=self.bounty)
         self.bounty.activities.add(activity)
+        interest_profile = Profile.objects.filter(handle='samplegitcoindeveloper2').first()
+        interest = Interest.objects.create(
+               profile=interest_profile,
+               issue_message='hello world',
+               pending=False,
+               acceptance_date=datetime(2018, 11, 30, tzinfo=UTC)
+        )
+        self.bounty.interested.add(interest)
         message = build_github_notification(self.bounty, 'stop_work')
         print(message)
+        assert f'[@{ activity_profile.handle }]({ activity_profile.url }) has __stopped work__ on this project.' in message
+        assert f'[@{ interest_profile.handle }]({ interest_profile.url }) is __still working__ on this project.' in message
 
     def test_build_github_notification_submit_work_traditional_permissionless(self):
         self.bounty.bounty_type='traditional'
         self.bounty.permission_type='permissionless'
+        fulfillment_profile = Profile.objects.filter(handle='samplegitcoindeveloper1').first()
         fulfillment = BountyFulfillment.objects.create(
               fulfiller_address='0x0000000000000000000000000000000000000000',
               fulfiller_email='gitcointestdeveloper1@gmail.com',
               fulfiller_github_username='samplegitcoindeveloper1',
+              fulfiller_github_url='http://gitoin.com/samplegitcoindeveloper1',
               bounty=self.bounty,
-              profile=Profile.objects.filter(handle='samplegitcoindeveloper1').first(),
+              profile=fulfillment_profile,
               accepted=False
         )
         self.bounty.fulfillments.add(fulfillment)
         message = build_github_notification(self.bounty, 'work_submitted')
         print(message)
+        assert f'[@{fulfillment_profile.handle}]({ fulfillment_profile.url }) has __submitted work__ for this project.'
+        self.bounty.fulfillments.remove(fulfillment)
 
     def test_build_github_notification_submit_work_traditional_approval(self):
         self.bounty.bounty_type='traditional'
         self.bounty.permission_type='approval'
+        fulfillment_profile = Profile.objects.filter(handle='samplegitcoindeveloper1').first()
+        fulfillment = BountyFulfillment.objects.create(
+              fulfiller_address='0x0000000000000000000000000000000000000000',
+              fulfiller_email='gitcointestdeveloper1@gmail.com',
+              fulfiller_github_username='samplegitcoindeveloper1',
+              fulfiller_github_url='http://gitoin.com/samplegitcoindeveloper1',
+              bounty=self.bounty,
+              profile=fulfillment_profile,
+              accepted=False
+        )
         message = build_github_notification(self.bounty, 'work_submitted')
         print(message)
+        assert f'[@{fulfillment_profile.handle}]({ fulfillment_profile.url }) has __submitted work__ for this project.'
+        self.bounty.fulfillments.remove(fulfillment)
 
     def test_build_github_notification_submit_work_cooperative(self):
         self.bounty.bounty_type='cooperative'
         self.bounty.permission_type='permissionless'
         message = build_github_notification(self.bounty, 'work_submitted')
-        print(message)
-
-    def test_build_github_notification_accept_work_traditional_permissionless(self):
-        self.bounty.bounty_type='traditional'
-        self.bounty.permission_type='permissionless'
+        fulfillment_profile = Profile.objects.filter(handle='samplegitcoindeveloper1').first()
         fulfillment = BountyFulfillment.objects.create(
               fulfiller_address='0x0000000000000000000000000000000000000000',
               fulfiller_email='gitcointestdeveloper1@gmail.com',
               fulfiller_github_username='samplegitcoindeveloper1',
+              fulfiller_github_url='http://gitoin.com/samplegitcoindeveloper1',
               bounty=self.bounty,
-              profile=Profile.objects.filter(handle='samplegitcoindeveloper1').first(),
+              profile=fulfillment_profile,
+              accepted=False
+        )
+        message = build_github_notification(self.bounty, 'work_submitted')
+        print(message)
+        assert f'[@{fulfillment_profile.handle}]({ fulfillment_profile.url }) has __submitted work__ for this project.'
+        self.bounty.fulfillments.remove(fulfillment)
+
+    def test_build_github_notification_accept_work_traditional_permissionless(self):
+        self.bounty.bounty_type='traditional'
+        self.bounty.permission_type='permissionless'
+        fulfillment_profile = Profile.objects.filter(handle='samplegitcoindeveloper1').first()
+        fulfillment = BountyFulfillment.objects.create(
+              fulfiller_address='0x0000000000000000000000000000000000000000',
+              fulfiller_email='gitcointestdeveloper1@gmail.com',
+              fulfiller_github_username='samplegitcoindeveloper1',
+              fulfiller_github_url='http://gitoin.com/samplegitcoindeveloper1',
+              bounty=self.bounty,
+              profile=fulfillment_profile,
               accepted=True
         )
         self.bounty.fulfillments.add(fulfillment)
         message = build_github_notification(self.bounty, 'work_done')
         print(message)
+        assert f'[@{ self.bounty.bounty_owner_github_username }]({ self.bounty.bounty_owner_profile_url }) has __accepted work __ from [@{ fulfillment.fulfiller_github_usernaem }]({ fulfillment.fulfiller_github_url }).'
+        self.bounty.fulfillments.remove(fulfillment)
 
     def test_build_github_notification_accept_work_traditional_approval(self):
         self.bounty.bounty_type='traditional'
         self.bounty.permission_type='permissionless'
+        fulfillment_profile = Profile.objects.filter(handle='samplegitcoindeveloper1').first()
+        fulfillment = BountyFulfillment.objects.create(
+              fulfiller_address='0x0000000000000000000000000000000000000000',
+              fulfiller_email='gitcointestdeveloper1@gmail.com',
+              fulfiller_github_username='samplegitcoindeveloper1',
+              fulfiller_github_url='http://gitoin.com/samplegitcoindeveloper1',
+              bounty=self.bounty,
+              profile=fulfillment_profile,
+              accepted=True
+        )
+        self.bounty.fulfillments.add(fulfillment)
         message = build_github_notification(self.bounty, 'work_done')
         print(message)
+        assert f'[@{ self.bounty.bounty_owner_github_username }]({ self.bounty.bounty_owner_profile_url }) has __accepted work __ from [@{ fulfillment.fulfiller_github_usernaem }]({ fulfillment.fulfiller_github_url }).'
+        self.bounty.fulfillments.remove(fulfillment)
 
     def test_build_github_notification_accept_work_cooperative(self):
         self.bounty.bounty_type='traditional'
         self.bounty.permission_type='approval'
+        fulfillment_profile = Profile.objects.filter(handle='samplegitcoindeveloper1').first()
+        fulfillment = BountyFulfillment.objects.create(
+              fulfiller_address='0x0000000000000000000000000000000000000000',
+              fulfiller_email='gitcointestdeveloper1@gmail.com',
+              fulfiller_github_username='samplegitcoindeveloper1',
+              fulfiller_github_url='http://gitoin.com/samplegitcoindeveloper1',
+              bounty=self.bounty,
+              profile=fulfillment_profile,
+              accepted=True
+        )
+        self.bounty.fulfillments.add(fulfillment)
         message = build_github_notification(self.bounty, 'work_done')
         print(message)
+        assert f'[@{ self.bounty.bounty_owner_github_username }]({ self.bounty.bounty_owner_profile_url }) has __accepted work __ from [@{ fulfillment.fulfiller_github_usernaem }]({ fulfillment.fulfiller_github_url }).'
+        self.bounty.fulfillments.remove(fulfillment)
 
     def test_build_github_notification_accept_work_contest(self):
         self.bounty.bounty_type='cooperativve'
         self.bounty.permission_type='permissionless'
+        fulfillment_profile = Profile.objects.filter(handle='samplegitcoindeveloper1').first()
+        fulfillment = BountyFulfillment.objects.create(
+              fulfiller_address='0x0000000000000000000000000000000000000000',
+              fulfiller_email='gitcointestdeveloper1@gmail.com',
+              fulfiller_github_username='samplegitcoindeveloper1',
+              fulfiller_github_url='http://gitoin.com/samplegitcoindeveloper1',
+              bounty=self.bounty,
+              profile=fulfillment_profile,
+              accepted=True
+        )
+        self.bounty.fulfillments.add(fulfillment)
         message = build_github_notification(self.bounty, 'work_done')
         print(message)
+        assert f'[@{ self.bounty.bounty_owner_github_username }]({ self.bounty.bounty_owner_profile_url }) has __accepted work __ from [@{ fulfillment.fulfiller_github_usernaem }]({ fulfillment.fulfiller_github_url }).'
+        self.bounty.fulfillments.remove(fulfillment)
 
 
     def test_build_github_notification_killed_bounty(self):
