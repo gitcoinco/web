@@ -954,7 +954,7 @@ class Tip(SuperModel):
                f"created: {naturalday(self.created_on)}, expires: {naturalday(self.expires_date)}"
         status = 'funded' if self.txid else 'not funded'
         status = status if not self.receive_txid else 'received'
-        return f"{status} {self.amount} {self.tokenName} to {self.username} from {self.from_name or 'NA'}"
+        return f"({self.web3_type}) {status} {self.amount} {self.tokenName} to {self.username} from {self.from_name or 'NA'}"
 
     # TODO: DRY
     def get_natural_value(self):
@@ -996,14 +996,6 @@ class Tip(SuperModel):
             raise Exception
 
         key = self.metadata['reference_hash_for_receipient']
-        return f"{settings.BASE_URL}tip/receive/v3/{key}/{self.txid}/{self.network}"
-
-    @property
-    def receive_url_for_funder(self):
-        if self.web3_type != 'v3':
-            raise Exception
-
-        key = self.metadata['reference_hash_for_funder']
         return f"{settings.BASE_URL}tip/receive/v3/{key}/{self.txid}/{self.network}"
 
     # TODO: DRY
