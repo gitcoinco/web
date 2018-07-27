@@ -1,0 +1,20 @@
+{
+  "symbol": "CODY",
+  "address": "0x9509ab39e86b0c369bc09e6f67c7585efcbd58d9",
+  "overview":{
+        "en": "Professional digital asset investment and financing service platform",
+        "zh": "专业的数字资产投融资服务平台"
+  },
+  "email": "www@coindy.com",
+  "website": "https://www.coindy.com/",
+  "state": "NORMAL",
+  "published_on": "2018-07-20",
+  "initial_price":{
+        "ETH":"0.000033 ETH",
+        "USD":"0.021 USD",
+        "BTC":"0.00000280 BTC"
+  },
+  "links": {
+    "telegram": "https://t.me/coindy"
+  }
+}
