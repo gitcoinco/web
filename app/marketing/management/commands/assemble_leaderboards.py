@@ -80,80 +80,68 @@ def add_element(key, username, amount):
     counts[key][username] += 1
 
 
+def sum_bounty_helper(b, breakdown, username, val_usd):
+    fulfiller_usernames = list(b.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True))
+    add_element(f'{breakdown}_all', username, val_usd)
+    add_element(f'{breakdown}_fulfilled', username, val_usd)
+    if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
+        add_element(f'{breakdown}_payers', username, val_usd)
+    if username == b.org_name and username not in IGNORE_PAYERS:
+        add_element(f'{breakdown}_orgs', username, val_usd)
+    if username in fulfiller_usernames and username not in IGNORE_EARNERS:
+        add_element(f'{breakdown}_earners', username, val_usd)
+
+
 def sum_bounties(b, usernames):
+    val_usd = b._val_usd_db
     for username in usernames:
         if b.idx_status == 'done':
-            fulfiller_usernames = list(b.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True))
-            add_element('all_fulfilled', username, b._val_usd_db)
-            if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
-                add_element('all_payers', username, b._val_usd_db)
-            if username == b.org_name and username not in IGNORE_PAYERS:
-                add_element('all_orgs', username, b._val_usd_db)
-            if username in fulfiller_usernames and username not in IGNORE_EARNERS:
-                add_element('all_earners', username, b._val_usd_db)
+            breakdown = 'all'
+            sum_bounty_helper(b, breakdown, username, val_usd)
+            ###############################
             if b.created_on > weekly_cutoff:
-                add_element('weekly_fulfilled', username, b._val_usd_db)
-                if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
-                    add_element('weekly_payers', username, b._val_usd_db)
-                if username in fulfiller_usernames and username not in IGNORE_EARNERS:
-                    add_element('weekly_earners', username, b._val_usd_db)
-                if username == b.org_name and username not in IGNORE_EARNERS:
-                    add_element('weekly_orgs', username, b._val_usd_db)
+                breakdown = 'weekly'
+                sum_bounty_helper(b, breakdown, username, val_usd)
             if b.created_on > monthly_cutoff:
-                add_element('monthly_fulfilled', username, b._val_usd_db)
-                if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
-                    add_element('monthly_payers', username, b._val_usd_db)
-                if username in fulfiller_usernames and username not in IGNORE_EARNERS:
-                    add_element('monthly_earners', username, b._val_usd_db)
-                if username == b.org_name and username not in IGNORE_EARNERS:
-                    add_element('monthly_orgs', username, b._val_usd_db)
+                breakdown = 'monthly'
+                sum_bounty_helper(b, breakdown, username, val_usd)
             if b.created_on > quarterly_cutoff:
-                add_element('quarterly_fulfilled', username, b._val_usd_db)
-                if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
-                    add_element('quarterly_payers', username, b._val_usd_db)
-                if username in fulfiller_usernames and username not in IGNORE_EARNERS:
-                    add_element('quarterly_earners', username, b._val_usd_db)
-                if username == b.org_name and username not in IGNORE_EARNERS:
-                    add_element('quarterly_orgs', username, b._val_usd_db)
+                breakdown = 'quarterly'
+                sum_bounty_helper(b, breakdown, username, val_usd)
             if b.created_on > yearly_cutoff:
-                add_element('yearly_fulfilled', username, b._val_usd_db)
-                if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
-                    add_element('yearly_payers', username, b._val_usd_db)
-                if username in fulfiller_usernames and username not in IGNORE_EARNERS:
-                    add_element('yearly_earners', username, b._val_usd_db)
-                if username == b.org_name and username not in IGNORE_EARNERS:
-                    add_element('yearly_orgs', username, b._val_usd_db)
+                breakdown = 'yearly'
+                sum_bounty_helper(b, breakdown, username, val_usd)
 
-        add_element('all_all', username, b._val_usd_db)
-        if b.created_on > weekly_cutoff:
-            add_element('weekly_all', username, b._val_usd_db)
-        if b.created_on > monthly_cutoff:
-            add_element('monthly_all', username, b._val_usd_db)
-        if b.created_on > yearly_cutoff:
-            add_element('yearly_all', username, b._val_usd_db)
+
+def sum_tip_helper(t, breakdown, username, val_usd):
+    add_element(f'{breakdown}_all', username, val_usd)
+    add_element(f'{breakdown}_fulfilled', username, val_usd)
+    if t.username == username:
+        add_element(f'{breakdown}_earners', username, val_usd)
+    if t.from_username == username:
+        add_element(f'{breakdown}_payers', username, val_usd)
+    if t.org_name == username:
+        add_element(f'{breakdown}_orgs', username, val_usd)
 
 
 def sum_tips(t, usernames):
     val_usd = t.value_in_usdt_now
     for username in usernames:
-        add_element('all_fulfilled', username, val_usd)
-        add_element('all_earners', username, val_usd)
+        breakdown = 'all'
+        sum_tip_helper(t, breakdown, username, val_usd)
+        #####################################
         if t.created_on > weekly_cutoff:
-            add_element('weekly_fulfilled', username, val_usd)
-            add_element('weekly_earners', username, val_usd)
-            add_element('weekly_all', username, val_usd)
+            breakdown = 'weekly'
+            sum_tip_helper(t, breakdown, username, val_usd)
         if t.created_on > monthly_cutoff:
-            add_element('monthly_fulfilled', username, val_usd)
-            add_element('monthly_all', username, val_usd)
-            add_element('monthly_earners', username, val_usd)
+            breakdown = 'monthly'
+            sum_tip_helper(t, breakdown, username, val_usd)
         if t.created_on > quarterly_cutoff:
-            add_element('quarterly_fulfilled', username, val_usd)
-            add_element('quarterly_all', username, val_usd)
-            add_element('quarterly_earners', username, val_usd)
+            breakdown = 'quarterly'
+            sum_tip_helper(t, breakdown, username, val_usd)
         if t.created_on > yearly_cutoff:
-            add_element('yearly_fulfilled', username, val_usd)
-            add_element('yearly_all', username, val_usd)
-            add_element('yearly_earners', username, val_usd)
+            breakdown = 'yearly'
+            sum_tip_helper(t, breakdown, username, val_usd)
 
 
 def should_suppress_leaderboard(handle):
@@ -202,6 +190,10 @@ class Command(BaseCommand):
             usernames = []
             if not should_suppress_leaderboard(t.username):
                 usernames.append(t.username)
+            if not should_suppress_leaderboard(t.from_username):
+                usernames.append(t.from_username)
+            if not should_suppress_leaderboard(t.org_name):
+                usernames.append(t.org_name)
 
             sum_tips(t, usernames)
 
