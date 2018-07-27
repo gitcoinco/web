@@ -1,0 +1,18 @@
+{
+  "symbol": "COS",
+  "address": "0x589891a198195061cb8ad1a75357a3b7dbadd7bc",
+  "overview":{
+        "en": "Contentos aims to be a decentralized global ecosystem for digital content, where content can be freely produced, authenticated of its copyright, distributed and transacted, and where the value and rights will be returned to users.",
+        "zh": "Contentos致力于成为去中心化全球数字内容生态，让内容在其中自由的被创作、授权、分发、交易，而最终将创造的价值与权利回归所有用户。"
+  },
+  "email": "service@contentos.io",
+  "website": "https://contentos.io/",
+  "whitepaper": "https://www.contentos.io/subject/home/generic/web/wp3_en.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-05-01",
+  "links": {
+    "twitter": "https://twitter.com/contentosio",
+    "telegram": "https://t.me/ContentoOfficialGroup",
+    "medium": "https://medium.com/@ContentosHome"
+  }
+}
