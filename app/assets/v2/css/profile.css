@@ -58,6 +58,15 @@
   margin-right: 0.5em;
   filter: invert(100%);
 }
+.profile-organizations .organization{
+  display: inline-block;
+  max-width: 100px;
+  max-height: 100px;
+}
+
+.profile-bounties--activities{
+  min-height: 200px;
+}
 
 @media (max-width: 767.98px) {
 

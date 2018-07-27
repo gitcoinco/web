@@ -596,3 +596,38 @@ def generate_pub_priv_keypair():
     # return priv key, pub key, address
 
     return priv.to_string().hex(), pub.hex(), checksum_encode(address)
+
+
+def profile_helper(handle, suppress_profile_hidden_exception=False):
+    """Define the profile helper.
+
+    Args:
+        handle (str): The profile handle.
+
+    Raises:
+        DoesNotExist: The exception is raised if a Profile isn't found matching the handle.
+            Remediation is attempted by syncing the profile data.
+        MultipleObjectsReturned: The exception is raised if multiple Profiles are found.
+            The latest Profile will be returned.
+
+    Returns:
+        dashboard.models.Profile: The Profile associated with the provided handle.
+
+    """
+    try:
+        profile = Profile.objects.get(handle__iexact=handle)
+    except Profile.DoesNotExist:
+        profile = sync_profile(handle)
+        if not profile:
+            raise Http404
+    except Profile.MultipleObjectsReturned as e:
+        # Handle edge case where multiple Profile objects exist for the same handle.
+        # We should consider setting Profile.handle to unique.
+        # TODO: Should we handle merging or removing duplicate profiles?
+        profile = Profile.objects.filter(handle__iexact=handle).latest('id')
+        logging.error(e)
+
+    if profile.hide_profile and not profile.is_org and not suppress_profile_hidden_exception:
+        raise ProfileHiddenException
+
+    return profile

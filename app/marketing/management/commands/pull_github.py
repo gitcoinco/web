@@ -21,7 +21,7 @@ from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 
 from dashboard.models import Profile
-from dashboard.views import profile_keywords_helper
+from dashboard.utils import profile_helper
 from git.utils import search
 from marketing.models import EmailSubscriber
 
@@ -74,6 +74,8 @@ class Command(BaseCommand):
                     es.keywords = profile_keywords_helper(es.github)
                     if es.keywords:
                         print(f"got keywords: {es.keywords}")
+                    profile = profile_helper(es.github, True)
+                    es.keywords = profile.keywords
                 es.save()
                 # print(es.email, es.github, es.keywords)
                 success += 1

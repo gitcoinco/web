@@ -1100,11 +1100,11 @@ def profile_keywords(request, handle):
         handle (str): The profile handle.
 
     """
-    keywords = profile_keywords_helper(handle)
+    profile = profile_helper(handle, True)
 
     response = {
         'status': 200,
-        'keywords': keywords,
+        'keywords': profile.keywords,
     }
     return JsonResponse(response)
 
