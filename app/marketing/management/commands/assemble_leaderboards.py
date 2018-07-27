@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
+from django.http.response import Http404
 
 from cacheops import CacheMiss, cache
 from dashboard.models import Bounty, Profile, Tip
@@ -334,7 +335,10 @@ class Command(BaseCommand):
             rank = 1
             for index_term, amount in sorted(rankings.items(), key=lambda x: x[1], reverse=True):
                 count = counts[key][index_term]
-                tech_keywords = profile_keywords_helper(index_term)
+                try:
+                    tech_keywords = profile_keywords_helper(index_term)
+                except Http404:
+                    tech_keywords = []
                 lbr_kwargs = {
                     'count': count,
                     'active': True,
