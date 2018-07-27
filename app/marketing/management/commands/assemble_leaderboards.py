@@ -335,6 +335,7 @@ class Command(BaseCommand):
             rank = 1
             for index_term, amount in sorted(rankings.items(), key=lambda x: x[1], reverse=True):
                 count = counts[key][index_term]
+                tech_keywords = Profile.objects.get(handle__iexact=username).keywords
                 try:
                     tech_keywords = profile_keywords_helper(index_term)
                 except Http404:

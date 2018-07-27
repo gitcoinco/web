@@ -138,6 +138,13 @@
 
   </body>
 
+  <script>
+    var technologies = []
+    {% for tech in technologies %}
+      technologies.push('{{tech}}')
+    {% endfor %}
+  </script>
+
   <!-- jQuery -->
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>

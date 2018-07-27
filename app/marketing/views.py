@@ -632,6 +632,11 @@ def leaderboard(request, key=''):
     amount = ranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
     items = ranks.order_by('-amount')
     top_earners = ''
+    technologies = set()
+    for profile_keywords in ranks.values_list('tech_keywords'):
+        for techs in profile_keywords:
+            for tech in techs:
+                technologies.add(tech)
 
     if amount:
         amount_max = amount[0][0]
@@ -653,6 +658,7 @@ def leaderboard(request, key=''):
         'card_desc': f'See the most valued members in the Gitcoin community recently . {top_earners}',
         'action_past_tense': 'Transacted' if 'submitted' in key else 'bountied',
         'amount_max': amount_max,
-        'podium_items': items[:3] if items else []
+        'podium_items': items[:3] if items else [],
+        'technologies': technologies
     }
     return TemplateResponse(request, 'leaderboard.html', context)
