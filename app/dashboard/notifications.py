@@ -455,41 +455,51 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
         
         msg = {}
         interested = bounty.interested.all().order_by('created')
-        interested_profiles = []
+        interested_context = []
+        started_context = []
+
         # interested_plural = "s" if interested.count() != 0 else ""
         from_now = naturaltime(bounty.expires_date)
-        started_work = [interested.profile for interested in bounty.interested.filter(pending=False).select_related('profile').all()]
         # pending_approval = bounty.interested.filter(pending=True).all()
         bounty_owner_clear = f"@{bounty.bounty_owner_github_username}" if bounty.bounty_owner_github_username else ""
-        pending_interest = [interested.profile for interested in bounty.interested.filter(pending=True).select_related('profile').all()]
-        interest_approve_links = {}
-        interest_reject_links = {}
+        pending_interest = bounty.interested.filter(pending=True).select_related('profile').all()
         if bounty.permission_type == 'approval':
-            for i, profile in enumerate(pending_interest):
-                   interested_profiles.append(
-                           SimpleNamespace(
-                               profile = pending_interest[i],
-                               approve_link = bounty.approve_worker_url(profile.handle),
-                               reject_link = bounty.reject_worker_url(profile.handle)
-                            )
-                    )
+            for interest in pending_interest:
+               interested_context.append(
+                       SimpleNamespace(
+                           profile = interest.profile,
+                           approve_link = bounty.approve_worker_url(interest.profile.handle),
+                           reject_link = bounty.reject_worker_url(interest.profile.handle),
+                           issue_comment = interest.issue_message
+                        )
+                )
             context = {
                 'bounty': bounty,
-                'interested': interested_profiles
+                'interested': interested_context
             }
             
             msg['pending'] = render_to_string('github_comments/express_interest.md', context)
-        if len(started_work):
-            context = {'started_work': started_work}
+        started_work = bounty.interested.filter(pending=False).select_related('profile').all()
+        if started_work.count():
+            for interest in started_work:
+                started_context.append(
+                        SimpleNamespace(
+                            profile = interest.profile,
+                            issue_comment = interest.issue_message
+                        )
+                )
+            context = {
+                'bounty': bounty,
+                'started_work': started_context}
             msg['started'] = render_to_string('github_comments/start_work.md', context)
 
-        if (not (len(started_work) and bounty.started_comment == None)) and len(pending_interest) == 0:
+        if (not (started_work.count() and bounty.started_comment == None)) and pending_interest.count() == 0:
             delete_issue_comment(bounty.started_comment, username, repo)
             return False
             #msg = f"{status_header}__Workers have applied to start work__.\n\n"
     elif event_name == 'stop_work':
         started_work = [interest.profile for interest in bounty.interested.filter(pending=False).select_related('profile').all()]
-        started_work_handles = [handle for profile in started_work]
+        started_work_handles = [profile.handle for profile in started_work]
         context = {
                     'bounty': bounty,
                     'started_work': started_work,
