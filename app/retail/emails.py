@@ -31,6 +31,7 @@ from django.utils.translation import gettext as _
 import cssutils
 import premailer
 from marketing.utils import get_or_save_email_subscriber
+from marketing.models import LeaderboardRank
 from retail.utils import strip_double_chars, strip_html
 
 # RENDERERS
@@ -553,7 +554,24 @@ Back to BUIDLing,
         },
     ]
 
+    num_leadboard_items = 5
     #### don't need to edit anything below this line
+    leaderboard = {
+        'quarterly_payers': {
+            'title': _('Top Payers'),
+            'items': [],
+        },
+        'quarterly_earners': {
+            'title': _('Top Earners'),
+            'items': [],
+        },
+        'quarterly_orgs': {
+            'title': _('Top Orgs'),
+            'items': [],
+        },
+    }
+    for key, val in leaderboard.items():
+        leaderboard[key]['items'] = LeaderboardRank.objects.filter(active=True, leaderboard=key).order_by('rank')[0:num_leadboard_items]
 
 
     bounties = []
@@ -576,6 +594,7 @@ Back to BUIDLing,
         'intro': intro,
         'intro_txt': strip_double_chars(strip_double_chars(strip_double_chars(strip_html(intro), ' '), "\n"), "\n "),
         'bounties': bounties,
+        'leaderboard': leaderboard,
         'ecosystem_bounties': ecosystem_bounties,
         'invert_footer': False,
         'hide_header': False,
