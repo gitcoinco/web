@@ -1,0 +1,12 @@
+{
+  "symbol": "TCASH",
+  "address": "0x7051620d11042c4335069AaA4f10Cd3B4290C681",
+  "overview":{
+        "en": "TCASH Token is an income-generating cryptocurrency. Holders can share 50% transaction fees of EtherFlyer. EtherFlyer is a one-stop, high-volume and open source decentralized exchange.",
+        "zh": "TCASH代币是一种创收型的数字货币，持有者能够一起分享EtherFlyer平台上加密货币交易费用的50%。EtherFlyer是一站式，高流通性，开源的去中心化数字货币交易所。"
+  },
+  "website": "https://tcash.io/",
+  "whitepaper": "https://tcash.io/pdf/tcash_whitepaper_en.pdf",
+  "state": "NORMAL",
+  "published_on": "2017-12-02"
+}
