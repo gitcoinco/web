@@ -21,7 +21,6 @@ var generate_or_get_private_key = function() {
 var clear_metadata = function() {
   document.account = undefined;
   document.hash1 = undefined;
-  document.hash2 = undefined;
 };
 
 var set_metadata = function(callback) {
@@ -34,23 +33,17 @@ var set_metadata = function(callback) {
     if (err)
       throw err;
     document.hash1 = hash1;
-    ipfs.add(shares[2], function(err, hash2) {
-      if (err)
-        throw err;
-      document.hash2 = hash2;
-    });
   });
 };
 var wait_for_metadata = function(callback) {
   setTimeout(function() {
-    if (typeof document.hash2 != 'undefined') {
+    if (typeof document.hash1 != 'undefined') {
       var account = generate_or_get_private_key();
 
       callback({
         'pub_key': account['public'],
         'address': account['address'],
-        'reference_hash_for_funder': document.hash1,
-        'reference_hash_for_receipient': document.hash2,
+        'reference_hash_for_receipient': document.hash1,
         'gitcoin_secret': account['shares'][0]
       });
     } else {
@@ -150,7 +143,6 @@ function isNumeric(n) {
 
 
 function sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, is_for_bounty_fulfiller) {
-
   mixpanel.track('Tip Step 2 Click', {});
   if (typeof web3 == 'undefined') {
     _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
