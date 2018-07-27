@@ -25,7 +25,7 @@ from django.conf import settings
 
 import ipfsapi
 import requests
-from app.utils import get_semaphor
+from app.utils import get_semaphorrollbar, sync_profile
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
 from dashboard.models import Activity, Bounty, UserAction
 from eth_utils import to_checksum_address
@@ -37,6 +37,13 @@ from web3.exceptions import BadFunctionCallOutput
 from web3.middleware import geth_poa_middleware
 
 logger = logging.getLogger(__name__)
+
+
+class ProfileNotFoundException(Exception):
+    pass
+
+class ProfileHiddenException(Exception):
+    pass
 
 
 class BountyNotFoundException(Exception):
@@ -619,7 +626,7 @@ def profile_helper(handle, suppress_profile_hidden_exception=False):
     except Profile.DoesNotExist:
         profile = sync_profile(handle)
         if not profile:
-            raise Http404
+            raise ProfileNotFoundException
     except Profile.MultipleObjectsReturned as e:
         # Handle edge case where multiple Profile objects exist for the same handle.
         # We should consider setting Profile.handle to unique.

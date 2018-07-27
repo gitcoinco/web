@@ -48,6 +48,7 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid, search_users
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
+from dashboard.utils import ProfileNotFoundException
 from marketing.mails import (
     admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
@@ -1100,7 +1101,10 @@ def profile_keywords(request, handle):
         handle (str): The profile handle.
 
     """
-    profile = profile_helper(handle, True)
+    try:
+        profile = profile_helper(handle, True)
+    except ProfileNotFoundException:
+        raise Http404
 
     response = {
         'status': 200,
