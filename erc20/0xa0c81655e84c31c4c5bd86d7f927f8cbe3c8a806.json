@@ -1,0 +1,23 @@
+{
+  "symbol": "WPKG",
+  "address": "0xa0c81655e84c31c4c5bd86d7f927f8cbe3c8a806",
+  "overview":{
+        "en": "Thanks to blockchain and smart contract technology, using distributed storage, peer-to-peer transmission, consensus mechanism, encryption algorithm and other basic technologies, WorldPoker.Game does not require a centralized server, and realizes the chain as the engine. Our consumer can play games on WorldPoker.Game without leaving traces, don't worry about all kinds of losses caused by information leakage, safe and trustworthy!",
+        "zh": "得益于区块链技术和智能合约技术，WorldPoker.Game不需要中心化服务器，采用分布式存储，点对点传输，共识机制，加密算法等基础技术，实现了链即引擎，引擎即链。用户在WorldPoker.Game 上玩游戏可以不留痕迹，不必担心信息泄露以及因为信息泄露带来的各种损失，安全可信任！"
+  },
+  "email": "info@wpkg.one",
+  "website": "https://wpkg.one/",
+  "whitepaper": "https://wpkg.one/doc/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-07-18",
+  "initial_price":{
+        "ETH":"0.006423264 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/@wpkg_one",
+    "telegram": "https://t.me/WorldPoker_Game",
+    "github": "https://github.com/wpkgone/WPKG",
+    "facebook": "https://www.facebook.com/jackpay.go",
+    "medium": "https://medium.com/@wpkg_one"
+  }
+}
