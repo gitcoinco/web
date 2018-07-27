@@ -38,9 +38,9 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-from app.utils import ellipses, sync_profile
+from app.utils import ellipses
 from avatar.utils import get_avatar_context
-from dashboard.utils import profile_helper
+from dashboard.utils import ProfileHiddenException, ProfileNotFoundException, profile_helper
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid
@@ -913,9 +913,6 @@ def quickstart(request):
     return TemplateResponse(request, 'quickstart.html', {})
 
 
-class ProfileHiddenException(Exception):
-    pass
-
 def profile_keywords(request, handle):
     """Display profile keywords.
 
@@ -923,7 +920,10 @@ def profile_keywords(request, handle):
         handle (str): The profile handle.
 
     """
-    profile = profile_helper(handle, True)
+    try:
+        profile = profile_helper(handle, True)
+    except ProfileNotFoundException:
+        raise Http404
 
     response = {
         'status': 200,
