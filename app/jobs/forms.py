@@ -22,6 +22,7 @@ from django import forms
 from dashboard.views import profile_keywords_helper
 
 from .models import Job
+from .services import clean_html_data
 
 
 class JobForm(forms.ModelForm):
@@ -31,6 +32,18 @@ class JobForm(forms.ModelForm):
     def __init__(self, user, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['skills'].choices = [(x, x) for x in profile_keywords_helper(user.profile.handle)]
+
+    def clean_description(self):
+        description = self.cleaned_data['description']
+        # Allow `strong`, `em` & `p` tags.
+        description = clean_html_data(description, ['strong', 'em', 'p'])
+        return description
+
+    def clean_title(self):
+        title = self.cleaned_data['title']
+        # Allow `strong`, `em` & `p` tags.
+        title = clean_html_data(title, ['strong', 'em'])
+        return title
 
     class Meta:
         """Define the JOB form metadata."""

@@ -91,7 +91,7 @@
                     </div>
 
                     <label class="form__label">{{ form.description.label_tag }}</label>
-                    <textarea name="description" class="form__input" id="description" placeholder="Add some new feature." value="{% if form.description.value  %}{{ form.description.value }}{%endif%}"></textarea>
+                    <textarea name="description" class="form__input" id="description" placeholder="Please enter the job description as plaintext or markdown" value="{% if form.description.value  %}{{ form.description.value }}{%endif%}"></textarea>
                     <div class="col-12 w-100">
                       {{ form.description.errors }}
                     </div>
