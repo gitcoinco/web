@@ -222,16 +222,6 @@ $(function () {
         return $(classSel(filterBaseSel) + '--age-or-value').find(':selected');
       }
     }
-
-    function OutgoingFund(bounty) {
-      this.id = bounty.github_issue_number;
-      this.title = bounty.title;
-      this.type = bounty.bounty_type; // TODO: This should be Tip, Payment etc.
-      this.status = bounty.status; // TODO: This should be Pending, Claimed etc
-      this.etherscanLink = bounty.etherscanLink;
-      this.worthDollars = bounty.value_in_usdt;
-      this.worthEth = bounty.value_in_eth;
-    }
   }
 
   function updateBemElementInParent($parent, classSelectorBase, elementName, elementValue) {
@@ -296,23 +286,23 @@ $(function () {
     function getAllBounties(bounties, cbRenderBounties) {
       var filterBaseSel = 'funder-dashboard__all-bounties__filter';
 
-      var typeStatusFilter = getTypeOrStatusFilter(filterBaseSel);
-      var sortFilter = getSortByFilter(filterBaseSel);
+      var $typeStatusFilter = getTypeOrStatusFilter(filterBaseSel);
+      var $sortFilter = getSortByFilter(filterBaseSel);
 
       var filteredBounties = bounties.filter(function (fund) {
-        if (typeStatusFilter.data('is-all-filter')) {
+        if ($typeStatusFilter.data('is-all-filter')) {
           return true;
         }
 
-        if (typeStatusFilter.data('is-type-filter')) {
-          return fund.typeTipOrPayment.toUpperCase() === typeStatusFilter.val().toUpperCase();
-        } else if (typeStatusFilter.data('is-status-filter')) {
+        if ($typeStatusFilter.data('is-type-filter')) {
+          return fund.typeTipOrPayment.toUpperCase() === $typeStatusFilter.val().toUpperCase();
+        } else if ($typeStatusFilter.data('is-status-filter')) {
           // 'Pending' || 'Claimed'
-          return fund.statusPendingOrClaimed.toUpperCase() === typeStatusFilter.val().toUpperCase();
+          return fund.statusPendingOrClaimed.toUpperCase() === $typeStatusFilter.val().toUpperCase();
         }
       });
 
-      var sortFn = getSortFn(sortFilter.val());
+      var sortFn = getSortFn($sortFilter.val());
       filteredBounties = filteredBounties.sort(function(fund1, fund2) {
         return sortFn(fund1, fund2);
       });
@@ -326,18 +316,6 @@ $(function () {
       function getSortByFilter(filterBaseSel) {
         return $(classSel(filterBaseSel) + '--age-or-value').find(':selected');
       }
-    }
-
-    function Bounty(bounty) {
-      this.id = bounty.github_issue_number;
-      this.title = bounty.title;
-      this.type = bounty.bounty_type;
-      this.typeTipOrPayment = ""; // TODO: this will be used to filter a bounty
-      this.status = bounty.status;
-      this.statusPendingOrClaimed = ""; // TODO: this will be used to filter the bounty
-      this.githubLink = bounty.github_url;
-      this.worthDollars = bounty.value_in_usdt;
-      this.worthEth = bounty.value_in_eth;
     }
   }
 
@@ -428,13 +406,10 @@ $(function () {
   activateTotalBudget();
   activateLinksToIssueExplorer();
 
-  var funderEmail = document.contxt.email;
-  if (funderEmail) {
-    var outgoingFunds = window.outgoingFunds.items;
-    var funderBounties = window.all_bounties.items;
+  var outgoingFunds = window.outgoingFunds.items;
+  var funderBounties = window.allBounties.items;
 
-    activateOutgoingFunds(outgoingFunds);
-    activateAllBounties(funderBounties.slice(0, 10));
-  }
+  activateOutgoingFunds(outgoingFunds);
+  activateAllBounties(funderBounties.slice(0, 10));
 });
 

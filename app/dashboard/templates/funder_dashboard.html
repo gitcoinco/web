@@ -342,13 +342,13 @@
                       {% for filter in outgoing_funds_filters %}
                       <option value="{{filter.value}}"
                               {% if filter.is_all_filter %}
-                              selected data-is-all-filter
+                              selected data-is-all-filter="true"
                               {% endif %}
                               {% if filter.is_type_filter %}
-                              data-is-type-filter
+                              data-is-type-filter="true"
                               {% endif %}
                               {% if filter.is_status_filter %}
-                              data-is-status-filter
+                              data-is-status-filter="true"
                               {% endif %}>
                         {{filter.value_display}}
                       </option>
@@ -465,13 +465,13 @@
                       {% for filter in all_bounties_filters %}
                       <option value="{{filter.value}}"
                               {% if filter.is_all_filter %}
-                              selected data-is-all-filter
+                              selected data-is-all-filter="true"
                               {% endif %}
                               {% if filter.is_type_filter %}
-                              data-is-type-filter
+                              data-is-type-filter="true"
                               {% endif %}
                               {% if filter.is_status_filter %}
-                              data-is-status-filter
+                              data-is-status-filter="true"
                               {% endif %}>
                         {{filter.value_display}}
                       </option>
