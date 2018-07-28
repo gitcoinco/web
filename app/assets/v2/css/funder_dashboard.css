@@ -161,6 +161,11 @@
   border: 2px solid #84b800;
 }
 
+.funder-dashboard__all-bounties__bounties__bounty--open
+.funder-dashboard__all-bounties__bounties__bounty__status__circle {
+  border: 2px solid lightgreen;
+}
+
 .bgc-ethereum {
   background-color: #ebe5ff;
   padding-right: 0.2rem;

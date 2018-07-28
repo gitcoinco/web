@@ -242,8 +242,8 @@ $(function () {
     var $bountyTemplate = $('.funder-dashboard__all-bounties__bounties__bounty--template');
 
     var bountyBaseSel = 'funder-dashboard__all-bounties__bounties__bounty';
-    var cbRenderBounties = renderOutgoingFunds.bind(this, $container, $bountyTemplate, bountyBaseSel);
-    var getBounties = getAllBounties.bind(this, bounties, cbRenderBounties);
+    var cbRenderBounties = renderBounties.bind(this, $container, $bountyTemplate, bountyBaseSel);
+    var getBounties = getBounties.bind(this, bounties, cbRenderBounties);
 
     getBounties();
     $('.funder-dashboard__all-bounties__filter').change(function () {
@@ -255,7 +255,7 @@ $(function () {
       $container.find(classSel(bountyBaseSel + ':not(' + classSel(bountyBaseSel) + '--template)')).remove();
     }
 
-    function renderOutgoingFunds($container, $bountyTemplate, bountyBaseSel, bounties) {
+    function renderBounties($container, $bountyTemplate, bountyBaseSel, bounties) {
       for (var i = 0; i < bounties.length; ++i) {
         var $clone = $bountyTemplate.clone();
         var bounty = bounties[i];
@@ -277,13 +277,16 @@ $(function () {
         else if (bounty.status === 'submitted') {
           $clone.addClass(bountyBaseSel + '--submitted');
         }
+        else if (bounty.status === 'open') {
+          $clone.addClass(bountyBaseSel + '--open');
+        }
 
         $clone.removeClass(bountyBaseSel + '--template');
         $container.append($clone);
       }
     }
 
-    function getAllBounties(bounties, cbRenderBounties) {
+    function getBounties(bounties, cbRenderBounties) {
       var filterBaseSel = 'funder-dashboard__all-bounties__filter';
 
       var $typeStatusFilter = getTypeOrStatusFilter(filterBaseSel);

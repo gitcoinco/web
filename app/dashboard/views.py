@@ -930,6 +930,16 @@ def save_search(request):
 
 def funder_dashboard(request):
     """ Render the funder dashboard"""
+    def usd_format(amount):
+        if amount is None:
+            return ""
+        return format(amount, '.2f')
+
+    def eth_format(amount):
+        if amount is None:
+            return ""
+        return format(amount, '.3f')
+
     funder_bounties = request.user.profile.get_funded_bounties()
 
     # TODO: Remove, it's just for testing now
@@ -1005,10 +1015,10 @@ def funder_dashboard(request):
     total_paid_date_since = _("May 5. 2018")
 
     # total budget in dollars, not used currently, we show an input field by default
-    total_budget_dollars = ""
+    total_budget_dollars = 0
 
     # total budget in eth, not used currently, we show an input field by default
-    total_budget_eth = ""
+    total_budget_eth = 0
 
     # TODO: Tax year stats - Considering the tax year to be 1 Jan to 31 Dec
     tax_year = 2018
@@ -1087,8 +1097,8 @@ def funder_dashboard(request):
             'type': fund_type,
             'status': fund_status,
             'etherscanLink': etherscan_link,
-            'worthDollars': bounty.get_value_in_usdt,
-            'worthEth': bounty.get_value_in_eth
+            'worthDollars': usd_format(bounty.get_value_in_usdt),
+            'worthEth': eth_format(bounty.get_value_in_eth)
         })
 
     for tip in Tip.objects.filter(from_email=request.user.profile.email):
@@ -1100,8 +1110,8 @@ def funder_dashboard(request):
                 'type': 'Tip',
                 'status': "Pending",
                 'etherscanLink': etherscan_link,
-                'worthDollars': tip.value_in_usdt,
-                'worthEth': tip.value_in_eth
+                'worthDollars': usd_format(tip.value_in_usdt),
+                'worthEth': eth_format(tip.value_in_eth)
             })
 
     all_bounties_filters = [
@@ -1162,8 +1172,8 @@ def funder_dashboard(request):
             'status': bounty.status,
             'statusPendingOrClaimed': pending_or_claimed,
             'githubLink': bounty.github_url,
-            'worthDollars': bounty.get_value_in_usdt,
-            'worthEth': bounty.get_value_in_eth
+            'worthDollars': usd_format(bounty.get_value_in_usdt),
+            'worthEth': eth_format(bounty.get_value_in_eth)
         })
 
     context = {
@@ -1174,11 +1184,11 @@ def funder_dashboard(request):
         # Stats
         "submitted_bounties_count": submitted_bounties_count,
         "total_contributors_count": total_contributors_count,
-        "total_paid_dollars": total_paid_dollars,
-        "total_paid_eth": total_paid_eth,
+        "total_paid_dollars": usd_format(total_paid_dollars),
+        "total_paid_eth": eth_format(total_paid_eth),
         "total_paid_date_since": total_paid_date_since,
-        "total_budget_dollars": total_budget_dollars,
-        "total_budget_eth": total_budget_eth,
+        "total_budget_dollars": usd_format(total_budget_dollars),
+        "total_budget_eth": eth_format(total_budget_eth),
         # Payout History
         "payout_history_weekly": json.dumps(payout_history_weekly, ensure_ascii=False, cls=DjangoJSONEncoder),
         "payout_history_monthly": json.dumps(payout_history_monthly, ensure_ascii=False, cls=DjangoJSONEncoder),
@@ -1189,7 +1199,7 @@ def funder_dashboard(request):
         "tax_year_bounties_worth_dollars": tax_year_bounties_worth_dollars,
         # Latest on your bounties
         "expired_issues_count": expired_issues_count,
-        "expired_issues_worth_dollars": expired_issues_worth_dollars,
+        "expired_issues_worth_dollars": usd_format(expired_issues_worth_dollars),
         "active_bounties_count": active_bounties_count,
         "completed_bounties_count": completed_bounties_count,
         "expired_bounties_count": expired_bounties_count,
