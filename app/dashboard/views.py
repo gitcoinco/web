@@ -33,6 +33,7 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.text import slugify
+from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
@@ -1082,7 +1083,7 @@ def funder_dashboard(request):
 
         outgoing_funds.push({
             'id': bounty.github_issue_number,
-            'title': bounty.title,
+            'title': escape(bounty.title),
             'type': fund_type,
             'status': fund_status,
             'etherscanLink': etherscan_link,
@@ -1155,7 +1156,7 @@ def funder_dashboard(request):
 
         all_bounties.append({
             'id': bounty.github_issue_number,
-            'title': bounty.title,
+            'title': escape(bounty.title),
             'type': bounty.bounty_type,
             'typeTipOrPayment': tip_or_payment,
             'status': bounty.status,
