@@ -940,7 +940,7 @@ def funder_dashboard(request):
             return ""
         return format(amount, '.3f')
 
-    def get_bounty_status(bounty):
+    def pending_or_claimed_from_bounty(bounty):
         if bounty.interested.exists():
             return 'Claimed'
         if bounty.status == 'open' or bounty.status == 'started' or bounty.status == 'submitted':
@@ -1132,8 +1132,19 @@ def funder_dashboard(request):
             'value': 'All',
             'value_display': _('All'),
             'is_all_filter': True,
-            'is_type_filter': False,
-            'is_status_filter': False
+            'is_status_pending_or_claimed_filter': False
+        },
+        {
+            'value': 'Pending',
+            'value_display': _('Pending'),
+            'is_all_filter': False,
+            'is_status_pending_or_claimed_filter': True
+        },
+        {
+            'value': 'Claimed',
+            'value_display': _('Claimed'),
+            'is_all_filter': False,
+            'is_status_pending_or_claimed_filter': True
         },
     ]
 
@@ -1145,7 +1156,7 @@ def funder_dashboard(request):
             'title': escape(bounty.title),
             'type': bounty.bounty_type,
             'status': bounty.status,
-            'statusPendingOrClaimed': get_bounty_status(bounty),
+            'statusPendingOrClaimed': pending_or_claimed_from_bounty(bounty),
             'githubLink': bounty.github_url,
             'worthDollars': usd_format(bounty.get_value_in_usdt),
             'worthEth': eth_format(bounty.get_value_in_eth)

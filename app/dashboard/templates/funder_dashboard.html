@@ -467,6 +467,9 @@
                               {% if filter.is_all_filter %}
                               selected data-is-all-filter="true"
                               {% endif %}
+                              {% if filter.is_status_pending_or_claimed_filter %}
+                              data-is-status-pending-or-claimed-filter="true"
+                              {% endif %}
                               >
                         {{filter.value_display}}
                       </option>

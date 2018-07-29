@@ -295,6 +295,9 @@ $(function () {
       var filteredBounties = bounties.filter(function (fund) {
         if ($typeStatusFilter.data('is-all-filter')) {
           return true;
+        } else if ($typeStatusFilter.data('is-status-pending-or-claimed-filter')) {
+          // 'Pending' || 'Claimed'
+          return fund.statusPendingOrClaimed.toUpperCase() === $typeStatusFilter.val().toUpperCase();
         }
 
         return false;
