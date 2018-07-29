@@ -1034,7 +1034,8 @@ def funder_dashboard(request):
     tax_year_bounties_worth_dollars = 0
 
     for bounty in done_bounties:
-        if bounty.fulfillment_accepted_on is not None and tax_year == bounty.fulfillment_accepted_on.year:
+        accepted_on = bounty.fulfillment_accepted_on
+        if accepted_on is not None and tax_year == accepted_on.year:
             tax_year_bounties_count += 1
             tax_year_bounties_worth_dollars += bounty.get_value_in_usdt
 
@@ -1134,46 +1135,15 @@ def funder_dashboard(request):
             'is_type_filter': False,
             'is_status_filter': False
         },
-        {
-            'value': 'Tip',
-            'value_display': _('Tip'),
-            'is_all_filter': False,
-            'is_type_filter': True,
-            'is_status_filter': False
-        },
-        {
-            'value': 'Payment',
-            'value_display': _('Payment'),
-            'is_all_filter': False,
-            'is_type_filter': True,
-            'is_status_filter': False
-        },
-        {
-            'value': 'Pending',
-            'value_display': _('Pending'),
-            'is_all_filter': False,
-            'is_type_filter': False,
-            'is_status_filter': True
-        },
-        {
-            'value': 'Claimed',
-            'value_display': _('Claimed'),
-            'is_all_filter': False,
-            'is_type_filter': False,
-            'is_status_filter': True
-        },
     ]
 
     all_bounties = []
     for bounty in funder_bounties:
-        # TODO: Is the bounty a Tip or a Payment?
-        tip_or_payment = None
 
         all_bounties.append({
             'id': bounty.github_issue_number,
             'title': escape(bounty.title),
             'type': bounty.bounty_type,
-            'typeTipOrPayment': tip_or_payment,
             'status': bounty.status,
             'statusPendingOrClaimed': get_bounty_status(bounty),
             'githubLink': bounty.github_url,

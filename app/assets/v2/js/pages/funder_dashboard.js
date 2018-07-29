@@ -297,12 +297,7 @@ $(function () {
           return true;
         }
 
-        if ($typeStatusFilter.data('is-type-filter')) {
-          return fund.typeTipOrPayment.toUpperCase() === $typeStatusFilter.val().toUpperCase();
-        } else if ($typeStatusFilter.data('is-status-filter')) {
-          // 'Pending' || 'Claimed'
-          return fund.statusPendingOrClaimed.toUpperCase() === $typeStatusFilter.val().toUpperCase();
-        }
+        return false;
       });
 
       var sortFn = getSortFn($sortFilter.val());
