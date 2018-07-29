@@ -16,7 +16,7 @@ import requests
 import rollbar
 from dashboard.models import Profile
 from geoip2.errors import AddressNotFoundError
-from github.utils import _AUTH, HEADERS, get_user
+from git.utils import _AUTH, HEADERS, get_user
 from ipware.ip import get_real_ip
 from marketing.utils import get_or_save_email_subscriber
 from pyshorteners import Shortener
@@ -122,11 +122,7 @@ def sync_profile(handle, user=None, hide_profile=True):
         rollbar.report_message('Failed to fetch github username', 'warning', extra_data=data)
         return None
 
-    defaults = {
-        'last_sync_date': timezone.now(),
-        'data': data,
-        'hide_profile': hide_profile,
-    }
+    defaults = {'last_sync_date': timezone.now(), 'data': data, 'hide_profile': hide_profile, }
 
     if user and isinstance(user, User):
         defaults['user'] = user

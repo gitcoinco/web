@@ -2,6 +2,11 @@ var onboard = {};
 var current = 0;
 var words = [];
 
+if ($('.logged-in').length) {
+  $('.nav-item.dropdown #navbarDropdown').css('visibility', 'visible');
+  $('img.nav_avatar').css('visibility', 'visible');
+}
+
 $('.js-select2').each(function() {
   $(this).select2();
 });
@@ -9,12 +14,27 @@ $('.js-select2').each(function() {
 onboard.showTab = function(num) {
   $($('.step')[num]).addClass('block').outerWidth();
   $($('.step')[num]).addClass('show');
-  window.history.pushState('', '', '/onboard/' + flow + '/' + $($('.step')[num]).attr('link'));
 
-  if (num == 0)
+  if (num === 0) {
     $('#prev-btn').hide();
-  else
+  } else {
     $('#prev-btn').show();
+    window.history.pushState('', '', '/onboard/' + flow + '/' + $($('.step')[num]).attr('link'));
+  }
+
+  if (num === 1 || num === 2 || $($('.step')[num]).attr('link') === 'avatar') {
+    $('.controls').hide();
+  } else {
+    $('.controls').show();
+  }
+
+  // if (flow === 'funder' && num === 3) {
+  //   $('#onboarding').parent().removeClass('offset-sm-1 col-sm-10 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6');
+  //   $('#onboarding').css('max-width', 'none');
+  // } else {
+  //   $('#onboarding').parent().addClass('offset-sm-1 col-sm-10 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6');
+  //   $('#onboarding').css('max-width', 'auto');
+  // }
 
   if (num == ($('.step').length) - 1) {
     $('#next-btn').html(gettext('Done'));
@@ -40,8 +60,11 @@ onboard.highlightStep = function(currentStep) {
   }
 };
 
+document.alreadyFoundMetamask = false;
 onboard.watchMetamask = function() {
-  if (typeof web3 == 'undefined') {
+  if (document.alreadyFoundMetamask) {
+    return;
+  } else if (typeof web3 == 'undefined') {
     $('.step #metamask').html(`
       <div class="locked">
         <a class="button button--primary" target="_blank" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">
@@ -50,6 +73,9 @@ onboard.watchMetamask = function() {
         </a>
       </div>`
     );
+    if (current === 1) {
+      $('.controls').hide();
+    }
   } else if (!web3.eth.coinbase) {
     $('.step #metamask').html(`
       <div class="locked">
@@ -59,8 +85,22 @@ onboard.watchMetamask = function() {
         </a>
       </div>`
     );
+    if (current === 1) {
+      $('.controls').hide();
+      $('#metamask-video').show();
+    }
   } else {
-    $('.step #metamask').html('<div class="unlocked"><img src="/static/v2/images/metamask.svg" %}><span>' + gettext('Unlocked') + '</span></div>');
+    $('.step #metamask').html('<div class="unlocked"><img src="/static/v2/images/metamask.svg" %}><span class="mr-1">' + gettext('Unlocked') + '</span><i class="far fa-check-circle"></i></div><div><label for=eth_address>' + gettext('Ethereum Payout Address') + ':</label><br><input class="w-100" type=text id=eth_address name=eth_address placeholder="' + gettext('Ethereum Payout Address') + '"" value=' + web3.eth.coinbase + '></div>');
+    if (current === 1) {
+      document.alreadyFoundMetamask = true;
+      $('.controls').show();
+      $('#metamask-video').hide();
+      $('#next-btn').click(function(e) {
+        var eth_address = $('#eth_address').val();
+
+        $.get('/onboard/contributor/', {eth_address: eth_address});
+      });
+    }
   }
 };
 
@@ -96,6 +136,7 @@ onboard.getFilters = function(savedKeywords) {
   }
 
   $.each($('input[type=checkbox][name=tech-stack]:checked'), function() {
+    $('.suggested-tag input[type=checkbox]:checked + span i').removeClass('fa-plus').addClass('fa-check');
     var value = $(this).attr('value');
 
     _words.push(value);
@@ -135,9 +176,14 @@ var changeStep = function(n) {
 
   $(steps[current]).removeClass('show');
   $(steps[current]).removeClass('block');
+  $('.alert').remove();
 
   current += n;
-  onboard.showTab(current);
+  if (current > steps.length - 1) {
+    redirectURL();
+  } else {
+    onboard.showTab(current);
+  }
 };
 
 steps.forEach(function(step, index) {
@@ -188,10 +234,18 @@ $('.search-area input[type=text]').keypress(function(e) {
 });
 
 var redirectURL = function() {
-  var level = $('#experienceLevel').find(':selected').val();
+  var url = '';
 
-  localStorage['experience_level'] = level;
-  var url = '/explorer?q=' + words.join(',');
+  if (flow === 'contributor') {
+    var level = $('#experienceLevel').find(':selected').val();
+
+    localStorage['experience_level'] = level;
+    url = '/explorer?q=' + words.join(',');
+  } else if (flow === 'funder') {
+    url = '/funding/new';
+  } else if (flow === 'profile') {
+    url = '/profile';
+  }
 
   localStorage['referrer'] = 'onboard';
   document.location.href = url;

@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+{% block body %}
+<style>
+  .slack--brand-tree {
+    max-width:80%;
+    margin: 0px auto;
+  }
+
+
+  h4 p {
+    background-color: #fee856;
+    padding: 5px 10px;
+  }
+
+  @media (max-width: 768px) {
+    .form_container {
+      padding-left: 1.6rem !important;
+      padding-right: 1.6rem !important;
+    }
+  }
+
+  @media (max-width: 992px) {
+    .slack--brand-tree {
+      max-width: 100%;
+    }
+  }
+
+</style>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12 col-md-5 pb-4">
+      <div class="align-items-right justify-content-right">
+        <img class="slack--brand-tree" src="{% static "v2/images/tree/dark.png" %}">
+      </div>
+    </div>
+    <div class="col-12 col-md-6 pr-2 pl-2 pb-4 form_container">
+      <div style="max-width: 500px; margin: 0px auto;">
+        <h4>
+          {% trans "New Token Request Form" %}
+        </h4>
+        {% if msg %}
+          <p>
+            {{ msg | safe }}
+          </p>
+        {% endif %}
+        {% if success %}
+          <div style="text-align: center; margin-bottom: 10px">
+            <img src="{% static "v2/images/tree/party_robot.jpg" %}">
+          </div>
+        {% endif %}
+        <form class="mt-5" id="newtoken" method="POST">
+          <div class="form-group">
+            <label class="form__label" for="email">{% trans "Email address" %}</label>
+            <input type="email" name="email" class="form__input" placeholder='you@somewhere' value="{% if email %}{{ email }}{% endif %}" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="address">{% trans "Token Address" %}</label>
+            <input type="text" name="address" class="form__input" placeholder='0xabcdef' value="" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="symbol">{% trans "Token Symbol" %}</label>
+            <input type="text" name="symbol" class="form__input" placeholder='FOOBAR' value="" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="decimals">{% trans "Token Decimal Places" %}</label>
+            <input type="number" name="decimals" class="form__input" placeholder='18' value="" required>
+          </div>
+          <div class="form-group">
+            <label class="form__label" for="network">{% trans "Token Network" %}</label>
+            <input type="text" name="network" class="form__input" placeholder='mainnet' value="mainnet" required>
+          </div>
+          <div class="terms_container pt-4">
+            <div class="form__checkbox">
+              <input name='terms' id='terms' type="checkbox" value=1 required />
+                <label class="form__label" for=terms>{% trans "I have read, understand, and agree to, the" %}
+                  <a href="{% url "terms" %}" target="_blank" rel="noopener noreferrer">{% trans "Terms of Service" %}</a>.
+              </label>
+            </div>
+          </div>
+
+          <div class="w-100 mt-2 terms_container">
+            <div class="form__checkbox">
+              <input name='not_security' id='not_security' type="checkbox" value=1 required />
+              <label class="form__label" for=not_security style="display: flex;">{% blocktrans %}This token is not a security token.{% endblocktrans %}</label>
+            </div>
+          </div>
+
+          {% csrf_token %}
+          <input class='button button--primary joinslack mt-2' type='submit' name='submit' value="Submit Token">
+        </form>
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+</div>
+{% block scripts %}
+<script>
+  $('#newtoken').validate();
+  $(document).ready(function() {
+    $('#newtoken input.btn-go').click(function(e){
+      mixpanel.track("New Token Request", {});
+      setTimeout(function(){
+        $('#newtoken input.btn-go').attr('disabled','disabled');
+      },1);
+    });
+  });
+</script>
+{% endblock %}

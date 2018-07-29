@@ -1,4 +1,5 @@
-body.quickstart {
+body.quickstart,
+.quickstart {
   background: #f6f6f6;
 }
 
@@ -9,6 +10,7 @@ body.quickstart {
 
 .quickstart .container-fluid.content {
   margin-bottom: 13rem;
+  text-align: left;
 }
 
 .quickstart h4.title {
@@ -144,4 +146,8 @@ body.quickstart {
     padding: 1rem 0;
   }
 
+}
+
+.flex-column img {
+  margin: auto;
 }

@@ -20,7 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import socket
 
 from django.http import Http404
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_noop
 
 import environ
 import rollbar
@@ -67,12 +67,13 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'django.contrib.sitemaps',
     'django.contrib.sites',
+    'autotranslate',
     'django_extensions',
     'easy_thumbnails',
     'app',
+    'avatar',
     'retail',
     'rest_framework',
-    'bootstrap3',
     'marketing',
     'economy',
     'dashboard',
@@ -80,7 +81,7 @@ INSTALLED_APPS = [
     'faucet',
     'tdi',
     'gas',
-    'github',
+    'git',
     'legacy',
     'chartit',
     'email_obfuscator',
@@ -89,7 +90,6 @@ INSTALLED_APPS = [
     'gitcoinbot',
     'external_bounties',
     'dataviz',
-    'ethos',
     'impersonate',
 ]
 
@@ -110,6 +110,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', )
 
 ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
 
@@ -118,28 +119,19 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
 )
 
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [
-            'retail/templates/',
-            'external_bounties/templates/',
-            'dataviz/templates',
+TEMPLATES = [{
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'DIRS': ['retail/templates/', 'external_bounties/templates/', 'dataviz/templates', ],
+    'APP_DIRS': True,
+    'OPTIONS': {
+        'context_processors': [
+            'django.template.context_processors.debug', 'django.template.context_processors.request',
+            'django.contrib.auth.context_processors.auth', 'django.contrib.messages.context_processors.messages',
+            'app.context.insert_settings', 'social_django.context_processors.backends',
+            'social_django.context_processors.login_redirect',
         ],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-                'app.context.insert_settings',
-                'social_django.context_processors.backends',
-                'social_django.context_processors.login_redirect',
-            ],
-        },
     },
-]
+}]
 
 SITE_ID = env.int('SITE_ID', default=1)
 WSGI_APPLICATION = env('WSGI_APPLICATION', default='app.wsgi.application')
@@ -150,20 +142,15 @@ DATABASES = {'default': env.db()}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
+AUTH_PASSWORD_VALIDATORS = [{
+    'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+}, {
+    'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+}, {
+    'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+}, {
+    'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+}]
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
@@ -187,9 +174,19 @@ TIME_ZONE = env.str('TIME_ZONE', default='UTC')
 
 LOCALE_PATHS = ('locale', )
 
-LANGUAGES = [('en', _('English'))]
+LANGUAGES = [
+    ('en', gettext_noop('English')),
+    ('es', gettext_noop('Spanish')),
+    ('de', gettext_noop('German')),
+    ('hi', gettext_noop('Hindi')),
+    ('it', gettext_noop('Italian')),
+    ('ko', gettext_noop('Korean')),
+    ('pl', gettext_noop('Polish')),
+    ('zh-hans', gettext_noop('Simplified Chinese')),
+    ('zh-hant', gettext_noop('Traditional Chinese')),
+]
 
-if not ENV in ['local', 'test']:
+if ENV not in ['local', 'test']:
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': False,
@@ -206,20 +203,16 @@ if not ENV in ['local', 'test']:
                 'maxBytes': 1024 * 1024 * 10,  # 10 MB
                 'backupCount': 100,  # max 100 logs
             },
-            'mail_admins': {
-                'level': 'ERROR',
-                'class': 'django.utils.log.AdminEmailHandler',
-                'include_html': True,
-            },
         },
         'loggers': {
             'django': {
-                'handlers': ['rotatingfilehandler', 'mail_admins'],
+                'handlers': ['rotatingfilehandler', ],
                 'propagate': True,
                 'filters': ['require_debug_is_false'],
             },
         },
     }
+
     LOGGING['loggers']['django.request'] = LOGGING['loggers']['django']
     for ia in INSTALLED_APPS:
         LOGGING['loggers'][ia] = LOGGING['loggers']['django']
@@ -227,9 +220,6 @@ else:
     LOGGING = {}
 
 GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
-
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
@@ -240,9 +230,7 @@ STATIC_ROOT = root('static')
 STATIC_HOST = env('STATIC_HOST', default='')
 STATIC_URL = STATIC_HOST + env('STATIC_URL', default='/static/')
 
-THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + (
-    'ethos.thumbnail_processors.circular_processor',
-)
+THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + ('app.thumbnail_processors.circular_processor', )
 
 THUMBNAIL_ALIASES = {
     '': {
@@ -321,22 +309,13 @@ SOCIAL_AUTH_GITHUB_KEY = GITHUB_CLIENT_ID
 SOCIAL_AUTH_GITHUB_SECRET = GITHUB_CLIENT_SECRET
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'last_name', 'email']
-SOCIAL_AUTH_GITHUB_SCOPE = [
-    'read:public_repo',
-    'read:user',
-    'user:email',
-]
+SOCIAL_AUTH_GITHUB_SCOPE = ['read:public_repo', 'read:user', 'user:email', ]
 
 SOCIAL_AUTH_PIPELINE = (
-    'social_core.pipeline.social_auth.social_details',
-    'social_core.pipeline.social_auth.social_uid',
-    'social_core.pipeline.social_auth.auth_allowed',
-    'social_core.pipeline.social_auth.social_user',
-    'social_core.pipeline.user.get_username',
-    'social_core.pipeline.user.create_user',
-    'app.pipeline.save_profile',
-    'social_core.pipeline.social_auth.associate_user',
-    'social_core.pipeline.social_auth.load_extra_data',
+    'social_core.pipeline.social_auth.social_details', 'social_core.pipeline.social_auth.social_uid',
+    'social_core.pipeline.social_auth.auth_allowed', 'social_core.pipeline.social_auth.social_user',
+    'social_core.pipeline.user.get_username', 'social_core.pipeline.user.create_user', 'app.pipeline.save_profile',
+    'social_core.pipeline.social_auth.associate_user', 'social_core.pipeline.social_auth.load_extra_data',
     'social_core.pipeline.user.user_details',
 )
 
@@ -389,6 +368,7 @@ GOOGLE_ANALYTICS_AUTH_JSON = {
         env('GA_AUTH_PROVIDER_X509_CERT_URL', default='https://www.googleapis.com/oauth2/v1/certs'),
     'client_x509_cert_url': env('GA_CLIENT_X509_CERT_URL', default='')
 }
+HOTJAR_CONFIG = {'hjid': env.int('HOTJAR_ID', default=0), 'hjsv': env.int('HOTJAR_SV', default=0), }
 
 # Rollbar - https://rollbar.com/docs/notifier/pyrollbar/#django
 ROLLBAR_CLIENT_TOKEN = env('ROLLBAR_CLIENT_TOKEN', default='')  # post_client_item
@@ -405,28 +385,10 @@ if ROLLBAR_SERVER_TOKEN and ENV not in ['local', 'test']:
         'capture_ip': 'anonymize',
         'capture_username': True,
         'scrub_fields': [
-            'pw',
-            'passwd',
-            'password',
-            'secret',
-            'confirm_password',
-            'confirmPassword',
-            'password_confirmation',
-            'passwordConfirmation',
-            'access_token',
-            'accessToken',
-            'auth',
-            'authentication',
-            'github_access_token',
-            'github_client_secret',
-            'secret_key',
-            'twitter_access_token',
-            'twitter_access_secret',
-            'twitter_consumer_secret',
-            'mixpanel_token',
-            'slack_verification_token',
-            'redirect_state',
-            'slack_token',
+            'pw', 'passwd', 'password', 'secret', 'confirm_password', 'confirmPassword', 'password_confirmation',
+            'passwordConfirmation', 'access_token', 'accessToken', 'auth', 'authentication', 'github_access_token',
+            'github_client_secret', 'secret_key', 'twitter_access_token', 'twitter_access_secret',
+            'twitter_consumer_secret', 'mixpanel_token', 'slack_verification_token', 'redirect_state', 'slack_token',
             'priv_key',
         ],
     }
@@ -442,9 +404,7 @@ if ROLLBAR_SERVER_TOKEN and ENV not in ['local', 'test']:
     rollbar.init(**ROLLBAR)
 
 # List of github usernames to not count as comments on an issue
-IGNORE_COMMENTS_FROM = [
-    'gitcoinbot',
-]
+IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
 
 # optional: only needed if you run the activity-report management command
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
@@ -463,6 +423,14 @@ AWS_S3_FILE_OVERWRITE = env.bool('AWS_S3_FILE_OVERWRITE', default=True)
 S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='')  # TODO
 S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='')  # TODO
 
+# Handle local file storage
+if ENV == 'local' and not AWS_STORAGE_BUCKET_NAME:
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = root('media')
+else:
+    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+    THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
+
 INSTALLED_APPS += env.list('DEBUG_APPS', default=[])
 
 # Faucet App config
@@ -478,15 +446,14 @@ WEB3_HTTP_PROVIDER = env('WEB3_HTTP_PROVIDER', default='https://rinkeby.infura.i
 COLO_ACCOUNT_ADDRESS = env('COLO_ACCOUNT_ADDRESS', default='')  # TODO
 COLO_ACCOUNT_PRIVATE_KEY = env('COLO_ACCOUNT_PRIVATE_KEY', default='')  # TODO
 
-# EthOS
-ETHOS_CONTRACT_ADDRESS = env('ETHOS_CONTRACT_ADDRESS', default='')  # TODO
-ETHOS_ACCOUNT_ADDRESS = env('ETHOS_ACCOUNT_ADDRESS', default='')  # TODO
-ETHOS_ACCOUNT_PRIVATE_KEY = env('ETHOS_ACCOUNT_PRIVATE_KEY', default='')  # TODO
-
-ETHOS_TWITTER_CONSUMER_KEY = env('ETHOS_TWITTER_CONSUMER_KEY', default='')  # TODO
-ETHOS_TWITTER_CONSUMER_SECRET = env('ETHOS_TWITTER_CONSUMER_SECRET', default='')  # TODO
-ETHOS_TWITTER_ACCESS_TOKEN = env('ETHOS_TWITTER_ACCESS_TOKEN', default='')  # TODO
-ETHOS_TWITTER_ACCESS_SECRET = env('ETHOS_TWITTER_ACCESS_SECRET', default='')  # TODO
+IPFS_HOST = env('IPFS_HOST', default='ipfs')
+IPFS_SWARM_PORT = env.int('IPFS_SWARM_PORT', default=4001)
+IPFS_UTP_PORT = env.int('IPFS_UTP_PORT', default=4002)
+IPFS_API_PORT = env.int('IPFS_API_PORT', default=5001)
+IPFS_GATEWAY_PORT = env.int('IPFS_GATEWAY_PORT', default=8080)
+IPFS_SWARM_WS_PORT = env.int('IPFS_SWARM_WS_PORT', default=8081)
+IPFS_API_ROOT = env('IPFS_API_ROOT', default='/api/v0')
+IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='http')
 
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)

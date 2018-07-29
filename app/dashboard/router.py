@@ -23,7 +23,7 @@ from datetime import datetime
 import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
 
-from .models import Bounty, BountyFulfillment, Interest, ProfileSerializer
+from .models import Activity, Bounty, BountyFulfillment, Interest, ProfileSerializer
 
 
 class BountyFulfillmentSerializer(serializers.ModelSerializer):
@@ -50,12 +50,25 @@ class InterestSerializer(serializers.ModelSerializer):
         fields = ('profile', 'created', 'pending')
 
 
+class ActivitySerializer(serializers.ModelSerializer):
+    """Handle serializing the Activity object."""
+
+    profile = ProfileSerializer()
+
+    class Meta:
+        """Define the activity serializer metadata."""
+
+        model = Activity
+        fields = ('activity_type', 'created', 'profile', 'metadata', 'bounty', 'tip')
+
+
 # Serializers define the API representation.
 class BountySerializer(serializers.HyperlinkedModelSerializer):
     """Handle serializing the Bounty object."""
 
     fulfillments = BountyFulfillmentSerializer(many=True)
     interested = InterestSerializer(many=True)
+    activities = ActivitySerializer(many=True)
     bounty_owner_email = serializers.SerializerMethodField('override_bounty_owner_email')
     bounty_owner_name = serializers.SerializerMethodField('override_bounty_owner_name')
 
@@ -79,7 +92,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'bounty_type', 'project_length', 'experience_level',
             'github_url', 'github_comments', 'bounty_owner_address',
             'bounty_owner_email', 'bounty_owner_github_username', 'bounty_owner_name',
-            'fulfillments', 'interested', 'is_open', 'expires_date',
+            'fulfillments', 'interested', 'is_open', 'expires_date', 'activities',
             'keywords', 'current_bounty', 'value_in_eth',
             'token_value_in_usdt', 'value_in_usdt_now', 'value_in_usdt', 'status', 'now',
             'avatar_url', 'value_true', 'issue_description', 'network',
@@ -88,7 +101,8 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'github_issue_number', 'github_org_name', 'github_repo_name',
             'idx_status', 'token_value_time_peg', 'fulfillment_accepted_on', 'fulfillment_submitted_on',
             'fulfillment_started_on', 'canceled_on', 'action_urls',
-            'project_type', 'permission_type',
+            'project_type', 'permission_type', 'attached_job_description',
+            'additional_funding_summary',
         )
 
     def create(self, validated_data):
@@ -112,7 +126,7 @@ class BountyViewSet(viewsets.ModelViewSet):
     """Handle the Bounty view behavior."""
 
     queryset = Bounty.objects.prefetch_related(
-        'fulfillments', 'interested', 'interested__profile') \
+        'fulfillments', 'interested', 'interested__profile', 'activities') \
         .all().order_by('-web3_created')
     serializer_class = BountySerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
@@ -124,10 +138,13 @@ class BountyViewSet(viewsets.ModelViewSet):
             QuerySet: The Bounty queryset.
 
         """
-        queryset = Bounty.objects.prefetch_related(
-            'fulfillments', 'interested', 'interested__profile') \
-            .current().order_by('-web3_created')
         param_keys = self.request.query_params.keys()
+        queryset = Bounty.objects.prefetch_related(
+            'fulfillments', 'interested', 'interested__profile', 'activities')
+        if 'not_current' not in param_keys:
+            queryset = queryset.current()
+
+        queryset = queryset.order_by('-web3_created')
 
         # filtering
         for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_owner_address',
@@ -139,13 +156,14 @@ class BountyViewSet(viewsets.ModelViewSet):
                 val = self.request.query_params.get(request_key, '')
 
                 vals = val.strip().split(',')
-                _queryset = queryset.none()
-                for val in vals:
-                    if val.strip():
+                vals = [val for val in vals if val and val.strip()]
+                if len(vals):
+                    _queryset = queryset.none()
+                    for val in vals:
                         args = {}
                         args['{}__icontains'.format(key)] = val.strip()
                         _queryset = _queryset | queryset.filter(**args)
-                queryset = _queryset
+                    queryset = _queryset
 
         # filter by PK
         if 'pk__gt' in param_keys:
@@ -208,9 +226,17 @@ class BountyViewSet(viewsets.ModelViewSet):
                 interested__profile__handle__iexact=self.request.query_params.get('interested_github_username')
             )
 
+        # All Misc Api things
+        if 'misc' in param_keys:
+            if self.request.query_params.get('misc') == 'hiring':
+                queryset = queryset.exclude(attached_job_description__isnull=True).exclude(attached_job_description='')
+
+        if 'keyword' in param_keys:
+            queryset = queryset.keyword(self.request.query_params.get('keyword'))
+
         # order
         order_by = self.request.query_params.get('order_by')
-        if order_by:
+        if order_by and order_by != 'null':
             queryset = queryset.order_by(order_by)
 
         queryset = queryset.distinct()

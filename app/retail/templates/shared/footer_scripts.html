@@ -16,46 +16,55 @@
 
 {% endcomment %}
 {% load static %}
-    <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
-    <script src="{% static "v2/js/jquery.js" %}"></script>
-    <script src="{% static "v2/js/jquery.cookie.js" %}"></script>
-    {% if not slim %}
-        <script src="{% static "v2/js/jquery-ui.js" %}"></script>
-        <script src="{% static "v2/js/tooltip.js" %}"></script>
-    {% endif %}
-    <script src="{% static "v2/js/jquery.modal.min.js" %}"></script>
-    <script src="{% static "v2/js/jquery.select2.min.js" %}"></script>
-    <script src="{% static "v2/js/jquery.validate.min.js" %}"></script>
-    <script src="{% static "v2/js/jsrender.js" %}"></script>
-    <script src="{% static "v2/js/base.js" %}"></script>
-    <script src="{% static "v2/js/purify.min.js" %}"></script>
-    <script src="{% static "v2/js/shared.js" %}"></script>
-    <script src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
-    <script src="{% static "v2/js/animate.min.js" %}"></script>
-    <script src="{% static "v2/js/note.js" %}"></script>
-    <script src="{% static "v2/js/pages/carousel.js" %}"></script>
-    <script src="{% static "v2/js/portis.js" %}"></script>
-    <script src="{% static "cookielaw/js/cookielaw.js" %}"></script>
+<script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+<script src="{% static "v2/js/jquery.js" %}"></script>
+<script src="{% static "v2/js/jquery.cookie.js" %}"></script>
+{% if not slim %}
+  <script src="{% static "v2/js/jquery-ui.js" %}"></script>
+  <script src="{% static "v2/js/tooltip.js" %}"></script>
+{% endif %}
+<script src="{% static "v2/js/jquery.modal.min.js" %}"></script>
+<script src="{% static "v2/js/jquery.select2.min.js" %}"></script>
+<script src="{% static "v2/js/jquery.validate.min.js" %}"></script>
+<script src="{% static "v2/js/jsrender.js" %}"></script>
+<script src="{% static "v2/js/base.js" %}"></script>
+<script src="{% static "v2/js/purify.min.js" %}"></script>
+<script src="{% static "v2/js/shared.js" %}"></script>
+<script src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
+<script src="{% static "v2/js/animate.min.js" %}"></script>
+<script src="{% static "v2/js/note.js" %}"></script>
+<script src="{% static "v2/js/pages/carousel.js" %}"></script>
+<script src="{% static "cookielaw/js/cl.js" %}"></script>
+<script src="{% static "v2/js/portis.js" %}"></script>
 
-    {% if recommend_gas_price %}
-        <script type="text/javascript">
-            setInterval(function(){
-                defaultGasPrice = parseInt(10**9 * {{recommend_gas_price}});
-            },1000);
-        </script>
-    {% endif %}
+<script>
+  var ipfsConfig = {
+    host: "{{ ipfs_config.host }}",
+    port: {{ ipfs_config.port }},
+    protocol: "{{ ipfs_config.protocol }}",
+    root: "{{ ipfs_config.root }}"
+  };
+</script>
 
-    {% if slideDurationInMs %}
-        <script>
-            let interval;
-            let startTimer = () => {
-                interval = setInterval(() => typeof nextSlide != 'undefined' ? nextSlide() : function(){}, {{slideDurationInMs}});
-            };
-            startTimer();
-        </script>
-    {% endif %}
+{% if recommend_gas_price %}
+<script type="text/javascript">
+  setInterval(function(){
+    defaultGasPrice = parseInt(10**9 * {{ recommend_gas_price }});
+  }, 1000);
+</script>
+{% endif %}
 
-    <script>
-        document.contxt = {{json_context | safe}};
-    </script>
-    {% include 'shared/messages.html' %}
+{% if slideDurationInMs %}
+<script>
+  let interval;
+  let startTimer = () => {
+    interval = setInterval(() => typeof nextSlide != 'undefined' ? nextSlide() : function(){}, {{ slideDurationInMs }});
+  };
+  startTimer();
+</script>
+{% endif %}
+
+<script>
+  document.contxt = {{ json_context|safe }};
+</script>
+{% include 'shared/messages.html' %}

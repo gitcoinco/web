@@ -17,7 +17,8 @@ var sidebar_keys = [
   'idx_status',
   'tech_stack',
   'project_type',
-  'permission_type'
+  'permission_type',
+  'misc'
 ];
 
 var localStorage;
@@ -90,7 +91,7 @@ var set_sidebar_defaults = function() {
 
   if (localStorage['order_by']) {
     $('#sort_option').val(localStorage['order_by']);
-    $('#sort_option').selectmenu('refresh');
+    $('#sort_option').selectmenu().selectmenu('refresh');
   }
 
   for (var i = 0; i < sidebar_keys.length; i++) {
@@ -144,7 +145,7 @@ var addTechStackKeywordFilters = function(value) {
       $('.filter-tags').append('<a class="filter-tag tech_stack"><span>' + value + '</span>' +
         '<i class="fas fa-times" onclick="removeFilter(\'tech_stack\', \'' + value + '\')"></i></a>');
 
-      $('input[name="tech_stack"][value=' + value + ']').prop('checked', true);
+      $('input[name="tech_stack"][value="' + value + '"]').prop('checked', true);
     }
   });
 
@@ -274,7 +275,6 @@ var get_search_URI = function() {
   if (order_by) {
     uri += '&order_by=' + order_by;
   }
-
   return uri;
 };
 
@@ -437,7 +437,7 @@ var refreshBounties = function(event) {
     for (var i = 0; i < results.length; i++) {
       // setup
       var result = results[i];
-      var related_token_details = tokenAddressToDetails(result['token_address']);
+      var related_token_details = tokenAddressToDetailsByNetwork(result['token_address'], result['network']);
       var decimals = 18;
 
       if (related_token_details && related_token_details.decimals) {
@@ -489,9 +489,8 @@ var refreshBounties = function(event) {
 
         var timeLeft = timeDifference(new Date(), new Date(result['expires_date']));
         var expiredExpires = new Date() < new Date(result['expires_date']) ? 'Expires' : 'Expired';
-        var softOrNot = result['can_submit_after_expiration_date'] ? 'Soft ' : '';
 
-        result['p'] += ('Opened ' + opened_when + ' ago, ' + softOrNot + expiredExpires + ' ' + timeLeft);
+        result['p'] += ('Opened ' + opened_when + ' ago, ' + expiredExpires + ' ' + timeLeft);
       }
 
       result['watch'] = 'Watch';

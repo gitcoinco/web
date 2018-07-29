@@ -28,12 +28,11 @@ import jwt
 import requests
 import rollbar
 from dashboard.models import Bounty
-from dashboard.tokens import tokens
+from dashboard.tokens import get_tokens
+from git.utils import post_issue_comment_reaction
 from gitcoinbot.models import GitcoinBotResponses
-from github.utils import post_issue_comment_reaction
 
 MIN_AMOUNT = 0
-CURRENCIES = set(map(lambda currency: currency['name'], tokens))
 FALLBACK_CURRENCY = 'ETH'
 
 
@@ -124,6 +123,7 @@ def parse_comment_amount(comment_text):
 
 def parse_comment_currency(comment_text, fallback_currency=FALLBACK_CURRENCY):
     """Get the first token defined in comment_text."""
+    CURRENCIES = set(map(lambda currency: currency['name'], get_tokens()))
     or_currencies = '|'.join(CURRENCIES)
     re_currencies = fr'({or_currencies})'
     result = re.findall(re_currencies, comment_text)
