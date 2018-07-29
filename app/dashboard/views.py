@@ -956,7 +956,7 @@ def funder_dashboard(request):
     done_bounties = active_done_expired_bounties.filter_by_status(['done'])
     expired_bounties = active_done_expired_bounties.filter_by_status(['expired'])
 
-    payout_history = get_payout_history(funder_bounties)
+    payout_history = get_payout_history(done_bounties)
 
     payout_history_weekly = payout_history['weekly']
     payout_history_monthly = payout_history['monthly']
