@@ -146,21 +146,30 @@
   border-radius: 50%;
 }
 
+.funder-dashboard__all-bounties__bounties__bounty
+.funder-dashboard__all-bounties__bounties__bounty__status__circle {
+  border: 2px solid dimgray;
+}
+
+.funder-dashboard__all-bounties__bounties__bounty
 .funder-dashboard__all-bounties__bounties__bounty--started
 .funder-dashboard__all-bounties__bounties__bounty__status__circle {
   border: 2px solid #1a91eb;
 }
 
+.funder-dashboard__all-bounties__bounties__bounty
 .funder-dashboard__all-bounties__bounties__bounty--stopped
 .funder-dashboard__all-bounties__bounties__bounty__status__circle {
   border: 2px solid #f86b67;
 }
 
+.funder-dashboard__all-bounties__bounties__bounty
 .funder-dashboard__all-bounties__bounties__bounty--submitted
 .funder-dashboard__all-bounties__bounties__bounty__status__circle {
   border: 2px solid #84b800;
 }
 
+.funder-dashboard__all-bounties__bounties__bounty
 .funder-dashboard__all-bounties__bounties__bounty--open
 .funder-dashboard__all-bounties__bounties__bounty__status__circle {
   border: 2px solid lightgreen;
