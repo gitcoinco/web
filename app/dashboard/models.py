@@ -1049,6 +1049,13 @@ class Tip(SuperModel):
         return float(self.amount)
 
     @property
+    def org_name(self):
+        try:
+            return org_name(self.url)
+        except Exception:
+            return None
+
+    @property
     def receive_url(self):
         if self.web3_type == 'yge':
             return self.url
