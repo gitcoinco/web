@@ -1,20 +1,22 @@
-'''
-    Copyright (C) 2017 Gitcoin Core
+# -*- coding: utf-8 -*-
+"""Define the management command to assemble leaderboard rankings.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Copyright (C) 2018 Gitcoin Core
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-'''
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -35,6 +37,12 @@ yearly_cutoff = timezone.now() - timezone.timedelta(days=365)
 
 
 def default_ranks():
+    """Generate a dictionary of nested dictionaries defining default ranks.
+
+    Returns:
+        dict: A nested dictionary mapping of all default ranks with empty dicts.
+
+    """
     return {
         'weekly_fulfilled': {},
         'weekly_all': {},
@@ -82,7 +90,6 @@ def add_element(key, username, amount):
 
 def sum_bounty_helper(b, breakdown, username, val_usd):
     fulfiller_usernames = list(b.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True))
-    add_element(f'{breakdown}_all', username, val_usd)
     add_element(f'{breakdown}_fulfilled', username, val_usd)
     if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
         add_element(f'{breakdown}_payers', username, val_usd)
@@ -112,11 +119,19 @@ def sum_bounties(b, usernames):
                 breakdown = 'yearly'
                 sum_bounty_helper(b, breakdown, username, val_usd)
 
+        add_element('all_all', username, b._val_usd_db)
+        if b.created_on > weekly_cutoff:
+            add_element('weekly_all', username, b._val_usd_db)
+        if b.created_on > monthly_cutoff:
+            add_element('monthly_all', username, b._val_usd_db)
+        if b.created_on > yearly_cutoff:
+            add_element('yearly_all', username, b._val_usd_db)
+
 
 def sum_tip_helper(t, breakdown, username, val_usd):
     add_element(f'{breakdown}_all', username, val_usd)
     add_element(f'{breakdown}_fulfilled', username, val_usd)
-    if t.username == username:
+    if t.username == username or breakdown == 'all':
         add_element(f'{breakdown}_earners', username, val_usd)
     if t.from_username == username:
         add_element(f'{breakdown}_payers', username, val_usd)
@@ -150,9 +165,7 @@ def should_suppress_leaderboard(handle):
     profiles = Profile.objects.filter(handle__iexact=handle)
     if profiles.exists():
         profile = profiles.first()
-        if profile.suppress_leaderboard:
-            return True
-        if profile.hide_profile:
+        if profile.suppress_leaderboard or profile.hide_profile:
             return True
     return False
 
@@ -214,6 +227,6 @@ class Command(BaseCommand):
                     count=count,
                     active=True,
                     rank=rank,
-                    )
+                )
                 rank += 1
                 print(key, username, amount, count, rank)
