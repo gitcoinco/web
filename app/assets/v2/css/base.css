@@ -1492,7 +1492,7 @@ input.is-invalid {
     display: none;
   }
 
-  .search_bar span {
+  .search_bar .save_search {
     display: none;
   }
 
