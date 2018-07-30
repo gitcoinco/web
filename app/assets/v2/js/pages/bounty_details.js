@@ -419,6 +419,30 @@ var showWarningMessage = function(txid) {
   var interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
 };
 
+// refresh page if metamask changes
+waitforWeb3(function() {
+  setInterval(function() {
+    if (document.web3Changed) {
+      return;
+    }
+    if (typeof document.lastWeb3Network == 'undefined') {
+      document.lastWeb3Network = document.web3network;
+      return;
+    }
+    if (typeof document.lastCoinbase == 'undefined') {
+      document.lastCoinbase = web3.eth.coinbase;
+      return;
+    }
+    var hasChanged = (document.lastCoinbase != web3.eth.coinbase) || (document.lastWeb3Network != document.web3network);
+
+    if (hasChanged) {
+      _alert(gettext('Detected a web3 change.  Refreshing the page. '), 'info');
+      document.location.href = document.location.href;
+      document.web3Changed = true;
+    }
+
+  }, 500);
+});
 var wait_for_tx_to_mine_and_then_ping_server = function() {
   console.log('checking for updates');
   if (typeof document.pendingIssueMetadata != 'undefined') {
@@ -621,6 +645,10 @@ var build_detail_page = function(result) {
     }
   }
 
+  $('body').delegate('#bounty_details .button.disabled', 'click', function(e) {
+    e.preventDefault();
+  });
+
   $('#bounty_details #issue_description img').on('click', function() {
 
     var content = $.parseHTML(
@@ -653,6 +681,7 @@ var do_actions = function(result) {
   var can_submit_after_expiration_date = result['can_submit_after_expiration_date'];
   var is_still_on_happy_path = result['status'] == 'open' || result['status'] == 'started' || result['status'] == 'submitted' || (can_submit_after_expiration_date && result['status'] == 'expired');
   const is_open = result['is_open'];
+  const disabled_bc_not_funder_txt = gettext('Enabled only if you are the funder of the bounty (If you are logged in and your web3 wallet is set to ' + result['bounty_owner_address'] + '.).');
 
   // Find interest information
   const is_interested = is_current_user_interested(result);
@@ -672,7 +701,7 @@ var do_actions = function(result) {
   const start_stop_work_enabled = !isBountyOwner(result);
   const increase_bounty_enabled = isBountyOwner(result);
   let show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
-  let show_advanced_payout = isBountyOwner(result) && !is_status_expired && !is_status_done;
+  let show_payout = !is_status_expired && !is_status_done;
   const show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
   const show_admin_methods = document.isStaff;
 
@@ -724,19 +753,19 @@ var do_actions = function(result) {
       href: result['action_urls']['cancel'],
       text: gettext('Cancel Bounty'),
       parent: 'right_actions',
-      title: gettext('Cancel bounty and reclaim funds for this issue')
+      title: enabled ? gettext('Cancel bounty and reclaim funds for this issue') : disabled_bc_not_funder_txt
     };
 
     actions.push(_entry);
   }
 
-  if (show_advanced_payout) {
-    const enabled = show_advanced_payout;
+  if (show_payout) {
+    const enabled = isBountyOwner(result);
     const _entry = {
       enabled: enabled,
       href: result['action_urls']['payout'],
       text: gettext('Payout Bounty'),
-      title: gettext('Payout the bounty to one or more submitters.'),
+      title: enabled ? gettext('Payout the bounty to one or more submitters.') : disabled_bc_not_funder_txt,
       parent: 'right_actions'
     };
 
