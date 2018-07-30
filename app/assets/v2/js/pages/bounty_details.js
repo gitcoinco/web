@@ -369,6 +369,12 @@ var isBountyOwner = function(result) {
   return (web3.eth.coinbase.toLowerCase() == bountyAddress.toLowerCase());
 };
 
+var isBountyOwnerPerLogin = function(result) {
+  var bounty_owner_github_username = result['bounty_owner_github_username'];
+
+  return bounty_owner_github_username == document.contxt['github_handle'];
+};
+
 var update_title = function() {
   document.original_title_text = $('title').text();
   setInterval(function() {
@@ -978,11 +984,12 @@ const process_activities = function(result, bounty_activities) {
     const fulfillment = meta.fulfillment || {};
     const new_bounty = meta.new_bounty || {};
     const old_bounty = meta.old_bounty || {};
-    const uninterest_possible = (isBountyOwner(result) || document.isStaff) && is_open;
+    const uninterest_possible = (isBountyOwnerPerLogin(result) || document.isStaff) && is_open;
     const has_pending_interest = !!result.interested.find(interest =>
       interest.profile.handle === _activity.profile.handle && interest.pending);
     const has_interest = !!result.interested.find(interest =>
       interest.profile.handle === _activity.profile.handle);
+    const slash_possible = document.isStaff;
 
     return {
       profileId: _activity.profile.id,
@@ -992,8 +999,8 @@ const process_activities = function(result, bounty_activities) {
       age: timeDifference(now, new Date(_activity.created)),
       activity_type: _activity.activity_type,
       status: _activity.activity_type === 'work_started' ? 'started' : 'stopped',
-      uninterest_possible: uninterest_possible && has_interest,
-      slash_possible: document.isStaff && has_interest,
+      uninterest_possible: uninterest_possible,
+      slash_possible: slash_possible,
       approve_worker_url: meta.approve_worker_url,
       reject_worker_url: meta.reject_worker_url,
       worker_handle: meta.worker_handle,

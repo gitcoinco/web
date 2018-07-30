@@ -378,7 +378,6 @@ def uninterested(request, bounty_id, profile_id):
     except Bounty.DoesNotExist:
         return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
                             status=401)
-
     is_funder = bounty.is_funder(request.user.username.lower())
     is_staff = request.user.is_staff
     if not is_funder and not is_staff:
