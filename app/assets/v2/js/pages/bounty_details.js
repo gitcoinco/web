@@ -533,7 +533,7 @@ var show_interest_modal = function() {
       var placeholder = gettext(
         'What steps will you take to complete this task?\n\n' +
         'Example:\n' +
-        'I\'d start by implementing Netflify, then I\'d make mockups ' +
+        'I\'d start by implementing Netlify, then I\'d make mockups ' +
         'for the /blog page and individual post pages and proceed ' +
         'with building them after getting some feedback from the team. ' +
         'I will start work on this right away and have it ready by the end of the weekend.');
