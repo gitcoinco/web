@@ -547,6 +547,7 @@ var show_interest_modal = function() {
       issueMessage.on('focus', function() {
         if (issueMessage.val() === placeholder) {
           issueMessage.removeClass('placeholder');
+          issueMessage.val('');
         }
       });
 
