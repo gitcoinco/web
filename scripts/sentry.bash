@@ -11,5 +11,5 @@ echo "Submitting deployment to Sentry - Revision: ($REVISION) - Environment: ($E
 curl https://$SENTRY_ADDRESS/api/hooks/release/builtin/$SENTRY_PROJECT/$SENTRY_TOKEN/ \
   -X POST \
   -H 'Content-Type: application/json' \
-  -d '{"version": \"$REVISION\"}'
+  -d \'{"version": "$REVISION"}\'
 echo "Submission completed!"
