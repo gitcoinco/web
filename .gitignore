@@ -41,8 +41,3 @@ webpack-stats.json
 
 .pytest_cache/
 app/cache/
-
-# Elastic Beanstalk Files
-.elasticbeanstalk/*
-!.elasticbeanstalk/*.cfg.yml
-!.elasticbeanstalk/*.global.yml
