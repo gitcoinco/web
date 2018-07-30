@@ -990,8 +990,7 @@ def funder_dashboard(request):
     total_paid_dollars = 0
     total_paid_eth = 0
 
-    top_contributors = []
-
+    contributors_usernames = []
     done_bounties_desc_created = done_bounties.order_by('-web3_created')
     for bounty in done_bounties_desc_created:
         contributors = bounty.fulfillments.filter(accepted_on__isnull=False)\
@@ -1002,13 +1001,17 @@ def funder_dashboard(request):
             contributor_github_username = contributor['fulfiller_github_username']
             if (
                 contributor_github_username
-                and contributor_github_username not in top_contributors
-                and len(top_contributors) <= 12
+                and contributor_github_username not in contributors_usernames
+                and len(contributors_usernames) <= 12
             ):
-                top_contributors.append({
-                    'githubLink': 'https://www.github.com/' + contributor_github_username,
-                    'profilePictureSrc': '/static/avatar/' + contributor_github_username
-                })
+                contributors_usernames.append(contributor_github_username)
+
+    top_contributors = []
+    for contributor_github_username in contributors_usernames:
+        top_contributors.append({
+            'githubLink': 'https://www.github.com/' + contributor_github_username,
+            'profilePictureSrc': '/static/avatar/' + contributor_github_username
+        })
 
     for bounty in done_bounties:
         bounty_value_in_usdt = bounty.get_value_in_usdt
