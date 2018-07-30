@@ -1,0 +1,20 @@
+{
+  "symbol": "Git",
+  "address": "0x3a86512cca257c4dd8a68646c7c01df084e0f87d",
+  "overview":{
+        "en": "We are an open source platform on which anyone can volunteer their code as a database to earn a reward,with the goal of automating code and changing the world within the next decade.",
+        "zh": "我們是一個讓任何人均可自願貢獻他們的代碼作為數據庫來賺取賞金的開放源碼的平臺，平臺目標在未來十年內，讓代碼自動化跑起來，改變世界。"
+  },
+  "email": "laboratory@opengit.one",
+  "website": "http://www.git-one.org",
+  "whitepaper": "http://www.git-one.org/Git.pdf",
+  "published_on": "2018-09-01",
+  "links": {
+	"blog": "https://weibo.com/opengit",
+	"telegram": "https://t.me/opengit/one",
+	"facebook": "https://www.facebook.com/opengit",
+	"twitter": "https://www.twitter.com/opengit_one",
+	"medium": "https://medium.com/@opengit",
+	"slack": "https://opengit.slack.com",
+  }
+}
