@@ -42,7 +42,7 @@
           <script>
             document.max_bounty_history = {{max_bounty_history}};
             document.bounty_history = {{bounty_history|safe}};
-  
+
           </script>
 
           <div class="col-md-8">
@@ -61,7 +61,7 @@
       </div>
     </div>
 
-    
+
     <div style="background: #F2F6F9;">
       <div class="container" id="results_hero">
         <div class="row py-5 animatedParent">
@@ -125,7 +125,7 @@
             <div id="repo_chart"></div>
           </div>
           <script type="text/javascript">
-          document.platform_stats = [  [ 'Repo', 'Bounties' ], [ 'Open Bounties', {{ count_open }}],  [ 'Bounties w. started work', {{ count_started }}],  [ 'Completed bounties', {{ count_done }} ] ];  
+          document.platform_stats = [  [ 'Repo', 'Bounties' ], [ 'Open Bounties', {{ count_open }}],  [ 'Bounties w. started work', {{ count_started }}],  [ 'Completed bounties', {{ count_done }} ] ];
         </script>
 
           <div class="col-md-6 py-5 bounty_status">
@@ -312,7 +312,7 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/rollbar.html' %}
+    {% include 'shared/sentry.html' %}
     {% include 'shared/messages.html' %}
   </body>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>

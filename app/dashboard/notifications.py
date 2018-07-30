@@ -27,7 +27,6 @@ from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 
 import requests
-import rollbar
 import twitter
 from economy.utils import convert_token_to_usdt
 from git.utils import delete_issue_comment, org_name, patch_issue_comment, post_issue_comment, repo_name
@@ -580,7 +579,7 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
         return False
     except Exception as e:
         extra_data = {'github_url': url, 'bounty_id': bounty.pk, 'event_name': event_name}
-        rollbar.report_exc_info(sys.exc_info(), extra_data=extra_data)
+        logger.error('Failure in marketing to github', exc_info=True, extra=extra_data)
         print(e)
         return False
     return True
