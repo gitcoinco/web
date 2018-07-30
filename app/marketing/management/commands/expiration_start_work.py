@@ -44,6 +44,9 @@ class Command(BaseCommand):
     help = 'lets a user know that they expressed interest in an issue and kicks them to do something about it'
 
     def handle(self, *args, **options):
+        if settings.DEBUG:
+            print('not running start work expiration because DEBUG is on')
+            return
 
         # TODO: DRY with dashboard/notifications.py
         num_days_back_to_warn = 3
