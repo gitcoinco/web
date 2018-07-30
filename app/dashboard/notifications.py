@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import logging
 import random
 import re
-import sys
 from urllib.parse import urlparse as parse
 
 from django.conf import settings
@@ -34,6 +33,8 @@ from marketing.mails import tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping
 from pyshorteners import Shortener
 from slackclient import SlackClient
+
+logger = logging.getLogger(__name__)
 
 
 def github_org_to_twitter_tags(github_org):
@@ -306,6 +307,7 @@ def maybe_market_to_user_discord(bounty, event_name):
         print(e)
 
     return sent
+
 
 def maybe_market_tip_to_email(tip, emails):
     """Send an email for the specified Tip.
