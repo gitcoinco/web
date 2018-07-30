@@ -371,6 +371,7 @@ var isBountyOwner = function(result) {
 
 var isBountyOwnerPerLogin = function(result) {
   var bounty_owner_github_username = result['bounty_owner_github_username'];
+
   return bounty_owner_github_username == document.contxt['github_handle'];
 };
 
