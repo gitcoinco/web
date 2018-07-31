@@ -220,6 +220,31 @@ def render_admin_contact_funder(bounty, text, from_user):
     return response_html, response_txt
 
 
+def render_funder_stale(github_username, days=30, time_as_str='about a month'):
+
+    txt = f"""
+hi {github_username},
+
+kevin owocki from gitcoin here.
+
+i see you haven't posted any funded work to the platform in {time_as_str}.
+
+just wanted to check in and see if there's anything we can do, or if you had any feedback for us.  we're still a small startup and we iterate fast; not only will your feedback be heard, but it's got a good chance of being put into the product roadmap!
+
+kevin
+
+PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+
+"""
+
+    params = {
+        'txt': txt,
+    }
+    response_html = premailer_transform(render_to_string("emails/txt.html", params))
+    response_txt = txt
+
+    return response_html, response_txt
+
 
 def render_new_bounty(to_email, bounties, old_bounties):
     sub = get_or_save_email_subscriber(to_email, 'internal')
@@ -672,6 +697,13 @@ def new_bounty_acceptance(request):
 def bounty_feedback(request):
     from dashboard.models import Bounty
     response_html, _ = render_bounty_feedback(Bounty.objects.filter(idx_status='done', current_bounty=True).last(), 'foo')
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def funder_stale(request):
+    from dashboard.models import Bounty
+    response_html, _ = render_funder_stale('@foo', 30, 'about a month')
     return HttpResponse(response_html)
 
 

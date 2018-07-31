@@ -271,6 +271,7 @@ urlpatterns = [
         name='bounty_expire_warning'
     ),
     url(r'^_administration/email/bounty_feedback$', retail.emails.bounty_feedback, name='bounty_feedback'),
+    url(r'^_administration/email/funder_stale$', retail.emails.funder_stale, name='funder_stale'),
     url(
         r'^_administration/email/start_work_expire_warning$',
         retail.emails.start_work_expire_warning,

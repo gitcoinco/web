@@ -26,7 +26,7 @@ from economy.utils import convert_token_to_usdt
 from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
 from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
-    render_admin_contact_funder, render_bounty_expire_warning, render_bounty_feedback,
+    render_admin_contact_funder, render_funder_stale, render_bounty_expire_warning, render_bounty_feedback,
     render_bounty_startwork_expire_warning, render_bounty_unintersted, render_faucet_rejected, render_faucet_request,
     render_gdpr_reconsent, render_gdpr_update, render_match_email, render_new_bounty, render_new_bounty_acceptance,
     render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission, render_quarterly_stats,
@@ -98,6 +98,21 @@ def admin_contact_funder(bounty, text, from_user):
         subject = bounty.url
         html, text = render_admin_contact_funder(bounty, text, from_user)
         cc_emails = [from_email]
+        if not should_suppress_notification_email(to_email, 'admin_contact_funder'):
+            send_mail(from_email, to_email, subject, text, cc_emails=cc_emails, from_name=from_email)
+    finally:
+        translation.activate(cur_language)
+
+
+def funder_stale(to_email, github_username, days=30, time_as_str='about a month'):
+    from_email = settings.PERSONAL_CONTACT_EMAIL
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+
+        subject = "hey from gitcoin.co"
+        html, text = render_funder_stale(github_username, days, time_as_str)
+        cc_emails = [from_email, 'team@gitcoin.co']
         if not should_suppress_notification_email(to_email, 'admin_contact_funder'):
             send_mail(from_email, to_email, subject, text, cc_emails=cc_emails, from_name=from_email)
     finally:
