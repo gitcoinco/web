@@ -949,10 +949,18 @@ input.is-invalid {
   width: 25em;
 }
 
+.tooltip-sm,
 .tooltip-xs {
-  font-size: 10px;
   padding: 2px;
   width: auto;
+}
+
+.tooltip-sm {
+  font-size: 0.75rem;
+}
+
+.tooltip-xs {
+  font-size: 10px;
 }
 
 .ui-widget-shadow,
