@@ -1002,8 +1002,11 @@ class Tip(SuperModel):
         if self.web3_type != 'v3':
             raise Exception
 
-        key = self.metadata['reference_hash_for_receipient']
-        return f"{settings.BASE_URL}tip/receive/v3/{key}/{self.txid}/{self.network}"
+        try:
+            key = self.metadata['reference_hash_for_receipient']
+            return f"{settings.BASE_URL}tip/receive/v3/{key}/{self.txid}/{self.network}"
+        except:
+            return None
 
     # TODO: DRY
     @property
