@@ -827,6 +827,41 @@ class Bounty(SuperModel):
             sentence += f" worth ${afs['usd_value']}"
         return sentence
 
+    def creation_to_dict(self):
+        return {
+            # info to xfr over from self as override fields (this is because sometimes
+            # ppl dont login when they first submit issue and it needs to be overridden)
+            'web3_created': self.web3_created,
+            'github_url': self.github_url,
+            'token_name': self.token_name,
+            'token_address': self.token_address,
+            'privacy_preferences': self.privacy_preferences,
+            'expires_date': self.expires_date,
+            'title': self.title,
+            'issue_description': self.issue_description,
+            'balance': self.balance,
+            'contract_address': self.contract_address,
+            'network': self.network,
+            'bounty_type': self.bounty_type,
+            'project_length': self.project_length,
+            'experience_level': self.experience_level,
+            'project_type': self.project_type,
+            'permission_type': self.permission_type,
+            'attached_job_description': self.attached_job_description,
+            'bounty_owner_github_username': self.bounty_owner_github_username,
+            'bounty_owner_address': self.bounty_owner_address,
+            'bounty_owner_email': self.bounty_owner_email,
+            'bounty_owner_name': self.bounty_owner_name,
+            # info to xfr over from self
+            'github_comments': self.github_comments,
+            'override_status': self.override_status,
+            'last_comment_date': self.last_comment_date,
+            'snooze_warnings_for_days': self.snooze_warnings_for_days,
+            'admin_override_and_hide': self.admin_override_and_hide,
+            'admin_override_suspend_auto_approval': self.admin_override_suspend_auto_approval,
+            'admin_mark_as_remarket_ready': self.admin_mark_as_remarket_ready,
+        }
+
 
 class BountyFulfillmentQuerySet(models.QuerySet):
     """Handle the manager queryset for BountyFulfillments."""
@@ -991,7 +1026,7 @@ class Tip(SuperModel):
             return self.receive_url_for_recipient
         elif self.web3_type != 'v2':
             raise Exception
-        
+
         pk = self.metadata.get('priv_key')
         txid = self.txid
         network = self.network
@@ -1624,7 +1659,7 @@ class Profile(SuperModel):
                             current_bounty=True,
                             metadata__icontains=keyword,
                             idx_status__in=['open'],
-                            ).order_by('?') 
+                            ).order_by('?')
                     )
                 relevant_bounties = relevant_bounties[:3]
                 relevant_bounties = list(relevant_bounties)
