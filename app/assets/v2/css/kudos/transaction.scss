@@ -1,0 +1,57 @@
+.box-transaction {
+  max-width: 35rem;
+  margin: auto;
+  background: #fff;
+  z-index: 2;
+  position: relative;
+  padding: 4.5em 3em 3em 3em;
+}
+
+.transaction {
+  background-color: #0d023b;
+  background-image: url('/static/onepager/images/overlay.png'), -moz-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url('/static/v2/images/header-bg.png');
+  background-image: url('/static/onepager/images/overlay.png'), -webkit-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url('/static/v2/images/header-bg.png');
+  background-image: url('/static/onepager/images/overlay.png'), -ms-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url('/static/v2/images/header-bg.png');
+  background-image: url('/static/onepager/images/overlay.png'), linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url('/static/v2/images/header-bg.png');
+  background-repeat: no-repeat;
+  background-size: 110%;
+  background-position: center center;
+  background-attachment: fixed;
+}
+
+.alert_msg {
+  top: 0px;
+  width: 100%;
+  z-index: 99999;
+  background-color: #f44336;
+  color: white;
+  position: fixed;
+  text-align: center;
+}
+
+.alert_msg.info {
+  background-color: #2196F3;
+}
+
+.line-back {
+  position: relative;
+  display: block;
+
+  &:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: -3em;
+    width: calc(100% + 6em);
+    height: 1px;
+    z-index: -1;
+    background: #c8cccf;
+  }
+}
+
+.copyright {
+  a {
+    color: white;
+  }
+}
