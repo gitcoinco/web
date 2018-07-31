@@ -820,11 +820,11 @@ class Bounty(SuperModel):
         if len(afs['tokens'].keys()) == 0:
             return ""
         items = []
-        for token, value in afs['tokens']:
+        for token, value in afs['tokens'].items():
             items.append(f"{value} {token}")
         sentence = ", ".join(items)
         if(afs['usd_value']):
-            sentence += f"worth ${afs['usd_value']}"
+            sentence += f" worth ${afs['usd_value']}"
         return sentence
 
 
