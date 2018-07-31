@@ -90,7 +90,7 @@
             {% endif %}
             {% if already_redeemed %}
                 <p>
-                 {% trans "This tip has been remitted automatically to the Ethereum address on file for your account via txid " %}{{tip.txid}}
+                 {% trans "This tip has been remitted automatically to the Ethereum address on file for your account (" %}<a href='https://etherscan.io/address/{{tip.receive_address}}'>{{tip.receive_address}}</a>{% trans ") via txid " %}<a href='https://etherscan.io/tx/{{tip.txid}}'>{{tip.txid}}</a>.
                 </p>
             {% elif show_expires %}
                 <p>

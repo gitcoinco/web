@@ -278,7 +278,7 @@ def send_tip_4(request):
     is_direct_to_recipient = params.get('is_direct_to_recipient', False)
     if is_direct_to_recipient:
         tip = Tip.objects.get(
-            metadata__direct_address=destinationAccount, 
+            metadata__direct_address=destinationAccount,
             metadata__creation_time=params['creation_time'],
             metadata__salt=params['salt'],
             )
@@ -301,6 +301,7 @@ def send_tip_4(request):
     tip.txid = txid
     if is_direct_to_recipient:
         tip.receive_txid = txid
+        tip.receive_address = destinationAccount
     tip.save()
 
     # notifications
