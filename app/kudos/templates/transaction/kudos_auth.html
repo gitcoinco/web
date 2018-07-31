@@ -19,7 +19,7 @@
 
 <div class="navbar navbar-expand-md w-100 p-0 m-0 mb-2">
   <a class="navbar-brand p-1" href="/">
-    <img id="logo" src="{% static "v2/images/helmet_icon.png" %}"  height="50" />
+    <img id="logo" src="{% static "v2/images/helmet_icon.png" %}"  height="50" class="w-auto" />
     {% if request.path|is_in_list:"/gas,/gas/history,/gas/intro,/gas/calculator,/gas/faq,/gas/faucets" %}
     <img id="addon" src="{% static "v2/images/gas_white.gif" %}"/>
     <p style="color:white; font-size: 12px;">Gas Station</p>
