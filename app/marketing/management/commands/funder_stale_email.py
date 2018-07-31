@@ -27,14 +27,26 @@ class Command(BaseCommand):
 
     help = 'solicits feedback from stale funders'
 
+    def add_arguments(self, parser):
+        parser.add_argument('days', default=30, type=int)
+
     def handle(self, *args, **options):
         if settings.DEBUG:
             print("not active in non prod environments")
             return
 
         # config
-        days = 30 # TODO: do we want to send another variant of this email at 90 days, 180 days?
-        time_as_str = 'about a month'
+        days = options['days']
+        if days < 7:
+            time_as_str = 'about a week'
+        elif days < 27:
+            time_as_str = 'a few weeks'
+        elif days < 27:
+            time_as_str = 'about a month'
+        elif days < 90:
+            time_as_str = 'a few months'
+        else:
+            time_as_str = 'quite a bit'
 
         start_time = timezone.now() - timezone.timedelta(days=(days+1))
         end_time = timezone.now() - timezone.timedelta(days=(days))
