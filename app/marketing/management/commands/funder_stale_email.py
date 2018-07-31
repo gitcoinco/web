@@ -19,8 +19,8 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from marketing.mails import funder_stale
 from dashboard.models import Bounty
+from marketing.mails import funder_stale
 
 
 class Command(BaseCommand):
@@ -70,6 +70,3 @@ class Command(BaseCommand):
                 funder_stale(email, handle, days, time_as_str)
             else:
                 print(" - has posted recently; not sending")
-
-
-
