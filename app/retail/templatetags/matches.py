@@ -29,13 +29,13 @@ def matches(text, pattern):
 
         Args:
             value: Any value.
-            input_pattern : Regex pattern against which the pattern is met.
+            pattern : Regex pattern against which the text is matched.
 
         Usage:
-            {% if '<value>'|is_in_list:'about,slack,home,help,mission' %}
+            {% if '<text>'|matches:'^/explorer$' %}
 
         Returns:
-            bool: Whether or not the value exists in the input_list.
+            bool: Whether or not the value matches the pattern.
 
     """
 
