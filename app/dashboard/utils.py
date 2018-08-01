@@ -26,7 +26,6 @@ from django.conf import settings
 
 import ipfsapi
 import requests
-import rollbar
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
 from dashboard.models import Bounty, UserAction
 from eth_utils import to_checksum_address
@@ -124,8 +123,6 @@ def create_user_action(user, action_type, request=None, metadata=None):
         return True
     except Exception as e:
         logger.error(f'Failure in UserAction.create_action - ({e})')
-        rollbar.report_message(
-            f'Failure in UserAction.create_action - ({e})', 'error', extra_data=kwargs)
         return False
 
 

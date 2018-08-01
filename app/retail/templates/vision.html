@@ -26,7 +26,7 @@
   </head>
 
   <body class="{{ active }}">
-    
+
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header">
       {% include 'shared/nav.html' %}
@@ -129,7 +129,7 @@
               <li class="macro">{% trans "Identity on blockchain becomes a very big deal" %}</li>
               <li class="market">{% trans "Megabull Market" %}</li>
               <li class="consensys">{% trans "Consensys members use tokens everyday" %}</li>
-              <li class="gitcoin">{% trans "Gitcoin is a $20mm / year business" %}.</li>  
+              <li class="gitcoin">{% trans "Gitcoin is a $20mm / year business" %}.</li>
             </ul>
           </div>
           <div class="tl-event" data-time="2023">
@@ -170,19 +170,19 @@
             <div class="w-25 align-self-center text-center mr-md-3 mb-3">
               <img class="mw-100" src="{% static "v2/images/vision/blockchain.png" %}" alt="twit-roadmap">
             </div>
-            <div class="media-body">  
+            <div class="media-body">
               <h3 class="mb-4">{% trans "Blockchain" %}</h3>
               <p>{% trans "Will blockchain be in everyone's wallet (like the Web Browser), or will it be hidden in the back? (like Linux)" %}</p>
               <p>{% trans "What will Identity on web3 look like?  Will there be a dFb (decentralized facebook), and if so, how will it differ from web 2.0 Facebook?" %}</p>
               <p>{% trans "What web3 wallet will everyone use? Will they use many?  What will the marekt for wallets look like as the space matures?" %}</p>
-              <p>{% trans "What will maturation/consolidation in the blockchain space look like?" %}</p>    
+              <p>{% trans "What will maturation/consolidation in the blockchain space look like?" %}</p>
             </div>
           </div>
           <div class="media shadow-sm p-5 mb-5 bg-white rounded flex-column flex-md-row animated fadeInRightShort" data-id="2">
             <div class="w-25 align-self-center text-center mr-md-3 mb-3">
               <img class="mw-100" src="{% static "v2/images/vision/oss.png" %}" alt="twit-roadmap">
             </div>
-            <div class="media-body">  
+            <div class="media-body">
               <h3 class="mb-4">{% trans "OSS" %}</h3>
               <p>{% trans "What is a scalable funding model for developers (esp OSS) in a blockchain world?" %}</p>
               <p>{% trans "Can blockchain solve" %} <a href="https://www.amazon.com/Software-Paradox-Rise-Commercial-Market/dp/1491900938">The Software Paradox</a> ?</p>
@@ -219,11 +219,11 @@
         </div>
       </div>
     </section>
-    
+
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/rollbar.html' %}
+    {% include 'shared/sentry.html' %}
     {% include 'shared/messages.html' %}
   </body>
 </html>
