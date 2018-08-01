@@ -382,6 +382,7 @@ def vision(request):
     }
     return TemplateResponse(request, 'vision.html', context)
 
+
 def not_a_token(request):
     """Render the not_a_token response."""
     context = {
@@ -393,6 +394,7 @@ def not_a_token(request):
         'card_desc': _("Gitcoin is not a token ICO"),
     }
     return TemplateResponse(request, 'not_a_token.html', context)
+
 
 def results(request, keyword=None):
     """Render the Results response."""
