@@ -47,7 +47,7 @@ def insert_settings(request):
         'github_handle': request.user.username if user_is_authenticated else False,
         'email': request.user.email if user_is_authenticated else False,
         'name': request.user.get_full_name() if user_is_authenticated else False,
-        'rollbar_client_token': settings.ROLLBAR_CLIENT_TOKEN,
+        'sentry_address': settings.SENTRY_ADDRESS,
         'env': settings.ENV,
         'email_key': email_key,
         'profile_id': profile.id if profile else '',
