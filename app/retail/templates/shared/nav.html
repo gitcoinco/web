@@ -61,6 +61,9 @@
           <a class="dropdown-item {% if active == 'results' %} selected{% endif %}" href="{% url "results" %}">
             {% trans "Results" %}
           </a>
+          <a class="dropdown-item {% if active == 'not_a_token' %} selected{% endif %}" href="{% url "not_a_token" %}">
+            {% trans "Not a Token" %}
+          </a>
         </div>
       </div>
       {% endif %}
