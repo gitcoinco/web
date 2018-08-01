@@ -133,7 +133,7 @@ class GitcoinBotActionsTest(TestCase):
             value_in_token=3,
             token_name='ETH',
             web3_created=datetime(2008, 10, 31),
-            github_url='https://github.com/test_owner/gitcoin/issues/1234',
+            github_url='https://github.com/gitcoinco/web/issues/305',
             token_address='0x0',
             issue_description='hello world',
             bounty_owner_github_username='flintstone',
@@ -146,14 +146,14 @@ class GitcoinBotActionsTest(TestCase):
             experience_level='Intermediate',
             raw_data={},
         )
-        submit_link = f'{settings.BASE_URL}issue/test_owner/gitcoin/1234'
+        submit_link = f'{settings.BASE_URL}issue/gitcoinco/web/305'
         target_text = f'To finish claiming this bounty please [visit this link]({submit_link})'
-        text = submit_work_or_new_bounty_text('test_owner', 'gitcoin', '1234')
+        text = submit_work_or_new_bounty_text('gitcoinco', 'web', '305')
         self.assertEqual(text, target_text)
 
     def test_submit_work_or_new_bounty_when_bounty_doesnt_exist(self):
         """Test submit_work_or_new_bounty_text when bounty isn't active."""
-        issue_link = f'https://github.com/test_owner/gitcoin/issues/1234'
+        issue_link = f'https://github.com/gitcoinco/web/issues/305'
         bounty_link = f'{settings.BASE_URL}funding/new?source={issue_link}'
         target_text = 'No active bounty for this issue, consider create the bounty please'\
                       f' [visit this link]({bounty_link}).\n\n ' \
