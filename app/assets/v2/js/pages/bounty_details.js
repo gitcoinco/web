@@ -759,6 +759,20 @@ var do_actions = function(result) {
     actions.push(_entry);
   }
 
+  function get_repository_name(github_url) {
+    const repo_link = document.createElement('a');
+
+    repo_link.href = github_url;
+
+    const hostname = repo_link.hostname;
+
+    if (hostname.match('github')) {
+      return 'GitHub';
+    }
+
+    return hostname.charAt(0).toUpperCase() + hostname.slice(1);
+  }
+
   if (show_github_link) {
     let github_url = result['github_url'];
     // hack to get around the renamed repo for piper's work.  can't change the data layer since blockchain is immutable
@@ -766,12 +780,14 @@ var do_actions = function(result) {
     github_url = github_url.replace('pipermerriam/web3.py', 'ethereum/web3.py');
     github_url = github_url.replace('ethereum/browser-solidity', 'ethereum/remix-ide');
 
+    const repo_name = get_repository_name(github_url);
+
     const _entry = {
       enabled: true,
       href: github_url,
-      text: gettext('View On Github'),
+      text: gettext('View On ' + repo_name),
       parent: 'right_actions',
-      title: gettext('View issue details and comments on Github'),
+      title: gettext('View issue details and comments on ' + repo_name),
       comments: result['github_comments'],
       color: 'white',
       is_last_non_admin_action: true
