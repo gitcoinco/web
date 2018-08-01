@@ -308,9 +308,9 @@ IMAP_EMAIL = env('IMAP_EMAIL', default='<email>')
 IMAP_PASSWORD = env('IMAP_PASSWORD', default='<password>')
 
 # Mailchimp Integration
-MAILCHIMP_USER = env('MAILCHIMP_USER', default='')
-MAILCHIMP_API_KEY = env('MAILCHIMP_API_KEY', default='')
-MAILCHIMP_LIST_ID = env('MAILCHIMP_LIST_ID', default='')
+MAILCHIMP_USER = env.str('MAILCHIMP_USER', default='')
+MAILCHIMP_API_KEY = env.str('MAILCHIMP_API_KEY', default='')
+MAILCHIMP_LIST_ID = env.str('MAILCHIMP_LIST_ID', default='')
 
 # Github
 GITHUB_API_BASE_URL = env('GITHUB_API_BASE_URL', default='https://api.github.com')
