@@ -224,39 +224,42 @@ def get_text_from_query_responses(comment_text, sender):
 def determine_response(owner, repo, comment_id, comment_text, issue_id, install_id, sender):
     bounty_exists = Bounty.objects.filter(github_url=f'https://github.com/{owner}/{repo}/issues/{issue_id}').exists()
 
-    if bounty_exists:
-        help_regex = r'@?[Gg]itcoinbot\s[Hh]elp'
-        bounty_regex = r'@?[Gg]itcoinbot\s[Bb]ounty\s\d*\.?(\d+\s?)'
-        submit_work_regex = r'@?[Gg]itcoinbot\s[Ss]ubmit(\s[Ww]ork)?'
-        tip_regex = r'@?[Gg]itcoinbot\s[Tt]ip\s@\w*\s\d*\.?(\d+\s?)'
-        start_work_regex = r'@?[Gg]itcoinbot\s[Ss]tart(\s[Ww]ork)?'
+    if not bounty_exists:
+        return False
 
-        if re.match(help_regex, comment_text) is not None:
-            post_issue_comment_reaction(owner, repo, comment_id, '+1')
-            post_gitcoin_app_comment(owner, repo, issue_id, help_text(), install_id)
-        elif re.match(bounty_regex, comment_text) is not None:
-            post_issue_comment_reaction(owner, repo, comment_id, '+1')
-            bounty_text = new_bounty_text(owner, repo, issue_id, comment_text)
-            post_gitcoin_app_comment(owner, repo, issue_id, bounty_text, install_id)
-        elif re.match(submit_work_regex, comment_text) is not None:
-            post_issue_comment_reaction(owner, repo, comment_id, '+1')
-            result_text = submit_work_or_new_bounty_text(owner, repo, issue_id)
-            post_gitcoin_app_comment(owner, repo, issue_id, result_text, install_id)
-        elif re.match(tip_regex, comment_text) is not None:
-            post_issue_comment_reaction(owner, repo, comment_id, 'heart')
-            tip_text = new_tip_text(owner, repo, issue_id, comment_text)
-            post_gitcoin_app_comment(owner, repo, issue_id, tip_text, install_id)
-        elif re.match(start_work_regex, comment_text) is not None:
-            post_issue_comment_reaction(owner, repo, comment_id, 'heart')
-            start_text = start_work_text(owner, repo, issue_id)
-            post_gitcoin_app_comment(owner, repo, issue_id, start_text, install_id)
+    help_regex = r'@?[Gg]itcoinbot\s[Hh]elp'
+    bounty_regex = r'@?[Gg]itcoinbot\s[Bb]ounty\s\d*\.?(\d+\s?)'
+    submit_work_regex = r'@?[Gg]itcoinbot\s[Ss]ubmit(\s[Ww]ork)?'
+    tip_regex = r'@?[Gg]itcoinbot\s[Tt]ip\s@\w*\s\d*\.?(\d+\s?)'
+    start_work_regex = r'@?[Gg]itcoinbot\s[Ss]tart(\s[Ww]ork)?'
+
+    if re.match(help_regex, comment_text) is not None:
+        post_issue_comment_reaction(owner, repo, comment_id, '+1')
+        post_gitcoin_app_comment(owner, repo, issue_id, help_text(), install_id)
+    elif re.match(bounty_regex, comment_text) is not None:
+        post_issue_comment_reaction(owner, repo, comment_id, '+1')
+        bounty_text = new_bounty_text(owner, repo, issue_id, comment_text)
+        post_gitcoin_app_comment(owner, repo, issue_id, bounty_text, install_id)
+    elif re.match(submit_work_regex, comment_text) is not None:
+        post_issue_comment_reaction(owner, repo, comment_id, '+1')
+        result_text = submit_work_or_new_bounty_text(owner, repo, issue_id)
+        post_gitcoin_app_comment(owner, repo, issue_id, result_text, install_id)
+    elif re.match(tip_regex, comment_text) is not None:
+        post_issue_comment_reaction(owner, repo, comment_id, 'heart')
+        tip_text = new_tip_text(owner, repo, issue_id, comment_text)
+        post_gitcoin_app_comment(owner, repo, issue_id, tip_text, install_id)
+    elif re.match(start_work_regex, comment_text) is not None:
+        post_issue_comment_reaction(owner, repo, comment_id, 'heart')
+        start_text = start_work_text(owner, repo, issue_id)
+        post_gitcoin_app_comment(owner, repo, issue_id, start_text, install_id)
+    else:
+        only_message = re.sub(r'@?[Gg]itcoinbot\s', '', comment_text)
+        text_response = get_text_from_query_responses(re.sub(r'</?\[\d+>', '', only_message), sender)
+
+        if text_response:
+            post_issue_comment_reaction(owner, repo, comment_id, 'hooray')
+            post_gitcoin_app_comment(owner, repo, issue_id, text_response, install_id)
         else:
-            only_message = re.sub(r'@?[Gg]itcoinbot\s', '', comment_text)
-            text_response = get_text_from_query_responses(re.sub(r'</?\[\d+>', '', only_message), sender)
-
-            if text_response:
-                post_issue_comment_reaction(owner, repo, comment_id, 'hooray')
-                post_gitcoin_app_comment(owner, repo, issue_id, text_response, install_id)
-            else:
-                post_issue_comment_reaction(owner, repo, comment_id, 'confused')
-                # post_gitcoin_app_comment(owner, repo, issue_id, confused_text(), install_id)
+            post_issue_comment_reaction(owner, repo, comment_id, 'confused')
+            # post_gitcoin_app_comment(owner, repo, issue_id, confused_text(), install_id)
+    return True

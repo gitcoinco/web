@@ -17,11 +17,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+from datetime import datetime, timedelta
+
 from django.conf import settings
+from django.utils import timezone
 
 from gitcoinbot.actions import (
-    FALLBACK_CURRENCY, confused_text, get_text_from_query_responses, help_text, new_bounty_text, new_tip_text,
-    parse_comment_amount, parse_comment_currency, parse_tippee_username, start_work_text,
+    FALLBACK_CURRENCY, confused_text, determine_response, get_text_from_query_responses, help_text, new_bounty_text,
+    new_tip_text, parse_comment_amount, parse_comment_currency, parse_tippee_username, start_work_text,
     submit_work_or_new_bounty_text, submit_work_text,
 )
 from gitcoinbot.models import GitcoinBotResponses
@@ -171,3 +174,38 @@ class GitcoinBotActionsTest(TestCase):
         GitcoinBotResponses.objects.create(request='speedy gonzales', response='The Fastest Mouse in all Mexico')
         response = get_text_from_query_responses('Speedy Gonzales', 'ACME')
         self.assertEqual(response, '@ACME The Fastest Mouse in all Mexico')
+
+    def test_determine_response_returns_false_when_non_github_bounty(self):
+        """Test determine_response returns False when unable to resolve github_url for arguments"""
+        actual = determine_response('some_user', 'some_repo', 'some_comment', 'some_comment_text', 'some_issue_id', 'install_id', 'sender')
+        self.assertEqual(actual, False)
+
+    def test_determine_response_returns_true_when_github_bounty(self):
+        """Test determine_response returns True when able to resolve github_url for arguments"""
+        from dashboard.models import Bounty
+        from datetime import datetime
+        owner = 'github_owner'
+        repo = 'github_repo'
+        issue_id = 'github_issue_id'
+        github_url = f'https://github.com/{owner}/{repo}/issues/{issue_id}'
+        Bounty.objects.create(
+            title='foo',
+            value_in_token=3,
+            token_name='ETH',
+            web3_created=timezone.make_aware(datetime.now()),
+            github_url=github_url,
+            token_address='0x0',
+            issue_description='hello world',
+            bounty_owner_github_username='flintstone',
+            is_open=False,
+            accepted=True,
+            expires_date=timezone.make_aware(datetime.now()) + timedelta(days=1, hours=1),
+            idx_project_length=5,
+            project_length='Months',
+            bounty_type='Feature',
+            experience_level='Intermediate',
+            raw_data={}
+        )
+
+        actual = determine_response(owner, repo, 'some_comment', 'some_comment_text', issue_id, 'install_id', 'sender' )
+        self.assertEqual(actual, True)
