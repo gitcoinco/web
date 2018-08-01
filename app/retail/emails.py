@@ -221,28 +221,37 @@ def render_admin_contact_funder(bounty, text, from_user):
 
 
 def render_funder_stale(github_username, days=30, time_as_str='about a month'):
+    """Render the stale funder email template.
 
-    txt = f"""
-hi {github_username},
+    Args:
+        github_username (str): The Github username to be referenced in the email.
+        days (int): The number of days back to reference.
+        time_as_str (str): The human readable length of time to reference.
 
-kevin owocki from gitcoin here.
+    Returns:
+        str: The rendered response as a string.
 
-i see you haven't posted any funded work to the platform in {time_as_str}.
+    """
+    response_txt = f"""
+Hi {github_username},
 
-just wanted to check in and see if there's anything we can do, or if you had any feedback for us.  we're still a small startup and we iterate fast; not only will your feedback be heard, but it's got a good chance of being put into the product roadmap!
+Kevin Owocki from Gitcoin here.
 
-kevin
+I see you haven't posted any funded work to the platform in {time_as_str}.
 
-PS - i've got some new gitcoin schwag on order. send me your mailing address and your t shirt size and i'll ship you some.
+Just wanted to check in and see if there's anything we can do, or if you had any feedback for us. \
+We're still a small startup and we iterate fast; not only will your feedback be heard, but it's \
+got a good chance of being put into the product roadmap!
+
+Kevin
+
+PS - I've got some new gitcoin schwag on order.  Send me your mailing address and your \
+t-shirt size and i'll ship you some.
 
 """
 
-    params = {
-        'txt': txt,
-    }
+    params = {'txt': response_txt}
     response_html = premailer_transform(render_to_string("emails/txt.html", params))
-    response_txt = txt
-
     return response_html, response_txt
 
 
@@ -702,8 +711,21 @@ def bounty_feedback(request):
 
 @staff_member_required
 def funder_stale(request):
-    from dashboard.models import Bounty
-    response_html, _ = render_funder_stale('@foo', 30, 'about a month')
+    """Display the stale funder email template.
+
+    Params:
+        limit (int): The number of days to limit the scope of the email to.
+        duration_copy (str): The copy to use for associated duration text.
+        username (str): The Github username to reference in the email.
+
+    Returns:
+        HttpResponse: The HTML version of the templated HTTP response.
+
+    """
+    limit = int(request.GET.get('limit', 30))
+    duration_copy = request.GET.get('duration_copy', 'about a month')
+    username = request.GET.get('username', '@foo')
+    response_html, _ = render_funder_stale(username, limit, duration_copy)
     return HttpResponse(response_html)
 
 

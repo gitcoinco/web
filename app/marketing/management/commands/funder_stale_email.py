@@ -1,20 +1,22 @@
-'''
-    Copyright (C) 2017 Gitcoin Core
+# -*- coding: utf-8 -*-
+"""Define the stale funder email management command for background execution.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Copyright (C) 2018 Gitcoin Core
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-'''
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -24,13 +26,16 @@ from marketing.mails import funder_stale
 
 
 class Command(BaseCommand):
+    """Define the stale funder management command class."""
 
     help = 'solicits feedback from stale funders'
 
     def add_arguments(self, parser):
+        """Define the added arguments to handle for the management command."""
         parser.add_argument('days', default=30, type=int)
 
     def handle(self, *args, **options):
+        """Handle the stale funder management command logic."""
         if settings.DEBUG:
             print("not active in non prod environments")
             return
@@ -48,17 +53,17 @@ class Command(BaseCommand):
         else:
             time_as_str = 'quite a bit'
 
-        start_time = timezone.now() - timezone.timedelta(days=(days+1))
+        start_time = timezone.now() - timezone.timedelta(days=(days + 1))
         end_time = timezone.now() - timezone.timedelta(days=(days))
         base_bounties = Bounty.objects.filter(
             network='mainnet',
             current_bounty=True,
-            )
+        )
 
         candidate_bounties = base_bounties.filter(
             web3_created__gt=start_time,
             web3_created__lt=end_time,
-            )
+        )
 
         for bounty in candidate_bounties.distinct('bounty_owner_github_username'):
             handle = bounty.bounty_owner_github_username
@@ -66,16 +71,16 @@ class Command(BaseCommand):
 
             if not handle:
                 continue
-                
+
             print(handle)
 
             has_posted_in_last_days_days = base_bounties.filter(
                 web3_created__gt=end_time,
                 bounty_owner_github_username=handle,
-                ).exists()
+            ).exists()
 
             if not has_posted_in_last_days_days:
-                # TODO: do we want to suppress the email if the user 
+                # TODO: do we want to suppress the email if the user
                 # has received this specific email before
 
                 # send the email

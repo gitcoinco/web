@@ -246,41 +246,41 @@ urlpatterns = [
     re_path(r'^faucet/?', faucet.views.faucet, name='faucet'),
 
     # admin views
-    url(r'^_administration/?', admin.site.urls, name='admin'),
-    url(r'^_administration/email/new_bounty$', retail.emails.new_bounty, name='admin_new_bounty'),
-    url(r'^_administration/email/roundup$', retail.emails.roundup, name='roundup'),
-    url(r'^_administration/email/faucet_rejected$', retail.emails.faucet_rejected, name='email_faucet_rejected'),
-    url(r'^_administration/email/faucet$', retail.emails.faucet, name='email_faucet'),
-    url(r'^_administration/email/new_tip$', retail.emails.new_tip, name='new_tip'),
-    url(r'^_administration/email/new_match$', retail.emails.new_match, name='new_match'),
-    url(r'^_administration/email/quarterly_roundup$', retail.emails.quarterly_roundup, name='quarterly_roundup'),
-    url(r'^_administration/email/new_work_submission$', retail.emails.new_work_submission, name='new_work_submission'),
-    url(
-        r'^_administration/email/new_bounty_rejection$',
+    re_path(r'^_administration/?', admin.site.urls, name='admin'),
+    path('_administration/email/new_bounty', retail.emails.new_bounty, name='admin_new_bounty'),
+    path('_administration/email/roundup', retail.emails.roundup, name='roundup'),
+    path('_administration/email/faucet_rejected', retail.emails.faucet_rejected, name='email_faucet_rejected'),
+    path('_administration/email/faucet', retail.emails.faucet, name='email_faucet'),
+    path('_administration/email/new_tip', retail.emails.new_tip, name='new_tip'),
+    path('_administration/email/new_match', retail.emails.new_match, name='new_match'),
+    path('_administration/email/quarterly_roundup', retail.emails.quarterly_roundup, name='quarterly_roundup'),
+    path('_administration/email/new_work_submission', retail.emails.new_work_submission, name='new_work_submission'),
+    path(
+        '_administration/email/new_bounty_rejection',
         retail.emails.new_bounty_rejection,
         name='new_bounty_rejection'
     ),
-    url(
-        r'^_administration/email/new_bounty_acceptance$',
+    path(
+        '_administration/email/new_bounty_acceptance',
         retail.emails.new_bounty_acceptance,
         name='new_bounty_acceptance'
     ),
-    url(
-        r'^_administration/email/bounty_expire_warning$',
+    path(
+        '_administration/email/bounty_expire_warning',
         retail.emails.bounty_expire_warning,
         name='bounty_expire_warning'
     ),
-    url(r'^_administration/email/bounty_feedback$', retail.emails.bounty_feedback, name='bounty_feedback'),
-    url(r'^_administration/email/funder_stale$', retail.emails.funder_stale, name='funder_stale'),
-    url(
-        r'^_administration/email/start_work_expire_warning$',
+    path('_administration/email/bounty_feedback', retail.emails.bounty_feedback, name='bounty_feedback'),
+    path('_administration/email/funder_stale', retail.emails.funder_stale, name='funder_stale'),
+    path(
+        '_administration/email/start_work_expire_warning',
         retail.emails.start_work_expire_warning,
         name='start_work_expire_warning'
     ),
-    url(r'^_administration/email/start_work_expired$', retail.emails.start_work_expired, name='start_work_expired'),
-    re_path(r'^_administration/email/gdpr_reconsent$', retail.emails.gdpr_reconsent, name='gdpr_reconsent'),
-    url(r'^_administration/email/new_tip/resend$', retail.emails.resend_new_tip, name='resend_new_tip'),
-    url(
+    path('_administration/email/start_work_expired', retail.emails.start_work_expired, name='start_work_expired'),
+    path('_administration/email/gdpr_reconsent', retail.emails.gdpr_reconsent, name='gdpr_reconsent'),
+    path('_administration/email/new_tip/resend', retail.emails.resend_new_tip, name='resend_new_tip'),
+    re_path(
         r'^_administration/process_accesscode_request/(.*)$',
         tdi.views.process_accesscode_request,
         name='process_accesscode_request'
