@@ -102,16 +102,6 @@ urlpatterns = [
 
     # View Bounty
     url(
-        r'^bounty/details/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)',
-        dashboard.views.bounty_details,
-        name='bounty_details_new'
-    ),
-    url(
-        r'^funding/details/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)',
-        dashboard.views.bounty_details,
-        name='funding_details_new'
-    ),
-    url(
         r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)/(?P<stdbounties_id>.*)',
         dashboard.views.bounty_details,
         name='issue_details_new3'
@@ -121,8 +111,6 @@ urlpatterns = [
         dashboard.views.bounty_details,
         name='issue_details_new2'
     ),
-    url(r'^bounty/details/?', dashboard.views.bounty_details, name='bounty_details'),
-    url(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
 
     # Tips
     url(
