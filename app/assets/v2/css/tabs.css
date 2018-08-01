@@ -1,0 +1,50 @@
+
+.tab-container {
+  position: relative;
+  display: block;
+  text-align: center;
+}
+
+.tab-container > button {
+  margin: 0 5px;
+}
+
+.section-tab {
+  background: transparent;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  color: var(--gc-purple);
+  padding: 0;
+}
+
+.tab-indicator {
+  display: block;
+  height: 5px;
+  width: 20px;
+  background: var(--gc-blue);
+  transition: transform .3s, left .3s;
+}
+
+.section-tab:hover,
+.section-tab:active,
+.section-tab:focus {
+  color: var(--gc-blue) !important;
+}
+
+.section-tab.active {
+  color: var(--gc-blue);
+}
+
+.tab-sections {
+  width: 100%;
+  position: relative;
+  transition: transform .3s;
+}
+
+.tab-section {
+  width: 100%;
+  padding: 0 2rem;
+  margin: 0 1rem;
+  flex-shrink: 0;
+}

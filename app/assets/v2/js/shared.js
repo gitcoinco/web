@@ -20,6 +20,7 @@ var callFunctionWhenTransactionMined = function(txHash, f) {
   });
 };
 
+
 /**
  * Looks for web3.  Won't call the fucntion until its there
  * @callback
@@ -116,7 +117,7 @@ var unloading_button = function(button) {
   button.find('img').remove();
 };
 
-var sanitizeDict = function(d) {
+var sanitizeDict = function(d, keyToIgnore) {
   if (typeof d != 'object') {
     return d;
   }
@@ -124,14 +125,18 @@ var sanitizeDict = function(d) {
   for (var i = 0; i < keys.length; i++) {
     var key = keys[i];
 
+    if (key === keyToIgnore) {
+      continue;
+    }
+
     d[key] = sanitize(d[key]);
   }
   return d;
 };
 
-var sanitizeAPIResults = function(results) {
+var sanitizeAPIResults = function(results, keyToIgnore) {
   for (var i = 0; i < results.length; i++) {
-    results[i] = sanitizeDict(results[i]);
+    results[i] = sanitizeDict(results[i], keyToIgnore);
   }
   return results;
 };
@@ -268,7 +273,11 @@ var mutate_interest = function(bounty_pk, direction, data) {
     }
     return false;
   }).fail(function(result) {
-    alert(result.responseJSON.error);
+    _alert({ message: gettext('Network or API error. Please reload the page and try again.') }, 'error');
+
+    if (result) {
+      console.log(result);
+    }
   });
 };
 
@@ -795,13 +804,24 @@ var listen_for_web3_changes = function() {
 var actions_page_warn_if_not_on_same_network = function() {
   var user_network = document.web3network;
 
+  if (user_network === 'locked') {
+    // handled by the unlock MetaMask banner
+    return;
+  }
+
   if (typeof user_network == 'undefined') {
     user_network = 'no network';
   }
   var bounty_network = $('input[name=network]').val();
 
   if (bounty_network != user_network) {
-    var msg = 'Warning: You are on ' + user_network + ' and this bounty is on the ' + bounty_network + ' network.  Please change your network to the ' + bounty_network + ' network.';
+    var msg = 'Warning: You are on ' +
+              user_network +
+              ' and this bounty is on the ' +
+              bounty_network +
+              ' network.  Please change your network to the ' +
+              bounty_network +
+              ' network.';
 
     _alert({ message: gettext(msg) }, 'error');
   }

@@ -16,6 +16,8 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+from os import walk as walkdir
+
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
@@ -26,10 +28,10 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.models import Activity, Bounty
 from dashboard.notifications import amount_usdt_open_work, open_bounties
-from dashboard.tokens import token_by_name
 from economy.models import Token
 from marketing.mails import new_token_request
 from marketing.models import Alumni, LeaderboardRank
@@ -37,6 +39,16 @@ from marketing.utils import get_or_save_email_subscriber, invite_to_slack
 from retail.helpers import get_ip
 
 from .utils import build_stat_results, programming_languages
+
+
+def get_activities(tech_stack=None, num_activities=15):
+    # get activity feed
+
+    activities = Activity.objects.filter(bounty__network='mainnet').order_by('-created')
+    if tech_stack:
+        activities = activities.filter(bounty__metadata__icontains=tech_stack)
+    activities = activities[0:num_activities]
+    return [a.view_props for a in activities]
 
 
 def index(request):
@@ -76,6 +88,7 @@ def index(request):
     )
 
     context = {
+        'activities': get_activities(),
         'is_outside': True,
         'slides': slides,
         'slideDurationInMs': 6000,
@@ -203,6 +216,7 @@ def contributor_landing(request, tech_stack):
     available_bounties_worth = amount_usdt_open_work()
 
     context = {
+        'activities': get_activities(tech_stack),
         'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else "Open Source Opportunities",
         'slides': slides,
         'slideDurationInMs': 6000,
@@ -218,6 +232,7 @@ def contributor_landing(request, tech_stack):
     }
 
     return TemplateResponse(request, 'contributor_landing.html', context)
+
 
 def how_it_works(request, work_type):
     """Show How it Works / Funder page."""
@@ -379,35 +394,6 @@ def results(request, keyword=None):
 
 def activity(request):
     """Render the Activity response."""
-    icons = {
-        'title': 'Activity',
-        'new_tip': 'fa-thumbs-up',
-        'start_work': 'fa-lightbulb',
-        'new_bounty': 'fa-money-bill-alt',
-        'work_done': 'fa-check-circle',
-    }
-
-
-    def add_view_props(activity):
-        activity.icon = icons.get(activity.activity_type, 'fa-check-circle')
-        obj = activity.metadata
-        if 'new_bounty' in activity.metadata:
-            obj = activity.metadata['new_bounty']
-        activity.title = obj.get('title', '')
-        if 'id' in obj:
-            activity.bounty_url = Bounty.objects.get(pk=obj['id']).get_relative_url()
-            if activity.title:
-                activity.urled_title = f'<a href="{activity.bounty_url}">{activity.title}</a>'
-            else:
-                activity.urled_title = activity.title
-        if 'value_in_usdt_now' in obj:
-            activity.value_in_usdt_now = obj['value_in_usdt_now']
-        if 'token_name' in obj:
-            activity.token = token_by_name(obj['token_name'])
-            if 'value_in_token' in obj and activity.token:
-                activity.value_in_token_disp = round((float(obj['value_in_token']) /
-                                                      10 ** activity.token['decimals']) * 1000) / 1000
-        return activity
 
     activities = Activity.objects.all().order_by('-created')
     p = Paginator(activities, 300)
@@ -416,9 +402,9 @@ def activity(request):
     context = {
         'p': p,
         'page': p.get_page(page),
-        'title': 'Activity Feed',
+        'title': _('Activity Feed'),
     }
-    context["activities"] = [add_view_props(a) for a in p.get_page(page)]
+    context["activities"] = [a.view_props for a in p.get_page(page)]
 
     return TemplateResponse(request, 'activity.html', context)
 
@@ -747,6 +733,59 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
     return TemplateResponse(request, 'help.html', context)
 
 
+def presskit(request):
+
+    brand_colors = [
+        (
+            "Cosmic Teal",
+            "#25e899",
+            "37, 232, 153"
+        ),
+        (
+            "Dark Cosmic Teal",
+            "#0fce7c",
+            "15, 206, 124"
+        ),
+        (
+            "Milky Way Blue",
+            "#15003e",
+            "21, 0, 62"
+        ),
+        (
+            "Stardust Yellow",
+            "#FFCE08",
+            "255,206, 8"
+        ),
+        (
+            "Polaris Blue",
+            "#3E00FF",
+            "62, 0, 255"
+        ),
+        (
+            "Vinus Purple",
+            "#8E2ABE",
+            "142, 42, 190"
+        ),
+        (
+            "Regulus Red",
+            "#F9006C",
+            "249, 0, 108"
+        ),
+        (
+            "Star White",
+            "#FFFFFF",
+            "23, 244, 238"
+        ),
+        ]
+
+    context = {
+        'brand_colors': brand_colors,
+        'active': 'get',
+        'title': _('Presskit'),
+    }
+    return TemplateResponse(request, 'presskit.html', context)
+
+
 def get_gitcoin(request):
     context = {
         'active': 'get',
@@ -798,10 +837,6 @@ def onboard(request):
 
 def podcast(request):
     return redirect('https://itunes.apple.com/us/podcast/gitcoin-community/id1360536677')
-
-
-def presskit(request):
-    return redirect('https://www.dropbox.com/sh/bsjzbu0li2z0kr1/AACKgnQC3g6m52huYI3Gx3Ega?dl=0')
 
 
 def feedback(request):
@@ -886,7 +921,7 @@ def slack(request):
 
     return TemplateResponse(request, 'slack.html', context)
 
-
+@csrf_exempt
 def newtoken(request):
     context = {
         'active': 'newtoken',
@@ -971,3 +1006,32 @@ def tokens(request):
         key = f"{network}_tokens"
         context[key] = Token.objects.filter(network=network, approved=True)
     return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
+
+
+def ui(request):
+    svgs = []
+    pngs = []
+    gifs = []
+    for path, dirs, files in walkdir('assets/v2/images'):
+        if path.find('/avatar') != -1:
+            continue
+        for f in files:
+            if f.endswith('.svg'):
+                svgs.append(f'{path[7:]}/{f}')
+                continue
+            if f.endswith('.png'):
+                pngs.append(f'{path[7:]}/{f}')
+                continue
+            if f.endswith('.gif'):
+                gifs.append(f'{path[7:]}/{f}')
+                continue
+
+    context = {
+        'is_outside': True,
+        'active': 'ui_inventory ',
+        'title': 'UI Inventory',
+        'svgs': svgs,
+        'pngs': pngs,
+        'gifs': gifs,
+    }
+    return TemplateResponse(request, 'ui_inventory.html', context)

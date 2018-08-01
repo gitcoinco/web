@@ -126,6 +126,10 @@ body {
   color: #000000;
 }
 
+#issue_description pre, code {
+  padding: 1em 0;
+}
+
 .bounty-subheading {
   font-weight: lighter;
   font-size: 14px;
@@ -262,6 +266,11 @@ body {
   padding: 5px 10px;
   background-color: #F2F6F9;
   color: #6184AC;
+}
+
+.tag.token.additional_funding_summary{
+  background-color: #fbe0d6;
+  color: #fb9470;
 }
 
 .contributor-box {
@@ -543,8 +552,12 @@ a.btn {
   width: 100%;
 }
 
-#issue-message {
-  min-height: 6em;
+#issue_message {
+  min-height: 12em;
+}
+
+#issue_message.placeholder {
+  color: #6e6e6e;
 }
 
 .add-interest-options {
@@ -628,6 +641,7 @@ a.btn {
 }
 
 .bounty_details .quote_text {
+  margin-top: 50px;
   font-size: 1.1rem;
   color: #4A4A4A;
 }

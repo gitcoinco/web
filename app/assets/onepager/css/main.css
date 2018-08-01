@@ -178,7 +178,6 @@ video {
   padding: 0;
   border: 0;
   font: inherit;
-  font-size: 100%;
   vertical-align: baseline;
 }
 
@@ -262,7 +261,7 @@ input,
 select,
 textarea {
   color: #000000;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 400;
 }
 
@@ -397,7 +396,6 @@ form > .field > :last-child {
 label {
   color: #313f47;
   display: inline;
-  font-size: 0.9em;
   margin: 0 0 0.75em 0;
 }
 
@@ -533,6 +531,8 @@ input[type='checkbox']:checked + label::before,
 input[type='radio']:checked + label::before {
   color: #ff7496;
   content: '\f00c';
+  font-family: "Font Awesome 5 free", sans-serif;
+  font-weight: 900;
 }
 
 input[type='checkbox']:focus + label::before,
@@ -540,13 +540,6 @@ input[type='radio']:focus + label::before {
   border-color: #ff7496;
 }
 
-input[type='checkbox'] + label::before {
-  border-radius: 4px;
-}
-
-input[type='radio'] + label::before {
-  border-radius: 100%;
-}
 
 ::-webkit-input-placeholder {
   color: #616f77 !important;

@@ -745,6 +745,10 @@ input[type=text].loading {
   transition: 0.3s;
 }
 
+.closebtn.purple {
+  content: url('/static/v2/images/close-purple.svg');
+}
+
 /* When moving the mouse over the close button */
 
 .closebtn:hover {
@@ -945,10 +949,18 @@ input.is-invalid {
   width: 25em;
 }
 
+.tooltip-sm,
 .tooltip-xs {
-  font-size: 10px;
   padding: 2px;
   width: auto;
+}
+
+.tooltip-sm {
+  font-size: 0.75rem;
+}
+
+.tooltip-xs {
+  font-size: 10px;
 }
 
 .ui-widget-shadow,
@@ -1125,6 +1137,31 @@ input.is-invalid {
 .rating span.checked label i,
 .rating span.checked ~ span label i {
   color:#F90;
+}
+
+.bounty_box {
+  border: 5px solid white;
+  width: 100%;
+  display: block;
+  padding: 30px 30px;
+  background-color: #15003e;
+  color: white;
+  text-decoration: none;
+}
+.bounty_box.disabled, .bounty_box.disabled:hover {
+  cursor: not-allowed;
+  background-color: #5f445b;
+  text-decoration: none;
+}
+.bounty_box:hover {
+  background-color: #35305e;
+  text-decoration: none;
+}
+.bounty_box h5{
+  color: white;
+}
+.bounty_box span{
+  color: white;
 }
 
 @media (max-width: 1350px) {
@@ -1495,7 +1532,7 @@ input.is-invalid {
     display: none;
   }
 
-  .search_bar span {
+  .search_bar .save_search {
     display: none;
   }
 

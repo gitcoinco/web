@@ -58,9 +58,7 @@ class DashboardNotificationsTest(TestCase):
         """Test the dashboard helper build_github_notification method with new_bounty."""
         message = build_github_notification(self.bounty, 'new_bounty')
         assert f'__This issue now has a funding of {self.natural_value} {self.bounty.token_name}' in message
-        assert self.usdt_value in message
         assert f'This issue now has a funding of' in message
-        assert f'${self.amount_open_work}' in message
 
     def test_build_github_notification_killed_bounty(self):
         """Test the dashboard helper build_github_notification method with killed_bounty."""

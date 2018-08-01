@@ -118,6 +118,11 @@
                         </span>
                       </p>
                     </div>
+                    <div class="tag token additional_funding_summary">
+                      <p>
+                        <span id="additional_funding_summary"></span>
+                      </p>
+                    </div>
                   </div>
                 </div>
             </div>
@@ -236,24 +241,30 @@
               [[:text]]
               <i class="far fa-check-circle"></i>
             </div>
-            <div>
-              <span class="bounty-subheading">{% trans "ETH Address" %} :</span>
-              <span class="bounty-text">
-                <a href="https://etherscan.io/address/[[:fulfiller_address]]" target="_blank" rel="noopener noreferrer">[[:fulfiller_address]]</a>
-              </span>
-            </div>
-            <div>
-              <span class="bounty-subheading">{% trans "Email" %} :</span>
-              <span class="bounty-text">
-                <a href="mailto:[[:fulfiller_email]]">[[:fulfiller_email]]</a>
-              </span>
-            </div>
-            <div>
-              <span class="bounty-subheading">{% trans "Submission Id" %} :</span>
-              <span class="bounty-text">[[:fulfillment_id]]</span>
-            </div>
+            [[if fulfiller_address]]
+              <div>
+                <span class="bounty-subheading">{% trans "ETH Address" %} :</span>
+                <span class="bounty-text">
+                  <a href="https://etherscan.io/address/[[:fulfiller_address]]" target="_blank" rel="noopener noreferrer">[[:fulfiller_address]]</a>
+                </span>
+              </div>
+            [[/if]]
+            [[if fulfiller_email]]
+              <div>
+                <span class="bounty-subheading">{% trans "Email" %} :</span>
+                <span class="bounty-text">
+                  <a href="mailto:[[:fulfiller_email]]">[[:fulfiller_email]]</a>
+                </span>
+              </div>
+            [[/if]]
+            [[if fulfillment_id]]
+              <div>
+                <span class="bounty-subheading">{% trans "Submission Id" %} :</span>
+                <span class="bounty-text">[[:fulfillment_id]]</span>
+              </div>
+            [[/if]]
           </div>
-        [[else activity_type == 'start_work']]
+        [[else activity_type == 'start_work' || activity_type == 'worker_approved' || activity_type == 'worker_applied' ]]
           <div class="col-12 col-md-7 started-status-column">
             <div class="activity-status">
               [[:text]]
@@ -289,7 +300,7 @@
                     <span class="font-smaller-4">Reject worker</span>
                   </a>
                 </span>
-              </div>
+              </div> | 
               <div class="stop-work">
                 <span title="<div class='tooltip-info tooltip-sm'>Approve worker</div>">
                   <a target="_blank" href="[[:approve_worker_url]]">

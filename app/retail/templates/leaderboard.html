@@ -97,7 +97,7 @@
                       {{item.count}} bounties/tips
                     </td>
                     <td class="col-2 d-flex align-items-center item-amount item-amount-revenue">
-                      ${{item.amount|intcomma}}
+                      ${{item.amount|floatformat:2|intcomma}}
                     </td>
                   </tr>
                 {% endfor %}

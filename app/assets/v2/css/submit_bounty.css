@@ -14,6 +14,22 @@ h1, h2, h3, h4, h5 {
   letter-spacing: 0;
 }
 
+input:-moz-read-only { /* For Firefox */
+  background-color: #eaeaea94;
+}
+
+input:read-only { 
+  background-color: #eaeaea94;
+}
+
+textarea:-moz-read-only { /* For Firefox */
+  background-color: #eaeaea94;
+}
+
+textarea:read-only { 
+  background-color: #eaeaea94;
+}
+
 #primary_form .revisions {
   min-height: 37px;
   padding: 0;
