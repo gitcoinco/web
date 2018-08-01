@@ -476,7 +476,7 @@ def dashboard(request):
         'title': _('Issue Explorer'),
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
-    return TemplateResponse(request, 'dashboard.html', params)
+    return TemplateResponse(request, 'dashboard/index.html', params)
 
 
 def accept_bounty(request):
