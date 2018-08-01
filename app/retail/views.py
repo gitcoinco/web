@@ -382,6 +382,17 @@ def vision(request):
     }
     return TemplateResponse(request, 'vision.html', context)
 
+def not_a_token(request):
+    """Render the not_a_token response."""
+    context = {
+        'is_outside': True,
+        'active': 'not_a_token',
+        'avatar_url': static('v2/images/no-token/no-token.jpg'),
+        'title': 'Why Gitcoin didn’t do a Utility Token ICO',
+        'card_title': _("Gitcoin is not a token ICO"),
+        'card_desc': _("Gitcoin is not a token ICO"),
+    }
+    return TemplateResponse(request, 'not_a_token.html', context)
 
 def results(request, keyword=None):
     """Render the Results response."""
