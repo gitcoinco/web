@@ -19,35 +19,9 @@
 <html>
   <head>
     
-    <!-- heade -->
     {% include 'shared/head.html' %}
-    <!-- / heade -->
-
     {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
-    <!-- <title>{{title}} | Gitcoin</title> -->
-    <!-- <meta charset="utf-8" /> -->
-    <!-- <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"> -->
-    <!-- <meta name="theme-color" content="#ffffff"> -->
-    <!--[if lte IE 8]><script src="{% static "onepager/js/html5shiv.js" %}"></script><![endif]-->
-    <!-- <link rel="stylesheet" href="{% static "v2/css/bootstrap.min.css" %}"> -->
-    <!-- <link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}"> -->
-    <!-- <link rel="stylesheet" href="{% static "onepager/css/main.css" %}"> -->
-    <!-- <link rel="stylesheet" href="{% static "v2/css/box_redeem.css" %}"> -->
-    <!-- <link rel="stylesheet" href="{% static "v2/css/rain.css" %}"> -->
-    <!-- <link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}"> -->
-    <!-- <link rel="stylesheet" href="{% static "v2/css/forms/button.css" %}"> -->
-    <!-- <link rel="stylesheet" href="{% static "cookielaw/css/cookielaw.css" %}"> -->
-
-    <!-- <script src="{% static "v2/js/jquery.js" %}"></script> -->
-    <!-- <script src="{% static "v2/js/work_with_gitcoin.js" %}"></script> -->
-    <!--[if lte IE 9]><link rel="stylesheet" href="{% static "onepager/css/ie9.css" %}"><![endif]-->
-    <!--[if lte IE 8]><link rel="stylesheet" href="{% static "onepager/css/ie8.css" %}"><![endif]-->
-    <noscript>
-      <!-- <link rel="stylesheet" href="{% static "onepager/css/noscript.css" %}"> -->
-    </noscript>
-    <!-- {% include 'shared/favicon.html' %} -->
-    <!-- {% include 'shared/rollbar.html' %} -->
   </head>
   <body id="yge" class="transaction {{ class }}">
     {% include 'shared/tag_manager_2.html' %}
@@ -70,10 +44,8 @@
     </main>
     {% include 'shared/rain.html' with class="color" %}
     <!-- Scripts -->
-    <!-- octa/ -->
-    {% include 'shared/footer_scripts.html' with slim=1 %}
-    <!-- /octa -->
     
+    {% include 'shared/footer_scripts.html' with slim=1 %}
     {% block 'scripts' %}{% endblock %}
     
     <script>
