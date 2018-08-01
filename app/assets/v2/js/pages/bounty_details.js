@@ -1008,12 +1008,12 @@ const process_activities = function(result, bounty_activities) {
     const fulfillment = meta.fulfillment || {};
     const new_bounty = meta.new_bounty || {};
     const old_bounty = meta.old_bounty || {};
-    const uninterest_possible = (isBountyOwnerPerLogin(result) || document.isStaff) && is_open;
     const has_pending_interest = !!result.interested.find(interest =>
       interest.profile.handle === _activity.profile.handle && interest.pending);
     const has_interest = !!result.interested.find(interest =>
       interest.profile.handle === _activity.profile.handle);
     const slash_possible = document.isStaff;
+    const uninterest_possible = (isBountyOwnerPerLogin(result) || document.isStaff) && is_open && has_interest;
 
     return {
       profileId: _activity.profile.id,

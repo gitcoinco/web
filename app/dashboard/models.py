@@ -892,11 +892,11 @@ class Bounty(SuperModel):
         if len(afs['tokens'].keys()) == 0:
             return ""
         items = []
-        for token, value in afs['tokens']:
+        for token, value in afs['tokens'].items():
             items.append(f"{value} {token}")
         sentence = ", ".join(items)
         if(afs['usd_value']):
-            sentence += f"worth ${afs['usd_value']}"
+            sentence += f" worth ${afs['usd_value']}"
         return sentence
 
 
@@ -1074,8 +1074,11 @@ class Tip(SuperModel):
         if self.web3_type != 'v3':
             raise Exception
 
-        key = self.metadata['reference_hash_for_receipient']
-        return f"{settings.BASE_URL}tip/receive/v3/{key}/{self.txid}/{self.network}"
+        try:
+            key = self.metadata['reference_hash_for_receipient']
+            return f"{settings.BASE_URL}tip/receive/v3/{key}/{self.txid}/{self.network}"
+        except:
+            return None
 
     # TODO: DRY
     @property

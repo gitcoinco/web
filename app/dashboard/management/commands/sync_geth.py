@@ -24,7 +24,6 @@ import warnings
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-import rollbar
 from dashboard.helpers import UnsupportedSchemaException
 from dashboard.utils import BountyNotFoundException, get_bounty, web3_process_bounty
 
@@ -73,7 +72,7 @@ class Command(BaseCommand):
                     'more_bounties': more_bounties,
                     'network': network
                 }
-                rollbar.report_exc_info(sys.exc_info(), extra_data=extra_data)
+                logger.error('Failed to fetch github username', exc_info=True, extra=extra_data)
                 logger.error(f"* Exception in sync_geth => {e}")
             finally:
                 # prepare for next loop

@@ -28,7 +28,6 @@ from django.utils import timezone
 
 import dateutil.parser
 import requests
-import rollbar
 from requests.exceptions import ConnectionError
 from rest_framework.reverse import reverse
 
@@ -531,15 +530,6 @@ def patch_issue_comment(comment_id, owner, repo, comment):
     response = requests.patch(url, data=json.dumps({'body': comment}), auth=_AUTH)
     if response.status_code == 200:
         return response.json()
-    rollbar.report_message(
-        'Github issue comment patch returned non-200 status code',
-        'warning',
-        request=response.request,
-        extra_data={
-            'status_code': response.status_code,
-            'reason': response.reason
-        }
-    )
     return {}
 
 
