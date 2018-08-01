@@ -937,27 +937,44 @@ const build_uri_for_pull_bounty_from_api = function() {
   return uri;
 };
 
+const get_bounty_by_id = function(bountyId) {
+  const deferred = $.Deferred();
+
+  return $.get('/actions/api/v0.1/bounties/' + document.bountyId)
+    .then(result => deferred.resolve([result]));
+};
+
+const get_bounties = function() {
+  if (document.bountyId) {
+    return get_bounty_by_id(document.bountyId);
+  }
+
+  return $.get(build_uri_for_pull_bounty_from_api());
+};
+
 var pull_bounty_from_api = function() {
-  $.get(build_uri_for_pull_bounty_from_api()).then(results => {
+  get_bounties().then(function(results) {
     // special case: do not sanitize issue_description
     // before we pass it to the markdown parser
-    return sanitizeAPIResults(results, 'issue_description');
-  }).then(function(results) {
+    const sanitized_results = sanitizeAPIResults(results, 'issue_description');
+
     let nonefound = true;
     // potentially make this a lot faster by only pulling the specific issue required
 
-    for (let i = 0; i < results.length; i++) {
-      var result = results[i];
+    for (let i = 0; i < sanitized_results.length; i++) {
+      const result = sanitized_results[i];
       // if the result from the database matches the one in question.
+      const isGithubIssueUrl = normalizeURL(result['github_url']) == normalizeURL(document.issueURL);
+      const isBountyId = Number(document.bountyId) === Number(result.pk);
 
-      if (normalizeURL(result['github_url']) == normalizeURL(document.issueURL)) {
+      if (isGithubIssueUrl || isBountyId) {
         nonefound = false;
 
         build_detail_page(result);
 
         do_actions(result);
 
-        render_activity(result, results);
+        render_activity(result, sanitized_results);
 
         document.result = result;
         return;
