@@ -145,13 +145,13 @@ class DashboardModelsTest(TestCase):
         interest = Interest(
             profile=profile,
         )
-        assert str(interest) == 'foo / pending: False'
+        assert str(interest) == 'foo / pending: False / status: okay'
 
     @staticmethod
     def test_profile():
         """Test the dashboard Profile model."""
         bounty = Bounty.objects.create(
-            github_url='https://github.com/gitcoinco/web',
+            github_url='https://github.com/gitcoinco/web/issues/305',
             web3_created=datetime.now(tz=pytz.UTC),
             expires_date=datetime.now(tz=pytz.UTC) + timedelta(days=1),
             is_open=True,
@@ -161,7 +161,7 @@ class DashboardModelsTest(TestCase):
         )
         tip = Tip.objects.create(
             emails=['foo@bar.com'],
-            github_url='https://github.com/gitcoinco/web',
+            github_url='https://github.com/gitcoinco/web/issues/305',
             expires_date=datetime.now(tz=pytz.UTC) + timedelta(days=1),
         )
         profile = Profile(
