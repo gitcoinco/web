@@ -234,7 +234,7 @@ class DashboardModelsTest(TestCase):
             value_in_token=3,
             token_name='ETH',
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/9999#issuecomment-999999999',
+            github_url='https://github.com/gitcoinco/web/issues/305#issuecomment-999999999',
             token_address='0x0',
             issue_description='hello world',
             bounty_owner_github_username='flintstone',
@@ -247,5 +247,5 @@ class DashboardModelsTest(TestCase):
             experience_level='Intermediate',
             raw_data={},
         )
-        assert bounty.github_url == 'https://github.com/gitcoinco/web/issues/9999'
+        assert bounty.github_url == 'https://github.com/gitcoinco/web/issues/305'
         bounty.delete()

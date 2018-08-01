@@ -76,7 +76,7 @@ def get_gh_issue_details(org, repo, issue_num):
     details['description'] = issue_details.body.replace('\n', '').strip()
     details['state'] = issue_details.state
     if issue_details.state == 'closed':
-        details['closed_at'] = issue_details.closed_at
+        details['closed_at'] = issue_details.closed_at.isoformat()
         details['closed_by'] = issue_details.closed_by.name
     return details
 
