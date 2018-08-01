@@ -219,7 +219,7 @@ if ENV not in ['local', 'test']:
         },
         'loggers': {
             'django.db.backends': {
-                'level': 'ERROR',
+                'level': 'WARN',
                 'handlers': ['console'],
                 'propagate': False,
             },
@@ -236,9 +236,9 @@ if ENV not in ['local', 'test']:
         },
     }
 
-    LOGGING['loggers']['django.request'] = LOGGING['loggers']['django']
+    LOGGING['loggers']['django.request'] = LOGGING['loggers']['django.db.backends']
     for ia in INSTALLED_APPS:
-        LOGGING['loggers'][ia] = LOGGING['loggers']['django']
+        LOGGING['loggers'][ia] = LOGGING['loggers']['django.db.backends']
 else:
     LOGGING = {}
 
