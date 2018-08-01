@@ -32,7 +32,20 @@ from eth_utils import to_checksum_address
 logger = logging.getLogger(__name__)
 
 
-def getKudosContratAddress(network):
+def get_kudos_map(kudos):
+    return dict(name=kudos[0],
+                description=kudos[1],
+                rarity=kudos[2],
+                price=kudos[3],
+                num_clones_allowed=kudos[4],
+                num_clones_in_wild=kudos[5],
+                lister=kudos[6],
+                tags=kudos[7],
+                image=kudos[8],
+                )
+
+
+def getKudosContractAddress(network):
     if network == 'mainnet':
         return to_checksum_address('')
     elif network == 'ropsten':
@@ -47,13 +60,14 @@ def getKudosContract(network):
     web3 = get_web3(network)
     with open('kudos/Kudos.json') as f:
         abi = json.load(f)['abi']
-    address = getKudosContratAddress(network)
+    address = getKudosContractAddress(network)
     contract = web3.eth.contract(address=address, abi=abi)
 
     return contract
 
 
-def get_kudos(kudos_id, network):
+def get_kudos_from_web3(kudos_id, network='localhost'):
+    """ Get kudos artifact info from the blockchain. """
     if (settings.DEBUG or settings.ENV != 'prod') and network == 'mainnet':
         # This block will return {} if env isn't prod and the network is mainnet.
         return {}
@@ -67,16 +81,11 @@ def get_kudos(kudos_id, network):
     return kudos
 
 
-def mint_kudos(network, *args
-               # name,
-               # description,
-               # rarity,
-               # price,
-               # numClonesAllowed,
-               ):
-    """ Mint a new Gen0 Kudos.  Not to be confused with clone_kudos.
+def mint_kudos_on_web3_and_db(network, *args):
+    """ Mint a new Gen0 Kudos on the blockchain and save it to the database.
+        Not to be confused with clone_kudos.
 
-        **kwargs:  See the Kudos.sol create() function for the propery keyword arguments.
+        *args:  See the Kudos.sol create() function for the propery keyword arguments.
 
         From Kudos.sol:
 
@@ -97,7 +106,6 @@ def mint_kudos(network, *args
     web3 = get_web3(network)
 
     kudos_contract = getKudosContract(network)
-    logger.info(dir(kudos_contract))
     web3.eth.defaultAccount = web3.eth.accounts[0]
 
     tx_hash = kudos_contract.functions.mint(*args).transact({"from": web3.eth.accounts[0]})
@@ -108,21 +116,69 @@ def mint_kudos(network, *args
 
     logger.info(f'Minted Kudos ID {kudos_id}: {kudos}')
 
-    kudos_map = dict(name=kudos[0],
-                     description=kudos[1],
-                     rarity=kudos[2],
-                     price=kudos[3],
-                     num_clones_allowed=kudos[4],
-                     num_clones_in_wild=kudos[5],
-                     lister=kudos[6],
-                     tags=kudos[7],
-                     image=kudos[8],
-                     )
+    kudos_map = get_kudos_map(kudos)
 
     kudos_db = MarketPlaceListing(pk=kudos_id, **kudos_map)
     kudos_db.save()
 
     # return kudos
+
+
+def kudos_has_changed(kudos_id):
+    """ Given the kudos artifact info obtained from the blockchain, check if it matches
+        the database entry.
+
+    Args:
+        kudos (list): A kudos array obtained by calling the get_kudos_from_web3() function.
+
+    Returns:
+        boolean:  True if the kudos has changed on the blockchain relative to the database.
+                  False otherwise.
+    """
+    mismatch = False
+    kudos = get_kudos_from_web3(kudos_id)
+    kudos_map = get_kudos_map(kudos)
+    kudos_db = MarketPlaceListing.objects.get(pk=kudos_id)
+
+    for k, v in kudos_map.items():
+        if getattr(kudos_db, k) != v:
+            logger.warning(f'Kudos blockchain/db mismatch: {k}')
+            mismatch = True
+
+    return mismatch
+
+
+def update_kudos_db(kudos_id):
+    kudos = get_kudos_from_web3(kudos_id)
+    kudos_map = get_kudos_map(kudos)
+    kudos_db = MarketPlaceListing(pk=kudos_id, **kudos_map)
+    logger.info(f'Updating Kudos ID: {kudos_id}')
+    logger.info(json.dumps(kudos_map))
+    # Update the database entry
+    kudos_db.save()
+
+
+def get_gen0_id_from_web3(kudos_name, network='localhost'):
+    """ Get the kudos id of the Gen0 Kudos using the name.  This information is pulled from web3.
+
+    Args:
+        kudos_name (str): The "name" field of the Gen0 Kudos.  This is the same value in the database
+                          as the web3 contract.
+        network (str, optional): The network we are working on.
+
+    Returns:
+        int: Kudos ID.  This maps to the pk in the database.
+    """
+    if (settings.DEBUG or settings.ENV != 'prod') and network == 'mainnet':
+        # This block will return {} if env isn't prod and the network is mainnet.
+        return {}
+
+    kudos_contract = getKudosContract(network)
+
+    kudos_id = kudos_contract.functions.getGen0TokenId(kudos_name).call()
+    logger.info(f'Kudos Gen0 ID {kudos_id}')
+
+    return kudos_id
 
 
 def clone_kudos(network):
@@ -137,10 +193,7 @@ def get_kudos_id():
     pass
 
 
-def get_kudos_id_from_db():
-    pass
-
-
 def get_kudos_id_from_web3():
     pass
+
 
