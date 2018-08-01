@@ -26,11 +26,12 @@ from django.core.management.base import BaseCommand
 
 import rollbar
 from dashboard.helpers import UnsupportedSchemaException
-from kudos.utils import get_kudos, web3_process_kudos
+from kudos.utils import get_kudos_from_web3, web3_process_kudos, kudos_has_changed, update_kudos_db
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
+logging.getLogger("web3").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 default_start_id = 0 if not settings.DEBUG else 402
@@ -41,7 +42,7 @@ class Command(BaseCommand):
     help = 'syncs database with kudos on the blockchain'
 
     def add_arguments(self, parser):
-        parser.add_argument('network', default='rinkeby', type=str)
+        parser.add_argument('--network', default='localhost', type=str)
         parser.add_argument('start_id', default=default_start_id, type=int)
         parser.add_argument('end_id', default=99999999999, type=int)
 
@@ -57,10 +58,12 @@ class Command(BaseCommand):
         more_kudos = True
         while more_kudos:
             # pull and process each kudos
-            self.stdout.write(f"[{month}/{day} {hour}:00] Getting kudos {kudos_enum}")
-            kudos = get_kudos(kudos_enum, network)
-            self.stdout.write(f"[{month}/{day} {hour}:00] Processing kudos {kudos_enum}")
+            # self.stdout.write(f"[{month}/{day} {hour}:00] Getting kudos {kudos_enum}")
+            # kudos = get_kudos(kudos_enum, network)
+            # self.stdout.write(f"[{month}/{day} {hour}:00] Processing kudos {kudos_enum}")
             # web3_process_kudos(kudos)
+            if kudos_has_changed(kudos_enum):
+                update_kudos_db(kudos_enum)
 
             kudos_enum += 1
 
