@@ -98,7 +98,7 @@ def index(request):
         'gitcoin_description': gitcoin_description,
         'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter.")
     }
-    return TemplateResponse(request, 'index.html', context)
+    return TemplateResponse(request, 'landing/funder.html', context)
 
 
 def contributor_landing(request, tech_stack):
@@ -231,7 +231,7 @@ def contributor_landing(request, tech_stack):
         'tech_stack': tech_stack,
     }
 
-    return TemplateResponse(request, 'contributor_landing.html', context)
+    return TemplateResponse(request, 'landing/contributor.html', context)
 
 
 def how_it_works(request, work_type):
