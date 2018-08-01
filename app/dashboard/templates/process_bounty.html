@@ -63,7 +63,7 @@
                 </div>
                 <div class="w-100 mt-2">
                   <label for=tipPercent>{% trans "(Optional) Add a tip of:" %}</label>
-                  <input name='tipPercent' id="tipPercent" class="gc-round-text-input" style="width: 50px;" type="number" placeholder="" value="0" min="0" /> % worth <span id="tipEstimate">0</span> {{bounty.token_name}} 
+                  <input name='tipPercent' id="tipPercent" class="gc-round-text-input" style="width: 50px;" type="number" placeholder="" value="0" min="0" /> % worth <span id="tipEstimate">0</span> {{bounty.token_name}}
                 </div>
                 <div id="gas-section">
                   {% include 'shared/bounty_actions_hidden_vars.html' %}
@@ -90,7 +90,7 @@
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/rollbar.html' %}
+    {% include 'shared/sentry.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
   </body>
