@@ -409,58 +409,25 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
     from dashboard.models import BountyFulfillment, Interest
     from types import SimpleNamespace 
     msg = ''
-    #usdt_value = ""
-    #try:
-    #    usdt_value = f"({round(bounty.value_in_usdt_now, 2)} USD @ ${round(convert_token_to_usdt(bounty.token_name), 2)}/{bounty.token_name})" if bounty.value_in_usdt_now else ""
-    #except Exception:
-    #    pass  # no USD conversion rate available
-    #natural_value = round(bounty.get_natural_value(), 4)
-    #absolute_url = bounty.get_absolute_url()
-    #amount_open_work = "{:,}".format(amount_usdt_open_work())
-    #bounty_owner = f"@{bounty.bounty_owner_github_username}" if bounty.bounty_owner_github_username else ""
-    #status_header = get_status_header(bounty)
+
     template_path = 'github_comments/'
 
     if event_name in ['new_bounty', 'increased_bounty']:
         context = {
                     'bounty': bounty,
-                    'amount_open_work': amount_usdt_open_work(),
-                    'token_value_usdt': convert_token_to_usdt(bounty.token_name)
+                    'amount_open_work': amount_usdt_open_work()
                   }
-        msg = render_to_string('github_comments/issue_opened.md', context)
-    #"""
-    #    if event_name == 'increased_bounty':
-    #       msg = f"{status_header}__The funding of this issue was increased to {natural_value} " \
-    #             f"{bounty.token_name} {usdt_value}.__\n\n * If you would " \
-    #             f"like to work on this issue you can claim it [here]({absolute_url}).\n " \
-    #             "* If you've completed this issue and want to claim the bounty you can do so " \
-    #             f"[here]({absolute_url})\n * Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or " \
-    #             f"the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${amount_open_work}" \
-    #             " more funded OSS Work available on the [Gitcoin Issue Explorer](https://gitcoin.co/explorer)\n"
-    #   """
+        msg = render_to_string(template_path + 'issue_opened.md', context)
     elif event_name == 'killed_bounty':
         if bounty.opened_comment:
             delete_issue_comment(bounty.opened_comment, username, repo)
-    #   """
-    #   elif event_name == 'rejected_claim':
-    #       msg = f"{status_header}__The work submission for {natural_value} {bounty.token_name} {usdt_value} " \
-    #             "has been **rejected** and can now be submitted by someone else.__\n\n * If you would " \
-    #             f"like to work on this issue you can claim it [here]({absolute_url}).\n * If you've " \
-    #             f"completed this issue and want to claim the bounty you can do so [here]({absolute_url})\n " \
-    #             "* Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * " \
-    #             f"${amount_open_work} more funded OSS Work available on the [Gitcoin Issue Explorer](https://gitcoin.co/explorer)\n"
-    #       context['issue_message'] = interest.issue_message.strip() if interest.issue_message
-    #   """
     elif event_name == 'work_started':
-        
         msg = {}
         interested = bounty.interested.all().order_by('created')
         interested_context = []
         started_context = []
 
-        # interested_plural = "s" if interested.count() != 0 else ""
         from_now = naturaltime(bounty.expires_date)
-        # pending_approval = bounty.interested.filter(pending=True).all()
         bounty_owner_clear = f"@{bounty.bounty_owner_github_username}" if bounty.bounty_owner_github_username else ""
         pending_interest = bounty.interested.filter(pending=True).select_related('profile').all()
         if bounty.permission_type == 'approval':
@@ -478,7 +445,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
                 'interested': interested_context
             }
             
-            msg['pending'] = render_to_string('github_comments/express_interest.md', context)
+            msg['pending'] = render_to_string(template_path + 'github_comments/express_interest.md', context)
         started_work = bounty.interested.filter(pending=False).select_related('profile').all()
         if started_work.count():
             for interest in started_work:
@@ -491,7 +458,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
             context = {
                 'bounty': bounty,
                 'started_work': started_context}
-            msg['started'] = render_to_string('github_comments/start_work.md', context)
+            msg['started'] = render_to_string(template_path + 'start_work.md', context)
 
         if (not (started_work.count() and bounty.started_comment == None)) and pending_interest.count() == 0:
             delete_issue_comment(bounty.started_comment, username, repo)
@@ -506,13 +473,13 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
                     #stopped_work: [activity.profile for activity in bounty.activities.filter(activity_type='stop_work').all() if activity.profile not in started_work]
                     'stopped_work': [activity.profile for activity in bounty.activities.filter(activity_type='stop_work').all() if activity.profile.handle not in started_work_handles]
         }
-        msg = render_to_string('github_comments/stop_work.md', context)
+        msg = render_to_string(template_path + 'stop_work.md', context)
     elif event_name == 'work_submitted':
             context = {
                         'bounty': bounty,
                         'fulfillments': [fulfillment.profile for fulfillment in bounty.fulfillments.select_related('profile').all()]
                       }
-            msg = render_to_string('github_comments/submit_work.md', context)
+            msg = render_to_string(template_path + 'submit_work.md', context)
 
     elif event_name == 'work_done':
         context = {}
@@ -526,7 +493,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
         if bounty.done_comment and bounty.fulfillments.filter(accepted=True).count() == 0:
             delete_issue_comment(bounty.done_comment, username, repo)
 
-        msg = render_to_string('github_comments/accept_work.md', context)
+        msg = render_to_string(template_path + 'accept_work.md', context)
         
     return msg
 
@@ -558,6 +525,7 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
     if not msg:
         return False
 
+    #try either posting or patching the comment on the github issue
     try:
         username = uri_array[1]
         repo = uri_array[2]
@@ -601,7 +569,6 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
                 response = post_issue_comment(username, repo, issue_num, msg)
                 bounty.done_comment = int(response.get('id'))
         bounty.save()
-        # If this isn't work_started/done, simply post the issue comment.
     except IndexError:
         return False
     except Exception as e:
@@ -630,8 +597,8 @@ def open_bounties():
         QuerySet: The mainnet Bounty objects which are of open and submitted work statuses.
 
     """
-    from dashboard.models import Bounty
-    return Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
+    from dashboard.models import Bounty, Profile
+    return Bounty.objects.filter(network=Profile.get_network(), current_bounty=True, idx_status__in=['open', 'submitted'])
 
 def maybe_market_tip_to_github(tip):
     """Post a Github comment for the specified Tip.

@@ -1,4 +1,4 @@
-{% include 'github_comments/status_bar.md' with status=bounty.status %}
+![Stop Work]({% static "status/stopped-copy.svg" %})
 {% for profile in stopped_work %} 
 [@{{ profile.handle }}]({{ profile.url }}) has __stopped work__ on this project.
 {% endfor %}

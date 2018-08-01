@@ -1,4 +1,4 @@
-{% include 'github_comments/status_bar.md' with status=bounty.status %}
+![Express Interest]({% static "status/open-copy.svg" %}
 {% if bounty.permission_type == 'approval' %} 
 {% for interest in interested %} 
 [@{{ interest.profile.handle }}]({{ interest.profile.url }}) has __expressed interest__ in this project.
