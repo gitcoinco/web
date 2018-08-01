@@ -12,13 +12,8 @@
   "published_on": "2018-08-01",
   "initial_price":{},
   "links": {
-    "blog": "",
     "twitter": "https://twitter.com/zhixinchain",
     "telegram": "https://t.me/zhixinchain",
-    "github": "",
-    "facebook": "https://www.facebook.com/zhixin.chain",
-    "reddit": "",
-    "slack": "",
-    "medium": ""
+    "facebook": "https://www.facebook.com/zhixin.chain"
   }
 }
