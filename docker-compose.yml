@@ -54,7 +54,8 @@ services:
     image: trufflesuite/ganache-cli
     ports:
       - "8545:8545"
-    command: "-a 1 --seed 2"
+    # command: "-a 1 --seed 2"
+    command: "--host 0.0.0.0 --mnemonic 'lobster chair view oyster relax keep sell grab daring ankle lunar about'"
 
 volumes:
   pgdata:

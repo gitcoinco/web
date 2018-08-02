@@ -51,14 +51,14 @@ def marketplace(request):
 
     results = MarketPlaceListing.objects.annotate(
         search=SearchVector('name', 'description', 'tags')
-        ).filter(search=q)
+        ).filter(num_clones_allowed__gt=0, search=q)
     logger.info(results)
 
     if results:
         listings = results
     else:
-        listings = MarketPlaceListing.objects.all()
-    
+        listings = MarketPlaceListing.objects.filter(num_clones_allowed__gt=0)
+
     # for x in context['listings']:
     #     x.price = x.price / 1000
 
@@ -69,7 +69,6 @@ def marketplace(request):
     #     logger.info(f'Price in ETH {l.price_in_eth()}')
     #     updated_listings.append(l)
 
-
     context = {
         'is_outside': True,
         'active': 'marketplace',
@@ -79,7 +78,6 @@ def marketplace(request):
         'avatar_url': static('v2/images/grow_open_source.png'),
         'listings': listings
     }
-
 
     return TemplateResponse(request, 'kudos_marketplace.html', context)
 
