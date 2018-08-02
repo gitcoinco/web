@@ -1,4 +1,27 @@
 {
   "symbol": "DAT",
-  "address": "0x81c9151de0C8bafCd325a57E3dB5a5dF1CEBf79c"
+  "address": "0x81c9151de0C8bafCd325a57E3dB5a5dF1CEBf79c",
+  "overview":{
+        "en": "Secure and monetize your digital life. Datum is the decentralized data storage network and data marketplace powered by the Data Access Token (DAT)",
+        "zh": "保护您的数据生活 并 赚取报酬 - Datum 达腾数据是由 Data Access Token (DAT 达腾币) 驱动的去中心化储存网络"
+  },
+  "email": "hello@datum.org",
+  "website": "https://datum.org",
+  "whitepaper": "https://datum.org/assets/Datum-WhitePaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2017-12-15",
+  "initial_price":{
+        "ETH":"0.00004 ETH",
+        "USD":"0.012 USD",
+        "BTC":"0.0000019732 BTC"
+  },
+  "links": {
+    "blog": "https://blog.datum.org",
+    "twitter": "https://twitter.com/datumnetwork",
+    "telegram": "https://t.me/datumnetwork",
+    "github": "https://github.com/Datum",
+    "facebook": "https://www.facebook.com/datumnetwork",
+    "reddit": "https://www.reddit.com/r/datumnetwork/",
+    "medium": "https://medium.com/@datumnetwork"
+  }
 }
