@@ -26,7 +26,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db import transaction
-from django.form.models import model_to_dict
+from django.forms.models import model_to_dict
 from django.http import Http404, JsonResponse
 from django.utils import timezone
 
