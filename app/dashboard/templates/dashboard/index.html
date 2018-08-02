@@ -39,21 +39,16 @@
 
       <div class="col-12 col-lg-9 col-xl-10 body">
         <div class="container-fluid" id="bounties">
-          <div id="dashboard-title" class="hidden">
-            {% include 'shared/search_bar.html' %}
-            <div class="row mt-2 mb-2">
-              <div class="col-12 offset-lg-1 col-lg-10 title-row">
-                <div class="col-12 col-md-4">
-                  <span id="filter" class="font-title"></span>
-                  <span id="matches" class="font-body"></span>
-                </div>
-                <div class="col-12 col-md-8 bounty-info" id="funding-info">
-                </div>
+          {% include 'shared/search_bar.html' %}
+          <div class="row mt-2 mb-2">
+            <div class="col-12 offset-md-1 col-md-10 title-row">
+              <div class="col-12 col-sm-7 col-md-5">
+                <span id="filter" class="font-title"></span>
+                <span id="matches" class="font-subheading"></span>
+              </div>
+              <div class="col-sm-5 col-md-7 bounty-info" id="funding-info">
               </div>
             </div>
-          </div>
-          <div class="row loading justify-content-center align-items-center loading_img">
-            <img src="{% static "v2/images/loading_v2.gif" %}">
           </div>
           <div class="row nonefound" style="display:none;">
               <img src="{% static "v2/images/shrug_bot.png" %}">
@@ -66,7 +61,11 @@
               </p>
           </div>
         </div>
+        <div class="row loading justify-content-center align-items-center loading_img">
+          <img src="{% static "v2/images/loading_v2.gif" %}">
+        </div>
       </div>
+      
     </div>
 
     <div id="onboard-footer" class="row hidden font-body">

@@ -17,11 +17,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-
 from datetime import datetime
+from decimal import Decimal
+
+from django.db.models import Sum
 
 import django_filters.rest_framework
-from rest_framework import routers, serializers, viewsets
+from rest_framework import pagination, routers, serializers, viewsets
+from rest_framework.response import Response
 
 from .models import Activity, Bounty, BountyFulfillment, Interest, ProfileSerializer
 
@@ -122,13 +125,23 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
         return bounty
 
 
-class BountyViewSet(viewsets.ModelViewSet):
-    """Handle the Bounty view behavior."""
+class BountyPagination(pagination.LimitOffsetPagination):
+    """Custom Pagination for Bounties"""
 
+    default_limit = 100
+    max_limit = 100
+
+    def get_paginated_response(self, data):
+        """Custom wrapper for respone."""
+        return Response(data)
+
+
+class BountyBaseViewSet(viewsets.ModelViewSet):
     queryset = Bounty.objects.prefetch_related(
         'fulfillments', 'interested', 'interested__profile', 'activities') \
         .all().order_by('-web3_created')
     serializer_class = BountySerializer
+    pagination_class = BountyPagination
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
 
     def get_queryset(self):
@@ -209,8 +222,9 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         # Retrieve all fullfilled bounties by fulfiller_username
         if 'fulfiller_github_username' in param_keys:
+            fulfiller = self.request.query_params.get('fulfiller_github_username')
             queryset = queryset.filter(
-                fulfillments__fulfiller_github_username__iexact=self.request.query_params.get('fulfiller_github_username')
+                fulfillments__fulfiller_github_username__iexact=fulfiller
             )
 
         # Retrieve all DONE fullfilled bounties by fulfiller_username
@@ -241,15 +255,39 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         queryset = queryset.distinct()
 
-        # offset / limit
-        limit = self.request.query_params.get('limit', None)
-        offset = self.request.query_params.get('offset', 0)
-        if limit:
-            queryset = queryset[int(offset):int(limit)]
-
         return queryset
+
+
+class BountyStatusViewSet(BountyBaseViewSet):
+    """Handle the Bounty view behavior."""
+
+    def getArg(self, param):
+        return Decimal((self.queryset.aggregate(Sum(param)))[param + "__sum"] or 0) / pow(10, 18)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        total_value_sum = self.getArg("value_in_token")
+        value_in_usdt = Decimal((queryset.aggregate(Sum('value_in_usdt')))["value_in_usdt__sum"] or 0)
+        value_in_eth = self.getArg("value_in_eth")
+        tokens = queryset.order_by('token_name').values_list('token_name', flat=True).distinct()
+        token_values = {}
+        for token in tokens:
+            #
+            token_values[token] = queryset.filter(token_name=token).aggregate(Sum('value_true'))["value_true__sum"]
+        custom_data = {
+            'count': (queryset.count()),
+            'tokens': tokens,
+            'total_value_sum': '{0:f}'.format(total_value_sum),
+            'value_in_usdt': '{0:f}'.format(value_in_usdt),
+            'value_in_eth': '{0:f}'.format(value_in_eth),
+            'token_values': token_values
+        }
+
+        return Response(custom_data)
+
 
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
-router.register(r'bounties', BountyViewSet)
+router.register(r'bounties', BountyBaseViewSet)
+router.register(r'bounties_status', BountyStatusViewSet)

@@ -14,7 +14,12 @@ var sidebar_keys = [
 ];
 
 var localStorage;
+var dashboard = {};
 
+dashboard.limit = 10;
+dashboard.draw_distance = 5;
+dashboard.bounty_offset = 0;
+dashboard.finished_appending = false;
 try {
   localStorage = window.localStorage;
 } catch (e) {
@@ -175,8 +180,8 @@ var removeFilter = function(key, value) {
   refreshBounties();
 };
 
-var get_search_URI = function() {
-  var uri = '/api/v0.1/bounties/?';
+var get_search_URI = function(status) {
+  var uri = ('/api/v0.1/bounties') + (status ? '_status' : '') + '?limit=' + dashboard.limit + '&offset=' + dashboard.bounty_offset;
   var keywords = '';
 
   for (var i = 0; i < sidebar_keys.length; i++) {
@@ -256,40 +261,13 @@ var get_search_URI = function() {
 };
 
 var process_stats = function(results) {
-  var num = results.length;
+  var num = results.count;
   var worth_usdt = 0;
-  var worth_eth = 0;
-  var currencies_to_value = {};
+  var stats = results.value_in_usdt + ' USD';
 
-  for (var i = 0; i < results.length; i++) {
-    var result = results[i];
-
-    var this_worth_usdt = Number.parseFloat(result['value_in_usdt']);
-    var this_worth_eth = Number.parseFloat(result['value_in_eth']);
-
-    if (this_worth_usdt) {
-      worth_usdt += this_worth_usdt;
-    }
-    if (this_worth_eth) {
-      worth_eth += this_worth_eth;
-    }
-    var token = result['token_name'];
-
-    if (token !== 'ETH') {
-      if (!currencies_to_value[token]) {
-        currencies_to_value[token] = 0;
-      }
-      currencies_to_value[token] += Number.parseFloat(result['value_true']);
-    }
-  }
-
-  worth_usdt = worth_usdt.toFixed(2);
-  worth_eth = (worth_eth / Math.pow(10, 18)).toFixed(2);
-  var stats = worth_usdt + ' USD, ' + worth_eth + ' ETH';
-
-  for (var t in currencies_to_value) {
-    if (Object.prototype.hasOwnProperty.call(currencies_to_value, t)) {
-      stats += ', ' + currencies_to_value[t].toFixed(2) + ' ' + t;
+  for (var t in results.token_values) {
+    if (Object.prototype.hasOwnProperty.call(results.token_values, t)) {
+      stats += ', ' + results.token_values[t].toFixed(2) + ' ' + t;
     }
   }
 
@@ -298,27 +276,27 @@ var process_stats = function(results) {
 
   switch (num) {
     case 0:
-      matchesEl.html(gettext('No Results'));
-      fundingInfoEl.html('');
+      // $('#matches').html(gettext('No Results'));
+      $('#funding-info').html('');
       break;
     case 1:
-      matchesEl.html(num + gettext(' Matching Result'));
-      fundingInfoEl.html('<span id="modifiers">Funded Issue</span><span id="stats" class="font-caption">(' + stats + ')</span>');
+      // $('#matches').html(num + gettext(' Matching Result'));
+      $('#funding-info').html("<span id='modifiers'>Funded Issue</span><span id='stats' class='font-body'>(" + stats + ')</span>');
       break;
     default:
-      matchesEl.html(num + gettext(' Matching Results'));
-      fundingInfoEl.html('<span id="modifiers">Funded Issues</span><span id="stats" class="font-caption">(' + stats + ')</span>');
+      // $('#matches').html(num + gettext(' Matching Results'));
+      $('#funding-info').html("<span id='modifiers'>Funded Issues</span><span id='stats' class='font-body'>(" + stats + ')</span>');
   }
 };
 
 var paint_bounties_in_viewport = function(start, max) {
-  document.is_painting_now = true;
-  var num_bounties = document.bounties_html.length;
+  dashboard.is_painting_now = true;
+  var num_bounties = dashboard.bounties_html.length;
 
   for (var i = start; i < num_bounties && i < max; i++) {
-    var html = document.bounties_html[i];
+    var html = dashboard.bounties_html[i];
 
-    document.last_bounty_rendered = i;
+    dashboard.last_bounty_rendered = i;
     $('#bounties').append(html);
   }
 
@@ -331,160 +309,194 @@ var paint_bounties_in_viewport = function(start, max) {
 
     $(this).attr('href', href);
   });
-  document.is_painting_now = false;
+  dashboard.is_painting_now = false;
+};
 
-  if (localStorage['referrer'] === 'onboard') {
-    $('.bounty_row').each(function(index) {
-      if (index > 2)
-        $(this).addClass('hidden');
-    });
+var near_bottom = function(callback, buffer) {
+  if (!dashboard.bounties_html)
+    return;
+  var scrollPos = $(document).scrollTop();
+  var last_active_bounty = $('.bounty_row.result:last-child');
+  var window_height = $(window).height();
+  var have_painted_all_bounties = dashboard.bounties_html.length <= dashboard.last_bounty_rendered;
+  var does_need_to_paint_more = !dashboard.is_painting_now && ((last_active_bounty.offset().top) < (scrollPos + buffer + window_height));
+
+  if (typeof dashboard.bounties_html == 'undefined' || dashboard.bounties_html.length == 0 || last_active_bounty.length == 0) {
+    return;
+  }
+
+  if (does_need_to_paint_more) {
+    callback();
   }
 };
 
-var trigger_scroll = debounce(function() {
-  if (typeof document.bounties_html == 'undefined' || document.bounties_html.length == 0) {
+
+var trigger_scroll_for_refresh_api = function() {
+  near_bottom(function() {
+    refreshBounties(true);
+  }, 1500);
+};
+
+// $(window).scroll(trigger_scroll_for_redraw);
+// $('body').bind('touchmove', trigger_scroll_for_redraw);
+
+$(window).scroll(trigger_scroll_for_refresh_api);
+$('body').bind('touchmove', trigger_scroll_for_refresh_api);
+
+var bountyToHTMLrow = function(result) {
+  var related_token_details = tokenAddressToDetails(result['token_address']);
+  var decimals = 18;
+
+  if (related_token_details && related_token_details.decimals) {
+    decimals = related_token_details.decimals;
+  }
+
+  var divisor = Math.pow(10, decimals);
+
+  result['rounded_amount'] = Math.round(result['value_in_token'] / divisor * 100) / 100;
+  var is_expired = new Date(result['expires_date']) < new Date() && !result['is_open'];
+
+  // setup args to go into template
+  if (typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
+    result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
+  } else if (result['fulfiller_address'] !== '0x0000000000000000000000000000000000000000') {
+    result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">' + result['status'] + '</span></a>';
+  }
+  result.action = result['url'];
+  result['title'] = result['title'] ? result['title'] : result['github_url'];
+  var timeLeft = timeDifference(new Date(result['expires_date']), new Date(), true);
+
+  result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
+
+  if (result['status'] === 'done')
+    result['p'] += 'Done';
+  if (result['fulfillment_accepted_on']) {
+    result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_accepted_on']), false, 60 * 60);
+  } else if (result['status'] === 'started') {
+    result['p'] += 'Started';
+    result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_started_on']), false, 60 * 60);
+  } else if (result['status'] === 'submitted') {
+    result['p'] += 'Submitted';
+    if (result['fulfillment_submitted_on']) {
+      result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_submitted_on']), false, 60 * 60);
+    }
+  } else if (result['status'] == 'cancelled') {
+    result['p'] += 'Cancelled';
+    if (result['canceled_on']) {
+      result['p'] += ' ' + timeDifference(new Date(), new Date(result['canceled_on']), false, 60 * 60);
+    }
+  } else if (is_expired) {
+    var time_ago = timeDifference(new Date(), new Date(result['expires_date']), true);
+
+    result['p'] += ('Expired ' + time_ago + ' ago');
+  } else {
+    var opened_when = timeDifference(new Date(), new Date(result['web3_created']), true);
+
+
+    result['p'] += ('Opened ' + opened_when + ' ago, ' + expiredExpires + ' ' + timeLeft);
+  }
+
+  result['watch'] = 'Watch';
+  return result;
+
+};
+
+var refreshBounties = function(append) {
+  // manage state
+  if (append && dashboard.finished_appending || dashboard.is_loading) {
     return;
   }
-  var scrollPos = $(document).scrollTop();
-  var last_active_bounty = $('.bounty_row.result:last-child');
 
-  if (last_active_bounty.length == 0) {
-    return;
-  }
+  dashboard.is_loading = true;
+  if (append)
+    dashboard.bounty_offset += dashboard.limit;
 
-  var window_height = $(window).height();
-  var have_painted_all_bounties = document.bounties_html.length <= document.last_bounty_rendered;
-  var buffer = 500;
-  var does_need_to_paint_more = !document.is_painting_now && !have_painted_all_bounties && ((last_active_bounty.offset().top) < (scrollPos + buffer + window_height));
+  if (!append) {
+    var keywords = $('#keywords').val();
+    var title = gettext('Issue Explorer | Gitcoin');
 
-  if (does_need_to_paint_more) {
-    paint_bounties_in_viewport(document.last_bounty_rendered + 1, document.last_bounty_rendered + 6);
-  }
-}, 200);
-
-$(window).scroll(trigger_scroll);
-$('body').bind('touchmove', trigger_scroll);
-
-var refreshBounties = function(event) {
-
-  // Allow search for freeform text
-  var searchInput = $('#keywords')[0];
-
-  if (searchInput.value.length > 0) {
-    addTechStackKeywordFilters(searchInput.value.trim());
-    searchInput.value = '';
-    searchInput.blur();
-    $('.close-icon').hide();
-  }
-
-  save_sidebar_latest();
-  set_filter_header();
-  toggleAny(event);
-  getFilters();
-
-  $('.nonefound').css('display', 'none');
-  $('.loading').css('display', 'block');
-  $('.bounty_row').remove();
-
-  // filter
-  var uri = get_search_URI();
-
-  // analytics
-  var params = { uri: uri };
-
-  mixpanel.track('Refresh Bounties', params);
-
-  // order
-  $.get(uri, function(results) {
-    results = sanitizeAPIResults(results);
-
-    if (results.length === 0) {
-      if (localStorage['referrer'] === 'onboard') {
-        $('.no-results').removeClass('hidden');
-        $('#dashboard-content').addClass('hidden');
-      } else {
-        $('.nonefound').css('display', 'block');
-      }
+    if (keywords) {
+      title = keywords + ' | ' + title;
     }
 
-    document.is_painting_now = false;
-    document.last_bounty_rendered = 0;
-    document.bounties_html = [];
+    var currentState = history.state;
+
+    window.history.replaceState(currentState, title, '/explorer?q=' + keywords);
+
+    save_sidebar_latest();
+    set_filter_header();
+    disableAny();
+    getFilters();
+    if (!append) {
+      $('.nonefound').css('display', 'none');
+      $('.bounty_row').remove();
+    }
+  } // filter
+  var uri = get_search_URI();
+  var uri_status = get_search_URI(true);
+  var params = { uri: uri };
+
+  if (!append) {
+    mixpanel.track('Refresh Bounties', params);
+  }
+  // order
+  $('.loading').css('display', 'block');
+  if (!append) {
+    var matchesEl = $('#matches');
+    var fundingInfoEl = $('#funding-info');
+
+    matchesEl.html('');
+    fundingInfoEl.html('');
+    $.get(uri_status, function(results) {
+      results = sanitizeAPIResults(results);
+      process_stats(results);
+    });
+  }
+  $.get(uri, function(results) {
+    results = sanitizeAPIResults(results);
+    if (results.length == 0 && !append) {
+      $('.nonefound').css('display', 'block');
+    }
+    if (results.length < dashboard.limit && append) {
+      dashboard.finished_appending = true;
+    }
+
+    dashboard.is_painting_now = false;
+
+    if (!append) {
+      dashboard.last_bounty_rendered = 0;
+      dashboard.bounties_html = [];
+      dashboard.bounty_offset = 0;
+    }
+
 
     for (var i = 0; i < results.length; i++) {
+      if (results.length === 0) {
+        dashboard.bounties_html = [];
+        $('.nonefound').css('display', 'block');
+      }
       // setup
-      var result = results[i];
-      var related_token_details = tokenAddressToDetailsByNetwork(result['token_address'], result['network']);
-      var decimals = 18;
+      var result = bountyToHTMLrow(results[i]);
 
-      if (related_token_details && related_token_details.decimals) {
-        decimals = related_token_details.decimals;
-      }
-
-      var divisor = Math.pow(10, decimals);
-
-      result['rounded_amount'] = Math.round(result['value_in_token'] / divisor * 100) / 100;
-      var is_expired = new Date(result['expires_date']) < new Date() && !result['is_open'];
-
-      // setup args to go into template
-      if (typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
-        result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
-      } else if (result['fulfiller_address'] !== '0x0000000000000000000000000000000000000000') {
-        result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">' + result['status'] + '</span></a>';
-      }
-
-      result.action = result['url'];
-      result['title'] = result['title'] ? result['title'] : result['github_url'];
-
-      var project_type = ucwords(result['project_type']) + ' &bull; ';
-
-      result['p'] = project_type + (result['experience_level'] ? result['experience_level'] + ' &bull; ' : '');
-      
-      if (result['status'] === 'done')
-        result['p'] += 'Done';
-      if (result['fulfillment_accepted_on']) {
-        result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_accepted_on']), false, 60 * 60);
-      } else if (result['status'] === 'started') {
-        result['p'] += 'Started';
-        result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_started_on']), false, 60 * 60);
-      } else if (result['status'] === 'submitted') {
-        result['p'] += 'Submitted';
-        if (result['fulfillment_submitted_on']) {
-          result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_submitted_on']), false, 60 * 60);
-        }
-      } else if (result['status'] == 'cancelled') {
-        result['p'] += 'Cancelled';
-        if (result['canceled_on']) {
-          result['p'] += ' ' + timeDifference(new Date(), new Date(result['canceled_on']), false, 60 * 60);
-        }
-      } else if (is_expired) {
-        var time_ago = timeDifference(new Date(), new Date(result['expires_date']), true);
-
-        result['p'] += (' Expired ' + time_ago + ' ago');
-      } else {
-        var opened_when = timeDifference(new Date(), new Date(result['web3_created']), true);
-
-        var timeLeft = timeDifference(new Date(), new Date(result['expires_date']));
-        var expiredExpires = new Date() < new Date(result['expires_date']) ? 'Expires' : 'Expired';
-
-        result['p'] += ('Opened ' + opened_when + ' ago, ' + expiredExpires + ' ' + timeLeft);
-      }
-
-      result['watch'] = 'Watch';
 
       // render the template
       var tmpl = $.templates('#result');
       var html = tmpl.render(result);
 
-      document.bounties_html[i] = html;
+      dashboard.bounties_html[i + dashboard.bounty_offset] = html;
     }
 
-    paint_bounties_in_viewport(0, 10);
+    if (!append) {
+      paint_bounties_in_viewport(0, dashboard.limit);
+    } else {
+      paint_bounties_in_viewport(dashboard.last_bounty_rendered + 1, dashboard.last_bounty_rendered + dashboard.limit + 1);
+    }
 
-    process_stats(results);
+
   }).fail(function() {
     _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
   }).always(function() {
+    dashboard.is_loading = false;
     $('.loading').css('display', 'none');
   });
 };
@@ -612,7 +624,8 @@ $(document).ready(function() {
       minLength: 0,
       source: function(request, response) {
         // delegate back to autocomplete, but extract the last term
-        response($.ui.autocomplete.filter(document.keywords, extractLast(request.term)));
+        response($.ui.autocomplete.filter(
+          dashboard.keywords, extractLast(request.term)));
       },
       focus: function() {
         // prevent value inserted on focus
