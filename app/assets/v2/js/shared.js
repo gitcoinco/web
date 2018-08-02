@@ -331,7 +331,7 @@ var extend_expiration = function(bounty_pk, data) {
   $.post(request_url, data, function(result) {
     result = sanitizeAPIResults(result);
     if (result.success) {
-      _alert({ message: gettext(success_message) }, 'success');
+      _alert({ message: result.msg }, 'success');
       pull_interest_list(bounty_pk);
       return true;
     }

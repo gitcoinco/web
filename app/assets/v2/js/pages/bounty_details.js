@@ -620,7 +620,9 @@ var show_extend_deadline_modal = function() {
           deadline: extended_time
         });
         $.modal.close();
-        window.location.reload();
+        setTimeout(function() {
+          window.location.reload();
+        }, 2000);
       });
     });
   });
