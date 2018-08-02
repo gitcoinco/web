@@ -43,6 +43,7 @@ from avatar.utils import get_avatar_context
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid
+from kudos.models import Wallet, MarketPlaceListing
 from marketing.mails import (
     admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
@@ -1020,6 +1021,12 @@ def profile(request, handle):
         return TemplateResponse(request, 'profiles/profile.html', params)
 
     params = profile.to_dict()
+    params['wallet_addresses'] = [x.address for x in profile.wallets.all()]
+    params['kudos'] = MarketPlaceListing.objects.filter(lister__in=params['wallet_addresses'])
+    logging.info(f'Found Kudos: {params["kudos"]}')
+    logging.info(f'Kudos name: {params["kudos"][0].name}')
+    # logging.info(f'Profile data: {params}')
+    # logging.info(f'Profile wallets: {profile.wallets.all()}')
 
     return TemplateResponse(request, 'profiles/profile.html', params)
 

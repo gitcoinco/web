@@ -16,10 +16,18 @@
 {% endcomment %}
 {% load i18n staticfiles %}
 
+<div class="container">
+  <h3>Wallets</h3>
+  <ul>
+    {% for address in wallet_addresses %}
+    <li>{{ address }}</li>
+    {% endfor %}
+  </ul>
+</div>
 
 <ul class="nav nav-tabs my-5" id="myTab" role="tablist">
   <li class="nav-item">
-    <a class="nav-link nav-line active" id="mykudos-tab" data-toggle="tab" href="#mykudos" role="tab" aria-controls="mykudos" aria-selected="true">{% trans "My Kudos" %} (4)</a>
+    <a class="nav-link nav-line active" id="mykudos-tab" data-toggle="tab" href="#mykudos" role="tab" aria-controls="mykudos" aria-selected="true">{% trans "My Kudos" %} ({{ kudos|length }})</a>
   </li>
   <li class="nav-item">
     <a class="nav-link nav-line" id="sentkudos-tab" data-toggle="tab" href="#sentkudos" role="tab" aria-controls="sentkudos" aria-selected="false">{% trans "Sent Kudos" %} (1)</a>
@@ -32,77 +40,25 @@
 <div class="tab-content" id="myTabContent">
   <div class="tab-pane fade show active" id="mykudos" role="tabpanel" aria-labelledby="home-tab">
     <div class="row justify-content-center">
+      {% for kudo in kudos %}
       <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
         <div class="kd-card kd-extended">
-          <a href="/kudos/{{ listing.id }}" class="">
-            <img src="{% static '/v2/images/kudos/devflare-bugsquasher.svg' %}" alt="{{ listing.name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
+          <a href="/kudos/{{ kudo.id }}" class="">
+            <img src="{% static kudo.image %}" alt="{{ kudo.name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
           </a>
           <div class="kd-content">
-            <div class="kd-title">{{ 'Jolly Juggler' }}</div>
-            Amazing developer, writes flawless code
-            <div class="mb-2">
+            <div class="kd-title">{{ kudo.name }}</div>
+            {{ kudo.description }}
+<!--             <div class="mb-2">
               45/75
-            </div>
-            <a href="" class="d-block mb-1" data-truncatehash title="0x0a2b3a08d5ab70d2091c985933eed7fab9c67022">0x0a2b3a08d5ab70d2091c985933eed7fab9c67022</a>
+            </div> -->
+            <a href="" class="d-block mb-1" data-truncatehash title="{{ kudo.lister}} ">{{ kudo.lister }}</a>
             <div>Sent from <a href="">Bob7878</a></div>
-            <p class="mt-2 mb-0">You have an amazing attention to details</p>
+            <!-- <p class="mt-2 mb-0">You have an amazing attention to details</p> -->
           </div>
         </div>
       </div>
-
-      <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
-        <div class="kd-card kd-extended">
-          <a href="/kudos/{{ listing.id }}" class="">
-            <img src="{% static '/v2/images/kudos/devflare-bugsquasher.svg' %}" alt="{{ listing.name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
-          </a>
-          <div class="kd-content">
-            <div class="kd-title">{{ 'Jolly Juggler' }}</div>
-            Amazing developer, writes flawless code
-            <div class="mb-2">
-              45/75
-            </div>
-            <a href="" class="d-block mb-1" data-truncatehash title="0x0a2b3a08d5ab70d2091c985933eed7fab9c67022">0x0a2b3a08d5ab70d2091c985933eed7fab9c67022</a>
-            <div>Sent from <a href="">Bob7878</a></div>
-            <p class="mt-2 mb-0">You have an amazing attention to details</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
-        <div class="kd-card kd-extended">
-          <a href="/kudos/{{ listing.id }}" class="">
-            <img src="{% static '/v2/images/kudos/devflare-bugsquasher.svg' %}" alt="{{ listing.name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
-          </a>
-          <div class="kd-content">
-            <div class="kd-title">{{ 'Jolly Juggler' }}</div>
-            Amazing developer, writes flawless code
-            <div class="mb-2">
-              45/75
-            </div>
-            <a href="" class="d-block mb-1" data-truncatehash title="0x0a2b3a08d5ab70d2091c985933eed7fab9c67022">0x0a2b3a08d5ab70d2091c985933eed7fab9c67022</a>
-            <div>Sent from <a href="">Bob7878</a></div>
-            <p class="mt-2 mb-0">You have an amazing attention to details</p>
-          </div>
-        </div>
-      </div>
-
-      <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
-        <div class="kd-card kd-extended">
-          <a href="/kudos/{{ listing.id }}" class="">
-            <img src="{% static '/v2/images/kudos/devflare-bugsquasher.svg' %}" alt="{{ listing.name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
-          </a>
-          <div class="kd-content">
-            <div class="kd-title">{{ 'Jolly Juggler' }}</div>
-            Amazing developer, writes flawless code
-            <div class="mb-2">
-              45/75
-            </div>
-            <a href="" class="d-block mb-1" data-truncatehash title="0x0a2b3a08d5ab70d2091c985933eed7fab9c67022">0x0a2b3a08d5ab70d2091c985933eed7fab9c67022</a>
-            <div>Sent from <a href="">Bob7878</a></div>
-            <p class="mt-2 mb-0">You have an amazing attention to details</p>
-          </div>
-        </div>
-      </div>
+      {% endfor %}
     </div> 
   </div>
   
