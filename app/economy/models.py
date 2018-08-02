@@ -25,6 +25,7 @@ from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.forms.models import model_to_dict
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.html import escape
@@ -51,6 +52,28 @@ class SuperModel(models.Model):
         """Override the SuperModel save to handle modified_on logic."""
         self.modified_on = get_time()
         return super(SuperModel, self).save(*args, **kwargs)
+
+    def to_standard_dict(self, fields=None, exclude=None):
+        """Define the standard to dict representation of the object.
+
+        Args:
+            fields (list): The list of fields to include. If not provided,
+                include all fields. If not provided, all fields are included.
+                Defaults to: None.
+            exclude (list): The list of fields to exclude. If not provided,
+                no fields are excluded. Default to: None.
+
+        Returns:
+            dict: The dictionary representation of the object.
+
+        """
+        kwargs = {}
+        if fields:
+            kwargs['fields'] = fields
+        if exclude:
+            kwargs['exclude'] = exclude
+        return model_to_dict(self, **kwargs)
+
 
     @property
     def admin_url(self):

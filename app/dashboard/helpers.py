@@ -26,7 +26,6 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db import transaction
-from django.forms.models import model_to_dict
 from django.http import Http404, JsonResponse
 from django.utils import timezone
 
@@ -419,8 +418,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'bounty_owner_name': bounty_issuer.get('name', ''),
             })
         else:
-            latest_old_bounty_dict = model_to_dict(
-                latest_old_bounty,
+            latest_old_bounty_dict = latest_old_bounty.to_standard_dict(
                 fields=[
                     'web3_created', 'github_url', 'token_name', 'token_address', 'privacy_preferences', 'expires_date',
                     'title', 'issue_description', 'balance', 'contract_address', 'network', 'bounty_type',
