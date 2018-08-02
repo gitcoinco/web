@@ -35,32 +35,32 @@
 
     <section class="container-fluid bg-light py-5">
       <div class="row justify-content-center my-5">
-        <div class="col-11 animatedParent" data-sequence='500'>
-          <div class="media shadow-sm p-5 mb-5 bg-white rounded flex-column flex-md-row animated fadeInRightShort" data-id="1">
-            <div class="w-25 align-self-center text-center mr-md-3 mb-3">
-              <img class="mw-100" height="170" src="{% static "v2/images/no-token/ethereum.svg" %}" alt="ethereum">
+        <div class="col-11">
+          <div class="media shadow-sm p-5 mb-5 bg-white rounded flex-column flex-md-row" data-id="1">
+            <div class="col-md-3 align-self-center text-center mr-md-3 mb-3">
+              <img class="mw-100" src="{% static "v2/images/no-token/ethereum.svg" %}" alt="ethereum">
             </div>
-            <div class="media-body align-self-center">
-              <h1 class="mb-4">{% trans "It is still early days in blockchain" %}</h1>
-              <h3>{% trans "It is still early days in blockchain, including tokens / tokenization." %}</h3>
-            </div>
-          </div>
-          <div class="media shadow-sm p-5 mb-5 bg-white rounded flex-column flex-md-row animated fadeInRightShort" data-id="1">
-            <div class="w-25 align-self-center text-center ml-md-3 mb-3 order-md-1">
-              <img class="mw-100" height="170" src="{% static "v2/images/no-token/no-token.svg" %}" alt="no token">
-            </div>
-            <div class="media-body align-self-center">
-              <h1 class="mb-4">{% trans "Gitcoin didn't want to do a utility token" %}</h1>
-              <h3>{% trans "Gitcoin didn't want to launch with a token before finding product-market fit, and doesn't think it's the morally right move." %}</h3>
+            <div class="media-body align-self-center text-md-left text-center">
+              <h2 class="mb-4">{% trans "It is still early days in blockchain" %}</h2>
+              <h3 class="font-bigger-2">{% trans "It is still early days in blockchain, including tokens / tokenization." %}</h3>
             </div>
           </div>
-          <div class="media shadow-sm p-5 mb-5 bg-white rounded flex-column flex-md-row animated fadeInRightShort" data-id="1">
-            <div class="w-25 align-self-center text-center mr-md-3 mb-3">
-              <img class="mw-100" height="170" src="{% static "v2/images/mission/interact/microscope.svg" %}" alt="microscope">
+          <div class="media shadow-sm p-5 mb-5 bg-white rounded flex-column flex-md-row" data-id="1">
+            <div class="col-md-3 align-self-center text-center ml-md-3 mb-3 order-md-1">
+              <img class="mw-100" src="{% static "v2/images/no-token/no-token.svg" %}" alt="no token">
             </div>
-            <div class="media-body align-self-center">
-              <h1 class="mb-4">{% trans "Other options to explore" %}</h1>
-              <h3>{% trans "There are a number of other options to explore in terms of capital in web3." %}</h3>
+            <div class="media-body align-self-center text-md-left text-center">
+              <h2 class="mb-4">{% trans "Gitcoin didn't want to do a utility token" %}</h2>
+              <h3 class="font-bigger-2">{% trans "Gitcoin didn't want to launch with a token before finding product-market fit, and doesn't think it's the morally right move." %}</h3>
+            </div>
+          </div>
+          <div class="media shadow-sm p-5 mb-5 bg-white rounded flex-column flex-md-row" data-id="1">
+            <div class="col-md-3 align-self-center text-center mr-md-3 mb-3">
+              <img class="mw-100" src="{% static "v2/images/no-token/microscope.svg" %}" alt="microscope">
+            </div>
+            <div class="media-body align-self-center text-md-left text-center">
+              <h2 class="mb-4">{% trans "Other options to explore" %}</h2>
+              <h3 class="font-bigger-2">{% trans "There are a number of other options to explore in terms of capital in web3." %}</h3>
             </div>
           </div>
         </div>
@@ -74,20 +74,20 @@
           <h3>{% trans "Think before doing an ICO. Make the right chess move with your time." %}</h3>
         </div>
       </div>
-      <div class="row justify-content-center animatedParent" data-sequence='500'>
+      <div class="row justify-content-center">
         <div class="col-11 pb-5">
           <div class="card-deck flex-column flex-lg-row">
-            <div class="card text-center p-5 m-3 border-0 animated fadeInRightShort" data-id="1">
+            <div class="card text-center p-5 m-3 border-0" data-id="1">
               <img class="mw-100 mx-auto mb-4 mt-4" width="100" src="{% static "v2/images/vision/future.png" %}"/>
               <h2 class="mb-3">{% trans "ERC721" %}</h2>
               <p class="h5">{% trans " Trading cards on the blockchain. Known as “Non fungible tokens” (NFTs) in the space." %}</p>
             </div>
-            <div class="card text-center p-5 m-3 border-0 animated fadeInRightShort" data-id="2">
+            <div class="card text-center p-5 m-3 border-0" data-id="2">
               <img class="mw-100 mx-auto mb-4 mt-4" width="100" src="{% static "v2/images/vision/blockchain.png" %}"/>
               <h2 class="mb-3">{% trans "ERC948" %}</h2>
               <p class="h5">{% trans "Subscription services on the blockchain. Known as SAAS to us startup geeks." %}</p>
             </div>
-            <div class="card text-center p-5 m-3 border-0 animated fadeInRightShort" data-id="3">
+            <div class="card text-center p-5 m-3 border-0" data-id="3">
               <img class="mw-100 mx-auto mb-4 mt-4" width="100" src="{% static "v2/images/mission/want/incentive.svg" %}"/>
               <h2 class="mb-3">{% trans "ERC1081" %}</h2>
               <p class="h5">{% trans "Standard for Bounties on the blockchain" %}</p>
