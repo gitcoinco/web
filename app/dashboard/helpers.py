@@ -36,7 +36,7 @@ from dashboard.notifications import (
 )
 from dashboard.tokens import addr_to_token
 from economy.utils import convert_amount
-from git.utils import get_gh_issue_details, get_url_dict
+from git.utils import get_gh_issue_details, get_url_dict, issue_number, org_name, repo_name
 from jsondiff import diff
 from pytz import UTC
 from ratelimit.decorators import ratelimit
@@ -157,9 +157,13 @@ def issue_details(request):
         return JsonResponse(response)
 
     try:
-        url_dict = get_url_dict(clean_bounty_url(url))
-        if url_dict:
-            response = get_gh_issue_details(**url_dict)
+        cleaned_url = clean_bounty_url(url)
+        # url_dict = get_url_dict(clean_bounty_url(url))
+        _org_name = org_name(cleaned_url)
+        _repo_name = repo_name(cleaned_url)
+        _issue_num = issue_number(cleaned_url)
+        if _issue_num and _org_name and _repo_name:
+            response = get_gh_issue_details(_org_name, _repo_name, int(_issue_num))
         else:
             response['message'] = 'could not parse Github url'
     except Exception as e:
