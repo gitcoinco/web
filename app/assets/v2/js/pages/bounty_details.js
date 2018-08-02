@@ -560,6 +560,7 @@ var show_interest_modal = function() {
 
 var set_extended_time_html = function(extendedDuration, currentExpires) {
   currentExpires.setTime(currentExpires.getTime() + (extendedDuration * 1000));
+  $('input[name=updatedExpires]').val(currentExpires.getTime());
   var date = getFormattedDate(currentExpires);
   var days = timeDifference(now, currentExpires).split(' ');
   var time = getTimeFromDate(currentExpires);
@@ -569,7 +570,6 @@ var set_extended_time_html = function(extendedDuration, currentExpires) {
 
   $('#extended-expiration-date #extended-date').html(date);
   $('#extended-expiration-date #extended-days').html(days);
-  console.log(date);
 };
 
 var show_extend_deadline_modal = function() {
@@ -609,30 +609,13 @@ var show_extend_deadline_modal = function() {
       modal.on('submit', function(event) {
         event.preventDefault();
 
-        var issue_message = event.target[0].value.trim();
-        var agree_precedence = event.target[1].checked;
-        var agree_not_to_abandon = event.target[2].checked;
+        var extended_time = $('input[name=updatedExpires]').val();
 
-        if (!issue_message) {
-          _alert({message: gettext('Please provide an action plan for this ticket.')}, 'error');
-          return false;
-        }
-
-        if (!agree_precedence) {
-          _alert({message: gettext('You must agree to the precedence clause.')}, 'error');
-          return false;
-        }
-        if (!agree_not_to_abandon) {
-          _alert({message: gettext('You must agree to keep the funder updated on your progress.')}, 'error');
-          return false;
-        }
-
-        $(self).attr('href', '/uninterested');
-        $(self).find('span').text(gettext('Stop Work'));
-        add_interest(document.result['pk'], {
-          issue_message
+        extend_expiration(document.result['pk'], {
+          deadline: extended_time
         });
         $.modal.close();
+        window.location.reload();
       });
     });
   });
@@ -1157,7 +1140,6 @@ const render_activity = function(result, all_results) {
 };
 
 const is_bounty_expired = function(bounty) {
-  console.log(bounty['expires_date']);
   let expires_date = new Date(bounty['expires_date']);
   let now = new Date(bounty['now']);
 

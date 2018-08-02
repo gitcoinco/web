@@ -325,6 +325,22 @@ var uninterested = function(bounty_pk, profileId, slash) {
   });
 };
 
+var extend_expiration = function(bounty_pk, data) {
+  var request_url = '/actions/bounty/' + bounty_pk + '/extend_expiration/';
+
+  $.post(request_url, data, function(result) {
+    result = sanitizeAPIResults(result);
+    if (result.success) {
+      _alert({ message: gettext(success_message) }, 'success');
+      pull_interest_list(bounty_pk);
+      return true;
+    }
+    return false;
+  }).fail(function(result) {
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+  });
+};
+
 
 /** Pulls the list of interested profiles from the server. */
 var pull_interest_list = function(bounty_pk, callback) {
