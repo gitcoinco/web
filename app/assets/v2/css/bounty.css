@@ -22,16 +22,6 @@ body {
   float: right;
 }
 
-#extended-expiration-date p {
-  font-size: 1rem;
-  font-weight: bold;
-}
-
-#extended-expiration-date i {
-  position: relative;
-  top: 2px;
-}
-
 #extended-expiration-date #extended-days {
   border-bottom: 1px solid black;
 }
@@ -105,6 +95,11 @@ body {
 
 .box .empty p {
   margin: 1rem;
+}
+
+#extended-expiration-date p {
+  font-size: 1rem;
+  font-weight: bold;
 }
 
 .contributor-box .fa-minus {
@@ -436,6 +431,11 @@ a.btn {
 .activity .bounty-subheading,
 .activity .bounty-text {
   font-size: 12px;
+}
+
+#extended-expiration-date i {
+  position: relative;
+  top: 2px;
 }
 
 .transaction-header h2 {
