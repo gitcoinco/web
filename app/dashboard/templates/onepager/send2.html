@@ -108,7 +108,7 @@
     </div>
     <div class="mb-1 mb-3">
       <input type="checkbox" id="tos" value="1" >
-      <label for="tos">{% blocktrans %}I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.{% endblocktrans %}</label>
+      <label for="tos">{% blocktrans %}I understand &amp; agree to the <a href="{% url "terms" %}">terms of service</a>.{% endblocktrans %}</label>
     </div>
     <a href="#" id="send" class="button button--primary">{% trans "Send" %} <span class="emoji">⚡️</span></a>
     <a style="display: block; margin-top: 20px;" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">Your transaction is secured by the Ethereum blockchain.  Learn more here.</a>

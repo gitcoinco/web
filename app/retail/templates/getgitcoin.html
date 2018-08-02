@@ -67,8 +67,8 @@
             </div>
             <div class="col pb-2 d-flex flex-column align-items-center font-weight-300 iama " style="">
                 <div class=" d-flex flex-column w-75 align-items-center">
-                    <div class="mt-3 mb-3" style="">
-                            <img src="{% static "v2/images/icons/link.png" %}">
+                    <div class="mt-3 mb-3">
+                        <img src="{% static "v2/images/icons/link.png" %}">
                     </div>
                     <div class="mb-3 font-bigger-2">Blockchain Evangelist</div>
                     <div class="font-smaller-2 mb-5">You can see that the future of software development involves aligned incentives, tools built by &amp; for developers, and decentralization is the way it's all goin' down. Let’s dive deeper!</div>
@@ -86,6 +86,6 @@
             </div>
         </div>
         <br>
-        Not sure?  <a href="{% url "tools" %}">View all Gitcoin tools</a>.
+        {% trans "Not sure?" %} <a href="{% url "toolbox" %}">{% trans "View all Gitcoin tools" %}</a>.
     </div>
 </div>
