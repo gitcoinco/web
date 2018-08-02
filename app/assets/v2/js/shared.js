@@ -157,10 +157,10 @@ var sanitize = function(str) {
 
 var getFormattedDate = function(date) {
   var monthNames = [
-    "January", "February", "March",
-    "April", "May", "June", "July",
-    "August", "September", "October",
-    "November", "December"
+    'January', 'February', 'March',
+    'April', 'May', 'June', 'July',
+    'August', 'September', 'October',
+    'November', 'December'
   ];
 
   var day = date.getDate();

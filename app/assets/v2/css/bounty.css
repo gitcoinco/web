@@ -27,6 +27,11 @@ body {
   font-weight: bold;
 }
 
+#extended-expiration-date i {
+  position: relative;
+  top: 2px;
+}
+
 #extended-expiration-date #extended-days {
   border-bottom: 1px solid black;
 }
@@ -780,6 +785,11 @@ a.btn {
 
   .rocket {
     right: 11rem;
+  }
+
+  #extend_deadline {
+    min-width: 40rem;
+    max-width: 0;
   }
 }
 
