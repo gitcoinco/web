@@ -30,7 +30,6 @@ from django.core.cache import cache
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-# from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils import timezone
