@@ -390,8 +390,8 @@ def not_a_token(request):
         'active': 'not_a_token',
         'avatar_url': static('v2/images/no-token/no-token.jpg'),
         'title': 'Why Gitcoin didn’t do a Utility Token ICO',
-        'card_title': _("Gitcoin is not a token ICO"),
-        'card_desc': _("Gitcoin is not a token ICO"),
+        'card_title': _("Gitcoin is not a token"),
+        'card_desc': _("We didn't do a token because we felt it wasn't the right way to align incentives with our user base.  Read more about the future of monetization in web3."),
     }
     return TemplateResponse(request, 'not_a_token.html', context)
 
