@@ -87,7 +87,11 @@ urlpatterns = [
     path('issue/cancel', dashboard.views.cancel_bounty, name='kill_bounty'),
     path('issue/contribute', dashboard.views.contribute, name='contribute'),
     path('issue/social_contribution', dashboard.views.social_contribution, name='social_contribution'),
-    path('actions/bounty/<int:bounty_id>/extend_expiration/', dashboard.views.extend_expiration, name='extend_expiration'),
+    path(
+        'actions/bounty/<int:bounty_id>/extend_expiration/',
+        dashboard.views.extend_expiration,
+        name='extend_expiration'
+    ),
 
     # Avatars
     path('avatar/', include('avatar.urls', namespace='avatar')),
@@ -184,8 +188,8 @@ urlpatterns = [
     url(r'^sync/search_save?', dashboard.views.save_search, name='save_search'),
 
     # modals
-    re_path(r'^modal/get_quickstart_video?', dashboard.views.get_quickstart_video, name='get_quickstart_video'),
-    re_path(r'^modal/extend_issue_deadline?', dashboard.views.extend_issue_deadline, name='extend_issue_deadline'),
+    re_path(r'^modal/get_quickstart_video/?', dashboard.views.get_quickstart_video, name='get_quickstart_video'),
+    re_path(r'^modal/extend_issue_deadline/?', dashboard.views.extend_issue_deadline, name='extend_issue_deadline'),
 
     # brochureware views
     re_path(r'^about/?', retail.views.about, name='about'),

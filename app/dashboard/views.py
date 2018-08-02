@@ -382,12 +382,11 @@ def extend_expiration(request, bounty_id):
     except Bounty.DoesNotExist:
         return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
                             status=401)
-    
+
     is_funder = bounty.is_funder(user.username.lower()) if user else False
     if is_funder:
         deadline = int(request.POST.get('deadline')) / 1000
-        print(deadline)
-        bounty.expires_date=timezone.make_aware(
+        bounty.expires_date = timezone.make_aware(
             timezone.datetime.fromtimestamp(deadline),
             timezone=UTC)
         bounty.save()
@@ -398,7 +397,7 @@ def extend_expiration(request, bounty_id):
             'success': True,
             'msg': _("You've extended expiration of this issue."),
         })
-    
+
     return JsonResponse({
         'error': _("You must be funder to extend expiration"),
     }, status=200)
@@ -721,30 +720,6 @@ def increase_bounty(request):
     params['is_funder'] = json.dumps(is_funder)
 
     return TemplateResponse(request, 'increase_bounty.html', params)
-
-
-def cancel_bounty(request):
-    """Kill an expired bounty.
-
-    Args:
-        pk (int): The primary key of the bounty to be cancelled.
-
-    Raises:
-        Http404: The exception is raised if no associated Bounty is found.
-
-    Returns:
-        TemplateResponse: The cancel bounty view.
-
-    """
-    bounty = handle_bounty_views(request)
-    params = get_context(
-        ref_object=bounty,
-        user=request.user if request.user.is_authenticated else None,
-        confirm_time_minutes_target=confirm_time_minutes_target,
-        active='kill_bounty',
-        title=_('Cancel Bounty'),
-    )
-    return TemplateResponse(request, 'kill_bounty.html', params)
 
 
 def cancel_bounty(request):
