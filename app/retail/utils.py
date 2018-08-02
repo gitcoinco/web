@@ -166,15 +166,33 @@ def get_base_done_bounties(keyword):
     return base_bounties
 
 
+def is_valid_bounty_for_hourly_rate(bounty):
+    hourly_rate = bounty.hourly_rate
+    if not hourly_rate:
+        return False
+
+    # smaller bounties were skewing the results
+    min_hourly_rate = 5
+    min_value_usdt = 400
+    if bounty.value_in_usdt < min_value_usdt:
+        return False
+    for ful in bounty.fulfillments.filter(accepted=True):
+        if ful.fulfiller_hours_worked and ful.fulfiller_hours_worked < min_hourly_rate:
+            return False
+
+    return True
+
+
 def get_hourly_rate_distribution(keyword):
     base_bounties = get_base_done_bounties(keyword)
-    hourly_rates = [ele.hourly_rate for ele in base_bounties if ele.hourly_rate]
-    methodology = 'quartile' if not keyword else 'minmax'
+    hourly_rates = [ele.hourly_rate for ele in base_bounties if is_valid_bounty_for_hourly_rate(ele)]
+    methodology = 'median_stdddev' if not keyword else 'minmax'
     if methodology == 'median_stdddev':
+        stddev_divisor = 1
         median = int(statistics.median(hourly_rates))
         stddev = int(statistics.stdev(hourly_rates))
-        min_hourly_rate = median - int(stddev/2)
-        max_hourly_rate = median + int(stddev/2)
+        min_hourly_rate = median - int(stddev/stddev_divisor)
+        max_hourly_rate = median + int(stddev/stddev_divisor)
     elif methodology == 'quartile':
         hourly_rates.sort()
         num_quarters = 12
