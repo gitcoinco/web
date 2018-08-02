@@ -28,11 +28,12 @@ from django.contrib.auth.models import User
 from django.contrib.auth.signals import user_logged_in, user_logged_out
 from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
 from django.contrib.postgres.fields import ArrayField, JSONField
-from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.db import models
 from django.db.models import Q, Sum
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
+# from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.templatetags.static import static
 from django.urls import reverse
 from django.urls.exceptions import NoReverseMatch
 from django.utils import timezone
@@ -175,7 +176,7 @@ class Bounty(SuperModel):
     is_open = models.BooleanField(help_text=_('Whether the bounty is still open for fulfillments.'))
     expires_date = models.DateTimeField()
     raw_data = JSONField()
-    metadata = JSONField(default={}, blank=True)
+    metadata = JSONField(default=dict, blank=True)
     current_bounty = models.BooleanField(
         default=False, help_text=_('Whether this bounty is the most current revision one or not'))
     _val_usd_db = models.DecimalField(default=0, decimal_places=2, max_digits=50)
@@ -208,7 +209,7 @@ class Bounty(SuperModel):
     value_in_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     value_in_eth = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
     value_true = models.DecimalField(default=0, decimal_places=2, max_digits=50, blank=True, null=True)
-    privacy_preferences = JSONField(default={}, blank=True)
+    privacy_preferences = JSONField(default=dict, blank=True)
     admin_override_and_hide = models.BooleanField(
         default=False, help_text=_('Admin override to hide the bounty from the system')
     )
@@ -847,7 +848,7 @@ class BountyFulfillment(SuperModel):
     fulfiller_email = models.CharField(max_length=255, blank=True)
     fulfiller_github_username = models.CharField(max_length=255, blank=True)
     fulfiller_name = models.CharField(max_length=255, blank=True)
-    fulfiller_metadata = JSONField(default={}, blank=True)
+    fulfiller_metadata = JSONField(default=dict, blank=True)
     fulfillment_id = models.IntegerField(null=True, blank=True)
     fulfiller_hours_worked = models.DecimalField(null=True, blank=True, decimal_places=2, max_digits=50)
     fulfiller_github_url = models.CharField(max_length=255, blank=True, null=True)
@@ -939,7 +940,7 @@ class Tip(SuperModel):
     sender_profile = models.ForeignKey(
         'dashboard.Profile', related_name='sent_tips', on_delete=models.SET_NULL, null=True, blank=True
     )
-    metadata = JSONField(default={}, blank=True)
+    metadata = JSONField(default=dict, blank=True)
     is_for_bounty_fulfiller = models.BooleanField(
         default=False,
         help_text='If this option is chosen, this tip will be automatically paid to the bounty'
@@ -991,7 +992,7 @@ class Tip(SuperModel):
             return self.receive_url_for_recipient
         elif self.web3_type != 'v2':
             raise Exception
-        
+
         pk = self.metadata.get('priv_key')
         txid = self.txid
         network = self.network
@@ -1244,7 +1245,7 @@ class Activity(models.Model):
     tip = models.ForeignKey(Tip, related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True)
-    metadata = JSONField(default={})
+    metadata = JSONField(default=dict)
 
     def __str__(self):
         """Define the string representation of an interested profile."""
@@ -1310,10 +1311,10 @@ class Profile(SuperModel):
     email = models.CharField(max_length=255, blank=True, db_index=True)
     github_access_token = models.CharField(max_length=255, blank=True, db_index=True)
     pref_lang_code = models.CharField(max_length=2, choices=settings.LANGUAGES, blank=True)
-    slack_repos = ArrayField(models.CharField(max_length=200), blank=True, default=[])
+    slack_repos = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     slack_token = models.CharField(max_length=255, default='', blank=True)
     slack_channel = models.CharField(max_length=255, default='', blank=True)
-    discord_repos = ArrayField(models.CharField(max_length=200), blank=True, default=[])
+    discord_repos = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     discord_webhook_url = models.CharField(max_length=400, default='', blank=True)
     suppress_leaderboard = models.BooleanField(
         default=False,
@@ -1327,7 +1328,7 @@ class Profile(SuperModel):
         default=False,
         help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
     )
-    form_submission_records = JSONField(default=[], blank=True)
+    form_submission_records = JSONField(default=list, blank=True)
     # Sample data: https://gist.github.com/mbeacom/ee91c8b0d7083fa40d9fa065125a8d48
     max_num_issues_start_work = models.IntegerField(default=3)
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
@@ -1624,7 +1625,7 @@ class Profile(SuperModel):
                             current_bounty=True,
                             metadata__icontains=keyword,
                             idx_status__in=['open'],
-                            ).order_by('?') 
+                            ).order_by('?')
                     )
                 relevant_bounties = relevant_bounties[:3]
                 relevant_bounties = list(relevant_bounties)
@@ -2124,8 +2125,8 @@ class UserAction(SuperModel):
     user = models.ForeignKey(User, related_name='actions', on_delete=models.SET_NULL, null=True)
     profile = models.ForeignKey('dashboard.Profile', related_name='actions', on_delete=models.CASCADE, null=True)
     ip_address = models.GenericIPAddressField(null=True)
-    location_data = JSONField(default={})
-    metadata = JSONField(default={})
+    location_data = JSONField(default=dict)
+    metadata = JSONField(default=dict)
 
     def __str__(self):
         return f"{self.action} by {self.profile} at {self.created_on}"

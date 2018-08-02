@@ -347,7 +347,7 @@ urlpatterns = [
 
     # Legacy Support
     path('legacy/', include('legacy.urls', namespace='legacy')),
-    re_path(r'^logout/$', auth_views.logout, name='logout'),
+    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
     re_path(r'^gh-login/$', dashboard.views.gh_login, name='gh_login'),
     path('', include('social_django.urls', namespace='social')),
     # webhook routes
