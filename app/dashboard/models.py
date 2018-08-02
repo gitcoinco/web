@@ -44,7 +44,10 @@ from dashboard.tokens import addr_to_token
 from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from git.utils import _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_issue_comments, issue_number, org_name, repo_name
+from git.utils import (
+    _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_gh_issue_details, get_gh_issue_state, get_issue_comments,
+    get_url_dict, issue_number, org_name, repo_name,
+)
 from marketing.models import LeaderboardRank
 from rest_framework import serializers
 from web3 import Web3
@@ -96,6 +99,55 @@ class BountyQuerySet(models.QuerySet):
             Q(title__icontains=keyword) | \
             Q(issue_description__icontains=keyword)
         )
+
+    def hidden(self):
+        """Filter results to only bounties that have been manually hidden by moderators."""
+        return self.filter(admin_override_and_hide=True)
+
+    def visible(self):
+        """Filter results to only bounties not marked as hidden."""
+        return self.filter(admin_override_and_hide=False)
+
+    def needs_review(self):
+        """Filter results by bounties that need reviewed."""
+        return self.prefetch_related('activities') \
+            .filter(
+                activities__activity_type__in=['bounty_abandonment_escalation_to_mods', 'bounty_abandonment_warning'],
+                activities__needs_review=True,
+            )
+
+    def reviewed(self):
+        """Filter results by bounties that have been reviewed."""
+        return self.prefetch_related('activities') \
+            .filter(
+                activities__activity_type__in=['bounty_abandonment_escalation_to_mods', 'bounty_abandonment_warning'],
+                activities__needs_review=False,
+            )
+
+    def warned(self):
+        """Filter results by bounties that have been warned for inactivity."""
+        return self.prefetch_related('activities') \
+            .filter(
+                activities__activity_type='bounty_abandonment_warning',
+                activities__needs_review=True,
+            )
+
+    def escalated(self):
+        """Filter results by bounties that have been escalated for review."""
+        return self.prefetch_related('activities') \
+            .filter(
+                activities__activity_type='bounty_abandonment_escalation_to_mods',
+                activities__needs_review=True,
+            )
+
+    def closed(self):
+        """Filter results by bounties that have been closed on Github."""
+        return self.filter(github_issue_details__state='closed')
+
+    def not_started(self):
+        """Filter results by bounties that have not been picked up in 3+ days."""
+        dt = timezone.now() - timedelta(days=3)
+        return self.prefetch_related('interested').filter(interested__isnull=True, created_on__gt=dt)
 
 
 class Bounty(SuperModel):
@@ -164,6 +216,7 @@ class Bounty(SuperModel):
     project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS, blank=True)
     experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS, blank=True)
     github_url = models.URLField(db_index=True)
+    github_issue_details = JSONField(default={}, blank=True)
     github_comments = models.IntegerField(default=0)
     bounty_owner_address = models.CharField(max_length=50)
     bounty_owner_email = models.CharField(max_length=255, blank=True)
@@ -243,6 +296,8 @@ class Bounty(SuperModel):
             self.bounty_owner_github_username = self.bounty_owner_github_username.lstrip('@')
         if self.github_url:
             self.github_url = clean_bounty_url(self.github_url)
+            issue_kwargs = get_url_dict(self.github_url)
+            self.github_issue_details = get_gh_issue_details(**issue_kwargs)
         super().save(*args, **kwargs)
 
     @property
@@ -785,6 +840,24 @@ class Bounty(SuperModel):
         return fulfilled
 
     @property
+    def needs_review(self):
+        if self.activities.filter(needs_review=True).exists():
+            return True
+        return False
+
+    @property
+    def github_issue_state(self):
+        issue_kwargs = get_url_dict(self.github_url)
+        gh_issue_state = get_gh_issue_state(**issue_kwargs)
+        return gh_issue_state
+
+    @property
+    def is_issue_closed(self):
+        if self.github_issue_state == 'closed':
+            return True
+        return False
+
+    @property
     def tips(self):
         """Return the tips associated with this bounty."""
         try:
@@ -1186,25 +1259,74 @@ def psave_bounty(sender, instance, **kwargs):
     instance.value_true = instance.get_value_true
 
 
+class InterestQuerySet(models.QuerySet):
+    """Handle the manager queryset for Interests."""
+
+    def needs_review(self):
+        """Filter results to Interest objects requiring review by moderators."""
+        return self.filter(status=Interest.STATUS_REVIEW)
+
+    def warned(self):
+        """Filter results to Interest objects that are currently in warning."""
+        return self.filter(status=Interest.STATUS_WARNED)
+
+
 class Interest(models.Model):
     """Define relationship for profiles expressing interest on a bounty."""
 
+    STATUS_REVIEW = 'review'
+    STATUS_WARNED = 'warned'
+    STATUS_OKAY = 'okay'
+    STATUS_SNOOZED = 'snoozed'
+    STATUS_PENDING = 'pending'
+
+    WORK_STATUSES = (
+        (STATUS_REVIEW, 'Needs Review'),
+        (STATUS_WARNED, 'Hunter Warned'),
+        (STATUS_OKAY, 'Okay'),
+        (STATUS_SNOOZED, 'Snoozed'),
+        (STATUS_PENDING, 'Pending'),
+    )
+
     profile = models.ForeignKey('dashboard.Profile', related_name='interested', on_delete=models.CASCADE)
-    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    issue_message = models.TextField(default='', blank=True)
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True, verbose_name=_('Date Created'))
+    issue_message = models.TextField(default='', blank=True, verbose_name=_('Issue Comment'))
     pending = models.BooleanField(
         default=False,
-        help_text='If this option is chosen, this interest is pending and not yet active',
-        )
-    acceptance_date = models.DateTimeField(blank=True, null=True)
+        help_text=_('If this option is chosen, this interest is pending and not yet active'),
+        verbose_name=_('Pending'),
+    )
+    acceptance_date = models.DateTimeField(blank=True, null=True, verbose_name=_('Date Accepted'))
+    status = models.CharField(
+        choices=WORK_STATUSES,
+        default=STATUS_OKAY,
+        max_length=7,
+        help_text=_('Whether or not the interest requires review'),
+        verbose_name=_('Needs Review'))
+
+    # Interest QuerySet Manager
+    objects = InterestQuerySet.as_manager()
 
     def __str__(self):
         """Define the string representation of an interested profile."""
-        return f"{self.profile.handle} / pending: {self.pending}"
+        return f"{self.profile.handle} / pending: {self.pending} / status: {self.status}"
 
     @property
     def bounties(self):
         return Bounty.objects.filter(interested=self)
+
+    def change_status(self, status=None):
+        if status is None or status not in self.WORK_STATUSES:
+            return self
+        self.status = status
+        self.save()
+        return self
+
+    def mark_for_review(self):
+        """Flag the Interest for review by the moderation team."""
+        self.status = self.STATUS_REVIEW
+        self.save()
+        return self
 
 
 @receiver(post_save, sender=Interest, dispatch_uid="psave_interest")
@@ -1214,6 +1336,33 @@ def psave_interest(sender, instance, **kwargs):
     print("signal: updating bounties psave_interest")
     for bounty in Bounty.objects.filter(interested=instance):
         bounty.save()
+
+
+class ActivityQuerySet(models.QuerySet):
+    """Handle the manager queryset for Activities."""
+
+    def needs_review(self):
+        """Filter results to Activity objects to be reviewed by moderators."""
+        return self.select_related('bounty', 'profile').filter(needs_review=True)
+
+    def reviewed(self):
+        """Filter results to Activity objects to be reviewed by moderators."""
+        return self.select_related('bounty', 'profile').filter(
+            needs_review=False,
+            activity_type__in=['bounty_abandonment_escalation_to_mods', 'bounty_abandonment_warning'],
+        )
+
+    def warned(self):
+        """Filter results to Activity objects to be reviewed by moderators."""
+        return self.select_related('bounty', 'profile').filter(
+            activity_type='bounty_abandonment_warning',
+        )
+
+    def escalated_for_removal(self):
+        """Filter results to Activity objects to be reviewed by moderators."""
+        return self.select_related('bounty', 'profile').filter(
+            activity_type='bounty_abandonment_escalation_to_mods',
+        )
 
 
 class Activity(models.Model):
@@ -1237,19 +1386,29 @@ class Activity(models.Model):
         ('killed_bounty', 'Canceled Bounty'),
         ('new_tip', 'New Tip'),
         ('receive_tip', 'Tip Received'),
+        ('bounty_abandonment_escalation_to_mods', 'Escalated for Abandonment of Bounty'),
+        ('bounty_abandonment_warning', 'Warning for Abandonment of Bounty'),
+        ('bounty_removed_slashed_by_staff', 'Dinged and Removed from Bounty by Staff'),
+        ('bounty_removed_by_staff', 'Removed from Bounty by Staff'),
+        ('bounty_removed_by_funder', 'Removed from Bounty by Funder'),
         ('new_crowdfund', 'New Crowdfund Contribution'),
     ]
+
     profile = models.ForeignKey('dashboard.Profile', related_name='activities', on_delete=models.CASCADE)
-    bounty = models.ForeignKey(Bounty, related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
-    tip = models.ForeignKey(Tip, related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
+    bounty = models.ForeignKey('dashboard.Bounty', related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
+    tip = models.ForeignKey('dashboard.Tip', related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True)
     metadata = JSONField(default=dict)
+    needs_review = models.BooleanField(default=False)
+
+    # Activity QuerySet Manager
+    objects = ActivityQuerySet.as_manager()
 
     def __str__(self):
         """Define the string representation of an interested profile."""
-        return f"{self.profile.handle} type: {self.activity_type}" \
-               f"created: {naturalday(self.created)}"
+        return f"{self.profile.handle} type: {self.activity_type} created: {naturalday(self.created)} " \
+               f"needs review: {self.needs_review}"
 
     def i18n_name(self):
         return _(next((x[1] for x in self.ACTIVITY_TYPES if x[0] == self.activity_type), 'Unknown type'))
