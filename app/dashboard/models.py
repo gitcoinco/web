@@ -857,6 +857,7 @@ class Bounty(SuperModel):
             return True
         return False
 
+    @property
     def tips(self):
         """Return the tips associated with this bounty."""
         try:
