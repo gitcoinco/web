@@ -53,7 +53,7 @@ class Command(BaseCommand):
 
         while True:
             # wait for a new block
-            block = web3.eth.getBlock(block)
+            block = web3.eth.getBlock('latest')
             block_hash = block['hash']
 
             if last_block_hash == block_hash:
