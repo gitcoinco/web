@@ -823,10 +823,6 @@ def error(request, code):
     return TemplateResponse(request, 'error.html', context)
 
 
-def facebook_verify(request):
-    return TemplateResponse(request, 'facebook_verify.html', {})
-
-
 def portal(request):
     return redirect('https://gitcoin.co/help')
 
