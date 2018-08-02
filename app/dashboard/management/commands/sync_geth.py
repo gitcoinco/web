@@ -49,8 +49,18 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('network', default='rinkeby', type=str)
-        parser.add_argument('start_id', default=default_start_id, type=int, help="The start id.  If negative or 0, will be set to highest bounty id minus <x>")
-        parser.add_argument('end_id', default=99999999999, type=int, help="The end id.  If negative or 0, will be set to highest bounty id minus <x>")
+        parser.add_argument(
+            'start_id',
+            default=default_start_id,
+            type=int,
+            help="The start id.  If negative or 0, will be set to highest bounty id minus <x>"
+        )
+        parser.add_argument(
+            'end_id',
+            default=99999999999,
+            type=int,
+            help="The end id.  If negative or 0, will be set to highest bounty id minus <x>"
+        )
 
     def handle(self, *args, **options):
         # config
@@ -79,11 +89,7 @@ class Command(BaseCommand):
             except UnsupportedSchemaException as e:
                 logger.info(f"* Unsupported Schema => {e}")
             except Exception as e:
-                extra_data = {
-                    'bounty_enum': bounty_enum,
-                    'more_bounties': more_bounties,
-                    'network': network
-                }
+                extra_data = {'bounty_enum': bounty_enum, 'more_bounties': more_bounties, 'network': network}
                 logger.error('Failed to fetch github username', exc_info=True, extra=extra_data)
                 logger.error(f"* Exception in sync_geth => {e}")
             finally:
