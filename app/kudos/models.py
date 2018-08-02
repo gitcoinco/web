@@ -27,6 +27,7 @@ from django.db.models import Q, Sum
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 
 from economy.models import SuperModel
+from dashboard.models import Profile
 
 import logging
 
@@ -53,8 +54,10 @@ class MarketPlaceListing(SuperModel):
     def short_lister(self):
         return self.lister[2:6] + '...' + self.lister[38:]
 
-    # Gitcoin App only fields
 
+class Wallet(SuperModel):
+    address = models.CharField(max_length=255)
+    profile = models.ForeignKey('dashboard.Profile', related_name='wallets', on_delete=models.SET_NULL, null=True)
 
 # class KudosToken(SuperModel):
 
