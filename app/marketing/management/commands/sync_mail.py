@@ -65,8 +65,10 @@ def pull_to_db():
     print("- tip")
     from dashboard.models import Tip
     for tip in Tip.objects.all():
-        for email in tip.emails:
-            process_email(email, 'tip_usage')
+        # do not add receive tip emails to the mailing list, 
+        # don't want to spam people at 4 diff email addresses
+        # for email in tip.emails:
+        #    process_email(email, 'tip_usage')
         if tip.from_email:
             process_email(tip.from_email, 'tip_usage')
 

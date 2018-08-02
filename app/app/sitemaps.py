@@ -13,9 +13,9 @@ class StaticViewSitemap(sitemaps.Sitemap):
 
     def items(self):
         return [
-            'dashboard', 'new_funding', 'tip', 'terms',
-            'privacy', 'cookie', 'prirp', 'apitos', 'about', 'index', 'help', 'whitepaper', 'whitepaper_access',
-            '_leaderboard', 'ios', 'faucet', 'mission', 'slack', 'universe_index', 'results', 'activity',
+            'dashboard', 'new_funding', 'tip', 'terms', 'privacy', 'cookie', 'prirp', 'apitos', 'about', 'index',
+            'help', 'whitepaper', 'whitepaper_access', '_leaderboard', 'ios', 'faucet', 'mission', 'slack',
+            'universe_index', 'results', 'activity',
         ]
 
     def location(self, item):

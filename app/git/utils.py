@@ -28,6 +28,8 @@ from django.utils import timezone
 
 import dateutil.parser
 import requests
+from github import Github
+from github.GithubException import BadCredentialsException, UnknownObjectException
 from requests.exceptions import ConnectionError
 from rest_framework.reverse import reverse
 
@@ -50,13 +52,15 @@ def github_connect(token=None):
             Defaults to: None.
 
     """
-    from github import Github
-    from github.GithubException import BadCredentialsException
     if token is None:
         token = settings.GITHUB_API_TOKEN
 
     try:
-        github_client = Github(login_or_token='token', password=token)
+        github_client = Github(
+            login_or_token=token,
+            client_id=settings.GITHUB_CLIENT_ID,
+            client_secret=settings.GITHUB_CLIENT_SECRET,
+        )
     except BadCredentialsException as e:
         github_client = None
         logger.exception(e)
@@ -65,19 +69,22 @@ def github_connect(token=None):
 
 def get_gh_issue_details(org, repo, issue_num):
     details = {'keywords': []}
-    gh_client = github_connect()
-    org_user = gh_client.get_user(login=org)
-    repo_obj = org_user.get_repo(repo)
-    issue_details = repo_obj.get_issue(issue_num)
-    langs = repo_obj.get_languages()
-    for k, _ in langs.items():
-        details['keywords'].append(k)
-    details['title'] = issue_details.title
-    details['description'] = issue_details.body.replace('\n', '').strip()
-    details['state'] = issue_details.state
-    if issue_details.state == 'closed':
-        details['closed_at'] = issue_details.closed_at.isoformat()
-        details['closed_by'] = issue_details.closed_by.name
+    try:
+        gh_client = github_connect()
+        org_user = gh_client.get_user(login=org)
+        repo_obj = org_user.get_repo(repo)
+        issue_details = repo_obj.get_issue(issue_num)
+        langs = repo_obj.get_languages()
+        for k, _ in langs.items():
+            details['keywords'].append(k)
+        details['title'] = issue_details.title
+        details['description'] = issue_details.body.replace('\n', '').strip()
+        details['state'] = issue_details.state
+        if issue_details.state == 'closed':
+            details['closed_at'] = issue_details.closed_at.isoformat()
+            details['closed_by'] = issue_details.closed_by.name
+    except UnknownObjectException:
+        return {}
     return details
 
 
@@ -573,8 +580,9 @@ def get_url_dict(issue_url):
             'repo': issue_url.split('/')[4],
             'issue_num': int(issue_url.split('/')[6]),
         }
-    except IndexError:
-        return {}
+    except IndexError as e:
+        logger.warn(e)
+        return {'org': org_name(issue_url), 'repo': repo_name(issue_url), 'issue_num': int(issue_number(issue_url))}
 
 
 def repo_url(issue_url):

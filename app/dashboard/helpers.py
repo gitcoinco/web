@@ -36,7 +36,7 @@ from dashboard.notifications import (
 )
 from dashboard.tokens import addr_to_token
 from economy.utils import convert_amount
-from git.utils import get_gh_issue_details, get_url_dict
+from git.utils import get_gh_issue_details, get_url_dict, issue_number, org_name, repo_name
 from jsondiff import diff
 from pytz import UTC
 from ratelimit.decorators import ratelimit
@@ -422,6 +422,11 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 admin_mark_as_remarket_ready=latest_old_bounty.admin_mark_as_remarket_ready if latest_old_bounty else 0,
             )
             new_bounty.fetch_issue_item()
+            try:
+                issue_kwargs = get_url_dict(new_bounty.github_url)
+                new_bounty.github_issue_details = get_gh_issue_details(**issue_kwargs)
+            except Exception as e:
+                logger.error(e)
 
             # migrate data objects from old bounty
             if latest_old_bounty:

@@ -111,6 +111,7 @@ urlpatterns = [
         dashboard.views.bounty_details,
         name='issue_details_new2'
     ),
+    re_path(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
 
     # Tips
     url(
@@ -177,6 +178,7 @@ urlpatterns = [
     re_path(r'^about/?', retail.views.about, name='about'),
     re_path(r'^mission/?', retail.views.mission, name='mission'),
     re_path(r'^vision/?', retail.views.vision, name='vision'),
+    path('not_a_token', retail.views.not_a_token, name='not_a_token'),
     re_path(r'^styleguide-alpha/?', retail.views.ui, name='ui'),
     re_path(r'^results/?(?P<keyword>.*)/?', retail.views.results, name='results_by_keyword'),
     re_path(r'^results/?', retail.views.results, name='results'),
@@ -243,11 +245,7 @@ urlpatterns = [
     path('_administration/email/new_match', retail.emails.new_match, name='new_match'),
     path('_administration/email/quarterly_roundup', retail.emails.quarterly_roundup, name='quarterly_roundup'),
     path('_administration/email/new_work_submission', retail.emails.new_work_submission, name='new_work_submission'),
-    path(
-        '_administration/email/new_bounty_rejection',
-        retail.emails.new_bounty_rejection,
-        name='new_bounty_rejection'
-    ),
+    path('_administration/email/new_bounty_rejection', retail.emails.new_bounty_rejection, name='new_bounty_rejection'),
     path(
         '_administration/email/new_bounty_acceptance',
         retail.emails.new_bounty_acceptance,

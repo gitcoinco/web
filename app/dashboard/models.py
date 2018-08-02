@@ -45,8 +45,8 @@ from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import (
-    _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_gh_issue_details, get_gh_issue_state, get_issue_comments,
-    get_url_dict, issue_number, org_name, repo_name,
+    _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_gh_issue_details, get_issue_comments, issue_number, org_name,
+    repo_name,
 )
 from marketing.models import LeaderboardRank
 from rest_framework import serializers
@@ -216,7 +216,7 @@ class Bounty(SuperModel):
     project_length = models.CharField(max_length=50, choices=PROJECT_LENGTHS, blank=True)
     experience_level = models.CharField(max_length=50, choices=EXPERIENCE_LEVELS, blank=True)
     github_url = models.URLField(db_index=True)
-    github_issue_details = JSONField(default=dict, blank=True)
+    github_issue_details = JSONField(default=dict, blank=True, null=True)
     github_comments = models.IntegerField(default=0)
     bounty_owner_address = models.CharField(max_length=50)
     bounty_owner_email = models.CharField(max_length=255, blank=True)
@@ -296,8 +296,6 @@ class Bounty(SuperModel):
             self.bounty_owner_github_username = self.bounty_owner_github_username.lstrip('@')
         if self.github_url:
             self.github_url = clean_bounty_url(self.github_url)
-            issue_kwargs = get_url_dict(self.github_url)
-            self.github_issue_details = get_gh_issue_details(**issue_kwargs)
         super().save(*args, **kwargs)
 
     @property
@@ -495,7 +493,10 @@ class Bounty(SuperModel):
         if not keywords:
             return []
         else:
-            return [keyword.strip() for keyword in keywords.split(",")]
+            try:
+                return [keyword.strip() for keyword in keywords.split(",")]
+            except AttributeError:
+                return []
 
     @property
     def now(self):
@@ -847,9 +848,21 @@ class Bounty(SuperModel):
 
     @property
     def github_issue_state(self):
-        issue_kwargs = get_url_dict(self.github_url)
-        gh_issue_state = get_gh_issue_state(**issue_kwargs)
-        return gh_issue_state
+        current_github_state = self.github_issue_details.get('state') if self.github_issue_details else None
+        if not current_github_state:
+            try:
+                _org_name = org_name(self.github_url)
+                _repo_name = repo_name(self.github_url)
+                _issue_num = issue_number(self.github_url)
+                gh_issue_details = get_gh_issue_details(_org_name, _repo_name, int(_issue_num))
+                if gh_issue_details:
+                    self.github_issue_details = gh_issue_details
+                    self.save()
+                    current_github_state = self.github_issue_details.get('state', 'open')
+            except Exception as e:
+                logger.info(e)
+                return 'open'
+        return current_github_state
 
     @property
     def is_issue_closed(self):
