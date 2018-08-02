@@ -273,7 +273,13 @@ var mutate_interest = function(bounty_pk, direction, data) {
     }
     return false;
   }).fail(function(result) {
-    _alert({ message: result.responseJSON.error }, 'error');
+    var alertMsg = result && result.responseJSON ? result.responseJSON.error : null;
+
+    if (alertMsg === null) {
+      alertMsg = gettext('Network error. Please reload the page and try again.');
+    }
+
+    _alert({ message: alertMsg }, 'error');
 
   });
 };
