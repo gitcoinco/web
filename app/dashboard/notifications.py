@@ -460,10 +460,6 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
                 'started_work': started_context}
             msg['started'] = render_to_string(template_path + 'start_work.md', context)
 
-        if (not (started_work.count() and bounty.started_comment == None)) and pending_interest.count() == 0:
-            delete_issue_comment(bounty.started_comment, username, repo)
-            return False
-            #msg = f"{status_header}__Workers have applied to start work__.\n\n"
     elif event_name == 'stop_work':
         started_work = [interest.profile for interest in bounty.interested.filter(pending=False).select_related('profile').all()]
         started_work_handles = [profile.handle for profile in started_work]
@@ -482,19 +478,21 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
             msg = render_to_string(template_path + 'submit_work.md', context)
 
     elif event_name == 'work_done':
-        context = {}
+        context = {
+                        'bounty': bounty
+                  }
         try:
             context['accepted_fulfillment'] = bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
             #accepted_fulfiller = f' to @{accepted_fulfillment.fulfiller_github_username}'
         except BountyFulfillment.DoesNotExist:
             context['accepted_fulfillment'] = None
 
-
         if bounty.done_comment and bounty.fulfillments.filter(accepted=True).count() == 0:
-            delete_issue_comment(bounty.done_comment, username, repo)
+            msg = bounty.done_comment
 
         msg = render_to_string(template_path + 'accept_work.md', context)
-        
+    else:
+         msg = False
     return msg
 
 
@@ -522,6 +520,9 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
 
     # Prepare the comment message string.
     msg = build_github_notification(bounty, event_name, profile_pairs)
+    if msg == bounty.done_comment:
+            delete_issue_comment(bounty.done_comment, username, repo)
+
     if not msg:
         return False
 
@@ -544,7 +545,7 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
                 else:
                     response = post_issue_comment(username, repo, issue_num, msg['pending'])
                     bounty.interested_comment = int(response.get('id'))
-            if started_work.exists():
+            if bounty.interested.filter(pending=False).count():
                 if bounty.started_comment:
                     patch_issue_comment(bounty.started_comment, username, repo, msg['started'])
                 else:

@@ -1,4 +1,5 @@
-![Stop Work]({% static "status/stopped-copy.svg" %})
+{% load static %}
+![Stop Work](https://oogetyboogety.github.com/gitcointestproject{% static "status/stopped-copy.svg" %})
 {% for profile in stopped_work %} 
 [@{{ profile.handle }}]({{ profile.url }}) has __stopped work__ on this project.
 {% endfor %}

@@ -1,5 +1,6 @@
 {% load i18n static humanize site %}
-![Issue Opened]({% current_domain %}{% static "status/open-copy.svg" %})
+#![Issue Opened]({% current_domain %}{% static "status/open-copy.svg" %})
+![Issue Opened](https://oogetyboogety.github.io/gitcointestproject{% static "status/open-copy.svg" %})
 {% if bounty.get_value_in_usdt_now %}
 Funding: {{ bounty.get_natural_value|floatformat:2|intcomma }} {{ bounty.token_name }} {{ bounty.get_value_in_usdt_now|floatformat:2|intcomma }} USD @ $ {{ bounty.token_value_in_usdt_now|floatformat:2|intcomma }}/{{ bounty.token_name }}
 {% endif %}
