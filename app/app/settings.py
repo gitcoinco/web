@@ -399,6 +399,7 @@ SENTRY_PASSWORD = env('SENTRY_PASSWORD', default='')
 SENTRY_ADDRESS = env('SENTRY_ADDRESS', default='')
 SENTRY_PROJECT = env('SENTRY_PROJECT', default='')
 SENTRY_RELEASE = raven.fetch_git_sha(os.path.abspath(os.pardir)) if SENTRY_USER else ''
+RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='3.26.4')
 if SENTRY_ADDRESS and SENTRY_PROJECT:
     RAVEN_CONFIG = {
         'dsn': f'https://{SENTRY_USER}:{SENTRY_PASSWORD}@{SENTRY_ADDRESS}/{SENTRY_PROJECT}',
