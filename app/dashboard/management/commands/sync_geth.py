@@ -25,7 +25,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from dashboard.helpers import UnsupportedSchemaException
-from dashboard.utils import BountyNotFoundException, get_bounty, get_web3, getBountyContract, web3_process_bounty
+from dashboard.utils import BountyNotFoundException, get_bounty, getBountyContract, web3_process_bounty
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -38,7 +38,6 @@ default_start_id = 0 if not settings.DEBUG else 402
 def get_bounty_id(_id, network):
     if _id > 0:
         return _id
-    web3 = get_web3(network)
     contract = getBountyContract(network)
     bounty_id = contract.functions.getNumBounties().call() - 1
     return bounty_id + _id
