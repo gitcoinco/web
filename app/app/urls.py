@@ -368,6 +368,15 @@ if settings.ENABLE_SILK:
 if settings.ENV == 'local' and not settings.AWS_STORAGE_BUCKET_NAME:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
+# If running in DEBUG, expose the error handling pages.
+if settings.DEBUG:
+    urlpatterns += [
+        re_path(r'^400/$', retail.views.handler400, name='400'),
+        re_path(r'^403/$', retail.views.handler403, name='403'),
+        re_path(r'^404/$', retail.views.handler404, name='404'),
+        re_path(r'^500/$', retail.views.handler500, name='500'),
+    ]
+
 handler403 = 'retail.views.handler403'
 handler404 = 'retail.views.handler404'
 handler500 = 'retail.views.handler500'
