@@ -495,7 +495,10 @@ class Bounty(SuperModel):
         if not keywords:
             return []
         else:
-            return [keyword.strip() for keyword in keywords.split(",")]
+            try:
+                return [keyword.strip() for keyword in keywords.split(",")]
+            except AttributeError:
+                return []
 
     @property
     def now(self):
