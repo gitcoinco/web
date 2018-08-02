@@ -297,7 +297,10 @@ class Bounty(SuperModel):
         if self.github_url:
             self.github_url = clean_bounty_url(self.github_url)
             issue_kwargs = get_url_dict(self.github_url)
-            self.github_issue_details = get_gh_issue_details(**issue_kwargs)
+            try:
+                self.github_issue_details = get_gh_issue_details(**issue_kwargs)
+            except Exception as e:
+                logger.error(e)
         super().save(*args, **kwargs)
 
     @property
