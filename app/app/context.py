@@ -48,6 +48,8 @@ def insert_settings(request):
         'email': request.user.email if user_is_authenticated else False,
         'name': request.user.get_full_name() if user_is_authenticated else False,
         'sentry_address': settings.SENTRY_ADDRESS,
+        'raven_js_version': settings.RAVEN_JS_VERSION,
+        'release': settings.SENTRY_RELEASE,
         'env': settings.ENV,
         'email_key': email_key,
         'profile_id': profile.id if profile else '',

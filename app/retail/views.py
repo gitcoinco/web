@@ -30,7 +30,7 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.models import Activity, Bounty
+from dashboard.models import Activity
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
 from marketing.mails import new_token_request
