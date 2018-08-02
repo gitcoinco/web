@@ -177,13 +177,12 @@ class GitcoinBotActionsTest(TestCase):
 
     def test_determine_response_returns_false_when_non_github_bounty(self):
         """Test determine_response returns False when unable to resolve github_url for arguments"""
-        actual = determine_response('some_user', 'some_repo', 'some_comment', 'some_comment_text', 'some_issue_id', 'install_id', 'sender')
+        actual = determine_response('user', 'repo', 'comment', 'comment_text', 'issue_id', 'install_id', 'sender')
         self.assertEqual(actual, False)
 
     def test_determine_response_returns_true_when_github_bounty(self):
         """Test determine_response returns True when able to resolve github_url for arguments"""
         from dashboard.models import Bounty
-        from datetime import datetime
         owner = 'github_owner'
         repo = 'github_repo'
         issue_id = 'github_issue_id'
@@ -207,5 +206,5 @@ class GitcoinBotActionsTest(TestCase):
             raw_data={}
         )
 
-        actual = determine_response(owner, repo, 'some_comment', 'some_comment_text', issue_id, 'install_id', 'sender' )
+        actual = determine_response(owner, repo, 'some_comment', 'some_comment_text', issue_id, 'install_id', 'sender')
         self.assertEqual(actual, True)

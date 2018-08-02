@@ -113,6 +113,9 @@ urlpatterns = [
     ),
     re_path(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
 
+    url(r'^issue/?', dashboard.views.bounty_details, name='bounty_details'),
+    url(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
+
     # Tips
     url(
         r'^tip/receive/v2/(?P<pk>.*)/(?P<txid>.*)/(?P<network>.*)?',

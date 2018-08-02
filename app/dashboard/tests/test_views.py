@@ -19,11 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from datetime import datetime, timedelta
 
-from django.conf import settings
 from django.test import Client
 from django.utils import timezone
 
-from dashboard.views import bounty_details
 from test_plus.test import TestCase
 
 
@@ -33,7 +31,6 @@ class DashboardViewsTest(TestCase):
     def test_bounty_details_issueURL_context_set_to_github_url_when_github_bounty(self):
         """Test the issueURL param value is set as expected when a ghissue argument is provided"""
         from dashboard.models import Bounty
-        from datetime import datetime
         owner = 'github_owner'
         repo = 'github_repo'
         issue_id = 999
@@ -58,14 +55,13 @@ class DashboardViewsTest(TestCase):
             network='mainnet',
             current_bounty=True
         )
-        response = Client().get(f'/bounty/details/{owner}/{repo}/{issue_id}')
+        response = Client().get(f'/issue/{owner}/{repo}/{issue_id}')
         actual_url = response.context['issueURL']
         self.assertEqual(actual_url, expected_url)
 
     def test_bounty_details_issueURL_set_to_url_query_param_when_non_github_bounty(self):
         """Test the issueURL param value is set as expected when no ghissue argument is provided"""
         from dashboard.models import Bounty
-        from datetime import datetime
         expected_url = f'https://foo.com?bar=1&baz=2&faz=3'
         Bounty.objects.create(
             title='foo',
@@ -87,6 +83,6 @@ class DashboardViewsTest(TestCase):
             network='mainnet',
             current_bounty=True
         )
-        response = Client().get(f'/bounty/details/?url={expected_url}')
+        response = Client().get(f'/issue/?url={expected_url}')
         actual_url = response.context['issueURL']
         self.assertEqual(actual_url, expected_url)
