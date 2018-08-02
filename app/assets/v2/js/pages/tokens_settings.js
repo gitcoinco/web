@@ -3,6 +3,11 @@
 load_tokens();
 
 $(document).ready(function() {
+
+  waitforWeb3(function(){
+    $("#contract_address").val(bounty_address());
+  });
+
   $('.js-select2').each(function() {
     $(this).select2();
   });
@@ -19,7 +24,7 @@ $(document).ready(function() {
 
     // form
     var token_address = $('select[name=deonomination]').val();
-    var contract_address = $('select[name=contract]').val();
+    var contract_address =$("#contract_address").val();
     var contract_name = $('select[name=contract] option:selected').text().trim();
     var token_name = $('select[name=deonomination] option:selected').text().trim();
     
