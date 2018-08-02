@@ -324,7 +324,7 @@ def get_github_event_emails(oauth_token, username):
                 author = commit.get('author', {})
                 email = author.get('email', {})
                 name = author.get('name', {})
-                append_email = name.lower() == username.lower() or name.lower() == user_name.lower() \
+                append_email = name and username and name.lower() == username.lower() or name.lower() == user_name.lower() \
                     and email and 'noreply.github.com' not in email
                 if append_email:
                     emails.append(email)
