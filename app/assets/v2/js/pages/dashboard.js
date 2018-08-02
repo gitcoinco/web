@@ -253,6 +253,7 @@ var get_search_URI = function() {
   if (order_by) {
     uri += '&order_by=' + order_by;
   }
+  uri += '&limit=1000';
   return uri;
 };
 
