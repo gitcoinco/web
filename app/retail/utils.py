@@ -297,7 +297,8 @@ def build_stat_results_helper(keyword=None):
         if year == 2018:
             months = range(6, 12)
         for month in months:
-            then = timezone.datetime(year, month, 3).replace(tzinfo=pytz.UTC)
+            day_of_month = 3 if year == 2018 and month < 7 else 1
+            then = timezone.datetime(year, month, day_of_month).replace(tzinfo=pytz.UTC)
             if then < timezone.now():
                 row = get_bounty_history_row(then.strftime("%B %Y"), then, keyword)
                 context['bounty_history'].append(row)
