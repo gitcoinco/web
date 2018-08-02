@@ -220,6 +220,40 @@ def render_admin_contact_funder(bounty, text, from_user):
     return response_html, response_txt
 
 
+def render_funder_stale(github_username, days=30, time_as_str='about a month'):
+    """Render the stale funder email template.
+
+    Args:
+        github_username (str): The Github username to be referenced in the email.
+        days (int): The number of days back to reference.
+        time_as_str (str): The human readable length of time to reference.
+
+    Returns:
+        str: The rendered response as a string.
+
+    """
+    response_txt = f"""
+Hi {github_username},
+
+Kevin Owocki from Gitcoin here.
+
+I see you haven't posted any funded work to the platform in {time_as_str}.
+
+Just wanted to check in and see if there's anything we can do, or if you had any feedback for us. \
+We're still a small startup and we iterate fast; not only will your feedback be heard, but it's \
+got a good chance of being put into the product roadmap!
+
+Kevin
+
+PS - I've got some new gitcoin schwag on order.  Send me your mailing address and your \
+t-shirt size and i'll ship you some.
+
+"""
+
+    params = {'txt': response_txt}
+    response_html = premailer_transform(render_to_string("emails/txt.html", params))
+    return response_html, response_txt
+
 
 def render_new_bounty(to_email, bounties, old_bounties):
     sub = get_or_save_email_subscriber(to_email, 'internal')
@@ -370,7 +404,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
         'bounty': bounty,
         'interest': interest,
         'time_delta_days': time_delta_days,
-        'subscriber': get_or_save_email_subscriber(fr.email, 'internal'),
+        'subscriber': get_or_save_email_subscriber(interest.profile.email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/render_bounty_startwork_expired.html", params))
@@ -474,38 +508,38 @@ def render_start_work_applicant_expired(interest, bounty):
     return response_html, response_txt, subject
 
 
+
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Hiring with Gitcoin | Contributor Friendly Repos"
+    subject = "Crowdfund bounties with Gitcoin"
 
     intro = '''
 
 <p>
-    Hi there
+    Hi there!
 </p>
 <p>
-This week, we shipped <a href="https://medium.com/gitcoin/hiring-with-gitcoin-just-got-better-259c59aa8e3">'Hiring with Gitcoin.'</a>
-This article discusses a new feature that we added to the Gitcoin interface this past week. Now, bounty funders have the option to attach
-a job description for full-time, part-time, or contract work directly to their bounty. We hope that this makes the hiring-via-Gitcoin process
-even more transparent and conducive to connecting great open source developers with open source projects looking to scale up!
+This week we published <a href="https://medium.com/gitcoin/everything-you-need-to-know-about-gitcoin-fe2e3e292a21">Everything You Need to Know About Gitcoin</a>
+This piece is a one stop shop for all things Gitcoin. We explain how Gitcoin works, what progress we’ve made, what cool things we’ve built, who we’ve worked with, and where we’re going next.
+This post will be subsequently pinned to our Medium and updated monthly to keep our community up to date on all things Gitcoin.
 </p>
 
 <p>
-Additionally, we published <a href="https://medium.com/@owocki/927037f528d9">'Make Your Repo Contributor Friendly.'</a>
-This piece contains an aggregation of all the best practices we’ve seen, throughout
-working in open source, to make your repository most attractive to contributing developers.
-The article covers everything from your README doc to marketing your repo. Hope you find it helpful!
+We also launched two new features! The first is <a href="https://medium.com/gitcoin/crowdfunding-bounties-fd821b04309d">Crowdfunding Bounties on Gitcoin.</a>
+This feature now allows anyone to contribute to funding a bounty with either social capital or physical funds.
+The second feature addition is that funders now have the ability to <a href="https://medium.com/gitcoin/crowdfunding-bounties-fd821b04309d">pay out multiple contributors at once.</a>
+Simply add their Github username on the ‘Advanced Payout’ screen and denominate their percent of the bounty total.
 </p>
 
 <h3>What else is new?</h3>
     <ul>
         <li>
-There will be no Gitcoin Livestream this week. We’ll see everyone back here next Friday @ 5pm!
+The <a href="http://gitcoin.co/livestream">Gitcoin Livestream</a> is back! Today at 5pm we'll be joined by Mark Beylin of Bounties Network as well as Chris Slaughter from Samsa.ai
         </li>
         <li>
-Our livestream with Matt Lockyer of ERC-998 protocol standard will be up on the <a href="https://gitcoin.co/youtube">Gitcoin Youtube Channel</a> this week.
+Our livestreams with Matt Lockyer of ERC-998 protocol and Dave & Chris of Deco Network are now live on the <a href="https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w">Gitcoin Youtube channel.</a>
         </li>
 
     </ul>
@@ -516,44 +550,45 @@ Back to BUIDLing,
 '''
     highlights = [
         {
-            'who': 'arun1595',
+            'who': 'scsaba',
             'who_link': True,
-            'what': 'Helped Market Protocol automate test coverage for TypeScript ABI’s.',
-            'link': 'https://gitcoin.co/issue/MARKETProtocol/types/28/772',
+            'what': 'Helped implement browser notifications on MetaMask!',
+            'link': 'https://gitcoin.co/issue/MetaMask/metamask-extension/4203/836',
             'link_copy': 'View more',
         },
         {
-            'who': 'olafghanizadeh',
+            'who': 'aerophile',
             'who_link': True,
-            'what': 'Improved the Gitcoin homepage by allowing users to interact with the software developer images to get more info.',
-            'link': 'https://gitcoin.co/issue/gitcoinco/web/1682/749',
+            'what': 'Crafted up a blog post on Ethereum Gas and it’s fluctuations.',
+            'link': 'https://gitcoin.co/issue/gitcoinco/web/1751/791',
             'link_copy': 'View more',
         },
         {
-            'who': 'dmvt',
+            'who': 'StevenJNPearce',
             'who_link': True,
-            'what': 'Refactored the BigChainDB codebase to minimize the size of the driver',
-            'link': 'https://gitcoin.co/issue/bigchaindb/js-bigchaindb-driver/221/763',
+            'what': 'Fixed the collateral deposit, withdraw, and settlement return on MarketProtocol.',
+            'link': 'https://gitcoin.co/issue/MARKETProtocol/MARKET.js/106/856',
             'link_copy': 'View more',
         },
     ]
 
     bounties_spec = [
         {
-            'url': 'https://github.com/INFURA/infura/issues/130',
-            'primer': 'Write some documentation for the Infura IPFS API.',
+            'url': 'https://github.com/zeppelinos/zos-cli/issues/320',
+            'primer': 'Help Zeppelin OS fix the logic contract kill switch bug',
         },
         {
-            'url': 'https://github.com/MetaMask/metamask-extension/issues/4771',
-            'primer': 'Help make the MetaMask plug-in work with Tor Browser.',
+            'url': 'https://github.com/gitcoinco/web/issues/1822',
+            'primer': 'Fix an issue with non-Github links not working on Gitcoin bounties',
         },
         {
-            'url': 'https://github.com/decentraland/MANA-community-fund-learning-content/issues/18',
-            'primer': 'Organize a local game developer meetup and talk about Decentraland',
+            'url': 'https://github.com/livepeer/livepeerjs/issues/155',
+            'primer': 'Assist Livepeer in fixing a loading bug in Mist browser',
         },
     ]
 
     #### don't need to edit anything below this line
+
 
     bounties = []
     for nb in bounties_spec:
@@ -671,6 +706,26 @@ def new_bounty_acceptance(request):
 def bounty_feedback(request):
     from dashboard.models import Bounty
     response_html, _ = render_bounty_feedback(Bounty.objects.filter(idx_status='done', current_bounty=True).last(), 'foo')
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def funder_stale(request):
+    """Display the stale funder email template.
+
+    Params:
+        limit (int): The number of days to limit the scope of the email to.
+        duration_copy (str): The copy to use for associated duration text.
+        username (str): The Github username to reference in the email.
+
+    Returns:
+        HttpResponse: The HTML version of the templated HTTP response.
+
+    """
+    limit = int(request.GET.get('limit', 30))
+    duration_copy = request.GET.get('duration_copy', 'about a month')
+    username = request.GET.get('username', '@foo')
+    response_html, _ = render_funder_stale(username, limit, duration_copy)
     return HttpResponse(response_html)
 
 

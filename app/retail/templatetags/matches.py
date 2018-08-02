@@ -1,5 +1,5 @@
-# -*- coding: utf-8
-"""Define the application WSGI.
+# -*- coding: utf-8 -*-
+"""Define the is_in_list template tag to allow if in list checking in templates.
 
 Copyright (C) 2018 Gitcoin Core
 
@@ -17,14 +17,29 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-import os
+import re
 
-from django.core.wsgi import get_wsgi_application
+from django import template
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "app.settings")
+register = template.Library()
 
-if os.environ.get('ENV') in ['prod', 'stage']:
-    from raven.contrib.django.raven_compat.middleware.wsgi import Sentry
-    application = Sentry(get_wsgi_application())
-else:
-    application = get_wsgi_application()
+
+@register.filter
+def matches(text, pattern):
+    """Determine whether or not the value matches regex pattern.
+
+        Args:
+            value: Any value.
+            pattern : Regex pattern against which the text is matched.
+
+        Usage:
+            {% if '<text>'|matches:'^/explorer$' %}
+
+        Returns:
+            bool: Whether or not the value matches the pattern.
+
+    """
+
+    if re.match(pattern, text):
+        return True
+    return False

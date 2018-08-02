@@ -27,6 +27,11 @@ body {
   font-weight: bold;
 }
 
+#extended-expiration-date i {
+  position: relative;
+  top: 2px;
+}
+
 #extended-expiration-date #extended-days {
   border-bottom: 1px solid black;
 }
@@ -561,8 +566,12 @@ a.btn {
   width: 100%;
 }
 
-#issue-message {
-  min-height: 6em;
+#issue_message {
+  min-height: 12em;
+}
+
+#issue_message.placeholder {
+  color: #6e6e6e;
 }
 
 .add-interest-options {
@@ -776,6 +785,11 @@ a.btn {
 
   .rocket {
     right: 11rem;
+  }
+
+  #extend_deadline {
+    min-width: 40rem;
+    max-width: 0;
   }
 }
 

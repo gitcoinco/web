@@ -235,7 +235,7 @@ var callbacks = {
     var str = '+ ' + ui_elements.join(', ') + ' in crowdfunding';
 
     if (usd_value) {
-      str += 'worth $' + usd_value;
+      str += ' worth $' + usd_value;
     }
 
     $('.additional_funding_summary  p').html(str);
@@ -367,6 +367,12 @@ var isBountyOwner = function(result) {
   }
 
   return (web3.eth.coinbase.toLowerCase() == bountyAddress.toLowerCase());
+};
+
+var isBountyOwnerPerLogin = function(result) {
+  var bounty_owner_github_username = result['bounty_owner_github_username'];
+
+  return bounty_owner_github_username == document.contxt['github_handle'];
 };
 
 var update_title = function() {
@@ -526,31 +532,49 @@ var show_interest_modal = function() {
         modalClass: 'modal add-interest-modal'
       });
 
+      var placeholder = gettext(
+        'What steps will you take to complete this task?\n\n' +
+        'Example:\n' +
+        'I\'d start by implementing Netflify, then I\'d make mockups ' +
+        'for the /blog page and individual post pages and proceed ' +
+        'with building them after getting some feedback from the team. ' +
+        'I will start work on this right away and have it ready by the end of the weekend.');
+
+      var actionPlanForm = modal.find('form#action_plan');
+      var issueMessage = actionPlanForm.find('#issue_message');
+
+      issueMessage.addClass('placeholder');
+      issueMessage.val(placeholder);
+
+      issueMessage.on('focus', function() {
+        if (issueMessage.val() === placeholder) {
+          issueMessage.removeClass('placeholder');
+        }
+      });
+
+      issueMessage.on('blur', function() {
+        var val = issueMessage.val();
+
+        if (!val || val === placeholder) {
+          issueMessage.val(placeholder);
+          issueMessage.addClass('placeholder');
+        }
+      });
+
       modal.on('submit', function(event) {
         event.preventDefault();
 
-        var issue_message = event.target[0].value.trim();
-        var agree_precedence = event.target[1].checked;
-        var agree_not_to_abandon = event.target[2].checked;
+        var msg = issueMessage.val().trim();
 
-        if (!issue_message) {
-          _alert({message: gettext('Please provide an action plan for this ticket.')}, 'error');
-          return false;
-        }
-
-        if (!agree_precedence) {
-          _alert({message: gettext('You must agree to the precedence clause.')}, 'error');
-          return false;
-        }
-        if (!agree_not_to_abandon) {
-          _alert({message: gettext('You must agree to keep the funder updated on your progress.')}, 'error');
+        if (!msg || msg === placeholder || msg.length < 48) {
+          _alert({message: gettext('Please provide an action plan for this ticket. At least two sentences. (48 Characters)')}, 'error');
           return false;
         }
 
         $(self).attr('href', '/uninterested');
         $(self).find('span').text(gettext('Stop Work'));
         add_interest(document.result['pk'], {
-          issue_message
+          issue_message: msg
         });
         $.modal.close();
       });
@@ -1046,11 +1070,12 @@ const process_activities = function(result, bounty_activities) {
     const fulfillment = meta.fulfillment || {};
     const new_bounty = meta.new_bounty || {};
     const old_bounty = meta.old_bounty || {};
-    const uninterest_possible = (isBountyOwner(result) || document.isStaff) && is_open;
     const has_pending_interest = !!result.interested.find(interest =>
       interest.profile.handle === _activity.profile.handle && interest.pending);
     const has_interest = !!result.interested.find(interest =>
       interest.profile.handle === _activity.profile.handle);
+    const slash_possible = document.isStaff;
+    const uninterest_possible = (isBountyOwnerPerLogin(result) || document.isStaff) && is_open && has_interest;
 
     return {
       profileId: _activity.profile.id,
@@ -1060,8 +1085,8 @@ const process_activities = function(result, bounty_activities) {
       age: timeDifference(now, new Date(_activity.created)),
       activity_type: _activity.activity_type,
       status: _activity.activity_type === 'work_started' ? 'started' : 'stopped',
-      uninterest_possible: uninterest_possible && has_interest,
-      slash_possible: document.isStaff && has_interest,
+      uninterest_possible: uninterest_possible,
+      slash_possible: slash_possible,
       approve_worker_url: meta.approve_worker_url,
       reject_worker_url: meta.reject_worker_url,
       worker_handle: meta.worker_handle,

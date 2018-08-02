@@ -820,11 +820,11 @@ class Bounty(SuperModel):
         if len(afs['tokens'].keys()) == 0:
             return ""
         items = []
-        for token, value in afs['tokens']:
+        for token, value in afs['tokens'].items():
             items.append(f"{value} {token}")
         sentence = ", ".join(items)
         if(afs['usd_value']):
-            sentence += f"worth ${afs['usd_value']}"
+            sentence += f" worth ${afs['usd_value']}"
         return sentence
 
 
@@ -954,7 +954,7 @@ class Tip(SuperModel):
                f"created: {naturalday(self.created_on)}, expires: {naturalday(self.expires_date)}"
         status = 'funded' if self.txid else 'not funded'
         status = status if not self.receive_txid else 'received'
-        return f"{status} {self.amount} {self.tokenName} to {self.username} from {self.from_name or 'NA'}"
+        return f"({self.web3_type}) {status} {self.amount} {self.tokenName} to {self.username} from {self.from_name or 'NA'}"
 
     # TODO: DRY
     def get_natural_value(self):
@@ -977,6 +977,13 @@ class Tip(SuperModel):
         return float(self.amount)
 
     @property
+    def org_name(self):
+        try:
+            return org_name(self.url)
+        except Exception:
+            return None
+
+    @property
     def receive_url(self):
         if self.web3_type == 'yge':
             return self.url
@@ -995,16 +1002,11 @@ class Tip(SuperModel):
         if self.web3_type != 'v3':
             raise Exception
 
-        key = self.metadata['reference_hash_for_receipient']
-        return f"{settings.BASE_URL}tip/receive/v3/{key}/{self.txid}/{self.network}"
-
-    @property
-    def receive_url_for_funder(self):
-        if self.web3_type != 'v3':
-            raise Exception
-
-        key = self.metadata['reference_hash_for_funder']
-        return f"{settings.BASE_URL}tip/receive/v3/{key}/{self.txid}/{self.network}"
+        try:
+            key = self.metadata['reference_hash_for_receipient']
+            return f"{settings.BASE_URL}tip/receive/v3/{key}/{self.txid}/{self.network}"
+        except:
+            return None
 
     # TODO: DRY
     @property
@@ -1328,7 +1330,7 @@ class Profile(SuperModel):
     form_submission_records = JSONField(default=[], blank=True)
     # Sample data: https://gist.github.com/mbeacom/ee91c8b0d7083fa40d9fa065125a8d48
     max_num_issues_start_work = models.IntegerField(default=3)
-    preferred_payout_address = models.CharField(max_length=255, default='')
+    preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
     max_tip_amount_usdt_per_tx = models.DecimalField(default=500, decimal_places=2, max_digits=50)
     max_tip_amount_usdt_per_week = models.DecimalField(default=1500, decimal_places=2, max_digits=50)
 
