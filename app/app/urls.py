@@ -266,6 +266,8 @@ urlpatterns = [
         retail.emails.start_work_expire_warning,
         name='start_work_expire_warning'
     ),
+
+    path('ctpwwm1b3osbtwdw1lrg8fu5fcvga3.html', retail.views.facebook_verify, name='ctpwwm1b3osbtwdw1lrg8fu5fcvga3'),
     path('_administration/email/start_work_expired', retail.emails.start_work_expired, name='start_work_expired'),
     path('_administration/email/gdpr_reconsent', retail.emails.gdpr_reconsent, name='gdpr_reconsent'),
     path('_administration/email/new_tip/resend', retail.emails.resend_new_tip, name='resend_new_tip'),
