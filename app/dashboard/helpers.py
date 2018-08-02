@@ -157,13 +157,9 @@ def issue_details(request):
         return JsonResponse(response)
 
     try:
-        cleaned_url = clean_bounty_url(url)
-        # url_dict = get_url_dict(clean_bounty_url(url))
-        _org_name = org_name(cleaned_url)
-        _repo_name = repo_name(cleaned_url)
-        _issue_num = issue_number(cleaned_url)
-        if _issue_num and _org_name and _repo_name:
-            response = get_gh_issue_details(_org_name, _repo_name, int(_issue_num))
+        url_dict = get_url_dict(clean_bounty_url(url))
+        if url_dict:
+            response = get_gh_issue_details(**url_dict)
         else:
             response['message'] = 'could not parse Github url'
     except Exception as e:
@@ -426,6 +422,11 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 admin_mark_as_remarket_ready=latest_old_bounty.admin_mark_as_remarket_ready if latest_old_bounty else 0,
             )
             new_bounty.fetch_issue_item()
+            try:
+                issue_kwargs = get_url_dict(new_bounty.github_url)
+                new_bounty.github_issue_details = get_gh_issue_details(**issue_kwargs)
+            except Exception as e:
+                logger.error(e)
 
             # migrate data objects from old bounty
             if latest_old_bounty:
