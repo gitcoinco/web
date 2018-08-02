@@ -74,11 +74,12 @@ class DashboardNotificationsTest(TestCase):
         self.bounty.bounty_type = 'traditional'
         self.bounty.permission_type='approval'
         message = build_github_notification(self.bounty, 'new_bounty')
+        print(message)
         absolute_url = self.bounty.get_absolute_url()
         assert f"Funding: " in message 
         assert f"ETH "
         assert f"USD @" in message
-        assert f"[Express interest to work on this issue on the Gitcoin issue details page]" in message
+        assert f"[Express interest]({ absolute_url }) to work on this issue on the [Gitcoin issue details page]" in message
         assert f"({ absolute_url })" in message
         assert f"Looking for another project? ${self.amount_open_work} more funded OSS work available on the [Gitcoin Issue Explorer]" in message
         assert f"Questions? Checkout [Gitcoin Help](https://gitcoin.co/help) or the [Gitcoin Slack](https://gitcoin.co/slack)" in message
@@ -106,7 +107,7 @@ class DashboardNotificationsTest(TestCase):
         assert f"Funding: " in message 
         assert f"ETH "
         assert f"USD @" in message
-        assert f"[Start work on this issue on the Gitcoin issue details page]" in message
+        assert f"[Start work]({ absolute_url }) on this issue on the [Gitcoin issue details page]" in message
         assert f"({ absolute_url })" in message
         assert f"Looking for another project? ${self.amount_open_work} more funded OSS work available on the [Gitcoin Issue Explorer]" in message
         assert f"Questions? Checkout [Gitcoin Help](https://gitcoin.co/help) or the [Gitcoin Slack](https://gitcoin.co/slack)" in message

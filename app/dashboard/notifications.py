@@ -445,7 +445,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
                 'interested': interested_context
             }
             
-            msg['pending'] = render_to_string(template_path + 'github_comments/express_interest.md', context)
+            msg['pending'] = render_to_string(template_path + 'express_interest.md', context)
         started_work = bounty.interested.filter(pending=False).select_related('profile').all()
         if started_work.count():
             for interest in started_work:

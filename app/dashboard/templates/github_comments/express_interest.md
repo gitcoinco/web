@@ -1,4 +1,7 @@
-![Express Interest]({% static "status/open-copy.svg" %}
+{% load static %}
+![Express Interest](https://oogetyboogety.github.io/gitcointestproject{{% static "status/open-copy.svg" %}
+--------------------
+
 {% if bounty.permission_type == 'approval' %} 
 {% for interest in interested %} 
 [@{{ interest.profile.handle }}]({{ interest.profile.url }}) has __expressed interest__ in this project.
