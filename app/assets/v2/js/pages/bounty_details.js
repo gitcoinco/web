@@ -606,6 +606,11 @@ var show_extend_deadline_modal = function() {
         set_extended_time_html(parseInt($(this).val()), previousExpires);
       });
 
+      $('.btn-cancel').on('click', function() {
+        $.modal.close();
+        return;
+      });
+
       modal.on('submit', function(event) {
         event.preventDefault();
 
