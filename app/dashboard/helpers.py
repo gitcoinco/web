@@ -715,6 +715,9 @@ def get_payout_history(done_bounties):
 
         bounty_val = bounty.get_value_in_usdt
 
+        if bounty_val is None:
+            bounty_val = 0.0
+
         week = week_of_month(bounty_date)
         month = bounty_date.month
         year = bounty_date.year
