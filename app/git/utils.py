@@ -573,8 +573,9 @@ def get_url_dict(issue_url):
             'repo': issue_url.split('/')[4],
             'issue_num': int(issue_url.split('/')[6]),
         }
-    except IndexError:
-        return {}
+    except IndexError as e:
+        logger.warn(e)
+        return {'org': org_name(issue_url), 'repo': repo_name(issue_url), 'issue_num': int(issue_number(issue_url))}
 
 
 def repo_url(issue_url):
