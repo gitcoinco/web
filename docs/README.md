@@ -134,7 +134,7 @@ This is the high level flow of a bounty on Gitcoin:
 Chain of Custody
 
 1. Bounty Funder's Wallet
-2. [StandardBounties Smart Contract](https://github.com/Bounties-Network/StandardBounties)
+2. [StandardBounties Smart Contract](https://github.com/Bounties-Network/StandardBounties) deployed at [0x2af47a65da8cd66729b4209c22017d6a5c2d2400](https://etherscan.io/address/0x2af47a65da8cd66729b4209c22017d6a5c2d2400#code)
 3. (Submission Made)
 4. (Submission Accepted)
 5. Recipient's Wallet 
