@@ -376,7 +376,7 @@ def extend_expiration(request, bounty_id):
         return JsonResponse(
             {'error': _('You must be authenticated via github to use this feature!')},
             status=401)
-    
+
     try:
         bounty = Bounty.objects.get(pk=bounty_id)
     except Bounty.DoesNotExist:
