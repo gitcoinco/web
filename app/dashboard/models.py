@@ -300,10 +300,10 @@ class Bounty(SuperModel):
             _org_name = org_name(self.github_url)
             _repo_name = repo_name(self.github_url)
             _issue_num = issue_number(self.github_url)
-            try:
-                self.github_issue_details = get_gh_issue_details(_org_name, _repo_name, int(_issue_num))
-            except Exception as e:
-                logger.error(e)
+            # try:
+            #     self.github_issue_details = get_gh_issue_details(_org_name, _repo_name, int(_issue_num))
+            # except Exception as e:
+            #     logger.error(e)
         super().save(*args, **kwargs)
 
     @property
@@ -854,19 +854,19 @@ class Bounty(SuperModel):
             return True
         return False
 
-    @property
-    def github_issue_state(self):
-        _org_name = org_name(self.github_url)
-        _repo_name = repo_name(self.github_url)
-        _issue_num = issue_number(self.github_url)
-        gh_issue_state = get_gh_issue_state(_org_name, _repo_name, int(_issue_num))
-        return gh_issue_state
+    # @property
+    # def github_issue_state(self):
+    #     _org_name = org_name(self.github_url)
+    #     _repo_name = repo_name(self.github_url)
+    #     _issue_num = issue_number(self.github_url)
+    #     gh_issue_state = get_gh_issue_state(_org_name, _repo_name, int(_issue_num))
+    #     return gh_issue_state
 
-    @property
-    def is_issue_closed(self):
-        if self.github_issue_state == 'closed':
-            return True
-        return False
+    # @property
+    # def is_issue_closed(self):
+    #     if self.github_issue_state == 'closed':
+    #         return True
+    #     return False
 
     @property
     def tips(self):

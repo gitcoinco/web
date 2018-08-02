@@ -102,8 +102,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'idx_status', 'token_value_time_peg', 'fulfillment_accepted_on', 'fulfillment_submitted_on',
             'fulfillment_started_on', 'canceled_on', 'action_urls',
             'project_type', 'permission_type', 'attached_job_description',
-            'needs_review', 'github_issue_state', 'is_issue_closed',
-            'additional_funding_summary',
+            'needs_review', 'additional_funding_summary',
         )
 
     def create(self, validated_data):
