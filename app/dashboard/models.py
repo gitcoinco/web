@@ -45,8 +45,8 @@ from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import (
-    _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_gh_issue_details, get_gh_issue_state, get_issue_comments,
-    get_url_dict, issue_number, org_name, repo_name,
+    _AUTH, HEADERS, TOKEN_URL, build_auth_dict, get_gh_issue_details, get_issue_comments, issue_number, org_name,
+    repo_name,
 )
 from marketing.models import LeaderboardRank
 from rest_framework import serializers
@@ -848,11 +848,21 @@ class Bounty(SuperModel):
 
     @property
     def github_issue_state(self):
-        _org_name = org_name(self.github_url)
-        _repo_name = repo_name(self.github_url)
-        _issue_num = issue_number(self.github_url)
-        gh_issue_state = get_gh_issue_state(_org_name, _repo_name, int(_issue_num))
-        return gh_issue_state
+        current_github_state = self.github_issue_details.get('state') if self.github_issue_details else None
+        if not current_github_state:
+            try:
+                _org_name = org_name(self.github_url)
+                _repo_name = repo_name(self.github_url)
+                _issue_num = issue_number(self.github_url)
+                gh_issue_details = get_gh_issue_details(_org_name, _repo_name, int(_issue_num))
+                if gh_issue_details:
+                    self.github_issue_details = gh_issue_details
+                    self.save()
+                    current_github_state = self.github_issue_details.get('state', 'open')
+            except Exception as e:
+                logger.info(e)
+                return 'open'
+        return current_github_state
 
     @property
     def is_issue_closed(self):
