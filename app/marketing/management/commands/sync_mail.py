@@ -41,7 +41,7 @@ def pull_to_db():
         process_email(match.email, 'match')
 
     get_size = 50
-    client = MailChimp(mc_user=settings.MAILCHIMP_USER, mc_api=settings.MAILCHIMP_API_KEY)
+    client = MailChimp(mc_api=settings.MAILCHIMP_API_KEY, mc_user=settings.MAILCHIMP_USER)
 
     print('mailchimp')
     for i in range(0, 90000):
@@ -95,7 +95,7 @@ def pull_to_db():
 
 def push_to_mailchimp():
     print('- push_to_mailchimp')
-    client = MailChimp(settings.MAILCHIMP_USER, settings.MAILCHIMP_API_KEY)
+    client = MailChimp(settings.MAILCHIMP_API_KEY, settings.MAILCHIMP_USER)
     created_after = timezone.now() - timezone.timedelta(hours=2)
     eses = EmailSubscriber.objects.filter(active=True, created_on__gt=created_after).order_by('-pk')
     print("- {} emails".format(eses.count()))

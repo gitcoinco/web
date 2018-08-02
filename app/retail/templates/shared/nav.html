@@ -17,6 +17,7 @@
 {% endcomment %}
 {% load i18n static %}
 {% load is_in_list %}
+{% load matches %}
 <nav class="navbar navbar-expand-md navbar-dark">
   <div id="gitcoin-background"></div>
   <a class="navbar-brand pt-0 pb-0" href="/">
@@ -26,7 +27,7 @@
       <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
     {% endif %}
   </a>
-  {% if not request.path|is_in_list:"/,/contributor,/about,/mission,/vision,/results,/slack,/help,/how/funder,/how/contributor,/tools" %}
+  {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}
     <div class="navbar-network ml-5 py-1 px-2 hidden">
       <i class="fas fa-circle pr-1"></i>
       <span id="current-network"></span>
@@ -116,6 +117,6 @@
     </nav>
   </div>
 </nav>
-{% if not request.path|is_in_list:"/,/contributor,/about,/mission,/vision,/results,/slack,/help,/how/funder,/how/contributor,/tools" %}
+{% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}
   <p id="navbar-network-banner" class="px-0 py-1 m-0 font-caption hidden"></p>
 {% endif %}

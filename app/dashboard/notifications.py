@@ -20,14 +20,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import logging
 import random
 import re
-import sys
 from urllib.parse import urlparse as parse
 
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 
 import requests
-import rollbar
 import twitter
 from economy.utils import convert_token_to_usdt
 from git.utils import delete_issue_comment, org_name, patch_issue_comment, post_issue_comment, repo_name
@@ -35,6 +33,8 @@ from marketing.mails import tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping
 from pyshorteners import Shortener
 from slackclient import SlackClient
+
+logger = logging.getLogger(__name__)
 
 
 def github_org_to_twitter_tags(github_org):
@@ -308,6 +308,7 @@ def maybe_market_to_user_discord(bounty, event_name):
 
     return sent
 
+
 def maybe_market_tip_to_email(tip, emails):
     """Send an email for the specified Tip.
 
@@ -458,8 +459,8 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
         else:
             msg = f"{status_header}__Workers have applied to start work__.\n\n"
 
-        msg += f"\nThese users each claimed they can complete the work by {from_now}. " \
-               "Please review their questions below:\n\n"
+        msg += f"\nThese users each claimed they can complete the work by {from_now}.\n" \
+               "Please review their action plans below:\n\n"
 
         for i, interest in enumerate(interested, start=1):
 
@@ -479,7 +480,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
 
             issue_message = interest.issue_message.strip()
             if issue_message:
-                msg += f"\t\n * Q: {issue_message}"
+                msg += f"\n    \n    {issue_message}"
             msg += f"\n\nLearn more [on the Gitcoin Issue Details page]({absolute_url}).\n\n"
 
     elif event_name == 'work_submitted':
@@ -580,7 +581,7 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
         return False
     except Exception as e:
         extra_data = {'github_url': url, 'bounty_id': bounty.pk, 'event_name': event_name}
-        rollbar.report_exc_info(sys.exc_info(), extra_data=extra_data)
+        logger.error('Failure in marketing to github', exc_info=True, extra=extra_data)
         print(e)
         return False
     return True

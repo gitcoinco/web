@@ -427,7 +427,6 @@ def uninterested(request, bounty_id, profile_id):
     except Bounty.DoesNotExist:
         return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
                             status=401)
-
     is_funder = bounty.is_funder(request.user.username.lower())
     is_staff = request.user.is_staff
     if not is_funder and not is_staff:
@@ -526,7 +525,7 @@ def dashboard(request):
         'title': _('Issue Explorer'),
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
-    return TemplateResponse(request, 'dashboard.html', params)
+    return TemplateResponse(request, 'dashboard/index.html', params)
 
 
 def accept_bounty(request):

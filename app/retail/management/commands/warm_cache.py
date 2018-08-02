@@ -49,6 +49,11 @@ class Command(BaseCommand):
         # build path list
         paths = [reverse('results') + f"/{pl}" for pl in programming_languages]
         paths.append(reverse('results'))
+        paths.append(reverse('activity'))
+        paths.append(reverse('gas_history_view'))
+        paths.append(reverse('gas_history_view') + "?breakdown=daily")
+        paths.append(reverse('gas_history_view') + "?breakdown=weekly")
+        paths.append(reverse('gas'))
 
         # warm the paths
         print(f"starting at {timezone.now()}")

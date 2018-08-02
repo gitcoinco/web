@@ -107,16 +107,6 @@ urlpatterns = [
 
     # View Bounty
     url(
-        r'^bounty/details/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)',
-        dashboard.views.bounty_details,
-        name='bounty_details_new'
-    ),
-    url(
-        r'^funding/details/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)',
-        dashboard.views.bounty_details,
-        name='funding_details_new'
-    ),
-    url(
         r'^issue/(?P<ghuser>.*)/(?P<ghrepo>.*)/(?P<ghissue>.*)/(?P<stdbounties_id>.*)',
         dashboard.views.bounty_details,
         name='issue_details_new3'
@@ -126,8 +116,6 @@ urlpatterns = [
         dashboard.views.bounty_details,
         name='issue_details_new2'
     ),
-    url(r'^bounty/details/?', dashboard.views.bounty_details, name='bounty_details'),
-    url(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
 
     # Tips
     url(
@@ -179,13 +167,13 @@ urlpatterns = [
     re_path(r'^static/avatar/(.*)/(.*)?', avatar.views.handle_avatar, name='org_avatar'),
     re_path(r'^static/viz/graph/(.*)?$', dataviz.d3_views.viz_graph, name='viz_graph'),
     re_path(r'^static/viz/sscatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot_stripped, name='viz_sscatterplot'),
-    re_path(r'^static/v2/js/tokens_dynamic.js$', retail.views.tokens, name='tokens'),
+    path('static/v2/js/tokens_dynamic.js', retail.views.tokens, name='tokens'),
 
     # sync methods
-    url(r'^sync/web3', dashboard.views.sync_web3, name='sync_web3'),
-    url(r'^sync/get_amount?', dashboard.helpers.amount, name='helpers_amount'),
-    url(r'^sync/get_issue_details?', dashboard.helpers.issue_details, name='helpers_issue_details'),
-    url(r'^sync/search_save?', dashboard.views.save_search, name='save_search'),
+    url(r'^sync/web3/?', dashboard.views.sync_web3, name='sync_web3'),
+    url(r'^sync/get_amount/?', dashboard.helpers.amount, name='helpers_amount'),
+    url(r'^sync/get_issue_details/?', dashboard.helpers.issue_details, name='helpers_issue_details'),
+    url(r'^sync/search_save/?', dashboard.views.save_search, name='save_search'),
 
     # modals
     re_path(r'^modal/get_quickstart_video/?', dashboard.views.get_quickstart_video, name='get_quickstart_video'),
@@ -195,21 +183,22 @@ urlpatterns = [
     re_path(r'^about/?', retail.views.about, name='about'),
     re_path(r'^mission/?', retail.views.mission, name='mission'),
     re_path(r'^vision/?', retail.views.vision, name='vision'),
+    re_path(r'^styleguide-alpha/?', retail.views.ui, name='ui'),
     re_path(r'^results/?(?P<keyword>.*)/?', retail.views.results, name='results_by_keyword'),
     re_path(r'^results/?', retail.views.results, name='results'),
     re_path(r'^activity/?', retail.views.activity, name='activity'),
-    url(r'^get/?', retail.views.get_gitcoin, name='get_gitcoin'),
+    re_path(r'^get/?', retail.views.get_gitcoin, name='get_gitcoin'),
     url(r'^$', retail.views.index, name='index'),
     re_path(r'^contributor/?(?P<tech_stack>.*)/?', retail.views.contributor_landing, name='contributor_landing'),
     url(r'^help/dev/?', retail.views.help_dev, name='help_dev'),
     url(r'^help/repo/?', retail.views.help_repo, name='help_repo'),
-    url(r'^help/faq?', retail.views.help_faq, name='help_faq'),
-    url(r'^help/portal?', retail.views.portal, name='portal'),
-    url(r'^help/pilot?', retail.views.help_pilot, name='help_pilot'),
+    url(r'^help/faq/?', retail.views.help_faq, name='help_faq'),
+    url(r'^help/portal/?', retail.views.portal, name='portal'),
+    url(r'^help/pilot/?', retail.views.help_pilot, name='help_pilot'),
     url(r'^help/?', retail.views.help, name='help'),
     url(r'^docs/onboard/?', retail.views.onboard, name='onboard_doc'),
-    url(r'^extension/chrome?', retail.views.browser_extension_chrome, name='browser_extension_chrome'),
-    url(r'^extension/firefox?', retail.views.browser_extension_firefox, name='browser_extension_firefox'),
+    url(r'^extension/chrome/?', retail.views.browser_extension_chrome, name='browser_extension_chrome'),
+    url(r'^extension/firefox/?', retail.views.browser_extension_firefox, name='browser_extension_firefox'),
     url(r'^extension/?', retail.views.browser_extension_chrome, name='browser_extension'),
     path('how/<str:work_type>', retail.views.how_it_works, name='how_it_works'),
 
@@ -251,40 +240,41 @@ urlpatterns = [
     re_path(r'^faucet/?', faucet.views.faucet, name='faucet'),
 
     # admin views
-    url(r'^_administration/?', admin.site.urls, name='admin'),
-    url(r'^_administration/email/new_bounty$', retail.emails.new_bounty, name='admin_new_bounty'),
-    url(r'^_administration/email/roundup$', retail.emails.roundup, name='roundup'),
-    url(r'^_administration/email/faucet_rejected$', retail.emails.faucet_rejected, name='email_faucet_rejected'),
-    url(r'^_administration/email/faucet$', retail.emails.faucet, name='email_faucet'),
-    url(r'^_administration/email/new_tip$', retail.emails.new_tip, name='new_tip'),
-    url(r'^_administration/email/new_match$', retail.emails.new_match, name='new_match'),
-    url(r'^_administration/email/quarterly_roundup$', retail.emails.quarterly_roundup, name='quarterly_roundup'),
-    url(r'^_administration/email/new_work_submission$', retail.emails.new_work_submission, name='new_work_submission'),
-    url(
-        r'^_administration/email/new_bounty_rejection$',
+    re_path(r'^_administration/?', admin.site.urls, name='admin'),
+    path('_administration/email/new_bounty', retail.emails.new_bounty, name='admin_new_bounty'),
+    path('_administration/email/roundup', retail.emails.roundup, name='roundup'),
+    path('_administration/email/faucet_rejected', retail.emails.faucet_rejected, name='email_faucet_rejected'),
+    path('_administration/email/faucet', retail.emails.faucet, name='email_faucet'),
+    path('_administration/email/new_tip', retail.emails.new_tip, name='new_tip'),
+    path('_administration/email/new_match', retail.emails.new_match, name='new_match'),
+    path('_administration/email/quarterly_roundup', retail.emails.quarterly_roundup, name='quarterly_roundup'),
+    path('_administration/email/new_work_submission', retail.emails.new_work_submission, name='new_work_submission'),
+    path(
+        '_administration/email/new_bounty_rejection',
         retail.emails.new_bounty_rejection,
         name='new_bounty_rejection'
     ),
-    url(
-        r'^_administration/email/new_bounty_acceptance$',
+    path(
+        '_administration/email/new_bounty_acceptance',
         retail.emails.new_bounty_acceptance,
         name='new_bounty_acceptance'
     ),
-    url(
-        r'^_administration/email/bounty_expire_warning$',
+    path(
+        '_administration/email/bounty_expire_warning',
         retail.emails.bounty_expire_warning,
         name='bounty_expire_warning'
     ),
-    url(r'^_administration/email/bounty_feedback$', retail.emails.bounty_feedback, name='bounty_feedback'),
-    url(
-        r'^_administration/email/start_work_expire_warning$',
+    path('_administration/email/bounty_feedback', retail.emails.bounty_feedback, name='bounty_feedback'),
+    path('_administration/email/funder_stale', retail.emails.funder_stale, name='funder_stale'),
+    path(
+        '_administration/email/start_work_expire_warning',
         retail.emails.start_work_expire_warning,
         name='start_work_expire_warning'
     ),
-    url(r'^_administration/email/start_work_expired$', retail.emails.start_work_expired, name='start_work_expired'),
-    re_path(r'^_administration/email/gdpr_reconsent$', retail.emails.gdpr_reconsent, name='gdpr_reconsent'),
-    url(r'^_administration/email/new_tip/resend$', retail.emails.resend_new_tip, name='resend_new_tip'),
-    url(
+    path('_administration/email/start_work_expired', retail.emails.start_work_expired, name='start_work_expired'),
+    path('_administration/email/gdpr_reconsent', retail.emails.gdpr_reconsent, name='gdpr_reconsent'),
+    path('_administration/email/new_tip/resend', retail.emails.resend_new_tip, name='resend_new_tip'),
+    re_path(
         r'^_administration/process_accesscode_request/(.*)$',
         tdi.views.process_accesscode_request,
         name='process_accesscode_request'
@@ -330,7 +320,7 @@ urlpatterns = [
 
     # marketing views
     url(r'^leaderboard/(.*)', marketing.views.leaderboard, name='leaderboard'),
-    url(r'^leaderboard', marketing.views._leaderboard, name='_leaderboard'),
+    path('leaderboard', marketing.views._leaderboard, name='_leaderboard'),
 
     # dataviz views
     re_path(r'^_administration/stats/$', dataviz.views.stats, name='stats'),
@@ -383,6 +373,15 @@ if settings.ENABLE_SILK:
 
 if settings.ENV == 'local' and not settings.AWS_STORAGE_BUCKET_NAME:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# If running in DEBUG, expose the error handling pages.
+if settings.DEBUG:
+    urlpatterns += [
+        re_path(r'^400/$', retail.views.handler400, name='400'),
+        re_path(r'^403/$', retail.views.handler403, name='403'),
+        re_path(r'^404/$', retail.views.handler404, name='404'),
+        re_path(r'^500/$', retail.views.handler500, name='500'),
+    ]
 
 handler403 = 'retail.views.handler403'
 handler404 = 'retail.views.handler404'
