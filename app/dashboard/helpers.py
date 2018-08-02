@@ -26,6 +26,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db import transaction
+from django.form.models import model_to_dict
 from django.http import Http404, JsonResponse
 from django.utils import timezone
 
@@ -418,7 +419,18 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'bounty_owner_name': bounty_issuer.get('name', ''),
             })
         else:
-            bounty_kwargs.update(latest_old_bounty.creation_to_dict())
+            latest_old_bounty_dict = model_to_dict(
+                latest_old_bounty,
+                fields=[
+                    'web3_created', 'github_url', 'token_name', 'token_address', 'privacy_preferences', 'expires_date',
+                    'title', 'issue_description', 'balance', 'contract_address', 'network', 'bounty_type',
+                    'project_length', 'experience_level', 'project_type', 'permission_type', 'attached_job_description',
+                    'bounty_owner_github_username', 'bounty_owner_address', 'bounty_owner_email', 'bounty_owner_name',
+                    'github_comments', 'override_status', 'last_comment_date', 'snooze_warnings_for_days',
+                    'admin_override_and_hide', 'admin_override_suspend_auto_approval', 'admin_mark_as_remarket_ready'
+                ],
+            )
+            bounty_kwargs.update(latest_old_bounty_dict)
 
         try:
             new_bounty = Bounty.objects.create(**bounty_kwargs)
