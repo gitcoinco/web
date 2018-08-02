@@ -46,6 +46,7 @@ import retail.emails
 import retail.views
 import tdi.views
 from dashboard.router import router as dbrouter
+from kudos.router import router as kdrouter
 from external_bounties.router import router as ebrouter
 
 from .sitemaps import sitemaps
@@ -66,6 +67,7 @@ urlpatterns = [
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(dbrouter.urls)),
     url(r'^api/v0.1/', include(ebrouter.urls)),
+    url(r'^api/v0.1/', include(kdrouter.urls)),
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cluodfront
 
     # dashboard views
