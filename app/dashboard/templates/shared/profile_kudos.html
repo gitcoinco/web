@@ -16,6 +16,11 @@
 {% endcomment %}
 {% load i18n staticfiles %}
 
+<!-- <div class="container">
+  <h5>Kudos Wallet</h5>
+  <p id=current-wallet>0x0</p>
+</div>
+
 <div class="container">
   <h3>Wallets</h3>
   <ul>
@@ -23,7 +28,7 @@
     <li>{{ address }}</li>
     {% endfor %}
   </ul>
-</div>
+</div> -->
 
 <ul class="nav nav-tabs my-5" id="myTab" role="tablist">
   <li class="nav-item">
@@ -39,8 +44,8 @@
 
 <div class="tab-content" id="myTabContent">
   <div class="tab-pane fade show active" id="mykudos" role="tabpanel" aria-labelledby="home-tab">
-    <div class="row justify-content-center">
-      {% for kudo in kudos %}
+    <div class="row justify-content-center" id='my-kudos'>
+<!--       {% for kudo in kudos %}
       <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
         <div class="kd-card kd-extended">
           <a href="/kudos/{{ kudo.id }}" class="">
@@ -49,16 +54,12 @@
           <div class="kd-content">
             <div class="kd-title">{{ kudo.name }}</div>
             {{ kudo.description }}
-<!--             <div class="mb-2">
-              45/75
-            </div> -->
             <a href="" class="d-block mb-1" data-truncatehash title="{{ kudo.lister}} ">{{ kudo.lister }}</a>
             <div>Sent from <a href="">Bob7878</a></div>
-            <!-- <p class="mt-2 mb-0">You have an amazing attention to details</p> -->
           </div>
         </div>
       </div>
-      {% endfor %}
+      {% endfor %} -->
     </div> 
   </div>
   
@@ -84,3 +85,6 @@
     </div>
   </div>
 </div>
+
+
+<script src="{% static "v2/js/pages/profile_kudos.js" %}"></script>
