@@ -21,10 +21,13 @@
 <script src="{% static "v2/js/secrets.min.js" %}"></script>
 <script src="{% static "v2/js/ipfs-api.js" %}"></script>
 <script src="{% static "v2/js/ipfs.js" %}"></script>
-<script src="{% static "v2/js/shared.js" %}"></script>
 <script src="{% static "onepager/js/receive.js" %}"></script>
 <script src="{% static "onepager/js/confetti.js" %}"></script>
 <script src="{% static "onepager/js/tx.js" %}"></script>
+
+<script>
+  $('#forwarding_address').val(web3.eth.coinbase)
+</script>
 
 {% endblock %}
 <!-- Main -->
@@ -34,35 +37,43 @@
 </div>
 {% endblock %}
 {% block 'main' %}
-<section id="main">
-  <header>
-    <span class="avatar">
+<section id="main" class="box-transaction">
+  <header class="text-center">
+    <!-- <span class="avatar line-back">
       <a href="{% url "tip" %}">
-        <img src="{% static "v2/images/helmet.png" %}" style="background-color: white; max-width: 100px; max-height: 100px;" />
       </a>
-    </span>
+    </span> -->
+    <img src="{% static "v2/images/helmet.png" %}" class="bg-white mh-100 mw-100 mx-auto p-2" width="70"/>
+    <h1 class="h2">{% trans "You've got a Kudos" %}</h1>
+
+    <div class="my-4">
+      <img src="{% static "v2/images/kudos/above_and_beyond.svg" %}" width="160" alt="" class="mb-2">
+      <span class="d-block">Night Owl</span>
+      <span class="d-block" data-kudosprice="0.0011">Ξ 0.0011 <small></small></span>
+    </div>
+    
   </header>
   <div id="receove_eth" {% if tip.receive_txid %} style="display:none;" {%endif%} >
     <form method="POST">
-      <h1 id="oneh1">{% trans "You've got" %} {{tip.amount}} {{tip.tokenName}} </h1>
-      <div>
-        {% trans "Forward it to a permanent address:" %}
-        <br>
+      <div class="form-group">
+        <label for="">{% trans "Forward it to a permanent address" %}:</label>
+        <input type="text" name="forwarding_address" id="forwarding_address" class="form-control" placeholder="0x0" {% if disable_inputs %}disabled=disabled{%endif%}>
         <input type="hidden" name="network" id="network" value="">
-        <input type="text" name="forwarding_address" id="forwarding_address" placeholder="0x0" {% if disable_inputs %}disabled=disabled{%endif%}>
       </div>
-      <div>
-        <input type="checkbox" name="save_addr" id="save_addr" value=1 checked="" {% if disable_inputs %}disabled=disabled{%endif%}>
-        <label for=save_addr>{% trans "Save this address as my direct payment address" %}</label>
-        <br>
-        <input type="checkbox" id="tos" value="1" >
-        <label for="tos">{% blocktrans %}I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.{% endblocktrans %}</label>
 
+      <div class="form-check">
+        <input type="checkbox" name="save_addr" id="save_addr" value="1" class="form-check-input" {% if disable_inputs %}disabled=disabled{%endif%} required>
+        <label for=save_addr>{% trans "Save this address as my direct payment address" %}</label>
       </div>
-      <div>
-        <br>
-        <input id="receive" type='submit' class="button button--primary" value="{% trans "Claim" %} {{tip.tokenName}} 🙌" {% if disable_inputs %}disabled=disabled{%endif%} >
-        <br>
+
+      <div class="form-check mb-3">
+        <input type="checkbox" id="tos" value="1" class="form-check-input" required>
+        <label for="tos" class="form-check-label">{% blocktrans %}I understand &amp; agree to the {% endblocktrans %} <a href="{% url "_terms" %}">{% trans "terms of service" %}</a>.</label>
+      </div>
+      
+      
+      <div class="text-center">
+        <input id="receive" type='submit' class="btn btn-gc-purple" value="{% trans "Claim" %} {{tip.tokenName}} 🙌" {% if disable_inputs %}disabled=disabled{%endif%} >  
       </div>
     </form>
   </div>

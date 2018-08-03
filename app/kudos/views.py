@@ -127,7 +127,7 @@ def send(request):
     # kt = KudosToken(name='pythonista', description='Zen', rarity=5, price=10, num_clones_allowed=3,
     #                 num_clones_in_wild=0)
 
-    return TemplateResponse(request, 'transaction/send2.html', context)
+    return TemplateResponse(request, 'transaction/send.html', context)
 
 
 def receive(request):
@@ -135,4 +135,4 @@ def receive(request):
     # kt = KudosToken(name='pythonista', description='Zen', rarity=5, price=10, num_clones_allowed=3,
     #                 num_clones_in_wild=0)
 
-    return TemplateResponse(request, 'kudos_mint.html', context)
+    return TemplateResponse(request, 'transaction/receive.html', context)
