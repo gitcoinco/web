@@ -162,8 +162,9 @@ class DashboardModelsTest(TestCase):
             bounty_owner_github_username='gitcoinco',
         )
         tip = Tip.objects.create(
+            from_username='gitcoinco',
+            username='gitcoinco',
             emails=['foo@bar.com'],
-            github_url='https://github.com/gitcoinco/web/issues/305',
             expires_date=datetime.now(tz=pytz.UTC) + timedelta(days=1),
         )
         profile = Profile(
