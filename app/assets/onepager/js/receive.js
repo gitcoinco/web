@@ -90,7 +90,7 @@ $(document).ready(function() {
     // redeem tip
 
     var gas_price_wei = document.gas_price * 10 ** 9;
-    var is_eth = document.tip['token_address'] == '0x0';
+    var is_eth = document.tip['token_address'] == '0x0' || document.tip['token_address'] == '0x0000000000000000000000000000000000000000';
     var token_address = document.tip['token_address'];
     var token_contract = web3.eth.contract(token_abi).at(token_address);
     var holding_address = document.tip['holding_address'];
