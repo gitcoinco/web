@@ -1,0 +1,15 @@
+{
+  "symbol": "HCB",
+  "address": "0x82a7cC01C1758332B5b3688706fBfaE205982c0E",
+  "overview":{
+        "en": "Candy Box Coin of Higgs Chain",
+        "zh": "Higgs Chain公链的生态糖果币"
+  },
+  "email": "contact@higgschain.com",
+  "website": "www.higgschain.com",
+  "whitepaper": "https://www.higgschain.com/documents/HIGGSCHAIN_Whitepaper_EN_2.5.pdf",
+  "links": {
+    "twitter": "https://twitter.com/ChainHiggs",
+    "telegram": "https://t.me/higgschainenglish"
+  }
+}
