@@ -105,12 +105,12 @@
             <div class="col col-12 text-left">
                 <ul>
                     {% for item in tutorials %}
-                    <li class='tutorial_parent pb-4 pt-4'>
-                        <div style="width:33%; display: inline-block;">
-                            <img src="{{item.img}}" />
+                    <li class='tutorial_parent pb-2 pt-2'>
+                        <div style="width:20%; display: inline-block; text-align: center;">
+                            <img src="{{item.img}}" style="max-height: 200px; max-width: 200px; margin: 0px auto;" />
                         </div>
-                        <div style="width: 60%;  display: inline-block; margin-left: 3%;">
-                            <a href="{{item.url}}">{{item.title}}</a>
+                        <div style="width: 70%;  display: inline-block; margin-left: 5%;">
+                            <a href="{{item.url}}" style="font-size: 16px">{{item.title}}</a>
                         </div>
                     </li>
                     {% endfor %}
@@ -164,7 +164,6 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/rollbar.html' %}
     {% include 'shared/messages.html' %}
 
 </body>

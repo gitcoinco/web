@@ -1,10 +1,13 @@
 jQuery(document).ready(function() {
 
   var gas_price_to_confirmation_time = function(gas_price) {
+    if (typeof gas_times == 'undefined') {
+      return;
+    }
     for (var i = 0; i < gas_times.length; i++) {
       var d = gas_times[i];
 
-      if (gas_price < (parseInt(d[0]) + 0.1) && gas_price > (parseInt(d[0]) - 0.1) ) {
+      if (gas_price < (parseInt(d[0]) + 0.1) && gas_price > (parseInt(d[0]) - 0.1)) {
         return d[1];
       }
     }

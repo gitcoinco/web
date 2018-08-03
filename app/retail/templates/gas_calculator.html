@@ -8,14 +8,20 @@
 
 {% endblock %}
 <!-- Main -->
-
-{% block 'world' %}
-    <canvas id="world" style="position:absolute; top:0px; left: 0px;">
-    </canvas>
-{% endblock %}
-
 {% block 'main' %}
 
+<style>
+  table td {
+    padding: 5px;
+    text-align: center;
+  }
+  table tr {
+    border-bottom: 1px solid #555555;
+  }
+  table td input {
+    width: 100px !important;
+  }
+</style>
 <section id=main>
 {% include 'shared/gas_nav.html' %}
 {% include 'shared/gas_advisories.html' %}
@@ -41,49 +47,31 @@
           <td>
             Action
           </td>
-          <td>
+          <td class=hidden>
             Gas Needed (wei)
           </td>
           <td>
-            Total Cost (eth)
+            Cost (eth)
           </td>
           <td>
-            Total Cost (USD)
+            Cost (USD)
           </td>
           <td>
-            Conf Time (minutes)
+            Conf Time (min)
           </td>
        </tr>
        <tr class="all">
           <td>
             <input class="gas_cost" type="number" min=0 value="{{start_gas_cost |floatformat:0}}" style="border: 1px solid red; ">
           </td>
-          <td>
-            N/A
-          </td>
-          <td>
-            N/A
-          </td>
-          <td>
-            N/A
-          </td>
-          <td>
-            N/A
-          </td>
-          <td>
-            N/A
-          </td>
-          <td>
-            N/A
-          </td>
-          <td>
-            N/A
+          <td colspan="6">
+            &nbsp;
           </td>
        </tr>
        {% for action in actions %}
          <tr class="new_bounty">
             <td>
-                Please Edit above ^^
+                ^^
             </td>
             <td>
               {{action.product}}
@@ -95,10 +83,10 @@
               <span class="name">{{action.name}}</span>
               <input type="hidden" class="target" value="{{action.target}}" />
             </td>
-            <td>
+            <td class="hidden">
               <input class="gas_needed" type="text" disabled="disabled">
             </td>
-            <td>
+            <td class="">
               <input class="total_cost_eth" type="text" disabled="disabled">
             </td>
             <td>

@@ -6,7 +6,7 @@ var doconfetti = function(){
 
   NUM_CONFETTI = 350;
 
-  COLORS = [[85, 71, 106], [174, 61, 99], [219, 56, 83], [244, 92, 68], [248, 182, 70]];
+  COLORS = [[165,104,246],[230,61,135],[0,199,228],[253,214,126],[253,214,126]];
 
   PI_2 = 2 * Math.PI;
 
@@ -120,8 +120,7 @@ var doconfetti = function(){
 };
 
 var stopConfetti = function(){
-  var element = $("world");
-  element.parentNode.removeChild(element);
+  $("#world").remove();
   setTimeout(function(){
   },100);
 };
@@ -131,6 +130,6 @@ var startConfetti = function(){
   doconfetti();
   setTimeout(function(){
     stopConfetti();
-  }, 4000);
+  }, 20000);
 };
 

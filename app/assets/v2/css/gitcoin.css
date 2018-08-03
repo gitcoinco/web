@@ -127,6 +127,10 @@ body {
   overflow-x: hidden;
   width: 100%;
   background-color: #fff;
+
+  /* better font render */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h4,
@@ -290,7 +294,7 @@ div.button-pink {
 }
 
 .header-line {
-  color: white;
+  color: #12c971;
   font-family: Muli, sans-serif;
   font-size: 3em;
   font-weight: 500;

@@ -64,7 +64,7 @@
                   </div>
                   <div class="w-100 mt-2 terms_container">
                       <div class="form__checkbox">
-                          <input name='terms' required id='terms' type="checkbox" value=1 />
+                          <input name='terms' required id='terms' type="checkbox" value=1 required />
                           <label class="form__label" for="terms">{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>.{% endblocktrans %}</label>
                       </div>
                   </div>
@@ -77,7 +77,7 @@
                   <div class="form__footer form__footer--right">
                       <button class="button button--primary js-submit" role="button" href="#">{% trans "Submit Work" %}</button>
                       <br />
-                      <a href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp" target="_blank" rel="noopener noreferrer">{% trans "Having trouble?  Click here." %}</a>
+                      <a target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.  Learn more here.</a>
                   </div>
                 </form>
               </div>
@@ -89,13 +89,13 @@
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
   </body>
 
   <!-- jQuery -->
   <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="/static/v2/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
   <script src="{% static "v2/js/pages/fulfill_bounty.js" %}"></script>

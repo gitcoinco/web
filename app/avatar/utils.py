@@ -27,7 +27,7 @@ from django.http import HttpResponse, JsonResponse
 from django.template import loader
 
 import requests
-from github.utils import get_user
+from git.utils import get_user
 from PIL import Image, ImageOps
 from svgutils.compose import SVG, Figure, Line
 
@@ -283,7 +283,7 @@ def get_avatar(_org_name):
         filepath = AVATAR_BASE + '../../v2/images/helmet.png'
     try:
         avatar = Image.open(filepath, 'r').convert("RGBA")
-    except IOError:
+    except (IOError, FileNotFoundError):
         remote_user = get_user(_org_name)
         if not remote_user.get('avatar_url', False):
             return JsonResponse({'msg': 'invalid user'}, status=422)

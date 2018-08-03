@@ -16,19 +16,33 @@
 {% endcomment %}
 {% load humanize %}
 <style>
-  .gas_nav {
-    list-style: none; 
-    border-bottom: #333 1px solid;
+  @media screen and (max-width: 900px) {
+    .gas_nav li{
+      display: list-item;
+      border-top: 1px solid black;
+      border-left: 1px solid black;
+      border-right: 1px solid black;
+    }
   }
-  .gas_nav li{
-    display: inline-block;
-    border-top: 1px solid black;
-    border-left: 1px solid black;
-    border-right: 1px solid black;
-    padding: 5px 10px;
+  @media screen and (min-width: 901px) {
+    .gas_nav li{
+      display: inline-block;
+      border-top: 1px solid black;
+      border-left: 1px solid black;
+      border-right: 1px solid black;
+    }
+  }
+  ul {
+    padding-left: 0px;
+  }
+  .gas_nav {
+    list-style: none;
+    border-bottom: #333 1px solid;
   }
   .gas_nav li a{
     color: black !important;
+    display: block;
+    padding: 5px 10px;
   }
   .gas_nav.small {
     border-bottom: #aaaaaa 1px solid;
@@ -46,18 +60,21 @@
 </style>
 <ul class="gas_nav">
   <li>
-    <a href="{% url 'gas' %}"> Live Gas Tool</a>
+    <a href="{% url 'gas_intro' %}">Intro</a>
+  </li>
+  <li>
+    <a href="{% url 'gas' %}">Price Tradeoff Tool</a>
+  </li>
+  <li>
+    <a href="{% url 'gas_history_view' %}">Price History</a>
   </li>
   <li>
     <a href="{% url 'gas_calculator' %}"> Gitcoin Contract Gas Cost Calculator</a>
   </li>
   <li>
-    <a href="{% url 'gas_history_view' %}"> Gas History</a>
+    <a href="{% url 'gas_faq' %}"> FAQ</a>
   </li>
   <li>
-    <a href="{% url 'gas_faq' %}"> Gas FAQ</a>
-  </li>
-  <li>
-    <a href="{% url 'gas_faucet_list' %}"> Gas Faucets</a>
+    <a href="{% url 'gas_faucet_list' %}"> Get Gas</a>
   </li>
 </ul>

@@ -40,7 +40,7 @@ def get_history_cached(breakdown, i):
     key_salt = '0'
     key = f'get_history_cached_{breakdown}_{i}_{key_salt}'
     results = cache.get(key)
-    if results and not settings.DEBUG:
+    if results:
         return results
 
     results = gas_history(breakdown, i)
@@ -63,9 +63,20 @@ def gas(request):
         'gas_advisories': gas_advisories(),
         'conf_time_spread': _cts,
         'hide_send_tip': True,
+        'is_3d': request.GET.get("is_3d", False),
         'title': 'Live Gas Usage => Predicted Conf Times'
     }
     return TemplateResponse(request, 'gas.html', context)
+
+
+def gas_intro(request):
+
+    context = {
+        'title': _('Gas Intro'),
+        'card_desc': _('Intro to Web3 / Gas'),
+        'hide_send_tip': True,
+    }
+    return TemplateResponse(request, 'gas_intro.html', context)
 
 
 def gas_faq(request):
@@ -77,6 +88,7 @@ def gas_faq(request):
     }
     return TemplateResponse(request, 'gas_faq.html', context)
 
+gas_intro
 
 def gas_faucet_list(request):
 
@@ -150,8 +162,10 @@ def gas_history_view(request):
         1: 'red',
         5: 'orange',
         60: 'green',
-        120: 'steelblue',
-        180: 'purple',
+        90: 'steelblue',
+        105: 'purple',
+        120: '#dddddd',
+        180: 'black',
     }
     for i in lines.keys():
         gas_histories[i] = get_history_cached(breakdown, i)

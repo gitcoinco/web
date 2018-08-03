@@ -126,6 +126,10 @@ body {
   color: #000000;
 }
 
+#issue_description pre, code {
+  padding: 1em 0;
+}
+
 .bounty-subheading {
   font-weight: lighter;
   font-size: 14px;
@@ -264,6 +268,11 @@ body {
   color: #6184AC;
 }
 
+.tag.token.additional_funding_summary{
+  background-color: #fbe0d6;
+  color: #fb9470;
+}
+
 .contributor-box {
   border: 1px solid #DBDBDB;
   border-right: none;
@@ -359,8 +368,14 @@ a.btn {
   max-width: 100%;
   width: 13rem;
   z-index: 2;
-  top: 2rem;
   padding-right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.waiting-state img {
+  top: -2rem;
+  transform: none;
 }
 
 #btn-white img {
@@ -417,6 +432,11 @@ a.btn {
 #bounty_details {
   display: none;
   margin-bottom: 2em;
+}
+
+.code-snippet {
+  background-color: #F2F6F9;
+  padding: 1rem;
 }
 
 #bounty_details #issue_description img {
@@ -489,6 +509,10 @@ a.btn {
     text-align: center;
   }
 
+  .loading_img img {
+    width: 10rem;
+  }
+
   #bounty_details .tags {
     margin-top: 10px;
     float: none;
@@ -528,8 +552,12 @@ a.btn {
   width: 100%;
 }
 
-#issue-message {
-  min-height: 6em;
+#issue_message {
+  min-height: 12em;
+}
+
+#issue_message.placeholder {
+  color: #6e6e6e;
 }
 
 .add-interest-options {
@@ -610,10 +638,10 @@ a.btn {
   margin: 4rem auto;
   font-weight: 700;
   z-index: 2;
-  padding-top: 100px;
 }
 
 .bounty_details .quote_text {
+  margin-top: 50px;
   font-size: 1.1rem;
   color: #4A4A4A;
 }

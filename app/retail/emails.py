@@ -64,14 +64,21 @@ def premailer_transform(html):
 
 def render_tip_email(to_email, tip, is_new):
     warning = tip.network if tip.network != 'mainnet' else ""
+    already_redeemed = bool(tip.receive_txid)
+    link = tip.url
+    if tip.web3_type != 'v2':
+        link = tip.receive_url
+    elif tip.web3_type != 'v3':
+        link = tip.receive_url_for_recipient
     params = {
-        'link': tip.url,
+        'link': link,
         'amount': round(tip.amount, 5),
         'tokenName': tip.tokenName,
         'comments_priv': tip.comments_priv,
         'comments_public': tip.comments_public,
         'tip': tip,
-        'show_expires': tip.expires_date < (timezone.now() + timezone.timedelta(days=365)) and tip.expires_date,
+        'already_redeemed': already_redeemed,
+        'show_expires': not already_redeemed and tip.expires_date < (timezone.now() + timezone.timedelta(days=365)) and tip.expires_date,
         'is_new': is_new,
         'warning': warning,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
@@ -212,6 +219,40 @@ def render_admin_contact_funder(bounty, text, from_user):
 
     return response_html, response_txt
 
+
+def render_funder_stale(github_username, days=30, time_as_str='about a month'):
+    """Render the stale funder email template.
+
+    Args:
+        github_username (str): The Github username to be referenced in the email.
+        days (int): The number of days back to reference.
+        time_as_str (str): The human readable length of time to reference.
+
+    Returns:
+        str: The rendered response as a string.
+
+    """
+    response_txt = f"""
+Hi {github_username},
+
+Kevin Owocki from Gitcoin here.
+
+I see you haven't posted any funded work to the platform in {time_as_str}.
+
+Just wanted to check in and see if there's anything we can do, or if you had any feedback for us. \
+We're still a small startup and we iterate fast; not only will your feedback be heard, but it's \
+got a good chance of being put into the product roadmap!
+
+Kevin
+
+PS - I've got some new gitcoin schwag on order.  Send me your mailing address and your \
+t-shirt size and i'll ship you some.
+
+"""
+
+    params = {'txt': response_txt}
+    response_html = premailer_transform(render_to_string("emails/txt.html", params))
+    return response_html, response_txt
 
 
 def render_new_bounty(to_email, bounties, old_bounties):
@@ -363,7 +404,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
         'bounty': bounty,
         'interest': interest,
         'time_delta_days': time_delta_days,
-        'subscriber': get_or_save_email_subscriber(fr.email, 'internal'),
+        'subscriber': get_or_save_email_subscriber(interest.profile.email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/render_bounty_startwork_expired.html", params))
@@ -467,6 +508,7 @@ def render_start_work_applicant_expired(interest, bounty):
     return response_html, response_txt, subject
 
 
+
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
@@ -498,7 +540,7 @@ we think it's important to understand a) what gas is, b) how it's fluctutated ov
     </ul>
 </p>
 <p>
-Back to building,
+Back to BUIDLing,
 </p>
 '''
     highlights = [
@@ -519,7 +561,7 @@ Back to building,
         {
             'who': 'anshumanv',
             'who_link': True,
-            'what': 'Worked on Giveth as they prepare for launch!,
+            'what': 'Worked on Giveth as they prepare for launch!',
             'link': 'https://gitcoin.co/issue/Giveth/giveth-dapp/80/823',
             'link_copy': 'View more',
         },
@@ -542,19 +584,20 @@ Back to building,
 
     #### don't need to edit anything below this line
 
+
     bounties = []
     for nb in bounties_spec:
         try:
-            bounty = Bounty.objects.get(
-                current_bounty=True,
+            bounty = Bounty.objects.current().filter(
                 github_url__iexact=nb['url'],
-            )
-            bounties.append({
-                'obj': bounty,
-                'primer': nb['primer']
-                })
-        except:
-            pass
+            ).order_by('-web3_created').first()
+            if bounty:
+                bounties.append({
+                    'obj': bounty,
+                    'primer': nb['primer']
+                    })
+        except Exception as e:
+            print(e)
 
     ecosystem_bounties = ExternalBounty.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(weeks=1)).order_by('?')[0:5]
 
@@ -662,6 +705,26 @@ def bounty_feedback(request):
 
 
 @staff_member_required
+def funder_stale(request):
+    """Display the stale funder email template.
+
+    Params:
+        limit (int): The number of days to limit the scope of the email to.
+        duration_copy (str): The copy to use for associated duration text.
+        username (str): The Github username to reference in the email.
+
+    Returns:
+        HttpResponse: The HTML version of the templated HTTP response.
+
+    """
+    limit = int(request.GET.get('limit', 30))
+    duration_copy = request.GET.get('duration_copy', 'about a month')
+    username = request.GET.get('username', '@foo')
+    response_html, _ = render_funder_stale(username, limit, duration_copy)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
 def bounty_expire_warning(request):
     from dashboard.models import Bounty
     response_html, _ = render_bounty_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.last())
@@ -708,7 +771,8 @@ def roundup(request):
 def quarterly_roundup(request):
     from marketing.utils import get_platform_wide_stats
     platform_wide_stats = get_platform_wide_stats()
-    response_html, _ = render_quarterly_stats(settings.CONTACT_EMAIL, platform_wide_stats)
+    email = settings.CONTACT_EMAIL
+    response_html, _ = render_quarterly_stats(email, platform_wide_stats)
     return HttpResponse(response_html)
 
 

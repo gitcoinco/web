@@ -15,16 +15,21 @@
 }
 
 .tag.usd {
-  background-color: #D6FBEB;
+  background-color: #d6fbeb;
   color: #00A55E;
 }
 
 .tag.network_warning {
-  background-color: #fbe0d6;
-  color: #fbaf95;
+  background-color: #fbaf95;
+  color: #fff;
 }
 
 .tag.token {
-  background-color: #E7F0FA;
+  background-color: #e7f0fa;
   color: #775EC7;
+}
+
+.tag.hiring {
+  background-color: #3a9ced;
+  color: #fff;
 }

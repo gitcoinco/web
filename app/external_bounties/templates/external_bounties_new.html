@@ -47,7 +47,6 @@
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
     <script>
@@ -55,6 +54,7 @@
         $('input[type=text], input[type=url], input[type=number], textarea').addClass('form__input');
       });
     </script>
+    <script src="/static/v2/js/tokens_dynamic.js"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>
     <script src="{% static "v2/js/shared.js" %}"></script>
   </body>

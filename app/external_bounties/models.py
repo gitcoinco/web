@@ -27,7 +27,7 @@ from django.utils.translation import gettext_lazy as _
 
 from economy.models import SuperModel
 from economy.utils import convert_amount
-from github.utils import org_name, repo_name
+from git.utils import org_name, repo_name
 
 
 class ExternalBounty(SuperModel):
