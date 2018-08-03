@@ -64,11 +64,13 @@
       </a>
     </span> -->
     <img src="{% static "v2/images/helmet.png" %}" class="bg-white mh-100 mw-100 mx-auto p-2" width="70"/>
-    <h1>{% trans "Send" %} <span class="text-highlight-green">{% trans "Kudos" %}</span></h1>
+    <h1 class="h2">{% trans "Send Kudos" %}</h1>
 
-    <img src="{% static "v2/images/kudos/above_and_beyond.svg" %}" width="160" alt="">
-    <span class="d-block">Night Owl</span>
-    <span class="d-block" data-kudosprice="0.0011">Ξ 0.0011 <small></small></span>
+    <div class="my-4">
+      <img src="{% static "v2/images/kudos/above_and_beyond.svg" %}" width="160" alt="" class="mb-2">
+      <span class="d-block">Night Owl</span>
+      <span class="d-block" data-kudosprice="0.0011">Ξ 0.0011 <small></small></span>
+    </div>
     
   </header>
  
@@ -95,8 +97,8 @@
       <input type="text" placeholder="@username" id="fromName" value="{% if user.is_authenticated  %}{{ user }}{% endif %}" class="form-control" disabled="disabled">
     </div>
 
-    <div id="advanced_toggle" class="form-group">
-      <a>{% trans "Advanced" %} >></a>
+    <div id="advanced_toggle" class="form-group text-center">
+      <a href="#">{% trans "Advanced" %} >></a>
     </div>
     <div id='advanced' style="display:none;">
       <div class="form-group">
@@ -134,12 +136,14 @@
         <textarea id="comments_public" class="form-control"></textarea>
       </div>
     </div>
-    <div class="mb-1 mb-3 form-group form-check">
+    <div class="mb-1 mb-3 form-group form-check text-center">
       <input type="checkbox" id="tos" value="1" class="form-check-input" required>
       <label for="tos" class="form-check-label">{% blocktrans %}I understand &amp; agree to the {% endblocktrans %} <a href="{% url "_terms" %}">{% trans "terms of service" %}</a>.</label>
     </div>
+    <div class="text-center">
     <!-- <a href="#" id="send" class="btn btn-gc-purple">{% trans "Send" %} <span class="emoji">⚡️</span></a> -->
-    <button class="btn btn-gc-purple" id="send">{% trans "Send" %} <span class="emoji">⚡️</span></button>
+      <button class="btn btn-gc-purple" id="send">{% trans "Send" %} <span class="emoji">⚡️</span></button>
+    </div>
   </form>
 
   <div id="send_eth_done" style="display:none;" class="text-center">

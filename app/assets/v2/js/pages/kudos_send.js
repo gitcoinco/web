@@ -56,7 +56,8 @@ var wait_for_metadata = function(callback) {
 $(document).ready(function() {
   set_metadata();
   // jquery bindings
-  $('#advanced_toggle').click(function() {
+  $('#advanced_toggle').click(function(e) {
+    e.preventDefault();
     advancedToggle();
   });
   $('#amount').on('keyup blur change', updateEstimate);
