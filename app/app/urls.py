@@ -57,6 +57,8 @@ urlpatterns = [
     url(r'^kudos/about', kudos.views.about, name='kudos_about'),
     url(r'^kudos/marketplace/$', kudos.views.marketplace, name='kudos_marketplace'),
     url(r'^kudos/mint', kudos.views.mint, name='kudos_mint'),
+    url(r'^kudos/send', kudos.views.send, name='kudos_send'),
+    url(r'^kudos/receive', kudos.views.receive, name='kudos_receive'),
     url(r'^kudos/search/$', kudos.views.search, name='kudos_search'),
     re_path(r'^kudos/\d+', kudos.views.details, name='kudos_details'),
 
