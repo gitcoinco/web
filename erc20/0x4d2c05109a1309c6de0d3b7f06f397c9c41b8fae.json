@@ -1,0 +1,19 @@
+{
+    "published_on": "2018-03-09",
+    "links": {
+        "twitter": "https://twitter.com/ValPromise",
+        "telegram": "https://t.me/joinchat/FJZW-E8KbjE1Zqdx4IDU4g"
+    },
+    "overview": {
+        "en": "Value Promise Protocol token",
+        "zh": "分布式價值承諾協議"
+    },
+    "symbol": "VPP",
+    "initial_price": {
+        "ETH": "0.000013 ETH"
+    },
+    "address": "0x4d2c05109a1309c6de0d3b7f06f397c9c41b8fae",
+    "email": "ValPromise@valp.io",
+    "website": "www.valp.io",
+  	"whitepaper": "http://www.valp.io/whitepaper/ValPromise_WhitePaper_en.pdf"
+}
