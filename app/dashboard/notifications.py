@@ -341,11 +341,10 @@ def maybe_market_tip_to_slack(tip, event_name):
     if not tip.is_notification_eligible(var_to_check=settings.SLACK_TOKEN):
         return False
 
-    title = tip.github_url
     msg = f"{event_name} worth {round(tip.amount, 4)} {tip.tokenName}"
 
-    if title:
-        msg = f"{msg}: {title}"
+    if tip.github_url:
+        msg = f"{msg}:\n{tip.github_url}"
 
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
