@@ -1131,7 +1131,10 @@ def sync_web3(request):
 # LEGAL
 
 def terms(request):
-    return TemplateResponse(request, 'legal/terms.txt', {})
+    context = {
+        'title': _('Terms of Use'),
+    }
+    return TemplateResponse(request, 'legal/terms.html', context)
 
 
 def privacy(request):

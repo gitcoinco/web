@@ -854,7 +854,18 @@ var promptForAuth = function(event) {
 
     token_contract.allowance.call(from, to, function(error, result) {
       if (error || result.toNumber() == 0) {
-        _alert("You have not yet enabled this token.  To enable this token, go to the <a style='padding-left:5px;' href='/settings/tokens'> Token Settings page and enable it</a>. (this is only needed one time per token)", 'warning');
+        if (!document.alert_enable_token_shown) {
+          _alert(
+            gettext('To enable this token, go to the ') +
+            '<a style="padding-left:5px;" href="/settings/tokens">' +
+            gettext('Token Settings page and enable it.') +
+            '</a> ' +
+            gettext('This is only needed once per token.'),
+            'warning'
+          );
+        }
+        document.alert_enable_token_shown = true;
+
         $('input, textarea, select').prop('disabled', 'disabled');
         $('select[name=deonomination]').prop('disabled', '');
       } else {
