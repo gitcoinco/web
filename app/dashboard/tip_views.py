@@ -305,7 +305,7 @@ def send_tip_4(request):
 
     # notifications
     maybe_market_tip_to_github(tip)
-    maybe_market_tip_to_slack(tip, 'new_tip')
+    maybe_market_tip_to_slack(tip, 'New tip')
     maybe_market_tip_to_email(tip, to_emails)
     record_user_action(tip.from_username, 'send_tip', tip)
     record_tip_activity(tip, tip.from_username, 'new_tip' if tip.username else 'new_crowdfund')
