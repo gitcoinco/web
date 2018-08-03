@@ -399,7 +399,7 @@ HOTJAR_CONFIG = {'hjid': env.int('HOTJAR_ID', default=0), 'hjsv': env.int('HOTJA
 SENTRY_USER = env('SENTRY_USER', default='')
 SENTRY_PASSWORD = env('SENTRY_PASSWORD', default='')
 SENTRY_ADDRESS = env('SENTRY_ADDRESS', default='')
-SENTRY_JS_DSN = env.str('SENTRY_FE_DSN', default='')
+SENTRY_JS_DSN = env.str('SENTRY_JS_DSN', default='')
 SENTRY_PROJECT = env('SENTRY_PROJECT', default='')
 RELEASE = raven.fetch_git_sha(os.path.abspath(os.pardir)) if SENTRY_USER else ''
 RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='3.26.4')
