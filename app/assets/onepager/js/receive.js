@@ -115,6 +115,7 @@ $(document).ready(function() {
         if (is_eth) {
           // send ETH
           rawTx = {
+            nonce: web3.toHex(nonce),
             to: forwarding_address,
             from: holding_address,
             value: amount_in_wei
