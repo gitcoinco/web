@@ -80,8 +80,8 @@
           animation-name: rains-fall, rains-shake;
   -webkit-animation-duration: 20s, 8s;
           animation-duration: 20s, 8s;
-  -webkit-animation-timing-function: linear, ease-in-out;
-          animation-timing-function: linear, ease-in-out;
+  -webkit-animation-timing-function: linear, linear;
+          animation-timing-function: linear, linear;
   -webkit-animation-iteration-count: infinite, infinite;
           animation-iteration-count: infinite, infinite;
   -webkit-animation-play-state: running, running;
