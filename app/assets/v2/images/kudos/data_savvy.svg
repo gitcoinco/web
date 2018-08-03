@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 viewBox="0 0 128 110.9" style="enable-background:new 0 0 128 110.9;" xml:space="preserve">
+<style type="text/css">
+	.st0{fill:#2E3192;}
+	.st1{opacity:0.48;}
+	.st2{opacity:0.51;clip-path:url(#SVGID_2_);}
+	.st3{fill:#FFFFFF;}
+	.st4{font-family:'Verdana';}
+	.st5{font-size:3.7956px;}
+	.st6{fill:#662D91;}
+	.st7{opacity:0.13;}
+	.st8{fill:#92C1F4;}
+	.st9{fill:#FCF295;}
+	.st10{fill:#FCEE21;}
+	.st11{fill:#B7A611;}
+	.st12{fill:#8CC63F;}
+	.st13{fill:#39B54A;}
+	.st14{fill:#009245;}
+	.st15{fill:#78D3F4;}
+	.st16{fill:#29ABE2;}
+	.st17{fill:#0071BC;}
+</style>
+<g>
+	<polygon class="st0" points="90.6,9.4 37.4,9.4 10.8,55.5 37.4,101.6 90.6,101.6 117.2,55.5 	"/>
+</g>
+<g class="st1">
+	<defs>
+		<polygon id="SVGID_1_" class="st1" points="35.2,5 5.5,55 35.5,106.2 92,106.5 122,55.7 94,5.5 		"/>
+	</defs>
+	<clipPath id="SVGID_2_">
+		<use xlink:href="#SVGID_1_"  style="overflow:visible;opacity:0.55;"/>
+	</clipPath>
+	<g class="st2">
+		<text transform="matrix(1 0 0 1 -2 2.5975)" class="st3 st4 st5">00111101     0011010  0        1100 10 000111101     0011010  0        1100</text>
+		<text transform="matrix(1 0 0 1 -2 6.7352)" class="st3 st4 st5">001      0011  010  0        110      00001      0011  010  0        110      00  </text>
+		<text transform="matrix(1 0 0 1 -2 10.8729)" class="st3 st4 st5">0   101     00 11010  0    1100 100000  01     00 11   010  0    1100 100000   </text>
+		<text transform="matrix(1 0 0 1 -2 23.286)" class="st3 st4 st5">0   101     00 1                      00 100    000   101     00 110   10  0    110 </text>
+		<text transform="matrix(1 0 0 1 -2 15.0106)" class="st3 st4 st5">00111     00 110  10  0        110   0 10   011     00 11     0  10  0        11  </text>
+		<text transform="matrix(1 0 0 1 -2 19.1493)" class="st3 st4 st5">001         010  0        110       0 1         010  0        110       0 100</text>
+		<text transform="matrix(1 0 0 1 -2 27.4247)" class="st3 st4 st5">00111101     0011010  0        1100 10        11101     0011010  0        1100</text>
+		<text transform="matrix(1 0 0 1 -2 31.5624)" class="st3 st4 st5">001      0011  010  0        110      00001      0011  010  0        110      00  </text>
+		<text transform="matrix(1 0 0 1 -2 35.7001)" class="st3 st4 st5">0   101     00 1               00 100000  01     00 11   010  0    1100 100000   </text>
+		<text transform="matrix(1 0 0 1 -2 48.1132)" class="st3 st4 st5">0   101     00 11010  0    1100 100    000   101     00 110   10  0    110 </text>
+		<text transform="matrix(1 0 0 1 -2 39.8378)" class="st3 st4 st5">00111                         0        110   0 10   011     00 11     0  10  0        11  </text>
+		<text transform="matrix(1 0 0 1 -2 43.9755)" class="st3 st4 st5">001         010  0        110       0 100 01         010  0        110       0 100</text>
+		<text transform="matrix(1 0 0 1 -2 52.2509)" class="st3 st4 st5">00111101     0011010  0                      11101     0011010  0        1100</text>
+		<text transform="matrix(1 0 0 1 -2 56.3885)" class="st3 st4 st5">001      0                0  0        110      00001      0011  010  0        110      00  </text>
+		<text transform="matrix(1 0 0 1 -2 60.5262)" class="st3 st4 st5">0   101     00 11               100 100000  01     00 11   010  0    1100 100000   </text>
+		<text transform="matrix(1 0 0 1 -2 72.9403)" class="st3 st4 st5">0   101     00 11010  0    1100 100    000   101     00 110   10  0    110 </text>
+		<text transform="matrix(1 0 0 1 -2 64.6649)" class="st3 st4 st5">00111     00 110  10  0        110   0 10   011     00 11     0  10  0        11  </text>
+		<text transform="matrix(1 0 0 1 -2 68.8016)" class="st3 st4 st5">001         010  0        110       0 100 01         010  0        110       0 100</text>
+		<text transform="matrix(1 0 0 1 -2 85.3534)" class="st3 st4 st5">0   101     00 11010  0    1100 100    000   101     00 110   10  0    110 </text>
+		<text transform="matrix(1 0 0 1 -2 77.078)" class="st3 st4 st5">00111                         0        110   0 10   011     00 11     0  10  0        11  </text>
+		<text transform="matrix(1 0 0 1 -2 81.2157)" class="st3 st4 st5">001         010  0        110       0 100 01         010  0        110       0 100</text>
+		<text transform="matrix(1 0 0 1 -2 89.4911)" class="st3 st4 st5">00111101     0011010  0                      11101     0011010  0        1100</text>
+		<text transform="matrix(1 0 0 1 -2 93.6288)" class="st3 st4 st5">001      0                0  0        110      00001      0011  010  0        110      00  </text>
+		<text transform="matrix(1 0 0 1 -2 97.7665)" class="st3 st4 st5">0   101     00 11               100 100000  01     00 11   010  0    1100 100000   </text>
+		<text transform="matrix(1 0 0 1 -2 110.1805)" class="st3 st4 st5">0   101     00 11010  0    1100 100    000   101     00 110   10  0    110 </text>
+		<text transform="matrix(1 0 0 1 -2 101.9042)" class="st3 st4 st5">00111     00 110  10  0        110   0 10   011     00 11     0  10  0        11  </text>
+		<text transform="matrix(1 0 0 1 -2 106.0419)" class="st3 st4 st5">001         010  0        110       0 100 01         010  0        110       0 100</text>
+	</g>
+</g>
+<g>
+	<path class="st6" d="M10.8,55.5L37.4,9.4h53.2l26.6,46.1l-26.6,46.1H37.4L10.8,55.5z M32,0L0,55.5l32,55.4h64l32-55.4L96,0H32z"/>
+	<g>
+		<g class="st7">
+			<g>
+				<path d="M89.2,11.8l25.2,43.7L89.2,99.1H38.8L13.6,55.5l25.2-43.7H89.2z M90.6,9.5H37.4l-26.6,46l26.6,46h53.1l26.6-46L90.6,9.5
+					z"/>
+			</g>
+		</g>
+	</g>
+</g>
+<path class="st8" d="M89.4,32.9c-0.2-0.9-3.3-1.5-7.1-1.5c-0.1,0-0.3,0-0.4,0c-0.3-0.9-1.2-1.5-2.2-1.5c-0.4,0-0.7,0.1-1,0.2
+	c-0.2-1.9-1.9-3.5-3.9-3.5c-1.1,0-2,0.4-2.7,1.1c-0.7-1.7-2.3-2.9-4.2-2.9c-0.3,0-0.5,0-0.8,0.1c-0.7-1.8-2.4-3-4.3-3.3
+	c-0.2-2-1.9-3.7-3.9-3.7c-2.2,0-4,1.8-4,4c0,0.1,0,0.2,0,0.3c-2,0.4-3.5,2.1-3.5,4.2c0,0.2,0,0.5,0.1,0.7c0,0-0.1,0-0.1,0
+	c-2,0-3.6,1.5-3.7,3.5c-1.1-0.3-2.5-0.4-3.9-0.4c-3.9,0-7.1,1.1-7.1,2.4c0,0.2,0.1,0.3,0.2,0.5c-3.1,0.2-5,0.7-5.5,1
+	c-5.5,2.8,20.5,2.1,25.2,1.7c4.7-0.4,21.3-0.4,25.4-0.3c4,0.1,16.8,0.4,15.3-1.5C96.4,33.3,92.2,33.2,89.4,32.9z"/>
+<g>
+	<polygon class="st9" points="62.6,35.5 54.1,31 62.6,26.6 71.1,31 	"/>
+	<g>
+		<polygon class="st10" points="62.6,68 62.6,35.5 54.2,31.1 54.2,63.6 		"/>
+		<polygon class="st11" points="62.6,68 62.6,35.5 71,31.1 71,63.6 		"/>
+	</g>
+	<polygon class="st9" points="51.5,50.3 43,45.9 51.5,41.4 59.9,45.9 	"/>
+	<g>
+		<polygon class="st10" points="51.5,73.8 51.5,50.3 43,45.9 43,69.4 		"/>
+		<polygon class="st11" points="51.5,73.8 51.5,50.3 59.9,45.9 59.9,69.4 		"/>
+	</g>
+	<polygon class="st9" points="40.4,67.9 32,63.4 40.4,59 48.9,63.4 	"/>
+	<g>
+		<polygon class="st10" points="40.4,79.6 40.4,67.9 32,63.5 32,75.2 		"/>
+		<polygon class="st11" points="40.4,79.6 40.4,67.9 48.9,63.5 48.9,75.2 		"/>
+	</g>
+	<polygon class="st12" points="74.6,46.8 66.1,42.3 74.6,37.9 83,42.3 	"/>
+	<g>
+		<polygon class="st13" points="74.6,74 74.6,46.8 66.1,42.3 66.1,69.6 		"/>
+		<polygon class="st14" points="74.6,74 74.6,46.8 83,42.3 83,69.6 		"/>
+	</g>
+	<polygon class="st12" points="63.4,61.5 55,57 63.4,52.6 71.9,57 	"/>
+	<g>
+		<polygon class="st13" points="63.4,79.8 63.4,61.5 55,57.1 55,75.4 		"/>
+		<polygon class="st14" points="63.4,79.8 63.4,61.5 71.9,57.1 71.9,75.4 		"/>
+	</g>
+	<polygon class="st12" points="52.4,73.9 43.9,69.4 52.4,65 60.9,69.4 	"/>
+	<g>
+		<polygon class="st13" points="52.4,85.6 52.4,73.9 44,69.4 44,81.2 		"/>
+		<polygon class="st14" points="52.4,85.6 52.4,73.9 60.8,69.4 60.8,81.2 		"/>
+	</g>
+	<polygon class="st15" points="86.5,57.3 78.1,52.9 86.5,48.4 95,52.9 	"/>
+	<g>
+		<polygon class="st16" points="86.5,80 86.5,57.3 78.1,52.9 78.1,75.5 		"/>
+		<polygon class="st17" points="86.5,80 86.5,57.3 95,52.9 95,75.5 		"/>
+	</g>
+	<polygon class="st15" points="75.4,71.2 67,66.7 75.4,62.3 83.9,66.7 	"/>
+	<g>
+		<polygon class="st16" points="75.4,85.8 75.4,71.2 67,66.8 67,81.4 		"/>
+		<polygon class="st17" points="75.4,85.8 75.4,71.2 83.8,66.8 83.8,81.4 		"/>
+	</g>
+	<polygon class="st15" points="64.4,79.8 55.9,75.4 64.4,70.9 72.8,75.4 	"/>
+	<g>
+		<polygon class="st16" points="64.4,91.6 64.4,79.8 55.9,75.4 55.9,87.2 		"/>
+		<polygon class="st17" points="64.4,91.6 64.4,79.8 72.8,75.4 72.8,87.2 		"/>
+	</g>
+</g>
+</svg>
