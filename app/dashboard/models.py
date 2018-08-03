@@ -1529,15 +1529,9 @@ class Profile(SuperModel):
             bounties = bounties | Bounty.objects.filter(interested=interested, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(pk__in=fulfilled_bounty_ids, current_bounty=True)
         bounties = bounties | Bounty.objects.filter(bounty_owner_github_username__iexact=self.handle, current_bounty=True) | Bounty.objects.filter(bounty_owner_github_username__iexact="@" + self.handle, current_bounty=True)
-        bounties = bounties | Bounty.objects.filter(github_url__in=[url for url in self.tips.values_list('github_url', flat=True)], current_bounty=True)
+        bounties = bounties | Bounty.objects.filter(github_url__in=[url for url in self.received_tips.values_list('github_url', flat=True)], current_bounty=True)
         bounties = bounties.distinct()
         return bounties.order_by('-web3_created')
-
-    @property
-    def tips(self):
-        on_repo = Tip.objects.filter(github_url__startswith=self.github_url).order_by('-id')
-        tipped_for = Tip.objects.filter(username__iexact=self.handle).order_by('-id')
-        return on_repo | tipped_for
 
     def no_times_slashed_by_staff(self):
         user_actions = UserAction.objects.filter(
@@ -2212,7 +2206,8 @@ class Profile(SuperModel):
                 }]
 
         if tips:
-            params['tips'] = self.tips.filter(**query_kwargs)
+            params['received_tips'] = self.received_tips.filter(**query_kwargs)
+            params['sent_tips'] = self.sent_tips.filter(**query_kwargs)
 
         if leaderboards:
             params['scoreboard_position_contributor'] = self.get_contributor_leaderboard_index()
