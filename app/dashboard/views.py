@@ -62,7 +62,7 @@ from .notifications import (
     maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from .utils import (
-    get_bounty, get_bounty_id, get_context, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
+    get_bounty, get_bounty_id, get_context, has_tx_mined, record_user_action_on_interest, web3_process_bounty, get_web3
 )
 
 logging.basicConfig(level=logging.DEBUG)
@@ -994,6 +994,10 @@ def profile(request, handle):
         handle (str): The profile handle.
 
     """
+    # kudos_wallet = request.GET.get('kudos_wallet')
+    # w3 = get_web3('localhost')
+    # account = w3.eth.coinbase
+    # logging.info(f'account: {account}')
     show_hidden_profile = False
     try:
         if not handle and not request.user.is_authenticated:
@@ -1023,8 +1027,8 @@ def profile(request, handle):
     params = profile.to_dict()
     params['wallet_addresses'] = [x.address for x in profile.wallets.all()]
     params['kudos'] = MarketPlaceListing.objects.filter(lister__in=params['wallet_addresses'])
-    logging.info(f'Found Kudos: {params["kudos"]}')
-    logging.info(f'Kudos name: {params["kudos"][0].name}')
+    # logging.info(f'Found Kudos: {params["kudos"]}')
+    # logging.info(f'Kudos name: {params["kudos"][0].name}')
     # logging.info(f'Profile data: {params}')
     # logging.info(f'Profile wallets: {profile.wallets.all()}')
 
