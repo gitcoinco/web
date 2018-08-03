@@ -55,9 +55,9 @@ class MarketPlaceListing(SuperModel):
         return self.lister[2:6] + '...' + self.lister[38:]
 
 
-class Wallet(SuperModel):
-    address = models.CharField(max_length=255)
-    profile = models.ForeignKey('dashboard.Profile', related_name='wallets', on_delete=models.SET_NULL, null=True)
+# class Wallet(SuperModel):
+#     address = models.CharField(max_length=255)
+#     profile = models.ForeignKey('dashboard.Profile', related_name='wallets', on_delete=models.SET_NULL, null=True)
 
 # class KudosToken(SuperModel):
 
