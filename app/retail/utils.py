@@ -117,7 +117,7 @@ def get_tip_history_at_date(date, keyword):
         return 0
 
 
-def get_history(base_stats, copy):
+def get_history(base_stats, copy, num_months=6):
     today = base_stats.first().val if base_stats.exists() else 0
 
     # slack ticks
@@ -127,7 +127,9 @@ def get_history(base_stats, copy):
         ['When', copy],
         ['Launch', 0],
     ]
-    for i in [6, 5, 4, 3, 2, 1]:
+    _range = list(range(1, num_months))
+    _range.reverse()
+    for i in _range:
         try:
             plural = 's' if i != 1 else ''
             before_then = (timezone.now() - timezone.timedelta(days=i*30))
@@ -293,7 +295,8 @@ def build_stat_results_helper(keyword=None):
     base_stats = Stat.objects.filter(
         key=key,
         ).order_by('-pk')
-    context['jdi_history'], __ = get_history(base_stats, 'Percentage')
+    num_months = int((timezone.now() - timezone.datetime(2017, 10, 1).replace(tzinfo=pytz.UTC)).days/30)
+    context['jdi_history'], __ = get_history(base_stats, 'Percentage', num_months)
 
     pp.profile_time('Stats2')
 
