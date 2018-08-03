@@ -471,37 +471,28 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Funding on Gitcoin | OSS Motivations"
+    subject = "The Nuances Of Bounties | A Gas History Lesson"
 
     intro = '''
 
 <p>
-    Hi there
+    Hi there,
 </p>
 <p>
-This week, we shipped <a href="https://medium.com/gitcoin/fund-an-issue-on-gitcoin-3d7245e9b3f3">'Fund an Issue on Gitcoin.'</a>
-This piece is geared for our open source funders on Gitcoin. We give you a succinct walkthrough of how
-to go from opening a Gitcoin account to funding your first issue.
+Over the past quarter, we've shipped a variety of features which add flexibility to your bounty toolkit. First, we provided options to have contest bounties and coooperative bounties.
+Then, we introduced 'Approval Only' bounties, where Gitcoiner's apply before starting work. Now, we've announced a few more often requested features!
+Learn more about <a href="https://medium.com/gitcoin/payout-several-contributors-at-once-8742c13a8fdd">1) multi-payout bounties</a> and <a href="https://medium.com/gitcoin/crowdfunding-bounties-fd821b04309d">2) crowdfunding bounties.</a>
 </p>
 
 <p>
-In addition to that, we published a longer thought piece on <a href="https://medium.com/gitcoin/building-a-platform-that-maximizes-freedom-1149968a7b05">
-building platforms that maximize freedom.</a>
-As cryptoeconomics and decentralized technology matures, we are fast approaching the intersection of
-intrinsic and extrinsic motivations in fields such as open source.
- In this post, Vivek takes a deep dive into what defines intrinsic and extrinsic motivations and how they will mix in the future of open source.
+We also posted on the <a href="https://medium.com/gitcoin/a-brief-history-of-gas-prices-on-ethereum-52e278a04306">History of Gas on Ethereum.</a> As a dApp built on ethereum,
+we think it's important to understand a) what gas is, b) how it's fluctutated over time, and c) plans for stabilizing gas prices into the future. Hope you enjoy!
 </p>
 
 <h3>What else is new?</h3>
     <ul>
         <li>
-Our livestream recording from a couple weeks prior is now live on the Gitcoin Youtube.
-This talks features Jay Rush of Quickblocks.
-<a href="https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w">Check it out!</a>
-        </li>
-        <li>
-<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET.
-This week features David Sneider of Deco Network, a project focused on decentralizing the knowledge economy!
+<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET. This week features Justin Drake speaking on sharding.
         </li>
 
     </ul>
@@ -512,40 +503,40 @@ Back to building,
 '''
     highlights = [
         {
-            'who': 'jvmaia',
-            'who_link': True,
-            'what': 'Helped us take the first step towards crowdfunding Gitcoin bounties',
-            'link': 'https://gitcoin.co/issue/gitcoinco/web/1380/718',
-            'link_copy': 'View more',
-        },
-        {
             'who': 'StevenJNPearce',
             'who_link': True,
-            'what': 'Assisted the YouveGotEth team in making the app more mobile friendly',
-            'link': 'https://gitcoin.co/issue/youvegoteth/youvegoteth.github.io/15/734',
+            'what': 'Worked with MARKET Protocol on their dApp!',
+            'link': 'https://gitcoin.co/issue/MARKETProtocol/MARKET.js/106/856',
             'link_copy': 'View more',
         },
         {
-            'who': 'perfectmak',
+            'who': 'rahulrumalla',
             'who_link': True,
-            'what': 'Added more functions for Market Protocol parameter checking to improve error reports and debugging',
-            'link': 'https://gitcoin.co/issue/MARKETProtocol/MARKET.js/67/730',
+            'what': 'Helped Infura with documentation on their IPFS API',
+            'link': 'https://gitcoin.co/issue/INFURA/infura/130/830',
+            'link_copy': 'View more',
+        },
+        {
+            'who': 'anshumanv',
+            'who_link': True,
+            'what': 'Worked on Giveth as they prepare for launch!,
+            'link': 'https://gitcoin.co/issue/Giveth/giveth-dapp/80/823',
             'link_copy': 'View more',
         },
     ]
 
     bounties_spec = [
         {
-            'url': 'https://github.com/spacemeshos/cosmic/issues/2',
-            'primer': 'Help the Spacemesh team in developing the alpha of their seed implementation to ship apps cross-platform.',
+            'url': 'https://github.com/paritytech/polkadot/issues/312',
+            'primer': 'Work with Gavin Wood at Parity on making heap size an on-chain parameter.',
         },
         {
-            'url': 'https://github.com/MARKETProtocol/dApp/issues/227',
-            'primer': 'Implement the new explorer UI/UX design in Market Protocol.',
+            'url': 'https://github.com/rotkehlchenio/rotkehlchen/issues/74',
+            'primer': 'Work with a core Raiden developer on his side project!',
         },
         {
-            'url': 'https://github.com/paritytech/parity/issues/7203',
-            'primer': 'Solve a puzzle with Parity nodes being bumped for TooManyPeers',
+            'url': 'https://github.com/gitcoinco/web/issues/1855',
+            'primer': 'Have backend skills? Help us with Gitcoin Requests, a cool new feature!',
         },
     ]
 
