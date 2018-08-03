@@ -424,6 +424,9 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
                    f"[Gitcoin Issue Explorer](https://gitcoin.co/explorer)"
     help_msg = "* Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or the " \
         f"<a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
+    dai_msg = "* If you have any query about DAI, checkout  <a href='https://gitcoin.co/help#faq'>DAI FAQ</a> or ask on " \
+        f"<a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
+
     claim_msg = f"* If you want to claim the bounty you can do so " \
                 f"[here]({absolute_url})"
     learn_more_msg = f"* Learn more [on the Gitcoin Issue Details page]({absolute_url})"
@@ -509,10 +512,11 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
             accepted_fulfiller = f' to @{accepted_fulfillment.fulfiller_github_username}'
         except BountyFulfillment.DoesNotExist:
             accepted_fulfiller = ''
-
         msg = f"{status_header}__The funding of {natural_value} {bounty.token_name} {usdt_value} {crowdfund_amount} attached to this " \
               f"issue has been approved & issued{accepted_fulfiller}.__  \n\n{crowdfund_thx} " \
               f"{learn_more_msg}\n{help_msg}\n{openwork_msg}\n"
+        if {bounty.token_name} == 'DAI':
+            msg+=f"{dai_msg}\n"
     return msg
 
 
@@ -632,6 +636,11 @@ def maybe_market_tip_to_github(tip):
         value_in_usd = f"({tip.value_in_usdt_now} USD @ ${round(convert_token_to_usdt(tip.tokenName), 2)}/{tip.tokenName})" if tip.value_in_usdt_now else ""
     except Exception:
         pass  # no USD conv rate
+    if tip.tokenName=='DAI':
+        dai_msg = "* If you have any query about DAI, checkout  <a href='https://gitcoin.co/help#faq'>DAI FAQ</a> or ask on " \
+        f"<a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
+    else:
+        dai_msg=''
     if tip.username:
         msg = f"⚡️ A tip worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has been " \
               f"granted to {username} for this issue{_from}. ⚡️ {_comments}\n\nNice work {username}! "
@@ -644,7 +653,7 @@ def maybe_market_tip_to_github(tip):
                     f"https://gitcoin.co/explorer\n * Incentivize contributions to your repo: " \
                     f"<a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>" \
                     f"Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
-        msg += redeem_instructions + addon_msg
+        msg += redeem_instructions + "\n"+ dai_msg + addon_msg
     else:
         msg = f"💰 A crowdfund contribution worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has " \
               f"been attached to this funded issue {_from}.💰 {_comments}\n"
