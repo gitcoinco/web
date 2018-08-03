@@ -344,7 +344,7 @@ def maybe_market_tip_to_slack(tip, event_name):
     msg = f"{event_name} worth {round(tip.amount, 4)} {tip.tokenName}"
 
     if tip.github_url:
-        msg = f"{msg}:\n{tip.github_url}"
+        msg = f"{msg}:\n\n{tip.github_url}"
 
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
