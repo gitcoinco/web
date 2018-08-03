@@ -14,12 +14,22 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% if not DEBUG %}
-  <script src="https://cdn.ravenjs.com/3.26.4/raven.min.js" crossorigin="anonymous"></script>
+{% if raven_js_dsn %}
+  <script src="https://cdn.ravenjs.com/{{ raven_js_version }}/raven.min.js" crossorigin="anonymous"></script>
   <script>
     Raven.config('{{ raven_js_dsn }}', {
       release: '{{ release }}',
       environment: '{{ env }}'
     }).install();
   </script>
+  {% if github_handle %}
+    <script>
+      Raven.setUserContext({
+        email: '{{ user.email|default_if_none:anonymous }}',
+        id: '{{ user.id|default_if_none:0 }}',
+        handle: '{{ github_handle }}',
+        profile_id: '{{ profile_id|default_in_none:0 }}'
+      });
+    </script>
+  {% endif %}
 {% endif %}
