@@ -16,6 +16,8 @@ var sidebar_keys = [
 
 var localStorage;
 
+var explorer = { };
+
 try {
   localStorage = window.localStorage;
 } catch (e) {
@@ -396,7 +398,11 @@ var refreshBounties = function(event) {
   mixpanel.track('Refresh Bounties', params);
 
   // order
-  $.get(uri, function(results) {
+  if (explorer.bounties_request && explorer.bounties_request.readyState != 4) {
+    explorer.bounties_request.abort();
+  }
+
+  explorer.bounties_request = $.get(uri, function(results, x) {
     results = sanitizeAPIResults(results);
 
     if (results.length === 0) {
@@ -484,7 +490,8 @@ var refreshBounties = function(event) {
 
     process_stats(results);
   }).fail(function() {
-    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+    if (explorer.bounties_request.readyState != 0)
+      _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
   }).always(function() {
     $('.loading').css('display', 'none');
   });
