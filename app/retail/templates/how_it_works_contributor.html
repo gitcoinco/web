@@ -17,10 +17,10 @@
 {% load i18n static %}
 
 <div class="howworks-sections d-flex">
-  <div class="howworks-section">
+  <div class="howworks-section" id="general">
     <div class="row mt-5 mb-5">
       <div class="col text-center">
-        <h1 class="light">{% trans "How it Works" %}</h1>
+        <h1 class="light">{% trans "How it Works - Contributor" %}</h1>
       </div>
     </div>
 
@@ -48,7 +48,7 @@
 
         <div class="col-12 col-lg-8 offset-lg-4 how-it-works__step">
           <div class="col-12 col-lg-6 how-it-works__screenshot">
-            <img src="{% static "v2/images/landing/contributor/howitworks2_1.png" %}" alt="start work" />
+            <img src="{% static "v2/images/landing/contributor/int.png" %}" alt="start work" />
           </div>
           <div class="col-12 col-md-4 offset-md-4 col-lg-6 offset-lg-0 how-it-works__step-description">
             <div class="how-it-works__step-icon">
@@ -58,10 +58,56 @@
               <div class="how-it-works__step-number">2</div>
               <div class="how-it-works__vert-line"></div>
             </div>
-            <div class="how-it-works__step-title">{% trans "Start Work" %}</div>
+            <div class="how-it-works__step-title">{% trans "Express Interest" %}</div>
             <div class="how-it-works__step-text">
-              {% blocktrans %}Interested on an issue? Click
-              <strong>Start Work</strong> and start working!{% endblocktrans %}
+              {% blocktrans %}Interested in an issue? Click
+              <strong>Start Work</strong> to express interest
+              through a short form.{% endblocktrans %}
+            </div>
+          </div>
+        </div>
+
+        <div class="how-it-works__step">
+          <div class="col-12 col-lg-4 how-it-works__screenshot">
+            <img src="{% static "v2/images/landing/contributor/begin.png" %}" alt="bounty explorer" />
+          </div>
+          <div class="col-12 col-md-4 offset-md-4 col-lg-4 offset-lg-0 how-it-works__step-description">
+            <div class="how-it-works__step-icon">
+              <img src="{% static "v2/images/landing/contributor/app.png" %}" alt="bounty explorer" />
+            </div>
+            <div>
+              <div class="how-it-works__step-number">3</div>
+              <div class="how-it-works__vert-line"></div>
+            </div>
+            <div class="how-it-works__step-title">{% trans "Begin Work" %}</div>
+            <div class="how-it-works__step-text">
+              {% blocktrans %}If the project requires approval,
+              keep an eye out for a notification
+              for a <strong>Request to Work</strong>
+              confirmation via email prior to 
+              begin working . Otherwise, work 
+              away!
+              {% endblocktrans %}
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-lg-8 offset-lg-4 how-it-works__step">
+          <div class="col-12 col-lg-6 how-it-works__screenshot">
+            <img src="{% static "v2/images/landing/contributor/pp.png" %}" alt="start work" />
+          </div>
+          <div class="col-12 col-md-4 offset-md-4 col-lg-6 offset-lg-0 how-it-works__step-description">
+            <div class="how-it-works__step-icon">
+              <img src="{% static "v2/images/landing/contributor/howitworks_cant_work_icon.png" %}" alt="start work" />
+            </div>
+            <div>
+              <div class="how-it-works__step-exclamation">!</div>
+              <div class="how-it-works__vert-line"></div>
+            </div>
+            <div class="how-it-works__step-title">{% trans "Can't Continue your Work?" %}</div>
+            <div class="how-it-works__step-text">
+              {% blocktrans %} Click <strong>Stop Work,</strong> and  
+              someone else will pick it up.{% endblocktrans %}
             </div>
           </div>
         </div>
@@ -76,13 +122,14 @@
               <img src="{% static "v2/images/landing/contributor/howitworks3_2.png" %}" alt="submit work" />
             </div>
             <div>
-              <div class="how-it-works__step-number">3</div>
+              <div class="how-it-works__step-number">4</div>
               <div class="how-it-works__vert-line"></div>
             </div>
             <div class="how-it-works__step-title">{% trans "Submit Work" %}</div>
             <div class="how-it-works__step-text">
               {% blocktrans %}Completed your work? Click
-              <strong>Submit Work</strong> to send to a repo maintainer for review{% endblocktrans %}
+              <strong> Submit Work</strong> to send your PR 
+              to a repo maintainer for review{% endblocktrans %}
             </div>
           </div>
         </div>
@@ -99,10 +146,10 @@
                 alt="accept submission" />
             </div>
             <div>
-              <div class="how-it-works__step-number">4</div>
+              <div class="how-it-works__step-number"></div>
               <div class="how-it-works__vert-line"></div>
             </div>
-            <div class="how-it-works__step-title">{% trans "Accept Submission" %}</div>
+            <div class="how-it-works__step-title">{% trans "Work Reviewed" %}</div>
             <div class="how-it-works__step-text">
               {% trans "Submitted work is reviewed and approved by a repo owner." %}
             </div>
@@ -127,31 +174,78 @@
           </div>
         </div>
 
-        <div class="testimonial-container w-100 how-it-works__hor-line">
-        </div>
-        <div class="d-none" ></div>
-
-        <div class="col-12 col-lg-8 offset-lg-4 how-it-works__step mt-4">
-          <div class="col-12 col-lg-6 how-it-works__screenshot">
-            <img src="{% static "v2/images/landing/contributor/howitworks_stop_work_scr.png" %}"
-              alt="accept submission" />
-          </div>
-
-          <div class="col-12 col-md-4 offset-md-4 col-lg-6 offset-lg-0 how-it-works__step-description">
-            <div class="how-it-works__step-icon">
-              <img src="{% static "v2/images/landing/contributor/howitworks_cant_work_icon.png" %}"
-                alt="accept submission" />
-            </div>
-
-            <div class="how-it-works__step-exclamation">!</div>
-            <div class="how-it-works__step-title">{% trans "Can't Continue Your Work?" %}</div>
-            <div class="how-it-works__step-text">
-              {% blocktrans %}Click <strong>Stop Work</strong>, and someone else will pick it up.{% endblocktrans %}
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
   </div>
 </div>
+<hr>
+
+<div class="container-fluid py-5 px-0 in-some-cases-container">
+  <div class="row mb-4 ">
+    <div class="col text-center">
+        <h2 class="light">{% trans "Things to Note" %}</h2>
+    </div>
+  </div>
+  
+  <div class="row mb-4 justify-content-around">
+    <div class="col d-none d-md-block">
+    </div> 
+    
+    <div class="col text-center px-4 px-md-4">
+      <img class="position-relative" style="left: 39px;"
+        src="{% static "v2/images/landing/contributor/start.png" %}"
+        alt="expired" />
+      <div class="text-center">{% blocktrans %}As a courtsey to other
+        contributors and to ensure payment,
+        user will start work button
+        to notify all parties
+        your intention to work.{% endblocktrans %}
+      </div>
+    </div>
+
+    <div class="col text-center px-4 px-md-4">
+      <img class="position-relative" style="left: 39px;"
+        src="{% static "v2/images/landing/contributor/2.png" %}"
+        alt="expired" />
+      <div class="text-center">{% blocktrans %}Expect a few rounds of revisions to
+        complete the project.{% endblocktrans %}
+      </div>
+    </div>
+
+    <div class="col text-center px-4 px-md-4">
+      <img class="position-relative" style="left: 39px;"
+        src="{% static "v2/images/landing/contributor/4.png" %}"
+        alt="expired" />
+      <div class="text-center">{% blocktrans %}The funder reserves the right to accept or deny
+        a worker in order to find the best fit for the project.{% endblocktrans %}</div>
+    </div>
+
+    <div class="col text-center px-4 px-md-4">
+      <img class="position-relative" style="left: 39px;"
+        src="{% static "v2/images/landing/contributor/howitworks_bottom_1.png" %}"
+        alt="expired" />
+      <div class="text-center">{% blocktrans %}Work that has not been completed and is past the
+        expiration date may be considered expired, it depends upon the funder
+        whether he wants to pay for the bounty after it's expiration or not. {% endblocktrans %}</div>
+    </div>
+    
+    <div class="col text-center px-4 px-md-4">
+      <div class="position-relative">
+        <img class="position-relative" style="left: 37px;"
+          src="{% static "v2/images/landing/contributor/howitworks_bottom_2.png" %}" alt="expired" />
+        <div class="how-it-works__fake_but">Cancel Bounty
+        </div>
+      </div>
+      <div class="text-center">{% blocktrans %}A project can be cancelled by a bounty funder.
+          The funds will then be reclaimed by the bounty owner.{% endblocktrans %}
+      </div>
+    </div>
+    
+    <div class="col d-none d-md-block">
+    </div>
+  </div>
+</div>
+<hr>
+{% include 'project_types.html' %}
+{% include 'project_permission.html' %}
+

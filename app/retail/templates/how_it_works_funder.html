@@ -16,8 +16,22 @@
 {% endcomment %}
 {% load i18n static %}
 
+<style type="text/css">
+h3 {
+    color:#050B4D;
+}
+h1 {
+    color:#050B4D;
+}
+.how-it-works__step-title{
+ color:#2D2E31; 
+}
+
+
+</style>
+
 <div class="howworks-sections d-flex">
-  <div class="howworks-section">
+  <div class="howworks-section" id="general">
     <div class="row mt-5 mb-5">
       <div class="col text-center">
         <h1 class="light">{% trans "How it Works - Bounty Funder" %}</h1>
@@ -88,10 +102,31 @@
             </div>
             <div class="how-it-works__step-title">{% trans "Start Work" %}</div>
             <div class="how-it-works__step-text">
-              {% trans "A contributor will click Start Work and start working!" %}
+              {% trans "A contributor will click <strong>Start Work</strong> and start working!" %}
             </div>
           </div>
         </div>
+
+        <div class="how-it-works__step">
+          <div class="col-12 col-lg-4 how-it-works__screenshot">
+            <img src="{% static "v2/images/landing/contributor/lol.png" %}" alt="bounty explorer" />
+          </div>
+          <div class="col-12 col-md-4 offset-md-4 col-lg-4 offset-lg-0 how-it-works__step-description">
+            <div class="how-it-works__step-icon">
+              <img src="{% static "v2/images/landing/contributor/app.png" %}" alt="email request" />
+            </div>
+            <div>
+              <div class="how-it-works__step-number"></div>
+              <div class="how-it-works__vert-line"></div>
+            </div>
+            <div class="how-it-works__step-text">
+              {% blocktrans %}Keep an eye out for an email with a Work Started or Request to Work notice.
+              Approve the request via the email notification.{% endblocktrans %}
+            </div>
+          </div>
+        </div>
+
+          
 
         <div class="how-it-works__step">
           <div class="col-12 col-lg-4 how-it-works__screenshot">
@@ -108,7 +143,28 @@
             </div>
             <div class="how-it-works__step-title">{% trans "Review Work" %}</div>
             <div class="how-it-works__step-text">
-              {% blocktrans %}Review the contributor's submitted work.{% endblocktrans %}
+              {% blocktrans %}Once work has been completed, the contributor will  submit a PR for review.{% endblocktrans %}
+            </div>
+          </div>
+        </div>
+
+        <div class="how-it-works__step">
+          <div class="col-12 col-lg-4 how-it-works__screenshot">
+          </div>
+          
+          <div class="col-12 col-md-4 offset-md-4 col-lg-4 offset-lg-0 how-it-works__step-description">
+            <div class="how-it-works__step-icon">
+              <img src="{% static "v2/images/landing/contributor/howitworks4_2.png" %}" alt="paying the bounty" />
+            </div>
+            <div>
+              <div class="how-it-works__step-number"></div>
+              <div class="how-it-works__vert-line"></div>
+              <div class="how-it-works__vert-line"></div>
+            </div>
+            <div class="how-it-works__step-title">{% trans "Paying the Bounty" %}</div>
+            <div class="how-it-works__step-text">
+              {% blocktrans %}Depending on the project type, payment can be made to one contributor pr to 
+              multiple contributors at one time.{% endblocktrans %}
             </div>
           </div>
         </div>
@@ -121,18 +177,166 @@
 
           <div class="col-12 col-md-4 offset-md-4 col-lg-4 offset-lg-0 how-it-works__step-description">
             <div class="how-it-works__step-icon">
-              <img src="{% static "v2/images/landing/contributor/howitworks4_2.png" %}"
+              <img src="{% static "v2/images/landing/contributor/how_it_works_approval.png" %}"
                 alt="approve work" />
             </div>
-            <div class="how-it-works__step-number">5</div>
-            <div class="how-it-works__step-title">{% trans "Approval and Payment" %}</div>
+              <div>
+                <div class="how-it-works__step-number">5</div>
+              </div>
+            <div class="how-it-works__step-title">{% trans "Accept Submission" %}</div>
             <div class="how-it-works__step-text">
-              {% trans "Approve the contributor's work and pay for a job well done!" %}
+              {% blocktrans %}Upon completion use the <strong>Accept Submission</strong> button on the issue details page to 
+              release funds.{% endblocktrans %}
             </div>
           </div>
         </div>
 
       </div>
     </div>
+  </div>
+</div>
+<hr>
+
+<div class="container-fluid py-5 px-0 in-some-cases-container">
+  <div class="row mb-4 ">
+    <div class="col text-center">
+        <h2 class="light">{% trans "Things to Note" %}</h2>
+    </div>
+  </div>
+  
+  <div class="row mb-4 justify-content-around">
+    <div class="col d-none d-md-block">
+    </div>  
+    <div class="col text-center px-4 px-md-4">
+      <img class="position-relative" style="left: 39px;"
+        src="{% static "v2/images/landing/contributor/2.png" %}"
+        alt="expired" />
+      <div class="text-center">{% blocktrans %}Expect a few rounds of revisions to
+        complete the project.{% endblocktrans %}
+      </div>
+    </div>
+
+    <div class="col text-center px-4 px-md-4">
+      <img class="position-relative" style="left: 39px;"
+        src="{% static "v2/images/landing/contributor/4.png" %}"
+        alt="expired" />
+      <div class="text-center">{% blocktrans %}The funder reserves the right to accept or deny
+        a worker in order to find the best fit for the project.{% endblocktrans %}</div>
+    </div>
+
+    <div class="col text-center px-4 px-md-4">
+      <img class="position-relative" style="left: 39px;"
+        src="{% static "v2/images/landing/contributor/howitworks_bottom_1.png" %}"
+        alt="expired" />
+      <div class="text-center">{% blocktrans %}Work that has not been completed and is past the
+        expiration date may be considered expired, it depends upon the funder
+        whether he wants to pay for the bounty after it's expiration or not. {% endblocktrans %}</div>
+    </div>
+    
+    <div class="col text-center px-4 px-md-4">
+      <div class="position-relative">
+        <img class="position-relative" style="left: 37px;"
+          src="{% static "v2/images/landing/contributor/howitworks_bottom_2.png" %}" alt="expired" />
+        <div class="how-it-works__fake_but">Cancel Bounty
+        </div>
+      </div>
+      <div class="text-center">{% blocktrans %}A project can be cancelled by a bounty funder.
+          The funds will then be reclaimed by the bounty owner.{% endblocktrans %}
+      </div>
+    </div>
+    
+    <div class="col d-none d-md-block">
+    </div>
+  </div>
+</div>
+<hr>
+{% include 'project_types.html' %}
+{% include 'project_permission.html' %}
+<hr>
+<br/>
+
+<div class="container-fluid" id="payment">
+  <div class="row">
+    <div class="col text-center">
+        <h1>{% trans "Payment" %}</h1>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col text-center">
+          <h4 class="light">{% trans "Gitcoin supports 2 ways to make payments to support the flexibility of each project." %}</h4>
+    </div>
+  </div>
+
+    <br/>
+    <br/>
+  <div class="row">
+    <div class="col-md-4" align="left">      
+        <h3><b> Basic Payout (single-party)</b></h3>
+          <br/>
+          This feature allows a funder to easily pay one person for the <br/>
+          fork completed. This is typically used for the traditional project <br/> type.
+          <br/>
+          <br/>
+          <h3><b> Advanced Payout (multi-party) </b></h3>
+          <br/> 
+          Multi-party payout allows multiple people to be paid at one <br/>
+          time. This can be used for cooperative or contest type projects.<br/>
+          Read more about this <a href="https:www.github.com">feature here.</a>       
+    </div>
+    
+    <div class="col-md-4">
+        <img height="600" width="520"
+          src="{% static "v2/images/landing/contributor/basic.png" %}" alt="expired" />
+    </div>
+    
+    <div class="col-md-4">
+        <img height="560" width="570"
+          src="{% static "v2/images/landing/contributor/adv.png" %}" alt="expired" />
+    </div>
+  </div>
+</div>
+<br/>
+<hr>
+<br/>
+
+<div class="container-fluid" id="dispute">
+  <div class="row">
+    <div class="col text-center">
+        <h1>{% trans "Disputes" %}</h1>
+    </div>
+  </div>
+  
+  <div class="row">
+    <div class="col text-center">
+          <h4 class="light">{% trans "Sometimes disagreements occur, here are some tips on how to handle them." %}</h4>
+    </div>
+  </div>
+
+    <br/>
+    <br/>
+  <div class="row">
+    <div class="col-md-6" align="left" margin-left="60px">      
+        <h3><b> What to Know</b></h3>
+          <br/>
+          Disputes very rarely occur given that we are mission driven in open source<br/>
+          <br/>
+          It's natural for some scope to be misunderstand or not fully laid out, so we <br/>
+          shouldn't feel bad about that.Software development is naturally iterative.
+          <br/>
+          <br/>
+          Plan for a extra tipping budget for after the fact, if there is extra scope.
+          <br/> 
+          <br/>
+          Sometimes it just doesn't work out and we need to go our separate ways. Leave a tip<br/>
+          for the bounty hunter for any value that was provided towards the end scope and re-bounty<br/>
+          the task<br/>
+          <br/>
+          As always feel free to contact the Gitcoin core team on slack with any questions.       
+    </div>
+    <div class="col-md-6" align="right" margin-right="40px"> 
+      <img src="{% static "v2/images/landing/contributor/disp.png" %}"
+              alt="disputes" />
+
   </div>
 </div>
