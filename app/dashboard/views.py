@@ -1005,6 +1005,8 @@ def profile(request, handle):
             handle = request.user.username
             profile = request.user.profile
         else:
+            if handle.endswith('/'):
+                handle = handle[:-1]
             profile = profile_helper(handle)
     except Http404:
         show_hidden_profile = True
