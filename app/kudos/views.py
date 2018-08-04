@@ -16,6 +16,8 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+from __future__ import print_function, unicode_literals
+
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
@@ -25,10 +27,18 @@ from .models import MarketPlaceListing
 from .forms import KudosSearchForm
 import re
 
+import json
+from ratelimit.decorators import ratelimit
+from django.views.decorators.csrf import csrf_exempt
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
+from git.utils import get_emails_master, get_github_primary_email
+from retail.helpers import get_ip
+
 import logging
 
 logger = logging.getLogger(__name__)
 
+confirm_time_minutes_target = 4
 
 def about(request):
     """Render the about kudos response."""
@@ -122,17 +132,114 @@ def mint(request):
     return TemplateResponse(request, 'kudos_mint.html', context)
 
 
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def send_api(request):
+    """Handle the third stage of sending a tip (the POST)
+
+    Returns:
+        JsonResponse: response with success state.
+
+    """
+    response = {
+        'status': 'OK',
+        'message': _('Tip Created'),
+    }
+
+    is_user_authenticated = request.user.is_authenticated
+    from_username = request.user.username if is_user_authenticated else ''
+    primary_from_email = request.user.email if is_user_authenticated else ''
+    access_token = request.user.profile.get_access_token() if is_user_authenticated else ''
+    to_emails = []
+
+    params = json.loads(request.body)
+
+    to_username = params['username'].lstrip('@')
+    to_emails = get_emails_master(to_username)
+
+    if params.get('email'):
+        to_emails.append(params['email'])
+
+    # If no primary email in session, try the POST data. If none, fetch from GH.
+    if params.get('fromEmail'):
+        primary_from_email = params['fromEmail']
+    elif access_token and not primary_from_email:
+        primary_from_email = get_github_primary_email(access_token)
+
+    to_emails = list(set(to_emails))
+    expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
+
+    # db mutations
+    tip = Tip.objects.create(
+        emails=to_emails,
+        tokenName=params['tokenName'],
+        amount=params['amount'],
+        comments_priv=params['comments_priv'],
+        comments_public=params['comments_public'],
+        ip=get_ip(request),
+        expires_date=expires_date,
+        github_url=params['github_url'],
+        from_name=params['from_name'],
+        from_email=params['from_email'],
+        from_username=from_username,
+        username=params['username'],
+        network=params['network'],
+        tokenAddress=params['tokenAddress'],
+        from_address=params['from_address'],
+        is_for_bounty_fulfiller=params['is_for_bounty_fulfiller'],
+        metadata=params['metadata'],
+        recipient_profile=get_profile(to_username),
+        sender_profile=get_profile(from_username),
+    )
+
+
+    is_over_tip_tx_limit = False
+    is_over_tip_weekly_limit = False
+    max_per_tip = request.user.profile.max_tip_amount_usdt_per_tx if request.user.is_authenticated and request.user.profile else 500
+    if tip.value_in_usdt_now:
+        is_over_tip_tx_limit = tip.value_in_usdt_now > max_per_tip
+        if request.user.is_authenticated and request.user.profile:
+            tips_last_week_value = tip.value_in_usdt_now
+            tips_last_week = Tip.objects.exclude(txid='').filter(sender_profile=get_profile(from_username), created_on__gt=timezone.now() - timezone.timedelta(days=7))
+            for this_tip in tips_last_week:
+                if this_tip.value_in_usdt_now:
+                    tips_last_week_value += this_tip.value_in_usdt_now
+            is_over_tip_weekly_limit = tips_last_week_value > request.user.profile.max_tip_amount_usdt_per_week
+    if is_over_tip_tx_limit:
+        response['status'] = 'error'
+        response['message'] = _('This tip is over the per-transaction limit of $') + str(max_per_tip) + ('.  Please try again later or contact support.')
+    elif is_over_tip_weekly_limit:
+        response['status'] = 'error'
+        response['message'] = _('You are over the weekly tip send limit of $') + str(request.user.profile.max_tip_amount_usdt_per_week) + ('.  Please try again later or contact support.')
+    return JsonResponse(response)
+
+
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def send(request):
-    context = dict()
     # kt = KudosToken(name='pythonista', description='Zen', rarity=5, price=10, num_clones_allowed=3,
     #                 num_clones_in_wild=0)
+    
+    is_user_authenticated = request.user.is_authenticated
+    from_username = request.user.username if is_user_authenticated else ''
+    primary_from_email = request.user.email if is_user_authenticated else ''
 
-    return TemplateResponse(request, 'transaction/send.html', context)
+    params = {
+        'issueURL': request.GET.get('source'),
+        'class': 'send2',
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'from_email': primary_from_email,
+        'from_handle': from_username,
+        'title': 'Send Tip | Gitcoin',
+        'card_desc': 'Send a tip to any github user at the click of a button.',
+    }
+
+    return TemplateResponse(request, 'transaction/send.html', params)
 
 
 def receive(request):
     context = dict()
     # kt = KudosToken(name='pythonista', description='Zen', rarity=5, price=10, num_clones_allowed=3,
     #                 num_clones_in_wild=0)
+    
 
     return TemplateResponse(request, 'transaction/receive.html', context)

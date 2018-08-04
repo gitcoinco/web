@@ -129,7 +129,7 @@ $(document).ready(function() {
         $('#token').append(html);
       }
     });
-    jQuery('#token').select2();
+    // jQuery('#token').select2();
   });
 
 });
@@ -211,7 +211,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
 
 
   var got_metadata_callback = function(metadata) {
-    const url = '/tip/send/3';
+    const url = '/kudos/send/api/';
 
     metadata['creation_time'] = creation_time;
     metadata['salt'] = salt;

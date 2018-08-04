@@ -88,6 +88,8 @@
         <div id="usd_amount" class="form-text"> &nbsp;</div>
       </div>
     </div> -->
+    <input type="hidden" id="token" value="0x408c49a91e46311ddc35737f8c1aaea6191f36e0">
+    <input type="hidden" id="amount" value="0.0011">
     <div class="form-group">
       <label for="">{% trans "To Github Username" %}:</label>
       <input type="text" placeholder="@username" id="username" class="form-control" required>
@@ -138,7 +140,7 @@
     </div>
     <div class="form-group form-check text-center">
       <input type="checkbox" id="tos" value="1" class="form-check-input" required>
-      <label for="tos" class="form-check-label">{% blocktrans %}I understand &amp; agree to the {% endblocktrans %} <a href="{% url "_terms" %}">{% trans "terms of service" %}</a>.</label>
+      <label for="tos" class="form-check-label">{% trans "I understand &amp; agree to the" %} <a href="{% url "_terms" %}">{% trans "terms of service" %}</a>.</label>
     </div>
     <div class="text-center">
     <!-- <a href="#" id="send" class="btn btn-gc-purple">{% trans "Send" %} <span class="emoji">⚡️</span></a> -->
