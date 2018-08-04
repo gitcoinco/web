@@ -149,6 +149,10 @@ class BountyQuerySet(models.QuerySet):
         dt = timezone.now() - timedelta(days=3)
         return self.prefetch_related('interested').filter(interested__isnull=True, created_on__gt=dt)
 
+    def has_funds(self):
+        """Filter results by bounties that are actively funded or funds have been dispersed."""
+        return self.filter(idx_status__in=Bounty.FUNDED_STATUSES)
+
 
 class Bounty(SuperModel):
     """Define the structure of a Bounty.
@@ -158,6 +162,7 @@ class Bounty(SuperModel):
         EXPERIENCE_LEVELS (list of tuples): The valid experience levels.
         PROJECT_LENGTHS (list of tuples): The possible project lengths.
         STATUS_CHOICES (list of tuples): The valid status stages.
+        FUNDED_STATUSES (list of str): The list of status types considered to have retained value.
         OPEN_STATUSES (list of str): The list of status types considered open.
         CLOSED_STATUSES (list of str): The list of status types considered closed.
         TERMINAL_STATUSES (list of str): The list of status types considered terminal states.
@@ -202,6 +207,7 @@ class Bounty(SuperModel):
         ('submitted', 'submitted'),
         ('unknown', 'unknown'),
     )
+    FUNDED_STATUSES = ['open', 'started', 'submitted', 'done']
     OPEN_STATUSES = ['open', 'started', 'submitted']
     CLOSED_STATUSES = ['expired', 'unknown', 'cancelled', 'done']
     TERMINAL_STATUSES = ['done', 'expired', 'cancelled']
@@ -1693,9 +1699,9 @@ class Profile(SuperModel):
         fulfilled_bounties_count = len(fulfilled_bounties)
         funded_bounties = self.get_funded_bounties()
         funded_bounties_count = funded_bounties.count()
-        from django.db.models import Sum
+
         if funded_bounties_count:
-            total_funded_usd = funded_bounties.all().aggregate(Sum('value_in_usdt'))['value_in_usdt__sum']
+            total_funded_usd = funded_bounties.has_funds().aggregate(Sum('value_in_usdt'))['value_in_usdt__sum']
             total_funded_hourly_rate = float(0)
             hourly_rate_bounties_counted = float(0)
             for bounty in funded_bounties:
@@ -2043,7 +2049,7 @@ class Profile(SuperModel):
         eth_sum = 0
 
         if sum_type == 'funded':
-            obj = self.get_funded_bounties(network=network)
+            obj = self.get_funded_bounties(network=network).has_funds()
         elif sum_type == 'collected':
             obj = self.get_fulfilled_bounties(network=network)
         elif sum_type == 'org':
