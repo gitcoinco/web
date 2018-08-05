@@ -48,11 +48,11 @@
         {% trans "View Profile" %}
       </a>
       {% if user.profile is not None and user.profile.is_funder %}
+        <a class="dropdown-item" href="{% url " funder_dashboard" %}">
+          <i class="fas fa-chart-line"></i>
+          {% trans "Funder Dashboard" %}
+        </a>
       {% endif %}
-      <a class="dropdown-item" href="{% url "funder_dashboard" %}">
-        <i class="fas fa-chart-line"></i>
-        {% trans "Funder Dashboard" %}
-      </a>
       <a class="dropdown-item" href="{% url "email_settings" email_key %}">
         <i class="fas fa-cog"></i>
         {% trans "Manage Settings" %}
