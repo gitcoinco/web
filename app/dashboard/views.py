@@ -1231,7 +1231,7 @@ def funder_dashboard(request):
             fund_status = 'Pending'
 
         fund_type = 'Payment'
-        outgoing_funds.push({
+        outgoing_funds.append({
             'id': bounty.github_issue_number,
             'title': escape(bounty.title),
             'type': fund_type,
