@@ -240,3 +240,11 @@ only screen and (max-width: 760px),
   }
 }
 
+.control {
+  cursor: pointer;
+}
+
+.control.control--selected {
+  background-color: #4a4a4a;
+  color: white;
+}

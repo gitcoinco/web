@@ -147,10 +147,21 @@ $(function () {
     $totalBudget.keypress(function(e) {
       if (e.key == "Enter") {
         console.log("User inputted total budget: \r\n" + this.value);
+
+        var isMonthly = $('.control--total-budget--monthly').hasClass('control--selected');
+        var isQuarterly = $('.control--total-budget--quarterly').hasClass('control--selected');
+
+        console.log('Is monthly total budget: ' + isMonthly);
+        console.log('Is quarterly total budget: ' + isQuarterly);
       }
     });
 
-    console.log($totalBudget.val());
+    // Monthly / Quarterly
+    var $totalBudgetControls = $('.control--total-budget');
+    $totalBudgetControls.click(function() {
+      $totalBudgetControls.removeClass('control--selected');
+      $(this).addClass('control--selected');
+    });
   };
 
   // used both by bounties and outgoing funds
