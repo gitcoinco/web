@@ -153,6 +153,8 @@ $(function () {
 
         console.log('Is monthly total budget: ' + isMonthly);
         console.log('Is quarterly total budget: ' + isQuarterly);
+
+        alert('We\'re sorry, but this feature is not currently available');
       }
     });
 
