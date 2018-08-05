@@ -29,6 +29,7 @@ from django.core.validators import URLValidator
 from django.db import transaction
 from django.http import Http404, JsonResponse
 from django.utils import timezone
+from django.utils.html import escape
 
 from app.utils import sync_profile
 from dashboard.models import Activity, Bounty, BountyFulfillment, BountySyncRequest, UserAction
@@ -755,6 +756,10 @@ def get_payout_history(done_bounties):
     w = {}
     m = {}
     y = {}
+    csv_all_time_paid_bounties = [[
+        'Issue ID', 'Title', 'Bounty Type', 'Github Link', 'Value in USD', 'Value in ETH'
+    ]]
+
     for bounty in done_bounties:
         bounty_date = bounty.fulfillment_accepted_on
         if bounty_date is None:
@@ -764,6 +769,15 @@ def get_payout_history(done_bounties):
 
         if bounty_val is None:
             bounty_val = 0.0
+
+        # csv export - all done bounties, ever
+        csv_row = []
+        for key, value in to_funder_dashboard_bounty(bounty).items():
+            if key == 'status' or key == 'statusPendingOrClaimed':
+                continue
+            csv_row.append(value)
+
+        csv_all_time_paid_bounties.append(csv_row)
 
         week = week_of_month(bounty_date)
         month = bounty_date.month
@@ -802,7 +816,42 @@ def get_payout_history(done_bounties):
         yearly['labels'].append(value)
 
     return {
+        # Used for payout history chart
         'weekly': weekly,
         'monthly': monthly,
-        'yearly': yearly
+        'yearly': yearly,
+        # Used for csv export
+        'csv_all_time_paid_bounties': csv_all_time_paid_bounties
     }
+
+
+def to_funder_dashboard_bounty(bounty):
+    pending_or_claimed = "None"
+
+    if bounty.interested.exists():
+        pending_or_claimed = 'Claimed'
+    if bounty.status == 'open' or bounty.status == 'started' or bounty.status == 'submitted':
+        pending_or_claimed = 'Pending'
+
+    return {
+        'id': bounty.github_issue_number,
+        'title': escape(bounty.title),
+        'type': bounty.bounty_type,
+        'status': bounty.status,
+        'statusPendingOrClaimed': pending_or_claimed,
+        'githubLink': bounty.github_url,
+        'worthDollars': usd_format(bounty.get_value_in_usdt),
+        'worthEth': eth_format(bounty.get_value_in_eth)
+    }
+
+
+def usd_format(amount):
+    if amount is None:
+        return "0"
+    return format(amount, '.2f')
+
+
+def eth_format(amount):
+    if amount is None:
+        return "0"
+    return format(amount, '.3f')

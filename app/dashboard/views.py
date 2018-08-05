@@ -54,7 +54,10 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
-from .helpers import get_bounty_data_for_activity, handle_bounty_views, get_payout_history
+from .helpers import (
+    get_bounty_data_for_activity, handle_bounty_views, get_payout_history,
+    eth_format, usd_format, to_funder_dashboard_bounty
+)
 from .models import (
     Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip,
     Tool, ToolVote, UserAction,
@@ -1059,21 +1062,6 @@ def save_search(request):
 
 def funder_dashboard(request):
     """ Render the funder dashboard"""
-    def usd_format(amount):
-        if amount is None:
-            return ""
-        return format(amount, '.2f')
-
-    def eth_format(amount):
-        if amount is None:
-            return ""
-        return format(amount, '.3f')
-
-    def pending_or_claimed_from_bounty(bounty):
-        if bounty.interested.exists():
-            return 'Claimed'
-        if bounty.status == 'open' or bounty.status == 'started' or bounty.status == 'submitted':
-            return 'Pending'
 
     funder_bounties = request.user.profile.get_funded_bounties()
 
@@ -1090,6 +1078,7 @@ def funder_dashboard(request):
     payout_history_weekly = payout_history['weekly']
     payout_history_monthly = payout_history['monthly']
     payout_history_yearly = payout_history['yearly']
+    csv_all_time_paid_bounties = payout_history['csv_all_time_paid_bounties']
 
     utc_now = datetime.datetime.now(timezone.utc)
 
@@ -1282,17 +1271,7 @@ def funder_dashboard(request):
 
     all_bounties = []
     for bounty in funder_bounties:
-
-        all_bounties.append({
-            'id': bounty.github_issue_number,
-            'title': escape(bounty.title),
-            'type': bounty.bounty_type,
-            'status': bounty.status,
-            'statusPendingOrClaimed': pending_or_claimed_from_bounty(bounty),
-            'githubLink': bounty.github_url,
-            'worthDollars': usd_format(bounty.get_value_in_usdt),
-            'worthEth': eth_format(bounty.get_value_in_eth)
-        })
+        all_bounties.append(to_funder_dashboard_bounty(bounty))
 
     context = {
         # Header
@@ -1311,6 +1290,10 @@ def funder_dashboard(request):
         "payout_history_weekly": json.dumps(payout_history_weekly, ensure_ascii=False, cls=DjangoJSONEncoder),
         "payout_history_monthly": json.dumps(payout_history_monthly, ensure_ascii=False, cls=DjangoJSONEncoder),
         "payout_history_yearly": json.dumps(payout_history_yearly, ensure_ascii=False, cls=DjangoJSONEncoder),
+        # Csv export all bounties this year
+        "csv_all_time_paid_bounties": json.dumps(csv_all_time_paid_bounties,
+                                                         ensure_ascii=False,
+                                                         cls=DjangoJSONEncoder),
         # Tax Reporting
         "tax_year": tax_year,
         "tax_year_bounties_count": tax_year_bounties_count,
@@ -1326,7 +1309,7 @@ def funder_dashboard(request):
         "outgoing_funds_filters": outgoing_funds_filters,
         "outgoing_funds": json.dumps(outgoing_funds, ensure_ascii=False, cls=DjangoJSONEncoder),
         "all_bounties_filters": all_bounties_filters,
-        "all_bounties": json.dumps(all_bounties, ensure_ascii=False, cls=DjangoJSONEncoder)
+        "all_bounties": json.dumps(all_bounties, ensure_ascii=False, cls=DjangoJSONEncoder),
     }
 
     return TemplateResponse(request, 'funder_dashboard.html', context)

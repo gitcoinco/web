@@ -441,7 +441,7 @@ $(function () {
 
   function activateTaxYearCsvExport() {
     $('.funder-dashboard__tax-reporting__bounties__download-report').click(function() {
-      var csvRows = $.parseJSON(window.taxReportCsv);
+      var csvRows = window.taxReportCsv;
 
       var csvContent = '';
       csvRows.forEach(function (infoArray, index) {
@@ -449,7 +449,7 @@ $(function () {
         csvContent += index < csvRows.length ? dataString + '\r\n' : dataString;
       });
 
-      utils.download(csvContent, 'GitcoinTaxReport.csv', 'text/csv;encoding:utf-8');
+      utils.download(csvContent, 'GitcoinPaidBountiesThisYear.csv', 'text/csv;encoding:utf-8');
     });
   }
 

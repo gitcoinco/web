@@ -599,11 +599,7 @@
         items: {{all_bounties | safe}}
       };
 
-      window.taxReportCsv = JSON.stringify(
-      [
-        ['name1', 'city1', 'some other info'],
-        ['name2', 'city2', 'more info']
-      ]);
+      window.taxReportCsv = {{ csv_all_time_paid_bounties | safe }}
     </script>
     <script src="{% static "v2/js/funder_dashboard.js" %}"></script>
     {% include 'shared/messages.html' %}
