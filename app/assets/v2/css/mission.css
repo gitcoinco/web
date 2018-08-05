@@ -1,0 +1,102 @@
+.mission p {
+  font-size: 20px;
+  font-weight: 500;
+  color: #666666;
+}
+
+.mission .icon {
+  width: 5rem;
+  float: left;
+  margin-right: 4rem;
+}
+
+.mission .divider {
+  border-bottom: 2px solid #3e24fb;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.mission .icon-small {
+  height: 4rem;
+  width: auto;
+}
+
+.mission .header-text {
+  font-weight: 700;
+}
+
+.mission .falcon-wrapper {
+  position: relative;
+  height: 100%;
+}
+
+.mission .falcon-wrapper .falcon-pull, .mission .falcon {
+  float: right;
+}
+
+@media(min-width: 768px) and (max-width: 991px)  {
+  .mission .falcon-wrapper .falcon {
+    width: 28rem;
+    height: auto;
+  }
+}
+
+@media(min-width: 992px) and (max-width: 1199px)  {
+  .mission .falcon-wrapper .falcon {
+    width: 25rem;
+    height: auto;
+  }
+}
+
+@media(min-width: 1200px) {
+  .mission .falcon-wrapper .falcon {
+    width: 30rem;
+    height: auto;
+  }
+}
+
+@media(min-width: 768px) and (max-width: 991px)  {
+  .mission .falcon-wrapper .falcon-pull {
+    width: 22rem;
+    height: auto;
+    margin-top: -18rem;
+  }
+}
+
+@media(min-width: 992px) and (max-width: 1199px)  {
+  .mission .falcon-wrapper .falcon-pull {
+    width: 30rem;
+    height: auto;
+    margin-top: -18rem;
+  }
+}
+
+@media(min-width: 1200px) {
+  .mission .falcon-wrapper .falcon-pull {
+    width: 30rem;
+    height: auto;
+    margin-top: -22rem;
+  }
+}
+
+.mission .icon-text {
+  font-weight: 500;
+  font-size: 18px;
+  font-family: futura-pt, sans-serif;
+  color: #666666;
+}
+
+#mission_hero .text {
+  margin-left: 2rem;
+}
+
+#mission_hero .font-bigger-4 {
+  letter-spacing: 0.15rem;
+}
+
+#we_want,
+#we_value,
+#we_interact,
+#we_believe {
+  padding: 0 10vw;
+}

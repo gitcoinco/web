@@ -1,23 +1,17 @@
 /* eslint-disable no-loop-func */
-// helper functions
-var technologies = [
-  '.NET', 'ASP .NET', 'Angular', 'Backbone', 'Bootstrap', 'C', 'C#', 'C++', 'CSS', 'CSS3',
-  'CoffeeScript', 'Dart', 'Django', 'Drupal', 'DynamoDB', 'ElasticSearch', 'Ember', 'Erlang', 'Express', 'Go', 'Groovy',
-  'Grunt', 'HTML', 'Hadoop', 'Jasmine', 'Java', 'JavaScript', 'Jekyll', 'Knockout', 'LaTeX', 'Mocha', 'MongoDB',
-  'MySQL', 'NoSQL', 'Node.js', 'Objective-C', 'Oracle', 'PHP', 'Perl', 'Polymer', 'Postgres', 'Python', 'R', 'Rails',
-  'React', 'Redis', 'Redux', 'Ruby', 'SASS', 'Scala', 'Sqlite', 'Swift', 'TypeScript', 'Websockets', 'WordPress', 'jQuery'
-];
 
 var sidebar_keys = [
   'experience_level',
   'project_length',
   'bounty_type',
   'bounty_filter',
+  'moderation_filter',
   'network',
   'idx_status',
   'tech_stack',
   'project_type',
-  'permission_type'
+  'permission_type',
+  'misc'
 ];
 
 var localStorage;
@@ -90,7 +84,7 @@ var set_sidebar_defaults = function() {
 
   if (localStorage['order_by']) {
     $('#sort_option').val(localStorage['order_by']);
-    $('#sort_option').selectmenu('refresh');
+    $('#sort_option').selectmenu().selectmenu('refresh');
   }
 
   for (var i = 0; i < sidebar_keys.length; i++) {
@@ -135,29 +129,14 @@ var toggleAny = function(event) {
 };
 
 var addTechStackKeywordFilters = function(value) {
-  var isTechStack = false;
-
-  technologies.forEach(function(v, k) {
-    if (v.toLowerCase() === value) {
-      isTechStack = true;
-
-      $('.filter-tags').append('<a class="filter-tag tech_stack"><span>' + value + '</span>' +
-        '<i class="fas fa-times" onclick="removeFilter(\'tech_stack\', \'' + value + '\')"></i></a>');
-
-      $('input[name="tech_stack"][value=' + value + ']').prop('checked', true);
-    }
-  });
-
-  if (!isTechStack) {
-    if (localStorage['keywords']) {
-      localStorage['keywords'] += ',' + value;
-    } else {
-      localStorage['keywords'] += value;
-    }
-
-    $('.filter-tags').append('<a class="filter-tag keywords"><span>' + value + '</span>' +
-      '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + value + '\')"></i></a>');
+  if (localStorage['keywords']) {
+    localStorage['keywords'] += ',' + value;
+  } else {
+    localStorage['keywords'] += value;
   }
+
+  $('.filter-tags').append('<a class="filter-tag keywords"><span>' + value + '</span>' +
+    '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + value + '\')"></i></a>');
 };
 
 var getFilters = function() {
@@ -274,7 +253,6 @@ var get_search_URI = function() {
   if (order_by) {
     uri += '&order_by=' + order_by;
   }
-
   return uri;
 };
 
@@ -437,7 +415,7 @@ var refreshBounties = function(event) {
     for (var i = 0; i < results.length; i++) {
       // setup
       var result = results[i];
-      var related_token_details = tokenAddressToDetails(result['token_address']);
+      var related_token_details = tokenAddressToDetailsByNetwork(result['token_address'], result['network']);
       var decimals = 18;
 
       if (related_token_details && related_token_details.decimals) {
@@ -462,7 +440,7 @@ var refreshBounties = function(event) {
       var project_type = ucwords(result['project_type']) + ' &bull; ';
 
       result['p'] = project_type + (result['experience_level'] ? result['experience_level'] + ' &bull; ' : '');
-      
+
       if (result['status'] === 'done')
         result['p'] += 'Done';
       if (result['fulfillment_accepted_on']) {
@@ -489,9 +467,8 @@ var refreshBounties = function(event) {
 
         var timeLeft = timeDifference(new Date(), new Date(result['expires_date']));
         var expiredExpires = new Date() < new Date(result['expires_date']) ? 'Expires' : 'Expired';
-        var softOrNot = result['can_submit_after_expiration_date'] ? 'Soft ' : '';
 
-        result['p'] += ('Opened ' + opened_when + ' ago, ' + softOrNot + expiredExpires + ' ' + timeLeft);
+        result['p'] += ('Opened ' + opened_when + ' ago, ' + expiredExpires + ' ' + timeLeft);
       }
 
       result['watch'] = 'Watch';
@@ -609,18 +586,6 @@ $(document).ready(function() {
   function extractLast(term) {
     return split(term).pop();
   }
-
-  technologies.forEach(function(v, k) {
-    $('#tech-stack-options').append(
-      '<div class="checkbox_container">' +
-        '<input name="tech_stack" id="' + v.toLowerCase() + '" type="checkbox" value="' + v.toLowerCase() + '" val-ui="' + v + '"/>' +
-        '<span class="checkbox"></span>' +
-        '<div class="filter-label">' +
-          '<label for="' + v.toLowerCase() + '">' + v + '</label>' +
-        '</div>' +
-      '</div>'
-    );
-  });
 
   // Handle search input clear
   $('.close-icon')

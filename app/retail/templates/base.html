@@ -30,17 +30,13 @@
     {% endif %}
   </div>
   {% cookielaw_banner %}
-  <div class="container-fluid mt-3">
-    </div>
-    <div class="row mt-5 pb-3">
-      <div class="col text-center body">
-        {% block body %}{% endblock %}
-      </div>
+  <div class="row mt-5 pb-0">
+    <div class="col text-center body">
+      {% block body %}{% endblock %}
     </div>
   </div>
   {% include 'shared/footer.html' %}
   {% include 'shared/footer_scripts.html' %}
-  {% include 'shared/rollbar.html' %}
   {% include 'shared/messages.html' %}
 </body>
 {% include 'shared/analytics.html' %}

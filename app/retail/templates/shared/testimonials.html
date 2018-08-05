@@ -1,71 +1,24 @@
 {% load i18n static %}
-<div class="container-fluid carousel">
-    <div class="row pb-1">
-        <div class="col text-center">
-            <h4 class="pt-1">{% trans "Who's using Gitcoin?" %}</h4>
-        </div>
-    </div>
-  <div class="row pilot_projects mt-1 mb-1">
-        <div class="col text-center">
-        <img src="{% static "v2/images/pilot_projects_1.png" %}">
-        <p>
-            {% trans "November 16 2017" %} -- <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6">{% trans "Gitcoin Announces Pilot Projects with EtherDelta, Consensys Dilligence, Truffle, Metamask, web3py" %}</a>
-        </p>
-      </div>
-  </div>
-
-  <div class="row mb-0" style="min-height: 200px;">
-    <div class="offset-lg-2 offset-md-1 offset-sm-0 hidden-xs-down col-sm-1 prev" align="center">
-      <button class="control" onclick="prevSlide()">
-        <i class="fas fa-chevron-left" aria-hidden="true"></i>
-      </button>
-    </div>
-    <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12" id="slides">
-      {% for author, avatar, testimonial, url in slides %}
-      <div class="slide hide">
-          <div class="flex-container col-12">
-            <div class="avatar">
-              <div class="circles">
-                <i class="closed fas fa-circle" aria-hidden="true"></i>
-                <i class="circle-large far fa-circle" aria-hidden="true"></i>
-                <i class="circle-small far fa-circle" aria-hidden="true"></i>
-              </div>
-              <div class="upper-line"></div>
-              <img src="{{avatar}}">
-              <div class="lower-line"></div>
-            </div>
-            <div class="testimonial">
-              <p class="content">{{testimonial}}</p>
+<div class="container-fluid carousel p-0">
+  <div class="row mb-0">
+    <div class="d-flex align-items-center" id="slides">
+      {% for slide in slides %}
+        <div class="slide d-flex justify-content-center flex-wrap">
+          <div class="avatar mb-4" style="background-image: url('{{slide.1}}');"></div>
+          <div class="testimonial d-flex">
+            <div class="decorated-quote p-0 font-italic mr-3">"</div>
+            <div class="content">
+              <p>{{slide.2}}</p>
               <p class="author">
-                <i class="fas fa-minus" aria-hidden="true"></i>
-                <a href="{{url}}">
-                    {{author}}
-                </a>
-                <i class="fas fa-minus" aria-hidden="true"></i>
+                <a href="{{slide.3}}" target="_blank" rel="noopener">{{slide.0}}</a>
+                {% if slide.4 %}
+                  <br><span class="org">{{slide.4}}</span>
+                {% endif %}
               </p>
             </div>
           </div>
         </div>
       {% endfor %}
     </div>
-    <div class="hidden-xs-down col-sm-1 next" align="center">
-      <button class="control" onclick="nextSlide()">
-        <i class="fas fa-chevron-right" aria-hidden="true"></i>
-      </button>
-    </div>
   </div>
-
-    <div class="row mt-2 pb-3 animatedParent" >
-        <div class="col d-flex flex-column align-items-center animatedParent youtube">
-            <iframe id="gitcoinTestimonials" src="https://www.youtube.com/embed/hpqHJCiqXzA" class="animated fadeInRightShort" frameborder="0" allowfullscreen></iframe>
-        </div>
-
-    </div>
-    <div class="row mt-2 pb-3 animatedParent">
-        <div class="col animated pulse fast">
-            <a class="btn btn-lg btn-warning" role="button" href="{% url "casestudies" %}">Read Case Studies</a>
-        </div>
-    </div>
-
-
 </div>

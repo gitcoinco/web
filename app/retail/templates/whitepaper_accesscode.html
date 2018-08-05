@@ -1,87 +1,72 @@
 {% extends 'base.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
 {% block body %}
-
-    <div class="container-fluid" style="">
-        <div class=" row ">
-            <div class="col-4 pb-4">
-                <div class="align-items-right justify-content-right" style="text-align: right;">
-                    <img src="{% static "v2/images/tree/dark.png" %}" style="max-width:300px; margin: 0px auto;">
-                </div>
-            </div>
-            <div class="col-1 pb-4">
-            </div>
-            <div class="col-6 pb-4">
-                <div class="form_container pl-2 pr-2">
-                    <h4 class='mb-0 pt-1'>{% trans "Got an access code?" %} </h4>
-                    <h4 class="mt-0 pt-1 font-smaller-1">{% trans "Good for you." %}</h4>
-                    <div style="max-width: 500px; margin: 0px auto;">
-                    <p>{% trans "Please submit your info below for access to the draft whitepaper." %}</a> </p>
-                    {% if msg %}
-                        <p style="background-color: #fee856; padding: 5px 10px;">
-                            {{msg | safe}}
-                        </p>
-                    {% endif %}
-                    <form id=whitepaper method=POST>
-                        <div class="form-group">
-                            <label for="email">{% trans "Email address" %}</label>
-                            <input type=text name=email class=form-control placeholder='you@somewhere'  value="{{email}}" required>
-                            <small id="emailHelp" class="form-text text-muted">{% trans "Gitcoin will never share your email with anyone else." %}</small>
-                        </div>
-                        <div class="form-group">
-                        <label for="accesskey">{% trans "Access Code" %}</label>
-                        <input type=text class=form-control name=accesskey id="accesskey" placeholder='XXXX-YYYY-ZZZZZ' value="{{accesskey}}" >
-
-                        </div>
-                        {% csrf_token %}
-                        <input class='btn btn-sm btn-success' type='submit' name='submit' value="Go">
-                    </form>
-
-                    {% endblock %}
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-1 pb-4">
-            </div>
-        </div>
+<div class="container-fluid" style="">
+  <div class=" row ">
+    <div class="col-4 pb-4">
+      <div class="align-items-right justify-content-right" style="text-align: right;">
+        <img src="{% static "v2/images/tree/dark.png" %}" style="max-width:300px; margin: 0px auto;">
+      </div>
     </div>
-
-
-
-
+    <div class="col-1 pb-4">
+    </div>
+    <div class="col-6 pb-4">
+      <div class="form_container pl-2 pr-2">
+        <h4 class='mb-0 pt-1'>{% trans "Got an access code?" %} </h4>
+        <h4 class="mt-0 pt-1 font-smaller-1">{% trans "Good for you." %}</h4>
+        <div style="max-width: 500px; margin: 0px auto;">
+        <p>{% trans "Please submit your info below for access to the draft whitepaper." %}</a> </p>
+        {% if msg %}
+        <p style="background-color: #fee856; padding: 5px 10px;">
+          {{ msg | safe }}
+        </p>
+        {% endif %}
+        <form id="whitepaper" method="POST">
+          <div class="form-group">
+            <label for="email">{% trans "Email address" %}</label>
+            <input type="text" name="email" class="form-control" placeholder="you@somewhere"  value="{% if email %}{{ email }}{% endif %}" required>
+            <small id="emailHelp" class="form-text text-muted">{% trans "Gitcoin will never share your email with anyone else." %}</small>
+          </div>
+          <div class="form-group">
+            <label for="accesskey">{% trans "Access Code" %}</label>
+            <input type="text" class="form-control" name="accesskey" id="accesskey" placeholder="xxxxxxxxxxxxxxxxxxxxxxxxxxxxx" value="{% if accesskey %}{{ accesskey }}{% endif %}" >
+          </div>
+          {% csrf_token %}
+          <input class="btn btn-sm btn-success" type="submit" name="submit" value="Go">
+        </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-1 pb-4">
+    </div>
+  </div>
+</div>
+{% endblock %}
 {% block scripts %}
-
-
 <script>
-
-    $(document).ready(function() {
-        $('#whitepaper input.btn-go').click(function(e){
-            mixpanel.track("Whitepaper Access Code Request", {});
-
-            setTimeout(function(){
-                $('#whitepaper input.btn-go').attr('disabled','disabled');
-            },1);
-        });
+  $(document).ready(function() {
+    $('#whitepaper input.btn-go').click(function(e){
+      mixpanel.track("Whitepaper Access Code Request", {});
+      setTimeout(function(){
+        $('#whitepaper input.btn-go').attr('disabled','disabled');
+      },1);
     });
+  });
 </script>
-
-
 {% endblock %}

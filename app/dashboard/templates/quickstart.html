@@ -33,7 +33,7 @@
     <div class="container-fluid content mt-3">
       <div class="row pb-1">
         <div class="col text-center">
-          <h4 class="title">{% trans "Quickstart Guide" %}</h4>
+          <h4 class="title">{% trans "Developer Guide" %}</h4>
         </div>
       </div>
       <div class="row col-12 offset-lg-1 col-lg-10">
@@ -152,13 +152,15 @@
 
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
 
+    <script src="/static/v2/js/tokens_dynamic.js"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>
     <script src="{% static "v2/js/pages/quickstart.js" %}"></script>
     <script src="{% static "v2/js/shared.js" %}"></script>
-    <script>
-        document.keywords = {{keywords | safe}};
-    </script>
+    {% if keywords %}
+      <script>
+        document.keywords = {{ keywords|safe }};
+      </script>
+    {% endif %}
   </body>

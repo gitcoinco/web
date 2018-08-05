@@ -2,7 +2,13 @@
 <div class="row">
   <div class="col-12 mb-4">
     <h4 class="font-heading">{% trans h1 %}</h4>
-    <p class="font-subheader caption">{% trans h2 %}</p>
+    {% if community_members == alumni %}
+      <p class="font-body caption">{% trans h2 %} <br>
+        {% trans "These are the ones who have opted to be public about it" %}
+      </p>
+    {% else %}
+      <p class="font-subheader caption">{% trans h2 %}</p>
+    {% endif %}
   </div>
 </div>
 <div class="row">
@@ -15,7 +21,7 @@
         <p class="organization font-caption">{{ org }}</p>
         <div class="social-links">
           <a href="{% url "profile" handle %}"><div class="gitcoin-svg"></div></a>
-          <a href="https://github.com/{{ handle }}"><i class="fab fa-github"></i></a>
+          <a href="https://github.com/{{ handle }}" target="_blank" rel="noopener noreferrer"><i class="fab fa-github"></i></a>
         </div>
       </div>
     </div>

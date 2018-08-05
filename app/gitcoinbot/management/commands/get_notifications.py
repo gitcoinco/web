@@ -22,9 +22,8 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from github.utils import (
-    get_issue_comments, get_notifications, issue_number, org_name, post_issue_comment, post_issue_comment_reaction,
-    repo_name,
+from git.utils import (
+    get_issue_comments, get_notifications, issue_number, org_name, post_issue_comment_reaction, repo_name,
 )
 
 
@@ -63,8 +62,6 @@ class Command(BaseCommand):
                         if num_reactions == 0 and not is_from_gitcoinbot:
                             print("unprocessed")
                             post_issue_comment_reaction(_org_name, _repo_name, _comment_id, 'heart')
-                            comment = f"@{comment_from}. :wave: thanks for the atMention, but you need to [install @gitcoinbot on this repo for me to be able to respond](https://github.com/apps/gitcoinbot).  More details [in the documentation](https://github.com/gitcoinco/web/tree/master/app/gitcoinbot).\n\n:v:\n@gitcoinbot"
-                            post_issue_comment(_org_name, _repo_name, _issue_number, comment)
                 except Exception as e:
                     logging.exception(e)
                     print(e)

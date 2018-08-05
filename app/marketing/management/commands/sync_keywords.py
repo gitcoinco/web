@@ -38,7 +38,7 @@ class Command(BaseCommand):
                 if fulfiller.fulfiller_github_username:
                     keywords.append(fulfiller.fulfiller_github_username)
             if bounty.keywords:
-                for keyword in bounty.keywords.split(','):
+                for keyword in bounty.keywords_list:
                     keywords.append(keyword)
         Keyword.objects.all().delete()
         for keyword in set(keywords):

@@ -17,5 +17,5 @@
 {% load i18n %}
 <div class="w-100 mt-2">
   <label class="form__label" for="hoursWorked">{% trans "Hours Worked" %}</label>
-  <input name='hoursWorked' id='hoursWorked' class="form__input" type="number" placeholder="1 (feel free to approximate)" value="" step="0.25" />
+  <input name='hoursWorked' id='hoursWorked' class="form__input" type="number" placeholder="1 (feel free to approximate)" value="" min="0" step="0.1" />
 </div>

@@ -17,7 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from dashboard.utils import get_ordinal_repr, get_web3
+from dashboard.utils import clean_bounty_url, get_ordinal_repr, get_web3, humanize_event_name
 from test_plus.test import TestCase
 from web3.main import Web3
 from web3.providers.rpc import HTTPProvider
@@ -50,3 +50,16 @@ class DashboardUtilsTest(TestCase):
         assert get_ordinal_repr(22) == '22nd'
         assert get_ordinal_repr(23) == '23rd'
         assert get_ordinal_repr(24) == '24th'
+
+    @staticmethod
+    def test_clean_bounty_url():
+        """Test the cleaning of a bounty-esque URL of # sections."""
+        assert clean_bounty_url(
+            'https://github.com/gitcoinco/web/issues/9999#issuecomment-999999999'
+        ) == 'https://github.com/gitcoinco/web/issues/9999'
+
+    @staticmethod
+    def test_humanize_event_name():
+        """Test the humanized representation of an event name."""
+        assert humanize_event_name('start_work') == 'WORK STARTED'
+        assert humanize_event_name('remarket_funded_issue') == 'REMARKET_FUNDED_ISSUE'

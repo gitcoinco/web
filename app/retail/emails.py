@@ -64,14 +64,21 @@ def premailer_transform(html):
 
 def render_tip_email(to_email, tip, is_new):
     warning = tip.network if tip.network != 'mainnet' else ""
+    already_redeemed = bool(tip.receive_txid)
+    link = tip.url
+    if tip.web3_type != 'v2':
+        link = tip.receive_url
+    elif tip.web3_type != 'v3':
+        link = tip.receive_url_for_recipient
     params = {
-        'link': tip.url,
+        'link': link,
         'amount': round(tip.amount, 5),
         'tokenName': tip.tokenName,
         'comments_priv': tip.comments_priv,
         'comments_public': tip.comments_public,
         'tip': tip,
-        'show_expires': tip.expires_date < (timezone.now() + timezone.timedelta(days=365)) and tip.expires_date,
+        'already_redeemed': already_redeemed,
+        'show_expires': not already_redeemed and tip.expires_date < (timezone.now() + timezone.timedelta(days=365)) and tip.expires_date,
         'is_new': is_new,
         'warning': warning,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
@@ -194,6 +201,58 @@ PS - i've got some new gitcoin schwag on order. send me your mailing address and
 
     return response_html, response_txt
 
+
+def render_admin_contact_funder(bounty, text, from_user):
+    txt = f"""
+{bounty.url}
+
+{text}
+
+{from_user}
+
+"""
+    params = {
+        'txt': txt,
+    }
+    response_html = premailer_transform(render_to_string("emails/txt.html", params))
+    response_txt = txt
+
+    return response_html, response_txt
+
+
+def render_funder_stale(github_username, days=30, time_as_str='about a month'):
+    """Render the stale funder email template.
+
+    Args:
+        github_username (str): The Github username to be referenced in the email.
+        days (int): The number of days back to reference.
+        time_as_str (str): The human readable length of time to reference.
+
+    Returns:
+        str: The rendered response as a string.
+
+    """
+    response_txt = f"""
+Hi {github_username},
+
+Kevin Owocki from Gitcoin here.
+
+I see you haven't posted any funded work to the platform in {time_as_str}.
+
+Just wanted to check in and see if there's anything we can do, or if you had any feedback for us. \
+We're still a small startup and we iterate fast; not only will your feedback be heard, but it's \
+got a good chance of being put into the product roadmap!
+
+Kevin
+
+PS - I've got some new gitcoin schwag on order.  Send me your mailing address and your \
+t-shirt size and i'll ship you some.
+
+"""
+
+    params = {'txt': response_txt}
+    response_html = premailer_transform(render_to_string("emails/txt.html", params))
+    return response_html, response_txt
 
 
 def render_new_bounty(to_email, bounties, old_bounties):
@@ -345,7 +404,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
         'bounty': bounty,
         'interest': interest,
         'time_delta_days': time_delta_days,
-        'subscriber': get_or_save_email_subscriber(fr.email, 'internal'),
+        'subscriber': get_or_save_email_subscriber(interest.profile.email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/render_bounty_startwork_expired.html", params))
@@ -449,92 +508,101 @@ def render_start_work_applicant_expired(interest, bounty):
     return response_html, response_txt, subject
 
 
+
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "How to Price Work on Gitcoin | Colony Hackathon "
+    subject = "Crowdfund bounties with Gitcoin"
 
     intro = '''
 
 <p>
-    Hi there
+    Hi there!
 </p>
 <p>
-This week, we shipped a <a href='https://medium.com/gitcoin/funder-guide-how-to-price-work-on-gitcoin-49bafcdd201e'>data-driven pricing guide for posting work on Gitcoin</a>. We share what we’ve learned about pricing for our first 300 bounties and look forward to continuing the analysis as time passes.  
+This week we published <a href="https://medium.com/gitcoin/everything-you-need-to-know-about-gitcoin-fe2e3e292a21">Everything You Need to Know About Gitcoin</a>
+This piece is a one stop shop for all things Gitcoin. We explain how Gitcoin works, what progress we’ve made, what cool things we’ve built, who we’ve worked with, and where we’re going next.
+This post will be subsequently pinned to our Medium and updated monthly to keep our community up to date on all things Gitcoin.
 </p>
+
 <p>
-We’ve proudly <a href='http://bit.ly/2LsssHG'>partnered up with our friends at Colony for their hackathon</a>! Colony is the Ethereum-based blockchain project building a platform for the future of work. The hackathon features $25K in prizes (paid in Dai) and an all-star panel of 16 judges from the ecosystem.
+We also launched two new features! The first is <a href="https://medium.com/gitcoin/crowdfunding-bounties-fd821b04309d">Crowdfunding Bounties on Gitcoin.</a>
+This feature now allows anyone to contribute to funding a bounty with either social capital or physical funds.
+The second feature addition is that funders now have the ability to <a href="https://medium.com/gitcoin/crowdfunding-bounties-fd821b04309d">pay out multiple contributors at once.</a>
+Simply add their Github username on the ‘Advanced Payout’ screen and denominate their percent of the bounty total.
 </p>
-<p>
-The online hackathon runs June 5th - June 24th and celebrates the release of the colonyJS library—tools that allow developers to leverage the power of Colony’s smart contracts in their own applications.
-</p>
-<p>
-<a href='http://bit.ly/2LsssHG'>You can register here. </a>
-</p>
-<p style="text-align:center;">
-<a href='http://bit.ly/2LsssHG'>
-<img style="margin: 0px auto" src='https://gitcoin.co/static/v2/images/colony.png?1' width='450', height='184'>
-</a>
-</p>
+
 <h3>What else is new?</h3>
     <ul>
         <li>
-We released Richard Burton’s demo of Balance on the Gitcoin Livestream channel on YouTube. <a href=https://www.youtube.com/watch?v=SoIJ6JJdO8o&t=4s</a>Check it out here!</a>
+The <a href="http://gitcoin.co/livestream">Gitcoin Livestream</a> is back! Today at 5pm we'll be joined by Mark Beylin of Bounties Network as well as Chris Slaughter from Samsa.ai
         </li>
         <li>
-I did a 2 minute interview  on Gitcoin at Ethereal 2018. <a href='https://www.youtube.com/watch?v=pdoa09b_2J4'>See it here.</a>
+Our livestreams with Matt Lockyer of ERC-998 protocol and Dave & Chris of Deco Network are now live on the <a href="https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w">Gitcoin Youtube channel.</a>
         </li>
-        <li>
-<a href='https://gitcoin.co/livestream'>The Gitcoin Livestream </a>is back as regularly scheduled today at 5PM ET. Colony will be joining to speak further on their hackathon alongside Livepeer, a fully decentralized live-video streaming service! 
-        </li>
+
     </ul>
 </p>
 <p>
-Back to BUIDLing, 
+Back to BUIDLing,
 </p>
 '''
     highlights = [
         {
-            'who': 'dilatebrave',
+            'who': 'scsaba',
             'who_link': True,
-            'what': 'Worked with Bounties Network on Weekly Graph Support',
-            'link': 'https://gitcoin.co/issue/Bounties-Network/StdBountiesAnaltyics/4/515',
-            'link_copy': 'See more',
-        },
-        {
-            'who': 'iamonuwa',
-            'who_link': True,
-            'what': 'Created a Smart Contract search engine with AbieFund!',
-            'link': 'https://gitcoin.co/issue/AbieFund/abie/5/508',
+            'what': 'Helped implement browser notifications on MetaMask!',
+            'link': 'https://gitcoin.co/issue/MetaMask/metamask-extension/4203/836',
             'link_copy': 'View more',
         },
         {
-            'who': 'antonper',
+            'who': 'aerophile',
             'who_link': True,
-            'what': 'Cleaned up an error rejection messages on MetaMask! ',
-            'link': 'https://gitcoin.co/issue/MetaMask/metamask-extension/1546/499',
+            'what': 'Crafted up a blog post on Ethereum Gas and it’s fluctuations.',
+            'link': 'https://gitcoin.co/issue/gitcoinco/web/1751/791',
+            'link_copy': 'View more',
+        },
+        {
+            'who': 'StevenJNPearce',
+            'who_link': True,
+            'what': 'Fixed the collateral deposit, withdraw, and settlement return on MarketProtocol.',
+            'link': 'https://gitcoin.co/issue/MARKETProtocol/MARKET.js/106/856',
             'link_copy': 'View more',
         },
     ]
 
-    try:
-        bounties = [
-            {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/XLNT/gnarly/issues/8'),
-                'primer': 'Ethereum Foundation grantee XLNT needs help with their Gas Price Oracle Reducer!',
-            },
-            {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/uport-project/buidlbox/issues/17'),
-                'primer': 'uPort aims to build a Transaction Manager ',
-            },
-            {
-                'obj': Bounty.objects.get(current_bounty=True, github_url__iexact='https://github.com/paritytech/parity/issues/8725'),
-                'primer': 'Contribute to Parity Tech, a leading Ethereum client',
-            },
-        ]
-    except:
-        bounties = []
+    bounties_spec = [
+        {
+            'url': 'https://github.com/zeppelinos/zos-cli/issues/320',
+            'primer': 'Help Zeppelin OS fix the logic contract kill switch bug',
+        },
+        {
+            'url': 'https://github.com/gitcoinco/web/issues/1822',
+            'primer': 'Fix an issue with non-Github links not working on Gitcoin bounties',
+        },
+        {
+            'url': 'https://github.com/livepeer/livepeerjs/issues/155',
+            'primer': 'Assist Livepeer in fixing a loading bug in Mist browser',
+        },
+    ]
+
+    #### don't need to edit anything below this line
+
+
+    bounties = []
+    for nb in bounties_spec:
+        try:
+            bounty = Bounty.objects.current().filter(
+                github_url__iexact=nb['url'],
+            ).order_by('-web3_created').first()
+            if bounty:
+                bounties.append({
+                    'obj': bounty,
+                    'primer': nb['primer']
+                    })
+        except Exception as e:
+            print(e)
 
     ecosystem_bounties = ExternalBounty.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(weeks=1)).order_by('?')[0:5]
 
@@ -642,6 +710,26 @@ def bounty_feedback(request):
 
 
 @staff_member_required
+def funder_stale(request):
+    """Display the stale funder email template.
+
+    Params:
+        limit (int): The number of days to limit the scope of the email to.
+        duration_copy (str): The copy to use for associated duration text.
+        username (str): The Github username to reference in the email.
+
+    Returns:
+        HttpResponse: The HTML version of the templated HTTP response.
+
+    """
+    limit = int(request.GET.get('limit', 30))
+    duration_copy = request.GET.get('duration_copy', 'about a month')
+    username = request.GET.get('username', '@foo')
+    response_html, _ = render_funder_stale(username, limit, duration_copy)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
 def bounty_expire_warning(request):
     from dashboard.models import Bounty
     response_html, _ = render_bounty_expire_warning(settings.CONTACT_EMAIL, Bounty.objects.last())
@@ -688,7 +776,8 @@ def roundup(request):
 def quarterly_roundup(request):
     from marketing.utils import get_platform_wide_stats
     platform_wide_stats = get_platform_wide_stats()
-    response_html, _ = render_quarterly_stats(settings.CONTACT_EMAIL, platform_wide_stats)
+    email = settings.CONTACT_EMAIL
+    response_html, _ = render_quarterly_stats(email, platform_wide_stats)
     return HttpResponse(response_html)
 
 

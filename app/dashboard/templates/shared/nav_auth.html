@@ -17,7 +17,7 @@
 {% load i18n static %}
 <input id="is-authenticated" type="hidden" value={{user.is_authenticated}}>
 {% if user.is_authenticated %}
-  <div class="nav-item dropdown">
+  <div class="nav-item dropdown interior">
     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
       {{ user }}
@@ -29,7 +29,7 @@
           {% trans "Send Tip" %}
         </a>
         <a class="dropdown-item" href="{% url "new_funding" %}">
-          <i class="fas fa-credit-card"></i>
+          <i class="fab fa-ethereum"></i>
           {% trans "Fund Issue" %}
         </a>
       {% else %}
@@ -39,6 +39,10 @@
         </a>
       {% endif %}
       <div class="dropdown-divider"></div>
+      <a class="dropdown-item" href="{% url "onboard" "profile" %}?steps=avatar">
+        <i class="fas fa-user-edit"></i>
+        {% trans "Build Avatar" %}
+      </a>
       <a class="dropdown-item" href="{% url "profile" %}">
         <i class="fas fa-user"></i>
         {% trans "View Profile" %}
@@ -56,9 +60,9 @@
       {% if unclaimed_tips %}
         <div class="dropdown-divider"></div>
         {% for tip in unclaimed_tips %}
-          <a class="dropdown-item" href="{{ tip.url }}">
+          <a class="dropdown-item" href="{{ tip.receive_url }}">
             <i class="fas fa-dollar-sign"></i>
-            {% blocktrans %}Claim ${{ tip.value_in_usdt_now }} Tip {% endblocktrans %}
+            {% trans "Claim" %} ${{ tip.value_in_usdt_now }} {% trans "Tip" %}
           </a>
         {% endfor %}
       {% endif %}
@@ -76,11 +80,11 @@
       </a>
     </div>
   </div>
-<img class="nav_avatar" width=50 height=50
-  src="/static/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}">
+<a href="/profile/" class="nav_avatar"
+  style="background-image:url({% if user.profile.avatar %}{{ user.profile.avatar.avatar_url }}{% else %}/static/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %})"></a>
 {% else %}
-<a class="nav-link login" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
+<a class="nav-link login interior" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
   onclick="dataLayer.push({'event': 'login'});">
-  <i class="fab fa-github"></i>{% trans "Login" %}
+  <i class="fab fa-github"></i><span class="nav-link__text">{% trans "Log in" %}</span>
 </a>
 {% endif %}
