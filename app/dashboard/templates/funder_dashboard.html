@@ -54,27 +54,27 @@
                     </div>
                   </div>
                   <div class="col-9 funder-dashboard__whats-next__items">
-                    <!-- should be a default message saying they have no expiring bounties in the next 7 days if they
-                     don't have any -->
                     <div class="funder-dashboard__whats-next__expiring-bounties">
                       {% blocktrans %}
                       You have {{expiring_bounties_count}} bounties expiring in {{expiring_days_count}} days!
                       {% endblocktrans %}
-                      <a href="{% url "explorer" %}"
-                         class="issue-explorer-link issue-explorer-link--bounties--expiring  text-fd-blue--dark">
-                        {% trans "view bounties" %}
-                      </a>
+                      {% if expiring_bounties_count > 0 %}
+                          <a href="{% url "explorer" %}"
+                          class="issue-explorer-link issue-explorer-link--bounties--expiring  text-fd-blue--dark">
+                          {% trans "view bounties" %}
+                          </a>
+                      {% endif %}
                     </div>
-                    <!-- should have a default message saying they don't have any new comments on their funded
-                    issues -->
                     <div class="funder-dashboard__whats-next__new-comments">
                       {% blocktrans %}
                       {{ new_contributor_comments_count }} contributors have commented on your open issues.
                       {% endblocktrans %}
-                      <a href="{% url "explorer" %}"
-                         class="issue-explorer-link issue-explorer-link--contributors-comments text-fd-blue--dark">
-                        {% trans "view comments" %}
-                      </a>
+                      {% if new_contributor_comments_count > 0 %}
+                          <a href="{% url "explorer" %}"
+                          class="issue-explorer-link issue-explorer-link--contributors-comments text-fd-blue--dark">
+                          {% trans "view comments" %}
+                          </a>
+                      {% endif %}
                     </div>
                   </div>
                 </div>
