@@ -1,4 +1,27 @@
 $(function () {
+  var utils = {
+    stringCompareIgnoreCase: function(str1, str2) {
+      if (!str1 || !str2) {
+        return false;
+      }
+
+      if (str1.toUpperCase && str2.toUpperCase) {
+        return str1.toUpperCase() === str2.toUpperCase();
+      }
+
+      return (str1 === str2);
+    },
+
+    updateBemElementInParent: function ($parent, classSelectorBase, elementName, elementValue) {
+      var $element = $parent.find(classSel(classSelectorBase) + '__' + elementName);
+      update($element, elementValue);
+
+      function update($el, htmlContent) {
+        $el.html(htmlContent);
+      }
+    }
+  };
+
   function activatePayoutHistory() {
     var chart = updateChart(null);
 
@@ -172,13 +195,13 @@ $(function () {
         var fund = funds[i];
 
         var $clone = $fundTemplate.clone();
-        updateBemElementInParent($clone, fundBaseSel, 'id', fund.id);
-        updateBemElementInParent($clone, fundBaseSel, 'title', fund.title);
-        updateBemElementInParent($clone, fundBaseSel, 'type', fund.type);
-        updateBemElementInParent($clone, fundBaseSel, 'status', fund.status);
+        utils.updateBemElementInParent($clone, fundBaseSel, 'id', fund.id);
+        utils.updateBemElementInParent($clone, fundBaseSel, 'title', fund.title);
+        utils.updateBemElementInParent($clone, fundBaseSel, 'type', fund.type);
+        utils.updateBemElementInParent($clone, fundBaseSel, 'status', fund.status);
         $clone.find(classSel(fundBaseSel) + '__view-etherscan').attr('href', fund.etherscanLink);
-        updateBemElementInParent($clone, fundBaseSel, 'worth__dollars', fund.worthDollars);
-        updateBemElementInParent($clone, fundBaseSel, 'worth__eth', fund.worthEth);
+        utils.updateBemElementInParent($clone, fundBaseSel, 'worth__dollars', fund.worthDollars);
+        utils.updateBemElementInParent($clone, fundBaseSel, 'worth__eth', fund.worthEth);
 
         if (fund.status === 'Pending') {
           $clone.addClass(fundBaseSel + '--pending')
@@ -192,22 +215,22 @@ $(function () {
     function getOutgoingFunds(funds, cbRenderFunds) {
       var filterBaseSel = 'funder-dashboard__outgoing-funds__filter';
 
-      var typeStatusFilter = getTypeOrStatusFilter(filterBaseSel);
-      var sortFilter = getSortByFilter(filterBaseSel);
+      var $typeStatusFilter = getTypeOrStatusFilter(filterBaseSel);
+      var $sortFilter = getSortByFilter(filterBaseSel);
 
       var filteredFunds = funds.filter(function (fund) {
-        if (typeStatusFilter.data('is-all-filter')) {
+        if ($typeStatusFilter.data('is-all-filter')) {
           return true;
         }
 
-        if (typeStatusFilter.data('is-type-filter')) {
-          return fund.type.toUpperCase() === typeStatusFilter.val().toUpperCase();
-        } else if (typeStatusFilter.data('is-status-filter')) {
-          return fund.status.toUpperCase() === typeStatusFilter.val().toUpperCase();
+        if ($typeStatusFilter.data('is-type-filter')) {
+          return utils.stringCompareIgnoreCase(fund.type, $typeStatusFilter.val());
+        } else if ($typeStatusFilter.data('is-status-filter')) {
+          return utils.stringCompareIgnoreCase(fund.status, $typeStatusFilter.val());
         }
       });
 
-      var sortFn = getSortFn(sortFilter.val());
+      var sortFn = getSortFn($sortFilter.val());
       filteredFunds = filteredFunds.sort(function(fund1, fund2) {
         return sortFn(fund1, fund2);
       });
@@ -221,15 +244,6 @@ $(function () {
       function getSortByFilter(filterBaseSel) {
         return $(classSel(filterBaseSel) + '--age-or-value').find(':selected');
       }
-    }
-  }
-
-  function updateBemElementInParent($parent, classSelectorBase, elementName, elementValue) {
-    var $element = $parent.find(classSel(classSelectorBase) + '__' + elementName);
-    update($element, elementValue);
-
-    function update($el, htmlContent) {
-      $el.html(htmlContent);
     }
   }
 
@@ -260,13 +274,13 @@ $(function () {
         var $clone = $bountyTemplate.clone();
         var bounty = bounties[i];
 
-        updateBemElementInParent($clone, bountyBaseSel, 'id', bounty.id);
-        updateBemElementInParent($clone, bountyBaseSel, 'title', bounty.title);
-        updateBemElementInParent($clone, bountyBaseSel, 'type', bounty.type);
-        updateBemElementInParent($clone, bountyBaseSel, 'status', bounty.status);
+        utils.updateBemElementInParent($clone, bountyBaseSel, 'id', bounty.id);
+        utils.updateBemElementInParent($clone, bountyBaseSel, 'title', bounty.title);
+        utils.updateBemElementInParent($clone, bountyBaseSel, 'type', bounty.type);
+        utils.updateBemElementInParent($clone, bountyBaseSel, 'status', bounty.status);
         $clone.find(classSel(bountyBaseSel) + '__view-github').attr('href', bounty.githubLink);
-        updateBemElementInParent($clone, bountyBaseSel, 'worth__dollars', bounty.worthDollars);
-        updateBemElementInParent($clone, bountyBaseSel, 'worth__eth', bounty.worthEth);
+        utils.updateBemElementInParent($clone, bountyBaseSel, 'worth__dollars', bounty.worthDollars);
+        utils.updateBemElementInParent($clone, bountyBaseSel, 'worth__eth', bounty.worthEth);
 
         if (bounty.status === 'started') {
           $clone.addClass(bountyBaseSel + '--started');
@@ -292,15 +306,15 @@ $(function () {
       var $typeStatusFilter = getTypeOrStatusFilter(filterBaseSel);
       var $sortFilter = getSortByFilter(filterBaseSel);
 
-      var filteredBounties = bounties.filter(function (fund) {
+      var filteredBounties = bounties.filter(function (bounty) {
         if ($typeStatusFilter.data('is-all-filter')) {
           return true;
-        } else if ($typeStatusFilter.data('is-status-pending-or-claimed-filter')) {
-          // 'Pending' || 'Claimed'
-          return fund.statusPendingOrClaimed.toUpperCase() === $typeStatusFilter.val().toUpperCase();
         }
 
-        return false;
+        if ($typeStatusFilter.data('is-status-pending-or-claimed-filter')) {
+          // 'Pending' || 'Claimed'
+          return utils.stringCompareIgnoreCase(bounty.statusPendingOrClaimed, $typeStatusFilter.val());
+        }
       });
 
       var sortFn = getSortFn($sortFilter.val());
@@ -411,6 +425,6 @@ $(function () {
   var funderBounties = window.allBounties.items;
 
   activateOutgoingFunds(outgoingFunds);
-  activateAllBounties(funderBounties.slice(0, 10));
+  activateAllBounties(funderBounties.slice(0, 100));
 });
 
