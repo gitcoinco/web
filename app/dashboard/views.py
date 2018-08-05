@@ -1155,7 +1155,7 @@ def funder_dashboard(request):
     paid_date_since = done_bounties_desc_created.last().web3_created
     total_paid_date_since = _("Nothing to show")
     if paid_date_since is not None:
-        total_paid_date_since = paid_date_since.strftime('%d %m, %y')
+        total_paid_date_since = paid_date_since.strftime('%d %b, %y')
 
     # total budget not used currently, we show an input field instead
     total_budget_dollars = 0
