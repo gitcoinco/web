@@ -105,6 +105,15 @@ $(document).ready(function() {
   waitforWeb3(function() {
     promptForAuth();
   });
+  $('select[name=permission_type]').on('change', function() {
+    var val = $('select[name=permission_type] option:selected').val();
+
+    if (val === 'approval') {
+      $('#auto_approve_workers_container').show();
+    } else {
+      $('#auto_approve_workers_container').hide();
+    }
+  });
 
   // revision action buttons
   $('#subtractAction').on('click', function() {
@@ -251,7 +260,8 @@ $(document).ready(function() {
           },
           schemes: {
             project_type: data.project_type,
-            permission_type: data.permission_type
+            permission_type: data.permission_type,
+            auto_approve_workers: !!data.auto_approve_workers
           },
           hiring: {
             hiringRightNow: data.hiringRightNow,

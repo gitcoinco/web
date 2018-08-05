@@ -94,7 +94,8 @@ var rows = [
   'submitted_owners_username',
   'fulfilled_owners_username',
   'fulfillment_accepted_on',
-  'additional_funding_summary'
+  'additional_funding_summary',
+  'admin_override_suspend_auto_approval'
 ];
 
 var heads = {
@@ -177,6 +178,14 @@ var callbacks = {
   },
   'project_type': function(key, val, result) {
     return [ 'project_type', ucwords(result.project_type) ];
+  },
+  'admin_override_suspend_auto_approval': function(key, val, result) {
+    if (result['permission_type'] === 'approval') {
+      $('#auto_approve_workers_wrapper').show();
+    } else {
+      $('#auto_approve_workers_wrapper').hide();
+    }
+    return [ 'admin_override_suspend_auto_approval', val ? 'off' : 'on' ];
   },
   'issue_keywords': function(key, val, result) {
     if (!result.keywords || result.keywords.length == 0)
@@ -814,7 +823,8 @@ var do_actions = function(result) {
   let show_payout = !is_status_expired && !is_status_done && isBountyOwner(result);
   let show_extend_deadline = isBountyOwner(result) && !is_status_expired && !is_status_done;
   let show_invoice = isBountyOwner(result);
-  const show_suspend_auto_approval = currentProfile.isStaff && result['permission_type'] == 'approval';
+
+  const show_suspend_auto_approval = currentProfile.isStaff && result['permission_type'] == 'approval' && !result['admin_override_suspend_auto_approval'];
   const show_admin_methods = currentProfile.isStaff;
   const show_moderator_methods = currentProfile.isModerator;
   const show_change_bounty = is_still_on_happy_path && (isBountyOwner(result) || show_admin_methods);

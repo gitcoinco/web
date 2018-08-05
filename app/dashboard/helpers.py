@@ -395,6 +395,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             'value_in_token': bounty_details.get('fulfillmentAmount', Decimal(1.0))
         }
         if not latest_old_bounty:
+            schemes = bounty_payload.get('schemes', {})
             bounty_kwargs.update({
                 # info to xfr over from latest_old_bounty as override fields (this is because sometimes
                 # ppl dont login when they first submit issue and it needs to be overridden)
@@ -417,13 +418,14 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'funding_organisation': metadata.get('fundingOrganisation', ''),
                 'project_length': metadata.get('projectLength', ''),
                 'experience_level': metadata.get('experienceLevel', ''),
-                'project_type': bounty_payload.get('schemes', {}).get('project_type', 'traditional'),
-                'permission_type': bounty_payload.get('schemes', {}).get('permission_type', 'permissionless'),
+                'project_type': schemes.get('project_type', 'traditional'),
+                'permission_type': schemes.get('permission_type', 'permissionless'),
                 'attached_job_description': bounty_payload.get('hiring', {}).get('jobDescription', None),
                 'bounty_owner_github_username': bounty_issuer.get('githubUsername', ''),
                 'bounty_owner_address': bounty_issuer.get('address', ''),
                 'bounty_owner_email': bounty_issuer.get('email', ''),
                 'bounty_owner_name': bounty_issuer.get('name', ''),
+                'admin_override_suspend_auto_approval': not schemes.get('auto_approve_workers', True),
             })
         else:
             latest_old_bounty_dict = latest_old_bounty.to_standard_dict(
