@@ -111,21 +111,6 @@ var set_filter_header = function() {
 var toggleAny = function(event) {
   if (!event)
     return;
-  // var key = event.target.name;
-  // var anyOption = $('input[name=' + key + '][value=any]');
-
-  // // Selects option 'any' when no filter is applied
-  // if ($('input[name=' + key + ']:checked').length === 0) {
-  //   anyOption.prop('checked', true);
-  //   return;
-  // }
-  // if (event.target.value === 'any') {
-  //   // Deselect other filters when 'any' is selected
-  //   $('input[name=' + key + '][value!=any]').prop('checked', false);
-  // } else {
-  //   // Deselect option 'any' when another filter is selected
-  //   anyOption.prop('checked', false);
-  // }
 };
 
 var getFilters = function() {

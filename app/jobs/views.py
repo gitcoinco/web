@@ -8,7 +8,7 @@ from .forms import JobForm
 
 
 def list_jobs(request):
-    context = dict()
+    context = {}
     return TemplateResponse(request, 'jobs/list.html', context=context)
 
 
@@ -21,7 +21,7 @@ def job_detail(request, pk):
 
 
 def create_job(request):
-    context = dict()
+    context = {}
     if request.method == 'POST':
         form = JobForm(user=request.user, data=request.POST)
         if form.is_valid():
