@@ -103,7 +103,7 @@ var force = d3.layout.force()
     .size([width, height])
     .nodes([]) // initialize with a single node
     .linkDistance(100)
-    .charge(-250)
+    .charge(-100)
     .on("tick", tick);
 
 var svg = d3.select("body").append("svg")
@@ -124,7 +124,8 @@ restart();
 var comp_value = $('#myRange').val();
 $('h2').html(new Date(comp_value * 1000).toISOString().slice(0,10));
 
-var url = document.location.href + '?data=1&format=json';
+var connector_char = document.location.href.indexOf('?') == -1 ? '?' : '&';
+var url = document.location.href + connector_char + 'data=1&format=json&keyword={{keyword}}';
 d3.json(url, function(json) {
     for(var i in json.nodes){
         var node = json.nodes[i];

@@ -2,11 +2,14 @@ scrollContainer = $('#landing_page_wrapper');
 
 // Header and Nav
 $(document).ready(function() {
+  $('#gc-tree #tree-svg .lines').addClass('pause-animation');
+  $('#gc-tree #tree-svg .cls-4').addClass('pause-animation');
+
   const $navbar = $('.navbar');
   const $gcRobot = $('#gc-robot');
-  const $gcTree = $('#gc-tree');
 
   const followStateHeight = 500;
+  const treeAnimationPosition = 1500;
   let navFollowState = scrollContainer.scrollTop() > followStateHeight;
 
   scrollContainer.scroll(RAFThrottle((e) => {
@@ -19,8 +22,13 @@ $(document).ready(function() {
       $navbar.removeClass('following');
       navFollowState = false;
     }
+
+    if (scrollContainer.scrollTop() > treeAnimationPosition) {
+      $('#gc-tree #tree-svg .lines').removeClass('pause-animation');
+      $('#gc-tree #tree-svg .cls-4').removeClass('pause-animation');
+    }
+
     $gcRobot.css('transform', `translateY(${$gcRobot.parent()[0].getBoundingClientRect().top - 100}px)`);
-    $gcTree.css('transform', `translateY(${$gcTree.parent()[0].getBoundingClientRect().top / 2 - 50}px)`);
   }));
   moveBackground({});
 

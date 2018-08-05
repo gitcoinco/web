@@ -80,6 +80,14 @@ $(document).ready(function() {
         ')'
     ).prop('selected', true);
   }
+
+  if (localStorage['jobDescription']) {
+    $('#jobDescription').val(localStorage['jobDescription']);
+    setTimeout(function() {
+      $('#hiringRightNow').attr('checked', 'checked');
+      open_hiring_panel(false);
+    }, 10);
+  }
   if (localStorage['bountyType']) {
     $(
       'select[name=bountyType] option:contains(' +
@@ -91,11 +99,32 @@ $(document).ready(function() {
   // fetch issue URL related info
   $('input[name=amount]').keyup(setUsdAmount);
   $('input[name=amount]').blur(setUsdAmount);
+  $('input[name=usd_amount]').keyup(usdToAmount);
+  $('input[name=usd_amount]').blur(usdToAmount);
   $('select[name=deonomination]').change(setUsdAmount);
   $('select[name=deonomination]').change(promptForAuth);
   $('input[name=issueURL]').blur(retrieveIssueDetails);
   setTimeout(setUsdAmount, 1000);
-  setTimeout(promptForAuth, 1000);
+  waitforWeb3(function() {
+    promptForAuth();
+  });
+
+  // revision action buttons
+  $('#subtractAction').on('click', function() {
+    var revision = parseInt($('input[name=revisions]').val());
+
+    revision = revision - 1;
+    if (revision > 0) {
+      $('input[name=revisions]').val(revision);
+    }
+  });
+
+  $('#addAction').on('click', function() {
+    var revision = parseInt($('input[name=revisions]').val());
+
+    revision = revision + 1;
+    $('input[name=revisions]').val(revision);
+  });
 
   if ($('input[name=issueURL]').val() != '') {
     retrieveIssueDetails();
@@ -107,7 +136,7 @@ $(document).ready(function() {
     $(this).select2();
   });
   // removes tooltip
-  $('select').on('change', function(evt) {
+  $('.submit_bounty select').each(function(evt) {
     $('.select2-selection__rendered').removeAttr('title');
   });
   // removes search field in all but the 'denomination' dropdown
@@ -116,6 +145,27 @@ $(document).ready(function() {
   });
   // denomination field
   $('select[name=deonomination]').select2();
+  if ($('input[name=amount]').val().trim().length > 0) {
+    setUsdAmount();
+  }
+  var open_hiring_panel = function(do_focus) {
+    setTimeout(function() {
+      var hiringRightNow = $('#hiringRightNow').is(':checked');
+
+      if (hiringRightNow) {
+        $('#jobDescription').removeClass('hidden');
+        if (do_focus) {
+          $('#jobDescription').focus();
+        }
+      } else {
+        $('#jobDescription').addClass('hidden');
+      }
+    }, 10);
+  };
+
+  $('#hiringRightNow').click(function() {
+    open_hiring_panel(true);
+  });
 
 
   $('#advancedLink a').click(function(e) {
@@ -205,6 +255,10 @@ $(document).ready(function() {
             project_type: data.project_type,
             permission_type: data.permission_type
           },
+          hiring: {
+            hiringRightNow: data.hiringRightNow,
+            jobDescription: data.jobDescription
+          },
           privacy_preferences: privacy_preferences,
           funders: [],
           categories: metadata.issueKeywords.split(','),
@@ -236,6 +290,7 @@ $(document).ready(function() {
       localStorage['notificationEmail'] = notificationEmail;
       localStorage['githubUsername'] = githubUsername;
       localStorage['tokenAddress'] = tokenAddress;
+      localStorage['jobDescription'] = $('#hiringRightNow').is(':checked') ? data.jobDescription : '';
       localStorage['expirationTimeDelta'] = $(
         'select[name=expirationTimeDelta]'
       ).val();
@@ -262,18 +317,8 @@ $(document).ready(function() {
       // IpfsApi is defined in the ipfs-api.js.
       // Is it better to use this JS file than the node package?  github.com/ipfs/
 
-      ipfs.ipfsApi = IpfsApi({
-        host: 'ipfs.infura.io',
-        port: '5001',
-        protocol: 'https',
-        root: '/api/v0'
-      });
-      ipfs.setProvider({
-        host: 'ipfs.infura.io',
-        port: 5001,
-        protocol: 'https',
-        root: '/api/v0'
-      });
+      ipfs.ipfsApi = IpfsApi(ipfsConfig);
+      ipfs.setProvider(ipfsConfig);
 
       // setup inter page state
       localStorage[issueURL] = JSON.stringify({
@@ -340,7 +385,7 @@ $(document).ready(function() {
           console.error(error);
           _alert({
             message: gettext('There was an error.  Please try again or contact support.')
-          });
+          }, 'error');
           unloading_button($('.js-submit'));
           return;
         }
@@ -368,7 +413,7 @@ $(document).ready(function() {
           tokenAddress, // _tokenContract
           amount, // _value
           {
-            // {from: x, to: y}
+          // {from: x, to: y}
             from: account,
             value: eth_amount,
             gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
@@ -380,7 +425,7 @@ $(document).ready(function() {
       }
 
       var do_bounty = function(callback) {
-        // Add data to IPFS and kick off all the callbacks.
+      // Add data to IPFS and kick off all the callbacks.
         ipfsBounty.payload.issuer.address = account;
         ipfs.addJson(ipfsBounty, newIpfsCallback);
       };

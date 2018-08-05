@@ -18,10 +18,13 @@ $(document).ready(function() {
     var destinationAccount = $('#destinationAccount').val();
     var faucetAmount = $('#faucetAmount').val();
 
+    decimals = 6;
+    faucetAmount = Math.round(faucetAmount * 10 ** decimals) / 10 ** decimals;
+
     web3.eth.sendTransaction({
       from: fundingAccount,
       to: destinationAccount,
-      value: web3.toWei(faucetAmount, 'ether'),
+      value: web3.toWei(parseFloat(faucetAmount), 'ether'),
       gasPrice: web3.toHex(document.gas_price * Math.pow(10, 9))
     }, post_receipt);
   });

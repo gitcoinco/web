@@ -16,15 +16,14 @@ $(document).ready(function() {
 
   force_no_www();
 
-  $('.nav-link.dropdown-toggle, .nav_avatar').click(function(e) {
+  $('.nav-link.dropdown-toggle').click(function(e) {
+    e.preventDefault();
     var parent = $(this).parents('.nav-item');
 
-    if (parent.find('.dropdown-menu').css('display') == 'block') {
-      parent.find('.dropdown-menu').css('display', 'none');
-    } else {
-      parent.find('.dropdown-menu').css('display', 'block');
-    }
-    e.preventDefault();
+    var parentSiblings = parent.siblings('.nav-item');
+
+    parent.find('.dropdown-menu').toggle();
+    parentSiblings.find('.dropdown-menu').hide();
   });
 
   // get started modal
@@ -174,7 +173,7 @@ $(document).ready(function() {
 });
 
 $(window).scroll(function() {
-  var scrollPos = $(document).scrollTop();
+  var scrollPos = jQuery(document).scrollTop();
 });
 
 /* TODO : Remove after GDPR */
