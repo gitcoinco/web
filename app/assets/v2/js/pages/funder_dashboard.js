@@ -19,6 +19,28 @@ $(function () {
       function update($el, htmlContent) {
         $el.html(htmlContent);
       }
+    },
+
+    download: function (content, fileName, mimeType) {
+      // Won't work in IE <= 9
+      var a = document.createElement('a');
+      mimeType = mimeType || 'application/octet-stream';
+
+      if (navigator.msSaveBlob) { // IE10
+        navigator.msSaveBlob(new Blob([content], {
+          type: mimeType
+        }), fileName);
+      } else if (URL && 'download' in a) {
+        a.href = URL.createObjectURL(new Blob([content], {
+          type: mimeType
+        }));
+        a.setAttribute('download', fileName);
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } else {
+        location.href = 'data:application/octet-stream,' + encodeURIComponent(content);
+      }
     }
   };
 
@@ -417,14 +439,29 @@ $(function () {
     };
   }
 
+  function activateTaxYearCsvExport() {
+    $('.funder-dashboard__tax-reporting__bounties__download-report').click(function() {
+      var csvRows = $.parseJSON(window.taxReportCsv);
+
+      var csvContent = '';
+      csvRows.forEach(function (infoArray, index) {
+        var dataString = infoArray.join(',');
+        csvContent += index < csvRows.length ? dataString + '\r\n' : dataString;
+      });
+
+      utils.download(csvContent, 'GitcoinTaxReport.csv', 'text/csv;encoding:utf-8');
+    });
+  }
+
   activatePayoutHistory();
   activateTotalBudget();
   activateLinksToIssueExplorer();
+  activateTaxYearCsvExport();
 
   var outgoingFunds = window.outgoingFunds.items;
   var funderBounties = window.allBounties.items;
 
-  activateOutgoingFunds(outgoingFunds);
-  activateAllBounties(funderBounties.slice(0, 100));
+  activateOutgoingFunds(outgoingFunds.slice(0, 5));
+  activateAllBounties(funderBounties.slice(0, 5));
 });
 
