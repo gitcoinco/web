@@ -280,6 +280,7 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
         bounties = bounties[0:max_bounties]
     if to_emails is None:
         to_emails = []
+    import ipdb; ipdb.set_trace()
     plural = "s" if len(bounties) != 1 else ""
     worth = round(sum([bounty.value_in_usdt for bounty in bounties if bounty.value_in_usdt]), 2)
     worth = f" worth ${worth}" if worth else ""
@@ -382,7 +383,6 @@ def new_bounty_acceptance(bounty, to_emails=None):
 
     if to_emails is None:
         to_emails = []
-    import ipdb; ipdb.set_trace()
 
     subject = gettext("🌈 Funds Paid for {} 🌈").format(bounty.title_or_desc)
 
