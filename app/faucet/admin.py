@@ -40,6 +40,10 @@ class FaucetRequestAdmin(admin.ModelAdmin):
         'created_on', 'fulfilled', 'rejected', 'link', 'get_profile_username',
         'get_profile_email', 'email', 'address', 'comment',
     ]
+    search_fields = [
+        'created_on', 'fulfilled', 'rejected', 'profile__handle',
+        'email', 'address', 'comment',
+    ]
 
     def get_queryset(self, request):
         """Override the get_queryset method to include FK lookups."""
