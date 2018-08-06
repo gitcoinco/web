@@ -344,8 +344,8 @@ $(function() {
 
     function changePageAbsolute(newPage) {
       var $page = $('.funder-dashboard__all-bounties__pagination__page');
-      $page.html(newPage);
 
+      $page.html(newPage);
       clearBounties();
       boundGetBounties();
     }
