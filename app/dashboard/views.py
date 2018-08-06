@@ -449,11 +449,13 @@ def onboard(request, flow):
             steps = steps.split(',')
 
     if (steps and 'github' not in steps) or 'github' not in onboard_steps:
-        if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile'):
+        if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
+            request.user, 'profile', None
+        ):
             login_redirect = redirect('/login/github?next=' + request.get_full_path())
             return login_redirect
 
-    if request.GET.get('eth_address') and request.user.is_authenticated and getattr(request.user, 'profile'):
+    if request.GET.get('eth_address') and request.user.is_authenticated and getattr(request.user, 'profile', None):
         profile = request.user.profile
         eth_address = request.GET.get('eth_address')
         profile.preferred_payout_address = eth_address
@@ -700,7 +702,7 @@ def helper_handle_admin_override_and_hide(request, bounty):
     admin_override_and_hide = request.GET.get('admin_override_and_hide', False)
     if admin_override_and_hide:
         is_moderator = request.user.profile.is_moderator if hasattr(request.user, 'profile') else False
-        if getattr(request.user, 'profile') and is_moderator or request.user.is_staff:
+        if getattr(request.user, 'profile', None) and is_moderator or request.user.is_staff:
             bounty.admin_override_and_hide = True
             bounty.save()
             messages.success(request, _('Bounty is now hidden'))
