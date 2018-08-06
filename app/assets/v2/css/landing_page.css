@@ -401,6 +401,7 @@ body {
 
 .whatisit .youtube {
   height: 100%;
+  max-width: 550px;
 }
 
 .whatisit_container iframe {

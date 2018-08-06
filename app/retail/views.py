@@ -709,24 +709,22 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
 """)
         },
      ],
-     'DAI':[
+     'DAI': [
      {
-            'category':"DAI",
-            'q':_('How to add this token to metamask'),
+            'category': "DAI",
+            'q': _('How to add this token to metamask'),
             'a': gettext("""
 Open metamask, you will see an option \"Add Token\".Click on it and fill all the <br>fields.<br>
 <b> Token Contract Address :  0x89d24a6b4ccb1b6faa2625fe562bdd9a23260359
 <br>
 Token Symbol : DAI<br>
-Decimals of precision : 18 </b>
-                    """)
+Decimals of precision : 18 </b>""")
      },
      {
-            'q':_('How to exchange it to ETH or USD?'),
+            'q': _('How to exchange it to ETH or USD?'),
             'a': gettext("""
 <a href="https://oasis.direct/"> Oasis.direct</a> changes your DAI to ETH. <br>
-For changing it to USD you can go to any local exchange.
-                    """)
+For changing it to USD you can go to any local exchange.""")
      },
      ]
     }
