@@ -1025,8 +1025,8 @@ def profile(request, handle):
         return TemplateResponse(request, 'profiles/profile.html', params)
 
     params = profile.to_dict()
-    params['wallet_addresses'] = [x.address for x in profile.wallets.all()]
-    params['kudos'] = MarketPlaceListing.objects.filter(lister__in=params['wallet_addresses'])
+    # params['wallet_addresses'] = [x.address for x in profile.wallets.all()]
+    # params['kudos'] = MarketPlaceListing.objects.filter(lister__in=params['wallet_addresses'])
     # logging.info(f'Found Kudos: {params["kudos"]}')
     # logging.info(f'Kudos name: {params["kudos"][0].name}')
     # logging.info(f'Profile data: {params}')
