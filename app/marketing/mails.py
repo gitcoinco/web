@@ -382,6 +382,7 @@ def new_bounty_acceptance(bounty, to_emails=None):
 
     if to_emails is None:
         to_emails = []
+    import ipdb; ipdb.set_trace()
 
     subject = gettext("🌈 Funds Paid for {} 🌈").format(bounty.title_or_desc)
 
