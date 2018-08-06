@@ -210,7 +210,9 @@ def receive_tip_v3(request, key, txid, network):
     is_authed = request.user.username == tip.username or request.user.username == tip.from_username
     not_mined_yet = get_web3(tip.network).eth.getBalance(Web3.toChecksumAddress(tip.metadata['address'])) == 0
 
-    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile'):
+    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
+        request.user, 'profile', None
+    ):
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
     elif tip.receive_txid:
@@ -278,7 +280,7 @@ def send_tip_4(request):
     is_direct_to_recipient = params.get('is_direct_to_recipient', False)
     if is_direct_to_recipient:
         tip = Tip.objects.get(
-            metadata__direct_address=destinationAccount, 
+            metadata__direct_address=destinationAccount,
             metadata__creation_time=params['creation_time'],
             metadata__salt=params['salt'],
             )
