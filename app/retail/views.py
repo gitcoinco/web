@@ -250,7 +250,7 @@ def robotstxt(request):
     context = {
         'settings': settings,
     }
-    return TemplateResponse(request, 'robots.txt', context)
+    return TemplateResponse(request, 'robots.txt', context, content_type='text')
 
 
 def about(request):
