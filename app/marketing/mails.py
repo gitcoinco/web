@@ -60,7 +60,7 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     if settings.IS_DEBUG_ENV:
         to_email = Email(settings.CONTACT_EMAIL)  # just to be double secret sure of what were doing in dev
         subject = _("[DEBUG] ") + subject
-    mail = Mail(from_email, subject, None, content)
+    mail = Mail(from_email, subject, to_email, content)
     response = None
 
     # build personalization
