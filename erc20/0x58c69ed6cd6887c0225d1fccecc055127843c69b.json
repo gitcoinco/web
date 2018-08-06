@@ -1,0 +1,24 @@
+{
+    "symbol": "HLC",
+    "address": "0x58c69ed6cd6887c0225d1fccecc055127843c69b",
+    "overview":{
+        "en": "HalalChain.",
+        "zh": "HalalChain"
+    },
+    "email": "Support@hlc.com",
+    "website": "https://hlc.com/",
+    "whitepaper": "https://hlc.com/whitepaper.pdf",
+    "state": "NORMAL",
+    "published_on": "2017-12-30",
+    "initial_price":{
+        "ETH":"0.00066 ETH",
+        "USD":"0.65 USD",
+        "BTC":"0.000041 BTC"
+    },
+    "links": {
+        "twitter": "https://www.twitter.com/halalchain",
+        "telegram": "https://t.me/HalalChainGroup",
+        "github": "https://github.com/halalchain",
+        "facebook": "https://www.facebook.com/officialhalalchain"
+    }
+}
