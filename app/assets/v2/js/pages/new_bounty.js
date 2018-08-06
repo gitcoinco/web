@@ -6,6 +6,10 @@ load_tokens();
 var localStorage;
 var quickstartURL = document.location.origin + '/bounty/quickstart';
 
+var new_bounty = {
+  last_sync: new Date()
+};
+
 try {
   localStorage = window.localStorage;
 } catch (e) {
@@ -31,6 +35,52 @@ function doShowQuickstart(url) {
 
   return true;
 }
+
+function lastSynced(current, last_sync) {
+  var time = timeDifference(current, last_sync);
+
+  return time;
+}
+
+$('#sync-issue').on('click', function(event) {
+  event.preventDefault();
+  if (!$('#sync-issue').hasClass('disabled')) {
+    new_bounty.last_sync = new Date();
+    retrieveIssueDetails();
+    $('#last-synced span').html(lastSynced(new Date(), new_bounty.last_sync));
+  }
+});
+
+$('#issueURL').focusout(function() {
+  setInterval(function() {
+    $('#last-synced span').html(timeDifference(new Date(), new_bounty.last_sync));
+  }, 6000);
+
+  if ($('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val())) {
+    $('#issue-details, #issue-details-edit').hide();
+    $('#no-issue-banner').show();
+
+    $('#title').val('');
+    $('#description').val('');
+
+    $('#last-synced').hide();
+    $('.js-submit').addClass('disabled');
+  } else {
+    $('#no-issue-banner').hide();
+    $('#edit-issue').attr('href', $('input[name=issueURL]').val());
+    $('#issue-details, #issue-details-edit').show();
+
+    $('#sync-issue').removeClass('disabled');
+    $('.js-submit').removeClass('disabled');
+
+    new_bounty.last_sync = new Date();
+    retrieveIssueDetails();
+    $('#last-synced').show();
+    $('#last-synced span').html(lastSynced(new Date(), new_bounty.last_sync));
+  }
+});
+
+$('#last-synced').hide();
 
 // Wait until page is loaded, then run the function
 $(document).ready(function() {
