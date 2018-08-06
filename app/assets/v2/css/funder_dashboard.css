@@ -215,16 +215,16 @@ and also iPads specifically.
     display: block;
   }
 
+  tr {
+    border: 1px solid #ccc;
+    margin-bottom: 0.5rem;
+  }
+
   /* Hide table headers (but not display: none;, for accessibility) */
   thead tr {
     position: absolute;
     top: -9999px;
     left: -9999px;
-  }
-
-  tr {
-    border: 1px solid #ccc;
-    margin-bottom: 0.5rem;
   }
 
   td {

@@ -17,7 +17,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-import calendar
 import datetime
 import logging
 import pprint
@@ -714,7 +713,6 @@ def process_bounty_changes(old_bounty, new_bounty):
         print('No notifications sent - Event Type Unknown = did_bsr: ', did_bsr)
 
 
-
 def week_of_month(dt):
     """ Returns the week of the month for the specified date.
     """
@@ -728,7 +726,8 @@ def week_of_month(dt):
 
 
 def get_payout_history(done_bounties):
-    """ Returns payout history given a set of bounties
+    """ Returns payout history given a set of bounties.
+    Also includes an array of rows for all the bounties a funder has paid for, to be used as a csv export.
 
     Args:
         done_bounties: (BountyQuerySet) the bounties to aggregate the data for.

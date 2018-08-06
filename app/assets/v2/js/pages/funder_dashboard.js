@@ -301,12 +301,12 @@ $(function() {
 
     var bountyBaseSel = 'funder-dashboard__all-bounties__bounties__bounty';
     var cbRenderBounties = renderBounties.bind(this, $container, $bountyTemplate, bountyBaseSel);
-    var getBounties = getBounties.bind(this, bounties, cbRenderBounties);
+    var boundGetBounties = getBounties.bind(this, bounties, cbRenderBounties);
 
-    getBounties();
+    boundGetBounties();
     $('.funder-dashboard__all-bounties__filter').change(function() {
       clearBounties();
-      getBounties();
+      boundGetBounties();
     });
 
     function clearBounties() {

@@ -1083,7 +1083,8 @@ def funder_dashboard(request):
 
     utc_now = datetime.datetime.now(timezone.utc)
 
-    expiring_bounties = active_bounties.filter(expires_date__gte=utc_now, expires_date__lte=utc_now + timezone.timedelta(days=7))
+    expiring_bounties = active_bounties.filter(expires_date__gte=utc_now,
+                                               expires_date__lte=utc_now + timezone.timedelta(days=7))
 
     expiring_bounties_count = expiring_bounties.count()
     last_expiring_days_from_now = 0
@@ -1293,8 +1294,8 @@ def funder_dashboard(request):
         "payout_history_yearly": json.dumps(payout_history_yearly, ensure_ascii=False, cls=DjangoJSONEncoder),
         # Csv export all bounties this year
         "csv_all_time_paid_bounties": json.dumps(csv_all_time_paid_bounties,
-                                                         ensure_ascii=False,
-                                                         cls=DjangoJSONEncoder),
+                                                 ensure_ascii=False,
+                                                 cls=DjangoJSONEncoder),
         # Tax Reporting
         "tax_year": tax_year,
         "tax_year_bounties_count": tax_year_bounties_count,
