@@ -45,7 +45,9 @@ def send_mail(from_email, _to_email, subject, body, html=False,
         print('No SendGrid API Key set. Not attempting to send email.')
         return
     to_email = _to_email
+    print("***************")
     get_or_save_email_subscriber(to_email, 'internal')
+    print("***************")
 
     # setup
     from_name = str(from_name)

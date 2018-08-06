@@ -73,7 +73,7 @@ class Command(BaseCommand):
             print("not active in non prod environments")
             return
         hours_back = 24
-        eses = EmailSubscriber.objects.filter(active=True)
+        eses = EmailSubscriber.objects.filter(active=True, email='vivek.m.singh93@gmail.com')
         print("got {} emails".format(eses.count()))
         for es in eses:
             try:
@@ -84,8 +84,9 @@ class Command(BaseCommand):
                 new_bounties, all_bounties = get_bounties_for_keywords(keywords, hours_back)
                 print("{}/{}: got {} new bounties & {} all bounties".format(to_email, keywords, new_bounties.count(), all_bounties.count()))
                 if new_bounties.count():
-                    print(f"sent to {to_email}")
+                    print(f"sending to {to_email}")
                     new_bounty_daily(new_bounties, all_bounties, [to_email])
+                    print(f"/sent to {to_email}")
             except Exception as e:
                 logging.exception(e)
                 print(e)
