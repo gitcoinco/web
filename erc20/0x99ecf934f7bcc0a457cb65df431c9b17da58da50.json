@@ -1,0 +1,26 @@
+{
+	"symbol": "DACC",
+	"address": "0x99ecf934f7bcc0a457cb65df431c9b17da58da50",
+	"overview": {
+		"en": "DACChain is a global public chain that provides digital services for property assets, including movable and real estate, using blockchain technology and digital identity for digitalization of property rights.",
+		"zh": "DACChain是为物权资产包括动产及不动产提供数字化服务的全球公链, 利用区块链技术和数字身份进行物权数字化；用智能合约对数字物权进行自行化管理，从而提高“智能产效”从而到达”智能经济”的一种分布式网络形态；同时社区提供丰富的区块链世界服务，包括物权交易、REITs金融服务，P2P租赁、智能酒店、智能社区、资产托管、科技金融等集合交易、消费、社交、服务为一体综合类虚拟智能经济生活圈"
+	},
+	"email": "service@dacc.ink",
+	"website": "http://www.dacc.ink",
+	"whitepaper": "http://www.dacc.ink/static/dacc.pdf",
+	"state": "NORMAL",
+	"published_on": "2018-05-01",
+	"initial_price": {
+		"ETH": "0.00023 ETH",
+		"USD": "0.11 USD",
+		"BTC": "0.000017 BTC"
+	},
+	"links": {
+		"twitter": "https://twitter.com/bowen83438859?lang=zh-cn",
+		"telegram": "https://0.plus/daccink",
+		"github": "https://github.com/DACChain",
+		"facebook": "www.facebook.com/daccink",
+		"reddit": "https://www.reddit.com/user/dacchain",
+		"medium": "https://medium.com/@DACChain"
+	}
+}

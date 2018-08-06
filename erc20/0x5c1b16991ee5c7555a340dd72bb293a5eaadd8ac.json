@@ -1,0 +1,23 @@
+{
+  "symbol": "FLC",
+  "address": "0x5c1b16991ee5c7555a340dd72bb293a5eaadd8ac",
+  "overview":{
+        "en": "Flower chain is the flower industry chain of the first basic block chain and Traceability Technology in the world as well as the traceability system of all kinds of precious flower genes in the center.",
+        "zh": "是全球首个基于区块链和溯源技术的鲜花行业链，借助区块链公平、公开的特性，让全球名贵花种基因、资讯自由流通，应用区块链技术建立起一个完整的数字生态系统。"
+  },
+  "email": "flc8@smycoin.com",
+  "website": "http://www.flowerchaintech.com/",
+  "whitepaper": "http://www.flowerchaintech.com/templets/default/images/baipishu.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-04-01",
+  "initial_price":{
+        "ETH":"0.0003 ETH",
+        "USD":"0.14 USD",
+        "BTC":"0.000008 BTC"
+  },
+  "links": {
+    "telegram": "https://t.me/joinchat/I7qchxGOvBr38n-qZPCHKQ",
+    "github": "https://github.com/flowerchainchina",
+    "facebook": "https://www.facebook.com/flowerchain.chun"
+  }
+}

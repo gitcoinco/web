@@ -1,0 +1,28 @@
+{
+	"symbol": "BGT",
+	"address": "0x5987b7aD0bfB6eB3d8e00882BBab490c79d185C9",
+	"overview": {
+		"en": "Bitgene blockchain is a decentralized platform for copyright protection, trading, tracking and ownership determination of digital content. Through the innovative black technology 'digital gene' technology, it solves the problem of the changes of digital content cant be traced when it is transmitted off the chain. Bitgene's  chain is committed to becoming the Taobao in the digital copyright industry, providing full-content copyright protection and traceability for digital content on the chain, helping content creators to truly realize better value realization.",
+		"zh": "Bitgene数字基因链是去中心化的数字内容版权保护、交易、追踪与确权平台。通过创新的黑科技'数字基因'技术，解决数字内容在链下传播时发生变化难以追溯确权的难题。Bitgene数字基因链致力于成为数字版权界的淘宝，为数字内容提供链上链下的全场景版权保护和追溯，帮助内容创造者真正实现更好的价值变现。"
+  },
+	"email": "info@bitgene.io",
+  "website": "http://bitgene.io",
+  "whitepaper": "http://bitgene.io/BitgeneWhitepaperEN.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-02",
+  "initial_price":{
+    "ETH":"0.00001 ETH",
+    "USD":"0.00458 USD",
+    "BTC":"0.00000062 BTC"
+  },
+	"links": {
+    "blog": "http://bitgene.io/blog",
+    "twitter":"https://twitter.com/bitgene_bgt",
+    "telegram":"https://t.me/joinchat/JAEr5xESXhlt-zI52WfAkg",
+    "github": "https://github.com/bitgene",
+    "facebook": "https://www.facebook.com/bitgene",
+    "reddit": "https://www.reddit.com/r/bitgene/",
+    "slack": "https://bitgeneblockchain.slack.com",
+    "medium": "https://medium.com/@bitgene"
+	}
+}

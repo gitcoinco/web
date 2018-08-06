@@ -1,0 +1,22 @@
+{
+  "symbol": "WID",
+  "address": "0x49d4C3629f93f49ba934dEBF28605D26CAaF3aCc",
+  "overview":{
+    "en": "Wine Chain is the world's first based on block Chain and Chain of the Wine of the technology of the public and weak centralized red Wine tracing back system.Using block chain characteristics of free, open and fair, free flow of information, the world's wine value optimization red wine red wine red wine supply chain system to reduce the transaction cost to realize intelligent industry and market highly match exclusive international community.",
+    "zh": "Wine Chain 是全球首個基於區塊鏈和溯源技術的紅酒公有鏈以及弱中心化的紅酒溯源追溯體系。借助區塊鏈的自由、開放和公正的特性，讓全球的紅酒價值資訊自由流通，優化紅酒供應鏈體系降低紅酒交易成本實現紅酒產業與市場智能化高度匹配的專屬國際社區。"
+  },
+  "email": "info@winechain.org",
+  "website": "https://www.winechain.org",
+  "whitepaper":"https://winechain.oss-cn-beijing.aliyuncs.com/new/Wine%20Chain%E4%B8%AD%E6%96%87%E7%99%BD%E7%9A%AE%E4%B9%A6.pdf",
+  "state": "LOCKED",
+  "published_on": "2018-07-08",
+  "initial_price":{
+    "ETH":"0.000066666 ETH",
+    "USD":"0.03 USD",
+    "BTC":"0.000005 BTC"
+  },
+  "links": {
+    "Twitter":"https://twitter.com/Wine_Chain",
+    "Telegram":"https://0.plus/#/WineChain"
+  }
+}

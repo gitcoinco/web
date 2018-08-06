@@ -1,0 +1,17 @@
+{
+  "symbol": "GEAR",
+  "address": "0xcd7593259d601232f0BEe575bFaE3EE3cEF8280E",
+  "overview":{
+        "en": "Smart Gear is the first carsharing project in the blockchain ecology. By activating the society's spare vehicle resources, such as personal private cars, rental companies with idle vehicles, enterprises with idle vehicles, and integration of existing vehicle resources in rental companies and carsharing platforms, achieving economies of scale (vehicle size and urban coverage)，diversification (vehicle diversification) , low-cost business models, and full mobilization of capacity and user engagement based on eco-incentives and dynamic pricing mechanisms, in order to promote the healthy development of ecology. The various incentives in the ecology are paid in the form of the Gear, allowing the Gear to circulate well in the ecology.",
+        "zh": "Smart Gear是区块链生态上，共享汽车的第一个项目。通过激活社会闲置车辆资源，例如个人私家车、租赁公司闲置车辆、企业闲置车辆，并整合租赁公司和共享汽车出行平台已有的车辆资源，实现规模化（车辆规模和城市覆盖规模）、多样化（车型多样化）、低成本的商业模式，同时，基于生态奖励和动态定价机制，充分调动运力和用户参与的积极性，以此推动生态的健康发展。生态中的各种激励以Gear币形式支付，使得Gear币得以在生态中良性流通。"
+  },
+  "email": "technology@smart-gear.io",
+  "website": "http://www.smart-gear.io",
+  "published_on": "2018-07-16",
+  "whitepaper": "http://www.smart-gear.io/Pdf/CnWhitePaper.pdf",
+  "state": "NORMAL",
+  "initial_price":{
+        "ETH":"0.00004 ETH",
+        "USD":"0.02 USD"        
+  }
+}

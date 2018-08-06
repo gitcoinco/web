@@ -1,0 +1,24 @@
+{
+  "symbol": "EUBC",
+  "address": "0xc37e8a31ba2d110c12f09f0239954a68b00bc599",
+  "overview":{
+        "en": "EUB Chain is a decentralized solution, designed for rapid exchange of idle GPU resource sharing. EUBC is the token generated on EUB Chain. It is a fork of Ethereum with enhancement, basing on Istanbul BFT to achieve Proof-Of-Resource,POR. Block time is defined to be 1 sec, have advantages of instant finality, manageable validator set and high frequency transcation. Sparkdisk is self-developed cold wallet to allow user to share idle resources with compensation, plug-and-mine.",
+        "zh": "燎原链是去中心化算力共享區塊鏈，專為快速交換閑置GPU算力資源而設計。一优币是燎原链產生的數字貨币，在原有ETH以太坊區塊鏈上作出改進, 以伊斯坦堡拜占庭容錯演算法（Istanbul BFT, IBFT）建設資源力証明(Proof-Of-Resource,POR) ，當中區塊時間被定義為1秒, 並有即時確認(instant finality), 可扩展確認節點(manageable validator set)及較高频率交易效果。星火盘是自己研发的智能硬件钱包让用户有偿贡献算力，普通用户只需要让自己的电脑插上星火盘，即可开始挖掘一优币。"
+  },
+  "email": "info@eubchain.com",
+  "website": "https://eubchain.com/",
+  "whitepaper": "https://eubchain.com/static/whitePaper/liaoyuanlian_wp.pdf",
+  "published_on": "2018-07-22",
+  "initial_price":{
+        "ETH":"0.000166666 ETH",
+        "USD":"0.0833333 USD"
+  },
+  "links": {
+    "blog": "https://eubchain.com/blog",
+    "twitter": "https://twitter.com/eubchain",
+    "telegram": "https://t.me/eubsparkchain",
+    "github": "https://github.com/eubchain",
+    "facebook": "https://www.facebook.com/Eubchain-153177778671597/",
+    "reddit": "https://www.reddit.com/u/EUBChain"
+  }
+}

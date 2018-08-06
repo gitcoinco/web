@@ -1,0 +1,20 @@
+{
+  "symbol": "BVB",
+  "address": "0xf083f40599741bc576173b492268972ce661e5ec",
+  "overview":{
+        "en": "Bit value art bank.",
+        "zh": "比特价值·艺术银行"
+  },
+  "email": "bvb@bitvaluebk.com",
+  "website": "https://www.bitvaluebk.com/",
+  "whitepaper": "https://www.bitvaluebk.com/WhitePaperBitValueBankCN.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-01-01",
+  "initial_price":{
+        "ETH":"0.2 ETH"
+  },
+  "links": {
+    "blog": "https://cms.bitvaluebk.com/",
+    "github": "https://github.com/bitvaluebk"
+  }
+}

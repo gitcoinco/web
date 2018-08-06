@@ -1,0 +1,25 @@
+{
+  "symbol": "FNKOS",
+  "address": "0x0707681f344deb24184037fc0228856f2137b02e",
+  "overview":{
+    "en": "Using the fog computing technology, the ability of edge computing is output, and the block chain system in the public and vertical fields, such as the common and vertical fields, is used by the POC (Proof of Contribution) consensus algorithm. Through the global spread of fog computing node consensus for the Internet of things IoT equipment, AI, intelligent traffic, cities and other scenarios to provide reliable data transmission and computing solutions. The use of block chain mobile phone and FNK BOX can realize the capacity value of the calculation of the load fog. At the same time, the fog chain has very low network cost. It can calculate the actual capacity of the node transmission center and the fog chain system by using the contributors of the edge calculation to build the fog.",
+    "zh": "利用雾计算技术，将边缘计算的能力进行输出，独创POC（Proof of Contribution）共识算法，服务于公共和垂直领域等场景的区块链系统。通过全球遍布的雾计算节点共识器，为物联网IoT设备、AI、智慧交通、城市等场景的落地提供可靠的数据传输和计算的解决方案。用户使用区块链手机、FNK BOX可以实现承载雾计算的能力价值；同时雾链具备非常低廉的网络成本，可以通过边缘计算的贡献者构建雾计算节点传输中心以及雾链系统等实际能力。"
+  },
+  "email": "support@foglink.io",
+  "website": "https://www.foglink.io/",
+  "whitepaper":"https://github.com/foglink/proposals/blob/master/FOG%20LINK%20WHITE%20PAPER3.1.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-07-26",
+  "initial_price":{
+    "ETH":"0.0003425 ETH",
+    "USD":"0.35 USD"
+  },
+  "links": {
+    "blog": "http://weibo.com/FNKOSofficial",
+    "twitter": "https://twitter.com/FNKOSofficial",
+    "telegram": "https://t.me/fnkofficial",
+    "github": "https://github.com/foglink",
+    "facebook": "https://www.facebook.com/your-awesome-project",
+    "reddit": "http://www.facebook.com/FNKOSofficial"
+  }
+}

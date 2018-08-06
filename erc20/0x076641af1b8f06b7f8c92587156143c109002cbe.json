@@ -1,0 +1,23 @@
+{
+  "symbol": "SOP",
+  "address": "0x076641af1b8f06b7f8c92587156143c109002cbe",
+  "overview":{
+    "en": "SoPay is a revolutionary blockchain technology platform, that enable mass adoption for cryptocurrencies payment. It key selling points including:(1) Support multiple cryptocurrencies;(2) 0 transaction fees for consumers;(3) Payment received within seconds;(4) Merchants  complete SoPay integration within 6 days to support cryptocurrencies payment, even without blockchain technical background.\nThe payment experience is as easy as using Alipay.",
+     "zh": "SoPay，是创新的金融科技以及区块链技术平台，为应用开发者赋能数字货币支付。具备以下产品特点：(1） 支持所有币种(2） 用户侧0手续费(3） 1秒到账(4） 开发者无需区块链技术基础，6天即可完成技术对接，支持数字货币支付。像支付宝一样简单的交易体验。"
+  },
+  "email": "xt.c@sopay.org",
+  "website": "https://sopay.org",
+  "whitepaper": "http://sopay.org/wp-content/uploads/SoPay-whitepaper-cn-latest.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-07-18",
+  "initial_price":{
+        "ETH":"0.00005 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/SoPayORG",
+    "telegram": "https://t.me/sopay_cn",
+    "github": "https://github.com/your-awesome-project",
+    "facebook": "https://www.facebook.com/sopayorg",
+    "reddit": "https://www.reddit.com/user/SoPay_org"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "symbol": "HIT",
+  "address": "0x7995ab36bB307Afa6A683C24a25d90Dc1Ea83566",
+  "overview":{
+        "en": "Hitchain aims to implement a distributive 'Hit' protocol and ecosystem to improve the 'Git' based source code management platforms by leveraging the powers of IPFS and blockchain technologies. The goal of Hitchain is to build an autonomous community of the developers，by the developers and for the developers.",
+        "zh": "Hitchain致力于解决Git协议的痛点，打造下一代Hit协议，通过类似IPFS的分布式存储技术托管代码，利用区块链的智能合约实现对代码的知识产权管理，从而建立一个彻底去中心化的由开发者共有、共建和共享的新型社区，帮助开发者实现写代码即挖矿的终极自身价值。"
+  },
+  "email": "marketing@hitchain.org",
+  "website": "http://www.hitchain.org/",
+  "whitepaper": "http://www.hitchain.org/pdf/HitChain-Whitepaper-en.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-07-18",
+  "initial_price":{
+        "ETH":"0.0000014 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/Hit_Chain",
+    "telegram": "https://t.me/HitChain_EN",
+    "github": "https://github.com/HitChainFoundation",
+    "facebook": "https://www.facebook.com/HitChain-174994073283392/",
+    "medium": "https://medium.com/@hitchainfoundation/hitchain-ca324e1628b4"
+  }
+}

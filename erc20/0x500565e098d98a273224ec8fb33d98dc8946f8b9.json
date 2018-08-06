@@ -1,0 +1,14 @@
+{
+  "symbol": "GCC",
+  "address": "0x500565E098d98A273224eC8Fb33d98dC8946F8B9",
+  "overview":{
+        "en": "GameCell is Ecological Game Community Based on Blockchain.",
+        "zh": "GameCell(游戏星球)是全方位的区块链游戏聚合平台。"
+  },
+  "email": "gamecell.foundation@gmail.com",
+  "website": "http://www.gamecell.io/",
+  "links": {
+    "twitter":"https://twitter.com/Gamecell4",
+    "github": "https://github.com/GameCell"
+  }
+}

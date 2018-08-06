@@ -1,0 +1,19 @@
+{
+  "symbol": "IMG",
+  "address": "0x7e2a54ced53bcc12c6b537537da24c5a3c450844",
+  "overview":{
+        "en": "IM-Game.com is an international mobile game platform, which is a game incubator plus encouraging platform of labor division based on blockchain.",
+        "zh": "IM-Game.com，国际手游平台，第四代游戏生态新引擎，基于区块链的激励型游戏社群生态。"
+  },
+  "email": "contact@im-game.com",
+  "website": "http://www.im-game.com",
+  "whitepaper": "https://www.facebook.com/IMGamePlatform",
+  "state": "NORMAL",
+  "published_on": "2018-06-27",
+  "initial_price":{
+        "ETH":"0.00000727 ETH"
+  },
+  "links": {
+    "facebook": "https://www.facebook.com/IMGamePlatform"
+  }
+}

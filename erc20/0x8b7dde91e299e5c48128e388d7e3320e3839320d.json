@@ -1,0 +1,21 @@
+{
+    "symbol": "ABCchain",
+    "address": "0x8b7dde91e299e5c48128e388d7e3320e3839320d",
+    "overview": {
+        "en": "ABC CHAIN is a distributed ledger system based on blockchain. Through decentralization, trust mechanisms, smart contracts, and consensus mechanisms, a decentralized agarwood trading center named 'Traceability System Blockchain Digital Assets 'was created based on blockchain technology. Creating a more efficient, transparent, credible, and self-maintaining ecosystem and turning it into a commercial blockchain that can be used to the traceability of agarwood around the world. The traceability service system of the ABC CHAIN utilizes the distributed accounting technology of the blockchain to provide a secure and tamper-proof ledger and adopt high anti-counterfeiting technology to solve offline problems. It writes down the traceability information of the product in the blockchain and digitizes the physical product to release the digital asset. In the process of circulation, real-time information will be recorded in detail to ensure the complete monitoring of information. Meanwhile, this transparent process has also improved the trust system of the supply chain of agarwood. It is hoped that by combining the traceability system blockchain technology with modern management methods, the spirit and essence of this traditional industry will be better passed on. The “ABC CHAIN” using blockchain technology is used to construct an integrated and ecological closed-loop of the agarwood industrial chain encompassing planting, processing, trading, logistics, channels, and training, products, services, operations, and sales, satisfying the consumer's traceability and fidelity needs of the agarwood products.",
+        "zh": "应用于全球沉香溯源的商用区块链。沉香链溯源服务系统利用区块链分布式记账技术提供一个安全的、防篡改的账本，以高防伪技术解决线下难题。将商品的溯源信息写入区块链中，再将实物商品数字化，发行数字资产。在流转过程中实时信息被层层记录，切实做到信息的全程监控，同时这种透明化流程也完善了沉香产品供应链的信任体系，希望通过溯源体系区块链技术结合现代的管理方式，将这个传统行业的精神和实质更好地传承下去。应用区块链技术的“沉香链”，构建了一个从种植、加工、交易、物流、渠道，再到培训、产品、服务、运营、销售等一系列环节全都囊括其中的沉香产业链完整生态闭环，满足了消费者对沉香产品的溯源及保真需求。"
+    },
+    "email": "284862428@qq.com",
+    "website": "http://www.abcchain1.com/",
+    "whitepaper": "http://www.abcchain1.com/assets/pdf/ABC_CHAIN_WHITE_PAPER.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-05-01",
+    "initial_price": {
+        "USD": "0.08 USD"
+    },
+    "links": {
+        "twitter": "https://twitter.com/ahcchain",
+        "facebook": "https://www.facebook.com/abcchain",
+        "github": "https://github.com/abcchain1"
+    }
+}

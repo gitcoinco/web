@@ -1,0 +1,18 @@
+{
+      "symbol": "AIE",
+      "address": "0x0408d7ed44de8d93a2510caef3db4ac7a4a1dfec",
+      "overview":{
+            "en": "AI Ecology Based Blockchain",
+            "zh": "基于区块链的AI生态系统"
+      },
+      "email": "hi@aieco.io",
+      "website": "http://aieco.io/",
+      "whitepaper": "https://aieco.io/whitepaper_en.pdf",
+      "state": "NORMAL",
+      "published_on": "2018-06-16",
+      "links": {
+        "github": "https://github.com/aiecology",
+        "facebook": "https://www.facebook.com/aiecology",
+        "medium": "https://medium.com/@aiecology"
+      }
+    }

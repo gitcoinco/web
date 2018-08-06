@@ -1,0 +1,25 @@
+{
+  "symbol": "oas",
+  "address": "0x89885fc1f76c3f4cc719640e33c315227da7003a",
+  "overview":{
+        "en": "Oases ecosystem is the industry foundationchain and agreement of the next generation of block chain environmental protection and energy management.",
+        "zh": "世界首个区块链环保技术及能源管理系统"
+  },
+  "email": "oases@oases.pro",
+  "website": "http://www.oases.pro",
+  "whitepaper": "http://www.oases.pro/frontend/assets/OASES_CHAIN_BUSINESS_WHITE_PAPER-CN.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-05",
+  "initial_price":{
+        "ETH":"0.00000667 ETH",
+        "USD":"0.003 USD",
+        "BTC":"0.0000005 BTC"
+  },
+  "links": {
+    "blog": "https://weibo.com/oaseschain",
+    "twitter": "https://twitter.com/oaseschain",
+    "telegram": "https://t.me/oaseschinese",
+    "github": "https://github.com/oaseschain/oaseschain",
+    "facebook": "https://www.facebook.com/shen.lin.54966"
+  }
+}

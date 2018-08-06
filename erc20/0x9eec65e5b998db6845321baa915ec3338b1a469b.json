@@ -1,0 +1,28 @@
+{
+  "symbol": "Only",
+  "address": "0x9eec65e5b998db6845321baa915ec3338b1a469b",
+  "overview":{
+        "zh": "OnlyChain打造的是应用型生态公链，目的是整合一切可用的计算机闲置资源，积极构建一个中心化应用利用闲置资源、去中心化应用融合共识机制的区块链应用生态圈。打造一链一生态（只存在一条Token母链），造福创业者、企业、用户，目前基于OnlyChain的基础链已构建第一款物联网结合区块链的防伪溯源落地应用。"
+  },
+  "email": "onlychain@163.com",
+  "website": "http://onlychain.pro/",
+  "whitepaper": "http://onlychainonly.onlychain-news.com/OnlyChainWhitePaper.pdf",
+  "published_on": "2018-07-14",
+  "initial_price":{
+        "ETH":"0.00004348 ETH"
+  },
+  "links": {
+      "twitter": "https://twitter.com/your-awesome-project",
+	  "telegram": "https://t.me/joinchat/your-awesome-project",
+	  "slack": "https://your-awesome-project.slack.com",
+	  "medium": "https://medium.com/@OnlyChain",
+	  "reddit": "https://www.reddit.com/user/OnlyChain",
+      "github": "https://github.com/onlychain/OnlyChain.git"
+  }
+}
+
+
+
+
+
+

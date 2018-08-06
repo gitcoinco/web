@@ -1,0 +1,17 @@
+{
+  "symbol": "CBS",
+  "address": "0x6e2A5b577437440D6024AEf6a6bf81CdE09798de",
+  "overview":{
+        "en": "Chain Book System Digital asset investment information community based on block chain",
+        "zh": "Chain Book System 基于区块链的数字资产投资信息社区"
+  },
+  "email": "chainbooksystem@outlook.com",
+  "website": "https://chainbooksystem.com/",
+  "whitepaper": "https://chainbooksystem.com/download/cbs.pdf",
+  "published_on": "2018-07-19",
+  "links": {
+    "telegram": "https://t.me/ChainBookSystem",
+    "github": "https://github.com/ChainBookSystem/CBS",
+    "facebook": "https://www.facebook.com/Book-Chain-498812263885628/"
+  }
+}

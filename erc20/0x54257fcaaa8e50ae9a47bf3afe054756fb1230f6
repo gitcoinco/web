@@ -1,0 +1,23 @@
+{
+  "symbol": "TBL",
+  "address": "0x54257fcaaa8e50ae9a47bf3afe054756fb1230f6",
+  "overview":{
+        "en": "TBL是TOMBOLA.game的竞猜代币，使用TBL投注竞猜游戏免佣金，持有者享有50%坐庄分红。.",
+        "zh": "TBL regularly allocates 50 % of the revenue for tombola.game. Also, there is no betting fee if you use TBL"
+  },
+  "email": "contact@tombola.io",
+  "website": "https://tombola.io",
+  "whitepaper": "https://www.tombola.io/tombola_whitepaper_english.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-07-01",
+  "initial_price":{
+        "ETH":"0.0001 ETH",
+        "USD":"0.0465 USD",
+  },
+  "links": {
+    "twitter": "https://twitter.com/TOMBOLA_COIN",
+    "telegram": "https://t.me/TBL_tombola",
+    "github": "https://github.com/team-tbl-dev/Tombola-TBL",
+    "facebook": "https://www.facebook.com/Tombola-ICO-1331136417018820",
+  }
+}
