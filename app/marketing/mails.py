@@ -60,11 +60,12 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     if settings.IS_DEBUG_ENV:
         to_email = Email(settings.CONTACT_EMAIL)  # just to be double secret sure of what were doing in dev
         subject = _("[DEBUG] ") + subject
-    mail = Mail(from_email, subject, to_email, content)
+    mail = Mail(from_email, subject, None, content)
     response = None
 
     # build personalization
     p = Personalization()
+    p.add_to(to_email)
     if cc_emails:  # only add CCif not in prod
         for cc_addr in set(cc_emails):
             cc_addr = Email(cc_addr)
