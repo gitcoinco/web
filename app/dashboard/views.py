@@ -1023,7 +1023,7 @@ def profile(request, handle):
                 },
             },
         }
-        return TemplateResponse(request, 'profiles/profile.html', params)
+        return TemplateResponse(request, 'profiles/profile.html', params, status=404)
 
     params = profile.to_dict()
 
