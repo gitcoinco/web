@@ -2,6 +2,8 @@
 $dark-blue: #0d023b;
 $gc-blue: #3e00ff;
 
+@import 'transaction';
+@import 'range-slider';
 
 // MIXINS
 @mixin square() {

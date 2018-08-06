@@ -172,9 +172,9 @@ $(document).ready(function() {
   });
 });
 
-$(window).scroll(function() {
-  var scrollPos = jQuery(document).scrollTop();
-});
+// $(window).scroll(function() {
+//   var scrollPos = jQuery(document).scrollTop();
+// });
 
 /* TODO : Remove after GDPR */
 if ($('#is-authenticated').val() === 'True' && !localStorage['notify_policy_update']) {

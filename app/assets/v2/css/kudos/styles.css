@@ -1,3 +1,77 @@
+.box-transaction {
+  max-width: 35rem;
+  margin: auto;
+  background: #fff;
+  z-index: 2;
+  position: relative;
+  padding: 1em 3em 3em 3em; }
+
+.transaction {
+  background-color: #0d023b;
+  background-image: -moz-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url("/static/v2/images/header-bg.png");
+  background-image: -webkit-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url("/static/v2/images/header-bg.png");
+  background-image: -ms-linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url("/static/v2/images/header-bg.png");
+  background-image: linear-gradient(60deg, rgba(255, 165, 150, 0.5) 5%, rgba(0, 228, 255, 0.35)), url("/static/v2/images/header-bg.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed; }
+
+.alert_msg {
+  top: 0px;
+  width: 100%;
+  z-index: 99999;
+  background-color: #f44336;
+  color: white;
+  position: fixed;
+  text-align: center; }
+
+.alert_msg.info {
+  background-color: #2196F3; }
+
+.line-back {
+  position: relative;
+  display: block; }
+  .line-back:before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: -3em;
+    width: calc(100% + 6em);
+    height: 1px;
+    z-index: -1;
+    background: #c8cccf; }
+
+.copyright a {
+  color: white; }
+
+[data-rangeslider] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 2px;
+  background: #0D0764;
+  outline: none;
+  margin: 1rem 0; }
+  [data-rangeslider]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50px;
+    background: #0D0764;
+    cursor: pointer;
+    transition: .1s all linear; }
+  [data-rangeslider]:hover::-webkit-slider-thumb {
+    width: 22px;
+    height: 22px; }
+  [data-rangeslider]:focus::-webkit-slider-thumb {
+    width: 26px;
+    height: 26px;
+    border-radius: 50px 50px 4px;
+    transform: rotate(45deg);
+    margin-bottom: 50px; }
+
 .kd-card {
   position: relative; }
   .kd-card .img-thumbnail {
