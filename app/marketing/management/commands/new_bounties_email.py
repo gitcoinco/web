@@ -73,7 +73,7 @@ class Command(BaseCommand):
             print("not active in non prod environments")
             return
         hours_back = 24
-        eses = EmailSubscriber.objects.filter(active=True, email='vivek.m.singh93@gmail.com')
+        eses = EmailSubscriber.objects.filter(active=True)
         print("got {} emails".format(eses.count()))
         for es in eses:
             try:
