@@ -1107,9 +1107,6 @@ def funder_dashboard(request):
     for bounty in funder_bounties.filter(current_bounty=True):
         total_contributors_count += bounty.fulfillments.filter(accepted=True).count()
 
-    total_paid_dollars = 0
-    total_paid_eth = 0
-
     contributors_usernames = []
     done_bounties_desc_created = done_bounties.order_by('-web3_created')
     for bounty in done_bounties_desc_created:
@@ -1132,6 +1129,9 @@ def funder_dashboard(request):
             'githubLink': 'https://www.github.com/' + contributor_github_username,
             'profilePictureSrc': '/static/avatar/' + contributor_github_username
         })
+
+    total_paid_dollars = 0
+    total_paid_eth = 0
 
     for bounty in done_bounties:
         bounty_value_in_usdt = bounty.get_value_in_usdt

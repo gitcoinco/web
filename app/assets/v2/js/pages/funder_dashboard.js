@@ -305,9 +305,50 @@ $(function() {
 
     boundGetBounties();
     $('.funder-dashboard__all-bounties__filter').change(function() {
+      changePageAbsolute(1);
       clearBounties();
       boundGetBounties();
     });
+
+    $('.funder-dashboard__all-bounties__pagination__prev').click(function() {
+      changePageRelative(bounties, -1);
+    });
+
+    $('.funder-dashboard__all-bounties__pagination__next').click(function() {
+      changePageRelative(bounties, 1);
+    });
+
+    function changePageRelative(allBounties, increment) {
+      var PAGE_SIZE = 5;
+      var bountiesCount = bounties.length;
+      var page_number_max = Math.floor(bountiesCount / PAGE_SIZE) + 1;
+      var page_number_min = 1;
+
+      var $page = $('.funder-dashboard__all-bounties__pagination__page');
+      var oldPage = Number($page.html());
+      var newPage = oldPage + increment;
+
+      if (newPage > page_number_max) {
+        newPage = page_number_max;
+      }
+
+      if (newPage < page_number_min) {
+        newPage = page_number_max;
+      }
+
+      $page.html(newPage);
+
+      clearBounties();
+      boundGetBounties();
+    }
+
+    function changePageAbsolute(newPage) {
+      var $page = $('.funder-dashboard__all-bounties__pagination__page');
+      $page.html(newPage);
+
+      clearBounties();
+      boundGetBounties();
+    }
 
     function clearBounties() {
       $container.find(classSel(bountyBaseSel + ':not(' + classSel(bountyBaseSel) + '--template)')).remove();
@@ -347,6 +388,7 @@ $(function() {
       var $typeStatusFilter = getTypeOrStatusFilter(filterBaseSel);
       var $sortFilter = getSortByFilter(filterBaseSel);
 
+
       var filteredBounties = bounties.filter(function(bounty) {
         if ($typeStatusFilter.data('is-all-filter')) {
           return true;
@@ -358,11 +400,16 @@ $(function() {
         }
       });
 
+      var page = Number($('.funder-dashboard__all-bounties__pagination__page').html());
+      var PAGE_SIZE = 5;
+
       var sortFn = getSortFn($sortFilter.val());
 
       filteredBounties = filteredBounties.sort(function(fund1, fund2) {
         return sortFn(fund1, fund2);
       });
+
+      filteredBounties = filteredBounties.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
       cbRenderBounties(filteredBounties);
 
@@ -485,6 +532,6 @@ $(function() {
   var funderBounties = window.allBounties.items;
 
   activateOutgoingFunds(outgoingFunds.slice(0, 5));
-  activateAllBounties(funderBounties.slice(0, 5));
+  activateAllBounties(funderBounties);
 });
 
