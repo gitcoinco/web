@@ -1065,7 +1065,7 @@ class Tip(SuperModel):
     @property
     def org_name(self):
         try:
-            return org_name(self.url)
+            return org_name(self.github_url)
         except Exception:
             return None
 

@@ -173,7 +173,7 @@ msgstr "समस्या निधि जानकारी"
 
 #: assets/v2/js/pages/bounty_details.js:97
 msgid "Funder"
-msgstr "Funder"
+msgstr "फंडर"
 
 #: assets/v2/js/pages/bounty_details.js:98
 msgid "Submitter"
@@ -336,7 +336,7 @@ msgstr ""
 #, fuzzy
 #| msgid "Funder"
 msgid "Contact Funder"
-msgstr "संपर्क निधि"
+msgstr "संपर्क फंडर"
 
 #: assets/v2/js/pages/bounty_details.js:794
 msgid "Contact Funder via Email"

@@ -9,6 +9,7 @@ $(document).ready(function() {
   const $gcRobot = $('#gc-robot');
 
   const followStateHeight = 500;
+  const treeAnimationPosition = 1500;
   let navFollowState = scrollContainer.scrollTop() > followStateHeight;
 
   scrollContainer.scroll(RAFThrottle((e) => {
@@ -21,10 +22,13 @@ $(document).ready(function() {
       $navbar.removeClass('following');
       navFollowState = false;
     }
-    $gcRobot.css('transform', `translateY(${$gcRobot.parent()[0].getBoundingClientRect().top - 100}px)`);
-    $('#gc-tree #tree-svg .lines').removeClass('pause-animation');
-    $('#gc-tree #tree-svg .cls-4').removeClass('pause-animation');
 
+    if (scrollContainer.scrollTop() > treeAnimationPosition) {
+      $('#gc-tree #tree-svg .lines').removeClass('pause-animation');
+      $('#gc-tree #tree-svg .cls-4').removeClass('pause-animation');
+    }
+
+    $gcRobot.css('transform', `translateY(${$gcRobot.parent()[0].getBoundingClientRect().top - 100}px)`);
   }));
   moveBackground({});
 
