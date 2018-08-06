@@ -17,11 +17,12 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import calendar
+import datetime
 import logging
 import pprint
 from enum import Enum
-import datetime
-import calendar
+from math import ceil
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -43,7 +44,6 @@ from git.utils import get_gh_issue_details, get_url_dict, issue_number, org_name
 from jsondiff import diff
 from pytz import UTC
 from ratelimit.decorators import ratelimit
-from math import ceil
 
 from .models import Profile
 

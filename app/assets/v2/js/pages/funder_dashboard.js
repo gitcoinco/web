@@ -1,4 +1,4 @@
-$(function () {
+$(function() {
   var utils = {
     stringCompareIgnoreCase: function(str1, str2) {
       if (!str1 || !str2) {
@@ -12,8 +12,9 @@ $(function () {
       return (str1 === str2);
     },
 
-    updateBemElementInParent: function ($parent, classSelectorBase, elementName, elementValue) {
+    updateBemElementInParent: function($parent, classSelectorBase, elementName, elementValue) {
       var $element = $parent.find(classSel(classSelectorBase) + '__' + elementName);
+
       update($element, elementValue);
 
       function update($el, htmlContent) {
@@ -21,9 +22,10 @@ $(function () {
       }
     },
 
-    download: function (content, fileName, mimeType) {
+    download: function(content, fileName, mimeType) {
       // Won't work in IE <= 9
       var a = document.createElement('a');
+
       mimeType = mimeType || 'application/octet-stream';
 
       if (navigator.msSaveBlob) { // IE10
@@ -48,12 +50,14 @@ $(function () {
     var chart = updateChart(null);
 
     var $currentChartFilter = null;
+
     handleChartChange();
 
     function handleChartChange() {
-      $('.funder-dashboard__payout-history__control').click(function () {
+      $('.funder-dashboard__payout-history__control').click(function() {
         if ($(this) !== $currentChartFilter) {
           var classSelected = 'funder-dashboard__payout-history__control--selected';
+
           $('.funder-dashboard__payout-history__control').removeClass(classSelected);
           $currentChartFilter = $(this);
           $currentChartFilter.addClass(classSelected);
@@ -71,6 +75,7 @@ $(function () {
 
     function renderChart() {
       var chartSettings = getChartSettings();
+
       return new Chart(chartSettings.context2d, {
         data: chartSettings.data,
         options: chartSettings.options,
@@ -92,6 +97,7 @@ $(function () {
 
       var plotData = null;
       var labels = null;
+
       if (isWeekly) {
         plotData = weeklyData.data;
         labels = weeklyData.labels;
@@ -109,9 +115,9 @@ $(function () {
           borderColor: '#3e00ff',
           backgroundColor: '#eff7fd',
           lineTension: 0,
-          fillColor: '#eff7fd',
+          fillColor: '#eff7fd'
         }],
-        labels: labels,
+        labels: labels
       };
 
       var options = {
@@ -119,34 +125,34 @@ $(function () {
           yAxes: [
             {
               ticks: {
-                callback: function (value, index, labels) {
+                callback: function(value, index, labels) {
                   return '$' + value;
                 }
-              },
+              }
             }
-          ],
+          ]
         },
         legend: {
           display: false
         }
       };
 
-      var context2d = document.getElementById("funder-dashhboard__payout-history__chart").getContext("2d");
+      var context2d = document.getElementById('funder-dashhboard__payout-history__chart').getContext('2d');
 
       return {
         data: data,
         options: options,
         context2d: context2d
-      }
+      };
     }
-  };
+  }
 
   function activateTotalBudget() {
     var $totalBudget = $('.funder-dashboard__stats__stat--total-budget__budget-input');
 
     $totalBudget.keypress(function(e) {
-      if (e.key == "Enter") {
-        console.log("User inputted total budget: \r\n" + this.value);
+      if (e.key == 'Enter') {
+        console.log('User inputted total budget: \r\n' + this.value);
 
         var isMonthly = $('.control--total-budget--monthly').hasClass('control--selected');
         var isQuarterly = $('.control--total-budget--quarterly').hasClass('control--selected');
@@ -160,11 +166,12 @@ $(function () {
 
     // Monthly / Quarterly
     var $totalBudgetControls = $('.control--total-budget');
+
     $totalBudgetControls.click(function() {
       $totalBudgetControls.removeClass('control--selected');
       $(this).addClass('control--selected');
     });
-  };
+  }
 
   // used both by bounties and outgoing funds
   // any object the resulting fns are to be used on must have the created_on and worthDollars properties
@@ -173,25 +180,25 @@ $(function () {
       case 'Recent':
         return function(fund1, fund2) {
           return dateComparison(fund1.created_on, fund2.created_on);
-        }
+        };
       case 'Oldest':
         return function(fund1, fund2) {
           return -dateComparison(fund1.created_on, fund2.created_on);
-        }
+        };
       case 'Highest Value':
         return function(fund1, fund2) {
           return -(parseFloat(fund1.worthDollars) - parseFloat(fund2.worthDollars));
-        }
+        };
       case 'Lowest Value':
         return function(fund1, fund2) {
           return parseFloat(fund1.worthDollars) - parseFloat(fund2.worthDollars);
-        }
+        };
       default:
         return function() {
           return 0;
-        }
+        };
     }
-  };
+  }
 
   // TODO: date1 and date2 are datetime objects coming from the api. Need a way to compare them
   function dateComparison(date1, date2) {
@@ -216,7 +223,7 @@ $(function () {
     var getFunds = getOutgoingFunds.bind(this, outgoingFunds, cbRenderFunds);
 
     getFunds();
-    $('.funder-dashboard__outgoing-funds__filter').change(function () {
+    $('.funder-dashboard__outgoing-funds__filter').change(function() {
       clearFunds();
       getFunds();
     });
@@ -230,6 +237,7 @@ $(function () {
         var fund = funds[i];
 
         var $clone = $fundTemplate.clone();
+
         utils.updateBemElementInParent($clone, fundBaseSel, 'id', fund.id);
         utils.updateBemElementInParent($clone, fundBaseSel, 'title', fund.title);
         utils.updateBemElementInParent($clone, fundBaseSel, 'type', fund.type);
@@ -239,7 +247,7 @@ $(function () {
         utils.updateBemElementInParent($clone, fundBaseSel, 'worth__eth', fund.worthEth);
 
         if (fund.status === 'Pending') {
-          $clone.addClass(fundBaseSel + '--pending')
+          $clone.addClass(fundBaseSel + '--pending');
         }
 
         $clone.removeClass(fundBaseSel + '--template');
@@ -253,7 +261,7 @@ $(function () {
       var $typeStatusFilter = getTypeOrStatusFilter(filterBaseSel);
       var $sortFilter = getSortByFilter(filterBaseSel);
 
-      var filteredFunds = funds.filter(function (fund) {
+      var filteredFunds = funds.filter(function(fund) {
         if ($typeStatusFilter.data('is-all-filter')) {
           return true;
         }
@@ -266,6 +274,7 @@ $(function () {
       });
 
       var sortFn = getSortFn($sortFilter.val());
+
       filteredFunds = filteredFunds.sort(function(fund1, fund2) {
         return sortFn(fund1, fund2);
       });
@@ -295,7 +304,7 @@ $(function () {
     var getBounties = getBounties.bind(this, bounties, cbRenderBounties);
 
     getBounties();
-    $('.funder-dashboard__all-bounties__filter').change(function () {
+    $('.funder-dashboard__all-bounties__filter').change(function() {
       clearBounties();
       getBounties();
     });
@@ -319,14 +328,11 @@ $(function () {
 
         if (bounty.status === 'started') {
           $clone.addClass(bountyBaseSel + '--started');
-        }
-        else if (bounty.status === 'stopped') {
+        } else if (bounty.status === 'stopped') {
           $clone.addClass(bountyBaseSel + '--stopped');
-        }
-        else if (bounty.status === 'submitted') {
+        } else if (bounty.status === 'submitted') {
           $clone.addClass(bountyBaseSel + '--submitted');
-        }
-        else if (bounty.status === 'open') {
+        } else if (bounty.status === 'open') {
           $clone.addClass(bountyBaseSel + '--open');
         }
 
@@ -341,7 +347,7 @@ $(function () {
       var $typeStatusFilter = getTypeOrStatusFilter(filterBaseSel);
       var $sortFilter = getSortByFilter(filterBaseSel);
 
-      var filteredBounties = bounties.filter(function (bounty) {
+      var filteredBounties = bounties.filter(function(bounty) {
         if ($typeStatusFilter.data('is-all-filter')) {
           return true;
         }
@@ -353,6 +359,7 @@ $(function () {
       });
 
       var sortFn = getSortFn($sortFilter.val());
+
       filteredBounties = filteredBounties.sort(function(fund1, fund2) {
         return sortFn(fund1, fund2);
       });
@@ -437,13 +444,14 @@ $(function () {
     var resetFilters = function() {
       for (var i = 0; i < sidebar_keys.length; i++) {
         var key = sidebar_keys[i];
+
         localStorage[key] = null;
       }
 
       localStorage['bounty_owner_github_username'] = null;
 
       if (localStorage['keywords']) {
-        localStorage['keywords'].split(',').forEach(function (v, k) {
+        localStorage['keywords'].split(',').forEach(function(v, k) {
           localStorage['keywords'] = localStorage['keywords'].replace(v, '').replace(',,', ',');
           // Removing the start and last comma to avoid empty element when splitting with comma
           localStorage['keywords'] = localStorage['keywords'].replace(/^,|,\s*$/g, '');
@@ -457,8 +465,10 @@ $(function () {
       var csvRows = window.taxReportCsv;
 
       var csvContent = '';
-      csvRows.forEach(function (infoArray, index) {
+
+      csvRows.forEach(function(infoArray, index) {
         var dataString = infoArray.join(',');
+
         csvContent += index < csvRows.length ? dataString + '\r\n' : dataString;
       });
 
