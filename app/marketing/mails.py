@@ -45,9 +45,7 @@ def send_mail(from_email, _to_email, subject, body, html=False,
         print('No SendGrid API Key set. Not attempting to send email.')
         return
     to_email = _to_email
-    print("***************")
     get_or_save_email_subscriber(to_email, 'internal')
-    print("***************")
 
     # setup
     from_name = str(from_name)
@@ -67,7 +65,6 @@ def send_mail(from_email, _to_email, subject, body, html=False,
 
     # build personalization
     p = Personalization()
-    p.add_to(to_email)
     if cc_emails:  # only add CCif not in prod
         for cc_addr in set(cc_emails):
             cc_addr = Email(cc_addr)
@@ -280,7 +277,6 @@ def new_bounty_daily(bounties, old_bounties, to_emails=None):
         bounties = bounties[0:max_bounties]
     if to_emails is None:
         to_emails = []
-    import ipdb; ipdb.set_trace()
     plural = "s" if len(bounties) != 1 else ""
     worth = round(sum([bounty.value_in_usdt for bounty in bounties if bounty.value_in_usdt]), 2)
     worth = f" worth ${worth}" if worth else ""
