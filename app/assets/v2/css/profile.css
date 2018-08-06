@@ -2,6 +2,9 @@
   padding-top: 3.5rem;
   color: #fff;
 }
+.container{
+  min-height: 150px;
+}
 
 .profile-header__avatar {
   float: left;
