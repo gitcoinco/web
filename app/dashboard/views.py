@@ -31,7 +31,6 @@ from django.core.cache import cache
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
@@ -47,6 +46,7 @@ from marketing.mails import (
     admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
 from marketing.models import Keyword
+from pytz import UTC
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
@@ -354,6 +354,54 @@ def remove_interest(request, bounty_id):
     })
 
 
+@csrf_exempt
+@require_POST
+def extend_expiration(request, bounty_id):
+    """Unclaim work from the Bounty.
+
+    Can only be called by someone who has started work
+
+    :request method: POST
+
+    post_id (int): ID of the Bounty.
+
+    Returns:
+        dict: The success key with a boolean value and accompanying error.
+
+    """
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+            status=401)
+
+    try:
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except Bounty.DoesNotExist:
+        return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
+                            status=401)
+
+    is_funder = bounty.is_funder(user.username.lower()) if user else False
+    if is_funder:
+        deadline = round(int(request.POST.get('deadline')) / 1000)
+        bounty.expires_date = timezone.make_aware(
+            timezone.datetime.fromtimestamp(deadline),
+            timezone=UTC)
+        bounty.save()
+        record_user_action(request.user, 'extend_expiration', bounty)
+        record_bounty_activity(bounty, request.user, 'extend_expiration')
+
+        return JsonResponse({
+            'success': True,
+            'msg': _("You've extended expiration of this issue."),
+        })
+
+    return JsonResponse({
+        'error': _("You must be funder to extend expiration"),
+    }, status=200)
+
+
 @require_POST
 @csrf_exempt
 def uninterested(request, bounty_id, profile_id):
@@ -380,7 +428,8 @@ def uninterested(request, bounty_id, profile_id):
                             status=401)
     is_funder = bounty.is_funder(request.user.username.lower())
     is_staff = request.user.is_staff
-    if not is_funder and not is_staff:
+    is_moderator = request.user.profile.is_moderator if hasattr(request.user, 'profile') else False
+    if not is_funder and not is_staff and not is_moderator:
         return JsonResponse(
             {'error': 'Only bounty funders are allowed to remove users!'},
             status=401)
@@ -392,7 +441,7 @@ def uninterested(request, bounty_id, profile_id):
         maybe_market_to_slack(bounty, 'stop_work')
         maybe_market_to_user_slack(bounty, 'stop_work')
         maybe_market_to_user_discord(bounty, 'stop_work')
-        if is_staff:
+        if is_staff or is_moderator:
             event_name = "bounty_removed_slashed_by_staff" if slashed else "bounty_removed_by_staff"
         else:
             event_name = "bounty_removed_by_funder"
@@ -449,11 +498,13 @@ def onboard(request, flow):
             steps = steps.split(',')
 
     if (steps and 'github' not in steps) or 'github' not in onboard_steps:
-        if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile'):
+        if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
+            request.user, 'profile', None
+        ):
             login_redirect = redirect('/login/github?next=' + request.get_full_path())
             return login_redirect
 
-    if request.GET.get('eth_address') and request.user.is_authenticated and getattr(request.user, 'profile'):
+    if request.GET.get('eth_address') and request.user.is_authenticated and getattr(request.user, 'profile', None):
         profile = request.user.profile
         eth_address = request.GET.get('eth_address')
         profile.preferred_payout_address = eth_address
@@ -476,7 +527,7 @@ def dashboard(request):
         'title': _('Issue Explorer'),
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
-    return TemplateResponse(request, 'dashboard.html', params)
+    return TemplateResponse(request, 'dashboard/index.html', params)
 
 @staff_member_required
 def explorer_organzations(request, handle):
@@ -754,32 +805,34 @@ def cancel_bounty(request):
 def helper_handle_admin_override_and_hide(request, bounty):
     admin_override_and_hide = request.GET.get('admin_override_and_hide', False)
     if admin_override_and_hide:
-        is_staff = request.user.is_staff
-        if is_staff:
+        is_moderator = request.user.profile.is_moderator if hasattr(request.user, 'profile') else False
+        if getattr(request.user, 'profile', None) and is_moderator or request.user.is_staff:
             bounty.admin_override_and_hide = True
             bounty.save()
-            messages.success(request, _(f'Bounty is now hidden'))
+            messages.success(request, _('Bounty is now hidden'))
         else:
-            messages.warning(request, _('Only the funder of this bounty may do this.'))
+            messages.warning(request, _('Only moderators may do this.'))
 
 
 def helper_handle_admin_contact_funder(request, bounty):
     admin_contact_funder_txt = request.GET.get('admin_contact_funder', False)
     if admin_contact_funder_txt:
         is_staff = request.user.is_staff
-        if is_staff:
+        is_moderator = request.user.profile.is_moderator if hasattr(request.user, 'profile') else False
+        if is_staff or is_moderator:
             # contact funder
             admin_contact_funder(bounty, admin_contact_funder_txt, request.user)
             messages.success(request, _(f'Bounty message has been sent'))
         else:
-            messages.warning(request, _('Only the funder of this bounty may do this.'))
+            messages.warning(request, _('Only moderators or the funder of this bounty may do this.'))
 
 
 def helper_handle_mark_as_remarket_ready(request, bounty):
     admin_mark_as_remarket_ready = request.GET.get('admin_toggle_as_remarket_ready', False)
     if admin_mark_as_remarket_ready:
         is_staff = request.user.is_staff
-        if is_staff:
+        is_moderator = request.user.profile.is_moderator if hasattr(request.user, 'profile') else False
+        if is_staff or is_moderator:
             bounty.admin_mark_as_remarket_ready = not bounty.admin_mark_as_remarket_ready
             bounty.save()
             if bounty.admin_mark_as_remarket_ready:
@@ -787,19 +840,20 @@ def helper_handle_mark_as_remarket_ready(request, bounty):
             else:
                 messages.success(request, _(f'Bounty is now NOT remarket ready'))
         else:
-            messages.warning(request, _('Only the funder of this bounty may do this.'))
+            messages.warning(request, _('Only moderators or the funder of this bounty may do this.'))
 
 
 def helper_handle_suspend_auto_approval(request, bounty):
     suspend_auto_approval = request.GET.get('suspend_auto_approval', False)
     if suspend_auto_approval:
         is_staff = request.user.is_staff
-        if is_staff:
+        is_moderator = request.user.profile.is_moderator if hasattr(request.user, 'profile') else False
+        if is_staff or is_moderator:
             bounty.admin_override_suspend_auto_approval = True
             bounty.save()
             messages.success(request, _(f'Bounty auto approvals are now suspended'))
         else:
-            messages.warning(request, _('Only the funder of this bounty may do this.'))
+            messages.warning(request, _('Only moderators or the funder of this bounty may do this.'))
 
 
 def helper_handle_override_status(request, bounty):
@@ -818,7 +872,7 @@ def helper_handle_override_status(request, bounty):
                 bounty.save()
                 messages.success(request, _(f'Status updated to "{admin_override_satatus}" '))
         else:
-            messages.warning(request, _('Only the funder of this bounty may do this.'))
+            messages.warning(request, _('Only staff or the funder of this bounty may do this.'))
 
 
 def helper_handle_snooze(request, bounty):
@@ -826,12 +880,13 @@ def helper_handle_snooze(request, bounty):
     if snooze_days:
         is_funder = bounty.is_funder(request.user.username.lower())
         is_staff = request.user.is_staff
-        if is_funder or is_staff:
+        is_moderator = request.user.profile.is_moderator if hasattr(request.user, 'profile') else False
+        if is_funder or is_staff or is_moderator:
             bounty.snooze_warnings_for_days = snooze_days
             bounty.save()
             messages.success(request, _(f'Warning messages have been snoozed for {snooze_days} days'))
         else:
-            messages.warning(request, _('Only the funder of this bounty may do this.'))
+            messages.warning(request, _('Only moderators or the funder of this bounty may do this.'))
 
 
 def helper_handle_approvals(request, bounty):
@@ -923,6 +978,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         'github_auth_url': get_auth_url(request.path),
         "newsletter_headline": _("Be the first to know about new funded issues."),
         'is_staff': request.user.is_staff,
+        'is_moderator': request.user.profile.is_moderator if hasattr(request.user, 'profile') else False,
     }
     if issue_url:
         try:
@@ -1071,7 +1127,7 @@ def profile(request, handle):
                 },
             },
         }
-        return TemplateResponse(request, 'profiles/profile.html', params)
+        return TemplateResponse(request, 'profiles/profile.html', params, status=404)
 
     params = profile.to_dict()
 
@@ -1112,6 +1168,22 @@ def get_quickstart_video(request):
         'title': _('Quickstart Video'),
     }
     return TemplateResponse(request, 'quickstart_video.html', context)
+
+
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def extend_issue_deadline(request):
+    """Show quickstart video."""
+    bounty = Bounty.objects.get(pk=request.GET.get("pk"))
+    print(bounty)
+    context = {
+        'active': 'extend_issue_deadline',
+        'title': _('Extend Expiration'),
+        'bounty': bounty,
+        'user_logged_in': request.user.is_authenticated,
+        'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
+    }
+    return TemplateResponse(request, 'extend_issue_deadline.html', context)
 
 
 @require_POST
@@ -1181,7 +1253,10 @@ def sync_web3(request):
 # LEGAL
 
 def terms(request):
-    return TemplateResponse(request, 'legal/terms.txt', {})
+    context = {
+        'title': _('Terms of Use'),
+    }
+    return TemplateResponse(request, 'legal/terms.html', context)
 
 
 def privacy(request):

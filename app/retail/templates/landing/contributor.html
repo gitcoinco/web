@@ -40,6 +40,11 @@
         {% include 'landing/contributor/hero.html' %}
       </div>
 
+      <div class="container-fluid p-5 benefits_container">
+        {% include 'landing/contributor/benefits.html' %}
+      </div>
+
+
       {% if tech_stack %}
         <div class="container-fluid p-5 open-bounties">
           {% include 'landing/contributor/explorer.html' %}
@@ -51,10 +56,6 @@
           {% include 'landing/contributor/activity.html' %}
         </div>
       {% endif %}
-
-      <div class="container-fluid p-5 benefits_container">
-        {% include 'landing/contributor/benefits.html' %}
-      </div>
 
       <div class="container-fluid pb-5 landing__newsletter">
         {% include 'shared/newsletter.html' %}
@@ -81,7 +82,7 @@
         {% include "shared/testimonials.html" %}
       </div>
 
-      {% include 'landing/gitcoiners.html' %}
+      {% include 'landing/contributor/gitcoiners.html' %}
 
       <div class="container-fluid py-5 px-0 contributors-cta">
         <div class="row mb-4 align-items-center">
@@ -105,7 +106,6 @@
       </div>
     </div>
     {% include 'shared/footer_scripts.html' with slim=1 %}
-    {% include 'shared/rollbar.html' %}
   </body>
   {% if tech_stack %}
     <script>

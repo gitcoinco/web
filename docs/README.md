@@ -134,7 +134,7 @@ This is the high level flow of a bounty on Gitcoin:
 Chain of Custody
 
 1. Bounty Funder's Wallet
-2. [StandardBounties Smart Contract](https://github.com/Bounties-Network/StandardBounties)
+2. [StandardBounties Smart Contract](https://github.com/Bounties-Network/StandardBounties) deployed at [0x2af47a65da8cd66729b4209c22017d6a5c2d2400](https://etherscan.io/address/0x2af47a65da8cd66729b4209c22017d6a5c2d2400#code)
 3. (Submission Made)
 4. (Submission Accepted)
 5. Recipient's Wallet 
@@ -144,6 +144,8 @@ Anywhere between 2 and 4 above, Funder may withdraw their funds via 'Cancel Boun
 We may introduce Arbitration [via Delphi](http://delphi.network/) at some point in the future.  Until then, we are lucky that Github users are very protective of their reputation, and therefore very kind to each other, and disputes have not generally arisen.
 
 ### of a Tip
+
+Note: Crowdfunded bounties + bulk payouts are secured by Tips (at least until Standard Bounties 2.0 is released).
 
 This is the high level flow of a bounty on Gitcoin:
 

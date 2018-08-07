@@ -1,3 +1,7 @@
+.container{
+  min-height: 150px;
+}
+
 .profile-header > .container {
   padding-top: 3.5rem;
   color: #fff;

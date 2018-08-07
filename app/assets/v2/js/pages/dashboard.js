@@ -1,18 +1,11 @@
 /* eslint-disable no-loop-func */
-// helper functions
-var technologies = [
-  '.NET', 'ASP .NET', 'Angular', 'Backbone', 'Bootstrap', 'C', 'C#', 'C++', 'CSS', 'CSS3',
-  'CoffeeScript', 'Dart', 'Django', 'Drupal', 'DynamoDB', 'ElasticSearch', 'Ember', 'Erlang', 'Express', 'Go', 'Groovy',
-  'Grunt', 'HTML', 'Hadoop', 'Jasmine', 'Java', 'JavaScript', 'Jekyll', 'Knockout', 'LaTeX', 'Mocha', 'MongoDB',
-  'MySQL', 'NoSQL', 'Node.js', 'Objective-C', 'Oracle', 'PHP', 'Perl', 'Polymer', 'Postgres', 'Python', 'R', 'Rails',
-  'React', 'Redis', 'Redux', 'Ruby', 'SASS', 'Scala', 'Sqlite', 'Swift', 'TypeScript', 'Websockets', 'WordPress', 'jQuery'
-];
 
 var sidebar_keys = [
   'experience_level',
   'project_length',
   'bounty_type',
   'bounty_filter',
+  'moderation_filter',
   'network',
   'idx_status',
   'tech_stack',
@@ -136,29 +129,14 @@ var toggleAny = function(event) {
 };
 
 var addTechStackKeywordFilters = function(value) {
-  var isTechStack = false;
-
-  technologies.forEach(function(v, k) {
-    if (v.toLowerCase() === value) {
-      isTechStack = true;
-
-      $('.filter-tags').append('<a class="filter-tag tech_stack"><span>' + value + '</span>' +
-        '<i class="fas fa-times" onclick="removeFilter(\'tech_stack\', \'' + value + '\')"></i></a>');
-
-      $('input[name="tech_stack"][value="' + value + '"]').prop('checked', true);
-    }
-  });
-
-  if (!isTechStack) {
-    if (localStorage['keywords']) {
-      localStorage['keywords'] += ',' + value;
-    } else {
-      localStorage['keywords'] += value;
-    }
-
-    $('.filter-tags').append('<a class="filter-tag keywords"><span>' + value + '</span>' +
-      '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + value + '\')"></i></a>');
+  if (localStorage['keywords']) {
+    localStorage['keywords'] += ',' + value;
+  } else {
+    localStorage['keywords'] += value;
   }
+
+  $('.filter-tags').append('<a class="filter-tag keywords"><span>' + value + '</span>' +
+    '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + value + '\')"></i></a>');
 };
 
 var getFilters = function() {
@@ -462,7 +440,7 @@ var refreshBounties = function(event) {
       var project_type = ucwords(result['project_type']) + ' &bull; ';
 
       result['p'] = project_type + (result['experience_level'] ? result['experience_level'] + ' &bull; ' : '');
-      
+
       if (result['status'] === 'done')
         result['p'] += 'Done';
       if (result['fulfillment_accepted_on']) {
@@ -608,18 +586,6 @@ $(document).ready(function() {
   function extractLast(term) {
     return split(term).pop();
   }
-
-  technologies.forEach(function(v, k) {
-    $('#tech-stack-options').append(
-      '<div class="checkbox_container">' +
-        '<input name="tech_stack" id="' + v.toLowerCase() + '" type="checkbox" value="' + v.toLowerCase() + '" val-ui="' + v + '"/>' +
-        '<span class="checkbox"></span>' +
-        '<div class="filter-label">' +
-          '<label for="' + v.toLowerCase() + '">' + v + '</label>' +
-        '</div>' +
-      '</div>'
-    );
-  });
 
   // Handle search input clear
   $('.close-icon')

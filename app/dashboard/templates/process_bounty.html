@@ -63,7 +63,7 @@
                 </div>
                 <div class="w-100 mt-2">
                   <label for=tipPercent>{% trans "(Optional) Add a tip of:" %}</label>
-                  <input name='tipPercent' id="tipPercent" class="gc-round-text-input" style="width: 50px;" type="number" placeholder="" value="0" min="0" /> % worth <span id="tipEstimate">0</span> {{bounty.token_name}} 
+                  <input name='tipPercent' id="tipPercent" class="gc-round-text-input" style="width: 50px;" type="number" placeholder="" value="0" min="0" /> % worth <span id="tipEstimate">0</span> {{bounty.token_name}}
                 </div>
                 <div id="gas-section">
                   {% include 'shared/bounty_actions_hidden_vars.html' %}
@@ -79,7 +79,7 @@
                     </a>
                   </div>
                 <div class="w-100 mb-5 mt-1">
-                  <a class="float-right" href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp" target="_blank" rel="noopener noreferrer">{% trans "Having trouble? Click here." %}</a>
+                  <a target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.  Learn more here.</a>
                 </div>
               </div>
             </div>
@@ -90,7 +90,6 @@
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
   </body>
@@ -98,7 +97,7 @@
   <script>
     document.bounty_amount_whole = {{bounty.get_value_true}};
     document.bounty_amount_wei = {{bounty.value_in_token}};
-    document.token_address = {{bounty.token_address}};
+    document.token_address = '{{bounty.token_address}}';
   </script>
 
   <!-- jQuery -->
