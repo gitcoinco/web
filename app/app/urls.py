@@ -137,6 +137,7 @@ urlpatterns = [
     url(r'^tip/?', dashboard.tip_views.send_tip, name='tip'),
 
     # Legal
+    path('legal', dashboard.views.terms, name='terms'),
     path('legal/terms', dashboard.views.terms, name='terms'),
     path('legal/privacy', dashboard.views.privacy, name='privacy'),
     path('legal/cookie', dashboard.views.cookie, name='cookie'),
