@@ -56,7 +56,7 @@ class MarketPlaceListing(SuperModel):
 
 
 class Wallet(SuperModel):
-    address = models.CharField(max_length=255)
+    address = models.CharField(max_length=255, unique=True)
     profile = models.ForeignKey('dashboard.Profile', related_name='wallets', on_delete=models.SET_NULL, null=True)
 
 # class KudosToken(SuperModel):
