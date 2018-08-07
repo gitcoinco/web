@@ -36,14 +36,14 @@ var renderKudos = function(kudos){
 }
 
 
-$(document).ready(function() {
-  let address = web3.eth.coinbase;
-  console.log(address);
-  $.get('/api/v0.1/kudos?lister=' + address, function(results, status) {
-    console.log(status)
-    console.log(results)
-    let numKudos = results.length;
-    results.forEach(renderKudos)
-    // renderKudos(results)
-  })
-})
+// $(document).ready(function() {
+//   let address = web3.eth.coinbase;
+//   console.log(address);
+//   $.get('/api/v0.1/kudos?lister=' + address, function(results, status) {
+//     console.log(status)
+//     console.log(results)
+//     let numKudos = results.length;
+//     results.forEach(renderKudos)
+//     // renderKudos(results)
+//   })
+// })

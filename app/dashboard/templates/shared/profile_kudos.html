@@ -16,11 +16,7 @@
 {% endcomment %}
 {% load i18n staticfiles %}
 
-<!-- <div class="container">
-  <h5>Kudos Wallet</h5>
-  <p id=current-wallet>0x0</p>
-</div>
-
+{% if user.is_authenticated and request.path == '/profile/' %}
 <div class="container">
   <h3>Wallets</h3>
   <ul>
@@ -28,7 +24,18 @@
     <li>{{ address }}</li>
     {% endfor %}
   </ul>
-</div> -->
+</div>
+<div class="container">
+  <form action="/profile/" method="post">
+     {% csrf_token %}
+    <div class="form-group">
+      <label for="addWallet">Wallet Address</label>
+      <input type="text" class="form-control form-control-lg" name="address" id="input-wallet" placeholder="{% trans 'Enter Wallet Address' %}">
+    </div>
+    <button type="submit" class="btn btn-primary">Add Wallet</button>
+  </form>
+</div>
+{% endif %}
 
 <ul class="nav nav-tabs my-5" id="myTab" role="tablist">
   <li class="nav-item">
@@ -43,9 +50,25 @@
 </ul>
 
 <div class="tab-content" id="myTabContent">
+
   <div class="tab-pane fade show active" id="mykudos" role="tabpanel" aria-labelledby="home-tab">
     <div class="row justify-content-center" id='my-kudos'>
-    </div> 
+      {% for kudo in kudos %}
+      <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+        <div class="kd-card kd-extended">
+          <a href="/kudos/{{ kudo.id }}" class="">
+            <img src="{% static kudo.image %}" alt="{{ kudo.name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
+          </a>
+          <div class="kd-content">
+            <div class="kd-title">{{ kudo.name }}</div>
+            {{ kudo.description }}
+            <a href="" class="d-block mb-1" data-truncatehash title="{{ kudo.lister}} ">{{ kudo.lister }}</a>
+            <div>Sent from <a href="">Bob7878</a></div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
   </div>
   
   <div class="tab-pane fade" id="sentkudos" role="tabpanel" aria-labelledby="sentkudos-tab">
@@ -69,6 +92,7 @@
       </div>
     </div>
   </div>
+
 </div>
 
 

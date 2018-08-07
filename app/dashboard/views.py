@@ -57,6 +57,7 @@ from .models import (
     Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip,
     Tool, ToolVote, UserAction,
 )
+from kudos.models import Wallet
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_github,
     maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_discord, maybe_market_to_user_slack,
@@ -1025,12 +1026,28 @@ def profile(request, handle):
         return TemplateResponse(request, 'profiles/profile.html', params)
 
     params = profile.to_dict()
-    # params['wallet_addresses'] = [x.address for x in profile.wallets.all()]
-    # params['kudos'] = MarketPlaceListing.objects.filter(lister__in=params['wallet_addresses'])
+    params['wallet_addresses'] = [x.address for x in profile.wallets.all()]
+    params['kudos'] = MarketPlaceListing.objects.filter(lister__in=params['wallet_addresses'])
+    logging.info(params['wallet_addresses'])
+    logging.info(params['kudos'])
     # logging.info(f'Found Kudos: {params["kudos"]}')
     # logging.info(f'Kudos name: {params["kudos"][0].name}')
     # logging.info(f'Profile data: {params}')
     # logging.info(f'Profile wallets: {profile.wallets.all()}')
+    if request.method == 'POST':
+        address = request.POST.get('address')
+        # handle = request.META.get('HTTP_REFERER').split['/'][-1]
+        # logging.info(request.path)
+        # logging.info(request.POST.dict())
+        logging.info(f'Address: {address}')
+        logging.info(f'Handle: {handle}')
+
+        # profile_id = Profile.objects.filter(handle__iexact=handle).first().id
+        # logging.info(f'profile_id: {profile_id}')
+        new_wallet = Wallet(address=address, profile_id=profile.id)
+        new_wallet.save()
+
+    # logging.info(params['profile'].wallets.all())
 
     return TemplateResponse(request, 'profiles/profile.html', params)
 
