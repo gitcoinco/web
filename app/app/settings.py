@@ -71,7 +71,6 @@ INSTALLED_APPS = [
     'autotranslate',
     'django_extensions',
     'easy_thumbnails',
-    'crispy_forms',
     'account',
     'raven.contrib.django.raven_compat',
     'app',
