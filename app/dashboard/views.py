@@ -46,6 +46,7 @@ from marketing.mails import (
     admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
 from marketing.models import Keyword
+from pytz import UTC
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
@@ -351,6 +352,54 @@ def remove_interest(request, bounty_id):
         'success': True,
         'msg': _("You've stopped working on this, thanks for letting us know."),
     })
+
+
+@csrf_exempt
+@require_POST
+def extend_expiration(request, bounty_id):
+    """Unclaim work from the Bounty.
+
+    Can only be called by someone who has started work
+
+    :request method: POST
+
+    post_id (int): ID of the Bounty.
+
+    Returns:
+        dict: The success key with a boolean value and accompanying error.
+
+    """
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+            status=401)
+
+    try:
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except Bounty.DoesNotExist:
+        return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
+                            status=401)
+
+    is_funder = bounty.is_funder(user.username.lower()) if user else False
+    if is_funder:
+        deadline = round(int(request.POST.get('deadline')) / 1000)
+        bounty.expires_date = timezone.make_aware(
+            timezone.datetime.fromtimestamp(deadline),
+            timezone=UTC)
+        bounty.save()
+        record_user_action(request.user, 'extend_expiration', bounty)
+        record_bounty_activity(bounty, request.user, 'extend_expiration')
+
+        return JsonResponse({
+            'success': True,
+            'msg': _("You've extended expiration of this issue."),
+        })
+
+    return JsonResponse({
+        'error': _("You must be funder to extend expiration"),
+    }, status=200)
 
 
 @require_POST
@@ -1072,6 +1121,22 @@ def get_quickstart_video(request):
         'title': _('Quickstart Video'),
     }
     return TemplateResponse(request, 'quickstart_video.html', context)
+
+
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def extend_issue_deadline(request):
+    """Show quickstart video."""
+    bounty = Bounty.objects.get(pk=request.GET.get("pk"))
+    print(bounty)
+    context = {
+        'active': 'extend_issue_deadline',
+        'title': _('Extend Expiration'),
+        'bounty': bounty,
+        'user_logged_in': request.user.is_authenticated,
+        'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
+    }
+    return TemplateResponse(request, 'extend_issue_deadline.html', context)
 
 
 @require_POST
