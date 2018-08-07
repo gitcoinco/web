@@ -112,9 +112,7 @@ urlpatterns = [
         name='issue_details_new2'
     ),
     re_path(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
-
     url(r'^issue/?', dashboard.views.bounty_details, name='bounty_details'),
-    url(r'^funding/details/?', dashboard.views.bounty_details, name='funding_details'),
 
     # Tips
     url(
