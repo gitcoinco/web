@@ -690,7 +690,7 @@ def fulfill_bounty(request):
         active='fulfill_bounty',
         title=_('Submit Work'),
     )
-    return TemplateResponse(request, 'fulfill_bounty.html', params)
+    return TemplateResponse(request, 'bounty/fulfill.html', params)
 
 
 def increase_bounty(request):
@@ -720,7 +720,7 @@ def increase_bounty(request):
 
     params['is_funder'] = json.dumps(is_funder)
 
-    return TemplateResponse(request, 'increase_bounty.html', params)
+    return TemplateResponse(request, 'bounty/increase.html', params)
 
 
 def cancel_bounty(request):
@@ -744,7 +744,7 @@ def cancel_bounty(request):
         active='kill_bounty',
         title=_('Cancel Bounty'),
     )
-    return TemplateResponse(request, 'kill_bounty.html', params)
+    return TemplateResponse(request, 'bounty/kill.html', params)
 
 
 def helper_handle_admin_override_and_hide(request, bounty):
@@ -959,7 +959,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
             print(e)
             logging.error(e)
 
-    return TemplateResponse(request, 'bounty_details.html', params)
+    return TemplateResponse(request, 'bounty/details.html', params)
 
 
 def quickstart(request):
@@ -1434,4 +1434,4 @@ def new_bounty(request):
         title=_('Create Funded Issue'),
         update=bounty_params,
     )
-    return TemplateResponse(request, 'submit_bounty.html', params)
+    return TemplateResponse(request, 'bounty/new.html', params)
