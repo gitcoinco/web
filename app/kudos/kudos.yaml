@@ -1,5 +1,5 @@
 - name: Hadoop
-  description: Bigger 
+  description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
@@ -110,6 +110,13 @@
   numClonesAllowed: 10
   tags: ipsum
   image: qa_ninja.svg
+- name: Ship Code
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: ship_code.svg
 - name: Durpal
   description: lorum
   rarity: 20
@@ -208,6 +215,13 @@
   numClonesAllowed: 10
   tags: ipsum
   image: data_savvy.svg
+- name: Idea Person
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: idea_person.svg
 - name: Nodejjs 2
   description: lorum
   rarity: 20
@@ -257,6 +271,13 @@
   numClonesAllowed: 10
   tags: ipsum
   image: release_early_and_often.svg
+- name: Grow Opensource
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: grow_opensource.svg
 - name: Mongodb
   description: lorum
   rarity: 20
@@ -411,6 +432,13 @@
   numClonesAllowed: 10
   tags: ipsum
   image: react.svg
+- name: Busines Smind
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: busines_smind.svg
 - name: Html
   description: lorum
   rarity: 20
