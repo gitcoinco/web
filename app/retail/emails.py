@@ -232,6 +232,7 @@ def render_funder_stale(github_username, days=30, time_as_str='about a month'):
         str: The rendered response as a string.
 
     """
+    github_username = f"@{github_username}" if github_username else "there"
     response_txt = f"""
 Hi {github_username},
 
