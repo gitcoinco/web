@@ -66,8 +66,9 @@ from .models import (
     Tool, ToolVote, UserAction,
 )
 from .notifications import (
-    maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_github,
-    maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_discord, maybe_market_to_user_slack,
+    maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
+    maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_discord,
+    maybe_market_to_user_slack,
 )
 from .utils import (
     get_bounty, get_bounty_id, get_context, has_tx_mined, record_user_action_on_interest, web3_process_bounty
@@ -1801,6 +1802,7 @@ def redeem_coin(request, shortcode):
     except CoinRedemption.DoesNotExist:
         raise Http404
 
+
 def new_bounty(request):
     """Create a new bounty."""
     from .utils import clean_bounty_url
@@ -1818,3 +1820,89 @@ def new_bounty(request):
         update=bounty_params,
     )
     return TemplateResponse(request, 'bounty/new.html', params)
+
+
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def change_bounty(request, bounty_id):
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
+        if request.body:
+            return JsonResponse(
+                {'error': _('You must be authenticated via github to use this feature!')},
+                status=401)
+        else:
+            return redirect('/login/github?next=' + request.get_full_path())
+
+    try:
+        bounty_id = int(bounty_id)
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except:
+        if request.body:
+            return JsonResponse({'error': _('Bounty doesn\'t exist!')}, status=404)
+        else:
+            raise Http404
+
+    keys = ['experience_level', 'project_length', 'bounty_type', 'permission_type', 'project_type']
+
+    if request.body:
+        can_change = (bounty.status in Bounty.OPEN_STATUSES) or \
+                (bounty.can_submit_after_expiration_date and bounty.status is 'expired')
+        if not can_change:
+            return JsonResponse({
+                'error': _('The bounty can not be changed anymore.')
+            }, status=405)
+
+        is_funder = bounty.is_funder(user.username.lower()) if user else False
+        is_staff = request.user.is_staff if user else False
+        if not is_funder and not is_staff:
+            return JsonResponse({
+                'error': _('You are not authorized to change the bounty.')
+            }, status=401)
+
+        try:
+            params = json.loads(request.body)
+        except Exception:
+            return JsonResponse({'error': 'Invalid JSON.'}, status=405)
+
+        bounty_changed = False
+        for key in keys:
+            value = params.get(key, '')
+            old_value = getattr(bounty, key)
+            if value != old_value:
+                setattr(bounty, key, value)
+                bounty_changed = True
+
+        if not bounty_changed:
+            return JsonResponse({
+                'success': True,
+                'msg': _('Bounty details are unchanged.'),
+                'url': bounty.absolute_url,
+            })
+
+        bounty.save()
+        record_bounty_activity(bounty, user, 'bounty_changed')
+        record_user_action(user, 'bounty_changed', bounty)
+
+        maybe_market_to_email(bounty, 'bounty_changed')
+        maybe_market_to_slack(bounty, 'bounty_changed')
+        maybe_market_to_user_slack(bounty, 'bounty_changed')
+        maybe_market_to_user_discord(bounty, 'bounty_changed')
+
+        return JsonResponse({
+            'success': True,
+            'msg': _('You successfully changed bounty details.'),
+            'url': bounty.absolute_url,
+        })
+
+    result = {}
+    for key in keys:
+        result[key] = getattr(bounty, key)
+
+    params = {
+        'title': _('Change Bounty Details'),
+        'pk': bounty.pk,
+        'result': result
+    }
+    return TemplateResponse(request, 'bounty/change.html', params)
