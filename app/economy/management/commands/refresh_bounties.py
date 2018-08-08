@@ -70,9 +70,7 @@ class Command(BaseCommand):
                     print('stopgap fixed old_bounty', old_bounty.pk)
 
                 if fetch_remote:
-                    bounty.fetch_issue_item('title')
-                    bounty.fetch_issue_item()
-                    bounty.fetch_issue_comments()
+                    bounty.fetch_issue_and_update()
                     print('1/ refreshed', bounty.pk)
 
             bounty.save()

@@ -407,9 +407,8 @@ class Bounty(SuperModel):
     def title_or_desc(self):
         """Return the title of the issue."""
         if not self.title:
-            title = self.fetch_issue_item('title') or self.github_url
-            return title
-        return self.title
+            self.fetch_issue_and_update()
+        return self.title or self.github_url
 
     @property
     def issue_description_text(self):
@@ -711,65 +710,43 @@ class Bounty(SuperModel):
         url_path = urlparse(self.github_url).path
         return 'https://api.github.com/repos' + url_path
 
-    def fetch_issue_item(self, item_type='body'):
-        """Fetch the item type of an issue.
-
-        Args:
-            type (str): The github API response body item to be fetched.
+    def fetch_issue_and_update(self):
+        """Fetch the github issue and update the bounty.
 
         Returns:
-            str: The item content.
+            bool: True on success.
 
         """
-        github_url = self.get_github_api_url()
-        if github_url:
-            issue_description = requests.get(github_url, auth=_AUTH)
-            if issue_description.status_code == 200:
-                item = issue_description.json().get(item_type, '')
-                if item_type == 'body' and item:
-                    self.issue_description = item
-                elif item_type == 'title' and item:
-                    self.title = item
-                self.save()
-                return item
-        return ''
-
-    def fetch_issue_comments(self, save=True):
-        """Fetch issue comments for the associated Github issue.
-
-        Args:
-            save (bool): Whether or not to save the Bounty after fetching.
-
-        Returns:
-            dict: The comments data dictionary provided by Github.
-
-        """
-        if self.github_url.lower()[:19] != 'https://github.com/':
-            return []
-
-        parsed_url = urlsplit(self.github_url)
         try:
-            github_user, github_repo, _, github_issue = parsed_url.path.split('/')[1:5]
-        except ValueError:
-            logger.info(f'Invalid github url for Bounty: {self.pk} -- {self.github_url}')
-            return []
-        comments = get_issue_comments(github_user, github_repo, github_issue)
-        if isinstance(comments, dict) and comments.get('message', '') == 'Not Found':
-            logger.info(f'Bounty {self.pk} contains an invalid github url {self.github_url}')
-            return []
-        comment_count = 0
-        for comment in comments:
-            if (isinstance(comment, dict) and comment.get('user', {}).get('login', '') not in settings.IGNORE_COMMENTS_FROM):
-                comment_count += 1
-        self.github_comments = comment_count
-        if comment_count:
-            comment_times = [datetime.strptime(comment['created_at'], '%Y-%m-%dT%H:%M:%SZ') for comment in comments]
-            max_comment_time = max(comment_times)
-            max_comment_time = max_comment_time.replace(tzinfo=pytz.utc)
-            self.last_comment_date = max_comment_time
-        if save:
-            self.save()
-        return comments
+            _org_name = org_name(self.github_url)
+            _repo_name = repo_name(self.github_url)
+            _issue_num = issue_number(self.github_url)
+            gh_issue_details = get_gh_issue_details(_org_name, _repo_name, int(_issue_num))
+            if not gh_issue_details:
+                return False
+
+            self.github_issue_details = gh_issue_details
+        except Exception as e:
+            logger.info(e)
+            return False
+
+        items = self.github_issue_details
+        item = items.get('body', '')
+        if not self.issue_description and item:
+            self.issue_description = item
+        item = items.get('title', '')
+        if not self.title and item:
+            self.title = item
+        item = items.get('comments', 0)
+        if item:
+            self.github_comments = item
+        item = items.get('updated_at', '')
+        if item:
+            last_update = datetime.strptime(item, '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=pytz.utc)
+            self.last_comment_date = last_update
+
+        self.save()
+        return True
 
     @property
     def next_bounty(self):
@@ -856,18 +833,10 @@ class Bounty(SuperModel):
     def github_issue_state(self):
         current_github_state = self.github_issue_details.get('state') if self.github_issue_details else None
         if not current_github_state:
-            try:
-                _org_name = org_name(self.github_url)
-                _repo_name = repo_name(self.github_url)
-                _issue_num = issue_number(self.github_url)
-                gh_issue_details = get_gh_issue_details(_org_name, _repo_name, int(_issue_num))
-                if gh_issue_details:
-                    self.github_issue_details = gh_issue_details
-                    self.save()
-                    current_github_state = self.github_issue_details.get('state', 'open')
-            except Exception as e:
-                logger.info(e)
+            if not self.fetch_issue_and_update():
                 return 'open'
+            current_github_state = self.github_issue_details.get('state')
+
         return current_github_state
 
     @property
@@ -1569,7 +1538,6 @@ class Profile(SuperModel):
 
     @property
     def github_created_on(self):
-        from datetime import datetime
         created_on = datetime.strptime(self.data['created_at'], '%Y-%m-%dT%H:%M:%SZ')
         return created_on.replace(tzinfo=pytz.UTC)
 
