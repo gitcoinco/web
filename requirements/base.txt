@@ -64,3 +64,5 @@ ecdsa
 pysha3
 pygithub==1.40
 raven
+django-cachalot
+django-redis

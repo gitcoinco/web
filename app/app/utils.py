@@ -2,6 +2,7 @@ import email
 import imaplib
 import logging
 import time
+from hashlib import sha1
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -13,6 +14,7 @@ from django.utils.translation import LANGUAGE_SESSION_KEY
 
 import geoip2.database
 import requests
+# from cachelot.utils import check_parameter_types
 from dashboard.models import Profile
 from geoip2.errors import AddressNotFoundError
 from git.utils import _AUTH, HEADERS, get_user
@@ -35,7 +37,43 @@ class NotEqual(Lookup):
         lhs, lhs_params = self.process_lhs(compiler, connection)
         rhs, rhs_params = self.process_rhs(compiler, connection)
         params = lhs_params + rhs_params
-        return f'%s <> %s' % (lhs, rhs), params
+        return f'{lhs} <> {rhs}', params
+
+
+def get_query_cache_key(compiler):
+    """Generate a cache key from a SQLCompiler.
+
+    This cache key is specific to the SQL query and its context
+    (which database is used).  The same query in the same context
+    (= the same database) must generate the same cache key.
+
+    Args:
+        compiler (django.db.models.sql.compiler.SQLCompiler): A SQLCompiler
+            that will generate the SQL query.
+
+    Returns:
+        int: The cache key.
+
+    """
+    sql, params = compiler.as_sql()
+    check_parameter_types(params)
+    cache_key = f'{compiler.using}:{sql}:{[str(p) for p in params]}'
+    return sha1(cache_key.encode('utf-8')).hexdigest()
+
+
+def get_table_cache_key(db_alias, table):
+    """Generates a cache key from a SQL table.
+
+    Args:
+        db_alias (str): The alias of the used database.
+        table (str): The name of the SQL table.
+
+    Returns:
+        int: The cache key.
+
+    """
+    cache_key = f'{db_alias}:{table}'
+    return sha1(cache_key.encode('utf-8')).hexdigest()
 
 
 def get_short_url(url):

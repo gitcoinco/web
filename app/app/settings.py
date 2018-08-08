@@ -69,6 +69,7 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.sites',
     'autotranslate',
+    'cachalot',
     'django_extensions',
     'easy_thumbnails',
     'raven.contrib.django.raven_compat',
@@ -271,7 +272,58 @@ THUMBNAIL_ALIASES = {
     }
 }
 
-CACHES = {'default': env.cache()}
+CACHEOPS_DEGRADE_ON_FAILURE = env.bool('CACHEOPS_DEGRADE_ON_FAILURE', default=True)
+CACHEOPS_DEFAULTS = {
+    'timeout': 60 * 60
+}
+
+# 'all' is an alias for {'get', 'fetch', 'count', 'aggregate', 'exists'}
+CACHEOPS = {
+    '*.*': {
+        'timeout': 60 * 60,
+    },
+    'auth.user': {
+        'ops': 'get',
+        'timeout': 60 * 15,
+    },
+    'auth.group': {
+        'ops': 'get',
+        'timeout': 60 * 15,
+    },
+    'auth.*': {
+        'ops': ('fetch', 'get'),
+        'timeout': 60 * 60,
+    },
+    'auth.permission': {
+        'ops': 'all',
+        'timeout': 60 * 15,
+    },
+    'dashboard.bounty': {
+        'ops': ('get', 'fetch', 'aggregate'),
+        'timeout': 60 * 5,
+    },
+    'dashboard.tip': {
+        'ops': ('get', 'fetch', 'aggregate'),
+        'timeout': 60 * 5,
+    },
+    'dashboard.profile': {
+        'ops': ('get', 'fetch', 'aggregate'),
+        'timeout': 60 * 5,
+    },
+    'dashboard.*': {
+        'ops': ('fetch', 'get'),
+        'timeout': 60 * 30,
+    },
+    'economy.*': {
+        'ops': 'all',
+        'timeout': 60 * 60,
+    },
+}
+
+CACHES = {
+    'default': env.cache('REDIS_URL'),
+    'legacy': env.cache('CACHE_URL'),
+}
 
 # HTTPS Handling
 SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=True)
