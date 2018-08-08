@@ -341,7 +341,7 @@ def get_bounty_id(issue_url, network):
 
 def get_bounty_id_from_db(issue_url, network):
     issue_url = normalize_url(issue_url)
-    bounties = Bounty.objects.filter(github_url=issue_url, network=network, web3_type='bounties_network')
+    bounties = Bounty.objects.filter(github_url=issue_url, network=network, web3_type='bounties_network').order_by('-standard_bounties_id')
     if not bounties.exists():
         return None
     return bounties.first().standard_bounties_id
