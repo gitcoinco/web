@@ -484,7 +484,6 @@ def process_bounty_details(bounty_details):
     # what schema are we workign with?
     schema_name = meta.get('schemaName')
     schema_version = meta.get('schemaVersion', 'Unknown')
-
     if not schema_name or schema_name != 'gitcoinBounty':
         raise UnsupportedSchemaException(
             f'Unknown Schema: Unknown - Version: {schema_version}')
