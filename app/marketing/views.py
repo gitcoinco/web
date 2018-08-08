@@ -362,7 +362,7 @@ def slack_settings(request):
             create_user_action(user, ua_type, request, {'channel': channel, 'repos': repos})
 
     context = {
-        'repos': profile.get_slack_repos(join=True),
+        'repos': profile.get_slack_repos(join=True) if profile else [],
         'is_logged_in': is_logged_in,
         'nav': 'internal',
         'active': '/settings/slack',
