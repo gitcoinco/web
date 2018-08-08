@@ -15,7 +15,7 @@ from django.utils.translation import LANGUAGE_SESSION_KEY
 
 import geoip2.database
 import requests
-from cachelot.utils import check_parameter_types
+from cachalot.utils import check_parameter_types
 from dashboard.models import Profile
 from geoip2.errors import AddressNotFoundError
 from git.utils import _AUTH, HEADERS, get_user
