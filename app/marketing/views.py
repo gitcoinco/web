@@ -407,7 +407,7 @@ def discord_settings(request):
             create_user_action(user, ua_type, request, {'webhook_url': webhook_url, 'repos': repos})
 
     context = {
-        'repos': profile.get_discord_repos(join=True),
+        'repos': profile.get_discord_repos(join=True) if profile else [],
         'is_logged_in': is_logged_in,
         'nav': 'internal',
         'active': '/settings/discord',
