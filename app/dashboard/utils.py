@@ -21,6 +21,7 @@ import json
 import logging
 import subprocess
 import time
+from json.decoder import JSONDecodeError
 
 from django.conf import settings
 
@@ -223,6 +224,7 @@ def getBountyContract(network):
 def get_bounty(bounty_enum, network):
     if (settings.DEBUG or settings.ENV != 'prod') and network == 'mainnet':
         # This block will return {} if env isn't prod and the network is mainnet.
+        print("--*--")
         return {}
 
     standard_bounties = getBountyContract(network)
@@ -231,7 +233,6 @@ def get_bounty(bounty_enum, network):
         issuer, contract_deadline, fulfillmentAmount, paysTokens, bountyStage, balance = standard_bounties.functions.getBounty(bounty_enum).call()
     except BadFunctionCallOutput:
         raise BountyNotFoundException
-
     # pull from blockchain
     bountydata = standard_bounties.functions.getBountyData(bounty_enum).call()
     arbiter = standard_bounties.functions.getBountyArbiter(bounty_enum).call()
@@ -246,8 +247,12 @@ def get_bounty(bounty_enum, network):
 
         # pull from blockchain
         accepted, fulfiller, data = standard_bounties.functions.getFulfillment(bounty_enum, fulfill_enum).call()
-        data_str = ipfs_cat(data)
-        data = json.loads(data_str)
+        try:
+            data_str = ipfs_cat(data)
+            data = json.loads(data_str)
+        except JSONDecodeError:
+            logger.error(f'Could not get {data} from ipfs')
+            continue
 
         # validation
         if 'Failed to get block' in str(data_str):
@@ -296,6 +301,7 @@ def web3_process_bounty(bounty_data):
     # Check whether or not the bounty data payload is for mainnet and env is prod or other network and not mainnet.
     if not bounty_data or (settings.DEBUG or settings.ENV != 'prod') and bounty_data.get('network') == 'mainnet':
         # This block will return None if running in debug/non-prod env and the network is mainnet.
+        print(f"--*--")
         return None
 
     did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
