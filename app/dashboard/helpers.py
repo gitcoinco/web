@@ -36,7 +36,7 @@ from dashboard.notifications import (
 )
 from dashboard.tokens import addr_to_token
 from economy.utils import convert_amount
-from git.utils import get_gh_issue_details, get_url_dict
+from git.utils import get_gh_issue_details, get_url_dict, issue_number, org_name, repo_name
 from jsondiff import diff
 from pytz import UTC
 from ratelimit.decorators import ratelimit
@@ -420,9 +420,13 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 admin_override_and_hide=latest_old_bounty.admin_override_and_hide if latest_old_bounty else 0,
                 admin_override_suspend_auto_approval=latest_old_bounty.admin_override_suspend_auto_approval if latest_old_bounty else 0,
                 admin_mark_as_remarket_ready=latest_old_bounty.admin_mark_as_remarket_ready if latest_old_bounty else 0,
-
             )
             new_bounty.fetch_issue_item()
+            try:
+                issue_kwargs = get_url_dict(new_bounty.github_url)
+                new_bounty.github_issue_details = get_gh_issue_details(**issue_kwargs)
+            except Exception as e:
+                logger.error(e)
 
             # migrate data objects from old bounty
             if latest_old_bounty:
@@ -500,16 +504,14 @@ def process_bounty_details(bounty_details):
 
 
 def get_bounty_data_for_activity(bounty):
-    """Get data from bounty to be saved in activity records
+    """Get data from bounty to be saved in activity records.
 
     Args:
-        bounty (dashboard.models.Bounty): Bounty
-
-    Raises:
-        None
+        bounty (dashboard.models.Bounty): The Bounty object.
 
     Returns:
-        object: object filled in with bounty data
+        dict: The Bounty data represented as a dictionary.
+
     """
     data = {
         'id': bounty.pk,
@@ -525,16 +527,14 @@ def get_bounty_data_for_activity(bounty):
 
 
 def get_fulfillment_data_for_activity(fulfillment):
-    """Get data from fulfillment to be saved in activity records
+    """Get data from fulfillment to be saved in activity records.
 
     Args:
-        fulfillment (dashboard.models.BountyFulfillment): Fulfillment
-
-    Raises:
-        None
+        fulfillment (dashboard.models.BountyFulfillment): The BountyFulfillment.
 
     Returns:
-        object: object filled in with fulfillment data
+        dict: The BountyFulfillment data represented as a dictionary.
+
     """
     data = {
         'id': fulfillment.pk,
@@ -561,10 +561,11 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
         new_bounty (dashboard.models.Bounty): The new Bounty object.
 
     Raises:
-        None
+        Exception: Log all exceptions that occur during fulfillment checks.
 
     Returns:
-        None
+        dashboard.Activity: The Activity object if user_profile is present or None.
+
     """
     user_profile = None
     fulfillment = _fulfillment
@@ -580,7 +581,6 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
                 user_profile = Profile.objects.filter(handle__iexact=fulfillment.fulfiller_github_username).first()
                 if not user_profile:
                     user_profile = sync_profile(fulfillment.fulfiller_github_username)
-
     except Exception as e:
         logging.error(f'{e} during record_bounty_activity for {new_bounty}')
 
@@ -594,21 +594,20 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
                 'old_bounty': get_bounty_data_for_activity(old_bounty) if old_bounty else None,
                 'fulfillment': get_fulfillment_data_for_activity(fulfillment) if fulfillment else None,
             })
+    return None
 
 
 def record_user_action(event_name, old_bounty, new_bounty):
-    """Records a user action
+    """Record a user action.
 
     Args:
-        event_name (string): the event
-        old_bounty (Bounty): the old_bounty
-        new_bounty (Bounty): the new_bounty
+        event_name (str): The event to be recorded.
+        old_bounty (Bounty): The old Bounty object.
+        new_bounty (Bounty): The new Bounty object.
 
     Raises:
-        None
+        Exception: Log all exceptions that occur during fulfillment checks.
 
-    Returns:
-        None
     """
     user_profile = None
     fulfillment = None

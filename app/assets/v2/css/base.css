@@ -18,8 +18,11 @@ span {
 }
 
 .nav_avatar {
+  width: 40px;
+  height: 40px;
   cursor: pointer;
   border-radius: 50%;
+  background-size: cover;
 }
 
 #navbarDropdown {
@@ -949,10 +952,18 @@ input.is-invalid {
   width: 25em;
 }
 
+.tooltip-sm,
 .tooltip-xs {
-  font-size: 10px;
   padding: 2px;
   width: auto;
+}
+
+.tooltip-sm {
+  font-size: 0.75rem;
+}
+
+.tooltip-xs {
+  font-size: 10px;
 }
 
 .ui-widget-shadow,
@@ -1492,7 +1503,7 @@ input.is-invalid {
     display: none;
   }
 
-  .search_bar span {
+  .search_bar .save_search {
     display: none;
   }
 

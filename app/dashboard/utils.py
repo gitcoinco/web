@@ -26,9 +26,8 @@ from django.conf import settings
 
 import ipfsapi
 import requests
-import rollbar
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
-from dashboard.models import Bounty, UserAction
+from dashboard.models import Activity, Bounty, UserAction
 from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
@@ -124,8 +123,6 @@ def create_user_action(user, action_type, request=None, metadata=None):
         return True
     except Exception as e:
         logger.error(f'Failure in UserAction.create_action - ({e})')
-        rollbar.report_message(
-            f'Failure in UserAction.create_action - ({e})', 'error', extra_data=kwargs)
         return False
 
 
@@ -429,14 +426,21 @@ def get_ordinal_repr(num):
 
 
 def record_user_action_on_interest(interest, event_name, last_heard_from_user_days):
-    UserAction.objects.create(
-        profile=interest.profile,
-        action=event_name,
-        metadata={
+    """Record User actions and activity for the associated Interest."""
+    payload = {
+        'profile': interest.profile,
+        'metadata': {
             'bounties': list(interest.bounty_set.values_list('pk', flat=True)),
             'interest_pk': interest.pk,
             'last_heard_from_user_days': last_heard_from_user_days,
-        })
+        }
+    }
+    UserAction.objects.create(action=event_name, **payload)
+
+    if event_name in ['bounty_abandonment_escalation_to_mods', 'bounty_abandonment_warning']:
+        payload['needs_review'] = True
+
+    Activity.objects.create(activity_type=event_name, bounty=interest.bounty_set.last(), **payload)
 
 
 def get_context(ref_object=None, github_username='', user=None, confirm_time_minutes_target=4,

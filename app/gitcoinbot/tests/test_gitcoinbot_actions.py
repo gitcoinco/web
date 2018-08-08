@@ -52,11 +52,11 @@ class GitcoinBotActionsTest(TestCase):
 
     def test_new_bounty_text(self):
         """Test that new_bounty_text returns the correct text."""
-        issue_link = 'https://github.com/test_owner/gitcoin/issues/1234'
+        issue_link = 'https://github.com/gitcoinco/web/issues/305'
         bounty_link = f'{settings.BASE_URL}funding/new?source={issue_link}&amount=3.3&tokenName=ETH'
         target_text = 'To create the bounty please [visit this link]' \
                       f'({bounty_link}).\n\n PS Make sure you\'re logged into Metamask!'
-        text = new_bounty_text('test_owner', 'gitcoin', '1234', '3.3 ETH')
+        text = new_bounty_text('gitcoinco', 'web', '305', '3.3 ETH')
         self.assertEqual(text, target_text)
 
     def test_parse_comment_amount(self):
@@ -98,24 +98,24 @@ class GitcoinBotActionsTest(TestCase):
 
     def test_new_tip_text(self):
         """Test Gitcoinbot can respond with link to complete a tip."""
-        issue_url = 'https://github.com/test_owner/gitcoin/issues/1234'
+        issue_url = 'https://github.com/gitcoinco/web/issues/305'
         tip_link = f'{settings.BASE_URL}tip/?amount=3.3&tokenName=ETH&username=@user&source={issue_url}'
         target_text = f'To complete the tip, please [visit this link]({tip_link}).\n ' \
                       'PS Make sure you\'re logged into Metamask!'
-        text = new_tip_text('test_owner', 'gitcoin', '1234', '@user 3.3 ETH')
+        text = new_tip_text('gitcoinco', 'web', '305', '@user 3.3 ETH')
         self.assertEqual(text, target_text)
 
     def test_submit_work_text(self):
         """Test Gitcoinbot can respond with link to submit your work."""
-        submit_link = f'{settings.BASE_URL}issue/test_owner/gitcoin/1234'
+        submit_link = f'{settings.BASE_URL}issue/gitcoinco/web/305'
         target_text = f'To finish claiming this bounty please [visit this link]({submit_link})'
-        text = submit_work_text('test_owner', 'gitcoin', '1234')
+        text = submit_work_text('gitcoinco', 'web', '305')
         self.assertEqual(text, target_text)
 
     def test_start_work_text(self):
-        start_work_link = f'{settings.BASE_URL}issue/test_owner/gitcoin/1234'
+        start_work_link = f'{settings.BASE_URL}issue/gitcoinco/web/305'
         target_text = f'To show this bounty as started please [visit this link]({start_work_link})'
-        text = start_work_text('test_owner', 'gitcoin', '1234')
+        text = start_work_text('gitcoinco', 'web', '305')
         self.assertEqual(text, target_text)
 
     def test_confused_text(self):
@@ -133,7 +133,7 @@ class GitcoinBotActionsTest(TestCase):
             value_in_token=3,
             token_name='ETH',
             web3_created=datetime(2008, 10, 31),
-            github_url='https://github.com/test_owner/gitcoin/issues/1234',
+            github_url='https://github.com/gitcoinco/web/issues/305',
             token_address='0x0',
             issue_description='hello world',
             bounty_owner_github_username='flintstone',
@@ -146,19 +146,19 @@ class GitcoinBotActionsTest(TestCase):
             experience_level='Intermediate',
             raw_data={},
         )
-        submit_link = f'{settings.BASE_URL}issue/test_owner/gitcoin/1234'
+        submit_link = f'{settings.BASE_URL}issue/gitcoinco/web/305'
         target_text = f'To finish claiming this bounty please [visit this link]({submit_link})'
-        text = submit_work_or_new_bounty_text('test_owner', 'gitcoin', '1234')
+        text = submit_work_or_new_bounty_text('gitcoinco', 'web', '305')
         self.assertEqual(text, target_text)
 
     def test_submit_work_or_new_bounty_when_bounty_doesnt_exist(self):
         """Test submit_work_or_new_bounty_text when bounty isn't active."""
-        issue_link = f'https://github.com/test_owner/gitcoin/issues/1234'
+        issue_link = f'https://github.com/gitcoinco/web/issues/305'
         bounty_link = f'{settings.BASE_URL}funding/new?source={issue_link}'
         target_text = 'No active bounty for this issue, consider create the bounty please'\
                       f' [visit this link]({bounty_link}).\n\n ' \
                       'PS Make sure you\'re logged into Metamask!'
-        text = submit_work_or_new_bounty_text('test_owner', 'gitcoin', '1234')
+        text = submit_work_or_new_bounty_text('gitcoinco', 'web', '305')
         self.assertEqual(text, target_text)
 
     def test_get_text_from_responses_when_doesnt_exist(self):

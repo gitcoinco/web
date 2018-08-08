@@ -18,6 +18,7 @@
 '''
 from os import walk as walkdir
 
+from django.conf import settings
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
@@ -30,7 +31,7 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.models import Activity, Bounty
+from dashboard.models import Activity
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
 from marketing.mails import new_token_request
@@ -98,7 +99,7 @@ def index(request):
         'gitcoin_description': gitcoin_description,
         'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter.")
     }
-    return TemplateResponse(request, 'index.html', context)
+    return TemplateResponse(request, 'landing/funder.html', context)
 
 
 def contributor_landing(request, tech_stack):
@@ -231,7 +232,7 @@ def contributor_landing(request, tech_stack):
         'tech_stack': tech_stack,
     }
 
-    return TemplateResponse(request, 'contributor_landing.html', context)
+    return TemplateResponse(request, 'landing/contributor.html', context)
 
 
 def how_it_works(request, work_type):
@@ -246,7 +247,10 @@ def how_it_works(request, work_type):
 
 
 def robotstxt(request):
-    return TemplateResponse(request, 'robots.txt', {})
+    context = {
+        'settings': settings,
+    }
+    return TemplateResponse(request, 'robots.txt', context, content_type='text')
 
 
 def about(request):
@@ -381,6 +385,19 @@ def vision(request):
         'card_desc': _("Gitcoin's Vision for a web3 world is to make it easy for developers to find paid work in open source."),
     }
     return TemplateResponse(request, 'vision.html', context)
+
+
+def not_a_token(request):
+    """Render the not_a_token response."""
+    context = {
+        'is_outside': True,
+        'active': 'not_a_token',
+        'avatar_url': static('v2/images/no-token/no-token.jpg'),
+        'title': 'Gitcoin is not a token',
+        'card_title': _("Gitcoin is not a token"),
+        'card_desc': _("We didn't do a token because we felt it wasn't the right way to align incentives with our user base.  Read more about the future of monetization in web3."),
+    }
+    return TemplateResponse(request, 'not_a_token.html', context)
 
 
 def results(request, keyword=None):
@@ -820,7 +837,7 @@ def error(request, code):
 
     if return_as_json:
         return JsonResponse(context, status=500)
-    return TemplateResponse(request, 'error.html', context)
+    return TemplateResponse(request, 'error.html', context, status=code)
 
 
 def portal(request):

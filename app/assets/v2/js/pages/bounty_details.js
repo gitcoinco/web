@@ -72,6 +72,7 @@ var rows = [
   'web3_created',
   'status',
   'project_type',
+  'project_length',
   'permission_type',
   'bounty_owner_address',
   'bounty_owner_email',
@@ -80,7 +81,6 @@ var rows = [
   'fulfillments',
   'network',
   'experience_level',
-  'project_length',
   'bounty_type',
   'expires_date',
   'bounty_owner_name',
@@ -235,7 +235,7 @@ var callbacks = {
     var str = '+ ' + ui_elements.join(', ') + ' in crowdfunding';
 
     if (usd_value) {
-      str += 'worth $' + usd_value;
+      str += ' worth $' + usd_value;
     }
 
     $('.additional_funding_summary  p').html(str);
@@ -496,10 +496,12 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
 };
 
 var attach_work_actions = function() {
-  $('body').delegate('a[href="/interested"], a[href="/uninterested"]', 'click', function(e) {
+  $('body').delegate('a[href="/interested"], a[href="/uninterested"], a[href="/extend-deadlines"]', 'click', function(e) {
     e.preventDefault();
     if ($(this).attr('href') == '/interested') {
       show_interest_modal.call(this);
+    } else if ($(this).attr('href') === '/extend-deadlines') {
+      show_extend_deadline_modal.call(this);
     } else if (confirm(gettext('Are you sure you want to stop work?'))) {
       $(this).attr('href', '/interested');
       $(this).find('span').text(gettext('Start Work'));
@@ -604,6 +606,76 @@ var show_interest_modal = function() {
   });
 };
 
+var set_extended_time_html = function(extendedDuration, currentExpires) {
+  currentExpires.setTime(currentExpires.getTime() + (extendedDuration * 1000));
+  $('input[name=updatedExpires]').val(currentExpires.getTime());
+  var date = getFormattedDate(currentExpires);
+  var days = timeDifference(now, currentExpires).split(' ');
+  var time = getTimeFromDate(currentExpires);
+
+  days.shift();
+  days = days.join(' ');
+
+  $('#extended-expiration-date #extended-date').html(date);
+  $('#extended-expiration-date #extended-days').html(days);
+};
+
+var show_extend_deadline_modal = function() {
+  var self = this;
+
+  setTimeout(function() {
+    var url = '/modal/extend_issue_deadline?pk=' + document.result['pk'];
+
+    $.get(url, function(newHTML) {
+      var modal = $(newHTML).appendTo('body').modal({
+        modalClass: 'modal add-interest-modal'
+      });
+
+      // all js select 2 fields
+      $('.js-select2').each(function() {
+        $(this).select2();
+      });
+      // removes tooltip
+      $('.submit_bounty select').each(function(evt) {
+        $('.select2-selection__rendered').removeAttr('title');
+      });
+      // removes search field in all but the 'denomination' dropdown
+      $('.select2-container').click(function() {
+        $('.select2-container .select2-search__field').remove();
+      });
+
+      var extendedDuration = parseInt($('select[name=expirationTimeDelta]').val());
+      var currentExpires = new Date(document.result['expires_date']);
+
+      set_extended_time_html(extendedDuration, currentExpires);
+      $(document).on('change', 'select[name=expirationTimeDelta]', function() {
+        var previousExpires = new Date(document.result['expires_date']);
+
+        set_extended_time_html(parseInt($(this).val()), previousExpires);
+      });
+
+      $('.btn-cancel').on('click', function() {
+        $.modal.close();
+        return;
+      });
+
+      modal.on('submit', function(event) {
+        event.preventDefault();
+
+        var extended_time = $('input[name=updatedExpires]').val();
+
+        extend_expiration(document.result['pk'], {
+          deadline: extended_time
+        });
+        $.modal.close();
+        setTimeout(function() {
+          window.location.reload();
+        }, 2000);
+      });
+    });
+  });
+};
+
 var build_detail_page = function(result) {
 
   // setup
@@ -680,6 +752,7 @@ var do_actions = function(result) {
   var is_status_cancelled = result['status'] == 'cancelled';
   var can_submit_after_expiration_date = result['can_submit_after_expiration_date'];
   var is_still_on_happy_path = result['status'] == 'open' || result['status'] == 'started' || result['status'] == 'submitted' || (can_submit_after_expiration_date && result['status'] == 'expired');
+  var needs_review = result['needs_review'];
   const is_open = result['is_open'];
   const disabled_bc_not_funder_txt = gettext('Enabled only if you are the funder of the bounty (If you are logged in and your web3 wallet is set to ' + result['bounty_owner_address'] + '.).');
 
@@ -702,8 +775,11 @@ var do_actions = function(result) {
   const increase_bounty_enabled = isBountyOwner(result);
   let show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
   let show_payout = !is_status_expired && !is_status_done;
+  let show_advanced_payout = isBountyOwner(result) && !is_status_expired && !is_status_done;
+  let show_extend_deadline = isBountyOwner(result) && !is_status_expired && !is_status_done;
   const show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
   const show_admin_methods = document.isStaff;
+  const show_moderator_methods = document.isModerator;
 
   if (is_legacy) {
     show_start_stop_work = false;
@@ -786,6 +862,19 @@ var do_actions = function(result) {
     actions.push(_entry);
   }
 
+  if (show_extend_deadline) {
+    const enabled = true;
+    const _entry = {
+      enabled: enabled,
+      href: '/extend-deadlines',
+      text: gettext('Extend Expiration'),
+      parent: 'right_actions',
+      title: gettext('Extend deadline of an issue')
+    };
+
+    actions.push(_entry);
+  }
+
   if (show_github_link) {
     let github_url = result['github_url'];
     // hack to get around the renamed repo for piper's work.  can't change the data layer since blockchain is immutable
@@ -857,7 +946,7 @@ var do_actions = function(result) {
     actions.push(_entry);
   }
 
-  if (show_admin_methods) {
+  if (show_admin_methods || show_moderator_methods) {
     const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
     const url = result['url'] + connector_char + 'admin_toggle_as_remarket_ready=1';
 
@@ -867,6 +956,23 @@ var do_actions = function(result) {
       text: gettext('Toggle Remarket Ready'),
       parent: 'right_actions',
       title: gettext('Sets Remarket Ready if not already remarket ready.  Unsets it if already remarket ready.'),
+      color: 'white',
+      buttonclass: 'admin-only'
+    };
+
+    actions.push(_entry);
+  }
+
+  if ((show_admin_methods || show_moderator_methods) && needs_review) {
+    const connector_char = result['url'].indexOf('?') == -1 ? '?' : '&';
+    const url = result['url'] + connector_char + 'mark_reviewed=1';
+
+    const _entry = {
+      enabled: true,
+      href: url,
+      text: gettext('Mark as Reviewed'),
+      parent: 'right_actions',
+      title: gettext('Marks the bounty activity as reviewed.'),
       color: 'white',
       buttonclass: 'admin-only'
     };
@@ -890,7 +996,7 @@ var do_actions = function(result) {
     actions.push(_entry);
   }
 
-  if (show_admin_methods) {
+  if (show_admin_methods || show_moderator_methods) {
     const url = '';
 
     const _entry = {
@@ -1002,7 +1108,12 @@ const process_activities = function(result, bounty_activities) {
     killed_bounty: gettext('Canceled Bounty'),
     new_crowdfund: gettext('New Crowdfund Contribution'),
     new_tip: gettext('New Tip'),
-    receive_tip: gettext('Tip Received')
+    receive_tip: gettext('Tip Received'),
+    bounty_abandonment_escalation_to_mods: gettext('Escalated for Abandonment of Bounty'),
+    bounty_abandonment_warning: gettext('Warned for Abandonment of Bounty'),
+    bounty_removed_slashed_by_staff: gettext('Dinged and Removed from Bounty by Staff'),
+    bounty_removed_by_staff: gettext('Removed from Bounty by Staff'),
+    bounty_removed_by_funder: gettext('Removed from Bounty by Funder')
   };
 
   const now = new Date(result['now']);
@@ -1013,12 +1124,12 @@ const process_activities = function(result, bounty_activities) {
     const fulfillment = meta.fulfillment || {};
     const new_bounty = meta.new_bounty || {};
     const old_bounty = meta.old_bounty || {};
-    const uninterest_possible = (isBountyOwnerPerLogin(result) || document.isStaff) && is_open;
     const has_pending_interest = !!result.interested.find(interest =>
       interest.profile.handle === _activity.profile.handle && interest.pending);
     const has_interest = !!result.interested.find(interest =>
       interest.profile.handle === _activity.profile.handle);
     const slash_possible = document.isStaff;
+    const uninterest_possible = (isBountyOwnerPerLogin(result) || document.isStaff) && is_open && has_interest;
 
     return {
       profileId: _activity.profile.id,

@@ -3,7 +3,8 @@
 from django.db import migrations
 from dashboard.utils import get_web3
 from django.conf import settings
-
+from datetime import datetime
+import pytz
 
 def get_profile(Profile, username):
     profiles = Profile.objects.filter(handle__iexact=username)
@@ -49,15 +50,10 @@ def forwards_func(apps, schema_editor):
         print('tip')
         Tip = apps.get_model('dashboard', 'Tip')
         for tip in Tip.objects.filter(network='mainnet').all():
-            try:
-                try_to_link_address_to_profile(Profile, tip.from_username, tip.from_address)
-                w3 = get_web3(tip.network)
-                tx = w3.eth.getTransaction(tip.receive_txid)
-                if tx:
-                    to = tx['to']
-                    try_to_link_address_to_profile(Profile, tip.username, to)
-            except:
-                pass
+            try_to_link_address_to_profile(Profile, tip.from_username, tip.from_address)
+            polluted_data_time = datetime(2018, 6, 24).replace(tzinfo=pytz.UTC)
+            if tip.receive_address and tip.created_on < polluted_data_time:
+                try_to_link_address_to_profile(Profile, tip.username, tip.receive_address)
         print('ens')
         ENSSubdomainRegistration = apps.get_model('enssubdomain', 'ENSSubdomainRegistration')
         for ens in ENSSubdomainRegistration.objects.all():
