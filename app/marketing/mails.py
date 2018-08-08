@@ -64,16 +64,16 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     response = None
 
     # build personalization
-    p = Personalization()
-    p.add_to(to_email)
-    if cc_emails:  # only add CCif not in prod
+    if cc_emails:
+        p = Personalization()
+        p.add_to(to_email)
         for cc_addr in set(cc_emails):
             cc_addr = Email(cc_addr)
             if settings.IS_DEBUG_ENV:
                 cc_addr = to_email
             if cc_addr._email != to_email._email:
                 p.add_to(cc_addr)
-    mail.add_personalization(p)
+        mail.add_personalization(p)
 
     # debug logs
     print(f"-- Sending Mail '{subject}' to {_to_email}")
