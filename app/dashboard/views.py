@@ -1037,7 +1037,7 @@ def profile(request, handle):
     if request.method == 'POST':
         address = request.POST.get('address')
         # handle = request.META.get('HTTP_REFERER').split['/'][-1]
-        # logging.info(request.path)
+        logging.info(request.path)
         # logging.info(request.POST.dict())
         logging.info(f'Address: {address}')
         logging.info(f'Handle: {handle}')
