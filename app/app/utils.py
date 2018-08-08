@@ -7,6 +7,7 @@ from hashlib import sha1
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.gis.geoip2 import GeoIP2
+from django.core.cache import cache
 from django.db.models import Lookup
 from django.db.models.fields import Field
 from django.utils import timezone
@@ -14,7 +15,7 @@ from django.utils.translation import LANGUAGE_SESSION_KEY
 
 import geoip2.database
 import requests
-# from cachelot.utils import check_parameter_types
+from cachelot.utils import check_parameter_types
 from dashboard.models import Profile
 from geoip2.errors import AddressNotFoundError
 from git.utils import _AUTH, HEADERS, get_user
@@ -74,6 +75,29 @@ def get_table_cache_key(db_alias, table):
     """
     cache_key = f'{db_alias}:{table}'
     return sha1(cache_key.encode('utf-8')).hexdigest()
+
+
+def get_raw_cache_client(backend='default'):
+    """Get a raw Redis cache client connection.
+
+    Args:
+        backend (str): The backend to attempt connection against.
+
+    Raises:
+        Exception: The exception is raised/caught if any generic exception
+            is encountered during the connection attempt.
+
+    Returns:
+        redis.client.StrictRedis: The raw Redis client connection.
+            If an exception is encountered, return None.
+
+    """
+    from django_redis import get_redis_connection
+    try:
+        return get_redis_connection(backend)
+    except Exception as e:
+        logger.error(e)
+        return None
 
 
 def get_short_url(url):
