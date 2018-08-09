@@ -1067,7 +1067,7 @@ def funder_dashboard(request):
     funder_bounties = request.user.profile.get_funded_bounties()
 
     # TODO: Remove, it's just for testing now
-    funder_bounties = Bounty.objects.all()
+    funder_bounties = Bounty.objects.current()
 
     active_done_expired_bounties = funder_bounties.filter_by_status(['active', 'done', 'expired'])
     active_bounties = active_done_expired_bounties.filter_by_status(['active'])
@@ -1233,7 +1233,7 @@ def funder_dashboard(request):
             'worthEth': eth_format(bounty.get_value_in_eth)
         })
 
-    funder_tips = Tip.objects.filter(from_email=request.user.profile.email)
+    funder_tips = Tip.objects.filter(from_email=request.user.profile.email).exclude(receive_txid='')
     for tip in funder_tips:
         if tip.status == "RECEIVED":
             tip_status = "Claimed"
