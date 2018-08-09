@@ -562,10 +562,14 @@ Back to BUIDLing,
             'who': 'anshumanv',
             'who_link': True,
 <<<<<<< HEAD
+<<<<<<< HEAD
             'what': 'Worked on Giveth as they prepare for launch!,
 =======
             'what': 'Worked on Giveth as they prepare for launch!',
 >>>>>>> upstream/master
+=======
+            'what': 'Worked on Giveth as they prepare for launch!',
+>>>>>>> a40dc73b7f2c447f34ce1add3910b6f534557c10
             'link': 'https://gitcoin.co/issue/Giveth/giveth-dapp/80/823',
             'link_copy': 'View more',
         },
