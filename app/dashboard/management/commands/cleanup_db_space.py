@@ -20,7 +20,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from economy.models import ConversionRate
-from gas.models import GasProfile
+from gas.models import GasGuzzler, GasProfile
 from marketing.models import Stat
 
 
@@ -33,10 +33,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        result = GasProfile.objects.filter(
-            created_on__lt=self.get_then(14),
-            ).exclude(created_on__minute__lt=10).delete()
-        print(f'GasProfile: {result}')
+        for model in [GasGuzzler, GasProfile]:
+            result = model.objects.filter(
+                created_on__lt=self.get_then(14),
+                ).exclude(created_on__minute__lt=10).delete()
+            print(f'{model}: {result}')
 
         result = ConversionRate.objects.filter(
                 created_on__lt=self.get_then(7),
