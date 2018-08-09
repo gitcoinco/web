@@ -16,14 +16,20 @@
 {% endcomment %}
 {% load i18n %}
 <form action="/kudos/marketplace/" method="get">
-  <div class="form-row align-items-center">
-    <div class="col-9 my-4">
-      <label class="sr-only" for="kudos-search">{% trans "Name" %}</label>
-      <input type="text" class="form-control form-control-lg" name="q" id="kudos-search" placeholder="{% trans "Search for Kudos" %}">
+  <div class="form-row align-items-center justify-content-center">
+    <div class="col-12 col-sm-6 my-4 ">
+      <div class="input-group">
+        
+        <input type="text" class="form-control form-control-lg" name="q" id="kudos-search" placeholder="{% trans "Search for Kudos" %}">
+        <div class="input-group-append">
+          
+          <a href="/kudos/marketplace" class="btn btn-danger btn-lg clear-search hidden"><i class="fas fa-times"></i></a>
+          <button type="submit" class="btn btn-gc-blue">{% trans "Search" %}</button>
+        </div>
+      </div>
     </div>
-    <div class="col-3 my-4">
-      <button type="submit" class="btn btn-gc-blue">{% trans "Search" %}</button>
-      <a href="/kudos/marketplace" class="btn">{% trans "Clear" %}</a>
+    <div class="my-4">
+      
     </div>
   </div>
 </form>
