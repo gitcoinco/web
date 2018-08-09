@@ -398,7 +398,7 @@ var refreshBounties = function(event) {
   mixpanel.track('Refresh Bounties', params);
 
   // order
-  if (explorer.bounties_request && explorer.bounties_request.readyState != 4) {
+  if (explorer.bounties_request && explorer.bounties_request.readyState !== 4) {
     explorer.bounties_request.abort();
   }
 
@@ -490,7 +490,7 @@ var refreshBounties = function(event) {
 
     process_stats(results);
   }).fail(function() {
-    if (explorer.bounties_request.readyState != 0)
+    if (explorer.bounties_request.readyState !== 0)
       _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
   }).always(function() {
     $('.loading').css('display', 'none');
