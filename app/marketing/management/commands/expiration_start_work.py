@@ -58,21 +58,22 @@ class Command(BaseCommand):
         if settings.DEBUG:
             days = range(1, 1000)
         for day in days:
+            start_date = (timezone.now() - timezone.timedelta(days=(day+1)))
+            end_date = (timezone.now() - timezone.timedelta(days=day))
             interests_by_created_on = Interest.objects.select_related('profile').filter(
-                created__gte=(timezone.now() - timezone.timedelta(days=(day+1))),
-                created__lt=(timezone.now() - timezone.timedelta(days=day)),
+                created__gte=start_date,
+                created__lt=end_date,
+                pending=False,
             )
             interests_by_accepted_on = Interest.objects.select_related('profile').filter(
-                acceptance_date__gte=(timezone.now() - timezone.timedelta(days=(day+1))),
-                acceptance_date__lt=(timezone.now() - timezone.timedelta(days=day)),
+                acceptance_date__gte=start_date,
+                acceptance_date__lt=end_date,
+                pending=False,
             )
             interests = (interests_by_accepted_on | interests_by_created_on).distinct('pk')
             print(f'day {day} got {interests.count()} interests')
             for interest in interests:
                 interest_day_0 = interest.created if not interest.acceptance_date else interest.acceptance_date
-                if interest.pending:
-                    print("This interest is pending, continuing")
-                    continue
                 bounties = Bounty.objects.current().filter(
                     interested=interest,
                     project_type='traditional',
