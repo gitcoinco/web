@@ -150,6 +150,10 @@
   .cta-square:hover {
     color: rgba(255, 255, 255, 0.8); }
 
+#carouselkudos .carousel-inner {
+  width: 90%;
+  margin: auto; }
+
 .carousel-control-kudos .carousel-control-next,
 .carousel-control-kudos .carousel-control-prev {
   width: 3.3rem;
