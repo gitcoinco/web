@@ -357,7 +357,10 @@
     <script>
       var bootstrapTooltip = $.fn.tooltip.noConflict()
     </script>
-
+    <script id="theTmpl" type="text/x-jsrender">
+      <li>[[:wallet]]</li>
+      
+      </script>
     <script type="text/javascript">
       $(document).ready(function() {
         if ($('.profile-bounties--tips .bounty_row--hidden').length > 0) {
@@ -426,11 +429,51 @@
 
             
             $('#input-wallet').val(web3.eth.coinbase)
+
+      
+            
+            
             // if (currentWallet) {
-            //   // $('#wallet-address').html(currentWallet)
-            // }
-            // $('#input-wallet').prop('disabled', true);
+              //   // $('#wallet-address').html(currentWallet)
+              // }
+              // $('#input-wallet').prop('disabled', true);
+
+
+              // Generic function to make an AJAX call
+              var fetchData = function(urlRequest, methodType, data) {
+                // Return the $.ajax promise
+                return $.ajax({
+                  url: urlRequest,
+                  type: methodType,
+                  dataType: 'json',
+                  data: data
+                });
+              }
+            
+              // var wally
+            $("body").on('submit', '#form-wallets', function(e) {
+              e.preventDefault()
+              console.log(e)  
+              var wally = fetchData(e.currentTarget.action, e.currentTarget.method, $("#form-wallets").serialize() )
+              $.when(wally).then(function(response){
+                console.log(response.wallets)
+                var template = $.templates("#theTmpl");
+                var htmlOutput = template.render(response.wallets);
+                $('.wallets-list').html(htmlOutput);
+                $('#wallets-number').html(response.wallets.length);
+               })
+              //   response.wallet.each(function(wallet) {
+              //      console.log(wallet)
+
+               
+              //  })
+            });
+
       });
+
+        
+
     </script>
+    
   </body>
 </html>

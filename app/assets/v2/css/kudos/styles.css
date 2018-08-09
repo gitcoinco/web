@@ -173,6 +173,7 @@
 .wallets-list {
   max-height: 140px;
   overflow-y: auto;
-  margin-top: 1rem; }
+  margin-top: 1rem;
+  background-color: #f3f3f3; }
 
 /*# sourceMappingURL=styles.css.map */
