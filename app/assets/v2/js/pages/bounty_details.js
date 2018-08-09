@@ -692,6 +692,9 @@ var build_detail_page = function(result) {
   result['title'] = result['title'] ? result['title'] : result['github_url'];
   $('.title').html(gettext('Funded Issue Details: ') + result['title']);
 
+  // funded by
+  $('#bounty_funded_by').html(result['bounty_owner_address']);
+
   // insert table onto page
   for (var j = 0; j < rows.length; j++) {
     var key = rows[j];
@@ -775,7 +778,6 @@ var do_actions = function(result) {
   const increase_bounty_enabled = isBountyOwner(result);
   let show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
   let show_payout = !is_status_expired && !is_status_done;
-  let show_advanced_payout = isBountyOwner(result) && !is_status_expired && !is_status_done;
   let show_extend_deadline = isBountyOwner(result) && !is_status_expired && !is_status_done;
   const show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
   const show_admin_methods = document.isStaff;
