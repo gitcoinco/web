@@ -164,32 +164,24 @@ imageFileNames.forEach(n => {
 })
 
 const checkWrongDirectoryItem = (directory, filename) => {
-  const path = directory + '/' + filename
-  const stats = fs.statSync(path)
-  if (stats.isDirectory()) {
-    checkWrongDirectory(path)
-
-  } else {
-    let shouldThrow = false
-    const errorMsg = `${filename} in the wrong directory ${directory}/`
-    if (directory === './erc20') {
-      if (['$template.json', 'README.md'].indexOf(filename) === -1 && !isAddressJson(filename)) {
-        exitWithMsg(errorMsg)
-      }
-
-    } else if (directory === './images') {
-      if (['bitcoin.png', 'eos.png', 'ethereum.png'].indexOf(filename) === -1 && !isAddressPng(filename)) {
-        // temporality not throw
-        if (filename === '0x4488ed050cd13ccfe0b0fcf3d168216830142775.jpg') {
-          notice(errorMsg)
-        } else {
-          exitWithMsg(errorMsg)
-        }
-      }
-
-    } else if (isAddressJson(filename) || isAddressPng(filename)) {
+  const errorMsg = `${filename} in the wrong directory ${directory}/`
+  if (directory === './erc20') {
+    if (['$template.json', 'README.md'].indexOf(filename) === -1 && !isAddressJson(filename)) {
       exitWithMsg(errorMsg)
     }
+
+  } else if (directory === './images') {
+    if (['bitcoin.png', 'eos.png', 'ethereum.png'].indexOf(filename) === -1 && !isAddressPng(filename)) {
+      // temporality not throw
+      if (filename === '0x4488ed050cd13ccfe0b0fcf3d168216830142775.jpg') {
+        notice(errorMsg)
+      } else {
+        exitWithMsg(errorMsg)
+      }
+    }
+
+  } else if (isAddressJson(filename) || isAddressPng(filename)) {
+    exitWithMsg(errorMsg)
   }
 }
 
@@ -197,7 +189,14 @@ const checkWrongDirectory = (directory) => {
   fs.readdirSync(directory).forEach((filename) => {
     // filter dot files
     if (!filename.startsWith('.')) {
-      checkWrongDirectoryItem(directory, filename)
+      const path = directory + '/' + filename
+      const stats = fs.statSync(path)
+      if (stats.isDirectory()) {
+        checkWrongDirectory(path)
+
+      } else {
+        checkWrongDirectoryItem(directory, filename)
+      }
     }
   })
 }
