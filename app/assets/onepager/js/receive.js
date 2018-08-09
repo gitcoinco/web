@@ -90,7 +90,7 @@ $(document).ready(function() {
     // redeem tip
 
     var gas_price_wei = document.gas_price * 10 ** 9;
-    var is_eth = document.tip['token_address'] == '0x0';
+    var is_eth = document.tip['token_address'] == '0x0' || document.tip['token_address'] == '0x0000000000000000000000000000000000000000';
     var token_address = document.tip['token_address'];
     var token_contract = web3.eth.contract(token_abi).at(token_address);
     var holding_address = document.tip['holding_address'];
@@ -115,13 +115,13 @@ $(document).ready(function() {
         if (is_eth) {
           // send ETH
           rawTx = {
+            nonce: web3.toHex(nonce),
             to: forwarding_address,
             from: holding_address,
             value: amount_in_wei
           };
-
           web3.eth.estimateGas(rawTx, function(err, gasLimit) {
-            rawTx['value'] -= (gasLimit * gas_price_wei); // deduct gas costs from amount to send
+            rawTx['value'] = amount_in_wei - (gasLimit * gas_price_wei); // deduct gas costs from amount to send
             rawTx['gasPrice'] = gas_price_wei;
             rawTx['gasLimit'] = gasLimit;
             sign_and_send(rawTx, success_callback, document.priv_key);

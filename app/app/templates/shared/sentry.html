@@ -29,10 +29,10 @@
   {% if github_handle %}
     <script>
       Raven.setUserContext({
-        email: '{{ user.email|default_if_none:anonymous }}',
-        id: '{{ user.id|default_if_none:0 }}',
+        email: '{{ user.email|default_if_none:"anonymous" }}',
+        id: '{{ user.id|default_if_none:"0" }}',
         handle: '{{ github_handle }}',
-        profile_id: '{{ profile_id|default_in_none:0 }}'
+        profile_id: '{{ profile_id|default_if_none:"0" }}'
       });
     </script>
   {% endif %}
