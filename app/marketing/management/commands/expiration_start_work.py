@@ -70,6 +70,9 @@ class Command(BaseCommand):
             print(f'day {day} got {interests.count()} interests')
             for interest in interests:
                 interest_day_0 = interest.created if not interest.acceptance_date else interest.acceptance_date
+                if interest.pending:
+                    print("This interest is pending, continuing")
+                    continue
                 bounties = Bounty.objects.current().filter(
                     interested=interest,
                     project_type='traditional',
