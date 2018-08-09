@@ -187,9 +187,7 @@ var get_search_URI = function() {
     var filters = [];
 
     $.each ($('input[name="' + key + '"]:checked'), function() {
-      if (key === 'tech_stack' && $(this).val()) {
-        keywords += $(this).val() + ',';
-      } else if ($(this).val()) {
+      if ($(this).val()) {
         filters.push($(this).val());
       }
     });
@@ -213,8 +211,11 @@ var get_search_URI = function() {
           _value = document.contxt.github_handle;
         }
 
-        if (_value !== 'any')
-          uri += _key + '=' + _value + '&';
+        if (_value !== 'any') {
+          if (!uri.endsWith('?'))
+            uri += '&';
+          uri += _key + '=' + _value;
+        }
       });
 
       // TODO: Check if value myself is needed for coinbase
@@ -224,10 +225,12 @@ var get_search_URI = function() {
       }
     }
 
-    if (val !== 'any' &&
+    if (val && val !== 'any' &&
         key !== 'bounty_filter' &&
         key !== 'bounty_owner_address') {
-      uri += key + '=' + val + '&';
+      if (!uri.endsWith('?'))
+        uri += '&';
+      uri += key + '=' + val;
     }
   }
 
@@ -242,12 +245,6 @@ var get_search_URI = function() {
 
   if (keywords) {
     uri += '&raw_data=' + keywords;
-  }
-
-  if (typeof web3 != 'undefined' && web3.eth.coinbase) {
-    uri += '&coinbase=' + web3.eth.coinbase;
-  } else {
-    uri += '&coinbase=unknown';
   }
 
   var order_by = localStorage['order_by'];
