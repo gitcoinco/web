@@ -12,8 +12,8 @@
     },
     "symbol": "IOG",
     "initial_price": {
-        "ETH": "0.0000016ETH",
-        "USD": "0.001USD"
+        "ETH": "0.0000016 ETH",
+        "USD": "0.001 USD"
     },
     "whitepaper": "https://www.iogenesis.org",
     "address": "0xe7d84cbee9b2234e53bde7ea093e7d1e198ca46a",
