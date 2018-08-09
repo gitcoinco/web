@@ -9,12 +9,17 @@ const urlExp = /^(?:([A-Za-z]+):)?(\/{0,3})([0-9.\-A-Za-z]+)(?::(\d+))?(?:\/([^?
 
 const emailExp = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
 
-const isAddress = (address) => {
-  if (!/^(0x)?[0-9a-f]{40}$/i.test(address)) {
-    return false
-  }
-  return true
-}
+const jsonExp = /\.json$/
+
+const imgExp = /\.png$/
+
+const addressExp = /^(0x)?[0-9a-f]{40}$/i
+
+const isAddress = address => addressExp.test(address)
+
+const isAddressJson = (filename) => jsonExp.test(filename) && isAddress(filename.replace(jsonExp, ''))
+
+const isAddressPng = (filename) => imgExp.test(filename) && isAddress(filename.replace(imgExp, ''))
 
 const isStringWithCharacter = (str) => {
   return str && typeof str === 'string' && str.trim()
@@ -40,7 +45,7 @@ jsonFileNames
     return jsonFileName !== '$template.json' && jsonFileName.endsWith('.json')
   })
   .forEach(jsonFileName => {
-    const addr = jsonFileName.replace('.json', '')
+    const addr = jsonFileName.replace(jsonExp, '')
     if (!isAddress(addr)) {
       exitWithMsg(`ERROR! json file name ${jsonFileName} is not like a address.json`)
     }
@@ -138,7 +143,7 @@ jsonFileNames
 imageFileNames.forEach(n => {
   const path = `./images/${n}`
   
-  if (n.endsWith('.png')) {
+  if (imgExp.test(n)) {
     fs.createReadStream(path)
       .pipe(new PNG()).on('metadata', (metadata) => {
         if (metadata.width !== metadata.height) {
@@ -158,4 +163,43 @@ imageFileNames.forEach(n => {
   }
 })
 
-// process.exit(0)
+const checkWrongDirectoryItem = (directory, filename) => {
+  const path = directory + '/' + filename
+  const stats = fs.statSync(path)
+  if (stats.isDirectory()) {
+    checkWrongDirectory(path)
+
+  } else {
+    let shouldThrow = false
+    const errorMsg = `${filename} in the wrong directory ${directory}/`
+    if (directory === './erc20') {
+      if (['$template.json', 'README.md'].indexOf(filename) === -1 && !isAddressJson(filename)) {
+        exitWithMsg(errorMsg)
+      }
+
+    } else if (directory === './images') {
+      if (['bitcoin.png', 'eos.png', 'ethereum.png'].indexOf(filename) === -1 && !isAddressPng(filename)) {
+        // temporality not throw
+        if (filename === '0x4488ed050cd13ccfe0b0fcf3d168216830142775.jpg') {
+          notice(errorMsg)
+        } else {
+          exitWithMsg(errorMsg)
+        }
+      }
+
+    } else if (isAddressJson(filename) || isAddressPng(filename)) {
+      exitWithMsg(errorMsg)
+    }
+  }
+}
+
+const checkWrongDirectory = (directory) => {
+  fs.readdirSync(directory).forEach((filename) => {
+    // filter dot files
+    if (!filename.startsWith('.')) {
+      checkWrongDirectoryItem(directory, filename)
+    }
+  })
+}
+
+checkWrongDirectory('.')
