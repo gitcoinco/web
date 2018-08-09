@@ -1138,10 +1138,10 @@ def funder_dashboard(request):
         bounty_value_in_eth = bounty.get_value_in_eth
 
         if bounty_value_in_usdt is not None:
-            total_paid_dollars = total_paid_dollars + bounty.get_value_in_usdt
+            total_paid_dollars = float(total_paid_dollars) + float(bounty.get_value_in_usdt)
 
         if bounty_value_in_eth is not None:
-            total_paid_eth = total_paid_eth + bounty.get_value_in_eth
+            total_paid_eth = float(total_paid_eth) + float(bounty.get_value_in_eth)
 
     paid_date_since = done_bounties_desc_created.last().web3_created
     total_paid_date_since = _("Nothing to show")
@@ -1159,15 +1159,16 @@ def funder_dashboard(request):
     for bounty in done_bounties:
         accepted_on = bounty.fulfillment_accepted_on
         if accepted_on is not None and tax_year == accepted_on.year:
-            tax_year_bounties_count += 1
-            tax_year_bounties_worth_dollars += bounty.get_value_in_usdt
+            if bounty.get_value_in_usdt:
+                tax_year_bounties_count += 1
+                tax_year_bounties_worth_dollars += float(bounty.get_value_in_usdt)
 
     expired_issues_count = expired_bounties.count()
     expired_issues_worth_dollars = 0
     for expired_issue in expired_bounties:
         issue_worth_in_usdt = expired_issue.get_value_in_usdt
         if issue_worth_in_usdt is not None:
-            expired_issues_worth_dollars = expired_issues_worth_dollars + issue_worth_in_usdt
+            expired_issues_worth_dollars = float(expired_issues_worth_dollars) + float(issue_worth_in_usdt)
 
     active_bounties_count = active_bounties.count()
     completed_bounties_count = done_bounties.count()
@@ -1240,15 +1241,16 @@ def funder_dashboard(request):
             tip_status = "Pending"
 
         etherscan_link = "https://etherscan.io/tx/" + tip.txid
-        outgoing_funds.append({
-            'id': tip.bounty.github_issue_number,
-            'title': tip.bounty.title,
-            'type': 'Tip',
-            'status': tip_status,
-            'etherscanLink': etherscan_link,
-            'worthDollars': usd_format(tip.value_in_usdt),
-            'worthEth': eth_format(tip.value_in_eth)
-        })
+        if tip.bounty:
+            outgoing_funds.append({
+                'id': tip.bounty.github_issue_number,
+                'title': tip.bounty.title,
+                'type': 'Tip',
+                'status': tip_status,
+                'etherscanLink': etherscan_link,
+                'worthDollars': usd_format(tip.value_in_usdt),
+                'worthEth': eth_format(tip.value_in_eth)
+            })
 
     all_bounties_filters = [
         {
