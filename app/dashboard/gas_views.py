@@ -23,12 +23,13 @@ import logging
 from django.conf import settings
 from django.core.cache import cache
 from django.template.response import TemplateResponse
-from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from economy.utils import convert_amount
-from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
 from gas.models import GasGuzzler
+from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
+
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 
 logging.basicConfig(level=logging.DEBUG)
