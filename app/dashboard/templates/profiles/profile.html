@@ -450,13 +450,17 @@
                 });
               }
             
-              // var wally
+              
             $("body").on('submit', '#form-wallets', function(e) {
               e.preventDefault()
               console.log(e)  
-              var wally = fetchData(e.currentTarget.action, e.currentTarget.method, $("#form-wallets").serialize() )
-              $.when(wally).then(function(response){
-                console.log(response.wallets)
+              var postWallets = fetchData (  e.currentTarget.action, 
+                                            e.currentTarget.method, 
+                                            $("#form-wallets").serialize() 
+                                          )
+              
+              $.when( postWallets ).then( function ( response ){
+                console.log( response.wallets )
                 var template = $.templates("#theTmpl");
                 var htmlOutput = template.render(response.wallets);
                 $('.wallets-list').html(htmlOutput);
