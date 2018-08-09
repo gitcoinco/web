@@ -20,6 +20,7 @@ var callFunctionWhenTransactionMined = function(txHash, f) {
   });
 };
 
+
 /**
  * Looks for web3.  Won't call the fucntion until its there
  * @callback
@@ -116,7 +117,7 @@ var unloading_button = function(button) {
   button.find('img').remove();
 };
 
-var sanitizeDict = function(d) {
+var sanitizeDict = function(d, keyToIgnore) {
   if (typeof d != 'object') {
     return d;
   }
@@ -124,14 +125,18 @@ var sanitizeDict = function(d) {
   for (var i = 0; i < keys.length; i++) {
     var key = keys[i];
 
+    if (key === keyToIgnore) {
+      continue;
+    }
+
     d[key] = sanitize(d[key]);
   }
   return d;
 };
 
-var sanitizeAPIResults = function(results) {
+var sanitizeAPIResults = function(results, keyToIgnore) {
   for (var i = 0; i < results.length; i++) {
-    results[i] = sanitizeDict(results[i]);
+    results[i] = sanitizeDict(results[i], keyToIgnore);
   }
   return results;
 };
@@ -268,7 +273,14 @@ var mutate_interest = function(bounty_pk, direction, data) {
     }
     return false;
   }).fail(function(result) {
-    alert(result.responseJSON.error);
+    var alertMsg = result && result.responseJSON ? result.responseJSON.error : null;
+
+    if (alertMsg === null) {
+      alertMsg = gettext('Network error. Please reload the page and try again.');
+    }
+
+    _alert({ message: alertMsg }, 'error');
+
   });
 };
 
@@ -795,13 +807,24 @@ var listen_for_web3_changes = function() {
 var actions_page_warn_if_not_on_same_network = function() {
   var user_network = document.web3network;
 
+  if (user_network === 'locked') {
+    // handled by the unlock MetaMask banner
+    return;
+  }
+
   if (typeof user_network == 'undefined') {
     user_network = 'no network';
   }
   var bounty_network = $('input[name=network]').val();
 
   if (bounty_network != user_network) {
-    var msg = 'Warning: You are on ' + user_network + ' and this bounty is on the ' + bounty_network + ' network.  Please change your network to the ' + bounty_network + ' network.';
+    var msg = 'Warning: You are on ' +
+              user_network +
+              ' and this bounty is on the ' +
+              bounty_network +
+              ' network.  Please change your network to the ' +
+              bounty_network +
+              ' network.';
 
     _alert({ message: gettext(msg) }, 'error');
   }
@@ -874,3 +897,110 @@ var usdToAmount = function(event) {
     }
   });
 };
+
+function renderBountyRowsFromResults(results) {
+  var html = '';
+  var tmpl = $.templates('#result');
+
+  if (results.length == 0) {
+    return false;
+  }
+
+  for (var i = 0; i < results.length; i++) {
+    var result = results[i];
+    var related_token_details = tokenAddressToDetails(result['token_address']);
+    var decimals = 18;
+
+    if (related_token_details && related_token_details.decimals) {
+      decimals = related_token_details.decimals;
+    }
+
+    var divisor = Math.pow(10, decimals);
+
+    result['rounded_amount'] = Math.round(result['value_in_token'] / divisor * 100) / 100;
+    var is_expired = new Date(result['expires_date']) < new Date() && !result['is_open'];
+
+    result['action'] = result['url'];
+    result['title'] = result['title'] ? result['title'] : result['github_url'];
+
+    var timeLeft = timeDifference(new Date(result['expires_date']), new Date(), true);
+
+    result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
+
+    if (result['status'] === 'done')
+      result['p'] += 'Done';
+    if (result['fulfillment_accepted_on']) {
+      result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_accepted_on']), false, 60 * 60);
+    } else if (result['status'] === 'started') {
+      result['p'] += 'Started';
+      result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_started_on']), false, 60 * 60);
+    } else if (result['status'] === 'submitted') {
+      result['p'] += 'Submitted';
+      if (result['fulfillment_submitted_on']) {
+        result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_submitted_on']), false, 60 * 60);
+      }
+    } else if (result['status'] == 'cancelled') {
+      result['p'] += 'Cancelled';
+      if (result['canceled_on']) {
+        result['p'] += ' ' + timeDifference(new Date(), new Date(result['canceled_on']), false, 60 * 60);
+      }
+    } else if (is_expired) {
+      var time_ago = timeDifference(new Date(), new Date(result['expires_date']), true);
+
+      result['p'] += ('Expired ' + time_ago + ' ago');
+    } else {
+      var opened_when = timeDifference(new Date(), new Date(result['web3_created']), true);
+
+      result['p'] += ('Opened ' + opened_when + ' ago, Expires in ' + timeLeft);
+    }
+
+    result['hidden'] = (i > 4);
+    html += tmpl.render(result);
+  }
+  return html;
+}
+
+/**
+ * Fetches results from the API and paints them onto the target element
+ *
+ * params - query params for bounty API
+ * target - element
+ * limit  - number of results
+ *
+ * TODO: refactor explorer to reuse this
+ */
+function fetchBountiesAndAddToList(params, target, limit) {
+  $.get('/api/v0.1/bounties/?' + params, function(results) {
+    results = sanitizeAPIResults(results);
+
+    var html = renderBountyRowsFromResults(results);
+
+    if (html) {
+      $(target).prepend(html);
+      $(target).removeClass('profile-bounties--loading');
+
+      if (limit) {
+        results = results.slice(0, limit);
+      } else if (results.length > 5) {
+        var $button = $(target + ' .profile-bounties__btn-show-all');
+
+        $button.removeClass('hidden');
+        $button.on('click', function(event) {
+          $(this).remove();
+          $(target + ' .bounty_row').removeClass('bounty_row--hidden');
+        });
+      }
+
+      $('div.bounty_row.result').each(function() {
+        var href = $(this).attr('href');
+
+        if (typeof $(this).changeElementType !== 'undefined') {
+          $(this).changeElementType('a');
+        }
+        $(this).attr('href', href);
+      });
+    } else {
+      console.log($(target).parent().closest('.container').addClass('hidden'));
+    }
+  });
+}

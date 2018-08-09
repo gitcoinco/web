@@ -16,6 +16,8 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+from os import walk as walkdir
+
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
@@ -26,14 +28,27 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.models import Activity, Bounty
+from dashboard.models import Activity
 from dashboard.notifications import amount_usdt_open_work, open_bounties
-from dashboard.tokens import token_by_name
+from economy.models import Token
+from marketing.mails import new_token_request
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
+from retail.helpers import get_ip
 
 from .utils import build_stat_results, programming_languages
+
+
+def get_activities(tech_stack=None, num_activities=15):
+    # get activity feed
+
+    activities = Activity.objects.filter(bounty__network='mainnet').order_by('-created')
+    if tech_stack:
+        activities = activities.filter(bounty__metadata__icontains=tech_stack)
+    activities = activities[0:num_activities]
+    return [a.view_props for a in activities]
 
 
 def index(request):
@@ -73,6 +88,7 @@ def index(request):
     )
 
     context = {
+        'activities': get_activities(),
         'is_outside': True,
         'slides': slides,
         'slideDurationInMs': 6000,
@@ -82,9 +98,11 @@ def index(request):
         'gitcoin_description': gitcoin_description,
         'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter.")
     }
-    return TemplateResponse(request, 'index.html', context)
+    return TemplateResponse(request, 'landing/funder.html', context)
 
-def contributor_landing(request):
+
+def contributor_landing(request, tech_stack):
+
     slides = [
         ("Daniel", static("v2/images/testimonials/gitcoiners/daniel.jpeg"),
          _("When I found Gitcoin I was gladly surprised that it took one thing and did it well. \
@@ -198,6 +216,8 @@ def contributor_landing(request):
     available_bounties_worth = amount_usdt_open_work()
 
     context = {
+        'activities': get_activities(tech_stack),
+        'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else "Open Source Opportunities",
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'home',
@@ -207,10 +227,12 @@ def contributor_landing(request):
         'projects': projects,
         'gitcoin_description': gitcoin_description,
         'available_bounties_count': available_bounties_count,
-        'available_bounties_worth': available_bounties_worth
+        'available_bounties_worth': available_bounties_worth,
+        'tech_stack': tech_stack,
     }
 
-    return TemplateResponse(request, 'contributor_landing.html', context)
+    return TemplateResponse(request, 'landing/contributor.html', context)
+
 
 def how_it_works(request, work_type):
     """Show How it Works / Funder page."""
@@ -327,6 +349,7 @@ def about(request):
         'core_team': core_team,
         'community_members': community_members,
         'alumni': alumnis,
+        'total_alumnis': str(Alumni.objects.count()),
         'active': 'about',
         'title': 'About',
         'is_outside': True,
@@ -347,6 +370,32 @@ def mission(request):
     return TemplateResponse(request, 'mission.html', context)
 
 
+def vision(request):
+    """Render the Vision response."""
+    context = {
+        'is_outside': True,
+        'active': 'vision',
+        'avatar_url': static('v2/images/vision/triangle.jpg'),
+        'title': 'Vision',
+        'card_title': _("Gitcoin's Vision for a Web3 World"),
+        'card_desc': _("Gitcoin's Vision for a web3 world is to make it easy for developers to find paid work in open source."),
+    }
+    return TemplateResponse(request, 'vision.html', context)
+
+
+def not_a_token(request):
+    """Render the not_a_token response."""
+    context = {
+        'is_outside': True,
+        'active': 'not_a_token',
+        'avatar_url': static('v2/images/no-token/no-token.jpg'),
+        'title': 'Gitcoin is not a token',
+        'card_title': _("Gitcoin is not a token"),
+        'card_desc': _("We didn't do a token because we felt it wasn't the right way to align incentives with our user base.  Read more about the future of monetization in web3."),
+    }
+    return TemplateResponse(request, 'not_a_token.html', context)
+
+
 def results(request, keyword=None):
     """Render the Results response."""
     if keyword and keyword not in programming_languages:
@@ -358,35 +407,6 @@ def results(request, keyword=None):
 
 def activity(request):
     """Render the Activity response."""
-    icons = {
-        'title': 'Activity',
-        'new_tip': 'fa-thumbs-up',
-        'start_work': 'fa-lightbulb',
-        'new_bounty': 'fa-money-bill-alt',
-        'work_done': 'fa-check-circle',
-    }
-
-
-    def add_view_props(activity):
-        activity.icon = icons.get(activity.activity_type, 'fa-check-circle')
-        obj = activity.metadata
-        if 'new_bounty' in activity.metadata:
-            obj = activity.metadata['new_bounty']
-        activity.title = obj.get('title', '')
-        if 'id' in obj:
-            activity.bounty_url = Bounty.objects.get(pk=obj['id']).get_relative_url()
-            if activity.title:
-                activity.urled_title = f'<a href="{activity.bounty_url}">{activity.title}</a>'
-            else:
-                activity.urled_title = activity.title
-        if 'value_in_usdt_now' in obj:
-            activity.value_in_usdt_now = obj['value_in_usdt_now']
-        if 'token_name' in obj:
-            activity.token = token_by_name(obj['token_name'])
-            if 'value_in_token' in obj and activity.token:
-                activity.value_in_token_disp = round((float(obj['value_in_token']) /
-                                                      10 ** activity.token['decimals']) * 1000) / 1000
-        return activity
 
     activities = Activity.objects.all().order_by('-created')
     p = Paginator(activities, 300)
@@ -395,9 +415,9 @@ def activity(request):
     context = {
         'p': p,
         'page': p.get_page(page),
-        'title': 'Activity Feed',
+        'title': _('Activity Feed'),
     }
-    context["activities"] = [add_view_props(a) for a in p.get_page(page)]
+    context["activities"] = [a.view_props for a in p.get_page(page)]
 
     return TemplateResponse(request, 'activity.html', context)
 
@@ -703,6 +723,18 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
         'img': static('v2/images/tldr/tips_noborder.jpg'),
         'url': 'https://medium.com/gitcoin/tutorial-send-a-tip-to-any-github-user-in-60-seconds-2eb20a648bc8',
         'title': _('Send a Tip to any Github user in 60 seconds'),
+    }, {
+        'img': 'https://cdn-images-1.medium.com/max/1800/1*IShTwIlxOxbVAGYbOEfbYg.png',
+        'url': 'https://medium.com/gitcoin/how-to-build-a-contributor-friendly-project-927037f528d9',
+        'title': _('How To Build A Contributor Friendly Project'),
+    }, {
+        'img': 'https://cdn-images-1.medium.com/max/2000/1*23Zxk9znad1i422nmseCGg.png',
+        'url': 'https://medium.com/gitcoin/fund-an-issue-on-gitcoin-3d7245e9b3f3',
+        'title': _('Fund An Issue on Gitcoin!'),
+    }, {
+        'img': 'https://cdn-images-1.medium.com/max/2000/1*WSyI5qFDmy6T8nPFkrY_Cw.png',
+        'url': 'https://medium.com/gitcoin/getting-started-with-gitcoin-fa7149f2461a',
+        'title': _('Getting Started With Gitcoin'),
     }]
 
     context = {
@@ -712,6 +744,59 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
         'tutorials': tutorials,
     }
     return TemplateResponse(request, 'help.html', context)
+
+
+def presskit(request):
+
+    brand_colors = [
+        (
+            "Cosmic Teal",
+            "#25e899",
+            "37, 232, 153"
+        ),
+        (
+            "Dark Cosmic Teal",
+            "#0fce7c",
+            "15, 206, 124"
+        ),
+        (
+            "Milky Way Blue",
+            "#15003e",
+            "21, 0, 62"
+        ),
+        (
+            "Stardust Yellow",
+            "#FFCE08",
+            "255,206, 8"
+        ),
+        (
+            "Polaris Blue",
+            "#3E00FF",
+            "62, 0, 255"
+        ),
+        (
+            "Vinus Purple",
+            "#8E2ABE",
+            "142, 42, 190"
+        ),
+        (
+            "Regulus Red",
+            "#F9006C",
+            "249, 0, 108"
+        ),
+        (
+            "Star White",
+            "#FFFFFF",
+            "23, 244, 238"
+        ),
+        ]
+
+    context = {
+        'brand_colors': brand_colors,
+        'active': 'get',
+        'title': _('Presskit'),
+    }
+    return TemplateResponse(request, 'presskit.html', context)
 
 
 def get_gitcoin(request):
@@ -767,10 +852,6 @@ def podcast(request):
     return redirect('https://itunes.apple.com/us/podcast/gitcoin-community/id1360536677')
 
 
-def presskit(request):
-    return redirect('https://www.dropbox.com/sh/bsjzbu0li2z0kr1/AACKgnQC3g6m52huYI3Gx3Ega?dl=0')
-
-
 def feedback(request):
     return redirect('https://goo.gl/forms/9rs9pNKJDnUDYEeA3')
 
@@ -809,7 +890,9 @@ def ios(request):
         'active': 'ios',
         'title': 'iOS app',
         'card_title': 'Gitcoin has an iOS app!',
-        'card_desc': 'Gitcoin aims to make it easier to grow open source from anywhere in the world, anytime.  We’re proud to announce our iOS app, which brings us a step closer to this north star!Browse open bounties on the go, express interest, and coordinate your work on the move.',
+        'card_desc': 'Gitcoin aims to make it easier to grow open source from anywhere in the world,\
+            anytime.  We’re proud to announce our iOS app, which brings us a step closer to this north star!\
+            Browse open bounties on the go, express interest, and coordinate your work on the move.',
     }
     return TemplateResponse(request, 'ios.html', context)
 
@@ -850,6 +933,39 @@ def slack(request):
                 context['msg'] = _('Invalid email')
 
     return TemplateResponse(request, 'slack.html', context)
+
+@csrf_exempt
+def newtoken(request):
+    context = {
+        'active': 'newtoken',
+        'msg': None,
+    }
+
+    if request.POST:
+        required_fields = ['email', 'terms', 'not_security', 'address', 'symbol', 'decimals', 'network']
+        validtion_passed = True
+        for key in required_fields:
+            if not request.POST.get(key):
+                context['msg'] = str(_('You must provide the following fields: ')) + key
+                validtion_passed = False
+        if validtion_passed:
+            ip = get_ip(request)
+            obj = Token.objects.create(
+                address=request.POST['address'],
+                symbol=request.POST['symbol'],
+                decimals=request.POST['decimals'],
+                network=request.POST['network'],
+                approved=False,
+                priority=1,
+                metadata={
+                    'ip': get_ip(request),
+                    'email': request.POST['email'],
+                    }
+                )
+            new_token_request(obj)
+            context['msg'] = str(_('Your token has been submitted and will be listed within 2 business days if it is accepted.'))
+
+    return TemplateResponse(request, 'newtoken.html', context)
 
 
 def btctalk(request):
@@ -894,3 +1010,41 @@ def youtube(request):
 
 def web3(request):
     return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')
+
+
+def tokens(request):
+    context = {}
+    networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']
+    for network in networks:
+        key = f"{network}_tokens"
+        context[key] = Token.objects.filter(network=network, approved=True)
+    return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
+
+
+def ui(request):
+    svgs = []
+    pngs = []
+    gifs = []
+    for path, dirs, files in walkdir('assets/v2/images'):
+        if path.find('/avatar') != -1:
+            continue
+        for f in files:
+            if f.endswith('.svg'):
+                svgs.append(f'{path[7:]}/{f}')
+                continue
+            if f.endswith('.png'):
+                pngs.append(f'{path[7:]}/{f}')
+                continue
+            if f.endswith('.gif'):
+                gifs.append(f'{path[7:]}/{f}')
+                continue
+
+    context = {
+        'is_outside': True,
+        'active': 'ui_inventory ',
+        'title': 'UI Inventory',
+        'svgs': svgs,
+        'pngs': pngs,
+        'gifs': gifs,
+    }
+    return TemplateResponse(request, 'ui_inventory.html', context)

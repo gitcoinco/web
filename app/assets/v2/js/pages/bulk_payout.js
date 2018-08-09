@@ -8,6 +8,7 @@ var normalizeUsername = function(username) {
   return username;
 };
 
+
 $(document).ready(function($) {
   var random_id = function() {
     var id_num = Math.random().toString(9).substr(2, 3);
@@ -18,6 +19,19 @@ $(document).ready(function($) {
 
   $(document).on('blur', '#amount', function(event) {
     event.preventDefault();
+    update_registry();
+  });
+
+  $(document).on('paste', '.username', function(event) {
+    var self = $(this);
+
+    setTimeout(function() {
+      self.html(self.html().replace(/(<([^>]+)>)/ig, ''));
+    }, 10);
+  });
+  
+
+  $(document).on('click', '#close_bounty', function(event) {
     update_registry();
   });
 
@@ -112,7 +126,7 @@ $(document).ready(function($) {
       // get form data
       var email = '';
       var github_url = $('#issueURL').val();
-      var from_name = '';
+      var from_name = document.contxt['github_handle'];
       var username = transaction['data']['to'];
       var amountInEth = transaction['data']['amount'];
       var comments_priv = '';
@@ -132,8 +146,12 @@ $(document).ready(function($) {
         // text transaction
         sendTransaction(i + 1);
       };
+      var failure_callback = function() {
+        // do nothing
+        $.noop();
+      };
 
-      return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback);
+      return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false);
     }
   };
 
@@ -142,6 +160,10 @@ $(document).ready(function($) {
     
     if (!$('#terms').is(':checked')) {
       _alert('Please accept the TOS.', 'error');
+      return;
+    }
+    if (!document.transactions.length) {
+      _alert('You do not have any transactions to payout.  Please add payees to the form.', 'error');
       return;
     }
 
@@ -190,6 +212,7 @@ $(document).ready(function($) {
     var denomination = $('#token_name').text();
     var original_amount = $('#original_amount').val();
     var net = round(original_amount - tc, 2);
+    var close_bounty = $('#close_bounty').is(':checked');
 
     $('#total_cost').html(tc + ' ' + denomination);
     $('#total_net').html(net + ' ' + denomination);
@@ -202,16 +225,21 @@ $(document).ready(function($) {
       'reason': 'Bounty Stake',
       'amount': '+' + original_amount + ' ' + denomination
     };
-    transactions.push(first_transaction);
-    var i = 1;
 
-    for (i = 1; i < num_rows; i += 1) {
-      var $row = $('#payout_table').find('tr:nth-child(' + i + ')');
+    var i = 0;
+
+    if (close_bounty) {
+      transactions.push(first_transaction);
+      i += 1;
+    }
+
+    for (let j = i; j < num_rows; j += 1) {
+      var $row = $('#payout_table').find('tr:nth-child(' + j + ')');
       var amount = parseFloat($row.find('.amount').text());
       var username = $row.find('.username').text();
 
       transaction = {
-        'id': i + 1,
+        'id': j + 1,
         'type': 'tip',
         'reason': 'Payment to ' + normalizeUsername(username),
         'amount': '-' + amount + ' ' + denomination,

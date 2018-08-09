@@ -26,9 +26,8 @@ from django.conf import settings
 
 import ipfsapi
 import requests
-import rollbar
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
-from dashboard.models import Bounty, UserAction
+from dashboard.models import Activity, Bounty, UserAction
 from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
@@ -55,14 +54,29 @@ class NoBountiesException(Exception):
     pass
 
 
-def humanize(text):
-    """Clean a notification string of underscores and capitalize it.
+def humanize_event_name(name):
+    """Humanize an event name.
+
+    Args:
+      name (str): The event name
 
     Returns:
-        str: The cleaned representation of the string.
+        str: The humanized representation.
 
     """
-    return text.replace('_', ' ').upper()
+    humanized_event_names = {
+        'new_bounty': 'New funded issue',
+        'start_work': 'Work started',
+        'stop_work': 'Work stopped',
+        'work_submitted': 'Work submitted',
+        'increased_bounty': 'Increased funds for issue',
+        'killed_bounty': 'Cancelled funded issue',
+        'worker_approved': 'Worker approved',
+        'worker_rejected': 'Worker rejected',
+        'work_done': 'Work done'
+    }
+
+    return humanized_event_names.get(name, name).upper()
 
 
 def create_user_action(user, action_type, request=None, metadata=None):
@@ -109,49 +123,58 @@ def create_user_action(user, action_type, request=None, metadata=None):
         return True
     except Exception as e:
         logger.error(f'Failure in UserAction.create_action - ({e})')
-        rollbar.report_message(
-            f'Failure in UserAction.create_action - ({e})', 'error', extra_data=kwargs)
         return False
 
 
-def startIPFS():
-    print('starting IPFS')
-    subprocess.Popen(["ipfs", "daemon"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    time.sleep(10)  # time for IPFS to boot
+def get_ipfs(host=None, port=settings.IPFS_API_PORT):
+    """Establish a connection to IPFS.
 
+    Args:
+        host (str): The IPFS host to connect to.
+            Defaults to environment variable: IPFS_HOST.
+        port (int): The IPFS port to connect to.
+            Defaults to environment variable: env IPFS_API_PORT.
 
-def isIPFSrunning():
-    output = subprocess.check_output('pgrep -fl ipfs | wc -l', shell=True)
-    is_running = output != b'       0\n'
-    print(f'** ipfs is_running: {is_running}')
-    return is_running
+    Raises:
+        CommunicationError: The exception is raised when there is a
+            communication error with IPFS.
 
+    Returns:
+        ipfsapi.client.Client: The IPFS connection client.
 
-def getIPFS():
-    if not isIPFSrunning():
-        startIPFS()
+    """
+    if host is None:
+        host = f'https://{settings.IPFS_HOST}'
 
     try:
-        return ipfsapi.connect('127.0.0.1', 5001)
-    except CommunicationError:
-        raise IPFSCantConnectException("IPFS is not running.  try running it with `ipfs daemon` before this script")
+        return ipfsapi.connect(host, port)
+    except CommunicationError as e:
+        logger.exception(e)
+        raise IPFSCantConnectException('Failed while attempt to connect to IPFS')
+    return None
 
 
 def ipfs_cat(key):
-    response = ipfs_cat_requests(key)
-    if response:
-        return response
+    try:
+        # Attempt connecting to IPFS via Infura
+        response = ipfs_cat_requests(key)
+        if response:
+            return response
 
-    response = ipfs_cat_ipfsapi(key)
-    if response:
-        return response
+        # Attempt connecting to IPFS via hosted node
+        response = ipfs_cat_ipfsapi(key)
+        if response:
+            return response
 
-    raise Exception("could not connect to IPFS")
+        raise IPFSCantConnectException('Failed to connect cat key against IPFS - Check IPFS/Infura connectivity')
+    except IPFSCantConnectException as e:
+        logger.exception(e)
 
 
 def ipfs_cat_ipfsapi(key):
-    ipfs = getIPFS()
-    return ipfs.cat(key)
+    ipfs = get_ipfs()
+    if ipfs:
+        return ipfs.cat(key)
 
 
 def ipfs_cat_requests(key):
@@ -227,7 +250,7 @@ def get_bounty(bounty_enum, network):
         data = json.loads(data_str)
 
         # validation
-        if 'Failed to get block' in data_str:
+        if 'Failed to get block' in str(data_str):
             raise IPFSCantConnectException("Failed to connect to IPFS")
 
         fulfillments.append({
@@ -238,7 +261,7 @@ def get_bounty(bounty_enum, network):
         })
 
     # validation
-    if 'Failed to get block' in bounty_data_str:
+    if 'Failed to get block' in str(bounty_data_str):
         raise IPFSCantConnectException("Failed to connect to IPFS")
 
     # https://github.com/Bounties-Network/StandardBounties/issues/25
@@ -403,14 +426,21 @@ def get_ordinal_repr(num):
 
 
 def record_user_action_on_interest(interest, event_name, last_heard_from_user_days):
-    UserAction.objects.create(
-        profile=interest.profile,
-        action=event_name,
-        metadata={
+    """Record User actions and activity for the associated Interest."""
+    payload = {
+        'profile': interest.profile,
+        'metadata': {
             'bounties': list(interest.bounty_set.values_list('pk', flat=True)),
             'interest_pk': interest.pk,
             'last_heard_from_user_days': last_heard_from_user_days,
-        })
+        }
+    }
+    UserAction.objects.create(action=event_name, **payload)
+
+    if event_name in ['bounty_abandonment_escalation_to_mods', 'bounty_abandonment_warning']:
+        payload['needs_review'] = True
+
+    Activity.objects.create(activity_type=event_name, bounty=interest.bounty_set.last(), **payload)
 
 
 def get_context(ref_object=None, github_username='', user=None, confirm_time_minutes_target=4,

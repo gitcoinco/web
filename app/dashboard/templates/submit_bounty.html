@@ -53,9 +53,9 @@
                   <label class="form__label" for=issueURL>{% trans "Github Issue URL" %}</label>
                   <input name='issueURL' id="issueURL" class="form__input" type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if issueURL %}{{issueURL}}{%endif%}" />
                   <label class="form__label" for="title">{% trans "Github Issue Title" %}</label>
-                  <input name='title' id="title"  class="form__input" type="text" placeholder="Deploy the Foo to The Bar" value="{{issue_title}}" />
+                  <input name='title' id="title"  class="form__input" type="text" placeholder="Deploy the Foo to The Bar" value="{{issue_title}}" title="<div class='tooltip-info tooltip-sm'>{% trans "Please update the title in the github issue" %}</div>" readonly/>
                   <label class="form__label" for="description">{% trans "Description" %}</label>
-                  <textarea name="description" class="form__input" id="description" placeholder="Add some new feature."></textarea>
+                  <textarea name="description" class="form__input" id="description" placeholder="Add some new feature." title="<div class='tooltip-info tooltip-sm'>{% trans "Please update the description in the github issue" %}</div>" readonly></textarea>
                   <label class="form__label" for="keywords">{% trans "Keywords" %}</label>
                   <input name='keywords' id='keywords'  class="form__input" type="text" placeholder="python, solidity, html, javascript, react (optional)" value="{{keywords}}" />
                   <hr class="mt-4">
@@ -171,7 +171,7 @@
                 </div>
                 <div class="terms_container pt-4">
                   <div class="form__checkbox">
-                    <input name='terms' id='terms' type="checkbox" value=1 />
+                    <input name='terms' id='terms' type="checkbox" value=1 required />
                       <label class="form__label" for=terms>{% trans "I have read, understand, and agree to, the" %}
                         <a href="{% url "terms" %}" target="_blank" rel="noopener noreferrer">{% trans "Terms of Service" %}</a>.
                     </label>
@@ -186,8 +186,9 @@
                 </div>
                 <div class="form__footer form__footer--right pb-5">
                   <button class="button button--primary btn-block js-submit" type="submit">Fund Issue</button>
-                  <a target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">Having trouble?  Click here.</a>
+                  <a target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.  Learn more here.</a>
                 </div>
+
               </form>
             </div>
           </div>
@@ -198,7 +199,6 @@
   {% include 'shared/bottom_notification.html' %}
   {% include 'shared/analytics.html' %}
   {% include 'shared/footer_scripts.html' %}
-  {% include 'shared/rollbar.html' %}
   {% include 'shared/footer.html' %}
   {% include 'shared/messages.html' %}
 </body>
@@ -208,6 +208,7 @@
 <script src="{% static "v2/js/ipfs.js" %}"></script>
 <script src="{% static "v2/js/amounts.js" %}"></script>
 <script src="{% static "v2/js/abi.js" %}"></script>
+<script src="/static/v2/js/tokens_dynamic.js"></script>
 <script src="{% static "v2/js/tokens.js" %}"></script>
 <script src="{% static "v2/js/shared.js" %}"></script>
 <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>

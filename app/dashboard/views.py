@@ -31,7 +31,6 @@ from django.core.cache import cache
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
-from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
@@ -42,9 +41,7 @@ from app.utils import ellipses, sync_profile
 from avatar.utils import get_avatar_context
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
-from github.utils import (
-    get_auth_url, get_github_emails, get_github_primary_email, get_github_user_data, is_github_token_valid,
-)
+from git.utils import get_auth_url, get_github_user_data, is_github_token_valid
 from marketing.mails import (
     admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
@@ -380,10 +377,10 @@ def uninterested(request, bounty_id, profile_id):
     except Bounty.DoesNotExist:
         return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
                             status=401)
-
     is_funder = bounty.is_funder(request.user.username.lower())
     is_staff = request.user.is_staff
-    if not is_funder and not is_staff:
+    is_moderator = request.user.profile.is_moderator if hasattr(request.user, 'profile') else False
+    if not is_funder and not is_staff and not is_moderator:
         return JsonResponse(
             {'error': 'Only bounty funders are allowed to remove users!'},
             status=401)
@@ -395,7 +392,7 @@ def uninterested(request, bounty_id, profile_id):
         maybe_market_to_slack(bounty, 'stop_work')
         maybe_market_to_user_slack(bounty, 'stop_work')
         maybe_market_to_user_discord(bounty, 'stop_work')
-        if is_staff:
+        if is_staff or is_moderator:
             event_name = "bounty_removed_slashed_by_staff" if slashed else "bounty_removed_by_staff"
         else:
             event_name = "bounty_removed_by_funder"
@@ -456,6 +453,13 @@ def onboard(request, flow):
             login_redirect = redirect('/login/github?next=' + request.get_full_path())
             return login_redirect
 
+    if request.GET.get('eth_address') and request.user.is_authenticated and getattr(request.user, 'profile'):
+        profile = request.user.profile
+        eth_address = request.GET.get('eth_address')
+        profile.preferred_payout_address = eth_address
+        profile.save()
+        return JsonResponse({'OK': True})
+
     params = {
         'title': _('Onboarding Flow'),
         'steps': steps or onboard_steps,
@@ -472,7 +476,7 @@ def dashboard(request):
         'title': _('Issue Explorer'),
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
-    return TemplateResponse(request, 'dashboard.html', params)
+    return TemplateResponse(request, 'dashboard/index.html', params)
 
 
 def accept_bounty(request):
@@ -505,6 +509,85 @@ def accept_bounty(request):
     return TemplateResponse(request, 'process_bounty.html', params)
 
 
+def contribute(request):
+    """Contribute to the bounty.
+
+    Args:
+        pk (int): The primary key of the bounty to be accepted.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The accept bounty view.
+
+    """
+    bounty = handle_bounty_views(request)
+
+    params = get_context(
+        ref_object=bounty,
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='contribute_bounty',
+        title=_('Contribute'),
+    )
+    return TemplateResponse(request, 'contribute_bounty.html', params)
+
+
+def social_contribution(request):
+    """Social Contributuion to the bounty.
+
+    Args:
+        pk (int): The primary key of the bounty to be accepted.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The accept bounty view.
+
+    """
+    bounty = handle_bounty_views(request)
+    promo_text = str(_("Check out this bounty that pays out ")) + f"{bounty.get_value_true} {bounty.token_name} {bounty.url}"
+    for keyword in bounty.keywords_list:
+        promo_text += f" #{keyword}"
+
+    params = get_context(
+        ref_object=bounty,
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='social_contribute',
+        title=_('Social Contribute'),
+    )
+    params['promo_text'] = promo_text
+    return TemplateResponse(request, 'social_contribution.html', params)
+
+
+def payout_bounty(request):
+    """Payout the bounty.
+
+    Args:
+        pk (int): The primary key of the bounty to be accepted.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The accept bounty view.
+
+    """
+    bounty = handle_bounty_views(request)
+
+    params = get_context(
+        ref_object=bounty,
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='payout_bounty',
+        title=_('Payout'),
+    )
+    return TemplateResponse(request, 'payout_bounty.html', params)
+
+
 def bulk_payout_bounty(request):
     """Payout the bounty.
 
@@ -527,7 +610,7 @@ def bulk_payout_bounty(request):
         active='payout_bounty',
         title=_('Multi-Party Payout'),
     )
-    return TemplateResponse(request, 'payout_bounty.html', params)
+    return TemplateResponse(request, 'bulk_payout_bounty.html', params)
 
 
 @require_GET
@@ -573,13 +656,19 @@ def increase_bounty(request):
 
     """
     bounty = handle_bounty_views(request)
+    user = request.user if request.user.is_authenticated else None
+    is_funder = bounty.is_funder(user.username.lower()) if user else False
+
     params = get_context(
         ref_object=bounty,
-        user=request.user if request.user.is_authenticated else None,
+        user=user,
         confirm_time_minutes_target=confirm_time_minutes_target,
         active='increase_bounty',
         title=_('Increase Bounty'),
     )
+
+    params['is_funder'] = json.dumps(is_funder)
+
     return TemplateResponse(request, 'increase_bounty.html', params)
 
 
@@ -610,32 +699,34 @@ def cancel_bounty(request):
 def helper_handle_admin_override_and_hide(request, bounty):
     admin_override_and_hide = request.GET.get('admin_override_and_hide', False)
     if admin_override_and_hide:
-        is_staff = request.user.is_staff
-        if is_staff:
+        is_moderator = request.user.profile.is_moderator if hasattr(request.user, 'profile') else False
+        if getattr(request.user, 'profile') and is_moderator or request.user.is_staff:
             bounty.admin_override_and_hide = True
             bounty.save()
-            messages.success(request, _(f'Bounty is now hidden'))
+            messages.success(request, _('Bounty is now hidden'))
         else:
-            messages.warning(request, _('Only the funder of this bounty may do this.'))
+            messages.warning(request, _('Only moderators may do this.'))
 
 
 def helper_handle_admin_contact_funder(request, bounty):
     admin_contact_funder_txt = request.GET.get('admin_contact_funder', False)
     if admin_contact_funder_txt:
         is_staff = request.user.is_staff
-        if is_staff:
+        is_moderator = request.user.profile.is_moderator if hasattr(request.user, 'profile') else False
+        if is_staff or is_moderator:
             # contact funder
             admin_contact_funder(bounty, admin_contact_funder_txt, request.user)
             messages.success(request, _(f'Bounty message has been sent'))
         else:
-            messages.warning(request, _('Only the funder of this bounty may do this.'))
+            messages.warning(request, _('Only moderators or the funder of this bounty may do this.'))
 
 
 def helper_handle_mark_as_remarket_ready(request, bounty):
     admin_mark_as_remarket_ready = request.GET.get('admin_toggle_as_remarket_ready', False)
     if admin_mark_as_remarket_ready:
         is_staff = request.user.is_staff
-        if is_staff:
+        is_moderator = request.user.profile.is_moderator if hasattr(request.user, 'profile') else False
+        if is_staff or is_moderator:
             bounty.admin_mark_as_remarket_ready = not bounty.admin_mark_as_remarket_ready
             bounty.save()
             if bounty.admin_mark_as_remarket_ready:
@@ -643,19 +734,20 @@ def helper_handle_mark_as_remarket_ready(request, bounty):
             else:
                 messages.success(request, _(f'Bounty is now NOT remarket ready'))
         else:
-            messages.warning(request, _('Only the funder of this bounty may do this.'))
+            messages.warning(request, _('Only moderators or the funder of this bounty may do this.'))
 
 
 def helper_handle_suspend_auto_approval(request, bounty):
     suspend_auto_approval = request.GET.get('suspend_auto_approval', False)
     if suspend_auto_approval:
         is_staff = request.user.is_staff
-        if is_staff:
+        is_moderator = request.user.profile.is_moderator if hasattr(request.user, 'profile') else False
+        if is_staff or is_moderator:
             bounty.admin_override_suspend_auto_approval = True
             bounty.save()
             messages.success(request, _(f'Bounty auto approvals are now suspended'))
         else:
-            messages.warning(request, _('Only the funder of this bounty may do this.'))
+            messages.warning(request, _('Only moderators or the funder of this bounty may do this.'))
 
 
 def helper_handle_override_status(request, bounty):
@@ -674,7 +766,7 @@ def helper_handle_override_status(request, bounty):
                 bounty.save()
                 messages.success(request, _(f'Status updated to "{admin_override_satatus}" '))
         else:
-            messages.warning(request, _('Only the funder of this bounty may do this.'))
+            messages.warning(request, _('Only staff or the funder of this bounty may do this.'))
 
 
 def helper_handle_snooze(request, bounty):
@@ -682,12 +774,13 @@ def helper_handle_snooze(request, bounty):
     if snooze_days:
         is_funder = bounty.is_funder(request.user.username.lower())
         is_staff = request.user.is_staff
-        if is_funder or is_staff:
+        is_moderator = request.user.profile.is_moderator if hasattr(request.user, 'profile') else False
+        if is_funder or is_staff or is_moderator:
             bounty.snooze_warnings_for_days = snooze_days
             bounty.save()
             messages.success(request, _(f'Warning messages have been snoozed for {snooze_days} days'))
         else:
-            messages.warning(request, _('Only the funder of this bounty may do this.'))
+            messages.warning(request, _('Only moderators or the funder of this bounty may do this.'))
 
 
 def helper_handle_approvals(request, bounty):
@@ -701,11 +794,12 @@ def helper_handle_approvals(request, bounty):
         is_funder = bounty.is_funder(request.user.username.lower())
         is_staff = request.user.is_staff
         if is_funder or is_staff:
-            interests = bounty.interested.filter(pending=True, profile__handle=worker)
-            if not interests.exists():
+            interests = bounty.interested.filter(profile__handle=worker)
+            is_interest_invalid = (not interests.filter(pending=True).exists() and mutate_worker_action == 'rejected') or (not interests.exists())
+            if is_interest_invalid:
                 messages.warning(
                     request,
-                    _('This worker does not exist or is not in a pending state. Please check your link and try again.'))
+                    _('This worker does not exist or is not in a pending state. Perhaps they were already approved or rejected? Please check your link and try again.'))
                 return
             interest = interests.first()
 
@@ -778,8 +872,8 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         'github_auth_url': get_auth_url(request.path),
         "newsletter_headline": _("Be the first to know about new funded issues."),
         'is_staff': request.user.is_staff,
+        'is_moderator': request.user.profile.is_moderator if hasattr(request.user, 'profile') else False,
     }
-
     if issue_url:
         try:
             bounties = Bounty.objects.current().filter(github_url=issue_url)
@@ -927,11 +1021,11 @@ def profile(request, handle):
                 },
             },
         }
-        return TemplateResponse(request, 'profile_details.html', params)
+        return TemplateResponse(request, 'profiles/profile.html', params)
 
     params = profile.to_dict()
 
-    return TemplateResponse(request, 'profile_details.html', params)
+    return TemplateResponse(request, 'profiles/profile.html', params)
 
 
 @csrf_exempt
@@ -1037,7 +1131,10 @@ def sync_web3(request):
 # LEGAL
 
 def terms(request):
-    return TemplateResponse(request, 'legal/terms.txt', {})
+    context = {
+        'title': _('Terms of Use'),
+    }
+    return TemplateResponse(request, 'legal/terms.html', context)
 
 
 def privacy(request):

@@ -84,7 +84,7 @@ class DashboardModelsTest(TestCase):
         assert bounty.is_funder('fred') is False
         assert bounty.is_funder('flintstone') is True
         assert bounty.status == 'done'
-        assert bounty.value_true == 3e-18
+        assert bounty.value_true == 0
         assert bounty.value_in_eth == 3
         assert bounty.value_in_usdt_now == 0
         assert 'ago 5 Feature Intermediate' in bounty.desc
@@ -145,13 +145,13 @@ class DashboardModelsTest(TestCase):
         interest = Interest(
             profile=profile,
         )
-        assert str(interest) == 'foo / pending: False'
+        assert str(interest) == 'foo / pending: False / status: okay'
 
     @staticmethod
     def test_profile():
         """Test the dashboard Profile model."""
         bounty = Bounty.objects.create(
-            github_url='https://github.com/gitcoinco/web',
+            github_url='https://github.com/gitcoinco/web/issues/305',
             web3_created=datetime.now(tz=pytz.UTC),
             expires_date=datetime.now(tz=pytz.UTC) + timedelta(days=1),
             is_open=True,
@@ -161,7 +161,7 @@ class DashboardModelsTest(TestCase):
         )
         tip = Tip.objects.create(
             emails=['foo@bar.com'],
-            github_url='https://github.com/gitcoinco/web',
+            github_url='https://github.com/gitcoinco/web/issues/305',
             expires_date=datetime.now(tz=pytz.UTC) + timedelta(days=1),
         )
         profile = Profile(
@@ -234,7 +234,7 @@ class DashboardModelsTest(TestCase):
             value_in_token=3,
             token_name='ETH',
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/9999#issuecomment-999999999',
+            github_url='https://github.com/gitcoinco/web/issues/305#issuecomment-999999999',
             token_address='0x0',
             issue_description='hello world',
             bounty_owner_github_username='flintstone',
@@ -247,5 +247,5 @@ class DashboardModelsTest(TestCase):
             experience_level='Intermediate',
             raw_data={},
         )
-        assert bounty.github_url == 'https://github.com/gitcoinco/web/issues/9999'
+        assert bounty.github_url == 'https://github.com/gitcoinco/web/issues/305'
         bounty.delete()
