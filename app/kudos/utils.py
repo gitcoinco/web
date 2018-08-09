@@ -50,6 +50,8 @@ def getKudosContractAddress(network):
         return to_checksum_address('')
     elif network == 'ropsten':
         return to_checksum_address('')
+    elif network == 'rinkeby':
+        return to_checksum_address('0x0b9bFF2c5c7c85eE94B48D54F2C6eFa1E399380D')
     else:
         return to_checksum_address('0xe7bed272ee374e8116049d0a49737bdda86325b6')
     # raise UnsupportedNetworkException(network)

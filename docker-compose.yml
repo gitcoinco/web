@@ -6,8 +6,8 @@ services:
     restart: unless-stopped
     ports:
       - "5432:5432"
-    # volumes:
-    #   - pgdata:/var/lib/postgresql/data
+    volumes:
+      - pgdata:/var/lib/postgresql/data
 
   pgweb:
     image: sosedoff/pgweb
@@ -58,6 +58,6 @@ services:
     command: "--host 0.0.0.0 --mnemonic 'lobster chair view oyster relax keep sell grab daring ankle lunar about'"
 
 volumes:
-  # pgdata:
+  pgdata:
   ipfsdata:
   ipfsexport:
