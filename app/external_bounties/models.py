@@ -42,7 +42,7 @@ class ExternalBounty(SuperModel):
     amount_denomination = models.CharField(max_length=255, blank=True, help_text="ex: ETH, LTC, BTC")
     created_on = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     last_sync_time = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    tags = ArrayField(models.CharField(max_length=200), blank=True, default=[], help_text=_("comma delimited"))
+    tags = ArrayField(models.CharField(max_length=200), blank=True, default=list, help_text=_("comma delimited"))
     github_handle = models.CharField(max_length=255, blank=True)
     payout_str = models.CharField(max_length=255, blank=True, default='', help_text=_("string representation of the payout (only needed it amount/denomination cannot be filled out"))
     idx_fiat_price = models.DecimalField(default=0, decimal_places=4, max_digits=50)
