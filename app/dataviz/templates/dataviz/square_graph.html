@@ -1,4 +1,4 @@
-{% load i18n admin_static static %}
+{% load i18n static %}
 
 <style>
 body {
@@ -99,12 +99,12 @@ svg{
   sankey.layout = function(iterations) {
     computeNodeLinks();
     computeNodeValues();
-    
+
     // big changes here
     // change the order and depths (y pos) won't need iterations
     computeNodeDepths();
     computeNodeBreadths(iterations);
-    
+
     computeLinkDepths();
     return sankey;
   };
@@ -119,13 +119,13 @@ svg{
 
     // x0 = line start X
     // y0 = line start Y
-      
+
     // x1 = line end X
     // y1 = line end Y
-      
+
     // y2 = control point 1 (Y pos)
     // y3 = control point 2 (Y pos)
-      
+
     function link(d) {
 
       // big changes here obviously, more comments to follow
@@ -139,7 +139,7 @@ svg{
 
       // ToDo - nice to have - allow flow up or down! Plenty of use cases for starting at the bottom,
       // but main one is trickle down (economics, budgets etc), not up
-        
+
       return 'M' + x0 + ',' + y0 + // start (of SVG path)
            'C' + x0 + ',' + y2 + // CP1 (curve control point)
            ' ' + x1 + ',' + y3 + // CP2
@@ -220,19 +220,19 @@ svg{
     links.forEach(function(link) {
       link.dy = link.value * ky;
     });
-      
+
     resolveCollisions();
-      
+
     for (var alpha = 1; iterations > 0; --iterations) {
       relaxLeftToRight(alpha);
       resolveCollisions();
-            
+
       relaxRightToLeft(alpha *= .99);
       resolveCollisions();
     }
-      
+
     // these relax methods should probably be operating on one level of the nodes, not all!?
-      
+
     function relaxLeftToRight(alpha) {
       nodesByBreadth.forEach(function(nodes, breadth) {
         nodes.forEach(function(node) {
@@ -264,7 +264,7 @@ svg{
         return center(link.target) * link.value;
       }
     }
-      
+
     function resolveCollisions() {
       nodesByBreadth.forEach(function(nodes) {
         var node,
@@ -299,14 +299,14 @@ svg{
         }
       });
     }
-      
+
     function ascendingDepth(a, b) {
       // return a.y - b.y; // flows go up
       return b.x - a.x; // flows go down
       // return a.x - b.x;
     }
   }
-    
+
   // this moves all end points (sinks!) to the most extreme bottom
   function moveSinksDown(y) {
     nodes.forEach(function(node) {
@@ -345,10 +345,10 @@ svg{
 
     // move end points to the very bottom
     moveSinksDown(y);
-    
+
     scaleNodeBreadths((size[1] - nodeWidth) / (y - 1));
   }
-    
+
   // .ty is the offset in terms of node position of the link (target)
   function computeLinkDepths() {
     nodes.forEach(function(node) {
@@ -400,9 +400,9 @@ svg{
     <body>
     <a href="..">&lt; back</a>
     {% include "dataviz/shared/nav.html" %}
-        
+
         <p id="chart">
-            
+
         <script>
 
         var margin = {top: 1, right: 1, bottom: 6, left: 1},
@@ -428,7 +428,7 @@ svg{
         var path = sankey.link();
 
         var url = document.location.href + '?data=1&format=json';
-        d3.json(url, function(energy) {  
+        d3.json(url, function(energy) {
           sankey
               .nodes(energy.nodes)
               .links(energy.links)
@@ -446,13 +446,13 @@ svg{
           link.append("title")
               .text(function(d) { return d.source.name + " → " + d.target.name + "\n" + format(d.value); });
               // title is an SVG standard way of providing tooltips, up to the browser how to render this, so changing the style is tricky
-            
+
           var node = svg.append("g").selectAll(".node")
               .data(energy.nodes)
             .enter().append("g")
               .attr("class", "node")
               .attr("transform", function(d) {
-                  return "translate(" + d.x + "," + d.y + ")"; 
+                  return "translate(" + d.x + "," + d.y + ")";
               })
               .call(d3.behavior.drag()
               .origin(function(d) { return d; })
@@ -466,7 +466,7 @@ svg{
               .style("stroke", function(d) { return d3.rgb(d.color).darker(2); })
             .append("title")
               .text(function(d) { return d.name + "\n" + format(d.value); });
-            
+
           node.append("text")
               .attr("text-anchor", "middle")
               .attr("x", function (d) { return d.dy / 2 })
@@ -474,7 +474,7 @@ svg{
               .attr("dy", ".35em")
               .text(function(d) { return d.name; })
               .filter(function(d) { return d.x < width / 2; });
-                        
+
           function dragmove(d) {
             //d3.select(this).attr("transform", "translate(" + d.x + "," + (d.y = Math.max(0, Math.min(height - d.dy, d3.event.y))) + ")");
             d3.select(this).attr("transform", "translate(" + (d.x = Math.max(0, Math.min(width - d.dy, d3.event.x))) + "," + d.y + ")");
