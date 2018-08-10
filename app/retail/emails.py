@@ -522,7 +522,7 @@ def render_new_bounty_roundup(to_email):
 </p>
 <p>
 We are often asked how Gitcoin, an open source network, has built such an invaluable community.
-To answer this question (and to hopefully generalize the answers in such a way that other dApp BUIDLers could utilize them) I wrote <a href="https://medium.com/p/a5293ecca60a/edit">How to BUIDL a Mesh Network of Human Beings.</a> This piece
+To answer this question (and to hopefully generalize the answers in such a way that other dApp BUIDLers could utilize them) I wrote <a href="https://medium.com/gitcoin/how-to-buidl-a-mesh-network-of-human-beings-a5293ecca60a">How to BUIDL a Mesh Network of Human Beings.</a> This piece
 examines the psychology and thought process we've put into building the Gitcoin community. Let me know what you think by replying to this email!
 </p>
 
