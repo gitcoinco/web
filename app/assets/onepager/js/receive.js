@@ -105,6 +105,7 @@ $(document).ready(function() {
       // find existing balance
       web3.eth.getBalance(holding_address, function(error, result) {
         var balance = new BigNumber(result.toString());
+
         if (balance == 0) {
           _alert('You must wait until the senders transaction confirm before claiming this tip.');
           return;
@@ -121,13 +122,15 @@ $(document).ready(function() {
           };
           web3.eth.estimateGas(rawTx, function(err, gasLimit) {
             var buffer = new BigNumber(0);
-            gasLimit = new BigNumber(gasLimit)
+
+            gasLimit = new BigNumber(gasLimit);
             var send_amount = amount_in_wei.minus(gasLimit.times(gas_price_wei)).minus(buffer);
+
             rawTx['value'] = web3.toHex(send_amount.toString()); // deduct gas costs from amount to send
             rawTx['gasPrice'] = web3.toHex(gas_price_wei.toString());
             rawTx['gas'] = web3.toHex(gasLimit.toString());
             rawTx['gasLimit'] = web3.toHex(gasLimit.toString());
-            if(false){
+            if (false) {
               console.log('addr ', holding_address);
               console.log('balance ', balance.toString());
               console.log('sending ', send_amount.toString());

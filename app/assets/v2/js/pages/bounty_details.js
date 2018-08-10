@@ -1127,7 +1127,8 @@ const process_activities = function(result, bounty_activities) {
     const has_interest = !!result.interested.find(interest =>
       interest.profile.handle === _activity.profile.handle);
     const slash_possible = document.isStaff;
-    const uninterest_possible = (isBountyOwnerPerLogin(result) || document.isStaff) && is_open && has_interest;
+    const is_logged_in = document.contxt['github_handle'];
+    const uninterest_possible = is_logged_in && ((isBountyOwnerPerLogin(result) || document.isStaff) && is_open && has_interest);
 
     return {
       profileId: _activity.profile.id,
