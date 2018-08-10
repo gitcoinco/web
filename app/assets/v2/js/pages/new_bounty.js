@@ -92,59 +92,6 @@ $(document).ready(function() {
   } else if (localStorage['issueURL']) {
     $('input[name=issueURL]').val(localStorage['issueURL']);
   }
-  if (localStorage['project_type']) {
-    $('select[name=project_type] option').prop('selected', false);
-    $(
-      "select[name=project_type] option[value='" +
-        localStorage['project_type'] +
-        "']"
-    ).prop('selected', true);
-  }
-  if (localStorage['permission_type']) {
-    $('select[name=permission_type] option').prop('selected', false);
-    $(
-      "select[name=permission_type] option[value='" +
-        localStorage['permission_type'] +
-        "']"
-    ).prop('selected', true);
-  }
-  if (localStorage['expirationTimeDelta']) {
-    $('select[name=expirationTimeDelta] option').prop('selected', false);
-    $(
-      "select[name=expirationTimeDelta] option[value='" +
-        localStorage['expirationTimeDelta'] +
-        "']"
-    ).prop('selected', true);
-  }
-  if (localStorage['experienceLevel']) {
-    $(
-      'select[name=experienceLevel] option:contains(' +
-        localStorage['experienceLevel'] +
-        ')'
-    ).prop('selected', true);
-  }
-  if (localStorage['projectLength']) {
-    $(
-      'select[name=projectLength] option:contains(' +
-        localStorage['projectLength'] +
-        ')'
-    ).prop('selected', true);
-  }
-
-  if (localStorage['jobDescription']) {
-    $('#jobDescription').val(localStorage['jobDescription']);
-    setTimeout(function() {
-      $('#hiringRightNow').attr('checked', 'checked');
-      open_hiring_panel(false);
-    }, 10);
-  }
-  if (localStorage['bountyType']) {
-    $(
-      'select[name=bountyType] option:contains(' +
-        localStorage['bountyType'] +
-        ')'
-    ).prop('selected', true);
-  }
 
   // fetch issue URL related info
   $('input[name=amount]').keyup(setUsdAmount);
@@ -333,20 +280,10 @@ $(document).ready(function() {
       $(this).attr('disabled', 'disabled');
 
       // save off local state for later
-      localStorage['project_type'] = data.project_type;
-      localStorage['permission_type'] = data.permission_type;
       localStorage['issueURL'] = issueURL;
-      localStorage['amount'] = amount;
       localStorage['notificationEmail'] = notificationEmail;
       localStorage['githubUsername'] = githubUsername;
       localStorage['tokenAddress'] = tokenAddress;
-      localStorage['jobDescription'] = $('#hiringRightNow').is(':checked') ? data.jobDescription : '';
-      localStorage['expirationTimeDelta'] = $(
-        'select[name=expirationTimeDelta]'
-      ).val();
-      localStorage['experienceLevel'] = $('select[name=experienceLevel]').val();
-      localStorage['projectLength'] = $('select[name=projectLength]').val();
-      localStorage['bountyType'] = $('select[name=bountyType]').val();
       localStorage.removeItem('bountyId');
 
       // setup web3
