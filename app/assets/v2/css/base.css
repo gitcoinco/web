@@ -450,7 +450,7 @@ p a {
 }
 
 .btn:focus {
-  box-shadow: none;
+  /* box-shadow: none; */
 }
 
 .cta-green {

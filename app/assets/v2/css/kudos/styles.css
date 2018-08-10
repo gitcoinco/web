@@ -124,6 +124,10 @@
   background-color: #0d023b;
   color: white; }
 
+.bg-light-blue {
+  background-color: #3e00ff;
+  color: white; }
+
 .lh-3 {
   line-height: 3rem; }
 
@@ -149,6 +153,10 @@
     justify-content: space-evenly; }
   .cta-square:hover {
     color: rgba(255, 255, 255, 0.8); }
+
+#carouselkudos .carousel-inner {
+  width: 90%;
+  margin: auto; }
 
 .carousel-control-kudos .carousel-control-next,
 .carousel-control-kudos .carousel-control-prev {

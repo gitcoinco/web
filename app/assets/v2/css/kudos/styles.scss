@@ -100,6 +100,10 @@ $gc-blue: #3e00ff;
   background-color: $dark-blue;
   color: white;
 }
+.bg-light-blue {
+  background-color: $gc-blue;
+  color: white;
+}
 
 .lh-3 {
   line-height: 3rem;
@@ -124,6 +128,11 @@ $gc-blue: #3e00ff;
   &:hover {
     color:rgba(255,255,255, 0.8)
   }
+}
+
+#carouselkudos .carousel-inner {
+  width: 90%;
+  margin: auto;
 }
 .carousel-control-kudos {
   .carousel-control-next,
