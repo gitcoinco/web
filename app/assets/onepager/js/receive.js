@@ -130,7 +130,8 @@ $(document).ready(function() {
             rawTx['gasPrice'] = web3.toHex(gas_price_wei.toString());
             rawTx['gas'] = web3.toHex(gasLimit.toString());
             rawTx['gasLimit'] = web3.toHex(gasLimit.toString());
-            if (false) {
+            show_console = false;
+            if (show_console) {
               console.log('addr ', holding_address);
               console.log('balance ', balance.toString());
               console.log('sending ', send_amount.toString());
