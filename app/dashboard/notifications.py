@@ -396,7 +396,7 @@ def get_status_header(bounty):
 
 def build_related_profile_pairs(queryset_all):
     # *args:
-    #   a 1: bool: .filter(pending=True}False)
+    #   a 1: QuerySet:  objects to get related profiles for
     queryset_all = queryset_all.select_related('profile').only('profile__handle')
     return queryset_all
 
@@ -485,24 +485,11 @@ def create_github_notifications():
 
     return events
 
+
 def build_github_notification(market_to_github):
-    """Build a Github comment for the specified Bounty.
-
-    Args:
-        bounty (dashboard.models.Bounty): The Bounty to be marketed.
-        event_name (str): The name of the event.
-        profile_pairs (list of tuples): The list of username and profile page
-            URL tuple pairs.
-
-    Returns:
-        bool: Whether or not the Github comment was posted successfully.
-
-    """
     def build_github_notification_market_to_github(*args, **kwargs):
         events = create_github_notifications()
-        context = {
-                        'bounty': args[0]
-                  }
+        context = {'bounty': args[0]}
         msg = events[args[1]](context)
         return market_to_github(args[0], msg, args[1])
     return build_github_notification_market_to_github
@@ -515,8 +502,6 @@ def maybe_market_to_github(bounty, msg, event_name):
     Args:
         bounty (dashboard.models.Bounty): The Bounty to be marketed.
         event_name (str): The name of the event.
-        profile_pairs (list of tuples): The list of username and profile page
-            URL tuple pairs.
 
     Returns:
         bool: Whether or not the Github comment was posted successfully.
@@ -541,43 +526,26 @@ def maybe_market_to_github(bounty, msg, event_name):
         repo = uri_array[2]
         issue_num = uri_array[4]
 
+        def post_or_patch_issue_comment(bounty_comment, msg):
+            if bounty_comment:
+                patch_issue_comment(bounty_comment, username, repo, msg)
+            else:
+                response = post_issue_comment(username, repo, issue_num, msg)
+                bounty_comment = int(response.get('id'))
+
         if event_name in ['new_bounty', 'increased_bounty']:
-            if bounty.opened_comment:
-                patch_issue_comment(bounty.opened_comment, username, repo, msg)
-            else:
-                response = post_issue_comment(username, repo, issue_num, msg)
-                bounty.opened_comment = int(response.get('id'))
+            post_or_patch_issue_comment(bounty.opened_comment, msg)
         elif event_name == 'work_started':
-            if bounty.interested.filter(pending=True).count():
-                if bounty.interested_comment:
-                    patch_issue_comment(bounty.interested_comment, username, repo, msg['pending'])
-                else:
-                    response = post_issue_comment(username, repo, issue_num, msg['pending'])
-                    bounty.interested_comment = int(response.get('id'))
-            if bounty.interested.filter(pending=False).count():
-                if bounty.started_comment:
-                    patch_issue_comment(bounty.started_comment, username, repo, msg['started'])
-                else:
-                    response = post_issue_comment(username, repo, issue_num, msg['started'])
-                    bounty.started_comment = int(response.get('id'))
+            if bounty.interested.filter(pending=True):
+                post_or_patch_issue_comment(bounty.interested_comment, msg['pending'])
+            if bounty.interested.filter(pending=False):
+                post_or_patch_issue_comment(bounty.started_comment, msg['started'])
         elif event_name == 'stop_work':
-            if bounty.stopped_comment:
-                patch_issue_comment(bounty.stopped_comment, username, repo, msg)
-            else:
-                response = post_issue_comment(username, repo, issue_num, msg)
-                bounty.stopped_comment = int(response.get('id'))
+            post_or_patch_issue_comment(bounty.stopped_comment, msg)
         elif event_name == 'work_submitted':
-            if bounty.submissions_comment:
-                patch_issue_comment(bounty.submissions_comment, username, repo, msg)
-            else:
-                response = post_issue_comment(username, repo, issue_num, msg)
-                bounty.submissions_comment = int(response.get('id'))
+            post_or_patch_issue_comment(bounty.submissions_comment, msg)
         elif event_name == 'work_done':
-            if bounty.done_comment:
-                patch_issue_comment(bounty.done_comment, username, repo, msg)
-            else:
-                response = post_issue_comment(username, repo, issue_num, msg)
-                bounty.done_comment = int(response.get('id'))
+            post_or_patch_issue_comment(bounty.done_comment, msg)
         bounty.save()
     except IndexError:
         return False
