@@ -5,6 +5,6 @@
 {% for profile in stopped_work %} 
 [@{{ profile.handle }}]({{ profile.url }}) has __stopped work__ on this project.
 {% endfor %}
-{% for profile in started_work %} 
+{% for profile in still_working %} 
 [@{{ profile.handle }}]({{ profile.url }}) is __still working__ on this project.
 {% endfor %}

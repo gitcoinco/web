@@ -25,6 +25,10 @@ from pytz import UTC
 from test_plus.test import TestCase
 import cgi
 
+@build_github_notification
+def test_maybe_market_to_github(bounty, msg, event_name):
+    return msg
+
 
 class DashboardNotificationsTest(TestCase):
     """Define tests for dashboard notifications."""
@@ -58,7 +62,7 @@ class DashboardNotificationsTest(TestCase):
         self.bounty_owner = f"(@{self.bounty.bounty_owner_github_username})"
 
     def test_build_github_notification_new_bounty_traditional_permissionless(self):
-        message = build_github_notification(self.bounty, 'new_bounty')
+        message = test_maybe_market_to_github(self.bounty, 'new_bounty')
         print(message)
         print(self.amount_open_work)
         absolute_url = self.bounty.get_absolute_url()
@@ -73,7 +77,7 @@ class DashboardNotificationsTest(TestCase):
     def test_build_github_notification_new_bounty_traditional_approval(self):
         self.bounty.bounty_type = 'traditional'
         self.bounty.permission_type='approval'
-        message = build_github_notification(self.bounty, 'new_bounty')
+        message = test_maybe_market_to_github(self.bounty, 'new_bounty')
         print(message)
         absolute_url = self.bounty.get_absolute_url()
         assert f"Funding: " in message 
@@ -87,7 +91,7 @@ class DashboardNotificationsTest(TestCase):
     def test_build_github_notification_new_bounty_cooperative(self):
         self.bounty.bounty_type = 'cooperative'
         self.bounty.permission_type = 'permissionless'
-        message = build_github_notification(self.bounty, 'new_bounty')
+        message = test_maybe_market_to_github(self.bounty, 'new_bounty')
         print(message)
         absolute_url = self.bounty.get_absolute_url()
         assert f"Funding: " in message 
@@ -101,7 +105,7 @@ class DashboardNotificationsTest(TestCase):
     def test_build_github_notification_new_bounty_contest(self):
         self.bounty.bounty_type = 'contest'
         self.bounty.permission_type='permissionless'
-        message = build_github_notification(self.bounty, 'new_bounty')
+        message = test_maybe_market_to_github(self.bounty, 'new_bounty')
         print(message)
         absolute_url = self.bounty.get_absolute_url()
         assert f"Funding: " in message 
@@ -115,7 +119,7 @@ class DashboardNotificationsTest(TestCase):
 
     def test_build_github_notification_new_bounty(self):
         """Test the dashboard helper build_github_notification method with new_bounty."""
-        message = build_github_notification(self.bounty, 'new_bounty')
+        message = test_maybe_market_to_github(self.bounty, 'new_bounty')
         print(message)
         assert f'__This issue now has a funding of {self.natural_value} {self.bounty.token_name}' in message
         assert self.usdt_value in message
@@ -132,7 +136,7 @@ class DashboardNotificationsTest(TestCase):
                pending=True
         )
         self.bounty.interested.add(interest)
-        message = build_github_notification(self.bounty, 'work_started')
+        message = test_maybe_market_to_github(self.bounty, 'work_started')
         bounty_owner_profile_handle = self.bounty.bounty_owner_profile.handle
         bounty_owner_profile_url = cgi.escape(self.bounty.bounty_owner_profile.url)
         bounty_approve_worker_url = cgi.escape(self.bounty.approve_worker_url(interest_profile.handle))
@@ -158,7 +162,7 @@ class DashboardNotificationsTest(TestCase):
                acceptance_date=datetime(2018, 11, 30, tzinfo=UTC)
         )
         self.bounty.interested.add(interest)
-        message = build_github_notification(self.bounty, 'work_started')
+        message = test_maybe_market_to_github(self.bounty, 'work_started')
         print(message)
         assert f'[@{ interest_profile.handle }]({ interest_profile.url }) has __started work__ on this project.' in message['started']
         self.bounty.interested.remove(interest)
@@ -174,7 +178,7 @@ class DashboardNotificationsTest(TestCase):
                acceptance_date=datetime(2018, 11, 30, tzinfo=UTC)
         )
         self.bounty.interested.add(interest)
-        message = build_github_notification(self.bounty, 'work_started')
+        message = test_maybe_market_to_github(self.bounty, 'work_started')
         print(message)
         assert f'[@{ interest_profile.handle }]({ interest_profile.url }) has been __approved__ to start work on this project.'
         self.bounty.interested.remove(interest)
@@ -198,7 +202,7 @@ class DashboardNotificationsTest(TestCase):
                acceptance_date=datetime(2018, 11, 30, tzinfo=UTC)
         )
         self.bounty.interested.add(interest2)
-        message = build_github_notification(self.bounty, 'work_started')
+        message = test_maybe_market_to_github(self.bounty, 'work_started')
         print(message)
         assert f'[@{ interest_profile.handle }]({ interest_profile.url }) has __started work__ on this project.' in message['started']
         assert f'Comments: hello world' in message['started']
@@ -218,10 +222,10 @@ class DashboardNotificationsTest(TestCase):
                acceptance_date=datetime(2018, 11, 30, tzinfo=UTC)
         )
         self.bounty.interested.add(interest)
-        message = build_github_notification(self.bounty, 'work_started')
+        message = test_maybe_market_to_github(self.bounty, 'work_started')
         print(message)
         assert f'[@{ interest_profile.handle }]({ interest_profile.url }) has __started work__ on this project.' in message['started']
-        assert f'Comments: helo world' in message['started']
+        assert f'Comments: hello world' in message['started']
         self.bounty.interested.remove(interest)
 
     def test_build_github_notification_stop_work_contest(self):
@@ -241,7 +245,7 @@ class DashboardNotificationsTest(TestCase):
                acceptance_date=datetime(2018, 11, 30, tzinfo=UTC)
         )
         self.bounty.interested.add(interest)
-        message = build_github_notification(self.bounty, 'stop_work')
+        message = test_maybe_market_to_github(self.bounty, 'stop_work')
         print(message)
         assert f'[@{ activity_profile.handle }]({ activity_profile.url }) has __stopped work__ on this project.' in message
         assert f'[@{ interest_profile.handle }]({ interest_profile.url }) is __still working__ on this project.' in message
@@ -260,7 +264,7 @@ class DashboardNotificationsTest(TestCase):
               accepted=False
         )
         fulfillment = self.bounty.fulfillments.add(fulfillment)
-        message = build_github_notification(self.bounty, 'work_submitted')
+        message = test_maybe_market_to_github(self.bounty, 'work_submitted')
         print(message)
         assert f'[@{fulfillment_profile.handle}]({ fulfillment_profile.url }) has __submitted work__ for this project.'
 
@@ -277,14 +281,14 @@ class DashboardNotificationsTest(TestCase):
               profile=fulfillment_profile,
               accepted=False
         )
-        message = build_github_notification(self.bounty, 'work_submitted')
+        message = test_maybe_market_to_github(self.bounty, 'work_submitted')
         print(message)
         assert f'[@{fulfillment_profile.handle}]({ fulfillment_profile.url }) has __submitted work__ for this project.'
 
     def test_build_github_notification_submit_work_cooperative(self):
         self.bounty.bounty_type='cooperative'
         self.bounty.permission_type='permissionless'
-        message = build_github_notification(self.bounty, 'work_submitted')
+        message = test_maybe_market_to_github(self.bounty, 'work_submitted')
         fulfillment_profile = Profile.objects.filter(handle='samplegitcoindeveloper1').first()
         fulfillment = BountyFulfillment.objects.create(
               fulfiller_address='0x0000000000000000000000000000000000000000',
@@ -295,7 +299,7 @@ class DashboardNotificationsTest(TestCase):
               profile=fulfillment_profile,
               accepted=False
         )
-        message = build_github_notification(self.bounty, 'work_submitted')
+        message = test_maybe_market_to_github(self.bounty, 'work_submitted')
         print(message)
         assert f'[@{fulfillment_profile.handle}]({ fulfillment_profile.url }) has __submitted work__ for this project.'
 
@@ -313,7 +317,7 @@ class DashboardNotificationsTest(TestCase):
               accepted=True
         )
         self.bounty.fulfillments.add(fulfillment)
-        message = build_github_notification(self.bounty, 'work_done')
+        message = test_maybe_market_to_github(self.bounty, 'work_done')
         print(message)
         assert f'[@{ self.bounty.bounty_owner_github_username }]({ self.bounty.bounty_owner_profile.url }) has __accepted work __ from [@{ fulfillment.fulfiller_github_username }]({ fulfillment.fulfiller_github_url }).'
 
@@ -331,7 +335,7 @@ class DashboardNotificationsTest(TestCase):
               accepted=True
         )
         self.bounty.fulfillments.add(fulfillment)
-        message = build_github_notification(self.bounty, 'work_done')
+        message = test_maybe_market_to_github(self.bounty, 'work_done')
         print(message)
         assert f'[@{ self.bounty.bounty_owner_github_username }]({ self.bounty.bounty_owner_profile.url }) has __accepted work __ from [@{ fulfillment.fulfiller_github_username }]({ fulfillment.fulfiller_github_url }).'
 
@@ -349,7 +353,7 @@ class DashboardNotificationsTest(TestCase):
               accepted=True
         )
         self.bounty.fulfillments.add(fulfillment)
-        message = build_github_notification(self.bounty, 'work_done')
+        message = test_maybe_market_to_github(self.bounty, 'work_done')
         print(message)
         assert f'[@{ self.bounty.bounty_owner_github_username }]({ self.bounty.bounty_owner_profile.url }) has __accepted work __ from [@{ fulfillment.fulfiller_github_username }]({ fulfillment.fulfiller_github_url }).'
 
@@ -367,20 +371,20 @@ class DashboardNotificationsTest(TestCase):
               accepted=True
         )
         self.bounty.fulfillments.add(fulfillment)
-        message = build_github_notification(self.bounty, 'work_done')
+        message = test_maybe_market_to_github(self.bounty, 'work_done')
         print(message)
         assert f'[@{ self.bounty.bounty_owner_github_username }]({ self.bounty.bounty_owner_profile.url }) has __accepted work __ from [@{ fulfillment.fulfiller_github_username }]({ fulfillment.fulfiller_github_url }).'
 
     def test_build_github_notification_killed_bounty(self):
         """Test the dashboard helper build_github_notification method with killed_bounty."""
-        message = build_github_notification(self.bounty, 'killed_bounty')
+        message = test_maybe_market_to_github(self.bounty, 'killed_bounty')
         assert f"__The funding of {self.natural_value} {self.bounty.token_name} {self.usdt_value}" in message
         assert 'Questions?' in message
         assert f'${self.amount_open_work}' in message
 
     def test_build_github_notification_increased_bounty(self):
         """Test the dashboard helper build_github_notification method with new_bounty."""
-        message = build_github_notification(self.bounty, 'increased_bounty')
+        message = test_maybe_market_to_github(self.bounty, 'increased_bounty')
         assert f'__The funding of this issue was increased to {self.natural_value} {self.bounty.token_name}' in message
         assert self.usdt_value in message
         assert f'The funding of this issue was increased' in message

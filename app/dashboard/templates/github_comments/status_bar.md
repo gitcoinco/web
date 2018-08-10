@@ -1,3 +1,4 @@
+{%load static %}
 {%if status == 'open' %}
 	![Open bounty]({% static 'status/open-copy.svg' %})
 {%elif status == 'started' and started_work.count %}
