@@ -17,23 +17,33 @@
 {% load i18n staticfiles %}
 
 {% if user.is_authenticated and request.path == '/profile/' %}
-<div class="container">
-  <h3>Wallets</h3>
-  <ul>
-    {% for address in wallet_addresses %}
-    <li>{{ address }}</li>
-    {% endfor %}
-  </ul>
+<div class="btn-group" role="group" aria-label="Basic example">
+  <button type="button" class="btn btn-sm btn-danger" data-toggle="popover" data-class="asd" data-html="true" data-popover-content="#wallet-popover">Add Wallet</button>
+  <button type="button" id="wallets-number" class="btn btn-sm btn-secondary" disabled>{{ wallet_addresses|length }}</button>
 </div>
-<div class="container">
-  <form action="/profile/" method="post">
-     {% csrf_token %}
-    <div class="form-group">
-      <label for="addWallet">Wallet Address</label>
-      <input type="text" class="form-control form-control-lg" name="address" id="input-wallet" placeholder="{% trans 'Enter Wallet Address' %}">
-    </div>
-    <button type="submit" class="btn btn-primary">Add Wallet</button>
-  </form>
+<div id="wallet-popover" style="display:none;">
+  <div class="popover-heading">{% trans "Wallets" %}</div>
+  <div class="popover-body">
+    <form action="/profile/" method="post" name="formwallets" id="form-wallets">
+      {% csrf_token %}
+      <input type="hidden" id="input-wallet" name="address">
+      <div class="input-group input-group-sm">
+        <div class="input-group-prepend">
+          <div id="wallet-address" class="input-group-text" data-metamask-address></div>
+        </div>
+        <div class="input-group-append">
+          <button type="submit" class="btn btn-sm btn-primary">{% trans "Add Wallet" %}</button>
+        </div>
+      </div>
+
+    </form>
+    <ul class="list-unstyled p-2 wallets-list">
+      {% for address in wallet_addresses %}
+      <li>{{ address }}</li>
+      {% endfor %}
+    </ul>
+  
+  </div>
 </div>
 {% endif %}
 
