@@ -127,6 +127,10 @@ body {
   overflow-x: hidden;
   width: 100%;
   background-color: #fff;
+
+  /* better font render */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 h4,
@@ -174,6 +178,11 @@ h4,
   background-repeat: no-repeat;
 }
 
+.header-contributor {
+  background-image: url('/static/v2/images/landing/contributor/hero_header_bg.jpg');
+  background-color: #3f00ff;
+}
+
 #gitcoin-background {
   background-image: url("/static/v2/images/header-bg.png");
   background-size: 2000px;
@@ -194,6 +203,18 @@ h4,
   padding-right: 1rem !important;
   padding-left: 1rem !important;
   font-size: 0.9rem !important;
+}
+
+.text-white {
+  color: #ffffff;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.light {
+  font-weight: 200;
 }
 
 .font-title-lg {
@@ -273,12 +294,17 @@ div.button-pink {
 }
 
 .header-line {
-  color: white;
+  color: #12c971;
   font-family: Muli, sans-serif;
   font-size: 3em;
   font-weight: 500;
   font-style: italic;
   letter-spacing: 0.1em;
+}
+
+.header-line-contributors {
+  letter-spacing: 0.5px;
+  font-weight: 700;
 }
 
 .subheader-line {
@@ -287,6 +313,12 @@ div.button-pink {
   font-size: 1.75em;
   font-weight: 500;
   font-style: italic;
+}
+
+.subheader-line-contributors {
+  color: #ffffff;
+  margin-top: 0.6em;
+  font-weight: 100;
 }
 
 .font-weight-300 {
@@ -438,6 +470,7 @@ div.button-pink {
   border-top: 1px solid var(--gc-green);
   background: black;
 }
+
 .sitenav {
   display: flex;
   flex-direction: column;
@@ -447,9 +480,26 @@ div.button-pink {
   width: 7rem;
   margin-bottom: 1rem;
 }
+
 .sitenav a {
   color: var(--text-light);
   margin-bottom: 0.5rem;
+}
+
+.network-banner--warning {
+  background: #ff3232;
+  width: 100%;
+  color: white;
+  text-align: center;
+}
+
+.network-banner--warning a {
+  color: white;
+  text-decoration: none;
+}
+
+.network-banner--warning a:hover {
+  text-decoration: underline;
 }
 
 .lil-white-button {

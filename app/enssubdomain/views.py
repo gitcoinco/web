@@ -57,10 +57,7 @@ def get_gas_price(gas_multiplier=1.101):
 
 
 def handle_default_response(request, github_handle):
-    params = {
-        'github_handle': github_handle,
-        'ens_domain': settings.ENS_TLD,
-    }
+    params = {'github_handle': github_handle, 'ens_domain': settings.ENS_TLD, }
     return TemplateResponse(request, 'ens/ens_register.html', params)
 
 
@@ -119,14 +116,8 @@ def set_resolver(signer, github_handle, nonce, gas_multiplier=1.101):
         'gasPrice': Web3.toHex(int(float(gas_price))),
     }
 
-    ens_contract = w3.eth.contract(
-        address=ENS_MAINNET_ADDR,
-        abi=ens_abi,
-    )
-    txn = ens_contract.functions.setResolver(
-        dot_eth_namehash(subdomain),
-        resolver_addr,
-    ).buildTransaction(transaction)
+    ens_contract = w3.eth.contract(address=ENS_MAINNET_ADDR, abi=ens_abi, )
+    txn = ens_contract.functions.setResolver(dot_eth_namehash(subdomain), resolver_addr, ).buildTransaction(transaction)
     signed_txn = w3.eth.account.signTransaction(txn, private_key=settings.ENS_PRIVATE_KEY)
     try:
         txn_hash = convert_txn(w3.eth.sendRawTransaction(signed_txn.rawTransaction))
@@ -152,15 +143,10 @@ def set_owner(signer, github_handle, nonce, gas_multiplier=1.101):
         'gasPrice': Web3.toHex(int(float(gas_price))),
     }
 
-    ens_contract = w3.eth.contract(
-        address=ENS_MAINNET_ADDR,
-        abi=ens_abi,
-    )
+    ens_contract = w3.eth.contract(address=ENS_MAINNET_ADDR, abi=ens_abi, )
 
     txn = ens_contract.functions.setSubnodeOwner(
-        dot_eth_namehash(owned),
-        label_to_hash(label),
-        Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
+        dot_eth_namehash(owned), label_to_hash(label), Web3.toChecksumAddress(settings.ENS_OWNER_ACCOUNT),
     ).buildTransaction(transaction)
     signed_txn = w3.eth.account.signTransaction(txn, private_key=settings.ENS_PRIVATE_KEY)
     try:
@@ -188,14 +174,8 @@ def set_address_at_resolver(signer, github_handle, nonce, gas_multiplier=1.101):
         'gasPrice': Web3.toHex(int(float(gas_price))),
     }
 
-    resolver_contract = w3.eth.contract(
-        address=resolver_addr,
-        abi=resolver_abi,
-    )
-    txn = resolver_contract.functions.setAddr(
-        dot_eth_namehash(subdomain),
-        signer,
-    ).buildTransaction(transaction)
+    resolver_contract = w3.eth.contract(address=resolver_addr, abi=resolver_abi, )
+    txn = resolver_contract.functions.setAddr(dot_eth_namehash(subdomain), signer, ).buildTransaction(transaction)
     signed_txn = w3.eth.account.signTransaction(txn, private_key=settings.ENS_PRIVATE_KEY)
     try:
         txn_hash = convert_txn(w3.eth.sendRawTransaction(signed_txn.rawTransaction))

@@ -17,7 +17,7 @@
 
 {% endcomment %}
 
-{% load i18n admin_static %}
+{% load i18n static %}
 
 {% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
 
@@ -100,6 +100,9 @@
         </ul>
         <ul>
             <a href="/_administrationtdi/whitepaperaccessrequest/">Process Whitepaper Requests</a>
+        </ul>
+        <ul>
+            <a href="/_administrationeconomy/token/">Process Token Requests</a>
         </ul>
 
     </div>

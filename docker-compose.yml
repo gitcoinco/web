@@ -8,25 +8,22 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
 
-  pgweb:
-    image: sosedoff/pgweb
-    environment:
-        - DATABASE_URL=postgres://postgres:postgres@db:5432?sslmode=disable
-    links:
-        - db
+  ipfs:
+    image: ipfs/go-ipfs:release
+    restart: unless-stopped
+    volumes:
+      - 'ipfsexport:/export'
+      - 'ipfsdata:/data/ipfs'
     ports:
-        - "8081:8081"
-    depends_on:
-      - db
-    restart: "on-failure:10"
+      - "4001:4001"
+      - "4002:4002"
+      - "5001:5001"
+      - "8080:8080"
 
   web:
     restart: unless-stopped
     environment:
-      - PYTHONDONTWRITEBYTECODE=1
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/code/app
     env_file:
@@ -49,3 +46,5 @@ services:
 
 volumes:
   pgdata:
+  ipfsdata:
+  ipfsexport:

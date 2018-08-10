@@ -23,13 +23,18 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from .models import (
-    Bounty, BountyFulfillment, BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Interest, Profile,
+    Activity, Bounty, BountyFulfillment, BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Interest, Profile,
     Subscription, Tip, TokenApproval, Tool, ToolVote, UserAction,
 )
 
 
 class BountyFulfillmentAdmin(admin.ModelAdmin):
     raw_id_fields = ['bounty', 'profile']
+    search_fields = ['fulfiller_address', 'fulfiller_email', 'fulfiller_github_username', 'fulfiller_name', 'fulfiller_metadata', 'fulfiller_github_url']
+    ordering = ['-id']
+
+
+class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
 
@@ -54,7 +59,7 @@ class InterestAdmin(admin.ModelAdmin):
 
 class UserActionAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile', 'user']
-    search_fields = ['action', 'ip_address', 'metadata']
+    search_fields = ['action', 'ip_address', 'metadata', 'profile__handle']
     ordering = ['-id']
 
 
@@ -68,11 +73,27 @@ class ProfileAdmin(admin.ModelAdmin):
 class TipAdmin(admin.ModelAdmin):
     raw_id_fields = ['recipient_profile', 'sender_profile']
     ordering = ['-id']
-    readonly_fields = ['resend']
-    search_fields = ['tokenName', 'comments_public', 'comments_priv', 'from_name', 'username', 'network', 'github_url', 'url', 'emails']
+    readonly_fields = ['resend', 'claim']
+    search_fields = ['tokenName', 'comments_public', 'comments_priv', 'from_name', 'username', 'network', 'github_url', 'url', 'emails', 'from_address', 'receive_address']
 
     def resend(self, instance):
         html = format_html('<a href="/_administration/email/new_tip/resend?pk={}">resend</a>', instance.pk)
+        return html
+
+    def claim(self, instance):
+        if instance.web3_type == 'yge':
+            return 'n/a'
+        if not instance.txid:
+            return 'n/a'
+        if instance.receive_txid:
+            return 'n/a'
+        try:
+            if instance.web3_type == 'v2':
+                html = format_html('<a href="{}">claim</a>', instance.receive_url)
+            if instance.web3_type == 'v3':
+                html = format_html(f'<a href="{instance.receive_url_for_recipient}">claim as recipient</a>')
+        except:
+            html = 'n/a'
         return html
 
 
@@ -82,8 +103,8 @@ class BountyAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
     search_fields = ['raw_data', 'title', 'bounty_owner_github_username', 'token_name']
-    list_display = ['pk', 'img', 'idx_status', 'network_link', 'standard_bounties_id_link', 'what']
-    readonly_fields = ['what', 'img', 'fulfillments_link', 'standard_bounties_id_link', 'network_link']
+    list_display = ['pk', 'img', 'idx_status', 'network_link', 'standard_bounties_id_link', 'bounty_link', 'what']
+    readonly_fields = ['what', 'img', 'fulfillments_link', 'standard_bounties_id_link', 'bounty_link', 'network_link']
 
     def img(self, instance):
         if not instance.avatar_url:
@@ -104,12 +125,18 @@ class BountyAdmin(admin.ModelAdmin):
         url = f'/_administrationdashboard/bounty/?standard_bounties_id={instance.standard_bounties_id}'
         return mark_safe(f"<a href={url}>{copy}</a>")
 
+    def bounty_link(self, instance):
+        copy = 'link'
+        url = instance.url
+        return mark_safe(f"<a href={url}>{copy}</a>")
+
     def network_link(self, instance):
         copy = f'{instance.network}'
         url = f'/_administrationdashboard/bounty/?network={instance.network}'
         return mark_safe(f"<a href={url}>{copy}</a>")
 
 
+admin.site.register(Activity, GeneralAdmin)
 admin.site.register(Subscription, GeneralAdmin)
 admin.site.register(UserAction, UserActionAdmin)
 admin.site.register(Interest, InterestAdmin)

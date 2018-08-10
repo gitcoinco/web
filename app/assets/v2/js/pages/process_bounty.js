@@ -9,6 +9,18 @@ window.onload = function() {
       $('input[name=issueURL]').val(getParam('source'));
     }
 
+    $('#tipPercent').change(function() {
+      is_valid = $(this).val() > 0 && !isNaN($(this).val());
+      if (!is_valid) {
+        $(this).val(0);
+      }
+      var bounty_amount = parseFloat(document.bounty_amount_whole);
+      var pct = parseFloat($(this).val()) * 0.01;
+      var estimate = Math.round(bounty_amount * pct * 10 ** 3) / 10 ** 3;
+
+      $('#tipEstimate').text(estimate);
+    });
+
     var bountyDetails = [];
 
     var fulfillmentCallback = function(results, status) {
@@ -22,7 +34,7 @@ window.onload = function() {
       results = sanitizeAPIResults(results);
       result = results[0];
       if (result == null) {
-        _alert({ message: gettext('No bounty fulfillments found for this Github URL.') }, 'warning');
+        _alert({ message: gettext('No bounty fulfillments found for this Github URL.  Please use the advanced payout tool instead.') }, 'warning');
         unloading_button($('.submitBounty'));
         return;
       }
@@ -33,6 +45,7 @@ window.onload = function() {
         var option = $('<option>');
 
         option.attr('value', value.fulfillment_id);
+        option.attr('data-username', value.fulfiller_github_username);
         var short_addr = value.fulfiller_address.slice(0, 7).concat('...');
 
         option.text('Id: ' + value.fulfillment_id + ',  Username: ' + value.fulfiller_github_username + ',  Address: ' + short_addr);
@@ -61,6 +74,42 @@ window.onload = function() {
       window.location.href = new_url;
     });
 
+    var attach_and_send_tip = function(callback) {
+      // get form data
+      var bounty_amount = parseFloat(document.bounty_amount_whole);
+      var pct = parseFloat($('#tipPercent').val()) * 0.01;
+
+      var email = '';
+      var github_url = $('#issueURL').val();
+      var from_name = document.contxt['github_handle'];
+      var username = $('#bountyFulfillment option:selected').data('username');
+      var amountInEth = bounty_amount * pct;
+      var comments_priv = '';
+      var comments_public = '';
+      var from_email = '';
+      var accept_tos = true;
+      var tokenAddress = document.token_address;
+      var expires = 9999999999;
+
+      var success_callback = function(txid) {
+        var url = 'https://' + etherscanDomain() + '/tx/' + txid;
+        var msg = 'The tip has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
+
+        // send msg to frontend
+        _alert(msg, 'info');
+        callback();
+
+      };
+      var failure_callback = function() {
+        // do nothing
+        $.noop();
+      };
+
+      return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false);
+
+    };
+
+
     $('#acceptBounty').click(function(e) {
       try {
         bounty_address();
@@ -74,8 +123,6 @@ window.onload = function() {
       var whatAction = $(this).html().trim();
       var issueURL = $('input[name=issueURL]').val();
       var fulfillmentId = $('select[name=bountyFulfillment]').val();
-
-      console.log(fulfillmentId);
 
       var isError = false;
 
@@ -167,8 +214,16 @@ window.onload = function() {
             next();
           }
         };
+        var send = function() {
+          bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))}, final_callback);
+        };
 
-        bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))}, final_callback);
+        if ($('#tipPercent').val() > 0) {
+          attach_and_send_tip(send);
+        } else {
+          send();
+        }
+        
 
       };
       // Get bountyId from the database

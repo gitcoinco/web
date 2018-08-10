@@ -76,44 +76,44 @@ function prefill_recommended_prices() {
 
   if (fast_data['time'] == 'unknown') {
     $('#default-recommended-gas').show();
-    $('#default-recommended-gas').html('The confirmation time is unknown. However we recommend a gas price of $' + fast_data['usd']);
-    $('#default-recommended-gas').data('amount', fast_data['usd']);
+    $('#default-recommended-gas').html('The confirmation time is unknown. However we recommend a gas price of $' + parseFloat(fast_data['usd']).toFixed(2));
+    $('#default-recommended-gas').data('amount', parseFloat(fast_data['usd']).toFixed(2));
     $('#gasPriceRecommended').val($('#average-recommended-gas').data('amount'));
     $('#slow-recommended-gas').hide();
     $('#average-recommended-gas').hide();
     $('#fast-recommended-gas').hide();
     $('#gasPrice').val($('#average-recommended-gas').data('amount'));
-    $('#gas-usd').html('$' + avg_data['usd']);
+    $('#gas-usd').html('$' + parseFloat(fast_data['usd']).toFixed(2));
     $('#gas-eth').html(avg_data['eth'] + 'ETH');
   } else if (slow_data['time'] < 20 && parseInt($('#slow-recommended-gas').data('amount')) < 2) {
     $('#slow-recommended-gas').hide();
     $('#default-recommended-gas').hide();
     $('#average-recommended-gas').hide();
     $('#fast-recommended-gas').show();
-    $('.message').html('Good news! Gas is pretty fast right now').show();
-    $('#fast-recommended-gas').html('Fast $' + fast_data['usd'] + ' ~' + fast_data['time'] + ' minutes').addClass('active');
-    $('#fast-recommended-gas').data('amount', fast_data['usd']);
+    $('.gas-rates .message').html('Good news! The network is pretty fast right now').show();
+    $('#fast-recommended-gas').html('Fast $' + parseFloat(fast_data['usd']).toFixed(2) + ' ~' + fast_data['time'] + ' minutes').addClass('active');
+    $('#fast-recommended-gas').data('amount', parseFloat(fast_data['usd']).toFixed(2));
     $('#fast-recommended-gas').parent().removeClass('justify-content-between').addClass('justify-content-around');
     $('#gasPrice').val($('#average-recommended-gas').data('amount'));
-    $('#gas-usd').html('$' + fast_data['usd']);
+    $('#gas-usd').html('$' + parseFloat(fast_data['usd']).toFixed(2));
     $('#gas-eth').html(fast_data['eth'] + 'ETH');
   } else {
     $('#fast-recommended-gas').parent().addClass('justify-content-between').removeClass('justify-content-around');
     $('#gasPrice').val($('#average-recommended-gas').data('amount'));
-    $('#gas-usd').html('$' + avg_data['usd']);
+    $('#gas-usd').html('$' + parseFloat(avg_data['usd']).toFixed(2));
     $('#gas-eth').html(avg_data['eth'] + 'ETH');
   }
 
   // Slow recommendation prefills
-  $('#slow-recommended-gas').html('Slow $' + slow_data['usd'] + ' ~' + slow_data['time'] + ' minutes');
-  $('#slow-recommended-gas').data('amount', slow_data['usd']);
+  $('#slow-recommended-gas').html('Slow $' + parseFloat(slow_data['usd']).toFixed(2) + ' ~' + slow_data['time'] + ' minutes');
+  $('#slow-recommended-gas').data('amount', parseFloat(slow_data['usd']).toFixed(2));
 
   // Avg recommendation prefills
-  $('#average-recommended-gas').html('Average $' + avg_data['usd'] + ' ~' + avg_data['time'] + ' minutes');
-  $('#average-recommended-gas').data('amount', avg_data['usd']);
+  $('#average-recommended-gas').html('Average $' + parseFloat(avg_data['usd']).toFixed(2) + ' ~' + avg_data['time'] + ' minutes');
+  $('#average-recommended-gas').data('amount', parseFloat(avg_data['usd']).toFixed(2));
 
   // Fast recommendation prefills
-  $('#fast-recommended-gas').html('Fast $' + fast_data['usd'] + ' ~' + fast_data['time'] + ' minutes');
-  $('#fast-recommended-gas').data('amount', fast_data['usd']);
+  $('#fast-recommended-gas').html('Fast $' + parseFloat(fast_data['usd']).toFixed(2) + ' ~' + fast_data['time'] + ' minutes');
+  $('#fast-recommended-gas').data('amount', parseFloat(fast_data['usd']).toFixed(2));
 }
 

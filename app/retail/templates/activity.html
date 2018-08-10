@@ -1,0 +1,48 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not,see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load humanize i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
+  </head>
+
+  <body class="{{ active }}">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header">
+      {% include 'shared/nav.html' %}
+      {% include 'shared/minihero.html' with h1='Activity Feed' position_h1_below_logo=1 %}
+    </div>
+
+    <div style="background-color: white;">
+      <div class="container" id="activity_stream">
+        {% include 'shared/pagination.html' %}
+          {% for row in activities %}
+            {% include 'shared/activity.html' %}
+          {% endfor %}
+        {% include 'shared/pagination.html' %}
+      </div>
+    </div>
+
+    {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/messages.html' %}
+  </body>
+</html>

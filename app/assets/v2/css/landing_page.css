@@ -62,7 +62,7 @@ body {
 }
 
 .howworks-container {
-  background-color: #F9F9F9;
+  background-color: #ffffff;
   text-align: center;
   color: var(--text-dark);
 }
@@ -150,7 +150,7 @@ body {
   position: absolute;
   top: -1rem;
   left: calc(50% - 1rem);
-  background: #F9F9F9;
+  background: #ffffff;
   color: var(--gc-purple);
 }
 
@@ -164,7 +164,7 @@ body {
   justify-items: center;
 }
 
-.benefit-list {
+.benefits-list {
   grid-gap: 1rem;
   max-width: 70rem;
   display: grid;
@@ -191,7 +191,19 @@ body {
 
 .benefit > h4 {
   padding-top: 2rem;
-  padding-bottom:  1rem;
+  padding-bottom: 1rem;
+  height: 6rem;
+}
+
+.activity.box {
+  border-left: none;
+  border-top: none;
+  border-right: none;
+}
+
+.activity-info {
+  position: relative;
+  top: 7px;
 }
 
 .landing__newsletter {
@@ -214,18 +226,37 @@ body {
   background: white;
 }
 
-.pilot-container img {
+.pilot-container img,
+.project  {
   margin: 1.5rem 3rem;
   height: 5rem;
   width: 5rem;
+}
+
+.project img {
+  width: auto;
+  margin: 0
 }
 
 .pilot-container .image--rounded {
   border-radius: 100%;
 }
 
-.contributors-cta-container {
+.contributors-cta {
   background: #3E00FF;
+}
+
+.contributors-cta__robot {
+  max-height: 350px;
+}
+
+.join-gitcoin-heading {
+  font-size: 2.5rem;
+}
+
+.contributors-cta-text {
+  font-size: 1.2rem;
+  font-weight: 100;
 }
 
 .pricing_container {
@@ -343,6 +374,10 @@ body {
   border-bottom: 1px solid #E1E8EE;
 }
 
+.projects-container {
+  border-top: 1px solid #E1E8EE;
+}
+
 .testimonial-container {
   background-color: #F0F0F0;
 }
@@ -355,7 +390,7 @@ body {
 }
 
 .tree_container {
-  background: white;
+  background: #f9f9f9;
   text-align: center;
   overflow: hidden;
 }
@@ -366,10 +401,13 @@ body {
 
 .whatisit .youtube {
   height: 100%;
+  max-width: 550px;
+  margin-bottom: auto;
+  margin-top: 2rem;
 }
 
 .whatisit_container iframe {
-  min-height: 300px;
+  min-height: 280px;
   width: 100%;
   height: 100%;
 }
@@ -408,6 +446,74 @@ body {
 #pot-leaves {
   animation: swaying-leaves 8s ease-in-out infinite;
   transform-origin: center 60%;
+}
+
+#binary-numbers .odd {
+  opacity: 0 ;
+  animation: opacity-1 1s infinite alternate;
+}
+
+#binary-numbers .even {
+  opacity: 1 ;
+  animation: opacity-1 1s 1s infinite alternate;
+}
+
+#community * {
+  animation: 3s cubic-bezier(0, 0, 1, 1) infinite;
+}
+
+#members-wrapper {
+  stroke: none;
+  stroke-width: 1;
+  fill: none;
+}
+
+#members-container {
+  transform: translate(-532.000000px, -912.000000px);
+  fill: #FFFFFF;
+  stroke: #000000;
+  stroke-width: 2.2;
+}
+
+#members {
+  transform: translate(-112.000000px, 757.000000px);
+}
+
+#members-inner1 {
+  transform: translate(527.000000px, 87.000000px);
+}
+
+#members-inner2 {
+  transform: translate(119.000000px, 70.000000px);
+}
+
+#member2-inner {
+  transform: translate(27.000000px, 0.000000px);
+}
+
+#member3-inner {
+  transform: translate(13.000000px, 4.000000px);
+}
+
+#member1 {
+  animation-name: member1-animation;
+  transform-origin: 50% 50%;
+  transform-box: fill-box;
+  transform: scale(0.8, 0.8);
+}
+
+#member2 {
+  transform-origin: 50% 50%;
+  transform-box: fill-box;
+  transform: scale(0.8, 0.8);
+  animation-name: member2-animation;
+}
+
+#member3 {
+  transform-origin: 50% 50%;
+  transform-box: fill-box;
+  transform: scale(0.8, 0.8);
+  animation-name: member3-animation;
 }
 
 .navbar__cta {
@@ -469,6 +575,81 @@ body {
   }
 }
 
+@keyframes opacity-1 {
+  0% {
+    opacity: 0;
+  }
+  49.99% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes member1-animation {
+  0% {
+    transform: scale(0.8, 0.8);
+  }
+  18.89% {
+    transform: scale(1, 1);
+  }
+  60% {
+    transform: scale(1, 0.87);
+  }
+  81.11% {
+    transform: scale(0.8, 0.8);
+  }
+  100% {
+    transform: scale(0.8, 0.8);
+  }
+}
+
+@keyframes member2-animation{
+  0% {
+    transform: scale(0.8, 0.8);
+  }
+  6.67% {
+    transform: scale(0.8, 0.8);
+  }
+  24.44% {
+    transform: scale(1, 1);
+  }
+  65.56% {
+    transform: scale(1, 1);
+  }
+  90% {
+    transform: scale(0.8, 0.8);
+  }
+  100% {
+    transform: scale(0.8, 0.8);
+  }
+}
+
+@keyframes member3-animation {
+  0% {
+    transform: scale(0.8, 0.8);
+  }
+  12.22% {
+    transform: scale(0.8, 0.8);
+  }
+  30% {
+    transform: scale(1, 1);
+  }
+  75.56% {
+    transform: scale(1, 1);
+  }
+  98.89% {
+    transform: scale(0.8, 0.8);
+  }
+  100% {
+    transform: scale(0.8, 0.8);
+  }
+}
+
 @media (max-width: 1300px) {
   .whatisit_container iframe {
     min-height: 250px;
@@ -476,7 +657,7 @@ body {
 }
 
 @media (max-width: 869px) {
-  .benefit-list {
+  .benefits-list {
     grid-template-columns: 1fr;
   }
 }
@@ -511,6 +692,29 @@ body {
 
   .howworks-steps {
     grid-template-columns: 1fr;
+  }
+
+  .activity {
+    text-align: center;
+  }
+
+  .activity-status a {
+    margin-top: 1rem;
+  }
+
+  .activity-status span {
+    display: block;
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+
+  .activity div.activity-tags {
+    margin-top: 4px;
+    margin-bottom: 1rem;
+  }
+
+  .activity div.activity-tags p {
+    margin-bottom: 0;
   }
 }
 
@@ -587,10 +791,6 @@ body {
   text-align: left;
 }
 
-/* .get-started-btn {
-  min-width: 206px;
-} */
-
 .contributor-hero-bg {
   position: relative;
   background: url('../images/landing/contributor/hero_laptop.png') no-repeat;
@@ -598,6 +798,20 @@ body {
   height: 100%;
   margin-right: -15px;
   max-height: 350px;
+  max-width: 500px;
+}
+
+.contributors-hero-container {
+  position: relative; 
+  overflow-y: hidden;
+}
+
+.contributor-hero-bg-container{
+  position: absolute;
+  top:100px;
+  right: 0px;
+  height: 500px;
+  width: 500px;
 }
 
 .ethereum-icon {
@@ -615,6 +829,13 @@ body {
   color: #3f00ff;
 }
 
+@media (max-width: 991px) {
+  .contributor-hero-bg,
+  .ethereum-icon {
+    display: none;
+  }
+}
+
 @media (max-width: 767px) {
   .contributors-hero-container {
     margin-left: 1em !important;
@@ -622,6 +843,11 @@ body {
 
   .join-slack-btn {
     margin-left: 0 !important;
+  }
+
+  .join-gitcoin-heading {
+    margin-top: 2em;
+    font-size: 2rem;
   }
 }
 

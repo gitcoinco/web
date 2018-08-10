@@ -19,7 +19,7 @@
 from django.core.management.base import BaseCommand
 
 from external_bounties.models import ExternalBounty
-from github.utils import get_issues
+from git.utils import get_issues
 
 
 class Command(BaseCommand):

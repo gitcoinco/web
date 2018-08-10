@@ -11,20 +11,20 @@
     {% stylesheet 'ens' %}
     <script src="{% static "v2/js/jquery.js" %}"></script>
     <script src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
-    <!--[if lte IE 9]><link rel="stylesheet" href="{% static "yge/css/ie9.css" %}"><![endif]-->
-    <!--[if lte IE 8]><link rel="stylesheet" href="{% static "yge/css/ie8.css" %}"><![endif]-->
-    <noscript><link rel="stylesheet" href="{% static "yge/css/noscript.css" %}"></noscript>
+    <!--[if lte IE 9]><link rel="stylesheet" href="{% static "onepager/css/ie9.css" %}"><![endif]-->
+    <!--[if lte IE 8]><link rel="stylesheet" href="{% static "onepager/css/ie8.css" %}"><![endif]-->
+    <noscript><link rel="stylesheet" href="{% static "onepager/css/noscript.css" %}"></noscript>
     {% include 'shared/favicon.html' %}
     <style>
-    #upper_left p{
+      #upper_left p{
         color: white;
-    }
-    #upper_left{
+      }
+      #upper_left{
         border-radius: 5px;
-    }
-    #main header{
+      }
+      #main header{
         min-height: 200px;
-    }
+      }
     </style>
   </head>
   <body class="{{class}}">
@@ -33,8 +33,8 @@
     {% include 'shared/rain.html' with class="color" %}
     {% include 'shared/rain.html' with class="color" %}
     <!-- Wrapper -->
-    <div id="wrapper">
-      {% include 'shared/yge_auth.html' with source='authed' %}
+    <div id="wrapper" class="pt-1">
+      {% include 'shared/onepager_auth.html' with source='authed' %}
       {% cookielaw_banner %}
       <!-- Main -->
       {% block 'main' %}
@@ -56,6 +56,6 @@
     {% endblock %}
     {% include 'shared/twitter.html'  %}
     <script src="{% static "v2/js/jquery.select2.min.js" %}"></script>
-    <script src="{% static "cookielaw/js/cookielaw.js" %}"></script>
+    <script src="{% static "cookielaw/js/cl.js" %}"></script>
   </body>
 </html>

@@ -118,6 +118,8 @@
   var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
   </script>
   </body>
-  <script src="{% static "v2/js/shared.js" %}"></script>
+
   {% javascript 'faucet' %}
+  <script src="/static/v2/js/tokens_dynamic.js"></script>
+  <script src="{% static " v2/js/shared.js " %}"></script>
 </html>

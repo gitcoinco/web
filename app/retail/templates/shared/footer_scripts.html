@@ -16,36 +16,46 @@
 
 {% endcomment %}
 {% load static pipeline %}
-    <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
-    {% if not slim %}
-        {% javascript 'footer_full' %}
-    {% else %}
-        {% javascript 'footer_slim' %}
-    {% endif %}
-    {% comment %}TODO: Fix syntax/formatting errors in the below files to allow for compression.{% endcomment %}
-    <script src="{% static "v2/js/shared.js" %}"></script>
-    <script src="{% static "v2/js/note.js" %}"></script>
-    <script src="{% static "v2/js/pages/carousel.js" %}"></script>
+<script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+{% include 'shared/sentry.html' %}
+{% if not slim %}
+  {% javascript 'footer_full' %}
+{% else %}
+  {% javascript 'footer_slim' %}
+{% endif %}
+{% comment %}TODO: Fix syntax/formatting errors in the below files to allow for compression.{% endcomment %}
+<script src="{% static "v2/js/shared.js" %}"></script>
+<script src="{% static "v2/js/note.js" %}"></script>
+<script src="{% static "v2/js/pages/carousel.js" %}"></script>
 
-    {% if recommend_gas_price %}
-        <script type="text/javascript">
-            setInterval(function(){
-                defaultGasPrice = parseInt(10**9 * {{recommend_gas_price}});
-            },1000);
-        </script>
-    {% endif %}
+<script>
+  var ipfsConfig = {
+    host: "{{ ipfs_config.host }}",
+    port: {{ ipfs_config.port }},
+    protocol: "{{ ipfs_config.protocol }}",
+    root: "{{ ipfs_config.root }}"
+  };
+</script>
 
-    {% if slideDurationInMs %}
-        <script>
-            let interval;
-            let startTimer = () => {
-                interval = setInterval(() => typeof nextSlide != 'undefined' ? nextSlide() : function(){}, {{slideDurationInMs}});
-            };
-            startTimer();
-        </script>
-    {% endif %}
+{% if recommend_gas_price %}
+<script type="text/javascript">
+  setInterval(function(){
+    defaultGasPrice = parseInt(10**9 * {{ recommend_gas_price }});
+  }, 1000);
+</script>
+{% endif %}
 
-    <script>
-        document.contxt = {{json_context | safe}};
-    </script>
-    {% include 'shared/messages.html' %}
+{% if slideDurationInMs %}
+<script>
+  let interval;
+  let startTimer = () => {
+    interval = setInterval(() => typeof nextSlide != 'undefined' ? nextSlide() : function(){}, {{ slideDurationInMs }});
+  };
+  startTimer();
+</script>
+{% endif %}
+
+<script>
+  document.contxt = {{ json_context|safe }};
+</script>
+{% include 'shared/messages.html' %}
