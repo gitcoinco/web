@@ -302,7 +302,7 @@ def remove_interest(request, bounty_id):
         dict: The success key with a boolean value and accompanying error.
 
     """
-    profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    profile_id = request.user.profile.pk if request.user.is_authenticated and getattr(request.user, 'profile', None) else None
 
     access_token = request.GET.get('token')
     if access_token:
