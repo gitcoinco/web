@@ -50,9 +50,11 @@ class Command(BaseCommand):
         paths = [reverse('results') + f"/{pl}" for pl in programming_languages]
         paths.append(reverse('results'))
         paths.append(reverse('activity'))
-        paths.append(reverse('gas_history_view'))
-        paths.append(reverse('gas_history_view') + "?breakdown=daily")
-        paths.append(reverse('gas_history_view') + "?breakdown=weekly")
+        for name in ['gas_history_view', 'gas_guzzler_view']:
+            path = reverse(name)
+            paths.append(path)
+            paths.append(path + "?breakdown=daily")
+            paths.append(path + "?breakdown=weekly")
         paths.append(reverse('gas'))
 
         # warm the paths

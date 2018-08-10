@@ -232,21 +232,20 @@ def render_funder_stale(github_username, days=30, time_as_str='about a month'):
         str: The rendered response as a string.
 
     """
+    github_username = f"@{github_username}" if github_username else "there"
     response_txt = f"""
-Hi {github_username},
+hi {github_username},
 
-Kevin Owocki from Gitcoin here.
+kevin from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}. in the spirit of making Gitcoin better + checking in:
 
-I see you haven't posted any funded work to the platform in {time_as_str}.
+- has anything been slipping on your issue board which might be bounty worthy?
+- do you have any feedback for Gitcoin Core on how we might improve the product to fit your needs?
 
-Just wanted to check in and see if there's anything we can do, or if you had any feedback for us. \
-We're still a small startup and we iterate fast; not only will your feedback be heard, but it's \
-got a good chance of being put into the product roadmap!
+our idea is that gitcoin should be a place you come when priorities stretch long, and you need an extra set of capable hands. curious if this fits what you're looking for these days. 
 
-Kevin
+appreciate you being a part of the community and let me know if you'd like some Gitcoin schwag — just send over a mailing address and a t-shirt size and it'll come your way. 
 
-PS - I've got some new gitcoin schwag on order.  Send me your mailing address and your \
-t-shirt size and i'll ship you some.
+~ kevin
 
 """
 

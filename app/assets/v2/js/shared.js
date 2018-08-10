@@ -500,7 +500,7 @@ var retrieveAmount = function() {
   }
 
   var amount = $('input[name=amount]').val();
-  var address = $('select[name=deonomination]').val();
+  var address = $('select[name=denomination]').val();
   var denomination = tokenAddressToDetails(address)['name'];
   var request_url = '/sync/get_amount?amount=' + amount + '&denomination=' + denomination;
 
@@ -902,7 +902,7 @@ var promptForAuth = function(event) {
         document.alert_enable_token_shown = true;
 
         $('input, textarea, select').prop('disabled', 'disabled');
-        $('select[name=deonomination]').prop('disabled', '');
+        $('select[name=denomination]').prop('disabled', '');
       } else {
         $('input, textarea, select').prop('disabled', '');
       }

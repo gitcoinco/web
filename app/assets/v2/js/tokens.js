@@ -29,7 +29,7 @@ var load_tokens = function() {
 
       for (var i = 0; i < _tokens.length; i++) {
         if (_tokens[i]['divider']) {
-          $('select[name=deonomination]').append('<option disabled />');
+          $('select[name=denomination]').append('<option disabled />');
           continue;
         }
 
@@ -43,7 +43,7 @@ var load_tokens = function() {
           select['selected'] = 'selected';
         }
 
-        $('select[name=deonomination]').append($('<option>', select));
+        $('select[name=denomination]').append($('<option>', select));
       }
       // if web3, set the values of some form variables
       var url_string = window.location.href;

@@ -398,10 +398,12 @@ var showWarningMessage = function(txid) {
   $('.interior .body').addClass('loading');
 
   if (typeof txid != 'undefined' && txid.indexOf('0x') != -1) {
-    clearInterval(interval);
-    var link_url = etherscan_tx_url(txid);
+    waitforWeb3(function() {
+      clearInterval(interval);
+      var link_url = etherscan_tx_url(txid);
 
-    $('#transaction_url').attr('href', link_url);
+      $('#transaction_url').attr('href', link_url);
+    });
   }
 
   $('.left-rails').hide();
@@ -418,6 +420,32 @@ var showWarningMessage = function(txid) {
   waitingRoomEntertainment();
   var interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
 };
+
+// refresh page if metamask changes
+waitforWeb3(function() {
+  setInterval(function() {
+    if (document.web3Changed) {
+      return;
+    }
+    if (typeof document.lastWeb3Network == 'undefined') {
+      document.lastWeb3Network = document.web3network;
+      return;
+    }
+    if (typeof document.lastCoinbase == 'undefined') {
+      document.lastCoinbase = web3.eth.coinbase;
+      return;
+    }
+    var hasChanged = (document.lastCoinbase != web3.eth.coinbase) || (document.lastWeb3Network != document.web3network);
+
+    if (hasChanged) {
+      _alert(gettext('Detected a web3 change.  Refreshing the page. '), 'info');
+      document.location.href = document.location.href;
+      document.web3Changed = true;
+    }
+
+  }, 500);
+});
+
 
 var wait_for_tx_to_mine_and_then_ping_server = function() {
   console.log('checking for updates');

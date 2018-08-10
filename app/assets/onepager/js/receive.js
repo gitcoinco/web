@@ -120,9 +120,8 @@ $(document).ready(function() {
             from: holding_address,
             value: amount_in_wei
           };
-
           web3.eth.estimateGas(rawTx, function(err, gasLimit) {
-            rawTx['value'] -= (gasLimit * gas_price_wei); // deduct gas costs from amount to send
+            rawTx['value'] = amount_in_wei - (gasLimit * gas_price_wei); // deduct gas costs from amount to send
             rawTx['gasPrice'] = gas_price_wei;
             rawTx['gasLimit'] = gasLimit;
             sign_and_send(rawTx, success_callback, document.priv_key);

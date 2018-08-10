@@ -26,18 +26,18 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
-from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.cache import cache
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-from app.utils import ellipses, sync_profile
+from app.utils import clean_str, ellipses, sync_profile
 from avatar.utils import get_avatar_context
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
@@ -690,7 +690,7 @@ def fulfill_bounty(request):
         active='fulfill_bounty',
         title=_('Submit Work'),
     )
-    return TemplateResponse(request, 'fulfill_bounty.html', params)
+    return TemplateResponse(request, 'bounty/fulfill.html', params)
 
 
 def increase_bounty(request):
@@ -720,7 +720,7 @@ def increase_bounty(request):
 
     params['is_funder'] = json.dumps(is_funder)
 
-    return TemplateResponse(request, 'increase_bounty.html', params)
+    return TemplateResponse(request, 'bounty/increase.html', params)
 
 
 def cancel_bounty(request):
@@ -744,7 +744,7 @@ def cancel_bounty(request):
         active='kill_bounty',
         title=_('Cancel Bounty'),
     )
-    return TemplateResponse(request, 'kill_bounty.html', params)
+    return TemplateResponse(request, 'bounty/kill.html', params)
 
 
 def helper_handle_admin_override_and_hide(request, bounty):
@@ -936,7 +936,8 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     if issue_url:
         try:
             bounties = Bounty.objects.current().filter(github_url=issue_url)
-            if stdbounties_id:
+            stdbounties_id = clean_str(stdbounties_id)
+            if stdbounties_id and stdbounties_id.isdigit():
                 bounties = bounties.filter(standard_bounties_id=stdbounties_id)
             if bounties:
                 bounty = bounties.order_by('-pk').first()
@@ -967,7 +968,7 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
             print(e)
             logging.error(e)
 
-    return TemplateResponse(request, 'bounty_details.html', params)
+    return TemplateResponse(request, 'bounty/details.html', params)
 
 
 def quickstart(request):
@@ -1442,4 +1443,4 @@ def new_bounty(request):
         title=_('Create Funded Issue'),
         update=bounty_params,
     )
-    return TemplateResponse(request, 'submit_bounty.html', params)
+    return TemplateResponse(request, 'bounty/new.html', params)
