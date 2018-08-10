@@ -289,7 +289,7 @@ var process_stats = function(results) {
   }
 
   show_stats = false; // TODO: xfr over to new stats API call
-  if(show_stats){
+  if (show_stats) {
     worth_usdt = worth_usdt.toFixed(2);
     worth_eth = (worth_eth / Math.pow(10, 18)).toFixed(2);
       
@@ -342,10 +342,10 @@ var trigger_scroll = debounce(function() {
 $(window).scroll(trigger_scroll);
 $('body').bind('touchmove', trigger_scroll);
 
-var reset_offset = function(){
-  document.done_loading_results = false;  
-  document.offset = 0; 
-}
+var reset_offset = function() {
+  document.done_loading_results = false;
+  document.offset = 0;
+};
 
 var refreshBounties = function(event, offset, append) {
 
@@ -364,7 +364,7 @@ var refreshBounties = function(event, offset, append) {
   toggleAny(event);
   getFilters();
 
-  if(!append){
+  if (!append) {
     $('.nonefound').css('display', 'none');
     $('.loading').css('display', 'block');
     $('.bounty_row').remove();
