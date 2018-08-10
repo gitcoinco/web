@@ -15,12 +15,12 @@
 <section id=main>
 {% include 'shared/gas_nav.html' %}
 
-<h1> {% trans "Gas History" %} ({{breakdown}}) <span id="alpha">{% trans "Alpha" %}</span> </h1>
-
+<h1> {% trans "Gas Guzzlers" %} ({{breakdown}}) <span id="alpha">{% trans "Alpha" %}</span> </h1>
+<p>These are the addresses that are using the most gas</p>
   <ul class="gas_nav small">
     {% for granularity in granularity_options %}
     <li>
-      <a href="{%url 'gas_history_view'%}?breakdown={{granularity}}">{{granularity}} view</a>
+      <a href="{%url 'gas_guzzler_view'%}?breakdown={{granularity}}">{{granularity}} view</a>
     </li>
     {% endfor %}
   </ul>
@@ -28,7 +28,7 @@
 
   <div id="key">
     {% for key, val in lines.items %}
-    <p style="color:{{val}}">{% trans "Gas price needed to confirm within" %} {{key}} {% trans "minute" %}{{key|pluralize}}</p>
+    <p style="color:{{val}}">{% trans "Address no. " %} {{key}} {% trans "." %}</p>
     {% endfor %}
   </div>
 
