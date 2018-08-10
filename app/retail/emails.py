@@ -521,13 +521,13 @@ def render_new_bounty_roundup(to_email):
     Hi there,
 </p>
 <p>
-We are consistently asked how Gitcoin, an open source network, has built such an invaluable community.
-To this end, I wrote <a href="https://medium.com/p/a5293ecca60a/edit">How to BUIDL a Mesh Network of Human Beings.</a> This piece
-examines the psychology and thought process we've put into building the Gitcoin community. We're lucky each one of you has chosen to be a part.
+We are often asked how Gitcoin, an open source network, has built such an invaluable community.
+To answer this question (and to hopefully generalize the answers in such a way that other dApp BUIDLers could utilize them) I wrote <a href="https://medium.com/p/a5293ecca60a/edit">How to BUIDL a Mesh Network of Human Beings.</a> This piece
+examines the psychology and thought process we've put into building the Gitcoin community. Let me know what you think by replying to this email!
 </p>
 
 <p>
-We also announced a <a href="https://medium.com/the-ethereum-name-service/ens-gitcoin-3654594537b8">partnership with the Ethereum Name Service.</a> We believe
+This week, we also announced a <a href="https://medium.com/the-ethereum-name-service/ens-gitcoin-3654594537b8">partnership with the Ethereum Name Service.</a> We believe
 ENS integrations are an important next step in decentralization, and are proud to sponsor any Github issues to integrate ENS into your dApps. Just open up a Github issue
 and let us know - we'll take it from there.
 </p>
