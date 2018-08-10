@@ -40,6 +40,7 @@
                 {% endif %}
               </p>
             </div>
+            <div data-metamask-address data-truncatehash></div>
             {% if profile.data.bio %}
               <div class="profile-header__bio my-2">
                 {{ profile.data.bio }}
@@ -118,9 +119,13 @@
     </div>
 
     <div class="container-fluid bg-light py-5">
-        <div class="container">
-          {% include "shared/profile_kudos.html" %}
-        </div>
+
+      
+
+
+      <div class="container">
+        {% include "shared/profile_kudos.html" %}
+      </div>
     </div>
     <div class="container">
     {% if hidden %}
@@ -352,7 +357,10 @@
     <script>
       var bootstrapTooltip = $.fn.tooltip.noConflict()
     </script>
-
+    <script id="theTmpl" type="text/x-jsrender">
+      <li>[[:wallet]]</li>
+      
+      </script>
     <script type="text/javascript">
       $(document).ready(function() {
         if ($('.profile-bounties--tips .bounty_row--hidden').length > 0) {
@@ -383,8 +391,93 @@
             // Fetch bounties user is fulfiller
             fetchBountiesAndAddToList('network=mainnet&fulfiller_github_username_done={{ profile.handle }}&idx_status=done', '.profile-bounties--completed');
       {% endif %}
+            
+            
+            $("[data-toggle=popover]").popover({
+              html : true,
+              template: '<div class="popover wallet-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
+              content: function() {
+                  var content = $(this).attr("data-popover-content");
+                  return $(content).children(".popover-body").html();
+              },
+              title: function() {
+                  var title = $(this).attr("data-popover-content");
+                  return $(title).children(".popover-heading").html();
+              }
+            });
+            
+
+            
+            (function (){
+              this.getaddress = function(elem, address) {
+                var address = !address ? address = web3.eth.coinbase : address
+                // var content = elem.textContent.trim();
+                // content =  content.substr(0,number)+ '\u2026'+ content.substr(-number)
+                elem.textContent = address
+                new truncateHash() 
+              }
+              
+              this.metamaskAddress = function () {
+                var currentWallet = web3.eth.coinbase
+                var elem = document.querySelectorAll('[data-metamask-address]')
+                for (var i = 0; i < elem.length; ++i) {
+                  new getaddress(elem[i],currentWallet)
+                }
+              }
+            }())
+            new metamaskAddress()  
+
+            
+            $('#input-wallet').val(web3.eth.coinbase)
+
+      
+            
+            
+            // if (currentWallet) {
+              //   // $('#wallet-address').html(currentWallet)
+              // }
+              // $('#input-wallet').prop('disabled', true);
+
+
+              // Generic function to make an AJAX call
+              var fetchData = function(urlRequest, methodType, data) {
+                // Return the $.ajax promise
+                return $.ajax({
+                  url: urlRequest,
+                  type: methodType,
+                  dataType: 'json',
+                  data: data
+                });
+              }
+            
+              
+            $("body").on('submit', '#form-wallets', function(e) {
+              e.preventDefault()
+              console.log(e)  
+              var postWallets = fetchData (  e.currentTarget.action, 
+                                            e.currentTarget.method, 
+                                            $("#form-wallets").serialize() 
+                                          )
+              
+              $.when( postWallets ).then( function ( response ){
+                console.log( response.wallets )
+                var template = $.templates("#theTmpl");
+                var htmlOutput = template.render(response.wallets);
+                $('.wallets-list').html(htmlOutput);
+                $('#wallets-number').html(response.wallets.length);
+               })
+              //   response.wallet.each(function(wallet) {
+              //      console.log(wallet)
+
+               
+              //  })
+            });
 
       });
+
+        
+
     </script>
+    
   </body>
 </html>

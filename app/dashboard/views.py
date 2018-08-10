@@ -28,7 +28,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.cache import cache
-from django.http import Http404, JsonResponse
+from django.http import Http404, JsonResponse, HttpResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -1034,10 +1034,11 @@ def profile(request, handle):
     # logging.info(f'Kudos name: {params["kudos"][0].name}')
     # logging.info(f'Profile data: {params}')
     # logging.info(f'Profile wallets: {profile.wallets.all()}')
-    if request.method == 'POST':
+    if request.method == 'POST' and request.is_ajax():
+        logging.info(request.POST)
         address = request.POST.get('address')
         # handle = request.META.get('HTTP_REFERER').split['/'][-1]
-        # logging.info(request.path)
+        logging.info(request.path)
         # logging.info(request.POST.dict())
         logging.info(f'Address: {address}')
         logging.info(f'Handle: {handle}')
@@ -1045,7 +1046,21 @@ def profile(request, handle):
         # profile_id = Profile.objects.filter(handle__iexact=handle).first().id
         # logging.info(f'profile_id: {profile_id}')
         new_wallet = Wallet(address=address, profile_id=profile.id)
-        new_wallet.save()
+        if new_wallet:
+            try:
+                new_wallet.save()
+                msg = {
+                    'status': 200,
+                    'msg': 'Success!',
+                    'wallets': [
+                        {"wallet":"0xeda95ed3e3436c689376889f9ed0a8f4ba23e866"},
+                        {"wallet":"0xeda95ed3e3436c689376889f9ed0a8f4ba23e000"}
+                    ]
+                }
+            except Exception as e:
+                msg = str(e)
+            
+            return JsonResponse(msg)
 
     # logging.info(params['profile'].wallets.all())
 
