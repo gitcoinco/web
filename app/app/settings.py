@@ -26,7 +26,7 @@ from django.utils.translation import gettext_noop
 import environ
 import raven
 from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
-from dj_pipeline_settings import PIPELINE
+from .dj_pipeline_settings import PIPELINE
 
 root = environ.Path(__file__) - 2  # Set the base directory to two levels.
 env = environ.Env(DEBUG=(bool, False), )  # set default values and casting
