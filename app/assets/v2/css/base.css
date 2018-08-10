@@ -1272,7 +1272,7 @@ input.is-invalid {
     max-width: 90%;
   }
 
-  body.slack, body.newtoken .col-4 {
+  body.slack .slack--brand-tree, body.newtoken .col-4 {
     display: none;
   }
 
