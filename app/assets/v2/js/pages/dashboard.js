@@ -14,6 +14,8 @@ var sidebar_keys = [
   'misc'
 ];
 
+document.results_limit = 50;
+
 var localStorage;
 
 var explorer = { };
@@ -175,10 +177,11 @@ var removeFilter = function(key, value) {
     localStorage['keywords'] = localStorage['keywords'].replace(/^,|,\s*$/g, '');
   }
 
-  refreshBounties();
+  reset_offset();
+  refreshBounties(null, 0, false);
 };
 
-var get_search_URI = function() {
+var get_search_URI = function(offset) {
   var uri = '/api/v0.1/bounties/?';
   var keywords = '';
 
@@ -252,7 +255,8 @@ var get_search_URI = function() {
   if (order_by) {
     uri += '&order_by=' + order_by;
   }
-  uri += '&limit=1000';
+  uri += '&offset=' + offset;
+  uri += '&limit=' + document.results_limit;
   return uri;
 };
 
@@ -284,68 +288,39 @@ var process_stats = function(results) {
     }
   }
 
-  worth_usdt = worth_usdt.toFixed(2);
-  worth_eth = (worth_eth / Math.pow(10, 18)).toFixed(2);
-  var stats = worth_usdt + ' USD, ' + worth_eth + ' ETH';
+  show_stats = false; // TODO: xfr over to new stats API call
+  if(show_stats){
+    worth_usdt = worth_usdt.toFixed(2);
+    worth_eth = (worth_eth / Math.pow(10, 18)).toFixed(2);
+      
+    var stats = worth_usdt + ' USD, ' + worth_eth + ' ETH';
 
-  for (var t in currencies_to_value) {
-    if (Object.prototype.hasOwnProperty.call(currencies_to_value, t)) {
-      stats += ', ' + currencies_to_value[t].toFixed(2) + ' ' + t;
-    }
-  }
-
-  var matchesEl = $('#matches');
-  var fundingInfoEl = $('#funding-info');
-
-  switch (num) {
-    case 0:
-      matchesEl.html(gettext('No Results'));
-      fundingInfoEl.html('');
-      break;
-    case 1:
-      matchesEl.html(num + gettext(' Matching Result'));
-      fundingInfoEl.html('<span id="modifiers">Funded Issue</span><span id="stats" class="font-caption">(' + stats + ')</span>');
-      break;
-    default:
-      matchesEl.html(num + gettext(' Matching Results'));
-      fundingInfoEl.html('<span id="modifiers">Funded Issues</span><span id="stats" class="font-caption">(' + stats + ')</span>');
-  }
-};
-
-var paint_bounties_in_viewport = function(start, max) {
-  document.is_painting_now = true;
-  var num_bounties = document.bounties_html.length;
-
-  for (var i = start; i < num_bounties && i < max; i++) {
-    var html = document.bounties_html[i];
-
-    document.last_bounty_rendered = i;
-    $('#bounties').append(html);
-  }
-
-  $('div.bounty_row.result').each(function() {
-    var href = $(this).attr('href');
-
-    if (typeof $(this).changeElementType !== 'undefined') {
-      $(this).changeElementType('a'); // hack so that users can right click on the element
+    for (var t in currencies_to_value) {
+      if (Object.prototype.hasOwnProperty.call(currencies_to_value, t)) {
+        stats += ', ' + currencies_to_value[t].toFixed(2) + ' ' + t;
+      }
     }
 
-    $(this).attr('href', href);
-  });
-  document.is_painting_now = false;
+    var matchesEl = $('#matches');
+    var fundingInfoEl = $('#funding-info');
 
-  if (localStorage['referrer'] === 'onboard') {
-    $('.bounty_row').each(function(index) {
-      if (index > 2)
-        $(this).addClass('hidden');
-    });
+    switch (num) {
+      case 0:
+        matchesEl.html(gettext('No Results'));
+        fundingInfoEl.html('');
+        break;
+      case 1:
+        matchesEl.html(num + gettext(' Matching Result'));
+        fundingInfoEl.html('<span id="modifiers">Funded Issue</span><span id="stats" class="font-caption">(' + stats + ')</span>');
+        break;
+      default:
+        matchesEl.html(num + gettext(' Matching Results'));
+        fundingInfoEl.html('<span id="modifiers">Funded Issues</span><span id="stats" class="font-caption">(' + stats + ')</span>');
+    }
   }
 };
 
 var trigger_scroll = debounce(function() {
-  if (typeof document.bounties_html == 'undefined' || document.bounties_html.length == 0) {
-    return;
-  }
   var scrollPos = $(document).scrollTop();
   var last_active_bounty = $('.bounty_row.result:last-child');
 
@@ -354,19 +329,25 @@ var trigger_scroll = debounce(function() {
   }
 
   var window_height = $(window).height();
-  var have_painted_all_bounties = document.bounties_html.length <= document.last_bounty_rendered;
+  var have_painted_all_bounties = false;// TODO
   var buffer = 500;
-  var does_need_to_paint_more = !document.is_painting_now && !have_painted_all_bounties && ((last_active_bounty.offset().top) < (scrollPos + buffer + window_height));
+  var get_more = !have_painted_all_bounties && ((last_active_bounty.offset().top) < (scrollPos + buffer + window_height));
 
-  if (does_need_to_paint_more) {
-    paint_bounties_in_viewport(document.last_bounty_rendered + 1, document.last_bounty_rendered + 6);
+  if (get_more && !document.done_loading_results) {
+    document.offset = parseInt(document.offset) + parseInt(document.results_limit);
+    refreshBounties(null, document.offset, true);
   }
 }, 200);
 
 $(window).scroll(trigger_scroll);
 $('body').bind('touchmove', trigger_scroll);
 
-var refreshBounties = function(event) {
+var reset_offset = function(){
+  document.done_loading_results = false;  
+  document.offset = 0; 
+}
+
+var refreshBounties = function(event, offset, append) {
 
   // Allow search for freeform text
   var searchInput = $('#keywords')[0];
@@ -383,12 +364,13 @@ var refreshBounties = function(event) {
   toggleAny(event);
   getFilters();
 
-  $('.nonefound').css('display', 'none');
-  $('.loading').css('display', 'block');
-  $('.bounty_row').remove();
-
+  if(!append){
+    $('.nonefound').css('display', 'none');
+    $('.loading').css('display', 'block');
+    $('.bounty_row').remove();
+  }
   // filter
-  var uri = get_search_URI();
+  var uri = get_search_URI(offset);
 
   // analytics
   var params = { uri: uri };
@@ -403,7 +385,7 @@ var refreshBounties = function(event) {
   explorer.bounties_request = $.get(uri, function(results, x) {
     results = sanitizeAPIResults(results);
 
-    if (results.length === 0) {
+    if (results.length === 0 && !append) {
       if (localStorage['referrer'] === 'onboard') {
         $('.no-results').removeClass('hidden');
         $('#dashboard-content').addClass('hidden');
@@ -412,9 +394,7 @@ var refreshBounties = function(event) {
       }
     }
 
-    document.is_painting_now = false;
     document.last_bounty_rendered = 0;
-    document.bounties_html = [];
 
     for (var i = 0; i < results.length; i++) {
       // setup
@@ -475,16 +455,35 @@ var refreshBounties = function(event) {
         result['p'] += ('Opened ' + opened_when + ' ago, ' + expiredExpires + ' ' + timeLeft);
       }
 
+
       result['watch'] = 'Watch';
 
       // render the template
       var tmpl = $.templates('#result');
       var html = tmpl.render(result);
 
-      document.bounties_html[i] = html;
+      $('#bounties').append(html);
+
     }
 
-    paint_bounties_in_viewport(0, 10);
+    document.done_loading_results = results.length < document.results_limit;
+
+    $('div.bounty_row.result').each(function() {
+      var href = $(this).attr('href');
+
+      if (typeof $(this).changeElementType !== 'undefined') {
+        $(this).changeElementType('a'); // hack so that users can right click on the element
+      }
+
+      $(this).attr('href', href);
+    });
+
+    if (localStorage['referrer'] === 'onboard') {
+      $('.bounty_row').each(function(index) {
+        if (index > 2)
+          $(this).addClass('hidden');
+      });
+    }
 
     process_stats(results);
   }).fail(function() {
@@ -497,7 +496,8 @@ var refreshBounties = function(event) {
 
 window.addEventListener('load', function() {
   set_sidebar_defaults();
-  refreshBounties();
+  reset_offset();
+  refreshBounties(null, 0, false);
 });
 
 var getNextDayOfWeek = function(date, dayOfWeek) {
@@ -578,7 +578,8 @@ $(document).ready(function() {
   // Sort select menu
   $('#sort_option').selectmenu({
     select: function(event, ui) {
-      refreshBounties();
+      reset_offset();
+      refreshBounties(null, 0, false);
       event.preventDefault();
     }
   });
@@ -650,31 +651,36 @@ $(document).ready(function() {
   $('.dashboard #clear').click(function(e) {
     e.preventDefault();
     resetFilters();
-    refreshBounties();
+    reset_offset();
+    refreshBounties(null, 0, false);
   });
 
   // search bar
   $('#bounties').delegate('#new_search', 'click', function(e) {
-    refreshBounties();
+    reset_offset();
+    refreshBounties(null, 0, false);
     e.preventDefault();
   });
 
   $('.search-area input[type=text]').keypress(function(e) {
     if (e.which == 13) {
-      refreshBounties();
+      reset_offset();
+      refreshBounties(null, 0, false);
       e.preventDefault();
     }
   });
 
   // sidebar filters
   $('.sidebar_search input[type=radio], .sidebar_search label').change(function(e) {
-    refreshBounties();
+    reset_offset();
+    refreshBounties(null, 0, false);
     e.preventDefault();
   });
 
   // sidebar filters
   $('.sidebar_search input[type=checkbox], .sidebar_search label').change(function(e) {
-    refreshBounties(e);
+    reset_offset();
+    refreshBounties(e, 0, false);
     e.preventDefault();
   });
 
@@ -687,7 +693,7 @@ $(document).ready(function() {
     setTimeout(function() {
       $.get(url, function(newHTML) {
         $(newHTML).appendTo('body').modal();
-        $('#save').append("<input type='hidden' name='raw_data' value='" + get_search_URI() + "'>");
+        $('#save').append("<input type='hidden' name='raw_data' value='" + get_search_URI(0) + "'>");
         $('#save_email').focus();
       });
     }, 300);
