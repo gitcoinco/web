@@ -19,6 +19,7 @@
 <html lang="en">
   {% include 'shared/head.html' %}
   <head>
+    <link rel="stylesheet" href="{% static "v2/css/landing_page.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/about.css" %}"
   </head>
   <body class="{{ active }}">
@@ -85,6 +86,9 @@
           </div>
         </div>
       </div>
+    </div>
+    <div class="container-fluid p-5 whatisit_container">
+      {% include 'shared/what_is_gitcoin.html' with title="What is Gitcoin?" video='DJartWzDn0E' %}
     </div>
     <div class="container-fluid white-light-bg font-body"  id="origin_story">
       <div class="row">

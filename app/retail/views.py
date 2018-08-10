@@ -18,13 +18,14 @@
 '''
 from os import walk as walkdir
 
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
@@ -246,7 +247,10 @@ def how_it_works(request, work_type):
 
 
 def robotstxt(request):
-    return TemplateResponse(request, 'robots.txt', {})
+    context = {
+        'settings': settings,
+    }
+    return TemplateResponse(request, 'robots.txt', context, content_type='text')
 
 
 def about(request):
@@ -381,6 +385,19 @@ def vision(request):
         'card_desc': _("Gitcoin's Vision for a web3 world is to make it easy for developers to find paid work in open source."),
     }
     return TemplateResponse(request, 'vision.html', context)
+
+
+def not_a_token(request):
+    """Render the not_a_token response."""
+    context = {
+        'is_outside': True,
+        'active': 'not_a_token',
+        'avatar_url': static('v2/images/no-token/no-token.jpg'),
+        'title': 'Gitcoin is not a token',
+        'card_title': _("Gitcoin is not a token"),
+        'card_desc': _("We didn't do a token because we felt it wasn't the right way to align incentives with our user base.  Read more about the future of monetization in web3."),
+    }
+    return TemplateResponse(request, 'not_a_token.html', context)
 
 
 def results(request, keyword=None):
@@ -820,7 +837,7 @@ def error(request, code):
 
     if return_as_json:
         return JsonResponse(context, status=500)
-    return TemplateResponse(request, 'error.html', context)
+    return TemplateResponse(request, 'error.html', context, status=code)
 
 
 def portal(request):

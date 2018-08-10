@@ -15,9 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static %}
-{% load is_in_list %}
-{% load matches %}
+{% load i18n static matches %}
 <nav class="navbar navbar-expand-md navbar-dark">
   <div id="gitcoin-background"></div>
   <a class="navbar-brand pt-0 pb-0" href="/">
@@ -61,6 +59,9 @@
           </a>
           <a class="dropdown-item {% if active == 'results' %} selected{% endif %}" href="{% url "results" %}">
             {% trans "Results" %}
+          </a>
+          <a class="dropdown-item {% if active == 'not_a_token' %} selected{% endif %}" href="{% url "not_a_token" %}">
+            {% trans "We're Not Tokenized" %}
           </a>
         </div>
       </div>

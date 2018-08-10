@@ -84,8 +84,9 @@ class Command(BaseCommand):
                 new_bounties, all_bounties = get_bounties_for_keywords(keywords, hours_back)
                 print("{}/{}: got {} new bounties & {} all bounties".format(to_email, keywords, new_bounties.count(), all_bounties.count()))
                 if new_bounties.count():
-                    print(f"sent to {to_email}")
+                    print(f"sending to {to_email}")
                     new_bounty_daily(new_bounties, all_bounties, [to_email])
+                    print(f"/sent to {to_email}")
             except Exception as e:
                 logging.exception(e)
                 print(e)

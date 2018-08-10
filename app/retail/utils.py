@@ -117,7 +117,7 @@ def get_tip_history_at_date(date, keyword):
         return 0
 
 
-def get_history(base_stats, copy):
+def get_history(base_stats, copy, num_months=6):
     today = base_stats.first().val if base_stats.exists() else 0
 
     # slack ticks
@@ -127,7 +127,9 @@ def get_history(base_stats, copy):
         ['When', copy],
         ['Launch', 0],
     ]
-    for i in [6, 5, 4, 3, 2, 1]:
+    _range = list(range(1, num_months))
+    _range.reverse()
+    for i in _range:
         try:
             plural = 's' if i != 1 else ''
             before_then = (timezone.now() - timezone.timedelta(days=i*30))
@@ -166,15 +168,33 @@ def get_base_done_bounties(keyword):
     return base_bounties
 
 
+def is_valid_bounty_for_hourly_rate(bounty):
+    hourly_rate = bounty.hourly_rate
+    if not hourly_rate:
+        return False
+
+    # smaller bounties were skewing the results
+    min_hourly_rate = 5
+    min_value_usdt = 400
+    if bounty.value_in_usdt < min_value_usdt:
+        return False
+    for ful in bounty.fulfillments.filter(accepted=True):
+        if ful.fulfiller_hours_worked and ful.fulfiller_hours_worked < min_hourly_rate:
+            return False
+
+    return True
+
+
 def get_hourly_rate_distribution(keyword):
     base_bounties = get_base_done_bounties(keyword)
-    hourly_rates = [ele.hourly_rate for ele in base_bounties if ele.hourly_rate]
-    methodology = 'quartile' if not keyword else 'minmax'
+    hourly_rates = [ele.hourly_rate for ele in base_bounties if is_valid_bounty_for_hourly_rate(ele)]
+    methodology = 'median_stdddev' if not keyword else 'minmax'
     if methodology == 'median_stdddev':
+        stddev_divisor = 1
         median = int(statistics.median(hourly_rates))
         stddev = int(statistics.stdev(hourly_rates))
-        min_hourly_rate = median - int(stddev/2)
-        max_hourly_rate = median + int(stddev/2)
+        min_hourly_rate = median - int(stddev/stddev_divisor)
+        max_hourly_rate = median + int(stddev/stddev_divisor)
     elif methodology == 'quartile':
         hourly_rates.sort()
         num_quarters = 12
@@ -275,7 +295,8 @@ def build_stat_results_helper(keyword=None):
     base_stats = Stat.objects.filter(
         key=key,
         ).order_by('-pk')
-    context['jdi_history'], __ = get_history(base_stats, 'Percentage')
+    num_months = int((timezone.now() - timezone.datetime(2017, 10, 1).replace(tzinfo=pytz.UTC)).days/30)
+    context['jdi_history'], __ = get_history(base_stats, 'Percentage', num_months)
 
     pp.profile_time('Stats2')
 
@@ -297,7 +318,8 @@ def build_stat_results_helper(keyword=None):
         if year == 2018:
             months = range(6, 12)
         for month in months:
-            then = timezone.datetime(year, month, 3).replace(tzinfo=pytz.UTC)
+            day_of_month = 3 if year == 2018 and month < 7 else 1
+            then = timezone.datetime(year, month, day_of_month).replace(tzinfo=pytz.UTC)
             if then < timezone.now():
                 row = get_bounty_history_row(then.strftime("%B %Y"), then, keyword)
                 context['bounty_history'].append(row)

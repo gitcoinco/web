@@ -652,7 +652,7 @@ input[type=text].loading {
   color: #4aeba8;
 }
 
-.submit_bounty select[name=deonomination] {
+.submit_bounty select[name=denomination] {
   text-align: left;
 }
 
@@ -1272,7 +1272,7 @@ input.is-invalid {
     max-width: 90%;
   }
 
-  body.slack, body.newtoken .col-4 {
+  body.slack .slack--brand-tree, body.newtoken .col-4 {
     display: none;
   }
 

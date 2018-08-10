@@ -30,6 +30,7 @@ from django.utils.translation import gettext as _
 
 import cssutils
 import premailer
+from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
 
@@ -232,21 +233,20 @@ def render_funder_stale(github_username, days=30, time_as_str='about a month'):
         str: The rendered response as a string.
 
     """
+    github_username = f"@{github_username}" if github_username else "there"
     response_txt = f"""
-Hi {github_username},
+hi {github_username},
 
-Kevin Owocki from Gitcoin here.
+kevin from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}. in the spirit of making Gitcoin better + checking in:
 
-I see you haven't posted any funded work to the platform in {time_as_str}.
+- has anything been slipping on your issue board which might be bounty worthy?
+- do you have any feedback for Gitcoin Core on how we might improve the product to fit your needs?
 
-Just wanted to check in and see if there's anything we can do, or if you had any feedback for us. \
-We're still a small startup and we iterate fast; not only will your feedback be heard, but it's \
-got a good chance of being put into the product roadmap!
+our idea is that gitcoin should be a place you come when priorities stretch long, and you need an extra set of capable hands. curious if this fits what you're looking for these days.
 
-Kevin
+appreciate you being a part of the community and let me know if you'd like some Gitcoin schwag — just send over a mailing address and a t-shirt size and it'll come your way.
 
-PS - I've got some new gitcoin schwag on order.  Send me your mailing address and your \
-t-shirt size and i'll ship you some.
+~ kevin
 
 """
 
@@ -513,33 +513,30 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Crowdfund bounties with Gitcoin"
+    subject = "BUIDLing Mesh Networks | Gitcoin + ENS Partnership"
 
     intro = '''
 
 <p>
-    Hi there!
+    Hi there,
 </p>
 <p>
-This week we published <a href="https://medium.com/gitcoin/everything-you-need-to-know-about-gitcoin-fe2e3e292a21">Everything You Need to Know About Gitcoin</a>
-This piece is a one stop shop for all things Gitcoin. We explain how Gitcoin works, what progress we’ve made, what cool things we’ve built, who we’ve worked with, and where we’re going next.
-This post will be subsequently pinned to our Medium and updated monthly to keep our community up to date on all things Gitcoin.
+We are often asked how Gitcoin, an open source network, has built such an invaluable community.
+To answer this question (and to hopefully generalize the answers in such a way that other dApp BUIDLers could utilize them) I wrote <a href="https://medium.com/gitcoin/how-to-buidl-a-mesh-network-of-human-beings-a5293ecca60a">How to BUIDL a Mesh Network of Human Beings.</a> This piece
+examines the psychology and thought process we've put into building the Gitcoin community. Let me know what you think by replying to this email!
 </p>
 
 <p>
-We also launched two new features! The first is <a href="https://medium.com/gitcoin/crowdfunding-bounties-fd821b04309d">Crowdfunding Bounties on Gitcoin.</a>
-This feature now allows anyone to contribute to funding a bounty with either social capital or physical funds.
-The second feature addition is that funders now have the ability to <a href="https://medium.com/gitcoin/crowdfunding-bounties-fd821b04309d">pay out multiple contributors at once.</a>
-Simply add their Github username on the ‘Advanced Payout’ screen and denominate their percent of the bounty total.
+This week, we also announced a <a href="https://medium.com/the-ethereum-name-service/ens-gitcoin-3654594537b8">partnership with the Ethereum Name Service.</a> We believe
+ENS integrations are an important next step in decentralization, and are proud to sponsor any Github issues to integrate ENS into your dApps. Just open up a Github issue
+and let us know - we'll take it from there.
 </p>
 
 <h3>What else is new?</h3>
     <ul>
         <li>
-The <a href="http://gitcoin.co/livestream">Gitcoin Livestream</a> is back! Today at 5pm we'll be joined by Mark Beylin of Bounties Network as well as Chris Slaughter from Samsa.ai
-        </li>
-        <li>
-Our livestreams with Matt Lockyer of ERC-998 protocol and Dave & Chris of Deco Network are now live on the <a href="https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w">Gitcoin Youtube channel.</a>
+<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET.
+This week features Decentraland on NFT's and Austin Griffith on metatransactions. Join us!
         </li>
 
     </ul>
@@ -550,44 +547,61 @@ Back to BUIDLing,
 '''
     highlights = [
         {
-            'who': 'scsaba',
+            'who': 'evgeniuz',
             'who_link': True,
-            'what': 'Helped implement browser notifications on MetaMask!',
-            'link': 'https://gitcoin.co/issue/MetaMask/metamask-extension/4203/836',
+            'what': 'Worked with the Solidity team on improving the language!',
+            'link': 'https://gitcoin.co/issue/ethereum/solidity/4640/890',
             'link_copy': 'View more',
         },
         {
-            'who': 'aerophile',
+            'who': 'rahulrumalla',
             'who_link': True,
-            'what': 'Crafted up a blog post on Ethereum Gas and it’s fluctuations.',
-            'link': 'https://gitcoin.co/issue/gitcoinco/web/1751/791',
+            'what': 'Won the QuickBlocks Gitcoin contest by Thomas Rush!',
+            'link': 'https://gitcoin.co/issue/Great-Hill-Corporation/quickBlocks/611/870',
             'link_copy': 'View more',
         },
         {
-            'who': 'StevenJNPearce',
+            'who': 'anshumanv',
             'who_link': True,
-            'what': 'Fixed the collateral deposit, withdraw, and settlement return on MarketProtocol.',
-            'link': 'https://gitcoin.co/issue/MARKETProtocol/MARKET.js/106/856',
+            'what': 'Worked with Origin Protocol on their first bounty.',
+            'link': 'https://gitcoin.co/issue/OriginProtocol/origin-dapp/329/900',
             'link_copy': 'View more',
         },
     ]
 
     bounties_spec = [
         {
-            'url': 'https://github.com/zeppelinos/zos-cli/issues/320',
-            'primer': 'Help Zeppelin OS fix the logic contract kill switch bug',
+            'url': 'https://github.com/XLNT/gnarly/issues/3',
+            'primer': 'Work with Matt Condon on Gnarly, an EF grant recipient!',
         },
         {
-            'url': 'https://github.com/gitcoinco/web/issues/1822',
-            'primer': 'Fix an issue with non-Github links not working on Gitcoin bounties',
+            'url': 'https://github.com/Datum/Datum-Gitcoin-Bounty/issues/1',
+            'primer': 'Use the Datum SDK to build something great without limits.',
         },
         {
-            'url': 'https://github.com/livepeer/livepeerjs/issues/155',
-            'primer': 'Assist Livepeer in fixing a loading bug in Mist browser',
+            'url': 'https://github.com/Bounties-Network/bounties.network/issues/7',
+            'primer': 'Help build the new Bounties Network website!',
         },
     ]
 
+    num_leadboard_items = 5
     #### don't need to edit anything below this line
+    leaderboard = {
+        'quarterly_payers': {
+            'title': _('Top Payers'),
+            'items': [],
+        },
+        'quarterly_earners': {
+            'title': _('Top Earners'),
+            'items': [],
+        },
+        'quarterly_orgs': {
+            'title': _('Top Orgs'),
+            'items': [],
+        },
+    }
+    for key, val in leaderboard.items():
+        leaderboard[key]['items'] = LeaderboardRank.objects.filter(active=True, leaderboard=key).order_by('rank')[0:num_leadboard_items]
 
 
     bounties = []
@@ -610,6 +624,7 @@ Back to BUIDLing,
         'intro': intro,
         'intro_txt': strip_double_chars(strip_double_chars(strip_double_chars(strip_html(intro), ' '), "\n"), "\n "),
         'bounties': bounties,
+        'leaderboard': leaderboard,
         'ecosystem_bounties': ecosystem_bounties,
         'invert_footer': False,
         'hide_header': False,

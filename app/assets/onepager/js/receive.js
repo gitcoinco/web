@@ -89,12 +89,12 @@ $(document).ready(function() {
 
     // redeem tip
 
-    var gas_price_wei = document.gas_price * 10 ** 9;
-    var is_eth = document.tip['token_address'] == '0x0';
+    var gas_price_wei = new BigNumber(document.gas_price * 10 ** 9);
+    var is_eth = document.tip['token_address'] == '0x0' || document.tip['token_address'] == '0x0000000000000000000000000000000000000000';
     var token_address = document.tip['token_address'];
     var token_contract = web3.eth.contract(token_abi).at(token_address);
     var holding_address = document.tip['holding_address'];
-    var amount_in_wei = document.tip['amount_in_wei'];
+    var amount_in_wei = new BigNumber(document.tip['amount_in_wei']);
 
     web3.eth.getTransactionCount(holding_address, function(error, result) {
       var nonce = result;
@@ -104,7 +104,7 @@ $(document).ready(function() {
       }
       // find existing balance
       web3.eth.getBalance(holding_address, function(error, result) {
-        var balance = result.toNumber();
+        var balance = new BigNumber(result.toString());
 
         if (balance == 0) {
           _alert('You must wait until the senders transaction confirm before claiming this tip.');
@@ -115,15 +115,32 @@ $(document).ready(function() {
         if (is_eth) {
           // send ETH
           rawTx = {
+            nonce: web3.toHex(nonce),
             to: forwarding_address,
             from: holding_address,
             value: amount_in_wei
           };
-
           web3.eth.estimateGas(rawTx, function(err, gasLimit) {
-            rawTx['value'] -= (gasLimit * gas_price_wei); // deduct gas costs from amount to send
-            rawTx['gasPrice'] = gas_price_wei;
-            rawTx['gasLimit'] = gasLimit;
+            var buffer = new BigNumber(0);
+
+            gasLimit = new BigNumber(gasLimit);
+            var send_amount = amount_in_wei.minus(gasLimit.times(gas_price_wei)).minus(buffer);
+
+            rawTx['value'] = web3.toHex(send_amount.toString()); // deduct gas costs from amount to send
+            rawTx['gasPrice'] = web3.toHex(gas_price_wei.toString());
+            rawTx['gas'] = web3.toHex(gasLimit.toString());
+            rawTx['gasLimit'] = web3.toHex(gasLimit.toString());
+            show_console = false;
+            if (show_console) {
+              console.log('addr ', holding_address);
+              console.log('balance ', balance.toString());
+              console.log('sending ', send_amount.toString());
+              console.log('gas ', (gasLimit.times(gas_price_wei)).toString());
+              console.log('gas price ', (gas_price_wei.toString()));
+              console.log('buffer ', (buffer.toString()));
+              console.log('balance > value ', balance > send_amount);
+              console.log(rawTx);
+            }
             sign_and_send(rawTx, success_callback, document.priv_key);
           });
         } else {
@@ -141,6 +158,7 @@ $(document).ready(function() {
 
           web3.eth.estimateGas(rawTx, function(err, gasLimit) {
             rawTx['gasPrice'] = gas_price_wei;
+            rawTx['gas'] = gasLimit;
             rawTx['gasLimit'] = gasLimit;
             var will_fail_at_this_gas_price = (gas_price_wei * gasLimit) > balance;
 
