@@ -1073,6 +1073,7 @@ input.is-invalid {
 
 .submit-notification a {
   color: #FFF;
+  text-decoration: none;
 }
 
 .metamask-error {
@@ -1098,7 +1099,7 @@ input.is-invalid {
 
 .metamask-banner p,
 .metamask-banner li {
-  font-size: 0.85rem;
+  font-size: 1rem;
 }
 
 #robot_error {
