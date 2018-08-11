@@ -403,9 +403,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
     metadata = bounty_payload.get('metadata', {})
     # fulfillments metadata will be empty when bounty is first created
     fulfillments = bounty_details.get('fulfillments', {})
-    interested_comment_id = None
-    submissions_comment_id = None
-    interested_comment_id = None
+    comment_id = None
 
     # start to process out all the bounty data
     url = bounty_payload.get('webReferenceURL')
@@ -432,8 +430,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
 
         for old_bounty in old_bounties:
             if old_bounty.current_bounty:
-                submissions_comment_id = old_bounty.submissions_comment
-                interested_comment_id = old_bounty.interested_comment
+                comment_id = old_bounty.comment_id
             old_bounty.current_bounty = False
             old_bounty.save()
             latest_old_bounty = old_bounty
@@ -462,8 +459,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 contract_address=bounty_details.get('token'),
                 network=bounty_details.get('network'),
                 accepted=accepted,
-                interested_comment=interested_comment_id,
-                submissions_comment=submissions_comment_id,
+                comment_id=comment_id,
                 project_type=bounty_payload.get('schemes', {}).get('project_type', 'traditional'),
                 permission_type=bounty_payload.get('schemes', {}).get('permission_type', 'permissionless'),
                 privacy_preferences=bounty_payload.get('privacy_preferences', {}),

@@ -412,17 +412,17 @@ def create_github_notifications():
 
     def killed_bounty(context):
         bounty = context['bounty']
-        if bounty.opened_comment:
-            msg = bounty.opened_comment
+        if bounty.comment_id:
+            msg = bounty.comment_id
         return msg
 
     def work_started(context):
         bounty = context['bounty']
         interested = bounty.interested.all().order_by('created')
         bounty_owner_clear = f"@{bounty.bounty_owner_github_username}" if bounty.bounty_owner_github_username else ""
-        msg = {}
-        if bounty.permission_type == 'approval' and interested:
-            pending_interest = interested.filter(pending=True).only('issue_message', 'profile')
+        msg = ''
+        pending_interest = interested.filter(pending=True).only('issue_message', 'profile')
+        if bounty.permission_type == 'approval' and pending_interest:
             interested_context = []
             for interest in pending_interest:
                 interested_context.append(
@@ -434,12 +434,11 @@ def create_github_notifications():
                     )
                 )
             context['interested'] = interested_context
-            msg['pending'] = render_to_string(TEMPLATE_PATH + 'express_interest.md', context)
-            return msg
+            msg += render_to_string(TEMPLATE_PATH + 'express_interest.md', context)
         started_work = build_related_profile_pairs(interested.filter(pending=False))
         if started_work:
             context['started_work'] = started_work
-            msg['started'] = render_to_string(TEMPLATE_PATH + 'start_work.md', context)
+            msg += render_to_string(TEMPLATE_PATH + 'start_work.md', context)
         return msg
 
     def stop_work(context):
@@ -466,9 +465,6 @@ def create_github_notifications():
             context['accepted_fulfillment'] = bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
         except BountyFulfillment.DoesNotExist:
             context['accepted_fulfillment'] = None
-
-        if bounty.done_comment and bounty.fulfillments.filter(accepted=True).count() == 0:
-            msg = bounty.done_comment
 
         msg = render_to_string(TEMPLATE_PATH + 'accept_work.md', context)
         return msg
@@ -511,13 +507,12 @@ def maybe_market_to_github(bounty, msg, event_name):
         return False
 
     # Define posting specific variables.
-    comment_id = None
     url = bounty.github_url
     uri = parse(url).path
     uri_array = uri.split('/')
 
     # Prepare the comment message string.
-    if msg == bounty.done_comment or msg == bounty.opened_comment:
+    if msg == bounty.comment_id:
             delete_issue_comment(msg, username, repo)
 
     # Try either posting or patching the comment on the github issue
@@ -526,26 +521,14 @@ def maybe_market_to_github(bounty, msg, event_name):
         repo = uri_array[2]
         issue_num = uri_array[4]
 
-        def post_or_patch_issue_comment(bounty_comment, msg):
-            if bounty_comment:
-                patch_issue_comment(bounty_comment, username, repo, msg)
-            else:
-                response = post_issue_comment(username, repo, issue_num, msg)
-                bounty_comment = int(response.get('id'))
-
-        if event_name in ['new_bounty', 'increased_bounty']:
-            post_or_patch_issue_comment(bounty.opened_comment, msg)
-        elif event_name == 'work_started':
-            if bounty.interested.filter(pending=True):
-                post_or_patch_issue_comment(bounty.interested_comment, msg['pending'])
-            if bounty.interested.filter(pending=False):
-                post_or_patch_issue_comment(bounty.started_comment, msg['started'])
-        elif event_name == 'stop_work':
-            post_or_patch_issue_comment(bounty.stopped_comment, msg)
-        elif event_name == 'work_submitted':
-            post_or_patch_issue_comment(bounty.submissions_comment, msg)
-        elif event_name == 'work_done':
-            post_or_patch_issue_comment(bounty.done_comment, msg)
+        print(bounty.comment_id)
+        if bounty.comment_id:
+            response = patch_issue_comment(bounty.comment_id, username, repo, msg)
+            bounty.comment_id = int(response.get('id'))
+        else:
+            response = post_issue_comment(username, repo, issue_num, msg)
+            print(bounty.comment_id)
+            bounty.comment_id = int(response.get('id'))
         bounty.save()
     except IndexError:
         return False
