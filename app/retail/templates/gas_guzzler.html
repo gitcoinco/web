@@ -38,7 +38,7 @@
   </p>
 {% else %}
   <svg id="graph"></svg>
-  {% include 'shared/gas_history.html' %}
+  {% include 'shared/gas_history.html' with y_axis="Percent of network" %}
   {% include 'shared/disqus.html' with page_url='https://gitcoin.co/gas/history?' %}
 
   </div>
