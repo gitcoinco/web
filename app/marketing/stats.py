@@ -485,20 +485,26 @@ def subs():
 
 def subs_active():
     from marketing.models import EmailSubscriber
-
+    all_subs = EmailSubscriber.objects.filter(active=True).count()
     Stat.objects.create(
         key='email_subscribers_active',
-        val=(EmailSubscriber.objects.filter(active=True).count()),
+        val=all_subs,
         )
+    from retail.emails import ALL_EMAILS
+    email_keys = [ele[0] for ele in ALL_EMAILS]
 
+    for key in email_keys:
+        kwargs = {
+            f"preferences__suppression_preferences__{key}":True
+        }
+        unsubs = EmailSubscriber.objects.filter(**kwargs).count()
+        val = all_subs - unsubs
+        Stat.objects.create(
+            key=f'email_subscribers_active_{key}',
+            val=val,
+            )
+        print(key, val, unsubs)
 
-def subs_newsletter():
-    from marketing.models import EmailSubscriber
-
-    Stat.objects.create(
-        key='email_subscribers_newsletter',
-        val=(EmailSubscriber.objects.filter(newsletter=True).count()),
-        )
 
 
 def whitepaper_access():
