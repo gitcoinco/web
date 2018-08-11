@@ -513,7 +513,7 @@ def maybe_market_to_github(bounty, msg, event_name):
 
     # Prepare the comment message string.
     if msg == bounty.comment_id:
-            delete_issue_comment(msg, username, repo)
+        delete_issue_comment(msg, username, repo)
 
     # Try either posting or patching the comment on the github issue
     try:
