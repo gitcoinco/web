@@ -93,7 +93,6 @@ INSTALLED_APPS = [
     'external_bounties',
     'dataviz',
     'jobs',
-    'ethos',
     'impersonate',
 ]
 
