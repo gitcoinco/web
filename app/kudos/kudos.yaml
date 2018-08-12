@@ -1,522 +1,522 @@
-- name: Hadoop
+- name: hadoop
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: hadoop.svg
-- name: Linux Wizard
+- name: linux_wizard
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: linux_wizard.svg
-- name: Gitcoin Genesis
+- name: gitcoin_genesis
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: gitcoin_genesis.svg
-- name: Rails 2
+- name: rails_2
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: rails_2.svg
-- name: Javascript
+- name: javascript
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: javascript.svg
-- name: Infrastructure Ninja
+- name: infrastructure_ninja
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: infrastructure_ninja.svg
-- name: Java
+- name: java
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: java.svg
-- name: Do More Faster
+- name: do_more_faster
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: do_more_faster.svg
-- name: Jquery
+- name: jquery
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: jquery.svg
-- name: Elixer Creator
+- name: elixer_creator
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: elixer_creator.svg
-- name: Collaboration Machine
+- name: collaboration_machine
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: collaboration_machine.svg
-- name: Unix Philosophy
+- name: unix_philosophy
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: unix_philosophy.svg
-- name: Jquery 2
+- name: jquery_2
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: jquery_2.svg
-- name: Ruby2
+- name: ruby2
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: ruby2.svg
-- name: Angular
+- name: angular
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: angular.svg
-- name: Qa Ninja
+- name: qa_ninja
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: qa_ninja.svg
-- name: Ship Code
+- name: ship_code
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: ship_code.svg
-- name: Durpal
+- name: durpal
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: durpal.svg
-- name: Ruby Rockstar
+- name: ruby_rockstar
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: ruby_rockstar.svg
-- name: Oss Freedom Fighter
+- name: oss_freedom_fighter
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: oss_freedom_fighter.svg
-- name: Ruby
+- name: ruby
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: ruby.svg
-- name: Elixer Mixer
+- name: elixer_mixer
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: elixer_mixer.svg
-- name: Be Open To Point Of Promiscuity
+- name: be_open_to_point_of_promiscuity
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: be_open_to_point_of_promiscuity.svg
-- name: Problem Solver
+- name: problem_solver
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: problem_solver.svg
-- name: Sustainer
+- name: sustainer
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: sustainer.svg
-- name: Juggler
+- name: juggler
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: juggler.svg
-- name: Above And Beyond
+- name: above_and_beyond
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: above_and_beyond.svg
-- name: Gitbadeege2v2
+- name: gitbadeege2v2
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: gitbadeege2v2.svg
-- name: Design Star
+- name: design_star
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: design_star.svg
-- name: Handyman
+- name: handyman
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: handyman.svg
-- name: Data Savvy
+- name: data_savvy
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: data_savvy.svg
-- name: Idea Person
+- name: idea_person
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: idea_person.svg
-- name: Nodejjs 2
+- name: nodejjs_2
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: nodejJS_2.svg
-- name: Always Shipping
+- name: always_shipping
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: always_shipping.svg
-- name: Php 2
+- name: php_2
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: php_2.svg
-- name: C#
+- name: c#
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: c#.svg
-- name: Cleanest Code
+- name: cleanest_code
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: cleanest_code.svg
-- name: Nodejjs 3
+- name: nodejjs_3
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: nodejJS_3.svg
-- name: Release Early And Often
+- name: release_early_and_often
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: release_early_and_often.svg
-- name: Grow Opensource
+- name: grow_opensource
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: grow_opensource.svg
-- name: Mongodb
+- name: mongodb
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: mongoDB.svg
-- name: Fast Turn Around
+- name: direct
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: direct.svg
+- name: fast_turn_around
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: fast_turn_around.svg
-- name: Gears Worker
+- name: gears_worker
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: gears_worker.svg
-- name: Css
+- name: css
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: css.svg
-- name: Night Owl
+- name: night_owl
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: night_owl.svg
-- name: Php
+- name: php
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: php.svg
-- name: Be Open
+- name: be_open
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: be_open.svg
-- name: C
+- name: c
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: c.svg
-- name: Redux
+- name: redux
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: redux.svg
-- name: Sustain Oss
+- name: sustain_oss
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: sustain_oss.svg
-- name: Rails
+- name: rails
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: rails.svg
-- name: Infra Ninja
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
-  image: infra_ninja.svg
-- name: Helping Hand
+- name: helping_hand
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: helping_hand.svg
-- name: Nodejjs
+- name: nodejjs
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: nodejJS.svg
-- name: C++
+- name: c++
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: c++.svg
-- name: Superhero
+- name: superhero
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: superhero.svg
-- name: Pythonista
+- name: pythonista
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: pythonista.svg
-- name: Level Up
+- name: level_up
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: level_up.svg
-- name: Delegate Everything You Can
+- name: delegate_everything_you_can
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: delegate_everything_you_can.svg
-- name: Artist
+- name: artist
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: artist.svg
-- name: Masterpiece Painter
+- name: masterpiece_painter
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: masterpiece_painter.svg
-- name: React
+- name: react
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: react.svg
-- name: Busines Smind
+- name: busines_smind
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: busines_smind.svg
-- name: Html
+- name: html
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: html.svg
-- name: Eye For Detail
+- name: eye_for_detail
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: eye_for_detail.svg
-- name: Ember
+- name: ember
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: ember.svg
-- name: Django
+- name: django
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: django.svg
-- name: Be Of All Trades
+- name: be_of_all_trades
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: be_of_all_trades.svg
-- name: Mysql
+- name: mysql
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: mysql.svg
-- name: Super Juggler
+- name: super_juggler
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: super_juggler.svg
-- name: App Dev All Star
+- name: app_dev_all_star
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: app_dev_all_star.svg
-- name: Go
+- name: go
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: go.svg
-- name: Product Wizard
+- name: product_wizard
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: product_wizard.svg
-- name: Business Mind
+- name: business_mind
   description: lorum
   rarity: 20
   price: 1
   numClonesAllowed: 10
   tags: ipsum
   image: business_mind.svg
-- name: Bug Squasher
+- name: bug_squasher
   description: lorum
   rarity: 20
   price: 1
