@@ -54,7 +54,7 @@
             <div class="job-company-exp">
               <div class="job-company">Company: <span class="company-name">[[:company]]</span></div>
               <div class="job-experience">Experience: <span id="exp-lang">[[:skills]]</span></div>
-              <div class="job-posted">Posted: <span id="job-post-duration">[[:posted_at]]</span></div>
+              <div class="job-posted">Posted: <span id="job-post-duration">[[:created_at]]</span></div>
             </div>
             <a class="btn job-apply-btn btn-white" target="_blank" href="[[:apply_url]]">
               <span class="font-caption">Apply on Company Site</span>
@@ -84,7 +84,7 @@
                 <div id="job-profile">Gitcoin Profile
                   <span id="job-poster-profile">
                     [[if posted_by_user_profile_url]]
-                    <a href="[[:posted_by_user_profile_url]]">@[[:posted_by_gitcoin_username]]</a>
+                    <a href="[[:posted_by_user_profile_url]]">@[[:posted_by]]</a>
                     [[else]]
                     Not available
                     [[/if]]

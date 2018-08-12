@@ -10,4 +10,4 @@ class JobViewSet(mixins.ListModelMixin,
     queryset = models.Job.objects.filter(is_active=True)
     serializer_class = serializers.JobSerializer
     filter_backends = (filters.JobPostedFilter, filters.EmploymentTypeFilter,)
-    ordering = ('-posted_at', )
+    ordering = ('-created_at', )

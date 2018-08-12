@@ -6,21 +6,21 @@ from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
-# Create your models here.
-
-JOB_TYPE_CHOICES = (
-    ('full_time', _('Full-Time')),
-    ('part_time', _('Part-Time')),
-    ('contract', _('Contract')),
-    ('intern', _('Intern')),
-)
+from economy.models import SuperModel
 
 
 def get_expiry_time():
     return timezone.now() + timedelta(days=30)
 
 
-class Job(models.Model):
+class Job(SuperModel):
+    JOB_TYPE_CHOICES = (
+        ('full_time', _('Full-Time')),
+        ('part_time', _('Part-Time')),
+        ('contract', _('Contract')),
+        ('intern', _('Intern')),
+    )
+
     title = models.CharField(
         verbose_name=_('Title'), max_length=200, null=False, blank=False
     )
@@ -37,26 +37,22 @@ class Job(models.Model):
     )
     apply_url = models.URLField(null=False, blank=True)
     is_active = models.BooleanField(
-        verbose_name=_('Is this job active?'), default=False,
-        null=False, blank=True
+        verbose_name=_('Is this job active?'), default=False
     )
-    skills = models.CharField(
+    skills = models.ArrayField(models.CharField(
         verbose_name=_('skill'), max_length=60, null=True, blank=True
-    )
+    ))
     expiry_date = models.DateTimeField(
         _('Expiry Date'), null=False, blank=False, default=get_expiry_time
     )
     company = models.CharField(_('Company'), max_length=50, null=True, blank=True)
     apply_email = models.EmailField(_('Contact Email for Job'), null=True, blank=True)
-    posted_at = models.DateTimeField(_('Posted At'), null=False, blank=False, default=timezone.now)
-    posted_by_gitcoin_username = models.CharField(
-        _('Username of person who posted Job'), max_length=50, null=True, blank=True
-    )
+    posted_by = models.ForeignKey('users.User', null=False, blank=False, related_name='posted_jobs')
 
     @property
     def posted_by_user_profile_url(self):
-        if self.posted_by_gitcoin_username:
-            return reverse('profile', args=[self.posted_by_gitcoin_username])
+        if self.posted_by:
+            return reverse('profile', args=[self.posted_by])
         return None
 
     def get_absolute_url(self):

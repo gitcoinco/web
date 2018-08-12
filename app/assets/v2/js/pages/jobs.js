@@ -66,14 +66,14 @@ var set_sidebar_defaults = function() {
   if (q) {
     keywords = decodeURIComponent(q).replace(/^,|\s|,\s*$/g, '');
 
-    if (localStorage['keywords']) {
+    if (localStorage['jobs_keywords']) {
       keywords.split(',').forEach(function(v, k) {
-        if (localStorage['keywords'].indexOf(v) === -1) {
-          localStorage['keywords'] += ',' + v;
+        if (localStorage['jobs_keywords'].indexOf(v) === -1) {
+          localStorage['jobs_keywords'] += ',' + v;
         }
       });
     } else {
-      localStorage['keywords'] = keywords;
+      localStorage['jobs_keywords'] = keywords;
     }
 
     window.history.replaceState(history.state, 'Issue Explorer | Gitcoin', '/explorer');
@@ -127,10 +127,10 @@ var getFilters = function() {
     });
   }
 
-  if (localStorage['keywords']) {
-    localStorage['keywords'].split(',').forEach(function(v, k) {
+  if (localStorage['jobs_keywords']) {
+    localStorage['jobs_keywords'].split(',').forEach(function(v, k) {
       _filters.push('<a class="filter-tag keywords"><span>' + v + '</span>' +
-        '<i class="fa fa-times" onclick="removeFilter(\'keywords\', \'' + v + '\')"></i></a>');
+        '<i class="fa fa-times" onclick="removeFilter(\'jobs_keywords\', \'' + v + '\')"></i></a>');
     });
   }
 
@@ -138,13 +138,13 @@ var getFilters = function() {
 };
 
 var removeFilter = function(key, value) {
-  if (key !== 'keywords') {
+  if (key !== 'jobs_keywords') {
     $('input[name=' + key + '][value=' + value + ']').prop('checked', false);
   } else {
-    localStorage['keywords'] = localStorage['keywords'].replace(value, '').replace(',,', ',');
+    localStorage['jobs_keywords'] = localStorage['jobs_keywords'].replace(value, '').replace(',,', ',');
 
     // Removing the start and last comma to avoid empty element when splitting with comma
-    localStorage['keywords'] = localStorage['keywords'].replace(/^,|,\s*$/g, '');
+    localStorage['jobs_keywords'] = localStorage['jobs_keywords'].replace(/^,|,\s*$/g, '');
   }
 
   refreshjobs();
@@ -203,8 +203,8 @@ var get_search_URI = function() {
     }
   }
 
-  if (localStorage['keywords']) {
-    localStorage['keywords'].split(',').forEach(function(v, k) {
+  if (localStorage['jobs_keywords']) {
+    localStorage['jobs_keywords'].split(',').forEach(function(v, k) {
       keywords += v + ', ';
     });
   }
@@ -545,14 +545,14 @@ $(document).ready(function() {
         this.value = '';
 
         if (!isTechStack) {
-          if (localStorage['keywords']) {
-            localStorage['keywords'] += ',' + ui.item.value;
+          if (localStorage['jobs_keywords']) {
+            localStorage['jobs_keywords'] += ',' + ui.item.value;
           } else {
-            localStorage['keywords'] += ui.item.value;
+            localStorage['jobs_keywords'] += ui.item.value;
           }
 
           $('.filter-tags').append('<a class="filter-tag keywords"><span>' + ui.item.value + '</span>' +
-            '<i class="fa fa-times" onclick="removeFilter(\'keywords\', \'' + ui.item.value + '\')"></i></a>');
+            '<i class="fa fa-times" onclick="removeFilter(\'jobs_keywords\', \'' + ui.item.value + '\')"></i></a>');
         }
 
         return false;

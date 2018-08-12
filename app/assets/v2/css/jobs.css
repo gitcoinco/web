@@ -90,7 +90,9 @@ h4 {
   font-size: 3em;
 }
 
-.company-name, #exp-lang, #job-post-duration {
+.company-name,
+#exp-lang,
+#job-post-duration {
   color: #717171;
 }
 

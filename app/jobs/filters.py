@@ -12,7 +12,7 @@ class JobPostedFilter(filters.BaseFilterBackend):
         if job_posted:
             job_posted_days_ago = int(job_posted)
             job_posted = datetime.now() - timedelta(days=job_posted_days_ago)
-            return queryset.filter(posted_at__gte=job_posted)
+            return queryset.filter(created_at__gte=job_posted)
         return queryset
 
 
