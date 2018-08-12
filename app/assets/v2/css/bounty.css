@@ -570,10 +570,6 @@ a.btn {
   min-height: 12em;
 }
 
-#issue_message.placeholder {
-  color: #6e6e6e;
-}
-
 .add-interest-options {
   display: flex;
   flex-direction: row;
