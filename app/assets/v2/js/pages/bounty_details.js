@@ -560,43 +560,18 @@ var show_interest_modal = function() {
         modalClass: 'modal add-interest-modal'
       });
 
-      var placeholder = gettext(
-        'What steps will you take to complete this task?\n\n' +
-        'Example:\n' +
-        'I\'d start by implementing Netlify, then I\'d make mockups ' +
-        'for the /blog page and individual post pages and proceed ' +
-        'with building them after getting some feedback from the team. ' +
-        'I will start work on this right away and have it ready by the end of the weekend.');
-
       var actionPlanForm = modal.find('form#action_plan');
       var issueMessage = actionPlanForm.find('#issue_message');
 
-      issueMessage.addClass('placeholder');
-      issueMessage.val(placeholder);
-
-      issueMessage.on('focus', function() {
-        if (issueMessage.val() === placeholder) {
-          issueMessage.removeClass('placeholder');
-          issueMessage.val('');
-        }
-      });
-
-      issueMessage.on('blur', function() {
-        var val = issueMessage.val();
-
-        if (!val || val === placeholder) {
-          issueMessage.val(placeholder);
-          issueMessage.addClass('placeholder');
-        }
-      });
+      issueMessage.attr('placeholder', gettext('What steps will you take to complete this task? (min 30 chars)'));
 
       modal.on('submit', function(event) {
         event.preventDefault();
 
         var msg = issueMessage.val().trim();
 
-        if (!msg || msg === placeholder || msg.length < 48) {
-          _alert({message: gettext('Please provide an action plan for this ticket. At least two sentences. (48 Characters)')}, 'error');
+        if (!msg || msg.length < 30) {
+          _alert({message: gettext('Please provide an action plan for this ticket. (min 30 chars)')}, 'error');
           return false;
         }
 
