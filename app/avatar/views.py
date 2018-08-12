@@ -79,7 +79,9 @@ def avatar(request):
 def save_avatar(request):
     """Save the Avatar configuration."""
     response = {'status': 200, 'message': 'Avatar saved'}
-    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile'):
+    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
+        request.user, 'profile', None
+    ):
         return JsonResponse({'status': 405, 'message': 'Authentication required'}, status=405)
 
     profile = request.user.profile
