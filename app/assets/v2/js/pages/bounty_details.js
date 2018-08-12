@@ -563,7 +563,7 @@ var show_interest_modal = function() {
       var actionPlanForm = modal.find('form#action_plan');
       var issueMessage = actionPlanForm.find('#issue_message');
 
-      issueMessage.attr('placeholder', 'What steps will you take to complete this task? (min 30 chars)');
+      issueMessage.attr('placeholder', gettext('What steps will you take to complete this task? (min 30 chars)'));
 
       modal.on('submit', function(event) {
         event.preventDefault();
