@@ -155,6 +155,25 @@ var sanitize = function(str) {
   return result;
 };
 
+var getFormattedDate = function(date) {
+  var monthNames = [
+    'January', 'February', 'March',
+    'April', 'May', 'June', 'July',
+    'August', 'September', 'October',
+    'November', 'December'
+  ];
+
+  var day = date.getDate();
+  var monthIndex = date.getMonth();
+  var year = date.getFullYear();
+
+  return monthNames[monthIndex] + ' ' + day + ', ' + year;
+};
+
+var getTimeFromDate = function(date) {
+  return date.getHours() + ':' + date.getMinutes();
+};
+
 var waitforWeb3 = function(callback) {
   if (document.web3network) {
     callback();
@@ -273,11 +292,14 @@ var mutate_interest = function(bounty_pk, direction, data) {
     }
     return false;
   }).fail(function(result) {
-    _alert({ message: gettext('Network or API error. Please reload the page and try again.') }, 'error');
+    var alertMsg = result && result.responseJSON ? result.responseJSON.error : null;
 
-    if (result) {
-      console.log(result.responseJSON.error);
+    if (alertMsg === null) {
+      alertMsg = gettext('Network error. Please reload the page and try again.');
     }
+
+    _alert({ message: alertMsg }, 'error');
+
   });
 };
 
@@ -297,6 +319,22 @@ var uninterested = function(bounty_pk, profileId, slash) {
     result = sanitizeAPIResults(result);
     if (result.success) {
       _alert({ message: gettext(success_message) }, 'success');
+      pull_interest_list(bounty_pk);
+      return true;
+    }
+    return false;
+  }).fail(function(result) {
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+  });
+};
+
+var extend_expiration = function(bounty_pk, data) {
+  var request_url = '/actions/bounty/' + bounty_pk + '/extend_expiration/';
+
+  $.post(request_url, data, function(result) {
+    result = sanitizeAPIResults(result);
+    if (result.success) {
+      _alert({ message: result.msg }, 'success');
       pull_interest_list(bounty_pk);
       return true;
     }
@@ -462,7 +500,7 @@ var retrieveAmount = function() {
   }
 
   var amount = $('input[name=amount]').val();
-  var address = $('select[name=deonomination]').val();
+  var address = $('select[name=denomination]').val();
   var denomination = tokenAddressToDetails(address)['name'];
   var request_url = '/sync/get_amount?amount=' + amount + '&denomination=' + denomination;
 
@@ -851,9 +889,20 @@ var promptForAuth = function(event) {
 
     token_contract.allowance.call(from, to, function(error, result) {
       if (error || result.toNumber() == 0) {
-        _alert("You have not yet enabled this token.  To enable this token, go to the <a style='padding-left:5px;' href='/settings/tokens'> Token Settings page and enable it</a>. (this is only needed one time per token)", 'warning');
+        if (!document.alert_enable_token_shown) {
+          _alert(
+            gettext('To enable this token, go to the ') +
+            '<a style="padding-left:5px;" href="/settings/tokens">' +
+            gettext('Token Settings page and enable it.') +
+            '</a> ' +
+            gettext('This is only needed once per token.'),
+            'warning'
+          );
+        }
+        document.alert_enable_token_shown = true;
+
         $('input, textarea, select').prop('disabled', 'disabled');
-        $('select[name=deonomination]').prop('disabled', '');
+        $('select[name=denomination]').prop('disabled', '');
       } else {
         $('input, textarea, select').prop('disabled', '');
       }

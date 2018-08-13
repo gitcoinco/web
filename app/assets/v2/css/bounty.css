@@ -22,6 +22,10 @@ body {
   float: right;
 }
 
+#extended-expiration-date #extended-days {
+  border-bottom: 1px solid black;
+}
+
 .progress-bar {
   background-color: #D8D8D8;
   display: block;
@@ -91,6 +95,11 @@ body {
 
 .box .empty p {
   margin: 1rem;
+}
+
+#extended-expiration-date p {
+  font-size: 1rem;
+  font-weight: bold;
 }
 
 .contributor-box .fa-minus {
@@ -424,6 +433,11 @@ a.btn {
   font-size: 12px;
 }
 
+#extended-expiration-date i {
+  position: relative;
+  top: 2px;
+}
+
 .transaction-header h2 {
   color: #ffffff;
   font-size: 2rem;
@@ -556,10 +570,6 @@ a.btn {
   min-height: 12em;
 }
 
-#issue_message.placeholder {
-  color: #6e6e6e;
-}
-
 .add-interest-options {
   display: flex;
   flex-direction: row;
@@ -595,10 +605,16 @@ a.btn {
   width: auto;
 }
 
-.btn-interested {
+.btn-interested,
+.btn-extend,
+.btn-cancel {
   float: right;
   padding: 0.375rem 0.9375rem;
   font-size: 12px;
+}
+
+.btn-cancel {
+  margin-right: 25px;
 }
 
 .close:hover, .close:focus {
@@ -765,6 +781,11 @@ a.btn {
 
   .rocket {
     right: 11rem;
+  }
+
+  #extend_deadline {
+    min-width: 40rem;
+    max-width: 0;
   }
 }
 

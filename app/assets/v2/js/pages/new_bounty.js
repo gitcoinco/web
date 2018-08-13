@@ -101,8 +101,8 @@ $(document).ready(function() {
   $('input[name=amount]').blur(setUsdAmount);
   $('input[name=usd_amount]').keyup(usdToAmount);
   $('input[name=usd_amount]').blur(usdToAmount);
-  $('select[name=deonomination]').change(setUsdAmount);
-  $('select[name=deonomination]').change(promptForAuth);
+  $('select[name=denomination]').change(setUsdAmount);
+  $('select[name=denomination]').change(promptForAuth);
   $('input[name=issueURL]').blur(retrieveIssueDetails);
   setTimeout(setUsdAmount, 1000);
   waitforWeb3(function() {
@@ -144,7 +144,7 @@ $(document).ready(function() {
     $('.select2-container .select2-search__field').remove();
   });
   // denomination field
-  $('select[name=deonomination]').select2();
+  $('select[name=denomination]').select2();
   if ($('input[name=amount]').val().trim().length > 0) {
     setUsdAmount();
   }
@@ -208,7 +208,7 @@ $(document).ready(function() {
       var issueURL = data.issueURL.replace(/#.*$/, '');
       var notificationEmail = data.notificationEmail;
       var amount = data.amount;
-      var tokenAddress = data.deonomination;
+      var tokenAddress = data.denomination;
       var token = tokenAddressToDetails(tokenAddress);
       var decimals = token['decimals'];
       var tokenName = token['name'];

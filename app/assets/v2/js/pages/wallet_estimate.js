@@ -90,7 +90,7 @@ function prefill_recommended_prices() {
     $('#default-recommended-gas').hide();
     $('#average-recommended-gas').hide();
     $('#fast-recommended-gas').show();
-    $('.gas-rates .message').html('Good news! Gas is pretty fast right now').show();
+    $('.gas-rates .message').html('Good news! The network is pretty fast right now').show();
     $('#fast-recommended-gas').html('Fast $' + parseFloat(fast_data['usd']).toFixed(2) + ' ~' + fast_data['time'] + ' minutes').addClass('active');
     $('#fast-recommended-gas').data('amount', parseFloat(fast_data['usd']).toFixed(2));
     $('#fast-recommended-gas').parent().removeClass('justify-content-between').addClass('justify-content-around');
