@@ -58,7 +58,7 @@ span {
 }
 
 .navbar-nav .btn-gc-blue {
-  margin-right: 0 !important;
+  margin-right: 1rem;
   font-size: 0.9rem;
 }
 
@@ -585,6 +585,11 @@ input[type=text].loading {
   max-width: 550px;
   margin: 0 auto;
   padding: 0 2em;
+}
+
+#bountyFulfillment {
+  height: 2rem;
+  outline: none;
 }
 
 .submit_bounty #primary_form {

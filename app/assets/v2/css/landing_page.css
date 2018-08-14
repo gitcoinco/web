@@ -57,7 +57,7 @@ body {
   position: absolute;
   top: -50px;
   right: calc(5vw - 50px);
-  max-width: 30vw;
+  max-width: 25vw;
   will-change: transform;
 }
 
