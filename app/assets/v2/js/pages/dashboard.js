@@ -337,8 +337,9 @@ var trigger_scroll = debounce(function() {
     
     // move loading indicator
     var loading_html = $('.loading_img').clone().wrap('<p>').parent().html();
+
     $('.loading_img').remove();
-    $("#bounties").append(loading_html);
+    $('#bounties').append(loading_html);
     $('.loading_img').css('display', 'block');
 
     document.offset = parseInt(document.offset) + parseInt(results_limit);
