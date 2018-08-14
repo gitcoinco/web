@@ -735,6 +735,23 @@ const is_current_user_interested = function(result) {
   return !!(result.interested || []).find(interest => interest.profile.handle == document.contxt.github_handle);
 };
 
+const is_current_user_approved = function(result) {
+  const needs_approval = result['permission_type'] === 'approval';
+  const interested = result.interested || [];
+  let len = interested.length;
+
+  while (len--) {
+    const interest = interested[len];
+    const handle = interest.profile ? interest.profile.handle : '';
+
+    if (handle && handle === document.contxt.github_handle) {
+      return needs_approval ? interest.pending === false : true;
+    }
+  }
+
+  return false;
+};
+
 var do_actions = function(result) {
   // helper vars
   var is_legacy = result['web3_type'] == 'legacy_gitcoin';
@@ -752,6 +769,7 @@ var do_actions = function(result) {
 
   document.interested = is_interested;
 
+  const current_user_is_approved = is_current_user_approved(result);
   // which actions should we show?
   const should_block_from_starting_work = !is_interested && result['project_type'] == 'traditional' && (result['status'] == 'started' || result['status'] == 'submitted');
   let show_start_stop_work = is_still_on_happy_path && !should_block_from_starting_work && is_open;
@@ -760,7 +778,7 @@ var do_actions = function(result) {
   let show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled && isBountyOwner(result);
   let show_job_description = result['attached_job_description'] && result['attached_job_description'].startsWith('http');
   const show_increase_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
-  const submit_work_enabled = !isBountyOwner(result);
+  const submit_work_enabled = !isBountyOwner(result) && current_user_is_approved;
   const start_stop_work_enabled = !isBountyOwner(result);
   const increase_bounty_enabled = isBountyOwner(result);
   let show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
