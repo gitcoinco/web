@@ -87,10 +87,10 @@ class Command(BaseCommand):
                 method_id = data[:10]
                 logger.info(f'method_id:  {method_id}')
 
-                # Check if its its a Clone function call
-                if method_id == '0xdaa6eb1d':
+                # Check if its a Clone or cloneAndTransfer function call
+                if method_id == '0xdaa6eb1d' or method_id == '0x8a94e433':
                     # Get the kudos_id of the newly cloned Kudos
-                    kudos_id = kudos_contract.functions.totalSupply().call() - 1
+                    kudos_id = kudos_contract.functions.totalSupply().call()
                     # Update the database with the newly cloned Kudos
                     update_kudos_db(kudos_id, network)
                     # Find the name of the Kudos that was cloned

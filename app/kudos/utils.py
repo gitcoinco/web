@@ -245,6 +245,59 @@ def clone_kudos(network):
     pass
 
 
+def clone_and_transfer_kudos_web3(network, private_key=None, *args):
+    """ Clone a new Kudos and transfer it to another address.
+
+        private_key:  Optionally pass a private key to sign the transaction locally
+        *args:  See the Kudos.sol cloneAndTransfer() function for the propery keyword arguments.
+
+        From Kudos.sol:
+        cloneAndTransfer(string name,
+                         uint256 numClonesRequested,
+                         address receiver,
+                         )
+    """
+    if (settings.DEBUG or settings.ENV != 'prod') and network == 'mainnet':
+        # This block will return {} if env isn't prod and the network is mainnet.
+        return {}
+
+    w3 = get_web3(network)
+
+    kudos_contract = getKudosContract(network)
+    account = to_checksum_address('0xD386793F1DB5F21609571C0164841E5eA2D33aD8')
+
+    w3.eth.defaultAccount = account
+
+    if private_key:
+        nonce = w3.eth.getTransactionCount(account)
+        txn = kudos_contract.functions.cloneAndTransfer(*args).buildTransaction({'gas': 700000, 'nonce': nonce, 'from': account})
+        # logger.info(txn)
+        signed_txn = w3.eth.account.signTransaction(txn, private_key=private_key)
+        # logger.info(signed_txn)
+        tx_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
+        # logger.info(f'tx_hash: {tx_hash}')
+    else:
+        tx_hash = kudos_contract.functions.cloneAndTransfer(*args).transact({"from": account})
+
+    tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+    # logger.info(f'tx_receipt: {tx_receipt}')
+    # logger.info(f'kudos_id: {int(tx_receipt.logs[0].data, 10)}')
+
+    # Normally this would be totalSupply() - 1, but we have a dummy Kudos at index 0
+    kudos_id = kudos_contract.functions.totalSupply().call()
+    logger.info(f'kudos_id: {kudos_id}')
+    kudos = kudos_contract.functions.getKudosById(kudos_id).call()
+
+    logger.info(f'Minted Kudos ID {kudos_id}: {kudos}')
+
+    kudos_map = get_kudos_map(kudos)
+
+    kudos_db = MarketPlaceListing(pk=kudos_id, **kudos_map)
+    kudos_db.save()
+
+    return kudos
+
+
 def web3_process_kudos():
     pass
 
