@@ -334,6 +334,13 @@ var trigger_scroll = debounce(function() {
   var get_more = !have_painted_all_bounties && ((last_active_bounty.offset().top) < (scrollPos + buffer + window_height));
 
   if (get_more && !document.done_loading_results) {
+    
+    // move loading indicator
+    var loading_html = $('.loading_img').clone().wrap('<p>').parent().html();
+    $('.loading_img').remove();
+    $("#bounties").append(loading_html);
+    $('.loading_img').css('display', 'block');
+
     document.offset = parseInt(document.offset) + parseInt(results_limit);
     refreshBounties(null, document.offset, true);
   }
@@ -463,7 +470,6 @@ var refreshBounties = function(event, offset, append) {
       var html = tmpl.render(result);
 
       $('#bounties').append(html);
-
     }
 
     document.done_loading_results = results.length < results_limit;
