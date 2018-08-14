@@ -188,11 +188,17 @@ def gas_guzzler_view(request):
                 continue
             if not og.created_on.weekday() < 1 and breakdown in ['weekly']:
                 continue
-            unit = int((timezone.now() - og.created_on).seconds / 3600)
-            gas_histories[address].append([float(og.pct_total), unit])
+            if breakdown == 'hourly':
+                divisor = 3600
+            elif breakdown == 'daily':
+                divisor = 3600 * 7
+            elif breakdown == 'weekly':
+                divisor = 3600 * 24 * 7
+            unit = int((timezone.now() - og.created_on).total_seconds() / divisor)
+            point = [float(og.pct_total), unit]
+            gas_histories[address].append(point)
             max_y = max(max_y, og.pct_total + 1)
         counter += 1
-
     context = {
         'title': _('Gas Guzzlers'),
         'card_desc': _('View the gas guzzlers on the Ethereum Network'),
