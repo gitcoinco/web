@@ -1112,13 +1112,7 @@ class Tip(SuperModel):
 
     @property
     def value_in_usdt_now(self):
-        decimals = 1
-        if self.tokenName in ['USDT', 'DAI']:
-            return float(self.amount)
-        try:
-            return round(float(convert_amount(self.amount, self.tokenName, 'USDT')) / decimals, 2)
-        except ConversionRateNotFoundError:
-            return None
+        return self.value_in_usdt_at_time(None)
 
     @property
     def value_in_usdt(self):
@@ -1126,13 +1120,7 @@ class Tip(SuperModel):
 
     @property
     def value_in_usdt_then(self):
-        decimals = 1
-        if self.tokenName in ['USDT', 'DAI']:
-            return float(self.amount)
-        try:
-            return round(float(convert_amount(self.amount, self.tokenName, 'USDT', self.created_on)) / decimals, 2)
-        except ConversionRateNotFoundError:
-            return None
+        return self.value_in_usdt_at_time(self.created_on)
 
     @property
     def token_value_in_usdt_now(self):
@@ -1147,6 +1135,19 @@ class Tip(SuperModel):
             return round(convert_token_to_usdt(self.tokenName, self.created_on), 2)
         except ConversionRateNotFoundError:
             return None
+
+    def value_in_usdt_at_time(self, at_time):
+        decimals = 1
+        if self.tokenName in ['USDT', 'DAI']:
+            return float(self.amount)
+        try:
+            return round(float(convert_amount(self.amount, self.tokenName, 'USDT', at_time)) / decimals, 2)
+        except ConversionRateNotFoundError:
+            try:
+                in_eth = convert_amount(self.amount, self.tokenName, 'ETH', at_time)
+                return round(float(convert_amount(in_eth, 'ETH', 'USDT', at_time)) / decimals, 2)
+            except ConversionRateNotFoundError:
+                return None
 
     @property
     def status(self):
