@@ -571,7 +571,7 @@ class Bounty(SuperModel):
         if self.token_name == 'ETH':
             return self.value_in_token
         try:
-            return convert_amount(self.value_in_token, self.token_name, 'ETH')
+            return convert_amount(self.value_true, self.token_name, 'ETH')
         except Exception:
             return None
 
