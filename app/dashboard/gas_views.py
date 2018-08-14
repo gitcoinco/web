@@ -169,27 +169,30 @@ def gas_calculator(request):
 def gas_guzzler_view(request):
     breakdown = request.GET.get('breakdown', 'hourly')
     breakdown_ui = breakdown.replace('ly', '') if breakdown != 'daily' else 'day'
-    num_guzzlers = 10
+    num_guzzlers = 7
     gas_histories = {}
     _lines = {}
     top_guzzlers = GasGuzzler.objects.filter(created_on__gt=timezone.now()-timezone.timedelta(minutes=60)).order_by('-pct_total')[0:num_guzzlers]
     counter = 0
     colors = [val for key, val in lines.items()]
+    max_y = 0
     for guzzler in top_guzzlers:
         address = guzzler.address
-        _lines[address] = colors[counter % len(colors)]
+        try:
+            _lines[address] = colors[counter]
+        except:
+            _lines[address] = 'purple'
         gas_histories[address] = []
-        for og in GasGuzzler.objects.filter(address=address).order_by('created_on'):
+        for og in GasGuzzler.objects.filter(address=address).order_by('-created_on'):
             if not og.created_on.hour < 1 and breakdown in ['daily', 'weekly']:
                 continue
             if not og.created_on.weekday() < 1 and breakdown in ['weekly']:
                 continue
             unit = int((timezone.now() - og.created_on).seconds / 3600)
             gas_histories[address].append([float(og.pct_total), unit])
+            max_y = max(max_y, og.pct_total + 1)
         counter += 1
 
-
-    max_y = 100
     context = {
         'title': _('Gas Guzzlers'),
         'card_desc': _('View the gas guzzlers on the Ethereum Network'),
