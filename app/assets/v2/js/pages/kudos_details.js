@@ -1,5 +1,5 @@
 var cloneKudos = function(name, numClones) {
-  console.log('name' + name);
+  console.log('name: ' + name);
   console.log('numClones: ' + numClones);
 
   var account = web3.eth.coinbase;
@@ -11,12 +11,52 @@ var cloneKudos = function(name, numClones) {
   })
 }
 
+var getKudosById = function(kudosId) {
+  $.get('/api/v0.1/kudos/' + kudosId, function(results, status) {
+    return results
+  })
+}
+
 
 
 $(document).ready(function() {
+  let kudosId = window.location.pathname.split('/')[2];
+  // let kudosId = $('#kudosId').text()
+  // let kudosName = $('#kudosName').text()
+  let kudosNumClonesAvailable = $('#kudosNumClonesAvailable').text()
+  let kudosNumClonesAllowed = $('#kudosNumClonesAllowed').text()
+  let numClones = 1;
+
+  if (kudosNumClonesAvailable == 0) {
+    $('#getKudos').attr('class', 'btn btn-gc-blue disabled').attr('aria-disabled', 'true');
+    return;
+  }
+
   $('#getKudos').click(function() {
-    let name = $('#kudos-image').attr('alt')
-    let numClones = 1;
-    cloneKudos(name, numClones);
+    if (numClones > kudosNumClonesAvailable) {
+      alert('Cannot make ' + numClones + ' clone(s).  ' + kudosNumClonesAvailable + ' clones available!');
+      return;
+    }
+
+    $.get('/api/v0.1/kudos/' + kudosId, function(results, status) {
+      let kudosName = results.name;
+      cloneKudos(kudosName, numClones);
+    })
   })
+
 })
+
+// $('#getKudos').click(function() {
+
+
+// $(document).ready(function() {
+//   let address = web3.eth.coinbase;
+//   console.log(address);
+//   $.get('/api/v0.1/kudos?lister=' + address, function(results, status) {
+//     console.log(status)
+//     console.log(results)
+//     let numKudos = results.length;
+//     results.forEach(renderKudos)
+//     // renderKudos(results)
+//   })
+// })

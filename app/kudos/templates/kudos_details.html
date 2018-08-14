@@ -1,4 +1,5 @@
 {% load i18n static %}
+{% load kudos_extras %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -22,18 +23,29 @@
   	<section class="container my-5 pb-5">
       <div class="row justify-content-around">
         <div class="col-md-6 col-lg-5 mb-5">
-          <img id="kudos-image" src="{% static kudos.image %}" alt="{{ kudos.name }}" class="sticky-top w-100">
+          <a href="/kudos/{{kudos.cloned_from_id}}"><img id="kudos-image" src="{% static kudos.image %}" alt="{{ kudos.name }}" class="sticky-top w-100"></a>
         </div>
         <div class="col-md-6 col-lg-5">
-          <h3 class="display-4">{{ kudos.name }}</h3>
+          <h3 id="kudosName" class="display-4">{{ kudos.name|humanize_name }}</h3>
           <div class="mt-4 font-bigger-1 font-weight-300">
-            <p class="">{{ kudos.description }}</p>
-            <p>Rarity: {{ kudos.rarity }}</p>
-            <p>Lister: <a href="" class="btn-link">{{ kudos.lister }}</a></p>
+            <p id="kudosDescriptionclass="">{{ kudos.description }}</p>
+            <p><span>ID: </span><span id="kudosID">{{ kudos.id }}</span></p>
+            <p><span>Rarity: </span><span id="kudosRarity">{{ kudos.rarity }}</span></p>
+            <p><span>Owner Address: </span><span><a id="kudosOwnerAddress" href="" class="btn-link">{{ kudos.owner_address|humanize_address }}</a></span></p>
+            <!-- <p><span>Clones Allowed: </span><span id="kudosNumClonesAllowed">{{ kudos.num_clones_allowed }}</span></p> -->
+            <p><span>Clones In Wild: </span><span id="kudosNumClonesInWild">{{ kudos.num_clones_in_wild }}</span></p>
+            {% if kudos.num_clones_available != 0 %}
+            <p><span>Clones Available: </span><span id="kudosNumClonesAvailable">{{ kudos.num_clones_available }}</span></p>
+            {% endif %}
           </div>
           <div class="row justify-content-start pb-4">
             <div class="col-12">
+              {% if kudos.num_clones_allowed != 0 and kudos.num_clones_available != 0 %}
               <button type="button" id="getKudos" class="btn btn-gc-blue">{% trans "Get Kudos" %}</button>
+              <a href="/kudos/send?name={{ kudos.name}}"><button type="button" id="sendKudos" class="btn btn-gc-blue">{% trans "Send Kudos" %}</button></a>
+              {% elif kudos.num_clones_allowed != 0 and kudos.num_clones_available == 0 %}
+              <button type="button" id="getKudosDisabled" class="btn btn-gc-blue disabled">{% trans "Not Available" %}</button>
+              {% endif %}
             </div>
           </div>
           <hr>

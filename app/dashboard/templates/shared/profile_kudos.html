@@ -15,6 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n staticfiles %}
+{% load kudos_extras %}
 
 {% if user.is_authenticated and request.path == '/profile/' %}
 <div class="btn-group" role="group" aria-label="Basic example">
@@ -70,9 +71,9 @@
             <img src="{% static kudo.image %}" alt="{{ kudo.name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
           </a>
           <div class="kd-content">
-            <div class="kd-title">{{ kudo.name }}</div>
+            <div class="kd-title">{{ kudo.name|humanize_name }}</div>
             {{ kudo.description }}
-            <a href="" class="d-block mb-1" data-truncatehash title="{{ kudo.lister}} ">{{ kudo.lister }}</a>
+            <a href="" class="d-block mb-1" data-truncatehash title="{{ kudo.owner_address|humanize_address }} ">{{ kudo.owner_address|humanize_address }}</a>
             <div>Sent from <a href="">Bob7878</a></div>
           </div>
         </div>

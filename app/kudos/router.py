@@ -23,14 +23,40 @@ from datetime import datetime
 import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets, generics
 
-from .models import MarketPlaceListing
+from .models import MarketPlaceListing, Wallet
 
 
 class MarketPlaceListingSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = MarketPlaceListing
         fields = ('id', 'created_on', 'modified_on', 'name', 'description', 'image', 'rarity',
-                  'price', 'num_clones_allowed', 'num_clones_in_wild', 'lister', 'tags')
+                  'price', 'num_clones_allowed', 'num_clones_in_wild', 'owner_address', 'tags')
+
+
+class WalletSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Wallet
+        fields = ('address', 'profile')
+
+
+class WalletViewSet(viewsets.ModelViewSet):
+    queryset = Wallet.objects.all().order_by('-id')
+    serializer_class = WalletSerializer
+    filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
+
+    def get_queryset(self):
+        param_keys = self.request.query_params.keys()
+        queryset = Wallet.objects.all().order_by('-id')
+
+        # Filter by address
+        if 'address' in param_keys:
+            queryset = queryset.filter(address=self.request.query_params.get('address'))
+
+        # Filter by profile
+        if 'profile' in param_keys:
+            queryset = queryset.filter(name=self.request.query_params.get('profile'))
+
+        return queryset
 
 
 class MarketPlaceListingViewSet(viewsets.ModelViewSet):
@@ -38,15 +64,15 @@ class MarketPlaceListingViewSet(viewsets.ModelViewSet):
     serializer_class = MarketPlaceListingSerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     # filter_fields = ('name', 'description', 'image', 'rarity', 'price', 'num_clones_allowed',
-    #                  'num_clones_in_wild', 'lister', 'tags')
+    #                  'num_clones_in_wild', 'owner_address', 'tags')
 
     def get_queryset(self):
         param_keys = self.request.query_params.keys()
         queryset = MarketPlaceListing.objects.all().order_by('-id')
 
-        # Filter by lister
-        if 'lister' in param_keys:
-            queryset = queryset.filter(lister__iexact=self.request.query_params.get('lister'))
+        # Filter by owner_address
+        if 'owner_address' in param_keys:
+            queryset = queryset.filter(owner_address__iexact=self.request.query_params.get('owner_address'))
 
         # Filter by name
         if 'name' in param_keys:
@@ -78,3 +104,4 @@ class MarketPlaceListingViewSet(viewsets.ModelViewSet):
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
 router.register(r'kudos', MarketPlaceListingViewSet)
+router.register(r'wallet', WalletViewSet)

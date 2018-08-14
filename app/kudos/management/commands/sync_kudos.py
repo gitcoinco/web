@@ -62,8 +62,8 @@ class Command(BaseCommand):
             # kudos = get_kudos(kudos_enum, network)
             # self.stdout.write(f"[{month}/{day} {hour}:00] Processing kudos {kudos_enum}")
             # web3_process_kudos(kudos)
-            if kudos_has_changed(kudos_enum):
-                update_kudos_db(kudos_enum)
+            if kudos_has_changed(kudos_enum, network):
+                update_kudos_db(kudos_enum, network)
 
             kudos_enum += 1
 

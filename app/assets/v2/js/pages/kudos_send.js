@@ -53,6 +53,34 @@ var wait_for_metadata = function(callback) {
 
 };
 
+var cloneKudos = function(name, numClones) {
+  console.log('name: ' + name);
+  console.log('numClones: ' + numClones);
+
+  var account = web3.eth.coinbase;
+  var kudosContractInstance = web3.eth.contract(kudos_abi).at(kudos_address());
+
+  kudosContractInstance.clone(name, numClones, {from: account, value: new web3.BigNumber(1000000000000000)}, function(error, txid) {
+    console.log('txid:' + txid)
+    return true;
+  })
+}
+
+
+var cloneAndTransferKudos = function(name, numClones, receiver) {
+  console.log('name: ' + name);
+  console.log('numClones: ' + numClones);
+  console.log('receiver: ' + receiver);
+
+  var account = web3.eth.coinbase;
+  var kudosContractInstance = web3.eth.contract(kudos_abi).at(kudos_address());
+
+  kudosContractInstance.cloneAndTransfer(name, numClones, receiver, {from: account, value: new web3.BigNumber(1000000000000000)}, function(error, txid) {
+    console.log('txid:' + txid)
+    return true;
+  })
+}
+
 $(document).ready(function() {
   set_metadata();
   // jquery bindings
@@ -81,6 +109,7 @@ $(document).ready(function() {
     var github_url = $('#issueURL').val();
     var from_name = $('#fromName').val();
     var username = $('#username').val();
+    var receiverAddress = $('#receiverAddress').val();
     var amountInEth = parseFloat($('#amount').val());
     var comments_priv = $('#comments_priv').val();
     var comments_public = $('#comments_public').val();
@@ -95,9 +124,9 @@ $(document).ready(function() {
     var tokenName = 'ETH';
     var weiConvert = Math.pow(10, 18);
 
-    if (!isSendingETH) {
-      tokenName = tokenDetails.name;
-    }
+    // if (!isSendingETH) {
+    //   tokenName = tokenDetails.name;
+    // }
 
     var success_callback = function(txid) {
 
@@ -117,7 +146,10 @@ $(document).ready(function() {
       unloading_button($('#send'));
     };
 
-    return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false);
+    // return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false);
+    // var kudosName = $('#kudosImage').attr('alt');
+    var kudosName = window.location.href.split('\=')[1];
+    cloneAndTransferKudos(kudosName, 1, receiverAddress);
 
   });
 

@@ -1027,9 +1027,13 @@ def profile(request, handle):
 
     params = profile.to_dict()
     params['wallet_addresses'] = [x.address for x in profile.wallets.all()]
-    params['kudos'] = MarketPlaceListing.objects.filter(lister__in=params['wallet_addresses'])
+    owned_kudos = MarketPlaceListing.objects.filter(owner_address__in=params['wallet_addresses'])
+    # if owned_kudos:
+    #     owned_kudos = [x.humanize() for x in owned_kudos]
     logging.info(params['wallet_addresses'])
-    logging.info(params['kudos'])
+    # owned_kudos['num_clones_availble'] = owned_kudos.num_clones_allowed - owned_kudos.num_clones_in_wild
+    logging.info(owned_kudos)
+    params['kudos'] = owned_kudos
     # logging.info(f'Found Kudos: {params["kudos"]}')
     # logging.info(f'Kudos name: {params["kudos"][0].name}')
     # logging.info(f'Profile data: {params}')
@@ -1059,7 +1063,7 @@ def profile(request, handle):
                 }
             except Exception as e:
                 msg = str(e)
-            
+
             return JsonResponse(msg)
 
     # logging.info(params['profile'].wallets.all())

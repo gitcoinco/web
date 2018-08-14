@@ -40,6 +40,7 @@ logger = logging.getLogger(__name__)
 
 confirm_time_minutes_target = 4
 
+
 def about(request):
     """Render the about kudos response."""
     context = {
@@ -192,7 +193,6 @@ def send_api(request):
         sender_profile=get_profile(from_username),
     )
 
-
     is_over_tip_tx_limit = False
     is_over_tip_weekly_limit = False
     max_per_tip = request.user.profile.max_tip_amount_usdt_per_tx if request.user.is_authenticated and request.user.profile else 500
@@ -218,7 +218,9 @@ def send_api(request):
 def send(request):
     # kt = KudosToken(name='pythonista', description='Zen', rarity=5, price=10, num_clones_allowed=3,
     #                 num_clones_in_wild=0)
-    
+    kudos_name = request.GET.get('name')
+    kudos = MarketPlaceListing.objects.filter(name=kudos_name, num_clones_allowed__gt=0).first()
+
     is_user_authenticated = request.user.is_authenticated
     from_username = request.user.username if is_user_authenticated else ''
     primary_from_email = request.user.email if is_user_authenticated else ''
@@ -231,6 +233,7 @@ def send(request):
         'from_handle': from_username,
         'title': 'Send Tip | Gitcoin',
         'card_desc': 'Send a tip to any github user at the click of a button.',
+        'kudos': kudos,
     }
 
     return TemplateResponse(request, 'transaction/send.html', params)
@@ -240,6 +243,5 @@ def receive(request):
     context = dict()
     # kt = KudosToken(name='pythonista', description='Zen', rarity=5, price=10, num_clones_allowed=3,
     #                 num_clones_in_wild=0)
-    
 
     return TemplateResponse(request, 'transaction/receive.html', context)

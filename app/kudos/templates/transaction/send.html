@@ -16,6 +16,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
+{% load kudos_extras %}
 {% block 'scripts' %}
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
@@ -67,9 +68,9 @@
     <h1 class="h2">{% trans "Send Kudos" %}</h1>
 
     <div class="my-4">
-      <img src="{% static "v2/images/kudos/above_and_beyond.svg" %}" width="160" alt="" class="mb-2">
-      <span class="d-block">Night Owl</span>
-      <span class="d-block" data-kudosprice="0.0011">Ξ 0.0011 <small></small></span>
+      <a href="/kudos/{{ kudos.id }}"><img src="{% static kudos.image %}" alt="{{ kudos.name }}" width="160" alt="" class="mb-2"></a>
+      <span class="d-block">{{ kudos.name|humanize_name }}</span>
+      <span class="d-block" data-kudosprice=>Ξ {{ kudos.price_in_eth }}<small></small></span>
     </div>
     
   </header>
@@ -93,6 +94,10 @@
     <div class="form-group">
       <label for="">{% trans "To Github Username" %}:</label>
       <input type="text" placeholder="@username" id="username" class="form-control" required>
+    </div>
+    <div class="form-group">
+      <label for="">{% trans "To Wallet Address" %}:</label>
+      <input type="text" placeholder="0x0" id="receiverAddress" class="form-control" required>
     </div>
     <div class="form-group">
       <label for="">{% trans "From Github Username" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next=/kudos/send">{% trans "Login" %}</a>) {%endif%}</label>
@@ -145,7 +150,7 @@
     <div class="text-center">
     <!-- <a href="#" id="send" class="btn btn-gc-purple">{% trans "Send" %} <span class="emoji">⚡️</span></a> -->
       <button class="btn btn-gc-purple" id="send">{% trans "Send" %} <span class="emoji">⚡️</span></button>
-    </div>
+    </div>x
   </form>
 
   <div id="send_eth_done" style="display:none;" class="text-center">

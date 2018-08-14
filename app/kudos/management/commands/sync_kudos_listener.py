@@ -92,13 +92,13 @@ class Command(BaseCommand):
                     # Get the kudos_id of the newly cloned Kudos
                     kudos_id = kudos_contract.functions.totalSupply().call() - 1
                     # Update the database with the newly cloned Kudos
-                    update_kudos_db(kudos_id)
+                    update_kudos_db(kudos_id, network)
                     # Find the name of the Kudos that was cloned
-                    kudos = get_kudos_from_web3(kudos_id)
+                    kudos = get_kudos_from_web3(kudos_id, network)
                     kudos_map = get_kudos_map(kudos)
                     # Find the ID of the Gen0 Kudos that was cloned
-                    gen0_id = get_gen0_id_from_web3(kudos_map['name'])
+                    gen0_id = get_gen0_id_from_web3(kudos_map['name'], network)
                     # Update the Gen0 Kudos in the database
-                    update_kudos_db(gen0_id)
+                    update_kudos_db(gen0_id, network)
 
             last_block_hash = block_hash

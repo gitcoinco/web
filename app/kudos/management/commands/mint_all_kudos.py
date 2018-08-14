@@ -34,6 +34,7 @@ import oyaml as yaml
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
+logging.getLogger("web3").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 default_start_id = 0 if not settings.DEBUG else 402
@@ -44,13 +45,15 @@ class Command(BaseCommand):
     help = 'mints the initial kudos gen0 set'
 
     def add_arguments(self, parser):
-        parser.add_argument('network', default='rinkeby', type=str)
+        parser.add_argument('network', default='ropsten', type=str)
         parser.add_argument('yaml_file', help='absolute path to kudos.yaml file', type=str)
+        parser.add_argument('--private_key', help='private key for signing transactions', type=str)
 
     def handle(self, *args, **options):
         # config
         network = options['network']
-        logging.info(options)
+        private_key = options['private_key']
+        logger.info(options)
         hour = datetime.datetime.now().hour
         day = datetime.datetime.now().day
         month = datetime.datetime.now().month
@@ -75,4 +78,7 @@ class Command(BaseCommand):
                     kudos['numClonesAllowed'], kudos['tags'], image_path,
                     )
 
-            mint_kudos_on_web3_and_db(network, *args)
+            try:
+                mint_kudos_on_web3_and_db(network, private_key, *args)
+            except ValueError as e:
+                logger.warning(e)

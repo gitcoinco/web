@@ -26,12 +26,12 @@ from django.core.management.base import BaseCommand
 
 import rollbar
 from dashboard.helpers import UnsupportedSchemaException
-from dashboard.utils import getIPFS
-from kudos.utils import mint_kudos
+from kudos.utils import mint_kudos_on_web3_and_db
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
+logging.getLogger("web3").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 default_start_id = 0 if not settings.DEBUG else 402
@@ -42,7 +42,7 @@ class Command(BaseCommand):
     help = 'syncs database with kudos on the blockchain'
 
     def add_arguments(self, parser):
-        parser.add_argument('network', default='rinkeby', type=str)
+        parser.add_argument('network', default='ropsten', type=str)
         parser.add_argument('name', type=str)
         parser.add_argument('--description', default='', type=str)
         parser.add_argument('--rarity', default=50, type=int)
@@ -50,10 +50,12 @@ class Command(BaseCommand):
         parser.add_argument('--numClonesAllowed', default=10, type=int)
         parser.add_argument('--tags', default='', type=str)
         parser.add_argument('--image', default='', type=str, help='absolute path to Kudos image')
+        parser.add_argument('--private_key', help='private key for signing transactions', type=str)
 
     def handle(self, *args, **options):
         # config
         network = options['network']
+        private_key = options['private_key']
         logging.info(options)
         hour = datetime.datetime.now().hour
         day = datetime.datetime.now().day
@@ -72,4 +74,4 @@ class Command(BaseCommand):
                 options['numClonesAllowed'], options['tags'], image_path,
                 )
 
-        mint_kudos(network, *args)
+        mint_kudos_on_web3_and_db(network, private_key, *args)
