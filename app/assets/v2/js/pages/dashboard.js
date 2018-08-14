@@ -14,7 +14,7 @@ var sidebar_keys = [
   'misc'
 ];
 
-document.results_limit = 50;
+results_limit = 50;
 
 var localStorage;
 
@@ -256,7 +256,7 @@ var get_search_URI = function(offset) {
     uri += '&order_by=' + order_by;
   }
   uri += '&offset=' + offset;
-  uri += '&limit=' + document.results_limit;
+  uri += '&limit=' + results_limit;
   return uri;
 };
 
@@ -334,7 +334,7 @@ var trigger_scroll = debounce(function() {
   var get_more = !have_painted_all_bounties && ((last_active_bounty.offset().top) < (scrollPos + buffer + window_height));
 
   if (get_more && !document.done_loading_results) {
-    document.offset = parseInt(document.offset) + parseInt(document.results_limit);
+    document.offset = parseInt(document.offset) + parseInt(results_limit);
     refreshBounties(null, document.offset, true);
   }
 }, 200);
@@ -466,7 +466,7 @@ var refreshBounties = function(event, offset, append) {
 
     }
 
-    document.done_loading_results = results.length < document.results_limit;
+    document.done_loading_results = results.length < results_limit;
 
     $('div.bounty_row.result').each(function() {
       var href = $(this).attr('href');
