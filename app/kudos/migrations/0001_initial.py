@@ -25,8 +25,9 @@ class Migration(migrations.Migration):
                 ('price', models.IntegerField()),
                 ('num_clones_allowed', models.IntegerField(blank=True, null=True)),
                 ('num_clones_in_wild', models.IntegerField(blank=True, null=True)),
-                ('lister', models.CharField(max_length=255)),
+                ('owner_address', models.CharField(max_length=255)),
                 ('tags', models.CharField(max_length=255, null=True)),
+                ('cloned_from_id', models.IntegerField()),
             ],
             options={
                 'abstract': False,

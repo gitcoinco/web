@@ -87,18 +87,18 @@ class Command(BaseCommand):
                 method_id = data[:10]
                 logger.info(f'method_id:  {method_id}')
 
-                # Check if its its a Clone function call
-                if method_id == '0xdaa6eb1d':
+                # Check if its a Clone or cloneAndTransfer function call
+                if method_id == '0xdaa6eb1d' or method_id == '0x8a94e433':
                     # Get the kudos_id of the newly cloned Kudos
-                    kudos_id = kudos_contract.functions.totalSupply().call() - 1
+                    kudos_id = kudos_contract.functions.totalSupply().call()
                     # Update the database with the newly cloned Kudos
-                    update_kudos_db(kudos_id)
+                    update_kudos_db(kudos_id, network)
                     # Find the name of the Kudos that was cloned
-                    kudos = get_kudos_from_web3(kudos_id)
+                    kudos = get_kudos_from_web3(kudos_id, network)
                     kudos_map = get_kudos_map(kudos)
                     # Find the ID of the Gen0 Kudos that was cloned
-                    gen0_id = get_gen0_id_from_web3(kudos_map['name'])
+                    gen0_id = get_gen0_id_from_web3(kudos_map['name'], network)
                     # Update the Gen0 Kudos in the database
-                    update_kudos_db(gen0_id)
+                    update_kudos_db(gen0_id, network)
 
             last_block_hash = block_hash

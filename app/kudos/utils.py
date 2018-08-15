@@ -28,8 +28,36 @@ from dashboard.utils import UnsupportedNetworkException
 from dashboard.utils import get_web3
 from kudos.models import MarketPlaceListing
 from eth_utils import to_checksum_address
+from web3.middleware import geth_poa_middleware
 
 logger = logging.getLogger(__name__)
+
+
+class KudosContract:
+    def __init__(self, network):
+        self.network = network
+        self.contract_address = self.get_contract_address()
+
+        self._contract = self.get_contract()
+
+    def get_contract(self):
+        web3 = get_web3(self.network)
+        with open('kudos/Kudos.json') as f:
+            abi = json.load(f)['abi']
+        address = self.get_contract_address()
+        return web3.eth.contract(address=address, abi=abi)
+
+    def get_contract_address(self):
+        if self.network == 'mainnet':
+            return to_checksum_address('')
+        elif self.network == 'ropsten':
+            return to_checksum_address('0x1aa9f0928c4b9cdd9706bcd4ebabbeafc62e472a')
+        elif self.network == 'rinkeby':
+            return to_checksum_address('0x0b9bFF2c5c7c85eE94B48D54F2C6eFa1E399380D')
+        else:
+            # local testrpc
+            return to_checksum_address('0xe7bed272ee374e8116049d0a49737bdda86325b6')
+        # raise UnsupportedNetworkException(self.network)
 
 
 def get_kudos_map(kudos):
@@ -39,9 +67,10 @@ def get_kudos_map(kudos):
                 price=kudos[3],
                 num_clones_allowed=kudos[4],
                 num_clones_in_wild=kudos[5],
-                lister=kudos[6],
+                owner_address=kudos[6],
                 tags=kudos[7],
                 image=kudos[8],
+                cloned_from_id=kudos[9],
                 )
 
 
@@ -49,10 +78,11 @@ def getKudosContractAddress(network):
     if network == 'mainnet':
         return to_checksum_address('')
     elif network == 'ropsten':
-        return to_checksum_address('')
+        return to_checksum_address('0x1aa9f0928c4b9cdd9706bcd4ebabbeafc62e472a')
     elif network == 'rinkeby':
         return to_checksum_address('0x0b9bFF2c5c7c85eE94B48D54F2C6eFa1E399380D')
     else:
+        # local testrpc
         return to_checksum_address('0xe7bed272ee374e8116049d0a49737bdda86325b6')
     # raise UnsupportedNetworkException(network)
 
@@ -68,7 +98,7 @@ def getKudosContract(network):
     return contract
 
 
-def get_kudos_from_web3(kudos_id, network='localhost'):
+def get_kudos_from_web3(kudos_id, network):
     """ Get kudos artifact info from the blockchain. """
     if (settings.DEBUG or settings.ENV != 'prod') and network == 'mainnet':
         # This block will return {} if env isn't prod and the network is mainnet.
@@ -83,10 +113,11 @@ def get_kudos_from_web3(kudos_id, network='localhost'):
     return kudos
 
 
-def mint_kudos_on_web3_and_db(network, *args):
+def mint_kudos_on_web3_and_db(network, private_key=None, *args):
     """ Mint a new Gen0 Kudos on the blockchain and save it to the database.
         Not to be confused with clone_kudos.
 
+        private_key:  Optionally pass a private key to sign the transaction locally
         *args:  See the Kudos.sol create() function for the propery keyword arguments.
 
         From Kudos.sol:
@@ -105,15 +136,54 @@ def mint_kudos_on_web3_and_db(network, *args):
         # This block will return {} if env isn't prod and the network is mainnet.
         return {}
 
-    web3 = get_web3(network)
+    name = args[0].lower()
+    logger.info(name)
+
+    # Check if Gen0 name already exists on web3.
+    gen0id = get_gen0_id_from_web3(name, network)
+    if gen0id != 0:
+        raise ValueError(f'The {name} Gen0 Kudos already exists on the blockchain.')
+
+    # Check if Gen0 name already exists in the database.
+    gen0name = MarketPlaceListing.objects.filter(name__iexact=name).first()
+    if gen0name is not None:
+        raise ValueError(f'The {name} Gen0 Kudos already exists in the database.')
+
+    w3 = get_web3(network)
 
     kudos_contract = getKudosContract(network)
-    web3.eth.defaultAccount = web3.eth.accounts[0]
+    logger.info(w3.eth.accounts)
+    account = to_checksum_address('0xD386793F1DB5F21609571C0164841E5eA2D33aD8')
+    # account = w3.eth.accounts[0]
+    logger.info(f'account: {account}')
+    w3.eth.defaultAccount = account
+    # logger.info(kudos_contract.all_functions())
+    # logger.info(kudos_contract.functions.ownerOf(0).call())
 
-    tx_hash = kudos_contract.functions.mint(*args).transact({"from": web3.eth.accounts[0]})
-    tx_receipt = web3.eth.waitForTransactionReceipt(tx_hash)
+    # logger.info(w3.eth.getBlock('latest'))
+    # logger.info(w3.eth.getCode(getKudosContractAddress(network)))
 
-    kudos_id = kudos_contract.functions.totalSupply().call() - 1
+    # w3.middleware_stack.inject(geth_poa_middleware, layer=0)
+    # logger.info(w3.version.node)
+
+    if private_key:
+        nonce = w3.eth.getTransactionCount(account)
+        txn = kudos_contract.functions.mint(*args).buildTransaction({'gas': 700000, 'nonce': nonce, 'from': account})
+        # logger.info(txn)
+        signed_txn = w3.eth.account.signTransaction(txn, private_key=private_key)
+        # logger.info(signed_txn)
+        tx_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
+        # logger.info(f'tx_hash: {tx_hash}')
+    else:
+        tx_hash = kudos_contract.functions.mint(*args).transact({"from": account})
+
+    tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+    # logger.info(f'tx_receipt: {tx_receipt}')
+    # logger.info(f'kudos_id: {int(tx_receipt.logs[0].data, 10)}')
+
+    # Normally this would be totalSupply() - 1, but we have a dummy Kudos at index 0
+    kudos_id = kudos_contract.functions.totalSupply().call()
+    logger.info(f'kudos_id: {kudos_id}')
     kudos = kudos_contract.functions.getKudosById(kudos_id).call()
 
     logger.info(f'Minted Kudos ID {kudos_id}: {kudos}')
@@ -123,10 +193,19 @@ def mint_kudos_on_web3_and_db(network, *args):
     kudos_db = MarketPlaceListing(pk=kudos_id, **kudos_map)
     kudos_db.save()
 
-    # return kudos
+    return kudos
 
 
-def kudos_has_changed(kudos_id):
+def kudos_exists_web3(kudos_id, network='ropsten'):
+    w3 = get_web3(network)
+    kudos_contract = getKudosContract(network)
+
+
+def kudos_exists_db(kudos_id):
+    pass
+
+
+def kudos_has_changed(kudos_id, network):
     """ Given the kudos artifact info obtained from the blockchain, check if it matches
         the database entry.
 
@@ -138,9 +217,15 @@ def kudos_has_changed(kudos_id):
                   False otherwise.
     """
     mismatch = False
-    kudos = get_kudos_from_web3(kudos_id)
+    try:
+        kudos = get_kudos_from_web3(kudos_id, network)
+    except ValueError:
+        return False
     kudos_map = get_kudos_map(kudos)
-    kudos_db = MarketPlaceListing.objects.get(pk=kudos_id)
+    try:
+        kudos_db = MarketPlaceListing.objects.get(pk=kudos_id)
+    except MarketPlaceListing.DoesNotExist:
+        return False
 
     for k, v in kudos_map.items():
         if getattr(kudos_db, k) != v:
@@ -150,8 +235,8 @@ def kudos_has_changed(kudos_id):
     return mismatch
 
 
-def update_kudos_db(kudos_id):
-    kudos = get_kudos_from_web3(kudos_id)
+def update_kudos_db(kudos_id, network):
+    kudos = get_kudos_from_web3(kudos_id, network)
     kudos_map = get_kudos_map(kudos)
     kudos_db = MarketPlaceListing(pk=kudos_id, **kudos_map)
     logger.info(f'Updating Kudos ID: {kudos_id}')
@@ -160,7 +245,7 @@ def update_kudos_db(kudos_id):
     kudos_db.save()
 
 
-def get_gen0_id_from_web3(kudos_name, network='localhost'):
+def get_gen0_id_from_web3(kudos_name, network):
     """ Get the kudos id of the Gen0 Kudos using the name.  This information is pulled from web3.
 
     Args:
@@ -178,13 +263,66 @@ def get_gen0_id_from_web3(kudos_name, network='localhost'):
     kudos_contract = getKudosContract(network)
 
     kudos_id = kudos_contract.functions.getGen0TokenId(kudos_name).call()
-    logger.info(f'Kudos Gen0 ID {kudos_id}')
+    logger.info(f'Kudos Gen0 ID: {kudos_id}.  ID of 0 indicates not found.')
 
     return kudos_id
 
 
 def clone_kudos(network):
     pass
+
+
+def clone_and_transfer_kudos_web3(network, private_key=None, *args):
+    """ Clone a new Kudos and transfer it to another address.
+
+        private_key:  Optionally pass a private key to sign the transaction locally
+        *args:  See the Kudos.sol cloneAndTransfer() function for the propery keyword arguments.
+
+        From Kudos.sol:
+        cloneAndTransfer(string name,
+                         uint256 numClonesRequested,
+                         address receiver,
+                         )
+    """
+    if (settings.DEBUG or settings.ENV != 'prod') and network == 'mainnet':
+        # This block will return {} if env isn't prod and the network is mainnet.
+        return {}
+
+    w3 = get_web3(network)
+
+    kudos_contract = getKudosContract(network)
+    account = to_checksum_address('0xD386793F1DB5F21609571C0164841E5eA2D33aD8')
+
+    w3.eth.defaultAccount = account
+
+    if private_key:
+        nonce = w3.eth.getTransactionCount(account)
+        txn = kudos_contract.functions.cloneAndTransfer(*args).buildTransaction({'gas': 700000, 'nonce': nonce, 'from': account})
+        # logger.info(txn)
+        signed_txn = w3.eth.account.signTransaction(txn, private_key=private_key)
+        # logger.info(signed_txn)
+        tx_hash = w3.eth.sendRawTransaction(signed_txn.rawTransaction)
+        # logger.info(f'tx_hash: {tx_hash}')
+    else:
+        tx_hash = kudos_contract.functions.cloneAndTransfer(*args).transact({"from": account})
+
+    tx_receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+    # logger.info(f'tx_receipt: {tx_receipt}')
+    # logger.info(f'kudos_id: {int(tx_receipt.logs[0].data, 10)}')
+
+    # Normally this would be totalSupply() - 1, but we have a dummy Kudos at index 0
+    kudos_id = kudos_contract.functions.totalSupply().call()
+    logger.info(f'kudos_id: {kudos_id}')
+    kudos = kudos_contract.functions.getKudosById(kudos_id).call()
+
+    logger.info(f'Minted Kudos ID {kudos_id}: {kudos}')
+
+    kudos_map = get_kudos_map(kudos)
+
+    kudos_db = MarketPlaceListing(pk=kudos_id, **kudos_map)
+    kudos_db.save()
+
+    return kudos
 
 
 def web3_process_kudos():
@@ -197,5 +335,4 @@ def get_kudos_id():
 
 def get_kudos_id_from_web3():
     pass
-
 

@@ -28,6 +28,7 @@ from django.db.models.signals import m2m_changed, post_delete, post_save, pre_sa
 
 from economy.models import SuperModel
 from dashboard.models import Profile
+from eth_utils import to_checksum_address
 
 import logging
 
@@ -43,21 +44,47 @@ class MarketPlaceListing(SuperModel):
     price = models.IntegerField()
     num_clones_allowed = models.IntegerField(null=True, blank=True)
     num_clones_in_wild = models.IntegerField(null=True, blank=True)
-    lister = models.CharField(max_length=255)  # FK to github profile
+    owner_address = models.CharField(max_length=255)  # FK to github profile
     tags = models.CharField(max_length=255, null=True)
+    cloned_from_id = models.IntegerField()
+
+    def save(self, *args, **kwargs):
+        self.owner_address = to_checksum_address(self.owner_address)
+        super().save(*args, **kwargs)
 
     @property
     def price_in_eth(self):
         return self.price / 1000
 
     @property
-    def short_lister(self):
-        return self.lister[2:6] + '...' + self.lister[38:]
+    def shortened_address(self):
+        return self.owner_address[:6] + '...' + self.owner_address[38:]
+
+    @property
+    def capitalized_name(self):
+        return ' '.join([x.capitalize() for x in self.name.split('_')])
+
+    @property
+    def num_clones_available(self):
+        r = self.num_clones_allowed - self.num_clones_in_wild
+        if r < 0:
+            r = 0
+        return r
+
+    def humanize(self):
+        self.owner_address = self.shortened_address
+        self.name = self.capitalized_name
+        self.num_clones_available = self.get_num_clones_available()
+        return self
 
 
 class Wallet(SuperModel):
     address = models.CharField(max_length=255, unique=True)
     profile = models.ForeignKey('dashboard.Profile', related_name='wallets', on_delete=models.SET_NULL, null=True)
+
+    def save(self, *args, **kwargs):
+        self.address = to_checksum_address(self.address)
+        super().save(*args, **kwargs)
 
 # class KudosToken(SuperModel):
 

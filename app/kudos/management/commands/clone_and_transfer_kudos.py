@@ -26,7 +26,8 @@ from django.core.management.base import BaseCommand
 
 import rollbar
 from dashboard.helpers import UnsupportedSchemaException
-from kudos.utils import mint_kudos_on_web3_and_db
+from kudos.utils import clone_and_transfer_kudos_web3
+from eth_utils import to_checksum_address
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -39,39 +40,20 @@ default_start_id = 0 if not settings.DEBUG else 402
 
 class Command(BaseCommand):
 
-    help = 'syncs database with kudos on the blockchain'
+    help = 'clone a new kudos and transfer it to a different address'
 
     def add_arguments(self, parser):
         parser.add_argument('network', default='ropsten', type=str)
         parser.add_argument('name', type=str)
-        parser.add_argument('--description', default='', type=str)
-        parser.add_argument('--rarity', default=50, type=int)
-        parser.add_argument('--price', default=1, type=int)
-        parser.add_argument('--numClonesAllowed', default=10, type=int)
-        parser.add_argument('--tags', default='', type=str)
-        parser.add_argument('--image', default='', type=str, help='absolute path to Kudos image')
+        parser.add_argument('receiver', type=str)
+        parser.add_argument('--numClonesRequested', default=1, type=str)
         parser.add_argument('--private_key', help='private key for signing transactions', type=str)
 
     def handle(self, *args, **options):
         # config
-        network = options['network']
-        private_key = options['private_key']
-        logging.info(options)
-        hour = datetime.datetime.now().hour
-        day = datetime.datetime.now().day
-        month = datetime.datetime.now().month
 
-        image = options.get('image')
-        if image:
-            # api = getIPFS()
-            # image_ipfs = api.add(image)
-            # image_hash = image_ipfs['Hash']
-            image_path = image
-        else:
-            image_path = ''
-
-        args = (options['name'], options['description'], options['rarity'], options['price'],
-                options['numClonesAllowed'], options['tags'], image_path,
+        args = (options['name'], options['numClonesRequested'],
+                to_checksum_address(options['receiver']),
                 )
 
-        mint_kudos_on_web3_and_db(network, private_key, *args)
+        clone_and_transfer_kudos_web3(options['network'], options['private_key'], *args)
