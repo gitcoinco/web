@@ -26,7 +26,7 @@
   <div class="popover-body">
     <form action="/profile/" method="post" name="formwallets" id="form-wallets">
       {% csrf_token %}
-      <input type="hidden" id="input-wallet" name="address">
+      <input type="hidden" id="input-wallet" name="address" data-metamask-address>
       <div class="input-group input-group-sm">
         <div class="input-group-prepend">
           <div id="wallet-address" class="input-group-text" data-metamask-address></div>
@@ -37,12 +37,15 @@
       </div>
 
     </form>
+    <ul class="list-unstyled p-2 wallets-list"></ul>
+    
+    <!-- {% if wallet_addresses %}
     <ul class="list-unstyled p-2 wallets-list">
       {% for address in wallet_addresses %}
-      <li>{{ address }}</li>
+        <li>{{ address }}</li>
       {% endfor %}
     </ul>
-  
+    {% endif %} -->
   </div>
 </div>
 {% endif %}

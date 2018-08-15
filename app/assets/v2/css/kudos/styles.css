@@ -184,4 +184,7 @@
   margin-top: 1rem;
   background-color: #f3f3f3; }
 
+.wallets-list:empty {
+  display: none; }
+
 /*# sourceMappingURL=styles.css.map */
