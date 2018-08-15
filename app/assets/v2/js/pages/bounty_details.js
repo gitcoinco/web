@@ -1002,6 +1002,22 @@ var do_actions = function(result) {
     actions.push(_entry);
   }
 
+  if (show_admin_methods) {
+    const url = '/_administrationdashboard/bounty/' + result['pk'] + '/change/';
+
+    const _entry = {
+      enabled: true,
+      href: url,
+      text: gettext('View in Admin'),
+      parent: 'right_actions',
+      title: gettext('View in Admin'),
+      color: 'white',
+      buttonclass: 'admin-only'
+    };
+
+    actions.push(_entry);
+  }
+
   render_actions(actions);
 };
 

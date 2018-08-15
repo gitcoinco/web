@@ -607,6 +607,8 @@ class Bounty(SuperModel):
 
     @property
     def token_value_in_usdt_now(self):
+        if self.token_name in settings.STABLE_COINS:
+            return 1
         try:
             return round(convert_token_to_usdt(self.token_name), 2)
         except ConversionRateNotFoundError:
