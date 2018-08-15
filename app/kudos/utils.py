@@ -33,6 +33,33 @@ from web3.middleware import geth_poa_middleware
 logger = logging.getLogger(__name__)
 
 
+class KudosContract:
+    def __init__(self, network):
+        self.network = network
+        self.contract_address = self.get_contract_address()
+
+        self._contract = self.get_contract()
+
+    def get_contract(self):
+        web3 = get_web3(self.network)
+        with open('kudos/Kudos.json') as f:
+            abi = json.load(f)['abi']
+        address = self.get_contract_address()
+        return web3.eth.contract(address=address, abi=abi)
+
+    def get_contract_address(self):
+        if self.network == 'mainnet':
+            return to_checksum_address('')
+        elif self.network == 'ropsten':
+            return to_checksum_address('0x1aa9f0928c4b9cdd9706bcd4ebabbeafc62e472a')
+        elif self.network == 'rinkeby':
+            return to_checksum_address('0x0b9bFF2c5c7c85eE94B48D54F2C6eFa1E399380D')
+        else:
+            # local testrpc
+            return to_checksum_address('0xe7bed272ee374e8116049d0a49737bdda86325b6')
+        # raise UnsupportedNetworkException(self.network)
+
+
 def get_kudos_map(kudos):
     return dict(name=kudos[0],
                 description=kudos[1],
