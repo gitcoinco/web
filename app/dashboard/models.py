@@ -594,7 +594,7 @@ class Bounty(SuperModel):
         decimals = 10 ** 18
         if self.token_name == 'USDT':
             return float(self.value_in_token)
-        if self.token_name == 'DAI':
+        if self.token_name in settings.STABLE_COINS:
             return float(self.value_in_token / 10 ** 18)
         try:
             return round(float(convert_amount(self.value_true, self.token_name, 'USDT', at_time)), 2)
@@ -1138,7 +1138,7 @@ class Tip(SuperModel):
 
     def value_in_usdt_at_time(self, at_time):
         decimals = 1
-        if self.tokenName in ['USDT', 'DAI']:
+        if self.tokenName in settings.STABLE_COINS:
             return float(self.amount)
         try:
             return round(float(convert_amount(self.amount, self.tokenName, 'USDT', at_time)) / decimals, 2)

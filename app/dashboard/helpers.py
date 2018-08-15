@@ -113,7 +113,7 @@ def amount(request):
     try:
         amount = request.GET.get('amount')
         denomination = request.GET.get('denomination', 'ETH')
-        if denomination == 'DAI':
+        if denomination in settings.STABLE_COINS:
             denomination = 'USDT'
         if denomination == 'ETH':
             amount_in_eth = float(amount)
