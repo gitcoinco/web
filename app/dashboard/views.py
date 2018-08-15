@@ -1053,16 +1053,16 @@ def profile(request, handle):
         if new_wallet:
             try:
                 new_wallet.save()
+                wallets = [x.address for x in profile.wallets.all()]
                 msg = {
                     'status': 200,
                     'msg': 'Success!',
-                    'wallets': [
-                        {"wallet":"0xeda95ed3e3436c689376889f9ed0a8f4ba23e866"},
-                        {"wallet":"0xeda95ed3e3436c689376889f9ed0a8f4ba23e000"}
-                    ]
+                    'wallets': wallets,
                 }
             except Exception as e:
                 msg = str(e)
+
+            logging.info(JsonResponse(msg))
 
             return JsonResponse(msg)
 
