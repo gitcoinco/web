@@ -292,8 +292,9 @@ class Bounty(SuperModel):
 
     def __str__(self):
         """Return the string representation of a Bounty."""
-        return f"{'(CURRENT) ' if self.current_bounty else ''}{self.title} {self.value_in_token} " \
-               f"{self.token_name} {self.web3_created}"
+        from django.contrib.humanize.templatetags.humanize import naturaltime
+        return f"{'(C) ' if self.current_bounty else ''}{self.pk}: {self.title}, {self.value_true} " \
+               f"{self.token_name} @ {naturaltime(self.web3_created)}"
 
     def save(self, *args, **kwargs):
         """Define custom handling for saving bounties."""
