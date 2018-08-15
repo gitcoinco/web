@@ -242,7 +242,7 @@ def build_stat_results(keyword=None):
     return results
 
 
-def get_bounty_history(keyword=None, cumulative=False):
+def get_bounty_history(keyword=None, cumulative=True):
     bh = [
         ['', 'Tips',  'Open / Available',  'Started / In Progress',  'Completed', 'Cancelled'],
     ]
