@@ -270,7 +270,7 @@
               </div>
             [[/if]]
           </div>
-        [[else activity_type == 'start_work' || activity_type == 'worker_approved' || activity_type == 'worker_applied' ]]
+        [[else activity_type == 'start_work' || activity_type == 'worker_approved' ]]
           <div class="col-12 col-md-7 started-status-column">
             <div class="activity-status">
               [[:text]]
@@ -302,14 +302,14 @@
             [[if can_approve_worker ]]
               <div class="stop-work">
                 <span title="<div class='tooltip-info tooltip-sm'>Reject worker</div>">
-                  <a target="_blank" href="[[:reject_worker_url]]">
+                  <a class="button button--primary" href="[[:reject_worker_url]]">
                     <span class="font-smaller-4">Reject worker</span>
                   </a>
                 </span>
-              </div> |
+              </div>
               <div class="stop-work">
                 <span title="<div class='tooltip-info tooltip-sm'>Approve worker</div>">
-                  <a target="_blank" href="[[:approve_worker_url]]">
+                  <a class="button button--primary" href="[[:approve_worker_url]]">
                     <span class="font-smaller-4">Approve worker</span>
                   </a>
                 </span>
