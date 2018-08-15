@@ -36,7 +36,7 @@ class MarketPlaceListingSerializer(serializers.HyperlinkedModelSerializer):
 class WalletSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Wallet
-        fields = ('address', 'profile')
+        fields = ('address', 'profile_id')
 
 
 class WalletViewSet(viewsets.ModelViewSet):
@@ -53,8 +53,8 @@ class WalletViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(address=self.request.query_params.get('address'))
 
         # Filter by profile
-        if 'profile' in param_keys:
-            queryset = queryset.filter(name=self.request.query_params.get('profile'))
+        if 'profile_id' in param_keys:
+            queryset = queryset.filter(name=self.request.query_params.get('profile_id'))
 
         return queryset
 
