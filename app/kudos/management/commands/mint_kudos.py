@@ -31,7 +31,7 @@ from kudos.utils import mint_kudos_on_web3_and_db
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
-logging.getLogger("web3").setLevel(logging.WARNING)
+# logging.getLogger("web3").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 default_start_id = 0 if not settings.DEBUG else 402
