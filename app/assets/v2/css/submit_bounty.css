@@ -86,6 +86,10 @@ textarea:read-only {
   border: 1px solid #d1d1d1;
 }
 
+#no-issue-banner {
+  text-align: center;
+}
+
 #issue-details,
 #issue-details-edit {
   display: none;
