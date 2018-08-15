@@ -10,7 +10,7 @@
   this.truncate = function(elem,number) {
     var number = !number ? number = 4 : number
     var content = elem.textContent.trim();
-    content =  content.substr(0,number)+ '\u2026'+ content.substr(-number)
+    content =  content.substr(0,number+2)+ '\u2026'+ content.substr(-number)
     elem.textContent = content
   }
   
