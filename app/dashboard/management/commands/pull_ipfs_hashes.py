@@ -112,7 +112,7 @@ class Command(BaseCommand):
                     'more_bounties': more_bounties,
                     'network': network,
                 }
-                logger.error('Failed to fetch github username', exc_info=True, extra=extra_data)
+                logger.error('Exception encountered while attempting to pin hashes', exc_info=True, extra=extra_data)
             finally:
                 standard_bounty_id += 1
                 if standard_bounty_id > int(end_id):
