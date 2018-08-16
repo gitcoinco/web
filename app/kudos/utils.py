@@ -30,24 +30,123 @@ from kudos.models import MarketPlaceListing
 from eth_utils import to_checksum_address
 from web3.middleware import geth_poa_middleware
 
+from functools import wraps
+
 logger = logging.getLogger(__name__)
 
 
+class KudosError(Exception):
+    """Base class for exceptions in this module."""
+    pass
+
+
+class Gen0ExistsWeb3(KudosError):
+    pass
+
+
+class Gen0ExistsDb(KudosError):
+    pass
+
+
+class KudosMismatch(KudosError):
+    """ Exception is raised when web3 and the database are out of sync.
+
+
+
+
+        Attributes:
+        kudos_id -- the kudos id that has mismatched data
+        kudos_web3 -- kudos attributes on web3
+        kudos_db -- kudos attritubes in the database
+        message -- explanation of the error
+
+    """
+    def __init__(self, kudos_id, kudos_web3, kudos_db, message):
+        self.kudos_id = kudos_id
+        self.kudos_web3 = kudos_web3
+        self.kudos_db = kudos_db
+        self.message = message
+
+
 class KudosContract:
-    def __init__(self, network):
+    def __init__(self, network='localhost', account=None, private_key=None):
         self.network = network
-        self.contract_address = self.get_contract_address()
 
-        self._contract = self.get_contract()
+        self._w3 = get_web3(self.network)
+        self._contract = self._get_contract()
 
-    def get_contract(self):
-        web3 = get_web3(self.network)
-        with open('kudos/Kudos.json') as f:
-            abi = json.load(f)['abi']
-        address = self.get_contract_address()
-        return web3.eth.contract(address=address, abi=abi)
+        if not account:
+            try:
+                account = self._w3.eth.accounts[0]
+            except IndexError:
+                raise RuntimeError('Please specify an account to use for interacting with the Kudos Contract.')
 
-    def get_contract_address(self):
+        self.account = to_checksum_address(account)
+        self.private_key = private_key
+        self.address = self._get_contract_address()
+
+    @staticmethod
+    def get_kudos_map(kudos):
+        """ Pass in a kudos array that is returned from web3, convert to dictionary.
+
+            Use this to operate on the database.
+
+        """
+        return dict(name=kudos[0],
+                    description=kudos[1],
+                    rarity=kudos[2],
+                    price=kudos[3],
+                    num_clones_allowed=kudos[4],
+                    num_clones_in_wild=kudos[5],
+                    owner_address=kudos[6],
+                    tags=kudos[7],
+                    image=kudos[8],
+                    cloned_from_id=kudos[9],
+                    )
+
+    def sync_db_decorator(f):
+        """ Decorator to sync up the database.  Any method that changes the state of the Kudos
+            contract should be decorated with `sync_db`.
+        """
+        @wraps(f)
+        def wrapper(self, *args, **kwargs):
+            # Get the most recent kudos_id before the function is called
+            old_supply = self._contract.functions.totalSupply().call()
+            # Run the function
+            r = f(self, *args, **kwargs)
+            # Handle the dummy Kudos
+            if old_supply == 0:
+                return r
+            # Check the most recent id again
+            new_supply = self._contract.functions.totalSupply().call()
+
+            # TODO: If multiple Kudos have been cloned or minted, might be able to optimize
+            # this by only doing one database transaction, rather than one for each kudos.
+            for kudos_id in range(old_supply, new_supply + 1):
+                kudos = self.getKudosById(kudos_id)
+                kudos_map = self.get_kudos_map(kudos)
+                kudos_db = MarketPlaceListing(pk=kudos_id, **kudos_map)
+                kudos_db.save()
+                logger.info(f'Synced Kudos ID {kudos_id}: {kudos_map}')
+
+            return r
+        return wrapper
+
+    def sync_db(self):
+        """ Sync the database with the blockchain. """
+        kudos_id = self._contract.functions.totalSupply().call()
+        # Handle the dummy Kudos
+        if kudos_id == 0:
+            return False
+
+        kudos = self.getKudosById(kudos_id)
+        kudos_map = self.get_kudos_map(kudos)
+        kudos_db = MarketPlaceListing(pk=kudos_id, **kudos_map)
+        kudos_db.save()
+        logger.info(f'Synced Kudos ID {kudos_id}: {kudos_map}')
+        return True
+
+    def _get_contract_address(self):
         if self.network == 'mainnet':
             return to_checksum_address('')
         elif self.network == 'ropsten':
@@ -59,7 +158,130 @@ class KudosContract:
             return to_checksum_address('0xe7bed272ee374e8116049d0a49737bdda86325b6')
         # raise UnsupportedNetworkException(self.network)
 
+    def _get_contract(self):
+        with open('kudos/Kudos.json') as f:
+            abi = json.load(f)['abi']
+        address = self._get_contract_address()
+        return self._w3.eth.contract(address=address, abi=abi)
 
+    @sync_db_decorator
+    def mint(self, *args):
+        """ Contract method.
+
+            Mint a new Gen0 Kudos on the blockchain.
+            Not to be confused with clone.  A clone() operation is only valid for an already
+            existing Gen0 Kudos.
+
+            *args:  See the Kudos.sol for implementation details.
+
+            From Kudos.sol:
+
+            mint(
+                string name,
+                string description,
+                uint256 rarity,
+                uint256 price,
+                uint256 numClonesAllowed,
+                string tags,
+                string image,
+                )
+        """
+        name = args[0]
+        if self.gen0_exists_web3(name):
+            raise ValueError(f'The {name} Gen0 Kudos already exists on the blockchain.')
+        if self.gen0_exists_db(name):
+            raise ValueError(f'The {name} Gen0 Kudos already exists in the database.')
+
+        if self.private_key:
+            nonce = self._w3.eth.getTransactionCount(self.account)
+            txn = self._contract.functions.mint(*args).buildTransaction({'gas': 700000, 'nonce': nonce, 'from': self.account})
+            signed_txn = self._w3.eth.account.signTransaction(txn, private_key=self.private_key)
+            tx_hash = self._w3.eth.sendRawTransaction(signed_txn.rawTransaction)
+        else:
+            tx_hash = self._contract.functions.mint(*args).transact({"from": self.account})
+
+        tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
+        return tx_receipt
+
+    @sync_db_decorator
+    def clone(self, *args):
+        """ Contract method.
+
+            *args:  See the Kudos.sol for implementation details.
+
+            From Kudos.sol:
+
+            clone(string name, uint256 numClonesRequested)
+        """
+
+        if self.private_key:
+            nonce = self._w3.eth.getTransactionCount(self.account)
+            txn = self._contract.functions.clone(*args).buildTransaction({'gas': 700000, 'nonce': nonce, 'from': self.account})
+            signed_txn = self._w3.eth.account.signTransaction(txn, private_key=self.private_key)
+            tx_hash = self._w3.eth.sendRawTransaction(signed_txn.rawTransaction)
+        else:
+            tx_hash = self._contract.functions.clone(*args).transact({"from": self.account})
+
+        tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
+        return tx_receipt
+
+    @sync_db_decorator
+    def cloneAndTransfer(self, *args):
+        """ Contract method.
+
+            *args:  See the Kudos.sol for implementation details.
+
+            From Kudos.sol:
+
+            cloneAndTransfer(string name, uint256 numClonesRequested, address receiver)
+        """
+        if self.private_key:
+            nonce = self._w3.eth.getTransactionCount(self.account)
+            txn = self._contract.functions.cloneAndTransfer(*args).buildTransaction({'gas': 700000, 'nonce': nonce, 'from': self.account})
+            signed_txn = self._w3.eth.account.signTransaction(txn, private_key=self.private_key)
+            tx_hash = self._w3.eth.sendRawTransaction(signed_txn.rawTransaction)
+        else:
+            tx_hash = self._contract.functions.cloneAndTransfer(*args).transact({"from": self.account})
+
+        tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
+        return tx_receipt
+
+    @sync_db_decorator
+    def burn(self, *args):
+        """ Contract method. """
+        pass
+
+    def getKudosById(self, *args):
+        """ Contract method. """
+        return self._contract.functions.getKudosById(args[0]).call()
+
+    def getGen0TokenId(self, *args):
+        """ Contract method. """
+        return self._contract.functions.getGen0TokenId(args[0]).call()
+
+
+    def gen0_exists_web3(self, kudos_name):
+        """ Helper method.  """
+        kudos_id = self.getGen0TokenId(kudos_name)
+        logger.info(f'kudos_id: {kudos_id}')
+        if kudos_id == 0:
+            return False
+        else:
+            return True
+
+    def gen0_exists_db(self, kudos_name):
+        """ Helper method.  """
+        kudos_name = MarketPlaceListing.objects.filter(name__iexact=kudos_name).first()
+        if not kudos_name:
+            return False
+        else:
+            return True
+
+    def sync_status(self):
+        pass
+
+
+# ######################################### LEGACY CODE #########################################
 def get_kudos_map(kudos):
     return dict(name=kudos[0],
                 description=kudos[1],
@@ -152,10 +374,10 @@ def mint_kudos_on_web3_and_db(network, private_key=None, *args):
     w3 = get_web3(network)
 
     kudos_contract = getKudosContract(network)
-    logger.info(w3.eth.accounts)
+    # logger.info(w3.eth.accounts)
     account = to_checksum_address('0xD386793F1DB5F21609571C0164841E5eA2D33aD8')
     # account = w3.eth.accounts[0]
-    logger.info(f'account: {account}')
+    # logger.info(f'account: {account}')
     w3.eth.defaultAccount = account
     # logger.info(kudos_contract.all_functions())
     # logger.info(kudos_contract.functions.ownerOf(0).call())
@@ -183,7 +405,7 @@ def mint_kudos_on_web3_and_db(network, private_key=None, *args):
 
     # Normally this would be totalSupply() - 1, but we have a dummy Kudos at index 0
     kudos_id = kudos_contract.functions.totalSupply().call()
-    logger.info(f'kudos_id: {kudos_id}')
+    # logger.info(f'kudos_id: {kudos_id}')
     kudos = kudos_contract.functions.getKudosById(kudos_id).call()
 
     logger.info(f'Minted Kudos ID {kudos_id}: {kudos}')
@@ -263,7 +485,7 @@ def get_gen0_id_from_web3(kudos_name, network):
     kudos_contract = getKudosContract(network)
 
     kudos_id = kudos_contract.functions.getGen0TokenId(kudos_name).call()
-    logger.info(f'Kudos Gen0 ID: {kudos_id}.  ID of 0 indicates not found.')
+    # logger.info(f'Kudos Gen0 ID: {kudos_id}.  ID of 0 indicates not found.')
 
     return kudos_id
 

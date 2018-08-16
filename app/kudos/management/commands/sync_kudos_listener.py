@@ -24,7 +24,9 @@ from django.core.management.base import BaseCommand
 from dashboard.utils import (
     get_bounty, get_web3, getBountyContract, getStandardBountiesContractAddresss, web3_process_bounty,
 )
-from kudos.utils import getKudosContractAddress, getKudosContract, get_kudos_from_web3, update_kudos_db, get_gen0_id_from_web3, get_kudos_map
+from kudos.utils import (getKudosContractAddress, getKudosContract, get_kudos_from_web3,
+                         update_kudos_db, get_gen0_id_from_web3, get_kudos_map, KudosContract
+                         )
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
@@ -50,17 +52,19 @@ class Command(BaseCommand):
 
         # setup
         network = options['network']
-        web3 = get_web3(network)
-        contract_address = getKudosContractAddress(network)
-        logger.info(f'Contract address: {contract_address}')
 
-        kudos_contract = getKudosContract(network)
+        kudos_contract = KudosContract(network)
+        w3 = get_web3(network)
+        # contract_address = getKudosContractAddress(network)
+        # logger.info(f'Contract address: {contract_address}')
+
+        # kudos_contract = getKudosContract(network)
         last_block_hash = None
 
         while True:
             # wait for a new block
             # logger.info(f'block: {block}')
-            block = web3.eth.getBlock('latest')
+            block = w3.eth.getBlock('latest')
             block_hash = block['hash']
             block_number = block['number']
 
@@ -70,14 +74,14 @@ class Command(BaseCommand):
                 time.sleep(1)
                 continue
 
-            logger.info('got new block %s' % web3.toHex(block_hash))
+            logger.info('got new block %s' % w3.toHex(block_hash))
             logger.info(f'block id: {block_number}')
 
             # get txs
             transactions = block['transactions']
             for tx in transactions:
-                tx = web3.eth.getTransaction(tx)
-                if not tx or tx['to'] != contract_address:
+                tx = w3.eth.getTransaction(tx)
+                if not tx or tx['to'] != kudos_contract.address:
                     continue
 
                 logger.info('found a kudos tx')
@@ -89,16 +93,17 @@ class Command(BaseCommand):
 
                 # Check if its a Clone or cloneAndTransfer function call
                 if method_id == '0xdaa6eb1d' or method_id == '0x8a94e433':
-                    # Get the kudos_id of the newly cloned Kudos
-                    kudos_id = kudos_contract.functions.totalSupply().call()
-                    # Update the database with the newly cloned Kudos
-                    update_kudos_db(kudos_id, network)
-                    # Find the name of the Kudos that was cloned
-                    kudos = get_kudos_from_web3(kudos_id, network)
-                    kudos_map = get_kudos_map(kudos)
-                    # Find the ID of the Gen0 Kudos that was cloned
-                    gen0_id = get_gen0_id_from_web3(kudos_map['name'], network)
-                    # Update the Gen0 Kudos in the database
-                    update_kudos_db(gen0_id, network)
+                    kudos_contract.sync_db()
+                    # # Get the kudos_id of the newly cloned Kudos
+                    # kudos_id = kudos_contract.functions.totalSupply().call()
+                    # # Update the database with the newly cloned Kudos
+                    # update_kudos_db(kudos_id, network)
+                    # # Find the name of the Kudos that was cloned
+                    # kudos = get_kudos_from_web3(kudos_id, network)
+                    # kudos_map = get_kudos_map(kudos)
+                    # # Find the ID of the Gen0 Kudos that was cloned
+                    # gen0_id = get_gen0_id_from_web3(kudos_map['name'], network)
+                    # # Update the Gen0 Kudos in the database
+                    # update_kudos_db(gen0_id, network)
 
             last_block_hash = block_hash

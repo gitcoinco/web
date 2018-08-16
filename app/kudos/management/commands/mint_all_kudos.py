@@ -27,7 +27,7 @@ from django.core.management.base import BaseCommand
 import rollbar
 from dashboard.helpers import UnsupportedSchemaException
 from django.core.management import call_command
-from kudos.utils import mint_kudos_on_web3_and_db
+from kudos.utils import mint_kudos_on_web3_and_db, KudosContract
 
 import oyaml as yaml
 
@@ -78,7 +78,13 @@ class Command(BaseCommand):
                     kudos['numClonesAllowed'], kudos['tags'], image_path,
                     )
 
+            # try:
+            #     mint_kudos_on_web3_and_db(network, private_key, *args)
+            # except ValueError as e:
+            #     logger.warning(e)
+
             try:
-                mint_kudos_on_web3_and_db(network, private_key, *args)
+                kudos_contract = KudosContract(network, private_key)
+                kudos_contract.mint(*args)
             except ValueError as e:
                 logger.warning(e)
