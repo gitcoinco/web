@@ -33,7 +33,7 @@
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
             <h2 class="text-center">
-              ${{ universe_total_usd|intcomma }} of {% blocktrans %}
+              ${{ universe_total_usd|floatformat:2|intcomma }} of {% blocktrans %}
                Cumulative Bounty History
               {% endblocktrans %}
               {% if keyword %}({{keyword}}){%endif%}

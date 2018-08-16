@@ -26,18 +26,18 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
-from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.cache import cache
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-from app.utils import ellipses, sync_profile
+from app.utils import clean_str, ellipses, sync_profile
 from avatar.utils import get_avatar_context
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
@@ -302,7 +302,7 @@ def remove_interest(request, bounty_id):
         dict: The success key with a boolean value and accompanying error.
 
     """
-    profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    profile_id = request.user.profile.pk if request.user.is_authenticated and getattr(request.user, 'profile', None) else None
 
     access_token = request.GET.get('token')
     if access_token:
@@ -426,10 +426,11 @@ def uninterested(request, bounty_id, profile_id):
     except Bounty.DoesNotExist:
         return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
                             status=401)
+    is_logged_in = request.user.is_authenticated
     is_funder = bounty.is_funder(request.user.username.lower())
     is_staff = request.user.is_staff
     is_moderator = request.user.profile.is_moderator if hasattr(request.user, 'profile') else False
-    if not is_funder and not is_staff and not is_moderator:
+    if not is_logged_in or (not is_funder and not is_staff and not is_moderator):
         return JsonResponse(
             {'error': 'Only bounty funders are allowed to remove users!'},
             status=401)
@@ -928,7 +929,8 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     if issue_url:
         try:
             bounties = Bounty.objects.current().filter(github_url=issue_url)
-            if stdbounties_id:
+            stdbounties_id = clean_str(stdbounties_id)
+            if stdbounties_id and stdbounties_id.isdigit():
                 bounties = bounties.filter(standard_bounties_id=stdbounties_id)
             if bounties:
                 bounty = bounties.order_by('-pk').first()
@@ -1056,6 +1058,8 @@ def profile(request, handle):
             handle = request.user.username
             profile = request.user.profile
         else:
+            if handle.endswith('/'):
+                handle = handle[:-1]
             profile = profile_helper(handle)
     except Http404:
         show_hidden_profile = True
