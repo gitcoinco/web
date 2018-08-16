@@ -134,9 +134,18 @@ var toggleAny = function(event) {
 
 var addTechStackKeywordFilters = function(value) {
   if (localStorage['keywords']) {
-    localStorage['keywords'] += ',' + value;
+    const keywords = localStorage['keywords'];
+    const new_value = ',' + value;
+
+    if (keywords === value ||
+        keywords.indexOf(new_value) !== -1 ||
+        keywords.indexOf(value + ',') !== -1) {
+
+      return;
+    }
+    localStorage['keywords'] = keywords + new_value;
   } else {
-    localStorage['keywords'] += value;
+    localStorage['keywords'] = value;
   }
 
   $('.filter-tags').append('<a class="filter-tag keywords"><span>' + value + '</span>' +
