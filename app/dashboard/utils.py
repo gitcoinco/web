@@ -158,8 +158,8 @@ def get_ipfs(host=None, port=settings.IPFS_API_PORT):
 def ipfs_cat(key):
     try:
         # Attempt connecting to IPFS via Infura
-        response = ipfs_cat_requests(key)
-        if response:
+        response, status_code = ipfs_cat_requests(key)
+        if status_code == 200:
             return response
 
         # Attempt connecting to IPFS via hosted node
@@ -175,13 +175,16 @@ def ipfs_cat(key):
 def ipfs_cat_ipfsapi(key):
     ipfs = get_ipfs()
     if ipfs:
-        return ipfs.cat(key)
+        try:
+            return ipfs.cat(key)
+        except:
+            return None
 
 
 def ipfs_cat_requests(key):
     url = f'https://ipfs.infura.io:5001/api/v0/cat/{key}'
     response = requests.get(url)
-    return response.text
+    return response.text, response.status_code
 
 
 def get_web3(network):
