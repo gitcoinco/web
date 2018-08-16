@@ -673,6 +673,11 @@ var build_detail_page = function(result) {
 
   // funded by
   $('#bounty_funded_by').html(result['bounty_owner_address']);
+  if (isBountyOwnerPerLogin(result) && !isBountyOwner(result)) {
+    $('#funder_notif_info').append('<span class="bounty-notification" style="border: orange 1px solid; border-radius: 5px; padding: 3px;">\
+                                      Ready to Pay? Set Your Metamask to this address!\
+                                    </span>');
+  }
 
   // insert table onto page
   for (var j = 0; j < rows.length; j++) {
@@ -736,7 +741,6 @@ var do_actions = function(result) {
   var is_still_on_happy_path = result['status'] == 'open' || result['status'] == 'started' || result['status'] == 'submitted' || (can_submit_after_expiration_date && result['status'] == 'expired');
   var needs_review = result['needs_review'];
   const is_open = result['is_open'];
-  const disabled_bc_not_funder_txt = gettext('Enabled only if you are the funder of the bounty (If you are logged in and your web3 wallet is set to ' + result['bounty_owner_address'] + '.).');
 
   // Find interest information
   const is_interested = is_current_user_interested(result);
@@ -748,15 +752,14 @@ var do_actions = function(result) {
   let show_start_stop_work = is_still_on_happy_path && !should_block_from_starting_work && is_open;
   let show_github_link = result['github_url'].substring(0, 4) == 'http';
   let show_submit_work = is_open;
-  let show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
+  let show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled && isBountyOwner(result);
   let show_job_description = result['attached_job_description'] && result['attached_job_description'].startsWith('http');
   const show_increase_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
-  const kill_bounty_enabled = isBountyOwner(result);
   const submit_work_enabled = !isBountyOwner(result);
   const start_stop_work_enabled = !isBountyOwner(result);
   const increase_bounty_enabled = isBountyOwner(result);
   let show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
-  let show_payout = !is_status_expired && !is_status_done;
+  let show_payout = !is_status_expired && !is_status_done && isBountyOwner(result);
   let show_extend_deadline = isBountyOwner(result) && !is_status_expired && !is_status_done;
   const show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
   const show_admin_methods = document.isStaff;
@@ -804,13 +807,13 @@ var do_actions = function(result) {
   }
 
   if (show_kill_bounty) {
-    const enabled = kill_bounty_enabled;
+    const enabled = isBountyOwner(result);
     const _entry = {
       enabled: enabled,
       href: result['action_urls']['cancel'],
       text: gettext('Cancel Bounty'),
       parent: 'right_actions',
-      title: enabled ? gettext('Cancel bounty and reclaim funds for this issue') : disabled_bc_not_funder_txt
+      title: gettext('Cancel bounty and reclaim funds for this issue')
     };
 
     actions.push(_entry);
@@ -822,7 +825,7 @@ var do_actions = function(result) {
       enabled: enabled,
       href: result['action_urls']['payout'],
       text: gettext('Payout Bounty'),
-      title: enabled ? gettext('Payout the bounty to one or more submitters.') : disabled_bc_not_funder_txt,
+      title: gettext('Payout the bounty to one or more submitters.'),
       parent: 'right_actions'
     };
 
