@@ -23,7 +23,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from dashboard.helpers import UnsupportedSchemaException
-from dashboard.utils import BountyNotFoundException, getBountyContract, infura_ipfs_pin
+from dashboard.utils import BountyNotFoundException, get_ipfs, getBountyContract, infura_ipfs_pin, ipfs_pin
 
 logger = logging.getLogger(__name__)
 default_start_id = 0 if not settings.DEBUG else 402
@@ -91,6 +91,8 @@ class Command(BaseCommand):
         standard_bounty_id = int(start_id)
         print('syncing from', start_id, 'to', end_id)
         more_bounties = True
+        ipfs_client = get_ipfs()
+
         while more_bounties:
             try:
                 # pull and process each bounty
@@ -99,6 +101,7 @@ class Command(BaseCommand):
                 print('Pulled standard bounty: ', standard_bounty_id, ' - IPFS hash: ', bounty_ipfs_hash)
                 # Pin the provided hash key on Infura.
                 infura_ipfs_pin(bounty_ipfs_hash)
+                ipfs_pin(bounty_ipfs_hash, ipfs_client)
             except BountyNotFoundException:
                 more_bounties = False
             except UnsupportedSchemaException:
