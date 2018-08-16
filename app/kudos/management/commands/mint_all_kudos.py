@@ -53,7 +53,7 @@ class Command(BaseCommand):
         # config
         network = options['network']
         private_key = options['private_key']
-        logger.info(options)
+        # logger.info(options)
         hour = datetime.datetime.now().hour
         day = datetime.datetime.now().day
         month = datetime.datetime.now().month
@@ -86,5 +86,5 @@ class Command(BaseCommand):
             try:
                 kudos_contract = KudosContract(network, private_key)
                 kudos_contract.mint(*args)
-            except ValueError as e:
+            except IndexError as e:
                 logger.warning(e)
