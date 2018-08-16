@@ -184,6 +184,48 @@ def ipfs_cat_requests(key):
     return response.text
 
 
+def infura_ipfs_pin(key):
+    """Pin the provided key on Infura IPFS.
+
+    Args:
+        key (str): The IPFS hash key to be pinned.
+
+    Returns:
+        requests.Response: The GET response from Infura IPFS /pin/add.
+
+    """
+    response = None
+    try:
+        url = f'https://ipfs.infura.io:5001/api/v0/pin/add?arg={key}&recursive=true'
+        response = requests.get(url)
+    except Exception as e:
+        logger.error(e)
+    return response
+
+
+def ipfs_pin(key, ipfs_client=None):
+    """Pin the provided key on internally hosted IPFS.
+
+    Args:
+        key (str): The IPFS hash key to be pinned.
+        ipfs_client (ipfsapi.Client): An actively connected IPFS connection client.
+            If none is provided, this method will connect upon entry.
+
+    Returns:
+        Response: The GET response from IPFS /pin/add.
+
+    """
+    response = None
+    if ipfs_client is None:
+        response = ipfs_client = get_ipfs()
+
+    try:
+        ipfs_client.pin_add(key)
+    except Exception as e:
+        logger.error(e)
+    return response
+
+
 def get_web3(network):
     """Get a Web3 session for the provided network.
 
@@ -235,6 +277,8 @@ def get_bounty(bounty_enum, network):
         raise BountyNotFoundException
     # pull from blockchain
     bountydata = standard_bounties.functions.getBountyData(bounty_enum).call()
+    # Always pin to Infura
+    infura_ipfs_pin(bountydata)  # TODO (mbeacom): Move to Celery task.
     arbiter = standard_bounties.functions.getBountyArbiter(bounty_enum).call()
     token = standard_bounties.functions.getBountyToken(bounty_enum).call()
     bounty_data_str = ipfs_cat(bountydata)
