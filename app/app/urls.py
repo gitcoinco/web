@@ -160,6 +160,7 @@ urlpatterns = [
     url(r'^gas/intro/?', dashboard.gas_views.gas_intro, name='gas_intro'),
     url(r'^gas/calculator/?', dashboard.gas_views.gas_calculator, name='gas_calculator'),
     url(r'^gas/history/?', dashboard.gas_views.gas_history_view, name='gas_history_view'),
+    url(r'^gas/guzzlers/?', dashboard.gas_views.gas_guzzler_view, name='gas_guzzler_view'),
     url(r'^gas/?', dashboard.gas_views.gas, name='gas'),
 
     # images
