@@ -1108,8 +1108,16 @@ const process_activities = function(result, bounty_activities) {
 
   const now = new Date(result['now']);
   const is_open = result['is_open'];
+  const _result = [];
 
-  return (bounty_activities || []).map(function(_activity) {
+  bounty_activities = bounty_activities || [];
+  bounty_activities.forEach(function(_activity) {
+    const type = _activity.activity_type;
+
+    if (type === 'unknown_event') {
+      return;
+    }
+
     const meta = _activity.metadata || {};
     const fulfillment = meta.fulfillment || {};
     const new_bounty = meta.new_bounty || {};
@@ -1122,9 +1130,18 @@ const process_activities = function(result, bounty_activities) {
     const is_logged_in = document.contxt['github_handle'];
     const uninterest_possible = is_logged_in && ((isBountyOwnerPerLogin(result) || document.isStaff) && is_open && has_interest);
 
-    return {
-      profileId: _activity.profile.id,
-      name: _activity.profile.handle,
+    let profile_id = _activity.profile.id;
+    let profile_handle = _activity.profile.handle;
+
+    if (type === 'receive_tip') {
+      // TODO: is not important for now, but maybe in the future?
+      profile_id = 0;
+      profile_handle = _activity.metadata.to_username;
+    }
+
+    _result.push({
+      profileId: profile_id,
+      name: profile_handle,
       text: activity_names[_activity.activity_type],
       created_on: _activity.created,
       age: timeDifference(now, new Date(_activity.created)),
@@ -1151,8 +1168,10 @@ const process_activities = function(result, bounty_activities) {
       token_value_in_usdt_old: old_bounty.token_value_in_usdt,
       token_value_time_peg_new: new_bounty.token_value_time_peg,
       token_name: result['token_name']
-    };
+    });
   });
+
+  return _result;
 };
 
 const only_one_approve = function(activities) {
