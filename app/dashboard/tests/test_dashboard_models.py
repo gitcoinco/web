@@ -20,10 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from datetime import date, datetime, timedelta
 
 from django.conf import settings
+from django.contrib.humanize.templatetags.humanize import naturaltime
 
 import pytz
 from dashboard.models import Bounty, BountyFulfillment, Interest, Profile, Tip, Tool, ToolVote
-from economy.models import ConversionRate
+from economy.models import ConversionRate, Token
 from test_plus.test import TestCase
 
 
@@ -32,6 +33,7 @@ class DashboardModelsTest(TestCase):
 
     def setUp(self):
         """Perform setup for the testcase."""
+        Token.objects.create(priority=999, symbol='ETH', address='0x0000000000000000000000000000000000000000')
         ConversionRate.objects.create(
             from_amount=1,
             to_amount=2,
@@ -74,7 +76,7 @@ class DashboardModelsTest(TestCase):
             bounty=bounty,
             profile=fulfiller_profile,
         )
-        assert str(bounty) == 'foo 3 ETH 2008-10-31 00:00:00+00:00'
+        assert str(bounty) == f'1: foo, 3.0 ETH @ {naturaltime(bounty.web3_created)}'
         assert bounty.url == f'{settings.BASE_URL}issue/gitcoinco/web/11/{bounty.standard_bounties_id}'
         assert bounty.title_or_desc == 'foo'
         assert bounty.issue_description_text == 'hello world'
@@ -84,7 +86,7 @@ class DashboardModelsTest(TestCase):
         assert bounty.is_funder('fred') is False
         assert bounty.is_funder('flintstone') is True
         assert bounty.status == 'done'
-        assert bounty.value_true == 0
+        assert bounty.value_true == 3.0
         assert bounty.value_in_eth == 3
         assert bounty.value_in_usdt_now == 0
         assert 'ago 5 Feature Intermediate' in bounty.desc
