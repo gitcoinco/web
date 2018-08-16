@@ -341,8 +341,6 @@ class Bounty(SuperModel):
             return f"{'/' if preceding_slash else ''}funding/details?url={self.github_url}"
 
     def get_natural_value(self):
-        if self.token_name == 'ETH':
-            return float(self.value_in_token)
         token = addr_to_token(self.token_address)
         if not token:
             return 0
