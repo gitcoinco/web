@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
     Copyright (C) 2017 Gitcoin Core
 
@@ -15,7 +16,6 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 import collections
@@ -292,7 +292,6 @@ class Bounty(SuperModel):
 
     def __str__(self):
         """Return the string representation of a Bounty."""
-        from django.contrib.humanize.templatetags.humanize import naturaltime
         return f"{'(C) ' if self.current_bounty else ''}{self.pk}: {self.title}, {self.value_true} " \
                f"{self.token_name} @ {naturaltime(self.web3_created)}"
 
@@ -342,6 +341,8 @@ class Bounty(SuperModel):
             return f"{'/' if preceding_slash else ''}funding/details?url={self.github_url}"
 
     def get_natural_value(self):
+        if self.token_name == 'ETH':
+            return float(self.value_in_token)
         token = addr_to_token(self.token_address)
         if not token:
             return 0
