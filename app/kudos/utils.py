@@ -98,10 +98,10 @@ class KudosContract:
                     price=kudos[3],
                     num_clones_allowed=kudos[4],
                     num_clones_in_wild=kudos[5],
-                    owner_address=kudos[6],
-                    tags=kudos[7],
-                    image=kudos[8],
-                    cloned_from_id=kudos[9],
+                    tags=kudos[6],
+                    image=kudos[7],
+                    cloned_from_id=kudos[8],
+                    sent_from_address=kudos[9]
                     )
 
     def sync_db_decorator(f):
@@ -125,7 +125,9 @@ class KudosContract:
             for kudos_id in range(old_supply, new_supply + 1):
                 kudos = self.getKudosById(kudos_id)
                 kudos_map = self.get_kudos_map(kudos)
-                kudos_db = MarketPlaceListing(pk=kudos_id, **kudos_map)
+                owner_address = self._contract.functions.ownerOf(kudos_id).call()
+                kudos_db = MarketPlaceListing(pk=kudos_id, owner_address=owner_address, **kudos_map)
+                kudos_map['owner_address'] = owner_address
                 kudos_db.save()
                 logger.info(f'Synced Kudos ID {kudos_id}: {kudos_map}')
 
@@ -138,11 +140,14 @@ class KudosContract:
         # Handle the dummy Kudos
         if kudos_id == 0:
             return False
+        owner_address = self._contract.functions.ownerOf(kudos_id).call()
+        # logger.info(f'owner_address: {owner_address}')
 
         kudos = self.getKudosById(kudos_id)
         kudos_map = self.get_kudos_map(kudos)
-        kudos_db = MarketPlaceListing(pk=kudos_id, **kudos_map)
+        kudos_db = MarketPlaceListing(pk=kudos_id, owner_address=owner_address, **kudos_map)
         kudos_db.save()
+        kudos_map['owner_address'] = owner_address
         logger.info(f'Synced Kudos ID {kudos_id}: {kudos_map}')
         return True
 
@@ -164,7 +169,7 @@ class KudosContract:
         address = self._get_contract_address()
         return self._w3.eth.contract(address=address, abi=abi)
 
-    @sync_db_decorator
+    # @sync_db_decorator
     def mint(self, *args):
         """ Contract method.
 
@@ -188,9 +193,13 @@ class KudosContract:
         """
         name = args[0]
         if self.gen0_exists_web3(name):
-            raise ValueError(f'The {name} Gen0 Kudos already exists on the blockchain.')
+            msg = f'The {name} Gen0 Kudos already exists on the blockchain.'
+            logger.warning(msg)
+            return False
         if self.gen0_exists_db(name):
-            raise ValueError(f'The {name} Gen0 Kudos already exists in the database.')
+            msg = f'The {name} Gen0 Kudos already exists in the database.'
+            logger.warning(msg)
+            return False
 
         if self.private_key:
             nonce = self._w3.eth.getTransactionCount(self.account)
@@ -201,9 +210,11 @@ class KudosContract:
             tx_hash = self._contract.functions.mint(*args).transact({"from": self.account})
 
         tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
+
+        self.sync_db()
+
         return tx_receipt
 
-    @sync_db_decorator
     def clone(self, *args):
         """ Contract method.
 
@@ -223,9 +234,11 @@ class KudosContract:
             tx_hash = self._contract.functions.clone(*args).transact({"from": self.account})
 
         tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
+
+        self.sync_db()
+
         return tx_receipt
 
-    @sync_db_decorator
     def cloneAndTransfer(self, *args):
         """ Contract method.
 
@@ -244,9 +257,11 @@ class KudosContract:
             tx_hash = self._contract.functions.cloneAndTransfer(*args).transact({"from": self.account})
 
         tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
+
+        self.sync_db()
+
         return tx_receipt
 
-    @sync_db_decorator
     def burn(self, *args):
         """ Contract method. """
         pass
@@ -258,7 +273,6 @@ class KudosContract:
     def getGen0TokenId(self, *args):
         """ Contract method. """
         return self._contract.functions.getGen0TokenId(args[0]).call()
-
 
     def gen0_exists_web3(self, kudos_name):
         """ Helper method.  """
