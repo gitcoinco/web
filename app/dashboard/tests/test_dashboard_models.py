@@ -76,7 +76,7 @@ class DashboardModelsTest(TestCase):
             bounty=bounty,
             profile=fulfiller_profile,
         )
-        assert str(bounty) == f'1: foo, 3.0 ETH @ {naturaltime(bounty.web3_created)}'
+        assert str(bounty) == f'1: foo, 0 ETH @ {naturaltime(bounty.web3_created)}'
         assert bounty.url == f'{settings.BASE_URL}issue/gitcoinco/web/11/{bounty.standard_bounties_id}'
         assert bounty.title_or_desc == 'foo'
         assert bounty.issue_description_text == 'hello world'
