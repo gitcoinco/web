@@ -44,9 +44,12 @@ class MarketPlaceListing(SuperModel):
     price = models.IntegerField()
     num_clones_allowed = models.IntegerField(null=True, blank=True)
     num_clones_in_wild = models.IntegerField(null=True, blank=True)
-    owner_address = models.CharField(max_length=255)  # FK to github profile
     tags = models.CharField(max_length=255, null=True)
     cloned_from_id = models.IntegerField()
+    sent_from_address = models.CharField(max_length=255)
+
+    # Extra fields added to database (not on blockchain)
+    owner_address = models.CharField(max_length=255)
 
     def save(self, *args, **kwargs):
         self.owner_address = to_checksum_address(self.owner_address)

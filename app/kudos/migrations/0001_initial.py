@@ -28,6 +28,7 @@ class Migration(migrations.Migration):
                 ('owner_address', models.CharField(max_length=255)),
                 ('tags', models.CharField(max_length=255, null=True)),
                 ('cloned_from_id', models.IntegerField()),
+                ('sent_from_address', models.CharField(max_length=255)),
             ],
             options={
                 'abstract': False,
