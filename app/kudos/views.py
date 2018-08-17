@@ -23,7 +23,9 @@ from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 from django.contrib.postgres.search import SearchVector
 
-from .models import MarketPlaceListing
+from .models import MarketPlaceListing, Wallet
+from dashboard.models import Profile
+from avatar.models import Avatar
 from .forms import KudosSearchForm
 import re
 
@@ -112,6 +114,19 @@ def details(request):
     if not re.match(r'\d+', kudos_id):
         raise ValueError(f'Invalid Kudos ID found.  ID is not a number:  {kudos_id}')
 
+    # Find other profiles that have the same kudos name
+    kudos = MarketPlaceListing.objects.get(pk=kudos_id)
+    # Find other Kudos rows that are the same kudos.name, but of a different owner
+    related_kudos = MarketPlaceListing.objects.exclude(owner_address='0xD386793F1DB5F21609571C0164841E5eA2D33aD8').filter(name=kudos.name)
+    logger.info(f'Kudos rows: {related_kudos}')
+    # Find the Wallet rows that match the Kudos.owner_addresses
+    related_wallets = Wallet.objects.filter(address__in=[rk.owner_address for rk in related_kudos]).distinct()
+    profile_ids = [rw.profile_id for rw in related_wallets]
+    logger.info(f'Related profile_ids:  {profile_ids}')
+
+    # Avatar can be accessed via Profile.avatar
+    related_profiles = Profile.objects.filter(pk__in=profile_ids).distinct()
+
     context = {
         'is_outside': True,
         'active': 'details',
@@ -119,7 +134,8 @@ def details(request):
         'card_title': _('Gitcoin is a mission-driven organization.'),
         'card_desc': _('Our mission is to grow open source.'),
         'avatar_url': static('v2/images/grow_open_source.png'),
-        'kudos': MarketPlaceListing.objects.get(pk=kudos_id),
+        'kudos': kudos,
+        'related_profiles': related_profiles,
     }
 
     return TemplateResponse(request, 'kudos_details.html', context)

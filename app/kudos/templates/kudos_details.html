@@ -51,14 +51,14 @@
           <hr>
           <div class="row pt-3">
             <div class="col-12">
-              <p class="font-bigger-1">{% trans "These people have them" %}</p>
+              <p class="font-bigger-1">{% trans "These people also own this Kudos" %}</p>
             </div>
           </div>
           <div class="row">
             <div class="col-12">
-              <img src="https://robohash.org/1" width="70" class="rounded-circle border m-1">
-              <img src="https://robohash.org/2" width="70" class="rounded-circle border m-1">
-              <img src="https://robohash.org/3" width="70" class="rounded-circle border m-1">
+              {% for profile in related_profiles %}
+              <a href="/profile/{{ profile.handle }}"><img src="/media/{{ profile.avatar.svg }}" width="70" class="rounded-circle border m-1"></a>
+              {% endfor %}
             </div>
           </div>
         </div>
