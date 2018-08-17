@@ -1,0 +1,21 @@
+{
+  "symbol": "EX8",
+  "address": "0x0f3065a387d9f596f40efb0a3df5ceb735d82fd2",
+  "overview":{
+        "en":"Innovative Shared digital assets trading platform.",
+        "zh":"创新共享型数字资产交易平台"
+  },
+  "email": "support@coinex8.com",
+  "website": "https://www.coinex8.com/",
+  "whitepaper": "https://www.coinex8.com/pdf/whitePaper.pdf",
+  "published_on": "2018-07-25",
+  "links": {
+    "telegram": "https://0.plus/coinex8",
+    "twitter": "https://twitter.com/Coinex8Official/",
+    "facebook": "https://www.facebook.com/Coinex8Official/"
+  },
+  "initial_price": {
+    "ETH": "0.00007992 ETH",
+    "USD": "0.024 USD"
+  }
+}
