@@ -165,6 +165,15 @@ $gc-blue: #3e00ff;
 .wallets-list {
   max-height: 140px;
   overflow-y: auto;
-  margin-top: 1rem;
+  // margin-top: 1rem;
   background-color: #f3f3f3;
+}
+
+.wallets-list:empty {
+  display: none;
+}
+
+.btn-lightblue {
+  color: white;
+  background-color: var(--gc-blue);
 }

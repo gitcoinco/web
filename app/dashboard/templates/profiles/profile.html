@@ -358,9 +358,18 @@
       var bootstrapTooltip = $.fn.tooltip.noConflict()
     </script>
     <script id="theTmpl" type="text/x-jsrender">
-      <li>[[:wallet]]</li>
-      
-      </script>
+      <div class="input-group input-group-sm mb-2">
+        <div id="wallet-address" class="input-group-text form-control" data-truncatehash>[[:address]]</div>
+        <input type="hidden" class="" aria-label="Text input with checkbox" value="[[:address]]">
+        <div class="input-group-append">
+          <div class="input-group-text">
+            <input type="radio" name="walletRadios" aria-label="Checkbox for following text input" checked>
+          </div>
+        </div>
+      </div>
+
+    </script>
+    <!-- <li data-truncatehash>[[:address]]</li> -->
     <script type="text/javascript">
       $(document).ready(function() {
         if ($('.profile-bounties--tips .bounty_row--hidden').length > 0) {
@@ -411,14 +420,18 @@
             (function (){
               this.getaddress = function(elem, address) {
                 var address = !address ? address = web3.eth.coinbase : address
-                // var content = elem.textContent.trim();
-                // content =  content.substr(0,number)+ '\u2026'+ content.substr(-number)
-                elem.textContent = address
+                if (elem.nodeName == 'INPUT') {
+                  elem.value = address
+                } else {
+                  elem.textContent = address
+                  elem.setAttribute('title', address)
+                }
                 new truncateHash() 
               }
               
               this.metamaskAddress = function () {
                 var currentWallet = web3.eth.coinbase
+                
                 var elem = document.querySelectorAll('[data-metamask-address]')
                 for (var i = 0; i < elem.length; ++i) {
                   new getaddress(elem[i],currentWallet)
@@ -426,11 +439,12 @@
               }
             }())
             new metamaskAddress()  
-
             
-            $('#input-wallet').val(web3.eth.coinbase)
-
-      
+            web3.currentProvider.publicConfigStore.on('update', function(e){
+              console.log('meememe', e)
+              new metamaskAddress()
+            });
+            var profileId= {{ profile.id }}
             
             
             // if (currentWallet) {
@@ -449,7 +463,20 @@
                   data: data
                 });
               }
-            
+              
+              function newWallets () {
+
+                var getWallets = fetchData ('/api/v0.1/wallet/?profile={{profile.id}}','GET')
+                $.when( getWallets ).then( function ( response ){
+                  console.log( response )
+                  var template = $.templates("#theTmpl");
+                  var htmlOutput = template.render(response);
+                  $('.wallets-list').html(htmlOutput);
+                  $('#wallets-number').html(response.length);
+                  new truncateHash() 
+                })
+              }
+              newWallets()
               
             $("body").on('submit', '#form-wallets', function(e) {
               e.preventDefault()
@@ -460,11 +487,11 @@
                                           )
               
               $.when( postWallets ).then( function ( response ){
-                console.log( response.wallets )
-                var template = $.templates("#theTmpl");
-                var htmlOutput = template.render(response.wallets);
-                $('.wallets-list').html(htmlOutput);
-                $('#wallets-number').html(response.wallets.length);
+                newWallets()
+                // var template = $.templates("#theTmpl");
+                // var htmlOutput = template.render(response.wallets);
+                // $('.wallets-list').html(htmlOutput);
+                // $('#wallets-number').html(response.wallets.length);
                })
               //   response.wallet.each(function(wallet) {
               //      console.log(wallet)
