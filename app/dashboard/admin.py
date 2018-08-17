@@ -30,6 +30,7 @@ from .models import (
 
 class BountyFulfillmentAdmin(admin.ModelAdmin):
     raw_id_fields = ['bounty', 'profile']
+    search_fields = ['fulfiller_address', 'fulfiller_email', 'fulfiller_github_username', 'fulfiller_name', 'fulfiller_metadata', 'fulfiller_github_url']
     ordering = ['-id']
 
 
@@ -54,6 +55,7 @@ class ToolVoteAdmin(admin.ModelAdmin):
 class InterestAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile']
     ordering = ['-id']
+    search_fields = ['profile__handle']
 
 
 class UserActionAdmin(admin.ModelAdmin):

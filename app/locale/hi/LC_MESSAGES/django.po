@@ -84,7 +84,7 @@ msgstr "गैस के बारे में अक्सर पूछे ज
 #, fuzzy
 #| msgid "Faucet Request"
 msgid "Gas Faucet List"
-msgstr "गैस नल सूची"
+msgstr "गैस फॉक्स सूची"
 
 #: dashboard/gas_views.py:97
 #, fuzzy
@@ -110,19 +110,19 @@ msgstr "ईथरियम नेटवर्क गैस की कीमत�
 
 #: dashboard/models.py:174
 msgid "Whether the bounty is still open for fulfillments."
-msgstr "चाहे उपहार के लिए अभी भी बक्षीस खुला है।"
+msgstr "चाहे उपहार के लिए अभी भी उपहार खुला है।"
 
 #: dashboard/models.py:179
 msgid "Whether this bounty is the most current revision one or not"
-msgstr "क्या यह बक्षीस सबसे वर्तमान संशोधन है या नहीं"
+msgstr "क्या यह इनाम सबसे वर्तमान संशोधन है या नहीं"
 
 #: dashboard/models.py:190
 msgid "Whether the bounty has been done"
-msgstr "चाहे बक्षीस किया गया हो"
+msgstr "चाहे इनाम किया गया हो"
 
 #: dashboard/models.py:212
 msgid "Admin override to hide the bounty from the system"
-msgstr "सिस्टम से बक्षीस छिपाने के लिए व्यवस्थापक ओवरराइड"
+msgstr "सिस्टम से इनाम छिपाने के लिए व्यवस्थापक ओवरराइड"
 
 #: dashboard/models.py:215
 msgid "Admin override to suspend work auto approvals"
@@ -224,7 +224,7 @@ msgstr "सवाल पूछो"
 
 #: dashboard/templates/_dashboard/ftux.html:42
 msgid "Leave room for adjustments"
-msgstr "समायोजन के लिए कमरे छोड़ दें"
+msgstr "समायोजन के लिए जगह छोड़ दें"
 
 #: dashboard/templates/_dashboard/ftux.html:43
 #, fuzzy
@@ -257,7 +257,7 @@ msgid ""
 "via email."
 msgstr ""
 "निधि इस मुद्दे के लिए श्रमिकों को मंजूरी दे रहा है। कृपया नीचे दिया गया "
-"फॉर्म सबमिट करें, और यदि आपको इस बक्षीस पर काम करने के लिए चुना गया है, तो "
+"फॉर्म सबमिट करें, और यदि आपको इस उपहार पर काम करने के लिए चुना गया है, तो "
 "आपको ईमेल के माध्यम से अधिसूचित किया जाएगा।"
 
 #: dashboard/templates/addinterest.html:38
@@ -273,14 +273,14 @@ msgstr "इस टिकट के लिए एक एक्शन प्ला
 #, fuzzy
 #| msgid "This will be reflected in a comment on the Github issue."
 msgid "Your response will be reflected in a comment on the Github issue."
-msgstr "आपकी प्रतिक्रिया गिथूब मुद्दे पर एक टिप्पणी में दिखाई देगी।"
+msgstr "आपकी प्रतिक्रिया गिटहब मुद्दे पर एक टिप्पणी में दिखाई देगी।"
 
 #: dashboard/templates/addinterest.html:49
 msgid ""
 "I understand that this bounty is a *contest* and that other bounty hunters "
 "may be working in parallel with me."
 msgstr ""
-"मैं समझता हूं कि यह बक्षीस एक * प्रतियोगिता * है और अन्य बाउंटी शिकारी मेरे "
+"मैं समझता हूं कि यह उपहार एक * प्रतियोगिता * है और अन्य बाउंटी शिकारी मेरे "
 "साथ समानांतर में काम कर रहे हैं।"
 
 #: dashboard/templates/addinterest.html:51
@@ -289,9 +289,9 @@ msgid ""
 " bounty hunters may be working in parallel with me, but the funder has "
 "indicated they will pay the bounty to multiple of us."
 msgstr ""
-"मैं समझता हूं कि यह बक्षीस एक बहु-कार्यकर्ता * सहकारी * बक्षीस है। अन्य "
+"मैं समझता हूं कि यह उपहार एक बहु-कार्यकर्ता * सहकारी * उपहार है। अन्य "
 "बाउंटी शिकारी मेरे साथ समानांतर में काम कर रहे हैं, लेकिन फंडर ने संकेत दिया"
-" है कि वे हम में से कई को बक्षीस का भुगतान करेंगे।"
+" है कि वे हम में से कई को उपहार का भुगतान करेंगे।"
 
 #: dashboard/templates/addinterest.html:53
 msgid ""
@@ -314,11 +314,11 @@ msgstr "जमा करें"
 
 #: dashboard/templates/addinterest.html:77
 msgid "Please login with Github to get started."
-msgstr "शुरू करने के लिए कृपया जिथब के साथ लॉगिन करें।"
+msgstr "शुरू करने के लिए कृपया गिटहब के साथ लॉगिन करें।"
 
 #: dashboard/templates/addinterest.html:80
 msgid "Login With Github"
-msgstr "गितूब के साथ लॉगिन करें"
+msgstr "गिटहब के साथ लॉगिन करें"
 
 #: dashboard/templates/bounty_details.html:20
 msgid "Back to Issue Explorer"
@@ -424,7 +424,7 @@ msgstr "सभी गतिविधि"
 #: dashboard/templates/profiles/profile.html:87
 #: retail/templates/index.html:170 retail/templates/shared/nav.html:75
 msgid "Funder"
-msgstr "Funder"
+msgstr "धन उपलब्ध कराना"
 
 #: dashboard/templates/bounty_details.html:168
 #: dashboard/templates/bounty_details.html:246 marketing/views.py:64
@@ -442,7 +442,7 @@ msgstr "ईटीएच पता"
 
 #: dashboard/templates/bounty_details.html:252
 msgid "Submission Id"
-msgstr "सबमिशन आईडी"
+msgstr "जमा आईडी"
 
 #: dashboard/templates/bulk_payout_bounty.html:42
 msgid "Payment(s) Sent"
@@ -455,7 +455,7 @@ msgstr "मूल भुगतान"
 
 #: dashboard/templates/bulk_payout_bounty.html:47
 msgid "Accept one of the submissions for this bounty"
-msgstr "इस बक्षीस के लिए सबमिशन स्वीकार करें"
+msgstr "इस उपहार के लिए सबमिशन स्वीकार करें"
 
 #: dashboard/templates/bulk_payout_bounty.html:62
 #, fuzzy
@@ -480,7 +480,7 @@ msgstr "रकम:"
 
 #: dashboard/templates/bulk_payout_bounty.html:79
 msgid "Return the bounty stake to me, thereby closing the bounty."
-msgstr "मुझे बक्षीस की हिस्सेदारी वापस कर दें, जिससे बक्षीस बंद हो जाए।"
+msgstr "मुझे उपहार की हिस्सेदारी वापस कर दें, जिससे उपहार बंद हो जाए।"
 
 #: dashboard/templates/bulk_payout_bounty.html:82 dashboard/views.py:526
 msgid "Payout"
@@ -672,7 +672,7 @@ msgstr "कृपया या तो व्यवस्थापक से स�
 #, fuzzy
 #| msgid "Login with github"
 msgid " Login with github"
-msgstr "जिथब के साथ लॉगिन करें"
+msgstr "गिटहब के साथ लॉगिन करें"
 
 #: dashboard/templates/ens/ens_register.html:18
 msgid "Register your ENS subdomain"
@@ -726,7 +726,7 @@ msgstr "अवतार बचाओ"
 
 #: dashboard/templates/ftux/avatar.html:104
 msgid "Don't see the right schwag?  Request new avatar attributes here"
-msgstr "सही schwag नहीं देखते हैं? यहां नए अवतार विशेषताओं का अनुरोध करें"
+msgstr "सही स्वैग नहीं देखते हैं? यहां नए अवतार विशेषताओं का अनुरोध करें"
 
 #: dashboard/templates/ftux/github.html:21
 #, fuzzy
@@ -800,7 +800,7 @@ msgstr "लोग आउट"
 
 #: dashboard/templates/ftux/github.html:77
 msgid "Login with github"
-msgstr "जिथब के साथ लॉगिन करें"
+msgstr "गिटहब के साथ लॉगिन करें"
 
 #: dashboard/templates/ftux/metamask.html:21
 #, fuzzy
@@ -936,11 +936,11 @@ msgstr "सिंक"
 
 #: dashboard/templates/ios.html:90
 msgid "Sync your github profile with the gitcoin app."
-msgstr "गिटकोइन ऐप के साथ अपनी जिथब प्रोफाइल को सिंक करें।"
+msgstr "गिटकोइन ऐप के साथ अपनी गिटहब प्रोफाइल को सिंक करें।"
 
 #: dashboard/templates/ios.html:103
 msgid "Swipe"
-msgstr "कड़ी चोट"
+msgstr "स्वाइप"
 
 #: dashboard/templates/ios.html:105
 msgid "Swipe through funded work in open source software."
@@ -1012,7 +1012,7 @@ msgstr "वेब 3 के लिए इंतजार कर रहा है 
 
 #: dashboard/templates/onepager/receive_legacy.html:53
 msgid "You've Got ETH!"
-msgstr "आपको एटी मिल गया है!"
+msgstr "आपको एथेरियम मिल गया है!"
 
 #: dashboard/templates/onepager/receive_legacy.html:54
 msgid "To claim it, please install MetaMask and refresh the page."
@@ -1050,18 +1050,18 @@ msgstr "ये तेज़ है। यह आसान है। यह म�
 
 #: dashboard/templates/onepager/send1.html:34
 msgid "Supports any github username or email address"
-msgstr "किसी भी github उपयोगकर्ता नाम या ईमेल पते का समर्थन करता है"
+msgstr "किसी भी गिटहब उपयोगकर्ता नाम या ईमेल पते का समर्थन करता है"
 
 #: dashboard/templates/onepager/send1.html:37
 msgid "receipient"
-msgstr "receipient"
+msgstr "प्राप्त करने वाला"
 
 #: dashboard/templates/onepager/send1.html:38
 #: dashboard/templates/onepager/send1.html:39
 #: dashboard/templates/onepager/send1.html:40
 #: dashboard/templates/onepager/send1.html:41
 msgid "receipients"
-msgstr "receipients"
+msgstr "प्राप्तकर्ताओं"
 
 #: dashboard/templates/onepager/send1.html:44
 msgid "Send Ether"
@@ -1077,13 +1077,13 @@ msgstr "की राशि"
 
 #: dashboard/templates/onepager/send2.html:53
 msgid "To Github Username"
-msgstr "Github उपयोगकर्ता नाम के लिए"
+msgstr "गिटहब उपयोगकर्ता नाम के लिए"
 
 #: dashboard/templates/onepager/send2.html:57
 #, fuzzy
 #| msgid "To Github Username"
 msgid "From Github Username"
-msgstr "गीथूब उपयोगकर्ता नाम से"
+msgstr "गिटहब उपयोगकर्ता नाम से"
 
 #: dashboard/templates/onepager/send2.html:57
 #: dashboard/templates/shared/github_username.html:21
@@ -1100,7 +1100,7 @@ msgstr "उन्नत"
 
 #: dashboard/templates/onepager/send2.html:66
 msgid "Related Github Issue URL"
-msgstr "संबंधित गीथूब अंक यूआरएल"
+msgstr "संबंधित गिटहब अंक यूआरएल"
 
 #: dashboard/templates/onepager/send2.html:66
 #: dashboard/templates/onepager/send2.html:70
@@ -1305,7 +1305,7 @@ msgstr ""
 
 #: dashboard/templates/profiles/hidden.html:35
 msgid "Try looking for their profile on Github"
-msgstr "गीथूब पर अपनी प्रोफ़ाइल की तलाश करने का प्रयास करें"
+msgstr "गिटहब पर अपनी प्रोफ़ाइल की तलाश करने का प्रयास करें"
 
 #: dashboard/templates/profiles/hidden.html:35
 #, fuzzy
@@ -1326,7 +1326,7 @@ msgstr "इनाम"
 
 #: dashboard/templates/profiles/organization.html:26
 msgid "ETH"
-msgstr "ETH"
+msgstr "ईथर"
 
 #: dashboard/templates/profiles/organization.html:28
 #, fuzzy
@@ -1343,11 +1343,11 @@ msgstr "योगदान देने वाला"
 
 #: dashboard/templates/profiles/profile.html:59
 msgid "bounties completed"
-msgstr "बक्षीस पूरा"
+msgstr "उपहार पूरा"
 
 #: dashboard/templates/profiles/profile.html:60
 msgid "ETH collected"
-msgstr "ईटीएच एकत्रित"
+msgstr "ईथर एकत्रित"
 
 #: dashboard/templates/profiles/profile.html:62
 msgid "removed from"
@@ -1363,17 +1363,17 @@ msgstr "योगदान देने वाला"
 #, fuzzy
 #| msgid "Bounties Universe"
 msgid "bounties funded"
-msgstr "वित्त पोषित बक्षीस"
+msgstr "वित्त पोषित उपहार"
 
 #: dashboard/templates/profiles/profile.html:92
 msgid "ETH funded"
-msgstr "ईटीएच वित्त पोषित"
+msgstr "ईथर वित्त पोषित"
 
 #: dashboard/templates/profiles/profile.html:94
 #, fuzzy
 #| msgid "Funder"
 msgid "funder"
-msgstr "funder"
+msgstr "धन उपलब्ध कराना"
 
 #: dashboard/templates/profiles/profile.html:98
 #, fuzzy
@@ -1385,7 +1385,7 @@ msgstr "फंड"
 #, fuzzy
 #| msgid "Bounties Universe"
 msgid "Bounties in progress"
-msgstr "प्रगति पर बक्षीस"
+msgstr "प्रगति पर उपहार"
 
 #: dashboard/templates/profiles/profile.html:132
 #: dashboard/templates/profiles/profile.html:148
@@ -1399,19 +1399,19 @@ msgstr "सब दिखाओ"
 #, fuzzy
 #| msgid "Bounties Universe"
 msgid "Bounties funded"
-msgstr "वित्त पोषित बक्षीस"
+msgstr "वित्त पोषित उपहार"
 
 #: dashboard/templates/profiles/profile.html:157
 #, fuzzy
 #| msgid "Bounties Universe"
 msgid "Bounties completed"
-msgstr "बक्षीस पूरा"
+msgstr "उपहार पूरा"
 
 #: dashboard/templates/profiles/profile.html:173
 #, fuzzy
 #| msgid "Bounties Universe"
 msgid "Bounties"
-msgstr "bounties"
+msgstr "इनाम"
 
 #: dashboard/templates/profiles/profile.html:190
 #, fuzzy
@@ -1463,7 +1463,7 @@ msgstr "दोबारा मत दिखाओ"
 
 #: dashboard/templates/quickstart.html:56
 msgid "1) Create a Github Issue, you'll need the issue URL"
-msgstr "1) एक गिथब समस्या बनाएं, आपको समस्या यूआरएल की आवश्यकता होगी"
+msgstr "1) एक गिटहब समस्या बनाएं, आपको समस्या यूआरएल की आवश्यकता होगी"
 
 #: dashboard/templates/quickstart.html:57
 msgid "2) Select the type of issue to fund"
@@ -1471,7 +1471,7 @@ msgstr "2) फंड के लिए समस्या का प्रका�
 
 #: dashboard/templates/quickstart.html:58
 msgid "3) Complete the form and press \"Fund Issue\""
-msgstr "3) फॉर्म को पूरा करें और \"फंड समस्या\" दबाएं"
+msgstr "3) फॉर्म को पूरा भरें और \"फंड समस्या\" दबाएं"
 
 #: dashboard/templates/quickstart.html:59
 msgid "4) Confirm the transaction in metamask"
@@ -1484,7 +1484,7 @@ msgid ""
 "your issue."
 msgstr ""
 "एक बार ब्लॉकचेन पर पुष्टि की, आपका उपहार गिटकोइन पर पोस्ट किया गया है! "
-"दुनिया भर में डेवलपर्स के लिए अपनी बक्षीस की खोज करें और अपनी समस्या पर काम "
+"दुनिया भर में डेवलपर्स के लिए अपनी उपहार की खोज करें और अपनी समस्या पर काम "
 "करना शुरू करें।"
 
 #: dashboard/templates/quickstart.html:68
@@ -1602,7 +1602,7 @@ msgid ""
 "In our experience, the following are <span class=\"orange-text\">not</span> "
 "good candidates for bounties:"
 msgstr ""
-"हमारे अनुभव में, निम्नलिखित <span class = \"नारंगी-पाठ\"> नहीं </ span> "
+"हमारे अनुभव में, निम्फॉक्सिखित <span class = \"नारंगी-पाठ\"> नहीं </ span> "
 "बकाया के लिए अच्छे उम्मीदवार हैं:"
 
 #: dashboard/templates/quickstart.html:135
@@ -1667,13 +1667,13 @@ msgstr "सिंक पूरा होने पर यह पृष्ठ स
 
 #: dashboard/templates/shared/github_link.html:19
 msgid "Github PR Link"
-msgstr "गिथब पीआर लिंक"
+msgstr "गिटहब पीआर लिंक"
 
 #: dashboard/templates/shared/github_username.html:19
 #: retail/templates/settings/ens.html:15
 #: retail/templates/shared/bulk_payout_form.html:26
 msgid "Github Username"
-msgstr "गिथूब उपयोगकर्ता नाम"
+msgstr "गिटहब उपयोगकर्ता नाम"
 
 #: dashboard/templates/shared/hours_worked.html:19
 msgid "Hours Worked"
@@ -1778,7 +1778,7 @@ msgstr "एक समस्या को वित्त पोषण के ल
 #: dashboard/templates/shared/no_issue_error.html:25
 msgid ""
 "Create an issue on Github so that we can reference the details of the issue."
-msgstr "गीथब पर एक समस्या बनाएं ताकि हम इस मुद्दे के विवरण का संदर्भ दे सकें।"
+msgstr "गिटहब पर एक समस्या बनाएं ताकि हम इस मुद्दे के विवरण का संदर्भ दे सकें।"
 
 #: dashboard/templates/shared/no_issue_error.html:26
 msgid ""
@@ -1798,7 +1798,7 @@ msgid ""
 "your next bounty."
 msgstr ""
 "एक बार रद्द करने के बाद मत भूलना आपको धन प्राप्त होगा और इसे आपके अगले "
-"बक्षीस पर पुन: उपयोग कर सकते हैं।"
+"उपहार पर पुन: उपयोग कर सकते हैं।"
 
 #: dashboard/templates/shared/no_issue_error.html:53
 msgid "Accepting a Submission is Exciting"
@@ -1809,7 +1809,7 @@ msgid ""
 "Make sure the submitter has completed the requirements to the specifications"
 " of your bounty."
 msgstr ""
-"सुनिश्चित करें कि जमाकर्ता ने आपके बक्षीस के विनिर्देशों की आवश्यकताओं को "
+"सुनिश्चित करें कि जमाकर्ता ने आपके उपहार के विनिर्देशों की आवश्यकताओं को "
 "पूरा कर लिया है।"
 
 #: dashboard/templates/shared/no_issue_error.html:57
@@ -1826,7 +1826,7 @@ msgstr ""
 #, fuzzy
 #| msgid "Accepting a Submission is Exciting"
 msgid "Paying out a bounty is Exciting"
-msgstr "एक बक्षीस भुगतान करना रोमांचक है"
+msgstr "एक उपहार भुगतान करना रोमांचक है"
 
 #: dashboard/templates/shared/no_issue_error.html:73
 #, fuzzy
@@ -1837,7 +1837,7 @@ msgid ""
 "If you are closing the bounty, make sure the submitters have completed the "
 "requirements to the specifications of your bounty."
 msgstr ""
-"यदि आप बक्षीस बंद कर रहे हैं, तो सुनिश्चित करें कि जमाकर्ताओं ने आपके बक्षीस"
+"यदि आप उपहार बंद कर रहे हैं, तो सुनिश्चित करें कि जमाकर्ताओं ने आपके उपहार"
 " के विनिर्देशों की आवश्यकताओं को पूरा कर लिया है।"
 
 #: dashboard/templates/shared/no_issue_error.html:89
@@ -1871,7 +1871,7 @@ msgstr ""
 "अपने ब्राउज़र में वेब 3 जोड़ने का सबसे तेज़ और आसान तरीका है <a "
 "target=\"_blank\" rel=\"noopener noreferrer\" "
 "href=\"https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral\"> "
-"मेटामास्क < / a>। बक्षीस जमा करना जारी रखने के लिए, कृपया मेटामास्क इंस्टॉल "
+"मेटामास्क < / a>। उपहार जमा करना जारी रखने के लिए, कृपया मेटामास्क इंस्टॉल "
 "करें और इस पृष्ठ पर वापस आएं।"
 
 #: dashboard/templates/shared/notification_email.html:19
@@ -1881,7 +1881,7 @@ msgstr "अधिसूचना ईमेल"
 #: dashboard/templates/shared/permissions_type_tooltip.html:24
 #: dashboard/templates/shared/sidebar_search.html:129
 msgid "Permissionless"
-msgstr "Permissionless"
+msgstr "अनुमति के बग़ैर"
 
 #: dashboard/templates/shared/permissions_type_tooltip.html:24
 msgid "Anyone can start work"
@@ -1908,7 +1908,7 @@ msgstr "मज़हब"
 
 #: dashboard/templates/shared/pricing.html:32
 msgid "USD"
-msgstr "USD"
+msgstr "डॉलर"
 
 #: dashboard/templates/shared/project_type_tooltip.html:19
 #, fuzzy
@@ -2125,12 +2125,12 @@ msgstr "Ropsten"
 
 #: dashboard/templates/shared/sidebar_search.html:285
 msgid "Rinkeby"
-msgstr "Rinkeby"
+msgstr "रिंकबे"
 
 #: dashboard/templates/shared/sidebar_search.html:292
 #: retail/templates/gas_faucet_list.html:15
 msgid "Mainnet"
-msgstr "Mainnet"
+msgstr "मेननेट "
 
 #: dashboard/templates/shared/sidebar_search.html:307
 msgid "Misc"
@@ -2150,7 +2150,7 @@ msgstr "संभावित स्थिति"
 
 #: dashboard/templates/shared/status_tooltip.html:24
 msgid "A funded bounty is available for anyone to work on."
-msgstr "किसी के लिए काम करने के लिए एक वित्त पोषित बक्षीस उपलब्ध है।"
+msgstr "किसी के लिए काम करने के लिए एक वित्त पोषित उपहार उपलब्ध है।"
 
 #: dashboard/templates/shared/status_tooltip.html:30
 msgid "Work has been started by at least one person."
@@ -2184,17 +2184,17 @@ msgstr "परियोजना के मालिक द्वारा ए�
 #, fuzzy
 #| msgid "Please Unlock MetaMask To Continue"
 msgid "Please Unlock Metamask to Continue"
-msgstr "जारी रखने के लिए कृपया मेटामास्क अनलॉक करें"
+msgstr "जारी रखने के लिए कृपया मेटामास्क अफॉक्सॉक करें"
 
 #: dashboard/templates/shared/unlock_metamask.html:23
 #: faucet/templates/shared/faucet_unlock_metamask.html:27
 msgid "In order to continue, you'll need to unlock metamask."
-msgstr "जारी रखने के लिए, आपको मेटामास्क अनलॉक करने की आवश्यकता होगी।"
+msgstr "जारी रखने के लिए, आपको मेटामास्क अफॉक्सॉक करने की आवश्यकता होगी।"
 
 #: dashboard/templates/shared/unlock_metamask.html:26
 #: faucet/templates/shared/faucet_unlock_metamask.html:30
 msgid "Please unlock Metamask and refresh the page."
-msgstr "कृपया मेटामास्क अनलॉक करें और पृष्ठ को रीफ्रेश करें।"
+msgstr "कृपया मेटामास्क अफॉक्सॉक करें और पृष्ठ को रीफ्रेश करें।"
 
 #: dashboard/templates/shared/unlock_metamask.html:27
 #: dashboard/templates/shared/zero_balance_error.html:34
@@ -2218,7 +2218,7 @@ msgid ""
 " min confirmation for <span id=\"ethAmount\">unknown</span> ETH (<span "
 "id=\"usdAmount\">unknown</span> USD)"
 msgstr ""
-"निम्नलिखित मेटामास्क सेटिंग्स को <span id = \"confTime\"> 5 </ span> <span "
+"निम्फॉक्सिखित मेटामास्क सेटिंग्स को <span id = \"confTime\"> 5 </ span> <span "
 "id = \"ethAmount\"> अज्ञात </ span> ETH (<span id = \"usdAmount\"> अज्ञात </"
 " span के लिए न्यूनतम पुष्टि देना चाहिए > यूएसडी)"
 
@@ -2233,7 +2233,7 @@ msgid ""
 "min confirmation for <span id=\"ethAmount\">unknown</span> ETH (<span "
 "id=\"usdAmount\">unknown</span> USD)"
 msgstr ""
-"निम्नलिखित ट्रस्ट सेटिंग्स को <span id = \"confTime\"> 5 </ span> <span id ="
+"निम्फॉक्सिखित ट्रस्ट सेटिंग्स को <span id = \"confTime\"> 5 </ span> <span id ="
 " \"ethAmount\"> अज्ञात </ span> ETH (<span id = \"usdAmount\"> अज्ञात </ "
 "span के लिए न्यूनतम पुष्टि देना चाहिए > यूएसडी)"
 
@@ -2278,16 +2278,16 @@ msgid ""
 "resources needed to run an application or program. In this case, Gitcoin."
 msgstr ""
 "'ईथर' एक डिजिटल संपत्ति है जिसका उपयोग किसी एप्लिकेशन या प्रोग्राम चलाने के "
-"लिए आवश्यक कम्प्यूटेशनल संसाधनों के लिए भुगतान करने के लिए किया जा सकता है। "
+"लिए आवश्यक कम्प्यूटेशफॉक्स संसाधनों के लिए भुगतान करने के लिए किया जा सकता है। "
 "इस मामले में, गिटकोइन।"
 
 #: dashboard/templates/shared/zero_balance_error.html:26
 msgid "The easiest way to get Ether is to request it via the Gitcoin Faucet:"
-msgstr "ईथर पाने का सबसे आसान तरीका गिटकोइन नल के माध्यम से अनुरोध करना है:"
+msgstr "ईथर पाने का सबसे आसान तरीका गिटकोइन फॉक्स के माध्यम से अनुरोध करना है:"
 
 #: dashboard/templates/shared/zero_balance_error.html:32
 msgid "View Faucet"
-msgstr "नल देखें"
+msgstr "फॉक्स देखें"
 
 #: dashboard/templates/submit_bounty.html:52
 #: retail/templates/shared/footer.html:66 retail/templates/shared/nav.html:53
@@ -2298,13 +2298,13 @@ msgstr "के बारे में"
 #, fuzzy
 #| msgid "Related Github Issue URL"
 msgid "Github Issue URL"
-msgstr "गिथूब अंक यूआरएल"
+msgstr "गिटहब मुद्दा यूआरएल"
 
 #: dashboard/templates/submit_bounty.html:55
 #, fuzzy
 #| msgid "Issue Title"
 msgid "Github Issue Title"
-msgstr "गिथूब अंक शीर्षक"
+msgstr "गिटहब मुद्दा शीर्षक"
 
 #: dashboard/templates/submit_bounty.html:59
 msgid "Keywords"
@@ -2466,7 +2466,7 @@ msgstr "विषय - सूची"
 #, fuzzy
 #| msgid "Send a Tip to any Github user in 60 seconds"
 msgid "Send a tip to any github user at the click of a button."
-msgstr "किसी बटन के क्लिक पर किसी भी github उपयोगकर्ता को टिप भेजें।"
+msgstr "किसी बटन के क्लिक पर किसी भी गिटहब उपयोगकर्ता को टिप भेजें।"
 
 #: dashboard/tip_views.py:101
 msgid "Tip has been received"
@@ -2507,13 +2507,13 @@ msgstr "ब्याज जोड़ें"
 #: dashboard/views.py:222 dashboard/views.py:316 faucet/views.py:62
 msgid "You must be authenticated via github to use this feature!"
 msgstr ""
-"इस सुविधा का उपयोग करने के लिए आपको गितब के माध्यम से प्रमाणित होना चाहिए!"
+"इस सुविधा का उपयोग करने के लिए आपको गिटहब के माध्यम से प्रमाणित होना चाहिए!"
 
 #: dashboard/views.py:232
 #, fuzzy
 #| msgid "You have already expressed interest in this bounty!"
 msgid "There is already someone working on this bounty."
-msgstr "इस बक्षीस पर काम कर रहे पहले से ही कोई है।"
+msgstr "इस उपहार पर काम कर रहे पहले से ही कोई है।"
 
 #: dashboard/views.py:242
 #, python-brace-format
@@ -2530,7 +2530,7 @@ msgid ""
 "are unable to startmore work at this time. Please leave a message on slack "
 "if you feel this message is in error."
 msgstr ""
-"चूंकि एक कर्मचारी सदस्य को आपको अतीत में एक बक्षीस से हटाना पड़ा है, इसलिए "
+"चूंकि एक कर्मचारी सदस्य को आपको अतीत में एक उपहार से हटाना पड़ा है, इसलिए "
 "आप इस समय काम शुरू करने में असमर्थ हैं। अगर आपको लगता है कि यह संदेश गलती "
 "में है तो कृपया ढीले पर एक संदेश छोड़ दें।"
 
@@ -2538,7 +2538,7 @@ msgstr ""
 #, fuzzy
 #| msgid "You have already expressed interest in this bounty!"
 msgid "You have already started work on this bounty!"
-msgstr "आप इस बक्षीस पर काम शुरू कर चुके हैं!"
+msgstr "आप इस उपहार पर काम शुरू कर चुके हैं!"
 
 #: dashboard/views.py:278
 msgid "You have started work."
@@ -2554,7 +2554,7 @@ msgstr ""
 
 #: dashboard/views.py:337
 msgid "You haven't expressed interest on this bounty."
-msgstr "आपने इस बक्षीस पर ब्याज व्यक्त नहीं किया है।"
+msgstr "आपने इस उपहार पर ब्याज व्यक्त नहीं किया है।"
 
 #: dashboard/views.py:353 dashboard/views.py:427
 msgid "You've stopped working on this, thanks for letting us know."
@@ -2591,7 +2591,7 @@ msgstr "बाउंटी अब छुपा हुआ है"
 #, fuzzy
 #| msgid "Only the funder of this bounty may snooze warnings."
 msgid "Only the funder of this bounty may do this."
-msgstr "केवल इस बक्षीस का निधि ही ऐसा कर सकता है।"
+msgstr "केवल इस उपहार का निधि ही ऐसा कर सकता है।"
 
 #: dashboard/views.py:652
 #, fuzzy
@@ -2654,7 +2654,7 @@ msgstr "{worker} {mutate_worker_action_past_tense} रहा है"
 #, fuzzy
 #| msgid "Only the funder of this bounty may snooze warnings."
 msgid "Only the funder of this bounty may perform this action."
-msgstr "केवल इस बक्षीस का निधि ही इस क्रिया को कर सकता है।"
+msgstr "केवल इस उपहार का निधि ही इस क्रिया को कर सकता है।"
 
 #: dashboard/views.py:798
 msgid "Funded Issue Details | Gitcoin"
@@ -2859,7 +2859,7 @@ msgstr ""
 #: external_bounties/templates/external_bounties.html:22
 #: external_bounties/templates/external_bounties_show.html:29
 msgid "Bounties Universe"
-msgstr "बक्षीस ब्रह्मांड"
+msgstr "उपहार ब्रह्मांड"
 
 #: external_bounties/templates/external_bounties.html:22
 #: external_bounties/templates/external_bounties_show.html:29
@@ -2978,7 +2978,7 @@ msgstr "आपके सबमिशन को स्वीकार करन�
 
 #: faucet/templates/faucet_form.html:37
 msgid "Faucet Request"
-msgstr "नल का अनुरोध"
+msgstr "फॉक्स का अनुरोध"
 
 #: faucet/templates/faucet_form.html:39
 msgid ""
@@ -2990,7 +2990,7 @@ msgid ""
 msgstr ""
 "\n"
 "एथिरियम और गिटकोइन को गिटकोइन के लिए व्यापक रूप से सुलभ बनाने के लिए\n"
-"                  ईथर का न्यूनतम नल वितरण प्रदान कर सकता है ताकि आप आसानी से हो सकें\n"
+"                  ईथर का न्यूनतम फॉक्स वितरण प्रदान कर सकता है ताकि आप आसानी से हो सकें\n"
 "                  मुद्दों का दावा करें और अधिक ईथर प्राप्त करें।"
 
 #: faucet/templates/faucet_form.html:55
@@ -3000,7 +3000,7 @@ msgstr "कृपया ध्यान दें, सभी इनपुट फ
 #: faucet/templates/faucet_form.html:58
 #: faucet/templates/process_faucet_request.html:35
 msgid "Github Profile"
-msgstr "गिथब प्रोफाइल"
+msgstr "गिटहब प्रोफाइल"
 
 #: faucet/templates/faucet_form.html:67
 msgid "Email Address"
@@ -3028,7 +3028,7 @@ msgid ""
 "will review your request shortly (up to 24 hours on weekdays, on next "
 "business day if on weekends / holidays) and arrange a deposit if approved."
 msgstr ""
-"नल वितरण के लिए आपका अनुरोध प्राप्त हुआ है। एक व्यवस्थापक जल्द ही आपके "
+"फॉक्स वितरण के लिए आपका अनुरोध प्राप्त हुआ है। एक व्यवस्थापक जल्द ही आपके "
 "अनुरोध की समीक्षा करेगा (सप्ताहांत पर 24 घंटे तक, अगले सप्ताह के दिन "
 "सप्ताहांत / छुट्टियों पर) और स्वीकृत होने पर जमा की व्यवस्था करें।"
 
@@ -3047,7 +3047,7 @@ msgstr "आपका अनुरोध जमा करने में कु�
 
 #: faucet/templates/process_faucet_request.html:33
 msgid "Process Faucet Request"
-msgstr "प्रक्रिया नल अनुरोध"
+msgstr "प्रक्रिया फॉक्स अनुरोध"
 
 #: faucet/templates/process_faucet_request.html:40
 msgid "MetaMask Extension Not Detected"
@@ -3055,7 +3055,7 @@ msgstr "मेटामास्क एक्सटेंशन नहीं प
 
 #: faucet/templates/process_faucet_request.html:41
 msgid "Please Unlock MetaMask To Continue"
-msgstr "जारी रखने के लिए कृपया मेटामास्क अनलॉक करें"
+msgstr "जारी रखने के लिए कृपया मेटामास्क अफॉक्सॉक करें"
 
 #: faucet/templates/process_faucet_request.html:42
 msgid "MetaMask Active Account Is Empty"
@@ -3071,7 +3071,7 @@ msgid ""
 "By funding this faucet request, you will transfer %(faucet_amount)s ETH to\n"
 "    %(obj.github_username)s with a wallet address of %(obj.address)s"
 msgstr ""
-"इस नल के अनुरोध को वित्त पोषित करके, आप %(faucet_amount)s ETH को स्थानांतरित कर देंगे\n"
+"इस फॉक्स के अनुरोध को वित्त पोषित करके, आप %(faucet_amount)s ETH को स्थानांतरित कर देंगे\n"
 "    %(obj.github_username)s %(obj.address)s के वॉलेट पते के साथ है"
 
 #: faucet/templates/process_faucet_request.html:70
@@ -3089,7 +3089,7 @@ msgstr "शून्य के बारे में"
 #: faucet/templates/shared/faucet_no_metamask_error.html:21
 #: faucet/templates/shared/faucet_unlock_metamask.html:21
 msgid "Apply for a faucet distribution"
-msgstr "एक नल वितरण के लिए आवेदन करें"
+msgstr "एक फॉक्स वितरण के लिए आवेदन करें"
 
 #: faucet/templates/shared/faucet_no_metamask_error.html:25
 msgid "To continue, enable Web3."
@@ -3113,7 +3113,7 @@ msgstr ""
 "अपने ब्राउज़र में वेब 3 जोड़ने का सबसे तेज़ और आसान तरीका <a href = "
 "\"https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=hi\""
 " target = \"_ blank\" rel = \"Noopener इंस्टॉल करना है noreferrer \"> "
-"मेटामास्क </a>। बक्षीस जमा करना जारी रखने के लिए, कृपया मेटामास्क इंस्टॉल "
+"मेटामास्क </a>। उपहार जमा करना जारी रखने के लिए, कृपया मेटामास्क इंस्टॉल "
 "करें और इस पृष्ठ पर वापस आएं।"
 
 #: faucet/templates/shared/faucet_no_metamask_error.html:33
@@ -3126,7 +3126,7 @@ msgstr "आप ईथर होने लगते हैं!"
 
 #: faucet/templates/shared/faucet_over_balance_error.html:24
 msgid "Thank you for your interest in receiving a faucet distribution."
-msgstr "नल वितरण प्राप्त करने में आपकी रूचि के लिए धन्यवाद।"
+msgstr "फॉक्स वितरण प्राप्त करने में आपकी रूचि के लिए धन्यवाद।"
 
 #: faucet/templates/shared/faucet_over_balance_error.html:27
 msgid ""
@@ -3142,7 +3142,7 @@ msgstr "काम करने के लिए web3 नहीं मिल स�
 
 #: faucet/views.py:43
 msgid "Gitcoin Faucet"
-msgstr "गिटकोइन नल"
+msgstr "गिटकोइन फॉक्स"
 
 #: faucet/views.py:44
 msgid ""
@@ -3154,11 +3154,11 @@ msgstr ""
 
 #: faucet/views.py:79
 msgid "The submitted github profile shows a previous faucet distribution."
-msgstr "सबमिट किया गया github प्रोफ़ाइल पिछले नल वितरण दिखाता है।"
+msgstr "सबमिट किया गया github प्रोफ़ाइल पिछले फॉक्स वितरण दिखाता है।"
 
 #: faucet/views.py:83
 msgid "The submitted github profile shows a pending faucet distribution."
-msgstr "सबमिट की गई github प्रोफ़ाइल लंबित नल वितरण दिखाती है।"
+msgstr "सबमिट की गई github प्रोफ़ाइल लंबित फॉक्स वितरण दिखाती है।"
 
 #: faucet/views.py:96
 msgid "Created."
@@ -3182,11 +3182,11 @@ msgstr "🕐 टिप वर्थ {} {} {} जल्द ही समाप्
 
 #: marketing/mails.py:157
 msgid "New Faucet Request"
-msgstr "नया नल अनुरोध"
+msgstr "नया फॉक्स अनुरोध"
 
 #: marketing/mails.py:158
 msgid "A new faucet request was completed. You may fund the request here"
-msgstr "एक नया नल का अनुरोध पूरा हो गया था। आप यहां अनुरोध निधि दे सकते हैं"
+msgstr "एक नया फॉक्स का अनुरोध पूरा हो गया था। आप यहां अनुरोध निधि दे सकते हैं"
 
 #: marketing/mails.py:161 marketing/mails.py:176 marketing/mails.py:191
 #: marketing/mails.py:223
@@ -3221,11 +3221,11 @@ msgstr "नई बाहरी बाउंटी"
 
 #: marketing/mails.py:230 retail/templates/emails/faucet_request.html:24
 msgid "Faucet Request Processed"
-msgstr "नल का अनुरोध संसाधित"
+msgstr "फॉक्स का अनुरोध संसाधित"
 
 #: marketing/mails.py:245
 msgid "Faucet Request Rejected"
-msgstr "नल का अनुरोध अस्वीकार कर दिया गया"
+msgstr "फॉक्स का अनुरोध अस्वीकार कर दिया गया"
 
 #: marketing/mails.py:268
 msgid ""
@@ -3273,7 +3273,7 @@ msgstr "अमान्य स्लैक टोकन।"
 
 #: marketing/utils.py:75
 msgid "Slack channel not found."
-msgstr "स्लैक चैनल नहीं मिला।"
+msgstr "स्लैक चैफॉक्स नहीं मिला।"
 
 #: marketing/utils.py:79
 msgid "The Gitcoin Slack integration is working fine."
@@ -3382,7 +3382,7 @@ msgstr "ईएनएस सेटिंग्स"
 #, fuzzy
 #| msgid "Your transaction has been posted to web3"
 msgid "Your account has been disconnected from Github"
-msgstr "आपका खाता गिथब से डिस्कनेक्ट हो गया है"
+msgstr "आपका खाता गिटहब से डिस्कनेक्ट हो गया है"
 
 #: marketing/views.py:547
 #, fuzzy
@@ -3452,13 +3452,13 @@ msgstr "केवल तभी जब आपको एक टिप भेजा
 #, fuzzy
 #| msgid "Notification Email"
 msgid "Faucet Notification Emails"
-msgstr "नल अधिसूचना ईमेल"
+msgstr "फॉक्स अधिसूचना ईमेल"
 
 #: retail/emails.py:47
 #, fuzzy
 #| msgid "Apply for a faucet distribution"
 msgid "Only when you are sent a faucet distribution"
-msgstr "केवल तभी जब आप एक नल वितरण भेजा जाता है"
+msgstr "केवल तभी जब आप एक फॉक्स वितरण भेजा जाता है"
 
 #: retail/emails.py:48
 #, fuzzy
@@ -3468,7 +3468,7 @@ msgstr "बाउंटी अधिसूचना ईमेल"
 
 #: retail/emails.py:48
 msgid "Only when you're active on a bounty"
-msgstr "केवल तभी जब आप एक बक्षीस पर सक्रिय होते हैं"
+msgstr "केवल तभी जब आप एक उपहार पर सक्रिय होते हैं"
 
 #: retail/emails.py:49
 msgid "Bounty Match Emails"
@@ -3476,7 +3476,7 @@ msgstr "बाउंटी मैच ईमेल"
 
 #: retail/emails.py:49
 msgid "Only when you've posted a open bounty and you have a new match"
-msgstr "केवल तभी जब आपने खुली बक्षीस पोस्ट की हो और आपके पास नया मैच हो"
+msgstr "केवल तभी जब आपने खुली उपहार पोस्ट की हो और आपके पास नया मैच हो"
 
 #: retail/emails.py:50
 msgid "Bounty Feedback Emails"
@@ -3492,7 +3492,7 @@ msgstr "बाउंटी समाप्ति चेतावनी ईमे
 
 #: retail/emails.py:53
 msgid "Only after you posted a bounty which is going to expire"
-msgstr "केवल एक बक्षीस पोस्ट करने के बाद जो समाप्त होने जा रहा है"
+msgstr "केवल एक उपहार पोस्ट करने के बाद जो समाप्त होने जा रहा है"
 
 #: retail/templates/about.html:33
 msgid "The Problem"
@@ -3510,7 +3510,7 @@ msgstr "ओपन सोर्स सॉफ्टवेयर डेवलपर
 
 #: retail/templates/about.html:44
 msgid "Create a lot of economic value."
-msgstr "बहुत सारे आर्थिक मूल्य बनाएँ।"
+msgstr "वे काफी आर्थिक मूल्य पैदा करते हैं ।।"
 
 #: retail/templates/about.html:45
 msgid "Are Not Properly incentivized."
@@ -3757,7 +3757,7 @@ msgid ""
 "Github."
 msgstr ""
 "गिटकोइन के बारे में सबसे अच्छी बात यह है कि यह काम करता है जहां आप अपना काम "
-"करते हैं; गीथूब पर"
+"करते हैं; गिटहब पर"
 
 #: retail/templates/about.html:264
 #, fuzzy
@@ -3804,7 +3804,7 @@ msgstr "काम बंद कर दिया:"
 #, fuzzy
 #| msgid "Cancel Bounty"
 msgid "canceled bounty: "
-msgstr "रद्द बक्षीस:"
+msgstr "रद्द उपहार:"
 
 #: retail/templates/activity.html:62
 msgid "increased funding: "
@@ -3955,7 +3955,7 @@ msgstr "समस्या एक्सप्लोरर देखें"
 
 #: retail/templates/emails/bounty_roundup.html:124
 msgid "Bounties from around the ecosystem"
-msgstr "पारिस्थितिक तंत्र के आसपास से बक्षीस"
+msgstr "पारिस्थितिक तंत्र के आसपास से उपहार"
 
 #: retail/templates/emails/bounty_roundup.html:125
 msgid "From other great projects in OSS"
@@ -4003,7 +4003,7 @@ msgstr ""
 
 #: retail/templates/emails/bounty_startwork_expire_warning.html:42
 msgid "If so, please leave a comment on the github thread to check in."
-msgstr "यदि ऐसा है, तो कृपया जांचने के लिए जिथब थ्रेड पर एक टिप्पणी छोड़ दें।"
+msgstr "यदि ऐसा है, तो कृपया जांचने के लिए गिटहब थ्रेड पर एक टिप्पणी छोड़ दें।"
 
 #: retail/templates/emails/bounty_startwork_expire_warning.html:44
 msgid "OR"
@@ -4052,7 +4052,7 @@ msgstr "अरे"
 #: retail/templates/emails/faucet_request.html:34
 #, python-format
 msgid "Gitcoin has distributed your faucet request for %(amount)s ETH to"
-msgstr "गिटकोइन ने %(amount)s ETH के लिए अपना नल अनुरोध वितरित किया है"
+msgstr "गिटकोइन ने %(amount)s ETH के लिए अपना फॉक्स अनुरोध वितरित किया है"
 
 #: retail/templates/emails/faucet_request.html:39
 msgid ""
@@ -4064,13 +4064,13 @@ msgstr ""
 
 #: retail/templates/emails/faucet_request_rejected.html:24
 msgid "Faucet Request Rejected ‼️"
-msgstr "नल का अनुरोध अस्वीकार! ️"
+msgstr "फॉक्स का अनुरोध अस्वीकार! ️"
 
 #: retail/templates/emails/faucet_request_rejected.html:34
 #, python-format
 msgid "Gitcoin *could not* approve your faucet request for %(amount)s ETH to"
 msgstr ""
-"गिटकोइन * %(amount)s ETH के लिए आपके नल के अनुरोध को स्वीकार नहीं कर सका"
+"गिटकोइन * %(amount)s ETH के लिए आपके फॉक्स के अनुरोध को स्वीकार नहीं कर सका"
 
 #: retail/templates/emails/faucet_request_rejected.html:41
 msgid "Here are somme comments from the administrator:"
@@ -4234,7 +4234,7 @@ msgid ""
 "You may also 'Cancel' the bounty and get the funds back."
 msgstr ""
 "वित्त पोषित मुद्दा समाप्त हो जाने के बाद, आप अभी भी काम सबमिट कर सकते हैं और"
-" स्वीकार कर सकते हैं। आप बक्षीस को 'रद्द' भी कर सकते हैं और धन वापस ले सकते "
+" स्वीकार कर सकते हैं। आप उपहार को 'रद्द' भी कर सकते हैं और धन वापस ले सकते "
 "हैं।"
 
 #: retail/templates/emails/new_bounty_expire_warning.html:45
@@ -4268,7 +4268,7 @@ msgid ""
 "There is a new funded issue fulfillment *rejection*. Please refer to the "
 "rejection comments on the github pull request to learn why."
 msgstr ""
-"एक नया वित्त पोषित मुद्दा पूर्ति * अस्वीकृति * है। कृपया जानने के लिए जिथब "
+"एक नया वित्त पोषित मुद्दा पूर्ति * अस्वीकृति * है। कृपया जानने के लिए गिटहब "
 "पुल अनुरोध पर अस्वीकृति टिप्पणियों का संदर्भ लें।"
 
 #: retail/templates/emails/new_match.html:39
@@ -4308,15 +4308,15 @@ msgstr "किसी ने आपको %(amount)s %(warning)s %(tokenName)s �
 
 #: retail/templates/emails/new_tip.html:65
 msgid "They had the following comments:"
-msgstr "उनके पास निम्नलिखित टिप्पणियां थीं:"
+msgstr "उनके पास निम्फॉक्सिखित टिप्पणियां थीं:"
 
 #: retail/templates/emails/new_tip.html:76
 msgid "They had the following private comments:"
-msgstr "उनके पास निम्नलिखित निजी टिप्पणियां थीं:"
+msgstr "उनके पास निम्फॉक्सिखित निजी टिप्पणियां थीं:"
 
 #: retail/templates/emails/new_tip.html:85
 msgid "They had the following public comments:"
-msgstr "उनके पास निम्नलिखित सार्वजनिक टिप्पणियां थीं:"
+msgstr "उनके पास निम्फॉक्सिखित सार्वजनिक टिप्पणियां थीं:"
 
 #: retail/templates/emails/new_tip.html:94
 msgid "The tip expires on"
@@ -4391,7 +4391,7 @@ msgstr ""
 
 #: retail/templates/emails/render_bounty_startwork_expired.html:45
 msgid "Please leave a comment on the github thread to check in."
-msgstr "चेक इन करने के लिए कृपया जिथब थ्रेड पर एक टिप्पणी छोड़ दें।"
+msgstr "चेक इन करने के लिए कृपया गिटहब थ्रेड पर एक टिप्पणी छोड़ दें।"
 
 #: retail/templates/emails/render_bounty_startwork_expired.html:47
 msgid "AND"
@@ -4430,7 +4430,7 @@ msgstr "काम करना चाहूंगा"
 #, fuzzy
 #| msgid "View Bounty"
 msgid "this bounty"
-msgstr "यह बक्षीस"
+msgstr "यह उपहार"
 
 #: retail/templates/emails/start_work_applicant_about_to_expire.html:30
 #: retail/templates/emails/start_work_new_applicant.html:30
@@ -4469,7 +4469,7 @@ msgstr ""
 #: retail/templates/emails/start_work_applicant_about_to_expire.txt:3
 #: retail/templates/emails/start_work_new_applicant.txt:3
 msgid "would like to work on this bounty. Please review and approve"
-msgstr "इस बक्षीस पर काम करना चाहूंगा। कृपया समीक्षा करें और स्वीकृति दें"
+msgstr "इस उपहार पर काम करना चाहूंगा। कृपया समीक्षा करें और स्वीकृति दें"
 
 #: retail/templates/emails/start_work_applicant_expired.html:24
 msgid "A Worker was Auto Approved"
@@ -4488,7 +4488,7 @@ msgid ""
 "was automatically approved to work on this bounty! Please work together to "
 "complete the project."
 msgstr ""
-"इस बक्षीस पर काम करने के लिए स्वचालित रूप से अनुमोदित किया गया था! परियोजना "
+"इस उपहार पर काम करने के लिए स्वचालित रूप से अनुमोदित किया गया था! परियोजना "
 "को पूरा करने के लिए कृपया एक साथ काम करें।"
 
 #: retail/templates/emails/start_work_approved.html:24
@@ -4522,7 +4522,7 @@ msgid ""
 " can go ahead and start working on the issue and as a courtesy provide an "
 "update to the maintainer every few days. "
 msgstr ""
-"खुशखबरी! फंडर ने इस बक्षीस पर काम करने के आपके अनुरोध को स्वीकार कर लिया है।"
+"खुशखबरी! फंडर ने इस उपहार पर काम करने के आपके अनुरोध को स्वीकार कर लिया है।"
 " आप आगे बढ़ सकते हैं और इस मुद्दे पर काम करना शुरू कर सकते हैं और एक सौजन्य "
 "हर कुछ दिनों में रखरखाव को अद्यतन प्रदान करता है।"
 
@@ -4698,13 +4698,13 @@ msgstr "मेरा एथेरियम लेनदेन क्यों �
 #, fuzzy
 #| msgid "What is Metamask?"
 msgid "What is Ethereum?"
-msgstr "Ethereum क्या है?"
+msgstr "ईथरियम क्या है?"
 
 #: retail/templates/gas_faq.html:21
 #, fuzzy
 #| msgid "Email Address"
 msgid "Ethereum FAQ"
-msgstr "Ethereum अकसर किये गए सवाल"
+msgstr "ईथरियम अकसर किये गए सवाल"
 
 #: retail/templates/gas_faq.html:23
 #, fuzzy
@@ -4718,7 +4718,7 @@ msgstr "हमें गैस का भुगतान करने की ज
 
 #: retail/templates/gas_faq.html:27
 msgid "What are the advantages of Ethereum-based applications??"
-msgstr "Ethereum- आधारित अनुप्रयोगों के फायदे क्या हैं ??"
+msgstr "ईथरियम आधारित अनुप्रयोगों के फायदे क्या हैं ??"
 
 #: retail/templates/gas_faq.html:29
 msgid "I can't figure this out.  Help!"
@@ -4738,7 +4738,7 @@ msgstr "ढीले के माध्यम से गिटकोइन क�
 #, fuzzy
 #| msgid "Gitcoin Faucet"
 msgid "Gitcoin Mainnet Faucet"
-msgstr "गिटकोइन मेननेट नल"
+msgstr "गिटकोइन मेननेट फॉक्स"
 
 #: retail/templates/gas_faucet_list.html:22
 #, fuzzy
@@ -4830,7 +4830,7 @@ msgid ""
 "about fees structure ~ "
 msgstr ""
 "'एथेरियम में लेनदेन या अनुबंध चलाने के लिए गैस आंतरिक मूल्य निर्धारण है। यह "
-"कम्प्यूटेशनल उपयोग (गैस) को मापने के लिए इकाई से ईथर (ईटीएच) और उसके बाजार "
+"कम्प्यूटेशफॉक्स उपयोग (गैस) को मापने के लिए इकाई से ईथर (ईटीएच) और उसके बाजार "
 "मूल्य की इकाई को कम करने के लिए है। इस प्रकार, एक खनिक अपनी आवश्यकताओं के "
 "अनुसार गैस के उपयोग को बढ़ाने या घटाने का फैसला कर सकता है, जबकि यदि "
 "आवश्यकता हो, तो गैस की कीमत में वृद्धि या कमी हो सकती है, ऐसी स्थिति से बचने"
@@ -4994,7 +4994,7 @@ msgstr "यह काम किस प्रकार करता है"
 
 #: retail/templates/help.html:88
 msgid "Product Demo: Post a Bounty"
-msgstr "उत्पाद डेमो: एक बक्षीस पोस्ट करें"
+msgstr "उत्पाद डेमो: एक उपहार पोस्ट करें"
 
 #: retail/templates/help.html:92
 msgid "What is Web3 and how do we use it?"
@@ -5127,7 +5127,7 @@ msgstr "समस्या बनाएं"
 
 #: retail/templates/how_it_works_funder.html:49
 msgid "Create an issue on Github."
-msgstr "गितूब पर एक मुद्दा बनाएँ।"
+msgstr "गिटहब पर एक मुद्दा बनाएँ।"
 
 #: retail/templates/how_it_works_funder.html:67
 #, fuzzy
@@ -5189,8 +5189,8 @@ msgid ""
 "              pesky bugs. Create space for your core team to focus on the right\n"
 "              problems."
 msgstr ""
-"गैर-कोर कार्यों पर समय बचाएं, दिलचस्प सुविधाओं का निर्माण करें, स्क्वैश करें\n"
-"              अजीब कीड़े दाईं ओर ध्यान केंद्रित करने के लिए अपनी कोर टीम के लिए जगह बनाएं\n"
+"गैर-कोर कार्यों पर समय बचाएं, दिलचस्प सुविधाओं का निर्माण करें, कोड में\n"
+"              समस्याएं हल करें दाईं ओर ध्यान केंद्रित करने के लिए अपनी कोर टीम के लिए जगह बनाएं\n"
 "              समस्या का।"
 
 #: retail/templates/index.html:77
@@ -5199,7 +5199,7 @@ msgstr "एक लेख पढ़ें"
 
 #: retail/templates/index.html:112
 msgid "Hire Global Talent"
-msgstr "वैश्विक प्रतिभा किराया"
+msgstr "काम के लिए वैश्विक प्रतिभा रखने"
 
 #: retail/templates/index.html:113
 msgid ""
@@ -5207,8 +5207,8 @@ msgid ""
 "              around the world. Get to to know potential talent through the projects\n"
 "              that you bounty. What better way to interview?"
 msgstr ""
-"गिटकोइनर में सभी देशों में काम कर रहे डिजाइनर और डेवलपर्स शामिल हैं\n"
-"              दुनिया भर में। परियोजनाओं के माध्यम से संभावित प्रतिभा को जानने के लिए जाओ\n"
+"गिटकोइन के डिजाइनरों और डेवलपर्स दुनिया भर के देशों में काम कर रहे है। \n"
+"               परियोजनाओं के माध्यम से संभावित प्रतिभा को जानने के लिए जाओ\n"
 "              कि आप बाउंटी। साक्षात्कार का बेहतर तरीका क्या है?"
 
 #: retail/templates/index.html:117
@@ -5235,7 +5235,7 @@ msgstr ""
 #, fuzzy
 #| msgid "Product Demo: Post a Bounty"
 msgid "Post a Bounty"
-msgstr "एक बक्षीस पोस्ट करें"
+msgstr "इनाम पोस्ट करें"
 
 #: retail/templates/index.html:181
 msgid "Fund An Issue. Grow Your Project."
@@ -5243,7 +5243,7 @@ msgstr "एक मुद्दा निधि। अपनी परियो�
 
 #: retail/templates/index.html:187
 msgid "Post A Bounty."
-msgstr "एक बक्षीस पोस्ट करें।"
+msgstr "इनाम पोस्ट करें।"
 
 #: retail/templates/index.html:188
 #, fuzzy
@@ -5254,7 +5254,7 @@ msgid ""
 "Fund a well specified issue on your Github repo which is a good\n"
 "                  candidate for external contribution."
 msgstr ""
-"अपने गीथूब रेपो पर एक अच्छी तरह से निर्दिष्ट मुद्दा को फंड करें जो एक अच्छा है\n"
+"अपने गिटहब रेपो पर एक अच्छी तरह से निर्दिष्ट मुद्दा को फंड करें जो एक अच्छा है\n"
 "                  बाहरी योगदान के लिए उम्मीदवार।"
 
 #: retail/templates/index.html:193
@@ -5266,7 +5266,7 @@ msgid ""
 "Provide a Gitcoiner with a timeline and\n"
 "                 collaborate to complete the task."
 msgstr ""
-"एक समय रेखा के साथ एक गिटकोइन प्रदान करें और\n"
+"गिटकोइनर के एक समय रेखा प्रदान करें और\n"
 "                 कार्य को पूरा करने के लिए सहयोग करें।"
 
 #: retail/templates/index.html:199
@@ -5289,7 +5289,7 @@ msgstr "एक मुद्दा निधि"
 msgid ""
 "Gitcoin is a bounty-based collaboration tool that works easily with Github"
 msgstr ""
-"गिटकोइन एक बाउंटी-आधारित सहयोग उपकरण है जो आसानी से गिथब के साथ काम करता है"
+"गिटकोइन एक बाउंटी-आधारित सहयोग उपकरण है जो आसानी से गिटहब के साथ काम करता है"
 
 #: retail/templates/index.html:216
 msgid "Contribute to Open Source. Get Paid."
@@ -5339,7 +5339,7 @@ msgid ""
 "                  accepted by the bounty submitter."
 msgstr ""
 "भुगतान Ethereum- आधारित हैं, और कोड के बाद स्वचालित रूप से जारी किया गया है\n"
-"                  बक्षीस जमाकर्ता द्वारा स्वीकार किया गया।"
+"                  उपहार जमाकर्ता द्वारा स्वीकार किया गया।"
 
 #: retail/templates/index.html:248
 #, fuzzy
@@ -5379,7 +5379,7 @@ msgstr "मुक्त"
 
 #: retail/templates/index.html:297
 msgid "Do it yourself. You post and manage the bounties."
-msgstr "यह स्वयं करो। आप बक्षीस को पोस्ट और प्रबंधित करते हैं।"
+msgstr "यह स्वयं करो। आप बाउंटी को पोस्ट और प्रबंधित करते हैं।"
 
 #: retail/templates/index.html:303
 msgid "Silver"
@@ -5391,7 +5391,7 @@ msgstr "हम विकास प्रवाह को प्रबंधि�
 
 #: retail/templates/index.html:309 retail/templates/index.html:328
 msgid "Access Gitcoin's torrent of dev flow"
-msgstr "देव प्रवाह के गिटकोइन के प्रवाह तक पहुंचें"
+msgstr "गिटकोइन के डेवलपर प्रवाह की धार का उपयोग करे "
 
 #: retail/templates/index.html:310 retail/templates/index.html:329
 msgid "We manage the project for you"
@@ -5432,7 +5432,7 @@ msgid ""
 "Work on a wide variety of bounties and learn new skills, suited for pros and"
 " beginners alike."
 msgstr ""
-"विभिन्न प्रकार के बक्षीस पर काम करें और नए कौशल सीखें, जो पेशेवरों और "
+"विभिन्न प्रकार के उपहार पर काम करें और नए कौशल सीखें, जो पेशेवरों और "
 "शुरुआती लोगों के लिए उपयुक्त हैं।"
 
 #: retail/templates/landing/contributor/benefits.html:112
@@ -5841,19 +5841,19 @@ msgstr "रेखांकन"
 #: retail/templates/presskit/logo.html:31
 #: retail/templates/presskit/logo.html:39
 msgid "Download Logo"
-msgstr "लोगो डाउनलोड करें"
+msgstr "लोगो डाउफॉक्सोड करें"
 
 #: retail/templates/presskit/illustrations.html:31
 msgid "Download Regulus"
-msgstr "रेगुलस डाउनलोड करें"
+msgstr "रेगुलस डाउफॉक्सोड करें"
 
 #: retail/templates/presskit/illustrations.html:37
 msgid "Download Prime"
-msgstr "प्राइम डाउनलोड करें"
+msgstr "प्राइम डाउफॉक्सोड करें"
 
 #: retail/templates/presskit/illustrations.html:43
 msgid "Download Divine"
-msgstr "दिव्य डाउनलोड करें"
+msgstr "दिव्य डाउफॉक्सोड करें"
 
 #: retail/templates/presskit/logo.html:21
 #, fuzzy
@@ -5868,7 +5868,7 @@ msgid ""
 "following guidelines.  "
 msgstr ""
 "गिटकोइन एक मिशन और मूल्य उन्मुख वितरित आंदोलन है जो परिवर्तन को चलाने और "
-"खुले स्रोत को बढ़ाने के उद्देश्य से किया जाता है। निम्नलिखित दिशानिर्देशों "
+"खुले स्रोत को बढ़ाने के उद्देश्य से किया जाता है। निम्फॉक्सिखित दिशानिर्देशों "
 "के अनुसार गिटकोइन लोगो का उपयोग किया जा सकता है।"
 
 #: retail/templates/presskit/logo.html:24
@@ -5907,7 +5907,7 @@ msgstr "भंडार देखें"
 
 #: retail/templates/presskit/resources.html:34
 msgid "Download repository"
-msgstr "भंडार डाउनलोड करें"
+msgstr "भंडार डाउफॉक्सोड करें"
 
 #: retail/templates/presskit/resources.html:48
 #, fuzzy
@@ -6092,7 +6092,7 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"<p> <span class = \"blue_box\"> </ span> %(count_open)s खुले बक्षीस </ p>"
+"<p> <span class = \"blue_box\"> </ span> %(count_open)s खुले उपहार </ p>"
 
 #: retail/templates/results.html:135
 #, python-format
@@ -6112,7 +6112,7 @@ msgid ""
 "            "
 msgstr ""
 "\n"
-"<p> <span class = \"yellow_box\"> </ span> %(count_done)s पूर्ण बक्षीस </ p>"
+"<p> <span class = \"yellow_box\"> </ span> %(count_done)s पूर्ण उपहार </ p>"
 
 #: retail/templates/results.html:151
 #, fuzzy
@@ -6177,7 +6177,7 @@ msgstr "प्रोग्रामिंग भाषा द्वारा अ
 
 #: retail/templates/save_search.html:26
 msgid "Unlock your potential in Open Source."
-msgstr "ओपन सोर्स में अपनी क्षमता अनलॉक करें।"
+msgstr "ओपन सोर्स में अपनी क्षमता अफॉक्सॉक करें।"
 
 #: retail/templates/save_search.html:32
 msgid "Emails no more than 2x / week."
@@ -6193,7 +6193,7 @@ msgstr "प्रोफाइल फोटो"
 
 #: retail/templates/settings/account.html:63
 msgid "Use Github Avatar"
-msgstr "गीथूब अवतार का प्रयोग करें"
+msgstr "गिटहब अवतार का प्रयोग करें"
 
 #: retail/templates/settings/account.html:71
 #, fuzzy
@@ -6211,7 +6211,7 @@ msgstr "खाता प्राथमिकताएं"
 #, fuzzy
 #| msgid "Github PR Link"
 msgid "Github"
-msgstr "Github"
+msgstr "गिटहब"
 
 #: retail/templates/settings/account.html:87
 #, fuzzy
@@ -6265,7 +6265,7 @@ msgid ""
 "Github repos to monitor (use full name, like 'gitcoinco/web' for <a "
 "href=https://github.com/gitcoinco/web>this repo</a>)"
 msgstr ""
-"निगरानी करने के लिए गिथब रिपोज़ (<a href=https://github.com/gitcoinco/web> "
+"निगरानी करने के लिए गिटहब रिपोज़ (<a href=https://github.com/gitcoinco/web> "
 "इस रेपो </a> के लिए 'gitcoinco / web' जैसे पूर्ण नाम का उपयोग करें </a>)"
 
 #: retail/templates/settings/discord.html:21
@@ -6322,7 +6322,7 @@ msgstr ""
 #, fuzzy
 #| msgid "Email Address"
 msgid "Ethereum Address"
-msgstr "Ethereum पता"
+msgstr "थेरियम पता"
 
 #: retail/templates/settings/ens.html:27
 msgid "Read more about this feature"
@@ -6344,7 +6344,7 @@ msgstr "मिलान प्राथमिकताएं"
 
 #: retail/templates/settings/matching.html:8
 msgid "Github username"
-msgstr "गीथूब उपयोगकर्ता नाम"
+msgstr "गिटहब उपयोगकर्ता नाम"
 
 #: retail/templates/settings/matching.html:12
 msgid "Programming languages"
@@ -6411,7 +6411,7 @@ msgid ""
 "submit to the gitcoin system, or to help bounty funders evaluate your "
 "fitness for performing their bounty."
 msgstr ""
-"हम आपके प्रोफाइल जानकारी को गिटकोइन सिस्टम में जमा किए गए बक्षीस पर संदर्भ "
+"हम आपके प्रोफाइल जानकारी को गिटकोइन सिस्टम में जमा किए गए उपहार पर संदर्भ "
 "प्रदान करने के लिए एकत्र करते हैं, या बाउंटी फंडर्स अपनी बाउंटी करने के लिए "
 "अपनी फिटनेस का मूल्यांकन करने में सहायता करते हैं।"
 
@@ -6420,7 +6420,7 @@ msgid ""
 "We collect your email address so that we can keep in touch about updates to "
 "bounties."
 msgstr ""
-"हम आपका ईमेल पता एकत्र करते हैं ताकि हम बक्षीस के अपडेट के बारे में संपर्क "
+"हम आपका ईमेल पता एकत्र करते हैं ताकि हम उपहार के अपडेट के बारे में संपर्क "
 "में रह सकें।"
 
 #: retail/templates/settings/privacy.html:38
@@ -6492,7 +6492,7 @@ msgstr "स्लैक एपीआई टोकन"
 
 #: retail/templates/settings/slack.html:21
 msgid "Slack channel to post to"
-msgstr "पोस्ट करने के लिए स्लैक चैनल"
+msgstr "पोस्ट करने के लिए स्लैक चैफॉक्स"
 
 #: retail/templates/settings/tokens.html:14
 msgid "Tokens"
@@ -6570,7 +6570,7 @@ msgstr "ओपन सोर्स बढ़ाएं"
 
 #: retail/templates/shared/hero.html:21
 msgid "Do More Work, Faster"
-msgstr "अधिक काम करो, तेज़"
+msgstr "ज्यादा काम करो, तेज करो"
 
 #: retail/templates/shared/hero.html:24
 #, fuzzy
@@ -6580,7 +6580,7 @@ msgstr "ओपन सोर्स समुदाय का लाभ उठा�
 
 #: retail/templates/shared/hero.html:25
 msgid "to incentivize or monetize work."
-msgstr "काम को प्रोत्साहन या मुद्रीकृत करने के लिए।"
+msgstr "काम को प्रोत्साहन या कमाई करने के लिए।"
 
 #: retail/templates/shared/mailchimp.html:5
 msgid "(Emails once a week max, &amp; we never sell your data.)"
@@ -6799,7 +6799,7 @@ msgid ""
 "CodeFund, Grants, Bounties)"
 msgstr ""
 "गिटकोइन कुछ राजस्व परीक्षण कर रहा है (टोकननाइजेशन, सीक्रेट प्रोजेक्ट, "
-"कोडफंड, अनुदान, बक्षीस)"
+"कोडफंड, अनुदान, उपहार)"
 
 #: retail/templates/vision.html:113
 msgid "1 Year out"
@@ -7229,8 +7229,8 @@ msgid ""
 " single tweet of publicity          and we had something like 20 language "
 "requests, and 10 language pull requests. It’s been total magic."
 msgstr ""
-"एक बार जब हम एक बक्षीस से कई भाषा समर्थन में विलय कर चुके थे, तो उसने अन्य "
-"सभी अनुवादों के मार्ग को अनब्लॉक कर दिया, और हमारे समुदाय से बक्षीस के "
+"एक बार जब हम एक उपहार से कई भाषा समर्थन में विलय कर चुके थे, तो उसने अन्य "
+"सभी अनुवादों के मार्ग को अनब्लॉक कर दिया, और हमारे समुदाय से उपहार के "
 "मुकाबले बहुत सारे अलग-अलग अनुवाद प्राप्त करने का बेहतर तरीका क्या है? प्रचार"
 " का एक ट्वीट और हमारे पास 20 भाषा अनुरोधों की तरह कुछ था, और 10 भाषा पुल "
 "अनुरोध। यह कुल जादू रहा है।"
@@ -7272,7 +7272,7 @@ msgstr ""
 " समय में गिटकोइन बढ़ते एथेरियम डेवलपर समुदाय के भीतर यूपोर्ट प्लांट बीजों की"
 " मदद करता है, हम उम्मीद करते हैं कि भविष्य में हम बढ़ते अवसरों में उगेंगे। "
 "चल रहे विपणन अभियान के विरोध में, बस हम संभावित डेवलपर्स के सामने मौजूद रहने"
-" के लिए बक्षीस का उपयोग कर सकते हैं, जिन्हें हम शामिल करना चाहते हैं।"
+" के लिए उपहार का उपयोग कर सकते हैं, जिन्हें हम शामिल करना चाहते हैं।"
 
 #: retail/views.py:65
 msgid ""
@@ -7303,7 +7303,7 @@ msgid ""
 msgstr ""
 "ब्लॉकचेन और ओपन सोर्स के चौराहे पर एक समुदाय। डेवलपर्स के लिए एक नई प्रणाली "
 "में सहयोग करने के लिए एक जगह, जहां ओपन सोर्स पैसा ओपन सोर्स रिपोजिटरीज के "
-"लिए मुद्रीकरण में बनाता है।"
+"लिए सुधार में बनाता है।"
 
 #: retail/views.py:86
 msgid "Get the Latest Gitcoin News! Join Our Newsletter."
@@ -7345,7 +7345,7 @@ msgid ""
 "community.  It puts the freelance          market back in the hands of the "
 "community!"
 msgstr ""
-"गिटकोइन के साथ बक्षीस प्रक्रिया बहुत ही अद्भुत है। बस वेबसाइट पर जाएं, एक "
+"गिटकोइन के साथ उपहार प्रक्रिया बहुत ही अद्भुत है। बस वेबसाइट पर जाएं, एक "
 "समस्या ढूंढें जिस पर आप काम कर सकते हैं, आप इसका दावा करते हैं। तब आप जो भी "
 "करते हैं वह गिटूब को अपना कोड सबमिट कर लेता है, कोड मिलाया जाता है। एक बार "
 "यह विलय हो जाने के बाद, स्मार्ट अनुबंध आपके ईथरियम खाते में पैसा भेजता है और"
@@ -7375,7 +7375,7 @@ msgstr ""
 "मैं 3 महीने पहले गिटकोइन में आया था। मैं क्रिप्टोकुरसियों से जुड़े "
 "परियोजनाओं के बारे में बहुत सारे विचार सुन रहा था, और मैंने सोचा \"ओपन सोर्स"
 " प्रोजेक्ट्स के बारे में क्या?\"। मैं गिटकोइन को फ्रीलांस के अगले स्तर के "
-"रूप में देखता हूं, जहां आप केवल गितूब पर रिपो की मदद नहीं कर सकते हैं, लेकिन"
+"रूप में देखता हूं, जहां आप केवल गिटहब पर रिपो की मदद नहीं कर सकते हैं, लेकिन"
 " इससे पैसे कमा सकते हैं। यह इतना आसान है और यह काम करता है।"
 
 #: retail/views.py:123
@@ -7411,7 +7411,7 @@ msgstr "ओपन सोर्स अवसर"
 #, fuzzy
 #| msgid "Be the first to know about new funded issues."
 msgid "Be the first to find out about newly posted bounties."
-msgstr "नए पोस्ट किए गए बक्षीस के बारे में पता लगाने वाले पहले व्यक्ति बनें।"
+msgstr "नए पोस्ट किए गए उपहार के बारे में पता लगाने वाले पहले व्यक्ति बनें।"
 
 #: retail/views.py:351
 msgid "Gitcoin is a mission-driven organization."
@@ -7688,7 +7688,7 @@ msgstr ""
 msgid ""
 "Am I allowed to place bounties on projects I don't contribute to or own?"
 msgstr ""
-"क्या मुझे उन परियोजनाओं पर बक्षीस लगाने की इजाजत है जिन्हें मैं योगदान नहीं "
+"क्या मुझे उन परियोजनाओं पर उपहार लगाने की इजाजत है जिन्हें मैं योगदान नहीं "
 "देता हूं?"
 
 #: retail/views.py:544
@@ -7707,7 +7707,7 @@ msgstr ""
 #: retail/views.py:547
 msgid "I started work on a bounty but someone else has too.  Who gets it?"
 msgstr ""
-"मैंने एक बक्षीस पर काम करना शुरू किया लेकिन किसी और के पास भी है। यह कौन "
+"मैंने एक बाउंटी पर काम करना शुरू किया लेकिन किसी और के पास भी है। यह कौन "
 "प्राप्त करता है?"
 
 #: retail/views.py:548
@@ -7720,9 +7720,9 @@ msgid ""
 msgstr ""
 "एक सामान्य नियम के रूप में, हम उस व्यक्ति से इलाज करते हैं जिसने इस मुद्दे "
 "पर प्राथमिकता के रूप में पहले 'काम शुरू किया' था। शामिल पार्टियां सभी को "
-"बक्षीस को विभाजित करने या किसी अन्य समझौते पर आने के लिए मिलकर काम करने के "
+"उपहार को विभाजित करने या किसी अन्य समझौते पर आने के लिए मिलकर काम करने के "
 "लिए स्वागत है, लेकिन अगर कोई समझौता करने के लिए तैयार किया जाता है, तो काम "
-"शुरू करने वाले पहले व्यक्ति को पहली बार बक्षीस पर गोली मार दी जाएगी।"
+"शुरू करने वाले पहले व्यक्ति को पहली बार उपहार पर गोली मार दी जाएगी।"
 
 #: retail/views.py:553
 msgid "Is Gitcoin open source?"
@@ -7840,7 +7840,7 @@ msgstr ""
 "    <a href=\"/twitter\"> ट्विटर पर प्रोजेक्ट का पालन करें </a>\n"
 "</ Li>\n"
 "<Li>\n"
-"    <a href=\"/slack\"> स्लैक चैनल में शामिल हों </a>\n"
+"    <a href=\"/slack\"> स्लैक चैफॉक्स में शामिल हों </a>\n"
 "</ Li>\n"
 "\n"
 "</ Ul>"
@@ -7931,7 +7931,7 @@ msgstr ""
 "</ P>\n"
 "<P>\n"
 "\n"
-"आज मेटामास्क <a href=\"https://metamask.io/\"> यहां </a> डाउनलोड करें।\n"
+"आज मेटामास्क <a href=\"https://metamask.io/\"> यहां </a> डाउफॉक्सोड करें।\n"
 "</ P>\n"
 "<P>\n"
 "मेटामास्क के बारे में और जानने के लिए, कृपया <a href=\"{}\"> वेब 3 के बारे में यह वीडियो </a> या <a href = \"https://github.com/gitcoinco/gitcoinco/issues?q=is% चेकआउट करें 3 एसीयू +% 3 ओपन + लेबल% 3 एल्प \"> गीथब इश्यूज बोर्ड </a> है\n"
@@ -7969,7 +7969,7 @@ msgstr ""
 "ईथरियम नेटवर्क के रखरखाव करने वालों को गैस फीस का भुगतान किया जाता है, बदले में दुनिया में सभी ईथर और एथेरियम आधारित लेनदेन को सुरक्षित करने के लिए। सीधे या अप्रत्यक्ष रूप से गिटकोइन कोर को गैस शुल्क का भुगतान नहीं किया जाता है।\n"
 "</ P>\n"
 "<P>\n"
-"गैस के बारे में अधिक जानने के लिए, कृपया जांचें <a href=\"https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp\"> गिथब मुद्दे बोर्ड </a>\n"
+"गैस के बारे में अधिक जानने के लिए, कृपया जांचें <a href=\"https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp\"> गिटहब मुद्दे बोर्ड </a>\n"
 "</ P>"
 
 #: retail/views.py:673
@@ -8051,7 +8051,7 @@ msgstr "गिटकोइन पर मूल्य कैसे करें"
 
 #: retail/views.py:722
 msgid "Post a Bounty in 90 Seconds"
-msgstr "90 सेकेंड में एक बक्षीस पोस्ट करें"
+msgstr "90 सेकेंड में एक बाउंटी पोस्ट करें"
 
 #: retail/views.py:726
 msgid "Send a Tip to any Github user in 60 seconds"
@@ -8099,7 +8099,7 @@ msgstr "अवैध ईमेल"
 #, fuzzy
 #| msgid "You must provide an email address"
 msgid "You must provide the following fields: "
-msgstr "आपको निम्नलिखित फ़ील्ड प्रदान करना होगा:"
+msgstr "आपको निम्फॉक्सिखित फ़ील्ड प्रदान करना होगा:"
 
 #: retail/views.py:967
 msgid ""
@@ -8158,7 +8158,7 @@ msgid ""
 "Your request has been sent.  <a href=/slack>Meantime, why don't you check "
 "out the slack channel?</a>"
 msgstr ""
-"आपका निवेदन भेज दिया गया है। <a href=/slack> इस समय, आप स्लैक चैनल क्यों "
+"आपका निवेदन भेज दिया गया है। <a href=/slack> इस समय, आप स्लैक चैफॉक्स क्यों "
 "नहीं देखते हैं? </a>"
 
 #: tdi/views.py:131
@@ -8354,7 +8354,7 @@ msgstr "आमंत्रण भेज दिया"
 #~ msgstr "लेकिन ये कैसे काम करता है?"
 
 #~ msgid "1. Find Funded Github Issues."
-#~ msgstr "1. वित्त पोषित जिथब मुद्दे खोजें।"
+#~ msgstr "1. वित्त पोषित गिटहब मुद्दे खोजें।"
 
 #~ msgid ""
 #~ "Whether it's Bugs, Features, or Security Issues, <a "
@@ -8379,7 +8379,7 @@ msgstr "आमंत्रण भेज दिया"
 
 #~ msgid ""
 #~ "Coordinate with the Bounty Submitter on Github.  Build something great!"
-#~ msgstr "गितूब पर बाउंटी सबमिटर के साथ समन्वय। कुछ बढ़िया बनाएं!"
+#~ msgstr "गिटहब पर बाउंटी सबमिटर के साथ समन्वय। कुछ बढ़िया बनाएं!"
 
 #~ msgid "4. Submit Your Work &amp; Get Paid."
 #~ msgstr "4. अपना काम जमा करें & amp; भुगतान प्राप्त करना।"
@@ -8510,7 +8510,7 @@ msgstr "आमंत्रण भेज दिया"
 #~ "The community, both on <a href=\"%(slackurl)s\">the slack channel</a> and <a"
 #~ " href=\"#mailchimp\">the community mailing list</a> continue to grow."
 #~ msgstr ""
-#~ "समुदाय, दोनों <a href=\"%(slackurl)s\"> स्लैक चैनल </a> और <a "
+#~ "समुदाय, दोनों <a href=\"%(slackurl)s\"> स्लैक चैफॉक्स </a> और <a "
 #~ "href=\"#mailchimp\"> समुदाय मेलिंग सूची </a> पर बढ़ते रहते हैं।"
 
 #~ msgid ""

@@ -961,7 +961,7 @@
 - Uncaught ReferenceError: web3 is not defined [\#336](https://github.com/gitcoinco/web/issues/336)
 - Uncaught TypeError: Cannot read property 'accounts' of undefined [\#318](https://github.com/gitcoinco/web/issues/318)
 - Error: Web3ProviderEngine does not support synchronous requests. [\#307](https://github.com/gitcoinco/web/issues/307)
-- Error: Syntax error, unrecognized expression: select\[name=deonomination [\#306](https://github.com/gitcoinco/web/issues/306)
+- Error: Syntax error, unrecognized expression: select\[name=denomination [\#306](https://github.com/gitcoinco/web/issues/306)
 - Uncaught ReferenceError: nextSlide is not defined [\#305](https://github.com/gitcoinco/web/issues/305)
 - Uncaught ReferenceError: web3 is not defined [\#303](https://github.com/gitcoinco/web/issues/303)
 - Uncaught SyntaxError: Unexpected token \* [\#302](https://github.com/gitcoinco/web/issues/302)

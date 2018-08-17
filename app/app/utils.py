@@ -1,6 +1,7 @@
 import email
 import imaplib
 import logging
+import re
 import time
 
 from django.conf import settings
@@ -13,7 +14,6 @@ from django.utils.translation import LANGUAGE_SESSION_KEY
 
 import geoip2.database
 import requests
-import rollbar
 from dashboard.models import Profile
 from geoip2.errors import AddressNotFoundError
 from git.utils import _AUTH, HEADERS, get_user
@@ -119,7 +119,7 @@ def sync_profile(handle, user=None, hide_profile=True):
     is_error = 'name' not in data.keys()
     if is_error:
         print("- error main")
-        rollbar.report_message('Failed to fetch github username', 'warning', extra_data=data)
+        logger.warning('Failed to fetch github username', exc_info=True, extra={'handle': handle})
         return None
 
     defaults = {'last_sync_date': timezone.now(), 'data': data, 'hide_profile': hide_profile, }
@@ -279,3 +279,8 @@ def get_country_from_ip(ip_address, db=None):
         logger.warning(f'Encountered ({e}) while attempting to retrieve a user\'s geolocation')
 
     return country
+
+
+def clean_str(string):
+    """Clean the provided string of all non-alpha numeric characters."""
+    return re.sub(r'\W+', '', string)

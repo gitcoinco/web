@@ -18,8 +18,11 @@ span {
 }
 
 .nav_avatar {
+  width: 40px;
+  height: 40px;
   cursor: pointer;
   border-radius: 50%;
+  background-size: cover;
 }
 
 #navbarDropdown {
@@ -649,7 +652,7 @@ input[type=text].loading {
   color: #4aeba8;
 }
 
-.submit_bounty select[name=deonomination] {
+.submit_bounty select[name=denomination] {
   text-align: left;
 }
 
@@ -1070,6 +1073,7 @@ input.is-invalid {
 
 .submit-notification a {
   color: #FFF;
+  text-decoration: none;
 }
 
 .metamask-error {
@@ -1095,7 +1099,7 @@ input.is-invalid {
 
 .metamask-banner p,
 .metamask-banner li {
-  font-size: 0.85rem;
+  font-size: 1rem;
 }
 
 #robot_error {
@@ -1269,7 +1273,7 @@ input.is-invalid {
     max-width: 90%;
   }
 
-  body.slack, body.newtoken .col-4 {
+  body.slack .slack--brand-tree, body.newtoken .col-4 {
     display: none;
   }
 

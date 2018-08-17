@@ -1,5 +1,6 @@
 FROM python:3.7-slim-stretch
 ENV PYTHONUNBUFFERED 1
+
 RUN mkdir /code && \
     apt-get update && \
     apt-get install build-essential -y && \
@@ -36,3 +37,15 @@ RUN dos2unix /bin/docker-command.bash && \
     apt-get purge -y --auto-remove dos2unix wget gcc libc6-dev libc-dev libssl-dev make automake libtool autoconf pkg-config libffi-dev apt-utils
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 CMD ["bash", "/bin/docker-command.bash"]
+
+ARG BUILD_DATETIME
+ARG SHA1
+
+LABEL co.gitcoin.description="Gitcoin web application image" \
+    co.gitcoin.documentation="https://github.com/gitcoinco/web/blob/master/docs/RUNNING_LOCALLY_DOCKER.md" \
+    co.gitcoin.licenses="AGPL-3.0" \
+    co.gitcoin.image.revision=$SHA1 \
+    co.gitcoin.image.vendor="Gitcoin" \
+    co.gitcoin.image.source="https://github.com/gitcoinco/web" \
+    co.gitcoin.image.title="Gitcoin Web" \
+    co.gitcoin.image.created=$BUILD_DATETIME

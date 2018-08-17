@@ -117,7 +117,7 @@ def get_tip_history_at_date(date, keyword):
         return 0
 
 
-def get_history(base_stats, copy):
+def get_history(base_stats, copy, num_months=6):
     today = base_stats.first().val if base_stats.exists() else 0
 
     # slack ticks
@@ -127,7 +127,9 @@ def get_history(base_stats, copy):
         ['When', copy],
         ['Launch', 0],
     ]
-    for i in [6, 5, 4, 3, 2, 1]:
+    _range = list(range(1, num_months))
+    _range.reverse()
+    for i in _range:
         try:
             plural = 's' if i != 1 else ''
             before_then = (timezone.now() - timezone.timedelta(days=i*30))
@@ -166,15 +168,33 @@ def get_base_done_bounties(keyword):
     return base_bounties
 
 
+def is_valid_bounty_for_hourly_rate(bounty):
+    hourly_rate = bounty.hourly_rate
+    if not hourly_rate:
+        return False
+
+    # smaller bounties were skewing the results
+    min_hourly_rate = 5
+    min_value_usdt = 400
+    if bounty.value_in_usdt < min_value_usdt:
+        return False
+    for ful in bounty.fulfillments.filter(accepted=True):
+        if ful.fulfiller_hours_worked and ful.fulfiller_hours_worked < min_hourly_rate:
+            return False
+
+    return True
+
+
 def get_hourly_rate_distribution(keyword):
     base_bounties = get_base_done_bounties(keyword)
-    hourly_rates = [ele.hourly_rate for ele in base_bounties if ele.hourly_rate]
-    methodology = 'quartile' if not keyword else 'minmax'
+    hourly_rates = [ele.hourly_rate for ele in base_bounties if is_valid_bounty_for_hourly_rate(ele)]
+    methodology = 'median_stdddev' if not keyword else 'minmax'
     if methodology == 'median_stdddev':
+        stddev_divisor = 1
         median = int(statistics.median(hourly_rates))
         stddev = int(statistics.stdev(hourly_rates))
-        min_hourly_rate = median - int(stddev/2)
-        max_hourly_rate = median + int(stddev/2)
+        min_hourly_rate = median - int(stddev/stddev_divisor)
+        max_hourly_rate = median + int(stddev/stddev_divisor)
     elif methodology == 'quartile':
         hourly_rates.sort()
         num_quarters = 12
@@ -222,13 +242,60 @@ def build_stat_results(keyword=None):
     return results
 
 
+def get_bounty_history(keyword=None, cumulative=True):
+    bh = [
+        ['', 'Tips',  'Open / Available',  'Started / In Progress',  'Completed', 'Cancelled'],
+    ]
+    initial_stats = [
+        ["December 2017", 2011, 903, 2329, 5534, 1203],
+        ["January 2018", 5093, 1290, 1830, 15930, 1803],
+        ["February 2018", 7391, 6903, 4302, 16302, 2390],
+        ["March 2018", 8302, 5349, 5203, 26390, 3153],
+        ["April 2018", 10109, 6702, 4290, 37342, 4281],
+    ]
+    if not keyword:
+        bh = bh + initial_stats
+    for year in range(2018, 2025):
+        months = range(1, 12)
+        if year == 2018:
+            months = range(6, 12)
+        for month in months:
+            day_of_month = 3 if year == 2018 and month < 7 else 1
+            then = timezone.datetime(year, month, day_of_month).replace(tzinfo=pytz.UTC)
+            if then < timezone.now():
+                label = (then - timezone.timedelta(days=2)).strftime("%B %Y")
+                row = get_bounty_history_row(label, then, keyword)
+                bh.append(row)
+
+    if timezone.now().day > 10:
+        # get current month date to month
+        label = timezone.now().strftime("%B %Y") + " (MTD)"
+        row = get_bounty_history_row(label, timezone.now(), keyword)
+        bh.append(row)
+
+    # adjust monthly totals
+    if not cumulative:
+        new_bh = bh.copy()
+        for i in range(1, len(bh)):
+            for k in range(1, len(bh[i])):
+                try:
+                    last_stat = int(bh[i-1][k])
+                except:
+                    last_stat = 0
+                diff = bh[i][k] - last_stat
+                new_bh[i][k] = diff
+        return new_bh
+
+    return bh
+
+
 def build_stat_results_helper(keyword=None):
     """Buidl the results page context.
 
     Args:
         keyword (str): The keyword to build statistic results.
     """
-    from dashboard.models import Bounty
+    from dashboard.models import Bounty, Tip
     context = {
         'active': 'results',
         'title': _('Results'),
@@ -275,40 +342,23 @@ def build_stat_results_helper(keyword=None):
     base_stats = Stat.objects.filter(
         key=key,
         ).order_by('-pk')
-    context['jdi_history'], __ = get_history(base_stats, 'Percentage')
+    num_months = int((timezone.now() - timezone.datetime(2017, 10, 1).replace(tzinfo=pytz.UTC)).days/30)
+    context['jdi_history'], __ = get_history(base_stats, 'Percentage', num_months)
 
     pp.profile_time('Stats2')
 
     # bounties history
-    context['bounty_history'] = [
-        ['', 'Tips',  'Open / Available',  'Started / In Progress',  'Completed', 'Cancelled'],
-    ]
-    initial_stats = [
-        ["January 2018", 2011, 903, 2329, 5534, 1203],
-        ["February 2018", 5093, 1290, 1830, 15930, 1803],
-        ["March 2018", 7391, 6903, 4302, 16302, 2390],
-        ["April 2018", 8302, 5349, 5203, 26390, 3153],
-        ["May 2018", 10109, 6702, 4290, 37342, 4281],
-    ]
-    if not keyword:
-        context['bounty_history'] = context['bounty_history'] + initial_stats
-    for year in range(2018, 2025):
-        months = range(1, 12)
-        if year == 2018:
-            months = range(6, 12)
-        for month in months:
-            then = timezone.datetime(year, month, 3).replace(tzinfo=pytz.UTC)
-            if then < timezone.now():
-                row = get_bounty_history_row(then.strftime("%B %Y"), then, keyword)
-                context['bounty_history'].append(row)
-    context['bounty_history'] = json.dumps(context['bounty_history'])
+    get_bounty_history(keyword)
+    context['bounty_history'] = json.dumps(get_bounty_history(keyword))
     pp.profile_time('bounty_history')
 
     # Bounties
     completion_rate = get_completion_rate(keyword)
     pp.profile_time('completion_rate')
     bounty_abandonment_rate = round(100 - completion_rate, 1)
-    context['universe_total_usd'] = sum(base_bounties.filter(network='mainnet').values_list('_val_usd_db', flat=True))
+    total_bounties_usd = sum(base_bounties.filter(network='mainnet').values_list('_val_usd_db', flat=True))
+    total_tips_usd = sum([tip.value_in_usdt for tip in Tip.objects.filter(network='mainnet').exclude(txid='')])
+    context['universe_total_usd'] = float(total_bounties_usd) + float(total_tips_usd)
     pp.profile_time('universe_total_usd')
     context['max_bounty_history'] = float(context['universe_total_usd']) * .7
     context['bounty_abandonment_rate'] = bounty_abandonment_rate

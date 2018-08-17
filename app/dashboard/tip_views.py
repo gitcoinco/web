@@ -210,7 +210,9 @@ def receive_tip_v3(request, key, txid, network):
     is_authed = request.user.username == tip.username or request.user.username == tip.from_username
     not_mined_yet = get_web3(tip.network).eth.getBalance(Web3.toChecksumAddress(tip.metadata['address'])) == 0
 
-    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile'):
+    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
+        request.user, 'profile', None
+    ):
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
     elif tip.receive_txid:
@@ -306,7 +308,7 @@ def send_tip_4(request):
 
     # notifications
     maybe_market_tip_to_github(tip)
-    maybe_market_tip_to_slack(tip, 'new_tip')
+    maybe_market_tip_to_slack(tip, 'New tip')
     maybe_market_tip_to_email(tip, to_emails)
     record_user_action(tip.from_username, 'send_tip', tip)
     record_tip_activity(tip, tip.from_username, 'new_tip' if tip.username else 'new_crowdfund')
