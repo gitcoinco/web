@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import json
 import logging
-import subprocess
-import time
 from json.decoder import JSONDecodeError
 
 from django.conf import settings
@@ -177,7 +175,7 @@ def ipfs_cat_ipfsapi(key):
     if ipfs:
         try:
             return ipfs.cat(key)
-        except:
+        except Exception:
             return None
 
 
@@ -334,12 +332,10 @@ def get_bounty_id(issue_url, network):
 
     all_known_stdbounties = Bounty.objects.filter(web3_type='bounties_network', network=network).order_by('-standard_bounties_id')
 
-    methodology = 'start_from_web3_latest'
     try:
         highest_known_bounty_id = get_highest_known_bounty_id(network)
         bounty_id = get_bounty_id_from_web3(issue_url, network, highest_known_bounty_id, direction='down')
     except NoBountiesException:
-        methodology = 'start_from_db'
         last_known_bounty_id = 0
         if all_known_stdbounties.exists():
             last_known_bounty_id = all_known_stdbounties.first().standard_bounties_id
@@ -366,7 +362,6 @@ def get_highest_known_bounty_id(network):
 
 def get_bounty_id_from_web3(issue_url, network, start_bounty_id, direction='up'):
     issue_url = normalize_url(issue_url)
-    web3 = get_web3(network)
 
     # iterate through all the bounties
     bounty_enum = start_bounty_id
