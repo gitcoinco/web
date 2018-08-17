@@ -15,14 +15,12 @@
         "USD":"",
         "BTC":""
   },
-  "links": {
-    "blog": "",
+  "links": {  
     "twitter": "https://twitter.com/XMAX_io",
     "telegram": "https://t.me/XMXblock_org",
     "github": "https://github.com/XMaxPlatform",
     "facebook": "https://www.facebook.com/XMAXBlockchain/",
-    "reddit": "https://www.reddit.com/r/XMax_Blockchain/",
-    "slack": "",
+    "reddit": "https://www.reddit.com/r/XMax_Blockchain/",    
     "medium": " https://medium.com/XMAX-galaxy-network/"
   }
 }
