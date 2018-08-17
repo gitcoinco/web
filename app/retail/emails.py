@@ -30,6 +30,7 @@ from django.utils.translation import gettext as _
 
 import cssutils
 import premailer
+from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
 
@@ -529,6 +530,7 @@ and/or respond to this e-mail with a bit more about yourself / your development 
 <p>
 In other news, the ERC-948 working group is chugging along. Kevin Seagraves <a href="https://medium.com/gitcoin/architectures-for-subscriptions-erc948-5fae89cabc7a">wrote a great post</a> detailing
 some of the potential standards and tradeoffs being discussed. Give it a read and also come hang <a href="https://gitcoin.co/slack">on Gitcoin Slack</a> if you'd like to get involved.</p>
+</p>
 
 <h3>What else is new?</h3>
     <ul>
@@ -582,7 +584,24 @@ Back to BUIDLing,
         },
     ]
 
+    num_leadboard_items = 5
     #### don't need to edit anything below this line
+    leaderboard = {
+        'quarterly_payers': {
+            'title': _('Top Payers'),
+            'items': [],
+        },
+        'quarterly_earners': {
+            'title': _('Top Earners'),
+            'items': [],
+        },
+        'quarterly_orgs': {
+            'title': _('Top Orgs'),
+            'items': [],
+        },
+    }
+    for key, val in leaderboard.items():
+        leaderboard[key]['items'] = LeaderboardRank.objects.filter(active=True, leaderboard=key).order_by('rank')[0:num_leadboard_items]
 
 
     bounties = []
@@ -605,6 +624,7 @@ Back to BUIDLing,
         'intro': intro,
         'intro_txt': strip_double_chars(strip_double_chars(strip_double_chars(strip_html(intro), ' '), "\n"), "\n "),
         'bounties': bounties,
+        'leaderboard': leaderboard,
         'ecosystem_bounties': ecosystem_bounties,
         'invert_footer': False,
         'hide_header': False,

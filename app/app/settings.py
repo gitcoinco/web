@@ -461,6 +461,8 @@ IPFS_SWARM_WS_PORT = env.int('IPFS_SWARM_WS_PORT', default=8081)
 IPFS_API_ROOT = env('IPFS_API_ROOT', default='/api/v0')
 IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='https')
 
+STABLE_COINS = ['DAI', 'USDT', 'TUSD']
+
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
 if ENABLE_SILK:

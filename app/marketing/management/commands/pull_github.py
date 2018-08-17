@@ -48,7 +48,7 @@ def get_github_user_from_DB(email):
 
 class Command(BaseCommand):
 
-    help = 'pulls all github login info'
+    help = 'pulls all github metadata info'
 
     def handle(self, *args, **options):
         emailsubscribers = EmailSubscriber.objects.filter(github='')

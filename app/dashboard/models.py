@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
     Copyright (C) 2017 Gitcoin Core
 
@@ -15,7 +16,6 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 import collections
@@ -292,8 +292,8 @@ class Bounty(SuperModel):
 
     def __str__(self):
         """Return the string representation of a Bounty."""
-        return f"{'(CURRENT) ' if self.current_bounty else ''}{self.title} {self.value_in_token} " \
-               f"{self.token_name} {self.web3_created}"
+        return f"{'(C) ' if self.current_bounty else ''}{self.pk}: {self.title}, {self.value_true} " \
+               f"{self.token_name} @ {naturaltime(self.web3_created)}"
 
     def save(self, *args, **kwargs):
         """Define custom handling for saving bounties."""
@@ -571,21 +571,13 @@ class Bounty(SuperModel):
         if self.token_name == 'ETH':
             return self.value_in_token
         try:
-            return convert_amount(self.value_in_token, self.token_name, 'ETH')
+            return convert_amount(self.value_true, self.token_name, 'ETH')
         except Exception:
             return None
 
     @property
     def get_value_in_usdt_now(self):
-        decimals = 10**18
-        if self.token_name == 'USDT':
-            return float(self.value_in_token)
-        if self.token_name == 'DAI':
-            return float(self.value_in_token / 10**18)
-        try:
-            return round(float(convert_amount(self.value_in_token, self.token_name, 'USDT')) / decimals, 2)
-        except ConversionRateNotFoundError:
-            return None
+        return self.value_in_usdt_at_time(None)
 
     @property
     def get_value_in_usdt(self):
@@ -595,18 +587,27 @@ class Bounty(SuperModel):
 
     @property
     def value_in_usdt_then(self):
+        return self.value_in_usdt_at_time(self.web3_created)
+
+    def value_in_usdt_at_time(self, at_time):
         decimals = 10 ** 18
         if self.token_name == 'USDT':
             return float(self.value_in_token)
-        if self.token_name == 'DAI':
+        if self.token_name in settings.STABLE_COINS:
             return float(self.value_in_token / 10 ** 18)
         try:
-            return round(float(convert_amount(self.value_in_token, self.token_name, 'USDT', self.web3_created)) / decimals, 2)
+            return round(float(convert_amount(self.value_true, self.token_name, 'USDT', at_time)), 2)
         except ConversionRateNotFoundError:
-            return None
+            try:
+                in_eth = round(float(convert_amount(self.value_true, self.token_name, 'ETH', at_time)), 2)
+                return round(float(convert_amount(in_eth, 'USDT', 'USDT', at_time)), 2)
+            except ConversionRateNotFoundError:
+                return None
 
     @property
     def token_value_in_usdt_now(self):
+        if self.token_name in settings.STABLE_COINS:
+            return 1
         try:
             return round(convert_token_to_usdt(self.token_name), 2)
         except ConversionRateNotFoundError:
@@ -1112,13 +1113,7 @@ class Tip(SuperModel):
 
     @property
     def value_in_usdt_now(self):
-        decimals = 1
-        if self.tokenName in ['USDT', 'DAI']:
-            return float(self.amount)
-        try:
-            return round(float(convert_amount(self.amount, self.tokenName, 'USDT')) / decimals, 2)
-        except ConversionRateNotFoundError:
-            return None
+        return self.value_in_usdt_at_time(None)
 
     @property
     def value_in_usdt(self):
@@ -1126,13 +1121,7 @@ class Tip(SuperModel):
 
     @property
     def value_in_usdt_then(self):
-        decimals = 1
-        if self.tokenName in ['USDT', 'DAI']:
-            return float(self.amount)
-        try:
-            return round(float(convert_amount(self.amount, self.tokenName, 'USDT', self.created_on)) / decimals, 2)
-        except ConversionRateNotFoundError:
-            return None
+        return self.value_in_usdt_at_time(self.created_on)
 
     @property
     def token_value_in_usdt_now(self):
@@ -1147,6 +1136,19 @@ class Tip(SuperModel):
             return round(convert_token_to_usdt(self.tokenName, self.created_on), 2)
         except ConversionRateNotFoundError:
             return None
+
+    def value_in_usdt_at_time(self, at_time):
+        decimals = 1
+        if self.tokenName in settings.STABLE_COINS:
+            return float(self.amount)
+        try:
+            return round(float(convert_amount(self.amount, self.tokenName, 'USDT', at_time)) / decimals, 2)
+        except ConversionRateNotFoundError:
+            try:
+                in_eth = convert_amount(self.amount, self.tokenName, 'ETH', at_time)
+                return round(float(convert_amount(in_eth, 'ETH', 'USDT', at_time)) / decimals, 2)
+            except ConversionRateNotFoundError:
+                return None
 
     @property
     def status(self):
