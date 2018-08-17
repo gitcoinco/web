@@ -309,6 +309,8 @@ def weekly_roundup(to_emails=None):
 
             if not should_suppress_notification_email(to_email, 'roundup'):
                 send_mail(from_email, to_email, subject, text, html, from_name="Kevin Owocki (Gitcoin.co)")
+            else:
+                print('supressed')
         finally:
             translation.activate(cur_language)
 
