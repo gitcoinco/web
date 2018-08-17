@@ -55,7 +55,7 @@ urlpatterns = [
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 
     # kudos
-    path('kudos/', kudos.views.about, name='kudos_about'),
+    path('kudos/', kudos.views.about, name='kudos_main'),
     path('kudos/about/', kudos.views.about, name='kudos_about'),
     path('kudos/marketplace/', kudos.views.marketplace, name='kudos_marketplace'),
     path('kudos/mint', kudos.views.mint, name='kudos_mint'),
