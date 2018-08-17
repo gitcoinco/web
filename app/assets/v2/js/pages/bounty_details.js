@@ -674,9 +674,13 @@ var build_detail_page = function(result) {
   // funded by
   $('#bounty_funded_by').html(result['bounty_owner_address']);
   if (isBountyOwnerPerLogin(result) && !isBountyOwner(result)) {
-    $('#funder_notif_info').append('<span class="bounty-notification" style="border: orange 1px solid; border-radius: 5px; padding: 3px;">\
-                                      Ready to Pay? Set Your Metamask to this address!\
-                                    </span>');
+    $('#funder_notif_info').append('\
+        <span class="bounty-notification ml-2">\
+        <i class="far fa-bell"></i>\
+        Ready to Pay? Set Your Metamask to this address!\
+        <img src="/static/v2/images/metamask.svg">\
+      </span>'
+    );
   }
 
   // insert table onto page

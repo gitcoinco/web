@@ -15,13 +15,13 @@
       {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
-      <div class="col-12 col-md-2 left-rails text-center" style="background: #F2F6F9;">
+      <div class="col-12 col-lg-2 left-rails text-center" style="background: #F2F6F9;">
         <div class="explorer font-body">
           <a href="{% url 'explorer' %}"><i class="fas fa-chevron-left"></i> {% trans "Back to Issue Explorer" %}</a>
         </div>
       </div>
 
-      <div class="col-12 offset-md-1 col-md-8 body">
+      <div class="col-12 offset-md-1 col-md-10 offset-lg-1 col-lg-8 body">
         {% include 'shared/bounty_waiting_state.html' %}
         <div class="row nonefound" style="display:none;">
           <img src="{% static "v2/images/shrug_bot.png" %}">
@@ -50,9 +50,9 @@
             <div class="col-12 col-lg-11 pl-lg-4">
               <div class="col-12">
                 <h4 id="title" class="font-title"></h4>
-                <div class="notif-info mb-3" id="funder_notif_info">
-                  <span class="bounty-subheading">{% trans "Funded by" %} :</span>
-                  <span class="bounty-text" id="bounty_funded_by"></span>
+                <div class="notif-info mb-3 font-caption" id="funder_notif_info">
+                  <span>{% trans "Funded Address" %} :</span>
+                  <span id="bounty_funded_by"></span>
                 </div>
                 <span id="network"></span>
               </div>
