@@ -539,6 +539,10 @@ some of the potential standards and tradeoffs being discussed. Give it a read an
 This week features POA Network and Paul Brower. Join us!
         </li>
 
+        <li>
+        Did you know <a href="https://codefund.io">CodeFund</a> is part of Gitcoin? <a href="https://codefund.io">CodeFund</a> is an open source advertising platform that is built to help developers generate revenue. We are currently looking for bloggers and websites that focus on blockchain development and have at least 1,000 visitors per month. If you or someone you know fits this, register to be a publisher at <a href="https://codefund.io/register/publisher">https://codefund.io/register/publisher</a>
+        </li>
+
     </ul>
 </p>
 <p>
