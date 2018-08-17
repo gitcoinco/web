@@ -18,49 +18,23 @@
 
 import datetime
 import logging
-import sys
 import warnings
 
-from django.conf import settings
-from django.core.management.base import BaseCommand
-
 from dashboard.helpers import UnsupportedSchemaException
-from dashboard.utils import BountyNotFoundException, get_bounty, getBountyContract, web3_process_bounty
+from dashboard.utils import (
+    BountyNotFoundException, StdBountyRangedCommand, get_bounty, get_standard_bounty_id, web3_process_bounty,
+)
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
-default_start_id = 0 if not settings.DEBUG else 402
 
 
-def get_bounty_id(_id, network):
-    if _id > 0:
-        return _id
-    contract = getBountyContract(network)
-    bounty_id = contract.functions.getNumBounties().call() - 1
-    return bounty_id + _id
-
-
-class Command(BaseCommand):
+class Command(StdBountyRangedCommand):
 
     help = 'syncs bounties with geth'
-
-    def add_arguments(self, parser):
-        parser.add_argument('network', default='rinkeby', type=str)
-        parser.add_argument(
-            'start_id',
-            default=default_start_id,
-            type=int,
-            help="The start id.  If negative or 0, will be set to highest bounty id minus <x>"
-        )
-        parser.add_argument(
-            'end_id',
-            default=99999999999,
-            type=int,
-            help="The end id.  If negative or 0, will be set to highest bounty id minus <x>"
-        )
 
     def handle(self, *args, **options):
         # config
@@ -69,8 +43,8 @@ class Command(BaseCommand):
         day = datetime.datetime.now().day
         month = datetime.datetime.now().month
 
-        start_id = get_bounty_id(options['start_id'], network)
-        end_id = get_bounty_id(options['end_id'], network)
+        start_id = get_standard_bounty_id(options['start_id'], network)
+        end_id = get_standard_bounty_id(options['end_id'], network)
 
         # iterate through all the bounties
         bounty_enum = int(start_id)

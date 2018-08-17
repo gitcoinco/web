@@ -19,73 +19,26 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
 
-from django.conf import settings
-from django.core.management.base import BaseCommand
-
 from dashboard.helpers import UnsupportedSchemaException
-from dashboard.utils import BountyNotFoundException, get_ipfs, getBountyContract, infura_ipfs_pin, ipfs_pin
+from dashboard.utils import (
+    BountyNotFoundException, StdBountyRangedCommand, get_ipfs, get_ipfs_hash, get_standard_bounty_id, infura_ipfs_pin,
+    ipfs_pin,
+)
 
 logger = logging.getLogger(__name__)
-default_start_id = 0 if not settings.DEBUG else 402
 
 
-def get_bounty_id(_id, network):
-    if _id > 0:
-        return _id
-    contract = getBountyContract(network)
-    bounty_id = contract.functions.getNumBounties().call() - 1
-    return bounty_id + _id
-
-
-def get_ipfs_hash(standard_bounty_id, network='rinkeby'):
-    """Get the IPFS hash of the provided standard bounties ID.
-
-    Args:
-        standard_bounty_id (int): The standard bounty ID.
-        network (str): The network to lookup. Defaults to: mainnet.
-
-    Returns:
-        str: The IPFS hash.
-
-    """
-    if (settings.DEBUG or settings.ENV != 'prod') and network == 'mainnet':
-        return ''
-
-    try:
-        standard_bounties = getBountyContract(network)
-        ipfs_hash = standard_bounties.functions.getBountyData(standard_bounty_id).call()
-        return ipfs_hash
-    except Exception as e:
-        logger.error(e)
-        return ''
-
-
-class Command(BaseCommand):
+class Command(StdBountyRangedCommand):
     """Define the IPFS pulling management command."""
 
     help = 'pulls the IPFS hashes for bounties within the provided range'
-
-    def add_arguments(self, parser):
-        parser.add_argument('network', default='rinkeby', type=str)
-        parser.add_argument(
-            'start_id',
-            default=default_start_id,
-            type=int,
-            help="The start id.  If negative or 0, will be set to highest bounty id minus <x>"
-        )
-        parser.add_argument(
-            'end_id',
-            default=99999999999,
-            type=int,
-            help="The end id.  If negative or 0, will be set to highest bounty id minus <x>"
-        )
 
     def handle(self, *args, **options):
         # config
         network = options['network']
 
-        start_id = get_bounty_id(options['start_id'], network)
-        end_id = get_bounty_id(options['end_id'], network)
+        start_id = get_standard_bounty_id(options['start_id'], network)
+        end_id = get_standard_bounty_id(options['end_id'], network)
 
         # iterate through all the bounties
         standard_bounty_id = int(start_id)

@@ -22,6 +22,7 @@ import logging
 from json.decoder import JSONDecodeError
 
 from django.conf import settings
+from django.core.management.base import BaseCommand
 
 import ipfsapi
 import requests
@@ -580,3 +581,57 @@ def generate_pub_priv_keypair():
     # return priv key, pub key, address
 
     return priv.to_string().hex(), pub.hex(), checksum_encode(address)
+
+
+def get_ipfs_hash(standard_bounty_id, network='rinkeby'):
+    """Get the IPFS hash of the provided standard bounties ID.
+
+    Args:
+        standard_bounty_id (int): The standard bounty ID.
+        network (str): The network to lookup. Defaults to: mainnet.
+
+    Returns:
+        str: The IPFS hash.
+
+    """
+    if (settings.DEBUG or settings.ENV != 'prod') and network == 'mainnet':
+        return ''
+
+    try:
+        standard_bounties = getBountyContract(network)
+        ipfs_hash = standard_bounties.functions.getBountyData(standard_bounty_id).call()
+        return ipfs_hash
+    except Exception as e:
+        logger.error(e)
+        return ''
+
+
+def get_standard_bounty_id(standard_bounty_id, network):
+    if standard_bounty_id > 0:
+        return standard_bounty_id
+    contract = getBountyContract(network)
+    bounty_id = contract.functions.getNumBounties().call() - 1
+    return bounty_id + standard_bounty_id
+
+
+def get_starting_id():
+    return 0 if not settings.DEBUG else 402
+
+
+class StdBountyRangedCommand(BaseCommand):
+    """Define a generic standard bounties command for ranged usage."""
+
+    def add_arguments(self, parser):
+        parser.add_argument('network', default='rinkeby', type=str)
+        parser.add_argument(
+            'start_id',
+            default=get_starting_id,
+            type=int,
+            help="The start id.  If negative or 0, will be set to highest bounty id minus <x>"
+        )
+        parser.add_argument(
+            'end_id',
+            default=99999999999,
+            type=int,
+            help="The end id.  If negative or 0, will be set to highest bounty id minus <x>"
+        )
