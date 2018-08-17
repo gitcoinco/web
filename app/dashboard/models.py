@@ -1006,7 +1006,7 @@ class TipPayoutException(Exception):
 class Tip(SuperModel):
 
     web3_type = models.CharField(max_length=50, default='v3')
-    emails = JSONField()
+    emails = JSONField(blank=True)
     url = models.CharField(max_length=255, default='', blank=True)
     tokenName = models.CharField(max_length=255)
     tokenAddress = models.CharField(max_length=255)
@@ -1019,7 +1019,7 @@ class Tip(SuperModel):
     from_name = models.CharField(max_length=255, default='', blank=True)
     from_email = models.CharField(max_length=255, default='', blank=True)
     from_username = models.CharField(max_length=255, default='', blank=True)
-    username = models.CharField(max_length=255, default='')  # to username
+    username = models.CharField(max_length=255, default='', blank=True)  # to username
     network = models.CharField(max_length=255, default='')
     txid = models.CharField(max_length=255, default='')
     receive_txid = models.CharField(max_length=255, default='', blank=True)
