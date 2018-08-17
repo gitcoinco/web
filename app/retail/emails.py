@@ -512,7 +512,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "BUIDLing Mesh Networks | Gitcoin + ENS Partnership"
+    subject = "Building Ethereum Test Suites | ERC-948: On-Chain Subscriptions"
 
     intro = '''
 
@@ -520,22 +520,21 @@ def render_new_bounty_roundup(to_email):
     Hi there,
 </p>
 <p>
-We are consistently asked how Gitcoin, an open source network, has built such an invaluable community.
-To this end, I wrote <a href="https://medium.com/p/a5293ecca60a/edit">How to BUIDL a Mesh Network of Human Beings.</a> This piece
-examines the psychology and thought process we've put into building the Gitcoin community. We're lucky each one of you has chosen to be a part.
+Are you interested in helping to build test suites across the Ethereum ecosystem?
+We're working with the Ethereum Foundation to find the best and brightest developers to get involved directly on Ethereum's
+codebase and would love to hear from you. If you're interested, join #focus-dev-testing <a href="https://gitcoin.co/slack">on Gitcoin Slack</a>
+and/or respond to this e-mail with a bit more about yourself / your development background. Bonus points if you have an active Gitcoin profile!
 </p>
 
 <p>
-We also announced a <a href="https://medium.com/the-ethereum-name-service/ens-gitcoin-3654594537b8">partnership with the Ethereum Name Service.</a> We believe
-ENS integrations are an important next step in decentralization, and are proud to sponsor any Github issues to integrate ENS into your dApps. Just open up a Github issue
-and let us know - we'll take it from there.
-</p>
+In other news, the ERC-948 working group is chugging along. Kevin Seagraves <a href="https://medium.com/gitcoin/architectures-for-subscriptions-erc948-5fae89cabc7a">wrote a great post</a> detailing
+some of the potential standards and tradeoffs being discussed. Give it a read and also come hang <a href="https://gitcoin.co/slack">on Gitcoin Slack</a> if you'd like to get involved.</p>
 
 <h3>What else is new?</h3>
     <ul>
         <li>
 <a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET.
-This week features Decentraland on NFT's and Austin Griffith on metatransactions. Join us!
+This week features POA Network and Paul Brower. Join us!
         </li>
 
     </ul>
@@ -546,40 +545,40 @@ Back to BUIDLing,
 '''
     highlights = [
         {
-            'who': 'evgeniuz',
+            'who': 'octavioamu',
             'who_link': True,
-            'what': 'Worked with the Solidity team on improving the language!',
-            'link': 'https://gitcoin.co/issue/ethereum/solidity/4640/890',
+            'what': 'Worked with MARKET Protocol on their calendar navigation.',
+            'link': 'https://gitcoin.co/issue/MARKETProtocol/dApp/295/965',
             'link_copy': 'View more',
         },
         {
-            'who': 'rahulrumalla',
+            'who': 'srisankethu',
             'who_link': True,
-            'what': 'Won the QuickBlocks Gitcoin contest by Thomas Rush!',
-            'link': 'https://gitcoin.co/issue/Great-Hill-Corporation/quickBlocks/611/870',
+            'what': 'Completed his first bounty on the Ethereum Utils repo!',
+            'link': 'https://gitcoin.co/issue/ethereum/eth-utils/117/964',
             'link_copy': 'View more',
         },
         {
-            'who': 'anshumanv',
+            'who': 'tcrowe',
             'who_link': True,
-            'what': 'Worked with Origin Protocol on their first bounty.',
-            'link': 'https://gitcoin.co/issue/OriginProtocol/origin-dapp/329/900',
+            'what': 'Was one worker picked out of 8, and did a great job on the Bounties website.',
+            'link': 'https://gitcoin.co/issue/Bounties-Network/bounties.network/7/927',
             'link_copy': 'View more',
         },
     ]
 
     bounties_spec = [
         {
-            'url': 'https://github.com/XLNT/gnarly/issues/3',
-            'primer': 'Work with Matt Condon on Gnarly, an EF grant recipient!',
+            'url': 'https://github.com/ethereum/py-evm/issues/1187',
+            'primer': 'Have Python chops? Work with Piper Merriam (EF) on PY-EVM',
         },
         {
-            'url': 'https://github.com/Datum/Datum-Gitcoin-Bounty/issues/1',
-            'primer': 'Use the Datum SDK to build something great without limits.',
+            'url': 'https://github.com/diadata-org/api-golang/issues/3',
+            'primer': 'Have a Go background? Work to build a Bitcoin Cash data scraper.',
         },
         {
-            'url': 'https://github.com/Bounties-Network/bounties.network/issues/7',
-            'primer': 'Help build the new Bounties Network website!',
+            'url': 'https://github.com/omisego/plasma-mvp/issues/170',
+            'primer': 'Create an RLP encoding library for the Plasma Cash MVP!',
         },
     ]
 
