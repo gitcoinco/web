@@ -55,11 +55,15 @@
             </div>
           </div>
           <div class="row">
+            {% for profile in related_profiles %}
             <div class="col-12">
-              {% for profile in related_profiles %}
               <a href="/profile/{{ profile.handle }}"><img src="/media/{{ profile.avatar.svg }}" width="70" class="rounded-circle border m-1"></a>
-              {% endfor %}
             </div>
+            {% if forloop.counter|divisibleby:5 %}
+          </div>
+          <div class="row">
+            {% endif %}
+            {% endfor %}
           </div>
         </div>
       </div>

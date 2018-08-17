@@ -120,7 +120,7 @@ def details(request):
     related_kudos = MarketPlaceListing.objects.exclude(owner_address='0xD386793F1DB5F21609571C0164841E5eA2D33aD8').filter(name=kudos.name)
     logger.info(f'Kudos rows: {related_kudos}')
     # Find the Wallet rows that match the Kudos.owner_addresses
-    related_wallets = Wallet.objects.filter(address__in=[rk.owner_address for rk in related_kudos]).distinct()
+    related_wallets = Wallet.objects.filter(address__in=[rk.owner_address for rk in related_kudos]).distinct()[:20]
     profile_ids = [rw.profile_id for rw in related_wallets]
     logger.info(f'Related profile_ids:  {profile_ids}')
 
