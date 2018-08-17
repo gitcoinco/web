@@ -1,0 +1,17 @@
+{
+    "symbol": "TB",
+    "address": "0x721a6ef7100d874f942ea3f18e06bbdce3ab693d",
+    "overview": {
+        "en": "ThinkBit Pro is a Next Gen cryptocurrency exchange, which offers an excellent liquid trading environment, a 100% cold storage of crypto assets, a variety of order types and a high performance API for professional traders.",
+        "zh": "ThinkBit Pro 是下一代的数字资产交易所，为专业用户提供高流动性交易环境、全资产冷储存、多种订单类、高性能 API。ThinkBit Pro 使用自研的粒子对撞交易撮合引擎，处理订单速度达500万订单/秒/交易对；绝对零度100%冷钱包技术，保护用户数字资产安全。"
+    },
+    "email": "support@thinkbit.com",
+    "website": "https://www.thinkbit.com",
+    "whitepaper": "https://www.thinkbit.com/info/thinkbit-whitepaper-zh-1.0.pdf",
+    "published_on": "2018-06-08",
+    "links": {
+        "Medium": "https://medium.com/@thinkbitpro",
+        "facebook": "https://www.facebook.com/ThinkBitPRO",
+        "twitter": "https://twitter.com/ThinkBitPro"
+    }
+}
