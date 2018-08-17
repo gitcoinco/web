@@ -453,6 +453,24 @@ a.btn {
   padding: 1rem;
 }
 
+#funder_notif_info .bounty-notification {
+  border: orange 1px solid;
+  border-radius: 3px;
+  padding: 0.5rem;
+}
+
+#funder_notif_info #bounty_funded_by,
+#funder_notif_info i {
+  color: #3E00FF;
+}
+
+#funder_notif_info img {
+  width: 1.5rem;
+  position: relative;
+  top: -2px;
+}
+
+
 #bounty_details #issue_description img {
   max-height: 30rem;
   max-width: 30rem;
@@ -604,6 +622,7 @@ a.btn {
 .add-interest-options > .option {
   width: auto;
 }
+
 
 .btn-interested,
 .btn-extend,
@@ -766,6 +785,15 @@ a.btn {
   .issue-url {
     margin-top: 15px;
   }
+
+  .left-rails {
+    display: none;
+  }
+
+  #title,
+  #funder_notif_info {
+    text-align: center;
+  }
 }
 
 @media (max-width: 991.98px) {
@@ -786,6 +814,14 @@ a.btn {
   #extend_deadline {
     min-width: 40rem;
     max-width: 0;
+  }
+}
+
+@media (max-width: 1024px) {
+  #funder_notif_info .bounty-notification {
+    margin-top: 1rem;
+    display: inline-block;
+    margin-left: 0 !important;
   }
 }
 
