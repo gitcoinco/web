@@ -22,6 +22,7 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 from django.contrib.postgres.search import SearchVector
+from django.http import HttpResponseRedirect
 
 from .models import MarketPlaceListing, Wallet
 from dashboard.models import Profile
@@ -49,8 +50,8 @@ def about(request):
         'is_outside': True,
         'active': 'about',
         'title': 'About',
-        'card_title': _('Gitcoin is a mission-driven organization.'),
-        'card_desc': _('Our mission is to grow open source.'),
+        'card_title': _('Each Kudos is a unique work of art.'),
+        'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/grow_open_source.png'),
         "listings": MarketPlaceListing.objects.all(),
     }
@@ -86,8 +87,8 @@ def marketplace(request):
         'is_outside': True,
         'active': 'marketplace',
         'title': 'Marketplace',
-        'card_title': _('Gitcoin is a mission-driven organization.'),
-        'card_desc': _('Our mission is to grow open source.'),
+        'card_title': _('Each Kudos is a unique work of art.'),
+        'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/grow_open_source.png'),
         'listings': listings
     }
@@ -131,8 +132,8 @@ def details(request):
         'is_outside': True,
         'active': 'details',
         'title': 'Details',
-        'card_title': _('Gitcoin is a mission-driven organization.'),
-        'card_desc': _('Our mission is to grow open source.'),
+        'card_title': _('Each Kudos is a unique work of art.'),
+        'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/grow_open_source.png'),
         'kudos': kudos,
         'related_profiles': related_profiles,
