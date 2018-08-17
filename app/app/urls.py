@@ -55,17 +55,19 @@ urlpatterns = [
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
 
     # kudos
-    url(r'^kudos/about', kudos.views.about, name='kudos_about'),
-    url(r'^kudos/marketplace/$', kudos.views.marketplace, name='kudos_marketplace'),
-    url(r'^kudos/mint', kudos.views.mint, name='kudos_mint'),
-    url(r'^kudos/send/?', kudos.views.send, name='kudos_send'),
-    url(r'^kudos/send/api/?', kudos.views.send_api, name='send_api'),
-    url(r'^kudos/receive', kudos.views.receive, name='kudos_receive'),
-    url(r'^kudos/search/$', kudos.views.search, name='kudos_search'),
+    path('kudos/', kudos.views.about, name='kudos_about'),
+    path('kudos/about/', kudos.views.about, name='kudos_about'),
+    path('kudos/marketplace/', kudos.views.marketplace, name='kudos_marketplace'),
+    path('kudos/mint', kudos.views.mint, name='kudos_mint'),
+    re_path(r'^kudos/send/.*', kudos.views.send, name='kudos_send'),
+    re_path(r'^kudos/send/api/?', kudos.views.send_api, name='send_api'),
+    re_path(r'^kudos/receive', kudos.views.receive, name='kudos_receive'),
+    re_path(r'^kudos/search/$', kudos.views.search, name='kudos_search'),
     re_path(r'^kudos/\d+', kudos.views.details, name='kudos_details'),
-    # url(r'^kudos/?', kudos.views.about, name='kudos_about'),
 
     # api views
+    # TODO:  url() will be deprecated soon.  Change to path() or re_path().
+    # https://docs.djangoproject.com/en/2.0/ref/urls/#url
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
