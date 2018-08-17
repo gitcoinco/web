@@ -8,12 +8,10 @@
   "email": "cy@xmx.com",
   "website": "http://xmx.com/",
   "whitepaper": "http://xmx.com/white-papers/XMax_White_Paper.pdf",
-  "state": "LOCKED | NORMAL",
+  "state": "NORMAL",
   "published_on": "2018-06-06",
   "initial_price":{
-        "ETH":"0.00000500 ETH",
-        "USD":"",
-        "BTC":""
+        "ETH":"0.00000500 ETH"
   },
   "links": {  
     "twitter": "https://twitter.com/XMAX_io",
