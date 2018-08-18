@@ -825,6 +825,12 @@ def get_payout_history(done_bounties):
 
 
 def to_funder_dashboard_bounty(bounty):
+    """
+    Maps a bounty object to a format that is suitable for display in the funder dashboard.
+
+    Args:
+        bounty: (Bounty) the bounty to map
+    """
     pending_or_claimed = "None"
 
     if bounty.interested.exists():
@@ -840,5 +846,5 @@ def to_funder_dashboard_bounty(bounty):
         'statusPendingOrClaimed': pending_or_claimed,
         'githubLink': bounty.github_url,
         'worthDollars': usd_format(bounty.get_value_in_usdt),
-        'worthEth': eth_format(bounty.get_value_in_eth)
+        'worthEth': eth_format(eth_from_wei(bounty.get_value_in_eth))
     }
