@@ -1,0 +1,85 @@
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+  </head>
+
+  <body class="interior {{active}}">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+    </div>
+    <div class="container-fluid">
+      <div class="row no-gutters metamask-banner">
+        <div class="col-12">
+          {% include 'shared/no_issue_error.html' with page='contribute_bounty' %}
+          {% include 'shared/no_metamask_error.html' %}
+          {% include 'shared/zero_balance_error.html' %}
+          {% include 'shared/unlock_metamask.html' %}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 body">
+          <div class="row font-smaller-2" id="form_container">
+            <div id="robot_error" class="hidden">
+              <img src="{% static "v2/images/prime.png" %}">
+            </div>
+            <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
+              <div class="d-flex justify-content-center flex-column mt-5 w-100" id="primary_subform">
+                <div class="w-100" style="text-align: center;">
+                  <h3>{% trans "Social Promotion of Bounty" %}</h3>
+                  <img src="{% static "v2/images/prime.png" %}">
+                  <p>Thank you for considering promotion of this bounty. Your promotion will help your friends & colleague find new, interesting work.  It will also help the bounty funder make sure their issue is turned around</p>
+                </div>
+                <div class="w-100">
+                  <h4>{% trans "Promotional Text" %}</h4>
+                  <textarea class="w-100">Check out this bounty that pays out {{bounty.get_value_true}} {{bounty.token_name}} {{bounty.url}} {% for keyword in bounty.keywords_list %} #{{keyword}}{% endfor %}</textarea>
+                </div>
+                <div class="w-100 mt-2">
+                  <h4>{% trans "One Click Social Share Links" %}</h4>
+                  <div class="mb-5 mt-5">
+                    <a class="twitter-share-button button button--primary"
+                      href="https://twitter.com/intent/tweet?text={{promo_text|iriencode}}"
+                      data-size="large">
+                    Tweet</a>
+                    <a class="button button--primary"
+                      href="mailto:?subject=New Bounty&body={{promo_text|iriencode}}">
+                    Email</a>
+                    <a class="button button--primary"
+                      href="https://www.facebook.com/sharer/sharer.php?u={{bounty.url}}">
+                    Facebook</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
+  </body>
+
+</html>

@@ -1,0 +1,13 @@
+Hey @{{fr.github_username}},
+
+Gitcoin *could not* approve your faucet request for {{amount}} ETH to {{fr.address}}
+
+{% if fr.comment_admin %}
+
+Here are somme comments from the administrator:
+
+> {{fr.comment_admin}}
+
+{% endif %}
+
+You are welcome to re-apply at https://gitcoin.co/faucet

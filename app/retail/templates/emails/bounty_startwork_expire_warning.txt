@@ -1,4 +1,4 @@
-{% load humanize %} 
+{% load humanize %}
 😕 Are you still working on this? 😕
 
 Hey there,
@@ -6,7 +6,7 @@ Hey there,
 
 You started work upon a funded issue {{interest.created | naturaltime}}.  We haven't heard from you on the github thread{% if time_delta_days %} in {{time_delta_days}} days{%endif%}.
 
-Do you still want to work on this?  
+Do you still want to work on this?
 
 
 If so, please leave a comment on the github thread to check in.
@@ -18,9 +18,3 @@ If you have any questions, feel free to reach out on slack => https://gitcoin.co
 Funded Issue Details
 
 {% include 'emails/bounty.txt' with bounty=bounty %}
-
-You are receiving this email because your email address is on the notification list for this funded issue.
-
-
-Keep Pushing Open Source Forward,
--- Gitcoin Core

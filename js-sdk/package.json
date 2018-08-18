@@ -1,0 +1,39 @@
+{
+  "name": "gitcoin-sdk",
+  "version": "1.0.2",
+  "description": "Gitcoin SDK.",
+  "scripts": {
+    "dev": "webpack --config webpack.config.js --mode development --progress --colors",
+    "build": "webpack --config webpack.config.js --mode production --progress --colors",
+    "prepublish": "npm run build",
+    "eslint": "./node_modules/eslint/bin/eslint.js --quiet --config .eslintrc ./src/*.js",
+    "eslint:fix": "./node_modules/eslint/bin/eslint.js --quiet --fix --config .eslintrc ./src/*.js",
+    "stylelint": "stylelint ./src/*.css",
+    "stylelint:fix": "stylelint --fix ./src/*.css",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["Gitcoin", "SDK"],
+  "author": "Matthew Lilley",
+  "license": "MIT",
+  "files": [
+    "dist/index.js"
+  ],
+  "main": "dist/index.js",
+  "unpkg": "dist/index.js",
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.46",
+    "@babel/preset-env": "^7.0.0-beta.46",
+    "babel-eslint": "^8.2.3",
+    "babel-loader": "^8.0.0-beta",
+    "clean-webpack-plugin": "^0.1.19",
+    "css-loader": "^0.28.11",
+    "eslint": "^4.19.1",
+    "siema": "^1.5.1",
+    "style-loader": "^0.21.0",
+    "stylelint": "^9.2.0",
+    "stylelint-config-recommended": "^2.1.0",
+    "uglifyjs-webpack-plugin": "^1.2.5",
+    "webpack": "^4.6.0",
+    "webpack-cli": "^2.0.15"
+  }
+}

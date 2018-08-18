@@ -1,4 +1,4 @@
-{% load humanize %} 
+{% load humanize %}
 👇 You've been removed from this task ... 👇
 
 Hey there,
@@ -19,8 +19,3 @@ If you have any questions, feel free to reach out on slack => https://gitcoin.co
 Funded Issue Details
 
 {% include 'emails/bounty.txt' with bounty=bounty %}
-
-You are receiving this email because your email address is on the notification list for this funded issue.
-
-Keep Pushing Open Source Forward,
--- Gitcoin Core

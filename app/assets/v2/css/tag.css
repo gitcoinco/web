@@ -1,0 +1,35 @@
+.tag {
+  text-align: center;
+  min-width: 90px;
+  border-radius: 2px;
+  margin: 4px;
+}
+
+.tag span {
+  margin-left: 2px;
+}
+
+.tag p {
+  padding: 5px 2px;
+  margin-bottom: 0;
+}
+
+.tag.usd {
+  background-color: #d6fbeb;
+  color: #00A55E;
+}
+
+.tag.network_warning {
+  background-color: #fbaf95;
+  color: #fff;
+}
+
+.tag.token {
+  background-color: #e7f0fa;
+  color: #775EC7;
+}
+
+.tag.hiring {
+  background-color: #3a9ced;
+  color: #fff;
+}

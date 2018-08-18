@@ -19,14 +19,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from datetime import datetime
 
-from django.test import TestCase
-
 from dashboard.models import Bounty
-from dashboard.notifications import amount_usdt_open_work, build_github_notification
+from dashboard.notifications import amount_usdt_open_work, append_snooze_copy, build_github_notification
 from pytz import UTC
+from test_plus.test import TestCase
 
 
-class DashboardNotificationsTestCase(TestCase):
+class DashboardNotificationsTest(TestCase):
     """Define tests for dashboard notifications."""
 
     def setUp(self):
@@ -36,7 +35,7 @@ class DashboardNotificationsTestCase(TestCase):
             value_in_token=3,
             token_name='ETH',
             web3_created=datetime(2008, 10, 31, tzinfo=UTC),
-            github_url='https://github.com/gitcoinco/web',
+            github_url='https://github.com/gitcoinco/web/issues/11',
             token_address='0x0',
             issue_description='hello world',
             bounty_owner_github_username='flintstone',
@@ -58,17 +57,35 @@ class DashboardNotificationsTestCase(TestCase):
     def test_build_github_notification_new_bounty(self):
         """Test the dashboard helper build_github_notification method with new_bounty."""
         message = build_github_notification(self.bounty, 'new_bounty')
-        assert message.startswith(f'__This issue now has a funding of {self.natural_value} {self.bounty.token_name}')
-        assert self.usdt_value in message
-        assert f'[here]({self.absolute_url})' in message
-        assert f'${self.amount_open_work}' in message
+        assert f'__This issue now has a funding of {self.natural_value} {self.bounty.token_name}' in message
+        assert f'This issue now has a funding of' in message
 
     def test_build_github_notification_killed_bounty(self):
         """Test the dashboard helper build_github_notification method with killed_bounty."""
         message = build_github_notification(self.bounty, 'killed_bounty')
-        assert message.startswith(f"__The funding of {self.natural_value} {self.bounty.token_name} {self.usdt_value}")
+        assert f"__The funding of {self.natural_value} {self.bounty.token_name} {self.usdt_value}" in message
         assert 'Questions?' in message
         assert f'${self.amount_open_work}' in message
+
+    def test_build_github_notification_increased_bounty(self):
+        """Test the dashboard helper build_github_notification method with new_bounty."""
+        message = build_github_notification(self.bounty, 'increased_bounty')
+        assert f'__The funding of this issue was increased to {self.natural_value} {self.bounty.token_name}' in message
+        assert self.usdt_value in message
+        assert f'The funding of this issue was increased' in message
+        assert f'${self.amount_open_work}' in message
+
+    def test_append_snooze_copy(self):
+        """Test the dashboard notification utility append_snooze_copy."""
+        snooze_copy = append_snooze_copy(self.bounty)
+        segments = snooze_copy.split(' | ')
+        assert len(segments) == 5
+        for i, day in enumerate([1, 3, 5, 10, 100]):
+            plural = "s" if day != 1 else ""
+            copy = f'[{day} day{plural}]({self.bounty.snooze_url(day)})'
+            if day == 1:
+                copy = f'\nFunders only: Snooze warnings for {copy}'
+            assert segments[i] == copy
 
     def tearDown(self):
         """Perform cleanup for the testcase."""

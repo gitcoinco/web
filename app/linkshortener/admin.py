@@ -7,7 +7,9 @@ from linkshortener.models import Link
 
 
 class LinkShortenerAdmin(admin.ModelAdmin):
+
     ordering = ['-id']
     list_display = ['shortcode', 'uses']
+
 
 admin.site.register(Link, LinkShortenerAdmin)

@@ -40,9 +40,8 @@ def pull_to_db():
     for match in Match.objects.all():
         process_email(match.email, 'match')
 
-
     get_size = 50
-    client = MailChimp(settings.MAILCHIMP_USER, settings.MAILCHIMP_API_KEY)
+    client = MailChimp(mc_api=settings.MAILCHIMP_API_KEY, mc_user=settings.MAILCHIMP_USER)
 
     print('mailchimp')
     for i in range(0, 90000):
@@ -66,8 +65,10 @@ def pull_to_db():
     print("- tip")
     from dashboard.models import Tip
     for tip in Tip.objects.all():
-        for email in tip.emails:
-            process_email(email, 'tip_usage')
+        # do not add receive tip emails to the mailing list, 
+        # don't want to spam people at 4 diff email addresses
+        # for email in tip.emails:
+        #    process_email(email, 'tip_usage')
         if tip.from_email:
             process_email(tip.from_email, 'tip_usage')
 
@@ -86,17 +87,17 @@ def pull_to_db():
     print("- tdi")
     from tdi.models import WhitepaperAccess, WhitepaperAccessRequest
     for wa in WhitepaperAccess.objects.all():
-            process_email(wa.email, 'whitepaperaccess')
+        process_email(wa.email, 'whitepaperaccess')
 
     for wa in WhitepaperAccessRequest.objects.all():
-            process_email(wa.email, 'whitepaperaccessrequest')
+        process_email(wa.email, 'whitepaperaccessrequest')
 
     print('/pull_to_db')
 
 
 def push_to_mailchimp():
     print('- push_to_mailchimp')
-    client = MailChimp(settings.MAILCHIMP_USER, settings.MAILCHIMP_API_KEY)
+    client = MailChimp(settings.MAILCHIMP_API_KEY, settings.MAILCHIMP_USER)
     created_after = timezone.now() - timezone.timedelta(hours=2)
     eses = EmailSubscriber.objects.filter(active=True, created_on__gt=created_after).order_by('-pk')
     print("- {} emails".format(eses.count()))
@@ -104,16 +105,15 @@ def push_to_mailchimp():
         email = es.email
         print(email)
         try:
-            response = client.lists.members.create(settings.MAILCHIMP_LIST_ID, {
+            client.lists.members.create(settings.MAILCHIMP_LIST_ID, {
                 'email_address': email,
                 'status': 'subscribed'
             })
             print('pushed_to_list')
-        except Exception as e:
-            #print("already on the list")
+        except Exception:
+            # print("already on the list")
             pass
     print('/push_to_mailchimp')
-    pass
 
 
 class Command(BaseCommand):

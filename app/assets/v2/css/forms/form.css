@@ -1,0 +1,52 @@
+.form__group {
+  display: flex;
+}
+
+.form__group-item {
+  height: 37px;
+}
+
+.form__amount-wrapper {
+  margin-right: 1rem;
+}
+
+.form__group-item {
+  flex: 1;
+  position: relative;
+}
+
+.form__group-item:not(:last-of-type) {
+  margin-right: 1rem;
+}
+
+.form__flex-group {
+  display: flex;
+}
+
+.form__flex-item {
+  flex: 1;
+}
+
+.form__footer {
+  padding-top: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+.form__footer button {
+  margin-bottom: .5rem;
+}
+
+.form__footer--right {
+  text-align: right;
+}
+
+@media (max-width: 540px) {
+  .form__group {
+    flex-direction: column;
+  }
+  
+  .form__group-item {
+    margin-bottom: 1em;
+    width: 100%;
+  }
+}

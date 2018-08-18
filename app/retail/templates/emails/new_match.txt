@@ -1,4 +1,4 @@
-{% load humanize %} 
+{% load humanize %}
 ⚡️ New Match Alert ⚡️
 
 @{{github_username}}, meet {{bounty.org_name}}.  {{bounty.org_name}}, meet @{{github_username}}.
@@ -6,6 +6,3 @@
 @{{github_username}} expressed interest in the following Funded Issue: {{bounty.absolute_url}}
 
 You are both CCed on this email.  Respond back to this email to get in touch.
-
-Keep Pushing Open Source Forward,
--- Gitcoin Core

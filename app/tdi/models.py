@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 '''
     Copyright (C) 2017 Gitcoin Core
 
@@ -15,18 +16,17 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 from django.db import models
 
-# Create your models here.
 from economy.models import SuperModel
 
 
 class AccessCodes(SuperModel):
 
     class Meta:
+
         verbose_name_plural = 'Access codes'
 
     invitecode = models.CharField(max_length=30)
@@ -43,6 +43,7 @@ class AccessCodes(SuperModel):
 class WhitepaperAccess(SuperModel):
 
     class Meta:
+
         verbose_name_plural = 'Whitepaper access'
 
     invitecode = models.CharField(max_length=30)
@@ -50,10 +51,11 @@ class WhitepaperAccess(SuperModel):
     ip = models.CharField(max_length=30)
 
     def __str__(self):
-        return "{} / {} / {} on {}".format(self.email, self.invitecode, self.ip, self.created_on)
+        return f"{self.email} / {self.invitecode} / {self.ip} on {self.created_on}"
 
 
 class WhitepaperAccessRequest(SuperModel):
+
     comments = models.TextField(max_length=5000)
     email = models.CharField(max_length=255)
     role = models.CharField(max_length=255)
@@ -61,4 +63,4 @@ class WhitepaperAccessRequest(SuperModel):
     processed = models.BooleanField(default=False)
 
     def __str__(self):
-        return "{} / {} / {} on {}".format(self.email, self.role, self.ip, self.created_on)
+        return f"{self.email} / {self.role} / {self.ip} on {self.created_on}"

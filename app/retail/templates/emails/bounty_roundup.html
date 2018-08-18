@@ -16,116 +16,174 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load static humanize %}
+{% load i18n static humanize %}
 
 {% block content %}
 
 <style>
-    body  p,
-    body  li,
-    body  span,
-    body  a{
-      font-family: "Arial";
+    .roundup {
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
+        padding-left: 2em;
+        padding-right: 2em;
+        line-height: 20px;
     }
-    body #welcome p,
-    body #welcome a,
-    body #welcome li{
-      font-weight: 300;
-      color: black;
-      font-size: 14px;
-      letter-spacing: 0.1em;
-      line-height: 18px;
+    .intro li{
+        margin-bottom: 15px;
     }
-    body li {
-        font-weight: normal;;
-        font-size: normal;;
-        margin-bottom: 5px;
+    h1{
+        color: black;
+        font-weight: bold;
     }
-
+    h3{
+        color: #0d0860;
+        font-weight: bold;
+    }
+    h5{
+        color: #aeaeae;
+    }
+    p, li, a{
+        color: #353535;
+        line-height: 26px;
+        font-size: 16px;
+    }
+    a{
+        text-decoration: underline;;
+    }
 </style>
 
-<h1><img src="{% static "v2/images/helmet_emoji.png" %}" width=40px height="40px"> The Gitcoin Weekly <img src="{% static "v2/images/helmet_emoji.png" %}" width=40px height="40px"></h1>
+<div class="roundup">
+    <div>
+        <h1>{% trans "The Gitcoin Weekly" %}</h1>
+    </div>
 
-<table>
-    <tr>
-        <td id="welcome" colspan=6 valign="top" style='padding: 5px 10px 0px;'>
-            <p>
-                Hi there.
-            </p>
-            <p>
-                It was great meeting many of you at <a href="https://ethdenver.com">ETHDenver</a> this past weekend.  ETHDenver was a 1200 person hackathon with dozens of new teams formed during the weekend; and Gitcoin is proud to say that <a href="https://medium.com/gitcoin/gitcoin-ethdenver-wrap-up-cc52d9874b38">we sponosored bounties for much of what was built there!</a>.  We are also happy to show off <a href="https://medium.com/gitcoin/coloradocoin-ethdenver-wrap-up-94fabb667c61">ColoradoCoin</a> -- a physical Ethereum ERC20 token that was built using Gitcoin bounties.
-            </p>
-            <p>
-                What else is new?  
-                <ul>
-                    <li>
-                        <a href="https://medium.com/gitcoin/post-mortem-production-issues-2018-02-20-3b4bb4ea003e">
-                            Post Mortem — Production Issues 2018/02/20
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://medium.com/gitcoin/oss-today-some-wins-some-losses-89d1ab46ceb6">
-                            OSS Today -- Some Wins, Some Losses
-                        </a>
-                    </li>
-                    <li>
-                        <a href="https://gitcoin.co/community">
-                            gitcoin.co/community - An index of community calls since Gitcoin was started
-                        </a>
-                    </li>
-                </ul>
-            </p>
-            <p>
-                I hope to see you <a href="https://gitcoin.co/slack">on slack</a>, or on the community livestream this Friday at 3pm MST ! 🤖
-            </p>
-            <a href="https://twitter.com/owocki" style="float:right; padding-left: 10px;">
-                <img src="{% static "v2/images/avatar.png" %}" width="77" height="137">
+    <div style="text-align: left;" class='intro'>
+        {{ intro | safe }}
+
+        <div style="text-align: center; ">
+            <a href="https://twitter.com/owocki">
+                <img style="max-height: 170px; " src="{% static "v2/images/avatar.png" %}">
             </a>
+
             <p>
-                👋
-                <br>
                 <a href="https://twitter.com/owocki">@owocki</a>
             </p>
-        </td>
-    </tr>
-</table>
+        </div>
 
+        <hr>
+    </div>
 
-<h3>Open Funded Issues</h3>
-<h5>Grow Open Source ⚡️ Make Some ETH 💰</h5>
+    {% if highlights %}
 
-<br>
+        <h3>{% trans "Last Week's Highlights" %}</h3>
+        <h5>{% trans "Community Members growing open source" %}</h5>
 
-{% for bounty in bounties %}
-    {% include 'emails/bounty.html' with bounty=bounty.obj small=1 primer=bounty.primer %}
+        <div style="text-align: left;">
+            {% for highlight in highlights %}
+                <li style="list-style:none; margin-bottom: 5px;">
+                    {% if highlight.who_link %}
+                        <img style="border-radius: 20px;" src="https://gitcoin.co/funding/avatar?repo=https://github.com/{{highlight.who}}" width=30px height=30px>
+                        <a style="font-weight: bold; text-decoration: none;" href="https://gitcoin.co/profile/{{highlight.who}}">{{highlight.who}}</a>
+                    {% else %}
+                        * <strong>{{highlight.who}}</strong>
+                    {% endif %}
+                     - {{highlight.what}}
+                    {% if highlight.link %}
+                        <a href="{{highlight.link}}">{{highlight.link_copy}}</a>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </div>
+        <br>
+        <br>
+
+        <hr>
+
+    {% endif %}
+
+    <div>
+        <h3>{% trans "Open Funded Issues" %}</h3>
+        <h5>{% trans "Grow Open Source &amp; Make Some ETH" %}</h5>
+    </div>
+
+    {% for bounty in bounties %}
+        {% include 'emails/bounty.html' with bounty=bounty.obj small=1 primer=bounty.primer %}
+    {% endfor %}
+
+    <div class="centered-contents">
+        <p>{% trans "Don't see anything that strikes your fancy above?" %}</p>
+        <p>{% trans "There are more issues in the Gitcoin Issue Explorer:" %}</p>
+
+        <div style="margin-bottom: 2em;">
+            <a class="button" href="https://gitcoin.co/explorer">{% trans "View Issue Explorer" %}</a>
+        </div>
+    </div>
+
     <hr>
-{% endfor %}
 
-    <table>
-        <tr >
-            <td width="400">
-                <p style="text-align: center; margin-bottom: 0px;">Don't see anything that strikes your fancy above?</p>
-                <p style="text-align: center; margin-top: 0px;">There are more issues in the Gitcoin Issue Explorer:</p>
-            </td>
-        </tr>
-        <tr >
-            <td width="180" style="text-align: center;">
-                <a style="margin: 0px auto;" class="button"  href="https://gitcoin.co/explorer" >View Issue Explorer</a>
-            </td>
-        </tr>
-    </table>
+    {% if leaderboard %}
+
+        <h3>{% trans "Who's leading the Leaderboard?" %}</h3>
+        <h5>{% trans "See the top Gitcoin Network Members For the last 90 Days" %}</h5>
+
+        <div style="text-align: left;">
+          {% for key, package in leaderboard.items %}
+            <div style="width: 30%; display: inline-block; min-width: 250px;">
+              <h4>{{package.title}}</h4>
+              <ul>
+                {% for leaderboard_item in package.items %}
+                <li style="list-style:none; margin-bottom: 5px;">
+                        {{leaderboard_item.rank}}. <img style="border-radius: 20px;" src="https://gitcoin.co/funding/avatar?repo=https://github.com/{{leaderboard_item.github_username}}" width=30px height=30px>
+                        <a style="font-weight: bold; text-decoration: none;" href="https://gitcoin.co/profile/{{leaderboard_item.github_username}}">{{leaderboard_item.github_username}}</a> : ${{leaderboard_item.amount|floatformat:2}}
+                </li>
+              {% endfor %}
+              </ul>
+            </div>
+          {% endfor %}
+
+        </div>
+        <br>
+        <br>
+          <div style="margin-bottom: 2em;">
+              <a class="button" href="https://gitcoin.co/leaderboard">{% trans "View Leaderboard" %}</a>
+          </div>
+
+        <hr>
+
+    {% endif %}
+
     <hr>
+    <div>
+        <h3>{% trans "Bounties from around the ecosystem" %}</h3>
+        <h5>{% trans "From other great projects in OSS" %}</h5>
+    </div>
+    <ul>
+        {% for bounty in ecosystem_bounties %}
+                <li style="list-style:none; margin-bottom: 5px;">
+                <img src="{{bounty.avatar}}" width=20px height="20px">
+                <a href="https://gitcoin.co/{{bounty.url}}">
+                    {{bounty.title}}
+                </a>
+                | Tagged: <i>{{bounty.tags |slice:":3" | join:", "}}</i>
+
+            </li>
+        {% endfor %}
+    </ul>
+    <div class="centered-contents">
+        <p style="margin-top: 20px;">{% trans "There's much much more on the Gitcoin Universal Bounties Explorer:" %}</p>
+
+        <div style="margin-bottom: 2em;">
+            <a class="button" href="https://gitcoin.co/universe">{% trans "View Bounties Universe" %}</a>
+        </div>
+    </div>
+
+
+    <hr>
+
+</div>
 
 <p>
-    You are receiving this email because your email address is on the notification list. <a href="https://gitcoin.co/email/settings/{{subscriber_id}}">Manage Email Settings</a>.
+    {% trans "You are receiving this email because your email address is on the notification list." %} <a href="https://gitcoin.co/settings/email/{{subscriber.priv}}">{% trans "Manage Email Settings" %}</a>.
 </p>
-
-<p>
-    Keep Pushing Open Source Forward,
-    <br>
-    -- Gitcoin Core
-</p>
-
-
 
 {% endblock %}

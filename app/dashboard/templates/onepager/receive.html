@@ -1,0 +1,97 @@
+{% extends 'onepager/base.html' %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+{% block 'scripts' %}
+<script src="{% static "v2/js/abi.js" %}"></script>
+<script src="{% static "v2/js/secrets.min.js" %}"></script>
+<script src="{% static "v2/js/ipfs-api.js" %}"></script>
+<script src="{% static "v2/js/ipfs.js" %}"></script>
+<script src="{% static "v2/js/shared.js" %}"></script>
+<script src="{% static "onepager/js/receive.js" %}"></script>
+<script src="{% static "onepager/js/confetti.js" %}"></script>
+<script src="{% static "onepager/js/bignumber.js" %}"></script>
+<script src="{% static "onepager/js/tx.js" %}"></script>
+
+{% endblock %}
+<!-- Main -->
+{% block 'world' %}
+<div>
+  <canvas id="world" style="position:absolute; top:0px; left: 0px;"></canvas>
+</div>
+{% endblock %}
+{% block 'main' %}
+<section id="main">
+  <header>
+    <span class="avatar">
+      <a href="{% url "tip" %}">
+        <img src="{% static "v2/images/helmet.png" %}" style="background-color: white; max-width: 100px; max-height: 100px;" />
+      </a>
+    </span>
+  </header>
+  <div id="receove_eth" {% if tip.receive_txid %} style="display:none;" {%endif%} >
+    <form method="POST">
+      <h1 id="oneh1">{% trans "You've got" %} {{tip.amount}} {{tip.tokenName}} </h1>
+      <div>
+        {% trans "Forward it to a permanent address:" %}
+        <br>
+        <input type="hidden" name="network" id="network" value="">
+        <input type="text" name="forwarding_address" id="forwarding_address" placeholder="0x0" {% if disable_inputs %}disabled=disabled{%endif%}>
+      </div>
+      <div>
+        <input type="checkbox" name="save_addr" id="save_addr" value=1 checked="" {% if disable_inputs %}disabled=disabled{%endif%}>
+        <label for=save_addr>{% trans "Save this address as my direct payment address" %}</label>
+        <br>
+        <input type="checkbox" id="tos" value="1" >
+        <label for="tos">{% blocktrans %}I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.{% endblocktrans %}</label>
+
+      </div>
+      <div>
+        <br>
+        <input id="receive" type='submit' class="button button--primary" value="{% trans "Claim" %} {{tip.tokenName}} 🙌" {% if disable_inputs %}disabled=disabled{%endif%} >
+        <br>
+      </div>
+    </form>
+  </div>
+  <div id="receove_eth_done" {% if not tip.receive_txid %} style="display:none;" {%endif%}>
+    <h1>{% trans "Congrats!" %}</h1>
+    <p>You've received {{tip.amount}} {{tip.tokenName}} via transaction <span id="trans_id">{{tip.receive_txid}}</span>.</p>
+  </div>
+  {% if not tip.receive_txid and is_authed %}
+    <script>
+      document.gas_price = {{gas_price}};
+      document.ipfs_key_to_secret = '{{key}}';
+      document.gitcoin_secret = '{{tip.metadata.gitcoin_secret}}';
+      document.tip = {
+        'holding_address': '{{tip.metadata.address}}',
+        'amount_in_wei': {{tip.amount_in_wei | floatformat}},
+        'token_address': '{{tip.tokenAddress}}',
+      }
+    </script>
+  {% endif %}
+{% if tip.receive_txid %}
+  <script>
+    setTimeout(function(){
+      startConfetti();
+    }, 1000);
+  </script>
+{% endif %}
+</section>
+<script>
+  document.network = '{{tip.network}}';
+</script>
+{% endblock %}

@@ -32,6 +32,7 @@ class Command(BaseCommand):
             bounties = Bounty.objects.filter(
                 is_open=True,
                 current_bounty=True,
+                network='mainnet',
                 expires_date__lt=(timezone.now() + timezone.timedelta(days=(day+1))),
                 expires_date__gte=(timezone.now() + timezone.timedelta(days=day)),
             ).all()

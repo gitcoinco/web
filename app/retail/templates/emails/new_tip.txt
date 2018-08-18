@@ -1,24 +1,25 @@
-{% load humanize %} 
+{% load humanize i18n %}
 ⚡️ New Tip Alert ⚡️
 
 {% if tip.from_name %}{{tip.from_name}}{% else %}Someone{% endif %} has sent you tip worth {{amount}} {{warning}} {{tokenName}}.
 
 {% if tip.url %}
-{% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} said it was for your work on {{tip.github_url}}: 
+{% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} said it was for your work on {{tip.github_url}}:
 {% endif %}
 
 {% if comments %}
-{% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} had the following comments: 
+{% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} had the following comments:
 {{comments}}
 {% endif %}
 
-{% if show_expires %}
+{% if already_redeemed %}
+ {% trans "This tip has been remitted automatically to the Ethereum address on file for your account via txid " %}{{tip.txid}}
+{% elif show_expires %}
 The tip expires on *{{tip.expires_date}}, in just {{tip.expires_date | naturaltime}}*.  No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:
 {% else %}
 No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:
 {% endif %}
 
+{% if not already_redeemed %}
 Click here to redeem it: {{link}}
-
-Keep Pushing Open Source Forward,
--- Gitcoin Core
+{% endif %}

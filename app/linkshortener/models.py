@@ -8,6 +8,7 @@ from economy.models import SuperModel
 
 
 class Link(SuperModel):
+
     comments = models.TextField()
     url = models.URLField(null=True)
     shortcode = models.CharField(max_length=255, unique=True)

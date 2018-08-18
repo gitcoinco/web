@@ -21,23 +21,35 @@ import csv
 import datetime
 import os
 import re
-import StringIO
-from itertools import imap
+from io import StringIO
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
 import boto
-from app.utils import itermerge
 from boto.s3.key import Key
-from dashboard.models import Bounty, Tip
+from dashboard.models import Bounty, Profile, Tip
+from economy.utils import convert_amount
+from enssubdomain.models import ENSSubdomainRegistration
+from faucet.models import FaucetRequest
 from marketing.mails import send_mail
 
 DATE_FORMAT = '%Y/%m/%d'
 DATE_FORMAT_HYPHENATED = '%Y-%m-%d'
-REPORT_URL_EXPIRATION_TIME = 60 * 60 * 24 * 30 # seconds
+REPORT_URL_EXPIRATION_TIME = 60 * 60 * 24 * 30  # seconds
 
 GITHUB_REPO_PATTERN = re.compile('github.com/[\w-]+/([\w-]+)')
+
+imap = map
+
+
+def get_bio(handle):
+    try:
+        profile = Profile.objects.filter(handle=handle.replace('@','')).first()
+        return profile.data.get('location', 'unknown'), profile.data.get('bio', 'unknown')
+    except Exception as e:
+        return 'unknown', 'unknown'
+
 
 def valid_date(v):
     try:
@@ -65,12 +77,14 @@ class Command(BaseCommand):
     def format_bounty(self, bounty):
         from dashboard.models import BountyFulfillment
         try:
-            bounty_fulfillment = bounty.fulfillments.accepted().latest('created_on')
+            bounty_fulfillment = bounty.fulfillments.filter(accepted=True).latest('created_on')
             claimee_address = bounty_fulfillment.fulfiller_address
             fulfiller_github_username = bounty_fulfillment.fulfiller_github_username
         except BountyFulfillment.DoesNotExist:
             claimee_address = ''
             fulfiller_github_username = ''
+
+        location, bio = get_bio(fulfiller_github_username)
 
         return {
             'type': 'bounty',
@@ -78,7 +92,7 @@ class Command(BaseCommand):
             'last_activity': bounty.modified_on,
             'amount': bounty.get_natural_value(),
             'denomination': bounty.token_name,
-            'amount_eth': bounty.value_in_eth / 10**18,
+            'amount_eth': bounty.value_in_eth / 10**18 if bounty.value_in_eth else None,
             'amount_usdt': bounty.value_in_usdt,
             'from_address': bounty.bounty_owner_address,
             'claimee_address': claimee_address,
@@ -87,14 +101,19 @@ class Command(BaseCommand):
             'fulfiller_github_username': fulfiller_github_username,
             'status': bounty.status,
             'comments': bounty.github_url,
+            'payee_bio': bio,
+            'payee_location': location,
         }
 
     def format_tip(self, tip):
+
+        location, bio = get_bio(tip.username)
+
         return {
             'type': 'tip',
             'created_on': tip.created_on,
             'last_activity': tip.modified_on,
-            'amount': tip.get_natural_value() * 10**18,
+            'amount': tip.amount_in_whole_units,
             'denomination': tip.tokenName,
             'amount_eth': tip.value_in_eth,
             'amount_usdt': tip.value_in_usdt,
@@ -105,6 +124,54 @@ class Command(BaseCommand):
             'fulfiller_github_username': tip.username,
             'status': tip.status,
             'comments': tip.github_url,
+            'payee_bio': bio,
+            'payee_location': location,
+        }
+
+    def format_faucet_distribution(self, fr):
+
+        location, bio = get_bio(fr.github_username)
+
+        return {
+            'type': 'faucet_distribution',
+            'created_on': fr.created_on,
+            'last_activity': fr.modified_on,
+            'amount': fr.amount,
+            'denomination': 'ETH',
+            'amount_eth': fr.amount,
+            'amount_usdt': convert_amount(fr.amount, 'ETH', 'USDT'),
+            'from_address': '0x4331B095bC38Dc3bCE0A269682b5eBAefa252929',
+            'claimee_address': fr.address,
+            'repo': 'n/a',
+            'from_username': 'admin',
+            'fulfiller_github_username': fr.github_username,
+            'status': 'sent',
+            'comments': f"faucet distribution {fr.pk}",
+            'payee_bio': bio,
+            'payee_location': location,
+        }
+
+    def format_ens_reg(self, ensreg):
+
+        location, bio = get_bio(ensreg.profile.handle) if ensreg.profile else "", ""
+        amount = ensreg.gas_cost_eth
+        return {
+            'type': 'ens_subdomain_registration',
+            'created_on': ensreg.created_on,
+            'last_activity': ensreg.modified_on,
+            'amount': amount,
+            'denomination': 'ETH',
+            'amount_eth': amount,
+            'amount_usdt': convert_amount(amount, 'ETH', 'USDT'),
+            'from_address': '0x4331B095bC38Dc3bCE0A269682b5eBAefa252929',
+            'claimee_address': ensreg.subdomain_wallet_address,
+            'repo': 'n/a',
+            'from_username': 'admin',
+            'fulfiller_github_username': ensreg.profile.handle if ensreg.profile else "",
+            'status': 'sent',
+            'comments': f"ENS Subdomain Registraiton {ensreg.pk}",
+            'payee_bio': bio,
+            'payee_location': location,
         }
 
     def upload_to_s3(self, filename, contents):
@@ -117,7 +184,6 @@ class Command(BaseCommand):
 
         return key.generate_url(expires_in=REPORT_URL_EXPIRATION_TIME)
 
-
     def handle(self, *args, **options):
         bounties = Bounty.objects.prefetch_related('fulfillments').filter(
             network='mainnet',
@@ -125,25 +191,47 @@ class Command(BaseCommand):
             web3_created__gte=options['start_date'],
             web3_created__lte=options['end_date']
         ).order_by('web3_created', 'id')
+        formatted_bounties = imap(self.format_bounty, bounties)
+
+        frs = FaucetRequest.objects.filter(
+            created_on__gte=options['start_date'],
+            created_on__lte=options['end_date'],
+            fulfilled=True,
+        ).order_by('created_on', 'id')
+        formatted_frs = imap(self.format_faucet_distribution, frs)
 
         tips = Tip.objects.filter(
             network='mainnet',
             created_on__gte=options['start_date'],
             created_on__lte=options['end_date']
+        ).exclude(
+            txid='',
         ).order_by('created_on', 'id')
-
-        formatted_bounties = imap(self.format_bounty, bounties)
         formatted_tips = imap(self.format_tip, tips)
 
-        csvfile = StringIO.StringIO()
+        enssubregistrations = ENSSubdomainRegistration.objects.filter(
+            created_on__gte=options['start_date'],
+            created_on__lte=options['end_date']
+        ).order_by('created_on', 'id')
+        formted_enssubreg = imap(self.format_ens_reg, enssubregistrations)
+
+        # python3 list hack
+        formatted_frs = [x for x in formatted_frs]
+        formatted_bounties = [x for x in formatted_bounties]
+        formatted_tips = [x for x in formatted_tips]
+        formateted_enssubregistrations = [x for x in formted_enssubreg]
+        all_items = formatted_bounties + formatted_tips + formatted_frs + formateted_enssubregistrations
+
+        csvfile = StringIO()
         csvwriter = csv.DictWriter(csvfile, fieldnames=[
             'type', 'created_on', 'last_activity', 'amount', 'denomination', 'amount_eth',
             'amount_usdt', 'from_address', 'claimee_address', 'repo', 'from_username',
-            'fulfiller_github_username', 'status', 'comments'])
+            'fulfiller_github_username', 'status', 'comments', 'payee_bio', 'payee_location'])
         csvwriter.writeheader()
 
+        items = sorted(all_items, key=lambda x: x['created_on'])
         has_rows = False
-        for item in itermerge(formatted_bounties, formatted_tips, lambda x: x['created_on']):
+        for item in items:
             has_rows = True
             csvwriter.writerow(item)
 
@@ -157,7 +245,7 @@ class Command(BaseCommand):
             body = '<a href="%s">%s</a>' % (url, url)
             print(url)
 
-            send_mail(settings.CONTACT_EMAIL, settings.CONTACT_EMAIL, subject, body='', html=body, add_bcc=False)
+            send_mail(settings.CONTACT_EMAIL, settings.CONTACT_EMAIL, subject, body='', html=body)
 
             self.stdout.write(self.style.SUCCESS('Sent activity report from %s to %s to %s' % (start, end, settings.CONTACT_EMAIL)))
         else:

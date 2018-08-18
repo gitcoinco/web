@@ -20,19 +20,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import logging
 import random
 import re
-import sys
 from urllib.parse import urlparse as parse
 
 from django.conf import settings
-from django.utils import timezone
+from django.contrib.humanize.templatetags.humanize import naturaltime
 
+import requests
 import twitter
-from app.rollbar import rollbar
-from github.utils import delete_issue_comment, patch_issue_comment, post_issue_comment
+from economy.utils import convert_token_to_usdt
+from git.utils import delete_issue_comment, org_name, patch_issue_comment, post_issue_comment, repo_name
 from marketing.mails import tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping
 from pyshorteners import Shortener
 from slackclient import SlackClient
+
+logger = logging.getLogger(__name__)
 
 
 def github_org_to_twitter_tags(github_org):
@@ -62,11 +64,8 @@ def maybe_market_to_twitter(bounty, event_name):
         bool: Whether or not the twitter notification was sent successfully.
 
     """
-    if not settings.TWITTER_CONSUMER_KEY or (event_name not in ['new_bounty', 'remarket_bounty']) or (
-       bounty.get_natural_value() < 0.0001) or (bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+    if not bounty.is_notification_eligible(var_to_check=settings.TWITTER_CONSUMER_KEY):
         return False
-    return False  # per 2018/01/22 convo with vivek / kevin, these tweets have low engagement
-    # we are going to test manually promoting these tweets for a week and come back to revisit this
 
     api = twitter.Api(
         consumer_key=settings.TWITTER_CONSUMER_KEY,
@@ -84,23 +83,66 @@ def maybe_market_to_twitter(bounty, event_name):
             "Gitcoin open task of the day is worth {} {} {} ⚡️ \n\n{}",
             "Task of the day 💰 {} {} {} ⚡️ \n\n{}",
         ]
-    if event_name == 'new_bounty':
+    elif event_name == 'new_bounty':
         tweet_txts = tweet_txts + [
             "Extra! Extra 🗞🗞 New Funded Issue, Read all about it 👇  {} {} {} \n\n{}",
             "Hot off the blockchain! 🔥🔥🔥 There's a new task worth {} {} {} \n\n{}",
             "💰 New Task Alert.. 💰 Earn {} {} {} for working on this 👇 \n\n{}",
         ]
+    elif event_name == 'increased_bounty':
+        tweet_txts = [
+            'Increased Payout on {} {} {}\n{}'
+        ]
+    elif event_name == 'start_work':
+        tweet_txts = [
+            'Work started on {} {} {}\n{}'
+        ]
+    elif event_name == 'stop_work':
+        tweet_txts = [
+            'Work stopped on {} {} {}\n{}'
+        ]
+    elif event_name == 'work_done':
+        tweet_txts = [
+            'Work done on {} {} {}\n{}'
+        ]
+    elif event_name == 'work_submitted':
+        tweet_txts = [
+            'Work submitted on {} {} {}\n{}'
+        ]
+    elif event_name == 'killed_bounty':
+        tweet_txts = [
+            'Bounty killed on {} {} {}\n{}'
+        ]
+    elif event_name == 'worker_rejected':
+        tweet_txts = [
+            'Worked rejected on {} {} {}\n{}'
+        ]
+    elif event_name == 'worker_approved':
+        tweet_txts = [
+            'Worked approved on {} {} {}\n{}'
+        ]
 
     random.shuffle(tweet_txts)
     tweet_txt = tweet_txts[0]
 
-    shortener = Shortener('Tinyurl')
+    url = bounty.get_absolute_url()
+    is_short = False
+    for shortener in ['Tinyurl', 'Adfly', 'Isgd', 'QrCx']:
+        try:
+            if not is_short:
+                shortener = Shortener(shortener)
+                response = shortener.short(url)
+                if response != 'Error' and 'http' in response:
+                    url = response
+                is_short = True
+        except Exception:
+            pass
 
     new_tweet = tweet_txt.format(
         round(bounty.get_natural_value(), 4),
         bounty.token_name,
-        ("(${})".format(bounty.value_in_usdt) if bounty.value_in_usdt else ""),
-        shortener.short(bounty.get_absolute_url())
+        f"({bounty.value_in_usdt_now} USD @ ${round(convert_token_to_usdt(bounty.token_name),2)}/{bounty.token_name})" if bounty.value_in_usdt_now else "",
+        url
     )
     new_tweet = new_tweet + " " + github_org_to_twitter_tags(bounty.org_name)  # twitter tags
     if bounty.keywords:  # hashtags
@@ -128,25 +170,143 @@ def maybe_market_to_slack(bounty, event_name):
         bool: Whether or not the Slack notification was sent successfully.
 
     """
-    if not settings.SLACK_TOKEN:
+    if not bounty.is_notification_eligible(var_to_check=settings.SLACK_TOKEN):
         return False
+
+    msg = build_message_for_integration(bounty, event_name)
+    if not msg:
+        return False
+
+    try:
+        channel = 'notif-gitcoin'
+        sc = SlackClient(settings.SLACK_TOKEN)
+        sc.api_call(
+            "chat.postMessage",
+            channel=channel,
+            text=msg,
+            icon_url=settings.GITCOIN_SLACK_ICON_URL,
+        )
+    except Exception as e:
+        print(e)
+        return False
+    return True
+
+
+def build_message_for_integration(bounty, event_name):
+    """Build message to be posted to integrated service (e.g. slack, discord).
+
+    Args:
+        bounty (dashboard.models.Bounty): The Bounty to be marketed.
+        event_name (str): The name of the event.
+
+    Returns:
+        str: Message to post to slack.
+
+    """
+    from dashboard.utils import humanize_event_name
+    conv_details = ""
+    usdt_details = ""
+    try:
+        conv_details = f"@ (${round(convert_token_to_usdt(bounty.token_name),2)}/{bounty.token_name})"
+        usdt_details = f"({bounty.value_in_usdt_now} USD {conv_details} "
+    except Exception:
+        pass  # no USD conversion rate
+
+    title = bounty.title if bounty.title else bounty.github_url
+    msg = f"*{humanize_event_name(event_name)}*" \
+          f"\n*Title*: {title}" \
+          f"\n*Bounty value*: {round(bounty.get_natural_value(), 4)} {bounty.token_name} {usdt_details}" \
+          f"\n{bounty.get_absolute_url()}"
+    return msg
+
+
+def maybe_market_to_user_slack(bounty, event_name):
+    """Send a Slack message to the user's slack channel for the specified Bounty.
+
+    Args:
+        bounty (dashboard.models.Bounty): The Bounty to be marketed.
+        event_name (str): The name of the event.
+
+    Returns:
+        bool: Whether or not the Slack notification was sent successfully.
+
+    """
+    from dashboard.models import Profile
     if bounty.get_natural_value() < 0.0001:
         return False
     if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
 
-    title = bounty.title if bounty.title else bounty.github_url
-    msg = f"{event_name.replace('bounty', 'funded_issue')} worth {round(bounty.get_natural_value(), 4)} " \
-          f"{bounty.token_name}: {title} \n\n{bounty.get_absolute_url()}&slack=1"
+    msg = build_message_for_integration(bounty, event_name)
+    if not msg:
+        return False
 
+    url = bounty.github_url
+    sent = False
     try:
-        channel = 'notif-gitcoin'
-        sc = SlackClient(settings.SLACK_TOKEN)
-        sc.api_call("chat.postMessage", channel=channel, text=msg)
+        repo = org_name(url) + '/' + repo_name(url)
+        subscribers = Profile.objects.filter(slack_repos__contains=[repo])
+        subscribers = subscribers & Profile.objects.exclude(slack_token='', slack_channel='')
+        for subscriber in subscribers:
+            try:
+                sc = SlackClient(subscriber.slack_token)
+                sc.api_call(
+                    "chat.postMessage",
+                    channel=subscriber.slack_channel,
+                    text=msg,
+                    icon_url=settings.GITCOIN_SLACK_ICON_URL,
+                )
+                sent = True
+            except Exception as e:
+                print(e)
     except Exception as e:
         print(e)
+
+    return sent
+
+
+def maybe_market_to_user_discord(bounty, event_name):
+    """Send a Discord message to the user's discord channel for the specified Bounty.
+
+    Args:
+        bounty (dashboard.models.Bounty): The Bounty to be marketed.
+        event_name (str): The name of the event.
+
+    Returns:
+        bool: Whether or not the Discord notification was sent successfully.
+
+    """
+    from dashboard.models import Profile
+    if bounty.get_natural_value() < 0.0001:
         return False
-    return True
+    if bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+        return False
+
+    msg = build_message_for_integration(bounty, event_name)
+    if not msg:
+        return False
+
+    url = bounty.github_url
+    sent = False
+    try:
+        repo = org_name(url) + '/' + repo_name(url)
+        subscribers = Profile.objects.filter(discord_repos__contains=[repo])
+        subscribers = subscribers & Profile.objects.exclude(discord_webhook_url='')
+        for subscriber in subscribers:
+            try:
+                headers = {'Content-Type': 'application/json'}
+                body = {"content": msg, "avatar_url": "https://gitcoin.co/static/v2/images/helmet.png"}
+                discord_response = requests.post(
+                    subscriber.discord_webhook_url, headers=headers, json=body
+                )
+                if discord_response.status_code == 204:
+                    sent = True
+            except Exception as e:
+                print(e)
+    except Exception as e:
+        print(e)
+
+    return sent
 
 
 def maybe_market_tip_to_email(tip, emails):
@@ -178,20 +338,60 @@ def maybe_market_tip_to_slack(tip, event_name):
         bool: Whether or not the Slack notification was sent successfully.
 
     """
-    if not settings.SLACK_TOKEN or (tip.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+    if not tip.is_notification_eligible(var_to_check=settings.SLACK_TOKEN):
         return False
 
-    title = tip.github_url
-    msg = f"{event_name} worth {round(tip.amount, 4)} {tip.tokenName}: {title} \n\n{tip.github_url}"
+    msg = f"{event_name} worth {round(tip.amount, 4)} {tip.tokenName}"
+
+    if tip.github_url:
+        msg = f"{msg}:\n\n{tip.github_url}"
 
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
-        channel = 'bounties'
-        sc.api_call("chat.postMessage", channel=channel, text=msg)
+        channel = 'notif-gitcoin'
+        sc.api_call(
+            "chat.postMessage",
+            channel=channel,
+            text=msg,
+            icon_url=settings.GITCOIN_SLACK_ICON_URL,
+        )
     except Exception as e:
         print(e)
         return False
     return True
+
+
+def get_status_header(bounty):
+    statuses = ['Open']
+    status = bounty.status
+    if status == 'unknown':
+        return ""
+    elif status == 'cancelled':
+        statuses.append('**Cancelled**')
+    elif status == 'expired':
+        statuses.append('**Expired**')
+    else:
+        if status == 'open':
+            statuses = ['**Open**', 'Started', 'Submitted', 'Done']
+        elif status == 'started':
+            statuses += ['**Started**', 'Submitted', 'Done']
+        else:
+            statuses.append('Started')
+            if status == 'submitted':
+                statuses += ['**Submitted**', 'Done']
+            else:
+                statuses.append('Submitted')
+                if status == 'done':
+                    statuses.append('**Done**')
+                else:
+                    statuses.append('**Done**')
+
+    # 1. Open | **2. Started** | 3. Submitted | 4. Done
+    status_bar = ""
+    for x, status in enumerate(statuses):
+        status_bar += f"{x+1}. {status} "
+
+    return f"Issue Status: {status_bar}\n\n<hr>\n\n"
 
 
 def build_github_notification(bounty, event_name, profile_pairs=None):
@@ -207,60 +407,104 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
         bool: Whether or not the Github comment was posted successfully.
 
     """
-    from dashboard.models import BountyFulfillment
+    from dashboard.utils import get_ordinal_repr  # hack for circular import issue
+    from dashboard.models import BountyFulfillment, Interest
     msg = ''
-    usdt_value = f"({round(bounty.value_in_usdt, 2)} USD)" if bounty.value_in_usdt else ""
+    usdt_value = ""
+    try:
+        usdt_value = f"({round(bounty.value_in_usdt_now, 2)} USD @ ${round(convert_token_to_usdt(bounty.token_name), 2)}/{bounty.token_name})" if bounty.value_in_usdt_now else ""
+    except Exception:
+        pass  # no USD conversion rate available
     natural_value = round(bounty.get_natural_value(), 4)
     absolute_url = bounty.get_absolute_url()
-    amount_open_work = amount_usdt_open_work()
-    profiles = ""
-    bounty_owner = f"(@{bounty.bounty_owner_github_username})" if bounty.bounty_owner_github_username else ""
+    amount_open_work = "{:,}".format(amount_usdt_open_work())
+    bounty_owner = f"@{bounty.bounty_owner_github_username}" if bounty.bounty_owner_github_username else ""
+    status_header = get_status_header(bounty)
 
-    if profile_pairs:
-        profiles = "\n 1. ".join("[@%s](%s)" % profile for profile in profile_pairs)
+    crowdfund_msg = f"* Want to chip in? Add your own contribution [here]({absolute_url})."
+    openwork_msg = f"* ${amount_open_work} more funded OSS Work available on the " \
+                   f"[Gitcoin Issue Explorer](https://gitcoin.co/explorer)"
+    help_msg = "* Questions? Checkout <a href='https://gitcoin.co/help'>Gitcoin Help</a> or the " \
+        f"<a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
+    claim_msg = f"* If you want to claim the bounty you can do so " \
+                f"[here]({absolute_url})"
+    learn_more_msg = f"* Learn more [on the Gitcoin Issue Details page]({absolute_url})"
+    crowdfund_amount = f"(plus a crowdfund of {bounty.additional_funding_summary_sentence})" if bounty.additional_funding_summary_sentence else ""
+    crowdfund_thx = ", ".join(f"@{tip.from_username}" for tip in bounty.tips.filter(is_for_bounty_fulfiller=True) if tip.from_username)
+    if crowdfund_thx:
+        crowdfund_thx = f"Thanks to {crowdfund_thx} for their crowdfunded contributions to this bounty.\n\n"
     if event_name == 'new_bounty':
-        msg = f"__This issue now has a funding of {natural_value} " \
-              f"{bounty.token_name} {usdt_value} attached to it.__\n\n * If you would " \
-              f"like to work on this issue you can claim it [here]({absolute_url}).\n " \
-              "* If you've completed this issue and want to claim the bounty you can do so " \
-              f"[here]({absolute_url})\n * Questions? Get help on the " \
-              f"<a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * ${amount_open_work}" \
-              " more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+        msg = f"{status_header}__This issue now has a funding of {natural_value} {bounty.token_name} {usdt_value} " \
+              f"{crowdfund_amount} attached to it.__\n\n * If you would " \
+              f"like to work on this issue you can 'start work' [on the Gitcoin Issue Details page]({absolute_url})." \
+              f"\n{crowdfund_msg}\n{help_msg}\n{openwork_msg}\n"
+    if event_name == 'increased_bounty':
+        msg = f"{status_header}__The funding of this issue was increased to {natural_value} {bounty.token_name} {usdt_value} " \
+              f"{crowdfund_amount}.__\n\n " \
+              f"\n{claim_msg}\n{crowdfund_msg}\n{help_msg}\n{openwork_msg}\n"
     elif event_name == 'killed_bounty':
-        msg = f"__The funding of {natural_value} {bounty.token_name} " \
-              f"{usdt_value} attached to this issue has been **killed** by the bounty submitter__\n\n " \
-              "* Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * " \
-              f"${amount_open_work} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+        msg = f"{status_header}__The funding of {natural_value} {bounty.token_name} {crowdfund_amount} " \
+              f"{usdt_value} attached to this issue has been **cancelled** by the bounty submitter__\n\n " \
+              f"\n{help_msg}\n{openwork_msg}"
     elif event_name == 'rejected_claim':
-        msg = f"__The work submission for {natural_value} {bounty.token_name} {usdt_value} " \
-              "has been **rejected** and can now be submitted by someone else.__\n\n * If you would " \
-              f"like to work on this issue you can claim it [here]({absolute_url}).\n * If you've " \
-              f"completed this issue and want to claim the bounty you can do so [here]({absolute_url})\n " \
-              "* Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * " \
-              f"${amount_open_work} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+        msg = f"{status_header}__The work submission for {natural_value} {bounty.token_name} {usdt_value} {crowdfund_amount} " \
+              f"has been **rejected** and can now be submitted by someone else.__\n\n{claim_msg}" \
+              f"\n{crowdfund_msg}\n{help_msg}\n{openwork_msg}"
     elif event_name == 'work_started':
-        sub_msg = "\n\n __Please work together__ and coordinate delivery of the issue scope. Gitcoin " \
-                  "doesn't know enough about everyones skillsets / free time to say who should work on " \
-                  "what, but we trust that the community is smart and well-intentioned enough to work " \
-                  "together.  As a general rule; if you start work first, youll be at the top of the " \
-                  "above list ^^, and should have 'dibs' as long as you follow through. \n\n On the " \
-                  f"above list? Please leave a comment to let the funder {bounty_owner} and the other parties " \
-                  "involved what you're working, with respect to this issue and your plans to resolve " \
-                  "it.  If you don't leave a comment, the funder may expire your submission at their discretion."
+        interested = bounty.interested.all().order_by('created')
+        from_now = naturaltime(bounty.expires_date)
+        started_work = bounty.interested.filter(pending=False).all()
+        approval_required = bounty.permission_type == 'approval'
 
-        msg = f"__Work has been started on the {natural_value} {bounty.token_name} {usdt_value} funding " \
-              f"by__: \n 1. {profiles} {sub_msg} \n\n * Learn more [on the gitcoin issue page]({absolute_url})\n " \
-              "* Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * " \
-              f"${amount_open_work} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+        if started_work.exists():
+            msg = f"{status_header}__Work has been started__.\n\n"
+        else:
+            msg = f"{status_header}__Workers have applied to start work__.\n\n"
+
+        msg += f"\nThese users each claimed they can complete the work by {from_now}.\n" \
+               "Please review their action plans below:\n\n"
+
+        for i, interest in enumerate(interested, start=1):
+
+            profile_link = f"[{interest.profile.handle}]({interest.profile.url})"
+            action = "started work"
+            if interest.pending:
+                action = 'applied to start work'
+                action += f" _(Funders only: [approve worker]({bounty.approve_worker_url(interest.profile.handle)})"
+                action += f" | [reject worker]({bounty.reject_worker_url(interest.profile.handle)}))_"
+            if not interest.pending and approval_required:
+                action = 'been approved to start work'
+
+            show_dibs = interested.count() > 1 and bounty.project_type == 'traditional'
+            dibs = f" ({get_ordinal_repr(i)} dibs)" if show_dibs else ""
+
+            msg += f"\n{i}. {profile_link} has {action}{dibs}. "
+
+            issue_message = interest.issue_message.strip()
+            if issue_message:
+                msg += f"\n    \n    {issue_message}"
+            msg += f"\n\nLearn more [on the Gitcoin Issue Details page]({absolute_url}).\n\n"
+
     elif event_name == 'work_submitted':
-        sub_msg = f"\n\n Submitters, please leave a comment to let the funder {bounty_owner} " \
-                  "(and the other parties involved) that you've submitted you work.  If you don't " \
-                  "leave a comment, the funder may expire your submission at their discretion."
+        sub_msg = ""
+        if bounty.fulfillments.exists():
+            sub_msg = f"\n\n{bounty_owner if bounty_owner else 'If you are the bounty funder,'} " \
+                       "please take a look at the submitted work:\n"
+            for bf in bounty.fulfillments.all():
+                username = "@"+bf.fulfiller_github_username if bf.fulfiller_github_username else bf.fulfiller_address
+                link_to_work = f"[PR]({bf.fulfiller_github_url})" if bf.fulfiller_github_url else "(Link Not Provided)"
+                sub_msg += f"* {link_to_work} by {username}\n"
 
-        msg = f"__Work for {natural_value} {bounty.token_name} {usdt_value} has been submitted by__: \n 1. " \
-              f"{profiles} {sub_msg} \n\n * Learn more [on the gitcoin issue page]({absolute_url})\n * " \
-              "Questions? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>\n * " \
-              f"${amount_open_work} more Funded OSS Work Available at: https://gitcoin.co/explorer\n"
+        profiles = ""
+        if profile_pairs:
+            for i, profile in enumerate(profile_pairs, start=1):
+                profiles = profiles + f"\n {i}. [@{profile[0]}]({profile[1]})"
+            profiles += "\n\n"
+
+
+        msg = f"{status_header}__Work for {natural_value} {bounty.token_name} {usdt_value} has been submitted by__:\n" \
+              f"{profiles}{sub_msg}\n<hr>\n\n" \
+              f"{learn_more_msg}\n{crowdfund_msg}\n{help_msg}\n{openwork_msg}"
     elif event_name == 'work_done':
         try:
             accepted_fulfillment = bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
@@ -268,11 +512,9 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
         except BountyFulfillment.DoesNotExist:
             accepted_fulfiller = ''
 
-        msg = f"__The funding of {natural_value} {bounty.token_name} {usdt_value} attached to this " \
-              f"issue has been approved & issued{accepted_fulfiller}.__  \n\n * Learn more at [on the gitcoin " \
-              f"issue page]({absolute_url})\n * Questions? Get help on the <a href='https://gitcoin.co/slack'>" \
-              f"Gitcoin Slack</a>\n * ${amount_open_work} more Funded OSS Work Available at: " \
-              "https://gitcoin.co/explorer\n"
+        msg = f"{status_header}__The funding of {natural_value} {bounty.token_name} {usdt_value} {crowdfund_amount} attached to this " \
+              f"issue has been approved & issued{accepted_fulfiller}.__  \n\n{crowdfund_thx} " \
+              f"{learn_more_msg}\n{help_msg}\n{openwork_msg}\n"
     return msg
 
 
@@ -289,8 +531,7 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
         bool: Whether or not the Github comment was posted successfully.
 
     """
-    if (not settings.GITHUB_CLIENT_ID) or (bounty.get_natural_value() < 0.0001) or (
-       bounty.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+    if not bounty.is_notification_eligible(var_to_check=settings.GITHUB_CLIENT_ID):
         return False
 
     # Define posting specific variables.
@@ -315,7 +556,7 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
             comment_id = bounty.submissions_comment
 
         # Handle creating or updating comments if profiles are provided.
-        if event_name in ['work_started', 'work_done', 'work_submitted'] and profile_pairs:
+        if event_name in ['work_started', 'work_submitted'] and profile_pairs:
             if comment_id is not None:
                 patch_issue_comment(comment_id, username, repo, msg)
             else:
@@ -327,7 +568,7 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
                         bounty.submissions_comment = int(response.get('id'))
                     bounty.save()
         # Handle deleting comments if no profiles are provided.
-        elif event_name in ['work_started', 'work_done'] and not profile_pairs:
+        elif event_name in ['work_started'] and not profile_pairs:
             if comment_id:
                 delete_issue_comment(comment_id, username, repo)
                 if event_name == 'work_started':
@@ -338,9 +579,11 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
         # If this isn't work_started/done, simply post the issue comment.
         else:
             post_issue_comment(username, repo, issue_num, msg)
+    except IndexError:
+        return False
     except Exception as e:
         extra_data = {'github_url': url, 'bounty_id': bounty.pk, 'event_name': event_name}
-        rollbar.report_exc_info(sys.exc_info(), extra_data=extra_data)
+        logger.error('Failure in marketing to github', exc_info=True, extra=extra_data)
         print(e)
         return False
     return True
@@ -353,9 +596,19 @@ def amount_usdt_open_work():
         float: The sum of all USDT values rounded to the nearest 2 decimals.
 
     """
+    bounties = open_bounties()
+    return round(sum([b.value_in_usdt_now for b in bounties if b.value_in_usdt_now]), 2)
+
+
+def open_bounties():
+    """Get all current open and submitted work.
+
+    Returns:
+        QuerySet: The mainnet Bounty objects which are of open and submitted work statuses.
+
+    """
     from dashboard.models import Bounty
-    bounties = Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
-    return round(sum([b.value_in_usdt for b in bounties]), 2)
+    return Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
 
 
 def maybe_market_tip_to_github(tip):
@@ -368,25 +621,37 @@ def maybe_market_tip_to_github(tip):
         bool: Whether or not the Github comment was posted successfully.
 
     """
-    if (not settings.GITHUB_CLIENT_ID) or (not tip.github_url) or (
-       tip.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK):
+    if not tip.is_notification_eligible(var_to_check=settings.GITHUB_CLIENT_ID) or not tip.github_url:
         return False
 
     # prepare message
     username = tip.username if '@' in tip.username else f'@{tip.username}'
-    _from = f" from {tip.from_name}" if tip.from_name else ""
+    _from = f" from @{tip.from_username}" if tip.from_name else ""
     warning = tip.network if tip.network != 'mainnet' else ""
     _comments = "\n\nThe sender had the following public comments: \n> " \
                 f"{tip.comments_public}" if tip.comments_public else ""
-    value_in_usd = f"(${tip.value_in_usdt})" if tip.value_in_usdt else ""
-    msg = f"⚡️ A tip worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has been " \
-          f"granted to {username} for this issue{_from}. ⚡️ {_comments}\n\nNice work {username}! To " \
-          "redeem your tip, login to Gitcoin at https://gitcoin.co/explorer and select 'Claim Tip' " \
-          "from dropdown menu in the top right, or check your email for a link to the tip redemption " \
-          "page. \n\n * ${amount_usdt_open_work()} in Funded OSS Work Available at: " \
-          "https://gitcoin.co/explorer\n * Incentivize contributions to your repo: " \
-          "<a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>" \
-          "Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
+    try:
+        value_in_usd = f"({tip.value_in_usdt_now} USD @ ${round(convert_token_to_usdt(tip.tokenName), 2)}/{tip.tokenName})" if tip.value_in_usdt_now else ""
+    except Exception:
+        pass  # no USD conv rate
+    if tip.username:
+        msg = f"⚡️ A tip worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has been " \
+              f"granted to {username} for this issue{_from}. ⚡️ {_comments}\n\nNice work {username}! "
+        redeem_instructions = "To redeem your tip, login to Gitcoin at https://gitcoin.co/explorer and select " \
+                              "'Claim Tip' from dropdown menu in the top right, or check your email for a " \
+                              "link to the tip redemption page. "
+        if tip.receive_txid:
+            redeem_instructions = "Your tip has automatically been deposited in the ETH address we have on file."
+        addon_msg = f"\n\n * ${amount_usdt_open_work()} in Funded OSS Work Available at: " \
+                    f"https://gitcoin.co/explorer\n * Incentivize contributions to your repo: " \
+                    f"<a href='https://gitcoin.co/tip'>Send a Tip</a> or <a href='https://gitcoin.co/funding/new'>" \
+                    f"Fund a PR</a>\n * No Email? Get help on the <a href='https://gitcoin.co/slack'>Gitcoin Slack</a>"
+        msg += redeem_instructions + addon_msg
+    else:
+        msg = f"💰 A crowdfund contribution worth {round(tip.amount, 5)} {warning} {tip.tokenName} {value_in_usd} has " \
+              f"been attached to this funded issue {_from}.💰 {_comments}\n"
+        if tip.bounty:
+            msg += f"\nWant to chip in also? Add your own contribution [here]({tip.bounty.absolute_url})."
 
     # actually post
     url = tip.github_url
@@ -404,30 +669,14 @@ def maybe_market_tip_to_github(tip):
 
 
 def maybe_market_to_email(b, event_name):
-    from marketing.mails import new_work_submission, new_bounty_rejection, new_bounty_acceptance, new_bounty
-    from marketing.models import EmailSubscriber
+    from marketing.mails import new_work_submission, new_bounty_rejection, new_bounty_acceptance
     to_emails = []
     if b.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
 
     if event_name == 'new_bounty' and not settings.DEBUG:
-        try:
-            # this doesnt scale because there are typically like 600 matches.. need to move to a background job
-            return
-            keywords = b.keywords.split(',')
-            for keyword in keywords:
-                to_emails = to_emails + list(EmailSubscriber.objects.filter(
-                    keywords__contains=[keyword.strip()]).values_list('email', flat=True))
-
-            should_send_email = b.web3_created > (timezone.now() - timezone.timedelta(hours=15))
-            # only send if the bounty is reasonbly new
-
-            if should_send_email:
-                for to_email in set(to_emails):
-                    new_bounty(b, [to_email])
-        except Exception as e:
-            logging.exception(e)
-            print(e)
+        # handled in 'new_bounties_email'
+        return
     elif event_name == 'work_submitted':
         try:
             to_emails = [b.bounty_owner_email]
@@ -436,9 +685,9 @@ def maybe_market_to_email(b, event_name):
             logging.exception(e)
             print(e)
     elif event_name == 'work_done':
-        accepted_fulfillment = b.fulfillments.filter(accepted=True).latest('modified_on')
         try:
-            to_emails = [b.bounty_owner_email, accepted_fulfillment]
+            accepted_fulfillment = b.fulfillments.filter(accepted=True).latest('modified_on')
+            to_emails = [b.bounty_owner_email, accepted_fulfillment.fulfiller_email]
             new_bounty_acceptance(b, to_emails)
         except Exception as e:
             logging.exception(e)
@@ -446,7 +695,7 @@ def maybe_market_to_email(b, event_name):
     elif event_name == 'rejected_claim':
         try:
             rejected_fulfillment = b.fulfillments.filter(accepted=False).latest('modified_on')
-            to_emails = [b.bounty_owner_email, rejected_fulfillment]
+            to_emails = [b.bounty_owner_email, rejected_fulfillment.fulfiller_email]
             new_bounty_rejection(b, to_emails)
         except Exception as e:
             logging.exception(e)
@@ -500,6 +749,7 @@ def maybe_post_on_craigslist(bounty):
         # for-else magic
         # if the loop completes normally that means we are still not at the edit page
         # hence return and don't proceed further
+        print('returning at first return')
         return
 
     posting_title = bounty.title
@@ -536,6 +786,7 @@ def maybe_post_on_craigslist(bounty):
         # for-else magic
         # if the loop completes normally that means we are still not at the edit page
         # hence return and don't proceed further
+        print('returning at 2nd return')
         return
 
     # submitting final form
@@ -565,3 +816,98 @@ def maybe_post_on_craigslist(bounty):
                     # in case of invalid links
                     return False
     return False
+
+
+def maybe_notify_bounty_user_escalated_to_slack(bounty, username, last_heard_from_user_days):
+    if not bounty.is_notification_eligible(var_to_check=settings.SLACK_TOKEN):
+        return False
+
+    msg = f"<@U88M8173P>, {bounty.github_url} is being escalated to you, due to inactivity for {last_heard_from_user_days} days from <@{username}> on the github thread."
+
+    try:
+        sc = SlackClient(settings.SLACK_TOKEN)
+        channel = 'notif-gitcoin'
+        sc.api_call(
+            "chat.postMessage",
+            channel=channel,
+            text=msg,
+            icon_url=settings.GITCOIN_SLACK_ICON_URL,
+        )
+    except Exception as e:
+        print(e)
+        return False
+    return True
+
+
+# TODO: DRY with expiration_start_work
+num_days_back_to_warn = 3
+num_days_back_to_delete_interest = 6
+
+
+def append_snooze_copy(bounty):
+    """Build the snooze copy for the associated Bounty.
+
+    Args:
+        bounty (dashboard.Bounty): The Bounty to create snooze copy for.
+
+    Returns:
+        str: The snooze copy for the provided bounty.
+
+    """
+    snooze = []
+    for day in [1, 3, 5, 10, 100]:
+        plural = "s" if day != 1 else ""
+        snooze.append(f"[{day} day{plural}]({bounty.snooze_url(day)})")
+    snooze = " | ".join(snooze)
+    return f"\nFunders only: Snooze warnings for {snooze}"
+
+
+def maybe_notify_user_escalated_github(bounty, username, last_heard_from_user_days=None):
+    if not bounty.is_notification_eligible(var_to_check=settings.GITHUB_CLIENT_ID):
+        return False
+
+    if not last_heard_from_user_days:
+        last_heard_from_user_days = num_days_back_to_delete_interest
+
+    status_header = get_status_header(bounty)
+
+    msg = f"""{status_header}@{username} due to inactivity, we have escalated [this issue]({bounty.url}) to Gitcoin's moderation team. Let us know if you believe this has been done in error!
+
+* [x] warning ({num_days_back_to_warn} days)
+* [x] escalation to mods ({num_days_back_to_delete_interest} days)
+{append_snooze_copy(bounty)}"""
+
+    post_issue_comment(bounty.org_name, bounty.github_repo_name, bounty.github_issue_number, msg)
+
+
+def maybe_warn_user_removed_github(bounty, username, last_heard_from_user_days):
+    if not bounty.is_notification_eligible(var_to_check=settings.GITHUB_CLIENT_ID):
+        return False
+
+    msg = f"""@{username} Hello from Gitcoin Core - are you still working on this issue? Please submit a WIP PR or comment back within the next 3 days or you will be removed from this ticket and it will be returned to an ‘Open’ status. Please let us know if you have questions!
+* [x] warning ({num_days_back_to_warn} days)
+* [ ] escalation to mods ({num_days_back_to_delete_interest} days)
+{append_snooze_copy(bounty)}"""
+
+    post_issue_comment(bounty.org_name, bounty.github_repo_name, bounty.github_issue_number, msg)
+
+
+def maybe_notify_bounty_user_warned_removed_to_slack(bounty, username, last_heard_from_user_days=None):
+    if not bounty.is_notification_eligible(var_to_check=settings.SLACK_TOKEN):
+        return False
+
+    msg = f"*@{username}* has been warned about inactivity ({last_heard_from_user_days} days) on {bounty.github_url}"
+
+    try:
+        sc = SlackClient(settings.SLACK_TOKEN)
+        channel = 'notif-gitcoin'
+        sc.api_call(
+            "chat.postMessage",
+            channel=channel,
+            text=msg,
+            icon_url=settings.GITCOIN_SLACK_ICON_URL,
+        )
+    except Exception as e:
+        print(e)
+        return False
+    return True

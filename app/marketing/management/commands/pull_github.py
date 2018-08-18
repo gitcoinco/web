@@ -17,38 +17,54 @@
 '''
 import time
 
+from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 
+from dashboard.models import Profile
 from dashboard.views import profile_keywords_helper
-from github.utils import search
+from git.utils import search
 from marketing.models import EmailSubscriber
 
 
-def get_github_user(email):
+def get_github_user_from_github(email):
     result = search(email)
     if not result.get('total_count', 0):
-        #print(result)
+        # print(result)
         raise Exception("no users found")
 
     return result['items'][0]
 
 
+def get_github_user_from_DB(email):
+    users = User.objects.filter(email__iexact=email)
+    for user in users:
+        if user.profile:
+            return user.profile.handle
+    profiles = Profile.objects.filter(email__iexact=email)
+    for profile in profiles:
+        return profile.handle
+    return None
+
+
 class Command(BaseCommand):
 
-    help = 'pulls all github login info'
+    help = 'pulls all github metadata info'
 
     def handle(self, *args, **options):
         emailsubscribers = EmailSubscriber.objects.filter(github='')
         success = 0
         exceptions = 0
         for es in emailsubscribers:
-            #print(es.email)
+            # print(es.email)
             try:
-                ghuser = get_github_user(es.email)
-                es.github = ghuser['login']
-                es.keywords = profile_keywords_helper(es.github)
+                es.github = get_github_user_from_DB(es.email)
+                if not es.github:
+                    ghuser = get_github_user_from_github(es.email)
+                    es.github = ghuser['login']
+                if not es.keywords:
+                    es.keywords = profile_keywords_helper(es.github)
                 es.save()
-                #print(es.email, es.github, es.keywords)
+                # print(es.email, es.github, es.keywords)
                 success += 1
             except Exception:
                 exceptions += 1
@@ -57,7 +73,6 @@ class Command(BaseCommand):
         print("success: {}".format(success))
         print("total: {}".format(emailsubscribers.count()))
         print("pct: {}".format(round(success / emailsubscribers.count(), 2)))
-
 
         print("exceptions: {}".format(exceptions))
         print("total: {}".format(emailsubscribers.count()))

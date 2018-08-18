@@ -7,9 +7,3 @@ Heads up! The funded issue that you posted (below) is expiring in {{num}} {{unit
 {% endif %}
 
 {% include 'emails/bounty.txt' with bounty=bounty %}
-
-You are receiving this email because your email address is on the notification list for this funded issue.
-
-
-Keep Pushing Open Source Forward,
--- Gitcoin Core

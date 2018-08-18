@@ -1,0 +1,183 @@
+{% extends 'settings/settings.html' %}
+{% load i18n static %}
+{% block settings_content %}
+<style type="text/css">
+  body {
+    font-family: "Muli", sans-serif;
+  }
+
+  h4, h5 {
+    letter-spacing: 0;
+    text-transform: capitalize;
+  }
+
+  .major_button_container {
+    border: 1px solid #090909;
+    padding: 20px;
+  }
+
+  .form-group .major_button_container input,
+  .form-group .major_button_container a {
+    color: #FFFFFF !important;
+    width: 7rem;
+    text-align: center;
+  }
+
+  .major_button_container input,
+  .major_button_container a {
+    float: right;
+  }
+
+  .major_button_container .warning {
+    background-color: #ca001a;
+  }
+
+  .form-group .major_button_container p {
+    margin-bottom: 0;
+  }
+
+  .major_button_container input {
+    width: 7rem;
+  }
+
+  .profile-avatar {
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  .profile-avatar img {
+    width: 7.5rem;
+    border-radius: 50%;
+    border: 0.2rem solid #1AB56D;
+  }
+</style>
+    <form id="settings" method="POST">
+      <div class="form-group">
+        <h5>{% trans "ETH Account Preferences" %}</h5>
+      </div>
+      <div class="form-group">
+        <label class="form__label" for="preferred_payout_address">{% trans "Ethereum Payout Address" %}:</label> <a href="#" id="pull_from_metamask">{% trans "(Pull from Metamask)" %}</a>
+        <input type="text" name="preferred_payout_address" class="form__input" placeholder='0x0'  value="{{ profile.preferred_payout_address }}">
+        <small id="preferred_payout_addresshelp" class="form__input-help">{% trans "so we know where to send tips to you." %}</small>
+      </div>
+      {% csrf_token %}
+      <input class='button button--primary' type='submit' name='submit' value="{% trans "Save" %}">
+    </form>
+<div>
+  <h4 class="font-title mb-4 text-left">{% trans "Profile Photo" %}</h4>
+  <div class="profile-avatar row mx-0 px-0 major_button_container">
+    <div class="col-12 col-md-5 pl-0 pr-0 text-center">
+      <img id="user_avatar" src="{% if user.profile.avatar %}{{ user.profile.avatar.avatar_url }}{% else %}/static/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
+    </div>
+    <div class="col-12 col-md-7 row">
+      <div class="col-12 mt-2 mb-2">
+        <button id="use_github_avatar" type="button" class="button button--primary-o">
+          <i class="mr-2 fab fa-github"></i>{% trans "Use Github Avatar" %}
+        </button>
+      </div>
+      <div class="col-12">
+        <form id="build_avatar" method="GET" action="/onboard/contributor">
+          {% csrf_token %}
+          <input type="hidden" name="steps" value="avatar" />
+          <button type="submit" class="button button--primary-o">
+            <i class="mr-2 fas fa-wrench"></i>{% trans "Build Your Avatar" %}
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="form-group">
+    <h4 class="font-title mb-4 text-left">{% trans "Account Preferences" %}</h4>
+  </div>
+  <div class="form-group mb-4">
+    <div class="major_button_container">
+      <form id="disconnect" method="POST" action="{% url 'account_settings' %}">
+        {% csrf_token %}
+        <input type="submit" class="button button--primary" name="disconnect" value="Disconnect">
+      </form>
+      <h5 class="font-subheader">{% trans "Github" %}</h5>
+      <p class="font-body">{% trans "Connected as " %}{{ github_handle }}</p>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="major_button_container">
+      <form id="delete" method="POST" action="{% url 'account_settings' %}">
+        {% csrf_token %}
+        <a id="delete_account" class="button button--primary warning">{% trans "Delete" %}</a>
+        <input type='hidden' class="button button--primary warning" name="delete" value="Delete">
+      </form>
+      <h5 class="font-subheader">{% trans "Delete My Account" %}</h5>
+      <p class="font-body">{% trans "This action deletes all of your data" %}</p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+  $(document).ready(function() {
+    $("#pull_from_metamask").click(function(e){
+      if(web3 && typeof web3.eth.coinbase != 'undefined'){
+        $("input[name=preferred_payout_address]").val(web3.eth.coinbase);
+      } else {
+        e.preventDefault();
+        _alert("You must have Metamask installed to perform this action.");
+      }
+    });
+    $("#delete_account").on('click', function(e) {
+      var content = $.parseHTML(
+        '<div>' +
+          '<div class="row">' +
+            '<div class="col-12 closebtn">' +
+              '<a rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">' +
+                '<span aria-hidden="true">&times;</span>' +
+              '</a>' +
+            '</div>' +
+            '<div class="col-12 pt-2 pb-2 text-center">' +
+              '<h2 class="font-title">' + gettext('Are you sure you want to delete all of your data from Gitcoin?') + '</h2>' +
+            '</div>' +
+            '<div class="col-12 pt-2 pb-2 font-body">' +
+              '<p>' + gettext('Once you delete your account, there is no going back.') + '<br>' + gettext('Please be certain.') + '</p>' +
+              '<p>' + gettext('This action cannot be undone. This will permanently delete your account, stats, bounties funded and worked upon by you.') + '</p>' +
+              '<p>' + gettext('Your data will not be removed from the Ethereum blockchain, which is immutable. However, this will no longer tie to your Gitcoin account.') + '</p>' +
+            '</div>' +
+            '<div class="col-12 mt-4 mb-2 text-right font-caption">' +
+              '<a rel="modal:close" href="javascript:void" aria-label="Close dialog" class="button button--primary-o mr-3">Cancel</a>' +
+              '<button class="modal-delete button button--warning">Delete</button>' +
+            '</div>' +
+          '</div>' +
+        '</div>'
+      );
+      var modal = $(content).appendTo('#delete').modal({
+        modalClass: 'modal delete_account'
+      });
+
+      $(".modal-delete").on('click', function(e) {
+        $('#delete').submit();
+      });
+    });
+    $("#use_github_avatar").on('click', function(e) {
+      var request = $.ajax({
+        url: '/avatar/save',
+        type: 'POST',
+        data: JSON.stringify({
+          use_github_avatar: true
+        }),
+        dataType: 'json',
+        cache: false,
+        contentType: 'application/json; charset=utf-8',
+        success: function(response) {
+          $("#user_avatar").attr("src", response.avatar_url);
+          _alert({ message: gettext('Your Github Avatar Has Been Saved To your Gitcoin Profile!')}, 'success');
+        },
+        error: function() {
+          _alert({ message: gettext('Error occurred while saving. Please try again.')}, 'error');
+        }
+      });
+      console.log(request);
+    });
+  });
+</script>
+<script>
+
+</script>
+{% endblock %}

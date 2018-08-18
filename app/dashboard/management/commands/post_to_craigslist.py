@@ -16,6 +16,8 @@
 
 '''
 
+import logging
+import warnings
 from datetime import timedelta
 
 from django.core.management.base import BaseCommand
@@ -23,6 +25,10 @@ from django.utils import timezone
 
 from dashboard.models import Bounty
 from dashboard.notifications import maybe_post_on_craigslist
+
+warnings.filterwarnings("ignore", category=DeprecationWarning) 
+logging.getLogger("requests").setLevel(logging.WARNING)
+logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 
 class Command(BaseCommand):
@@ -38,5 +44,9 @@ class Command(BaseCommand):
         bounties_to_post = Bounty.objects.filter(web3_created__gte=one_hour_back)
         for bounty in bounties_to_post:
             # print(bounty)
-            link = maybe_post_on_craigslist(bounty)
-            print("Posted {}".format(link))
+            try:
+                print(f'attempting to post {bounty.github_url}')
+                link = maybe_post_on_craigslist(bounty)
+                print("Posted", link)
+            except Exception as e:
+                print(e)

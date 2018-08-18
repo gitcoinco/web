@@ -1,27 +1,25 @@
-const slides = document.querySelectorAll( '#slides .slide' );
+const $slides = $('#slides');
 
 let currentSlide = 0;
 
 function nextSlide() {
-  slides[currentSlide].className = 'slide hide';
-  currentSlide = ( currentSlide + 1 ) % slides.length;
-  slides[currentSlide].className = 'slide showing';
+  currentSlide = (currentSlide + 1) % $slides.children().length;
+  $slides.css('transform', `translateX(${-currentSlide * 100}vw)`);
   resetTimer();
 }
 
 function prevSlide() {
-  slides[currentSlide].className = 'slide hide';
-  if ( currentSlide == 0 ) {
+  if (currentSlide == 0) {
     currentSlide = slides.length - 1;
   } else {
-    currentSlide = ( currentSlide - 1 ) % slides.length;
+    currentSlide = (currentSlide - 1) % slides.length;
   }
-
-  slides[currentSlide].className = 'slide showing';
+  $slides.css('transform', `translateX(${-currentSlide * 100}vw)`);
   resetTimer();
 }
 
 function resetTimer() {
-  clearInterval( interval );
+  clearInterval(interval);
   startTimer();
 }
+

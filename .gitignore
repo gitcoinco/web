@@ -4,12 +4,15 @@ static/*
 sftp-config.json
 app/app/local_settings.py
 app/static/*
+app/external_bounties/management/commands/
 app/mydatabase
 app/marketing/quotify/output/*
 app/output/*.pdf
 app/assets/other/wp.pdf
+app/assets/tmp/*
 app/assets/other/avatars/
 app/gcoin/
+app/media/
 .idea/
 venv/
 .coverage
@@ -18,3 +21,22 @@ node_modules/
 gcoin/
 .cache/
 webpack-stats.json
+
+# Sensitive environment files
+.env
+*.pem
+
+#  Local .terraform directories
+**/.terraform/*
+
+# .tfstate files
+*.tfstate
+*.tfstate.*
+
+# .tfvars files
+*.tfvars
+
+*.prof
+
+.pytest_cache/
+app/cache/
