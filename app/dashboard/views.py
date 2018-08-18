@@ -1061,6 +1061,8 @@ def save_search(request):
     return TemplateResponse(request, 'save_search.html', context)
 
 
+@cache_page(60 * 60 * 24)
+@vary_on_cookie
 def funder_dashboard(request):
     """ Render the funder dashboard"""
 
