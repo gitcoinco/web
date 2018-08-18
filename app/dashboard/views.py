@@ -1126,7 +1126,7 @@ def funder_dashboard(request):
     top_contributors = []
     for contributor_github_username in contributors_usernames:
         top_contributors.append({
-            'githubLink': 'https://www.github.com/' + contributor_github_username,
+            'githubLink': 'https://gitcoin.co/profile/' + contributor_github_username,
             'profilePictureSrc': '/static/avatar/' + contributor_github_username
         })
 
