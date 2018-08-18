@@ -88,3 +88,11 @@ def etherscan_link(txid):
 
     """
     return f'https://etherscan.io/tx/{txid}'
+
+
+def eth_from_wei(wei_amount):
+    """ Converts a wei amount to a whole value eth amount """
+
+    if wei_amount is None:
+        return float(0)
+    return wei_amount / 10**18

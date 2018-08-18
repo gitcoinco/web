@@ -42,7 +42,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import ellipses, sync_profile
 from avatar.utils import get_avatar_context
-from economy.utils import convert_amount, etherscan_link
+from economy.utils import convert_amount, etherscan_link, eth_from_wei
 from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid
 from marketing.mails import (
@@ -55,7 +55,7 @@ from web3 import HTTPProvider, Web3
 
 from .helpers import (
     eth_format, get_bounty_data_for_activity, get_payout_history, handle_bounty_views, to_funder_dashboard_bounty,
-    usd_format,
+    usd_format
 )
 from .models import (
     Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip,
@@ -1137,13 +1137,12 @@ def funder_dashboard(request):
 
     for bounty in done_bounties:
         bounty_value_in_usdt = bounty.get_value_in_usdt
-        bounty_value_in_eth = bounty.get_value_in_eth
+        bounty_value_in_eth = eth_from_wei(bounty.get_value_in_eth)
 
         if bounty_value_in_usdt is not None:
             total_paid_dollars = float(total_paid_dollars) + float(bounty.get_value_in_usdt)
 
-        if bounty_value_in_eth is not None:
-            total_paid_eth = float(total_paid_eth) + float(bounty.get_value_in_eth)
+        total_paid_eth = float(total_paid_eth) + float(bounty_value_in_eth)
 
     paid_date_since = None
     if done_bounties_desc_created.last() is not None:
@@ -1235,7 +1234,7 @@ def funder_dashboard(request):
             'status': fund_status,
             'etherscanLink': link_to_etherscan,
             'worthDollars': usd_format(bounty.get_value_in_usdt),
-            'worthEth': eth_format(bounty.get_value_in_eth)
+            'worthEth': eth_format(eth_from_wei(bounty.get_value_in_eth))
         })
 
     funder_tips = Tip.objects.filter(from_email=request.user.profile.email).exclude(receive_txid='')
@@ -1254,7 +1253,7 @@ def funder_dashboard(request):
                 'status': tip_status,
                 'etherscanLink': link_to_etherscan,
                 'worthDollars': usd_format(tip.value_in_usdt),
-                'worthEth': eth_format(tip.value_in_eth)
+                'worthEth': eth_format(eth_from_wei(tip.value_in_eth))
             })
 
     all_bounties_filters = [
