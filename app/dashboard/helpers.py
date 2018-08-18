@@ -842,19 +842,3 @@ def to_funder_dashboard_bounty(bounty):
         'worthDollars': usd_format(bounty.get_value_in_usdt),
         'worthEth': eth_format(bounty.get_value_in_eth)
     }
-
-
-def usd_format(amount):
-    """ Converts an amount in USD to a display string format """
-
-    if amount is None:
-        return "0"
-    return format(amount, '.2f')
-
-
-def eth_format(amount):
-    """ Converts an amount in ETH to a display string format """
-
-    if amount is None:
-        return "0"
-    return format(amount, '.3f')
