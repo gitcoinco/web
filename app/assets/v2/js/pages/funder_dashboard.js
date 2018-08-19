@@ -243,7 +243,7 @@ $(function() {
         utils.updateBemElementInParent($clone, fundBaseSel, 'type', fund.type);
         utils.updateBemElementInParent($clone, fundBaseSel, 'status', fund.status);
         var $etherscanLink = $clone.find(classSel(fundBaseSel) + '__view-etherscan');
-        
+
         if (fund.etherscanLink) {
           $etherscanLink.attr('href', fund.etherscanLink);
         } else {

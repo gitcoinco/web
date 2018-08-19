@@ -1068,10 +1068,10 @@ def save_search(request):
 def funder_dashboard(request):
     """ Render the funder dashboard"""
 
-    funder_bounties = request.user.profile.get_funded_bounties()
+    if request.user is None or request.user.profile is None or request.user.profile.is_funder == False:
+        return redirect('/')
 
-    # TODO: Remove, it's just for testing now
-    funder_bounties = Bounty.objects.current()
+    funder_bounties = request.user.profile.get_funded_bounties()
 
     active_done_expired_bounties = funder_bounties.filter_by_status(['active', 'done', 'expired'])
     active_bounties = active_done_expired_bounties.filter_by_status(['open', 'started'])
