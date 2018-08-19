@@ -1151,7 +1151,7 @@ def funder_dashboard(request):
     if done_bounties_desc_created.last() is not None:
         paid_date_since = done_bounties_desc_created.last().web3_created
 
-    total_paid_date_since = _("Nothing to show")
+    total_paid_date_since = None
     if paid_date_since is not None:
         total_paid_date_since = paid_date_since.strftime('%d %b, %y')
 

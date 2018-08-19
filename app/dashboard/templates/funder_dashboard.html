@@ -134,9 +134,13 @@
                     </div>
                     <small class="funder-dashboard__stats__stat__footer
                                 card-footer text-uppercase text-center p0 text-muted">
-                      {% blocktrans %}
-                      As of {{ total_paid_date_since }}
-                      {% endblocktrans %}
+                      {% if total_paid_date_since is not None %}
+                        {% blocktrans %}
+                          As of {{ total_paid_date_since }}
+                        {% endblocktrans %}
+                      {% else %}
+                        {% trans "All time" %}
+                      {% endif %}
                     </small>
                   </div>
                   <div class="funder-dashboard__stats__stat funder-dashboard__stats__stat--total-budget
