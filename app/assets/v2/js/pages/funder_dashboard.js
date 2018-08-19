@@ -321,19 +321,19 @@ $(function() {
     function changePageRelative(allBounties, increment) {
       var PAGE_SIZE = 5;
       var bountiesCount = bounties.length;
-      var page_number_max = Math.floor(bountiesCount / PAGE_SIZE) + 1;
-      var page_number_min = 1;
+      var max_page = Math.floor(bountiesCount / PAGE_SIZE) + 1;
+      var min_page = 1;
 
       var $page = $('.funder-dashboard__all-bounties__pagination__page');
       var oldPage = Number($page.html());
       var newPage = oldPage + increment;
 
-      if (newPage > page_number_max) {
-        newPage = page_number_max;
+      if (newPage > max_page) {
+        newPage = min_page;
       }
 
-      if (newPage < page_number_min) {
-        newPage = page_number_max;
+      if (newPage < min_page) {
+        newPage = max_page;
       }
 
       $page.html(newPage);
