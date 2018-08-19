@@ -803,16 +803,16 @@ def get_payout_history(done_bounties):
             y[year] = bounty_val
 
     for key, value in sorted(w.items()):
-        weekly['data'].append(key)
-        weekly['labels'].append(value)
+        weekly['data'].append(value)
+        weekly['labels'].append(key)
 
     for key, value in sorted(m.items()):
-        monthly['data'].append(key)
-        monthly['labels'].append(value)
+        monthly['data'].append(value)
+        monthly['labels'].append(key)
 
     for key, value in sorted(y.items()):
-        yearly['data'].append(key)
-        yearly['labels'].append(value)
+        yearly['data'].append(value)
+        yearly['labels'].append(key)
 
     return {
         # Used for payout history chart
