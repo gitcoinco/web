@@ -224,8 +224,17 @@ $(function() {
 
     getFunds();
     $('.funder-dashboard__outgoing-funds__filter').change(function() {
+      changePageAbsolute(1);
       clearFunds();
       getFunds();
+    });
+
+    $('.funder-dashboard__outgoing-funds__pagination__prev').click(function() {
+      changePageRelative(outgoingFunds, -1);
+    });
+
+    $('.funder-dashboard__outgoing-funds__pagination__next').click(function() {
+      changePageRelative(outgoingFunds, 1);
     });
 
     function clearFunds() {
@@ -286,6 +295,11 @@ $(function() {
         return sortFn(fund1, fund2);
       });
 
+      var page = Number($('.funder-dashboard__outgoing-funds__pagination__page').html());
+      var PAGE_SIZE = 5;
+
+      filteredFunds = filteredFunds.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
       cbRenderFunds(filteredFunds);
 
       function getTypeOrStatusFilter(filterBaseSel) {
@@ -295,6 +309,38 @@ $(function() {
       function getSortByFilter(filterBaseSel) {
         return $(classSel(filterBaseSel) + '--age-or-value').find(':selected');
       }
+    }
+
+    function changePageRelative(allFunds, increment) {
+      var PAGE_SIZE = 5;
+      var outgoingFundsCount = allFunds.length;
+      var max_page = Math.floor(outgoingFundsCount / PAGE_SIZE) + 1;
+      var min_page = 1;
+
+      var $page = $('.funder-dashboard__outgoing-funds__pagination__page');
+      var oldPage = Number($page.html());
+      var newPage = oldPage + increment;
+
+      if (newPage > max_page) {
+        newPage = min_page;
+      }
+
+      if (newPage < min_page) {
+        newPage = max_page;
+      }
+
+      $page.html(newPage);
+
+      clearFunds();
+      getFunds();
+    }
+
+    function changePageAbsolute(newPage) {
+      var $page = $('.funder-dashboard__outgoing-funds__pagination__page');
+
+      $page.html(newPage);
+      clearFunds();
+      getFunds();
     }
   }
 
@@ -395,7 +441,6 @@ $(function() {
       var $typeStatusFilter = getTypeOrStatusFilter(filterBaseSel);
       var $sortFilter = getSortByFilter(filterBaseSel);
 
-
       var filteredBounties = bounties.filter(function(bounty) {
         if ($typeStatusFilter.data('is-all-filter')) {
           return true;
@@ -407,14 +452,14 @@ $(function() {
         }
       });
 
-      var page = Number($('.funder-dashboard__all-bounties__pagination__page').html());
-      var PAGE_SIZE = 5;
-
       var sortFn = getSortFn($sortFilter.val());
 
       filteredBounties = filteredBounties.sort(function(fund1, fund2) {
         return sortFn(fund1, fund2);
       });
+
+      var page = Number($('.funder-dashboard__all-bounties__pagination__page').html());
+      var PAGE_SIZE = 5;
 
       filteredBounties = filteredBounties.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
@@ -538,7 +583,7 @@ $(function() {
   var outgoingFunds = window.outgoingFunds.items;
   var funderBounties = window.allBounties.items;
 
-  activateOutgoingFunds(outgoingFunds.slice(0, 5));
+  activateOutgoingFunds(outgoingFunds);
   activateAllBounties(funderBounties);
 });
 
