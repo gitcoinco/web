@@ -532,27 +532,3 @@ def generate_pub_priv_keypair():
     # return priv key, pub key, address
 
     return priv.to_string().hex(), pub.hex(), checksum_encode(address)
-
-
-def usd_format(amount):
-    """ Converts an amount in USD to a display string format
-
-    Args:
-        amount: (decimal) The amount in USD to display
-    """
-
-    if amount is None:
-        return "0"
-    return format(amount, '.2f')
-
-
-def eth_format(amount):
-    """ Converts an amount in ETH to a display string format
-
-    Args:
-        amount: (decimal) The amount in ETH or WEI to display
-    """
-
-    if amount is None:
-        return "0"
-    return format(amount, '.3f')

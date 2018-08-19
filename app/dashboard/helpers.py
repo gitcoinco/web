@@ -38,7 +38,7 @@ from dashboard.notifications import (
     maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from dashboard.tokens import addr_to_token
-from economy.utils import convert_amount
+from economy.utils import convert_amount, eth_from_wei
 from git.utils import get_gh_issue_details, get_url_dict, issue_number, org_name, repo_name
 from jsondiff import diff
 from pytz import UTC
@@ -824,6 +824,30 @@ def get_payout_history(done_bounties):
     }
 
 
+def usd_format(amount):
+    """ Converts an amount in USD to a display string format
+
+    Args:
+        amount: (decimal) The amount in USD to display
+    """
+
+    if amount is None:
+        return "0"
+    return format(amount, '.2f')
+
+
+def eth_format(amount):
+    """ Converts an amount in ETH to a display string format
+
+    Args:
+        amount: (decimal) The amount in ETH or WEI to display
+    """
+
+    if amount is None:
+        return "0"
+    return format(amount, '.3f')
+
+
 def to_funder_dashboard_bounty(bounty):
     """
     Maps a bounty object to a format that is suitable for display in the funder dashboard.
@@ -831,6 +855,7 @@ def to_funder_dashboard_bounty(bounty):
     Args:
         bounty: (Bounty) the bounty to map
     """
+
     pending_or_claimed = "None"
 
     if bounty.interested.exists():
