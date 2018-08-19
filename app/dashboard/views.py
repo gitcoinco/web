@@ -1221,8 +1221,9 @@ def funder_dashboard(request):
 
     outgoing_funds = []
     for bounty in done_bounties.filter(fulfillment_started_on__isnull=False):
-        # TODO: Need the txid to generate this link. Where is it in the bounty object, if at all?
-        link_to_etherscan = etherscan_link('#')
+        # TODO: Replace the missing txid. Should uncomment the line below when we have this link available.
+        # link_to_etherscan = etherscan_link('#')
+        link_to_etherscan = None
 
         if bounty.fulfillments.filter(accepted=True).exists():
             fund_status = 'Claimed'

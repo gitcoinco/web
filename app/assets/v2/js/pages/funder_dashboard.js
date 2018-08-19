@@ -242,7 +242,14 @@ $(function() {
         utils.updateBemElementInParent($clone, fundBaseSel, 'title', fund.title);
         utils.updateBemElementInParent($clone, fundBaseSel, 'type', fund.type);
         utils.updateBemElementInParent($clone, fundBaseSel, 'status', fund.status);
-        $clone.find(classSel(fundBaseSel) + '__view-etherscan').attr('href', fund.etherscanLink);
+        var $etherscanLink = $clone.find(classSel(fundBaseSel) + '__view-etherscan');
+        if (fund.etherscanLink) {
+          $etherscanLink.attr('href', fund.etherscanLink);
+        }
+        else {
+          $clone.find(classSel(fundBaseSel) + '__etherscan-link-placeholder').removeClass('d-none');
+          $etherscanLink.addClass('d-none');
+        }
         utils.updateBemElementInParent($clone, fundBaseSel, 'worth__dollars', fund.worthDollars);
         utils.updateBemElementInParent($clone, fundBaseSel, 'worth__eth', fund.worthEth);
 
@@ -321,19 +328,19 @@ $(function() {
     function changePageRelative(allBounties, increment) {
       var PAGE_SIZE = 5;
       var bountiesCount = bounties.length;
-      var max_page = Math.floor(bountiesCount / PAGE_SIZE) + 1;
-      var min_page = 1;
+      var page_number_max = Math.floor(bountiesCount / PAGE_SIZE) + 1;
+      var page_number_min = 1;
 
       var $page = $('.funder-dashboard__all-bounties__pagination__page');
       var oldPage = Number($page.html());
       var newPage = oldPage + increment;
 
-      if (newPage > max_page) {
-        newPage = min_page;
+      if (newPage > page_number_max) {
+        newPage = page_number_max;
       }
 
-      if (newPage < min_page) {
-        newPage = max_page;
+      if (newPage < page_number_min) {
+        newPage = page_number_max;
       }
 
       $page.html(newPage);
