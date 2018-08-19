@@ -1074,7 +1074,7 @@ def funder_dashboard(request):
     funder_bounties = Bounty.objects.current()
 
     active_done_expired_bounties = funder_bounties.filter_by_status(['active', 'done', 'expired'])
-    active_bounties = active_done_expired_bounties.filter_by_status(['open'])
+    active_bounties = active_done_expired_bounties.filter_by_status(['open', 'started'])
     done_bounties = active_done_expired_bounties.filter_by_status(['done'])
     expired_bounties = active_done_expired_bounties.filter_by_status(['expired'])
 
