@@ -1105,10 +1105,11 @@ def funder_dashboard(request):
     for bounty in active_bounties:
         new_contributor_comments += bounty.github_comments
 
-    submitted_bounties_count = funder_bounties.count()
+    current_funder_bounties = funder_bounties.filter(current_bounty=True)
+    submitted_bounties_count = current_funder_bounties.count()
     total_contributors_count = 0
 
-    for bounty in funder_bounties.filter(current_bounty=True):
+    for bounty in current_funder_bounties:
         total_contributors_count += bounty.fulfillments.filter(accepted=True).count()
 
     contributors_usernames = []
