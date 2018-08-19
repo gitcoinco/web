@@ -55,25 +55,31 @@
                   </div>
                   <div class="col-9 funder-dashboard__whats-next__items">
                     <div class="funder-dashboard__whats-next__expiring-bounties">
-                      {% blocktrans %}
-                      You have {{expiring_bounties_count}} bounties expiring in {{expiring_days_count}} days!
-                      {% endblocktrans %}
+                      {% if expiring_bounties_count <= 0 %}
+                          {% trans "You don't have any bounties expiring in the next 7 days." %}
+                      {% else %}
+                        {% blocktrans %}
+                          You have {{expiring_bounties_count}} bounties expiring in {{expiring_days_count}} days!
+                        {% endblocktrans %}
+                      {% endif %}
                       {% if expiring_bounties_count > 0 %}
-                          <a href="{% url "explorer" %}"
-                          class="issue-explorer-link issue-explorer-link--bounties--expiring  text-fd-blue--dark">
-                          {% trans "view bounties" %}
-                          </a>
+                        <a href="{% url "explorer" %}"
+                        class="issue-explorer-link issue-explorer-link--bounties--expiring  text-fd-blue--dark">
+                        {% trans "view bounties" %}
+                        </a>
                       {% endif %}
                     </div>
                     <div class="funder-dashboard__whats-next__new-comments">
-                      {% blocktrans %}
-                      {{ new_contributor_comments_count }} contributors have commented on your open issues.
-                      {% endblocktrans %}
                       {% if new_contributor_comments_count > 0 %}
-                          <a href="{% url "explorer" %}"
-                          class="issue-explorer-link issue-explorer-link--contributors-comments text-fd-blue--dark">
+                        {% blocktrans %}
+                          {{ new_contributor_comments_count }} contributors have commented on your open issues.
+                        {% endblocktrans %}
+                        <a href="{% url "explorer" %}"
+                        class="issue-explorer-link issue-explorer-link--contributors-comments text-fd-blue--dark">
                           {% trans "view comments" %}
-                          </a>
+                        </a>
+                      {% else %}
+                        {% trans "No contributors have commented on your open issues." %}
                       {% endif %}
                     </div>
                   </div>
