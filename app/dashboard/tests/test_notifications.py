@@ -17,13 +17,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import cgi
 from datetime import datetime
 
-from dashboard.models import Bounty, Profile, BountyFulfillment, Interest, Activity
+from dashboard.models import Activity, Bounty, BountyFulfillment, Interest, Profile
 from dashboard.notifications import amount_usdt_open_work, append_snooze_copy, build_github_notification
 from pytz import UTC
 from test_plus.test import TestCase
-import cgi
+
 
 @build_github_notification
 def test_maybe_market_to_github(bounty, msg, event_name):

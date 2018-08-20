@@ -21,22 +21,21 @@ import logging
 import random
 import re
 import sys
+from types import SimpleNamespace
 from urllib.parse import urlparse as parse
 
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.template.loader import render_to_string
 
 import requests
 import twitter
-from django.template.loader import render_to_string
 from economy.utils import convert_token_to_usdt
 from git.utils import delete_issue_comment, org_name, patch_issue_comment, post_issue_comment, repo_name
-from types import SimpleNamespace
 from marketing.mails import tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping
 from pyshorteners import Shortener
 from slackclient import SlackClient
-
 
 
 def github_org_to_twitter_tags(github_org):

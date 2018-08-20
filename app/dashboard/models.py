@@ -1173,7 +1173,7 @@ class Tip(SuperModel):
             return False
         if self.network == 'mainnet' and (settings.DEBUG or settings.ENV != 'prod'):
             return False
-        if (settings.DEBUG or settings.ENV != 'prod') and settings.GITHUB_API_USER != self.github_org_name:
+        if (settings.DEBUG or settings.ENV != 'prod'): and settings.GITHUB_API_USER != self.github_org_name:
             return False
         return True
 
