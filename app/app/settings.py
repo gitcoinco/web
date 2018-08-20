@@ -297,6 +297,10 @@ CACHEOPS = {
         'ops': 'all',
         'timeout': 60 * 15,
     },
+    'dashboard.activity':{
+        'ops': 'all',
+        'timeout': 60 * 5,
+    },
     'dashboard.bounty': {
         'ops': ('get', 'fetch', 'aggregate'),
         'timeout': 60 * 5,
