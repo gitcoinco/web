@@ -586,6 +586,8 @@ def leaderboard(request, key=''):
         'quarterly_payers': _('Top Payers'),
         'quarterly_earners': _('Top Earners'),
         'quarterly_orgs': _('Top Orgs'),
+        'quarterly_tokens': _('Top Tokens'),
+        'quarterly_keywords': _('Top Keywords'),
         #        'weekly_fulfilled': 'Weekly Leaderboard: Fulfilled Funded Issues',
         #        'weekly_all': 'Weekly Leaderboard: All Funded Issues',
         #        'monthly_fulfilled': 'Monthly Leaderboard',
