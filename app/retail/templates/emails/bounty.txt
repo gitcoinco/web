@@ -8,3 +8,6 @@
 {% if action == 'custom' %}
 * {{action_copy}}: {{action_url}}
 {% endif %}
+{% if action2 == 'custom' %}
+* {{action2_copy}}: {{action2_url}}
+{% endif %}

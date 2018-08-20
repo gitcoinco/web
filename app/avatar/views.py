@@ -24,7 +24,7 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.utils import create_user_action
-from github.utils import org_name
+from git.utils import org_name
 from PIL import Image, ImageOps
 
 from .models import Avatar
@@ -79,7 +79,9 @@ def avatar(request):
 def save_avatar(request):
     """Save the Avatar configuration."""
     response = {'status': 200, 'message': 'Avatar saved'}
-    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile'):
+    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
+        request.user, 'profile', None
+    ):
         return JsonResponse({'status': 405, 'message': 'Authentication required'}, status=405)
 
     profile = request.user.profile

@@ -22,6 +22,10 @@ body {
   float: right;
 }
 
+#extended-expiration-date #extended-days {
+  border-bottom: 1px solid black;
+}
+
 .progress-bar {
   background-color: #D8D8D8;
   display: block;
@@ -93,6 +97,11 @@ body {
   margin: 1rem;
 }
 
+#extended-expiration-date p {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
 .contributor-box .fa-minus {
   font-size: 14px;
   margin: 0;
@@ -124,6 +133,10 @@ body {
 
 #issue_description {
   color: #000000;
+}
+
+#issue_description pre, code {
+  padding: 1em 0;
 }
 
 .bounty-subheading {
@@ -264,6 +277,11 @@ body {
   color: #6184AC;
 }
 
+.tag.token.additional_funding_summary{
+  background-color: #fbe0d6;
+  color: #fb9470;
+}
+
 .contributor-box {
   border: 1px solid #DBDBDB;
   border-right: none;
@@ -359,8 +377,14 @@ a.btn {
   max-width: 100%;
   width: 13rem;
   z-index: 2;
-  top: 2rem;
   padding-right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.waiting-state img {
+  top: -2rem;
+  transform: none;
 }
 
 #btn-white img {
@@ -409,6 +433,11 @@ a.btn {
   font-size: 12px;
 }
 
+#extended-expiration-date i {
+  position: relative;
+  top: 2px;
+}
+
 .transaction-header h2 {
   color: #ffffff;
   font-size: 2rem;
@@ -418,6 +447,29 @@ a.btn {
   display: none;
   margin-bottom: 2em;
 }
+
+.code-snippet {
+  background-color: #F2F6F9;
+  padding: 1rem;
+}
+
+#funder_notif_info .bounty-notification {
+  border: orange 1px solid;
+  border-radius: 3px;
+  padding: 0.5rem;
+}
+
+#funder_notif_info #bounty_funded_by,
+#funder_notif_info i {
+  color: #3E00FF;
+}
+
+#funder_notif_info img {
+  width: 1.5rem;
+  position: relative;
+  top: -2px;
+}
+
 
 #bounty_details #issue_description img {
   max-height: 30rem;
@@ -489,6 +541,10 @@ a.btn {
     text-align: center;
   }
 
+  .loading_img img {
+    width: 10rem;
+  }
+
   #bounty_details .tags {
     margin-top: 10px;
     float: none;
@@ -528,8 +584,8 @@ a.btn {
   width: 100%;
 }
 
-#issue-message {
-  min-height: 6em;
+#issue_message {
+  min-height: 12em;
 }
 
 .add-interest-options {
@@ -567,10 +623,17 @@ a.btn {
   width: auto;
 }
 
-.btn-interested {
+
+.btn-interested,
+.btn-extend,
+.btn-cancel {
   float: right;
   padding: 0.375rem 0.9375rem;
   font-size: 12px;
+}
+
+.btn-cancel {
+  margin-right: 25px;
 }
 
 .close:hover, .close:focus {
@@ -610,10 +673,10 @@ a.btn {
   margin: 4rem auto;
   font-weight: 700;
   z-index: 2;
-  padding-top: 100px;
 }
 
 .bounty_details .quote_text {
+  margin-top: 50px;
   font-size: 1.1rem;
   color: #4A4A4A;
 }
@@ -722,6 +785,15 @@ a.btn {
   .issue-url {
     margin-top: 15px;
   }
+
+  .left-rails {
+    display: none;
+  }
+
+  #title,
+  #funder_notif_info {
+    text-align: center;
+  }
 }
 
 @media (max-width: 991.98px) {
@@ -737,6 +809,19 @@ a.btn {
 
   .rocket {
     right: 11rem;
+  }
+
+  #extend_deadline {
+    min-width: 40rem;
+    max-width: 0;
+  }
+}
+
+@media (max-width: 1024px) {
+  #funder_notif_info .bounty-notification {
+    margin-top: 1rem;
+    display: inline-block;
+    margin-left: 0 !important;
   }
 }
 

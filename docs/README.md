@@ -123,12 +123,33 @@ Gitcoinbot will allow you to add issues straight from github.
 
 Have an ERC20 compatible token that you'ud like to add support for?  Great!  Submit [this form](https://gitcoin.co/submittoken) to submit it to the system
 
-## High Level flow of a Bounty
+## High Level flows
+
+### of a Bounty
 
 This is the high level flow of a bounty on Gitcoin:
 
-<img src='bounty_flow.png'>
+<a href="https://www.draw.io/?state=%7B%22ids%22:%5B%221FTatOur159qS8pzBCgIG5E0XdEH8iZF-%22%5D,%22action%22:%22open%22,%22userId%22:%22115514289174042120922%22%7D#G1FTatOur159qS8pzBCgIG5E0XdEH8iZF-"><img src='bounty_flow.png'></a>
 
+Chain of Custody
+
+1. Bounty Funder's Wallet
+2. [StandardBounties Smart Contract](https://github.com/Bounties-Network/StandardBounties) deployed at [0x2af47a65da8cd66729b4209c22017d6a5c2d2400](https://etherscan.io/address/0x2af47a65da8cd66729b4209c22017d6a5c2d2400#code)
+3. (Submission Made)
+4. (Submission Accepted)
+5. Recipient's Wallet 
+
+Anywhere between 2 and 4 above, Funder may withdraw their funds via 'Cancel Bounty' function for any reason. 
+
+We may introduce Arbitration [via Delphi](http://delphi.network/) at some point in the future.  Until then, we are lucky that Github users are very protective of their reputation, and therefore very kind to each other, and disputes have not generally arisen.
+
+### of a Tip
+
+Note: Crowdfunded bounties + bulk payouts are secured by Tips (at least until Standard Bounties 2.0 is released).
+
+This is the high level flow of a bounty on Gitcoin:
+
+<a href="https://www.draw.io/#G1sTJtQou5FYsHCabhb2JXHDTprpvvkUy0"><img src='tip_flow.png'></a>
 
 # Legal
 

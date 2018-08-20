@@ -27,11 +27,10 @@ from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 
 import requests
-import rollbar
 import twitter
 from django.template.loader import render_to_string
 from economy.utils import convert_token_to_usdt
-from github.utils import delete_issue_comment, org_name, patch_issue_comment, post_issue_comment, repo_name
+from git.utils import delete_issue_comment, org_name, patch_issue_comment, post_issue_comment, repo_name
 from types import SimpleNamespace
 from marketing.mails import tip_email
 from marketing.models import GithubOrgToTwitterHandleMapping

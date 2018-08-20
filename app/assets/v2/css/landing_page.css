@@ -57,12 +57,12 @@ body {
   position: absolute;
   top: -50px;
   right: calc(5vw - 50px);
-  max-width: 30vw;
+  max-width: 25vw;
   will-change: transform;
 }
 
 .howworks-container {
-  background-color: #F9F9F9;
+  background-color: #ffffff;
   text-align: center;
   color: var(--text-dark);
 }
@@ -150,7 +150,7 @@ body {
   position: absolute;
   top: -1rem;
   left: calc(50% - 1rem);
-  background: #F9F9F9;
+  background: #ffffff;
   color: var(--gc-purple);
 }
 
@@ -193,6 +193,17 @@ body {
   padding-top: 2rem;
   padding-bottom: 1rem;
   height: 6rem;
+}
+
+.activity.box {
+  border-left: none;
+  border-top: none;
+  border-right: none;
+}
+
+.activity-info {
+  position: relative;
+  top: 7px;
 }
 
 .landing__newsletter {
@@ -379,7 +390,7 @@ body {
 }
 
 .tree_container {
-  background: white;
+  background: #f9f9f9;
   text-align: center;
   overflow: hidden;
 }
@@ -390,10 +401,13 @@ body {
 
 .whatisit .youtube {
   height: 100%;
+  max-width: 550px;
+  margin-bottom: auto;
+  margin-top: 2rem;
 }
 
 .whatisit_container iframe {
-  min-height: 300px;
+  min-height: 280px;
   width: 100%;
   height: 100%;
 }
@@ -679,6 +693,29 @@ body {
   .howworks-steps {
     grid-template-columns: 1fr;
   }
+
+  .activity {
+    text-align: center;
+  }
+
+  .activity-status a {
+    margin-top: 1rem;
+  }
+
+  .activity-status span {
+    display: block;
+    margin-top: 4px;
+    margin-bottom: 4px;
+  }
+
+  .activity div.activity-tags {
+    margin-top: 4px;
+    margin-bottom: 1rem;
+  }
+
+  .activity div.activity-tags p {
+    margin-bottom: 0;
+  }
 }
 
 @media (min-width: 768px) and (max-width: 991.98px) {
@@ -761,6 +798,20 @@ body {
   height: 100%;
   margin-right: -15px;
   max-height: 350px;
+  max-width: 500px;
+}
+
+.contributors-hero-container {
+  position: relative; 
+  overflow-y: hidden;
+}
+
+.contributor-hero-bg-container{
+  position: absolute;
+  top:100px;
+  right: 0px;
+  height: 500px;
+  width: 500px;
 }
 
 .ethereum-icon {

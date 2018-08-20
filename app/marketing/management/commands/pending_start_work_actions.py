@@ -30,6 +30,7 @@ def start_work_applicant_expired_executer(interest, bounty):
     start_work_approved(interest, bounty)
     start_work_applicant_expired(interest, bounty)
     interest.pending = False
+    interest.acceptance_date = timezone.now()
     interest.save()
 
 

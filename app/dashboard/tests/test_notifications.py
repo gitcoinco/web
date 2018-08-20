@@ -122,9 +122,7 @@ class DashboardNotificationsTest(TestCase):
         message = test_maybe_market_to_github(self.bounty, 'new_bounty')
         print(message)
         assert f'__This issue now has a funding of {self.natural_value} {self.bounty.token_name}' in message
-        assert self.usdt_value in message
         assert f'This issue now has a funding of' in message
-        assert f'${self.amount_open_work}' in message
 
     def test_build_github_notification_express_interest_traditional_approval(self):
         self.bounty.bounty_type = 'traditional'

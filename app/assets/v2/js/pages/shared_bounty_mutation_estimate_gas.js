@@ -6,30 +6,20 @@ var gas_amount = function(page_url) {
 
   if (page_url.indexOf('issue/fulfill') != -1) {
     gasLimitEstimate = 207103;
-  }
-  // new fulfill funding page
-  if (page_url.indexOf('/new') != -1) {
+  } else if (page_url.indexOf('/new') != -1) { // new fulfill funding page
     gasLimitEstimate = 318730;
-  }
-  // new fulfill funding page
-  if (page_url.indexOf('issue/increase') != -1) {
+  } else if (page_url.indexOf('issue/increase') != -1) { // new fulfill funding page
     gasLimitEstimate = 56269;
-  }
-  // new process funding page
-  if (page_url.indexOf('issue/accept') != -1) {
+  } else if (page_url.indexOf('issue/accept') != -1) { // new process funding page
     gasLimitEstimate = 103915;
-  }
-  // new kill funding page
-  if (page_url.indexOf('issue/cancel') != -1) {
+  } else if (page_url.indexOf('issue/cancel') != -1) { // new kill funding page
     gasLimitEstimate = 67327;
-  }
-  // tip
-  if (page_url.indexOf('tip/send') != -1) {
-    gasLimitEstimate = 448057;
-  }
-  // tip
-  if (page_url.indexOf('tip/receive') != -1) {
-    gasLimitEstimate = 98390;
+  } else if (page_url.indexOf('issue/payout') != -1) { // bulk payout
+    gasLimitEstimate = 103915;
+  } else if (page_url.indexOf('tip/send') != -1) { // tip
+    gasLimitEstimate = 21000;
+  } else if (page_url.indexOf('tip/receive') != -1) { // tip
+    gasLimitEstimate = 21000;
   }
   return gasLimitEstimate;
 };

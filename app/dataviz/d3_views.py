@@ -466,7 +466,8 @@ def viz_graph(request, _type, template='graph'):
         TemplateResponse: If data param not provided, return the populated data visualization template.
 
     """
-    keyword = request.GET.get('keyword', None)
+    show_controls = request.GET.get('show_controls', False)
+    keyword = request.GET.get('keyword', '')
     hide_pii = True
     page_route = 'graph'
     if template == 'square_graph':
@@ -604,7 +605,8 @@ def viz_graph(request, _type, template='graph'):
         'keyword': keyword,
     }
 
-    response = TemplateResponse(request, f'dataviz/{template}.html', params)
+    _template = 'graph' if not show_controls else 'admin_graph'
+    response = TemplateResponse(request, f'dataviz/{_template}.html', params)
     response['X-Frame-Options'] = 'SAMEORIGIN'
     return response
 

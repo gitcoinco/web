@@ -70,9 +70,9 @@ function get_recommended_prices() {
 }
 
 function prefill_recommended_prices() {
-  var slow_data = get_updated_metamask_conf_time_and_cost(parseInt($('#slow-recommended-gas').data('amount')));
-  var avg_data = get_updated_metamask_conf_time_and_cost(parseInt($('#average-recommended-gas').data('amount')));
-  var fast_data = get_updated_metamask_conf_time_and_cost(parseInt($('#fast-recommended-gas').data('amount')));
+  var slow_data = get_updated_metamask_conf_time_and_cost(parseFloat($('#slow-recommended-gas').data('amount')));
+  var avg_data = get_updated_metamask_conf_time_and_cost(parseFloat($('#average-recommended-gas').data('amount')));
+  var fast_data = get_updated_metamask_conf_time_and_cost(parseFloat($('#fast-recommended-gas').data('amount')));
 
   if (fast_data['time'] == 'unknown') {
     $('#default-recommended-gas').show();
@@ -90,7 +90,7 @@ function prefill_recommended_prices() {
     $('#default-recommended-gas').hide();
     $('#average-recommended-gas').hide();
     $('#fast-recommended-gas').show();
-    $('.message').html('Good news! Gas is pretty fast right now').show();
+    $('.gas-rates .message').html('Good news! The network is pretty fast right now').show();
     $('#fast-recommended-gas').html('Fast $' + parseFloat(fast_data['usd']).toFixed(2) + ' ~' + fast_data['time'] + ' minutes').addClass('active');
     $('#fast-recommended-gas').data('amount', parseFloat(fast_data['usd']).toFixed(2));
     $('#fast-recommended-gas').parent().removeClass('justify-content-between').addClass('justify-content-around');

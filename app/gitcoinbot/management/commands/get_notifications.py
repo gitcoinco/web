@@ -22,9 +22,8 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from github.utils import (
-    get_issue_comments, get_notifications, issue_number, org_name, post_issue_comment, post_issue_comment_reaction,
-    repo_name,
+from git.utils import (
+    get_issue_comments, get_notifications, issue_number, org_name, post_issue_comment_reaction, repo_name,
 )
 
 
