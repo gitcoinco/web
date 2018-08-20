@@ -673,7 +673,7 @@ var build_detail_page = function(result) {
 
   // funded by
   if (isBountyOwnerPerLogin(result) && !isBountyOwner(result)) {
-    $('#funder_notif_info').html(gettext('Funded Address: ') +
+    $('#funder_notif_info').html(gettext('Funder Address: ') +
       '<span id="bounty_funded_by">' + result['bounty_owner_address'] + '</span>');
     $('#funder_notif_info').append('\
         <span class="bounty-notification ml-2">\
