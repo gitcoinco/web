@@ -180,9 +180,12 @@ def ipfs_cat_ipfsapi(key):
 
 
 def ipfs_cat_requests(key):
-    url = f'https://ipfs.infura.io:5001/api/v0/cat/{key}'
-    response = requests.get(url, timeout=1)
-    return response.text, response.status_code
+    try:
+        url = f'https://ipfs.infura.io:5001/api/v0/cat/{key}'
+        response = requests.get(url, timeout=1)
+        return response.text, response.status_code
+    except:
+        return None, 500
 
 
 def get_web3(network):
