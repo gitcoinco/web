@@ -57,6 +57,7 @@ jobs:
           name: run tests
           command: |
             . venv/bin/activate
+            cd ~/web/app
             pytest -p no:ethereum
       - store_test_results:
           path: test-results
