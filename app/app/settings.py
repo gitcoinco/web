@@ -69,7 +69,6 @@ INSTALLED_APPS = [
     'django.contrib.sitemaps',
     'django.contrib.sites',
     'autotranslate',
-    'cachalot',
     'django_extensions',
     'easy_thumbnails',
     'raven.contrib.django.raven_compat',

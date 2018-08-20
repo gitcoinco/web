@@ -24,11 +24,11 @@ import statistics
 import time
 
 from django.conf import settings
-from django.core.cache import cache
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 import pytz
+from cacheops import CacheMiss, cache
 from marketing.models import Alumni, EmailSubscriber, LeaderboardRank, Stat
 from requests_oauthlib import OAuth2Session
 
@@ -232,7 +232,10 @@ def build_stat_results(keyword=None):
     timeout = 60 * 60 * 24
     key_salt = '3'
     key = f'build_stat_results_{keyword}_{key_salt}'
-    results = cache.get(key)
+    try:
+        results = cache.get(key)
+    except CacheMiss:
+        results = None
     if results and not settings.DEBUG:
         return results
 
