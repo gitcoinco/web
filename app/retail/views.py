@@ -31,6 +31,7 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
+from cacheops import cached_as
 from dashboard.models import Activity
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
@@ -42,6 +43,7 @@ from retail.helpers import get_ip
 from .utils import build_stat_results, programming_languages
 
 
+@cached_as(Activity, timeout=120)
 def get_activities(tech_stack=None, num_activities=15):
     # get activity feed
 
@@ -58,12 +60,12 @@ def index(request):
          _("Once we had merged in multiple language support from a bounty, it unblocked the \
          path to all other translations, and what better way to get lots of dif erent \
          translations than with bounties from our community? A single tweet of publicity \
-         and we had something like 20 language requests, and 10 language pull requests. It’s been total magic."),
+         and we had something like 20 language requests, and 10 language pull requests. It’s been total magic."                                                                                                                                                                                                                              ),
          'https://github.com/danfinlay', "Metamask -- Internationalization"),
         ("Phil Elsasser", static("v2/images/testimonials/phil.jpg"),
          _("​By design or not, there is an element of trust inherent within Gitcoin. This isn’t \
          the bad kind of “trust” that we are all trying to move away from in a centralized world, \
-         but a much better sense of community trust that gets established through the bounty process."),
+         but a much better sense of community trust that gets established through the bounty process."                                                                                                                                                                                                            ),
          'http://www.marketprotocol.io/', 'Market'),
         ("John Maurelian", static("v2/images/testimonials/maurelian.jpg"),
          _("Gitcoin helps us to finally close out the issues we've been meaning to get around to for too long"),
@@ -72,15 +74,15 @@ def index(request):
          _("uPort is still in the process of Open Sourcing all of our code, so Gitcoin at the present moment, \
          helps uPort plant seeds within the growing Ethereum developer community, that we expect will blossom \
          into flourishing opportunities in the future. Put simply, as opposed to running marketing campaign, \
-         we can use bounties to stay present in front of potential developers we want to engage with."),
+         we can use bounties to stay present in front of potential developers we want to engage with."                                                                                                                                                                                                            ),
          'https://github.com/KamesCG', 'Uport'),
         ("Piper", static("v2/images/testimonials/pipermerriam.jpg"),
          _("Although we’ve only hired two developers, there is no doubt that we could have sourced more. \
-         Gitcoin has been the strongest hiring signal in all of the hiring I’ve ever done."),
+         Gitcoin has been the strongest hiring signal in all of the hiring I’ve ever done."                                                                                                                                                                                      ),
          'https://github.com/pipermerriam', 'Pipermerriam'),
         ("Joseph Schiarizzi", static("v2/images/testimonials/jschiarizzi.jpeg"),
          _("On a Friday I needed a front end done for a project due in 48 hours.  When everyone I knew was busy, \
-         gitcoiners were able to help me make my deadline, with fast, affordable, & high quality work."),
+         gitcoiners were able to help me make my deadline, with fast, affordable, & high quality work."                                                                                                                                                                                                              ),
          'https://github.com/jschiarizzi', 'Fourth Wave')
     ]
 
@@ -108,36 +110,36 @@ def contributor_landing(request, tech_stack):
         ("Daniel", static("v2/images/testimonials/gitcoiners/daniel.jpeg"),
          _("When I found Gitcoin I was gladly surprised that it took one thing and did it well. \
          It took the Ethereum tech and used it as a bridge to technology with open source Jobs.  \
-         Even though Gitcoin is still in it’s early stages, I think it’s filled with potential to grow."),
+         Even though Gitcoin is still in it’s early stages, I think it’s filled with potential to grow."                                                                                                                                                                                                                ),
          'https://github.com/dmerrill6'),
         ("CryptoMental", static("v2/images/testimonials/gitcoiners/cryptomental.png"),
          _(" think the great thing about GitCoin is how easy it is for projects to reach out to worldwide talent. \
          GitCoin helps to find people who have time to contribute and increase speed of project development. \
-         Thanks to GitCoin a bunch of interesting OpenSource projects got my attention!"),
+         Thanks to GitCoin a bunch of interesting OpenSource projects got my attention!"                                                                                                                                                                                ),
          'https://github.com/cryptomental'),
         ("Elan", static("v2/images/testimonials/gitcoiners/elan.jpeg"),
          _("The bounty process with Gitcoin is pretty amazing.  Just go on the website, find an issue you can \
          work on, you claim it.  All you do then is submit your code to Github, get the code merged.  \
          Once it’s merged, the smart contract kicks in and sends the money to your Ethereum account.  \
          The whole process is pretty smooth.  There’s a giant slack community.  It puts the freelance \
-         market back in the hands of the community!"),
+         market back in the hands of the community!"                                                                                                        ),
          "https://github.com/elaniobro"),
         ("Jack", static("v2/images/testimonials/gitcoiners/jack.jpeg"),
          _("I really like Gitcoin because it’s allowed me to get involved in some really interesting \
          Open Source Projects.  I’ve written code for MyEtherWallet and Gitcoin itself.  \
-         I think Gitcoin is becoming a great asset for the Ethereum ecosystem."),
+         I think Gitcoin is becoming a great asset for the Ethereum ecosystem."                                                                                                                                                              ),
          'https://github.com/jclancy93'),
         ("Miguel Angel Rodriguez Bermudez", static("v2/images/testimonials/gitcoiners/miguel.jpeg"),
          _("I came across Gitcoin 3 months ago.  I was hearing lots of ideas about projects involving \
          cryptocurrencies, and I kept thinking \"what about open source projects?\".  I see Gitcoin as \
          the next level of freelance, where you can not only help repos on Github, but get money out of \
-         it.  It is that simple and it works."),
+         it.  It is that simple and it works."                                                                                            ),
          'https://github.com/marbrb'),
         ("Octavio Amuchástegui", static("v2/images/testimonials/gitcoiners/octavioamu.jpeg"),
          _("I'm in love with Gitcoin. It isn't only a platform, it's a community that gives me the \
          opportunity to open my network and work with amazing top technology projects and earn some \
          money in a way I'm visible to the dev community and work opportunities. Open source is amazing, \
-         and is even better to make a living from it, I think is the future of development."),
+         and is even better to make a living from it, I think is the future of development."                                                                                                                                                                                        ),
          'https://github.com/octavioamu')
     ]
 
@@ -896,7 +898,11 @@ def ios(request):
         'card_title': 'Gitcoin has an iOS app!',
         'card_desc': 'Gitcoin aims to make it easier to grow open source from anywhere in the world,\
             anytime.  We’re proud to announce our iOS app, which brings us a step closer to this north star!\
-            Browse open bounties on the go, express interest, and coordinate your work on the move.',
+            Browse open bounties on the go, express interest, and coordinate your work on the move.'
+
+
+
+                                                                                                    ,
     }
     return TemplateResponse(request, 'ios.html', context)
 
