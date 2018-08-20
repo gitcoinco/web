@@ -47,7 +47,7 @@ from .utils import build_stat_results, programming_languages
 def get_activities(tech_stack=None, num_activities=15):
     # get activity feed
 
-    activities = Activity.objects.filter(bounty__network='mainnet').order_by('-created')
+    activities = Activity.objects.select_related('bounty').filter(bounty__network='mainnet').order_by('-created')
     if tech_stack:
         activities = activities.filter(bounty__metadata__icontains=tech_stack)
     activities = activities[0:num_activities]

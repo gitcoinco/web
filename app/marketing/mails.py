@@ -113,7 +113,7 @@ def funder_stale(to_email, github_username, days=30, time_as_str='about a month'
 
         subject = "hey from gitcoin.co" if not github_username else f"hey @{github_username}"
         html, text = render_funder_stale(github_username, days, time_as_str)
-        cc_emails = [from_email, 'vivek.singh@consensys.net', 'scott.moore@consensys.net']
+        cc_emails = [from_email, 'vivek.singh@consensys.net', 'scott.moore@consensys.net', 'alisa.march@consensys.net']
         if not should_suppress_notification_email(to_email, 'admin_contact_funder'):
             send_mail(from_email, to_email, subject, text, cc_emails=cc_emails, from_name=from_email)
     finally:
