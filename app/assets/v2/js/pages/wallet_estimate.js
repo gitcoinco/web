@@ -70,9 +70,9 @@ function get_recommended_prices() {
 }
 
 function prefill_recommended_prices() {
-  var slow_data = get_updated_metamask_conf_time_and_cost(parseInt($('#slow-recommended-gas').data('amount')));
-  var avg_data = get_updated_metamask_conf_time_and_cost(parseInt($('#average-recommended-gas').data('amount')));
-  var fast_data = get_updated_metamask_conf_time_and_cost(parseInt($('#fast-recommended-gas').data('amount')));
+  var slow_data = get_updated_metamask_conf_time_and_cost(parseFloat($('#slow-recommended-gas').data('amount')));
+  var avg_data = get_updated_metamask_conf_time_and_cost(parseFloat($('#average-recommended-gas').data('amount')));
+  var fast_data = get_updated_metamask_conf_time_and_cost(parseFloat($('#fast-recommended-gas').data('amount')));
 
   if (fast_data['time'] == 'unknown') {
     $('#default-recommended-gas').show();
