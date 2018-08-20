@@ -31,6 +31,7 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
+from cacheops import cached_as
 from dashboard.models import Activity
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
@@ -42,6 +43,7 @@ from retail.helpers import get_ip
 from .utils import build_stat_results, programming_languages
 
 
+@cached_as(Activity, timeout=120)
 def get_activities(tech_stack=None, num_activities=15):
     # get activity feed
 
