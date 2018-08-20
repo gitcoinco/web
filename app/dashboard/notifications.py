@@ -205,7 +205,7 @@ def build_message_for_integration(bounty, event_name):
         str: Message to post to slack.
 
     """
-    from dashboard.utils import humanize
+    from dashboard.utils import humanize_event_name
     conv_details = ""
     usdt_details = ""
     try:
@@ -215,7 +215,7 @@ def build_message_for_integration(bounty, event_name):
         pass  # no USD conversion rate
 
     title = bounty.title if bounty.title else bounty.github_url
-    msg = f"*{humanize(event_name.replace('bounty', 'funded_issue'))}*" \
+    msg = f"*{humanize_event_name(event_name.replace('bounty', 'funded_issue'))}*" \
           f"\n*Title*: {title}" \
           f"\n*Bounty value*: {round(bounty.get_natural_value(), 4)} {bounty.token_name} {usdt_details}" \
           f"\n{bounty.get_absolute_url()}"
