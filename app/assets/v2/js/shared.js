@@ -3,6 +3,16 @@
 // helper functions
 
 /**
+ * Validates if input is a valid URL
+ * @param {string} input - Input String
+ */
+var validURL = function(input) {
+  var regex = /(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,63}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?/;
+
+  return regex.test(input);
+};
+
+/**
  * Looks for a transaction receipt.  If it doesn't find one, it keeps running until it does.
  * @callback
  * @param {string} txhash - The transaction hash.
@@ -500,7 +510,7 @@ var retrieveAmount = function() {
   }
 
   var amount = $('input[name=amount]').val();
-  var address = $('select[name=deonomination]').val();
+  var address = $('select[name=denomination]').val();
   var denomination = tokenAddressToDetails(address)['name'];
   var request_url = '/sync/get_amount?amount=' + amount + '&denomination=' + denomination;
 
@@ -571,12 +581,10 @@ var retrieveIssueDetails = function() {
 
       target_eles['keywords'].val(keywords.join(', '));
     }
-    if (result['description']) {
-      target_eles['description'].val(result['description']);
-    }
-    if (result['title']) {
-      target_eles['title'].val(result['title']);
-    }
+    target_eles['description'].val(result['description']);
+    target_eles['title'].val(result['title']);
+
+    $('#title--text').html(result['title']); // TODO: Refactor
     $.each(target_eles, function(i, ele) {
       ele.removeClass('loading');
     });
@@ -902,7 +910,7 @@ var promptForAuth = function(event) {
         document.alert_enable_token_shown = true;
 
         $('input, textarea, select').prop('disabled', 'disabled');
-        $('select[name=deonomination]').prop('disabled', '');
+        $('select[name=denomination]').prop('disabled', '');
       } else {
         $('input, textarea, select').prop('disabled', '');
       }

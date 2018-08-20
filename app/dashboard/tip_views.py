@@ -303,6 +303,7 @@ def send_tip_4(request):
     tip.txid = txid
     if is_direct_to_recipient:
         tip.receive_txid = txid
+        tip.receive_address = destinationAccount
     tip.save()
 
     # notifications

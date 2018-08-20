@@ -181,7 +181,7 @@ def new_faucet_request(fr):
 
 def new_token_request(obj):
     to_email = settings.PERSONAL_CONTACT_EMAIL
-    from_email = settings.SERVER_EMAIL
+    from_email = obj.email
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
@@ -309,6 +309,8 @@ def weekly_roundup(to_emails=None):
 
             if not should_suppress_notification_email(to_email, 'roundup'):
                 send_mail(from_email, to_email, subject, text, html, from_name="Kevin Owocki (Gitcoin.co)")
+            else:
+                print('supressed')
         finally:
             translation.activate(cur_language)
 

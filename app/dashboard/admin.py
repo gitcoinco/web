@@ -55,6 +55,7 @@ class ToolVoteAdmin(admin.ModelAdmin):
 class InterestAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile']
     ordering = ['-id']
+    search_fields = ['profile__handle']
 
 
 class UserActionAdmin(admin.ModelAdmin):

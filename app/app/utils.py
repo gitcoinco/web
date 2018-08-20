@@ -1,6 +1,7 @@
 import email
 import imaplib
 import logging
+import re
 import time
 from hashlib import sha1
 
@@ -340,3 +341,8 @@ def get_country_from_ip(ip_address, db=None):
         logger.warning(f'Encountered ({e}) while attempting to retrieve a user\'s geolocation')
 
     return country
+
+
+def clean_str(string):
+    """Clean the provided string of all non-alpha numeric characters."""
+    return re.sub(r'\W+', '', string)
