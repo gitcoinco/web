@@ -159,6 +159,9 @@ var callbacks = {
   'bounty_owner_name': function(key, val, result) {
     return [ 'bounty_owner_name', result.bounty_owner_name ];
   },
+  'funding_organisation': function(key, val, result) {
+    return [ 'funding_organisation', result.funding_organisation ];
+  },
   'permission_type': function(key, val, result) {
     if (val == 'approval') {
       val = 'Approval Required';
