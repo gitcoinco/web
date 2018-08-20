@@ -345,8 +345,6 @@ var callbacks = {
         });
       }
     }
-    if (result.fulfillments) {
-    }
     return [ 'fulfilled_owners_username', accepted ];
   }
 };
