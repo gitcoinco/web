@@ -18,8 +18,11 @@ span {
 }
 
 .nav_avatar {
+  width: 40px;
+  height: 40px;
   cursor: pointer;
   border-radius: 50%;
+  background-size: cover;
 }
 
 #navbarDropdown {
@@ -55,7 +58,7 @@ span {
 }
 
 .navbar-nav .btn-gc-blue {
-  margin-right: 0 !important;
+  margin-right: 1rem;
   font-size: 0.9rem;
 }
 
@@ -584,6 +587,11 @@ input[type=text].loading {
   padding: 0 2em;
 }
 
+#bountyFulfillment {
+  height: 2rem;
+  outline: none;
+}
+
 .submit_bounty #primary_form {
   max-width: none;
 }
@@ -649,7 +657,7 @@ input[type=text].loading {
   color: #4aeba8;
 }
 
-.submit_bounty select[name=deonomination] {
+.submit_bounty select[name=denomination] {
   text-align: left;
 }
 
@@ -743,6 +751,10 @@ input[type=text].loading {
   line-height: 20px;
   margin-left: 15px;
   transition: 0.3s;
+}
+
+.closebtn.purple {
+  content: url('/static/v2/images/close-purple.svg');
 }
 
 /* When moving the mouse over the close button */
@@ -945,10 +957,18 @@ input.is-invalid {
   width: 25em;
 }
 
+.tooltip-sm,
 .tooltip-xs {
-  font-size: 10px;
   padding: 2px;
   width: auto;
+}
+
+.tooltip-sm {
+  font-size: 0.75rem;
+}
+
+.tooltip-xs {
+  font-size: 10px;
 }
 
 .ui-widget-shadow,
@@ -1058,6 +1078,7 @@ input.is-invalid {
 
 .submit-notification a {
   color: #FFF;
+  text-decoration: none;
 }
 
 .metamask-error {
@@ -1083,7 +1104,7 @@ input.is-invalid {
 
 .metamask-banner p,
 .metamask-banner li {
-  font-size: 0.85rem;
+  font-size: 1rem;
 }
 
 #robot_error {
@@ -1093,6 +1114,31 @@ input.is-invalid {
 #robot_error img {
   max-height: 18rem;
   width: auto;
+}
+
+.bounty_box {
+  border: 5px solid white;
+  width: 100%;
+  display: block;
+  padding: 30px 30px;
+  background-color: #15003e;
+  color: white;
+  text-decoration: none;
+}
+.bounty_box.disabled, .bounty_box.disabled:hover {
+  cursor: not-allowed;
+  background-color: #5f445b;
+  text-decoration: none;
+}
+.bounty_box:hover {
+  background-color: #35305e;
+  text-decoration: none;
+}
+.bounty_box h5{
+  color: white;
+}
+.bounty_box span{
+  color: white;
 }
 
 @media (max-width: 1350px) {
@@ -1232,7 +1278,7 @@ input.is-invalid {
     max-width: 90%;
   }
 
-  body.slack, body.newtoken .col-4 {
+  body.slack .slack--brand-tree, body.newtoken .col-4 {
     display: none;
   }
 
@@ -1463,7 +1509,7 @@ input.is-invalid {
     display: none;
   }
 
-  .search_bar span {
+  .search_bar .save_search {
     display: none;
   }
 

@@ -8,7 +8,7 @@
         </div>
       [[else]]
         <div class="avatar-container col-1 justify-content-center">
-            <div class="experience [[:experience_level]]">&nbsp;</div>
+          <div class="experience [[:experience_level]]">&nbsp;</div>
         </div>
       [[/if]]
     <div class="col-12 col-md-8 d-flex flex-column">
@@ -31,11 +31,19 @@
     </div>
     <div class="col-12 col-md-3 tags font-caption align-items-center">
       [[if network != 'mainnet']]
-        <div class="tag network_warning">
+        <div class="tag network_warning shift_left">
           <p>
             <span>[[:network]]</span>
           </p>
         </div>
+      [[else]]
+        [[if attached_job_description != null && attached_job_description != '']]
+        <div class="tag hiring shift_left">
+          <p>
+            <span>Hiring</span>
+          </p>
+        </div>
+        [[/if]]
       [[/if]]
       <div class="tag token">
         <p>

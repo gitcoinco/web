@@ -39,3 +39,4 @@ webpack-stats.json
 *.prof
 
 .pytest_cache/
+app/cache/

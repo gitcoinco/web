@@ -66,7 +66,7 @@ def stats(request):
     if _filter == 'KPI':
         _filters = []
         types = [
-            'email_subscribers_active', 'joe_dominance_index_30_value', 'bounties_value', 'bounties_done_value',
+            'email_subscribers_active_roundup', 'joe_dominance_index_30_value', 'bounties_value', 'bounties_done_value',
             'bounties_hourly_rate_inusd_last_24_hours', 'bounties_open_total', 'slack_users_active',
             'twitter_followers',
         ]

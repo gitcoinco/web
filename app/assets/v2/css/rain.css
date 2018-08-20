@@ -38,6 +38,10 @@
   background: #f1e1e1;
 }
 
+.rain.purple {
+  background-color: var(--gc-purple);
+}
+
 .rain:nth-of-type(1) {
   animation-name: rain-1;
   animation-delay: 3s;

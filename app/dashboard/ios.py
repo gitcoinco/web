@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.models import Bounty, Interest, Profile
-from github.utils import get_github_user_data
+from git.utils import get_github_user_data
 from marketing.mails import new_match
 from marketing.models import Match
 from ratelimit.decorators import ratelimit

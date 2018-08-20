@@ -42,6 +42,6 @@ class Command(BaseCommand):
 
         print(bounty)
         did_tweet = maybe_market_to_twitter(bounty, 'remarket_bounty')
-        did_slack = maybe_market_to_slack(bounty, 'this bounty could use some action!')
+        did_slack = maybe_market_to_slack(bounty, 'this funded issue could use some action!')
         print("did tweet", did_tweet)
         print("did slack", did_slack)

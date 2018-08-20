@@ -18,8 +18,8 @@
 
 from django.core.management.base import BaseCommand
 
-from dashboard import helpers
-from dashboard.models import Activity, Bounty
+from dashboard.helpers import record_bounty_activity
+from dashboard.models import Activity, Bounty, Interest
 from dashboard.views import record_bounty_activity
 
 
@@ -30,29 +30,29 @@ def set_created(activity, date):
 
 
 def create_activities(bounty):
-    act = helpers.record_bounty_activity('new_bounty', None, bounty)
+    act = record_bounty_activity('new_bounty', None, bounty)
     set_created(act, bounty.web3_created)
     approval_required = bounty.permission_type == 'approval'
     for interest in bounty.interested.all():
         event_name = 'start_work' if not approval_required else 'worker_applied'
         act = record_bounty_activity(bounty, interest.profile.user, event_name, interest)
         set_created(act, interest.created)
-        if approval_required and not interest.pending:
+        if approval_required and interest.status != Interest.STATUS_REVIEW:
             act = record_bounty_activity(bounty, interest.profile.user, 'worker_approved', interest)
             set_created(act, interest.acceptance_date)
     done_recorded = False
     for fulfillment in bounty.fulfillments.all():
-        act = helpers.record_bounty_activity('work_submitted', bounty.prev_bounty, bounty, fulfillment)
+        act = record_bounty_activity('work_submitted', bounty.prev_bounty, bounty, fulfillment)
         set_created(act, fulfillment.created_on)
         if fulfillment.accepted:
-            act = helpers.record_bounty_activity('work_done', bounty.prev_bounty, bounty, fulfillment)
+            act = record_bounty_activity('work_done', bounty.prev_bounty, bounty, fulfillment)
             set_created(act, fulfillment.accepted_on)
             done_recorded = True
     if bounty.status == 'done' and not done_recorded:
-        act = helpers.record_bounty_activity('work_done', bounty.prev_bounty, bounty)
+        act = record_bounty_activity('work_done', bounty.prev_bounty, bounty)
         set_created(act, bounty.fulfillment_accepted_on)
     if bounty.status == 'cancelled':
-        act = helpers.record_bounty_activity('killed_bounty', bounty.prev_bounty, bounty)
+        act = record_bounty_activity('killed_bounty', bounty.prev_bounty, bounty)
         set_created(act, bounty.canceled_on)
 
 

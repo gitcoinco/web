@@ -17,13 +17,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import cgi
 from datetime import datetime
 
-from dashboard.models import Bounty, Profile, BountyFulfillment, Interest, Activity
+from dashboard.models import Activity, Bounty, BountyFulfillment, Interest, Profile
 from dashboard.notifications import amount_usdt_open_work, append_snooze_copy, build_github_notification
 from pytz import UTC
 from test_plus.test import TestCase
-import cgi
+
 
 @build_github_notification
 def test_maybe_market_to_github(bounty, msg, event_name):
@@ -122,9 +123,7 @@ class DashboardNotificationsTest(TestCase):
         message = test_maybe_market_to_github(self.bounty, 'new_bounty')
         print(message)
         assert f'__This issue now has a funding of {self.natural_value} {self.bounty.token_name}' in message
-        assert self.usdt_value in message
         assert f'This issue now has a funding of' in message
-        assert f'${self.amount_open_work}' in message
 
     def test_build_github_notification_express_interest_traditional_approval(self):
         self.bounty.bounty_type = 'traditional'

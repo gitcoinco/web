@@ -26,11 +26,10 @@ from django.conf import settings
 
 import jwt
 import requests
-import rollbar
 from dashboard.models import Bounty
 from dashboard.tokens import get_tokens
+from git.utils import post_issue_comment_reaction
 from gitcoinbot.models import GitcoinBotResponses
-from github.utils import post_issue_comment_reaction
 
 MIN_AMOUNT = 0
 FALLBACK_CURRENCY = 'ETH'
@@ -184,7 +183,6 @@ def confused_text():
 def post_gitcoin_app_comment(owner, repo, issue_id, content, install_id):
     token = create_token(install_id)
     if not token:
-        rollbar.report_message('Failed to create Github Bot token', 'warning')
         return {}
     url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue_id}/comments'
     github_app_headers = {

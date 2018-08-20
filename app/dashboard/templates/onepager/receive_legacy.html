@@ -17,7 +17,6 @@
 {% endcomment %}
 {% load i18n static %}
 {% block 'scripts' %}
-<script src="{% static "onepager/js/quarantine/ethereumjs-accounts.js" %}"></script>
 <script src="{% static "onepager/js/quarantine/web3.js" %}"></script>
 <script src="{% static "onepager/js/quarantine/hooked-web3-provider.js" %}"></script>
 <script src="{% static "onepager/js/quarantine/tx.js" %}"></script>
@@ -46,7 +45,7 @@
   </header>
   <div id="loading">
     <h1>{% trans "Loading" %}</h1>
-    <img src="{% static "onepager/images/loading.gif" %}" style="max-width: 70px; max-height: 70px;">
+    <img src="{% static "onepager/images/loading_v2.gif" %}" style="max-width: 70px; max-height: 70px;">
     <p id="loading_txt">{% trans "waiting for web3..." %}</p>
   </div>
   <div id="step_zero" style="display:none;">
