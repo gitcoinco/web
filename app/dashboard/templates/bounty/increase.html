@@ -86,10 +86,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <label class="form__label" for=terms>I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>.</label>
                   </div>
                 </div>
-                <div class="form__footer form__footer--right">
+                <div class="form__footer form__footer--right text-center">
                   <button class="button button--primary" type="submit" id="increaseFunding">Increase Funding</button>
                   <br />
-                  <a target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.  Learn more here.</a>
+                  <a class="font-caption" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">
+                    Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain. </br>
+                    Learn more here.
+                  </a>
                 </div>
                 {% include 'shared/newsletter.html' %}
               </div>
