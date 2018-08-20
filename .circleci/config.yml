@@ -9,7 +9,7 @@ jobs:
     docker:
       # specify the version you desire here
       # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
-      - image: circleci/python:3.7
+      - image: gitcoin/web:latest
         environment:
           CACHE_URL: dbcache://my_cache_table
           DATABASE_URL: psql://postgres:postgres@localhost/testdb
