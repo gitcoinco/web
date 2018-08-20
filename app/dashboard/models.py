@@ -893,6 +893,21 @@ class Bounty(SuperModel):
                 queryset.filter(from_name=self.bounty_owner_github_username))
 
     @property
+    def paid(self):
+        """Return list of users paid for this bounty."""
+        if self.status != 'done':
+            return [] #to save the db hits
+        
+        return_list = []
+        for fulfillment in self.fulfillments.filter(accepted=True):
+            if fulfiller.fulfiller_github_username:
+                return_list.append(fulfiller_github_username)
+        for tip in self.tips:
+            if tip.username:
+                return_list.append(tip.username)
+        return list(set(return_list))
+
+    @property
     def additional_funding_summary(self):
         """Return a dict describing the additional funding from crowdfunding that this object has"""
         return_dict = {
