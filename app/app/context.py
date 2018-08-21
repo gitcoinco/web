@@ -60,7 +60,9 @@ def insert_settings(request):
             'port': settings.IPFS_API_PORT,
             'protocol': settings.IPFS_API_SCHEME,
             'root': settings.IPFS_API_ROOT,
-        }
+        },
+        'static_url': settings.STATIC_URL,
+        'media_url': settings.MEDIA_URL,
     }
     context['json_context'] = json.dumps(context)
 

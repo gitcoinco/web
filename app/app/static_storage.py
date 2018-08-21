@@ -19,6 +19,7 @@ class SilentFileStorage(ManifestFilesMixin, S3Boto3Storage):
     location = settings.STATICFILES_LOCATION
 
     def __init__(self, *args, **kwargs):
+        kwargs['bucket'] = settings.AWS_STORAGE_BUCKET_NAME
         kwargs['custom_domain'] = settings.AWS_S3_CUSTOM_DOMAIN
         super(SilentFileStorage, self).__init__(*args, **kwargs)
 
@@ -44,6 +45,7 @@ class MediaFileStorage(S3Boto3Storage):
     location = settings.MEDIAFILES_LOCATION
 
     def __init__(self, *args, **kwargs):
+        kwargs['bucket'] = settings.MEDIA_BUCKET
         kwargs['custom_domain'] = settings.MEDIA_CUSTOM_DOMAIN
         super(MediaFileStorage, self).__init__(*args, **kwargs)
 

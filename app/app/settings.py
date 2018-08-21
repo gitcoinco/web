@@ -450,6 +450,7 @@ AWS_QUERYSTRING_AUTH = env.bool('AWS_QUERYSTRING_AUTH', default=False)
 AWS_S3_FILE_OVERWRITE = env.bool('AWS_S3_FILE_OVERWRITE', default=True)
 AWS_PRELOAD_METADATA = env.bool('AWS_PRELOAD_METADATA', default=True)
 AWS_S3_CUSTOM_DOMAIN = env('AWS_S3_CUSTOM_DOMAIN', default='s.gitcoin.co')
+MEDIA_BUCKET = env.str('MEDIA_BUCKET', default=AWS_STORAGE_BUCKET_NAME)
 MEDIA_CUSTOM_DOMAIN = env('MEDIA_CUSTOM_DOMAIN', default='c.gitcoin.co')
 AWS_DEFAULT_ACL = env('AWS_DEFAULT_ACL', default='public-read')
 if not AWS_S3_OBJECT_PARAMETERS:
