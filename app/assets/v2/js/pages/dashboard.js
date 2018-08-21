@@ -46,20 +46,57 @@ function debounce(func, wait, immediate) {
   };
 }
 
-// sets search information default
+/**
+ * Fetches all filters options from the URI
+ */
+var getActiveFilters = function() {
+  sidebar_keys.forEach(filter => {
+    if (getParam(filter)) {
+      localStorage[filter] = getParam(filter).replace(/^,|,\s*$/g, '');
+    }
+  });
+};
+
+/**
+ * Build URI based on selected filter
+ */
+var buildURI = function() {
+  let uri = '';
+  sidebar_keys.forEach((filter) => {
+    if (localStorage[filter] &&
+      localStorage[filter] != null &&
+      localStorage[filter] != 'any') {
+      uri += (filter + '=' + localStorage[filter] + '&');
+    }
+  });
+
+  var _filters = ['keywords', 'order_by'];
+  _filters.forEach((filter) => {
+    if (localStorage[filter] &&
+      localStorage[filter] != '') {
+      uri += (filter + '=' + localStorage[filter] + '&');
+    }
+  });
+
+  return uri.slice(0, -1);
+};
+
+/**
+ * Updates localStorage with selected filters
+ */
 var save_sidebar_latest = function() {
   localStorage['order_by'] = $('#sort_option').val();
 
   for (var i = 0; i < sidebar_keys.length; i++) {
     var key = sidebar_keys[i];
-
+ 
     localStorage[key] = '';
 
     $('input[name="' + key + '"]:checked').each(function() {
       localStorage[key] += $(this).val() + ',';
     });
 
-    // Removing the start and last comma to avoid empty element when splitting with comma
+    // Trim trailing comma to avoid empty element on split
     localStorage[key] = localStorage[key].replace(/^,|,\s*$/g, '');
   }
 };
@@ -82,9 +119,9 @@ var set_sidebar_defaults = function() {
     } else {
       localStorage['keywords'] = keywords;
     }
-
-    window.history.replaceState(history.state, 'Issue Explorer | Gitcoin', '/explorer');
   }
+
+  getActiveFilters();
 
   if (localStorage['order_by']) {
     $('#sort_option').val(localStorage['order_by']);
@@ -301,7 +338,7 @@ var process_stats = function(results) {
   if (show_stats) {
     worth_usdt = worth_usdt.toFixed(2);
     worth_eth = (worth_eth / Math.pow(10, 18)).toFixed(2);
-      
+
     var stats = worth_usdt + ' USD, ' + worth_eth + ' ETH';
 
     for (var t in currencies_to_value) {
@@ -343,7 +380,7 @@ var trigger_scroll = debounce(function() {
   var get_more = !have_painted_all_bounties && ((last_active_bounty.offset().top) < (scrollPos + buffer + window_height));
 
   if (get_more && !document.done_loading_results) {
-    
+
     // move loading indicator
     var loading_html = $('.loading_img').clone().wrap('<p>').parent().html();
 
@@ -381,6 +418,8 @@ var refreshBounties = function(event, offset, append) {
   toggleAny(event);
   getFilters();
 
+  window.history.pushState('', '', '/explorer?' + buildURI());
+
   if (!append) {
     $('.nonefound').css('display', 'none');
     $('.loading').css('display', 'block');
@@ -390,11 +429,9 @@ var refreshBounties = function(event, offset, append) {
   var uri = get_search_URI(offset);
 
   // analytics
-  var params = { uri: uri };
+  mixpanel.track('Refresh Bounties', { uri: uri });
 
-  mixpanel.track('Refresh Bounties', params);
-
-  // order
+  // Abort pending request if any subsequent request
   if (explorer.bounties_request && explorer.bounties_request.readyState !== 4) {
     explorer.bounties_request.abort();
   }
@@ -515,13 +552,6 @@ window.addEventListener('load', function() {
   reset_offset();
   refreshBounties(null, 0, false);
 });
-
-var getNextDayOfWeek = function(date, dayOfWeek) {
-  var resultDate = new Date(date.getTime());
-
-  resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay() - 1) % 7 + 1);
-  return resultDate;
-};
 
 function getURLParams(k) {
   var p = {};
