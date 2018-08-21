@@ -929,7 +929,6 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     if issue_url:
         try:
             bounties = Bounty.objects.current().filter(github_url=issue_url)
-            print(bounties)
             stdbounties_id = clean_str(stdbounties_id)
             if stdbounties_id and stdbounties_id.isdigit():
                 bounties = bounties.filter(standard_bounties_id=stdbounties_id)
