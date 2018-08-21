@@ -1056,7 +1056,7 @@ function fetchBountiesAndAddToList(params, target, limit, additional_callback) {
     } else {
       console.log($(target).parent().closest('.container').addClass('hidden'));
     }
-    if(typeof additional_callback != 'undefined'){
+    if (typeof additional_callback != 'undefined') {
       additional_callback(results);
     }
   });
