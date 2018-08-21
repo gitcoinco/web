@@ -22,6 +22,13 @@
           animation-iteration-count: infinite, infinite;
   -webkit-animation-play-state: running, running;
           animation-play-state: running, running;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .rain {
+    display: block;
+  } 
 }
 
 .rain:nth-of-type(3n+0) {
