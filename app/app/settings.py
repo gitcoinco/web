@@ -250,7 +250,7 @@ GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
 STATICFILES_DIRS = env.tuple('STATICFILES_DIRS', default=('assets/', ))
 STATIC_ROOT = root('static')
 
-if not DEBUG:
+if ENV in ['prod', 'stage']:
     DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE', default='app.storage.SilentFileStorage')
     STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.static_storage.SilentFileStorage')
     STATIC_HOST = env('STATIC_HOST', default='https://s.gitcoin.co/')
