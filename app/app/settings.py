@@ -298,7 +298,7 @@ CACHEOPS = {
         'ops': 'all',
         'timeout': 60 * 15,
     },
-    'dashboard.activity':{
+    'dashboard.activity': {
         'ops': 'all',
         'timeout': 60 * 5,
     },
