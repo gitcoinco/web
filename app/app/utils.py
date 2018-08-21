@@ -343,3 +343,8 @@ def get_country_from_ip(ip_address, db=None):
 def clean_str(string):
     """Clean the provided string of all non-alpha numeric characters."""
     return re.sub(r'\W+', '', string)
+
+def get_default_network():
+    if settings.DEBUG:
+        return 'rinkeby'
+    return 'mainnet'
