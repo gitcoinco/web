@@ -13,15 +13,15 @@
   cursor: default;
   will-change: transform, top, left;
   -webkit-animation-name: rains-fall, rains-shake;
-          animation-name: rains-fall, rains-shake;
+  animation-name: rains-fall, rains-shake;
   -webkit-animation-duration: 20s, 8s;
-          animation-duration: 20s, 8s;
+  animation-duration: 20s, 8s;
   -webkit-animation-timing-function: linear, linear;
-          animation-timing-function: linear, linear;
+  animation-timing-function: linear, linear;
   -webkit-animation-iteration-count: infinite, infinite;
-          animation-iteration-count: infinite, infinite;
+  animation-iteration-count: infinite, infinite;
   -webkit-animation-play-state: running, running;
-          animation-play-state: running, running;
+  animation-play-state: running, running;
   display: none;
 }
 
@@ -64,29 +64,29 @@
 @-webkit-keyframes rains-shake {
   0% {
     -webkit-transform: rotate(45deg) translate(0, -100vw);
-            transform: rotate(45deg) translate(0, -100vw);
+    transform: rotate(45deg) translate(0, -100vw);
   }
   100% {
     -webkit-transform: rotate(45deg) translate(0, 100vw);
-            transform: rotate(45deg) translate(0, 100vw);
+    transform: rotate(45deg) translate(0, 100vw);
   }
 }
 
 @keyframes rains-shake {
   0% {
     -webkit-transform: rotate(45deg) translate(0, -100vw);
-            transform: rotate(45deg) translate(0, -100vw);
+    transform: rotate(45deg) translate(0, -100vw);
   }
   100% {
     -webkit-transform: rotate(45deg) translate(0, 100vw);
-            transform: rotate(45deg) translate(0, 100vw);
+    transform: rotate(45deg) translate(0, 100vw);
   }
 }
 
 .rain:nth-of-type(10) {
   left: 1%;
   -webkit-animation-delay: 0s, 0s;
-          animation-delay: 0s, 0s;
+  animation-delay: 0s, 0s;
   width: 10px;
   height: 100px;
 }
@@ -94,7 +94,7 @@
 .rain:nth-of-type(1) {
   left: 10%;
   -webkit-animation-delay: 6s, 6s;
-          animation-delay: 6s, 6s;
+  animation-delay: 6s, 6s;
   width: 8px;
   height: 80px;
 }
@@ -102,7 +102,7 @@
 .rain:nth-of-type(2) {
   left: 20%;
   -webkit-animation-delay: 6s, 0.5s;
-          animation-delay: 6s, 0.5s;
+  animation-delay: 6s, 0.5s;
   width: 15px;
   height: 120px;
 }
@@ -110,7 +110,7 @@
 .rain:nth-of-type(3) {
   left: 30%;
   -webkit-animation-delay: 4s, 2s;
-          animation-delay: 4s, 2s;
+  animation-delay: 4s, 2s;
   width: 12px;
   height: 95px;
 }
@@ -118,7 +118,7 @@
 .rain:nth-of-type(4) {
   left: 40%;
   -webkit-animation-delay: 2s, 2s;
-          animation-delay: 2s, 2s;
+  animation-delay: 2s, 2s;
   width: 8px;
   height: 100px;
 }
@@ -126,7 +126,7 @@
 .rain:nth-of-type(5) {
   left: 50%;
   -webkit-animation-delay: 8s, 3s;
-          animation-delay: 8s, 3s;
+  animation-delay: 8s, 3s;
   width: 14px;
   height: 110px;
 }
@@ -134,7 +134,7 @@
 .rain:nth-of-type(6) {
   left: 60%;
   -webkit-animation-delay: 6s, 2s;
-          animation-delay: 6s, 2s;
+  animation-delay: 6s, 2s;
   width: 8px;
   height: 90px;
 }
@@ -142,7 +142,7 @@
 .rain:nth-of-type(7) {
   left: 70%;
   -webkit-animation-delay: 2.5s, 1s;
-          animation-delay: 2.5s, 1s;
+  animation-delay: 2.5s, 1s;
   width: 16px;
   height: 100px;
 }
@@ -150,7 +150,7 @@
 .rain:nth-of-type(8) {
   left: 80%;
   -webkit-animation-delay: 1s, 0s;
-          animation-delay: 1s, 0s;
+  animation-delay: 1s, 0s;
   width: 10px;
   height: 100px;
 }
@@ -158,5 +158,5 @@
 .rain:nth-of-type(9) {
   left: 90%;
   -webkit-animation-delay: 3s, 1.5s;
-          animation-delay: 3s, 1.5s;
+  animation-delay: 3s, 1.5s;
 }
