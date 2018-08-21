@@ -1023,7 +1023,7 @@ function renderBountyRowsFromResults(results) {
  *
  * TODO: refactor explorer to reuse this
  */
-function fetchBountiesAndAddToList(params, target, limit) {
+function fetchBountiesAndAddToList(params, target, limit, additional_callback) {
   $.get('/api/v0.1/bounties/?' + params, function(results) {
     results = sanitizeAPIResults(results);
 
@@ -1055,6 +1055,9 @@ function fetchBountiesAndAddToList(params, target, limit) {
       });
     } else {
       console.log($(target).parent().closest('.container').addClass('hidden'));
+    }
+    if(typeof additional_callback != 'undefined'){
+      additional_callback(results);
     }
   });
 }
