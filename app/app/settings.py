@@ -246,17 +246,25 @@ GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 STATICFILES_DIRS = env.tuple('STATICFILES_DIRS', default=('assets/', ))
 STATIC_ROOT = root('static')
+STATICFILES_LOCATION = env.str('STATICFILES_LOCATION', default='static')
+MEDIAFILES_LOCATION = env.str('MEDIAFILES_LOCATION', default='media')
 
 if ENV in ['prod', 'stage']:
-    DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE', default='app.storage.SilentFileStorage')
+    DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE', default='app.static_storage.MediaFileStorage')
+    THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
     STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.static_storage.SilentFileStorage')
     STATIC_HOST = env('STATIC_HOST', default='https://s.gitcoin.co/')
-    STATIC_URL = STATIC_HOST + env('STATIC_URL', default='static/')
-    MEDIA_URL = env('MEDIA_URL', default='https://cdnx.gitcoin.co/assets/')
+    STATIC_URL = STATIC_HOST + env('STATIC_URL', default=f'{STATICFILES_LOCATION}{"/" if STATICFILES_LOCATION else ""}')
+    MEDIA_URL = env(
+        'MEDIA_URL', default=f'https://c.gitcoin.co/{MEDIAFILES_LOCATION}{"/" if MEDIAFILES_LOCATION else ""}'
+    )
 else:
+    # Handle local static file storage
     STATIC_HOST = BASE_URL
-    STATIC_URL = env('STATIC_URL', default='/static/')
-    MEDIA_URL = env('MEDIA_URL', default='/assets/')
+    STATIC_URL = env('STATIC_URL', default=f'/{STATICFILES_LOCATION}/')
+    # Handle local media file storage
+    MEDIA_ROOT = root('media')
+    MEDIA_URL = env('MEDIA_URL', default=f'/{MEDIAFILES_LOCATION}/')
 
 COMPRESS_ROOT = STATIC_ROOT
 COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', default=True)
@@ -442,6 +450,7 @@ AWS_QUERYSTRING_AUTH = env.bool('AWS_QUERYSTRING_AUTH', default=False)
 AWS_S3_FILE_OVERWRITE = env.bool('AWS_S3_FILE_OVERWRITE', default=True)
 AWS_PRELOAD_METADATA = env.bool('AWS_PRELOAD_METADATA', default=True)
 AWS_S3_CUSTOM_DOMAIN = env('AWS_S3_CUSTOM_DOMAIN', default='s.gitcoin.co')
+MEDIA_CUSTOM_DOMAIN = env('MEDIA_CUSTOM_DOMAIN', default='c.gitcoin.co')
 AWS_DEFAULT_ACL = env('AWS_DEFAULT_ACL', default='public-read')
 if not AWS_S3_OBJECT_PARAMETERS:
     AWS_S3_OBJECT_PARAMETERS = {'CacheControl': f'max-age={AWS_S3_CACHE_MAX_AGE}', }
@@ -452,14 +461,6 @@ CORS_ORIGIN_WHITELIST = CORS_ORIGIN_WHITELIST + (AWS_S3_CUSTOM_DOMAIN, )
 
 S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='')  # TODO
 S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='')  # TODO
-
-# Handle local file storage
-if ENV == 'local' and not AWS_STORAGE_BUCKET_NAME:
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = root('media')
-else:
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
 
 INSTALLED_APPS += env.list('DEBUG_APPS', default=[])
 
