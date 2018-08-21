@@ -52,6 +52,10 @@ def get_activities(tech_stack=None, num_activities=15):
     return [a.view_props for a in activities]
 
 
+def lbcheck(request):
+    context = {}
+    return TemplateResponse(request, 'lbcheck.html', context)
+
 def index(request):
     slides = [
         ("Dan Finlay", static("v2/images/testimonials/dan.jpg"),
@@ -215,7 +219,7 @@ def contributor_landing(request, tech_stack):
 
     available_bounties_count = open_bounties().count()
     available_bounties_worth = amount_usdt_open_work()
-
+    # tech_stack = '' #uncomment this if you wish to disable contributor specific LPs
     context = {
         'activities': get_activities(tech_stack),
         'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else "Open Source Opportunities",
@@ -805,7 +809,7 @@ def presskit(request):
 
 def get_gitcoin(request):
     context = {
-        'active': 'get',
+        'active': 'get_gitcoin',
         'title': _('Get Started'),
     }
     return TemplateResponse(request, 'getgitcoin.html', context)

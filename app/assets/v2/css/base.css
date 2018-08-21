@@ -326,10 +326,12 @@ p a {
 
 .iama a.btn {
   color: #f9006c;
+  border-color: #f9006c;
 }
 
 .iama a.btn:hover {
   color: white;
+  background-color: #f9006c;
 }
 
 .iama .mt-3 {
