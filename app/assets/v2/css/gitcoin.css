@@ -176,6 +176,8 @@ h4,
   background-size: cover;
   background-position: 0px 0px;
   background-repeat: no-repeat;
+  overflow: hidden;
+  position: relative;
 }
 
 .header-contributor {
