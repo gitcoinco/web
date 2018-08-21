@@ -805,7 +805,7 @@ def presskit(request):
 
 def get_gitcoin(request):
     context = {
-        'active': 'get',
+        'active': 'get_gitcoin',
         'title': _('Get Started'),
     }
     return TemplateResponse(request, 'getgitcoin.html', context)
