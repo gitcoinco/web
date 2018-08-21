@@ -26,7 +26,8 @@ class SilentFileStorage(ManifestFilesMixin, S3Boto3Storage):
     def url(self, name, **kwargs):
         """Handle catching bad URLs and return the name if route is unavailable."""
         try:
-            return super(SilentFileStorage, self).url(name, **kwargs)
+            hashed_name = self.stored_name or ''
+            return super(SilentFileStorage, self).url(hashed_name, name, **kwargs)
         except Exception:
             return name
 
