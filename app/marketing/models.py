@@ -181,8 +181,25 @@ class LeaderboardRank(SuperModel):
         return f"https://github.com/{self.github_username}"
 
     @property
+    def is_user_based(self):
+        return '_tokens' not in self.leaderboard and '_keywords' not in self.leaderboard
+
+    @property
+    def at_ify_username(self):
+        if self.is_user_based:
+            return f"@{self.github_username}"
+        return self.github_username
+
+
+    @property
     def avatar_url(self):
-        return f"/static/avatar/{self.github_username}"
+        key = self.github_username
+
+        # these two types won't have images
+        if not self.is_user_based:
+            key = 'None'
+
+        return f"/static/avatar/{key}"
 
 
 class Match(SuperModel):
