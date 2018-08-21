@@ -765,19 +765,6 @@ input[type=text].loading {
   color: black;
 }
 
-.modal#save {
-  width: 100%;
-}
-
-.modal#save img {
-  width: 30px;
-  height: 30px;
-}
-
-.modal#save p {
-  display: inline;
-}
-
 .row.nonefound {
   margin-right: 0px;
 }
