@@ -1,5 +1,5 @@
 .rain {
-  position: fixed;
+  position: absolute;
   top: -50%;
   background: white;
   height: 100px;
@@ -41,6 +41,14 @@
 
 .rain:nth-of-type(3n+2) {
   background: rgba(74, 235, 168, 0.4);
+}
+
+.rain.grey {
+  background: rgba(241,225,255,0.2);
+}	
+
+.rain.purple {	
+  background-color: rgba(13,7,100, 0.2);	
 }
 
 @-webkit-keyframes rains-fall {
