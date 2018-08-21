@@ -52,6 +52,10 @@ def get_activities(tech_stack=None, num_activities=15):
     return [a.view_props for a in activities]
 
 
+def lbcheck(request):
+    context = {}
+    return TemplateResponse(request, 'lbcheck.html', context)
+
 def index(request):
     slides = [
         ("Dan Finlay", static("v2/images/testimonials/dan.jpg"),
