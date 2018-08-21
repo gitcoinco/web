@@ -32,7 +32,7 @@ class Widget {
 
     anchor.appendChild(logo);
     // need a srcset or svg logo for responsiveness
-    logo.src = 'https://gitcoin.co/static/v2/images/logo.png';
+    logo.src = static_url + 'v2/images/logo.png';
     logo.className = 'gitcoin-widget__logo';
     return anchor;
   }
