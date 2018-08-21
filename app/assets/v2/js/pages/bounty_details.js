@@ -797,7 +797,7 @@ var do_actions = function(result) {
   }
 
   if (show_start_stop_work) {
-    const enabled = start_stop_work_enabled;
+    const enabled = true;
     const interest_entry = {
       enabled: enabled,
       href: is_interested ? '/uninterested' : '/interested',
