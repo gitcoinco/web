@@ -156,7 +156,7 @@ function changeImage(option, path) {
     const elem = $('#preview-' + option);
 
     if (path) {
-      elem.css('background-image', `url(${static_url}${path})`);
+      elem.css('background-image', `url(${path})`);
       options[option] = path;
       localStorage[option] = path;
     } else {
@@ -167,7 +167,7 @@ function changeImage(option, path) {
   } else if (path) { // option was previously blank
     const newEl = $.parseHTML(`<div id="preview-${option}"
     alt="${option} Preview"
-    style="z-index: ${layers.indexOf(option)}; background-image: url(${static_url}${path})"
+    style="z-index: ${layers.indexOf(option)}; background-image: url(${path})"
     class="preview-section ${
   (sectionPalettes.hasOwnProperty(option) &&
     [ 'Eyes', 'Mouth', 'Nose' ].indexOf(option) < 0) ?

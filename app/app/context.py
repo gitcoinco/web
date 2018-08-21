@@ -43,6 +43,7 @@ def insert_settings(request):
     context = {
         'mixpanel_token': settings.MIXPANEL_TOKEN,
         'STATIC_URL': settings.STATIC_URL,
+        'MEDIA_URL': settings.MEDIA_URL,
         'num_slack': num_slack,
         'github_handle': request.user.username if user_is_authenticated else False,
         'email': request.user.email if user_is_authenticated else False,
@@ -61,8 +62,6 @@ def insert_settings(request):
             'protocol': settings.IPFS_API_SCHEME,
             'root': settings.IPFS_API_ROOT,
         },
-        'static_url': settings.STATIC_URL,
-        'media_url': settings.MEDIA_URL,
     }
     context['json_context'] = json.dumps(context)
 

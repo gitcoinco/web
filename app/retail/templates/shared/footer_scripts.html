@@ -17,8 +17,8 @@
 {% endcomment %}
 {% load static %}
 <script type="text/javascript">
-  var static_url = "{{ static_url }}";
-  var media_url = "{{ media_url }}";
+  var static_url = "{{ STATIC_URL }}";
+  var media_url = "{{ MEDIA_URL }}";
 </script>
 <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
 <script src="{% static "v2/js/jquery.js" %}"></script>
