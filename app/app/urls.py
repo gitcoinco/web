@@ -192,6 +192,7 @@ urlpatterns = [
     re_path(r'^activity/?', retail.views.activity, name='activity'),
     re_path(r'^get/?', retail.views.get_gitcoin, name='get_gitcoin'),
     url(r'^$', retail.views.index, name='index'),
+    url(r'^lbcheck/?', retail.views.lbcheck, name='lbcheck'),
     re_path(r'^contributor/?(?P<tech_stack>.*)/?', retail.views.contributor_landing, name='contributor_landing'),
     url(r'^help/dev/?', retail.views.help_dev, name='help_dev'),
     url(r'^help/repo/?', retail.views.help_repo, name='help_repo'),

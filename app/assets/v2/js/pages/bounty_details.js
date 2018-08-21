@@ -112,7 +112,7 @@ var callbacks = {
     var username = result['bounty_owner_github_username'] ? result['bounty_owner_github_username'] : 'Self';
 
     return [ 'issuer_avatar_url', '<a href="/profile/' + result['bounty_owner_github_username'] +
-      '"><img class=avatar src="/funding/avatar?repo=https://github.com/' + username + '"></a>' ];
+      '"><img class=avatar src="/static/avatar/' + username + '"></a>' ];
   },
   'status': function(key, val, result) {
     var ui_status = val;
@@ -673,7 +673,7 @@ var build_detail_page = function(result) {
 
   // funded by
   if (isBountyOwnerPerLogin(result) && !isBountyOwner(result)) {
-    $('#funder_notif_info').html(gettext('Funded Address: ') +
+    $('#funder_notif_info').html(gettext('Funder Address: ') +
       '<span id="bounty_funded_by">' + result['bounty_owner_address'] + '</span>');
     $('#funder_notif_info').append('\
         <span class="bounty-notification ml-2">\
@@ -797,7 +797,7 @@ var do_actions = function(result) {
   }
 
   if (show_start_stop_work) {
-    const enabled = start_stop_work_enabled;
+    const enabled = true;
     const interest_entry = {
       enabled: enabled,
       href: is_interested ? '/uninterested' : '/interested',
