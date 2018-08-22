@@ -47,14 +47,14 @@ class SilentFileStorage(ManifestFilesMixin, S3Boto3Storage):
         if not content_autoclose.closed:
             content_autoclose.close()
 
-    def url(self, name, force=False):
+    def url(self, name, force=True):
         """Handle catching bad URLs and return the name if route is unavailable."""
         try:
             return super(SilentFileStorage, self).url(name, force=force)
         except Exception:
             return name
 
-    def _url(self, hashed_name_func, name, force=False, hashed_files=None):
+    def _url(self, hashed_name_func, name, force=True, hashed_files=None):
         """Handle catching bad URLs and return the name if route is unavailable."""
         try:
             hashed_name = self.stored_name or ''
