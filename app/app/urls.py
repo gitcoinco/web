@@ -58,7 +58,11 @@ urlpatterns = [
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(dbrouter.urls)),
     url(r'^api/v0.1/', include(ebrouter.urls)),
-    url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cluodfront
+    url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cloudfront
+
+    # Health check endpoint
+    re_path(r'^health/', include('health_check.urls')),
+    re_path(r'^lbcheck/?', retail.views.lbcheck, name='lbcheck'),
 
     # dashboard views
 
@@ -161,10 +165,10 @@ urlpatterns = [
     # images
     re_path(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
     re_path(r'^funding/avatar/?', avatar.views.handle_avatar, name='avatar'),
-    re_path(r'^static/avatar/(.*)/(.*)?', avatar.views.handle_avatar, name='org_avatar'),
-    re_path(r'^static/viz/graph/(.*)?$', dataviz.d3_views.viz_graph, name='viz_graph'),
-    re_path(r'^static/viz/sscatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot_stripped, name='viz_sscatterplot'),
-    path('static/v2/js/tokens_dynamic.js', retail.views.tokens, name='tokens'),
+    re_path(r'^dynamic/avatar/(.*)/(.*)?', avatar.views.handle_avatar, name='org_avatar'),
+    re_path(r'^dynamic/viz/graph/(.*)?$', dataviz.d3_views.viz_graph, name='viz_graph'),
+    re_path(r'^dynamic/viz/sscatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot_stripped, name='viz_sscatterplot'),
+    path('dynamic/js/tokens_dynamic.js', retail.views.tokens, name='tokens'),
 
     # sync methods
     url(r'^sync/web3/?', dashboard.views.sync_web3, name='sync_web3'),
@@ -186,7 +190,6 @@ urlpatterns = [
     re_path(r'^activity/?', retail.views.activity, name='activity'),
     re_path(r'^get/?', retail.views.get_gitcoin, name='get_gitcoin'),
     url(r'^$', retail.views.index, name='index'),
-    url(r'^lbcheck/?', retail.views.lbcheck, name='lbcheck'),
     re_path(r'^contributor/?(?P<tech_stack>.*)/?', retail.views.contributor_landing, name='contributor_landing'),
     url(r'^help/dev/?', retail.views.help_dev, name='help_dev'),
     url(r'^help/repo/?', retail.views.help_repo, name='help_repo'),
@@ -366,6 +369,7 @@ if settings.ENABLE_SILK:
     urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
 
 if settings.ENV == 'local' and not settings.AWS_STORAGE_BUCKET_NAME:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # If running in DEBUG, expose the error handling pages.

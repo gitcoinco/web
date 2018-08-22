@@ -1102,7 +1102,7 @@ def profile(request, handle):
             'hidden': True,
             'profile': {
                 'handle': handle,
-                'avatar_url': f"/static/avatar/Self",
+                'avatar_url': f"/dynamic/avatar/Self",
                 'data': {
                     'name': f"@{handle}",
                 },

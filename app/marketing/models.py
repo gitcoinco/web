@@ -199,7 +199,7 @@ class LeaderboardRank(SuperModel):
         if not self.is_user_based:
             key = 'None'
 
-        return f"/static/avatar/{key}"
+        return f"/dynamic/avatar/{key}"
 
 
 class Match(SuperModel):
