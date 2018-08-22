@@ -164,7 +164,7 @@ class Widget {
     right.appendChild(bar);
     const slider = document.createElement('div');
 
-    function groupBounties(arr,n,fn) {
+    function groupBounties(arr, n, fn) {
       for (var i = 0; i < arr.length; i += n) {
         fn(arr.slice(i, i + n));
       }
@@ -172,11 +172,12 @@ class Widget {
     
     slider.className = 'siema';
 
-    groupBounties(this.data,4,function(group) {
+    groupBounties(this.data, 4, function(group) {
       const slide = document.createElement('div');
+
       slide.appendChild(Widget.bountyRow(group));
       slider.appendChild(slide);
-    })
+    });
 
     right.appendChild(slider);
     return right;
