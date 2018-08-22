@@ -207,7 +207,13 @@
       {% if not tips and not accepted_fulfillments %}
         <tr class="item">
           <td colspan="2">
-            {% trans "(no completed payments have been made on this invoice)" %}
+            {% trans "( no completed payments have been made on this invoice, although a pending payment of" %}
+            {% if bounty.value_in_usdt %}
+              ${{bounty.value_in_usdt}}
+            {% endif %}
+              ( {{bounty.value_true}}
+              {{bounty.token_name}} )
+            {% trans " is present. )" %}
           </td>
           
         </tr>
