@@ -1,6 +1,6 @@
 {
   "name": "gitcoin-sdk",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Gitcoin SDK.",
   "scripts": {
     "dev": "webpack --config webpack.config.js --mode development --progress --colors",
@@ -16,8 +16,8 @@
     "Gitcoin",
     "SDK"
   ],
-  "author": "Matthew Lilley",
-  "license": "MIT",
+  "author": "Gitcoin",
+  "license": "AGPLv3",
   "files": [
     "dist/index.js"
   ],
