@@ -679,7 +679,7 @@ var build_detail_page = function(result) {
         <span class="bounty-notification ml-2">\
         <i class="far fa-bell"></i>\
         Ready to Pay? Set Your Metamask to this address!\
-        <img src="' + static_url +'v2/images/metamask.svg">\
+        <img src="' + static_url + 'v2/images/metamask.svg">\
       </span>'
     );
   }
