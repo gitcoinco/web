@@ -8,7 +8,6 @@ var filters = [
   'moderation_filter',
   'network',
   'idx_status',
-  'tech_stack',
   'project_type',
   'permission_type',
   'misc'
@@ -50,7 +49,14 @@ function debounce(func, wait, immediate) {
  * Fetches all filters options from the URI
  */
 var getActiveFilters = function() {
-  filters.forEach(filter => {
+
+  if (window.location.search) {
+    resetFilters();
+  }
+  let _filters = filters.slice();
+
+  _filters.push('keywords', 'order_by');
+  _filters.forEach(filter => {
     if (getParam(filter)) {
       localStorage[filter] = getParam(filter).replace(/^,|,\s*$/g, '');
     }
@@ -62,20 +68,13 @@ var getActiveFilters = function() {
  */
 var buildURI = function() {
   let uri = '';
+  let _filters = filters.slice();
 
-  filters.forEach((filter) => {
+  _filters.push('keywords', 'order_by');
+  _filters.forEach((filter) => {
     if (localStorage[filter] &&
       localStorage[filter] != null &&
       localStorage[filter] != 'any') {
-      uri += (filter + '=' + localStorage[filter] + '&');
-    }
-  });
-
-  var _filters = [ 'keywords', 'order_by' ];
-
-  _filters.forEach((filter) => {
-    if (localStorage[filter] &&
-      localStorage[filter] != '') {
       uri += (filter + '=' + localStorage[filter] + '&');
     }
   });
@@ -556,7 +555,11 @@ function getURLParams(k) {
   return k ? p[k] : p;
 }
 
-var resetFilters = function() {
+/**
+ * removed all filters from the sidebar search
+ * resetKeyword : boolean
+ */
+var resetFilters = function(resetKeyword) {
   filters.forEach((filter) => {
     var tag = ($('input[name="' + filter + '"][value]'));
 
@@ -568,7 +571,7 @@ var resetFilters = function() {
     }
   });
 
-  if (localStorage['keywords']) {
+  if (resetKeyword && localStorage['keywords']) {
     localStorage['keywords'].split(',').forEach(function(v, k) {
       removeFilter('keywords', v);
     });
@@ -581,7 +584,7 @@ var resetFilters = function() {
     $('#dashboard-title').addClass('hidden');
     $('#onboard-dashboard').removeClass('hidden');
     $('#onboard-footer').removeClass('hidden');
-    resetFilters();
+    resetFilters(true);
     $('input[name=idx_status][value=open]').prop('checked', true);
     $('.search-area input[type=text]').text(getURLParams('q'));
 
@@ -689,7 +692,7 @@ $(document).ready(function() {
   // sidebar clear
   $('.dashboard #clear').click(function(e) {
     e.preventDefault();
-    resetFilters();
+    resetFilters(true);
     reset_offset();
     refreshBounties(null, 0, false);
   });
