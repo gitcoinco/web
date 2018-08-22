@@ -76,8 +76,10 @@ var update_metamask_conf_time_and_cost_estimate = function() {
   var gasPrice = parseFloat($('#gasPrice').val());
 
   if (gasPrice) {
-    ethAmount = Math.round(1000 * gasLimit * gasPrice / Math.pow(10, 9)) / 1000;
-    usdAmount = Math.round(10 * ethAmount * document.eth_usd_conv_rate) / 10;
+    var eth_amount_unrounded = gasLimit * gasPrice / Math.pow(10, 9);
+
+    ethAmount = Math.round(1000000 * eth_amount_unrounded) / 1000000;
+    usdAmount = Math.round(1000 * eth_amount_unrounded * document.eth_usd_conv_rate) / 1000;
   }
 
   if (typeof document.conf_time_spread == 'undefined') return;
@@ -87,7 +89,7 @@ var update_metamask_conf_time_and_cost_estimate = function() {
     var next_ele = (document.conf_time_spread[i + 1]);
 
     if (gasPrice <= parseFloat(next_ele[0]) && gasPrice > parseFloat(this_ele[0])) {
-      confTime = Math.round(10 * next_ele[1]) / 10;
+      confTime = Math.round(1000 * next_ele[1]) / 1000;
     }
   }
 
@@ -105,8 +107,10 @@ var get_updated_metamask_conf_time_and_cost = function(gasPrice) {
   var gasLimit = parseInt($('#gasLimit').val());
 
   if (gasPrice) {
-    ethAmount = Math.round(1000000 * gasLimit * gasPrice / Math.pow(10, 9)) / 1000000;
-    usdAmount = Math.round(10 * ethAmount * document.eth_usd_conv_rate) / 10;
+    var eth_amount_unrounded = gasLimit * gasPrice / Math.pow(10, 9);
+
+    ethAmount = Math.round(1000000 * eth_amount_unrounded) / 1000000;
+    usdAmount = Math.round(100 * eth_amount_unrounded * document.eth_usd_conv_rate) / 100;
   }
 
   for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
