@@ -164,15 +164,15 @@ class Widget {
     right.appendChild(bar);
     const slider = document.createElement('div');
 
-    function groupBounties (arr, n, fn) {
-      for (var i = 0; i < arr.length; i += n){
+    function groupBounties(arr,n,fn) {
+      for (var i = 0; i < arr.length; i += n) {
         fn(arr.slice(i, i + n));
       }
     }
     
     slider.className = 'siema';
 
-    groupBounties(this.data,4,function(group){
+    groupBounties(this.data,4,function(group) {
       const slide = document.createElement('div');
       slide.appendChild(Widget.bountyRow(group));
       slider.appendChild(slide);
