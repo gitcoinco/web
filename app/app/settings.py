@@ -296,7 +296,7 @@ COLLECTFAST_DEBUG = env.bool('COLLECTFAST_DEBUG', default=False)
 
 CACHES = {
     'default': env.cache(),
-    COLLECTFAST_CACHE: env.cache('COLLECTFAST_CACHE_URL'),
+    COLLECTFAST_CACHE: env.cache('COLLECTFAST_CACHE_URL', default='dbcache://collectfast'),
 }
 CACHES[COLLECTFAST_CACHE]['OPTIONS'] = {'MAX_ENTRIES': 1000}
 
