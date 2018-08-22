@@ -1099,24 +1099,35 @@ def profile(request, handle):
     Args:
         handle (str): The profile handle.
 
+    Variables:
+        context (dict): The template context to be used for template rendering.
+        profile (dashboard.models.Profile): The Profile object to be used.
+        status (int): The status code of the response.
+
+    Returns:
+        TemplateResponse: The profile templated view.
+
     """
-    show_hidden_profile = False
+    status = 200
+
     try:
         if not handle and not request.user.is_authenticated:
             return redirect('index')
-        elif not handle:
+
+        if not handle:
             handle = request.user.username
-            profile = request.user.profile
+            profile = getattr(request.user, 'profile', None)
+            if not profile:
+                profile = profile_helper(handle)
         else:
             if handle.endswith('/'):
                 handle = handle[:-1]
             profile = profile_helper(handle)
-    except Http404:
-        show_hidden_profile = True
-    except ProfileHiddenException:
-        show_hidden_profile = True
-    if show_hidden_profile:
-        params = {
+
+        context = profile.to_dict()
+    except (Http404, ProfileHiddenException):
+        status = 404
+        context = {
             'hidden': True,
             'profile': {
                 'handle': handle,
@@ -1126,11 +1137,9 @@ def profile(request, handle):
                 },
             },
         }
-        return TemplateResponse(request, 'profiles/profile.html', params, status=404)
 
-    params = profile.to_dict()
+    return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
-    return TemplateResponse(request, 'profiles/profile.html', params)
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
