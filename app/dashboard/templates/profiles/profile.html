@@ -72,7 +72,7 @@
                             {% endif %}
                             {% for profile, num_times in works_with_collected.items %}
                                 <a href="{% url 'profile' profile %} ">
-                                  <img src='/dynamic/avatar/{{ profile }}/' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
+                                  <img src='/dynamic/avatar/{{ profile }}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
                                 </a>
                             {% endfor %}
                         {% endif %}
@@ -101,7 +101,7 @@
                             {% endif %}
                             {% for profile, num_times in works_with_funded.items %}
                               <a href="{% url 'profile' profile %} ">
-                                <img src='/dynamic/avatar/{{ profile }}/' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
+                                <img src='/dynamic/avatar/{{ profile }}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
                               </a>
                             {% endfor %}
                         {% endif %}

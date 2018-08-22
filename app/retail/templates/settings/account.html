@@ -67,7 +67,7 @@
   <h4 class="font-title mb-4 text-left">{% trans "Profile Photo" %}</h4>
   <div class="profile-avatar row mx-0 px-0 major_button_container">
     <div class="col-12 col-md-5 pl-0 pr-0 text-center">
-      <img id="user_avatar" src="{% if user.profile.avatar %}{{ user.profile.avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}/">
+      <img id="user_avatar" src="{% if user.profile.avatar %}{{ user.profile.avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
     </div>
     <div class="col-12 col-md-7 row">
       <div class="col-12 mt-2 mb-2">

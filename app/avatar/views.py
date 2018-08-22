@@ -115,17 +115,17 @@ def save_avatar(request):
     return JsonResponse(response, status=response['status'])
 
 
-def handle_avatar(request, org_name='', add_gitcoincologo=False):
+def handle_avatar(request, _org_name='', add_gitcoincologo=False):
     from dashboard.models import Profile
     icon_size = (215, 215)
 
-    if org_name:
+    if _org_name:
         try:
-            profile = Profile.objects.select_related('avatar').get(handle__iexact=org_name)
+            profile = Profile.objects.select_related('avatar').get(handle__iexact=_org_name)
             if profile.avatar:
                 if profile.avatar.use_github_avatar and profile.avatar.png:
                     return HttpResponse(profile.avatar.png.file, content_type='image/png')
-                if profile.avatar.svg and not profile.avatar.use_github_avatar:
+                elif profile.avatar.svg and not profile.avatar.use_github_avatar:
                     return HttpResponse(profile.avatar.svg.file, content_type='image/svg+xml')
         except Exception as e:
             logger.error(e)
@@ -133,15 +133,15 @@ def handle_avatar(request, org_name='', add_gitcoincologo=False):
     # default response
     # params
     repo_url = request.GET.get('repo', False)
-    if not org_name and (not repo_url or 'github.com' not in repo_url):
-        return get_err_response(request, blank_img=(org_name == 'Self'))
+    if not _org_name and (not repo_url or 'github.com' not in repo_url):
+        return get_err_response(request, blank_img=(_org_name == 'Self'))
 
     try:
         # get avatar of repo
-        if not org_name:
-            org_name = org_name(repo_url)
+        if not _org_name:
+            _org_name = org_name(repo_url)
 
-        filepath = get_avatar(org_name)
+        filepath = get_avatar(_org_name)
 
         # new image
         img = Image.new('RGBA', icon_size, (255, 255, 255))
@@ -153,7 +153,7 @@ def handle_avatar(request, org_name='', add_gitcoincologo=False):
         img.paste(avatar, offset, avatar)
 
         # Determine if we should add the Gitcoin logo
-        if add_gitcoincologo and org_name != 'gitcoinco':
+        if add_gitcoincologo and _org_name != 'gitcoinco':
             img = add_gitcoin_logo_blend(avatar, icon_size)
 
         response = HttpResponse(content_type='image/png')
@@ -161,4 +161,4 @@ def handle_avatar(request, org_name='', add_gitcoincologo=False):
         return response
     except (AttributeError, IOError, SyntaxError) as e:
         logger.error(e)
-        return get_err_response(request, blank_img=(org_name == 'Self'))
+        return get_err_response(request, blank_img=(_org_name == 'Self'))

@@ -32,7 +32,7 @@
             <span class="font-body">( <i class="fa fa-code"></i> ) {% trans "Contributors" %}:</span>
             {% for profile, num_times in works_with_org.items %}
               <a href="{% url 'profile' profile %} ">
-                <img src='{% if profile.avatar and profile.avatar.svg %}{{ profile.avatar.svg.url }}{% else %}/dynamic/avatar/{{ profile }}/{% endif %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
+                <img src='{% if profile.avatar and profile.avatar.svg %}{{ profile.avatar.svg.url }}{% else %}/dynamic/avatar/{{ profile }}{% endif %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
               </a>
             {% endfor %}
           {% endif %}
