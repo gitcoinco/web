@@ -4,12 +4,25 @@
 .PHONY: help
 
 REPO_NAME := gitcoinco/web
-CONTAINER_NAME := $(addsuffix _web_1, $(subst -,, $(shell pwd | xargs basename)))
+CONTAINER_NAME := $(addsuffix _web_1, $(shell pwd | xargs basename))
 SHA1 := $$(git log -1 --pretty=%h)
 GIT_TAG := ${REPO_NAME}:${SHA1}
 LATEST_TAG := ${REPO_NAME}:latest
 CURRENT_BRANCH := $$(git symbolic-ref -q --short HEAD)
 WEB_CONTAINER_ID := $$(docker inspect --format="{{.Id}}" ${CONTAINER_NAME})
+
+variables: ## Display current makefile variables.
+	@echo "\033[35m*Current Makefile variables:*\033[0m\n"
+	@echo "REPO_NAME: ${REPO_NAME}"
+	@echo "CONTAINER_NAME: ${CONTAINER_NAME}"
+	@echo "SHA1: ${SHA1}"
+	@echo "GIT_TAG: ${GIT_TAG}"
+	@echo "LATEST_TAG: ${LATEST_TAG}"
+	@echo "CURRENT_BRANCH: ${CURRENT_BRANCH}"
+	@echo "WEB_CONTAINER_ID: ${WEB_CONTAINER_ID}"
+	@echo "DOCKER_USER: ${DOCKER_USER}"
+	@echo "DOCKER_PASS: ${DOCKER_PASS}"
+	@echo "VERSION: ${VERSION}"
 
 autotranslate: ## Automatically translate all untranslated entries for all LOCALES in settings.py.
 	@echo "Starting makemessages..."
@@ -109,4 +122,4 @@ pgtop: ## Run pg_top against the local postgresql instance.
 	@docker-compose exec web scripts/pg_top.bash
 
 help:
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[33m%-30s\033[0m %s\n", $$1, $$2}'

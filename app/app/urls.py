@@ -73,8 +73,6 @@ urlpatterns = [
     re_path(r'^onboard/contributor/avatar/?$', dashboard.views.onboard_avatar, name='onboard_avatar'),
     re_path(r'^dashboard/?', dashboard.views.dashboard, name='dashboard'),
     re_path(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
-    re_path(r'^orgs/(.*)?', dashboard.views.explorer_organzations, name='explorer_organzations'),
-    path('orgs', dashboard.views.organizations, name='organizations'),
 
     # action URLs
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
@@ -306,7 +304,7 @@ urlpatterns = [
         name='start_work_applicant_expired'
     ),
 
-    # Account
+    # Accounts / Organizations
     re_path(r'^account/', include('account.urls', namespace='account')),
 
     # settings

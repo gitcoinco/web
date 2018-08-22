@@ -49,11 +49,11 @@
         <!-- TODO : If condition to check if hiring / not -->
         <div class="mt-2">
           <div class="tag org-hiring">
-            <p>Hiring</p>
+            <p>{% trans "Hiring" %}</p>
           </div>
           <!-- END TODO -->
           <!-- TODO: Show if user is org member-->
-          <span class="ml-2 mr-1 font-weight-300">Hiring</span>
+          <span class="ml-2 mr-1 font-weight-300">{% trans "Hiring" %}</span>
           <label class="switch mt-2">
             <input type="checkbox">
             <span class="slider round"></span>
@@ -62,7 +62,7 @@
         </div>
         <!-- TODO : If condition to check if members are there & populate with them -->
         <div class="members my-4">
-          <h3 class="font-body">Members</h3>
+          <h3 class="font-body">{% trans "Members" %}</h3>
           {% for profile, num_times in works_with_org.items %}
             <a href="{% url 'profile' profile %} " class="mr-2">
               <img src='{% if profile.avatar and profile.avatar.svg %}{{ profile.avatar.svg.url }}{% else %}/static/avatar/{{ profile }}{% endif %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
@@ -75,7 +75,7 @@
       </div>
       <div class="col-12 col-md-8">
         <div class="network-stats mt-4 pt-2">
-          <h2 class="font-body">Network Stats</h2>
+          <h2 class="font-body">{% trans "Network Stats" %}</h2>
           <div class="row text-center">
             <p>
               <span class="stats">{{ count_bounties_on_repo }}</span>

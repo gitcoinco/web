@@ -78,7 +78,7 @@ class Avatar(SuperModel):
     def to_dict(self):
         return self.config
 
-    def pull_github_avatar(self):
+    def pull_github_avatar(self, handle='', is_org=False):
         """Pull the latest avatar from Github and store in Avatar.png.
 
         Returns:
@@ -86,7 +86,17 @@ class Avatar(SuperModel):
 
         """
         from avatar.utils import get_github_avatar
-        handle = self.profile_set.last().handle
+        try:
+            if handle:
+                pass
+            elif is_org:
+                handle = self.organization_set.last().github_username
+            else:
+                handle = self.profile_set.last().handle
+        except AttributeError as e:
+            from secrets import token_hex
+            salt = token_hex(16)
+            handle = f'{salt}'
         temp_avatar = get_github_avatar(handle)
         if not temp_avatar:
             return ''

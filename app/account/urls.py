@@ -17,19 +17,20 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from django.urls import include, path
+from django.urls import include, path, re_path
 
 from rest_framework import routers
 
-from . import api
+from . import api, views
 
 app_name = 'account'
 
 router = routers.DefaultRouter()
 router.register(r'organization', api.OrganizationViewSet)
 
-
 urlpatterns = (
     # urls for Django Rest Framework API
     path('api/v1/', include(router.urls)),
+    re_path(r'^orgs/view/(?P<org_name>\w+)/$', views.explorer_organzations, name='explorer_organzations'),
+    path('orgs', views.organizations, name='organizations'),
 )

@@ -25,3 +25,7 @@ class AccountConfig(AppConfig):
 
     name = 'account'
     verbose_name = 'Account'
+
+    def ready(self):
+        """Define the app level ready logic."""
+        from .models import organization_post_save  # noqa

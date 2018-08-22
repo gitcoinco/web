@@ -119,7 +119,7 @@
     </style>
   </head>
 
-  <body class="interior {{active}}">
+  <body class="interior {{ active }}">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
       {% include 'shared/nav.html' %}
@@ -130,7 +130,7 @@
         <h2 class="font-subheader mb-4">{{ orgs|length }} Projects</h2>
         <div class="mx-4 text-left">
           {% for org in orgs %}
-            <a href="org/{{org.profile}}" class="org-list mx-1 my-2">
+            <a href="{% url "account:explorer_organzations" org.profile %}" class="org-list mx-1 my-2"></a>
               <img src="{% static org.logo %}">
               {% if org.is_hiring %}
                 <div class="tag org-hiring">
@@ -163,32 +163,32 @@
               <div class="col-12 col-md-2">
                 <div class="text-center">
                   <img class="org-header__avatar"
-                    src="{% if profile.avatar and profile.avatar.avatar_url %}{{ profile.avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}">
+                    src="{{ view_org.avatar_url }}">
                 </div>
               </div>
               <div class="col-12 col-md-5 org-info">
-                <h1 class="font-subheader mt-2">{{ profile.handle|title }}</h1>
+                <h1 class="font-subheader mt-2">{{ view_org.github_username|title }}</h1>
                 <div class="org-user-info font-caption boldify my-3">
-                  <!-- TODO : If condition to check if hiring / not -->
-                  <div class="tag org-hiring mr-2">
-                    <p>Hiring</p>
-                  </div>
-                  <!-- END TODO-->
+                  {% if view_org.is_hiring %}
+                    <div class="tag org-hiring mr-2">
+                      <p>Hiring</p>
+                    </div>
+                  {% endif %}
                   <div id="follow" class="button--primary-o tag">
                     <p>Follow</p>
                   </div>
                 </div>
                 <p class="profile-header__links clearfix mt-1">
-                  <a href="{{ profile.data.html_url }}?tab=repositories" target="_blank" rel="noopener noreferrer" >
+                  <a href="https://github.com/{{ view_org.github_username }}?tab=repositories" target="_blank" rel="noopener noreferrer" >
                     <i class="fab fa-github"></i>
                   </a>
-                  {% if profile.data.blog %}
-                    <a href="{{ profile.data.blog|add_url_schema }}" target="_blank" rel="noopener noreferrer" >
+                  {% if view_org.website_url %}
+                    <a href="{{ view_org.website_url|add_url_schema }}" target="_blank" rel="noopener noreferrer" >
                       <i class="fas fa-home"></i>
                     </a>
                   {% endif %}
-                  {% if profile.data.email %}
-                    <a href="mailto:{{profile.data.email | obfuscate}}">
+                  {% if view_org.email %}
+                    <a href="mailto:{{ view_org.email|obfuscate }}">
                       <i class="far fa-envelope"></i>
                     </a>
                   {% endif %}
@@ -196,7 +196,13 @@
               </div>
               <div class="col-12 col-md-5 org-members">
                 <p class="font-body boldify mt-4">Members</p>
-                <!-- TODO: Populate org members--> <!-- END TODO -->
+                  <li class="works_with_list">
+                    {% for member_user in org_members %}
+                      <a href="{% url 'profile' member_user.username %}">
+                        <img src='/static/avatar/{{ member_user.username }}' title="<div class='tooltip-info tooltip-xs'>{{ member_user.username }}</div>">
+                      </a>
+                    {% endfor %}
+                  </li>
               </div>
             </div>
           </div>
@@ -234,7 +240,6 @@
 
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
 

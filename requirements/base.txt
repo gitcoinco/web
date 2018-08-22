@@ -66,3 +66,5 @@ ecdsa
 pysha3
 pygithub==1.40
 raven
+django-taggit==0.22.2
+django-taggit-serializer

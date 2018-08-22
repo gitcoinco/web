@@ -22,6 +22,7 @@ from datetime import datetime
 
 import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
+from taggit_serializer.serializers import TaggitSerializer, TagListSerializerField
 
 from .models import Activity, Bounty, BountyFulfillment, Interest, ProfileSerializer
 
@@ -63,7 +64,7 @@ class ActivitySerializer(serializers.ModelSerializer):
 
 
 # Serializers define the API representation.
-class BountySerializer(serializers.HyperlinkedModelSerializer):
+class BountySerializer(TaggitSerializer, serializers.HyperlinkedModelSerializer):
     """Handle serializing the Bounty object."""
 
     fulfillments = BountyFulfillmentSerializer(many=True)
@@ -71,6 +72,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
     activities = ActivitySerializer(many=True)
     bounty_owner_email = serializers.SerializerMethodField('override_bounty_owner_email')
     bounty_owner_name = serializers.SerializerMethodField('override_bounty_owner_name')
+    tags = TagListSerializerField()
 
     def override_bounty_owner_email(self, obj):
         can_make_visible_via_api = bool(int(obj.privacy_preferences.get('show_email_publicly', 1)))
@@ -87,17 +89,22 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
 
         model = Bounty
         fields = (
-            'url', 'created_on', 'modified_on', 'title', 'web3_created', 'value_in_token', 'token_name',
-            'token_address', 'bounty_type', 'project_length', 'experience_level', 'github_url', 'github_comments',
-            'bounty_owner_address', 'bounty_owner_email', 'bounty_owner_github_username', 'bounty_owner_name',
-            'fulfillments', 'interested', 'is_open', 'expires_date', 'activities', 'keywords', 'current_bounty',
-            'value_in_eth', 'token_value_in_usdt', 'value_in_usdt_now', 'value_in_usdt', 'status', 'now', 'avatar_url',
-            'value_true', 'issue_description', 'network', 'org_name', 'pk', 'issue_description_text',
-            'standard_bounties_id', 'web3_type', 'can_submit_after_expiration_date', 'github_issue_number',
-            'github_org_name', 'github_repo_name', 'idx_status', 'token_value_time_peg', 'fulfillment_accepted_on',
-            'fulfillment_submitted_on', 'fulfillment_started_on', 'canceled_on', 'action_urls', 'project_type',
-            'permission_type', 'attached_job_description', 'needs_review', 'github_issue_state', 'is_issue_closed',
-            'additional_funding_summary',
+            'url', 'created_on', 'modified_on', 'title', 'web3_created',
+            'value_in_token', 'token_name', 'token_address',
+            'bounty_type', 'project_length', 'experience_level',
+            'github_url', 'github_comments', 'bounty_owner_address',
+            'bounty_owner_email', 'bounty_owner_github_username', 'bounty_owner_name',
+            'fulfillments', 'interested', 'is_open', 'expires_date', 'activities',
+            'keywords', 'current_bounty', 'value_in_eth',
+            'token_value_in_usdt', 'value_in_usdt_now', 'value_in_usdt', 'status', 'now',
+            'avatar_url', 'value_true', 'issue_description', 'network',
+            'org_name', 'pk', 'issue_description_text',
+            'standard_bounties_id', 'web3_type', 'can_submit_after_expiration_date',
+            'github_issue_number', 'github_org_name', 'github_repo_name',
+            'idx_status', 'token_value_time_peg', 'fulfillment_accepted_on', 'fulfillment_submitted_on',
+            'fulfillment_started_on', 'canceled_on', 'action_urls',
+            'project_type', 'permission_type', 'attached_job_description', 'needs_review', 'github_issue_state',
+            'is_issue_closed', 'additional_funding_summary', 'tags',
         )
 
     def create(self, validated_data):
@@ -121,8 +128,9 @@ class BountyViewSet(viewsets.ModelViewSet):
     """Handle the Bounty view behavior."""
 
     queryset = Bounty.objects.prefetch_related(
-        'fulfillments', 'interested', 'interested__profile', 'activities') \
-        .all().order_by('-web3_created')
+        'fulfillments', 'interested', 'interested__profile', 'activities', 'tags'
+        ).all() \
+        .order_by('-web3_created')
     serializer_class = BountySerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
 
@@ -135,7 +143,8 @@ class BountyViewSet(viewsets.ModelViewSet):
         """
         param_keys = self.request.query_params.keys()
         queryset = Bounty.objects.prefetch_related(
-            'fulfillments', 'interested', 'interested__profile', 'activities')
+            'fulfillments', 'interested', 'interested__profile', 'activities', 'tags',
+        )
         if 'not_current' not in param_keys:
             queryset = queryset.current()
 

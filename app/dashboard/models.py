@@ -50,6 +50,7 @@ from git.utils import (
 )
 from marketing.models import LeaderboardRank
 from rest_framework import serializers
+from taggit.managers import TaggableManager
 from web3 import Web3
 
 from .signals import m2m_changed_interested
@@ -95,8 +96,8 @@ class BountyQuerySet(models.QuerySet):
 
         """
         return self.filter(
-            Q(metadata__issueKeywords__icontains=keyword) | \
-            Q(title__icontains=keyword) | \
+            Q(metadata__issueKeywords__icontains=keyword) |
+            Q(title__icontains=keyword) |
             Q(issue_description__icontains=keyword)
         )
 
@@ -1505,12 +1506,13 @@ class Profile(SuperModel):
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
     max_tip_amount_usdt_per_tx = models.DecimalField(default=500, decimal_places=2, max_digits=50)
     max_tip_amount_usdt_per_week = models.DecimalField(default=1500, decimal_places=2, max_digits=50)
+    tags = TaggableManager(blank=True, related_name='profile_tags')
 
     @property
     def is_org(self):
         try:
             return self.data['type'] == 'Organization'
-        except:
+        except Exception:
             return False
 
     @property

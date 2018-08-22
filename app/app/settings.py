@@ -71,6 +71,9 @@ INSTALLED_APPS = [
     'autotranslate',
     'django_extensions',
     'easy_thumbnails',
+    'crispy_forms',
+    'taggit',
+    'taggit_serializer',
     'account',
     'raven.contrib.django.raven_compat',
     'app',
@@ -115,9 +118,10 @@ MIDDLEWARE = [
 ]
 
 CRISPY_TEMPLATE_PACK = env('CRISPY_TEMPLATE_PACK', default='bootstrap4')
+TAGGIT_CASE_INSENSITIVE = env.bool('TAGGIT_CASE_INSENSITIVE', default=True)
 
-CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', )
+CORS_ORIGIN_ALLOW_ALL = env.bool('CORS_ORIGIN_ALLOW_ALL', default=False)
+CORS_ORIGIN_WHITELIST = env.tuple('CORS_ORIGIN_WHITELIST', default=('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', ))
 
 ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
 
@@ -338,7 +342,7 @@ SOCIAL_AUTH_GITHUB_KEY = GITHUB_CLIENT_ID
 SOCIAL_AUTH_GITHUB_SECRET = GITHUB_CLIENT_SECRET
 SOCIAL_AUTH_POSTGRES_JSONFIELD = True
 SOCIAL_AUTH_ADMIN_USER_SEARCH_FIELDS = ['username', 'first_name', 'last_name', 'email']
-SOCIAL_AUTH_GITHUB_SCOPE = ['read:public_repo', 'read:user', 'user:email', ]
+SOCIAL_AUTH_GITHUB_SCOPE = ['read:public_repo', 'read:user', 'user:email', 'read:org', ]
 
 SOCIAL_AUTH_PIPELINE = (
     'social_core.pipeline.social_auth.social_details', 'social_core.pipeline.social_auth.social_uid',

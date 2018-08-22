@@ -13,6 +13,7 @@ from django.utils.translation import LANGUAGE_SESSION_KEY
 
 import geoip2.database
 import requests
+from account.models import Organization
 from dashboard.models import Profile
 from geoip2.errors import AddressNotFoundError
 from git.utils import _AUTH, HEADERS, get_user
@@ -147,6 +148,13 @@ def sync_profile(handle, user=None, hide_profile=True):
 
     if email and profile:
         get_or_save_email_subscriber(email, 'sync_profile', profile=profile)
+
+    if profile and profile.is_org:
+        try:
+            org, _ = Organization.objects.get_or_create(name=handle)
+            user.groups.add(org)
+        except Exception as e:
+            logger.error(e)
 
     return profile
 
