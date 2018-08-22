@@ -81,7 +81,7 @@
     </div>
   </div>
   <a href="/profile/" class="nav_avatar"
-    style="background-image:url({% if user.profile.avatar %}{{ user.profile.avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %})"></a>
+    style="background-image:url({% if user.profile.avatar %}{{ user.profile.avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}/)"></a>
 {% else %}
   <a class="nav-link login interior" href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}"
     onclick="dataLayer.push({'event': 'login'});">
