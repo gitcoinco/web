@@ -507,7 +507,6 @@ var attach_work_actions = function() {
 };
 
 
-
 var show_interest_modal = function() {
   var self = this;
 
@@ -859,6 +858,21 @@ var do_actions = function(result) {
     actions.push(_entry);
   }
 
+  if (show_job_description) {
+    var job_url = result['attached_job_description'];
+
+    var _entry = {
+      enabled: true,
+      href: job_url,
+      text: gettext('View Attached Job Description'),
+      parent: 'right_actions',
+      title: gettext('This bounty funder is hiring for a full time, part time, or contract role and has attached that to this bounty.'),
+      color: 'white'
+    };
+
+    actions.push(_entry);
+  }
+
   if (show_admin_methods) {
 
     const _entry = {
@@ -873,11 +887,11 @@ var do_actions = function(result) {
 
     actions.push(_entry);
 
-    setTimeout(function(){
+    setTimeout(function() {
       // get started modal
-      $("a[href='"+result['action_urls']['admin']+"']").click(function(e) {
+      $("a[href='" + result['action_urls']['admin'] + "']").click(function(e) {
         e.preventDefault();
-        var url = result['action_urls']['admin'];;
+        var url = result['action_urls']['admin'];
 
         setTimeout(function() {
           $.get(url, function(newHTML) {
