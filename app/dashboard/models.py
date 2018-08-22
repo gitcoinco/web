@@ -902,7 +902,7 @@ class Bounty(SuperModel):
         for fulfillment in self.fulfillments.filter(accepted=True):
             if fulfiller.fulfiller_github_username:
                 return_list.append(fulfiller_github_username)
-        for tip in self.tips:
+        for tip in self.tips.exclude(txid=''):
             if tip.username:
                 return_list.append(tip.username)
         return list(set(return_list))
