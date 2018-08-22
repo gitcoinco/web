@@ -1,4 +1,24 @@
 {
   "symbol": "JOY",
-  "address": "0xDDe12a12A6f67156e0DA672be05c374e1B0a3e57"
+  "address": "0xDDe12a12A6f67156e0DA672be05c374e1B0a3e57",
+  "overview":{
+        "en": "JOYSO is a hybrid decentralized exchange that offers the speed and efficiency of a centralized platform while providing the security and privacy of a decentralized exchange.",
+        "zh": "JOYSO 是一個混合式去中心化交易所，提供中心化交易所的速度和效率，並保有去中心化交易所的安全和隱私性"
+  },
+  "email": "support@joyso.io",
+  "website": "https://joyso.io/",
+  "whitepaper": "https://joyso.io/whitepaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-08-07",
+  "initial_price":{
+        "ETH":"0.0001 ETH"
+  },
+  "links": {
+    "twitter": "https://twitter.com/joyso_io",
+    "telegram": "https://t.me/joyso_io",
+    "github": "https://github.com/Joyso-io",
+    "facebook": "https://www.facebook.com/Joyso.io",
+    "reddit": "https://www.reddit.com/r/joyso/",
+    "medium": "https://medium.com/joyso"
+  }
 }
