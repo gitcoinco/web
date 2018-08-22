@@ -58,7 +58,11 @@ urlpatterns = [
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(dbrouter.urls)),
     url(r'^api/v0.1/', include(ebrouter.urls)),
-    url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cluodfront
+    url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cloudfront
+
+    # Health check endpoint
+    re_path(r'^health/', include('health_check.urls')),
+    re_path(r'^lbcheck/?', retail.views.lbcheck, name='lbcheck'),
 
     # dashboard views
 

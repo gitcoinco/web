@@ -22,7 +22,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
-from django.http import Http404, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
@@ -1033,7 +1033,7 @@ def ui(request):
     svgs = []
     pngs = []
     gifs = []
-    for path, dirs, files in walkdir('assets/v2/images'):
+    for path, __, files in walkdir('assets/v2/images'):
         if path.find('/avatar') != -1:
             continue
         for f in files:
@@ -1056,3 +1056,7 @@ def ui(request):
         'gifs': gifs,
     }
     return TemplateResponse(request, 'ui_inventory.html', context)
+
+
+def lbcheck(request):
+    return HttpResponse(status=200)
