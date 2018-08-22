@@ -10,7 +10,7 @@ class Widget {
     this.options.repository = this.el.dataset.repository || this.options.repository;
     this.options.orderBy = this.el.dataset['order-by'] || this.options.orderBy;
     this.options.limit = this.el.dataset['limit'] || this.options.limit;
-    fetch(`https://gitcoin.co/api/v0.1/bounties/?raw_data=${this.options.repository}&network=mainnet&coinbase=unknown&order_by=${this.orderBy()}&limit=${this.limit()}`)
+    fetch(`https://gitcoin.co/api/v0.1/bounties/?raw_data=${this.options.repository}&org=${this.options.orginisation}&network=mainnet&coinbase=unknown&order_by=${this.orderBy()}&limit=${this.limit()}`)
       .then(response => response.json())
       .then(json => {
         this.data = json;
@@ -85,7 +85,7 @@ class Widget {
     const anchor = document.createElement('a');
 
     anchor.target = '_blank';
-    anchor.href = `https://gitcoin.co/${b.url}`;
+    anchor.href = b.url;
     const title = document.createElement('h1');
 
     title.innerHTML = b.title;
