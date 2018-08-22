@@ -211,9 +211,6 @@ if ENV not in ['local', 'test']:
             'sentry': {
                 'level': 'ERROR',  # To capture more than ERROR, change to WARNING, INFO, etc.
                 'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-                'tags': {
-                    'custom-tag': 'x'
-                },
             },
             'console': {
                 'level': 'DEBUG',
@@ -464,7 +461,7 @@ if not AWS_S3_OBJECT_PARAMETERS:
 
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', 'gitcoin.co', )
-CORS_ORIGIN_WHITELIST = CORS_ORIGIN_WHITELIST + (AWS_S3_CUSTOM_DOMAIN, )
+CORS_ORIGIN_WHITELIST = CORS_ORIGIN_WHITELIST + (AWS_S3_CUSTOM_DOMAIN, MEDIA_CUSTOM_DOMAIN, )
 
 S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='')  # TODO
 S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='')  # TODO
