@@ -14,6 +14,7 @@ jobs:
           CACHE_URL: dbcache://my_cache_table
           DATABASE_URL: psql://postgres:postgres@localhost/testdb
           ENV: test
+          COLLECTFAST_CACHE_URL: dbcache://collectfast
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images

@@ -112,7 +112,7 @@ var callbacks = {
     var username = result['bounty_owner_github_username'] ? result['bounty_owner_github_username'] : 'Self';
 
     return [ 'issuer_avatar_url', '<a href="/profile/' + result['bounty_owner_github_username'] +
-      '"><img class=avatar src="/static/avatar/' + username + '"></a>' ];
+      '"><img class=avatar src="/dynamic/avatar/' + username + '"></a>' ];
   },
   'status': function(key, val, result) {
     var ui_status = val;
@@ -679,7 +679,7 @@ var build_detail_page = function(result) {
         <span class="bounty-notification ml-2">\
         <i class="far fa-bell"></i>\
         Ready to Pay? Set Your Metamask to this address!\
-        <img src="/static/v2/images/metamask.svg">\
+        <img src="' + static_url + 'v2/images/metamask.svg">\
       </span>'
     );
   }

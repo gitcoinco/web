@@ -483,7 +483,7 @@ class Bounty(SuperModel):
         org_name = self.github_org_name
         gitcoin_logo_flag = "/1" if gitcoin_logo_flag else ""
         if org_name:
-            return f"{settings.BASE_URL}static/avatar/{org_name}{gitcoin_logo_flag}"
+            return f"{settings.BASE_URL}dynamic/avatar/{org_name}{gitcoin_logo_flag}"
         return f"{settings.BASE_URL}funding/avatar?repo={self.github_url}&v=3"
 
     @property
@@ -1806,7 +1806,7 @@ class Profile(SuperModel):
 
     @property
     def avatar_url(self):
-        return f"{settings.BASE_URL}static/avatar/{self.handle}"
+        return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
 
     @property
     def avatar_url_with_gitcoin_logo(self):
