@@ -263,10 +263,15 @@ class BountyViewSet(viewsets.ModelViewSet):
         queryset = queryset.distinct()
 
         # offset / limit
-        limit = self.request.query_params.get('limit', None)
+        limit = int(self.request.query_params.get('limit', 100))
+        max_bounties = 100
+        if limit > max_bounties:
+            limit = max_bounties
         offset = self.request.query_params.get('offset', 0)
         if limit:
-            queryset = queryset[int(offset):int(limit)]
+            start = int(offset)
+            end = start + int(limit)
+            queryset = queryset[start:end]
 
         return queryset
 

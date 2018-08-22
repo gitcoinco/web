@@ -106,96 +106,6 @@ def record_tip_activity(tip, github_handle, event_name):
 
 @csrf_exempt
 @ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
-def receive_tip_legacy(request):
-    """Receive a tip."""
-    # TODO: Deprecate after v2 has been live for a month
-    if request.body:
-        status = 'OK'
-        message = _('Tip has been received')
-        params = json.loads(request.body)
-
-        # db mutations
-        try:
-            tip = Tip.objects.get(txid=params['txid'])
-            tip.receive_address = params['receive_address']
-            tip.receive_txid = params['receive_txid']
-            tip.received_on = timezone.now()
-            tip.save()
-            record_user_action(tip.from_username, 'receive_tip', tip)
-            record_tip_activity(tip, tip.from_username, 'receive_tip')
-        except Exception as e:
-            status = 'error'
-            message = str(e)
-
-        # http response
-        response = {
-            'status': status,
-            'message': message,
-        }
-
-        return JsonResponse(response)
-
-    params = {
-        'issueURL': request.GET.get('source'),
-        'class': 'receive',
-        'title': _('Receive Tip'),
-        'gas_price': round(recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target), 1),
-    }
-
-    return TemplateResponse(request, 'onepager/receive_legacy.html', params)
-
-
-@csrf_exempt
-@ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
-def receive_tip_v2(request, pk, txid, network):
-    """Handle the receiving of a tip (the POST).
-    TODO: Deprecate after v3 has been live for a month.
-    Returns:
-        TemplateResponse: the UI with the tip confirmed
-
-    """
-
-    tip = Tip.objects.get(web3_type='v2', metadata__priv_key=pk, txid=txid, network=network)
-
-    if tip.receive_txid:
-        messages.info(request, 'This tip has already been received')
-
-    not_mined_yet = get_web3(tip.network).eth.getBalance(Web3.toChecksumAddress(tip.metadata['address'])) == 0
-    if not_mined_yet:
-        messages.info(request, f'This tx {tip.txid}, is still mining.  Please wait a moment before submitting the receive form.')
-
-    """Receive a tip."""
-    if request.POST and not tip.receive_txid:
-        params = request.POST
-
-        # db mutations
-        try:
-            address = params['forwarding_address']
-            tip.receive_txid = tip.payout_to(address)
-            tip.receive_address = address
-            tip.received_on = timezone.now()
-            tip.save()
-            record_user_action(tip.from_username, 'receive_tip', tip)
-            record_tip_activity(tip, tip.from_username, 'receive_tip')
-            messages.success(request, 'This tip has been received')
-        except Exception as e:
-            messages.error(request, str(e))
-            logger.exception(e)
-
-    params = {
-        'issueURL': request.GET.get('source'),
-        'class': 'receive',
-        'title': _('Receive Tip'),
-        'gas_price': round(recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target), 1),
-        'tip': tip,
-        'disable_inputs': tip.receive_txid or not_mined_yet,
-    }
-
-    return TemplateResponse(request, 'onepager/receive_v2.html', params)
-
-
-@csrf_exempt
-@ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
 def receive_tip_v3(request, key, txid, network):
     """Handle the receiving of a tip (the POST)
 
@@ -303,6 +213,7 @@ def send_tip_4(request):
     tip.txid = txid
     if is_direct_to_recipient:
         tip.receive_txid = txid
+        tip.receive_address = destinationAccount
     tip.save()
 
     # notifications

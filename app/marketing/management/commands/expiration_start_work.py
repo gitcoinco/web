@@ -58,12 +58,22 @@ class Command(BaseCommand):
         if settings.DEBUG:
             days = range(1, 1000)
         for day in days:
-            interests = Interest.objects.select_related('profile').filter(
-                created__gte=(timezone.now() - timezone.timedelta(days=(day + 1))),
-                created__lt=(timezone.now() - timezone.timedelta(days=day)),
+            start_date = (timezone.now() - timezone.timedelta(days=(day+1)))
+            end_date = (timezone.now() - timezone.timedelta(days=day))
+            interests_by_created_on = Interest.objects.select_related('profile').filter(
+                created__gte=start_date,
+                created__lt=end_date,
+                pending=False,
             )
+            interests_by_accepted_on = Interest.objects.select_related('profile').filter(
+                acceptance_date__gte=start_date,
+                acceptance_date__lt=end_date,
+                pending=False,
+            )
+            interests = (interests_by_accepted_on | interests_by_created_on).distinct('pk')
             print(f'day {day} got {interests.count()} interests')
             for interest in interests:
+                interest_day_0 = interest.created if not interest.acceptance_date else interest.acceptance_date
                 bounties = Bounty.objects.current().filter(
                     interested=interest,
                     project_type='traditional',
@@ -85,7 +95,7 @@ class Command(BaseCommand):
                         if not actions:
                             should_warn_user = True
                             should_delete_interest = False
-                            last_heard_from_user_days = (timezone.now() - interest.created).days
+                            last_heard_from_user_days = (timezone.now() - interest_day_0).days
                             print(" - no actions")
                         else:
                             # example format: 2018-01-26T17:56:31Z'
@@ -97,8 +107,8 @@ class Command(BaseCommand):
 
                             # if user hasn't commented since they expressed interest, handled this condition
                             # per https://github.com/gitcoinco/web/issues/462#issuecomment-368384384
-                            if last_action_by_user.replace() < interest.created:
-                                last_action_by_user = interest.created
+                            if last_action_by_user.replace() < interest_day_0:
+                                last_action_by_user = interest_day_0
 
                             # some small calcs
                             snooze_time = timezone.timedelta(days=bounty.snooze_warnings_for_days)

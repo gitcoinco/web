@@ -18,10 +18,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from django.conf import settings
+from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.models import Bounty
+from dashboard.models import Bounty, Profile
 from marketing.mails import funder_stale
 
 
@@ -68,11 +69,24 @@ class Command(BaseCommand):
         for bounty in candidate_bounties.distinct('bounty_owner_github_username'):
             handle = bounty.bounty_owner_github_username
             email = bounty.bounty_owner_email
+            if not email:
+                profiles = Profile.objects.filter(handle=handle)
+                if profiles.exists():
+                    email = profiles.first().email
+            if not email:
+                users = User.objects.filter(username=handle)
+                if users.exists():
+                    email = users.first().email
 
             if not handle:
                 continue
 
             print(handle)
+
+            if not email:
+                print("- could not find email")
+                continue
+
 
             has_posted_in_last_days_days = base_bounties.filter(
                 web3_created__gt=end_time,
@@ -84,6 +98,7 @@ class Command(BaseCommand):
                 # has received this specific email before
 
                 # send the email
+                print(f" sending to {handle} / {email}")
                 funder_stale(email, handle, days, time_as_str)
             else:
                 print(" - has posted recently; not sending")

@@ -30,6 +30,7 @@ from django.utils.translation import gettext as _
 
 import cssutils
 import premailer
+from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
 
@@ -232,21 +233,20 @@ def render_funder_stale(github_username, days=30, time_as_str='about a month'):
         str: The rendered response as a string.
 
     """
+    github_username = f"@{github_username}" if github_username else "there"
     response_txt = f"""
-Hi {github_username},
+hi {github_username},
 
-Kevin Owocki from Gitcoin here.
+kevin from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}. in the spirit of making Gitcoin better + checking in:
 
-I see you haven't posted any funded work to the platform in {time_as_str}.
+- has anything been slipping on your issue board which might be bounty worthy?
+- do you have any feedback for Gitcoin Core on how we might improve the product to fit your needs?
 
-Just wanted to check in and see if there's anything we can do, or if you had any feedback for us. \
-We're still a small startup and we iterate fast; not only will your feedback be heard, but it's \
-got a good chance of being put into the product roadmap!
+our idea is that gitcoin should be a place you come when priorities stretch long, and you need an extra set of capable hands. curious if this fits what you're looking for these days.
 
-Kevin
+appreciate you being a part of the community and let me know if you'd like some Gitcoin schwag — just send over a mailing address and a t-shirt size and it'll come your way.
 
-PS - I've got some new gitcoin schwag on order.  Send me your mailing address and your \
-t-shirt size and i'll ship you some.
+~ kevin
 
 """
 
@@ -513,7 +513,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "The Nuances Of Bounties | A Gas History Lesson"
+    subject = "Building Ethereum Test Suites | ERC-948: On-Chain Subscriptions"
 
     intro = '''
 
@@ -521,20 +521,26 @@ def render_new_bounty_roundup(to_email):
     Hi there,
 </p>
 <p>
-Over the past quarter, we've shipped a variety of features which add flexibility to your bounty toolkit. First, we provided options to have contest bounties and coooperative bounties.
-Then, we introduced 'Approval Only' bounties, where Gitcoiner's apply before starting work. Now, we've announced a few more often requested features!
-Learn more about <a href="https://medium.com/gitcoin/payout-several-contributors-at-once-8742c13a8fdd">1) multi-payout bounties</a> and <a href="https://medium.com/gitcoin/crowdfunding-bounties-fd821b04309d">2) crowdfunding bounties.</a>
+Are you interested in helping to build test suites across the Ethereum ecosystem?
+We're working with the Ethereum Foundation to find the best and brightest developers to get involved directly on Ethereum's
+codebase and would love to hear from you. If you're interested, join #focus-dev-testing <a href="https://gitcoin.co/slack">on Gitcoin Slack</a>
+and/or respond to this e-mail with a bit more about yourself / your development background. Bonus points if you have an active Gitcoin profile!
 </p>
 
 <p>
-We also posted on the <a href="https://medium.com/gitcoin/a-brief-history-of-gas-prices-on-ethereum-52e278a04306">History of Gas on Ethereum.</a> As a dApp built on ethereum,
-we think it's important to understand a) what gas is, b) how it's fluctutated over time, and c) plans for stabilizing gas prices into the future. Hope you enjoy!
+In other news, the ERC-948 working group is chugging along. Kevin Seagraves <a href="https://medium.com/gitcoin/architectures-for-subscriptions-erc948-5fae89cabc7a">wrote a great post</a> detailing
+some of the potential standards and tradeoffs being discussed. Give it a read and also come hang <a href="https://gitcoin.co/slack">on Gitcoin Slack</a> if you'd like to get involved.</p>
 </p>
 
 <h3>What else is new?</h3>
     <ul>
         <li>
-<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET. This week features Justin Drake speaking on sharding.
+<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET.
+This week features POA Network and Paul Brower. Join us!
+        </li>
+
+        <li>
+        Did you know <a href="https://codefund.io">CodeFund</a> is part of Gitcoin? <a href="https://codefund.io">CodeFund</a> is an open source advertising platform that is built to help developers generate revenue. We are currently looking for bloggers and websites that focus on blockchain development and have at least 1,000 visitors per month. If you or someone you know fits this, register to be a publisher at <a href="https://codefund.io/register/publisher">https://codefund.io/register/publisher</a>
         </li>
 
     </ul>
@@ -545,44 +551,61 @@ Back to BUIDLing,
 '''
     highlights = [
         {
-            'who': 'StevenJNPearce',
+            'who': 'octavioamu',
             'who_link': True,
-            'what': 'Worked with MARKET Protocol on their dApp!',
-            'link': 'https://gitcoin.co/issue/MARKETProtocol/MARKET.js/106/856',
+            'what': 'Worked with MARKET Protocol on their calendar navigation.',
+            'link': 'https://gitcoin.co/issue/MARKETProtocol/dApp/295/965',
             'link_copy': 'View more',
         },
         {
-            'who': 'rahulrumalla',
+            'who': 'srisankethu',
             'who_link': True,
-            'what': 'Helped Infura with documentation on their IPFS API',
-            'link': 'https://gitcoin.co/issue/INFURA/infura/130/830',
+            'what': 'Completed his first bounty on the Ethereum Utils repo!',
+            'link': 'https://gitcoin.co/issue/ethereum/eth-utils/117/964',
             'link_copy': 'View more',
         },
         {
-            'who': 'anshumanv',
+            'who': 'tcrowe',
             'who_link': True,
-            'what': 'Worked on Giveth as they prepare for launch!',
-            'link': 'https://gitcoin.co/issue/Giveth/giveth-dapp/80/823',
+            'what': 'Was one worker picked out of 8, and did a great job on the Bounties website.',
+            'link': 'https://gitcoin.co/issue/Bounties-Network/bounties.network/7/927',
             'link_copy': 'View more',
         },
     ]
 
     bounties_spec = [
         {
-            'url': 'https://github.com/paritytech/polkadot/issues/312',
-            'primer': 'Work with Gavin Wood at Parity on making heap size an on-chain parameter.',
+            'url': 'https://github.com/ethereum/py-evm/issues/1187',
+            'primer': 'Have Python chops? Work with Piper Merriam (EF) on PY-EVM',
         },
         {
-            'url': 'https://github.com/rotkehlchenio/rotkehlchen/issues/74',
-            'primer': 'Work with a core Raiden developer on his side project!',
+            'url': 'https://github.com/diadata-org/api-golang/issues/3',
+            'primer': 'Have a Go background? Work to build a Bitcoin Cash data scraper.',
         },
         {
-            'url': 'https://github.com/gitcoinco/web/issues/1855',
-            'primer': 'Have backend skills? Help us with Gitcoin Requests, a cool new feature!',
+            'url': 'https://github.com/omisego/plasma-mvp/issues/170',
+            'primer': 'Create an RLP encoding library for the Plasma Cash MVP!',
         },
     ]
 
+    num_leadboard_items = 5
     #### don't need to edit anything below this line
+    leaderboard = {
+        'quarterly_payers': {
+            'title': _('Top Payers'),
+            'items': [],
+        },
+        'quarterly_earners': {
+            'title': _('Top Earners'),
+            'items': [],
+        },
+        'quarterly_orgs': {
+            'title': _('Top Orgs'),
+            'items': [],
+        },
+    }
+    for key, val in leaderboard.items():
+        leaderboard[key]['items'] = LeaderboardRank.objects.filter(active=True, leaderboard=key).order_by('rank')[0:num_leadboard_items]
 
 
     bounties = []
@@ -605,6 +628,7 @@ Back to BUIDLing,
         'intro': intro,
         'intro_txt': strip_double_chars(strip_double_chars(strip_double_chars(strip_html(intro), ' '), "\n"), "\n "),
         'bounties': bounties,
+        'leaderboard': leaderboard,
         'ecosystem_bounties': ecosystem_bounties,
         'invert_footer': False,
         'hide_header': False,

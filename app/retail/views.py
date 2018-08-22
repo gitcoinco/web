@@ -19,13 +19,13 @@
 from os import walk as walkdir
 
 from django.conf import settings
-from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
-from django.http import Http404, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
@@ -45,7 +45,7 @@ from .utils import build_stat_results, programming_languages
 def get_activities(tech_stack=None, num_activities=15):
     # get activity feed
 
-    activities = Activity.objects.filter(bounty__network='mainnet').order_by('-created')
+    activities = Activity.objects.select_related('bounty').filter(bounty__network='mainnet').order_by('-created')
     if tech_stack:
         activities = activities.filter(bounty__metadata__icontains=tech_stack)
     activities = activities[0:num_activities]
@@ -215,7 +215,7 @@ def contributor_landing(request, tech_stack):
 
     available_bounties_count = open_bounties().count()
     available_bounties_worth = amount_usdt_open_work()
-
+    # tech_stack = '' #uncomment this if you wish to disable contributor specific LPs
     context = {
         'activities': get_activities(tech_stack),
         'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else "Open Source Opportunities",
@@ -805,7 +805,7 @@ def presskit(request):
 
 def get_gitcoin(request):
     context = {
-        'active': 'get',
+        'active': 'get_gitcoin',
         'title': _('Get Started'),
     }
     return TemplateResponse(request, 'getgitcoin.html', context)
@@ -1029,7 +1029,7 @@ def ui(request):
     svgs = []
     pngs = []
     gifs = []
-    for path, dirs, files in walkdir('assets/v2/images'):
+    for path, __, files in walkdir('assets/v2/images'):
         if path.find('/avatar') != -1:
             continue
         for f in files:
@@ -1052,3 +1052,7 @@ def ui(request):
         'gifs': gifs,
     }
     return TemplateResponse(request, 'ui_inventory.html', context)
+
+
+def lbcheck(request):
+    return HttpResponse(status=200)
