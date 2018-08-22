@@ -601,6 +601,13 @@ def invoice(request):
     """
     bounty = handle_bounty_views(request)
 
+    # only allow invoice viewing if admin or iff bounty funder
+    is_funder = bounty.is_funder(request.user.username)
+    is_staff = request.user.is_staff
+    has_view_privs = is_funder or is_staff
+    if not has_view_privs:
+        raise Http404
+
     params = get_context(
         ref_object=bounty,
         user=request.user if request.user.is_authenticated else None,
