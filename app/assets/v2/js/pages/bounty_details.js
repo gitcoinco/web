@@ -112,7 +112,7 @@ var callbacks = {
     var username = result['bounty_owner_github_username'] ? result['bounty_owner_github_username'] : 'Self';
 
     return [ 'issuer_avatar_url', '<a href="/profile/' + result['bounty_owner_github_username'] +
-      '"><img class=avatar src="/funding/avatar?repo=https://github.com/' + username + '"></a>' ];
+      '"><img class=avatar src="/static/avatar/' + username + '"></a>' ];
   },
   'status': function(key, val, result) {
     var ui_status = val;
@@ -790,7 +790,7 @@ var do_actions = function(result) {
   }
 
   if (show_start_stop_work) {
-    const enabled = start_stop_work_enabled;
+    const enabled = true;
     const interest_entry = {
       enabled: enabled,
       href: is_interested ? '/uninterested' : '/interested',

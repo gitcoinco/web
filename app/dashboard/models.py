@@ -896,12 +896,12 @@ class Bounty(SuperModel):
     def paid(self):
         """Return list of users paid for this bounty."""
         if self.status != 'done':
-            return [] #to save the db hits
-        
+            return []  # to save the db hits
+
         return_list = []
         for fulfillment in self.fulfillments.filter(accepted=True):
-            if fulfiller.fulfiller_github_username:
-                return_list.append(fulfiller_github_username)
+            if fulfillment.fulfiller_github_username:
+                return_list.append(fulfillment.fulfiller_github_username)
         for tip in self.tips.exclude(txid=''):
             if tip.username:
                 return_list.append(tip.username)
