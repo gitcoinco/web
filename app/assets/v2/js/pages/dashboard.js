@@ -73,7 +73,6 @@ var buildURI = function() {
   _filters.push('keywords', 'order_by');
   _filters.forEach((filter) => {
     if (localStorage[filter] &&
-      localStorage[filter] != null &&
       localStorage[filter] != 'any') {
       uri += (filter + '=' + localStorage[filter] + '&');
     }
