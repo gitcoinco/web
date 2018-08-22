@@ -18,6 +18,10 @@
     font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
     color: #555;
   }
+  a {
+    color: #555;
+    text-decoration: underline;
+  }
   
   .invoice-box table {
     width: 100%;
@@ -121,6 +125,8 @@
                 {% trans "Invoice" %} #: {{bounty.pk}}<br>
                 {% trans "Created" %}: {{bounty.web3_created}}<br>
                 {% trans "Status" %}: {{bounty.status}}<br>
+                {% trans "For" %}: <a href="{{bounty.url}}">{% trans "Gitcoin Bounty" %} {{bounty.pk}}</a> <br>
+                {% trans "Related Issue:" %} <a href="{{bounty.github_url}}">{{bounty.github_url}}</a><br>
               </td>
             </tr>
           </table>
@@ -140,7 +146,7 @@
               </td>
               
               <td>
-                {% trans "Prepared for Payer" %}: <br>
+                {% trans "Prepared for Funder" %}: <br>
                 {{bounty.bounty_owner_address}}<br>
                 @{{bounty.bounty_owner_github_username}}<br>
                 {{bounty.bounty_owner_email}}<br>
