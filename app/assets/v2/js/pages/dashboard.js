@@ -1,6 +1,6 @@
 /* eslint-disable no-loop-func */
 
-var sidebar_keys = [
+var filters = [
   'experience_level',
   'project_length',
   'bounty_type',
@@ -50,7 +50,7 @@ function debounce(func, wait, immediate) {
  * Fetches all filters options from the URI
  */
 var getActiveFilters = function() {
-  sidebar_keys.forEach(filter => {
+  filters.forEach(filter => {
     if (getParam(filter)) {
       localStorage[filter] = getParam(filter).replace(/^,|,\s*$/g, '');
     }
@@ -62,7 +62,8 @@ var getActiveFilters = function() {
  */
 var buildURI = function() {
   let uri = '';
-  sidebar_keys.forEach((filter) => {
+
+  filters.forEach((filter) => {
     if (localStorage[filter] &&
       localStorage[filter] != null &&
       localStorage[filter] != 'any') {
@@ -70,7 +71,8 @@ var buildURI = function() {
     }
   });
 
-  var _filters = ['keywords', 'order_by'];
+  var _filters = [ 'keywords', 'order_by' ];
+
   _filters.forEach((filter) => {
     if (localStorage[filter] &&
       localStorage[filter] != '') {
@@ -87,18 +89,15 @@ var buildURI = function() {
 var save_sidebar_latest = function() {
   localStorage['order_by'] = $('#sort_option').val();
 
-  for (var i = 0; i < sidebar_keys.length; i++) {
-    var key = sidebar_keys[i];
- 
-    localStorage[key] = '';
+  filters.forEach((filter) => {
+    localStorage[filter] = '';
 
-    $('input[name="' + key + '"]:checked').each(function() {
-      localStorage[key] += $(this).val() + ',';
+    $('input[name="' + filter + '"]:checked').each(function() {
+      localStorage[filter] += $(this).val() + ',';
     });
 
-    // Trim trailing comma to avoid empty element on split
-    localStorage[key] = localStorage[key].replace(/^,|,\s*$/g, '');
-  }
+    localStorage[filter] = localStorage[filter].replace(/^,|,\s*$/g, '');
+  });
 };
 
 // saves search information default
@@ -128,18 +127,16 @@ var set_sidebar_defaults = function() {
     $('#sort_option').selectmenu().selectmenu('refresh');
   }
 
-  for (var i = 0; i < sidebar_keys.length; i++) {
-    var key = sidebar_keys[i];
-
-    if (localStorage[key]) {
-      localStorage[key].split(',').forEach(function(v, k) {
-        $('input[name="' + key + '"][value="' + v + '"]').prop('checked', true);
+  filters.forEach((filter) => {
+    if (localStorage[filter]) {
+      localStorage[filter].split(',').forEach(function(val) {
+        $('input[name="' + filter + '"][value="' + val + '"]').prop('checked', true);
       });
 
-      if ($('input[name="' + key + '"][value!=any]:checked').length > 0)
-        $('input[name="' + key + '"][value=any]').prop('checked', false);
+      if ($('input[name="' + filter + '"][value!=any]:checked').length > 0)
+        $('input[name="' + filter + '"][value=any]').prop('checked', false);
     }
-  }
+  });
 };
 
 var set_filter_header = function() {
@@ -192,16 +189,14 @@ var addTechStackKeywordFilters = function(value) {
 var getFilters = function() {
   var _filters = [];
 
-  for (var i = 0; i < sidebar_keys.length; i++) {
-    var key = sidebar_keys[i];
-
-    $.each($('input[name="' + key + '"]:checked'), function() {
+  filters.forEach((filter) => {
+    $.each($('input[name="' + filter + '"]:checked'), function() {
       if ($(this).attr('val-ui')) {
-        _filters.push('<a class="filter-tag ' + key + '"><span>' + $(this).attr('val-ui') + '</span>' +
-          '<i class="fas fa-times" onclick="removeFilter(\'' + key + '\', \'' + $(this).attr('value') + '\')"></i></a>');
+        _filters.push('<a class="filter-tag ' + filter + '"><span>' + $(this).attr('val-ui') + '</span>' +
+          '<i class="fas fa-times" onclick="removeFilter(\'' + filter + '\', \'' + $(this).attr('value') + '\')"></i></a>');
       }
     });
-  }
+  });
 
   if (localStorage['keywords']) {
     localStorage['keywords'].split(',').forEach(function(v, k) {
@@ -231,19 +226,18 @@ var get_search_URI = function(offset) {
   var uri = '/api/v0.1/bounties/?';
   var keywords = '';
 
-  for (var i = 0; i < sidebar_keys.length; i++) {
-    var key = sidebar_keys[i];
-    var filters = [];
+  filters.forEach((filter) => {
+    var active_filters = [];
 
-    $.each ($('input[name="' + key + '"]:checked'), function() {
+    $.each ($('input[name="' + filter + '"]:checked'), function() {
       if ($(this).val()) {
-        filters.push($(this).val());
+        active_filters.push($(this).val());
       }
     });
 
-    var val = filters.toString();
+    var val = active_filters.toString();
 
-    if ((key === 'bounty_filter') && val) {
+    if ((filter === 'bounty_filter') && val) {
       var values = val.split(',');
 
       values.forEach(function(_value) {
@@ -269,19 +263,19 @@ var get_search_URI = function(offset) {
 
       // TODO: Check if value myself is needed for coinbase
       if (val === 'fulfilledByMe') {
-        key = 'bounty_owner_address';
+        filter = 'bounty_owner_address';
         val = 'myself';
       }
     }
 
     if (val && val !== 'any' &&
-        key !== 'bounty_filter' &&
-        key !== 'bounty_owner_address') {
+      filter !== 'bounty_filter' &&
+      filter !== 'bounty_owner_address') {
       if (!uri.endsWith('?'))
         uri += '&';
-      uri += key + '=' + val;
+      uri += filter + '=' + val;
     }
-  }
+  });
 
   if (localStorage['keywords']) {
     localStorage['keywords'].split(',').forEach(function(v, pos, arr) {
@@ -563,17 +557,16 @@ function getURLParams(k) {
 }
 
 var resetFilters = function() {
-  for (var i = 0; i < sidebar_keys.length; i++) {
-    var key = sidebar_keys[i];
-    var tag = ($('input[name="' + key + '"][value]'));
+  filters.forEach((filter) => {
+    var tag = ($('input[name="' + filter + '"][value]'));
 
     for (var j = 0; j < tag.length; j++) {
       if (tag[j].value == 'any')
-        $('input[name="' + key + '"][value="any"]').prop('checked', true);
+        $('input[name="' + filter + '"][value="any"]').prop('checked', true);
       else
-        $('input[name="' + key + '"][value="' + tag[j].value + '"]').prop('checked', false);
+        $('input[name="' + filter + '"][value="' + tag[j].value + '"]').prop('checked', false);
     }
-  }
+  });
 
   if (localStorage['keywords']) {
     localStorage['keywords'].split(',').forEach(function(v, k) {
