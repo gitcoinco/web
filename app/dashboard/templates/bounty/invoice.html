@@ -105,7 +105,7 @@
   <div class="invoice-box">
     {% if bounty.network != 'mainnet' %}
       <div style="color:red; border: 1px red solid; padding: 5px;">
-        Note: This is not a mainnet bounty, it is a {{bounty.network}} bounty, and this invoice is only for demonstration purposes.
+        {% trans "Note: This is not a mainnet bounty, it is a {{bounty.network}} bounty, and this invoice is only for demonstration purposes." %}
       </div>
     {% endif %}
     <table cellpadding="0" cellspacing="0">
@@ -118,9 +118,9 @@
               </td>
               
               <td>
-                Invoice #: {{bounty.pk}}<br>
-                Created: {{bounty.web3_created}}<br>
-                Status: {{bounty.status}}<br>
+                {% trans "Invoice" %} #: {{bounty.pk}}<br>
+                {% trans "Created" %}: {{bounty.web3_created}}<br>
+                {% trans "Status" %}: {{bounty.status}}<br>
               </td>
             </tr>
           </table>
@@ -132,7 +132,7 @@
           <table>
             <tr>
               <td>
-                Prepared by <br>
+                {% trans "Prepared by" %} <br>
                 Gitcoin Core LLC<br>
                 ConsenSys Inc. <br>
                 49 Bogart Street Suite 22 <br>
@@ -140,7 +140,7 @@
               </td>
               
               <td>
-                Prepared for Payer: <br>
+                {% trans "Prepared for Payer" %}: <br>
                 {{bounty.bounty_owner_address}}<br>
                 @{{bounty.bounty_owner_github_username}}<br>
                 {{bounty.bounty_owner_email}}<br>
@@ -152,17 +152,17 @@
       
       <tr class="heading">
         <td>
-          Payment Method
+          {% trans "Payment Method" %}
         </td>
         
         <td>
-          Account #
+          {% trans "Account" %} #
         </td>
       </tr>
       
       <tr class="details">
         <td>
-          Directly to counterparties via Ethereum Blockchain
+          {% trans "Directly to counterparties via Ethereum Blockchain" %}
         </td>
         
         <td>
@@ -183,7 +183,7 @@
       {% for fullfillment in accepted_fulfillments %}
         <tr class="item">
           <td>
-            Direct Payment to {{fullfillment.fulfiller_github_username}} {{fullfillment.fulfiller_address}}
+            {% trans "Direct Payment to " %}{{fullfillment.fulfiller_github_username}} {{fullfillment.fulfiller_address}}
           </td>
           
           <td>
@@ -207,7 +207,7 @@
       {% if not tips and not accepted_fulfillments %}
         <tr class="item">
           <td colspan="2">
-            (no completed payments have been made on this invoice)
+            {% trans "(no completed payments have been made on this invoice)" %}
           </td>
           
         </tr>
@@ -219,9 +219,9 @@
         
         <td>
           {% if total %}
-             Total: ${{total|floatformat:2}}
+             {% trans "Total:" %} ${{total|floatformat:2}}
           {%else%}
-             Total: $0.00
+             {% trans "Total:" %} $0.00
           {%endif%}
         </td>
       </tr>
