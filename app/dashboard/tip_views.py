@@ -23,22 +23,34 @@ import logging
 
 from django.contrib import messages
 from django.http import JsonResponse
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.abi import erc20_abi
+from dashboard.utils import generate_pub_priv_keypair, get_web3
 from dashboard.views import record_user_action
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from git.utils import get_github_emails, get_github_primary_email
+from git.utils import get_emails_master, get_github_primary_email
+from marketing.mails import (
+    admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
+)
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import Web3
 
-from .models import Activity, Bounty, Profile, Tip
-from .notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
-from .utils import generate_pub_priv_keypair, get_web3
+from .models import (
+    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip,
+    Tool, ToolVote, UserAction,
+)
+from .notifications import (
+    maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_github,
+    maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_discord, maybe_market_to_user_slack,
+)
+from .utils import (
+    get_bounty, get_bounty_id, get_context, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
+)
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -82,8 +94,8 @@ def record_tip_activity(tip, github_handle, event_name):
         logging.error(f"error in record_tip_activity: profile with github name {github_handle} not found")
         return
     try:
-        kwargs['bounty'] = Bounty.objects.get(current_bounty=True, network=tip.network, github_url=tip.github_url)
-    except Exception:
+        kwargs['bounty'] = tip.bounty
+    except:
         pass
 
     try:
@@ -94,111 +106,46 @@ def record_tip_activity(tip, github_handle, event_name):
 
 @csrf_exempt
 @ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
-def receive_tip_legacy(request):
-    """Receive a tip."""
-    if request.body:
-        status = 'OK'
-        message = _('Tip has been received')
-        params = json.loads(request.body)
-
-        # db mutations
-        try:
-            tip = Tip.objects.get(txid=params['txid'])
-            tip.receive_address = params['receive_address']
-            tip.receive_txid = params['receive_txid']
-            tip.received_on = timezone.now()
-            tip.save()
-            record_user_action(tip.username, 'receive_tip', tip)
-            record_tip_activity(tip, tip.username, 'receive_tip')
-        except Exception as e:
-            status = 'error'
-            message = str(e)
-
-        # http response
-        response = {
-            'status': status,
-            'message': message,
-        }
-
-        return JsonResponse(response)
-
-    params = {
-        'issueURL': request.GET.get('source'),
-        'class': 'receive',
-        'title': _('Receive Tip'),
-        'gas_price': round(recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target), 1),
-    }
-
-    return TemplateResponse(request, 'onepager/receive_legacy.html', params)
-
-
-@csrf_exempt
-@ratelimit(key='ip', rate='2/m', method=ratelimit.UNSAFE, block=True)
-def receive_tip_v2(request, pk, txid, network):
-    """Handle the receiving of a tip (the POST).
+def receive_tip_v3(request, key, txid, network):
+    """Handle the receiving of a tip (the POST)
 
     Returns:
-        TemplateResponse: The UI with the tip confirmed.
+        TemplateResponse: the UI with the tip confirmed
 
     """
-    tip = Tip.objects.get(web3_type='v2', metadata__priv_key=pk, txid=txid, network=network)
 
-    if tip.receive_txid:
-        messages.info(request, 'This tip has already been received')
-
+    these_tips = Tip.objects.filter(web3_type='v3', txid=txid, network=network)
+    tips = these_tips.filter(metadata__reference_hash_for_receipient=key) | these_tips.filter(metadata__reference_hash_for_funder=key)
+    tip = tips.first()
+    is_authed = request.user.username == tip.username or request.user.username == tip.from_username
     not_mined_yet = get_web3(tip.network).eth.getBalance(Web3.toChecksumAddress(tip.metadata['address'])) == 0
-    if not_mined_yet:
-        messages.info(request, f'This tx {tip.txid}, is still mining.  Please wait a moment before submitting the receive form.')
 
-    if request.POST and not tip.receive_txid:
-        params = request.POST
+    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
+        request.user, 'profile', None
+    ):
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+    elif tip.receive_txid:
+        messages.info(request, 'This tip has been received')
+    elif not is_authed:
+        messages.error(request, f'This tip is for {tip.username} but you are logged in as {request.user.username}.  Please logout and log back in as {tip.username}.')
+    elif not_mined_yet:
+        messages.info(request, f'This tx {tip.txid}, is still mining.  Please wait a moment before submitting the receive form.')
+    elif request.GET.get('receive_txid') and not tip.receive_txid:
+        params = request.GET
 
         # db mutations
         try:
-            address = params['forwarding_address']
-            if not address or address == '0x0':
-                raise Exception('bad forwarding address')
-
-            # send tokens
-
-            address = Web3.toChecksumAddress(address)
-            w3 = get_web3(tip.network)
-            is_erc20 = tip.tokenName.lower() != 'eth'
-            amount = int(tip.amount_in_wei)
-            gasPrice = recommend_min_gas_price_to_confirm_in_time(25) * 10**9
-            from_address = Web3.toChecksumAddress(tip.metadata['address'])
-            nonce = w3.eth.getTransactionCount(from_address)
-            if is_erc20:
-                # ERC20 contract receive
-                balance = w3.eth.getBalance(from_address)
-                contract = w3.eth.contract(Web3.toChecksumAddress(tip.tokenAddress), abi=erc20_abi)
-                gas = contract.functions.transfer(address, amount).estimateGas({'from': from_address}) + 1
-                gasPrice = gasPrice if ((gas * gasPrice) < balance) else (balance * 1.0 / gas)
-                tx = contract.functions.transfer(address, amount).buildTransaction({
-                    'nonce': nonce,
-                    'gas': w3.toHex(gas),
-                    'gasPrice': w3.toHex(int(gasPrice)),
-                })
-            else:
-                # ERC20 contract receive
-                gas = 100000
-                amount -= gas * int(gasPrice)
-                tx = dict(
-                    nonce=nonce,
-                    gasPrice=w3.toHex(int(gasPrice)),
-                    gas=w3.toHex(gas),
-                    to=address,
-                    value=w3.toHex(amount),
-                    data=b'',
-                )
-            signed = w3.eth.account.signTransaction(tx, tip.metadata['priv_key'])
-            receive_txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
-
+            if params['save_addr']:
+                profile = get_profile(tip.username)
+                if profile:
+                    profile.preferred_payout_address = params['forwarding_address']
+                    profile.save()
+            tip.receive_txid = params['receive_txid']
             tip.receive_address = params['forwarding_address']
-            tip.receive_txid = receive_txid
             tip.received_on = timezone.now()
             tip.save()
-            record_user_action(tip.username, 'receive_tip', tip)
+            record_user_action(tip.from_username, 'receive_tip', tip)
             record_tip_activity(tip, tip.username, 'receive_tip')
             messages.success(request, 'This tip has been received')
         except Exception as e:
@@ -209,9 +156,11 @@ def receive_tip_v2(request, pk, txid, network):
         'issueURL': request.GET.get('source'),
         'class': 'receive',
         'title': _('Receive Tip'),
-        'gas_price': round(recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target), 1),
+        'gas_price': round(recommend_min_gas_price_to_confirm_in_time(120), 1),
         'tip': tip,
-        'disable_inputs': tip.receive_txid or not_mined_yet,
+        'key': key,
+        'is_authed': is_authed,
+        'disable_inputs': tip.receive_txid or not_mined_yet or not is_authed,
     }
 
     return TemplateResponse(request, 'onepager/receive.html', params)
@@ -220,7 +169,7 @@ def receive_tip_v2(request, pk, txid, network):
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def send_tip_4(request):
-    """Handle the fourth stage of sending a tip (the POST).
+    """Handle the fourth stage of sending a tip (the POST)
 
     Returns:
         JsonResponse: response with success state.
@@ -238,7 +187,18 @@ def send_tip_4(request):
     params = json.loads(request.body)
     txid = params['txid']
     destinationAccount = params['destinationAccount']
-    tip = Tip.objects.get(metadata__address=destinationAccount)
+    is_direct_to_recipient = params.get('is_direct_to_recipient', False)
+    if is_direct_to_recipient:
+        tip = Tip.objects.get(
+            metadata__direct_address=destinationAccount,
+            metadata__creation_time=params['creation_time'],
+            metadata__salt=params['salt'],
+            )
+    else:
+        tip = Tip.objects.get(
+            metadata__address=destinationAccount,
+            metadata__salt=params['salt'],
+            )
     is_authenticated_for_this_via_login = (tip.from_username and tip.from_username == from_username)
     is_authenticated_for_this_via_ip = tip.ip == get_ip(request)
     is_authed = is_authenticated_for_this_via_ip or is_authenticated_for_this_via_login
@@ -251,22 +211,52 @@ def send_tip_4(request):
 
     # db mutations
     tip.txid = txid
+    if is_direct_to_recipient:
+        tip.receive_txid = txid
+        tip.receive_address = destinationAccount
     tip.save()
 
     # notifications
     maybe_market_tip_to_github(tip)
-    maybe_market_tip_to_slack(tip, 'new_tip')
+    maybe_market_tip_to_slack(tip, 'New tip')
     maybe_market_tip_to_email(tip, to_emails)
-    record_user_action(tip.username, 'send_tip', tip)
-    record_tip_activity(tip, tip.from_name, 'new_tip')
+    record_user_action(tip.from_username, 'send_tip', tip)
+    record_tip_activity(tip, tip.from_username, 'new_tip' if tip.username else 'new_crowdfund')
 
+    return JsonResponse(response)
+
+
+def get_profile(handle):
+    try:
+        to_profile = Profile.objects.get(handle__iexact=handle)
+    except Profile.MultipleObjectsReturned:
+        to_profile = Profile.objects.filter(handle__iexact=handle).order_by('-created_on').first()
+    except Profile.DoesNotExist:
+        to_profile = None
+    return to_profile
+
+
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def tipee_address(request, handle):
+    """returns the address, if any, that someone would like to be tipped directly at
+
+    Returns:
+        list of addresse
+
+    """
+    response = {
+        'addresses': []
+    }
+    profile = get_profile(str(handle).replace('@', ''))
+    if profile and profile.preferred_payout_address:
+        response['addresses'].append(profile.preferred_payout_address)
     return JsonResponse(response)
 
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def send_tip_3(request):
-    """Handle the third stage of sending a tip (the POST).
+    """Handle the third stage of sending a tip (the POST)
 
     Returns:
         JsonResponse: response with success state.
@@ -286,17 +276,7 @@ def send_tip_3(request):
     params = json.loads(request.body)
 
     to_username = params['username'].lstrip('@')
-    try:
-        to_profile = Profile.objects.get(handle__iexact=to_username)
-    except Profile.MultipleObjectsReturned:
-        to_profile = Profile.objects.filter(handle__iexact=to_username).first()
-    except Profile.DoesNotExist:
-        to_profile = None
-    if to_profile:
-        if to_profile.email:
-            to_emails.append(to_profile.email)
-        if to_profile.github_access_token:
-            to_emails = get_github_emails(to_profile.github_access_token)
+    to_emails = get_emails_master(to_username)
 
     if params.get('email'):
         to_emails.append(params['email'])
@@ -309,10 +289,9 @@ def send_tip_3(request):
 
     to_emails = list(set(to_emails))
     expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
-    priv_key, pub_key, address = generate_pub_priv_keypair()
 
     # db mutations
-    Tip.objects.create(
+    tip = Tip.objects.create(
         emails=to_emails,
         tokenName=params['tokenName'],
         amount=params['amount'],
@@ -328,15 +307,31 @@ def send_tip_3(request):
         network=params['network'],
         tokenAddress=params['tokenAddress'],
         from_address=params['from_address'],
-        metadata={
-            'priv_key': priv_key,
-            'pub_key': pub_key,
-            'address': address,
-        }
+        is_for_bounty_fulfiller=params['is_for_bounty_fulfiller'],
+        metadata=params['metadata'],
+        recipient_profile=get_profile(to_username),
+        sender_profile=get_profile(from_username),
     )
-    response['payload'] = {
-        'address': address,
-    }
+
+
+    is_over_tip_tx_limit = False
+    is_over_tip_weekly_limit = False
+    max_per_tip = request.user.profile.max_tip_amount_usdt_per_tx if request.user.is_authenticated and request.user.profile else 500
+    if tip.value_in_usdt_now:
+        is_over_tip_tx_limit = tip.value_in_usdt_now > max_per_tip
+        if request.user.is_authenticated and request.user.profile:
+            tips_last_week_value = tip.value_in_usdt_now
+            tips_last_week = Tip.objects.exclude(txid='').filter(sender_profile=get_profile(from_username), created_on__gt=timezone.now() - timezone.timedelta(days=7))
+            for this_tip in tips_last_week:
+                if this_tip.value_in_usdt_now:
+                    tips_last_week_value += this_tip.value_in_usdt_now
+            is_over_tip_weekly_limit = tips_last_week_value > request.user.profile.max_tip_amount_usdt_per_week
+    if is_over_tip_tx_limit:
+        response['status'] = 'error'
+        response['message'] = _('This tip is over the per-transaction limit of $') + str(max_per_tip) + ('.  Please try again later or contact support.')
+    elif is_over_tip_weekly_limit:
+        response['status'] = 'error'
+        response['message'] = _('You are over the weekly tip send limit of $') + str(request.user.profile.max_tip_amount_usdt_per_week) + ('.  Please try again later or contact support.')
     return JsonResponse(response)
 
 
@@ -352,6 +347,7 @@ def send_tip_2(request):
         TemplateResponse: Render the submission form.
 
     """
+
     is_user_authenticated = request.user.is_authenticated
     from_username = request.user.username if is_user_authenticated else ''
     primary_from_email = request.user.email if is_user_authenticated else ''
@@ -362,7 +358,7 @@ def send_tip_2(request):
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'from_email': primary_from_email,
         'from_handle': from_username,
-        'title': _('Send Tip | Gitcoin'),
+        'title': 'Send Tip | Gitcoin',
         'card_desc': 'Send a tip to any github user at the click of a button.',
     }
 

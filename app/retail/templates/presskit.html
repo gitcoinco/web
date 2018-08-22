@@ -1,0 +1,54 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+  {% include 'shared/head.html' %}
+  <link rel="stylesheet" href="{% static "v2/css/presskit.css" %}">
+<head>
+  <body class="{{ active }}">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header">
+      {% include 'shared/nav.html' %} {% include 'shared/minihero.html' with h1='Press Kit' %}
+    </div>
+    <div class="presskit">
+      <section class="presskit_section py-5">
+        <div class="container">
+          <div class="row my-5">
+            <h2 class="col-12 my-3">{% trans "Gitcoin Press Kit" %}</h2>
+            <div class="col-sm-12 col-md-12">
+              <p>{% trans "Thank you for your interest in using the Gitcoin brand assets. We created these guidelines to manage and protect the value of the brand. By using any of the Gitcoin brand assets, you expressly consent to respect these guidelines." %}</p>
+              <p>{% trans "If your use case is not covered below we’re happy to help answer any questions about the Gitcoin brand or other products within our brand, please contact " %} <a href="mailto:founders@gitcoin.co">Gitcoin Core</a></p>
+            </div>
+          </div>
+        </div>
+      </section>
+      {% include 'presskit/logo.html' %}
+      {% include 'presskit/usage.html' %}
+      {% include 'presskit/colors.html' %}
+      {% include 'presskit/illustrations.html' %}
+      {% include 'presskit/resources.html' %}
+
+    </div>
+
+    {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/messages.html' %}
+  </body>
+
+</html>

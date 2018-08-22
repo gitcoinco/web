@@ -1,109 +1,115 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2017 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
 {% load i18n humanize %}
 
 {% block content %}
 
-<style>
+  <style>
     .tip-box {
-        margin-bottom: 2em;
-        border-style: solid;
-        border-width: 1px;
-        border-color: #e0e0e0;
+      margin-bottom: 2em;
+      border-style: solid;
+      border-width: 1px;
+      border-color: #e0e0e0;
     }
     .tip-contents {
-        text-align: left;
+      text-align: left;
     }
     .tip {
-        display: flex;
-        padding-top: 0.5em;
-        padding-bottom: 0.5em;
-        padding-left: 1em;
-        padding-right: 1em;
+      display: flex;
+      padding-top: 0.5em;
+      padding-bottom: 0.5em;
+      padding-left: 1em;
+      padding-right: 1em;
     }
-</style>
+  </style>
 
-<div>
+  <div>
     {% if is_new %}
-    <h1>⚡️ {% trans "New Tip Alert" %} ⚡️</h1>
+      <h1>⚡️ {% trans "New Tip Alert" %} ⚡️</h1>
     {% else %}
-    <h1>🕑 {% trans "Reminder: Tip Expires Soon" %} 🕝</h1>
+      <h1>🕑 {% trans "Reminder: Tip Expires Soon" %} 🕝</h1>
     {% endif %}
 
     <h3>
-        {% if tip.from_name %}
-            {% blocktrans %}{{tip.from_name}} sent you a tip worth {{amount}} {{warning}} {{tokenName}}{% endblocktrans %}
-        {% else %}
-            {% blocktrans %}Someone sent you a tip worth {{amount}} {{warning}} {{tokenName}}{% endblocktrans %}
-        {% endif %}{% if not is_new %} {{tip.created_on | naturaltime}}{%endif%}.
+      {% if tip.from_name %}
+        {{tip.from_name}} {% blocktrans %} sent you a tip worth {{amount}} {{warning}} {{tokenName}}{% endblocktrans %}
+      {% else %}
+        {% blocktrans %}Someone sent you a tip worth {{amount}} {{warning}} {{tokenName}}{% endblocktrans %}
+      {% endif %}{% if not is_new %} {{tip.created_on | naturaltime}}{%endif%}.
     </h3>
-</div>
+  </div>
 
-<div class="centered-contents tip-box">
+  <div class="centered-contents tip-box">
     <div class="tip">
-        <div class="tip-contents">
-            {% if tip.github_url %}
-                <p>
-                {% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} said it was for your work on <a href="{{tip.github_url}}">{{tip.github_url}}</a>.
-                    {% if comments %}
-                        {% trans "They had the following comments:" %}
-                    <pre>
-                        {{comments}}
-                    </pre>
-                    {% endif %}
-
-                </p>
+      <div class="tip-contents">
+        {% if tip.github_url %}
+          <p>
+            {% if tip.from_name %}{{tip.from_name}}{% else %}The sender{% endif %} said it was for your work on <a href="{{tip.github_url}}">{{tip.github_url}}</a>.
+              {% if comments %}
+                {% trans "They had the following comments:" %}
+                <pre>
+                  {{comments}}
+                </pre>
             {% endif %}
+          </p>
+        {% endif %}
 
-            {% if comments_priv %}
-                <p>
-                {% trans "They had the following private comments:" %}
+        {% if comments_priv %}
+          <p>
+            {% trans "They had the following private comments:" %}
             <pre>
-                {{comments_priv}}
+              {{comments_priv}}
             </pre>
-                </p>
-            {% endif %}
+          </p>
+          {% endif %}
 
-            {% if comments_public %}
-                <p>
-                {% trans "They had the following public comments:" %}
-            <pre>
+          {% if comments_public %}
+            <p>
+              {% trans "They had the following public comments:" %}
+              <pre>
                 {{comments_public}}
-            </pre>
-                </p>
-            {% endif %}
-
-            {% if show_expires %}
-                <p>
-                {% trans "The tip expires on" %} <strong>{{tip.expires_date}}, {% trans "in just" %} {{tip.expires_date | naturaltime}}</strong>.{% trans "No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:" %}
-                </p>
-            {% else %}
-                <p>
-                 {% trans "No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌" %}
-                </p>
-            {% endif %}
-        </div>
+              </pre>
+            </p>
+          {% endif %}
+          {% if already_redeemed %}
+            <p>
+               {% trans "This tip has been remitted automatically to the Ethereum address on file for your account (" %}<a href='https://etherscan.io/address/{{tip.receive_address}}'>{{tip.receive_address}}</a>{% trans ") via txid " %}<a href='https://etherscan.io/tx/{{tip.txid}}'>{{tip.txid}}</a>.
+            </p>
+          {% elif show_expires %}
+            <p>
+            {% trans "The tip expires on" %} <strong>{{tip.expires_date}}, {% trans "in just" %} {{tip.expires_date | naturaltime}}</strong>. {% trans "No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌:" %}
+            </p>
+          {% else %}
+            <p>
+              {% trans "No pressure, but if you wanted to redeem your tip sooner rather than later that'd be 👌" %}
+            </p>
+          {% endif %}
+      </div>
     </div>
-
-    <div style="margin-bottom: 1.5em;">
+    {% if not already_redeemed %}
+      <div style="margin-bottom: 1.5em;">
         <a class="button" href="{{link}}">{% trans "Redeem Tip" %}</a>
+      </div>
+    {% endif %}
+    <div>
+      {% trans "Transaction ID:" %} <a href='https://etherscan.io/tx/{{tip.txid}}'>{{tip.txid}}</a>
     </div>
-</div>
+  </div>
 
 {% endblock %}

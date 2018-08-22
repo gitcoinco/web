@@ -28,7 +28,8 @@ from django.utils import timezone
 
 import dateutil.parser
 import requests
-import rollbar
+from github import Github
+from github.GithubException import BadCredentialsException, UnknownObjectException
 from requests.exceptions import ConnectionError
 from rest_framework.reverse import reverse
 
@@ -51,13 +52,15 @@ def github_connect(token=None):
             Defaults to: None.
 
     """
-    from github import Github
-    from github.GithubException import BadCredentialsException
     if token is None:
         token = settings.GITHUB_API_TOKEN
 
     try:
-        github_client = Github(login_or_token='token', password=token)
+        github_client = Github(
+            login_or_token=token,
+            client_id=settings.GITHUB_CLIENT_ID,
+            client_secret=settings.GITHUB_CLIENT_SECRET,
+        )
     except BadCredentialsException as e:
         github_client = None
         logger.exception(e)
@@ -66,16 +69,32 @@ def github_connect(token=None):
 
 def get_gh_issue_details(org, repo, issue_num):
     details = {'keywords': []}
+    try:
+        gh_client = github_connect()
+        org_user = gh_client.get_user(login=org)
+        repo_obj = org_user.get_repo(repo)
+        issue_details = repo_obj.get_issue(issue_num)
+        langs = repo_obj.get_languages()
+        for k, _ in langs.items():
+            details['keywords'].append(k)
+        details['title'] = issue_details.title
+        details['description'] = issue_details.body.replace('\n', '').strip()
+        details['state'] = issue_details.state
+        if issue_details.state == 'closed':
+            details['closed_at'] = issue_details.closed_at.isoformat()
+            details['closed_by'] = issue_details.closed_by.name
+    except UnknownObjectException:
+        return {}
+    return details
+
+
+def get_gh_issue_state(org, repo, issue_num):
     gh_client = github_connect()
     org_user = gh_client.get_user(login=org)
     repo_obj = org_user.get_repo(repo)
     issue_details = repo_obj.get_issue(issue_num)
-    langs = repo_obj.get_languages()
-    for k, _ in langs.items():
-        details['keywords'].append(k)
-    details['title'] = issue_details.title
-    details['description'] = issue_details.body.replace('\n', '').strip()
-    return details
+    return issue_details.state
+
 
 def build_auth_dict(oauth_token):
     """Collect authentication details.
@@ -277,6 +296,43 @@ def get_github_primary_email(oauth_token):
     return ''
 
 
+def get_github_event_emails(oauth_token, username):
+    """Get all email addresses associated with the github profile.
+
+    Args:
+        oauth_token (str): The Github OAuth2 token to use for authentication.
+
+    Returns:
+        list of str: All of the user's associated email from github.
+
+    """
+    emails = []
+    headers = JSON_HEADER
+    if oauth_token:
+        headers = dict({'Authorization': f'token {oauth_token}'}, **JSON_HEADER)
+    response = requests.get(f'https://api.github.com/users/{username}/events/public', headers=headers)
+
+    userinfo = get_user(username)
+    user_name = userinfo.get('name', '')
+    print(user_name)
+
+    if response.status_code == 200:
+        events = response.json()
+        for event in events:
+            payload = event.get('payload', {})
+            for commit in payload.get('commits', []):
+                author = commit.get('author', {})
+                email = author.get('email', {})
+                name = author.get('name', {})
+                if name and username and user_name:
+                    append_email = name.lower() == username.lower() or name.lower() == user_name.lower() \
+                        and email and 'noreply.github.com' not in email
+                    if append_email:
+                        emails.append(email)
+
+    return set(emails)
+
+
 def get_github_emails(oauth_token):
     """Get all email addresses associated with the github profile.
 
@@ -299,6 +355,21 @@ def get_github_emails(oauth_token):
                 emails.append(email_address)
 
     return emails
+
+
+def get_emails_master(username):
+    from dashboard.models import Profile
+    to_emails = []
+    to_profiles = Profile.objects.filter(handle__iexact=username)
+    if to_profiles.exists():
+        to_profile = to_profiles.first()
+        if to_profile.github_access_token:
+            to_emails = get_github_emails(to_profile.github_access_token)
+        if to_profile.email:
+            to_emails.append(to_profile.email)
+    for email in get_github_event_emails(None, username):
+        to_emails.append(email)
+    return list(set(to_emails))
 
 
 def search(query):
@@ -467,15 +538,6 @@ def patch_issue_comment(comment_id, owner, repo, comment):
     response = requests.patch(url, data=json.dumps({'body': comment}), auth=_AUTH)
     if response.status_code == 200:
         return response.json()
-    rollbar.report_message(
-        'Github issue comment patch returned non-200 status code',
-        'warning',
-        request=response.request,
-        extra_data={
-            'status_code': response.status_code,
-            'reason': response.reason
-        }
-    )
     return {}
 
 
@@ -519,8 +581,9 @@ def get_url_dict(issue_url):
             'repo': issue_url.split('/')[4],
             'issue_num': int(issue_url.split('/')[6]),
         }
-    except IndexError:
-        return {}
+    except IndexError as e:
+        logger.warn(e)
+        return {'org': org_name(issue_url), 'repo': repo_name(issue_url), 'issue_num': int(issue_number(issue_url))}
 
 
 def repo_url(issue_url):

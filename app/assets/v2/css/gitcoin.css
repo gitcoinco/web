@@ -176,6 +176,8 @@ h4,
   background-size: cover;
   background-position: 0px 0px;
   background-repeat: no-repeat;
+  overflow: hidden;
+  position: relative;
 }
 
 .header-contributor {
@@ -296,7 +298,7 @@ div.button-pink {
 .header-line {
   color: #12c971;
   font-family: Muli, sans-serif;
-  font-size: 3em;
+  font-size: 2em;
   font-weight: 500;
   font-style: italic;
   letter-spacing: 0.1em;
@@ -310,7 +312,7 @@ div.button-pink {
 .subheader-line {
   color: #70efbe;
   font-family: Muli, sans-serif;
-  font-size: 1.75em;
+  font-size: 1.5em;
   font-weight: 500;
   font-style: italic;
 }
@@ -521,7 +523,6 @@ div.button-pink {
 }
 
 .gc-round-text-input {
-  border-radius: 16px;
   height: 32px;
   border: 1px solid #eee;
   outline: none;

@@ -101,8 +101,8 @@
               {% else %}
                 <a href="https://etherscan.io/address/{{fulfillment.fulfiller_address}}">{{fulfillment.fulfiller_address}}</a>
               {% endif %}
-              {% if fulillment.fulfiller_github_url %}
-                <a href="{{fulillment.fulfiller_github_url}}">(Submission)</a>
+              {% if fulfillment.fulfiller_github_url %}
+                <a href="{{fulfillment.fulfiller_github_url}}">(View Submission)</a>
               {% endif %}
             {% endfor %}
             )
@@ -129,13 +129,6 @@
       {% endif %}
     </div>
   </div>
-  {% if action == 'custom' %}
-    <div style="margin-bottom: 2em; margin-top: 2em;">
-      <a class="button" href="{{action_url}}">{{action_copy}}</a>
-    </div>
-  {% else %}
-    <div style="margin-bottom: 2em; margin-top: 2em;">
-      <a class="button" href="{{bounty.absolute_url}}">{% trans "View on Gitcoin.co" %}</a>
-    </div>
-  {% endif %}
+    <hr>
+    {% include 'emails/shared_bounty_actions.html' %}
 </div>

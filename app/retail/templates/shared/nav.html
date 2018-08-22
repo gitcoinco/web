@@ -15,8 +15,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n static %}
-{% load is_in_list %}
+{% load i18n static matches %}
 <nav class="navbar navbar-expand-md navbar-dark">
   <div id="gitcoin-background"></div>
   <a class="navbar-brand pt-0 pb-0" href="/">
@@ -26,7 +25,7 @@
       <img id="logo" src="{% static "v2/images/logo_large.png" %}" data-hover="{% static "v2/images/logo_med_hover.gif" %}" width="150" height="50" />
     {% endif %}
   </a>
-  {% if not request.path|is_in_list:"/,/contributor,/about,/mission,/vision,/results,/slack,/help,/how/funder,/how/contributor,/tools" %}
+  {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}
     <div class="navbar-network ml-5 py-1 px-2 hidden">
       <i class="fas fa-circle pr-1"></i>
       <span id="current-network"></span>
@@ -40,7 +39,7 @@
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <nav class="navbar-nav ml-auto mr-3">
       {% if request.path == '/' %}
-        <span class="navbar__cta mr-2">Want to get help on your repo? Easily get started!</span>
+        <span class="navbar__cta mr-2">{% trans "Want to get help on your repo? Easily get started!" %}</span>
       {% endif %}
       {% if not user.is_authenticated %}
       <div class="nav-item dropdown interior">
@@ -61,28 +60,29 @@
           <a class="dropdown-item {% if active == 'results' %} selected{% endif %}" href="{% url "results" %}">
             {% trans "Results" %}
           </a>
+          <a class="dropdown-item {% if active == 'not_a_token' %} selected{% endif %}" href="{% url "not_a_token" %}">
+            {% trans "We're Not Tokenized" %}
+          </a>
         </div>
       </div>
       {% endif %}
-      {% if not request.path|is_in_list:"/,/contributor,/about,/mission,/vision,/results,/slack" %}
-        <div class="nav-item dropdown interior">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownHow" role="button"
-            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            How it works
+      <div class="nav-item dropdown interior">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownHow" role="button"
+          data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          {% trans "How it works" %}
+        </a>
+        <div class="dropdown-menu" id="how-it-works" aria-labelledby="navbarDropdownHow">
+          <a class="dropdown-item {% if active == 'how_it_works_funder' %} selected{% endif %}" href="{% url "how_it_works" "funder" %}">
+            {% trans "Funder" %}
           </a>
-          <div class="dropdown-menu" id="how-it-works" aria-labelledby="navbarDropdownHow">
-            <a class="dropdown-item {% if active == 'how_it_works_funder' %} selected{% endif %}" href="{% url "how_it_works" "funder" %}">
-              {% trans "Funder" %}
-            </a>
-            <a class="dropdown-item {% if active == 'how_it_works_contributor' %} selected{% endif %}" href="{% url "how_it_works" "contributor" %}">
-              {% trans "Contributor" %}
-            </a>
-            <a class="dropdown-item {% if active == 'help' %} selected{% endif %}" href="{% url "help" %}">
-              {% trans "Help" %}
-            </a>
-          </div>
+          <a class="dropdown-item {% if active == 'how_it_works_contributor' %} selected{% endif %}" href="{% url "how_it_works" "contributor" %}">
+            {% trans "Contributor" %}
+          </a>
+          <a class="dropdown-item {% if active == 'help' %} selected{% endif %}" href="{% url "help" %}">
+            {% trans "Help" %}
+          </a>
         </div>
-      {% endif %}
+      </div>
       <a class="nav-link{% if active == 'dashboard' %} selected{% endif %} interior" href="{% url "explorer" %}">{% trans "Issue Explorer" %}</a>
       {% if not user.is_authenticated %}
       <a class="nav-link slack{% if active == 'slack' %} selected{% endif %}" href="{% url "slack" %}">
@@ -118,6 +118,6 @@
     </nav>
   </div>
 </nav>
-{% if not request.path|is_in_list:"/,/contributor,/about,/mission,/vision,/results,/slack,/help,/how/funder,/how/contributor,/tools" %}
+{% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}
   <p id="navbar-network-banner" class="px-0 py-1 m-0 font-caption hidden"></p>
 {% endif %}

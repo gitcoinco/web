@@ -6,11 +6,11 @@ class Widget {
   constructor(options = {}) {
     this.options = options;
     this.el = this.options.el || document.querySelector(options.selector || '.gitcoin-widget');
-    this.options.orginisation = this.el.dataset.orginisation || this.options.orginisation;
+    this.options.organization = this.el.dataset.organization || this.options.organization;
     this.options.repository = this.el.dataset.repository || this.options.repository;
     this.options.orderBy = this.el.dataset['order-by'] || this.options.orderBy;
     this.options.limit = this.el.dataset['limit'] || this.options.limit;
-    fetch(`https://gitcoin.co/api/v0.1/bounties/?raw_data=${this.options.repository}&network=mainnet&coinbase=unknown&order_by=${this.orderBy()}&limit=${this.limit()}`)
+    fetch(`https://gitcoin.co/api/v0.1/bounties/?raw_data=${this.options.repository}&org=${this.options.organization}&network=mainnet&coinbase=unknown&order_by=${this.orderBy()}&limit=${this.limit()}`)
       .then(response => response.json())
       .then(json => {
         this.data = json;
@@ -32,7 +32,7 @@ class Widget {
 
     anchor.appendChild(logo);
     // need a srcset or svg logo for responsiveness
-    logo.src = 'https://gitcoin.co/static/v2/images/logo.png';
+    logo.src = 'https://s.gitcoin.co/static/v2/images/logo.png';
     logo.className = 'gitcoin-widget__logo';
     return anchor;
   }
@@ -85,7 +85,7 @@ class Widget {
     const anchor = document.createElement('a');
 
     anchor.target = '_blank';
-    anchor.href = `https://gitcoin.co/${b.url}`;
+    anchor.href = b.url;
     const title = document.createElement('h1');
 
     title.innerHTML = b.title;
@@ -122,11 +122,11 @@ class Widget {
     const avatar = document.createElement('img');
 
     avatar.className = 'gitcoin-widget__avatar';
-    avatar.src = `https://github.com/${this.options.orginisation}.png`;
+    avatar.src = `https://github.com/${this.options.organization}.png`;
     left.appendChild(avatar);
     const title = document.createElement('h1');
 
-    title.innerHTML = `${this.options.orginisation} <br />supports funded issues`;
+    title.innerHTML = `${this.options.organization} <br />supports funded issues`;
     left.appendChild(title);
     const div = document.createElement('div');
 

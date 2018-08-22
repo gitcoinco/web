@@ -16,32 +16,11 @@
 
 {% endcomment %}
 {% load i18n static %}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    {% include 'shared/head.html' %}
-    {% include 'shared/cards.html' %}
-  </head>
+<div id="admin_actions" class="white-light-bg" style="background-image: url('{% static "v2/images/light-bg.png" %}'); background-size: contain;">
+    <div class="container-fluid text-center" style='min-height: 700px;'>
+        <h4 class="col mb-2">I Am A:</h4>
+        <div class="row">
 
-  <body class="interior {{active}}">
-    {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
-      {% include 'shared/nav.html' %}
-    </div>
-    <div class="container-fluid">
-      <div class="row no-gutters metamask-banner">
-        <div class="col-12">
-          {% include 'shared/no_metamask_error.html' %}
-          {% include 'shared/zero_balance_error.html' %}
-          {% include 'shared/unlock_metamask.html' %}
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-12 body">
-          <div class="row font-smaller-2" id="form_container">
-            <div id="robot_error" class="hidden">
-              <img src="{% static "v2/images/prime.png" %}">
-            </div>
             <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
               <div class="d-flex justify-content-center flex-column mt-5 w-100" id="primary_subform">
                 <div class="w-100" style="text-align: center;">
@@ -102,52 +81,23 @@
                       </span>
                   </a>
                 </div>
-                
-                
+                <div class="w-100 mt-2">
+                  <a class="bounty_box" href="{{bounty.admin_url}}">
+                      <h5>{% trans "View in Admin" %}</h5>
+                      <span>
+                        {% trans "View in Admin" %}
+                      </span>
+                  </a>
+                </div>
               </div>
             </div>
-          </div>
+
         </div>
-      </div>
-    </div>
-    {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/rollbar.html' %}
-    {% include 'shared/footer.html' %}
-    {% include 'shared/messages.html' %}
-  </body>
-  <style>
-  h4{
-    border-bottom: 1px solid black;
-  }
-  .bounty_box {
-    border: 5px solid white;
-    width: 100%;
-    display: block;
-    padding: 30px 30px;
-    background-color: #3f243b;
-    color: white;
-    text-decoration: none;
-  }
-  .bounty_box.disabled, .bounty_box.disabled:hover {
-    cursor: not-allowed;
-    background-color: #5f445b;
-    text-decoration: none;
-  }
-  .bounty_box:hover {
-    background-color: #2f142b;
-    text-decoration: none;
-  }
-  .bounty_box h5{
-    color: white;
-  }
-  .bounty_box span{
-    color: white;
-  }
-  </style>
+        <br>
+        Not sure?  <a href="{% url "tools" %}">View all Gitcoin tools</a>.
+
   <script>
-    $(document).ready(function(){
+    var execute_on_load = function(){
       var attach_contact_funder_options = function() {
         $('body').delegate('a.contact_bounty_hunter', 'click', function(e) {
           e.preventDefault();
@@ -182,6 +132,11 @@
       attach_snoozee_options();
       attach_override_status();
 
-    });
+    };
+    execute_on_load();
   </script>
-</html>
+
+    </div>
+</div>
+
+

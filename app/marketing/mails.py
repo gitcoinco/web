@@ -1,20 +1,22 @@
-'''
-    Copyright (C) 2017 Gitcoin Core
+# -*- coding: utf-8 -*-
+"""Define the standard marketing email logic.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Copyright (C) 2018 Gitcoin Core
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-'''
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
 
 from django.conf import settings
 from django.utils import timezone, translation
@@ -22,16 +24,15 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
 import sendgrid
-from economy.utils import convert_token_to_usdt
 from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
 from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
     render_admin_contact_funder, render_bounty_expire_warning, render_bounty_feedback,
     render_bounty_startwork_expire_warning, render_bounty_unintersted, render_faucet_rejected, render_faucet_request,
-    render_gdpr_reconsent, render_gdpr_update, render_match_email, render_new_bounty, render_new_bounty_acceptance,
-    render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission, render_quarterly_stats,
-    render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
-    render_start_work_new_applicant, render_start_work_rejected, render_tip_email,
+    render_funder_stale, render_gdpr_reconsent, render_gdpr_update, render_match_email, render_new_bounty,
+    render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission,
+    render_quarterly_stats, render_start_work_applicant_about_to_expire, render_start_work_applicant_expired,
+    render_start_work_approved, render_start_work_new_applicant, render_start_work_rejected, render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
@@ -63,16 +64,16 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     response = None
 
     # build personalization
-    p = Personalization()
-    p.add_to(to_email)
-    if cc_emails:  # only add CCif not in prod
+    if cc_emails:
+        p = Personalization()
+        p.add_to(to_email)
         for cc_addr in set(cc_emails):
             cc_addr = Email(cc_addr)
             if settings.IS_DEBUG_ENV:
                 cc_addr = to_email
             if cc_addr._email != to_email._email:
                 p.add_to(cc_addr)
-    mail.add_personalization(p)
+        mail.add_personalization(p)
 
     # debug logs
     print(f"-- Sending Mail '{subject}' to {_to_email}")
@@ -104,6 +105,21 @@ def admin_contact_funder(bounty, text, from_user):
         translation.activate(cur_language)
 
 
+def funder_stale(to_email, github_username, days=30, time_as_str='about a month'):
+    from_email = settings.PERSONAL_CONTACT_EMAIL
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+
+        subject = "hey from gitcoin.co" if not github_username else f"hey @{github_username}"
+        html, text = render_funder_stale(github_username, days, time_as_str)
+        cc_emails = [from_email, 'vivek.singh@consensys.net', 'scott.moore@consensys.net', 'alisa.march@consensys.net']
+        if not should_suppress_notification_email(to_email, 'admin_contact_funder'):
+            send_mail(from_email, to_email, subject, text, cc_emails=cc_emails, from_name=from_email)
+    finally:
+        translation.activate(cur_language)
+
+
 def bounty_feedback(bounty, persona='fulfiller', previous_bounties=[]):
     from_email = settings.PERSONAL_CONTACT_EMAIL
     to_email = None
@@ -127,7 +143,7 @@ def bounty_feedback(bounty, persona='fulfiller', previous_bounties=[]):
 
 def tip_email(tip, to_emails, is_new):
     round_decimals = 5
-    if not tip or not tip.url or not tip.amount or not tip.tokenName:
+    if not tip or not tip.txid or not tip.amount or not tip.tokenName:
         return
 
     warning = '' if tip.network == 'mainnet' else "({})".format(tip.network)
@@ -165,7 +181,7 @@ def new_faucet_request(fr):
 
 def new_token_request(obj):
     to_email = settings.PERSONAL_CONTACT_EMAIL
-    from_email = settings.SERVER_EMAIL
+    from_email = obj.email
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
@@ -293,6 +309,8 @@ def weekly_roundup(to_emails=None):
 
             if not should_suppress_notification_email(to_email, 'roundup'):
                 send_mail(from_email, to_email, subject, text, html, from_name="Kevin Owocki (Gitcoin.co)")
+            else:
+                print('supressed')
         finally:
             translation.activate(cur_language)
 

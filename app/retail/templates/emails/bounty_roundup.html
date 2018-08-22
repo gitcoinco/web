@@ -82,7 +82,7 @@
             {% for highlight in highlights %}
                 <li style="list-style:none; margin-bottom: 5px;">
                     {% if highlight.who_link %}
-                        <img style="border-radius: 20px;" src="https://gitcoin.co/funding/avatar?repo=https://github.com/{{highlight.who}}" width=30px height=30px>
+                        <img style="border-radius: 20px;" src="https://gitcoin.co/dynamic/avatar/{{highlight.who}}" width=30px height=30px>
                         <a style="font-weight: bold; text-decoration: none;" href="https://gitcoin.co/profile/{{highlight.who}}">{{highlight.who}}</a>
                     {% else %}
                         * <strong>{{highlight.who}}</strong>
@@ -118,6 +118,39 @@
             <a class="button" href="https://gitcoin.co/explorer">{% trans "View Issue Explorer" %}</a>
         </div>
     </div>
+
+    <hr>
+
+    {% if leaderboard %}
+
+        <h3>{% trans "Who's leading the Leaderboard?" %}</h3>
+        <h5>{% trans "See the top Gitcoin Network Members For the last 90 Days" %}</h5>
+
+        <div style="text-align: left;">
+          {% for key, package in leaderboard.items %}
+            <div style="width: 30%; display: inline-block; min-width: 250px;">
+              <h4>{{package.title}}</h4>
+              <ul>
+                {% for leaderboard_item in package.items %}
+                <li style="list-style:none; margin-bottom: 5px;">
+                        {{leaderboard_item.rank}}. <img style="border-radius: 20px;" src="https://gitcoin.co/dynamic/avatar/{{leaderboard_item.github_username}}" width=30px height=30px>
+                        <a style="font-weight: bold; text-decoration: none;" href="https://gitcoin.co/profile/{{leaderboard_item.github_username}}">{{leaderboard_item.github_username}}</a> : ${{leaderboard_item.amount|floatformat:2}}
+                </li>
+              {% endfor %}
+              </ul>
+            </div>
+          {% endfor %}
+
+        </div>
+        <br>
+        <br>
+          <div style="margin-bottom: 2em;">
+              <a class="button" href="https://gitcoin.co/leaderboard">{% trans "View Leaderboard" %}</a>
+          </div>
+
+        <hr>
+
+    {% endif %}
 
     <hr>
     <div>

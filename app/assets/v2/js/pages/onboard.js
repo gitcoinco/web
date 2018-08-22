@@ -4,7 +4,7 @@ var words = [];
 
 if ($('.logged-in').length) {
   $('.nav-item.dropdown #navbarDropdown').css('visibility', 'visible');
-  $('img.nav_avatar').css('visibility', 'visible');
+  $('.nav_avatar').css('visibility', 'visible');
 }
 
 $('.js-select2').each(function() {
@@ -27,14 +27,6 @@ onboard.showTab = function(num) {
   } else {
     $('.controls').show();
   }
-
-  // if (flow === 'funder' && num === 3) {
-  //   $('#onboarding').parent().removeClass('offset-sm-1 col-sm-10 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6');
-  //   $('#onboarding').css('max-width', 'none');
-  // } else {
-  //   $('#onboarding').parent().addClass('offset-sm-1 col-sm-10 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6');
-  //   $('#onboarding').css('max-width', 'auto');
-  // }
 
   if (num == ($('.step').length) - 1) {
     $('#next-btn').html(gettext('Done'));
@@ -60,12 +52,15 @@ onboard.highlightStep = function(currentStep) {
   }
 };
 
+document.alreadyFoundMetamask = false;
 onboard.watchMetamask = function() {
-  if (typeof web3 == 'undefined') {
+  if (document.alreadyFoundMetamask) {
+    return;
+  } else if (typeof web3 == 'undefined') {
     $('.step #metamask').html(`
       <div class="locked">
         <a class="button button--primary" target="_blank" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">
-          <img src="/static/v2/images/metamask.svg" %}>
+          <img src="` + static_url + `v2/images/metamask.svg">
           <span>` + gettext('Install Metamask') + `</span>
         </a>
       </div>`
@@ -77,7 +72,7 @@ onboard.watchMetamask = function() {
     $('.step #metamask').html(`
       <div class="locked">
         <a class="button button--primary" target="_blank" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">
-          <img src="/static/v2/images/metamask.svg" %}>
+          <img src="` + static_url + `v2/images/metamask.svg">
           <span>` + gettext('Unlock Metamask') + `</span>
         </a>
       </div>`
@@ -87,10 +82,20 @@ onboard.watchMetamask = function() {
       $('#metamask-video').show();
     }
   } else {
-    $('.step #metamask').html('<div class="unlocked"><img src="/static/v2/images/metamask.svg" %}><span class="mr-1">' + gettext('Unlocked') + '</span><i class="far fa-check-circle"></i></div>');
+    $('.step #metamask').html(
+      '<div class="unlocked"><img src="' + static_url + 'v2/images/metamask.svg"><span class="mr-1">' +
+      gettext('Unlocked') + '</span><i class="far fa-check-circle"></i></div><div class="font-body mt-3"><div class=col><label for=eth_address>' +
+      gettext('Ethereum Payout Address') + '</label></div><div class="col"><input class="w-100 text-center" type=text id=eth_address name=eth_address placeholder="' +
+      gettext('Ethereum Payout Address') + '"" value=' + web3.eth.coinbase + '></div></div>');
     if (current === 1) {
+      document.alreadyFoundMetamask = true;
       $('.controls').show();
       $('#metamask-video').hide();
+      $('#next-btn').click(function(e) {
+        var eth_address = $('#eth_address').val();
+
+        $.get('/onboard/contributor/', {eth_address: eth_address});
+      });
     }
   }
 };

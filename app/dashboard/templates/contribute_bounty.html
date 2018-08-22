@@ -1,0 +1,116 @@
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+  </head>
+
+  <body class="interior {{active}}">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+    </div>
+    <div class="container-fluid">
+      <div class="row no-gutters metamask-banner">
+        <div class="col-12">
+          {% include 'shared/no_issue_error.html' with page='contribute_bounty' %}
+          {% include 'shared/no_metamask_error.html' %}
+          {% include 'shared/zero_balance_error.html' %}
+          {% include 'shared/unlock_metamask.html' %}
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12 body">
+          <div class="row font-smaller-2" id="form_container">
+            <div id="robot_error" class="hidden">
+              <img src="{% static "v2/images/prime.png" %}">
+            </div>
+            <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
+              <div class="d-flex justify-content-center flex-column mt-5 w-100" id="primary_subform">
+                <div class="w-100" style="text-align: center;">
+                  <h3>{% trans "Contribute to Bounty" %}</h3>
+                  <img src="{% static "v2/images/prime.png" %}">
+                </div>
+                {% include 'shared/network_status.html' %}
+                <div class="w-100">
+                  <h4>{% trans "Option 1:" %}</h4>
+                </div>
+                <div class="w-100 mt-2">
+                  <a class="bounty_box" href="{{bounty.action_urls.increase}}">
+                      <h5>{% trans "Fund this Bounty." %}</h5>
+                      <span>
+                        {% trans "Used to increase the financial compensation to the bounty hunter(s) who turn around this issue." %}
+                      </span>
+                  </a>
+                </div>
+                <div class="w-100">
+                  <h4>{% trans "Option 2:" %}</h4>
+                </div>
+                <div class="w-100 mt-2">
+                  <a class="bounty_box" href="{{bounty.action_urls.social_contribution}}">
+                      <h5>{% trans "Promote this Bounty" %}</h5>
+                      <span>
+                        {% trans "Used to tell your network about this bounty; increasing the chance that it'll be turned around." %}
+                      </span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
+  </body>
+  <style>
+  h4{
+    border-bottom: 1px solid black;
+  }
+  .bounty_box {
+    border: 5px solid white;
+    width: 100%;
+    display: block;
+    padding: 30px 30px;
+    background-color: #3f243b;
+    color: white;
+    text-decoration: none;
+  }
+  .bounty_box.disabled, .bounty_box.disabled:hover {
+    cursor: not-allowed;
+    background-color: #5f445b;
+    text-decoration: none;
+  }
+  .bounty_box:hover {
+    background-color: #2f142b;
+    text-decoration: none;
+  }
+  .bounty_box h5{
+    color: white;
+  }
+  .bounty_box span{
+    color: white;
+  }
+  </style>
+</html>

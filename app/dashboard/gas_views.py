@@ -23,9 +23,11 @@ import logging
 from django.conf import settings
 from django.core.cache import cache
 from django.template.response import TemplateResponse
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
 from economy.utils import convert_amount
+from gas.models import GasGuzzler
 from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
@@ -33,6 +35,16 @@ from .helpers import get_bounty_data_for_activity, handle_bounty_views
 logging.basicConfig(level=logging.DEBUG)
 
 confirm_time_minutes_target = 4
+
+lines = {
+    1: 'red',
+    5: 'orange',
+    60: 'green',
+    90: 'steelblue',
+    105: 'purple',
+    120: '#dddddd',
+    180: 'black',
+}
 
 
 def get_history_cached(breakdown, i):
@@ -154,17 +166,57 @@ def gas_calculator(request):
     return TemplateResponse(request, 'gas_calculator.html', context)
 
 
+def gas_guzzler_view(request):
+    breakdown = request.GET.get('breakdown', 'hourly')
+    breakdown_ui = breakdown.replace('ly', '') if breakdown != 'daily' else 'day'
+    num_guzzlers = 7
+    gas_histories = {}
+    _lines = {}
+    top_guzzlers = GasGuzzler.objects.filter(created_on__gt=timezone.now()-timezone.timedelta(minutes=60)).order_by('-pct_total')[0:num_guzzlers]
+    counter = 0
+    colors = [val for key, val in lines.items()]
+    max_y = 0
+    for guzzler in top_guzzlers:
+        address = guzzler.address
+        try:
+            _lines[address] = colors[counter]
+        except:
+            _lines[address] = 'purple'
+        gas_histories[address] = []
+        for og in GasGuzzler.objects.filter(address=address).order_by('-created_on'):
+            if not og.created_on.hour < 1 and breakdown in ['daily', 'weekly']:
+                continue
+            if not og.created_on.weekday() < 1 and breakdown in ['weekly']:
+                continue
+            if breakdown == 'hourly':
+                divisor = 3600
+            elif breakdown == 'daily':
+                divisor = 3600 * 7
+            elif breakdown == 'weekly':
+                divisor = 3600 * 24 * 7
+            unit = int((timezone.now() - og.created_on).total_seconds() / divisor)
+            point = [float(og.pct_total), unit]
+            gas_histories[address].append(point)
+            max_y = max(max_y, og.pct_total + 1)
+        counter += 1
+    context = {
+        'title': _('Gas Guzzlers'),
+        'card_desc': _('View the gas guzzlers on the Ethereum Network'),
+        'max': max_y,
+        'lines': _lines,
+        'gas_histories': gas_histories,
+        'breakdown': breakdown,
+        'breakdown_ui': breakdown_ui,
+        'granularity_options': ['hourly', 'daily', 'weekly'],
+    }
+
+    return TemplateResponse(request, 'gas_guzzler.html', context)
+
+
 def gas_history_view(request):
     breakdown = request.GET.get('breakdown', 'hourly')
     gas_histories = {}
     max_y = 0
-    lines = {
-        1: 'red',
-        5: 'orange',
-        60: 'green',
-        120: 'steelblue',
-        180: 'purple',
-    }
     for i in lines.keys():
         gas_histories[i] = get_history_cached(breakdown, i)
         for gh in gas_histories[i]:

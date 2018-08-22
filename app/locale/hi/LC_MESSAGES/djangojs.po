@@ -1,0 +1,949 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2018-07-20 19:34+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: assets/onepager/js/quarantine/receive_legacy.js:100
+#, fuzzy
+#| msgid "Not a valid forwarding address"
+msgid "Not a valid forwarding address."
+msgstr "मान्य अग्रेषण पता नहीं है।"
+
+#: assets/onepager/js/quarantine/receive_legacy.js:105
+#: assets/onepager/js/quarantine/receive_legacy.js:109
+msgid "Invalid Link.  Please check your link and try again"
+msgstr "अमान्य लिंक। कृपया अपना लिंक जांचें और पुनः प्रयास करें"
+
+#: assets/onepager/js/quarantine/receive_legacy.js:118
+msgid "got an error :("
+msgstr "एक त्रुटि मिली :("
+
+#: assets/onepager/js/quarantine/receive_legacy.js:153
+msgid "You must wait until the senders transaction confirms."
+msgstr "प्रेषक लेनदेन की पुष्टि होने तक आपको प्रतीक्षा करनी होगी।"
+
+#: assets/onepager/js/quarantine/web3alert.js:29
+#: assets/onepager/js/web3alert.js:29
+msgid ""
+"You must install <a href=https://metamask.io/>Metamask</a> to use this tool."
+msgstr ""
+"इस टूल का उपयोग करने के लिए आपको <a href=https://metamask.io/> मेटामास्क "
+"</a> इंस्टॉल करना होगा।"
+
+#: assets/onepager/js/quarantine/web3alert.js:33
+#: assets/onepager/js/web3alert.js:33
+#, fuzzy
+#| msgid "Unlock Metamask"
+msgid "Please unlock Metamask."
+msgstr "कृपया मेटामास्क अनलॉक करें।"
+
+#: assets/onepager/js/receive.js:5
+msgid "You are not on the right web3 network.  Please switch to "
+msgstr "आप सही वेब 3 नेटवर्क पर नहीं हैं। कृपया स्विच करें"
+
+#: assets/onepager/js/send.js:88
+msgid ""
+"You must have a web3 enabled browser to do this.  Please download Metamask."
+msgstr ""
+"ऐसा करने के लिए आपके पास एक वेब 3 सक्षम ब्राउज़र होना चाहिए। कृपया मेटामास्क"
+" डाउनलोड करें।"
+
+#: assets/onepager/js/send.js:115
+msgid ""
+"To Email is optional, but if you enter an email, you must enter a valid "
+"email!"
+msgstr ""
+"ईमेल के लिए वैकल्पिक है, लेकिन यदि आप एक ईमेल दर्ज करते हैं, तो आपको एक वैध "
+"ईमेल दर्ज करना होगा!"
+
+#: assets/onepager/js/send.js:119
+msgid ""
+"From Email is optional, but if you enter an email, you must enter a valid "
+"email!"
+msgstr ""
+"ईमेल से वैकल्पिक है, लेकिन यदि आप एक ईमेल दर्ज करते हैं, तो आपको एक वैध ईमेल"
+" दर्ज करना होगा!"
+
+#: assets/onepager/js/send.js:123
+msgid "You must enter an number for the amount!"
+msgstr "आपको राशि के लिए एक संख्या दर्ज करनी होगी!"
+
+#: assets/onepager/js/send.js:127
+msgid "You must enter a username."
+msgstr "आपको एक उपयोगकर्ता नाम दर्ज करना होगा।"
+
+#: assets/onepager/js/send.js:131
+#, fuzzy
+#| msgid "You must agree to the precedence clause."
+msgid "You must accept the terms."
+msgstr "आपको शर्तों को स्वीकार करना होगा।"
+
+#: assets/onepager/js/send.js:166
+#, fuzzy
+#| msgid "There was an error"
+msgid "There was an error."
+msgstr "एक त्रुटि हुई।"
+
+#: assets/onepager/js/send.js:196
+msgid ""
+"You will now be asked to confirm two transactions.  The first is gas money, "
+"so your receipient doesnt have to pay it.  The second is the actual token "
+"transfer."
+msgstr ""
+"अब आप दो लेनदेन की पुष्टि करने के लिए कहा जाएगा। पहला गैस धन है, इसलिए आपके "
+"प्राप्ति को इसका भुगतान नहीं करना पड़ेगा। दूसरा वास्तविक टोकन स्थानांतरण है।"
+
+#: assets/v2/js/amounts.js:11
+msgid "Approx: "
+msgstr "लगभग:"
+
+#: assets/v2/js/amounts.js:13 assets/v2/js/amounts.js:103
+#: assets/v2/js/amounts.js:152
+msgid "Approx: Unknown amount"
+msgstr "लगभग: अज्ञात राशि"
+
+#: assets/v2/js/amounts.js:62 assets/v2/js/amounts.js:116
+msgid "Incorrect amount"
+msgstr "गलत राशि"
+
+#: assets/v2/js/avatar_builder.js:291
+msgid "Your Avatar Has Been Saved To your Gitcoin Profile!"
+msgstr "आपका अवतार आपके गिटकोइन प्रोफाइल में सहेजा गया है!"
+
+#: assets/v2/js/avatar_builder.js:296
+msgid "Error occurred while saving. Please try again."
+msgstr "सहेजते समय त्रुटि आई। कृपया पुन: प्रयास करें।"
+
+#: assets/v2/js/base.js:191
+msgid "We Care About Your Privacy"
+msgstr "हमें आपकी गोपनीयता का ख्याल है"
+
+#: assets/v2/js/base.js:194
+msgid ""
+"As a Web 3.0 company, we think carefully about user data and privacy and how"
+" the internet is evolving. We hope Web 3.0 will bring more control of data "
+"to users. With this ethos in mind, we are always careful about how we use "
+"your information."
+msgstr ""
+"एक वेब 3.0 कंपनी के रूप में, हम उपयोगकर्ता डेटा और गोपनीयता के बारे में "
+"सावधानी से सोचते हैं और इंटरनेट कैसे विकसित हो रहा है। हमें आशा है कि वेब "
+"3.0 उपयोगकर्ताओं को डेटा का अधिक नियंत्रण लाएगा। इस आचार को ध्यान में रखते "
+"हुए, हम हमेशा आपकी जानकारी का उपयोग करने के बारे में सावधान रहेंगे।"
+
+#: assets/v2/js/base.js:198
+msgid ""
+"We recently reviewed our Privacy Policy to comply with requirements of "
+"General Data Protection Regulation (GDPR), improving our Terms of Use, "
+"Privacy Policy and Cookie Policy. These changes will go into effect on May "
+"25, 2018, and your continued use of the Gitcoin after May 25, 2018 will be "
+"subject to our updated Terms of Use and Privacy Policy."
+msgstr ""
+"हमने हाल ही में हमारी डेटा उपयोग, गोपनीयता नीति और कुकी नीति में सुधार, "
+"सामान्य डेटा संरक्षण विनियमन (जीडीपीआर) की आवश्यकताओं का अनुपालन करने के लिए"
+" हमारी गोपनीयता नीति की समीक्षा की। ये परिवर्तन 25 मई, 2018 को प्रभावी होंगे"
+" और 25 मई, 2018 के बाद गिटकोइन का आपका निरंतर उपयोग हमारी अद्यतन शर्तों और "
+"गोपनीयता नीति के अधीन होगा।"
+
+#: assets/v2/js/base.js:206
+msgid "Read Our Updated Terms"
+msgstr "हमारी अपडेट की गई शर्तें पढ़ें"
+
+#: assets/v2/js/pages/bounty_details.js:95
+msgid "Issue"
+msgstr "मुद्दा"
+
+#: assets/v2/js/pages/bounty_details.js:96
+msgid "Issue Funding Info"
+msgstr "समस्या निधि जानकारी"
+
+#: assets/v2/js/pages/bounty_details.js:97
+msgid "Funder"
+msgstr "फंडर"
+
+#: assets/v2/js/pages/bounty_details.js:98
+msgid "Submitter"
+msgstr "सबमिट करने"
+
+#: assets/v2/js/pages/bounty_details.js:99
+msgid "Meta"
+msgstr "मेटा"
+
+#: assets/v2/js/pages/bounty_details.js:120
+msgid "OPEN ISSUE"
+msgstr "खुला मुद्दा"
+
+#: assets/v2/js/pages/bounty_details.js:123
+msgid "work started"
+msgstr "काम शुरू हुआ"
+
+#: assets/v2/js/pages/bounty_details.js:126
+msgid "work submitted"
+msgstr "काम जमा"
+
+#: assets/v2/js/pages/bounty_details.js:129
+msgid "done"
+msgstr "किया हुआ"
+
+#: assets/v2/js/pages/bounty_details.js:132
+msgid "cancelled"
+msgstr "रद्द"
+
+#: assets/v2/js/pages/bounty_details.js:437
+#, fuzzy
+#| msgid "Are you sure you want to remove your interest?"
+msgid "Are you sure you want to stop work?"
+msgstr "क्या आप वाकई काम करना बंद करना चाहते हैं?"
+
+#: assets/v2/js/pages/bounty_details.js:439
+#: assets/v2/js/pages/bounty_details.js:650
+msgid "Start Work"
+msgstr "काम शुरु करें"
+
+#: assets/v2/js/pages/bounty_details.js:499
+msgid "Please provide an action plan for this ticket."
+msgstr "कृपया इस टिकट के लिए एक एक्शन प्लान प्रदान करें।"
+
+#: assets/v2/js/pages/bounty_details.js:504
+msgid "You must agree to the precedence clause."
+msgstr "आपको प्राथमिकता खंड से सहमत होना चाहिए।"
+
+#: assets/v2/js/pages/bounty_details.js:508
+msgid "You must agree to keep the funder updated on your progress."
+msgstr "आपको अपनी प्रगति पर फंडर को अद्यतन रखने के लिए सहमत होना चाहिए।"
+
+#: assets/v2/js/pages/bounty_details.js:513
+#: assets/v2/js/pages/bounty_details.js:650
+msgid "Stop Work"
+msgstr "काम रोको"
+
+#: assets/v2/js/pages/bounty_details.js:537
+msgid "Funded Issue Details: "
+msgstr "वित्त पोषित अंक विवरण:"
+
+#: assets/v2/js/pages/bounty_details.js:635
+msgid "Submit Work"
+msgstr "कार्य सबमिट करें"
+
+#: assets/v2/js/pages/bounty_details.js:637
+msgid "Submit work for the funder to review"
+msgstr "समीक्षा करने के लिए फंडर के लिए काम जमा करें"
+
+#: assets/v2/js/pages/bounty_details.js:652
+msgid "Notify the funder that you will not be working on this project"
+msgstr "निधि को सूचित करें कि आप इस परियोजना पर काम नहीं करेंगे"
+
+#: assets/v2/js/pages/bounty_details.js:652
+msgid "Notify the funder that you would like to take on this project"
+msgstr "इस परियोजना पर आप जिस फंडर को लेना चाहते हैं उसे सूचित करें"
+
+#: assets/v2/js/pages/bounty_details.js:665
+msgid "Cancel Bounty"
+msgstr "बाउंटी रद्द करें"
+
+#: assets/v2/js/pages/bounty_details.js:667
+msgid "Cancel bounty and reclaim funds for this issue"
+msgstr "इस मुद्दे के लिए बक्षीस रद्द करें और धन पुनः प्राप्त करें"
+
+#: assets/v2/js/pages/bounty_details.js:679
+msgid "View Attached Job Description"
+msgstr "संलग्न नौकरी विवरण देखें"
+
+#: assets/v2/js/pages/bounty_details.js:681
+msgid ""
+"This bounty hunter is hiring for a full time, part time, or contract role "
+"and has attached that to this bounty."
+msgstr ""
+"यह बाउंटी शिकारी एक पूर्णकालिक, अंशकालिक, या अनुबंध भूमिका के लिए भर्ती कर "
+"रहा है और इस बक्षीस से जुड़ा हुआ है।"
+
+#: assets/v2/js/pages/bounty_details.js:694
+#, fuzzy
+#| msgid "Cancel Bounty"
+msgid "Payout Bounty"
+msgstr "पेआउट बाउंटी"
+
+#: assets/v2/js/pages/bounty_details.js:695
+#, fuzzy
+#| msgid "This will payout the bounty to the submitter."
+msgid "Payout the bounty to one or more submitters."
+msgstr "एक या अधिक जमाकर्ताओं को बक्षीस का भुगतान करें।"
+
+#: assets/v2/js/pages/bounty_details.js:707
+msgid "Add Contribution"
+msgstr "योगदान जोड़ें"
+
+#: assets/v2/js/pages/bounty_details.js:709
+msgid "Increase the funding for this issue"
+msgstr "इस मुद्दे के लिए धन बढ़ाएं"
+
+#: assets/v2/js/pages/bounty_details.js:725
+msgid "View On Github"
+msgstr "गीथूब पर देखें"
+
+#: assets/v2/js/pages/bounty_details.js:727
+msgid "View issue details and comments on Github"
+msgstr "गिथब पर समस्या विवरण और टिप्पणियां देखें"
+
+#: assets/v2/js/pages/bounty_details.js:742
+msgid "Suspend Auto Approval"
+msgstr "ऑटो स्वीकृति निलंबित करें"
+
+#: assets/v2/js/pages/bounty_details.js:744
+msgid ""
+"Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty"
+msgstr ""
+"बाउंटी शिकारी के ऑटो स्वीकृति * को निलंबित करें जिन्होंने इस बक्षीस के लिए "
+"आवेदन किया है"
+
+#: assets/v2/js/pages/bounty_details.js:759
+#, fuzzy
+#| msgid "Cancel Bounty"
+msgid "Hide Bounty"
+msgstr "बाउंटी छुपाएं"
+
+#: assets/v2/js/pages/bounty_details.js:761
+msgid "Hides Bounty from Active Bounties"
+msgstr "सक्रिय बाउंटी से बाउंटी छुपाएं"
+
+#: assets/v2/js/pages/bounty_details.js:776
+msgid "Toggle Remarket Ready"
+msgstr "रीमार्केटिंग तैयार टॉगल करें"
+
+#: assets/v2/js/pages/bounty_details.js:778
+msgid ""
+"Sets Remarket Ready if not already remarket ready.  Unsets it if already "
+"remarket ready."
+msgstr ""
+"अगर रीमार्केटिंग तैयार नहीं है तो रीमार्केटिंग तैयार सेट करें। अगर पहले से "
+"ही रीमार्केटिंग तैयार है तो इसे अनसेट करता है।"
+
+#: assets/v2/js/pages/bounty_details.js:792
+#, fuzzy
+#| msgid "Funder"
+msgid "Contact Funder"
+msgstr "संपर्क फंडर"
+
+#: assets/v2/js/pages/bounty_details.js:794
+msgid "Contact Funder via Email"
+msgstr "ईमेल के माध्यम से संपर्क निधि"
+
+#: assets/v2/js/pages/bounty_details.js:808
+msgid "Snooze Gitcoinbot"
+msgstr "गिटकोइनबॉट स्नूज़ करें"
+
+#: assets/v2/js/pages/bounty_details.js:810
+msgid "Snooze Gitcoinbot reminders"
+msgstr "गिटकोइनबॉट अनुस्मारक याद दिलाएं"
+
+#: assets/v2/js/pages/bounty_details.js:824
+msgid "Override Status"
+msgstr "स्थिति ओवरराइड करें"
+
+#: assets/v2/js/pages/bounty_details.js:826
+msgid "Override Status with a status of your choosing"
+msgstr "अपनी पसंद की स्थिति के साथ स्थिति ओवरराइड करें"
+
+#: assets/v2/js/pages/bounty_details.js:892
+#: assets/v2/js/pages/dashboard.js:510 assets/v2/js/shared.js:296
+msgid "got an error. please try again, or contact support@gitcoin.co"
+msgstr ""
+"एक त्रुटि मिली कृपया पुनः प्रयास करें, या support@gitcoin.co से संपर्क करें"
+
+#: assets/v2/js/pages/bounty_details.js:902
+#, fuzzy
+#| msgid "Cancel Bounty"
+msgid "New Bounty"
+msgstr "नया बाउंटी"
+
+#: assets/v2/js/pages/bounty_details.js:903
+msgid "Work Started"
+msgstr "काम शुरू"
+
+#: assets/v2/js/pages/bounty_details.js:904
+#, fuzzy
+#| msgid "Work Started"
+msgid "Work Stopped"
+msgstr "काम बंद कर दिया"
+
+#: assets/v2/js/pages/bounty_details.js:905
+msgid "Work Submitted"
+msgstr "कार्य सबमिट"
+
+#: assets/v2/js/pages/bounty_details.js:906
+#, fuzzy
+#| msgid "Done"
+msgid "Work Done"
+msgstr "काम किया"
+
+#: assets/v2/js/pages/bounty_details.js:907
+#, fuzzy
+#| msgid "Work Accepted"
+msgid "Worker Approved"
+msgstr "श्रमिक स्वीकृत"
+
+#: assets/v2/js/pages/bounty_details.js:908
+#, fuzzy
+#| msgid "Work Accepted"
+msgid "Worker Rejected"
+msgstr "श्रमिक अस्वीकार कर दिया"
+
+#: assets/v2/js/pages/bounty_details.js:909
+#, fuzzy
+#| msgid "Work Accepted"
+msgid "Worker Applied"
+msgstr "श्रमिक एप्लाइड"
+
+#: assets/v2/js/pages/bounty_details.js:910
+#, fuzzy
+#| msgid "Issue Funding Info"
+msgid "Increased Funding"
+msgstr "बढ़ी हुई धनराशि"
+
+#: assets/v2/js/pages/bounty_details.js:911
+#, fuzzy
+#| msgid "Cancel Bounty"
+msgid "Canceled Bounty"
+msgstr "रद्द बाउंटी"
+
+#: assets/v2/js/pages/bounty_details.js:912
+msgid "New Tip"
+msgstr "नई युक्ति"
+
+#: assets/v2/js/pages/bounty_details.js:913
+msgid "Tip Received"
+msgstr "युक्ति प्राप्त हुई"
+
+#: assets/v2/js/pages/bounty_details.js:1000
+msgid "There's no activity yet!"
+msgstr "अभी तक कोई गतिविधि नहीं है!"
+
+#: assets/v2/js/pages/dashboard.js:324
+msgid "No Results"
+msgstr "कोई परिणाम नहीं"
+
+#: assets/v2/js/pages/dashboard.js:328
+msgid " Matching Result"
+msgstr "मिलान परिणाम"
+
+#: assets/v2/js/pages/dashboard.js:332
+msgid " Matching Results"
+msgstr "मिलान परिणाम"
+
+#: assets/v2/js/pages/dashboard.js:732
+msgid "Please enter a valid email address."
+msgstr "कृपया एक वैध ई - मेल एड्रेस डालें।"
+
+#: assets/v2/js/pages/dashboard.js:743
+msgid "You're in! Keep an eye on your inbox for the next funding listing."
+msgstr "आप अंदर हैं! अगली वित्त पोषण सूची के लिए अपने इनबॉक्स पर नजर रखें।"
+
+#: assets/v2/js/pages/faucet_form.js:31
+msgid "We could not validate that input as an email address"
+msgstr "हम उस इनपुट को ईमेल पते के रूप में मान्य नहीं कर सके"
+
+#: assets/v2/js/pages/faucet_form.js:59
+msgid "Please make sure to fill out all fields."
+msgstr "कृपया सभी फ़ील्ड भरना सुनिश्चित करें।"
+
+#: assets/v2/js/pages/faucet_form.js:79
+msgid "Got an unexpected error"
+msgstr "एक अनपेक्षित त्रुटि मिली"
+
+#: assets/v2/js/pages/fulfill_bounty.js:25
+#: assets/v2/js/pages/increase_bounty.js:29
+#: assets/v2/js/pages/kill_bounty.js:17 assets/v2/js/pages/new_bounty.js:189
+#: assets/v2/js/pages/process_bounty.js:68
+msgid ""
+"You are on an unsupported network.  Please change your network to a "
+"supported network."
+msgstr ""
+"आप असमर्थित नेटवर्क पर हैं। कृपया अपने नेटवर्क को एक समर्थित नेटवर्क में "
+"बदलें।"
+
+#: assets/v2/js/pages/fulfill_bounty.js:105
+msgid "Could not get bounty details."
+msgstr "बक्षीस विवरण नहीं मिल सका।"
+
+#: assets/v2/js/pages/fulfill_bounty.js:121
+msgid "Fulfillment submitted to web3."
+msgstr "वेब 3 पर जमा पूर्ति।"
+
+#: assets/v2/js/pages/fulfill_bounty.js:134
+#: assets/v2/js/pages/kill_bounty.js:106
+#: assets/v2/js/pages/process_bounty.js:163
+msgid "There was an error"
+msgstr "एक त्रुटि हुई"
+
+#: assets/v2/js/pages/increase_bounty.js:51
+#: assets/v2/js/pages/process_bounty.js:83
+msgid "Please accept the terms of service."
+msgstr "कृपया सेवा के नियमों को स्वीकार करें।"
+
+#: assets/v2/js/pages/increase_bounty.js:61
+msgid "Please enter a valid github issue URL."
+msgstr "कृपया वैध जिथब समस्या यूआरएल दर्ज करें।"
+
+#: assets/v2/js/pages/increase_bounty.js:65
+#, fuzzy
+#| msgid "Please enter a fulfillment Id."
+msgid "Please enter an amount."
+msgstr "कृपया एक राशि दर्ज करें।"
+
+#: assets/v2/js/pages/increase_bounty.js:97
+#: assets/v2/js/pages/new_bounty.js:371 assets/v2/js/pages/new_bounty.js:397
+msgid "There was an error.  Please try again or contact support."
+msgstr "एक त्रुटि हुई। कृपया पुनः प्रयास करें या समर्थन से संपर्क करें।"
+
+#: assets/v2/js/pages/increase_bounty.js:109
+#: assets/v2/js/pages/new_bounty.js:352
+msgid "Submission sent to web3."
+msgstr "सबमिशन वेब 3 पर भेजा गया।"
+
+#: assets/v2/js/pages/increase_bounty.js:124
+msgid "No active funded issue found at this address on "
+msgstr "इस पते पर कोई सक्रिय वित्त पोषित समस्या नहीं मिली है"
+
+#: assets/v2/js/pages/increase_bounty.js:127
+msgid ""
+"Only the address that submitted this funded issue may increase the payout."
+msgstr ""
+"इस वित्त पोषित मुद्दे को सबमिट करने वाला पता केवल भुगतान को बढ़ा सकता है।"
+
+#: assets/v2/js/pages/kill_bounty.js:44
+#: assets/v2/js/pages/process_bounty.js:107
+msgid "Could not get bounty details"
+msgstr "बक्षीस विवरण नहीं मिल सका"
+
+#: assets/v2/js/pages/kill_bounty.js:53
+#: assets/v2/js/pages/process_bounty.js:115
+msgid "No active bounty found for this Github URL on "
+msgstr "इस गीथब यूआरएल के लिए कोई सक्रिय बकाया नहीं मिला"
+
+#: assets/v2/js/pages/kill_bounty.js:70
+msgid ""
+"No active funded issue found at this address.  Are you sure this is an "
+"active funded issue?"
+msgstr ""
+"इस पते पर कोई सक्रिय वित्त पोषित समस्या नहीं मिली है। क्या आप वाकई एक सक्रिय"
+" वित्त पोषित मुद्दा हैं?"
+
+#: assets/v2/js/pages/kill_bounty.js:74
+msgid "Only the address that submitted this funded issue may kill the bounty."
+msgstr "केवल इस पते को प्रस्तुत करने वाला पता ही बकाया राशि को मार सकता है।"
+
+#: assets/v2/js/pages/kill_bounty.js:93
+msgid "Kill bounty submitted to web3."
+msgstr "वेब 3 पर सबमिट बक्षीस को मार डालो।"
+
+#: assets/v2/js/pages/onboard.js:40
+msgid "Done"
+msgstr "किया हुआ"
+
+#: assets/v2/js/pages/onboard.js:47
+msgid "Next"
+msgstr "आगामी"
+
+#: assets/v2/js/pages/onboard.js:69
+msgid "Install Metamask"
+msgstr "मेटामास्क स्थापित करें"
+
+#: assets/v2/js/pages/onboard.js:81
+msgid "Unlock Metamask"
+msgstr "मेटामास्क अनलॉक करें"
+
+#: assets/v2/js/pages/process_bounty.js:17
+msgid "Could not get fulfillment details"
+msgstr "पूरा विवरण नहीं मिला"
+
+#: assets/v2/js/pages/process_bounty.js:25
+#, fuzzy
+#| msgid "No bounty fulfillments found for this Github URL."
+msgid ""
+"No bounty fulfillments found for this Github URL.  Please use the multi-"
+"party payout tool instead."
+msgstr ""
+"इस गीथब यूआरएल के लिए कोई बक्षीस की पूर्ति नहीं हुई। कृपया इसके बजाय "
+"बहु-पक्ष पेआउट टूल का उपयोग करें।"
+
+#: assets/v2/js/pages/process_bounty.js:89
+msgid "Please enter a issue URL."
+msgstr "कृपया एक मुद्दा यूआरएल दर्ज करें।"
+
+#: assets/v2/js/pages/process_bounty.js:93
+msgid "Please enter a fulfillment Id."
+msgstr "कृपया एक पूर्ति आईडी दर्ज करें।"
+
+#: assets/v2/js/pages/process_bounty.js:130
+msgid ""
+"No active funding found at this address.  Are you sure this is an active "
+"funded issue?"
+msgstr ""
+"इस पते पर कोई सक्रिय निधि नहीं मिली। क्या आप वाकई एक सक्रिय वित्त पोषित "
+"मुद्दा हैं?"
+
+#: assets/v2/js/pages/process_bounty.js:132
+msgid "No claimee found for this bounty."
+msgstr "इस बक्षीस के लिए कोई क्लैमी नहीं मिला।"
+
+#: assets/v2/js/pages/process_bounty.js:134
+msgid "You can only process a funded issue if you submitted it initially."
+msgstr ""
+"यदि आप इसे प्रारंभ में सबमिट करते हैं तो आप केवल एक वित्त पोषित समस्या को "
+"संसाधित कर सकते हैं।"
+
+#: assets/v2/js/pages/process_bounty.js:153
+msgid "Submitted transaction to web3."
+msgstr "वेब 3 पर जमा लेनदेन।"
+
+#: assets/v2/js/shared.js:247
+msgid "Thanks for letting us know that you're ready to start work."
+msgstr "हमें यह बताने के लिए धन्यवाद कि आप काम शुरू करने के लिए तैयार हैं।"
+
+#: assets/v2/js/shared.js:250
+msgid "You've stopped working on this, thanks for letting us know."
+msgstr "आपने इस पर काम करना बंद कर दिया है, हमें बताने के लिए धन्यवाद।"
+
+#: assets/v2/js/shared.js:575 assets/v2/js/shared.js:609
+msgid "Web3 disabled. Please install "
+msgstr "वेब 3 अक्षम कृपया स्थापित करें"
+
+#: assets/v2/js/shared.js:577 assets/v2/js/shared.js:611
+msgid "Metamask Not Enabled"
+msgstr "मेटामास्क सक्षम नहीं है"
+
+#: assets/v2/js/shared.js:580 assets/v2/js/shared.js:614
+msgid "Web3 locked. Please unlock "
+msgstr "वेब 3 लॉक कृपया अनलॉक करें"
+
+#: assets/v2/js/shared.js:582 assets/v2/js/shared.js:616
+msgid "Metamask Locked"
+msgstr "मेटामास्क लॉक"
+
+#: assets/v2/js/shared.js:585
+msgid "Connect to Mainnet via Metamask"
+msgstr "मेटामास्क के माध्यम से मेननेट से कनेक्ट करें"
+
+#: assets/v2/js/shared.js:586 assets/v2/js/shared.js:620
+msgid "Unsupported Network"
+msgstr "असमर्थित नेटवर्क"
+
+#: assets/v2/js/shared.js:619
+msgid "Connect to Rinkeby / Custom RPC via Metamask"
+msgstr "मेटामास्क के माध्यम से रिंकबे / कस्टम आरपीसी से कनेक्ट करें"
+
+#: assets/v2/js/waiting_room_entertainment.js:4
+msgid ""
+"Open source software has become a relevant part of the software industry and"
+" a number of software ecosystems. It has become an alternative to commercial"
+" software in various areas and is already included in many commercial "
+"software products."
+msgstr ""
+"ओपन सोर्स सॉफ्टवेयर सॉफ्टवेयर उद्योग और कई सॉफ्टवेयर पारिस्थितिक तंत्र का एक"
+" प्रासंगिक हिस्सा बन गया है। यह विभिन्न क्षेत्रों में वाणिज्यिक सॉफ्टवेयर का"
+" विकल्प बन गया है और पहले से ही कई वाणिज्यिक सॉफ्टवेयर उत्पादों में शामिल "
+"है।"
+
+#: assets/v2/js/waiting_room_entertainment.js:5
+msgid ""
+"OSS can support the development of new software because companies can use "
+"existing software to create their software products. Therefore, it can be a "
+"catalyst for new software developments and the creation of new software "
+"companies."
+msgstr ""
+"ओएसएस नए सॉफ्टवेयर के विकास का समर्थन कर सकता है क्योंकि कंपनियां अपने "
+"सॉफ्टवेयर उत्पादों को बनाने के लिए मौजूदा सॉफ्टवेयर का उपयोग कर सकती हैं। "
+"इसलिए, यह नए सॉफ्टवेयर विकास और नई सॉफ्टवेयर कंपनियों के निर्माण के लिए "
+"उत्प्रेरक हो सकता है।"
+
+#: assets/v2/js/waiting_room_entertainment.js:6
+msgid ""
+"OSS can ... be considered as an important factor in the value creation of "
+"other software, even if it is difficult to quantify. Today, OSS often "
+"replaces the standard middleware platform provided by a third party. It "
+"limits costs and, more importantly, dependency to some extent."
+msgstr ""
+"ओएसएस ... अन्य सॉफ़्टवेयर के मूल्य निर्माण में एक महत्वपूर्ण कारक के रूप में"
+" माना जा सकता है, भले ही इसे मापना मुश्किल हो। आज, ओएसएस अक्सर किसी तीसरे "
+"पक्ष द्वारा प्रदान किए गए मानक मिडलवेयर मंच को प्रतिस्थापित करता है। यह लागत"
+" को सीमित करता है, और अधिक महत्वपूर्ण बात, कुछ हद तक निर्भरता।"
+
+#: assets/v2/js/waiting_room_entertainment.js:7
+msgid ""
+"Software vendors that build new products can save costs if they reuse "
+"existing open source software components instead of developing software on "
+"their own or buying software components. As a result, open source software "
+"can foster the development of new software products as well as the creation "
+"of new software vendors."
+msgstr ""
+"सॉफ़्टवेयर विक्रेता जो नए उत्पादों का निर्माण करते हैं, वे लागत बचा सकते हैं"
+" यदि वे अपने स्वयं के सॉफ्टवेयर विकसित करने या सॉफ़्टवेयर घटकों को खरीदने के"
+" बजाय मौजूदा ओपन सोर्स सॉफ़्टवेयर घटकों का पुन: उपयोग करते हैं। नतीजतन, ओपन "
+"सोर्स सॉफ्टवेयर नए सॉफ्टवेयर उत्पादों के विकास के साथ-साथ नए सॉफ्टवेयर "
+"विक्रेताओं के निर्माण को बढ़ावा दे सकता है।"
+
+#: assets/v2/js/waiting_room_entertainment.js:8
+msgid ""
+"OSS allows companies to incorporate IT in their value chain in an easy way. "
+"Instead of buying commercial software that may involve the risk of a vendor "
+"lock-in, they just have to share value with the OSS community."
+msgstr ""
+"ओएसएस कंपनियों को आईटी को अपनी मूल्य श्रृंखला में एक आसान तरीके से शामिल "
+"करने की अनुमति देता है। वाणिज्यिक सॉफ़्टवेयर खरीदने के बजाय जिसमें विक्रेता "
+"लॉक-इन का जोखिम शामिल हो सकता है, उन्हें केवल ओएसएस समुदाय के साथ मूल्य साझा"
+" करना होगा।"
+
+#: assets/v2/js/waiting_room_entertainment.js:9
+msgid ""
+"The basic principle of open source software development is that a community "
+"of software experts contributes time and effort for coding, reviewing and "
+"testing to publicly available source code."
+msgstr ""
+"ओपन सोर्स सॉफ्टवेयर विकास का मूल सिद्धांत यह है कि सॉफ्टवेयर विशेषज्ञों का "
+"एक समुदाय सार्वजनिक रूप से उपलब्ध स्रोत कोड को कोडिंग, समीक्षा और परीक्षण के"
+" लिए समय और प्रयास में योगदान देता है।"
+
+#: assets/v2/js/waiting_room_entertainment.js:10
+msgid ""
+"Open source can ... be a key success factor for co-innovation as none of the"
+" participants will have the upper hand. OSS can create standards that are "
+"very important for the development of emerging technologies and that help "
+"lower the total cost of ownership."
+msgstr ""
+"ओपन सोर्स ... सह-नवाचार के लिए एक महत्वपूर्ण सफलता कारक हो सकता है क्योंकि "
+"प्रतिभागियों में से कोई भी ऊपरी हाथ नहीं रखता है। ओएसएस उन मानकों को बना "
+"सकता है जो उभरती हुई प्रौद्योगिकियों के विकास के लिए बहुत महत्वपूर्ण हैं और "
+"इससे स्वामित्व की कुल लागत कम हो जाती है।"
+
+#: assets/v2/js/waiting_room_entertainment.js:11
+msgid ""
+"Future software must be easily developed from components and freely "
+"available software and its maintenance must be supported by a wide "
+"community. This includes a reuse and evolution of existing software and "
+"modules: rather than developing from scratch, existing software must become "
+"more easily retrievable, interoperable and usable."
+msgstr ""
+"भविष्य सॉफ्टवेयर को घटकों और आसानी से उपलब्ध सॉफ्टवेयर से आसानी से विकसित "
+"किया जाना चाहिए और इसके रखरखाव को व्यापक समुदाय द्वारा समर्थित किया जाना "
+"चाहिए। इसमें मौजूदा सॉफ्टवेयर और मॉड्यूल का पुन: उपयोग और विकास शामिल है: "
+"स्क्रैच से विकसित होने के बजाय, मौजूदा सॉफ़्टवेयर को आसानी से पुनर्प्राप्त "
+"करने योग्य, इंटरऑपरेबल और उपयोग करने योग्य बनना चाहिए।"
+
+#: assets/v2/js/waiting_room_entertainment.js:12
+msgid ""
+"OSS is also a firm promoter of standards and interoperability. This openness"
+" lowers the risk of a vendor lock-in. OSS is based on communities that "
+"develop software in a collaborative way. Many enabling technologies for SMAC"
+" have strong OSS roots."
+msgstr ""
+"ओएसएस मानक और अंतःक्रियाशीलता का एक फर्म प्रमोटर भी है। यह खुलेपन एक "
+"विक्रेता लॉक-इन के जोखिम को कम करता है। ओएसएस उन समुदायों पर आधारित है जो एक"
+" सहयोगी तरीके से सॉफ्टवेयर विकसित करते हैं। एसएमएसी के लिए कई सक्षम "
+"प्रौद्योगिकियों में मजबूत ओएसएस की जड़ें हैं।"
+
+#: assets/v2/js/waiting_room_entertainment.js:13
+msgid ""
+"Some commercial vendors offer open source software in order to create a "
+"large user community. They generate revenues from subscriptions to support "
+"and updates and/or professional services as well as from selling extensions "
+"or professional editions that are based on the open source software. "
+"Examples are the providers of the Linux distributions RedHat and Suse."
+msgstr ""
+"कुछ वाणिज्यिक विक्रेता बड़े उपयोगकर्ता समुदाय बनाने के लिए ओपन सोर्स "
+"सॉफ्टवेयर प्रदान करते हैं। वे सब्सक्रिप्शन से समर्थन और अपडेट और / या पेशेवर"
+" सेवाओं के साथ-साथ ओपन सोर्स सॉफ़्टवेयर पर आधारित एक्सटेंशन या व्यावसायिक "
+"संस्करणों को बेचने से राजस्व उत्पन्न करते हैं। उदाहरण लिनक्स वितरण रेडहाट और"
+" सूज़ के प्रदाता हैं।"
+
+#: assets/v2/js/waiting_room_entertainment.js:14
+msgid ""
+"Major commercial software vendors such as IBM and HP have made open source "
+"technology a part of their business by integrating it into their own "
+"products and by providing professional services for open source software."
+msgstr ""
+"आईबीएम और एचपी जैसे प्रमुख व्यावसायिक सॉफ्टवेयर विक्रेताओं ने ओपन सोर्स "
+"टेक्नोलॉजी को अपने उत्पादों में एकीकृत करके और ओपन सोर्स सॉफ्टवेयर के लिए "
+"पेशेवर सेवाएं प्रदान करके अपने व्यापार का एक हिस्सा बना दिया है।"
+
+#: assets/v2/js/waiting_room_entertainment.js:15
+msgid ""
+"Many business applications already include open source software and this is "
+"going to increase. Some vendors may donate part of their products to an open"
+" source foundation in order to create a larger user community that will "
+"potentially become buyers of commercial add-ons or services. On the other "
+"hand, open source software that is free of charge can be an alternative to "
+"commercial application software."
+msgstr ""
+"कई व्यावसायिक अनुप्रयोगों में पहले से ही ओपन सोर्स सॉफ्टवेयर शामिल है और यह "
+"बढ़ने जा रहा है। कुछ विक्रेता एक बड़े उपयोगकर्ता समुदाय को बनाने के लिए अपने"
+" उत्पादों का हिस्सा ओपन सोर्स नींव में दान कर सकते हैं जो संभावित रूप से "
+"व्यावसायिक ऐड-ऑन या सेवाओं के खरीदारों बन जाएगा। दूसरी तरफ, ओपन सोर्स "
+"सॉफ्टवेयर जो निःशुल्क है वाणिज्यिक एप्लिकेशन सॉफ्टवेयर का विकल्प हो सकता है।"
+
+#: assets/v2/js/waiting_room_entertainment.js:16
+msgid ""
+"According to Carlo Daffara, a researcher in the field of IT economics who "
+"contributed to several European Commission research projects involving open "
+"source, the European economy saves around EUR114 billion per year by using "
+"open source software solutions. Apart from direct cost savings, other "
+"benefits of open source are reduced project failure and lower cost of code "
+"maintenance."
+msgstr ""
+"आईटी अर्थशास्त्र के क्षेत्र में एक शोधकर्ता कार्लो दफ्फारा के मुताबिक, ओपन "
+"सोर्स सॉफ़्टवेयर समाधानों का उपयोग करके यूरोपीय अर्थव्यवस्था अनुसंधान "
+"परियोजनाओं में कई यूरोपीय आयोग अनुसंधान परियोजनाओं में योगदान दिया गया है, "
+"यूरोपीय अर्थव्यवस्था प्रति वर्ष EUR114 बिलियन बचाती है। प्रत्यक्ष लागत बचत "
+"के अलावा, ओपन सोर्स के अन्य लाभ परियोजना विफलता और कोड रखरखाव की कम लागत को "
+"कम कर रहे हैं।"
+
+#: assets/v2/js/waiting_room_entertainment.js:17
+msgid ""
+"Quoting several sources, [Carlo Daffara, researcher in IT economics] "
+"estimates that about 35 per cent of the software  used in the past five "
+"years was directly or indirectly derived from open source."
+msgstr ""
+"कई स्रोतों का हवाला देते हुए, [आईटी अर्थशास्त्र में शोधकर्ता कार्लो दफ्फारा]"
+" का अनुमान है कि पिछले पांच वर्षों में इस्तेमाल होने वाले लगभग 35 प्रतिशत "
+"सॉफ्टवेयर सीधे या अप्रत्यक्ष रूप से खुले स्रोत से प्राप्त किए गए थे।"
+
+#: assets/v2/js/waiting_room_entertainment.js:18
+msgid ""
+"Companies outsource activities that are less critical. For example, a car "
+"manufacturer will hardly outsource the in-house software development for its"
+" autonomous driving technology, as this is highly confidential and highly "
+"relevant for its competitiveness."
+msgstr ""
+"कंपनियां ऐसी गतिविधियों को आउटसोर्स करती हैं जो कम महत्वपूर्ण हैं। उदाहरण के"
+" लिए, एक कार निर्माता अपनी स्वायत्त ड्राइविंग तकनीक के लिए इन-हाउस सॉफ्टवेयर"
+" विकास को शायद ही आउटसोर्स करेगा, क्योंकि यह अत्यधिक प्रतिस्पर्धी है और इसकी"
+" प्रतिस्पर्धात्मकता के लिए अत्यधिक प्रासंगिक है।"
+
+#: assets/v2/js/waiting_room_entertainment.js:19
+msgid ""
+"Outsourcing can be an alternative to in-house software development and more "
+"and more companies take advantage of this. ... Two areas of potential "
+"outsourcing in the area of in-house software development are testing and "
+"maintenance."
+msgstr ""
+"आउटसोर्सिंग इन-हाउस सॉफ्टवेयर विकास का विकल्प हो सकती है और अधिक से अधिक "
+"कंपनियां इसका लाभ उठाती हैं। ... घर के सॉफ्टवेयर विकास के क्षेत्र में "
+"संभावित आउटसोर्सिंग के दो क्षेत्र परीक्षण और रखरखाव हैं।"
+
+#: assets/v2/js/waiting_room_entertainment.js:20
+msgid ""
+"As demand for individual software development increases, companies evaluate "
+"ways to outsource such activities due to internal skill shortages and cost "
+"considerations."
+msgstr ""
+"व्यक्तिगत सॉफ्टवेयर विकास की बढ़ोतरी की मांग के रूप में, कंपनियां आंतरिक "
+"कौशल की कमी और लागत के विचारों के कारण ऐसी गतिविधियों को आउटसोर्स करने के "
+"तरीकों का मूल्यांकन करती हैं।"
+
+#: assets/v2/js/waiting_room_entertainment.js:22
+msgid ""
+"Victor Hugo once remarked: 'You can resist an invading army; you cannot "
+"resist an idea whose time has come'. The Drucker Forum will ask the question"
+" and deliver elements of response as to whether the time for a new "
+"entrepreneurial age has come."
+msgstr ""
+"विक्टर ह्यूगो ने एक बार टिप्पणी की: &#39;आप एक हमलावर सेना का विरोध कर सकते "
+"हैं; आप किसी ऐसे विचार का विरोध नहीं कर सकते जिसका समय आ गया है। ड्रकर फोरम "
+"प्रश्न पूछेगा और प्रतिक्रिया के तत्व वितरित करेगा कि क्या एक नई उद्यमी उम्र "
+"के लिए समय आ गया है।"
+
+#: assets/v2/js/waiting_room_entertainment.js:23
+msgid ""
+"Digital technology has played an accelerating role in this transformation "
+"[to an entrepreneurial society] by dramatically lowering barriers to entry "
+"in many industries and by providing new tools for managing knowledge "
+"creation and sharing and by enabling new forms of continuous learning, all "
+"on a global canvas."
+msgstr ""
+"डिजिटल प्रौद्योगिकी ने कई उद्योगों में प्रवेश के लिए नाटकीय रूप से बाधाओं को"
+" कम करके और ज्ञान निर्माण और साझा करने के प्रबंधन के लिए नए टूल प्रदान करके "
+"और निरंतर सीखने के नए रूपों को सक्षम करके, वैश्विक कैनवास पर, इस परिवर्तन "
+"में [उद्यमी समाज के लिए] इस परिवर्तन में तेजी से भूमिका निभाई है। ।"
+
+#: assets/v2/js/waiting_room_entertainment.js:24
+msgid ""
+"While the journey towards an entrepreneurial society is by no means a "
+"straight-line progression towards a well-defined destination, broad cultural"
+" changes have brought entrepreneurialism into the mainstream. An activity "
+"that was once regarded as peripheral, perhaps even a bit suspect, has become"
+" cool, celebrated by politicians and embraced by the new generations."
+msgstr ""
+"जबकि एक उद्यमी समाज की यात्रा किसी भी तरह से परिभाषित गंतव्य की दिशा में "
+"सीधी रेखा प्रगति नहीं है, व्यापक सांस्कृतिक परिवर्तनों ने उद्यमशीलता को "
+"मुख्यधारा में लाया है। एक गतिविधि जिसे परिधीय माना जाता था, शायद थोड़ा सा "
+"संदिग्ध, राजनीतिज्ञों द्वारा मनाया जाता है और नई पीढ़ियों द्वारा गले लगाया "
+"जाता है।"
+
+#: assets/v2/js/waiting_room_entertainment.js:25
+msgid ""
+"[T]he emergence of an entrepreneurial culture entails a broader "
+"transformation of the economic fabric of our society, as we see in the rapid"
+" proliferation of free agents in the form of contractors, freelancers and "
+"self-employed workers on on-demand platforms, for example."
+msgstr ""
+"[टी] वह एक उद्यमी संस्कृति के उभरने के लिए हमारे समाज के आर्थिक कपड़े का "
+"व्यापक परिवर्तन करता है, क्योंकि हम ठेकेदारों, फ्रीलांसरों और स्व-नियोजित "
+"श्रमिकों के रूप में मुक्त मांग एजेंटों के तेजी से प्रसार में देखते हैं, "
+"ऑन-डिमांड प्लेटफॉर्म पर उदाहरण।"
+
+#: assets/v2/js/waiting_room_entertainment.js:26
+msgid ""
+"[I]n a world of rapid change frequent job and career moves, switches between"
+" employed and independent roles become the rule rather than the exception."
+msgstr ""
+"[मैं] तेजी से परिवर्तन की दुनिया लगातार नौकरी और करियर चाल, नियोजित और "
+"स्वतंत्र भूमिकाओं के बीच स्विच अपवाद के बजाय नियम बन जाते हैं।"
+
+#: assets/v2/js/waiting_room_entertainment.js:27
+msgid ""
+"Within large organizations a renewed focus on freeing up the creative and "
+"innovative potential of workers points in the same direction [as that of the"
+" entrepreneurial society] i.e. a new mindset of ownership, responsibility "
+"and autonomy."
+msgstr ""
+"बड़े संगठनों के भीतर श्रमिकों की रचनात्मक और अभिनव क्षमता को एक ही दिशा में "
+"[उद्यमशील समाज के रूप में] यानी स्वामित्व, जिम्मेदारी और स्वायत्तता की एक नई"
+" मानसिकता को इंगित करने पर एक नया ध्यान केंद्रित किया गया।"
+
+#~ msgid "Accept Submission"
+#~ msgstr "सबमिशन स्वीकार करें"
+
+#, fuzzy
+#~ msgid "Please enter a valid checksum address."
+#~ msgstr "कृपया एक वैध चेकसम पता दर्ज करें।"
+
+#~ msgid "Not a valid forwarding address"
+#~ msgstr "मान्य अग्रेषण पता नहीं है"
+
+#~ msgid "Please enter your Twitter username"
+#~ msgstr "कृपया अपना ट्विटर उपयोगकर्ता नाम दर्ज करें"
+
+#~ msgid "batch mode enabled"
+#~ msgstr "बैच मोड सक्षम"
+
+#~ msgid "Invalid addresses generated. Please try again from the first page."
+#~ msgstr "अमान्य पते उत्पन्न हुए। कृपया पहले पृष्ठ से पुनः प्रयास करें।"
+
+#~ msgid "You can only send a maximum of "
+#~ msgstr "आप केवल अधिकतम भेज सकते हैं"
+
+#~ msgid "You can only send a minimum of "
+#~ msgstr "आप केवल न्यूनतम भेज सकते हैं"
