@@ -902,6 +902,14 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     from .utils import clean_bounty_url
     is_user_authenticated = request.user.is_authenticated
     request_url = clean_bounty_url(request.GET.get('url', ''))
+
+    # We need the url query param value to include the value's complete query params
+    external_bounty_url = request.build_absolute_uri().split('url=')
+
+    if (len(external_bounty_url) > 1):
+        import html
+        request_url = html.unescape(external_bounty_url[1])
+
     if is_user_authenticated and hasattr(request.user, 'profile'):
         _access_token = request.user.profile.get_access_token()
     else:

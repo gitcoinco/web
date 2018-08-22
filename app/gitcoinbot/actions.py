@@ -222,6 +222,11 @@ def get_text_from_query_responses(comment_text, sender):
 
 
 def determine_response(owner, repo, comment_id, comment_text, issue_id, install_id, sender):
+    bounty_exists = Bounty.objects.filter(github_url=f'https://github.com/{owner}/{repo}/issues/{issue_id}').exists()
+
+    if not bounty_exists:
+        return False
+
     help_regex = r'@?[Gg]itcoinbot\s[Hh]elp'
     bounty_regex = r'@?[Gg]itcoinbot\s[Bb]ounty\s\d*\.?(\d+\s?)'
     submit_work_regex = r'@?[Gg]itcoinbot\s[Ss]ubmit(\s[Ww]ork)?'
@@ -256,4 +261,5 @@ def determine_response(owner, repo, comment_id, comment_text, issue_id, install_
             post_gitcoin_app_comment(owner, repo, issue_id, text_response, install_id)
         else:
             post_issue_comment_reaction(owner, repo, comment_id, 'confused')
-            #post_gitcoin_app_comment(owner, repo, issue_id, confused_text(), install_id)
+            # post_gitcoin_app_comment(owner, repo, issue_id, confused_text(), install_id)
+    return True
