@@ -224,7 +224,7 @@
                           {% trans "Bounties" %}
                         </spn>
                         <span class="funder-dashboard__tax-reporting__bounties__worth pl-1">
-                          ${{ tax_year_bounties_worth_dollars }}
+                          ${{ tax_year_bounties_worth_dollars|floatformat:2 }}
                         </span>
                       </p>
                       <div class="mb-2">
