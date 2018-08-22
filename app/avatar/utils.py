@@ -269,7 +269,7 @@ def handle_avatar_payload(request):
     body = json.loads(request.body)
     for k, v in body.items():
         if v and k in valid_component_keys:
-            component_type, svg_asset = v.lstrip('{settings.STATIC_URL}v2/images/avatar/').split('/')
+            component_type, svg_asset = v.lstrip(f'{settings.STATIC_URL}v2/images/avatar/').split('/')
             avatar_dict[k] = {'component_type': component_type, 'svg_asset': svg_asset, }
         elif v and k in valid_color_keys:
             avatar_dict[k] = v
