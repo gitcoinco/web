@@ -3,12 +3,13 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>{{title}}</title>
+      {% include 'shared/head.html' %}
+      {% include 'shared/cards.html' %}
     
     <style>
     .invoice-box {
-        max-width: 800px;
-        margin: auto;
+        max-width: 1000px;
+        margin: 50px auto;
         padding: 30px;
         border: 1px solid #eee;
         box-shadow: 0 0 10px rgba(0, 0, 0, .15);
@@ -119,6 +120,7 @@
                             <td>
                                 Invoice #: {{bounty.pk}}<br>
                                 Created: {{bounty.web3_created}}<br>
+                                Status: {{bounty.status}}<br>
                             </td>
                         </tr>
                     </table>
@@ -160,7 +162,7 @@
             
             <tr class="details">
                 <td>
-                    Ethereum Blockchain
+                    Directly to counterparties via Ethereum Blockchain
                 </td>
                 
                 <td>
@@ -201,6 +203,15 @@
                     </td>
                 </tr>
             {% endfor %}
+
+            {% if not tips and not accepted_fulfillments %}
+                <tr class="item">
+                    <td colspan="2">
+                        (no completed payments have been made on this invoice)
+                    </td>
+                    
+                </tr>
+            {% endif %}
             
 
             <tr class="total">
