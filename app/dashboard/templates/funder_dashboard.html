@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static %}
+{% load i18n static humanize %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -59,7 +59,7 @@
                           {% trans "You don't have any bounties expiring in the next 7 days." %}
                       {% else %}
                         {% blocktrans %}
-                          You have {{expiring_bounties_count}} bounties expiring in {{expiring_days_count}} days!
+                          You have {{expiring_bounties_count}} bountie{{expiring_bounties_count|pluralize}} expiring in {{expiring_days_count}} days!
                         {% endblocktrans %}
                       {% endif %}
                       {% if expiring_bounties_count > 0 %}
@@ -70,17 +70,6 @@
                       {% endif %}
                     </div>
                     <div class="funder-dashboard__whats-next__new-comments">
-                      {% if new_contributor_comments_count > 0 %}
-                        {% blocktrans %}
-                          {{ new_contributor_comments_count }} contributors have commented on your open issues.
-                        {% endblocktrans %}
-                        <a href="{% url "explorer" %}"
-                        class="issue-explorer-link issue-explorer-link--contributors-comments text-fd-blue--dark">
-                          {% trans "view comments" %}
-                        </a>
-                      {% else %}
-                        {% trans "No contributors have commented on your open issues." %}
-                      {% endif %}
                     </div>
                   </div>
                 </div>
@@ -96,7 +85,7 @@
                         {{ submitted_bounties_count }}
                       </h4>
                       <small class="card-text text-fd-blue--light text-uppercase">
-                        {% trans "Bounties Submitted" %}
+                        {% trans "Bounties Created" %}
                       </small>
                     </div>
                     <small class="funder-dashboard__stats__stat__footer
@@ -123,7 +112,7 @@
                             col-6 p-0 col-lg mr-lg-3 card mb-3 mb-lg-0">
                     <div class="card-body pb-2 text-center lead">
                       <h5 class="card-title pt-0 font-weight-bold">
-                        ${{ total_paid_dollars }}
+                        ${{ total_paid_dollars|floatformat:2|intcomma }}
                         <small class="text-fd-blue--dark d-block">
                           {{total_paid_eth}} ETH
                         </small>
@@ -224,7 +213,7 @@
                           {% trans "Bounties" %}
                         </spn>
                         <span class="funder-dashboard__tax-reporting__bounties__worth pl-1">
-                          ${{ tax_year_bounties_worth_dollars|floatformat:2 }}
+                          ${{ tax_year_bounties_worth_dollars|floatformat:2|intcomma }}
                         </span>
                       </p>
                       <div class="mb-2">
@@ -264,7 +253,7 @@
                         You have
                         <span class="funder-dashboard__latest-on-bounties__reclaim-funds__funds-count
                                              text-danger">{{expired_issues_count}}</span>
-                        <span class="text-danger">Expired Issues,</span>
+                        <span class="text-danger">Expired Issue{{expired_issues_count|pluralize}},</span>
                         funds worth <span class="funder-dashboard__latest-on-bounties__reclaim-funds__worth
                                                          font-weight-bold">${{expired_issues_worth_dollars}}</span>
                         <a href="{{explorer_url}}"
@@ -284,7 +273,7 @@
                           {{active_bounties_count}}
                         </span>
                         <span class="text-fd-blue--dark text-uppercase">
-                          {% trans "active bounties" %}
+                          {% trans "active bountie" %}{{active_bounties_count|pluralize}}
                         </span>
                       </div>
                       <div class="w-100 text-right">
@@ -302,7 +291,9 @@
                         <span class="funder-dashboard__latest-on-bounties__completed__count font-weight-bold">
                           {{completed_bounties_count}}
                         </span>
-                        <span class="text-fd-green text-uppercase"> {% trans "completed bounties" %}</span>
+                        <span class="text-fd-green text-uppercase"> 
+                          {% trans "completed bountie" %}{{completed_bounties_count|pluralize}}
+                        </span>
                       </div>
                       <div class="w-100 text-right">
                           <a href="{% url "explorer" %}"
@@ -319,7 +310,9 @@
                         <span class="funder-dashboard__latest-on-bounties__expired__count font-weight-bold">
                           {{expired_bounties_count}}
                         </span>
-                        <span class="text-fd-red text-uppercase">{% trans "expired bounties" %}</span>
+                        <span class="text-fd-red text-uppercase">
+                          {% trans "expired bountie" %}{{expired_bounties_count|pluralize}}
+                      </span>
                       </div>
                       <div class="w-100 text-right">
                         <a href="{% url "explorer" %}"
@@ -338,7 +331,7 @@
 
                     {% for contributor in top_contributors %}
                     <a href="{{contributor.githubLink}}" class="mr-1 pb-1 d-inline-block">
-                      <img src="{{contributor.profilePictureSrc}}"
+                      <img src="{{contributor.profilePictureSrc}}" alt="{{contributor.handle}}" title="{{contributor.handle}}"
                            class="funder-dashboard__latest-on-bounties__top-contributors__contributor">
                       </img>
                     </a>

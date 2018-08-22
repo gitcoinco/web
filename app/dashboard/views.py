@@ -1142,7 +1142,7 @@ def get_quickstart_video(request):
     return TemplateResponse(request, 'quickstart_video.html', context)
 
 
-@cache_page(60 * 60 * 24)
+#@cache_page(60 * 60 * 24)
 @vary_on_cookie
 def funder_dashboard(request):
     """ Render the funder dashboard"""
@@ -1153,7 +1153,7 @@ def funder_dashboard(request):
     funder_bounties = request.user.profile.get_funded_bounties()
 
     active_done_expired_bounties = funder_bounties.filter_by_status(['active', 'done', 'expired'])
-    active_bounties = active_done_expired_bounties.filter_by_status(['open', 'started'])
+    active_bounties = funder_bounties.filter_by_status(['open', 'started'])
     done_bounties = active_done_expired_bounties.filter_by_status(['done'])
     expired_bounties = active_done_expired_bounties.filter_by_status(['expired'])
 
@@ -1179,10 +1179,6 @@ def funder_dashboard(request):
                 last_expiring_days_from_now = delta_days
 
     expiring_days_count = last_expiring_days_from_now
-
-    new_contributor_comments = 0
-    for bounty in active_bounties:
-        new_contributor_comments += bounty.github_comments
 
     current_funder_bounties = funder_bounties.filter(current_bounty=True)
     submitted_bounties_count = current_funder_bounties.count()
@@ -1211,7 +1207,8 @@ def funder_dashboard(request):
     for contributor_github_username in contributors_usernames:
         top_contributors.append({
             'githubLink': 'https://gitcoin.co/profile/' + contributor_github_username,
-            'profilePictureSrc': '/static/avatar/' + contributor_github_username
+            'profilePictureSrc': '/dynamic/avatar/' + contributor_github_username,
+            'handle': contributor_github_username,
         })
 
     total_paid_dollars = 0
@@ -1368,7 +1365,6 @@ def funder_dashboard(request):
         # Header
         "expiring_bounties_count": expiring_bounties_count,
         "expiring_days_count": expiring_days_count,
-        "new_contributor_comments_count": new_contributor_comments,
         # Stats
         "submitted_bounties_count": submitted_bounties_count,
         "total_contributors_count": total_contributors_count,
