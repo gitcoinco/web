@@ -766,6 +766,7 @@ var do_actions = function(result) {
   let show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
   let show_payout = !is_status_expired && !is_status_done && isBountyOwner(result);
   let show_extend_deadline = isBountyOwner(result) && !is_status_expired && !is_status_done;
+  let show_invoice = isBountyOwner(result);
   const show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
   const show_admin_methods = document.isStaff;
   const show_moderator_methods = document.isModerator;
@@ -863,6 +864,19 @@ var do_actions = function(result) {
 
     actions.push(_entry);
   }
+
+  if (show_invoice) {
+    const _entry = {
+      enabled: true,
+      href: result['action_urls']['invoice'],
+      text: gettext('Show Invoice'),
+      parent: 'right_actions',
+      title: gettext('View an Invoice for this Issue')
+    };
+
+    actions.push(_entry);
+  }
+
 
   if (show_github_link) {
     let github_url = result['github_url'];

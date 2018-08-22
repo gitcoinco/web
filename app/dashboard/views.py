@@ -586,6 +586,38 @@ def contribute(request):
     return TemplateResponse(request, 'contribute_bounty.html', params)
 
 
+def invoice(request):
+    """invoice view.
+
+    Args:
+        pk (int): The primary key of the bounty to be accepted.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The invoice  view.
+
+    """
+    bounty = handle_bounty_views(request)
+
+    params = get_context(
+        ref_object=bounty,
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='invoice_view',
+        title=_('Invoice'),
+    )
+    params['accepted_fulfillments'] = bounty.fulfillments.filter(accepted=True)
+    params['tips'] = [tip for tip in bounty.tips.exclude(txid='') if tip.username == request.user.username and tip.username]
+    params['total'] = bounty._val_usd_db if params['accepted_fulfillments'] else 0
+    for tip in params['tips']:
+        if tip.value_in_usdt:
+            params['total'] += tip.value_in_usdt
+
+    return TemplateResponse(request, 'bounty/invoice.html', params)
+
+
 def social_contribution(request):
     """Social Contributuion to the bounty.
 
@@ -662,6 +694,7 @@ def bulk_payout_bounty(request):
         active='payout_bounty',
         title=_('Multi-Party Payout'),
     )
+
     return TemplateResponse(request, 'bulk_payout_bounty.html', params)
 
 
