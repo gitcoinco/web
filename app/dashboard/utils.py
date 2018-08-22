@@ -19,8 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import json
 import logging
-import subprocess
-import time
+from json.decoder import JSONDecodeError
 
 from django.conf import settings
 
@@ -157,8 +156,8 @@ def get_ipfs(host=None, port=settings.IPFS_API_PORT):
 def ipfs_cat(key):
     try:
         # Attempt connecting to IPFS via Infura
-        response = ipfs_cat_requests(key)
-        if response:
+        response, status_code = ipfs_cat_requests(key)
+        if status_code == 200:
             return response
 
         # Attempt connecting to IPFS via hosted node
@@ -174,13 +173,19 @@ def ipfs_cat(key):
 def ipfs_cat_ipfsapi(key):
     ipfs = get_ipfs()
     if ipfs:
-        return ipfs.cat(key)
+        try:
+            return ipfs.cat(key)
+        except Exception:
+            return None
 
 
 def ipfs_cat_requests(key):
-    url = f'https://ipfs.infura.io:5001/api/v0/cat/{key}'
-    response = requests.get(url)
-    return response.text
+    try:
+        url = f'https://ipfs.infura.io:5001/api/v0/cat/{key}'
+        response = requests.get(url, timeout=1)
+        return response.text, response.status_code
+    except:
+        return None, 500
 
 
 def get_web3(network):
@@ -223,6 +228,7 @@ def getBountyContract(network):
 def get_bounty(bounty_enum, network):
     if (settings.DEBUG or settings.ENV != 'prod') and network == 'mainnet':
         # This block will return {} if env isn't prod and the network is mainnet.
+        print("--*--")
         return {}
 
     standard_bounties = getBountyContract(network)
@@ -231,7 +237,6 @@ def get_bounty(bounty_enum, network):
         issuer, contract_deadline, fulfillmentAmount, paysTokens, bountyStage, balance = standard_bounties.functions.getBounty(bounty_enum).call()
     except BadFunctionCallOutput:
         raise BountyNotFoundException
-
     # pull from blockchain
     bountydata = standard_bounties.functions.getBountyData(bounty_enum).call()
     arbiter = standard_bounties.functions.getBountyArbiter(bounty_enum).call()
@@ -246,8 +251,12 @@ def get_bounty(bounty_enum, network):
 
         # pull from blockchain
         accepted, fulfiller, data = standard_bounties.functions.getFulfillment(bounty_enum, fulfill_enum).call()
-        data_str = ipfs_cat(data)
-        data = json.loads(data_str)
+        try:
+            data_str = ipfs_cat(data)
+            data = json.loads(data_str)
+        except JSONDecodeError:
+            logger.error(f'Could not get {data} from ipfs')
+            continue
 
         # validation
         if 'Failed to get block' in str(data_str):
@@ -296,6 +305,7 @@ def web3_process_bounty(bounty_data):
     # Check whether or not the bounty data payload is for mainnet and env is prod or other network and not mainnet.
     if not bounty_data or (settings.DEBUG or settings.ENV != 'prod') and bounty_data.get('network') == 'mainnet':
         # This block will return None if running in debug/non-prod env and the network is mainnet.
+        print(f"--*--")
         return None
 
     did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
@@ -325,12 +335,10 @@ def get_bounty_id(issue_url, network):
 
     all_known_stdbounties = Bounty.objects.filter(web3_type='bounties_network', network=network).order_by('-standard_bounties_id')
 
-    methodology = 'start_from_web3_latest'
     try:
         highest_known_bounty_id = get_highest_known_bounty_id(network)
         bounty_id = get_bounty_id_from_web3(issue_url, network, highest_known_bounty_id, direction='down')
     except NoBountiesException:
-        methodology = 'start_from_db'
         last_known_bounty_id = 0
         if all_known_stdbounties.exists():
             last_known_bounty_id = all_known_stdbounties.first().standard_bounties_id
@@ -341,7 +349,7 @@ def get_bounty_id(issue_url, network):
 
 def get_bounty_id_from_db(issue_url, network):
     issue_url = normalize_url(issue_url)
-    bounties = Bounty.objects.filter(github_url=issue_url, network=network, web3_type='bounties_network')
+    bounties = Bounty.objects.filter(github_url=issue_url, network=network, web3_type='bounties_network').order_by('-standard_bounties_id')
     if not bounties.exists():
         return None
     return bounties.first().standard_bounties_id
@@ -357,7 +365,6 @@ def get_highest_known_bounty_id(network):
 
 def get_bounty_id_from_web3(issue_url, network, start_bounty_id, direction='up'):
     issue_url = normalize_url(issue_url)
-    web3 = get_web3(network)
 
     # iterate through all the bounties
     bounty_enum = start_bounty_id
@@ -444,7 +451,7 @@ def record_user_action_on_interest(interest, event_name, last_heard_from_user_da
 
 
 def get_context(ref_object=None, github_username='', user=None, confirm_time_minutes_target=4,
-                confirm_time_slow=90, confirm_time_avg=30, confirm_time_fast=1, active='',
+                confirm_time_slow=120, confirm_time_avg=15, confirm_time_fast=1, active='',
                 title='', update=None):
     """Get the context dictionary for use in view."""
     context = {

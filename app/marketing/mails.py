@@ -64,16 +64,16 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     response = None
 
     # build personalization
-    p = Personalization()
-    p.add_to(to_email)
-    if cc_emails:  # only add CCif not in prod
+    if cc_emails:
+        p = Personalization()
+        p.add_to(to_email)
         for cc_addr in set(cc_emails):
             cc_addr = Email(cc_addr)
             if settings.IS_DEBUG_ENV:
                 cc_addr = to_email
             if cc_addr._email != to_email._email:
                 p.add_to(cc_addr)
-    mail.add_personalization(p)
+        mail.add_personalization(p)
 
     # debug logs
     print(f"-- Sending Mail '{subject}' to {_to_email}")
@@ -111,9 +111,9 @@ def funder_stale(to_email, github_username, days=30, time_as_str='about a month'
     try:
         setup_lang(to_email)
 
-        subject = "hey from gitcoin.co"
+        subject = "hey from gitcoin.co" if not github_username else f"hey @{github_username}"
         html, text = render_funder_stale(github_username, days, time_as_str)
-        cc_emails = [from_email, 'team@gitcoin.co']
+        cc_emails = [from_email, 'vivek.singh@consensys.net', 'scott.moore@consensys.net', 'alisa.march@consensys.net']
         if not should_suppress_notification_email(to_email, 'admin_contact_funder'):
             send_mail(from_email, to_email, subject, text, cc_emails=cc_emails, from_name=from_email)
     finally:
@@ -181,7 +181,7 @@ def new_faucet_request(fr):
 
 def new_token_request(obj):
     to_email = settings.PERSONAL_CONTACT_EMAIL
-    from_email = settings.SERVER_EMAIL
+    from_email = obj.email
     cur_language = translation.get_language()
     try:
         setup_lang(to_email)
@@ -309,6 +309,8 @@ def weekly_roundup(to_emails=None):
 
             if not should_suppress_notification_email(to_email, 'roundup'):
                 send_mail(from_email, to_email, subject, text, html, from_name="Kevin Owocki (Gitcoin.co)")
+            else:
+                print('supressed')
         finally:
             translation.activate(cur_language)
 

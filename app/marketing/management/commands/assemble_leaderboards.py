@@ -43,34 +43,15 @@ def default_ranks():
         dict: A nested dictionary mapping of all default ranks with empty dicts.
 
     """
-    return {
-        'weekly_fulfilled': {},
-        'weekly_all': {},
-        'weekly_payers': {},
-        'weekly_earners': {},
-        'weekly_orgs': {},
-        'monthly_fulfilled': {},
-        'monthly_all': {},
-        'monthly_payers': {},
-        'monthly_earners': {},
-        'monthly_orgs': {},
-        'quarterly_fulfilled': {},
-        'quarterly_all': {},
-        'quarterly_payers': {},
-        'quarterly_earners': {},
-        'quarterly_orgs': {},
-        'yearly_fulfilled': {},
-        'yearly_all': {},
-        'yearly_payers': {},
-        'yearly_earners': {},
-        'yearly_orgs': {},
-        'all_fulfilled': {},
-        'all_all': {},
-        'all_payers': {},
-        'all_earners': {},
-        'all_orgs': {},
-    }
+    times = ['all', 'weekly', 'quarterly', 'yearly', 'monthly']
+    breakdowns = ['fulfilled', 'all', 'payers', 'earners', 'orgs', 'keywords', 'tokens']
+    return_dict = {}
+    for time in times:
+        for bd in breakdowns:
+            key = f'{time}_{bd}'
+            return_dict[key] = {}
 
+    return return_dict
 
 ranks = default_ranks()
 counts = default_ranks()
@@ -97,6 +78,10 @@ def sum_bounty_helper(b, breakdown, username, val_usd):
         add_element(f'{breakdown}_orgs', username, val_usd)
     if username in fulfiller_usernames and username not in IGNORE_EARNERS:
         add_element(f'{breakdown}_earners', username, val_usd)
+    if b.token_name == username:
+        add_element(f'{breakdown}_tokens', username, val_usd)
+    if username in b.keywords_list:
+        add_element(f'{breakdown}_keywords', username, val_usd)
 
 
 def sum_bounties(b, usernames):
@@ -137,6 +122,8 @@ def sum_tip_helper(t, breakdown, username, val_usd):
         add_element(f'{breakdown}_payers', username, val_usd)
     if t.org_name == username:
         add_element(f'{breakdown}_orgs', username, val_usd)
+    if t.tokenName == username:
+        add_element(f'{breakdown}_tokens', username, val_usd)
 
 
 def sum_tips(t, usernames):
@@ -191,6 +178,10 @@ class Command(BaseCommand):
             for fulfiller in b.fulfillments.filter(accepted=True):
                 if not should_suppress_leaderboard(fulfiller.fulfiller_github_username):
                     usernames.append(fulfiller.fulfiller_github_username)
+            for keyword in b.keywords_list:
+                usernames.append(keyword)
+
+            usernames.append(b.token_name)
 
             sum_bounties(b, usernames)
 
@@ -207,6 +198,8 @@ class Command(BaseCommand):
                 usernames.append(t.from_username)
             if not should_suppress_leaderboard(t.org_name):
                 usernames.append(t.org_name)
+            if not should_suppress_leaderboard(t.tokenName):
+                usernames.append(t.tokenName)
 
             sum_tips(t, usernames)
 

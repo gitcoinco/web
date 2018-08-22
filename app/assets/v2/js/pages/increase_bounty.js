@@ -16,12 +16,12 @@ $(document).ready(function() {
 
   $('input[name=amount]').keyup(setUsdAmount);
   $('input[name=amount]').blur(setUsdAmount);
-  $('select[name=deonomination]').change(setUsdAmount);
+  $('select[name=denomination]').change(setUsdAmount);
 
 
   $('input[name=amount]').focus();
 
-  var denomSelect = $('select[name=deonomination]');
+  var denomSelect = $('select[name=denomination]');
 
   localStorage['tokenAddress'] = denomSelect.data('tokenAddress');
   localStorage['amount'] = 0;
@@ -47,7 +47,7 @@ $(document).ready(function() {
 
     var issueURL = $('input[name=issueURL]').val();
     var amount = $('input[name=amount]').val();
-    var tokenAddress = $('select[name=deonomination]').val();
+    var tokenAddress = $('select[name=denomination]').val();
 
     // validation
     var isError = false;

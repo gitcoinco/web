@@ -27,12 +27,12 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
-from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.core.cache import cache
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.html import escape
 from django.utils.text import slugify
@@ -42,7 +42,7 @@ from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
 
-from app.utils import ellipses, sync_profile
+from app.utils import clean_str, ellipses, sync_profile
 from avatar.utils import get_avatar_context
 from economy.utils import convert_amount, etherscan_link, eth_from_wei
 from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
@@ -51,6 +51,7 @@ from marketing.mails import (
     admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
 from marketing.models import Keyword
+from pytz import UTC
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
@@ -71,7 +72,7 @@ from .utils import (
     get_bounty, get_bounty_id, get_context, has_tx_mined, record_user_action_on_interest, web3_process_bounty
 )
 
-logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 confirm_time_minutes_target = 4
 
@@ -102,7 +103,7 @@ def record_user_action(user, event_name, instance):
         UserAction.objects.create(**kwargs)
     except Exception as e:
         # TODO: sync_profile?
-        logging.error(f"error in record_action: {e} - {event_name} - {instance}")
+        logger.error(f"error in record_action: {e} - {event_name} - {instance}")
 
 
 def record_bounty_activity(bounty, user, event_name, interest=None):
@@ -145,7 +146,7 @@ def record_bounty_activity(bounty, user, event_name, interest=None):
     try:
         return Activity.objects.create(**kwargs)
     except Exception as e:
-        logging.error(f"error in record_bounty_activity: {e} - {event_name} - {bounty} - {user}")
+        logger.error(f"error in record_bounty_activity: {e} - {event_name} - {bounty} - {user}")
 
 
 
@@ -309,7 +310,7 @@ def remove_interest(request, bounty_id):
         dict: The success key with a boolean value and accompanying error.
 
     """
-    profile_id = request.user.profile.pk if request.user.is_authenticated and hasattr(request.user, 'profile') else None
+    profile_id = request.user.profile.pk if request.user.is_authenticated and getattr(request.user, 'profile', None) else None
 
     access_token = request.GET.get('token')
     if access_token:
@@ -361,6 +362,54 @@ def remove_interest(request, bounty_id):
     })
 
 
+@csrf_exempt
+@require_POST
+def extend_expiration(request, bounty_id):
+    """Unclaim work from the Bounty.
+
+    Can only be called by someone who has started work
+
+    :request method: POST
+
+    post_id (int): ID of the Bounty.
+
+    Returns:
+        dict: The success key with a boolean value and accompanying error.
+
+    """
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
+        return JsonResponse(
+            {'error': _('You must be authenticated via github to use this feature!')},
+            status=401)
+
+    try:
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except Bounty.DoesNotExist:
+        return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
+                            status=401)
+
+    is_funder = bounty.is_funder(user.username.lower()) if user else False
+    if is_funder:
+        deadline = round(int(request.POST.get('deadline')) / 1000)
+        bounty.expires_date = timezone.make_aware(
+            timezone.datetime.fromtimestamp(deadline),
+            timezone=UTC)
+        bounty.save()
+        record_user_action(request.user, 'extend_expiration', bounty)
+        record_bounty_activity(bounty, request.user, 'extend_expiration')
+
+        return JsonResponse({
+            'success': True,
+            'msg': _("You've extended expiration of this issue."),
+        })
+
+    return JsonResponse({
+        'error': _("You must be funder to extend expiration"),
+    }, status=200)
+
+
 @require_POST
 @csrf_exempt
 def uninterested(request, bounty_id, profile_id):
@@ -385,10 +434,11 @@ def uninterested(request, bounty_id, profile_id):
     except Bounty.DoesNotExist:
         return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
                             status=401)
+    is_logged_in = request.user.is_authenticated
     is_funder = bounty.is_funder(request.user.username.lower())
     is_staff = request.user.is_staff
     is_moderator = request.user.profile.is_moderator if hasattr(request.user, 'profile') else False
-    if not is_funder and not is_staff and not is_moderator:
+    if not is_logged_in or (not is_funder and not is_staff and not is_moderator):
         return JsonResponse(
             {'error': 'Only bounty funders are allowed to remove users!'},
             status=401)
@@ -544,6 +594,47 @@ def contribute(request):
     return TemplateResponse(request, 'contribute_bounty.html', params)
 
 
+def invoice(request):
+    """invoice view.
+
+    Args:
+        pk (int): The primary key of the bounty to be accepted.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The invoice  view.
+
+    """
+    bounty = handle_bounty_views(request)
+
+    # only allow invoice viewing if admin or iff bounty funder
+    is_funder = bounty.is_funder(request.user.username)
+    is_staff = request.user.is_staff
+    has_view_privs = is_funder or is_staff
+    if not has_view_privs:
+        raise Http404
+
+    params = get_context(
+        ref_object=bounty,
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='invoice_view',
+        title=_('Invoice'),
+    )
+    params['accepted_fulfillments'] = bounty.fulfillments.filter(accepted=True)
+    params['tips'] = [
+        tip for tip in bounty.tips.exclude(txid='') if tip.username == request.user.username and tip.username
+    ]
+    params['total'] = bounty._val_usd_db if params['accepted_fulfillments'] else 0
+    for tip in params['tips']:
+        if tip.value_in_usdt:
+            params['total'] += tip.value_in_usdt
+
+    return TemplateResponse(request, 'bounty/invoice.html', params)
+
+
 def social_contribution(request):
     """Social Contributuion to the bounty.
 
@@ -620,6 +711,7 @@ def bulk_payout_bounty(request):
         active='payout_bounty',
         title=_('Multi-Party Payout'),
     )
+
     return TemplateResponse(request, 'bulk_payout_bounty.html', params)
 
 
@@ -649,7 +741,7 @@ def fulfill_bounty(request):
         active='fulfill_bounty',
         title=_('Submit Work'),
     )
-    return TemplateResponse(request, 'fulfill_bounty.html', params)
+    return TemplateResponse(request, 'bounty/fulfill.html', params)
 
 
 def increase_bounty(request):
@@ -679,7 +771,7 @@ def increase_bounty(request):
 
     params['is_funder'] = json.dumps(is_funder)
 
-    return TemplateResponse(request, 'increase_bounty.html', params)
+    return TemplateResponse(request, 'bounty/increase.html', params)
 
 
 def cancel_bounty(request):
@@ -703,7 +795,7 @@ def cancel_bounty(request):
         active='kill_bounty',
         title=_('Cancel Bounty'),
     )
-    return TemplateResponse(request, 'kill_bounty.html', params)
+    return TemplateResponse(request, 'bounty/kill.html', params)
 
 
 def helper_handle_admin_override_and_hide(request, bounty):
@@ -887,7 +979,8 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
     if issue_url:
         try:
             bounties = Bounty.objects.current().filter(github_url=issue_url)
-            if stdbounties_id:
+            stdbounties_id = clean_str(stdbounties_id)
+            if stdbounties_id and stdbounties_id.isdigit():
                 bounties = bounties.filter(standard_bounties_id=stdbounties_id)
             if bounties:
                 bounty = bounties.order_by('-pk').first()
@@ -915,10 +1008,9 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
         except Bounty.DoesNotExist:
             pass
         except Exception as e:
-            print(e)
-            logging.error(e)
+            logger.error(e)
 
-    return TemplateResponse(request, 'bounty_details.html', params)
+    return TemplateResponse(request, 'bounty/details.html', params)
 
 
 def quickstart(request):
@@ -957,7 +1049,7 @@ def profile_helper(handle, suppress_profile_hidden_exception=False):
         # We should consider setting Profile.handle to unique.
         # TODO: Should we handle merging or removing duplicate profiles?
         profile = Profile.objects.filter(handle__iexact=handle).latest('id')
-        logging.error(e)
+        logger.error(e)
 
     if profile.hide_profile and not profile.is_org and not suppress_profile_hidden_exception:
         raise ProfileHiddenException
@@ -1015,6 +1107,8 @@ def profile(request, handle):
             handle = request.user.username
             profile = request.user.profile
         else:
+            if handle.endswith('/'):
+                handle = handle[:-1]
             profile = profile_helper(handle)
     except Http404:
         show_hidden_profile = True
@@ -1025,42 +1119,27 @@ def profile(request, handle):
             'hidden': True,
             'profile': {
                 'handle': handle,
-                'avatar_url': f"/static/avatar/Self",
+                'avatar_url': f"/dynamic/avatar/Self",
                 'data': {
                     'name': f"@{handle}",
                 },
             },
         }
-        return TemplateResponse(request, 'profiles/profile.html', params)
+        return TemplateResponse(request, 'profiles/profile.html', params, status=404)
 
     params = profile.to_dict()
 
     return TemplateResponse(request, 'profiles/profile.html', params)
 
-
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def save_search(request):
-    """Save the search."""
-    email = request.POST.get('email')
-    if email:
-        raw_data = request.POST.get('raw_data')
-        Subscription.objects.create(
-            email=email,
-            raw_data=raw_data,
-            ip=get_ip(request),
-        )
-        response = {
-            'status': 200,
-            'msg': 'Success!',
-        }
-        return JsonResponse(response)
-
+def get_quickstart_video(request):
+    """Show quickstart video."""
     context = {
-        'active': 'save',
-        'title': _('Save Search'),
+        'active': 'video',
+        'title': _('Quickstart Video'),
     }
-    return TemplateResponse(request, 'save_search.html', context)
+    return TemplateResponse(request, 'quickstart_video.html', context)
 
 
 @cache_page(60 * 60 * 24)
@@ -1329,22 +1408,33 @@ def funder_dashboard(request):
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def get_quickstart_video(request):
+def extend_issue_deadline(request):
     """Show quickstart video."""
+    bounty = Bounty.objects.get(pk=request.GET.get("pk"))
+    print(bounty)
     context = {
-        'active': 'video',
-        'title': _('Quickstart Video'),
+        'active': 'extend_issue_deadline',
+        'title': _('Extend Expiration'),
+        'bounty': bounty,
+        'user_logged_in': request.user.is_authenticated,
+        'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
     }
-    return TemplateResponse(request, 'quickstart_video.html', context)
+    return TemplateResponse(request, 'extend_issue_deadline.html', context)
 
 
 @require_POST
 @csrf_exempt
 @ratelimit(key='ip', rate='5/s', method=ratelimit.UNSAFE, block=True)
 def sync_web3(request):
-    """ Sync up web3 with the database.  This function has a few different uses.  It is typically
-        called from the front end using the javascript `sync_web3` function.  The `issueURL` is
-        passed in first, followed optionally by a `bountydetails` argument.
+    """Sync up web3 with the database.
+
+    This function has a few different uses.  It is typically called from the
+    front end using the javascript `sync_web3` function.  The `issueURL` is
+    passed in first, followed optionally by a `bountydetails` argument.
+
+    Returns:
+        JsonResponse: The JSON response following the web3 sync.
+
     """
     # setup
     result = {
@@ -1641,4 +1731,4 @@ def new_bounty(request):
         title=_('Create Funded Issue'),
         update=bounty_params,
     )
-    return TemplateResponse(request, 'submit_bounty.html', params)
+    return TemplateResponse(request, 'bounty/new.html', params)

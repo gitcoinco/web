@@ -1,0 +1,134 @@
+{% comment %}
+Copyright (C) 2017 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+  </head>
+
+  <body class="interior {{active}}">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+    </div>
+    <div class="container-fluid">
+      <div class="row no-gutters metamask-banner">
+        <div class="col-12">
+          {% include 'shared/no_issue_error.html' with page='submit_bounty' %}
+          {% include 'shared/no_metamask_error.html' %}
+          {% include 'shared/zero_balance_error.html' %}
+          {% include 'shared/unlock_metamask.html' %}
+        </div>
+      </div>
+      {% include 'shared/success_container.html' %}
+      <div class="row content">
+        <div class="col-12 body">
+          <div class="row font-smaller-2" id="form_container">
+            <div id="robot_error" class="hidden">
+              <img src="{% static "v2/images/prime.png" %}">
+            </div>
+            <input type="hidden" name="standardBountiesId"
+              value="{{bounty.standard_bounties_id}}">
+            <input type="hidden" name="bountyOwnerAddress"
+              value="{{bounty.bounty_owner_address}}">
+            <input type="hidden" name="valueInToken"
+              value="{{bounty.value_in_token}}">
+            <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
+              <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
+                <div class="w-100" style="text-align: center;">
+                  <h3>Increase Funding</h3>
+                  <img src="{% static "v2/images/prime.png" %}">
+                </div>
+                {% include 'shared/bounty_actions_hidden_vars.html' %}
+                {% include 'shared/network_status.html' %}
+                <div class="w-100">
+                  <label class="form__label" for=issueURL>Issue URL</label>
+                  <input name='issueURL' id="issueURL" class="w-100 form__input" type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" disabled/>
+                </div>
+                <div class="w-100 mt-2">
+                  <label class="form__label" for="amount">Amount</label>
+                  <div class="form__flex-group">
+                    <div class="form__amount-wrapper">
+                      <input name='amount' id='amount' step="0.0001" class="form__input" type="number" placeholder="Amount" />
+                    </div>
+                    <div class="form__group-item">
+                      <div class="form__select2">
+                        <select name='denomination' id='token' data-token-address='{{bounty.token_address}}' disabled></select>
+                      </div>
+                    </div>
+                  </div>
+                  <small class="form__input-help form__input-help--dynamic" id="usd_amount"></small>
+                </div>
+                <div id="gas-section">
+                  {% include 'shared/wallet_estimate.html' %}
+                </div>
+                <div class="w-100 mt-2 terms_container" style="padding-top:5px;">
+                  <div class="form__checkbox">
+                    <input name='terms' id='terms' type="checkbox" value=1 required />
+                    <label class="form__label" for=terms>I have read, understand, and agree to, the <a href="{% url "terms" %}" target=new>Terms of Service</a>.</label>
+                  </div>
+                </div>
+                <div class="form__footer form__footer--right text-center">
+                  <button class="button button--primary" type="submit" id="increaseFunding">Increase Funding</button>
+                  <br />
+                  <a class="font-caption" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">
+                    Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain. </br>
+                    Learn more here.
+                  </a>
+                </div>
+                {% include 'shared/newsletter.html' %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
+
+  </body>
+
+
+  <script>
+    document.is_funder_github_user_same = {{ is_funder }};
+  </script>
+
+  <!-- jQuery -->
+  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/secrets.min.js" %}"></script>
+  <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
+  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/amounts.js" %}"></script>
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/shared.js" %}"></script>
+  <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+  <script src="{% static "v2/js/pages/increase_bounty.js" %}"></script>
+  <script src="{% static "onepager/js/send.js" %}"></script>
+
+
+</html>

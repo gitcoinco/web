@@ -74,7 +74,11 @@ def convert_token_to_usdt(from_token, timestamp=None):
         float: The current rate of the provided token to USDT.
 
     """
-    return convert_amount(1, from_token, "USDT", timestamp)
+    try:
+        return convert_amount(1, from_token, "USDT", timestamp)
+    except ConversionRateNotFoundError:
+        in_eth = convert_amount(1, from_token, "ETH", timestamp)
+        return convert_amount(in_eth, 'ETH', "USDT", timestamp)
 
 
 def etherscan_link(txid):

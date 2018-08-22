@@ -57,7 +57,7 @@ body {
   position: absolute;
   top: -50px;
   right: calc(5vw - 50px);
-  max-width: 30vw;
+  max-width: 25vw;
   will-change: transform;
 }
 
@@ -401,13 +401,15 @@ body {
 
 .whatisit .youtube {
   height: 100%;
+  max-width: 550px;
+  margin-bottom: auto;
+  margin-top: 2rem;
 }
 
 .whatisit_container iframe {
   min-height: 280px;
   width: 100%;
   height: 100%;
-  padding: 7px;
 }
 
 .index #gitcoin-background {

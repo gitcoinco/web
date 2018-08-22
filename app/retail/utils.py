@@ -242,13 +242,60 @@ def build_stat_results(keyword=None):
     return results
 
 
+def get_bounty_history(keyword=None, cumulative=True):
+    bh = [
+        ['', 'Tips',  'Open / Available',  'Started / In Progress',  'Completed', 'Cancelled'],
+    ]
+    initial_stats = [
+        ["December 2017", 2011, 903, 2329, 5534, 1203],
+        ["January 2018", 5093, 1290, 1830, 15930, 1803],
+        ["February 2018", 7391, 6903, 4302, 16302, 2390],
+        ["March 2018", 8302, 5349, 5203, 26390, 3153],
+        ["April 2018", 10109, 6702, 4290, 37342, 4281],
+    ]
+    if not keyword:
+        bh = bh + initial_stats
+    for year in range(2018, 2025):
+        months = range(1, 12)
+        if year == 2018:
+            months = range(6, 12)
+        for month in months:
+            day_of_month = 3 if year == 2018 and month < 7 else 1
+            then = timezone.datetime(year, month, day_of_month).replace(tzinfo=pytz.UTC)
+            if then < timezone.now():
+                label = (then - timezone.timedelta(days=2)).strftime("%B %Y")
+                row = get_bounty_history_row(label, then, keyword)
+                bh.append(row)
+
+    if timezone.now().day > 10:
+        # get current month date to month
+        label = timezone.now().strftime("%B %Y") + " (MTD)"
+        row = get_bounty_history_row(label, timezone.now(), keyword)
+        bh.append(row)
+
+    # adjust monthly totals
+    if not cumulative:
+        new_bh = bh.copy()
+        for i in range(1, len(bh)):
+            for k in range(1, len(bh[i])):
+                try:
+                    last_stat = int(bh[i-1][k])
+                except:
+                    last_stat = 0
+                diff = bh[i][k] - last_stat
+                new_bh[i][k] = diff
+        return new_bh
+
+    return bh
+
+
 def build_stat_results_helper(keyword=None):
     """Buidl the results page context.
 
     Args:
         keyword (str): The keyword to build statistic results.
     """
-    from dashboard.models import Bounty
+    from dashboard.models import Bounty, Tip
     context = {
         'active': 'results',
         'title': _('Results'),
@@ -301,36 +348,20 @@ def build_stat_results_helper(keyword=None):
     pp.profile_time('Stats2')
 
     # bounties history
-    context['bounty_history'] = [
-        ['', 'Tips',  'Open / Available',  'Started / In Progress',  'Completed', 'Cancelled'],
-    ]
-    initial_stats = [
-        ["January 2018", 2011, 903, 2329, 5534, 1203],
-        ["February 2018", 5093, 1290, 1830, 15930, 1803],
-        ["March 2018", 7391, 6903, 4302, 16302, 2390],
-        ["April 2018", 8302, 5349, 5203, 26390, 3153],
-        ["May 2018", 10109, 6702, 4290, 37342, 4281],
-    ]
-    if not keyword:
-        context['bounty_history'] = context['bounty_history'] + initial_stats
-    for year in range(2018, 2025):
-        months = range(1, 12)
-        if year == 2018:
-            months = range(6, 12)
-        for month in months:
-            day_of_month = 3 if year == 2018 and month < 7 else 1
-            then = timezone.datetime(year, month, day_of_month).replace(tzinfo=pytz.UTC)
-            if then < timezone.now():
-                row = get_bounty_history_row(then.strftime("%B %Y"), then, keyword)
-                context['bounty_history'].append(row)
-    context['bounty_history'] = json.dumps(context['bounty_history'])
+    get_bounty_history(keyword)
+    context['bounty_history'] = json.dumps(get_bounty_history(keyword))
     pp.profile_time('bounty_history')
 
     # Bounties
     completion_rate = get_completion_rate(keyword)
     pp.profile_time('completion_rate')
     bounty_abandonment_rate = round(100 - completion_rate, 1)
-    context['universe_total_usd'] = sum(base_bounties.filter(network='mainnet').values_list('_val_usd_db', flat=True))
+    total_bounties_usd = sum(base_bounties.filter(network='mainnet').values_list('_val_usd_db', flat=True))
+    total_tips_usd = sum([
+        tip.value_in_usdt
+        for tip in Tip.objects.filter(network='mainnet').exclude(txid='') if tip.value_in_usdt
+    ])
+    context['universe_total_usd'] = float(total_bounties_usd) + float(total_tips_usd)
     pp.profile_time('universe_total_usd')
     context['max_bounty_history'] = float(context['universe_total_usd']) * .7
     context['bounty_abandonment_rate'] = bounty_abandonment_rate

@@ -112,7 +112,7 @@ var callbacks = {
     var username = result['bounty_owner_github_username'] ? result['bounty_owner_github_username'] : 'Self';
 
     return [ 'issuer_avatar_url', '<a href="/profile/' + result['bounty_owner_github_username'] +
-      '"><img class=avatar src="/funding/avatar?repo=https://github.com/' + username + '"></a>' ];
+      '"><img class=avatar src="/dynamic/avatar/' + username + '"></a>' ];
   },
   'status': function(key, val, result) {
     var ui_status = val;
@@ -332,20 +332,13 @@ var callbacks = {
   },
   'fulfilled_owners_username': function(key, val, result) {
     var accepted = [];
-    var accepted_fufillments = [];
 
-    if (result.fulfillments) {
-      var fulfillments = result.fulfillments;
-
-      fulfillments.forEach(function(fufillment) {
-        if (fufillment.accepted == true)
-          accepted_fufillments.push(fufillment.fulfiller_github_username);
-      });
-      if (accepted_fufillments.length == 0) {
+    if (result.paid) {
+      if (result.paid.length == 0) {
         accepted.push('<i class="fas fa-minus"></i>');
       } else {
-        accepted_fufillments.forEach((github_username, position) => {
-          var name = (position == accepted_fufillments.length - 1) ?
+        result.paid.forEach((github_username, position) => {
+          var name = (position == result.paid.length - 1) ?
             github_username : github_username.concat(',');
 
           accepted.push(profileHtml(github_username, name));
@@ -398,10 +391,12 @@ var showWarningMessage = function(txid) {
   $('.interior .body').addClass('loading');
 
   if (typeof txid != 'undefined' && txid.indexOf('0x') != -1) {
-    clearInterval(interval);
-    var link_url = etherscan_tx_url(txid);
+    waitforWeb3(function() {
+      clearInterval(interval);
+      var link_url = etherscan_tx_url(txid);
 
-    $('#transaction_url').attr('href', link_url);
+      $('#transaction_url').attr('href', link_url);
+    });
   }
 
   $('.left-rails').hide();
@@ -418,6 +413,31 @@ var showWarningMessage = function(txid) {
   waitingRoomEntertainment();
   var interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
 };
+
+// refresh page if metamask changes
+waitforWeb3(function() {
+  setInterval(function() {
+    if (document.web3Changed) {
+      return;
+    }
+    if (typeof document.lastWeb3Network == 'undefined') {
+      document.lastWeb3Network = document.web3network;
+      return;
+    }
+    if (typeof document.lastCoinbase == 'undefined') {
+      document.lastCoinbase = web3.eth.coinbase;
+      return;
+    }
+    var hasChanged = (document.lastCoinbase != web3.eth.coinbase) || (document.lastWeb3Network != document.web3network);
+
+    if (hasChanged) {
+      _alert(gettext('Detected a web3 change.  Refreshing the page. '), 'info');
+      document.location.href = document.location.href;
+      document.web3Changed = true;
+    }
+
+  }, 500);
+});
 
 var wait_for_tx_to_mine_and_then_ping_server = function() {
   console.log('checking for updates');
@@ -472,10 +492,12 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
 };
 
 var attach_work_actions = function() {
-  $('body').delegate('a[href="/interested"], a[href="/uninterested"]', 'click', function(e) {
+  $('body').delegate('a[href="/interested"], a[href="/uninterested"], a[href="/extend-deadlines"]', 'click', function(e) {
     e.preventDefault();
     if ($(this).attr('href') == '/interested') {
       show_interest_modal.call(this);
+    } else if ($(this).attr('href') === '/extend-deadlines') {
+      show_extend_deadline_modal.call(this);
     } else if (confirm(gettext('Are you sure you want to stop work?'))) {
       $(this).attr('href', '/interested');
       $(this).find('span').text(gettext('Start Work'));
@@ -530,42 +552,18 @@ var show_interest_modal = function() {
         modalClass: 'modal add-interest-modal'
       });
 
-      var placeholder = gettext(
-        'What steps will you take to complete this task?\n\n' +
-        'Example:\n' +
-        'I\'d start by implementing Netflify, then I\'d make mockups ' +
-        'for the /blog page and individual post pages and proceed ' +
-        'with building them after getting some feedback from the team. ' +
-        'I will start work on this right away and have it ready by the end of the weekend.');
-
       var actionPlanForm = modal.find('form#action_plan');
       var issueMessage = actionPlanForm.find('#issue_message');
 
-      issueMessage.addClass('placeholder');
-      issueMessage.val(placeholder);
-
-      issueMessage.on('focus', function() {
-        if (issueMessage.val() === placeholder) {
-          issueMessage.removeClass('placeholder');
-        }
-      });
-
-      issueMessage.on('blur', function() {
-        var val = issueMessage.val();
-
-        if (!val || val === placeholder) {
-          issueMessage.val(placeholder);
-          issueMessage.addClass('placeholder');
-        }
-      });
+      issueMessage.attr('placeholder', gettext('What steps will you take to complete this task? (min 30 chars)'));
 
       modal.on('submit', function(event) {
         event.preventDefault();
 
         var msg = issueMessage.val().trim();
 
-        if (!msg || msg === placeholder || msg.length < 48) {
-          _alert({message: gettext('Please provide an action plan for this ticket. At least two sentences. (48 Characters)')}, 'error');
+        if (!msg || msg.length < 30) {
+          _alert({message: gettext('Please provide an action plan for this ticket. (min 30 chars)')}, 'error');
           return false;
         }
 
@@ -575,6 +573,76 @@ var show_interest_modal = function() {
           issue_message: msg
         });
         $.modal.close();
+      });
+    });
+  });
+};
+
+var set_extended_time_html = function(extendedDuration, currentExpires) {
+  currentExpires.setTime(currentExpires.getTime() + (extendedDuration * 1000));
+  $('input[name=updatedExpires]').val(currentExpires.getTime());
+  var date = getFormattedDate(currentExpires);
+  var days = timeDifference(now, currentExpires).split(' ');
+  var time = getTimeFromDate(currentExpires);
+
+  days.shift();
+  days = days.join(' ');
+
+  $('#extended-expiration-date #extended-date').html(date);
+  $('#extended-expiration-date #extended-days').html(days);
+};
+
+var show_extend_deadline_modal = function() {
+  var self = this;
+
+  setTimeout(function() {
+    var url = '/modal/extend_issue_deadline?pk=' + document.result['pk'];
+
+    $.get(url, function(newHTML) {
+      var modal = $(newHTML).appendTo('body').modal({
+        modalClass: 'modal add-interest-modal'
+      });
+
+      // all js select 2 fields
+      $('.js-select2').each(function() {
+        $(this).select2();
+      });
+      // removes tooltip
+      $('.submit_bounty select').each(function(evt) {
+        $('.select2-selection__rendered').removeAttr('title');
+      });
+      // removes search field in all but the 'denomination' dropdown
+      $('.select2-container').click(function() {
+        $('.select2-container .select2-search__field').remove();
+      });
+
+      var extendedDuration = parseInt($('select[name=expirationTimeDelta]').val());
+      var currentExpires = new Date(document.result['expires_date']);
+
+      set_extended_time_html(extendedDuration, currentExpires);
+      $(document).on('change', 'select[name=expirationTimeDelta]', function() {
+        var previousExpires = new Date(document.result['expires_date']);
+
+        set_extended_time_html(parseInt($(this).val()), previousExpires);
+      });
+
+      $('.btn-cancel').on('click', function() {
+        $.modal.close();
+        return;
+      });
+
+      modal.on('submit', function(event) {
+        event.preventDefault();
+
+        var extended_time = $('input[name=updatedExpires]').val();
+
+        extend_expiration(document.result['pk'], {
+          deadline: extended_time
+        });
+        $.modal.close();
+        setTimeout(function() {
+          window.location.reload();
+        }, 2000);
       });
     });
   });
@@ -595,6 +663,19 @@ var build_detail_page = function(result) {
   // title
   result['title'] = result['title'] ? result['title'] : result['github_url'];
   $('.title').html(gettext('Funded Issue Details: ') + result['title']);
+
+  // funded by
+  if (isBountyOwnerPerLogin(result) && !isBountyOwner(result)) {
+    $('#funder_notif_info').html(gettext('Funder Address: ') +
+      '<span id="bounty_funded_by">' + result['bounty_owner_address'] + '</span>');
+    $('#funder_notif_info').append('\
+        <span class="bounty-notification ml-2">\
+        <i class="far fa-bell"></i>\
+        Ready to Pay? Set Your Metamask to this address!\
+        <img src="' + static_url + 'v2/images/metamask.svg">\
+      </span>'
+    );
+  }
 
   // insert table onto page
   for (var j = 0; j < rows.length; j++) {
@@ -620,6 +701,10 @@ var build_detail_page = function(result) {
       $(id).html(val);
     }
   }
+
+  $('body').delegate('#bounty_details .button.disabled', 'click', function(e) {
+    e.preventDefault();
+  });
 
   $('#bounty_details #issue_description img').on('click', function() {
 
@@ -665,15 +750,16 @@ var do_actions = function(result) {
   let show_start_stop_work = is_still_on_happy_path && !should_block_from_starting_work && is_open;
   let show_github_link = result['github_url'].substring(0, 4) == 'http';
   let show_submit_work = is_open;
-  let show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
+  let show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled && isBountyOwner(result);
   let show_job_description = result['attached_job_description'] && result['attached_job_description'].startsWith('http');
   const show_increase_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
-  const kill_bounty_enabled = isBountyOwner(result);
   const submit_work_enabled = !isBountyOwner(result);
   const start_stop_work_enabled = !isBountyOwner(result);
   const increase_bounty_enabled = isBountyOwner(result);
   let show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
-  let show_advanced_payout = isBountyOwner(result) && !is_status_expired && !is_status_done;
+  let show_payout = !is_status_expired && !is_status_done && isBountyOwner(result);
+  let show_extend_deadline = isBountyOwner(result) && !is_status_expired && !is_status_done;
+  let show_invoice = isBountyOwner(result);
   const show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
   const show_admin_methods = document.isStaff;
   const show_moderator_methods = document.isModerator;
@@ -705,7 +791,7 @@ var do_actions = function(result) {
   }
 
   if (show_start_stop_work) {
-    const enabled = start_stop_work_enabled;
+    const enabled = true;
     const interest_entry = {
       enabled: enabled,
       href: is_interested ? '/uninterested' : '/interested',
@@ -720,7 +806,7 @@ var do_actions = function(result) {
   }
 
   if (show_kill_bounty) {
-    const enabled = kill_bounty_enabled;
+    const enabled = isBountyOwner(result);
     const _entry = {
       enabled: enabled,
       href: result['action_urls']['cancel'],
@@ -732,8 +818,8 @@ var do_actions = function(result) {
     actions.push(_entry);
   }
 
-  if (show_advanced_payout) {
-    const enabled = show_advanced_payout;
+  if (show_payout) {
+    const enabled = isBountyOwner(result);
     const _entry = {
       enabled: enabled,
       href: result['action_urls']['payout'],
@@ -758,6 +844,32 @@ var do_actions = function(result) {
 
     actions.push(_entry);
   }
+
+  if (show_extend_deadline) {
+    const enabled = true;
+    const _entry = {
+      enabled: enabled,
+      href: '/extend-deadlines',
+      text: gettext('Extend Expiration'),
+      parent: 'right_actions',
+      title: gettext('Extend deadline of an issue')
+    };
+
+    actions.push(_entry);
+  }
+
+  if (show_invoice) {
+    const _entry = {
+      enabled: true,
+      href: result['action_urls']['invoice'],
+      text: gettext('Show Invoice'),
+      parent: 'right_actions',
+      title: gettext('View an Invoice for this Issue')
+    };
+
+    actions.push(_entry);
+  }
+
 
   if (show_github_link) {
     let github_url = result['github_url'];
@@ -912,6 +1024,22 @@ var do_actions = function(result) {
     actions.push(_entry);
   }
 
+  if (show_admin_methods) {
+    const url = '/_administrationdashboard/bounty/' + result['pk'] + '/change/';
+
+    const _entry = {
+      enabled: true,
+      href: url,
+      text: gettext('View in Admin'),
+      parent: 'right_actions',
+      title: gettext('View in Admin'),
+      color: 'white',
+      buttonclass: 'admin-only'
+    };
+
+    actions.push(_entry);
+  }
+
   render_actions(actions);
 };
 
@@ -1013,7 +1141,8 @@ const process_activities = function(result, bounty_activities) {
     const has_interest = !!result.interested.find(interest =>
       interest.profile.handle === _activity.profile.handle);
     const slash_possible = document.isStaff;
-    const uninterest_possible = (isBountyOwnerPerLogin(result) || document.isStaff) && is_open && has_interest;
+    const is_logged_in = document.contxt['github_handle'];
+    const uninterest_possible = is_logged_in && ((isBountyOwnerPerLogin(result) || document.isStaff) && is_open && has_interest);
 
     return {
       profileId: _activity.profile.id,
