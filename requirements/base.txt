@@ -65,3 +65,4 @@ pysha3
 pygithub==1.40
 raven==6.9.0
 collectfast==0.6.2
+django-health-check==3.7.0

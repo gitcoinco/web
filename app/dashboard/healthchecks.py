@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Define the Dashboard application configuration.
+"""Define custom healthchecks.
 
 Copyright (C) 2018 Gitcoin Core
 
@@ -17,21 +17,22 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from __future__ import unicode_literals
-
-from django.apps import AppConfig
-
-from health_check.plugins import plugin_dir
+from dashboard.utils import get_ipfs
+from health_check.backends import BaseHealthCheckBackend
+from health_check.exceptions import HealthCheckException
 
 
-class DashboardConfig(AppConfig):
-    """Define the Dashboard application configuration."""
+class IPFSBackend(BaseHealthCheckBackend):
+    """Define the IPFS healthcheck backend."""
 
-    name = 'dashboard'
-    verbose_name = 'Dashboard'
+    critical_service = True
 
-    def ready(self):
-        """Handle signals on ready."""
-        from .healthchecks import IPFSBackend
-        import .signals # noqa
-        plugin_dir.register(IPFSBackend)
+    def check_status(self):
+        """Define the functionality of the health check."""
+        ipfs_connection = get_ipfs()
+        if not ipfs_connection:
+            raise HealthCheckException('IPFS Unreachable')
+
+    def identifier(self):
+        """Define the displayed name of the healthcheck."""
+        return self.__class__.__name__
