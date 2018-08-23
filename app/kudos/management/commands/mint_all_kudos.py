@@ -45,7 +45,7 @@ class Command(BaseCommand):
     help = 'mints the initial kudos gen0 set'
 
     def add_arguments(self, parser):
-        parser.add_argument('network', default='ropsten', type=str)
+        parser.add_argument('network', default='localhost', type=str)
         parser.add_argument('yaml_file', help='absolute path to kudos.yaml file', type=str)
         parser.add_argument('--private_key', help='private key for signing transactions', type=str)
 
@@ -77,6 +77,8 @@ class Command(BaseCommand):
             args = (kudos['name'], kudos['description'], kudos['rarity'], kudos['priceFinney'],
                     kudos['numClonesAllowed'], kudos['tags'], image_path,
                     )
+
+            logger.info(args)
 
             # try:
             #     mint_kudos_on_web3_and_db(network, private_key, *args)
