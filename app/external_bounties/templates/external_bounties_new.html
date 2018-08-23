@@ -12,13 +12,12 @@
     <div class="container-fluid header dash">
       {% include 'shared/nav.html' %}
     </div>
-    {% include 'shared/current_balance.html' with full=True %}
     {% if msg %}
-        <div class="row no-gutter">
-          <div class="col">
-            <span id="msg">{{msg}}</span>
-          </div>
+      <div class="row no-gutter">
+        <div class="col">
+          <span id="msg">{{msg}}</span>
         </div>
+      </div>
     {% endif %}
     <div class="row no-gutter">
       <div class="col body">
@@ -30,12 +29,12 @@
           </header>
           <div class="main-content">
             <form method="post" >
-                {% csrf_token %}
-                {{ formset }}
-                <br>
-                <br>
-                <br>
-                <input class="button btn-info" type="submit" value="Submit"/>
+              {% csrf_token %}
+              {{ formset }}
+              <br>
+              <br>
+              <br>
+              <input class="button btn-info" type="submit" value="Submit"/>
             </form>
           </div>
           <div class="bounty__footer">
@@ -48,14 +47,14 @@
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
     <script>
-        $(document).ready(function(){
-            $('input[type=text], input[type=url], input[type=number], textarea').addClass('form__input');
-        });
+      $(document).ready(function(){
+        $('input[type=text], input[type=url], input[type=number], textarea').addClass('form__input');
+      });
     </script>
+    <script src="/dynamic/js/tokens_dynamic.js"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>
     <script src="{% static "v2/js/shared.js" %}"></script>
   </body>

@@ -1,0 +1,135 @@
+.submit_bounty .submit_bounty_content {
+  background-color: #f2f6f9;
+}
+
+.submit_bounty .submit_bounty_form {
+  background-color: #FFFFFF;
+}
+
+.submit_bounty_form textarea[name=description] {
+  height: 20rem;
+}
+
+h1, h2, h3, h4, h5 {
+  letter-spacing: 0;
+}
+
+input:-moz-read-only { /* For Firefox */
+  background-color: #eaeaea94;
+}
+
+input:read-only { 
+  background-color: #eaeaea94;
+}
+
+textarea:-moz-read-only { /* For Firefox */
+  background-color: #eaeaea94;
+}
+
+textarea:read-only { 
+  background-color: #eaeaea94;
+}
+
+#primary_form .revisions {
+  min-height: 37px;
+  padding: 0;
+  width: 30%;
+  justify-content: space-around;
+  text-align: center;
+  align-items: center;
+}
+
+#primary_form .title {
+  text-transform: none;
+}
+
+#primary_form .font-subheader {
+  color: #666666;
+  font-weight: bold;
+}
+
+#primary_form .form__input-help {
+  font-size: 13px;
+}
+
+.revisions input {
+  width: 35%;
+  height: 35px;
+  text-align: center;
+  border-left: 1px solid #0D0764;
+  border-top: 0;
+  border-bottom: 0;
+  border-right: 1px solid #0D0764;
+}
+
+.revisions .form__input-action {
+  width: 30%;
+  cursor: pointer;
+}
+
+#pricing-section .form__amount-wrapper {
+  width: 33%;
+}
+
+#pricing-section .form__flex-group {
+  justify-content: space-between;
+}
+
+#pricing-section .form__input,
+#pricing-section .form__select2 {
+  height: 37px;
+}
+
+#issue-details,
+#no-issue-banner img {
+  max-width: 100%;
+  border: 1px solid #d1d1d1;
+}
+
+#no-issue-banner {
+  text-align: center;
+}
+
+#issue-details,
+#issue-details-edit {
+  display: none;
+}
+
+#issue-details {
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+#issue-details input:read-only,
+#issue-details textarea:read-only {
+  border: none;
+  padding-left: 0;  
+  background-color: #fff;
+  outline: none;
+}
+
+#issue-details input:read-only {
+  font-size: 1.1rem;
+  border-bottom: 1px solid #d1d1d1;
+  border-radius: 0;
+}
+
+#sync-issue,
+#issue-details-edit a {
+  font-size: 0.75rem;
+  padding: 5px 14px;
+}
+
+#issue-details-edit label {
+  display: block;
+}
+
+#issue-details .form__input.valid,
+#issue-details .form__input.error {
+  background-image: none;
+}
+
+#last-synced {
+  display: inline;
+  margin-right: .5rem;
+}

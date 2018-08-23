@@ -1,0 +1,83 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load humanize %}
+<style>
+  @media screen and (max-width: 900px) {
+    .gas_nav li{
+      display: list-item;
+      border-top: 1px solid black;
+      border-left: 1px solid black;
+      border-right: 1px solid black;
+    }
+  }
+  @media screen and (min-width: 901px) {
+    .gas_nav li{
+      display: inline-block;
+      border-top: 1px solid black;
+      border-left: 1px solid black;
+      border-right: 1px solid black;
+    }
+  }
+  ul {
+    padding-left: 0px;
+  }
+  .gas_nav {
+    list-style: none;
+    border-bottom: #333 1px solid;
+  }
+  .gas_nav li a{
+    color: black !important;
+    display: block;
+    padding: 5px 10px;
+  }
+  .gas_nav.small {
+    border-bottom: #aaaaaa 1px solid;
+  }
+  .gas_nav.small li{
+    border-top: 1px solid #aaaaaa;
+    border-left: 1px solid #aaaaaa;
+    border-right: 1px solid #aaaaaa;
+    padding: 3px 3px;
+  }
+  .gas_nav.small li a {
+    font-size: 12px;
+    color: #aaaaaa;
+  }
+</style>
+<ul class="gas_nav">
+  <li>
+    <a href="{% url 'gas_intro' %}">Intro</a>
+  </li>
+  <li>
+    <a href="{% url 'gas' %}">Price Tradeoff Tool</a>
+  </li>
+  <li>
+    <a href="{% url 'gas_history_view' %}">Price History</a>
+  </li>
+  <li>
+    <a href="{% url 'gas_guzzler_view' %}">Gas Guzzlers</a>
+  </li>
+  <li>
+    <a href="{% url 'gas_calculator' %}"> Gitcoin Contract Gas Cost Calculator</a>
+  </li>
+  <li>
+    <a href="{% url 'gas_faq' %}"> FAQ</a>
+  </li>
+  <li>
+    <a href="{% url 'gas_faucet_list' %}"> Get Gas</a>
+  </li>
+</ul>

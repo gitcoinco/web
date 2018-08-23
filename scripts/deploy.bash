@@ -37,7 +37,7 @@ MIGRATE_DB=${MIGRATE_DB:-$5}
 CREATE_CACHE_TABLE=${CREATE_CACHE_TABLE:-$6}
 
 # shellcheck disable=SC1091
-source ../gitcoin-3/bin/activate
+source ../gitcoin-37/bin/activate
 
 # pull from git
 git add .
@@ -93,7 +93,7 @@ cd ~/gitcoin/coin || echo "Cannot find coin directory!"
 bash scripts/run_management_command.bash ping_google
 
 if [ "$ENV" = "prod" ]; then
-    # Handle rollbar deployment
-    echo "- publishing deployment information to Rollbar"
-    bash scripts/rollbar.bash
+    # Handle sentry deployment
+    echo "- publishing deployment information to Sentry"
+    bash scripts/sentry.bash
 fi

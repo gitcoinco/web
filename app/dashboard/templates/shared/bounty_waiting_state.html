@@ -1,0 +1,49 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<div class="bg-container" style="display:none;">
+  <img src="{% static "v2/images/icons/circle.png" %}" class="circle" id="c1">
+  <img src="{% static "v2/images/icons/circle.png" %}" class="circle" id="c2">
+  <img src="{% static "v2/images/icons/circle.png" %}" class="circle" id="c3">
+  <img src="{% static "v2/images/icons/circle.png" %}" class="circle" id="c4">
+
+  <img src="{% static "v2/images/icons/cross.png" %}" class="cross" id="cs1">
+  <img src="{% static "v2/images/icons/cross.png" %}" class="cross" id="cs2">
+  <img src="{% static "v2/images/icons/cross.png" %}" class="cross" id="cs3">
+  <img src="{% static "v2/images/icons/cross.png" %}" class="cross" id="cs4">
+
+  <div class="transaction-header pt-5">
+    <h2 class="my-2">Transaction Processing</h2>
+  </div>
+  <div class="transaction-status">
+    <div class="ethereum-issue">
+      <a id="transaction_url" href="#" target="blank" rel="noopener">{% trans "Your update is being posted to the Ethereum Blockchain." %}</a>
+      <br>
+      {% trans "This page will automatically update when the sync is completed.  You may close your browser." %}
+    </div>
+  </div>
+  <div class="row loading justify-content-center align-items-center">
+    <h3 class="issue-url"></h3>
+  </div>
+  <div class="rocket">
+    <img src="{% static "v2/images/rocket.svg" %}" class="svg" alt="Gitcoin Rocket">
+  </div>
+  <img src="{% static "v2/images/icons/clouds.png" %}" id="cloud">
+</div>
+<div class="row loading justify-content-center align-items-center loading_img">
+  <img src="{% static "v2/images/loading_v2.gif" %}">
+</div>

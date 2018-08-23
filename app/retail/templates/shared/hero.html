@@ -16,26 +16,18 @@
 {% endcomment %}
 {% load i18n %}
 <div class="row ml-5">
-    <div class="col header-line">&nbsp;</div>
-    <div class="w-100"></div>
-    <div class="col header-line">{% trans "Do More Work, Faster" %}</div>
-    <div class="w-100"></div>
-    <div class="col subheader-line">
-      <span>{% trans "Gitcoin is the easiest way to leverage the open source community" %}<br>
-      <span>{% trans "to incentivize or monetize work." %}</span>
-    </div>
-    <div class="w-100">&nbsp;</div>
-    <div class="col header-line">
-    </div>
-    <div class="w-100">&nbsp;</div>
-    <div class="col header-line">
-    </div>
+  <div class="col-12 header-line mt-5">{% trans "Do More Work, Faster" %}</div>
+  <div class="col-12 subheader-line mt-3">
+    <span>{% trans "Gitcoin is the easiest way" %}</span><br>
+    <span>{% trans "to leverage the open source community" %}</span><br>
+    <span>{% trans "to incentivize or monetize work." %}</span>
+  </div>
 </div>
 <div id="hero_cta" class="row">
   <div class="col d-flex justify-content-end  mt-5 mb-5 mr-5">
     <div style="text-align: center;">
       <div>
-        <a class="btn btn-gc-blue" role="button" href="{% url "new_bounty" %}" target="_blank" rel="noopener noreferrer">
+        <a class="btn btn-gc-blue" role="button" href="{% url "new_funding" %}" target="_blank" rel="noopener noreferrer">
           <i class="fab fa-ethereum mr-1" aria-hidden="true"></i>
           <span>{% trans "Fund an Issue" %}</span>
         </a>
@@ -47,3 +39,4 @@
     </div>
   </div>
 </div>
+{% include 'shared/rain.html' with class="grey" %}

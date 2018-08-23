@@ -1,3 +1,7 @@
+.container{
+  min-height: 150px;
+}
+
 .profile-header > .container {
   padding-top: 3.5rem;
   color: #fff;
@@ -146,6 +150,10 @@
   color: #FFCE08;
 }
 
+.profile-section-title {
+  border-bottom: 2px solid #3E24FB;
+}
+
 .profile-bounties--loading {
   background-image: url('/static/v2/images/loading_v2.gif');
   background-repeat: no-repeat;
@@ -159,6 +167,7 @@
   max-height: 3.125rem;
   margin-right: auto;
   margin-left: auto;
+  border-radius: 100%;
 }
 
 .profile-bounties .bounty_row {

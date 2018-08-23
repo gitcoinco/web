@@ -30,7 +30,7 @@
       {% include 'shared/nav.html' %}
       <div class="row no-gutter">
         <div class="col body">
-          <div class="container-fluid col-12 offset-md-2 col-md-8">
+          <div class="container-fluid col-12 offset-md-2 col-md-9">
             <div class = "toolbox">
               <div class="row no-gutters">
                 <div class="col-md-5 col-12">
@@ -105,10 +105,10 @@
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
 
+    <script src="/dynamic/js/tokens_dynamic.js"></script>
     <script src="{% static "v2/js/abi.js" %}"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>
     <script src="{% static "v2/js/shared.js" %}"></script>

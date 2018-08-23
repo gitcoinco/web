@@ -13,7 +13,6 @@
     <div class="container-fluid header dash">
       {% include 'shared/nav.html' %}
     </div>
-    {% include 'shared/current_balance.html' with full=True %}
 
     <div class="row no-gutter">
       <div class="col body">
@@ -27,24 +26,24 @@
             <div class="bounties-header__search">
               <div class="bounties-header__info">
                 <a href="{% url "externalbounty-list" %}">
-                    [ {% trans "View API" %} ]
+                  [ {% trans "View API" %} ]
                 </a> |
                 Listing {{ num_bounties | intcomma }} universal bounties.
               </div>
               <div class="search_area search_area--append">
                 <form id="search_form" method=GET>
-                    <input type="hidden" name="sort" value="{{sorted_by}}">
-                    <input type="hidden" name="direction" value="{{sort_direction}}">
-                    <input type="hidden" name="page" value="{{page}}">
-                    <input class="gc-round-text-input gc-border-black w-100" name="q" type="text" value="{%if q%}{{q}}{% endif %}" placeholder="Search Bounties" />
+                  <input type="hidden" name="sort" value="{{sorted_by}}">
+                  <input type="hidden" name="direction" value="{{sort_direction}}">
+                  <input type="hidden" name="page" value="{{page}}">
+                  <input class="gc-round-text-input gc-border-black w-100" name="q" type="text" value="{%if q%}{{q}}{% endif %}" placeholder="Search Bounties" />
                 </form>
                 <span class="icon">{% include 'svgs/search.svg' %}</span>
                 <div id="sort_options">
-                    {% trans "Sort by" %}
-                        <a class="{% if sorted_by == 'Oldest' and sort_direction == 'asc' %}active{%endif%}" href="/universe?sort=Created&direction=asc">{% trans "Oldest" %}</a> |
-                        <a class="{% if sorted_by == 'Oldest' and sort_direction == 'asc' %}active{%endif%}" href="/universe?sort=Created&direction=desc">{% trans "Newest" %}</a> |
-                        <a class="{% if sorted_by == 'Value' %}active{%endif%}" href="/universe?sort=Value&direction=desc">{% trans "Highest Value" %}</a> |
-                        <a class="{% if sorted_by == 'Value' %}active{%endif%}" href="/universe?sort=Value&direction=asc">{% trans "Lowest Value" %}</a>
+                  {% trans "Sort by" %}
+                  <a class="{% if sorted_by == 'Oldest' and sort_direction == 'asc' %}active{%endif%}" href="/universe?sort=Created&direction=asc">{% trans "Oldest" %}</a> |
+                  <a class="{% if sorted_by == 'Oldest' and sort_direction == 'asc' %}active{%endif%}" href="/universe?sort=Created&direction=desc">{% trans "Newest" %}</a> |
+                  <a class="{% if sorted_by == 'Value' %}active{%endif%}" href="/universe?sort=Value&direction=desc">{% trans "Highest Value" %}</a> |
+                  <a class="{% if sorted_by == 'Value' %}active{%endif%}" href="/universe?sort=Value&direction=asc">{% trans "Lowest Value" %}</a>
                 </div>
               </div>
             </div>
@@ -63,7 +62,7 @@
             </aside>
             <main class="bounties-container">
                 <div style="float: right; padding-right: 10px; padding-top: 20px; margin-bottom: 20px;">
-                    <a class="button right btn-info" href="{% url "universe_new" %}">{% trans "Post New" %} >> </a>
+                  <a class="button right btn-info" href="{% url "universe_new" %}">{% trans "Post New" %} >> </a>
                 </div>
                 <br style="clear:both;">
               {% for bounty in bounties %}
@@ -111,9 +110,9 @@
 
                           <div class="bounty__crypto-price-pill bounty__crypto-price-pill--grey">
                             {% if bounty.crypto_price %}
-                            <span>{{ bounty.crypto_price }} {{ bounty.crypto_label }}</span>
+                              <span>{{ bounty.crypto_price }} {{ bounty.crypto_label }}</span>
                             {% else %}
-                            <span>{{ bounty.payout_str }}</span>
+                              <span>{{ bounty.payout_str }}</span>
                             {% endif %}
                           </div>
                         {% endif %}
@@ -121,33 +120,32 @@
                       </div>
                       <div class="bounty__fiat-price">
                       {% if bounty.fiat_price %}
-                            <span class="icon">{% include 'svgs/money.svg' %}</span>
-                            {{ bounty.fiat_price }} USD
-                        {% endif %}
+                        <span class="icon">{% include 'svgs/money.svg' %}</span>
+                        {{ bounty.fiat_price }} USD
+                      {% endif %}
                       </div>
                     </div>
                   </div>
                 </a>
               {% endfor %}
 
-                <div class="pagination">
-                    <span class="step-links">
-                        {% if bounties_paginator.has_previous %}
-                            <a href="?sort={{sorted_by}}&direction={{sort_direction}}&q={{q}}&page=1">&laquo; {% trans "first" %}</a>
-                            <a href="?sort={{sorted_by}}&direction={{sort_direction}}&q={{q}}&page={{ bounties.previous_page_number }}">{% trans "previous" %}</a>
-                        {% endif %}
+              <div class="pagination">
+                <span class="step-links">
+                  {% if bounties_paginator.has_previous %}
+                    <a href="?sort={{sorted_by}}&direction={{sort_direction}}&q={{q}}&page=1">&laquo; {% trans "first" %}</a>
+                    <a href="?sort={{sorted_by}}&direction={{sort_direction}}&q={{q}}&page={{ bounties.previous_page_number }}">{% trans "previous" %}</a>
+                  {% endif %}
 
-                        <span class="current">
-                            {% blocktrans %}Page {{ bounties_paginator.number }} of {{ bounties_paginator.paginator.num_pages }}.{% endblocktrans %}
-                        </span>
+                  <span class="current">
+                    {% blocktrans %}Page {{ bounties_paginator.number }} of {{ bounties_paginator.paginator.num_pages }}.{% endblocktrans %}
+                  </span>
 
-                        {% if bounties_paginator.has_next %}
-                            <a href="?sort={{sorted_by}}&direction={{sort_direction}}&q={{q}}&page={{ bounties_paginator.next_page_number }}">{% trans "next" %}</a>
-                            <a href="?sort={{sorted_by}}&direction={{sort_direction}}&q={{q}}&page={{ bounties_paginator.paginator.num_pages }}">{% trans "last" %} &raquo;</a>
-                        {% endif %}
-                    </span>
-                </div>
-
+                  {% if bounties_paginator.has_next %}
+                    <a href="?sort={{sorted_by}}&direction={{sort_direction}}&q={{q}}&page={{ bounties_paginator.next_page_number }}">{% trans "next" %}</a>
+                    <a href="?sort={{sorted_by}}&direction={{sort_direction}}&q={{q}}&page={{ bounties_paginator.paginator.num_pages }}">{% trans "last" %} &raquo;</a>
+                  {% endif %}
+                </span>
+              </div>
             </main>
           </div>
         </div>
@@ -157,10 +155,10 @@
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
 
+    <script src="/dynamic/js/tokens_dynamic.js"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>
     <script src="{% static "v2/js/pages/offchain_bounties.js" %}"></script>
     <script src="{% static "v2/js/shared.js" %}"></script>

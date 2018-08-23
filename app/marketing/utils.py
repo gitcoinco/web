@@ -20,9 +20,11 @@ import logging
 from datetime import datetime, timedelta
 
 from django.conf import settings
+from django.templatetags.static import static
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
+import requests
 from slackclient import SlackClient
 from slackclient.exceptions import SlackClientError
 
@@ -78,7 +80,7 @@ def validate_slack_integration(token, channel, message=None, icon_url=''):
         message = gettext('The Gitcoin Slack integration is working fine.')
 
     if not icon_url:
-        icon_url = 'https://gitcoin.co/static/v2/images/helmet.png'
+        icon_url = static('v2/images/helmet.png')
 
     try:
         sc = SlackClient(token)
@@ -99,6 +101,51 @@ def validate_slack_integration(token, channel, message=None, icon_url=''):
         result['output'] = _('An error has occurred.')
     return result
 
+
+def validate_discord_integration(webhook_url, message=None, icon_url=''):
+    """Validate the Discord webhook URL by posting a message.
+
+    Args:
+        webhook_url (str): The Discord webhook URL.
+        message (str): The Discord message to be sent.
+            Defaults to: The Gitcoin Discord integration is working fine.
+        icon_url (str): The URL to the avatar to be used.
+            Defaults to: the gitcoin helmet.
+
+    Attributes:
+        result (dict): The result dictionary defining success status and error message.
+        message (str): The response message to display to the user.
+        response (obj): The Discord response object - refer to python-requests API
+
+    Raises:
+        requests.exception.HTTPError: The exception is raised for any HTTP error.
+
+    Returns:
+        str: The response message.
+
+    """
+    result = {'success': False, 'output': 'Test message was not sent.'}
+
+    if message is None:
+        message = gettext('The Gitcoin Discord integration is working fine.')
+
+    if not icon_url:
+        icon_url = static('v2/images/helmet.png')
+
+    try:
+        headers = {'Content-Type': 'application/json'}
+        body = {"content": message, "avatar_url": icon_url}
+        response = requests.post(
+            webhook_url, headers=headers, json=body
+        )
+        response.raise_for_status()
+        if response.ok:
+            result['output'] = _('The test message was sent to Discord.')
+            result['success'] = True
+    except requests.exceptions.HTTPError as e:
+        logger.error(e)
+        result['output'] = _('An error has occurred.')
+    return result
 
 def should_suppress_notification_email(email, email_type):
     from marketing.models import EmailSubscriber

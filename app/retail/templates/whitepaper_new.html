@@ -1,170 +1,154 @@
 {% extends 'base.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
 {% block body %}
-
-    <div class="container-fluid" style="">
-        <div class=" row ">
-            <div class="col-4 pb-4">
-                <div class="align-items-right justify-content-right" style="text-align: right;">
-                    <img src="{% static "v2/images/tree/dark.png" %}" style="max-width:80%; margin: 0px auto;">
-                </div>
-            </div>
-            <div class="col-1 pb-4">
-            </div>
-            <div class="col-6 pb-4">
-                <div class="form_container pr-2 pl-2 ">
-                    <div style="max-width: 500px; margin: 0px auto;">
-                        <span style="text-align: center;">
-                            <h2>{% trans "Hey, you!" %}</h2>
-                        </span>
-                        <h4 class="pt-1">{% trans "Gitcoin is *not* a token." %}</h4>
-                        <p>
-                            <br>
-                            {% trans "Gitcoin is a distributed group of individuals focused:" %}
-                        </p>
-                        <ul>
-                            <li>
-                                {% url "mission" as missionurl %}{% blocktrans %}on being <i>relentlessly mission driven</i>. <a href="{{ missionurl }}"> (more on this here) </a>{% endblocktrans %}
-                            </li>
-                            <li>
-                                {% blocktrans %}on working with the <i>best repos</i> in web3..  <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6"> (more on this here) </a>{% endblocktrans %}
-                            </li>
-                            <li>
-                                {% url "toolbox" as toolboxurl %}{% blocktrans %}on building the <i>best tools</i> for them...  <a href="{{ toolboxurl }}"> (more on this here) </a>{% endblocktrans %}
-                            </li>
-                            <li>
-                                {% blocktrans %}over a <i>long term</i> time horizon..  <a href="https://medium.com/gitcoin/blockchain-is-the-next-tcp-ip-6663b62b5654"> (more on this here) </a>{% endblocktrans %}
-                            </li>
-                            <li>
-                                {% blocktrans %}and doing <i>something historic</i> in the space.  <a href="https://medium.com/gitcoin/playing-the-long-game-fbd78fb41de6"> (more on this here) </a>{% endblocktrans %}
-                            </li>
-                        </ul>
-                        <h4 class="pt-1">{% trans "Quite Frankly..." %} </h4>
-                        <p>
-                            {% trans "The project hasn't really had time to partipate in token related activities." %}  🕑
-                        </p>
-                        <p>
-                            {% trans "In fact, we're quite fatigued by the pervasiveness of tokens." %}  🗞
-                        </p>
-                        <p>
-                            {% trans "Its exhausting to have to pay attention to all of the rumours, the drama, the speculation." %}  📈 📉 📉 📈 📉
-                        </p>
-                        <p>
-                            {% trans "And there are *more worthwhile* uses of a completely-distributed trust-management supercomputer like the Ethereum blockchain." %} 🙌
-                        </p>
-                        <p>
-                            {% trans "So we're choosing to ignore it all (for now) and focusing on building stuff." %} 🔧🛠
-                        </p>
-                        <h4 class="pt-1">{% trans "But that could change.." %}</h4>
-                        <p>
-                            {% trans "It is possible that one day there will be tokens or other digital assets associated with the project.  Possible, but no promises." %} 🤔
-                        </p>
-
-                        <h4 class="pt-1">{% trans "Want to participate now?" %} </h4>
-                        <p>{% trans "Some ways to get involved now:" %} </p>
-                        <ul>
-                            <li>
-                                <a href="{% url "slack" %}">{% trans "Join the slack" %}</a> 👋
-                            </li>
-                            <li>
-                                <a href="{% url "twitter" %}">{% trans "Follow the twitter" %}</a> 🐦
-                            </li>
-                            <li>
-                                <a href="{% url "explorer" %}">{% trans "Build something cool" %}</a>  🔧
-                            </li>
-                            <li>
-                                <a href="/pitch">{% trans "Pitch a new idea" %}</a> ⚡️
-                            </li>
-                            <li>
-                                <a href="{% url "tools" %}">{% trans "Learn a new tool" %}</a> 🛠
-                            </li>
-                        </ul>
-                        <h4 id="still" class="pt-1">{% trans "Still want whitepaper access?" %} </h4>
-
-                        <p>{% trans "Please submit your info below to receive access to the whitepaper if/when its available." %} <a href="{% url "whitepaper_access" %}">{% trans "Already have an access code?" %}</a> </p>
-                        {% if msg %}
-                            <p style="background-color: #fee856; padding: 5px 10px;">
-                                {{msg | safe}}
-                            </p>
-                        {% endif %}
-                        {% if success %}
-                            <div style="text-align: center; margin-bottom: 10px">
-                                <img src="{% static "v2/images/tree/party_robot.jpg" %}" style="max-width:60%; margin: 0px auto;">
-                            </div>
-                        {% endif %}
-                        <form id=whitepaper action="{% url 'whitepaper' %}#still"  method=POST>
-                            <div class="form-group">
-                                <label class="form__label" for="email">{% trans "Email address" %}</label>
-                                <input type=text name=email class="form__input" placeholder='you@somewhere'  value="{{email}}" required>
-                                <small id="emailHelp" class="form__input-help">{% trans "Gitcoin will never share your email with anyone else." %}</small>
-                            </div>
-                            <div class="form-group">
-                                <label class="form__label" for="role">{% trans "Interested as a" %}</label>
-                                <div class="form__select">
-                                    <select multiple class="form-control" id="role" name="role"  required>
-                                        <option>{% trans "Open Source Developer" %}</option>
-                                        <option>{% trans "Open Source Repo Maintainer" %}</option>
-                                        <option>{% trans "Token Purchaser" %}</option>
-                                        <option>{% trans "Press" %}</option>
-                                        <option>{% trans "Advisor" %}</option>
-                                        <option>{% trans "Other" %}</option>
-                                    </select>
-                                </div>
-                                <small id="role" class="form__input-help">{% trans "Feel free to select more than one." %}</small>
-                            </div>
-                            <div class="form-group">
-                                <label class="form__label" for="comments">{% trans "Comments" %}</label>
-                                <textarea class="form__input" id="comments" name="comments" rows="3" required>{{comments}}</textarea>
-                                <small id="comments" class="form__input-help">{% trans "Who are you?  What is your interest in the whitepaper?" %}</small>
-                            </div>
-                            {% csrf_token %}
-                            <input class='button button--primary' type='submit' name='submit' value="Go">
-                        </form>
-
-                        {% endblock %}
-
-                    </div>
-                </div>
-            </div>
-            <div class="col-1 pb-4">
-            </div>
-        </div>
+<div class="container-fluid" style="">
+  <div class=" row ">
+    <div class="col-4 pb-4">
+      <div class="align-items-right justify-content-right" style="text-align: right;">
+        <img src="{% static "v2/images/tree/dark.png" %}" style="max-width:80%; margin: 0px auto;">
+      </div>
     </div>
-
-
-
-
+    <div class="col-1 pb-4">
+    </div>
+    <div class="col-6 pb-4">
+      <div class="form_container pr-2 pl-2 ">
+        <div style="max-width: 500px; margin: 0px auto;">
+          <span style="text-align: center;">
+            <h2>{% trans "Hey, you!" %}</h2>
+          </span>
+          <h4 class="pt-1">{% trans "Gitcoin is *not* a token." %}</h4>
+          <p>
+            <br>
+            {% trans "Gitcoin is a distributed group of individuals focused:" %}
+          </p>
+          <ul>
+            <li>
+              {% url "mission" as missionurl %}{% blocktrans %}on being <i>relentlessly mission driven</i>. <a href="{{ missionurl }}"> (more on this here) </a>{% endblocktrans %}
+            </li>
+            <li>
+              {% blocktrans %}on working with the <i>best repos</i> in web3..  <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6"> (more on this here) </a>{% endblocktrans %}
+            </li>
+            <li>
+              {% url "toolbox" as toolboxurl %}{% blocktrans %}on building the <i>best tools</i> for them...  <a href="{{ toolboxurl }}"> (more on this here) </a>{% endblocktrans %}
+            </li>
+            <li>
+              {% blocktrans %}over a <i>long term</i> time horizon..  <a href="https://medium.com/gitcoin/blockchain-is-the-next-tcp-ip-6663b62b5654"> (more on this here) </a>{% endblocktrans %}
+            </li>
+            <li>
+              {% blocktrans %}and doing <i>something historic</i> in the space.  <a href="https://medium.com/gitcoin/playing-the-long-game-fbd78fb41de6"> (more on this here) </a>{% endblocktrans %}
+            </li>
+          </ul>
+          <h4 class="pt-1">{% trans "Quite Frankly..." %} </h4>
+          <p>
+            {% trans "The project hasn't really had time to participate in token related activities." %}  🕑
+          </p>
+          <p>
+            {% trans "In fact, we're quite fatigued by the pervasiveness of tokens." %}  🗞
+          </p>
+          <p>
+            {% trans "Its exhausting to have to pay attention to all of the rumours, the drama, the speculation." %}  📈 📉 📉 📈 📉
+          </p>
+          <p>
+            {% trans "And there are *more worthwhile* uses of a completely-distributed trust-management supercomputer like the Ethereum blockchain." %} 🙌
+          </p>
+          <p>
+            {% trans "So we're choosing to ignore it all (for now) and focusing on building stuff." %} 🔧🛠
+          </p>
+          <h4 class="pt-1">{% trans "But that could change.." %}</h4>
+          <p>
+            {% trans "It is possible that one day there will be tokens or other digital assets associated with the project.  Possible, but no promises." %} 🤔
+          </p>
+          <h4 class="pt-1">{% trans "Want to participate now?" %} </h4>
+          <p>{% trans "Some ways to get involved now:" %} </p>
+          <ul>
+            <li>
+              <a href="{% url "slack" %}">{% trans "Join the slack" %}</a> 👋
+            </li>
+            <li>
+              <a href="{% url "twitter" %}">{% trans "Follow the twitter" %}</a> 🐦
+            </li>
+            <li>
+              <a href="{% url "explorer" %}">{% trans "Build something cool" %}</a>  🔧
+            </li>
+            <li>
+              <a href="{% url "tools" %}">{% trans "Learn a new tool" %}</a> 🛠
+            </li>
+          </ul>
+          <h4 id="still" class="pt-1">{% trans "Still want whitepaper access?" %} </h4>
+          <p>
+            {% trans "Please submit your info below to receive access to the whitepaper if/when its available." %} <a href="{% url "whitepaper_access" %}">{% trans "Already have an access code?" %}</a>
+          </p>
+          {% if msg %}
+          <p style="background-color: #fee856; padding: 5px 10px;">
+            {{ msg | safe }}
+          </p>
+          {% endif %}
+          {% if success %}
+          <div style="text-align: center; margin-bottom: 10px">
+            <img src="{% static "v2/images/tree/party_robot.jpg" %}" style="max-width:60%; margin: 0px auto;">
+          </div>
+          {% endif %}
+          <form id="whitepaper" action="{% url 'whitepaper' %}#still"  method="POST">
+            <div class="form-group">
+              <label class="form__label" for="email">{% trans "Email address" %}</label>
+              <input type="text" name="email" class="form__input" placeholder="you@somewhere"  value="{% if email %}{{ email }}{% endif %}" required>
+              <small id="emailHelp" class="form__input-help">{% trans "Gitcoin will never share your email with anyone else." %}</small>
+            </div>
+            <div class="form-group">
+              <label class="form__label" for="role">{% trans "Interested as a" %}</label>
+              <div class="form__select">
+                <select multiple class="form-control" id="role" name="role"  required>
+                  <option>{% trans "Open Source Developer" %}</option>
+                  <option>{% trans "Open Source Repo Maintainer" %}</option>
+                  <option>{% trans "Token Purchaser" %}</option>
+                  <option>{% trans "Press" %}</option>
+                  <option>{% trans "Advisor" %}</option>
+                  <option>{% trans "Other" %}</option>
+                </select>
+              </div>
+              <small id="role" class="form__input-help">{% trans "Feel free to select more than one." %}</small>
+            </div>
+            <div class="form-group">
+              <label class="form__label" for="comments">{% trans "Comments" %}</label>
+              <textarea class="form__input" id="comments" name="comments" rows="3" required>{{ comments }}</textarea>
+              <small id="comments" class="form__input-help">{% trans "Who are you?  What is your interest in the whitepaper?" %}</small>
+            </div>
+            {% csrf_token %}
+            <input class="button button--primary" type="submit" name="submit" value="Go">
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-1 pb-4">
+    </div>
+  </div>
+</div>
+{% endblock %}
 {% block scripts %}
-
-
 <script>
-
-    $(document).ready(function() {
-        $('#whitepaper input.btn-go').click(function(e){
-            mixpanel.track("Whitepaper New Request", {});
-            setTimeout(function(){
-                $('#whitepaper input.btn-go').attr('disabled','disabled');
-            },1);
-        });
+  $(document).ready(function() {
+    $('#whitepaper input.btn-go').click(function(e){
+      mixpanel.track("Whitepaper New Request", {});
+      setTimeout(function(){
+        $('#whitepaper input.btn-go').attr('disabled','disabled');
+      },1);
     });
+  });
 </script>
-
-
 {% endblock %}

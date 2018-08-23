@@ -104,7 +104,7 @@ class TestAssembleLeaderboards(TestCase):
     def test_sum_tips(self):
         """Test sum tips of assemble leaderboards."""
         total = 7
-        user = 'johnny'
+        user = 'john'
         rank_types = [
             'all_fulfilled', 'all_earners', 'weekly_fulfilled',
             'weekly_earners', 'weekly_all', 'monthly_fulfilled',
@@ -141,4 +141,4 @@ class TestAssembleLeaderboards(TestCase):
         """Test command assemble leaderboards."""
         Command().handle()
 
-        assert LeaderboardRank.objects.all().count() == 8
+        assert LeaderboardRank.objects.all().count() == 12

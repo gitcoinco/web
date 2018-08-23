@@ -33,5 +33,6 @@ var waitingRoomEntertainment = function() {
   var quoteAuthor = quote[1];
 
   $('.quote_text').html('"' + quoteText + '"');
+  $('.bounty_details .quote_text').html(quoteText);
   $('.quote_author').html(quoteAuthor);
 };

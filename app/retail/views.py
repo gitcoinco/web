@@ -16,53 +16,241 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from os import walk as walkdir
+
+from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.core.paginator import Paginator
 from django.core.validators import validate_email
-from django.http import HttpResponse, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.csrf import csrf_exempt
 
+from dashboard.models import Activity
+from dashboard.notifications import amount_usdt_open_work, open_bounties
+from economy.models import Token
+from marketing.mails import new_token_request
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
+from retail.helpers import get_ip
 
-from .utils import build_stat_results
+from .utils import build_stat_results, programming_languages
+
+
+def get_activities(tech_stack=None, num_activities=15):
+    # get activity feed
+
+    activities = Activity.objects.select_related('bounty').filter(bounty__network='mainnet').order_by('-created')
+    if tech_stack:
+        activities = activities.filter(bounty__metadata__icontains=tech_stack)
+    activities = activities[0:num_activities]
+    return [a.view_props for a in activities]
 
 
 def index(request):
     slides = [
         ("Dan Finlay", static("v2/images/testimonials/dan.jpg"),
-         _("Once we had merged in multiple language support from a bounty, it unblocked the path to all other translations, and what better way to get lots of dif erent translations than with bounties from our community? A single tweet of publicity and we had something like 20 language requests, and 10 language pull requests. It’s been total magic."),
+         _("Once we had merged in multiple language support from a bounty, it unblocked the \
+         path to all other translations, and what better way to get lots of dif erent \
+         translations than with bounties from our community? A single tweet of publicity \
+         and we had something like 20 language requests, and 10 language pull requests. It’s been total magic."),
          'https://github.com/danfinlay', "Metamask -- Internationalization"),
         ("Phil Elsasser", static("v2/images/testimonials/phil.jpg"),
-         _("​By design or not, there is an element of trust inherent within Gitcoin. This isn’t the bad kind of “trust” that we are all trying to move away from in a centralized world, but a much better sense of community trust that gets established through the bounty process."),
+         _("​By design or not, there is an element of trust inherent within Gitcoin. This isn’t \
+         the bad kind of “trust” that we are all trying to move away from in a centralized world, \
+         but a much better sense of community trust that gets established through the bounty process."),
          'http://www.marketprotocol.io/', 'Market'),
         ("John Maurelian", static("v2/images/testimonials/maurelian.jpg"),
          _("Gitcoin helps us to finally close out the issues we've been meaning to get around to for too long"),
          "https://consensys.github.io/smart-contract-best-practices/", 'Consensys Diligence -- Documentation Bounties'),
         ("Kames CG", static("v2/images/testimonials/kames.jpg"),
-         _("uPort is still in the process of Open Sourcing all of our code, so Gitcoin at the present moment, helps uPort plant seeds within the growing Ethereum developer community, that we expect will blossom into flourishing opportunities in the future. Put simply, as opposed to running marketing campaign, we can use bounties to stay present in front of potential developers we want to engage with."),
+         _("uPort is still in the process of Open Sourcing all of our code, so Gitcoin at the present moment, \
+         helps uPort plant seeds within the growing Ethereum developer community, that we expect will blossom \
+         into flourishing opportunities in the future. Put simply, as opposed to running marketing campaign, \
+         we can use bounties to stay present in front of potential developers we want to engage with."),
          'https://github.com/KamesCG', 'Uport'),
         ("Piper", static("v2/images/testimonials/pipermerriam.jpg"),
-         _("Although we’ve only hired two developers, there is no doubt that we could have sourced more. Gitcoin has been the strongest hiring signal in all of the hiring I’ve ever done."),
+         _("Although we’ve only hired two developers, there is no doubt that we could have sourced more. \
+         Gitcoin has been the strongest hiring signal in all of the hiring I’ve ever done."),
          'https://github.com/pipermerriam', 'Pipermerriam'),
+        ("Joseph Schiarizzi", static("v2/images/testimonials/jschiarizzi.jpeg"),
+         _("On a Friday I needed a front end done for a project due in 48 hours.  When everyone I knew was busy, \
+         gitcoiners were able to help me make my deadline, with fast, affordable, & high quality work."),
+         'https://github.com/jschiarizzi', 'Fourth Wave')
     ]
+
+    gitcoin_description = _(
+        "A community at the intersection of blockchain and open source. A place for developers to collaborate in a new system, where open source money builds in monetization for open source repositories."
+    )
+
     context = {
+        'activities': get_activities(),
+        'is_outside': True,
         'slides': slides,
         'slideDurationInMs': 6000,
         'active': 'home',
         'hide_newsletter_caption': True,
         'hide_newsletter_consent': True,
-        'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter."),
+        'gitcoin_description': gitcoin_description,
+        'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter.")
     }
-    return TemplateResponse(request, 'index.html', context)
+    return TemplateResponse(request, 'landing/funder.html', context)
+
+
+def contributor_landing(request, tech_stack):
+
+    slides = [
+        ("Daniel", static("v2/images/testimonials/gitcoiners/daniel.jpeg"),
+         _("When I found Gitcoin I was gladly surprised that it took one thing and did it well. \
+         It took the Ethereum tech and used it as a bridge to technology with open source Jobs.  \
+         Even though Gitcoin is still in it’s early stages, I think it’s filled with potential to grow."),
+         'https://github.com/dmerrill6'),
+        ("CryptoMental", static("v2/images/testimonials/gitcoiners/cryptomental.png"),
+         _(" think the great thing about GitCoin is how easy it is for projects to reach out to worldwide talent. \
+         GitCoin helps to find people who have time to contribute and increase speed of project development. \
+         Thanks to GitCoin a bunch of interesting OpenSource projects got my attention!"),
+         'https://github.com/cryptomental'),
+        ("Elan", static("v2/images/testimonials/gitcoiners/elan.jpeg"),
+         _("The bounty process with Gitcoin is pretty amazing.  Just go on the website, find an issue you can \
+         work on, you claim it.  All you do then is submit your code to Github, get the code merged.  \
+         Once it’s merged, the smart contract kicks in and sends the money to your Ethereum account.  \
+         The whole process is pretty smooth.  There’s a giant slack community.  It puts the freelance \
+         market back in the hands of the community!"),
+         "https://github.com/elaniobro"),
+        ("Jack", static("v2/images/testimonials/gitcoiners/jack.jpeg"),
+         _("I really like Gitcoin because it’s allowed me to get involved in some really interesting \
+         Open Source Projects.  I’ve written code for MyEtherWallet and Gitcoin itself.  \
+         I think Gitcoin is becoming a great asset for the Ethereum ecosystem."),
+         'https://github.com/jclancy93'),
+        ("Miguel Angel Rodriguez Bermudez", static("v2/images/testimonials/gitcoiners/miguel.jpeg"),
+         _("I came across Gitcoin 3 months ago.  I was hearing lots of ideas about projects involving \
+         cryptocurrencies, and I kept thinking \"what about open source projects?\".  I see Gitcoin as \
+         the next level of freelance, where you can not only help repos on Github, but get money out of \
+         it.  It is that simple and it works."),
+         'https://github.com/marbrb'),
+        ("Octavio Amuchástegui", static("v2/images/testimonials/gitcoiners/octavioamu.jpeg"),
+         _("I'm in love with Gitcoin. It isn't only a platform, it's a community that gives me the \
+         opportunity to open my network and work with amazing top technology projects and earn some \
+         money in a way I'm visible to the dev community and work opportunities. Open source is amazing, \
+         and is even better to make a living from it, I think is the future of development."),
+         'https://github.com/octavioamu')
+    ]
+
+    gitcoin_description = _(
+        "A community for developers to collaborate and monetize their skills while working \
+        on Open Source projects through bounties."
+    )
+
+    projects = [
+        {
+            'name': 'Augur Logo',
+            'source': 'v2/images/project_logos/augur.png'
+        },
+        {
+            'name': 'Bounties Logo',
+            'source': 'v2/images/project_logos/bounties.png'
+        },
+        {
+            'name': 'Balance Logo',
+            'source': 'v2/images/project_logos/balance.png'
+        },
+        {
+            'name': 'Metamask Logo',
+            'source': 'v2/images/project_logos/metamask.png'
+        },
+        {
+            'name': 'uPort Logo',
+            'source': 'v2/images/project_logos/uport.png'
+        },
+        {
+            'name': 'Market Protocol Logo',
+            'source': 'v2/images/project_logos/market.png'
+        },
+        {
+            'name': 'Trust Wallet Logo',
+            'source': 'v2/images/project_logos/trust.png'
+        },
+        {
+            'name': 'MCrypto Logo',
+            'source': 'v2/images/project_logos/mycrypto.png'
+        },
+        {
+            'name': 'Truffle Logo',
+            'source': 'v2/images/project_logos/truffle.png'
+        },
+        {
+            'name': 'Solidity Logo',
+            'source': 'v2/images/project_logos/solidity.png'
+        },
+        {
+            'name': 'Casper Logo',
+            'source': 'v2/images/project_logos/casper.png'
+        },
+        {
+            'name': 'Wyvern Logo',
+            'source': 'v2/images/project_logos/wyvern.png'
+        },
+        {
+            'name': 'Ethereum Logo',
+            'source': 'v2/images/project_logos/eth.png'
+        },
+        {
+            'name': 'Livepeer Logo',
+            'source': 'v2/images/project_logos/livepeer.png'
+        },
+        {
+            'name': 'Raiden Logo',
+            'source': 'v2/images/project_logos/raiden.png'
+        },
+        {
+            'name': 'Databroker Logo',
+            'source': 'v2/images/project_logos/databroker.png'
+        }
+    ]
+
+    available_bounties_count = open_bounties().count()
+    available_bounties_worth = amount_usdt_open_work()
+    # tech_stack = '' #uncomment this if you wish to disable contributor specific LPs
+    context = {
+        'activities': get_activities(tech_stack),
+        'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else "Open Source Opportunities",
+        'slides': slides,
+        'slideDurationInMs': 6000,
+        'active': 'home',
+        'newsletter_headline': _("Be the first to find out about newly posted bounties."),
+        'hide_newsletter_caption': True,
+        'hide_newsletter_consent': True,
+        'projects': projects,
+        'gitcoin_description': gitcoin_description,
+        'available_bounties_count': available_bounties_count,
+        'available_bounties_worth': available_bounties_worth,
+        'tech_stack': tech_stack,
+    }
+
+    return TemplateResponse(request, 'landing/contributor.html', context)
+
+
+def how_it_works(request, work_type):
+    """Show How it Works / Funder page."""
+    if work_type not in ['funder', 'contributor']:
+        raise Http404
+
+    context = {
+        'active': f'how_it_works_{work_type}',
+    }
+    return TemplateResponse(request, 'how_it_works.html', context)
 
 
 def robotstxt(request):
-    return TemplateResponse(request, 'robots.txt', {})
+    context = {
+        'settings': settings,
+    }
+    return TemplateResponse(request, 'robots.txt', context, content_type='text')
 
 
 def about(request):
@@ -137,6 +325,15 @@ def about(request):
             "Everything Open Source",
             "daab chingri"
         ),
+        (
+            static("v2/images/team/scott.jpg"),
+            "Scott Moore",
+            "Biz Dev",
+            "ceresstation",
+            "scott-moore-a2970075",
+            "Issue Explorer",
+            "Teriyaki Chicken"
+        ),
     ]
     exclude_community = ['kziemiane', 'owocki', 'mbeacom']
     community_members = [
@@ -156,8 +353,10 @@ def about(request):
         'core_team': core_team,
         'community_members': community_members,
         'alumni': alumnis,
+        'total_alumnis': str(Alumni.objects.count()),
         'active': 'about',
         'title': 'About',
+        'is_outside': True,
     }
     return TemplateResponse(request, 'about.html', context)
 
@@ -165,6 +364,7 @@ def about(request):
 def mission(request):
     """Render the Mission response."""
     context = {
+        'is_outside': True,
         'active': 'mission',
         'title': 'Mission',
         'card_title': _('Gitcoin is a mission-driven organization.'),
@@ -174,10 +374,56 @@ def mission(request):
     return TemplateResponse(request, 'mission.html', context)
 
 
-def results(request):
+def vision(request):
+    """Render the Vision response."""
+    context = {
+        'is_outside': True,
+        'active': 'vision',
+        'avatar_url': static('v2/images/vision/triangle.jpg'),
+        'title': 'Vision',
+        'card_title': _("Gitcoin's Vision for a Web3 World"),
+        'card_desc': _("Gitcoin's Vision for a web3 world is to make it easy for developers to find paid work in open source."),
+    }
+    return TemplateResponse(request, 'vision.html', context)
+
+
+def not_a_token(request):
+    """Render the not_a_token response."""
+    context = {
+        'is_outside': True,
+        'active': 'not_a_token',
+        'avatar_url': static('v2/images/no-token/no-token.jpg'),
+        'title': 'Gitcoin is not a token',
+        'card_title': _("Gitcoin is not a token"),
+        'card_desc': _("We didn't do a token because we felt it wasn't the right way to align incentives with our user base.  Read more about the future of monetization in web3."),
+    }
+    return TemplateResponse(request, 'not_a_token.html', context)
+
+
+def results(request, keyword=None):
     """Render the Results response."""
-    context = build_stat_results()
+    if keyword and keyword not in programming_languages:
+        raise Http404
+    context = build_stat_results(keyword)
+    context['is_outside'] = True
     return TemplateResponse(request, 'results.html', context)
+
+
+def activity(request):
+    """Render the Activity response."""
+
+    activities = Activity.objects.all().order_by('-created')
+    p = Paginator(activities, 300)
+    page = request.GET.get('page', 1)
+
+    context = {
+        'p': p,
+        'page': p.get_page(page),
+        'title': _('Activity Feed'),
+    }
+    context["activities"] = [a.view_props for a in p.get_page(page)]
+
+    return TemplateResponse(request, 'activity.html', context)
 
 
 def help(request):
@@ -481,6 +727,18 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
         'img': static('v2/images/tldr/tips_noborder.jpg'),
         'url': 'https://medium.com/gitcoin/tutorial-send-a-tip-to-any-github-user-in-60-seconds-2eb20a648bc8',
         'title': _('Send a Tip to any Github user in 60 seconds'),
+    }, {
+        'img': 'https://cdn-images-1.medium.com/max/1800/1*IShTwIlxOxbVAGYbOEfbYg.png',
+        'url': 'https://medium.com/gitcoin/how-to-build-a-contributor-friendly-project-927037f528d9',
+        'title': _('How To Build A Contributor Friendly Project'),
+    }, {
+        'img': 'https://cdn-images-1.medium.com/max/2000/1*23Zxk9znad1i422nmseCGg.png',
+        'url': 'https://medium.com/gitcoin/fund-an-issue-on-gitcoin-3d7245e9b3f3',
+        'title': _('Fund An Issue on Gitcoin!'),
+    }, {
+        'img': 'https://cdn-images-1.medium.com/max/2000/1*WSyI5qFDmy6T8nPFkrY_Cw.png',
+        'url': 'https://medium.com/gitcoin/getting-started-with-gitcoin-fa7149f2461a',
+        'title': _('Getting Started With Gitcoin'),
     }]
 
     context = {
@@ -492,9 +750,62 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
     return TemplateResponse(request, 'help.html', context)
 
 
+def presskit(request):
+
+    brand_colors = [
+        (
+            "Cosmic Teal",
+            "#25e899",
+            "37, 232, 153"
+        ),
+        (
+            "Dark Cosmic Teal",
+            "#0fce7c",
+            "15, 206, 124"
+        ),
+        (
+            "Milky Way Blue",
+            "#15003e",
+            "21, 0, 62"
+        ),
+        (
+            "Stardust Yellow",
+            "#FFCE08",
+            "255,206, 8"
+        ),
+        (
+            "Polaris Blue",
+            "#3E00FF",
+            "62, 0, 255"
+        ),
+        (
+            "Vinus Purple",
+            "#8E2ABE",
+            "142, 42, 190"
+        ),
+        (
+            "Regulus Red",
+            "#F9006C",
+            "249, 0, 108"
+        ),
+        (
+            "Star White",
+            "#FFFFFF",
+            "23, 244, 238"
+        ),
+        ]
+
+    context = {
+        'brand_colors': brand_colors,
+        'active': 'get',
+        'title': _('Presskit'),
+    }
+    return TemplateResponse(request, 'presskit.html', context)
+
+
 def get_gitcoin(request):
     context = {
-        'active': 'get',
+        'active': 'get_gitcoin',
         'title': _('Get Started'),
     }
     return TemplateResponse(request, 'getgitcoin.html', context)
@@ -526,7 +837,7 @@ def error(request, code):
 
     if return_as_json:
         return JsonResponse(context, status=500)
-    return TemplateResponse(request, 'error.html', context)
+    return TemplateResponse(request, 'error.html', context, status=code)
 
 
 def portal(request):
@@ -543,10 +854,6 @@ def onboard(request):
 
 def podcast(request):
     return redirect('https://itunes.apple.com/us/podcast/gitcoin-community/id1360536677')
-
-
-def presskit(request):
-    return redirect('https://www.dropbox.com/sh/bsjzbu0li2z0kr1/AACKgnQC3g6m52huYI3Gx3Ega?dl=0')
 
 
 def feedback(request):
@@ -582,11 +889,14 @@ def itunes(request):
 
 
 def ios(request):
-    #return HttpResponse('<h1>Coming soon!</h1> If youre seeing this page its because apple is reviewing the app... and release is imminent :)')
 
     context = {
         'active': 'ios',
-        'title': 'iOS',
+        'title': 'iOS app',
+        'card_title': 'Gitcoin has an iOS app!',
+        'card_desc': 'Gitcoin aims to make it easier to grow open source from anywhere in the world,\
+            anytime.  We’re proud to announce our iOS app, which brings us a step closer to this north star!\
+            Browse open bounties on the go, express interest, and coordinate your work on the move.',
     }
     return TemplateResponse(request, 'ios.html', context)
 
@@ -627,6 +937,39 @@ def slack(request):
                 context['msg'] = _('Invalid email')
 
     return TemplateResponse(request, 'slack.html', context)
+
+@csrf_exempt
+def newtoken(request):
+    context = {
+        'active': 'newtoken',
+        'msg': None,
+    }
+
+    if request.POST:
+        required_fields = ['email', 'terms', 'not_security', 'address', 'symbol', 'decimals', 'network']
+        validtion_passed = True
+        for key in required_fields:
+            if not request.POST.get(key):
+                context['msg'] = str(_('You must provide the following fields: ')) + key
+                validtion_passed = False
+        if validtion_passed:
+            ip = get_ip(request)
+            obj = Token.objects.create(
+                address=request.POST['address'],
+                symbol=request.POST['symbol'],
+                decimals=request.POST['decimals'],
+                network=request.POST['network'],
+                approved=False,
+                priority=1,
+                metadata={
+                    'ip': get_ip(request),
+                    'email': request.POST['email'],
+                    }
+                )
+            new_token_request(obj)
+            context['msg'] = str(_('Your token has been submitted and will be listed within 2 business days if it is accepted.'))
+
+    return TemplateResponse(request, 'newtoken.html', context)
 
 
 def btctalk(request):
@@ -671,3 +1014,45 @@ def youtube(request):
 
 def web3(request):
     return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')
+
+
+def tokens(request):
+    context = {}
+    networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']
+    for network in networks:
+        key = f"{network}_tokens"
+        context[key] = Token.objects.filter(network=network, approved=True)
+    return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
+
+
+def ui(request):
+    svgs = []
+    pngs = []
+    gifs = []
+    for path, __, files in walkdir('assets/v2/images'):
+        if path.find('/avatar') != -1:
+            continue
+        for f in files:
+            if f.endswith('.svg'):
+                svgs.append(f'{path[7:]}/{f}')
+                continue
+            if f.endswith('.png'):
+                pngs.append(f'{path[7:]}/{f}')
+                continue
+            if f.endswith('.gif'):
+                gifs.append(f'{path[7:]}/{f}')
+                continue
+
+    context = {
+        'is_outside': True,
+        'active': 'ui_inventory ',
+        'title': 'UI Inventory',
+        'svgs': svgs,
+        'pngs': pngs,
+        'gifs': gifs,
+    }
+    return TemplateResponse(request, 'ui_inventory.html', context)
+
+
+def lbcheck(request):
+    return HttpResponse(status=200)

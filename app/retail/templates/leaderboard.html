@@ -38,7 +38,7 @@
                             {{podium_item.github_username}}
                           </a>
                         </h5>
-                        <h2 style="color:#86eec4" > ${{podium_item.amount}} </h2>
+                        <h2 style="color:#86eec4" > ${{podium_item.amount|floatformat:2}} </h2>
                       </div>
                     </div>
                   </div>
@@ -78,7 +78,7 @@
                     </td>
                     <td class="col-2 d-flex align-items-center">
                       <a href="{% url "profile" %}{{item.github_username}}" target="_blank" >
-                        @{{item.github_username}}
+                        {{item.at_ify_username}}
                       </a>
                     </td>
                     <td class="col-5 progress_container">
@@ -94,10 +94,10 @@
                       </div>
                     </td>
                     <td class="col-1 d-flex align-items-center item-count item-count-bounties">
-                      {{item.count}} bounties
+                      {{item.count}} bounties/tips
                     </td>
                     <td class="col-2 d-flex align-items-center item-amount item-amount-revenue">
-                      ${{item.amount|intcomma}}
+                      ${{item.amount|floatformat:2|intcomma}}
                     </td>
                   </tr>
                 {% endfor %}
@@ -110,7 +110,6 @@
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
 
@@ -118,6 +117,7 @@
 
   <!-- jQuery -->
   <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/pages/leaderboard.js" %}"></script>

@@ -6,6 +6,10 @@ load_tokens();
 var localStorage;
 var quickstartURL = document.location.origin + '/bounty/quickstart';
 
+var new_bounty = {
+  last_sync: new Date()
+};
+
 try {
   localStorage = window.localStorage;
 } catch (e) {
@@ -32,6 +36,52 @@ function doShowQuickstart(url) {
   return true;
 }
 
+function lastSynced(current, last_sync) {
+  var time = timeDifference(current, last_sync);
+
+  return time;
+}
+
+$('#sync-issue').on('click', function(event) {
+  event.preventDefault();
+  if (!$('#sync-issue').hasClass('disabled')) {
+    new_bounty.last_sync = new Date();
+    retrieveIssueDetails();
+    $('#last-synced span').html(lastSynced(new Date(), new_bounty.last_sync));
+  }
+});
+
+$('#issueURL').focusout(function() {
+  setInterval(function() {
+    $('#last-synced span').html(timeDifference(new Date(), new_bounty.last_sync));
+  }, 6000);
+
+  if ($('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val())) {
+    $('#issue-details, #issue-details-edit').hide();
+    $('#no-issue-banner').show();
+
+    $('#title').val('');
+    $('#description').val('');
+
+    $('#last-synced').hide();
+    $('.js-submit').addClass('disabled');
+  } else {
+    $('#no-issue-banner').hide();
+    $('#edit-issue').attr('href', $('input[name=issueURL]').val());
+    $('#issue-details, #issue-details-edit').show();
+
+    $('#sync-issue').removeClass('disabled');
+    $('.js-submit').removeClass('disabled');
+
+    new_bounty.last_sync = new Date();
+    retrieveIssueDetails();
+    $('#last-synced').show();
+    $('#last-synced span').html(lastSynced(new Date(), new_bounty.last_sync));
+  }
+});
+
+$('#last-synced').hide();
+
 // Wait until page is loaded, then run the function
 $(document).ready(function() {
   // Load sidebar radio buttons from localStorage
@@ -42,60 +92,36 @@ $(document).ready(function() {
   } else if (localStorage['issueURL']) {
     $('input[name=issueURL]').val(localStorage['issueURL']);
   }
-  if (localStorage['project_type']) {
-    $('select[name=project_type] option').prop('selected', false);
-    $(
-      "select[name=project_type] option[value='" +
-        localStorage['project_type'] +
-        "']"
-    ).prop('selected', true);
-  }
-  if (localStorage['permission_type']) {
-    $('select[name=permission_type] option').prop('selected', false);
-    $(
-      "select[name=permission_type] option[value='" +
-        localStorage['permission_type'] +
-        "']"
-    ).prop('selected', true);
-  }
-  if (localStorage['expirationTimeDelta']) {
-    $('select[name=expirationTimeDelta] option').prop('selected', false);
-    $(
-      "select[name=expirationTimeDelta] option[value='" +
-        localStorage['expirationTimeDelta'] +
-        "']"
-    ).prop('selected', true);
-  }
-  if (localStorage['experienceLevel']) {
-    $(
-      'select[name=experienceLevel] option:contains(' +
-        localStorage['experienceLevel'] +
-        ')'
-    ).prop('selected', true);
-  }
-  if (localStorage['projectLength']) {
-    $(
-      'select[name=projectLength] option:contains(' +
-        localStorage['projectLength'] +
-        ')'
-    ).prop('selected', true);
-  }
-  if (localStorage['bountyType']) {
-    $(
-      'select[name=bountyType] option:contains(' +
-        localStorage['bountyType'] +
-        ')'
-    ).prop('selected', true);
-  }
 
   // fetch issue URL related info
   $('input[name=amount]').keyup(setUsdAmount);
   $('input[name=amount]').blur(setUsdAmount);
-  $('select[name=deonomination]').change(setUsdAmount);
-  $('select[name=deonomination]').change(promptForAuth);
+  $('input[name=usd_amount]').keyup(usdToAmount);
+  $('input[name=usd_amount]').blur(usdToAmount);
+  $('select[name=denomination]').change(setUsdAmount);
+  $('select[name=denomination]').change(promptForAuth);
   $('input[name=issueURL]').blur(retrieveIssueDetails);
   setTimeout(setUsdAmount, 1000);
-  setTimeout(promptForAuth, 1000);
+  waitforWeb3(function() {
+    promptForAuth();
+  });
+
+  // revision action buttons
+  $('#subtractAction').on('click', function() {
+    var revision = parseInt($('input[name=revisions]').val());
+
+    revision = revision - 1;
+    if (revision > 0) {
+      $('input[name=revisions]').val(revision);
+    }
+  });
+
+  $('#addAction').on('click', function() {
+    var revision = parseInt($('input[name=revisions]').val());
+
+    revision = revision + 1;
+    $('input[name=revisions]').val(revision);
+  });
 
   if ($('input[name=issueURL]').val() != '') {
     retrieveIssueDetails();
@@ -107,7 +133,7 @@ $(document).ready(function() {
     $(this).select2();
   });
   // removes tooltip
-  $('select').on('change', function(evt) {
+  $('.submit_bounty select').each(function(evt) {
     $('.select2-selection__rendered').removeAttr('title');
   });
   // removes search field in all but the 'denomination' dropdown
@@ -115,7 +141,28 @@ $(document).ready(function() {
     $('.select2-container .select2-search__field').remove();
   });
   // denomination field
-  $('select[name=deonomination]').select2();
+  $('select[name=denomination]').select2();
+  if ($('input[name=amount]').val().trim().length > 0) {
+    setUsdAmount();
+  }
+  var open_hiring_panel = function(do_focus) {
+    setTimeout(function() {
+      var hiringRightNow = $('#hiringRightNow').is(':checked');
+
+      if (hiringRightNow) {
+        $('#jobDescription').removeClass('hidden');
+        if (do_focus) {
+          $('#jobDescription').focus();
+        }
+      } else {
+        $('#jobDescription').addClass('hidden');
+      }
+    }, 10);
+  };
+
+  $('#hiringRightNow').click(function() {
+    open_hiring_panel(true);
+  });
 
 
   $('#advancedLink a').click(function(e) {
@@ -158,7 +205,7 @@ $(document).ready(function() {
       var issueURL = data.issueURL.replace(/#.*$/, '');
       var notificationEmail = data.notificationEmail;
       var amount = data.amount;
-      var tokenAddress = data.deonomination;
+      var tokenAddress = data.denomination;
       var token = tokenAddressToDetails(tokenAddress);
       var decimals = token['decimals'];
       var tokenName = token['name'];
@@ -205,6 +252,10 @@ $(document).ready(function() {
             project_type: data.project_type,
             permission_type: data.permission_type
           },
+          hiring: {
+            hiringRightNow: data.hiringRightNow,
+            jobDescription: data.jobDescription
+          },
           privacy_preferences: privacy_preferences,
           funders: [],
           categories: metadata.issueKeywords.split(','),
@@ -229,19 +280,10 @@ $(document).ready(function() {
       $(this).attr('disabled', 'disabled');
 
       // save off local state for later
-      localStorage['project_type'] = data.project_type;
-      localStorage['permission_type'] = data.permission_type;
       localStorage['issueURL'] = issueURL;
-      localStorage['amount'] = amount;
       localStorage['notificationEmail'] = notificationEmail;
       localStorage['githubUsername'] = githubUsername;
       localStorage['tokenAddress'] = tokenAddress;
-      localStorage['expirationTimeDelta'] = $(
-        'select[name=expirationTimeDelta]'
-      ).val();
-      localStorage['experienceLevel'] = $('select[name=experienceLevel]').val();
-      localStorage['projectLength'] = $('select[name=projectLength]').val();
-      localStorage['bountyType'] = $('select[name=bountyType]').val();
       localStorage.removeItem('bountyId');
 
       // setup web3
@@ -262,18 +304,8 @@ $(document).ready(function() {
       // IpfsApi is defined in the ipfs-api.js.
       // Is it better to use this JS file than the node package?  github.com/ipfs/
 
-      ipfs.ipfsApi = IpfsApi({
-        host: 'ipfs.infura.io',
-        port: '5001',
-        protocol: 'https',
-        root: '/api/v0'
-      });
-      ipfs.setProvider({
-        host: 'ipfs.infura.io',
-        port: 5001,
-        protocol: 'https',
-        root: '/api/v0'
-      });
+      ipfs.ipfsApi = IpfsApi(ipfsConfig);
+      ipfs.setProvider(ipfsConfig);
 
       // setup inter page state
       localStorage[issueURL] = JSON.stringify({
@@ -340,7 +372,7 @@ $(document).ready(function() {
           console.error(error);
           _alert({
             message: gettext('There was an error.  Please try again or contact support.')
-          });
+          }, 'error');
           unloading_button($('.js-submit'));
           return;
         }
@@ -368,7 +400,7 @@ $(document).ready(function() {
           tokenAddress, // _tokenContract
           amount, // _value
           {
-            // {from: x, to: y}
+          // {from: x, to: y}
             from: account,
             value: eth_amount,
             gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
@@ -380,7 +412,7 @@ $(document).ready(function() {
       }
 
       var do_bounty = function(callback) {
-        // Add data to IPFS and kick off all the callbacks.
+      // Add data to IPFS and kick off all the callbacks.
         ipfsBounty.payload.issuer.address = account;
         ipfs.addJson(ipfsBounty, newIpfsCallback);
       };
