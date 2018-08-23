@@ -20,6 +20,7 @@ import logging
 from datetime import datetime, timedelta
 
 from django.conf import settings
+from django.templatetags.static import static
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
@@ -79,7 +80,7 @@ def validate_slack_integration(token, channel, message=None, icon_url=''):
         message = gettext('The Gitcoin Slack integration is working fine.')
 
     if not icon_url:
-        icon_url = 'https://gitcoin.co/static/v2/images/helmet.png'
+        icon_url = static('v2/images/helmet.png')
 
     try:
         sc = SlackClient(token)
@@ -129,7 +130,7 @@ def validate_discord_integration(webhook_url, message=None, icon_url=''):
         message = gettext('The Gitcoin Discord integration is working fine.')
 
     if not icon_url:
-        icon_url = 'https://gitcoin.co/static/v2/images/helmet.png'
+        icon_url = static('v2/images/helmet.png')
 
     try:
         headers = {'Content-Type': 'application/json'}
