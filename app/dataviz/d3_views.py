@@ -571,8 +571,8 @@ def viz_graph(request, _type, template='graph'):
 
         for key, val in values.items():
             if val > 40:
-                github_url = f"https://github.com/{key}"
-                avatars[key] = f'https://gitcoin.co/funding/avatar?repo={github_url}&v=3'
+                avatar_key = key if key and "*" not in key else "None"
+                avatars[key] = f'https://gitcoin.co/dynamic/avatar/{avatar_key}'
 
         # build output
         for name in set(names.keys()):

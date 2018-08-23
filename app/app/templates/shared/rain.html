@@ -14,18 +14,6 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% for i in "123456789012345678901234567890" %}
+{% for i in "1234567890" %}
   <i class="rain {{ class }}"></i>
 {% endfor %}
-<script>
-  var rains = document.getElementsByClassName('rain');
-  for(var i=0;i<rains.length;i++){
-    var rain = rains[i];
-    var width = Math.round(Math.random() * 10) + 5;
-    var height = Math.round(Math.random() * 50) + 90;
-    rain.style.height = height + 'px';
-    rain.style.width = width + 'px';
-    rain.style.borderRadius = (width/2) + 'px';
-    rain.style.top = '-200px';
-  }
-</script>

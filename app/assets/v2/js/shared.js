@@ -49,7 +49,7 @@ var callFunctionWhenweb3Available = function(f) {
 var loading_button = function(button) {
   button.prop('disabled', true);
   button.addClass('disabled');
-  button.prepend('<img src=/static/v2/images/loading_white.gif style="max-width:20px; max-height: 20px">').addClass('disabled');
+  button.prepend('<img src=' + static_url + 'v2/images/loading_white.gif style="max-width:20px; max-height: 20px">').addClass('disabled');
 };
 
 var attach_close_button = function() {
@@ -76,10 +76,12 @@ var update_metamask_conf_time_and_cost_estimate = function() {
   var gasPrice = parseFloat($('#gasPrice').val());
 
   if (gasPrice) {
-    ethAmount = Math.round(1000 * gasLimit * gasPrice / Math.pow(10, 9)) / 1000;
-    usdAmount = Math.round(10 * ethAmount * document.eth_usd_conv_rate) / 10;
+    var eth_amount_unrounded = gasLimit * gasPrice / Math.pow(10, 9);
+
+    ethAmount = Math.round(1000000 * eth_amount_unrounded) / 1000000;
+    usdAmount = Math.round(1000 * eth_amount_unrounded * document.eth_usd_conv_rate) / 1000;
   }
-  
+
   if (typeof document.conf_time_spread == 'undefined') return;
 
   for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
@@ -87,7 +89,7 @@ var update_metamask_conf_time_and_cost_estimate = function() {
     var next_ele = (document.conf_time_spread[i + 1]);
 
     if (gasPrice <= parseFloat(next_ele[0]) && gasPrice > parseFloat(this_ele[0])) {
-      confTime = Math.round(10 * next_ele[1]) / 10;
+      confTime = Math.round(1000 * next_ele[1]) / 1000;
     }
   }
 
@@ -97,7 +99,7 @@ var update_metamask_conf_time_and_cost_estimate = function() {
 };
 
 var get_updated_metamask_conf_time_and_cost = function(gasPrice) {
-  
+
   var confTime = 'unknown';
   var ethAmount = 'unknown';
   var usdAmount = 'unknown';
@@ -105,8 +107,10 @@ var get_updated_metamask_conf_time_and_cost = function(gasPrice) {
   var gasLimit = parseInt($('#gasLimit').val());
 
   if (gasPrice) {
-    ethAmount = Math.round(1000000 * gasLimit * gasPrice / Math.pow(10, 9)) / 1000000;
-    usdAmount = Math.round(10 * ethAmount * document.eth_usd_conv_rate) / 10;
+    var eth_amount_unrounded = gasLimit * gasPrice / Math.pow(10, 9);
+
+    ethAmount = Math.round(1000000 * eth_amount_unrounded) / 1000000;
+    usdAmount = Math.round(100 * eth_amount_unrounded * document.eth_usd_conv_rate) / 100;
   }
 
   for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
@@ -284,7 +288,7 @@ var mutate_interest = function(bounty_pk, direction, data) {
     _alert({ message: gettext("You've stopped working on this, thanks for letting us know.") }, 'success');
     $('#interest a').attr('id', '');
   }
-  
+
 
   $.post(request_url, data).then(function(result) {
     result = sanitizeAPIResults(result);
@@ -506,7 +510,7 @@ var retrieveAmount = function() {
   var target_ele = $('#usd_amount');
 
   if (target_ele.html() == '') {
-    target_ele.html('<img style="width: 50px; height: 50px;" src=/static/v2/images/loading_v2.gif>');
+    target_ele.html('<img style="width: 50px; height: 50px;" src=' + static_url + 'v2/images/loading_v2.gif>');
   }
 
   var amount = $('input[name=amount]').val();
@@ -1023,7 +1027,7 @@ function renderBountyRowsFromResults(results) {
  *
  * TODO: refactor explorer to reuse this
  */
-function fetchBountiesAndAddToList(params, target, limit) {
+function fetchBountiesAndAddToList(params, target, limit, additional_callback) {
   $.get('/api/v0.1/bounties/?' + params, function(results) {
     results = sanitizeAPIResults(results);
 
@@ -1055,6 +1059,9 @@ function fetchBountiesAndAddToList(params, target, limit) {
       });
     } else {
       console.log($(target).parent().closest('.container').addClass('hidden'));
+    }
+    if (typeof additional_callback != 'undefined') {
+      additional_callback(results);
     }
   });
 }

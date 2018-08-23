@@ -484,7 +484,7 @@ class Bounty(SuperModel):
         org_name = self.github_org_name
         gitcoin_logo_flag = "/1" if gitcoin_logo_flag else ""
         if org_name:
-            return f"{settings.BASE_URL}static/avatar/{org_name}{gitcoin_logo_flag}"
+            return f"{settings.BASE_URL}dynamic/avatar/{org_name}{gitcoin_logo_flag}"
         return f"{settings.BASE_URL}funding/avatar?repo={self.github_url}&v=3"
 
     @property
@@ -811,7 +811,8 @@ class Bounty(SuperModel):
         """
         params = f'pk={self.pk}&network={self.network}'
         urls = {}
-        for item in ['fulfill', 'increase', 'accept', 'cancel', 'payout', 'contribute', 'advanced_payout', 'social_contribution']:
+        for item in ['fulfill', 'increase', 'accept', 'cancel', 'payout', 'contribute',
+                     'advanced_payout', 'social_contribution', 'invoice', ]:
             urls.update({item: f'/issue/{item}?{params}'})
         return urls
 
@@ -892,6 +893,21 @@ class Bounty(SuperModel):
         queryset = self.tips.filter(is_for_bounty_fulfiller=False, metadata__is_clone__isnull=True, metadata__direct_address__isnull=True)
         return (queryset.filter(from_address=self.bounty_owner_address) |
                 queryset.filter(from_name=self.bounty_owner_github_username))
+
+    @property
+    def paid(self):
+        """Return list of users paid for this bounty."""
+        if self.status != 'done':
+            return []  # to save the db hits
+
+        return_list = []
+        for fulfillment in self.fulfillments.filter(accepted=True):
+            if fulfillment.fulfiller_github_username:
+                return_list.append(fulfillment.fulfiller_github_username)
+        for tip in self.tips.exclude(txid=''):
+            if tip.username:
+                return_list.append(tip.username)
+        return list(set(return_list))
 
     @property
     def additional_funding_summary(self):
@@ -1086,10 +1102,7 @@ class Tip(SuperModel):
         elif self.web3_type != 'v2':
             raise Exception
 
-        pk = self.metadata.get('priv_key')
-        txid = self.txid
-        network = self.network
-        return f"{settings.BASE_URL}tip/receive/v2/{pk}/{txid}/{network}"
+        return self.receive_url_for_recipient
 
     @property
     def receive_url_for_recipient(self):
@@ -1188,52 +1201,6 @@ class Tip(SuperModel):
         except Bounty.DoesNotExist:
             return None
 
-    def payout_to(self, address, amount_override=None):
-        # TODO: deprecate this after v3 is shipped.
-        from dashboard.utils import get_web3
-        from dashboard.abi import erc20_abi
-        if not address or address == '0x0':
-            raise TipPayoutException('bad forwarding address')
-        if self.web3_type == 'yge':
-            raise TipPayoutException('bad web3_type')
-        if self.receive_txid:
-            raise TipPayoutException('already received')
-
-        # send tokens
-        tip = self
-        address = Web3.toChecksumAddress(address)
-        w3 = get_web3(tip.network)
-        is_erc20 = tip.tokenName.lower() != 'eth'
-        amount = int(tip.amount_in_wei) if not amount_override else int(amount_override)
-        gasPrice = recommend_min_gas_price_to_confirm_in_time(60) * 10**9
-        from_address = Web3.toChecksumAddress(tip.metadata['address'])
-        nonce = w3.eth.getTransactionCount(from_address)
-        if is_erc20:
-            # ERC20 contract receive
-            balance = w3.eth.getBalance(from_address)
-            contract = w3.eth.contract(Web3.toChecksumAddress(tip.tokenAddress), abi=erc20_abi)
-            gas = contract.functions.transfer(address, amount).estimateGas({'from': from_address}) + 1
-            gasPrice = gasPrice if ((gas * gasPrice) < balance) else (balance * 1.0 / gas)
-            tx = contract.functions.transfer(address, amount).buildTransaction({
-                'nonce': nonce,
-                'gas': w3.toHex(gas),
-                'gasPrice': w3.toHex(int(gasPrice)),
-            })
-        else:
-            # ERC20 contract receive
-            gas = 100000
-            amount -= gas * int(gasPrice)
-            tx = dict(
-                nonce=nonce,
-                gasPrice=w3.toHex(int(gasPrice)),
-                gas=w3.toHex(gas),
-                to=address,
-                value=w3.toHex(amount),
-                data=b'',
-            )
-        signed = w3.eth.account.signTransaction(tx, tip.metadata['priv_key'])
-        receive_txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
-        return receive_txid
 
 @receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
 def psave_tip(sender, instance, **kwargs):
@@ -1855,7 +1822,7 @@ class Profile(SuperModel):
 
     @property
     def avatar_url(self):
-        return f"{settings.BASE_URL}static/avatar/{self.handle}"
+        return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
 
     @property
     def avatar_url_with_gitcoin_logo(self):
