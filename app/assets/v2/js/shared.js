@@ -89,7 +89,7 @@ var update_metamask_conf_time_and_cost_estimate = function() {
     var next_ele = (document.conf_time_spread[i + 1]);
 
     if (gasPrice <= parseFloat(next_ele[0]) && gasPrice > parseFloat(this_ele[0])) {
-      confTime = Math.round(1000 * next_ele[1]) / 1000;
+      confTime = Math.round(10 * next_ele[1]) / 10;
     }
   }
 
