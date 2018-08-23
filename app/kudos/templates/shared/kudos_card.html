@@ -20,6 +20,6 @@
   <a href="/kudos/{{ listing.id }}" class="">
     <img id="kudosImage" src="{% static listing.image %}" alt="{{ listing.name }}" class="img-thumbnail kd-shadow border-transparent" width="250">
   </a>
-  <span class="kd-price">Ξ {{ listing.price_in_eth }}</span>
+  <span class="kd-price">{{ listing.price_in_eth }} ETH</span>
   <div class="kd-name">{{ listing.name|humanize_name }}</div>
 </div>

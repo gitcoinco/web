@@ -70,7 +70,7 @@
     <div class="my-4">
       <a href="/kudos/{{ kudos.id }}"><img src="{% static kudos.image %}" alt="{{ kudos.name }}" width="160" alt="" class="mb-2"></a>
       <span class="d-block">{{ kudos.name|humanize_name }}</span>
-      <span class="d-block" data-kudosprice=>Ξ {{ kudos.price_in_eth }}<small></small></span>
+      <span class="d-block" data-kudosprice=>{{ kudos.price_in_eth }} ETH<small></small></span>
     </div>
     
   </header>
