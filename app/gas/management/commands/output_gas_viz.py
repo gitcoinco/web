@@ -15,6 +15,8 @@ def convert_to_movie():
 
 
 def clear_cache():
+    # TODO: This whole method and utilization needs modified to use S3 storage... not local.
+    # We can't be using local storage moving forward.
     command = "mkdir cache"
     os.system(command)
     command = "mkdir cache/frames"
@@ -28,6 +30,8 @@ def clear_cache():
 
 
 def move_to_static():
+    # TODO: This whole method and utilization needs modified to use S3 storage... not local.
+    # We can't be using local storage moving forward.
     command = "rm static/tmp/gas_price_viz.mp4 -f"
     os.system(command)
     command = "mv cache/out.mp4 static/tmp/gas_price_viz.mp4"
@@ -84,7 +88,7 @@ class Command(BaseCommand):
             if invert_colors:
                 axiscolor = 'white'
                 ax.spines['bottom'].set_color(axiscolor)
-                ax.spines['top'].set_color(axiscolor) 
+                ax.spines['top'].set_color(axiscolor)
                 ax.spines['right'].set_color(axiscolor)
                 ax.spines['left'].set_color(axiscolor)
                 ax.tick_params(axis='x', colors=axiscolor)
