@@ -67,7 +67,10 @@ def insert_settings(request):
 
     if context['github_handle']:
         context['unclaimed_tips'] = Tip.objects.filter(
-            expires_date__gte=timezone.now(), receive_txid='', username__iexact=context['github_handle']
+            expires_date__gte=timezone.now(),
+            receive_txid='',
+            username__iexact=context['github_handle'],
+            web3_type='v3',
         ).exclude(txid='')
         if not settings.DEBUG:
             context['unclaimed_tips'] = context['unclaimed_tips'].filter(network='mainnet')
