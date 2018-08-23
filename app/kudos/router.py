@@ -52,9 +52,13 @@ class WalletViewSet(viewsets.ModelViewSet):
         if 'address' in param_keys:
             queryset = queryset.filter(address=self.request.query_params.get('address'))
 
-        # Filter by profile
+        # Filter by profile_id
         if 'profile_id' in param_keys:
-            queryset = queryset.filter(name=self.request.query_params.get('profile_id'))
+            queryset = queryset.filter(profile__id=self.request.query_params.get('profile_id'))
+
+        # Filter by profile_id
+        if 'profile_handle' in param_keys:
+            queryset = queryset.filter(profile__handle=self.request.query_params.get('profile_handle'))
 
         return queryset
 
