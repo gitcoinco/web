@@ -333,7 +333,7 @@
   priceFinney: 2
   numClonesAllowed: 300
   tags: c, memory management, programming
-  image: c++.svg
+  image: c.svg
 - name: Redux Programmer
   description: Need someone who can deliver value in Redux?  Owners of this badge are renown for their ability to work effciently in Redux.
   rarity: 20
