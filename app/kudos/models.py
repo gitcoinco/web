@@ -83,7 +83,7 @@ class MarketPlaceListing(SuperModel):
 
 class Wallet(SuperModel):
     address = models.CharField(max_length=255, unique=True)
-    profile = models.ForeignKey('dashboard.Profile', related_name='wallets', on_delete=models.SET_NULL, null=True)
+    profile = models.ForeignKey('dashboard.Profile', on_delete=models.SET_NULL, null=True)
 
     def save(self, *args, **kwargs):
         self.address = to_checksum_address(self.address)
