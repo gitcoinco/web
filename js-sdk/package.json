@@ -1,6 +1,6 @@
 {
   "name": "gitcoin-sdk",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Gitcoin SDK.",
   "scripts": {
     "dev": "webpack --config webpack.config.js --mode development --progress --colors",
