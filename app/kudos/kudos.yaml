@@ -1,525 +1,511 @@
-- name: hadoop
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Hadoop Master
+  description: You are a Master of MapReduce, a sultan of reliable, distributed, and scalable computing.  Owners of this badge are infamous for their mastery of distributing processing of large data sets!
+  rarity: 25
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: hadoop, distributed, scalable, data
   image: hadoop.svg
-- name: linux_wizard
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Linux Wizard
+  description: All hail the Linux Penguin!  Linux is a force in open source, powering millions of websites and businesses.  Owners of this badge are known for their mastery of the Linux family of Operating Systems!
+  rarity: 25
+  priceFinney: 3
+  numClonesAllowed: 500
+  tags: linux, open source, penguin, OS
   image: linux_wizard.svg
-- name: gitcoin_genesis
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Gitcoin Genesis
+  description: The Gitcoin Genesis Badge is the rarest of the Gitcoin team badges.  Owners of this badge contributed to Gitcoin in a meaningful way in the way-back-when.
+  rarity: 100
+  priceFinney: 2000
+  numClonesAllowed: 450
+  tags: gitcoin, genesis, rare
   image: gitcoin_genesis.svg
-- name: rails_2
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Ruby on Rails Hacker
+  description: Can anyone spin up websites faster than a Ruby on Rails hacker? Owners of this badge are famous for their mastery of MVC website development, DRY, and use of Active Record. 
+  rarity: 10
+  priceFinney: 5
+  numClonesAllowed: 550s
+  tags: rails, ruby, web, MVC, DRY
   image: rails_2.svg
-- name: javascript
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Javascript Juju
+  description: Remember the web in the days before javascript?  No?  Neither can we!  Javascript powers the modern web, top to bottom and we <3 the usage of javascript here at Gitcoin.  Owners of this badge are masters of the asyncronous, event driven, programming language and specifically, of client side scripting!
+  rarity: 15
+  priceFinney: 3
+  numClonesAllowed: 500
+  tags: javascript, node, web
   image: javascript.svg
-- name: infrastructure_ninja
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Infrastructure Ninja
+  description: Just like every building needs a solid foundation, every website needs a great infrastructure.  Infrastructure Ninjas are rarely seen or heard, but they are omnipresent -- Quickly tackling the gnarly infrastructure issues that crop up in the modern web, and ensuring stability, peace, performance, and prosperity for inhabinants the modern web.
+  rarity: 23
+  priceFinney: 2
+  numClonesAllowed: 300
+  tags: OS, infrastructure, linux
   image: infrastructure_ninja.svg
-- name: java
-  description: lorum
+- name: Java Juice
+  description: Is there anything better than a cup 'o' Joe in the morning? Java can be written once and run everywhere; so what better tool to BUIDL on in the modern, blockchain-enabled, web?  Owners of the Java Juice badge are famous for their mastery of the Java programming language!
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: java, web, sun
   image: java.svg
-- name: do_more_faster
-  description: lorum
+- name: Do More Faster
+  description: Is there anything better than working with someone who can rapidly iterate?  The modern web is built by Agile, and favors experimentation and iteration.  Owners of the Do More Faster badge, well, they DO MORE FASTER!
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: do more faster, iteration, hypothesis testing, soft skills
   image: do_more_faster.svg
-- name: jquery
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: jQuery Justice
+  description: jQuery is a force in the modern web.  By solving compatibilty issues across browsers, and providing a friendly interface for developing AJAX websites, jQuery won our <3s.  To owners of this badge, thank you for using jQuery to provide Justice to all!
+  rarity: 25
+  priceFinney: 2
+  numClonesAllowed: 800
+  tags: jquery, javascript, web, MVC
   image: jquery.svg
-- name: elixer_creator
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Elixer Mixer
+  description: Elixer Mixers are known for their alchemy.  Just as a chemist combines fundamental chemical primitives to create potions that are near-magic, an Elixer Mixer combines functional programming with the Erlang VM to to produce low-latency, fault tolerant, systems!
+  rarity: 45
+  priceFinney: 2
+  numClonesAllowed: 250
+  tags: elixer, erlang, functional
   image: elixer_creator.svg
-- name: collaboration_machine
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Collaboration Machine
+  description: Is there anything better than working with a collaboration machine?  Known for their communication skills, rapid value delivery, and great attitudes, Collaboration Machines are a huge asset to the modern programming ecosystem!
+  rarity: 15
+  priceFinney: 1
+  numClonesAllowed: 300
+  tags: collaboration, soft skills
   image: collaboration_machine.svg
-- name: unix_philosophy
-  description: lorum
+- name: Unix Philosophy
+  description: Owners of this badge 'Write programs that do one thing and do it well'; just like the UNIX OS!
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: unix, build once, OS
   image: unix_philosophy.svg
-- name: jquery_2
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: jQuery Juju
+  description: jQuery is a force in modern open source.  By solving compatibilty issues across browsers, and providing a friendly interface for developing AJAX websites, jQuery won our <3s.  To owners of this badge, thank you for using jQuery to provide Juju to all!
+  rarity: 25
+  priceFinney: 2
+  numClonesAllowed: 800
+  tags: jquery, javascript, web, MVC
   image: jquery_2.svg
-- name: ruby2
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Ruby Gem
+  description: Is there anyone who knows more about 'gem's than someone who's good enough at Ruby, to be a 'Gem' themselves? Owners of this badge are known for their mastery of the Ruby programming language.
+  rarity: 10
+  priceFinney: 5
+  numClonesAllowed: 550s
+  tags: rails, ruby, web, MVC, DRY
   image: ruby2.svg
-- name: angular
-  description: lorum
+- name: Angular Master
+  description: AngularJS is a great extension of javsacript, and we love how it lets use declare dynamic views for our dApps!  Owners of this badge are masters of the AngularJS programming framework!
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: angular, javascript, mvc, web
   image: angular.svg
-- name: qa_ninja
-  description: lorum
+- name: QA Ninja
+  description: Rarely heard or seen, the modern QA Ninja is a hyper-efficient finder and reporter of bugs.  Got a number input on an HTML form?  They'll find a way to type 'LIZARD' into it?  Buffer overflow somewhere in your dApp?  They'll find it.  QA Ninjas make the web bug free, and we salute them!
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 700
+  tags: qa, ninja, bugs, bug squasher
   image: qa_ninja.svg
-- name: ship_code
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Code Shipper
+  description:  Know who we LOVE working with?  Programmers who are always shipping code!  Always. Be. Shipping. 
+  rarity: 25
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: shipping, soft skills,
   image: ship_code.svg
-- name: durpal
-  description: lorum
+- name: Drupal Master
+  description: Want to ship content on the modern web?  Drupal is where it's at.  The leading Open Source CMS has provided tons of value to the modern web, and adding a Drupal Master to your project is a sure fire way to make your CMS fly!
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: drupal, CMS, web
   image: durpal.svg
-- name: ruby_rockstar
-  description: lorum
+- name: Ruby on Rails Master
+  description: Can anyone spin up websites faster than a Ruby on Rails Master? Owners of this badge are legitimately famous for their mastery of MVC website development, DRY, and use of Active Record. 
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 4
+  numClonesAllowed: 200
+  tags: rails, ruby, web, MVC, DRY
   image: ruby_rockstar.svg
-- name: oss_freedom_fighter
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Open Source Freedom Fighter
+  description: Hey, look -- In the sky, it's a bird.  No it's a plane.  No it's an Open Source Freedom Fighter!  OSS Freedom Fighters fight for liberty, justice, and open source code for all!
+  rarity: 50
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: oss, soft skills
   image: oss_freedom_fighter.svg
-- name: ruby
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Ruby Master
+  description: Can anyone spin up clean code faster than a Ruby on Rails Master? Owners of this badge are mega famous for their mastery of Ruby, Gems, and the Ruby ecosystem. 
+  rarity: 10
+  priceFinney: 2
+  numClonesAllowed: 150
+  tags: ruby, web, programmer
   image: ruby.svg
-- name: elixer_mixer
-  description: lorum
+- name: Mega-Open Collaborator
+  description: "Be open to the point of promiscuity" is one of our favorite points from the famous essay from Eric Raymond entitled 'The Cathedral and the Bazaar'.  Owners of this badge embody the principle of Openness from the Cathedral and the Bazaar.
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
-  image: elixer_mixer.svg
-- name: be_open_to_point_of_promiscuity
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: soft skills, open
   image: be_open_to_point_of_promiscuity.svg
-- name: problem_solver
-  description: lorum
+- name: Problem Solver
+  description: Is there anything better than working with someone who can rapidly solve problems?  The modern web is built by Agile, and favors experimentation and iteration.  Owners of this badge, well, they SOLVE PROBLEMS!
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: soft skills
   image: problem_solver.svg
-- name: sustainer
-  description: lorum
+- name: Sustainer
+  description: Open Source Software is fraught with problems with sustainability.  Owners of this badge are fighting to change to tide and to make Open Source Software sustainable for generations to come!
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: soft skills, sustainer, open source
   image: sustainer.svg
-- name: juggler
-  description: lorum
+- name: Juggler
+  description: Jugglers are known for their joyous attitude and their ability to manage multiple balls in the air at once.  Owners of this badge can contribute meaningfully to several projects at once and not let a single one drop!
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: soft skills, project management
   image: juggler.svg
-- name: above_and_beyond
-  description: lorum
+- name: Above and Beyond
+  description: Owners of this badge are always under-promising and over-delivering.  They go 'above and beyond' for their clients!
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: soft skills, project management
   image: above_and_beyond.svg
-- name: gitbadeege2v2
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: New Dawn
+  description: Owners of this badge have completely changed the course of a project their on, with their skills, organization, tenacity and sheer ability to deliver.
+  rarity: 70
+  priceFinney: 2
+  numClonesAllowed: 50
+  tags: soft skills, momentum
   image: gitbadeege2v2.svg
-- name: design_star
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Design Star
+  description: Know that feeling early in a project when you're just putting pencil to paper, figuring out what things are going to look like?  Owners of this badge at Design Stars, delivering tons of value on aesthetics, UX, and otherwise shaping the very projects they work on!
+  rarity: 40
+  priceFinney: 2
+  numClonesAllowed: 350
+  tags: design, star, aesthetics, ux
   image: design_star.svg
-- name: handyman
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Handyman
+  description: Its great to have a handy man around your house when your sink, plumbing, electricity, breaks.  Owners of this badge are digital handymen and handywomen.  They fix stuff, and do it with a smile on their face!
+  rarity: 30
+  priceFinney: 2
+  numClonesAllowed: 210
+  tags: soft skills, programmer, technical, handyman
   image: handyman.svg
-- name: data_savvy
-  description: lorum
+- name: Handy-Woman
+  description: Its great to have a handy woman around your house when your sink, plumbing, electricity, breaks.  Owners of this badge are digital handymen and handywomen.  They fix stuff, and do it with a smile on their face!
+  rarity: 30
+  priceFinney: 2
+  numClonesAllowed: 210
+  tags: soft skills, programmer, technical, handywoman
+  image: handy_woman.svg
+- name: Data Savvy
+  description: Being Data-Driven is an asset in today's world.  Owners of this badge have mastered the abiltiy to gather, cultivate, clean, gain insight, and deliver value from a dataset
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: data, graphs, charts
   image: data_savvy.svg
-- name: idea_person
-  description: lorum
+- name: Idea Person
+  description: Idea people create value and warmth with the sheer radiance of their ideas.  They think outside the box, they combine left-brain and right brain.  They deliver value by thinking about things in a new way.
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: soft skills, ideas, project manager, product manager
   image: idea_person.svg
-- name: nodejjs_2
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Node JS Ninja
+  description: Remember the bad old days in the web before javascript?  Javascript powers the modern web, top to bottom and we <3 the usage of javascript here at Gitcoin.  Owners of this badge are masters of the asyncronous, event driven, programming language and specifically, of server side scripting!
+  rarity: 30
+  priceFinney: 4
+  numClonesAllowed: 300
+  tags: javascript, nodeJS, node, asyncronous
   image: nodejJS_2.svg
-- name: always_shipping
-  description: lorum
+- name: Always Shipping
+  description:  Know who we LOVE working with?  Programmers who are always shipping code!  Always. Be. Shipping. 
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 5
+  numClonesAllowed: 500
+  tags: shipping, SHIPL, soft skils
   image: always_shipping.svg
-- name: php_2
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: PHP Programmer
+  description: PHP -- The og web developers programming language!  Know whats cool about PHP?  It's a recursive acronym, "PHP Hypertext Processor".  Want a PHP programmer for your project? Look no further than to owners of this badge!
+  rarity: 15
+  priceFinney: 2
+  numClonesAllowed: 200
+  tags: php, programmer, php6, php7
   image: php_2.svg
-- name: c#
-  description: lorum
+- name: C# Programmer
+  description: Need someone who uses strong typing, declarative, functional, code?  Look no further than the owners of the C# Kudos!
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: c#, programmer
   image: c#.svg
-- name: cleanest_code
-  description: lorum
+- name: Cleanest Code
+  description: Want to work with someone who is famous for having squeaky clean code?  Look no further than owners of the 'Cleanest Code' Kudos. 
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: clean code, programmer, soft skills
   image: cleanest_code.svg
-- name: nodejjs_3
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Node JS User
+  description: Remember the bad old days in the web before javascript?  Javascript powers the modern web, top to bottom and we <3 the usage of javascript here at Gitcoin.  Owners of this badge are masters of the asyncronous, event driven, programming language and specifically, of server side scripting!
+  rarity: 30
+  priceFinney: 4
+  numClonesAllowed: 300
+  tags: javascript, nodeJS, node, asyncronous
   image: nodejJS_3.svg
-- name: release_early_and_often
-  description: lorum
+- name: Relase Early and Often
+  description: Want to work with someone who RERO (Relase Early and Often)? RERO is a software development philosophy that emphasizes the importance of early and frequent releases.  This creates a tight feedback looop between devs and testers.  Want someone who releases frequently?  Owners of this badge are who you'll want to talk to!
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 300
+  tags: iteration, release early, RERO, soft skills
   image: release_early_and_often.svg
-- name: grow_opensource
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Grow Open Source
+  description: Owners of this Kudos embody Gitcoin's mission of 'Grow Open Source'
+  rarity: 60
+  priceFinney: 2
+  numClonesAllowed: 200
+  tags: mission, open source, sustainer
   image: grow_opensource.svg
-- name: mongodb
-  description: lorum
+- name: Mongo DB Programmer
+  description: Want someone who can work efficiently with MongoDB?  Look no further than owners of this badge.
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: mongodb, db
   image: mongoDB.svg
-- name: direct
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Navigator
+  description: Want to work with someone who can navigate through complexity and deliver on-time, on-scope, and on-budget?  Look no further than owneres of this kudos!
+  rarity: 30
+  priceFinney: 4
+  numClonesAllowed: 300
+  tags: navigator, project management, soft skills
   image: direct.svg
-- name: fast_turn_around
-  description: lorum
+- name: Fast Turnaround
+  description: Want someone who ships deliverables quick?  Owners of this 'fast turnaround' kudos are the first place to look!
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: soft skills, fast, quick
   image: fast_turn_around.svg
-- name: gears_worker
-  description: lorum
+- name: CSS Wizard 
+  description: CSS is one of the foundations of the modern web.  Owners of this badge are masters of building beautiful, mobile-friendly, products.
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
-  image: gears_worker.svg
-- name: css
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: css, frontend, html
   image: css.svg
-- name: night_owl
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Night Owl
+  description: Owners of this badge always seem to be up at night, SHIPling product to customers.
+  rarity: 50
+  priceFinney: 2
+  numClonesAllowed: 200
+  tags: night owl, quirks
   image: night_owl.svg
-- name: php
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: PHP Prose
+  description: PHP -- The og web developers programming language!  Know whats cool about PHP?  It's a recursive acronym, "PHP Hypertext Processor".  Want a PHP programmer for your project? Look no further than to owners of this badge!
+  rarity: 15
+  priceFinney: 2
+  numClonesAllowed: 200
+  tags: php, programmer, php6, php7
   image: php.svg
-- name: be_open
-  description: lorum
+- name: Builder of a Better World
+  description: Owners of this badge are obsessed with BUIDLing a better world than what came before them.  We salute them for their dedication to making things better.
+  rarity: 60
+  priceFinney: 10
+  numClonesAllowed: 500
+  tags: soft skills, inspiration
+  image: utopia.svg
+- name: C Programmer
+  description: Need a programmer for your performant, object oriented, project that can manage their own memory and manage on-scope and on-budget!? Look no further; Owners of this badge are renown for their work in the C programming language.
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
-  image: be_open.svg
-- name: c
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
-  image: c.svg
-- name: redux
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
-  image: redux.svg
-- name: sustain_oss
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
-  image: sustain_oss.svg
-- name: rails
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
-  image: rails.svg
-- name: helping_hand
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
-  image: helping_hand.svg
-- name: nodejjs
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
-  image: nodejJS.svg
-- name: c++
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 300
+  tags: c, memory management, programming
   image: c++.svg
-- name: superhero
-  description: lorum
+- name: Redux Programmer
+  description: Need someone who can deliver value in Redux?  Owners of this badge are renown for their ability to work effciently in Redux.
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
-  image: superhero.svg
-- name: pythonista
-  description: lorum
+  priceFinney: 2
+  numClonesAllowed: 200
+  tags: redux, react
+  image: redux.svg
+- name: Ruby on Rails Hacker
+  description: Can anyone spin up websites faster than a Ruby on Rails hacker? Owners of this badge are famous for their mastery of MVC website development, DRY, and use of Active Record. 
+  rarity: 10
+  priceFinney: 5
+  numClonesAllowed: 550s
+  tags: rails, ruby, web, MVC, DRY
+  image: rails.svg
+- name: Helping Hand
+  description: Need a helping hand for your project.  Start with an owner of this 'Helping Hand' badge!
+  rarity: 90
+  priceFinney: 2
+  numClonesAllowed: 50
+  tags: helping hand, soft skills, helpful
+  image: helping_hand.svg
+- name: Node JS Juju
+  description: Remember the bad old days in the web before javascript?  Javascript powers the modern web, top to bottom and we <3 the usage of javascript here at Gitcoin.  Owners of this badge are masters of the asyncronous, event driven, programming language and specifically, of server side scripting!
+  rarity: 30
+  priceFinney: 4
+  numClonesAllowed: 300
+  tags: javascript, nodeJS, node, asyncronous
+  image: nodejJS.svg
+- name: C++ Programmer
+  description: Need a programmer for your performant, object oriented, project that can manage their own memory and manage on-scope and on-budget!? Look no further; Owners of this badge are renown for their work in the C++ programming language.
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 300
+  tags: c++, c, memory management, programming
+  image: c++.svg
+- name: Pythonista
+  description: Pythonistas are loyal users of the Python programming language.
+  rarity: 40
+  priceFinney: 2
+  numClonesAllowed: 300
+  tags: python, pythonista
   image: pythonista.svg
-- name: level_up
-  description: lorum
+- name: Level Up
+  description: Owners of this badge are known for their ability to Level Up the teams and projects they work on
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: soft skills, programmer
   image: level_up.svg
-- name: delegate_everything_you_can
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Delegation Machine
+  description: Owners of this badge are known for their ability to clearly articulate requirements, to work with collaborators of all types, and to product value in a team atmosphere!
+  rarity: 70
+  priceFinney: 5
+  numClonesAllowed: 300
+  tags: delegate, team, soft skills
   image: delegate_everything_you_can.svg
-- name: artist
-  description: lorum
+- name: Arts and Farts
+  description: Need someone who is going to create beautiful designs of any kind?  Check out the owners of the 'Arts and Farts' Kudos.
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 100
+  tags: arts, design, frontend, aesthetics
   image: artist.svg
-- name: masterpiece_painter
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
-  image: masterpiece_painter.svg
-- name: react
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: React
+  description: React is a force in the modern web, and so are those who can yield it.   Owners of this badge have demonstrated proficiency in React on a past project.
+  rarity: 40
+  priceFinney: 3
+  numClonesAllowed: 400
+  tags: react, javascript, programming
   image: react.svg
-- name: busines_smind
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Business Minded
+  description: Looking for someone who can deliver the goods from a business side of things?  Look no further than owners of this 'business minded' kudos.
+  rarity: 70
+  priceFinney: 2
+  numClonesAllowed: 100
+  tags: business, soft skills
   image: busines_smind.svg
-- name: html
-  description: lorum
+- name: HTML Mastery
+  description: Looking for someone who writes clean, standards-compliant, HTML?  Look no further than this HTML Mastery kudos.
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: html, frontend, standards-compliant
   image: html.svg
-- name: eye_for_detail
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Eye for Detail
+  description: Looking for someone who has a great eye for detail?  Look no further than this eye for detail kudos badge.
+  rarity: 90
+  priceFinney: 2
+  numClonesAllowed: 50
+  tags: design, details, soft skills
   image: eye_for_detail.svg
-- name: ember
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Ember Master
+  description: Ember is a great extension of javsacript, and we love how it lets use declare dynamic views for our dApps!  Owners of this badge are masters of the Ember programming framework!
+  rarity: 30
+  priceFinney: 6
+  numClonesAllowed: 300
+  tags: ember, javascript
   image: ember.svg
-- name: django
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Django Dev
+  description: Developers who use Django are a great asset to the modern web, and so is the Django project itself!  Gitcoin itself is built with Django, and we are very happy to host this badge as part of the Kudos genesis batch!
+  rarity: 33
+  priceFinney: 3
+  numClonesAllowed: 342
+  tags: python, django, web, programmer
   image: django.svg
-- name: be_of_all_trades
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Bee of all Trades
+  description: Are you a cross-pollinator?  Do you deliver value in a lot of places at once?  This 'Bee of all trades' badge is for you!
+  rarity: 25
+  priceFinney: 2
+  numClonesAllowed: 200
+  tags: soft skills, cross-pollinator
   image: be_of_all_trades.svg
-- name: mysql
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: MySQL
+  description: MySQL is a great asset to modern web developers.  Looking for someone who knows MySQL?  This badge is for you.
+  rarity: 30
+  priceFinney: 2
+  numClonesAllowed: 100
+  tags: mysql, database, db
   image: mysql.svg
-- name: super_juggler
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
-  image: super_juggler.svg
-- name: app_dev_all_star
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: App Dev All Star
+  description: Looking for an all star app developer?  This badge is for you.
+  rarity: 10
+  priceFinney: 1
+  numClonesAllowed: 340
+  tags: app, web, programmer
   image: app_dev_all_star.svg
-- name: go
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Go Developer
+  description: Looking for someone who can Go Go Go and BUIDL in Go?  This kudos is for you.
+  rarity: 30
+  priceFinney: 2
+  numClonesAllowed: 200
+  tags: go, programmer
   image: go.svg
-- name: product_wizard
-  description: lorum
+- name: Product Wizard
+  description: Looking for someone to put on their product wizard's cap and deliver massive value to your project?  This kudos is for you!
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: product, soft skills
   image: product_wizard.svg
-- name: business_mind
-  description: lorum
-  rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+- name: Business Minded
+  description: Looking for someone who can deliver the goods from a business side of things?  Look no further than owners of this 'business minded' kudos.
+  rarity: 30
+  priceFinney: 3
+  numClonesAllowed: 340
+  tags: business, soft skills
   image: business_mind.svg
-- name: bug_squasher
-  description: lorum
+- name: Bug Squasher
+  description: Splat goes the bug!  Owners of this badge are proficient at squashing bugs.
   rarity: 20
-  price: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: bugs, soft skills
   image: bug_squasher.svg
+- name: Shill Ethereum
+  description: For your friends & family who just love to shill Ethereum
+  rarity: 20
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: ethereum, shills
+  image: shill_ethereum.svg
+- name: Shill Colorado
+  description: For your friends & family who just love to shill Colorado
+  rarity: 20
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: colorado, shills
+  image: shill_colorado.svg
+- name: Devcon 4
+  description: For your friends & family who came to Devcon 4 with you.
+  rarity: 20
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags: devcon, ethereum, shills
+  image: devcon_4.svg
