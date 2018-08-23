@@ -249,7 +249,7 @@
   priceFinney: 2
   numClonesAllowed: 500
   tags: c#, programmer
-  image: c#.svg
+  image: c_sharp.svg
 - name: Cleanest Code
   description: Want to work with someone who is famous for having squeaky clean code?  Look no further than owners of the 'Cleanest Code' Kudos. 
   rarity: 20
