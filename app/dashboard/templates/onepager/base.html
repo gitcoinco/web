@@ -69,6 +69,10 @@
     </div>
     <!-- Scripts -->
     <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+    <script type="text/javascript">
+      var static_url = "{{ STATIC_URL }}";
+      var media_url = "{{ MEDIA_URL }}";
+    </script>
     {% block 'scripts' %}{% endblock %}
     {% include 'shared/sentry.html' %}
     <script src="{% static "v2/js/jquery.select2.min.js" %}"></script>
