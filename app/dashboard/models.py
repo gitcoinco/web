@@ -2192,7 +2192,7 @@ class Profile(SuperModel):
                 }]
 
         if tips:
-            params['tips'] = self.tips.filter(**query_kwargs)
+            params['tips'] = self.tips.filter(**query_kwargs).exclude(txid='')
 
         if leaderboards:
             params['scoreboard_position_contributor'] = self.get_contributor_leaderboard_index()
