@@ -38,7 +38,7 @@
   {% if user.is_authenticated %}
   <a class="nav-link login" href="{% url 'profile' %}">
     <img class="nav_avatar" width=25 height=25
-      src="{% if user.profile.avatar %}{{ user.profile.avatar.svg.url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
+      src="{% if user.profile.avatar %}{{ user.profile.avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
     {{ user }}
   </a>
   {% else %}
