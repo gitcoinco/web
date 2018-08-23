@@ -1654,7 +1654,7 @@ div.busyOverlay {
   bottom: 0;
   transform: translateZ(0);
   z-index: 9;
-  background-color: rgba(240, 240, 240, 0.6);
+  background-color: rgba(240, 240, 240, 0.3);
   box-shadow: 0 0 100em 0 inset var(--gc-purple);
   animation: busyOverlay 0.3s ease-in;
   animation-fill-mode: both;
