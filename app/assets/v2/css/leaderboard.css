@@ -55,6 +55,7 @@
 #leaderboard .winner {
   position: relative;
   padding: 0px;
+  min-height: 23em;
 }
 
 #leaderboard .winner-content {
