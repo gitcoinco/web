@@ -2147,7 +2147,7 @@ class Profile(SuperModel):
             'avatar_url': self.avatar_url_with_gitcoin_logo,
             'profile': self,
             'bounties': self.bounties,
-            'count_bounties_completed': self.fulfilled.filter(accepted=True, current_bounty=True, bounty__network=network).distinct('pk').count(),
+            'count_bounties_completed': self.fulfilled.filter(accepted=True, bounty__current_bounty=True, bounty__network=network).distinct('pk').count(),
             'sum_eth_collected': sum_eth_collected,
             'sum_eth_funded': sum_eth_funded,
             'works_with_collected': works_with_collected,
