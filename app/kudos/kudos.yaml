@@ -23,7 +23,7 @@
   description: Can anyone spin up websites faster than a Ruby on Rails hacker? Owners of this badge are famous for their mastery of MVC website development, DRY, and use of Active Record. 
   rarity: 10
   priceFinney: 5
-  numClonesAllowed: 550s
+  numClonesAllowed: 550
   tags: rails, ruby, web, MVC, DRY
   image: rails_2.svg
 - name: Javascript Juju
@@ -93,7 +93,7 @@
   description: Is there anyone who knows more about 'gem's than someone who's good enough at Ruby, to be a 'Gem' themselves? Owners of this badge are known for their mastery of the Ruby programming language.
   rarity: 10
   priceFinney: 5
-  numClonesAllowed: 550s
+  numClonesAllowed: 550
   tags: rails, ruby, web, MVC, DRY
   image: ruby2.svg
 - name: Angular Master
@@ -345,7 +345,7 @@
   description: Can anyone spin up websites faster than a Ruby on Rails hacker? Owners of this badge are famous for their mastery of MVC website development, DRY, and use of Active Record. 
   rarity: 10
   priceFinney: 5
-  numClonesAllowed: 550s
+  numClonesAllowed: 550
   tags: rails, ruby, web, MVC, DRY
   image: rails.svg
 - name: Helping Hand

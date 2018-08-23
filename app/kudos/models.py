@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
 class MarketPlaceListing(SuperModel):
     # Kudos specific fields -- lines up with Kudos contract
     name = models.CharField(max_length=255)
-    description = models.CharField(max_length=255)
+    description = models.CharField(max_length=510)
     image = models.CharField(max_length=255, null=True)
     rarity = models.IntegerField()
     price_finney = models.IntegerField()
@@ -57,7 +57,7 @@ class MarketPlaceListing(SuperModel):
 
     @property
     def price_in_eth(self):
-        return self.price / 1000
+        return self.price_finney / 1000
 
     @property
     def shortened_address(self):
