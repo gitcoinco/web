@@ -18,7 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 END
 
 date
-BACKUPSTR=`date +"%Y%m%d"`
+BACKUPSTR=`date +"%Y%m%d-%H%M"`
 MONTH=`date +"%m"`
 DAY=`date +"%d"`
 YEAR=`date +"%Y"`
