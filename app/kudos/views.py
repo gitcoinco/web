@@ -237,6 +237,7 @@ def send(request):
     #                 num_clones_in_wild=0)
     kudos_name = request.GET.get('name')
     kudos = MarketPlaceListing.objects.filter(name=kudos_name, num_clones_allowed__gt=0).first()
+    profiles = Profile.objects.all()
 
     is_user_authenticated = request.user.is_authenticated
     from_username = request.user.username if is_user_authenticated else ''
@@ -251,6 +252,7 @@ def send(request):
         'title': 'Send Tip | Gitcoin',
         'card_desc': 'Send a tip to any github user at the click of a button.',
         'kudos': kudos,
+        'profiles': profiles
     }
 
     return TemplateResponse(request, 'transaction/send.html', params)

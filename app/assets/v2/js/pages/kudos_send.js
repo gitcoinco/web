@@ -90,6 +90,12 @@ $(document).ready(function() {
   });
   $('#amount').on('keyup blur change', updateEstimate);
   $('#token').on('change', updateEstimate);
+  $('#username').select2();
+  // console.log($('#username').select2('data'));
+  $('#username').on('select2:select', function(e) {
+    let profileId = e.params.data.id;
+    renderWallets(profileId);
+  });
   $('#send').click(function(e) {
     e.preventDefault();
     $('#send_eth')[0].checkValidity()
@@ -394,3 +400,30 @@ var etherscanDomain = function() {
   }
   return etherscanDomain;
 };
+
+
+var renderWallets = function (profileId) {
+  $('.form-check').remove()
+  console.log('profileId: ' + profileId);
+  let url = '/api/v0.1/wallet?profile_id=' + profileId;
+  $.get(url, function(results, status) {
+    console.log(status);
+    results.forEach(function(r) {
+      console.log(r);
+      let walletAddress = r.address;
+
+      let walletItem = document.createElement('div');
+      $(walletItem).attr('class', 'form-check')
+
+      let walletInput = document.createElement('input');
+      $(walletInput).attr('class', 'form-check-input').attr('type', 'radio').
+      attr('name', 'address').attr('value', walletAddress).attr('checked', 'true');
+
+      let walletLabel = document.createElement('label');
+      $(walletLabel).attr('class', 'form-check-label').attr('for', 'address').text(walletAddress);
+
+      $(walletItem).append(walletInput, walletLabel);
+      $('#username-fg').after(walletItem);
+    })
+  })
+}
