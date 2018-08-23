@@ -275,23 +275,12 @@ var remove_interest = function(bounty_pk, slash = false) {
 var mutate_interest = function(bounty_pk, direction, data) {
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + direction + '/';
 
-  $('#submit').toggleClass('none');
-  $('#interest a').toggleClass('btn')
-    .toggleClass('btn-small')
-    .toggleClass('button')
-    .toggleClass('button--primary');
-
-  if (direction === 'new') {
-    _alert({ message: gettext("Thanks for letting us know that you're ready to start work.") }, 'success');
-    $('#interest a').attr('id', 'btn-white');
-  } else if (direction === 'remove') {
-    _alert({ message: gettext("You've stopped working on this, thanks for letting us know.") }, 'success');
-    $('#interest a').attr('id', '');
-  }
-
-
+  showBusyOverlay();
   $.post(request_url, data).then(function(result) {
+    hideBusyOverlay();
+
     result = sanitizeAPIResults(result);
+
     if (result.success) {
       if (direction === 'new') {
         _alert({ message: result.msg }, 'success');
@@ -306,6 +295,8 @@ var mutate_interest = function(bounty_pk, direction, data) {
     }
     return false;
   }).fail(function(result) {
+    hideBusyOverlay();
+
     var alertMsg = result && result.responseJSON ? result.responseJSON.error : null;
 
     if (alertMsg === null) {
@@ -329,7 +320,10 @@ var uninterested = function(bounty_pk, profileId, slash) {
 
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + profileId + '/uninterested/';
 
+  showBusyOverlay();
   $.post(request_url, data, function(result) {
+    hideBusyOverlay();
+
     result = sanitizeAPIResults(result);
     if (result.success) {
       _alert({ message: gettext(success_message) }, 'success');
@@ -338,6 +332,7 @@ var uninterested = function(bounty_pk, profileId, slash) {
     }
     return false;
   }).fail(function(result) {
+    hideBusyOverlay();
     _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
   });
 };
@@ -345,7 +340,10 @@ var uninterested = function(bounty_pk, profileId, slash) {
 var extend_expiration = function(bounty_pk, data) {
   var request_url = '/actions/bounty/' + bounty_pk + '/extend_expiration/';
 
+  showBusyOverlay();
   $.post(request_url, data, function(result) {
+    hideBusyOverlay();
+
     result = sanitizeAPIResults(result);
     if (result.success) {
       _alert({ message: result.msg }, 'success');
@@ -354,6 +352,7 @@ var extend_expiration = function(bounty_pk, data) {
     }
     return false;
   }).fail(function(result) {
+    hideBusyOverlay();
     _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
   });
 };
@@ -1064,4 +1063,37 @@ function fetchBountiesAndAddToList(params, target, limit, additional_callback) {
       additional_callback(results);
     }
   });
+}
+
+function showBusyOverlay() {
+  let overlay = document.querySelector('.busyOverlay');
+
+  if (overlay) {
+    overlay.style['display'] = 'block';
+    overlay.style['animation-name'] = 'fadeIn';
+    return;
+  }
+
+  overlay = document.createElement('div');
+  overlay.className = 'busyOverlay';
+  overlay.addEventListener(
+    'animationend',
+    function() {
+      if (overlay.style['animation-name'] === 'fadeOut') {
+        overlay.style['display'] = 'none';
+      }
+    },
+    false
+  );
+  document.body.appendChild(overlay);
+}
+
+function hideBusyOverlay() {
+  let overlay = document.querySelector('.busyOverlay');
+
+  if (overlay) {
+    setTimeout(function() {
+      overlay.style['animation-name'] = 'fadeOut';
+    }, 300);
+  }
 }
