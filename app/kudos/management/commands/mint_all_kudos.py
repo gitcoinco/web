@@ -74,7 +74,7 @@ class Command(BaseCommand):
             else:
                 image_path = ''
 
-            args = (kudos['name'], kudos['description'], kudos['rarity'], kudos['price'],
+            args = (kudos['name'], kudos['description'], kudos['rarity'], kudos['priceFinney'],
                     kudos['numClonesAllowed'], kudos['tags'], image_path,
                     )
 

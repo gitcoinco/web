@@ -41,7 +41,7 @@ class MarketPlaceListing(SuperModel):
     description = models.CharField(max_length=255)
     image = models.CharField(max_length=255, null=True)
     rarity = models.IntegerField()
-    price = models.IntegerField()
+    price_finney = models.IntegerField()
     num_clones_allowed = models.IntegerField(null=True, blank=True)
     num_clones_in_wild = models.IntegerField(null=True, blank=True)
     tags = models.CharField(max_length=255, null=True)
@@ -83,7 +83,7 @@ class MarketPlaceListing(SuperModel):
 
 class Wallet(SuperModel):
     address = models.CharField(max_length=255, unique=True)
-    profile = models.ForeignKey('dashboard.Profile', related_name='wallets', on_delete=models.SET_NULL, null=True)
+    profile = models.ForeignKey('dashboard.Profile', on_delete=models.SET_NULL, null=True)
 
     def save(self, *args, **kwargs):
         self.address = to_checksum_address(self.address)

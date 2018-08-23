@@ -91,14 +91,19 @@
     </div> -->
     <input type="hidden" id="token" value="0x408c49a91e46311ddc35737f8c1aaea6191f36e0">
     <input type="hidden" id="amount" value="0.0011">
-    <div class="form-group">
-      <label for="">{% trans "To Github Username" %}:</label>
-      <input type="text" placeholder="@username" id="username" class="form-control" required>
+    <div id="username-fg" class="form-group">
+      <label for="">{% trans "To Github Username" %}</label>
+      <br>
+      <select class="username-selector" name="github-username" id="username">
+        {% for profile in profiles %}
+        <option value="{{ profile.id }}">{{ profile.handle }}</option>
+        {% endfor %}
+      </select>
     </div>
-    <div class="form-group">
+<!--     <div id="wallet-fg" class="form-group">
       <label for="">{% trans "To Wallet Address" %}:</label>
       <input type="text" placeholder="0x0" id="receiverAddress" class="form-control" required>
-    </div>
+    </div> -->
     <div class="form-group">
       <label for="">{% trans "From Github Username" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next=/kudos/send">{% trans "Login" %}</a>) {%endif%}</label>
       <input type="text" placeholder="@username" id="fromName" value="{% if user.is_authenticated  %}{{ user }}{% endif %}" class="form-control" disabled="disabled">

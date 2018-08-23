@@ -1026,7 +1026,8 @@ def profile(request, handle):
         return TemplateResponse(request, 'profiles/profile.html', params)
 
     params = profile.to_dict()
-    params['wallet_addresses'] = [x.address for x in profile.wallets.all()]
+    # params['wallet_addresses'] = [x.address for x in profile.wallets.all()]
+    params['wallet_addresses'] = [w.address for w in Wallet.objects.filter(profile=profile.id)]
     owned_kudos = MarketPlaceListing.objects.filter(owner_address__in=params['wallet_addresses'])
     sent_kudos = MarketPlaceListing.objects.filter(sent_from_address__in=params['wallet_addresses'])
     # if owned_kudos:
@@ -1055,7 +1056,8 @@ def profile(request, handle):
         if new_wallet:
             try:
                 new_wallet.save()
-                wallets = [x.address for x in profile.wallets.all()]
+                # wallets = [x.address for x in profile.wallets.all()]
+                wallets = [w.address for w in Wallet.objects.filter(profile=profile.id)]
                 msg = {
                     'status': 200,
                     'msg': 'Success!',
