@@ -78,7 +78,7 @@ function prefill_recommended_prices() {
   var slow_data = get_updated_metamask_conf_time_and_cost(parseFloat($('#slow-recommended-gas').data('amount')));
   var avg_data = get_updated_metamask_conf_time_and_cost(parseFloat($('#average-recommended-gas').data('amount')));
   var fast_data = get_updated_metamask_conf_time_and_cost(parseFloat($('#fast-recommended-gas').data('amount')));
-  
+
   if (fast_data['time'] == 'unknown') {
     $('#default-recommended-gas').show();
     $('#default-recommended-gas').html('The confirmation time is unknown. However we recommend a gas price of $' + parseFloat(fast_data['usd']).toFixed(2));
@@ -87,7 +87,8 @@ function prefill_recommended_prices() {
     $('#slow-recommended-gas').hide();
     $('#average-recommended-gas').hide();
     $('#fast-recommended-gas').hide();
-    var new_gas_price = Math.round($('#average-recommended-gas').data('amount') * 10 ) / 10;
+    var new_gas_price = Math.round($('#average-recommended-gas').data('amount') * 10) / 10;
+
     $('#gasPrice').val(new_gas_price);
     $('#gas-usd').html('$' + parseFloat(fast_data['usd']).toFixed(2));
     $('#gas-eth').html(avg_data['eth'] + 'ETH');
@@ -100,13 +101,15 @@ function prefill_recommended_prices() {
     $('#fast-recommended-gas').html('Fast $' + parseFloat(fast_data['usd']).toFixed(2) + ' ~' + fast_data['time'] + ' minutes').addClass('active');
     $('#fast-recommended-gas').data('amount-usd', parseFloat(fast_data['usd']).toFixed(2));
     $('#fast-recommended-gas').parent().removeClass('justify-content-between').addClass('justify-content-around');
-    var new_gas_price = Math.round($('#average-recommended-gas').data('amount') * 10 ) / 10;
+    var new_gas_price = Math.round($('#average-recommended-gas').data('amount') * 10) / 10;
+
     $('#gasPrice').val(new_gas_price);
     $('#gas-usd').html('$' + parseFloat(fast_data['usd']).toFixed(2));
     $('#gas-eth').html(fast_data['eth'] + 'ETH');
   } else {
     $('#fast-recommended-gas').parent().addClass('justify-content-between').removeClass('justify-content-around');
-    var new_gas_price = Math.round($('#average-recommended-gas').data('amount') * 10 ) / 10;
+    var new_gas_price = Math.round($('#average-recommended-gas').data('amount') * 10) / 10;
+
     $('#gasPrice').val(new_gas_price);
     $('#gas-usd').html('$' + parseFloat(avg_data['usd']).toFixed(2));
     $('#gas-eth').html(avg_data['eth'] + 'ETH');
