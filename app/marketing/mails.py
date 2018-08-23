@@ -605,3 +605,18 @@ def setup_lang(to_email):
     if user and hasattr(user, 'profile'):
         preferred_language = user.profile.get_profile_preferred_language()
         translation.activate(preferred_language)
+
+
+def new_bounty_request(model):
+    to_email = 'vivek.singh@consensys.net'
+    from_email = model.requested_by.email or settings.SERVER_EMAIL
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = _("New Bounty Request")
+        body_str = _(f"New Bounty Request from")
+        body = f"{body_str} {model.requested_by}: "\
+            f"{settings.BASE_URL}_administrationbounty_requests/bountyrequest/{model.pk}/change"
+        send_mail(from_email, to_email, subject, body, from_name=_("No Reply from Gitcoin.co"))
+    finally:
+        translation.activate(cur_language)
