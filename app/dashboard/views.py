@@ -1864,7 +1864,7 @@ def change_bounty(request, bounty_id):
         try:
             params = json.loads(request.body)
         except Exception:
-            return JsonResponse({'error': 'Invalid JSON.'}, status=405)
+            return JsonResponse({'error': 'Invalid JSON.'}, status=400)
 
         bounty_changed = False
         for key in keys:
