@@ -4,7 +4,7 @@ var trigger_form_hooks = function() {
   callFunctionWhenweb3Available(
     function() {
       const addr = web3.eth.coinbase;
-      const input = $('#eth_address');
+      const input = $('[name=eth_address]');
 
       if (addr && !input.val()) {
         input.val(addr);
@@ -14,7 +14,10 @@ var trigger_form_hooks = function() {
 };
 
 $(document).ready(function() {
-  $('#comment').bind('input propertychange', function() {
+  $('[for=comment]').append(
+    ' (<span id="charcount">500</span> ' + gettext('characters left') + ')'
+  );
+  $('[name=comment]').bind('input propertychange', function() {
     this.value = this.value.replace(/ +(?= )/g, '');
 
     if (this.value.length > 500) {
