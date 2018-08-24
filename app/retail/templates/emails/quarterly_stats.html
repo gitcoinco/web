@@ -196,7 +196,7 @@
   }
 </style>
 <div id="stat-container">
-    <h1>GITCOIN QUARTERLY</h1>
+    <h1>{% trans "GITCOIN QUARTERLY" %}</h1>
 
     {% if user_active_in_last_quarter %}
     	{% if user_fulfilled_bounties %}
@@ -253,7 +253,7 @@
 		       {% endblocktrans %}
                     {% for language in user_languages %}
 		        {% if not forloop.first %}{% trans ", " %}{% endif %}
-			{% if forloop.counter == user_no_of_languages %} {% trans "and " %} {% endif %} 
+			{% if forloop.counter == user_no_of_languages %} {% trans "and " %} {% endif %}
 			{{ language }}
 	            {% endfor %}{% trans "!" %}
                 </p>
