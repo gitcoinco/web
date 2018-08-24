@@ -28,7 +28,7 @@
         <div class="col-md-6 col-lg-5">
           <h3 id="kudosName" class="display-4">{{ kudos.name|humanize_name }}</h3>
           <div class="mt-4 font-bigger-1 font-weight-300">
-            <p id="kudosDescription class="">{{ kudos.description }}</p>
+            <p id="kudosDescription" class="">{{ kudos.description }}</p>
             <p><span>ID: </span><span id="kudosID">{{ kudos.id }}</span></p>
             <p><span>Rarity: </span><span id="kudosRarity">{{ kudos.rarity }}</span></p>
             <p><span>Owner Address: </span><a id="kudosOwnerAddress" target="_blank" href="https://etherscan.io/address/{{ kudos.owner_address }}" class="btn-link" title="{{ kudos.owner_address }}">{{ kudos.owner_address|humanize_address }}</a></p>
@@ -47,10 +47,9 @@
           <div class="row justify-content-start pb-4">
             <div class="col-12">
               {% if kudos.num_clones_allowed != 0 and kudos.num_clones_available != 0 %}
-              <button type="button" id="getKudos" class="btn btn-gc-blue">{% trans "Get Kudos" %}</button>
-              <a href="/kudos/send?name={{ kudos.name}}"><button type="button" id="sendKudos" class="btn btn-gc-blue">{% trans "Send Kudos" %}</button></a>
+              <a href="/kudos/send?name={{ kudos.name}}" class="btn btn-gc-blue">{% trans "Send Kudos" %}</a>
               {% elif kudos.num_clones_allowed != 0 and kudos.num_clones_available == 0 %}
-              <button type="button" id="getKudosDisabled" class="btn btn-gc-blue disabled">{% trans "Not Available" %}</button>
+              <button type="button" id="getKudosDisabled" class="btn btn-gc-blue" disabled>{% trans "Not Available" %}</button>
               {% endif %}
             </div>
           </div>
