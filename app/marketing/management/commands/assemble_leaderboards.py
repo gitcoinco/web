@@ -36,6 +36,50 @@ quarterly_cutoff = timezone.now() - timezone.timedelta(days=90)
 yearly_cutoff = timezone.now() - timezone.timedelta(days=365)
 
 
+def profile_to_location(handle):
+    profiles = Profile.objects.filter(handle__iexact=handle)
+    if handle and profiles.exists():
+        profile = profiles.first()
+        return profile.locations
+    return []
+
+
+def bounty_to_location(bounty):
+    locations = profile_to_location(bounty.bounty_owner_github_username)
+    fulfiller_usernames = list(bounty.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True))
+    for username in fulfiller_usernames:
+        locations = locations + locations
+    return locations
+
+
+def tip_to_location(tip):
+    return profile_to_location(tip.username) + profile_to_location(tip.from_username)
+
+
+def tip_to_country(tip):
+    return list(set([ele['country_name'] for ele in tip_to_location(tip) if ele and ele['country_name']]))
+
+
+def bounty_to_country(bounty):
+    return list(set([ele['country_name'] for ele in bounty_to_location(bounty) if ele and ele['country_name']]))
+
+
+def tip_to_continent(tip):
+    return list(set([ele['continent_name'] for ele in tip_to_location(tip) if ele and ele['continent_name']]))
+
+
+def bounty_to_continent(bounty):
+    return list(set([ele['continent_name'] for ele in bounty_to_location(bounty) if ele and ele['continent_name']]))
+
+
+def tip_to_city(tip):
+    return list(set([ele['city'] for ele in tip_to_location(tip) if ele and ele['city']]))
+
+
+def bounty_to_city(bounty):
+    return list(set([ele['city'] for ele in bounty_to_location(bounty) if ele and ele['city']]))
+
+
 def default_ranks():
     """Generate a dictionary of nested dictionaries defining default ranks.
 
@@ -44,7 +88,7 @@ def default_ranks():
 
     """
     times = ['all', 'weekly', 'quarterly', 'yearly', 'monthly']
-    breakdowns = ['fulfilled', 'all', 'payers', 'earners', 'orgs', 'keywords', 'tokens']
+    breakdowns = ['fulfilled', 'all', 'payers', 'earners', 'orgs', 'keywords', 'tokens', 'countries', 'cities', 'continents']
     return_dict = {}
     for time in times:
         for bd in breakdowns:
@@ -80,6 +124,12 @@ def sum_bounty_helper(b, breakdown, index_term, val_usd):
         add_element(f'{breakdown}_earners', index_term, val_usd)
     if b.token_name == index_term:
         add_element(f'{breakdown}_tokens', index_term, val_usd)
+    if index_term in bounty_to_country(b):
+        add_element(f'{breakdown}_countries', index_term, val_usd)
+    if index_term in bounty_to_city(b):
+        add_element(f'{breakdown}_cities', index_term, val_usd)
+    if index_term in bounty_to_continent(b):
+        add_element(f'{breakdown}_continents', index_term, val_usd)
     if index_term in b.keywords_list:
         index_term = index_term.lower()
         is_github_org_name = Bounty.objects.filter(github_url__icontains=f'https://github.com/{index_term}').exists()
@@ -109,14 +159,6 @@ def sum_bounties(b, index_terms):
                 breakdown = 'yearly'
                 sum_bounty_helper(b, breakdown, index_term, val_usd)
 
-        add_element('all_all', index_term, b._val_usd_db)
-        if b.created_on > weekly_cutoff:
-            add_element('weekly_all', index_term, b._val_usd_db)
-        if b.created_on > monthly_cutoff:
-            add_element('monthly_all', index_term, b._val_usd_db)
-        if b.created_on > yearly_cutoff:
-            add_element('yearly_all', index_term, b._val_usd_db)
-
 
 def sum_tip_helper(t, breakdown, index_term, val_usd):
     add_element(f'{breakdown}_all', index_term, val_usd)
@@ -129,6 +171,12 @@ def sum_tip_helper(t, breakdown, index_term, val_usd):
         add_element(f'{breakdown}_orgs', index_term, val_usd)
     if t.tokenName == index_term:
         add_element(f'{breakdown}_tokens', index_term, val_usd)
+    if index_term in tip_to_country(t):
+        add_element(f'{breakdown}_countries', index_term, val_usd)
+    if index_term in tip_to_city(t):
+        add_element(f'{breakdown}_cities', index_term, val_usd)
+    if index_term in tip_to_continent(t):
+        add_element(f'{breakdown}_continents', index_term, val_usd)
 
 
 def sum_tips(t, index_terms):
@@ -186,6 +234,12 @@ class Command(BaseCommand):
             for keyword in b.keywords_list:
                 keyword = keyword.lower()
                 index_terms.append(keyword)
+            for keyword in bounty_to_city(b):
+                index_terms.append(keyword)
+            for keyword in bounty_to_continent(b):
+                index_terms.append(keyword)
+            for keyword in bounty_to_country(b):
+                index_terms.append(keyword)
 
             index_terms.append(b.token_name)
 
@@ -206,6 +260,12 @@ class Command(BaseCommand):
                 index_terms.append(t.org_name)
             if not should_suppress_leaderboard(t.tokenName):
                 index_terms.append(t.tokenName)
+            for keyword in tip_to_country(t):
+                index_terms.append(keyword)
+            for keyword in tip_to_city(t):
+                index_terms.append(keyword)
+            for keyword in tip_to_continent(t):
+                index_terms.append(keyword)
 
             sum_tips(t, index_terms)
 

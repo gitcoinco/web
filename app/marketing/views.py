@@ -597,6 +597,9 @@ def leaderboard(request, key=''):
         'quarterly_orgs': _('Top Orgs'),
         'quarterly_tokens': _('Top Tokens'),
         'quarterly_keywords': _('Top Keywords'),
+        'quarterly_cities': _('Top Cities'),
+        'quarterly_countries': _('Top Countries'),
+        'quarterly_continents': _('Top Continents'),
         #        'weekly_fulfilled': 'Weekly Leaderboard: Fulfilled Funded Issues',
         #        'weekly_all': 'Weekly Leaderboard: All Funded Issues',
         #        'monthly_fulfilled': 'Monthly Leaderboard',
@@ -624,7 +627,7 @@ def leaderboard(request, key=''):
     else:
         amount_max = 0
 
-    is_linked_to_profile = '_tokens' in key or '_keywords' in key
+    is_linked_to_profile = '_tokens' in key or '_keywords' in key or '_cities' in key or '_countries' in key or '_continents' in key
     context = {
         'items': items,
         'titles': titles,
