@@ -521,9 +521,9 @@ def render_new_bounty_roundup(to_email):
 Hi there,
 </p>
 <p>
-This week, we launched Gitcoin Requests. Gitcoin Requests allows funders and developers to request bounties on
+This week, we launched <a href="https://gitcoin.co/requests/">Gitcoin Requests</a>. Gitcoin Requests allows funders and developers to request bounties on
 specific Github issues. We hope that maintainers and developers alike use this feature to let us know what else they'd
-like to have funded so we can continue building at break-neck speed!
+like to have funded so we can continue building at break-neck speed! <a href="https://gitcoin.co/requests/">Checkout Gitcoin Requests here</a>.
 </p>
 To this end, we have recently received $60K grant from the Ethereum Community Fund to post bounties across a variety of Web 3
 repo's who are building interesting infrastructure tools in the Ethereum space. Where might you go to request funding on your repo?
