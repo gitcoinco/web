@@ -101,8 +101,8 @@
               {% else %}
                 <a href="https://etherscan.io/address/{{fulfillment.fulfiller_address}}">{{fulfillment.fulfiller_address}}</a>
               {% endif %}
-              {% if fulillment.fulfiller_github_url %}
-                <a href="{{fulillment.fulfiller_github_url}}">(Submission)</a>
+              {% if fulfillment.fulfiller_github_url %}
+                <a href="{{fulfillment.fulfiller_github_url}}">(View Submission)</a>
               {% endif %}
             {% endfor %}
             )

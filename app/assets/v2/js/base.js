@@ -116,7 +116,6 @@ $(document).ready(function() {
     'get',
     'watch',
     'unwatch',
-    'save_search',
     'help/repo',
     'help/dev',
     'help/portal',

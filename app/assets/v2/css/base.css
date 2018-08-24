@@ -326,10 +326,12 @@ p a {
 
 .iama a.btn {
   color: #f9006c;
+  border-color: #f9006c;
 }
 
 .iama a.btn:hover {
   color: white;
+  background-color: #f9006c;
 }
 
 .iama .mt-3 {
@@ -761,19 +763,6 @@ input[type=text].loading {
 
 .closebtn:hover {
   color: black;
-}
-
-.modal#save {
-  width: 100%;
-}
-
-.modal#save img {
-  width: 30px;
-  height: 30px;
-}
-
-.modal#save p {
-  display: inline;
 }
 
 .row.nonefound {

@@ -112,7 +112,7 @@ var callbacks = {
     var username = result['bounty_owner_github_username'] ? result['bounty_owner_github_username'] : 'Self';
 
     return [ 'issuer_avatar_url', '<a href="/profile/' + result['bounty_owner_github_username'] +
-      '"><img class=avatar src="/funding/avatar?repo=https://github.com/' + username + '"></a>' ];
+      '"><img class=avatar src="/dynamic/avatar/' + username + '"></a>' ];
   },
   'status': function(key, val, result) {
     var ui_status = val;
@@ -335,20 +335,13 @@ var callbacks = {
   },
   'fulfilled_owners_username': function(key, val, result) {
     var accepted = [];
-    var accepted_fufillments = [];
 
-    if (result.fulfillments) {
-      var fulfillments = result.fulfillments;
-
-      fulfillments.forEach(function(fufillment) {
-        if (fufillment.accepted == true)
-          accepted_fufillments.push(fufillment.fulfiller_github_username);
-      });
-      if (accepted_fufillments.length == 0) {
+    if (result.paid) {
+      if (result.paid.length == 0) {
         accepted.push('<i class="fas fa-minus"></i>');
       } else {
-        accepted_fufillments.forEach((github_username, position) => {
-          var name = (position == accepted_fufillments.length - 1) ?
+        result.paid.forEach((github_username, position) => {
+          var name = (position == result.paid.length - 1) ?
             github_username : github_username.concat(',');
 
           accepted.push(profileHtml(github_username, name));
@@ -676,13 +669,13 @@ var build_detail_page = function(result) {
 
   // funded by
   if (isBountyOwnerPerLogin(result) && !isBountyOwner(result)) {
-    $('#funder_notif_info').html(gettext('Funded Address: ') +
+    $('#funder_notif_info').html(gettext('Funder Address: ') +
       '<span id="bounty_funded_by">' + result['bounty_owner_address'] + '</span>');
     $('#funder_notif_info').append('\
         <span class="bounty-notification ml-2">\
         <i class="far fa-bell"></i>\
         Ready to Pay? Set Your Metamask to this address!\
-        <img src="/static/v2/images/metamask.svg">\
+        <img src="' + static_url + 'v2/images/metamask.svg">\
       </span>'
     );
   }
@@ -769,6 +762,7 @@ var do_actions = function(result) {
   let show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
   let show_payout = !is_status_expired && !is_status_done && isBountyOwner(result);
   let show_extend_deadline = isBountyOwner(result) && !is_status_expired && !is_status_done;
+  let show_invoice = isBountyOwner(result);
   const show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
   const show_admin_methods = document.isStaff;
   const show_moderator_methods = document.isModerator;
@@ -800,7 +794,7 @@ var do_actions = function(result) {
   }
 
   if (show_start_stop_work) {
-    const enabled = start_stop_work_enabled;
+    const enabled = true;
     const interest_entry = {
       enabled: enabled,
       href: is_interested ? '/uninterested' : '/interested',
@@ -866,6 +860,19 @@ var do_actions = function(result) {
 
     actions.push(_entry);
   }
+
+  if (show_invoice) {
+    const _entry = {
+      enabled: true,
+      href: result['action_urls']['invoice'],
+      text: gettext('Show Invoice'),
+      parent: 'right_actions',
+      title: gettext('View an Invoice for this Issue')
+    };
+
+    actions.push(_entry);
+  }
+
 
   if (show_github_link) {
     let github_url = result['github_url'];
