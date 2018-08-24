@@ -32,6 +32,7 @@ from django.db import models
 from django.db.models import Q, Sum
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
+from django.forms.models import model_to_dict
 from django.templatetags.static import static
 from django.urls import reverse
 from django.urls.exceptions import NoReverseMatch
@@ -1441,6 +1442,27 @@ class Activity(models.Model):
             return self.metadata['token_name']
         return None
 
+    def to_dict(self, fields=None, exclude=None):
+        """Define the standard to dict representation of the object.
+
+        Args:
+            fields (list): The list of fields to include. If not provided,
+                include all fields. If not provided, all fields are included.
+                Defaults to: None.
+            exclude (list): The list of fields to exclude. If not provided,
+                no fields are excluded. Default to: None.
+
+        Returns:
+            dict: The dictionary representation of the object.
+
+        """
+        kwargs = {}
+        if fields:
+            kwargs['fields'] = fields
+        if exclude:
+            kwargs['exclude'] = exclude
+        return model_to_dict(self, **kwargs)
+
 
 class Profile(SuperModel):
     """Define the structure of the user profile.
@@ -2148,7 +2170,7 @@ class Profile(SuperModel):
             'avatar_url': self.avatar_url_with_gitcoin_logo,
             'profile': self,
             'bounties': self.bounties,
-            'count_bounties_completed': self.fulfilled.filter(accepted=True, bounty__network=network).count(),
+            'count_bounties_completed': self.fulfilled.filter(accepted=True, bounty__current_bounty=True, bounty__network=network).distinct('bounty__pk').count(),
             'sum_eth_collected': sum_eth_collected,
             'sum_eth_funded': sum_eth_funded,
             'works_with_collected': works_with_collected,
@@ -2180,7 +2202,7 @@ class Profile(SuperModel):
                 }]
 
         if tips:
-            params['tips'] = self.tips.filter(**query_kwargs)
+            params['tips'] = self.tips.filter(**query_kwargs).exclude(txid='')
 
         if leaderboards:
             params['scoreboard_position_contributor'] = self.get_contributor_leaderboard_index()

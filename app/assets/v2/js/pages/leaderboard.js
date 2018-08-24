@@ -10,6 +10,9 @@ $(document).ready(function() {
   });
 
   $('.clickable-row').click(function(e) {
+    if (typeof $(this).data('href') == 'undefined') {
+      return;
+    }
     window.location = $(this).data('href');
     e.preventDefault();
   });

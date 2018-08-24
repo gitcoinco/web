@@ -1636,3 +1636,30 @@ input.is-invalid {
   font-weight: 500;
   margin-bottom: 0.5rem;
 }
+
+@keyframes busyOverlay {
+  from {
+    opacity: 0.0;
+  }
+  to {
+    opacity: 1.0;
+  }
+}
+
+div.busyOverlay {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  transform: translateZ(0);
+  z-index: 9;
+  background-color: rgba(240, 240, 240, 0.3);
+  box-shadow: 0 0 100em 0 inset var(--gc-purple);
+  animation: busyOverlay 0.3s ease-in;
+  animation-fill-mode: both;
+  background-repeat: no-repeat;
+  background-size: 12em;
+  background-position: center;
+  background-image: url('/static/v2/images/loading_v2.gif');
+}
