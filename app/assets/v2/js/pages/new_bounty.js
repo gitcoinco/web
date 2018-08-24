@@ -156,8 +156,11 @@ $(document).ready(function() {
   });
   // denomination field
   $('select[name=denomination]').select2();
-  if ($('input[name=amount]').val().trim().length > 0) {
-    setUsdAmount();
+  if ($(`input[name=${pricingPrefix}amount]`).val().trim().length > 0) {
+    setUsdAmount(pricingPrefix);
+  }
+  if ($(`input[name=${gitcoinTipPrefix}amount]`).val().trim().length > 0) {
+    setUsdAmount(gitcoinTipPrefix);
   }
   var open_hiring_panel = function(do_focus) {
     setTimeout(function() {
