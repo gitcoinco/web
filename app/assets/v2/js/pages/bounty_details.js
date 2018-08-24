@@ -877,7 +877,7 @@ var do_actions = function(result) {
       href: '/bounty/change/' + result['pk'],
       text: gettext('Change Bounty Details'),
       parent: 'right_actions',
-      title: gettext('Change the Bounty Details')
+      title: gettext('Update your Bounty Settings to get the right Crowd')
     };
 
     actions.push(_entry);
