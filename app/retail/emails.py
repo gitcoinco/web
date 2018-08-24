@@ -525,6 +525,7 @@ This week, we launched <a href="https://gitcoin.co/requests/">Gitcoin Requests</
 specific Github issues. We hope that maintainers and developers alike use this feature to let us know what else they'd
 like to have funded so we can continue building at break-neck speed! <a href="https://gitcoin.co/requests/">Checkout Gitcoin Requests here</a>.
 </p>
+<p>
 To this end, we have recently received $60K grant from the Ethereum Community Fund to post bounties across a variety of Web 3
 repo's who are building interesting infrastructure tools in the Ethereum space. Where might you go to request funding on your repo?
 You know the answer :)
