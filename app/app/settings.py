@@ -505,6 +505,8 @@ if ENABLE_APM:
     }
     if APM_SECRET_TOKEN:
         ELASTIC_APM['SECRET_TOKEN'] = APM_SECRET_TOKEN
+    if DEBUG and ENV == 'stage':
+        ELASTIC_APM['DEBUG'] = True
 
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
