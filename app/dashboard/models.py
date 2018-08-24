@@ -32,6 +32,7 @@ from django.db import models
 from django.db.models import Q, Sum
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
+from django.forms.models import model_to_dict
 from django.templatetags.static import static
 from django.urls import reverse
 from django.urls.exceptions import NoReverseMatch
@@ -1439,6 +1440,27 @@ class Activity(models.Model):
         if 'token_name' in self.metadata.keys():
             return self.metadata['token_name']
         return None
+
+    def to_dict(self, fields=None, exclude=None):
+        """Define the standard to dict representation of the object.
+
+        Args:
+            fields (list): The list of fields to include. If not provided,
+                include all fields. If not provided, all fields are included.
+                Defaults to: None.
+            exclude (list): The list of fields to exclude. If not provided,
+                no fields are excluded. Default to: None.
+
+        Returns:
+            dict: The dictionary representation of the object.
+
+        """
+        kwargs = {}
+        if fields:
+            kwargs['fields'] = fields
+        if exclude:
+            kwargs['exclude'] = exclude
+        return model_to_dict(self, **kwargs)
 
 
 class Profile(SuperModel):
