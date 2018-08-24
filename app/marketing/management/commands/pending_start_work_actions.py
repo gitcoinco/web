@@ -15,6 +15,8 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+import logging
+
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
@@ -23,6 +25,8 @@ from marketing.mails import start_work_applicant_about_to_expire, start_work_app
 
 THRESHOLD_HOURS_AUTO_APPROVE = 3 * 24
 THRESHOLD_HOURS_AUTO_APPROVE_WARNING = 2 * 24
+
+logger = logging.getLogger(__name__)
 
 
 def start_work_applicant_expired_executer(interest, bounty):
@@ -51,6 +55,8 @@ def helper_execute(threshold, func_to_execute, action_str):
                 continue
             print(f"- {interest.pk} {action_str}")
             func_to_execute(interest, bounty)
+        else:
+            logger.error(f'Interest: {interest} missing bounty')
 
 
 class Command(BaseCommand):
