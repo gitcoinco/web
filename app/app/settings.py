@@ -493,6 +493,19 @@ IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='https')
 
 STABLE_COINS = ['DAI', 'USDT', 'TUSD']
 
+# Elastic APM
+ENABLE_APM = env.bool('ENABLE_APM', default=False)
+if ENABLE_APM:
+    INSTALLED_APPS += ['elasticapm.contrib.django', ]
+    MIDDLEWARE.append('elasticapm.contrib.django.middleware.TracingMiddleware')
+    APM_SECRET_TOKEN = env.str('APM_SECRET_TOKEN', default='')
+    ELASTIC_APM = {
+        'SERVICE_NAME': env.str('APM_SERVICE_NAME', default=f'{ENV}-web'),
+        'SERVER_URL': env.str('APM_SERVER_URL', default='http://localhost:8200'),
+    }
+    if APM_SECRET_TOKEN:
+        ELASTIC_APM['SECRET_TOKEN'] = APM_SECRET_TOKEN
+
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
 if ENABLE_SILK:
