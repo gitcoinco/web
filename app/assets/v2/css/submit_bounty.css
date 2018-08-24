@@ -18,7 +18,7 @@ input:-moz-read-only { /* For Firefox */
   background-color: #eaeaea94;
 }
 
-input:read-only { 
+input:read-only {
   background-color: #eaeaea94;
 }
 
@@ -26,7 +26,7 @@ textarea:-moz-read-only { /* For Firefox */
   background-color: #eaeaea94;
 }
 
-textarea:read-only { 
+textarea:read-only {
   background-color: #eaeaea94;
 }
 
@@ -80,6 +80,19 @@ textarea:read-only {
   height: 37px;
 }
 
+#gitcoin-tip-section .form__amount-wrapper {
+  width: 33%;
+}
+
+#gitcoin-tip-section .form__flex-group {
+  justify-content: space-between;
+}
+
+#gitcoin-tip-section .form__input,
+#gitcoin-tip-section .form__select2 {
+  height: 37px;
+}
+
 #issue-details,
 #no-issue-banner img {
   max-width: 100%;
@@ -103,7 +116,7 @@ textarea:read-only {
 #issue-details input:read-only,
 #issue-details textarea:read-only {
   border: none;
-  padding-left: 0;  
+  padding-left: 0;
   background-color: #fff;
   outline: none;
 }
