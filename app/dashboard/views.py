@@ -583,6 +583,47 @@ def contribute(request):
     return TemplateResponse(request, 'contribute_bounty.html', params)
 
 
+def invoice(request):
+    """invoice view.
+
+    Args:
+        pk (int): The primary key of the bounty to be accepted.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The invoice  view.
+
+    """
+    bounty = handle_bounty_views(request)
+
+    # only allow invoice viewing if admin or iff bounty funder
+    is_funder = bounty.is_funder(request.user.username)
+    is_staff = request.user.is_staff
+    has_view_privs = is_funder or is_staff
+    if not has_view_privs:
+        raise Http404
+
+    params = get_context(
+        ref_object=bounty,
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='invoice_view',
+        title=_('Invoice'),
+    )
+    params['accepted_fulfillments'] = bounty.fulfillments.filter(accepted=True)
+    params['tips'] = [
+        tip for tip in bounty.tips.exclude(txid='') if tip.username == request.user.username and tip.username
+    ]
+    params['total'] = bounty._val_usd_db if params['accepted_fulfillments'] else 0
+    for tip in params['tips']:
+        if tip.value_in_usdt:
+            params['total'] += tip.value_in_usdt
+
+    return TemplateResponse(request, 'bounty/invoice.html', params)
+
+
 def social_contribution(request):
     """Social Contributuion to the bounty.
 
@@ -659,6 +700,7 @@ def bulk_payout_bounty(request):
         active='payout_bounty',
         title=_('Multi-Party Payout'),
     )
+
     return TemplateResponse(request, 'bulk_payout_bounty.html', params)
 
 
@@ -1045,63 +1087,46 @@ def profile(request, handle):
     Args:
         handle (str): The profile handle.
 
+    Variables:
+        context (dict): The template context to be used for template rendering.
+        profile (dashboard.models.Profile): The Profile object to be used.
+        status (int): The status code of the response.
+
+    Returns:
+        TemplateResponse: The profile templated view.
+
     """
-    show_hidden_profile = False
+    status = 200
+
     try:
         if not handle and not request.user.is_authenticated:
             return redirect('index')
-        elif not handle:
+
+        if not handle:
             handle = request.user.username
-            profile = request.user.profile
+            profile = getattr(request.user, 'profile', None)
+            if not profile:
+                profile = profile_helper(handle)
         else:
             if handle.endswith('/'):
                 handle = handle[:-1]
             profile = profile_helper(handle)
-    except Http404:
-        show_hidden_profile = True
-    except ProfileHiddenException:
-        show_hidden_profile = True
-    if show_hidden_profile:
-        params = {
+
+        context = profile.to_dict()
+    except (Http404, ProfileHiddenException):
+        status = 404
+        context = {
             'hidden': True,
             'profile': {
                 'handle': handle,
-                'avatar_url': f"/static/avatar/Self",
+                'avatar_url': f"/dynamic/avatar/Self",
                 'data': {
                     'name': f"@{handle}",
                 },
             },
         }
-        return TemplateResponse(request, 'profiles/profile.html', params, status=404)
 
-    params = profile.to_dict()
-
-    return TemplateResponse(request, 'profiles/profile.html', params)
-
-
-@csrf_exempt
-@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def save_search(request):
-    """Save the search."""
-    email = request.POST.get('email')
-    if email:
-        raw_data = request.POST.get('raw_data')
-        Subscription.objects.create(
-            email=email,
-            raw_data=raw_data,
-            ip=get_ip(request),
-        )
-        response = {
-            'status': 200,
-            'msg': 'Success!',
-        }
-        return JsonResponse(response)
-
-    context = {
-        'active': 'save',
-        'title': _('Save Search'),
-    }
-    return TemplateResponse(request, 'save_search.html', context)
+    return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
 
 @csrf_exempt

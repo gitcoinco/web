@@ -22,7 +22,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
-from django.http import Http404, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
@@ -221,7 +221,7 @@ def contributor_landing(request, tech_stack):
 
     available_bounties_count = open_bounties().count()
     available_bounties_worth = amount_usdt_open_work()
-
+    # tech_stack = '' #uncomment this if you wish to disable contributor specific LPs
     context = {
         'activities': get_activities(tech_stack),
         'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else "Open Source Opportunities",
@@ -814,7 +814,7 @@ def presskit(request):
 
 def get_gitcoin(request):
     context = {
-        'active': 'get',
+        'active': 'get_gitcoin',
         'title': _('Get Started'),
     }
     return TemplateResponse(request, 'getgitcoin.html', context)
@@ -1061,3 +1061,7 @@ def ui(request):
         'gifs': gifs,
     }
     return TemplateResponse(request, 'ui_inventory.html', context)
+
+
+def lbcheck(request):
+    return HttpResponse(status=200)

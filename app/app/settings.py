@@ -60,7 +60,7 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'whitenoise.runserver_nostatic',
+    'collectfast',  # Collectfast | static file collector
     'django.contrib.staticfiles',
     'cacheops',
     'storages',
@@ -73,6 +73,12 @@ INSTALLED_APPS = [
     'django_extensions',
     'easy_thumbnails',
     'raven.contrib.django.raven_compat',
+    'health_check',
+    'health_check.db',
+    'health_check.cache',
+    'health_check.storage',
+    'health_check.contrib.psutil',
+    'health_check.contrib.s3boto3_storage',
     'app',
     'avatar',
     'retail',
@@ -94,13 +100,13 @@ INSTALLED_APPS = [
     'external_bounties',
     'dataviz',
     'impersonate',
+    'bounty_requests'
 ]
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -112,9 +118,6 @@ MIDDLEWARE = [
     'social_django.middleware.SocialAuthExceptionMiddleware',
     'impersonate.middleware.ImpersonateMiddleware',
 ]
-
-CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', )
 
 ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
 
@@ -192,6 +195,21 @@ LANGUAGES = [
     ('zh-hant', gettext_noop('Traditional Chinese')),
 ]
 
+# Elastic APM
+ENABLE_APM = env.bool('ENABLE_APM', default=False)
+if ENABLE_APM:
+    INSTALLED_APPS += ['elasticapm.contrib.django', ]
+    MIDDLEWARE.append('elasticapm.contrib.django.middleware.TracingMiddleware')
+    APM_SECRET_TOKEN = env.str('APM_SECRET_TOKEN', default='')
+    ELASTIC_APM = {
+        'SERVICE_NAME': env.str('APM_SERVICE_NAME', default=f'{ENV}-web'),
+        'SERVER_URL': env.str('APM_SERVER_URL', default='http://localhost:8200'),
+    }
+    if APM_SECRET_TOKEN:
+        ELASTIC_APM['SECRET_TOKEN'] = APM_SECRET_TOKEN
+    if DEBUG and ENV == 'stage':
+        ELASTIC_APM['DEBUG'] = True
+
 if ENV not in ['local', 'test']:
     LOGGING = {
         'version': 1,
@@ -210,9 +228,6 @@ if ENV not in ['local', 'test']:
             'sentry': {
                 'level': 'ERROR',  # To capture more than ERROR, change to WARNING, INFO, etc.
                 'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-                'tags': {
-                    'custom-tag': 'x'
-                },
             },
             'console': {
                 'level': 'DEBUG',
@@ -239,6 +254,18 @@ if ENV not in ['local', 'test']:
         },
     }
 
+    if ENABLE_APM:
+        LOGGING['handlers']['elasticapm'] = {
+            'level': 'WARNING',
+            'class': 'elasticapm.contrib.django.handlers.LoggingHandler',
+        }
+        LOGGING['loggers']['elasticapm.errors'] = {
+            'level': 'ERROR',
+            'handlers': ['sentry', 'console'],
+            'propagate': False,
+        }
+        LOGGING['root']['handlers'] = ['sentry', 'elasticapm']
+
     LOGGING['loggers']['django.request'] = LOGGING['loggers']['django.db.backends']
     for ia in INSTALLED_APPS:
         LOGGING['loggers'][ia] = LOGGING['loggers']['django.db.backends']
@@ -249,12 +276,30 @@ GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.static_storage.SilentFileStorage')
 STATICFILES_DIRS = env.tuple('STATICFILES_DIRS', default=('assets/', ))
 STATIC_ROOT = root('static')
+STATICFILES_LOCATION = env.str('STATICFILES_LOCATION', default='static')
+MEDIAFILES_LOCATION = env.str('MEDIAFILES_LOCATION', default='media')
 
-STATIC_HOST = env('STATIC_HOST', default='')
-STATIC_URL = STATIC_HOST + env('STATIC_URL', default='/static/')
+if ENV in ['prod', 'stage']:
+    DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE', default='app.static_storage.MediaFileStorage')
+    THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
+    STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.static_storage.SilentFileStorage')
+    STATIC_HOST = env('STATIC_HOST', default='https://s.gitcoin.co/')
+    STATIC_URL = STATIC_HOST + env('STATIC_URL', default=f'{STATICFILES_LOCATION}{"/" if STATICFILES_LOCATION else ""}')
+    MEDIA_URL = env(
+        'MEDIA_URL', default=f'https://c.gitcoin.co/{MEDIAFILES_LOCATION}{"/" if MEDIAFILES_LOCATION else ""}'
+    )
+else:
+    # Handle local static file storage
+    STATIC_HOST = BASE_URL
+    STATIC_URL = env('STATIC_URL', default=f'/{STATICFILES_LOCATION}/')
+    # Handle local media file storage
+    MEDIA_ROOT = root('media')
+    MEDIA_URL = env('MEDIA_URL', default=f'/{MEDIAFILES_LOCATION}/')
+
+COMPRESS_ROOT = STATIC_ROOT
+COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', default=True)
 
 THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + ('app.thumbnail_processors.circular_processor', )
 
@@ -324,12 +369,20 @@ CACHEOPS = {
     },
 }
 
-CACHES = {
-    'default': env.cache('REDIS_URL'),
-    'legacy': env.cache('CACHE_URL'),
-}
 DJANGO_REDIS_IGNORE_EXCEPTIONS = env.bool('REDIS_IGNORE_EXCEPTIONS', default=True)
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = env.bool('REDIS_LOG_IGNORED_EXCEPTIONS', default=True)
+COLLECTFAST_CACHE = env('COLLECTFAST_CACHE', default='collectfast')
+COLLECTFAST_DEBUG = env.bool('COLLECTFAST_DEBUG', default=False)
+
+CACHES = {
+    'default': env.cache(
+        'REDIS_URL',
+        default='rediscache://redis:6379/0?client_class=django_redis.client.DefaultClient'
+    ),
+    COLLECTFAST_CACHE: env.cache('COLLECTFAST_CACHE_URL', default='dbcache://collectfast'),
+    'legacy': env.cache('CACHE_URL', default='dbcache://my_cache_table'),
+}
+CACHES[COLLECTFAST_CACHE]['OPTIONS'] = {'MAX_ENTRIES': 1000}
 
 # HTTPS Handling
 SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=True)
@@ -414,7 +467,7 @@ if GITCOIN_BOT_CERT_PATH:
     with open(str(root.path(GITCOIN_BOT_CERT_PATH))) as f:
         SECRET_KEYSTRING = f.read()
 
-GITCOIN_SLACK_ICON_URL = 'https://gitcoin.co/static/v2/images/helmet.png'
+GITCOIN_SLACK_ICON_URL = 'https://s.gitcoin.co/static/v2/images/helmet.png'
 
 # Twitter Integration
 TWITTER_CONSUMER_KEY = env('TWITTER_CONSUMER_KEY', default='')  # TODO
@@ -475,25 +528,30 @@ AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
 
 AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='')
-AWS_S3_OBJECT_PARAMETERS = env.dict('AWS_S3_OBJECT_PARAMETERS', default={'CacheControl': 'max-age=86400'})
+AWS_S3_CACHE_MAX_AGE = env.str('AWS_S3_CACHE_MAX_AGE', default='86400')
+AWS_QUERYSTRING_EXPIRE = env.int('AWS_QUERYSTRING_EXPIRE', default=3600)
+AWS_S3_ENCRYPTION = env.bool('AWS_S3_ENCRYPTION', default=False)
+AWS_S3_OBJECT_PARAMETERS = env.dict('AWS_S3_OBJECT_PARAMETERS', default=None)
 S3_USE_SIGV4 = env.bool('S3_USE_SIGV4', default=True)
 AWS_IS_GZIPPED = env.bool('AWS_IS_GZIPPED', default=True)
 AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME', default='us-west-2')
 AWS_S3_SIGNATURE_VERSION = env('AWS_S3_SIGNATURE_VERSION', default='s3v4')
 AWS_QUERYSTRING_AUTH = env.bool('AWS_QUERYSTRING_AUTH', default=False)
 AWS_S3_FILE_OVERWRITE = env.bool('AWS_S3_FILE_OVERWRITE', default=True)
-# AWS_S3_CUSTOM_DOMAIN = env('AWS_S3_CUSTOM_DOMAIN', default='assets.gitcoin.co')
+AWS_PRELOAD_METADATA = env.bool('AWS_PRELOAD_METADATA', default=True)
+AWS_S3_CUSTOM_DOMAIN = env('AWS_S3_CUSTOM_DOMAIN', default='s.gitcoin.co')
+MEDIA_BUCKET = env.str('MEDIA_BUCKET', default=AWS_STORAGE_BUCKET_NAME)
+MEDIA_CUSTOM_DOMAIN = env('MEDIA_CUSTOM_DOMAIN', default='c.gitcoin.co')
+AWS_DEFAULT_ACL = env('AWS_DEFAULT_ACL', default='public-read')
+if not AWS_S3_OBJECT_PARAMETERS:
+    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': f'max-age={AWS_S3_CACHE_MAX_AGE}', }
+
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', 'gitcoin.co', )
+CORS_ORIGIN_WHITELIST = CORS_ORIGIN_WHITELIST + (AWS_S3_CUSTOM_DOMAIN, MEDIA_CUSTOM_DOMAIN, )
 
 S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='')  # TODO
 S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='')  # TODO
-
-# Handle local file storage
-if ENV == 'local' and not AWS_STORAGE_BUCKET_NAME:
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = root('media')
-else:
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
 
 INSTALLED_APPS += env.list('DEBUG_APPS', default=[])
 

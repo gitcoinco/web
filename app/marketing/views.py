@@ -586,6 +586,8 @@ def leaderboard(request, key=''):
         'quarterly_payers': _('Top Payers'),
         'quarterly_earners': _('Top Earners'),
         'quarterly_orgs': _('Top Orgs'),
+        'quarterly_tokens': _('Top Tokens'),
+        'quarterly_keywords': _('Top Keywords'),
         #        'weekly_fulfilled': 'Weekly Leaderboard: Fulfilled Funded Issues',
         #        'weekly_all': 'Weekly Leaderboard: All Funded Issues',
         #        'monthly_fulfilled': 'Monthly Leaderboard',
@@ -613,10 +615,12 @@ def leaderboard(request, key=''):
     else:
         amount_max = 0
 
+    is_linked_to_profile = '_tokens' in key or '_keywords' in key
     context = {
         'items': items,
         'titles': titles,
         'selected': title,
+        'is_linked_to_profile': is_linked_to_profile,
         'title': f'Leaderboard: {title}',
         'card_title': f'Leaderboard: {title}',
         'card_desc': f'See the most valued members in the Gitcoin community recently . {top_earners}',

@@ -451,7 +451,7 @@ def record_user_action_on_interest(interest, event_name, last_heard_from_user_da
 
 
 def get_context(ref_object=None, github_username='', user=None, confirm_time_minutes_target=4,
-                confirm_time_slow=90, confirm_time_avg=30, confirm_time_fast=1, active='',
+                confirm_time_slow=120, confirm_time_avg=15, confirm_time_fast=1, active='',
                 title='', update=None):
     """Get the context dictionary for use in view."""
     context = {
