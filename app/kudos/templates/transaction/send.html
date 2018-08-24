@@ -52,6 +52,65 @@
     
     new kudosprice()  
   </script>
+
+  <script>
+    
+  $(function() {
+    $('.js-data-example-ajax').select2({
+      ajax: {
+        url: '/api/v0.1/users_search/',
+        dataType: 'json',
+        delay: 250,
+        data: function (params) {
+          console.log(params)
+          var query = {
+            term: params.term,
+          }
+          return query;
+        },
+        processResults: function (data) {
+          return {
+            results: data,  
+          };
+        },
+        cache: true
+      },
+      placeholder: 'Search for a user',
+      minimumInputLength: 3,
+      escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+      templateResult: formatUser,
+      templateSelection: formatUserSelection,
+      theme: "bootstrap4"
+    });
+
+    function formatUser (user) {
+      if (user.loading) {
+        return user.text;
+      }
+      var markup = `<div class="d-flex align-items-baseline">
+                      <div class="mr-2">
+                        <img class="rounded-circle" src="${user.avatar_url || '{% static "v2/images/user-placeholder.png"%}'}" width="40" height="40"/>
+                      </div>
+                      <div class="">${user.text}</div>
+                    </div>`;
+      
+      return markup;
+    }
+
+    function formatUserSelection (user) {
+      if (user.id) {
+        var selected = `<img class="rounded-circle" src="${user.avatar_url || '{% static "v2/images/user-placeholder.png"%}'}" width="20" height="20"/> ${user.text}`;
+      }
+      return selected || user.text;
+    }
+
+    
+  });
+
+  
+  
+  
+  </script>
 {% endblock %}
 <!-- Main -->
 {% block 'main' %}
@@ -70,7 +129,7 @@
     <div class="my-4">
       <a href="/kudos/{{ kudos.id }}"><img src="{% static kudos.image %}" alt="{{ kudos.name }}" width="160" alt="" class="mb-2"></a>
       <span class="d-block">{{ kudos.name|humanize_name }}</span>
-      <span class="d-block" data-kudosprice=>{{ kudos.price_in_eth }} ETH<small></small></span>
+      <span class="d-block" data-kudosprice="{{ kudos.price_in_eth }}">{{ kudos.price_in_eth }} ETH <small></small></span>
     </div>
     
   </header>
@@ -91,15 +150,21 @@
     </div> -->
     <input type="hidden" id="token" value="0x408c49a91e46311ddc35737f8c1aaea6191f36e0">
     <input type="hidden" id="amount" value="0.0011">
-    <div id="username-fg" class="form-group">
-      <label for="">{% trans "To Github Username" %}</label>
+    <label for="">{% trans "To Github Username" %}</label>
+    <div class="form-group">
+      <select class="js-data-example-ajax custom-select"></select>
+    </div>
+    <!-- <div id="username-fg" class="form-group">
       <br>
+      
+
+
       <select class="username-selector" name="github-username" id="username">
         {% for profile in profiles %}
         <option value="{{ profile.id }}">{{ profile.handle }}</option>
         {% endfor %}
       </select>
-    </div>
+    </div> -->
 <!--     <div id="wallet-fg" class="form-group">
       <label for="">{% trans "To Wallet Address" %}:</label>
       <input type="text" placeholder="0x0" id="receiverAddress" class="form-control" required>

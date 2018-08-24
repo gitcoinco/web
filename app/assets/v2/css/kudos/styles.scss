@@ -4,6 +4,7 @@ $gc-blue: #3e00ff;
 
 @import 'transaction';
 @import 'range-slider';
+@import 'select2.bootstrap4';
 
 // MIXINS
 @mixin square() {
@@ -24,7 +25,7 @@ $gc-blue: #3e00ff;
 
   .img-thumbnail {
     width: 100%;
-    padding: 3.75rem 2.25rem 2.25rem;
+    padding: 1.25rem 2.14rem;
     transition: all linear .1s;
   }
 
@@ -48,7 +49,7 @@ $gc-blue: #3e00ff;
     position: absolute;
     top: 0;
     right: 0;
-    padding: 1em;
+    padding: 0.5em;
   }
 }
 

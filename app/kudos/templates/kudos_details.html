@@ -23,18 +23,18 @@
   	<section class="container my-5 pb-5">
       <div class="row justify-content-around">
         <div class="col-md-6 col-lg-5 mb-5">
-          <a href="/kudos/{{kudos.cloned_from_id}}"><img id="kudos-image" src="{% static kudos.image %}" alt="{{ kudos.name }}" class="sticky-top w-100"></a>
+          <img id="kudos-image" src="{% static kudos.image %}" alt="{{ kudos.name }}" class="sticky-top w-100">
         </div>
         <div class="col-md-6 col-lg-5">
           <h3 id="kudosName" class="display-4">{{ kudos.name|humanize_name }}</h3>
           <div class="mt-4 font-bigger-1 font-weight-300">
-            <p id="kudosDescriptionclass="">{{ kudos.description }}</p>
+            <p id="kudosDescription class="">{{ kudos.description }}</p>
             <p><span>ID: </span><span id="kudosID">{{ kudos.id }}</span></p>
             <p><span>Rarity: </span><span id="kudosRarity">{{ kudos.rarity }}</span></p>
             <p><span>Owner Address: </span><a id="kudosOwnerAddress" target="_blank" href="https://etherscan.io/address/{{ kudos.owner_address }}" class="btn-link" title="{{ kudos.owner_address }}">{{ kudos.owner_address|humanize_address }}</a></p>
-            <p>{{ kudos.price}} ETH</p>
+            <p>{{ kudos.price_finney}} ETH</p>
             <p>
-              {% for tag in kudos.tags %}
+              {% for tag in kudos.tags.split %}
                 <span class="badge badge-success">{{tag}}</span>
               {% endfor %}
             </p>
