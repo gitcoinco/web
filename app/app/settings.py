@@ -194,6 +194,21 @@ LANGUAGES = [
     ('zh-hant', gettext_noop('Traditional Chinese')),
 ]
 
+# Elastic APM
+ENABLE_APM = env.bool('ENABLE_APM', default=False)
+if ENABLE_APM:
+    INSTALLED_APPS += ['elasticapm.contrib.django', ]
+    MIDDLEWARE.append('elasticapm.contrib.django.middleware.TracingMiddleware')
+    APM_SECRET_TOKEN = env.str('APM_SECRET_TOKEN', default='')
+    ELASTIC_APM = {
+        'SERVICE_NAME': env.str('APM_SERVICE_NAME', default=f'{ENV}-web'),
+        'SERVER_URL': env.str('APM_SERVER_URL', default='http://localhost:8200'),
+    }
+    if APM_SECRET_TOKEN:
+        ELASTIC_APM['SECRET_TOKEN'] = APM_SECRET_TOKEN
+    if DEBUG and ENV == 'stage':
+        ELASTIC_APM['DEBUG'] = True
+
 if ENV not in ['local', 'test']:
     LOGGING = {
         'version': 1,
@@ -237,6 +252,18 @@ if ENV not in ['local', 'test']:
             },
         },
     }
+
+    if ENABLE_APM:
+        LOGGING['handlers']['elasticapm'] = {
+            'level': 'WARNING',
+            'class': 'elasticapm.contrib.django.handlers.LoggingHandler',
+        }
+        LOGGING['loggers']['elasticapm.errors'] = {
+            'level': 'ERROR',
+            'handlers': ['sentry', 'console'],
+            'propagate': False,
+        }
+        LOGGING['root']['handlers'] = ['sentry', 'elasticapm']
 
     LOGGING['loggers']['django.request'] = LOGGING['loggers']['django.db.backends']
     for ia in INSTALLED_APPS:
@@ -492,21 +519,6 @@ IPFS_API_ROOT = env('IPFS_API_ROOT', default='/api/v0')
 IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='https')
 
 STABLE_COINS = ['DAI', 'USDT', 'TUSD']
-
-# Elastic APM
-ENABLE_APM = env.bool('ENABLE_APM', default=False)
-if ENABLE_APM:
-    INSTALLED_APPS += ['elasticapm.contrib.django', ]
-    MIDDLEWARE.append('elasticapm.contrib.django.middleware.TracingMiddleware')
-    APM_SECRET_TOKEN = env.str('APM_SECRET_TOKEN', default='')
-    ELASTIC_APM = {
-        'SERVICE_NAME': env.str('APM_SERVICE_NAME', default=f'{ENV}-web'),
-        'SERVER_URL': env.str('APM_SERVER_URL', default='http://localhost:8200'),
-    }
-    if APM_SECRET_TOKEN:
-        ELASTIC_APM['SECRET_TOKEN'] = APM_SECRET_TOKEN
-    if DEBUG and ENV == 'stage':
-        ELASTIC_APM['DEBUG'] = True
 
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
