@@ -3,7 +3,7 @@ load_tokens();
 // Wait until page is loaded, then run the function
 $(document).ready(function() {
   waitforWeb3(actions_page_warn_if_not_on_same_network);
-  
+
   var is_funder = function() {
     return document.is_funder_github_user_same && $('input[name=bountyOwnerAddress]').val() == web3.eth.coinbase;
   };
@@ -14,9 +14,9 @@ $(document).ready(function() {
     }
   });
 
-  $('input[name=amount]').keyup(setUsdAmount);
-  $('input[name=amount]').blur(setUsdAmount);
-  $('select[name=denomination]').change(setUsdAmount);
+  $('input[name=amount]').keyup(setUsdAmount(''));
+  $('input[name=amount]').blur(setUsdAmount(''));
+  $('select[name=denomination]').change(setUsdAmount(''));
 
 
   $('input[name=amount]').focus();
