@@ -146,7 +146,7 @@ def receive_tip_v3(request, key, txid, network):
             tip.received_on = timezone.now()
             tip.save()
             record_user_action(tip.from_username, 'receive_tip', tip)
-            record_tip_activity(tip, tip.from_username, 'receive_tip')
+            record_tip_activity(tip, tip.username, 'receive_tip')
             messages.success(request, 'This tip has been received')
         except Exception as e:
             messages.error(request, str(e))

@@ -104,6 +104,7 @@ INSTALLED_APPS = [
     'external_bounties',
     'dataviz',
     'impersonate',
+    'bounty_requests'
 ]
 
 MIDDLEWARE = [
@@ -202,6 +203,21 @@ LANGUAGES = [
     ('zh-hant', gettext_noop('Traditional Chinese')),
 ]
 
+# Elastic APM
+ENABLE_APM = env.bool('ENABLE_APM', default=False)
+if ENABLE_APM:
+    INSTALLED_APPS += ['elasticapm.contrib.django', ]
+    MIDDLEWARE.append('elasticapm.contrib.django.middleware.TracingMiddleware')
+    APM_SECRET_TOKEN = env.str('APM_SECRET_TOKEN', default='')
+    ELASTIC_APM = {
+        'SERVICE_NAME': env.str('APM_SERVICE_NAME', default=f'{ENV}-web'),
+        'SERVER_URL': env.str('APM_SERVER_URL', default='http://localhost:8200'),
+    }
+    if APM_SECRET_TOKEN:
+        ELASTIC_APM['SECRET_TOKEN'] = APM_SECRET_TOKEN
+    if DEBUG and ENV == 'stage':
+        ELASTIC_APM['DEBUG'] = True
+
 if ENV not in ['local', 'test']:
     LOGGING = {
         'version': 1,
@@ -220,9 +236,6 @@ if ENV not in ['local', 'test']:
             'sentry': {
                 'level': 'ERROR',  # To capture more than ERROR, change to WARNING, INFO, etc.
                 'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-                'tags': {
-                    'custom-tag': 'x'
-                },
             },
             'console': {
                 'level': 'DEBUG',
@@ -248,6 +261,18 @@ if ENV not in ['local', 'test']:
             },
         },
     }
+
+    if ENABLE_APM:
+        LOGGING['handlers']['elasticapm'] = {
+            'level': 'WARNING',
+            'class': 'elasticapm.contrib.django.handlers.LoggingHandler',
+        }
+        LOGGING['loggers']['elasticapm.errors'] = {
+            'level': 'ERROR',
+            'handlers': ['sentry', 'console'],
+            'propagate': False,
+        }
+        LOGGING['root']['handlers'] = ['sentry', 'elasticapm']
 
     LOGGING['loggers']['django.request'] = LOGGING['loggers']['django.db.backends']
     for ia in INSTALLED_APPS:
@@ -305,7 +330,7 @@ COLLECTFAST_DEBUG = env.bool('COLLECTFAST_DEBUG', default=False)
 
 CACHES = {
     'default': env.cache(),
-    COLLECTFAST_CACHE: env.cache('COLLECTFAST_CACHE_URL'),
+    COLLECTFAST_CACHE: env.cache('COLLECTFAST_CACHE_URL', default='dbcache://collectfast'),
 }
 CACHES[COLLECTFAST_CACHE]['OPTIONS'] = {'MAX_ENTRIES': 1000}
 
@@ -392,7 +417,7 @@ if GITCOIN_BOT_CERT_PATH:
     with open(str(root.path(GITCOIN_BOT_CERT_PATH))) as f:
         SECRET_KEYSTRING = f.read()
 
-GITCOIN_SLACK_ICON_URL = 'https://gitcoin.co/static/v2/images/helmet.png'
+GITCOIN_SLACK_ICON_URL = 'https://s.gitcoin.co/static/v2/images/helmet.png'
 
 # Twitter Integration
 TWITTER_CONSUMER_KEY = env('TWITTER_CONSUMER_KEY', default='')  # TODO
@@ -475,7 +500,7 @@ CORS_ORIGIN_ALLOW_ALL = env.bool('CORS_ORIGIN_ALLOW_ALL', default=False)
 CORS_ORIGIN_WHITELIST = env.tuple(
     'CORS_ORIGIN_WHITELIST', default=('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', 'gitcoin.co', )
 )
-CORS_ORIGIN_WHITELIST = CORS_ORIGIN_WHITELIST + (AWS_S3_CUSTOM_DOMAIN, )
+CORS_ORIGIN_WHITELIST = CORS_ORIGIN_WHITELIST + (AWS_S3_CUSTOM_DOMAIN, MEDIA_CUSTOM_DOMAIN, )
 
 S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='')  # TODO
 S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='')  # TODO

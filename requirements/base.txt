@@ -70,3 +70,4 @@ django-taggit-serializer
 raven==6.9.0
 collectfast==0.6.2
 django-health-check==3.7.0
+elastic-apm==3.0.0

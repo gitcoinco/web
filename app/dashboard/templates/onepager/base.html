@@ -33,6 +33,10 @@
     <link rel="stylesheet" href="{% static "v2/css/forms/button.css" %}">
     <link rel="stylesheet" href="{% static "cookielaw/css/cookielaw.css" %}">
 
+    <script type="text/javascript">
+      var static_url = "{{ STATIC_URL }}";
+      var media_url = "{{ MEDIA_URL }}";
+    </script>
     <script src="{% static "v2/js/jquery.js" %}"></script>
     <script src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
     <!--[if lte IE 9]><link rel="stylesheet" href="{% static "onepager/css/ie9.css" %}"><![endif]-->

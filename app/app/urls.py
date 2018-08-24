@@ -25,6 +25,7 @@ from django.urls import path, re_path
 from django.views.i18n import JavaScriptCatalog
 
 import avatar.views
+import bounty_requests.views
 import credits.views
 import dashboard.embed
 import dashboard.gas_views
@@ -86,6 +87,7 @@ urlpatterns = [
     path('issue/fulfill', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
     path('issue/accept', dashboard.views.accept_bounty, name='process_funding'),
     path('issue/advanced_payout', dashboard.views.bulk_payout_bounty, name='bulk_payout_bounty'),
+    path('issue/invoice', dashboard.views.invoice, name='invoice'),
     path('issue/payout', dashboard.views.payout_bounty, name='payout_bounty'),
     path('issue/increase', dashboard.views.increase_bounty, name='increase_bounty'),
     path('issue/cancel', dashboard.views.cancel_bounty, name='kill_bounty'),
@@ -238,6 +240,9 @@ urlpatterns = [
 
     # faucet views
     re_path(r'^faucet/?', faucet.views.faucet, name='faucet'),
+
+    # bounty requests
+    re_path(r'^requests/?', bounty_requests.views.bounty_request, name='bounty_requests'),
 
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),
