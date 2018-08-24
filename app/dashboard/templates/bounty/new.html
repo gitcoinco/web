@@ -105,6 +105,27 @@
                   <hr class="mt-4">
                 </div>
                 {% include 'shared/pricing.html' %}
+                <div id="gitcoin-tip-section" class="pt-2">
+                  <h5 class="font-subheader">{% trans "Gitcoin tip" %}</h5>
+                  <div class="form__flex-group">
+                    <div class="form__amount-wrapper">
+                      <label class="form__label" for="gitcoin_tip_amount">{% trans "Denomination" %}</label>
+                      <div class="form__select2">
+                        <select name='denomination' id='gitcoin_tip_token'></select>
+                      </div>
+                    </div>
+                    <div class="form__amount-wrapper">
+                      <label class="form__label" for="gitcoin_tip_amount">{% trans "Amount" %}</label>
+                      <input name='gitcoin_tip_amount' id='gitcoin_tip_amount'  class="form__input" type="number" value="{{amount|default:'0.001'}}" step="0.001" min="0.001"/>
+                    </div>
+                    <div class="form__amount-wrapper" id="gitcoin_tip_usd-amount-wrapper">
+                      <label class="form__label" for="gitcoin_tip_usd_amount">{% trans "USD" %}</label>
+                      <input name='gitcoin_tip_usd_amount' id='gitcoin_tip_usd_amount'  class="form__input" type="text" min="0.00"/>
+                    </div>
+                  </div>
+                  <small class="form__input-help form__input-help--dynamic" id="gitcoin_tip_usd_amount_text"></small>
+                  <hr class="mt-5">
+                </div>
                 <div class="w-100 mt-2">
                   <label class="form__label" for="fundingOrganisation">{% trans "Funding organisation" %}</label>
                   <input name='fundingOrganisation' id="fundingOrganisation" class="form__input" type="text" placeholder="Ethereum Community Foundation"/>

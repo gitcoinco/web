@@ -94,16 +94,30 @@ $(document).ready(function() {
   }
 
   // fetch issue URL related info
-  $('input[name=amount]').keyup(setUsdAmount);
-  $('input[name=amount]').blur(setUsdAmount);
-  $('input[name=usd_amount]').keyup(usdToAmount);
-  $('input[name=usd_amount]').blur(usdToAmount);
-  $('select[name=denomination]').change(setUsdAmount);
-  $('select[name=denomination]').change(promptForAuth);
+  const pricingPrefix = 'pricing_';
+  $(`input[name=${pricingPrefix}amount]`).keyup(setUsdAmount(pricingPrefix));
+  $(`input[name=${pricingPrefix}amount]`).blur(setUsdAmount(pricingPrefix));
+  $(`input[name=${pricingPrefix}usd_amount]`).keyup(usdToAmount(pricingPrefix));
+  $(`input[name=${pricingPrefix}usd_amount]`).blur(usdToAmount(pricingPrefix));
+  $('select[name=denomination]').change(setUsdAmount(pricingPrefix));
+  $('select[name=denomination]').change(promptForAuth(pricingPrefix));
   $('input[name=issueURL]').blur(retrieveIssueDetails);
-  setTimeout(setUsdAmount, 1000);
+  setTimeout(setUsdAmount(pricingPrefix), 1000);
   waitforWeb3(function() {
-    promptForAuth();
+    promptForAuth(pricingPrefix);
+  });
+
+  const gitcoinTipPrefix = 'gitcoin_tip_';
+  $(`input[name=${gitcoinTipPrefix}amount]`).keyup(setUsdAmount(gitcoinTipPrefix));
+  $(`input[name=${gitcoinTipPrefix}amount]`).blur(setUsdAmount(gitcoinTipPrefix));
+  $(`input[name=${gitcoinTipPrefix}usd_amount]`).keyup(usdToAmount(gitcoinTipPrefix));
+  $(`input[name=${gitcoinTipPrefix}usd_amount]`).blur(usdToAmount(gitcoinTipPrefix));
+  $('select[name=denomination]').change(setUsdAmount(gitcoinTipPrefix));
+  $('select[name=denomination]').change(promptForAuth(gitcoinTipPrefix));
+  $('input[name=issueURL]').blur(retrieveIssueDetails);
+  setTimeout(setUsdAmount(gitcoinTipPrefix), 1000);
+  waitforWeb3(function() {
+    promptForAuth(gitcoinTipPrefix);
   });
 
   // revision action buttons

@@ -883,76 +883,82 @@ window.addEventListener('load', function() {
   attach_close_button();
 });
 
-var promptForAuth = function(event) {
-  var denomination = $('#token option:selected').text();
-  var tokenAddress = $('#token option:selected').val();
+var promptForAuth = (prefix) => {
+  return function(event) {
+    var denomination = $(`#${prefix}token option:selected`).text();
+    var tokenAddress = $(`#${prefix}token option:selected`).val();
 
-  if (!denomination) {
-    return;
-  }
+    if (!denomination) {
+      return;
+    }
 
-  if (denomination == 'ETH') {
-    $('input, textarea, select').prop('disabled', '');
-  } else {
-    var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-    var from = web3.eth.coinbase;
-    var to = bounty_address();
+    if (denomination == 'ETH') {
+      $('input, textarea, select').prop('disabled', '');
+    } else {
+      var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+      var from = web3.eth.coinbase;
+      var to = bounty_address();
 
-    token_contract.allowance.call(from, to, function(error, result) {
-      if (error || result.toNumber() == 0) {
-        if (!document.alert_enable_token_shown) {
-          _alert(
-            gettext('To enable this token, go to the ') +
-            '<a style="padding-left:5px;" href="/settings/tokens">' +
-            gettext('Token Settings page and enable it.') +
-            '</a> ' +
-            gettext('This is only needed once per token.'),
-            'warning'
-          );
+      token_contract.allowance.call(from, to, function(error, result) {
+        if (error || result.toNumber() == 0) {
+          if (!document.alert_enable_token_shown) {
+            _alert(
+              gettext('To enable this token, go to the ') +
+              '<a style="padding-left:5px;" href="/settings/tokens">' +
+              gettext('Token Settings page and enable it.') +
+              '</a> ' +
+              gettext('This is only needed once per token.'),
+              'warning'
+            );
+          }
+          document.alert_enable_token_shown = true;
+
+          $('input, textarea, select').prop('disabled', 'disabled');
+          $('select[name=denomination]').prop('disabled', '');
+        } else {
+          $('input, textarea, select').prop('disabled', '');
         }
-        document.alert_enable_token_shown = true;
+      });
 
-        $('input, textarea, select').prop('disabled', 'disabled');
-        $('select[name=denomination]').prop('disabled', '');
+    }
+  };
+};
+
+var setUsdAmount = (prefix) => {
+  return function(event) {
+    var amount = $(`input[name=${prefix}amount]`).val();
+    var denomination = $(`#${prefix}token option:selected`).text();
+    var estimate = getUSDEstimate(amount, denomination, function(estimate) {
+      if (estimate['value']) {
+        $(`#${prefix}usd-amount-wrapper`).css('visibility', 'visible');
+        $(`#${prefix}usd_amount_text`).css('visibility', 'visible');
+
+        $(`#${prefix}usd_amount`).val(estimate['value_unrounded']);
+        $(`#${prefix}usd_amount_text`).html(estimate['rate_text']);
+        $(`#${prefix}usd_amount`).removeAttr('disabled');
       } else {
-        $('input, textarea, select').prop('disabled', '');
+        $(`#${prefix}usd-amount-wrapper`).css('visibility', 'hidden');
+        $(`#${prefix}usd_amount_text`).css('visibility', 'hidden');
+
+        $(`#${prefix}usd_amount_text`).html('');
+        $(`#${prefix}usd_amount`).prop('disabled', true);
+        $(`#${prefix}usd_amount`).val('');
       }
     });
-
-  }
+  };
 };
 
-var setUsdAmount = function(event) {
-  var amount = $('input[name=amount]').val();
-  var denomination = $('#token option:selected').text();
-  var estimate = getUSDEstimate(amount, denomination, function(estimate) {
-    if (estimate['value']) {
-      $('#usd-amount-wrapper').css('visibility', 'visible');
-      $('#usd_amount_text').css('visibility', 'visible');
-
-      $('#usd_amount').val(estimate['value_unrounded']);
-      $('#usd_amount_text').html(estimate['rate_text']);
-      $('#usd_amount').removeAttr('disabled');
-    } else {
-      $('#usd-amount-wrapper').css('visibility', 'hidden');
-      $('#usd_amount_text').css('visibility', 'hidden');
-
-      $('#usd_amount_text').html('');
-      $('#usd_amount').prop('disabled', true);
-      $('#usd_amount').val('');
-    }
-  });
-};
-
-var usdToAmount = function(event) {
-  var usdAmount = $('input[name=usd_amount').val();
-  var denomination = $('#token option:selected').text();
-  var estimate = getAmountEstimate(usdAmount, denomination, function(amountEstimate) {
-    if (amountEstimate['value']) {
-      $('#amount').val(amountEstimate['value']);
-      $('#usd_amount_text').html(amountEstimate['rate_text']);
-    }
-  });
+var usdToAmount = (prefix) => {
+  return function(event) {
+    var usdAmount = $(`input[name=${prefix}usd_amount`).val();
+    var denomination = $(`#${prefix}token option:selected`).text();
+    var estimate = getAmountEstimate(usdAmount, denomination, function(amountEstimate) {
+      if (amountEstimate['value']) {
+        $(`#${prefix}amount`).val(amountEstimate['value']);
+        $(`#${prefix}usd_amount_text`).html(amountEstimate['rate_text']);
+      }
+    });
+  };
 };
 
 function renderBountyRowsFromResults(results) {
