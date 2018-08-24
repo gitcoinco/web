@@ -569,7 +569,7 @@ Back to BUIDLing,
         {
             'who': 'evgeniuz',
             'who_link': True,
-            'what': 'Helped MetaMask to remember recent RPC URL's.',
+            'what': 'Helped MetaMask to remember recent RPC URL\'s.',
             'link': 'https://gitcoin.co/issue/Bounties-Network/bounties.network/7/927',
             'link_copy': 'View more',
         },
