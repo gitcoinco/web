@@ -96,7 +96,8 @@
       <br>
       <select class="username-selector" name="github-username" id="username">
         {% for profile in profiles %}
-        <option value="{{ profile.id }}">{{ profile.handle }}</option>
+        <!-- <option value="{{ profile.id }}">{{ profile.handle }}</option> -->
+        <option value="{{ profile.handle }}">{{ profile.handle }}</option>
         {% endfor %}
       </select>
     </div>
