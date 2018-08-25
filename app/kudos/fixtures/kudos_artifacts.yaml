@@ -1,6 +1,6 @@
 ---
 
-- model: kudos.MarketPlaceListing
+- model: kudos.Token
   pk: 1
   fields:
     name: Bug Squasher
@@ -13,7 +13,7 @@
     lister:  Gitcoin
     tags: bug, squash, debug, fix
 
-- model: kudos.MarketPlaceListing
+- model: kudos.Token
   pk: 2
   fields:
     name: Collaboration Machine
@@ -26,7 +26,7 @@
     lister:  Gitcoin
     tags: collaboration, helpful, synergy, team player
 
-- model: kudos.MarketPlaceListing
+- model: kudos.Token
   pk: 3
   fields:
     name: Design Star
@@ -39,7 +39,7 @@
     lister:  Gitcoin
     tags: design, ui, ux, visual, front-end
 
-- model: kudos.MarketPlaceListing
+- model: kudos.Token
   pk: 4
   fields:
     name: Fast Turn Around
@@ -52,7 +52,7 @@
     lister:  Gitcoin
     tags: fast, speedy, quick
 
-- model: kudos.MarketPlaceListing
+- model: kudos.Token
   pk: 5
   fields:
     name: Helping Hand
@@ -65,7 +65,7 @@
     lister:  Gitcoin
     tags: helpful, hand, reliable
 
-- model: kudos.MarketPlaceListing
+- model: kudos.Token
   pk: 6
   fields:
     name: Problem Solver
@@ -78,7 +78,7 @@
     lister:  Gitcoin
     tags: problem, solve, tenacious
 
-- model: kudos.MarketPlaceListing
+- model: kudos.Token
   pk: 7
   fields:
     name: Pythonista

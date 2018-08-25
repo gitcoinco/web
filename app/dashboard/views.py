@@ -43,7 +43,7 @@ from avatar.utils import get_avatar_context
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid
-from kudos.models import MarketPlaceListing
+from kudos.models import Token
 from marketing.mails import (
     admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
@@ -1028,8 +1028,8 @@ def profile(request, handle):
     params = profile.to_dict()
     # params['wallet_addresses'] = [x.address for x in profile.wallets.all()]
     params['wallet_addresses'] = [w.address for w in Wallet.objects.filter(profile=profile.id)]
-    owned_kudos = MarketPlaceListing.objects.filter(owner_address__in=params['wallet_addresses'])
-    sent_kudos = MarketPlaceListing.objects.filter(sent_from_address__in=params['wallet_addresses'])
+    owned_kudos = Token.objects.filter(owner_address__in=params['wallet_addresses'])
+    sent_kudos = Token.objects.filter(sent_from_address__in=params['wallet_addresses'])
     # if owned_kudos:
     #     owned_kudos = [x.humanize() for x in owned_kudos]
     logging.info(params['wallet_addresses'])

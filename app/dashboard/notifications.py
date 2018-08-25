@@ -362,7 +362,7 @@ def maybe_market_kudos_to_email(kudos, emails):
     """Send an email for the specified Kudos.
 
     Args:
-        kudos (kudos.models.MarketPlaceListing): The Kudos to be marketed.
+        kudos (kudos.models.Token): The Kudos to be marketed.
         emails (list of str): The list of emails to notify.
 
     Returns:
