@@ -23,12 +23,12 @@ from datetime import datetime
 import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets, generics
 
-from .models import MarketPlaceListing, Wallet
+from .models import Listing, Wallet
 
 
-class MarketPlaceListingSerializer(serializers.HyperlinkedModelSerializer):
+class ListingSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = MarketPlaceListing
+        model = Listing
         fields = ('id', 'created_on', 'modified_on', 'name', 'description', 'image', 'rarity',
                   'price', 'num_clones_allowed', 'num_clones_in_wild', 'owner_address', 'tags')
 
@@ -63,16 +63,16 @@ class WalletViewSet(viewsets.ModelViewSet):
         return queryset
 
 
-class MarketPlaceListingViewSet(viewsets.ModelViewSet):
-    queryset = MarketPlaceListing.objects.all().order_by('-id')
-    serializer_class = MarketPlaceListingSerializer
+class ListingViewSet(viewsets.ModelViewSet):
+    queryset = Listing.objects.all().order_by('-id')
+    serializer_class = ListingSerializer
     filter_backends = (django_filters.rest_framework.DjangoFilterBackend,)
     # filter_fields = ('name', 'description', 'image', 'rarity', 'price', 'num_clones_allowed',
     #                  'num_clones_in_wild', 'owner_address', 'tags')
 
     def get_queryset(self):
         param_keys = self.request.query_params.keys()
-        queryset = MarketPlaceListing.objects.all().order_by('-id')
+        queryset = Listing.objects.all().order_by('-id')
 
         # Filter by owner_address
         if 'owner_address' in param_keys:
@@ -107,5 +107,5 @@ class MarketPlaceListingViewSet(viewsets.ModelViewSet):
 
 # Routers provide an easy way of automatically determining the URL conf.
 router = routers.DefaultRouter()
-router.register(r'kudos', MarketPlaceListingViewSet)
+router.register(r'kudos', ListingViewSet)
 router.register(r'wallet', WalletViewSet)

@@ -69,7 +69,7 @@ class Email(SuperModel):
 
 
 
-class MarketPlaceListing(SuperModel):
+class Listing(SuperModel):
     # Kudos specific fields -- lines up with Kudos contractpass
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=510)
