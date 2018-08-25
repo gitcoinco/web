@@ -92,6 +92,36 @@ def render_tip_email(to_email, tip, is_new):
     return response_html, response_txt
 
 
+def render_kudos_email(to_email, kudos, is_new):
+    warning = kudos.network if kudos.network != 'mainnet' else ""
+    already_redeemed = bool(kudos.receive_txid)
+    link = kudos.url
+    if kudos.web3_type != 'v2':
+        link = kudos.receive_url
+    elif kudos.web3_type != 'v3':
+        link = kudos.receive_url_for_recipient
+    params = {
+        'link': link,
+        'amount': round(kudos.amount, 5),
+        'tokenName': kudos.tokenName,
+        'comments_priv': kudos.comments_priv,
+        'comments_public': kudos.comments_public,
+        'kudos': kudos,
+        'already_redeemed': already_redeemed,
+        'show_expires': not already_redeemed and kudos.expires_date < (timezone.now() + timezone.timedelta(days=365)) and kudos.expires_date,
+        'is_new': is_new,
+        'warning': warning,
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'is_sender': to_email not in kudos.emails,
+        'is_receiver': to_email in kudos.emails,
+    }
+
+    response_html = premailer_transform(render_to_string("emails/new_tip.html", params))
+    response_txt = render_to_string("emails/new_tip.txt", params)
+
+    return response_html, response_txt
+
+
 def render_match_email(bounty, github_username):
     params = {
         'bounty': bounty,
