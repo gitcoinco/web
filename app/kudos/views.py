@@ -22,9 +22,9 @@ from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 from django.contrib.postgres.search import SearchVector
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 
-from .models import MarketPlaceListing, Wallet
+from .models import MarketPlaceListing, Wallet, Email
 from dashboard.models import Profile
 from avatar.models import Avatar
 from .forms import KudosSearchForm
@@ -32,7 +32,7 @@ import re
 
 import json
 from ratelimit.decorators import ratelimit
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_master, get_github_primary_email
 from retail.helpers import get_ip
@@ -171,6 +171,8 @@ def send_api(request):
     to_emails = []
 
     params = json.loads(request.body)
+    logger.info(f'params: {params}')
+    return JsonResponse(response)
 
     to_username = params['username'].lstrip('@')
     to_emails = get_emails_master(to_username)
@@ -231,10 +233,13 @@ def send_api(request):
     return JsonResponse(response)
 
 
+@ensure_csrf_cookie
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def send(request):
-    # kt = KudosToken(name='pythonista', description='Zen', rarity=5, price=10, num_clones_allowed=3,
-    #                 num_clones_in_wild=0)
+    """ Handle the first start of the Kudos email send.  This form is filled out before the
+        'send' button is clicked.
+    """
+
     kudos_name = request.GET.get('name')
     kudos = MarketPlaceListing.objects.filter(name=kudos_name, num_clones_allowed__gt=0).first()
     profiles = Profile.objects.all()

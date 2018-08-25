@@ -28,6 +28,7 @@ from django.db.models.signals import m2m_changed, post_delete, post_save, pre_sa
 
 from economy.models import SuperModel
 from dashboard.models import Profile
+from dashboard.models import Tip
 from eth_utils import to_checksum_address
 
 import logging
@@ -35,8 +36,41 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+class Email(SuperModel):
+
+    web3_type = models.CharField(max_length=50, default='v3')
+    emails = JSONField()
+    url = models.CharField(max_length=255, default='', blank=True)
+    tokenName = models.CharField(max_length=255)
+    tokenAddress = models.CharField(max_length=255)
+    amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
+    comments_priv = models.TextField(default='', blank=True)
+    comments_public = models.TextField(default='', blank=True)
+    ip = models.CharField(max_length=50)
+    expires_date = models.DateTimeField()
+    github_url = models.URLField(null=True, blank=True)
+    from_name = models.CharField(max_length=255, default='', blank=True)
+    from_email = models.CharField(max_length=255, default='', blank=True)
+    from_username = models.CharField(max_length=255, default='', blank=True)
+    username = models.CharField(max_length=255, default='')  # to username
+    network = models.CharField(max_length=255, default='')
+    txid = models.CharField(max_length=255, default='')
+    receive_txid = models.CharField(max_length=255, default='', blank=True)
+    received_on = models.DateTimeField(null=True, blank=True)
+    from_address = models.CharField(max_length=255, default='', blank=True)
+    receive_address = models.CharField(max_length=255, default='', blank=True)
+    recipient_profile = models.ForeignKey(
+        'dashboard.Profile', related_name='received_kudos', on_delete=models.SET_NULL, null=True, blank=True
+    )
+    sender_profile = models.ForeignKey(
+        'dashboard.Profile', related_name='sent_kudos', on_delete=models.SET_NULL, null=True, blank=True
+    )
+    metadata = JSONField(default={}, blank=True)
+
+
+
 class MarketPlaceListing(SuperModel):
-    # Kudos specific fields -- lines up with Kudos contract
+    # Kudos specific fields -- lines up with Kudos contractpass
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=510)
     image = models.CharField(max_length=255, null=True)

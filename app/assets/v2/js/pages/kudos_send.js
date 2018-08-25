@@ -38,6 +38,7 @@ var set_metadata = function(callback) {
 var wait_for_metadata = function(callback) {
   setTimeout(function() {
     if (typeof document.hash1 != 'undefined') {
+      console.log('document.hash1 = ' + document.hash1)
       var account = generate_or_get_private_key();
 
       callback({
@@ -47,6 +48,7 @@ var wait_for_metadata = function(callback) {
         'gitcoin_secret': account['shares'][0]
       });
     } else {
+      console.log('still waiting...')
       wait_for_metadata(callback);
     }
   }, 500);
@@ -96,6 +98,7 @@ $(document).ready(function() {
     let profileId = e.params.data.id;
     renderWallets(profileId);
   });
+  // The Kudos Send Button
   $('#send').click(function(e) {
     e.preventDefault();
     $('#send_eth')[0].checkValidity()
@@ -123,6 +126,21 @@ $(document).ready(function() {
     var accept_tos = $('#tos').is(':checked');
     var tokenAddress = $('#token').val();
     var expires = parseInt($('#expires').val());
+
+    var formData = {
+      email: email,
+      github_url: github_url,
+      from_name: from_name,
+      username: username,
+      receiverAddress: receiverAddress,
+      amountInEth: amountInEth,
+      comments_priv: comments_priv,
+      comments_public: comments_public,
+      from_email: from_email,
+      accept_tos: accept_tos,
+      tokenAddress: tokenAddress,
+      expires: expires
+    }
 
     // derived info
     var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
@@ -152,10 +170,14 @@ $(document).ready(function() {
       unloading_button($('#send'));
     };
 
-    // return sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false);
     // var kudosName = $('#kudosImage').attr('alt');
     var kudosName = window.location.href.split('\=')[1];
-    cloneAndTransferKudos(kudosName, 1, receiverAddress);
+    // cloneAndTransferKudos(kudosName, 1, receiverAddress);
+    console.log(formData);
+    return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, false);
+
+
+
 
   });
 
@@ -189,7 +211,7 @@ function isNumeric(n) {
 }
 
 
-function sendTip(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, is_for_bounty_fulfiller) {
+function sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, success_callback, failure_callback, is_for_bounty_fulfiller) {
   mixpanel.track('Tip Step 2 Click', {});
   if (typeof web3 == 'undefined') {
     _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
@@ -246,8 +268,9 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
     failure_callback();
     return;
   }
+  console.log('got to metadata_callback')
 
-
+  // function inside of getKudos()
   var got_metadata_callback = function(metadata) {
     const url = '/kudos/send/api/';
 
@@ -276,6 +299,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
         metadata: metadata
       })
     }).then(function(response) {
+      console.log(response)
       return response.json();
     }).then(function(json) {
       var is_success = json['status'] == 'OK';
@@ -367,8 +391,11 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
         'salt': salt
       });
     } else {
+      console.log('waiting for metadata')
       // pay out via secret sharing algo
-      wait_for_metadata(got_metadata_callback);
+      // wait_for_metadata(got_metadata_callback);
+      let metadata = {}
+      got_metadata_callback(metadata);
     }
   });
 }
