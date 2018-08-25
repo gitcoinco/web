@@ -5,6 +5,12 @@ $border-grey: #ced4da;
     border: 1px solid #ced4da;
     padding: 0.25em;
     border-radius: .25rem;
+    width: 100%;
+}
+
+.select2-container--bootstrap4.select2-container--disabled {
+    background-color: #e9ecef;
+    opacity: 1;
 }
 
 .select2-container--bootstrap4.select2-container--open .select2-selection .select2-selection__arrow b {

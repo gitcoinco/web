@@ -75,7 +75,12 @@
 .select2-container--bootstrap4 {
   border: 1px solid #ced4da;
   padding: 0.25em;
-  border-radius: .25rem; }
+  border-radius: .25rem;
+  width: 100%; }
+
+.select2-container--bootstrap4.select2-container--disabled {
+  background-color: #e9ecef;
+  opacity: 1; }
 
 .select2-container--bootstrap4.select2-container--open .select2-selection .select2-selection__arrow b {
   border-color: transparent transparent #6c757d transparent;
@@ -233,5 +238,50 @@
 .btn-lightblue {
   color: white;
   background-color: var(--gc-blue); }
+
+.hexagon {
+  background: red;
+  width: 10rem;
+  display: block;
+  margin: auto;
+  height: 11.56rem;
+  display: flex;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  -webkit-clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); }
+
+a:hover #shape-hexagon {
+  animation-play-state: paused; }
+
+#shape-hexagon {
+  animation: rotation 5s linear infinite;
+  animation-fill-mode: none;
+  animation-direction: alternate;
+  animation-iteration-count: infinite; }
+
+@keyframes rotation {
+  0% {
+    stroke: #0cc67f;
+    fill: rgba(12, 198, 127, 0.6); }
+  15% {
+    stroke: #1e6ee2;
+    fill: rgba(30, 110, 226, 0.6); }
+  30% {
+    stroke: #662d91;
+    fill: rgba(102, 45, 145, 0.6); }
+  50% {
+    stroke: #018cb2;
+    fill: rgba(1, 140, 178, 0.6); }
+  65% {
+    stroke: #e57418;
+    fill: rgba(229, 116, 24, 0.6); }
+  85% {
+    stroke: #4d4d4d;
+    fill: rgba(77, 77, 77, 0.6); }
+  100% {
+    stroke: #0044e0;
+    fill: rgba(0, 68, 224, 0.6); } }
 
 /*# sourceMappingURL=styles.css.map */
