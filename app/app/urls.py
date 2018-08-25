@@ -48,6 +48,7 @@ import tdi.views
 from dashboard.router import router as dbrouter
 from kudos.router import router as kdrouter
 from external_bounties.router import router as ebrouter
+from django.views.decorators.csrf import csrf_exempt
 
 from .sitemaps import sitemaps
 
@@ -59,8 +60,8 @@ urlpatterns = [
     path('kudos/about/', kudos.views.about, name='kudos_about'),
     path('kudos/marketplace/', kudos.views.marketplace, name='kudos_marketplace'),
     path('kudos/mint', kudos.views.mint, name='kudos_mint'),
-    re_path(r'^kudos/send/.*', kudos.views.send, name='kudos_send'),
-    re_path(r'^kudos/send/api/?', kudos.views.send_api, name='send_api'),
+    path('kudos/send/', kudos.views.send, name='kudos_send'),
+    path('kudos/send/api/', kudos.views.send_api, name='kudos_send_api'),
     re_path(r'^kudos/receive', kudos.views.receive, name='kudos_receive'),
     re_path(r'^kudos/search/$', kudos.views.search, name='kudos_search'),
     re_path(r'^kudos/\d+', kudos.views.details, name='kudos_details'),
