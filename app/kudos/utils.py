@@ -26,7 +26,7 @@ from django.conf import settings
 
 from dashboard.utils import UnsupportedNetworkException
 from dashboard.utils import get_web3
-from kudos.models import Listing
+from kudos.models import MarketPlaceListing
 from eth_utils import to_checksum_address
 from web3.middleware import geth_poa_middleware
 
@@ -126,7 +126,7 @@ class KudosContract:
                 kudos = self.getKudosById(kudos_id)
                 kudos_map = self.get_kudos_map(kudos)
                 owner_address = self._contract.functions.ownerOf(kudos_id).call()
-                kudos_db = Listing(pk=kudos_id, owner_address=owner_address, **kudos_map)
+                kudos_db = MarketPlaceListing(pk=kudos_id, owner_address=owner_address, **kudos_map)
                 kudos_map['owner_address'] = owner_address
                 kudos_db.save()
                 logger.info(f'Synced Kudos ID {kudos_id}: {kudos_map}')
@@ -145,7 +145,7 @@ class KudosContract:
 
         kudos = self.getKudosById(kudos_id)
         kudos_map = self.get_kudos_map(kudos)
-        kudos_db = Listing(pk=kudos_id, owner_address=owner_address, **kudos_map)
+        kudos_db = MarketPlaceListing(pk=kudos_id, owner_address=owner_address, **kudos_map)
         kudos_db.save()
         kudos_map['owner_address'] = owner_address
         logger.info(f'Synced Kudos ID {kudos_id}: {kudos_map}')
@@ -285,7 +285,7 @@ class KudosContract:
 
     def gen0_exists_db(self, kudos_name):
         """ Helper method.  """
-        kudos_name = Listing.objects.filter(name__iexact=kudos_name).first()
+        kudos_name = MarketPlaceListing.objects.filter(name__iexact=kudos_name).first()
         if not kudos_name:
             return False
         else:
@@ -381,7 +381,7 @@ def mint_kudos_on_web3_and_db(network, private_key=None, *args):
         raise ValueError(f'The {name} Gen0 Kudos already exists on the blockchain.')
 
     # Check if Gen0 name already exists in the database.
-    gen0name = Listing.objects.filter(name__iexact=name).first()
+    gen0name = MarketPlaceListing.objects.filter(name__iexact=name).first()
     if gen0name is not None:
         raise ValueError(f'The {name} Gen0 Kudos already exists in the database.')
 
@@ -426,7 +426,7 @@ def mint_kudos_on_web3_and_db(network, private_key=None, *args):
 
     kudos_map = get_kudos_map(kudos)
 
-    kudos_db = Listing(pk=kudos_id, **kudos_map)
+    kudos_db = MarketPlaceListing(pk=kudos_id, **kudos_map)
     kudos_db.save()
 
     return kudos
@@ -459,8 +459,8 @@ def kudos_has_changed(kudos_id, network):
         return False
     kudos_map = get_kudos_map(kudos)
     try:
-        kudos_db = Listing.objects.get(pk=kudos_id)
-    except Listing.DoesNotExist:
+        kudos_db = MarketPlaceListing.objects.get(pk=kudos_id)
+    except MarketPlaceListing.DoesNotExist:
         return False
 
     for k, v in kudos_map.items():
@@ -474,7 +474,7 @@ def kudos_has_changed(kudos_id, network):
 def update_kudos_db(kudos_id, network):
     kudos = get_kudos_from_web3(kudos_id, network)
     kudos_map = get_kudos_map(kudos)
-    kudos_db = Listing(pk=kudos_id, **kudos_map)
+    kudos_db = MarketPlaceListing(pk=kudos_id, **kudos_map)
     logger.info(f'Updating Kudos ID: {kudos_id}')
     logger.info(json.dumps(kudos_map))
     # Update the database entry
@@ -555,7 +555,7 @@ def clone_and_transfer_kudos_web3(network, private_key=None, *args):
 
     kudos_map = get_kudos_map(kudos)
 
-    kudos_db = Listing(pk=kudos_id, **kudos_map)
+    kudos_db = MarketPlaceListing(pk=kudos_id, **kudos_map)
     kudos_db.save()
 
     return kudos

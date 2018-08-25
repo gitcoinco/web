@@ -24,7 +24,7 @@ from django.utils.translation import gettext_lazy as _
 from django.contrib.postgres.search import SearchVector
 from django.http import HttpResponseRedirect, JsonResponse
 
-from .models import Listing, Wallet, Email
+from .models import MarketPlaceListing, Wallet, Email
 from dashboard.models import Profile
 from avatar.models import Avatar
 from .forms import KudosSearchForm
@@ -53,7 +53,7 @@ def about(request):
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/grow_open_source.png'),
-        "listings": Listing.objects.all(),
+        "listings": MarketPlaceListing.objects.all(),
     }
     return TemplateResponse(request, 'kudos_about.html', context)
 
@@ -63,7 +63,7 @@ def marketplace(request):
     q = request.GET.get('q')
     logger.info(q)
 
-    results = Listing.objects.annotate(
+    results = MarketPlaceListing.objects.annotate(
         search=SearchVector('name', 'description', 'tags')
         ).filter(num_clones_allowed__gt=0, search=q)
     logger.info(results)
@@ -71,7 +71,7 @@ def marketplace(request):
     if results:
         listings = results
     else:
-        listings = Listing.objects.filter(num_clones_allowed__gt=0)
+        listings = MarketPlaceListing.objects.filter(num_clones_allowed__gt=0)
 
     # for x in context['listings']:
     #     x.price = x.price / 1000
@@ -116,9 +116,9 @@ def details(request):
         raise ValueError(f'Invalid Kudos ID found.  ID is not a number:  {kudos_id}')
 
     # Find other profiles that have the same kudos name
-    kudos = Listing.objects.get(pk=kudos_id)
+    kudos = MarketPlaceListing.objects.get(pk=kudos_id)
     # Find other Kudos rows that are the same kudos.name, but of a different owner
-    related_kudos = Listing.objects.exclude(owner_address='0xD386793F1DB5F21609571C0164841E5eA2D33aD8').filter(name=kudos.name)
+    related_kudos = MarketPlaceListing.objects.exclude(owner_address='0xD386793F1DB5F21609571C0164841E5eA2D33aD8').filter(name=kudos.name)
     logger.info(f'Kudos rows: {related_kudos}')
     # Find the Wallet rows that match the Kudos.owner_addresses
     related_wallets = Wallet.objects.filter(address__in=[rk.owner_address for rk in related_kudos]).distinct()[:20]
@@ -241,7 +241,7 @@ def send(request):
     """
 
     kudos_name = request.GET.get('name')
-    kudos = Listing.objects.filter(name=kudos_name, num_clones_allowed__gt=0).first()
+    kudos = MarketPlaceListing.objects.filter(name=kudos_name, num_clones_allowed__gt=0).first()
     profiles = Profile.objects.all()
 
     is_user_authenticated = request.user.is_authenticated

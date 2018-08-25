@@ -22,10 +22,10 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from .models import Listing
+from .models import MarketPlaceListing
 
 
-class ListingAdmin(admin.ModelAdmin):
+class MarketPlaceListingAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
 
@@ -33,5 +33,5 @@ class ListingAdmin(admin.ModelAdmin):
 #     ordering = ['-id']
 
 
-admin.site.register(Listing, ListingAdmin)
+admin.site.register(MarketPlaceListing, MarketPlaceListingAdmin)
 # admin.site.register(Wallet, WalletAdmin)
