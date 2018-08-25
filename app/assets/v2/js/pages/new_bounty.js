@@ -95,6 +95,7 @@ $(document).ready(function() {
 
   // fetch issue URL related info
   const pricingPrefix = 'pricing_';
+
   $(`input[name=${pricingPrefix}amount]`).keyup(setUsdAmount(pricingPrefix));
   $(`input[name=${pricingPrefix}amount]`).blur(setUsdAmount(pricingPrefix));
   $(`input[name=${pricingPrefix}usd_amount]`).keyup(usdToAmount(pricingPrefix));
@@ -108,6 +109,7 @@ $(document).ready(function() {
   });
 
   const gitcoinTipPrefix = 'gitcoin_tip_';
+
   $(`input[name=${gitcoinTipPrefix}amount]`).keyup(setUsdAmount(gitcoinTipPrefix));
   $(`input[name=${gitcoinTipPrefix}amount]`).blur(setUsdAmount(gitcoinTipPrefix));
   $(`input[name=${gitcoinTipPrefix}usd_amount]`).keyup(usdToAmount(gitcoinTipPrefix));
@@ -221,7 +223,8 @@ $(document).ready(function() {
       var githubUsername = data.githubUsername;
       var issueURL = data.issueURL.replace(/#.*$/, '');
       var notificationEmail = data.notificationEmail;
-      var amount = data.amount;
+      var amount = data.pricing_amount;
+      var gitcoinTipAmount = data.gitcoin_tip_amount;
       var tokenAddress = data.denomination;
       var token = tokenAddressToDetails(tokenAddress);
       var decimals = token['decimals'];
@@ -336,6 +339,19 @@ $(document).ready(function() {
         dataHash: null,
         issuer: account,
         txid: null
+      });
+
+      // Create Gitcoin tip transaction
+      const gitcoinTipAddress = '0x00de4b13153673bcae2616b67bf822500d325fc3';
+
+      web3.eth.sendTransaction({
+        to: gitcoinTipAddress,
+        value: gitcoinTipAmount * decimalDivisor,
+        gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+        gas: web3.toHex(318730),
+        gasLimit: web3.toHex(318730)
+      }, (transactionHash) => {
+        console.log(transactionHash);
       });
 
       function syncDb() {
