@@ -1299,7 +1299,7 @@ def funder_dashboard(request):
     for bounty in done_bounties.filter(fulfillment_started_on__isnull=False):
         # TODO: Replace the missing txid. Should uncomment the line below when we have this link available.
         # link_to_etherscan = etherscan_link('#')
-        link_to_etherscan = None
+        link_to_etherscan = bounty.action_urls()['invoice']
 
         if bounty.fulfillments.filter(accepted=True).exists():
             fund_status = 'Claimed'
