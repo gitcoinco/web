@@ -44,6 +44,8 @@ from git.utils import get_gh_issue_details, get_url_dict, issue_number, org_name
 from jsondiff import diff
 from pytz import UTC
 from ratelimit.decorators import ratelimit
+import csv
+import io
 
 from .models import Profile
 
@@ -765,9 +767,12 @@ def get_payout_history(done_bounties):
     w = {}
     m = {}
     y = {}
-    csv_all_time_paid_bounties = [[
+
+    csv_all_time_paid_bounties = io.StringIO()
+    wr = csv.writer(csv_all_time_paid_bounties, quoting=csv.QUOTE_ALL)
+    wr.writerow([
         'Issue ID', 'Title', 'Bounty Type', 'Github Link', 'Value in USD', 'Value in ETH'
-    ]]
+    ])
 
     for bounty in done_bounties:
         bounty_date = bounty.fulfillment_accepted_on
@@ -786,7 +791,7 @@ def get_payout_history(done_bounties):
                 continue
             csv_row.append(value)
 
-        csv_all_time_paid_bounties.append(csv_row)
+        wr.writerow(csv_row)
 
         week = week_of_month(bounty_date)
         month = bounty_date.month
@@ -824,13 +829,16 @@ def get_payout_history(done_bounties):
         yearly['data'].append(value)
         yearly['labels'].append(key)
 
+    csv_data = csv_all_time_paid_bounties.getvalue()
+    csv_all_time_paid_bounties.close()
+
     return {
         # Used for payout history chart
         'weekly': weekly,
         'monthly': monthly,
         'yearly': yearly,
         # Used for csv export
-        'csv_all_time_paid_bounties': csv_all_time_paid_bounties
+        'csv_all_time_paid_bounties': csv_data
     }
 
 
