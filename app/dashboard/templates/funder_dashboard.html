@@ -58,14 +58,14 @@
                       {% if expiring_bounties_count <= 0 %}
                           {% trans "You don't have any bounties expiring in the next 7 days." %}
                       {% else %}
-                        {% blocktrans %}
-                          You have {{expiring_bounties_count}} bount{{expiring_bounties_count|pluralize:"y,ies"}} expiring in {{expiring_days_count}} days!
+                        {% blocktrans count count=expiring_bounties_count %}
+                          You have {{expiring_bounties_count}} bounty expiring in {{expiring_days_count}} days!
+                        {% plural %}
+                          You have {{expiring_bounties_count}} bounties expiring in {{expiring_days_count}} days!
                         {% endblocktrans %}
-                      {% endif %}
-                      {% if expiring_bounties_count > 0 %}
                         <a href="{% url "explorer" %}"
-                        class="issue-explorer-link issue-explorer-link--bounties--expiring  text-fd-blue--dark">
-                        {% trans "view bounties" %}
+                           class="issue-explorer-link issue-explorer-link--bounties--expiring  text-fd-blue--dark">
+                          {% trans "view bounties" %}
                         </a>
                       {% endif %}
                     </div>
