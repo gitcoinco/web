@@ -59,7 +59,7 @@
                           {% trans "You don't have any bounties expiring in the next 7 days." %}
                       {% else %}
                         {% blocktrans %}
-                          You have {{expiring_bounties_count}} bountie{{expiring_bounties_count|pluralize}} expiring in {{expiring_days_count}} days!
+                          You have {{expiring_bounties_count}} bount{{expiring_bounties_count|pluralize:"y,ies"}} expiring in {{expiring_days_count}} days!
                         {% endblocktrans %}
                       {% endif %}
                       {% if expiring_bounties_count > 0 %}
