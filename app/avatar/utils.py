@@ -21,6 +21,7 @@ import json
 import logging
 import os
 from io import BytesIO
+from secrets import token_hex
 from tempfile import NamedTemporaryFile
 
 from django.conf import settings
@@ -30,13 +31,15 @@ from django.template import loader
 import requests
 from git.utils import get_user
 from PIL import Image, ImageOps
+from reportlab.graphics import renderPM
+from scour.scour import start as start_scour
+from svglib.svglib import svg2rlg
 from svgutils.compose import SVG, Figure, Line
 
 AVATAR_BASE = 'assets/other/avatars/'
 COMPONENT_BASE = 'assets/v2/images/avatar/'
 
 logger = logging.getLogger(__name__)
-
 
 def get_avatar_context():
     return {
@@ -99,10 +102,8 @@ def get_avatar_context():
 
 
 def get_upload_filename(instance, filename):
-    from secrets import token_hex
-    from os.path import basename
     salt = token_hex(16)
-    file_path = basename(filename)
+    file_path = os.path.basename(filename)
     return f"avatars/{getattr(instance, '_path', '')}/{salt}/{file_path}"
 
 
@@ -383,3 +384,52 @@ def get_github_avatar(handle):
         return False
 
     return temp_avatar
+
+
+def convert_svg(svg_filename='', output_filename='', fmt='PNG'):
+    """Convert an SVG to another format.
+
+    Args:
+        svg_filename (str): The input SVG full path.
+        output_filename (str): The output file path.
+
+    Returns:
+        bool: The status of whether or not the conversion is presumed successful.
+
+    """
+    try:
+        drawing = svg2rlg(svg_filename)
+        renderPM.drawToFile(drawing, output_filename, fmt=fmt)
+    except Exception as e:
+        logger.error(e)
+        return False
+    return True
+
+
+def optimize_svg(svg_input_filename='', svg_output_filename='', options=None, max_scrub=True):
+    """Optimize the input SVG.
+
+    Args:
+        svg_input_filename (str): The input SVG full path.
+        svg_output_filename (str): The output SVG path.
+        options (dict): A mapping of options derived from scour.py entry options.
+        max_scrub (bool): Whether or not to enable max scrubbing options.
+            Defaults to: True. If enabled, you may pass .svgz extensions to generate
+            gzip compressed SVGZ files.
+
+    Returns:
+        bool: The status of whether or not the conversion is presumed successful.
+
+    """
+    try:
+        if options is None:
+            options = {}
+
+        if max_scrub:
+            # If max scrub is enabled, enable max scrub options in addition to those passed in options.
+            options.update({'enable_viewboxing': True, 'shorten_ids': True, 'strip_comments': True, 'indent_type': 'none'})
+        return start_scour(options, svg_input_filename, svg_output_filename)
+    except Exception as e:
+        logger.error(e)
+        return False
+    return True
