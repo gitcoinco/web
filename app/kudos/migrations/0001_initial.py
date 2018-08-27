@@ -87,7 +87,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='email',
-            name='token',
+            name='kudos_token',
             field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='kudos.Token'),
         ),
     ]

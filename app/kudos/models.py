@@ -87,8 +87,8 @@ class Email(SuperModel):
     web3_type = models.CharField(max_length=50, default='v3')
     emails = JSONField()
     url = models.CharField(max_length=255, default='', blank=True)
-    # token is a reference to the Kudos Token that is slated to be cloned.
-    token = models.ForeignKey(Token, on_delete=models.SET_NULL, null=True)
+    # kudos_token is a reference to the Kudos Token that is slated to be cloned.
+    kudos_token = models.ForeignKey(Token, on_delete=models.SET_NULL, null=True)
     tokenAddress = models.CharField(max_length=255)
     amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
     comments_priv = models.TextField(default='', blank=True)
