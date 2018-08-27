@@ -1481,7 +1481,7 @@ class Profile(SuperModel):
     max_tip_amount_usdt_per_tx = models.DecimalField(default=500, decimal_places=2, max_digits=50)
     max_tip_amount_usdt_per_week = models.DecimalField(default=1500, decimal_places=2, max_digits=50)
     funder_total_budget_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50)
-    funder_total_budget_type = models.CharField(max_length=50, default='', blank=True) # "monthly" or "quarterly"
+    funder_total_budget_type = models.CharField(max_length=50, default='', blank=True)  # "monthly" or "quarterly"
     funder_total_budget_updated_on = models.DateTimeField(blank=True, null=True)
 
     @property

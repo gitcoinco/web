@@ -152,7 +152,7 @@ $(function() {
 
     $totalBudget.keypress(function(e) {
       if (e.key == 'Enter') {
-        submitTotalBudget()
+        submitTotalBudget();
       }
     });
 
@@ -177,9 +177,9 @@ $(function() {
 
       $.ajax({
         url: '/update_funder_total_budget',
-        method: "POST",
+        method: 'POST',
         data: JSON.stringify(updateData),
-        dataType: "json"
+        dataType: 'json'
       }).done(function() {
         setUpdatedTotalCookie('fd_total_last_updated', 1);
         location.reload();
@@ -197,12 +197,12 @@ $(function() {
     // used to force a refresh of the view, so that users see their new total budget once
     // they type in one
     function setUpdatedTotalCookie(name, days) {
-        var date = new Date();
-        date.setTime(date.getTime() + (days*24*60*60*1000));
+      var date = new Date();
+      date.setTime(date.getTime() + (days*24*60*60*1000));
 
-        var expires = "; expires=" + date.toUTCString();
-        var value = date.toUTCString();
-        document.cookie = name + "=" + value + expires + "; path=/";
+      var expires = "; expires=" + date.toUTCString();
+      var value = date.toUTCString();
+      document.cookie = name + "=" + value + expires + "; path=/";
     }
   }
 

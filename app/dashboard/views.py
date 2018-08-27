@@ -24,7 +24,6 @@ import logging
 import time
 import math
 
-from decimal import Decimal
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -1270,7 +1269,7 @@ def funder_dashboard(request):
         total_budget_eth = convert_amount(total_budget_dollars, "USDT", "ETH")
 
         if budget_type == 'monthly':
-            total_budget_used_time_period = utc_now.strftime('%B') # the month
+            total_budget_used_time_period = utc_now.strftime('%B')
         else:
             # it's a quarterly budget
             quarter_now = int(math.ceil(utc_now.month / 3.))
