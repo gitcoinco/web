@@ -82,6 +82,7 @@ urlpatterns = [
     # action URLs
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
+    re_path(r'^bounty/change/(?P<bounty_id>.*)?', dashboard.views.change_bounty, name='change_bounty'),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
     path('issue/fulfill', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
