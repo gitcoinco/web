@@ -31,7 +31,7 @@ from retail.emails import (
     render_gdpr_reconsent, render_gdpr_update, render_match_email, render_new_bounty, render_new_bounty_acceptance,
     render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission, render_quarterly_stats,
     render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
-    render_start_work_new_applicant, render_start_work_rejected, render_tip_email,
+    render_start_work_new_applicant, render_start_work_rejected, render_tip_email, render_kudos_email
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
@@ -143,6 +143,29 @@ def tip_email(tip, to_emails, is_new):
             html, text = render_tip_email(to_email, tip, is_new)
 
             if not should_suppress_notification_email(to_email, 'tip'):
+                send_mail(from_email, to_email, subject, text, html)
+        finally:
+            translation.activate(cur_language)
+
+
+def kudos_email(kudos, to_emails, is_new):
+    round_decimals = 5
+    if not kudos or not kudos.txid or not kudos.amount or not kudos.tokenName:
+        return
+
+    warning = '' if kudos.network == 'mainnet' else "({})".format(kudos.network)
+    subject = gettext("⚡️ New Kudos Available")
+    if not is_new:
+        subject = gettext("🕐 Your Kudos Is Expiring Soon")
+
+    for to_email in to_emails:
+        cur_language = translation.get_language()
+        try:
+            setup_lang(to_email)
+            from_email = settings.CONTACT_EMAIL
+            html, text = render_kudos_email(to_email, kudos, is_new)
+
+            if not should_suppress_notification_email(to_email, 'kudos'):
                 send_mail(from_email, to_email, subject, text, html)
         finally:
             translation.activate(cur_language)

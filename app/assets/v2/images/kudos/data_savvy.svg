@@ -1,128 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 22.1.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!-- Generator: Adobe Illustrator 16.0.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="0 0 128 110.9" style="enable-background:new 0 0 128 110.9;" xml:space="preserve">
-<style type="text/css">
-	.st0{fill:#2E3192;}
-	.st1{opacity:0.48;}
-	.st2{opacity:0.51;clip-path:url(#SVGID_2_);}
-	.st3{fill:#FFFFFF;}
-	.st4{font-family:'Verdana';}
-	.st5{font-size:3.7956px;}
-	.st6{fill:#662D91;}
-	.st7{opacity:0.13;}
-	.st8{fill:#92C1F4;}
-	.st9{fill:#FCF295;}
-	.st10{fill:#FCEE21;}
-	.st11{fill:#B7A611;}
-	.st12{fill:#8CC63F;}
-	.st13{fill:#39B54A;}
-	.st14{fill:#009245;}
-	.st15{fill:#78D3F4;}
-	.st16{fill:#29ABE2;}
-	.st17{fill:#0071BC;}
-</style>
+	 width="841.889px" height="1190.551px" viewBox="0 0 841.889 1190.551" enable-background="new 0 0 841.889 1190.551"
+	 xml:space="preserve">
 <g>
-	<polygon class="st0" points="90.6,9.4 37.4,9.4 10.8,55.5 37.4,101.6 90.6,101.6 117.2,55.5 	"/>
+	<polygon fill="#2E3192" points="724.156,770.559 724.156,420.649 420.945,245.694 117.733,420.649 117.733,770.559 
+		420.945,945.514 	"/>
 </g>
-<g class="st1">
-	<defs>
-		<polygon id="SVGID_1_" class="st1" points="35.2,5 5.5,55 35.5,106.2 92,106.5 122,55.7 94,5.5 		"/>
-	</defs>
-	<clipPath id="SVGID_2_">
-		<use xlink:href="#SVGID_1_"  style="overflow:visible;opacity:0.55;"/>
-	</clipPath>
-	<g class="st2">
-		<text transform="matrix(1 0 0 1 -2 2.5975)" class="st3 st4 st5">00111101     0011010  0        1100 10 000111101     0011010  0        1100</text>
-		<text transform="matrix(1 0 0 1 -2 6.7352)" class="st3 st4 st5">001      0011  010  0        110      00001      0011  010  0        110      00  </text>
-		<text transform="matrix(1 0 0 1 -2 10.8729)" class="st3 st4 st5">0   101     00 11010  0    1100 100000  01     00 11   010  0    1100 100000   </text>
-		<text transform="matrix(1 0 0 1 -2 23.286)" class="st3 st4 st5">0   101     00 1                      00 100    000   101     00 110   10  0    110 </text>
-		<text transform="matrix(1 0 0 1 -2 15.0106)" class="st3 st4 st5">00111     00 110  10  0        110   0 10   011     00 11     0  10  0        11  </text>
-		<text transform="matrix(1 0 0 1 -2 19.1493)" class="st3 st4 st5">001         010  0        110       0 1         010  0        110       0 100</text>
-		<text transform="matrix(1 0 0 1 -2 27.4247)" class="st3 st4 st5">00111101     0011010  0        1100 10        11101     0011010  0        1100</text>
-		<text transform="matrix(1 0 0 1 -2 31.5624)" class="st3 st4 st5">001      0011  010  0        110      00001      0011  010  0        110      00  </text>
-		<text transform="matrix(1 0 0 1 -2 35.7001)" class="st3 st4 st5">0   101     00 1               00 100000  01     00 11   010  0    1100 100000   </text>
-		<text transform="matrix(1 0 0 1 -2 48.1132)" class="st3 st4 st5">0   101     00 11010  0    1100 100    000   101     00 110   10  0    110 </text>
-		<text transform="matrix(1 0 0 1 -2 39.8378)" class="st3 st4 st5">00111                         0        110   0 10   011     00 11     0  10  0        11  </text>
-		<text transform="matrix(1 0 0 1 -2 43.9755)" class="st3 st4 st5">001         010  0        110       0 100 01         010  0        110       0 100</text>
-		<text transform="matrix(1 0 0 1 -2 52.2509)" class="st3 st4 st5">00111101     0011010  0                      11101     0011010  0        1100</text>
-		<text transform="matrix(1 0 0 1 -2 56.3885)" class="st3 st4 st5">001      0                0  0        110      00001      0011  010  0        110      00  </text>
-		<text transform="matrix(1 0 0 1 -2 60.5262)" class="st3 st4 st5">0   101     00 11               100 100000  01     00 11   010  0    1100 100000   </text>
-		<text transform="matrix(1 0 0 1 -2 72.9403)" class="st3 st4 st5">0   101     00 11010  0    1100 100    000   101     00 110   10  0    110 </text>
-		<text transform="matrix(1 0 0 1 -2 64.6649)" class="st3 st4 st5">00111     00 110  10  0        110   0 10   011     00 11     0  10  0        11  </text>
-		<text transform="matrix(1 0 0 1 -2 68.8016)" class="st3 st4 st5">001         010  0        110       0 100 01         010  0        110       0 100</text>
-		<text transform="matrix(1 0 0 1 -2 85.3534)" class="st3 st4 st5">0   101     00 11010  0    1100 100    000   101     00 110   10  0    110 </text>
-		<text transform="matrix(1 0 0 1 -2 77.078)" class="st3 st4 st5">00111                         0        110   0 10   011     00 11     0  10  0        11  </text>
-		<text transform="matrix(1 0 0 1 -2 81.2157)" class="st3 st4 st5">001         010  0        110       0 100 01         010  0        110       0 100</text>
-		<text transform="matrix(1 0 0 1 -2 89.4911)" class="st3 st4 st5">00111101     0011010  0                      11101     0011010  0        1100</text>
-		<text transform="matrix(1 0 0 1 -2 93.6288)" class="st3 st4 st5">001      0                0  0        110      00001      0011  010  0        110      00  </text>
-		<text transform="matrix(1 0 0 1 -2 97.7665)" class="st3 st4 st5">0   101     00 11               100 100000  01     00 11   010  0    1100 100000   </text>
-		<text transform="matrix(1 0 0 1 -2 110.1805)" class="st3 st4 st5">0   101     00 11010  0    1100 100    000   101     00 110   10  0    110 </text>
-		<text transform="matrix(1 0 0 1 -2 101.9042)" class="st3 st4 st5">00111     00 110  10  0        110   0 10   011     00 11     0  10  0        11  </text>
-		<text transform="matrix(1 0 0 1 -2 106.0419)" class="st3 st4 st5">001         010  0        110       0 100 01         010  0        110       0 100</text>
+<g opacity="0.48" enable-background="new    ">
+	<g>
+		<defs>
+			<polygon id="SVGID_1_" points="409.445,225.775 76.445,410.775 90.445,780.775 426.445,979.775 758.445,782.775 736.445,392.775 
+							"/>
+		</defs>
+		<clipPath id="SVGID_2_">
+			<use xlink:href="#SVGID_1_"  overflow="visible"/>
+		</clipPath>
+		<g opacity="0.51" clip-path="url(#SVGID_2_)">
+			<text transform="matrix(1 0 0 1 -13.156 247.6501)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">00111101     0011010  0        1100 10 000111101     0011010  0        1100</text>
+			<text transform="matrix(1 0 0 1 -13.156 274.865)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">001      0011  010  0        110      00001      0011  010  0        110      00  </text>
+			<text transform="matrix(1 0 0 1 -13.156 302.0798)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">0   101     00 11010  0    1100 100000  01     00 11   010  0    1100 100000   </text>
+			<text transform="matrix(1 0 0 1 -13.156 383.7244)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">0   101     00 1                      00 100    000   101     00 110   10  0    110 </text>
+			<text transform="matrix(1 0 0 1 -13.156 329.2947)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">00111     00 110  10  0        110   0 10   011     00 11     0  10  0        11  </text>
+			<text transform="matrix(1 0 0 1 -13.156 356.5173)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">001         010  0        110       0 1         010  0        110       0 100</text>
+			<text transform="matrix(1 0 0 1 -13.156 410.947)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">00111101     0011010  0        1100 10        11101     0011010  0        1100</text>
+			<text transform="matrix(1 0 0 1 -13.156 438.1619)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">001      0011  010  0        110      00001      0011  010  0        110      00  </text>
+			<text transform="matrix(1 0 0 1 -13.156 465.3767)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">0   101     00 1               00 100000  01     00 11   010  0    1100 100000   </text>
+			<text transform="matrix(1 0 0 1 -13.156 547.0173)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">0   101     00 11010  0    1100 100    000   101     00 110   10  0    110 </text>
+			<text transform="matrix(1 0 0 1 -13.156 492.5916)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">00111                         0        110   0 10   011     00 11     0  10  0        11  </text>
+			<text transform="matrix(1 0 0 1 -13.156 519.8025)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">001         010  0        110       0 100 01         010  0        110       0 100</text>
+			<text transform="matrix(1 0 0 1 -13.156 574.2322)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">00111101     0011010  0                      11101     0011010  0        1100</text>
+			<text transform="matrix(1 0 0 1 -13.156 601.447)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">001      0                0  0        110      00001      0011  010  0        110      00  </text>
+			<text transform="matrix(1 0 0 1 -13.156 628.6619)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">0   101     00 11               100 100000  01     00 11   010  0    1100 100000   </text>
+			<text transform="matrix(1 0 0 1 -13.156 710.3142)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">0   101     00 11010  0    1100 100    000   101     00 110   10  0    110 </text>
+			<text transform="matrix(1 0 0 1 -13.156 655.8845)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">00111     00 110  10  0        110   0 10   011     00 11     0  10  0        11  </text>
+			<text transform="matrix(1 0 0 1 -13.156 683.0916)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">001         010  0        110       0 100 01         010  0        110       0 100</text>
+			<text transform="matrix(1 0 0 1 -13.156 791.9587)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">0   101     00 11010  0    1100 100    000   101     00 110   10  0    110 </text>
+			<text transform="matrix(1 0 0 1 -13.156 737.5291)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">00111                         0        110   0 10   011     00 11     0  10  0        11  </text>
+			<text transform="matrix(1 0 0 1 -13.156 764.7439)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">001         010  0        110       0 100 01         010  0        110       0 100</text>
+			<text transform="matrix(1 0 0 1 -13.156 819.1736)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">00111101     0011010  0                      11101     0011010  0        1100</text>
+			<text transform="matrix(1 0 0 1 -13.156 846.3884)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">001      0                0  0        110      00001      0011  010  0        110      00  </text>
+			<text transform="matrix(1 0 0 1 -13.156 873.6033)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">0   101     00 11               100 100000  01     00 11   010  0    1100 100000   </text>
+			<text transform="matrix(1 0 0 1 -13.156 955.2517)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">0   101     00 11010  0    1100 100    000   101     00 110   10  0    110 </text>
+			<text transform="matrix(1 0 0 1 -13.156 900.8181)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">00111     00 110  10  0        110   0 10   011     00 11     0  10  0        11  </text>
+			<text transform="matrix(1 0 0 1 -13.156 928.033)" fill="#FFFFFF" font-family="'Verdana'" font-size="24.9647">001         010  0        110       0 100 01         010  0        110       0 100</text>
+		</g>
 	</g>
 </g>
 <g>
-	<path class="st6" d="M10.8,55.5L37.4,9.4h53.2l26.6,46.1l-26.6,46.1H37.4L10.8,55.5z M32,0L0,55.5l32,55.4h64l32-55.4L96,0H32z"/>
+	<path fill="#662D91" d="M421.274,945.185L118.062,770.23V420.32l303.212-174.955L724.486,420.32v349.91L421.274,945.185z
+		 M56.236,805.748l365.038,210.472l364.38-210.472V384.802l-364.38-210.472L56.236,384.802V805.748z"/>
 	<g>
-		<g class="st7">
+		<g opacity="0.13">
 			<g>
-				<path d="M89.2,11.8l25.2,43.7L89.2,99.1H38.8L13.6,55.5l25.2-43.7H89.2z M90.6,9.5H37.4l-26.6,46l26.6,46h53.1l26.6-46L90.6,9.5
-					z"/>
+				<path d="M133.847,429.528l287.427-165.747l286.769,165.747v331.494L421.274,926.769L133.847,761.022V429.528z M118.719,420.32
+					v349.91l302.555,174.955L723.827,770.23V420.977L421.274,246.022L118.719,420.32z"/>
 			</g>
 		</g>
 	</g>
 </g>
-<path class="st8" d="M89.4,32.9c-0.2-0.9-3.3-1.5-7.1-1.5c-0.1,0-0.3,0-0.4,0c-0.3-0.9-1.2-1.5-2.2-1.5c-0.4,0-0.7,0.1-1,0.2
-	c-0.2-1.9-1.9-3.5-3.9-3.5c-1.1,0-2,0.4-2.7,1.1c-0.7-1.7-2.3-2.9-4.2-2.9c-0.3,0-0.5,0-0.8,0.1c-0.7-1.8-2.4-3-4.3-3.3
-	c-0.2-2-1.9-3.7-3.9-3.7c-2.2,0-4,1.8-4,4c0,0.1,0,0.2,0,0.3c-2,0.4-3.5,2.1-3.5,4.2c0,0.2,0,0.5,0.1,0.7c0,0-0.1,0-0.1,0
-	c-2,0-3.6,1.5-3.7,3.5c-1.1-0.3-2.5-0.4-3.9-0.4c-3.9,0-7.1,1.1-7.1,2.4c0,0.2,0.1,0.3,0.2,0.5c-3.1,0.2-5,0.7-5.5,1
-	c-5.5,2.8,20.5,2.1,25.2,1.7c4.7-0.4,21.3-0.4,25.4-0.3c4,0.1,16.8,0.4,15.3-1.5C96.4,33.3,92.2,33.2,89.4,32.9z"/>
+<path fill="#92C1F4" d="M588.007,446.958c-1.315-5.919-21.705-9.866-46.698-9.866c-0.658,0-1.974,0-2.631,0
+	c-1.974-5.919-7.893-9.865-14.471-9.865c-2.631,0-4.604,0.657-6.577,1.315c-1.315-12.497-12.497-23.021-25.651-23.021
+	c-7.234,0-13.154,2.631-17.758,7.234c-4.604-11.181-15.128-19.074-27.625-19.074c-1.973,0-3.289,0-5.262,0.658
+	c-4.604-11.839-15.785-19.731-28.282-21.705c-1.315-13.154-12.497-24.336-25.651-24.336c-14.47,0-26.31,11.839-26.31,26.31
+	c0,0.657,0,1.315,0,1.973c-13.154,2.631-23.02,13.813-23.02,27.625c0,1.315,0,3.288,0.657,4.604h-0.657
+	c-13.155,0-23.679,9.866-24.336,23.021c-7.235-1.973-16.443-2.631-25.651-2.631c-25.651,0-46.698,7.235-46.698,15.786
+	c0,1.315,0.657,1.973,1.315,3.288c-20.39,1.315-32.887,4.604-36.176,6.577c-36.175,18.417,134.834,13.813,165.747,11.182
+	s140.096-2.631,167.063-1.974c26.31,0.658,110.498,2.631,100.632-9.865C634.048,449.589,606.423,448.931,588.007,446.958z"/>
 <g>
-	<polygon class="st9" points="62.6,35.5 54.1,31 62.6,26.6 71.1,31 	"/>
+	<polygon fill="#FCF295" points="411.737,464.058 355.829,434.461 411.737,405.521 467.643,434.461 	"/>
 	<g>
-		<polygon class="st10" points="62.6,68 62.6,35.5 54.2,31.1 54.2,63.6 		"/>
-		<polygon class="st11" points="62.6,68 62.6,35.5 71,31.1 71,63.6 		"/>
+		<polygon fill="#FCEE21" points="411.737,677.82 411.737,464.058 356.488,435.119 356.488,648.88 		"/>
+		<polygon fill="#B7A611" points="411.737,677.82 411.737,464.058 466.986,435.119 466.986,648.88 		"/>
 	</g>
-	<polygon class="st9" points="51.5,50.3 43,45.9 51.5,41.4 59.9,45.9 	"/>
+	<polygon fill="#FCF295" points="338.729,561.402 282.823,532.463 338.729,502.865 393.978,532.463 	"/>
 	<g>
-		<polygon class="st10" points="51.5,73.8 51.5,50.3 43,45.9 43,69.4 		"/>
-		<polygon class="st11" points="51.5,73.8 51.5,50.3 59.9,45.9 59.9,69.4 		"/>
+		<polygon fill="#FCEE21" points="338.729,715.968 338.729,561.402 282.823,532.463 282.823,687.028 		"/>
+		<polygon fill="#B7A611" points="338.729,715.968 338.729,561.402 393.978,532.463 393.978,687.028 		"/>
 	</g>
-	<polygon class="st9" points="40.4,67.9 32,63.4 40.4,59 48.9,63.4 	"/>
+	<polygon fill="#FCF295" points="265.721,677.162 210.472,647.564 265.721,618.625 321.628,647.564 	"/>
 	<g>
-		<polygon class="st10" points="40.4,79.6 40.4,67.9 32,63.5 32,75.2 		"/>
-		<polygon class="st11" points="40.4,79.6 40.4,67.9 48.9,63.5 48.9,75.2 		"/>
+		<polygon fill="#FCEE21" points="265.721,754.116 265.721,677.162 210.472,648.222 210.472,725.177 		"/>
+		<polygon fill="#B7A611" points="265.721,754.116 265.721,677.162 321.628,648.222 321.628,725.177 		"/>
 	</g>
-	<polygon class="st12" points="74.6,46.8 66.1,42.3 74.6,37.9 83,42.3 	"/>
+	<polygon fill="#8CC63F" points="490.663,538.382 434.757,508.784 490.663,479.844 545.912,508.784 	"/>
 	<g>
-		<polygon class="st13" points="74.6,74 74.6,46.8 66.1,42.3 66.1,69.6 		"/>
-		<polygon class="st14" points="74.6,74 74.6,46.8 83,42.3 83,69.6 		"/>
+		<polygon fill="#39B54A" points="490.663,717.283 490.663,538.382 434.757,508.784 434.757,688.344 		"/>
+		<polygon fill="#009245" points="490.663,717.283 490.663,538.382 545.912,508.784 545.912,688.344 		"/>
 	</g>
-	<polygon class="st12" points="63.4,61.5 55,57 63.4,52.6 71.9,57 	"/>
+	<polygon fill="#8CC63F" points="416.998,635.067 361.749,605.469 416.998,576.53 472.905,605.469 	"/>
 	<g>
-		<polygon class="st13" points="63.4,79.8 63.4,61.5 55,57.1 55,75.4 		"/>
-		<polygon class="st14" points="63.4,79.8 63.4,61.5 71.9,57.1 71.9,75.4 		"/>
+		<polygon fill="#39B54A" points="416.998,755.431 416.998,635.067 361.749,606.128 361.749,726.492 		"/>
+		<polygon fill="#009245" points="416.998,755.431 416.998,635.067 472.905,606.128 472.905,726.492 		"/>
 	</g>
-	<polygon class="st12" points="52.4,73.9 43.9,69.4 52.4,65 60.9,69.4 	"/>
+	<polygon fill="#8CC63F" points="344.649,716.626 288.741,687.028 344.649,658.088 400.555,687.028 	"/>
 	<g>
-		<polygon class="st13" points="52.4,85.6 52.4,73.9 44,69.4 44,81.2 		"/>
-		<polygon class="st14" points="52.4,85.6 52.4,73.9 60.8,69.4 60.8,81.2 		"/>
+		<polygon fill="#39B54A" points="344.649,793.58 344.649,716.626 289.4,687.028 289.4,764.639 		"/>
+		<polygon fill="#009245" points="344.649,793.58 344.649,716.626 399.898,687.028 399.898,764.639 		"/>
 	</g>
-	<polygon class="st15" points="86.5,57.3 78.1,52.9 86.5,48.4 95,52.9 	"/>
+	<polygon fill="#78D3F4" points="568.933,607.443 513.684,578.503 568.933,548.905 624.84,578.503 	"/>
 	<g>
-		<polygon class="st16" points="86.5,80 86.5,57.3 78.1,52.9 78.1,75.5 		"/>
-		<polygon class="st17" points="86.5,80 86.5,57.3 95,52.9 95,75.5 		"/>
+		<polygon fill="#29ABE2" points="568.933,756.747 568.933,607.443 513.684,578.503 513.684,727.149 		"/>
+		<polygon fill="#0071BC" points="568.933,756.747 568.933,607.443 624.84,578.503 624.84,727.149 		"/>
 	</g>
-	<polygon class="st15" points="75.4,71.2 67,66.7 75.4,62.3 83.9,66.7 	"/>
+	<polygon fill="#78D3F4" points="495.925,698.867 440.676,669.269 495.925,640.33 551.832,669.269 	"/>
 	<g>
-		<polygon class="st16" points="75.4,85.8 75.4,71.2 67,66.8 67,81.4 		"/>
-		<polygon class="st17" points="75.4,85.8 75.4,71.2 83.8,66.8 83.8,81.4 		"/>
+		<polygon fill="#29ABE2" points="495.925,794.895 495.925,698.867 440.676,669.927 440.676,765.955 		"/>
+		<polygon fill="#0071BC" points="495.925,794.895 495.925,698.867 551.174,669.927 551.174,765.955 		"/>
 	</g>
-	<polygon class="st15" points="64.4,79.8 55.9,75.4 64.4,70.9 72.8,75.4 	"/>
+	<polygon fill="#78D3F4" points="423.575,755.431 367.669,726.492 423.575,696.894 478.824,726.492 	"/>
 	<g>
-		<polygon class="st16" points="64.4,91.6 64.4,79.8 55.9,75.4 55.9,87.2 		"/>
-		<polygon class="st17" points="64.4,91.6 64.4,79.8 72.8,75.4 72.8,87.2 		"/>
+		<polygon fill="#29ABE2" points="423.575,833.043 423.575,755.431 367.669,726.492 367.669,804.103 		"/>
+		<polygon fill="#0071BC" points="423.575,833.043 423.575,755.431 478.824,726.492 478.824,804.103 		"/>
 	</g>
 </g>
 </svg>

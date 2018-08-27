@@ -1,0 +1,113 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2018 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n humanize %}
+
+{% block content %}
+
+<style>
+    .kudos-box {
+        margin-bottom: 2em;
+        border-style: solid;
+        border-width: 1px;
+        border-color: #e0e0e0;
+    }
+    .kudos-contents {
+        text-align: left;
+    }
+    .kudos {
+        display: flex;
+        padding-top: 0.5em;
+        padding-bottom: 0.5em;
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+</style>
+
+<div>
+    {% if is_new %}
+    <h1>⚡️ {% trans "New Kudos Alert" %} ⚡️</h1>
+    {% else %}
+    <h1>🕑 {% trans "Reminder: Kudos Expires Soon" %} 🕝</h1>
+    {% endif %}
+
+    <h3>
+        {% if kudos.from_name %}
+            {{kudos.from_name}} {% blocktrans %} sent you a kudos worth {{amount}} {{warning}} {{tokenName}}{% endblocktrans %}
+        {% else %}
+            {% blocktrans %}Someone sent you a kudos worth {{amount}} {{warning}} {{tokenName}}{% endblocktrans %}
+        {% endif %}{% if not is_new %} {{kudos.created_on | naturaltime}}{%endif%}.
+    </h3>
+</div>
+
+<div class="centered-contents kudos-box">
+    <div class="kudos">
+        <div class="kudos-contents">
+            {% if kudos.github_url %}
+                <p>
+                {% if kudos.from_name %}{{kudos.from_name}}{% else %}The sender{% endif %} said it was for your work on <a href="{{kudos.github_url}}">{{kudos.github_url}}</a>.
+                    {% if comments %}
+                        {% trans "They had the following comments:" %}
+                    <pre>
+                        {{comments}}
+                    </pre>
+                    {% endif %}
+
+                </p>
+            {% endif %}
+
+            {% if comments_priv %}
+                <p>
+                {% trans "They had the following private comments:" %}
+            <pre>
+                {{comments_priv}}
+            </pre>
+                </p>
+            {% endif %}
+
+            {% if comments_public %}
+                <p>
+                {% trans "They had the following public comments:" %}
+            <pre>
+                {{comments_public}}
+            </pre>
+                </p>
+            {% endif %}
+            {% if already_redeemed %}
+                <p>
+                 {% trans "This kudos has been remitted automatically to the Ethereum address on file for your account via txid " %}{{kudos.txid}}
+                </p>
+            {% elif show_expires %}
+                <p>
+                {% trans "The kudos expires on" %} <strong>{{kudos.expires_date}}, {% trans "in just" %} {{kudos.expires_date | naturaltime}}</strong>. {% trans "No pressure, but if you wanted to redeem your kudos sooner rather than later that'd be 👌:" %}
+                </p>
+            {% else %}
+                <p>
+                 {% trans "No pressure, but if you wanted to redeem your kudos sooner rather than later that'd be 👌" %}
+                </p>
+            {% endif %}
+        </div>
+    </div>
+    {% if not already_redeemed %}
+      <div style="margin-bottom: 1.5em;">
+          <a class="button" href="{{link}}">{% trans "Redeem Kudos" %}</a>
+      </div>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -21,19 +21,21 @@ from __future__ import print_function, unicode_literals
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 from django.contrib.postgres.search import SearchVector
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 
-
-from .models import MarketPlaceListing, Wallet
+from .models import Token, Wallet, Email
 from dashboard.models import Profile
 from avatar.models import Avatar
 from .forms import KudosSearchForm
 import re
 
+from dashboard.notifications import maybe_market_kudos_to_email
+
 import json
 from ratelimit.decorators import ratelimit
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_master, get_github_primary_email
 from retail.helpers import get_ip
@@ -43,6 +45,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 confirm_time_minutes_target = 4
+
+def get_profile(handle):
+    try:
+        to_profile = Profile.objects.get(handle__iexact=handle)
+    except Profile.MultipleObjectsReturned:
+        to_profile = Profile.objects.filter(handle__iexact=handle).order_by('-created_on').first()
+    except Profile.DoesNotExist:
+        to_profile = None
+    return to_profile
 
 
 def about(request):
@@ -54,7 +65,7 @@ def about(request):
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/grow_open_source.png'),
-        "listings": MarketPlaceListing.objects.all(),
+        "listings": Token.objects.all(),
     }
     return TemplateResponse(request, 'kudos_about.html', context)
 
@@ -64,7 +75,7 @@ def marketplace(request):
     q = request.GET.get('q')
     logger.info(q)
 
-    results = MarketPlaceListing.objects.annotate(
+    results = Token.objects.annotate(
         search=SearchVector('name', 'description', 'tags')
         ).filter(num_clones_allowed__gt=0, search=q)
     logger.info(results)
@@ -72,7 +83,7 @@ def marketplace(request):
     if results:
         listings = results
     else:
-        listings = MarketPlaceListing.objects.filter(num_clones_allowed__gt=0)
+        listings = Token.objects.filter(num_clones_allowed__gt=0)
 
     # for x in context['listings']:
     #     x.price = x.price / 1000
@@ -117,9 +128,9 @@ def details(request):
         raise ValueError(f'Invalid Kudos ID found.  ID is not a number:  {kudos_id}')
 
     # Find other profiles that have the same kudos name
-    kudos = MarketPlaceListing.objects.get(pk=kudos_id)
+    kudos = Token.objects.get(pk=kudos_id)
     # Find other Kudos rows that are the same kudos.name, but of a different owner
-    related_kudos = MarketPlaceListing.objects.exclude(owner_address='0xD386793F1DB5F21609571C0164841E5eA2D33aD8').filter(name=kudos.name)
+    related_kudos = Token.objects.exclude(owner_address='0xD386793F1DB5F21609571C0164841E5eA2D33aD8').filter(name=kudos.name)
     logger.info(f'Kudos rows: {related_kudos}')
     # Find the Wallet rows that match the Kudos.owner_addresses
     related_wallets = Wallet.objects.filter(address__in=[rk.owner_address for rk in related_kudos]).distinct()[:20]
@@ -154,7 +165,8 @@ def mint(request):
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def send_api(request):
-    """Handle the third stage of sending a tip (the POST)
+    """ This function is derived from send_tip_3.
+    Handle the third stage of sending a kudos (the POST)
 
     Returns:
         JsonResponse: response with success state.
@@ -172,6 +184,8 @@ def send_api(request):
     to_emails = []
 
     params = json.loads(request.body)
+    logger.info(f'params: {params}')
+    # return JsonResponse(response)
 
     to_username = params['username'].lstrip('@')
     to_emails = get_emails_master(to_username)
@@ -188,10 +202,14 @@ def send_api(request):
     to_emails = list(set(to_emails))
     expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
 
+    # Validate that the token exists on the back-end
+    token = Token.objects.filter(name=params['tokenName'], num_clones_allowed__gt=0).first()
     # db mutations
-    tip = Tip.objects.create(
+    kudos_email = Email.objects.create(
         emails=to_emails,
-        tokenName=params['tokenName'],
+        # For kudos, `token` is a kudos.models.Token instance.  This is to ensure that the 
+        # kudos.models.Email instance is tied to a real Token in the database.
+        token=token,
         amount=params['amount'],
         comments_priv=params['comments_priv'],
         comments_public=params['comments_public'],
@@ -211,33 +229,19 @@ def send_api(request):
         sender_profile=get_profile(from_username),
     )
 
-    is_over_tip_tx_limit = False
-    is_over_tip_weekly_limit = False
-    max_per_tip = request.user.profile.max_tip_amount_usdt_per_tx if request.user.is_authenticated and request.user.profile else 500
-    if tip.value_in_usdt_now:
-        is_over_tip_tx_limit = tip.value_in_usdt_now > max_per_tip
-        if request.user.is_authenticated and request.user.profile:
-            tips_last_week_value = tip.value_in_usdt_now
-            tips_last_week = Tip.objects.exclude(txid='').filter(sender_profile=get_profile(from_username), created_on__gt=timezone.now() - timezone.timedelta(days=7))
-            for this_tip in tips_last_week:
-                if this_tip.value_in_usdt_now:
-                    tips_last_week_value += this_tip.value_in_usdt_now
-            is_over_tip_weekly_limit = tips_last_week_value > request.user.profile.max_tip_amount_usdt_per_week
-    if is_over_tip_tx_limit:
-        response['status'] = 'error'
-        response['message'] = _('This tip is over the per-transaction limit of $') + str(max_per_tip) + ('.  Please try again later or contact support.')
-    elif is_over_tip_weekly_limit:
-        response['status'] = 'error'
-        response['message'] = _('You are over the weekly tip send limit of $') + str(request.user.profile.max_tip_amount_usdt_per_week) + ('.  Please try again later or contact support.')
+    maybe_market_kudos_to_email(kudos_email, to_emails)
+
     return JsonResponse(response)
 
 
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def send(request):
-    # kt = KudosToken(name='pythonista', description='Zen', rarity=5, price=10, num_clones_allowed=3,
-    #                 num_clones_in_wild=0)
+    """ Handle the first start of the Kudos email send.  This form is filled out before the
+        'send' button is clicked.
+    """
+
     kudos_name = request.GET.get('name')
-    kudos = MarketPlaceListing.objects.filter(name=kudos_name, num_clones_allowed__gt=0).first()
+    kudos = Token.objects.filter(name=kudos_name, num_clones_allowed__gt=0).first()
     profiles = Profile.objects.all()
 
     is_user_authenticated = request.user.is_authenticated

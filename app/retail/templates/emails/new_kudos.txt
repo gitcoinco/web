@@ -1,0 +1,25 @@
+{% load humanize i18n %}
+⚡️ New Kudos Alert ⚡️
+
+{% if kudos.from_name %}{{kudos.from_name}}{% else %}Someone{% endif %} has sent you kudos worth {{amount}} {{warning}} {{tokenName}}.
+
+{% if kudos.url %}
+{% if kudos.from_name %}{{kudos.from_name}}{% else %}The sender{% endif %} said it was for your work on {{kudos.github_url}}:
+{% endif %}
+
+{% if comments %}
+{% if kudos.from_name %}{{kudos.from_name}}{% else %}The sender{% endif %} had the following comments:
+{{comments}}
+{% endif %}
+
+{% if already_redeemed %}
+ {% trans "This kudos has been remitted automatically to the Ethereum address on file for your account via txid " %}{{kudos.txid}}
+{% elif show_expires %}
+The kudos expires on *{{kudos.expires_date}}, in just {{kudos.expires_date | naturaltime}}*.  No pressure, but if you wanted to redeem your kudos sooner rather than later that'd be 👌:
+{% else %}
+No pressure, but if you wanted to redeem your kudos sooner rather than later that'd be 👌:
+{% endif %}
+
+{% if not already_redeemed %}
+Click here to redeem it: {{link}}
+{% endif %}

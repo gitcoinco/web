@@ -31,7 +31,7 @@ import rollbar
 import twitter
 from economy.utils import convert_token_to_usdt
 from git.utils import delete_issue_comment, org_name, patch_issue_comment, post_issue_comment, repo_name
-from marketing.mails import tip_email
+from marketing.mails import tip_email, kudos_email
 from marketing.models import GithubOrgToTwitterHandleMapping
 from pyshorteners import Shortener
 from slackclient import SlackClient
@@ -355,6 +355,24 @@ def maybe_market_tip_to_slack(tip, event_name):
     except Exception as e:
         print(e)
         return False
+    return True
+
+
+def maybe_market_kudos_to_email(kudos, emails):
+    """Send an email for the specified Kudos.
+
+    Args:
+        kudos (kudos.models.Token): The Kudos to be marketed.
+        emails (list of str): The list of emails to notify.
+
+    Returns:
+        bool: Whether or not the email notification was sent successfully.
+
+    """
+    if kudos.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+        return False
+
+    kudos_email(kudos, set(emails), True)
     return True
 
 
