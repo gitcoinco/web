@@ -40,7 +40,6 @@ $(function() {
                     </div>
                     <div class="">${user.text}</div>
                   </div>`;
-
     return markup;
   }
 
