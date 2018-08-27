@@ -66,12 +66,14 @@ $(document).ready(function() {
     if ($(this).hasClass('disabled'))
       return;
     loading_button($(this));
-
+    console.log('dentro')
     // get form data
     var email = $('#email').val();
     var github_url = $('#issueURL').val();
     var from_name = $('#fromName').val();
-    var username = $('#username').val();
+    // var username = $('#username').val();
+    var username = $('.username-search').select2('data')[0].text
+    console.log(username)
     var amountInEth = parseFloat($('#amount').val());
     var comments_priv = $('#comments_priv').val();
     var comments_public = $('#comments_public').val();
@@ -212,7 +214,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
       method: 'POST',
       credentials: 'include',
       body: JSON.stringify({
-        username: username,
+        username: $('.username-search').select2('data')[0].text,
         email: email,
         tokenName: tokenName,
         amount: amountInEth,

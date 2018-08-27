@@ -5,7 +5,6 @@ $(function() {
       dataType: 'json',
       delay: 250,
       data: function (params) {
-        console.log(params)
         var query = {
           term: params.term,
         }
