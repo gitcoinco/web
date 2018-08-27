@@ -182,6 +182,9 @@ class LeaderboardRank(SuperModel):
 
     @property
     def is_user_based(self):
+        profile_keys = ['_tokens', '_keywords', '_cities', '_countries', '_continents']
+        is_linked_to_profile = any(self.leaderboard in self.leaderboard for sub in profile_keys)
+
         return '_tokens' not in self.leaderboard and '_keywords' not in self.leaderboard and '_cities' not in self.leaderboard  and '_countries' not in self.leaderboard and '_continents' not in self.leaderboard
 
     @property
