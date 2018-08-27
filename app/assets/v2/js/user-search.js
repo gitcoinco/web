@@ -40,16 +40,17 @@ $(function() {
                     </div>
                     <div class="">${user.text}</div>
                   </div>`;
-
+                  
     return markup;
   }
 
   function formatUserSelection(user) {
+
     let selected;
     if (user.id) {
       selected = `<img class="rounded-circle" src="${user.avatar_url || static_url + 'v2/images/user-placeholder.png'}" width="20" height="20"/> ${user.text}`;
     } else {
-      selected = user.text
+      selected = user.text;
     }
     return selected;
   }
