@@ -296,15 +296,14 @@ var callbacks = {
   },
   'started_owners_username': function(key, val, result) {
     var started = [];
-
     if (result.interested) {
       var interested = result.interested;
-
       interested.forEach(function(_interested, position) {
         var name = (position == interested.length - 1) ?
           _interested.profile.handle : _interested.profile.handle.concat(',');
-
-        started.push(profileHtml(_interested.profile.handle, name));
+        if(!_interested.pending){
+          started.push(profileHtml(_interested.profile.handle, name));
+        }
       });
       if (started.length == 0) {
         started.push('<i class="fas fa-minus"></i>');
@@ -763,6 +762,7 @@ var do_actions = function(result) {
   const show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
   const show_admin_methods = document.isStaff;
   const show_moderator_methods = document.isModerator;
+  const show_change_bounty = is_still_on_happy_path && (isBountyOwner(result) || show_admin_methods);
 
   if (is_legacy) {
     show_start_stop_work = false;
@@ -870,6 +870,17 @@ var do_actions = function(result) {
     actions.push(_entry);
   }
 
+  if (show_change_bounty) {
+    const _entry = {
+      enabled: true,
+      href: '/bounty/change/' + result['pk'],
+      text: gettext('Edit Issue Details'),
+      parent: 'right_actions',
+      title: gettext('Update your Bounty Settings to get the right Crowd')
+    };
+
+    actions.push(_entry);
+  }
 
   if (show_github_link) {
     let github_url = result['github_url'];
@@ -881,7 +892,8 @@ var do_actions = function(result) {
     const _entry = {
       enabled: true,
       href: github_url,
-      text: gettext('View On Github'),
+      text: gettext('View On Github') +
+            (result['is_issue_closed'] ? gettext(' (Issue is closed)') : ''),
       parent: 'right_actions',
       title: gettext('View issue details and comments on Github'),
       comments: result['github_comments'],
@@ -1125,7 +1137,8 @@ const process_activities = function(result, bounty_activities) {
     bounty_abandonment_warning: gettext('Warned for Abandonment of Bounty'),
     bounty_removed_slashed_by_staff: gettext('Dinged and Removed from Bounty by Staff'),
     bounty_removed_by_staff: gettext('Removed from Bounty by Staff'),
-    bounty_removed_by_funder: gettext('Removed from Bounty by Funder')
+    bounty_removed_by_funder: gettext('Removed from Bounty by Funder'),
+    bounty_changed: gettext('Bounty Details Changed')
   };
 
   const now = new Date(result['now']);
