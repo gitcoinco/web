@@ -6,23 +6,24 @@ $(function() {
       delay: 250,
       data: function(params) {
 
-        var query = {
-          term: params.term,
-        }
+        let query = {
+          term: params.term
+        };
+
         return query;
       },
       processResults: function(data) {
         return {
-          results: data,  
+          results: data
         };
       },
       cache: true
     },
     placeholder: 'Search by username',
     minimumInputLength: 3,
-    escapeMarkup: function(markup) { 
-      
-      return markup; 
+    escapeMarkup: function(markup) {
+
+      return markup;
     },
     templateResult: formatUser,
     templateSelection: formatUserSelection
@@ -33,21 +34,22 @@ $(function() {
     if (user.loading) {
       return user.text;
     }
-    var markup = `<div class="d-flex align-items-baseline">
+    let markup = `<div class="d-flex align-items-baseline">
                     <div class="mr-2">
                       <img class="rounded-circle" src="${user.avatar_url || static_url + 'v2/images/user-placeholder.png'}" width="40" height="40"/>
                     </div>
                     <div class="">${user.text}</div>
                   </div>`;
-    
+
     return markup;
   }
 
   function formatUserSelection(user) {
+    let selected;
     if (user.id) {
-      var selected = `<img class="rounded-circle" src="${user.avatar_url || static_url + 'v2/images/user-placeholder.png'}" width="20" height="20"/> ${user.text}`;
+      selected = `<img class="rounded-circle" src="${user.avatar_url || static_url + 'v2/images/user-placeholder.png'}" width="20" height="20"/> ${user.text}`;
     } else {
-      var selected = user.text
+      selected = user.text
     }
     return selected;
   }
