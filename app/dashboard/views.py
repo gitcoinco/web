@@ -22,7 +22,9 @@ import datetime
 import json
 import logging
 import time
+import math
 
+from decimal import Decimal
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
@@ -1147,7 +1149,7 @@ def get_quickstart_video(request):
 def funder_dashboard(request):
     """ Render the funder dashboard"""
 
-    if request.user is None or request.user.profile is None or request.user.profile.is_funder == False:
+    if not hasattr(request.user, 'profile') or not request.user.profile.is_funder:
         return redirect('/')
 
     funder_bounties = request.user.profile.get_funded_bounties()
@@ -1231,9 +1233,57 @@ def funder_dashboard(request):
     if paid_date_since is not None:
         total_paid_date_since = paid_date_since.strftime('%d %b, %y')
 
-    # total budget not used currently, we show an input field instead
-    total_budget_dollars = 0
-    total_budget_eth = 0
+    # total budget
+    # set total budget to 0 and allow users to input the total budget,
+    # if the updated total budget date is null
+    # or if there is an updated on date but the type saved is monthly and the months are different
+    # or if there is an updated on date but the type saved is quarterly and the quarters are different
+
+    # otherwise show the actual numbers, and the quarter / month
+
+    total_budget_updated_on = request.user.profile.funder_total_budget_updated_on
+    total_budget_use_input_layout = False
+    budget_type = request.user.profile.funder_total_budget_type
+
+    if total_budget_updated_on is None:
+        total_budget_use_input_layout = True
+    else:
+        month_saved = total_budget_updated_on.month
+        month_now = utc_now.month
+
+        if budget_type == 'monthly' and month_now != month_saved:
+            total_budget_use_input_layout = True
+        elif budget_type == 'quarterly':
+            quarter_now = int(math.ceil(month_now / 3.))
+            quarter_saved = int(math.ceil(month_saved / 3.))
+
+            if quarter_now != quarter_saved:
+                total_budget_use_input_layout = True
+
+    if total_budget_use_input_layout:
+        total_budget_dollars = 0
+        total_budget_eth = 0
+        total_budget_used_time_period = None
+    else:
+        # we should display their total budget
+        total_budget_dollars = request.user.profile.funder_total_budget_usdt
+        total_budget_eth = convert_amount(total_budget_dollars, "USDT", "ETH")
+
+        if budget_type == 'monthly':
+            total_budget_used_time_period = utc_now.strftime('%B') # the month
+        else:
+            # it's a quarterly budget
+            quarter_now = int(math.ceil(utc_now.month / 3.))
+
+            if quarter_now == 0:
+                total_budget_used_time_period = _("January 1 - March 31")
+            elif quarter_now == 1:
+                total_budget_used_time_period = _("April 1 - June 31")
+            elif quarter_now == 2:
+                total_budget_used_time_period = _("July 1 - September 31")
+            else:
+                # quarter_now == 3
+                total_budget_used_time_period = _("October 1 - December 31")
 
     tax_year = utc_now.year
     tax_year_bounties_count = 0
@@ -1373,6 +1423,8 @@ def funder_dashboard(request):
         "total_paid_date_since": total_paid_date_since,
         "total_budget_dollars": usd_format(total_budget_dollars),
         "total_budget_eth": eth_format(total_budget_eth),
+        "total_budget_use_input_layout": total_budget_use_input_layout,
+        "total_budget_used_time_period": total_budget_used_time_period,
         # Payout History
         "payout_history_weekly": json.dumps(payout_history_weekly, ensure_ascii=False, cls=DjangoJSONEncoder),
         "payout_history_monthly": json.dumps(payout_history_monthly, ensure_ascii=False, cls=DjangoJSONEncoder),
@@ -1400,6 +1452,36 @@ def funder_dashboard(request):
     }
 
     return TemplateResponse(request, 'funder_dashboard.html', context)
+
+
+@csrf_exempt
+@require_POST
+def update_funder_total_budget(request):
+    data = json.loads(request.body)
+
+    budget_type = None
+    if data['isMonthly']:
+        budget_type = 'monthly'
+    elif data['isQuarterly']:
+        budget_type = 'quarterly'
+
+    budget_usd = data['budget']
+    if budget_type is None or budget_usd is None or float(budget_usd) < 0:
+        return JsonResponse({'status': '400'}, status='400')
+
+    profile = request.user.profile
+
+    profile.funder_total_budget_usdt = budget_usd
+    profile.funder_total_budget_type = budget_type
+    profile.funder_total_budget_updated_on = datetime.datetime.now(timezone.utc)
+
+    profile.save()
+
+    result = {
+       'status': '200',
+    }
+
+    return JsonResponse(result, status=result['status'])
 
 
 @csrf_exempt

@@ -145,22 +145,35 @@
                         {% trans "Total budget" %}
                       </small>
                     </div>
-                    <div class="funder-dashboard__stats__stat__footer
+                    {% if total_budget_use_input_layout %}
+                      <div class="funder-dashboard__stats__stat__footer
                                 card-footer text-uppercase text-center p0 text-muted">
-                      <small class="pr-1">
+                        <small class="pr-1">
                           {% trans "Budget USD: " %}
-                      </small>
-                      <input class="funder-dashboard__stats__stat--total-budget__budget-input mw-100 mb-2" type="text"/>
-                      <div>
-                        <small class="control control--total-budget control--total-budget--monthly
-                                    control--selected p-1 pl-3 pr-3">
-                          {% trans "Monthly" %}
                         </small>
-                        <small class="control control--total-budget control--total-budget--quarterly p-1 pl-3 pr-3">
-                          {% trans "Quarterly" %}
-                        </small>
+                        <hr class="mt-0 mb-1 pb-1"/>
+                        <div class="mb-2 mw-100">
+                          <input class="d-inline-block funder-dashboard__stats__stat--total-budget__budget-input"
+                                 type="number"/>
+                          <i class="d-inline-block fa fa-arrow-circle-right
+                                     funder-dashboard__stats__stat--total-budget__budget-input__submit"></i>
+                        </div>
+                        <div>
+                          <small class="control control--total-budget control--total-budget--monthly
+                                      control--selected p-1 pl-3 pr-3">
+                            {% trans "Monthly" %}
+                          </small>
+                          <small class="control control--total-budget control--total-budget--quarterly p-1 pl-3 pr-3">
+                            {% trans "Quarterly" %}
+                          </small>
+                        </div>
                       </div>
-                    </div>
+                    {% else %}
+                    <small class="funder-dashboard__stats__stat__footer
+                                card-footer text-uppercase text-center p0 text-muted">
+                      {{ total_budget_used_time_period }}
+                    </small>
+                    {% endif %}
                   </div>
                 </div>
                 <div class="funder-dashboard__payout-history row card mt-4">
@@ -209,9 +222,9 @@
                         <span class="funder-dashboard__tax-reporting__bounties__count">
                           {{ tax_year_bounties_count }}
                         </span>
-                        <spn class="funder-dashboard__tax-reporting__bounties__print pr-1">
+                        <span class="funder-dashboard__tax-reporting__bounties__print pr-1">
                           {% trans "Bounties" %}
-                        </spn>
+                        </span>
                         <span class="funder-dashboard__tax-reporting__bounties__worth pl-1">
                           ${{ tax_year_bounties_worth_dollars|floatformat:2|intcomma }}
                         </span>

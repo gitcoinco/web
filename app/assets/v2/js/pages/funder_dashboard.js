@@ -152,17 +152,39 @@ $(function() {
 
     $totalBudget.keypress(function(e) {
       if (e.key == 'Enter') {
-        console.log('User inputted total budget: \r\n' + this.value);
-
-        var isMonthly = $('.control--total-budget--monthly').hasClass('control--selected');
-        var isQuarterly = $('.control--total-budget--quarterly').hasClass('control--selected');
-
-        console.log('Is monthly total budget: ' + isMonthly);
-        console.log('Is quarterly total budget: ' + isQuarterly);
-
-        alert('We\'re sorry, but this feature is not currently available');
+        submitTotalBudget()
       }
     });
+
+    $('.funder-dashboard__stats__stat--total-budget__budget-input__submit').click(function() {
+      submitTotalBudget();
+    });
+
+    function submitTotalBudget() {
+      var isMonthly = $('.control--total-budget--monthly').hasClass('control--selected');
+      var isQuarterly = $('.control--total-budget--quarterly').hasClass('control--selected');
+
+      var updateData = {
+        isMonthly: isMonthly,
+        isQuarterly: isQuarterly,
+        budget: $totalBudget.val()
+      };
+
+      if (updateData.budget === '') {
+        alert('Budget cannot be empty');
+        return;
+      }
+
+      $.ajax({
+        url: '/update_funder_total_budget',
+        method: "POST",
+        data: JSON.stringify(updateData),
+        dataType: "json"
+      }).done(function() {
+        setUpdatedTotalCookie('fd_total_last_updated', 1);
+        location.reload();
+      });
+    }
 
     // Monthly / Quarterly
     var $totalBudgetControls = $('.control--total-budget');
@@ -171,6 +193,17 @@ $(function() {
       $totalBudgetControls.removeClass('control--selected');
       $(this).addClass('control--selected');
     });
+
+    // used to force a refresh of the view, so that users see their new total budget once
+    // they type in one
+    function setUpdatedTotalCookie(name, days) {
+        var date = new Date();
+        date.setTime(date.getTime() + (days*24*60*60*1000));
+
+        var expires = "; expires=" + date.toUTCString();
+        var value = date.toUTCString();
+        document.cookie = name + "=" + value + expires + "; path=/";
+    }
   }
 
   // used both by bounties and outgoing funds
