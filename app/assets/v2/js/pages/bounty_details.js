@@ -1,5 +1,10 @@
 /* eslint block-scoped-var: "warn" */
 /* eslint no-redeclare: "warn" */
+/* eslint no-loop-func: "warn" */
+
+var normalizeAmount = function(amount, decimals) {
+  return Math.round(amount * 10 ** decimals) / 10 ** decimals;
+};
 
 var _truthy = function(val) {
   if (!val || val == '0x0000000000000000000000000000000000000000') {
@@ -223,22 +228,51 @@ var callbacks = {
     var tokens = val['tokens'];
     var decimals = 3;
 
-    var ui_elements = [];
+    let crowdfunded_tokens = [];
+    let tooltip_info = [];
 
+    crowdfunded_tokens.push({
+      amount: token_value_to_display(result['value_in_token'], decimals),
+      token: result['token_name']
+    });
+
+    tooltip_info.push('<p class="font-weight-bold m-0 pb-1" style="color:#775EC7;">Intial : ' +
+      $('#value_in_token').html() + '</p>');
+
+    if (usd_value) {
+      tooltip_info.push('<p class="m-0" style="margin-top: 3px;">Crowdfunding worth $' + usd_value + '</p>');
+      $('#value_in_usdt').html(result['value_in_usdt'] + usd_value);
+    }
+  
     for (var token in tokens) {
       if (token) {
         var val = tokens[token];
+        var funding = normalizeAmount(val, decimals);
 
-        ui_elements.push(Math.round(val * 10 ** decimals) / 10 ** decimals + ' ' + token);
+        if (crowdfunded_tokens.filter(fund => fund.token === token).length > 0) {
+          crowdfunded_tokens.map((fund, index) => {
+            if (fund.token === token) {
+              crowdfunded_tokens[index].amount += funding;
+            }
+          });
+        } else {
+          crowdfunded_tokens.push({
+            amount: funding,
+            token: token
+          });
+        }
+        var template = '<p class="m-0" style="color:#fb9470">+' + funding + ' ' + token + ' in crowdfunding</p>';
+
+        tooltip_info.push(template);
       }
     }
-    var str = '+ ' + ui_elements.join(', ') + ' in crowdfunding';
 
-    if (usd_value) {
-      str += ' worth $' + usd_value;
-    }
+    var token_tag = crowdfunded_tokens.map(fund => fund.amount + ' ' + fund.token);
 
-    $('.additional_funding_summary  p').html(str);
+    $('#value_in_token').html('<i class="fas fa-users mr-2"></i>' +
+      token_tag.join(' <i class="fas fa-plus mx-1" style="font-size: 0.5rem; position: relative; top: -1px;"></i> '));
+    $('#value_in_token').attr('title', '<div class="tooltip-info tooltip-sm">' + tooltip_info.join('') + '</div>');
+
     return [ 'additional_funding_summary', val ];
   },
   'token_value_time_peg': function(key, val, result) {
