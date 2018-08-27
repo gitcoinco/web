@@ -1558,7 +1558,7 @@ def change_bounty(request, bounty_id):
     }
     return TemplateResponse(request, 'bounty/change.html', params)
 
-    
+
 def get_users(request):
     if request.is_ajax():
         q = request.GET.get('term')
