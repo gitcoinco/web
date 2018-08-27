@@ -296,18 +296,19 @@ var callbacks = {
   },
   'started_owners_username': function(key, val, result) {
     var started = [];
+
     if (result.interested) {
       var interested = result.interested;
+
       interested.forEach(function(_interested, position) {
         var name = (position == interested.length - 1) ?
           _interested.profile.handle : _interested.profile.handle.concat(',');
-        if(!_interested.pending){
+
+        if (!_interested.pending)
           started.push(profileHtml(_interested.profile.handle, name));
-        }
       });
-      if (started.length == 0) {
+      if (started.length == 0)
         started.push('<i class="fas fa-minus"></i>');
-      }
     }
     return [ 'started_owners_username', started ];
   },
