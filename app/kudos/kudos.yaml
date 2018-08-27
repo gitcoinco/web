@@ -24,16 +24,7 @@
   numClonesAllowed: 450
   tags: gitcoin, genesis, rare
   image: gitcoin_genesis.svg
-- name: ruby_on_rails_hacker
-  description: Can anyone spin up websites faster than a Ruby on Rails hacker? Owners
-    of this badge are famous for their mastery of MVC website development, DRY, and
-    use of Active Record.
-  rarity: 10
-  priceFinney: 5
-  numClonesAllowed: 550
-  tags: rails, ruby, web, MVC, DRY
-  image: rails_2.svg
-- name: javascript_master_scribe
+- name: javascript_master_scriber
   description: Remember the web in the days before javascript?  No?  Neither can we!  Javascript
     powers the modern web, top to bottom and we <3 the usage of javascript here at
     Gitcoin.  Owners of this badge are masters of the asyncronous, event driven, programming
@@ -42,7 +33,7 @@
   priceFinney: 3
   numClonesAllowed: 500
   tags: javascript, node, web
-  image: javascript_masterscriber.svg
+  image: javascript_master_scriber.svg
 - name: infrastructure_ninja
   description: Just like every building needs a solid foundation, every website needs
     a great infrastructure.  Infrastructure Ninjas are rarely seen or heard, but they
@@ -73,16 +64,16 @@
   numClonesAllowed: 500
   tags: do more faster, iteration, hypothesis testing, soft skills
   image: do_more_faster.svg
-- name: jquery_justice
+- name: jquery_fixer
   description: jQuery is a force in the modern web.  By solving compatibilty issues
     across browsers, and providing a friendly interface for developing AJAX websites,
     jQuery won our <3s.  To owners of this badge, thank you for using jQuery to provide
-    Justice to all!
+    Fixes to all!
   rarity: 25
   priceFinney: 2
   numClonesAllowed: 800
   tags: jquery, javascript, web, MVC
-  image: jquery.svg
+  image: jquery_fixer.svg
 - name: elixer_mixer
   description: Elixer Mixers are known for their alchemy.  Just as a chemist combines
     fundamental chemical primitives to create potions that are near-magic, an Elixer
@@ -92,7 +83,7 @@
   priceFinney: 2
   numClonesAllowed: 250
   tags: elixer, erlang, functional
-  image: elixer_creator.svg
+  image: elixer_mixer.svg
 - name: collaboration_machine
   description: Is there anything better than working with a collaboration machine?  Known
     for their communication skills, rapid value delivery, and great attitudes, Collaboration
@@ -110,16 +101,6 @@
   numClonesAllowed: 500
   tags: unix, build once, OS
   image: unix_philosophy.svg
-- name: jquery_juju
-  description: jQuery is a force in modern open source.  By solving compatibilty issues
-    across browsers, and providing a friendly interface for developing AJAX websites,
-    jQuery won our <3s.  To owners of this badge, thank you for using jQuery to provide
-    Juju to all!
-  rarity: 25
-  priceFinney: 2
-  numClonesAllowed: 800
-  tags: jquery, javascript, web, MVC
-  image: jquery_2.svg
 - name: ruby_gem
   description: Is there anyone who knows more about 'gem's than someone who's good
     enough at Ruby, to be a 'Gem' themselves? Owners of this badge are known for their
@@ -128,7 +109,7 @@
   priceFinney: 5
   numClonesAllowed: 550
   tags: rails, ruby, web, MVC, DRY
-  image: ruby2.svg
+  image: ruby_gem.svg
 - name: angular_royalty
   description: AngularJS is a great extension of javsacript, and we love how it lets
     use declare dynamic views for our dApps!  Owners of this badge are royalty of
@@ -155,7 +136,7 @@
   priceFinney: 2
   numClonesAllowed: 500
   tags: shipping, soft skills,
-  image: ship_code.svg
+  image: code_shipper.svg
 - name: drupal_brainiac
   description: Want to ship content on the modern web?  Drupal is where it's at.  The
     leading Open Source CMS has provided tons of value to the modern web, and adding
@@ -173,7 +154,7 @@
   priceFinney: 4
   numClonesAllowed: 200
   tags: rails, ruby, web, MVC, DRY
-  image: ruby_rockstar.svg
+  image: ruby_on_rails_master.svg
 - name: open_source_freedom_fighter
   description: Hey, look -- In the sky, it's a bird.  No it's a plane.  No it's an
     Open Source Freedom Fighter!  OSS Freedom Fighters fight for liberty, justice,
@@ -182,16 +163,8 @@
   priceFinney: 2
   numClonesAllowed: 500
   tags: oss, soft skills
-  image: oss_freedom_fighter.svg
-- name: ruby_master
-  description: Can anyone spin up clean code faster than a Ruby on Rails Master? Owners
-    of this badge are mega famous for their mastery of Ruby, Gems, and the Ruby ecosystem.
-  rarity: 10
-  priceFinney: 2
-  numClonesAllowed: 150
-  tags: ruby, web, programmer
-  image: ruby.svg
-- name: mega-open_collaborator
+  image: open_source_freedom_fighter.svg
+- name: mega_open_collaborator
   description: '"Be open to the point of promiscuity" is one of our favorite points
     from the famous essay from Eric Raymond entitled "The Cathedral and the Bazaar".  Owners
     of this badge embody the principle of Openness from the Cathedral and the Bazaar.'
@@ -199,7 +172,7 @@
   priceFinney: 2
   numClonesAllowed: 500
   tags: soft skills, open
-  image: be_open_to_point_of_promiscuity.svg
+  image: mega_open_collaborator.svg
 - name: problem_solver
   description: Is there anything better than working with someone who can rapidly
     solve problems?  The modern web is built by Agile, and favors experimentation
@@ -218,7 +191,7 @@
   numClonesAllowed: 500
   tags: soft skills, sustainer, open source
   image: sustainer.svg
-- name: juggler
+- name: super_juggler
   description: Jugglers are known for their joyous attitude and their ability to manage
     multiple balls in the air at once.  Owners of this badge can contribute meaningfully
     to several projects at once and not let a single one drop!
@@ -226,7 +199,7 @@
   priceFinney: 2
   numClonesAllowed: 500
   tags: soft skills, project management
-  image: juggler.svg
+  image: super_juggler.svg
 - name: above_and_beyond
   description: Owners of this badge are always under-promising and over-delivering.  They
     go 'above and beyond' for their clients!
@@ -242,7 +215,7 @@
   priceFinney: 2
   numClonesAllowed: 50
   tags: soft skills, momentum
-  image: gitbadeege2v2.svg
+  image: new_dawn.svg
 - name: design_star
   description: Know that feeling early in a project when you're just putting pencil
     to paper, figuring out what things are going to look like?  Owners of this badge
@@ -262,7 +235,7 @@
   numClonesAllowed: 210
   tags: soft skills, programmer, technical, handyman
   image: handyman.svg
-- name: handy-woman
+- name: handy_woman
   description: Its great to have a handy woman around your house when your sink, plumbing,
     electricity, breaks.  Owners of this badge are digital handymen and handywomen.  They
     fix stuff, and do it with a smile on their face!
@@ -289,16 +262,6 @@
   numClonesAllowed: 500
   tags: soft skills, ideas, project manager, product manager
   image: idea_person.svg
-- name: node_js_ninja
-  description: Remember the bad old days in the web before javascript?  Javascript
-    powers the modern web, top to bottom and we <3 the usage of javascript here at
-    Gitcoin.  Owners of this badge are masters of the asyncronous, event driven, programming
-    language and specifically, of server side scripting!
-  rarity: 30
-  priceFinney: 4
-  numClonesAllowed: 300
-  tags: javascript, nodeJS, node, asyncronous
-  image: nodejJS_2.svg
 - name: always_shipping
   description: Know who we LOVE working with?  Programmers who are always shipping
     code!  Always. Be. Shipping.
@@ -307,23 +270,14 @@
   numClonesAllowed: 500
   tags: shipping, SHIPL, soft skils
   image: always_shipping.svg
-- name: php_programmer
-  description: PHP -- The og web developers programming language!  Know whats cool
-    about PHP?  It's a recursive acronym, "PHP Hypertext Processor".  Want a PHP programmer
-    for your project? Look no further than to owners of this badge!
-  rarity: 15
-  priceFinney: 2
-  numClonesAllowed: 200
-  tags: php, programmer, php6, php7
-  image: php_2.svg
-- name: c#_programmer
+- name: c_sharp_programmer
   description: Need someone who uses strong typing, declarative, functional, code?  Look
     no further than the owners of the C# Blacksmith Kudos!
   rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
   tags: c#, programmer
-  image: c_sharp_blacksmith.svg
+  image: c_sharp_programmer.svg
 - name: cleanest_code
   description: Want to work with someone who is famous for having squeaky clean code?  Look
     no further than owners of the 'Cleanest Code' Kudos.
@@ -332,16 +286,6 @@
   numClonesAllowed: 500
   tags: clean code, programmer, soft skills
   image: cleanest_code.svg
-- name: node_js_user
-  description: Remember the bad old days in the web before javascript?  Javascript
-    powers the modern web, top to bottom and we <3 the usage of javascript here at
-    Gitcoin.  Owners of this badge are masters of the asyncronous, event driven, programming
-    language and specifically, of server side scripting!
-  rarity: 30
-  priceFinney: 4
-  numClonesAllowed: 300
-  tags: javascript, nodeJS, node, asyncronous
-  image: nodejJS_3.svg
 - name: relase_early_and_often
   description: Want to work with someone who RERO (Relase Early and Often)? RERO is
     a software development philosophy that emphasizes the importance of early and
@@ -359,7 +303,7 @@
   priceFinney: 2
   numClonesAllowed: 200
   tags: mission, open source, sustainer
-  image: grow_opensource.svg
+  image: grow_open_source.svg
 - name: mongo_db_programmer
   description: Want someone who can work efficiently with MongoDB?  Look no further
     than owners of this badge.
@@ -367,7 +311,7 @@
   priceFinney: 2
   numClonesAllowed: 500
   tags: mongodb, db
-  image: mongoDB.svg
+  image: mongo_db_programmer.svg
 - name: navigator
   description: Want to work with someone who can navigate through complexity and deliver
     on-time, on-scope, and on-budget?  Look no further than owneres of this kudos!
@@ -376,7 +320,7 @@
   numClonesAllowed: 300
   tags: navigator, project management, soft skills
   image: direct.svg
-- name: fast_turnaround
+- name: fast_turn_around
   description: Want someone who ships deliverables quick?  Owners of this 'fast turnaround'
     kudos are the first place to look!
   rarity: 20
@@ -416,7 +360,7 @@
   priceFinney: 10
   numClonesAllowed: 500
   tags: soft skills, inspiration
-  image: utopia.svg
+  image: builder_of_a_better_world.svg
 - name: c_debugger
   description: Need a programmer for your performant, object oriented, project that
     can manage their own memory and manage on-scope and on-budget!? Look no further;
@@ -433,7 +377,7 @@
   priceFinney: 2
   numClonesAllowed: 200
   tags: redux, react
-  image: redux.svg
+  image: redux_programmer.svg
 - name: ruby_on_rails_machine
   description: Can anyone spin up websites faster than a Ruby on Rails hacker? Owners
     of this badge are famous for their mastery of MVC website development, DRY, and
@@ -442,7 +386,7 @@
   priceFinney: 5
   numClonesAllowed: 550
   tags: rails, ruby, web, MVC, DRY
-  image: rails_machine.svg
+  image: ruby_on_rails_machine.svg
 - name: helping_hand
   description: Need a helping hand for your project.  Start with an owner of this
     'Helping Hand' badge!
@@ -493,7 +437,7 @@
   priceFinney: 5
   numClonesAllowed: 300
   tags: delegate, team, soft skills
-  image: delegate_everything_you_can.svg
+  image: delegation_machine.svg
 - name: arts_and_farts
   description: Need someone who is going to create beautiful designs of any kind?  Check
     out the owners of the 'Arts and Farts' Kudos.
@@ -501,23 +445,15 @@
   priceFinney: 2
   numClonesAllowed: 100
   tags: arts, design, frontend, aesthetics
-  image: artist.svg
-- name: react
+  image: arts_and_farts.svg
+- name: react_reactor
   description: React is a force in the modern web, and so are those who can yield
     it.   Owners of this badge have demonstrated proficiency in React on a past project.
   rarity: 40
   priceFinney: 3
   numClonesAllowed: 400
   tags: react, javascript, programming
-  image: react.svg
-- name: business_minded
-  description: Looking for someone who can deliver the goods from a business side
-    of things?  Look no further than owners of this 'business minded' kudos.
-  rarity: 70
-  priceFinney: 2
-  numClonesAllowed: 100
-  tags: business, soft skills
-  image: busines_smind.svg
+  image: react_reactor.svg
 - name: html_celebrity
   description: Looking for someone who writes clean, standards-compliant, HTML?  Look
     no further than this HTML Celebrity kudos.
@@ -542,7 +478,7 @@
   priceFinney: 6
   numClonesAllowed: 300
   tags: ember, javascript
-  image: ember_rockstar.svg
+  image: ember_master.svg
 - name: django_dev
   description: Developers who use Django are a great asset to the modern web, and
     so is the Django project itself!  Gitcoin itself is built with Django, and we
@@ -551,7 +487,7 @@
   priceFinney: 3
   numClonesAllowed: 342
   tags: python, django, web, programmer
-  image: django.svg
+  image: django_dev.svg
 - name: bee_of_all_trades
   description: Are you a cross-pollinator?  Do you deliver value in a lot of places
     at once?  This 'Bee of all trades' badge is for you!
@@ -559,7 +495,7 @@
   priceFinney: 2
   numClonesAllowed: 200
   tags: soft skills, cross-pollinator
-  image: be_of_all_trades.svg
+  image: bee_of_all_trades.svg
 - name: mysql_hero
   description: MySQL is a great asset to modern web developers.  Looking for someone
     who knows MySQL?  This badge is for you.
@@ -582,7 +518,7 @@
   priceFinney: 2
   numClonesAllowed: 200
   tags: go, programmer
-  image: go_builder.svg
+  image: go_developer.svg
 - name: product_wizard
   description: Looking for someone to put on their product wizard's cap and deliver
     massive value to your project?  This kudos is for you!
@@ -598,7 +534,7 @@
   priceFinney: 3
   numClonesAllowed: 340
   tags: business, soft skills
-  image: business_mind.svg
+  image: business_minded.svg
 - name: bug_squasher
   description: Splat goes the bug!  Owners of this badge are proficient at squashing
     bugs.
@@ -628,3 +564,202 @@
   numClonesAllowed: 500
   tags: devcon, ethereum, shills
   image: devcon_4.svg
+
+# New kudos that need copy
+- name: pythonista_pony
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: pythonista_pony.svg
+- name: blockchain_utopia
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: blockchain_utopia.svg
+- name: collab_robot
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: collab_robot.svg
+- name: path_finder
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: path_finder.svg
+- name: eth_hacker
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: eth_hacker.svg
+- name: climb_the_ladder
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: climb_the_ladder.svg
+- name: gitcoin_sustainer
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: gitcoin_sustainer.svg
+- name: growopen_source
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: growopen_source.svg
+- name: craftsman
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: craftsman.svg
+- name: struck_oil
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: struck_oil.svg
+- name: freedom
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: freedom.svg
+- name: focus
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: focus.svg
+- name: powertool_user
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: powertool_user.svg
+- name: party_robot
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: party_robot.svg
+- name: release_early_and_often
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: release_early_and_often.svg
+- name: direct
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: direct.svg
+- name: growoss_crystalball
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: growoss_crystalball.svg
+- name: gitter_of_coins
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: gitter_of_coins.svg
+- name: mana_from_heavens
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: mana_from_heavens.svg
+- name: robot_medium
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: robot_medium.svg
+- name: heros_honour
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: heros_honour.svg
+- name: blockchain_the_world
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: blockchain_the_world.svg
+- name: robot_small
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: robot_small.svg
+- name: firefighter
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: firefighter.svg
+- name: gitcoin_rasta
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: gitcoin_rasta.svg
+- name: robot_large
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: robot_large.svg
+- name: a_genius
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: a_genius.svg
+- name: vitalik_genesis
+  description: lorum
+  rarity: 20
+  price: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: vitalik_genesis.svg
+
