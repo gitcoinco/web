@@ -219,9 +219,9 @@ $(document).ready(function() {
         githubUsername: data.githubUsername,
         notificationEmail: data.notificationEmail,
         fullName: data.fullName,
-        experienceLevel: data.experienceLevel,
-        projectLength: data.projectLength,
-        bountyType: data.bountyType,
+        experienceLevel: data.experience_level,
+        projectLength: data.project_length,
+        bountyType: data.bounty_type,
         tokenName
       };
 
