@@ -211,7 +211,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
       method: 'POST',
       credentials: 'include',
       body: JSON.stringify({
-        username: $('.username-search').select2('data')[0].text,
+        username: username,
         email: email,
         tokenName: tokenName,
         amount: amountInEth,
