@@ -198,11 +198,11 @@ $(function() {
     // they type in one
     function setUpdatedTotalCookie(name, days) {
       var date = new Date();
-      date.setTime(date.getTime() + (days*24*60*60*1000));
-
-      var expires = "; expires=" + date.toUTCString();
+      var expires = '; expires=' + date.toUTCString();
       var value = date.toUTCString();
-      document.cookie = name + "=" + value + expires + "; path=/";
+
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+      document.cookie = name + '=' + value + expires + '; path=/';
     }
   }
 
