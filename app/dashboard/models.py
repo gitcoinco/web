@@ -67,7 +67,7 @@ class BountyQuerySet(models.QuerySet):
 
     def stats_eligible(self):
         """Exclude results that we don't want to track in statistics."""
-        return self.exclude(current_bounty=True, idx_status__in=['unknown', 'cancelled'])
+        return self.current().exclude(idx_status__in=['unknown', 'cancelled'])
 
     def exclude_by_status(self, excluded_statuses=None):
         """Exclude results with a status matching the provided list."""
@@ -1801,9 +1801,8 @@ class Profile(SuperModel):
                 potential_bounties = Bounty.objects.all()
                 relevant_bounties = Bounty.objects.none()
                 for keyword in user_coding_languages:
-                    relevant_bounties = relevant_bounties.union(potential_bounties.filter(
+                    relevant_bounties = relevant_bounties.union(potential_bounties.current().filter(
                             network=Profile.get_network(),
-                            current_bounty=True,
                             metadata__icontains=keyword,
                             idx_status__in=['open'],
                             ).order_by('?')
@@ -2008,13 +2007,13 @@ class Profile(SuperModel):
     def get_fulfilled_bounties(self, network=None):
         network = network or self.get_network()
         fulfilled_bounty_ids = self.fulfilled.all().values_list('bounty_id', flat=True)
-        bounties = Bounty.objects.filter(pk__in=fulfilled_bounty_ids, accepted=True, current_bounty=True, network=network)
+        bounties = Bounty.objects.current().filter(pk__in=fulfilled_bounty_ids, accepted=True, network=network)
         return bounties
 
     def get_orgs_bounties(self, network=None):
         network = network or self.get_network()
         url = f"https://github.com/{self.handle}"
-        bounties = Bounty.objects.filter(current_bounty=True, network=network, github_url__contains=url)
+        bounties = Bounty.objects.current().filter(network=network, github_url__contains=url)
         return bounties
 
     def get_leaderboard_index(self, key='quarterly_earners'):
