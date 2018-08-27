@@ -569,196 +569,196 @@
 - name: pythonista_pony
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: pythonista_pony.svg
 - name: blockchain_utopia
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: blockchain_utopia.svg
 - name: collab_robot
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: collab_robot.svg
 - name: path_finder
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: path_finder.svg
 - name: eth_hacker
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: eth_hacker.svg
 - name: climb_the_ladder
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: climb_the_ladder.svg
 - name: gitcoin_sustainer
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: gitcoin_sustainer.svg
 - name: growopen_source
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: growopen_source.svg
 - name: craftsman
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: craftsman.svg
 - name: struck_oil
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: struck_oil.svg
 - name: freedom
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: freedom.svg
 - name: focus
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: focus.svg
 - name: powertool_user
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: powertool_user.svg
 - name: party_robot
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: party_robot.svg
 - name: release_early_and_often
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: release_early_and_often.svg
 - name: direct
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: direct.svg
 - name: growoss_crystalball
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: growoss_crystalball.svg
 - name: gitter_of_coins
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: gitter_of_coins.svg
 - name: mana_from_heavens
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: mana_from_heavens.svg
 - name: robot_medium
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: robot_medium.svg
 - name: heros_honour
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: heros_honour.svg
 - name: blockchain_the_world
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: blockchain_the_world.svg
 - name: robot_small
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: robot_small.svg
 - name: firefighter
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: firefighter.svg
 - name: gitcoin_rasta
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: gitcoin_rasta.svg
 - name: robot_large
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: robot_large.svg
 - name: a_genius
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: a_genius.svg
 - name: vitalik_genesis
   description: lorum
   rarity: 20
-  price: 1
+  priceFinney: 1
   numClonesAllowed: 10
   tags: ipsum
   image: vitalik_genesis.svg
