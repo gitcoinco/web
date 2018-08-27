@@ -203,13 +203,14 @@ def send_api(request):
     expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
 
     # Validate that the token exists on the back-end
-    token = Token.objects.filter(name=params['tokenName'], num_clones_allowed__gt=0).first()
+    kudos_token = Token.objects.filter(name=params['tokenName'], num_clones_allowed__gt=0).first()
     # db mutations
     kudos_email = Email.objects.create(
         emails=to_emails,
         # For kudos, `token` is a kudos.models.Token instance.  This is to ensure that the 
         # kudos.models.Email instance is tied to a real Token in the database.
-        token=token,
+        # TODO: Change name to kudosToken
+        kudos_token=kudos_token,
         amount=params['amount'],
         comments_priv=params['comments_priv'],
         comments_public=params['comments_public'],
