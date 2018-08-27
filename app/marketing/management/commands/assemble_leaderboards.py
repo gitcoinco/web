@@ -115,6 +115,7 @@ def add_element(key, index_term, amount):
 
 def sum_bounty_helper(b, breakdown, index_term, val_usd):
     fulfiller_index_terms = list(b.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True))
+    add_element(f'{breakdown}_all', index_term, val_usd)
     add_element(f'{breakdown}_fulfilled', index_term, val_usd)
     if index_term == b.bounty_owner_github_username and index_term not in IGNORE_PAYERS:
         add_element(f'{breakdown}_payers', index_term, val_usd)

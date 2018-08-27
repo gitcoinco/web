@@ -627,7 +627,8 @@ def leaderboard(request, key=''):
     else:
         amount_max = 0
 
-    is_linked_to_profile = '_tokens' in key or '_keywords' in key or '_cities' in key or '_countries' in key or '_continents' in key
+    profile_keys = ['_tokens', '_keywords', '_cities', '_countries', '_continents']
+    is_linked_to_profile = any(sub in key for sub in profile_keys)
     context = {
         'items': items,
         'titles': titles,
