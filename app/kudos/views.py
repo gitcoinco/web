@@ -21,6 +21,7 @@ from __future__ import print_function, unicode_literals
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 from django.contrib.postgres.search import SearchVector
 from django.http import HttpResponseRedirect, JsonResponse
 
@@ -29,6 +30,8 @@ from dashboard.models import Profile
 from avatar.models import Avatar
 from .forms import KudosSearchForm
 import re
+
+from dashboard.notifications import maybe_market_kudos_to_email
 
 import json
 from ratelimit.decorators import ratelimit
@@ -42,6 +45,15 @@ import logging
 logger = logging.getLogger(__name__)
 
 confirm_time_minutes_target = 4
+
+def get_profile(handle):
+    try:
+        to_profile = Profile.objects.get(handle__iexact=handle)
+    except Profile.MultipleObjectsReturned:
+        to_profile = Profile.objects.filter(handle__iexact=handle).order_by('-created_on').first()
+    except Profile.DoesNotExist:
+        to_profile = None
+    return to_profile
 
 
 def about(request):
@@ -153,7 +165,8 @@ def mint(request):
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def send_api(request):
-    """Handle the third stage of sending a tip (the POST)
+    """ This function is derived from send_tip_3.
+    Handle the third stage of sending a kudos (the POST)
 
     Returns:
         JsonResponse: response with success state.
@@ -172,7 +185,7 @@ def send_api(request):
 
     params = json.loads(request.body)
     logger.info(f'params: {params}')
-    return JsonResponse(response)
+    # return JsonResponse(response)
 
     to_username = params['username'].lstrip('@')
     to_emails = get_emails_master(to_username)
@@ -189,10 +202,14 @@ def send_api(request):
     to_emails = list(set(to_emails))
     expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
 
+    # Validate that the token exists on the back-end
+    token = Token.objects.filter(name=params['tokenName'], num_clones_allowed__gt=0).first()
     # db mutations
-    tip = Tip.objects.create(
+    kudos_email = Email.objects.create(
         emails=to_emails,
-        tokenName=params['tokenName'],
+        # For kudos, `token` is a kudos.models.Token instance.  This is to ensure that the 
+        # kudos.models.Email instance is tied to a real Token in the database.
+        token=token,
         amount=params['amount'],
         comments_priv=params['comments_priv'],
         comments_public=params['comments_public'],
@@ -212,28 +229,11 @@ def send_api(request):
         sender_profile=get_profile(from_username),
     )
 
-    is_over_tip_tx_limit = False
-    is_over_tip_weekly_limit = False
-    max_per_tip = request.user.profile.max_tip_amount_usdt_per_tx if request.user.is_authenticated and request.user.profile else 500
-    if tip.value_in_usdt_now:
-        is_over_tip_tx_limit = tip.value_in_usdt_now > max_per_tip
-        if request.user.is_authenticated and request.user.profile:
-            tips_last_week_value = tip.value_in_usdt_now
-            tips_last_week = Tip.objects.exclude(txid='').filter(sender_profile=get_profile(from_username), created_on__gt=timezone.now() - timezone.timedelta(days=7))
-            for this_tip in tips_last_week:
-                if this_tip.value_in_usdt_now:
-                    tips_last_week_value += this_tip.value_in_usdt_now
-            is_over_tip_weekly_limit = tips_last_week_value > request.user.profile.max_tip_amount_usdt_per_week
-    if is_over_tip_tx_limit:
-        response['status'] = 'error'
-        response['message'] = _('This tip is over the per-transaction limit of $') + str(max_per_tip) + ('.  Please try again later or contact support.')
-    elif is_over_tip_weekly_limit:
-        response['status'] = 'error'
-        response['message'] = _('You are over the weekly tip send limit of $') + str(request.user.profile.max_tip_amount_usdt_per_week) + ('.  Please try again later or contact support.')
+    maybe_market_kudos_to_email(kudos_email, to_emails)
+
     return JsonResponse(response)
 
 
-@ensure_csrf_cookie
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def send(request):
     """ Handle the first start of the Kudos email send.  This form is filled out before the

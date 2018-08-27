@@ -41,6 +41,7 @@ var wait_for_metadata = function(callback) {
       console.log('document.hash1 = ' + document.hash1)
       var account = generate_or_get_private_key();
 
+      // This is the metadata that gets passed into got_metadata_callback()
       callback({
         'pub_key': account['public'],
         'address': account['address'],
@@ -96,6 +97,7 @@ $(document).ready(function() {
   // console.log($('#username').select2('data'));
   $('#username').on('select2:select', function(e) {
     let profileId = e.params.data.id;
+    console.log(e.params.data)
     renderWallets(profileId);
   });
   // The Kudos Send Button
@@ -117,7 +119,7 @@ $(document).ready(function() {
     var email = $('#email').val();
     var github_url = $('#issueURL').val();
     var from_name = $('#fromName').val();
-    var username = $('#username').val();
+    var username = $('#username').select2('data')[0].text;
     var receiverAddress = $('#receiverAddress').val();
     var amountInEth = parseFloat($('#amount').val());
     var comments_priv = $('#comments_priv').val();
@@ -228,15 +230,12 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
   var gas_money = parseInt(Math.pow(10, (9 + 5)) * ((defaultGasPrice * 1.001) / Math.pow(10, 9)));
   var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
   var tokenDetails = tokenAddressToDetails(tokenAddress);
-  var tokenName = 'ETH';
+  // var tokenName = 'ETH';
+  var tokenName = window.location.href.split('\=')[1];
   var weiConvert = Math.pow(10, 18);
   var creation_time = Math.round((new Date()).getTime() / 1000);
   var salt = parseInt((Math.random() * 1000000));
 
-  if (!isSendingETH) {
-    tokenName = tokenDetails.name;
-    weiConvert = Math.pow(10, tokenDetails.decimals);
-  }
   var amountInWei = amountInEth * 1.0 * weiConvert;
   // validation
   var hasEmail = email != '';
@@ -311,6 +310,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
       } else {
         var is_direct_to_recipient = metadata['is_direct'];
         var destinationAccount = is_direct_to_recipient ? metadata['direct_address'] : metadata['address'];
+
         var post_send_callback = function(errors, txid) {
           if (errors) {
             _alert({ message: gettext('There was an error.') }, 'warning');
@@ -343,6 +343,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
             });
           }
         };
+        // end post_send_callback
 
         if (isSendingETH) {
           web3.eth.sendTransaction({
@@ -356,6 +357,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
 
             token_contract.transfer(destinationAccount, amountInWei, {gasPrice: web3.toHex(get_gas_price())}, post_send_callback);
           };
+          // This is what runs in the Kudos case
           var send_gas_money_and_erc20 = function() {
             _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer.') }, 'info');
             web3.eth.sendTransaction({
@@ -430,7 +432,7 @@ var etherscanDomain = function() {
 
 
 var renderWallets = function (profileId) {
-  $('.form-check').remove()
+  // $('.form-check').remove()
   console.log('profileId: ' + profileId);
   let url = '/api/v0.1/wallet?profile_id=' + profileId;
   $.get(url, function(results, status) {

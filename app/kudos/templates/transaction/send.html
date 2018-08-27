@@ -96,8 +96,7 @@
       <br>
       <select class="username-selector" name="github-username" id="username">
         {% for profile in profiles %}
-        <!-- <option value="{{ profile.id }}">{{ profile.handle }}</option> -->
-        <option value="{{ profile.handle }}">{{ profile.handle }}</option>
+        <option value="{{ profile.id }}">{{ profile.handle }}</option>
         {% endfor %}
       </select>
     </div>
@@ -156,7 +155,7 @@
     <div class="text-center">
     <!-- <a href="#" id="send" class="btn btn-gc-purple">{% trans "Send" %} <span class="emoji">⚡️</span></a> -->
       <button class="btn btn-gc-purple" id="send">{% trans "Send" %} <span class="emoji">⚡️</span></button>
-    </div>x
+    </div>
   </form>
 
   <div id="send_eth_done" style="display:none;" class="text-center">

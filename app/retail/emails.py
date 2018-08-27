@@ -33,6 +33,10 @@ import premailer
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 # RENDERERS
 
 # key, name, frequency
@@ -118,6 +122,8 @@ def render_kudos_email(to_email, kudos, is_new):
 
     response_html = premailer_transform(render_to_string("emails/new_tip.html", params))
     response_txt = render_to_string("emails/new_tip.txt", params)
+
+    logger.info(response_txt)
 
     return response_html, response_txt
 
