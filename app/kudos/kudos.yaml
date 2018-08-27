@@ -564,202 +564,193 @@
   numClonesAllowed: 500
   tags: devcon, ethereum, shills
   image: devcon_4.svg
-
-# New kudos that need copy
-- name: pythonista_pony
-  description: lorum
+- name: django_pony
+  description: For the django ponies out there that just love Django
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
-  image: pythonista_pony.svg
+  numClonesAllowed: 100
+  tags: django, programmer
+  image: django_pony.svg
 - name: blockchain_utopia
-  description: lorum
+  description: Got a Utopian vision for a blockchain-ized world?  This badge is for you.
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: soft skills, vision, inspiration
   image: blockchain_utopia.svg
-- name: collab_robot
-  description: lorum
+- name: collaboration_robot
+  description: Know someone who's just a *machine* at collaborating with other coders, PMs, designers, and more?  Send them a Collboration Robot!
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: collboration, soft skills
   image: collab_robot.svg
 - name: path_finder
-  description: lorum
+  description: Path Finders are those who are able to carve a path through an uncertain roadmap.
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: soft skills, path, finder
   image: path_finder.svg
-- name: eth_hacker
-  description: lorum
+- name: climb_to_sky
+  description: Know someone who's skills, ambition, or talent knows no limits?  Give them a 'climb to the sky' Kudos!
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
-  image: eth_hacker.svg
-- name: climb_the_ladder
-  description: lorum
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: soft skills
   image: climb_the_ladder.svg
 - name: gitcoin_sustainer
-  description: lorum
+  description: A very special, limited edition, Kudos, only for sustainers of Gitcoin.
   rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  priceFinney: 5
+  numClonesAllowed: 100
+  tags: gitcoin, mission, grow open source
   image: gitcoin_sustainer.svg
-- name: growopen_source
-  description: lorum
+- name: grow_open_source
+  description: A very special, limited edition, Kudos, only for contributors to Gitcoin.
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: gitcoin, mission, grow open source
   image: growopen_source.svg
 - name: craftsman
-  description: lorum
+  description: Know a crafts-woman or crafts-man?  A craftsperson kudos is a great way to celebrate the tools we use and the people that use them!
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: soft skills, programmer
   image: craftsman.svg
 - name: struck_oil
-  description: lorum
+  description: Know someone who just unlocks value all the time?  Send them the 'struck oil' Kudos
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: soft skills, oil, value
   image: struck_oil.svg
 - name: freedom
-  description: lorum
+  description: Is there someone out there who is creating a better world? A more free world?  Send them the 'freedom' kudos!
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: freedom, soft skills, inspiration
   image: freedom.svg
 - name: focus
-  description: lorum
+  description: Know someone who has extremely good focus?  Send them a 'kudos' kudos.
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: focus, soft skills
   image: focus.svg
 - name: powertool_user
-  description: lorum
+  description: Know someone who's great at setting up and using power tools!?  Send them a powertool user kudos.
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: powertools, tools
   image: powertool_user.svg
 - name: party_robot
-  description: lorum
+  description: Is one of your teammates just a lot of fun to be around?  Send them a Party Robot Kudos.
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: party, fun, soft skills
   image: party_robot.svg
 - name: release_early_and_often
-  description: lorum
+  description: One of the important tenants of the Agile Manifesto is that you release early and often.  This badge is designed to highlighyt the contributors who release early and often!
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: soft skills, agile
   image: release_early_and_often.svg
 - name: direct
-  description: lorum
+  description: Know someone who's great at finding the right path to an issue?  Send them a 'direct' Kudos
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: direct, path, navigator
   image: direct.svg
-- name: growoss_crystalball
-  description: lorum
+- name: crystal_ball
+  description: Know someone who's got great vision?  Someone who can seemingly see into the future?  Send them a Crystal Ball Kudos
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: soft skills, vision, inspiration
   image: growoss_crystalball.svg
 - name: gitter_of_coins
-  description: lorum
+  description: For the contributors on the platform that, well, GIT coins.
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: git, coins, money
   image: gitter_of_coins.svg
 - name: mana_from_heavens
-  description: lorum
+  description: Open Source Software is mana from the heavens.  Celebrate someone who's provided value to your lift with this Kudos badge.
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: mana, fun
   image: mana_from_heavens.svg
-- name: robot_medium
-  description: lorum
+- name: medium_robot
+  description: Just for fun, this Gitcoin Robot is a way of celebrating the contributors in your life.
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: robot, gitcoin, just for fun
   image: robot_medium.svg
 - name: heros_honour
-  description: lorum
+  description: Know someone who's a hero?  Send them this video-game-inspired, badge. 
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: hero, honour, honor, soft skills
   image: heros_honour.svg
 - name: blockchain_the_world
-  description: lorum
+  description: Know someone who's blockchain-izing the world?  Send them this badge.
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: blockchain, soft skills
   image: blockchain_the_world.svg
-- name: robot_small
-  description: lorum
+- name: small_robot
+  description: Just for fun, this Gitcoin Robot is a way of celebrating the contributors in your life.
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: robot, just for fun
   image: robot_small.svg
 - name: firefighter
-  description: lorum
+  description: Know someone who's great at putting out fires?  This firefighter badge is for them!
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: firefigheter, bugs
   image: firefighter.svg
-- name: gitcoin_rasta
-  description: lorum
+- name: gitcoin_sun
+  description: A very special, limited edition, Kudos, only for sustainers of Gitcoin.
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: sustainers, gitcoin, just for fun
   image: gitcoin_rasta.svg
 - name: robot_large
-  description: lorum
+  description: Just for fun, this Gitcoin Robot is a way of celebrating the contributors in your life.
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: robot, just for fun, gitcoin
   image: robot_large.svg
-- name: a_genius
-  description: lorum
+- name: genius
+  description: This kudos is for the genius collaborators in your world.
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: genius, albert einstein, smart
   image: a_genius.svg
 - name: vitalik_genesis
-  description: lorum
+  description: A kudos that celebrates Vitalik's leadership in the Ethereum world.
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  numClonesAllowed: 100
+  tags: vitalik, just for fun
   image: vitalik_genesis.svg
 
