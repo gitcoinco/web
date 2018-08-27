@@ -27,7 +27,11 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.core.cache import cache
+<<<<<<< HEAD
 from django.http import Http404, HttpResponse, JsonResponse
+=======
+from django.http import Http404, JsonResponse, HttpResponse
+>>>>>>> Add user search autocomplete
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
