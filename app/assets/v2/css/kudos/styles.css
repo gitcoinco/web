@@ -72,11 +72,13 @@
     transform: rotate(45deg);
     margin-bottom: 50px; }
 
+.select2 {
+  width: 100%; }
+
 .select2-container--bootstrap4 {
   border: 1px solid #ced4da;
   padding: 0.25em;
-  border-radius: .25rem;
-  width: 100%; }
+  border-radius: .25rem; }
 
 .select2-container--bootstrap4.select2-container--disabled {
   background-color: #e9ecef;

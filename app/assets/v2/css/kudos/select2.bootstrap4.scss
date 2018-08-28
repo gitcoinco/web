@@ -1,11 +1,14 @@
 $arrow-color: #6c757d;
 $border-grey: #ced4da;
 
+.select2 {
+    width: 100%;
+}
+
 .select2-container--bootstrap4 {
     border: 1px solid #ced4da;
     padding: 0.25em;
     border-radius: .25rem;
-    width: 100%;
 }
 
 .select2-container--bootstrap4.select2-container--disabled {
