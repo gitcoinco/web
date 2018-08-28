@@ -1577,6 +1577,6 @@ def get_users(request):
             results.append(profile_json)
         data = json.dumps(results)
     else:
-        data = 'fail'
+        raise Http404
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
