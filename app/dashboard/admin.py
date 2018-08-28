@@ -77,7 +77,7 @@ class TipAdmin(admin.ModelAdmin):
     raw_id_fields = ['recipient_profile', 'sender_profile']
     ordering = ['-id']
     readonly_fields = ['resend', 'claim']
-    search_fields = ['tokenName', 'comments_public', 'comments_priv', 'from_name', 'username', 'network', 'github_url', 'url', 'emails', 'from_address', 'receive_address']
+    search_fields = ['tokenName', 'comments_public', 'comments_priv', 'from_name', 'username', 'network', 'github_url', 'url', 'emails', 'from_address', 'receive_address', 'ip', 'metadata']
 
     def resend(self, instance):
         html = format_html('<a href="/_administration/email/new_tip/resend?pk={}">resend</a>', instance.pk)
