@@ -2,11 +2,11 @@
 /* eslint no-redeclare: "warn" */
 /* eslint no-loop-func: "warn" */
 
-var normalizeAmount = function(amount, decimals) {
+const normalizeAmount = function(amount, decimals) {
   return Math.round(amount * 10 ** decimals) / 10 ** decimals;
 };
 
-var _truthy = function(val) {
+const _truthy = function(val) {
   if (!val || val == '0x0000000000000000000000000000000000000000') {
     return false;
   }
@@ -224,9 +224,9 @@ var callbacks = {
       $('.additional_funding_summary').addClass('hidden');
       return [ 'additional_funding_summary', '' ];
     }
-    var usd_value = val['usd_value'];
-    var tokens = val['tokens'];
-    var decimals = 3;
+    const usd_value = val['usd_value'];
+    const tokens = val['tokens'];
+    const decimals = 3;
 
     let crowdfunded_tokens = [];
     let tooltip_info = [];
@@ -246,8 +246,8 @@ var callbacks = {
   
     for (var token in tokens) {
       if (token) {
-        var val = tokens[token];
-        var funding = normalizeAmount(val, decimals);
+        const val = tokens[token];
+        const funding = normalizeAmount(val, decimals);
 
         if (crowdfunded_tokens.filter(fund => fund.token === token).length > 0) {
           crowdfunded_tokens.map((fund, index) => {
@@ -261,13 +261,13 @@ var callbacks = {
             token: token
           });
         }
-        var template = '<p class="m-0" style="color:#fb9470">+' + funding + ' ' + token + ' in crowdfunding</p>';
+        const template = '<p class="m-0" style="color:#fb9470">+' + funding + ' ' + token + ' in crowdfunding</p>';
 
         tooltip_info.push(template);
       }
     }
 
-    var token_tag = crowdfunded_tokens.map(fund => fund.amount + ' ' + fund.token);
+    const token_tag = crowdfunded_tokens.map(fund => fund.amount + ' ' + fund.token);
 
     $('#value_in_token').html('<i class="fas fa-users mr-2"></i>' +
       token_tag.join(' <i class="fas fa-plus mx-1" style="font-size: 0.5rem; position: relative; top: -1px;"></i> '));
