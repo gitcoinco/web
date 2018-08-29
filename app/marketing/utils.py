@@ -20,6 +20,7 @@ import logging
 from datetime import datetime, timedelta
 
 from django.conf import settings
+from django.templatetags.static import static
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
@@ -79,7 +80,7 @@ def validate_slack_integration(token, channel, message=None, icon_url=''):
         message = gettext('The Gitcoin Slack integration is working fine.')
 
     if not icon_url:
-        icon_url = 'https://gitcoin.co/static/v2/images/helmet.png'
+        icon_url = static('v2/images/helmet.png')
 
     try:
         sc = SlackClient(token)
@@ -129,7 +130,7 @@ def validate_discord_integration(webhook_url, message=None, icon_url=''):
         message = gettext('The Gitcoin Discord integration is working fine.')
 
     if not icon_url:
-        icon_url = 'https://gitcoin.co/static/v2/images/helmet.png'
+        icon_url = static('v2/images/helmet.png')
 
     try:
         headers = {'Content-Type': 'application/json'}
@@ -199,7 +200,7 @@ def get_platform_wide_stats(since_last_n_days=90):
     from dashboard.models import Bounty, BountyFulfillment
 
     last_n_days = datetime.now() - timedelta(days=since_last_n_days)
-    bounties = Bounty.objects.stats_eligible().filter(created_on__gte=last_n_days, current_bounty=True)
+    bounties = Bounty.objects.stats_eligible().current().filter(created_on__gte=last_n_days)
     total_bounties = bounties.count()
     completed_bounties = bounties.filter(idx_status__in=['done'])
     terminal_state_bounties = bounties.filter(idx_status__in=['done', 'expired', 'cancelled'])

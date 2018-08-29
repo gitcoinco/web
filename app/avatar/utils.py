@@ -23,6 +23,7 @@ import os
 from io import BytesIO
 from tempfile import NamedTemporaryFile
 
+from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 
@@ -51,7 +52,7 @@ def get_avatar_context():
         }, {
             'name': 'Eyes',
             'title': 'Pick eyes shape',
-            'options': ('0', '1', '2', '3', '4')
+            'options': ('0', '1', '2', '3', '4', '5', '6')
         }, {
             'name': 'Nose',
             'title': 'Pick nose shape',
@@ -67,7 +68,7 @@ def get_avatar_context():
         }, {
             'name': 'Clothing',
             'title': 'Pick your clothing',
-            'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt')
+            'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater')
         }, {
             'name': 'Hair Style',
             'title': 'Pick a hairstyle',
@@ -268,7 +269,7 @@ def handle_avatar_payload(request):
     body = json.loads(request.body)
     for k, v in body.items():
         if v and k in valid_component_keys:
-            component_type, svg_asset = v.lstrip('v2/images/avatar/').split('/')
+            component_type, svg_asset = v.lstrip(f'{settings.STATIC_URL}v2/images/avatar/').split('/')
             avatar_dict[k] = {'component_type': component_type, 'svg_asset': svg_asset, }
         elif v and k in valid_color_keys:
             avatar_dict[k] = v

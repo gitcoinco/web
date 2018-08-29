@@ -1,0 +1,63 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include 'shared/head.html' %}
+  {% include 'shared/cards.html' %}
+  <link rel="stylesheet" href={% static "v2/css/submit_bounty.css" %}>
+</head>
+<body class="interior submit_bounty">
+  {% include 'shared/tag_manager_2.html' %}
+  <div class="container-fluid header dash">
+    {% include 'shared/nav.html' %}
+  </div>
+  <div class="container-fluid submit_bounty_content">
+    <div class="row">
+      <div class="col-sm-12 col-lg-12">
+        <div id="form_container">
+          <div class="row d-flex justify-content-center my-5">
+            <div id="primary_form" class="col-lg-7 col-sm-12">
+              <h1 class="text-center title">{% trans "Change Bounty Details" %}</h1>
+              <form id="submitBounty" class="submit_bounty_form px-5 pt-5">
+                <div id="details-section" class="pt-2">
+                  {% include 'shared/issue_details.html' %}
+                </div>
+                <div class="form__footer pb-5">
+                  <button class="button button--primary btn-block js-submit" type="submit">{% trans 'Update Issue Details' %}</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% include 'shared/bottom_notification.html' %}
+  {% include 'shared/analytics.html' %}
+  {% include 'shared/footer_scripts.html' %}
+  {% include 'shared/footer.html' %}
+  {% include 'shared/messages.html' %}
+</body>
+<script type="text/javascript">
+  document.pk = {{ pk }};
+  document.result = {{ result|safe }};
+</script>
+<script src="{% static "v2/js/shared.js" %}"></script>
+<script src="{% static "v2/js/pages/change_bounty.js" %}"></script>
+</html>

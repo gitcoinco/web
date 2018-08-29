@@ -14,6 +14,7 @@ jobs:
           CACHE_URL: dbcache://my_cache_table
           DATABASE_URL: psql://postgres:postgres@localhost/testdb
           ENV: test
+          COLLECTFAST_CACHE_URL: dbcache://collectfast
 
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
@@ -21,7 +22,7 @@ jobs:
       - image: circleci/postgres:9-alpine
         environment:
           POSTGRES_USER: postgres
-          POSTGRES_PASS: postgres
+          POSTGRES_PASSWORD: postgres
           POSTGRES_DB: testdb
 
     steps:

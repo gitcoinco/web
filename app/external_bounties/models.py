@@ -70,7 +70,7 @@ class ExternalBounty(SuperModel):
         """Return the local avatar URL."""
         _org_name = org_name(self.action_url)
         if _org_name:
-            return f"{settings.BASE_URL}static/avatar/{_org_name}"
+            return f"{settings.BASE_URL}dynamic/avatar/{_org_name}"
         return f"{settings.BASE_URL}funding/avatar?repo={self.github_url}&v=3"
 
     @property
@@ -85,7 +85,7 @@ class ExternalBounty(SuperModel):
             ]
             i = self.pk % len(icons)
             icon = icons[i]
-            return f'{settings.BASE_URL}static/v2/images/icons/{icon}'
+            return f'{settings.STATIC_URL}v2/images/icons/{icon}'
 
     @property
     def fiat_price(self):
