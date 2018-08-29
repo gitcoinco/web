@@ -286,7 +286,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
             token_contract.transfer(destinationAccount, amountInWei, {gasPrice: web3.toHex(get_gas_price())}, post_send_callback);
           };
           var send_gas_money_and_erc20 = function() {
-            _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer.') }, 'info');
+            _alert({ message: gettext('You will now be asked to confirm two transactions.  The first is gas money, so your receipient doesnt have to pay it.  The second is the actual token transfer. (note: check Metamask extension, sometimes the 2nd confirmation window doesnt popup)') }, 'info');
             web3.eth.sendTransaction({
               to: destinationAccount,
               value: gas_money,
