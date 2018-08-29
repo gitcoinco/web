@@ -385,6 +385,13 @@ body {
 .in-some-cases-container {
   background-color: #FAFCFD;
 }
+
+.in-some-cases-container .flex-row div {
+  max-width: 12rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .how-it-works-footer {
   background-color: #0D0764;
 }

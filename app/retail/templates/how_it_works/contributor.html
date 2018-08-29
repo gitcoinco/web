@@ -18,22 +18,29 @@
 
 <div class="howworks-sections d-flex">
   <div class="howworks-section">
+    <div class="font-subheader">
+      <ul class="pl-0">
+        <li><a href="#">General</a></li>
+        <li><a href="#project-types">Project Types</a></li>
+        <li><a href="#permissions">Permission</a></li>
+      </ul>
+    </div>
     <div class="row mt-5 mb-5">
-      <div class="col text-center">
-        <h1 class="light">{% trans "How it Works - Contributor" %}</h1>
+      <div class="col text-center mb-5">
+        <h1 class="font-title-xl">{% trans "How it Works - Contributor" %}</h1>
       </div>
     </div>
 
     <div class="row how-it-works">
       <div class="col-12 mt-3">
         <div class="how-it-works__step">
-          <div class="col-12 col-lg-4 how-it-works__screenshot">
-            <img src="{% static "v2/images/landing/contributor/howitworks1_1.png" %}" alt="bounty explorer" />
+          <div class="col-12 col-lg-4 how-it-works__screenshot p-0">
+            <img src="{% static "v2/images/how-it-works/contributor/explore_bounty.svg" %}" alt="bounty explorer" />
           </div>
 
           <div class="col-12 col-md-4 offset-md-4 col-lg-4 offset-lg-0 how-it-works__step-description">
             <div class="how-it-works__step-icon">
-              <img src="{% static "v2/images/landing/contributor/howitworks1_2.png" %}" alt="bounty explorer" />
+              <img src="{% static "v2/images/how-it-works/icons/fund_bounty.svg" %}" alt="bounty explorer" />
             </div>
             <div>
               <div class="how-it-works__step-number">1</div>
@@ -41,116 +48,166 @@
             </div>
             <div class="how-it-works__step-title">{% trans "Explore Bounties" %}</div>
             <div class="how-it-works__step-text">
-              {% trans "Explore available bounties on the Issue Explorer" %}
+              <span class="center-block">
+                {% trans "Explore available bounties" %}
+              </span>
+              <span>
+                {% trans "on the Issue Explorer." %}
+              </span>
             </div>
           </div>
         </div>
 
-        <div class="col-12 col-lg-8 offset-lg-4 how-it-works__step">
+        <div class="col-12 col-lg-8 offset-lg-4 how-it-works__step p-0">
           <div class="col-12 col-lg-6 how-it-works__screenshot">
-            <img src="{% static "v2/images/landing/contributor/howitworks2_1.png" %}" alt="start work" />
+            <img src="{% static "v2/images/how-it-works/contributor/express_interest.svg" %}" alt="express interest" />
           </div>
           <div class="col-12 col-md-4 offset-md-4 col-lg-6 offset-lg-0 how-it-works__step-description">
             <div class="how-it-works__step-icon">
-              <img src="{% static "v2/images/landing/contributor/howitworks2_2.png" %}" alt="start work" />
+              <img src="{% static "v2/images/how-it-works/icons/binary.svg" %}" alt="express interest" />
             </div>
             <div>
               <div class="how-it-works__step-number">2</div>
               <div class="how-it-works__vert-line"></div>
             </div>
-            <div class="how-it-works__step-title">{% trans "Start Work" %}</div>
+            <div class="how-it-works__step-title">{% trans "Express Interest" %}</div>
             <div class="how-it-works__step-text">
-              {% blocktrans %}Interested on an issue? Click
-              <strong>Start Work</strong> and start working!{% endblocktrans %}
+              {% blocktrans %}
+                <span class="center-block">Interested on an issue?</span>
+                <span class="center-block">
+                  Click Start Work to express
+                </span>
+                <span>
+                  interest through a short form.
+                </span>
+              {% endblocktrans %}
             </div>
           </div>
         </div>
 
         <div class="how-it-works__step">
-          <div class="col-12 col-lg-4 how-it-works__screenshot">
-            <img src="{% static "v2/images/landing/contributor/howitworks3_1.png" %}" alt="submit work" />
+          <div class="col-12 col-lg-4 how-it-works__screenshot p-0">
+            <img src="{% static "v2/images/how-it-works/begin_work.svg" %}" alt="begin work" />
           </div>
 
           <div class="col-12 col-md-4 offset-md-4 col-lg-4 offset-lg-0 how-it-works__step-description">
             <div class="how-it-works__step-icon">
-              <img src="{% static "v2/images/landing/contributor/howitworks3_2.png" %}" alt="submit work" />
+              <img src="{% static "v2/images/how-it-works/icons/mail.svg" %}" alt="begin work" />
             </div>
             <div>
               <div class="how-it-works__step-number">3</div>
               <div class="how-it-works__vert-line"></div>
             </div>
-            <div class="how-it-works__step-title">{% trans "Submit Work" %}</div>
+            <div class="how-it-works__step-title">{% trans "Begin Work" %}</div>
             <div class="how-it-works__step-text">
-              {% blocktrans %}Completed your work? Click
-              <strong>Submit Work</strong> to send to a repo maintainer for review{% endblocktrans %}
+              {% blocktrans %}
+                <span class="center-block">If the project requires approval,</span>
+                <span class="center-block">keep an eye out for a notification</span>
+                <span class="center-block">for a Request to Work confirmation</span>
+                <span class="center-block">via email prior to begin working.</span>
+                <span>Otherwise, work away!</span>
+              {% endblocktrans %}
             </div>
           </div>
         </div>
 
         <div class="col-12 col-lg-8 offset-lg-4 how-it-works__step">
-          <div class="col-12 col-lg-6 how-it-works__screenshot">
-            <img src="{% static "v2/images/landing/contributor/howitworks_accept_submission_scr.png" %}"
-              alt="accept submission" />
+          <div class="col-12 col-lg-6 how-it-works__screenshot p-0">
+            <img src="{% static "v2/images/how-it-works/contributor/stop_work.svg" %}"
+              alt="stop work" />
           </div>
 
           <div class="col-12 col-md-4 offset-md-4 col-lg-6 offset-lg-0 how-it-works__step-description">
             <div class="how-it-works__step-icon">
-              <img src="{% static "v2/images/landing/contributor/howitworks_accept_submission_icon.png" %}"
-                alt="accept submission" />
+              <img src="{% static "v2/images/how-it-works/icons/stop_work.svg" %}"
+                alt="stop work" />
             </div>
             <div>
-              <div class="how-it-works__step-number">4</div>
+              <div class="how-it-works__step-exclamation"><i class="fas fa-exclamation"></i></div>
               <div class="how-it-works__vert-line"></div>
             </div>
-            <div class="how-it-works__step-title">{% trans "Accept Submission" %}</div>
+            <div class="how-it-works__step-title">{% trans "Can’t Continue Your Work?" %}</div>
             <div class="how-it-works__step-text">
-              {% trans "Submitted work is reviewed and approved by a repo owner." %}
+              {% blocktrans %}
+                <span class="center-block">Click Stop Work, and</span>
+                <span class="center-block">someone else will pick it up.</span>
+              {% endblocktrans %}
             </div>
           </div>
         </div>
 
         <div class="how-it-works__step">
-          <div class="col-12 col-lg-4 how-it-works__screenshot">
-            <img src="{% static "v2/images/landing/contributor/howitworks4_1.png" %}" alt="get paid" />
+          <div class="col-12 col-lg-4 how-it-works__screenshot p-0">
+            <img src="{% static "v2/images/how-it-works/submit_work.svg" %}" alt="submit work" />
           </div>
 
           <div class="col-12 col-md-4 offset-md-4 col-lg-4 offset-lg-0 how-it-works__step-description">
             <div class="how-it-works__step-icon">
-              <img src="{% static "v2/images/landing/contributor/howitworks4_2.png" %}" alt="get paid" />
+              <img src="{% static "v2/images/how-it-works/icons/complete_work.svg" %}" alt="submit work" />
             </div>
 
-            <div class="how-it-works__step-number">5</div>
-            <div class="how-it-works__step-title">{% trans "Get Paid" %}</div>
+            <div>
+              <div class="how-it-works__step-number">4</div>
+              <div class="how-it-works__vert-line"></div>
+            </div>
+            <div class="how-it-works__step-title">{% trans "Submit Work" %}</div>
             <div class="how-it-works__step-text">
-              {% trans "Once your work is approved by the repo maintainer, you'll get paid!" %}
+              {% blocktrans %}
+                <span class="center-block">Completed your work?</span>
+                <span class="center-block">Click Submit Work to</span>
+                <span class="center-block">send your PR to a repo maintainer</span>
+                <span class="center-block">for review.</span>
+                <span>Otherwise, work away!</span>
+              {% endblocktrans %}            
             </div>
           </div>
         </div>
 
-        <div class="testimonial-container w-100 how-it-works__hor-line">
-        </div>
-        <div class="d-none" ></div>
-
-        <div class="col-12 col-lg-8 offset-lg-4 how-it-works__step mt-4">
-          <div class="col-12 col-lg-6 how-it-works__screenshot">
-            <img src="{% static "v2/images/landing/contributor/howitworks_stop_work_scr.png" %}"
-              alt="accept submission" />
+        <div class="col-12 col-lg-8 offset-lg-4 how-it-works__step">
+          <div class="col-12 col-lg-6 how-it-works__screenshot p-0">
+            <img src="{% static "v2/images/how-it-works/accept_work.svg" %}" alt="work reviewed" />
           </div>
 
           <div class="col-12 col-md-4 offset-md-4 col-lg-6 offset-lg-0 how-it-works__step-description">
             <div class="how-it-works__step-icon">
-              <img src="{% static "v2/images/landing/contributor/howitworks_cant_work_icon.png" %}"
-                alt="accept submission" />
+              <img src="{% static "v2/images/how-it-works/icons/box_eth.svg" %}" alt="work reviewed" />
             </div>
-
-            <div class="how-it-works__step-exclamation">!</div>
-            <div class="how-it-works__step-title">{% trans "Can't Continue Your Work?" %}</div>
+            <div>
+              <div class="how-it-works__step-wait"> </div>
+              <div class="how-it-works__vert-line"></div>
+            </div>
+            <div class="how-it-works__step-title">{% trans "Work Reviewed" %}</div>
             <div class="how-it-works__step-text">
-              {% blocktrans %}Click <strong>Stop Work</strong>, and someone else will pick it up.{% endblocktrans %}
+              {% blocktrans %}
+                <span class="center-block">Submitted work is reviewed</span>
+                <span class="center-block">and approved by a repo owner.</span>
+              {% endblocktrans %}
             </div>
           </div>
         </div>
 
+        <div class="how-it-works__step">
+          <div class="col-12 col-lg-4 how-it-works__screenshot p-0">
+            <img src="{% static "v2/images/how-it-works/work_paid.svg" %}" alt="get paid" />
+          </div>
+
+          <div class="col-12 col-md-4 offset-md-4 col-lg-4 offset-lg-0 how-it-works__step-description">
+            <div class="how-it-works__step-icon">
+              <img src="{% static "v2/images/how-it-works/icons/eth_paid.svg" %}" alt="get paid" />
+            </div>
+
+            <div class="how-it-works__step-number">5</div>
+            <div class="how-it-works__step-title">{% trans "Get Paid" %}</div>
+
+            <div class="how-it-works__step-text">
+              {% blocktrans %}
+                <span class="center-block">Once your work is approved</span>
+                <span class="center-block">by the repo maintainer,</span>
+                <span>you’ll get paid!</span>
+              {% endblocktrans %}            
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>

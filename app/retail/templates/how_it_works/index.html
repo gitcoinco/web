@@ -37,36 +37,80 @@
         {% endif %}
       </div>
 
-      <div class="container-fluid py-5 px-0 in-some-cases-container">
-        <div class="row mb-4 ">
-          <div class="col text-center">
-            <h2 class="light">{% trans "In some cases..." %}</h2>
-          </div>
-        </div>
-        <div class="row mb-4 justify-content-around">
-          <div class="col d-none d-md-block">
-          </div>
-          <div class="col text-center px-4 px-md-4">
-            <img class="position-relative" style="left: 39px;"
-              src="{% static "v2/images/landing/contributor/howitworks_bottom_1.png" %}"
-              alt="expired" />
-            <div class="text-center">{% blocktrans %}Work that has not been completed and is past the
-              expiration date is considered expired.{% endblocktrans %}</div>
-          </div>
-          <div class="col text-center px-4 px-md-4">
-            <div class="position-relative">
-              <img class="position-relative" style="left: 37px;"
-                src="{% static "v2/images/landing/contributor/howitworks_bottom_2.png" %}" alt="expired" />
-              <div class="how-it-works__fake_but">Cancel Bounty</div>
+      <div class="in-some-cases-container">
+        <div class="container-fluid py-5 px-0 col-12">
+          <div class="row mb-4">
+            <div class="col text-center">
+              <h2 class="light my-5">{% trans "Things to Note" %}</h2>
             </div>
-            <div class="text-center">{% blocktrans %}A project can be cancelled by a bounty funder.
-              The funds will then be reclaimed by the bounty owner.{% endblocktrans %}</div>
           </div>
-          <div class="col d-none d-md-block">
+          <div class="row mb-4 d-flex flex-row text-center font-body mx-4">
+            {% if active == 'how_it_works_contributor' %}
+              <div>
+                <img src="{% static "v2/images/how-it-works/icons/notes_1.svg" %}"
+                  alt="start work" />
+                <div class="text-center mt-3">
+                  {% blocktrans %}
+                    As a courtesy to other contributors and to ensure payment,
+                    user the start work button to notify all parties your intention
+                    to work.
+                  {% endblocktrans %}
+                </div>
+              </div>
+            {% endif %}
+            <div>
+              <img src="{% static "v2/images/how-it-works/icons/notes_2.svg" %}"
+                alt="approve work" />
+              <div class="text-center mt-3">
+                {% blocktrans %}
+                  The funder reserves the right to accept or deny a worker
+                  in order to find the best fit for the project.
+                {% endblocktrans %}
+              </div>
+            </div>
+            <div>
+              <img src="{% static "v2/images/how-it-works/icons/notes_3.svg" %}"
+                alt="iterate work" />
+              <div class="text-center mt-3">
+                {% blocktrans %}
+                  Expect a few rounds of revisions to complete the project. 
+                {% endblocktrans %}
+              </div>
+            </div>
+            <div>
+              <img src="{% static "v2/images/how-it-works/icons/notes_4.svg" %}"
+                alt="start work" />
+              <div class="text-center mt-3">
+                {% blocktrans %}
+                  Work that has not been completed and is past the
+                  expiration date is considered expired.
+                {% endblocktrans %}
+              </div>
+            </div>
+            <div>
+              <img src="{% static "v2/images/how-it-works/icons/notes_5.svg" %}"
+                alt="expired work" />
+              <div class="text-center mt-3">
+                {% blocktrans %}
+                  A project can be cancelled by a bounty funder. The funds will then be reclaimed by the bounty owner.
+                {% endblocktrans %}
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
+      <div class="container-fluid howworks-container-contributors p-2 p-md-5">
+        <div class="col-12 offset-md-1 col-md-10">
+          {% include "how_it_works/project_types.html" %}
+          {% include "how_it_works/permissions.html" %}
+
+          {% if active == 'how_it_works_funder' %}
+            {% include "how_it_works/payment.html" %}
+            {% include "how_it_works/disputes.html" %} 
+          {% endif %}
+        </div>
+      </div>
 
       <div class="container-fluid py-5 px-0 how-it-works-footer">
         <div class="row mb-4">
@@ -82,7 +126,6 @@
           </div>
         </div>
       </div>
-
       {% include 'shared/footer.html' %}
     </div>
     {% include 'shared/footer_scripts.html' with slim=1 %}
