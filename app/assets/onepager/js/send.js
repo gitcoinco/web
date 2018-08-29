@@ -83,7 +83,6 @@ $(document).ready(function() {
     var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
     var tokenDetails = tokenAddressToDetails(tokenAddress);
     var tokenName = 'ETH';
-    var weiConvert = Math.pow(10, 18);
 
     if (!isSendingETH) {
       tokenName = tokenDetails.name;
@@ -154,7 +153,7 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
   if (username.indexOf('@') == -1) {
     username = '@' + username;
   }
-  var _disableDeveloperTip = true;
+
   var gas_money = parseInt(Math.pow(10, (9 + 5)) * ((defaultGasPrice * 1.001) / Math.pow(10, 9)));
   var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
   var tokenDetails = tokenAddressToDetails(tokenAddress);
@@ -170,7 +169,6 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
   var amountInWei = amountInEth * 1.0 * weiConvert;
   // validation
   var hasEmail = email != '';
-  var hasUsername = username != '';
 
   // validation
   if (hasEmail && !validateEmail(email)) {
