@@ -52,7 +52,7 @@ def get_avatar_context():
         }, {
             'name': 'Eyes',
             'title': 'Pick eyes shape',
-            'options': ('0', '1', '2', '3', '4')
+            'options': ('0', '1', '2', '3', '4', '5', '6')
         }, {
             'name': 'Nose',
             'title': 'Pick nose shape',
