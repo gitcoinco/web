@@ -60,6 +60,7 @@ urlpatterns = [
     url(r'^api/v0.1/', include(dbrouter.urls)),
     url(r'^api/v0.1/', include(ebrouter.urls)),
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cloudfront
+    url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
 
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
