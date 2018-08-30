@@ -37,6 +37,7 @@ from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.clickjacking import xframe_options_exempt
 
 from app.utils import ellipses, sync_profile
 from avatar.utils import get_avatar_context
@@ -1176,7 +1177,7 @@ def sync_web3(request):
 
 
 # LEGAL
-
+@xframe_options_exempt
 def terms(request):
     return TemplateResponse(request, 'legal/terms.txt', {})
 
@@ -1412,3 +1413,25 @@ def new_bounty(request):
         update=bounty_params,
     )
     return TemplateResponse(request, 'submit_bounty.html', params)
+
+
+def get_users(request):
+    if request.is_ajax():
+        q = request.GET.get('term')
+        profiles = Profile.objects.filter(handle__icontains=q)
+        results = []
+        for user in profiles:
+            profile_json = {}
+            profile_json['id'] = user.id
+            profile_json['text'] = user.handle
+            profile_json['email'] = user.email
+            profile_json['avatar_id'] = user.avatar_id
+            if user.avatar_id:
+                profile_json['avatar_url'] = user.avatar_url
+            profile_json['preferred_payout_address'] = user.preferred_payout_address
+            results.append(profile_json)
+        data = json.dumps(results)
+    else:
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)

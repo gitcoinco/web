@@ -77,6 +77,8 @@ urlpatterns = [
     url(r'^api/v0.1/', include(ebrouter.urls)),
     url(r'^api/v0.1/', include(kdrouter.urls)),
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cluodfront
+    url(r'^api/v0.1/users_search/',  dashboard.views.get_users, name='users_search'),
+
 
     # dashboard views
 

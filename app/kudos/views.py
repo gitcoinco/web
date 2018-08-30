@@ -23,8 +23,7 @@ from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.contrib.postgres.search import SearchVector
-from django.http import HttpResponseRedirect, JsonResponse
-from django.views import View
+from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 
 from .models import Token, Wallet, Email
 from dashboard.models import Profile
