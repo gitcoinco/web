@@ -90,7 +90,7 @@
       </div>
     </div> -->
     <input type="hidden" id="token" value="0x408c49a91e46311ddc35737f8c1aaea6191f36e0">
-    <input type="hidden" id="amount" value="0.0011">
+    <input type="hidden" id="amount" value="{{ kudos.price_in_eth }}">
     <div id="username-fg" class="form-group">
       <label for="">{% trans "To Github Username" %}</label>
       <br>
@@ -172,7 +172,7 @@
     <h3 class="font-weight-300">{% blocktrans %}<span id="new_username">the user</span> has been notified{% endblocktrans %}</h3>
     <p>{% trans "with instructions about how to receive their kudos." %}</p>
     <br>
-    <a id="" class="btn btn-gc-purple" href="{% url "kudos_send" %}">⬅ {% trans "Start Over" %}</a>
+    <a id="" class="btn btn-gc-purple" href="/kudos/send?name={{ kudos.name }}">⬅ {% trans "Start Over" %}</a>
   </div>
 </section>
 {% endblock %}

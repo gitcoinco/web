@@ -31,6 +31,7 @@
             <p id="kudosDescriptionclass="">{{ kudos.description }}</p>
             <p><span>ID: </span><span id="kudosID">{{ kudos.id }}</span></p>
             <p><span>Rarity: </span><span id="kudosRarity">{{ kudos.rarity }}</span></p>
+            <p><span>Price: </span><span id="kudosPrice">Ξ {{ kudos.price_in_eth }}</span></p>
             <p><span>Owner Address: </span><span><a id="kudosOwnerAddress" href="" class="btn-link">{{ kudos.owner_address|humanize_address }}</a></span></p>
             <!-- <p><span>Clones Allowed: </span><span id="kudosNumClonesAllowed">{{ kudos.num_clones_allowed }}</span></p> -->
             <p><span>Clones In Wild: </span><span id="kudosNumClonesInWild">{{ kudos.num_clones_in_wild }}</span></p>

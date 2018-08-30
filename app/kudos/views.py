@@ -24,6 +24,7 @@ from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.contrib.postgres.search import SearchVector
 from django.http import HttpResponseRedirect, JsonResponse
+from django.views import View
 
 from .models import Token, Wallet, Email
 from dashboard.models import Profile
@@ -162,11 +163,41 @@ def mint(request):
     return TemplateResponse(request, 'kudos_mint.html', context)
 
 
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def send_kudos_2(request):
+    """ Handle the first start of the Kudos email send.
+    This form is filled out before the 'send' button is clicked.
+    """
+    is_user_authenticated = request.user.is_authenticated
+    from_username = request.user.username if is_user_authenticated else ''
+    primary_from_email = request.user.email if is_user_authenticated else ''
+
+    kudos_name = request.GET.get('name')
+    kudos = Token.objects.filter(name=kudos_name, num_clones_allowed__gt=0).first()
+    profiles = Profile.objects.all()
+
+    params = {
+        'issueURL': request.GET.get('source'),
+        'class': 'send2',
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'from_email': primary_from_email,
+        'from_handle': from_username,
+        'title': 'Send Kudos | Gitcoin',
+        'card_desc': 'Send a Kudos to any github user at the click of a button.',
+        'kudos': kudos,
+        'profiles': profiles
+    }
+
+    return TemplateResponse(request, 'transaction/send.html', params)
+
+
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def send_api(request):
+def send_kudos_3(request):
     """ This function is derived from send_tip_3.
-    Handle the third stage of sending a kudos (the POST)
+    Handle the third stage of sending a kudos (the POST).  The request to send the kudos is
+    added to the database, but the transaction has not happened yet.  The txid is added
+    in `send_kudos_4`.
 
     Returns:
         JsonResponse: response with success state.
@@ -174,7 +205,7 @@ def send_api(request):
     """
     response = {
         'status': 'OK',
-        'message': _('Tip Created'),
+        'message': _('Kudos Created'),
     }
 
     is_user_authenticated = request.user.is_authenticated
@@ -185,7 +216,6 @@ def send_api(request):
 
     params = json.loads(request.body)
     logger.info(f'params: {params}')
-    # return JsonResponse(response)
 
     to_username = params['username'].lstrip('@')
     to_emails = get_emails_master(to_username)
@@ -203,13 +233,14 @@ def send_api(request):
     expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
 
     # Validate that the token exists on the back-end
-    kudos_token = Token.objects.filter(name=params['tokenName'], num_clones_allowed__gt=0).first()
+    kudos_token = Token.objects.filter(name=params['kudosName'], num_clones_allowed__gt=0).first()
     # db mutations
+    # TODO: Delete this next line (testing only)
+    to_emails = ['jasonrhaas@gmail.com']
     kudos_email = Email.objects.create(
         emails=to_emails,
         # For kudos, `token` is a kudos.models.Token instance.  This is to ensure that the 
         # kudos.models.Email instance is tied to a real Token in the database.
-        # TODO: Change name to kudosToken
         kudos_token=kudos_token,
         amount=params['amount'],
         comments_priv=params['comments_priv'],
@@ -230,38 +261,66 @@ def send_api(request):
         sender_profile=get_profile(from_username),
     )
 
-    maybe_market_kudos_to_email(kudos_email, to_emails)
-
     return JsonResponse(response)
 
-
+@csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def send(request):
-    """ Handle the first start of the Kudos email send.  This form is filled out before the
-        'send' button is clicked.
-    """
+def send_kudos_4(request):
+    """ Handle the fourth stage of sending a tip (the POST).  Once the metamask transaction is complete,
+        add it to the database.
 
-    kudos_name = request.GET.get('name')
-    kudos = Token.objects.filter(name=kudos_name, num_clones_allowed__gt=0).first()
-    profiles = Profile.objects.all()
+    Returns:
+        JsonResponse: response with success state.
+
+    """
+    response = {
+        'status': 'OK',
+        'message': _('Kudos Sent'),
+    }
 
     is_user_authenticated = request.user.is_authenticated
     from_username = request.user.username if is_user_authenticated else ''
-    primary_from_email = request.user.email if is_user_authenticated else ''
+    to_emails = []
 
-    params = {
-        'issueURL': request.GET.get('source'),
-        'class': 'send2',
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
-        'from_email': primary_from_email,
-        'from_handle': from_username,
-        'title': 'Send Tip | Gitcoin',
-        'card_desc': 'Send a tip to any github user at the click of a button.',
-        'kudos': kudos,
-        'profiles': profiles
-    }
+    params = json.loads(request.body)
+    txid = params['txid']
+    destinationAccount = params['destinationAccount']
+    is_direct_to_recipient = params.get('is_direct_to_recipient', False)
+    if is_direct_to_recipient:
+        kudos_email = Email.objects.get(
+            metadata__direct_address=destinationAccount, 
+            metadata__creation_time=params['creation_time'],
+            metadata__salt=params['salt'],
+            )
+    else:
+        kudos_email = Email.objects.get(
+            metadata__address=destinationAccount,
+            metadata__salt=params['salt'],
+            )
+    is_authenticated_for_this_via_login = (kudos_email.from_username and kudos_email.from_username == from_username)
+    is_authenticated_for_this_via_ip = kudos_email.ip == get_ip(request)
+    is_authed = is_authenticated_for_this_via_ip or is_authenticated_for_this_via_login
+    if not is_authed:
+        response = {
+            'status': 'error',
+            'message': _('Permission Denied'),
+        }
+        return JsonResponse(response)
 
-    return TemplateResponse(request, 'transaction/send.html', params)
+    # db mutations
+    kudos_email.txid = txid
+    if is_direct_to_recipient:
+        kudos_email.receive_txid = txid
+    kudos_email.save()
+
+    # notifications
+    # maybe_market_tip_to_github(kudos_email)
+    # maybe_market_tip_to_slack(kudos_email, 'new_tip')
+    maybe_market_kudos_to_email(kudos_email, to_emails)
+    # record_user_action(kudos_email.from_username, 'send_kudos', kudos_email)
+    # record_tip_activity(kudos_email, kudos_email.from_username, 'new_kudos' if kudos_email.username else 'new_crowdfund')
+
+    return JsonResponse(response)
 
 
 def receive(request):
