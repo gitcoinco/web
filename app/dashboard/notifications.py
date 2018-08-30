@@ -31,10 +31,14 @@ import rollbar
 import twitter
 from economy.utils import convert_token_to_usdt
 from git.utils import delete_issue_comment, org_name, patch_issue_comment, post_issue_comment, repo_name
-from marketing.mails import tip_email, kudos_email
+from marketing.mails import tip_email, send_kudos_email
 from marketing.models import GithubOrgToTwitterHandleMapping
 from pyshorteners import Shortener
 from slackclient import SlackClient
+
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def github_org_to_twitter_tags(github_org):
@@ -358,21 +362,24 @@ def maybe_market_tip_to_slack(tip, event_name):
     return True
 
 
-def maybe_market_kudos_to_email(kudos, emails):
+def maybe_market_kudos_to_email(kudos_email, emails):
     """Send an email for the specified Kudos.
 
     Args:
-        kudos (kudos.models.Token): The Kudos to be marketed.
+        kudos_email (kudos.models.Token): The Kudos to be marketed.
         emails (list of str): The list of emails to notify.
 
     Returns:
         bool: Whether or not the email notification was sent successfully.
 
     """
-    if kudos.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+    logger.info(kudos_email.network)
+    logger.info(settings.ENABLE_NOTIFICATIONS_ON_NETWORK)
+    if kudos_email.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+        logger.warning('Not sending out Kudos notificaion email because notifications are disabled.')
         return False
 
-    kudos_email(kudos, set(emails), True)
+    send_kudos_email(kudos_email, set(emails), True)
     return True
 
 

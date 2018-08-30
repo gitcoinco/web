@@ -35,6 +35,10 @@ from retail.emails import (
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 def send_mail(from_email, _to_email, subject, body, html=False,
               from_name="Gitcoin.co", cc_emails=None):
@@ -56,10 +60,12 @@ def send_mail(from_email, _to_email, subject, body, html=False,
 
     # build content
     content = Content(contenttype, html) if html else Content(contenttype, body)
+    content = Content("text/plain", "and easy to do anywhere, even with Python")
     if settings.IS_DEBUG_ENV:
         to_email = Email(settings.CONTACT_EMAIL)  # just to be double secret sure of what were doing in dev
         subject = _("[DEBUG] ") + subject
-    mail = Mail(from_email, subject, to_email, content)
+    # mail = Mail(from_email, subject, to_email, content)
+    mail = Mail(Email('testkudos@gitcoin.co'), 'testing kudos', Email('jasonrhaas@gmail.com'), content)
     response = None
 
     # build personalization
@@ -75,15 +81,19 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     mail.add_personalization(p)
 
     # debug logs
-    print(f"-- Sending Mail '{subject}' to {_to_email}")
+    logger.info(f"-- Sending Mail '{subject}' to {_to_email}")
+    # logger.info(f"-- SendGrid request_body: {mail.get()}")
 
     # send mails
     try:
         response = sg.client.mail.send.post(request_body=mail.get())
     except UnauthorizedError:
-        print(f'-- Sendgrid Mail failure - Unauthorized - Check sendgrid credentials')
+        logger.error(f'-- Sendgrid Mail failure - Unauthorized - Check sendgrid credentials')
     except HTTPError as e:
-        print(f'-- Sendgrid Mail failure - {e}')
+        logger.error(f'-- Sendgrid Mail failure - {e}')
+        # logger.debug(response.status_code)
+        # logger.debug(response.body)
+        # logger.debug(response.headers)
 
     return response
 
@@ -148,25 +158,43 @@ def tip_email(tip, to_emails, is_new):
             translation.activate(cur_language)
 
 
-def kudos_email(kudos, to_emails, is_new):
+def send_kudos_email(kudos_email, to_emails, is_new):
+    """ Send out a kudos email letting the user know that they can claim it.
+
+    Args:
+        kudos_email (model): An instance of the `kudos.model.Email` object.  This contains the information about the kudos that will be cloned.
+        to_emails (list): An array of email addresses to send the email to.
+        is_new (bool): If this is the first email or a remineder email.
+
+    Returns:
+        None
+    """
     round_decimals = 5
-    if not kudos or not kudos.txid or not kudos.amount or not kudos.tokenName:
+    if not kudos_email or not kudos_email.txid or not kudos_email.amount or not kudos_email.kudos_token:
+        logger.warning('Some kudos information not found.  Skipping email.')
         return
 
-    warning = '' if kudos.network == 'mainnet' else "({})".format(kudos.network)
+    warning = '' if kudos_email.network == 'mainnet' else "({})".format(kudos_email.network)
     subject = gettext("⚡️ New Kudos Available")
     if not is_new:
         subject = gettext("🕐 Your Kudos Is Expiring Soon")
 
+    if not to_emails:
+        to_emails = kudos_email.emails
     for to_email in to_emails:
         cur_language = translation.get_language()
         try:
             setup_lang(to_email)
             from_email = settings.CONTACT_EMAIL
-            html, text = render_kudos_email(to_email, kudos, is_new)
+            html, text = render_kudos_email(to_email, kudos_email, is_new)
 
             if not should_suppress_notification_email(to_email, 'kudos'):
                 send_mail(from_email, to_email, subject, text, html)
+            else:
+                logger.warning('Email not supposed be sent, sending anyway for testing')
+                send_mail(from_email, to_email, subject, text, html)
+        # except Exception as e:
+        #     logger.error(e)
         finally:
             translation.activate(cur_language)
 

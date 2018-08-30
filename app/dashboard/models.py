@@ -906,16 +906,12 @@ class Subscription(SuperModel):
         return f"{self.email} {self.created_on}"
 
 
-class TipPayoutException(Exception):
-    pass
-
-
-class Tip(SuperModel):
-
+class SendCryptoAsset(SuperModel):
+    """ Abstract Base Class to handle the model for both Tips and Kudos. """
     web3_type = models.CharField(max_length=50, default='v3')
     emails = JSONField()
     url = models.CharField(max_length=255, default='', blank=True)
-    tokenName = models.CharField(max_length=255)
+    tokenName = models.CharField(max_length=255, default='ETH')
     tokenAddress = models.CharField(max_length=255)
     amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
     comments_priv = models.TextField(default='', blank=True)
@@ -933,18 +929,15 @@ class Tip(SuperModel):
     received_on = models.DateTimeField(null=True, blank=True)
     from_address = models.CharField(max_length=255, default='', blank=True)
     receive_address = models.CharField(max_length=255, default='', blank=True)
-    recipient_profile = models.ForeignKey(
-        'dashboard.Profile', related_name='received_tips', on_delete=models.SET_NULL, null=True, blank=True
-    )
-    sender_profile = models.ForeignKey(
-        'dashboard.Profile', related_name='sent_tips', on_delete=models.SET_NULL, null=True, blank=True
-    )
     metadata = JSONField(default={}, blank=True)
     is_for_bounty_fulfiller = models.BooleanField(
         default=False,
         help_text='If this option is chosen, this tip will be automatically paid to the bounty'
                   ' fulfiller, not self.usernameusername.',
     )
+
+    class Meta:
+        abstract = True
 
     def __str__(self):
         """Return the string representation for a tip."""
@@ -975,28 +968,6 @@ class Tip(SuperModel):
     @property
     def amount_in_whole_units(self):
         return float(self.amount)
-
-    @property
-    def receive_url(self):
-        if self.web3_type == 'yge':
-            return self.url
-        elif self.web3_type == 'v3':
-            return self.receive_url_for_recipient
-        elif self.web3_type != 'v2':
-            raise Exception
-        
-        pk = self.metadata.get('priv_key')
-        txid = self.txid
-        network = self.network
-        return f"{settings.BASE_URL}tip/receive/v2/{pk}/{txid}/{network}"
-
-    @property
-    def receive_url_for_recipient(self):
-        if self.web3_type != 'v3':
-            raise Exception
-
-        key = self.metadata['reference_hash_for_receipient']
-        return f"{settings.BASE_URL}tip/receive/v3/{key}/{self.txid}/{self.network}"
 
     # TODO: DRY
     @property
@@ -1129,6 +1100,42 @@ class Tip(SuperModel):
         signed = w3.eth.account.signTransaction(tx, tip.metadata['priv_key'])
         receive_txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
         return receive_txid
+
+
+class Tip(SendCryptoAsset):
+    recipient_profile = models.ForeignKey(
+        'dashboard.Profile', related_name='received_tips', on_delete=models.SET_NULL, null=True, blank=True
+    )
+    sender_profile = models.ForeignKey(
+        'dashboard.Profile', related_name='sent_tips', on_delete=models.SET_NULL, null=True, blank=True
+    )
+
+    @property
+    def receive_url(self):
+        if self.web3_type == 'yge':
+            return self.url
+        elif self.web3_type == 'v3':
+            return self.receive_url_for_recipient
+        elif self.web3_type != 'v2':
+            raise Exception
+        
+        pk = self.metadata.get('priv_key')
+        txid = self.txid
+        network = self.network
+        return f"{settings.BASE_URL}tip/receive/v2/{pk}/{txid}/{network}"
+
+    @property
+    def receive_url_for_recipient(self):
+        if self.web3_type != 'v3':
+            raise Exception
+
+        key = self.metadata['reference_hash_for_receipient']
+        return f"{settings.BASE_URL}tip/receive/v3/{key}/{self.txid}/{self.network}"
+
+
+class TipPayoutException(Exception):
+    pass
+
 
 @receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
 def psave_tip(sender, instance, **kwargs):

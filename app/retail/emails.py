@@ -96,32 +96,42 @@ def render_tip_email(to_email, tip, is_new):
     return response_html, response_txt
 
 
-def render_kudos_email(to_email, kudos, is_new):
-    warning = kudos.network if kudos.network != 'mainnet' else ""
-    already_redeemed = bool(kudos.receive_txid)
-    link = kudos.url
-    if kudos.web3_type != 'v2':
-        link = kudos.receive_url
-    elif kudos.web3_type != 'v3':
-        link = kudos.receive_url_for_recipient
+def render_kudos_email(to_email, kudos_email, is_new):
+    """Summary
+
+    Args:
+        to_emails (list): An array of email addresses to send the email to.
+        kudos_email (model): An instance of the `kudos.model.Email` object.  This contains the information about the kudos that will be cloned.
+        is_new (TYPE): Description
+
+    Returns:
+        TYPE: Description
+    """
+    warning = kudos_email.network if kudos_email.network != 'mainnet' else ""
+    already_redeemed = bool(kudos_email.receive_txid)
+    link = kudos_email.url
+    if kudos_email.web3_type != 'v2':
+        link = kudos_email.receive_url
+    elif kudos_email.web3_type != 'v3':
+        link = kudos_email.receive_url_for_recipient
     params = {
         'link': link,
-        'amount': round(kudos.amount, 5),
-        'tokenName': kudos.tokenName,
-        'comments_priv': kudos.comments_priv,
-        'comments_public': kudos.comments_public,
-        'kudos': kudos,
+        'amount': round(kudos_email.amount, 5),
+        'tokenName': kudos_email.kudos_token,
+        'comments_priv': kudos_email.comments_priv,
+        'comments_public': kudos_email.comments_public,
+        'kudos_email': kudos_email,
         'already_redeemed': already_redeemed,
-        'show_expires': not already_redeemed and kudos.expires_date < (timezone.now() + timezone.timedelta(days=365)) and kudos.expires_date,
+        'show_expires': not already_redeemed and kudos_email.expires_date < (timezone.now() + timezone.timedelta(days=365)) and kudos_email.expires_date,
         'is_new': is_new,
         'warning': warning,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
-        'is_sender': to_email not in kudos.emails,
-        'is_receiver': to_email in kudos.emails,
+        'is_sender': to_email not in kudos_email.emails,
+        'is_receiver': to_email in kudos_email.emails,
     }
 
-    response_html = premailer_transform(render_to_string("emails/new_tip.html", params))
-    response_txt = render_to_string("emails/new_tip.txt", params)
+    response_html = premailer_transform(render_to_string("emails/new_kudos.html", params))
+    response_txt = render_to_string("emails/new_kudos.txt", params)
 
     logger.info(response_txt)
 

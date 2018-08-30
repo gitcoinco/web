@@ -28,7 +28,7 @@ from django.db.models.signals import m2m_changed, post_delete, post_save, pre_sa
 
 from economy.models import SuperModel
 from dashboard.models import Profile
-from dashboard.models import Tip
+from dashboard.models import SendCryptoAsset
 from eth_utils import to_checksum_address
 
 import logging
@@ -82,42 +82,38 @@ class Token(SuperModel):
         return self
 
 
-class Email(SuperModel):
-
-    web3_type = models.CharField(max_length=50, default='v3')
-    emails = JSONField()
-    url = models.CharField(max_length=255, default='', blank=True)
+class Email(SendCryptoAsset):
     # kudos_token is a reference to the Kudos Token that is slated to be cloned.
     kudos_token = models.ForeignKey(Token, on_delete=models.SET_NULL, null=True)
-    tokenAddress = models.CharField(max_length=255)
-    amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
-    comments_priv = models.TextField(default='', blank=True)
-    comments_public = models.TextField(default='', blank=True)
-    ip = models.CharField(max_length=50)
-    expires_date = models.DateTimeField()
-    github_url = models.URLField(null=True, blank=True)
-    from_name = models.CharField(max_length=255, default='', blank=True)
-    from_email = models.CharField(max_length=255, default='', blank=True)
-    from_username = models.CharField(max_length=255, default='', blank=True)
-    username = models.CharField(max_length=255, default='')  # to username
-    network = models.CharField(max_length=255, default='')
-    txid = models.CharField(max_length=255, default='')
-    receive_txid = models.CharField(max_length=255, default='', blank=True)
-    received_on = models.DateTimeField(null=True, blank=True)
-    from_address = models.CharField(max_length=255, default='', blank=True)
-    receive_address = models.CharField(max_length=255, default='', blank=True)
+
     recipient_profile = models.ForeignKey(
         'dashboard.Profile', related_name='received_kudos', on_delete=models.SET_NULL, null=True, blank=True
     )
     sender_profile = models.ForeignKey(
         'dashboard.Profile', related_name='sent_kudos', on_delete=models.SET_NULL, null=True, blank=True
     )
-    metadata = JSONField(default={}, blank=True)
-    is_for_bounty_fulfiller = models.BooleanField(
-        default=False,
-        help_text='If this option is chosen, this tip will be automatically paid to the bounty'
-                  ' fulfiller, not self.usernameusername.',
-    )
+
+    @property
+    def receive_url(self):
+        if self.web3_type == 'yge':
+            return self.url
+        elif self.web3_type == 'v3':
+            return self.receive_url_for_recipient
+        elif self.web3_type != 'v2':
+            raise Exception
+        
+        pk = self.metadata.get('priv_key')
+        txid = self.txid
+        network = self.network
+        return f"{settings.BASE_URL}kudos/receive/v2/{pk}/{txid}/{network}"
+
+    @property
+    def receive_url_for_recipient(self):
+        if self.web3_type != 'v3':
+            raise Exception
+
+        key = self.metadata['reference_hash_for_receipient']
+        return f"{settings.BASE_URL}kudos/receive/v3/{key}/{self.txid}/{self.network}"
 
 
 
