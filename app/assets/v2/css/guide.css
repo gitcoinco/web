@@ -1,0 +1,67 @@
+p {
+  margin: 0.1rem;
+}
+
+h1 {
+  margin: 1rem auto;
+}
+
+.responsive-object,
+iframe {
+  max-width: 100%;
+  padding: 0 !important;
+}
+
+.body {
+  margin: 0;
+}
+
+.center {
+  margin: 0 auto;
+}
+
+.intro {
+  margin: 0;
+  padding: 3rem;
+}
+
+.intro img {
+  position: absolute;
+  max-height: 18rem;
+  width: auto;
+  right: -28rem;
+  vertical-align: top;
+  bottom: 0;
+}
+
+#toc {
+  position: sticky;
+  top: 1em;
+}
+
+#toc a {
+  display: block;
+  margin: 0.3rem;
+}
+
+#toc a.active {
+  padding-left: 6px;
+  margin-left: -9px;
+  border-left: 3px solid var(--gc-green-hover);
+}
+
+@media (max-width: 800px) {
+  .col-4,
+  .col-6,
+  .col-8 {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+  .intro {
+    padding: 3rem 3rem 0 3rem;
+  }
+  .intro img {
+    position: relative;
+    right: 0;
+  }
+}
