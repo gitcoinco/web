@@ -180,7 +180,7 @@
     <h3 class="font-weight-300">{% blocktrans %}<span id="new_username">the user</span> has been notified{% endblocktrans %}</h3>
     <p>{% trans "with instructions about how to receive their kudos." %}</p>
     <br>
-    <a id="" class="btn btn-gc-purple" href="{% url "kudos_send" %}">⬅ {% trans "Start Over" %}</a>
+    <a id="" class="btn btn-gc-purple" href="/kudos/send?name={{ kudos.name }}">⬅ {% trans "Start Over" %}</a>
   </div>
 </section>
 

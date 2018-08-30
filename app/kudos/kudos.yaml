@@ -479,15 +479,14 @@
   numClonesAllowed: 300
   tags: ember, javascript
   image: ember_master.svg
-- name: django_dev
-  description: Developers who use Django are a great asset to the modern web, and
-    so is the Django project itself!  Gitcoin itself is built with Django, and we
-    are very happy to host this badge as part of the Kudos genesis batch!
+- name: flying_pony
+  description: Flying Ponies take risks, inspire other ponies to think big to achieve big ideas.
+    We turn lofty ideas into something tangible. We are fearless about the outcome, sometimes to our own detriment.
   rarity: 33
   priceFinney: 3
   numClonesAllowed: 342
-  tags: python, django, web, programmer
-  image: django_dev.svg
+  tags: pony, risks, ideas, dreamer
+  image: flying_pony.svg
 - name: bee_of_all_trades
   description: Are you a cross-pollinator?  Do you deliver value in a lot of places
     at once?  This 'Bee of all trades' badge is for you!
@@ -579,21 +578,21 @@
   tags: soft skills, vision, inspiration
   image: blockchain_utopia.svg
 - name: collaboration_robot
-  description: Know someone who's just a *machine* at collaborating with other coders, PMs, designers, and more?  Send them a Collboration Robot!
+  description: Collab Robots push the envelope. They make connections and find ways to build new ideas. With our powers, we can develop collabs with the smallest or largest machines.
   rarity: 20
   priceFinney: 1
   numClonesAllowed: 100
   tags: collboration, soft skills
-  image: collab_robot.svg
+  image: collaboration_robot.svg
 - name: path_finder
-  description: Path Finders are those who are able to carve a path through an uncertain roadmap.
+  description: Pathfinders are masters of navigation, able to pave ways forward without hesitation. The amount of trees or woods are no concern - we won’t rest until the right path has been uncovered.
   rarity: 20
   priceFinney: 1
   numClonesAllowed: 100
   tags: soft skills, path, finder
   image: path_finder.svg
 - name: climb_to_sky
-  description: Know someone who's skills, ambition, or talent knows no limits?  Give them a 'climb to the sky' Kudos!
+  description: A ladder climber propels upward into dreams and helps to paint a sharable vision. We can do it all from start to finish - to build new experiences for the open source community around us. 
   rarity: 20
   priceFinney: 1
   numClonesAllowed: 100
@@ -607,7 +606,7 @@
   tags: gitcoin, mission, grow open source
   image: gitcoin_sustainer.svg
 - name: grow_open_source
-  description: A very special, limited edition, Kudos, only for contributors to Gitcoin.
+  description: We are the source to Open Source. We know the origins and stories behind the trees around us – where they came from and where they are going.
   rarity: 20
   priceFinney: 1
   numClonesAllowed: 100
@@ -656,21 +655,23 @@
   tags: party, fun, soft skills
   image: party_robot.svg
 - name: release_early_and_often
-  description: One of the important tenants of the Agile Manifesto is that you release early and often.  This badge is designed to highlighyt the contributors who release early and often!
+  description: With the goal of releasing in mind, we help sustain the ecosystem by shipping quickly to learn quickly. 
   rarity: 20
   priceFinney: 1
   numClonesAllowed: 100
   tags: soft skills, agile
   image: release_early_and_often.svg
 - name: direct
-  description: Know someone who's great at finding the right path to an issue?  Send them a 'direct' Kudos
+  description: Holders of this badge seek the most straightforward ways to solve problem.
+    Our great challenge is finding the shortest path to the truth
   rarity: 20
   priceFinney: 1
   numClonesAllowed: 100
   tags: direct, path, navigator
   image: direct.svg
 - name: crystal_ball
-  description: Know someone who's got great vision?  Someone who can seemingly see into the future?  Send them a Crystal Ball Kudos
+  description: A crystal ball is just a way to predict the future, but hidden inside is a compelling story.
+    Grow Oss Crystal Ball holders are visionaries that transform what’s happening into an understandable future.
   rarity: 20
   priceFinney: 1
   numClonesAllowed: 100
@@ -740,7 +741,8 @@
   tags: robot, just for fun, gitcoin
   image: robot_large.svg
 - name: genius
-  description: This kudos is for the genius collaborators in your world.
+  description: A Genius bring ideas to life. We activate creative thinking and push problem solving
+    with our words and stories. The world is our experiment lab, and we are players in it.
   rarity: 20
   priceFinney: 1
   numClonesAllowed: 100
@@ -748,9 +750,16 @@
   image: a_genius.svg
 - name: vitalik_genesis
   description: A kudos that celebrates Vitalik's leadership in the Ethereum world.
-  rarity: 20
+  rarity: 90
   priceFinney: 1
   numClonesAllowed: 100
   tags: vitalik, just for fun
   image: vitalik_genesis.svg
+- name: eth_hacker
+  description: You spin up DAPPS on the weekend, just for fun.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 100
+  tags: ethereum, hacker, hackathon, eth
+  image: eth_hacker2.svg
 
