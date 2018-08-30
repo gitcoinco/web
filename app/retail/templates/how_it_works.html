@@ -31,40 +31,46 @@
     <div>
       <div class="container-fluid p-5 howworks-container howworks-container-contributors">
         {% if active == 'how_it_works_contributor' %}
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav">
+                <li class="nav-item active">
+                  <a class="nav-link" href="#">General </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#project-types">Project Types</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#permission">Permissions</a>
+                </li>
+              </ul>
+            </div>
+          </nav>
           {% include "how_it_works_contributor.html" %}
         {% else %}
+          <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="collapse navbar-collapse" id="navbarNav">
+              <ul class="navbar-nav">
+                <li class="nav-item active">
+                  <a class="nav-link" href="#">General </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#project-types">Project Types</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#permission">Permissions</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#payment">Payment</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" href="#dispute">Disputes</a>
+                </li>
+              </ul>
+            </div>
+          </nav>
           {% include "how_it_works_funder.html" %}
         {% endif %}
-      </div>
-
-      <div class="container-fluid py-5 px-0 in-some-cases-container">
-        <div class="row mb-4 ">
-          <div class="col text-center">
-            <h2 class="light">{% trans "In some cases..." %}</h2>
-          </div>
-        </div>
-        <div class="row mb-4 justify-content-around">
-          <div class="col d-none d-md-block">
-          </div>
-          <div class="col text-center px-4 px-md-4">
-            <img class="position-relative" style="left: 39px;"
-              src="{% static "v2/images/landing/contributor/howitworks_bottom_1.png" %}"
-              alt="expired" />
-            <div class="text-center">{% blocktrans %}Work that has not been completed and is past the
-              expiration date is considered expired.{% endblocktrans %}</div>
-          </div>
-          <div class="col text-center px-4 px-md-4">
-            <div class="position-relative">
-              <img class="position-relative" style="left: 37px;"
-                src="{% static "v2/images/landing/contributor/howitworks_bottom_2.png" %}" alt="expired" />
-              <div class="how-it-works__fake_but">Cancel Bounty</div>
-            </div>
-            <div class="text-center">{% blocktrans %}A project can be cancelled by a bounty funder.
-              The funds will then be reclaimed by the bounty owner.{% endblocktrans %}</div>
-          </div>
-          <div class="col d-none d-md-block">
-          </div>
-        </div>
       </div>
 
 

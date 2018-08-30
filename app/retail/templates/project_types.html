@@ -1,0 +1,160 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<style type="text/css">
+h3 {
+    color:#050B4D;
+}
+h1 {
+    color:#050B4D;
+}
+#con{
+  margin: 0 0 7em;
+}
+#cop{
+  margin: 0 0 7em;
+}
+#trad{
+  margin: 0 0 7em;
+}
+
+</style>
+
+
+<div class="container-fluid" id="project-types">
+  <div class="row">
+    <div class="col text-center">
+        <h1 class="light">{% trans "Project Types" %}</h1>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col text-center">
+          <h4 class="light">{% trans "Gitcoin supports 3 flexible ways to set up a project to ensure the best results." %}</h4>
+    </div>
+  </div>
+
+  <br/>
+  <br/>     
+  <h2 align="left"><b> Traditional Project</b></h2>
+  <br/>
+  <hr>
+                  
+  <div class="row">
+    <div class="col-md-6" id="trad" align="left">
+      <img src="{% static "v2/images/landing/contributor/man.png" %}" alt="start work" />
+      <strong>One Worker Contributes</strong>
+      <img src="{% static "v2/images/landing/contributor/man.png" %}" alt="start work" />
+      <strong>One Worker is Paid</strong>
+      <br/>
+      <br/>
+      <h3><b>Good For</b></h3>
+      
+      Small projects that require ramp up time, or a way to reserve a<br/>
+      project for a specific contributor.
+      <br/>
+      <br/>
+      <h3><b>What to Know</b></h3>
+      
+      A traditional project can be set up for contributors to be able<br/>
+      to start work immediately without approval or can be set up<br/>
+      as approval required.
+      <br/>
+      <br/>
+    </div>
+    <div class="col-md-6" align="left">
+      <h4>Example Traditional Project Flow</h4>
+      <br/>
+      <img src="{% static "v2/images/landing/contributor/trad.png" %}" alt="start work" />
+   </div>
+  </div>
+   
+  <h2 align="left"><b> Cooperative Project</b></h2>
+  <br/>
+  <hr>
+
+  <div class="row">
+    <div class="col-md-6" id="cop" align="left">
+      <img src="{% static "v2/images/landing/contributor/mans.png" %}" alt="start work" />
+      <strong>Multiple Contributors</strong>
+      <img src="{% static "v2/images/landing/contributor/mans.png" %}" alt="start work" />
+      <strong>Multiple Contributors Paid</strong>
+      <br/>
+      <br/>
+      <h3><b>Good For</b></h3>
+      
+      Large projects (broken up into parts), augmenting team skillsets.
+      <br/>
+      <br/>
+      <h3><b>What to Know</b></h3>
+      
+      Cooperative bounties may or may not require approval to work.<br/>
+      <br/>
+      When working on a cooperative bounty, if you are the first person<br/>
+      explain your approach given that others may join you.<br/>
+      <br/>
+      If you are joining after the first contributor, check to see how<br/>
+      the project has progressed and where you can jump in to contribute.<br/>
+      <br/>
+      The amount paid for a cooperative project is at the discretion of <br/>
+      the funder.
+      <br/>
+      <br/>
+    </div>
+    <div class="col-md-6" align="left">
+      <h4>Example Cooperative Project Flow</h4>
+      <br/>
+      <img src="{% static "v2/images/landing/contributor/cop.png" %}" alt="start work" />
+   </div>
+  </div>
+
+  <h2 align="left"><b> Contest Project</b></h2>
+  <br/>
+  <hr>
+
+  <div class="row">
+    <div class="col-md-6" id="con" align="left">
+      <img src="{% static "v2/images/landing/contributor/manss.png" %}" alt="start work" />
+      <strong>Multiple Contributors</strong>
+      <img src="{% static "v2/images/landing/contributor/man.png" %}" alt="start work" />
+      <strong>One Contributor Paid*</strong>
+      <br/>
+      <br/>
+      <h3><b>Good For</b></h3>
+      
+      Sourcing ideas, creative, searching for the best ways to solve
+      a problem, bug hunt.
+      <br/>
+      <br/>
+      <h3><b>What to Know</b></h3>
+      
+      Contest bounties may or may not require approval to work.<br/>
+      <br/>
+      The funder reserves the right to pay only one or more than<br/>
+      one contributor for the contest at their discretion. This depends<br/>
+      on the type of contest listed and the number of winners alloted.<br/>
+      
+      <br/>
+      <br/>
+    </div>
+    <div class="col-md-6" align="left">
+      <h4>Example Cooperative Project Flow</h4>
+      <br/>
+      <img src="{% static "v2/images/landing/contributor/cont.png" %}" alt="start work" />
+   </div>
+  </div>
+  <hr>

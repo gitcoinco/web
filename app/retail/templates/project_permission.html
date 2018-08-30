@@ -1,0 +1,87 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<style type="text/css">
+h3 {
+    color:#050B4D;
+}
+h1 {
+    color:#050B4D;
+}
+</style>
+
+
+<div class="container-fluid" id="permission">
+  <div class="row">
+    <div class="col text-center">
+        <h1 class="light">{% trans "Project Permissions" %}</h1>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col text-center">
+          <h4 class="light">{% trans "Gitcoin supports 2 types of permissions to support the flexibility of each project." %}</h4>
+    </div>
+  </div>
+
+    <br/>
+    <br/>
+  <div class="row">
+    <div class="col-md-6" align="left">      
+        <h3><b> Permissions- Approval Required</b></h3>
+        <img src="{% static "v2/images/landing/contributor/pos.png" %}"/>
+          <br/>
+          A Permissions based project ensures that the contributor has <br/>
+          necessary skillsets to complete the task. Contributors will request <br/>
+          to work on a project by clicking start work to express interest. A<br/>
+          short summary of a work approach will also be provided in the start <br/>
+          work form.
+          <br/>
+          <br/>
+          <h3><b>What to Know </b></h3>
+          <br/> 
+          Gitcoin will send you an email notification when a worker has<br/>
+          expressed interest.<br/>
+          <br/>
+          The repo owner/funder has the right to approve or deny any request<br/>
+          to work.<br/>
+          <br/>
+          If there is no response from the funder/owner of the repo. Gitcoin will<br/>
+          auto approve the contributor after 72 hours.<br/>
+          <br/>
+          <img src="{% static "v2/images/landing/contributor/sys.png" %}"/>    
+   </div>
+    
+    <div class="col-md-6" align="left">
+        <h3><b> Permissionless- No Approval Required</b></h3>
+        <img src="{% static "v2/images/landing/contributor/neg.png" %}"/>
+          <br/>
+          A Permissionless project allows a contributor to begin work without <br/>
+          permission or approval from the project owner. It is suggested that <br/>
+          an approach and questions be raised prior the start of the project to<br/>
+          ensure mutual understanding or the way forward.<br/>
+          work form.
+          <br/>
+          <br/>
+          <h3><b>What to Know </b></h3>
+          <br/> 
+          Although approval is not required to begin working on the project.<br/>
+          Ensure that the goals in the issue description are clear.<br/>
+          
+    </div>
+  </div>
+</div>
