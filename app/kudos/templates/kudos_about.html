@@ -37,13 +37,13 @@
                   <div class="col-xs-12 col-sm-6 col-lg-3">
                     {% include 'shared/kudos_card.html' %}
                   </div>
-                {% if forloop.counter|divisibleby:4 %}
+                {% if forloop.counter|divisibleby:4 and not forloop.last %}
               </div>
             </div>
             <div class="carousel-item">
               <div class="row justify-content-center">
                 {% endif %}
-              {% endfor %}
+                {% endfor %}
               </div>
             </div>
           </div> <!-- carousel-inner -->
@@ -68,6 +68,9 @@
     <section class="container mt-5">
       <div class="row">
         <div class="col mb-5">
+            <img class="mw-100" src="{% static "v2/images/kudos/assets/send-kudos.png" %}" alt="kudos" width="">
+            <img class="mw-100 position-absolute" src="{% static "v2/images/kudos/assets/star.png" %}" alt="kudos" width="">
+            <img class="mw-100" src="{% static "v2/images/kudos/assets/cellarius-logo.png" %}" alt="kudos" width="">
           <h3 class="h1 font-weight-300 text-center mb-5">{% trans "Summary/Intro" %}</h3>
           <h2 class="text-center text-highlight-gc-blue">Kudos is a unique artwork that can be sent to highlight, recognize, and show appreciation.</h2>
           <p class="font-bigger-1 font-weight-300 lh-3">{% trans "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dignissim, lacus accumsan dignissim sollicitudin, libero arcu viverra odio, in semper ipsum nisi non leo. Quisque augue nisi, elementum ac urna quis, sollicitudin imperdiet dolor. Integer lacus dolor, dapibus a condimentum eget, pulvinar a arcu. Morbi eu lectus sit amet sapien fermentum porta. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dapibus pellentesque lectus, et mattis dui semper a. Donec ut nulla ligula. Suspendisse potenti. Vestibulum neque purus, feugiat vel quam in, dignissim blandit mauris. Praesent laoreet in ex quis eleifend." %}</p>
@@ -93,6 +96,97 @@
 
       <div class="row justify-content-center">
         <a class="btn font-bigger-1 font-weight-300 m-5" href="{% url 'kudos_marketplace' %}">{% trans "See All Recent Kudos" %}</a>
+      </div>
+    </section>
+
+    <section class="container">
+      <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+        <desc>kudos hexagon</desc>
+        <symbol id="hexagon" viewBox="0 0 237 273">
+          <g transform="translate(-46.000000, -3742.000000)" fill="currentColor">
+            <g transform="translate(250.327895, 3805.378820) rotate(-330.000000) translate(-250.327895, -3805.378820) translate(76.327895, 3581.378820)">
+              <path fill-opacity="0.4" d="M204.381995,212 L272.509327,330 L204.381995,448 L68.1273318,448 L0,330 L68.1273318,212 L204.381995,212 Z M198.508996,222.172334 L74.0003315,222.172334 L11.7459994,330 L74.0003315,437.827666 L198.508996,437.827666 L260.763328,330 L198.508996,222.172334 Z" id="Polygon"></path>
+            </g>
+          </g>
+        </symbol> 
+      </svg>
+      <div class="hexagon-group">
+        <div class="paging-animation">
+          <div class="faces">
+            <svg role="img" title="hexagon" width="130" class="front face">
+              <use xlink:href="#hexagon"/>
+              <text font-size="1.3em" x="50%" y="40%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "Recognize" %}</text>
+              <text font-size="1.3em" x="50%" y="50%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "People You’ve" %}</text>
+              <text font-size="1.3em" x="50%" y="60%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "Worked With" %}</text>
+            </svg>
+            <img src="{% static 'v2/images/kudos/django_pony.svg' %}" width="100%" height="100%" class="face back kudos-hidden">
+          </div>
+        </div>
+        
+        <div class="paging-animation">
+          <div class="faces">
+            <svg role="img" title="hexagon" width="130" class="front face">
+              <use xlink:href="#hexagon"/>
+              <text font-size="1.3em" x="50%" y="40%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "Build Long" %}</text>
+              <text font-size="1.3em" x="50%" y="50%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "Lasting" %}</text>
+              <text font-size="1.3em" x="50%" y="60%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "Relationships" %}</text>
+            </svg>
+            <img src="{% static 'v2/images/kudos/gitcoin_rasta.svg' %}" width="100%" height="100%" class="face back kudos-hidden">
+          </div>
+        </div>
+        <div class="paging-animation">
+          <div class="faces">
+            <svg role="img" title="hexagon" width="130" class="front face">
+              <use xlink:href="#hexagon"/>
+              <text font-size="1.3em" x="50%" y="40%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "Understand" %}</text>
+              <text font-size="1.3em" x="50%" y="50%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "Other Gitcoiners" %}</text>
+              <text font-size="1.3em" x="50%" y="60%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "Skillsets" %}</text>
+            </svg>
+            <img src="{% static 'v2/images/kudos/heros_honour.svg' %}" width="100%" height="100%" class="face back kudos-hidden">
+          </div>
+        </div>
+        <div class="paging-animation">
+          <div class="faces">
+            <svg role="img" title="hexagon" width="130" class="front face">
+              <use xlink:href="#hexagon"/>
+              <text font-size="1.3em" x="50%" y="40%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "See Who" %}</text>
+              <text font-size="1.3em" x="50%" y="50%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "Gitcoiners have" %}</text>
+              <text font-size="1.3em" x="50%" y="60%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "Collaborated" %}</text>
+              <text font-size="1.3em" x="50%" y="70%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "With" %}</text>
+            </svg>
+            <img src="{% static 'v2/images/kudos/gitcoin_sustainer.svg' %}" width="100%" height="100%" class="face back kudos-hidden">
+          </div>
+        </div>
+        <div class="paging-animation">
+          <div class="faces">
+            <svg role="img" title="hexagon" width="130" class="front face">
+              <use xlink:href="#hexagon"/>
+              <text font-size="1.3em" x="50%" y="45%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "Send Kudos" %}</text>
+              <text font-size="1.3em" x="50%" y="55%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "With a Tip" %}</text>
+            </svg>
+            <img src="{% static 'v2/images/kudos/collab_robot.svg' %}" width="100%" height="100%" class="face back kudos-hidden">
+          </div>
+        </div>
+        <div class="paging-animation">
+          <div class="faces">
+            <svg role="img" title="hexagon" width="130" class="front face">
+              <use xlink:href="#hexagon"/>
+              <text font-size="1.3em" x="50%" y="45%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "Send Kudos" %}</text>
+              <text font-size="1.3em" x="50%" y="55%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "as a Tip" %}</text>
+            </svg>
+            <img src="{% static 'v2/images/kudos/party_robot.svg' %}" width="100%" height="100%" class="face back kudos-hidden">
+          </div>
+        </div>
+        <div class="paging-animation">
+          <div class="faces">
+            <svg role="img" title="hexagon" width="130" class="front face">
+              <use xlink:href="#hexagon"/>
+              <text font-size="1.3em" x="50%" y="45%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "Grow Open" %}</text>
+              <text font-size="1.3em" x="50%" y="55%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "Source" %}</text>
+            </svg>
+            <img src="{% static 'v2/images/kudos/grow_open_source.svg' %}" width="100%" height="100%" class="face back kudos-hidden">
+          </div>
+        </div>
       </div>
     </section>
 
