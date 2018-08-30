@@ -29,16 +29,15 @@
           <h3 id="kudosName" class="display-4">{{ kudos.name|humanize_name }}</h3>
           <div class="mt-4 font-bigger-1 font-weight-300">
             <p id="kudosDescription" class="">{{ kudos.description }}</p>
-            <p><span>ID: </span><span id="kudosID">{{ kudos.id }}</span></p>
+            <!-- <p><span>ID: </span><span id="kudosID">{{ kudos.id }}</span></p> -->
             <p><span>Rarity: </span><span id="kudosRarity">{{ kudos.rarity }}</span></p>
             <p><span>Owner Address: </span><a id="kudosOwnerAddress" target="_blank" href="https://etherscan.io/address/{{ kudos.owner_address }}" class="btn-link" title="{{ kudos.owner_address }}">{{ kudos.owner_address|humanize_address }}</a></p>
-            <p>{{ kudos.price_finney}} ETH</p>
+            <p>{{ kudos.price_in_eth }} ETH</p>
             <p>
               {% for tag in kudos.tags.split %}
                 <span class="badge badge-success">{{tag}}</span>
               {% endfor %}
             </p>
-            <p><span>Price: </span><span id="kudosPrice">Ξ {{ kudos.price_in_eth }}</span></p>
             <p><span>Clones In Wild: </span><span id="kudosNumClonesInWild">{{ kudos.num_clones_in_wild }}</span></p>
             {% if kudos.num_clones_available != 0 %}
             <p><span>Clones Available: </span><span id="kudosNumClonesAvailable">{{ kudos.num_clones_available }}</span></p>
