@@ -1,0 +1,140 @@
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static %}
+<div id="admin_actions" class="white-light-bg" style="background-image: url('{% static "v2/images/light-bg.png" %}'); background-size: contain;">
+    <div class="container-fluid text-center" style='min-height: 700px;'>
+        <div class="row">
+
+            <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
+              <div class="d-flex justify-content-center flex-column mt-5 w-100" id="primary_subform">
+                <div class="w-100" style="text-align: center;">
+                  <h3>{% trans "Admin Actions" %}</h3>
+                  <p>{% trans "for" %} <a href="{{bounty.url}}">{{bounty.title}}</a></p>
+                  <img src="{% static "v2/images/prime.png" %}">
+                </div>
+                <div class="w-100 mt-2">
+                  <a class="bounty_box snooze_gitcoin_bot" href="{{bounty.url}}">
+                      <h5>{% trans "Snooze Gitcoinbot." %}</h5>
+                      <span>
+                        {% trans "Snooze Gitcoinbot reminders." %}
+                      </span>
+                  </a>
+                </div>
+
+                <div class="w-100 mt-2">
+                  <a class="bounty_box admin_override_satatus" href="{{bounty.url}}">
+                      <h5>{% trans "Override Status." %}</h5>
+                      <span>
+                        {% trans "Override Status with a status of your choosing." %}
+                      </span>
+                  </a>
+                </div>
+                
+                <div class="w-100 mt-2">
+                  <a class="bounty_box" href="{{bounty.url}}?admin_toggle_as_remarket_ready=1">
+                      <h5>{% trans "Toggle Remarket Ready" %}</h5>
+                      <span>
+                        {% trans "Sets Remarket Ready if not already remarket ready.  Unsets it if already remarket ready." %}
+                      </span>
+                  </a>
+                </div>
+                
+                <div class="w-100 mt-2">
+                  <a class="bounty_box" href="{{bounty.url}}?admin_override_and_hide=1">
+                      <h5>{% trans "Hide Bounty" %}</h5>
+                      <span>
+                        {% trans "Hides Bounty from Active Bounties." %}
+                      </span>
+                  </a>
+                </div>
+                {% if permission_type == 'approval' %}
+                  <div class="w-100 mt-2">
+                    <a class="bounty_box" href="{{bounty.url}}?suspend_auto_approval=1">
+                        <h5>{% trans "Suspend Auto Approval" %}</h5>
+                        <span>
+                          {% trans "Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty." %}
+                        </span>
+                    </a>
+                  </div>
+                {% endif %}
+                <div class="w-100 mt-2">
+                  <a class="bounty_box contact_bounty_hunter" href="{{bounty.url}}">
+                      <h5>{% trans "Contact Funder via Email" %}</h5>
+                      <span>
+                        {% trans "Contact Funder via Email" %}
+                      </span>
+                  </a>
+                </div>
+                <div class="w-100 mt-2">
+                  <a class="bounty_box" href="{{bounty.admin_url}}">
+                      <h5>{% trans "View in Admin" %}</h5>
+                      <span>
+                        {% trans "View in Admin" %}
+                      </span>
+                  </a>
+                </div>
+              </div>
+            </div>
+
+        </div>
+        <br>
+
+  <script>
+    var execute_on_load = function(){
+      var attach_contact_funder_options = function() {
+        $('body').delegate('a.contact_bounty_hunter', 'click', function(e) {
+          e.preventDefault();
+          var text = window.prompt('What would you like to say to the funder?', '');
+          var url = '{{bounty.url}}?admin_contact_funder=' + text;
+
+          document.location.href = url;
+        });
+      };
+
+
+      var attach_snoozee_options = function() {
+        $('body').delegate('a.snooze_gitcoin_bot', 'click', function(e) {
+          e.preventDefault();
+          var text = window.prompt('How many days do you want to snooze?', '');
+          var url = '{{bounty.url}}?snooze=' + text;
+
+          document.location.href = url;
+        });
+      };
+
+      var attach_override_status = function() {
+        $('body').delegate('a.admin_override_satatus', 'click', function(e) {
+          e.preventDefault();
+          var text = window.prompt('What new status (valid choices: "open", "started", "submitted", "done", "expired", "cancelled", "" to remove override )?', '');
+          var url = '{{bounty.url}}?admin_override_satatus=' + text;
+
+          document.location.href = url;
+        });
+      };
+      attach_contact_funder_options();
+      attach_snoozee_options();
+      attach_override_status();
+
+    };
+    execute_on_load();
+  </script>
+
+    </div>
+</div>
+
+

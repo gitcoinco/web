@@ -91,6 +91,7 @@ urlpatterns = [
     path('issue/advanced_payout', dashboard.views.bulk_payout_bounty, name='bulk_payout_bounty'),
     path('issue/invoice', dashboard.views.invoice, name='invoice'),
     path('issue/payout', dashboard.views.payout_bounty, name='payout_bounty'),
+    path('issue/admin', dashboard.views.admin_bounty_view, name='admin_bounty_view'),
     path('issue/increase', dashboard.views.increase_bounty, name='increase_bounty'),
     path('issue/cancel', dashboard.views.cancel_bounty, name='kill_bounty'),
     path('issue/contribute', dashboard.views.contribute, name='contribute'),
