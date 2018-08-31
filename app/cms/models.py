@@ -23,16 +23,19 @@ from wagtail.core.models import Page
 
 
 class GuideSection(blocks.StructBlock):
+    """Defines the structure for a section in the GuidePage."""
     heading = blocks.CharBlock()
     paragraph = blocks.RichTextBlock(required=False)
     html = blocks.RawHTMLBlock(required=False)
 
 
 class GuideSectionWrapper(blocks.StreamBlock):
+    """A wrapper for GuideSection."""
     section = GuideSection()
 
 
 class GuidePage(Page):
+    """Defines the structure for the GuidePage."""
     intro = RichTextField(blank=True)
     sections = StreamField(GuideSectionWrapper())
 
