@@ -64,11 +64,8 @@ PyYAML==4.2b4
 ecdsa
 pysha3
 pygithub==1.40
-<<<<<<< HEAD
 oyaml
-=======
 raven==6.9.0
 collectfast==0.6.2
 django-health-check==3.7.0
 elastic-apm==3.0.0
->>>>>>> c2a7327dbb66d70bcd3404bd7974eeb6810ed7ff
