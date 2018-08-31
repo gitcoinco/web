@@ -763,9 +763,7 @@ const is_current_user_interested = function(result) {
 };
 
 var do_actions = function(result) {
-  // helper vars
   var is_legacy = result['web3_type'] == 'legacy_gitcoin';
-  // var is_date_expired = (new Date(result['now']) > new Date(result['expires_date']));
   var is_status_expired = result['status'] == 'expired';
   var is_status_done = result['status'] == 'done';
   var is_status_cancelled = result['status'] == 'cancelled';
@@ -777,20 +775,19 @@ var do_actions = function(result) {
   // Find interest information
   const is_interested = is_current_user_interested(result);
 
+  const has_fulfilled = result['fulfillments'].filter(fulfiller => fulfiller.fulfiller_github_username === document.contxt['github_handle']).length > 0;
+
   document.interested = is_interested;
 
   // which actions should we show?
   const should_block_from_starting_work = !is_interested && result['project_type'] == 'traditional' && (result['status'] == 'started' || result['status'] == 'submitted');
   let show_start_stop_work = is_still_on_happy_path && !should_block_from_starting_work && is_open;
   let show_github_link = result['github_url'].substring(0, 4) == 'http';
-  let show_submit_work = is_open;
+  let show_submit_work = is_open && !has_fulfilled;
   let show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled && isBountyOwner(result);
   let show_job_description = result['attached_job_description'] && result['attached_job_description'].startsWith('http');
   const show_increase_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
   const submit_work_enabled = !isBountyOwner(result);
-  const start_stop_work_enabled = !isBountyOwner(result);
-  const increase_bounty_enabled = isBountyOwner(result);
-  let show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
   let show_payout = !is_status_expired && !is_status_done && isBountyOwner(result);
   let show_extend_deadline = isBountyOwner(result) && !is_status_expired && !is_status_done;
   let show_invoice = isBountyOwner(result);
