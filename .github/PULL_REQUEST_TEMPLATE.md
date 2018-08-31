@@ -7,7 +7,7 @@
 
 ##### Description
 
-<!-- A description on what this PR aims to solve -->
+<!-- A description of what this PR aims to solve -->
 
 ##### Checklist
 
