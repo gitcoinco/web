@@ -238,6 +238,7 @@ body {
 }
 .transaction-status a{
   color: white;
+  text-decoration: underline;
 }
 
 
