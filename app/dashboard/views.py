@@ -1132,7 +1132,7 @@ def profile(request, handle):
                 },
             },
         }
-        return TemplateResponse(request, 'profiles/profile.html', params)
+        return TemplateResponse(request, 'profiles/profile.html')
 
     params = profile.to_dict()
     params['wallet_addresses'] = [w.address for w in Wallet.objects.filter(profile=profile.id)]

@@ -25,7 +25,7 @@
   <script src="{% static "v2/js/amounts.js" %}"></script>
   <script src="{% static "v2/js/secrets.min.js" %}"></script>
   <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
-  <script src="{% static "v2/js/tokens_dynamic.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/pages/kudos_send.js" %}"></script>
   <script src="{% static "onepager/js/confetti.js" %}"></script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
@@ -110,7 +110,7 @@
     <input type="hidden" id="amount" value="0.0011">
     <label for="">{% trans "To Github Username" %}</label>
     <div class="form-group">
-      <select class="username-search custom-select" {% if not kudos.name  %}disabled{% endif %}></select>
+      <select id="username" class="username-search custom-select" {% if not kudos.name  %}disabled{% endif %}></select>
     </div>
     <!-- <div id="username-fg" class="form-group">
       <br>
