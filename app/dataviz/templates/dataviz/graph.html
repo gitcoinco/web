@@ -78,20 +78,7 @@ if(d.type =='target'){
 return d.type =='source' ?  ( d.type =='independent' ? "#ffffff" : '#1f77b4') : '#000000';
 }
 
-var grow_over_time = function(){
-    setInterval(function(){
-        var val = $('#myRange').val();
-        var new_val = parseInt(val) + 24 * 3600 * 2; // 2 days at a time
-        $('#myRange').val(new_val);
-        console.log(new_val);
-        load_data();
-    }, 500)
-}
 
-
-$('#myRange').change(function(){
-    load_data();
-});
 
 var width = $(window).width() - 15,
     height = $(window).height() + 30;

@@ -16,19 +16,22 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from os import walk as walkdir
+
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
-from django.http import Http404, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.models import Activity, Bounty
+from dashboard.models import Activity
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
 from marketing.mails import new_token_request
@@ -42,7 +45,7 @@ from .utils import build_stat_results, programming_languages
 def get_activities(tech_stack=None, num_activities=15):
     # get activity feed
 
-    activities = Activity.objects.filter(bounty__network='mainnet').order_by('-created')
+    activities = Activity.objects.select_related('bounty').filter(bounty__network='mainnet').order_by('-created')
     if tech_stack:
         activities = activities.filter(bounty__metadata__icontains=tech_stack)
     activities = activities[0:num_activities]
@@ -96,7 +99,7 @@ def index(request):
         'gitcoin_description': gitcoin_description,
         'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter.")
     }
-    return TemplateResponse(request, 'index.html', context)
+    return TemplateResponse(request, 'landing/funder.html', context)
 
 
 def contributor_landing(request, tech_stack):
@@ -212,7 +215,7 @@ def contributor_landing(request, tech_stack):
 
     available_bounties_count = open_bounties().count()
     available_bounties_worth = amount_usdt_open_work()
-
+    # tech_stack = '' #uncomment this if you wish to disable contributor specific LPs
     context = {
         'activities': get_activities(tech_stack),
         'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else "Open Source Opportunities",
@@ -229,7 +232,7 @@ def contributor_landing(request, tech_stack):
         'tech_stack': tech_stack,
     }
 
-    return TemplateResponse(request, 'contributor_landing.html', context)
+    return TemplateResponse(request, 'landing/contributor.html', context)
 
 
 def how_it_works(request, work_type):
@@ -240,11 +243,14 @@ def how_it_works(request, work_type):
     context = {
         'active': f'how_it_works_{work_type}',
     }
-    return TemplateResponse(request, 'how_it_works.html', context)
+    return TemplateResponse(request, 'how_it_works/index.html', context)
 
 
 def robotstxt(request):
-    return TemplateResponse(request, 'robots.txt', {})
+    context = {
+        'settings': settings,
+    }
+    return TemplateResponse(request, 'robots.txt', context, content_type='text')
 
 
 def about(request):
@@ -379,6 +385,19 @@ def vision(request):
         'card_desc': _("Gitcoin's Vision for a web3 world is to make it easy for developers to find paid work in open source."),
     }
     return TemplateResponse(request, 'vision.html', context)
+
+
+def not_a_token(request):
+    """Render the not_a_token response."""
+    context = {
+        'is_outside': True,
+        'active': 'not_a_token',
+        'avatar_url': static('v2/images/no-token/no-token.jpg'),
+        'title': 'Gitcoin is not a token',
+        'card_title': _("Gitcoin is not a token"),
+        'card_desc': _("We didn't do a token because we felt it wasn't the right way to align incentives with our user base.  Read more about the future of monetization in web3."),
+    }
+    return TemplateResponse(request, 'not_a_token.html', context)
 
 
 def results(request, keyword=None):
@@ -786,7 +805,7 @@ def presskit(request):
 
 def get_gitcoin(request):
     context = {
-        'active': 'get',
+        'active': 'get_gitcoin',
         'title': _('Get Started'),
     }
     return TemplateResponse(request, 'getgitcoin.html', context)
@@ -818,7 +837,7 @@ def error(request, code):
 
     if return_as_json:
         return JsonResponse(context, status=500)
-    return TemplateResponse(request, 'error.html', context)
+    return TemplateResponse(request, 'error.html', context, status=code)
 
 
 def portal(request):
@@ -1004,3 +1023,36 @@ def tokens(request):
         key = f"{network}_tokens"
         context[key] = Token.objects.filter(network=network, approved=True)
     return TemplateResponse(request, 'tokens_js.txt', context, content_type='text/javascript')
+
+
+def ui(request):
+    svgs = []
+    pngs = []
+    gifs = []
+    for path, __, files in walkdir('assets/v2/images'):
+        if path.find('/avatar') != -1:
+            continue
+        for f in files:
+            if f.endswith('.svg'):
+                svgs.append(f'{path[7:]}/{f}')
+                continue
+            if f.endswith('.png'):
+                pngs.append(f'{path[7:]}/{f}')
+                continue
+            if f.endswith('.gif'):
+                gifs.append(f'{path[7:]}/{f}')
+                continue
+
+    context = {
+        'is_outside': True,
+        'active': 'ui_inventory ',
+        'title': 'UI Inventory',
+        'svgs': svgs,
+        'pngs': pngs,
+        'gifs': gifs,
+    }
+    return TemplateResponse(request, 'ui_inventory.html', context)
+
+
+def lbcheck(request):
+    return HttpResponse(status=200)

@@ -20,14 +20,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import logging
 import random
 import re
-import sys
 from urllib.parse import urlparse as parse
 
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.templatetags.static import static
 
 import requests
-import rollbar
 import twitter
 from economy.utils import convert_token_to_usdt
 from git.utils import delete_issue_comment, org_name, patch_issue_comment, post_issue_comment, repo_name
@@ -299,7 +298,7 @@ def maybe_market_to_user_discord(bounty, event_name):
         for subscriber in subscribers:
             try:
                 headers = {'Content-Type': 'application/json'}
-                body = {"content": msg, "avatar_url": "https://gitcoin.co/static/v2/images/helmet.png"}
+                body = {"content": msg, "avatar_url": static('v2/images/helmet.png')}
                 discord_response = requests.post(
                     subscriber.discord_webhook_url, headers=headers, json=body
                 )
@@ -311,6 +310,7 @@ def maybe_market_to_user_discord(bounty, event_name):
         print(e)
 
     return sent
+
 
 def maybe_market_tip_to_email(tip, emails):
     """Send an email for the specified Tip.
@@ -344,8 +344,10 @@ def maybe_market_tip_to_slack(tip, event_name):
     if not tip.is_notification_eligible(var_to_check=settings.SLACK_TOKEN):
         return False
 
-    title = tip.github_url
-    msg = f"{event_name} worth {round(tip.amount, 4)} {tip.tokenName}: {title} \n\n{tip.github_url}"
+    msg = f"{event_name} worth {round(tip.amount, 4)} {tip.tokenName}"
+
+    if tip.github_url:
+        msg = f"{msg}:\n\n{tip.github_url}"
 
     try:
         sc = SlackClient(settings.SLACK_TOKEN)
@@ -605,7 +607,7 @@ def maybe_market_to_github(bounty, event_name, profile_pairs=None):
         return False
     except Exception as e:
         extra_data = {'github_url': url, 'bounty_id': bounty.pk, 'event_name': event_name}
-        rollbar.report_exc_info(sys.exc_info(), extra_data=extra_data)
+        logger.error('Failure in marketing to github', exc_info=True, extra=extra_data)
         print(e)
         return False
     return True
@@ -691,7 +693,7 @@ def maybe_market_tip_to_github(tip):
 
 
 def maybe_market_to_email(b, event_name):
-    from marketing.mails import new_work_submission, new_bounty_rejection, new_bounty_acceptance
+    from marketing.mails import new_work_submission, new_bounty_rejection, new_bounty_acceptance, bounty_changed
     to_emails = []
     if b.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
@@ -719,6 +721,17 @@ def maybe_market_to_email(b, event_name):
             rejected_fulfillment = b.fulfillments.filter(accepted=False).latest('modified_on')
             to_emails = [b.bounty_owner_email, rejected_fulfillment.fulfiller_email]
             new_bounty_rejection(b, to_emails)
+        except Exception as e:
+            logging.exception(e)
+    elif event_name == 'bounty_changed':
+        try:
+            to_emails = [b.bounty_owner_email]
+            for profile in b.interested.select_related('profile').all():
+                email = profile.profile.email
+                if email:
+                    to_emails.append(email)
+
+            bounty_changed(b, to_emails)
         except Exception as e:
             logging.exception(e)
 

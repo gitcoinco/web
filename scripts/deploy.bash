@@ -93,7 +93,7 @@ cd ~/gitcoin/coin || echo "Cannot find coin directory!"
 bash scripts/run_management_command.bash ping_google
 
 if [ "$ENV" = "prod" ]; then
-    # Handle rollbar deployment
-    echo "- publishing deployment information to Rollbar"
-    bash scripts/rollbar.bash
+    # Handle sentry deployment
+    echo "- publishing deployment information to Sentry"
+    bash scripts/sentry.bash
 fi

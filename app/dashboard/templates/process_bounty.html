@@ -51,19 +51,19 @@
                   <img src="{% static "v2/images/prime.png" %}">
                 </div>
                 {% include 'shared/network_status.html' %}
-                <div class="w-100">
+                <div class="w-100 mb-2">
                   <label for=issueURL>{% trans "Issue URL:" %}</label>
                   <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input" type="text" placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" />
                 </div>
-                <div class="w-100 mt-2">
+                <div class="w-100 my-2">
                   <label for=bountyFulfillment>{% trans "Bounty Submission:" %}</label>
-                  <select class="w-100 btn btn-sm btn-outline-dark" name=bountyFulfillment id=bountyFulfillment>
+                  <select class="w-100 btn btn-sm" name=bountyFulfillment id=bountyFulfillment>
                     <option value="">-- {% trans "Submission" %} -- </option>
                   </select>
                 </div>
-                <div class="w-100 mt-2">
+                <div class="w-100 my-2">
                   <label for=tipPercent>{% trans "(Optional) Add a tip of:" %}</label>
-                  <input name='tipPercent' id="tipPercent" class="gc-round-text-input" style="width: 50px;" type="number" placeholder="" value="0" min="0" /> % worth <span id="tipEstimate">0</span> {{bounty.token_name}} 
+                  <input name='tipPercent' id="tipPercent" class="gc-round-text-input" style="width: 50px;" type="number" placeholder="" value="0" min="0" /> % worth <span id="tipEstimate">0</span> {{bounty.token_name}}
                 </div>
                 <div id="gas-section">
                   {% include 'shared/bounty_actions_hidden_vars.html' %}
@@ -73,13 +73,16 @@
                   <input name='terms' id='terms' type="checkbox" value=1 required />
                   <label for=terms>{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>.{% endblocktrans %}</label>
                 </div>
-                  <div class="w-100 mt-2">
-                    <a id="acceptBounty" class="btn btn-sm btn-info mt-3 mb-2 pulseClick submitBounty" name="submit" style="width: 100%; text-transform: uppercase; color: white;">
-                      {% trans "Accept" %}
-                    </a>
-                  </div>
-                <div class="w-100 mb-5 mt-1">
-                  <a class="float-right" href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp" target="_blank" rel="noopener noreferrer">{% trans "Having trouble? Click here." %}</a>
+                <div class="row mt-2 text-center">
+                  <a id="acceptBounty" class="button button--primary mt-3 mb-2 pulseClick submitBounty" name="submit" style="width: 100%; text-transform: uppercase; color: white;">
+                    {% trans "Accept" %}
+                  </a>
+                </div>
+                <div class="mt-1 text-center">
+                  <a class="font-caption" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">
+                    Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.</br>
+                    Learn more here.
+                  </a>
                 </div>
               </div>
             </div>
@@ -90,7 +93,6 @@
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
   </body>
@@ -98,7 +100,7 @@
   <script>
     document.bounty_amount_whole = {{bounty.get_value_true}};
     document.bounty_amount_wei = {{bounty.value_in_token}};
-    document.token_address = {{bounty.token_address}};
+    document.token_address = '{{bounty.token_address}}';
   </script>
 
   <!-- jQuery -->
@@ -109,7 +111,7 @@
   <script src="{% static "onepager/js/send.js" %}"></script>
 
   <script src="{% static "v2/js/abi.js" %}"></script>
-  <script src="/static/v2/js/tokens_dynamic.js"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
   <script src="{% static "v2/js/pages/process_bounty.js" %}"></script>

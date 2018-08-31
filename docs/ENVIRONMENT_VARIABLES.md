@@ -80,12 +80,14 @@ For further information, please check out the [Gitcoin Bot Documentation](https:
 | GITHUB_EVENT_HOOK_URL | The Github event hook payload URL for Gitcoin Bot. | `str` | github/payload/ |
 | IGNORE_COMMENTS_FROM | A list of Github handles to ignore comments from. | `list` | ['gitcoinbot', ] |
 
-## Rollbar
+## Sentry
 
 | Variable | Description | Type | Default |
 | --- | --- | --- | --- |
-| ROLLBAR_SERVER_TOKEN | The [Rollbar](https://rollbar.com) server token from your Rollbar account settings. | `str` | '' |
-| ROLLBAR_CLIENT_TOKEN | The [Rollbar](https://rollbar.com) client token from your Rollbar account settings. | `str` | '' |
+| SENTRY_USER | The [Sentry](https://sentry.io) user name. | `str` | '' |
+| SENTRY_PASSWORD | The [Sentry](https://sentry.io) password. | `str` | '' |
+| SENTRY_ADDRESS | The [Sentry](https://sentry.io) host address. | `str` | '' |
+| SENTRY_PROJECT | The [Sentry](https://sentry.io) project number. | `int` | '' |
 
 ## SendGrid
 

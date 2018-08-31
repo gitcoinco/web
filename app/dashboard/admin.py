@@ -30,6 +30,7 @@ from .models import (
 
 class BountyFulfillmentAdmin(admin.ModelAdmin):
     raw_id_fields = ['bounty', 'profile']
+    search_fields = ['fulfiller_address', 'fulfiller_email', 'fulfiller_github_username', 'fulfiller_name', 'fulfiller_metadata', 'fulfiller_github_url']
     ordering = ['-id']
 
 
@@ -37,8 +38,10 @@ class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
 
-class GeneralAdmin(admin.ModelAdmin):
+class ActivityAdmin(admin.ModelAdmin):
     ordering = ['-id']
+    raw_id_fields = ['bounty', 'profile', 'tip']
+    search_fields = ['metadata', 'activity_type', 'profile__handle']
 
 
 class TokenApprovalAdmin(admin.ModelAdmin):
@@ -54,6 +57,7 @@ class ToolVoteAdmin(admin.ModelAdmin):
 class InterestAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile']
     ordering = ['-id']
+    search_fields = ['profile__handle']
 
 
 class UserActionAdmin(admin.ModelAdmin):
@@ -73,7 +77,7 @@ class TipAdmin(admin.ModelAdmin):
     raw_id_fields = ['recipient_profile', 'sender_profile']
     ordering = ['-id']
     readonly_fields = ['resend', 'claim']
-    search_fields = ['tokenName', 'comments_public', 'comments_priv', 'from_name', 'username', 'network', 'github_url', 'url', 'emails']
+    search_fields = ['tokenName', 'comments_public', 'comments_priv', 'from_name', 'username', 'network', 'github_url', 'url', 'emails', 'from_address', 'receive_address']
 
     def resend(self, instance):
         html = format_html('<a href="/_administration/email/new_tip/resend?pk={}">resend</a>', instance.pk)
@@ -135,7 +139,7 @@ class BountyAdmin(admin.ModelAdmin):
         return mark_safe(f"<a href={url}>{copy}</a>")
 
 
-admin.site.register(Activity, GeneralAdmin)
+admin.site.register(Activity, ActivityAdmin)
 admin.site.register(Subscription, GeneralAdmin)
 admin.site.register(UserAction, UserActionAdmin)
 admin.site.register(Interest, InterestAdmin)

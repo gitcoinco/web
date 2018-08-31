@@ -18,8 +18,11 @@ span {
 }
 
 .nav_avatar {
+  width: 40px;
+  height: 40px;
   cursor: pointer;
   border-radius: 50%;
+  background-size: cover;
 }
 
 #navbarDropdown {
@@ -55,7 +58,7 @@ span {
 }
 
 .navbar-nav .btn-gc-blue {
-  margin-right: 0 !important;
+  margin-right: 1rem;
   font-size: 0.9rem;
 }
 
@@ -323,10 +326,12 @@ p a {
 
 .iama a.btn {
   color: #f9006c;
+  border-color: #f9006c;
 }
 
 .iama a.btn:hover {
   color: white;
+  background-color: #f9006c;
 }
 
 .iama .mt-3 {
@@ -584,6 +589,11 @@ input[type=text].loading {
   padding: 0 2em;
 }
 
+#bountyFulfillment {
+  height: 2rem;
+  outline: none;
+}
+
 .submit_bounty #primary_form {
   max-width: none;
 }
@@ -649,7 +659,7 @@ input[type=text].loading {
   color: #4aeba8;
 }
 
-.submit_bounty select[name=deonomination] {
+.submit_bounty select[name=denomination] {
   text-align: left;
 }
 
@@ -753,19 +763,6 @@ input[type=text].loading {
 
 .closebtn:hover {
   color: black;
-}
-
-.modal#save {
-  width: 100%;
-}
-
-.modal#save img {
-  width: 30px;
-  height: 30px;
-}
-
-.modal#save p {
-  display: inline;
 }
 
 .row.nonefound {
@@ -949,10 +946,18 @@ input.is-invalid {
   width: 25em;
 }
 
+.tooltip-sm,
 .tooltip-xs {
-  font-size: 10px;
   padding: 2px;
   width: auto;
+}
+
+.tooltip-sm {
+  font-size: 0.75rem;
+}
+
+.tooltip-xs {
+  font-size: 10px;
 }
 
 .ui-widget-shadow,
@@ -1062,6 +1067,7 @@ input.is-invalid {
 
 .submit-notification a {
   color: #FFF;
+  text-decoration: none;
 }
 
 .metamask-error {
@@ -1087,7 +1093,7 @@ input.is-invalid {
 
 .metamask-banner p,
 .metamask-banner li {
-  font-size: 0.85rem;
+  font-size: 1rem;
 }
 
 #robot_error {
@@ -1261,7 +1267,7 @@ input.is-invalid {
     max-width: 90%;
   }
 
-  body.slack, body.newtoken .col-4 {
+  body.slack .slack--brand-tree, body.newtoken .col-4 {
     display: none;
   }
 
@@ -1492,7 +1498,7 @@ input.is-invalid {
     display: none;
   }
 
-  .search_bar span {
+  .search_bar .save_search {
     display: none;
   }
 
@@ -1629,4 +1635,31 @@ input.is-invalid {
   font-size: 1.3rem;
   font-weight: 500;
   margin-bottom: 0.5rem;
+}
+
+@keyframes busyOverlay {
+  from {
+    opacity: 0.0;
+  }
+  to {
+    opacity: 1.0;
+  }
+}
+
+div.busyOverlay {
+  position: fixed;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  transform: translateZ(0);
+  z-index: 9;
+  background-color: rgba(240, 240, 240, 0.3);
+  box-shadow: 0 0 100em 0 inset var(--gc-purple);
+  animation: busyOverlay 0.3s ease-in;
+  animation-fill-mode: both;
+  background-repeat: no-repeat;
+  background-size: 12em;
+  background-position: center;
+  background-image: url('/static/v2/images/loading_v2.gif');
 }

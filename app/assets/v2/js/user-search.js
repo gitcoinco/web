@@ -7,7 +7,7 @@ $(function() {
       data: function(params) {
 
         let query = {
-          term: params.term
+          term: params.term[0] === '@' ? params.term.slice(1) : params.term
         };
 
         return query;
@@ -26,8 +26,7 @@ $(function() {
       return markup;
     },
     templateResult: formatUser,
-    templateSelection: formatUserSelection,
-    theme: "bootstrap4"
+    templateSelection: formatUserSelection
   });
 
   function formatUser(user) {

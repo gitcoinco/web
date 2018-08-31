@@ -57,12 +57,12 @@ body {
   position: absolute;
   top: -50px;
   right: calc(5vw - 50px);
-  max-width: 30vw;
+  max-width: 25vw;
   will-change: transform;
 }
 
 .howworks-container {
-  background-color: #F9F9F9;
+  background-color: #ffffff;
   text-align: center;
   color: var(--text-dark);
 }
@@ -141,6 +141,19 @@ body {
   margin-bottom: 1rem;
 }
 
+.howworks-step i {
+  font-size: 2rem;
+  padding: 0.5rem 0;
+}
+
+.funder-container .howworks-step i {
+  color: #FFCE08;
+}
+
+.contributor-container .howworks-step i {
+  color: #25E899;
+}
+
 .howworks-step__label {
   border-radius: 50%;
   height: 2rem;
@@ -150,7 +163,7 @@ body {
   position: absolute;
   top: -1rem;
   left: calc(50% - 1rem);
-  background: #F9F9F9;
+  background: #ffffff;
   color: var(--gc-purple);
 }
 
@@ -385,12 +398,19 @@ body {
 .in-some-cases-container {
   background-color: #FAFCFD;
 }
+
+.in-some-cases-container .flex-row div {
+  max-width: 12rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .how-it-works-footer {
   background-color: #0D0764;
 }
 
 .tree_container {
-  background: white;
+  background: #f9f9f9;
   text-align: center;
   overflow: hidden;
 }
@@ -401,10 +421,13 @@ body {
 
 .whatisit .youtube {
   height: 100%;
+  max-width: 550px;
+  margin-bottom: auto;
+  margin-top: 2rem;
 }
 
 .whatisit_container iframe {
-  min-height: 300px;
+  min-height: 280px;
   width: 100%;
   height: 100%;
 }
