@@ -292,7 +292,7 @@ def send_tip_3(request):
 
     # metadata
     metadata = params['metadata']
-    metadata['user_agent'] = request.META['HTTP_USER_AGENT']
+    metadata['user_agent'] = request.META.get('HTTP_USER_AGENT', '')
 
     # db mutations
     tip = Tip.objects.create(
