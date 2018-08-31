@@ -82,7 +82,7 @@
             {% for highlight in highlights %}
                 <li style="list-style:none; margin-bottom: 5px;">
                     {% if highlight.who_link %}
-                        <img style="border-radius: 20px;" src="https://gitcoin.co/dynamic/avatar/{{highlight.who}}" width=30px height=30px>
+                        <img style="border-radius: 20px;" src="https://gitcoin.co/dynamic/avatar/{{highlight.who}}?email=1" width=30px height=30px>
                         <a style="font-weight: bold; text-decoration: none;" href="https://gitcoin.co/profile/{{highlight.who}}">{{highlight.who}}</a>
                     {% else %}
                         * <strong>{{highlight.who}}</strong>
@@ -133,7 +133,7 @@
               <ul>
                 {% for leaderboard_item in package.items %}
                 <li style="list-style:none; margin-bottom: 5px;">
-                        {{leaderboard_item.rank}}. <img style="border-radius: 20px;" src="https://gitcoin.co/dynamic/avatar/{{leaderboard_item.github_username}}" width=30px height=30px>
+                        {{leaderboard_item.rank}}. <img style="border-radius: 20px;" src="https://gitcoin.co/dynamic/avatar/{{leaderboard_item.github_username}}?email=1" width=30px height=30px>
                         <a style="font-weight: bold; text-decoration: none;" href="https://gitcoin.co/profile/{{leaderboard_item.github_username}}">{{leaderboard_item.github_username}}</a> : ${{leaderboard_item.amount|floatformat:2}}
                 </li>
               {% endfor %}
