@@ -914,10 +914,8 @@ class SendCryptoAsset(SuperModel):
     tokenName = models.CharField(max_length=255, default='ETH')
     tokenAddress = models.CharField(max_length=255)
     amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
-    comments_priv = models.TextField(default='', blank=True)
     comments_public = models.TextField(default='', blank=True)
     ip = models.CharField(max_length=50)
-    expires_date = models.DateTimeField()
     github_url = models.URLField(null=True, blank=True)
     from_name = models.CharField(max_length=255, default='', blank=True)
     from_email = models.CharField(max_length=255, default='', blank=True)
@@ -1103,6 +1101,9 @@ class SendCryptoAsset(SuperModel):
 
 
 class Tip(SendCryptoAsset):
+    """ Inherit from SendCryptoAsset base class, and extra fields that are needed for Tips. """
+    expires_date = models.DateTimeField(null=True, blank=True)
+    comments_priv = models.TextField(default='', blank=True)
     recipient_profile = models.ForeignKey(
         'dashboard.Profile', related_name='received_tips', on_delete=models.SET_NULL, null=True, blank=True
     )
