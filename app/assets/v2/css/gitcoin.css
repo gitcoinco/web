@@ -223,6 +223,10 @@ h4,
   font-weight: 200;
 }
 
+.font-title-xl {
+  font-size: 1.8rem;
+}
+
 .font-title-lg {
   font-size: 22px;
 }
@@ -390,6 +394,12 @@ div.button-pink {
 
 .font-smaller-7 {
   font-size: 0.55rem;
+}
+
+.center-block {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 }
 
 .how-it-works-video {
