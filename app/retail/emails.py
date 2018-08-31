@@ -590,7 +590,7 @@ Back to BUIDLing,
     bounties_spec = [
         {
             'url': 'https://github.com/ethereum/ethereum-org/issues/898',
-            'primer': 'Have Design chops? The Ethereum Foundation is looking to design a grants website. Apply this weekend!,
+            'primer': 'Have Design chops? The Ethereum Foundation is looking to design a grants website. Apply this weekend!',
         },
         {
             'url': 'https://github.com/novnc/noVNC/issues/944',
