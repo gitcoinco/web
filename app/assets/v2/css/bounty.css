@@ -344,11 +344,6 @@ a.btn {
   margin-bottom: 10px;
 }
 
-#moderator-admin-actions:not(:empty) {
-  background: #e9e9e9;
-  padding: 16px;
-}
-
 .sticky {
   position: fixed;
   top: 0;
@@ -531,6 +526,18 @@ a.btn {
 .stop-work {
   float: right;
   padding-left: 5px;
+}
+
+#moderator-admin-actions:not(:empty) {
+  background: #F2F6F9;
+  padding: 16px 0 10px;
+  text-align: center;
+  left: 0;
+}
+
+#moderator-admin-actions:not(:empty) a {
+  border: none !important;
+  margin: 0 3px 5px;
 }
 
 @media (max-width: 767px) {
