@@ -141,6 +141,19 @@ body {
   margin-bottom: 1rem;
 }
 
+.howworks-step i {
+  font-size: 2rem;
+  padding: 0.5rem 0;
+}
+
+.funder-container .howworks-step i {
+  color: #FFCE08;
+}
+
+.contributor-container .howworks-step i {
+  color: #25E899;
+}
+
 .howworks-step__label {
   border-radius: 50%;
   height: 2rem;
