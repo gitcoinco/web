@@ -141,6 +141,19 @@ body {
   margin-bottom: 1rem;
 }
 
+.howworks-step i {
+  font-size: 2rem;
+  padding: 0.5rem 0;
+}
+
+.funder-container .howworks-step i {
+  color: #FFCE08;
+}
+
+.contributor-container .howworks-step i {
+  color: #25E899;
+}
+
 .howworks-step__label {
   border-radius: 50%;
   height: 2rem;
@@ -385,6 +398,13 @@ body {
 .in-some-cases-container {
   background-color: #FAFCFD;
 }
+
+.in-some-cases-container .flex-row div {
+  max-width: 12rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .how-it-works-footer {
   background-color: #0D0764;
 }

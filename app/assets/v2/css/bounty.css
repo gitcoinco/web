@@ -277,11 +277,6 @@ body {
   color: #6184AC;
 }
 
-.tag.token.additional_funding_summary{
-  background-color: #fbe0d6;
-  color: #fb9470;
-}
-
 .contributor-box {
   border: 1px solid #DBDBDB;
   border-right: none;
