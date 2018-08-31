@@ -24,7 +24,6 @@ import warnings
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-import rollbar
 from dashboard.helpers import UnsupportedSchemaException
 from kudos.utils import clone_and_transfer_kudos_web3
 from eth_utils import to_checksum_address

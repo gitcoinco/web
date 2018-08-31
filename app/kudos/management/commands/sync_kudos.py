@@ -24,7 +24,6 @@ import warnings
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-import rollbar
 from dashboard.helpers import UnsupportedSchemaException
 from kudos.utils import get_kudos_from_web3, web3_process_kudos, kudos_has_changed, update_kudos_db
 
