@@ -344,6 +344,17 @@ a.btn {
   margin-bottom: 10px;
 }
 
+#moderator-admin-actions:not(:empty) {
+  background: #e9e9e9;
+  padding: 16px;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  z-index: 1010;
+}
+
 #btn-white {
   background-color: #FFFFFF;
   border: 1px solid #979797;
