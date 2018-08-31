@@ -100,7 +100,7 @@ INSTALLED_APPS = [
     'dataviz',
     'impersonate',
     'kudos',
-    'django.contrib.postgres'
+    'django.contrib.postgres',
     'bounty_requests'
 ]
 
