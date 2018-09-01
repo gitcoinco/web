@@ -476,10 +476,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
             if not interest.pending and approval_required:
                 action = 'been approved to start work'
 
-            show_dibs = interested.count() > 1 and bounty.project_type == 'traditional'
-            dibs = f" ({get_ordinal_repr(i)} dibs)" if show_dibs else ""
-
-            msg += f"\n{i}. {profile_link} has {action}{dibs}. "
+            msg += f"\n{i}. {profile_link} has {action}."
 
             issue_message = interest.issue_message.strip()
             if issue_message:
