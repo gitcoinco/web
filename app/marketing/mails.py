@@ -33,6 +33,7 @@ from retail.emails import (
     render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission,
     render_quarterly_stats, render_start_work_applicant_about_to_expire, render_start_work_applicant_expired,
     render_start_work_approved, render_start_work_new_applicant, render_start_work_rejected, render_tip_email,
+    render_kudos_email
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 
@@ -42,12 +43,13 @@ logger = logging.getLogger(__name__)
 
 
 def send_mail(from_email, _to_email, subject, body, html=False,
-              from_name="Gitcoin.co", cc_emails=None):
+              from_name="Gitcoin.co", cc_emails=None, debug_mode=False):
     """Send email via SendGrid."""
     # make sure this subscriber is saved
     if not settings.SENDGRID_API_KEY:
-        print('No SendGrid API Key set. Not attempting to send email.')
+        logger.warning('No SendGrid API Key set. Not attempting to send email.')
         return
+
     to_email = _to_email
     get_or_save_email_subscriber(to_email, 'internal')
 
@@ -61,12 +63,14 @@ def send_mail(from_email, _to_email, subject, body, html=False,
 
     # build content
     content = Content(contenttype, html) if html else Content(contenttype, body)
-    content = Content("text/plain", "and easy to do anywhere, even with Python")
-    if settings.IS_DEBUG_ENV:
+
+    # TODO:  A bit of a hidden state change here.  Really confusing when doing development.
+    #        Maybe this should be a variable passed into the function the value is set upstream? 
+    if settings.IS_DEBUG_ENV or debug_mode:
         to_email = Email(settings.CONTACT_EMAIL)  # just to be double secret sure of what were doing in dev
         subject = _("[DEBUG] ") + subject
-    # mail = Mail(from_email, subject, to_email, content)
-    mail = Mail(Email('testkudos@gitcoin.co'), 'testing kudos', Email('jasonrhaas@gmail.com'), content)
+
+    mail = Mail(from_email, subject, to_email, content)
     response = None
 
     # build personalization
@@ -82,19 +86,14 @@ def send_mail(from_email, _to_email, subject, body, html=False,
         mail.add_personalization(p)
 
     # debug logs
-    logger.info(f"-- Sending Mail '{subject}' to {_to_email}")
-    # logger.info(f"-- SendGrid request_body: {mail.get()}")
-
-    # send mails
+    logger.info(f"-- Sending Mail '{subject}' to {to_email}")
     try:
         response = sg.client.mail.send.post(request_body=mail.get())
-    except UnauthorizedError:
+    except UnauthorizedError as e:
         logger.error(f'-- Sendgrid Mail failure - Unauthorized - Check sendgrid credentials')
+        logger.error(e)
     except HTTPError as e:
         logger.error(f'-- Sendgrid Mail failure - {e}')
-        # logger.debug(response.status_code)
-        # logger.debug(response.body)
-        # logger.debug(response.headers)
 
     return response
 
@@ -170,47 +169,6 @@ def tip_email(tip, to_emails, is_new):
 
             if not should_suppress_notification_email(to_email, 'tip'):
                 send_mail(from_email, to_email, subject, text, html)
-        finally:
-            translation.activate(cur_language)
-
-
-def send_kudos_email(kudos_email, to_emails, is_new):
-    """ Send out a kudos email letting the user know that they can claim it.
-
-    Args:
-        kudos_email (model): An instance of the `kudos.model.Email` object.  This contains the information about the kudos that will be cloned.
-        to_emails (list): An array of email addresses to send the email to.
-        is_new (bool): If this is the first email or a remineder email.
-
-    Returns:
-        None
-    """
-    round_decimals = 5
-    if not kudos_email or not kudos_email.txid or not kudos_email.amount or not kudos_email.kudos_token:
-        logger.warning('Some kudos information not found.  Skipping email.')
-        return
-
-    warning = '' if kudos_email.network == 'mainnet' else "({})".format(kudos_email.network)
-    subject = gettext("⚡️ New Kudos Available")
-    if not is_new:
-        subject = gettext("🕐 Your Kudos Is Expiring Soon")
-
-    if not to_emails:
-        to_emails = kudos_email.emails
-    for to_email in to_emails:
-        cur_language = translation.get_language()
-        try:
-            setup_lang(to_email)
-            from_email = settings.CONTACT_EMAIL
-            html, text = render_kudos_email(to_email, kudos_email, is_new)
-
-            if not should_suppress_notification_email(to_email, 'kudos'):
-                send_mail(from_email, to_email, subject, text, html)
-            else:
-                logger.warning('Email not supposed be sent, sending anyway for testing')
-                send_mail(from_email, to_email, subject, text, html)
-        # except Exception as e:
-        #     logger.error(e)
         finally:
             translation.activate(cur_language)
 

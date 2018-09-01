@@ -343,7 +343,7 @@ def send_kudos_4(request):
     # notifications
     # maybe_market_tip_to_github(kudos_email)
     # maybe_market_tip_to_slack(kudos_email, 'new_tip')
-    maybe_market_kudos_to_email(kudos_email, kudos_email.emails)
+    maybe_market_kudos_to_email(kudos_email)
     # record_user_action(kudos_email.from_username, 'send_kudos', kudos_email)
     # record_tip_activity(kudos_email, kudos_email.from_username, 'new_kudos' if kudos_email.username else 'new_crowdfund')
 

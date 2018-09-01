@@ -21,10 +21,7 @@ from __future__ import unicode_literals
 
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturalday
-from django.contrib.postgres.fields import JSONField
 from django.db import models
-from django.db.models import Q, Sum
-from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 
 from economy.models import SuperModel
 from dashboard.models import Profile
@@ -75,6 +72,10 @@ class Token(SuperModel):
             r = 0
         return r
 
+    @property
+    def humanized_name(self):
+        return ' '.join([x.capitalize() for x in self.name.split('_')])
+
     def humanize(self):
         self.owner_address = self.shortened_address
         self.name = self.capitalized_name
@@ -101,7 +102,7 @@ class Email(SendCryptoAsset):
             return self.receive_url_for_recipient
         elif self.web3_type != 'v2':
             raise Exception
-        
+
         pk = self.metadata.get('priv_key')
         txid = self.txid
         network = self.network
@@ -116,7 +117,6 @@ class Email(SendCryptoAsset):
         return f"{settings.BASE_URL}kudos/receive/v3/{key}/{self.txid}/{self.network}"
 
 
-
 class Wallet(SuperModel):
     address = models.CharField(max_length=255, unique=True)
     profile = models.ForeignKey('dashboard.Profile', on_delete=models.SET_NULL, null=True)
@@ -124,4 +124,3 @@ class Wallet(SuperModel):
     def save(self, *args, **kwargs):
         self.address = to_checksum_address(self.address)
         super().save(*args, **kwargs)
-

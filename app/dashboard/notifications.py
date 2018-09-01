@@ -22,6 +22,8 @@ import random
 import re
 from urllib.parse import urlparse as parse
 
+from django.utils import timezone, translation
+from django.utils.translation import gettext
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.templatetags.static import static
@@ -30,12 +32,12 @@ import requests
 import twitter
 from economy.utils import convert_token_to_usdt
 from git.utils import delete_issue_comment, org_name, patch_issue_comment, post_issue_comment, repo_name
-from marketing.mails import tip_email, send_kudos_email
+from marketing.mails import tip_email, setup_lang, send_mail
 from marketing.models import GithubOrgToTwitterHandleMapping
+from marketing.utils import should_suppress_notification_email
+from retail.emails import render_kudos_email
 from pyshorteners import Shortener
 from slackclient import SlackClient
-
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -364,24 +366,62 @@ def maybe_market_tip_to_slack(tip, event_name):
     return True
 
 
-def maybe_market_kudos_to_email(kudos_email, emails):
-    """Send an email for the specified Kudos.
+def maybe_market_kudos_to_email(kudos_email):
+    """Send an email for the specified Kudos.  The general flow of this function:
+
+        - 1. Decide if we are sending it
+        - 2. Generate subject
+        - 3. Render email
+        - 4. Send email
+        - 5. Do translation
 
     Args:
-        kudos_email (kudos.models.Token): The Kudos to be marketed.
-        emails (list of str): The list of emails to notify.
+        kudos_email (kudos.models.Email): The Kudos Email object to be marketed.
 
     Returns:
         bool: Whether or not the email notification was sent successfully.
 
     """
-    logger.info(kudos_email.network)
-    logger.info(settings.ENABLE_NOTIFICATIONS_ON_NETWORK)
+    is_new = True
+
+    # 1. Decide if we are sending it
     if kudos_email.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
-        logger.warning('Not sending out Kudos notificaion email because notifications are disabled.')
+        logger.warning('Notifications are disabled.  Skipping email.')
+        logger.debug(kudos_email.network)
+        logger.debug(settings.ENABLE_NOTIFICATIONS_ON_NETWORK)
         return False
 
-    send_kudos_email(kudos_email, set(emails), True)
+    if not kudos_email or not kudos_email.txid or not kudos_email.amount or not kudos_email.kudos_token:
+        logger.warning('Some kudos information not found.  Skipping email.')
+        return False
+
+    # 2. Generate subject
+    on_network = '' if kudos_email.network == 'mainnet' else f'({kudos_email.network})'
+    if is_new:
+        subject = gettext(f"⚡️ New {kudos_email.kudos_token.humanized_name} Kudos Available {on_network}")
+    else:
+        subject = gettext(f"🕐 Your {kudos_email.kudos_token.humanized_name}  Kudos Is Expiring Soon {on_network}")
+
+    logger.info(f'Emails to send to: {kudos_email.emails}')
+
+    for to_email in kudos_email.emails:
+        cur_language = translation.get_language()
+        try:
+            setup_lang(to_email)
+            # TODO:  Does the from_email field in the database mean nothing?  We just override it here.
+            from_email = settings.CONTACT_EMAIL
+            # 3. Render email
+            html, text = render_kudos_email(to_email, kudos_email, is_new)
+
+            # 4. Send email unless the email address has notifications disabled
+            if not should_suppress_notification_email(to_email, 'kudos'):
+                # TODO:  Should we be doing something with the response from SendGrid?
+                #        Maybe we should store it somewhere.
+                send_mail(from_email, to_email, subject, text, html)
+        finally:
+            # 5.  Do translation
+            translation.activate(cur_language)
+
     return True
 
 

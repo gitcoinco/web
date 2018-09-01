@@ -106,7 +106,7 @@ def render_kudos_email(to_email, kudos_email, is_new):
         is_new (TYPE): Description
 
     Returns:
-        TYPE: Description
+        tup: response_html, response_txt
     """
     warning = kudos_email.network if kudos_email.network != 'mainnet' else ""
     already_redeemed = bool(kudos_email.receive_txid)
@@ -132,8 +132,6 @@ def render_kudos_email(to_email, kudos_email, is_new):
 
     response_html = premailer_transform(render_to_string("emails/new_kudos.html", params))
     response_txt = render_to_string("emails/new_kudos.txt", params)
-
-    logger.info(response_txt)
 
     return response_html, response_txt
 

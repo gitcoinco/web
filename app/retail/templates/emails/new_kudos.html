@@ -48,7 +48,7 @@
 
     <h3>
         {% if kudos_email.from_name %}
-            {{kudos_email.from_name}} {% blocktrans %} sent you a {{ kudos_token.name }} kudos worth {{amount}}.{% endblocktrans %}
+            {{kudos_email.from_name}} {% blocktrans %} sent you a {{ kudos_token.name|humanize_name }} kudos.{% endblocktrans %}
         {% else %}
             {% blocktrans %}Someone sent you a {{ kudos_token.name }} kudos.{% endblocktrans %}
         {% endif %}{% if not is_new %} {{kudos_email.created_on | naturaltime}}{%endif%}.
