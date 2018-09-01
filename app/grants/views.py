@@ -24,7 +24,7 @@ def grant_show(request, grant_id):
 def new_grant(request):
     """Handle new grant."""
     profile_id = request.session.get('profile_id')
-    profile = request.user.profile
+    profile = request.user.profile if request.user.is_authenticated else None
 
     if request.method == "POST":
         grant = Grant()
