@@ -48,7 +48,8 @@ var wait_for_metadata = function(callback) {
       callback({
         'pub_key': account['public'],
         'address': account['address'],
-        'reference_hash_for_receipient': document.hash1,
+        // 'reference_hash_for_receipient': document.hash1,
+        reference_hash_for_receipient: '0x0000000000000000000000000000000000000000',
         'gitcoin_secret': account['shares'][0]
       });
     } else {
@@ -59,6 +60,20 @@ var wait_for_metadata = function(callback) {
     }
   }, 500);
 
+};
+
+
+var wait_for_metadata_test = function(callback) {
+  console.log('document.hash1 = ' + document.hash1)
+  var account = generate_or_get_private_key();
+
+  // This is the metadata that gets passed into got_metadata_callback()
+  callback({
+    'pub_key': account['public'],
+    'address': account['address'],
+    'reference_hash_for_receipient': '0x0000000000000000000000000000000000000000',
+    'gitcoin_secret': account['shares'][0]
+  });
 };
 
 var cloneKudos = function(name, numClones) {
@@ -495,7 +510,8 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
       console.log('waiting for metadata')
       // pay out via secret sharing algo
       // Step 6
-      wait_for_metadata(got_metadata_callback);
+      // wait_for_metadata(got_metadata_callback);
+      wait_for_metadata_test(got_metadata_callback);
       // let metadata = {}
       // got_metadata_callback(metadata);
     }
