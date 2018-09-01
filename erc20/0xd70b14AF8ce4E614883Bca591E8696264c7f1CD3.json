@@ -1,0 +1,18 @@
+{
+   "website": "https://www.egochain.io",
+   "symbol": "EGOT",
+   "whitepaper": "https://www.egochain.io/white_paper.pdf",
+   "address": "0xd70b14AF8ce4E614883Bca591E8696264c7f1CD3",
+   "overview":{
+         "en": "EGOChain,Realizing the chain of content in digital industry, breaking the shackles of traditional content industries, and ensuring the value of knowledge and expanding the volume of industrial bodies.",
+         "zh": "异构链，实现数字产业内容上链，打破传统内容行业桎梏，确权知识价值，扩容产业体量。"
+   },
+   "email": "service@egochain.io",
+   "published_on": "2018-06-29",
+   "initial_price": {
+         "USD": "0.0600 USD"
+     },
+    "links": {
+     "github": "https://github.com/egoChain"
+   }
+ }
