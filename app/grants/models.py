@@ -2,8 +2,6 @@ from django.db import models
 
 from economy.models import SuperModel
 
-# Create your models here.
-
 
 class Grant(SuperModel):
     """Define the structure of a Grant."""
@@ -19,3 +17,15 @@ class Grant(SuperModel):
 
     def percentage_done(self):
         return self.current_funding / self.goal_funding * 100
+
+
+class Stakeholder(models.Model):
+    """Define relationship for profiles expressing interest on a bounty."""
+
+    eth_address = models.CharField(max_length=50)
+    name = models.CharField(max_length=255, blank=True)
+    role = models.CharField(max_length=255, blank=True)
+    url = models.URLField(db_index=True)
+
+    def __str__(self):
+        return self.name
