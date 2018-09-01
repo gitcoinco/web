@@ -6,11 +6,12 @@
 
     <style>
         .animate-colors {
-            animation: colors 5s linear infinite;
-            animation-direction: alternate;
+            -webkit-animation: colors 3s linear infinite;
+                    animation: colors 3s linear infinite;
+            -webkit-animation-direction: alternate;
+                    animation-direction: alternate;
         }
-        @keyframes colors {
-            // stroke-dasharray: 300
+        @-webkit-keyframes colors {
             0% {
                 stroke:#0cc67f;
                 fill:rgba(#0cc67f,0.6);
@@ -41,13 +42,73 @@
             }                               
     
         }
+        @keyframes colors {
+            0% {
+                stroke:#0cc67f;
+                fill:rgba(#0cc67f,0.6);
+            }
+            15% {
+                stroke:#1e6ee2;
+                fill:rgba(#1e6ee2,0.6);
+            }
+            30% {
+                stroke:#662d91;
+                fill:rgba(#662d91,0.6);
+            }
+            50% {
+                stroke:#018cb2;
+                fill:rgba(#018cb2,0.6);
+            }
+            65% {
+                stroke:#e57418;
+                fill:rgba(#e57418,0.6);
+            }
+            85% {
+                stroke:#4d4d4d;
+                fill:rgba(#4d4d4d,0.6);
+            }
+            100% {
+                stroke:#0044e0;
+                fill:rgba(#0044e0,0.6);
+            }                               
+    
+        }
+        .animate-opacity {
+            -webkit-animation: opacity 2s linear infinite;
+            animation: opacity 2s linear infinite;
+            -webkit-animation-direction: alternate;
+            animation-direction: alternate;
+        }
+        .animate-opacity:nth-of-type(1) {
+        -webkit-animation-delay: 1s;
+          animation-delay: 1s;
+        }
+
+        @-webkit-keyframes opacity {
+            0% {
+                opacity: 0.1;
+            }
+            
+            100% {
+                opacity: 0.4;
+            }                               
+        }
+        @keyframes opacity {
+            0% {
+                opacity: 0.1;
+            }
+            
+            100% {
+                opacity: 0.4;
+            }                               
+        }
     </style>
     <defs></defs>
     <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
         <g id="Updated-Landing" transform="translate(-229.000000, -4947.000000)">
             <g id="erc-721" transform="translate(192.000000, 4928.000000)">
-                <polygon id="Stroke-2-Copy-3" stroke="#05B66A" stroke-width="8.6" opacity="0.178515625" transform="translate(125.388439, 121.179147) rotate(-30.000000) translate(-125.388439, -121.179147) " points="173.38708 36.6791466 77.3870803 36.6791466 29.3884388 121.180527 77.3870803 205.679147 173.38708 205.679147 221.388439 121.180527"></polygon>
-                <polygon id="Stroke-2-Copy-4" stroke="#05B66A" stroke-width="8.6" opacity="0.178515625" transform="translate(225.388439, 285.179147) rotate(-30.000000) translate(-225.388439, -285.179147) " points="273.38708 200.679147 177.38708 200.679147 129.388439 285.180527 177.38708 369.679147 273.38708 369.679147 321.388439 285.180527"></polygon>
+                <polygon id="Stroke-2-Copy-3" class="animate-opacity" stroke="#05B66A" stroke-width="8.6" opacity="0.178515625" transform="translate(125.388439, 121.179147) rotate(-30.000000) translate(-125.388439, -121.179147) " points="173.38708 36.6791466 77.3870803 36.6791466 29.3884388 121.180527 77.3870803 205.679147 173.38708 205.679147 221.388439 121.180527"></polygon>
+                <polygon id="Stroke-2-Copy-4" class="animate-opacity" stroke="#05B66A" stroke-width="8.6" opacity="0.178515625" transform="translate(225.388439, 285.179147) rotate(-30.000000) translate(-225.388439, -285.179147) " points="273.38708 200.679147 177.38708 200.679147 129.388439 285.180527 177.38708 369.679147 273.38708 369.679147 321.388439 285.180527"></polygon>
                 <polygon id="Stroke-2-Copy-5" class="animate-colors" stroke="#405366" stroke-width="4" transform="translate(226.662150, 289.035661) rotate(-30.000000) translate(-226.662150, -289.035661) " points="233.806013 276.45913 219.517882 276.45913 212.374019 289.035867 219.517882 301.612193 233.806013 301.612193 240.95028 289.035867"></polygon>
                 <g id="eth-symbol" class="animate-colors" transform="translate(100.000000, 79.000000)" stroke="#405366" stroke-linejoin="round" stroke-width="3.2928">
                     <polygon id="Stroke-3" points="25 87 0 52 25 66.7851427"></polygon>

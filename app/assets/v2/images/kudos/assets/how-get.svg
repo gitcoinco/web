@@ -5,11 +5,12 @@
     <desc>Created with Sketch.</desc>
     <style>
         .animate-colors {
-            animation: colors 5s linear infinite;
-            animation-direction: alternate;
+            -webkit-animation: colors 3s linear infinite;
+                    animation: colors 3s linear infinite;
+            -webkit-animation-direction: alternate;
+                    animation-direction: alternate;
         }
-        @keyframes colors {
-            // stroke-dasharray: 300
+        @-webkit-keyframes colors {
             0% {
                 stroke:#0cc67f;
                 fill:rgba(#0cc67f,0.6);
@@ -39,6 +40,66 @@
                 fill:rgba(#0044e0,0.6);
             }                               
     
+        }
+        @keyframes colors {
+            0% {
+                stroke:#0cc67f;
+                fill:rgba(#0cc67f,0.6);
+            }
+            15% {
+                stroke:#1e6ee2;
+                fill:rgba(#1e6ee2,0.6);
+            }
+            30% {
+                stroke:#662d91;
+                fill:rgba(#662d91,0.6);
+            }
+            50% {
+                stroke:#018cb2;
+                fill:rgba(#018cb2,0.6);
+            }
+            65% {
+                stroke:#e57418;
+                fill:rgba(#e57418,0.6);
+            }
+            85% {
+                stroke:#4d4d4d;
+                fill:rgba(#4d4d4d,0.6);
+            }
+            100% {
+                stroke:#0044e0;
+                fill:rgba(#0044e0,0.6);
+            }                               
+    
+        }
+        .animate-opacity {
+            -webkit-animation: opacity 2s linear infinite;
+            animation: opacity 2s linear infinite;
+            -webkit-animation-direction: alternate;
+            animation-direction: alternate;
+        }
+        .animate-opacity:nth-of-type(1) {
+        -webkit-animation-delay: 1s;
+          animation-delay: 1s;
+        }
+
+        @-webkit-keyframes opacity {
+            0% {
+                opacity: 0.1;
+            }
+            
+            100% {
+                opacity: 0.4;
+            }                               
+        }
+        @keyframes opacity {
+            0% {
+                opacity: 0.1;
+            }
+            
+            100% {
+                opacity: 0.4;
+            }                               
         }
     </style>
     <defs></defs>
@@ -77,8 +138,8 @@
                     <path d="M24.9620253,0 C16.4064203,0 9.46835443,6.94264183 9.46835443,15.5108173 L9.46835443,24.8173077 L40.4556962,24.8173077 L40.4556962,15.5108173 C40.4556962,6.94264183 33.5176304,0 24.9620253,0 Z" id="Stroke-5"></path>
                     <path d="M43.0379747,0 C34.4823696,0 27.5443038,6.94264183 27.5443038,15.5108173 L27.5443038,24.8173077 L58.5316456,24.8173077 L58.5316456,15.5108173 C58.5316456,6.94264183 51.5935797,0 43.0379747,0 Z" id="Stroke-6"></path>
                 </g>
-                <polygon id="Stroke-2" stroke="#3E00FF" stroke-width="8.6" opacity="0.117745536" transform="translate(125.388439, 121.179147) rotate(-30.000000) translate(-125.388439, -121.179147) " points="173.38708 36.6791466 77.3870803 36.6791466 29.3884388 121.180527 77.3870803 205.679147 173.38708 205.679147 221.388439 121.180527"></polygon>
-                <polygon id="Stroke-2-Copy-2" stroke="#3E00FF" stroke-width="8.6" opacity="0.117745536" transform="translate(225.388439, 285.179147) rotate(-30.000000) translate(-225.388439, -285.179147) " points="273.38708 200.679147 177.38708 200.679147 129.388439 285.180527 177.38708 369.679147 273.38708 369.679147 321.388439 285.180527"></polygon>
+                <polygon id="Stroke-2" class="animate-opacity" stroke="#3E00FF" stroke-width="8.6" opacity="0.117745536" transform="translate(125.388439, 121.179147) rotate(-30.000000) translate(-125.388439, -121.179147) " points="173.38708 36.6791466 77.3870803 36.6791466 29.3884388 121.180527 77.3870803 205.679147 173.38708 205.679147 221.388439 121.180527"></polygon>
+                <polygon id="Stroke-2-Copy-2" class="animate-opacity" stroke="#3E00FF" stroke-width="8.6" opacity="0.117745536" transform="translate(225.388439, 285.179147) rotate(-30.000000) translate(-225.388439, -285.179147) " points="273.38708 200.679147 177.38708 200.679147 129.388439 285.180527 177.38708 369.679147 273.38708 369.679147 321.388439 285.180527"></polygon>
                 <g id="Group-15-Copy-6" class="animate-colors" transform="translate(205.000000, 266.000000)" stroke="#405366" stroke-linejoin="round" stroke-width="3.2928">
                     <polygon id="Stroke-3" points="14 49 0 29 14 37.448653"></polygon>
                     <polygon id="Stroke-5" points="15 49 29 29 15 37.448653"></polygon>

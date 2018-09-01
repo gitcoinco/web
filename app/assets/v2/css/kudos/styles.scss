@@ -1,6 +1,7 @@
 // VARS
 $dark-blue: #0d023b;
 $gc-blue: #3e00ff;
+$bg-cellarius: #4D5858;
 
 @import 'transaction';
 @import 'range-slider';
@@ -106,6 +107,10 @@ $gc-blue: #3e00ff;
   color: white;
 }
 
+.bg-cellarius {
+  background-color: $bg-cellarius;
+}
+
 .lh-3 {
   line-height: 3rem;
 }
@@ -177,6 +182,17 @@ $gc-blue: #3e00ff;
 .btn-lightblue {
   color: white;
   background-color: var(--gc-blue);
+}
+
+.btn-orange {
+  background-color: #d38971;
+  color: white;
+  padding: .75rem 1.5rem;
+
+  &:hover {
+    color: white;
+    background-color: rgba(#d38971,0.9);
+  }
 }
 
 .hexagon {
@@ -308,15 +324,13 @@ a:hover {
 
     .back {
       display: block;
-      transform: rotateY(180deg);
+      transform: rotateY(0.5turn);
       box-sizing: border-box;
       
     }
     
     &:hover .faces{
-      transform: rotateY(180deg);
-      // animation: sk-rotateplane 1.2s  ease-in-out 1;
-      
+      transform: rotateY(0.5turn);
     }
   
     &:nth-child(1) {
@@ -424,4 +438,40 @@ a:hover {
     }
   }
 
+}
+
+
+.star-pulse {
+  animation: pulse-shadow .5s ease-out infinite;
+  animation-direction: alternate;
+  margin-left: -60px;
+  margin-top: 4rem;
+  top: 0;
+
+  @media (max-width: 768px) {
+    right: -10px; 
+    margin-top: 0;
+    width: 5rem;
+  }
+}
+@keyframes pulse-shadow {
+  0% {
+    transform: scale(0.98);
+    filter: drop-shadow(0px 0px 0px rgba(0,0,0,0.9));
+  }
+
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0px 5px 5px rgba(0,0,0,0.5));
+  }
+}
+
+.bg-hexa {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd' opacity='0.187946429'%3E%3Cg transform='translate(-227.000000, -1170.000000)' stroke='%233E00FF' stroke-width='10'%3E%3Cg id='Group-5-Copy-7' transform='translate(294.737804, 1248.626588) rotate(-330.000000) translate(-294.737804, -1248.626588) translate(223.737804, 1186.126588)'%3E%3Cpolygon opacity='0.334877232' points='105.943991 0 35.3139974 0 9.09494702e-13 62.3980694 35.3139974 124.7941 105.943991 124.7941 141.259988 62.3980694'%3E%3C/polygon%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-position: 2rem 2rem;
+  background-repeat: no-repeat;
+}
+
+.text-featured {
+  font-size: 36px;
 }

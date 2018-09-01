@@ -60,56 +60,82 @@
         </div> <!-- /carousel -->
 
         <div class="row justify-content-center">
-          <a class="btn btn-gc-blue m-5" href="/kudos/marketplace">{% trans "See More Kudos" %}</a>
+          <a class="btn btn-gc-blue m-5" href="{% url 'kudos_marketplace' %}">{% trans "See More Kudos" %}</a>
         </div>
       </div>
     </header>
 
-    <section class="container mt-5">
+    <section class="container mt-5 text-center">
       <div class="row">
-        <div class="col mb-5">
-            <img class="mw-100" src="{% static "v2/images/kudos/assets/send-kudos.png" %}" alt="kudos" width="">
-            <img class="mw-100 position-absolute" src="{% static "v2/images/kudos/assets/star.png" %}" alt="kudos" width="">
-            <img class="mw-100" src="{% static "v2/images/kudos/assets/cellarius-logo.png" %}" alt="kudos" width="">
-          <h3 class="h1 font-weight-300 text-center mb-5">{% trans "Summary/Intro" %}</h3>
-          <h2 class="text-center text-highlight-gc-blue">Kudos is a unique artwork that can be sent to highlight, recognize, and show appreciation.</h2>
-          <p class="font-bigger-1 font-weight-300 lh-3">{% trans "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam dignissim, lacus accumsan dignissim sollicitudin, libero arcu viverra odio, in semper ipsum nisi non leo. Quisque augue nisi, elementum ac urna quis, sollicitudin imperdiet dolor. Integer lacus dolor, dapibus a condimentum eget, pulvinar a arcu. Morbi eu lectus sit amet sapien fermentum porta. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus dapibus pellentesque lectus, et mattis dui semper a. Donec ut nulla ligula. Suspendisse potenti. Vestibulum neque purus, feugiat vel quam in, dignissim blandit mauris. Praesent laoreet in ex quis eleifend." %}</p>
+        <div class="col my-5 text-featured">
+          <img class="img-fluid" src="{% static "v2/images/kudos/assets/send-kudos.png" %}" alt="kudos" width="648" height="271">
+          <img class="mw-100 position-absolute star-pulse" src="{% static "v2/images/kudos/assets/star.png" %}" alt="kudos" width="">
+          {% url 'kudos_marketplace' as marketplace_url %}
+          {% blocktrans %}
+            <p class="mt-5">Kudos is a way of <span class="text-highlight-green">showing your appreciation</span> for another Gitcoin member. It's also a way to <span class="text-highlight-green">showcase special skills</span> that a member might have, such as Pythonista, or Design Star. Kudos tokens can also be <span class="text-highlight-green">bought</span> and <span class="text-highlight-green">sold</span> on the <a class="text-highlight-gc-blue" href="{{ marketplace_url }}">Kudos Marketplace</a>.</p>
+          {% endblocktrans %}
         </div>
       </div>
-
-      <div class="row">
-        <div class="col mb-5">
-          <h3 class="h1 font-weight-300 text-center mb-5">{% trans "Recent Kudos" %}</h3>
-          <ul class="list-unstyled col-md-8 col-lg-6 mt-5 mx-auto">
-            {% for listing in listings|slice:":4" %}
-            <li class="media my-3 align-items-center listing-kudo">
-              <a href="/kudos/{{ listing.id }}" class=""><img class="mr-3" width="80" src="{% static listing.image %}" alt="{{ listing.name }}"></a>
-              <div class="media-body">
-                <a href="/kudos/{{ listing.id }}" class="font-weight-300"><strong class="font-bigger-1 text-uppercase">{{ listing.name }}</strong> Purchased for .01 ETH ($100)</a>
-                <time class="kd-date d-block" datetime="2007-08-29T13:58Z">8 hs ago</time>  
-              </div>
-            </li>
-            {% endfor %}  
-          </ul>
-        </div>
-      </div>
-
       <div class="row justify-content-center">
-        <a class="btn font-bigger-1 font-weight-300 m-5" href="{% url 'kudos_marketplace' %}">{% trans "See All Recent Kudos" %}</a>
+          <a class="btn btn-gc-blue mb-5" href="{% url 'kudos_marketplace' %}">{% trans "Send Kudos" %}</a>
       </div>
     </section>
+    <section class="container-fluid mt-5 py-5 bg-dark-blue white">
+      <div class="container">
 
-    <section class="container">
-      <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
-        <desc>kudos hexagon</desc>
-        <symbol id="hexagon" viewBox="0 0 237 273">
-          <g transform="translate(-46.000000, -3742.000000)" fill="currentColor">
-            <g transform="translate(250.327895, 3805.378820) rotate(-330.000000) translate(-250.327895, -3805.378820) translate(76.327895, 3581.378820)">
-              <path fill-opacity="0.4" d="M204.381995,212 L272.509327,330 L204.381995,448 L68.1273318,448 L0,330 L68.1273318,212 L204.381995,212 Z M198.508996,222.172334 L74.0003315,222.172334 L11.7459994,330 L74.0003315,437.827666 L198.508996,437.827666 L260.763328,330 L198.508996,222.172334 Z" id="Polygon"></path>
-            </g>
+        <div class="row">
+          <div class="col">
+            <h3 class="my-5 text-center h1">{% trans "What is Kudos?" %}</h3>
+          </div>
+        </div>
+        <div class="row justify-content-center pb-5">
+          <div class="col-12 col-md-6">
+            <div class="embed-responsive embed-responsive-16by9">
+              <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/DJartWzDn0E?rel=0&showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+    <section class="container-fluid bg-cellarius white py-5">
+      <div class="container pt-5 font-bigger-2">
+        <div class="row mb-5 text-center">
+          <div class="col">
+            <img class="img-fluid mb-3" src="{% static "v2/images/kudos/assets/cellarius-logo.png" %}" alt="kudos" width="448" height="281">
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <p class="mb-5">{% trans "Gitcoin has partnered with CELLARIUS UNIVERSE (CX) to create original collectible badges that feature  Cellarius Art style. We’ll likely work with the Cellarius team to come up with the language that displays here." %}</p>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12 col-md-3">
+            <img class="img-fluid mb-3" src="http://placehold.it/248x240" alt="Generic placeholder image">
+          </div>
+          <div class="col-12 col-md-9">
+            <p>{% trans "Gitcoin has partnered with CELLARIUS UNIVERSE (CX) to create original collectible badges that feature  Cellarius Art style. We’ll likely work with the Cellarius team to come up with the language that displays here." %}</p>
+            {% trans "Visit the Cellarius Network" %}
+          </div>
+        </div>
+        <div class="row justify-content-center">
+            <a class="btn btn-orange m-5" href="{% url 'kudos_marketplace' %}">{% trans "See Featured Kudos" %}</a>
+        </div>
+      </div>
+    </section>
+    <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
+      <desc>kudos hexagon</desc>
+      <symbol id="hexagon" viewBox="0 0 237 273">
+        <g transform="translate(-46.000000, -3742.000000)" fill="currentColor">
+          <g transform="translate(250.327895, 3805.378820) rotate(-330.000000) translate(-250.327895, -3805.378820) translate(76.327895, 3581.378820)">
+            <path fill-opacity="0.4" d="M204.381995,212 L272.509327,330 L204.381995,448 L68.1273318,448 L0,330 L68.1273318,212 L204.381995,212 Z M198.508996,222.172334 L74.0003315,222.172334 L11.7459994,330 L74.0003315,437.827666 L198.508996,437.827666 L260.763328,330 L198.508996,222.172334 Z" id="Polygon"></path>
           </g>
-        </symbol> 
-      </svg>
+        </g>
+      </symbol> 
+    </svg>
+    <section class="container py-5">
+      <h1 class="text-center my-5">Why Use Kudos?</h1>
       <div class="hexagon-group">
         <div class="paging-animation">
           <div class="faces">
@@ -188,49 +214,38 @@
           </div>
         </div>
       </div>
+      <div class="row justify-content-center pt-5">
+          <a class="btn btn-gc-blue m-5" href="{% url 'kudos_marketplace' %}">{% trans "Send Kudos Now" %}</a>
+      </div>
     </section>
-
-    <section class="container-fluid mt-5 py-5 bg-light-blue white">
+    <section class="container-fluid m-5 py-5">
       <div class="container">
 
-        <div class="row">
+        <div class="row pb-5">
           <div class="col-12 col-md-6 d-flex flex-column justify-content-center">
-            <h3 class="mb-3">Lorem ipsum dolor sit amet consectetur adipisicing elit.</h3>
-            <p>Ipsam adipisci iusto ipsum, tempora maxime numquam, nam optio est illo recusandae in. Repellendus ea veritatis delectus cumque suscipit aspernatur, consequatur provident.</p>
+            <h3 class="h1 mb-3">{% trans "How Do I Get One?" %}</h3>
+            <p class="font-bigger-1 lh-3">{% trans "Kudos can be gifted to you by any other Gitcoin member. You can also purchase Kudos through the marketplace and send it to any other Gitcoin user. When you send a Kudos, they receive an email notication. After they accept the Kudos, it will be minted on the blockchain and delivered to its recipient." %}</p>
           </div>
+          <div class="col-12 col-md-6 d-flex justify-content-center">
+            
+              <img src="{% static "v2/images/kudos/assets/how-get.svg" %}" alt="{% trans "how to get Kudos" %}" width="277" height="369">
+            
+          </div>
+        </div>
+        <div class="row pt-5">
           <div class="col-12 col-md-6">
-            <div class="embed-responsive embed-responsive-16by9">
-              <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/DJartWzDn0E" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-            </div>
+            
+              <img src="{% static "v2/images/kudos/assets/erc-721.svg" %}" alt="{% trans "ERC 721" %}" width="277" height="369">
+            
+          </div>
+          <div class="col-12 col-md-6 d-flex flex-column justify-content-center">
+            <h3 class="h1 mb-3">{% trans "ERC-721" %}</h3>
+            <p class="font-bigger-1 lh-3">{% trans "ERC-721 is a standard developed by the Ethereum Foundation that can be used to create Non-Fungible Tokens (NFT's). The most well known example of this is Cryptokitties, but there are many other examples. Here at Gitcoin we believe in the potential of NFT's, so we created our own - Kudos." %}</p>
           </div>
         </div>
       </div>
 
     </section>
-
-    <section class="container-fluid py-5 bg-dark-blue white">
-      <div class="container">
-        <div class="row">
-          <div class="col mb-5">
-            <h3 class="h1 font-weight-300 text-center mb-5">{% trans "What is Kudos?" %}</h3>
-            <p>{% trans "Kudos is a way of showing your appreciation for another Gitcoin member.  It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star.  Kudos tokens can also be bought and sold on the Kudos Marketplace." %}</p>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col mb-5">
-            <h3 class="h1 font-weight-300 text-center mb-5">{% trans "How Do I Get One?" %}</h3>
-            <p>{% trans "Kudos can be gifted to you by any other Gitcoin member.  You can also purchase Kudos through the marketplace and send it to any other Gitcoin user.  When you send a Kudos, they receive an email notication.  After they accept the Kudos, it will be minted on the blockchain and delivered to its recepient." %}</p>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col mb-5">
-            <h3 class="h1 font-weight-300 text-center mb-5">{% trans "ERC-721 Details" %}</h3>
-            <p>{% trans "ERC-721 is a standard developed by the Ethereum Foundation that can be used to create Non-Fungible Tokens (NFT's).  The most well known example of this is Cryptokitties, but there are many other examples.  Here at Gitcoin we believe in the potential of NFT's, so we created our own - Kudos." %}</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
     
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}

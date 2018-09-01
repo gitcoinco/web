@@ -179,6 +179,9 @@
   background-color: #3e00ff;
   color: white; }
 
+.bg-cellarius {
+  background-color: #4D5858; }
+
 .lh-3 {
   line-height: 3rem; }
 
@@ -240,6 +243,14 @@
 .btn-lightblue {
   color: white;
   background-color: var(--gc-blue); }
+
+.btn-orange {
+  background-color: #d38971;
+  color: white;
+  padding: .75rem 1.5rem; }
+  .btn-orange:hover {
+    color: white;
+    background-color: rgba(211, 137, 113, 0.9); }
 
 .hexagon {
   background: red;
@@ -317,10 +328,10 @@ a:hover #shape-hexagon {
       backface-visibility: hidden; }
     .hexagon-group .paging-animation .back {
       display: block;
-      transform: rotateY(180deg);
+      transform: rotateY(0.5turn);
       box-sizing: border-box; }
     .hexagon-group .paging-animation:hover .faces {
-      transform: rotateY(180deg); }
+      transform: rotateY(0.5turn); }
     .hexagon-group .paging-animation:nth-child(1) {
       color: #FF7200;
       grid-column: 1/4; }
@@ -377,5 +388,32 @@ a:hover #shape-hexagon {
         grid-column: 4/6; }
       .hexagon-group .paging-animation:nth-child(7) {
         grid-column: 6/8; } }
+
+.star-pulse {
+  animation: pulse-shadow .5s ease-out infinite;
+  animation-direction: alternate;
+  margin-left: -60px;
+  margin-top: 4rem;
+  top: 0; }
+  @media (max-width: 768px) {
+    .star-pulse {
+      right: -10px;
+      margin-top: 0;
+      width: 5rem; } }
+
+@keyframes pulse-shadow {
+  0% {
+    transform: scale(0.98);
+    filter: drop-shadow(0px 0px 0px rgba(0, 0, 0, 0.9)); }
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0px 5px 5px rgba(0, 0, 0, 0.5)); } }
+.bg-hexa {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd' opacity='0.187946429'%3E%3Cg transform='translate(-227.000000, -1170.000000)' stroke='%233E00FF' stroke-width='10'%3E%3Cg id='Group-5-Copy-7' transform='translate(294.737804, 1248.626588) rotate(-330.000000) translate(-294.737804, -1248.626588) translate(223.737804, 1186.126588)'%3E%3Cpolygon opacity='0.334877232' points='105.943991 0 35.3139974 0 9.09494702e-13 62.3980694 35.3139974 124.7941 105.943991 124.7941 141.259988 62.3980694'%3E%3C/polygon%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  background-position: 2rem 2rem;
+  background-repeat: no-repeat; }
+
+.text-featured {
+  font-size: 36px; }
 
 /*# sourceMappingURL=styles.css.map */
