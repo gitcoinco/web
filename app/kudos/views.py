@@ -84,17 +84,6 @@ def marketplace(request):
         listings = results
     else:
         listings = Token.objects.filter(num_clones_allowed__gt=0)
-
-    # for x in context['listings']:
-    #     x.price = x.price / 1000
-
-    # Adjust the price units.  Change from Finney to ETH
-    # updated_listings = []
-    # for l in listings:
-    #     # l.price = l.price / 1000
-    #     logger.info(f'Price in ETH {l.price_in_eth()}')
-    #     updated_listings.append(l)
-
     context = {
         'is_outside': True,
         'active': 'marketplace',
@@ -162,14 +151,16 @@ def mint(request):
     return TemplateResponse(request, 'kudos_mint.html', context)
 
 
+def get_user_request_info(request):
+    """ Returns """
+    pass
+
+
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def send_kudos_2(request):
     """ Handle the first start of the Kudos email send.
     This form is filled out before the 'send' button is clicked.
     """
-    is_user_authenticated = request.user.is_authenticated
-    from_username = request.user.username if is_user_authenticated else ''
-    primary_from_email = request.user.email if is_user_authenticated else ''
 
     kudos_name = request.GET.get('name')
     kudos = Token.objects.filter(name=kudos_name, num_clones_allowed__gt=0).first()
@@ -179,8 +170,8 @@ def send_kudos_2(request):
         'issueURL': request.GET.get('source'),
         'class': 'send2',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
-        'from_email': primary_from_email,
-        'from_handle': from_username,
+        'from_email': getattr(request.user, 'email', ''),
+        'from_handle': request.user.username,
         'title': 'Send Kudos | Gitcoin',
         'card_desc': 'Send a Kudos to any github user at the click of a button.',
         'kudos': kudos,
@@ -188,6 +179,61 @@ def send_kudos_2(request):
     }
 
     return TemplateResponse(request, 'transaction/send.html', params)
+
+
+def get_primary_from_email(params, request):
+    """Find the primary_from_email address.  This function finds the address using this priority:
+        1. If the email field is filed out in the Send POST request, use the `fromEmail` field.
+        2. If the user is logged in, they should have an email address associated with thier account.
+           Use this as the second option.  `request_user_email`.
+        3. If all else fails, attempt to pull the email from the user's github account.
+
+    Args:
+        params (dict): A dictionary parsed form the POST request.  Typically this is a POST
+                       request coming in from a Tips/Kudos send.
+
+    Returns:
+        str: The primary_from_email string.
+    """
+
+    request_user_email = request.user.email if request.user.is_authenticated else ''
+    access_token = request.user.profile.get_access_token() if request.user.is_authenticated else ''
+
+    if params.get('fromEmail'):
+        primary_from_email = params['fromEmail']
+    elif request_user_email:
+        primary_from_email = request_user_email
+    elif access_token:
+        primary_from_email = get_github_primary_email(access_token)
+    else:
+        primary_from_email = 'unknown@gitcoin.co'
+
+    return primary_from_email
+
+
+def get_to_emails(params):
+    """Get a list of email address to send the alert to, in this priority:
+
+        1. get_emails_master() pulls email addresses from the user's public Github account.
+        2. If an email address is included in the Tips/Kudos form, append that to the email list.
+
+
+    Args:
+        params (dict): A dictionary parsed form the POST request.  Typically this is a POST
+                       request coming in from a Tips/Kudos send.
+
+    Returns:
+        list: An array of email addresses to send the email to.
+    """
+    to_emails = []
+
+    to_username = params['username'].lstrip('@')
+    to_emails = get_emails_master(to_username)
+
+    if params.get('email'):
+        to_emails.append(params['email'])
+
+    return list(set(to_emails))
 
 
 @csrf_exempt
@@ -207,48 +253,27 @@ def send_kudos_3(request):
         'message': _('Kudos Created'),
     }
 
-    is_user_authenticated = request.user.is_authenticated
-    from_username = request.user.username if is_user_authenticated else ''
-    primary_from_email = request.user.email if is_user_authenticated else ''
-    access_token = request.user.profile.get_access_token() if is_user_authenticated else ''
-    to_emails = []
-
     params = json.loads(request.body)
-    logger.info(f'params: {params}')
+
+    from_username = request.user.username
+    from_email = get_primary_from_email(params, request)
 
     to_username = params['username'].lstrip('@')
-    to_emails = get_emails_master(to_username)
-
-    if params.get('email'):
-        to_emails.append(params['email'])
-
-    # If no primary email in session, try the POST data. If none, fetch from GH.
-    if params.get('fromEmail'):
-        primary_from_email = params['fromEmail']
-    elif access_token and not primary_from_email:
-        primary_from_email = get_github_primary_email(access_token)
-
-    to_emails = list(set(to_emails))
-    expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
+    to_emails = get_to_emails(params)
 
     # Validate that the token exists on the back-end
     kudos_token = Token.objects.filter(name=params['kudosName'], num_clones_allowed__gt=0).first()
     # db mutations
-    # TODO: Delete this next line (testing only)
-    to_emails = ['jasonrhaas@gmail.com']
     kudos_email = Email.objects.create(
         emails=to_emails,
-        # For kudos, `token` is a kudos.models.Token instance.  This is to ensure that the 
-        # kudos.models.Email instance is tied to a real Token in the database.
+        # For kudos, `token` is a kudos.models.Token instance.
         kudos_token=kudos_token,
         amount=params['amount'],
-        comments_priv=params['comments_priv'],
         comments_public=params['comments_public'],
         ip=get_ip(request),
-        expires_date=expires_date,
         github_url=params['github_url'],
         from_name=params['from_name'],
-        from_email=params['from_email'],
+        from_email=from_email,
         from_username=from_username,
         username=params['username'],
         network=params['network'],
@@ -261,6 +286,7 @@ def send_kudos_3(request):
     )
 
     return JsonResponse(response)
+
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
@@ -277,11 +303,10 @@ def send_kudos_4(request):
         'message': _('Kudos Sent'),
     }
 
-    is_user_authenticated = request.user.is_authenticated
-    from_username = request.user.username if is_user_authenticated else ''
-    to_emails = []
-
     params = json.loads(request.body)
+
+    from_username = request.user.username
+
     txid = params['txid']
     destinationAccount = params['destinationAccount']
     is_direct_to_recipient = params.get('is_direct_to_recipient', False)
@@ -296,6 +321,8 @@ def send_kudos_4(request):
             metadata__address=destinationAccount,
             metadata__salt=params['salt'],
             )
+
+    # Return Permission Denied if not authenticated
     is_authenticated_for_this_via_login = (kudos_email.from_username and kudos_email.from_username == from_username)
     is_authenticated_for_this_via_ip = kudos_email.ip == get_ip(request)
     is_authed = is_authenticated_for_this_via_ip or is_authenticated_for_this_via_login
@@ -306,7 +333,8 @@ def send_kudos_4(request):
         }
         return JsonResponse(response)
 
-    # db mutations
+    # Save the txid to the database once it has been confirmed in MetaMask.  If there is no txid,
+    # it means that the user never went through with the transaction.
     kudos_email.txid = txid
     if is_direct_to_recipient:
         kudos_email.receive_txid = txid
@@ -315,7 +343,7 @@ def send_kudos_4(request):
     # notifications
     # maybe_market_tip_to_github(kudos_email)
     # maybe_market_tip_to_slack(kudos_email, 'new_tip')
-    maybe_market_kudos_to_email(kudos_email, to_emails)
+    maybe_market_kudos_to_email(kudos_email, kudos_email.emails)
     # record_user_action(kudos_email.from_username, 'send_kudos', kudos_email)
     # record_tip_activity(kudos_email, kudos_email.from_username, 'new_kudos' if kudos_email.username else 'new_crowdfund')
 
