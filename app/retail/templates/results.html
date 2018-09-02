@@ -87,7 +87,7 @@
             <img class="icon" src="{% static "v2/images/results/hourly_rate_distribution.svg" %}" />
             <h3 class="text-highlight-light-blue mt-3">{{ hourly_rate_distribution }}</h3>
             <p>{% trans "Hourly Rate Distribution" %}</p>
-            <span class="mt-0">(up to 2 std-deviations from the mean; <a target="_blank" href="https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e">more details here</a>)</span>
+            <span class="mt-0">(for most bounties; <a href="#price_per_hour">more details here</a>)</span>
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
@@ -118,7 +118,7 @@
       <div class="container" id="repo_transaction">
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center">
-            <h2 class="text-center">Gitcoin {% trans "Status Breakdown" %} {% if keyword %}({{keyword}}){%endif%}</h2>
+            <h2 class="text-center">{% trans "Bounty Status Breakdown" %} {% if keyword %}({{keyword}}){%endif%}</h2>
           </div>
 
           <div class="col-12 col-md-6">
@@ -148,7 +148,7 @@
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
             <h2 class="text-center pb-5">
-              {% trans "Top Repos" %} {% if keyword %}({{keyword}}){%endif%}
+              {% trans "Top Funded Organizations" %} {% if keyword %}({{keyword}}){%endif%}
             </h2>
           </div>
 
@@ -166,8 +166,92 @@
     </div>
 
 
+    {% if not keyword %}
+    <div style="background-color: white;">
+      <div class="container" id="price_per_hour">
+        <div class="row py-5 animatedParent">
+          <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
+            <h2>{% trans "Hourly Rates of Bounties" %} {% if keyword %}({{keyword}}){%endif%}</h2>
+          </div>
+        </div>
 
-    <div>
+        <div class="row mt-5 pb-5 animatedParent text-center">
+          <div class="col animated pulse fast">
+            <iframe src="{% url 'viz_sscatterplot' %}?keyword={{keyword}}" style="width: 100%; height: 600px; overflow-x: hidden; overflow-y: hidden;" frameBorder="0"></iframe>
+          </div>
+        </div>
+
+        <div class="row mt-2 pb-2 animatedParent text-center align-items-center">
+          <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
+            <h2 class="font-smaller-1">{% trans "Hourly Rates Vary by Bounty Size" %}</h2>
+          </div>
+        </div>
+        <div class="row mt-2 pb-2 animatedParent text-center align-items-center">
+          {% for the_title, hrd in hourly_rate_distribution_by_range.items %}
+            {% if hrd %}
+              <div class="col-2 {% cycle 'odd' 'even' %}" style="margin: 10px auto; border: 1px solid #6c757d; padding: 5px 10px; max-width: 150px; height: 110px;">
+                  <strong>{{the_title | title}}</strong> 
+                  <br>
+                  {% trans "Bounties Pay" %}
+                  <br>
+                  <i>{{hrd}}/hr</i>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <div class="row mt-3 pb-2 animatedParent text-center align-items-center">
+          <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
+            <h2 class="font-smaller-1">{% trans "And By Skill" %}</h2>
+          </div>
+        </div>
+        <div class="row mt-2 pb-2 animatedParent text-center align-items-center">
+          {% for the_title, hrd in skill_rate_distribution_by_range.items %}
+            {% if hrd %}
+              <div class="col-2 {% cycle 'odd' 'even' %}" style="margin: 10px auto; border: 1px solid #6c757d; padding: 5px 10px; max-width: 150px; height: 110px;">
+                  <strong>{{the_title | title}}</strong> 
+                  <br>
+                  {% trans "Bounties Pay" %}
+                  <br>
+                  <i>{{hrd}}/hr</i>
+              </div>
+            {% endif %}
+          {% endfor %}
+        </div>
+
+        <div class="row mt-5 pb-5 animatedParent text-center">
+          <div class="col animated pulse fast">
+            <a class="button button--primary" role="button" href="https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e"
+              target="_blank" rel="noopener noreferrer">{% trans "Read More about Pricing on Gitcoin" %}</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    {% endif %}
+
+
+    <div style="background-color: #F2F6F9; padding-bottom: 40px;">
+      <div class="container" id="testimonials">
+        <div class="row py-2 animatedParent">
+          <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
+            <h2>{% trans "Testimonials" %}</h2>
+          </div>
+        </div>
+        <div class="row py-1 animatedParent">
+          <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
+            <p style="text-align: center; font-size: 0.9rem;">from real Gitcoin community members</p>
+          </div>
+
+          <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
+            <iframe style="width:100%; max-width: 600px; height: 400px; " src="https://www.youtube.com/embed/hpqHJCiqXzA" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div style="background-color: white;">
       <div class="container" id="bounty_jdi">
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
@@ -185,51 +269,6 @@
 
           <div class="col-12">
             <div id="jdi_chart" height="600"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div style="background-color: #F2F6F9; padding-bottom: 40px;">
-      <div class="container" id="testimonials">
-        <div class="row py-2 animatedParent">
-          <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
-            <h2>{% trans "Testimonials" %}</h2>
-          </div>
-        </div>
-        <div class="row py-1 animatedParent">
-          <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
-            <p style="text-align: center; font-size: 0.9rem;">from real Gitcoin community members</p>
-          </div>
-
-          <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
-            <iframe style="width:100%; max-width: 600px; height: 400px; " src="https://www.youtube.com/embed/hpqHJCiqXzA" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-          </div>
-
-          <div class="col-12">
-            <div id="jdi_chart" height="600"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div style="background-color: white;">
-      <div class="container" id="price_per_hour">
-        <div class="row py-5 animatedParent">
-          <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
-            <h2>{% trans "Hourly Rates of Bounties" %} {% if keyword %}({{keyword}}){%endif%}</h2>
-          </div>
-        </div>
-
-        <div class="row mt-5 pb-5 animatedParent text-center">
-          <div class="col animated pulse fast">
-            <iframe src="{% url 'viz_sscatterplot' %}?keyword={{keyword}}" style="width: 100%; height: 600px; overflow-x: hidden; overflow-y: hidden;" frameBorder="0"></iframe>
-          </div>
-        </div>
-
-        <div class="row mt-5 pb-5 animatedParent text-center">
-          <div class="col animated pulse fast">
-            <a class="button button--primary" role="button" href="https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e"
-              target="_blank" rel="noopener noreferrer">{% trans "Read More about Pricing on Gitcoin" %}</a>
           </div>
         </div>
       </div>
@@ -265,7 +304,7 @@
       <div class="container" id="mesh_network_jobs" style="width: 85%; max-width: 85%; height: 1000px;">
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
-            <h2>{% trans "TLDR - We're building a Mesh Network of" %} {{keyword}} {% trans "Jobs" %}</h2>
+            <h2>{% trans "TLDR - We're building a Mesh Network of" %} {{keyword|title}} {% trans "Jobs" %}</h2>
           </div>
         </div>
 

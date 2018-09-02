@@ -168,27 +168,37 @@ def get_base_done_bounties(keyword):
     return base_bounties
 
 
-def is_valid_bounty_for_hourly_rate(bounty):
+def is_valid_bounty_for_headline_hourly_rate(bounty):
     hourly_rate = bounty.hourly_rate
-    if not hourly_rate:
+    if None is hourly_rate:
         return False
 
     # smaller bounties were skewing the results
-    min_hourly_rate = 5
-    min_value_usdt = 400
+    min_hours = 3
+    min_value_usdt = 300
     if bounty.value_in_usdt < min_value_usdt:
         return False
     for ful in bounty.fulfillments.filter(accepted=True):
-        if ful.fulfiller_hours_worked and ful.fulfiller_hours_worked < min_hourly_rate:
+        if ful.fulfiller_hours_worked and ful.fulfiller_hours_worked < min_hours:
             return False
 
     return True
 
 
-def get_hourly_rate_distribution(keyword):
+def get_hourly_rate_distribution(keyword, bounty_value_range=None, methodology=None):
+    if not methodology:
+        methodology = 'quartile' if not keyword else 'minmax'
     base_bounties = get_base_done_bounties(keyword)
-    hourly_rates = [ele.hourly_rate for ele in base_bounties if is_valid_bounty_for_hourly_rate(ele)]
-    methodology = 'median_stdddev' if not keyword else 'minmax'
+    if bounty_value_range:
+        base_bounties = base_bounties.filter(_val_usd_db__lt=bounty_value_range[1], _val_usd_db__gt=bounty_value_range[0])
+        hourly_rates = [ele.hourly_rate for ele in base_bounties if ele.hourly_rate is not None]
+        print(bounty_value_range, len(hourly_rates))
+    else:
+        hourly_rates = [ele.hourly_rate for ele in base_bounties if is_valid_bounty_for_headline_hourly_rate(ele)]
+    if len(hourly_rates) == 1:
+        return f"${round(hourly_rates[0], 2)}"
+    if len(hourly_rates) < 2:
+        return ""
     if methodology == 'median_stdddev':
         stddev_divisor = 1
         median = int(statistics.median(hourly_rates))
@@ -197,7 +207,7 @@ def get_hourly_rate_distribution(keyword):
         max_hourly_rate = median + int(stddev/stddev_divisor)
     elif methodology == 'quartile':
         hourly_rates.sort()
-        num_quarters = 12
+        num_quarters = 4
         first_quarter = int(len(hourly_rates)/num_quarters)
         third_quarter = first_quarter * (num_quarters-1)
         min_hourly_rate = int(hourly_rates[first_quarter])
@@ -369,6 +379,17 @@ def build_stat_results_helper(keyword=None):
     context['bounty_average_turnaround'] = f'{bounty_average_turnaround} days'
     pp.profile_time('bounty_average_turnaround')
     context['hourly_rate_distribution'] = get_hourly_rate_distribution(keyword)
+    context['hourly_rate_distribution_by_range'] = {}
+    usd_value_ranges = [[10, 50], [50, 150], [150, 500], [500, 1500], [1500, 5000], [5000, 50000]] 
+    for val_range in usd_value_ranges:
+        low = val_range[0] if val_range[0] < 1000 else f"{round(val_range[0]/1000,1)}k"
+        high = val_range[1] if val_range[1] < 1000 else f"{round(val_range[1]/1000,1)}k"
+        key = f"${low} to ${high}"
+        context['hourly_rate_distribution_by_range'][key] = get_hourly_rate_distribution(keyword, val_range, 'quartile')
+    context['skill_rate_distribution_by_range'] = {}
+    for programming_language in programming_languages:
+        context['skill_rate_distribution_by_range'][programming_language] = get_hourly_rate_distribution(programming_language, None, 'quartile')
+
     context['bounty_claimed_completion_rate'] = completion_rate
     context['bounty_median_pickup_time'] = round(
         get_bounty_median_turnaround_time('turnaround_time_started', keyword), 1)
