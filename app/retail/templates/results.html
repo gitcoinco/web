@@ -166,7 +166,7 @@
     </div>
 
 
-
+    {% if not keyword %}
     <div style="background-color: white;">
       <div class="container" id="price_per_hour">
         <div class="row py-5 animatedParent">
@@ -202,7 +202,7 @@
 
         <div class="row mt-3 pb-2 animatedParent text-center align-items-center">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
-            <h2 class="font-smaller-1">{% trans "and by skill" %}</h2>
+            <h2 class="font-smaller-1">{% trans "And By Skill" %}</h2>
           </div>
         </div>
         <div class="row mt-2 pb-2 animatedParent text-center align-items-center">
@@ -228,6 +228,7 @@
 
       </div>
     </div>
+    {% endif %}
 
 
     <div style="background-color: #F2F6F9; padding-bottom: 40px;">
@@ -303,7 +304,7 @@
       <div class="container" id="mesh_network_jobs" style="width: 85%; max-width: 85%; height: 1000px;">
         <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
-            <h2>{% trans "TLDR - We're building a Mesh Network of" %} {{keyword}} {% trans "Jobs" %}</h2>
+            <h2>{% trans "TLDR - We're building a Mesh Network of" %} {{keyword|title}} {% trans "Jobs" %}</h2>
           </div>
         </div>
 
