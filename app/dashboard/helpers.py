@@ -31,6 +31,7 @@ from django.db import transaction
 from django.http import Http404, JsonResponse
 from django.utils import timezone
 from django.utils.html import escape
+from django.utils.translation import gettext_lazy as _
 from economy.utils import etherscan_link
 
 from app.utils import sync_profile
@@ -858,11 +859,10 @@ def get_expiring_days_count(expiring_bounties):
     last_expiring_days_from_now = 0
     utc_now = datetime.datetime.now(timezone.utc)
 
-    if d_expiring_bounties_count != 0:
-        for bounty in expiring_bounties:
-            delta_days = (bounty.expires_date - utc_now).days
-            if last_expiring_days_from_now is None or delta_days > last_expiring_days_from_now:
-                last_expiring_days_from_now = delta_days
+    for bounty in expiring_bounties:
+        delta_days = (bounty.expires_date - utc_now).days
+        if last_expiring_days_from_now is None or delta_days > last_expiring_days_from_now:
+            last_expiring_days_from_now = delta_days
 
     return last_expiring_days_from_now
 
@@ -883,8 +883,7 @@ def get_top_contributors(done_bounties, contributors_to_take):
     """
 
     contributors_usernames = []
-    done_bounties_desc_created = done_bounties.order_by('-web3_created')
-    for bounty in done_bounties_desc_created:
+    for bounty in done_bounties:
         contributors = bounty.fulfillments.filter(accepted_on__isnull=False) \
             .values('fulfiller_github_username') \
             .distinct()

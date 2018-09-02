@@ -41,6 +41,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
+from django.core.serializers.json import DjangoJSONEncoder
 
 from app.utils import clean_str, ellipses, sync_profile
 from avatar.utils import get_avatar_context
@@ -1167,6 +1168,7 @@ def funder_dashboard(request):
     active_bounties = funder_bounties.filter_by_status(['open', 'started'])
     done_bounties = active_done_expired_bounties.filter_by_status(['done'])
     expired_bounties = active_done_expired_bounties.filter_by_status(['expired'])
+    done_bounties_desc_created = done_bounties.order_by('-web3_created')
 
     # Payout history
     payout_history = get_payout_history(done_bounties)
@@ -1193,7 +1195,7 @@ def funder_dashboard(request):
     for bounty in current_funder_bounties:
         d_total_contributors_count += bounty.fulfillments.filter(accepted=True).count()
 
-    d_top_contributors = get_top_contributors(done_bounties, 12)
+    d_top_contributors = get_top_contributors(done_bounties_desc_created, 12)
 
     d_total_paid_dollars = 0
     d_total_paid_eth = 0
