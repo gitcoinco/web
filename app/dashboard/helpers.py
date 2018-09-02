@@ -942,7 +942,7 @@ def is_funder_allowed_to_input_total_budget(total_budget_last_update_date, funde
     return allow_total_budget_input
 
 
-def get_funder_total_budget(use_input_layout, funder_total_budget_dollars):
+def get_funder_total_budget(use_input_layout, funder_total_budget_dollars, budget_type):
     """ (Funder dashboard) Returns a wrapper object containing the total budget of the funder in dollars and eth,
         and the time period in display format for which this budget is for
 
@@ -950,6 +950,8 @@ def get_funder_total_budget(use_input_layout, funder_total_budget_dollars):
         use_input_layout: (boolean) is the funder allowed to edit their total budget or should the existing one be shown
         funder_total_budget_dollars (decimal) the total budget of the funder in dollars
     """
+
+    utc_now = datetime.datetime.now(timezone.utc)
 
     if use_input_layout:
         total_budget_dollars = 0
@@ -964,7 +966,7 @@ def get_funder_total_budget(use_input_layout, funder_total_budget_dollars):
                 total_budget_used_time_period = utc_now.strftime('%B')
         else:
             # it's a quarterly budget
-            quarter_now = int(math.ceil(utc_now.month / 3.))
+            quarter_now = int(ceil(utc_now.month / 3.))
 
             if quarter_now == 0:
                     total_budget_used_time_period = _("January 1 - March 31")

@@ -22,7 +22,6 @@ import datetime
 import json
 import logging
 import time
-import math
 
 from django.conf import settings
 from django.contrib import messages
