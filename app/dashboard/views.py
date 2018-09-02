@@ -1170,33 +1170,33 @@ def funder_dashboard(request):
 
     payout_history = get_payout_history(done_bounties)
 
-    payout_history_weekly = payout_history['weekly']
-    payout_history_monthly = payout_history['monthly']
-    payout_history_yearly = payout_history['yearly']
-    csv_all_time_paid_bounties = payout_history['csv_all_time_paid_bounties']
+    d_payout_history_weekly = payout_history['weekly']
+    d_payout_history_monthly = payout_history['monthly']
+    d_payout_history_yearly = payout_history['yearly']
+    d_csv_all_time_paid_bounties = payout_history['csv_all_time_paid_bounties']
 
     utc_now = datetime.datetime.now(timezone.utc)
 
     expiring_bounties = active_bounties.filter(expires_date__gte=utc_now,
                                                expires_date__lte=utc_now + timezone.timedelta(days=7))
 
-    expiring_bounties_count = expiring_bounties.count()
+    d_expiring_bounties_count = expiring_bounties.count()
     last_expiring_days_from_now = 0
 
-    if expiring_bounties_count != 0:
+    if d_expiring_bounties_count != 0:
         for bounty in funder_bounties:
             delta_days = (bounty.expires_date - utc_now).days
             if last_expiring_days_from_now is None or delta_days > last_expiring_days_from_now:
                 last_expiring_days_from_now = delta_days
 
-    expiring_days_count = last_expiring_days_from_now
+    d_expiring_days_count = last_expiring_days_from_now
 
     current_funder_bounties = funder_bounties.filter(current_bounty=True)
-    submitted_bounties_count = current_funder_bounties.count()
-    total_contributors_count = 0
+    d_submitted_bounties_count = current_funder_bounties.count()
+    d_total_contributors_count = 0
 
     for bounty in current_funder_bounties:
-        total_contributors_count += bounty.fulfillments.filter(accepted=True).count()
+        d_total_contributors_count += bounty.fulfillments.filter(accepted=True).count()
 
     contributors_usernames = []
     done_bounties_desc_created = done_bounties.order_by('-web3_created')
@@ -1214,33 +1214,33 @@ def funder_dashboard(request):
             ):
                 contributors_usernames.append(contributor_github_username)
 
-    top_contributors = []
+    d_top_contributors = []
     for contributor_github_username in contributors_usernames:
-        top_contributors.append({
+        d_top_contributors.append({
             'githubLink': 'https://gitcoin.co/profile/' + contributor_github_username,
             'profilePictureSrc': '/dynamic/avatar/' + contributor_github_username,
             'handle': contributor_github_username,
         })
 
-    total_paid_dollars = 0
-    total_paid_eth = 0
+    d_total_paid_dollars = 0
+    d_total_paid_eth = 0
 
     for bounty in done_bounties:
         bounty_value_in_usdt = bounty.get_value_in_usdt
         bounty_value_in_eth = eth_from_wei(bounty.get_value_in_eth)
 
         if bounty_value_in_usdt is not None:
-            total_paid_dollars = float(total_paid_dollars) + float(bounty.get_value_in_usdt)
+            d_total_paid_dollars = float(d_total_paid_dollars) + float(bounty.get_value_in_usdt)
 
-        total_paid_eth = float(total_paid_eth) + float(bounty_value_in_eth)
+        d_total_paid_eth = float(d_total_paid_eth) + float(bounty_value_in_eth)
 
     paid_date_since = None
     if done_bounties_desc_created.last() is not None:
         paid_date_since = done_bounties_desc_created.last().web3_created
 
-    total_paid_date_since = None
+    d_total_paid_date_since = None
     if paid_date_since is not None:
-        total_paid_date_since = paid_date_since.strftime('%d %b, %y')
+        d_total_paid_date_since = paid_date_since.strftime('%d %b, %y')
 
     # total budget
     # set total budget to 0 and allow users to input the total budget,
@@ -1251,72 +1251,72 @@ def funder_dashboard(request):
     # otherwise show the actual numbers, and the quarter / month
 
     total_budget_updated_on = request.user.profile.funder_total_budget_updated_on
-    total_budget_use_input_layout = False
+    d_total_budget_use_input_layout = False
     budget_type = request.user.profile.funder_total_budget_type
 
     if total_budget_updated_on is None:
-        total_budget_use_input_layout = True
+        d_total_budget_use_input_layout = True
     else:
         month_saved = total_budget_updated_on.month
         month_now = utc_now.month
 
         if budget_type == 'monthly' and month_now != month_saved:
-            total_budget_use_input_layout = True
+            d_total_budget_use_input_layout = True
         elif budget_type == 'quarterly':
             quarter_now = int(math.ceil(month_now / 3.))
             quarter_saved = int(math.ceil(month_saved / 3.))
 
             if quarter_now != quarter_saved:
-                total_budget_use_input_layout = True
+                d_total_budget_use_input_layout = True
 
-    if total_budget_use_input_layout:
-        total_budget_dollars = 0
-        total_budget_eth = 0
-        total_budget_used_time_period = None
+    if d_total_budget_use_input_layout:
+        d_total_budget_dollars = 0
+        d_total_budget_eth = 0
+        d_total_budget_used_time_period = None
     else:
         # we should display their total budget
-        total_budget_dollars = request.user.profile.funder_total_budget_usdt
-        total_budget_eth = convert_amount(total_budget_dollars, "USDT", "ETH")
+        d_total_budget_dollars = request.user.profile.funder_total_budget_usdt
+        d_total_budget_eth = convert_amount(d_total_budget_dollars, "USDT", "ETH")
 
         if budget_type == 'monthly':
-            total_budget_used_time_period = utc_now.strftime('%B')
+            d_total_budget_used_time_period = utc_now.strftime('%B')
         else:
             # it's a quarterly budget
             quarter_now = int(math.ceil(utc_now.month / 3.))
 
             if quarter_now == 0:
-                total_budget_used_time_period = _("January 1 - March 31")
+                d_total_budget_used_time_period = _("January 1 - March 31")
             elif quarter_now == 1:
-                total_budget_used_time_period = _("April 1 - June 31")
+                d_total_budget_used_time_period = _("April 1 - June 31")
             elif quarter_now == 2:
-                total_budget_used_time_period = _("July 1 - September 31")
+                d_total_budget_used_time_period = _("July 1 - September 31")
             else:
                 # quarter_now == 3
-                total_budget_used_time_period = _("October 1 - December 31")
+                d_total_budget_used_time_period = _("October 1 - December 31")
 
-    tax_year = utc_now.year
-    tax_year_bounties_count = 0
-    tax_year_bounties_worth_dollars = 0
+    d_tax_year = utc_now.year
+    d_tax_year_bounties_count = 0
+    d_tax_year_bounties_worth_dollars = 0
 
     for bounty in done_bounties:
         accepted_on = bounty.fulfillment_accepted_on
-        if accepted_on is not None and tax_year == accepted_on.year:
+        if accepted_on is not None and d_tax_year == accepted_on.year:
             if bounty.get_value_in_usdt:
-                tax_year_bounties_count += 1
-                tax_year_bounties_worth_dollars += float(bounty.get_value_in_usdt)
+                d_tax_year_bounties_count += 1
+                d_tax_year_bounties_worth_dollars += float(bounty.get_value_in_usdt)
 
-    expired_issues_count = expired_bounties.count()
-    expired_issues_worth_dollars = 0
+    d_expired_issues_count = expired_bounties.count()
+    d_expired_issues_worth_dollars = 0
     for expired_issue in expired_bounties:
         issue_worth_in_usdt = expired_issue.get_value_in_usdt
         if issue_worth_in_usdt is not None:
-            expired_issues_worth_dollars = float(expired_issues_worth_dollars) + float(issue_worth_in_usdt)
+            d_expired_issues_worth_dollars = float(d_expired_issues_worth_dollars) + float(issue_worth_in_usdt)
 
-    active_bounties_count = active_bounties.count()
-    completed_bounties_count = done_bounties.count()
-    expired_bounties_count = expired_bounties.count()
+    d_active_bounties_count = active_bounties.count()
+    d_completed_bounties_count = done_bounties.count()
+    d_expired_bounties_count = expired_bounties.count()
 
-    outgoing_funds_filters = [
+    d_outgoing_funds_filters = [
         {
             'value': 'All',
             'value_display': _('All'),
@@ -1354,7 +1354,7 @@ def funder_dashboard(request):
         },
     ]
 
-    outgoing_funds = []
+    d_outgoing_funds = []
     for bounty in done_bounties.filter(fulfillment_started_on__isnull=False):
         # TODO: Replace the missing txid. Should uncomment the line below when we have this link available.
         # link_to_etherscan = etherscan_link('#')
@@ -1366,7 +1366,7 @@ def funder_dashboard(request):
             fund_status = 'Pending'
 
         fund_type = 'Payment'
-        outgoing_funds.append({
+        d_outgoing_funds.append({
             'id': bounty.github_issue_number,
             'title': escape(bounty.title),
             'type': fund_type,
@@ -1385,7 +1385,7 @@ def funder_dashboard(request):
 
         link_to_etherscan = etherscan_link(tip.txid)
         if tip.bounty:
-            outgoing_funds.append({
+            d_outgoing_funds.append({
                 'id': tip.bounty.github_issue_number,
                 'title': tip.bounty.title,
                 'type': 'Tip',
@@ -1395,7 +1395,7 @@ def funder_dashboard(request):
                 'worthEth': eth_format(eth_from_wei(tip.value_in_eth))
             })
 
-    all_bounties_filters = [
+    d_all_bounties_filters = [
         {
             'value': 'All',
             'value_display': _('All'),
@@ -1416,48 +1416,48 @@ def funder_dashboard(request):
         },
     ]
 
-    all_bounties = []
+    d_all_bounties = []
     for bounty in funder_bounties:
-        all_bounties.append(to_funder_dashboard_bounty(bounty))
+        d_all_bounties.append(to_funder_dashboard_bounty(bounty))
 
     context = {
         # Header
-        "expiring_bounties_count": expiring_bounties_count,
-        "expiring_days_count": expiring_days_count,
+        "expiring_bounties_count": d_expiring_bounties_count,
+        "expiring_days_count": d_expiring_days_count,
         # Stats
-        "submitted_bounties_count": submitted_bounties_count,
-        "total_contributors_count": total_contributors_count,
-        "total_paid_dollars": usd_format(total_paid_dollars),
-        "total_paid_eth": eth_format(total_paid_eth),
-        "total_paid_date_since": total_paid_date_since,
-        "total_budget_dollars": usd_format(total_budget_dollars),
-        "total_budget_eth": eth_format(total_budget_eth),
-        "total_budget_use_input_layout": total_budget_use_input_layout,
-        "total_budget_used_time_period": total_budget_used_time_period,
+        "submitted_bounties_count": d_submitted_bounties_count,
+        "total_contributors_count": d_total_contributors_count,
+        "total_paid_dollars": usd_format(d_total_paid_dollars),
+        "total_paid_eth": eth_format(d_total_paid_eth),
+        "total_paid_date_since": d_total_paid_date_since,
+        "total_budget_dollars": usd_format(d_total_budget_dollars),
+        "total_budget_eth": eth_format(d_total_budget_eth),
+        "total_budget_use_input_layout": d_total_budget_use_input_layout,
+        "total_budget_used_time_period": d_total_budget_used_time_period,
         # Payout History
-        "payout_history_weekly": json.dumps(payout_history_weekly, ensure_ascii=False, cls=DjangoJSONEncoder),
-        "payout_history_monthly": json.dumps(payout_history_monthly, ensure_ascii=False, cls=DjangoJSONEncoder),
-        "payout_history_yearly": json.dumps(payout_history_yearly, ensure_ascii=False, cls=DjangoJSONEncoder),
+        "payout_history_weekly": json.dumps(d_payout_history_weekly, ensure_ascii=False, cls=DjangoJSONEncoder),
+        "payout_history_monthly": json.dumps(d_payout_history_monthly, ensure_ascii=False, cls=DjangoJSONEncoder),
+        "payout_history_yearly": json.dumps(d_payout_history_yearly, ensure_ascii=False, cls=DjangoJSONEncoder),
         # Csv export all bounties this year
-        "csv_all_time_paid_bounties": json.dumps(csv_all_time_paid_bounties,
+        "csv_all_time_paid_bounties": json.dumps(d_csv_all_time_paid_bounties,
                                                  ensure_ascii=False,
                                                  cls=DjangoJSONEncoder),
         # Tax Reporting
-        "tax_year": tax_year,
-        "tax_year_bounties_count": tax_year_bounties_count,
-        "tax_year_bounties_worth_dollars": tax_year_bounties_worth_dollars,
+        "tax_year": d_tax_year,
+        "tax_year_bounties_count": d_tax_year_bounties_count,
+        "tax_year_bounties_worth_dollars": d_tax_year_bounties_worth_dollars,
         # Latest on your bounties
-        "expired_issues_count": expired_issues_count,
-        "expired_issues_worth_dollars": usd_format(expired_issues_worth_dollars),
-        "active_bounties_count": active_bounties_count,
-        "completed_bounties_count": completed_bounties_count,
-        "expired_bounties_count": expired_bounties_count,
-        "top_contributors": top_contributors,
+        "expired_issues_count": d_expired_issues_count,
+        "expired_issues_worth_dollars": usd_format(d_expired_issues_worth_dollars),
+        "active_bounties_count": d_active_bounties_count,
+        "completed_bounties_count": d_completed_bounties_count,
+        "expired_bounties_count": d_expired_bounties_count,
+        "top_contributors": d_top_contributors,
         # Table data - outgoing funds and bounties
-        "outgoing_funds_filters": outgoing_funds_filters,
-        "outgoing_funds": json.dumps(outgoing_funds, ensure_ascii=False, cls=DjangoJSONEncoder),
-        "all_bounties_filters": all_bounties_filters,
-        "all_bounties": json.dumps(all_bounties, ensure_ascii=False, cls=DjangoJSONEncoder),
+        "outgoing_funds_filters": d_outgoing_funds_filters,
+        "outgoing_funds": json.dumps(d_outgoing_funds, ensure_ascii=False, cls=DjangoJSONEncoder),
+        "all_bounties_filters": d_all_bounties_filters,
+        "all_bounties": json.dumps(d_all_bounties, ensure_ascii=False, cls=DjangoJSONEncoder),
     }
 
     return TemplateResponse(request, 'funder_dashboard.html', context)
