@@ -31,6 +31,7 @@ from django.db import transaction
 from django.http import Http404, JsonResponse
 from django.utils import timezone
 from django.utils.html import escape
+from economy.utils import etherscan_link
 
 from app.utils import sync_profile
 from dashboard.models import Activity, Bounty, BountyFulfillment, BountySyncRequest, UserAction
@@ -845,6 +846,220 @@ def get_payout_history(done_bounties):
         # Used for csv export
         'csv_all_time_paid_bounties': csv_data
     }
+
+
+def get_expiring_days_count(expiring_bounties):
+    """ Returns the last day that a bounty expires in, from utc_now. I.e: 6
+
+    Args:
+        expiring_bounties: (BountyQuerySet) The expiring bounties to search in.
+    """
+
+    last_expiring_days_from_now = 0
+    utc_now = datetime.datetime.now(timezone.utc)
+
+    if d_expiring_bounties_count != 0:
+        for bounty in expiring_bounties:
+            delta_days = (bounty.expires_date - utc_now).days
+            if last_expiring_days_from_now is None or delta_days > last_expiring_days_from_now:
+                last_expiring_days_from_now = delta_days
+
+    return last_expiring_days_from_now
+
+
+def get_top_contributors(done_bounties, contributors_to_take):
+    """ Gets the top contributors for a set of done bounties
+
+    Args:
+        done_bounties: (BountyQuerySet) A set of bounties with status done, that will be searched in.
+        contributors_to_take: (int) Take the first X contributors. If 12, will take 12 contributors.
+
+    Returns:
+        A list of up to max_contributor_count objects of the form: {
+            githhubLink (a link to the contributor's github profile),
+            profilePictureSrc (a link to the contributor's profile picture),
+            handle (the contributor's github username)
+        }
+    """
+
+    contributors_usernames = []
+    done_bounties_desc_created = done_bounties.order_by('-web3_created')
+    for bounty in done_bounties_desc_created:
+        contributors = bounty.fulfillments.filter(accepted_on__isnull=False) \
+            .values('fulfiller_github_username') \
+            .distinct()
+
+        for contributor in contributors:
+            contributor_github_username = contributor['fulfiller_github_username']
+            if (
+                contributor_github_username
+                and contributor_github_username not in contributors_usernames
+                and len(contributors_usernames) <= contributors_to_take
+            ):
+                contributors_usernames.append(contributor_github_username)
+
+    top_contributors = []
+    for contributor_github_username in contributors_usernames:
+        top_contributors.append({
+            'githubLink': 'https://gitcoin.co/profile/' + contributor_github_username,
+            'profilePictureSrc': '/dynamic/avatar/' + contributor_github_username,
+            'handle': contributor_github_username,
+        })
+
+    return top_contributors
+
+
+def is_funder_allowed_to_input_total_budget(total_budget_last_update_date, funder_total_budget_type):
+    """ (Funder dashboard). Describes whether a funder should be able to set a total_budget,
+        based on the date that they updated their total budget last time, and the total budget type they set.
+
+        A funder is only allowed to input a total budget if the updated total budget date is null
+            or if there is an updated on date but the type saved is monthly and the months are different
+            or if there is an updated on date but the type saved is quarterly and the quarters are different
+
+    Args:
+        total_budget_last_update_date: (datetime) utc. Last time the total budget was updated for a user
+        funder_total_budget_type: (string) either 'monthly' or 'quarterly'. Describes what kind of budget a user set
+    """
+
+    allow_total_budget_input = False
+    utc_now = datetime.datetime.now(timezone.utc)
+
+    if total_budget_last_update_date is None:
+        allow_total_budget_input = True
+    else:
+        month_saved = total_budget_last_update_date.month
+        month_now = utc_now.month
+
+        if funder_total_budget_type == 'monthly' and month_now != month_saved:
+            allow_total_budget_input = True
+        elif funder_total_budget_type == 'quarterly':
+            quarter_now = int(math.ceil(month_now / 3.))
+            quarter_saved = int(math.ceil(month_saved / 3.))
+
+            if quarter_now != quarter_saved:
+                allow_total_budget_input = True
+
+    return allow_total_budget_input
+
+
+def get_funder_outgoing_funds(done_bounties, funder_tips):
+    """ (Funder dashboard). Gets a list of outgoing funds of a user,
+        mapped to a format to be displayed in the funder dashboard template.
+
+    Args:
+        done_bounties: (BountyQuerySet) Done bounties that a funder has funded.
+        funder_tips: (TipQuerySet) Tips sent from the funder to gitcoiners
+    """
+
+    outgoing_funds = []
+    for bounty in done_bounties.filter(fulfillment_started_on__isnull=False):
+       # TODO: Replace the missing txid. Should uncomment the line below when we have this link available.
+       # link_to_etherscan = etherscan_link('#')
+       link_to_etherscan = bounty.action_urls()['invoice']
+
+       if bounty.fulfillments.filter(accepted=True).exists():
+           fund_status = 'Claimed'
+       else:
+           fund_status = 'Pending'
+
+       fund_type = 'Payment'
+       outgoing_funds.append({
+           'id': bounty.github_issue_number,
+           'title': escape(bounty.title),
+           'type': fund_type,
+           'status': fund_status,
+           'etherscanLink': link_to_etherscan,
+           'worthDollars': usd_format(bounty.get_value_in_usdt),
+           'worthEth': eth_format(eth_from_wei(bounty.get_value_in_eth))
+       })
+
+    for tip in funder_tips:
+        if tip.status == "RECEIVED":
+            tip_status = "Claimed"
+        else:
+            tip_status = "Pending"
+
+        link_to_etherscan = etherscan_link(tip.txid)
+        if tip.bounty:
+            outgoing_funds.append({
+                'id': tip.bounty.github_issue_number,
+                'title': tip.bounty.title,
+                'type': 'Tip',
+                'status': tip_status,
+                'etherscanLink': link_to_etherscan,
+                'worthDollars': usd_format(tip.value_in_usdt),
+                'worthEth': eth_format(eth_from_wei(tip.value_in_eth))
+            })
+
+    return outgoing_funds
+
+
+def get_outgoing_funds_filters():
+    outgoing_funds_filters = [
+        {
+            'value': 'All',
+            'value_display': _('All'),
+            'is_all_filter': True,
+            'is_type_filter': False,
+            'is_status_filter': False
+        },
+        {
+            'value': 'Tip',
+            'value_display': _('Tip'),
+            'is_all_filter': False,
+            'is_type_filter': True,
+            'is_status_filter': False
+        },
+        {
+            'value': 'Payment',
+            'value_display': _('Payment'),
+            'is_all_filter': False,
+            'is_type_filter': True,
+            'is_status_filter': False
+        },
+        {
+            'value': 'Pending',
+            'value_display': _('Pending'),
+            'is_all_filter': False,
+            'is_type_filter': False,
+            'is_status_filter': True
+        },
+        {
+            'value': 'Claimed',
+            'value_display': _('Claimed'),
+            'is_all_filter': False,
+            'is_type_filter': False,
+            'is_status_filter': True
+        },
+    ]
+
+    return outgoing_funds_filters
+
+
+def get_all_bounties_filters():
+    all_bounties_filters = [
+        {
+            'value': 'All',
+            'value_display': _('All'),
+            'is_all_filter': True,
+            'is_status_pending_or_claimed_filter': False
+        },
+        {
+            'value': 'Pending',
+            'value_display': _('Pending'),
+            'is_all_filter': False,
+            'is_status_pending_or_claimed_filter': True
+        },
+        {
+            'value': 'Claimed',
+            'value_display': _('Claimed'),
+            'is_all_filter': False,
+            'is_status_pending_or_claimed_filter': True
+        },
+    ]
+
+    return all_bounties_filters
 
 
 def usd_format(amount):

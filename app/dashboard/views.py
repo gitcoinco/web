@@ -45,7 +45,7 @@ from django.views.decorators.vary import vary_on_cookie
 
 from app.utils import clean_str, ellipses, sync_profile
 from avatar.utils import get_avatar_context
-from economy.utils import convert_amount, etherscan_link, eth_from_wei
+from economy.utils import convert_amount, eth_from_wei
 from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid
 from marketing.mails import (
@@ -59,7 +59,8 @@ from web3 import HTTPProvider, Web3
 
 from .helpers import (
     get_bounty_data_for_activity, get_payout_history, handle_bounty_views, to_funder_dashboard_bounty,
-    eth_format, usd_format
+    eth_format, usd_format, get_expiring_days_count, get_top_contributors, is_funder_allowed_to_input_total_budget,
+    get_funder_outgoing_funds, get_outgoing_funds_filters, get_all_bounties_filters
 )
 from .models import (
     Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip,
@@ -1168,59 +1169,32 @@ def funder_dashboard(request):
     done_bounties = active_done_expired_bounties.filter_by_status(['done'])
     expired_bounties = active_done_expired_bounties.filter_by_status(['expired'])
 
+    # Payout history
     payout_history = get_payout_history(done_bounties)
-
     d_payout_history_weekly = payout_history['weekly']
     d_payout_history_monthly = payout_history['monthly']
     d_payout_history_yearly = payout_history['yearly']
+
+    # Csv export all bounties this year
     d_csv_all_time_paid_bounties = payout_history['csv_all_time_paid_bounties']
 
     utc_now = datetime.datetime.now(timezone.utc)
-
     expiring_bounties = active_bounties.filter(expires_date__gte=utc_now,
                                                expires_date__lte=utc_now + timezone.timedelta(days=7))
 
+    # Header
     d_expiring_bounties_count = expiring_bounties.count()
-    last_expiring_days_from_now = 0
-
-    if d_expiring_bounties_count != 0:
-        for bounty in funder_bounties:
-            delta_days = (bounty.expires_date - utc_now).days
-            if last_expiring_days_from_now is None or delta_days > last_expiring_days_from_now:
-                last_expiring_days_from_now = delta_days
-
-    d_expiring_days_count = last_expiring_days_from_now
+    d_expiring_days_count = get_expiring_days_count(expiring_bounties)
 
     current_funder_bounties = funder_bounties.filter(current_bounty=True)
+
+    # Stats
     d_submitted_bounties_count = current_funder_bounties.count()
     d_total_contributors_count = 0
-
     for bounty in current_funder_bounties:
         d_total_contributors_count += bounty.fulfillments.filter(accepted=True).count()
 
-    contributors_usernames = []
-    done_bounties_desc_created = done_bounties.order_by('-web3_created')
-    for bounty in done_bounties_desc_created:
-        contributors = bounty.fulfillments.filter(accepted_on__isnull=False)\
-            .values('fulfiller_github_username')\
-            .distinct()
-
-        for contributor in contributors:
-            contributor_github_username = contributor['fulfiller_github_username']
-            if (
-                contributor_github_username
-                and contributor_github_username not in contributors_usernames
-                and len(contributors_usernames) <= 12
-            ):
-                contributors_usernames.append(contributor_github_username)
-
-    d_top_contributors = []
-    for contributor_github_username in contributors_usernames:
-        d_top_contributors.append({
-            'githubLink': 'https://gitcoin.co/profile/' + contributor_github_username,
-            'profilePictureSrc': '/dynamic/avatar/' + contributor_github_username,
-            'handle': contributor_github_username,
-        })
+    d_top_contributors = get_top_contributors(done_bounties, 12)
 
     d_total_paid_dollars = 0
     d_total_paid_eth = 0
@@ -1243,32 +1217,10 @@ def funder_dashboard(request):
         d_total_paid_date_since = paid_date_since.strftime('%d %b, %y')
 
     # total budget
-    # set total budget to 0 and allow users to input the total budget,
-    # if the updated total budget date is null
-    # or if there is an updated on date but the type saved is monthly and the months are different
-    # or if there is an updated on date but the type saved is quarterly and the quarters are different
-
-    # otherwise show the actual numbers, and the quarter / month
-
     total_budget_updated_on = request.user.profile.funder_total_budget_updated_on
-    d_total_budget_use_input_layout = False
     budget_type = request.user.profile.funder_total_budget_type
 
-    if total_budget_updated_on is None:
-        d_total_budget_use_input_layout = True
-    else:
-        month_saved = total_budget_updated_on.month
-        month_now = utc_now.month
-
-        if budget_type == 'monthly' and month_now != month_saved:
-            d_total_budget_use_input_layout = True
-        elif budget_type == 'quarterly':
-            quarter_now = int(math.ceil(month_now / 3.))
-            quarter_saved = int(math.ceil(month_saved / 3.))
-
-            if quarter_now != quarter_saved:
-                d_total_budget_use_input_layout = True
-
+    d_total_budget_use_input_layout = is_funder_allowed_to_input_total_budget(total_budget_updated_on, budget_type)
     if d_total_budget_use_input_layout:
         d_total_budget_dollars = 0
         d_total_budget_eth = 0
@@ -1294,16 +1246,17 @@ def funder_dashboard(request):
                 # quarter_now == 3
                 d_total_budget_used_time_period = _("October 1 - December 31")
 
+    # Latest on your bounties
+    utc_now = datetime.datetime.now(timezone.utc)
     d_tax_year = utc_now.year
     d_tax_year_bounties_count = 0
     d_tax_year_bounties_worth_dollars = 0
 
     for bounty in done_bounties:
         accepted_on = bounty.fulfillment_accepted_on
-        if accepted_on is not None and d_tax_year == accepted_on.year:
-            if bounty.get_value_in_usdt:
-                d_tax_year_bounties_count += 1
-                d_tax_year_bounties_worth_dollars += float(bounty.get_value_in_usdt)
+        if accepted_on is not None and d_tax_year == accepted_on.year and bounty.get_value_in_usdt:
+            d_tax_year_bounties_count += 1
+            d_tax_year_bounties_worth_dollars += float(bounty.get_value_in_usdt)
 
     d_expired_issues_count = expired_bounties.count()
     d_expired_issues_worth_dollars = 0
@@ -1316,106 +1269,12 @@ def funder_dashboard(request):
     d_completed_bounties_count = done_bounties.count()
     d_expired_bounties_count = expired_bounties.count()
 
-    d_outgoing_funds_filters = [
-        {
-            'value': 'All',
-            'value_display': _('All'),
-            'is_all_filter': True,
-            'is_type_filter': False,
-            'is_status_filter': False
-        },
-        {
-            'value': 'Tip',
-            'value_display': _('Tip'),
-            'is_all_filter': False,
-            'is_type_filter': True,
-            'is_status_filter': False
-        },
-        {
-            'value': 'Payment',
-            'value_display': _('Payment'),
-            'is_all_filter': False,
-            'is_type_filter': True,
-            'is_status_filter': False
-        },
-        {
-            'value': 'Pending',
-            'value_display': _('Pending'),
-            'is_all_filter': False,
-            'is_type_filter': False,
-            'is_status_filter': True
-        },
-        {
-            'value': 'Claimed',
-            'value_display': _('Claimed'),
-            'is_all_filter': False,
-            'is_type_filter': False,
-            'is_status_filter': True
-        },
-    ]
+    # Outgoing funds
+    d_outgoing_funds_filters = get_outgoing_funds_filters()
+    funder_tips = Tip.objects.filter(from_email=request.user.profile.email)
+    d_outgoing_funds = get_funder_outgoing_funds(done_bounties, funder_tips)
 
-    d_outgoing_funds = []
-    for bounty in done_bounties.filter(fulfillment_started_on__isnull=False):
-        # TODO: Replace the missing txid. Should uncomment the line below when we have this link available.
-        # link_to_etherscan = etherscan_link('#')
-        link_to_etherscan = bounty.action_urls()['invoice']
-
-        if bounty.fulfillments.filter(accepted=True).exists():
-            fund_status = 'Claimed'
-        else:
-            fund_status = 'Pending'
-
-        fund_type = 'Payment'
-        d_outgoing_funds.append({
-            'id': bounty.github_issue_number,
-            'title': escape(bounty.title),
-            'type': fund_type,
-            'status': fund_status,
-            'etherscanLink': link_to_etherscan,
-            'worthDollars': usd_format(bounty.get_value_in_usdt),
-            'worthEth': eth_format(eth_from_wei(bounty.get_value_in_eth))
-        })
-
-    funder_tips = Tip.objects.filter(from_email=request.user.profile.email).exclude(receive_txid='')
-    for tip in funder_tips:
-        if tip.status == "RECEIVED":
-            tip_status = "Claimed"
-        else:
-            tip_status = "Pending"
-
-        link_to_etherscan = etherscan_link(tip.txid)
-        if tip.bounty:
-            d_outgoing_funds.append({
-                'id': tip.bounty.github_issue_number,
-                'title': tip.bounty.title,
-                'type': 'Tip',
-                'status': tip_status,
-                'etherscanLink': link_to_etherscan,
-                'worthDollars': usd_format(tip.value_in_usdt),
-                'worthEth': eth_format(eth_from_wei(tip.value_in_eth))
-            })
-
-    d_all_bounties_filters = [
-        {
-            'value': 'All',
-            'value_display': _('All'),
-            'is_all_filter': True,
-            'is_status_pending_or_claimed_filter': False
-        },
-        {
-            'value': 'Pending',
-            'value_display': _('Pending'),
-            'is_all_filter': False,
-            'is_status_pending_or_claimed_filter': True
-        },
-        {
-            'value': 'Claimed',
-            'value_display': _('Claimed'),
-            'is_all_filter': False,
-            'is_status_pending_or_claimed_filter': True
-        },
-    ]
-
+    d_all_bounties_filters = get_all_bounties_filters()
     d_all_bounties = []
     for bounty in funder_bounties:
         d_all_bounties.append(to_funder_dashboard_bounty(bounty))
