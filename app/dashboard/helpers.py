@@ -942,6 +942,47 @@ def is_funder_allowed_to_input_total_budget(total_budget_last_update_date, funde
     return allow_total_budget_input
 
 
+def get_funder_total_budget(use_input_layout, funder_total_budget_dollars):
+    """ (Funder dashboard) Returns a wrapper object containing the total budget of the funder in dollars and eth,
+        and the time period in display format for which this budget is for
+
+    Args:
+        use_input_layout: (boolean) is the funder allowed to edit their total budget or should the existing one be shown
+        funder_total_budget_dollars (decimal) the total budget of the funder in dollars
+    """
+
+    if use_input_layout:
+        total_budget_dollars = 0
+        total_budget_eth = 0
+        total_budget_used_time_period = None
+    else:
+        # we should display their total budget
+        total_budget_dollars = funder_total_budget_dollars
+        total_budget_eth = convert_amount(total_budget_dollars, "USDT", "ETH")
+
+        if budget_type == 'monthly':
+                total_budget_used_time_period = utc_now.strftime('%B')
+        else:
+            # it's a quarterly budget
+            quarter_now = int(math.ceil(utc_now.month / 3.))
+
+            if quarter_now == 0:
+                    total_budget_used_time_period = _("January 1 - March 31")
+            elif quarter_now == 1:
+                    total_budget_used_time_period = _("April 1 - June 31")
+            elif quarter_now == 2:
+                    total_budget_used_time_period = _("July 1 - September 31")
+            else:
+                # quarter_now == 3
+                    total_budget_used_time_period = _("October 1 - December 31")
+
+    return {
+        'total_budget_dollars': total_budget_dollars,
+        'total_budget_eth': total_budget_eth,
+        'total_budget_used_time_period':     total_budget_used_time_period
+    }
+
+
 def get_funder_outgoing_funds(done_bounties, funder_tips):
     """ (Funder dashboard). Gets a list of outgoing funds of a user,
         mapped to a format to be displayed in the funder dashboard template.

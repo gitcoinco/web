@@ -45,7 +45,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 
 from app.utils import clean_str, ellipses, sync_profile
 from avatar.utils import get_avatar_context
-from economy.utils import convert_amount, eth_from_wei
+from economy.utils import eth_from_wei
 from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid
 from marketing.mails import (
@@ -60,7 +60,7 @@ from web3 import HTTPProvider, Web3
 from .helpers import (
     get_bounty_data_for_activity, get_payout_history, handle_bounty_views, to_funder_dashboard_bounty,
     eth_format, usd_format, get_expiring_days_count, get_top_contributors, is_funder_allowed_to_input_total_budget,
-    get_funder_outgoing_funds, get_outgoing_funds_filters, get_all_bounties_filters
+    get_funder_outgoing_funds, get_outgoing_funds_filters, get_all_bounties_filters, get_funder_total_budget
 )
 from .models import (
     Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip,
@@ -1222,30 +1222,13 @@ def funder_dashboard(request):
     budget_type = request.user.profile.funder_total_budget_type
 
     d_total_budget_use_input_layout = is_funder_allowed_to_input_total_budget(total_budget_updated_on, budget_type)
-    if d_total_budget_use_input_layout:
-        d_total_budget_dollars = 0
-        d_total_budget_eth = 0
-        d_total_budget_used_time_period = None
-    else:
-        # we should display their total budget
-        d_total_budget_dollars = request.user.profile.funder_total_budget_usdt
-        d_total_budget_eth = convert_amount(d_total_budget_dollars, "USDT", "ETH")
 
-        if budget_type == 'monthly':
-            d_total_budget_used_time_period = utc_now.strftime('%B')
-        else:
-            # it's a quarterly budget
-            quarter_now = int(math.ceil(utc_now.month / 3.))
+    funder_total_budget = request.user.profile.funder_total_budget_usdt
+    total_budget_data = get_funder_total_budget(d_total_budget_use_input_layout, funder_total_budget)
 
-            if quarter_now == 0:
-                d_total_budget_used_time_period = _("January 1 - March 31")
-            elif quarter_now == 1:
-                d_total_budget_used_time_period = _("April 1 - June 31")
-            elif quarter_now == 2:
-                d_total_budget_used_time_period = _("July 1 - September 31")
-            else:
-                # quarter_now == 3
-                d_total_budget_used_time_period = _("October 1 - December 31")
+    d_total_budget_dollars = total_budget_data['total_budget_dollars']
+    d_total_budget_eth = total_budget_data['total_budget_eth']
+    d_total_budget_used_time_period = total_budget_data['total_budget_used_time_period']
 
     # Latest on your bounties
     utc_now = datetime.datetime.now(timezone.utc)
