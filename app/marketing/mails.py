@@ -18,11 +18,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
+import inspect
+
 from django.conf import settings
 from django.utils import timezone, translation
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
-import inspect
+
 import sendgrid
 from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
 from python_http_client.exceptions import HTTPError, UnauthorizedError
