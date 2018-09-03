@@ -1842,11 +1842,13 @@ class Profile(SuperModel):
 
     @property
     def avatar_url(self):
+        if self.avatar:
+            return self.avatar.avatar_url
         return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
 
     @property
     def avatar_url_with_gitcoin_logo(self):
-        return f"{self.avatar_url}/1"
+        return f"{settings.BASE_URL}dynamic/avatar/{self.handle}/1"
 
     @property
     def absolute_url(self):
