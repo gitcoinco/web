@@ -86,7 +86,7 @@ def get_avatar_context():
             'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
                 'HatShort-backwardscap'
             ], ['HatShort-ballcap'], ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'],
-                        ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'])
+                        ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'], ['Helmet-space'])
         }, {
             'name': 'Background',
             'title': 'Pick a background color',
