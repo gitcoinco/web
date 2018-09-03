@@ -344,10 +344,15 @@ a.btn {
   margin-bottom: 10px;
 }
 
+#moderator-admin-actions:not(:empty).sticky {
+  text-align: center;
+}
+
 .sticky {
   position: fixed;
   top: 0;
   z-index: 1010;
+  text-align: center;
 }
 
 #btn-white {
@@ -531,7 +536,7 @@ a.btn {
 #moderator-admin-actions:not(:empty) {
   background: #F2F6F9;
   padding: 16px 0 10px;
-  text-align: center;
+  text-align: left;
   left: 0;
 }
 
