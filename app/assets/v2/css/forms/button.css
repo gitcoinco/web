@@ -52,3 +52,7 @@
 .button--warning {
   background-color: #ca001a;
 }
+
+.button--full {
+  width: 100%;
+}
