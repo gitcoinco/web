@@ -19,14 +19,18 @@
 from __future__ import print_function, unicode_literals
 
 from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.contrib import messages
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
 from django.contrib.postgres.search import SearchVector
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.shortcuts import redirect
 
 from .models import Token, Wallet, Email
-from dashboard.models import Profile
+from dashboard.models import Profile, Activity
+from dashboard.utils import get_web3
+from dashboard.views import record_user_action
 from avatar.models import Avatar
 from .forms import KudosSearchForm
 import re
@@ -39,6 +43,8 @@ from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_master, get_github_primary_email
 from retail.helpers import get_ip
+from web3 import Web3
+from eth_utils import to_checksum_address
 
 import logging
 
@@ -157,7 +163,7 @@ def get_user_request_info(request):
 
 
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def send_kudos_2(request):
+def send_2(request):
     """ Handle the first start of the Kudos email send.
     This form is filled out before the 'send' button is clicked.
     """
@@ -238,7 +244,7 @@ def get_to_emails(params):
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def send_kudos_3(request):
+def send_3(request):
     """ This function is derived from send_tip_3.
     Handle the third stage of sending a kudos (the POST).  The request to send the kudos is
     added to the database, but the transaction has not happened yet.  The txid is added
@@ -290,7 +296,7 @@ def send_kudos_3(request):
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def send_kudos_4(request):
+def send_4(request):
     """ Handle the fourth stage of sending a tip (the POST).  Once the metamask transaction is complete,
         add it to the database.
 
@@ -350,9 +356,100 @@ def send_kudos_4(request):
     return JsonResponse(response)
 
 
-def receive(request):
-    context = dict()
-    # kt = KudosToken(name='pythonista', description='Zen', rarity=5, price=10, num_clones_allowed=3,
-    #                 num_clones_in_wild=0)
+def record_kudos_email_activity(kudos_email, github_handle, event_name):
+    kwargs = {
+        'activity_type': event_name,
+        'kudos_email': kudos_email,
+        'metadata': {
+            'amount': str(kudos_email.amount),
+            'token_name': kudos_email.tokenName,
+            'value_in_eth': str(kudos_email.value_in_eth),
+            'value_in_usdt_now': str(kudos_email.value_in_usdt_now),
+            'github_url': kudos_email.github_url,
+            'to_username': kudos_email.username,
+            'from_name': kudos_email.from_name,
+            'received_on': str(kudos_email.received_on) if kudos_email.received_on else None
+        }
+    }
+    try:
+        kwargs['profile'] = Profile.objects.get(handle=github_handle)
+    except Profile.MultipleObjectsReturned:
+        kwargs['profile'] = Profile.objects.filter(handle__iexact=github_handle).first()
+    except Profile.DoesNotExist:
+        logging.error(f"error in record_kudos_email_activity: profile with github name {github_handle} not found")
+        return
+    try:
+        kwargs['bounty'] = kudos_email.bounty
+    except:
+        pass
 
-    return TemplateResponse(request, 'transaction/receive.html', context)
+    try:
+        Activity.objects.create(**kwargs)
+    except Exception as e:
+        logging.error(f"error in record_kudos_email_activity: {e} - {event_name} - {kudos_email} - {github_handle}")
+
+
+def receive(request, key, txid, network):
+    """Handle the receiving of a kudos (the POST)
+
+    Returns:
+        TemplateResponse: the UI with the kudos confirmed
+
+    """
+
+    these_kudos_emails = Email.objects.filter(web3_type='v3', txid=txid, network=network)
+    kudos_emails = these_kudos_emails.filter(metadata__reference_hash_for_receipient=key) | these_kudos_emails.filter(
+        metadata__reference_hash_for_funder=key)
+    kudos_email = kudos_emails.first()
+    is_authed = request.user.username == kudos_email.username or request.user.username == kudos_email.from_username
+    not_mined_yet = get_web3(kudos_email.network).eth.getBalance(Web3.toChecksumAddress(kudos_email.metadata['address'])) == 0
+
+    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
+        request.user, 'profile', None
+    ):
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+    elif kudos_email.receive_txid:
+        messages.info(request, 'This kudos has been received')
+    elif not is_authed:
+        messages.error(
+            request, f'This kudos is for {kudos_email.username} but you are logged in as {request.user.username}.  Please logout and log back in as {kudos_email.username}.')
+    elif not_mined_yet:
+        messages.info(
+            request, f'This tx {kudos_email.txid}, is still mining.  Please wait a moment before submitting the receive form.')
+    elif request.GET.get('receive_txid') and not kudos_email.receive_txid:
+        params = request.GET
+
+        # db mutations
+        try:
+            if params['save_addr']:
+                profile = get_profile(kudos_email.username)
+                if profile:
+                    # TODO: Does this mean that the address the user enters in the receive form
+                    # Will overwrite an already existing preferred_payout_address?  Should we
+                    # ask the user to confirm this?
+                    profile.preferred_payout_address = params['forwarding_address']
+                    profile.save()
+            kudos_email.receive_txid = params['receive_txid']
+            kudos_email.receive_address = params['forwarding_address']
+            kudos_email.received_on = timezone.now()
+            kudos_email.save()
+            record_user_action(kudos_email.from_username, 'receive_kudos', kudos_email)
+            record_kudos_email_activity(kudos_email, kudos_email.username, 'receive_kudos')
+            messages.success(request, 'This tip has been received')
+        except Exception as e:
+            messages.error(request, str(e))
+            logger.exception(e)
+
+    params = {
+        'issueURL': request.GET.get('source'),
+        'class': 'receive',
+        'title': _('Receive Kudos'),
+        'gas_price': round(recommend_min_gas_price_to_confirm_in_time(120), 1),
+        'kudos_email': kudos_email,
+        'key': key,
+        'is_authed': is_authed,
+        'disable_inputs': kudos_email.receive_txid or not_mined_yet or not is_authed,
+    }
+
+    return TemplateResponse(request, 'transaction/receive.html', params)
