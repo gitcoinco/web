@@ -81,6 +81,7 @@ def sum_bounty_helper(b, breakdown, index_term, val_usd):
     if b.token_name == index_term:
         add_element(f'{breakdown}_tokens', index_term, val_usd)
     if index_term in b.keywords_list:
+        index_term = index_term.lower()
         is_github_org_name = Bounty.objects.filter(github_url__icontains=f'https://github.com/{index_term}').exists()
         is_github_repo_name = Bounty.objects.filter(github_url__icontains=f'/{index_term}/').exists()
         index_keyword = not is_github_repo_name and not is_github_org_name
@@ -183,6 +184,7 @@ class Command(BaseCommand):
                 if not should_suppress_leaderboard(fulfiller.fulfiller_github_username):
                     index_terms.append(fulfiller.fulfiller_github_username)
             for keyword in b.keywords_list:
+                keyword = keyword.lower()
                 index_terms.append(keyword)
 
             index_terms.append(b.token_name)
