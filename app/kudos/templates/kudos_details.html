@@ -53,6 +53,7 @@
             </div>
           </div>
           <hr>
+          {% if related_profiles %}
           <div class="row pt-3">
             <div class="col-12">
               <p class="font-bigger-1">{% trans "These people own this Kudos" %}</p>
@@ -69,6 +70,7 @@
             {% endif %}
             {% endfor %}
           </div>
+          {% endif %}
         </div>
       </div>
   	</section>

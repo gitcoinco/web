@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="277px" height="369px" viewBox="0 0 277 369" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
+    <title>erc-721</title>
+    <desc>erc-721 image</desc>
+
+    <style>
+        .animate-colors {
+            -webkit-animation: colors 3s linear infinite;
+                    animation: colors 3s linear infinite;
+            -webkit-animation-direction: alternate;
+                    animation-direction: alternate;
+        }
+        @-webkit-keyframes colors {
+            0% {
+                stroke:#0cc67f;
+                fill:rgba(#0cc67f,0.6);
+            }
+            15% {
+                stroke:#1e6ee2;
+                fill:rgba(#1e6ee2,0.6);
+            }
+            30% {
+                stroke:#662d91;
+                fill:rgba(#662d91,0.6);
+            }
+            50% {
+                stroke:#018cb2;
+                fill:rgba(#018cb2,0.6);
+            }
+            65% {
+                stroke:#e57418;
+                fill:rgba(#e57418,0.6);
+            }
+            85% {
+                stroke:#4d4d4d;
+                fill:rgba(#4d4d4d,0.6);
+            }
+            100% {
+                stroke:#0044e0;
+                fill:rgba(#0044e0,0.6);
+            }                               
+    
+        }
+        @keyframes colors {
+            0% {
+                stroke:#0cc67f;
+                fill:rgba(#0cc67f,0.6);
+            }
+            15% {
+                stroke:#1e6ee2;
+                fill:rgba(#1e6ee2,0.6);
+            }
+            30% {
+                stroke:#662d91;
+                fill:rgba(#662d91,0.6);
+            }
+            50% {
+                stroke:#018cb2;
+                fill:rgba(#018cb2,0.6);
+            }
+            65% {
+                stroke:#e57418;
+                fill:rgba(#e57418,0.6);
+            }
+            85% {
+                stroke:#4d4d4d;
+                fill:rgba(#4d4d4d,0.6);
+            }
+            100% {
+                stroke:#0044e0;
+                fill:rgba(#0044e0,0.6);
+            }                               
+    
+        }
+        .animate-opacity {
+            -webkit-animation: opacity 2s linear infinite;
+            animation: opacity 2s linear infinite;
+            -webkit-animation-direction: alternate;
+            animation-direction: alternate;
+        }
+        .animate-opacity:nth-of-type(1) {
+        -webkit-animation-delay: 1s;
+          animation-delay: 1s;
+        }
+
+        @-webkit-keyframes opacity {
+            0% {
+                opacity: 0.1;
+            }
+            
+            100% {
+                opacity: 0.4;
+            }                               
+        }
+        @keyframes opacity {
+            0% {
+                opacity: 0.1;
+            }
+            
+            100% {
+                opacity: 0.4;
+            }                               
+        }
+    </style>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Updated-Landing" transform="translate(-229.000000, -4947.000000)">
+            <g id="erc-721" transform="translate(192.000000, 4928.000000)">
+                <polygon id="Stroke-2-Copy-3" class="animate-opacity" stroke="#05B66A" stroke-width="8.6" opacity="0.178515625" transform="translate(125.388439, 121.179147) rotate(-30.000000) translate(-125.388439, -121.179147) " points="173.38708 36.6791466 77.3870803 36.6791466 29.3884388 121.180527 77.3870803 205.679147 173.38708 205.679147 221.388439 121.180527"></polygon>
+                <polygon id="Stroke-2-Copy-4" class="animate-opacity" stroke="#05B66A" stroke-width="8.6" opacity="0.178515625" transform="translate(225.388439, 285.179147) rotate(-30.000000) translate(-225.388439, -285.179147) " points="273.38708 200.679147 177.38708 200.679147 129.388439 285.180527 177.38708 369.679147 273.38708 369.679147 321.388439 285.180527"></polygon>
+                <polygon id="Stroke-2-Copy-5" class="animate-colors" stroke="#405366" stroke-width="4" transform="translate(226.662150, 289.035661) rotate(-30.000000) translate(-226.662150, -289.035661) " points="233.806013 276.45913 219.517882 276.45913 212.374019 289.035867 219.517882 301.612193 233.806013 301.612193 240.95028 289.035867"></polygon>
+                <g id="eth-symbol" class="animate-colors" transform="translate(100.000000, 79.000000)" stroke="#405366" stroke-linejoin="round" stroke-width="3.2928">
+                    <polygon id="Stroke-3" points="25 87 0 52 25 66.7851427"></polygon>
+                    <polygon id="Stroke-5" points="26 87 51 52 26 66.7851427"></polygon>
+                    <polygon id="Stroke-7" points="25 30.5803917 0 42 25 0 25 30.5803917 25 0"></polygon>
+                    <polygon id="Stroke-9" points="26 30.5803917 51 42 26 0 26 30.5803917 26 0"></polygon>
+                    <polygon id="Stroke-11" points="26 57 51 42.2889962 26 31"></polygon>
+                    <polygon id="Stroke-13" points="25 57 0 42.2889962 25 31"></polygon>
+                </g>
+                <rect id="Rectangle-18" stroke="#405366" stroke-width="4" fill-rule="nonzero" x="199" y="265" width="55" height="49"></rect>
+                <rect id="Rectangle-18-Copy" stroke="#405366" stroke-width="4" fill-rule="nonzero" x="191" y="254" width="71" height="11"></rect>
+            </g>
+        </g>
+    </g>
+</svg>
