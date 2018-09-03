@@ -35,7 +35,7 @@ class Command(BaseCommand):
         if self.all_bountied_repos_cache:
             return self.all_bountied_repos_cache
 
-        bounties = Bounty.objects.filter(current_bounty=True)
+        bounties = Bounty.objects.current()
         return_me = []
         for bounty in bounties:
             try:

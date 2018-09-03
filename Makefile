@@ -108,5 +108,13 @@ pgactivity: ## Run pg_activivty against the local postgresql instance.
 pgtop: ## Run pg_top against the local postgresql instance.
 	@docker-compose exec web scripts/pg_top.bash
 
+update_fork: ## Update the current fork master branch with upstream master.
+	@echo "Updating the current fork with the Gitcoin upstream master branch..."
+	@git checkout master
+	@git fetch upstream
+	@git merge upstream/master
+	@git push origin master
+	@echo "Updated!"
+
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

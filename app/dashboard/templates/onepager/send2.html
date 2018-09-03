@@ -28,6 +28,8 @@
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "onepager/js/send.js" %}"></script>
   <script src="{% static "onepager/js/confetti.js" %}"></script>
+  <script src="{% static "v2/js/user-search.js" %}"></script>
+  
 {% endblock %}
 <!-- Main -->
 {% block 'main' %}
@@ -59,8 +61,8 @@
     </div>
     <div id="usd_amount"> &nbsp;</div>
     <div>
-      {% trans "To Github Username" %}:
-      <input type="text" placeholder="@username" id="username" value="" style="max-width: 400px; margin-left: auto; margin-right: auto;">
+      <label for="">{% trans "To Github Username" %}:</label> <br>
+      <select id="username" class="username-search custom-select" style="max-width: 400px; margin-left: auto; margin-right: auto;"></select>
     </div>
     <div>
       {% trans "From Github Username" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next=/tip">{% trans "Login" %}</a>) {%endif%}
