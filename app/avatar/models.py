@@ -155,13 +155,46 @@ class Avatar(SuperModel):
     @property
     def avatar_url(self):
         """Return the appropriate avatar URL."""
-        if self.use_github_avatar and not self.png:
+        if self.use_github_avatar and not self.github_svg:
             return self.pull_github_avatar()
-        if self.use_github_avatar and self.png:
-            return self.png.url
+        if self.use_github_avatar and self.github_svg:
+            return self.github_svg.url
         if self.svg:
             return self.svg.url
         return ''
+
+    def determine_response(self, use_svg=True):
+        """Determine the content type and file to serve.
+
+        Args:
+            use_svg (bool): Whether or not to use SVG format.
+
+        """
+        content_type = 'image/svg+xml' if use_svg else 'image/png'
+        image = None
+
+        if not use_svg:
+            if self.use_github_avatar and self.png:
+                image = self.png.file
+            elif not self.use_github_avatar and self.custom_avatar_png:
+                image = self.custom_avatar_png.file
+        else:
+            if self.use_github_avatar and self.github_svg:
+                image = self.github_svg.file
+            elif not self.use_github_avatar and self.svg:
+                image = self.svg.file
+        return image, content_type
+
+    def get_avatar_url(self, use_svg=True):
+        """Get the Avatar URL.
+
+        Args:
+            use_svg (bool): Whether or not to use SVG format.
+
+        """
+        if not use_svg:
+            return self.png.url if self.use_github_avatar else self.custom_avatar_png.url
+        return self.github_avatar_png.url if self.use_github_avatar else self.svg.url
 
     def create_from_config(self, svg_name='avatar'):
         """Create an avatar SVG from the configuration.
