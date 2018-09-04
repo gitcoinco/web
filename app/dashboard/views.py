@@ -1223,7 +1223,7 @@ def funder_dashboard(request):
     d_total_budget_use_input_layout = is_funder_allowed_to_input_total_budget(total_budget_updated_on, budget_type)
 
     funder_total_budget = request.user.profile.funder_total_budget_usdt
-    total_budget_data = get_funder_total_budget(d_total_budget_use_input_layout, funder_total_budget)
+    total_budget_data = get_funder_total_budget(d_total_budget_use_input_layout, funder_total_budget, budget_type)
 
     d_total_budget_dollars = total_budget_data['total_budget_dollars']
     d_total_budget_eth = total_budget_data['total_budget_eth']

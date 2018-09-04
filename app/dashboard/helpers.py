@@ -948,6 +948,7 @@ def get_funder_total_budget(use_input_layout, funder_total_budget_dollars, budge
     Args:
         use_input_layout: (boolean) is the funder allowed to edit their total budget or should the existing one be shown
         funder_total_budget_dollars (decimal) the total budget of the funder in dollars
+        budget_type: "monthly" or "quarterly"
     """
 
     utc_now = datetime.datetime.now(timezone.utc)
@@ -980,7 +981,7 @@ def get_funder_total_budget(use_input_layout, funder_total_budget_dollars, budge
     return {
         'total_budget_dollars': total_budget_dollars,
         'total_budget_eth': total_budget_eth,
-        'total_budget_used_time_period':     total_budget_used_time_period
+        'total_budget_used_time_period': total_budget_used_time_period
     }
 
 
