@@ -245,8 +245,17 @@ class Command(BaseCommand):
             body = '<a href="%s">%s</a>' % (url, url)
             print(url)
 
-            send_mail(settings.CONTACT_EMAIL, settings.CONTACT_EMAIL, subject, body='', html=body, categories=['admin', 'activity_report'])
+            send_mail(
+                settings.CONTACT_EMAIL,
+                settings.CONTACT_EMAIL,
+                subject,
+                body='',
+                html=body,
+                categories=['admin', 'activity_report'],
+            )
 
-            self.stdout.write(self.style.SUCCESS('Sent activity report from %s to %s to %s' % (start, end, settings.CONTACT_EMAIL)))
+            self.stdout.write(
+                self.style.SUCCESS('Sent activity report from %s to %s to %s' % (start, end, settings.CONTACT_EMAIL))
+            )
         else:
             self.stdout.write(self.style.WARNING('No activity from %s to %s to report' % (start, end)))

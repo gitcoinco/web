@@ -37,4 +37,4 @@ class Command(BaseCommand):
         # new_bounty_rejection(b, [settings.CONTACT_EMAIL])
         # new_bounty_acceptance(b, [settings.CONTACT_EMAIL])
         # bounty_expire_warning(b, [settings.CONTACT_EMAIL])
-        #bounty_uninterested([settings.CONTACT_EMAIL, 'ksowocki@gmail.com'], b, i)
+        # bounty_uninterested([settings.CONTACT_EMAIL, 'ksowocki@gmail.com'], b, i)
