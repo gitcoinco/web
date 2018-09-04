@@ -28,6 +28,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.core.cache import cache
+from django.core.serializers.json import DjangoJSONEncoder
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -35,11 +36,10 @@ from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.cache import cache_page
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
-from django.views.decorators.cache import cache_page
 from django.views.decorators.vary import vary_on_cookie
-from django.core.serializers.json import DjangoJSONEncoder
 
 from app.utils import clean_str, ellipses, sync_profile
 from avatar.utils import get_avatar_context
@@ -56,9 +56,10 @@ from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
 from .helpers import (
-    get_bounty_data_for_activity, get_payout_history, handle_bounty_views, to_funder_dashboard_bounty,
-    eth_format, usd_format, get_expiring_days_count, get_top_contributors, is_funder_allowed_to_input_total_budget,
-    get_funder_outgoing_funds, get_outgoing_funds_filters, get_all_bounties_filters, get_funder_total_budget
+    eth_format, get_all_bounties_filters, get_bounty_data_for_activity, get_expiring_days_count,
+    get_funder_outgoing_funds, get_funder_total_budget, get_outgoing_funds_filters, get_payout_history,
+    get_top_contributors, handle_bounty_views, is_funder_allowed_to_input_total_budget, to_funder_dashboard_bounty,
+    usd_format,
 )
 from .models import (
     Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip,
@@ -70,7 +71,7 @@ from .notifications import (
     maybe_market_to_user_slack,
 )
 from .utils import (
-    get_bounty, get_bounty_id, get_context, has_tx_mined, record_user_action_on_interest, web3_process_bounty
+    get_bounty, get_bounty_id, get_context, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
 )
 
 logger = logging.getLogger(__name__)

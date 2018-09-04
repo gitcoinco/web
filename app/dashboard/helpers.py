@@ -17,7 +17,9 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import csv
 import datetime
+import io
 import logging
 import pprint
 from decimal import Decimal
@@ -32,7 +34,6 @@ from django.http import Http404, JsonResponse
 from django.utils import timezone
 from django.utils.html import escape
 from django.utils.translation import gettext_lazy as _
-from economy.utils import etherscan_link
 
 from app.utils import sync_profile
 from dashboard.models import Activity, Bounty, BountyFulfillment, BountySyncRequest, UserAction
@@ -41,13 +42,11 @@ from dashboard.notifications import (
     maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from dashboard.tokens import addr_to_token
-from economy.utils import convert_amount, eth_from_wei
+from economy.utils import convert_amount, eth_from_wei, etherscan_link
 from git.utils import get_gh_issue_details, get_url_dict, issue_number, org_name, repo_name
 from jsondiff import diff
 from pytz import UTC
 from ratelimit.decorators import ratelimit
-import csv
-import io
 
 from .models import Profile
 
