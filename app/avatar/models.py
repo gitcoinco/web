@@ -30,6 +30,7 @@ from django.utils.translation import gettext_lazy as _
 from economy.models import SuperModel
 from svgutils.compose import Figure, Line
 
+from .exceptions import AvatarConversionError
 from .utils import build_avatar_component, convert_img, get_upload_filename
 
 logger = logging.getLogger(__name__)
@@ -88,7 +89,7 @@ class Avatar(SuperModel):
         """Define the string representation of Avatar."""
         return f"Avatar ({self.pk}) - Profile: {self.profile_set.last().handle if self.profile_set.exists() else 'N/A'}"
 
-    def save(self, force_insert=False, force_update=False, *args, **kwargs):
+    def save(self, *args, force_insert=False, force_update=False, **kwargs):
         """Override the save to perform change comparison against PNG and SVG fields."""
         if (self.svg != self.__previous_svg) or (self.svg and not self.custom_avatar_png):
             # If the SVG has changed, perform PNG conversion.
@@ -249,8 +250,18 @@ class Avatar(SuperModel):
 
     def convert_custom_svg(self):
         """Handle converting the custom Avatar SVG to PNG."""
-        self.convert_field(self.svg, 'custom_avatar_png', input_fmt='svg', output_fmt='png')
+        try:
+            converted = self.convert_field(self.svg, 'custom_avatar_png', input_fmt='svg', output_fmt='png')
+            if not converted:
+                raise AvatarConversionError('Avatar conversion error while converting SVG!')
+        except AvatarConversionError as e:
+            logger.error(e)
 
     def convert_github_png(self):
         """Handle converting the Github Avatar PNG to SVG."""
-        self.convert_field(self.png, 'github_svg', input_fmt='png', output_fmt='svg')
+        try:
+            converted = self.convert_field(self.png, 'github_svg', input_fmt='png', output_fmt='svg')
+            if not converted:
+                raise AvatarConversionError('Avatar conversion error while converting SVG!')
+        except AvatarConversionError as e:
+            logger.error(e)
