@@ -70,7 +70,7 @@ def about(request):
         'title': 'About',
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
-        'avatar_url': static('v2/images/grow_open_source.png'),
+        'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         "listings": Token.objects.all(),
     }
     return TemplateResponse(request, 'kudos_about.html', context)
@@ -96,7 +96,7 @@ def marketplace(request):
         'title': 'Marketplace',
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
-        'avatar_url': static('v2/images/grow_open_source.png'),
+        'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         'listings': listings
     }
 
@@ -141,7 +141,7 @@ def details(request):
         'title': 'Details',
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
-        'avatar_url': static('v2/images/grow_open_source.png'),
+        'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         'kudos': kudos,
         'related_profiles': related_profiles,
     }
