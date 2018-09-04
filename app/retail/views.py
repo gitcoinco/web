@@ -249,7 +249,7 @@ def how_it_works(request, work_type):
     context = {
         'active': f'how_it_works_{work_type}',
     }
-    return TemplateResponse(request, 'how_it_works.html', context)
+    return TemplateResponse(request, 'how_it_works/index.html', context)
 
 
 def robotstxt(request):

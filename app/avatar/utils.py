@@ -52,7 +52,7 @@ def get_avatar_context():
         }, {
             'name': 'Eyes',
             'title': 'Pick eyes shape',
-            'options': ('0', '1', '2', '3', '4')
+            'options': ('0', '1', '2', '3', '4', '5', '6')
         }, {
             'name': 'Nose',
             'title': 'Pick nose shape',
@@ -68,7 +68,7 @@ def get_avatar_context():
         }, {
             'name': 'Clothing',
             'title': 'Pick your clothing',
-            'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt')
+            'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater')
         }, {
             'name': 'Hair Style',
             'title': 'Pick a hairstyle',

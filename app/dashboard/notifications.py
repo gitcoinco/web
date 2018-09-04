@@ -670,7 +670,7 @@ def maybe_market_tip_to_github(tip):
 
 
 def maybe_market_to_email(b, event_name):
-    from marketing.mails import new_work_submission, new_bounty_rejection, new_bounty_acceptance
+    from marketing.mails import new_work_submission, new_bounty_rejection, new_bounty_acceptance, bounty_changed
     to_emails = []
     if b.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
@@ -698,6 +698,17 @@ def maybe_market_to_email(b, event_name):
             rejected_fulfillment = b.fulfillments.filter(accepted=False).latest('modified_on')
             to_emails = [b.bounty_owner_email, rejected_fulfillment.fulfiller_email]
             new_bounty_rejection(b, to_emails)
+        except Exception as e:
+            logging.exception(e)
+    elif event_name == 'bounty_changed':
+        try:
+            to_emails = [b.bounty_owner_email]
+            for profile in b.interested.select_related('profile').all():
+                email = profile.profile.email
+                if email:
+                    to_emails.append(email)
+
+            bounty_changed(b, to_emails)
         except Exception as e:
             logging.exception(e)
 
