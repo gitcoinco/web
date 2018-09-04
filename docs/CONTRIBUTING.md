@@ -73,6 +73,7 @@ User facing copy / text should be run through [Django Translation Framework](htt
 3. each of the `views.py` user-facing pieces of copy are in `gettext_lazy` fields
 4. each of the models `help_text`s are internationalized
 5. as are all the emails in `marketing/mails.py`
+6. run `make autotranslate` or a combination of the necessary `./manage.py makemessages` and `./manage.py compilemessages` commands.
 
 Take a look at `/styleguide-alpha` (ui_inventory.html), for a quick reference of user interface components.
 If you are contributing user-facing assets, interface components or other relevant visuals,
