@@ -249,9 +249,9 @@ and also iPads specifically.
   color: white;
 }
 
- .funder-dashboard__stats__stat--total-budget__budget-input {
-   max-width: 80%;
- }
+.funder-dashboard__stats__stat--total-budget__budget-input {
+  max-width: 80%;
+}
 
 .funder-dashboard__stats__stat--total-budget__budget-input__submit {
   cursor: pointer;
