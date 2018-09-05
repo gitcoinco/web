@@ -271,7 +271,7 @@ def bounties():
 
     Stat.objects.create(
         key='bounties',
-        val=(Bounty.objects.filter(current_bounty=True, network='mainnet').count()),
+        val=(Bounty.objects.current().filter(network='mainnet').count()),
         )
 
 

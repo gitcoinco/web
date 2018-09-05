@@ -28,7 +28,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        bounties = Bounty.objects.filter(current_bounty=True, network='mainnet', idx_status__in=['open', 'started', 'submitted'])
+        bounties = Bounty.objects.current().filter(network='mainnet', idx_status__in=['open', 'started', 'submitted'])
         for bounty in bounties:
             if False:
                 continue
