@@ -686,8 +686,19 @@ var show_extend_deadline_modal = function() {
   });
 };
 
-var build_detail_page = function(result) {
+var set_reserved_for_link = function(result) {
+    if(result.bounty_reserved_for !== '') {
+      var profile_link = 'https://gitcoin.co/profile/'+result.bounty_reserved_for;
+      var reservedForHtmlLink = '<a href="'+profile_link+'">'+result.bounty_reserved_for+'</a>';
+      var reservedForAvatar = `<img class="rounded-circle" src="${static_url + 'v2/images/user-placeholder.png'}" width="30" height="30"/>`;
+      $('#bounty_reserved_for').html(reservedForHtmlLink+reservedForAvatar); 
+    }
+    else {
+      $('#bounty_reserved_for').css('display', 'none');
+    }
+};
 
+var build_detail_page = function(result) {
   // setup
   var decimals = 18;
   var related_token_details = tokenAddressToDetailsByNetwork(result['token_address'], result['network']);
@@ -1131,6 +1142,8 @@ var pull_bounty_from_api = function() {
         nonefound = false;
 
         build_detail_page(result);
+
+        set_reserved_for_link(result);
 
         do_actions(result);
 

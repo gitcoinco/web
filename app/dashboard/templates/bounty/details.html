@@ -58,59 +58,67 @@
               <div class="col-12">
                 <div id="status"></div>
               </div>
-              <div class="row">
+              <div id="bounty-info-row" class="row">
                   <div class="col-3 bounty-info">
-                    <div id="timer">
-                      <div>
-                        <span class="bounty-info-heading timeleft">{% trans "Time left" %} </span>
-                        <span class="bounty-info-text" id="expires_date"></span>
-                      </div>
-                      <div>
-                        <span class="progress-bar">
-                          <span class="progress"></span>
-                        </span>
-                      </div>
+                    <div class="bounty-info-row-div">
+                        <span class="bounty-info-heading timeleft bounty-info-row-span-left">{% trans "Time left" %} </span>
+                        <span class="bounty-info-text bounty-info-row-span-right" id="expires_date"></span>
                     </div>
-                    <div>
-                      <span class="bounty-info-heading">{% trans "Opened" %} </span>
-                      <span class="bounty-info-text" id="web3_created"></span>
+                    <div class="bounty-info-row-div">
+                      <span class="bounty-info-heading bounty-info-row-span-left">{% trans "Opened" %} </span>
+                      <span class="bounty-info-text bounty-info-row-span-right" id="web3_created"></span>
                     </div>
-                    <div>
-                      <span class="bounty-info-heading">{% trans "Issue Type" %} </span>
-                      <span class="bounty-info-text" id="bounty_type"></span>
+                    <div class="bounty-info-row-div">
+                      <span class="bounty-info-heading bounty-info-row-span-left">{% trans "Issue Type" %} </span>
+                      <span class="bounty-info-text bounty-info-row-span-right" id="bounty_type"></span>
                     </div>
+
                   </div>
                   <div class="col-3 offset-md-1 bounty-info">
-                    <div>
-                      <span class="bounty-info-heading" title='{% include "shared/project_type_tooltip.html" %}'>{% trans "Project Type" %} </span>
-                      <span class="bounty-info-text" id="project_type" title='{% include "shared/project_type_tooltip.html" %}'>></span>
-                      <i class="fas fa-info-circle" title='{% include "shared/project_type_tooltip.html" %}'></i>
+                    <div class="bounty-info-row-div">
+                      <span class="bounty-info-heading bounty-info-row-span-left" title='{% include "shared/project_type_tooltip.html" %}'>
+                       {% trans "Project Type" %} 
+                      </span>
+                        &nbsp;
+                       <i class="fas fa-info-circle" title='{% include "shared/project_type_tooltip.html" %}'></i>
+                      <span class="bounty-info-text bounty-info-row-span-right" id="project_type" title='{% include "shared/project_type_tooltip.html" %}'>
+                      </span>
+                      
                     </div>
-                    <div>
-                      <span class="bounty-info-heading">{% trans "Project Length" %}</span>
-                      <span class="bounty-info-text" id="project_length"></span>
+                    <div class="bounty-info-row-div">
+                      <span class="bounty-info-heading bounty-info-row-span-left">{% trans "Project Length" %}</span>
+                      <span class="bounty-info-text bounty-info-row-span-right" id="project_length"></span>
                     </div>
-                    <div>
-                      <span class="bounty-info-heading">{% trans "Experience Level" %} </span>
-                      <span class="bounty-info-text" id="experience_level"></span>
+                    <div class="bounty-info-row-div">
+                      <span class="bounty-info-heading bounty-info-row-span-left">{% trans "Experience Level" %} </span>
+                      <span class="bounty-info-text bounty-info-row-span-right" id="experience_level"></span>
                     </div>
                   </div>
-                  <div class="col-3 offset-md-1 bounty-info">
-                    <div>
-                      <span class="bounty-info-heading" title='{% include "shared/permissions_type_tooltip.html" %}'>{% trans "Permissions" %}</span>
-                      <span class="bounty-info-text" id="permission_type" title='{% include "shared/permissions_type_tooltip.html" %}'>></span>
+                  <div class="col-4 bounty-info">
+                    <div class="bounty-info-row-div">
+                      <span class="bounty-info-heading bounty-info-row-span-left" title='{% include "shared/permissions_type_tooltip.html" %}'>
+                       {% trans "Permissions" %}
+                      </span>
+                        &nbsp;
                       <i class="fas fa-info-circle" title='{% include "shared/permissions_type_tooltip.html" %}'></i>
+                      <span class="bounty-info-text bounty-info-row-span-right" id="permission_type" title='{% include "shared/permissions_type_tooltip.html" %}'></span>
+                      
                     </div>
-                     <div>
-                      <span class="bounty-info-heading">{% trans "Reserved For" %} </span>
+                     <div class="bounty-info-row-div">
+                      <span class="bounty-info-heading bounty-info-row-span-left">{% trans "Reserved For" %} </span>
                       <span class="bounty-info-text" id="bounty_reserved_for"></span>
+                    </div class="bounty-info-row-div">
+                    <div class="bounty-info-row-div">
+                      <div id="fulfillment_accepted_on_wrapper">
+                        <span class="bounty-info-heading bounty-info-row-span-left">{% trans "Accepted" %} </span>
+                        <span class="bounty-info-text bounty-info-row-span-right" id="fulfillment_accepted_on"></span>
+                      </div>
+                       &nbsp;
                     </div>
-                    <div id="fulfillment_accepted_on_wrapper">
-                      <span class="bounty-info-heading">{% trans "Accepted" %} </span>
-                      <span class="bounty-info-text" id="fulfillment_accepted_on"></span>
-                    </div> 
+                   
                   </div>
               </div>
+                
             </div>
           </div>
           <div class="row">

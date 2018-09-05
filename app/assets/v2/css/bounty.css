@@ -139,6 +139,10 @@ body {
   padding: 1em 0;
 }
 
+#bounty-info-row{
+  margin-left: 1px;
+}
+
 .bounty-subheading {
   font-weight: lighter;
   font-size: 14px;
@@ -160,12 +164,41 @@ body {
   font-weight: 300;
 }
 
+
 .bounty-info-heading {
   color: #0D0764;
 }
 
+.bounty-info-row-div {
+  width: 100%;
+}
+.bounty-info-row-span-left{
+  float: left;
+}
+
+.bounty-info-row-span-right{
+  float: right;
+}
+
+#bounty_reserved_for a{
+  margin-left: 5px;
+  font-weight: bold;
+}
+
+#bounty_reserved_for img{
+  margin-left: 3px;
+}
+
 .bounty-info-text {
   color: #717171;
+}
+
+.col-4.bounty-info{
+  margin-left: 20px;
+}
+
+.col-4.bounty-info span.bounty-info-text.bounty-info-row-span-right {
+  margin-right: 70px;
 }
 
 .started-status-column div {
