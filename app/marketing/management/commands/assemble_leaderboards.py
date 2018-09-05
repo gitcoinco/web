@@ -210,22 +210,29 @@ class Command(BaseCommand):
             sum_tips(t, index_terms)
 
         # set old LR as inactive
-        for lr in LeaderboardRank.objects.filter(active=True):
-            lr.active = False
-            lr.save()
+        lrs = LeaderboardRank.objects.active()
+        lrs.update(active=False)
 
         # save new LR in DB
         for key, rankings in ranks.items():
             rank = 1
             for index_term, amount in sorted(rankings.items(), key=lambda x: x[1], reverse=True):
                 count = counts[key][index_term]
-                LeaderboardRank.objects.create(
-                    github_username=index_term,
-                    leaderboard=key,
-                    amount=amount,
-                    count=count,
-                    active=True,
-                    rank=rank,
-                )
+                lbr_kwargs = {
+                    'count': count,
+                    'active': True,
+                    'amount': amount,
+                    'rank': rank,
+                    'leaderboard': key,
+                    'github_username': index_term,
+                }
+
+                try:
+                    lbr_kwargs['profile'] = Profile.objects.get(handle__iexact=index_term)
+                except Profile.DoesNotExist:
+                    pass
+
+                # TODO: Bucket LeaderboardRank objects and .bulk_create
+                LeaderboardRank.objects.create(**lbr_kwargs)
                 rank += 1
                 print(key, index_term, amount, count, rank)

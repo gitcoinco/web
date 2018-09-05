@@ -618,9 +618,8 @@ Back to BUIDLing,
             'items': [],
         },
     }
-    for key, val in leaderboard.items():
-        leaderboard[key]['items'] = LeaderboardRank.objects.filter(active=True, leaderboard=key).order_by('rank')[0:num_leadboard_items]
-
+    for key, __ in leaderboard.items():
+        leaderboard[key]['items'] = LeaderboardRank.objects.active().filter(leaderboard=key).order_by('rank')[0:num_leadboard_items]
 
     bounties = []
     for nb in bounties_spec:
@@ -632,7 +631,7 @@ Back to BUIDLing,
                 bounties.append({
                     'obj': bounty,
                     'primer': nb['primer']
-                    })
+                })
         except Exception as e:
             print(e)
 
