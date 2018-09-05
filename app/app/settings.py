@@ -108,6 +108,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'app.middleware.drop_accept_langauge',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

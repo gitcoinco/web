@@ -1518,13 +1518,13 @@ input.is-invalid {
   }
 }
 
-@media (max-width: 350px) {
+@media (max-width: 575.98px) {
   .header .header-line {
-    font-size: 1.5em;
+    font-size: 1.4em;
   }
 
   .header .subheader-line {
-    font-size: 1.2em;
+    font-size: 1em;
   }
 
   .bounty_def h5 {

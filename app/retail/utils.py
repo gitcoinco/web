@@ -369,7 +369,7 @@ def build_stat_results_helper(keyword=None):
     completion_rate = get_completion_rate(keyword)
     pp.profile_time('completion_rate')
     bounty_abandonment_rate = round(100 - completion_rate, 1)
-    total_bounties_usd = sum(base_bounties.filter(network='mainnet').values_list('_val_usd_db', flat=True))
+    total_bounties_usd = sum(base_bounties.exclude(idx_status__in=['expired', 'cancelled', 'canceled', 'unknown']).values_list('_val_usd_db', flat=True))
     total_tips_usd = sum([
         tip.value_in_usdt
         for tip in Tip.objects.filter(network='mainnet').exclude(txid='') if tip.value_in_usdt
