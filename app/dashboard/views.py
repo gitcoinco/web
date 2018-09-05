@@ -358,9 +358,9 @@ def remove_interest(request, bounty_id):
 @csrf_exempt
 @require_POST
 def extend_expiration(request, bounty_id):
-    """Unclaim work from the Bounty.
+    """Extend expiration of the Bounty.
 
-    Can only be called by someone who has started work
+    Can only be called by funder or staff of the bounty.
 
     :request method: POST
 
