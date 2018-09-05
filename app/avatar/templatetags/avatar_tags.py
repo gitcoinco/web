@@ -18,10 +18,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from django import template
+from django.conf import settings
+
+from dashboard.models import Profile
 
 register = template.Library()
 
 
 @register.simple_tag
-def avatar_url(avatar, use_svg=True):
-    return avatar.get_avatar_url(use_svg)
+def avatar_url(profile, use_svg=True):
+    if isinstance(profile, Profile) and profile.avatar:
+        return profile.avatar.get_avatar_url(use_svg)
+    if isinstance(profile, str):
+        return f'{settings.BASE_URL}dynamic/avatar/{profile}'
+    return f'{settings.BASE_URL}dynamic/avatar/Self'

@@ -195,7 +195,7 @@ class Avatar(SuperModel):
         """
         if not use_svg:
             return self.png.url if self.use_github_avatar else self.custom_avatar_png.url
-        return self.github_avatar_png.url if self.use_github_avatar else self.svg.url
+        return self.github_svg.url if self.use_github_avatar else self.svg.url
 
     def create_from_config(self, svg_name='avatar'):
         """Create an avatar SVG from the configuration.
