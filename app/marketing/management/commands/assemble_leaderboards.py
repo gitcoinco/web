@@ -230,10 +230,10 @@ class Command(BaseCommand):
                 try:
                     lbr_kwargs['profile'] = Profile.objects.get(handle__iexact=index_term)
                 except Profile.MultipleObjectsReturned:
-                    lbr_kwargs['profile'] = Profile.objects.filter(handle__iexact=index_term, user__isnull=False).latest('id')
+                    lbr_kwargs['profile'] = Profile.objects.filter(handle__iexact=index_term).latest('id')
                     print(f'Multiple profiles found for username: {index_term}')
                 except Profile.DoesNotExist:
-                    pass
+                    print(f'No profiles found for username: {index_term}')
 
                 # TODO: Bucket LeaderboardRank objects and .bulk_create
                 LeaderboardRank.objects.create(**lbr_kwargs)
