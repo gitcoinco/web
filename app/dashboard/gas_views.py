@@ -21,11 +21,11 @@ from __future__ import print_function, unicode_literals
 import logging
 
 from django.conf import settings
-from django.core.cache import cache
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
+from cacheops import CacheMiss, cache
 from economy.utils import convert_amount
 from gas.models import GasGuzzler
 from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
@@ -51,7 +51,12 @@ def get_history_cached(breakdown, i):
     timeout = 60 * 60 * 3
     key_salt = '0'
     key = f'get_history_cached_{breakdown}_{i}_{key_salt}'
-    results = cache.get(key)
+
+    try:
+        results = cache.get(key)
+    except CacheMiss:
+        results = None
+
     if results:
         return results
 
