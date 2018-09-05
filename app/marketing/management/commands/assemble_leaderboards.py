@@ -229,6 +229,9 @@ class Command(BaseCommand):
 
                 try:
                     lbr_kwargs['profile'] = Profile.objects.get(handle__iexact=index_term)
+                except Profile.MultipleObjectsReturned:
+                    lbr_kwargs['profile'] = Profile.objects.filter(handle__iexact=index_term, user__isnull=False).latest('id')
+                    print(f'Multiple profiles found for username: {index_term}')
                 except Profile.DoesNotExist:
                     pass
 
