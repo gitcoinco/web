@@ -20,7 +20,6 @@ from __future__ import print_function, unicode_literals
 
 import logging
 
-from django.conf import settings
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -30,7 +29,7 @@ from economy.utils import convert_amount
 from gas.models import GasGuzzler
 from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
 
-from .helpers import get_bounty_data_for_activity, handle_bounty_views
+from .helpers import handle_bounty_views
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -73,7 +72,7 @@ def gas(request):
         _cts = conf_time_spread(recommended_gas_price)
 
     context = {
-        'title': _('Live Gas Tool'),
+        'title': _('Live Gas Usage => Predicted Conf Times'),
         'card_desc': _('See the Live Network Conditions for the Ethereum Network'),
         'eth_to_usd': round(convert_amount(1, 'ETH', 'USDT'), 0),
         'start_gas_cost': recommended_gas_price,
@@ -81,7 +80,6 @@ def gas(request):
         'conf_time_spread': _cts,
         'hide_send_tip': True,
         'is_3d': request.GET.get("is_3d", False),
-        'title': 'Live Gas Usage => Predicted Conf Times'
     }
     return TemplateResponse(request, 'gas.html', context)
 
@@ -105,7 +103,6 @@ def gas_faq(request):
     }
     return TemplateResponse(request, 'gas_faq.html', context)
 
-gas_intro
 
 def gas_faucet_list(request):
 
@@ -165,7 +162,6 @@ def gas_calculator(request):
         'conf_time_spread': _cts,
         'eth_to_usd': round(convert_amount(1, 'ETH', 'USDT'), 0),
         'start_gas_cost': recommended_gas_price,
-        'title': 'Gas Calculator',
         'hide_send_tip': True,
     }
     return TemplateResponse(request, 'gas_calculator.html', context)
@@ -177,7 +173,7 @@ def gas_guzzler_view(request):
     num_guzzlers = 7
     gas_histories = {}
     _lines = {}
-    top_guzzlers = GasGuzzler.objects.filter(created_on__gt=timezone.now()-timezone.timedelta(minutes=60)).order_by('-pct_total')[0:num_guzzlers]
+    top_guzzlers = GasGuzzler.objects.filter(created_on__gt=timezone.now()-timezone.timedelta(minutes=60)).order_by('-pct_total').cache()[0:num_guzzlers]
     counter = 0
     colors = [val for key, val in lines.items()]
     max_y = 0
@@ -185,10 +181,10 @@ def gas_guzzler_view(request):
         address = guzzler.address
         try:
             _lines[address] = colors[counter]
-        except:
+        except Exception:
             _lines[address] = 'purple'
         gas_histories[address] = []
-        for og in GasGuzzler.objects.filter(address=address).order_by('-created_on'):
+        for og in GasGuzzler.objects.filter(address=address).order_by('-created_on').cache():
             if not og.created_on.hour < 1 and breakdown in ['daily', 'weekly']:
                 continue
             if not og.created_on.weekday() < 1 and breakdown in ['weekly']:

@@ -368,6 +368,10 @@ CACHEOPS = {
         'ops': 'all',
         'timeout': 60 * 60,
     },
+    'gas.*': {
+        'ops': 'all',
+        'timeout': 60 * 10,
+    }
 }
 
 DJANGO_REDIS_IGNORE_EXCEPTIONS = env.bool('REDIS_IGNORE_EXCEPTIONS', default=True)
