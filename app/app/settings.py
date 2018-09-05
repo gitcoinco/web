@@ -319,6 +319,7 @@ THUMBNAIL_ALIASES = {
 }
 
 CACHEOPS_DEGRADE_ON_FAILURE = env.bool('CACHEOPS_DEGRADE_ON_FAILURE', default=True)
+CACHEOPS_REDIS = env.str('CACHEOPS_REDIS', default='redis://redis:6379/0')
 CACHEOPS_DEFAULTS = {
     'timeout': 60 * 60
 }
