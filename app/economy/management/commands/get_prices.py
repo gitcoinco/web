@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import json
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 
 import ccxt
@@ -29,7 +30,9 @@ from websocket import create_connection
 
 
 def stablecoins():
-    for to_currency in ['DAI']:
+    for to_currency in settings.STABLE_COINS:
+        if to_currency == 'to_currency':
+            continue
         from_amount = 1
         to_amount = 1
         from_currency = 'USDT'
@@ -155,7 +158,7 @@ def cryptocompare():
     Updates ConversionRates only if data not available.
 
     """
-    for bounty in Bounty.objects.filter(current_bounty=True):
+    for bounty in Bounty.objects.current():
         print(f'CryptoCompare Bounty {bounty.pk}')
         refresh_conv_rate(bounty.web3_created, bounty.token_name)
 

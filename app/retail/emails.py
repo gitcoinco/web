@@ -30,6 +30,7 @@ from django.utils.translation import gettext as _
 
 import cssutils
 import premailer
+from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
 
@@ -241,9 +242,9 @@ kevin from Gitcoin here (CC scott and vivek too) — i see you haven't funded an
 - has anything been slipping on your issue board which might be bounty worthy?
 - do you have any feedback for Gitcoin Core on how we might improve the product to fit your needs?
 
-our idea is that gitcoin should be a place you come when priorities stretch long, and you need an extra set of capable hands. curious if this fits what you're looking for these days. 
+our idea is that gitcoin should be a place you come when priorities stretch long, and you need an extra set of capable hands. curious if this fits what you're looking for these days.
 
-appreciate you being a part of the community and let me know if you'd like some Gitcoin schwag — just send over a mailing address and a t-shirt size and it'll come your way. 
+appreciate you being a part of the community and let me know if you'd like some Gitcoin schwag — just send over a mailing address and a t-shirt size and it'll come your way.
 
 ~ kevin
 
@@ -313,6 +314,18 @@ def render_new_bounty_rejection(to_email, bounty):
 
     response_html = premailer_transform(render_to_string("emails/new_bounty_rejection.html", params))
     response_txt = render_to_string("emails/new_bounty_rejection.txt", params)
+
+    return response_html, response_txt
+
+
+def render_bounty_changed(to_email, bounty):
+    params = {
+        'bounty': bounty,
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+    }
+
+    response_html = premailer_transform(render_to_string("emails/bounty_changed.html", params))
+    response_txt = render_to_string("emails/bounty_changed.txt", params)
 
     return response_html, response_txt
 
@@ -512,30 +525,38 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "The Nuances Of Bounties | A Gas History Lesson"
+    subject = "Embarking Into Web 3 | Gitcoin Requests"
 
     intro = '''
 
 <p>
-    Hi there,
+Hi there,
 </p>
 <p>
-Over the past quarter, we've shipped a variety of features which add flexibility to your bounty toolkit. First, we provided options to have contest bounties and coooperative bounties.
-Then, we introduced 'Approval Only' bounties, where Gitcoiner's apply before starting work. Now, we've announced a few more often requested features!
-Learn more about <a href="https://medium.com/gitcoin/payout-several-contributors-at-once-8742c13a8fdd">1) multi-payout bounties</a> and <a href="https://medium.com/gitcoin/crowdfunding-bounties-fd821b04309d">2) crowdfunding bounties.</a>
+We're excited to unveil <a href="https://medium.com/gitcoin/embarking-into-web-3-f46408b23f59">a partnership with Status</a> for 60 bounties on their Embark framework - all in the month of September!
+If you're a developer interested in getting involved in Web 3, this is an opportunity to contribute towards a leading framework which aims to shape Web 3 into the future.
+More on Embark <a href="https://embark.status.im/">here</a>.
 </p>
-
 <p>
-We also posted on the <a href="https://medium.com/gitcoin/a-brief-history-of-gas-prices-on-ethereum-52e278a04306">History of Gas on Ethereum.</a> As a dApp built on ethereum,
-we think it's important to understand a) what gas is, b) how it's fluctutated over time, and c) plans for stabilizing gas prices into the future. Hope you enjoy!
+We funded $1,000 in Gitcoin Requests the first week! Do you have a Github issue you want solved? Make <a href="https://gitcoin.co/requests">a Gitcoin Request</a> and we'll review in 24 hours.
+If you're a developer and you see a 'Good First Issue' you'd work on for a bounty, <a href="https://gitcoin.co/requests">let us know</a>! Gitcoin Requests
+is a way for developers and maintainers to make their voice heard and let us know where they'd pay to have meaningful help on their projects. We're excited to see what you'd like to work.
 </p>
 
 <h3>What else is new?</h3>
     <ul>
         <li>
-<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET. This week features Justin Drake speaking on sharding.
+We're still working with the Ethereum Foundation to find the best and brightest developers to get involved directly on Ethereum's
+codebase and would love to hear from you. If you have experience building out test cases and are familiar with consensus systems,
+join #focus-dev-testing <a href="https://gitcoin.co/slack">on Gitcoin Slack</a>
         </li>
-
+        <li>
+        Did you know <a href="https://codefund.io">CodeFund</a> is part of Gitcoin? <a href="https://codefund.io">CodeFund</a> is an open source advertising platform that is built to help developers generate revenue. We are currently looking for bloggers and websites that focus on blockchain development and have at least 1,000 visitors per month. If you or someone you know fits this, register to be a publisher at <a href="https://codefund.io/register/publisher">here!</a>
+        </li>
+        <li>
+We published our recent Gitcoin Livestream with Austin Griffith's work on meta-transactions <a href="https://youtu.be/EkZHTzGJMcY">on Gitcoin's YouTube</a>.
+We'll be talking Embark and EIP-1337 on this week's <a href="https://gitcoin.co/livestream">this week's livestream</a> today at 5PM ET. We'd love to have you!
+        </li>
     </ul>
 </p>
 <p>
@@ -544,44 +565,61 @@ Back to BUIDLing,
 '''
     highlights = [
         {
+            'who': 'hardlydifficult',
+            'who_link': True,
+            'what': 'Worked with Unlock Protocol on their smart contract.',
+            'link': 'https://gitcoin.co/issue/unlock-protocol/unlock/172/991',
+            'link_copy': 'View more',
+        },
+        {
+            'who': 'KevinLiLu',
+            'who_link': True,
+            'what': 'Worked with CyberCongress on their Ethereum uncle rewards!',
+            'link': 'https://gitcoin.co/issue/cybercongress/cyber-search/185/1043',
+            'link_copy': 'View more',
+        },
+        {
             'who': 'StevenJNPearce',
             'who_link': True,
-            'what': 'Worked with MARKET Protocol on their dApp!',
-            'link': 'https://gitcoin.co/issue/MARKETProtocol/MARKET.js/106/856',
-            'link_copy': 'View more',
-        },
-        {
-            'who': 'rahulrumalla',
-            'who_link': True,
-            'what': 'Helped Infura with documentation on their IPFS API',
-            'link': 'https://gitcoin.co/issue/INFURA/infura/130/830',
-            'link_copy': 'View more',
-        },
-        {
-            'who': 'anshumanv',
-            'who_link': True,
-            'what': 'Worked on Giveth as they prepare for launch!',
-            'link': 'https://gitcoin.co/issue/Giveth/giveth-dapp/80/823',
+            'what': 'Helped MARKET add a method to find a deployed contract address.',
+            'link': 'https://gitcoin.co/issue/MARKETProtocol/MARKET.js/145/989',
             'link_copy': 'View more',
         },
     ]
 
     bounties_spec = [
         {
-            'url': 'https://github.com/paritytech/polkadot/issues/312',
-            'primer': 'Work with Gavin Wood at Parity on making heap size an on-chain parameter.',
+            'url': 'https://github.com/ethereum/ethereum-org/issues/898',
+            'primer': 'Have Design chops? The Ethereum Foundation is looking to design a grants website. Apply this weekend!',
         },
         {
-            'url': 'https://github.com/rotkehlchenio/rotkehlchen/issues/74',
-            'primer': 'Work with a core Raiden developer on his side project!',
+            'url': 'https://github.com/novnc/noVNC/issues/944',
+            'primer': 'Help specify this issue in better detail for 240 DAI.',
         },
         {
-            'url': 'https://github.com/gitcoinco/web/issues/1855',
-            'primer': 'Have backend skills? Help us with Gitcoin Requests, a cool new feature!',
+            'url': 'https://github.com/zeppelinos/zos/issues/37',
+            'primer': 'Great bounty for the ecosystem from the Zeppelin team.',
         },
     ]
 
+    num_leadboard_items = 5
     #### don't need to edit anything below this line
+    leaderboard = {
+        'quarterly_payers': {
+            'title': _('Top Payers'),
+            'items': [],
+        },
+        'quarterly_earners': {
+            'title': _('Top Earners'),
+            'items': [],
+        },
+        'quarterly_orgs': {
+            'title': _('Top Orgs'),
+            'items': [],
+        },
+    }
+    for key, val in leaderboard.items():
+        leaderboard[key]['items'] = LeaderboardRank.objects.filter(active=True, leaderboard=key).order_by('rank')[0:num_leadboard_items]
 
 
     bounties = []
@@ -604,6 +642,7 @@ Back to BUIDLing,
         'intro': intro,
         'intro_txt': strip_double_chars(strip_double_chars(strip_double_chars(strip_html(intro), ' '), "\n"), "\n "),
         'bounties': bounties,
+        'leaderboard': leaderboard,
         'ecosystem_bounties': ecosystem_bounties,
         'invert_footer': False,
         'hide_header': False,
@@ -668,8 +707,8 @@ def resend_new_tip(request):
 @staff_member_required
 def new_bounty(request):
     from dashboard.models import Bounty
-    bounties = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3]
-    old_bounties = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3]
+    bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
+    old_bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
     response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties)
     return HttpResponse(response_html)
 
@@ -677,7 +716,7 @@ def new_bounty(request):
 @staff_member_required
 def new_work_submission(request):
     from dashboard.models import Bounty
-    bounty = Bounty.objects.filter(idx_status='submitted', current_bounty=True).last()
+    bounty = Bounty.objects.current().filter(idx_status='submitted').last()
     response_html, _ = render_new_work_submission(settings.CONTACT_EMAIL, bounty)
     return HttpResponse(response_html)
 
@@ -699,7 +738,7 @@ def new_bounty_acceptance(request):
 @staff_member_required
 def bounty_feedback(request):
     from dashboard.models import Bounty
-    response_html, _ = render_bounty_feedback(Bounty.objects.filter(idx_status='done', current_bounty=True).last(), 'foo')
+    response_html, _ = render_bounty_feedback(Bounty.objects.current().filter(idx_status='done').last(), 'foo')
     return HttpResponse(response_html)
 
 

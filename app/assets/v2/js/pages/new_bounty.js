@@ -6,6 +6,10 @@ load_tokens();
 var localStorage;
 var quickstartURL = document.location.origin + '/bounty/quickstart';
 
+var new_bounty = {
+  last_sync: new Date()
+};
+
 try {
   localStorage = window.localStorage;
 } catch (e) {
@@ -32,6 +36,52 @@ function doShowQuickstart(url) {
   return true;
 }
 
+function lastSynced(current, last_sync) {
+  var time = timeDifference(current, last_sync);
+
+  return time;
+}
+
+$('#sync-issue').on('click', function(event) {
+  event.preventDefault();
+  if (!$('#sync-issue').hasClass('disabled')) {
+    new_bounty.last_sync = new Date();
+    retrieveIssueDetails();
+    $('#last-synced span').html(lastSynced(new Date(), new_bounty.last_sync));
+  }
+});
+
+$('#issueURL').focusout(function() {
+  setInterval(function() {
+    $('#last-synced span').html(timeDifference(new Date(), new_bounty.last_sync));
+  }, 6000);
+
+  if ($('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val())) {
+    $('#issue-details, #issue-details-edit').hide();
+    $('#no-issue-banner').show();
+
+    $('#title').val('');
+    $('#description').val('');
+
+    $('#last-synced').hide();
+    $('.js-submit').addClass('disabled');
+  } else {
+    $('#no-issue-banner').hide();
+    $('#edit-issue').attr('href', $('input[name=issueURL]').val());
+    $('#issue-details, #issue-details-edit').show();
+
+    $('#sync-issue').removeClass('disabled');
+    $('.js-submit').removeClass('disabled');
+
+    new_bounty.last_sync = new Date();
+    retrieveIssueDetails();
+    $('#last-synced').show();
+    $('#last-synced span').html(lastSynced(new Date(), new_bounty.last_sync));
+  }
+});
+
+$('#last-synced').hide();
+
 // Wait until page is loaded, then run the function
 $(document).ready(function() {
   // Load sidebar radio buttons from localStorage
@@ -41,59 +91,6 @@ $(document).ready(function() {
     $('input[name=issueURL]').val(getParam('url'));
   } else if (localStorage['issueURL']) {
     $('input[name=issueURL]').val(localStorage['issueURL']);
-  }
-  if (localStorage['project_type']) {
-    $('select[name=project_type] option').prop('selected', false);
-    $(
-      "select[name=project_type] option[value='" +
-        localStorage['project_type'] +
-        "']"
-    ).prop('selected', true);
-  }
-  if (localStorage['permission_type']) {
-    $('select[name=permission_type] option').prop('selected', false);
-    $(
-      "select[name=permission_type] option[value='" +
-        localStorage['permission_type'] +
-        "']"
-    ).prop('selected', true);
-  }
-  if (localStorage['expirationTimeDelta']) {
-    $('select[name=expirationTimeDelta] option').prop('selected', false);
-    $(
-      "select[name=expirationTimeDelta] option[value='" +
-        localStorage['expirationTimeDelta'] +
-        "']"
-    ).prop('selected', true);
-  }
-  if (localStorage['experienceLevel']) {
-    $(
-      'select[name=experienceLevel] option:contains(' +
-        localStorage['experienceLevel'] +
-        ')'
-    ).prop('selected', true);
-  }
-  if (localStorage['projectLength']) {
-    $(
-      'select[name=projectLength] option:contains(' +
-        localStorage['projectLength'] +
-        ')'
-    ).prop('selected', true);
-  }
-
-  if (localStorage['jobDescription']) {
-    $('#jobDescription').val(localStorage['jobDescription']);
-    setTimeout(function() {
-      $('#hiringRightNow').attr('checked', 'checked');
-      open_hiring_panel(false);
-    }, 10);
-  }
-  if (localStorage['bountyType']) {
-    $(
-      'select[name=bountyType] option:contains(' +
-        localStorage['bountyType'] +
-        ')'
-    ).prop('selected', true);
   }
 
   // fetch issue URL related info
@@ -222,9 +219,9 @@ $(document).ready(function() {
         githubUsername: data.githubUsername,
         notificationEmail: data.notificationEmail,
         fullName: data.fullName,
-        experienceLevel: data.experienceLevel,
-        projectLength: data.projectLength,
-        bountyType: data.bountyType,
+        experienceLevel: data.experience_level,
+        projectLength: data.project_length,
+        bountyType: data.bounty_type,
         tokenName
       };
 
@@ -283,20 +280,10 @@ $(document).ready(function() {
       $(this).attr('disabled', 'disabled');
 
       // save off local state for later
-      localStorage['project_type'] = data.project_type;
-      localStorage['permission_type'] = data.permission_type;
       localStorage['issueURL'] = issueURL;
-      localStorage['amount'] = amount;
       localStorage['notificationEmail'] = notificationEmail;
       localStorage['githubUsername'] = githubUsername;
       localStorage['tokenAddress'] = tokenAddress;
-      localStorage['jobDescription'] = $('#hiringRightNow').is(':checked') ? data.jobDescription : '';
-      localStorage['expirationTimeDelta'] = $(
-        'select[name=expirationTimeDelta]'
-      ).val();
-      localStorage['experienceLevel'] = $('select[name=experienceLevel]').val();
-      localStorage['projectLength'] = $('select[name=projectLength]').val();
-      localStorage['bountyType'] = $('select[name=bountyType]').val();
       localStorage.removeItem('bountyId');
 
       // setup web3
@@ -305,6 +292,10 @@ $(document).ready(function() {
       var isETH = tokenAddress == '0x0000000000000000000000000000000000000000';
       var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
       var account = web3.eth.coinbase;
+
+      if (!isETH) {
+        check_balance_and_alert_user_if_not_enough(tokenAddress, amount);
+      }
 
       amount = amount * decimalDivisor;
       // Create the bounty object.
@@ -434,3 +425,25 @@ $(document).ready(function() {
     }
   });
 });
+
+var check_balance_and_alert_user_if_not_enough = function(tokenAddress, amount) {
+  var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+  var from = web3.eth.coinbase;
+  var token_details = tokenAddressToDetails(tokenAddress);
+  var token_decimals = token_details['decimals'];
+  var token_name = token_details['name'];
+
+  token_contract.balanceOf.call(from, function(error, result) {
+    if (error) return;
+    var balance = result.toNumber() / Math.pow(10, 18);
+    var balance_rounded = Math.round(balance * 10) / 10;
+
+    if (parseFloat(amount) > balance) {
+      var msg = gettext('You do not have enough tokens to fund this bounty. You have ') + balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + amount + ' ' + token_name;
+
+      _alert(msg, 'warning');
+    }
+  });
+
+
+};

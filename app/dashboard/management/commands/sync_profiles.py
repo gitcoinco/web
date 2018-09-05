@@ -52,7 +52,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # setup
-        handles = set([b.org_name for b in Bounty.objects.filter(current_bounty=True)])
+        handles = set([b.org_name for b in Bounty.objects.current()])
         for handle in handles:
             print(handle)
 

@@ -15,7 +15,7 @@ def recommend_min_gas_price_to_confirm_in_time(minutes, default=5):
             created_on__gt=(timezone.now()-timezone.timedelta(minutes=31)),
             mean_time_to_confirm_minutes__lt=minutes
             ).order_by('gas_price').first()
-        return max(gp.gas_price, 1)
+        return max(0.1, gp.gas_price)
     except Exception:
         return default
 

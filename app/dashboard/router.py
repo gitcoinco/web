@@ -97,7 +97,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'github_org_name', 'github_repo_name', 'idx_status', 'token_value_time_peg', 'fulfillment_accepted_on',
             'fulfillment_submitted_on', 'fulfillment_started_on', 'canceled_on', 'action_urls', 'project_type',
             'permission_type', 'attached_job_description', 'needs_review', 'github_issue_state', 'is_issue_closed',
-            'additional_funding_summary',
+            'additional_funding_summary', 'paid',
         )
 
     def create(self, validated_data):
@@ -254,10 +254,15 @@ class BountyViewSet(viewsets.ModelViewSet):
         queryset = queryset.distinct()
 
         # offset / limit
-        limit = self.request.query_params.get('limit', None)
+        limit = int(self.request.query_params.get('limit', 100))
+        max_bounties = 100
+        if limit > max_bounties:
+            limit = max_bounties
         offset = self.request.query_params.get('offset', 0)
         if limit:
-            queryset = queryset[int(offset):int(limit)]
+            start = int(offset)
+            end = start + int(limit)
+            queryset = queryset[start:end]
 
         return queryset
 

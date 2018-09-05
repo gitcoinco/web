@@ -25,6 +25,7 @@ from django.urls import path, re_path
 from django.views.i18n import JavaScriptCatalog
 
 import avatar.views
+import bounty_requests.views
 import credits.views
 import dashboard.embed
 import dashboard.gas_views
@@ -58,7 +59,12 @@ urlpatterns = [
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(dbrouter.urls)),
     url(r'^api/v0.1/', include(ebrouter.urls)),
-    url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cluodfront
+    url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cloudfront
+    url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
+
+    # Health check endpoint
+    re_path(r'^health/', include('health_check.urls')),
+    re_path(r'^lbcheck/?', retail.views.lbcheck, name='lbcheck'),
 
     # dashboard views
 
@@ -77,11 +83,13 @@ urlpatterns = [
     # action URLs
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
+    re_path(r'^bounty/change/(?P<bounty_id>.*)?', dashboard.views.change_bounty, name='change_bounty'),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
     path('issue/fulfill', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
     path('issue/accept', dashboard.views.accept_bounty, name='process_funding'),
     path('issue/advanced_payout', dashboard.views.bulk_payout_bounty, name='bulk_payout_bounty'),
+    path('issue/invoice', dashboard.views.invoice, name='invoice'),
     path('issue/payout', dashboard.views.payout_bounty, name='payout_bounty'),
     path('issue/increase', dashboard.views.increase_bounty, name='increase_bounty'),
     path('issue/cancel', dashboard.views.cancel_bounty, name='kill_bounty'),
@@ -120,17 +128,11 @@ urlpatterns = [
 
     # Tips
     url(
-        r'^tip/receive/v2/(?P<pk>.*)/(?P<txid>.*)/(?P<network>.*)?',
-        dashboard.tip_views.receive_tip_v2,
-        name='receive_tip'
-    ),
-    url(
         r'^tip/receive/v3/(?P<key>.*)/(?P<txid>.*)/(?P<network>.*)?',
         dashboard.tip_views.receive_tip_v3,
         name='receive_tip'
     ),
     url(r'^tip/address/(?P<handle>.*)', dashboard.tip_views.tipee_address, name='tipee_address'),
-    url(r'^tip/receive/?', dashboard.tip_views.receive_tip_legacy, name='receive_tip_legacy'),
     url(r'^tip/send/4/?', dashboard.tip_views.send_tip_4, name='send_tip_4'),
     url(r'^tip/send/3/?', dashboard.tip_views.send_tip_3, name='send_tip_3'),
     url(r'^tip/send/2/?', dashboard.tip_views.send_tip_2, name='send_tip_2'),
@@ -160,21 +162,21 @@ urlpatterns = [
     url(r'^gas/intro/?', dashboard.gas_views.gas_intro, name='gas_intro'),
     url(r'^gas/calculator/?', dashboard.gas_views.gas_calculator, name='gas_calculator'),
     url(r'^gas/history/?', dashboard.gas_views.gas_history_view, name='gas_history_view'),
+    url(r'^gas/guzzlers/?', dashboard.gas_views.gas_guzzler_view, name='gas_guzzler_view'),
     url(r'^gas/?', dashboard.gas_views.gas, name='gas'),
 
     # images
     re_path(r'^funding/embed/?', dashboard.embed.embed, name='embed'),
     re_path(r'^funding/avatar/?', avatar.views.handle_avatar, name='avatar'),
-    re_path(r'^static/avatar/(.*)/(.*)?', avatar.views.handle_avatar, name='org_avatar'),
-    re_path(r'^static/viz/graph/(.*)?$', dataviz.d3_views.viz_graph, name='viz_graph'),
-    re_path(r'^static/viz/sscatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot_stripped, name='viz_sscatterplot'),
-    path('static/v2/js/tokens_dynamic.js', retail.views.tokens, name='tokens'),
+    re_path(r'^dynamic/avatar/(.*)/(.*)?', avatar.views.handle_avatar, name='org_avatar'),
+    re_path(r'^dynamic/viz/graph/(.*)?$', dataviz.d3_views.viz_graph, name='viz_graph'),
+    re_path(r'^dynamic/viz/sscatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot_stripped, name='viz_sscatterplot'),
+    path('dynamic/js/tokens_dynamic.js', retail.views.tokens, name='tokens'),
 
     # sync methods
     url(r'^sync/web3/?', dashboard.views.sync_web3, name='sync_web3'),
     url(r'^sync/get_amount/?', dashboard.helpers.amount, name='helpers_amount'),
     url(r'^sync/get_issue_details/?', dashboard.helpers.issue_details, name='helpers_issue_details'),
-    url(r'^sync/search_save/?', dashboard.views.save_search, name='save_search'),
 
     # modals
     re_path(r'^modal/get_quickstart_video/?', dashboard.views.get_quickstart_video, name='get_quickstart_video'),
@@ -240,6 +242,9 @@ urlpatterns = [
 
     # faucet views
     re_path(r'^faucet/?', faucet.views.faucet, name='faucet'),
+
+    # bounty requests
+    re_path(r'^requests/?', bounty_requests.views.bounty_request, name='bounty_requests'),
 
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),
@@ -370,6 +375,7 @@ if settings.ENABLE_SILK:
     urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
 
 if settings.ENV == 'local' and not settings.AWS_STORAGE_BUCKET_NAME:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # If running in DEBUG, expose the error handling pages.

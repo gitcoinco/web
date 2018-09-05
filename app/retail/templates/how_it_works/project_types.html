@@ -1,0 +1,120 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<div id="project-types" class="row my-5 grey-border">
+  <div class="col-12 text-center my-5">
+    <h1 class="font-title-xl mb-4">{% trans "Project Types" %}</h1>
+    <p class="font-body how-it-works__text-grey">{% trans "Gitcoin supports 3 flexible ways to set up a project to ensure the best results." %}</p>
+  </div>
+  <div class="row mx-0 my-5">
+    <div class="col-12">
+      <h2 class="font-title grey-border">{% trans "Traditional Project" %}</h2>
+    </div>
+
+    <div class="col-12 col-xl-6 mt-3">
+      <img src="{% static "v2/images/how-it-works/icons/traditional.svg" %}" alt="traditional" />
+
+      <h2 class="font-subheader mt-5 mb-3">{% trans "Good For" %}</h2>
+      <div class="font-body how-it-works__text-grey">
+        {% blocktrans %}
+          <p>Sourcing ideas, creative, searching for the best ways 
+            to solve a problem, bug hunt.</p>
+        {% endblocktrans %}
+      </div>
+      <h2 class="font-subheader mt-5 mb-3">{% trans "What to Know" %}</h2>
+      <div class="font-body how-it-works__text-grey">
+        {% blocktrans %}
+          <p>A traditional project can be set up for contributors to be able
+            to start work immediately without approval or can be set up
+            as approval required.
+          </p>
+          <p>Approve workers via a Request to Work email notfication.</p>
+        {% endblocktrans %}
+      </div>
+    </div>
+    <div class="col-12 col-xl-6 mt-3 text-center">
+      <img src="{% static "v2/images/how-it-works/traditional.svg" %}" alt="traditional" />
+    </div>
+  </div>
+
+  <div class="row mx-0 my-5">
+    <div class="col-12">
+      <h2 class="font-title grey-border">{% trans "Cooperative Project" %}</h2>
+    </div>
+    <div class="col-12 col-xl-6 mt-3">
+      <img src="{% static "v2/images/how-it-works/icons/cooperative.svg" %}" alt="cooperative" />
+      <h2 class="font-subheader mt-5 mb-3">{% trans "Good For" %}</h2>
+      <div class="font-body how-it-works__text-grey">
+        {% blocktrans %}
+          <p>Large projects (broken up into parts), augmenting team skillsets</p>
+        {% endblocktrans %}
+      </div>
+      <h2 class="font-subheader mt-5 mb-3">{% trans "What to Know" %}</h2>
+      <div class="font-body how-it-works__text-grey">
+        {% blocktrans %}
+          <p>When funding a cooperative bounty, provide guidance on how
+            the project can be broken up to allow additional contributors 
+            smooth onboarding.
+          </p>
+          <p>The amount paid for a cooperative bounty is at the discretion
+            of the funder. Please make sure you over-communicate your
+            budget/intent to the bounty hunter -- It helps avoid
+            misunderstandings in the future!
+          </p>
+        {% endblocktrans %}
+      </div>
+    </div>
+    <div class="col-12 col-xl-6 mt-3 text-center">
+      <img src="{% static "v2/images/how-it-works/cooperative.svg" %}" alt="cooperative" />
+    </div>
+  </div>
+
+  <div class="row mx-0 my-5">
+    <div class="col-12">
+      <h2 class="font-title grey-border">{% trans "Contest Project" %}</h2>
+    </div>
+    <div class="col-12 col-xl-6 mt-3">
+      <img src="{% static "v2/images/how-it-works/icons/contest.svg" %}" alt="contest" />
+      <h2 class="font-subheader mt-5 mb-3">{% trans "Good For" %}</h2>
+      <div class="font-body how-it-works__text-grey">
+        {% blocktrans %}
+          <p>
+            Sourcing ideas, creative, searching for the best ways 
+            to solve a problem, bug hunt.
+          </p>
+        {% endblocktrans %}
+      </div>
+      <h2 class="font-subheader mt-5 mb-3">{% trans "What to Know" %}</h2>
+      <div class="font-body how-it-works__text-grey">
+        {% blocktrans %}
+          <p>
+            Be clear on the type of contest and how many winners will be
+            provided a bounty.            
+          </p>
+          <p>
+            The funder resrves the right to pay only one or more than one contributor
+            for the contest at their discretion. This depends on the type of contest
+            listed and the number of winners alloted.
+          </p>
+        {% endblocktrans %}
+      </div>
+    </div>
+    <div class="col-12 col-xl-6 mt-3 text-center">
+      <img src="{% static "v2/images/how-it-works/contest.svg" %}" alt="contest" />
+    </div>
+  </div>
+</div>
