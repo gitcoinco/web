@@ -86,6 +86,8 @@ var rows = [
   'fulfillments',
   'network',
   'experience_level',
+  'bounty_reserved_for',
+  'bounty_reserved_for_creation_date',
   'bounty_type',
   'expires_date',
   'bounty_owner_name',
@@ -159,6 +161,8 @@ var callbacks = {
   'bounty_owner_email': email_ize,
   'experience_level': unknown_if_empty,
   'project_length': unknown_if_empty,
+  'bounty_reserved_for': unknown_if_empty,
+  'bounty_reserved_for_creation_date': unknown_if_empty,
   'bounty_type': unknown_if_empty,
   'bounty_owner_github_username': gitcoin_ize,
   'bounty_owner_name': function(key, val, result) {

@@ -990,6 +990,8 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 params['stdbounties_id'] = bounty.standard_bounties_id if not stdbounties_id else stdbounties_id
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.get_avatar_url(True)
+                params['bounty_reserved_for'] = bounty.bounty_reserved_for
+                params['bounty_reserved_for_creation_date'] = bounty.bounty_reserved_for_creation_date
 
                 helper_handle_snooze(request, bounty)
                 helper_handle_approvals(request, bounty)

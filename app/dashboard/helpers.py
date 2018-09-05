@@ -416,6 +416,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'bounty_owner_address': bounty_issuer.get('address', ''),
                 'bounty_owner_email': bounty_issuer.get('email', ''),
                 'bounty_owner_name': bounty_issuer.get('name', ''),
+                'bounty_reserved_for':metadata.get('reservedFor', ''),
+                'bounty_reserved_for_creation_date':metadata.get('reservedForCreationDate', ''),
             })
         else:
             latest_old_bounty_dict = latest_old_bounty.to_standard_dict(
@@ -425,7 +427,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     'project_length', 'experience_level', 'project_type', 'permission_type', 'attached_job_description',
                     'bounty_owner_github_username', 'bounty_owner_address', 'bounty_owner_email', 'bounty_owner_name',
                     'github_comments', 'override_status', 'last_comment_date', 'snooze_warnings_for_days',
-                    'admin_override_and_hide', 'admin_override_suspend_auto_approval', 'admin_mark_as_remarket_ready'
+                    'admin_override_and_hide', 'admin_override_suspend_auto_approval', 'admin_mark_as_remarket_ready',
+                    'bounty_reserved_for','bounty_reserved_for_creation_date'
                 ],
             )
             bounty_kwargs.update(latest_old_bounty_dict)
