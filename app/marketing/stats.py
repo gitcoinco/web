@@ -312,7 +312,7 @@ def bounties_by_status_and_keyword(created_before=timezone.now()):
     created_after = created_before - timezone.timedelta(days=days_back)
     for status in statuses:
         for keyword in keywords:
-            eligible_bounties = Bounty.objects.filter(current_bounty=True, network='mainnet', web3_created__gt=created_after, web3_created__lt=created_before)
+            eligible_bounties = Bounty.objects.current().filter(network='mainnet', web3_created__gt=created_after, web3_created__lt=created_before)
             if keyword:
                 eligible_bounties = eligible_bounties.filter(raw_data__icontains=keyword)
             numerator_bounties = eligible_bounties.filter(idx_status=status)
@@ -356,7 +356,7 @@ def joe_dominance_index(created_before=timezone.now()):
     for days in [7, 30, 90, 360]:
         created_after = created_before - timezone.timedelta(days=days)
         for keyword in keywords:
-            all_bounties = Bounty.objects.filter(current_bounty=True, network='mainnet', web3_created__gt=created_after, web3_created__lt=created_before)
+            all_bounties = Bounty.objects.current().filter(network='mainnet', web3_created__gt=created_after, web3_created__lt=created_before)
             if keyword:
                 all_bounties = all_bounties.filter(raw_data__icontains=keyword)
             joe_bounties = all_bounties.filter(bounty_owner_address__in=joe_addresses)
@@ -386,8 +386,7 @@ def avg_time_bounty_turnaround():
     from dashboard.models import Bounty
 
     for days in [7, 30, 90, 360]:
-        all_bounties = Bounty.objects.filter(
-            current_bounty=True,
+        all_bounties = Bounty.objects.current().filter(
             network='mainnet',
             idx_status='done',
             web3_created__gt=(timezone.now() - timezone.timedelta(days=days))
@@ -425,7 +424,7 @@ def bounties_open():
 
     Stat.objects.create(
         key='bounties_open',
-        val=(Bounty.objects.filter(current_bounty=True, network='mainnet', idx_status='open').count()),
+        val=(Bounty.objects.current().filter(network='mainnet', idx_status='open').count()),
         )
 
 
@@ -434,7 +433,7 @@ def bounties_fulfilled():
 
     Stat.objects.create(
         key='bounties_fulfilled',
-        val=(Bounty.objects.filter(current_bounty=True, network='mainnet', idx_status='done').count()),
+        val=(Bounty.objects.current().filter(network='mainnet', idx_status='done').count()),
         )
 
 
@@ -545,7 +544,7 @@ def get_skills_keyword_counts():
 def get_bounty_keyword_counts():
     from dashboard.models import Bounty
     keywords = {}
-    for bounty in Bounty.objects.filter(current_bounty=True).all():
+    for bounty in Bounty.objects.current().all():
         for keyword in str(bounty.keywords).split(","):
             keyword = keyword.strip().lower().replace(" ", "_")
             if keyword not in keywords.keys():
