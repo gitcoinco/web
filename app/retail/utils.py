@@ -316,26 +316,26 @@ def build_stat_results_helper(keyword=None):
     }
     pp = PerformanceProfiler()
     pp.profile_time('start')
-    base_alumni = Alumni.objects.all()
-    base_bounties = Bounty.objects.current().filter(network='mainnet')
-    base_leaderboard = LeaderboardRank.objects.all()
+    base_alumni = Alumni.objects.all().cache()
+    base_bounties = Bounty.objects.current().filter(network='mainnet').cache()
+    base_leaderboard = LeaderboardRank.objects.all().cache()
 
     pp.profile_time('filters')
     if keyword:
-        base_email_subscribers = EmailSubscriber.objects.filter(keywords__icontains=keyword)
+        base_email_subscribers = EmailSubscriber.objects.filter(keywords__icontains=keyword).cache()
         base_profiles = base_email_subscribers.select_related('profile')
-        base_bounties = base_bounties.filter(raw_data__icontains=keyword)
+        base_bounties = base_bounties.filter(raw_data__icontains=keyword).cache()
         profile_pks = base_profiles.values_list('profile', flat=True)
         profile_usernames = base_profiles.values_list('profile__handle', flat=True)
         profile_usernames = list(profile_usernames) + list([bounty.github_repo_name for bounty in base_bounties])
         base_alumni = base_alumni.filter(profile__in=profile_pks)
         base_leaderboard = base_leaderboard.filter(github_username__in=profile_usernames)
 
-    context['alumni_count'] = base_alumni.count()
+    context['alumni_count'] = base_alumni.count().cache()
     pp.profile_time('alumni')
-    context['count_open'] = base_bounties.filter(network='mainnet', idx_status__in=['open']).count()
-    context['count_started'] = base_bounties.filter(network='mainnet', idx_status__in=['started', 'submitted']).count()
-    context['count_done'] = base_bounties.filter(network='mainnet', idx_status__in=['done']).count()
+    context['count_open'] = base_bounties.filter(network='mainnet', idx_status__in=['open']).count().cache()
+    context['count_started'] = base_bounties.filter(network='mainnet', idx_status__in=['started', 'submitted']).count().cache()
+    context['count_done'] = base_bounties.filter(network='mainnet', idx_status__in=['done']).count().cache()
     pp.profile_time('count_*')
 
     # Leaderboard
@@ -345,7 +345,7 @@ def build_stat_results_helper(keyword=None):
 
     # community size
     _key = 'email_subscriberse' if not keyword else f"subscribers_with_skill_{keyword}"
-    base_stats = Stat.objects.filter(key=_key).order_by('-pk')
+    base_stats = Stat.objects.filter(key=_key).order_by('-pk').cache()
     context['members_history'], context['slack_ticks'] = get_history(base_stats, "Members")
 
     pp.profile_time('Stats1')
@@ -354,7 +354,7 @@ def build_stat_results_helper(keyword=None):
     key = f'joe_dominance_index_30_{keyword}_value' if keyword else 'joe_dominance_index_30_value'
     base_stats = Stat.objects.filter(
         key=key,
-        ).order_by('-pk')
+        ).order_by('-pk').cache()
     num_months = int((timezone.now() - timezone.datetime(2017, 10, 1).replace(tzinfo=pytz.UTC)).days/30)
     context['jdi_history'], __ = get_history(base_stats, 'Percentage', num_months)
 
@@ -372,7 +372,7 @@ def build_stat_results_helper(keyword=None):
     total_bounties_usd = sum(base_bounties.exclude(idx_status__in=['expired', 'cancelled', 'canceled', 'unknown']).values_list('_val_usd_db', flat=True))
     total_tips_usd = sum([
         tip.value_in_usdt
-        for tip in Tip.objects.filter(network='mainnet').exclude(txid='') if tip.value_in_usdt
+        for tip in Tip.objects.filter(network='mainnet').exclude(txid='').cache() if tip.value_in_usdt
     ])
     context['universe_total_usd'] = float(total_bounties_usd) + float(total_tips_usd)
     pp.profile_time('universe_total_usd')
@@ -383,7 +383,7 @@ def build_stat_results_helper(keyword=None):
     pp.profile_time('bounty_average_turnaround')
     context['hourly_rate_distribution'] = get_hourly_rate_distribution(keyword)
     context['hourly_rate_distribution_by_range'] = {}
-    usd_value_ranges = [[10, 50], [50, 150], [150, 500], [500, 1500], [1500, 5000], [5000, 50000]] 
+    usd_value_ranges = [[10, 50], [50, 150], [150, 500], [500, 1500], [1500, 5000], [5000, 50000]]
     for val_range in usd_value_ranges:
         low = val_range[0] if val_range[0] < 1000 else f"{round(val_range[0]/1000,1)}k"
         high = val_range[1] if val_range[1] < 1000 else f"{round(val_range[1]/1000,1)}k"
