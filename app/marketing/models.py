@@ -210,7 +210,7 @@ class LeaderboardRank(SuperModel):
     @property
     def avatar_url(self):
         if self.profile and self.profile.avatar:
-            return self.profile.avatar.avatar_url
+            return self.profile.avatar.get_avatar_url()
         key = self.github_username
 
         # these two types won't have images
