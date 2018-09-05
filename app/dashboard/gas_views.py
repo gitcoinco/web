@@ -173,7 +173,11 @@ def gas_guzzler_view(request):
     num_guzzlers = 7
     gas_histories = {}
     _lines = {}
-    top_guzzlers = GasGuzzler.objects.filter(created_on__gt=timezone.now()-timezone.timedelta(minutes=60)).order_by('-pct_total').cache()[0:num_guzzlers]
+    top_guzzlers = GasGuzzler.objects \
+        .filter(
+            created_on__gt=timezone.now() - timezone.timedelta(minutes=60)
+        ).order_by('-pct_total') \
+        .cache()[0:num_guzzlers]
     counter = 0
     colors = [val for key, val in lines.items()]
     max_y = 0
@@ -218,7 +222,7 @@ def gas_history_view(request):
     breakdown = request.GET.get('breakdown', 'hourly')
     gas_histories = {}
     max_y = 0
-    for i in lines.keys():
+    for i, __ in lines.items():
         gas_histories[i] = get_history_cached(breakdown, i)
         for gh in gas_histories[i]:
             max_y = max(gh[0], max_y)
