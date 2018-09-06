@@ -3,6 +3,8 @@
   min-width: 90px;
   border-radius: 2px;
   margin: 4px;
+  padding: 0 3px;
+  font-weight: 400;
 }
 
 .tag span {
@@ -26,7 +28,7 @@
 
 .tag.token {
   background-color: #e7f0fa;
-  color: #775EC7;
+  color: var(--gc-purple);
 }
 
 .tag.hiring {

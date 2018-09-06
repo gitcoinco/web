@@ -2,10 +2,6 @@
 /* eslint no-redeclare: "warn" */
 /* eslint no-loop-func: "warn" */
 
-const normalizeAmount = function(amount, decimals) {
-  return Math.round(amount * 10 ** decimals) / 10 ** decimals;
-};
-
 const _truthy = function(val) {
   if (!val || val == '0x0000000000000000000000000000000000000000') {
     return false;
@@ -229,7 +225,7 @@ var callbacks = {
       $('.additional_funding_summary').addClass('hidden');
       return [ 'additional_funding_summary', '' ];
     }
-    const usd_value = val['usd_value'];
+    const usd_value = val['usd_value'] | 0;
     const tokens = val['tokens'];
     const decimals = 3;
 
@@ -241,8 +237,24 @@ var callbacks = {
       token: result['token_name']
     });
 
-    tooltip_info.push('<p class="font-weight-bold m-0 pb-1" style="color:#775EC7;">Intial : ' +
-      $('#value_in_token').html() + '</p>');
+    var timePeg = timeDifference(new Date(), new Date(result['token_value_time_peg']), false, 60 * 60);
+
+    tooltip_info.push(
+      '<p class="font-weight-bold m-0 pb-1" style="color:#775EC7;">' +
+      'Bounty worth $' +
+      result['value_in_usdt'] +
+      '<br>' +
+      token_value_to_display(result['value_in_token'], decimals) +
+      ' ' +
+      result['token_name'] +
+      ' @ $' +
+       result['token_value_in_usdt'] +
+      '/' +
+      result['token_name'] +
+      ' as of ' +
+      timePeg +
+      '</p>'
+    );
 
     if (usd_value) {
       tooltip_info.push('<p class="m-0" style="margin-top: 3px;">Crowdfunding worth $' + usd_value + '</p>');
@@ -274,9 +286,18 @@ var callbacks = {
 
     const token_tag = crowdfunded_tokens.map(fund => fund.amount + ' ' + fund.token);
 
-    $('#value_in_token').html('<i class="fas fa-users mr-2"></i>' +
-      token_tag.join(' <i class="fas fa-plus mx-1" style="font-size: 0.5rem; position: relative; top: -1px;"></i> '));
-    $('#value_in_token').attr('title', '<div class="tooltip-info tooltip-sm">' + tooltip_info.join('') + '</div>');
+    $('#value_in_token').html(
+      token_tag.join(' <i class="fas fa-plus mx-1" style="font-size: 0.5rem; position: relative; top: -1px;"></i> ')
+    );
+
+    var rates_estimate = get_rates_estimate(result['value_in_usdt']);
+
+    $('#value_in_usdt_wrapper').attr('title',
+      '<div class="tooltip-info tooltip-sm">' +
+      tooltip_info.join('') +
+      '<br>' +
+      rates_estimate +
+      '</div>');
 
     return [ 'additional_funding_summary', val ];
   },

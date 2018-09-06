@@ -955,63 +955,107 @@ var usdToAmount = function(event) {
   });
 };
 
-function renderBountyRowsFromResults(results) {
+function renderBountyRowsFromResults(results, renderForExplorer) {
   var html = '';
   var tmpl = $.templates('#result');
 
   if (results.length == 0) {
-    return false;
+    return html;
   }
 
   for (var i = 0; i < results.length; i++) {
     var result = results[i];
-    var related_token_details = tokenAddressToDetails(result['token_address']);
+    var relatedTokenDetails = tokenAddressToDetailsByNetwork(result['token_address'], result['network']);
     var decimals = 18;
 
-    if (related_token_details && related_token_details.decimals) {
-      decimals = related_token_details.decimals;
+    if (relatedTokenDetails && relatedTokenDetails.decimals) {
+      decimals = relatedTokenDetails.decimals;
     }
 
     var divisor = Math.pow(10, decimals);
 
-    result['rounded_amount'] = Math.round(result['value_in_token'] / divisor * 100) / 100;
-    var is_expired = new Date(result['expires_date']) < new Date() && !result['is_open'];
+    result['rounded_amount'] = normalizeAmount(result['value_in_token'] / divisor, decimals);
+
+    var crowdfunding = result['additional_funding_summary'];
+
+    if (crowdfunding) {
+      var tokens = Object.keys(crowdfunding['tokens'] || {});
+
+      if (tokens.length) {
+        var obj = {};
+
+        obj[result['token_name']] = result['rounded_amount'];
+
+        while (tokens.length) {
+          var tokenName = tokens.shift();
+
+          obj[tokenName] =
+            normalizeAmount(crowdfunding['tokens'][tokenName], 3);
+        }
+        result['tokens'] = obj;
+      }
+
+      var usdValue = crowdfunding['usd_value'] | 0;
+
+      if (usdValue && result['value_in_usdt']) {
+        result['value_in_usdt'] =
+          parseFloat(result['value_in_usdt']) + normalizeAmount(usdValue, 3);
+      }
+    }
+
+    var dateNow = new Date();
+    var dateExpires = new Date(result['expires_date']);
+    var isExpired = dateExpires < dateNow && !result['is_open'];
+    var projectType = ucwords(result['project_type']) + ' &bull; ';
 
     result['action'] = result['url'];
     result['title'] = result['title'] ? result['title'] : result['github_url'];
+    result['p'] = projectType + (result['experience_level'] ? (result['experience_level'] + ' &bull; ') : '');
 
-    var timeLeft = timeDifference(new Date(result['expires_date']), new Date(), true);
-
-    result['p'] = ((result['experience_level'] ? result['experience_level'] : 'Unknown Experience Level') + ' &bull; ');
-
-    if (result['status'] === 'done')
+    if (result['status'] === 'done') {
       result['p'] += 'Done';
-    if (result['fulfillment_accepted_on']) {
-      result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_accepted_on']), false, 60 * 60);
+      if (result['fulfillment_accepted_on']) {
+        result['p'] += ' ' + timeDifference(dateNow, new Date(result['fulfillment_accepted_on']), false, 60 * 60);
+      }
     } else if (result['status'] === 'started') {
       result['p'] += 'Started';
-      result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_started_on']), false, 60 * 60);
+      if (result['fulfillment_started_on']) {
+        result['p'] += ' ' + timeDifference(dateNow, new Date(result['fulfillment_started_on']), false, 60 * 60);
+      }
     } else if (result['status'] === 'submitted') {
       result['p'] += 'Submitted';
       if (result['fulfillment_submitted_on']) {
-        result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_submitted_on']), false, 60 * 60);
+        result['p'] += ' ' + timeDifference(dateNow, new Date(result['fulfillment_submitted_on']), false, 60 * 60);
       }
     } else if (result['status'] == 'cancelled') {
       result['p'] += 'Cancelled';
       if (result['canceled_on']) {
-        result['p'] += ' ' + timeDifference(new Date(), new Date(result['canceled_on']), false, 60 * 60);
+        result['p'] += ' ' + timeDifference(dateNow, new Date(result['canceled_on']), false, 60 * 60);
       }
-    } else if (is_expired) {
-      var time_ago = timeDifference(new Date(), new Date(result['expires_date']), true);
+    } else if (isExpired) {
+      var timeAgo = timeDifference(dateNow, dateExpires, true);
 
-      result['p'] += ('Expired ' + time_ago + ' ago');
+      result['p'] += ('Expired ' + timeAgo + ' ago');
     } else {
-      var opened_when = timeDifference(new Date(), new Date(result['web3_created']), true);
+      var openedWhen = timeDifference(dateNow, new Date(result['web3_created']), true);
+      var timeLeft = timeDifference(dateNow, dateExpires);
+      var expiredExpires = dateNow < dateExpires ? 'Expires' : 'Expired';
 
-      result['p'] += ('Opened ' + opened_when + ' ago, Expires in ' + timeLeft);
+      result['p'] += ('Opened ' + openedWhen + ' ago, ' + expiredExpires + ' ' + timeLeft);
     }
 
-    result['hidden'] = (i > 4);
+    if (renderForExplorer) {
+      if (typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
+        result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
+      } else if (result['fulfiller_address'] !== '0x0000000000000000000000000000000000000000') {
+        result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">' + result['status'] + '</span></a>';
+      }
+
+      result['watch'] = 'Watch';
+    } else {
+      result['hidden'] = (i > 4);
+    }
+
     html += tmpl.render(result);
   }
   return html;
@@ -1096,4 +1140,30 @@ function hideBusyOverlay() {
       overlay.style['animation-name'] = 'fadeOut';
     }, 300);
   }
+}
+
+function toggleExpandableBounty(evt) {
+  evt.preventDefault();
+
+  if (evt.target.id === 'expanded') {
+    evt.target.id = '';
+  } else {
+    evt.target.id = 'expanded';
+  }
+
+  var container = evt.target.parentElement.parentElement.parentElement.querySelector('.expandable');
+
+  if (container) {
+    if (container.id === 'expanded') {
+      container.id = '';
+      evt.target.id = '';
+      return;
+    }
+    container.id = 'expanded';
+    evt.target.id = 'expanded';
+  }
+}
+
+function normalizeAmount(amount, decimals) {
+  return Math.round(amount * 10 ** decimals) / 10 ** decimals;
 }

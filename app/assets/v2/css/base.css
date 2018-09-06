@@ -1639,3 +1639,48 @@ div.busyOverlay {
   background-position: center;
   background-image: url('/static/v2/images/loading_v2.gif');
 }
+
+.expandable {
+  overflow: hidden;
+  max-height: 0;
+  transition: 0.3s ease-in-out;
+}
+
+.expandable#expanded {
+  max-height: 10rem;
+}
+
+.arrow {
+  display: inline-block;
+  min-width: .5rem;
+  min-height: .5rem;
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  background-image: url('/static/v2/images/arrow-down.png');
+  transform: rotateZ(180deg);
+  transition: 0.3s ease;
+}
+
+#expanded > .arrow {
+  transform: rotateZ(0);
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.funding {
+  background-color: #f9f9f9;
+}
+
+.funding > div.placeholder {
+  margin-left: 5rem;
+  padding: 0.3rem 0;
+}
+
+@media (max-width: 768px) {
+  .funding > div.placeholder {
+    margin-left: 0;
+  }
+}

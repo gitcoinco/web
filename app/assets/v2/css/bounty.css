@@ -194,11 +194,6 @@ body {
   top: 2px;
 }
 
-#bounty_details .tags {
-  float: right;
-  text-align: center;
-}
-
 #bounty_details .activity-tags {
   float: left;
   text-align: center;

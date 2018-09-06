@@ -1,35 +1,36 @@
-{% load static %}
+{% load static i18n %}
 <!-- JSRender stuff -->
 <script id="result" type="text/x-jsrender">
 <div class="row result bounty_row [[if hidden]]bounty_row--hidden[[/if]] [[:network]]" href="[[:action]]">
-      [[if avatar_url]]
-        <div class="avatar-container col-1 justify-content-center hide_min_viewport">
-          <img src='[[:avatar_url]]' class='avatar'>
-        </div>
-      [[else]]
-        <div class="avatar-container col-1 justify-content-center">
-          <div class="experience [[:experience_level]]">&nbsp;</div>
-        </div>
-      [[/if]]
-    <div class="col-12 col-md-8 d-flex flex-column">
-      <div class="bounty-detail">
-        <div class="title font-subheader">
-          [[:title]]
-        </div>
-        <div class="bounty-summary col-12">
-          [[if github_comments]]
-            <div class="col-xs-1">
-              <img src={% static "v2/images/comment.svg" %}>
-              <span class="github-comment font-caption">[[:github_comments]]</span>
-            </div>
-          [[/if]]
-          <div class="info font-caption">
-            [[:p]]
+  [[if avatar_url]]
+    <div class="avatar-container col-1 justify-content-center hide_min_viewport">
+      <img src='[[:avatar_url]]' class='avatar'>
+    </div>
+  [[else]]
+    <div class="avatar-container col-1 justify-content-center">
+      <div class="experience [[:experience_level]]">&nbsp;</div>
+    </div>
+  [[/if]]
+  <div class="col-12 col-md-8 d-flex flex-column">
+    <div class="bounty-detail">
+      <div class="title font-subheader">
+        [[:title]]
+      </div>
+      <div class="bounty-summary col-12">
+        [[if github_comments]]
+          <div class="col-xs-1">
+            <img src={% static 'v2/images/comment.svg' %}>
+            <span class="github-comment font-caption">[[:github_comments]]</span>
           </div>
+        [[/if]]
+        <div class="info font-caption">
+          [[:p]]
         </div>
       </div>
     </div>
-    <div class="col-12 col-md-3 tags font-caption align-items-center">
+  </div>
+  <div class="col-12 col-md-3 font-caption align-items-center">
+    <div class="tags">
       [[if network != 'mainnet']]
         <div class="tag network_warning shift_left">
           <p>
@@ -49,6 +50,10 @@
         <p>
           [[:rounded_amount]]
           <span>[[:token_name]]</span>
+          [[if tokens]]
+            <i class="fas fa-plus mx-1" style="font-size: 0.5rem; position: relative; top: -1px;"></i>
+            <img class="m-0" style="position: relative; top: -1px;" src="{% static 'v2/images/coin.svg' %}">
+          [[/if]]
         </p>
       </div>
       [[if value_in_usdt]]
@@ -59,6 +64,26 @@
           </p>
         </div>
       [[/if]]
+      </div>
+      [[if tokens]]
+        <div class="row">
+          <a class="ml-4" href="" onclick="toggleExpandableBounty(event)">{% trans 'See All' %}   <div class="arrow"></div></a>
+        </div>
+      [[/if]]
     </div>
+    [[if tokens]]
+      <div class="row col-12 tags expandable funding">
+        <div class="placeholder">
+          <span class="text-highlight-gc-purple m-2 uppercase">{% trans 'Funding' %}</span>
+        </div>
+        [[props tokens]]
+          [[for prop ~tokenName=key]]
+            <div class="tag token font-caption">
+              <p>[[:#data]]   <span>[[:~tokenName]]</span></p>
+            </div>
+          [[/for]]
+        [[/props]]
+      </div>
+    [[/if]]
   </div>
 </script>
