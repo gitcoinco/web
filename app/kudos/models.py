@@ -83,7 +83,7 @@ class Token(SuperModel):
         return self
 
 
-class Email(SendCryptoAsset):
+class KudosTransfer(SendCryptoAsset):
     # kudos_token is a reference to the Kudos Token that is slated to be cloned.
     kudos_token = models.ForeignKey(Token, on_delete=models.SET_NULL, null=True)
 

@@ -22,7 +22,11 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from .models import Token
+from .models import Token, KudosTransfer, Wallet
+
+
+class GeneralAdmin(admin.ModelAdmin):
+    ordering = ['-id']
 
 
 class TokenAdmin(admin.ModelAdmin):
@@ -34,4 +38,6 @@ class TokenAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Token, TokenAdmin)
+admin.site.register(KudosTransfer, GeneralAdmin)
+admin.site.register(Wallet, GeneralAdmin)
 # admin.site.register(Wallet, WalletAdmin)

@@ -444,6 +444,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
         // end post_send_callback
 
         if (isSendingETH) {
+          alert(amountInWei);
           web3.eth.sendTransaction({
             to: destinationAccount,
             value: amountInWei,

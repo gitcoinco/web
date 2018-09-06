@@ -27,7 +27,7 @@ from django.contrib.postgres.search import SearchVector
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 
-from .models import Token, Wallet, Email
+from .models import Token, Wallet, KudosTransfer
 from dashboard.models import Profile, Activity
 from dashboard.utils import get_web3
 from dashboard.views import record_user_action
@@ -275,7 +275,7 @@ def send_3(request):
     # Validate that the token exists on the back-end
     kudos_token = Token.objects.filter(name=params['kudosName'], num_clones_allowed__gt=0).first()
     # db mutations
-    kudos_email = Email.objects.create(
+    kudos_email = KudosTransfer.objects.create(
         emails=to_emails,
         # For kudos, `token` is a kudos.models.Token instance.
         kudos_token=kudos_token,
@@ -322,13 +322,13 @@ def send_4(request):
     destinationAccount = params['destinationAccount']
     is_direct_to_recipient = params.get('is_direct_to_recipient', False)
     if is_direct_to_recipient:
-        kudos_email = Email.objects.get(
+        kudos_email = KudosTransfer.objects.get(
             metadata__direct_address=destinationAccount, 
             metadata__creation_time=params['creation_time'],
             metadata__salt=params['salt'],
             )
     else:
-        kudos_email = Email.objects.get(
+        kudos_email = KudosTransfer.objects.get(
             metadata__address=destinationAccount,
             metadata__salt=params['salt'],
             )
@@ -402,7 +402,7 @@ def receive(request, key, txid, network):
 
     """
 
-    these_kudos_emails = Email.objects.filter(web3_type='v3', txid=txid, network=network)
+    these_kudos_emails = KudosTransfer.objects.filter(web3_type='v3', txid=txid, network=network)
     kudos_emails = these_kudos_emails.filter(metadata__reference_hash_for_receipient=key) | these_kudos_emails.filter(
         metadata__reference_hash_for_funder=key)
     kudos_email = kudos_emails.first()
