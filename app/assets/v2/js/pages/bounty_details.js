@@ -687,10 +687,11 @@ var show_extend_deadline_modal = function() {
 };
 
 var set_reserved_for_link = function(result) {
-    if(result.bounty_reserved_for !== '') {
-      var profile_link = 'https://gitcoin.co/profile/'+result.bounty_reserved_for;
-      var reservedForHtmlLink = '<a href="'+profile_link+'">'+result.bounty_reserved_for+'</a>';
-      var reservedForAvatar = `<img class="rounded-circle" src="${static_url + 'v2/images/user-placeholder.png'}" width="30" height="30"/>`;
+    if(!$.isEmptyObject(result.bounty_reserved_for)) {
+      var reservedForUsername = result.bounty_reserved_for.username;
+      var profile_link = 'https://gitcoin.co/profile/'+reservedForUsername;
+      var reservedForHtmlLink = '<a href="'+profile_link+'">'+reservedForUsername+'</a>';
+      var reservedForAvatar = `<img class="rounded-circle" src="${static_url + 'v2/images/user-placeholder.png'}" width="25" height="25"/>`;
       $('#bounty_reserved_for').html(reservedForHtmlLink+reservedForAvatar); 
     }
     else {

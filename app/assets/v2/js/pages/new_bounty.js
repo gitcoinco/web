@@ -10,7 +10,7 @@ var new_bounty = {
   last_sync: new Date()
 };
 
-var reservedFor = '';
+var reservedFor = {};
 
 try {
   localStorage = window.localStorage;
@@ -111,9 +111,12 @@ $(document).ready(function() {
   // listen to reserved for changes
   $('#reservedFor').on('select2:select', function(e) {
     var data = e.params.data;
-
-    reservedFor = data.text;
-
+    reservedFor = {
+      username:data.text,
+      creation_date: new Date(),
+      email: data.email,
+      avatar_url:''
+    };
   });
 
   // revision action buttons
@@ -233,7 +236,6 @@ $(document).ready(function() {
         projectLength: data.project_length,
         bountyType: data.bounty_type,
         reservedFor: reservedFor,
-        reservedForCreationDate: reservedFor !== '' ? new Date() : null,
         tokenName
       };
 

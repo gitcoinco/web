@@ -180,6 +180,11 @@ body {
   float: right;
 }
 
+#bounty_reserved_for {
+  float: right;
+  margin-right: 70px;
+}
+
 #bounty_reserved_for a{
   margin-left: 5px;
   font-weight: bold;

@@ -416,8 +416,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'bounty_owner_address': bounty_issuer.get('address', ''),
                 'bounty_owner_email': bounty_issuer.get('email', ''),
                 'bounty_owner_name': bounty_issuer.get('name', ''),
-                'bounty_reserved_for':metadata.get('reservedFor', ''),
-                'bounty_reserved_for_creation_date':metadata.get('reservedForCreationDate', ''),
+                'bounty_reserved_for': metadata.get('reservedFor', ''),
             })
         else:
             latest_old_bounty_dict = latest_old_bounty.to_standard_dict(
