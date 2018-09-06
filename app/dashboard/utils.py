@@ -459,7 +459,7 @@ def record_user_action_on_interest(interest, event_name, last_heard_from_user_da
 
 def get_context(ref_object=None, github_username='', user=None, confirm_time_minutes_target=4,
                 confirm_time_slow=120, confirm_time_avg=15, confirm_time_fast=1, active='',
-                title='', update=None):
+                title='', update=None, gitcoin_tip_address=settings.GITCOIN_TIP_ADDRESS):
     """Get the context dictionary for use in view."""
     context = {
         'githubUsername': github_username,  # TODO: Deprecate this field.
@@ -475,6 +475,7 @@ def get_context(ref_object=None, github_username='', user=None, confirm_time_min
         'handle': getattr(user, 'username', ''),
         'title': title,
         'gas_advisories': gas_advisories(),
+        'gitcoin_tip_address': gitcoin_tip_address
     }
     if ref_object is not None:
         context.update({f'{ref_object.__class__.__name__}'.lower(): ref_object})

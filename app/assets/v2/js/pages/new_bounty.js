@@ -341,11 +341,8 @@ $(document).ready(function() {
         txid: null
       });
 
-      // Create Gitcoin tip transaction
-      const gitcoinTipAddress = '0x00de4b13153673bcae2616b67bf822500d325fc3';
-
       web3.eth.sendTransaction({
-        to: gitcoinTipAddress,
+        to: GITCOIN_TIP_ADDRESS,
         value: gitcoinTipAmount * decimalDivisor,
         gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
         gas: web3.toHex(318730),
