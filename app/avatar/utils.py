@@ -69,7 +69,7 @@ def get_avatar_context():
         }, {
             'name': 'Clothing',
             'title': 'Pick your clothing',
-            'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater')
+            'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacesuit')
         }, {
             'name': 'Hair Style',
             'title': 'Pick a hairstyle',
@@ -84,10 +84,10 @@ def get_avatar_context():
         }, {
             'name': 'Accessories',
             'title': 'Pick your accessories',
-            'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
-                'HatShort-backwardscap'
-            ], ['HatShort-ballcap'], ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'],
-                        ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'])
+            'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'],
+                        ['HatShort-backwardscap'], ['HatShort-ballcap'], ['HatShort-headphones'],
+                        ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], ['HatShort-helmet'], ['Earring-0'],
+                        ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'])
         }, {
             'name': 'Background',
             'title': 'Pick a background color',
