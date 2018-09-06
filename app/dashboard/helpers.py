@@ -41,6 +41,7 @@ from git.utils import get_gh_issue_details, get_url_dict, issue_number, org_name
 from jsondiff import diff
 from pytz import UTC
 from ratelimit.decorators import ratelimit
+from marketing.mails import send_mail
 
 from .models import Profile
 
@@ -432,6 +433,12 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             )
             bounty_kwargs.update(latest_old_bounty_dict)
 
+        # notify a user that a bounty has been set aside for them if its been reserved for them
+        bounty_reserved_for = metadata.get('reservedFor', '')
+        if len(bounty_reserved_for.keys()) > 0:
+            body = '<p>Hi ' + bounty_reserved_for['username'] + ',<br><br>An issue has been assigned to you on gitcoin. Please start working on it in the next 24 hours, otherwise it will be opened up for other bounty hunters as well.<br><br>Regards</p>'
+            send_mail('founders@gitcoin.co', bounty_reserved_for['email'], 'Reserved Issue', str(body), html=True)
+            
         try:
             new_bounty = Bounty.objects.create(**bounty_kwargs)
             new_bounty.fetch_issue_item()
@@ -458,6 +465,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             if canceled_on:
                 new_bounty.canceled_on = canceled_on
                 new_bounty.save()
+
 
         except Exception as e:
             print(e, 'encountered during new bounty creation for:', url)

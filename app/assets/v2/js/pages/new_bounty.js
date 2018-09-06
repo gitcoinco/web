@@ -10,7 +10,7 @@ var new_bounty = {
   last_sync: new Date()
 };
 
-var reservedFor = {};
+var bounty_reserved_for = {};
 
 try {
   localStorage = window.localStorage;
@@ -112,7 +112,7 @@ $(document).ready(function() {
   $('#reservedFor').on('select2:select', function(e) {
     
     var data = e.params.data;
-    reservedFor = {
+    bounty_reserved_for = {
       username: data.text,
       creation_date: new Date(),
       email: data.email,
@@ -236,7 +236,7 @@ $(document).ready(function() {
         experienceLevel: data.experience_level,
         projectLength: data.project_length,
         bountyType: data.bounty_type,
-        reservedFor: reservedFor,
+        reservedFor: bounty_reserved_for,
         tokenName
       };
 

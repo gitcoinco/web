@@ -532,23 +532,23 @@ var attach_work_actions = function() {
   $('body').delegate('a[href="/interested"], a[href="/uninterested"], a[href="/extend-deadlines"]', 'click', function(e) {
     e.preventDefault();
     if ($(this).attr('href') == '/interested') {
-      if(currentLoggedInUser.length > 0 && reservedForUsername.length > 0){
-        if(currentLoggedInUser === reservedForUsername){
+      if( currentLoggedInUser.length > 0 && reservedForUsername.length > 0) {
+        if (currentLoggedInUser === reservedForUsername) {
           show_interest_modal.call(this);
         }
-        else{
+        else {
           var reservedForHoursLeft = 24 - Math.abs(new Date() - new Date(reservedForCreationDate)) / 36e5;
           var errorMsg = '';
 
-          if(Math.round(reservedForHoursLeft) > 1){
+          if (Math.round(reservedForHoursLeft) > 1) {
             errorMsg = 'This issue is currently reserved for ' + reservedForUsername + ', please try to [Start Work] again after the next ' + Math.round(reservedForHoursLeft) +' hours'
           }
-          if(Math.round(reservedForHoursLeft) === 1){
+          if (Math.round(reservedForHoursLeft) === 1) {
             errorMsg = 'This issue is currently reserved for ' + reservedForUsername + ', please try to [Start Work] again after the next 1 hour';
           }
-          if(Math.round(reservedForHoursLeft) === 0){
+          if (Math.round(reservedForHoursLeft) === 0) {
             var minutesLeft = reservedForHoursLeft * 60;
-            errorMsg = 'This issue is currently reserved for ' + reservedForUsername + ', please try to [Start Work] again in ' + Math.round(minutesLeft) + ' minutes';
+            errorMsg = 'This issue is currently reserved for ' + reservedForUsername + ', please try to [Start Work] again after ' + Math.round(minutesLeft) + ' minutes';
           }
 
           _alert({ message: gettext(errorMsg) }, 'error');
@@ -713,14 +713,14 @@ var reservedForUsername  = '';
 var reservedForCreationDate = '';
 var currentLoggedInUser = '';
 var set_reserved_for_link = function(result) {
-  if(!$.isEmptyObject(result.bounty_reserved_for)) {
+  if (!$.isEmptyObject(result.bounty_reserved_for)) {
     currentLoggedInUser = $('#bounty_reserved_for_current_user').html().trim();
     reservedForUsername = result.bounty_reserved_for.username.trim();
     reservedForCreationDate = result.bounty_reserved_for.creation_date;
     var reservedForHoursLeft = 24 - Math.abs(new Date() - new Date(reservedForCreationDate)) / 36e5;
     
     // check if 24 hours have passed before setting the issue as reserved
-    if(Math.round(reservedForHoursLeft) > 0){
+    if (Math.round(reservedForHoursLeft) > 0){
       var profile_link = 'https://gitcoin.co/profile/'+reservedForUsername;
       var reservedForHtmlLink = '<a href="'+profile_link+'">'+reservedForUsername+'</a>';
       // show a static image for now becase the search is not returning an image

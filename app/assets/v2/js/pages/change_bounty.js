@@ -8,6 +8,7 @@ $(document).ready(function() {
   const oldBounty = document.result;
   const keys = Object.keys(oldBounty);
   const form = $('#submitBounty');
+  var bounty_reserved_for = {};
 
   while (keys.length) {
     const key = keys.pop();
@@ -22,6 +23,17 @@ $(document).ready(function() {
 
   $('.js-select2').each(function() {
     $(this).select2();
+  });
+  
+  $('#reservedFor').on('select2:select', function(e) {
+    
+    var data = e.params.data;
+    bounty_reserved_for = {
+      username: data.text,
+      creation_date: new Date(),
+      email: data.email,
+      avatar_url: ''
+    };
   });
 
   form.validate({
@@ -38,6 +50,8 @@ $(document).ready(function() {
       loading_button($('.js-submit'));
 
       mixpanel.track('Change Bounty Details Clicked', {});
+      // update bounty reserved for
+      formData.bounty_reserved_for = bounty_reserved_for;
 
       const bountyId = document.pk;
       const payload = JSON.stringify(formData);
