@@ -21,6 +21,7 @@ import logging
 from secrets import token_hex
 from tempfile import NamedTemporaryFile
 
+from django.conf import settings
 from django.contrib.postgres.fields import JSONField
 from django.core.files import File
 from django.core.files.base import ContentFile
@@ -194,8 +195,32 @@ class Avatar(SuperModel):
 
         """
         if not use_svg:
-            return self.png.url if self.use_github_avatar else self.custom_avatar_png.url
-        return self.github_svg.url if self.use_github_avatar else self.svg.url
+            if self.use_github_avatar and self.png:
+                return self.png.url
+            if self.use_github_avatar and not self.png:
+                return self.pull_github_avatar()
+            if not self.use_github_avatar and self.custom_avatar_png:
+                return self.custom_avatar_png.url
+            if not self.use_github_avatar and not self.custom_avatar_png:
+                self.convert_custom_svg(force_save=True)
+                return self.custom_avatar_png.url
+        if self.use_github_avatar and self.github_svg:
+            return self.github_svg.url
+        if self.use_github_avatar and not self.github_svg:
+            self.convert_github_png(force_save=True)
+            return self.github_svg.url
+        if not self.use_github_avatar and self.svg:
+            return self.svg.url
+        if not self.use_github_avatar and not self.svg:
+            self.create_from_config()
+            return self.svg.url
+
+        try:
+            handle = self.profile_set.last().handle
+        except Exception:
+            handle = 'Self'
+
+        return f'{settings.BASE_URL}dynamic/avatar/{handle}'
 
     def create_from_config(self, svg_name='avatar'):
         """Create an avatar SVG from the configuration.
@@ -229,7 +254,7 @@ class Avatar(SuperModel):
                     svg_name = self.profile_set.last().handle
                 self.svg.save(f"{svg_name}.svg", File(file), save=True)
 
-    def convert_field(self, source, target='custom_avatar_png', input_fmt='svg', output_fmt='png'):
+    def convert_field(self, source, target='custom_avatar_png', input_fmt='svg', output_fmt='png', force_save=False):
         """Handle converting from the source field to the target based on format."""
         try:
             # Convert the provided source to the specified output and store in BytesIO.
@@ -243,24 +268,36 @@ class Avatar(SuperModel):
                 custom_avatar = ContentFile(tmpfile_io.getvalue())
                 custom_avatar.name = f'{png_name}.{output_fmt}'
                 setattr(self, target, custom_avatar)
+                if force_save:
+                    self.save()
                 return True
         except Exception as e:
             logger.error(e)
         return False
 
-    def convert_custom_svg(self):
+    def convert_custom_svg(self, force_save=False):
         """Handle converting the custom Avatar SVG to PNG."""
         try:
-            converted = self.convert_field(self.svg, 'custom_avatar_png', input_fmt='svg', output_fmt='png')
+            if not self.svg:
+                self.create_from_config()
+
+            converted = self.convert_field(
+                self.svg, 'custom_avatar_png', input_fmt='svg', output_fmt='png', force_save=force_save
+            )
             if not converted:
                 raise AvatarConversionError('Avatar conversion error while converting SVG!')
         except AvatarConversionError as e:
             logger.error(e)
 
-    def convert_github_png(self):
+    def convert_github_png(self, force_save=False):
         """Handle converting the Github Avatar PNG to SVG."""
         try:
-            converted = self.convert_field(self.png, 'github_svg', input_fmt='png', output_fmt='svg')
+            if not self.png:
+                self.pull_github_avatar()
+
+            converted = self.convert_field(
+                self.png, 'github_svg', input_fmt='png', output_fmt='svg', force_save=force_save
+            )
             if not converted:
                 raise AvatarConversionError('Avatar conversion error while converting SVG!')
         except AvatarConversionError as e:
