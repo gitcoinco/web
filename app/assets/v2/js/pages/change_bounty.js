@@ -26,8 +26,8 @@ $(document).ready(function() {
   });
   
   $('#reservedFor').on('select2:select', function(e) {
-    
     var data = e.params.data;
+
     bounty_reserved_for = {
       username: data.text,
       creation_date: new Date(),

@@ -535,8 +535,7 @@ var attach_work_actions = function() {
       if (currentLoggedInUser.length > 0 && reservedForUsername.length > 0) {
         if (currentLoggedInUser === reservedForUsername) {
           show_interest_modal.call(this);
-        }
-        else {
+        } else {
           var reservedForHoursLeft = 24 - Math.abs(new Date() - new Date(reservedForCreationDate)) / 36e5;
           var errorMsg = '';
 
@@ -548,7 +547,7 @@ var attach_work_actions = function() {
           }
           if (Math.round(reservedForHoursLeft) === 0) {
             var minutesLeft = reservedForHoursLeft * 60;
-            
+
             errorMsg = 'This issue is currently reserved for ' + reservedForUsername + ', please try to [Start Work] again after ' + Math.round(minutesLeft) + ' minutes';
           }
 
@@ -722,18 +721,17 @@ var set_reserved_for_link = function(result) {
     
     // check if 24 hours have passed before setting the issue as reserved
     if (Math.round(reservedForHoursLeft) > 0) {
-      var profile_link = 'https://gitcoin.co/profile/'+reservedForUsername;
-      var reservedForHtmlLink = '<a href="'+profile_link+'">' + reservedForUsername + '</a>';
+      var profile_link = 'https://gitcoin.co/profile/' + reservedForUsername;
+      var reservedForHtmlLink = '<a href="' + profile_link + '">' + reservedForUsername + '</a>';
       // show a static image for now becase the search is not returning an image
       var reservedForAvatar = `<img class="rounded-circle" src="${ static_url + 'v2/images/user-placeholder.png'}" width="25" height="25"/>`;
+
       $('#bounty_reserved_for').html(reservedForHtmlLink + reservedForAvatar);
-    }
-    else {
+    } else {
       $('#bounty_reserved_for').css('display', 'none');
       $('#bounty_reserved_for_label').css('display', 'none');
     } 
-  }
-  else {
+  } else {
     $('#bounty_reserved_for').css('display', 'none');
     $('#bounty_reserved_for_label').css('display', 'none');
   }

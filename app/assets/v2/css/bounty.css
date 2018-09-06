@@ -185,14 +185,6 @@ body {
   margin-right: 70px;
 }
 
-#bounty_reserved_for a{
-  margin-left: 5px;
-  font-weight: bold;
-}
-
-#bounty_reserved_for img{
-  margin-left: 3px;
-}
 
 .bounty-info-text {
   color: #717171;
@@ -292,6 +284,11 @@ body {
 .red_warning a,
 #network a{
   color: #fb9470;
+  font-weight: bold;
+}
+
+#bounty_reserved_for a{
+  margin-left: 5px;
   font-weight: bold;
 }
 
@@ -429,6 +426,10 @@ a.btn {
 .waiting-state img {
   top: -2rem;
   transform: none;
+}
+
+#bounty_reserved_for img{
+  margin-left: 3px;
 }
 
 #btn-white img {
