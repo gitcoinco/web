@@ -1140,7 +1140,7 @@ def profile(request, handle):
     sent_kudos = Token.objects.filter(sent_from_address__in=params['wallet_addresses'])
 
     logging.info(params['wallet_addresses'])
-    logging.info(owned_kudos)
+    # logging.info(owned_kudos)
     params['kudos'] = owned_kudos
     params['sent_kudos'] = sent_kudos
     if request.method == 'POST' and request.is_ajax():

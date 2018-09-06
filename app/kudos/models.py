@@ -94,8 +94,10 @@ class Email(SendCryptoAsset):
         'dashboard.Profile', related_name='sent_kudos', on_delete=models.SET_NULL, null=True, blank=True
     )
 
+
     @property
     def receive_url(self):
+
         if self.web3_type == 'yge':
             return self.url
         elif self.web3_type == 'v3':
