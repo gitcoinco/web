@@ -553,8 +553,7 @@ var attach_work_actions = function() {
 
           _alert({ message: gettext(errorMsg) }, 'error');
         }
-      }
-      else {
+      } else {
         show_interest_modal.call(this);
       }
     } else if ($(this).attr('href') === '/extend-deadlines') {
@@ -709,7 +708,7 @@ var show_extend_deadline_modal = function() {
   });
 };
 
-var reservedForUsername  = '';
+var reservedForUsername = '';
 var reservedForCreationDate = '';
 var currentLoggedInUser = '';
 var set_reserved_for_link = function(result) {
