@@ -39,9 +39,9 @@ from dashboard.tokens import addr_to_token
 from economy.utils import convert_amount
 from git.utils import get_gh_issue_details, get_url_dict, issue_number, org_name, repo_name
 from jsondiff import diff
+from marketing.mails import send_mail
 from pytz import UTC
 from ratelimit.decorators import ratelimit
-from marketing.mails import send_mail
 
 from .models import Profile
 
