@@ -34,6 +34,7 @@ from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
 
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -710,6 +711,15 @@ def new_tip(request):
 
     return HttpResponse(response_html)
 
+@staff_member_required
+def new_kudos(request):
+    
+    from kudos.models import Token
+    kudos = Token.objects.last()
+    print(Token.objects)
+    response_html, _ = render_kudos_email(settings.CONTACT_EMAIL, kudos, True)
+
+    return HttpResponse(response_html)
 
 @staff_member_required
 def new_match(request):
