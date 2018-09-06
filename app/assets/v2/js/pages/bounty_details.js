@@ -540,7 +540,7 @@ var attach_work_actions = function() {
           var errorMsg = '';
 
           if (Math.round(reservedForHoursLeft) > 1) {
-            errorMsg = 'This issue is currently reserved for ' + reservedForUsername + ', please try to [Start Work] again after the next ' + Math.round(reservedForHoursLeft) +' hours';
+            errorMsg = 'This issue is currently reserved for ' + reservedForUsername + ', please try to [Start Work] again after the next ' + Math.round(reservedForHoursLeft) + ' hours';
           }
           if (Math.round(reservedForHoursLeft) === 1) {
             errorMsg = 'This issue is currently reserved for ' + reservedForUsername + ', please try to [Start Work] again after the next 1 hour';
