@@ -12,6 +12,7 @@ os:
 services:
   - docker
   - postgresql
+  - redis-server
 
 cache:
   directories:

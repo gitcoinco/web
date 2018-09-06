@@ -844,7 +844,8 @@ var do_actions = function(result) {
       href: result['action_urls']['cancel'],
       text: gettext('Cancel Bounty'),
       parent: 'right_actions',
-      title: gettext('Cancel bounty and reclaim funds for this issue')
+      title: gettext('Cancel bounty and reclaim funds for this issue'),
+      buttonclass: 'button--warning'
     };
 
     actions.push(_entry);
