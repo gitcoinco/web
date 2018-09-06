@@ -66,8 +66,8 @@
       {% endif %}
       {% if unclaimed_kudos %}
         <div class="dropdown-divider"></div>
-        {% for tip in unclaimed_kudos %}
-          <a class="dropdown-item" href="{{ email.receive_url_for_recipient }}">
+        {% for email in unclaimed_kudos %}
+          <a class="dropdown-item" href="{{ email.receive_url }}">
             <i class="fas fa-gift"></i> 
             {% trans "Claim Kudos" %}
           </a>

@@ -97,7 +97,6 @@ class Email(SendCryptoAsset):
 
     @property
     def receive_url(self):
-
         if self.web3_type == 'yge':
             return self.url
         elif self.web3_type == 'v3':
