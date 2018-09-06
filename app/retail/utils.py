@@ -331,11 +331,13 @@ def build_stat_results_helper(keyword=None):
         base_alumni = base_alumni.filter(profile__in=profile_pks)
         base_leaderboard = base_leaderboard.filter(github_username__in=profile_usernames)
 
-    context['alumni_count'] = base_alumni.count().cache()
+    context['alumni_count'] = base_alumni.count()
     pp.profile_time('alumni')
-    context['count_open'] = base_bounties.filter(network='mainnet', idx_status__in=['open']).count().cache()
-    context['count_started'] = base_bounties.filter(network='mainnet', idx_status__in=['started', 'submitted']).count().cache()
-    context['count_done'] = base_bounties.filter(network='mainnet', idx_status__in=['done']).count().cache()
+    context['count_open'] = base_bounties.filter(network='mainnet', idx_status__in=['open']).count()
+    context['count_started'] = base_bounties.filter(
+        network='mainnet', idx_status__in=['started', 'submitted']
+    ).count()
+    context['count_done'] = base_bounties.filter(network='mainnet', idx_status__in=['done']).count()
     pp.profile_time('count_*')
 
     # Leaderboard
