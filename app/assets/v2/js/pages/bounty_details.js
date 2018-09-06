@@ -87,7 +87,6 @@ var rows = [
   'network',
   'experience_level',
   'bounty_reserved_for',
-  'bounty_reserved_for_creation_date',
   'bounty_type',
   'expires_date',
   'bounty_owner_name',
@@ -533,7 +532,31 @@ var attach_work_actions = function() {
   $('body').delegate('a[href="/interested"], a[href="/uninterested"], a[href="/extend-deadlines"]', 'click', function(e) {
     e.preventDefault();
     if ($(this).attr('href') == '/interested') {
-      show_interest_modal.call(this);
+      if(currentLoggedInUser.length > 0 && reservedForUsername.length > 0){
+        if(currentLoggedInUser === reservedForUsername){
+          show_interest_modal.call(this);
+        }
+        else{
+          var reservedForHoursLeft = 24 - Math.abs(new Date() - new Date(reservedForCreationDate)) / 36e5;
+          var errorMsg = '';
+
+          if(Math.round(reservedForHoursLeft) > 1){
+            errorMsg = 'This issue is currently reserved for ' + reservedForUsername + ', please try to [Start Work] again after the next ' + Math.round(reservedForHoursLeft) +' hours'
+          }
+          if(Math.round(reservedForHoursLeft) === 1){
+            errorMsg = 'This issue is currently reserved for ' + reservedForUsername + ', please try to [Start Work] again after the next 1 hour';
+          }
+          if(Math.round(reservedForHoursLeft) === 0){
+            var minutesLeft = reservedForHoursLeft * 60;
+            errorMsg = 'This issue is currently reserved for ' + reservedForUsername + ', please try to [Start Work] again in ' + Math.round(minutesLeft) + ' minutes';
+          }
+
+          _alert({ message: gettext(errorMsg) }, 'error');
+        }
+      }
+      else {
+        show_interest_modal.call(this);
+      }
     } else if ($(this).attr('href') === '/extend-deadlines') {
       show_extend_deadline_modal.call(this);
     } else if (confirm(gettext('Are you sure you want to stop work?'))) {
@@ -686,17 +709,34 @@ var show_extend_deadline_modal = function() {
   });
 };
 
+var reservedForUsername  = '';
+var reservedForCreationDate = '';
+var currentLoggedInUser = '';
 var set_reserved_for_link = function(result) {
-    if(!$.isEmptyObject(result.bounty_reserved_for)) {
-      var reservedForUsername = result.bounty_reserved_for.username;
+  if(!$.isEmptyObject(result.bounty_reserved_for)) {
+    currentLoggedInUser = $('#bounty_reserved_for_current_user').html().trim();
+    reservedForUsername = result.bounty_reserved_for.username.trim();
+    reservedForCreationDate = result.bounty_reserved_for.creation_date;
+    var reservedForHoursLeft = 24 - Math.abs(new Date() - new Date(reservedForCreationDate)) / 36e5;
+    
+    // check if 24 hours have passed before setting the issue as reserved
+    if(Math.round(reservedForHoursLeft) > 0){
       var profile_link = 'https://gitcoin.co/profile/'+reservedForUsername;
       var reservedForHtmlLink = '<a href="'+profile_link+'">'+reservedForUsername+'</a>';
+      // show a static image for now becase the search is not returning an image
       var reservedForAvatar = `<img class="rounded-circle" src="${static_url + 'v2/images/user-placeholder.png'}" width="25" height="25"/>`;
       $('#bounty_reserved_for').html(reservedForHtmlLink+reservedForAvatar); 
     }
     else {
       $('#bounty_reserved_for').css('display', 'none');
+      $('#bounty_reserved_for_label').css('display', 'none');
     }
+    
+  }
+  else {
+    $('#bounty_reserved_for').css('display', 'none');
+    $('#bounty_reserved_for_label').css('display', 'none');
+  }
 };
 
 var build_detail_page = function(result) {

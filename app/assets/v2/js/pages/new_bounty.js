@@ -110,12 +110,13 @@ $(document).ready(function() {
 
   // listen to reserved for changes
   $('#reservedFor').on('select2:select', function(e) {
+    
     var data = e.params.data;
     reservedFor = {
-      username:data.text,
+      username: data.text,
       creation_date: new Date(),
       email: data.email,
-      avatar_url:''
+      avatar_url: ''
     };
   });
 

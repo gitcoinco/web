@@ -991,7 +991,6 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
                 params['interested_profiles'] = bounty.interested.select_related('profile').all()
                 params['avatar_url'] = bounty.get_avatar_url(True)
                 
-
                 helper_handle_snooze(request, bounty)
                 helper_handle_approvals(request, bounty)
                 helper_handle_admin_override_and_hide(request, bounty)
