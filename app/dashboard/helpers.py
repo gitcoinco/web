@@ -441,11 +441,10 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             body3 = ' Please start working on it in the next 24 hours,'
             body4 = ' otherwise it will be opened up for other bounty hunters as well'
             body5 = '.<br><br>Regards</p>'
-            
-            send_mail('founders@gitcoin.co', 
-                      bounty_reserved_for['email'], 
-                      'Reserved Issue', 
-                      str(body1 + body2 + body3 + body4 + body5), 
+            send_mail('founders@gitcoin.co',
+                      bounty_reserved_for['email'],
+                      'Reserved Issue',
+                      str(body1 + body2 + body3 + body4 + body5),
                       html=True)
         try:
             new_bounty = Bounty.objects.create(**bounty_kwargs)
