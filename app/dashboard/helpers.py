@@ -437,10 +437,11 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
         bounty_reserved_for = metadata.get('reservedFor', '')
         if len(bounty_reserved_for.keys()) > 0:
             body1 = '<p>Hi ' + bounty_reserved_for['username'] + ',<br><br>'
-            body2 = 'An issue has been assigned to you on gitcoin. Please start working on it in the next 24 hours,'
-            body3 = ' otherwise it will be opened up for other bounty hunters as well.<br><br>Regards</p>'
-            send_mail('founders@gitcoin.co', bounty_reserved_for['email'], 'Reserved Issue', str(body1 + body2 + body3), html=True)
-                  
+            body2 = 'An issue has been assigned to you on gitcoin.'
+            body3 = ' Please start working on it in the next 24 hours,'
+            body4 = ' otherwise it will be opened up for other bounty hunters as well.<br><br>Regards</p>'
+            send_mail('founders@gitcoin.co', bounty_reserved_for['email'], 'Reserved Issue', str(body1 + body2 + body3 + body4), html=True)
+        
         try:
             new_bounty = Bounty.objects.create(**bounty_kwargs)
             new_bounty.fetch_issue_item()

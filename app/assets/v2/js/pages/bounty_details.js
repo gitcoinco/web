@@ -730,7 +730,7 @@ var set_reserved_for_link = function(result) {
     } else {
       $('#bounty_reserved_for').css('display', 'none');
       $('#bounty_reserved_for_label').css('display', 'none');
-    } 
+    }
   } else {
     $('#bounty_reserved_for').css('display', 'none');
     $('#bounty_reserved_for_label').css('display', 'none');
