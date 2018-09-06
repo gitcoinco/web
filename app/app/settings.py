@@ -192,6 +192,7 @@ LANGUAGES = [
     ('it', gettext_noop('Italian')),
     ('ko', gettext_noop('Korean')),
     ('pl', gettext_noop('Polish')),
+    ('ja', gettext_noop('Japanese')),
     ('zh-hans', gettext_noop('Simplified Chinese')),
     ('zh-hant', gettext_noop('Traditional Chinese')),
 ]
