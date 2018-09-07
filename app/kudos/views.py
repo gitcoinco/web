@@ -52,6 +52,7 @@ logger = logging.getLogger(__name__)
 
 confirm_time_minutes_target = 4
 
+
 def get_profile(handle):
     try:
         to_profile = Profile.objects.get(handle__iexact=handle)
@@ -83,7 +84,7 @@ def marketplace(request):
 
     results = Token.objects.annotate(
         search=SearchVector('name', 'description', 'tags')
-        ).filter(num_clones_allowed__gt=0, search=q)
+    ).filter(num_clones_allowed__gt=0, search=q)
     logger.info(results)
 
     if results:
@@ -125,7 +126,8 @@ def details(request):
     # Find other profiles that have the same kudos name
     kudos = Token.objects.get(pk=kudos_id)
     # Find other Kudos rows that are the same kudos.name, but of a different owner
-    related_kudos = Token.objects.exclude(owner_address='0xD386793F1DB5F21609571C0164841E5eA2D33aD8').filter(name=kudos.name)
+    related_kudos = Token.objects.exclude(
+        owner_address='0xD386793F1DB5F21609571C0164841E5eA2D33aD8').filter(name=kudos.name)
     logger.info(f'Kudos rows: {related_kudos}')
     # Find the Wallet rows that match the Kudos.owner_addresses
     related_wallets = Wallet.objects.filter(address__in=[rk.owner_address for rk in related_kudos]).distinct()[:20]
@@ -323,15 +325,15 @@ def send_4(request):
     is_direct_to_recipient = params.get('is_direct_to_recipient', False)
     if is_direct_to_recipient:
         kudos_email = KudosTransfer.objects.get(
-            metadata__direct_address=destinationAccount, 
+            metadata__direct_address=destinationAccount,
             metadata__creation_time=params['creation_time'],
             metadata__salt=params['salt'],
-            )
+        )
     else:
         kudos_email = KudosTransfer.objects.get(
             metadata__address=destinationAccount,
             metadata__salt=params['salt'],
-            )
+        )
 
     # Return Permission Denied if not authenticated
     is_authenticated_for_this_via_login = (kudos_email.from_username and kudos_email.from_username == from_username)
@@ -407,7 +409,8 @@ def receive(request, key, txid, network):
         metadata__reference_hash_for_funder=key)
     kudos_email = kudos_emails.first()
     is_authed = request.user.username == kudos_email.username or request.user.username == kudos_email.from_username
-    not_mined_yet = get_web3(kudos_email.network).eth.getBalance(Web3.toChecksumAddress(kudos_email.metadata['address'])) == 0
+    not_mined_yet = get_web3(kudos_email.network).eth.getBalance(
+        Web3.toChecksumAddress(kudos_email.metadata['address'])) == 0
 
     if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
         request.user, 'profile', None
