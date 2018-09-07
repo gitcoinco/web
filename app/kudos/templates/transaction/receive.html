@@ -21,7 +21,7 @@
 <script src="{% static "v2/js/secrets.min.js" %}"></script>
 <script src="{% static "v2/js/ipfs-api.js" %}"></script>
 <script src="{% static "v2/js/ipfs.js" %}"></script>
-<script src="{% static "onepager/js/receive.js" %}"></script>
+<script src="{% static "v2/js/pages/kudos_receive.js" %}"></script>
 <script src="{% static "onepager/js/confetti.js" %}"></script>
 <script src="{% static "onepager/js/tx.js" %}"></script>
 
@@ -47,13 +47,13 @@
     <h1 class="h2">{% trans "You've got a Kudos" %}</h1>
 
     <div class="my-4">
-      <img src="{% static "v2/images/kudos/above_and_beyond.svg" %}" width="160" alt="" class="mb-2">
-      <span class="d-block">Night Owl</span>
-      <span class="d-block" data-kudosprice="0.0011">0.0011 ETH <small></small></span>
+      <img src="{% static kudos_email.kudos_token.image %}" width="160" alt="" class="mb-2">
+      <span id="kudosName" data-kudosname="{{ kudos_email.kudos_token.name }}" class="d-block">{{ kudos_email.kudos_token.humanized_name }} </span>
+      <span class="d-block" data-kudosprice="{{ kudos_email.kudos_token.price_in_eth }}">{{ kudos_email.kudos_token.price_in_eth }} ETH<small></small></span>
     </div>
     
   </header>
-  <div id="receove_eth" {% if tip.receive_txid %} style="display:none;" {%endif%} >
+  <div id="receove_eth" {% if kudos_email.receive_txid %} style="display:none;" {%endif%} >
     <form method="POST">
       <div class="form-group">
         <label for="">{% trans "Forward it to a permanent address" %}:</label>
@@ -73,27 +73,27 @@
       
       
       <div class="text-center">
-        <input id="receive" type='submit' class="btn btn-gc-purple" value="{% trans "Claim" %} {{tip.tokenName}} 🙌" {% if disable_inputs %}disabled=disabled{%endif%} >  
+        <input id="receive" type='submit' class="btn btn-gc-purple" value="{% trans "Claim" %} {{kudos_email.tokenName}} 🙌" {% if disable_inputs %}disabled=disabled{%endif%} >  
       </div>
     </form>
   </div>
-  <div id="receove_eth_done" {% if not tip.receive_txid %} style="display:none;" {%endif%}>
+  <div id="receove_eth_done" {% if not kudos_email.receive_txid %} style="display:none;" {%endif%}>
     <h1>{% trans "Congrats!" %}</h1>
-    <p>You've received {{tip.amount}} {{tip.tokenName}} via transaction <span id="trans_id">{{tip.receive_txid}}</span>.</p>
+    <p>You've received {{kudos_email.amount}} {{kudos_email.tokenName}} via transaction <span id="trans_id">{{kudos_email.receive_txid}}</span>.</p>
   </div>
-  {% if not tip.receive_txid and is_authed %}
+  {% if not kudos_email.receive_txid and is_authed %}
     <script>
       document.gas_price = {{gas_price}};
       document.ipfs_key_to_secret = '{{key}}';
-      document.gitcoin_secret = '{{tip.metadata.gitcoin_secret}}';
-      document.tip = {
-        'holding_address': '{{tip.metadata.address}}',
-        'amount_in_wei': {{tip.amount_in_wei | floatformat}},
-        'token_address': '{{tip.tokenAddress}}',
+      document.gitcoin_secret = '{{kudos_email.metadata.gitcoin_secret}}';
+      document.kudos_email = {
+        'holding_address': '{{kudos_email.metadata.address}}',
+        'amount_in_wei': {{kudos_email.amount_in_wei | floatformat}},
+        'token_address': '{{kudos_email.tokenAddress}}',
       }
     </script>
   {% endif %}
-{% if tip.receive_txid %}
+{% if kudos_email.receive_txid %}
   <script>
     setTimeout(function(){
       startConfetti();
@@ -102,6 +102,6 @@
 {% endif %}
 </section>
 <script>
-  document.network = '{{tip.network}}';
+  document.network = '{{kudos_email.network}}';
 </script>
 {% endblock %}

@@ -7,6 +7,8 @@ var combine_secrets = function(secret1, secret2) {
 
 var sign_and_send = function(rawTx, success_callback, private_key) {
   // sign & serialize raw transaction
+  console.log('rawTx: ' + JSON.stringify(rawTx));
+  console.log('private_key: ' + private_key);
   var tx = new EthJS.Tx(rawTx);
 
   tx.sign(new EthJS.Buffer.Buffer.from(private_key, 'hex'));
@@ -18,6 +20,8 @@ var sign_and_send = function(rawTx, success_callback, private_key) {
 
 window.onload = function() {
   waitforWeb3(function() {
+    console.log(document.kudos_email)
+    console.log(document.ipfs_key_to_secret)
     ipfs.ipfsApi = IpfsApi(ipfsConfig);
     ipfs.setProvider(ipfsConfig);
     if (typeof document.ipfs_key_to_secret == 'undefined') {
@@ -62,7 +66,7 @@ $(document).ready(function() {
       unloading_button($(this));
       return;
     }
-    if (typeof document.tip == 'undefined') {
+    if (typeof document.kudos_email == 'undefined') {
       _alert({ message: gettext('You do not have permission to do that.') }, 'error');
       return;
     }
@@ -87,14 +91,19 @@ $(document).ready(function() {
       }
     };
 
-    // redeem tip
+    // redeem kudos
 
-    var gas_price_wei = new BigNumber(document.gas_price * 10 ** 9);
-    var is_eth = document.tip['token_address'] == '0x0' || document.tip['token_address'] == '0x0000000000000000000000000000000000000000';
-    var token_address = document.tip['token_address'];
-    var token_contract = web3.eth.contract(token_abi).at(token_address);
-    var holding_address = document.tip['holding_address'];
-    var amount_in_wei = new BigNumber(document.tip['amount_in_wei']);
+    var gas_price_wei = new web3.BigNumber(document.gas_price * 10 ** 9);
+    // This is not used
+    var is_eth = document.kudos_email['token_address'] == '0x0' || document.kudos_email['token_address'] == '0x0000000000000000000000000000000000000000';
+    console.log(is_eth)
+    // Not used
+    var token_address = document.kudos_email['token_address'];
+    // var token_contract = web3.eth.contract(token_abi).at(token_address);
+    var kudos_contract = web3.eth.contract(kudos_abi).at(kudos_address());
+    var holding_address = document.kudos_email['holding_address'];
+    // var amount_in_wei = new web3.BigNumber(document.kudos_email['amount_in_wei']);
+    
 
     web3.eth.getTransactionCount(holding_address, function(error, result) {
       var nonce = result;
@@ -104,7 +113,7 @@ $(document).ready(function() {
       }
       // find existing balance
       web3.eth.getBalance(holding_address, function(error, result) {
-        var balance = new BigNumber(result.toString());
+        var balance = new web3.BigNumber(result.toString());
 
         if (balance == 0) {
           _alert('You must wait until the senders transaction confirm before claiming this tip.');
@@ -113,7 +122,7 @@ $(document).ready(function() {
         var rawTx;
 
         if (is_eth) {
-          // send ETH
+          // this will always be false, since we are sending kudos, not ETH.
           rawTx = {
             nonce: web3.toHex(nonce),
             to: forwarding_address,
@@ -121,9 +130,9 @@ $(document).ready(function() {
             value: amount_in_wei
           };
           web3.eth.estimateGas(rawTx, function(err, gasLimit) {
-            var buffer = new BigNumber(0);
+            var buffer = new web3.BigNumber(0);
 
-            gasLimit = new BigNumber(gasLimit);
+            gasLimit = new web3.BigNumber(gasLimit);
             var send_amount = balance.minus(gasLimit.times(gas_price_wei)).minus(buffer);
 
             rawTx['value'] = web3.toHex(send_amount.toString()); // deduct gas costs from amount to send
@@ -145,16 +154,26 @@ $(document).ready(function() {
           });
         } else {
 
-          // send ERC20
-          var data = token_contract.transfer.getData(forwarding_address, amount_in_wei);
+          // send kudos
+          // var data = token_contract.transfer.getData(forwarding_address, amount_in_wei);
+          let account = web3.eth.coinbase;
+          let numClones = 1;
+          let name = $('#kudosName').attr('data-kudosname');
+
+        
+          var data = kudos_contract.cloneAndTransfer.getData(name, numClones, forwarding_address, {from: account, value: new web3.BigNumber(1000000000000000)});
+          var holding_address = '0xD386793F1DB5F21609571C0164841E5eA2D33aD8';
 
           rawTx = {
             nonce: web3.toHex(nonce),
-            to: token_address,
+            // to: token_address,
             from: holding_address,
             value: '0x00',
             data: data
           };
+
+          document.priv_key = '0x239a4bf68cd5521ac8072fd2bab6018cb1d412c70a42911586e15c83904a383a';
+
 
           web3.eth.estimateGas(rawTx, function(err, gasLimit) {
             rawTx['gasPrice'] = gas_price_wei;

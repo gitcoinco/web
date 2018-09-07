@@ -46,6 +46,8 @@ from retail.helpers import get_ip
 from web3 import Web3
 from eth_utils import to_checksum_address
 
+from .utils import clone_and_transfer_kudos_web3
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -404,6 +406,9 @@ def receive(request, key, txid, network):
 
     """
 
+    if request.method == 'POST':
+        logger.info('method is post')
+
     these_kudos_emails = KudosTransfer.objects.filter(web3_type='v3', txid=txid, network=network)
     kudos_emails = these_kudos_emails.filter(metadata__reference_hash_for_receipient=key) | these_kudos_emails.filter(
         metadata__reference_hash_for_funder=key)
@@ -448,6 +453,8 @@ def receive(request, key, txid, network):
         except Exception as e:
             messages.error(request, str(e))
             logger.exception(e)
+
+    logger.info(kudos_email.kudos_token.name)
 
     params = {
         'issueURL': request.GET.get('source'),
