@@ -19,6 +19,7 @@
         <div class="explorer font-body">
           <a href="{% url 'explorer' %}"><i class="fas fa-chevron-left"></i> {% trans "Back to Issue Explorer" %}</a>
         </div>
+        {% include 'shared/codefund_banner.html' %}
       </div>
 
       <div class="col-12 offset-md-1 col-md-10 offset-lg-1 col-lg-8 body">
@@ -42,6 +43,7 @@
           </div>
         </div>
 
+        <div class="col-12" id="moderator-admin-actions"></div>
         <div class="col-12" id="bounty_details">
           <div class="row font-body">
             <div class="d-none d-lg-block col-lg-1">
@@ -123,11 +125,6 @@
                         <span id="token_value_time_peg_wrapper">
                             as of<span id="token_value_time_peg"></span>
                         </span>
-                      </p>
-                    </div>
-                    <div class="tag token additional_funding_summary">
-                      <p>
-                        <span id="additional_funding_summary"></span>
                       </p>
                     </div>
                   </div>
@@ -269,7 +266,7 @@
               </div>
             [[/if]]
           </div>
-        [[else activity_type == 'start_work' || activity_type == 'worker_approved' ]]
+        [[else activity_type == 'start_work' || activity_type == 'worker_approved' || activity_type == 'bounty_abandonment_warning' ]]
           <div class="col-12 col-md-7 started-status-column">
             <div class="activity-status">
               [[:text]]

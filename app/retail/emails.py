@@ -318,6 +318,18 @@ def render_new_bounty_rejection(to_email, bounty):
     return response_html, response_txt
 
 
+def render_bounty_changed(to_email, bounty):
+    params = {
+        'bounty': bounty,
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+    }
+
+    response_html = premailer_transform(render_to_string("emails/bounty_changed.html", params))
+    response_txt = render_to_string("emails/bounty_changed.txt", params)
+
+    return response_html, response_txt
+
+
 def render_bounty_expire_warning(to_email, bounty):
     from django.db.models.functions import Lower
 
@@ -513,36 +525,38 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Building Ethereum Test Suites | ERC-948: On-Chain Subscriptions"
+    subject = "Embarking Into Web 3 | Gitcoin Requests"
 
     intro = '''
 
 <p>
-    Hi there,
+Hi there,
 </p>
 <p>
-Are you interested in helping to build test suites across the Ethereum ecosystem?
-We're working with the Ethereum Foundation to find the best and brightest developers to get involved directly on Ethereum's
-codebase and would love to hear from you. If you're interested, join #focus-dev-testing <a href="https://gitcoin.co/slack">on Gitcoin Slack</a>
-and/or respond to this e-mail with a bit more about yourself / your development background. Bonus points if you have an active Gitcoin profile!
+We're excited to unveil <a href="https://medium.com/gitcoin/embarking-into-web-3-f46408b23f59">a partnership with Status</a> for 60 bounties on their Embark framework - all in the month of September!
+If you're a developer interested in getting involved in Web 3, this is an opportunity to contribute towards a leading framework which aims to shape Web 3 into the future.
+More on Embark <a href="https://embark.status.im/">here</a>.
 </p>
-
 <p>
-In other news, the ERC-948 working group is chugging along. Kevin Seagraves <a href="https://medium.com/gitcoin/architectures-for-subscriptions-erc948-5fae89cabc7a">wrote a great post</a> detailing
-some of the potential standards and tradeoffs being discussed. Give it a read and also come hang <a href="https://gitcoin.co/slack">on Gitcoin Slack</a> if you'd like to get involved.</p>
+We funded $1,000 in Gitcoin Requests the first week! Do you have a Github issue you want solved? Make <a href="https://gitcoin.co/requests">a Gitcoin Request</a> and we'll review in 24 hours.
+If you're a developer and you see a 'Good First Issue' you'd work on for a bounty, <a href="https://gitcoin.co/requests">let us know</a>! Gitcoin Requests
+is a way for developers and maintainers to make their voice heard and let us know where they'd pay to have meaningful help on their projects. We're excited to see what you'd like to work.
 </p>
 
 <h3>What else is new?</h3>
     <ul>
         <li>
-<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET.
-This week features POA Network and Paul Brower. Join us!
+We're still working with the Ethereum Foundation to find the best and brightest developers to get involved directly on Ethereum's
+codebase and would love to hear from you. If you have experience building out test cases and are familiar with consensus systems,
+join #focus-dev-testing <a href="https://gitcoin.co/slack">on Gitcoin Slack</a>
         </li>
-
         <li>
-        Did you know <a href="https://codefund.io">CodeFund</a> is part of Gitcoin? <a href="https://codefund.io">CodeFund</a> is an open source advertising platform that is built to help developers generate revenue. We are currently looking for bloggers and websites that focus on blockchain development and have at least 1,000 visitors per month. If you or someone you know fits this, register to be a publisher at <a href="https://codefund.io/register/publisher">https://codefund.io/register/publisher</a>
+        Did you know <a href="https://codefund.io">CodeFund</a> is part of Gitcoin? <a href="https://codefund.io">CodeFund</a> is an open source advertising platform that is built to help developers generate revenue. We are currently looking for bloggers and websites that focus on blockchain development and have at least 1,000 visitors per month. If you or someone you know fits this, register to be a publisher at <a href="https://codefund.io/register/publisher">here!</a>
         </li>
-
+        <li>
+We published our recent Gitcoin Livestream with Austin Griffith's work on meta-transactions <a href="https://youtu.be/EkZHTzGJMcY">on Gitcoin's YouTube</a>.
+We'll be talking Embark and EIP-1337 on this week's <a href="https://gitcoin.co/livestream">this week's livestream</a> today at 5PM ET. We'd love to have you!
+        </li>
     </ul>
 </p>
 <p>
@@ -551,40 +565,40 @@ Back to BUIDLing,
 '''
     highlights = [
         {
-            'who': 'octavioamu',
+            'who': 'hardlydifficult',
             'who_link': True,
-            'what': 'Worked with MARKET Protocol on their calendar navigation.',
-            'link': 'https://gitcoin.co/issue/MARKETProtocol/dApp/295/965',
+            'what': 'Worked with Unlock Protocol on their smart contract.',
+            'link': 'https://gitcoin.co/issue/unlock-protocol/unlock/172/991',
             'link_copy': 'View more',
         },
         {
-            'who': 'srisankethu',
+            'who': 'KevinLiLu',
             'who_link': True,
-            'what': 'Completed his first bounty on the Ethereum Utils repo!',
-            'link': 'https://gitcoin.co/issue/ethereum/eth-utils/117/964',
+            'what': 'Worked with CyberCongress on their Ethereum uncle rewards!',
+            'link': 'https://gitcoin.co/issue/cybercongress/cyber-search/185/1043',
             'link_copy': 'View more',
         },
         {
-            'who': 'tcrowe',
+            'who': 'StevenJNPearce',
             'who_link': True,
-            'what': 'Was one worker picked out of 8, and did a great job on the Bounties website.',
-            'link': 'https://gitcoin.co/issue/Bounties-Network/bounties.network/7/927',
+            'what': 'Helped MARKET add a method to find a deployed contract address.',
+            'link': 'https://gitcoin.co/issue/MARKETProtocol/MARKET.js/145/989',
             'link_copy': 'View more',
         },
     ]
 
     bounties_spec = [
         {
-            'url': 'https://github.com/ethereum/py-evm/issues/1187',
-            'primer': 'Have Python chops? Work with Piper Merriam (EF) on PY-EVM',
+            'url': 'https://github.com/ethereum/ethereum-org/issues/898',
+            'primer': 'Have Design chops? The Ethereum Foundation is looking to design a grants website. Apply this weekend!',
         },
         {
-            'url': 'https://github.com/diadata-org/api-golang/issues/3',
-            'primer': 'Have a Go background? Work to build a Bitcoin Cash data scraper.',
+            'url': 'https://github.com/novnc/noVNC/issues/944',
+            'primer': 'Help specify this issue in better detail for 240 DAI.',
         },
         {
-            'url': 'https://github.com/omisego/plasma-mvp/issues/170',
-            'primer': 'Create an RLP encoding library for the Plasma Cash MVP!',
+            'url': 'https://github.com/zeppelinos/zos/issues/37',
+            'primer': 'Great bounty for the ecosystem from the Zeppelin team.',
         },
     ]
 
@@ -604,9 +618,9 @@ Back to BUIDLing,
             'items': [],
         },
     }
-    for key, val in leaderboard.items():
-        leaderboard[key]['items'] = LeaderboardRank.objects.filter(active=True, leaderboard=key).order_by('rank')[0:num_leadboard_items]
-
+    for key, __ in leaderboard.items():
+        leaderboard[key]['items'] = LeaderboardRank.objects.active() \
+            .filter(leaderboard=key).order_by('rank')[0:num_leadboard_items]
 
     bounties = []
     for nb in bounties_spec:
@@ -618,7 +632,7 @@ Back to BUIDLing,
                 bounties.append({
                     'obj': bounty,
                     'primer': nb['primer']
-                    })
+                })
         except Exception as e:
             print(e)
 
@@ -693,8 +707,8 @@ def resend_new_tip(request):
 @staff_member_required
 def new_bounty(request):
     from dashboard.models import Bounty
-    bounties = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3]
-    old_bounties = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3]
+    bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
+    old_bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
     response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties)
     return HttpResponse(response_html)
 
@@ -702,7 +716,7 @@ def new_bounty(request):
 @staff_member_required
 def new_work_submission(request):
     from dashboard.models import Bounty
-    bounty = Bounty.objects.filter(idx_status='submitted', current_bounty=True).last()
+    bounty = Bounty.objects.current().filter(idx_status='submitted').last()
     response_html, _ = render_new_work_submission(settings.CONTACT_EMAIL, bounty)
     return HttpResponse(response_html)
 
@@ -724,7 +738,7 @@ def new_bounty_acceptance(request):
 @staff_member_required
 def bounty_feedback(request):
     from dashboard.models import Bounty
-    response_html, _ = render_bounty_feedback(Bounty.objects.filter(idx_status='done', current_bounty=True).last(), 'foo')
+    response_html, _ = render_bounty_feedback(Bounty.objects.current().filter(idx_status='done').last(), 'foo')
     return HttpResponse(response_html)
 
 

@@ -182,7 +182,6 @@ def send_tip_4(request):
 
     is_user_authenticated = request.user.is_authenticated
     from_username = request.user.username if is_user_authenticated else ''
-    to_emails = []
 
     params = json.loads(request.body)
     txid = params['txid']
@@ -219,7 +218,7 @@ def send_tip_4(request):
     # notifications
     maybe_market_tip_to_github(tip)
     maybe_market_tip_to_slack(tip, 'New tip')
-    maybe_market_tip_to_email(tip, to_emails)
+    maybe_market_tip_to_email(tip, tip.emails)
     record_user_action(tip.from_username, 'send_tip', tip)
     record_tip_activity(tip, tip.from_username, 'new_tip' if tip.username else 'new_crowdfund')
 
@@ -290,6 +289,10 @@ def send_tip_3(request):
     to_emails = list(set(to_emails))
     expires_date = timezone.now() + timezone.timedelta(seconds=params['expires_date'])
 
+    # metadata
+    metadata = params['metadata']
+    metadata['user_agent'] = request.META.get('HTTP_USER_AGENT', '')
+
     # db mutations
     tip = Tip.objects.create(
         emails=to_emails,
@@ -308,7 +311,7 @@ def send_tip_3(request):
         tokenAddress=params['tokenAddress'],
         from_address=params['from_address'],
         is_for_bounty_fulfiller=params['is_for_bounty_fulfiller'],
-        metadata=params['metadata'],
+        metadata=metadata,
         recipient_profile=get_profile(to_username),
         sender_profile=get_profile(from_username),
     )
