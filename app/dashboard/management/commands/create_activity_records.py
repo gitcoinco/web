@@ -73,7 +73,7 @@ class Command(BaseCommand):
         force_refresh = options['force_refresh']
         if force_refresh:
             Activity.objects.all().delete()
-        bounties = Bounty.objects.filter(current_bounty=True)
+        bounties = Bounty.objects.current()
         for bounty in bounties:
             if force_refresh or not bounty.activities.count():
                 create_activities(bounty)

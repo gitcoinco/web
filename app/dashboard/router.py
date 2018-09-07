@@ -73,13 +73,13 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
     bounty_owner_name = serializers.SerializerMethodField('override_bounty_owner_name')
 
     def override_bounty_owner_email(self, obj):
-        can_make_visible_via_api = bool(int(obj.privacy_preferences.get('show_email_publicly', 1)))
-        default = "(hidden email)"
+        can_make_visible_via_api = bool(int(obj.privacy_preferences.get('show_email_publicly', 0)))
+        default = "Anonymous"
         return obj.bounty_owner_email if can_make_visible_via_api else default
 
     def override_bounty_owner_name(self, obj):
-        can_make_visible_via_api = bool(int(obj.privacy_preferences.get('show_name_publicly', 1)))
-        default = "(hidden name)"
+        can_make_visible_via_api = bool(int(obj.privacy_preferences.get('show_name_publicly', 0)))
+        default = "Anonymous"
         return obj.bounty_owner_name if can_make_visible_via_api else default
 
     class Meta:
@@ -97,7 +97,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'github_org_name', 'github_repo_name', 'idx_status', 'token_value_time_peg', 'fulfillment_accepted_on',
             'fulfillment_submitted_on', 'fulfillment_started_on', 'canceled_on', 'action_urls', 'project_type',
             'permission_type', 'attached_job_description', 'needs_review', 'github_issue_state', 'is_issue_closed',
-            'additional_funding_summary',
+            'additional_funding_summary', 'paid',
         )
 
     def create(self, validated_data):

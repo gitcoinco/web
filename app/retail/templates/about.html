@@ -20,7 +20,7 @@
   {% include 'shared/head.html' %}
   <head>
     <link rel="stylesheet" href="{% static "v2/css/landing_page.css" %}" />
-    <link rel="stylesheet" href="{% static "v2/css/about.css" %}"
+    <link rel="stylesheet" href="{% static "v2/css/about.css" %}" />
   </head>
   <body class="{{ active }}">
     {% include 'shared/tag_manager_2.html' %}
@@ -79,10 +79,10 @@
           <h6 style="text-align: center;" >{% trans "A decentralized App for value creation &amp; value capture." %}</h6>
         </div>
       </div>
-      <div class=" row ">
+      <div class="row">
         <div class="col pb-4">
-          <div class="align-items-center justify-content-center animatedParent" style="text-align: center;">
-            <img class="animated fadeIn" src="{% static "v2/images/about/flywheel.png" %}" style="max-width: 100%;">
+          <div class="align-items-center justify-content-center" style="text-align: center;">
+            <img src="{% static "v2/images/about/flywheel.png" %}" style="max-width: 100%;">
           </div>
         </div>
       </div>
@@ -97,15 +97,15 @@
           <p class="font-subheader caption">{% trans "Who, what, when, where, and most importantly, why." %}</p>
         </div>
       </div>
-      <div class="row col-12 offset-lg-1 col-lg-10 animatedParent">
-        <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
+      <div class="row col-12 offset-lg-1 col-lg-10">
+        <div class="col d-flex flex-column align-items-center">
           <img class="img-fluid" src="{% static "v2/images/why-different/boulder.png" %}" style="margin-top:50px;" />
           <h4 class="caption font-title">{% trans "Built with &lt;3 in Boulder Colorado USA" %}</h4>
           <p>
             {% blocktrans %}<strong>Gitcoin</strong> was borne of the community in Boulder Colorado's thriving tech scene. One of the most amazing things about the Boulder community is the #givefirst mantra. The founding team has built their careers off of advice, mentorship, and relationships in the local tech community.{% endblocktrans %}
           </p>
         </div>
-        <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
+        <div class="col d-flex flex-column align-items-center">
           <img class="img-fluid" src="{% static "v2/images/about/grow_open_source.png" %}" />
           <h4 class="caption font-title">{% trans "Mission: Grow Open Source" %}</h4>
           <p>
@@ -113,15 +113,15 @@
           </p>
         </div>
       </div>
-      <div class="row col-12 offset-lg-1 col-lg-10 animatedParent">
-        <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
+      <div class="row col-12 offset-lg-1 col-lg-10">
+        <div class="col d-flex flex-column align-items-center">
           <img class="img-fluid" src="{% static "v2/images/why-different/lock.png" %}" style="margin-top:100px;" />
           <h4 class="caption font-title">{% trans "Cryptocurrencies provide new, decentralized, opportunities" %}</h4>
           <p>
             {% blocktrans %}<strong>Gitcoin</strong> is built upon the Ethereum network, and the solidity smart contract programming language. Ethereum provides opportunities to align incentives across actors in the ecosystem. By programming rights of stakeholders directly into smart contracts, actors are incentivized to provide value, and edge cases are handled _without_ having to involve legacy legal enforcement mechanisms.{% endblocktrans %}
           </p>
         </div>
-        <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
+        <div class="col d-flex flex-column align-items-center">
           <img class="img-fluid" src="{% static "v2/images/about/grow_community.png" %}" />
           <h4 class="caption font-title">Goal: To grow the community</h4>
           <p>
@@ -141,7 +141,6 @@
       </div>
     </div>
     <div id="team" class="container-fluid section">
-      {% include 'shared/rain.html' with class="grey" %}
       <div class="row">
         <div class="col-12 mb-4">
           <h4 class="font-heading">{% trans "Team" %}</h4>
@@ -221,8 +220,8 @@
           <h4 class="">{% trans "Features of Gitcoin" %}</h4>
         </div>
       </div>
-      <div class="row pt-5 mb-3 animatedParent">
-        <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
+      <div class="row pt-5 mb-3">
+        <div class="col d-flex flex-column align-items-center">
           <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
             <img src="{% static "v2/images/getgitcoin/spaceship.png" %}" />
           </div>
@@ -231,7 +230,7 @@
             <div class="font-smaller-3">{% trans "Fund a feature, bug, or security issue that you care about, &amp; get results." %}</div>
           </div>
         </div>
-        <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
+        <div class="col d-flex flex-column align-items-center">
           <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
             <img src="{% static "v2/images/getgitcoin/tip-dev.png" %}" />
           </div>
@@ -241,8 +240,8 @@
           </div>
         </div>
       </div>
-      <div class="row pt-5 mb-3 animatedParent">
-          <div class="col d-flex flex-column align-items-center animated fadeInLeftShort">
+      <div class="row pt-5 mb-3">
+          <div class="col d-flex flex-column align-items-center">
             <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
               <img src="{% static "v2/images/getgitcoin/find-work.png" %}" />
             </div>
@@ -251,7 +250,7 @@
               <div class="font-smaller-3">{% trans "Find interesting projects to work on, interesting people to work with. Try projects before you fully commit to them. Add value wherever you go." %}</div>
             </div>
           </div>
-          <div class="col d-flex flex-column align-items-center animated fadeInRightShort">
+          <div class="col d-flex flex-column align-items-center">
             <div class="explain-img-wrapper mb-3 d-flex justify-content-center align-items-center">
               <img src="{% static "v2/images/getgitcoin/github.png" %}" />
             </div>
@@ -261,8 +260,8 @@
             </div>
           </div>
       </div>
-      <div class="row mt-5 pb-3 animatedParent">
-        <div class="col animated pulse fast">
+      <div class="row mt-5 pb-3">
+        <div class="col">
           <a class="button button--primary" role="button" href="{% url "tools" %}">
             <i class="fas fa-wrench mr-2"></i>
             {% trans "Checkout our Toolbox" %}

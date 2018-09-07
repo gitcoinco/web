@@ -24,6 +24,7 @@ from urllib.parse import urlparse as parse
 
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.templatetags.static import static
 
 import requests
 import twitter
@@ -214,7 +215,7 @@ def build_message_for_integration(bounty, event_name):
 
     title = bounty.title if bounty.title else bounty.github_url
     msg = f"*{humanize_event_name(event_name)}*" \
-          f"\n*Title*: {title}" \
+          f"\n*Issue*: {title}" \
           f"\n*Bounty value*: {round(bounty.get_natural_value(), 4)} {bounty.token_name} {usdt_details}" \
           f"\n{bounty.get_absolute_url()}"
     return msg
@@ -295,7 +296,7 @@ def maybe_market_to_user_discord(bounty, event_name):
         for subscriber in subscribers:
             try:
                 headers = {'Content-Type': 'application/json'}
-                body = {"content": msg, "avatar_url": "https://gitcoin.co/static/v2/images/helmet.png"}
+                body = {"content": msg, "avatar_url": static('v2/images/helmet.png')}
                 discord_response = requests.post(
                     subscriber.discord_webhook_url, headers=headers, json=body
                 )
@@ -475,10 +476,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
             if not interest.pending and approval_required:
                 action = 'been approved to start work'
 
-            show_dibs = interested.count() > 1 and bounty.project_type == 'traditional'
-            dibs = f" ({get_ordinal_repr(i)} dibs)" if show_dibs else ""
-
-            msg += f"\n{i}. {profile_link} has {action}{dibs}. "
+            msg += f"\n{i}. {profile_link} has {action}."
 
             issue_message = interest.issue_message.strip()
             if issue_message:
@@ -608,7 +606,7 @@ def open_bounties():
 
     """
     from dashboard.models import Bounty
-    return Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
+    return Bounty.objects.current().filter(network='mainnet', idx_status__in=['open', 'submitted']).cache()
 
 
 def maybe_market_tip_to_github(tip):
@@ -669,7 +667,7 @@ def maybe_market_tip_to_github(tip):
 
 
 def maybe_market_to_email(b, event_name):
-    from marketing.mails import new_work_submission, new_bounty_rejection, new_bounty_acceptance
+    from marketing.mails import new_work_submission, new_bounty_rejection, new_bounty_acceptance, bounty_changed
     to_emails = []
     if b.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         return False
@@ -697,6 +695,17 @@ def maybe_market_to_email(b, event_name):
             rejected_fulfillment = b.fulfillments.filter(accepted=False).latest('modified_on')
             to_emails = [b.bounty_owner_email, rejected_fulfillment.fulfiller_email]
             new_bounty_rejection(b, to_emails)
+        except Exception as e:
+            logging.exception(e)
+    elif event_name == 'bounty_changed':
+        try:
+            to_emails = [b.bounty_owner_email]
+            for profile in b.interested.select_related('profile').all():
+                email = profile.profile.email
+                if email:
+                    to_emails.append(email)
+
+            bounty_changed(b, to_emails)
         except Exception as e:
             logging.exception(e)
 

@@ -43,120 +43,112 @@ def default_ranks():
         dict: A nested dictionary mapping of all default ranks with empty dicts.
 
     """
-    return {
-        'weekly_fulfilled': {},
-        'weekly_all': {},
-        'weekly_payers': {},
-        'weekly_earners': {},
-        'weekly_orgs': {},
-        'monthly_fulfilled': {},
-        'monthly_all': {},
-        'monthly_payers': {},
-        'monthly_earners': {},
-        'monthly_orgs': {},
-        'quarterly_fulfilled': {},
-        'quarterly_all': {},
-        'quarterly_payers': {},
-        'quarterly_earners': {},
-        'quarterly_orgs': {},
-        'yearly_fulfilled': {},
-        'yearly_all': {},
-        'yearly_payers': {},
-        'yearly_earners': {},
-        'yearly_orgs': {},
-        'all_fulfilled': {},
-        'all_all': {},
-        'all_payers': {},
-        'all_earners': {},
-        'all_orgs': {},
-    }
+    times = ['all', 'weekly', 'quarterly', 'yearly', 'monthly']
+    breakdowns = ['fulfilled', 'all', 'payers', 'earners', 'orgs', 'keywords', 'tokens']
+    return_dict = {}
+    for time in times:
+        for bd in breakdowns:
+            key = f'{time}_{bd}'
+            return_dict[key] = {}
 
+    return return_dict
 
 ranks = default_ranks()
 counts = default_ranks()
 
 
-def add_element(key, username, amount):
-    username = username.replace('@', '')
-    if not username or username == "None":
+def add_element(key, index_term, amount):
+    index_term = index_term.replace('@', '')
+    if not index_term or index_term == "None":
         return
-    if username not in ranks[key].keys():
-        ranks[key][username] = 0
-    if username not in counts[key].keys():
-        counts[key][username] = 0
-    ranks[key][username] += round(float(amount), 2)
-    counts[key][username] += 1
+    if index_term not in ranks[key].keys():
+        ranks[key][index_term] = 0
+    if index_term not in counts[key].keys():
+        counts[key][index_term] = 0
+    ranks[key][index_term] += round(float(amount), 2)
+    counts[key][index_term] += 1
 
 
-def sum_bounty_helper(b, breakdown, username, val_usd):
-    fulfiller_usernames = list(b.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True))
-    add_element(f'{breakdown}_fulfilled', username, val_usd)
-    if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
-        add_element(f'{breakdown}_payers', username, val_usd)
-    if username == b.org_name and username not in IGNORE_PAYERS:
-        add_element(f'{breakdown}_orgs', username, val_usd)
-    if username in fulfiller_usernames and username not in IGNORE_EARNERS:
-        add_element(f'{breakdown}_earners', username, val_usd)
+def sum_bounty_helper(b, breakdown, index_term, val_usd):
+    fulfiller_index_terms = list(b.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True))
+    add_element(f'{breakdown}_fulfilled', index_term, val_usd)
+    if index_term == b.bounty_owner_github_username and index_term not in IGNORE_PAYERS:
+        add_element(f'{breakdown}_payers', index_term, val_usd)
+    if index_term == b.org_name and index_term not in IGNORE_PAYERS:
+        add_element(f'{breakdown}_orgs', index_term, val_usd)
+    if index_term in fulfiller_index_terms and index_term not in IGNORE_EARNERS:
+        add_element(f'{breakdown}_earners', index_term, val_usd)
+    if b.token_name == index_term:
+        add_element(f'{breakdown}_tokens', index_term, val_usd)
+    if index_term in b.keywords_list:
+        index_term = index_term.lower()
+        is_github_org_name = Bounty.objects.filter(github_url__icontains=f'https://github.com/{index_term}').exists()
+        is_github_repo_name = Bounty.objects.filter(github_url__icontains=f'/{index_term}/').exists()
+        index_keyword = not is_github_repo_name and not is_github_org_name
+        if index_keyword:
+            add_element(f'{breakdown}_keywords', index_term, val_usd)
 
 
-def sum_bounties(b, usernames):
+def sum_bounties(b, index_terms):
     val_usd = b._val_usd_db
-    for username in usernames:
+    for index_term in index_terms:
         if b.idx_status == 'done':
             breakdown = 'all'
-            sum_bounty_helper(b, breakdown, username, val_usd)
+            sum_bounty_helper(b, breakdown, index_term, val_usd)
             ###############################
             if b.created_on > weekly_cutoff:
                 breakdown = 'weekly'
-                sum_bounty_helper(b, breakdown, username, val_usd)
+                sum_bounty_helper(b, breakdown, index_term, val_usd)
             if b.created_on > monthly_cutoff:
                 breakdown = 'monthly'
-                sum_bounty_helper(b, breakdown, username, val_usd)
+                sum_bounty_helper(b, breakdown, index_term, val_usd)
             if b.created_on > quarterly_cutoff:
                 breakdown = 'quarterly'
-                sum_bounty_helper(b, breakdown, username, val_usd)
+                sum_bounty_helper(b, breakdown, index_term, val_usd)
             if b.created_on > yearly_cutoff:
                 breakdown = 'yearly'
-                sum_bounty_helper(b, breakdown, username, val_usd)
+                sum_bounty_helper(b, breakdown, index_term, val_usd)
 
-        add_element('all_all', username, b._val_usd_db)
+        add_element('all_all', index_term, b._val_usd_db)
         if b.created_on > weekly_cutoff:
-            add_element('weekly_all', username, b._val_usd_db)
+            add_element('weekly_all', index_term, b._val_usd_db)
         if b.created_on > monthly_cutoff:
-            add_element('monthly_all', username, b._val_usd_db)
+            add_element('monthly_all', index_term, b._val_usd_db)
         if b.created_on > yearly_cutoff:
-            add_element('yearly_all', username, b._val_usd_db)
+            add_element('yearly_all', index_term, b._val_usd_db)
 
 
-def sum_tip_helper(t, breakdown, username, val_usd):
-    add_element(f'{breakdown}_all', username, val_usd)
-    add_element(f'{breakdown}_fulfilled', username, val_usd)
-    if t.username == username or breakdown == 'all':
-        add_element(f'{breakdown}_earners', username, val_usd)
-    if t.from_username == username:
-        add_element(f'{breakdown}_payers', username, val_usd)
-    if t.org_name == username:
-        add_element(f'{breakdown}_orgs', username, val_usd)
+def sum_tip_helper(t, breakdown, index_term, val_usd):
+    add_element(f'{breakdown}_all', index_term, val_usd)
+    add_element(f'{breakdown}_fulfilled', index_term, val_usd)
+    if t.username == index_term or breakdown == 'all':
+        add_element(f'{breakdown}_earners', index_term, val_usd)
+    if t.from_username == index_term:
+        add_element(f'{breakdown}_payers', index_term, val_usd)
+    if t.org_name == index_term:
+        add_element(f'{breakdown}_orgs', index_term, val_usd)
+    if t.tokenName == index_term:
+        add_element(f'{breakdown}_tokens', index_term, val_usd)
 
 
-def sum_tips(t, usernames):
+def sum_tips(t, index_terms):
     val_usd = t.value_in_usdt_now
-    for username in usernames:
+    for index_term in index_terms:
         breakdown = 'all'
-        sum_tip_helper(t, breakdown, username, val_usd)
+        sum_tip_helper(t, breakdown, index_term, val_usd)
         #####################################
         if t.created_on > weekly_cutoff:
             breakdown = 'weekly'
-            sum_tip_helper(t, breakdown, username, val_usd)
+            sum_tip_helper(t, breakdown, index_term, val_usd)
         if t.created_on > monthly_cutoff:
             breakdown = 'monthly'
-            sum_tip_helper(t, breakdown, username, val_usd)
+            sum_tip_helper(t, breakdown, index_term, val_usd)
         if t.created_on > quarterly_cutoff:
             breakdown = 'quarterly'
-            sum_tip_helper(t, breakdown, username, val_usd)
+            sum_tip_helper(t, breakdown, index_term, val_usd)
         if t.created_on > yearly_cutoff:
             breakdown = 'yearly'
-            sum_tip_helper(t, breakdown, username, val_usd)
+            sum_tip_helper(t, breakdown, index_term, val_usd)
 
 
 def should_suppress_leaderboard(handle):
@@ -183,50 +175,67 @@ class Command(BaseCommand):
             if not b._val_usd_db:
                 continue
 
-            usernames = []
+            index_terms = []
             if not should_suppress_leaderboard(b.bounty_owner_github_username):
-                usernames.append(b.bounty_owner_github_username)
+                index_terms.append(b.bounty_owner_github_username)
                 if b.org_name:
-                    usernames.append(b.org_name)
+                    index_terms.append(b.org_name)
             for fulfiller in b.fulfillments.filter(accepted=True):
                 if not should_suppress_leaderboard(fulfiller.fulfiller_github_username):
-                    usernames.append(fulfiller.fulfiller_github_username)
+                    index_terms.append(fulfiller.fulfiller_github_username)
+            for keyword in b.keywords_list:
+                keyword = keyword.lower()
+                index_terms.append(keyword)
 
-            sum_bounties(b, usernames)
+            index_terms.append(b.token_name)
+
+            sum_bounties(b, index_terms)
 
         # tips
-        tips = Tip.objects.exclude(txid='')
+        tips = Tip.objects.exclude(txid='').filter(network='mainnet')
 
         for t in tips:
             if not t.value_in_usdt_now:
                 continue
-            usernames = []
+            index_terms = []
             if not should_suppress_leaderboard(t.username):
-                usernames.append(t.username)
+                index_terms.append(t.username)
             if not should_suppress_leaderboard(t.from_username):
-                usernames.append(t.from_username)
+                index_terms.append(t.from_username)
             if not should_suppress_leaderboard(t.org_name):
-                usernames.append(t.org_name)
+                index_terms.append(t.org_name)
+            if not should_suppress_leaderboard(t.tokenName):
+                index_terms.append(t.tokenName)
 
-            sum_tips(t, usernames)
+            sum_tips(t, index_terms)
 
         # set old LR as inactive
-        for lr in LeaderboardRank.objects.filter(active=True):
-            lr.active = False
-            lr.save()
+        lrs = LeaderboardRank.objects.active()
+        lrs.update(active=False)
 
         # save new LR in DB
         for key, rankings in ranks.items():
             rank = 1
-            for username, amount in sorted(rankings.items(), key=lambda x: x[1], reverse=True):
-                count = counts[key][username]
-                LeaderboardRank.objects.create(
-                    github_username=username,
-                    leaderboard=key,
-                    amount=amount,
-                    count=count,
-                    active=True,
-                    rank=rank,
-                )
+            for index_term, amount in sorted(rankings.items(), key=lambda x: x[1], reverse=True):
+                count = counts[key][index_term]
+                lbr_kwargs = {
+                    'count': count,
+                    'active': True,
+                    'amount': amount,
+                    'rank': rank,
+                    'leaderboard': key,
+                    'github_username': index_term,
+                }
+
+                try:
+                    lbr_kwargs['profile'] = Profile.objects.get(handle__iexact=index_term)
+                except Profile.MultipleObjectsReturned:
+                    lbr_kwargs['profile'] = Profile.objects.filter(handle__iexact=index_term).latest('id')
+                    print(f'Multiple profiles found for username: {index_term}')
+                except Profile.DoesNotExist:
+                    print(f'No profiles found for username: {index_term}')
+
+                # TODO: Bucket LeaderboardRank objects and .bulk_create
+                LeaderboardRank.objects.create(**lbr_kwargs)
                 rank += 1
-                print(key, username, amount, count, rank)
+                print(key, index_term, amount, count, rank)

@@ -32,6 +32,7 @@ from django.db import models
 from django.db.models import Q, Sum
 from django.db.models.signals import m2m_changed, post_delete, post_save, pre_save
 from django.dispatch import receiver
+from django.forms.models import model_to_dict
 from django.templatetags.static import static
 from django.urls import reverse
 from django.urls.exceptions import NoReverseMatch
@@ -66,7 +67,7 @@ class BountyQuerySet(models.QuerySet):
 
     def stats_eligible(self):
         """Exclude results that we don't want to track in statistics."""
-        return self.exclude(current_bounty=True, idx_status__in=['unknown', 'cancelled'])
+        return self.current().exclude(idx_status__in=['unknown', 'cancelled'])
 
     def exclude_by_status(self, excluded_statuses=None):
         """Exclude results with a status matching the provided list."""
@@ -483,7 +484,7 @@ class Bounty(SuperModel):
         org_name = self.github_org_name
         gitcoin_logo_flag = "/1" if gitcoin_logo_flag else ""
         if org_name:
-            return f"{settings.BASE_URL}static/avatar/{org_name}{gitcoin_logo_flag}"
+            return f"{settings.BASE_URL}dynamic/avatar/{org_name}{gitcoin_logo_flag}"
         return f"{settings.BASE_URL}funding/avatar?repo={self.github_url}&v=3"
 
     @property
@@ -810,7 +811,8 @@ class Bounty(SuperModel):
         """
         params = f'pk={self.pk}&network={self.network}'
         urls = {}
-        for item in ['fulfill', 'increase', 'accept', 'cancel', 'payout', 'contribute', 'advanced_payout', 'social_contribution']:
+        for item in ['fulfill', 'increase', 'accept', 'cancel', 'payout', 'contribute',
+                     'advanced_payout', 'social_contribution', 'invoice', ]:
             urls.update({item: f'/issue/{item}?{params}'})
         return urls
 
@@ -891,6 +893,21 @@ class Bounty(SuperModel):
         queryset = self.tips.filter(is_for_bounty_fulfiller=False, metadata__is_clone__isnull=True, metadata__direct_address__isnull=True)
         return (queryset.filter(from_address=self.bounty_owner_address) |
                 queryset.filter(from_name=self.bounty_owner_github_username))
+
+    @property
+    def paid(self):
+        """Return list of users paid for this bounty."""
+        if self.status != 'done':
+            return []  # to save the db hits
+
+        return_list = []
+        for fulfillment in self.fulfillments.filter(accepted=True):
+            if fulfillment.fulfiller_github_username:
+                return_list.append(fulfillment.fulfiller_github_username)
+        for tip in self.tips.exclude(txid=''):
+            if tip.username:
+                return_list.append(tip.username)
+        return list(set(return_list))
 
     @property
     def additional_funding_summary(self):
@@ -1006,7 +1023,7 @@ class TipPayoutException(Exception):
 class Tip(SuperModel):
 
     web3_type = models.CharField(max_length=50, default='v3')
-    emails = JSONField()
+    emails = JSONField(blank=True)
     url = models.CharField(max_length=255, default='', blank=True)
     tokenName = models.CharField(max_length=255)
     tokenAddress = models.CharField(max_length=255)
@@ -1019,7 +1036,7 @@ class Tip(SuperModel):
     from_name = models.CharField(max_length=255, default='', blank=True)
     from_email = models.CharField(max_length=255, default='', blank=True)
     from_username = models.CharField(max_length=255, default='', blank=True)
-    username = models.CharField(max_length=255, default='')  # to username
+    username = models.CharField(max_length=255, default='', blank=True)  # to username
     network = models.CharField(max_length=255, default='')
     txid = models.CharField(max_length=255, default='')
     receive_txid = models.CharField(max_length=255, default='', blank=True)
@@ -1085,10 +1102,7 @@ class Tip(SuperModel):
         elif self.web3_type != 'v2':
             raise Exception
 
-        pk = self.metadata.get('priv_key')
-        txid = self.txid
-        network = self.network
-        return f"{settings.BASE_URL}tip/receive/v2/{pk}/{txid}/{network}"
+        return self.receive_url_for_recipient
 
     @property
     def receive_url_for_recipient(self):
@@ -1187,52 +1201,6 @@ class Tip(SuperModel):
         except Bounty.DoesNotExist:
             return None
 
-    def payout_to(self, address, amount_override=None):
-        # TODO: deprecate this after v3 is shipped.
-        from dashboard.utils import get_web3
-        from dashboard.abi import erc20_abi
-        if not address or address == '0x0':
-            raise TipPayoutException('bad forwarding address')
-        if self.web3_type == 'yge':
-            raise TipPayoutException('bad web3_type')
-        if self.receive_txid:
-            raise TipPayoutException('already received')
-
-        # send tokens
-        tip = self
-        address = Web3.toChecksumAddress(address)
-        w3 = get_web3(tip.network)
-        is_erc20 = tip.tokenName.lower() != 'eth'
-        amount = int(tip.amount_in_wei) if not amount_override else int(amount_override)
-        gasPrice = recommend_min_gas_price_to_confirm_in_time(60) * 10**9
-        from_address = Web3.toChecksumAddress(tip.metadata['address'])
-        nonce = w3.eth.getTransactionCount(from_address)
-        if is_erc20:
-            # ERC20 contract receive
-            balance = w3.eth.getBalance(from_address)
-            contract = w3.eth.contract(Web3.toChecksumAddress(tip.tokenAddress), abi=erc20_abi)
-            gas = contract.functions.transfer(address, amount).estimateGas({'from': from_address}) + 1
-            gasPrice = gasPrice if ((gas * gasPrice) < balance) else (balance * 1.0 / gas)
-            tx = contract.functions.transfer(address, amount).buildTransaction({
-                'nonce': nonce,
-                'gas': w3.toHex(gas),
-                'gasPrice': w3.toHex(int(gasPrice)),
-            })
-        else:
-            # ERC20 contract receive
-            gas = 100000
-            amount -= gas * int(gasPrice)
-            tx = dict(
-                nonce=nonce,
-                gasPrice=w3.toHex(int(gasPrice)),
-                gas=w3.toHex(gas),
-                to=address,
-                value=w3.toHex(amount),
-                data=b'',
-            )
-        signed = w3.eth.account.signTransaction(tx, tip.metadata['priv_key'])
-        receive_txid = w3.eth.sendRawTransaction(signed.rawTransaction).hex()
-        return receive_txid
 
 @receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
 def psave_tip(sender, instance, **kwargs):
@@ -1472,6 +1440,27 @@ class Activity(models.Model):
         if 'token_name' in self.metadata.keys():
             return self.metadata['token_name']
         return None
+
+    def to_dict(self, fields=None, exclude=None):
+        """Define the standard to dict representation of the object.
+
+        Args:
+            fields (list): The list of fields to include. If not provided,
+                include all fields. If not provided, all fields are included.
+                Defaults to: None.
+            exclude (list): The list of fields to exclude. If not provided,
+                no fields are excluded. Default to: None.
+
+        Returns:
+            dict: The dictionary representation of the object.
+
+        """
+        kwargs = {}
+        if fields:
+            kwargs['fields'] = fields
+        if exclude:
+            kwargs['exclude'] = exclude
+        return model_to_dict(self, **kwargs)
 
 
 class Profile(SuperModel):
@@ -1799,9 +1788,8 @@ class Profile(SuperModel):
                 potential_bounties = Bounty.objects.all()
                 relevant_bounties = Bounty.objects.none()
                 for keyword in user_coding_languages:
-                    relevant_bounties = relevant_bounties.union(potential_bounties.filter(
+                    relevant_bounties = relevant_bounties.union(potential_bounties.current().filter(
                             network=Profile.get_network(),
-                            current_bounty=True,
                             metadata__icontains=keyword,
                             idx_status__in=['open'],
                             ).order_by('?')
@@ -1854,11 +1842,13 @@ class Profile(SuperModel):
 
     @property
     def avatar_url(self):
-        return f"{settings.BASE_URL}static/avatar/{self.handle}"
+        if self.avatar:
+            return self.avatar.avatar_url
+        return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
 
     @property
     def avatar_url_with_gitcoin_logo(self):
-        return f"{self.avatar_url}/1"
+        return f"{settings.BASE_URL}dynamic/avatar/{self.handle}/1"
 
     @property
     def absolute_url(self):
@@ -2006,22 +1996,18 @@ class Profile(SuperModel):
     def get_fulfilled_bounties(self, network=None):
         network = network or self.get_network()
         fulfilled_bounty_ids = self.fulfilled.all().values_list('bounty_id', flat=True)
-        bounties = Bounty.objects.filter(pk__in=fulfilled_bounty_ids, accepted=True, current_bounty=True, network=network)
+        bounties = Bounty.objects.current().filter(pk__in=fulfilled_bounty_ids, accepted=True, network=network)
         return bounties
 
     def get_orgs_bounties(self, network=None):
         network = network or self.get_network()
         url = f"https://github.com/{self.handle}"
-        bounties = Bounty.objects.filter(current_bounty=True, network=network, github_url__contains=url)
+        bounties = Bounty.objects.current().filter(network=network, github_url__contains=url)
         return bounties
 
     def get_leaderboard_index(self, key='quarterly_earners'):
         try:
-            rank = LeaderboardRank.objects.filter(
-                leaderboard=key,
-                active=True,
-                github_username=self.handle,
-            ).latest('id')
+            rank = self.leaderboard_ranks.active().filter(leaderboard=key).latest('id')
             return rank.rank
         except LeaderboardRank.DoesNotExist:
             score = 0
@@ -2180,7 +2166,7 @@ class Profile(SuperModel):
             'avatar_url': self.avatar_url_with_gitcoin_logo,
             'profile': self,
             'bounties': self.bounties,
-            'count_bounties_completed': self.fulfilled.filter(accepted=True, bounty__network=network).count(),
+            'count_bounties_completed': self.fulfilled.filter(accepted=True, bounty__current_bounty=True, bounty__network=network).distinct('bounty__pk').count(),
             'sum_eth_collected': sum_eth_collected,
             'sum_eth_funded': sum_eth_funded,
             'works_with_collected': works_with_collected,
@@ -2212,7 +2198,7 @@ class Profile(SuperModel):
                 }]
 
         if tips:
-            params['tips'] = self.tips.filter(**query_kwargs)
+            params['tips'] = self.tips.filter(**query_kwargs).exclude(txid='')
 
         if leaderboards:
             params['scoreboard_position_contributor'] = self.get_contributor_leaderboard_index()

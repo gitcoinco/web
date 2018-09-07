@@ -164,14 +164,30 @@ class Stat(SuperModel):
             return 0
 
 
+class LeaderboardRankQuerySet(models.QuerySet):
+    """Handle the manager queryset for Leaderboard Ranks."""
+
+    def active(self):
+        """Filter results to only active LeaderboardRank objects."""
+        return self.select_related('profile', 'profile__avatar').filter(active=True)
+
+
 class LeaderboardRank(SuperModel):
 
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='leaderboard_ranks',
+    )
     github_username = models.CharField(max_length=255)
     leaderboard = models.CharField(max_length=255)
     amount = models.FloatField()
     active = models.BooleanField()
     count = models.IntegerField(default=0)
     rank = models.IntegerField(default=0)
+
+    objects = LeaderboardRankQuerySet.as_manager()
 
     def __str__(self):
         return f"{self.leaderboard}, {self.github_username}: {self.amount}"
@@ -181,8 +197,27 @@ class LeaderboardRank(SuperModel):
         return f"https://github.com/{self.github_username}"
 
     @property
+    def is_user_based(self):
+        return '_tokens' not in self.leaderboard and '_keywords' not in self.leaderboard
+
+    @property
+    def at_ify_username(self):
+        if self.is_user_based:
+            return f"@{self.github_username}"
+        return self.github_username
+
+
+    @property
     def avatar_url(self):
-        return f"/static/avatar/{self.github_username}"
+        if self.profile and self.profile.avatar:
+            return self.profile.avatar.get_avatar_url()
+        key = self.github_username
+
+        # these two types won't have images
+        if not self.is_user_based:
+            key = 'None'
+
+        return f"/dynamic/avatar/{key}"
 
 
 class Match(SuperModel):

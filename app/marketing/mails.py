@@ -27,7 +27,7 @@ import sendgrid
 from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
 from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
-    render_admin_contact_funder, render_bounty_expire_warning, render_bounty_feedback,
+    render_admin_contact_funder, render_bounty_changed, render_bounty_expire_warning, render_bounty_feedback,
     render_bounty_startwork_expire_warning, render_bounty_unintersted, render_faucet_rejected, render_faucet_request,
     render_funder_stale, render_gdpr_reconsent, render_gdpr_update, render_match_email, render_new_bounty,
     render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission,
@@ -111,9 +111,9 @@ def funder_stale(to_email, github_username, days=30, time_as_str='about a month'
     try:
         setup_lang(to_email)
 
-        subject = "hey from gitcoin.co"
+        subject = "hey from gitcoin.co" if not github_username else f"hey @{github_username}"
         html, text = render_funder_stale(github_username, days, time_as_str)
-        cc_emails = [from_email, 'vivek.singh@consensys.net', 'scott.moore@consensys.net']
+        cc_emails = [from_email, 'vivek.singh@consensys.net', 'scott.moore@consensys.net', 'alisa.march@consensys.net']
         if not should_suppress_notification_email(to_email, 'admin_contact_funder'):
             send_mail(from_email, to_email, subject, text, cc_emails=cc_emails, from_name=from_email)
     finally:
@@ -180,7 +180,7 @@ def new_faucet_request(fr):
 
 
 def new_token_request(obj):
-    to_email = settings.PERSONAL_CONTACT_EMAIL
+    to_email = 'founders@gitcoin.co'
     from_email = obj.email
     cur_language = translation.get_language()
     try:
@@ -398,6 +398,28 @@ def new_bounty_acceptance(bounty, to_emails=None):
             translation.activate(cur_language)
 
 
+def bounty_changed(bounty, to_emails=None):
+    if not bounty or not bounty.value_in_usdt_now:
+        return
+
+    subject = gettext("Bounty Details Changed for {}").format(bounty.title_or_desc)
+
+    if to_emails is None:
+        to_emails = []
+
+    for to_email in to_emails:
+        cur_language = translation.get_language()
+        try:
+            setup_lang(to_email)
+            from_email = settings.CONTACT_EMAIL
+            html, text = render_bounty_changed(to_email, bounty)
+
+            if not should_suppress_notification_email(to_email, 'bounty'):
+                send_mail(from_email, to_email, subject, text, html)
+        finally:
+            translation.activate(cur_language)
+
+
 def new_match(to_emails, bounty, github_username):
 
     subject = gettext("⚡️ {} Meet {}: {}! ").format(github_username.title(), bounty.org_name.title(), bounty.title)
@@ -605,3 +627,18 @@ def setup_lang(to_email):
     if user and hasattr(user, 'profile'):
         preferred_language = user.profile.get_profile_preferred_language()
         translation.activate(preferred_language)
+
+
+def new_bounty_request(model):
+    to_email = 'vivek.singh@consensys.net'
+    from_email = model.requested_by.email or settings.SERVER_EMAIL
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        subject = _("New Bounty Request")
+        body_str = _(f"New Bounty Request from")
+        body = f"{body_str} {model.requested_by}: "\
+            f"{settings.BASE_URL}_administrationbounty_requests/bountyrequest/{model.pk}/change"
+        send_mail(from_email, to_email, subject, body, from_name=_("No Reply from Gitcoin.co"))
+    finally:
+        translation.activate(cur_language)
