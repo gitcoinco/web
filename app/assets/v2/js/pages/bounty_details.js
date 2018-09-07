@@ -241,7 +241,7 @@ var callbacks = {
 
     if (usd_value) {
       tooltip_info.push('<p class="m-0" style="margin-top: 3px;">Crowdfunding worth $' + usd_value + '</p>');
-      $('#value_in_usdt').html(result['value_in_usdt'] + usd_value);
+      $('#value_in_usdt').html(parseFloat(result['value_in_usdt']) + usd_value);
     }
   
     for (var token in tokens) {
@@ -844,7 +844,8 @@ var do_actions = function(result) {
       href: result['action_urls']['cancel'],
       text: gettext('Cancel Bounty'),
       parent: 'right_actions',
-      title: gettext('Cancel bounty and reclaim funds for this issue')
+      title: gettext('Cancel bounty and reclaim funds for this issue'),
+      buttonclass: 'button--warning'
     };
 
     actions.push(_entry);
@@ -960,7 +961,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('Suspend Auto Approval'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty'),
       color: 'white',
       buttonclass: 'admin-only'
@@ -977,7 +978,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('Hide Bounty'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('Hides Bounty from Active Bounties'),
       color: 'white',
       buttonclass: 'admin-only'
@@ -994,7 +995,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('Toggle Remarket Ready'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('Sets Remarket Ready if not already remarket ready.  Unsets it if already remarket ready.'),
       color: 'white',
       buttonclass: 'admin-only'
@@ -1011,7 +1012,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('Mark as Reviewed'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('Marks the bounty activity as reviewed.'),
       color: 'white',
       buttonclass: 'admin-only'
@@ -1027,7 +1028,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('Contact Funder'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('Contact Funder via Email'),
       color: 'white',
       buttonclass: 'admin-only contact_bounty_hunter'
@@ -1043,7 +1044,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('Snooze Gitcoinbot'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('Snooze Gitcoinbot reminders'),
       color: 'white',
       buttonclass: 'admin-only snooze_gitcoin_bot'
@@ -1059,7 +1060,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('Override Status'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('Override Status with a status of your choosing'),
       color: 'white',
       buttonclass: 'admin-only admin_override_satatus'
@@ -1075,7 +1076,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('View in Admin'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('View in Admin'),
       color: 'white',
       buttonclass: 'admin-only'
@@ -1291,6 +1292,17 @@ const is_bounty_expired = function(bounty) {
 };
 
 var main = function() {
+  const moderatorAndAdminActions = $('#moderator-admin-actions');
+  const scrollHeight = 150;
+
+  $(window).scroll(RAFThrottle(() => {
+    if (window.scrollY > scrollHeight) {
+      moderatorAndAdminActions.addClass('sticky');
+    } else {
+      moderatorAndAdminActions.removeClass('sticky');
+    }
+  }));
+
   setTimeout(function() {
     // setup
     attach_work_actions();
