@@ -47,6 +47,7 @@ class ActivityAdmin(admin.ModelAdmin):
 class TokenApprovalAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile']
     ordering = ['-id']
+    search_fields = ['profile__handle', 'token_name', 'token_address']
 
 
 class ToolVoteAdmin(admin.ModelAdmin):
