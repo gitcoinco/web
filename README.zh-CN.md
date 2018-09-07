@@ -30,7 +30,7 @@ git clone git@github.com:xxxxxxxx/token-profile.git
 7. 如果你的代币已经被添加了，你可以在对应的目录下更新相应的代币信息
 8. commit 提交信息
 9. push 提交信息到你的 repo
-10. 在你的 repo 页面下点击 `New pull request` 按钮，并附上详细的描述（比如建议设置的 gas ，默认为 60000）
+10. 在你的 repo 页面下点击 `New pull request` 按钮，并附上详细的描述（比如建议 gas ，默认为 60000; 已收录的交易所）
 11. 我们会尽快核实你的 PR，如果 PR 没问题我们会合并到主分支下
 
 ## 要求
