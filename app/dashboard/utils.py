@@ -475,7 +475,7 @@ def get_context(ref_object=None, github_username='', user=None, confirm_time_min
         'handle': getattr(user, 'username', ''),
         'title': title,
         'gas_advisories': gas_advisories(),
-        'gitcoin_tip_address': gitcoin_tip_address
+        'gitcoin_tip_address': gitcoin_tip_address,
     }
     if ref_object is not None:
         context.update({f'{ref_object.__class__.__name__}'.lower(): ref_object})
