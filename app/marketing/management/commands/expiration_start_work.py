@@ -99,28 +99,45 @@ class Command(BaseCommand):
                             print(" - no actions")
                         else:
                             # example format: 2018-01-26T17:56:31Z'
-                            action_times = [
-                                datetime.strptime(action['created_at'], '%Y-%m-%dT%H:%M:%SZ') for action in actions
-                                if action.get('created_at')
-                            ]
-                            last_action_by_user = max(action_times).replace(tzinfo=pytz.UTC)
+                            action_times = []
+                            has_pull_request_by_user = False
 
-                            # if user hasn't commented since they expressed interest, handled this condition
-                            # per https://github.com/gitcoinco/web/issues/462#issuecomment-368384384
-                            if last_action_by_user.replace() < interest_day_0:
-                                last_action_by_user = interest_day_0
+                            for action in actions:
+                                pr = action.get('source', {}).get('issue', {}).get('pull_request', None)
 
-                            # some small calcs
-                            snooze_time = timezone.timedelta(days=bounty.snooze_warnings_for_days)
-                            delta_now_vs_last_action = timezone.now() - snooze_time - last_action_by_user
-                            last_heard_from_user_days = delta_now_vs_last_action.days
+                                if pr:
+                                    has_pull_request_by_user = True
+                                    break
 
-                            # decide action params
-                            should_warn_user = last_heard_from_user_days >= num_days_back_to_warn
-                            should_delete_interest = last_heard_from_user_days >= num_days_back_to_delete_interest
-                            should_ignore = last_heard_from_user_days >= num_days_back_to_ignore_bc_mods_got_it
+                                if action.get('created_at'):
+                                    action_times.append(
+                                        datetime.strptime(action['created_at'], '%Y-%m-%dT%H:%M:%SZ')
+                                    )
 
-                            print(f"- its been {last_heard_from_user_days} days since we heard from the user")
+                            if has_pull_request_by_user:
+                                should_ignore = True
+
+                                print(f"- user has submitted a pull request")
+                            else:
+                                last_action_by_user = max(action_times).replace(tzinfo=pytz.UTC)
+
+                                # if user hasn't commented since they expressed interest, handled this condition
+                                # per https://github.com/gitcoinco/web/issues/462#issuecomment-368384384
+                                if last_action_by_user.replace() < interest_day_0:
+                                    last_action_by_user = interest_day_0
+
+                                # some small calcs
+                                snooze_time = timezone.timedelta(days=bounty.snooze_warnings_for_days)
+                                delta_now_vs_last_action = timezone.now() - snooze_time - last_action_by_user
+                                last_heard_from_user_days = delta_now_vs_last_action.days
+
+                                # decide action params
+                                should_warn_user = last_heard_from_user_days >= num_days_back_to_warn
+                                should_delete_interest = last_heard_from_user_days >= num_days_back_to_delete_interest
+                                should_ignore = last_heard_from_user_days >= num_days_back_to_ignore_bc_mods_got_it
+
+                                print(f"- its been {last_heard_from_user_days} days since we heard from the user")
+
                         if should_ignore:
                             print(f'executing should_ignore for {interest.profile} / {bounty.github_url} ')
 

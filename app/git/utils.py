@@ -475,6 +475,9 @@ def get_interested_actions(github_url, username, email=''):
         elif 'user' in action:
             gh_user = action['user']['login']
 
+        if gh_user and gh_user == username and action['event'] in activity_event_types:
+            actions_by_interested_party.append(action)
+
         if action['event'] == 'cross-referenced':
             pr_num = action.get('source', {}).get('issue', {}).get('number', '')
             pr_repo_owner, pr_repo = action.get('source', {}).get('issue', {}) \
@@ -499,8 +502,6 @@ def get_interested_actions(github_url, username, email=''):
                     if gh_email and gh_email == email:
                         actions_by_interested_party.append(pr_action)
 
-        if gh_user and gh_user == username and action['event'] in activity_event_types:
-            actions_by_interested_party.append(action)
     return actions_by_interested_party
 
 
