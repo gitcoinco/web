@@ -16,6 +16,10 @@
 
 {% endcomment %}
 {% load static pipeline %}
+<script type="text/javascript">
+  var static_url = "{{ STATIC_URL }}";
+  var media_url = "{{ MEDIA_URL }}";
+</script>
 <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
 {% include 'shared/sentry.html' %}
 {% if not slim %}

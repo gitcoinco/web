@@ -62,11 +62,11 @@
       </div>
 
       <div class="container-fluid p-5 whatisit_container">
-        {% include 'shared/what_is_gitcoin.html' %}
+        {% include 'shared/what_is_gitcoin.html' with video='DJartWzDn0E' %}
       </div>
 
       <div class="container-fluid p-5 howworks-container howworks-container-contributors">
-        {% include "how_it_works_contributor.html" %}
+        {% include "how_it_works/contributor.html" %}
       </div>
 
       <div class="container-fluid p-5 pilot-container projects-container">
@@ -114,7 +114,12 @@
         uri = 'network=mainnet&idx_status=open&keyword={{ tech_stack }}';
       else
         uri = 'idx_status=open&keyword={{ tech_stack }}';
-      fetchBountiesAndAddToList(uri, '.featured-bounties', 5);
+      var additional_callback = function(results){
+        if(results.length < 2){
+          $(".open-bounties").remove();
+        }
+      }
+      fetchBountiesAndAddToList(uri, '.featured-bounties', 5, additional_callback);
     </script>
   {% endif %}
 </html>

@@ -3,6 +3,16 @@
 // helper functions
 
 /**
+ * Validates if input is a valid URL
+ * @param {string} input - Input String
+ */
+var validURL = function(input) {
+  var regex = /(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,63}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?/;
+
+  return regex.test(input);
+};
+
+/**
  * Looks for a transaction receipt.  If it doesn't find one, it keeps running until it does.
  * @callback
  * @param {string} txhash - The transaction hash.
@@ -39,7 +49,7 @@ var callFunctionWhenweb3Available = function(f) {
 var loading_button = function(button) {
   button.prop('disabled', true);
   button.addClass('disabled');
-  button.prepend('<img src=/static/v2/images/loading_white.gif style="max-width:20px; max-height: 20px">').addClass('disabled');
+  button.prepend('<img src=' + static_url + 'v2/images/loading_white.gif style="max-width:20px; max-height: 20px">').addClass('disabled');
 };
 
 var attach_close_button = function() {
@@ -66,10 +76,12 @@ var update_metamask_conf_time_and_cost_estimate = function() {
   var gasPrice = parseFloat($('#gasPrice').val());
 
   if (gasPrice) {
-    ethAmount = Math.round(1000 * gasLimit * gasPrice / Math.pow(10, 9)) / 1000;
-    usdAmount = Math.round(10 * ethAmount * document.eth_usd_conv_rate) / 10;
+    var eth_amount_unrounded = gasLimit * gasPrice / Math.pow(10, 9);
+
+    ethAmount = Math.round(1000000 * eth_amount_unrounded) / 1000000;
+    usdAmount = Math.round(1000 * eth_amount_unrounded * document.eth_usd_conv_rate) / 1000;
   }
-  
+
   if (typeof document.conf_time_spread == 'undefined') return;
 
   for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
@@ -87,7 +99,7 @@ var update_metamask_conf_time_and_cost_estimate = function() {
 };
 
 var get_updated_metamask_conf_time_and_cost = function(gasPrice) {
-  
+
   var confTime = 'unknown';
   var ethAmount = 'unknown';
   var usdAmount = 'unknown';
@@ -95,8 +107,10 @@ var get_updated_metamask_conf_time_and_cost = function(gasPrice) {
   var gasLimit = parseInt($('#gasLimit').val());
 
   if (gasPrice) {
-    ethAmount = Math.round(1000000 * gasLimit * gasPrice / Math.pow(10, 9)) / 1000000;
-    usdAmount = Math.round(10 * ethAmount * document.eth_usd_conv_rate) / 10;
+    var eth_amount_unrounded = gasLimit * gasPrice / Math.pow(10, 9);
+
+    ethAmount = Math.round(1000000 * eth_amount_unrounded) / 1000000;
+    usdAmount = Math.round(100 * eth_amount_unrounded * document.eth_usd_conv_rate) / 100;
   }
 
   for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
@@ -261,23 +275,12 @@ var remove_interest = function(bounty_pk, slash = false) {
 var mutate_interest = function(bounty_pk, direction, data) {
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + direction + '/';
 
-  $('#submit').toggleClass('none');
-  $('#interest a').toggleClass('btn')
-    .toggleClass('btn-small')
-    .toggleClass('button')
-    .toggleClass('button--primary');
-
-  if (direction === 'new') {
-    _alert({ message: gettext("Thanks for letting us know that you're ready to start work.") }, 'success');
-    $('#interest a').attr('id', 'btn-white');
-  } else if (direction === 'remove') {
-    _alert({ message: gettext("You've stopped working on this, thanks for letting us know.") }, 'success');
-    $('#interest a').attr('id', '');
-  }
-  
-
+  showBusyOverlay();
   $.post(request_url, data).then(function(result) {
+    hideBusyOverlay();
+
     result = sanitizeAPIResults(result);
+
     if (result.success) {
       if (direction === 'new') {
         _alert({ message: result.msg }, 'success');
@@ -292,6 +295,8 @@ var mutate_interest = function(bounty_pk, direction, data) {
     }
     return false;
   }).fail(function(result) {
+    hideBusyOverlay();
+
     var alertMsg = result && result.responseJSON ? result.responseJSON.error : null;
 
     if (alertMsg === null) {
@@ -315,7 +320,10 @@ var uninterested = function(bounty_pk, profileId, slash) {
 
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + profileId + '/uninterested/';
 
+  showBusyOverlay();
   $.post(request_url, data, function(result) {
+    hideBusyOverlay();
+
     result = sanitizeAPIResults(result);
     if (result.success) {
       _alert({ message: gettext(success_message) }, 'success');
@@ -324,6 +332,7 @@ var uninterested = function(bounty_pk, profileId, slash) {
     }
     return false;
   }).fail(function(result) {
+    hideBusyOverlay();
     _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
   });
 };
@@ -331,7 +340,10 @@ var uninterested = function(bounty_pk, profileId, slash) {
 var extend_expiration = function(bounty_pk, data) {
   var request_url = '/actions/bounty/' + bounty_pk + '/extend_expiration/';
 
+  showBusyOverlay();
   $.post(request_url, data, function(result) {
+    hideBusyOverlay();
+
     result = sanitizeAPIResults(result);
     if (result.success) {
       _alert({ message: result.msg }, 'success');
@@ -340,6 +352,7 @@ var extend_expiration = function(bounty_pk, data) {
     }
     return false;
   }).fail(function(result) {
+    hideBusyOverlay();
     _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
   });
 };
@@ -496,7 +509,7 @@ var retrieveAmount = function() {
   var target_ele = $('#usd_amount');
 
   if (target_ele.html() == '') {
-    target_ele.html('<img style="width: 50px; height: 50px;" src=/static/v2/images/loading_v2.gif>');
+    target_ele.html('<img style="width: 50px; height: 50px;" src=' + static_url + 'v2/images/loading_v2.gif>');
   }
 
   var amount = $('input[name=amount]').val();
@@ -571,12 +584,10 @@ var retrieveIssueDetails = function() {
 
       target_eles['keywords'].val(keywords.join(', '));
     }
-    if (result['description']) {
-      target_eles['description'].val(result['description']);
-    }
-    if (result['title']) {
-      target_eles['title'].val(result['title']);
-    }
+    target_eles['description'].val(result['description']);
+    target_eles['title'].val(result['title']);
+
+    $('#title--text').html(result['title']); // TODO: Refactor
     $.each(target_eles, function(i, ele) {
       ele.removeClass('loading');
     });
@@ -1015,7 +1026,7 @@ function renderBountyRowsFromResults(results) {
  *
  * TODO: refactor explorer to reuse this
  */
-function fetchBountiesAndAddToList(params, target, limit) {
+function fetchBountiesAndAddToList(params, target, limit, additional_callback) {
   $.get('/api/v0.1/bounties/?' + params, function(results) {
     results = sanitizeAPIResults(results);
 
@@ -1048,5 +1059,41 @@ function fetchBountiesAndAddToList(params, target, limit) {
     } else {
       console.log($(target).parent().closest('.container').addClass('hidden'));
     }
+    if (typeof additional_callback != 'undefined') {
+      additional_callback(results);
+    }
   });
+}
+
+function showBusyOverlay() {
+  let overlay = document.querySelector('.busyOverlay');
+
+  if (overlay) {
+    overlay.style['display'] = 'block';
+    overlay.style['animation-name'] = 'fadeIn';
+    return;
+  }
+
+  overlay = document.createElement('div');
+  overlay.className = 'busyOverlay';
+  overlay.addEventListener(
+    'animationend',
+    function() {
+      if (overlay.style['animation-name'] === 'fadeOut') {
+        overlay.style['display'] = 'none';
+      }
+    },
+    false
+  );
+  document.body.appendChild(overlay);
+}
+
+function hideBusyOverlay() {
+  let overlay = document.querySelector('.busyOverlay');
+
+  if (overlay) {
+    setTimeout(function() {
+      overlay.style['animation-name'] = 'fadeOut';
+    }, 300);
+  }
 }

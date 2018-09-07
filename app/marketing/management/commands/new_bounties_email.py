@@ -43,9 +43,8 @@ def get_bounties_for_keywords(keywords, hours_back):
     new_bounties_pks = []
     all_bounties_pks = []
     for keyword in keywords:
-        relevant_bounties = Bounty.objects.filter(
+        relevant_bounties = Bounty.objects.current().filter(
             network='mainnet',
-            current_bounty=True,
             metadata__icontains=keyword,
             idx_status__in=['open'],
             )
@@ -55,8 +54,8 @@ def get_bounties_for_keywords(keywords, hours_back):
         for bounty in relevant_bounties:
             if does_bounty_match_keyword(bounty, keyword):
                 all_bounties_pks.append(bounty.pk)
-    new_bounties = Bounty.objects.filter(pk__in=new_bounties_pks)
-    all_bounties = Bounty.objects.filter(pk__in=all_bounties_pks).exclude(pk__in=new_bounties_pks).order_by('?')
+    new_bounties = Bounty.objects.filter(pk__in=new_bounties_pks).order_by('-_val_usd_db')
+    all_bounties = Bounty.objects.filter(pk__in=all_bounties_pks).exclude(pk__in=new_bounties_pks).order_by('-web3_created')
 
     new_bounties = new_bounties.order_by('-admin_mark_as_remarket_ready')
     all_bounties = all_bounties.order_by('-admin_mark_as_remarket_ready')

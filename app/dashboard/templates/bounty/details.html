@@ -15,13 +15,14 @@
       {% include 'shared/nav.html' %}
     </div>
     <div class="row no-gutter">
-      <div class="col-12 col-md-2 left-rails text-center" style="background: #F2F6F9;">
+      <div class="col-12 col-lg-2 left-rails text-center" style="background: #F2F6F9;">
         <div class="explorer font-body">
           <a href="{% url 'explorer' %}"><i class="fas fa-chevron-left"></i> {% trans "Back to Issue Explorer" %}</a>
         </div>
+        {% include 'shared/codefund_banner.html' %}
       </div>
 
-      <div class="col-12 offset-md-1 col-md-8 body">
+      <div class="col-12 offset-md-1 col-md-10 offset-lg-1 col-lg-8 body">
         {% include 'shared/bounty_waiting_state.html' %}
         <div class="row nonefound" style="display:none;">
           <img src="{% static "v2/images/shrug_bot.png" %}">
@@ -42,6 +43,7 @@
           </div>
         </div>
 
+        <div class="col-12" id="moderator-admin-actions"></div>
         <div class="col-12" id="bounty_details">
           <div class="row font-body">
             <div class="d-none d-lg-block col-lg-1">
@@ -50,6 +52,7 @@
             <div class="col-12 col-lg-11 pl-lg-4">
               <div class="col-12">
                 <h4 id="title" class="font-title"></h4>
+                <div class="notif-info mb-3 font-caption" id="funder_notif_info"></div>
                 <span id="network"></span>
               </div>
               <div class="col-12">
@@ -124,11 +127,6 @@
                         </span>
                       </p>
                     </div>
-                    <div class="tag token additional_funding_summary">
-                      <p>
-                        <span id="additional_funding_summary"></span>
-                      </p>
-                    </div>
                   </div>
                 </div>
             </div>
@@ -154,7 +152,7 @@
                 </div>
                 <div class="col-12 col-md-4 contributor-box">
                   <i class="fab fa-ethereum"></i>
-                  <h6>{% trans "Work Accepted" %}</h6>
+                  <h6>{% trans "Work Paid" %}</h6>
                   <ul id="fulfilled_owners_username" class="font-body"></ul>
                 </div>
               </div>
@@ -192,38 +190,36 @@
     </div>
 
     <script id="action" type="text/x-jsrender">
-      [[if enabled]]
-        <span [[if id]] id="[[:id]]" [[if id == 'submit']] [[if !work_started]] class="none" [[/if]] [[/if]] [[/if]]
-          title='<div class="tooltip-info tooltip-sm">[[:title]]</div>'>
-          [[if pending_acceptance]]
-            <a class="button button--primary accept" role="button" href="[[:href]]" target="[[:target]]">
-              <span class="font-caption">[[:text]] ( [[:pending_acceptance]] )</span>
-            </a>
-          [[else color == 'white']]
-            <a class="btn btn-small [[:buttonclass]]" id="btn-white" role="button" target="_blank" href="[[:href]]" target="[[:target]]">
-              [[if comments]]
-                <span class="font-caption">
-                  [[:text]]
-                  <span class="comment">
-                    <img src={% static "v2/images/comment.svg" %}>
-                    <span class="github-comment">
-                      [[:comments]]
-                    </span>
+      <span [[if id]] id="[[:id]]" [[if id == 'submit']] [[if !work_started]] class="none" [[/if]] [[/if]] [[/if]]
+        title='<div class="tooltip-info tooltip-sm">[[:title]]</div>'>
+        [[if pending_acceptance]]
+          <a class="button button--primary accept [[if !enabled]]disabled[[/if]]" role="button" href="[[:href]]" target="[[:target]]">
+            <span class="font-caption">[[:text]] ( [[:pending_acceptance]] )</span>
+          </a>
+        [[else color == 'white']]
+          <a class="btn btn-small [[if !enabled]]disabled[[/if]] [[:buttonclass]]" id="btn-white" role="button" target="_blank" href="[[:href]]" target="[[:target]]">
+            [[if comments]]
+              <span class="font-caption">
+                [[:text]]
+                <span class="comment">
+                  <img src={% static "v2/images/comment.svg" %}>
+                  <span class="github-comment">
+                    [[:comments]]
                   </span>
                 </span>
-              [[else]]
-                <span class="font-caption">[[:text]]</span>
-              [[/if]]
-            </a>
-          [[else]]
-            <a class="button button--primary [[:buttonclass]]" role="button" href="[[:href]]" target="[[:target]]">
+              </span>
+            [[else]]
               <span class="font-caption">[[:text]]</span>
-            </a>
-          [[/if]]
-        </span>
-        [[if is_last_non_admin_action]]
-          <br>
+            [[/if]]
+          </a>
+        [[else]]
+          <a class="button button--primary [[if !enabled]]disabled[[/if]] [[:buttonclass]]" role="button" href="[[:href]]" target="[[:target]]">
+            <span class="font-caption">[[:text]]</span>
+          </a>
         [[/if]]
+      </span>
+      [[if is_last_non_admin_action]]
+        <br>
       [[/if]]
     </script>
 
@@ -231,7 +227,7 @@
       <div class="row box activity">
         <div class="col-12 col-md-1">
           <div class="activity-avatar">
-            <img class="avatar" src="/funding/avatar?repo=https://github.com/[[:name]]"/>
+            <img class="avatar" src="/dynamic/avatar/[[:name]]"/>
           </div>
         </div>
         <div class="col-12 col-md-2">
@@ -270,7 +266,7 @@
               </div>
             [[/if]]
           </div>
-        [[else activity_type == 'start_work' || activity_type == 'worker_approved' || activity_type == 'worker_applied' ]]
+        [[else activity_type == 'start_work' || activity_type == 'worker_approved' || activity_type == 'bounty_abandonment_warning' ]]
           <div class="col-12 col-md-7 started-status-column">
             <div class="activity-status">
               [[:text]]
@@ -302,14 +298,14 @@
             [[if can_approve_worker ]]
               <div class="stop-work">
                 <span title="<div class='tooltip-info tooltip-sm'>Reject worker</div>">
-                  <a target="_blank" href="[[:reject_worker_url]]">
+                  <a class="button button--primary" href="[[:reject_worker_url]]">
                     <span class="font-smaller-4">Reject worker</span>
                   </a>
                 </span>
-              </div> |
+              </div>
               <div class="stop-work">
                 <span title="<div class='tooltip-info tooltip-sm'>Approve worker</div>">
-                  <a target="_blank" href="[[:approve_worker_url]]">
+                  <a class="button button--primary" href="[[:approve_worker_url]]">
                     <span class="font-smaller-4">Approve worker</span>
                   </a>
                 </span>
@@ -395,7 +391,7 @@
   <!-- jQuery -->
   <script src="{% static "v2/js/showdown.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
-  <script src="/static/v2/js/tokens_dynamic.js"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/amounts.js" %}"></script>
   <script src="{% static "v2/js/pages/bounty_details.js" %}"></script>
