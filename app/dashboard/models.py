@@ -42,7 +42,7 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 import requests
 from dashboard.tokens import addr_to_token
-from economy.models import SuperModel
+from economy.models import SuperModel, ConversionRate
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import (
@@ -913,29 +913,54 @@ class Bounty(SuperModel):
     @property
     def additional_funding_summary(self):
         """Return a dict describing the additional funding from crowdfunding that this object has"""
-        return_dict = {
-            'tokens': {},
-            'usd_value': 0,
-        }
+        ret = {}
         for tip in self.tips.filter(is_for_bounty_fulfiller=True).exclude(txid=''):
-            key = tip.tokenName
-            if key not in return_dict['tokens'].keys():
-                return_dict['tokens'][key] = 0
-            return_dict['tokens'][key] += tip.amount_in_whole_units
-            return_dict['usd_value'] += tip.value_in_usdt if tip.value_in_usdt else 0
-        return return_dict
+            token = tip.tokenName
+            obj = ret.get(token, None)
+            if not obj:
+                obj = {}
+                obj['amount'] = 0.0
+
+                conversion_rate = ConversionRate.objects.filter(
+                    from_currency=token,
+                    to_currency='USDT',
+                ).order_by('-timestamp').first()
+
+                if conversion_rate:
+                    obj['ratio'] = (float(conversion_rate.to_amount) / float(conversion_rate.from_amount))
+                    obj['timestamp'] = conversion_rate.timestamp
+                else:
+                    obj['ratio'] = 0.0
+                    obj['timestamp'] = datetime.now()
+
+                ret[token] = obj
+
+            obj['amount'] += tip.amount_in_whole_units
+        return ret
 
     @property
     def additional_funding_summary_sentence(self):
         afs = self.additional_funding_summary
-        if len(afs['tokens'].keys()) == 0:
-            return ""
+        tokens = afs.keys()
+
+        if len(tokens) == 0:
+            return ''
+
         items = []
-        for token, value in afs['tokens'].items():
-            items.append(f"{value} {token}")
+        usd_value = 0.0
+
+        for token_name in tokens:
+            obj = afs[token_name]
+            ratio = obj['ratio']
+            amount = obj['amount']
+            usd_value += amount * ratio
+            items.append(f"{amount} {token_name}")
+
         sentence = ", ".join(items)
-        if(afs['usd_value']):
-            sentence += f" worth ${afs['usd_value']}"
+
+        if usd_value:
+            sentence += f" worth {usd_value} USD"
+
         return sentence
 
 

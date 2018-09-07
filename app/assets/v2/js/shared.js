@@ -956,57 +956,63 @@ var usdToAmount = function(event) {
 };
 
 function renderBountyRowsFromResults(results, renderForExplorer) {
-  var html = '';
-  var tmpl = $.templates('#result');
+  let html = '';
+  const tmpl = $.templates('#result');
 
-  if (results.length == 0) {
+  if (results.length === 0) {
     return html;
   }
 
   for (var i = 0; i < results.length; i++) {
-    var result = results[i];
-    var relatedTokenDetails = tokenAddressToDetailsByNetwork(result['token_address'], result['network']);
-    var decimals = 18;
+    const result = results[i];
+    const relatedTokenDetails = tokenAddressToDetailsByNetwork(result['token_address'], result['network']);
+    let decimals = 18;
 
     if (relatedTokenDetails && relatedTokenDetails.decimals) {
       decimals = relatedTokenDetails.decimals;
     }
 
-    var divisor = Math.pow(10, decimals);
+    const divisor = Math.pow(10, decimals);
 
     result['rounded_amount'] = normalizeAmount(result['value_in_token'] / divisor, decimals);
 
-    var crowdfunding = result['additional_funding_summary'];
+    const crowdfunding = result['additional_funding_summary'];
 
     if (crowdfunding) {
-      var tokens = Object.keys(crowdfunding['tokens'] || {});
+      const tokens = Object.keys(crowdfunding);
+      let usdValue = 0.0;
 
       if (tokens.length) {
-        var obj = {};
+        const obj = {};
 
         obj[result['token_name']] = result['rounded_amount'];
 
         while (tokens.length) {
-          var tokenName = tokens.shift();
+          const tokenName = tokens.shift();
+          const tokenObj = crowdfunding[tokenName];
+          const amount = tokenObj['amount'];
+          const ratio = tokenObj['ratio'];
 
           obj[tokenName] =
-            normalizeAmount(crowdfunding['tokens'][tokenName], 3);
+            normalizeAmount(amount, 3);
+          usdValue += amount * ratio;
         }
         result['tokens'] = obj;
       }
 
-      var usdValue = crowdfunding['usd_value'] | 0;
-
       if (usdValue && result['value_in_usdt']) {
         result['value_in_usdt'] =
-          parseFloat(result['value_in_usdt']) + normalizeAmount(usdValue, 3);
+          normalizeAmount(
+            parseFloat(result['value_in_usdt']) + usdValue,
+            2
+          );
       }
     }
 
-    var dateNow = new Date();
-    var dateExpires = new Date(result['expires_date']);
-    var isExpired = dateExpires < dateNow && !result['is_open'];
-    var projectType = ucwords(result['project_type']) + ' &bull; ';
+    const dateNow = new Date();
+    const dateExpires = new Date(result['expires_date']);
+    const isExpired = dateExpires < dateNow && !result['is_open'];
+    const projectType = ucwords(result['project_type']) + ' &bull; ';
 
     result['action'] = result['url'];
     result['title'] = result['title'] ? result['title'] : result['github_url'];
@@ -1033,13 +1039,13 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
         result['p'] += ' ' + timeDifference(dateNow, new Date(result['canceled_on']), false, 60 * 60);
       }
     } else if (isExpired) {
-      var timeAgo = timeDifference(dateNow, dateExpires, true);
+      const timeAgo = timeDifference(dateNow, dateExpires, true);
 
       result['p'] += ('Expired ' + timeAgo + ' ago');
     } else {
-      var openedWhen = timeDifference(dateNow, new Date(result['web3_created']), true);
-      var timeLeft = timeDifference(dateNow, dateExpires);
-      var expiredExpires = dateNow < dateExpires ? 'Expires' : 'Expired';
+      const openedWhen = timeDifference(dateNow, new Date(result['web3_created']), true);
+      const timeLeft = timeDifference(dateNow, dateExpires);
+      const expiredExpires = dateNow < dateExpires ? 'Expires' : 'Expired';
 
       result['p'] += ('Opened ' + openedWhen + ' ago, ' + expiredExpires + ' ' + timeLeft);
     }
@@ -1166,4 +1172,25 @@ function toggleExpandableBounty(evt) {
 
 function normalizeAmount(amount, decimals) {
   return Math.round(amount * 10 ** decimals) / 10 ** decimals;
+}
+
+function newTokenTag(amount, tokenName, tooltipInfo) {
+  const ele = document.createElement('div');
+  const p = document.createElement('p');
+  const span = document.createElement('span');
+
+  ele.className = 'tag token';
+  span.innerHTML = amount + ' ' + tokenName;
+
+  p.appendChild(span);
+  ele.appendChild(p);
+
+  if (tooltipInfo) {
+    ele.title =
+      '<div class="tooltip-info tooltip-sm">' +
+      tooltipInfo +
+      '</div>';
+  }
+
+  return ele;
 }
