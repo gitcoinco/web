@@ -253,6 +253,10 @@ and also iPads specifically.
   max-width: 80%;
 }
 
+.funder-dashboard__stats__stat .card-title {
+  min-height: 2.82rem;
+}
+
 .funder-dashboard__stats__stat--total-budget__budget-input__submit {
   cursor: pointer;
 }
