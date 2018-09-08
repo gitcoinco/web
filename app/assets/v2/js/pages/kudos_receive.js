@@ -11,11 +11,16 @@ var sign_and_send = function(rawTx, success_callback, private_key) {
   console.log('private_key: ' + private_key);
   var tx = new EthJS.Tx(rawTx);
 
-  tx.sign(new EthJS.Buffer.Buffer.from(private_key, 'hex'));
+  var private_key_buffer = new EthJS.Buffer.Buffer.from(private_key, 'hex')
+  // console.log(private_key_buffer)
+  
+  tx.sign(private_key_buffer);
   var serializedTx = tx.serialize();
+  console.log('0x' + serializedTx.toString('hex'));
 
   // send raw transaction
   web3.eth.sendRawTransaction('0x' + serializedTx.toString('hex'), success_callback);
+
 };
 
 window.onload = function() {
@@ -94,14 +99,12 @@ $(document).ready(function() {
     // redeem kudos
 
     var gas_price_wei = new web3.BigNumber(document.gas_price * 10 ** 9);
-    // This is not used
-    var is_eth = document.kudos_email['token_address'] == '0x0' || document.kudos_email['token_address'] == '0x0000000000000000000000000000000000000000';
-    console.log(is_eth)
     // Not used
     var token_address = document.kudos_email['token_address'];
     // var token_contract = web3.eth.contract(token_abi).at(token_address);
     var kudos_contract = web3.eth.contract(kudos_abi).at(kudos_address());
-    var holding_address = document.kudos_email['holding_address'];
+    // var holding_address = document.kudos_email['holding_address'];
+    var holding_address = '0xd386793f1db5f21609571c0164841e5ea2d33ad8';
     // var amount_in_wei = new web3.BigNumber(document.kudos_email['amount_in_wei']);
     
 
@@ -121,72 +124,54 @@ $(document).ready(function() {
         }
         var rawTx;
 
-        if (is_eth) {
-          // this will always be false, since we are sending kudos, not ETH.
-          rawTx = {
-            nonce: web3.toHex(nonce),
-            to: forwarding_address,
-            from: holding_address,
-            value: amount_in_wei
-          };
-          web3.eth.estimateGas(rawTx, function(err, gasLimit) {
-            var buffer = new web3.BigNumber(0);
+        // Build the raw transaction data for the kudos clone & transfer
+        var numClones = 1;
+        var name = $('#kudosName').attr('data-kudosname');
+        var data = kudos_contract.cloneAndTransfer.getData(name, numClones, forwarding_address);
 
-            gasLimit = new web3.BigNumber(gasLimit);
-            var send_amount = balance.minus(gasLimit.times(gas_price_wei)).minus(buffer);
+        // console.log(kudos_address())
+        // kudos_contract.totalSupply(function (err, result) {
+        //   if (err) console.log(err)
+        //   console.log(parseInt(result, 10))
+        // });
+        // create the raw transaction
+        rawTx = {
+          // nonce: web3.toHex(nonce),
+          nonce: '0x00',
+          // to: forwarding_address,
+          from: holding_address,
+          value: new web3.BigNumber(1000000000000000),
+          data: data
+        };
+        // console.log(rawTx)
+        document.priv_key = '239a4bf68cd5521ac8072fd2bab6018cb1d412c70a42911586e15c83904a383a';
+ 
+        kudos_contract.cloneAndTransfer.estimateGas(name, numClones, forwarding_address, {from: holding_address, value: new web3.BigNumber(1000000000000000)}, function(error, gasLimit) {
+          console.log(gasLimit)
+          var buffer = new web3.BigNumber(0);
 
-            rawTx['value'] = web3.toHex(send_amount.toString()); // deduct gas costs from amount to send
-            rawTx['gasPrice'] = web3.toHex(gas_price_wei.toString());
-            rawTx['gas'] = web3.toHex(gasLimit.toString());
-            rawTx['gasLimit'] = web3.toHex(gasLimit.toString());
-            show_console = false;
-            if (show_console) {
-              console.log('addr ', holding_address);
-              console.log('balance ', balance.toString());
-              console.log('sending ', send_amount.toString());
-              console.log('gas ', (gasLimit.times(gas_price_wei)).toString());
-              console.log('gas price ', (gas_price_wei.toString()));
-              console.log('buffer ', (buffer.toString()));
-              console.log('balance > value ', balance > send_amount);
-              console.log(rawTx);
-            }
-            sign_and_send(rawTx, success_callback, document.priv_key);
-          });
-        } else {
-
-          // send kudos
-          // var data = token_contract.transfer.getData(forwarding_address, amount_in_wei);
-          let account = web3.eth.coinbase;
-          let numClones = 1;
-          let name = $('#kudosName').attr('data-kudosname');
-
-        
-          var data = kudos_contract.cloneAndTransfer.getData(name, numClones, forwarding_address, {from: account, value: new web3.BigNumber(1000000000000000)});
-          var holding_address = '0xD386793F1DB5F21609571C0164841E5eA2D33aD8';
-
-          rawTx = {
-            nonce: web3.toHex(nonce),
-            // to: token_address,
-            from: holding_address,
-            value: '0x00',
-            data: data
-          };
-
-          document.priv_key = '0x239a4bf68cd5521ac8072fd2bab6018cb1d412c70a42911586e15c83904a383a';
-
-
-          web3.eth.estimateGas(rawTx, function(err, gasLimit) {
-            rawTx['gasPrice'] = gas_price_wei;
-            rawTx['gas'] = gasLimit;
-            rawTx['gasLimit'] = gasLimit;
-            var will_fail_at_this_gas_price = (gas_price_wei * gasLimit) > balance;
-
-            if (will_fail_at_this_gas_price) { // adjust if gas prices have increased since this tx was created
-              rawTx['gasPrice'] = Math.floor(balance / gasLimit / 10 ** 9);
-            }
-            sign_and_send(rawTx, success_callback, document.priv_key);
-          });
-        }
+          gasLimit = new web3.BigNumber(gasLimit);
+          var send_amount = balance.minus(gasLimit.times(gas_price_wei)).minus(buffer);
+          rawTx['value'] = web3.toHex(send_amount.toString()); // deduct gas costs from amount to send
+          rawTx['gasPrice'] = web3.toHex(gas_price_wei.toString());
+          rawTx['gas'] = web3.toHex(gasLimit.toString());
+          rawTx['gasLimit'] = web3.toHex(gasLimit.toString());
+          show_console = true;
+          if (show_console) {
+            console.log('from_addr ', holding_address);
+            console.log('balance ', balance.toString());
+            console.log('sending ', send_amount.toString());
+            console.log('gas ', (gasLimit.times(gas_price_wei)).toString());
+            console.log('gas price ', (gas_price_wei.toString()));
+            console.log('buffer ', (buffer.toString()));
+            console.log('balance > value ', balance > send_amount);
+            console.log(rawTx);
+          }
+          sign_and_send(rawTx, success_callback, document.priv_key);
+          // kudos_contract.cloneAndTransfer(name, numClones, forwarding_address, {from: holding_address, value: new web3.BigNumber(1000000000000000)}, function(error, txid) {
+          //   console.log('txid:' + txid)
+          // })
+        });
       });
     });
   });
