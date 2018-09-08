@@ -26,7 +26,6 @@ import time
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import User
-from django.core.cache import cache
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
@@ -61,8 +60,8 @@ from .helpers import (
     usd_format,
 )
 from .models import (
-    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tool,
-    ToolVote, UserAction,
+    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip,
+    Tool, ToolVote, UserAction
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
