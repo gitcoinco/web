@@ -172,7 +172,8 @@ body {
   color: #fff;
 }
 
-.benefits_container {
+.benefits_container,
+.landing__newsletter {
   background-color: #F9F9F9;
   justify-items: center;
 }

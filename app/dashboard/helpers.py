@@ -249,7 +249,9 @@ def bounty_did_change(bounty_id, new_bounty_details):
         # make sure it is updated in dashboard.helpers/bounty_did_change
         # AND
         # refresh_bounties/handle
-        old_bounties = Bounty.objects.filter(standard_bounties_id=bounty_id, network=network).order_by('-created_on')
+        old_bounties = Bounty.objects.filter(
+            standard_bounties_id=bounty_id, network=network
+        ).nocache().order_by('-created_on')
 
         if old_bounties.exists():
             did_change = (new_bounty_details != old_bounties.first().raw_data)
@@ -257,7 +259,8 @@ def bounty_did_change(bounty_id, new_bounty_details):
             did_change = True
     except Exception as e:
         did_change = True
-        print(f"asserting did change because got the following exception: {e}. args; bounty_id: {bounty_id}, network: {network}")
+        print(f"asserting did change because got the following exception: {e}. args;"
+              f"bounty_id: {bounty_id}, network: {network}")
 
     print('* Bounty did_change:', did_change)
     return did_change, old_bounties
@@ -295,7 +298,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
             created_on = timezone.now()
             modified_on = timezone.now()
             if old_bounty:
-                old_fulfillments = old_bounty.fulfillments.filter(fulfillment_id=fulfillment.get('id'))
+                old_fulfillments = old_bounty.fulfillments.filter(fulfillment_id=fulfillment.get('id')).nocache()
                 if old_fulfillments.exists():
                     old_fulfillment = old_fulfillments.first()
                     created_on = old_fulfillment.created_on
@@ -448,11 +451,11 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             # migrate data objects from old bounty
             if latest_old_bounty:
                 # Pull the interested parties off the last old_bounty
-                for interest in latest_old_bounty.interested.all():
+                for interest in latest_old_bounty.interested.all().nocache():
                     new_bounty.interested.add(interest)
 
                 # pull the activities off the last old bounty
-                for activity in latest_old_bounty.activities.all():
+                for activity in latest_old_bounty.activities.all().nocache():
                     new_bounty.activities.add(activity)
 
             # set cancel date of this bounty
@@ -470,8 +473,10 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
 
         if fulfillments:
             handle_bounty_fulfillments(fulfillments, new_bounty, latest_old_bounty)
-            for inactive in Bounty.objects.filter(current_bounty=False, github_url=url).order_by('-created_on'):
-                BountyFulfillment.objects.filter(bounty_id=inactive.id).delete()
+            for inactive in Bounty.objects.filter(
+                current_bounty=False, github_url=url
+            ).nocache().order_by('-created_on'):
+                BountyFulfillment.objects.filter(bounty_id=inactive.id).nocache().delete()
     return new_bounty
 
 
@@ -507,7 +512,7 @@ def process_bounty_details(bounty_details):
 
     # Create new bounty (but only if things have changed)
     did_change, old_bounties = bounty_did_change(bounty_id, bounty_details)
-    latest_old_bounty = old_bounties.order_by('-pk').first()
+    latest_old_bounty = old_bounties.nocache().order_by('-pk').first()
 
     if not did_change:
         return (did_change, latest_old_bounty, latest_old_bounty)
@@ -663,7 +668,7 @@ def process_bounty_changes(old_bounty, new_bounty):
     profile_pairs = None
     # process bounty sync requests
     did_bsr = False
-    for bsr in BountySyncRequest.objects.filter(processed=False, github_url=new_bounty.github_url):
+    for bsr in BountySyncRequest.objects.filter(processed=False, github_url=new_bounty.github_url).nocache():
         did_bsr = True
         bsr.processed = True
         bsr.save()

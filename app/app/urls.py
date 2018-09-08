@@ -381,7 +381,6 @@ if settings.ENABLE_SILK:
     urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
 
 if settings.ENV == 'local' and not settings.AWS_STORAGE_BUCKET_NAME:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # If running in DEBUG, expose the error handling pages.

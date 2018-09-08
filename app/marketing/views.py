@@ -602,7 +602,7 @@ def leaderboard(request, key=''):
         raise Http404
 
     title = titles[key]
-    leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard=key)
+    leadeboardranks = LeaderboardRank.objects.active().filter(leaderboard=key)
     amount = leadeboardranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
     items = leadeboardranks.order_by('-amount')
     top_earners = ''

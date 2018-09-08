@@ -25,7 +25,6 @@ import time
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.core.cache import cache
 from django.core.serializers.json import DjangoJSONEncoder
@@ -44,7 +43,7 @@ from django.views.decorators.vary import vary_on_cookie
 from app.utils import clean_str, ellipses, sync_profile
 from avatar.utils import get_avatar_context
 from economy.utils import eth_from_wei
-from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid
 from marketing.mails import (
     admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
@@ -62,8 +61,8 @@ from .helpers import (
     usd_format,
 )
 from .models import (
-    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip,
-    Tool, ToolVote, UserAction,
+    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tool,
+    ToolVote, UserAction,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -367,9 +366,9 @@ def remove_interest(request, bounty_id):
 @csrf_exempt
 @require_POST
 def extend_expiration(request, bounty_id):
-    """Unclaim work from the Bounty.
+    """Extend expiration of the Bounty.
 
-    Can only be called by someone who has started work
+    Can only be called by funder or staff of the bounty.
 
     :request method: POST
 
@@ -856,7 +855,7 @@ def helper_handle_suspend_auto_approval(request, bounty):
 
 def helper_handle_override_status(request, bounty):
     admin_override_satatus = request.GET.get('admin_override_satatus', False)
-    if admin_override_satatus != False:
+    if admin_override_satatus:
         is_staff = request.user.is_staff
         if is_staff:
             valid_statuses = [ele[0] for ele in Bounty.STATUS_CHOICES]

@@ -81,6 +81,7 @@ def sum_bounty_helper(b, breakdown, index_term, val_usd):
     if b.token_name == index_term:
         add_element(f'{breakdown}_tokens', index_term, val_usd)
     if index_term in b.keywords_list:
+        index_term = index_term.lower()
         is_github_org_name = Bounty.objects.filter(github_url__icontains=f'https://github.com/{index_term}').exists()
         is_github_repo_name = Bounty.objects.filter(github_url__icontains=f'/{index_term}/').exists()
         index_keyword = not is_github_repo_name and not is_github_org_name
@@ -183,6 +184,7 @@ class Command(BaseCommand):
                 if not should_suppress_leaderboard(fulfiller.fulfiller_github_username):
                     index_terms.append(fulfiller.fulfiller_github_username)
             for keyword in b.keywords_list:
+                keyword = keyword.lower()
                 index_terms.append(keyword)
 
             index_terms.append(b.token_name)
@@ -208,22 +210,32 @@ class Command(BaseCommand):
             sum_tips(t, index_terms)
 
         # set old LR as inactive
-        for lr in LeaderboardRank.objects.filter(active=True):
-            lr.active = False
-            lr.save()
+        lrs = LeaderboardRank.objects.active()
+        lrs.update(active=False)
 
         # save new LR in DB
         for key, rankings in ranks.items():
             rank = 1
             for index_term, amount in sorted(rankings.items(), key=lambda x: x[1], reverse=True):
                 count = counts[key][index_term]
-                LeaderboardRank.objects.create(
-                    github_username=index_term,
-                    leaderboard=key,
-                    amount=amount,
-                    count=count,
-                    active=True,
-                    rank=rank,
-                )
+                lbr_kwargs = {
+                    'count': count,
+                    'active': True,
+                    'amount': amount,
+                    'rank': rank,
+                    'leaderboard': key,
+                    'github_username': index_term,
+                }
+
+                try:
+                    lbr_kwargs['profile'] = Profile.objects.get(handle__iexact=index_term)
+                except Profile.MultipleObjectsReturned:
+                    lbr_kwargs['profile'] = Profile.objects.filter(handle__iexact=index_term).latest('id')
+                    print(f'Multiple profiles found for username: {index_term}')
+                except Profile.DoesNotExist:
+                    print(f'No profiles found for username: {index_term}')
+
+                # TODO: Bucket LeaderboardRank objects and .bulk_create
+                LeaderboardRank.objects.create(**lbr_kwargs)
                 rank += 1
                 print(key, index_term, amount, count, rank)

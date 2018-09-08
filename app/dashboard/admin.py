@@ -47,6 +47,7 @@ class ActivityAdmin(admin.ModelAdmin):
 class TokenApprovalAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile']
     ordering = ['-id']
+    search_fields = ['profile__handle', 'token_name', 'token_address']
 
 
 class ToolVoteAdmin(admin.ModelAdmin):
@@ -67,7 +68,7 @@ class UserActionAdmin(admin.ModelAdmin):
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    raw_id_fields = ['user']
+    raw_id_fields = ['user', 'avatar']
     ordering = ['-id']
     search_fields = ['email', 'data']
     list_display = ['handle', 'created_on', 'github_created_on']
@@ -77,7 +78,10 @@ class TipAdmin(admin.ModelAdmin):
     raw_id_fields = ['recipient_profile', 'sender_profile']
     ordering = ['-id']
     readonly_fields = ['resend', 'claim']
-    search_fields = ['tokenName', 'comments_public', 'comments_priv', 'from_name', 'username', 'network', 'github_url', 'url', 'emails', 'from_address', 'receive_address']
+    search_fields = [
+        'tokenName', 'comments_public', 'comments_priv', 'from_name', 'username', 'network', 'github_url', 'url',
+        'emails', 'from_address', 'receive_address', 'ip', 'metadata'
+    ]
 
     def resend(self, instance):
         html = format_html('<a href="/_administration/email/new_tip/resend?pk={}">resend</a>', instance.pk)
@@ -95,7 +99,7 @@ class TipAdmin(admin.ModelAdmin):
                 html = format_html('<a href="{}">claim</a>', instance.receive_url)
             if instance.web3_type == 'v3':
                 html = format_html(f'<a href="{instance.receive_url_for_recipient}">claim as recipient</a>')
-        except:
+        except Exception:
             html = 'n/a'
         return html
 
