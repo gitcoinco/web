@@ -70,3 +70,6 @@ collectfast==0.6.2
 django-health-check==3.7.0
 elastic-apm==3.0.0
 Wand==0.4.4
+mkdocs==0.17.3
+pymdown-extensions==3.5
+mkdocs-material==2.7.3
