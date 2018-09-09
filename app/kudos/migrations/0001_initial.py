@@ -76,7 +76,7 @@ class Migration(migrations.Migration):
                 ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
                 ('modified_on', models.DateTimeField(default=economy.models.get_time)),
                 ('address', models.CharField(max_length=255, unique=True)),
-                ('profile', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, to='dashboard.Profile')),
+                ('profile', models.ForeignKey(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='kudos_wallets', to='dashboard.Profile')),
             ],
             options={
                 'abstract': False,

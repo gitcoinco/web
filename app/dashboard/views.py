@@ -1135,7 +1135,7 @@ def profile(request, handle):
         return TemplateResponse(request, 'profiles/profile.html')
 
     params = profile.to_dict()
-    params['wallet_addresses'] = [w.address for w in Wallet.objects.filter(profile=profile.id)]
+    params['wallet_addresses'] = [w.address for w in profile.kudos_wallets.all()]
     owned_kudos = Token.objects.filter(owner_address__in=params['wallet_addresses'])
     sent_kudos = Token.objects.filter(sent_from_address__in=params['wallet_addresses'])
 
@@ -1153,16 +1153,23 @@ def profile(request, handle):
         if new_wallet:
             try:
                 new_wallet.save()
-                wallets = [w.address for w in Wallet.objects.filter(profile=profile.id)]
+                wallets = profile.kudos_wallets.all()
+                if not profile.preferred_kudos_wallet:
+                    profile.preferred_kudos_wallet = wallets.first()
+                    logger.info(f'No profile.preferred_kudos_wallet found.  Setting it to {wallets.first().id}')
+                    profile.save()
+                wallet_addresses = [w.address for w in wallets]
                 msg = {
                     'status': 200,
                     'msg': 'Success!',
-                    'wallets': wallets,
+                    'wallets': wallet_addresses,
                 }
             except Exception as e:
-                msg = str(e)
-
-            logging.info(JsonResponse(msg))
+                logger.error(e)
+                msg = {
+                    'status': 500,
+                    'msg': 'Internal server error',
+                }
 
             return JsonResponse(msg)
 
