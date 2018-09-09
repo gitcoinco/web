@@ -17,22 +17,27 @@
 {% endcomment %}
 {% load i18n static %}
 {% block 'scripts' %}
-<script src="{% static "v2/js/ipfs-api.js" %}"></script>
-<script src="{% static "v2/js/ipfs.js" %}"></script>
-<script src="{% static "v2/js/tokens.js" %}"></script>
-<script src="{% static "v2/js/shared.js" %}"></script>
-<script src="{% static "v2/js/abi.js" %}"></script>
-<script src="{% static "v2/js/amounts.js" %}"></script>
-<script src="{% static "v2/js/secrets.min.js" %}"></script>
-<script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
-<script src="/static/v2/js/tokens_dynamic.js"></script>
-<script src="{% static "onepager/js/send.js" %}"></script>
-<script src="{% static "onepager/js/confetti.js" %}"></script>
-</script>
-
+  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/shared.js" %}"></script>
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/amounts.js" %}"></script>
+  <script src="{% static "v2/js/secrets.min.js" %}"></script>
+  <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "onepager/js/send.js" %}"></script>
+  <script src="{% static "onepager/js/confetti.js" %}"></script>
+  <script src="{% static "v2/js/user-search.js" %}"></script>
+  
 {% endblock %}
 <!-- Main -->
 {% block 'main' %}
+<style>
+  .send2 .navbar-network {
+    padding: 3px;
+  }
+</style>
 <div>
   <canvas id="world" style="position:absolute; top:0px; left: 0px;"></canvas>
 </div>
@@ -56,12 +61,12 @@
     </div>
     <div id="usd_amount"> &nbsp;</div>
     <div>
-      {% trans "To Github Username" %}:
-      <input type="text" placeholder="@username" id="username" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
+      <label for="">{% trans "To Github Username" %}:</label> <br>
+      <select id="username" class="username-search custom-select" style="max-width: 400px; margin-left: auto; margin-right: auto;"></select>
     </div>
     <div>
-        {% trans "From Github Username" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next=/tip">{% trans "Login" %}</a>) {%endif%}
-        <input type="text" placeholder="@username" id="fromName" value="{% if user.is_authenticated  %}{{ user }}{% endif %}" style="width: 400px; margin-left: auto; margin-right: auto; background-color: #eee;" disabled="disabled"  >
+      {% trans "From Github Username" %} {% if not request.user.is_authenticated %}(<a href="{% url 'social:begin' 'github' %}?next=/tip">{% trans "Login" %}</a>) {%endif%}
+      <input type="text" placeholder="@username" id="fromName" value="{% if user.is_authenticated  %}{{ user }}{% endif %}" style="max-width: 400px; margin-left: auto; margin-right: auto; background-color: #eee;" disabled="disabled"  >
     </div>
 
     <div id="advanced_toggle">
@@ -70,15 +75,15 @@
     <div id='advanced' style="display:none;">
       <div>
         {% trans "Related Github Issue URL" %} ({% trans "optional" %}):
-        <input type="text" placeholder="https://github.com/user/repo/pull|issues/n" id="issueURL" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
+        <input type="text" placeholder="https://github.com/user/repo/pull|issues/n" id="issueURL" value="" style="max-width: 400px; margin-left: auto; margin-right: auto;">
       </div>
       <div>
         {% trans "To Email address" %} ({% trans "optional" %}):
-        <input type="text" placeholder="foo@bar.it" id="email" value="" style="width: 400px; margin-left: auto; margin-right: auto;">
+        <input type="text" placeholder="foo@bar.it" id="email" value="" style="max-width: 400px; margin-left: auto; margin-right: auto;">
       </div>
       <div>
         {% trans "From Email" %} ({% trans "optional" %}):
-        <input type="text" placeholder="you@domain.co" id="fromEmail" value="{% if from_email %}{{ from_email }}{% endif %}" style="width: 400px; margin-left: auto; margin-right: auto;">
+        <input type="text" placeholder="you@domain.co" id="fromEmail" value="{% if from_email %}{{ from_email }}{% endif %}" style="max-width: 400px; margin-left: auto; margin-right: auto;">
       </div>
       <div>
         {% trans "Expires" %}:
@@ -108,6 +113,7 @@
       <label for="tos">{% blocktrans %}I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.{% endblocktrans %}</label>
     </div>
     <a href="#" id="send" class="button button--primary">{% trans "Send" %} <span class="emoji">⚡️</span></a>
+    <a style="display: block; margin-top: 20px;" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">Your transaction is secured by the Ethereum blockchain.  Learn more here.</a>
   </div>
   <div id="send_eth_done" style="display:none;">
     <h1>{% trans "Woo hoo!" %}</h1>

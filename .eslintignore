@@ -11,3 +11,4 @@ app/assets/onepager/js/confetti.js
 app/assets/v2/js/dataviz/*
 app/assets/v2/js/ethereumjs-accounts.js
 app/assets/onepager/js/tx.js
+app/assets/onepager/js/bignumber.js

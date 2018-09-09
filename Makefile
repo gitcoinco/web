@@ -3,9 +3,13 @@
 
 .PHONY: help
 
-PROJECT_DIR := $(subst -,, $(shell pwd | xargs basename))
-CONTAINER_NAME := $(addsuffix _web_1, $(PROJECT_DIR))
-WEB_CONTAINER_ID := $(shell docker inspect --format="{{.Id}}" $(CONTAINER_NAME))
+REPO_NAME := gitcoinco/web
+CONTAINER_NAME := $(addsuffix _web_1, $(subst -,, $(shell pwd | xargs basename)))
+SHA1 := $$(git log -1 --pretty=%h)
+GIT_TAG := ${REPO_NAME}:${SHA1}
+LATEST_TAG := ${REPO_NAME}:latest
+CURRENT_BRANCH := $$(git symbolic-ref -q --short HEAD)
+WEB_CONTAINER_ID := $$(docker inspect --format="{{.Id}}" ${CONTAINER_NAME})
 
 autotranslate: ## Automatically translate all untranslated entries for all LOCALES in settings.py.
 	@echo "Starting makemessages..."
@@ -18,6 +22,20 @@ autotranslate: ## Automatically translate all untranslated entries for all LOCAL
 	@echo "Starting compilemessages..."
 	@docker-compose exec web python3 app/manage.py compilemessages -f
 	@echo "Translation Completed!"
+
+build: ## Build the Gitcoin Web image.
+	@docker build \
+		--build-arg BUILD_DATETIME=`date -u +"%Y-%m-%dT%H:%M:%SZ"` \
+		--build-arg "SHA1=${SHA1}" \
+		${VERSION:+--build-arg "VERSION=$VERSION"} \
+		-t "${GIT_TAG}" .
+	@docker tag "${GIT_TAG}" "${LATEST_TAG}"
+
+login: ## Login to Docker Hub.
+	@docker log -u "${DOCKER_USER}" -p "${DOCKER_PASS}"
+
+push: ## Push the Docker image to the Docker Hub repository.
+	@docker push "${REPO_NAME}"
 
 collect-static: ## Collect newly added static resources from the assets directory.
 	@docker-compose exec web python3 app/manage.py collectstatic -i other
@@ -38,7 +56,7 @@ fix-stylelint: ## Run stylelint --fix against the project directory. Requires no
 	@npm run stylelint:fix
 
 fix-yapf: ## Run yapf against any included or newly introduced Python code.
-	@docker-compose exec web yapf -i -r -e "app/**/migrations/*.py" -p app/app/ app/avatar/ app/credits/ app/dataviz/ app/enssubdomain/ app/ethos/ app/github/
+	@docker-compose exec web yapf -i -r -e "app/**/migrations/*.py" -e "app/app/settings.py" -p app/app/ app/avatar/ app/credits/ app/dataviz/ app/enssubdomain/ app/ethos/ app/github/
 
 fix: fix-eslint fix-stylelint fix-isort fix-yapf ## Attempt to run all fixes against the project directory.
 
@@ -89,6 +107,14 @@ pgactivity: ## Run pg_activivty against the local postgresql instance.
 
 pgtop: ## Run pg_top against the local postgresql instance.
 	@docker-compose exec web scripts/pg_top.bash
+
+update_fork: ## Update the current fork master branch with upstream master.
+	@echo "Updating the current fork with the Gitcoin upstream master branch..."
+	@git checkout master
+	@git fetch upstream
+	@git merge upstream/master
+	@git push origin master
+	@echo "Updated!"
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

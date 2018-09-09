@@ -1,0 +1,174 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  {% include 'shared/head.html' %}
+  {% include 'shared/cards.html' %}
+  <link rel="stylesheet" href={% static "v2/css/submit_bounty.css" %}>
+</head>
+
+<body class="interior {{active}}" style="background-color: #FFFFFF;">
+  {% include 'shared/tag_manager_2.html' %}
+  <div class="container-fluid header dash">
+    {% include 'shared/nav.html' %}
+  </div>
+  <div class="container-fluid submit_bounty_content">
+    <div class="row no-gutters metamask-banner">
+      <div class="col-12">
+        {% include 'shared/no_issue_error.html' with page='submit_bounty' %}
+        {% include 'shared/no_metamask_error.html' %}
+        {% include 'shared/zero_balance_error.html' %}
+        {% include 'shared/unlock_metamask.html' %}
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 col-lg-12">
+        <div id="form_container">
+          <div class="row d-flex justify-content-center my-5">
+            <div id="robot_error" class="hidden">
+              <img src="{% static "v2/images/prime.png" %}">
+            </div>
+            <div id="primary_form" class="col-lg-7 col-sm-12">
+              <h1 class="text-center title">{% trans "Fund Issue" %}</h1>
+              <form id="submitBounty" class="submit_bounty_form px-5 pt-5">
+                <div id="about-section" class="pt-2">
+                  <h5 class="font-subheader">{% trans "About" %}</h5>
+                  <label class="form__label" for=issueURL>{% trans "Github Issue URL" %}</label>
+                  <input name='issueURL' id="issueURL" class="form__input" type="url" placeholder="https://github.com/user/repo/issues/n" value="{% if issueURL %}{{issueURL}}{%endif%}" required/>
+                  <div class="text-right mt-2">
+                    <p class="font-caption" id="last-synced">{% trans "Last Synced " %}<span></span></p>
+                    <button id="sync-issue" class="button button--primary disabled">
+                      {% trans "Sync with Github" %} <i class="fas fa-sync ml-1"></i>
+                    </button>
+                  </div>
+                  <div id="no-issue-banner" class="my-4">
+                    <img src="{% static "v2/images/bounty/no_issue.svg" %}">
+                  </div>
+                  <div id="issue-details" class="mt-4">
+                    <label class="form__label mb-0 mt-3" for="title">{% trans "Issue Title" %}</label>
+                    <input name='title' id="title"  class="form__input pb-3 pt-0 hidden" type="text" value="{{ issue_title }}" readonly/>
+                    <p id="title--text"></p>
+                    <label class="form__label" for="description">{% trans "Description" %}</label>
+                    <textarea name="description" class="form__input" id="description" readonly></textarea>
+                  </div>
+                  <div id="issue-details-edit" class="mt-2">
+                    <div class="text-right">
+                      <a id="edit-issue" class="button button--primary" href="#" target="_blank" rel="noopener noreferrer">
+                        {% trans "Edit on Github" %} <i class="fab fa-github ml-1"></i>
+                      </a>
+                    </div>
+                    <label class="form__label" for="keywords">{% trans "Keywords" %}</label>
+                    <input name='keywords' id='keywords'  class="form__input" type="text" value="{{keywords}}" />
+                  </div>
+                  <hr class="mt-4">
+                </div>
+                <div id="details-section" class="pt-2">
+                  {% include 'shared/issue_details.html' %}
+                  {% comment %}
+                  <!-- TODO: Re-enable this once we get clarification on what a Revision should entail -->
+                  <label class="form__label" for="revisions">{% trans "Revisions" %}</label>
+                  <div class="form__input revisions d-flex">
+                    <span class="form__input-action" id="subtractAction">-</span>
+                    <input name='revisions' type="text" value="1" step="1" min="1"/>
+                    <span class="form__input-action" id="addAction">+</span>
+                  </div>
+                  <hr class="mt-4"/>
+                  {% endcomment %}
+                </div>
+                <div id="deadline-section" class="pt-2">
+                  {% include 'shared/issue_deadline.html' %}
+                  <hr class="mt-4">
+                </div>
+                <div id="contact-section" class="pt-2">
+                  <h5 class="font-subheader">{% trans "Contact" %}</h5>
+                  {% include 'shared/github_username.html' %}
+                  {% include 'shared/notification_email.html' with show_information_publicly_checkbox=1 %}
+                  {% include 'shared/name.html' %}
+                  <div id="advanced_container"></div>
+                  <hr class="mt-4">
+                </div>
+                {% include 'shared/pricing.html' %}
+                <div class="w-100 mt-2">
+                  <label class="form__label" for="hiringRightNow">{% trans "Hiring right now?" %}</label>
+                  <div class="hiring_container">
+                    <div class="form__checkbox">
+                      <input name='hiringRightNow' id='hiringRightNow' type="checkbox" value=1 />
+                        <label class="form__label" for=hiringRightNow>{% trans "I am hiring for a full time, part time, or contract position, right now and would like Gitcoin to attach this job description to the bounty." %}
+                      </label>
+                    </div>
+                  <hr class="mt-4">
+                  </div>
+                  <input name='jobDescription' id='jobDescription' type="url" class="form__input hidden" type="text" placeholder="https://link.to/job/description" value="" />
+                </div>
+                <div id="gas-section" class="pt-2">
+                  <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h4>
+                  <div>
+                    {% include 'shared/bounty_actions_hidden_vars.html' %}
+                    {% include 'shared/wallet_estimate.html' %}
+                  </div>
+                </div>
+                <div class="terms_container pt-4">
+                  <div class="form__checkbox">
+                    <input name='terms' id='terms' type="checkbox" value=1 required />
+                      <label class="form__label" for=terms>{% trans "I have read, understand, and agree to, the" %}
+                        <a href="{% url "terms" %}" target="_blank" rel="noopener noreferrer">{% trans "Terms of Service" %}</a>.
+                    </label>
+                  </div>
+                </div>
+                <div class="w-100 mt-2 terms_container">
+                  <div class="form__checkbox">
+                    <input name='blockchain_tos' id='blockchain_tos' type="checkbox" value=1 required />
+                    <label class="form__label" for=blockchain_tos style="display: flex;">{% blocktrans %}I understand that this information is being submitted to a public, immutable, blockchain. No one, including
+                      Gitcoin Core, will be able to take my funds or change this information.{% endblocktrans %}</label>
+                  </div>
+                </div>
+                <div class="form__footer form__footer--right pb-5 text-center">
+                  <button class="button button--primary btn-block js-submit" type="submit">Fund Issue</button>
+                  <a class="font-caption" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">
+                    Your transaction is secured by the audited StandardBounties contract on the Ethereum blockchain.</br>
+                    Learn more here.
+                  </a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  {% include 'shared/bottom_notification.html' %}
+  {% include 'shared/analytics.html' %}
+  {% include 'shared/footer_scripts.html' %}
+  {% include 'shared/footer.html' %}
+  {% include 'shared/messages.html' %}
+</body>
+
+<!-- jQuery -->
+<script src="{% static "v2/js/ipfs-api.js" %}"></script>
+<script src="{% static "v2/js/ipfs.js" %}"></script>
+<script src="{% static "v2/js/amounts.js" %}"></script>
+<script src="{% static "v2/js/abi.js" %}"></script>
+<script src="/dynamic/js/tokens_dynamic.js"></script>
+<script src="{% static "v2/js/tokens.js" %}"></script>
+<script src="{% static "v2/js/shared.js" %}"></script>
+<script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+<script src="{% static "v2/js/pages/new_bounty.js" %}"></script>
+
+</html>

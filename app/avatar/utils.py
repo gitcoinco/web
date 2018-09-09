@@ -21,8 +21,10 @@ import json
 import logging
 import os
 from io import BytesIO
+from secrets import token_hex
 from tempfile import NamedTemporaryFile
 
+from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 
@@ -30,12 +32,12 @@ import requests
 from git.utils import get_user
 from PIL import Image, ImageOps
 from svgutils.compose import SVG, Figure, Line
+from wand.image import Image as WandImage
 
 AVATAR_BASE = 'assets/other/avatars/'
 COMPONENT_BASE = 'assets/v2/images/avatar/'
 
 logger = logging.getLogger(__name__)
-
 
 def get_avatar_context():
     return {
@@ -51,7 +53,7 @@ def get_avatar_context():
         }, {
             'name': 'Eyes',
             'title': 'Pick eyes shape',
-            'options': ('0', '1', '2', '3', '4')
+            'options': ('0', '1', '2', '3', '4', '5', '6')
         }, {
             'name': 'Nose',
             'title': 'Pick nose shape',
@@ -67,7 +69,7 @@ def get_avatar_context():
         }, {
             'name': 'Clothing',
             'title': 'Pick your clothing',
-            'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt')
+            'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater')
         }, {
             'name': 'Hair Style',
             'title': 'Pick a hairstyle',
@@ -98,10 +100,8 @@ def get_avatar_context():
 
 
 def get_upload_filename(instance, filename):
-    from secrets import token_hex
-    from os.path import basename
     salt = token_hex(16)
-    file_path = basename(filename)
+    file_path = os.path.basename(filename)
     return f"avatars/{getattr(instance, '_path', '')}/{salt}/{file_path}"
 
 
@@ -268,7 +268,7 @@ def handle_avatar_payload(request):
     body = json.loads(request.body)
     for k, v in body.items():
         if v and k in valid_component_keys:
-            component_type, svg_asset = v.lstrip('v2/images/avatar/').split('/')
+            component_type, svg_asset = v.lstrip(f'{settings.STATIC_URL}v2/images/avatar/').split('/')
             avatar_dict[k] = {'component_type': component_type, 'svg_asset': svg_asset, }
         elif v and k in valid_color_keys:
             avatar_dict[k] = v
@@ -382,3 +382,27 @@ def get_github_avatar(handle):
         return False
 
     return temp_avatar
+
+
+def convert_img(svg_obj, input_fmt='svg', output_fmt='png'):
+    """Convert an SVG to another format.
+
+    Args:
+        svg_obj (File): The SVG File/ContentFile.
+        fmt (str): The output format. Defaults to: png.
+
+    Returns:
+        BytesIO: The BytesIO stream containing the converted File data.
+        None: If there is an exception, the method returns None.
+
+    """
+    try:
+        svg_data = svg_obj.read()
+        with WandImage(blob=svg_data, format=input_fmt) as svg_img:
+            svg_img.format = output_fmt
+            tmpfile_io = BytesIO()
+            svg_img.save(file=tmpfile_io)
+            return tmpfile_io
+    except Exception as e:
+        logger.error(e)
+    return None

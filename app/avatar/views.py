@@ -79,7 +79,9 @@ def avatar(request):
 def save_avatar(request):
     """Save the Avatar configuration."""
     response = {'status': 200, 'message': 'Avatar saved'}
-    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile'):
+    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
+        request.user, 'profile', None
+    ):
         return JsonResponse({'status': 405, 'message': 'Authentication required'}, status=405)
 
     profile = request.user.profile
@@ -121,10 +123,9 @@ def handle_avatar(request, _org_name='', add_gitcoincologo=False):
         try:
             profile = Profile.objects.select_related('avatar').get(handle__iexact=_org_name)
             if profile.avatar:
-                if profile.avatar.use_github_avatar and profile.avatar.png:
-                    return HttpResponse(profile.avatar.png.file, content_type='image/png')
-                elif profile.avatar.svg and not profile.avatar.use_github_avatar:
-                    return HttpResponse(profile.avatar.svg.file, content_type='image/svg+xml')
+                avatar_file, content_type = profile.avatar.determine_response(request.GET.get('email', False))
+                if avatar_file:
+                    return HttpResponse(avatar_file, content_type=content_type)
         except Exception as e:
             logger.error(e)
 

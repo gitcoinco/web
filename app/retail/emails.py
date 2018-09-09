@@ -30,6 +30,7 @@ from django.utils.translation import gettext as _
 
 import cssutils
 import premailer
+from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
 
@@ -220,6 +221,39 @@ def render_admin_contact_funder(bounty, text, from_user):
     return response_html, response_txt
 
 
+def render_funder_stale(github_username, days=30, time_as_str='about a month'):
+    """Render the stale funder email template.
+
+    Args:
+        github_username (str): The Github username to be referenced in the email.
+        days (int): The number of days back to reference.
+        time_as_str (str): The human readable length of time to reference.
+
+    Returns:
+        str: The rendered response as a string.
+
+    """
+    github_username = f"@{github_username}" if github_username else "there"
+    response_txt = f"""
+hi {github_username},
+
+kevin from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}. in the spirit of making Gitcoin better + checking in:
+
+- has anything been slipping on your issue board which might be bounty worthy?
+- do you have any feedback for Gitcoin Core on how we might improve the product to fit your needs?
+
+our idea is that gitcoin should be a place you come when priorities stretch long, and you need an extra set of capable hands. curious if this fits what you're looking for these days.
+
+appreciate you being a part of the community and let me know if you'd like some Gitcoin schwag — just send over a mailing address and a t-shirt size and it'll come your way.
+
+~ kevin
+
+"""
+
+    params = {'txt': response_txt}
+    response_html = premailer_transform(render_to_string("emails/txt.html", params))
+    return response_html, response_txt
+
 
 def render_new_bounty(to_email, bounties, old_bounties):
     sub = get_or_save_email_subscriber(to_email, 'internal')
@@ -280,6 +314,18 @@ def render_new_bounty_rejection(to_email, bounty):
 
     response_html = premailer_transform(render_to_string("emails/new_bounty_rejection.html", params))
     response_txt = render_to_string("emails/new_bounty_rejection.txt", params)
+
+    return response_html, response_txt
+
+
+def render_bounty_changed(to_email, bounty):
+    params = {
+        'bounty': bounty,
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+    }
+
+    response_html = premailer_transform(render_to_string("emails/bounty_changed.html", params))
+    response_txt = render_to_string("emails/bounty_changed.txt", params)
 
     return response_html, response_txt
 
@@ -479,35 +525,38 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Crowdfund bounties with Gitcoin"
+    subject = "$60K In Funding For Web 3 Infrastructure Projects"
 
     intro = '''
 
 <p>
-    Hi there!
+Hi there,
 </p>
 <p>
-This week we published <a href="https://medium.com/gitcoin/everything-you-need-to-know-about-gitcoin-fe2e3e292a21">Everything You Need to Know About Gitcoin</a>
-This piece is a one stop shop for all things Gitcoin. We explain how Gitcoin works, what progress we’ve made, what cool things we’ve built, who we’ve worked with, and where we’re going next.
-This post will be subsequently pinned to our Medium and updated monthly to keep our community up to date on all things Gitcoin.
+We're excited to formally announce an expansion of our ECF Partnership, bringing $60K in funding to the <a href="https://medium.com/@mitchkosowski/cbe1d2d1c071">Ethereum Infrastructure layer</a>!
+As stated in the article, if you know of any open source projects / specific Github issues which could use some funding, <a href="https://gitcoin.co/requests">make a Gitcoin Request</a> and comment 'ECF'.
+We're very excited to make it easy to contribute to the ecosystem, while getting paid.
 </p>
-
 <p>
-We also launched two new features! The first is <a href="https://medium.com/gitcoin/crowdfunding-bounties-fd821b04309d">Crowdfunding Bounties on Gitcoin.</a>
-This feature now allows anyone to contribute to funding a bounty with either social capital or physical funds.
-The second feature addition is that funders now have the ability to <a href="https://medium.com/gitcoin/crowdfunding-bounties-fd821b04309d">pay out multiple contributors at once.</a>
-Simply add their Github username on the ‘Advanced Payout’ screen and denominate their percent of the bounty total.
+We're still working with the Ethereum Foundation to find the best and brightest developers to get involved directly on Ethereum's
+codebase. We'd love to hear from you. If you have experience building out test cases and are familiar with consensus systems,
+join #focus-dev-testing <a href="https://gitcoin.co/slack">on Gitcoin Slack</a>.
 </p>
 
 <h3>What else is new?</h3>
     <ul>
         <li>
-The <a href="http://gitcoin.co/livestream">Gitcoin Livestream</a> is back! Today at 5pm we'll be joined by Mark Beylin of Bounties Network as well as Chris Slaughter from Samsa.ai
+        <a href="https://medium.com/gitcoin/embarking-into-web-3-f46408b23f59">Our Status partnership</a> is off to a hot start, with all 14 of the initial bounties picked up in 6 hours.
+        Be on the lookout for the seconds batch sometime next week!
         </li>
         <li>
-Our livestreams with Matt Lockyer of ERC-998 protocol and Dave & Chris of Deco Network are now live on the <a href="https://www.youtube.com/channel/UCeKRqRjzSzq5yP-zUPwc6_w">Gitcoin Youtube channel.</a>
+        There have now been 20 Gitcoin Requests for over $5,000! Do you have a Github issue you want solved? Make <a href="https://gitcoin.co/requests">a Gitcoin Request</a> and we'll review in 24 hours.
+        If you're a developer and you see a 'Good First Issue' you'd work on for a bounty, <a href="https://gitcoin.co/requests">let us know</a>! Gitcoin Requests
+        is a way for developers and maintainers to make their voice heard.
         </li>
-
+        <li>
+        No Gitcoin Livestream this week, but we're excited <a href="https://gitcoin.co/livestream">to be back next week</a> at 5PM ET. Have a great weekend!
+        </li>
     </ul>
 </p>
 <p>
@@ -516,45 +565,62 @@ Back to BUIDLing,
 '''
     highlights = [
         {
-            'who': 'scsaba',
+            'who': 'eiselems',
             'who_link': True,
-            'what': 'Helped implement browser notifications on MetaMask!',
-            'link': 'https://gitcoin.co/issue/MetaMask/metamask-extension/4203/836',
+            'what': 'Completed the first Status Embark bounty in 48 hours!',
+            'link': 'https://gitcoin.co/issue/embark-framework/embark/765/1089',
             'link_copy': 'View more',
         },
         {
-            'who': 'aerophile',
+            'who': 'lastmjs',
             'who_link': True,
-            'what': 'Crafted up a blog post on Ethereum Gas and it’s fluctuations.',
-            'link': 'https://gitcoin.co/issue/gitcoinco/web/1751/791',
+            'what': 'Worked with Piper and Carver at the Ethereum Foundation on web3py.',
+            'link': 'https://gitcoin.co/issue/ethereum/web3.py/962/1036',
             'link_copy': 'View more',
         },
         {
-            'who': 'StevenJNPearce',
+            'who': 'bakaoh',
             'who_link': True,
-            'what': 'Fixed the collateral deposit, withdraw, and settlement return on MarketProtocol.',
-            'link': 'https://gitcoin.co/issue/MARKETProtocol/MARKET.js/106/856',
+            'what': 'Back at it, this time on the OmiseGO Plasma MVP repo.',
+            'link': 'https://gitcoin.co/issue/omisego/plasma-mvp/170/967',
             'link_copy': 'View more',
         },
     ]
 
     bounties_spec = [
         {
-            'url': 'https://github.com/zeppelinos/zos-cli/issues/320',
-            'primer': 'Help Zeppelin OS fix the logic contract kill switch bug',
+            'url': 'https://github.com/ethereum-alarm-clock/timenode-core/issues/194',
+            'primer': 'Work on Ethereum Alarm Clock, a project for transactions into the future!',
         },
         {
-            'url': 'https://github.com/gitcoinco/web/issues/1822',
-            'primer': 'Fix an issue with non-Github links not working on Gitcoin bounties',
+            'url': 'https://github.com/prysmaticlabs/prysm/issues/437',
+            'primer': 'Work on Sharding with the Prysmatic Labs folks!',
         },
         {
-            'url': 'https://github.com/livepeer/livepeerjs/issues/155',
-            'primer': 'Assist Livepeer in fixing a loading bug in Mist browser',
+            'url': 'https://github.com/zeppelinos/zos/issues/37',
+            'primer': 'Great bounty for the ecosystem from the Zeppelin team.',
         },
     ]
 
+    num_leadboard_items = 5
     #### don't need to edit anything below this line
-
+    leaderboard = {
+        'quarterly_payers': {
+            'title': _('Top Payers'),
+            'items': [],
+        },
+        'quarterly_earners': {
+            'title': _('Top Earners'),
+            'items': [],
+        },
+        'quarterly_orgs': {
+            'title': _('Top Orgs'),
+            'items': [],
+        },
+    }
+    for key, __ in leaderboard.items():
+        leaderboard[key]['items'] = LeaderboardRank.objects.active() \
+            .filter(leaderboard=key).order_by('rank')[0:num_leadboard_items]
 
     bounties = []
     for nb in bounties_spec:
@@ -566,7 +632,7 @@ Back to BUIDLing,
                 bounties.append({
                     'obj': bounty,
                     'primer': nb['primer']
-                    })
+                })
         except Exception as e:
             print(e)
 
@@ -576,6 +642,7 @@ Back to BUIDLing,
         'intro': intro,
         'intro_txt': strip_double_chars(strip_double_chars(strip_double_chars(strip_html(intro), ' '), "\n"), "\n "),
         'bounties': bounties,
+        'leaderboard': leaderboard,
         'ecosystem_bounties': ecosystem_bounties,
         'invert_footer': False,
         'hide_header': False,
@@ -640,8 +707,8 @@ def resend_new_tip(request):
 @staff_member_required
 def new_bounty(request):
     from dashboard.models import Bounty
-    bounties = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3]
-    old_bounties = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3]
+    bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
+    old_bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
     response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties)
     return HttpResponse(response_html)
 
@@ -649,7 +716,7 @@ def new_bounty(request):
 @staff_member_required
 def new_work_submission(request):
     from dashboard.models import Bounty
-    bounty = Bounty.objects.filter(idx_status='submitted', current_bounty=True).last()
+    bounty = Bounty.objects.current().filter(idx_status='submitted').last()
     response_html, _ = render_new_work_submission(settings.CONTACT_EMAIL, bounty)
     return HttpResponse(response_html)
 
@@ -671,7 +738,27 @@ def new_bounty_acceptance(request):
 @staff_member_required
 def bounty_feedback(request):
     from dashboard.models import Bounty
-    response_html, _ = render_bounty_feedback(Bounty.objects.filter(idx_status='done', current_bounty=True).last(), 'foo')
+    response_html, _ = render_bounty_feedback(Bounty.objects.current().filter(idx_status='done').last(), 'foo')
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def funder_stale(request):
+    """Display the stale funder email template.
+
+    Params:
+        limit (int): The number of days to limit the scope of the email to.
+        duration_copy (str): The copy to use for associated duration text.
+        username (str): The Github username to reference in the email.
+
+    Returns:
+        HttpResponse: The HTML version of the templated HTTP response.
+
+    """
+    limit = int(request.GET.get('limit', 30))
+    duration_copy = request.GET.get('duration_copy', 'about a month')
+    username = request.GET.get('username', '@foo')
+    response_html, _ = render_funder_stale(username, limit, duration_copy)
     return HttpResponse(response_html)
 
 

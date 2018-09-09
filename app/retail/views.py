@@ -18,19 +18,22 @@
 '''
 from os import walk as walkdir
 
-from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.core.validators import validate_email
-from django.http import Http404, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.models import Activity, Bounty
+from app.utils import get_default_network
+from cacheops import cached_as, cached_view, cached_view_as
+from dashboard.models import Activity
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
 from marketing.mails import new_token_request
@@ -41,10 +44,13 @@ from retail.helpers import get_ip
 from .utils import build_stat_results, programming_languages
 
 
+@cached_as(
+    Activity.objects.select_related('bounty').filter(bounty__network='mainnet').order_by('-created'),
+    timeout=120)
 def get_activities(tech_stack=None, num_activities=15):
     # get activity feed
 
-    activities = Activity.objects.filter(bounty__network='mainnet').order_by('-created')
+    activities = Activity.objects.select_related('bounty').filter(bounty__network='mainnet').order_by('-created')
     if tech_stack:
         activities = activities.filter(bounty__metadata__icontains=tech_stack)
     activities = activities[0:num_activities]
@@ -98,9 +104,10 @@ def index(request):
         'gitcoin_description': gitcoin_description,
         'newsletter_headline': _("Get the Latest Gitcoin News! Join Our Newsletter.")
     }
-    return TemplateResponse(request, 'index.html', context)
+    return TemplateResponse(request, 'landing/funder.html', context)
 
 
+@cached_view(timeout=60 * 10)
 def contributor_landing(request, tech_stack):
 
     slides = [
@@ -214,7 +221,7 @@ def contributor_landing(request, tech_stack):
 
     available_bounties_count = open_bounties().count()
     available_bounties_worth = amount_usdt_open_work()
-
+    # tech_stack = '' #uncomment this if you wish to disable contributor specific LPs
     context = {
         'activities': get_activities(tech_stack),
         'title': tech_stack.title() + str(_(" Open Source Opportunities")) if tech_stack else "Open Source Opportunities",
@@ -231,7 +238,7 @@ def contributor_landing(request, tech_stack):
         'tech_stack': tech_stack,
     }
 
-    return TemplateResponse(request, 'contributor_landing.html', context)
+    return TemplateResponse(request, 'landing/contributor.html', context)
 
 
 def how_it_works(request, work_type):
@@ -242,13 +249,17 @@ def how_it_works(request, work_type):
     context = {
         'active': f'how_it_works_{work_type}',
     }
-    return TemplateResponse(request, 'how_it_works.html', context)
+    return TemplateResponse(request, 'how_it_works/index.html', context)
 
 
 def robotstxt(request):
-    return TemplateResponse(request, 'robots.txt', {})
+    context = {
+        'settings': settings,
+    }
+    return TemplateResponse(request, 'robots.txt', context, content_type='text')
 
 
+@cached_view(timeout=60 * 10)
 def about(request):
     core_team = [
         (
@@ -334,14 +345,14 @@ def about(request):
     exclude_community = ['kziemiane', 'owocki', 'mbeacom']
     community_members = [
     ]
-    leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount')[0: 15]
+    leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount').cache()[0: 15]
     for lr in leadeboardranks:
         package = (lr.avatar_url, lr.github_username, lr.github_username, '')
         community_members.append(package)
 
     alumnis = [
     ]
-    for alumni in Alumni.objects.select_related('profile').filter(public=True).exclude(organization='gitcoinco'):
+    for alumni in Alumni.objects.select_related('profile').filter(public=True).exclude(organization='gitcoinco').cache():
         package = (alumni.profile.avatar_url, alumni.profile.username, alumni.profile.username, alumni.organization)
         alumnis.append(package)
 
@@ -383,6 +394,20 @@ def vision(request):
     return TemplateResponse(request, 'vision.html', context)
 
 
+def not_a_token(request):
+    """Render the not_a_token response."""
+    context = {
+        'is_outside': True,
+        'active': 'not_a_token',
+        'avatar_url': static('v2/images/no-token/no-token.jpg'),
+        'title': 'Gitcoin is not a token',
+        'card_title': _("Gitcoin is not a token"),
+        'card_desc': _("We didn't do a token because we felt it wasn't the right way to align incentives with our user base.  Read more about the future of monetization in web3."),
+    }
+    return TemplateResponse(request, 'not_a_token.html', context)
+
+
+@cached_view(timeout=60 * 10)
 def results(request, keyword=None):
     """Render the Results response."""
     if keyword and keyword not in programming_languages:
@@ -392,6 +417,7 @@ def results(request, keyword=None):
     return TemplateResponse(request, 'results.html', context)
 
 
+@cached_view_as(Activity.objects.all().order_by('-created'))
 def activity(request):
     """Render the Activity response."""
 
@@ -776,7 +802,7 @@ def presskit(request):
             "#FFFFFF",
             "23, 244, 238"
         ),
-        ]
+    ]
 
     context = {
         'brand_colors': brand_colors,
@@ -788,7 +814,7 @@ def presskit(request):
 
 def get_gitcoin(request):
     context = {
-        'active': 'get',
+        'active': 'get_gitcoin',
         'title': _('Get Started'),
     }
     return TemplateResponse(request, 'getgitcoin.html', context)
@@ -820,7 +846,7 @@ def error(request, code):
 
     if return_as_json:
         return JsonResponse(context, status=500)
-    return TemplateResponse(request, 'error.html', context)
+    return TemplateResponse(request, 'error.html', context, status=code)
 
 
 def portal(request):
@@ -936,7 +962,6 @@ def newtoken(request):
                 context['msg'] = str(_('You must provide the following fields: ')) + key
                 validtion_passed = False
         if validtion_passed:
-            ip = get_ip(request)
             obj = Token.objects.create(
                 address=request.POST['address'],
                 symbol=request.POST['symbol'],
@@ -999,6 +1024,7 @@ def web3(request):
     return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')
 
 
+@cached_view_as(Token.objects.filter(network=get_default_network, approved=True))
 def tokens(request):
     context = {}
     networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']
@@ -1012,7 +1038,7 @@ def ui(request):
     svgs = []
     pngs = []
     gifs = []
-    for path, dirs, files in walkdir('assets/v2/images'):
+    for path, __, files in walkdir('assets/v2/images'):
         if path.find('/avatar') != -1:
             continue
         for f in files:
@@ -1035,3 +1061,7 @@ def ui(request):
         'gifs': gifs,
     }
     return TemplateResponse(request, 'ui_inventory.html', context)
+
+
+def lbcheck(request):
+    return HttpResponse(status=200)

@@ -17,13 +17,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import os
 import socket
 
 from django.http import Http404
 from django.utils.translation import gettext_noop
 
 import environ
-import rollbar
+import raven
 from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
 
 root = environ.Path(__file__) - 2  # Set the base directory to two levels.
@@ -59,8 +60,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'whitenoise.runserver_nostatic',
+    'collectfast',  # Collectfast | static file collector
     'django.contrib.staticfiles',
+    'cacheops',
     'storages',
     'social_django',
     'cookielaw',
@@ -70,6 +72,13 @@ INSTALLED_APPS = [
     'autotranslate',
     'django_extensions',
     'easy_thumbnails',
+    'raven.contrib.django.raven_compat',
+    'health_check',
+    'health_check.db',
+    'health_check.cache',
+    'health_check.storage',
+    'health_check.contrib.psutil',
+    'health_check.contrib.s3boto3_storage',
     'app',
     'avatar',
     'retail',
@@ -91,13 +100,15 @@ INSTALLED_APPS = [
     'external_bounties',
     'dataviz',
     'impersonate',
+    'bounty_requests'
 ]
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'app.middleware.drop_accept_langauge',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -108,9 +119,6 @@ MIDDLEWARE = [
     'social_django.middleware.SocialAuthExceptionMiddleware',
     'impersonate.middleware.ImpersonateMiddleware',
 ]
-
-CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', )
 
 ROOT_URLCONF = env('ROOT_URLCONF', default='app.urls')
 
@@ -164,6 +172,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': []
 }
 
+AUTH_USER_MODEL = 'auth.User'
+
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 LANGUAGE_CODE = env('LANGUAGE_CODE', default='en-us')
@@ -182,40 +192,85 @@ LANGUAGES = [
     ('it', gettext_noop('Italian')),
     ('ko', gettext_noop('Korean')),
     ('pl', gettext_noop('Polish')),
+    ('ja', gettext_noop('Japanese')),
     ('zh-hans', gettext_noop('Simplified Chinese')),
     ('zh-hant', gettext_noop('Traditional Chinese')),
 ]
 
+# Elastic APM
+ENABLE_APM = env.bool('ENABLE_APM', default=False)
+if ENABLE_APM:
+    INSTALLED_APPS += ['elasticapm.contrib.django', ]
+    MIDDLEWARE.append('elasticapm.contrib.django.middleware.TracingMiddleware')
+    APM_SECRET_TOKEN = env.str('APM_SECRET_TOKEN', default='')
+    ELASTIC_APM = {
+        'SERVICE_NAME': env.str('APM_SERVICE_NAME', default=f'{ENV}-web'),
+        'SERVER_URL': env.str('APM_SERVER_URL', default='http://localhost:8200'),
+    }
+    if APM_SECRET_TOKEN:
+        ELASTIC_APM['SECRET_TOKEN'] = APM_SECRET_TOKEN
+    if DEBUG and ENV == 'stage':
+        ELASTIC_APM['DEBUG'] = True
+
 if ENV not in ['local', 'test']:
     LOGGING = {
         'version': 1,
-        'disable_existing_loggers': False,
-        'filters': {
-            'require_debug_is_false': {
-                '()': 'django.utils.log.RequireDebugFalse'
+        'disable_existing_loggers': True,
+        'root': {
+            'level': 'WARNING',
+            'handlers': ['sentry'],
+        },
+        'formatters': {
+            'verbose': {
+                'format': '%(levelname)s %(asctime)s %(module)s '
+                          '%(process)d %(thread)d %(message)s'
             },
         },
         'handlers': {
-            'rotatingfilehandler': {
-                'level': 'DEBUG',
-                'class': 'logging.handlers.RotatingFileHandler',
-                'filename': '/var/log/django/debug.log',
-                'maxBytes': 1024 * 1024 * 10,  # 10 MB
-                'backupCount': 100,  # max 100 logs
+            'sentry': {
+                'level': 'ERROR',  # To capture more than ERROR, change to WARNING, INFO, etc.
+                'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
             },
+            'console': {
+                'level': 'DEBUG',
+                'class': 'logging.StreamHandler',
+                'formatter': 'verbose'
+            }
         },
         'loggers': {
-            'django': {
-                'handlers': ['rotatingfilehandler', ],
-                'propagate': True,
-                'filters': ['require_debug_is_false'],
+            'django.db.backends': {
+                'level': 'WARN',
+                'handlers': ['console'],
+                'propagate': False,
+            },
+            'raven': {
+                'level': 'DEBUG',
+                'handlers': ['console'],
+                'propagate': False,
+            },
+            'sentry.errors': {
+                'level': 'DEBUG',
+                'handlers': ['console'],
+                'propagate': False,
             },
         },
     }
 
-    LOGGING['loggers']['django.request'] = LOGGING['loggers']['django']
+    if ENABLE_APM:
+        LOGGING['handlers']['elasticapm'] = {
+            'level': 'WARNING',
+            'class': 'elasticapm.contrib.django.handlers.LoggingHandler',
+        }
+        LOGGING['loggers']['elasticapm.errors'] = {
+            'level': 'ERROR',
+            'handlers': ['sentry', 'console'],
+            'propagate': False,
+        }
+        LOGGING['root']['handlers'] = ['sentry', 'elasticapm']
+
+    LOGGING['loggers']['django.request'] = LOGGING['loggers']['django.db.backends']
     for ia in INSTALLED_APPS:
-        LOGGING['loggers'][ia] = LOGGING['loggers']['django']
+        LOGGING['loggers'][ia] = LOGGING['loggers']['django.db.backends']
 else:
     LOGGING = {}
 
@@ -223,12 +278,30 @@ GEOIP_PATH = env('GEOIP_PATH', default='/usr/share/GeoIP/')
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.static_storage.SilentFileStorage')
 STATICFILES_DIRS = env.tuple('STATICFILES_DIRS', default=('assets/', ))
 STATIC_ROOT = root('static')
+STATICFILES_LOCATION = env.str('STATICFILES_LOCATION', default='static')
+MEDIAFILES_LOCATION = env.str('MEDIAFILES_LOCATION', default='media')
 
-STATIC_HOST = env('STATIC_HOST', default='')
-STATIC_URL = STATIC_HOST + env('STATIC_URL', default='/static/')
+if ENV in ['prod', 'stage']:
+    DEFAULT_FILE_STORAGE = env('DEFAULT_FILE_STORAGE', default='app.static_storage.MediaFileStorage')
+    THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
+    STATICFILES_STORAGE = env('STATICFILES_STORAGE', default='app.static_storage.SilentFileStorage')
+    STATIC_HOST = env('STATIC_HOST', default='https://s.gitcoin.co/')
+    STATIC_URL = STATIC_HOST + env('STATIC_URL', default=f'{STATICFILES_LOCATION}{"/" if STATICFILES_LOCATION else ""}')
+    MEDIA_URL = env(
+        'MEDIA_URL', default=f'https://c.gitcoin.co/{MEDIAFILES_LOCATION}{"/" if MEDIAFILES_LOCATION else ""}'
+    )
+else:
+    # Handle local static file storage
+    STATIC_HOST = BASE_URL
+    STATIC_URL = env('STATIC_URL', default=f'/{STATICFILES_LOCATION}/')
+    # Handle local media file storage
+    MEDIA_ROOT = root('media')
+    MEDIA_URL = env('MEDIA_URL', default=f'/{MEDIAFILES_LOCATION}/')
+
+COMPRESS_ROOT = STATIC_ROOT
+COMPRESS_ENABLED = env.bool('COMPRESS_ENABLED', default=True)
 
 THUMBNAIL_PROCESSORS = easy_thumbnails_defaults.THUMBNAIL_PROCESSORS + ('app.thumbnail_processors.circular_processor', )
 
@@ -246,7 +319,77 @@ THUMBNAIL_ALIASES = {
     }
 }
 
-CACHES = {'default': env.cache()}
+CACHEOPS_DEGRADE_ON_FAILURE = env.bool('CACHEOPS_DEGRADE_ON_FAILURE', default=True)
+CACHEOPS_REDIS = env.str('CACHEOPS_REDIS', default='redis://redis:6379/0')
+CACHEOPS_DEFAULTS = {
+    'timeout': 60 * 60
+}
+
+# 'all' is an alias for {'get', 'fetch', 'count', 'aggregate', 'exists'}
+CACHEOPS = {
+    '*.*': {
+        'timeout': 60 * 60,
+    },
+    'auth.user': {
+        'ops': 'get',
+        'timeout': 60 * 15,
+    },
+    'auth.group': {
+        'ops': 'get',
+        'timeout': 60 * 15,
+    },
+    'auth.*': {
+        'ops': ('fetch', 'get'),
+        'timeout': 60 * 60,
+    },
+    'auth.permission': {
+        'ops': 'all',
+        'timeout': 60 * 15,
+    },
+    'dashboard.activity': {
+        'ops': 'all',
+        'timeout': 60 * 5,
+    },
+    'dashboard.bounty': {
+        'ops': ('get', 'fetch', 'aggregate'),
+        'timeout': 60 * 5,
+    },
+    'dashboard.tip': {
+        'ops': ('get', 'fetch', 'aggregate'),
+        'timeout': 60 * 5,
+    },
+    'dashboard.profile': {
+        'ops': ('get', 'fetch', 'aggregate'),
+        'timeout': 60 * 5,
+    },
+    'dashboard.*': {
+        'ops': ('fetch', 'get'),
+        'timeout': 60 * 30,
+    },
+    'economy.*': {
+        'ops': 'all',
+        'timeout': 60 * 60,
+    },
+    'gas.*': {
+        'ops': 'all',
+        'timeout': 60 * 10,
+    }
+}
+
+DJANGO_REDIS_IGNORE_EXCEPTIONS = env.bool('REDIS_IGNORE_EXCEPTIONS', default=True)
+DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = env.bool('REDIS_LOG_IGNORED_EXCEPTIONS', default=True)
+COLLECTFAST_CACHE = env('COLLECTFAST_CACHE', default='collectfast')
+COLLECTFAST_DEBUG = env.bool('COLLECTFAST_DEBUG', default=False)
+
+CACHES = {
+    'default': env.cache(
+        'REDIS_URL',
+        default='rediscache://redis:6379/0?client_class=django_redis.client.DefaultClient'
+    ),
+    COLLECTFAST_CACHE: env.cache('COLLECTFAST_CACHE_URL', default='dbcache://collectfast'),
+    'legacy': env.cache('CACHE_URL', default='dbcache://my_cache_table'),
+}
+CACHES[COLLECTFAST_CACHE]['OPTIONS'] = {'MAX_ENTRIES': 1000}
 
 # HTTPS Handling
 SECURE_HSTS_INCLUDE_SUBDOMAINS = env.bool('SECURE_HSTS_INCLUDE_SUBDOMAINS', default=True)
@@ -285,9 +428,9 @@ IMAP_EMAIL = env('IMAP_EMAIL', default='<email>')
 IMAP_PASSWORD = env('IMAP_PASSWORD', default='<password>')
 
 # Mailchimp Integration
-MAILCHIMP_USER = env('MAILCHIMP_USER', default='')
-MAILCHIMP_API_KEY = env('MAILCHIMP_API_KEY', default='')
-MAILCHIMP_LIST_ID = env('MAILCHIMP_LIST_ID', default='')
+MAILCHIMP_USER = env.str('MAILCHIMP_USER', default='')
+MAILCHIMP_API_KEY = env.str('MAILCHIMP_API_KEY', default='')
+MAILCHIMP_LIST_ID = env.str('MAILCHIMP_LIST_ID', default='')
 
 # Github
 GITHUB_API_BASE_URL = env('GITHUB_API_BASE_URL', default='https://api.github.com')
@@ -331,7 +474,7 @@ if GITCOIN_BOT_CERT_PATH:
     with open(str(root.path(GITCOIN_BOT_CERT_PATH))) as f:
         SECRET_KEYSTRING = f.read()
 
-GITCOIN_SLACK_ICON_URL = 'https://gitcoin.co/static/v2/images/helmet.png'
+GITCOIN_SLACK_ICON_URL = 'https://s.gitcoin.co/static/v2/images/helmet.png'
 
 # Twitter Integration
 TWITTER_CONSUMER_KEY = env('TWITTER_CONSUMER_KEY', default='')  # TODO
@@ -370,38 +513,19 @@ GOOGLE_ANALYTICS_AUTH_JSON = {
 }
 HOTJAR_CONFIG = {'hjid': env.int('HOTJAR_ID', default=0), 'hjsv': env.int('HOTJAR_SV', default=0), }
 
-# Rollbar - https://rollbar.com/docs/notifier/pyrollbar/#django
-ROLLBAR_CLIENT_TOKEN = env('ROLLBAR_CLIENT_TOKEN', default='')  # post_client_item
-ROLLBAR_SERVER_TOKEN = env('ROLLBAR_SERVER_TOKEN', default='')  # post_server_item
-if ROLLBAR_SERVER_TOKEN and ENV not in ['local', 'test']:
-    # Handle rollbar initialization.
-    ROLLBAR = {
-        'access_token': ROLLBAR_SERVER_TOKEN,
-        'environment': ENV,
-        'root': BASE_DIR,
-        'patch_debugview': False,  # Disable debug view patching.
-        'branch': 'master',
-        'exception_level_filters': [(Http404, 'ignored')],
-        'capture_ip': 'anonymize',
-        'capture_username': True,
-        'scrub_fields': [
-            'pw', 'passwd', 'password', 'secret', 'confirm_password', 'confirmPassword', 'password_confirmation',
-            'passwordConfirmation', 'access_token', 'accessToken', 'auth', 'authentication', 'github_access_token',
-            'github_client_secret', 'secret_key', 'twitter_access_token', 'twitter_access_secret',
-            'twitter_consumer_secret', 'mixpanel_token', 'slack_verification_token', 'redirect_state', 'slack_token',
-            'priv_key',
-        ],
+# Sentry
+SENTRY_USER = env('SENTRY_USER', default='')
+SENTRY_PASSWORD = env('SENTRY_PASSWORD', default='')
+SENTRY_ADDRESS = env('SENTRY_ADDRESS', default='')
+SENTRY_JS_DSN = env.str('SENTRY_JS_DSN', default='')
+SENTRY_PROJECT = env('SENTRY_PROJECT', default='')
+RELEASE = raven.fetch_git_sha(os.path.abspath(os.pardir)) if SENTRY_USER else ''
+RAVEN_JS_VERSION = env.str('RAVEN_JS_VERSION', default='3.26.4')
+if SENTRY_ADDRESS and SENTRY_PROJECT:
+    RAVEN_CONFIG = {
+        'dsn': f'https://{SENTRY_USER}:{SENTRY_PASSWORD}@{SENTRY_ADDRESS}/{SENTRY_PROJECT}',
+        'release': RELEASE,
     }
-    MIDDLEWARE.append('rollbar.contrib.django.middleware.RollbarNotifierMiddleware')
-    REST_FRAMEWORK['EXCEPTION_HANDLER'] = 'rollbar.contrib.django_rest_framework.post_exception_handler'
-    # LOGGING['handlers']['rollbar'] = {
-    #     'filters': ['require_debug_false'],
-    #     'access_token': ROLLBAR_SERVER_TOKEN,
-    #     'environment': ENV,
-    #     'class': 'rollbar.logger.RollbarHandler',
-    # }
-    # LOGGING['loggers']['django']['handlers'].append('rollbar')
-    rollbar.init(**ROLLBAR)
 
 # List of github usernames to not count as comments on an issue
 IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
@@ -411,25 +535,30 @@ AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
 
 AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='')
-AWS_S3_OBJECT_PARAMETERS = env.dict('AWS_S3_OBJECT_PARAMETERS', default={'CacheControl': 'max-age=86400'})
+AWS_S3_CACHE_MAX_AGE = env.str('AWS_S3_CACHE_MAX_AGE', default='15552000')
+AWS_QUERYSTRING_EXPIRE = env.int('AWS_QUERYSTRING_EXPIRE', default=3600)
+AWS_S3_ENCRYPTION = env.bool('AWS_S3_ENCRYPTION', default=False)
+AWS_S3_OBJECT_PARAMETERS = env.dict('AWS_S3_OBJECT_PARAMETERS', default=None)
 S3_USE_SIGV4 = env.bool('S3_USE_SIGV4', default=True)
 AWS_IS_GZIPPED = env.bool('AWS_IS_GZIPPED', default=True)
 AWS_S3_REGION_NAME = env('AWS_S3_REGION_NAME', default='us-west-2')
 AWS_S3_SIGNATURE_VERSION = env('AWS_S3_SIGNATURE_VERSION', default='s3v4')
 AWS_QUERYSTRING_AUTH = env.bool('AWS_QUERYSTRING_AUTH', default=False)
 AWS_S3_FILE_OVERWRITE = env.bool('AWS_S3_FILE_OVERWRITE', default=True)
-# AWS_S3_CUSTOM_DOMAIN = env('AWS_S3_CUSTOM_DOMAIN', default='assets.gitcoin.co')
+AWS_PRELOAD_METADATA = env.bool('AWS_PRELOAD_METADATA', default=True)
+AWS_S3_CUSTOM_DOMAIN = env('AWS_S3_CUSTOM_DOMAIN', default='s.gitcoin.co')
+MEDIA_BUCKET = env.str('MEDIA_BUCKET', default=AWS_STORAGE_BUCKET_NAME)
+MEDIA_CUSTOM_DOMAIN = env('MEDIA_CUSTOM_DOMAIN', default='c.gitcoin.co')
+AWS_DEFAULT_ACL = env('AWS_DEFAULT_ACL', default='public-read')
+if not AWS_S3_OBJECT_PARAMETERS:
+    AWS_S3_OBJECT_PARAMETERS = {'CacheControl': f'max-age={AWS_S3_CACHE_MAX_AGE}', }
+
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = ('sumo.com', 'load.sumo.com', 'googleads.g.doubleclick.net', 'gitcoin.co', )
+CORS_ORIGIN_WHITELIST = CORS_ORIGIN_WHITELIST + (AWS_S3_CUSTOM_DOMAIN, MEDIA_CUSTOM_DOMAIN, )
 
 S3_REPORT_BUCKET = env('S3_REPORT_BUCKET', default='')  # TODO
 S3_REPORT_PREFIX = env('S3_REPORT_PREFIX', default='')  # TODO
-
-# Handle local file storage
-if ENV == 'local' and not AWS_STORAGE_BUCKET_NAME:
-    MEDIA_URL = '/media/'
-    MEDIA_ROOT = root('media')
-else:
-    DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-    THUMBNAIL_DEFAULT_STORAGE = DEFAULT_FILE_STORAGE
 
 INSTALLED_APPS += env.list('DEBUG_APPS', default=[])
 
@@ -446,14 +575,16 @@ WEB3_HTTP_PROVIDER = env('WEB3_HTTP_PROVIDER', default='https://rinkeby.infura.i
 COLO_ACCOUNT_ADDRESS = env('COLO_ACCOUNT_ADDRESS', default='')  # TODO
 COLO_ACCOUNT_PRIVATE_KEY = env('COLO_ACCOUNT_PRIVATE_KEY', default='')  # TODO
 
-IPFS_HOST = env('IPFS_HOST', default='ipfs')
+IPFS_HOST = env('IPFS_HOST', default='ipfs.infura.io')
 IPFS_SWARM_PORT = env.int('IPFS_SWARM_PORT', default=4001)
 IPFS_UTP_PORT = env.int('IPFS_UTP_PORT', default=4002)
 IPFS_API_PORT = env.int('IPFS_API_PORT', default=5001)
 IPFS_GATEWAY_PORT = env.int('IPFS_GATEWAY_PORT', default=8080)
 IPFS_SWARM_WS_PORT = env.int('IPFS_SWARM_WS_PORT', default=8081)
 IPFS_API_ROOT = env('IPFS_API_ROOT', default='/api/v0')
-IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='http')
+IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='https')
+
+STABLE_COINS = ['DAI', 'USDT', 'TUSD']
 
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)

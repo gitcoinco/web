@@ -15,7 +15,7 @@ def recommend_min_gas_price_to_confirm_in_time(minutes, default=5):
             created_on__gt=(timezone.now()-timezone.timedelta(minutes=31)),
             mean_time_to_confirm_minutes__lt=minutes
             ).order_by('gas_price').first()
-        return max(gp.gas_price, 1)
+        return max(0.1, gp.gas_price)
     except Exception:
         return default
 
@@ -61,7 +61,7 @@ def gas_history(breakdown, mean_time_to_confirm_minutes):
     gas_profiles = GasProfile.objects.filter(
         created_on__gt=start_date,
         mean_time_to_confirm_minutes__lte=mean_time_to_confirm_minutes,
-        ).order_by('-created_on')
+        ).order_by('-created_on').cache()
 
     # collapse into best gas price per time period
     results = {}
@@ -86,7 +86,7 @@ def gas_history(breakdown, mean_time_to_confirm_minutes):
     # for debugging
     # for key, result in results.items():
     #    print(result['created_on'], result['gas_price'], result['mean_time_to_confirm_minutes'])
-    
+
     # collapse into array that the frontend can understand
     results_array = []
     i = 0
