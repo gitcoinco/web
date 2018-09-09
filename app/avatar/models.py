@@ -207,8 +207,9 @@ class Avatar(SuperModel):
         if self.use_github_avatar and self.github_svg:
             return self.github_svg.url
         if self.use_github_avatar and not self.github_svg:
-            self.convert_github_png(force_save=True)
-            return self.github_svg.url
+            if self.png:
+                self.convert_github_png(force_save=True)
+                return self.github_svg.url
         if not self.use_github_avatar and self.svg:
             return self.svg.url
         if not self.use_github_avatar and not self.svg:
