@@ -33,6 +33,38 @@
     <link rel="stylesheet" href="{% static "v2/css/forms/button.css" %}">
     <link rel="stylesheet" href="{% static "cookielaw/css/cookielaw.css" %}">
 
+    <style>
+      .d-flex {
+        display: flex;
+      }
+
+      .align-items-baseline {
+        align-items: center;
+      }
+
+      .mr-2 {
+        margin-right: 1rem;
+      }
+
+      .rounded-circle {
+        border-radius: 50%;
+        vertical-align: middle;
+      }
+
+      .select2-container .select2-selection--single {
+        height: 34px;
+        text-align: left;
+      }
+
+      .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 32px;
+      }
+
+      .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 32px;
+      }
+    </style>
+
     <script type="text/javascript">
       var static_url = "{{ STATIC_URL }}";
       var media_url = "{{ MEDIA_URL }}";

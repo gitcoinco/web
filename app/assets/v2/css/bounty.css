@@ -277,11 +277,6 @@ body {
   color: #6184AC;
 }
 
-.tag.token.additional_funding_summary{
-  background-color: #fbe0d6;
-  color: #fb9470;
-}
-
 .contributor-box {
   border: 1px solid #DBDBDB;
   border-right: none;
@@ -347,6 +342,17 @@ a.btn {
   top: 1px;
   display: inline-block;
   margin-bottom: 10px;
+}
+
+#moderator-admin-actions:not(:empty).sticky {
+  text-align: center;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  z-index: 1010;
+  text-align: center;
 }
 
 #btn-white {
@@ -525,6 +531,18 @@ a.btn {
 .stop-work {
   float: right;
   padding-left: 5px;
+}
+
+#moderator-admin-actions:not(:empty) {
+  background: #F2F6F9;
+  padding: 16px 0 10px;
+  text-align: left;
+  left: 0;
+}
+
+#moderator-admin-actions:not(:empty) a {
+  border: none !important;
+  margin: 0 3px 5px;
 }
 
 @media (max-width: 767px) {

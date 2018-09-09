@@ -196,7 +196,7 @@
   }
 </style>
 <div id="stat-container">
-    <h1>GITCOIN QUARTERLY</h1>
+    <h1>{% trans "GITCOIN QUARTERLY" %}</h1>
 
     {% if user_active_in_last_quarter %}
     	{% if user_fulfilled_bounties %}
@@ -210,10 +210,10 @@
             </div>
             <div class="stat-contents col-sm-12">
 		    <p>
-		    {% blocktrans with total_earned_eth=user_total_earned_eth|intcomma total_earned_usd=user_total_earned_usd|intcomma avg_eth_earned_per_bounty=user_avg_eth_earned_per_bounty|intcomma avg_usd_earned_per_bounty=user_avg_usd_earned_per_bounty|intcomma count fulfilled_bounties_count=user_fulfilled_bounties_count|intcomma %}
-		    You earned {{ total_earned_eth }} ETH ({{ total_earned_usd }} USD) from {{ fulfilled_bounties_count }} completed bounty, for an average of {{ avg_eth_earned_per_bounty }} ETH ({{ avg_usd_earned_per_bounty }} USD) per bounty!
+		    {% blocktrans with total_earned_eth=user_total_earned_eth|intcomma total_earned_usd=user_total_earned_usd|intcomma avg_eth_earned_per_bounty=user_avg_eth_earned_per_bounty|intcomma avg_usd_earned_per_bounty=user_avg_usd_earned_per_bounty|intcomma count fulfilled_bounties_count=user_fulfilled_bounties_count %}
+		    You earned {{ total_earned_eth }} ETH ({{ total_earned_usd }} USD) from {{ fulfilled_bounties_count|intcomma }} completed bounty, for an average of {{ avg_eth_earned_per_bounty }} ETH ({{ avg_usd_earned_per_bounty }} USD) per bounty!
 		    {% plural %}
-		    You earned {{ total_earned_eth }} ETH ({{ total_earned_usd }} USD) from {{ fulfilled_bounties_count }} completed bounties, for an average of {{ avg_eth_earned_per_bounty }} ETH ({{ avg_usd_earned_per_bounty }} USD) per bounty!
+		    You earned {{ total_earned_eth }} ETH ({{ total_earned_usd }} USD) from {{ fulfilled_bounties_count|intcomma }} completed bounties, for an average of {{ avg_eth_earned_per_bounty }} ETH ({{ avg_usd_earned_per_bounty }} USD) per bounty!
 		    {% endblocktrans %}
 		    </p>
             </div>
@@ -227,10 +227,10 @@
 		    </p>
             </div>
             <div class="stat-contents col-sm-12">
-		    <p>{% blocktrans with bounty_completion_percentage=user_bounty_completion_percentage count num_completed_bounties=user_num_completed_bountes %}
-			You completed {{ bounty_completion_percentage }}% of the {{ num_completed_bounties }} bounties that you started - thanks for showing such diligence.
+		    <p>{% blocktrans with bounty_completion_percentage=user_bounty_completion_percentage count num_completed_bounties=user_num_completed_bounties %}
+			You completed {{ bounty_completion_percentage }}% of the {{ num_completed_bounties|intcomma }} bounties that you started - thanks for showing such diligence.
 			{% plural %}
-			You completed {{ bounty_completion_percentage }}% of the {{ num_completed_bounties }} bounty that you started - thanks for showing such diligence.
+			You completed {{ bounty_completion_percentage }}% of the {{ num_completed_bounties|intcomma }} bounty that you started - thanks for showing such diligence.
 			{% endblocktrans %}
 		    </p>
             </div>
@@ -253,7 +253,7 @@
 		       {% endblocktrans %}
                     {% for language in user_languages %}
 		        {% if not forloop.first %}{% trans ", " %}{% endif %}
-			{% if forloop.counter == user_no_of_languages %} {% trans "and " %} {% endif %} 
+			{% if forloop.counter == user_no_of_languages %} {% trans "and " %} {% endif %}
 			{{ language }}
 	            {% endfor %}{% trans "!" %}
                 </p>
@@ -274,10 +274,10 @@
             </div>
             <div class="stat-contents col-sm-12">
 		    <p>
-		        {% blocktrans with num_funded_fulfilled_bounties=user_num_funded_fulfilled_bounties|intcomma funded_fulfilled_percentage=user_funded_fulfilled_percentage count funded_bounties_count=user_funded_bounties_count|intcomma %}
-			Of the {{ funded_bounties_count }} issue that you funded a bounty for, {{ num_funded_fulfilled_bounties }} were fulfilled -- that's a {{ funded_fulfilled_percentage }}% success rate!
+		        {% blocktrans with num_funded_fulfilled_bounties=user_num_funded_fulfilled_bounties|intcomma funded_fulfilled_percentage=user_funded_fulfilled_percentage count funded_bounties_count=user_funded_bounties_count %}
+			Of the {{ funded_bounties_count }} issue that you funded a bounty for, {{ num_funded_fulfilled_bounties|intcomma }} were fulfilled -- that's a {{ funded_fulfilled_percentage }}% success rate!
 			{% plural %}
-			Of the {{ funded_bounties_count }} issues that you funded a bounty for, {{ num_funded_fulfilled_bounties }} were fulfilled -- that's a {{ funded_fulfilled_percentage }}% success rate!
+			Of the {{ funded_bounties_count }} issues that you funded a bounty for, {{ num_funded_fulfilled_bounties|intcomma }} were fulfilled -- that's a {{ funded_fulfilled_percentage }}% success rate!
 			{% endblocktrans %}
 		    </p>
             </div>

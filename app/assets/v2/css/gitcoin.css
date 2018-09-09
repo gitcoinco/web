@@ -400,6 +400,12 @@ div.button-pink {
   font-size: 0.55rem;
 }
 
+.center-block {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
 .how-it-works-video {
   width: 100%;
   height: 600px;

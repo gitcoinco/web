@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'collectfast',  # Collectfast | static file collector
     'django.contrib.staticfiles',
+    'cacheops',
     'storages',
     'social_django',
     'cookielaw',
@@ -112,6 +113,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'raven.contrib.django.raven_compat.middleware.SentryResponseErrorIdMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'app.middleware.drop_accept_langauge',
     'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -199,6 +201,7 @@ LANGUAGES = [
     ('it', gettext_noop('Italian')),
     ('ko', gettext_noop('Korean')),
     ('pl', gettext_noop('Polish')),
+    ('ja', gettext_noop('Japanese')),
     ('zh-hans', gettext_noop('Simplified Chinese')),
     ('zh-hant', gettext_noop('Traditional Chinese')),
 ]
@@ -325,12 +328,75 @@ THUMBNAIL_ALIASES = {
     }
 }
 
+CACHEOPS_DEGRADE_ON_FAILURE = env.bool('CACHEOPS_DEGRADE_ON_FAILURE', default=True)
+CACHEOPS_REDIS = env.str('CACHEOPS_REDIS', default='redis://redis:6379/0')
+CACHEOPS_DEFAULTS = {
+    'timeout': 60 * 60
+}
+
+# 'all' is an alias for {'get', 'fetch', 'count', 'aggregate', 'exists'}
+CACHEOPS = {
+    '*.*': {
+        'timeout': 60 * 60,
+    },
+    'auth.user': {
+        'ops': 'get',
+        'timeout': 60 * 15,
+    },
+    'auth.group': {
+        'ops': 'get',
+        'timeout': 60 * 15,
+    },
+    'auth.*': {
+        'ops': ('fetch', 'get'),
+        'timeout': 60 * 60,
+    },
+    'auth.permission': {
+        'ops': 'all',
+        'timeout': 60 * 15,
+    },
+    'dashboard.activity': {
+        'ops': 'all',
+        'timeout': 60 * 5,
+    },
+    'dashboard.bounty': {
+        'ops': ('get', 'fetch', 'aggregate'),
+        'timeout': 60 * 5,
+    },
+    'dashboard.tip': {
+        'ops': ('get', 'fetch', 'aggregate'),
+        'timeout': 60 * 5,
+    },
+    'dashboard.profile': {
+        'ops': ('get', 'fetch', 'aggregate'),
+        'timeout': 60 * 5,
+    },
+    'dashboard.*': {
+        'ops': ('fetch', 'get'),
+        'timeout': 60 * 30,
+    },
+    'economy.*': {
+        'ops': 'all',
+        'timeout': 60 * 60,
+    },
+    'gas.*': {
+        'ops': 'all',
+        'timeout': 60 * 10,
+    }
+}
+
+DJANGO_REDIS_IGNORE_EXCEPTIONS = env.bool('REDIS_IGNORE_EXCEPTIONS', default=True)
+DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = env.bool('REDIS_LOG_IGNORED_EXCEPTIONS', default=True)
 COLLECTFAST_CACHE = env('COLLECTFAST_CACHE', default='collectfast')
 COLLECTFAST_DEBUG = env.bool('COLLECTFAST_DEBUG', default=False)
 
 CACHES = {
-    'default': env.cache(),
+    'default': env.cache(
+        'REDIS_URL',
+        default='rediscache://redis:6379/0?client_class=django_redis.client.DefaultClient'
+    ),
     COLLECTFAST_CACHE: env.cache('COLLECTFAST_CACHE_URL', default='dbcache://collectfast'),
+    'legacy': env.cache('CACHE_URL', default='dbcache://my_cache_table'),
 }
 CACHES[COLLECTFAST_CACHE]['OPTIONS'] = {'MAX_ENTRIES': 1000}
 
@@ -478,7 +544,7 @@ AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')
 AWS_SECRET_ACCESS_KEY = env('AWS_SECRET_ACCESS_KEY', default='')
 
 AWS_STORAGE_BUCKET_NAME = env('AWS_STORAGE_BUCKET_NAME', default='')
-AWS_S3_CACHE_MAX_AGE = env.str('AWS_S3_CACHE_MAX_AGE', default='86400')
+AWS_S3_CACHE_MAX_AGE = env.str('AWS_S3_CACHE_MAX_AGE', default='15552000')
 AWS_QUERYSTRING_EXPIRE = env.int('AWS_QUERYSTRING_EXPIRE', default=3600)
 AWS_S3_ENCRYPTION = env.bool('AWS_S3_ENCRYPTION', default=False)
 AWS_S3_OBJECT_PARAMETERS = env.dict('AWS_S3_OBJECT_PARAMETERS', default=None)

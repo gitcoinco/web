@@ -60,6 +60,7 @@ urlpatterns = [
     url(r'^api/v0.1/', include(dbrouter.urls)),
     url(r'^api/v0.1/', include(ebrouter.urls)),
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cloudfront
+    url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
 
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
@@ -82,6 +83,7 @@ urlpatterns = [
     # action URLs
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
+    re_path(r'^bounty/change/(?P<bounty_id>.*)?', dashboard.views.change_bounty, name='change_bounty'),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
     path('issue/fulfill', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
@@ -376,7 +378,6 @@ if settings.ENABLE_SILK:
     urlpatterns += [url(r'^silk/', include('silk.urls', namespace='silk'))]
 
 if settings.ENV == 'local' and not settings.AWS_STORAGE_BUCKET_NAME:
-    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # If running in DEBUG, expose the error handling pages.

@@ -200,7 +200,7 @@ def get_platform_wide_stats(since_last_n_days=90):
     from dashboard.models import Bounty, BountyFulfillment
 
     last_n_days = datetime.now() - timedelta(days=since_last_n_days)
-    bounties = Bounty.objects.stats_eligible().filter(created_on__gte=last_n_days, current_bounty=True)
+    bounties = Bounty.objects.stats_eligible().current().filter(created_on__gte=last_n_days)
     total_bounties = bounties.count()
     completed_bounties = bounties.filter(idx_status__in=['done'])
     terminal_state_bounties = bounties.filter(idx_status__in=['done', 'expired', 'cancelled'])
@@ -220,8 +220,8 @@ def get_platform_wide_stats(since_last_n_days=90):
     completed_bounties_fund = round(completed_bounties_fund)
     bounties_completion_percent = round(bounties_completion_percent)
 
-    largest_bounty = Bounty.objects.filter(
-        current_bounty=True, created_on__gte=last_n_days).order_by('-_val_usd_db').first()
+    largest_bounty = Bounty.objects.current().filter(
+        created_on__gte=last_n_days).order_by('-_val_usd_db').first()
     largest_bounty_value = largest_bounty.value_in_usdt
 
     bounty_fulfillments = BountyFulfillment.objects.filter(
