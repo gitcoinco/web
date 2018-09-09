@@ -30,6 +30,12 @@ body {
   letter-spacing: 0.100rem;
 }
 
+.t-oflowhide {
+  overflow:hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
 .funder-dashboard__header {
   background-color: #3e00ff;
 }

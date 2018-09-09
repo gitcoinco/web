@@ -458,15 +458,17 @@
                         </span>
                     </td>
                     <td class="funder-dashboard__outgoing-funds__fund__worth">
-                      <span class="table-header--inline">
+                      <div class="t-oflowhide">
+                        <span class="table-header--inline">
                           {% trans "Amount:" %}
-                      </span>
-                      <span class="mr-2 text-fd-blue--dark">
-                        <span class="funder-dashboard__outgoing-funds__funds__fund__worth__eth"></span> ETH
-                      </span>
-                      <span class=" text-fd-green">
-                        <span class="funder-dashboard__outgoing-funds__funds__fund__worth__dollars"></span> USD
-                      </span>
+                        </span>
+                        <span class="mr-2 text-fd-blue--dark">
+                          <span class="funder-dashboard__outgoing-funds__funds__fund__worth__eth"></span> ETH
+                        </span>
+                        <span class=" text-fd-green">
+                          <span class="funder-dashboard__outgoing-funds__funds__fund__worth__dollars"></span> USD
+                        </span>
+                      </div>
                     </td>
                   </tr>
                   </tbody>
@@ -593,18 +595,18 @@
                         {% trans "View Github" %}
                       </a>
                     </td>
-                    <td>
-                      <span class="table-header--inline">
-                          {% trans "Amount:" %}
-                      </span>
-                      <span class="funder-dashboard__all-bounties__bounties__bounty__worth">
-                      </span>
-                      <span class="mr-2 text-fd-blue--dark bgc-ethereum">
-                        <span class="funder-dashboard__all-bounties__bounties__bounty__worth__eth"></span> ETH
-                      </span>
-                      <span class="text-fd-green bgc-dollars">
-                        <span class="funder-dashboard__all-bounties__bounties__bounty__worth__dollars"></span> USD
-                      </span>
+                    <td class="funder-dashboard__all-bounties__bounties__bounty__worth">
+                      <div class="t-oflowhide" style="min-width: 200px">
+                        <span class="table-header--inline">
+                            {% trans "Amount:" %}
+                        </span>
+                        <span class="mr-2 text-fd-blue--dark bgc-ethereum">
+                          <span class="funder-dashboard__all-bounties__bounties__bounty__worth__eth"></span> ETH
+                        </span>
+                        <span class="text-fd-green bgc-dollars">
+                          <span class="funder-dashboard__all-bounties__bounties__bounty__worth__dollars"></span> USD
+                        </span>
+                      </div>
                     </td>
                   </tr>
                   </tbody>
