@@ -916,7 +916,7 @@ class Bounty(SuperModel):
             'tokens': {},
             'usd_value': 0,
         }
-        for tip in self.tips.filter(is_for_bounty_fulfiller=True):
+        for tip in self.tips.filter(is_for_bounty_fulfiller=True).exclude(txid=''):
             key = tip.tokenName
             if key not in return_dict['tokens'].keys():
                 return_dict['tokens'][key] = 0
