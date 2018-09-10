@@ -16,6 +16,10 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+from .models import Wallet
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def reconcile_kudos_preferred_wallet(profile):
