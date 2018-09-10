@@ -1569,7 +1569,10 @@ class Profile(SuperModel):
     @property
     def github_created_on(self):
         from datetime import datetime
-        created_on = datetime.strptime(self.data['created_at'], '%Y-%m-%dT%H:%M:%SZ')
+        try:
+            created_on = datetime.strptime(self.data['created_at'], '%Y-%m-%dT%H:%M:%SZ')
+        except KeyError:
+            created_on = datetime.datetime.now()
         return created_on.replace(tzinfo=pytz.UTC)
 
     @property
