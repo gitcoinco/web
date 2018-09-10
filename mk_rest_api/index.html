@@ -1,0 +1,1662 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="https://s.gitcoin.co/static/v2/images/favicon.ico/favicon.ico">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-3.0.4">
+    
+    
+      
+        <title>Rest API - Gitcoin Developer Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application.451f80e5.css">
+      
+      
+    
+    
+      <script src="../assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448"
+    viewBox="0 0 416 448" id="__github">
+  <path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19-18.125
+        8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19 18.125-8.5
+        18.125 8.5 10.75 19 3.125 20.5zM320 304q0 10-3.125 20.5t-10.75
+        19-18.125 8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19
+        18.125-8.5 18.125 8.5 10.75 19 3.125 20.5zM360
+        304q0-30-17.25-51t-46.75-21q-10.25 0-48.75 5.25-17.75 2.75-39.25
+        2.75t-39.25-2.75q-38-5.25-48.75-5.25-29.5 0-46.75 21t-17.25 51q0 22 8
+        38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0
+        37.25-1.75t35-7.375 30.5-15 20.25-25.75 8-38.375zM416 260q0 51.75-15.25
+        82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5-41.75
+        1.125q-19.5 0-35.5-0.75t-36.875-3.125-38.125-7.5-34.25-12.875-30.25-20.25-21.5-28.75q-15.5-30.75-15.5-82.75
+        0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25
+        30.875q36.75-8.75 77.25-8.75 37 0 70 8 26.25-20.5
+        46.75-30.25t47.25-9.75q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34
+        99.5z" />
+</svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="../#https-api" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href=".." title="Gitcoin Developer Documentation" class="md-header-nav__button md-logo">
+          
+            <img src="https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png" width="24" height="24">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                Gitcoin Developer Documentation
+              </span>
+              <span class="md-header-nav__topic">
+                Rest API
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+
+  <a href="https://github.com/gitcoinco/web/" title="Go to repository" class="md-source" data-md-source="github">
+    
+      <div class="md-source__icon">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="#__github" width="24" height="24"></use>
+        </svg>
+      </div>
+    
+    <div class="md-source__repository">
+      GitHub
+    </div>
+  </a>
+
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+        
+
+  
+
+<nav class="md-tabs md-tabs--active" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  <li class="md-tabs__item">
+    
+      <a href=".." title="Home" class="md-tabs__link">
+        Home
+      </a>
+    
+  </li>
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../mk_setup/" title="General" class="md-tabs__link md-tabs__link--active">
+          General
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../app/middleware/" title="App" class="md-tabs__link">
+          App
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../avatar/admin/" title="Avatar" class="md-tabs__link">
+          Avatar
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../bounty_requests/admin/" title="Bounty Requests" class="md-tabs__link">
+          Bounty Requests
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../credits/views/" title="Credits" class="md-tabs__link">
+          Credits
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../dashboard/admin/" title="Dashboard" class="md-tabs__link">
+          Dashboard
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../dataviz/admin/" title="Data Visualization" class="md-tabs__link">
+          Data Visualization
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../git/utils/" title="Git" class="md-tabs__link">
+          Git
+        </a>
+      
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href=".." title="Gitcoin Developer Documentation" class="md-nav__button md-logo">
+      
+        <img src="https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png" width="48" height="48">
+      
+    </a>
+    Gitcoin Developer Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+
+  <a href="https://github.com/gitcoinco/web/" title="Go to repository" class="md-source" data-md-source="github">
+    
+      <div class="md-source__icon">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="#__github" width="24" height="24"></use>
+        </svg>
+      </div>
+    
+    <div class="md-source__repository">
+      GitHub
+    </div>
+  </a>
+
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+    
+    <label class="md-nav__link" for="nav-2">
+      General
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        General
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../mk_setup/" title="Setup Environment (recommended)" class="md-nav__link">
+      Setup Environment (recommended)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../mk_alternative_setup/" title="Alternative Setup" class="md-nav__link">
+      Alternative Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../mk_third_party_integrations/" title="Third Party Integration Setup" class="md-nav__link">
+      Third Party Integration Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../mk_advanced/" title="Advanced" class="md-nav__link">
+      Advanced
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../mk_widget/" title="Widget Setup" class="md-nav__link">
+      Widget Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../mk_envvars/" title="Environment Variables" class="md-nav__link">
+      Environment Variables
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Rest API
+      </label>
+    
+    <a href="./" title="Rest API" class="md-nav__link md-nav__link--active">
+      Rest API
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#datatypes" title="Datatypes" class="md-nav__link">
+    Datatypes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bounties" title="bounties" class="md-nav__link">
+    bounties
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fields" title="Fields" class="md-nav__link">
+    Fields
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#url-parameters" title="URL Parameters" class="md-nav__link">
+    URL Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-request" title="Example Request" class="md-nav__link">
+    Example Request
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../mk_changelog/" title="Changelog" class="md-nav__link">
+      Changelog
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../mk_contributors/" title="Contributors Guide" class="md-nav__link">
+      Contributors Guide
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      App
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        App
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../app/middleware/" title="Middleware" class="md-nav__link">
+      Middleware
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../app/pipeline/" title="Auth Pipeline" class="md-nav__link">
+      Auth Pipeline
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../app/sitemaps/" title="Sitemaps" class="md-nav__link">
+      Sitemaps
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../app/static_storage/" title="Static Storage" class="md-nav__link">
+      Static Storage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../app/thumbnail_processors/" title="Thumbnail Processors" class="md-nav__link">
+      Thumbnail Processors
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../app/utils/" title="Utilities" class="md-nav__link">
+      Utilities
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Avatar
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Avatar
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../avatar/admin/" title="Admin" class="md-nav__link">
+      Admin
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../avatar/exceptions/" title="Exceptions" class="md-nav__link">
+      Exceptions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../avatar/models/" title="Models" class="md-nav__link">
+      Models
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../avatar/utils/" title="Utilities" class="md-nav__link">
+      Utilities
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../avatar/views/" title="Views" class="md-nav__link">
+      Views
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../avatar/templatetags/" title="Template Tags" class="md-nav__link">
+      Template Tags
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Bounty Requests
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        Bounty Requests
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../bounty_requests/admin/" title="Admin" class="md-nav__link">
+      Admin
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../bounty_requests/models/" title="Models" class="md-nav__link">
+      Models
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../bounty_requests/views/" title="Views" class="md-nav__link">
+      Views
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Credits
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Credits
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../credits/views/" title="Views" class="md-nav__link">
+      Views
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      Dashboard
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Dashboard
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/admin/" title="Admin" class="md-nav__link">
+      Admin
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/embed/" title="Embedded" class="md-nav__link">
+      Embedded
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/models/" title="Models" class="md-nav__link">
+      Models
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/utils/" title="Utilities" class="md-nav__link">
+      Utilities
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/views/" title="Views" class="md-nav__link">
+      Views
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/healthchecks/" title="Healthchecks" class="md-nav__link">
+      Healthchecks
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/helpers/" title="Helpers" class="md-nav__link">
+      Helpers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/ios/" title="iOS" class="md-nav__link">
+      iOS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/notifications/" title="Notifications" class="md-nav__link">
+      Notifications
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/router/" title="API Router" class="md-nav__link">
+      API Router
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/signals/" title="Signals" class="md-nav__link">
+      Signals
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/tokens/" title="Tokens" class="md-nav__link">
+      Tokens
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/templatetags/" title="Template Tags" class="md-nav__link">
+      Template Tags
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-8" type="checkbox" id="nav-8">
+    
+    <label class="md-nav__link" for="nav-8">
+      Data Visualization
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-8">
+        Data Visualization
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dataviz/admin/" title="Admin" class="md-nav__link">
+      Admin
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dataviz/models/" title="Models" class="md-nav__link">
+      Models
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dataviz/views/" title="Views" class="md-nav__link">
+      Views
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9" type="checkbox" id="nav-9">
+    
+    <label class="md-nav__link" for="nav-9">
+      Git
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-9">
+        Git
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../git/utils/" title="Utilities" class="md-nav__link">
+      Utilities
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#datatypes" title="Datatypes" class="md-nav__link">
+    Datatypes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bounties" title="bounties" class="md-nav__link">
+    bounties
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#fields" title="Fields" class="md-nav__link">
+    Fields
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#url-parameters" title="URL Parameters" class="md-nav__link">
+    URL Parameters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example-request" title="Example Request" class="md-nav__link">
+    Example Request
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/gitcoinco/web/edit/master/docs/mk_rest_api.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                
+                
+                <h1 id="https-api">HTTPS API</h1>
+<p>Gitcoin provides a simple HTTPS API to access data without having to run your own Ethereum node. The API is live at https://gitcoin.co/api/v0.1</p>
+<h3 id="datatypes">Datatypes</h3>
+<p>Beyond simple datatypes like <code>string</code> or <code>integer</code> the API returns datatypes like dates that are serialized in a very specific fashion.</p>
+<table>
+<thead>
+<tr>
+<th>Datatype</th>
+<th>Description</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>date_time</code></td>
+<td>Date and time represented in ISO 8601</td>
+<td><code>2017-09-24T18:59:53.964344Z</code></td>
+</tr>
+<tr>
+<td><code>ethereum_address</code></td>
+<td>An ethereum token address with the leading <code>0x</code></td>
+<td><code>0x636f3093258412b96c43bef3663f1b853253ec59</code></td>
+</tr>
+<tr>
+<td><code>token_type</code></td>
+<td>The type of token offered as a reward. Ex: <code>ETH</code> or <code>GIT</code></td>
+<td><code>ETH</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="bounties"><code>bounties</code></h3>
+<p>The bounties endpoint provides a listing of bounties and their current status. There are two endpoints that access bounties:</p>
+<ul>
+<li><code>https://gitcoin.co/api/v0.1/bounties</code> - Returns a list of bounties</li>
+<li><code>https://gitcoin.co/api/v0.1/bounties/&lt;bountyId&gt;</code> - Returns a single bounty by ID.</li>
+</ul>
+<h4 id="fields">Fields</h4>
+<table>
+<thead>
+<tr>
+<th>Field Key</th>
+<th>Datatype</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>url</code></td>
+<td><code>string</code></td>
+<td>URL for this specific bounty Ex: api/v0.1/bounties/9</td>
+</tr>
+<tr>
+<td><code>created_on</code></td>
+<td><code>date_time</code></td>
+<td>Creation timestamp</td>
+</tr>
+<tr>
+<td><code>modified_on</code></td>
+<td><code>date_time</code></td>
+<td>Last modified timestamp</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td><code>string</code></td>
+<td>Title of the bounty</td>
+</tr>
+<tr>
+<td><code>web3_created</code></td>
+<td><code>date_time</code></td>
+<td>Creation timestamp for the transaction that holds this bounty</td>
+</tr>
+<tr>
+<td><code>value_in_token</code></td>
+<td><code>integer</code></td>
+<td>Amount of tokens rewarded for bounty</td>
+</tr>
+<tr>
+<td><code>token_name</code></td>
+<td><code>token_type</code></td>
+<td>Type of token. Ex: <code>ETH</code>, <code>GIT</code></td>
+</tr>
+<tr>
+<td><code>token_address</code></td>
+<td><code>ethereum_address</code></td>
+<td>Address where the tokens are located</td>
+</tr>
+<tr>
+<td><code>bounty_type</code></td>
+<td><code>string</code></td>
+<td>Type of bounty. Ex: <code>Bug</code>, <code>Feature</code>, <code>Security</code></td>
+</tr>
+<tr>
+<td><code>project_length</code></td>
+<td><code>string</code></td>
+<td>Relative length of project Ex: <code>Hours</code>, <code>Days</code>, <code>Weeks</code>, <code>Months</code></td>
+</tr>
+<tr>
+<td><code>experience_level</code></td>
+<td><code>string</code></td>
+<td>Recommended experience level</td>
+</tr>
+<tr>
+<td><code>github_url</code></td>
+<td><code>string</code></td>
+<td>URL on GitHub where you can find the bounty description</td>
+</tr>
+<tr>
+<td><code>github_org_name</code></td>
+<td><code>string</code></td>
+<td>github org name</td>
+</tr>
+<tr>
+<td><code>github_repo_name</code></td>
+<td><code>string</code></td>
+<td>github repo name</td>
+</tr>
+<tr>
+<td><code>github_issue_number</code></td>
+<td><code>string</code></td>
+<td>github issue number</td>
+</tr>
+<tr>
+<td><code>keywords</code></td>
+<td><code>string</code></td>
+<td>comma delimited list of keywords</td>
+</tr>
+<tr>
+<td><code>current_bounty</code></td>
+<td><code>boolean</code></td>
+<td>Whether this bounty is the most current revision one or not</td>
+</tr>
+<tr>
+<td><code>expires_date</code></td>
+<td><code>date_time</code></td>
+<td>Date before which the bounty must be compelted</td>
+</tr>
+<tr>
+<td><code>value_in_eth</code></td>
+<td><code>integer</code></td>
+<td>Value of the bounty in Ethereum</td>
+</tr>
+<tr>
+<td><code>value_in_usdt</code></td>
+<td><code>float</code></td>
+<td>Approximation of value in USD at bounty web3_created timestamp</td>
+</tr>
+<tr>
+<td><code>value_in_usdt_now</code></td>
+<td><code>float</code></td>
+<td>Approximation of current value in USD</td>
+</tr>
+<tr>
+<td><code>now</code></td>
+<td><code>date_time</code></td>
+<td>Current date_time on the server</td>
+</tr>
+<tr>
+<td><code>action_urls</code></td>
+<td><code>dict</code></td>
+<td>a list of urls where user can take action against the bounty</td>
+</tr>
+<tr>
+<td><code>paid</code></td>
+<td><code>array</code></td>
+<td>List of users who have been paid from the bounty</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Current Status</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field Key</th>
+<th>Datatype</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>is_open</code></td>
+<td><code>boolean</code></td>
+<td>True if the bounty has not been completed</td>
+</tr>
+<tr>
+<td><code>status</code></td>
+<td><code>string</code></td>
+<td>Current status enum: (<code>open</code>, The bounty was created), (<code>started</code>, The bounty was started) (<code>submitted</code>, Someone submitted work for the bounty) (<code>done</code>, Someone fulfilled and completed the bounty) (<code>expired</code>, The bounty expired w/o completion)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Bounty Creator &amp; Bounty Fulfiller</strong></p>
+<table>
+<thead>
+<tr>
+<th>Field Key</th>
+<th>Datatype</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bounty_owner_address</code></td>
+<td><code>ethereum_address</code></td>
+<td>Address of the person who owns the bounty</td>
+</tr>
+<tr>
+<td><code>bounty_owner_email</code></td>
+<td><code>string</code></td>
+<td>Email of the bounty owner</td>
+</tr>
+<tr>
+<td><code>bounty_owner_github_username</code></td>
+<td><code>string</code></td>
+<td>Username of the bounty owner</td>
+</tr>
+<tr>
+<td><code>metadata</code></td>
+<td><code>dictionary</code></td>
+<td>Misc metadata about the bounty and the creator</td>
+</tr>
+<tr>
+<td><code>fulfiller_address</code></td>
+<td><code>ethereum_address</code></td>
+<td>Address of the person who fulfilled the bounty</td>
+</tr>
+<tr>
+<td><code>fulfiller_email</code></td>
+<td><code>string</code></td>
+<td>Email of the person fulfilling the bounty</td>
+</tr>
+<tr>
+<td><code>fulfiller_github_username</code></td>
+<td><code>string</code></td>
+<td>Username of the fulfiller</td>
+</tr>
+<tr>
+<td><code>fulfiller_metadata</code></td>
+<td><code>dictionary</code></td>
+<td><code>githubUsername</code> and <code>notificationEmail</code> for the fulfiller</td>
+</tr>
+</tbody>
+</table>
+<h4 id="url-parameters">URL Parameters</h4>
+<p><strong>Filters</strong></p>
+<p>You can filter the data returned from the API buy providing these keys as URL parameters <code>experience_level</code>, <code>project_length</code>, <code>bounty_type</code>, <code>bounty_owner_address</code>, <code>is_open</code>, and <code>github_url</code>. <code>github_url</code> can take a comma-seperated list of GitHub urls</p>
+<p><strong>Order By</strong></p>
+<p>By passing an <code>order_by</code> parameter you can order the data by the provided key. Ex: <code>?order_by=expires_date</code>. To sort in the opposite direction you can add a <code>-</code> in from the the key <code>?order_by=-expires_date</code>.</p>
+<h4 id="example-request">Example Request</h4>
+<pre><code>~ % curl &quot;https://gitcoin.co/api/v0.1/bounties/?&amp;order_by=web3_created&quot;
+
+[
+  {
+    &quot;url&quot;: &quot;https:\/\/gitcoin.co\/api\/v0.1\/bounties\/87\/&quot;,
+    &quot;created_on&quot;: &quot;2017-09-22T01:42:07.060841Z&quot;,
+    &quot;modified_on&quot;: &quot;2017-09-23T12:36:11.946334Z&quot;,
+    &quot;title&quot;: &quot;Update local_settings.py.example&quot;,
+    &quot;web3_created&quot;: &quot;2017-09-22T01:42:04Z&quot;,
+    &quot;value_in_token&quot;: &quot;1000000000000000000.00&quot;,
+    &quot;token_name&quot;: &quot;ETH&quot;,
+    &quot;token_address&quot;: &quot;0x0000000000000000000000000000000000000000&quot;,
+    &quot;bounty_type&quot;: &quot;&quot;,
+    &quot;project_length&quot;: &quot;&quot;,
+    &quot;experience_level&quot;: &quot;&quot;,
+    &quot;github_url&quot;: &quot;https:\/\/github.com\/owocki\/pytrader\/pull\/83232&quot;,
+    &quot;bounty_owner_address&quot;: &quot;0xd3d280c2866eaa795fc72bd850c48e7cce166e23&quot;,
+    &quot;bounty_owner_email&quot;: &quot;ksowocki@gmail.com&quot;,
+    &quot;bounty_owner_github_username&quot;: &quot;owocki&quot;,
+    &quot;fulfiller_address&quot;: &quot;0x0000000000000000000000000000000000000000&quot;,
+    &quot;fulfiller_email&quot;: null,
+    &quot;fulfiller_github_username&quot;: null,
+    &quot;is_open&quot;: true,
+    &quot;expires_date&quot;: &quot;2017-09-23T01:42:04Z&quot;,
+    &quot;fulfiller_metadata&quot;: {
+
+    },
+    &quot;current_bounty&quot;: true,
+    &quot;value_in_eth&quot;: 1.0e+18,
+    &quot;value_in_usdt_now&quot;: 280.65,
+    &quot;status&quot;: &quot;expired&quot;,
+    &quot;now&quot;: &quot;2017-09-24T18:59:53.964344Z&quot;
+  },
+  ....
+  ]
+
+</code></pre>
+
+<h1 id="web3-api">WEB3 API</h1>
+<p>You may interact with the HTTPS API as follows</p>
+<pre><code>truffle(development)&gt; BountyIndex.at('0x0ed0c2a859e9e576cdff840c51d29b6f8a405bdd').bountydetails.call('https://github.com/owocki/pytrader/pull/83');
+[ { [String: '100000000000000000'] s: 1, e: 17, c: [ 1000 ] },
+  '0x0000000000000000000000000000000000000000',
+  '0xd3d280c2866eaa795fc72bd850c48e7cce166e23',
+  '0x0000000000000000000000000000000000000000',
+  true,
+  true,
+  'https://github.com/owocki/pytrader/pull/83',
+  { [String: '1506220425'] s: 1, e: 9, c: [ 1506220425 ] },
+  '{&quot;issueTitle&quot;:&quot;&quot;,&quot;issueKeywords&quot;:&quot;&quot;,&quot;tokenName&quot;:&quot;ETH&quot;,&quot;githubUsername&quot;:&quot;owocki&quot;,&quot;notificationEmail&quot;:&quot;ksowocki@gmail.com&quot;,&quot;experienceLevel&quot;:&quot;&quot;,&quot;projectLength&quot;:&quot;&quot;,&quot;bountyType&quot;:&quot;&quot;}',
+  { [String: '1537756425'] s: 1, e: 9, c: [ 1537756425 ] },
+  '' ]
+
+</code></pre>
+
+<ul>
+<li>be sure to replace <code>0x0ed0c2a859e9e576cdff840c51d29b6f8a405bdd</code> with the BountyIndex contract address.</li>
+<li>be sure to replace <code>https://github.com/owocki/pytrader/pull/83</code> with the issue that you care about.</li>
+</ul>
+<p>Further information on the smart contract interface is available at <a href="https://github.com/gitcoinco/smart_contracts/blob/master/contracts/bounty/BountyIndex.sol">https://github.com/gitcoinco/smart_contracts/blob/master/contracts/bounty/BountyIndex.sol</a></p>
+<p>_bountydetails function returns the following fields:</p>
+<h4 id="fields_1">Fields</h4>
+<table>
+<thead>
+<tr>
+<th>Field Key</th>
+<th>Datatype</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>amount</code></td>
+<td><code>float</code></td>
+<td>Bounty amount in ETH or specified ERC20 token</td>
+</tr>
+<tr>
+<td><code>amount_denomination</code></td>
+<td><code>string</code></td>
+<td>Denomination of the bounty</td>
+</tr>
+<tr>
+<td><code>action_url</code></td>
+<td><code>string</code></td>
+<td>URL of the bounty</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td><code>string</code></td>
+<td>Title of hte bounty</td>
+</tr>
+<tr>
+<td><code>description</code></td>
+<td><code>string</code></td>
+<td>Description of the bounty</td>
+</tr>
+<tr>
+<td><code>created_on</code></td>
+<td><code>datetime</code></td>
+<td>Creation timestamp</td>
+</tr>
+<tr>
+<td><code>source_project</code></td>
+<td><code>string</code></td>
+<td>Source Project the bounty came from</td>
+</tr>
+<tr>
+<td><code>tags</code></td>
+<td><code>strings</code></td>
+<td>tags to classify the bounthy</td>
+</tr>
+</tbody>
+</table>
+<h1 id="bounties-universe-api">Bounties Universe API</h1>
+<p>Access it at <code>https://gitcoin.co/api/v0.1/universe</code></p>
+<p>The bounties universe API lists all bounties (offchain) that have not yet been put into the blockchain or (onchain) that aren't in standard bounties :)</p>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../mk_envvars/" title="Environment Variables" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Environment Variables
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../mk_changelog/" title="Changelog" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Changelog
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+        
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/application.583bbe55.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
+      
+    
+    
+      
+    
+  </body>
+</html>

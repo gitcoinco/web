@@ -1,0 +1,1297 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="https://s.gitcoin.co/static/v2/images/favicon.ico/favicon.ico">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-3.0.4">
+    
+    
+      
+        <title>Gitcoin Developer Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/application.451f80e5.css">
+      
+      
+    
+    
+      <script src="assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="assets/fonts/material-icons.css">
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448"
+    viewBox="0 0 416 448" id="__github">
+  <path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19-18.125
+        8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19 18.125-8.5
+        18.125 8.5 10.75 19 3.125 20.5zM320 304q0 10-3.125 20.5t-10.75
+        19-18.125 8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19
+        18.125-8.5 18.125 8.5 10.75 19 3.125 20.5zM360
+        304q0-30-17.25-51t-46.75-21q-10.25 0-48.75 5.25-17.75 2.75-39.25
+        2.75t-39.25-2.75q-38-5.25-48.75-5.25-29.5 0-46.75 21t-17.25 51q0 22 8
+        38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0
+        37.25-1.75t35-7.375 30.5-15 20.25-25.75 8-38.375zM416 260q0 51.75-15.25
+        82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5-41.75
+        1.125q-19.5 0-35.5-0.75t-36.875-3.125-38.125-7.5-34.25-12.875-30.25-20.25-21.5-28.75q-15.5-30.75-15.5-82.75
+        0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25
+        30.875q36.75-8.75 77.25-8.75 37 0 70 8 26.25-20.5
+        46.75-30.25t47.25-9.75q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34
+        99.5z" />
+</svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#gitcoin" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="." title="Gitcoin Developer Documentation" class="md-header-nav__button md-logo">
+          
+            <img src="https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png" width="24" height="24">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                Gitcoin Developer Documentation
+              </span>
+              <span class="md-header-nav__topic">
+                Home
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+
+  <a href="https://github.com/gitcoinco/web/" title="Go to repository" class="md-source" data-md-source="github">
+    
+      <div class="md-source__icon">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="#__github" width="24" height="24"></use>
+        </svg>
+      </div>
+    
+    <div class="md-source__repository">
+      GitHub
+    </div>
+  </a>
+
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+        
+
+<nav class="md-tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  <li class="md-tabs__item">
+    
+      <a href="." title="Home" class="md-tabs__link md-tabs__link--active">
+        Home
+      </a>
+    
+  </li>
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="mk_setup/" title="General" class="md-tabs__link">
+          General
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="app/middleware/" title="App" class="md-tabs__link">
+          App
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="avatar/admin/" title="Avatar" class="md-tabs__link">
+          Avatar
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="bounty_requests/admin/" title="Bounty Requests" class="md-tabs__link">
+          Bounty Requests
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="credits/views/" title="Credits" class="md-tabs__link">
+          Credits
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="dashboard/admin/" title="Dashboard" class="md-tabs__link">
+          Dashboard
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="dataviz/admin/" title="Data Visualization" class="md-tabs__link">
+          Data Visualization
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="git/utils/" title="Git" class="md-tabs__link">
+          Git
+        </a>
+      
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="." title="Gitcoin Developer Documentation" class="md-nav__button md-logo">
+      
+        <img src="https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png" width="48" height="48">
+      
+    </a>
+    Gitcoin Developer Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+
+  <a href="https://github.com/gitcoinco/web/" title="Go to repository" class="md-source" data-md-source="github">
+    
+      <div class="md-source__icon">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="#__github" width="24" height="24"></use>
+        </svg>
+      </div>
+    
+    <div class="md-source__repository">
+      GitHub
+    </div>
+  </a>
+
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+    <a href="." title="Home" class="md-nav__link md-nav__link--active">
+      Home
+    </a>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      General
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        General
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="mk_setup/" title="Setup Environment (recommended)" class="md-nav__link">
+      Setup Environment (recommended)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="mk_alternative_setup/" title="Alternative Setup" class="md-nav__link">
+      Alternative Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="mk_third_party_integrations/" title="Third Party Integration Setup" class="md-nav__link">
+      Third Party Integration Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="mk_advanced/" title="Advanced" class="md-nav__link">
+      Advanced
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="mk_widget/" title="Widget Setup" class="md-nav__link">
+      Widget Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="mk_envvars/" title="Environment Variables" class="md-nav__link">
+      Environment Variables
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="mk_rest_api/" title="Rest API" class="md-nav__link">
+      Rest API
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="mk_changelog/" title="Changelog" class="md-nav__link">
+      Changelog
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="mk_contributors/" title="Contributors Guide" class="md-nav__link">
+      Contributors Guide
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      App
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        App
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="app/middleware/" title="Middleware" class="md-nav__link">
+      Middleware
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="app/pipeline/" title="Auth Pipeline" class="md-nav__link">
+      Auth Pipeline
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="app/sitemaps/" title="Sitemaps" class="md-nav__link">
+      Sitemaps
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="app/static_storage/" title="Static Storage" class="md-nav__link">
+      Static Storage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="app/thumbnail_processors/" title="Thumbnail Processors" class="md-nav__link">
+      Thumbnail Processors
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="app/utils/" title="Utilities" class="md-nav__link">
+      Utilities
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Avatar
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Avatar
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="avatar/admin/" title="Admin" class="md-nav__link">
+      Admin
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="avatar/exceptions/" title="Exceptions" class="md-nav__link">
+      Exceptions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="avatar/models/" title="Models" class="md-nav__link">
+      Models
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="avatar/utils/" title="Utilities" class="md-nav__link">
+      Utilities
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="avatar/views/" title="Views" class="md-nav__link">
+      Views
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="avatar/templatetags/" title="Template Tags" class="md-nav__link">
+      Template Tags
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Bounty Requests
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        Bounty Requests
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="bounty_requests/admin/" title="Admin" class="md-nav__link">
+      Admin
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="bounty_requests/models/" title="Models" class="md-nav__link">
+      Models
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="bounty_requests/views/" title="Views" class="md-nav__link">
+      Views
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Credits
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Credits
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="credits/views/" title="Views" class="md-nav__link">
+      Views
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      Dashboard
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Dashboard
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="dashboard/admin/" title="Admin" class="md-nav__link">
+      Admin
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="dashboard/embed/" title="Embedded" class="md-nav__link">
+      Embedded
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="dashboard/models/" title="Models" class="md-nav__link">
+      Models
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="dashboard/utils/" title="Utilities" class="md-nav__link">
+      Utilities
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="dashboard/views/" title="Views" class="md-nav__link">
+      Views
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="dashboard/healthchecks/" title="Healthchecks" class="md-nav__link">
+      Healthchecks
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="dashboard/helpers/" title="Helpers" class="md-nav__link">
+      Helpers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="dashboard/ios/" title="iOS" class="md-nav__link">
+      iOS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="dashboard/notifications/" title="Notifications" class="md-nav__link">
+      Notifications
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="dashboard/router/" title="API Router" class="md-nav__link">
+      API Router
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="dashboard/signals/" title="Signals" class="md-nav__link">
+      Signals
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="dashboard/tokens/" title="Tokens" class="md-nav__link">
+      Tokens
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="dashboard/templatetags/" title="Template Tags" class="md-nav__link">
+      Template Tags
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-8" type="checkbox" id="nav-8">
+    
+    <label class="md-nav__link" for="nav-8">
+      Data Visualization
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-8">
+        Data Visualization
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="dataviz/admin/" title="Admin" class="md-nav__link">
+      Admin
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="dataviz/models/" title="Models" class="md-nav__link">
+      Models
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="dataviz/views/" title="Views" class="md-nav__link">
+      Views
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9" type="checkbox" id="nav-9">
+    
+    <label class="md-nav__link" for="nav-9">
+      Git
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-9">
+        Git
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="git/utils/" title="Utilities" class="md-nav__link">
+      Utilities
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/gitcoinco/web/edit/master/docs/index.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                
+                
+                <p><img src="https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png" width=75px height=75px></p>
+<h1 id="gitcoin">Gitcoin</h1>
+<p>Gitcoin Grows Open Source. Learn more at <a href="https://gitcoin.co">https://gitcoin.co</a></p>
+<p><a href="https://gitcoin.co/explorer?q=gitcoinco">
+    <img src="https://gitcoin.co/funding/embed?repo=https://github.com/gitcoinco/web&badge=1&maxAge=60">
+</a></p>
+<h1 id="web-repo">web repo</h1>
+<p><a href="https://travis-ci.org/gitcoinco/web"><img alt="Build Status" src="https://travis-ci.org/gitcoinco/web.svg?branch=master" /></a>
+<a href="https://codecov.io/gh/gitcoinco/web"><img alt="codecov" src="https://codecov.io/gh/gitcoinco/web/branch/master/graph/badge.svg" /></a>
+<a href="https://waffle.io/gitcoinco/web"><img alt="Waffle.io - Columns and their card count" src="https://badge.waffle.io/gitcoinco/web.svg?columns=all" /></a></p>
+<p>This is the website that is live at gitcoin.co</p>
+<h2 id="how-to-interact-with-this-repo">How to interact with this repo</h2>
+<h3 id="table-of-contents">Table of Contents</h3>
+<ul>
+<li><a href="#gitcoin">Gitcoin</a></li>
+<li><a href="#web-repo">web repo</a></li>
+<li><a href="#how-to-interact-with-this-repo">How to interact with this repo</a><ul>
+<li><a href="#on-github">On Github</a></li>
+<li><a href="#on-gitcoin">On Gitcoin</a></li>
+</ul>
+</li>
+<li><a href="#what">What</a></li>
+<li><a href="#developing">Developing</a></li>
+<li><a href="#https-api">HTTPS API</a></li>
+<li><a href="#running-locally">Running Locally</a></li>
+<li><a href="#trying-out-gitcoin">Trying out Gitcoin</a></li>
+<li><a href="#posting-your-first-issue">Posting your first issue</a></li>
+<li><a href="#integrating-gitcoin">Integrating Gitcoin</a></li>
+<li><a href="#integrating-the--available-work-widget--on-your-repo">Integrating the 'available work widget' on your repo.</a></li>
+<li><a href="#adding-gitcoinbot-to-your-repo">Adding GitcoinBot to your repo</a></li>
+<li><a href="#adding-your-token-to-gitcoin">Adding your token to Gitcoin</a></li>
+<li><a href="#legal">Legal</a></li>
+<li><a href="#license">License</a></li>
+</ul>
+<h3 id="on-github">On Github</h3>
+<p><a href="https://github.com/gitcoinco/web/stargazers">Star</a> and <a href="https://github.com/gitcoinco/web/watchers">watch</a> this github repository to stay up to date, we're pushing new code several times per week!</p>
+<p>Check out the <a href="./CHANGELOG.md">CHANGELOG</a> for details about recent changes to this repository.</p>
+<p>Also,</p>
+<ul>
+<li>want to become a contributor ? Checkout our <a href="./CONTRIBUTING.md">guidelines</a>.</li>
+<li><a href="https://github.com/gitcoinco/gitcoinco">check out the gitcoinco organization-wide repo</a>.</li>
+<li>check out the open issues list, especially the <a href="https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Adiscussion">discussion</a> label and <a href="https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Aeasy-pickings">easy-pickings</a>.</li>
+</ul>
+<h3 id="on-gitcoin">On Gitcoin</h3>
+<p><a href="https://gitcoin.co/explorer/?q=https://github.com/gitcoinco/web">Check out the available open issues on Gitcoin</a>.</p>
+<h2 id="what">What</h2>
+<p>Functionally, the app has several key features:</p>
+<ul>
+<li>Smart Contracts -- Where funded issues are stored and indexed.</li>
+<li>Brochureware -- Describes the project.</li>
+<li>Funded Issue Explorer -- A searchable index of all of the work available in the system.</li>
+<li>Funded Issue Submission / Acceptance flow -- Interface between the application and web3.</li>
+<li>API - the HTTPS API</li>
+<li>Bot - the GitcoinBot</li>
+</ul>
+<p><a href="https://gitcoin.co/web3">More about how/why to interact with web3 here</a>.</p>
+<p>Technically, the system is architected:</p>
+<ul>
+<li><strong>Web3</strong> The main source of truth for the system is the Ethereum blockchain. Check out the <a href="https://github.com/gitcoinco/smart_contracts">smart contracts</a>.</li>
+<li><strong>Web2</strong> This part of the app is built with Python, Django, Postgres, and a handful of other tools that are common in the web2 ecosystem.</li>
+<li><strong>Web 3 Bridge</strong> This is the bridge between web3 and the rest of the application. Mostly built in javascript(web3js) and python(web3py).</li>
+<li><strong>Brochureware</strong> Just a nice little landing page telling folks what the Gitcoin project is.</li>
+</ul>
+<h1 id="developing">Developing</h1>
+<h2 id="https-api">HTTPS API</h2>
+<p><a href="API.md">For more information on the HTTPS API, please view the api README</a></p>
+<h2 id="running-locally">Running locally</h2>
+<h3 id="with-docker-recommended">With Docker (Recommended)</h3>
+<p><a href="RUNNING_LOCALLY_DOCKER.md">For more information on running the app locally, please view the running locally README</a></p>
+<h3 id="without-docker">Without Docker</h3>
+<p><a href="RUNNING_LOCALLY.md">For more information on running the app locally, please view the running locally README</a></p>
+<h2 id="overriding-application-defaults">Overriding Application Defaults</h2>
+<p><a href="ENVIRONMENT_VARIABLES.md">For more information on overriding the local dev environment configuration defaults, please view the environment variables documentation</a></p>
+<h1 id="trying-out-gitcoin">Trying out Gitcoin</h1>
+<h2 id="posting-your-first-issue">Posting your first issue</h2>
+<p>If you</p>
+<ul>
+<li>have some work on your Github Issues board that you don't have time (or skills) to do.</li>
+<li>are dependant upon an upstream repo for something, and you'd like to incentivize them to work onit.</li>
+</ul>
+<p>try posting a funded issue at <a href="https://gitcoin.co/new">https://gitcoin.co/new</a>.</p>
+<h1 id="integrating-gitcoin">Integrating Gitcoin</h1>
+<h2 id="integrating-the-available-work-widget-on-your-repo">Integrating the 'available work widget' on your repo.</h2>
+<p>This widget will help you advertise that you support Gitcoin bounties, so that your community knows the best place to contribute.</p>
+<p><a href="WIDGET.md">Check out the widget readme to learn how</a></p>
+<h2 id="adding-gitcoinbot-to-your-repo">Adding GitcoinBot to your repo</h2>
+<p>Gitcoinbot will allow you to add issues straight from github.</p>
+<p><a href="app/gitcoinbot/">Check out the gitcoinbot readme to learn how</a></p>
+<h2 id="adding-your-token-to-gitcoin">Adding your token to Gitcoin</h2>
+<p>Have an ERC20 compatible token that you'ud like to add support for?  Great!  Submit <a href="https://gitcoin.co/submittoken">this form</a> to submit it to the system</p>
+<h2 id="high-level-flows">High Level flows</h2>
+<h3 id="of-a-bounty">of a Bounty</h3>
+<p>This is the high level flow of a bounty on Gitcoin:</p>
+<p><a href="https://www.draw.io/?state=%7B%22ids%22:%5B%221FTatOur159qS8pzBCgIG5E0XdEH8iZF-%22%5D,%22action%22:%22open%22,%22userId%22:%22115514289174042120922%22%7D#G1FTatOur159qS8pzBCgIG5E0XdEH8iZF-"><img src='bounty_flow.png'></a></p>
+<p>Chain of Custody</p>
+<ol>
+<li>Bounty Funder's Wallet</li>
+<li><a href="https://github.com/Bounties-Network/StandardBounties">StandardBounties Smart Contract</a> deployed at <a href="https://etherscan.io/address/0x2af47a65da8cd66729b4209c22017d6a5c2d2400#code">0x2af47a65da8cd66729b4209c22017d6a5c2d2400</a></li>
+<li>(Submission Made)</li>
+<li>(Submission Accepted)</li>
+<li>Recipient's Wallet </li>
+</ol>
+<p>Anywhere between 2 and 4 above, Funder may withdraw their funds via 'Cancel Bounty' function for any reason. </p>
+<p>We may introduce Arbitration <a href="http://delphi.network/">via Delphi</a> at some point in the future.  Until then, we are lucky that Github users are very protective of their reputation, and therefore very kind to each other, and disputes have not generally arisen.</p>
+<h3 id="of-a-tip">of a Tip</h3>
+<p>Note: Crowdfunded bounties + bulk payouts are secured by Tips (at least until Standard Bounties 2.0 is released).</p>
+<p>This is the high level flow of a bounty on Gitcoin:</p>
+<p><a href="https://www.draw.io/#G1sTJtQou5FYsHCabhb2JXHDTprpvvkUy0"><img src='tip_flow.png'></a></p>
+<h1 id="legal">Legal</h1>
+<p>'''
+    Copyright (C) 2018 Gitcoin Core</p>
+<pre><code>This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see &lt;http://www.gnu.org/licenses/&gt;.
+</code></pre>
+<p>'''</p>
+<h1 id="license">License</h1>
+<p><a href="../LICENSE">GNU AFFERO GENERAL PUBLIC LICENSE</a></p>
+<!-- Google Analytics -->
+
+<p><img src='https://ga-beacon.appspot.com/UA-102304388-1/gitcoinco/web' style='width:1px; height:1px;' ></p>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+        
+          <a href="mk_setup/" title="Setup Environment (recommended)" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Setup Environment (recommended)
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+        
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="assets/javascripts/application.583bbe55.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:"."}})</script>
+      
+    
+    
+      
+    
+  </body>
+</html>

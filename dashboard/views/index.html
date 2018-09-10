@@ -1,0 +1,1586 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="https://s.gitcoin.co/static/v2/images/favicon.ico/favicon.ico">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-3.0.4">
+    
+    
+      
+        <title>Views - Gitcoin Developer Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application.451f80e5.css">
+      
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448"
+    viewBox="0 0 416 448" id="__github">
+  <path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19-18.125
+        8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19 18.125-8.5
+        18.125 8.5 10.75 19 3.125 20.5zM320 304q0 10-3.125 20.5t-10.75
+        19-18.125 8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19
+        18.125-8.5 18.125 8.5 10.75 19 3.125 20.5zM360
+        304q0-30-17.25-51t-46.75-21q-10.25 0-48.75 5.25-17.75 2.75-39.25
+        2.75t-39.25-2.75q-38-5.25-48.75-5.25-29.5 0-46.75 21t-17.25 51q0 22 8
+        38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0
+        37.25-1.75t35-7.375 30.5-15 20.25-25.75 8-38.375zM416 260q0 51.75-15.25
+        82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5-41.75
+        1.125q-19.5 0-35.5-0.75t-36.875-3.125-38.125-7.5-34.25-12.875-30.25-20.25-21.5-28.75q-15.5-30.75-15.5-82.75
+        0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25
+        30.875q36.75-8.75 77.25-8.75 37 0 70 8 26.25-20.5
+        46.75-30.25t47.25-9.75q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34
+        99.5z" />
+</svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../.." title="Gitcoin Developer Documentation" class="md-header-nav__button md-logo">
+          
+            <img src="https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png" width="24" height="24">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                Gitcoin Developer Documentation
+              </span>
+              <span class="md-header-nav__topic">
+                Views
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+
+  <a href="https://github.com/gitcoinco/web/" title="Go to repository" class="md-source" data-md-source="github">
+    
+      <div class="md-source__icon">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="#__github" width="24" height="24"></use>
+        </svg>
+      </div>
+    
+    <div class="md-source__repository">
+      GitHub
+    </div>
+  </a>
+
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+        
+
+  
+
+<nav class="md-tabs md-tabs--active" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  <li class="md-tabs__item">
+    
+      <a href="../.." title="Home" class="md-tabs__link">
+        Home
+      </a>
+    
+  </li>
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../mk_setup/" title="General" class="md-tabs__link">
+          General
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../app/middleware/" title="App" class="md-tabs__link">
+          App
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../avatar/admin/" title="Avatar" class="md-tabs__link">
+          Avatar
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../bounty_requests/admin/" title="Bounty Requests" class="md-tabs__link">
+          Bounty Requests
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../credits/views/" title="Credits" class="md-tabs__link">
+          Credits
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../admin/" title="Dashboard" class="md-tabs__link md-tabs__link--active">
+          Dashboard
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../dataviz/admin/" title="Data Visualization" class="md-tabs__link">
+          Data Visualization
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../../git/utils/" title="Git" class="md-tabs__link">
+          Git
+        </a>
+      
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../.." title="Gitcoin Developer Documentation" class="md-nav__button md-logo">
+      
+        <img src="https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png" width="48" height="48">
+      
+    </a>
+    Gitcoin Developer Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+
+  <a href="https://github.com/gitcoinco/web/" title="Go to repository" class="md-source" data-md-source="github">
+    
+      <div class="md-source__icon">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="#__github" width="24" height="24"></use>
+        </svg>
+      </div>
+    
+    <div class="md-source__repository">
+      GitHub
+    </div>
+  </a>
+
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2">
+    
+    <label class="md-nav__link" for="nav-2">
+      General
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        General
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../mk_setup/" title="Setup Environment (recommended)" class="md-nav__link">
+      Setup Environment (recommended)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../mk_alternative_setup/" title="Alternative Setup" class="md-nav__link">
+      Alternative Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../mk_third_party_integrations/" title="Third Party Integration Setup" class="md-nav__link">
+      Third Party Integration Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../mk_advanced/" title="Advanced" class="md-nav__link">
+      Advanced
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../mk_widget/" title="Widget Setup" class="md-nav__link">
+      Widget Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../mk_envvars/" title="Environment Variables" class="md-nav__link">
+      Environment Variables
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../mk_rest_api/" title="Rest API" class="md-nav__link">
+      Rest API
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../mk_changelog/" title="Changelog" class="md-nav__link">
+      Changelog
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../mk_contributors/" title="Contributors Guide" class="md-nav__link">
+      Contributors Guide
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      App
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        App
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../app/middleware/" title="Middleware" class="md-nav__link">
+      Middleware
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../app/pipeline/" title="Auth Pipeline" class="md-nav__link">
+      Auth Pipeline
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../app/sitemaps/" title="Sitemaps" class="md-nav__link">
+      Sitemaps
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../app/static_storage/" title="Static Storage" class="md-nav__link">
+      Static Storage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../app/thumbnail_processors/" title="Thumbnail Processors" class="md-nav__link">
+      Thumbnail Processors
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../app/utils/" title="Utilities" class="md-nav__link">
+      Utilities
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Avatar
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Avatar
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../avatar/admin/" title="Admin" class="md-nav__link">
+      Admin
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../avatar/exceptions/" title="Exceptions" class="md-nav__link">
+      Exceptions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../avatar/models/" title="Models" class="md-nav__link">
+      Models
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../avatar/utils/" title="Utilities" class="md-nav__link">
+      Utilities
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../avatar/views/" title="Views" class="md-nav__link">
+      Views
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../avatar/templatetags/" title="Template Tags" class="md-nav__link">
+      Template Tags
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Bounty Requests
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        Bounty Requests
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../bounty_requests/admin/" title="Admin" class="md-nav__link">
+      Admin
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../bounty_requests/models/" title="Models" class="md-nav__link">
+      Models
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../bounty_requests/views/" title="Views" class="md-nav__link">
+      Views
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Credits
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Credits
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../credits/views/" title="Views" class="md-nav__link">
+      Views
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7" checked>
+    
+    <label class="md-nav__link" for="nav-7">
+      Dashboard
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Dashboard
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../admin/" title="Admin" class="md-nav__link">
+      Admin
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../embed/" title="Embedded" class="md-nav__link">
+      Embedded
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../models/" title="Models" class="md-nav__link">
+      Models
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../utils/" title="Utilities" class="md-nav__link">
+      Utilities
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+    
+    <a href="./" title="Views" class="md-nav__link md-nav__link--active">
+      Views
+    </a>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../healthchecks/" title="Healthchecks" class="md-nav__link">
+      Healthchecks
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../helpers/" title="Helpers" class="md-nav__link">
+      Helpers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../ios/" title="iOS" class="md-nav__link">
+      iOS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../notifications/" title="Notifications" class="md-nav__link">
+      Notifications
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../router/" title="API Router" class="md-nav__link">
+      API Router
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../signals/" title="Signals" class="md-nav__link">
+      Signals
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../tokens/" title="Tokens" class="md-nav__link">
+      Tokens
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../templatetags/" title="Template Tags" class="md-nav__link">
+      Template Tags
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-8" type="checkbox" id="nav-8">
+    
+    <label class="md-nav__link" for="nav-8">
+      Data Visualization
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-8">
+        Data Visualization
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../dataviz/admin/" title="Admin" class="md-nav__link">
+      Admin
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../dataviz/models/" title="Models" class="md-nav__link">
+      Models
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../dataviz/views/" title="Views" class="md-nav__link">
+      Views
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9" type="checkbox" id="nav-9">
+    
+    <label class="md-nav__link" for="nav-9">
+      Git
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-9">
+        Git
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../git/utils/" title="Utilities" class="md-nav__link">
+      Utilities
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/gitcoinco/web/edit/master/docs/dashboard/views.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                
+                
+                <h1 id="dashboard.gas_views">dashboard.gas_views</h1>
+
+<p>Copyright (C) 2017 Gitcoin Core</p>
+<p>This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.</p>
+<p>You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
+<h1 id="dashboard.tip_views">dashboard.tip_views</h1>
+
+<p>Copyright (C) 2017 Gitcoin Core</p>
+<p>This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.</p>
+<p>You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
+<h2 id="dashboard.tip_views.send_tip">send_tip</h2>
+
+<pre><code class="python">send_tip(request)
+</code></pre>
+
+<p>Handle the first stage of sending a tip.
+<h2 id="dashboard.tip_views.receive_tip_v3">receive_tip_v3</h2></p>
+<pre><code class="python">receive_tip_v3(request, key, txid, network)
+</code></pre>
+
+<p>Handle the receiving of a tip (the POST)</p>
+<p>Returns:
+    TemplateResponse: the UI with the tip confirmed</p>
+<h3 id="dashboard.tip_views.receive_tip_v3.csrf_exempt">csrf_exempt</h3>
+
+<p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.
+<h2 id="dashboard.tip_views.send_tip_4">send_tip_4</h2></p>
+<pre><code class="python">send_tip_4(request)
+</code></pre>
+
+<p>Handle the fourth stage of sending a tip (the POST)</p>
+<p>Returns:
+    JsonResponse: response with success state.</p>
+<h3 id="dashboard.tip_views.send_tip_4.csrf_exempt">csrf_exempt</h3>
+
+<p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.
+<h2 id="dashboard.tip_views.tipee_address">tipee_address</h2></p>
+<pre><code class="python">tipee_address(request, handle)
+</code></pre>
+
+<p>returns the address, if any, that someone would like to be tipped directly at</p>
+<p>Returns:
+    list of addresse</p>
+<h2 id="dashboard.tip_views.send_tip_3">send_tip_3</h2>
+
+<pre><code class="python">send_tip_3(request)
+</code></pre>
+
+<p>Handle the third stage of sending a tip (the POST)</p>
+<p>Returns:
+    JsonResponse: response with success state.</p>
+<h3 id="dashboard.tip_views.send_tip_3.csrf_exempt">csrf_exempt</h3>
+
+<p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.
+<h2 id="dashboard.tip_views.send_tip_2">send_tip_2</h2></p>
+<pre><code class="python">send_tip_2(request)
+</code></pre>
+
+<p>Handle the second stage of sending a tip.</p>
+<p>TODO:
+    * Convert this view-based logic to a django form.</p>
+<p>Returns:
+    JsonResponse: If submitting tip, return response with success state.
+    TemplateResponse: Render the submission form.</p>
+<h1 id="dashboard.views">dashboard.views</h1>
+
+<p>Copyright (C) 2017 Gitcoin Core</p>
+<p>This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.</p>
+<p>This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.</p>
+<p>You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
+<h2 id="dashboard.views.record_bounty_activity">record_bounty_activity</h2>
+
+<pre><code class="python">record_bounty_activity(bounty, user, event_name, interest=None)
+</code></pre>
+
+<p>Creates Activity object.</p>
+<p>Args:
+    bounty (dashboard.models.Bounty): Bounty
+    user (string): User name
+    event_name (string): Event name
+    interest (dashboard.models.Interest): Interest</p>
+<p>Raises:
+    None</p>
+<p>Returns:
+    None</p>
+<h2 id="dashboard.views.gh_login">gh_login</h2>
+
+<pre><code class="python">gh_login(request)
+</code></pre>
+
+<p>Attempt to redirect the user to Github for authentication.
+<h3 id="dashboard.views.gh_login.csrf_exempt">csrf_exempt</h3></p>
+<p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.
+<h2 id="dashboard.views.new_interest">new_interest</h2></p>
+<pre><code class="python">new_interest(request, bounty_id)
+</code></pre>
+
+<p>Claim Work for a Bounty.</p>
+<p>:request method: POST</p>
+<p>Args:
+    bounty_id (int): ID of the Bounty.</p>
+<p>Returns:
+    dict: The success key with a boolean value and accompanying error.</p>
+<h3 id="dashboard.views.new_interest.csrf_exempt">csrf_exempt</h3>
+
+<p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.
+<h2 id="dashboard.views.remove_interest">remove_interest</h2></p>
+<pre><code class="python">remove_interest(request, bounty_id)
+</code></pre>
+
+<p>Unclaim work from the Bounty.</p>
+<p>Can only be called by someone who has started work</p>
+<p>:request method: POST</p>
+<p>post_id (int): ID of the Bounty.</p>
+<p>Returns:
+    dict: The success key with a boolean value and accompanying error.</p>
+<h3 id="dashboard.views.remove_interest.csrf_exempt">csrf_exempt</h3>
+
+<p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.
+<h2 id="dashboard.views.extend_expiration">extend_expiration</h2></p>
+<pre><code class="python">extend_expiration(request, bounty_id)
+</code></pre>
+
+<p>Extend expiration of the Bounty.</p>
+<p>Can only be called by funder or staff of the bounty.</p>
+<p>:request method: POST</p>
+<p>post_id (int): ID of the Bounty.</p>
+<p>Returns:
+    dict: The success key with a boolean value and accompanying error.</p>
+<h3 id="dashboard.views.extend_expiration.csrf_exempt">csrf_exempt</h3>
+
+<p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.
+<h2 id="dashboard.views.uninterested">uninterested</h2></p>
+<pre><code class="python">uninterested(request, bounty_id, profile_id)
+</code></pre>
+
+<p>Remove party from given bounty</p>
+<p>Can only be called by the bounty funder</p>
+<p>:request method: GET</p>
+<p>Args:
+    bounty_id (int): ID of the Bounty
+    profile_id (int): ID of the interested profile</p>
+<p>Params:
+    slashed (str): if the user will be slashed or not</p>
+<p>Returns:
+    dict: The success key with a boolean value and accompanying error.</p>
+<h3 id="dashboard.views.uninterested.csrf_exempt">csrf_exempt</h3>
+
+<p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.
+<h2 id="dashboard.views.onboard">onboard</h2></p>
+<pre><code class="python">onboard(request, flow)
+</code></pre>
+
+<p>Handle displaying the first time user experience flow.
+<h2 id="dashboard.views.dashboard">dashboard</h2></p>
+<pre><code class="python">dashboard(request)
+</code></pre>
+
+<p>Handle displaying the dashboard.
+<h2 id="dashboard.views.accept_bounty">accept_bounty</h2></p>
+<pre><code class="python">accept_bounty(request)
+</code></pre>
+
+<p>Process the bounty.</p>
+<p>Args:
+    pk (int): The primary key of the bounty to be accepted.</p>
+<p>Raises:
+    Http404: The exception is raised if no associated Bounty is found.</p>
+<p>Returns:
+    TemplateResponse: The accept bounty view.</p>
+<h2 id="dashboard.views.contribute">contribute</h2>
+
+<pre><code class="python">contribute(request)
+</code></pre>
+
+<p>Contribute to the bounty.</p>
+<p>Args:
+    pk (int): The primary key of the bounty to be accepted.</p>
+<p>Raises:
+    Http404: The exception is raised if no associated Bounty is found.</p>
+<p>Returns:
+    TemplateResponse: The accept bounty view.</p>
+<h2 id="dashboard.views.invoice">invoice</h2>
+
+<pre><code class="python">invoice(request)
+</code></pre>
+
+<p>invoice view.</p>
+<p>Args:
+    pk (int): The primary key of the bounty to be accepted.</p>
+<p>Raises:
+    Http404: The exception is raised if no associated Bounty is found.</p>
+<p>Returns:
+    TemplateResponse: The invoice  view.</p>
+<h2 id="dashboard.views.social_contribution">social_contribution</h2>
+
+<pre><code class="python">social_contribution(request)
+</code></pre>
+
+<p>Social Contributuion to the bounty.</p>
+<p>Args:
+    pk (int): The primary key of the bounty to be accepted.</p>
+<p>Raises:
+    Http404: The exception is raised if no associated Bounty is found.</p>
+<p>Returns:
+    TemplateResponse: The accept bounty view.</p>
+<h2 id="dashboard.views.payout_bounty">payout_bounty</h2>
+
+<pre><code class="python">payout_bounty(request)
+</code></pre>
+
+<p>Payout the bounty.</p>
+<p>Args:
+    pk (int): The primary key of the bounty to be accepted.</p>
+<p>Raises:
+    Http404: The exception is raised if no associated Bounty is found.</p>
+<p>Returns:
+    TemplateResponse: The accept bounty view.</p>
+<h2 id="dashboard.views.bulk_payout_bounty">bulk_payout_bounty</h2>
+
+<pre><code class="python">bulk_payout_bounty(request)
+</code></pre>
+
+<p>Payout the bounty.</p>
+<p>Args:
+    pk (int): The primary key of the bounty to be accepted.</p>
+<p>Raises:
+    Http404: The exception is raised if no associated Bounty is found.</p>
+<p>Returns:
+    TemplateResponse: The accept bounty view.</p>
+<h2 id="dashboard.views.fulfill_bounty">fulfill_bounty</h2>
+
+<pre><code class="python">fulfill_bounty(request)
+</code></pre>
+
+<p>Fulfill a bounty.</p>
+<p>Parameters:
+    pk (int): The primary key of the Bounty.
+    standard_bounties_id (int): The standard bounties ID of the Bounty.
+    network (str): The network of the Bounty.
+    githubUsername (str): The Github Username of the referenced user.</p>
+<p>Raises:
+    Http404: The exception is raised if no associated Bounty is found.</p>
+<p>Returns:
+    TemplateResponse: The fulfill bounty view.</p>
+<h2 id="dashboard.views.increase_bounty">increase_bounty</h2>
+
+<pre><code class="python">increase_bounty(request)
+</code></pre>
+
+<p>Increase a bounty as the funder.</p>
+<p>Args:
+    pk (int): The primary key of the bounty to be increased.</p>
+<p>Raises:
+    Http404: The exception is raised if no associated Bounty is found.</p>
+<p>Returns:
+    TemplateResponse: The increase bounty view.</p>
+<h2 id="dashboard.views.cancel_bounty">cancel_bounty</h2>
+
+<pre><code class="python">cancel_bounty(request)
+</code></pre>
+
+<p>Kill an expired bounty.</p>
+<p>Args:
+    pk (int): The primary key of the bounty to be cancelled.</p>
+<p>Raises:
+    Http404: The exception is raised if no associated Bounty is found.</p>
+<p>Returns:
+    TemplateResponse: The cancel bounty view.</p>
+<h2 id="dashboard.views.bounty_details">bounty_details</h2>
+
+<pre><code class="python">bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None)
+</code></pre>
+
+<p>Display the bounty details.</p>
+<p>Args:
+    ghuser (str): The Github user. Defaults to an empty string.
+    ghrepo (str): The Github repository. Defaults to an empty string.
+    ghissue (int): The Github issue number. Defaults to: 0.</p>
+<p>Raises:
+    Exception: The exception is raised for any exceptions in the main query block.</p>
+<p>Returns:
+    django.template.response.TemplateResponse: The Bounty details template response.</p>
+<h2 id="dashboard.views.quickstart">quickstart</h2>
+
+<pre><code class="python">quickstart(request)
+</code></pre>
+
+<p>Display quickstart guide.
+<h2 id="dashboard.views.profile_helper">profile_helper</h2></p>
+<pre><code class="python">profile_helper(handle, suppress_profile_hidden_exception=False)
+</code></pre>
+
+<p>Define the profile helper.</p>
+<p>Args:
+    handle (str): The profile handle.</p>
+<p>Raises:
+    DoesNotExist: The exception is raised if a Profile isn't found matching the handle.
+        Remediation is attempted by syncing the profile data.
+    MultipleObjectsReturned: The exception is raised if multiple Profiles are found.
+        The latest Profile will be returned.</p>
+<p>Returns:
+    dashboard.models.Profile: The Profile associated with the provided handle.</p>
+<h2 id="dashboard.views.profile_keywords_helper">profile_keywords_helper</h2>
+
+<pre><code class="python">profile_keywords_helper(handle)
+</code></pre>
+
+<p>Define the profile keywords helper.</p>
+<p>Args:
+    handle (str): The profile handle.</p>
+<h2 id="dashboard.views.profile_keywords">profile_keywords</h2>
+
+<pre><code class="python">profile_keywords(request, handle)
+</code></pre>
+
+<p>Display profile keywords.</p>
+<p>Args:
+    handle (str): The profile handle.</p>
+<h2 id="dashboard.views.profile">profile</h2>
+
+<pre><code class="python">profile(request, handle)
+</code></pre>
+
+<p>Display profile details.</p>
+<p>Args:
+    handle (str): The profile handle.</p>
+<p>Variables:
+    context (dict): The template context to be used for template rendering.
+    profile (dashboard.models.Profile): The Profile object to be used.
+    status (int): The status code of the response.</p>
+<p>Returns:
+    TemplateResponse: The profile templated view.</p>
+<h2 id="dashboard.views.get_quickstart_video">get_quickstart_video</h2>
+
+<pre><code class="python">get_quickstart_video(request)
+</code></pre>
+
+<p>Show quickstart video.
+<h3 id="dashboard.views.get_quickstart_video.csrf_exempt">csrf_exempt</h3></p>
+<p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.
+<h2 id="dashboard.views.extend_issue_deadline">extend_issue_deadline</h2></p>
+<pre><code class="python">extend_issue_deadline(request)
+</code></pre>
+
+<p>Show quickstart video.
+<h3 id="dashboard.views.extend_issue_deadline.csrf_exempt">csrf_exempt</h3></p>
+<p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.
+<h2 id="dashboard.views.sync_web3">sync_web3</h2></p>
+<pre><code class="python">sync_web3(request)
+</code></pre>
+
+<p>Sync up web3 with the database.</p>
+<p>This function has a few different uses.  It is typically called from the
+front end using the javascript <code>sync_web3</code> function.  The <code>issueURL</code> is
+passed in first, followed optionally by a <code>bountydetails</code> argument.</p>
+<p>Returns:
+    JsonResponse: The JSON response following the web3 sync.</p>
+<h3 id="dashboard.views.sync_web3.csrf_exempt">csrf_exempt</h3>
+
+<p>bool(x) -&gt; bool</p>
+<p>Returns True when the argument x is true, False otherwise.
+The builtins True and False are the only two instances of the class bool.
+The class bool is a subclass of the class int, and cannot be subclassed.
+<h2 id="dashboard.views.new_bounty">new_bounty</h2></p>
+<pre><code class="python">new_bounty(request)
+</code></pre>
+
+<p>Create a new bounty.</p>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../utils/" title="Utilities" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Utilities
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../healthchecks/" title="Healthchecks" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Healthchecks
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+        
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application.583bbe55.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:"../.."}})</script>
+      
+    
+    
+      
+    
+  </body>
+</html>

@@ -1,0 +1,1912 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="https://s.gitcoin.co/static/v2/images/favicon.ico/favicon.ico">
+      <meta name="generator" content="mkdocs-1.0.4, mkdocs-material-3.0.4">
+    
+    
+      
+        <title>Environment Variables - Gitcoin Developer Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/application.451f80e5.css">
+      
+      
+    
+    
+      <script src="../assets/javascripts/modernizr.1aa3b519.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700|Roboto+Mono">
+        <style>body,input{font-family:"Roboto","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../assets/fonts/material-icons.css">
+    
+    
+  </head>
+  
+    <body dir="ltr">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448"
+    viewBox="0 0 416 448" id="__github">
+  <path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19-18.125
+        8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19 18.125-8.5
+        18.125 8.5 10.75 19 3.125 20.5zM320 304q0 10-3.125 20.5t-10.75
+        19-18.125 8.5-18.125-8.5-10.75-19-3.125-20.5 3.125-20.5 10.75-19
+        18.125-8.5 18.125 8.5 10.75 19 3.125 20.5zM360
+        304q0-30-17.25-51t-46.75-21q-10.25 0-48.75 5.25-17.75 2.75-39.25
+        2.75t-39.25-2.75q-38-5.25-48.75-5.25-29.5 0-46.75 21t-17.25 51q0 22 8
+        38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0
+        37.25-1.75t35-7.375 30.5-15 20.25-25.75 8-38.375zM416 260q0 51.75-15.25
+        82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5-41.75
+        1.125q-19.5 0-35.5-0.75t-36.875-3.125-38.125-7.5-34.25-12.875-30.25-20.25-21.5-28.75q-15.5-30.75-15.5-82.75
+        0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25
+        30.875q36.75-8.75 77.25-8.75 37 0 70 8 26.25-20.5
+        46.75-30.25t47.25-9.75q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34
+        99.5z" />
+</svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="../#recognized-environment-variables" tabindex="1" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href=".." title="Gitcoin Developer Documentation" class="md-header-nav__button md-logo">
+          
+            <img src="https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png" width="24" height="24">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            
+              <span class="md-header-nav__topic">
+                Gitcoin Developer Documentation
+              </span>
+              <span class="md-header-nav__topic">
+                Environment Variables
+              </span>
+            
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          
+            <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+            
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+          
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+
+  <a href="https://github.com/gitcoinco/web/" title="Go to repository" class="md-source" data-md-source="github">
+    
+      <div class="md-source__icon">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="#__github" width="24" height="24"></use>
+        </svg>
+      </div>
+    
+    <div class="md-source__repository">
+      GitHub
+    </div>
+  </a>
+
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+        
+
+  
+
+<nav class="md-tabs md-tabs--active" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  <li class="md-tabs__item">
+    
+      <a href=".." title="Home" class="md-tabs__link">
+        Home
+      </a>
+    
+  </li>
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../mk_setup/" title="General" class="md-tabs__link md-tabs__link--active">
+          General
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../app/middleware/" title="App" class="md-tabs__link">
+          App
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../avatar/admin/" title="Avatar" class="md-tabs__link">
+          Avatar
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../bounty_requests/admin/" title="Bounty Requests" class="md-tabs__link">
+          Bounty Requests
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../credits/views/" title="Credits" class="md-tabs__link">
+          Credits
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../dashboard/admin/" title="Dashboard" class="md-tabs__link">
+          Dashboard
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../dataviz/admin/" title="Data Visualization" class="md-tabs__link">
+          Data Visualization
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="../git/utils/" title="Git" class="md-tabs__link">
+          Git
+        </a>
+      
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+      
+      <main class="md-main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href=".." title="Gitcoin Developer Documentation" class="md-nav__button md-logo">
+      
+        <img src="https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png" width="48" height="48">
+      
+    </a>
+    Gitcoin Developer Documentation
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+
+  <a href="https://github.com/gitcoinco/web/" title="Go to repository" class="md-source" data-md-source="github">
+    
+      <div class="md-source__icon">
+        <svg viewBox="0 0 24 24" width="24" height="24">
+          <use xlink:href="#__github" width="24" height="24"></use>
+        </svg>
+      </div>
+    
+    <div class="md-source__repository">
+      GitHub
+    </div>
+  </a>
+
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href=".." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+    
+    <label class="md-nav__link" for="nav-2">
+      General
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        General
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../mk_setup/" title="Setup Environment (recommended)" class="md-nav__link">
+      Setup Environment (recommended)
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../mk_alternative_setup/" title="Alternative Setup" class="md-nav__link">
+      Alternative Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../mk_third_party_integrations/" title="Third Party Integration Setup" class="md-nav__link">
+      Third Party Integration Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../mk_advanced/" title="Advanced" class="md-nav__link">
+      Advanced
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../mk_widget/" title="Widget Setup" class="md-nav__link">
+      Widget Setup
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Environment Variables
+      </label>
+    
+    <a href="./" title="Environment Variables" class="md-nav__link md-nav__link--active">
+      Environment Variables
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#initial-overrides" title="Initial Overrides" class="md-nav__link">
+    Initial Overrides
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-entry-specific" title="Project / Entry Specific" class="md-nav__link">
+    Project / Entry Specific
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#amazon-web-services" title="Amazon Web Services" class="md-nav__link">
+    Amazon Web Services
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#colorado-coin" title="Colorado Coin" class="md-nav__link">
+    Colorado Coin
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ethos" title="EthOS" class="md-nav__link">
+    EthOS
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#django" title="Django" class="md-nav__link">
+    Django
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#github-authentication" title="Github Authentication" class="md-nav__link">
+    Github Authentication
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gitcoin-bot" title="Gitcoin Bot" class="md-nav__link">
+    Gitcoin Bot
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sentry" title="Sentry" class="md-nav__link">
+    Sentry
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sendgrid" title="SendGrid" class="md-nav__link">
+    SendGrid
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#slack" title="Slack" class="md-nav__link">
+    Slack
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#silk" title="Silk" class="md-nav__link">
+    Silk
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#web3" title="Web3" class="md-nav__link">
+    Web3
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#miscellaneous" title="Miscellaneous" class="md-nav__link">
+    Miscellaneous
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../mk_rest_api/" title="Rest API" class="md-nav__link">
+      Rest API
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../mk_changelog/" title="Changelog" class="md-nav__link">
+      Changelog
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../mk_contributors/" title="Contributors Guide" class="md-nav__link">
+      Contributors Guide
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-3" type="checkbox" id="nav-3">
+    
+    <label class="md-nav__link" for="nav-3">
+      App
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-3">
+        App
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../app/middleware/" title="Middleware" class="md-nav__link">
+      Middleware
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../app/pipeline/" title="Auth Pipeline" class="md-nav__link">
+      Auth Pipeline
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../app/sitemaps/" title="Sitemaps" class="md-nav__link">
+      Sitemaps
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../app/static_storage/" title="Static Storage" class="md-nav__link">
+      Static Storage
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../app/thumbnail_processors/" title="Thumbnail Processors" class="md-nav__link">
+      Thumbnail Processors
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../app/utils/" title="Utilities" class="md-nav__link">
+      Utilities
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4" type="checkbox" id="nav-4">
+    
+    <label class="md-nav__link" for="nav-4">
+      Avatar
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-4">
+        Avatar
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../avatar/admin/" title="Admin" class="md-nav__link">
+      Admin
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../avatar/exceptions/" title="Exceptions" class="md-nav__link">
+      Exceptions
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../avatar/models/" title="Models" class="md-nav__link">
+      Models
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../avatar/utils/" title="Utilities" class="md-nav__link">
+      Utilities
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../avatar/views/" title="Views" class="md-nav__link">
+      Views
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../avatar/templatetags/" title="Template Tags" class="md-nav__link">
+      Template Tags
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-5" type="checkbox" id="nav-5">
+    
+    <label class="md-nav__link" for="nav-5">
+      Bounty Requests
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-5">
+        Bounty Requests
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../bounty_requests/admin/" title="Admin" class="md-nav__link">
+      Admin
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../bounty_requests/models/" title="Models" class="md-nav__link">
+      Models
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../bounty_requests/views/" title="Views" class="md-nav__link">
+      Views
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-6" type="checkbox" id="nav-6">
+    
+    <label class="md-nav__link" for="nav-6">
+      Credits
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-6">
+        Credits
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../credits/views/" title="Views" class="md-nav__link">
+      Views
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-7" type="checkbox" id="nav-7">
+    
+    <label class="md-nav__link" for="nav-7">
+      Dashboard
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-7">
+        Dashboard
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/admin/" title="Admin" class="md-nav__link">
+      Admin
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/embed/" title="Embedded" class="md-nav__link">
+      Embedded
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/models/" title="Models" class="md-nav__link">
+      Models
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/utils/" title="Utilities" class="md-nav__link">
+      Utilities
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/views/" title="Views" class="md-nav__link">
+      Views
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/healthchecks/" title="Healthchecks" class="md-nav__link">
+      Healthchecks
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/helpers/" title="Helpers" class="md-nav__link">
+      Helpers
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/ios/" title="iOS" class="md-nav__link">
+      iOS
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/notifications/" title="Notifications" class="md-nav__link">
+      Notifications
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/router/" title="API Router" class="md-nav__link">
+      API Router
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/signals/" title="Signals" class="md-nav__link">
+      Signals
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/tokens/" title="Tokens" class="md-nav__link">
+      Tokens
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dashboard/templatetags/" title="Template Tags" class="md-nav__link">
+      Template Tags
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-8" type="checkbox" id="nav-8">
+    
+    <label class="md-nav__link" for="nav-8">
+      Data Visualization
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-8">
+        Data Visualization
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dataviz/admin/" title="Admin" class="md-nav__link">
+      Admin
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dataviz/models/" title="Models" class="md-nav__link">
+      Models
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dataviz/views/" title="Views" class="md-nav__link">
+      Views
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-9" type="checkbox" id="nav-9">
+    
+    <label class="md-nav__link" for="nav-9">
+      Git
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-9">
+        Git
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../git/utils/" title="Utilities" class="md-nav__link">
+      Utilities
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#initial-overrides" title="Initial Overrides" class="md-nav__link">
+    Initial Overrides
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#project-entry-specific" title="Project / Entry Specific" class="md-nav__link">
+    Project / Entry Specific
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#amazon-web-services" title="Amazon Web Services" class="md-nav__link">
+    Amazon Web Services
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#colorado-coin" title="Colorado Coin" class="md-nav__link">
+    Colorado Coin
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ethos" title="EthOS" class="md-nav__link">
+    EthOS
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#django" title="Django" class="md-nav__link">
+    Django
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#github-authentication" title="Github Authentication" class="md-nav__link">
+    Github Authentication
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#gitcoin-bot" title="Gitcoin Bot" class="md-nav__link">
+    Gitcoin Bot
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sentry" title="Sentry" class="md-nav__link">
+    Sentry
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#sendgrid" title="SendGrid" class="md-nav__link">
+    SendGrid
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#slack" title="Slack" class="md-nav__link">
+    Slack
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#silk" title="Silk" class="md-nav__link">
+    Silk
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#web3" title="Web3" class="md-nav__link">
+    Web3
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#miscellaneous" title="Miscellaneous" class="md-nav__link">
+    Miscellaneous
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                  <a href="https://github.com/gitcoinco/web/edit/master/docs/mk_envvars.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                
+                
+                <h1 id="recognized-environment-variables">Recognized Environment Variables</h1>
+<p>The following environment variables are currently accepted by the local web application.
+You can overwrite the default values for these environment variables by adding them to the <code>web/app/app/.env</code> file.
+All of the environment variables used by this application conform to the <a href="https://django-environ.readthedocs.io/en/latest/"><code>django-environ</code> documentation</a>.</p>
+<h2 id="initial-overrides">Initial Overrides</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CACHE_URL</td>
+<td>The <a href="https://django-environ.readthedocs.io/en/latest/#supported-types"><code>django-environ</code></a> compatible uri to your cache.</td>
+<td><code>str</code></td>
+<td>dbcache://my_cache_table</td>
+</tr>
+<tr>
+<td>DATABASE_URL</td>
+<td>The <a href="https://django-environ.readthedocs.io/en/latest/#supported-types"><code>django-environ</code></a> compatible uri to your database.</td>
+<td><code>str</code></td>
+<td>psql://postgres:postgres@db:5432/postgres</td>
+</tr>
+<tr>
+<td>DEBUG</td>
+<td>Whether or not to run the environment in Debug mode.</td>
+<td><code>bool</code></td>
+<td>True</td>
+</tr>
+<tr>
+<td>SECRET_KEY</td>
+<td>The secret key to use for your Django environment.</td>
+<td><code>str</code></td>
+<td>TODO</td>
+</tr>
+</tbody>
+</table>
+<h2 id="project-entry-specific">Project / Entry Specific</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FORCE_PROVISION</td>
+<td>Whether or not to force provisioning even if the container has been previously provisioned</td>
+<td><code>bool</code></td>
+<td>False</td>
+</tr>
+<tr>
+<td>FORCE_GET_PRICES</td>
+<td>Whether or not to force pulling fresh conversion rate data from etherdelta and poloniex</td>
+<td><code>bool</code></td>
+<td>False</td>
+</tr>
+</tbody>
+</table>
+<h2 id="amazon-web-services">Amazon Web Services</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AWS_ACCESS_KEY_ID</td>
+<td>Your AWS access key ID.</td>
+<td><code>str</code></td>
+<td>''</td>
+</tr>
+<tr>
+<td>AWS_SECRET_ACCESS_KEY</td>
+<td>Your AWS secret access key</td>
+<td><code>str</code></td>
+<td>''</td>
+</tr>
+<tr>
+<td>S3_REPORT_BUCKET</td>
+<td>The S3 bucket to be used to store reports.</td>
+<td><code>str</code></td>
+<td>TODO</td>
+</tr>
+<tr>
+<td>S3_REPORT_PREFIX</td>
+<td>The S3 path prefix to be used when storing reports.</td>
+<td><code>str</code></td>
+<td>TODO</td>
+</tr>
+</tbody>
+</table>
+<h2 id="colorado-coin">Colorado Coin</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>COLO_ACCOUNT_ADDRESS</td>
+<td>The coin distribution address.</td>
+<td><code>str</code></td>
+<td>''</td>
+</tr>
+<tr>
+<td>COLO_ACCOUNT_PRIVATE_KEY</td>
+<td>The coin distribution private key.</td>
+<td><code>str</code></td>
+<td>''</td>
+</tr>
+</tbody>
+</table>
+<h2 id="ethos">EthOS</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ETHOS_CONTRACT_ADDRESS</td>
+<td>The coin contract address.</td>
+<td><code>str</code></td>
+<td>''</td>
+</tr>
+<tr>
+<td>ETHOS_ACCOUNT_ADDRESS</td>
+<td>The coin distribution address.</td>
+<td><code>str</code></td>
+<td>''</td>
+</tr>
+<tr>
+<td>ETHOS_ACCOUNT_PRIVATE_KEY</td>
+<td>The coin distribution private key.</td>
+<td><code>str</code></td>
+<td>''</td>
+</tr>
+<tr>
+<td>ETHOS_TWITTER_CONSUMER_KEY</td>
+<td>EthOSEthereal Twitter account consumer key.</td>
+<td><code>str</code></td>
+<td>''</td>
+</tr>
+<tr>
+<td>ETHOS_TWITTER_CONSUMER_SECRET</td>
+<td>EthOSEthereal Twitter account consumer secret.</td>
+<td><code>str</code></td>
+<td>''</td>
+</tr>
+<tr>
+<td>ETHOS_TWITTER_ACCESS_TOKEN</td>
+<td>EthOSEthereal Twitter account access token.</td>
+<td><code>str</code></td>
+<td>''</td>
+</tr>
+<tr>
+<td>ETHOS_TWITTER_ACCESS_SECRET</td>
+<td>TEthOSEthereal Twitter account access secret.</td>
+<td><code>str</code></td>
+<td>''</td>
+</tr>
+</tbody>
+</table>
+<h2 id="django">Django</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>INSTALLED_APPS</td>
+<td>A list of additional apps to be recognized by Django.</td>
+<td><code>list</code></td>
+<td>[]</td>
+</tr>
+</tbody>
+</table>
+<h2 id="github-authentication">Github Authentication</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GITHUB_API_BASE_URL</td>
+<td>The Github API URL.</td>
+<td><code>str</code></td>
+<td>https://api.github.com</td>
+</tr>
+<tr>
+<td>GITHUB_AUTH_BASE_URL</td>
+<td>The Github OAuth authorization URL.</td>
+<td><code>str</code></td>
+<td>https://github.com/login/oauth/authorize</td>
+</tr>
+<tr>
+<td>GITHUB_TOKEN_URL</td>
+<td>The Github OAuth access token URL.</td>
+<td><code>str</code></td>
+<td>https://github.com/login/oauth/access_token</td>
+</tr>
+<tr>
+<td>GITHUB_SCOPE</td>
+<td>The Github application scope.</td>
+<td><code>str</code></td>
+<td>read:user,user:email,read:org</td>
+</tr>
+<tr>
+<td>GITHUB_CLIENT_ID</td>
+<td>The client ID of the Github OAuth app.</td>
+<td><code>str</code></td>
+<td>TODO</td>
+</tr>
+<tr>
+<td>GITHUB_CLIENT_SECRET</td>
+<td>The client secret of the Github OAuth app.</td>
+<td><code>str</code></td>
+<td>TODO</td>
+</tr>
+<tr>
+<td>GITHUB_API_USER</td>
+<td>The username of the Github account.</td>
+<td><code>str</code></td>
+<td>TODO</td>
+</tr>
+<tr>
+<td>GITHUB_API_TOKEN</td>
+<td>The token of the Github account.</td>
+<td><code>str</code></td>
+<td>TODO</td>
+</tr>
+<tr>
+<td>GITHUB_APP_NAME</td>
+<td>The name of your Github OAuth application.</td>
+<td><code>str</code></td>
+<td>gitcoin-local</td>
+</tr>
+</tbody>
+</table>
+<h2 id="gitcoin-bot">Gitcoin Bot</h2>
+<p>For further information, please check out the <a href="https://github.com/gitcoinco/web/blob/master/app/gitcoinbot/README.md">Gitcoin Bot Documentation</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GITCOINBOT_APP_ID</td>
+<td>The Gitcoin Bot App ID provided by Github.</td>
+<td><code>str</code></td>
+<td>''</td>
+</tr>
+<tr>
+<td>GITCOIN_BOT_CERT_PATH</td>
+<td>The relative path to the Gitcoin Bot pem certificate.</td>
+<td><code>str</code></td>
+<td>''</td>
+</tr>
+<tr>
+<td>GITHUB_EVENT_HOOK_URL</td>
+<td>The Github event hook payload URL for Gitcoin Bot.</td>
+<td><code>str</code></td>
+<td>github/payload/</td>
+</tr>
+<tr>
+<td>IGNORE_COMMENTS_FROM</td>
+<td>A list of Github handles to ignore comments from.</td>
+<td><code>list</code></td>
+<td>['gitcoinbot', ]</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sentry">Sentry</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SENTRY_USER</td>
+<td>The <a href="https://sentry.io">Sentry</a> user name.</td>
+<td><code>str</code></td>
+<td>''</td>
+</tr>
+<tr>
+<td>SENTRY_PASSWORD</td>
+<td>The <a href="https://sentry.io">Sentry</a> password.</td>
+<td><code>str</code></td>
+<td>''</td>
+</tr>
+<tr>
+<td>SENTRY_ADDRESS</td>
+<td>The <a href="https://sentry.io">Sentry</a> host address.</td>
+<td><code>str</code></td>
+<td>''</td>
+</tr>
+<tr>
+<td>SENTRY_PROJECT</td>
+<td>The <a href="https://sentry.io">Sentry</a> project number.</td>
+<td><code>int</code></td>
+<td>''</td>
+</tr>
+</tbody>
+</table>
+<h2 id="sendgrid">SendGrid</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SENDGRID_EVENT_HOOK_URL</td>
+<td>The SendGrid event hook URL.</td>
+<td><code>str</code></td>
+<td>sg_event_process</td>
+</tr>
+</tbody>
+</table>
+<h2 id="slack">Slack</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SLACK_TOKEN</td>
+<td>The API token to be used for interacting with Slack.</td>
+<td><code>str</code></td>
+<td>TODO</td>
+</tr>
+</tbody>
+</table>
+<h2 id="silk">Silk</h2>
+<p>The below environment variables are useful for overwriting <a href="https://github.com/jazzband/django-silk">Django Silk</a> settings.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ENABLE_SILK</td>
+<td>Whether or not to enable the <a href="https://github.com/jazzband/django-silk">Django Silk</a> profiling and inspection tool.</td>
+<td><code>bool</code></td>
+<td>False</td>
+</tr>
+<tr>
+<td>SILKY_PYTHON_PROFILER</td>
+<td>Whether or not to enable the <a href="https://github.com/jazzband/django-silk#profiling">function profiler</a>.</td>
+<td><code>bool</code></td>
+<td>True</td>
+</tr>
+<tr>
+<td>SILKY_PYTHON_PROFILER_BINARY</td>
+<td>Whether or not to enable the generation of <code>.prof</code> files.</td>
+<td><code>bool</code></td>
+<td>False</td>
+</tr>
+<tr>
+<td>SILKY_AUTHENTICATION</td>
+<td>Whether or not to require <a href="https://github.com/jazzband/django-silk#authenticationauthorisation">user authentication</a> to access Silk.</td>
+<td><code>bool</code></td>
+<td>False</td>
+</tr>
+<tr>
+<td>SILKY_AUTHORISATION</td>
+<td>Whether or not to require <code>is_staff</code> to access Silk.</td>
+<td><code>bool</code></td>
+<td>False</td>
+</tr>
+<tr>
+<td>SILKY_META</td>
+<td>Whether or not to enable <a href="https://github.com/jazzband/django-silk#meta-profiling">meta profiling</a>.</td>
+<td><code>bool</code></td>
+<td>True</td>
+</tr>
+<tr>
+<td>SILKY_INTERCEPT_PERCENT</td>
+<td>Limit the number of <a href="https://github.com/jazzband/django-silk#recording-a-fraction-of-requests">request/responses</a> stored by Silk.</td>
+<td><code>int</code></td>
+<td>100</td>
+</tr>
+<tr>
+<td>SILKY_MAX_RECORDED_REQUESTS</td>
+<td>Limit the number of request/response rows stored by Silk.</td>
+<td><code>int</code></td>
+<td>10000</td>
+</tr>
+<tr>
+<td>SILKY_MAX_RECORDED_REQUESTS_CHECK_PERCENT</td>
+<td>The percent of recorded data to perform gargbase collection on.</td>
+<td><code>int</code></td>
+<td>10</td>
+</tr>
+<tr>
+<td>SILKY_DYNAMIC_PROFILING</td>
+<td></td>
+<td><code>dict</code></td>
+<td>{}</td>
+</tr>
+</tbody>
+</table>
+<h2 id="web3">Web3</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WEB3_HTTP_PROVIDER</td>
+<td>The Web3 HTTP provider URI to be used.</td>
+<td><code>str</code></td>
+<td>https://rinkeby.infura.io</td>
+</tr>
+</tbody>
+</table>
+<h2 id="miscellaneous">Miscellaneous</h2>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>FAUCET_AMOUNT</td>
+<td>The amount of ETH to be distributed for approved faucet requests.</td>
+<td><code>float</code></td>
+<td>.0005</td>
+</tr>
+<tr>
+<td>GITTER_TOKEN</td>
+<td>The Gitter chat API token.</td>
+<td><code>str</code></td>
+<td>False</td>
+</tr>
+</tbody>
+</table>
+                
+                  
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../mk_widget/" title="Widget Setup" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Widget Setup
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../mk_rest_api/" title="Rest API" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Rest API
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/">
+          Material for MkDocs</a>
+      </div>
+      
+        
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../assets/javascripts/application.583bbe55.js"></script>
+      
+      <script>app.initialize({version:"1.0.4",url:{base:".."}})</script>
+      
+    
+    
+      
+    
+  </body>
+</html>
