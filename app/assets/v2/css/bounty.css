@@ -184,6 +184,11 @@ body {
   color: #717171;
 }
 
+@media (min-width: 1200px) {
+  .col-xl-4.bounty-info .bounty-info-row-span-right {
+    margin-right: 3.2em;
+  }
+}
 
 .started-status-column div {
   display: inline-block;
