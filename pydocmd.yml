@@ -1,0 +1,151 @@
+site_name: "Gitcoin Developer Documentation"
+repo_name: 'gitcoinco/web'
+repo_url: 'https://github.com/gitcoinco/web'
+
+# This tells pydocmd which pages to generate from which Python modules,
+# functions and classes. At the first level is the page name, below that
+# is a tree of Python member names (modules, classes, etc.) that should be
+# documented. Higher indentation leads to smaller header size.
+generate:
+- app/middleware.md:
+  - app.middleware++
+- app/pipeline.md:
+  - app.pipeline++
+- app/sitemaps.md:
+  - app.sitemaps++
+- app/static_storage.md:
+  - app.static_storage++
+- app/thumbnail_processors.md:
+  - app.thumbnail_processors++
+- app/utils.md:
+  - app.utils++
+- avatar/admin.md:
+  - avatar.admin++
+- avatar/exceptions.md:
+  - avatar.exceptions++
+- avatar/models.md:
+  - avatar.models++
+- avatar/utils.md:
+  - avatar.utils++
+- avatar/views.md:
+  - avatar.views++
+- avatar/templatetags.md:
+  - avatar.templatetags.avatar_tags++
+- bounty_requests/admin.md:
+  - bounty_requests.admin++
+- bounty_requests/models.md:
+  - bounty_requests.models++
+- bounty_requests/views.md:
+  - bounty_requests.views++
+- credits/views.md:
+  - credits.views++
+- dashboard/admin.md:
+  - dashboard.admin++
+- dashboard/embed.md:
+  - dashboard.embed++
+- dashboard/healthchecks.md:
+  - dashboard.healthchecks++
+- dashboard/helpers.md:
+  - dashboard.helpers++
+- dashboard/ios.md:
+  - dashboard.ios++
+- dashboard/models.md:
+  - dashboard.models++
+- dashboard/notifications.md:
+  - dashboard.notifications++
+- dashboard/router.md:
+  - dashboard.router++
+- dashboard/signals.md:
+  - dashboard.signals++
+- dashboard/tokens.md:
+  - dashboard.tokens++
+- dashboard/utils.md:
+  - dashboard.utils++
+- dashboard/views.md:
+  - dashboard.gas_views++
+  - dashboard.tip_views++
+  - dashboard.views++
+- dashboard/templatetags.md:
+  - dashboard.templatetags.add_url_schema++
+- dataviz/admin.md:
+  - dataviz.admin++
+- dataviz/models.md:
+  - dataviz.models++
+- dataviz/views.md:
+  - dataviz.d3_views++
+  - dataviz.views++
+- git/utils.md:
+  - git.utils++
+
+# MkDocs pages configuration. The `<<` operator is sugar added by pydocmd
+# that allows you to use an external Markdown file (eg. your project's README)
+# in the documentation. The path must be relative to current working directory.
+pages:
+- Home: index.md << docs/README.md
+- General:
+  - Setup Environment (recommended): mk_setup.md << docs/RUNNING_LOCALLY_DOCKER.md
+  - Alternative Setup: mk_alternative_setup.md << docs/RUNNING_LOCALLY.md
+  - Third Party Integration Setup: mk_third_party_integrations.md << docs/THIRD_PARTY_SETUP.md
+  - Advanced: mk_advanced.md << docs/ADVANCED.md
+  - Widget Setup: mk_widget.md << docs/WIDGET.md
+  - Environment Variables: mk_envvars.md << docs/ENVIRONMENT_VARIABLES.md
+  - Rest API: mk_rest_api.md << docs/API.md
+  - Changelog: mk_changelog.md << CHANGELOG.md
+  - Contributors Guide: mk_contributors.md << docs/CONTRIBUTING.md
+
+- App:
+  - Middleware: app/middleware.md
+  - Auth Pipeline: app/pipeline.md
+  - Sitemaps: app/sitemaps.md
+  - Static Storage: app/static_storage.md
+  - Thumbnail Processors: app/thumbnail_processors.md
+  - Utilities: app/utils.md
+- Avatar:
+  - Admin: avatar/admin.md
+  - Exceptions: avatar/exceptions.md
+  - Models: avatar/models.md
+  - Utilities: avatar/utils.md
+  - Views: avatar/views.md
+  - Template Tags: avatar/templatetags.md
+- Bounty Requests:
+  - Admin: bounty_requests/admin.md
+  - Models: bounty_requests/models.md
+  - Views: bounty_requests/views.md
+- Credits:
+  - Views: credits/views.md
+- Dashboard:
+  - Admin: dashboard/admin.md
+  - Embedded: dashboard/embed.md
+  - Models: dashboard/models.md
+  - Utilities: dashboard/utils.md
+  - Views: dashboard/views.md
+  - Healthchecks: dashboard/healthchecks.md
+  - Helpers: dashboard/helpers.md
+  - iOS: dashboard/ios.md
+  - Notifications: dashboard/notifications.md
+  - API Router: dashboard/router.md
+  - Signals: dashboard/signals.md
+  - Tokens: dashboard/tokens.md
+  - Template Tags: dashboard/templatetags.md
+- Data Visualization:
+  - Admin: dataviz/admin.md
+  - Models: dataviz/models.md
+  - Views: dataviz/views.md
+- Git:
+  - Utilities: git/utils.md
+
+# These options all show off their default values. You don't have to add
+# them to your configuration if you're fine with the default.
+theme:
+  name: material
+  logo: 'https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png'
+  favicon: 'https://s.gitcoin.co/static/v2/images/favicon.ico/favicon.ico'
+  feature:
+    tabs: true
+loader:   loader.DjangoPythonLoader
+
+# Additional search path for your Python module. If you use Pydocmd from a
+# subdirectory of your project (eg. docs/), you may want to add the parent
+# directory here.
+additional_search_paths:
+- app/
