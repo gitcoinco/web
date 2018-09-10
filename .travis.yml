@@ -26,6 +26,7 @@ deploy:
   keep-history: true
   local-dir: _build/site
   fqdn: docs.gitcoin.co
+  target-branch: gh-pages
   on:
     branch: master
 
