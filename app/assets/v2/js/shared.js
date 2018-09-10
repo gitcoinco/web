@@ -1179,7 +1179,7 @@ function newTokenTag(amount, tokenName, tooltipInfo, isCrowdfunded) {
 
   ele.className = 'tag token';
   span.innerHTML = amount + ' ' + tokenName +
-    (isCrowdfunded ? '<i class="fas fa-users ml-1"></i>' : '' );
+    (isCrowdfunded ? '<i class="fas fa-users ml-1"></i>' : '');
 
   p.appendChild(span);
   ele.appendChild(p);
