@@ -171,31 +171,6 @@ def get_user_request_info(request):
     pass
 
 
-@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def send_2(request):
-    """ Handle the first start of the Kudos email send.
-    This form is filled out before the 'send' button is clicked.
-    """
-
-    kudos_name = request.GET.get('name')
-    kudos = Token.objects.filter(name=kudos_name, num_clones_allowed__gt=0).first()
-    profiles = Profile.objects.all()
-
-    params = {
-        'issueURL': request.GET.get('source'),
-        'class': 'send2',
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
-        'from_email': getattr(request.user, 'email', ''),
-        'from_handle': request.user.username,
-        'title': 'Send Kudos | Gitcoin',
-        'card_desc': 'Send a Kudos to any github user at the click of a button.',
-        'kudos': kudos,
-        'profiles': profiles
-    }
-
-    return TemplateResponse(request, 'transaction/send.html', params)
-
-
 def get_primary_from_email(params, request):
     """Find the primary_from_email address.  This function finds the address using this priority:
         1. If the email field is filed out in the Send POST request, use the `fromEmail` field.
@@ -249,6 +224,110 @@ def get_to_emails(params):
         to_emails.append(params['email'])
 
     return list(set(to_emails))
+
+
+def reconcile_kudos_preferred_wallet(profile):
+    """Helper function to set the kudos_preferred_wallet if it doesn't already exist
+
+    Args:
+        profile (dashboard.modles.Profile): Instead of the profile model.
+
+    Returns:  Kudos preferred wallet if found, else None.
+
+    """
+
+    # If the preferred_kudos_wallet is not set, figure out how to set it.
+    if not profile.preferred_kudos_wallet:
+        # If the preferred_payout_address exists, use it for the preferred_kudos_Wallet
+        if profile.preferred_payout_address and profile.preferred_payout_address != '0x0':
+            # Check if the preferred_payout_addess exists as a kudos wallet address
+            kudos_wallet = profile.wallets.filter(address=profile.preferred_payout_address).first()
+            if kudos_wallet:
+                # If yes, set that wallet to be the profile.preferred_kudos_wallet
+                profile.preferred_kudos_wallet = kudos_wallet
+                # profile.preferred_kudos_wallet = profile.wallets.filter(address=profile.preferred_payout_address)
+            else:
+                # Create the kudos_wallet and set it as the preferred_kudos_wallet in the profile
+                new_kudos_wallet = Wallet(address=profile.preferred_payout_address)
+                new_kudos_wallet.save()
+                profile.preferred_kudos_wallet = new_kudos_wallet
+        else:
+            # Check if there are any kudos_wallets available.  If so, set the first one to preferred.
+            kudos_wallet = profile.kudos_wallets.all()
+            if kudos_wallet:
+                profile.preferred_kudos_wallet = kudos_wallet.first()
+            else:
+                # Not enough information available to set the preferred_kudos_wallet
+                # Use kudos indrect send.
+                logger.warning('No kudos wallets or preferred_payout_address address found.  Use Kudos Indirect Send.')
+                return None
+
+        profile.save()
+
+    return profile.preferred_kudos_wallet
+
+
+def kudos_preferred_wallet(request, handle):
+    """returns the address, if any, that someone would like to be send kudos directly to.
+
+    Returns:
+        list of addresse
+
+    """
+    response = {
+        'addresses': []
+    }
+
+    profile = get_profile(str(handle).replace('@', ''))
+
+    if profile:
+        reconcile_kudos_preferred_wallet(profile)
+        if profile.preferred_kudos_wallet:
+            response['addresses'].append(profile.preferred_kudos_wallet.address)
+
+    return JsonResponse(response)
+
+
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def tipee_address(request, handle):
+    """returns the address, if any, that someone would like to be tipped directly at
+
+    Returns:
+        list of addresse
+
+    """
+    response = {
+        'addresses': []
+    }
+    profile = get_profile(str(handle).replace('@', ''))
+    if profile and profile.preferred_payout_address:
+        response['addresses'].append(profile.preferred_payout_address)
+    return JsonResponse(response)
+
+
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def send_2(request):
+    """ Handle the first start of the Kudos email send.
+    This form is filled out before the 'send' button is clicked.
+    """
+
+    kudos_name = request.GET.get('name')
+    kudos = Token.objects.filter(name=kudos_name, num_clones_allowed__gt=0).first()
+    profiles = Profile.objects.all()
+
+    params = {
+        'issueURL': request.GET.get('source'),
+        'class': 'send2',
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'from_email': getattr(request.user, 'email', ''),
+        'from_handle': request.user.username,
+        'title': 'Send Kudos | Gitcoin',
+        'card_desc': 'Send a Kudos to any github user at the click of a button.',
+        'kudos': kudos,
+        'profiles': profiles
+    }
+
+    return TemplateResponse(request, 'transaction/send.html', params)
 
 
 @csrf_exempt

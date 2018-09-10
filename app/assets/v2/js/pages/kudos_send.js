@@ -443,6 +443,9 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
         };
         // end post_send_callback
 
+        // Pull up Kudos contract instance
+        var kudosContractInstance = web3.eth.contract(kudos_abi).at(kudos_address());
+
         if (isSendingETH) {
           alert(amountInWei);
           web3.eth.sendTransaction({
@@ -451,16 +454,18 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
             gasPrice: web3.toHex(get_gas_price())
           }, post_send_callback);
         } else {
-          var send_erc20 = function() {
-            var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+          var send_kudos = function(name, numClones, receiver) {
+            kudosContractInstance.cloneAndTransfer(name, numClones, receiver, {from: account, value: new web3.BigNumber(1000000000000000)}, function(error, txid) {
+              console.log('txid:' + txid)
+            });
 
             // Step 10
             // call the post_send_callback() function which hits the /kudos/send/4 endpoint and updates
             // the database with the txid once it is mined.
-            token_contract.transfer(destinationAccount, amountInWei, {gasPrice: web3.toHex(get_gas_price())}, post_send_callback);
+            // token_contract.transfer(destinationAccount, amountInWei, {gasPrice: web3.toHex(get_gas_price())}, post_send_callback);
           };
           // This is what runs in the Kudos case
-          var send_gas_money_and_erc20 = function(kudosGasEstimate) {
+          var send_gas_kudos_money = function(kudosGasEstimate) {
             _alert({ message: gettext('You will now be asked to confirm a transaction to cover the cost of the Kudos and the gas money.') }, 'info');
             // Multiply gas * gas_price_gwei to get gas cost in wei.
             kudosGasCostInWei = kudosGasEstimate * get_gas_price();
@@ -472,17 +477,21 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
             }, post_send_callback);
           };
 
+          
           if (is_direct_to_recipient) {
             // Step 9
-            send_erc20();
+            // Kudos Direct Send (KDS)
+            send_kudos(kudosName, 1, destinationAccount);
+
           } else {
             // Step 9
+            // Kudos Indirect Send (KIS)
             // estimate gas for cloning the kudos
-            var kudosContractInstance = web3.eth.contract(kudos_abi).at(kudos_address());
+            
             var numClones = 1;
             kudosContractInstance.clone.estimateGas(kudosName, numClones, {from: fromAccount, value: new web3.BigNumber(1000000000000000)}, function(error, kudosGasEstimate){
               console.log('kudosGasEstimate: '+ kudosGasEstimate)
-              send_gas_money_and_erc20(kudosGasEstimate);
+              send_gas_kudos_money(kudosGasEstimate);
             });
           }
         }
@@ -491,7 +500,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
   };
 
   // send direct, or not?
-  const url = '/tip/address/' + username;
+  const url = '/kudos/address/' + username;
 
   // Step 5
   // Check if we are sending direct or not
