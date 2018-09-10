@@ -74,3 +74,4 @@ mkdocs==1.0.4
 pymdown-extensions==5.0
 mkdocs-material==3.0.4
 pydoc-markdown==2.0.4
+oauth2client==4.1.3

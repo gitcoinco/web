@@ -14,7 +14,7 @@ Gitcoin Grows Open Source. Learn more at [https://gitcoin.co](https://gitcoin.co
 [![codecov](https://codecov.io/gh/gitcoinco/web/branch/master/graph/badge.svg)](https://codecov.io/gh/gitcoinco/web)
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/gitcoinco/web.svg?columns=all)](https://waffle.io/gitcoinco/web)
 
-This is the website that is live at gitcoin.co
+This is the website that is live at [gitcoin.co](https://gitcoin.co)
 
 ## Documentation
 
@@ -133,7 +133,7 @@ Have an ERC20 compatible token that you'ud like to add support for?  Great!  Sub
 
 This is the high level flow of a bounty on Gitcoin:
 
-<a href="https://www.draw.io/?state=%7B%22ids%22:%5B%221FTatOur159qS8pzBCgIG5E0XdEH8iZF-%22%5D,%22action%22:%22open%22,%22userId%22:%22115514289174042120922%22%7D#G1FTatOur159qS8pzBCgIG5E0XdEH8iZF-"><img src='bounty_flow.png'></a>
+<a href="https://www.draw.io/?state=%7B%22ids%22:%5B%221FTatOur159qS8pzBCgIG5E0XdEH8iZF-%22%5D,%22action%22:%22open%22,%22userId%22:%22115514289174042120922%22%7D#G1FTatOur159qS8pzBCgIG5E0XdEH8iZF-"><img src='https://github.com/gitcoinco/web/raw/master/docs/bounty_flow.png'></a>
 
 Chain of Custody
 
@@ -153,7 +153,7 @@ Note: Crowdfunded bounties + bulk payouts are secured by Tips (at least until St
 
 This is the high level flow of a bounty on Gitcoin:
 
-<a href="https://www.draw.io/#G1sTJtQou5FYsHCabhb2JXHDTprpvvkUy0"><img src='tip_flow.png'></a>
+<a href="https://www.draw.io/#G1sTJtQou5FYsHCabhb2JXHDTprpvvkUy0"><img src='https://github.com/gitcoinco/web/raw/master/docs/tip_flow.png'></a>
 
 # Legal
 
