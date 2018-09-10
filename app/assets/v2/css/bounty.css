@@ -164,7 +164,6 @@ body {
   font-weight: 300;
 }
 
-
 .bounty-info-heading {
   color: #0D0764;
 }
@@ -181,22 +180,10 @@ body {
   float: right;
 }
 
-#bounty_reserved_for {
-  float: right;
-  margin-right: 4.375em;
-}
-
 .bounty-info-text {
   color: #717171;
 }
 
-.col-4.bounty-info {
-  margin-left: 1.250em;
-}
-
-.col-4.bounty-info span.bounty-info-text.bounty-info-row-span-right {
-  margin-right: 4.375em;
-}
 
 .started-status-column div {
   display: inline-block;

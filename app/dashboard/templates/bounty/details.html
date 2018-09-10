@@ -59,22 +59,25 @@
                 <div id="status"></div>
               </div>
               <div id="bounty-info-row" class="row">
-                  <div class="col-3 bounty-info">
+                  <div class="col-12 col-sm-6 col-xl-3 bounty-info">
                     <div class="bounty-info-row-div">
-                        <span class="bounty-info-heading timeleft bounty-info-row-span-left">{% trans "Time left" %} </span>
-                        <span class="bounty-info-text bounty-info-row-span-right" id="expires_date"></span>
+                      <span class="bounty-info-heading timeleft bounty-info-row-span-left">{% trans "Time left" %} </span>
+                      <span class="bounty-info-text bounty-info-row-span-right" id="expires_date"></span>
+                      &nbsp;
                     </div>
                     <div class="bounty-info-row-div">
                       <span class="bounty-info-heading bounty-info-row-span-left">{% trans "Opened" %} </span>
                       <span class="bounty-info-text bounty-info-row-span-right" id="web3_created"></span>
+                       &nbsp;
                     </div>
                     <div class="bounty-info-row-div">
                       <span class="bounty-info-heading bounty-info-row-span-left">{% trans "Issue Type" %} </span>
                       <span class="bounty-info-text bounty-info-row-span-right" id="bounty_type"></span>
+                       &nbsp;
                     </div>
 
                   </div>
-                  <div class="col-3 offset-md-1 bounty-info">
+                  <div class="col-12 col-sm-6 col-xl-3 offset-xl-1 bounty-info">
                     <div class="bounty-info-row-div">
                       <span class="bounty-info-heading bounty-info-row-span-left" title='{% include "shared/project_type_tooltip.html" %}'>
                        {% trans "Project Type" %} 
@@ -83,18 +86,19 @@
                        <i class="fas fa-info-circle" title='{% include "shared/project_type_tooltip.html" %}'></i>
                       <span class="bounty-info-text bounty-info-row-span-right" id="project_type" title='{% include "shared/project_type_tooltip.html" %}'>
                       </span>
-                      
                     </div>
                     <div class="bounty-info-row-div">
                       <span class="bounty-info-heading bounty-info-row-span-left">{% trans "Project Length" %}</span>
                       <span class="bounty-info-text bounty-info-row-span-right" id="project_length"></span>
+                       &nbsp;
                     </div>
                     <div class="bounty-info-row-div">
                       <span class="bounty-info-heading bounty-info-row-span-left">{% trans "Experience Level" %} </span>
                       <span class="bounty-info-text bounty-info-row-span-right" id="experience_level"></span>
+                       &nbsp;
                     </div>
                   </div>
-                  <div class="col-4 bounty-info">
+                  <div class="col-12 col-sm-6 col-xl-4 offset-xl-1 bounty-info">
                     <div class="bounty-info-row-div">
                       <span class="bounty-info-heading bounty-info-row-span-left" title='{% include "shared/permissions_type_tooltip.html" %}'>
                        {% trans "Permissions" %}
@@ -105,7 +109,7 @@
                     </div>
                      <div class="bounty-info-row-div">
                       <span class="bounty-info-heading bounty-info-row-span-left" id="bounty_reserved_for_label">{% trans "Reserved For" %} </span>
-                      <span class="bounty-info-text" id="bounty_reserved_for"></span>
+                      <span class="bounty-info-text bounty-info-row-span-right" id="bounty_reserved_for"></span>
                       <span class="bounty-info-text d-none" id="bounty_reserved_for_current_user">
                         {% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}
                       </span>
