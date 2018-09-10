@@ -50,7 +50,6 @@ jobs:
         # Publish CodeCov coverage results.
         - codecov
         # Generate Markdown documentation and static docs page.
-        - pip install -r ops/lambdas/welcomebot/requirements.txt
         - pydocmd build
       env:
         - PYTHONPATH="${TRAVIS_BUILD_DIR}/app/"

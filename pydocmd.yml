@@ -197,8 +197,6 @@ generate:
     - tdi.models++
   - tdi/views.md:
     - tdi.views++
-  - welcomebot/app.md:
-    - welcomebot.app++
 
 # MkDocs pages configuration. The `<<` operator is sugar added by pydocmd
 # that allows you to use an external Markdown file (eg. your project's README)
@@ -316,7 +314,6 @@ pages:
   - Additional Services:
     - Slack WelcomeBot:
       - Readme: mk_welcomebot.md << ops/lambdas/welcomebot/README.md
-      - Code: welcomebot/app.md
 
 
 # These options all show off their default values. You don't have to add
@@ -334,4 +331,3 @@ loader: loader.DjangoPythonLoader
 # directory here.
 additional_search_paths:
   - app/
-  - ops/lambdas
