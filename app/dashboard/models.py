@@ -1171,7 +1171,6 @@ class SendCryptoAsset(SuperModel):
             return None
 
 
-
 class Tip(SendCryptoAsset):
     """ Inherit from SendCryptoAsset base class, and extra fields that are needed for Tips. """
     expires_date = models.DateTimeField(null=True, blank=True)

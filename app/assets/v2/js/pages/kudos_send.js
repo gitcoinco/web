@@ -186,11 +186,12 @@ $(document).ready(function() {
   $('#amount').on('keyup blur change', updateEstimate);
   $('#token').on('change', updateEstimate);
   $('#username').select2();
-  $('#username').on('select2:select', function(e) {
-    let profileId = e.params.data.id;
-    console.log(e.params.data)
-    renderWallets(profileId);
-  });
+  // $('#username').on('select2:select', function(e) {
+  //   let profileId = e.params.data.id;
+  //   console.log(e.params.data)
+  //   renderWallets(profileId);
+  // });
+
   // Step 1
   // Kudos send button is clicked
   $('#send').click(function(e) {
@@ -323,8 +324,8 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
 
   var amountInWei = amountInEth * 1.0 * weiConvert;
   // validation
-  console.log(amountInEth)
-  console.log(amountInWei)
+  // console.log(amountInEth)
+  // console.log(amountInWei)
   var hasEmail = email != '';
   var hasUsername = username != '';
 
@@ -355,7 +356,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
     failure_callback();
     return;
   }
-  console.log('got to metadata_callback')
+  // console.log('got to metadata_callback')
 
   // Step 7
   // Do a POST request to the kudos/send/3
@@ -392,7 +393,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
         metadata: metadata
       })
     }).then(function(response) {
-      console.log(response)
+      // console.log(response)
       return response.json();
     }).then(function(json) {
       var is_success = json['status'] == 'OK';
@@ -426,7 +427,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
               })
             }).then(function(response) {
               return response.json();
-            }).then(function(json) {
+            }).then(function(json) {  
               var is_success = json['status'] == 'OK';
 
               if (!is_success) {
@@ -455,9 +456,8 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           }, post_send_callback);
         } else {
           var send_kudos = function(name, numClones, receiver) {
-            kudosContractInstance.cloneAndTransfer(name, numClones, receiver, {from: account, value: new web3.BigNumber(1000000000000000)}, function(error, txid) {
-              console.log('txid:' + txid)
-            });
+            var account = web3.eth.coinbase;
+            kudosContractInstance.cloneAndTransfer(name, numClones, receiver, {from: account, value: new web3.BigNumber(1000000000000000)}, post_send_callback);
 
             // Step 10
             // call the post_send_callback() function which hits the /kudos/send/4 endpoint and updates
@@ -481,13 +481,15 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           if (is_direct_to_recipient) {
             // Step 9
             // Kudos Direct Send (KDS)
+            console.log('Using Kudos Direct Send (KDS)');
+            console.log('destinationAccount:' + destinationAccount);
             send_kudos(kudosName, 1, destinationAccount);
 
           } else {
             // Step 9
             // Kudos Indirect Send (KIS)
             // estimate gas for cloning the kudos
-            
+            console.log('Using Kudos Indirect Send (KIS)')
             var numClones = 1;
             kudosContractInstance.clone.estimateGas(kudosName, numClones, {from: fromAccount, value: new web3.BigNumber(1000000000000000)}, function(error, kudosGasEstimate){
               console.log('kudosGasEstimate: '+ kudosGasEstimate)

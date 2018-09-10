@@ -1134,15 +1134,16 @@ def profile(request, handle):
         }
         return TemplateResponse(request, 'profiles/profile.html')
 
-    params = profile.to_dict()
-    params['wallet_addresses'] = [w.address for w in profile.kudos_wallets.all()]
-    owned_kudos = Token.objects.filter(owner_address__in=params['wallet_addresses'])
-    sent_kudos = Token.objects.filter(sent_from_address__in=params['wallet_addresses'])
+    context['wallet_addresses'] = [w.address for w in profile.kudos_wallets.all()]
+    owned_kudos = Token.objects.filter(owner_address__in=context['wallet_addresses'])
+    sent_kudos = Token.objects.filter(sent_from_address__in=context['wallet_addresses'])
 
-    logging.info(params['wallet_addresses'])
+    logging.info(context['wallet_addresses'])
     logging.info(owned_kudos)
-    params['kudos'] = owned_kudos
-    params['sent_kudos'] = sent_kudos
+    context['kudos'] = owned_kudos
+    context['sent_kudos'] = sent_kudos
+
+    # The Add Wallet Button
     if request.method == 'POST' and request.is_ajax():
         logging.info(request.POST)
         address = request.POST.get('address')

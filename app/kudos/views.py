@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2018 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -45,8 +45,9 @@ from git.utils import get_emails_master, get_github_primary_email
 from retail.helpers import get_ip
 from web3 import Web3
 from eth_utils import to_checksum_address
+from .helpers import reconcile_kudos_preferred_wallet
 
-from .utils import clone_and_transfer_kudos_web3
+from .utils import KudosContract
 
 import logging
 
@@ -226,47 +227,6 @@ def get_to_emails(params):
     return list(set(to_emails))
 
 
-def reconcile_kudos_preferred_wallet(profile):
-    """Helper function to set the kudos_preferred_wallet if it doesn't already exist
-
-    Args:
-        profile (dashboard.modles.Profile): Instead of the profile model.
-
-    Returns:  Kudos preferred wallet if found, else None.
-
-    """
-
-    # If the preferred_kudos_wallet is not set, figure out how to set it.
-    if not profile.preferred_kudos_wallet:
-        # If the preferred_payout_address exists, use it for the preferred_kudos_Wallet
-        if profile.preferred_payout_address and profile.preferred_payout_address != '0x0':
-            # Check if the preferred_payout_addess exists as a kudos wallet address
-            kudos_wallet = profile.wallets.filter(address=profile.preferred_payout_address).first()
-            if kudos_wallet:
-                # If yes, set that wallet to be the profile.preferred_kudos_wallet
-                profile.preferred_kudos_wallet = kudos_wallet
-                # profile.preferred_kudos_wallet = profile.wallets.filter(address=profile.preferred_payout_address)
-            else:
-                # Create the kudos_wallet and set it as the preferred_kudos_wallet in the profile
-                new_kudos_wallet = Wallet(address=profile.preferred_payout_address)
-                new_kudos_wallet.save()
-                profile.preferred_kudos_wallet = new_kudos_wallet
-        else:
-            # Check if there are any kudos_wallets available.  If so, set the first one to preferred.
-            kudos_wallet = profile.kudos_wallets.all()
-            if kudos_wallet:
-                profile.preferred_kudos_wallet = kudos_wallet.first()
-            else:
-                # Not enough information available to set the preferred_kudos_wallet
-                # Use kudos indrect send.
-                logger.warning('No kudos wallets or preferred_payout_address address found.  Use Kudos Indirect Send.')
-                return None
-
-        profile.save()
-
-    return profile.preferred_kudos_wallet
-
-
 def kudos_preferred_wallet(request, handle):
     """returns the address, if any, that someone would like to be send kudos directly to.
 
@@ -433,6 +393,12 @@ def send_4(request):
     if is_direct_to_recipient:
         kudos_email.receive_txid = txid
     kudos_email.save()
+
+    # Update kudos.models.Token to reflect the newly cloned Kudos
+    if kudos_email.network == 'custom network':
+        network = 'localhost'
+    kudos_contract = KudosContract(network)
+    kudos_contract.sync_db()
 
     # notifications
     # maybe_market_tip_to_github(kudos_email)

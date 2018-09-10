@@ -113,8 +113,11 @@ class KudosTransfer(SendCryptoAsset):
         if self.web3_type != 'v3':
             raise Exception
 
-        key = self.metadata['reference_hash_for_receipient']
-        return f"{settings.BASE_URL}kudos/receive/v3/{key}/{self.txid}/{self.network}"
+        try:
+            key = self.metadata['reference_hash_for_receipient']
+            return f"{settings.BASE_URL}kudos/receive/v3/{key}/{self.txid}/{self.network}"
+        except KeyError:
+            return None
 
 
 class Wallet(SuperModel):
