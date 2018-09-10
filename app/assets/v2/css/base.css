@@ -1676,11 +1676,11 @@ div.busyOverlay {
 }
 
 .funding > div.placeholder {
-  margin-left: 5rem;
+  margin-left: 8.3%;
 }
 
 @media (max-width: 768px) {
   .funding > div.placeholder {
-    margin-left: 0;
+    margin-left: 3px;
   }
 }
