@@ -1,6 +1,0 @@
-{{bounties | length}} New Funded Issue{% if bounties|length != 1 %}s{%endif%}
-
-{% for bounty in bounties %}
-{% include 'emails/bounty.txt' with bounty=bounty %}
-
-{% endfor %}

@@ -1,9 +1,0 @@
-
-User-agent: Twitterbot
-Disallow:
-
-User-agent: Yandex
-Disallow: /
-
-
-Sitemap: {{settings.BASE_URL}}sitemap.xml
