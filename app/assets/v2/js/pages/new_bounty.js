@@ -115,8 +115,7 @@ $(document).ready(function() {
     bounty_reserved_for = {
       username: data.text,
       creation_date: new Date(),
-      email: data.email,
-      avatar_url: ''
+      email: data.email
     };
   });
 

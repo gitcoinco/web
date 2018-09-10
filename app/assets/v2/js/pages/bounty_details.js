@@ -160,8 +160,6 @@ var callbacks = {
   'bounty_owner_email': email_ize,
   'experience_level': unknown_if_empty,
   'project_length': unknown_if_empty,
-  'bounty_reserved_for': unknown_if_empty,
-  'bounty_reserved_for_creation_date': unknown_if_empty,
   'bounty_type': unknown_if_empty,
   'bounty_owner_github_username': gitcoin_ize,
   'bounty_owner_name': function(key, val, result) {
@@ -534,7 +532,7 @@ var attach_work_actions = function() {
     if ($(this).attr('href') == '/interested') {
       const reservedForHoursLeft = 24 - Math.abs(new Date() - new Date(reservedForCreationDate)) / 36e5;
 
-      if ((currentLoggedInUser.length > 0 && reservedForUsername.length > 0) &&  reservedForHoursLeft > 0) {
+      if ((currentLoggedInUser.length > 0 && reservedForUsername.length > 0) && reservedForHoursLeft > 0) {
         if (currentLoggedInUser === reservedForUsername) {
           show_interest_modal.call(this);
         } else {
