@@ -250,46 +250,4 @@
     "hide_profile": false,
     "max_num_issues_start_work": 3
   }
-}, {
-  "model": "dashboard.profile",
-  "pk": 13,
-  "fields": {
-    "created_on": "2018-05-14T14:34:09.979Z",
-    "modified_on": "2018-05-14T14:34:09.979Z",
-    "data": {},
-    "handle": "jasonrhaas",
-    "last_sync_date": "2018-05-14T14:34:09.972Z",
-    "email": "",
-    "github_access_token": "",
-    "pref_lang_code": "",
-    "slack_repos": "[]",
-    "slack_token": "",
-    "slack_channel": "",
-    "discord_repos": "[]",
-    "discord_webhook_url": "",
-    "suppress_leaderboard": false,
-    "hide_profile": false,
-    "max_num_issues_start_work": 3
-  }
-}, {
-  "model": "dashboard.profile",
-  "pk": 14,
-  "fields": {
-    "created_on": "2018-05-14T14:34:09.979Z",
-    "modified_on": "2018-05-14T14:34:09.979Z",
-    "data": {},
-    "handle": "octavioamu",
-    "last_sync_date": "2018-05-14T14:34:09.972Z",
-    "email": "",
-    "github_access_token": "",
-    "pref_lang_code": "",
-    "slack_repos": "[]",
-    "slack_token": "",
-    "slack_channel": "",
-    "discord_repos": "[]",
-    "discord_webhook_url": "",
-    "suppress_leaderboard": false,
-    "hide_profile": false,
-    "max_num_issues_start_work": 3
-  }
 }]
