@@ -1652,12 +1652,9 @@ div.busyOverlay {
 
 .arrow {
   display: inline-block;
-  min-width: .5rem;
-  min-height: .5rem;
-  background-repeat: no-repeat;
-  background-size: contain;
-  background-position: center;
-  background-image: url('/static/v2/images/arrow-down.png');
+  margin: 0;
+  padding: 0;
+  vertical-align: baseline;
   transform: rotateZ(180deg);
   transition: 0.3s ease;
 }

@@ -243,7 +243,7 @@ var callbacks = {
       bountyTokenAmount + ' ' + bountyTokenName + '</p>';
 
     rightHtml += '<p class="m-0">@ $' +
-      result['token_value_in_usdt'] + ' ' + bountyTokenName + ' ' + timePeg + '</p>';
+      result['token_value_in_usdt'] + ' ' + bountyTokenName + ' as of ' + timePeg + '</p>';
 
     let totalUSDValue = parseFloat(result['value_in_usdt']) || 0.0;
 
@@ -259,7 +259,7 @@ var callbacks = {
       const tooltip = '$' + normalizeAmount(usd, decimals) + ' ' + tokenName + ' in crowdfunding';
 
       leftHtml += '<p class="m-0">+ ' + funding + ' ' + tokenName + '</p>';
-      rightHtml += '<p class="m-0">@ $' + tokenValue + ' ' + tokenName + ' ' + timePeg + '</p>';
+      rightHtml += '<p class="m-0">@ $' + tokenValue + ' ' + tokenName + ' as of ' + timePeg + '</p>';
 
       totalUSDValue += usd;
 
