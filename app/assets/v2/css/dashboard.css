@@ -208,13 +208,6 @@ body {
   }
 }
 
-@media (min-width: 768px) {
-
-  .tag.shift_left {
-    margin-left: -100px;
-  }
-}
-
 @media (max-width: 768px) {
 
   #onboard-dashboard .col-12 {

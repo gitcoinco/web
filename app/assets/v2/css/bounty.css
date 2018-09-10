@@ -207,10 +207,6 @@ body {
   display: inline-block;
 }
 
-#bounty_details .tag p {
-  padding: 5px;
-}
-
 .issue-url > a {
   color: #ffffff;
 }

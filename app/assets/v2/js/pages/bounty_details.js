@@ -264,7 +264,7 @@ var callbacks = {
       totalUSDValue += usd;
 
       container.insertBefore(
-        newTokenTag(funding, tokenName, tooltip),
+        newTokenTag(funding, tokenName, tooltip, true),
         usdTagElement
       );
     }

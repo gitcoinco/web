@@ -1667,13 +1667,16 @@ div.busyOverlay {
   text-transform: uppercase;
 }
 
+.middle {
+  vertical-align: middle;
+}
+
 .funding {
   background-color: #f9f9f9;
 }
 
 .funding > div.placeholder {
   margin-left: 5rem;
-  padding: 0.3rem 0;
 }
 
 @media (max-width: 768px) {

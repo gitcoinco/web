@@ -985,8 +985,6 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
       if (tokens.length) {
         const obj = {};
 
-        obj[result['token_name']] = result['rounded_amount'];
-
         while (tokens.length) {
           const tokenName = tokens.shift();
           const tokenObj = crowdfunding[tokenName];
@@ -1174,13 +1172,14 @@ function normalizeAmount(amount, decimals) {
   return Math.round(amount * 10 ** decimals) / 10 ** decimals;
 }
 
-function newTokenTag(amount, tokenName, tooltipInfo) {
+function newTokenTag(amount, tokenName, tooltipInfo, isCrowdfunded) {
   const ele = document.createElement('div');
   const p = document.createElement('p');
   const span = document.createElement('span');
 
   ele.className = 'tag token';
-  span.innerHTML = amount + ' ' + tokenName;
+  span.innerHTML = amount + ' ' + tokenName +
+    (isCrowdfunded ? '<i class="fas fa-users ml-1"></i>' : '' );
 
   p.appendChild(span);
   ele.appendChild(p);

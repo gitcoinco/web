@@ -52,7 +52,7 @@
           <span>[[:token_name]]</span>
           [[if tokens]]
             <i class="fas fa-plus mx-1" style="font-size: 0.5rem; position: relative; top: -1px;"></i>
-            <img class="m-0" style="position: relative; top: -1px;" src="{% static 'v2/images/coin.svg' %}">
+            <img class="m-0" style="position: relative; top: -2px;" src="{% static 'v2/images/coin.svg' %}">
           [[/if]]
         </p>
       </div>
@@ -74,12 +74,15 @@
     [[if tokens]]
       <div class="row col-12 tags expandable funding">
         <div class="placeholder">
-          <span class="text-highlight-gc-purple m-2 uppercase">{% trans 'Funding' %}</span>
+          <span class="text-highlight-gc-purple m-0 uppercase middle">{% trans 'Funding' %}</span>
+        </div>
+        <div class="tag token font-caption">
+          <p><span>[[:rounded_amount]] [[:token_name]]</span></p>
         </div>
         [[props tokens]]
           [[for prop ~tokenName=key]]
             <div class="tag token font-caption">
-              <p>[[:#data]]   <span>[[:~tokenName]]</span></p>
+              <p><span>[[:#data]] [[:~tokenName]]<i class="fas fa-users ml-1"></i></span></p>
             </div>
           [[/for]]
         [[/props]]
