@@ -120,7 +120,6 @@ span {
 }
 
 .modal {
-  font-family: "Muli", sans-serif;
   z-index: 9;
   border-radius: 4px !important;
 }
@@ -603,8 +602,8 @@ input[type=text].loading {
 .submit_bounty .select2-results__option,
 .fulfill_bounty .select2-results__option {
   font-size: 0.875rem;
-  font-family: "Muli", sans-serif;
 }
+
 .select2-results__option:empty {
   padding: 1px;
   border-bottom: solid 1px darkgray;
@@ -678,7 +677,6 @@ input[type=text].loading {
   box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.24);
   color: white;
   display: flex;
-  font-family: 'Muli', sans-serif;
   justify-content: space-between;
   padding: 20px;
   margin-bottom: 1px;
@@ -692,6 +690,7 @@ input[type=text].loading {
   align-items: center;
   display: flex;
 }
+
 .alert .message .content{
   display: inline;
 }
@@ -940,7 +939,6 @@ input.is-invalid {
 }
 
 .tooltip-info {
-  font-family: 'Muli', sans-serif;
   padding: 10px 20px;
   margin: 0;
   width: 25em;
@@ -994,7 +992,6 @@ input.is-invalid {
   text-transform: uppercase;
   font-size: 14px;
   padding: 4px 7px;
-  font-family: 'Muli', sans-serif;
   font-weight: 100;
   letter-spacing: 0.15em;
   margin: 5px;
@@ -1054,7 +1051,6 @@ input.is-invalid {
 
 .submit-notification {
   color: #fff;
-  font-family: 'Muli', sans-serif;
   font-size: 10px !important;
   min-height: 100px;
   padding: 0.6rem;
@@ -1179,20 +1175,6 @@ input.is-invalid {
 
   .advisor {
     width: 130px;
-  }
-
-  .whitepaper .row .col-1,
-  .whitepaper .row .col-4 {
-    display: none;
-  }
-
-  .whitepaper .row .col-6 {
-    width: 90%;
-    flex: 0 0 90%;
-    max-width: 90%;
-    padding-left: 10px;
-    padding-right: 10px;
-    margin: 0 auto;
   }
 
   .bounty_def .col-7 {
@@ -1498,10 +1480,6 @@ input.is-invalid {
     display: none;
   }
 
-  .search_bar .save_search {
-    display: none;
-  }
-
   .interior .body {
     width: 100%;
     flex: 0 0 100%;
@@ -1548,9 +1526,7 @@ input.is-invalid {
 /* End TODO */
 
 /* Results */
-.results {
-  font-family: 'Muli', sans-serif;
-}
+
 .results h2 {
   font-size: 1.8rem;
   font-weight: 700;

@@ -1,0 +1,17 @@
+@font-face {
+  font-family: 'futura-pt';
+  src: url('/static/v2/fonts/futura/font4.ttf')/* TTF file for CSS3 browsers */
+}
+
+@font-face {
+  font-family: 'Muli';
+  src: url('/static/v2/fonts/Muli/Regular.ttf');
+}
+
+.g-font-futura {
+  font-family: 'futura-pt', sans-serif;
+}
+
+.g-font-muli {
+  font-family: 'Muli', sans-serif;
+}

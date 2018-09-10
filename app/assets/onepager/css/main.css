@@ -1,26 +1,10 @@
+/* One-Pager CSS */
 @charset "UTF-8";
 /* stylelint-disable no-descending-specificity */
 
-/* ...because sometimes descending-specificity is a PIA to clean up */
-
-/* Futura */
-
-@font-face {
-  font-family: 'futura-pt';
-  src: url('/static/v2/fonts/futura/font4.ttf')/* TTF file for CSS3 browsers */
-}
-
-/* Muli Regular */
-
-@font-face {
-  font-family: 'Muli';
-  src: url('/static/v2/fonts/Muli/Regular.ttf');
-  font-weight: 400;
-}
-
 body {
   line-height: 1;
-  font-family: 'Muli', sans-serif !important;
+  font-family: 'Muli', sans-serif;
   -webkit-text-size-adjust: none;
   overflow: hidden;
   width: 100%;
@@ -72,7 +56,6 @@ body.is-loading:after {
   text-transform: uppercase;
   font-size: 14px;
   padding: 4px 7px;
-  font-family: 'Muli', sans-serif;
   font-weight: 100;
   letter-spacing: 0.15em;
   margin: 5px;
@@ -715,8 +698,6 @@ dl dd {
   z-index: 1;
   position: absolute;
 }
-
-/* Footer */
 
 #footer {
   -moz-align-self: -moz-flex-end;
