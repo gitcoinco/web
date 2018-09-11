@@ -68,6 +68,8 @@ from .utils import (
     get_bounty, get_bounty_id, get_context, has_tx_mined, record_user_action_on_interest, web3_process_bounty, get_web3
 )
 
+from eth_utils import to_checksum_address
+
 logger = logging.getLogger(__name__)
 
 confirm_time_minutes_target = 4
@@ -1134,45 +1136,72 @@ def profile(request, handle):
         }
         return TemplateResponse(request, 'profiles/profile.html')
 
-    context['wallet_addresses'] = [w.address for w in profile.kudos_wallets.all()]
-    owned_kudos = Token.objects.filter(owner_address__in=context['wallet_addresses'])
-    sent_kudos = Token.objects.filter(sent_from_address__in=context['wallet_addresses'])
+    # context['wallet_addresses'] = [w.address for w in profile.kudos_wallets.all()]
+    context['preferred_payout_address'] = profile.preferred_payout_address
+    # logger.info(to_checksum_address(context['preferred_payout_address']))
+    if context['preferred_payout_address']:
+        owned_kudos = Token.objects.filter(owner_address=to_checksum_address(context['preferred_payout_address']))
+        sent_kudos = Token.objects.filter(sent_from_address=to_checksum_address(context['preferred_payout_address']))
+    else:
+        owned_kudos = None
+        sent_kudos = None
 
-    logging.info(context['wallet_addresses'])
-    logging.info(owned_kudos)
+    # logging.info(context['preferred_payout_address'])
+    # logging.info(owned_kudos)
     context['kudos'] = owned_kudos
     context['sent_kudos'] = sent_kudos
 
-    # The Add Wallet Button
+    # The Add Account Button
     if request.method == 'POST' and request.is_ajax():
         logging.info(request.POST)
         address = request.POST.get('address')
-        logging.info(request.path)
-        logging.info(f'Address: {address}')
-        logging.info(f'Handle: {handle}')
-        new_wallet = Wallet(address=address, profile_id=profile.id)
-        if new_wallet:
-            try:
-                new_wallet.save()
-                wallets = profile.kudos_wallets.all()
-                if not profile.preferred_kudos_wallet:
-                    profile.preferred_kudos_wallet = wallets.first()
-                    logger.info(f'No profile.preferred_kudos_wallet found.  Setting it to {wallets.first().id}')
-                    profile.save()
-                wallet_addresses = [w.address for w in wallets]
-                msg = {
-                    'status': 200,
-                    'msg': 'Success!',
-                    'wallets': wallet_addresses,
-                }
-            except Exception as e:
-                logger.error(e)
-                msg = {
-                    'status': 500,
-                    'msg': 'Internal server error',
-                }
+        profile.preferred_payout_address = address
 
-            return JsonResponse(msg)
+        try:
+            profile.save()
+        except Exception as e:
+            logger.error(e)
+            msg = {
+                'status': 500,
+                'msg': 'Internal server error',
+            }
+        else:
+            wallet_addresses = []
+            wallet_addresses.append(profile.preferred_payout_address)
+            msg = {
+                'status': 200,
+                'msg': 'Success!',
+                'wallets': wallet_addresses,
+            }
+
+        return JsonResponse(msg)
+
+        # logging.info(request.path)
+        # logging.info(f'Address: {address}')
+        # logging.info(f'Handle: {handle}')
+        # new_wallet = Wallet(address=address, profile_id=profile.id)
+        # if new_wallet:
+        #     try:
+        #         new_wallet.save()
+        #         wallets = profile.kudos_wallets.all()
+        #         if not profile.preferred_kudos_wallet:
+        #             profile.preferred_kudos_wallet = wallets.first()
+        #             logger.info(f'No profile.preferred_kudos_wallet found.  Setting it to {wallets.first().id}')
+        #             profile.save()
+        #         wallet_addresses = [w.address for w in wallets]
+        #         msg = {
+        #             'status': 200,
+        #             'msg': 'Success!',
+        #             'wallets': wallet_addresses,
+        #         }
+        #     except Exception as e:
+        #         logger.error(e)
+        #         msg = {
+        #             'status': 500,
+        #             'msg': 'Internal server error',
+        #         }
+
+        #     return JsonResponse(msg)
 
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 

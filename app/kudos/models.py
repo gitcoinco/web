@@ -51,6 +51,7 @@ class Token(SuperModel):
 
     def save(self, *args, **kwargs):
         self.owner_address = to_checksum_address(self.owner_address)
+        self.sent_from_address = to_checksum_address(self.sent_from_address)
         super().save(*args, **kwargs)
 
     @property

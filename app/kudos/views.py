@@ -44,7 +44,7 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_master, get_github_primary_email
 from retail.helpers import get_ip
 from web3 import Web3
-from eth_utils import to_checksum_address
+from eth_utils import to_checksum_address, to_normalized_address
 from .helpers import reconcile_kudos_preferred_wallet
 
 from .utils import KudosContract
@@ -131,14 +131,19 @@ def details(request):
     # Find other Kudos rows that are the same kudos.name, but of a different owner
     related_kudos = Token.objects.exclude(
         owner_address='0xD386793F1DB5F21609571C0164841E5eA2D33aD8').filter(name=kudos.name)
-    logger.info(f'Kudos rows: {related_kudos}')
+    logger.info(f'Related Kudos Tokens: {related_kudos}')
     # Find the Wallet rows that match the Kudos.owner_addresses
-    related_wallets = Wallet.objects.filter(address__in=[rk.owner_address for rk in related_kudos]).distinct()[:20]
-    profile_ids = [rw.profile_id for rw in related_wallets]
-    logger.info(f'Related profile_ids:  {profile_ids}')
+    # related_wallets = Wallet.objects.filter(address__in=[rk.owner_address for rk in related_kudos]).distinct()[:20]
+
+    # Find the related Profiles assuming the preferred_payout_address is the kudos owner address.
+    # Note that preferred_payout_address is most likely in normalized form.
+    # https://eth-utils.readthedocs.io/en/latest/utilities.html#to-normalized-address-value-text
+    related_profiles = Profile.objects.filter(preferred_payout_address__in=[to_normalized_address(rk.owner_address) for rk in related_kudos]).distinct()[:20]
+    # profile_ids = [rw.profile_id for rw in related_wallets]
+    logger.info(f'Related Profiles:  {related_profiles}')
 
     # Avatar can be accessed via Profile.avatar
-    related_profiles = Profile.objects.filter(pk__in=profile_ids).distinct()
+    # related_profiles = Profile.objects.filter(pk__in=profile_ids).distinct()
 
     context = {
         'is_outside': True,
@@ -188,6 +193,7 @@ def get_primary_from_email(params, request):
     """
 
     request_user_email = request.user.email if request.user.is_authenticated else ''
+    logger.info(request.user.profile)
     access_token = request.user.profile.get_access_token() if request.user.is_authenticated else ''
 
     if params.get('fromEmail'):
@@ -241,9 +247,9 @@ def kudos_preferred_wallet(request, handle):
     profile = get_profile(str(handle).replace('@', ''))
 
     if profile:
-        reconcile_kudos_preferred_wallet(profile)
-        if profile.preferred_kudos_wallet:
-            response['addresses'].append(profile.preferred_kudos_wallet.address)
+        # reconcile_kudos_preferred_wallet(profile)
+        if profile.preferred_payout_address:
+            response['addresses'].append(profile.preferred_payout_address)
 
     return JsonResponse(response)
 
