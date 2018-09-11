@@ -1154,9 +1154,8 @@ def get_quickstart_video(request):
 @vary_on_cookie
 @cache_page(60 * 60 * 24)
 def funder_dashboard(request):
-    """ Render the funder dashboard"""
-
-    if not hasattr(request.user, 'profile') or not request.user.profile.is_funder:
+    """Render the funder dashboard."""
+    if not hasattr(request.user, 'profile'):
         return redirect('/')
 
     funder_bounties = request.user.profile.get_funded_bounties()
