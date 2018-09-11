@@ -1492,7 +1492,8 @@ def change_bounty(request, bounty_id):
         else:
             raise Http404
 
-    keys = ['experience_level', 'project_length', 'bounty_type', 'permission_type', 'project_type']
+    keys = ['experience_level', 'project_length', 'bounty_type', 'permission_type', 'project_type',
+            'bounty_reserved_for']
 
     if request.body:
         can_change = (bounty.status in Bounty.OPEN_STATUSES) or \

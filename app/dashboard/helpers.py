@@ -39,6 +39,7 @@ from dashboard.tokens import addr_to_token
 from economy.utils import convert_amount
 from git.utils import get_gh_issue_details, get_url_dict, issue_number, org_name, repo_name
 from jsondiff import diff
+from marketing.mails import send_mail
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 
@@ -419,6 +420,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'bounty_owner_address': bounty_issuer.get('address', ''),
                 'bounty_owner_email': bounty_issuer.get('email', ''),
                 'bounty_owner_name': bounty_issuer.get('name', ''),
+                'bounty_reserved_for': metadata.get('reservedFor', ''),
             })
         else:
             latest_old_bounty_dict = latest_old_bounty.to_standard_dict(
@@ -428,11 +430,25 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     'project_length', 'experience_level', 'project_type', 'permission_type', 'attached_job_description',
                     'bounty_owner_github_username', 'bounty_owner_address', 'bounty_owner_email', 'bounty_owner_name',
                     'github_comments', 'override_status', 'last_comment_date', 'snooze_warnings_for_days',
-                    'admin_override_and_hide', 'admin_override_suspend_auto_approval', 'admin_mark_as_remarket_ready'
+                    'admin_override_and_hide', 'admin_override_suspend_auto_approval', 'admin_mark_as_remarket_ready',
+                    'bounty_reserved_for'
                 ],
             )
             bounty_kwargs.update(latest_old_bounty_dict)
 
+        # notify a user that a bounty has been set aside for them if its been reserved for them
+        bounty_reserved_for = metadata.get('reservedFor', '')
+        if len(bounty_reserved_for.keys()) > 0:
+            body1 = '<p>Hi ' + bounty_reserved_for['username'] + ',<br><br>'
+            body2 = 'An issue has been assigned to you on gitcoin.'
+            body3 = ' Please start working on it in the next 24 hours,'
+            body4 = ' otherwise it will be opened up for other bounty hunters as well'
+            body5 = '.<br><br>Regards</p>'
+            send_mail('founders@gitcoin.co',
+                      bounty_reserved_for['email'],
+                      'Reserved Issue',
+                      str(body1 + body2 + body3 + body4 + body5),
+                      html=True)
         try:
             new_bounty = Bounty.objects.create(**bounty_kwargs)
             new_bounty.fetch_issue_item()
@@ -459,6 +475,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             if canceled_on:
                 new_bounty.canceled_on = canceled_on
                 new_bounty.save()
+
 
         except Exception as e:
             print(e, 'encountered during new bounty creation for:', url)
