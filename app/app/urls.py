@@ -64,9 +64,14 @@ urlpatterns = [
     path('kudos/send/', kudos.views.send_2, name='kudos_send'),
     path('kudos/send/3/', kudos.views.send_3, name='kudos_send_3'),
     path('kudos/send/4/', kudos.views.send_4, name='kudos_send_4'),
-    re_path(r'^kudos/receive', kudos.views.receive, name='kudos_receive'),
+    re_path(
+        r'^kudos/receive/v3/(?P<key>.*)/(?P<txid>.*)/(?P<network>.*)?',
+        kudos.views.receive,
+        name='kudos_receive'
+    ),
     re_path(r'^kudos/search/$', kudos.views.search, name='kudos_search'),
     re_path(r'^kudos/\d+', kudos.views.details, name='kudos_details'),
+    re_path(r'^kudos/address/(?P<handle>.*)', kudos.views.kudos_preferred_wallet, name='kudos_preferred_wallet'),
 
     # api views
     # TODO:  url() will be deprecated soon.  Change to path() or re_path().

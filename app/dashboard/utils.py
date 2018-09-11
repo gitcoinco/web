@@ -204,7 +204,7 @@ def get_web3(network):
     """
     if network in ['mainnet', 'rinkeby', 'ropsten']:
         return Web3(HTTPProvider(f'https://{network}.infura.io'))
-    elif network == 'localhost':
+    elif network == 'localhost' or 'custom network':
         return Web3(Web3.HTTPProvider("http://testrpc:8545", request_kwargs={'timeout': 60}))
 
     raise UnsupportedNetworkException(network)

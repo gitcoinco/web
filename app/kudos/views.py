@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2018 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -27,7 +27,7 @@ from django.contrib.postgres.search import SearchVector
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 
-from .models import Token, Wallet, Email
+from .models import Token, Wallet, KudosTransfer
 from dashboard.models import Profile, Activity
 from dashboard.utils import get_web3
 from dashboard.views import record_user_action
@@ -44,13 +44,17 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_master, get_github_primary_email
 from retail.helpers import get_ip
 from web3 import Web3
-from eth_utils import to_checksum_address
+from eth_utils import to_checksum_address, to_normalized_address
+from .helpers import reconcile_kudos_preferred_wallet
+
+from .utils import KudosContract
 
 import logging
 
 logger = logging.getLogger(__name__)
 
 confirm_time_minutes_target = 4
+
 
 def get_profile(handle):
     try:
@@ -70,7 +74,7 @@ def about(request):
         'title': 'About',
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
-        'avatar_url': static('v2/images/grow_open_source.png'),
+        'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         "listings": Token.objects.all(),
     }
     return TemplateResponse(request, 'kudos_about.html', context)
@@ -83,7 +87,7 @@ def marketplace(request):
 
     results = Token.objects.annotate(
         search=SearchVector('name', 'description', 'tags')
-        ).filter(num_clones_allowed__gt=0, search=q)
+    ).filter(num_clones_allowed__gt=0, search=q)
     logger.info(results)
 
     if results:
@@ -96,7 +100,7 @@ def marketplace(request):
         'title': 'Marketplace',
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
-        'avatar_url': static('v2/images/grow_open_source.png'),
+        'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         'listings': listings
     }
 
@@ -125,15 +129,21 @@ def details(request):
     # Find other profiles that have the same kudos name
     kudos = Token.objects.get(pk=kudos_id)
     # Find other Kudos rows that are the same kudos.name, but of a different owner
-    related_kudos = Token.objects.exclude(owner_address='0xD386793F1DB5F21609571C0164841E5eA2D33aD8').filter(name=kudos.name)
-    logger.info(f'Kudos rows: {related_kudos}')
+    related_kudos = Token.objects.exclude(
+        owner_address='0xD386793F1DB5F21609571C0164841E5eA2D33aD8').filter(name=kudos.name)
+    logger.info(f'Related Kudos Tokens: {related_kudos}')
     # Find the Wallet rows that match the Kudos.owner_addresses
-    related_wallets = Wallet.objects.filter(address__in=[rk.owner_address for rk in related_kudos]).distinct()[:20]
-    profile_ids = [rw.profile_id for rw in related_wallets]
-    logger.info(f'Related profile_ids:  {profile_ids}')
+    # related_wallets = Wallet.objects.filter(address__in=[rk.owner_address for rk in related_kudos]).distinct()[:20]
+
+    # Find the related Profiles assuming the preferred_payout_address is the kudos owner address.
+    # Note that preferred_payout_address is most likely in normalized form.
+    # https://eth-utils.readthedocs.io/en/latest/utilities.html#to-normalized-address-value-text
+    related_profiles = Profile.objects.filter(preferred_payout_address__in=[to_normalized_address(rk.owner_address) for rk in related_kudos]).distinct()[:20]
+    # profile_ids = [rw.profile_id for rw in related_wallets]
+    logger.info(f'Related Profiles:  {related_profiles}')
 
     # Avatar can be accessed via Profile.avatar
-    related_profiles = Profile.objects.filter(pk__in=profile_ids).distinct()
+    # related_profiles = Profile.objects.filter(pk__in=profile_ids).distinct()
 
     context = {
         'is_outside': True,
@@ -141,10 +151,15 @@ def details(request):
         'title': 'Details',
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
-        'avatar_url': static('v2/images/grow_open_source.png'),
+        'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         'kudos': kudos,
         'related_profiles': related_profiles,
     }
+    if kudos:
+        context['title'] = kudos.name
+        context['card_title'] = kudos.name
+        context['card_desc'] = kudos.description
+        context['avatar_url'] = kudos.image
 
     return TemplateResponse(request, 'kudos_details.html', context)
 
@@ -160,31 +175,6 @@ def mint(request):
 def get_user_request_info(request):
     """ Returns """
     pass
-
-
-@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def send_2(request):
-    """ Handle the first start of the Kudos email send.
-    This form is filled out before the 'send' button is clicked.
-    """
-
-    kudos_name = request.GET.get('name')
-    kudos = Token.objects.filter(name=kudos_name, num_clones_allowed__gt=0).first()
-    profiles = Profile.objects.all()
-
-    params = {
-        'issueURL': request.GET.get('source'),
-        'class': 'send2',
-        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
-        'from_email': getattr(request.user, 'email', ''),
-        'from_handle': request.user.username,
-        'title': 'Send Kudos | Gitcoin',
-        'card_desc': 'Send a Kudos to any github user at the click of a button.',
-        'kudos': kudos,
-        'profiles': profiles
-    }
-
-    return TemplateResponse(request, 'transaction/send.html', params)
 
 
 def get_primary_from_email(params, request):
@@ -203,6 +193,7 @@ def get_primary_from_email(params, request):
     """
 
     request_user_email = request.user.email if request.user.is_authenticated else ''
+    logger.info(request.user.profile)
     access_token = request.user.profile.get_access_token() if request.user.is_authenticated else ''
 
     if params.get('fromEmail'):
@@ -242,6 +233,69 @@ def get_to_emails(params):
     return list(set(to_emails))
 
 
+def kudos_preferred_wallet(request, handle):
+    """returns the address, if any, that someone would like to be send kudos directly to.
+
+    Returns:
+        list of addresse
+
+    """
+    response = {
+        'addresses': []
+    }
+
+    profile = get_profile(str(handle).replace('@', ''))
+
+    if profile:
+        # reconcile_kudos_preferred_wallet(profile)
+        if profile.preferred_payout_address:
+            response['addresses'].append(profile.preferred_payout_address)
+
+    return JsonResponse(response)
+
+
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def tipee_address(request, handle):
+    """returns the address, if any, that someone would like to be tipped directly at
+
+    Returns:
+        list of addresse
+
+    """
+    response = {
+        'addresses': []
+    }
+    profile = get_profile(str(handle).replace('@', ''))
+    if profile and profile.preferred_payout_address:
+        response['addresses'].append(profile.preferred_payout_address)
+    return JsonResponse(response)
+
+
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def send_2(request):
+    """ Handle the first start of the Kudos email send.
+    This form is filled out before the 'send' button is clicked.
+    """
+
+    kudos_name = request.GET.get('name')
+    kudos = Token.objects.filter(name=kudos_name, num_clones_allowed__gt=0).first()
+    profiles = Profile.objects.all()
+
+    params = {
+        'issueURL': request.GET.get('source'),
+        'class': 'send2',
+        'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'from_email': getattr(request.user, 'email', ''),
+        'from_handle': request.user.username,
+        'title': 'Send Kudos | Gitcoin',
+        'card_desc': 'Send a Kudos to any github user at the click of a button.',
+        'kudos': kudos,
+        'profiles': profiles
+    }
+
+    return TemplateResponse(request, 'transaction/send.html', params)
+
+
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def send_3(request):
@@ -270,7 +324,7 @@ def send_3(request):
     # Validate that the token exists on the back-end
     kudos_token = Token.objects.filter(name=params['kudosName'], num_clones_allowed__gt=0).first()
     # db mutations
-    kudos_email = Email.objects.create(
+    kudos_email = KudosTransfer.objects.create(
         emails=to_emails,
         # For kudos, `token` is a kudos.models.Token instance.
         kudos_token=kudos_token,
@@ -317,16 +371,16 @@ def send_4(request):
     destinationAccount = params['destinationAccount']
     is_direct_to_recipient = params.get('is_direct_to_recipient', False)
     if is_direct_to_recipient:
-        kudos_email = Email.objects.get(
-            metadata__direct_address=destinationAccount, 
+        kudos_email = KudosTransfer.objects.get(
+            metadata__direct_address=destinationAccount,
             metadata__creation_time=params['creation_time'],
             metadata__salt=params['salt'],
-            )
+        )
     else:
-        kudos_email = Email.objects.get(
+        kudos_email = KudosTransfer.objects.get(
             metadata__address=destinationAccount,
             metadata__salt=params['salt'],
-            )
+        )
 
     # Return Permission Denied if not authenticated
     is_authenticated_for_this_via_login = (kudos_email.from_username and kudos_email.from_username == from_username)
@@ -345,6 +399,12 @@ def send_4(request):
     if is_direct_to_recipient:
         kudos_email.receive_txid = txid
     kudos_email.save()
+
+    # Update kudos.models.Token to reflect the newly cloned Kudos
+    if kudos_email.network == 'custom network':
+        network = 'localhost'
+    kudos_contract = KudosContract(network)
+    kudos_contract.sync_db()
 
     # notifications
     # maybe_market_tip_to_github(kudos_email)
@@ -397,12 +457,16 @@ def receive(request, key, txid, network):
 
     """
 
-    these_kudos_emails = Email.objects.filter(web3_type='v3', txid=txid, network=network)
+    if request.method == 'POST':
+        logger.info('method is post')
+
+    these_kudos_emails = KudosTransfer.objects.filter(web3_type='v3', txid=txid, network=network)
     kudos_emails = these_kudos_emails.filter(metadata__reference_hash_for_receipient=key) | these_kudos_emails.filter(
         metadata__reference_hash_for_funder=key)
     kudos_email = kudos_emails.first()
     is_authed = request.user.username == kudos_email.username or request.user.username == kudos_email.from_username
-    not_mined_yet = get_web3(kudos_email.network).eth.getBalance(Web3.toChecksumAddress(kudos_email.metadata['address'])) == 0
+    not_mined_yet = get_web3(kudos_email.network).eth.getBalance(
+        Web3.toChecksumAddress(kudos_email.metadata['address'])) == 0
 
     if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
         request.user, 'profile', None
@@ -440,6 +504,8 @@ def receive(request, key, txid, network):
         except Exception as e:
             messages.error(request, str(e))
             logger.exception(e)
+
+    logger.info(kudos_email.kudos_token.name)
 
     params = {
         'issueURL': request.GET.get('source'),

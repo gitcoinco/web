@@ -40,7 +40,7 @@
                 {% endif %}
               </p>
             </div>
-            <div data-metamask-address data-truncatehash></div>
+            <div data-metamask-address data-truncatehash title="{{ preferred_payout_address }}">{{ preferred_payout_address }}</div>
             {% if profile.data.bio %}
               <div class="profile-header__bio my-2">
                 {{ profile.data.bio }}
@@ -415,7 +415,6 @@
             });
             
 
-            
             (function (){
               this.getaddress = function(elem, address) {
                 var address = !address ? address = web3.eth.coinbase : address
@@ -431,7 +430,8 @@
               this.metamaskAddress = function () {
                 var currentWallet = web3.eth.coinbase
                 
-                var elem = document.querySelectorAll('[data-metamask-address]')
+                // var elem = document.querySelectorAll('[data-metamask-address]')
+                var elem = $('#wallet-address')
                 for (var i = 0; i < elem.length; ++i) {
                   new getaddress(elem[i],currentWallet)
                 }
@@ -475,11 +475,12 @@
                   new truncateHash() 
                 })
               }
-              newWallets()
+              // newWallets()
               
             $("body").on('submit', '#form-wallets', function(e) {
               e.preventDefault()
-              console.log(e)  
+              console.log(e)
+              $('#input-wallet').val($('#wallet-address').prop('title'))
               var postWallets = fetchData (  e.currentTarget.action, 
                                             e.currentTarget.method, 
                                             $("#form-wallets").serialize() 

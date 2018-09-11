@@ -51,6 +51,7 @@ class Token(SuperModel):
 
     def save(self, *args, **kwargs):
         self.owner_address = to_checksum_address(self.owner_address)
+        self.sent_from_address = to_checksum_address(self.sent_from_address)
         super().save(*args, **kwargs)
 
     @property
@@ -83,7 +84,7 @@ class Token(SuperModel):
         return self
 
 
-class Email(SendCryptoAsset):
+class KudosTransfer(SendCryptoAsset):
     # kudos_token is a reference to the Kudos Token that is slated to be cloned.
     kudos_token = models.ForeignKey(Token, on_delete=models.SET_NULL, null=True)
 
@@ -114,13 +115,16 @@ class Email(SendCryptoAsset):
         if self.web3_type != 'v3':
             raise Exception
 
-        key = self.metadata['reference_hash_for_receipient']
-        return f"{settings.BASE_URL}kudos/receive/v3/{key}/{self.txid}/{self.network}"
+        try:
+            key = self.metadata['reference_hash_for_receipient']
+            return f"{settings.BASE_URL}kudos/receive/v3/{key}/{self.txid}/{self.network}"
+        except KeyError:
+            return None
 
 
 class Wallet(SuperModel):
     address = models.CharField(max_length=255, unique=True)
-    profile = models.ForeignKey('dashboard.Profile', on_delete=models.SET_NULL, null=True)
+    profile = models.ForeignKey('dashboard.Profile', related_name='kudos_wallets', on_delete=models.SET_NULL, null=True)
 
     def save(self, *args, **kwargs):
         self.address = to_checksum_address(self.address)
