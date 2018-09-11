@@ -25,7 +25,7 @@ window.onload = function() {
     }
     ipfs.catText(document.ipfs_key_to_secret, function(err, key2) {
       if (err) {
-        _alert('could not reach IPFS.  please try again later.', 'error');
+        _alert('Could not reach IPFS.  please try again later.', 'error');
         return;
       }
       document.priv_key = combine_secrets(key2, document.gitcoin_secret);

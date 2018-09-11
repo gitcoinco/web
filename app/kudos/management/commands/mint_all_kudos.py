@@ -85,6 +85,7 @@ class Command(BaseCommand):
             #     logger.warning(e)
 
             try:
+                # TODO:  Move the kudos_contract instantiation outside of the for loop
                 kudos_contract = KudosContract(network, private_key)
                 kudos_contract.mint(*args)
             except IndexError as e:

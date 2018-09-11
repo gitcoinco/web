@@ -19,11 +19,11 @@
 
 {% if user.is_authenticated and request.path == '/profile/' %}
 <div class="btn-group" role="group" aria-label="Basic example">
-  <button type="button" class="btn btn-sm btn-lightblue" data-toggle="popover" data-class="asd" data-html="true" data-popover-content="#wallet-popover">Add Wallet</button>
-  <button type="button" id="wallets-number" class="btn btn-sm btn-secondary" disabled>{{ wallet_addresses|length }}</button>
+  <button type="button" class="btn btn-sm btn-lightblue" data-toggle="popover" data-class="asd" data-html="true" data-popover-content="#wallet-popover">Add Account</button>
+  <!-- <button type="button" id="wallets-number" class="btn btn-sm btn-secondary" disabled>{{ preferre|length }}</button> -->
 </div>
 <div id="wallet-popover" style="display:none;">
-  <div class="popover-heading">{% trans "Wallets" %}</div>
+  <!-- <div class="popover-heading">{% trans "Account" %}</div> -->
   <div class="popover-body">
     <form action="/profile/" method="post" name="formwallets" id="form-wallets">
       {% csrf_token %}
@@ -31,12 +31,12 @@
       <div class="input-group input-group-sm">
         <div id="wallet-address" class="input-group-text form-control" data-metamask-address data-truncatehash></div>
         <div class="input-group-append">
-          <button type="submit" class="btn btn-sm btn-primary">{% trans "Add Wallet" %}</button>
+          <button type="submit" class="btn btn-sm btn-primary">{% trans "Add" %}</button>
         </div>
       </div>
 
       <div class="my-2">
-        Select your default receive address:
+        Add or replace your preferred MetaMask account.
       </div>
       <div class="list-unstyled p-2 wallets-list"></div>
     </form>

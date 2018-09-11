@@ -366,7 +366,7 @@ def maybe_market_tip_to_slack(tip, event_name):
     return True
 
 
-def maybe_market_kudos_to_email(kudos_email):
+def maybe_market_kudos_to_email(kudos_transfer):
     """Send an email for the specified Kudos.  The general flow of this function:
 
         - 1. Decide if we are sending it
@@ -376,7 +376,7 @@ def maybe_market_kudos_to_email(kudos_email):
         - 5. Do translation
 
     Args:
-        kudos_email (kudos.models.Email): The Kudos Email object to be marketed.
+        kudos_transfer (kudos.models.KudosTransfer): The Kudos Email object to be marketed.
 
     Returns:
         bool: Whether or not the email notification was sent successfully.
@@ -385,33 +385,33 @@ def maybe_market_kudos_to_email(kudos_email):
     is_new = True
 
     # 1. Decide if we are sending it
-    if kudos_email.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
+    if kudos_transfer.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
         logger.warning('Notifications are disabled.  Skipping email.')
-        logger.debug(kudos_email.network)
+        logger.debug(kudos_transfer.network)
         logger.debug(settings.ENABLE_NOTIFICATIONS_ON_NETWORK)
         return False
 
-    if not kudos_email or not kudos_email.txid or not kudos_email.amount or not kudos_email.kudos_token:
+    if not kudos_transfer or not kudos_transfer.txid or not kudos_transfer.amount or not kudos_transfer.kudos_token:
         logger.warning('Some kudos information not found.  Skipping email.')
         return False
 
     # 2. Generate subject
-    on_network = '' if kudos_email.network == 'mainnet' else f'({kudos_email.network})'
+    on_network = '' if kudos_transfer.network == 'mainnet' else f'({kudos_transfer.network})'
     if is_new:
-        subject = gettext(f"⚡️ New {kudos_email.kudos_token.humanized_name} Kudos Available {on_network}")
+        subject = gettext(f"⚡️ New {kudos_transfer.kudos_token.humanized_name} Kudos Available {on_network}")
     else:
-        subject = gettext(f"🕐 Your {kudos_email.kudos_token.humanized_name}  Kudos Is Expiring Soon {on_network}")
+        subject = gettext(f"🕐 Your {kudos_transfer.kudos_token.humanized_name}  Kudos Is Expiring Soon {on_network}")
 
-    logger.info(f'Emails to send to: {kudos_email.emails}')
+    logger.info(f'Emails to send to: {kudos_transfer.emails}')
 
-    for to_email in kudos_email.emails:
+    for to_email in kudos_transfer.emails:
         cur_language = translation.get_language()
         try:
             setup_lang(to_email)
             # TODO:  Does the from_email field in the database mean nothing?  We just override it here.
             from_email = settings.CONTACT_EMAIL
             # 3. Render email
-            html, text = render_kudos_email(to_email, kudos_email, is_new)
+            html, text = render_kudos_email(to_email, kudos_transfer, is_new)
 
             # 4. Send email unless the email address has notifications disabled
             if not should_suppress_notification_email(to_email, 'kudos'):
