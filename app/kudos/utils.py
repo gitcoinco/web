@@ -212,6 +212,7 @@ class KudosContract:
                 string image,
                 )
         """
+        logger.info(f'private_key: {self.private_key}')
         name = args[0]
         if self.gen0_exists_web3(name):
             msg = f'The {name} Gen0 Kudos already exists on the blockchain.'
@@ -224,7 +225,9 @@ class KudosContract:
 
         if self.private_key:
             nonce = self._w3.eth.getTransactionCount(self.account)
-            txn = self._contract.functions.mint(*args).buildTransaction({'gas': 700000, 'nonce': nonce, 'from': self.account})
+            gas_estimate = self._contract.functions.mint(*args).estimateGas({'nonce': nonce, 'from': self.account})
+            logger.info(f'gas_estimate: {gas_estimate}')
+            txn = self._contract.functions.mint(*args).buildTransaction({'gas': gas_estimate, 'nonce': nonce, 'from': self.account})
             signed_txn = self._w3.eth.account.signTransaction(txn, private_key=self.private_key)
             tx_hash = self._w3.eth.sendRawTransaction(signed_txn.rawTransaction)
         else:

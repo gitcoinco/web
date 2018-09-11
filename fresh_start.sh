@@ -11,10 +11,8 @@ fi
 ACCOUNT=$2
 PRIVATE_KEY=$3
 
-# if [ -n "$ACCOUNT" ] && [ -n "$PRIVATE_KEY" ];
-# then
-# 	echo $ACCOUNT
-# fi
+echo $ACCOUNT
+echo $PRIVATE_KEY
 
 docker-compose down
 docker volume rm kudos_pgdata
