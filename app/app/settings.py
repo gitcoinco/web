@@ -20,12 +20,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import os
 import socket
 
-from django.http import Http404
 from django.utils.translation import gettext_noop
 
 import environ
 import raven
 from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
+from app.dj_pipeline_settings import DJ_PIPELINE
 
 root = environ.Path(__file__) - 2  # Set the base directory to two levels.
 env = environ.Env(DEBUG=(bool, False), )  # set default values and casting
@@ -60,9 +60,9 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'pipeline',
     'collectfast',  # Collectfast | static file collector
     'django.contrib.staticfiles',
+    'pipeline',
     'cacheops',
     'storages',
     'social_django',
@@ -300,6 +300,7 @@ if ENV in ['prod', 'stage']:
         'MEDIA_URL', default=f'https://c.gitcoin.co/{MEDIAFILES_LOCATION}{"/" if MEDIAFILES_LOCATION else ""}'
     )
 else:
+    STATICFILES_STORAGE = 'pipeline.storage.PipelineStorage'
     # Handle local static file storage
     STATIC_HOST = BASE_URL
     STATIC_URL = env('STATIC_URL', default=f'/{STATICFILES_LOCATION}/')
@@ -538,117 +539,10 @@ if SENTRY_ADDRESS and SENTRY_PROJECT:
 IGNORE_COMMENTS_FROM = ['gitcoinbot', ]
 
 # Django Pipeline
-PIPELINE = {
-    'COMPILERS': ('app.compilers.ES6Compiler', ),
-    'CSS_COMPRESSOR': 'pipeline.compressors.yuglify.YuglifyCompressor',
-    'JS_COMPRESSOR': 'pipeline.compressors.uglifyjs.UglifyJSCompressor',
-    'PIPELINE_ENABLED': env.bool('PIPELINE_ENABLED', default=True),
-    'PIPELINE_COLLECTOR_ENABLED': env.bool('PIPELINE_COLLECTOR_ENABLED', default=True),
-    'STYLESHEETS': {
-        'ens': {
-            'source_filenames': (
-                'v2/css/bootstrap.min.css',
-                'v2/css/gitcoin.css',
-                'onepager/css/main.css',
-                'v2/css/box_redeem.css',
-                'v2/css/rain.css',
-                'v2/css/forms/button.css',
-                'v2/css/external_bounties/checkboxes.css',
-                'v2/css/jquery.select2.min.css',
-                'cookielaw/css/cookielaw.css',
-            ),
-            'output_filename': 'v2/css/ens.min.css',
-        },
-        'head': {
-            'source_filenames': (
-                'v2/css/fontawesome-all.min.css',
-                'v2/css/bootstrap.min.css',
-                'v2/css/gitcoin.css',
-                'v2/css/base.css',
-                'v2/css/jquery-ui.css',
-                'v2/css/jquery.modal.min.css',
-                'v2/css/jquery.select2.min.css',
-                'v2/css/animate.min.css',
-                'v2/css/rain.css',
-                'v2/css/buttons.css',
-                'v2/css/timeline.css',
-                'v2/css/carousel.css',
-                'v2/css/faucet.css',
-                'v2/css/colors.css',
-                'v2/css/typography.css',
-                # Forms
-                'v2/css/forms/button.css',
-                'v2/css/forms/checkbox.css',
-                'v2/css/forms/form.css',
-                'v2/css/forms/input.css',
-                'v2/css/forms/label.css',
-                'v2/css/forms/radio.css',
-                'v2/css/forms/select.css',
-                'v2/css/external_bounties/checkboxes.css',
-                'cookielaw/css/cookielaw.css',
-            ),
-            'output_filename': 'v2/css/head.min.css',
-        },
-        'ios': {
-            'source_filenames': (
-                'v2/css/toolbox.css',
-                'v2/css/card.css',
-                'v2/css/ios.css',
-            ),
-            'output_filename': 'v2/css/ios.min.css',
-        }
-    },
-    'JAVASCRIPT': {
-        'external_bounties': {
-            'source_filenames': ('v2/js/tokens.js', 'v2/js/pages/offchain_bounties.js'),
-            'output_filename': 'v2/js/externalbounties.min.js',
-        },
-        'faucet': {
-            'source_filenames': (
-                'v2/js/amounts.js',
-                'v2/js/abi.js',
-                'v2/js/tokens.js',
-                'v2/js/pages/faucet_form.js',
-                'v2/js/pages/process_faucet.js',
-            ),
-            'output_filename': 'v2/js/faucet.min.js',
-        },
-        'footer_full': {
-            'source_filenames': (
-                'v2/js/jquery.js',
-                'v2/js/jquery.cookie.js',
-                'v2/js/jquery-ui.js',
-                'v2/js/tooltip.js',
-                'v2/js/jquery.modal.min.js',
-                'v2/js/jquery.select2.min.js',
-                'v2/js/jquery.validate.min.js',
-                'v2/js/jsrender.js',
-                'v2/js/base.js',
-                'v2/js/purify.min.js',
-                'v2/js/work_with_gitcoin.js',
-                'v2/js/animate.min.js',
-                'cookielaw/js/cl.js',
-            ),
-            'output_filename': 'v2/js/footer.min.js',
-        },
-        'footer_slim': {
-            'source_filenames': (
-                'v2/js/jquery.js',
-                'v2/js/jquery.cookie.js',
-                'v2/js/jquery.modal.min.js',
-                'v2/js/jquery.select2.min.js',
-                'v2/js/jquery.validate.min.js',
-                'v2/js/jsrender.js',
-                'v2/js/base.js',
-                'v2/js/purify.min.js',
-                'v2/js/work_with_gitcoin.js',
-                'v2/js/animate.min.js',
-                'cookielaw/js/cl.js',
-            ),
-            'output_filename': 'v2/js/slim_footer.min.js',
-        },
-    }
-}
+DJ_PIPELINE['PIPELINE_ENABLED'] = env.bool('PIPELINE_ENABLED', default=False)
+DJ_PIPELINE['PIPELINE_COLLECTOR_ENABLED'] = env.bool('PIPELINE_COLLECTOR_ENABLED', default=True)
+
+PIPELINE = DJ_PIPELINE
 
 # optional: only needed if you run the activity-report management command
 AWS_ACCESS_KEY_ID = env('AWS_ACCESS_KEY_ID', default='')

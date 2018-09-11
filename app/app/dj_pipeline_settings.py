@@ -1,7 +1,8 @@
-PIPELINE = {
+DJ_PIPELINE = {
     'COMPILERS': ('app.compilers.ES6Compiler', ),
     'CSS_COMPRESSOR': 'pipeline.compressors.yuglify.YuglifyCompressor',
     'JS_COMPRESSOR': 'pipeline.compressors.uglifyjs.UglifyJSCompressor',
+    'BABEL_BINARY': 'npx babel',
     'STYLESHEETS': {
         'ens': {
             'source_filenames': (
@@ -15,7 +16,7 @@ PIPELINE = {
                 'v2/css/jquery.select2.min.css',
                 'cookielaw/css/cookielaw.css',
             ),
-            'output_filename': 'v2/css/ens.min.css',
+            'output_filename': 'bundle/css/ens.min.css',
         },
         'head': {
             'source_filenames': (
@@ -45,7 +46,7 @@ PIPELINE = {
                 'v2/css/external_bounties/checkboxes.css',
                 'cookielaw/css/cookielaw.css',
             ),
-            'output_filename': 'v2/css/head.min.css',
+            'output_filename': 'bundle/css/head.min.css',
         },
         'ios': {
             'source_filenames': (
@@ -53,13 +54,17 @@ PIPELINE = {
                 'v2/css/card.css',
                 'v2/css/ios.css',
             ),
-            'output_filename': 'v2/css/ios.min.css',
+            'output_filename': 'bundle/css/ios.min.css',
         }
     },
     'JAVASCRIPT': {
         'external_bounties': {
-            'source_filenames': ('v2/js/tokens.js', 'v2/js/pages/offchain_bounties.js'),
-            'output_filename': 'v2/js/externalbounties.min.js',
+            'source_filenames': (
+                'v2/js/tokens.js',
+                'v2/js/pages/offchain_bounties.js',
+                'v2/js/shared.js',
+            ),
+            'output_filename': 'bundle/js/externalbounties.min.js',
         },
         'faucet': {
             'source_filenames': (
@@ -68,8 +73,9 @@ PIPELINE = {
                 'v2/js/tokens.js',
                 'v2/js/pages/faucet_form.js',
                 'v2/js/pages/process_faucet.js',
+                'v2/js/shared.js',
             ),
-            'output_filename': 'v2/js/faucet.min.js',
+            'output_filename': 'bundle/js/faucet.min.js',
         },
         'footer_full': {
             'source_filenames': (
@@ -83,11 +89,14 @@ PIPELINE = {
                 'v2/js/jsrender.js',
                 'v2/js/base.js',
                 'v2/js/purify.min.js',
+                'v2/js/shared.js',
                 'v2/js/work_with_gitcoin.js',
                 'v2/js/animate.min.js',
+                'v2/js/note.js',
+                'v2/js/pages/carousel.js',
                 'cookielaw/js/cl.js',
             ),
-            'output_filename': 'v2/js/footer.min.js',
+            'output_filename': 'bundle/js/footer.min.js',
         },
         'footer_slim': {
             'source_filenames': (
@@ -99,11 +108,14 @@ PIPELINE = {
                 'v2/js/jsrender.js',
                 'v2/js/base.js',
                 'v2/js/purify.min.js',
+                'v2/js/shared.js',
                 'v2/js/work_with_gitcoin.js',
                 'v2/js/animate.min.js',
+                'v2/js/note.js',
+                'v2/js/pages/carousel.js',
                 'cookielaw/js/cl.js',
             ),
-            'output_filename': 'v2/js/slim_footer.min.js',
+            'output_filename': 'bundle/js/slim_footer.min.js',
         },
     }
 }

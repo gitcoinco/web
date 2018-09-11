@@ -22,6 +22,7 @@
   "homepage": "https://github.com/gitcoinco/web#readme",
   "devDependencies": {
     "babel": "^6.23.0",
+    "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
     "babel-eslint": "^8.2.6",
     "babel-loader": "^7.1.5",
@@ -39,7 +40,7 @@
     "stylelint-config-recommended": "^2.1.0",
     "stylelint-webpack-plugin": "^0.9.0",
     "webpack": "^3.12.0",
-    "webpack-bundle-tracker": "^0.2.1",
+    "webpack-bundle-tracker": "^0.3.0",
     "webpack-dev-server": "^2.11.2"
   }
 }

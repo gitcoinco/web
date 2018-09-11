@@ -2,7 +2,7 @@ $(document).ready(function() {
   var post_receipt = function(err, res) {
     $('#loadingImg').hide();
     $('.js-submit').removeAttr('disabled');
-    if (err != null) {
+    if (err !== null) {
       $('#failureReason').html(err.message);
       $('#errResponse').show();
       return;
@@ -18,8 +18,7 @@ $(document).ready(function() {
     var destinationAccount = $('#destinationAccount').val();
     var faucetAmount = $('#faucetAmount').val();
 
-    decimals = 6;
-    faucetAmount = Math.round(faucetAmount * 10 ** decimals) / 10 ** decimals;
+    faucetAmount = Math.round(faucetAmount * 10 ** 6) / 10 ** 6;
 
     web3.eth.sendTransaction({
       from: fundingAccount,
