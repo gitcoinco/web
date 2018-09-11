@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/bash
 
 # If no network is specified, use localhost
 if [ -z $1 ]
