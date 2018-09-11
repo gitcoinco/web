@@ -1151,7 +1151,6 @@ def profile(request, handle):
     context['kudos'] = owned_kudos
     context['sent_kudos'] = sent_kudos
 
-    # The Add Account Button
     if request.method == 'POST' and request.is_ajax():
         logging.info(request.POST)
         address = request.POST.get('address')
