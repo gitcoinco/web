@@ -185,7 +185,7 @@ body {
 }
 
 @media (min-width: 1200px) {
-  .col-xl-4.bounty-info .bounty-info-row-span-right {
+  .col-xl-4.bounty-info .bounty-info-row-div .bounty-info-text.bounty-info-row-span-right {
     margin-right: 3.2em;
   }
 }
