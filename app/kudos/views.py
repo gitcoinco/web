@@ -70,11 +70,11 @@ def about(request):
     """Render the about kudos response."""
     context = {
         'is_outside': True,
-        'active': 'kudos-about',
-        'title': 'Kudos | About',
-        'card_title': _('About Kudos | Gitcoin '),
-        'card_desc': _('Each Kudos is a unique work of art.. It can be sent to highlight, recognize, and show appreciation.'),
-        'avatar_url': static('v2/images/kudos-flower.gif'),
+        'active': 'about',
+        'title': 'About',
+        'card_title': _('Each Kudos is a unique work of art.'),
+        'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
+        'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         "listings": Token.objects.all(),
     }
     return TemplateResponse(request, 'kudos_about.html', context)
@@ -97,10 +97,10 @@ def marketplace(request):
     context = {
         'is_outside': True,
         'active': 'marketplace',
-        'title': 'Kudos | Marketplace',
-        'card_title': _('Kudos Marketplace | Gitcoin '),
-        'card_desc': _('Each Kudos is a unique work of art.. It can be sent to highlight, recognize, and show appreciation.'),
-        'avatar_url': static('v2/images/kudos-flower.gif'),
+        'title': 'Marketplace',
+        'card_title': _('Each Kudos is a unique work of art.'),
+        'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
+        'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         'listings': listings
     }
 
@@ -148,10 +148,10 @@ def details(request):
     context = {
         'is_outside': True,
         'active': 'details',
-        'title': 'Kudos | Details',
-        'card_title': _('Kudos Details | Gitcoin '),
-        'card_desc': _('Each Kudos is a unique work of art.. It can be sent to highlight, recognize, and show appreciation.'),
-        'avatar_url': static('v2/images/kudos-flower.gif'),
+        'title': 'Details',
+        'card_title': _('Each Kudos is a unique work of art.'),
+        'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
+        'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         'kudos': kudos,
         'related_profiles': related_profiles,
     }
