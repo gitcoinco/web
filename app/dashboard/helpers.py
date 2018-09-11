@@ -28,6 +28,7 @@ from django.core.validators import URLValidator
 from django.db import transaction
 from django.http import Http404, JsonResponse
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
 from dashboard.models import Activity, Bounty, BountyFulfillment, BountySyncRequest, UserAction
@@ -39,6 +40,7 @@ from dashboard.tokens import addr_to_token
 from economy.utils import convert_amount
 from git.utils import get_gh_issue_details, get_url_dict, issue_number, org_name, repo_name
 from jsondiff import diff
+from marketing.mails import send_mail
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 
@@ -390,6 +392,12 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             'num_fulfillments': len(fulfillments),
             'value_in_token': bounty_details.get('fulfillmentAmount', Decimal(1.0))
         }
+
+        bounty_reserved_for_user = metadata.get('reservedFor', '')
+        reserved_for_user = None
+        if bounty_reserved_for_user:
+            reserved_for_user = Profile.objects.get(id=bounty_reserved_for_user)
+
         if not latest_old_bounty:
             bounty_kwargs.update({
                 # info to xfr over from latest_old_bounty as override fields (this is because sometimes
@@ -419,6 +427,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'bounty_owner_address': bounty_issuer.get('address', ''),
                 'bounty_owner_email': bounty_issuer.get('email', ''),
                 'bounty_owner_name': bounty_issuer.get('name', ''),
+                'bounty_reserved_for_user': reserved_for_user,
             })
         else:
             latest_old_bounty_dict = latest_old_bounty.to_standard_dict(
@@ -428,7 +437,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     'project_length', 'experience_level', 'project_type', 'permission_type', 'attached_job_description',
                     'bounty_owner_github_username', 'bounty_owner_address', 'bounty_owner_email', 'bounty_owner_name',
                     'github_comments', 'override_status', 'last_comment_date', 'snooze_warnings_for_days',
-                    'admin_override_and_hide', 'admin_override_suspend_auto_approval', 'admin_mark_as_remarket_ready'
+                    'admin_override_and_hide', 'admin_override_suspend_auto_approval', 'admin_mark_as_remarket_ready',
+                    'bounty_reserved_for_user'
                 ],
             )
             bounty_kwargs.update(latest_old_bounty_dict)
@@ -464,6 +474,17 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             print(e, 'encountered during new bounty creation for:', url)
             logging.error(f'{e} encountered during new bounty creation for: {url}')
             new_bounty = None
+
+        # notify a user that a bounty has been reserved for them once the bounty has been created
+        if reserved_for_user and new_bounty is not None:
+            from_email = _('founders@gitcoin.co')
+            email_subject = _('Reserved Issue')
+            body = _(f'<p>Hi {reserved_for_user.handle},<br><br>An issue has been assigned to you on gitcoin. '
+                     f'The link to the issue is {new_bounty.url}. '
+                     f'Please start working on the issue, in the next 72 hours,'
+                     f' before it is opened up for other bounty'
+                     f' hunters to try as well.<br><br>Regards</p>')
+            send_mail(from_email, reserved_for_user.email, email_subject, body, html=True)
 
         if fulfillments:
             handle_bounty_fulfillments(fulfillments, new_bounty, latest_old_bounty)

@@ -443,6 +443,15 @@ var refreshBounties = function(event, offset, append) {
     document.last_bounty_rendered = 0;
 
     for (var i = 0; i < results.length; i++) {
+      // check if bounty has been reserved for a particular user
+      if (!$.isEmptyObject(results[i].bounty_reserved_for_user_profile)) {
+        const reservedForHoursLeft = 72 - Math.abs(new Date() - new Date(results[i].created_on)) / 36e5;
+
+        // if the reserved issue has been open for 72 hours or less, then hide it to allow the reserved user to start working on it
+        if (reservedForHoursLeft >= 0 && results[i].idx_status === 'open') {
+          results.splice(i, 1);
+        }
+      }
       // setup
       var result = results[i];
       var related_token_details = tokenAddressToDetailsByNetwork(result['token_address'], result['network']);
