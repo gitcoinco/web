@@ -95,7 +95,15 @@ def etherscan_link(txid):
 
 
 def eth_from_wei(wei_amount):
-    """ Converts a wei amount to a whole value eth amount """
+    """ Convert a wei amount to a whole value eth amount.
+
+        Args:
+            wei_amount: (decimal) the amount in wei to convert to eth.
+
+        Returns:
+            decimal: the eth amount, converted from wei.
+
+    """
 
     if wei_amount is None:
         return float(0)

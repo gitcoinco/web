@@ -59,9 +59,9 @@
                           {% trans "You don't have any bounties expiring in the next 7 days." %}
                       {% else %}
                         {% blocktrans count count=expiring_bounties_count %}
-                          You have {{expiring_bounties_count}} bounty expiring in {{expiring_days_count}} days!
+                          You have {{ expiring_bounties_count }} bounty expiring in {{ expiring_days_count }} days!
                         {% plural %}
-                          You have {{expiring_bounties_count}} bounties expiring in {{expiring_days_count}} days!
+                          You have {{ expiring_bounties_count }} bounties expiring in {{ expiring_days_count }} days!
                         {% endblocktrans %}
                         <a href="{% url "explorer" %}"
                            class="issue-explorer-link issue-explorer-link--bounties--expiring  text-fd-blue--dark">
@@ -114,7 +114,7 @@
                       <h5 class="card-title pt-0 font-weight-bold">
                         ${{ total_paid_dollars|floatformat:2|intcomma }}
                         <small class="text-fd-blue--dark d-block">
-                          {{total_paid_eth}} ETH
+                          {{ total_paid_eth }} ETH
                         </small>
                       </h5>
                       <small class="card-text text-fd-orange d-inline-block text-uppercase">
@@ -265,13 +265,13 @@
                         {% blocktrans with explorer_url=explorer_url%}
                         You have
                         <span class="funder-dashboard__latest-on-bounties__reclaim-funds__funds-count
-                                             text-danger">{{expired_issues_count}}</span>
-                        <span class="text-danger">Expired Issue{{expired_issues_count|pluralize}},</span>
+                                             text-danger">{{ expired_issues_count }}</span>
+                        <span class="text-danger">Expired Issue{{ expired_issues_count|pluralize }},</span>
                         funds worth <span class="funder-dashboard__latest-on-bounties__reclaim-funds__worth
-                                                         font-weight-bold">${{expired_issues_worth_dollars}}</span>
-                        <a href="{{explorer_url}}"
+                                                         font-weight-bold">${{ expired_issues_worth_dollars }}</span>
+                        <a href="{{ explorer_url }}"
                            class="funder-dashboard__latest-on-bounties__reclaim-funds__reclaim
-                                           issue-explorer-link issue-explorer-link--bounties--expired text-fd-blue--light ml-1">
+                                  issue-explorer-link issue-explorer-link--bounties--expired text-fd-blue--light ml-1">
                           Reclaim Now
                         </a>
                         {% endblocktrans %}
@@ -283,10 +283,10 @@
                     <div class="card-body pb-1">
                       <div class="lead">
                         <span class="funder-dashboard__latest-on-bounties__active__count font-weight-bold">
-                          {{active_bounties_count}}
+                          {{ active_bounties_count }}
                         </span>
                         <span class="text-fd-blue--dark text-uppercase">
-                          {% trans "active bountie" %}{{active_bounties_count|pluralize}}
+                          {% trans "active bountie" %}{{ active_bounties_count|pluralize }}
                         </span>
                       </div>
                       <div class="w-100 text-right">
@@ -302,10 +302,10 @@
                     <div class="card-body pb-1">
                       <div class="lead">
                         <span class="funder-dashboard__latest-on-bounties__completed__count font-weight-bold">
-                          {{completed_bounties_count}}
+                          {{ completed_bounties_count }}
                         </span>
                         <span class="text-fd-green text-uppercase"> 
-                          {% trans "completed bountie" %}{{completed_bounties_count|pluralize}}
+                          {% trans "completed bountie" %}{{ completed_bounties_count|pluralize }}
                         </span>
                       </div>
                       <div class="w-100 text-right">
@@ -321,10 +321,10 @@
                     <div class="card-body pb-1">
                       <div class="lead">
                         <span class="funder-dashboard__latest-on-bounties__expired__count font-weight-bold">
-                          {{expired_bounties_count}}
+                          {{ expired_bounties_count }}
                         </span>
                         <span class="text-fd-red text-uppercase">
-                          {% trans "expired bountie" %}{{expired_bounties_count|pluralize}}
+                          {% trans "expired bountie" %}{{ expired_bounties_count|pluralize }}
                       </span>
                       </div>
                       <div class="w-100 text-right">
@@ -343,8 +343,10 @@
                     </p>
 
                     {% for contributor in top_contributors %}
-                    <a href="{{contributor.githubLink}}" class="mr-1 pb-1 d-inline-block">
-                      <img src="{{contributor.profilePictureSrc}}" alt="{{contributor.handle}}" title="{{contributor.handle}}"
+                    <a href="{{ contributor.githubLink }}" class="mr-1 pb-1 d-inline-block">
+                      <img src="{{ contributor.profilePictureSrc }}"
+                           alt="{{ contributor.handle }}"
+                           title="{{ contributor.handle }}"
                            class="funder-dashboard__latest-on-bounties__top-contributors__contributor">
                       </img>
                     </a>
@@ -365,7 +367,7 @@
                                    funder-dashboard__outgoing-funds__filter--type-or-status
                                    custom-select d-inline-block w-auto">
                       {% for filter in outgoing_funds_filters %}
-                      <option value="{{filter.value}}"
+                      <option value="{{ filter.value }}"
                               {% if filter.is_all_filter %}
                               selected data-is-all-filter="true"
                               {% endif %}
@@ -375,7 +377,7 @@
                               {% if filter.is_status_filter %}
                               data-is-status-filter="true"
                               {% endif %}>
-                        {{filter.value_display}}
+                        {{ filter.value_display }}
                       </option>
                       {% endfor %}
                     </select>
@@ -509,7 +511,7 @@
                                    funder-dashboard__all-bounties__filter--type-or-status
                                    custom-select d-inline-block w-auto">
                       {% for filter in all_bounties_filters %}
-                      <option value="{{filter.value}}"
+                      <option value="{{ filter.value }}"
                               {% if filter.is_all_filter %}
                               selected data-is-all-filter="true"
                               {% endif %}
@@ -517,7 +519,7 @@
                               data-is-status-pending-or-claimed-filter="true"
                               {% endif %}
                               >
-                        {{filter.value_display}}
+                        {{ filter.value_display }}
                       </option>
                       {% endfor %}
                     </select>
@@ -646,17 +648,17 @@
     <script src="{% static "v2/js/chart.min.js" %}"></script>
     <script type="text/javascript">
       window.funderDashboardPayoutChartData = {
-        weeklyData: {{payout_history_weekly | safe}},
-        monthlyData: {{payout_history_monthly | safe}},
-        yearlyData: {{payout_history_yearly | safe}}
+        weeklyData: {{ payout_history_weekly | safe }},
+        monthlyData: {{ payout_history_monthly | safe }},
+        yearlyData: {{ payout_history_yearly | safe }}
       };
 
       window.outgoingFunds = {
-        items: {{outgoing_funds | safe}}
+        items: {{ outgoing_funds | safe }}
       }
 
       window.allBounties = {
-        items: {{all_bounties | safe}}
+        items: {{ all_bounties | safe }}
       };
 
       window.taxReportCsv = {{ csv_all_time_paid_bounties | safe }}

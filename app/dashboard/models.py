@@ -167,6 +167,8 @@ class Bounty(SuperModel):
         OPEN_STATUSES (list of str): The list of status types considered open.
         CLOSED_STATUSES (list of str): The list of status types considered closed.
         TERMINAL_STATUSES (list of str): The list of status types considered terminal states.
+        TERMINAL_SUCCESS_STATUSES (list of str): The list of status types considered to be terminal successful states.
+        TERMINAL_FAILURE_STATUSES (list of str): The list of status types considered to be terminal failure states.
 
     """
 
@@ -212,6 +214,8 @@ class Bounty(SuperModel):
     OPEN_STATUSES = ['open', 'started', 'submitted']
     CLOSED_STATUSES = ['expired', 'unknown', 'cancelled', 'done']
     TERMINAL_STATUSES = ['done', 'expired', 'cancelled']
+    TERMINAL_SUCCESS_STATUSES = ['done']
+    TERMINAL_FAILURE_STATUSES = ['expired', 'cancelled']
 
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=255)
