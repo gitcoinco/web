@@ -1,6 +1,6 @@
 # Running Locally without Docker
 
-*Note: This setup method is not recommended. To ensure a consistent environment, please check out the [Docker Setup Guide](RUNNING_LOCALLY_DOCKER.md).
+*Note: This setup method is not recommended. To ensure a consistent environment, please check out the [Docker Setup Guide](https://docs.gitcoin.co/mk_setup/).
 
 ```shell
 brew install libmaxminddb automake pkg-config libtool libffi gmp python openssl
@@ -13,7 +13,7 @@ You will need to edit the `app/.env` file with your local environment variables.
 
 ## Configure Integrations (recommended)
 
-If you plan on using the Github integration, please read the [third party integration guide](THIRD_PARTY_SETUP.md).
+If you plan on using the Github integration, please read the [third party integration guide](https://docs.gitcoin.co/mk_third_party_integrations/).
 
 ## Static Asset Handling (optional)
 

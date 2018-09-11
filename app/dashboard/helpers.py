@@ -689,7 +689,7 @@ def process_bounty_changes(old_bounty, new_bounty):
         event_name = 'increased_bounty'
     else:
         event_name = 'unknown_event'
-        logging.error(f'got an unknown event from bounty {old_bounty.pk} => {new_bounty.pk}: {json_diff}')
+        logging.info(f'got an unknown event from bounty {old_bounty.pk} => {new_bounty.pk}: {json_diff}')
 
     print(f"- {event_name} event; diff => {json_diff}")
 

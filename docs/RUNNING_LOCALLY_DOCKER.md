@@ -43,7 +43,7 @@ You will need to edit the `app/.env` file with your local environment variables.
 
 ## Integration Setup (recommended)
 
-If you plan on using the Github integration, please read the [third party integration guide](THIRD_PARTY_SETUP.md).
+If you plan on using the Github integration, please read the [third party integration guide](https://docs.gitcoin.co/mk_third_party_integrations/).
 
 ## Static Asset Handling (optional)
 
@@ -137,7 +137,7 @@ This error can occur when you are already running a local instance of PostgreSQL
 
 `Q: How can I enable the Github Login functionality on my local docker instance?`
 
-If you plan on using the Github integration, please read the [third party integration guide](THIRD_PARTY_SETUP.md).
+If you plan on using the Github integration, please read the [third party integration guide](https://docs.gitcoin.co/mk_third_party_integrations/).
 
 #### ipdb
 
