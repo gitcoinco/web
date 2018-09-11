@@ -23,7 +23,7 @@ from django.conf import settings
 from django.utils import timezone
 
 from dashboard.models import Tip
-from kudos.models import Email
+from kudos.models import KudosTransfer
 
 
 def insert_settings(request):
@@ -76,12 +76,12 @@ def insert_settings(request):
         if not settings.DEBUG:
             context['unclaimed_tips'] = context['unclaimed_tips'].filter(network='mainnet')
 
-        context['unclaimed_kudos'] = Email.objects.filter(
+        context['unclaimed_kudos'] = KudosTransfer.objects.filter(
             receive_txid='',
             username__iexact="@" + context['github_handle'],
             web3_type='v3',
         ).exclude(txid='')
         if not settings.DEBUG:
             context['unclaimed_kudos'] = context['unclaimed_kudos'].filter(network='mainnet')
-            
+
     return context
