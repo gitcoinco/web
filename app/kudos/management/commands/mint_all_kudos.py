@@ -46,11 +46,13 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('network', default='localhost', type=str)
         parser.add_argument('yaml_file', help='absolute path to kudos.yaml file', type=str)
+        parser.add_argument('--account', help='public account address to use for transaction', type=str)
         parser.add_argument('--private_key', help='private key for signing transactions', type=str)
 
     def handle(self, *args, **options):
         # config
         network = options['network']
+        account = options['account']
         private_key = options['private_key']
         # logger.info(options)
         hour = datetime.datetime.now().hour
@@ -86,7 +88,7 @@ class Command(BaseCommand):
 
             try:
                 # TODO:  Move the kudos_contract instantiation outside of the for loop
-                kudos_contract = KudosContract(network, private_key)
+                kudos_contract = KudosContract(network=network, account=account, private_key=private_key)
                 kudos_contract.mint(*args)
             except IndexError as e:
                 logger.warning(e)
