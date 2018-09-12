@@ -93,7 +93,7 @@ jsonFileNames
     if (obj.address.toLowerCase() !== addr.toLowerCase()) {
       exitWithMsg(`ERROR! json file ${jsonFileName} should be the same with address field ${obj.address}`)
     } else if (obj.address !== addr) {
-      exitWithMsg(`Warning! json file ${jsonFileName}, that capital and small letter isn't quite the same with object.address ${obj.address}`)
+      // exitWithMsg(`Warning! json file ${jsonFileName}, that capital and small letter isn't quite the same with object.address ${obj.address}`)
     }
 
     if (obj.published_on !== undefined) {
