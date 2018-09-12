@@ -50,7 +50,7 @@ Check out the [CHANGELOG](https://docs.gitcoin.co/mk_changelog/) for details abo
 
 Also,
 
-* want to become a contributor ? Checkout our [guidelines](https://docs.gitcoin.co/mk_contributors/).
+* want to become a contributor ? Checkout our [guidelines](https://docs.gitcoin.co/mk_contributors/) & [styleguide](https://docs.gitcoin.co/mk_styleguide/).
 * [check out the gitcoinco organization-wide repo](https://github.com/gitcoinco/gitcoinco).
 * check out the open issues list, especially the [discussion](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Adiscussion) label and [easy-pickings](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Aeasy-pickings).
 
