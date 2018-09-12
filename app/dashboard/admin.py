@@ -47,6 +47,7 @@ class ActivityAdmin(admin.ModelAdmin):
 class TokenApprovalAdmin(admin.ModelAdmin):
     raw_id_fields = ['profile']
     ordering = ['-id']
+    search_fields = ['profile__handle', 'token_name', 'token_address']
 
 
 class ToolVoteAdmin(admin.ModelAdmin):
@@ -67,7 +68,7 @@ class UserActionAdmin(admin.ModelAdmin):
 
 
 class ProfileAdmin(admin.ModelAdmin):
-    raw_id_fields = ['user']
+    raw_id_fields = ['user', 'avatar']
     ordering = ['-id']
     search_fields = ['email', 'data']
     list_display = ['handle', 'created_on', 'github_created_on']
