@@ -427,6 +427,8 @@ def send_4(request):
     # Update kudos.models.Token to reflect the newly cloned Kudos
     if kudos_email.network == 'custom network':
         network = 'localhost'
+    else:
+        network = kudos_email.network
     kudos_contract = KudosContract(network)
     kudos_contract.sync_db()
 

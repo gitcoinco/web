@@ -136,11 +136,11 @@ $(document).ready(function() {
         // });
         // create the raw transaction
         rawTx = {
-          // nonce: web3.toHex(nonce),
-          nonce: '0x00',
+          nonce: web3.toHex(nonce),
           // to: forwarding_address,
+          // to: '0x0000000000000000000000000000000000000000',
           from: holding_address,
-          value: new web3.BigNumber(1000000000000000),
+          // value: new web3.BigNumber(1000000000000000),
           data: data
         };
         // console.log(rawTx)
@@ -152,9 +152,10 @@ $(document).ready(function() {
 
           gasLimit = new web3.BigNumber(gasLimit);
           var send_amount = balance.minus(gasLimit.times(gas_price_wei)).minus(buffer);
-          rawTx['value'] = web3.toHex(send_amount.toString()); // deduct gas costs from amount to send
+          // rawTx['value'] = web3.toHex(send_amount.toString()); // deduct gas costs from amount to send
+          rawTx['value'] = '0x00'
           rawTx['gasPrice'] = web3.toHex(gas_price_wei.toString());
-          rawTx['gas'] = web3.toHex(gasLimit.toString());
+          // rawTx['gas'] = web3.toHex(gasLimit.toString());
           rawTx['gasLimit'] = web3.toHex(gasLimit.toString());
           show_console = true;
           if (show_console) {

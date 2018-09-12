@@ -45,6 +45,8 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('--network', default='localhost', type=str)
+        parser.add_argument('--account', help='public account address to use for transaction', type=str)
+        parser.add_argument('--private_key', help='private key for signing transactions', type=str)
 
     def handle(self, *args, **options):
         # config
@@ -52,8 +54,10 @@ class Command(BaseCommand):
 
         # setup
         network = options['network']
+        account = options['account']
+        private_key = options['private_key']
 
-        kudos_contract = KudosContract(network)
+        kudos_contract = KudosContract(network=network, account=account, private_key=private_key)
         w3 = get_web3(network)
         # contract_address = getKudosContractAddress(network)
         # logger.info(f'Contract address: {contract_address}')
