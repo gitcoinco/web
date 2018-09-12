@@ -74,7 +74,7 @@
       {% if kudos.name %}
       <a href="/kudos/{{ kudos.id }}"><img src="{% static kudos.image %}" alt="{{ kudos.name }}" width="160" alt="" class="mb-2"></a>
       <span class="d-block">{{ kudos.name|humanize_name }}</span>
-      <span class="d-block" data-kudosprice="{{ kudos.price_in_eth }}">{{ kudos.price_in_eth }} ETH <small></small></span>
+      <span id='kudosPrice' class="d-block" data-kudosprice="{{ kudos.price_in_eth }}">{{ kudos.price_in_eth }} ETH <small></small></span>
       {% else %}
       <a href="{% url 'kudos_marketplace' %}" class="">
         <svg  viewBox="0 0 109 125" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="width: 160px;">
