@@ -153,6 +153,8 @@
 .kd-extended {
   background: #fff;
   border-radius: .25rem; }
+  .kd-extended:hover .content-hover {
+    display: block; }
   .kd-extended .img-thumbnail {
     padding: 2.25rem; }
   .kd-extended .kd-title {
@@ -164,6 +166,15 @@
   padding: 1.3rem 2rem; }
   .kd-content a {
     color: #3e00ff; }
+
+.content-hover {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: #785bffba;
+  color: white;
+  padding: 1rem;
+  display: none; }
 
 .listing-kudo a {
   color: #43484d; }

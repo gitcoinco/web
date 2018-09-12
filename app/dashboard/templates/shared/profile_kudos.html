@@ -47,6 +47,12 @@
             <a href="" class="d-block mb-1" data-truncatehash title="{{ kudo.owner_address|humanize_address }} ">{{ kudo.owner_address|humanize_address }}</a>
             <div>Sent from <a href="">{{ kudo.sent_from_address|humanize_address }}</a></div>
           </div>
+          <div class="content-hover">
+            <div class="kd-title">{{ kudo.name|humanize_name }}</div>
+            <p>
+              {{ kudo.description }}
+            </p>
+          </div>
         </div>
       </div>
       {% endfor %}
@@ -66,6 +72,12 @@
             {{ kudo.description }}
             <a href="" class="d-block mb-1" data-truncatehash title="{{ kudo.owner_address|humanize_address }} ">{{ kudo.owner_address|humanize_address }}</a>
             <div>Sent from <a href="">{{ kudo.sent_from_address|humanize_address }}</a></div>
+          </div>
+          <div class="content-hover">
+            <div class="kd-title">{{ kudo.name|humanize_name }}</div>
+            <p>
+              {{ kudo.description }}
+            </p>
           </div>
         </div>
       </div>
