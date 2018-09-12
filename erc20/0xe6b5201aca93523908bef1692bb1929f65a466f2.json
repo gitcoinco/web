@@ -1,0 +1,19 @@
+{
+  "symbol": "ISC",
+  "address": "0xe6b5201aca93523908bef1692bb1929f65a466f2",
+  "overview":{
+        "en": "Whole Ecological Public Service Platform of Blockchain Innovation Entrepreneurship",
+        "zh": "首个面向区块链领域的创新创业社区公链"
+  },
+  "email": "support@ischain.io",
+  "website": "www.ischain.io",
+  "whitepaper": "http://www.ischain.io/files/ISC_White_Paper_EN-US.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-09-04"
+  },
+  "links": {
+    "twitter": "https://twitter.com/ischainofficial",
+    "telegram": "https://t.me/ischain",
+    "facebook": "https://www.facebook.com/ischainofficial"
+  }
+}
