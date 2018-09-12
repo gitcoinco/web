@@ -23,7 +23,7 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
 import sendgrid
-from app.utils import func_name
+from marketing.utils import func_name
 from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
 from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (

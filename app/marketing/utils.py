@@ -250,3 +250,17 @@ def get_platform_wide_stats(since_last_n_days=90):
         "total_transaction_in_usd": total_transaction_in_usd,
         "total_transaction_in_eth": total_transaction_in_eth,
     }
+
+
+def func_name():
+    """Determine the calling function's name.
+
+    Returns:
+        str: The parent method's name.
+
+    """
+    try:
+        return sys._getframe(1).f_code.co_name
+    except Exception as e:
+        logger.error(e)
+        return 'NA'
