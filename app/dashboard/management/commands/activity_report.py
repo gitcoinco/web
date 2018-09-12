@@ -185,9 +185,8 @@ class Command(BaseCommand):
         return key.generate_url(expires_in=REPORT_URL_EXPIRATION_TIME)
 
     def handle(self, *args, **options):
-        bounties = Bounty.objects.prefetch_related('fulfillments').filter(
+        bounties = Bounty.objects.prefetch_related('fulfillments').current().filter(
             network='mainnet',
-            current_bounty=True,
             web3_created__gte=options['start_date'],
             web3_created__lte=options['end_date']
         ).order_by('web3_created', 'id')

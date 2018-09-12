@@ -916,7 +916,7 @@ class Bounty(SuperModel):
             'tokens': {},
             'usd_value': 0,
         }
-        for tip in self.tips.filter(is_for_bounty_fulfiller=True):
+        for tip in self.tips.filter(is_for_bounty_fulfiller=True).exclude(txid=''):
             key = tip.tokenName
             if key not in return_dict['tokens'].keys():
                 return_dict['tokens'][key] = 0
@@ -1842,11 +1842,13 @@ class Profile(SuperModel):
 
     @property
     def avatar_url(self):
+        if self.avatar:
+            return self.avatar.avatar_url
         return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
 
     @property
     def avatar_url_with_gitcoin_logo(self):
-        return f"{self.avatar_url}/1"
+        return f"{settings.BASE_URL}dynamic/avatar/{self.handle}/1"
 
     @property
     def absolute_url(self):
@@ -2005,11 +2007,7 @@ class Profile(SuperModel):
 
     def get_leaderboard_index(self, key='quarterly_earners'):
         try:
-            rank = LeaderboardRank.objects.filter(
-                leaderboard=key,
-                active=True,
-                github_username=self.handle,
-            ).latest('id')
+            rank = self.leaderboard_ranks.active().filter(leaderboard=key).latest('id')
             return rank.rank
         except LeaderboardRank.DoesNotExist:
             score = 0

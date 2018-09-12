@@ -333,7 +333,10 @@ def get_bounty_id(issue_url, network):
     if bounty_id:
         return bounty_id
 
-    all_known_stdbounties = Bounty.objects.filter(web3_type='bounties_network', network=network).order_by('-standard_bounties_id')
+    all_known_stdbounties = Bounty.objects.filter(
+        web3_type='bounties_network',
+        network=network,
+    ).nocache().order_by('-standard_bounties_id')
 
     try:
         highest_known_bounty_id = get_highest_known_bounty_id(network)
@@ -349,7 +352,11 @@ def get_bounty_id(issue_url, network):
 
 def get_bounty_id_from_db(issue_url, network):
     issue_url = normalize_url(issue_url)
-    bounties = Bounty.objects.filter(github_url=issue_url, network=network, web3_type='bounties_network').order_by('-standard_bounties_id')
+    bounties = Bounty.objects.filter(
+        github_url=issue_url,
+        network=network,
+        web3_type='bounties_network',
+    ).nocache().order_by('-standard_bounties_id')
     if not bounties.exists():
         return None
     return bounties.first().standard_bounties_id

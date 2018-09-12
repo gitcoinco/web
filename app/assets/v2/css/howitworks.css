@@ -149,6 +149,10 @@ h2 {
   max-width: 5rem;
 }
 
+.in-some-cases-container img {
+  height: 7rem;
+}
+
 #permissions h2 img {
   position: relative;
   top: -3px;

@@ -2,7 +2,7 @@ bs4
 ccxt
 cryptocompare==0.6
 cryptography==2.3
-django==2.1
+django==2.1.1
 django-cors-headers==2.4.0
 django-filter==2.0.0
 django-ratelimit==1.1.0
@@ -11,7 +11,7 @@ gitterpy
 gunicorn
 matplotlib
 markdown
-reportlab
+reportlab==3.5.6
 requests
 requests_oauthlib
 Pillow==4.0.0
@@ -36,7 +36,6 @@ django-email-obfuscator
 cytoolz==0.9.0
 boto==2.49.0
 google-api-python-client
-whitenoise==3.3.1
 django-environ==0.4.5
 ipfsapi
 eth-utils==1.0.0b2
@@ -65,6 +64,14 @@ ecdsa
 pysha3
 pygithub==1.40
 raven==6.9.0
+django-cacheops==4.0.7
+django-redis==4.9.0
 collectfast==0.6.2
 django-health-check==3.7.0
 elastic-apm==3.0.0
+Wand==0.4.4
+mkdocs==1.0.4
+pymdown-extensions==5.0
+mkdocs-material==3.0.4
+pydoc-markdown==2.0.4
+oauth2client==4.1.3

@@ -241,7 +241,7 @@ var callbacks = {
 
     if (usd_value) {
       tooltip_info.push('<p class="m-0" style="margin-top: 3px;">Crowdfunding worth $' + usd_value + '</p>');
-      $('#value_in_usdt').html(result['value_in_usdt'] + usd_value);
+      $('#value_in_usdt').html(parseFloat(result['value_in_usdt']) + usd_value);
     }
   
     for (var token in tokens) {
@@ -844,7 +844,8 @@ var do_actions = function(result) {
       href: result['action_urls']['cancel'],
       text: gettext('Cancel Bounty'),
       parent: 'right_actions',
-      title: gettext('Cancel bounty and reclaim funds for this issue')
+      title: gettext('Cancel bounty and reclaim funds for this issue'),
+      buttonclass: 'button--warning'
     };
 
     actions.push(_entry);

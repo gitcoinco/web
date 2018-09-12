@@ -4,6 +4,7 @@ import logging
 import re
 import sys
 import time
+from hashlib import sha1
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -37,7 +38,65 @@ class NotEqual(Lookup):
         lhs, lhs_params = self.process_lhs(compiler, connection)
         rhs, rhs_params = self.process_rhs(compiler, connection)
         params = lhs_params + rhs_params
-        return f'%s <> %s' % (lhs, rhs), params
+        return f'{lhs} <> {rhs}', params
+
+
+def get_query_cache_key(compiler):
+    """Generate a cache key from a SQLCompiler.
+
+    This cache key is specific to the SQL query and its context
+    (which database is used).  The same query in the same context
+    (= the same database) must generate the same cache key.
+
+    Args:
+        compiler (django.db.models.sql.compiler.SQLCompiler): A SQLCompiler
+            that will generate the SQL query.
+
+    Returns:
+        int: The cache key.
+
+    """
+    sql, params = compiler.as_sql()
+    cache_key = f'{compiler.using}:{sql}:{[str(p) for p in params]}'
+    return sha1(cache_key.encode('utf-8')).hexdigest()
+
+
+def get_table_cache_key(db_alias, table):
+    """Generates a cache key from a SQL table.
+
+    Args:
+        db_alias (str): The alias of the used database.
+        table (str): The name of the SQL table.
+
+    Returns:
+        int: The cache key.
+
+    """
+    cache_key = f'{db_alias}:{table}'
+    return sha1(cache_key.encode('utf-8')).hexdigest()
+
+
+def get_raw_cache_client(backend='default'):
+    """Get a raw Redis cache client connection.
+
+    Args:
+        backend (str): The backend to attempt connection against.
+
+    Raises:
+        Exception: The exception is raised/caught if any generic exception
+            is encountered during the connection attempt.
+
+    Returns:
+        redis.client.StrictRedis: The raw Redis client connection.
+            If an exception is encountered, return None.
+
+    """
+    from django_redis import get_redis_connection
+    try:
+        return get_redis_connection(backend)
+    except Exception as e:
+        logger.error(e)
+        return None
 
 
 def get_short_url(url):
@@ -299,3 +358,8 @@ def func_name():
     except Exception as e:
         logger.error(e)
         return 'NA'
+
+def get_default_network():
+    if settings.DEBUG:
+        return 'rinkeby'
+    return 'mainnet'

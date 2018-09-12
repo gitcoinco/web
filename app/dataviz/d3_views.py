@@ -49,7 +49,7 @@ def data_viz_helper_get_data_responses(request, visual_type):
     """
     data_dict = {}
     network = 'mainnet'
-    for bounty in Bounty.objects.filter(network=network, web3_type='bounties_network', current_bounty=True):
+    for bounty in Bounty.objects.current().filter(network=network, web3_type='bounties_network'):
 
         if visual_type == 'status_progression':
             max_size = 12
@@ -143,8 +143,8 @@ def viz_chord(request, key='bounties_paid'):
     if request.GET.get('data'):
         rows = [['creditor', 'debtor', 'amount', 'risk']]
         network = 'mainnet'
-        for bounty in Bounty.objects.filter(
-            network=network, web3_type='bounties_network', current_bounty=True, idx_status='done'
+        for bounty in Bounty.objects.current().filter(
+            network=network, web3_type='bounties_network', idx_status='done'
         ):
             weight = bounty.value_in_usdt_then
             if weight:
@@ -501,7 +501,7 @@ def viz_graph(request, _type, template='graph'):
         values = {}
         avatars = {}
         edges = []
-        bounties = Bounty.objects.filter(network='mainnet', current_bounty=True)
+        bounties = Bounty.objects.current().filter(network='mainnet')
         if keyword:
             bounties = bounties.filter(raw_data__icontains=keyword)
 

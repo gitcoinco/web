@@ -223,7 +223,7 @@ def new_faucet_request(fr):
 
 
 def new_token_request(obj):
-    to_email = settings.PERSONAL_CONTACT_EMAIL
+    to_email = 'founders@gitcoin.co'
     from_email = obj.email
     cur_language = translation.get_language()
     try:

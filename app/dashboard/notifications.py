@@ -215,7 +215,7 @@ def build_message_for_integration(bounty, event_name):
 
     title = bounty.title if bounty.title else bounty.github_url
     msg = f"*{humanize_event_name(event_name)}*" \
-          f"\n*Title*: {title}" \
+          f"\n*Issue*: {title}" \
           f"\n*Bounty value*: {round(bounty.get_natural_value(), 4)} {bounty.token_name} {usdt_details}" \
           f"\n{bounty.get_absolute_url()}"
     return msg
@@ -476,14 +476,11 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
             if not interest.pending and approval_required:
                 action = 'been approved to start work'
 
-            show_dibs = interested.count() > 1 and bounty.project_type == 'traditional'
-            dibs = f" ({get_ordinal_repr(i)} dibs)" if show_dibs else ""
-
-            msg += f"\n{i}. {profile_link} has {action}{dibs}. "
+            msg += f"\n**{i}) {profile_link} has {action}.**"
 
             issue_message = interest.issue_message.strip()
             if issue_message:
-                msg += f"\n    \n    {issue_message}"
+                msg += f"\n\n{issue_message}"
             msg += f"\n\nLearn more [on the Gitcoin Issue Details page]({absolute_url}).\n\n"
 
     elif event_name == 'work_submitted':
@@ -609,7 +606,7 @@ def open_bounties():
 
     """
     from dashboard.models import Bounty
-    return Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
+    return Bounty.objects.current().filter(network='mainnet', idx_status__in=['open', 'submitted']).cache()
 
 
 def maybe_market_tip_to_github(tip):
