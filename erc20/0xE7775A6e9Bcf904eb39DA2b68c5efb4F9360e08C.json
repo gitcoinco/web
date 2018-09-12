@@ -1,0 +1,20 @@
+{
+    "website": "https://taas.fund",
+    "published_on": "2017-11-27",
+    "links": {
+        "telegram": "https://t.me/taasfund",
+        "twitter": "https://twitter.com/TaaSfund",
+        "facebook": "https://www.facebook.com/taasfund/",
+        "slack": "https://taasfund.signup.team/"
+    },
+    "overview": {
+        "en": "TaaS is a tokenized closed-end fund designed to reduce the risks and technical barriers of investing in the blockchain space.",
+        "zh": "TaaS 致力于降低在区块链领域投资和虚拟货币交易中的各类风险和技术门槛。"
+    },
+    "symbol": "TAAS",
+    "initial_price": {
+        "USD": "1.0 USD"
+    },
+    "whitepaper": "http://taas.fund/media/whitepaper.pdf",
+    "address": "0xE7775A6e9Bcf904eb39DA2b68c5efb4F9360e08C"
+}

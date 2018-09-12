@@ -1,0 +1,20 @@
+{
+    "website": "https://bluzelle.com/",
+    "published_on": "2018-01-18",
+    "links": {
+        "telegram": "https://t.me/bluzelle",
+        "twitter": "https://twitter.com/bluzellehq",
+        "github": "https://github.com/bluzelle"
+    },
+    "overview": {
+        "en": "Aims to be the next-gen database protocol for the decentralized internet.",
+        "zh": "BLZ 致力于成为下一代去中心化网络数据库底层协议。"
+    },
+    "symbol": "BLZ",
+    "initial_price": {
+        "ETH": "0.00011659 ETH",
+        "USD": "0.12 USD"
+    },
+    "whitepaper": "https://bluzelle.com/wp-content/uploads/2017/10/bluzelle-whitepaper-english1-4.pdf",
+    "address": "0x5732046A883704404F284Ce41FfADd5b007FD668"
+}

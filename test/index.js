@@ -71,11 +71,11 @@ jsonFileNames
 
     if (!lowerCaseImageAddrs.includes(addr.toLowerCase())) {
       notice(`Warning! dose not have ${addr + '.png'} in images dir, please check first`)
-    } else if (!imageAddrs.includes(addr)) {
+    } else if (!imageAddrs.includes(obj.address)) {
       const imgAddr = imageAddrs.find(imgad => {
         return imgad.toLowerCase() === addr.toLowerCase()
       })
-      notice(`Warning! ${imgAddr + '.png'} in images dir, that capital and small letter isn't quite the same with ${addr}`) 
+      exitWithMsg(`Warning! ${imgAddr + '.png'} in images dir, that capital and small letter isn't quite the same with ${addr}`)
     }
 
     if (!obj.symbol) {
@@ -93,7 +93,7 @@ jsonFileNames
     if (obj.address.toLowerCase() !== addr.toLowerCase()) {
       exitWithMsg(`ERROR! json file ${jsonFileName} should be the same with address field ${obj.address}`)
     } else if (obj.address !== addr) {
-      notice(`Warning! json file ${jsonFileName}, that capital and small letter isn't quite the same with object.address ${obj.address}`) 
+      exitWithMsg(`Warning! json file ${jsonFileName}, that capital and small letter isn't quite the same with object.address ${obj.address}`)
     }
 
     if (obj.published_on !== undefined) {

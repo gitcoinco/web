@@ -1,0 +1,21 @@
+{
+  "symbol": "RECT",
+  "address": "0x9216707c81438d9593c4e215bcbb0e7bb10d07f5",
+  "overview":{
+        "en": "RECT token is a type of coupon to purchase real estate property. Since our business has expanded to 12 countries , RECT investors can redeem their token when purchase properties in the 12 countries that NAREIG support. The purpose of RECT is to provide a real incentive that benefits real estate buyers.",
+        "zh": "RECT是用于购买房产的优惠券。在从NAREIG购买房产时，可使用RECT抵扣部分购房佣金。因为NAREIG已经在12个国家和地区开展房产业务，这确保了代币持有者持有的代币可以即时被赎回，也意味着代币的价值会保持很好的稳定性，同时又比传统的优惠券具备更好的流动性。以房地产优惠券为支撑的数字代币给组织和个人提供了一种鲁棒和分布式的方法以大家熟悉的概念来交换优惠券。房地产优惠券数字代币持有者可利用区块链技术方便地在代币交易市场进行交易。"
+  },
+  "email": "info@nareigus.com",
+  "website": "http://ico.nareigus.com",
+  "published_on": "2018-05-28",
+  "initial_price":{
+        "USD":"1 USD"
+  },
+  "whitepaper": "http://ico.nareigus.com/hct_whiterpaper.pdf",
+  "links": {
+    "twitter": "https://twitter.com/nareig_us",
+    "telegram": "https://t.me/housecoupon",
+    "github": "https://github.com/nareig/RealEstateCouponToken",
+    "facebook": "https://www.facebook.com/nareig.us/"
+  }
+}

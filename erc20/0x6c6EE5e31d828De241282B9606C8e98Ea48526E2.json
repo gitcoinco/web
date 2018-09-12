@@ -1,0 +1,23 @@
+{
+    "website": "https://holo.host/",
+    "published_on": "2018-03-29",
+    "links": {
+        "telegram": "https://t.me/channelholo",
+        "reddit": "https://www.reddit.com/r/holochain/",
+        "github": "https://github.com/Holo-Host",
+        "facebook": "https://www.facebook.com/holohost/",
+        "twitter": "https://twitter.com/H_O_L_O_"
+    },
+    "overview": {
+        "en": "Holo is a decentralized hosting platform and a new breed of asset-backed, mutual-credit cryptocurrency based on Holochain. Holochain is a massively scalable, agent-centric post-blockchain development framework for distributed applications.",
+        "zh": "Holo Chain 是一个去中心化的分布式平台，未来会有各种各样基于 Holo Chain 的证券化资产、加密货币。"
+    },
+    "symbol": "HOT",
+    "initial_price": {
+        "ETH": "0.0000002267 ETH",
+        "USD": "0.00016 USD"
+    },
+    "whitepaper": "https://holo.host/whitepapers/",
+    "address": "0x6c6EE5e31d828De241282B9606C8e98Ea48526E2",
+    "email": "help@holo.host"
+}

@@ -1,0 +1,18 @@
+{
+    "website": "http://www.cybervein.org/",
+    "links": {
+        "telegram": "https://t.me/Cyberveinofficial",
+        "twitter": "https://twitter.com/cyberveingroup",
+        "slack": "https://cybervein.slack.com/"
+    },
+    "overview": {
+        "en": "CyberVein reinvents decentralized databases and the way we secure and monetize information.",
+        "zh": "Cyber​​Vein 网络是一个可以在区块链本身上进行复杂数据的分散化管理的分布式数据库网络，无需中心化的集中存储。"
+    },
+    "symbol": "CVT",
+    "initial_price": {
+        "USD": "0.0776 USD"
+    },
+    "address": "0xBe428c3867F05deA2A89Fc76a102b544eaC7f772",
+    "email": "project@cybervein.org"
+}

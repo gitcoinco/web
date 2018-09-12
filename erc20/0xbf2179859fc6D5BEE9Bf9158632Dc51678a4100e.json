@@ -1,0 +1,23 @@
+{
+    "website": "http://aelf.io/",
+    "published_on": "2017-11-28",
+    "links": {
+        "telegram": "https://t.me/aelfblockchain",
+        "reddit": "https://www.reddit.com/user/aelf_blockchain/",
+        "github": "https://github.com/aelfProject",
+        "facebook": "https://www.facebook.com/grid.blockchain.1",
+        "twitter": "https://twitter.com/aelfblockchain"
+    },
+    "overview": {
+        "en": "Decentralized Cloud Computing Blockchain Network.",
+        "zh": "去中心化云计算区块链网络。"
+    },
+    "symbol": "ELF",
+    "initial_price": {
+        "ETH": "0.00022 ETH",
+        "USD": "0.099 USD"
+    },
+    "whitepaper": "https://grid.hoopox.com/%C3%A6lf_whitepaper_v1.2.pdf",
+    "address": "0xbf2179859fc6D5BEE9Bf9158632Dc51678a4100e",
+    "email": "contact@aelf.io"
+}

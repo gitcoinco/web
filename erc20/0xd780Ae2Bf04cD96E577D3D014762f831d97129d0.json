@@ -1,0 +1,20 @@
+{
+    "website": "https://www.envion.org/",
+    "published_on": "2017-12-15",
+    "links": {
+        "telegram": "https://t.me/Envion",
+        "twitter": "https://twitter.com/Envion_org",
+        "facebook": "https://facebook.com/envion.org"
+    },
+    "overview": {
+        "en": "A global, highly profitable crypto infrastructure hosted in mobile containers near energy sources.",
+        "zh": "高利润全球加密货币挖矿基础设施 - 置入移动设备、模块化 CSC 集装箱 - 能源来源端的直接去中心化配售。"
+    },
+    "symbol": "EVN",
+    "initial_price": {
+        "ETH": "0.0010227 ETH",
+        "USD": "0.7 USD"
+    },
+    "address": "0xd780Ae2Bf04cD96E577D3D014762f831d97129d0",
+    "email": "support@envion.org"
+}

@@ -1,0 +1,23 @@
+{
+    "website": "https://www.spectre.ai/",
+    "published_on": "2017-11-17",
+    "links": {
+        "telegram": "https://t.me/joinchat/GjkGkw7IfwUVuPiWxctD4g",
+        "reddit": "https://www.reddit.com/r/Spectre_ai/",
+        "github": "https://github.com/spectre-ai",
+        "facebook": "https://www.facebook.com/spectrepage/",
+        "twitter": "https://twitter.com/SpectreAI"
+    },
+    "overview": {
+        "en": "Broker-less financial trading platform.",
+        "zh": "无券商金融交易平台。"
+    },
+    "symbol": "SXDT",
+    "initial_price": {
+        "ETH": "0.0005 ETH",
+        "USD": "0.22 USD"
+    },
+    "whitepaper": "https://d1zzssn32v8b7a.cloudfront.net/media/en/spectre_whitepaper_v_2_3.pdf",
+    "address": "0x12B306fA98F4CbB8d4457FdFf3a0A0a56f07cCdf",
+    "email": "team@spectre.ai"
+}

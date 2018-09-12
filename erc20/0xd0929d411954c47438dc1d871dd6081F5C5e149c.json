@@ -1,0 +1,21 @@
+{
+    "website": "https://refereum.com/",
+    "published_on": "2018-02-08",
+    "links": {
+        "telegram": "https://t.me/refereumtalk",
+        "reddit": "https://www.reddit.com/r/Refereum/",
+        "facebook": "https://facebook.com/refereum"
+    },
+    "overview": {
+        "en": "Distribution and growth platform for games.",
+        "zh": "基于区块链的去中心化游戏社交推广平台。"
+    },
+    "symbol": "RFR",
+    "initial_price": {
+        "ETH": "0.00003 ETH",
+        "USD": "0.021 USD"
+    },
+    "whitepaper": "https://refereum.com/RefereumWhitepaper.pdf",
+    "address": "0xd0929d411954c47438dc1d871dd6081F5C5e149c",
+    "email": "team@refereum.com"
+}
