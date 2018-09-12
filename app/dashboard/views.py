@@ -52,6 +52,7 @@ from pytz import UTC
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
+from django.template import loader
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
@@ -1154,7 +1155,18 @@ def profile(request, handle):
     if request.method == 'POST' and request.is_ajax():
         logging.info(request.POST)
         address = request.POST.get('address')
+        context['kudos'] = Token.objects.filter(owner_address=to_checksum_address(address))[:8]
+        context['sent_kudos'] = Token.objects.filter(sent_from_address=to_checksum_address(address))[:8]
         profile.preferred_payout_address = address
+
+        kudos_html = loader.render_to_string(
+            'shared/profile_kudos.html',
+            context
+        )
+        # package output data and return it as a JSON object
+        output_data = {
+            'kudos_html': kudos_html
+        }
 
         try:
             profile.save()
@@ -1171,6 +1183,7 @@ def profile(request, handle):
                 'status': 200,
                 'msg': 'Success!',
                 'wallets': wallet_addresses,
+                'kudos_html': kudos_html,
             }
 
         return JsonResponse(msg)

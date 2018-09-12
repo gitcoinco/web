@@ -64,6 +64,7 @@ urlpatterns = [
     path('kudos/send/', kudos.views.send_2, name='kudos_send'),
     path('kudos/send/3/', kudos.views.send_3, name='kudos_send_3'),
     path('kudos/send/4/', kudos.views.send_4, name='kudos_send_4'),
+    # re_path(r'^lazy_load_kudos/$', kudos.views.lazy_load_kudos, name='lazy_load_kudos'),
     re_path(
         r'^kudos/receive/v3/(?P<key>.*)/(?P<txid>.*)/(?P<network>.*)?',
         kudos.views.receive,

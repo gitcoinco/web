@@ -26,6 +26,7 @@ from django.utils import timezone
 from django.contrib.postgres.search import SearchVector
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import redirect
+# from django.template import loader
 
 from .models import Token, Wallet, KudosTransfer
 from dashboard.models import Profile, Activity
@@ -64,6 +65,29 @@ def get_profile(handle):
     except Profile.DoesNotExist:
         to_profile = None
     return to_profile
+
+
+# def lazy_load_kudos(request):
+#     if request.method == 'POST' and request.is_ajax():
+#         logging.info(request.POST)
+#         handle = request.POST.get('handle')
+#         try:
+#             to_profile = Profile.objects.get(handle__iexact=handle)
+#         except Profile.MultipleObjectsReturned:
+#             to_profile = Profile.objects.filter(handle__iexact=handle).order_by('-created_on').first()
+#         except Profile.DoesNotExist:
+#             to_profile = None
+
+#         # build a html kudos list with the paginated posts
+#         kudos_html = loader.render_to_string(
+#             'shared/profile_kudos.html',
+#             {'to_profile': to_profile}
+#         )
+#         # package output data and return it as a JSON object
+#         output_data = {
+#             'kudos_html': kudos_html
+#         }
+#         return JsonResponse(output_data)
 
 
 def about(request):
