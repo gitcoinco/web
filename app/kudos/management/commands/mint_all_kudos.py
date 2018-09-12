@@ -40,6 +40,8 @@ logging.getLogger("web3").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 default_start_id = 0 if not settings.DEBUG else 402
 
+logging.basicConfig(level=logging.INFO)
+
 
 class Command(BaseCommand):
 
@@ -81,7 +83,7 @@ class Command(BaseCommand):
                     kudos['numClonesAllowed'], kudos['tags'], image_path,
                     )
 
-            logger.info(args)
+            # logger.info(args)
 
             # try:
             #     mint_kudos_on_web3_and_db(network, private_key, *args)
@@ -92,8 +94,8 @@ class Command(BaseCommand):
             for i in range(1, 4):
                 try:
                     # TODO:  Move the kudos_contract instantiation outside of the for loop
-                    kudos_contract = KudosContract(network=network, account=account, private_key=private_key)
-                    kudos_contract.mint(*args)
+                    kudos_contract = KudosContract(network=network)
+                    kudos_contract.mint(*args, account=account, private_key=private_key)
                 except IndexError as e:
                     logger.warning(e)
                 except BadFunctionCallOutput as e:
