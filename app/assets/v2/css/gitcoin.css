@@ -202,15 +202,6 @@ h4,
   overflow-x: hidden;
 }
 
-.nav-link {
-  color: #eff4ee;
-  text-transform: uppercase;
-  text-decoration: none;
-  padding-right: 1rem !important;
-  padding-left: 1rem !important;
-  font-size: 0.9rem !important;
-}
-
 .text-white {
   color: #ffffff;
 }
@@ -249,10 +240,6 @@ h4,
 
 .font-caption {
   font-size: 0.75rem;
-}
-
-.nav-link:visited {
-  color: #eff4ee;
 }
 
 .footer-link {
@@ -452,26 +439,42 @@ div.button-pink {
   margin: 0 auto;
   min-height: 300px;
 }
+
 .footer__top {
   max-width: 1000px;
   margin: 0 auto;
 }
-.footer__social {
-  /* flex-grow: 1; */
-}
+
 .footer__social .nav-link {
   margin-bottom: 1rem;
 }
+
 .footer .navbar-brand {
   flex-grow: 1;
 }
+
 .footer {
   background-color: #0d023b;
 }
+
 .footer .nav-link {
   font-size: 0.8rem !important;
   margin-right: 0.5rem;
 }
+
+.nav-link:visited {
+  color: #eff4ee;
+}
+
+.navbar-expand-md .navbar-nav .nav-link {
+  color: #eff4ee;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  font-size: 0.9rem !important;
+}
+
 .footer .nav-link:hover {
   border-radius: 2px;
   background-color: rgba(255, 255, 255, 0.2);
@@ -482,6 +485,7 @@ div.button-pink {
   height: 25px;
   filter: invert(100%);
 }
+
 .footer__consensys {
   border-top: 1px solid var(--gc-green);
   background: black;
@@ -640,6 +644,19 @@ div.button-pink {
   .footer__main {
     padding-left: 1em !important;
     padding-right: 1em !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+
+  .navbar-brand #logo {
+    width: 6.5rem;
+    height: auto;
+  }
+
+  .navbar-expand-md .navbar-nav .nav-link {
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
   }
 }
 
