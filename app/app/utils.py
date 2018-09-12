@@ -2,6 +2,7 @@ import email
 import imaplib
 import logging
 import re
+import sys
 import time
 
 from django.conf import settings
@@ -284,3 +285,17 @@ def get_country_from_ip(ip_address, db=None):
 def clean_str(string):
     """Clean the provided string of all non-alpha numeric characters."""
     return re.sub(r'\W+', '', string)
+
+
+def func_name():
+    """Determine the calling function's name.
+
+    Returns:
+        str: The parent method's name.
+
+    """
+    try:
+        return sys._getframe(1).f_code.co_name
+    except Exception as e:
+        logger.error(e)
+        return 'NA'

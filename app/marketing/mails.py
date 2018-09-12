@@ -17,15 +17,13 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-
-import inspect
-
 from django.conf import settings
 from django.utils import timezone, translation
 from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
 import sendgrid
+from app.utils import func_name
 from marketing.utils import get_or_save_email_subscriber, should_suppress_notification_email
 from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
@@ -38,10 +36,6 @@ from retail.emails import (
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
-
-
-def func_name():
-    return inspect.stack()[0][3]
 
 
 def send_mail(from_email, _to_email, subject, body, html=False,
