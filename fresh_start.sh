@@ -11,8 +11,8 @@ fi
 ACCOUNT=$2
 PRIVATE_KEY=$3
 
-echo $ACCOUNT
-echo $PRIVATE_KEY
+# echo $ACCOUNT
+# echo $PRIVATE_KEY
 
 docker-compose down
 docker volume rm kudos_pgdata
