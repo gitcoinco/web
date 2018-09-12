@@ -83,6 +83,10 @@ class Token(SuperModel):
         self.num_clones_available = self.get_num_clones_available()
         return self
 
+    def __str__(self):
+        """Return the string representation of a model."""
+        return f"Kudos Token: {self.humanized_name}"
+
 
 class KudosTransfer(SendCryptoAsset):
     # kudos_token is a reference to the Kudos Token that is slated to be cloned.
@@ -121,6 +125,10 @@ class KudosTransfer(SendCryptoAsset):
         except KeyError:
             return None
 
+    def __str__(self):
+        """Return the string representation of a model."""
+        return f"xfr of {self.kudos_token} from {self.recipient_profile} to {self.sender_profile}"
+
 
 class Wallet(SuperModel):
     address = models.CharField(max_length=255, unique=True)
@@ -129,3 +137,8 @@ class Wallet(SuperModel):
     def save(self, *args, **kwargs):
         self.address = to_checksum_address(self.address)
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        """Return the string representation of a model."""
+        return f"Wallet: {self.address} Profile: {self.profile}"
+
