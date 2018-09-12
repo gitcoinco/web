@@ -1,0 +1,18 @@
+{
+    "website": "https://www.rchain.coop",
+    "published_on": "2017-10-07",
+    "links": {
+        "twitter": "https://twitter.com/rchain_coop/",
+        "github": "https://github.com/rchain/",
+        "slack": "http://slack.rchain.coop/"
+    },
+    "overview": {
+        "en": "The RChain Platform aims to be a decentralized, economically sustainable public compute infrastructure.",
+        "zh": "RChain 平台的目标是成为去中心化和可持续的公共计算基础设施。"
+    },
+    "symbol": "RHOC",
+    "initial_price": {
+        "USD": "0.2 USD"
+    },
+    "address": "0x168296bb09e24A88805CB9c33356536B980D3fC5"
+}

@@ -1,0 +1,21 @@
+{
+    "website": "https://www.nagaico.com/",
+    "published_on": "2017-12-01",
+    "links": {
+        "telegram": "https://t.me/nagaico",
+        "twitter": "https://twitter.com/thenagaico",
+        "facebook": "https://facebook.com/thenagaico"
+    },
+    "overview": {
+        "en": "The NAGA CARD allows you to fund with cryptos and spend your money (online/offline) all around the globe.",
+        "zh": "NAGA 希望通过为金融市场、虚拟商品和加密货币提供一个去中心化的代币彻底改变传统金融现状。"
+    },
+    "symbol": "NGC",
+    "initial_price": {
+        "USD": "1.0 USD",
+        "ETH": "0.002166 ETH"
+    },
+    "whitepaper": "https://docsend.com/view/srsg4zw",
+    "address": "0x72dD4b6bd852A3AA172Be4d6C5a6dbEc588cf131",
+    "email": "support@nagaico.com"
+}

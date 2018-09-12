@@ -1,0 +1,23 @@
+{
+    "website": "https://www.zilliqa.com/",
+    "published_on": "2017-12-27",
+    "links": {
+        "telegram": "https://t.me/zilliqa",
+        "reddit": "https://www.reddit.com/r/zilliqa/",
+        "github": "https://github.com/zilliqa",
+        "slack": "https://zilliqa.slack.com/",
+        "twitter": "https://twitter.com/zilliqa"
+    },
+    "overview": {
+        "en": "Zilliqa is a high-throughput public blockchain platform - designed to scale to thousands ​of transactions per second.",
+        "zh": "Zilliqa 是具备高吞吐量的可扩展公链平台。"
+    },
+    "symbol": "ZIL",
+    "initial_price": {
+        "ETH": "0.0000084656 ETH",
+        "USD": "0.01 USD"
+    },
+    "whitepaper": "https://docs.zilliqa.com/whitepaper.pdf",
+    "address": "0x05f4a42e251f2d52b8ed15E9FEdAacFcEF1FAD27",
+    "email": "enquiry@zilliqa.com"
+}

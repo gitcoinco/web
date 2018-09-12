@@ -1,0 +1,21 @@
+{
+    "website": "https://coss.io/",
+    "published_on": "2017-08-05",
+    "links": {
+        "telegram": "https://t.me/myCOSS",
+        "twitter": "https://twitter.com/cosscrypto?lang=en",
+        "github": "https://github.com/coss-crypto/coss-token",
+        "facebook": "https://www.facebook.com/cosscrypto/"
+    },
+    "overview": {
+        "en": "A crypto currency exchange.",
+        "zh": "数字货币交易所。"
+    },
+    "symbol": "COSS",
+    "initial_price": {
+        "ETH": "0.0001666 ETH"
+    },
+    "whitepaper": "https://coss.io/documents/coss-whitepaper-v3.pdf",
+    "address": "0x9e96604445Ec19fFed9a5e8dd7B50a29C899A10C",
+    "email": "info@coss.io"
+}

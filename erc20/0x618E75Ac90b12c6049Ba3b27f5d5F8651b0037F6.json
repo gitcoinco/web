@@ -1,0 +1,21 @@
+{
+    "website": "https://liquid.plus/",
+    "published_on": "2017-11-05",
+    "links": {
+        "telegram": "https://t.me/QUOINE",
+        "twitter": "https://twitter.com/quoine_SG",
+        "facebook": "https://www.facebook.com/QUOINE.SG/"
+    },
+    "overview": {
+        "en": "We envision QASH to be the preferred payment token for financial services, like the Bitcoin for financial services. As more financial institutions, fintech startups and partners adopt QASH as a method of payment, the utility of QASH will scale, fueling the Fintech revolution.",
+        "zh": "致力于增强加密数字货币生态的流通性。"
+    },
+    "symbol": "QASH",
+    "initial_price": {
+        "ETH": "0.001 ETH",
+        "USD": "0.30 USD"
+    },
+    "whitepaper": "https://s3-ap-southeast-1.amazonaws.com/liquid-site/quoine-liquid_v1.5.pdf",
+    "address": "0x618E75Ac90b12c6049Ba3b27f5d5F8651b0037F6",
+    "email": "support@quoine.com"
+}

@@ -1,0 +1,20 @@
+{
+    "website": "https://www.decent.bet/",
+    "published_on": "2017-09-23",
+    "links": {
+        "reddit": "https://www.reddit.com/r/decentbet/",
+        "facebook": "https://www.facebook.com/decentbet/",
+        "slack": "https://decentbet-slack.herokuapp.com/",
+        "twitter": "https://twitter.com/decent_bet/"
+    },
+    "overview": {
+        "en": "Decent.bet is a transparent, smart contract based sports betting platform and online casino.",
+        "zh": "基于以太坊的透明、可验证的体育对赌平台。"
+    },
+    "symbol": "DBET",
+    "initial_price": {
+        "USD": "0.1 USD"
+    },
+    "whitepaper": "https://www.decent.bet/whitepaper/",
+    "address": "0x9b68bFaE21DF5A510931A262CECf63f41338F264"
+}

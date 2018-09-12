@@ -1,0 +1,19 @@
+{
+    "website": "https://odem.io/",
+    "links": {
+        "reddit": "https://www.reddit.com/r/ODEM/",
+        "github": "https://github.com/odemio",
+        "facebook": "https://www.facebook.com/odemio/",
+        "twitter": "https://twitter.com/ODEM_IO"
+    },
+    "overview": {
+        "en": "ODEM is a global, decentralized education marketplace, removing intermediaries and empowering educators and students.",
+        "zh": "去中心化的全球教育市场。"
+    },
+    "symbol": "ODEM",
+    "initial_price": {
+        "USD": "0.06 USD"
+    },
+    "whitepaper": "https://odem.io/docs/whitepaper/ODEM.IO-Whitepaper.pdf",
+    "address": "0xbf52F2ab39e26E0951d2a02b49B7702aBe30406a"
+}

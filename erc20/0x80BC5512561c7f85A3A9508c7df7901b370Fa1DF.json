@@ -1,0 +1,23 @@
+{
+    "website": "https://trade.io/",
+    "published_on": "2017-12-07",
+    "links": {
+        "telegram": "https://t.me/TradeToken",
+        "twitter": "https://twitter.com/TradeToken",
+        "github": "https://github.com/trade-io/Tradeio-TokenSale-Contract",
+        "facebook": "https://www.facebook.com/trade.io"
+    },
+    "overview": {
+        "en": "Trading platform.",
+        "zh": "交易平台。"
+    },
+    "symbol": "TIO",
+    "initial_price": {
+        "ETH": "0.00166666 ETH",
+        "USD": "0.7 USD",
+        "BTC": "0.00004137 BTC"
+    },
+    "whitepaper": "https://trade.io/whitepaper/EN.pdf",
+    "address": "0x80BC5512561c7f85A3A9508c7df7901b370Fa1DF",
+    "email": "support@trade.io"
+}

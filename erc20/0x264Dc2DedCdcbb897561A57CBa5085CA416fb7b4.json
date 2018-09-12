@@ -1,0 +1,22 @@
+{
+    "website": "https://qunqun.io/",
+    "published_on": "2018-01-12",
+    "links": {
+        "telegram": "https://t.me/qunqunglobal",
+        "reddit": "https://www.reddit.com/r/QunQun/",
+        "github": "https://github.com/qunqun-io",
+        "facebook": "https://www.facebook.com/qunqun.io",
+        "twitter": "https://twitter.com/qunqun_io"
+    },
+    "overview": {
+        "en": "Incentive community platform based on blockchain technology.",
+        "zh": "基于区块链的激励型社区平台。"
+    },
+    "symbol": "QUN",
+    "initial_price": {
+        "USD": "0.036 USD"
+    },
+    "whitepaper": "https://qunqun.io/whitepaper",
+    "address": "0x264Dc2DedCdcbb897561A57CBa5085CA416fb7b4",
+    "email": "contact@qunqun.io"
+}

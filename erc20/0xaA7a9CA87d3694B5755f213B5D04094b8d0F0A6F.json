@@ -1,0 +1,23 @@
+{
+    "website": "https://origintrail.io/",
+    "published_on": "2018-01-15",
+    "links": {
+        "telegram": "https://t.me/origintrail",
+        "reddit": "https://www.reddit.com/r/OriginTrail/",
+        "github": "https://github.com/origintrail",
+        "facebook": "https://www.facebook.com/origintrail/",
+        "twitter": "https://twitter.com/origin_trail"
+    },
+    "overview": {
+        "en": "Purpose-built Protocol for Supply Chains Based on Blockchain.",
+        "zh": "OriginTrail 是一个专门针对供应链行业的项目。它试图通过区块链技术使信息流更容易，更具适应性，更便宜，更快速和更安全。"
+    },
+    "symbol": "TRAC",
+    "initial_price": {
+        "ETH": "0.00007821 ETH",
+        "USD": "0.1 USD"
+    },
+    "whitepaper": "https://origintrail.io/storage/documents/OriginTrail-White-Paper.pdf",
+    "address": "0xaA7a9CA87d3694B5755f213B5D04094b8d0F0A6F",
+    "email": "office@origin-trail.com"
+}
