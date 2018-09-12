@@ -134,19 +134,39 @@ class KudosContract:
             return r
         return wrapper
 
-    def sync_db(self):
-        """ Sync the database with the blockchain.
+    def sync_db(self, kudos_id=None):
+        """Sync the database with the blockchain.
 
-            During a Kudos clone  or cloneAndTransfer, two rows need to be updated in the
-            kudos.Token table.
+        During a Kudos clone  or cloneAndTransfer, two rows need to be updated in the
+        kudos.Token table.
 
-            1. The new kudos that was just cloned needs to be added.
-            2. The gen0 kudos needs to be updated, primarily the num_clones_in_wild field.
+        1. The new kudos that was just cloned needs to be added.
+        2. The gen0 kudos needs to be updated, primarily the num_clones_in_wild field.
 
-            Both of these tasks are accomplished by reading from the Kudos Contract, and then
-            running the .save() command to update the Django Database.
+        Both of these tasks are accomplished by reading from the Kudos Contract, and then
+        running the .save() command to update the Django Database.
 
-            """
+        Args:
+            kudos_id (int, optional): Optionally can include a kudos_id to specificly sync that kudos
+                                      to the database.
+
+        Returns:
+            bool: Returns True if a sync occured, False otherwise.
+
+        TODO:   Refactor this code to be DRY.
+
+        """
+
+        # If the kudos_id is passed to the function
+        if kudos_id:
+            owner_address = self._contract.functions.ownerOf(kudos_id).call()
+            kudos = self.getKudosById(kudos_id)
+            kudos_map = self.get_kudos_map(kudos)
+            kudos_db = Token(pk=kudos_id, owner_address=owner_address, **kudos_map)
+            kudos_db.save()
+            kudos_map['owner_address'] = owner_address
+            logger.info(f'Synced Kudos ID {kudos_id}: {kudos_map}')
+            return True
 
         # Part 1.  The newly cloned Kudos.
         kudos_id = self._contract.functions.totalSupply().call()
@@ -162,12 +182,16 @@ class KudosContract:
         logger.info(f'Synced Kudos ID {kudos_id}: {kudos_map}')
 
         # Part 2.  Sync up the Gen0 Kudos.
+        # Only need this for when a clone happens, not the initial mint
+        if kudos_id == kudos_db.cloned_from_id:
+            return True
         kudos_id = kudos_db.cloned_from_id
         owner_address = self._contract.functions.ownerOf(kudos_id).call()
         kudos = self.getKudosById(kudos_id)
         kudos_map = self.get_kudos_map(kudos)
         kudos_db = Token(pk=kudos_id, owner_address=owner_address, **kudos_map)
         kudos_db.save()
+        kudos_map['owner_address'] = owner_address
         logger.info(f'Synced Kudos ID {kudos_id}: {kudos_map}')
 
         return True
@@ -215,8 +239,10 @@ class KudosContract:
         logger.info(f'private_key: {self.private_key}')
         name = args[0]
         if self.gen0_exists_web3(name):
-            msg = f'The {name} Gen0 Kudos already exists on the blockchain.'
+            msg = f'The {name} Gen0 Kudos already exists on the blockchain. Making sure that the database is synced'
             logger.warning(msg)
+            kudos_id = self.getGen0TokenId(name)
+            self.sync_db(kudos_id)
             return False
         if self.gen0_exists_db(name):
             msg = f'The {name} Gen0 Kudos already exists in the database.'

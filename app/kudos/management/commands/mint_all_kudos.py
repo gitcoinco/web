@@ -28,6 +28,8 @@ from dashboard.helpers import UnsupportedSchemaException
 from django.core.management import call_command
 from kudos.utils import mint_kudos_on_web3_and_db, KudosContract
 
+from web3.exceptions import BadFunctionCallOutput
+
 import oyaml as yaml
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -86,9 +88,15 @@ class Command(BaseCommand):
             # except ValueError as e:
             #     logger.warning(e)
 
-            try:
-                # TODO:  Move the kudos_contract instantiation outside of the for loop
-                kudos_contract = KudosContract(network=network, account=account, private_key=private_key)
-                kudos_contract.mint(*args)
-            except IndexError as e:
-                logger.warning(e)
+            # If the mint fails, retry it 3 times.  Because Infura.
+            for i in range(1, 4):
+                try:
+                    # TODO:  Move the kudos_contract instantiation outside of the for loop
+                    kudos_contract = KudosContract(network=network, account=account, private_key=private_key)
+                    kudos_contract.mint(*args)
+                except IndexError as e:
+                    logger.warning(e)
+                except BadFunctionCallOutput as e:
+                    logger.warning(e)
+                    continue
+                break
