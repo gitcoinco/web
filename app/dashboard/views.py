@@ -910,7 +910,7 @@ def helper_handle_approvals(request, bounty):
         is_staff = request.user.is_staff
         if is_funder or is_staff:
             interests = bounty.interested.filter(profile__handle=worker)
-            is_interest_invalid = (not interests.filter(pending=True).exists() and mutate_worker_action == 'rejected') or (not interests.exists())
+            is_interest_invalid = (not interests.filter(pending=True).exists()) or (not interests.exists())
             if is_interest_invalid:
                 messages.warning(
                     request,
