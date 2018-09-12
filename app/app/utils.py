@@ -2,7 +2,6 @@ import email
 import imaplib
 import logging
 import re
-import sys
 import time
 from hashlib import sha1
 
@@ -345,19 +344,6 @@ def clean_str(string):
     """Clean the provided string of all non-alpha numeric characters."""
     return re.sub(r'\W+', '', string)
 
-
-def func_name():
-    """Determine the calling function's name.
-
-    Returns:
-        str: The parent method's name.
-
-    """
-    try:
-        return sys._getframe(1).f_code.co_name
-    except Exception as e:
-        logger.error(e)
-        return 'NA'
 
 def get_default_network():
     if settings.DEBUG:
