@@ -17,8 +17,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-import os
-import shutil
 from datetime import datetime
 from decimal import Decimal
 
@@ -101,4 +99,3 @@ class DashboardEmbedTest(TestCase):
         assert embed(self.factory.get(
             'https://github.com/gitcoinco/web/issues/11?repo=https://github.com/gitcoinco/web'
         )).status_code in [200, 422]
-
