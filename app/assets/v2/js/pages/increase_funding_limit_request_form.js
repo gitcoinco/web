@@ -1,5 +1,6 @@
 
 // Overwrite from shared.js
+// eslint-disable-next-line no-empty-function
 var trigger_form_hooks = function() {
 };
 

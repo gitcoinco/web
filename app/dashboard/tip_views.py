@@ -332,14 +332,18 @@ def send_tip_3(request):
             is_over_tip_weekly_limit = tips_last_week_value > request.user.profile.max_tip_amount_usdt_per_week
 
     increase_funding_form_title = _('Request a Funding Limit Increasement')
-    increase_funding_form = f'<a target="_blank" href="{settings.BASE_URL}requestincrease">{increase_funding_form_title}</a>'
+    increase_funding_form = f'<a target="_blank" href="{settings.BASE_URL}'\
+                            f'requestincrease">{increase_funding_form_title}</a>'
 
     if is_over_tip_tx_limit:
         response['status'] = 'error'
-        response['message'] = _('This tip is over the per-transaction limit of $') + str(max_per_tip) + '. ' + increase_funding_form
+        response['message'] = _('This tip is over the per-transaction limit of $') +\
+                              str(max_per_tip) + '. ' + increase_funding_form
     elif is_over_tip_weekly_limit:
         response['status'] = 'error'
-        response['message'] = _('You are over the weekly tip send limit of $') + str(request.user.profile.max_tip_amount_usdt_per_week) + '. ' + increase_funding_form
+        response['message'] = _('You are over the weekly tip send limit of $') +\
+                              str(request.user.profile.max_tip_amount_usdt_per_week) +\
+                              '. ' + increase_funding_form
     return JsonResponse(response)
 
 
