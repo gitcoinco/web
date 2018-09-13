@@ -826,7 +826,7 @@ def get_payout_history(done_bounties):
             yearly_payout_history[year] = bounty_val
 
     payout_history = []
-    for _ in range(0, 3):
+    for i in range(0, 3):
         payout_history.append({
             "data": [],
             "labels": []
