@@ -18,6 +18,14 @@ valued.
   * [Step 4: Commit](#step-4-commit)
   * [Step 5: Rebase](#step-5-rebase)
   * [Step 6: PRs](#step-6-prs)
+* [Python](#python)
+  * [Docstrings](#docstrings)
+    * [Classes](#classes)
+    * [Methods](#methods)
+    * [Example](#example)
+  * [Additional Resources](#additional-resources)
+* [FAQ](#faq)
+  * [Contributing Static Assets](#contributing-static-assets)
 
 ## Code of Conduct
 
@@ -170,6 +178,119 @@ Please ensure that your pull request follows all of the community guidelines to 
 * If the PR modifies the frontend in any way, please attach screenshots and/or GIFs of all purposeful changes (before and after screens are recommended)
 * The PR passes all CI checks, to include Stickler, codecov, and Travis.
 
+## Python
+
+### Docstrings
+
+Gitcoin attempts to adhere to [PEP-257](https://www.python.org/dev/peps/pep-0257/) while employing the [Google Python Style Guide](https://github.com/google/styleguide/blob/gh-pages/pyguide.md#38-comments-and-docstrings) approach to docstring formatting.
+
+#### Classes
+
+```python
+class Gitcoin:
+    """Define the overall Gitcoin object.
+
+    Attributes:
+        repo (str): The Gitcoin repository.
+
+    """
+
+    repo = 'gitcoinco/web'
+
+```
+
+#### Methods
+
+```python
+def foo(bar='bar'):
+    """Handle string concatenation of the provided suffix.
+
+    Args:
+      bar (str): The foo suffix. Defaults to: bar.
+
+    Attributes:
+      foobar (str): The foo string concatentated with the provided bar variable.
+
+    Returns:
+      str: The concatenated string.
+
+    """
+    foobar = f'foo{bar}'
+    return foobar
+```
+
+#### Example
+
+```python
+from __future__ import braces
+
+
+class Example:
+    """Define the overall Example object."""
+
+    # Class attributes.
+    repo = 'gitcoinco/web'
+    known_dances = ['tango']
+
+    def example(self):
+        """Some Example.example class method docstring.
+
+        Returns:
+            bool: Whether or not the Example performs the specified dance.
+
+        """
+        return 'example'
+
+    def example2(self):
+        """Some Example.example2 class method docstring.
+
+        Attributes:
+            var (str): The example2 variable.
+
+        """
+        var = 'example2'
+
+def can_dance(example, dance='tango'):
+    """Handle determining whether or not Example can perform the provided dance.
+
+    Args:
+        dingo (dashboard.Example): The Example object.
+        dance (str): The dance type.  Defaults to: tango.
+
+    Returns:
+        bool: Whether or not the Example performs the specified dance.
+
+    """
+    return dance in example.known_dances
+
+
+def example3(self):
+    """Some example3 method docstring.
+
+    Attributes:
+        var (str): The example3 variable.
+
+    Returns:
+        str: The example var text.
+
+    """
+    var = 'example3'
+    return var
+```
+
+### Additional Resources
+
+We either strongly employ or encourage the review and implementation of the following resources:
+
+* [Python Style Guide: PEP-8](https://www.python.org/dev/peps/pep-0008/)
+* [The Zen of Python: PEP-20](https://www.python.org/dev/peps/pep-0020/)
+* [Docstrings: PEP-257](https://www.python.org/dev/peps/pep-0257/)
+* [Docutils: PEP-258](https://www.python.org/dev/peps/pep-0258/)
+* [f-strings: PEP-498](https://www.python.org/dev/peps/pep-0498/)
+* [Google Python Style Guide](https://github.com/google/styleguide/blob/gh-pages/pyguide.md)
+* [Hitchhiker's Guide to Python](http://docs.python-guide.org/)
+* [Django Documentation](https://docs.djangoproject.com/)
+
 ## FAQ
 
 ### Contributing Static Assets
@@ -177,8 +298,8 @@ Please ensure that your pull request follows all of the community guidelines to 
 Note: Please remember to optimize/compress your image assets via: `make compress-images` (Requires: jpeq-recompress, optipng, and svgo in `PATH`)
 You can install the necessary binaries via:
 
-- `npm install -g jpeg-recompress-bin pngquant-bin svgo`
-- `brew install optipng`
+* `npm install -g jpeg-recompress-bin pngquant-bin svgo`
+* `brew install optipng`
 
 Q: `I need to add static assets...  Where to I put them?`
 
