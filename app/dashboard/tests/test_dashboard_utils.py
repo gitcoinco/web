@@ -46,18 +46,7 @@ class DashboardUtilsTest(TestCase):
 
     @staticmethod
     def test_get_bounty():
-        assert get_bounty(100, 'mainnet')['contract_deadline'] == 1522802516
-
-    @staticmethod
-    def test_get_bounty_id_from_db():
-        """ There should be no bounty with this id in the db"""
-        assert not get_bounty_id_from_db('https://github.com/gitcoinco/web/issues/607', 'mainnet')
-
-    @staticmethod
-    def test_get_bounty_id_from_web3():
-        # find bounty 249
-        assert get_bounty_id_from_web3('https://github.com/raiden-network/raiden/issues/1195', 'mainnet', 246) == 249
-        assert not get_bounty_id_from_web3('https://github.com/gitcoinco/web/issues/607', 'mainnet', 10000000)
+        assert get_bounty(100, 'rinkeby')['contract_deadline'] == 1515699751
 
     @staticmethod
     def test_get_ordinal_repr():
