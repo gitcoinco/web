@@ -1333,7 +1333,7 @@ def update_funder_total_budget(request):
     budget_usd = data.get('budget', None)
     budget_type = get_budget_type(data)
 
-    if not budget_type is None or budget_usd is None or float(budget_usd) < 0:
+    if budget_type is not None or budget_usd is None or float(budget_usd) < 0:
         return JsonResponse({'status': '400'}, status='400')
 
     request.user.profile.update(funder_total_budget_usdt=budget_usd,
