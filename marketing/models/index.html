@@ -2467,8 +2467,12 @@ object the first time, the query is executed.</p>
 <pre><code class="python">EmailEvent(self, *args, **kwargs)
 </code></pre>
 
-<p>EmailEvent(id, created_on, modified_on, email, event, ip_address)
-<h3 id="marketing.models.EmailEvent.email">email</h3></p>
+<p>EmailEvent(id, created_on, modified_on, email, event, category, ip_address)
+<h3 id="marketing.models.EmailEvent.category">category</h3></p>
+<p>A wrapper for a deferred-loading field. When the value is read from this
+object the first time, the query is executed.</p>
+<h3 id="marketing.models.EmailEvent.email">email</h3>
+
 <p>A wrapper for a deferred-loading field. When the value is read from this
 object the first time, the query is executed.</p>
 <h3 id="marketing.models.EmailEvent.event">event</h3>
