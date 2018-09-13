@@ -1472,7 +1472,7 @@ def new_bounty(request):
         confirm_time_minutes_target=confirm_time_minutes_target,
         active='submit_bounty',
         title=_('Create Funded Issue'),
-        update=bounty_params
+        update=bounty_params,
     )
     return TemplateResponse(request, 'bounty/new.html', params)
 
