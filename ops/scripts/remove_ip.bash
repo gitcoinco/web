@@ -14,5 +14,3 @@ echo "Removing IP: $WAN_IP to AWS SG: $GC_SG_ID - Port: $GC_SSH_PORT - Protocol:
 aws ec2 revoke-security-group-ingress --group-id "$GC_SG_ID" \
     --ip-permissions='[{"IpProtocol": "'"$GC_SSH_PROTO"'", "FromPort": '"$GC_SSH_PORT"', "ToPort": '"$GC_SSH_PORT"', "IpRanges": [{"CidrIp": "'"$WAN_IP"'"}]}]'
 echo "Removed!"
-
-# --ip-permissions IpProtocol="$GC_SSH_PROTO",FromPort="$GC_SSH_PORT",ToPort="$GC_SSH_PORT",IpRanges=" [{CidrIp=$WAN_IP/32}]"
