@@ -14,7 +14,7 @@ var trigger_form_hooks = function() {
 };
 
 $(document).ready(function() {
-  $('[for=comment]').append(
+  $('[for=id_comment]').append(
     ' (<span id="charcount">500</span> ' + gettext('characters left') + ')'
   );
   $('[name=comment]').bind('input propertychange', function() {
