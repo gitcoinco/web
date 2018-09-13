@@ -1165,20 +1165,17 @@ def to_funder_dashboard_bounty(bounty):
               }
 
     """
-    bounty_dict = bounty.to_standard_dict(fields=[
-        'github_issue_number',
-        'title'
-        'bounty_type',
-        'status',
-        'github_url'
-    ])
-
-    bounty_dict.update({'statusPendingOrClaimed': 'None', 'title': escape(bounty_dict['title'])})
-    bounty_dict['id'] = bounty_dict.pop('github_issue_number')
-    bounty_dict['type'] = bounty_dict.pop('bounty_type')
-    bounty_dict['githubLink'] = bounty_dict.pop('github_url')
-    bounty_dict['worthDollars'] = usd_format(bounty.get_value_in_usdt)
-    bounty_dict['worthEth'] = eth_format(eth_from_wei(bounty.get_value_in_eth))
+    bounty_dict = bounty.to_standard_dict(fields=['title', 'bounty_type', 'github_url'])
+    bounty_dict.update({
+        'id': bounty.github_issue_number,
+        'title': escape(bounty_dict['title']),
+        'type': bounty_dict.pop('bounty_type'),
+        'status': bounty.status,
+        'statusPendingOrClaimed': 'None',
+        'githubLink': bounty_dict.pop('github_url'),
+        'worthDollars': usd_format(bounty.get_value_in_usdt),
+        'worthEth': eth_format(eth_from_wei(bounty.get_value_in_eth))
+    })
 
     if bounty.interested.exists() and bounty.status in Bounty.FUNDED_STATUSES:
         bounty_dict['statusPendingOrClaimed'] = 'Claimed'
