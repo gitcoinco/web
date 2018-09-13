@@ -535,6 +535,60 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#python" title="Python" class="md-nav__link">
+    Python
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#docstrings" title="Docstrings" class="md-nav__link">
+    Docstrings
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#classes" title="Classes" class="md-nav__link">
+    Classes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods" title="Methods" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example" title="Example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#additional-resources" title="Additional Resources" class="md-nav__link">
+    Additional Resources
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#faq" title="FAQ" class="md-nav__link">
     FAQ
   </a>
@@ -2126,6 +2180,60 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#python" title="Python" class="md-nav__link">
+    Python
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#docstrings" title="Docstrings" class="md-nav__link">
+    Docstrings
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#classes" title="Classes" class="md-nav__link">
+    Classes
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#methods" title="Methods" class="md-nav__link">
+    Methods
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#example" title="Example" class="md-nav__link">
+    Example
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#additional-resources" title="Additional Resources" class="md-nav__link">
+    Additional Resources
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#faq" title="FAQ" class="md-nav__link">
     FAQ
   </a>
@@ -2182,6 +2290,16 @@ valued.</p>
 <li><a href="#step-4-commit">Step 4: Commit</a></li>
 <li><a href="#step-5-rebase">Step 5: Rebase</a></li>
 <li><a href="#step-6-prs">Step 6: PRs</a></li>
+<li><a href="#python">Python</a></li>
+<li><a href="#docstrings">Docstrings</a><ul>
+<li><a href="#classes">Classes</a></li>
+<li><a href="#methods">Methods</a></li>
+<li><a href="#example">Example</a></li>
+</ul>
+</li>
+<li><a href="#additional-resources">Additional Resources</a></li>
+<li><a href="#faq">FAQ</a></li>
+<li><a href="#contributing-static-assets">Contributing Static Assets</a></li>
 </ul>
 <h2 id="code-of-conduct">Code of Conduct</h2>
 <p>Contributions to Gitcoin are governed by the <a href="https://www.contributor-covenant.org/version/1/4/code-of-conduct.html">Contributor Covenant version 1.4</a>.
@@ -2305,6 +2423,109 @@ git rebase upstream/master
 <li>Description explains what the PR achieves or addresses</li>
 <li>If the PR modifies the frontend in any way, please attach screenshots and/or GIFs of all purposeful changes (before and after screens are recommended)</li>
 <li>The PR passes all CI checks, to include Stickler, codecov, and Travis.</li>
+</ul>
+<h2 id="python">Python</h2>
+<h3 id="docstrings">Docstrings</h3>
+<p>Gitcoin attempts to adhere to <a href="https://www.python.org/dev/peps/pep-0257/">PEP-257</a> while employing the <a href="https://github.com/google/styleguide/blob/gh-pages/pyguide.md#38-comments-and-docstrings">Google Python Style Guide</a> approach to docstring formatting.</p>
+<h4 id="classes">Classes</h4>
+<pre><code class="python">class Gitcoin:
+    &quot;&quot;&quot;Define the overall Gitcoin object.
+
+    Attributes:
+        repo (str): The Gitcoin repository.
+
+    &quot;&quot;&quot;
+
+    repo = 'gitcoinco/web'
+
+</code></pre>
+
+<h4 id="methods">Methods</h4>
+<pre><code class="python">def foo(bar='bar'):
+    &quot;&quot;&quot;Handle string concatenation of the provided suffix.
+
+    Args:
+      bar (str): The foo suffix. Defaults to: bar.
+
+    Attributes:
+      foobar (str): The foo string concatentated with the provided bar variable.
+
+    Returns:
+      str: The concatenated string.
+
+    &quot;&quot;&quot;
+    foobar = f'foo{bar}'
+    return foobar
+</code></pre>
+
+<h4 id="example">Example</h4>
+<pre><code class="python">from __future__ import braces
+
+
+class Example:
+    &quot;&quot;&quot;Define the overall Example object.&quot;&quot;&quot;
+
+    # Class attributes.
+    repo = 'gitcoinco/web'
+    known_dances = ['tango']
+
+    def example(self):
+        &quot;&quot;&quot;Some Example.example class method docstring.
+
+        Returns:
+            bool: Whether or not the Example performs the specified dance.
+
+        &quot;&quot;&quot;
+        return 'example'
+
+    def example2(self):
+        &quot;&quot;&quot;Some Example.example2 class method docstring.
+
+        Attributes:
+            var (str): The example2 variable.
+
+        &quot;&quot;&quot;
+        var = 'example2'
+
+def can_dance(example, dance='tango'):
+    &quot;&quot;&quot;Handle determining whether or not Example can perform the provided dance.
+
+    Args:
+        dingo (dashboard.Example): The Example object.
+        dance (str): The dance type.  Defaults to: tango.
+
+    Returns:
+        bool: Whether or not the Example performs the specified dance.
+
+    &quot;&quot;&quot;
+    return dance in example.known_dances
+
+
+def example3(self):
+    &quot;&quot;&quot;Some example3 method docstring.
+
+    Attributes:
+        var (str): The example3 variable.
+
+    Returns:
+        str: The example var text.
+
+    &quot;&quot;&quot;
+    var = 'example3'
+    return var
+</code></pre>
+
+<h3 id="additional-resources">Additional Resources</h3>
+<p>We either strongly employ or encourage the review and implementation of the following resources:</p>
+<ul>
+<li><a href="https://www.python.org/dev/peps/pep-0008/">Python Style Guide: PEP-8</a></li>
+<li><a href="https://www.python.org/dev/peps/pep-0020/">The Zen of Python: PEP-20</a></li>
+<li><a href="https://www.python.org/dev/peps/pep-0257/">Docstrings: PEP-257</a></li>
+<li><a href="https://www.python.org/dev/peps/pep-0258/">Docutils: PEP-258</a></li>
+<li><a href="https://www.python.org/dev/peps/pep-0498/">f-strings: PEP-498</a></li>
+<li><a href="https://github.com/google/styleguide/blob/gh-pages/pyguide.md">Google Python Style Guide</a></li>
+<li><a href="http://docs.python-guide.org/">Hitchhiker's Guide to Python</a></li>
+<li><a href="https://docs.djangoproject.com/">Django Documentation</a></li>
 </ul>
 <h2 id="faq">FAQ</h2>
 <h3 id="contributing-static-assets">Contributing Static Assets</h3>
