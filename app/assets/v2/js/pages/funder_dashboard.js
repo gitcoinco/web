@@ -570,4 +570,3 @@ $(function() {
   activateOutgoingFunds(outgoingFunds);
   activateAllBounties(funderBounties);
 });
-

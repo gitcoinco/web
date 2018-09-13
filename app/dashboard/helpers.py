@@ -763,28 +763,18 @@ def get_payout_history(done_bounties):
               a csv representation of the funder's all time payout history.
 
     """
-    weekly = {
-        "data": [],
-        "labels": []
-    }
-
-    monthly = {
-        "data": [],
-        "labels": []
-    }
-
-    yearly = {
-        "data": [],
-        "labels": []
-    }
-
     utc_now = datetime.datetime.now(timezone.utc)
     month_now = utc_now.month
     year_now = utc_now.year
 
-    weekly_payout_history = {}
-    monthly_payout_history = {}
-    yearly_payout_history = {}
+    # 0: weekly
+    # 1: monthly
+    # 2: yearly
+    working_payout_history = [{},{},{}]
+
+    weekly_payout_history = working_payout_history[0]
+    monthly_payout_history = working_payout_history[1]
+    yearly_payout_history = working_payout_history[2]
 
     csv_all_time_paid_bounties = io.StringIO()
     wr = csv.writer(csv_all_time_paid_bounties, quoting=csv.QUOTE_ALL)
@@ -802,7 +792,7 @@ def get_payout_history(done_bounties):
         if bounty_val is None:
             bounty_val = 0.0
 
-        # csv export - all done bounties, ever
+        # csv export - all done bounties
         csv_row = []
         for key, value in to_funder_dashboard_bounty(bounty).items():
             if key == 'status' or key == 'statusPendingOrClaimed':
@@ -835,26 +825,26 @@ def get_payout_history(done_bounties):
         else:
             yearly_payout_history[year] = bounty_val
 
-    for key, value in sorted(weekly_payout_history.items()):
-        weekly['data'].append(value)
-        weekly['labels'].append(key)
+    payout_history = []
+    for i in range(0,3):
+        payout_history.append({
+            "data": [],
+            "labels": []
+        })
 
-    for key, value in sorted(monthly_payout_history.items()):
-        monthly['data'].append(value)
-        monthly['labels'].append(key)
-
-    for key, value in sorted(yearly_payout_history.items()):
-        yearly['data'].append(value)
-        yearly['labels'].append(key)
+    for index, payout_history_in_period in enumerate(working_payout_history):
+        for key, value in sorted(payout_history_in_period.items()):
+            payout_history[index]['data'].append(value)
+            payout_history[index]['labels'].append(key)
 
     csv_data = csv_all_time_paid_bounties.getvalue()
     csv_all_time_paid_bounties.close()
 
     return {
         # Used for payout history chart
-        'weekly': weekly,
-        'monthly': monthly,
-        'yearly': yearly,
+        'weekly': payout_history[0],
+        'monthly': payout_history[1],
+        'yearly': payout_history[2],
         # Used for csv export
         'csv_all_time_paid_bounties': csv_data
     }
@@ -1121,6 +1111,7 @@ def get_all_bounties_filters():
     return [
         all_bounties_filter('All', _('All'), True, False),
         all_bounties_filter('Pending', _('Pending'), False, True),
+        all_bounties_filter('Claimed', _('Claimed'), False, True),
     ]
 
 
@@ -1174,20 +1165,24 @@ def to_funder_dashboard_bounty(bounty):
               }
 
     """
-    pending_or_claimed = "None"
+    bounty_dict = bounty.to_standard_dict(fields=[
+        'github_issue_number',
+        'title'
+        'bounty_type',
+        'status',
+        'github_url'
+    ])
 
-    if bounty.interested.exists():
-        pending_or_claimed = 'Claimed'
-    if bounty.status == 'open' or bounty.status == 'started' or bounty.status == 'submitted':
-        pending_or_claimed = 'Pending'
+    bounty_dict.update({'statusPendingOrClaimed': 'None', 'title': escape(bounty_dict['title'])})
+    bounty_dict['id'] = bounty_dict.pop('github_issue_number')
+    bounty_dict['type'] = bounty_dict.pop('bounty_type')
+    bounty_dict['githubLink'] = bounty_dict.pop('github_url')
+    bounty_dict['worthDollars'] = usd_format(bounty.get_value_in_usdt)
+    bounty_dict['worthEth'] = eth_format(eth_from_wei(bounty.get_value_in_eth))
 
-    return {
-        'id': bounty.github_issue_number,
-        'title': escape(bounty.title),
-        'type': bounty.bounty_type,
-        'status': bounty.status,
-        'statusPendingOrClaimed': pending_or_claimed,
-        'githubLink': bounty.github_url,
-        'worthDollars': usd_format(bounty.get_value_in_usdt),
-        'worthEth': eth_format(eth_from_wei(bounty.get_value_in_eth))
-    }
+    if bounty.interested.exists() and bounty.status in Bounty.FUNDED_STATUSES:
+        bounty_dict['statusPendingOrClaimed'] = 'Claimed'
+    elif bounty.status in Bounty.OPEN_STATUSES:
+        bounty_dict['statusPendingOrClaimed'] = 'Pending'
+
+    return bounty_dict
