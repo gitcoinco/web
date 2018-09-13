@@ -8,8 +8,6 @@ body {
 }
 
 .explorer {
-  font-family: 'Muli', sans-serif;
-  font-weight: 600;
   margin-top: 2em;
   color: #3E00FF;
 }
@@ -22,6 +20,10 @@ body {
 
 #expires_date {
   float: right;
+}
+
+#extended-expiration-date #extended-days {
+  border-bottom: 1px solid black;
 }
 
 .progress-bar {
@@ -95,6 +97,11 @@ body {
   margin: 1rem;
 }
 
+#extended-expiration-date p {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
 .contributor-box .fa-minus {
   font-size: 14px;
   margin: 0;
@@ -128,9 +135,22 @@ body {
   color: #000000;
 }
 
+#issue_description pre, code {
+  padding: 1em 0;
+}
+
 .bounty-subheading {
   font-weight: lighter;
   font-size: 14px;
+}
+
+.bounty-info {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.bounty-info > div {
+  margin-bottom: 4px;
 }
 
 .bounty-info div {
@@ -183,6 +203,15 @@ body {
   text-align: center;
 }
 
+#bounty_details .activity-tags {
+  float: left;
+  text-align: center;
+}
+
+#bounty_details .activity-tag-first {
+  margin-right: 0.2em;
+}
+
 #bounty_details .tag {
   display: inline-block;
 }
@@ -191,15 +220,38 @@ body {
   padding: 5px;
 }
 
+.issue-url > a {
+  color: #ffffff;
+}
+
+.transaction-status {
+  font-family: 'Muli', sans-serif;
+  display: block;
+  position: relative;
+  width: 80%;
+  left: 10%;
+  top: 30px;
+  margin-bottom: 30px;
+  border-radius: 2px;
+  padding: 3vh 5vw;
+  text-align: center;
+}
+.transaction-status a{
+  color: white;
+}
+
+
+.red_warning, 
 #network {
   background-color: #fbe0d6;
   color: #fb9470;
   padding: 5px 10px;
   border-radius: 2px;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
   display: block;
 }
 
+.red_warning a,
 #network a{
   color: #fb9470;
   font-weight: bold;
@@ -248,7 +300,7 @@ body {
   font-weight: 600;
 }
 
-.contributor-box svg {
+.contributor-box i {
   font-size: 24px;
   margin-top: 15px;
   margin-bottom: 10px;
@@ -292,12 +344,53 @@ a.btn {
   margin-bottom: 10px;
 }
 
+#moderator-admin-actions:not(:empty).sticky {
+  text-align: center;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  z-index: 1010;
+  text-align: center;
+}
+
 #btn-white {
   background-color: #FFFFFF;
   border: 1px solid #979797;
   color: #0D0764;
   border-radius: 3px;
   position: relative;
+}
+
+.waiting-state {
+  position: relative;
+  top: -6rem;
+}
+
+.loading_img::before {
+  content: '';
+  width: 12rem;
+  height: 12rem;
+  background: #fff;
+  position: absolute;
+  border-radius: 50%;
+  top: 0;
+}
+
+.loading_img img {
+  position: absolute;
+  max-width: 100%;
+  width: 13rem;
+  z-index: 2;
+  padding-right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.waiting-state img {
+  top: -2rem;
+  transform: none;
 }
 
 #btn-white img {
@@ -336,7 +429,7 @@ a.btn {
   color: #717171;
 }
 
-.activity .activity-status svg {
+.activity .activity-status i {
   margin-left: 10px;
   color: #0ECF7C;
 }
@@ -346,15 +439,51 @@ a.btn {
   font-size: 12px;
 }
 
+#extended-expiration-date i {
+  position: relative;
+  top: 2px;
+}
+
+.transaction-header h2 {
+  color: #ffffff;
+  font-size: 2rem;
+}
+
 #bounty_details {
   display: none;
   margin-bottom: 2em;
 }
 
+.code-snippet {
+  background-color: #F2F6F9;
+  padding: 1rem;
+}
+
+#funder_notif_info .bounty-notification {
+  border: orange 1px solid;
+  border-radius: 3px;
+  padding: 0.5rem;
+}
+
+#funder_notif_info #bounty_funded_by,
+#funder_notif_info i {
+  color: #3E00FF;
+}
+
+#funder_notif_info img {
+  width: 1.5rem;
+  position: relative;
+  top: -2px;
+}
+
+
 #bounty_details #issue_description img {
   max-height: 30rem;
   max-width: 30rem;
   cursor: pointer;
+  display: block;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 #bounty_details #issue_description h1,
@@ -382,16 +511,16 @@ a.btn {
 #started_owners_username a,
 #fulfilled_owners_username a,
 #submitted_owners_username a,
-#started_owners_username svg,
-#fulfilled_owners_username svg,
-#submitted_owners_username svg {
+#started_owners_username i,
+#fulfilled_owners_username i,
+#submitted_owners_username i {
   margin-left: 5px;
   margin-right: 5px;
 }
 
-#started_owners_username svg,
-#fulfilled_owners_username svg,
-#submitted_owners_username svg {
+#started_owners_username i,
+#fulfilled_owners_username i,
+#submitted_owners_username i {
   margin-top: 5px;
 }
 
@@ -401,17 +530,19 @@ a.btn {
 
 .stop-work {
   float: right;
+  padding-left: 5px;
 }
 
-@media (max-width: 575px) {
+#moderator-admin-actions:not(:empty) {
+  background: #F2F6F9;
+  padding: 16px 0 10px;
+  text-align: left;
+  left: 0;
+}
 
-  #timer {
-    margin-bottom: 10px;
-  }
-
-  .bounty-info div {
-    width: 100%;
-  }
+#moderator-admin-actions:not(:empty) a {
+  border: none !important;
+  margin: 0 3px 5px;
 }
 
 @media (max-width: 767px) {
@@ -426,6 +557,10 @@ a.btn {
 
   .bounty-actions .col-12 {
     text-align: center;
+  }
+
+  .loading_img img {
+    width: 10rem;
   }
 
   #bounty_details .tags {
@@ -453,18 +588,6 @@ a.btn {
   }
 }
 
-@media (max-width: 991.98px) {
-  .explorer {
-    display: none;
-  }
-}
-
-@media (min-width: 768px) {
-  .activity-time {
-    margin-left: 0.625rem !important;
-  }
-}
-
 #add_interest form > div {
   margin-top: 10px;
 }
@@ -479,8 +602,8 @@ a.btn {
   width: 100%;
 }
 
-#issue-message {
-  min-height: 6em;
+#issue_message {
+  min-height: 12em;
 }
 
 .add-interest-options {
@@ -518,10 +641,17 @@ a.btn {
   width: auto;
 }
 
-.btn-interested {
+
+.btn-interested,
+.btn-extend,
+.btn-cancel {
   float: right;
   padding: 0.375rem 0.9375rem;
   font-size: 12px;
+}
+
+.btn-cancel {
+  margin-right: 25px;
 }
 
 .close:hover, .close:focus {
@@ -532,4 +662,200 @@ a.btn {
 .modal .magnify {
   width: auto;
   max-width: 100%;
+}
+
+.bg-container {
+  background-color: #3f24f9;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-bottom: 10rem;
+}
+
+.transaction-header {
+  font-family: 'Muli', sans-serif;
+  display: block;
+  position: relative;
+  width: 80%;
+  left: 10%;
+  top: 30px;
+  padding: 3vh 5vw;
+  text-align: center;
+}
+
+.waiting_room_entertainment {
+  text-align: center;
+}
+
+.bounty_details .quote-container {
+  width: 55%;
+  margin: 4rem auto;
+  font-weight: 700;
+  z-index: 2;
+}
+
+.bounty_details .quote_text {
+  margin-top: 50px;
+  font-size: 1.1rem;
+  color: #4A4A4A;
+}
+
+.bounty_details .quote_author {
+  color: #4A4A4A;
+  margin: 1rem auto;
+  font-size: 1rem;
+}
+
+.ethereum-issue {
+  width:100%;
+  color: #ffffff;
+}
+
+.ethereum-issue,
+.issue-url {
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.rocket {
+  position: absolute;
+  top: 10rem;
+  width: 4rem;
+  animation: MoveUpDown 3s infinite alternate;
+  -webkit-animation: MoveUpDown 3s infinite alternate;
+}
+
+.circle,
+.cross {
+  position: absolute;
+  width: 1.8rem;
+  z-index: 0;
+}
+
+#c1 {
+  top: 25%;
+  right: 11%;
+}
+
+#c2 {
+  top: 35%;
+  left: 10%;
+}
+
+#c3 {
+  top: 22%;
+  left: 13%;
+}
+
+#c4 {
+  top: 40%;
+  right: 10%;
+}
+
+#cs1 {
+  top: 14%;
+  left: 10%;
+  transform: rotate(75deg)
+}
+
+#cs2 {
+  top: 40%;
+  left: 25%;
+}
+
+#cs3 {
+  top: 40%;
+  right: 35%;
+  transform: rotate(25deg)
+}
+
+#cs4 {
+  top: 30%;
+  right: 20%;
+}
+
+#cloud {
+  position: relative;
+  right: 2rem;
+  float: right;
+  top: 7rem;
+}
+
+@media (max-width: 575.98px) {
+
+  #timer {
+    margin-bottom: 10px;
+  }
+
+  .bounty-info div {
+    width: 100%;
+  }
+
+  .loading .issue-url {
+    font-size: 1rem;
+  }
+
+  .rocket {
+    width: 3.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .issue-url {
+    margin-top: 15px;
+  }
+
+  .left-rails {
+    display: none;
+  }
+
+  #title,
+  #funder_notif_info {
+    text-align: center;
+  }
+}
+
+@media (max-width: 991.98px) {
+  .explorer {
+    display: none;
+  }
+}
+
+@media (min-width: 769px) {
+  .activity-time {
+    margin-left: 0.625rem !important;
+  }
+
+  .rocket {
+    right: 11rem;
+  }
+
+  #extend_deadline {
+    min-width: 40rem;
+    max-width: 0;
+  }
+}
+
+@media (max-width: 1024px) {
+  #funder_notif_info .bounty-notification {
+    margin-top: 1rem;
+    display: inline-block;
+    margin-left: 0 !important;
+  }
+}
+
+@media (min-width: 1441px) and (max-width: 2560px) {
+
+  .bounty_details .quote-container {
+    margin-top: 1rem;
+  }
+}
+
+@keyframes MoveUpDown {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-3rem); }
+}
+
+@-webkit-keyframes MoveUpDown {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-3rem); }
 }

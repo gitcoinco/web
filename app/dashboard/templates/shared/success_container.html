@@ -1,0 +1,29 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<div class="row" id="success_container" style="display: none; min-height: 500px;">
+  <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center">
+    <div class="d-flex justify-content-center flex-column mt-5">
+      <h3>{% trans "Transaction Sent" %}</h3>
+      {% include 'svgs/success.svg' %}
+      <a class="button button--primary mt-3 text-center" href="{{bounty.url}}">
+        {% trans "Back to Bounty" %}
+      </a>
+    </div>
+  </div>
+</div>
+

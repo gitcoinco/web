@@ -22,8 +22,8 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 
 from .models import (
-    Alumni, EmailEvent, EmailSubscriber, GithubEvent, GithubOrgToTwitterHandleMapping, LeaderboardRank, Match,
-    SlackPresence, SlackUser, Stat,
+    Alumni, EmailEvent, EmailSubscriber, EmailSupressionList, GithubEvent, GithubOrgToTwitterHandleMapping,
+    LeaderboardRank, Match, SlackPresence, SlackUser, Stat,
 )
 
 
@@ -31,9 +31,30 @@ class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
 
+class EmailEventAdmin(admin.ModelAdmin):
+    search_fields = ['email', 'event' ]
+    ordering = ['-id']
+
+
+class GithubEventAdmin(admin.ModelAdmin):
+    raw_id_fields = ['profile']
+    ordering = ['-id']
+
+
+class SlackPresenceAdmin(admin.ModelAdmin):
+    raw_id_fields = ['slackuser']
+    ordering = ['-id']
+
+
+class MatchAdmin(admin.ModelAdmin):
+    raw_id_fields = ['bounty']
+    ordering = ['-id']
+
+
 class AlumniAdmin(GeneralAdmin):
     """Define the Alumni admin layout."""
 
+    raw_id_fields = ['profile']
     search_fields = ['organization', ]
     list_display = ['get_profile_username', 'get_profile_email', 'organization', 'created_on', ]
     readonly_fields = ['created_on', 'modified_on', ]
@@ -64,8 +85,9 @@ class AlumniAdmin(GeneralAdmin):
 
 
 class EmailSubscriberAdmin(admin.ModelAdmin):
+    raw_id_fields = ['profile']
     ordering = ['-id']
-    search_fields = ['email', 'source']
+    search_fields = ['email', 'source', 'keywords']
     list_display = ['email', 'created_on', 'source']
 
 
@@ -84,13 +106,14 @@ class SlackUserAdmin(admin.ModelAdmin):
             return 'Unknown'
 
 
+admin.site.register(EmailSupressionList, GeneralAdmin)
 admin.site.register(Alumni, AlumniAdmin)
-admin.site.register(GithubEvent, GeneralAdmin)
-admin.site.register(Match, GeneralAdmin)
+admin.site.register(GithubEvent, GithubEventAdmin)
+admin.site.register(Match, MatchAdmin)
 admin.site.register(Stat, GeneralAdmin)
-admin.site.register(EmailEvent, GeneralAdmin)
+admin.site.register(EmailEvent, EmailEventAdmin)
 admin.site.register(EmailSubscriber, EmailSubscriberAdmin)
 admin.site.register(LeaderboardRank, GeneralAdmin)
 admin.site.register(SlackUser, SlackUserAdmin)
-admin.site.register(SlackPresence, GeneralAdmin)
+admin.site.register(SlackPresence, SlackPresenceAdmin)
 admin.site.register(GithubOrgToTwitterHandleMapping, GeneralAdmin)

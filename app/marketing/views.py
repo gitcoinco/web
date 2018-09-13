@@ -19,10 +19,12 @@
 from __future__ import unicode_literals
 
 import json
+import logging
 import math
 import random
 
 from django.conf import settings
+from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.core.validators import validate_email
@@ -37,32 +39,54 @@ from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
 from chartit import Chart, DataPool
-from dashboard.models import Bounty, Profile, Tip, UserAction
+from dashboard.models import Profile, TokenApproval
 from dashboard.utils import create_user_action
+from enssubdomain.models import ENSSubdomainRegistration
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
+from mailchimp3 import MailChimp
 from marketing.mails import new_feedback
 from marketing.models import (
     EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
 )
-from marketing.utils import get_or_save_email_subscriber, validate_slack_integration
+from marketing.utils import get_or_save_email_subscriber, validate_discord_integration, validate_slack_integration
+from retail.emails import ALL_EMAILS
 from retail.helpers import get_ip
 
+logger = logging.getLogger(__name__)
 
-def get_settings_navs():
+
+logger = logging.getLogger(__name__)
+
+
+def get_settings_navs(request):
+    subdomain = f"{request.user.username}." if request.user.is_authenticated else False
     return [{
-        'body': 'Email',
+        'body': _('Email'),
         'href': reverse('email_settings', args=('', ))
     }, {
-        'body': 'Privacy',
-        'href': reverse('privacy_settings'),
+        'body': _('Privacy'),
+        'href': reverse('privacy_settings')
     }, {
-        'body': 'Matching',
-        'href': reverse('matching_settings'),
+        'body': _('Matching'),
+        'href': reverse('matching_settings')
     }, {
-        'body': 'Feedback',
-        'href': reverse('feedback_settings'),
+        'body': _('Feedback'),
+        'href': reverse('feedback_settings')
     }, {
         'body': 'Slack',
         'href': reverse('slack_settings'),
+    }, {
+        'body': 'Discord',
+        'href': reverse('discord_settings')
+    }, {
+        'body': 'ENS',
+        'href': reverse('ens_settings')
+    }, {
+        'body': _('Account'),
+        'href': reverse('account_settings'),
+    }, {
+        'body': _('Token'),
+        'href': reverse('token_settings'),
     }]
 
 
@@ -124,6 +148,7 @@ def privacy_settings(request):
         if profile:
             profile.suppress_leaderboard = bool(request.POST.get('suppress_leaderboard', False))
             profile.hide_profile = bool(request.POST.get('hide_profile', False))
+            profile = record_form_submission(request, profile, 'privacy')
             if profile.alumni and profile.alumni.exists():
                 alumni = profile.alumni.first()
                 alumni.public = bool(not request.POST.get('hide_alumni', False))
@@ -136,11 +161,20 @@ def privacy_settings(request):
         'nav': 'internal',
         'active': '/settings/privacy',
         'title': _('Privacy Settings'),
-        'navs': get_settings_navs(),
+        'navs': get_settings_navs(request),
         'is_logged_in': is_logged_in,
         'msg': msg,
     }
     return TemplateResponse(request, 'settings/privacy.html', context)
+
+
+def record_form_submission(request, obj, submission_type):
+    obj.form_submission_records.append({
+        'ip': get_ip(request),
+        'timestamp': int(timezone.now().timestamp()),
+        'type': submission_type,
+        })
+    return obj
 
 
 def matching_settings(request):
@@ -170,11 +204,7 @@ def matching_settings(request):
             es.github = github
         if keywords:
             es.keywords = keywords
-        ip = get_ip(request)
-        if not es.metadata.get('ip', False):
-            es.metadata['ip'] = [ip]
-        else:
-            es.metadata['ip'].append(ip)
+        es = record_form_submission(request, es, 'match')
         es.save()
         msg = _('Updated your preferences.')
 
@@ -186,7 +216,7 @@ def matching_settings(request):
         'nav': 'internal',
         'active': '/settings/matching',
         'title': _('Matching Settings'),
-        'navs': get_settings_navs(),
+        'navs': get_settings_navs(request),
         'msg': msg,
     }
     return TemplateResponse(request, 'settings/matching.html', context)
@@ -206,11 +236,7 @@ def feedback_settings(request):
         if has_comment_changed:
             new_feedback(es.email, comments)
         es.metadata['comments'] = comments
-        ip = get_ip(request)
-        if not es.metadata.get('ip', False):
-            es.metadata['ip'] = [ip]
-        else:
-            es.metadata['ip'].append(ip)
+        es = record_form_submission(request, es, 'feedback')
         es.save()
         msg = _('We\'ve received your feedback.')
 
@@ -218,7 +244,7 @@ def feedback_settings(request):
         'nav': 'internal',
         'active': '/settings/feedback',
         'title': _('Feedback'),
-        'navs': get_settings_navs(),
+        'navs': get_settings_navs(request),
         'msg': msg,
     }
     return TemplateResponse(request, 'settings/feedback.html', context)
@@ -246,12 +272,9 @@ def email_settings(request, key):
     email = ''
     level = ''
     msg = ''
-    pref_lang = 'en'
     if request.POST and request.POST.get('submit'):
         email = request.POST.get('email')
         level = request.POST.get('level')
-        if profile:
-            pref_lang = profile.get_profile_preferred_language()
         preferred_language = request.POST.get('preferred_language')
         validation_passed = True
         try:
@@ -264,9 +287,6 @@ def email_settings(request, key):
             if preferred_language not in [i[0] for i in settings.LANGUAGES]:
                 msg = _('Unknown language')
                 validation_passed = False
-        if level not in ['lite', 'lite1', 'regular', 'nothing']:
-            validation_passed = False
-            msg = _('Invalid Level')
         if validation_passed:
             if profile:
                 profile.pref_lang_code = preferred_language
@@ -277,6 +297,14 @@ def email_settings(request, key):
                 key = get_or_save_email_subscriber(email, 'settings')
                 es.preferences['level'] = level
                 es.email = email
+                form = dict(request.POST)
+                # form was not sending falses, so default them if not there
+                for email_tuple in ALL_EMAILS:
+                    key = email_tuple[0]
+                    if key not in form.keys():
+                        form[key] = False
+                es.build_email_preferences(form)
+                es = record_form_submission(request, es, 'email')
                 ip = get_ip(request)
                 es.active = level != 'nothing'
                 es.newsletter = level in ['regular', 'lite1']
@@ -286,13 +314,16 @@ def email_settings(request, key):
                     es.metadata['ip'].append(ip)
                 es.save()
             msg = _('Updated your preferences.')
+    pref_lang = 'en' if not profile else profile.get_profile_preferred_language()
     context = {
         'nav': 'internal',
         'active': '/settings/email',
         'title': _('Email Settings'),
         'es': es,
+        'suppression_preferences': json.dumps(es.preferences.get('suppression_preferences', {}) if es else {}),
         'msg': msg,
-        'navs': get_settings_navs(),
+        'email_types': ALL_EMAILS,
+        'navs': get_settings_navs(request),
         'preferred_language': pref_lang
     }
     return TemplateResponse(request, 'settings/email.html', context)
@@ -324,23 +355,214 @@ def slack_settings(request):
 
         if submit or (response and response.get('success')):
             profile.update_slack_integration(token, channel, repos)
+            profile = record_form_submission(request, profile, 'slack')
             if not response.get('output'):
                 response['output'] = _('Updated your preferences.')
             ua_type = 'added_slack_integration' if token and channel and repos else 'removed_slack_integration'
             create_user_action(user, ua_type, request, {'channel': channel, 'repos': repos})
 
     context = {
-        'repos': profile.get_slack_repos(join=True),
+        'repos': profile.get_slack_repos(join=True) if profile else [],
         'is_logged_in': is_logged_in,
         'nav': 'internal',
         'active': '/settings/slack',
         'title': _('Slack Settings'),
-        'navs': get_settings_navs(),
+        'navs': get_settings_navs(request),
         'es': es,
         'profile': profile,
         'msg': response['output'],
     }
     return TemplateResponse(request, 'settings/slack.html', context)
+
+
+def discord_settings(request):
+    """Displays and saves user's Discord settings.
+
+    Returns:
+        TemplateResponse: The user's Discord settings template response.
+
+    """
+    response = {'output': ''}
+    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+
+    if not user or not is_logged_in:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    if request.POST:
+        test = request.POST.get('test')
+        submit = request.POST.get('submit')
+        webhook_url = request.POST.get('webhook_url', '')
+        repos = request.POST.get('repos', '')
+
+        if test and webhook_url:
+            response = validate_discord_integration(webhook_url)
+
+        if submit or (response and response.get('success')):
+            profile.update_discord_integration(webhook_url, repos)
+            profile = record_form_submission(request, profile, 'discord')
+            if not response.get('output'):
+                response['output'] = _('Updated your preferences.')
+            ua_type = 'added_discord_integration' if webhook_url and repos else 'removed_discord_integration'
+            create_user_action(user, ua_type, request, {'webhook_url': webhook_url, 'repos': repos})
+
+    context = {
+        'repos': profile.get_discord_repos(join=True) if profile else [],
+        'is_logged_in': is_logged_in,
+        'nav': 'internal',
+        'active': '/settings/discord',
+        'title': _('Discord Settings'),
+        'navs': get_settings_navs(request),
+        'es': es,
+        'profile': profile,
+        'msg': response['output'],
+    }
+    return TemplateResponse(request, 'settings/discord.html', context)
+
+
+def token_settings(request):
+    """Displays and saves user's token settings.
+    Returns:
+        TemplateResponse: The user's token settings template response.
+    """
+    msg = ""
+    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+
+    if not user or not is_logged_in:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    if request.POST:
+        coinbase = request.POST.get('coinbase')
+        approved_name = request.POST.get('contract_name')
+        approved_address = request.POST.get('contract_address')
+        token_address = request.POST.get('token_address')
+        token_name = request.POST.get('token_name')
+        txid = request.POST.get('txid')
+        network = request.POST.get('network')
+
+        TokenApproval.objects.create(
+            profile=profile,
+            coinbase=coinbase,
+            token_name=token_name,
+            token_address=token_address,
+            approved_address=approved_address,
+            approved_name=approved_name,
+            tx=txid,
+            network=network,
+            )
+        msg = "Token approval completed"
+
+    context = {
+        'is_logged_in': is_logged_in,
+        'nav': 'internal',
+        'active': '/settings/tokens',
+        'title': _('Token Settings'),
+        'navs': get_settings_navs(request),
+        'es': es,
+        'profile': profile,
+        'msg': msg,
+        'gas_price': round(recommend_min_gas_price_to_confirm_in_time(1), 1),
+    }
+    return TemplateResponse(request, 'settings/tokens.html', context)
+
+
+def ens_settings(request):
+    """Displays and saves user's ENS settings.
+
+    Returns:
+        TemplateResponse: The user's ENS settings template response.
+
+    """
+    response = {'output': ''}
+    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+
+    if not user or not is_logged_in:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    ens_subdomains = ENSSubdomainRegistration.objects.filter(profile=profile).order_by('-pk')
+    ens_subdomain = ens_subdomains.first() if ens_subdomains.exists() else None
+
+    context = {
+        'is_logged_in': is_logged_in,
+        'nav': 'internal',
+        'ens_subdomain': ens_subdomain,
+        'active': '/settings/ens',
+        'title': _('ENS Settings'),
+        'navs': get_settings_navs(request),
+        'es': es,
+        'profile': profile,
+        'msg': response['output'],
+    }
+    return TemplateResponse(request, 'settings/ens.html', context)
+
+def account_settings(request):
+    """Displays and saves user's Account settings.
+
+    Returns:
+        TemplateResponse: The user's Account settings template response.
+
+    """
+    msg = ''
+    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+
+    if not user or not is_logged_in:
+        login_redirect = redirect('/login/github?next=' + request.get_full_path())
+        return login_redirect
+
+    if request.POST:
+
+        if 'preferred_payout_address' in request.POST.keys():
+            profile.preferred_payout_address = request.POST.get('preferred_payout_address', '')
+            profile.save()
+            msg = _('Updated your Address')
+        elif request.POST.get('disconnect', False):
+            profile.github_access_token = ''
+            profile = record_form_submission(request, profile, 'account-disconnect')
+            profile.email = ''
+            profile.save()
+            messages.success(request, _('Your account has been disconnected from Github'))
+            logout_redirect = redirect(reverse('logout') + '?next=/')
+            return logout_redirect
+        elif request.POST.get('delete', False):
+            # remove profile
+            profile.hide_profile = True
+            profile = record_form_submission(request, profile, 'account-delete')
+            profile.email = ''
+            profile.save()
+
+            # remove email
+            try:
+                client = MailChimp(mc_user=settings.MAILCHIMP_USER, mc_api=settings.MAILCHIMP_API_KEY)
+                result = client.search_members.get(query=es.email)
+                subscriber_hash = result['exact_matches']['members'][0]['id']
+                client.lists.members.delete(
+                    list_id=settings.MAILCHIMP_LIST_ID,
+                    subscriber_hash=subscriber_hash,
+                    )
+            except Exception as e:
+                logger.exception(e)
+            if es:
+                es.delete()
+            request.user.delete()
+            messages.success(request, _('Your account has been deleted'))
+            logout_redirect = redirect(reverse('logout') + '?next=/')
+            return logout_redirect
+        else:
+            msg = _('Error: did not understand your request')
+
+    context = {
+        'is_logged_in': is_logged_in,
+        'nav': 'internal',
+        'active': '/settings/account',
+        'title': _('Account Settings'),
+        'navs': get_settings_navs(request),
+        'es': es,
+        'profile': profile,
+        'msg': msg,
+    }
+    return TemplateResponse(request, 'settings/account.html', context)
 
 
 def _leaderboard(request):
@@ -363,6 +585,9 @@ def leaderboard(request, key=''):
     titles = {
         'quarterly_payers': _('Top Payers'),
         'quarterly_earners': _('Top Earners'),
+        'quarterly_orgs': _('Top Orgs'),
+        'quarterly_tokens': _('Top Tokens'),
+        'quarterly_keywords': _('Top Keywords'),
         #        'weekly_fulfilled': 'Weekly Leaderboard: Fulfilled Funded Issues',
         #        'weekly_all': 'Weekly Leaderboard: All Funded Issues',
         #        'monthly_fulfilled': 'Monthly Leaderboard',
@@ -377,7 +602,7 @@ def leaderboard(request, key=''):
         raise Http404
 
     title = titles[key]
-    leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard=key)
+    leadeboardranks = LeaderboardRank.objects.active().filter(leaderboard=key)
     amount = leadeboardranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
     items = leadeboardranks.order_by('-amount')
     top_earners = ''
@@ -390,13 +615,15 @@ def leaderboard(request, key=''):
     else:
         amount_max = 0
 
+    is_linked_to_profile = '_tokens' in key or '_keywords' in key
     context = {
         'items': items,
         'titles': titles,
         'selected': title,
+        'is_linked_to_profile': is_linked_to_profile,
         'title': f'Leaderboard: {title}',
         'card_title': f'Leaderboard: {title}',
-        'card_desc': f'See the most valued members in the Gitcoin community this month. {top_earners}',
+        'card_desc': f'See the most valued members in the Gitcoin community recently . {top_earners}',
         'action_past_tense': 'Transacted' if 'submitted' in key else 'bountied',
         'amount_max': amount_max,
         'podium_items': items[:3] if items else []

@@ -1,0 +1,97 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+{% if page == 'submit_bounty' %}
+<div id="no_issue_error" class="submit-notification container-fluid" style="display: block; background-color: #3d00fd;">
+  <div class="row align-items-center px-4 py-2 text-center text-lg-left">
+      <div class="col-lg-10 col-sm-12 py-2 px-5">
+        <h3>{% trans "Tips for Funding an Issue" %}</h3>
+        <p>
+          <ol class="pl-3 mb-0">
+            <li>{% trans "Create an issue on Github so that we can reference the details of the issue." %}</li>
+            <li>{% trans "What to fund? A new feature, feature improvements, bug fixes, code review, design and more." %}</li>
+          </ol>
+        </p>
+      </div>
+      <div class="col-lg-2 col-sm-12">
+        <img src="{% static "v2/images/Lightbulb.svg" %}">
+      </div>
+  </div>
+</div>
+{% elif page == 'kill_bounty' %}
+<div id="no_issue_error" class="submit-notification container-fluid" style="display: block; background-color: #d43247;">
+  <div class="row align-items-center px-4 py-2 text-center text-lg-left">
+    <div class="col-lg-10 col-sm-12 py-2 px-5">
+      <h3>{% trans "Cancelling a Bounty is Sometimes Necessary" %}</h3>
+      <p>
+        {% trans "Don't forget once you cancel you will receive the funds & can reuse it on your next bounty." %}
+      </p>
+    </div>
+    <div class="col-lg-2 col-sm-12">
+      <img src="{% static "v2/images/refund.svg" %}">
+    </div>
+  </div>
+</div>
+{% elif page == 'process_bounty' %}
+<div id="no_issue_error" class="submit-notification container-fluid" style="display: block; background-color: #fe006a;">
+  <div class="row align-items-center px-4 py-2 text-center text-lg-left">
+    <div class="col-lg-10 col-sm-12 py-2 px-5">
+      <h3>{% trans "Accepting a Submission is Exciting" %}</h3>
+      <p>
+        <ol class="pl-3 mb-0">
+          <li>{% trans "Make sure the submitter has completed the requirements to the specifications of your bounty." %}</li>
+          <li>{% trans "Feedback and gratitude are always nice ways to continue a relationship." %}</li>
+        </ol>
+      </p>
+    </div>
+    <div class="col-lg-2 col-sm-12">
+      <img src="{% static "v2/images/box.svg" %}">
+    </div>
+  </div>
+</div>
+{% elif page == 'payout_bounty' %}
+<div id="no_issue_error" class="submit-notification container-fluid" style="display: block; background-color: #fe006a;">
+  <div class="row align-items-center px-4 py-2 text-center text-lg-left">
+    <div class="col-lg-10 col-sm-12 py-2 px-5">
+      <h3>{% trans "Paying out a bounty is Exciting" %}</h3>
+      <p>
+        <ol class="pl-3 mb-0">
+          <li>{% trans "If you are closing the bounty, make sure the submitters have completed the requirements to the specifications of your bounty." %}</li>
+          <li>{% trans "Feedback and gratitude are always nice ways to continue a relationship." %}</li>
+        </ol>
+      </p>
+    </div>
+    <div class="col-lg-2 col-sm-12">
+      <img src="{% static "v2/images/box.svg" %}">
+    </div>
+  </div>
+</div>
+{% elif page == 'fulfill_bounty' %}
+<div id="no_issue_error" class="submit-notification container-fluid" style="display: block; background-color: #3d00fd;">
+  <div class="row align-items-center px-4 py-2 text-center text-lg-left">
+    <div class="col-lg-10 col-sm-12 py-2 px-5">
+      <h3>{% trans "Submit Work" %}</h3>
+      <p>
+        {% trans "You have worked really hard! Time to submit work and get paid" %}
+      </p>
+    </div>
+    <div class="col-lg-2 col-sm-12">
+      <i class="fas fa-3x fa-code"></i>
+    </div>
+  </div>
+</div>
+{% endif %}

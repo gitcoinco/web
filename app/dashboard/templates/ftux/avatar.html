@@ -1,0 +1,117 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<div class="row">
+  <div class="col-12">
+    <h2>{% trans "Build Your Gitcoin Avatar" %}
+      <button type="button" id="later-button" class="button button--primary-o" onclick="changeStep(1)">
+        {% trans "Do This Later" %}
+      </button>
+    </h2>
+  </div>
+  <div id="avatar-builder">
+    <!-- Navigation Links -->
+    <ul id="avatar-builder__sections">
+      {% for s in sections %}
+      <a href="#section-title" onclick="changeSection('{{ s.name|cut:" " }}')">
+        <li id="nav-{{ s.name|cut:" " }}">{% trans s.name %}</li>
+      </a>
+      {% endfor %}
+    </ul>
+    <!-- Main editor area -->
+    <div id="avatar-builder__editor">
+      <h3 id="section-title">
+        {% for s in sections %}
+        <span class="section-title__content" id="title-{{ s.name|cut:" " }}">
+          {% trans s.title %}
+        </span>
+        {% endfor %}
+      </h3>
+      <!-- Avatar preview -->
+      <div id="avatar-area" class="d-flex flex-wrap justify-content-center">
+        <div id="avatar-preview" class="mb-3" style="background-color: #{{ defaultBackground }}"></div>
+        <!-- Options area for each section (hidden by default) -->
+        {% for s in sections %}
+        {% with s.name|cut:" " as id %}
+        {% with "v2/images/avatar/"|add:id|add:"/" as basePath %}
+        <div id="options-{{ id }}" class="options-section d-flex flex-wrap {% if id in optionalSections %}optional{% endif %}">
+          {% for o in s.options %}
+          <button type="button" class="avatar-option" id="avatar-option-{{ id }}-{{ o }}" onclick="setOption('{{ id }}', '{{ o|addslashes }}', this)">
+            {% if id == "Head" or id == "Ears" %}
+            {% with STATIC_URL|add:basePath|add:o|add:"-"|add:defaultSkinTone|add:".svg" as path %}
+            <div class="SkinTone-dependent" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
+            {% endwith %}
+            {% elif id == "Clothing" %}
+              {% with STATIC_URL|add:basePath|add:o|add:"-"|add:defaultClothingColor|add:".svg" as path %}
+              <div class="ClothingColor-dependent" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
+              {% endwith %}
+            {% elif id == "HairStyle" %}
+              {% for part in o %}
+              {% with STATIC_URL|add:basePath|add:part|add:"-"|add:defaultHairColor|add:".svg" as path %}
+                {% if part != 'None' %}
+                <div class="{{ forloop.counter0 }} HairColor-dependent" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
+                {% endif %}
+              {% endwith %}
+              {% endfor %}
+            {% elif id == "FacialHair" %}
+              {% with STATIC_URL|add:basePath|add:o|add:"-"|add:defaultHairColor|add:".svg" as path %}
+              <div class="HairColor-dependent" style="background-image: url({{ path }});" data-path="{{ path }}"></div>
+              {% endwith %}
+            {% elif id == "Accessories" %}
+              {% for part in o %}
+              {% with STATIC_URL|add:basePath|add:part|add:".svg" as path %}
+              <div style="background-image: url({{ path }});" data-path="{{ path }}"></div>
+              {% endwith %}
+              {% endfor %}
+            {% elif id == 'Background' or id == 'SkinTone' or id == 'HairColor' %}
+            <div class="color-option" style="background-color: #{{ o }}" data-path="{{ path }}"></div>
+            {% else %}
+              {% with STATIC_URL|add:basePath|add:o|add:".svg" as path %}
+              <div style="background-image: url({{ path }});" data-path="{{ path }}"></div>
+              {% endwith %}
+            {% endif %}
+          </button>
+          {% endfor %}
+          </div>
+        {% endwith %}
+        {% endwith %}
+        {% endfor %}
+      </div>
+      <div id="color-picker"></div>
+    </div>
+  </div>
+  <!-- Button Row -->
+  <div id="avatar-builder__actions">
+    <p class="button button--primary-o button--controls" onclick="changeStep(-1)">{% trans "Previous" %}</p>
+    <button disabled type="button" id="save-button" class="button button--primary" onclick="saveAvatar()">
+      {% trans "Save Avatar" %}
+    </button>
+    <div>
+      <a href="https://github.com/gitcoinco/web/issues/1550" target="_blank" rel="noopener noreferrer">{% trans "Don't see the right schwag?  Request new avatar attributes here" %}
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  var options = {
+    Background: '{{ defaultBackground }}',
+    HairColor: '{{ defaultHairColor }}',
+    SkinTone: '{{ defaultSkinTone }}',
+    ClothingColor: '{{ defaultClothingColor }}'
+  }
+</script>

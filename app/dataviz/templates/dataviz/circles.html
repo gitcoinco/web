@@ -1,26 +1,22 @@
 {% extends "admin/base_site.html" %}
-{% load humanize %}
+{% load humanize i18n static %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-
-{% load i18n admin_static static %}
-
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 
@@ -34,7 +30,6 @@
 {% block content %}
 <a href="..">&lt; back</a>
 <style>
-
 circle {
   fill: rgb(31, 119, 180);
   fill-opacity: .25;
@@ -54,21 +49,16 @@ text {
   font: 10px sans-serif;
   text-anchor: middle;
 }
-
-
 </style>
-
-
 
 {% include "dataviz/shared/nav.html" %}
 
 <div>
-<svg width="960" height="960"></svg>
+  <svg width="960" height="960"></svg>
 </div>
 <script src="https://d3js.org/d3.v4.min.js"></script>
 <script src="{% static "v2/js/jquery.js" %}"></script>
 <script>
-
 var svg = d3.select("svg"),
     diameter = +svg.attr("width"),
     g = svg.append("g").attr("transform", "translate(2,2)"),
@@ -78,7 +68,7 @@ var pack = d3.pack()
     .size([diameter - 4, diameter - 4]);
 
 var url = document.location.href + '?data=1&format=json';
-//var url = '/static/v2/js/stats/data.json'
+
 d3.json(url, function(error, root) {
   if (error) throw error;
 
@@ -113,41 +103,37 @@ d3.json(url, function(error, root) {
 });
 
 function zoom(d, i) {
-        var k = r / d.r / 2;
-        x.domain([d.x - d.r, d.x + d.r]);
-        y.domain([d.y - d.r, d.y + d.r]);
+  var k = r / d.r / 2;
+  x.domain([d.x - d.r, d.x + d.r]);
+  y.domain([d.y - d.r, d.y + d.r]);
 
-        var t = vis.transition()
-            .duration(d3.event.altKey ? 7500 : 750);
+  var t = vis.transition()
+    .duration(d3.event.altKey ? 7500 : 750);
 
-        t.selectAll("circle")
-            .attr("cx", function (d) {
-            return x(d.x);
-        })
-            .attr("cy", function (d) {
-            return y(d.y);
-        })
-            .attr("r", function (d) {
-            return k * d.r;
-        });
+  t.selectAll("circle")
+    .attr("cx", function (d) {
+    return x(d.x);
+  })
+    .attr("cy", function (d) {
+    return y(d.y);
+  })
+    .attr("r", function (d) {
+    return k * d.r;
+  });
 
-        t.selectAll("text")
-            .attr("x", function (d) {
-            return x(d.x);
-        })
-            .attr("y", function (d) {
-            return y(d.y);
-        })
-            .style("opacity", function (d) {
-            return k * d.r > 20 ? 1 : 0;
-        });
+  t.selectAll("text")
+    .attr("x", function (d) {
+    return x(d.x);
+  })
+    .attr("y", function (d) {
+    return y(d.y);
+  })
+    .style("opacity", function (d) {
+    return k * d.r > 20 ? 1 : 0;
+  });
 
-        node = d;
-        d3.event.stopPropagation();
-
+  node = d;
+  d3.event.stopPropagation();
 }
-
-
-
 </script>
 {% endblock %}

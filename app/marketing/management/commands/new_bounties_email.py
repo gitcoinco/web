@@ -26,22 +26,40 @@ from marketing.mails import new_bounty_daily
 from marketing.models import EmailSubscriber
 
 
+def does_bounty_match_keyword(bounty, keyword):
+    if keyword.lower() in [keyword.lower() for keyword in bounty.keywords_list]:
+        return True
+
+    if keyword.lower() in bounty.title_or_desc.lower():
+        return True
+
+    if keyword.lower() in bounty.issue_description.lower():
+        return True
+
+    return False
+
+
 def get_bounties_for_keywords(keywords, hours_back):
     new_bounties_pks = []
     all_bounties_pks = []
     for keyword in keywords:
-        relevant_bounties = Bounty.objects.filter(
+        relevant_bounties = Bounty.objects.current().filter(
             network='mainnet',
-            current_bounty=True,
             metadata__icontains=keyword,
             idx_status__in=['open'],
             )
         for bounty in relevant_bounties.filter(web3_created__gt=(timezone.now() - timezone.timedelta(hours=hours_back))):
-                new_bounties_pks.append(bounty.pk)
+            if does_bounty_match_keyword(bounty, keyword):
+                    new_bounties_pks.append(bounty.pk)
         for bounty in relevant_bounties:
+            if does_bounty_match_keyword(bounty, keyword):
                 all_bounties_pks.append(bounty.pk)
-    new_bounties = Bounty.objects.filter(pk__in=new_bounties_pks)
-    all_bounties = Bounty.objects.filter(pk__in=all_bounties_pks).exclude(pk__in=new_bounties_pks).order_by('?')
+    new_bounties = Bounty.objects.filter(pk__in=new_bounties_pks).order_by('-_val_usd_db')
+    all_bounties = Bounty.objects.filter(pk__in=all_bounties_pks).exclude(pk__in=new_bounties_pks).order_by('-web3_created')
+
+    new_bounties = new_bounties.order_by('-admin_mark_as_remarket_ready')
+    all_bounties = all_bounties.order_by('-admin_mark_as_remarket_ready')
+
     return new_bounties, all_bounties
 
 
@@ -65,8 +83,9 @@ class Command(BaseCommand):
                 new_bounties, all_bounties = get_bounties_for_keywords(keywords, hours_back)
                 print("{}/{}: got {} new bounties & {} all bounties".format(to_email, keywords, new_bounties.count(), all_bounties.count()))
                 if new_bounties.count():
-                    print(f"sent to {to_email}")
+                    print(f"sending to {to_email}")
                     new_bounty_daily(new_bounties, all_bounties, [to_email])
+                    print(f"/sent to {to_email}")
             except Exception as e:
                 logging.exception(e)
                 print(e)

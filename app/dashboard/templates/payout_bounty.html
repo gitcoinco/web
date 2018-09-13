@@ -1,0 +1,113 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+  </head>
+
+  <body class="interior {{ active }}">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+    </div>
+    <div class="container-fluid">
+      <div class="row no-gutters metamask-banner">
+        <div class="col-12">
+          {% include 'shared/no_issue_error.html' with page='payout_bounty_choice' %}
+          {% include 'shared/no_metamask_error.html' %}
+          {% include 'shared/zero_balance_error.html' %}
+          {% include 'shared/unlock_metamask.html' %}
+        </div>
+      </div>
+      {% include 'shared/success_container.html' %}
+      <div class="row content">
+        <div class="col-12 body">
+          <div class="row font-smaller-2" id="form_container">
+            <div id="robot_error" class="hidden">
+              <img src="{% static "v2/images/prime.png" %}">
+            </div>
+            <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
+              <div class="d-flex justify-content-center flex-column mt-5 w-100" id="primary_subform">
+                <div class="w-100" style="text-align: center;">
+                  <h3>{% trans "Payout Bounty" %}</h3>
+                  <img src="{% static "v2/images/prime.png" %}">
+                </div>
+                {% include 'shared/network_status.html' %}
+                <div class="w-100">
+                  <h4>{% trans "Option 1:" %}</h4>
+                </div>
+                <div class="w-100 mt-2">
+                  <a class="bounty_box {% if bounty.fulfillments.count == 0 %}disabled{% endif %}" href="{% if bounty.fulfillments.count > 0 %}{{ bounty.action_urls.accept }}{% else %}#{% endif %}">
+                      <h5>{% trans "Basic Payout." %}</h5>
+                      <span>
+                        {% trans "Used to accept a bounty hunter's submission. You currently have " %}{{bounty.fulfillments.count}} {% trans "submission" %}{{bounty.fulfillments.count | pluralize}}.
+                        {% if bounty.fulfillments.count == 0 %}
+                        {% trans "This option is currently disabled because you have no submissions." %}
+                        {% elif bounty.fulfillments.count == 1 %}
+                        {% trans "Accept it using this option." %}
+                        {% else %}
+                        {% trans "Accept one of them using this option." %}
+                        {% endif %}
+                      </span>
+                  </a>
+                </div>
+                <div class="w-100">
+                  <h4>{% trans "Option 2:" %}</h4>
+                </div>
+                <div class="w-100 mt-2">
+                  <a class="bounty_box" href="{{ bounty.action_urls.advanced_payout }}">
+                      <h5>{% trans "Advanced Payout." %}</h5>
+                      <span>
+                        {% trans "Used to skip the 'submission' step; or when multiple parties need to be paid out." %}
+                      </span>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
+  </body>
+
+  <!-- jQuery -->
+  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/secrets.min.js" %}"></script>
+  <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+  <script src="{% static "v2/js/pages/bulk_payout.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "onepager/js/send.js" %}"></script>
+
+  <style>
+  h4{
+    border-bottom: 1px solid black;
+  }
+  </style>
+</html>

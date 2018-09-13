@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-<link rel="stylesheet" href={% static "v2/css/search_bar.css" %}>
+<link rel="stylesheet" href="{% static "v2/css/search_bar.css" %}">
 <div class="row search_bar">
   <div class="offset-1 col-10">
     <div class="row">
@@ -37,11 +37,8 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-12 col-md-6">
+      <div class="col-12 col-md-7">
         <div class="filter-tags"></div> <!-- Populate the filters -->
-      </div>
-      <div class="col-12 col-md-2">
-        <a class="save_search font-caption" href="/save_search">{% trans "Save Search" %}</a>
       </div>
     </div>
   </div>

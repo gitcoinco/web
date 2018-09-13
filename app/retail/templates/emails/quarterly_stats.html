@@ -1,0 +1,413 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n humanize static %}
+{% block content %}
+<style type="text/css">
+  h1, h2, h3, h4 {
+    text-transform: none;
+    color: #0D0764;
+  }
+
+  h2 {
+    margin-top: 3em;
+  }
+
+  h4 {
+    color: #9B9B9B;
+  }
+
+  hr {
+    color: #E0E0E0;
+  }
+
+  .social-img {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
+  .total-transaction {
+    background-color: #D6FBEB;
+    color: #00A55E;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .stat-box {
+    display: flex;
+    margin-bottom: 2em;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #e0e0e0;
+    padding: 1em;
+  }
+
+  .stat-img {
+    text-align: center;
+    border-width: 1px;
+    border-radius: 50%;
+    width: 7em;
+  }
+
+  .stat-img > .content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .stat-contents {
+    color: #0D0764;
+    text-align: left;
+    align-items: center;
+    display: flex;
+    justify-content: left;
+  }
+
+  .stat-contents > p {
+    color: #0D0764;
+    padding: 1em;
+  }
+
+  .bounty-img {
+    border-radius: 50%;
+    background-color: #DBD0FF;
+    color: #3E00FF;
+    float: left;
+    width: 5em;
+    height: 5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .bounty-fund-img {
+    border-radius: 50%;
+    background-color: #D6FBEB;
+    color: #00A55E;
+    float: right;
+    width: 5em;
+    height: 5em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: -3em;
+    margin-left: -1.3em;
+
+  }
+
+  .stat {
+    display: flex;
+    padding: 0.5em;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #grow-oss {
+    margin-top: 5em;
+  }
+
+  .button-action {
+    margin-bottom: 5em;
+    margin-top: 3em;
+  }
+
+  .percent-content {
+    display: flex;
+    justify-content: center;
+    color: #3E00FF;
+  }
+
+  .button-action > .button {
+    padding: 1.3em;
+  }
+
+  .full-bordered-circle {
+    border-radius: 100%;
+    border-style: solid;
+    border-width: 5px;
+    border-color: #3E00FF;
+  }
+
+  .user-skill-1, .user-skill-5, .user-skill-9 {
+    background-color: rgba(255, 206, 8, .20);
+    color: rgba(255, 206, 8, 1);
+  }
+
+  .user-skill-2, .user-skill-6, .user-skill-10 {
+    background-color: rgba(249, 0, 198, .20);
+    color: rgba(249, 0, 198, 1);
+  }
+
+  .user-skill-3, .user-skill-7, .user-skill-11 {
+    background-color: rgba(142, 42, 90, .20);
+    color: rgba(142, 42, 90, 1);
+  }
+
+  .user-skill-4, .user-skill-8, .user-skill-12 {
+    background-color: rgba(62, 0, 255, .20);
+    color: rgba(62, 0, 255, 1);
+  }
+
+  .user-skill-lang {
+    margin: 0.2em;
+    border-radius: 0.2em;
+    padding: 0.2em;
+  }
+
+  #stat-container {
+    margin-left: 20%;
+    margin-right: 20%;
+    padding: 5em;
+  }
+
+  .bounty-completion-circle {
+    color: #F9006C;
+    border-color: #F9006C;
+  }
+
+  @media (max-width: 600px) {
+    #stat-container {
+      margin-left: 0px !important;
+      margin-right: 0px !important;
+      padding: 0px !important;
+    }
+
+    .stat-box {
+      display: flex;
+      justify-content: center;
+      text-align: center;
+    }
+  }
+</style>
+<div id="stat-container">
+    <h1>{% trans "GITCOIN QUARTERLY" %}</h1>
+
+    {% if user_active_in_last_quarter %}
+    	{% if user_fulfilled_bounties %}
+	<h2>{% trans "You've Been BUIDLing" %}</h2>
+	<h4>{% trans "An overview of your stats from the last 3 months." %}</h4>
+        <div class="centered-contents stat-box row">
+            <div class="stat-img total-transaction col-sm-12">
+		    <p class="content">
+		        {% blocktrans with total_earned_usd=user_total_earned_usd|intcomma %} {{ total_earned_usd }} USD {% endblocktrans %}
+		    </p>
+            </div>
+            <div class="stat-contents col-sm-12">
+		    <p>
+		    {% blocktrans with total_earned_eth=user_total_earned_eth|intcomma total_earned_usd=user_total_earned_usd|intcomma avg_eth_earned_per_bounty=user_avg_eth_earned_per_bounty|intcomma avg_usd_earned_per_bounty=user_avg_usd_earned_per_bounty|intcomma count fulfilled_bounties_count=user_fulfilled_bounties_count %}
+		    You earned {{ total_earned_eth }} ETH ({{ total_earned_usd }} USD) from {{ fulfilled_bounties_count|intcomma }} completed bounty, for an average of {{ avg_eth_earned_per_bounty }} ETH ({{ avg_usd_earned_per_bounty }} USD) per bounty!
+		    {% plural %}
+		    You earned {{ total_earned_eth }} ETH ({{ total_earned_usd }} USD) from {{ fulfilled_bounties_count|intcomma }} completed bounties, for an average of {{ avg_eth_earned_per_bounty }} ETH ({{ avg_usd_earned_per_bounty }} USD) per bounty!
+		    {% endblocktrans %}
+		    </p>
+            </div>
+        </div>
+        <div class="centered-contents stat-box row">
+            <div class="stat-img full-bordered-circle percent-content col-sm-12">
+		    <p class="content">
+		    	{% blocktrans with bounty_completion_percentage=user_bounty_completion_percentage %}
+			{{ bounty_completion_percentage }}%
+			{% endblocktrans %}
+		    </p>
+            </div>
+            <div class="stat-contents col-sm-12">
+		    <p>{% blocktrans with bounty_completion_percentage=user_bounty_completion_percentage count num_completed_bounties=user_num_completed_bounties %}
+			You completed {{ bounty_completion_percentage }}% of the {{ num_completed_bounties|intcomma }} bounties that you started - thanks for showing such diligence.
+			{% plural %}
+			You completed {{ bounty_completion_percentage }}% of the {{ num_completed_bounties|intcomma }} bounty that you started - thanks for showing such diligence.
+			{% endblocktrans %}
+		    </p>
+            </div>
+        </div>
+        <div class="centered-contents stat-box row">
+            <div class="stat-img">
+                  {% for language in user_languages %}
+                      {% if forloop.counter < 10 and language %}
+                        <div class="user-skill-lang user-skill-{{ forloop.counter }}">
+                          {{ language }}
+                        </div>
+                      {% endif %}
+                  {% endfor %}
+            </div>
+            <div class="stat-contents">
+		    <p>{% blocktrans count no_of_languages=user_no_of_languages %}
+		          You've boosted your skills in {{ no_of_languages }} different areas:
+			  {% plural %}
+			  You've boosted your skills in {{ no_of_languages }} different area:
+		       {% endblocktrans %}
+                    {% for language in user_languages %}
+		        {% if not forloop.first %}{% trans ", " %}{% endif %}
+			{% if forloop.counter == user_no_of_languages %} {% trans "and " %} {% endif %}
+			{{ language }}
+	            {% endfor %}{% trans "!" %}
+                </p>
+            </div>
+        </div>
+
+        <div class="button-action">
+            <a class="button" href="{% url 'dashboard' %}">{% trans "Share my stats" %}</a>
+        </div>
+        {% endif %}
+
+    	{% if user_funded_bounties_count %}
+	<h2>{% trans "You've Been Making Money Moves" %}</h2>
+	<h4>{% trans "An overview of your OSS project's stats from the last 3 months." %}</h4>
+        <div class="centered-contents stat-box row">
+            <div class="stat-img full-bordered-circle percent-content col-sm-12">
+		    <p class="content">{{ user_funded_fulfilled_percentage }} {% trans "%" %}</p>
+            </div>
+            <div class="stat-contents col-sm-12">
+		    <p>
+		        {% blocktrans with num_funded_fulfilled_bounties=user_num_funded_fulfilled_bounties|intcomma funded_fulfilled_percentage=user_funded_fulfilled_percentage count funded_bounties_count=user_funded_bounties_count %}
+			Of the {{ funded_bounties_count }} issue that you funded a bounty for, {{ num_funded_fulfilled_bounties|intcomma }} were fulfilled -- that's a {{ funded_fulfilled_percentage }}% success rate!
+			{% plural %}
+			Of the {{ funded_bounties_count }} issues that you funded a bounty for, {{ num_funded_fulfilled_bounties|intcomma }} were fulfilled -- that's a {{ funded_fulfilled_percentage }}% success rate!
+			{% endblocktrans %}
+		    </p>
+            </div>
+        </div>
+        <div class="centered-contents stat-box row">
+	   <div class="stat-img total-transaction">
+		   <p class="content">
+		   	{% blocktrans count funded_bounty_developers=user_funded_bounty_developers|length %}
+			    {{ funded_bounty_developers }} contributor
+			    {% plural %}
+			    {{ funded_bounty_developers }} contributors
+			{% endblocktrans %}
+		   </p>
+	   </div>
+            <div class="stat-contents col-sm-12">
+		    <p>
+		    	{% blocktrans count funded_bounty_developers=user_funded_bounty_developers|length %}
+			     The following {{ funded_bounty_developers }} developer has made contributions to your OSS projects this quarter:
+			     {% plural %}
+			     The following {{ funded_bounty_developers }} developers have made contributions to your OSS projects this quarter:
+			 {% endblocktrans %}
+               {% for developer in user_funded_bounty_developers %}
+	           {% if not forloop.first %}{% trans "," %} {% endif %}
+	           {% if forloop.counter == user_num_funded_bounty_developers %} &amp; {% endif %}
+		   <a href="https://github.com/{{ developer }}">@{{ developer }}</a>
+	       {% endfor %}</p>
+	    </div>
+        </div>
+        {% if user_total_funded_hours %}
+        <div class="centered-contents stat-box row">
+            <div class="stat-img">
+		    <p class="content bounty-img">
+		    	{% blocktrans count total_funded_hours=user_total_funded_hours %}
+			    {{ total_funded_hours }} hour
+			   {% plural %}
+			    {{ total_funded_hours }} hours
+			{% endblocktrans %}
+		    </p>
+	      <p class="content bounty-fund-img">
+	          {% blocktrans with total_funded_usd=user_total_funded_usd|intcomma %}
+	              {{ total_funded_usd }} USD
+	          {% endblocktrans %}
+	      </p>
+            </div>
+            <div class="stat-contents">
+		    <p>
+		    {% blocktrans with avg_hours_per_funded_bounty=usr_avg_hours_per_funded_bounty total_funded_usd=user_total_funded_usd|intcomma avg_hourly_rate_per_funded_bounty=user_avg_hourly_rate_per_funded_bounty %}
+		    Developers worked an average of {{ avg_hours_per_funded_bounty }} hours per issue on your projects (only applies to bounties where users entered their hours). You funded a total of ${{ total_funded_usd }} USD of work at an average rate of ${{ avg_hourly_rate_per_funded_bounty }} USD / hour.
+		    {% endblocktrans %}
+		    </p>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="button-action">
+            <a class="button" href="{% url 'dashboard' %}">{% trans "Share my stats" %}</a>
+        </div>
+    {% endif %}
+{% endif %}
+{% if not user_active_last_quarter and relevant_bounties %}
+	<h2>{% trans "You could have been BUIDLing" %}</h2>
+	{% blocktrans count num_relevant_bounties=relevant_bounties|length %}
+		This bounty from the issue explorer matches your skillset:
+		{% plural %}
+		These bounties from the issue explorer match your skillset:
+	{% endblocktrans %}
+	<br>
+	{% for bounty in relevant_bounties %}
+		<br>
+		{% include 'emails/bounty.html' with bounty=bounty %}
+	{% endfor %}
+{% endif %}
+    <hr>
+
+    <h2>Platform-wide Stats</h2>
+    <h4>Activity happening across the Gitcoin network</h4>
+    <div class="centered-contents stat-box">
+        <div class="stat-img full-bordered-circle percent-content bounty-completion-circle">
+            <p class="content">{{ bounties_completion_percent }} %</p>
+        </div>
+        <div class="stat-contents">
+            <p>Over the past 3 months, {{ bounties_completion_percent }}% of the {{ total_funded_bounties }} funded bounties on the Gitcoin network were completed.</p>
+        </div>
+    </div>
+    <div class="centered-contents stat-box">
+        <div class="stat-img">
+            <p class="content bounty-img">{{ num_completed_bounties | intcomma }} bounties</p>
+            <p class="content bounty-fund-img">{{ completed_bounties_fund | intcomma }} USD</p>
+        </div>
+        <div class="stat-contents">
+            <p>A total of {{ num_completed_bounties | intcomma }} bounties were funded an average of ${{ avg_fund_per_bounty }} per bounty, for a total of ${{ completed_bounties_fund | intcomma }} USD.</p>
+        </div>
+    </div>
+    <div class="centered-contents stat-box">
+        <div class="stat-img">
+            {% for hunter in hunters %}
+            <img style="border-radius: 50%; width: 35%;" src="{% url 'org_avatar' hunter %}" />
+            {% endfor %}
+        </div>
+        <div class="stat-contents">
+            <p>The top {{ hunters | length }} hunters in this quarter were
+            {% for hunter in hunters %}{% if forloop.counter == no_of_hunters %} &amp; {% elif forloop.first %}{% else %}, {% endif %}<a href="https://github.com/{{ hunter }}">@{{ hunter }}</a>{% endfor %}</p>
+        </div>
+    </div>
+    <div class="centered-contents stat-box">
+        <div class="stat-img total-transaction">
+            <p class="content">{{ total_transaction_in_usd }} USD</p>
+        </div>
+        <div class="stat-contents">
+            <p>A total value of ${{ total_transaction_in_usd | intcomma }} USD was transacted on the Gitcoin network &amp; {{total_transaction_in_eth|intcomma}} ETH.</p>
+        </div>
+    </div>
+    {% if largest_bounty_value %}
+        <div class="centered-contents stat-box">
+            <div class="stat-img">
+                <img style="width: 100%; border-radius: 50%;" src="{% url 'org_avatar' largest_bounty.bounty_owner_github_username %}" />
+            </div>
+            <div class="stat-contents">
+                <p>
+                    The largest bounty of the quarter was funded by
+                    @<a href="https://github.com/{{ largest_bounty.bounty_owner_github_username }}">{{ largest_bounty.bounty_owner_github_username }}</a>
+                    for ${{ largest_bounty_value }} for
+                    <a href="{{ largest_bounty.get_absolute_url }}">{{largest_bounty.title }}</a>.
+                </p>
+            </div>
+        </div>
+    {% endif %}
+    <div class="button-action">
+        <a class="button" href="{% url 'dashboard' %}">{% trans "Explore New Bounties" %}</a>
+    </div>
+    <hr>
+</div>
+{% endblock %}

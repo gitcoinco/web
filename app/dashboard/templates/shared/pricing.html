@@ -1,0 +1,38 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+<div id="pricing-section" class="pt-2">
+  <h5 class="font-subheader">{% trans "Pricing" %}</h5>
+  <div class="form__flex-group">
+    <div class="form__amount-wrapper">
+      <label class="form__label" for="amount">{% trans "Denomination" %}</label>
+      <div class="form__select2">
+        <select name='denomination' id='token'></select>
+      </div>
+    </div>
+    <div class="form__amount-wrapper">
+      <label class="form__label" for="amount">{% trans "Amount" %}</label>
+      <input name='amount' id='amount'  class="form__input" type="number" value="{{amount|default:'0.001'}}" step="0.001" min="0.001"/>
+    </div>
+    <div class="form__amount-wrapper" id="usd-amount-wrapper">
+      <label class="form__label" for="usd_amount">{% trans "USD" %}</label>
+      <input name='usd_amount' id='usd_amount'  class="form__input" type="text" min="0.00"/>
+    </div>
+  </div>
+  <small class="form__input-help form__input-help--dynamic" id="usd_amount_text"></small>
+  <hr class="mt-5">
+</div>

@@ -1,7 +1,11 @@
 var onboard = {};
-var steps = [ 'github', 'metamask', 'skills', 'avatar' ];
 var current = 0;
 var words = [];
+
+if ($('.logged-in').length) {
+  $('.nav-item.dropdown #navbarDropdown').css('visibility', 'visible');
+  $('.nav_avatar').css('visibility', 'visible');
+}
 
 $('.js-select2').each(function() {
   $(this).select2();
@@ -10,12 +14,19 @@ $('.js-select2').each(function() {
 onboard.showTab = function(num) {
   $($('.step')[num]).addClass('block').outerWidth();
   $($('.step')[num]).addClass('show');
-  window.history.pushState('', '', '/onboard/' + $($('.step')[num]).attr('link'));
 
-  if (num == 0)
+  if (num === 0) {
     $('#prev-btn').hide();
-  else
+  } else {
     $('#prev-btn').show();
+    window.history.pushState('', '', '/onboard/' + flow + '/' + $($('.step')[num]).attr('link'));
+  }
+
+  if (num === 1 || num === 2 || $($('.step')[num]).attr('link') === 'avatar') {
+    $('.controls').hide();
+  } else {
+    $('.controls').show();
+  }
 
   if (num == ($('.step').length) - 1) {
     $('#next-btn').html(gettext('Done'));
@@ -29,46 +40,69 @@ onboard.showTab = function(num) {
     $('#next-btn').attr('onclick', 'changeStep(1)');
   }
   onboard.highlightStep(num);
+  $('#next-btn').addClass('completed');
 };
 
 onboard.highlightStep = function(currentStep) {
   var steps = $('.step-state');
 
   for (i = 0; i < steps.length; i++) {
-    if (i < currentStep)
+    if (i <= currentStep)
       $(steps[i]).addClass('finish');
-    $(steps[i]).removeClass('active');
   }
-  $(steps[currentStep]).addClass('active');
 };
 
+document.alreadyFoundMetamask = false;
 onboard.watchMetamask = function() {
-  if (typeof web3 == 'undefined') {
+  if (document.alreadyFoundMetamask) {
+    return;
+  } else if (typeof web3 == 'undefined') {
     $('.step #metamask').html(`
       <div class="locked">
         <a class="button button--primary" target="_blank" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">
-          <img src="/static/v2/images/metamask.svg" %}>
+          <img src="` + static_url + `v2/images/metamask.svg">
           <span>` + gettext('Install Metamask') + `</span>
         </a>
       </div>`
     );
+    if (current === 1) {
+      $('.controls').hide();
+    }
   } else if (!web3.eth.coinbase) {
     $('.step #metamask').html(`
       <div class="locked">
         <a class="button button--primary" target="_blank" href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral">
-          <img src="/static/v2/images/metamask.svg" %}>
+          <img src="` + static_url + `v2/images/metamask.svg">
           <span>` + gettext('Unlock Metamask') + `</span>
         </a>
       </div>`
     );
+    if (current === 1) {
+      $('.controls').hide();
+      $('#metamask-video').show();
+    }
   } else {
-    $('.step #metamask').html('<div class="unlocked"><img src="/static/v2/images/metamask.svg" %}><span>' + gettext('Unlocked') + '</span></div>');
+    $('.step #metamask').html(
+      '<div class="unlocked"><img src="' + static_url + 'v2/images/metamask.svg"><span class="mr-1">' +
+      gettext('Unlocked') + '</span><i class="far fa-check-circle"></i></div><div class="font-body mt-3"><div class=col><label for=eth_address>' +
+      gettext('Ethereum Payout Address') + '</label></div><div class="col"><input class="w-100 text-center" type=text id=eth_address name=eth_address placeholder="' +
+      gettext('Ethereum Payout Address') + '"" value=' + web3.eth.coinbase + '></div></div>');
+    if (current === 1) {
+      document.alreadyFoundMetamask = true;
+      $('.controls').show();
+      $('#metamask-video').hide();
+      $('#next-btn').click(function(e) {
+        var eth_address = $('#eth_address').val();
+
+        $.get('/onboard/contributor/', {eth_address: eth_address});
+      });
+    }
   }
 };
 
-onboard.getFilters = function() {
-  $('.suggested-tag input[type=checkbox]:checked + span svg').attr('data-icon', 'check');
-  $('.suggested-tag input[type=checkbox]:not(:checked) + span svg').attr('data-icon', 'plus');
+onboard.getFilters = function(savedKeywords) {
+  $('.suggested-tag input[type=checkbox]:checked + span i').removeClass('fa-plus').addClass('fa-check');
+  $('.suggested-tag input[type=checkbox]:not(:checked) + span i').removeClass('fa-check').addClass('fa-plus');
 
   var _filters = [];
   var _words = [];
@@ -81,7 +115,24 @@ onboard.getFilters = function() {
     });
   }
 
+  if (savedKeywords) {
+    $.each(savedKeywords, function(k, value) {
+      if (keywords.includes(value.toLowerCase())) {
+        $('input[type=checkbox][name=tech-stack][value="' + value.toLowerCase() + '"]').prop('checked', true);
+      } else {
+        if ($('#keywords').val() != '') {
+          $('#keywords').val($('#keywords').val() + ',');
+        }
+
+        $('#keywords').val($('#keywords').val() + value.toLowerCase());
+        _words.push(value.toLowerCase());
+        _filters.push('<a class=filter-tag><i class="fas fa-check"></i>' + value.toLowerCase() + '</a>');
+      }
+    });
+  }
+
   $.each($('input[type=checkbox][name=tech-stack]:checked'), function() {
+    $('.suggested-tag input[type=checkbox]:checked + span i').removeClass('fa-plus').addClass('fa-check');
     var value = $(this).attr('value');
 
     _words.push(value);
@@ -94,6 +145,23 @@ onboard.getFilters = function() {
 
   $('.filter-tags').html(_filters);
   words = [...new Set(_words)];
+  // TODO: Save Preferences
+  var settings = {
+    url: '/settings/matching',
+    method: 'POST',
+    headers: {'X-CSRFToken': csrftoken},
+    data: JSON.stringify({
+      'keywords': 'JavaScript,CCoffeeScript,CSS,HTML',
+      'submit': 'Go',
+      'github': 'thelostone-mc'
+    })
+  };
+
+  $.ajax(settings).done(function(response) {
+    // TODO : Update keywords for user profile
+  }).fail(function(error) {
+    // TODO: Handle Error
+  });
 };
 
 var changeStep = function(n) {
@@ -104,9 +172,14 @@ var changeStep = function(n) {
 
   $(steps[current]).removeClass('show');
   $(steps[current]).removeClass('block');
+  $('.alert').remove();
 
   current += n;
-  onboard.showTab(current);
+  if (current > steps.length - 1) {
+    redirectURL();
+  } else {
+    onboard.showTab(current);
+  }
 };
 
 steps.forEach(function(step, index) {
@@ -117,7 +190,7 @@ steps.forEach(function(step, index) {
 onboard.showTab(current);
 
 onboard.watchMetamask();
-setInterval(onboard.watchMetamask, 5000);
+setInterval(onboard.watchMetamask, 2000);
 
 var keywords = [ 'css', 'solidity', 'python', 'javascript', 'ruby', 'django',
   'java', 'html', 'test', 'design' ];
@@ -135,7 +208,15 @@ keywords.forEach(function(keyword) {
   );
 });
 
-$('#step-3 #suggested-tags').html(suggested_tags);
+$('#skills #suggested-tags').html(suggested_tags);
+
+if ($('.navbar #navbarDropdown').html()) {
+  var url = '/api/v0.1/profile/' + $('.navbar #navbarDropdown').html().trim() + '/keywords';
+
+  $.get(url, function(response) {
+    onboard.getFilters(response.keywords);
+  });
+}
 
 $('.suggested-tag input[type=checkbox]').change(function(e) {
   onboard.getFilters();
@@ -143,21 +224,25 @@ $('.suggested-tag input[type=checkbox]').change(function(e) {
 
 $('.search-area input[type=text]').keypress(function(e) {
   if (e.which == 13) {
-    $('#next-btn').addClass('completed');
     onboard.getFilters();
     e.preventDefault();
   }
 });
 
-$('#experienceLevel, .suggested-tag input[type=checkbox]').change(function() {
-  $('#next-btn').addClass('completed');
-});
-
 var redirectURL = function() {
-  var level = $('#experienceLevel').find(':selected').val();
+  var url = '';
 
-  localStorage['experience_level'] = level;
-  var url = '/explorer?q=' + words.join(',');
+  if (flow === 'contributor') {
+    var level = $('#experienceLevel').find(':selected').val();
 
+    localStorage['experience_level'] = level;
+    url = '/explorer?q=' + words.join(',');
+  } else if (flow === 'funder') {
+    url = '/funding/new';
+  } else if (flow === 'profile') {
+    url = '/profile';
+  }
+
+  localStorage['referrer'] = 'onboard';
   document.location.href = url;
 };

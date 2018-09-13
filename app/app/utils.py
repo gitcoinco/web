@@ -1,7 +1,9 @@
 import email
 import imaplib
 import logging
+import re
 import time
+from hashlib import sha1
 
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -11,11 +13,11 @@ from django.db.models.fields import Field
 from django.utils import timezone
 from django.utils.translation import LANGUAGE_SESSION_KEY
 
+import geoip2.database
 import requests
-import rollbar
 from dashboard.models import Profile
 from geoip2.errors import AddressNotFoundError
-from github.utils import _AUTH, HEADERS, get_user
+from git.utils import _AUTH, HEADERS, get_user
 from ipware.ip import get_real_ip
 from marketing.utils import get_or_save_email_subscriber
 from pyshorteners import Shortener
@@ -35,7 +37,65 @@ class NotEqual(Lookup):
         lhs, lhs_params = self.process_lhs(compiler, connection)
         rhs, rhs_params = self.process_rhs(compiler, connection)
         params = lhs_params + rhs_params
-        return f'%s <> %s' % (lhs, rhs), params
+        return f'{lhs} <> {rhs}', params
+
+
+def get_query_cache_key(compiler):
+    """Generate a cache key from a SQLCompiler.
+
+    This cache key is specific to the SQL query and its context
+    (which database is used).  The same query in the same context
+    (= the same database) must generate the same cache key.
+
+    Args:
+        compiler (django.db.models.sql.compiler.SQLCompiler): A SQLCompiler
+            that will generate the SQL query.
+
+    Returns:
+        int: The cache key.
+
+    """
+    sql, params = compiler.as_sql()
+    cache_key = f'{compiler.using}:{sql}:{[str(p) for p in params]}'
+    return sha1(cache_key.encode('utf-8')).hexdigest()
+
+
+def get_table_cache_key(db_alias, table):
+    """Generates a cache key from a SQL table.
+
+    Args:
+        db_alias (str): The alias of the used database.
+        table (str): The name of the SQL table.
+
+    Returns:
+        int: The cache key.
+
+    """
+    cache_key = f'{db_alias}:{table}'
+    return sha1(cache_key.encode('utf-8')).hexdigest()
+
+
+def get_raw_cache_client(backend='default'):
+    """Get a raw Redis cache client connection.
+
+    Args:
+        backend (str): The backend to attempt connection against.
+
+    Raises:
+        Exception: The exception is raised/caught if any generic exception
+            is encountered during the connection attempt.
+
+    Returns:
+        redis.client.StrictRedis: The raw Redis client connection.
+            If an exception is encountered, return None.
+
+    """
+    from django_redis import get_redis_connection
+    try:
+        return get_redis_connection(backend)
+    except Exception as e:
+        logger.error(e)
+        return None
 
 
 def get_short_url(url):
@@ -118,19 +178,10 @@ def sync_profile(handle, user=None, hide_profile=True):
     is_error = 'name' not in data.keys()
     if is_error:
         print("- error main")
-        rollbar.report_message('Failed to fetch github username', 'warning', extra_data=data)
+        logger.warning('Failed to fetch github username', exc_info=True, extra={'handle': handle})
         return None
 
-    repos_data = get_user(handle, '/repos')
-    repos_data = sorted(repos_data, key=lambda repo: repo['stargazers_count'], reverse=True)
-    repos_data = [add_contributors(repo_data) for repo_data in repos_data]
-
-    defaults = {
-        'last_sync_date': timezone.now(),
-        'data': data,
-        'repos_data': repos_data,
-        'hide_profile': hide_profile,
-    }
+    defaults = {'last_sync_date': timezone.now(), 'data': data, 'hide_profile': hide_profile, }
 
     if user and isinstance(user, User):
         defaults['user'] = user
@@ -184,7 +235,7 @@ def fetch_mails_since_id(email_id, password, since_id=None, host='imap.gmail.com
     all_ids = all_ids[0].decode("utf-8").split()
     print(all_ids)
     if since_id:
-        ids = all_ids[all_ids.index(str(since_id))+1:]
+        ids = all_ids[all_ids.index(str(since_id)) + 1:]
     else:
         ids = all_ids
     emails = {}
@@ -267,3 +318,34 @@ def get_location_from_ip(ip_address):
     except Exception as e:
         logger.warning(f'Encountered ({e}) while attempting to retrieve a user\'s geolocation')
     return city
+
+
+def get_country_from_ip(ip_address, db=None):
+    """Get the user's country information from the provided IP address."""
+    country = {}
+    if db is None:
+        db = f'{settings.GEOIP_PATH}GeoLite2-Country.mmdb'
+
+    if not ip_address:
+        return country
+
+    try:
+        reader = geoip2.database.Reader(db)
+        country = reader.country(ip_address)
+    except AddressNotFoundError:
+        pass
+    except Exception as e:
+        logger.warning(f'Encountered ({e}) while attempting to retrieve a user\'s geolocation')
+
+    return country
+
+
+def clean_str(string):
+    """Clean the provided string of all non-alpha numeric characters."""
+    return re.sub(r'\W+', '', string)
+
+
+def get_default_network():
+    if settings.DEBUG:
+        return 'rinkeby'
+    return 'mainnet'

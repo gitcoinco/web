@@ -1,6 +1,6 @@
 {% extends "admin/base_site.html" %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core 
+    Copyright (C) 2017 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -17,9 +17,9 @@
 
 {% endcomment %}
 
-{% load i18n admin_static %}
+{% load i18n static %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 
@@ -84,6 +84,12 @@
         <ul>
             <a href="{% url 'viz_index' %}">Analytics Playground</a>
         </ul>
+        <h2>{% trans 'Debugging Tasks' %}</h2>
+
+        <ul>
+            <a href="{% url 'impersonate-list' %}">{% trans 'Impersonate Users' %}<a/>
+        </ul>
+
         <h2>{% trans 'Administrative Tasks' %}</h2>
 
         <ul>
@@ -94,6 +100,9 @@
         </ul>
         <ul>
             <a href="/_administrationtdi/whitepaperaccessrequest/">Process Whitepaper Requests</a>
+        </ul>
+        <ul>
+            <a href="/_administrationeconomy/token/">Process Token Requests</a>
         </ul>
 
     </div>

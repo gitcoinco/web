@@ -16,7 +16,7 @@
 
 {% endcomment %}
 {% load static %}
-        <div class="row pt-5 pb-5 text-center">
+        <div class="minihero row pt-5 pb-5 text-center">
             {% if position_h1_below_logo %}
                 <div class="col">
                     {% if not suppress_logo %}
@@ -24,9 +24,9 @@
                     {% endif %}
                 </div>
                 <div class="w-100"></div>
-                <div class="col header-line font-weight-300 pb-5 pt-3" style="color:#12c971">{{h1}}</div>
+                <div class="col header-line font-weight-300 pb-5 pt-3">{{h1}}</div>
             {% else %}
-                <div class="col header-line font-weight-300" style="color:#12c971">{{h1}}</div>
+                <div class="col header-line font-weight-300">{{h1}}</div>
                 <div class="w-100"></div>
                 <div class="col pb-5 pt-3">
                     {% if not suppress_logo %}
@@ -34,6 +34,5 @@
                     {% endif %}
                 </div>
             {% endif %}
-
-
         </div>
+        {% include 'shared/rain.html' with class="grey" %}

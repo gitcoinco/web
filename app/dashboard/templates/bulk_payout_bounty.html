@@ -1,0 +1,205 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+  </head>
+
+  <body class="interior {{ active }}">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+    </div>
+    <div class="container-fluid">
+      <div class="row no-gutters metamask-banner">
+        <div class="col-12">
+          {% include 'shared/no_issue_error.html' with page='payout_bounty' %}
+          {% include 'shared/no_metamask_error.html' %}
+          {% include 'shared/zero_balance_error.html' %}
+          {% include 'shared/unlock_metamask.html' %}
+        </div>
+      </div>
+      <div class="row" id="success_container" style="display: none; min-height: 500px;">
+        <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
+          <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
+            <h3>{% trans "Payment(s) Sent" %}</h3>
+            {% include 'svgs/success.svg' %}
+            <a class="button button--primary mt-3 text-center" href="{{ bounty.url }}" >
+                {% trans "Back to Bounty" %}
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="row content">
+        <div class="col-12 body">
+          <div class="row font-smaller-2" id="form_container">
+            <div id="robot_error" class="hidden">
+              <img src="{% static "v2/images/prime.png" %}">
+            </div>
+            <div class="col offset-md-1 col-md-10 d-flex align-items-center justify-content-center" id="primary_form">
+              <div class="d-flex justify-content-center flex-column mt-5" id="primary_subform">
+                <div class="w-100" style="text-align: center;">
+                  <h3>{% trans "Advanced Payout" %}</h3>
+                  <p><a href="{{ action_urls.accept }}">{% trans "Switch to Basic Payout" %}</a></p>
+                </div>
+                <div class="w-100">
+                  <label for=issueURL>{% trans "Issue URL:" %}</label>
+                  <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input" type="text" placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{% endif %}" disabled/>
+                </div>
+                <div class="w-100 mt-2">
+                  <label for=amount>{% trans "Amount:" %}</label>
+                  <input name='amount' id="amount" class="w-20 gc-round-text-input" type="number" placeholder="amount" value="{{ bounty.value_true }}" disabled/>
+                  <input type="hidden" id="standard_bounties_id" value="{{ bounty.standard_bounties_id }}">
+                  <input type="hidden" id="token_address" value="{{ bounty.token_address }}">
+                  <input type="hidden" id="original_amount" value="{{ bounty.value_true }}">
+                  <span id="token_name">{{ bounty.token_name }}</span>
+                </div>
+                  <div class="w-100 mt-2 terms_container">
+                    <input name='close_bounty' id='close_bounty' type="checkbox" value=1 checked="checked" />
+                    <label for=close_bounty>{% blocktrans %}Return the bounty stake to me, thereby closing the bounty.{% endblocktrans %}</label>
+                  </div>
+                <div class="w-100 mt-2">
+                  <label for=bountyFulfillment>{% trans "Payout" %}</label>
+                  <div>
+                    <div class="w-100 mt-2" style="display: inline-block;">
+                      {% include 'shared/bulk_payout_form.html' %}
+                    </div>
+                    <div class="mt-2" id="trans_preview">
+                      <h5>{% trans 'Payout Preview' %}</h5>
+                      <p class="mb-0">{% trans 'Refunded' %}: <span id="total_returned">{{ bounty.value_true }} {{ bounty.token_name }}</span></p>
+                      <p class="mb-0">{% trans 'Paid' %}: -<span id="total_cost"></span></p>
+                      <p class="mb-0">{% trans 'Net' %}: <span id="total_net"></span></p>
+                      <p class="mt-1 mb-0">{% trans 'Transactions:' %}</p>
+                      <table id="transaction_registry">
+                        <tr>
+                          <td>
+                            #
+                          </td>
+                          <td>
+                            {% trans 'Amount' %}
+                          </td>
+                          <td>
+                            {% trans 'Reason' %}
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                  </div>
+                  <div id="gas-section">
+                    {% include 'shared/bounty_actions_hidden_vars.html' %}
+                    {% include 'shared/wallet_estimate.html' %}
+                  </div>
+                  <div class="w-100 mt-2 terms_container">
+                    <input name='terms' id='terms' type="checkbox" value=1 required />
+                    <label for=terms>{% url "terms" as termsurl %}{% blocktrans %}I have read, understand, and agree to, the <a href="{{ termsurl }}" target="_blank" rel="noopener noreferrer">Terms of Service</a>.{% endblocktrans %}</label>
+                  </div>
+                  <div class="w-100 mt-2 text-center">
+                    <a id="acceptBounty" class="button button--primary btn-block js-submit mt-3 mb-2 pulseClick submitBounty" name="submit" style="width: 100%; text-transform: uppercase; text-align: center; color: white;">
+                      {% trans "Payout Bounty" %}
+                    </a>
+                    <a class="font-caption" style="display: block; margin-top: 20px;" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">
+                      Your transaction is secured by the Ethereum blockchain.</br>
+                      Learn more here.
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <style>
+      #transaction_registry {
+        width: 100%;
+      }
+      #transaction_registry tr td{
+        padding: 10px;
+        border: #333 solid 1px;
+      }
+      #trans_preview{
+        padding: 5px;
+        border-radius: 3px;
+        background-color: #fafafa;
+        position: absolute;
+        top: 5rem;
+        right: -20rem;
+      }
+      #trans_preview h5{
+        color: #08cf7b;
+      }
+      #primary_form{
+        margin: 0px 25%;
+      }
+      @media (max-width: 1100px) {
+        #primary_form{
+          margin: 0px 15%;
+        }
+      }
+      @media (max-width: 900px) {
+        #primary_form{
+          margin: 0px 5%;
+        }
+      }
+      @media (max-width: 750px) {
+        #trans_preview{
+          position: unset;
+          top: 200px;
+          left: 72%;
+          width: 100%;
+        }
+        #primary_form{
+          margin: 0px auto;
+        }
+      }
+
+
+      tr div{
+        border-radius: 3px;
+        padding: 5px;
+      }
+      .error{
+        border: 1px solid red !important;
+      }
+      .entry.active{
+        background-color: #bbb;
+      }
+
+    </style>
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
+  </body>
+
+  <!-- jQuery -->
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+  <script src="{% static "v2/js/pages/bulk_payout.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/secrets.min.js" %}"></script>
+  <script src="{% static "v2/js/ethereumjs-accounts.js" %}"></script>
+  <script src="{% static "onepager/js/send.js" %}"></script>
+
+</html>

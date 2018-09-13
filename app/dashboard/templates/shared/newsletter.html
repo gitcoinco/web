@@ -22,16 +22,23 @@
     name="mc-embedded-subscribe-form" target="_blank" novalidate>
 
     <h4 class="col-12" id="newsletter-title">
-      {%if newsletter_headline %}
+      {% if newsletter_headline %}
         {{ newsletter_headline }}
       {% else %}
-        {% trans "Join Our Newsletter !" %}
+        {% trans "Join Our Newsletter!" %}
       {% endif %}
     </h4>
-    <label for="newsletter-input">({% trans "Emails once a week max, & we never sell your data" %})</label>
-    <div class="col-12">
-      <input name="EMAIL" placeholder="you@domain.com" id="newsletter-input" required>
-      <button id="newsletter-subscribe" type="submit" class="addon subscribe"><i class="fas fa-paper-plane" aria-hidden="true"></i></button>
+    {% if not hide_newsletter_caption %}
+      <label for="newsletter-input">({% trans "Emails once a week max, & we never sell your data" %})</label>
+    {% endif %}
+    <div class="col-12 pt-3">
+      <input name="EMAIL" id="newsletter-input" placeholder="Enter your email" required>
+      <button id="newsletter-subscribe" type="submit" class="button button--primary subscribe">Subscribe</button>
     </div>
+    {% if not hide_newsletter_consent %}
+      <span style="display: block; margin-top: 3px; font-size: 10px;">
+        {% trans "You may withdraw email consent at any time" %} | <a href="{% url 'email_settings' email_key %}">{% trans "Manage preferences" %}</a> | <a href="{% url 'email_settings' email_key %}">{% trans "Opt out" %}</a> | <a href="mailto:privacy@gitcoin.co">{% trans "Email us" %}</a>
+      </span>
+    {% endif %}
   </form>
 </div>

@@ -58,33 +58,18 @@ def stats(request):
         _filters = ['slack', 'email', 'whitepaper', 'twitter']
         types = filter_types(types, _filters)
     if _filter == 'user_skills':
-        _filters = [
-            'subscribers_with_skill_',
-        ]
+        _filters = ['subscribers_with_skill_', ]
         types = filter_types(types, _filters)
     if _filter == 'bounty_skills':
-        _filters = [
-            'bounties_with_skill_',
-        ]
+        _filters = ['bounties_with_skill_', ]
         types = filter_types(types, _filters)
     if _filter == 'KPI':
-        _filters = [
-            'browser_ext_chrome',
-            'medium_subscribers',
-            'github_stargazers_count',
-            'slack_users',
-            'email_subscribers_active',
-            'bounties_open',
-            'bounties_ful',
-            'joe_dominance_index_30_count',
-            'joe_dominance_index_30_value',
-            'turnaround_time_hours_30_days_back',
-            'tips',
-            'twitter',
-            'user_action_Login',
-            'bounties_hourly_rate_inusd_last_24_hours',
+        _filters = []
+        types = [
+            'email_subscribers_active_roundup', 'joe_dominance_index_30_value', 'bounties_value', 'bounties_done_value',
+            'bounties_hourly_rate_inusd_last_24_hours', 'bounties_open_total', 'slack_users_active',
+            'twitter_followers',
         ]
-        types = filter_types(types, _filters)
 
     # params
     params = {
@@ -171,9 +156,7 @@ def cohort_helper_num(inner_start_time, inner_end_time, data_source, users):
     if 'profile' in data_source:
         if data_source == 'profile-githubinteraction':
             num = GithubEvent.objects.filter(
-                profile__in=users,
-                created_on__gte=inner_start_time,
-                created_on__lt=inner_end_time,
+                profile__in=users, created_on__gte=inner_start_time, created_on__lt=inner_end_time,
             ).distinct('profile').count()
         else:
             event = 'start_work'
@@ -182,17 +165,11 @@ def cohort_helper_num(inner_start_time, inner_end_time, data_source, users):
             if data_source == 'profile-new_bounty':
                 event = 'new_bounty'
             num = UserAction.objects.filter(
-                profile__in=users,
-                created_on__gte=inner_start_time,
-                created_on__lt=inner_end_time,
-                action=event,
+                profile__in=users, created_on__gte=inner_start_time, created_on__lt=inner_end_time, action=event,
             ).distinct('profile').count()
     elif data_source == 'slack-online':
         num = SlackPresence.objects.filter(
-            slackuser__in=users,
-            created_on__gte=inner_start_time,
-            created_on__lt=inner_end_time,
-            status='active',
+            slackuser__in=users, created_on__gte=inner_start_time, created_on__lt=inner_end_time, status='active',
         ).distinct('slackuser').count()
     else:
         event = data_source.split('-')[1]
@@ -233,11 +210,7 @@ def cohort(request):
             inner_end_time = timezone.now() - timezone.timedelta(**cohort_helper_timedelta(k - 1, period_size))
             num = cohort_helper_num(inner_start_time, inner_end_time, data_source, users)
             pct = round(num / num_entries, 2) if num_entries else 0
-            usage_by_time_period[k] = {
-                'num': num,
-                'pct_float': pct,
-                'pct_int': int(pct * 100),
-            }
+            usage_by_time_period[k] = {'num': num, 'pct_float': pct, 'pct_int': int(pct * 100), }
         cohorts[i] = {
             'num': num_entries,
             'start_time': start_time,
@@ -293,63 +266,34 @@ def funnel(request):
 
     weekly_source = Stat.objects.filter(created_on__hour=1, created_on__week_day=1).order_by('-created_on')
     daily_source = Stat.objects.filter(created_on__hour=1).order_by('-created_on')
-    funnels = [
-        {
-            'title': 'web => bounties_posted => bounties_fulfilled',
-            'keys': [
-                'sessions',
-                'bounties_alltime',
-                'bounties_fulfilled',
-            ],
-            'data': []
-        },
-        {
-            'title': 'web => bounties_posted => bounties_fulfilled (detail)',
-            'keys': [
-                'sessions',
-                'bounties_alltime',
-                'bounties_started_total',
-                'bounties_submitted_total',
-                'bounties_done_total',
-                'bounties_expired_total',
-                'bounties_cancelled_total',
-            ],
-            'data': []
-        },
-        {
-            'title': 'web session => email_subscribers',
-            'keys': [
-                'sessions',
-                'email_subscribers',
-            ],
-            'data': []
-        },
-        {
-            'title': 'web session => slack',
-            'keys': [
-                'sessions',
-                'slack_users',
-            ],
-            'data': []
-        },
-        {
-            'title': 'web session => create dev grant',
-            'keys': [
-                'sessions',
-                'dev_grant',
-            ],
-            'data': []
-        },
-        {
-            'title': 'email funnel',
-            'keys': [
-                'email_processed',
-                'email_open',
-                'email_click',
-            ],
-            'data': []
-        },
-    ]
+    funnels = [{
+        'title': 'web => bounties_posted => bounties_fulfilled',
+        'keys': ['sessions', 'bounties_alltime', 'bounties_fulfilled', ],
+        'data': []
+    }, {
+        'title': 'web => bounties_posted => bounties_fulfilled (detail)',
+        'keys': [
+            'sessions', 'bounties_alltime', 'bounties_started_total', 'bounties_submitted_total', 'bounties_done_total',
+            'bounties_expired_total', 'bounties_cancelled_total',
+        ],
+        'data': []
+    }, {
+        'title': 'web session => email_subscribers',
+        'keys': ['sessions', 'email_subscribers', ],
+        'data': []
+    }, {
+        'title': 'web session => slack',
+        'keys': ['sessions', 'slack_users', ],
+        'data': []
+    }, {
+        'title': 'web session => create dev grant',
+        'keys': ['sessions', 'dev_grant', ],
+        'data': []
+    }, {
+        'title': 'email funnel',
+        'keys': ['email_processed', 'email_open', 'email_click', ],
+        'data': []
+    }, ]
 
     for funnel in range(0, len(funnels)):
         keys = funnels[funnel]['keys']
@@ -386,8 +330,5 @@ def funnel(request):
             except Exception as e:
                 print(key, k, e)
 
-    params = {
-        'title': "Funnel Analysis",
-        'funnels': funnels,
-    }
+    params = {'title': "Funnel Analysis", 'funnels': funnels, }
     return TemplateResponse(request, 'funnel.html', params)

@@ -1,0 +1,44 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+
+<div class="row mb-5">
+  <div class="col text-center">
+    <h1>{% trans title %}</h1>
+  </div>
+</div>
+<div class="row d-flex justify-content-center align-items-center whatisit mb-4 flex-wrap">
+  <div class="col-12 col-md-6 col-lg-5 mb-4">
+    <div>
+      <h3 class="mb-3">{% trans "A Mission to Grow Open Source." %}</h3>
+      <p class="mb-4">{% blocktrans %}A community for developers to collaborate and monetize their skills while working 
+        on Open Source projects through bounties.{% endblocktrans %}
+      </p>
+      <a href="https://medium.com/gitcoin/open-source-money-will-buidl-the-open-source-ecosystem-f4169def8748" class="btn btn-gc-purple mb-4"
+      target="_blank" rel="noopener noreferrer"><i class="fas fa-rocket mr-2"></i> {% trans "Our Mission" %}</a>
+      <h3 class="mb-3 font-title-lg">{% trans "No ICO. No Token. No Funny Business." %}</h3>
+      <p>
+        {% trans "Gitcoin is a decentralized application built on Ethereum’s blockchain. Gitcoin does <strong>not</strong> have a native token." %}
+      </p>
+      <a href="{% url 'not_a_token' %}" class="btn btn-gc-purple mb-4"
+        target="_blank" rel="noopener noreferrer"><i class="fas fa-coins mr-2"></i> {% trans "Read More" %}</a>
+    </div>
+  </div>
+  <div class="col-12 col-md-6 col-lg-5 d-flex flex-column align-items-center animatedParent youtube">
+    <iframe src="https://www.youtube.com/embed/{{video}}" frameborder="0" allowfullscreen></iframe>
+  </div>
+</div>

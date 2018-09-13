@@ -48,7 +48,7 @@ class FaucetRequest(SuperModel):
     fulfilled = models.BooleanField(default=False)
     rejected = models.BooleanField(default=False)
     github_username = models.CharField(max_length=255, db_index=True)
-    github_meta = JSONField(default={})
+    github_meta = JSONField(default=dict, blank=True)
     address = models.CharField(max_length=50)
     email = models.CharField(max_length=255)
     comment = models.TextField(max_length=500, blank=True)

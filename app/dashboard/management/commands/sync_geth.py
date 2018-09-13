@@ -18,20 +18,28 @@
 
 import datetime
 import logging
-import sys
 import warnings
 
+from django.conf import settings
 from django.core.management.base import BaseCommand
 
-import rollbar
 from dashboard.helpers import UnsupportedSchemaException
-from dashboard.utils import BountyNotFoundException, get_bounty, web3_process_bounty
+from dashboard.utils import BountyNotFoundException, get_bounty, getBountyContract, web3_process_bounty
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
+default_start_id = 0 if not settings.DEBUG else 402
+
+
+def get_bounty_id(_id, network):
+    if _id > 0:
+        return _id
+    contract = getBountyContract(network)
+    bounty_id = contract.functions.getNumBounties().call() - 1
+    return bounty_id + _id
 
 
 class Command(BaseCommand):
@@ -39,20 +47,33 @@ class Command(BaseCommand):
     help = 'syncs bounties with geth'
 
     def add_arguments(self, parser):
-        parser.add_argument('network')
-        parser.add_argument('start_id', default=0, type=int)
-        parser.add_argument('end_id', default=99999999999, type=int)
+        parser.add_argument('network', default='rinkeby', type=str)
+        parser.add_argument(
+            'start_id',
+            default=default_start_id,
+            type=int,
+            help="The start id.  If negative or 0, will be set to highest bounty id minus <x>"
+        )
+        parser.add_argument(
+            'end_id',
+            default=99999999999,
+            type=int,
+            help="The end id.  If negative or 0, will be set to highest bounty id minus <x>"
+        )
 
     def handle(self, *args, **options):
-
         # config
         network = options['network']
         hour = datetime.datetime.now().hour
         day = datetime.datetime.now().day
         month = datetime.datetime.now().month
 
+        start_id = get_bounty_id(options['start_id'], network)
+        end_id = get_bounty_id(options['end_id'], network)
+
         # iterate through all the bounties
-        bounty_enum = int(options['start_id'])
+        bounty_enum = int(start_id)
+        print(f"syncing from {start_id} to {end_id}")
         more_bounties = True
         while more_bounties:
             try:
@@ -67,16 +88,12 @@ class Command(BaseCommand):
             except UnsupportedSchemaException as e:
                 logger.info(f"* Unsupported Schema => {e}")
             except Exception as e:
-                extra_data = {
-                    'bounty_enum': bounty_enum,
-                    'more_bounties': more_bounties,
-                    'network': network
-                }
-                rollbar.report_exc_info(sys.exc_info(), extra_data=extra_data)
+                extra_data = {'bounty_enum': bounty_enum, 'more_bounties': more_bounties, 'network': network}
+                logger.error('Failed to fetch github username', exc_info=True, extra=extra_data)
                 logger.error(f"* Exception in sync_geth => {e}")
             finally:
                 # prepare for next loop
                 bounty_enum += 1
 
-                if bounty_enum > int(options['end_id']):
+                if bounty_enum > int(end_id):
                     more_bounties = False

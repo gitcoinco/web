@@ -22,7 +22,7 @@ from django.core.management.base import BaseCommand
 
 from dashboard.models import Profile
 from dashboard.views import profile_keywords_helper
-from github.utils import search
+from git.utils import search
 from marketing.models import EmailSubscriber
 
 
@@ -48,7 +48,7 @@ def get_github_user_from_DB(email):
 
 class Command(BaseCommand):
 
-    help = 'pulls all github login info'
+    help = 'pulls all github metadata info'
 
     def handle(self, *args, **options):
         emailsubscribers = EmailSubscriber.objects.filter(github='')

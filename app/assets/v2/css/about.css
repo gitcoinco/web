@@ -1,5 +1,4 @@
 .section {
-  border-top: 1px solid #EAEAEA;
   margin: auto;
 }
 
@@ -85,22 +84,22 @@ h4 {
   margin-bottom: 10px;
 }
 
-#team .social-links a svg {
+#team .social-links a i {
   font-size: 1.25em;
   transition: all 0.3s;
   color: black;
 }
 
-#team .social-links a:hover svg {
+#team .social-links a:hover i {
   color: #1AB56D;
   transform: scale(1.5) rotate(360deg);
 }
 
-#team .card-small .social-links a svg {
+#team .card-small .social-links a i {
   transition: none;
 }
 
-#team .card-small .social-links a:hover svg {
+#team .card-small .social-links a:hover i {
   transition: none;
   transform: none;
   color: black;

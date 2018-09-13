@@ -43,7 +43,7 @@ You will need to edit the `app/.env` file with your local environment variables.
 
 ## Integration Setup (recommended)
 
-If you plan on using the Github integration, please read the [third party integration guide](THIRD_PARTY_SETUP.md).
+If you plan on using the Github integration, please read the [third party integration guide](https://docs.gitcoin.co/mk_third_party_integrations/).
 
 ## Static Asset Handling (optional)
 
@@ -64,7 +64,13 @@ docker-compose exec web python3 app/manage.py createsuperuser
 This can be useful if you'd like data to test with:
 
 ```shell
-docker-compose exec web python3 app/manage.py sync_geth mainnet 40 99999999999
+docker-compose exec web python3 app/manage.py sync_geth
+```
+
+or equivalently:
+
+```shell
+docker-compose exec web python3 app/manage.py sync_geth rinkeby 402 99999999999
 ```
 
 ### FAQ
@@ -76,7 +82,7 @@ docker-compose exec web python3 app/manage.py sync_geth mainnet 40 99999999999
 You can ensure your project will pass all Travis tests by running:
 
 ```shell
-make tests # docker-compose exec web pytest -p no:ethereum; npm run eslint;
+make tests # docker-compose exec -e DJANGO_SETTINGS_MODULE=app.settings web pytest -p no:ethereum; npm run eslint;
 ```
 
 The above make command will run `eslint` and `pytest`.
@@ -114,11 +120,24 @@ make fix # npm run eslint:fix; docker-compose exec web isort -rc --atomic .;
 make # make help
 ```
 
+#### On-chain activities
+
+`Q: Which network should I be using for local testing?`
+
+It is recommended to use the `Rinkeby` testnet for local development testing.  You can receive some testnet eth by visiting the [Rinkeby Faucet](https://faucet.rinkeby.io/)
+Alternatively, you can use the local `ganache-cli` test rpc network that ships with the docker compose stack by switching to `Localhost 8545` in Metamask.
+
+#### Address already in use
+
+`Q: I am receiving a "address already in use" error when attempting to run: docker-compose up`
+
+This error can occur when you are already running a local instance of PostgreSQL or another service on any of the ports specified in the `docker-compose.yml`.  You can identify which process is currently bound to the port with: `lsof -i :<port_number> | grep LISTEN` - for example: `lsof -i :8000 | grep LISTEN` and simply `sudo kill <pid>`, substituting the PID returned from `lsof`.
+
 #### Github Login
 
 `Q: How can I enable the Github Login functionality on my local docker instance?`
 
-If you plan on using the Github integration, please read the [third party integration guide](THIRD_PARTY_SETUP.md).
+If you plan on using the Github integration, please read the [third party integration guide](https://docs.gitcoin.co/mk_third_party_integrations/).
 
 #### ipdb
 

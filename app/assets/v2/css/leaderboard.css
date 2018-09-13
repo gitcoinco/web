@@ -55,6 +55,7 @@
 #leaderboard .winner {
   position: relative;
   padding: 0px;
+  min-height: 23em;
 }
 
 #leaderboard .winner-content {
@@ -125,6 +126,13 @@
 }
 
 @media (max-width: 700px) {
+  .item-count-bounties {
+    display: none !important;
+  }
+  .clickable-row.d-flex .col-5{
+    flex: 0 0 16.666667%;
+    max-width: 16.66666%;
+  }
   #leaderboard .select {
     display: none;
   }

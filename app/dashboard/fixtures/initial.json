@@ -13,9 +13,10 @@
     "slack_repos": "[]",
     "slack_token": "",
     "slack_channel": "",
+    "discord_repos": "[]",
+    "discord_webhook_url": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }, {
@@ -33,9 +34,10 @@
     "slack_repos": "[]",
     "slack_token": "",
     "slack_channel": "",
+    "discord_repos": "[]",
+    "discord_webhook_url": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }, {
@@ -53,9 +55,10 @@
     "slack_repos": "[]",
     "slack_token": "",
     "slack_channel": "",
+    "discord_repos": "[]",
+    "discord_webhook_url": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }, {
@@ -73,9 +76,10 @@
     "slack_repos": "[]",
     "slack_token": "",
     "slack_channel": "",
+    "discord_repos": "[]",
+    "discord_webhook_url": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }, {
@@ -93,9 +97,10 @@
     "slack_repos": "[]",
     "slack_token": "",
     "slack_channel": "",
+    "discord_repos": "[]",
+    "discord_webhook_url": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }, {
@@ -113,9 +118,10 @@
     "slack_repos": "[]",
     "slack_token": "",
     "slack_channel": "",
+    "discord_repos": "[]",
+    "discord_webhook_url": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }, {
@@ -133,9 +139,10 @@
     "slack_repos": "[]",
     "slack_token": "",
     "slack_channel": "",
+    "discord_repos": "[]",
+    "discord_webhook_url": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }, {
@@ -153,9 +160,10 @@
     "slack_repos": "[]",
     "slack_token": "",
     "slack_channel": "",
+    "discord_repos": "[]",
+    "discord_webhook_url": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }, {
@@ -173,9 +181,10 @@
     "slack_repos": "[]",
     "slack_token": "",
     "slack_channel": "",
+    "discord_repos": "[]",
+    "discord_webhook_url": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }, {
@@ -193,9 +202,10 @@
     "slack_repos": "[]",
     "slack_token": "",
     "slack_channel": "",
+    "discord_repos": "[]",
+    "discord_webhook_url": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }, {
@@ -213,9 +223,10 @@
     "slack_repos": "[]",
     "slack_token": "",
     "slack_channel": "",
+    "discord_repos": "[]",
+    "discord_webhook_url": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }, {
@@ -233,9 +244,10 @@
     "slack_repos": "[]",
     "slack_token": "",
     "slack_channel": "",
+    "discord_repos": "[]",
+    "discord_webhook_url": "",
     "suppress_leaderboard": false,
     "hide_profile": false,
-    "repos_data": [],
     "max_num_issues_start_work": 3
   }
 }]

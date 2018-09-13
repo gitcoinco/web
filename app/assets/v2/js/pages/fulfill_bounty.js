@@ -13,12 +13,6 @@ window.onload = function() {
     if (typeof localStorage['notificationEmail'] != 'undefined') {
       $('input[name=notificationEmail]').val(localStorage['notificationEmail']);
     }
-    if (
-      typeof localStorage['acceptTOS'] != 'undefined' &&
-      localStorage['acceptTOS']
-    ) {
-      $('input[name=terms]').attr('checked', 'checked');
-    }
     if (getParam('source')) {
       $('input[name=issueURL]').val(getParam('source'));
     }
@@ -57,18 +51,8 @@ window.onload = function() {
         var account = web3.eth.coinbase;
         var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
 
-        ipfs.ipfsApi = IpfsApi({
-          host: 'ipfs.infura.io',
-          port: '5001',
-          protocol: 'https',
-          root: '/api/v0'
-        });
-        ipfs.setProvider({
-          host: 'ipfs.infura.io',
-          port: 5001,
-          protocol: 'https',
-          root: '/api/v0'
-        });
+        ipfs.ipfsApi = IpfsApi(ipfsConfig);
+        ipfs.setProvider(ipfsConfig);
 
         // https://github.com/ConsenSys/StandardBounties/issues/21
         var ipfsFulfill = {

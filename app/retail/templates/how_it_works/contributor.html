@@ -1,0 +1,214 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+
+<div class="howworks-sections d-flex">
+  <div class="howworks-section">
+    <div class="font-subheader">
+      <ul class="pl-0">
+        <li><a href="#">General</a></li>
+        <li><a href="#project-types">Project Types</a></li>
+        <li><a href="#permissions">Permission</a></li>
+      </ul>
+    </div>
+    <div class="row mt-5 mb-5">
+      <div class="col text-center mb-5">
+        <h1 class="font-title-xl">{% trans "How it Works - Contributor" %}</h1>
+      </div>
+    </div>
+
+    <div class="row how-it-works">
+      <div class="col-12 mt-3">
+        <div class="how-it-works__step">
+          <div class="col-12 col-lg-4 how-it-works__screenshot p-0">
+            <img src="{% static "v2/images/how-it-works/contributor/explore_bounty.svg" %}" alt="bounty explorer" />
+          </div>
+
+          <div class="col-12 col-md-4 offset-md-4 col-lg-4 offset-lg-0 how-it-works__step-description">
+            <div class="how-it-works__step-icon">
+              <img src="{% static "v2/images/how-it-works/icons/fund_bounty.svg" %}" alt="bounty explorer" />
+            </div>
+            <div>
+              <div class="how-it-works__step-number">1</div>
+              <div class="how-it-works__vert-line"></div>
+            </div>
+            <div class="how-it-works__step-title">{% trans "Explore Bounties" %}</div>
+            <div class="how-it-works__step-text">
+              <span class="center-block">
+                {% trans "Explore available bounties" %}
+              </span>
+              <span>
+                {% trans "on the Issue Explorer." %}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-lg-8 offset-lg-4 how-it-works__step p-0">
+          <div class="col-12 col-lg-6 how-it-works__screenshot">
+            <img src="{% static "v2/images/how-it-works/contributor/express_interest.svg" %}" alt="express interest" />
+          </div>
+          <div class="col-12 col-md-4 offset-md-4 col-lg-6 offset-lg-0 how-it-works__step-description">
+            <div class="how-it-works__step-icon">
+              <img src="{% static "v2/images/how-it-works/icons/binary.svg" %}" alt="express interest" />
+            </div>
+            <div>
+              <div class="how-it-works__step-number">2</div>
+              <div class="how-it-works__vert-line"></div>
+            </div>
+            <div class="how-it-works__step-title">{% trans "Express Interest" %}</div>
+            <div class="how-it-works__step-text">
+              {% blocktrans %}
+                <span class="center-block">Interested on an issue?</span>
+                <span class="center-block">
+                  Click Start Work to express
+                </span>
+                <span>
+                  interest through a short form.
+                </span>
+              {% endblocktrans %}
+            </div>
+          </div>
+        </div>
+
+        <div class="how-it-works__step">
+          <div class="col-12 col-lg-4 how-it-works__screenshot p-0">
+            <img src="{% static "v2/images/how-it-works/begin_work.svg" %}" alt="begin work" />
+          </div>
+
+          <div class="col-12 col-md-4 offset-md-4 col-lg-4 offset-lg-0 how-it-works__step-description">
+            <div class="how-it-works__step-icon">
+              <img src="{% static "v2/images/how-it-works/icons/mail.svg" %}" alt="begin work" />
+            </div>
+            <div>
+              <div class="how-it-works__step-number">3</div>
+              <div class="how-it-works__vert-line"></div>
+            </div>
+            <div class="how-it-works__step-title">{% trans "Begin Work" %}</div>
+            <div class="how-it-works__step-text">
+              {% blocktrans %}
+                <span class="center-block">If the project requires approval,</span>
+                <span class="center-block">keep an eye out for a notification</span>
+                <span class="center-block">for a Request to Work confirmation</span>
+                <span class="center-block">via email prior to begin working.</span>
+                <span>Otherwise, work away!</span>
+              {% endblocktrans %}
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-lg-8 offset-lg-4 how-it-works__step">
+          <div class="col-12 col-lg-6 how-it-works__screenshot p-0">
+            <img src="{% static "v2/images/how-it-works/contributor/stop_work.svg" %}"
+              alt="stop work" />
+          </div>
+
+          <div class="col-12 col-md-4 offset-md-4 col-lg-6 offset-lg-0 how-it-works__step-description">
+            <div class="how-it-works__step-icon">
+              <img src="{% static "v2/images/how-it-works/icons/stop_work.svg" %}"
+                alt="stop work" />
+            </div>
+            <div>
+              <div class="how-it-works__step-exclamation"><i class="fas fa-exclamation"></i></div>
+              <div class="how-it-works__vert-line"></div>
+            </div>
+            <div class="how-it-works__step-title">{% trans "Can’t Continue Your Work?" %}</div>
+            <div class="how-it-works__step-text">
+              {% blocktrans %}
+                <span class="center-block">Click Stop Work, and</span>
+                <span class="center-block">someone else will pick it up.</span>
+              {% endblocktrans %}
+            </div>
+          </div>
+        </div>
+
+        <div class="how-it-works__step">
+          <div class="col-12 col-lg-4 how-it-works__screenshot p-0">
+            <img src="{% static "v2/images/how-it-works/submit_work.svg" %}" alt="submit work" />
+          </div>
+
+          <div class="col-12 col-md-4 offset-md-4 col-lg-4 offset-lg-0 how-it-works__step-description">
+            <div class="how-it-works__step-icon">
+              <img src="{% static "v2/images/how-it-works/icons/complete_work.svg" %}" alt="submit work" />
+            </div>
+
+            <div>
+              <div class="how-it-works__step-number">4</div>
+              <div class="how-it-works__vert-line"></div>
+            </div>
+            <div class="how-it-works__step-title">{% trans "Submit Work" %}</div>
+            <div class="how-it-works__step-text">
+              {% blocktrans %}
+                <span class="center-block">Completed your work?</span>
+                <span class="center-block">Click Submit Work to</span>
+                <span class="center-block">send your PR to a repo maintainer</span>
+                <span class="center-block">for review.</span>
+                <span>Otherwise, work away!</span>
+              {% endblocktrans %}            
+            </div>
+          </div>
+        </div>
+
+        <div class="col-12 col-lg-8 offset-lg-4 how-it-works__step">
+          <div class="col-12 col-lg-6 how-it-works__screenshot p-0">
+            <img src="{% static "v2/images/how-it-works/accept_work.svg" %}" alt="work reviewed" />
+          </div>
+
+          <div class="col-12 col-md-4 offset-md-4 col-lg-6 offset-lg-0 how-it-works__step-description">
+            <div class="how-it-works__step-icon">
+              <img src="{% static "v2/images/how-it-works/icons/box_eth.svg" %}" alt="work reviewed" />
+            </div>
+            <div>
+              <div class="how-it-works__step-wait"> </div>
+              <div class="how-it-works__vert-line"></div>
+            </div>
+            <div class="how-it-works__step-title">{% trans "Work Reviewed" %}</div>
+            <div class="how-it-works__step-text">
+              {% blocktrans %}
+                <span class="center-block">Submitted work is reviewed</span>
+                <span class="center-block">and approved by a repo owner.</span>
+              {% endblocktrans %}
+            </div>
+          </div>
+        </div>
+
+        <div class="how-it-works__step">
+          <div class="col-12 col-lg-4 how-it-works__screenshot p-0">
+            <img src="{% static "v2/images/how-it-works/work_paid.svg" %}" alt="get paid" />
+          </div>
+
+          <div class="col-12 col-md-4 offset-md-4 col-lg-4 offset-lg-0 how-it-works__step-description">
+            <div class="how-it-works__step-icon">
+              <img src="{% static "v2/images/how-it-works/icons/eth_paid.svg" %}" alt="get paid" />
+            </div>
+
+            <div class="how-it-works__step-number">5</div>
+            <div class="how-it-works__step-title">{% trans "Get Paid" %}</div>
+
+            <div class="how-it-works__step-text">
+              {% blocktrans %}
+                <span class="center-block">Once your work is approved</span>
+                <span class="center-block">by the repo maintainer,</span>
+                <span>you’ll get paid!</span>
+              {% endblocktrans %}            
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,139 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static cookielaw_tags %}
+<!DOCTYPE HTML>
+<html>
+  <head>
+    {% include 'shared/tag_manager_1.html' %}
+    {% include 'shared/cards_pic.html' %}
+    <title>{{title}} | Gitcoin</title>
+    <meta charset="utf-8" />
+    <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="theme-color" content="#ffffff">
+    <!--[if lte IE 8]><script src="{% static "onepager/js/html5shiv.js" %}"></script><![endif]-->
+    <link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}">
+    <link rel="stylesheet" href="{% static "onepager/css/main.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/box_redeem.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/rain.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}">
+    <link rel="stylesheet" href="{% static "v2/css/forms/button.css" %}">
+    <link rel="stylesheet" href="{% static "cookielaw/css/cookielaw.css" %}">
+
+    <style>
+      .d-flex {
+        display: flex;
+      }
+
+      .align-items-baseline {
+        align-items: center;
+      }
+
+      .mr-2 {
+        margin-right: 1rem;
+      }
+
+      .rounded-circle {
+        border-radius: 50%;
+        vertical-align: middle;
+      }
+
+      .select2-container .select2-selection--single {
+        height: 34px;
+        text-align: left;
+      }
+
+      .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 32px;
+      }
+
+      .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 32px;
+      }
+    </style>
+
+    <script type="text/javascript">
+      var static_url = "{{ STATIC_URL }}";
+      var media_url = "{{ MEDIA_URL }}";
+    </script>
+    <script src="{% static "v2/js/jquery.js" %}"></script>
+    <script src="{% static "v2/js/work_with_gitcoin.js" %}"></script>
+    <!--[if lte IE 9]><link rel="stylesheet" href="{% static "onepager/css/ie9.css" %}"><![endif]-->
+    <!--[if lte IE 8]><link rel="stylesheet" href="{% static "onepager/css/ie8.css" %}"><![endif]-->
+    <noscript>
+      <link rel="stylesheet" href="{% static "onepager/css/noscript.css" %}">
+    </noscript>
+    {% include 'shared/favicon.html' %}
+  </head>
+  <body id="yge" class="{{ class }}">
+    {% include 'shared/tag_manager_2.html' %}
+    {% include 'shared/analytics.html' with suppress_sumo=1 %}
+    {% block 'world' %} {% endblock %}
+    {% include 'shared/rain.html' with class="color" %}
+    <!-- Wrapper -->
+    <div id="wrapper">
+      {% include 'shared/onepager_auth.html' with source='authed' %}
+      {% cookielaw_banner %}
+      <!-- Main -->
+      {% block 'main' %} {% endblock %}
+      <!-- Footer -->
+      <footer id="footer">
+        <ul class="copyright">
+          <li>
+            <a href="/">&copy; Gitcoin.co</a>
+          </li>
+          {% if not hide_send_tip %}
+          <li>
+            <a href="{% url "tip" %}">{% trans "Send Tip" %}</a>
+          </li>
+          {% endif %}
+        </ul>
+      </footer>
+    </div>
+    <!-- Scripts -->
+    <script type="text/javascript" src="{% url 'javascript-catalog' %}"></script>
+    {% block 'scripts' %}{% endblock %}
+    {% include 'shared/sentry.html' %}
+    <script src="{% static "v2/js/jquery.select2.min.js" %}"></script>
+    <script src="{% static "cookielaw/js/cl.js" %}"></script>
+    <!--[if lte IE 8]><script src="{% static "onepager/js/respond.min.js" %}"></script><![endif]-->
+    <script>
+      if ('addEventListener' in window) {
+        window.addEventListener('load', function () {
+          document.body.className = document.body.className.replace(/\bis-loading\b/, '');
+        });
+        document.body.className += (navigator.userAgent.match(/(MSIE|rv:11\.0)/) ? ' is-ie' : '');
+      }
+    </script>
+    {% if recommend_gas_price %}
+    <script type="text/javascript">
+      setInterval(function () {
+        defaultGasPrice = parseInt(10 ** 9 * {{ recommend_gas_price }});
+      }, 1000);
+    </script>
+    {% endif %}
+    {% include 'shared/messages.html' %}
+
+    <script>
+      var ipfsConfig = {
+        host: "{{ ipfs_config.host }}",
+        port: {{ ipfs_config.port }},
+        protocol: "{{ ipfs_config.protocol }}",
+        root: "{{ ipfs_config.root }}"
+      };
+    </script>
+  </body>
+</html>

@@ -1,13 +1,12 @@
 -r base.txt
-pytest==3.5.0
-pytest-cov
-pytest-isort
-pytest-django
-pytest-sugar
-coverage
-django-coverage-plugin
-isort
-responses
-requests_mock
-django-test-plus
-yapf
+pytest==3.8.0
+pytest-cov==2.6.0
+pytest-isort==0.2.1
+pytest-django==3.4.2
+pytest-sugar==0.9.1
+coverage==4.5.1
+isort==4.3.4
+responses==0.9.0
+requests_mock==1.5.2
+django-test-plus==1.1.1
+git+https://github.com/google/yapf.git#egg=yapf

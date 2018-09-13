@@ -18,9 +18,9 @@
 
 {% endcomment %}
 
-{% load i18n admin_static static %}
+{% load i18n static %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 
@@ -44,7 +44,7 @@
   </li>
   <li>
     <img src="{% static "v2/images/dataviz/graph.png" %}">
-    <a href='{% url 'viz_graph' %}'>Graph</a>
+    <a href='{% url 'viz_graph' %}?show_controls=1'>Graph</a>
   </li>
   <li>
     <img src="{% static "v2/images/dataviz/spiral.png" %}">

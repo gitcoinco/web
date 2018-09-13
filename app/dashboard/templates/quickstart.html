@@ -1,0 +1,166 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/quickstart.css" %}>
+  </head>
+  <body class="interior {{active}} quickstart">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+    </div>
+    <div class="container-fluid content mt-3">
+      <div class="row pb-1">
+        <div class="col text-center">
+          <h4 class="title">{% trans "Developer Guide" %}</h4>
+        </div>
+      </div>
+      <div class="row col-12 offset-lg-1 col-lg-10">
+        <div class="dont-show">
+          <div class="checkbox_container">
+            <input name="dontshow" id="dontshow" type="checkbox" />
+            <span class="checkbox"></span>
+            <div class="filter-label">
+              <label for=dontshow>{% trans "Don't show again" %}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row col-12 offset-lg-1 col-lg-10 mt-2 steps-container">
+        <div class="col-md-3 col-sm-12 text-center p-2 image-container">
+          <img src="{% static 'v2/images/quickstart-box.svg' %}" />
+        </div>
+        <div class="col-md-6 col-sm-12 p-5 steps-list">
+          <ol>
+            <li>{% trans "1) Create a Github Issue, you'll need the issue URL" %}</li>
+            <li>{% trans "2) Select the type of issue to fund" %}</li>
+            <li>{% trans '3) Complete the form and press "Fund Issue"' %}</li>
+            <li>{% trans "4) Confirm the transaction in metamask" %}</li>
+          </ol>
+          <p>
+            {% trans "Once confirmed on blockchain, your bounty is posted to Gitcoin! Wait for developers across the world to discover your bounty and start working on your issue." %}
+          </p>
+          <div class="d-flex pt-5 action-footer">
+            <div class="video-link">
+              <a href="#" class="show_video">
+                <i class="far fa-play-circle"></i>
+                <span >{% trans "Watch 90 second video" %}</span>
+              </a>
+            </div>
+            <a href="{% url 'new_funding' %}"><button class="btn btn-primary">{% trans "Ok, I'm ready" %}</button></a>
+          </div>
+        </div>
+        <div class="col-md-3 col-sm-12 p-5 tips-list">
+          <h5 class="title">{% trans "Tips & Tricks" %}</h5>
+          <ul>
+            <li>{% trans "Know what you're looking for." %}</li>
+            <li>{% trans "Set clear acceptance criteria." %}</li>
+            <li>{% trans "Set a reasonable timeframe." %}</li>
+            <li>{% trans "Pick a fair price." %}</li>
+            <li>{% trans "Documentation is Key." %}</li>
+            <li>{% trans "Leave Room for Error." %}</li>
+          </ul>
+          <p>{% trans "Have fun! Meet new people!" %}</p>
+          <a href="https://docs.google.com/document/d/1_U9IdDN8FIRMGAdLWCMl2BnqCTAv558QvyJiSWQfkbs/edit?usp=sharing" target="_blank" rel="noopener noreferrer">{% trans "See Developer Guide" %}</a>
+        </div>
+      </div>
+      <div class="row col-12 offset-lg-1 col-lg-10 pt-2 pb-5 issuetypes-container text-center">
+        <h4 class="subheading">{% trans "Other Repo Maintainers are funding these types of issues" %}</h4>
+        <div class="col-md-3 mt-5 flex-column d-flex px-5">
+          <img src="{% static 'v2/images/quickstart-icons/newproduct-icon.svg' %}" />
+          <h5>{% trans "NEW PRODUCT OR FEATURE" %}</h5>
+          <p>{% trans "Build new product ideas or new features" %}</p>
+        </div>
+        <div class="col-md-3 mt-5 flex-column d-flex px-5">
+          <img src="{% static 'v2/images/quickstart-icons/feature-icon.svg' %}" />
+          <h5>{% trans "FEATURE IMPROVEMENT" %}</h5>
+          <p>{% trans "Iterate on the next set of features" %}</p>
+        </div>
+        <div class="col-md-3 mt-5 flex-column d-flex px-5">
+          <img src="{% static 'v2/images/quickstart-icons/bug-icon.svg' %}" />
+          <h5>{% trans "BUG FIX" %}</h5>
+          <p>{% trans "Find and fix bugs in your product" %}</p>
+        </div>
+        <div class="col-md-3 mt-5 flex-column d-flex px-5">
+          <img src="{% static 'v2/images/quickstart-icons/review-icon.svg' %}" />
+          <h5>{% trans "CODE REVIEW" %}</h5>
+          <p>{% trans "Get help reviewing code" %}</p>
+        </div>
+        <div class="col-md-3 mt-5 flex-column d-flex px-5">
+          <img src="{% static 'v2/images/quickstart-icons/upgrade-icon.svg' %}" />
+          <h5>{% trans "TECH UPGRADE" %}</h5>
+          <p>{% trans "Frameworks, migrations, batches" %}</p>
+        </div>
+        <div class="col-md-3 mt-5 flex-column d-flex px-5">
+          <img src="{% static 'v2/images/quickstart-icons/documentation-icon.svg' %}" />
+          <h5>{% trans "DOCUMENTATION" %}</h5>
+          <p>{% trans "Product documentation, set up instructions" %}</p>
+        </div>
+        <div class="col-md-3 mt-5 flex-column d-flex px-5">
+          <img src="{% static 'v2/images/quickstart-icons/design-icon.svg' %}" />
+          <h5>{% trans "DESIGN" %}</h5>
+          <p>{% trans "Architecture, flows, wireframes, designs" %}</p>
+        </div>
+        <div class="col-md-3 mt-5 flex-column d-flex px-5">
+          <img src="{% static 'v2/images/quickstart-icons/other-icon.svg' %}" />
+          <h5>{% trans "OTHER" %}</h5>
+          <p>{% trans "Ideas, discussions, contests, consulting" %}</p>
+        </div>
+        <div class="col-lg-10 col-md-12 offset-lg-1 notsuggested-container">
+          <h4 class="subheading">{% blocktrans %}In our experience, the following are <span class="orange-text">not</span> good candidates for bounties:{% endblocktrans %}</h4>
+          <ol class="text-left">
+            <li>
+              <i class="far fa-2x fa-times-circle"></i>
+              <span>{% trans "Core Architecture" %}</span>
+            </li>
+            <li>
+              <i class="far fa-2x fa-times-circle"></i>
+              <span>{% blocktrans %}Anything that requires a high degree of situational awareness
+              of the product/market fit (unless there is well documented material on the same){% endblocktrans %}</span>
+            </li>
+            <li>
+              <i class="far fa-2x fa-times-circle"></i>
+              <span>{% blocktrans %}Anything that requires privileged access (like SSH access,
+              prod private API key){% endblocktrans %}</span>
+            </li>
+          </ol>
+          <span>{% trans "If you're unsure, please reach out to a Gitcoin Core Team member on" %} <a href="{% url 'slack' %}">Slack</a></span>
+        </div>
+      </div>
+    </div>
+
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+
+    <script src="/dynamic/js/tokens_dynamic.js"></script>
+    <script src="{% static "v2/js/tokens.js" %}"></script>
+    <script src="{% static "v2/js/pages/quickstart.js" %}"></script>
+    <script src="{% static "v2/js/shared.js" %}"></script>
+    {% if keywords %}
+      <script>
+        document.keywords = {{ keywords|safe }};
+      </script>
+    {% endif %}
+  </body>

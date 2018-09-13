@@ -41,13 +41,13 @@ def pull_to_db():
         process_email(match.email, 'match')
 
     get_size = 50
-    client = MailChimp(settings.MAILCHIMP_USER, settings.MAILCHIMP_API_KEY)
+    client = MailChimp(mc_api=settings.MAILCHIMP_API_KEY, mc_user=settings.MAILCHIMP_USER)
 
     print('mailchimp')
     for i in range(0, 90000):
         members = client.lists.members.all(settings.MAILCHIMP_LIST_ID, count=get_size, offset=(i*get_size), fields="members.email_address")
         members = members['members']
-        if not len(members):
+        if not members:
             break
         print(i)
         for member in members:
@@ -65,8 +65,10 @@ def pull_to_db():
     print("- tip")
     from dashboard.models import Tip
     for tip in Tip.objects.all():
-        for email in tip.emails:
-            process_email(email, 'tip_usage')
+        # do not add receive tip emails to the mailing list,
+        # don't want to spam people at 4 diff email addresses
+        # for email in tip.emails:
+        #    process_email(email, 'tip_usage')
         if tip.from_email:
             process_email(tip.from_email, 'tip_usage')
 
@@ -95,7 +97,7 @@ def pull_to_db():
 
 def push_to_mailchimp():
     print('- push_to_mailchimp')
-    client = MailChimp(settings.MAILCHIMP_USER, settings.MAILCHIMP_API_KEY)
+    client = MailChimp(settings.MAILCHIMP_API_KEY, settings.MAILCHIMP_USER)
     created_after = timezone.now() - timezone.timedelta(hours=2)
     eses = EmailSubscriber.objects.filter(active=True, created_on__gt=created_after).order_by('-pk')
     print("- {} emails".format(eses.count()))

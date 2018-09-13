@@ -1,0 +1,76 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
+{% load i18n static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href={% static "v2/css/onboard.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/avatar_builder.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/quickstart.css" %}>
+  </head>
+  <body>
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+    </div>
+    <div class="row">
+      <div class="col-12 offset-sm-1 col-sm-10 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+        <form id="onboarding">
+          <div class="state">
+            {% for step in steps %}
+              <span class="step-state"></span>
+            {% endfor %}
+          </div>
+          {% for step in steps %}
+            <div id="step-{{ forloop.counter }}" link="{{ step }}" class="step">
+              {% include 'ftux/'|add:step|add:'.html' %}
+            </div>
+          {% endfor %}
+          {% if github_handle %}
+          <div class="controls">
+            <p id="prev-btn" class="button button--primary-o button--controls" onclick="changeStep(-1)">{% trans "Previous" %}</p>
+            <p id="next-btn" class="button button--primary button--controls" onclick="changeStep(1)">{% trans "Next" %}</p>
+          </div>
+          {% endif %}
+        </form>
+      </div>
+    </div>
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/messages.html' %}
+  </body>
+  {% csrf_token %}
+  <script type="text/javascript">
+    var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+  </script>
+  <script>
+    var steps = [];
+    var flow = "{{flow}}"
+    {% for step in steps %}
+      steps.push("{{step}}");
+    {% endfor %};
+  </script>
+  <script src="{% static "v2/js/shared.js" %}"></script>
+  <script src="{% static "v2/js/pages/onboard.js" %}"></script>
+  <script src="{% static "v2/js/avatar_builder.js" %}" defer></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/pages/quickstart.js" %}"></script>
+</html>

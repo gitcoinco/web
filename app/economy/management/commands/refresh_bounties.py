@@ -57,9 +57,9 @@ class Command(BaseCommand):
                 # refresh_bounties/handle
                 # stopgap to make sure that older versions of this bounty
                 # are marked as current_bounty=False
-                old_bounties = Bounty.objects.filter(
-                    github_url=bounty.github_url,
-                    current_bounty=True,
+                old_bounties = Bounty.objects.current().filter(
+                    web3_type='bounties_network',
+                    standard_bounties_id=bounty.standard_bounties_id,
                     pk__lt=bounty.pk,
                     network=bounty.network,
                 ).exclude(pk=bounty.pk).order_by('-created_on')

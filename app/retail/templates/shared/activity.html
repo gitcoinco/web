@@ -1,0 +1,77 @@
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load humanize i18n static %}
+<div class="row box activity">
+  <div class="col-12 col-md-1">
+    <div class="activity-avatar">
+      <img class="avatar" src="/dynamic/avatar/{{ row.profile.handle }}"/>
+    </div>
+  </div>
+  <div class="col-12 col-md-10 activity-info">
+    <div class="activity-status">
+      <a href="https://gitcoin.co/profile/{{ row.profile.handle }}" target="_blank">
+        @{{ row.profile.handle }}
+      </a>
+      {% if row.activity_type == 'new_tip' %}
+        {% trans "tipped" %}
+        <a href="https://gitcoin.co/profile/{{ row.metadata.to_username }}" target="_blank">
+          @{{ row.metadata.to_username }}
+        </a>
+      {% elif row.activity_type == 'new_bounty' %}
+        <span>{% trans "funded a new issue: " %}</span>{{ row.urled_title | safe }}
+      {% elif row.activity_type == 'start_work' %}
+        <span>{% trans "started work: " %}</span>{{ row.urled_title | safe }}
+      {% elif row.activity_type == 'stop_work' %}
+        <span>{% trans "stopped work: " %}</span>{{ row.urled_title | safe }}
+      {% elif row.activity_type == 'killed_bounty' %}
+        <span>{% trans "canceled bounty: " %}</span>{{ row.urled_title | safe }}
+      {% elif row.activity_type == 'increased_bounty' %}
+        <span>{% trans "increased funding: " %}</span>{{ row.urled_title | safe }}
+      {% else %}
+        {{ row.i18n_name }}
+        {% if row.bounty %}
+          : <a href="{{ row.bounty.url }}">{{ row.bounty.title }}</a>
+        {% endif %}
+      {% endif %}
+    </div>
+    <div class="font-caption" >
+      <div class="activity-tags activity-tag-first align-items-center">
+        <div class="tag token">
+          <p>
+            {% if row.value_in_token_disp %}
+            <span>{{ row.value_in_token_disp }} {{row.token_name}}</span>
+            {% elif row.metadata.value_in_eth %}
+            <span>{{ row.metadata.value_in_eth }} {{row.token_name}}</span>
+            {% else %}
+            <span>{{row.metadata.value_in_token_old}}  - {{row.metadata.value_in_token}}  {{row.metadata.token_name}}</span>
+            {% endif %}
+          </p>
+        </div>
+        <div class="tag usd">
+          <p>
+            <span>{{ row.value_in_usdt_now }} USD</span>
+          </p>
+        </div>
+        {{ row.created | naturaltime }}
+      </div>
+    </div>
+  </div>
+  <div class="col-12 col-md-1">
+    <i class="far {{ row.icon }} last-icon"></i>
+  </div>
+</div>

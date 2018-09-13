@@ -1,0 +1,68 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n %}
+<h5 class="font-subheader">{% trans "Details" %}</h5>
+<label class="form__label" for="project_type">{% trans "Project Type" %}</label>
+<div class="form__select2">
+  <select class="js-select2" name="project_type">
+    <option value="traditional">{% trans "Traditional -- 1 worker at a time, 1 is paid out" %}</option>
+    <option value="contest">{% trans "Contest -- many workers at a time, 1 is paid out" %}</option>
+    <option value="cooperative">{% trans "Cooperative -- many workers at a time, many are paid out" %}</option>
+  </select>
+</div>
+<label class="form__label" for="permission_type">{% trans "Permissions" %}</label>
+<div class="form__select2">
+  <select class="js-select2" name="permission_type">
+    <option value="permissionless">{% trans "Permissionless - Anyone can start work." %}</option>
+    <option value="approval" selected>{% trans "Approval Required - I will approve bounty hunters." %}</option>
+  </select>
+</div>
+<div>
+  <label class="form__label">{% trans "Issue Details" %}</label>
+</div>
+<div class="form__group">
+  <div class="form__select2 form__group-item">
+    <select class="js-select2" name="experience_level">
+      <option value="">{% trans "Experience Level" %}</option>
+      <option>{% trans "Beginner" %}</option>
+      <option>{% trans "Intermediate" %}</option>
+      <option>{% trans "Advanced" %}</option>
+    </select>
+  </div>
+  <div class="form__select2 form__group-item">
+    <select class="js-select2" name="project_length">
+      <option value="Unknown">{% trans "Time Commitment" %}</option>
+      <option>{% trans "Hours" %}</option>
+      <option>{% trans "Days" %}</option>
+      <option>{% trans "Weeks" %}</option>
+      <option>{% trans "Months" %}</option>
+    </select>
+  </div>
+  <div class="form__select2 form__group-item">
+    <select class="js-select2" name="bounty_type">
+      <option value="">{% trans "Bounty Type" %}</option>
+      <option>{% trans "Bug" %}</option>
+      <option>{% trans "Feature" %}</option>
+      <option>{% trans "Improvement" %}</option>
+      <option>{% trans "Security" %}</option>
+      <option>{% trans "Documentation" %}</option>
+      <option>{% trans "Design" %}</option>
+      <option>{% trans "Code Review" %}</option>
+      <option>{% trans "Other" %}</option>
+    </select>
+  </div>
+</div>

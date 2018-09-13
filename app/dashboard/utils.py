@@ -19,16 +19,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import json
 import logging
-import subprocess
-import time
+from json.decoder import JSONDecodeError
+
+from django.conf import settings
 
 import ipfsapi
 import requests
-import rollbar
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
-from dashboard.models import Bounty, UserAction
+from dashboard.models import Activity, Bounty, UserAction
 from eth_utils import to_checksum_address
-from gas.utils import conf_time_spread, eth_usd_conv_rate, recommend_min_gas_price_to_confirm_in_time
+from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
 from ipfsapi.exceptions import CommunicationError
 from web3 import HTTPProvider, Web3
@@ -51,6 +51,31 @@ class IPFSCantConnectException(Exception):
 
 class NoBountiesException(Exception):
     pass
+
+
+def humanize_event_name(name):
+    """Humanize an event name.
+
+    Args:
+      name (str): The event name
+
+    Returns:
+        str: The humanized representation.
+
+    """
+    humanized_event_names = {
+        'new_bounty': 'New funded issue',
+        'start_work': 'Work started',
+        'stop_work': 'Work stopped',
+        'work_submitted': 'Work submitted',
+        'increased_bounty': 'Increased funds for issue',
+        'killed_bounty': 'Cancelled funded issue',
+        'worker_approved': 'Worker approved',
+        'worker_rejected': 'Worker rejected',
+        'work_done': 'Work done'
+    }
+
+    return humanized_event_names.get(name, name).upper()
 
 
 def create_user_action(user, action_type, request=None, metadata=None):
@@ -97,55 +122,70 @@ def create_user_action(user, action_type, request=None, metadata=None):
         return True
     except Exception as e:
         logger.error(f'Failure in UserAction.create_action - ({e})')
-        rollbar.report_message(
-            f'Failure in UserAction.create_action - ({e})', 'error', extra_data=kwargs)
         return False
 
 
-def startIPFS():
-    print('starting IPFS')
-    subprocess.Popen(["ipfs", "daemon"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    time.sleep(10)  # time for IPFS to boot
+def get_ipfs(host=None, port=settings.IPFS_API_PORT):
+    """Establish a connection to IPFS.
 
+    Args:
+        host (str): The IPFS host to connect to.
+            Defaults to environment variable: IPFS_HOST.
+        port (int): The IPFS port to connect to.
+            Defaults to environment variable: env IPFS_API_PORT.
 
-def isIPFSrunning():
-    output = subprocess.check_output('pgrep -fl ipfs | wc -l', shell=True)
-    is_running = output != b'       0\n'
-    print(f'** ipfs is_running: {is_running}')
-    return is_running
+    Raises:
+        CommunicationError: The exception is raised when there is a
+            communication error with IPFS.
 
+    Returns:
+        ipfsapi.client.Client: The IPFS connection client.
 
-def getIPFS():
-    if not isIPFSrunning():
-        startIPFS()
+    """
+    if host is None:
+        host = f'https://{settings.IPFS_HOST}'
 
     try:
-        return ipfsapi.connect('127.0.0.1', 5001)
-    except CommunicationError:
-        raise IPFSCantConnectException("IPFS is not running.  try running it with `ipfs daemon` before this script")
+        return ipfsapi.connect(host, port)
+    except CommunicationError as e:
+        logger.exception(e)
+        raise IPFSCantConnectException('Failed while attempt to connect to IPFS')
+    return None
 
 
 def ipfs_cat(key):
-    response = ipfs_cat_requests(key)
-    if response:
-        return response
+    try:
+        # Attempt connecting to IPFS via Infura
+        response, status_code = ipfs_cat_requests(key)
+        if status_code == 200:
+            return response
 
-    response = ipfs_cat_ipfsapi(key)
-    if response:
-        return response
+        # Attempt connecting to IPFS via hosted node
+        response = ipfs_cat_ipfsapi(key)
+        if response:
+            return response
 
-    raise Exception("could not connect to IPFS")
+        raise IPFSCantConnectException('Failed to connect cat key against IPFS - Check IPFS/Infura connectivity')
+    except IPFSCantConnectException as e:
+        logger.exception(e)
 
 
 def ipfs_cat_ipfsapi(key):
-    ipfs = getIPFS()
-    return ipfs.cat(key)
+    ipfs = get_ipfs()
+    if ipfs:
+        try:
+            return ipfs.cat(key)
+        except Exception:
+            return None
 
 
 def ipfs_cat_requests(key):
-    url = f'https://ipfs.infura.io:5001/api/v0/cat/{key}'
-    response = requests.get(url)
-    return response.text
+    try:
+        url = f'https://ipfs.infura.io:5001/api/v0/cat/{key}'
+        response = requests.get(url, timeout=1)
+        return response.text, response.status_code
+    except:
+        return None, 500
 
 
 def get_web3(network):
@@ -186,13 +226,17 @@ def getBountyContract(network):
 
 
 def get_bounty(bounty_enum, network):
+    if (settings.DEBUG or settings.ENV != 'prod') and network == 'mainnet':
+        # This block will return {} if env isn't prod and the network is mainnet.
+        print("--*--")
+        return {}
+
     standard_bounties = getBountyContract(network)
 
     try:
         issuer, contract_deadline, fulfillmentAmount, paysTokens, bountyStage, balance = standard_bounties.functions.getBounty(bounty_enum).call()
     except BadFunctionCallOutput:
         raise BountyNotFoundException
-
     # pull from blockchain
     bountydata = standard_bounties.functions.getBountyData(bounty_enum).call()
     arbiter = standard_bounties.functions.getBountyArbiter(bounty_enum).call()
@@ -207,11 +251,15 @@ def get_bounty(bounty_enum, network):
 
         # pull from blockchain
         accepted, fulfiller, data = standard_bounties.functions.getFulfillment(bounty_enum, fulfill_enum).call()
-        data_str = ipfs_cat(data)
-        data = json.loads(data_str)
+        try:
+            data_str = ipfs_cat(data)
+            data = json.loads(data_str)
+        except JSONDecodeError:
+            logger.error(f'Could not get {data} from ipfs')
+            continue
 
         # validation
-        if 'Failed to get block' in data_str:
+        if 'Failed to get block' in str(data_str):
             raise IPFSCantConnectException("Failed to connect to IPFS")
 
         fulfillments.append({
@@ -222,7 +270,7 @@ def get_bounty(bounty_enum, network):
         })
 
     # validation
-    if 'Failed to get block' in bounty_data_str:
+    if 'Failed to get block' in str(bounty_data_str):
         raise IPFSCantConnectException("Failed to connect to IPFS")
 
     # https://github.com/Bounties-Network/StandardBounties/issues/25
@@ -253,6 +301,13 @@ def get_bounty(bounty_enum, network):
 
 # processes a bounty returned by get_bounty
 def web3_process_bounty(bounty_data):
+    """Process web3 bounty data by creating new or updated Bounty objects."""
+    # Check whether or not the bounty data payload is for mainnet and env is prod or other network and not mainnet.
+    if not bounty_data or (settings.DEBUG or settings.ENV != 'prod') and bounty_data.get('network') == 'mainnet':
+        # This block will return None if running in debug/non-prod env and the network is mainnet.
+        print(f"--*--")
+        return None
+
     did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
 
     if did_change and new_bounty:
@@ -278,14 +333,15 @@ def get_bounty_id(issue_url, network):
     if bounty_id:
         return bounty_id
 
-    all_known_stdbounties = Bounty.objects.filter(web3_type='bounties_network', network=network).order_by('-standard_bounties_id')
+    all_known_stdbounties = Bounty.objects.filter(
+        web3_type='bounties_network',
+        network=network,
+    ).nocache().order_by('-standard_bounties_id')
 
-    methodology = 'start_from_web3_latest'
     try:
         highest_known_bounty_id = get_highest_known_bounty_id(network)
         bounty_id = get_bounty_id_from_web3(issue_url, network, highest_known_bounty_id, direction='down')
     except NoBountiesException:
-        methodology = 'start_from_db'
         last_known_bounty_id = 0
         if all_known_stdbounties.exists():
             last_known_bounty_id = all_known_stdbounties.first().standard_bounties_id
@@ -296,7 +352,11 @@ def get_bounty_id(issue_url, network):
 
 def get_bounty_id_from_db(issue_url, network):
     issue_url = normalize_url(issue_url)
-    bounties = Bounty.objects.filter(github_url=issue_url, network=network, web3_type='bounties_network')
+    bounties = Bounty.objects.filter(
+        github_url=issue_url,
+        network=network,
+        web3_type='bounties_network',
+    ).nocache().order_by('-standard_bounties_id')
     if not bounties.exists():
         return None
     return bounties.first().standard_bounties_id
@@ -312,7 +372,6 @@ def get_highest_known_bounty_id(network):
 
 def get_bounty_id_from_web3(issue_url, network, start_bounty_id, direction='up'):
     issue_url = normalize_url(issue_url)
-    web3 = get_web3(network)
 
     # iterate through all the bounties
     bounty_enum = start_bounty_id
@@ -381,31 +440,109 @@ def get_ordinal_repr(num):
 
 
 def record_user_action_on_interest(interest, event_name, last_heard_from_user_days):
-    UserAction.objects.create(
-        profile=interest.profile,
-        action=event_name,
-        metadata={
+    """Record User actions and activity for the associated Interest."""
+    payload = {
+        'profile': interest.profile,
+        'metadata': {
             'bounties': list(interest.bounty_set.values_list('pk', flat=True)),
             'interest_pk': interest.pk,
             'last_heard_from_user_days': last_heard_from_user_days,
-        })
+        }
+    }
+    UserAction.objects.create(action=event_name, **payload)
+
+    if event_name in ['bounty_abandonment_escalation_to_mods', 'bounty_abandonment_warning']:
+        payload['needs_review'] = True
+
+    Activity.objects.create(activity_type=event_name, bounty=interest.bounty_set.last(), **payload)
 
 
 def get_context(ref_object=None, github_username='', user=None, confirm_time_minutes_target=4,
-                active='', title='', update=None):
+                confirm_time_slow=120, confirm_time_avg=15, confirm_time_fast=1, active='',
+                title='', update=None):
     """Get the context dictionary for use in view."""
     context = {
         'githubUsername': github_username,  # TODO: Deprecate this field.
+        'action_urls': ref_object.action_urls() if hasattr(ref_object, 'action_urls') else None,
         'active': active,
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
+        'recommend_gas_price_slow': recommend_min_gas_price_to_confirm_in_time(confirm_time_slow),
+        'recommend_gas_price_avg': recommend_min_gas_price_to_confirm_in_time(confirm_time_avg),
+        'recommend_gas_price_fast': recommend_min_gas_price_to_confirm_in_time(confirm_time_fast),
         'eth_usd_conv_rate': eth_usd_conv_rate(),
         'conf_time_spread': conf_time_spread(),
         'email': getattr(user, 'email', ''),
         'handle': getattr(user, 'username', ''),
         'title': title,
+        'gas_advisories': gas_advisories(),
     }
     if ref_object is not None:
         context.update({f'{ref_object.__class__.__name__}'.lower(): ref_object})
     if update is not None and isinstance(update, dict):
         context.update(update)
     return context
+
+
+def clean_bounty_url(url):
+    """Clean the Bounty URL of unsavory characters.
+
+    The primary utility of this method is to drop #issuecomment blocks from
+    Github issue URLs copy/pasted via comments.
+
+    Args:
+        url (str): The Bounty VC URL.
+
+    TODO:
+        * Deprecate this in favor of Django forms.
+
+    Returns:
+        str: The cleaned Bounty URL.
+
+    """
+    try:
+        return url.split('#')[0]
+    except Exception:
+        return url
+
+
+def generate_pub_priv_keypair():
+    # Thanks https://github.com/vkobel/ethereum-generate-wallet/blob/master/LICENSE.md
+    from ecdsa import SigningKey, SECP256k1
+    import sha3
+
+    def checksum_encode(addr_str):
+        keccak = sha3.keccak_256()
+        out = ''
+        addr = addr_str.lower().replace('0x', '')
+        keccak.update(addr.encode('ascii'))
+        hash_addr = keccak.hexdigest()
+        for i, c in enumerate(addr):
+            if int(hash_addr[i], 16) >= 8:
+                out += c.upper()
+            else:
+                out += c
+        return '0x' + out
+
+    keccak = sha3.keccak_256()
+
+    priv = SigningKey.generate(curve=SECP256k1)
+    pub = priv.get_verifying_key().to_string()
+
+    keccak.update(pub)
+    address = keccak.hexdigest()[24:]
+
+    def test(addrstr):
+        assert(addrstr == checksum_encode(addrstr))
+
+    test('0x5aAeb6053F3E94C9b9A09f33669435E7Ef1BeAed')
+    test('0xfB6916095ca1df60bB79Ce92cE3Ea74c37c5d359')
+    test('0xdbF03B407c01E7cD3CBea99509d93f8DDDC8C6FB')
+    test('0xD1220A0cf47c7B9Be7A2E6BA89F429762e7b9aDb')
+    test('0x7aA3a964CC5B0a76550F549FC30923e5c14EDA84')
+
+    # print("Private key:", priv.to_string().hex())
+    # print("Public key: ", pub.hex())
+    # print("Address:    ", checksum_encode(address))
+    # return priv key, pub key, address
+
+    return priv.to_string().hex(), pub.hex(), checksum_encode(address)

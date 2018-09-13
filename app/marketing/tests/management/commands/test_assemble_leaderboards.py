@@ -65,7 +65,8 @@ class TestAssembleLeaderboards(TestCase):
             experience_level='Intermediate',
             raw_data={},
             idx_status='submitted',
-            current_bounty=True
+            current_bounty=True,
+            network='mainnet',
         )
         bounty = Bounty.objects.create(
             title='foo',
@@ -85,7 +86,8 @@ class TestAssembleLeaderboards(TestCase):
             experience_level='Intermediate',
             raw_data={},
             idx_status='submitted',
-            current_bounty=True
+            current_bounty=True,
+            network='mainnet',
         )
         BountyFulfillment.objects.create(
             fulfiller_address='0x0000000000000000000000000000000000000000',
@@ -102,7 +104,7 @@ class TestAssembleLeaderboards(TestCase):
     def test_sum_tips(self):
         """Test sum tips of assemble leaderboards."""
         total = 7
-        user = 'johnny'
+        user = 'john'
         rank_types = [
             'all_fulfilled', 'all_earners', 'weekly_fulfilled',
             'weekly_earners', 'weekly_all', 'monthly_fulfilled',
@@ -139,4 +141,4 @@ class TestAssembleLeaderboards(TestCase):
         """Test command assemble leaderboards."""
         Command().handle()
 
-        assert LeaderboardRank.objects.all().count() == 4
+        assert LeaderboardRank.objects.all().count() == 12

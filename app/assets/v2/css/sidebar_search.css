@@ -1,20 +1,16 @@
 .sidebar_search {
   margin-left: 10px;
   margin-right: 10px;
-  padding: 40px 20px 10px;
+  padding: 20px 20px 10px;
 }
 
 .subheading {
   color: #5B5C5C;
   margin-top: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   text-transform: uppercase;
   font-family: 'Muli', sans-serif;
   font-weight: 600;
-}
-
-.subheading svg {
-  margin-left: 5px;
 }
 
 .sidebar_search .options {

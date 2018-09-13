@@ -19,7 +19,7 @@ GITHUB_CLIENT_SECRET=xxx
 GITHUB_APP_NAME=MyGitcoinApp
 ```
 
-Restart your `web` container to apply the changes via:  `docker-compose restart web`
+Please `docker-compose down; docker-compose up -d` to have the environment variable changes reflect in your local Gitcoin environment.
 
 ## Setup Github User Integration (Recommended)
 
@@ -33,12 +33,31 @@ GITHUB_API_TOKEN=xxx
 GITHUB_API_USER=xxx
 ```
 
+Make sure you disable gitcoinbot notifications on your local, unless you are specifically testing that feature
+By default, we disable outbound GitHub notifications to any repository that isn't under the `GITHUB_API_USER` repositories.
+
+For example, if `settings.GITHUB_API_USER == gitcoinco` only `github.com/gitcoinco/<repos>` bounties and associated tips will post Github comments.
+
+```
+# Be VERY CAREFUL when changing this setting.  You don't want to accidently
+# send a bunch of github notifications :)
+ENABLE_NOTIFICATIONS_ON_NETWORK=None
+```
+
 ## Gitcoinbot Installation Instructions
 
 ### This integration requires the Github OAuth2 App Integration
 
 Navigate to: [Gitcoinbot Github App](https://github.com/apps/gitcoinbot)
 Copy the application ID found on the page as the `GITCOINBOT_APP_ID` environment variable.
+
+Make sure you disable gitcoinbot notifications on your local, unless you are specifically testing that feature
+
+```
+# Be VERY CAREFUL when changing this setting.  You don't want to accidentally
+# send a bunch of github notifications :)
+ENABLE_NOTIFICATIONS_ON_NETWORK=None
+```
 
 The following environment variables must be set for gitcoinbot to work correctly:
 
@@ -60,14 +79,16 @@ Aside from these environment variables, the settings page of the gitcoin bot app
 
 After running the migrations and deploying the gitcoin.co website, gitcoinbot will begin to receive webhook events from any repository that it is installed into. This application will then parse through the comments and respond if it is called with @gitcoinbot + registered action call.
 
-## Rollbar Integration
+## Sentry Integration
 
 Error tracking is entirely optional and primarily for internal staging and production tracking.
-If you would like to track errors of your local environment, setup an account at: [Rollbar.com](https://rollbar.com)
+If you would like to track errors of your local environment, setup an account at: [Sentry.io](https://sentry.io)
 
-Once you have access to your project access tokens, you can enable rollbar error tracking for both the backend and frontend by adding the following environment variables to `web/app/app/.env`:
+Once you have access to your project secrets, you can enable Sentry error tracking for both the backend and frontend by adding the following environment variables to `web/app/app/.env`:
 
 ```shell
-ROLLBAR_CLIENT_TOKEN=post_client_item
-ROLLBAR_SERVER_TOKEN=post_server_item
+SENTRY_USER=xxx
+SENTRY_PASSWORD=xxx
+SENTRY_ADDRESS=https://sentry.example.xxx
+SENTRY_PROJECT=2
 ```

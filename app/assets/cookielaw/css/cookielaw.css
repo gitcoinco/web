@@ -1,0 +1,93 @@
+#CookielawBanner {
+  padding: 15px;
+  position: fixed;
+  bottom: 0;
+  background-color: #F2F6F9;
+  width: 100%;
+  z-index: 999999999;
+  font-family: 'Muli', sans-serif;
+}
+
+#CookielawBanner .container {
+  position: relative;
+  max-width: none;
+}
+
+#CookielawBanner .container h6 {
+  letter-spacing: 0;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+#CookielawBanner .container .button {
+  max-height: 2.5rem;
+}
+
+#CookielawBanner .container .d-flex {
+  justify-content: space-between;
+}
+
+#CookielawBanner .container .d-flex .row.cookie-row {
+  width: 100%;
+  margin-right: 0px;
+}
+
+#CookielawBanner .container .cookie-info {
+  width: 90%;
+}
+
+#CookielawBanner .container .cookie-info.cookie-body {
+  font-size: 0.675rem;
+}
+
+#CookielawBanner #CookielawCross {
+  background: url('../img/close.png') no-repeat 0 0;
+  cursor: pointer;
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 15px;
+  height: 15px;
+}
+
+@media (max-width: 767.98px) {
+
+  #CookielawBanner {
+    padding: 0px; 
+  }
+
+  #CookielawBanner .container {
+    padding-right: 2px;
+    padding-left: 10px;
+  }
+
+  #CookielawBanner .container h6 {
+    margin-top: 0.5rem;
+    margin-bottom: 0.3rem;
+    font-size: 0.75rem;
+  }
+
+  #CookielawBanner .container .d-flex {
+    display: inline !important;
+  }
+
+  #CookielawBanner .container .d-flex .row.cookie-row .col-4 {
+    padding-right: 5px;
+  }
+
+  #CookielawBanner .container .cookie-info {
+    width: 100%;
+    margin-bottom: 1.5rem;
+  }
+
+  #CookielawBanner .container .cookie-info.cookie-body-font {
+    font-size: 0.675rem;
+  }
+
+  #CookielawBanner .container a.button{
+    float: right;
+    font-size: 0.775rem;
+  }
+  
+}

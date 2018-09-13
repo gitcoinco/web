@@ -13,28 +13,9 @@ class StaticViewSitemap(sitemaps.Sitemap):
 
     def items(self):
         return [
-            'dashboard',
-            'new_funding',
-            'fulfill_bounty',
-            'process_funding',
-            'funding_details',
-            'tip',
-            'terms',
-            'privacy',
-            'cookie',
-            'prirp',
-            'apitos',
-            'about',
-            'index',
-            'help',
-            'whitepaper',
-            'whitepaper_access',
-            '_leaderboard',
-            'ios',
-            'faucet',
-            'mission',
-            'slack',
-            'universe_index',
+            'dashboard', 'new_funding', 'tip', 'terms', 'privacy', 'cookie', 'prirp', 'apitos', 'about', 'index',
+            'help', 'whitepaper', 'whitepaper_access', '_leaderboard', 'ios', 'faucet', 'mission', 'slack',
+            'universe_index', 'results', 'activity',
         ]
 
     def location(self, item):
@@ -46,7 +27,7 @@ class IssueSitemap(Sitemap):
     priority = 0.9
 
     def items(self):
-        return Bounty.objects.current()
+        return Bounty.objects.current().cache()
 
     def lastmod(self, obj):
         return obj.modified_on
@@ -60,7 +41,7 @@ class ProfileSitemap(Sitemap):
     priority = 0.8
 
     def items(self):
-        return Profile.objects.filter(hide_profile=False).all()
+        return Profile.objects.filter(hide_profile=False).cache()
 
     def lastmod(self, obj):
         return obj.modified_on
@@ -69,12 +50,28 @@ class ProfileSitemap(Sitemap):
         return item.get_relative_url()
 
 
+class ResultsSitemap(Sitemap):
+    changefreq = "weekly"
+    priority = 0.6
+
+    def items(self):
+        from retail.utils import programming_languages
+        return programming_languages
+
+    def lastmod(self, obj):
+        from django.utils import timezone
+        return timezone.now()
+
+    def location(self, item):
+        return f'/results/{item}'
+
+
 class ExternalBountySitemap(Sitemap):
     changefreq = "weekly"
     priority = 0.8
 
     def items(self):
-        return ExternalBounty.objects.filter(active=True)
+        return ExternalBounty.objects.filter(active=True).cache()
 
     def lastmod(self, obj):
         return obj.modified_on
@@ -84,6 +81,7 @@ class ExternalBountySitemap(Sitemap):
 
 
 sitemaps = {
+    'results': ResultsSitemap,
     'static': StaticViewSitemap,
     'issues': IssueSitemap,
     'universe': ExternalBountySitemap,

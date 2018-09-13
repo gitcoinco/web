@@ -34,10 +34,15 @@ class GeneralAdmin(admin.ModelAdmin):
 class FaucetRequestAdmin(admin.ModelAdmin):
     """Setup the FaucetRequest admin results display."""
 
+    raw_id_fields = ['profile']
     ordering = ['-created_on']
     list_display = [
         'created_on', 'fulfilled', 'rejected', 'link', 'get_profile_username',
         'get_profile_email', 'email', 'address', 'comment',
+    ]
+    search_fields = [
+        'created_on', 'fulfilled', 'rejected', 'profile__handle',
+        'email', 'address', 'comment',
     ]
 
     def get_queryset(self, request):

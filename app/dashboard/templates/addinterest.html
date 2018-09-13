@@ -18,38 +18,45 @@
 <div id="add_interest" class="white-light-bg">
   <div class="row">
     <div class="col-12 closebtn">
-      <a rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">
-        <span aria-hidden="true">&times;</span>
-      </a>
+      <a rel="modal:close" href="javascript:void" class="closebtn purple" aria-label="Close dialog"></a>
     </div>
     <div class="col-12">
-      <h5 class="text-center font-title">{% trans "Great to see that you're interested in this project!" %}</h5>
+      <h5 class="text-center font-title">{% trans "Submit a Plan" %}</h5>
     </div>
     {% if user_logged_in %}
       <div class="col-12">
-        <form class="font-body">
+        <form id="action_plan" class="font-body">
           <div>
-            <label for="issue-message">
-              <span>{% trans "Please provide an action plan and any initial questions you have for this ticket." %}</span>
-              <br>
-              <span>{% trans "This will be reflected in a comment on the Github issue." %}</span>
+            <label for="issue_message">
+              <span>
+                {% trans "Provide an action plan and any initial questions you have for this ticket." %} <br>
+                <span class="font-smaller-4">
+                  ({% trans "Your response will be reflected in a comment on the Github issue." %})
+                </span>
+              </span>
             </label>
-            <textarea id="issue-message" class="form__input"></textarea>
+            <textarea id="issue_message" class="form__input"></textarea>
           </div>
           <div>
-            <div class=checkbox_container>
-              <input type="checkbox" id="checkbox2" class="form__input" value="1">
+            <div class="checkbox_container d-flex">
+              <input type="checkbox" id="checkbox2" class="form__input" value="1" required/>
               <span class="checkbox"></span>
               <div class="filter-label">
                 <label for="checkbox2">
-                  {% trans "I understand that if anyone has started work on this ticket before me, they may have precedence." %}
+                  {% if bounty and bounty.permission_type == 'approval' %}
+                    {% trans "I understand that this is an application and I should wait for approval from the funder before starting work." %}
+                  {% elif bounty and bounty.project_type == 'contest' %}
+                    {% trans "I understand that this bounty is a *contest* and that other bounty hunters may be working in parallel with me." %}
+                  {% elif bounty and bounty.project_type == 'cooperative' %}
+                    {% trans "I understand that this bounty is a multi-worker *cooperative* bounty.  Other bounty hunters may be working in parallel with me, but the funder has indicated they will pay the bounty to multiple of us." %}
+                  {% else %}
+                    {% trans "I understand that if anyone has started work on this ticket before me, they may have precedence." %}
+                  {% endif %}
                 </label>
               </div>
             </div>
-          </div>
-          <div>
-            <div class=checkbox_container>
-              <input type="checkbox" id="checkbox1" class="form__input" value="1">
+            <div class="checkbox_container d-flex">
+              <input type="checkbox" id="checkbox1" class="form__input" value="1" required/>
               <span class="checkbox"></span>
               <div class="filter-label">
                 <label for="checkbox1">
@@ -58,7 +65,7 @@
               </div>
             </div>
           </div>
-          <button class="row button button--primary btn-interested" type="submit">{% trans "Submit" %}</button>
+          <button id="submit" class="row button button--primary btn-interested" type="submit">{% trans "Submit" %}</button>
         </form>
       </div>
     {% else %}

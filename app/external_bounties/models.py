@@ -27,7 +27,7 @@ from django.utils.translation import gettext_lazy as _
 
 from economy.models import SuperModel
 from economy.utils import convert_amount
-from github.utils import org_name, repo_name
+from git.utils import org_name, repo_name
 
 
 class ExternalBounty(SuperModel):
@@ -42,7 +42,7 @@ class ExternalBounty(SuperModel):
     amount_denomination = models.CharField(max_length=255, blank=True, help_text="ex: ETH, LTC, BTC")
     created_on = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     last_sync_time = models.DateTimeField(auto_now_add=True, blank=True, null=True)
-    tags = ArrayField(models.CharField(max_length=200), blank=True, default=[], help_text=_("comma delimited"))
+    tags = ArrayField(models.CharField(max_length=200), blank=True, default=list, help_text=_("comma delimited"))
     github_handle = models.CharField(max_length=255, blank=True)
     payout_str = models.CharField(max_length=255, blank=True, default='', help_text=_("string representation of the payout (only needed it amount/denomination cannot be filled out"))
     idx_fiat_price = models.DecimalField(default=0, decimal_places=4, max_digits=50)
@@ -68,6 +68,9 @@ class ExternalBounty(SuperModel):
     @property
     def github_avatar_url(self):
         """Return the local avatar URL."""
+        _org_name = org_name(self.action_url)
+        if _org_name:
+            return f"{settings.BASE_URL}dynamic/avatar/{_org_name}"
         return f"{settings.BASE_URL}funding/avatar?repo={self.github_url}&v=3"
 
     @property
@@ -82,7 +85,7 @@ class ExternalBounty(SuperModel):
             ]
             i = self.pk % len(icons)
             icon = icons[i]
-            return f'{settings.BASE_URL}static/v2/images/icons/{icon}'
+            return f'{settings.STATIC_URL}v2/images/icons/{icon}'
 
     @property
     def fiat_price(self):

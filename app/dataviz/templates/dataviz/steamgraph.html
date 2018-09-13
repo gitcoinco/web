@@ -18,9 +18,9 @@
 
 {% endcomment %}
 
-{% load i18n admin_static static %}
+{% load i18n static %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 
@@ -40,7 +40,7 @@ body {
   font: 10px sans-serif;
 }
 
-.chart { 
+.chart {
   background: #fff;
 }
 
@@ -221,9 +221,9 @@ var graph = d3.csv(csvpath, function(data) {
       d3.select(this)
       .classed("hover", true)
       .attr("stroke", strokecolor)
-      .attr("stroke-width", "0.5px"), 
+      .attr("stroke-width", "0.5px"),
       tooltip.html( "<p>" + d.key + "<br>" + pro + "</p>" ).style("visibility", "visible");
-      
+
     })
     .on("mouseout", function(d, i) {
      svg.selectAll(".layer")
@@ -234,7 +234,7 @@ var graph = d3.csv(csvpath, function(data) {
       .classed("hover", false)
       .attr("stroke-width", "0px"), tooltip.html( "<p>" + d.key + "<br>" + pro + "</p>" ).style("visibility", "hidden");
   })
-    
+
   var vertical = d3.select(".chart")
         .append("div")
         .attr("class", "remove")
@@ -248,11 +248,11 @@ var graph = d3.csv(csvpath, function(data) {
         .style("background", "#fff");
 
   d3.select(".chart")
-      .on("mousemove", function(){  
+      .on("mousemove", function(){
          mousex = d3.mouse(this);
          mousex = mousex[0] + 5;
          vertical.style("left", mousex + "px" )})
-      .on("mouseover", function(){  
+      .on("mouseover", function(){
          mousex = d3.mouse(this);
          mousex = mousex[0] + 5;
          vertical.style("left", mousex + "px")});

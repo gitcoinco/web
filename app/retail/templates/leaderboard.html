@@ -5,7 +5,7 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    <link rel="stylesheet" href="{% static "v2/css/leaderboard.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/leaderboard.css" %}">
   </head>
   <body class="interior {{active}}">
     {% include 'shared/tag_manager_2.html' %}
@@ -19,7 +19,9 @@
             <div class="row mt-0 mb-2 pt-1 podium">
               {% for podium_item in podium_items %}
                 <div class="col-4 winner">
-                  <img class="img-fluid"  src="{{podium_item.avatar_url}}" >
+                  {% if not is_linked_to_profile %}
+                    <img class="img-fluid"  src="{{podium_item.avatar_url}}" >
+                  {% endif %}
                   <div class="container winner-content">
                     <div class="row align-items-center">
                       {% if forloop.counter == 1 %}
@@ -34,11 +36,15 @@
 
                       <div class="col-8 " >
                         <h5 style="color:white">
+                          {% if not is_linked_to_profile %}
                           <a href="{% url "profile" %}{{podium_item.github_username}}" target="_blank">
                             {{podium_item.github_username}}
                           </a>
+                          {% else %}
+                            {{podium_item.github_username}}
+                          {% endif %}
                         </h5>
-                        <h2 style="color:#86eec4" > ${{podium_item.amount}} </h2>
+                        <h2 style="color:#86eec4" > ${{podium_item.amount|floatformat:2}} </h2>
                       </div>
                     </div>
                   </div>
@@ -71,17 +77,23 @@
             <table class="table table-striped table-hover leaderboard_entry">
               <tbody>
                 {% for item in items %}
-                  <tr class='clickable-row d-flex  align-items-stretch ' data-href="{% url "profile" %}{{item.github_username}}">
+                  <tr class='{% if not is_linked_to_profile %} clickable-row {% endif %} d-flex  align-items-stretch ' {% if not is_linked_to_profile %} data-href="{% url "profile" %}{{item.github_username}}" {% endif %} >
                     <td class="col-1 d-flex align-items-center item-position">#{{forloop.counter}}</td>
                     <td class="col-1 d-flex align-items-center" >
-                      <img class="img-fluid"  src="{{item.avatar_url}}">
+                      {% if not is_linked_to_profile %}
+                        <img class="img-fluid"  src="{{item.avatar_url}}">
+                      {% endif %}
                     </td>
                     <td class="col-2 d-flex align-items-center">
-                      <a href="{% url "profile" %}{{item.github_username}}" target="_blank" >
-                        @{{item.github_username}}
-                      </a>
+                        {% if not is_linked_to_profile %}
+                          <a href="{% url "profile" %}{{item.github_username}}" target="_blank" >
+                            {{item.at_ify_username}}
+                          </a>
+                        {% else %}
+                          {{item.at_ify_username}}
+                        {% endif %}
                     </td>
-                    <td class="col-6 progress_container">
+                    <td class="col-5 progress_container">
                       <div class="progress ">
                         {% with forloop.counter0 as index %}
                           <div class="progress-bar progress-bar-striped bg-success"
@@ -93,8 +105,11 @@
                         {% endwith %}
                       </div>
                     </td>
-                    <td class="col-2 d-flex align-items-center item-amount">
-                      ${{item.amount}}
+                    <td class="col-1 d-flex align-items-center item-count item-count-bounties">
+                      {{item.count}} bounties/tips
+                    </td>
+                    <td class="col-2 d-flex align-items-center item-amount item-amount-revenue">
+                      ${{item.amount|floatformat:2|intcomma}}
                     </td>
                   </tr>
                 {% endfor %}
@@ -107,7 +122,6 @@
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
 
@@ -115,6 +129,7 @@
 
   <!-- jQuery -->
   <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/pages/leaderboard.js" %}"></script>

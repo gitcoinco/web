@@ -1,5 +1,5 @@
-{% extends "admin/base_site.html" %}
 {% load humanize %}
+{% load i18n static %}
 {% comment %}
     Copyright (C) 2017 Gitcoin Core
 
@@ -18,21 +18,8 @@
 
 {% endcomment %}
 
-{% load i18n admin_static static %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
-
-{% block coltype %}colMS{% endblock %}
-
-{% block bodyclass %}{{ block.super }} cohort{% endblock %}
-
-{% block breadcrumbs %}{% endblock %}
-
-{% block title %}Graph Visualizer | Gitcoin
-{% endblock %}
-
-{% block content %}
-  <head>
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">  <head>
     <meta charset="utf-8">
     <script src="{% static "v2/js/jquery.js" %}"></script>
     <script src="//d3js.org/d3.v2.min.js?2.9.3"></script>
@@ -64,21 +51,15 @@ rect {
   </head>
 
 
-<body>
-<a href="..">&lt; back</a>
-{% include "dataviz/shared/nav.html" %}
+<body id="body" style="zoom: 1;">
 
 <p>{{comments}}
 </p>
 
-<input style="width: 100%;" type="range" min="1519862400" max="{{max_time}}" value="1519862400" class="slider" id="myRange">
-<input type="button" value="Auto mode" onclick="grow_over_time()">
+<input style="width: 100%;" type=hidden value={{max_time}} id="myRange">
 
-<div style="text-align: center; width: 100%;">
-    <h2>Date</h2>
-</div>
 <script>
-var getColor =function (d) { 
+var getColor =function (d) {
 //if(d.avatar){
 //    return "white";
 //}
@@ -94,26 +75,13 @@ if(d.type =='independent'){
 if(d.type =='target'){
     return "#000000";
 }
-return d.type =='source' ?  ( d.type =='independent' ? "#ffffff" : '#1f77b4') : '#000000'; 
-}
-
-var grow_over_time = function(){
-    setInterval(function(){
-        var val = $('#myRange').val();
-        var new_val = parseInt(val) + 24 * 3600 * 2; // 2 days at a time
-        $('#myRange').val(new_val);
-        console.log(new_val);
-        load_data();
-    }, 500)    
+return d.type =='source' ?  ( d.type =='independent' ? "#ffffff" : '#1f77b4') : '#000000';
 }
 
 
-$('#myRange').change(function(){
-    load_data();
-});
 
-var width = $(window).width(),
-    height = $(window).height()
+var width = $(window).width() - 15,
+    height = $(window).height() + 30;
 
 
 var fill = d3.scale.category20();
@@ -122,7 +90,7 @@ var force = d3.layout.force()
     .size([width, height])
     .nodes([]) // initialize with a single node
     .linkDistance(100)
-    .charge(-250)
+    .charge(-100)
     .on("tick", tick);
 
 var svg = d3.select("body").append("svg")
@@ -143,7 +111,8 @@ restart();
 var comp_value = $('#myRange').val();
 $('h2').html(new Date(comp_value * 1000).toISOString().slice(0,10));
 
-var url = document.location.href + '?data=1&format=json';
+var connector_char = document.location.href.indexOf('?') == -1 ? '?' : '&';
+var url = document.location.href + connector_char + 'data=1&format=json&keyword={{keyword}}';
 d3.json(url, function(json) {
     for(var i in json.nodes){
         var node = json.nodes[i];
@@ -199,7 +168,7 @@ function restart() {
  node.append("text")
       .attr("dx", 12)
       .attr("dy", ".35em")
-      .text(function(d) { console.log(d.name); return d.name });
+      .text(function(d) {  return d.name });
 
 node.append("image")
       .attr("xlink:href", function(d) { return d.avatar; })
@@ -219,7 +188,38 @@ node.append("image")
   force.start();
 }
 
+$(document).ready(function(){
+  load_data();
+
+
+});
+function MouseWheelHandler(e) {
+
+  // cross-browser wheel delta
+  var e = window.event || e; // old IE support
+  var delta = Math.max(-1, Math.min(1, (e.wheelDelta || -e.detail)));
+
+  var zoom = $('body').css('zoom');
+  var new_zoom = parseFloat(zoom) + parseFloat(delta * 3 / 100.0);
+  if(new_zoom<1){
+    new_zoom=1;
+  }
+  $('body').css('zoom', new_zoom);
+  e.preventDefault();
+  return false;
+}
+
+var mybody = document.getElementById("body");
+if (mybody.addEventListener) {
+  // IE9, Chrome, Safari, Opera
+  mybody.addEventListener("mousewheel", MouseWheelHandler, false);
+  // Firefox
+  mybody.addEventListener("DOMMouseScroll", MouseWheelHandler, false);
+}
+// IE 6/7/8
+else mybody.attachEvent("onmousewheel", MouseWheelHandler);
+
+
 
 </script>
 
-{% endblock %}

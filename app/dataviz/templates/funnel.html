@@ -18,9 +18,9 @@
 
 {% endcomment %}
 
-{% load i18n admin_static static %}
+{% load i18n static %}
 
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
 
 {% block coltype %}colMS{% endblock %}
 
@@ -81,7 +81,7 @@ tr.data:nth-child(odd) {background: #FFF}
                         {% endif %}
                     {% endfor %}
                 {% endfor %}
-            </tr>        
+            </tr>
 
             {% for outer_ele in data.data %}
             <tr class='data'>

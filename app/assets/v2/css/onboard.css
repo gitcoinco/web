@@ -1,6 +1,6 @@
 body {
-  background-color: #FFFFFF;
-  font-family: 'Muli', sans-serif;
+  background-color: #fff;
+  font-family: Muli, sans-serif;
 }
 
 h2, h3 {
@@ -8,15 +8,14 @@ h2, h3 {
 }
 
 h2 {
-  font-size: 18px;
+  font-size: 22px;
   margin-bottom: 2em;
-  text-transform: capitalize;
 }
 
 h3 {
   font-size: 14px;
   margin-bottom: 2em;
-  font-weight: 500;
+  font-weight: lighter;
   margin-top: 10px;
   line-height: 1.5em;
   text-align: left;
@@ -28,6 +27,9 @@ h3 {
   margin-top: 1em;
   padding: 30px 10px 0;
   border-radius: 2px;
+  max-width: 44rem;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .show {
@@ -58,28 +60,31 @@ h3 {
 .step .filter-tag,
 .step a span,
 .step .label,
-#next-btn,
-#prev-btn {
+.button--controls {
   font-size: 12px;
 }
 
 #onboarding .controls {
   float: right;
-  margin-right: 15px;
+  margin-right: 4rem;
   overflow: auto;
+  position: relative;
 }
 
-.step svg {
+.step i {
   font-size: 1.8em;
 }
 
-.step a svg {
+.step a i {
   font-size: 16px;
 }
 
 .step .button {
+  margin-top: 5px;
   padding-left: 25px;
   padding-right: 25px;
+  font-size: 12px;
+  box-shadow: none;
 }
 
 .step a span {
@@ -97,26 +102,31 @@ h3 {
   margin-bottom: 10px;
 }
 
-.step .logged-in svg {
-  font-size: 1.2em
+.step .logged-in i,
+.step .unlocked i {
+  font-size: 1em
 }
 
 .step .logged-in a {
   display: block;
 }
 
-#onboarding .controls p {
-  border: 1px solid #D6D6D6;
-  padding: 3px 16px;
+#navbarSupportedContent .nav-link,
+#navbarSupportedContent img {
+  visibility: hidden;
 }
 
-#next-btn,
-#prev-btn {
+.button--controls {
   display: inline-block;
-  margin: 5px;
+  margin: 5px 0 5px 5px;
   text-transform: capitalize;
   border-radius: 3px;
   cursor: pointer;
+  box-shadow: none;
+}
+
+#next-btn {
+  margin-left: 0;
 }
 
 .step #metamask {
@@ -151,7 +161,6 @@ h3 {
   margin: 20px 2px;
   background-color: #CACACA;
   border: none;
-  border-radius: 2px;
   display: inline-block;
   opacity: 0.5;
 }
@@ -169,6 +178,7 @@ h3 {
   border-radius: 50%;
   width: 50px;
   height: 50px;
+  border: 0.1rem solid #1AB56D;
 }
 
 .fa-check-circle {
@@ -222,8 +232,8 @@ h3 {
   margin: 5px;
 }
 
-.suggested-tag .text svg,
-.step .filter-tag svg {
+.suggested-tag .text i,
+.step .filter-tag i {
   font-size: 9px;
   margin-right: 8px;
 }
@@ -327,10 +337,6 @@ h3 {
   border-radius: 3px;
 }
 
-#navbarSupportedContent {
-  visibility: hidden;
-}
-
 .completed {
   background-color: #0D0764;
   color: #FFFFFF;
@@ -374,8 +380,39 @@ h3 {
     text-align: center;
   }
 
-  #step-3 div.pl-0 {
+  #skills div.pl-0 {
     padding-left: 15px !important;
     padding-right: 15px !important;
+  }
+
+  #skills {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  #navbarSupportedContent .nav-link,
+  #navbarSupportedContent img {
+    visibility: visible;
+  }
+}
+
+@media (min-width: 1200px) {
+  h3 {
+    font-size: 1rem;
+  }
+
+  .step .label {
+    font-size: 0.8rem;
+  }
+
+  .step a {
+    font-size: 0.9rem;
+  }
+}
+
+@media (min-width: 1400px) {
+  .suggested-tag .text,
+  .step .filter-tag {
+    font-size: 0.8rem;
   }
 }

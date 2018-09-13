@@ -53,11 +53,18 @@ def process(request):
     for event in response:
         try:
             created_on = datetime.utcfromtimestamp(event['timestamp']).replace(tzinfo=pytz.utc)
-            email_event = EmailEvent(email=event['email'], event=event['event'], created_on=created_on, payload=event)
+            email_event = EmailEvent(
+                email=event['email'],
+                event=event['event'],
+                category=event.get('category', ''),
+                created_on=created_on,
+                ip_address=event.get('ip'),
+                )
             events.append(email_event)
         except Exception:
             pass
 
+        
     EmailEvent.objects.bulk_create(events)
 
     return HttpResponse('Thanks!')

@@ -22,7 +22,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.models import Bounty, BountyFulfillment, Interest, Profile, UserAction
-from github.utils import get_user, repo_name
+from git.utils import get_user, repo_name
 from marketing.models import GithubEvent
 
 
@@ -35,7 +35,7 @@ class Command(BaseCommand):
         if self.all_bountied_repos_cache:
             return self.all_bountied_repos_cache
 
-        bounties = Bounty.objects.filter(current_bounty=True)
+        bounties = Bounty.objects.current()
         return_me = []
         for bounty in bounties:
             try:

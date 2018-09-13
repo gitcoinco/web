@@ -50,14 +50,14 @@ Here's how to get started in the community
 We believe that a great way to build new skills is to learn by doing, and Gitcoin's core product (Bounties) supports that.
 
 Here's how to get started with bounties:
-- Developer? Check out the open bounties at https://gitcoin.co/explorer
+- Developer? Start by completing the contributor onboarding at https://gitcoin.co/onboard/contributor and check out the open bounties at https://gitcoin.co/explorer
 - Repo Owner? Accelerate your dev progress by posting a bounty of your own at https://gitcoin.co/new
 - Send a tip to any github username with https://gitcoin.co/tip
 
-We have more details in our onboarding guide at https://gitcoin.co/onboard . We also have a FAQ and tutorials available at https://gitcoin.co/help
+We have more details in our onboarding guide at https://gitcoin.co/docs/onboard . We also have a FAQ and tutorials available at https://gitcoin.co/help
 
 If you have any feedback for the team, or just want to say hi, this is them:
-- @owocki, @vivek, @Pixelant, @mbeacom, @coderberry, @justin-bean
+- <@U55F2LT5L>, <@U88M8173P>, <@U8J2TK1L6>, <@U87BL3KS6>, <@U7Z23ATPB>, <@U9UKDGS01>, <@U88BVQAJD>, <@U9PL1BSAC>, <@U7J5ZPCPQ>, <@U85EFS1MM>
 
 See you around! :spock-hand:
 Welcome_bot (and the Gitcoin Team)
@@ -104,11 +104,8 @@ def new_user_welcome(event):
         channel = sc.api_call('im.open', user=user)
         channel_id = channel['channel']['id']
         sc.api_call(
-            'chat.postMessage',
-            channel=channel_id,
-            unfurl_links=False,
-            text=MESSAGE,
-            as_user=True)
+            'chat.postMessage', channel=channel_id, unfurl_links=False, text=MESSAGE, as_user=True
+        )
 
 
 # Serve the slack welcomebot flask app.

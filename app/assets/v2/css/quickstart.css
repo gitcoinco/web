@@ -1,0 +1,153 @@
+body.quickstart,
+.quickstart {
+  background: #f6f6f6;
+}
+
+.quickstart .title {
+  color: #0d0764;
+  letter-spacing: 0;
+}
+
+.quickstart .container-fluid.content {
+  margin-bottom: 13rem;
+  text-align: left;
+}
+
+.quickstart h4.title {
+  font-size: 2.75rem;
+}
+
+.quickstart .dont-show {
+  text-align: right;
+  font-style: italic;
+  color: #4a4a4a;
+  width: 100%;
+}
+
+.quickstart .dont-show .checkbox_container .filter-label {
+  display: inline;
+}
+
+.quickstart ol,
+.quickstart ul {
+  padding: 0;
+}
+
+.quickstart .modal {
+  padding: 0;
+  line-height: 0;
+}
+
+.quickstart iframe {
+  width: 100%;
+  min-height: 450px;
+}
+
+
+.steps-container {
+  background-color: #fff;
+}
+
+.steps-container .image-container {
+  margin-top: 10rem;
+}
+
+.steps-container a {
+  color: #3e00ff;
+}
+
+.steps-list {
+  padding-left: 1.5rem !important;
+}
+
+.steps-list p {
+  font-size: 1.1rem;
+  color: #4a4a4a
+}
+
+.steps-list ol li {
+  color: #3d3d46;
+  list-style-type: none;
+  line-height: 2.5rem;
+  font-size: 1.1rem;
+}
+
+.steps-list .action-footer {
+  justify-content: space-between;
+}
+
+.action-footer .video-link {
+  width: 30%;
+}
+
+.action-footer .btn {
+  border-radius: 2px;
+  background-color: #0c0763;
+  border-color: #0c0763;
+}
+
+.tips-list {
+  border-left: #d7d7d7 2px solid;
+  padding-right: 0 !important;
+}
+
+.tips-list ul li {
+  font-size: 0.95rem !important;
+  line-height: 2rem !important;
+}
+
+.issuetypes-container {
+  background-color: #efefef;
+}
+
+.issuetypes-container .subheading {
+  width: 100%;
+  color: #15003e;
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+.issuetypes-container h5 {
+  font-size: 1.1rem;
+  margin-top: 1rem;
+  flex: 1;
+  letter-spacing: 0;
+}
+
+.issuetypes-container p {
+  font-size: 0.9rem;
+  line-height: 0.9rem;
+}
+
+.notsuggested-container ol {
+  padding: 1rem 9rem;
+}
+
+.notsuggested-container ol li {
+  list-style: none;
+  display: flex;
+  padding: 1rem 0;
+}
+
+.notsuggested-container ol li span {
+  padding: 0rem 1rem;
+}
+
+.notsuggested-container .orange-text {
+  color: #ff7200;
+}
+
+@media screen and (max-width: 500px) {
+  iframe {
+    min-height: 200px;
+  }
+
+  .notsuggested-container ol {
+    padding: 1rem 0;
+  }
+
+}
+
+.flex-column img {
+  margin: auto;
+}

@@ -33,6 +33,7 @@ from marketing.models import Stat
 from .models import DataPayload
 
 
+@staff_member_required
 def data_viz_helper_get_data_responses(request, visual_type):
     """Handle visualization of the request response data based on type.
 
@@ -48,7 +49,7 @@ def data_viz_helper_get_data_responses(request, visual_type):
     """
     data_dict = {}
     network = 'mainnet'
-    for bounty in Bounty.objects.filter(network=network, web3_type='bounties_network', current_bounty=True):
+    for bounty in Bounty.objects.current().filter(network=network, web3_type='bounties_network'):
 
         if visual_type == 'status_progression':
             max_size = 12
@@ -74,10 +75,12 @@ def data_viz_helper_get_data_responses(request, visual_type):
 
         elif visual_type == 'repos':
             value = bounty.value_in_usdt_then
+            bounty_org_name = getattr(bounty, 'org_name', '')
+            bounty_repo_name = getattr(bounty, 'github_repo_name', '')
 
             response = [
-                bounty.org_name.replace('-', ''),
-                bounty.github_repo_name.replace('-', ''),
+                bounty_org_name.replace('-', ''),
+                bounty_repo_name.replace('-', ''),
                 str(bounty.github_issue_number),
             ]
 
@@ -120,13 +123,7 @@ def viz_spiral(request, key='email_open'):
     stats = Stat.objects.filter(created_on__hour=1)
     type_options = stats.distinct('key').values_list('key', flat=True)
     stats = stats.filter(key=key).order_by('created_on')
-    params = {
-        'stats': stats,
-        'key': key,
-        'page_route': 'spiral',
-        'type_options': type_options,
-        'viz_type': key,
-    }
+    params = {'stats': stats, 'key': key, 'page_route': 'spiral', 'type_options': type_options, 'viz_type': key, }
     return TemplateResponse(request, 'dataviz/spiral.html', params)
 
 
@@ -146,8 +143,8 @@ def viz_chord(request, key='bounties_paid'):
     if request.GET.get('data'):
         rows = [['creditor', 'debtor', 'amount', 'risk']]
         network = 'mainnet'
-        for bounty in Bounty.objects.filter(
-            network=network, web3_type='bounties_network', current_bounty=True, idx_status='done'
+        for bounty in Bounty.objects.current().filter(
+            network=network, web3_type='bounties_network', idx_status='done'
         ):
             weight = bounty.value_in_usdt_then
             if weight:
@@ -166,12 +163,7 @@ def viz_chord(request, key='bounties_paid'):
         output = "\n".join(output_rows)
         return HttpResponse(output)
 
-    params = {
-        'key': key,
-        'page_route': 'spiral',
-        'type_options': type_options,
-        'viz_type': key,
-    }
+    params = {'key': key, 'page_route': 'spiral', 'type_options': type_options, 'viz_type': key, }
     return TemplateResponse(request, 'dataviz/chord.html', params)
 
 
@@ -222,12 +214,7 @@ def viz_steamgraph(request, key='open'):
         output = "\n".join(output_rows)
         return HttpResponse(output)
 
-    params = {
-        'key': key,
-        'page_route': 'steamgraph',
-        'type_options': type_options,
-        'viz_type': key,
-    }
+    params = {'key': key, 'page_route': 'steamgraph', 'type_options': type_options, 'viz_type': key, }
     return TemplateResponse(request, 'dataviz/steamgraph.html', params)
 
 
@@ -284,13 +271,7 @@ def viz_heatmap(request, key='email_open', template='heatmap'):
 
         output = "\n".join(output_rows)
         return HttpResponse(output)
-    params = {
-        'stats': stats,
-        'key': key,
-        'page_route': template,
-        'type_options': type_options,
-        'viz_type': key,
-    }
+    params = {'stats': stats, 'key': key, 'page_route': template, 'type_options': type_options, 'viz_type': key, }
     return TemplateResponse(request, f'dataviz/{template}.html', params)
 
 
@@ -330,9 +311,7 @@ def data_viz_helper_merge_json_trees(output):
         dict: The merged data dictionary.
 
     """
-    new_output = {
-        'name': output['name'],
-    }
+    new_output = {'name': output['name'], }
     if not output.get('children'):
         new_output['size'] = output['size']
         return new_output
@@ -346,7 +325,7 @@ def data_viz_helper_merge_json_trees(output):
         name = this_child['name']
         if name in processed_names.keys():
             target_idx = processed_names[name]
-            print(target_idx)
+            #print(target_idx)
             for this_childs_child in this_child['children']:
                 new_output['children'][target_idx]['children'].append(this_childs_child)
         else:
@@ -398,12 +377,7 @@ def viz_sunburst(request, visual_type, template='sunburst'):
         TemplateResponse: If data param not provided, return the populated data visualization template.
 
     """
-    visual_type_options = [
-        'status_progression',
-        'repos',
-        'fulfillers',
-        'funders',
-    ]
+    visual_type_options = ['status_progression', 'repos', 'fulfillers', 'funders', ]
     if visual_type not in visual_type_options:
         visual_type = visual_type_options[0]
 
@@ -473,14 +447,14 @@ def viz_sankey(request, _type, template='square_graph'):
     return viz_graph(request, _type, template)
 
 
-def helper_hide_pii(username):
+def helper_hide_pii(username, num_chars=3):
     if not username:
         return None
-    new_username = str(username)[0:3] + "*******"
+    new_username = str(username)[0:num_chars] + "*******"
     return new_username
 
 
-@staff_member_required
+# PUBLIC VIEW!
 def viz_graph(request, _type, template='graph'):
     """Render a graph visualization of the Gitcoin Network.
 
@@ -492,6 +466,8 @@ def viz_graph(request, _type, template='graph'):
         TemplateResponse: If data param not provided, return the populated data visualization template.
 
     """
+    show_controls = request.GET.get('show_controls', False)
+    keyword = request.GET.get('keyword', '')
     hide_pii = True
     page_route = 'graph'
     if template == 'square_graph':
@@ -525,7 +501,11 @@ def viz_graph(request, _type, template='graph'):
         values = {}
         avatars = {}
         edges = []
-        for bounty in Bounty.objects.filter(network='mainnet', current_bounty=True):
+        bounties = Bounty.objects.current().filter(network='mainnet')
+        if keyword:
+            bounties = bounties.filter(raw_data__icontains=keyword)
+
+        for bounty in bounties:
             if bounty.value_in_usdt_then:
                 weight = bounty.value_in_usdt_then
                 source = bounty.org_name
@@ -591,8 +571,8 @@ def viz_graph(request, _type, template='graph'):
 
         for key, val in values.items():
             if val > 40:
-                github_url = f"https://github.com/{key}"
-                avatars[key] = f'https://gitcoin.co/funding/avatar?repo={github_url}&v=3'
+                avatar_key = key if key and "*" not in key else "None"
+                avatars[key] = f'https://gitcoin.co/dynamic/avatar/{avatar_key}'
 
         # build output
         for name in set(names.keys()):
@@ -622,10 +602,16 @@ def viz_graph(request, _type, template='graph'):
         'type_options': _type_options,
         'page_route': page_route,
         'max_time': int(time.time()),
+        'keyword': keyword,
     }
-    return TemplateResponse(request, f'dataviz/{template}.html', params)
+
+    _template = 'graph' if not show_controls else 'admin_graph'
+    response = TemplateResponse(request, f'dataviz/{_template}.html', params)
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    return response
 
 
+@staff_member_required
 def viz_draggable(request, key='email_open'):
     """Render a draggable graph visualization.
 
@@ -641,9 +627,8 @@ def viz_draggable(request, key='email_open'):
     bfs = BountyFulfillment.objects.filter(accepted=True)
     limit = 50
     usernames = list(
-        bfs.exclude(fulfiller_github_username='').distinct('fulfiller_github_username').values_list(
-            'fulfiller_github_username', flat=True
-        )
+        bfs.exclude(fulfiller_github_username=''
+                    ).distinct('fulfiller_github_username').values_list('fulfiller_github_username', flat=True)
     )[0:limit]
     if request.GET.get('data'):
         output = []
@@ -664,7 +649,7 @@ def viz_draggable(request, key='email_open'):
                 income.append([i, val_usdt])  # x axis
                 lifeExpectancy.append([i, num_bounties])  # y axis
                 population.append([i, 10000000 * num_bounties])  # size
-                print(username, i, num_bounties, val_usdt)
+                #print(username, i, num_bounties, val_usdt)
             output.append({
                 'name': username,
                 'region': username,
@@ -686,7 +671,16 @@ def viz_draggable(request, key='email_open'):
     return TemplateResponse(request, 'dataviz/draggable.html', params)
 
 
-def viz_scatterplot(request, key='hourly_rate'):
+def viz_scatterplot_stripped(request, key='hourly_rate'):
+    return viz_scatterplot_helper(request, 'hourly_rate', 'dataviz/scatterplot_stripped.html', True)
+
+
+@staff_member_required
+def viz_scatterplot(request, key='hourly_rate', template='dataviz/scatterplot.html', hide_usernames=False):
+    return viz_scatterplot_helper(request, key, template, hide_usernames)
+
+
+def viz_scatterplot_helper(request, key='hourly_rate', template='dataviz/scatterplot.html', hide_usernames=False):
     """Render a scatterplot visualization.
 
     Args:
@@ -697,19 +691,22 @@ def viz_scatterplot(request, key='hourly_rate'):
 
     """
     stats = []
+    keyword = request.GET.get('keyword', None)
     type_options = ['hourly_rate']
     if request.GET.get('data'):
         rows = [['hourlyRate', 'daysBack', 'username', 'weight']]
-        for bf in BountyFulfillment.objects.filter(accepted=True).exclude(fulfiller_hours_worked=None):
-            print(bf.pk, bf.created_on)
+        fulfillments = BountyFulfillment.objects.filter(accepted=True).exclude(fulfiller_hours_worked=None)
+        if keyword:
+            filter_bounties = Bounty.objects.filter(raw_data__icontains=keyword)
+            fulfillments = fulfillments.filter(bounty__in=filter_bounties)
+        for bf in fulfillments:
+            #print(bf.pk, bf.created_on)
             try:
                 weight = math.log(bf.bounty.value_in_usdt, 10) / 4
-                row = [
-                    str(bf.bounty.hourly_rate),
-                    str((timezone.now() - bf.accepted_on).days),
-                    bf.bounty.org_name,
-                    str(weight),
-                ]
+                username = bf.bounty.org_name
+                if hide_usernames:
+                    username = "repo: " + helper_hide_pii(username.lower(), 1)
+                row = [str(bf.bounty.hourly_rate), str((timezone.now() - bf.accepted_on).days), username, str(weight), ]
                 if bf.bounty.hourly_rate:
                     rows.append(row)
             except Exception:
@@ -728,5 +725,8 @@ def viz_scatterplot(request, key='hourly_rate'):
         'page_route': 'scatterplot',
         'type_options': type_options,
         'viz_type': key,
+        'keyword': keyword,
     }
-    return TemplateResponse(request, 'dataviz/scatterplot.html', params)
+    response = TemplateResponse(request, template, params)
+    response['X-Frame-Options'] = 'SAMEORIGIN'
+    return response

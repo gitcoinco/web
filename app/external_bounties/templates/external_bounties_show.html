@@ -4,11 +4,11 @@
 <html lang="en">
 
   <head>
-    <link rel="stylesheet" href="{% static "v2/css/external_bounties/bounty.css" %}" />
+    <link rel="stylesheet" href="{% static "v2/css/external_bounties/bounty.css" %}">
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
     {% if no_index %}
-        <meta name="robots" content="noindex">
+      <meta name="robots" content="noindex">
     {% endif %}
 
   </head>
@@ -18,7 +18,6 @@
     <div class="container-fluid header dash">
       {% include 'shared/nav.html' %}
     </div>
-    {% include 'shared/current_balance.html' with full=True %}
 
     <div class="row no-gutter">
 
@@ -41,7 +40,6 @@
                   <div class="bounty__header-wrapper">
                     <div class="bounty__header">
                       <h3 class="bounty__title">{{ bounty.title }}</h3>
-
                       <div class="bounty__source">{% trans "created" %}: {{ bounty.created_on | naturaltime}}</div>
                       {% if bounty.source %}
                         <div class="bounty__source">{% trans "source" %}: {{ bounty.source }}</div>
@@ -52,34 +50,34 @@
                     </div>
                   </div>
                   {% if bounty.crypto_price or bounty.fiat_price %}
-                      <h6 class="sub-title">{% trans "Funding" %}:</h6>
-                      <div class="bounty__content">
-                        <span class="bounty__crypto-price">
-                          {% if bounty.crypto_label == 'ETH' %}
-                            <span class="icon">{% include 'svgs/ethereum.svg' %}</span>
-                          {% endif %}
-                          {% if bounty.crypto_price %}
-                              <span>{{ bounty.crypto_price }} {{ bounty.crypto_label }}</span>
-                          {% else %}
-                              <span>{{ bounty.payout_str }}</span>
-                          {% endif %}
-                        </span>
-                        <span class="bounty__fiat-price">
-                          {% if bounty.fiat_price %}
-                              <span class="icon">{% include 'svgs/money.svg' %}</span>
-                              <span>{{ bounty.fiat_price }} USD</span>
-                          {% endif %}
-                        </span>
-                      </div>
+                    <h6 class="sub-title">{% trans "Funding" %}:</h6>
+                    <div class="bounty__content">
+                      <span class="bounty__crypto-price">
+                        {% if bounty.crypto_label == 'ETH' %}
+                          <span class="icon">{% include 'svgs/ethereum.svg' %}</span>
+                        {% endif %}
+                        {% if bounty.crypto_price %}
+                          <span>{{ bounty.crypto_price }} {{ bounty.crypto_label }}</span>
+                        {% else %}
+                          <span>{{ bounty.payout_str }}</span>
+                        {% endif %}
+                      </span>
+                      <span class="bounty__fiat-price">
+                        {% if bounty.fiat_price %}
+                          <span class="icon">{% include 'svgs/money.svg' %}</span>
+                          <span>{{ bounty.fiat_price }} USD</span>
+                        {% endif %}
+                      </span>
+                    </div>
                   {% endif %}
                   {% if bounty.content %}
-                      <h6 class="sub-title">{% trans "Description" %}:</h6>
-                      <div class="bounty__content">
-                      <pre>{{ bounty.content }}</pre>
-                      </div>
-                      <div class="bounty__footer">
-                        <a class="link-red" href="{% url "offchain_index" %}">{% trans "Go Back" %}</a>
-                      </div>
+                    <h6 class="sub-title">{% trans "Description" %}:</h6>
+                    <div class="bounty__content">
+                    <pre>{{ bounty.content }}</pre>
+                    </div>
+                    <div class="bounty__footer">
+                      <a class="link-red" href="{% url "offchain_index" %}">{% trans "Go Back" %}</a>
+                    </div>
                   {% endif %}
                 </div>
               </div>
@@ -92,10 +90,10 @@
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
 
+    <script src="/dynamic/js/tokens_dynamic.js"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>
     <script src="{% static "v2/js/shared.js" %}"></script>
 

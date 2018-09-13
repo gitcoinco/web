@@ -37,7 +37,16 @@ faith and everyone is working towards a common goal.
 
 Issues in `gitcoin/web` are the primary means by which bug reports and
 general discussions are made. A contributor is allowed to create an issue,
-discuss and provide a fix if needed.
+discuss, and provide a fix if needed.
+
+Before opening an issue, https://waffle.io/gitcoinco/web is a good place to go to see if there are any current issues with similar key words. This helps us cut down on duplicate tickets.
+
+When you [open an issue](https://github.com/gitcoinco/web), you'll notice four templates (bug, custom, discussion, feature) with the user-story format we like for our issue reports. When starting a new issue, please do your best to be as detailed and specific as possible.
+
+1. Bug report - use this to create a bug report to help us improve Gitcoin
+2. Discussion - use this template to start a discussion
+3. Feature request - use this to suggest a project idea
+4. Custom report - use this to report an issue that doesn't fall under any other category
 
 ## Discussions And General Help
 
@@ -55,7 +64,7 @@ documentation.
 You must install [pre-commit](https://pre-commit.com/#install) in order to enable our
 precommit hooks and `pre-commit install` from your `gitcoinco/web` root directory.
 
-In order to make use of the `pre-commit` hooks used for this repository, you should have a valid installation of `node`/`npm`, `isort` (`pip install isort`), `stylelint` (`npm install -g stylelint`), and `eslint` (`npm install -g eslint`).
+In order to make use of the `pre-commit` hooks used for this repository, you should have a valid installation of `node`/`npm`, `isort` (`pip install isort`), `yapf` (`pip install yapf`), `stylelint` (`npm install -g stylelint`), and `eslint` (`npm install -g eslint`).
 
 User facing copy / text should be run through [Django Translation Framework](https://docs.djangoproject.com/en/2.0/topics/i18n/translation/). For example,
 
@@ -64,6 +73,11 @@ User facing copy / text should be run through [Django Translation Framework](htt
 3. each of the `views.py` user-facing pieces of copy are in `gettext_lazy` fields
 4. each of the models `help_text`s are internationalized
 5. as are all the emails in `marketing/mails.py`
+6. run `make autotranslate` or a combination of the necessary `./manage.py makemessages` and `./manage.py compilemessages` commands.
+
+Take a look at `/styleguide-alpha` (ui_inventory.html), for a quick reference of user interface components.
+If you are contributing user-facing assets, interface components or other relevant visuals,
+then please add them to our UI Inventory page.
 
 ### Step 1: Fork
 

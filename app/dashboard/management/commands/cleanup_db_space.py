@@ -20,17 +20,39 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from economy.models import ConversionRate
-from gas.models import GasProfile
+from gas.models import GasGuzzler, GasProfile
+from marketing.models import Stat
 
 
 class Command(BaseCommand):
 
     help = 'cleans up database objects that are old'
 
+    def get_then(self, days_back=7):
+        return timezone.now() - timezone.timedelta(days=days_back)
+
     def handle(self, *args, **options):
 
-        days_back = 7
-        then_time = timezone.now() - timezone.timedelta(days=days_back)
+        for model in [GasGuzzler, GasProfile]:
+            result = model.objects.filter(
+                created_on__lt=self.get_then(14),
+                ).exclude(created_on__minute__lt=10).delete()
+            print(f'{model}: {result}')
 
-        GasProfile.objects.filter(created_on__lt=then_time).delete()
-        ConversionRate.objects.filter(created_on__lt=then_time).exclude(from_currency='ETH', to_currency='USDT').exclude(from_currency='USDT', to_currency='ETH').delete()
+        result = ConversionRate.objects.filter(
+                created_on__lt=self.get_then(7),
+            ).exclude(
+                from_currency='ETH',
+                to_currency='USDT',
+            ).exclude(
+                from_currency='USDT',
+                to_currency='ETH'
+            ).delete()
+        print(f'ConversionRate: {result}')
+
+        result = Stat.objects.filter(
+                created_on__lt=self.get_then(7),
+            ).exclude(
+                created_on__hour=1,
+            ).delete()
+        print(f'Stat: {result}')

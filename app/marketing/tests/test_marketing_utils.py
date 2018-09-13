@@ -18,8 +18,18 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from marketing.models import EmailSubscriber, Stat
-from marketing.utils import get_or_save_email_subscriber, get_stat, should_suppress_notification_email
+from marketing.utils import func_name, get_or_save_email_subscriber, get_stat, should_suppress_notification_email
 from test_plus.test import TestCase
+
+
+class MarketingUtilsTestCase(TestCase):
+    """Define tests for general marketing utils."""
+
+    @staticmethod
+    def test_func_name():
+        """Test the func_name method and ensure parent method matches."""
+        function_name = func_name()
+        assert function_name == 'test_func_name'
 
 
 class MarketingStatUtilsTest(TestCase):
@@ -27,14 +37,8 @@ class MarketingStatUtilsTest(TestCase):
 
     def setUp(self):
         """Perform setup for the testcase."""
-        Stat.objects.create(
-            key='mykey',
-            val=1
-        )
-        Stat.objects.create(
-            key='mykey',
-            val=2
-        )
+        Stat.objects.create(key='mykey', val=1)
+        Stat.objects.create(key='mykey', val=2)
 
     def test_get_stat(self):
         """Test the marketing util get_stat method."""
@@ -49,28 +53,31 @@ class MarketingEmailUtilsTest(TestCase):
         EmailSubscriber.objects.create(
             email='emailSubscriber1@gitcoin.co',
             source='mysource',
-            priv='priv1'
+            priv='priv1',
+            preferences={'suppression_preferences': {
+                'foo': False
+            }}
         )
         EmailSubscriber.objects.create(
             email='emailSubscriber2@gitcoin.co',
             source='mysource',
-            preferences={
-                'level': 'something'
-            }
+            preferences={'suppression_preferences': {
+                'foo': False
+            }}
         )
         EmailSubscriber.objects.create(
             email='emailSubscriber3@gitcoin.co',
             source='mysource',
-            preferences={
-                'level': 'nothing'
-            }
+            preferences={'suppression_preferences': {
+                'foo': True
+            }}
         )
 
     def test_should_suppress_notification_email(self):
         """Test the marketing util test_should_suppress_notification_email method."""
-        assert not should_suppress_notification_email('emailSubscriber1@gitcoin.co')
-        assert not should_suppress_notification_email('emailSubscriber2@gitcoin.co')
-        assert should_suppress_notification_email('emailSubscriber3@gitcoin.co')
+        assert not should_suppress_notification_email('emailSubscriber1@gitcoin.co', 'foo')
+        assert not should_suppress_notification_email('emailSubscriber2@gitcoin.co', 'foo')
+        assert should_suppress_notification_email('emailSubscriber3@gitcoin.co', 'foo')
 
     def test_get_of_get_or_save_email_subscriber(self):
         """Test the marketing util get_or_save_email_subscriber method."""
@@ -83,7 +90,6 @@ class MarketingEmailUtilsTest(TestCase):
 
     def test_save_get_or_save_email_subscriber_get(self):
         """Test the marketing util get_or_save_email_subscriber method."""
-        self.assertIsNotNone(
-            get_or_save_email_subscriber('newemail@gitcoin.co', 'mysource', send_slack_invite=False))
+        self.assertIsNotNone(get_or_save_email_subscriber('newemail@gitcoin.co', 'mysource', send_slack_invite=False))
 
         assert EmailSubscriber.objects.filter().count() == 4

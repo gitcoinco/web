@@ -77,8 +77,8 @@
 
 
 
-    <div id="feature_videos">
-        <h4 class="heading">{% trans "Featured Videos" %}</h4>
+    <div id="feature_videos" class="pt-3">
+        <h4 class="heading mt-0">{% trans "Featured Videos" %}</h4>
         <div class="animatedParent video-row">
             <div class="video animated fadeInLeftShort">
                 <h6 class="sub-heading">{% trans "How it works" %}</h6>
@@ -96,18 +96,22 @@
     </div>
 
     <div id=tutorials class="container-fluid text-center white-light-bg">
-        <div class="row mt-5">
+        <div class="row pt-5">
             <div class="col">
                 <h3>{% trans "Tutorials" %}</h3>
             </div>
         </div>
-        <div class="row mt-2 mb-2 pb-3 tutorial_item">
+        <div class="row mt-2 pb-3 tutorial_item">
             <div class="col col-12 text-left">
                 <ul>
                     {% for item in tutorials %}
-                    <li class='tutorial_parent pb-4 pt-4'>
-                        <img src="{{item.img}}" />
-                        <a href="{{item.url}}">{{item.title}}</a>
+                    <li class='tutorial_parent pb-2 pt-2'>
+                        <div style="width:20%; display: inline-block; text-align: center;">
+                            <img src="{{item.img}}" style="max-height: 200px; max-width: 200px; margin: 0px auto;" />
+                        </div>
+                        <div style="width: 70%;  display: inline-block; margin-left: 5%;">
+                            <a href="{{item.url}}" style="font-size: 16px">{{item.title}}</a>
+                        </div>
                     </li>
                     {% endfor %}
                 </ul>
@@ -117,12 +121,12 @@
 
 
     <div id=faq class="container-fluid text-center white-light-bg" id="faq">
-        <div class="row mt-5">
+        <div class="row pt-5">
             <div class="col">
                 <h3>{% trans "FAQ" %}</h3>
             </div>
         </div>
-        <div class="row mt-2 mb-2 pb-3 faq_item">
+        <div class="row mt-2 pb-3 faq_item">
         {% for category, items in faq.items %}
             <div class="col col-4 text-left">
                 <h4 class="heading">{{category}}</h4>
@@ -149,7 +153,7 @@
         </div>
         <div class="row mt-2 mb-2 pb-3 animatedParent">
             <div class="col animated pulse fast">
-                <a class="btn btn-lg btn-warning " role="button" href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp">{% trans "View Github Repo" %}</a>
+                <a class="btn btn-lg btn-warning " role="button" href="https://github.com/gitcoinco/gitcoinco/issues?q=is%3Aissue+is%3Aopen+label%3Ahelp" target="_blank" rel="noopener noreferrer">{% trans "View Github Repo" %}</a>
                 <a class="btn btn-lg btn-warning " role="button" href="{% url "slack" %}"> <i class="fab fa-slack-hash" style="margin-right: 5px; position: relative; top: 2px;" aria-hidden="true"></i>{% trans "Ask on slack" %}</a>
                 <a class="btn btn-lg btn-warning " role="button" href="mailto:founders@gitcoin.co">{% trans "Contact Gitcoin Core" %}</a>
             </div>
@@ -160,7 +164,6 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/rollbar.html' %}
     {% include 'shared/messages.html' %}
 
 </body>

@@ -1,0 +1,10 @@
+{% load i18n  %}
+
+{% trans "Good news!" %} @{{interest.profile.handle}}</a> {% trans "would like to work on this bounty. Please review and approve" %} @{{interest.profile.handle}} {% trans "by clicking approve below." %}
+
+
+
+{% include 'emails/bounty.txt' with bounty=bounty action='custom' action_copy='Approve Worker' action_url=approve_worker_url action2_url=reject_worker_url action2_copy='Reject Worker' action2='custom' %}
+
+
+{% trans "As a reminder, after 72 hours any contributor will be auto-approved and can automatically submit a PR against your issue." %}

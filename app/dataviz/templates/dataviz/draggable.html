@@ -1,16 +1,15 @@
-
+{% load static %}
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
   <title>User balance progression over time</title>
-  <link href="/static/v2/js/dataviz/dragit.css" rel="stylesheet"/>
-  <script src="/static/v2/js/dataviz/d3.v3.js"></script>
-  <script src="/static/v2/js/dataviz/dragit.js"></script>
+  <link href="{% static "v2/js/dataviz/dragit.css" %}" rel="stylesheet">
+  <script src="{% static "v2/js/dataviz/d3.v3.js" %}"></script>
+  <script src="{% static "v2/js/dataviz/dragit.js" %}"></script>
 </head>
 <title>User balance progression over time</title>
 <style>
-
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   margin-left:40px;
@@ -72,10 +71,10 @@ text {
 }
 
 circle.pointTrajectory {
-   pointer-events: none;
-   stroke: lightgray;
-   fill: black;
-   opacity: 0;
+  pointer-events: none;
+  stroke: lightgray;
+  fill: black;
+  opacity: 0;
 }
 
 path.lineTrajectory {
@@ -89,7 +88,6 @@ path.lineTrajectory {
 .selected {
   stroke-width: 4;
 }
-
 </style>
 
 <script type="text/javascript">
@@ -103,7 +101,7 @@ var max = 360;
 <i>Use your mouse to click and drag</i></p>
 
 <div id="chart" style="margin:0px"></div>
-<span id="min-time">1</span> 
+<span id="min-time">1</span>
 <input type="range" name="points" min="0" max="208" step="1" value="0" id="slider-time" style="width:900px">
 <span id="max-time">360</span>
 <br>
@@ -233,7 +231,7 @@ d3.json(url, function(nations) {
           countrylabel.text("");
           dot.style("opacity", 1);
         }
-  
+
         dragit.trajectory.remove(d, i);
       })
       .call(dragit.object.activate)
@@ -289,7 +287,7 @@ d3.json(url, function(nations) {
     }
     return a[1];
   }
-  
+
   init();
 
   function update(v, duration) {
@@ -299,7 +297,6 @@ d3.json(url, function(nations) {
   }
 
   function init() {
-
     dragit.init(".gRoot");
 
     dragit.time = {min:min, max:max, step:1, current:min}
@@ -307,18 +304,15 @@ d3.json(url, function(nations) {
 
     for(var yy = min; yy<max; yy++) {
 
-      interpolateData(yy).filter(function(d, i) { 
+      interpolateData(yy).filter(function(d, i) {
         dragit.data[i][yy-dragit.time.min] = [xScale(x(d)), yScale(y(d))];
-
       })
     }
 
     dragit.evt.register("update", update);
 
-    //d3.select("#slider-time").property("value", dragit.time.current);
-
     d3.select("#slider-time")
-      .on("mousemove", function() { 
+      .on("mousemove", function() {
         update(parseInt(this.value), 500);
         clear_demo();
       })
@@ -333,7 +327,7 @@ d3.json(url, function(nations) {
 
 function clear_demo() {
   if(first_time) {
-     svg.transition().duration(0);
+    svg.transition().duration(0);
     first_time = false;
     window.clearInterval(demo_interval);
     countrylabel.text("");
@@ -343,11 +337,10 @@ function clear_demo() {
 }
 
 function play_demo() {
-
-  var ex_nations = {{usernames | safe}};
+  var ex_nations = {{ usernames|safe }};
   var index_random_nation = null;
   var random_index = Math.floor(Math.random() * ex_nations.length);
-  var random_nation = nations.filter(function(d, i) { 
+  var random_nation = nations.filter(function(d, i) {
     if(d.name == ex_nations[random_index]) {
       index_random_nation = i;
       return true;
@@ -379,7 +372,6 @@ setTimeout(function() {
 }, 1000);
 
 });
-
 </script>
 
 </body>

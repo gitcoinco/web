@@ -30,6 +30,7 @@ import boto
 from boto.s3.key import Key
 from dashboard.models import Bounty, Profile, Tip
 from economy.utils import convert_amount
+from enssubdomain.models import ENSSubdomainRegistration
 from faucet.models import FaucetRequest
 from marketing.mails import send_mail
 
@@ -112,7 +113,7 @@ class Command(BaseCommand):
             'type': 'tip',
             'created_on': tip.created_on,
             'last_activity': tip.modified_on,
-            'amount': tip.get_natural_value() * 10**18,
+            'amount': tip.amount_in_whole_units,
             'denomination': tip.tokenName,
             'amount_eth': tip.value_in_eth,
             'amount_usdt': tip.value_in_usdt,
@@ -150,6 +151,29 @@ class Command(BaseCommand):
             'payee_location': location,
         }
 
+    def format_ens_reg(self, ensreg):
+
+        location, bio = get_bio(ensreg.profile.handle) if ensreg.profile else "", ""
+        amount = ensreg.gas_cost_eth
+        return {
+            'type': 'ens_subdomain_registration',
+            'created_on': ensreg.created_on,
+            'last_activity': ensreg.modified_on,
+            'amount': amount,
+            'denomination': 'ETH',
+            'amount_eth': amount,
+            'amount_usdt': convert_amount(amount, 'ETH', 'USDT'),
+            'from_address': '0x4331B095bC38Dc3bCE0A269682b5eBAefa252929',
+            'claimee_address': ensreg.subdomain_wallet_address,
+            'repo': 'n/a',
+            'from_username': 'admin',
+            'fulfiller_github_username': ensreg.profile.handle if ensreg.profile else "",
+            'status': 'sent',
+            'comments': f"ENS Subdomain Registraiton {ensreg.pk}",
+            'payee_bio': bio,
+            'payee_location': location,
+        }
+
     def upload_to_s3(self, filename, contents):
         s3 = boto.connect_s3(settings.AWS_ACCESS_KEY_ID, settings.AWS_SECRET_ACCESS_KEY)
         bucket = s3.get_bucket(settings.S3_REPORT_BUCKET)
@@ -161,33 +185,41 @@ class Command(BaseCommand):
         return key.generate_url(expires_in=REPORT_URL_EXPIRATION_TIME)
 
     def handle(self, *args, **options):
-        bounties = Bounty.objects.prefetch_related('fulfillments').filter(
+        bounties = Bounty.objects.prefetch_related('fulfillments').current().filter(
             network='mainnet',
-            current_bounty=True,
             web3_created__gte=options['start_date'],
             web3_created__lte=options['end_date']
         ).order_by('web3_created', 'id')
+        formatted_bounties = imap(self.format_bounty, bounties)
 
         frs = FaucetRequest.objects.filter(
             created_on__gte=options['start_date'],
             created_on__lte=options['end_date'],
             fulfilled=True,
         ).order_by('created_on', 'id')
+        formatted_frs = imap(self.format_faucet_distribution, frs)
 
         tips = Tip.objects.filter(
             network='mainnet',
             created_on__gte=options['start_date'],
             created_on__lte=options['end_date']
+        ).exclude(
+            txid='',
         ).order_by('created_on', 'id')
-
-        formatted_frs = imap(self.format_faucet_distribution, frs)
-        formatted_bounties = imap(self.format_bounty, bounties)
         formatted_tips = imap(self.format_tip, tips)
+
+        enssubregistrations = ENSSubdomainRegistration.objects.filter(
+            created_on__gte=options['start_date'],
+            created_on__lte=options['end_date']
+        ).order_by('created_on', 'id')
+        formted_enssubreg = imap(self.format_ens_reg, enssubregistrations)
 
         # python3 list hack
         formatted_frs = [x for x in formatted_frs]
         formatted_bounties = [x for x in formatted_bounties]
         formatted_tips = [x for x in formatted_tips]
+        formateted_enssubregistrations = [x for x in formted_enssubreg]
+        all_items = formatted_bounties + formatted_tips + formatted_frs + formateted_enssubregistrations
 
         csvfile = StringIO()
         csvwriter = csv.DictWriter(csvfile, fieldnames=[
@@ -196,7 +228,7 @@ class Command(BaseCommand):
             'fulfiller_github_username', 'status', 'comments', 'payee_bio', 'payee_location'])
         csvwriter.writeheader()
 
-        items = sorted(formatted_bounties + formatted_tips + formatted_frs, key=lambda x: x['created_on'])
+        items = sorted(all_items, key=lambda x: x['created_on'])
         has_rows = False
         for item in items:
             has_rows = True
@@ -212,8 +244,17 @@ class Command(BaseCommand):
             body = '<a href="%s">%s</a>' % (url, url)
             print(url)
 
-            send_mail(settings.CONTACT_EMAIL, settings.CONTACT_EMAIL, subject, body='', html=body)
+            send_mail(
+                settings.CONTACT_EMAIL,
+                settings.CONTACT_EMAIL,
+                subject,
+                body='',
+                html=body,
+                categories=['admin', 'activity_report'],
+            )
 
-            self.stdout.write(self.style.SUCCESS('Sent activity report from %s to %s to %s' % (start, end, settings.CONTACT_EMAIL)))
+            self.stdout.write(
+                self.style.SUCCESS('Sent activity report from %s to %s to %s' % (start, end, settings.CONTACT_EMAIL))
+            )
         else:
             self.stdout.write(self.style.WARNING('No activity from %s to %s to report' % (start, end)))

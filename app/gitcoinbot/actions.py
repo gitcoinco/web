@@ -26,14 +26,12 @@ from django.conf import settings
 
 import jwt
 import requests
-import rollbar
 from dashboard.models import Bounty
-from dashboard.tokens import tokens
+from dashboard.tokens import get_tokens
+from git.utils import post_issue_comment_reaction
 from gitcoinbot.models import GitcoinBotResponses
-from github.utils import post_issue_comment_reaction
 
 MIN_AMOUNT = 0
-CURRENCIES = set(map(lambda currency: currency['name'], tokens))
 FALLBACK_CURRENCY = 'ETH'
 
 
@@ -124,11 +122,11 @@ def parse_comment_amount(comment_text):
 
 def parse_comment_currency(comment_text, fallback_currency=FALLBACK_CURRENCY):
     """Get the first token defined in comment_text."""
+    CURRENCIES = set(map(lambda currency: currency['name'], get_tokens()))
     or_currencies = '|'.join(CURRENCIES)
     re_currencies = fr'({or_currencies})'
     result = re.findall(re_currencies, comment_text)
-
-    return result[0] if len(result) > 0 else fallback_currency
+    return result[0] if result else fallback_currency
 
 
 def parse_tippee_username(comment_text):
@@ -184,7 +182,6 @@ def confused_text():
 def post_gitcoin_app_comment(owner, repo, issue_id, content, install_id):
     token = create_token(install_id)
     if not token:
-        rollbar.report_message('Failed to create Github Bot token', 'warning')
         return {}
     url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue_id}/comments'
     github_app_headers = {
@@ -258,4 +255,4 @@ def determine_response(owner, repo, comment_id, comment_text, issue_id, install_
             post_gitcoin_app_comment(owner, repo, issue_id, text_response, install_id)
         else:
             post_issue_comment_reaction(owner, repo, comment_id, 'confused')
-            #post_gitcoin_app_comment(owner, repo, issue_id, confused_text(), install_id)
+            # post_gitcoin_app_comment(owner, repo, issue_id, confused_text(), install_id)

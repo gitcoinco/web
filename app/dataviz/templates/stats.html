@@ -15,8 +15,8 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n admin_static static %}
-{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+{% load i18n static %}
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}">{% endblock %}
 {% block coltype %}colMS{% endblock %}
 {% block bodyclass %}{{ block.super }} dashboard{% endblock %}
 {% block breadcrumbs %}{% endblock %}

@@ -1,0 +1,7 @@
+{% load i18n  %}
+
+@{{interest.profile.handle}}</a> {% trans "was automatically approved to work on this bounty! Please work together to complete the project." %}
+
+
+{% include 'emails/bounty.txt' with bounty=bounty %}
+

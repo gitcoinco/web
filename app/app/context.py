@@ -43,14 +43,25 @@ def insert_settings(request):
     context = {
         'mixpanel_token': settings.MIXPANEL_TOKEN,
         'STATIC_URL': settings.STATIC_URL,
+        'MEDIA_URL': settings.MEDIA_URL,
         'num_slack': num_slack,
         'github_handle': request.user.username if user_is_authenticated else False,
         'email': request.user.email if user_is_authenticated else False,
         'name': request.user.get_full_name() if user_is_authenticated else False,
-        'rollbar_client_token': settings.ROLLBAR_CLIENT_TOKEN,
+        'sentry_address': settings.SENTRY_ADDRESS,
+        'raven_js_version': settings.RAVEN_JS_VERSION,
+        'raven_js_dsn': settings.SENTRY_JS_DSN,
+        'release': settings.RELEASE,
         'env': settings.ENV,
         'email_key': email_key,
         'profile_id': profile.id if profile else '',
+        'hotjar': settings.HOTJAR_CONFIG,
+        'ipfs_config': {
+            'host': settings.IPFS_HOST,
+            'port': settings.IPFS_API_PORT,
+            'protocol': settings.IPFS_API_SCHEME,
+            'root': settings.IPFS_API_ROOT,
+        },
     }
     context['json_context'] = json.dumps(context)
 
@@ -58,7 +69,9 @@ def insert_settings(request):
         context['unclaimed_tips'] = Tip.objects.filter(
             expires_date__gte=timezone.now(),
             receive_txid='',
-            username__iexact=context['github_handle'])
+            username__iexact=context['github_handle'],
+            web3_type='v3',
+        ).exclude(txid='')
         if not settings.DEBUG:
             context['unclaimed_tips'] = context['unclaimed_tips'].filter(network='mainnet')
 

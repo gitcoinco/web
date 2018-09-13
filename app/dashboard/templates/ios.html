@@ -47,9 +47,9 @@
         </div>
         <div class="row visible-md-down">
           <div class="col-12 header-line">
-            {% trans "One Swipe Away From Your Next Bounty." %}
+            <span>{% trans "One Swipe Away From Your Next Bounty." %}</span>
             <div class="row no-gutter">
-              <div class="col-2" style="background: #fff; height:7px; margin:30px 0;"></div>
+              <div class="col-2 white-line"></div>
             </div>
             <h3>
               {% trans "Browse funded work in open source software from anywhere, at anytime." %}
@@ -77,17 +77,16 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-md-1"></div>
-      <div class="col-md-10">
+      <div class="offset-md-1 col-md-10">
         <div class="row">
-          <div class="col-md-4" style="">
+          <div class="col-md-4">
             <div class="text-center">
               <div class="cards">
                 <div class="card">
                   <div class="ios-emoji">👤</div>
                   <div class="content">
-                    <div class="title">1. {% trans "Sync" %}</div>
-                    <div class="description">
+                    <div class="title font-title-lg">{% trans "Sync" %}</div>
+                    <div class="description font-body">
                       {% trans "Sync your github profile with the gitcoin app." %}
                     </div>
                   </div>
@@ -95,14 +94,14 @@
               </div>
             </div>
           </div>
-          <div class="col-md-4" style="">
+          <div class="col-md-4">
             <div class="text-center">
                 <div class="cards">
                   <div class="card">
                     <div class="ios-emoji">👆</div>
                     <div class="content">
-                      <div class="title">2. {% trans "Swipe" %}</div>
-                      <div class="description">
+                      <div class="title font-title-lg">{% trans "Swipe" %}</div>
+                      <div class="description font-body">
                         {% trans "Swipe through funded work in open source software." %}
                       </div>
                     </div>
@@ -110,14 +109,14 @@
                 </div>
             </div>
           </div>
-          <div class="col-md-4" style="">
+          <div class="col-md-4">
             <div class="text-center">
               <div class="cards">
                 <div class="card">
                   <div class="ios-emoji">🎉</div>
                   <div class="content">
-                    <div class="title">3. {% trans "Match" %}</div>
-                    <div class="description">
+                    <div class="title font-title-lg">{% trans "Match" %}</div>
+                    <div class="description font-body">
                       {% trans "The app will intro you (via github comments) to the repository owners with whom you've matched with" %}
                     </div>
                   </div>
@@ -126,8 +125,7 @@
               </div>
             </div>
           </div>
-        </div>
-      <div class="col-md-1"></div>
+      </div>
     </div>
     <div class="row tag-line text-center">
       <div class="col-12">
@@ -139,12 +137,12 @@
     </div>
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/rollbar.html' %}
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
   </body>
   <!-- jQuery -->
   <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/pages/claim_bounty.js" %}"></script>
