@@ -1,5 +1,8 @@
 #!/bin/bash
 
+GC_SSH_PORT=$(cat app/app/.env | grep "GC_SSH_PORT" | awk -F "=" '{print $2}')
+GC_SG_ID=$(cat app/app/.env | grep "GC_SG_ID" | awk -F "=" '{print $2}')
+
 : "${GC_SSH_PORT?You need to set GC_SSH_PORT in .env}"
 : "${GC_SG_ID?You need to set GC_SG_ID in .env}"
 
