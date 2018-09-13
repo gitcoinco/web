@@ -150,7 +150,9 @@ var callbacks = {
     return [ 'status', ui_status ];
   },
   'issue_description': function(key, val, result) {
-    var converter = new showdown.Converter();
+    var converter = new showdown.Converter({
+      simplifiedAutoLink: true
+    });
 
     ui_body = sanitize(converter.makeHtml(val));
     return [ 'issue_description', ui_body ];
