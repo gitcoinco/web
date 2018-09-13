@@ -25,7 +25,7 @@ from decimal import Decimal
 from django.test.client import RequestFactory
 
 import pytz
-from dashboard.embed import avatar, embed, summarize_bounties, wrap_text
+from dashboard.embed import embed, summarize_bounties, wrap_text
 from dashboard.models import Bounty
 from test_plus.test import TestCase
 
@@ -80,34 +80,25 @@ class DashboardEmbedTest(TestCase):
     def test_embed(self):
         assert embed(self.factory.get('/explorer')).status_code == 200
         Bounty.objects.create(
-          title='foo',
-          value_in_token=3,
-          token_name='ETH',
-          web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
-          github_url='https://github.com/gitcoinco/web/issues/11',
-          token_address='0x0',
-          issue_description='hello world',
-          bounty_owner_github_username='flintstone',
-          is_open=True,
-          accepted=False,
-          network='mainnet',
-          expires_date=datetime(2222, 11, 30, tzinfo=pytz.UTC),
-          idx_project_length=5,
-          project_length='Months',
-          bounty_type='Feature',
-          experience_level='Intermediate',
-          raw_data={},
+            title='foo',
+            value_in_token=3,
+            token_name='ETH',
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/11',
+            token_address='0x0',
+            issue_description='hello world',
+            bounty_owner_github_username='flintstone',
+            is_open=True,
+            accepted=False,
+            network='mainnet',
+            expires_date=datetime(2222, 11, 30, tzinfo=pytz.UTC),
+            idx_project_length=5,
+            project_length='Months',
+            bounty_type='Feature',
+            experience_level='Intermediate',
+            raw_data={},
         )
         assert embed(self.factory.get(
-          'https://github.com/gitcoinco/web/issues/11?repo=https://github.com/gitcoinco/web'
+            'https://github.com/gitcoinco/web/issues/11?repo=https://github.com/gitcoinco/web'
         )).status_code in [200, 422]
 
-    def test_avatar(self):
-        try:
-            os.makedirs('assets/other/avatars/')
-        except FileExistsError:
-            pass
-        assert avatar(self.factory.get(
-          'https://github.com/gitcoinco/web/issues/11?repo=https://github.com/gitcoinco/web'
-        )).status_code in [200, 422]
-        shutil.rmtree('assets/other/avatars/')
