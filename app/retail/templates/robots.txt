@@ -1,43 +1,6 @@
-User-agent: *
-Disallow: profile/@sponnet*
-Disallow: profile/Abhay07*
-Disallow: profile/backkem*
-Disallow: profile/bartleyg*
-Disallow: profile/choochootrain*
-Disallow: profile/clehene*
-Disallow: profile/dolebas*
-Disallow: profile/DRYuval*
-Disallow: profile/duaraghav8*
-Disallow: profile/Fomode3D*
-Disallow: profile/GauthierZupp*
-Disallow: profile/gnunicorn*
-Disallow: profile/gvmoon*
-Disallow: profile/h3ph4est7s*
-Disallow: profile/j10sanders*
-Disallow: profile/jchen86*
-Disallow: profile/jvanoers*
-Disallow: profile/karolpodlesny*
-Disallow: profile/kennycoc*
-Disallow: profile/lisamtrujillo*
-Disallow: profile/melsk1*
-Disallow: profile/mumuss*
-Disallow: profile/namanmanchanda09*
-Disallow: profile/nieldlr*
-Disallow: profile/nilgradisnik*
-Disallow: profile/o*
-Disallow: profile/raineorshine*
-Disallow: profile/realphi*
-Disallow: profile/ruslo*
-Disallow: profile/s1na*
-Disallow: profile/samplegitcoindeveloper1*
-Disallow: profile/SamSamskies*
-Disallow: profile/Sebohe*
-Disallow: profile/SOLIDcoinboulder*
-Disallow: profile/sprusr*
-Disallow: profile/Steve-Puppo*
-Disallow: profile/tcrowe*
-Disallow: profile/vikiniky*
-Disallow: profile/yashLadha*
+User-agent: *{% for profile in hidden_profiles %}
+Disallow: profile/{{ profile.handle }}*
+{% endfor %}
 
 User-agent: Twitterbot
 Disallow:
