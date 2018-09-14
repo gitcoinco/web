@@ -273,8 +273,8 @@ def funnel(request):
     }, {
         'title': 'web => bounties_posted => bounties_fulfilled (detail)',
         'keys': [
-            'sessions', 'bounties_alltime', 'bounties_started_total', 'bounties_submitted_total', 'bounties_done_total',
-            'bounties_expired_total', 'bounties_cancelled_total',
+            'sessions', 'bounties_alltime', 'bounties_started_total', 'bounties_submitted_total',
+            'bounties_done_total', 'bounties_expired_total', 'bounties_cancelled_total',
         ],
         'data': []
     }, {
