@@ -533,14 +533,15 @@ def render_new_bounty_roundup(to_email):
 Hi there,
 </p>
 <p>
-We're excited to formally announce an expansion of our ECF Partnership, bringing $60K in funding to the <a href="https://medium.com/@mitchkosowski/cbe1d2d1c071">Ethereum Infrastructure layer</a>!
-As stated in the article, if you know of any open source projects / specific Github issues which could use some funding, <a href="https://gitcoin.co/requests">make a Gitcoin Request</a> and comment 'ECF'.
-We're very excited to make it easy to contribute to the ecosystem, while getting paid.
+Hacktoberfest is a month long celebration of open source. As Gitcoiners, we support anything that grows open source. Next Monday, we're going to formally
+announce our plans for Hacktoberfest...but you can see them <a href="https://medium.com/p/98825f199af2/edit">here today</a>!
+The short story: Make <a href="https://gitcoin.co/requests">Gitcoin Requests</a> for any 'good-first-issues' you see on Github during Hacktoberfest,
+and we'll bounty the best of them. We're very excited to play a small part in a huge movement!
 </p>
 <p>
-We're still working with the Ethereum Foundation to find the best and brightest developers to get involved directly on Ethereum's
-codebase. We'd love to hear from you. If you have experience building out test cases and are familiar with consensus systems,
-join #focus-dev-testing <a href="https://gitcoin.co/slack">on Gitcoin Slack</a>.
+Aside from this, I've been busy co-authoring a children's book, <a href="https://medium.com/gitcoin/everyone-ships-653f53343337">Everybody Ships</a>.
+It's a tongue-in-cheek book meant to celebrate the projects in the blockchain space who are focused on building. We hope you
+enjoy!
 </p>
 
 <h3>What else is new?</h3>
@@ -550,12 +551,12 @@ join #focus-dev-testing <a href="https://gitcoin.co/slack">on Gitcoin Slack</a>.
         Be on the lookout for the seconds batch sometime next week!
         </li>
         <li>
-        There have now been 20 Gitcoin Requests for over $5,000! Do you have a Github issue you want solved? Make <a href="https://gitcoin.co/requests">a Gitcoin Request</a> and we'll review in 24 hours.
+        There have now been 25 Gitcoin Requests! Do you have a Github issue you want solved? Make <a href="https://gitcoin.co/requests">a Gitcoin Request</a> and we'll review in 24 hours.
         If you're a developer and you see a 'Good First Issue' you'd work on for a bounty, <a href="https://gitcoin.co/requests">let us know</a>! Gitcoin Requests
         is a way for developers and maintainers to make their voice heard.
         </li>
         <li>
-        No Gitcoin Livestream this week, but we're excited <a href="https://gitcoin.co/livestream">to be back next week</a> at 5PM ET. Have a great weekend!
+        Gitcoin Livestream today includes MakerDAO and Meridio at 5PM ET. We're excited to be back - <a href="https://gitcoin.co/livestream">add to your calendar here!</a>.
         </li>
     </ul>
 </p>
@@ -563,44 +564,36 @@ join #focus-dev-testing <a href="https://gitcoin.co/slack">on Gitcoin Slack</a>.
 Back to BUIDLing,
 </p>
 '''
-    highlights = [
-        {
-            'who': 'eiselems',
-            'who_link': True,
-            'what': 'Completed the first Status Embark bounty in 48 hours!',
-            'link': 'https://gitcoin.co/issue/embark-framework/embark/765/1089',
-            'link_copy': 'View more',
-        },
-        {
-            'who': 'lastmjs',
-            'who_link': True,
-            'what': 'Worked with Piper and Carver at the Ethereum Foundation on web3py.',
-            'link': 'https://gitcoin.co/issue/ethereum/web3.py/962/1036',
-            'link_copy': 'View more',
-        },
-        {
-            'who': 'bakaoh',
-            'who_link': True,
-            'what': 'Back at it, this time on the OmiseGO Plasma MVP repo.',
-            'link': 'https://gitcoin.co/issue/omisego/plasma-mvp/170/967',
-            'link_copy': 'View more',
-        },
-    ]
+    highlights = [{
+        'who': 'krzkaczor',
+        'who_link': True,
+        'what': 'Completed a bounty posted on his own repo via Gitcoin Requests!',
+        'link': 'https://gitcoin.co/issue/krzkaczor/TypeChain/25/1137',
+        'link_copy': 'View more',
+    }, {
+        'who': 'frostiq',
+        'who_link': True,
+        'what': 'Claimed the MakerDAO CDP Analytics bounty from ETHBerlin.',
+        'link': 'https://gitcoin.co/issue/ethberlin-hackathon/ETHBerlin-Bounties/14/1204',
+        'link_copy': 'View more',
+    }, {
+        'who': 'subramanianv',
+        'who_link': True,
+        'what': 'Another Status bounty down on the Embark repo!',
+        'link': 'https://gitcoin.co/issue/embark-framework/embark/767/1087',
+        'link_copy': 'View more',
+    }, ]
 
-    bounties_spec = [
-        {
-            'url': 'https://github.com/ethereum-alarm-clock/timenode-core/issues/194',
-            'primer': 'Work on Ethereum Alarm Clock, a project for transactions into the future!',
-        },
-        {
-            'url': 'https://github.com/prysmaticlabs/prysm/issues/437',
-            'primer': 'Work on Sharding with the Prysmatic Labs folks!',
-        },
-        {
-            'url': 'https://github.com/zeppelinos/zos/issues/37',
-            'primer': 'Great bounty for the ecosystem from the Zeppelin team.',
-        },
-    ]
+    bounties_spec = [{
+        'url': 'https://github.com/ethberlin-hackathon/ETHBerlin-Bounties/issues/16',
+        'primer': 'Build an ETHPM plug-in for Remix; still open post ETH-Berlin!',
+    }, {
+        'url': 'https://github.com/prysmaticlabs/prysm/issues/497',
+        'primer': 'Work on Sharding with the Prysmatic Labs folks!',
+    }, {
+        'url': 'https://github.com/w3f/Web3-collaboration/issues/34',
+        'primer': 'Help build documentation for Polkadot!',
+    }, ]
 
     num_leadboard_items = 5
     #### don't need to edit anything below this line
