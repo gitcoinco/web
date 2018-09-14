@@ -525,7 +525,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "$60K In Funding For Web 3 Infrastructure Projects"
+    subject = "Sneak Peek: Hacktoberfest | Everybody Ships"
 
     intro = '''
 
