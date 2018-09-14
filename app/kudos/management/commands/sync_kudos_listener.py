@@ -57,7 +57,7 @@ class Command(BaseCommand):
         account = options['account']
         private_key = options['private_key']
 
-        kudos_contract = KudosContract(network=network, account=account, private_key=private_key)
+        kudos_contract = KudosContract(network=network)
         w3 = get_web3(network)
         # contract_address = getKudosContractAddress(network)
         # logger.info(f'Contract address: {contract_address}')

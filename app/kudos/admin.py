@@ -29,15 +29,33 @@ class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
 
-class TokenAdmin(admin.ModelAdmin):
+class TransferAdmin(admin.ModelAdmin):
+    raw_id_fields = ['recipient_profile', 'sender_profile', 'kudos_token']
     ordering = ['-id']
+    readonly_fields = ['claim']
+    search_fields = ['tokenName', 'comments_public', 'comments_priv', 'from_name', 'username', 'network', 'github_url', 'url', 'emails', 'from_address', 'receive_address']
 
+    def claim(self, instance):
+        if instance.web3_type == 'yge':
+            return 'n/a'
+        if not instance.txid:
+            return 'n/a'
+        if instance.receive_txid:
+            return 'n/a'
+        try:
+            if instance.web3_type == 'v2':
+                html = format_html('<a href="{}">claim</a>', instance.receive_url)
+            if instance.web3_type == 'v3':
+                html = format_html(f'<a href="{instance.receive_url_for_recipient}">claim as recipient</a>')
+        except:
+            html = 'n/a'
+        return html
 
 # class WalletAdmin(admin.ModelAdmin):
 #     ordering = ['-id']
 
 
-admin.site.register(Token, TokenAdmin)
-admin.site.register(KudosTransfer, GeneralAdmin)
+admin.site.register(Token, GeneralAdmin)
+admin.site.register(KudosTransfer, TransferAdmin)
 admin.site.register(Wallet, GeneralAdmin)
 # admin.site.register(Wallet, WalletAdmin)

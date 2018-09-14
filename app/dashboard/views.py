@@ -150,7 +150,6 @@ def record_bounty_activity(bounty, user, event_name, interest=None):
         logger.error(f"error in record_bounty_activity: {e} - {event_name} - {bounty} - {user}")
 
 
-
 def helper_handle_access_token(request, access_token):
     # https://gist.github.com/owocki/614a18fbfec7a5ed87c97d37de70b110
     # interest API via token

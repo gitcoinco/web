@@ -526,7 +526,7 @@ def receive(request, key, txid, network):
             kudos_email.save()
             record_user_action(kudos_email.from_username, 'receive_kudos', kudos_email)
             record_kudos_email_activity(kudos_email, kudos_email.username, 'receive_kudos')
-            messages.success(request, 'This tip has been received')
+            messages.success(request, 'This kudos has been received')
         except Exception as e:
             messages.error(request, str(e))
             logger.exception(e)

@@ -69,27 +69,53 @@ class KudosMismatch(KudosError):
 
 
 class KudosContract:
-    def __init__(self, network='localhost', account=None, private_key=None):
+
+    """A class represending the Kudos.sol contract.
+
+    Note: There are two types of interactions that can be done on the Solidity contract,
+    - call()
+    - transact()
+
+    A call() is just a getter, and does not require gas, or an account to transact with.
+    A transact() or transaction requires gas and typically changes state on the contract.
+
+        A transaction requires an account, because it needs somewhere to pull the gas from.
+        When working in Javascript and web3js, Metamask is used to handle this interaction.
+        When working in Python and web3py, there is no interaction with MetaMask so this
+        needs to be handled behind the scenes, by providing the account and private_key to
+        web3py to create the raw transaction.
+
+    Attributes:
+        network (str): The blockchain network (localhost, rinkeby, ropsten, mainnet)
+        address (str): The addess of the Kudos.sol contract on the blockchain.
+    """
+
+    def __init__(self, network='localhost'):
+        """Initialize the KudosContract.
+
+        Args:
+            network (str, optional): The blockchain network (localhost, rinkeby, ropsten, mainnet)
+
+        """
         self.network = network
 
         self._w3 = get_web3(self.network)
         self._contract = self._get_contract()
 
-        if not account:
-            try:
-                account = self._w3.eth.accounts[0]
-            except IndexError:
-                raise RuntimeError('Please specify an account to use for interacting with the Kudos Contract.')
-
-        self.account = to_checksum_address(account)
-        self.private_key = private_key
         self.address = self._get_contract_address()
 
     @staticmethod
     def get_kudos_map(kudos):
-        """ Pass in a kudos array that is returned from web3, convert to dictionary.
+        """Pass in a kudos array that is returned from web3, convert to dictionary.
 
-            Use this to operate on the database.
+        Use this to operate on the database.
+
+        Args:
+            kudos (list): A kudos object returned from the Kudos.sol contract.  Soldidity returns
+                          the Kudos strcut as an array.
+
+        Returns:
+            dict: Kudos dictionary with key/values to be used to interact with the database.
 
         """
         return dict(name=kudos[0],
@@ -104,33 +130,60 @@ class KudosContract:
                     sent_from_address=kudos[9]
                     )
 
-    def sync_db_decorator(f):
-        """ Decorator to sync up the database.  Any method that changes the state of the Kudos
-            contract should be decorated with `sync_db`.
+    def may_require_key(f):
+        @wraps(f)
+        def wrapper(self, *args, **kwargs):
+            if self.network != 'localhost' and (kwargs['account'] is None or kwargs['private_key'] is None):
+                raise ValueError(f'Since you are on the {self.network} network, you must provide and account and private_key')
+            else:
+                return f(self, *args, **kwargs)
+        return wrapper
+
+    # def sync_db_decorator(f):
+    #     """ Deprecated.
+    #         Decorator to sync up the database.  Any method that changes the state of the Kudos
+    #         contract should be decorated with `sync_db`.
+    #     """
+    #     @wraps(f)
+    #     def wrapper(self, *args, **kwargs):
+    #         # Get the most recent kudos_id before the function is called
+    #         old_supply = self._contract.functions.totalSupply().call()
+    #         # Run the function
+    #         r = f(self, *args, **kwargs)
+    #         # Handle the dummy Kudos
+    #         if old_supply == 0:
+    #             return r
+    #         # Check the most recent id again
+    #         new_supply = self._contract.functions.totalSupply().call()
+
+    #         # TODO: If multiple Kudos have been cloned or minted, might be able to optimize
+    #         # this by only doing one database transaction, rather than one for each kudos.
+    #         for kudos_id in range(old_supply, new_supply + 1):
+    #             kudos = self.getKudosById(kudos_id)
+    #             kudos_map = self.get_kudos_map(kudos)
+    #             owner_address = self._contract.functions.ownerOf(kudos_id).call()
+    #             kudos_db = Token(pk=kudos_id, owner_address=owner_address, **kudos_map)
+    #             kudos_map['owner_address'] = owner_address
+    #             kudos_db.save()
+    #             logger.info(f'Synced Kudos ID {kudos_id}: {kudos_map}')
+
+    #         return r
+    #     return wrapper
+
+    def sync_db_afterwards(f):
+        """Decorator.  Syncs the database after the function call.  This is used to sync blockchain
+           transactions to the database.
+
+        Args:
+            f (function): Function being decorated.
+
+        Returns:
+            function: The original function.
         """
         @wraps(f)
         def wrapper(self, *args, **kwargs):
-            # Get the most recent kudos_id before the function is called
-            old_supply = self._contract.functions.totalSupply().call()
-            # Run the function
             r = f(self, *args, **kwargs)
-            # Handle the dummy Kudos
-            if old_supply == 0:
-                return r
-            # Check the most recent id again
-            new_supply = self._contract.functions.totalSupply().call()
-
-            # TODO: If multiple Kudos have been cloned or minted, might be able to optimize
-            # this by only doing one database transaction, rather than one for each kudos.
-            for kudos_id in range(old_supply, new_supply + 1):
-                kudos = self.getKudosById(kudos_id)
-                kudos_map = self.get_kudos_map(kudos)
-                owner_address = self._contract.functions.ownerOf(kudos_id).call()
-                kudos_db = Token(pk=kudos_id, owner_address=owner_address, **kudos_map)
-                kudos_map['owner_address'] = owner_address
-                kudos_db.save()
-                logger.info(f'Synced Kudos ID {kudos_id}: {kudos_map}')
-
+            self.sync_db()
             return r
         return wrapper
 
@@ -165,7 +218,8 @@ class KudosContract:
             kudos_db = Token(pk=kudos_id, owner_address=owner_address, **kudos_map)
             kudos_db.save()
             kudos_map['owner_address'] = owner_address
-            logger.info(f'Synced Kudos ID {kudos_id}: {kudos_map}')
+            logger.info(f'Synced Kudos ID {kudos_id}: {kudos_map["name"]}')
+            logger.debug(f'Kudos Detail: {kudos_map}')
             return True
 
         # Part 1.  The newly cloned Kudos.
@@ -179,7 +233,8 @@ class KudosContract:
         kudos_db = Token(pk=kudos_id, owner_address=owner_address, **kudos_map)
         kudos_db.save()
         kudos_map['owner_address'] = owner_address
-        logger.info(f'Synced Kudos ID {kudos_id}: {kudos_map}')
+        logger.info(f'Synced Kudos ID {kudos_id}: {kudos_map["name"]}')
+        logger.debug(f'Kudos Detail: {kudos_map}')
 
         # Part 2.  Sync up the Gen0 Kudos.
         # Only need this for when a clone happens, not the initial mint
@@ -192,11 +247,17 @@ class KudosContract:
         kudos_db = Token(pk=kudos_id, owner_address=owner_address, **kudos_map)
         kudos_db.save()
         kudos_map['owner_address'] = owner_address
-        logger.info(f'Synced Kudos ID {kudos_id}: {kudos_map}')
+        logger.info(f'Synced Kudos ID {kudos_id}: {kudos_map["name"]}')
+        logger.debug(f'Kudos Detail: {kudos_map}')
 
         return True
 
     def _get_contract_address(self):
+        """Get the Kudos contract address, depending on the network.
+
+        Returns:
+            str: Kudos contract address.
+        """
         if self.network == 'mainnet':
             return to_checksum_address('')
         elif self.network == 'ropsten':
@@ -209,23 +270,57 @@ class KudosContract:
         # raise UnsupportedNetworkException(self.network)
 
     def _get_contract(self):
+        """Load up the Kudos ABI from a .json file.
+
+        Returns:
+            obj: Web3py contract object.
+        """
         with open('kudos/Kudos.json') as f:
-            abi = json.load(f)['abi']
+            abi = json.load(f)
         address = self._get_contract_address()
         return self._w3.eth.contract(address=address, abi=abi)
 
-    # @sync_db_decorator
-    def mint(self, *args):
-        """ Contract method.
+    def _resolve_account(self, account):
+        """
+        This method will return one of the following:
+            - the checksummed account address if the account is given
+            - the local account if it can find it
+            - raise an error if it can't resolve the account
 
-            Mint a new Gen0 Kudos on the blockchain.
-            Not to be confused with clone.  A clone() operation is only valid for an already
-            existing Gen0 Kudos.
+        Args:
+            account (str): The ethereum public account address.
 
-            *args:  See the Kudos.sol for implementation details.
+        """
+        if account:
+            return to_checksum_address(account)
+        else:
+            try:
+                return self._w3.eth.accounts[0]
+            except IndexError:
+                raise RuntimeError('Please specify an account to use for transacting with the Kudos Contract.')
 
-            From Kudos.sol:
+    @sync_db_afterwards
+    @may_require_key
+    def mint(self, *args, account=None, private_key=None):
+        """Contract transaction method.
 
+        Mint a new Gen0 Kudos on the blockchain.  Not to be confused with clone.
+        A clone() operation is only valid for an already existing Gen0 Kudos.
+
+        From Kudos.sol:
+
+        mint(
+            string name,
+            string description,
+            uint256 rarity,
+            uint256 priceFinney,
+            uint256 numClonesAllowed,
+            string tags,
+            string image,
+            )
+
+        Args:
+            *args: From Kudos.sol:
             mint(
                 string name,
                 string description,
@@ -235,8 +330,15 @@ class KudosContract:
                 string tags,
                 string image,
                 )
+            account (str, optional): Public account address.  Not needed for localhost testing.
+            private_key (str, optional): Private key for account.  Not needed for localhost testing.
+
+        Returns:
+            TYPE: If a sync did occur, returns the tx_receive as a str.
+                  If no sync occured, return False.
         """
-        logger.info(f'private_key: {self.private_key}')
+        account = self._resolve_account(account)
+
         name = args[0]
         if self.gen0_exists_web3(name):
             msg = f'The {name} Gen0 Kudos already exists on the blockchain. Making sure that the database is synced'
@@ -249,62 +351,75 @@ class KudosContract:
             logger.warning(msg)
             return False
 
-        if self.private_key:
-            nonce = self._w3.eth.getTransactionCount(self.account)
-            gas_estimate = self._contract.functions.mint(*args).estimateGas({'nonce': nonce, 'from': self.account})
+        if private_key:
+            nonce = self._w3.eth.getTransactionCount(account)
+            gas_estimate = self._contract.functions.mint(*args).estimateGas({'nonce': nonce, 'from': account})
             logger.info(f'gas_estimate: {gas_estimate}')
-            txn = self._contract.functions.mint(*args).buildTransaction({'gas': gas_estimate, 'nonce': nonce, 'from': self.account})
-            signed_txn = self._w3.eth.account.signTransaction(txn, private_key=self.private_key)
+            txn = self._contract.functions.mint(*args).buildTransaction({'gas': gas_estimate, 'nonce': nonce, 'from': account})
+            signed_txn = self._w3.eth.account.signTransaction(txn, private_key=private_key)
             tx_hash = self._w3.eth.sendRawTransaction(signed_txn.rawTransaction)
         else:
-            tx_hash = self._contract.functions.mint(*args).transact({"from": self.account})
+            tx_hash = self._contract.functions.mint(*args).transact({"from": account})
 
         tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
 
-        self.sync_db()
+        # self.sync_db()
 
         return tx_receipt
 
-    def clone(self, *args):
-        """ Contract method.
+    @sync_db_afterwards
+    @may_require_key
+    def clone(self, *args, account=None, private_key=None):
+        """Contract transaction method.
 
-            *args:  See the Kudos.sol for implementation details.
-
-            From Kudos.sol:
-
+        Args:
+            *args: From Kudos.sol
             clone(string name, uint256 numClonesRequested)
-        """
+            account (str, optional): Public account address.  Not needed for localhost testing.
+            private_key (str, optional): Private key for account.  Not needed for localhost testing.
 
-        if self.private_key:
-            nonce = self._w3.eth.getTransactionCount(self.account)
-            txn = self._contract.functions.clone(*args).buildTransaction({'gas': 700000, 'nonce': nonce, 'from': self.account})
-            signed_txn = self._w3.eth.account.signTransaction(txn, private_key=self.private_key)
+        Returns:
+            str: The tx_receipt.
+        """
+        account = self._resolve_account(account)
+
+        if private_key:
+            nonce = self._w3.eth.getTransactionCount(account)
+            txn = self._contract.functions.clone(*args).buildTransaction({'gas': 700000, 'nonce': nonce, 'from': account})
+            signed_txn = self._w3.eth.account.signTransaction(txn, private_key=private_key)
             tx_hash = self._w3.eth.sendRawTransaction(signed_txn.rawTransaction)
         else:
-            tx_hash = self._contract.functions.clone(*args).transact({"from": self.account})
+            tx_hash = self._contract.functions.clone(*args).transact({"from": account})
 
         tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
 
-        self.sync_db()
+        # self.sync_db()
 
         return tx_receipt
 
-    def cloneAndTransfer(self, *args):
-        """ Contract method.
+    @sync_db_afterwards
+    @may_require_key
+    def cloneAndTransfer(self, *args, account=None,  private_key=None):
+        """Contract transaction method.
 
-            *args:  See the Kudos.sol for implementation details.
-
-            From Kudos.sol:
-
+        Args:
+            *args: From Kudos.sol:
             cloneAndTransfer(string name, uint256 numClonesRequested, address receiver)
+            account (str, optional): Public account address.  Not needed for localhost testing.
+            private_key (str, optional): Private key for account.  Not needed for localhost testing.
+
+        Returns:
+            str: The tx_receipt.
         """
-        if self.private_key:
-            nonce = self._w3.eth.getTransactionCount(self.account)
-            txn = self._contract.functions.cloneAndTransfer(*args).buildTransaction({'gas': 700000, 'nonce': nonce, 'from': self.account})
-            signed_txn = self._w3.eth.account.signTransaction(txn, private_key=self.private_key)
+        account = self._resolve_account(account)
+
+        if private_key:
+            nonce = self._w3.eth.getTransactionCount(account)
+            txn = self._contract.functions.cloneAndTransfer(*args).buildTransaction({'gas': 700000, 'nonce': nonce, 'from': account})
+            signed_txn = self._w3.eth.account.signTransaction(txn, private_key=private_key)
             tx_hash = self._w3.eth.sendRawTransaction(signed_txn.rawTransaction)
         else:
-            tx_hash = self._contract.functions.cloneAndTransfer(*args).transact({"from": self.account})
+            tx_hash = self._contract.functions.cloneAndTransfer(*args).transact({"from": account})
 
         tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
 
@@ -317,24 +432,60 @@ class KudosContract:
         pass
 
     def getKudosById(self, *args):
-        """ Contract method. """
+        """Contract call method.
+
+        Args:
+            *args: From Kudos.sol:
+            getKudosById(uint256 tokenId)
+
+        Returns:
+            list: From Kudos.sol:
+            returns (string name, string description, uint256 rarity,
+                     uint256 priceFinney, uint256 numClonesAllowed,
+                     uint256 numClonesInWild, string tags, string image,
+                     uint256 clonedFromId, address sentFromAddress
+                     )
+        """
         return self._contract.functions.getKudosById(args[0]).call()
 
     def getGen0TokenId(self, *args):
-        """ Contract method. """
+        """Contract call method.
+
+        Args:
+            *args: From Kudos.sol
+            getGen0Tokenid(string name)
+
+        Returns:
+            int: From Kudos.sol:
+            returns (unint256)
+        """
         return self._contract.functions.getGen0TokenId(args[0]).call()
 
     def gen0_exists_web3(self, kudos_name):
-        """ Helper method.  """
+        """Helper method.
+
+        Args:
+            kudos_name (TYPE): Description
+
+        Returns:
+            TYPE: Description
+        """
         kudos_id = self.getGen0TokenId(kudos_name)
-        logger.info(f'kudos_id: {kudos_id}')
+        # logger.info(f'kudos_id: {kudos_id}')
         if kudos_id == 0:
             return False
         else:
             return True
 
     def gen0_exists_db(self, kudos_name):
-        """ Helper method.  """
+        """Helper method.
+
+        Args:
+            kudos_name (TYPE): Description
+
+        Returns:
+            TYPE: Description
+        """
         kudos_name = Token.objects.filter(name__iexact=kudos_name).first()
         if not kudos_name:
             return False
