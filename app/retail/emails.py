@@ -534,7 +534,7 @@ Hi there,
 </p>
 <p>
 Hacktoberfest is a month long celebration of open source. As Gitcoiners, we support anything that grows open source. Next Monday, we're going to formally
-announce our plans for Hacktoberfest...but you can see them <a href="https://medium.com/p/98825f199af2/edit">here today</a>!
+announce our plans for Hacktoberfest...but you can see them <a href="https://medium.com/@vivek.m.singh/98825f199af2">here today</a>.
 The short story: Make <a href="https://gitcoin.co/requests">Gitcoin Requests</a> for any 'good-first-issues' you see on Github during Hacktoberfest,
 and we'll bounty the best of them. We're very excited to play a small part in a huge movement!
 </p>
