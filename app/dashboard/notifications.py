@@ -476,11 +476,11 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
             if not interest.pending and approval_required:
                 action = 'been approved to start work'
 
-            msg += f"\n{i}. {profile_link} has {action}."
+            msg += f"\n**{i}) {profile_link} has {action}.**"
 
             issue_message = interest.issue_message.strip()
             if issue_message:
-                msg += f"\n    \n    {issue_message}"
+                msg += f"\n\n{issue_message}"
             msg += f"\n\nLearn more [on the Gitcoin Issue Details page]({absolute_url}).\n\n"
 
     elif event_name == 'work_submitted':
