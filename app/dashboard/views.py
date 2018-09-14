@@ -53,6 +53,8 @@ from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 from django.template import loader
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
@@ -1140,9 +1142,10 @@ def profile(request, handle):
     # context['wallet_addresses'] = [w.address for w in profile.kudos_wallets.all()]
     context['preferred_payout_address'] = profile.preferred_payout_address
     # logger.info(to_checksum_address(context['preferred_payout_address']))
+    order_by = request.GET.get('order_by', '-modified_on')
     if context['preferred_payout_address']:
-        owned_kudos = Token.objects.filter(owner_address=to_checksum_address(context['preferred_payout_address']))
-        sent_kudos = Token.objects.filter(sent_from_address=to_checksum_address(context['preferred_payout_address']))
+        owned_kudos = Token.objects.filter(owner_address=to_checksum_address(context['preferred_payout_address'])).order_by(order_by)
+        sent_kudos = Token.objects.filter(sent_from_address=to_checksum_address(context['preferred_payout_address'])).order_by(order_by)
     else:
         owned_kudos = None
         sent_kudos = None
@@ -1153,10 +1156,10 @@ def profile(request, handle):
     context['sent_kudos'] = sent_kudos
 
     if request.method == 'POST' and request.is_ajax():
-        logging.info(request.POST)
+        # Send kudos data when new preferred address
         address = request.POST.get('address')
-        context['kudos'] = Token.objects.filter(owner_address=to_checksum_address(address))[:8]
-        context['sent_kudos'] = Token.objects.filter(sent_from_address=to_checksum_address(address))[:8]
+        context['kudos'] = Token.objects.filter(owner_address=to_checksum_address(address)).order_by(order_by)
+        context['sent_kudos'] = Token.objects.filter(sent_from_address=to_checksum_address(address)).order_by(order_by)
         profile.preferred_payout_address = address
 
         kudos_html = loader.render_to_string(
@@ -1165,7 +1168,7 @@ def profile(request, handle):
         )
         # package output data and return it as a JSON object
         output_data = {
-            'kudos_html': kudos_html
+            'kudos_html': kudos_html,
         }
 
         try:
@@ -1216,6 +1219,42 @@ def profile(request, handle):
         #     return JsonResponse(msg)
 
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
+
+def lazy_load_kudos(request):
+    page = request.POST.get('page')
+    # with this attr from the button clicked we know if we request kudos or sent kudos
+    datarequest = request.POST.get('request')
+    # Need the current preferred address to make the query
+    profile = getattr(request.user, 'profile', None)
+    address = profile.preferred_payout_address
+    order_by = request.GET.get('order_by', '-modified_on')
+
+    if datarequest == 'mykudos':
+        context = Token.objects.filter(owner_address=to_checksum_address(address)).order_by(order_by)
+    else :
+        context = Token.objects.filter(sent_from_address=to_checksum_address(address)).order_by(order_by)
+
+    # use Django’s pagination
+    # https://docs.djangoproject.com/en/dev/topics/pagination/
+    results_per_page = 8
+    paginator = Paginator(context, results_per_page)
+    try:
+        kudos = paginator.page(page)
+    except PageNotAnInteger:
+        kudos = paginator.page(2)
+    except EmptyPage:
+        kudos = paginator.page(paginator.num_pages)
+    # build a html kudos list with the paginated kudos
+    kudos_html = loader.render_to_string(
+        'shared/kudos_card_profile.html',
+        {'kudos':kudos}
+    )
+    # package output data and return it as a JSON object
+    output_data = {
+        'kudos_html': kudos_html,
+        'has_next': kudos.has_next()
+    }
+    return JsonResponse(output_data)
 
 
 @csrf_exempt

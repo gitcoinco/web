@@ -14,78 +14,43 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n staticfiles %}
-{% load kudos_extras %}
+{% load i18n staticfiles kudos_extras %}
+{% if kudos.count > 0 or sent_kudos.count > 0 %}
+  <ul class="nav nav-tabs my-5" id="myTab" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link nav-line active" id="mykudos-tab" data-toggle="tab" href="#mykudos" role="tab" aria-controls="mykudos" aria-selected="true">{% if request.path == '/profile/' %}{% trans "My Kudos" %}{% else %}{% trans "Kudos" %}{% endif %} ({{ kudos|length }})</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link nav-line" id="sentkudos-tab" data-toggle="tab" href="#sentkudos" role="tab" aria-controls="sentkudos" aria-selected="false">{% trans "Sent Kudos" %} ({{ sent_kudos|length }})</a>
+    </li>
+    <li class="align-self-center ml-auto font-smaller-2">
+      Sort By Recent: <a href="?order_by=-modified_on">{% trans "New" %}</a> - <a href="?order_by=modified_on">{% trans "Old" %}</a>
+    </li>
+  </ul>
 
+  <div class="tab-content" id="myTabContent">
 
-
-<ul class="nav nav-tabs my-5" id="myTab" role="tablist">
-  <li class="nav-item">
-    <a class="nav-link nav-line active" id="mykudos-tab" data-toggle="tab" href="#mykudos" role="tab" aria-controls="mykudos" aria-selected="true">{% trans "My Kudos" %} ({{ kudos|length }})</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link nav-line" id="sentkudos-tab" data-toggle="tab" href="#sentkudos" role="tab" aria-controls="sentkudos" aria-selected="false">{% trans "Sent Kudos" %} ({{ sent_kudos|length }})</a>
-  </li>
-  <li class="align-self-center ml-auto font-smaller-2">
-    Sort By Recent: <a href="">{% trans "New" %}</a> - <a href="">{% trans "Old" %}</a>
-  </li>
-</ul>
-
-<div class="tab-content" id="myTabContent">
-
-  <div class="tab-pane fade show active" id="mykudos" role="tabpanel" aria-labelledby="home-tab">
-    <div class="row justify-content-center" id='my-kudos'>
-      {% for kudo in kudos %}
-      <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
-        <div class="kd-card kd-extended">
-          <a href="/kudos/{{ kudo.id }}" class="">
-            <img src="{% static kudo.image %}" alt="{{ kudo.name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
-          </a>
-          <div class="kd-content">
-            <div class="kd-title">{{ kudo.name|humanize_name }}</div>
-            {{ kudo.description }}
-            <a href="" class="d-block mb-1" data-truncatehash title="{{ kudo.owner_address|humanize_address }} ">{{ kudo.owner_address|humanize_address }}</a>
-            <div>Sent from <a href="">{{ kudo.sent_from_address|humanize_address }}</a></div>
-          </div>
-          <div class="content-hover">
-            <div class="kd-title">{{ kudo.name|humanize_name }}</div>
-            <p>
-              {{ kudo.description }}
-            </p>
-          </div>
-        </div>
+    <div class="tab-pane fade show active" id="mykudos" role="tabpanel" aria-labelledby="home-tab">
+      <div class="row justify-content-center">
+        {% include 'shared/kudos_card_profile.html' %}
       </div>
-      {% endfor %}
-    </div>
-  </div>
-
-  <div class="tab-pane fade" id="sentkudos" role="tabpanel" aria-labelledby="sentkudos-tab">
-    <div class="row justify-content-center" id='my-kudos'>
-      {% for kudo in sent_kudos %}
-      <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
-        <div class="kd-card kd-extended">
-          <a href="/kudos/{{ kudo.id }}" class="">
-            <img src="{% static kudo.image %}" alt="{{ kudo.name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
-          </a>
-          <div class="kd-content">
-            <div class="kd-title">{{ kudo.name|humanize_name }}</div>
-            {{ kudo.description }}
-            <a href="" class="d-block mb-1" data-truncatehash title="{{ kudo.owner_address|humanize_address }} ">{{ kudo.owner_address|humanize_address }}</a>
-            <div>Sent from <a href="">{{ kudo.sent_from_address|humanize_address }}</a></div>
-          </div>
-          <div class="content-hover">
-            <div class="kd-title">{{ kudo.name|humanize_name }}</div>
-            <p>
-              {{ kudo.description }}
-            </p>
-          </div>
-        </div>
+      <div class="row justify-content-center">
+        {% if kudos.count > 8 %}
+        <button id="" data-request="mykudos" data-page="2" class="btn btn-gc-blue mb-5 load-more">See More Kudos</button>
+        {% endif %}
       </div>
-      {% endfor %}
     </div>
+
+    <div class="tab-pane fade" id="sentkudos" role="tabpanel" aria-labelledby="sentkudos-tab">
+      <div class="row justify-content-center">
+        {% include 'shared/kudos_card_profile.html' %}
+      </div>
+      <div class="row justify-content-center">
+        {% if sent_kudos.count > 8 %}
+        <button id="" data-request="sentkudos" data-page="2" class="btn btn-gc-blue mb-5 load-more">See More s Kudos</button>
+        {% endif %}
+      </div>
+    </div>
+
   </div>
-
-</div>
-
-
-<script src="{% static "v2/js/pages/profile_kudos.js" %}"></script>
+{% endif %}

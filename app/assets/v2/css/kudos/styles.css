@@ -152,7 +152,9 @@
 
 .kd-extended {
   background: #fff;
-  border-radius: .25rem; }
+  border-radius: .25rem;
+  height: 100%;
+  overflow: hidden; }
   .kd-extended:hover .content-hover {
     display: block; }
   .kd-extended .img-thumbnail {
@@ -171,10 +173,11 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  background: #785bffba;
+  background: rgba(62, 0, 255, 0.8);
   color: white;
   padding: 1rem;
-  display: none; }
+  display: none;
+  overflow-y: auto; }
 
 .listing-kudo a {
   color: #43484d; }
