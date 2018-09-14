@@ -287,6 +287,7 @@ class EmailEvent(SuperModel):
 
     email = models.EmailField(max_length=255, db_index=True)
     event = models.CharField(max_length=255, db_index=True)
+    category = models.CharField(max_length=255, db_index=True, blank=True, default='')
     ip_address = models.GenericIPAddressField(default=None, null=True)
 
     def __str__(self):
@@ -298,3 +299,7 @@ class EmailSupressionList(SuperModel):
     email = models.EmailField(max_length=255)
     metadata = JSONField(default=dict, blank=True)
     comments = models.TextField(max_length=5000, blank=True)
+
+    def __str__(self):
+        return f"{self.email}"
+

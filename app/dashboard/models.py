@@ -1463,6 +1463,18 @@ class Activity(models.Model):
         return model_to_dict(self, **kwargs)
 
 
+class ProfileQuerySet(models.QuerySet):
+    """Define the Profile QuerySet to be used as the objects manager."""
+
+    def visible(self):
+        """Filter results to only visible profiles."""
+        return self.filter(hide_profile=False)
+
+    def hidden(self):
+        """Filter results to only hidden profiles."""
+        return self.filter(hide_profile=True)
+
+
 class Profile(SuperModel):
     """Define the structure of the user profile.
 
@@ -1502,6 +1514,8 @@ class Profile(SuperModel):
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
     max_tip_amount_usdt_per_tx = models.DecimalField(default=500, decimal_places=2, max_digits=50)
     max_tip_amount_usdt_per_week = models.DecimalField(default=1500, decimal_places=2, max_digits=50)
+
+    objects = ProfileQuerySet.as_manager()
 
     @property
     def is_org(self):
