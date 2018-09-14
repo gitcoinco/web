@@ -37,8 +37,8 @@ We believe that properly incentivizing Open Source Software means providing fund
 Gitcoin has written about this, in the abstract, [here](https://medium.com/gitcoin/building-a-platform-that-maximizes-freedom-1149968a7b05). Tangibly, our *monetary policy* is:
 
 1. Our mission is to "Grow Open Source".  [Read More about our Mission here](https://gitcoin.co/mission).
-1. We believe that contributors should contribute for intrinsic reasons first (see mission statement above), and we hereby provide notice that we will not be able to fund all contributions.  Appreciate it if and when a Tip comes! 
-1. Scope that is explicitly funded upfront will be posted to the Github Issue by [@gitcoinbot](https://github.com/gitcoinbot), and will also be posted to the [Gitcoin Issue Explorer](https://gitcoin.co/explorer). 
+2. We believe that contributors should contribute for intrinsic reasons first (see mission statement above), and we hereby provide notice that we will not be able to fund all contributions.  Appreciate it if and when a Tip comes! 
+3. Scope that is explicitly funded upfront will be posted to the Github Issue by [@gitcoinbot](https://github.com/gitcoinbot), and will also be posted to the [Gitcoin Issue Explorer](https://gitcoin.co/explorer). 
 
 
 ## Code of Conduct
