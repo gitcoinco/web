@@ -35,7 +35,7 @@
             <p>{{ kudos.price_in_eth }} ETH</p>
             <p>
               {% for tag in kudos.tags.split %}
-                <span class="badge badge-success">{{tag}}</span>
+                <span class="badge badge-kudos">{{tag | replace_commas }}</span>
               {% endfor %}
             </p>
             <p><span>Clones In Wild: </span><span id="kudosNumClonesInWild">{{ kudos.num_clones_in_wild }}</span></p>
