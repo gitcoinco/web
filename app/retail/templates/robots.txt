@@ -9,4 +9,4 @@ User-agent: Yandex
 Disallow: /
 
 
-Sitemap: {{settings.BASE_URL}}sitemap.xml
+Sitemap: {{ settings.BASE_URL }}sitemap.xml
