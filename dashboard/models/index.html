@@ -3255,8 +3255,23 @@ object the first time, the query is executed.</p>
         no fields are excluded. Default to: None.</p>
 <p>Returns:
     dict: The dictionary representation of the object.</p>
-<h2 id="dashboard.models.Profile">Profile</h2>
+<h2 id="dashboard.models.ProfileQuerySet">ProfileQuerySet</h2>
 
+<pre><code class="python">ProfileQuerySet(self, model=None, query=None, using=None, hints=None)
+</code></pre>
+
+<p>Define the Profile QuerySet to be used as the objects manager.
+<h3 id="dashboard.models.ProfileQuerySet.visible">visible</h3></p>
+<pre><code class="python">ProfileQuerySet.visible(self)
+</code></pre>
+
+<p>Filter results to only visible profiles.
+<h3 id="dashboard.models.ProfileQuerySet.hidden">hidden</h3></p>
+<pre><code class="python">ProfileQuerySet.hidden(self)
+</code></pre>
+
+<p>Filter results to only hidden profiles.
+<h2 id="dashboard.models.Profile">Profile</h2></p>
 <pre><code class="python">Profile(self, *args, **kwargs)
 </code></pre>
 
