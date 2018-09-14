@@ -126,8 +126,10 @@ class KudosTransfer(SendCryptoAsset):
             return None
 
     def __str__(self):
+        status = 'funded' if self.txid else 'not funded'
+
         """Return the string representation of a model."""
-        return f"xfr of {self.kudos_token} from {self.recipient_profile} to {self.sender_profile}"
+        return f"({status}) xfr of {self.kudos_token} from {self.recipient_profile} to {self.sender_profile} on {self.network}"
 
 
 class Wallet(SuperModel):

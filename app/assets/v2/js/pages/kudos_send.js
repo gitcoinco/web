@@ -61,8 +61,7 @@ var wait_for_metadata = function(callback) {
       callback({
         'pub_key': account['public'],
         'address': account['address'],
-        // 'reference_hash_for_receipient': document.hash1,
-        reference_hash_for_receipient: '0x0000000000000000000000000000000000000000',
+        'reference_hash_for_receipient': document.hash1,
         'gitcoin_secret': account['shares'][0]
       });
     } else {
@@ -84,7 +83,7 @@ var wait_for_metadata_test = function(callback) {
   callback({
     'pub_key': account['public'],
     'address': account['address'],
-    'reference_hash_for_receipient': '0x0000000000000000000000000000000000000000',
+    'reference_hash_for_receipient': document.hash1,
     'gitcoin_secret': account['shares'][0]
   });
 };
