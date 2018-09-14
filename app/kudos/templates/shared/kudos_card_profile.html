@@ -19,9 +19,9 @@
 
 {% for kudo in kudos|slice:":8" %}
 <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
-  <div class="kd-card kd-extended">
-    <a href="/kudos/{{ kudo.id }}" class="">
-      <img src="{% static kudo.image %}" alt="{{ kudo.name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
+  <div class="kd-card kd-extended" aria-haspopup="true" tabindex="0">
+    <a href="/kudos/{{ kudo.id }}" class="" title="{{ kudo.name|humanize_name }}" tabindex="0">
+      <img src="{% static kudo.image %}" alt="{{ kudo.name|humanize_name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
     </a>
     <div class="kd-content">
       <div class="kd-title">{{ kudo.name|humanize_name }}</div>
@@ -29,14 +29,16 @@
     </div>
     <div class="content-hover">
       <a class="kd-title" href="/kudos/{{ kudo.id }}">{{ kudo.name|humanize_name }}</a>
-      <a href="" class="d-block mb-1" data-truncatehash title="{{ kudo.owner_address|humanize_address }} ">{{ kudo.owner_address|humanize_address }}</a>
-      <div>Sent from <a href="">{{ kudo.sent_from_address|humanize_address }}</a></div>
+      <a href="https://etherscan.io/address/{{ kudo.owner_address }}" target="_blank" class="d-block mb-1">{{ kudo.owner_address|humanize_address }}</a>
+      <!-- <div>Sent from <a href="">{{ kudo.sent_from_address|humanize_address }}</a></div> -->
       <p>
         {{ kudo.description }}
       </p>
-      {% for tag in kudo.tags.split %}
-      <span class="badge badge-success">{{tag | replace_commas }}</span>
-    {% endfor %}
+      <p>
+        {% for tag in kudo.tags.split %}
+        <span class="badge badge-kudos">{{tag | replace_commas }}</span>
+        {% endfor %}
+      </p>
     </div>
   </div>
 </div>

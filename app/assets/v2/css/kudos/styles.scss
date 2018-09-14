@@ -69,9 +69,13 @@ $bg-cellarius: #4D5858;
   height: 100%;
   overflow: hidden;
 
-  &:hover {
+  &:hover,
+  &:active,
+  &:focus,
+  &:focus-within {
+    cursor: pointer;
     .content-hover {
-      display: block;
+      display: flex;
     }
   }
 
@@ -103,6 +107,13 @@ $bg-cellarius: #4D5858;
   padding: 1rem;
   display: none;
   overflow-y:auto;
+  flex-direction: column;
+  justify-content: space-between;
+
+  a {
+    color: white;
+    font-weight: 700;
+  }
 }
 
 .listing-kudo {
@@ -493,4 +504,10 @@ a:hover {
 
 .text-featured {
   font-size: 36px;
+}
+
+.badge-kudos {
+  background-color: #F2F6F9;
+  color: #6184AC;
+  border-radius: 2px;
 }
