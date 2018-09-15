@@ -267,31 +267,7 @@
                 </div>
               [[/if]]
             </div>
-          [[else activity_type == 'start_work' || activity_type == 'worker_approved' || activity_type == 'bounty_abandonment_warning' ]]
-            <div class="col-12 col-md-7 started-status-column">
-              <div class="activity-status">
-                [[:text]]
-              </div>
-              [[if uninterest_possible]]
-                <div class="stop-work">
-                  <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty</div>">
-                    <a id="remove-[[:name]]" class="button button--primary" role="button" href="remove-handle">
-                      <span class="font-smaller-4">Stop work</span>
-                    </a>
-                  </span>
-                </div>
-                [[if slash_possible]]
-                  <div class="stop-work">
-                    <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty and ding rep</div>">
-                      <a id="remove-slash-[[:name]]" class="button button--primary admin-only" role="button" href="remove-handle">
-                        <span class="font-smaller-4">Stop work + Ding Rep</span>
-                      </a>
-                    </span>
-                  </div>
-                [[/if]]
-              [[/if]]
-            </div>
-          [[else activity_type == 'worker_applied']]
+          [[else activity_type == 'start_work' || activity_type == 'worker_approved' || activity_type == 'bounty_abandonment_warning' || activity_type == 'worker_applied']]
             <div class="col-12 col-md-7 started-status-column">
               <div class="activity-status">
                 [[:text]]
@@ -300,17 +276,34 @@
                 <div class="stop-work">
                   <span title="<div class='tooltip-info tooltip-sm'>Reject worker</div>">
                     <a class="button button--primary" href="[[:reject_worker_url]]">
-                      <span class="font-smaller-4">Reject worker</span>
+                      <span class="font-smaller-4">{% trans "Reject worker" %}</span>
                     </a>
                   </span>
                 </div>
                 <div class="stop-work">
                   <span title="<div class='tooltip-info tooltip-sm'>Approve worker</div>">
                     <a class="button button--primary" href="[[:approve_worker_url]]">
-                      <span class="font-smaller-4">Approve worker</span>
+                      <span class="font-smaller-4">{% trans "Approve worker" %}</span>
                     </a>
                   </span>
                 </div>
+              [[else uninterest_possible]]
+                <div class="stop-work">
+                  <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty</div>">
+                    <a id="remove-[[:name]]" class="button button--primary" role="button" href="remove-handle">
+                      <span class="font-smaller-4">{% trans "Stop work" %}</span>
+                    </a>
+                  </span>
+                </div>
+                [[if slash_possible]]
+                  <div class="stop-work">
+                    <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty and ding rep</div>">
+                      <a id="remove-slash-[[:name]]" class="button button--primary admin-only" role="button" href="remove-handle">
+                        <span class="font-smaller-4">{% trans "Stop work + Ding Rep" %}</span>
+                      </a>
+                    </span>
+                  </div>
+                [[/if]]
               [[/if]]
             </div>
           [[else activity_type == 'worker_approved' ]]
@@ -334,13 +327,29 @@
               </div>
             </div>
           [[else activity_type == 'work_submitted']]
-            <div class="col-12 col-md-7">
+            <div class="col-12 col-md-7 started-status-column">
               <div class="activity-status">
                 [[:text]]
                 [[if fulfiller_github_url]]
-                <a target="_blank" href="[[:fulfiller_github_url]]">[View Work]</a>
+                <a target="_blank" href="[[:fulfiller_github_url]]">[{% trans "View Work" %}]</a>
                 [[/if]]
               </div>
+              [[if slash_possible]]
+                <div class="stop-work">
+                  <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty</div>">
+                    <a id="remove-[[:name]]" class="button button--primary" role="button" href="remove-handle">
+                      <span class="font-smaller-4">{% trans "Stop work" %}</span>
+                    </a>
+                  </span>
+                </div>
+                <div class="stop-work">
+                  <span title="<div class='tooltip-info tooltip-sm'>Remove this user's started work on the bounty and ding rep</div>">
+                    <a id="remove-slash-[[:name]]" class="button button--primary admin-only" role="button" href="remove-handle">
+                      <span class="font-smaller-4">{% trans "Stop work + Ding Rep" %}</span>
+                    </a>
+                  </span>
+                </div>
+              [[/if]]
             </div>
           [[else activity_type == 'increased_bounty']]
             <div class="col-12 col-md-7">
