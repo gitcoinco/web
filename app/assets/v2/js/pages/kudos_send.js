@@ -209,16 +209,26 @@ $(document).ready(function() {
   $('#send').click(function(e) {
     e.preventDefault();
     $('#send_eth')[0].checkValidity()
+
+    if (!$('#username')[0].checkValidity() ) {
+      $('#username')[0].reportValidity()
+    }
     var inputsValidate = document.querySelectorAll('input')
 
-    inputsValidate.forEach( function(elem){   
+    inputsValidate.forEach( function(elem){
       elem.reportValidity()
     })
     if ($(this).hasClass('disabled') || !$('#send_eth')[0].checkValidity() )
       return;
 
-    
+
     loading_button($(this));
+
+    if ($('#username').select2('data')[0] && $('#username').select2('data')[0].text) {
+      var username = $('#username').select2('data')[0].text;
+    } else {
+      var username = undefined
+    }
 
     // Step 2
     // get form data
@@ -226,7 +236,7 @@ $(document).ready(function() {
     var github_url = $('#issueURL').val();
     var from_name = $('#fromName').val();
     // should username be to_username for clarity?
-    var username = $('#username').select2('data')[0].text;
+    // var username = $('#username').select2('data')[0].text || $('#username').select2('data')[0];
     var receiverAddress = $('#receiverAddress').val();
     var amountInEth = parseFloat($('#amount').val());
     var comments_priv = $('#comments_priv').val();
@@ -259,7 +269,7 @@ $(document).ready(function() {
     var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
     var tokenDetails = tokenAddressToDetails(tokenAddress);
     var tokenName = 'ETH';
-    
+
     var weiConvert = Math.pow(10, 18);
 
     // if (!isSendingETH) {
@@ -358,7 +368,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
     failure_callback();
     return;
   }
-  if (username == '') {
+  if (username == '' || username === undefined ) {
     _alert({ message: gettext('You must enter a username.') }, 'warning');
     failure_callback();
     return;
@@ -439,7 +449,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
               })
             }).then(function(response) {
               return response.json();
-            }).then(function(json) {  
+            }).then(function(json) {
               var is_success = json['status'] == 'OK';
 
               if (!is_success) {
@@ -470,7 +480,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           var send_kudos = function(name, numClones, receiver) {
             let account = web3.eth.coinbase;
             // let value = new web3.BigNumber(1000000000000000);
-            let amountInEth = parseFloat($('#kudosPrice').attr('data-kudosprice'))
+            let amountInEth = parseFloat($('#kudosPrice').attr('data-ethprice'))
             console.log(amountInEth)
             let weiConvert = Math.pow(10, 18);
             let value = new web3.BigNumber(amountInEth * 1.0 * weiConvert);
@@ -497,7 +507,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
             }, post_send_callback);
           };
 
-          
+
           if (is_direct_to_recipient) {
             // Step 9
             // Kudos Direct Send (KDS)
