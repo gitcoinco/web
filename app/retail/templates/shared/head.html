@@ -44,7 +44,14 @@
 <link rel="stylesheet" href="{% static "v2/css/forms/radio.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/forms/select.css" %}" />
 <link rel="stylesheet" href="{% static "v2/css/external_bounties/checkboxes.css" %}" />
-<link rel="stylesheet" href="{% static "v2/css/grants/grant.css" %}" />
+
+{% if 'grants' in request.path %}
+<!-- Grants -->
+<link rel="stylesheet" href="{% static "v2/css/grants/grant.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/grants/new.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/grants/fund.css" %}">
+<link rel="stylesheet" href="{% static "v2/css/grants/cancel.css" %}">
+{% endif %}
 
 {% if active == 'offchain' %}
     <!-- External Bounties -->

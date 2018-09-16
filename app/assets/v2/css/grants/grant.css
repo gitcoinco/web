@@ -86,28 +86,25 @@ body.grant {
   font-size: 14px;
 }
 
-.progress-bar {
+.progress {
   background-color: #D8D8D8;
-  display: block;
-  height: 5px;
-  margin-bottom: 10px;
-  overflow: hidden;
+  border-radius: 2px;
+  height: 15px;
+  overflow: initial;
 }
 
-.progress-bar .progress {
+.progress-bar {
   background-color: #0FCE7C;
-  border-radius: 0;
-  height: 5px;
-  width: 50%;
 }
 
-.progress-bar.progress-bar--large {
-  height: 10px;
-  margin-bottom: 0;
+.progress-bar.progress-bar--cancel {
+  background-color: #D0021B;
+  position: relative;
 }
 
-.progress-bar.progress-bar--large .progress {
-  height: 10px;
+.progress-bar.progress-bar--fund {
+  background-color: #0D0764;
+  position: relative;
 }
 
 /* Grant Show */
@@ -190,10 +187,6 @@ body.grant {
   margin-right: 6px;
 }
 
-.grant__footer {
-  margin-top: auto;
-}
-
 .grant__description {
   font-size: 16px;
   margin-bottom: 100px;
@@ -220,13 +213,13 @@ body.grant {
   margin-right: 5px;
 }
 
-.progress-text {
-  color: rgba(0, 0, 0, 0.54);
-  margin-bottom: 22px;
+.progress-text span {
+  color: #0D0764;
 }
 
-.progress-text span {
-  color: rgba(0, 0, 0, 0.87);
+.progress-text p {
+  font-size: 14px;
+  color: #BBBDBF;
 }
 
 /* Grants hero */
@@ -254,4 +247,34 @@ body.grant {
 
 .grants-hero__copy {
   margin-bottom: 40px;
+}
+
+/* Grants Contribution */
+.contribution {
+  position: absolute;
+  top: -50px;
+  left: 100%;
+  text-align: left;
+  padding: 0 10px;
+}
+
+.contribution:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  z-index: 100;
+  top: 0;
+  width: 1px;
+  height: 100%;
+  background: #979797;
+}
+
+.contribution span {
+  font-size: 18px;
+}
+
+.contribution p {
+  font-family: Helvetica;
+  font-size: 14px;
+  color: #BBBDBF;
 }

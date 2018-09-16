@@ -1,6 +1,5 @@
 import json
 
-from django.shortcuts import render
 from django.template.response import TemplateResponse
 
 from marketing.models import Keyword
@@ -60,3 +59,17 @@ def grants(request):
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'grants/index.html', params)
+
+def fund_grant(request):
+    params = {
+        'title': 'Fund Grant'
+    }
+
+    return TemplateResponse(request, 'grants/fund.html', params)
+
+def cancel_grant(request):
+    params = {
+        'title': 'Fund Grant'
+    }
+
+    return TemplateResponse(request, 'grants/cancel.html', params)

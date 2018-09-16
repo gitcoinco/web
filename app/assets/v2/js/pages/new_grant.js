@@ -29,9 +29,23 @@ window.onload = function() {
         data[this.name] = this.value;
       });
 
-      $(form).submit();
+      console.log(data);
+      // $(form).submit();
     }
+  });
 
+  $('#new-milestone').on('click', function(event) {
+    event.preventDefault();
+    var milestones = $('.milestone-form .row');
+    var milestoneId = milestones.length || 1;
+
+    $('.milestone-form').append('<div class="row" id="milestone' + milestoneId + '">' +
+      '<div class="col-12">\n' +
+      '<input type="text" class="form__input" placeholder="Title" name="milestone-title[' + milestoneId + ']" required/>' +
+      '<input type="date" class="form__input" placeholder="Date" name="milestone-date[' + milestoneId + ']" required/>' +
+      '<textarea class="form__input" type="text" placeholder="Description" name="milestone-description[' + milestoneId + ']" required></textarea>' +
+      '</div>' +
+      '</div>');
   });
 
   waitforWeb3(function() {

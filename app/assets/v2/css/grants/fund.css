@@ -1,0 +1,26 @@
+.fund__header {
+  font-family: Helvetica;
+  font-size: 36px;
+  color: #43484D;
+  letter-spacing: 0;
+  text-align: center;
+  margin: 40px 0;
+}
+
+.fund__header--highlight {
+  color: #0D0764;
+}
+
+.fund__title {
+  font-family: Helvetica-Bold;
+  color: #43484D;
+  margin-bottom: 10px;
+}
+
+.fund__period .select2-container--default .select2-selection--single {
+  min-height: 33px;
+}
+
+.progress-bar--fund span {
+  color: #0D0764;
+}
