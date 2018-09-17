@@ -41,7 +41,7 @@ from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from mailchimp3 import MailChimp
 from marketing.mails import new_feedback
-from marketing.models import EmailSubscriber, Keyword, LeaderboardRank
+from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, validate_discord_integration, validate_slack_integration
 from retail.emails import ALL_EMAILS
 from retail.helpers import get_ip
@@ -521,6 +521,7 @@ def account_settings(request):
             logout_redirect = redirect(reverse('logout') + '?next=/')
             return logout_redirect
         elif request.POST.get('delete', False):
+
             # remove profile
             profile.hide_profile = True
             profile = record_form_submission(request, profile, 'account-delete')
@@ -541,7 +542,14 @@ def account_settings(request):
             if es:
                 es.delete()
             request.user.delete()
-            messages.success(request, _('Your account has been deleted'))
+            AccountDeletionRequest.objects.create(
+                handle=profile.handle,
+                profile={
+                        'ip': get_ip(request),
+                    }
+                )
+            profile.delete()
+            messages.success(request, _('Your account has been deleted.'))
             logout_redirect = redirect(reverse('logout') + '?next=/')
             return logout_redirect
         else:
