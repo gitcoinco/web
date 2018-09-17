@@ -1259,8 +1259,10 @@ const only_one_approve = function(activities) {
       if (!iseen[activity.name]) {
         iseen[activity.name] = true;
       } else {
-        activity.uninterest_possible = false;
-        activity.slash_possible = false;
+        if(activity.activity_type != 'start_work'){
+          activity.uninterest_possible = false;
+          activity.slash_possible = false;
+        }
       }
     }
   }
