@@ -1467,6 +1467,18 @@ class Activity(models.Model):
         return model_to_dict(self, **kwargs)
 
 
+class ProfileQuerySet(models.QuerySet):
+    """Define the Profile QuerySet to be used as the objects manager."""
+
+    def visible(self):
+        """Filter results to only visible profiles."""
+        return self.filter(hide_profile=False)
+
+    def hidden(self):
+        """Filter results to only hidden profiles."""
+        return self.filter(hide_profile=True)
+
+
 class Profile(SuperModel):
     """Define the structure of the user profile.
 
@@ -1509,6 +1521,8 @@ class Profile(SuperModel):
     funder_total_budget_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50)
     funder_total_budget_type = models.CharField(max_length=50, default='', blank=True)  # "monthly" or "quarterly"
     funder_total_budget_updated_on = models.DateTimeField(blank=True, null=True)
+
+    objects = ProfileQuerySet.as_manager()
 
     @property
     def is_org(self):
@@ -1567,8 +1581,12 @@ class Profile(SuperModel):
 
     @property
     def github_created_on(self):
-        from datetime import datetime
-        created_on = datetime.strptime(self.data['created_at'], '%Y-%m-%dT%H:%M:%SZ')
+        created_at = self.data.get('created_at', '')
+
+        if not created_at:
+            return ''
+
+        created_on = datetime.strptime(created_at, '%Y-%m-%dT%H:%M:%SZ')
         return created_on.replace(tzinfo=pytz.UTC)
 
     @property
@@ -2302,6 +2320,7 @@ class UserAction(SuperModel):
         ('added_slack_integration', 'Added Slack Integration'),
         ('removed_slack_integration', 'Removed Slack Integration'),
         ('updated_avatar', 'Updated Avatar'),
+        ('account_disconnected', 'Account Disconnected'),
     ]
     action = models.CharField(max_length=50, choices=ACTION_TYPES)
     user = models.ForeignKey(User, related_name='actions', on_delete=models.SET_NULL, null=True)
