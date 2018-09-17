@@ -264,6 +264,25 @@
                 <div class="col-12">
                   <span class="font-caption profile-bounties__sort_label">{{ group.title }}</span>
                 </div>
+                {% if group.all %}
+                  <div class="container">
+                    <div class="row mb-3 p-2">
+                      <div class="col-12">
+                        <div class="profile-bounties__group-title profile-bounties__group-title--completed">
+                          <i class="far fa-check-circle"></i>
+                          <span class="pl-1">
+                            {% trans "All" %} {{ group.all|length }}
+                            Bount{{ group.all|pluralize:"y,ies" }}
+                          </span>
+                        </div>
+                        {% for bounty in group.all %}
+                          {% include "shared/profile_activities_bounty.html" %}
+                        {% endfor %}
+                      </div>
+                    </div>
+                  </div>
+                {% endif %}
+
                 {% if group.completed %}
                   <div class="container">
                     <div class="row mb-3 p-2">

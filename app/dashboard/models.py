@@ -2206,6 +2206,10 @@ class Profile(SuperModel):
             started = self.interested.prefetch_related('bounty_set') \
                 .filter(bounty__network=network).all().order_by('-created')
             started_bounties = list(set([interest.bounty_set.last() for interest in started]))
+            all_activities = self.activities.filter(
+                bounty__network=network
+            ).select_related('bounty').all().order_by('-created')
+            all_activity_bounties = list(set([activity.bounty for activity in all_activities]))
 
             if completed or submitted or started:
                 params['activities'] = [{
@@ -2213,6 +2217,7 @@ class Profile(SuperModel):
                     'completed': completed,
                     'submitted': submitted,
                     'started': started_bounties,
+                    'all': all_activities,
                 }]
 
         if tips:
