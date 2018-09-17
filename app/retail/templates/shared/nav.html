@@ -112,7 +112,7 @@
         {% endif %}
       {% endif %}
       {% if request.path != '/' or user.is_authenticated %}
-        <img class="d-none d-md-block img__spaceship" src="{% static "v2/images/spaceship.png" %}" width="52" height="45" />
+        <img class="d-none d-lg-block img__spaceship" src="{% static "v2/images/spaceship.png" %}" width="52" height="45" />
         {% include 'shared/nav_auth.html' with source='authed' %}
       {% endif %}
     </nav>

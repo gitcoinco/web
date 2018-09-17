@@ -56,3 +56,7 @@
 .button--full {
   width: 100%;
 }
+
+.button--warning:hover {
+  background-color: #d43247;
+}

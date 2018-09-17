@@ -1,0 +1,243 @@
+{% load i18n static %}
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+  
+  <style>
+  .invoice-box {
+    max-width: 1000px;
+    margin: 50px auto;
+    padding: 30px;
+    border: 1px solid #eee;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .15);
+    font-size: 16px;
+    line-height: 24px;
+    font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+    color: #555;
+  }
+  a {
+    color: #555;
+    text-decoration: underline;
+  }
+  
+  .invoice-box table {
+    width: 100%;
+    line-height: inherit;
+    text-align: left;
+  }
+  
+  .invoice-box table td {
+    padding: 5px;
+    vertical-align: top;
+  }
+  
+  .invoice-box table tr td:nth-child(2) {
+    text-align: right;
+  }
+  
+  .invoice-box table tr.top table td {
+    padding-bottom: 20px;
+  }
+  
+  .invoice-box table tr.top table td.title {
+    font-size: 45px;
+    line-height: 45px;
+    color: #333;
+  }
+  
+  .invoice-box table tr.information table td {
+    padding-bottom: 40px;
+  }
+  
+  .invoice-box table tr.heading td {
+    background: #eee;
+    border-bottom: 1px solid #ddd;
+    font-weight: bold;
+  }
+  
+  .invoice-box table tr.details td {
+    padding-bottom: 20px;
+  }
+  
+  .invoice-box table tr.item td{
+    border-bottom: 1px solid #eee;
+  }
+  
+  .invoice-box table tr.item.last td {
+    border-bottom: none;
+  }
+  
+  .invoice-box table tr.total td:nth-child(2) {
+    border-top: 2px solid #eee;
+    font-weight: bold;
+  }
+  
+  @media only screen and (max-width: 600px) {
+    .invoice-box table tr.top table td {
+      width: 100%;
+      display: block;
+      text-align: center;
+    }
+    
+    .invoice-box table tr.information table td {
+      width: 100%;
+      display: block;
+      text-align: center;
+    }
+  }
+  
+  /** RTL **/
+  .rtl {
+    direction: rtl;
+    font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+  }
+  
+  .rtl table {
+    text-align: right;
+  }
+  
+  .rtl table tr td:nth-child(2) {
+    text-align: left;
+  }
+  </style>
+</head>
+
+<body>
+  <div class="invoice-box">
+    {% if bounty.network != 'mainnet' %}
+      <div style="color:red; border: 1px red solid; padding: 5px;">
+        {% trans "Note: This is not a mainnet bounty, it is a " %} {{bounty.network}} {% trans "bounty, and this invoice is only for demonstration purposes." %}
+      </div>
+    {% endif %}
+    <table cellpadding="0" cellspacing="0">
+      <tr class="top">
+        <td colspan="2">
+          <table>
+            <tr>
+              <td class="title">
+                <img src="{% static "v2/images/presskit/GitCoinLogoText.svg" %}" style="width:100%; max-width:300px;">
+              </td>
+              
+              <td>
+                {% trans "Invoice" %} #: {{bounty.pk}}<br>
+                {% trans "Created" %}: {{bounty.web3_created}}<br>
+                {% trans "Status" %}: {{bounty.status}}<br>
+                {% trans "For" %}: <a href="{{bounty.url}}">{% trans "Gitcoin Bounty" %} {{bounty.pk}}</a> <br>
+                {% trans "Related Issue:" %} <a href="{{bounty.github_url}}">{{bounty.github_url}}</a><br>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      
+      <tr class="information">
+        <td colspan="2">
+          <table>
+            <tr>
+              <td>
+                {% trans "Prepared by" %} <br>
+                Gitcoin Core LLC<br>
+                ConsenSys Inc. <br>
+                49 Bogart Street Suite 22 <br>
+                Brooklyn, NY 11206 <br>
+              </td>
+              
+              <td>
+                {% trans "Prepared for Funder" %}: <br>
+                {{bounty.bounty_owner_address}}<br>
+                @{{bounty.bounty_owner_github_username}}<br>
+                {{bounty.bounty_owner_email}}<br>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+      
+      <tr class="heading">
+        <td>
+          {% trans "Payment Method" %}
+        </td>
+        
+        <td>
+          {% trans "Account" %} #
+        </td>
+      </tr>
+      
+      <tr class="details">
+        <td>
+          {% trans "Directly to counterparties via Ethereum Blockchain" %}
+        </td>
+        
+        <td>
+          0x2af47a65da8cd66729b4209c22017d6a5c2d2400
+        </td>
+      </tr>
+      
+      <tr class="heading">
+        <td>
+          Item
+        </td>
+        
+        <td>
+          Price
+        </td>
+      </tr>
+      
+      {% for fullfillment in accepted_fulfillments %}
+        <tr class="item">
+          <td>
+            {% trans "Direct Payment to " %}{{fullfillment.fulfiller_github_username}} {{fullfillment.fulfiller_address}}
+          </td>
+          
+          <td>
+            {{bounty.value_true}} {{bounty.token_name}} (${{bounty.get_value_in_usdt|floatformat:2}})
+          </td>
+        </tr>
+      {% endfor %}
+
+      {% for tip in tips %}
+        <tr class="item">
+          <td>
+            Direct Payment to {{tip.username}} {{tip.receive_address}}
+          </td>
+          
+          <td>
+            {{tip.value_true}} {{tip.tokenName}} (${{tip.value_in_usdt|floatformat:2}})
+          </td>
+        </tr>
+      {% endfor %}
+
+      {% if not tips and not accepted_fulfillments %}
+        <tr class="item">
+          <td colspan="2">
+            {% trans "( no completed payments have been made on this invoice, although a pending payment of" %}
+            {% if bounty.value_in_usdt %}
+              ${{bounty.value_in_usdt}}
+            {% endif %}
+              ( {{bounty.value_true}}
+              {{bounty.token_name}} )
+            {% trans " is present. )" %}
+          </td>
+          
+        </tr>
+      {% endif %}
+      
+
+      <tr class="total">
+        <td></td>
+        
+        <td>
+          {% if total %}
+             {% trans "Total:" %} ${{total|floatformat:2}}
+          {%else%}
+             {% trans "Total:" %} $0.00
+          {%endif%}
+        </td>
+      </tr>
+    </table>
+  </div>
+</body>
+</html>

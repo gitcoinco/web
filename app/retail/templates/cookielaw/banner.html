@@ -3,10 +3,17 @@
   <div class="container">
     <h6>{% trans "COOKIE_INFO_HEADER" %}</h6>
     <div class="d-flex">
-      <p class="cookie-info font-body">
-        {% trans "COOKIE_INFO_PARA" %}
-      </p>
-      <a class="button button--primary pull-right" href="javascript:Cookielaw.createCookielawCookie();">{% trans "COOKIE_INFO_OK" %}</a>
+      <div class="row cookie-row">
+        <div class="col-8 col-md-10">
+          <p id="cookie-body" class="cookie-info cookie-body-font">
+            {% trans "By continuing to browse the site, you are agreeing to our use of cookies. Learn more in" %}
+            <a href="{% url 'cookie' %}">{% trans "Gitcoin's Privacy Policy" %}</a>
+          </p>
+        </div>
+        <div class="col-4 col-md-2">
+          <a class="button button--primary float-right" href="javascript:Cookielaw.createCookielawCookie();">{% trans "COOKIE_INFO_OK" %}</a>
+        </div>
+      </div>
     </div>
   </div>
 </div>

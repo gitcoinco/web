@@ -14,7 +14,11 @@ Gitcoin Grows Open Source. Learn more at [https://gitcoin.co](https://gitcoin.co
 [![codecov](https://codecov.io/gh/gitcoinco/web/branch/master/graph/badge.svg)](https://codecov.io/gh/gitcoinco/web)
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/gitcoinco/web.svg?columns=all)](https://waffle.io/gitcoinco/web)
 
-This is the website that is live at gitcoin.co
+This is the website that is live at [gitcoin.co](https://gitcoin.co)
+
+## Documentation
+
+[https://docs.gitcoin.co](https://docs.gitcoin.co)
 
 ## How to interact with this repo
 
@@ -42,11 +46,11 @@ This is the website that is live at gitcoin.co
 
 [Star](https://github.com/gitcoinco/web/stargazers) and [watch](https://github.com/gitcoinco/web/watchers) this github repository to stay up to date, we're pushing new code several times per week!
 
-Check out the [CHANGELOG](./CHANGELOG.md) for details about recent changes to this repository.
+Check out the [CHANGELOG](https://docs.gitcoin.co/mk_changelog/) for details about recent changes to this repository.
 
 Also,
 
-* want to become a contributor ? Checkout our [guidelines](./CONTRIBUTING.md).
+* want to become a contributor ? Checkout our [guidelines](https://docs.gitcoin.co/mk_contributors/).
 * [check out the gitcoinco organization-wide repo](https://github.com/gitcoinco/gitcoinco).
 * check out the open issues list, especially the [discussion](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Adiscussion) label and [easy-pickings](https://github.com/gitcoinco/web/issues?q=is%3Aissue+is%3Aopen+label%3Aeasy-pickings).
 
@@ -78,21 +82,21 @@ Technically, the system is architected:
 
 ## HTTPS API
 
-[For more information on the HTTPS API, please view the api README](API.md)
+[For more information on the HTTPS API, please view the api README](https://docs.gitcoin.co/mk_rest_api/)
 
 ## Running locally
 
 ### With Docker (Recommended)
 
-[For more information on running the app locally, please view the running locally README](RUNNING_LOCALLY_DOCKER.md)
+[For more information on running the app locally, please view the documentation for running gitcoinco/web with Docker](https://docs.gitcoin.co/mk_setup/)
 
 ### Without Docker
 
-[For more information on running the app locally, please view the running locally README](RUNNING_LOCALLY.md)
+[For more information on running the app locally, please view the documentation for running gitcoinco/web without Docker](https://docs.gitcoin.co/mk_alternative_setup/)
 
 ## Overriding Application Defaults
 
-[For more information on overriding the local dev environment configuration defaults, please view the environment variables documentation](ENVIRONMENT_VARIABLES.md)
+[For more information on overriding the local dev environment configuration defaults, please view the environment variables documentation](https://docs.gitcoin.co/mk_envvars/)
 
 # Trying out Gitcoin
 
@@ -111,7 +115,7 @@ try posting a funded issue at [https://gitcoin.co/new](https://gitcoin.co/new).
 
 This widget will help you advertise that you support Gitcoin bounties, so that your community knows the best place to contribute.
 
-[Check out the widget readme to learn how](WIDGET.md)
+[Check out the widget documentation to learn how](https://docs.gitcoin.co/mk_widget/)
 
 ## Adding GitcoinBot to your repo
 
@@ -129,7 +133,7 @@ Have an ERC20 compatible token that you'ud like to add support for?  Great!  Sub
 
 This is the high level flow of a bounty on Gitcoin:
 
-<a href="https://www.draw.io/?state=%7B%22ids%22:%5B%221FTatOur159qS8pzBCgIG5E0XdEH8iZF-%22%5D,%22action%22:%22open%22,%22userId%22:%22115514289174042120922%22%7D#G1FTatOur159qS8pzBCgIG5E0XdEH8iZF-"><img src='bounty_flow.png'></a>
+<a href="https://www.draw.io/?state=%7B%22ids%22:%5B%221FTatOur159qS8pzBCgIG5E0XdEH8iZF-%22%5D,%22action%22:%22open%22,%22userId%22:%22115514289174042120922%22%7D#G1FTatOur159qS8pzBCgIG5E0XdEH8iZF-"><img src='https://github.com/gitcoinco/web/raw/master/docs/bounty_flow.png'></a>
 
 Chain of Custody
 
@@ -137,9 +141,9 @@ Chain of Custody
 2. [StandardBounties Smart Contract](https://github.com/Bounties-Network/StandardBounties) deployed at [0x2af47a65da8cd66729b4209c22017d6a5c2d2400](https://etherscan.io/address/0x2af47a65da8cd66729b4209c22017d6a5c2d2400#code)
 3. (Submission Made)
 4. (Submission Accepted)
-5. Recipient's Wallet 
+5. Recipient's Wallet
 
-Anywhere between 2 and 4 above, Funder may withdraw their funds via 'Cancel Bounty' function for any reason. 
+Anywhere between 2 and 4 above, Funder may withdraw their funds via 'Cancel Bounty' function for any reason.
 
 We may introduce Arbitration [via Delphi](http://delphi.network/) at some point in the future.  Until then, we are lucky that Github users are very protective of their reputation, and therefore very kind to each other, and disputes have not generally arisen.
 
@@ -149,7 +153,7 @@ Note: Crowdfunded bounties + bulk payouts are secured by Tips (at least until St
 
 This is the high level flow of a bounty on Gitcoin:
 
-<a href="https://www.draw.io/#G1sTJtQou5FYsHCabhb2JXHDTprpvvkUy0"><img src='tip_flow.png'></a>
+<a href="https://www.draw.io/#G1sTJtQou5FYsHCabhb2JXHDTprpvvkUy0"><img src='https://github.com/gitcoinco/web/raw/master/docs/tip_flow.png'></a>
 
 # Legal
 

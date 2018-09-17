@@ -21,38 +21,27 @@
       <div class="ethereum-icon"></div>
     </div>
   </div>
-
-  <div class="col header-line">&nbsp;</div>
-  <div class="w-100"></div>
   <div class="col-12 col-lg-6">
-    <div class="col header-line header-line-contributors">
+    <div class="col header-line header-line-contributors mt-5">
       {% trans "Join the Gitcoin" %}
       <br>
       {{tech_stack|title}}
       {% trans "Developer Community" %}
     </div>
-    <div class="w-100"></div>
-    <div class="col subheader-line subheader-line-contributors">
+    <div class="col subheader-line subheader-line-contributors mb-4">
       <span>{% trans "Gitcoin is the easiest way to monetize work" %}
-        <br>
-        <span>{% trans "in Open Source Software." %}</span>
+      <br>
+      <span>{% trans "in Open Source Software." %}</span>
     </div>
-    <div class="w-100">&nbsp;</div>
-    <div class="col header-line">
-    </div>
-    <div class="w-100">&nbsp;</div>
-    <div class="col header-line">
-    </div>
-
     <div class="col d-flex mt-2 mb-5 mr-5">
       <div class="text-center">
         <div>
           <a class="btn btn-gc-purple text-purple white get-started-btn" role="button" href="/onboard/contributor" target="_blank" rel="noopener noreferrer">
             <span>{% trans "Get Started" %}</span>
           </a>
-          <a class="btn btn-outline-white join-slack-btn ml-3" role="button" href="{% url "slack" %}" target="_blank" rel="noopener noreferrer">
-            <i class="fab fa-slack-hash mr-1" aria-hidden="true"></i>
-            <span>{% trans "Join Gitcoin Slack" %}</span>
+          <a class="btn btn-outline-white join-slack-btn ml-3" role="button" href="{% url "how_it_works" 'contributor' %}" target="_blank" rel="noopener noreferrer">
+            <i class="fas fa-map mr-1" aria-hidden="true"></i>
+            <span>{% trans "How it works" %}</span>
           </a>
         </div>
         <div class="explore-bounties-link text-white mt-4">
@@ -64,5 +53,5 @@
       </div>
     </div>
   </div>
-
 </div>
+{% include 'shared/rain.html' with class="grey" %}

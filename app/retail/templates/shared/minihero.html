@@ -16,7 +16,7 @@
 
 {% endcomment %}
 {% load static %}
-        <div class="row pt-5 pb-5 text-center">
+        <div class="minihero row pt-5 pb-5 text-center">
             {% if position_h1_below_logo %}
                 <div class="col">
                     {% if not suppress_logo %}
@@ -34,6 +34,5 @@
                     {% endif %}
                 </div>
             {% endif %}
-
-
         </div>
+        {% include 'shared/rain.html' with class="grey" %}

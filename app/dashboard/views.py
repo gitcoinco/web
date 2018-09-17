@@ -24,10 +24,8 @@ import time
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
-from django.core.cache import cache
-from django.http import Http404, JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
@@ -39,8 +37,7 @@ from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import clean_str, ellipses, sync_profile
 from avatar.utils import get_avatar_context
-from economy.utils import convert_amount
-from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid
 from marketing.mails import (
     admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
@@ -53,12 +50,13 @@ from web3 import HTTPProvider, Web3
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
-    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip,
-    Tool, ToolVote, UserAction,
+    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tool,
+    ToolVote, UserAction,
 )
 from .notifications import (
-    maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_github,
-    maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_discord, maybe_market_to_user_slack,
+    maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
+    maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_discord,
+    maybe_market_to_user_slack,
 )
 from .utils import (
     get_bounty, get_bounty_id, get_context, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
@@ -357,9 +355,9 @@ def remove_interest(request, bounty_id):
 @csrf_exempt
 @require_POST
 def extend_expiration(request, bounty_id):
-    """Unclaim work from the Bounty.
+    """Extend expiration of the Bounty.
 
-    Can only be called by someone who has started work
+    Can only be called by funder or staff of the bounty.
 
     :request method: POST
 
@@ -586,6 +584,47 @@ def contribute(request):
     return TemplateResponse(request, 'contribute_bounty.html', params)
 
 
+def invoice(request):
+    """invoice view.
+
+    Args:
+        pk (int): The primary key of the bounty to be accepted.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The invoice  view.
+
+    """
+    bounty = handle_bounty_views(request)
+
+    # only allow invoice viewing if admin or iff bounty funder
+    is_funder = bounty.is_funder(request.user.username)
+    is_staff = request.user.is_staff
+    has_view_privs = is_funder or is_staff
+    if not has_view_privs:
+        raise Http404
+
+    params = get_context(
+        ref_object=bounty,
+        user=request.user if request.user.is_authenticated else None,
+        confirm_time_minutes_target=confirm_time_minutes_target,
+        active='invoice_view',
+        title=_('Invoice'),
+    )
+    params['accepted_fulfillments'] = bounty.fulfillments.filter(accepted=True)
+    params['tips'] = [
+        tip for tip in bounty.tips.exclude(txid='') if tip.username == request.user.username and tip.username
+    ]
+    params['total'] = bounty._val_usd_db if params['accepted_fulfillments'] else 0
+    for tip in params['tips']:
+        if tip.value_in_usdt:
+            params['total'] += tip.value_in_usdt
+
+    return TemplateResponse(request, 'bounty/invoice.html', params)
+
+
 def social_contribution(request):
     """Social Contributuion to the bounty.
 
@@ -662,6 +701,7 @@ def bulk_payout_bounty(request):
         active='payout_bounty',
         title=_('Multi-Party Payout'),
     )
+
     return TemplateResponse(request, 'bulk_payout_bounty.html', params)
 
 
@@ -804,7 +844,7 @@ def helper_handle_suspend_auto_approval(request, bounty):
 
 def helper_handle_override_status(request, bounty):
     admin_override_satatus = request.GET.get('admin_override_satatus', False)
-    if admin_override_satatus != False:
+    if admin_override_satatus:
         is_staff = request.user.is_staff
         if is_staff:
             valid_statuses = [ele[0] for ele in Bounty.STATUS_CHOICES]
@@ -1048,63 +1088,46 @@ def profile(request, handle):
     Args:
         handle (str): The profile handle.
 
+    Variables:
+        context (dict): The template context to be used for template rendering.
+        profile (dashboard.models.Profile): The Profile object to be used.
+        status (int): The status code of the response.
+
+    Returns:
+        TemplateResponse: The profile templated view.
+
     """
-    show_hidden_profile = False
+    status = 200
+
     try:
         if not handle and not request.user.is_authenticated:
             return redirect('index')
-        elif not handle:
+
+        if not handle:
             handle = request.user.username
-            profile = request.user.profile
+            profile = getattr(request.user, 'profile', None)
+            if not profile:
+                profile = profile_helper(handle)
         else:
             if handle.endswith('/'):
                 handle = handle[:-1]
             profile = profile_helper(handle)
-    except Http404:
-        show_hidden_profile = True
-    except ProfileHiddenException:
-        show_hidden_profile = True
-    if show_hidden_profile:
-        params = {
+
+        context = profile.to_dict()
+    except (Http404, ProfileHiddenException):
+        status = 404
+        context = {
             'hidden': True,
             'profile': {
                 'handle': handle,
-                'avatar_url': f"/static/avatar/Self",
+                'avatar_url': f"/dynamic/avatar/Self",
                 'data': {
                     'name': f"@{handle}",
                 },
             },
         }
-        return TemplateResponse(request, 'profiles/profile.html', params, status=404)
 
-    params = profile.to_dict()
-
-    return TemplateResponse(request, 'profiles/profile.html', params)
-
-
-@csrf_exempt
-@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def save_search(request):
-    """Save the search."""
-    email = request.POST.get('email')
-    if email:
-        raw_data = request.POST.get('raw_data')
-        Subscription.objects.create(
-            email=email,
-            raw_data=raw_data,
-            ip=get_ip(request),
-        )
-        response = {
-            'status': 200,
-            'msg': 'Success!',
-        }
-        return JsonResponse(response)
-
-    context = {
-        'active': 'save',
-        'title': _('Save Search'),
-    }
-    return TemplateResponse(request, 'save_search.html', context)
+    return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
 
 @csrf_exempt
@@ -1427,6 +1450,7 @@ def redeem_coin(request, shortcode):
     except CoinRedemption.DoesNotExist:
         raise Http404
 
+
 def new_bounty(request):
     """Create a new bounty."""
     from .utils import clean_bounty_url
@@ -1444,3 +1468,111 @@ def new_bounty(request):
         update=bounty_params,
     )
     return TemplateResponse(request, 'bounty/new.html', params)
+
+
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def change_bounty(request, bounty_id):
+    user = request.user if request.user.is_authenticated else None
+
+    if not user:
+        if request.body:
+            return JsonResponse(
+                {'error': _('You must be authenticated via github to use this feature!')},
+                status=401)
+        else:
+            return redirect('/login/github?next=' + request.get_full_path())
+
+    try:
+        bounty_id = int(bounty_id)
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except:
+        if request.body:
+            return JsonResponse({'error': _('Bounty doesn\'t exist!')}, status=404)
+        else:
+            raise Http404
+
+    keys = ['experience_level', 'project_length', 'bounty_type', 'permission_type', 'project_type']
+
+    if request.body:
+        can_change = (bounty.status in Bounty.OPEN_STATUSES) or \
+                (bounty.can_submit_after_expiration_date and bounty.status is 'expired')
+        if not can_change:
+            return JsonResponse({
+                'error': _('The bounty can not be changed anymore.')
+            }, status=405)
+
+        is_funder = bounty.is_funder(user.username.lower()) if user else False
+        is_staff = request.user.is_staff if user else False
+        if not is_funder and not is_staff:
+            return JsonResponse({
+                'error': _('You are not authorized to change the bounty.')
+            }, status=401)
+
+        try:
+            params = json.loads(request.body)
+        except Exception:
+            return JsonResponse({'error': 'Invalid JSON.'}, status=400)
+
+        bounty_changed = False
+        for key in keys:
+            value = params.get(key, '')
+            old_value = getattr(bounty, key)
+            if value != old_value:
+                setattr(bounty, key, value)
+                bounty_changed = True
+
+        if not bounty_changed:
+            return JsonResponse({
+                'success': True,
+                'msg': _('Bounty details are unchanged.'),
+                'url': bounty.absolute_url,
+            })
+
+        bounty.save()
+        record_bounty_activity(bounty, user, 'bounty_changed')
+        record_user_action(user, 'bounty_changed', bounty)
+
+        maybe_market_to_email(bounty, 'bounty_changed')
+        maybe_market_to_slack(bounty, 'bounty_changed')
+        maybe_market_to_user_slack(bounty, 'bounty_changed')
+        maybe_market_to_user_discord(bounty, 'bounty_changed')
+
+        return JsonResponse({
+            'success': True,
+            'msg': _('You successfully changed bounty details.'),
+            'url': bounty.absolute_url,
+        })
+
+    result = {}
+    for key in keys:
+        result[key] = getattr(bounty, key)
+
+    params = {
+        'title': _('Change Bounty Details'),
+        'pk': bounty.pk,
+        'result': result
+    }
+    return TemplateResponse(request, 'bounty/change.html', params)
+
+
+def get_users(request):
+    if request.is_ajax():
+        q = request.GET.get('term')
+        profiles = Profile.objects.filter(handle__icontains=q)
+        results = []
+        for user in profiles:
+            profile_json = {}
+            profile_json['id'] = user.id
+            profile_json['text'] = user.handle
+            profile_json['email'] = user.email
+            profile_json['avatar_id'] = user.avatar_id
+            if user.avatar_id:
+                profile_json['avatar_url'] = user.avatar_url
+            profile_json['preferred_payout_address'] = user.preferred_payout_address
+            results.append(profile_json)
+        data = json.dumps(results)
+    else:
+        raise Http404
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
