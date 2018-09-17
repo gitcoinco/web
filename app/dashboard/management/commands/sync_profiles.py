@@ -55,6 +55,9 @@ class Command(BaseCommand):
         handles = set([b.org_name for b in Bounty.objects.current()])
         for handle in handles:
             print(handle)
+            if handle in settings.BLOCKED_USERS:
+                print('not syncing, handle is blocked')
+                continue
 
             # does this handle need a refresh
             needs_refresh = does_need_refresh(handle) or options['force_refresh']

@@ -1258,7 +1258,7 @@ const only_one_approve = function(activities) {
     if (activity.uninterest_possible) {
       if (!iseen[activity.name]) {
         iseen[activity.name] = true;
-      } else {
+      } else if (activity.activity_type != 'start_work') {
         activity.uninterest_possible = false;
         activity.slash_possible = false;
       }
