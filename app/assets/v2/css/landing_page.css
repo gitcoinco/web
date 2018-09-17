@@ -209,12 +209,6 @@ body {
   height: 6rem;
 }
 
-.activity.box {
-  border-left: none;
-  border-top: none;
-  border-right: none;
-}
-
 .activity-info {
   position: relative;
   top: 7px;

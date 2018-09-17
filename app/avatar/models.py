@@ -50,29 +50,17 @@ class Avatar(SuperModel):
     config = JSONField(default=dict, help_text=_('The JSON configuration of the custom avatar.'), )
     # Github Avatar
     github_svg = models.FileField(
-        upload_to=get_upload_filename,
-        null=True,
-        blank=True,
-        help_text=_('The Github avatar SVG.')
+        upload_to=get_upload_filename, null=True, blank=True, help_text=_('The Github avatar SVG.')
     )
     png = models.ImageField(
-        upload_to=get_upload_filename,
-        null=True,
-        blank=True,
-        help_text=_('The Github avatar PNG.'),
+        upload_to=get_upload_filename, null=True, blank=True, help_text=_('The Github avatar PNG.'),
     )
     # Custom Avatar
     custom_avatar_png = models.ImageField(
-        upload_to=get_upload_filename,
-        null=True,
-        blank=True,
-        help_text=_('The custom avatar PNG.'),
+        upload_to=get_upload_filename, null=True, blank=True, help_text=_('The custom avatar PNG.'),
     )
     svg = models.FileField(
-        upload_to=get_upload_filename,
-        null=True,
-        blank=True,
-        help_text=_('The custom avatar SVG.'),
+        upload_to=get_upload_filename, null=True, blank=True, help_text=_('The custom avatar SVG.'),
     )
 
     use_github_avatar = models.BooleanField(default=True)

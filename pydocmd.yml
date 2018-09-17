@@ -1,0 +1,333 @@
+site_name: "Gitcoin Developer Documentation"
+repo_name: 'gitcoinco/web'
+repo_url: 'https://github.com/gitcoinco/web'
+
+# This tells pydocmd which pages to generate from which Python modules,
+# functions and classes. At the first level is the page name, below that
+# is a tree of Python member names (modules, classes, etc.) that should be
+# documented. Higher indentation leads to smaller header size.
+generate:
+  - app/middleware.md:
+    - app.middleware++
+  - app/pipeline.md:
+    - app.pipeline++
+  - app/sitemaps.md:
+    - app.sitemaps++
+  - app/static_storage.md:
+    - app.static_storage++
+  - app/thumbnail_processors.md:
+    - app.thumbnail_processors++
+  - app/utils.md:
+    - app.utils++
+  - avatar/admin.md:
+    - avatar.admin++
+  - avatar/exceptions.md:
+    - avatar.exceptions++
+  - avatar/models.md:
+    - avatar.models++
+  - avatar/utils.md:
+    - avatar.utils++
+  - avatar/views.md:
+    - avatar.views++
+  - avatar/templatetags.md:
+    - avatar.templatetags.avatar_tags++
+  - bounty_requests/admin.md:
+    - bounty_requests.admin++
+  - bounty_requests/models.md:
+    - bounty_requests.models++
+  - bounty_requests/views.md:
+    - bounty_requests.views++
+  - credits/views.md:
+    - credits.views++
+  - dashboard/admin.md:
+    - dashboard.admin++
+  - dashboard/embed.md:
+    - dashboard.embed++
+  - dashboard/healthchecks.md:
+    - dashboard.healthchecks++
+  - dashboard/helpers.md:
+    - dashboard.helpers++
+  - dashboard/ios.md:
+    - dashboard.ios++
+  - dashboard/models.md:
+    - dashboard.models++
+  - dashboard/notifications.md:
+    - dashboard.notifications++
+  - dashboard/router.md:
+    - dashboard.router++
+  - dashboard/signals.md:
+    - dashboard.signals++
+  - dashboard/tokens.md:
+    - dashboard.tokens++
+  - dashboard/utils.md:
+    - dashboard.utils++
+  - dashboard/views.md:
+    - dashboard.gas_views++
+    - dashboard.tip_views++
+    - dashboard.views++
+  - dashboard/templatetags.md:
+    - dashboard.templatetags.add_url_schema++
+  - dataviz/admin.md:
+    - dataviz.admin++
+  - dataviz/models.md:
+    - dataviz.models++
+  - dataviz/views.md:
+    - dataviz.d3_views++
+    - dataviz.views++
+  - economy/commands.md:
+    - economy.management.commands.get_prices++
+    - economy.management.commands.refresh_bounties++
+  - economy/admin.md:
+    - economy.admin++
+  - economy/models.md:
+    - economy.models++
+  - economy/utils.md:
+    - economy.utils++
+  - enssubdomain/commands.md:
+    - enssubdomain.management.commands.reprocess_txs++
+    - enssubdomain.management.commands.warn_when_wallet_out_of_eth++
+  - enssubdomain/admin.md:
+    - enssubdomain.admin++
+  - enssubdomain/models.md:
+    - enssubdomain.models++
+  - enssubdomain/utils.md:
+    - enssubdomain.utils++
+  - enssubdomain/views.md:
+    - enssubdomain.views++
+  - external_bounties/commands.md:
+    - external_bounties.management.commands.sync_bounty0x++
+    - external_bounties.management.commands.sync_gitcoin++
+    - external_bounties.management.commands.sync_known_github_repos++
+  - external_bounties/admin.md:
+    - external_bounties.admin++
+  - external_bounties/forms.md:
+    - external_bounties.forms++
+  - external_bounties/models.md:
+    - external_bounties.models++
+  - external_bounties/router.md:
+    - external_bounties.router++
+  - external_bounties/views.md:
+    - external_bounties.views++
+  - faucet/admin.md:
+    - faucet.admin++
+  - faucet/models.md:
+    - faucet.models++
+  - faucet/views.md:
+    - faucet.views++
+  - gas/admin.md:
+    - gas.admin++
+  - gas/models.md:
+    - gas.models++
+  - gas/utils.md:
+    - gas.utils++
+  - git/utils.md:
+    - git.utils++
+  - gitcoinbot/actions.md:
+    - gitcoinbot.actions++
+  - gitcoinbot/admin.md:
+    - gitcoinbot.admin++
+  - gitcoinbot/models.md:
+    - gitcoinbot.models++
+  - gitcoinbot/views.md:
+    - gitcoinbot.views++
+  - linkshortener/commands.md:
+    - linkshortener.management.commands.create_shortlinks++
+  - linkshortener/admin.md:
+    - linkshortener.admin++
+  - linkshortener/models.md:
+    - linkshortener.models++
+  - linkshortener/views.md:
+    - linkshortener.views++
+  - marketing/commands.md:
+    - marketing.management.commands.assemble_leaderboards++
+    - marketing.management.commands.backfill_analytics++
+    - marketing.management.commands.bounty_feedback_email++
+    - marketing.management.commands.expiration_start_work++
+    - marketing.management.commands.expiration_tip++
+    - marketing.management.commands.expiration++
+    - marketing.management.commands.funder_stale_email++
+    - marketing.management.commands.gdpr_reconsent_eu++
+    - marketing.management.commands.gdpr_update_email++
+    - marketing.management.commands.ingest_slack_users++
+    - marketing.management.commands.new_bounties_email++
+    - marketing.management.commands.pending_start_work_actions++
+    - marketing.management.commands.process_email_events++
+    - marketing.management.commands.pull_github++
+    - marketing.management.commands.pull_stats++
+    - marketing.management.commands.remarket_bounties++
+    - marketing.management.commands.roundup++
+    - marketing.management.commands.send_quarterly_stats++
+    - marketing.management.commands.sync_github++
+    - marketing.management.commands.sync_keywords++
+    - marketing.management.commands.sync_mail++
+    - marketing.management.commands.sync_slack++
+    - marketing.management.commands.test_email++
+  - marketing/admin.md:
+    - marketing.admin++
+  - marketing/google_analytics.md:
+    - marketing.google_analytics++
+  - marketing/mails.md:
+    - marketing.mails++
+  - marketing/models.md:
+    - marketing.models++
+  - marketing/stats.md:
+    - marketing.stats++
+  - marketing/utils.md:
+    - marketing.utils++
+  - marketing/views.md:
+    - marketing.views++
+  - marketing/webbhookviews.md:
+    - marketing.webhookviews++
+  - retail/commands.md:
+    - retail.management.commands.warm_cache++
+  - retail/templatetags.md:
+    - retail.templatetags.is_in_list++
+    - retail.templatetags.matches++
+  - retail/emails.md:
+    - retail.emails++
+  - retail/helpers.md:
+    - retail.helpers++
+  - retail/utils.md:
+    - retail.utils++
+  - retail/views.md:
+    - retail.views++
+  - tdi/admin.md:
+    - tdi.admin++
+  - tdi/models.md:
+    - tdi.models++
+  - tdi/views.md:
+    - tdi.views++
+
+# MkDocs pages configuration. The `<<` operator is sugar added by pydocmd
+# that allows you to use an external Markdown file (eg. your project's README)
+# in the documentation. The path must be relative to current working directory.
+pages:
+  - General:
+    - Home: index.md << docs/README.md
+    - Setup Environment (recommended): mk_setup.md << docs/RUNNING_LOCALLY_DOCKER.md
+    - Alternative Setup: mk_alternative_setup.md << docs/RUNNING_LOCALLY.md
+    - Third Party Integration Setup: mk_third_party_integrations.md << docs/THIRD_PARTY_SETUP.md
+    - Advanced: mk_advanced.md << docs/ADVANCED.md
+    - Widget Setup: mk_widget.md << docs/WIDGET.md
+    - Environment Variables: mk_envvars.md << docs/ENVIRONMENT_VARIABLES.md
+    - Rest API: mk_rest_api.md << docs/API.md
+    - Changelog: mk_changelog.md << CHANGELOG.md
+    - Contributors Guide: mk_contributors.md << docs/CONTRIBUTING.md
+  - Code:
+    - App:
+      - Middleware: app/middleware.md
+      - Auth Pipeline: app/pipeline.md
+      - Sitemaps: app/sitemaps.md
+      - Static Storage: app/static_storage.md
+      - Thumbnail Processors: app/thumbnail_processors.md
+      - Utilities: app/utils.md
+    - Avatar:
+      - Admin: avatar/admin.md
+      - Exceptions: avatar/exceptions.md
+      - Models: avatar/models.md
+      - Utilities: avatar/utils.md
+      - Views: avatar/views.md
+      - Template Tags: avatar/templatetags.md
+    - Bounty Requests:
+      - Admin: bounty_requests/admin.md
+      - Models: bounty_requests/models.md
+      - Views: bounty_requests/views.md
+    - Credits:
+      - Views: credits/views.md
+    - Dashboard:
+      - Admin: dashboard/admin.md
+      - Embedded: dashboard/embed.md
+      - Models: dashboard/models.md
+      - Utilities: dashboard/utils.md
+      - Views: dashboard/views.md
+      - Healthchecks: dashboard/healthchecks.md
+      - Helpers: dashboard/helpers.md
+      - iOS: dashboard/ios.md
+      - Notifications: dashboard/notifications.md
+      - API Router: dashboard/router.md
+      - Signals: dashboard/signals.md
+      - Tokens: dashboard/tokens.md
+      - Template Tags: dashboard/templatetags.md
+    - Data Visualization:
+      - Admin: dataviz/admin.md
+      - Models: dataviz/models.md
+      - Views: dataviz/views.md
+    - Economy:
+      - Commands: economy/commands.md
+      - Admin: economy/admin.md
+      - Models: economy/models.md
+      - Utilities: economy/utils.md
+    - ENS Subdomain:
+      - Commands: enssubdomain/commands.md
+      - Admin: enssubdomain/admin.md
+      - Models: enssubdomain/models.md
+      - Utilities: enssubdomain/utils.md
+      - Views: enssubdomain/views.md
+    - External Bounties:
+      - Commands: external_bounties/commands.md
+      - Admin: external_bounties/admin.md
+      - Forms: external_bounties/forms.md
+      - Models: external_bounties/models.md
+      - Router: external_bounties/router.md
+      - Views: external_bounties/views.md
+    - Faucet:
+      - Admin: faucet/admin.md
+      - Models: faucet/models.md
+      - Views: faucet/views.md
+    - Gas:
+      - Admin: gas/admin.md
+      - Models: gas/models.md
+      - Utilities: gas/utils.md
+    - Git:
+      - Utilities: git/utils.md
+    - Gitcoin Bot:
+      - Actions: gitcoinbot/actions.md
+      - Admin: gitcoinbot/admin.md
+      - Models: gitcoinbot/models.md
+      - Views: gitcoinbot/views.md
+    - Link Shortener:
+      - Commands: linkshortener/commands.md
+      - Admin: linkshortener/admin.md
+      - Models: linkshortener/models.md
+      - Views: linkshortener/views.md
+    - Marketing:
+      - Commands: marketing/commands.md
+      - Admin: marketing/admin.md
+      - Google Analytics: marketing/google_analytics.md
+      - Mails: marketing/mails.md
+      - Models: marketing/models.md
+      - Stats: marketing/stats.md
+      - Utilities: marketing/utils.md
+      - Views: marketing/views.md
+      - Webhook Views: marketing/webbhookviews.md
+    - Retail:
+      - Commands: retail/commands.md
+      - Template Tags: retail/templatetags.md
+      - Emails: retail/emails.md
+      - Helpers: retail/helpers.md
+      - Utilities: retail/utils.md
+      - Views: retail/views.md
+    - TDI:
+      - Admin: tdi/admin.md
+      - Models: tdi/models.md
+      - Views: tdi/views.md
+  - Additional Services:
+    - Slack WelcomeBot:
+      - Readme: mk_welcomebot.md << ops/lambdas/welcomebot/README.md
+
+
+# These options all show off their default values. You don't have to add
+# them to your configuration if you're fine with the default.
+theme:
+  name: material
+  logo: 'https://d3vv6lp55qjaqc.cloudfront.net/items/263e3q1M2Y2r3L1X3c2y/helmet.png'
+  favicon: 'https://s.gitcoin.co/static/v2/images/favicon.ico/favicon.ico'
+  feature:
+    tabs: true
+loader: loader.DjangoPythonLoader
+
+# Additional search path for your Python module. If you use Pydocmd from a
+# subdirectory of your project (eg. docs/), you may want to add the parent
+# directory here.
+additional_search_paths:
+  - app/
