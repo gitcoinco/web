@@ -29,31 +29,7 @@
   <script src="{% static "v2/js/pages/kudos_send.js" %}"></script>
   <script src="{% static "onepager/js/confetti.js" %}"></script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
-
-  <script>
-    (function (){
-      this.kudosprice = function () {
-        var elems = document.querySelectorAll('[data-kudosprice]')
-        elems.forEach( function(elem){          
-          new Promise(function(resolve, reject) {
-            getUSDEstimate(elem.dataset.kudosprice, 'ETH', function(usdAmount){
-              resolve( usdAmount)
-            })
-          }).then(function(result){
-            addValue(elem, result) 
-          }, function(reject){
-            console.log(reject)
-          })
-        })
-        
-        function addValue(elem, result) {
-          elem.children[0].textContent = `(${result.value} USD)`
-        }
-      }
-    }())
-    
-    new kudosprice()  
-  </script>
+  <script src="{% static "v2/js/eth-price.js" %}"></script>
 
 {% endblock %}
 <!-- Main -->
@@ -74,7 +50,7 @@
       {% if kudos.name %}
       <a href="/kudos/{{ kudos.id }}"><img src="{% static kudos.image %}" alt="{{ kudos.name }}" width="160" alt="" class="mb-2"></a>
       <span class="d-block">{{ kudos.name|humanize_name }}</span>
-      <span id='kudosPrice' class="d-block" data-kudosprice="{{ kudos.price_in_eth }}">{{ kudos.price_in_eth }} ETH <small></small></span>
+      <span id="kudosPrice" class="d-block" data-ethprice="{{ kudos.price_in_eth }}">{{ kudos.price_in_eth }} ETH <small>USD</small></span>
       {% else %}
       <a href="{% url 'kudos_marketplace' %}" class="">
         <svg  viewBox="0 0 109 125" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="width: 160px;">
@@ -89,9 +65,9 @@
       <span class="d-block">0 ETH <small></small></span>
       {% endif %}
     </div>
-    
+
   </header>
- 
+
 
   <form id="send_eth">
     <!-- <div class="form-row">
@@ -111,11 +87,11 @@
     <input type="hidden" id="amount" value="0.0011">
     <label for="">{% trans "To Github Username" %}</label>
     <div class="form-group">
-      <select id="username" class="username-search custom-select" {% if not kudos.name  %}disabled{% endif %}></select>
+      <select id="username" class="username-search custom-select" required {% if not kudos.name  %}disabled{% endif %}></select>
     </div>
     <!-- <div id="username-fg" class="form-group">
       <br>
-      
+
 
 
       <select class="username-selector" name="github-username" id="username">
@@ -153,11 +129,11 @@
         <label for="">{% trans "From Email" %} ({% trans "optional" %}):</label>
         <input type="email" placeholder="you@domain.co" id="fromEmail" value="{% if from_email %}{{ from_email }}{% endif %}" class="form-control">
       </div>
-      
+
     </div>
     <div class="form-group form-check text-center">
       <input type="checkbox" id="tos" value="1" class="form-check-input" required>
-      <label for="tos" class="form-check-label">{% trans "I understand &amp; agree to the" %} 
+      <label for="tos" class="form-check-label">{% trans "I understand &amp; agree to the" %}
           <a href="//{{ request.get_protocol }}{{ request.get_host }}{% url "_terms" %}" rel="modal:open">{% trans "terms of service" %}</a>.
       </label>
     </div>
@@ -174,7 +150,7 @@
       <p class="font-smaller-1">
         <a href="" target="_blank" rel="noopener noreferrer" id="trans_link2" >{% trans "The transaction is still pending." %}</a><br>{% trans "This page will auto-update when the transaction is confirmed" %} <br>({% trans "but you can close the browser window if you want" %}).
       </p>
-      
+
       <img src="{% static "onepager/images/loading_v2.gif" %}" width="70" style="margin-right: 9px;">
     </div>
     <hr>
@@ -186,3 +162,4 @@
 </section>
 
 {% endblock %}
+>>>>>>> kudos-v1

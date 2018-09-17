@@ -40,7 +40,11 @@
                 {% endif %}
               </p>
             </div>
-            <div data-metamask-address data-truncatehash title="{{ preferred_payout_address }}">{{ preferred_payout_address }}</div>
+            {% if preferred_payout_address %}
+              <div class="my-2" id="preferred-address" data-truncatehash title="{{ preferred_payout_address }}">{{ preferred_payout_address }}</div>
+            {% else %}
+              <div class="my-2" id="preferred-address">No preferred address</div>
+            {% endif %}
             {% if profile.data.bio %}
               <div class="profile-header__bio my-2">
                 {{ profile.data.bio }}
@@ -119,12 +123,44 @@
     </div>
 
     <div class="container-fluid bg-light py-5">
-
-      
-
-
       <div class="container">
-        {% include "shared/profile_kudos.html" %}
+        {% if user.is_authenticated and request.path == '/profile/' %}
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <button type="button" class="btn btn-sm btn-lightblue" data-toggle="popover" data-class="asd" data-html="true" data-popover-content="#wallet-popover">Add Account</button>
+            <!-- <button type="button" id="wallets-number" class="btn btn-sm btn-secondary" disabled>{{ preferre|length }}</button> -->
+          </div>
+          <div id="wallet-popover" style="display:none;">
+            <div class="popover-heading">{% trans "Metamask account" %}</div>
+            <div class="popover-body">
+              <form action="/profile/" method="post" name="formwallets" id="form-wallets">
+                {% csrf_token %}
+                <input type="hidden" class="input-wallet" name="address" data-metamask-address>
+                <div class="input-group input-group-sm">
+                  <div class="input-group-text form-control wallet-address" data-metamask-address data-truncatehash></div>
+                  <div class="input-group-append">
+                    <button type="submit" class="btn btn-sm btn-primary">{% trans "Add" %}</button>
+                  </div>
+                </div>
+
+                <div class="my-2">
+                  Add or replace your preferred MetaMask account.
+                </div>
+                <!-- <div class="list-unstyled p-2 wallets-list"></div> -->
+              </form>
+
+              <!-- {% if wallet_addresses %}
+              <ul class="list-unstyled p-2 wallets-list">
+                {% for address in wallet_addresses %}
+                  <li>{{ address }}</li>
+                {% endfor %}
+              </ul>
+              {% endif %} -->
+            </div>
+          </div>
+        {% endif %}
+        <div id="kudos-section">
+          {% include "shared/profile_kudos.html" %}
+        </div>
       </div>
     </div>
     <div class="container">
@@ -350,25 +386,12 @@
     <script src="/dynamic/js/tokens_dynamic.js"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>
     <script src="{% static "v2/js/pages/profile_details.js" %}"></script>
-    <script src="{% static "v2/js/shared.js" %}"></script>
     <script src="{% static "v2/js/popper.min.js" %}"></script>
     <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
     <script>
       var bootstrapTooltip = $.fn.tooltip.noConflict()
     </script>
-    <script id="theTmpl" type="text/x-jsrender">
-      <div class="input-group input-group-sm mb-2">
-        <div id="wallet-address" class="input-group-text form-control" data-truncatehash>[[:address]]</div>
-        <input type="hidden" class="" aria-label="Text input with checkbox" value="[[:address]]">
-        <div class="input-group-append">
-          <div class="input-group-text">
-            <input type="radio" name="walletRadios" aria-label="Checkbox for following text input" checked>
-          </div>
-        </div>
-      </div>
 
-    </script>
-    <!-- <li data-truncatehash>[[:address]]</li> -->
     <script type="text/javascript">
       $(document).ready(function() {
         if ($('.profile-bounties--tips .bounty_row--hidden').length > 0) {
@@ -399,112 +422,82 @@
             // Fetch bounties user is fulfiller
             fetchBountiesAndAddToList('network=mainnet&fulfiller_github_username_done={{ profile.handle }}&idx_status=done', '.profile-bounties--completed');
       {% endif %}
-            
-            
-            $("[data-toggle=popover]").popover({
-              html : true,
-              template: '<div class="popover wallet-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
-              content: function() {
-                  var content = $(this).attr("data-popover-content");
-                  return $(content).children(".popover-body").html();
-              },
-              title: function() {
-                  var title = $(this).attr("data-popover-content");
-                  return $(title).children(".popover-heading").html();
-              }
-            });
-            
-
-            (function (){
-              this.getaddress = function(elem, address) {
-                var address = !address ? address = web3.eth.coinbase : address
-                if (elem.nodeName == 'INPUT') {
-                  elem.value = address
-                } else {
-                  elem.textContent = address
-                  elem.setAttribute('title', address)
-                }
-                new truncateHash() 
-              }
-              
-              this.metamaskAddress = function () {
-                var currentWallet = web3.eth.coinbase
-                
-                // var elem = document.querySelectorAll('[data-metamask-address]')
-                var elem = $('#wallet-address')
-                for (var i = 0; i < elem.length; ++i) {
-                  new getaddress(elem[i],currentWallet)
-                }
-              }
-            }())
-            new metamaskAddress()  
-            
-            web3.currentProvider.publicConfigStore.on('update', function(e){
-              console.log('meememe', e)
-              new metamaskAddress()
-            });
-            // var profileId= {{ profile.id }}
-            
-            
-            // if (currentWallet) {
-              //   // $('#wallet-address').html(currentWallet)
-              // }
-              // $('#input-wallet').prop('disabled', true);
 
 
-              // Generic function to make an AJAX call
-              var fetchData = function(urlRequest, methodType, data) {
-                // Return the $.ajax promise
-                return $.ajax({
-                  url: urlRequest,
-                  type: methodType,
-                  dataType: 'json',
-                  data: data
-                });
-              }
-              
-              function newWallets () {
+        $("[data-toggle=popover]").popover({
+          html : true,
+          trigger: 'focus',
+          template: '<div class="popover wallet-popover" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
+          content: function() {
+              var content = $(this).attr("data-popover-content");
+              return $(content).children(".popover-body").html();
+          },
+          title: function() {
+              var title = $(this).attr("data-popover-content");
+              return $(title).children(".popover-heading").html();
+          }
+        });
 
-                var getWallets = fetchData ('/api/v0.1/wallet/?profile={{profile.id}}','GET')
-                $.when( getWallets ).then( function ( response ){
-                  console.log( response )
-                  var template = $.templates("#theTmpl");
-                  var htmlOutput = template.render(response);
-                  $('.wallets-list').html(htmlOutput);
-                  $('#wallets-number').html(response.length);
-                  new truncateHash() 
-                })
-              }
-              // newWallets()
-              
-            $("body").on('submit', '#form-wallets', function(e) {
-              e.preventDefault()
-              console.log(e)
-              $('#input-wallet').val($('#wallet-address').prop('title'))
-              var postWallets = fetchData (  e.currentTarget.action, 
-                                            e.currentTarget.method, 
-                                            $("#form-wallets").serialize() 
-                                          )
-              
-              $.when( postWallets ).then( function ( response ){
-                newWallets()
-                // var template = $.templates("#theTmpl");
-                // var htmlOutput = template.render(response.wallets);
-                // $('.wallets-list').html(htmlOutput);
-                // $('#wallets-number').html(response.wallets.length);
-               })
-              //   response.wallet.each(function(wallet) {
-              //      console.log(wallet)
+        {% if not preferred_payout_address%}
+          $("[data-toggle=popover]").popover('show')
+        {% endif %}
 
-               
-              //  })
-            });
+        $("body").on('submit', '#form-wallets', function(e) {
+          e.preventDefault()
+          var data = $("#form-wallets").serializeArray();
+          data.push({'page': 2});
+          var postWallets = fetchData ( e.currentTarget.action,
+                                        e.currentTarget.method,
+                                        data
+                                      )
+
+          $.when( postWallets ).then( function ( response ){
+            var walletAddress = response.wallets[0]
+            var newAddress = new truncate(walletAddress)
+            $('#preferred-address').text(newAddress.elem);
+            $('#preferred-address').prop('title', walletAddress)
+            $('#kudos-section').html(response.kudos_html)
+
+            })
+        });
 
       });
 
-        
+
+      (function($) {
+        $(document).on('click','.load-more' ,function() {
+          var link = $(this);
+          var page = link.data('page');
+          var request = link.data('request')
+          $.ajax({
+            type: 'POST',
+            url: '/lazy_load_kudos/',
+            data: {
+              'page': page,
+              'request': request,
+              'csrfmiddlewaretoken': '{{csrf_token}}' // from index.html
+            },
+            success: function(data) {
+              // if there are still more pages to load,
+              // add 1 to the "Load More Posts" link's page data attribute
+              // else hide the link
+              if (data.has_next) {
+                  link.data('page', page+1);
+              } else {
+                link.hide();
+              }
+              // append html to the posts div
+              var elem = '#' + request
+              $(elem + ' div').first().append(data.kudos_html);
+            },
+            error: function(xhr, status, error) {
+              // shit happens friends!
+            }
+          });
+        });
+      }(jQuery));
 
     </script>
-    
+
   </body>
 </html>

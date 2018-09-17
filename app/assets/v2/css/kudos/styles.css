@@ -128,7 +128,7 @@
   .kd-card .img-thumbnail {
     width: 100%;
     padding: 1.25rem 2.14rem;
-    transition: all linear .1s; }
+    transition: all linear .15s; }
   .kd-card a:hover .img-thumbnail {
     border-color: #3e00ff;
     box-shadow: inset 0 0 0px 2px #3e00ff; }
@@ -152,7 +152,13 @@
 
 .kd-extended {
   background: #fff;
-  border-radius: .25rem; }
+  border-radius: .25rem;
+  height: 100%;
+  overflow: hidden; }
+  .kd-extended:hover, .kd-extended:active, .kd-extended:focus, .kd-extended:focus-within {
+    cursor: pointer; }
+    .kd-extended:hover .content-hover, .kd-extended:active .content-hover, .kd-extended:focus .content-hover, .kd-extended:focus-within .content-hover {
+      display: flex; }
   .kd-extended .img-thumbnail {
     padding: 2.25rem; }
   .kd-extended .kd-title {
@@ -164,6 +170,21 @@
   padding: 1.3rem 2rem; }
   .kd-content a {
     color: #3e00ff; }
+
+.content-hover {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: rgba(62, 0, 255, 0.8);
+  color: white;
+  padding: 1rem;
+  display: none;
+  overflow-y: auto;
+  flex-direction: column;
+  justify-content: space-between; }
+  .content-hover a {
+    color: white;
+    font-weight: 700; }
 
 .listing-kudo a {
   color: #43484d; }
@@ -415,5 +436,10 @@ a:hover #shape-hexagon {
 
 .text-featured {
   font-size: 36px; }
+
+.badge-kudos {
+  background-color: #F2F6F9;
+  color: #6184AC;
+  border-radius: 2px; }
 
 /*# sourceMappingURL=styles.css.map */
