@@ -75,9 +75,12 @@ textarea:read-only {
   justify-content: space-between;
 }
 
-#pricing-section .form__input,
+#pricing-section .form__input {
+  height: 2.75em;
+}
+
 #pricing-section .form__select2 {
-  height: 37px;
+  height: 2.25em;
 }
 
 #gitcoin-tip-section .form__amount-wrapper {
@@ -88,9 +91,12 @@ textarea:read-only {
   justify-content: space-between;
 }
 
-#gitcoin-tip-section .form__input,
+#gitcoin-tip-section .form__input {
+  height: 2.75em;
+}
+
 #gitcoin-tip-section .form__select2 {
-  height: 37px;
+  height: 2.25em;
 }
 
 #issue-details,
