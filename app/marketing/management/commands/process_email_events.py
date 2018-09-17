@@ -23,25 +23,39 @@ from marketing.models import EmailEvent, EmailSubscriber
 from retail.emails import ALL_EMAILS
 
 
+def num_total_bounces(email):
+        return EmailEvent.objects.filter(
+            event__in=['bounce'],
+            email__iexact=email,
+            ).count()
+
+
 class Command(BaseCommand):
 
     help = 'pulls any email events we need to manage and puts those emails on the suppression list'
 
     def handle(self, *args, **options):
+        hours = 24
+        bounce_threshold = 5
+        
         email_events = EmailEvent.objects.filter(
-            event__in=['spamreport','bounce'],
-            created_on__gt=timezone.now()-timezone.timedelta(hours=24)
+            event__in=['spamreport', 'bounce'],
+            created_on__gt=timezone.now()-timezone.timedelta(hours=hours)
             )
 
         for ee in email_events:
             print(ee)
             try:
-                es = EmailSubscriber.objects.filter(email=ee.email).first()
-                # auto unsubscribe
-                suppression_preferences = {ele[0]:True for ele in ALL_EMAILS}
-                es.preferences['suppression_preferences'] = suppression_preferences
-                es.form_submission_records += [f"auto unsubscribed all on {timezone.now()} because of email event {ee.pk} "]
-                es.save()
-                print(ee.pk, es.pk)
+                bounces = num_total_bounces(ee.email)
+
+                should_unsubscribe = bounces > bounce_threshold or ee.event == 'spamreport' 
+                if should_unsubscribe:
+                    es = EmailSubscriber.objects.filter(email=ee.email).first()
+                    # auto unsubscribe
+                    suppression_preferences = {ele[0]:True for ele in ALL_EMAILS}
+                    es.preferences['suppression_preferences'] = suppression_preferences
+                    es.form_submission_records += [f"auto unsubscribed all on {timezone.now()} because of email event {ee.pk} "]
+                    es.save()
+                    print(ee.pk, es.pk)
             except Exception as e:
                 print(e)

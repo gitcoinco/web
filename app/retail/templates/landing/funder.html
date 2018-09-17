@@ -29,10 +29,10 @@
     {% include 'shared/nav.html' %}
     <div id="landing_page_wrapper">
       <div class="container-fluid header">
-        {% include 'shared/hero.html' %}
-        <div class="row banner--green px-3 py-4 justify-content-center">
+        {% include 'landing/funder/hero.html' %}
+        <div class="row banner--green px-3 py-4 justify-content-center font-subheader">
           <p class="col-12 mb-2 white text-center">{% trans "DEVELOPERS! Looking for work on OSS Projects?" %}</p>
-          <div class="col-12 text-highlight-gc-purple font-body text-center">
+          <div class="col-12 text-highlight-gc-purple text-center">
             <a class="text-highlight-gc-purple" href="{% url "explorer" %}">{% trans "View Available Bounties" %}</a>
             |
             <a class="text-highlight-gc-purple" href="{% url "onboard" "contributor" %}">{% trans "Get Started with Gitcoin" %}</a>

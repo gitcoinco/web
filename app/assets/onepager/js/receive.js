@@ -124,7 +124,7 @@ $(document).ready(function() {
             var buffer = new BigNumber(0);
 
             gasLimit = new BigNumber(gasLimit);
-            var send_amount = amount_in_wei.minus(gasLimit.times(gas_price_wei)).minus(buffer);
+            var send_amount = balance.minus(gasLimit.times(gas_price_wei)).minus(buffer);
 
             rawTx['value'] = web3.toHex(send_amount.toString()); // deduct gas costs from amount to send
             rawTx['gasPrice'] = web3.toHex(gas_price_wei.toString());

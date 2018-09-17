@@ -19,8 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import json
 import logging
-import subprocess
-import time
 from json.decoder import JSONDecodeError
 
 from django.conf import settings
@@ -158,8 +156,8 @@ def get_ipfs(host=None, port=settings.IPFS_API_PORT):
 def ipfs_cat(key):
     try:
         # Attempt connecting to IPFS via Infura
-        response = ipfs_cat_requests(key)
-        if response:
+        response, status_code = ipfs_cat_requests(key)
+        if status_code == 200:
             return response
 
         # Attempt connecting to IPFS via hosted node
@@ -175,13 +173,19 @@ def ipfs_cat(key):
 def ipfs_cat_ipfsapi(key):
     ipfs = get_ipfs()
     if ipfs:
-        return ipfs.cat(key)
+        try:
+            return ipfs.cat(key)
+        except Exception:
+            return None
 
 
 def ipfs_cat_requests(key):
-    url = f'https://ipfs.infura.io:5001/api/v0/cat/{key}'
-    response = requests.get(url)
-    return response.text
+    try:
+        url = f'https://ipfs.infura.io:5001/api/v0/cat/{key}'
+        response = requests.get(url, timeout=1)
+        return response.text, response.status_code
+    except:
+        return None, 500
 
 
 def get_web3(network):
@@ -329,14 +333,15 @@ def get_bounty_id(issue_url, network):
     if bounty_id:
         return bounty_id
 
-    all_known_stdbounties = Bounty.objects.filter(web3_type='bounties_network', network=network).order_by('-standard_bounties_id')
+    all_known_stdbounties = Bounty.objects.filter(
+        web3_type='bounties_network',
+        network=network,
+    ).nocache().order_by('-standard_bounties_id')
 
-    methodology = 'start_from_web3_latest'
     try:
         highest_known_bounty_id = get_highest_known_bounty_id(network)
         bounty_id = get_bounty_id_from_web3(issue_url, network, highest_known_bounty_id, direction='down')
     except NoBountiesException:
-        methodology = 'start_from_db'
         last_known_bounty_id = 0
         if all_known_stdbounties.exists():
             last_known_bounty_id = all_known_stdbounties.first().standard_bounties_id
@@ -347,7 +352,11 @@ def get_bounty_id(issue_url, network):
 
 def get_bounty_id_from_db(issue_url, network):
     issue_url = normalize_url(issue_url)
-    bounties = Bounty.objects.filter(github_url=issue_url, network=network, web3_type='bounties_network').order_by('-standard_bounties_id')
+    bounties = Bounty.objects.filter(
+        github_url=issue_url,
+        network=network,
+        web3_type='bounties_network',
+    ).nocache().order_by('-standard_bounties_id')
     if not bounties.exists():
         return None
     return bounties.first().standard_bounties_id
@@ -363,7 +372,6 @@ def get_highest_known_bounty_id(network):
 
 def get_bounty_id_from_web3(issue_url, network, start_bounty_id, direction='up'):
     issue_url = normalize_url(issue_url)
-    web3 = get_web3(network)
 
     # iterate through all the bounties
     bounty_enum = start_bounty_id
@@ -450,7 +458,7 @@ def record_user_action_on_interest(interest, event_name, last_heard_from_user_da
 
 
 def get_context(ref_object=None, github_username='', user=None, confirm_time_minutes_target=4,
-                confirm_time_slow=90, confirm_time_avg=30, confirm_time_fast=1, active='',
+                confirm_time_slow=120, confirm_time_avg=15, confirm_time_fast=1, active='',
                 title='', update=None):
     """Get the context dictionary for use in view."""
     context = {

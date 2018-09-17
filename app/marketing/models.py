@@ -1,21 +1,22 @@
 # -*- coding: utf-8 -*-
-'''
-    Copyright (C) 2017 Gitcoin Core
+"""Define the marketing models and related logic.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Copyright (C) 2018 Gitcoin Core
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-'''
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
 from __future__ import unicode_literals
 
 from secrets import token_hex
@@ -61,7 +62,6 @@ class EmailSubscriber(SuperModel):
         null=True)
     form_submission_records = JSONField(default=list, blank=True)
 
-
     def __str__(self):
         return self.email
 
@@ -76,8 +76,10 @@ class EmailSubscriber(SuperModel):
         should_suppress = self.preferences.get('suppression_preferences', {}).get(email_type, False)
         return not should_suppress
 
-    def build_email_preferences(self, form={}):
+    def build_email_preferences(self, form=None):
         from retail.emails import ALL_EMAILS, TRANSACTIONAL_EMAILS, MARKETING_EMAILS
+        if form is None:
+            form = {}
 
         suppression_preferences = self.preferences.get('suppression_preferences', {})
 
@@ -152,26 +154,47 @@ class Stat(SuperModel):
     @property
     def val_since_yesterday(self):
         try:
-            return self.val - Stat.objects.filter(key=self.key, created_on__lt=self.created_on, created_on__hour=self.created_on.hour).order_by('-created_on').first().val
+            return self.val - Stat.objects.filter(
+                key=self.key, created_on__lt=self.created_on, created_on__hour=self.created_on.hour
+            ).order_by('-created_on').first().val
         except Exception:
             return 0
 
     @property
     def val_since_hour(self):
         try:
-            return self.val - Stat.objects.filter(key=self.key, created_on__lt=self.created_on).order_by('-created_on').first().val
+            return self.val - Stat.objects.filter(
+                key=self.key, created_on__lt=self.created_on
+            ).order_by('-created_on').first().val
         except Exception:
             return 0
 
 
-class LeaderboardRank(SuperModel):
+class LeaderboardRankQuerySet(models.QuerySet):
+    """Handle the manager queryset for Leaderboard Ranks."""
 
+    def active(self):
+        """Filter results to only active LeaderboardRank objects."""
+        return self.select_related('profile', 'profile__avatar').filter(active=True)
+
+
+class LeaderboardRank(SuperModel):
+    """Define the Leaderboard Rank model."""
+
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='leaderboard_ranks',
+    )
     github_username = models.CharField(max_length=255)
     leaderboard = models.CharField(max_length=255)
     amount = models.FloatField()
     active = models.BooleanField()
     count = models.IntegerField(default=0)
     rank = models.IntegerField(default=0)
+
+    objects = LeaderboardRankQuerySet.as_manager()
 
     def __str__(self):
         return f"{self.leaderboard}, {self.github_username}: {self.amount}"
@@ -181,8 +204,26 @@ class LeaderboardRank(SuperModel):
         return f"https://github.com/{self.github_username}"
 
     @property
+    def is_user_based(self):
+        return '_tokens' not in self.leaderboard and '_keywords' not in self.leaderboard
+
+    @property
+    def at_ify_username(self):
+        if self.is_user_based:
+            return f"@{self.github_username}"
+        return self.github_username
+
+    @property
     def avatar_url(self):
-        return f"/static/avatar/{self.github_username}"
+        if self.profile and self.profile.avatar:
+            return self.profile.avatar.get_avatar_url()
+        key = self.github_username
+
+        # these two types won't have images
+        if not self.is_user_based:
+            key = 'None'
+
+        return f"/dynamic/avatar/{key}"
 
 
 class Match(SuperModel):
@@ -252,6 +293,7 @@ class EmailEvent(SuperModel):
 
     email = models.EmailField(max_length=255, db_index=True)
     event = models.CharField(max_length=255, db_index=True)
+    category = models.CharField(max_length=255, db_index=True, blank=True, default='')
     ip_address = models.GenericIPAddressField(default=None, null=True)
 
     def __str__(self):
@@ -263,3 +305,6 @@ class EmailSupressionList(SuperModel):
     email = models.EmailField(max_length=255)
     metadata = JSONField(default=dict, blank=True)
     comments = models.TextField(max_length=5000, blank=True)
+
+    def __str__(self):
+        return f"{self.email}"

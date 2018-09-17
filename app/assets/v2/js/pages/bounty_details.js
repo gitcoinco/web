@@ -1,7 +1,12 @@
 /* eslint block-scoped-var: "warn" */
 /* eslint no-redeclare: "warn" */
+/* eslint no-loop-func: "warn" */
 
-var _truthy = function(val) {
+const normalizeAmount = function(amount, decimals) {
+  return Math.round(amount * 10 ** decimals) / 10 ** decimals;
+};
+
+const _truthy = function(val) {
   if (!val || val == '0x0000000000000000000000000000000000000000') {
     return false;
   }
@@ -112,7 +117,7 @@ var callbacks = {
     var username = result['bounty_owner_github_username'] ? result['bounty_owner_github_username'] : 'Self';
 
     return [ 'issuer_avatar_url', '<a href="/profile/' + result['bounty_owner_github_username'] +
-      '"><img class=avatar src="/funding/avatar?repo=https://github.com/' + username + '"></a>' ];
+      '"><img class=avatar src="/dynamic/avatar/' + username + '"></a>' ];
   },
   'status': function(key, val, result) {
     var ui_status = val;
@@ -145,7 +150,9 @@ var callbacks = {
     return [ 'status', ui_status ];
   },
   'issue_description': function(key, val, result) {
-    var converter = new showdown.Converter();
+    var converter = new showdown.Converter({
+      simplifiedAutoLink: true
+    });
 
     ui_body = sanitize(converter.makeHtml(val));
     return [ 'issue_description', ui_body ];
@@ -219,26 +226,55 @@ var callbacks = {
       $('.additional_funding_summary').addClass('hidden');
       return [ 'additional_funding_summary', '' ];
     }
-    var usd_value = val['usd_value'];
-    var tokens = val['tokens'];
-    var decimals = 3;
+    const usd_value = val['usd_value'];
+    const tokens = val['tokens'];
+    const decimals = 3;
 
-    var ui_elements = [];
+    let crowdfunded_tokens = [];
+    let tooltip_info = [];
 
-    for (var token in tokens) {
-      if (token) {
-        var val = tokens[token];
+    crowdfunded_tokens.push({
+      amount: token_value_to_display(result['value_in_token'], decimals),
+      token: result['token_name']
+    });
 
-        ui_elements.push(Math.round(val * 10 ** decimals) / 10 ** decimals + ' ' + token);
-      }
-    }
-    var str = '+ ' + ui_elements.join(', ') + ' in crowdfunding';
+    tooltip_info.push('<p class="font-weight-bold m-0 pb-1" style="color:#775EC7;">Intial : ' +
+      $('#value_in_token').html() + '</p>');
 
     if (usd_value) {
-      str += ' worth $' + usd_value;
+      tooltip_info.push('<p class="m-0" style="margin-top: 3px;">Crowdfunding worth $' + usd_value + '</p>');
+      $('#value_in_usdt').html(parseFloat(result['value_in_usdt']) + usd_value);
+    }
+  
+    for (var token in tokens) {
+      if (token) {
+        const val = tokens[token];
+        const funding = normalizeAmount(val, decimals);
+
+        if (crowdfunded_tokens.filter(fund => fund.token === token).length > 0) {
+          crowdfunded_tokens.map((fund, index) => {
+            if (fund.token === token) {
+              crowdfunded_tokens[index].amount += funding;
+            }
+          });
+        } else {
+          crowdfunded_tokens.push({
+            amount: funding,
+            token: token
+          });
+        }
+        const template = '<p class="m-0" style="color:#fb9470">+' + funding + ' ' + token + ' in crowdfunding</p>';
+
+        tooltip_info.push(template);
+      }
     }
 
-    $('.additional_funding_summary  p').html(str);
+    const token_tag = crowdfunded_tokens.map(fund => fund.amount + ' ' + fund.token);
+
+    $('#value_in_token').html('<i class="fas fa-users mr-2"></i>' +
+      token_tag.join(' <i class="fas fa-plus mx-1" style="font-size: 0.5rem; position: relative; top: -1px;"></i> '));
+    $('#value_in_token').attr('title', '<div class="tooltip-info tooltip-sm">' + tooltip_info.join('') + '</div>');
+
     return [ 'additional_funding_summary', val ];
   },
   'token_value_time_peg': function(key, val, result) {
@@ -304,11 +340,11 @@ var callbacks = {
         var name = (position == interested.length - 1) ?
           _interested.profile.handle : _interested.profile.handle.concat(',');
 
-        started.push(profileHtml(_interested.profile.handle, name));
+        if (!_interested.pending)
+          started.push(profileHtml(_interested.profile.handle, name));
       });
-      if (started.length == 0) {
+      if (started.length == 0)
         started.push('<i class="fas fa-minus"></i>');
-      }
     }
     return [ 'started_owners_username', started ];
   },
@@ -332,20 +368,13 @@ var callbacks = {
   },
   'fulfilled_owners_username': function(key, val, result) {
     var accepted = [];
-    var accepted_fufillments = [];
 
-    if (result.fulfillments) {
-      var fulfillments = result.fulfillments;
-
-      fulfillments.forEach(function(fufillment) {
-        if (fufillment.accepted == true)
-          accepted_fufillments.push(fufillment.fulfiller_github_username);
-      });
-      if (accepted_fufillments.length == 0) {
+    if (result.paid) {
+      if (result.paid.length == 0) {
         accepted.push('<i class="fas fa-minus"></i>');
       } else {
-        accepted_fufillments.forEach((github_username, position) => {
-          var name = (position == accepted_fufillments.length - 1) ?
+        result.paid.forEach((github_username, position) => {
+          var name = (position == result.paid.length - 1) ?
             github_username : github_username.concat(',');
 
           accepted.push(profileHtml(github_username, name));
@@ -445,7 +474,6 @@ waitforWeb3(function() {
 
   }, 500);
 });
-
 
 var wait_for_tx_to_mine_and_then_ping_server = function() {
   console.log('checking for updates');
@@ -672,6 +700,19 @@ var build_detail_page = function(result) {
   result['title'] = result['title'] ? result['title'] : result['github_url'];
   $('.title').html(gettext('Funded Issue Details: ') + result['title']);
 
+  // funded by
+  if (isBountyOwnerPerLogin(result) && !isBountyOwner(result)) {
+    $('#funder_notif_info').html(gettext('Funder Address: ') +
+      '<span id="bounty_funded_by">' + result['bounty_owner_address'] + '</span>');
+    $('#funder_notif_info').append('\
+        <span class="bounty-notification ml-2">\
+        <i class="far fa-bell"></i>\
+        Ready to Pay? Set Your Metamask to this address!\
+        <img src="' + static_url + 'v2/images/metamask.svg">\
+      </span>'
+    );
+  }
+
   // insert table onto page
   for (var j = 0; j < rows.length; j++) {
     var key = rows[j];
@@ -697,6 +738,10 @@ var build_detail_page = function(result) {
     }
   }
 
+  $('body').delegate('#bounty_details .button.disabled', 'click', function(e) {
+    e.preventDefault();
+  });
+
   $('#bounty_details #issue_description img').on('click', function() {
 
     var content = $.parseHTML(
@@ -719,10 +764,25 @@ const is_current_user_interested = function(result) {
   return !!(result.interested || []).find(interest => interest.profile.handle == document.contxt.github_handle);
 };
 
+const is_current_user_approved = function(result) {
+  const needs_approval = result['permission_type'] === 'approval';
+  const interested = result.interested || [];
+  let len = interested.length;
+
+  while (len--) {
+    const interest = interested[len];
+    const handle = interest.profile ? interest.profile.handle : '';
+
+    if (handle && handle === document.contxt.github_handle) {
+      return needs_approval ? interest.pending === false : true;
+    }
+  }
+
+  return false;
+};
+
 var do_actions = function(result) {
-  // helper vars
   var is_legacy = result['web3_type'] == 'legacy_gitcoin';
-  // var is_date_expired = (new Date(result['now']) > new Date(result['expires_date']));
   var is_status_expired = result['status'] == 'expired';
   var is_status_done = result['status'] == 'done';
   var is_status_cancelled = result['status'] == 'cancelled';
@@ -734,26 +794,27 @@ var do_actions = function(result) {
   // Find interest information
   const is_interested = is_current_user_interested(result);
 
+  const has_fulfilled = result['fulfillments'].filter(fulfiller => fulfiller.fulfiller_github_username === document.contxt['github_handle']).length > 0;
+
   document.interested = is_interested;
 
+  const current_user_is_approved = is_current_user_approved(result);
   // which actions should we show?
   const should_block_from_starting_work = !is_interested && result['project_type'] == 'traditional' && (result['status'] == 'started' || result['status'] == 'submitted');
   let show_start_stop_work = is_still_on_happy_path && !should_block_from_starting_work && is_open;
   let show_github_link = result['github_url'].substring(0, 4) == 'http';
-  let show_submit_work = is_open;
-  let show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
+  let show_submit_work = is_open && !has_fulfilled;
+  let show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled && isBountyOwner(result);
   let show_job_description = result['attached_job_description'] && result['attached_job_description'].startsWith('http');
   const show_increase_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
-  const kill_bounty_enabled = isBountyOwner(result);
-  const submit_work_enabled = !isBountyOwner(result);
-  const start_stop_work_enabled = !isBountyOwner(result);
-  const increase_bounty_enabled = isBountyOwner(result);
-  let show_accept_submission = isBountyOwner(result) && !is_status_expired && !is_status_done;
-  let show_advanced_payout = isBountyOwner(result) && !is_status_expired && !is_status_done;
+  const submit_work_enabled = !isBountyOwner(result) && current_user_is_approved;
+  let show_payout = !is_status_expired && !is_status_done && isBountyOwner(result);
   let show_extend_deadline = isBountyOwner(result) && !is_status_expired && !is_status_done;
+  let show_invoice = isBountyOwner(result);
   const show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
   const show_admin_methods = document.isStaff;
   const show_moderator_methods = document.isModerator;
+  const show_change_bounty = is_still_on_happy_path && (isBountyOwner(result) || show_admin_methods);
 
   if (is_legacy) {
     show_start_stop_work = false;
@@ -782,7 +843,7 @@ var do_actions = function(result) {
   }
 
   if (show_start_stop_work) {
-    const enabled = start_stop_work_enabled;
+    const enabled = true;
     const interest_entry = {
       enabled: enabled,
       href: is_interested ? '/uninterested' : '/interested',
@@ -797,20 +858,21 @@ var do_actions = function(result) {
   }
 
   if (show_kill_bounty) {
-    const enabled = kill_bounty_enabled;
+    const enabled = isBountyOwner(result);
     const _entry = {
       enabled: enabled,
       href: result['action_urls']['cancel'],
       text: gettext('Cancel Bounty'),
       parent: 'right_actions',
-      title: gettext('Cancel bounty and reclaim funds for this issue')
+      title: gettext('Cancel bounty and reclaim funds for this issue'),
+      buttonclass: 'button--warning'
     };
 
     actions.push(_entry);
   }
 
-  if (show_advanced_payout) {
-    const enabled = show_advanced_payout;
+  if (show_payout) {
+    const enabled = isBountyOwner(result);
     const _entry = {
       enabled: enabled,
       href: result['action_urls']['payout'],
@@ -849,6 +911,30 @@ var do_actions = function(result) {
     actions.push(_entry);
   }
 
+  if (show_invoice) {
+    const _entry = {
+      enabled: true,
+      href: result['action_urls']['invoice'],
+      text: gettext('Show Invoice'),
+      parent: 'right_actions',
+      title: gettext('View an Invoice for this Issue')
+    };
+
+    actions.push(_entry);
+  }
+
+  if (show_change_bounty) {
+    const _entry = {
+      enabled: true,
+      href: '/bounty/change/' + result['pk'],
+      text: gettext('Edit Issue Details'),
+      parent: 'right_actions',
+      title: gettext('Update your Bounty Settings to get the right Crowd')
+    };
+
+    actions.push(_entry);
+  }
+
   if (show_github_link) {
     let github_url = result['github_url'];
     // hack to get around the renamed repo for piper's work.  can't change the data layer since blockchain is immutable
@@ -859,7 +945,8 @@ var do_actions = function(result) {
     const _entry = {
       enabled: true,
       href: github_url,
-      text: gettext('View On Github'),
+      text: gettext('View On Github') +
+            (result['is_issue_closed'] ? gettext(' (Issue is closed)') : ''),
       parent: 'right_actions',
       title: gettext('View issue details and comments on Github'),
       comments: result['github_comments'],
@@ -894,7 +981,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('Suspend Auto Approval'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty'),
       color: 'white',
       buttonclass: 'admin-only'
@@ -911,7 +998,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('Hide Bounty'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('Hides Bounty from Active Bounties'),
       color: 'white',
       buttonclass: 'admin-only'
@@ -928,7 +1015,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('Toggle Remarket Ready'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('Sets Remarket Ready if not already remarket ready.  Unsets it if already remarket ready.'),
       color: 'white',
       buttonclass: 'admin-only'
@@ -945,7 +1032,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('Mark as Reviewed'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('Marks the bounty activity as reviewed.'),
       color: 'white',
       buttonclass: 'admin-only'
@@ -961,7 +1048,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('Contact Funder'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('Contact Funder via Email'),
       color: 'white',
       buttonclass: 'admin-only contact_bounty_hunter'
@@ -977,7 +1064,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('Snooze Gitcoinbot'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('Snooze Gitcoinbot reminders'),
       color: 'white',
       buttonclass: 'admin-only snooze_gitcoin_bot'
@@ -993,7 +1080,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('Override Status'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('Override Status with a status of your choosing'),
       color: 'white',
       buttonclass: 'admin-only admin_override_satatus'
@@ -1009,7 +1096,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('View in Admin'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('View in Admin'),
       color: 'white',
       buttonclass: 'admin-only'
@@ -1103,7 +1190,8 @@ const process_activities = function(result, bounty_activities) {
     bounty_abandonment_warning: gettext('Warned for Abandonment of Bounty'),
     bounty_removed_slashed_by_staff: gettext('Dinged and Removed from Bounty by Staff'),
     bounty_removed_by_staff: gettext('Removed from Bounty by Staff'),
-    bounty_removed_by_funder: gettext('Removed from Bounty by Funder')
+    bounty_removed_by_funder: gettext('Removed from Bounty by Funder'),
+    bounty_changed: gettext('Bounty Details Changed')
   };
 
   const now = new Date(result['now']);
@@ -1224,6 +1312,17 @@ const is_bounty_expired = function(bounty) {
 };
 
 var main = function() {
+  const moderatorAndAdminActions = $('#moderator-admin-actions');
+  const scrollHeight = 150;
+
+  $(window).scroll(RAFThrottle(() => {
+    if (window.scrollY > scrollHeight) {
+      moderatorAndAdminActions.addClass('sticky');
+    } else {
+      moderatorAndAdminActions.removeClass('sticky');
+    }
+  }));
+
   setTimeout(function() {
     // setup
     attach_work_actions();

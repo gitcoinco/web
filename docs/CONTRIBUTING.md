@@ -8,6 +8,7 @@ We welcome all contributions from folks who are willing to work in good faith
 with the community. No contribution is too small and all contributions are
 valued.
 
+* [Monetization Policy](#monetization-policy)
 * [Code of Conduct](#code-of-conduct)
 * [Issues](#issues)
 * [Discussions And General Help](#discussions-and-general-help)
@@ -18,6 +19,27 @@ valued.
   * [Step 4: Commit](#step-4-commit)
   * [Step 5: Rebase](#step-5-rebase)
   * [Step 6: PRs](#step-6-prs)
+* [Python](#python)
+  * [Docstrings](#docstrings)
+    * [Classes](#classes)
+    * [Methods](#methods)
+    * [Example](#example)
+  * [Additional Resources](#additional-resources)
+* [FAQ](#faq)
+  * [Contributing Static Assets](#contributing-static-assets)
+
+## Monetization Policy
+
+This repo uses [Gitcoin](https://gitcoin.co) to incentivize contributions from contributors all around the world.
+
+We believe that properly incentivizing Open Source Software means providing funding to support contributors, but we also recognize the dangerous precedent that is set when contributors who have been contributing for intrinsic reasons begin to expect extrinsic rewards for their contributions.  
+
+Gitcoin has written about this, in the abstract, [here](https://medium.com/gitcoin/building-a-platform-that-maximizes-freedom-1149968a7b05). Tangibly, our *monetary policy* is:
+
+1. Our mission is to "Grow Open Source".  [Read More about our Mission here](https://gitcoin.co/mission).
+2. We believe that contributors should contribute for intrinsic reasons first (see mission statement above), and we hereby provide notice that we will not be able to fund all contributions.  Appreciate it if and when a Tip comes! 
+3. Scope that is explicitly funded upfront will be posted to the Github Issue by [@gitcoinbot](https://github.com/gitcoinbot), and will also be posted to the [Gitcoin Issue Explorer](https://gitcoin.co/explorer). 
+
 
 ## Code of Conduct
 
@@ -73,6 +95,7 @@ User facing copy / text should be run through [Django Translation Framework](htt
 3. each of the `views.py` user-facing pieces of copy are in `gettext_lazy` fields
 4. each of the models `help_text`s are internationalized
 5. as are all the emails in `marketing/mails.py`
+6. run `make autotranslate` or a combination of the necessary `./manage.py makemessages` and `./manage.py compilemessages` commands.
 
 Take a look at `/styleguide-alpha` (ui_inventory.html), for a quick reference of user interface components.
 If you are contributing user-facing assets, interface components or other relevant visuals,
@@ -169,6 +192,119 @@ Please ensure that your pull request follows all of the community guidelines to 
 * If the PR modifies the frontend in any way, please attach screenshots and/or GIFs of all purposeful changes (before and after screens are recommended)
 * The PR passes all CI checks, to include Stickler, codecov, and Travis.
 
+## Python
+
+### Docstrings
+
+Gitcoin attempts to adhere to [PEP-257](https://www.python.org/dev/peps/pep-0257/) while employing the [Google Python Style Guide](https://github.com/google/styleguide/blob/gh-pages/pyguide.md#38-comments-and-docstrings) approach to docstring formatting.
+
+#### Classes
+
+```python
+class Gitcoin:
+    """Define the overall Gitcoin object.
+
+    Attributes:
+        repo (str): The Gitcoin repository.
+
+    """
+
+    repo = 'gitcoinco/web'
+
+```
+
+#### Methods
+
+```python
+def foo(bar='bar'):
+    """Handle string concatenation of the provided suffix.
+
+    Args:
+      bar (str): The foo suffix. Defaults to: bar.
+
+    Attributes:
+      foobar (str): The foo string concatentated with the provided bar variable.
+
+    Returns:
+      str: The concatenated string.
+
+    """
+    foobar = f'foo{bar}'
+    return foobar
+```
+
+#### Example
+
+```python
+from __future__ import braces
+
+
+class Example:
+    """Define the overall Example object."""
+
+    # Class attributes.
+    repo = 'gitcoinco/web'
+    known_dances = ['tango']
+
+    def example(self):
+        """Some Example.example class method docstring.
+
+        Returns:
+            bool: Whether or not the Example performs the specified dance.
+
+        """
+        return 'example'
+
+    def example2(self):
+        """Some Example.example2 class method docstring.
+
+        Attributes:
+            var (str): The example2 variable.
+
+        """
+        var = 'example2'
+
+def can_dance(example, dance='tango'):
+    """Handle determining whether or not Example can perform the provided dance.
+
+    Args:
+        dingo (dashboard.Example): The Example object.
+        dance (str): The dance type.  Defaults to: tango.
+
+    Returns:
+        bool: Whether or not the Example performs the specified dance.
+
+    """
+    return dance in example.known_dances
+
+
+def example3(self):
+    """Some example3 method docstring.
+
+    Attributes:
+        var (str): The example3 variable.
+
+    Returns:
+        str: The example var text.
+
+    """
+    var = 'example3'
+    return var
+```
+
+### Additional Resources
+
+We either strongly employ or encourage the review and implementation of the following resources:
+
+* [Python Style Guide: PEP-8](https://www.python.org/dev/peps/pep-0008/)
+* [The Zen of Python: PEP-20](https://www.python.org/dev/peps/pep-0020/)
+* [Docstrings: PEP-257](https://www.python.org/dev/peps/pep-0257/)
+* [Docutils: PEP-258](https://www.python.org/dev/peps/pep-0258/)
+* [f-strings: PEP-498](https://www.python.org/dev/peps/pep-0498/)
+* [Google Python Style Guide](https://github.com/google/styleguide/blob/gh-pages/pyguide.md)
+* [Hitchhiker's Guide to Python](http://docs.python-guide.org/)
+* [Django Documentation](https://docs.djangoproject.com/)
+
 ## FAQ
 
 ### Contributing Static Assets
@@ -176,8 +312,8 @@ Please ensure that your pull request follows all of the community guidelines to 
 Note: Please remember to optimize/compress your image assets via: `make compress-images` (Requires: jpeq-recompress, optipng, and svgo in `PATH`)
 You can install the necessary binaries via:
 
-- `npm install -g jpeg-recompress-bin pngquant-bin svgo`
-- `brew install optipng`
+* `npm install -g jpeg-recompress-bin pngquant-bin svgo`
+* `brew install optipng`
 
 Q: `I need to add static assets...  Where to I put them?`
 

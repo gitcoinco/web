@@ -1,6 +1,6 @@
 /* eslint-disable no-loop-func */
 
-var sidebar_keys = [
+var filters = [
   'experience_level',
   'project_length',
   'bounty_type',
@@ -8,7 +8,6 @@ var sidebar_keys = [
   'moderation_filter',
   'network',
   'idx_status',
-  'tech_stack',
   'project_type',
   'permission_type',
   'misc'
@@ -46,22 +45,57 @@ function debounce(func, wait, immediate) {
   };
 }
 
-// sets search information default
+/**
+ * Fetches all filters options from the URI
+ */
+var getActiveFilters = function() {
+
+  if (window.location.search) {
+    resetFilters();
+  }
+  let _filters = filters.slice();
+
+  _filters.push('keywords', 'order_by');
+  _filters.forEach(filter => {
+    if (getParam(filter)) {
+      localStorage[filter] = getParam(filter).replace(/^,|,\s*$/g, '');
+    }
+  });
+};
+
+/**
+ * Build URI based on selected filter
+ */
+var buildURI = function() {
+  let uri = '';
+  let _filters = filters.slice();
+
+  _filters.push('keywords', 'order_by');
+  _filters.forEach((filter) => {
+    if (localStorage[filter] &&
+      localStorage[filter] != 'any') {
+      uri += (filter + '=' + localStorage[filter] + '&');
+    }
+  });
+
+  return uri.slice(0, -1);
+};
+
+/**
+ * Updates localStorage with selected filters
+ */
 var save_sidebar_latest = function() {
   localStorage['order_by'] = $('#sort_option').val();
 
-  for (var i = 0; i < sidebar_keys.length; i++) {
-    var key = sidebar_keys[i];
+  filters.forEach((filter) => {
+    localStorage[filter] = '';
 
-    localStorage[key] = '';
-
-    $('input[name="' + key + '"]:checked').each(function() {
-      localStorage[key] += $(this).val() + ',';
+    $('input[name="' + filter + '"]:checked').each(function() {
+      localStorage[filter] += $(this).val() + ',';
     });
 
-    // Removing the start and last comma to avoid empty element when splitting with comma
-    localStorage[key] = localStorage[key].replace(/^,|,\s*$/g, '');
-  }
+    localStorage[filter] = localStorage[filter].replace(/^,|,\s*$/g, '');
+  });
 };
 
 // saves search information default
@@ -82,27 +116,25 @@ var set_sidebar_defaults = function() {
     } else {
       localStorage['keywords'] = keywords;
     }
-
-    window.history.replaceState(history.state, 'Issue Explorer | Gitcoin', '/explorer');
   }
+
+  getActiveFilters();
 
   if (localStorage['order_by']) {
     $('#sort_option').val(localStorage['order_by']);
     $('#sort_option').selectmenu().selectmenu('refresh');
   }
 
-  for (var i = 0; i < sidebar_keys.length; i++) {
-    var key = sidebar_keys[i];
-
-    if (localStorage[key]) {
-      localStorage[key].split(',').forEach(function(v, k) {
-        $('input[name="' + key + '"][value="' + v + '"]').prop('checked', true);
+  filters.forEach((filter) => {
+    if (localStorage[filter]) {
+      localStorage[filter].split(',').forEach(function(val) {
+        $('input[name="' + filter + '"][value="' + val + '"]').prop('checked', true);
       });
 
-      if ($('input[name="' + key + '"][value!=any]:checked').length > 0)
-        $('input[name="' + key + '"][value=any]').prop('checked', false);
+      if ($('input[name="' + filter + '"][value!=any]:checked').length > 0)
+        $('input[name="' + filter + '"][value=any]').prop('checked', false);
     }
-  }
+  });
 };
 
 var set_filter_header = function() {
@@ -155,16 +187,14 @@ var addTechStackKeywordFilters = function(value) {
 var getFilters = function() {
   var _filters = [];
 
-  for (var i = 0; i < sidebar_keys.length; i++) {
-    var key = sidebar_keys[i];
-
-    $.each($('input[name="' + key + '"]:checked'), function() {
+  filters.forEach((filter) => {
+    $.each($('input[name="' + filter + '"]:checked'), function() {
       if ($(this).attr('val-ui')) {
-        _filters.push('<a class="filter-tag ' + key + '"><span>' + $(this).attr('val-ui') + '</span>' +
-          '<i class="fas fa-times" onclick="removeFilter(\'' + key + '\', \'' + $(this).attr('value') + '\')"></i></a>');
+        _filters.push('<a class="filter-tag ' + filter + '"><span>' + $(this).attr('val-ui') + '</span>' +
+          '<i class="fas fa-times" onclick="removeFilter(\'' + filter + '\', \'' + $(this).attr('value') + '\')"></i></a>');
       }
     });
-  }
+  });
 
   if (localStorage['keywords']) {
     localStorage['keywords'].split(',').forEach(function(v, k) {
@@ -194,19 +224,18 @@ var get_search_URI = function(offset) {
   var uri = '/api/v0.1/bounties/?';
   var keywords = '';
 
-  for (var i = 0; i < sidebar_keys.length; i++) {
-    var key = sidebar_keys[i];
-    var filters = [];
+  filters.forEach((filter) => {
+    var active_filters = [];
 
-    $.each ($('input[name="' + key + '"]:checked'), function() {
+    $.each ($('input[name="' + filter + '"]:checked'), function() {
       if ($(this).val()) {
-        filters.push($(this).val());
+        active_filters.push($(this).val());
       }
     });
 
-    var val = filters.toString();
+    var val = active_filters.toString();
 
-    if ((key === 'bounty_filter') && val) {
+    if ((filter === 'bounty_filter') && val) {
       var values = val.split(',');
 
       values.forEach(function(_value) {
@@ -232,19 +261,19 @@ var get_search_URI = function(offset) {
 
       // TODO: Check if value myself is needed for coinbase
       if (val === 'fulfilledByMe') {
-        key = 'bounty_owner_address';
+        filter = 'bounty_owner_address';
         val = 'myself';
       }
     }
 
     if (val && val !== 'any' &&
-        key !== 'bounty_filter' &&
-        key !== 'bounty_owner_address') {
+      filter !== 'bounty_filter' &&
+      filter !== 'bounty_owner_address') {
       if (!uri.endsWith('?'))
         uri += '&';
-      uri += key + '=' + val;
+      uri += filter + '=' + val;
     }
-  }
+  });
 
   if (localStorage['keywords']) {
     localStorage['keywords'].split(',').forEach(function(v, pos, arr) {
@@ -301,7 +330,7 @@ var process_stats = function(results) {
   if (show_stats) {
     worth_usdt = worth_usdt.toFixed(2);
     worth_eth = (worth_eth / Math.pow(10, 18)).toFixed(2);
-      
+
     var stats = worth_usdt + ' USD, ' + worth_eth + ' ETH';
 
     for (var t in currencies_to_value) {
@@ -343,7 +372,7 @@ var trigger_scroll = debounce(function() {
   var get_more = !have_painted_all_bounties && ((last_active_bounty.offset().top) < (scrollPos + buffer + window_height));
 
   if (get_more && !document.done_loading_results) {
-    
+
     // move loading indicator
     var loading_html = $('.loading_img').clone().wrap('<p>').parent().html();
 
@@ -381,6 +410,8 @@ var refreshBounties = function(event, offset, append) {
   toggleAny(event);
   getFilters();
 
+  window.history.pushState('', '', '/explorer?' + buildURI());
+
   if (!append) {
     $('.nonefound').css('display', 'none');
     $('.loading').css('display', 'block');
@@ -390,11 +421,9 @@ var refreshBounties = function(event, offset, append) {
   var uri = get_search_URI(offset);
 
   // analytics
-  var params = { uri: uri };
+  mixpanel.track('Refresh Bounties', { uri: uri });
 
-  mixpanel.track('Refresh Bounties', params);
-
-  // order
+  // Abort pending request if any subsequent request
   if (explorer.bounties_request && explorer.bounties_request.readyState !== 4) {
     explorer.bounties_request.abort();
   }
@@ -516,13 +545,6 @@ window.addEventListener('load', function() {
   refreshBounties(null, 0, false);
 });
 
-var getNextDayOfWeek = function(date, dayOfWeek) {
-  var resultDate = new Date(date.getTime());
-
-  resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay() - 1) % 7 + 1);
-  return resultDate;
-};
-
 function getURLParams(k) {
   var p = {};
 
@@ -532,20 +554,23 @@ function getURLParams(k) {
   return k ? p[k] : p;
 }
 
-var resetFilters = function() {
-  for (var i = 0; i < sidebar_keys.length; i++) {
-    var key = sidebar_keys[i];
-    var tag = ($('input[name="' + key + '"][value]'));
+/**
+ * removed all filters from the sidebar search
+ * resetKeyword : boolean
+ */
+var resetFilters = function(resetKeyword) {
+  filters.forEach((filter) => {
+    var tag = ($('input[name="' + filter + '"][value]'));
 
     for (var j = 0; j < tag.length; j++) {
       if (tag[j].value == 'any')
-        $('input[name="' + key + '"][value="any"]').prop('checked', true);
+        $('input[name="' + filter + '"][value="any"]').prop('checked', true);
       else
-        $('input[name="' + key + '"][value="' + tag[j].value + '"]').prop('checked', false);
+        $('input[name="' + filter + '"][value="' + tag[j].value + '"]').prop('checked', false);
     }
-  }
+  });
 
-  if (localStorage['keywords']) {
+  if (resetKeyword && localStorage['keywords']) {
     localStorage['keywords'].split(',').forEach(function(v, k) {
       removeFilter('keywords', v);
     });
@@ -558,7 +583,7 @@ var resetFilters = function() {
     $('#dashboard-title').addClass('hidden');
     $('#onboard-dashboard').removeClass('hidden');
     $('#onboard-footer').removeClass('hidden');
-    resetFilters();
+    resetFilters(true);
     $('input[name=idx_status][value=open]').prop('checked', true);
     $('.search-area input[type=text]').text(getURLParams('q'));
 
@@ -666,7 +691,7 @@ $(document).ready(function() {
   // sidebar clear
   $('.dashboard #clear').click(function(e) {
     e.preventDefault();
-    resetFilters();
+    resetFilters(true);
     reset_offset();
     refreshBounties(null, 0, false);
   });
@@ -697,58 +722,6 @@ $(document).ready(function() {
   $('.sidebar_search input[type=checkbox], .sidebar_search label').change(function(e) {
     reset_offset();
     refreshBounties(e, 0, false);
-    e.preventDefault();
-  });
-
-  // email subscribe functionality
-  $('.save_search').click(function(e) {
-    e.preventDefault();
-    $('#save').remove();
-    var url = '/sync/search_save';
-
-    setTimeout(function() {
-      $.get(url, function(newHTML) {
-        $(newHTML).appendTo('body').modal();
-        $('#save').append("<input type='hidden' name='raw_data' value='" + get_search_URI(0) + "'>");
-        $('#save_email').focus();
-      });
-    }, 300);
-  });
-
-  var emailSubscribe = function() {
-    var email = $('#save input[type=email]').val();
-    var raw_data = $('#save input[type=hidden]').val();
-    var is_validated = validateEmail(email);
-
-    if (!is_validated) {
-      _alert({ message: gettext('Please enter a valid email address.') }, 'warning');
-    } else {
-      var url = '/sync/search_save';
-
-      $.post(url, {
-        email: email,
-        raw_data: raw_data
-      }, function(response) {
-        var status = response['status'];
-
-        if (status == 200) {
-          _alert({ message: gettext("You're in! Keep an eye on your inbox for the next funding listing.") }, 'success');
-          $.modal.close();
-        } else {
-          _alert({ message: response['msg'] }, 'error');
-        }
-      });
-    }
-  };
-
-  $('body').delegate('#save input[type=email]', 'keypress', function(e) {
-    if (e.which == 13) {
-      emailSubscribe();
-      e.preventDefault();
-    }
-  });
-  $('body').delegate('#save a', 'click', function(e) {
-    emailSubscribe();
     e.preventDefault();
   });
 });

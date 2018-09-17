@@ -1,0 +1,77 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<div class="row my-5 pb-5 {% if active == 'how_it_works_funder' %} grey-border {% endif %}" id="permissions">
+  <div class="col-12 text-center my-5">
+    <h1 class="font-title-xl mb-4">{% trans "Project Permissions" %}</h1>
+    <p class="font-body how-it-works__text-grey">{% trans "Gitcoin supports 2 types of permissions to allow flexibility for each project." %}</p>
+  </div>
+  <div class="col-12 col-lg-6">
+    <h2 class="font-subheader mb-4">
+      {% trans "Permissions - Approval Required" %}
+      <img class="mx-2" src="{% static "v2/images/how-it-works/icons/permissioned.svg" %}" alt="permissioned" />
+    </h2>
+    <div class="font-body how-it-works__text-grey">
+      <p>
+        {% blocktrans %}
+          A Permissions based project ensures that the contributor has
+          necessary skillsets to complete the task. Contributors will
+          request to work on a project by clicking start work to express 
+          interest. A short summary of a work approach will also be provided 
+          in the start work form.
+        {% endblocktrans %}
+      </p>
+    </div>
+    <h2 class="font-subheader pt-2 my-4">{% trans "What to Know" %}</h2>
+    <div class="font-body how-it-works__text-grey">
+      {% blocktrans %}
+        <p>Gitcoin will send you an email notification when a worker has
+        expressed interest.</p>
+        <p>The repo owner/funder has the right to approve or deny any request to work.</p>
+        <p>If there is no response from the funder/repo owner, Gitcoin will auto 
+          approve the contributor after 72 hours. 
+        </p>
+      {% endblocktrans %}  
+      <img class="mb-4 mb-lg-0" src="{% static "v2/images/how-it-works/icons/timer.svg" %}" alt="system approve" />
+    </div>
+  </div>
+  <div class="col-12 col-lg-6">
+    <h2 class="font-subheader mb-4">
+      {% trans "Permissionless - No Approval Required" %}
+      <img class="mx-2" src="{% static "v2/images/how-it-works/icons/permissionless.svg" %}" alt="permissionless" />
+    </h2>
+    <div class="font-body how-it-works__text-grey">
+      <p>
+        {% blocktrans %}
+          A permissionless project allows a contributor to begin work without permission 
+          or approval from the project owner. It is suggested that an approach and 
+          questions be raised prior the start of the project to ensure mutual 
+          understanding or the way forward.
+        {% endblocktrans %}
+      </p>
+    </div>
+    <h2 class="font-subheader pt-2 my-4">{% trans "What to Know" %}</h2>
+    <div class="font-body how-it-works__text-grey">
+      <p>
+        {% blocktrans %}
+          Although approval is not required to begin working on the project,
+          ensure that the goals in the issue description are clear.
+        {% endblocktrans %}
+      </p>
+    </div>
+  </div>
+</div>

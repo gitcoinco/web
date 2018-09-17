@@ -52,3 +52,7 @@
 .button--warning {
   background-color: #ca001a;
 }
+
+.button--warning:hover {
+  background-color: #d43247;
+}

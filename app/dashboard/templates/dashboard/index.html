@@ -40,6 +40,7 @@
     <div id="dashboard-content" class="row no-gutter">
       <div class="col-12 col-lg-3 col-xl-2 invisible" id="sidebar_container" style="background: #F2F6F9;">
         {% include 'shared/sidebar_search.html' %}
+        {% include 'shared/codefund_banner.html' %}
       </div>
 
       <div class="col-12 col-lg-9 col-xl-10 body">
@@ -64,11 +65,6 @@
               <img src="{% static "v2/images/shrug_bot.png" %}">
               <h3>{% trans "No results found." %}</h3>
               <p>{% trans "Please try another query" %}</p>
-              <p>- {% trans "or" %} -</p>
-              <p>
-                {% blocktrans %}<a href="#" class="save_search">save search</a>
-                to be notified when results do appear.{% endblocktrans %}
-              </p>
           </div>
         </div>
       </div>
@@ -88,11 +84,11 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
 
-    <script src="/static/v2/js/tokens_dynamic.js"></script>
+    <script src="/dynamic/js/tokens_dynamic.js"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>
     <script src="{% static "v2/js/pages/dashboard.js" %}"></script>
     <script>
-        document.keywords = {{keywords | safe}};
+      document.keywords = {{keywords | safe}};
     </script>
   </body>
 </html>

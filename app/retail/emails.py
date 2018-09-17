@@ -318,6 +318,18 @@ def render_new_bounty_rejection(to_email, bounty):
     return response_html, response_txt
 
 
+def render_bounty_changed(to_email, bounty):
+    params = {
+        'bounty': bounty,
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+    }
+
+    response_html = premailer_transform(render_to_string("emails/bounty_changed.html", params))
+    response_txt = render_to_string("emails/bounty_changed.txt", params)
+
+    return response_html, response_txt
+
+
 def render_bounty_expire_warning(to_email, bounty):
     from django.db.models.functions import Lower
 
@@ -513,76 +525,75 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "BUIDLing Mesh Networks | Gitcoin + ENS Partnership"
+    subject = "Sneak Peek: Hacktoberfest | Everybody Ships"
 
     intro = '''
 
 <p>
-    Hi there,
+Hi there,
 </p>
 <p>
-We are often asked how Gitcoin, an open source network, has built such an invaluable community.
-To answer this question (and to hopefully generalize the answers in such a way that other dApp BUIDLers could utilize them) I wrote <a href="https://medium.com/gitcoin/how-to-buidl-a-mesh-network-of-human-beings-a5293ecca60a">How to BUIDL a Mesh Network of Human Beings.</a> This piece
-examines the psychology and thought process we've put into building the Gitcoin community. Let me know what you think by replying to this email!
+Hacktoberfest is a month long celebration of open source. As Gitcoiners, we support anything that grows open source. Next Monday, we're going to formally
+announce our plans for Hacktoberfest...but you can see them <a href="https://medium.com/@vivek.m.singh/98825f199af2">here today</a>.
+The short story: Make <a href="https://gitcoin.co/requests">Gitcoin Requests</a> for any 'good-first-issues' you see on Github during Hacktoberfest,
+and we'll bounty the best of them. We're very excited to play a small part in a huge movement!
 </p>
-
 <p>
-This week, we also announced a <a href="https://medium.com/the-ethereum-name-service/ens-gitcoin-3654594537b8">partnership with the Ethereum Name Service.</a> We believe
-ENS integrations are an important next step in decentralization, and are proud to sponsor any Github issues to integrate ENS into your dApps. Just open up a Github issue
-and let us know - we'll take it from there.
+Aside from this, I've been busy co-authoring a children's book, <a href="https://medium.com/gitcoin/everyone-ships-653f53343337">Everybody Ships</a>.
+It's a tongue-in-cheek book meant to celebrate the projects in the blockchain space who are focused on building. We hope you
+enjoy!
 </p>
 
 <h3>What else is new?</h3>
     <ul>
         <li>
-<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET.
-This week features Decentraland on NFT's and Austin Griffith on metatransactions. Join us!
+        <a href="https://medium.com/gitcoin/embarking-into-web-3-f46408b23f59">Our Status partnership</a> is off to a hot start, with all 14 of the initial bounties picked up in 6 hours.
+        Be on the lookout for the seconds batch sometime next week!
         </li>
-
+        <li>
+        There have now been 25 Gitcoin Requests! Do you have a Github issue you want solved? Make <a href="https://gitcoin.co/requests">a Gitcoin Request</a> and we'll review in 24 hours.
+        If you're a developer and you see a 'Good First Issue' you'd work on for a bounty, <a href="https://gitcoin.co/requests">let us know</a>! Gitcoin Requests
+        is a way for developers and maintainers to make their voice heard.
+        </li>
+        <li>
+        Gitcoin Livestream today includes MakerDAO and Meridio at 5PM ET. We're excited to be back - <a href="https://gitcoin.co/livestream">add to your calendar here!</a>.
+        </li>
     </ul>
 </p>
 <p>
 Back to BUIDLing,
 </p>
 '''
-    highlights = [
-        {
-            'who': 'evgeniuz',
-            'who_link': True,
-            'what': 'Worked with the Solidity team on improving the language!',
-            'link': 'https://gitcoin.co/issue/ethereum/solidity/4640/890',
-            'link_copy': 'View more',
-        },
-        {
-            'who': 'rahulrumalla',
-            'who_link': True,
-            'what': 'Won the QuickBlocks Gitcoin contest by Thomas Rush!',
-            'link': 'https://gitcoin.co/issue/Great-Hill-Corporation/quickBlocks/611/870',
-            'link_copy': 'View more',
-        },
-        {
-            'who': 'anshumanv',
-            'who_link': True,
-            'what': 'Worked with Origin Protocol on their first bounty.',
-            'link': 'https://gitcoin.co/issue/OriginProtocol/origin-dapp/329/900',
-            'link_copy': 'View more',
-        },
-    ]
+    highlights = [{
+        'who': 'krzkaczor',
+        'who_link': True,
+        'what': 'Completed a bounty posted on his own repo via Gitcoin Requests!',
+        'link': 'https://gitcoin.co/issue/krzkaczor/TypeChain/25/1137',
+        'link_copy': 'View more',
+    }, {
+        'who': 'frostiq',
+        'who_link': True,
+        'what': 'Claimed the MakerDAO CDP Analytics bounty from ETHBerlin.',
+        'link': 'https://gitcoin.co/issue/ethberlin-hackathon/ETHBerlin-Bounties/14/1204',
+        'link_copy': 'View more',
+    }, {
+        'who': 'subramanianv',
+        'who_link': True,
+        'what': 'Another Status bounty down on the Embark repo!',
+        'link': 'https://gitcoin.co/issue/embark-framework/embark/767/1087',
+        'link_copy': 'View more',
+    }, ]
 
-    bounties_spec = [
-        {
-            'url': 'https://github.com/XLNT/gnarly/issues/3',
-            'primer': 'Work with Matt Condon on Gnarly, an EF grant recipient!',
-        },
-        {
-            'url': 'https://github.com/Datum/Datum-Gitcoin-Bounty/issues/1',
-            'primer': 'Use the Datum SDK to build something great without limits.',
-        },
-        {
-            'url': 'https://github.com/Bounties-Network/bounties.network/issues/7',
-            'primer': 'Help build the new Bounties Network website!',
-        },
-    ]
+    bounties_spec = [{
+        'url': 'https://github.com/ethberlin-hackathon/ETHBerlin-Bounties/issues/16',
+        'primer': 'Build an ETHPM plug-in for Remix; still open post ETH-Berlin!',
+    }, {
+        'url': 'https://github.com/prysmaticlabs/prysm/issues/497',
+        'primer': 'Work on Sharding with the Prysmatic Labs folks!',
+    }, {
+        'url': 'https://github.com/w3f/Web3-collaboration/issues/34',
+        'primer': 'Help build documentation for Polkadot!',
+    }, ]
 
     num_leadboard_items = 5
     #### don't need to edit anything below this line
@@ -600,9 +611,9 @@ Back to BUIDLing,
             'items': [],
         },
     }
-    for key, val in leaderboard.items():
-        leaderboard[key]['items'] = LeaderboardRank.objects.filter(active=True, leaderboard=key).order_by('rank')[0:num_leadboard_items]
-
+    for key, __ in leaderboard.items():
+        leaderboard[key]['items'] = LeaderboardRank.objects.active() \
+            .filter(leaderboard=key).order_by('rank')[0:num_leadboard_items]
 
     bounties = []
     for nb in bounties_spec:
@@ -614,7 +625,7 @@ Back to BUIDLing,
                 bounties.append({
                     'obj': bounty,
                     'primer': nb['primer']
-                    })
+                })
         except Exception as e:
             print(e)
 
@@ -689,8 +700,8 @@ def resend_new_tip(request):
 @staff_member_required
 def new_bounty(request):
     from dashboard.models import Bounty
-    bounties = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3]
-    old_bounties = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3]
+    bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
+    old_bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
     response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties)
     return HttpResponse(response_html)
 
@@ -698,7 +709,7 @@ def new_bounty(request):
 @staff_member_required
 def new_work_submission(request):
     from dashboard.models import Bounty
-    bounty = Bounty.objects.filter(idx_status='submitted', current_bounty=True).last()
+    bounty = Bounty.objects.current().filter(idx_status='submitted').last()
     response_html, _ = render_new_work_submission(settings.CONTACT_EMAIL, bounty)
     return HttpResponse(response_html)
 
@@ -720,7 +731,7 @@ def new_bounty_acceptance(request):
 @staff_member_required
 def bounty_feedback(request):
     from dashboard.models import Bounty
-    response_html, _ = render_bounty_feedback(Bounty.objects.filter(idx_status='done', current_bounty=True).last(), 'foo')
+    response_html, _ = render_bounty_feedback(Bounty.objects.current().filter(idx_status='done').last(), 'foo')
     return HttpResponse(response_html)
 
 
