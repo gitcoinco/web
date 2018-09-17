@@ -88,32 +88,6 @@ var wait_for_metadata_test = function(callback) {
   });
 };
 
-var cloneKudos = function(name, numClones) {
-  console.log('name: ' + name);
-  console.log('numClones: ' + numClones);
-
-  var account = web3.eth.coinbase;
-  var kudosContractInstance = web3.eth.contract(kudos_abi).at(kudos_address());
-
-  kudosContractInstance.clone.estimateGas(name, numClones, {from: account, value: new web3.BigNumber(1000000000000000)}, function(error, txid) {
-    console.log('txid:' + txid)
-    return true;
-  })
-}
-
-var cloneAndTransferKudos = function(name, numClones, receiver) {
-  console.log('name: ' + name);
-  console.log('numClones: ' + numClones);
-  console.log('receiver: ' + receiver);
-
-  var account = web3.eth.coinbase;
-  var kudosContractInstance = web3.eth.contract(kudos_abi).at(kudos_address());
-
-  kudosContractInstance.cloneAndTransfer(name, numClones, receiver, {from: account, value: new web3.BigNumber(1000000000000000)}, function(error, txid) {
-    console.log('txid:' + txid)
-    return true;
-  })
-}
 
 function advancedToggle() {
   $('#advanced_toggle').css('display', 'none');
@@ -495,14 +469,18 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
             // token_contract.transfer(destinationAccount, amountInWei, {gasPrice: web3.toHex(get_gas_price())}, post_send_callback);
           };
           // This is what runs in the Kudos case
-          var send_gas_kudos_money = function(kudosGasEstimate) {
+          var send_kudos_money = function(kudosGasEstimateInWei, kudosPriceInWei) {
             _alert({ message: gettext('You will now be asked to confirm a transaction to cover the cost of the Kudos and the gas money.') }, 'info');
-            // Multiply gas * gas_price_gwei to get gas cost in wei.
-            kudosGasCostInWei = kudosGasEstimate * get_gas_price();
+            money = {
+              gas_money: gas_money,
+              kudosGasEstimateInWei: kudosGasEstimateInWei,
+              kudosPriceInWei: kudosPriceInWei
+            }
+            console.log(money)
             web3.eth.sendTransaction({
               to: destinationAccount,
               // Add gas_money + gas cost for kudos contract transaction + cost of kudos token (Gitcoin keeps this amount?)
-              value: gas_money + kudosGasCostInWei + amountInWei,
+              value: gas_money + kudosGasEstimateInWei + kudosPriceInWei,
               gasPrice: web3.toHex(get_gas_price())
             }, post_send_callback);
           };
@@ -521,9 +499,26 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
             // estimate gas for cloning the kudos
             console.log('Using Kudos Indirect Send (KIS)')
             var numClones = 1;
-            kudosContractInstance.clone.estimateGas(kudosName, numClones, {from: fromAccount, value: new web3.BigNumber(1000000000000000)}, function(error, kudosGasEstimate){
+            let account = web3.eth.coinbase;
+            let amountInEth = parseFloat($('#kudosPrice').attr('data-ethprice')); 
+            let weiConvert = Math.pow(10, 18);
+            // kudosCost is the price of the kudos in the send page.
+            // var kudosPriceInWei = new web3.BigNumber(amountInEth * 1.0 * weiConvert);
+            var kudosPriceInWei = amountInEth * 1.0 * weiConvert;
+            // let value = new web3.BigNumber(1000000)
+            params = {
+              kudosName: kudosName,
+              numClones: numClones,
+              account: account,
+              amountInEth: amountInEth,
+              kudosPriceInWei: kudosPriceInWei
+            }
+            console.log(params)
+            kudosContractInstance.clone.estimateGas(kudosName, numClones, {from: account, value: kudosPriceInWei}, function(error, kudosGasEstimate){
               console.log('kudosGasEstimate: '+ kudosGasEstimate)
-              send_gas_kudos_money(kudosGasEstimate);
+              // Multiply gas * gas_price_gwei to get gas cost in wei.
+              kudosGasEstimateInWei = kudosGasEstimate * get_gas_price();
+              send_kudos_money(kudosGasEstimateInWei, kudosPriceInWei);
             });
           }
         }
@@ -553,7 +548,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
       // pay out via secret sharing algo
       // Step 6
       // wait_for_metadata(got_metadata_callback);
-      wait_for_metadata_test(got_metadata_callback);
+      wait_for_metadata(got_metadata_callback);
       // let metadata = {}
       // got_metadata_callback(metadata);
     }
