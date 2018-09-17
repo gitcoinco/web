@@ -18,6 +18,10 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    {% block title %}
+      Activity Feed | Gitcoin
+    {% endblock title %}
+    <meta name="description" content="See open source development in real-time with the Gitcoin Activity Feed." />
     {% include 'shared/head.html' %}
     <link rel="stylesheet" href="{% static "v2/css/activity_stream.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
