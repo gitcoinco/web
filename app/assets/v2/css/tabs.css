@@ -8,8 +8,12 @@
 }
 
 .tab-container > button {
-  margin: 0 5px;
+  margin: 0 1rem;
   transition: none;
+}
+
+.tab-container > button:first-child {
+  margin-left: 0;
 }
 
 .section-tab {
@@ -29,7 +33,7 @@
 
 .section-tab.active {
   color: var(--gc-blue);
-  border-bottom: 5px var(--gc-blue) solid;
+  border-bottom: 2px var(--gc-blue) solid;
 }
 
 .tab-sections {
@@ -45,4 +49,16 @@
 
 .tab-section.active {
   display: block;
+}
+
+@media (max-width: 768px) {
+  #activity-tabs {
+    text-align: center;
+  }
+
+  .tab-container > button,
+  .tab-container > button:first-child {
+    text-align: center;
+    margin: 0.25rem 1rem;
+  }
 }

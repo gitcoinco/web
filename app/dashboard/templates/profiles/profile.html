@@ -125,16 +125,16 @@
           <div class="container profile-bounties profile-bounties--activities">
             {% for group in activities %}
               <div class="row">
-                <div class="col-12">
+                <div class="col-12 px-4 px-lg-0">
                   <span class="font-caption profile-bounties__sort_label">{{ group.title }}</span>
                 </div>
 
                 {% if group.activity_bounties %}
-                <div id="activity-tabs" class="tab-container">
-                  <button type="button" id="all" class="section-tab">All Activity ({{ group.activity_bounties|length }})</button>
-                  <button type="button" id="funded" class="section-tab">Bounties Funded ({{ funded_bounties_count }})</button>
-                  <button type="button" id="completed" class="section-tab">Bounties Completed</button>
-                  <button type="button" id="tips" class="section-tab">Tips Received</button>
+                <div id="activity-tabs" class="tab-container mt-4 font-body">
+                  <button type="button" id="all" class="section-tab">{% trans "All Activity" %} ({{ group.activity_bounties|length }})</button>
+                  <button type="button" id="funded" class="section-tab">{% trans "Bounties Funded" %} ({{ funded_bounties_count }})</button>
+                  <button type="button" id="completed" class="section-tab">{% trans "Bounties Completed" %}</button>
+                  <button type="button" id="tips" class="section-tab">{% trans "Tips Received" %}</button>
                 </div>
                 <div id="activity-tabs-sections" class="tab-sections section">
                   <div id="section-all" class="tab-section active">
