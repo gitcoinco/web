@@ -21,12 +21,8 @@ import time
 
 from django.core.management.base import BaseCommand
 
-from dashboard.utils import (
-    get_bounty, get_web3, getBountyContract, getStandardBountiesContractAddresss, web3_process_bounty,
-)
-from kudos.utils import (getKudosContractAddress, getKudosContract, get_kudos_from_web3,
-                         update_kudos_db, get_gen0_id_from_web3, get_kudos_map, KudosContract
-                         )
+from dashboard.utils import get_web3
+from kudos.utils import KudosContract
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
@@ -34,10 +30,6 @@ logging.getLogger("web3").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
-
-def process_bounty(bounty_id, network):
-    bounty = get_bounty(bounty_id, network)
-    return web3_process_bounty(bounty)
 
 
 class Command(BaseCommand):
