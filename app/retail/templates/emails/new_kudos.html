@@ -51,6 +51,11 @@
         {% else %}
             {% blocktrans %}Someone sent you a {{ kudos_token.name }} kudos.{% endblocktrans %}
         {% endif %}{% if not is_new %} {{kudos_transfer.created_on | naturaltime}}{%endif%}.
+      {% if kudos_email.from_name %}
+      {{kudos_email.from_name}} {% blocktrans %} sent you a {% endblocktrans %}<b>{{ token_elem.name|humanize_name }}</b> kudos.
+      {% else %}
+      Someone sent you a <b>{{ token_elem.name|humanize_name }}</b> kudos.
+      {% endif %}{% if not is_new %} {{kudos_email.created_on | naturaltime}}{%endif%}
     </h3>
     <div>
       <img src="{% static token_elem.image %}" alt="{{token_elem.name|humanize_name  }}" width="200" style="margin:auto;">
