@@ -50,8 +50,11 @@ class Token(SuperModel):
     sent_from_address = models.CharField(max_length=255)
 
     def save(self, *args, **kwargs):
-        self.owner_address = to_checksum_address(self.owner_address)
-        self.sent_from_address = to_checksum_address(self.sent_from_address)
+        if self.owner_address:
+            self.owner_address = to_checksum_address(self.owner_address)
+        if self.sent_from_address:
+            self.sent_from_address = to_checksum_address(self.sent_from_address)
+
         super().save(*args, **kwargs)
 
     @property
@@ -101,19 +104,9 @@ class KudosTransfer(SendCryptoAsset):
         'dashboard.Profile', related_name='sent_kudos', on_delete=models.SET_NULL, null=True, blank=True
     )
 
-    # @property
-    # def receive_url(self):
-    #     if self.web3_type == 'yge':
-    #         return self.url
-    #     elif self.web3_type == 'v3':
-    #         return self.receive_url_for_recipient
-    #     elif self.web3_type != 'v2':
-    #         raise Exception
-
-    #     pk = self.metadata.get('priv_key')
-    #     txid = self.txid
-    #     network = self.network
-    #     return f"{settings.BASE_URL}kudos/receive/v2/{pk}/{txid}/{network}"
+    @property
+    def receive_url(self):
+        return self.receive_url_for_recipient
 
     @property
     def receive_url_for_recipient(self):
@@ -130,16 +123,26 @@ class KudosTransfer(SendCryptoAsset):
         status = 'funded' if self.txid else 'not funded'
 
         """Return the string representation of a model."""
-        return f"({status}) xfr of {self.kudos_token} from {self.recipient_profile} to {self.sender_profile} on {self.network}"
+        return f"({status}) transfer of {self.kudos_token_cloned_from} from {self.sender_profile} to {self.recipient_profile} on {self.network}"
 
 
 class Wallet(SuperModel):
+
+    """Kudos Address where the tokens are stored.
+
+    Currently not used.  Instead we are using preferred_payout_address for now.
+
+    Attributes:
+        address (TYPE): Description
+        profile (TYPE): Description
+    """
+
     address = models.CharField(max_length=255, unique=True)
     profile = models.ForeignKey('dashboard.Profile', related_name='kudos_wallets', on_delete=models.SET_NULL, null=True)
 
-    def save(self, *args, **kwargs):
-        self.address = to_checksum_address(self.address)
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     self.address = to_checksum_address(self.address)
+    #     super().save(*args, **kwargs)
 
     def __str__(self):
         """Return the string representation of a model."""
