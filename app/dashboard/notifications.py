@@ -391,16 +391,16 @@ def maybe_market_kudos_to_email(kudos_transfer):
         logger.debug(settings.ENABLE_NOTIFICATIONS_ON_NETWORK)
         return False
 
-    if not kudos_transfer or not kudos_transfer.txid or not kudos_transfer.amount or not kudos_transfer.kudos_token:
+    if not kudos_transfer or not kudos_transfer.txid or not kudos_transfer.amount or not kudos_transfer.kudos_token_cloned_from:
         logger.warning('Some kudos information not found.  Skipping email.')
         return False
 
     # 2. Generate subject
     on_network = '' if kudos_transfer.network == 'mainnet' else f'({kudos_transfer.network})'
     if is_new:
-        subject = gettext(f"⚡️ New {kudos_transfer.kudos_token.humanized_name} Kudos Available {on_network}")
+        subject = gettext(f"⚡️ New {kudos_transfer.kudos_token_cloned_from.humanized_name} Kudos Available {on_network}")
     else:
-        subject = gettext(f"🕐 Your {kudos_transfer.kudos_token.humanized_name}  Kudos Is Expiring Soon {on_network}")
+        subject = gettext(f"🕐 Your {kudos_transfer.kudos_token_cloned_from.humanized_name}  Kudos Is Expiring Soon {on_network}")
 
     logger.info(f'Emails to send to: {kudos_transfer.emails}')
 

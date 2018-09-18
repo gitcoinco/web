@@ -120,7 +120,7 @@ def render_kudos_email(to_email, kudos_transfer, is_new):
         'link': link,
         'amount': round(kudos_transfer.amount, 5),
         'tokenName': kudos_transfer.tokenName,
-        'kudos_token:': kudos_transfer.kudos_token,
+        'kudos_token:': kudos_transfer.kudos_token_cloned_from,
         'comments_public': kudos_transfer.comments_public,
         'kudos_transfer': kudos_transfer,
         'already_redeemed': already_redeemed,
