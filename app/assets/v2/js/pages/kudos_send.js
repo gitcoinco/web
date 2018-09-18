@@ -296,7 +296,6 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
     return;
   }
   // setup
-  var fromAccount = web3.eth.accounts[0];
 
   if (username.indexOf('@') == -1) {
     username = '@' + username;
@@ -349,7 +348,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
 
   // Step 7
   // Do a POST request to the kudos/send/3
-  // This adds the information to the kudos_email table
+  // This adds the information to the kudos_transfer table
   // Then the metamask transaction gets kicked off
   // Once the transaction is mined, the txid is added to the database in kudos/send/4
   // function inside of getKudos()
@@ -377,7 +376,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
         tokenAddress: tokenAddress,
         kudosName: kudosName,
         network: document.web3network,
-        from_address: fromAccount,
+        from_address: web3.eth.coinbase,
         is_for_bounty_fulfiller: is_for_bounty_fulfiller,
         metadata: metadata
       })
