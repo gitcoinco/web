@@ -17,10 +17,14 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import csv
+import datetime
+import io
 import logging
 import pprint
 from decimal import Decimal
 from enum import Enum
+from math import ceil
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -28,6 +32,8 @@ from django.core.validators import URLValidator
 from django.db import transaction
 from django.http import Http404, JsonResponse
 from django.utils import timezone
+from django.utils.html import escape
+from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
 from dashboard.models import Activity, Bounty, BountyFulfillment, BountySyncRequest, UserAction
@@ -36,7 +42,7 @@ from dashboard.notifications import (
     maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from dashboard.tokens import addr_to_token
-from economy.utils import convert_amount
+from economy.utils import convert_amount, eth_from_wei, etherscan_link
 from git.utils import get_gh_issue_details, get_url_dict, issue_number, org_name, repo_name
 from jsondiff import diff
 from pytz import UTC
@@ -728,3 +734,452 @@ def process_bounty_changes(old_bounty, new_bounty):
         pp.pprint(what_happened)
     else:
         print('No notifications sent - Event Type Unknown = did_bsr: ', did_bsr)
+
+
+def week_of_month(in_datetime):
+    """Get the current week of the month as a number.
+
+    Args:
+        in_datetime (datetime): the input datetime to get the week of month for.
+
+    Returns:
+        int: The week of the month (1,2,3,4,5).
+
+    """
+    day_of_month = in_datetime.day
+    adjusted_day_of_month = day_of_month + in_datetime.replace(day=1).weekday()
+
+    return int(ceil(adjusted_day_of_month/7.0))
+
+
+def get_payout_history(done_bounties):
+    """Aggregate a funder's payout history given a set of bounties that belong to that funder.
+
+    Args:
+        done_bounties: (BountyQuerySet) the bounties to aggregate the data for, should be in "done" status.
+
+    Returns:
+        dict: A dictionary containing a funder's payout history, grouped as weekly, monthly and yearly, as well as
+              a csv representation of the funder's all time payout history.
+
+    """
+    utc_now = datetime.datetime.now(timezone.utc)
+    month_now = utc_now.month
+    year_now = utc_now.year
+
+    # 0: weekly
+    # 1: monthly
+    # 2: yearly
+    working_payout_history = [{}, {}, {}]
+
+    weekly_payout_history = working_payout_history[0]
+    monthly_payout_history = working_payout_history[1]
+    yearly_payout_history = working_payout_history[2]
+
+    csv_all_time_paid_bounties = io.StringIO()
+    wr = csv.writer(csv_all_time_paid_bounties, quoting=csv.QUOTE_ALL)
+    wr.writerow([
+        'Issue ID', 'Title', 'Bounty Type', 'Github Link', 'Value in USD', 'Value in ETH'
+    ])
+
+    for bounty in done_bounties:
+        bounty_date = bounty.fulfillment_accepted_on
+        if bounty_date is None:
+            continue
+
+        bounty_val = bounty.get_value_in_usdt
+
+        if bounty_val is None:
+            bounty_val = 0.0
+
+        # csv export - all done bounties
+        csv_row = []
+        for key, value in to_funder_dashboard_bounty(bounty).items():
+            if key == 'status' or key == 'statusPendingOrClaimed':
+                continue
+            csv_row.append(value)
+
+        wr.writerow(csv_row)
+
+        week = week_of_month(bounty_date)
+        month = bounty_date.month
+        year = bounty_date.year
+
+        # weekly payout history
+        if year == year_now and month == month_now:
+            if weekly_payout_history.get(week):
+                weekly_payout_history[week] = weekly_payout_history[week] + bounty_val
+            else:
+                weekly_payout_history[week] = bounty_val
+
+        # monthly payout history
+        if year == year_now:
+            if monthly_payout_history.get(month):
+                monthly_payout_history[month] = monthly_payout_history[month] + bounty_val
+            else:
+                monthly_payout_history[month] = bounty_val
+
+        # yearly payout history
+        if yearly_payout_history.get(year):
+            yearly_payout_history[year] = yearly_payout_history[year] + bounty_val
+        else:
+            yearly_payout_history[year] = bounty_val
+
+    payout_history = []
+    for i in range(0, 3):
+        payout_history.append({
+            "data": [],
+            "labels": []
+        })
+
+    for index, payout_history_in_period in enumerate(working_payout_history):
+        for key, value in sorted(payout_history_in_period.items()):
+            payout_history[index]['data'].append(value)
+            payout_history[index]['labels'].append(key)
+
+    csv_data = csv_all_time_paid_bounties.getvalue()
+    csv_all_time_paid_bounties.close()
+
+    return {
+        # Used for payout history chart
+        'weekly': payout_history[0],
+        'monthly': payout_history[1],
+        'yearly': payout_history[2],
+        # Used for csv export
+        'csv_all_time_paid_bounties': csv_data
+    }
+
+
+def get_expiring_days_count(expiring_bounties):
+    """Find the bounty that expires last given a set of bounties and get in how many days that bounty expires in.
+
+    Args:
+        expiring_bounties: (BountyQuerySet) The expiring bounties to search in.
+
+    Returns:
+        int: In how many days the found bounty is expiring in.
+
+    """
+    last_expiring_days_from_now = 0
+    utc_now = datetime.datetime.now(timezone.utc)
+
+    for bounty in expiring_bounties:
+        delta_days = (bounty.expires_date - utc_now).days
+        if last_expiring_days_from_now is None or delta_days > last_expiring_days_from_now:
+            last_expiring_days_from_now = delta_days
+
+    return last_expiring_days_from_now
+
+
+def get_top_contributors(done_bounties, contributors_to_take):
+    """Get the top contributors for a set of done bounties.
+
+    Args:
+        done_bounties: (BountyQuerySet) A set of bounties with status done, that will be searched in.
+        contributors_to_take: (int) Take the first X contributors. If 12, will take 12 contributors.
+
+    Returns:
+        list of dict: A list of up to max_contributor_count objects of the form: {
+            githubLink (a link to the contributor's github profile),
+            profilePictureSrc (a link to the contributor's profile picture),
+            handle (the contributor's github username)
+        }
+
+    """
+    contributors_usernames = []
+
+    for bounty in done_bounties:
+        contributors = bounty.fulfillments.filter(accepted_on__isnull=False) \
+            .values('fulfiller_github_username') \
+            .distinct()
+
+        for contributor in contributors:
+            contributor_github_username = contributor['fulfiller_github_username']
+            if (
+                contributor_github_username
+                and contributor_github_username not in contributors_usernames
+                and len(contributors_usernames) <= contributors_to_take
+            ):
+                contributors_usernames.append(contributor_github_username)
+
+    top_contributors = []
+    for contributor_github_username in contributors_usernames:
+        top_contributors.append({
+            'githubLink': 'https://gitcoin.co/profile/' + contributor_github_username,
+            'profilePictureSrc': '/dynamic/avatar/' + contributor_github_username,
+            'handle': contributor_github_username,
+        })
+
+    return top_contributors
+
+
+def is_funder_allowed_to_input_total_budget(total_budget_last_update_date, funder_total_budget_type):
+    """Describe whether a funder should be able to set a total_budget,
+       based on the date that they updated their total budget last time, and the total budget type they set.
+
+        A funder is only allowed to input a total budget if the updated total budget date is null,
+            or if there is an updated on date but the type saved is monthly and the months are different,
+            or if there is an updated on date but the type saved is quarterly and the quarters are different.
+
+    Args:
+        total_budget_last_update_date: (datetime) Last time the total budget was updated for a user, utc time.
+        funder_total_budget_type: (string) either 'monthly' or 'quarterly'. Describes what kind of budget a user set.
+
+    Returns:
+        bool: True if the funder can input a total budget, False otherwise.
+
+    """
+    allow_total_budget_input = False
+
+    if total_budget_last_update_date is None:
+        allow_total_budget_input = True
+    else:
+        month_saved = total_budget_last_update_date.month
+        month_now = datetime.datetime.now(timezone.utc).month
+
+        if funder_total_budget_type == 'monthly' and month_now != month_saved:
+            allow_total_budget_input = True
+        elif funder_total_budget_type == 'quarterly':
+            quarter_now = int(math.ceil(month_now / 3.))
+            quarter_saved = int(math.ceil(month_saved / 3.))
+
+            if quarter_now != quarter_saved:
+                allow_total_budget_input = True
+
+    return allow_total_budget_input
+
+
+def get_funder_total_budget(use_input_layout, funder_total_budget_dollars, budget_type):
+    """Get the data needed for the total budget module of the funder dashboard, wrapped in a dictionary.
+
+    Args:
+        use_input_layout: (boolean) is funder allowed to edit their total budget or should the existing one be shown?
+        funder_total_budget_dollars: (decimal) the total budget of the funder in dollars.
+        budget_type: (str) "monthly" or "quarterly".
+
+    Returns:
+        dict: Contains the total budget of the funder in dollars and eth, and the time period in display format for
+              which this budget is for.
+
+    """
+    utc_now = datetime.datetime.now(timezone.utc)
+
+    if use_input_layout:
+        total_budget_dollars = 0
+        total_budget_eth = 0
+        total_budget_used_time_period = None
+    else:
+        # we should display their total budget
+        total_budget_dollars = funder_total_budget_dollars
+        total_budget_eth = convert_amount(total_budget_dollars, "USDT", "ETH")
+
+        if budget_type == 'monthly':
+                total_budget_used_time_period = utc_now.strftime('%B')
+        else:
+            # it's a quarterly budget
+            quarter_now = int(ceil(utc_now.month / 3.))
+
+            if quarter_now == 0:
+                total_budget_used_time_period = _("January 1 - March 31")
+            elif quarter_now == 1:
+                total_budget_used_time_period = _("April 1 - June 31")
+            elif quarter_now == 2:
+                total_budget_used_time_period = _("July 1 - September 31")
+            else:
+                # quarter_now == 3
+                total_budget_used_time_period = _("October 1 - December 31")
+
+    return {
+        'total_budget_dollars': total_budget_dollars,
+        'total_budget_eth': total_budget_eth,
+        'total_budget_used_time_period': total_budget_used_time_period
+    }
+
+
+def get_funder_outgoing_funds(done_bounties, funder_tips):
+    """Create the model for the outgoing funds table of the funder dashboard.
+
+    Args:
+        done_bounties: (BountyQuerySet) Done bounties that a funder has funded.
+        funder_tips: (TipQuerySet) Tips sent from the funder to gitcoiners.
+
+    Returns:
+        list of dict: The outgoing funds of a user, to be JSON stringified for use in the front-end of the funder
+        dashboard.
+        Each dictionary object in the list is of the form: {
+            id,
+            title,
+            type ("Tip" / "Payment"),
+            status ("Pending" / "Claimed"),
+            etherscanLink,
+            worthDollars,
+            worthEth
+        }
+
+    """
+    def to_outgoing_fund(id, title, type, status, link_to_etherscan, worth_dollars, worth_eth):
+        return {
+            'id': id,
+            'title': escape(title),
+            'type': type,
+            'status': status,
+            'etherscanLink': link_to_etherscan,
+            'worthDollars': usd_format(worth_dollars),
+            'worthEth': eth_format(eth_from_wei(worth_eth))
+        }
+
+    outgoing_funds = []
+    for bounty in done_bounties.filter(fulfillment_started_on__isnull=False):
+        # TODO: Use the txid to generate the etherscan link.
+        # link_to_etherscan = etherscan_link('#')
+
+        if bounty.fulfillments.filter(accepted=True).exists():
+            fund_status = 'Claimed'
+        else:
+            fund_status = 'Pending'
+
+        outgoing_funds.append(to_outgoing_fund(
+            bounty.github_issue_number,
+            bounty.title,
+            'Payment',
+            fund_status,
+            bounty.action_urls()['invoice'],
+            bounty.get_value_in_usdt,
+            bounty.get_value_in_eth,
+        ))
+
+    for tip in funder_tips:
+        if tip.status == "RECEIVED":
+            tip_status = "Claimed"
+        else:
+            tip_status = "Pending"
+
+        if tip.bounty:
+            outgoing_funds.append(to_outgoing_fund(
+                tip.bounty.github_issue_number,
+                tip.bounty.title,
+                'Tip',
+                tip_status,
+                etherscan_link(tip.txid),
+                tip.value_in_usdt,
+                tip.value_in_eth,
+            ))
+
+    return outgoing_funds
+
+
+def get_outgoing_funds_filters():
+    """Get the filters that a funder can use to filter the "outgoing funds" table in the funder dashboard.
+
+    Returns:
+        dict: The filters, to be used in the template of the funder dashboard.
+
+    """
+    def outgoing_funds_filter(value, value_display, is_all_filter, is_type_filter, is_status_filter):
+        return {
+            'value': value,
+            'value_display': value_display,
+            'is_all_filter': is_all_filter,
+            'is_type_filter': is_type_filter,
+            'is_status_filter': is_status_filter
+        }
+
+    return [
+        outgoing_funds_filter('All', _('All'), True, False, False),
+        outgoing_funds_filter('Tip', _('Tip'), False, True, False),
+        outgoing_funds_filter('Payment', _('Payment'), False, True, False),
+        outgoing_funds_filter('Pending', _('Pending'), False, False, True),
+        outgoing_funds_filter('Claimed', _('Claimed'), False, False, True),
+    ]
+
+
+def get_all_bounties_filters():
+    """Get the filters that a funder can use to filter the "all bounties" table in the funder dashboard.
+
+    Returns:
+        dict: The filters, to be used in the template of the funder dashboard.
+
+    """
+    def all_bounties_filter(value, value_display, is_all_filter, is_status_pending_or_claimed_filter):
+        return {
+            'value': value,
+            'value_display': value_display,
+            'is_all_filter': is_all_filter,
+            'is_status_pending_or_claimed_filter': is_status_pending_or_claimed_filter
+        }
+
+    return [
+        all_bounties_filter('All', _('All'), True, False),
+        all_bounties_filter('Pending', _('Pending'), False, True),
+        all_bounties_filter('Claimed', _('Claimed'), False, True),
+    ]
+
+
+def usd_format(amount):
+    """Convert an amount in USD to a display string format.
+
+    Args:
+        amount: (decimal) The amount in USD to display.
+
+    Returns:
+        str: The display format for the given USD amount, using 2 decimal places.
+
+    """
+    if amount is None:
+        return "0"
+    return format(amount, '.2f')
+
+
+def eth_format(amount):
+    """Convert an amount in ETH to a display string format.
+
+    Args:
+        amount: (decimal) The amount in ETH to display.
+
+    Returns:
+        str: The display format for the given ETH amount, using 3 decimal places.
+
+    """
+    if amount is None:
+        return "0"
+    return format(amount, '.3f')
+
+
+def to_funder_dashboard_bounty(bounty):
+    """Map a bounty object to a dict that is suitable for display in the funder dashboard.
+
+    Args:
+        bounty: (Bounty) the bounty to map.
+
+    Returns:
+        dict: The mapped bounty, to be JSON stringified for use in the front-end of the funder dashboard.
+              The mapped bounty is of the form: {
+                  id,
+                  title,
+                  type,
+                  status ("active", "done", "expired" etc. - uses bounty.status),
+                  statusPendingOrClaimed ("Pending" / "Claimed"),
+                  githubLink,
+                  worthDollars,
+                  worthEth
+              }
+
+    """
+    bounty_dict = bounty.to_standard_dict(fields=['title', 'bounty_type', 'github_url'])
+    bounty_dict.update({
+        'id': bounty.github_issue_number,
+        'title': escape(bounty_dict['title']),
+        'type': bounty_dict.pop('bounty_type'),
+        'status': bounty.status,
+        'statusPendingOrClaimed': 'None',
+        'githubLink': bounty_dict.pop('github_url'),
+        'worthDollars': usd_format(bounty.get_value_in_usdt),
+        'worthEth': eth_format(eth_from_wei(bounty.get_value_in_eth))
+    })
+
+    if bounty.interested.exists() and bounty.status in Bounty.FUNDED_STATUSES:
+        bounty_dict['statusPendingOrClaimed'] = 'Claimed'
+    elif bounty.status in Bounty.OPEN_STATUSES:
+        bounty_dict['statusPendingOrClaimed'] = 'Pending'
+
+    return bounty_dict

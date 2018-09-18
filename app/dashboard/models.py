@@ -167,6 +167,8 @@ class Bounty(SuperModel):
         OPEN_STATUSES (list of str): The list of status types considered open.
         CLOSED_STATUSES (list of str): The list of status types considered closed.
         TERMINAL_STATUSES (list of str): The list of status types considered terminal states.
+        TERMINAL_SUCCESS_STATUSES (list of str): The list of status types considered to be terminal successful states.
+        TERMINAL_FAILURE_STATUSES (list of str): The list of status types considered to be terminal failure states.
 
     """
 
@@ -212,6 +214,8 @@ class Bounty(SuperModel):
     OPEN_STATUSES = ['open', 'started', 'submitted']
     CLOSED_STATUSES = ['expired', 'unknown', 'cancelled', 'done']
     TERMINAL_STATUSES = ['done', 'expired', 'cancelled']
+    TERMINAL_SUCCESS_STATUSES = ['done']
+    TERMINAL_FAILURE_STATUSES = ['expired', 'cancelled']
 
     web3_type = models.CharField(max_length=50, default='bounties_network')
     title = models.CharField(max_length=255)
@@ -1514,6 +1518,9 @@ class Profile(SuperModel):
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
     max_tip_amount_usdt_per_tx = models.DecimalField(default=500, decimal_places=2, max_digits=50)
     max_tip_amount_usdt_per_week = models.DecimalField(default=1500, decimal_places=2, max_digits=50)
+    funder_total_budget_usdt = models.DecimalField(default=0, decimal_places=2, max_digits=50)
+    funder_total_budget_type = models.CharField(max_length=50, default='', blank=True)  # "monthly" or "quarterly"
+    funder_total_budget_updated_on = models.DateTimeField(blank=True, null=True)
 
     objects = ProfileQuerySet.as_manager()
 
@@ -1612,6 +1619,16 @@ class Profile(SuperModel):
 
         """
         return self.user.is_staff if self.user else False
+
+    @property
+    def is_funder(self):
+        """Determine whether or not the user is a funder.
+
+        Returns:
+            bool: Whether or not the user is a funder.
+
+        """
+        return self.stats[0][0] == 'funder'
 
     @property
     def stats(self):

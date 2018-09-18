@@ -1,0 +1,669 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static humanize %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' with title="Funder Dashboard" %}
+    <link rel="stylesheet" href="{% static "v2/css/dashboard/funder.css" %}">
+  </head>
+  <body class="g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header">
+      {% include 'shared/nav.html' %}
+    </div>
+    <div class="funder-dashboard">
+      <div class="funder-dashboard__header container-fluid pt-4 pb-4">
+        <div class="row">
+          <div class="col">
+            <h1 class="funder-dashboard__header__hero text-white text-center text-capitalize pt-5 pb-5">
+              {% trans "Dashboard" %}
+            </h1>
+          </div>
+        </div>
+      </div>
+
+      <div class="funder-dashboard__dashboard__wrapper container-fluid">
+        <div class="row ml-1 mr-1 m-lg-0">
+          <div class="col-xl">
+          </div>
+          <div class=" funder-dashboard__dashboard col-12 col-xl-10">
+            <div class="funder-dashboard__whats-next card row pt-1 pb-1">
+              <div class="card-body col">
+                <div class="row">
+                  <div class="funder-dashboard__whats-next__rocket-wrapper
+                              col-3 d-flex align-items-center justify-content-center">
+                    <div class="funder-dashboard__whats-next__rocket align-middle">
+                    </div>
+                    <div class="funder-dashboard__whats-next__rocket-text text align-middle pl-2 text-uppercase">
+                      {% trans "What's next" %}
+                    </div>
+                  </div>
+                  <div class="col-9 funder-dashboard__whats-next__items">
+                    <div class="funder-dashboard__whats-next__expiring-bounties">
+                      {% if expiring_bounties_count <= 0 %}
+                          {% trans "You don't have any bounties expiring in the next 7 days." %}
+                      {% else %}
+                        {% blocktrans count count=expiring_bounties_count %}
+                          You have {{ expiring_bounties_count }} bounty expiring in {{ expiring_days_count }} days!
+                        {% plural %}
+                          You have {{ expiring_bounties_count }} bounties expiring in {{ expiring_days_count }} days!
+                        {% endblocktrans %}
+                        <a href="{% url "explorer" %}"
+                           class="issue-explorer-link issue-explorer-link--bounties--expiring  text-fd-blue--dark">
+                          {% trans "view bounties" %}
+                        </a>
+                      {% endif %}
+                    </div>
+                    <div class="funder-dashboard__whats-next__new-comments">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col-12 col-lg-8 funder-dashboard__left-column-wrapper">
+                <div class="funder-dashboard__stats row">
+                  <div class="funder-dashboard__stats__stat funder-dashboard__stats__stat--bounties
+                            col-6 p-0 col-lg mr-lg-3 card mb-3 mb-lg-0">
+                    <div class="card-body pb-2 text-center lead">
+                      <h4 class="card-title pt-0 font-weight-bold">
+                        {{ submitted_bounties_count }}
+                      </h4>
+                      <small class="card-text d-inline-block text-fd-blue--light text-uppercase">
+                        {% trans "Bounties Created" %}
+                      </small>
+                    </div>
+                    <small class="funder-dashboard__stats__stat__footer
+                                card-footer text-uppercase text-center p0 text-muted">
+                      {% trans "All Time" %}
+                    </small>
+                  </div>
+                  <div class="funder-dashboard__stats__stat funder-dashboard__stats__stat--contributors
+                            col-6 p-0 col-lg mr-lg-3 card mb-3 mb-lg-0">
+                    <div class="card-body pb-2 text-center lead">
+                      <h4 class="card-title pt-0 font-weight-bold">
+                        {{ total_contributors_count }}
+                      </h4>
+                      <small class="card-text d-inline-block text-fd-blue--light text-uppercase">
+                        {% trans "Total Contributors" %}
+                      </small>
+                    </div>
+                    <small class="funder-dashboard__stats__stat__footer
+                                card-footer text-uppercase text-center p0 text-muted">
+                      {% trans "All Time" %}
+                    </small>
+                  </div>
+                  <div class="funder-dashboard__stats__stat funder-dashboard__stats__stat--total-spent
+                            col-6 p-0 col-lg mr-lg-3 card mb-3 mb-lg-0">
+                    <div class="card-body pb-2 text-center lead">
+                      <h5 class="card-title pt-0 font-weight-bold">
+                        ${{ total_paid_dollars|floatformat:2|intcomma }}
+                        <small class="text-fd-blue--dark d-block">
+                          {{ total_paid_eth }} ETH
+                        </small>
+                      </h5>
+                      <small class="card-text text-fd-orange d-inline-block text-uppercase">
+                        {% trans "Total paid out" %}
+                      </small>
+                    </div>
+                    <small class="funder-dashboard__stats__stat__footer
+                                card-footer text-uppercase text-center p0 text-muted">
+                      {% if total_paid_date_since is not None %}
+                        {% blocktrans %}
+                          As of {{ total_paid_date_since }}
+                        {% endblocktrans %}
+                      {% else %}
+                        {% trans "All time" %}
+                      {% endif %}
+                    </small>
+                  </div>
+                  <div class="funder-dashboard__stats__stat funder-dashboard__stats__stat--total-budget
+                            col-6 p-0 col-lg card mb-3 mb-lg-0">
+                    <div class="card-body d-flex flex-column lead justify-content-center pb-2 text-center">
+                      <h5 class="card-title pt-0 font-weight-bold">
+                        ${{ total_budget_dollars }}
+                        <small class="text-fd-blue--dark d-block">
+                          {{ total_budget_eth }} ETH
+                        </small>
+                      </h5>
+                      <small class="card-text text-fd-green d-inline-block mb-5 text-uppercase">
+                        {% trans "Total budget" %}
+                      </small>
+                    </div>
+                    {% if total_budget_use_input_layout %}
+                      <div class="funder-dashboard__stats__stat__footer
+                                card-footer text-uppercase text-center p0 text-muted">
+                        <small class="pr-1">
+                          {% trans "Budget USD: " %}
+                        </small>
+                        <hr class="mt-0 mb-1 pb-1"/>
+                        <div class="mb-2 mw-100">
+                          <input class="d-inline-block funder-dashboard__stats__stat--total-budget__budget-input"
+                                 type="number"/>
+                          <i class="d-inline-block fa fa-arrow-circle-right
+                                     funder-dashboard__stats__stat--total-budget__budget-input__submit"></i>
+                        </div>
+                        <div>
+                          <small class="control control--total-budget control--total-budget--monthly
+                                      control--selected p-1 pl-3 pr-3">
+                            {% trans "Monthly" %}
+                          </small>
+                          <small class="control control--total-budget control--total-budget--quarterly p-1 pl-3 pr-3">
+                            {% trans "Quarterly" %}
+                          </small>
+                        </div>
+                      </div>
+                    {% else %}
+                    <small class="funder-dashboard__stats__stat__footer
+                                card-footer text-uppercase text-center p0 text-muted">
+                      {{ total_budget_used_time_period }}
+                    </small>
+                    {% endif %}
+                  </div>
+                </div>
+                <div class="funder-dashboard__payout-history row card mt-4">
+                  <div class="col card-body">
+                    <div class="d-block d-sm-flex justify-content-between">
+                      <h4 class="text-capitalize pb-1 pt-0 text-fd-no-spacing">{% trans "Payout History" %}</h4>
+                      <div class="funder-dashboard__payout-history__controls
+                                  pt-1 d-flex align-items-start text-uppercase mb-4 mb-sm-0">
+                        <small class="funder-dashboard__payout-history__control pl-2 pr-2 mr-2
+                                    funder-dashboard__payout-history__control--weekly">
+                          {% trans "Weekly" %}
+                        </small>
+                        <small class="funder-dashboard__payout-history__control pl-2 pr-2 mr-2
+                                    funder-dashboard__payout-history__control--monthly
+                                    funder-dashboard__payout-history__control--selected">
+                          {% trans "Monthly" %}
+                        </small>
+                        <small class="funder-dashboard__payout-history__control pl-2 pr-2 mr-2
+                                    funder-dashboard__payout-history__control--yearly">
+                          {% trans "Yearly" %}
+                        </small>
+                      </div>
+                    </div>
+                    <canvas id="funder-dashhboard__payout-history__chart"
+                            class="funder-dashhboard__payout-history__chart"
+                            style="width: 100%; height: 20rem;">
+                    </canvas>
+                  </div>
+                </div>
+                <div class="funder-dashboard__tax-reporting row card mt-1">
+                  <div class="card-body pb-2">
+                    <div class="funder-dashboard__tax-reporting__title">
+                      <h4 class="text-capitalize pb-1 pt-0 text-fd-no-spacing d-inline-block mr-1">
+                        {% trans "Tax Reporting" %}
+                      </h4>
+                      <span class="text-secondary">
+                        {% trans "Amount to be reported for "%}
+                        <span class="funder-dashboard__tax-reporting__year">
+                          {{ tax_year }}
+                        </span>
+                      </span>
+                    </div>
+                    <div class="funder-dashboard__tax-reporting__bounties
+                                d-flex align-items-center justify-content-between">
+                      <p class="lead pt-0">
+                        <span class="funder-dashboard__tax-reporting__bounties__count">
+                          {{ tax_year_bounties_count }}
+                        </span>
+                        <span class="funder-dashboard__tax-reporting__bounties__print pr-1">
+                          {% trans "Bounties" %}
+                        </span>
+                        <span class="funder-dashboard__tax-reporting__bounties__worth pl-1">
+                          ${{ tax_year_bounties_worth_dollars|floatformat:2|intcomma }}
+                        </span>
+                      </p>
+                      <div class="mb-2">
+                        <button class="funder-dashboard__tax-reporting__bounties__download-report
+                        button text text-white">
+                          <i class="fas fa-download pr-1">
+                          </i>
+                          {% trans "Download Report" %}
+                        </button>
+                      </div>
+                    </div>
+                    <div class="d-flex justify-content-end">
+                      <a href="{% url "explorer" %}"
+                         class="issue-explorer-link issue-explorer-link--bounties--all">
+                        {% trans "View All Bounties" %}
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="funder-dashboard__latest-on-bounties
+                          col card p-1 pt-0 ml-lg-3 mt-3 mt-lg-0">
+                <div class="card-body">
+                  <div class="text-capitalize lead">
+                    {% trans "Latest on Your Bounties" %}
+                  </div>
+                  <hr>
+                  {% if expired_issues_count|add:"0" > 0 %}
+                  <div class="funder-dashboard__latest-on-bounties__reclaim-funds card">
+                    <div class="card-body pb-1">
+                      <div class="text-capitalize lead">
+                        {% trans "Reclaim Your Funds" %}
+                      </div>
+                      <div>
+                        {% url "explorer" as explorer_url %}
+                        {% blocktrans with explorer_url=explorer_url%}
+                        You have
+                        <span class="funder-dashboard__latest-on-bounties__reclaim-funds__funds-count
+                                             text-danger">{{ expired_issues_count }}</span>
+                        <span class="text-danger">Expired Issue{{ expired_issues_count|pluralize }},</span>
+                        funds worth <span class="funder-dashboard__latest-on-bounties__reclaim-funds__worth
+                                                         font-weight-bold">${{ expired_issues_worth_dollars }}</span>
+                        <a href="{{ explorer_url }}"
+                           class="funder-dashboard__latest-on-bounties__reclaim-funds__reclaim
+                                  issue-explorer-link issue-explorer-link--bounties--expired text-fd-blue--light ml-1">
+                          Reclaim Now
+                        </a>
+                        {% endblocktrans %}
+                      </div>
+                    </div>
+                  </div>
+                  {% endif %}
+                  <div class="funder-dashboard__latest-on-bounties__active card mt-3">
+                    <div class="card-body pb-1">
+                      <div class="lead">
+                        <span class="funder-dashboard__latest-on-bounties__active__count font-weight-bold">
+                          {{ active_bounties_count }}
+                        </span>
+                        <span class="text-fd-blue--dark text-uppercase">
+                          {% trans "active bountie" %}{{ active_bounties_count|pluralize }}
+                        </span>
+                      </div>
+                      <div class="w-100 text-right">
+                        <a href="{% url "explorer" %}"
+                           class="funder-dashboard__latest-on-bounties__active__view text-capitalize
+                                  issue-explorer-link issue-explorer-link--bounties--active">
+                          {% trans "View" %}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="funder-dashboard__latest-on-bounties__completed card mt-3">
+                    <div class="card-body pb-1">
+                      <div class="lead">
+                        <span class="funder-dashboard__latest-on-bounties__completed__count font-weight-bold">
+                          {{ completed_bounties_count }}
+                        </span>
+                        <span class="text-fd-green text-uppercase"> 
+                          {% trans "completed bountie" %}{{ completed_bounties_count|pluralize }}
+                        </span>
+                      </div>
+                      <div class="w-100 text-right">
+                          <a href="{% url "explorer" %}"
+                             class="funder-dashboard__latest-on-bounties__completed__view text-capitalize
+                             issue-explorer-link issue-explorer-link--bounties--completed">
+                            {% trans "View" %}
+                          </a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="funder-dashboard__latest-on-bounties__expired card mt-3">
+                    <div class="card-body pb-1">
+                      <div class="lead">
+                        <span class="funder-dashboard__latest-on-bounties__expired__count font-weight-bold">
+                          {{ expired_bounties_count }}
+                        </span>
+                        <span class="text-fd-red text-uppercase">
+                          {% trans "expired bountie" %}{{ expired_bounties_count|pluralize }}
+                      </span>
+                      </div>
+                      <div class="w-100 text-right">
+                        <a href="{% url "explorer" %}"
+                           class="funder-dashboard__latest-on-bounties__expired__view
+                                  text-capitalize issue-explorer-link issue-explorer-link--bounties--expired">
+                          {% trans "View" %}
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="funder-dashboard__latest-on-bounties__top-contributors mt-3">
+                    <p class="lead">
+                      {% trans "Top Contributors" %}
+                    </p>
+
+                    {% for contributor in top_contributors %}
+                    <a href="{{ contributor.githubLink }}" class="mr-1 pb-1 d-inline-block">
+                      <img src="{{ contributor.profilePictureSrc }}"
+                           alt="{{ contributor.handle }}"
+                           title="{{ contributor.handle }}"
+                           class="funder-dashboard__latest-on-bounties__top-contributors__contributor">
+                      </img>
+                    </a>
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="funder-dasboard__outgoing-funds row card mt-4">
+              <div class="col card-body">
+                <div class="d-sm-flex d-block justify-content-between">
+                  <h4 class="funder-dashboard__outgoing-funds__title
+                           text-capitalize pt-0 text-fd-no-spacing d-inline-block mr-1">
+                    {% trans "Outgoing Funds" %}
+                  </h4>
+                  <div class="pb-2">
+                    <select class="funder-dashboard__outgoing-funds__filter
+                                   funder-dashboard__outgoing-funds__filter--type-or-status
+                                   custom-select d-inline-block w-auto">
+                      {% for filter in outgoing_funds_filters %}
+                      <option value="{{ filter.value }}"
+                              {% if filter.is_all_filter %}
+                              selected data-is-all-filter="true"
+                              {% endif %}
+                              {% if filter.is_type_filter %}
+                              data-is-type-filter="true"
+                              {% endif %}
+                              {% if filter.is_status_filter %}
+                              data-is-status-filter="true"
+                              {% endif %}>
+                        {{ filter.value_display }}
+                      </option>
+                      {% endfor %}
+                    </select>
+                    <select class="funder-dashboard__outgoing-funds__filter
+                                   funder-dashboard__outgoing-funds__filter--age-or-value
+                                   custom-select d-inline-block w-auto">
+                      <option value="Recent" selected>{% trans "Recent" %}</option>
+                      <option value="Oldest">{% trans "Oldest" %}</option>
+                      <option value="Highest Value">{% trans "Highest Value" %}</option>
+                      <option value="Lowest Value">{% trans "Lowest Value" %}</option>
+                    </select>
+                  </div>
+                </div>
+                <table class="funder-dashboard__outgoing-funds__funds-wrapper table w-100" style="table-layout: fixed;">
+                  <thead>
+                  <tr class="text-secondary">
+                    <th scope="col" style="width: 10%;">
+                      {% trans "Issue" %}
+                    </th>
+                    <th scope="col" style="max-width: 25%;">
+                      {% trans "Title" %}
+                    </th>
+                    <th scope="col" style="width: 15%">
+                      {% trans "Type" %}
+                    </th>
+                    <th scope="col" style="width: 15%;">
+                      {% trans "Status" %}
+                    </th>
+                    <th scope="col" style="width: 15%;">
+                      {% trans "Issue Details" %}
+                    </th>
+                    <th scope="col" style="width: 20%">
+                      {% trans "Amount" %}
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody class="funder-dashboard__outgoing-funds__funds">
+                  <tr class="funder-dashboard__outgoing-funds__funds__fund
+                             funder-dashboard__outgoing-funds__funds__fund--template">
+                    <td class="">
+                      <span class="table-header--inline">
+                          {% trans "Issue:" %}
+                      </span>
+                      <span class="funder-dashboard__outgoing-funds__funds__fund__id">
+                      </span>
+                    </td>
+                    <td>
+                      <span class="table-header--inline">
+                          {% trans "Title:" %}
+                      </span>
+                      <span class="funder-dashboard__outgoing-funds__funds__fund__title">
+                      </span>
+                    </td>
+                    <td>
+                      <span class="table-header--inline">
+                        {% trans "Type:" %}
+                      </span>
+                      <span class="funder-dashboard__outgoing-funds__funds__fund__type">
+                      </span>
+                    </td>
+                    <td>
+                      <span class="table-header--inline">
+                        {% trans "Status:" %}
+                      </span>
+                      <span class="funder-dashboard__outgoing-funds__funds__fund__status">
+                      </span>
+                    </td>
+                    <td>
+                      <span class="table-header--inline">
+                          {% trans "Issue Details:" %}
+                      </span>
+                      <a href="#" class="funder-dashboard__outgoing-funds__funds__fund__view-etherscan text-secondary">
+                        <i class="fas mr-1 fa-eye"></i>
+                        {% trans "View Etherscan" %}
+                      </a>
+                      <span class="d-none text-secondary
+                        funder-dashboard__outgoing-funds__funds__fund__etherscan-link-placeholder">
+                          <i class="fas mr-1 fa-eye"></i>
+                          {% trans "Etherscan link unavailable" %}
+                        </span>
+                    </td>
+                    <td class="funder-dashboard__outgoing-funds__fund__worth">
+                      <div class="t-oflowhide">
+                        <span class="table-header--inline">
+                          {% trans "Amount:" %}
+                        </span>
+                        <span class="mr-2 text-fd-blue--dark">
+                          <span class="funder-dashboard__outgoing-funds__funds__fund__worth__eth"></span> ETH
+                        </span>
+                        <span class=" text-fd-green">
+                          <span class="funder-dashboard__outgoing-funds__funds__fund__worth__dollars"></span> USD
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+                <hr>
+                <div class="d-flex justify-content-end">
+                  <a href="{% url "explorer" %}"
+                     class="issue-explorer-link issue-explorer-link--payments--all">
+                    {% trans "View All Payments" %}
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="funder-dashboard__outgoing-funds__pagination text-right mt-2">
+              <button type="button"
+                      class="btn btn-secondary d-inline-block funder-dashboard__outgoing-funds__pagination__prev">
+                {% trans "Prev" %}
+              </button>
+              <button class="btn btn-secondary pr-2 pl-2 font-weight-bold d-inline-block
+                             funder-dashboard__outgoing-funds__pagination__page">
+                1
+              </button>
+              <button type="button"
+                      class="btn btn-secondary d-inline-block funder-dashboard__outgoing-funds__pagination__next">
+                {% trans "Next" %}
+              </button>
+            </div>
+
+            <div class="funder-dasboard__all-bounties row card mt-4">
+              <div class="col card-body">
+                <div class="d-sm-flex d-block justify-content-between">
+                  <h4 class="funder-dashboard__all-bounties__title
+                             text-capitalize pt-0 text-fd-no-spacing d-inline-block mr-1">
+                    {% trans "All Bounties" %}
+                  </h4>
+                  <div class="pb-2">
+                    <select class="funder-dashboard__all-bounties__filter
+                                   funder-dashboard__all-bounties__filter--type-or-status
+                                   custom-select d-inline-block w-auto">
+                      {% for filter in all_bounties_filters %}
+                      <option value="{{ filter.value }}"
+                              {% if filter.is_all_filter %}
+                              selected data-is-all-filter="true"
+                              {% endif %}
+                              {% if filter.is_status_pending_or_claimed_filter %}
+                              data-is-status-pending-or-claimed-filter="true"
+                              {% endif %}
+                              >
+                        {{ filter.value_display }}
+                      </option>
+                      {% endfor %}
+                    </select>
+                    <select class="funder-dashboard__all-bounties__filter
+                                   funder-dashboard__all-bounties__filter--age-or-value
+                                   custom-select d-inline-block w-auto">
+                      <option value="Recent" selected>{% trans "Recent" %}</option>
+                      <option value="Oldest">{% trans "Oldest" %}</option>
+                      <option value="Highest Value">{% trans "Highest Value" %}</option>
+                      <option value="Lowest Value">{% trans "Lowest Value" %}</option>
+                    </select>
+                  </div>
+                </div>
+                <table class="table w-100" style="table-layout: fixed;">
+                  <thead>
+                  <tr class="text-secondary">
+                    <th scope="col" style="width: 10%;">
+                      {% trans "Issue" %}
+                    </th>
+                    <th scope="col" style="max-width: 25%;">
+                      {% trans "Title" %}
+                    </th>
+                    <th scope="col" style="width: 15%">
+                      {% trans "Type" %}
+                    </th>
+                    <th scope="col" style="width: 15%;">
+                      {% trans "Status" %}
+                    </th>
+                    <th scope="col" style="width: 15%;">
+                      {% trans "Issue Details" %}
+                    </th>
+                    <th scope="col" style="width: 20%">
+                      {% trans "Amount" %}
+                    </th>
+                  </tr>
+                  </thead>
+                  <tbody class="funder-dashboard__all-bounties__bounties">
+                  <tr class="funder-dashboard__all-bounties__bounties__bounty
+                             funder-dashboard__all-bounties__bounties__bounty--template">
+                    <td>
+                      <span class="table-header--inline">
+                          {% trans "Issue:" %}
+                      </span>
+                      <span class="funder-dashboard__all-bounties__bounties__bounty__id">
+                      </span>
+                    </td>
+                    <td>
+                      <span class="table-header--inline">
+                          {% trans "Title:" %}
+                      </span>
+                      <span class="funder-dashboard__all-bounties__bounties__bounty__title">
+                      </span>
+                    </td>
+                    <td>
+                      <span class="table-header--inline">
+                        {% trans "Type:" %}
+                      </span>
+                      <span class="funder-dashboard__all-bounties__bounties__bounty__type">
+                      </span>
+                    </td>
+                    <td>
+                      <span class="table-header--inline">
+                        {% trans "Status:" %}
+                      </span>
+                      <div class="funder-dashboard__all-bounties__bounties__bounty__status__circle"></div>
+                      <span class="funder-dashboard__all-bounties__bounties__bounty__status d-inline-block">
+                      </span>
+                    </td>
+                    <td>
+                      <span class="table-header--inline">
+                          {% trans "Issue Details:" %}
+                      </span>
+                      <a href="#" class="funder-dashboard__all-bounties__bounties__bounty__view-github text-secondary">
+                        <i class="fas mr-1 fa-eye"></i>
+                        {% trans "View Github" %}
+                      </a>
+                    </td>
+                    <td class="funder-dashboard__all-bounties__bounties__bounty__worth">
+                      <div class="t-oflowhide" style="min-width: 200px">
+                        <span class="table-header--inline">
+                            {% trans "Amount:" %}
+                        </span>
+                        <span class="mr-2 text-fd-blue--dark bgc-ethereum">
+                          <span class="funder-dashboard__all-bounties__bounties__bounty__worth__eth"></span> ETH
+                        </span>
+                        <span class="text-fd-green bgc-dollars">
+                          <span class="funder-dashboard__all-bounties__bounties__bounty__worth__dollars"></span> USD
+                        </span>
+                      </div>
+                    </td>
+                  </tr>
+                  </tbody>
+                </table>
+                <hr>
+                <div class="d-flex justify-content-end">
+                  <a href="{% url "explorer" %}"
+                     class="issue-explorer-link issue-explorer-link--bounties--all">
+                    {% trans "View All Bounties" %}
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="funder-dashboard__all-bounties__pagination text-right mt-2">
+              <button type="button"
+                class="btn btn-secondary d-inline-block funder-dashboard__all-bounties__pagination__prev">
+                {% trans "Prev" %}
+              </button>
+              <button class="btn btn-secondary pr-2 pl-2 font-weight-bold d-inline-block
+                             funder-dashboard__all-bounties__pagination__page">
+                1
+              </button>
+              <button type="button"
+                class="btn btn-secondary d-inline-block funder-dashboard__all-bounties__pagination__next">
+                {% trans "Next" %}
+              </button>
+            </div>
+          </div>
+          <div class="col-xl">
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include 'shared/footer.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    <script src="{% static "v2/js/chart.min.js" %}"></script>
+    <script type="text/javascript">
+      window.funderDashboardPayoutChartData = {
+        weeklyData: {{ payout_history_weekly | safe }},
+        monthlyData: {{ payout_history_monthly | safe }},
+        yearlyData: {{ payout_history_yearly | safe }}
+      };
+
+      window.outgoingFunds = {
+        items: {{ outgoing_funds | safe }}
+      }
+
+      window.allBounties = {
+        items: {{ all_bounties | safe }}
+      };
+
+      window.taxReportCsv = {{ csv_all_time_paid_bounties | safe }}
+    </script>
+    <script src="{% static "v2/js/pages/dashboard/funder.js" %}"></script>
+    {% include 'shared/messages.html' %}
+  </body>
+</html>
