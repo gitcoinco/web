@@ -245,7 +245,7 @@ var callbacks = {
       tooltip_info.push('<p class="m-0" style="margin-top: 3px;">Crowdfunding worth $' + usd_value + '</p>');
       $('#value_in_usdt').html(parseFloat(result['value_in_usdt']) + usd_value);
     }
-  
+
     for (var token in tokens) {
       if (token) {
         const val = tokens[token];

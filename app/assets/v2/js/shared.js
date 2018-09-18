@@ -926,7 +926,7 @@ var setUsdAmount = function(event) {
   var amount = $('input[name=amount]').val();
   var denomination = $('#token option:selected').text();
   var estimate = getUSDEstimate(amount, denomination, function(estimate) {
-    if (estimate['value']) {
+    if (estimate['value'] ) {
       $('#usd-amount-wrapper').css('visibility', 'visible');
       $('#usd_amount_text').css('visibility', 'visible');
 
