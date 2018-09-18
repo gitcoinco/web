@@ -1297,7 +1297,7 @@ def funder_dashboard(request):
         "all_bounties": json.dumps(d_all_bounties, ensure_ascii=False, cls=DjangoJSONEncoder),
     }
 
-    return TemplateResponse(request, 'funder_dashboard.html', context)
+    return TemplateResponse(request, 'dashboard/funder.html', context)
 
 
 @csrf_exempt
