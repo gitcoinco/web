@@ -127,7 +127,7 @@ class KudosContract:
                     tags=kudos[6],
                     image=kudos[7],
                     cloned_from_id=kudos[8],
-                    sent_from_address=kudos[9]
+                    # sent_from_address=kudos[9]
                     )
 
     def may_require_key(f):
@@ -187,7 +187,7 @@ class KudosContract:
             return r
         return wrapper
 
-    def sync_db(self, kudos_id=None):
+    def sync_db(self, kudos_id=None, sent_from_address=None):
         """Sync the database with the blockchain.
 
         During a Kudos clone  or cloneAndTransfer, two rows need to be updated in the
@@ -212,12 +212,12 @@ class KudosContract:
 
         # If the kudos_id is passed to the function
         if kudos_id:
-            owner_address = self._contract.functions.ownerOf(kudos_id).call()
             kudos = self.getKudosById(kudos_id)
             kudos_map = self.get_kudos_map(kudos)
-            kudos_db = Token(pk=kudos_id, owner_address=owner_address, **kudos_map)
+            kudos_map['owner_address'] = self._contract.functions.ownerOf(kudos_id).call()
+            kudos_map['sent_from_address'] = self._w3.eth.getTransactionFromBlock('latest', 0)['from']
+            kudos_db = Token(pk=kudos_id, **kudos_map)
             kudos_db.save()
-            kudos_map['owner_address'] = owner_address
             logger.info(f'Synced Kudos ID {kudos_id}: {kudos_map["name"]}')
             logger.debug(f'Kudos Detail: {kudos_map}')
             return True
@@ -227,12 +227,12 @@ class KudosContract:
         # Handle the dummy Kudos
         if kudos_id == 0:
             return False
-        owner_address = self._contract.functions.ownerOf(kudos_id).call()
         kudos = self.getKudosById(kudos_id)
         kudos_map = self.get_kudos_map(kudos)
-        kudos_db = Token(pk=kudos_id, owner_address=owner_address, **kudos_map)
+        kudos_map['owner_address'] = self._contract.functions.ownerOf(kudos_id).call()
+        kudos_map['sent_from_address'] = self._w3.eth.getTransactionFromBlock('latest', 0)['from']
+        kudos_db = Token(pk=kudos_id,  **kudos_map)
         kudos_db.save()
-        kudos_map['owner_address'] = owner_address
         logger.info(f'Synced Kudos ID {kudos_id}: {kudos_map["name"]}')
         logger.debug(f'Kudos Detail: {kudos_map}')
 
@@ -241,12 +241,12 @@ class KudosContract:
         if kudos_id == kudos_db.cloned_from_id:
             return True
         kudos_id = kudos_db.cloned_from_id
-        owner_address = self._contract.functions.ownerOf(kudos_id).call()
         kudos = self.getKudosById(kudos_id)
         kudos_map = self.get_kudos_map(kudos)
-        kudos_db = Token(pk=kudos_id, owner_address=owner_address, **kudos_map)
+        kudos_map['owner_address'] = self._contract.functions.ownerOf(kudos_id).call()
+        kudos_map['sent_from_address'] = self._w3.eth.getTransactionFromBlock('latest', 0)['from']
+        kudos_db = Token(pk=kudos_id, **kudos_map)
         kudos_db.save()
-        kudos_map['owner_address'] = owner_address
         logger.info(f'Synced Kudos ID {kudos_id}: {kudos_map["name"]}')
         logger.debug(f'Kudos Detail: {kudos_map}')
 
