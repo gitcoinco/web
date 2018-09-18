@@ -322,12 +322,12 @@ def send_3(request):
     to_emails = get_to_emails(params)
 
     # Validate that the token exists on the back-end
-    kudos_token = Token.objects.filter(name=params['kudosName'], num_clones_allowed__gt=0).first()
+    kudos_token_cloned_from = Token.objects.filter(name=params['kudosName'], num_clones_allowed__gt=0).first()
     # db mutations
-    kudos_email = KudosTransfer.objects.create(
+    kudos_transfer = KudosTransfer.objects.create(
         emails=to_emails,
         # For kudos, `token` is a kudos.models.Token instance.
-        kudos_token=kudos_token,
+        kudos_token_cloned_from=kudos_token_cloned_from,
         amount=params['amount'],
         comments_public=params['comments_public'],
         ip=get_ip(request),
@@ -371,20 +371,20 @@ def send_4(request):
     destinationAccount = params['destinationAccount']
     is_direct_to_recipient = params.get('is_direct_to_recipient', False)
     if is_direct_to_recipient:
-        kudos_email = KudosTransfer.objects.get(
+        kudos_transfer = KudosTransfer.objects.get(
             metadata__direct_address=destinationAccount,
             metadata__creation_time=params['creation_time'],
             metadata__salt=params['salt'],
         )
     else:
-        kudos_email = KudosTransfer.objects.get(
+        kudos_transfer = KudosTransfer.objects.get(
             metadata__address=destinationAccount,
             metadata__salt=params['salt'],
         )
 
     # Return Permission Denied if not authenticated
-    is_authenticated_for_this_via_login = (kudos_email.from_username and kudos_email.from_username == from_username)
-    is_authenticated_for_this_via_ip = kudos_email.ip == get_ip(request)
+    is_authenticated_for_this_via_login = (kudos_transfer.from_username and kudos_transfer.from_username == from_username)
+    is_authenticated_for_this_via_ip = kudos_transfer.ip == get_ip(request)
     is_authed = is_authenticated_for_this_via_ip or is_authenticated_for_this_via_login
     if not is_authed:
         response = {
@@ -395,42 +395,42 @@ def send_4(request):
 
     # Save the txid to the database once it has been confirmed in MetaMask.  If there is no txid,
     # it means that the user never went through with the transaction.
-    kudos_email.txid = txid
+    kudos_transfer.txid = txid
     if is_direct_to_recipient:
-        kudos_email.receive_txid = txid
-    kudos_email.save()
+        kudos_transfer.receive_txid = txid
+    kudos_transfer.save()
 
     # Update kudos.models.Token to reflect the newly cloned Kudos
-    if kudos_email.network == 'custom network':
+    if kudos_transfer.network == 'custom network':
         network = 'localhost'
     else:
-        network = kudos_email.network
+        network = kudos_transfer.network
     kudos_contract = KudosContract(network)
     kudos_contract.sync_db()
 
     # notifications
-    # maybe_market_tip_to_github(kudos_email)
-    # maybe_market_tip_to_slack(kudos_email, 'new_tip')
-    maybe_market_kudos_to_email(kudos_email)
-    # record_user_action(kudos_email.from_username, 'send_kudos', kudos_email)
-    # record_tip_activity(kudos_email, kudos_email.from_username, 'new_kudos' if kudos_email.username else 'new_crowdfund')
+    # maybe_market_tip_to_github(kudos_transfer)
+    # maybe_market_tip_to_slack(kudos_transfer, 'new_tip')
+    maybe_market_kudos_to_email(kudos_transfer)
+    # record_user_action(kudos_transfer.from_username, 'send_kudos', kudos_transfer)
+    # record_tip_activity(kudos_transfer, kudos_transfer.from_username, 'new_kudos' if kudos_transfer.username else 'new_crowdfund')
 
     return JsonResponse(response)
 
 
-def record_kudos_email_activity(kudos_email, github_handle, event_name):
+def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
     kwargs = {
         'activity_type': event_name,
-        'kudos_email': kudos_email,
+        'kudos_transfer': kudos_transfer,
         'metadata': {
-            'amount': str(kudos_email.amount),
-            'token_name': kudos_email.tokenName,
-            'value_in_eth': str(kudos_email.value_in_eth),
-            'value_in_usdt_now': str(kudos_email.value_in_usdt_now),
-            'github_url': kudos_email.github_url,
-            'to_username': kudos_email.username,
-            'from_name': kudos_email.from_name,
-            'received_on': str(kudos_email.received_on) if kudos_email.received_on else None
+            'amount': str(kudos_transfer.amount),
+            'token_name': kudos_transfer.tokenName,
+            'value_in_eth': str(kudos_transfer.value_in_eth),
+            'value_in_usdt_now': str(kudos_transfer.value_in_usdt_now),
+            'github_url': kudos_transfer.github_url,
+            'to_username': kudos_transfer.username,
+            'from_name': kudos_transfer.from_name,
+            'received_on': str(kudos_transfer.received_on) if kudos_transfer.received_on else None
         }
     }
     try:
@@ -441,14 +441,14 @@ def record_kudos_email_activity(kudos_email, github_handle, event_name):
         logging.error(f"error in record_kudos_email_activity: profile with github name {github_handle} not found")
         return
     try:
-        kwargs['bounty'] = kudos_email.bounty
+        kwargs['bounty'] = kudos_transfer.bounty
     except:
         pass
 
     try:
         Activity.objects.create(**kwargs)
     except Exception as e:
-        logging.error(f"error in record_kudos_email_activity: {e} - {event_name} - {kudos_email} - {github_handle}")
+        logging.error(f"error in record_kudos_email_activity: {e} - {event_name} - {kudos_transfer} - {github_handle}")
 
 
 def receive(request, key, txid, network):
@@ -465,59 +465,59 @@ def receive(request, key, txid, network):
     these_kudos_emails = KudosTransfer.objects.filter(web3_type='v3', txid=txid, network=network)
     kudos_emails = these_kudos_emails.filter(metadata__reference_hash_for_receipient=key) | these_kudos_emails.filter(
         metadata__reference_hash_for_funder=key)
-    kudos_email = kudos_emails.first()
-    is_authed = request.user.username == kudos_email.username or request.user.username == kudos_email.from_username
-    not_mined_yet = get_web3(kudos_email.network).eth.getBalance(
-        Web3.toChecksumAddress(kudos_email.metadata['address'])) == 0
+    kudos_transfer = kudos_emails.first()
+    is_authed = request.user.username == kudos_transfer.username or request.user.username == kudos_transfer.from_username
+    not_mined_yet = get_web3(kudos_transfer.network).eth.getBalance(
+        Web3.toChecksumAddress(kudos_transfer.metadata['address'])) == 0
 
     if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
         request.user, 'profile', None
     ):
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
-    elif kudos_email.receive_txid:
+    elif kudos_transfer.receive_txid:
         messages.info(request, 'This kudos has been received')
     elif not is_authed:
         messages.error(
-            request, f'This kudos is for {kudos_email.username} but you are logged in as {request.user.username}.  Please logout and log back in as {kudos_email.username}.')
+            request, f'This kudos is for {kudos_transfer.username} but you are logged in as {request.user.username}.  Please logout and log back in as {kudos_transfer.username}.')
     elif not_mined_yet:
         messages.info(
-            request, f'This tx {kudos_email.txid}, is still mining.  Please wait a moment before submitting the receive form.')
-    elif request.GET.get('receive_txid') and not kudos_email.receive_txid:
+            request, f'This tx {kudos_transfer.txid}, is still mining.  Please wait a moment before submitting the receive form.')
+    elif request.GET.get('receive_txid') and not kudos_transfer.receive_txid:
         params = request.GET
 
         # db mutations
         try:
             if params['save_addr']:
-                profile = get_profile(kudos_email.username)
+                profile = get_profile(kudos_transfer.username)
                 if profile:
                     # TODO: Does this mean that the address the user enters in the receive form
                     # Will overwrite an already existing preferred_payout_address?  Should we
                     # ask the user to confirm this?
                     profile.preferred_payout_address = params['forwarding_address']
                     profile.save()
-            kudos_email.receive_txid = params['receive_txid']
-            kudos_email.receive_address = params['forwarding_address']
-            kudos_email.received_on = timezone.now()
-            kudos_email.save()
-            record_user_action(kudos_email.from_username, 'receive_kudos', kudos_email)
-            record_kudos_email_activity(kudos_email, kudos_email.username, 'receive_kudos')
+            kudos_transfer.receive_txid = params['receive_txid']
+            kudos_transfer.receive_address = params['forwarding_address']
+            kudos_transfer.received_on = timezone.now()
+            kudos_transfer.save()
+            record_user_action(kudos_transfer.from_username, 'receive_kudos', kudos_transfer)
+            record_kudos_email_activity(kudos_transfer, kudos_transfer.username, 'receive_kudos')
             messages.success(request, 'This kudos has been received')
         except Exception as e:
             messages.error(request, str(e))
             logger.exception(e)
 
-    logger.info(kudos_email.kudos_token.name)
+    logger.info(kudos_transfer.kudos_token_cloned_from.name)
 
     params = {
         'issueURL': request.GET.get('source'),
         'class': 'receive',
         'title': _('Receive Kudos'),
         'gas_price': round(recommend_min_gas_price_to_confirm_in_time(120), 1),
-        'kudos_email': kudos_email,
+        'kudos_transfer': kudos_transfer,
         'key': key,
         'is_authed': is_authed,
-        'disable_inputs': kudos_email.receive_txid or not_mined_yet or not is_authed,
+        'disable_inputs': kudos_transfer.receive_txid or not_mined_yet or not is_authed,
     }
 
     return TemplateResponse(request, 'transaction/receive.html', params)

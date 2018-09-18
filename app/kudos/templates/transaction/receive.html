@@ -47,13 +47,13 @@
     <h1 class="h2">{% trans "You've got a Kudos" %}</h1>
 
     <div class="my-4">
-      <img src="{% static kudos_email.kudos_token.image %}" width="160" alt="" class="mb-2">
-      <span id="kudosName" data-kudosname="{{ kudos_email.kudos_token.name }}" class="d-block">{{ kudos_email.kudos_token.humanized_name }} </span>
-      <span id="kudosPrice" class="d-block" data-ethprice="{{ kudos_email.kudos_token.price_in_eth }}">{{ kudos_email.kudos_token.price_in_eth }} ETH<small></small></span>
+      <img src="{% static kudos_transfer.kudos_token_cloned_from.image %}" width="160" alt="" class="mb-2">
+      <span id="kudosName" data-kudosname="{{ kudos_transfer.kudos_token_cloned_from.name }}" class="d-block">{{ kudos_transfer.kudos_token_cloned_from.humanized_name }} </span>
+      <span id="kudosPrice" class="d-block" data-ethprice="{{ kudos_transfer.kudos_token_cloned_from.price_in_eth }}">{{ kudos_transfer.kudos_token_cloned_from.price_in_eth }} ETH<small></small></span>
     </div>
     
   </header>
-  <div id="receove_eth" {% if kudos_email.receive_txid %} style="display:none;" {%endif%} >
+  <div id="receove_eth" {% if kudos_transfer.receive_txid %} style="display:none;" {%endif%} >
     <form method="POST">
       <div class="form-group">
         <label for="">{% trans "Forward it to a permanent address" %}:</label>
@@ -77,23 +77,23 @@
       </div>
     </form>
   </div>
-  <div id="receove_eth_done" {% if not kudos_email.receive_txid %} style="display:none;" {%endif%}>
+  <div id="receove_eth_done" {% if not kudos_transfer.receive_txid %} style="display:none;" {%endif%}>
     <h1>{% trans "Congrats!" %}</h1>
-    <p>You've received {{kudos_email.amount}} {{kudos_email.tokenName}} via transaction <span id="trans_id">{{kudos_email.receive_txid}}</span>.</p>
+    <p>You've received {{kudos_transfer.amount}} {{kudos_transfer.tokenName}} via transaction <span id="trans_id">{{kudos_transfer.receive_txid}}</span>.</p>
   </div>
-  {% if not kudos_email.receive_txid and is_authed %}
+  {% if not kudos_transfer.receive_txid and is_authed %}
     <script>
       document.gas_price = {{gas_price}};
       document.ipfs_key_to_secret = '{{key}}';
-      document.gitcoin_secret = '{{kudos_email.metadata.gitcoin_secret}}';
-      document.kudos_email = {
-        'holding_address': '{{kudos_email.metadata.address}}',
-        'amount_in_wei': {{kudos_email.amount_in_wei | floatformat}},
-        'token_address': '{{kudos_email.tokenAddress}}',
+      document.gitcoin_secret = '{{kudos_transfer.metadata.gitcoin_secret}}';
+      document.kudos_transfer = {
+        'holding_address': '{{kudos_transfer.metadata.address}}',
+        'amount_in_wei': {{kudos_transfer.amount_in_wei | floatformat}},
+        'token_address': '{{kudos_transfer.tokenAddress}}',
       }
     </script>
   {% endif %}
-{% if kudos_email.receive_txid %}
+{% if kudos_transfer.receive_txid %}
   <script>
     setTimeout(function(){
       startConfetti();
@@ -102,6 +102,6 @@
 {% endif %}
 </section>
 <script>
-  document.network = '{{kudos_email.network}}';
+  document.network = '{{kudos_transfer.network}}';
 </script>
 {% endblock %}

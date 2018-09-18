@@ -47,20 +47,20 @@
     {% endif %}
 
     <h3>
-        {% if kudos_email.from_name %}
-            {{kudos_email.from_name}} {% blocktrans %} sent you a {{ kudos_token.name|humanize_name }} kudos.{% endblocktrans %}
+        {% if kudos_transfer.from_name %}
+            {{kudos_transfer.from_name}} {% blocktrans %} sent you a {{ kudos_token.name|humanize_name }} kudos.{% endblocktrans %}
         {% else %}
             {% blocktrans %}Someone sent you a {{ kudos_token.name }} kudos.{% endblocktrans %}
-        {% endif %}{% if not is_new %} {{kudos_email.created_on | naturaltime}}{%endif%}.
+        {% endif %}{% if not is_new %} {{kudos_transfer.created_on | naturaltime}}{%endif%}.
     </h3>
 </div>
 
 <div class="centered-contents kudos-box">
     <div class="kudos">
         <div class="kudos-contents">
-            {% if kudos_email.github_url %}
+            {% if kudos_transfer.github_url %}
                 <p>
-                {% if kudos_email.from_name %}{{kudos_email.from_name}}{% else %}The sender{% endif %} said it was for your work on <a href="{{kudos_email.github_url}}">{{kudos_email.github_url}}</a>.
+                {% if kudos_transfer.from_name %}{{kudos_transfer.from_name}}{% else %}The sender{% endif %} said it was for your work on <a href="{{kudos_transfer.github_url}}">{{kudos_transfer.github_url}}</a>.
                     {% if comments %}
                         {% trans "They had the following comments:" %}
                     <pre>
@@ -90,11 +90,11 @@
             {% endif %}
             {% if already_redeemed %}
                 <p>
-                 {% trans "This kudos has been remitted automatically to the Ethereum address on file for your account via txid " %}{{kudos_email.txid}}
+                 {% trans "This kudos has been remitted automatically to the Ethereum address on file for your account via txid " %}{{kudos_transfer.txid}}
                 </p>
             {% elif show_expires %}
                 <p>
-                {% trans "The kudos expires on" %} <strong>{{kudos_email.expires_date}}, {% trans "in just" %} {{kudos_email.expires_date | naturaltime}}</strong>. {% trans "No pressure, but if you wanted to redeem your kudos sooner rather than later that'd be 👌:" %}
+                {% trans "The kudos expires on" %} <strong>{{kudos_transfer.expires_date}}, {% trans "in just" %} {{kudos_transfer.expires_date | naturaltime}}</strong>. {% trans "No pressure, but if you wanted to redeem your kudos sooner rather than later that'd be 👌:" %}
                 </p>
             {% else %}
                 <p>

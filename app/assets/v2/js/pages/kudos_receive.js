@@ -25,7 +25,7 @@ var sign_and_send = function(rawTx, success_callback, private_key) {
 
 window.onload = function() {
   waitforWeb3(function() {
-    console.log(document.kudos_email)
+    console.log(document.kudos_transfer)
     console.log(document.ipfs_key_to_secret)
     ipfs.ipfsApi = IpfsApi(ipfsConfig);
     ipfs.setProvider(ipfsConfig);
@@ -71,7 +71,7 @@ $(document).ready(function() {
       unloading_button($(this));
       return;
     }
-    if (typeof document.kudos_email == 'undefined') {
+    if (typeof document.kudos_transfer == 'undefined') {
       _alert({ message: gettext('You do not have permission to do that.') }, 'error');
       return;
     }
@@ -100,9 +100,9 @@ $(document).ready(function() {
 
     var gas_price_wei = new web3.BigNumber(document.gas_price * 10 ** 9);
     // Not used
-    var token_address = document.kudos_email['token_address'];
+    var token_address = document.kudos_transfer['token_address'];
     var kudos_contract = web3.eth.contract(kudos_abi).at(kudos_address());
-    var holding_address = document.kudos_email['holding_address'];
+    var holding_address = document.kudos_transfer['holding_address'];
     
 
     web3.eth.getTransactionCount(holding_address, function(error, result) {
