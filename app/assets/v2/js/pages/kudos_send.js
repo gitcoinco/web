@@ -1,17 +1,5 @@
 /* eslint-disable no-console */
 
-var ethToWei = function(amountInEth) {
-  // Accept a float value in eth and convert to Wei.
-  let weiConvert = Math.pow(10, 18);
-  return new web3.BigNumber(amountInEth * 1.0 * weiConvert);
-}
-
-var weiToEth = function(amountInWei) {
-  // Accept a wei integer value and convert to a float Eth value.
-  let weiConvert = Math.pow(10, 18);
-  return amountInWei / weiConvert;
-}
-
 var get_gas_price = function() {
   if ($('#gasPrice').length) {
     return $('#gasPrice').val() * Math.pow(10, 9);
@@ -41,6 +29,7 @@ var set_metadata = function(callback) {
   var account = generate_or_get_private_key();
   var shares = account['shares'];
 
+  console.log(ipfsConfig);
   ipfs.ipfsApi = IpfsApi(ipfsConfig);
   ipfs.setProvider(ipfsConfig);
   ipfs.add(shares[1], function(err, hash1) {
@@ -222,6 +211,10 @@ $(document).ready(function() {
     // kudosName is the name of the kudos token that is being cloned
     var kudosName = window.location.href.split('\=')[1];
 
+    // get kudosPrice from the HTML
+    kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
+    kudosPriceInWei = new web3.BigNumber(kudosPriceInEth * 1.0 * Math.pow(10, 18));
+
     var formData = {
       email: email,
       github_url: github_url,
@@ -240,7 +233,7 @@ $(document).ready(function() {
     }
 
     // derived info
-    var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
+    // var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
     var tokenDetails = tokenAddressToDetails(tokenAddress);
     var tokenName = 'ETH';
 
@@ -310,7 +303,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
   }
   var _disableDeveloperTip = true;
   var gas_money = parseInt(Math.pow(10, (9 + 5)) * ((defaultGasPrice * 1.001) / Math.pow(10, 9)));
-  var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
+  // var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
   var tokenDetails = tokenAddressToDetails(tokenAddress);
   var tokenName = 'ETH';
   // var tokenName = window.location.href.split('\=')[1];
@@ -441,86 +434,54 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
         // end post_send_callback
 
         // Pull up Kudos contract instance
-        var kudosContractInstance = web3.eth.contract(kudos_abi).at(kudos_address());
+        var kudos_contract = web3.eth.contract(kudos_abi).at(kudos_address());
 
-        if (isSendingETH) {
-          alert(amountInWei);
-          web3.eth.sendTransaction({
-            to: destinationAccount,
-            value: amountInWei,
-            gasPrice: web3.toHex(get_gas_price())
-          }, post_send_callback);
+        if (is_direct_to_recipient) {
+          // Step 9
+          // Kudos Direct Send (KDS)
+          console.log('Using Kudos Direct Send (KDS)');
+          console.log('destinationAccount:' + destinationAccount);
+          // send_kudos_direct(kudosName, 1, destinationAccount);
+          let numClones = 1;
+          let receiver = destinationAccount;
+
+          kudos_contract.cloneAndTransfer(kudosName, numClones, receiver, {from: account, value: kudosPriceInWei}, post_send_callback);
+
+          // Send Indirectly
         } else {
-          var send_kudos = function(name, numClones, receiver) {
-            let account = web3.eth.coinbase;
-            // let value = new web3.BigNumber(1000000000000000);
-            let amountInEth = parseFloat($('#kudosPrice').attr('data-ethprice'))
-            console.log(amountInEth)
-            let weiConvert = Math.pow(10, 18);
-            let value = new web3.BigNumber(amountInEth * 1.0 * weiConvert);
-            console.log(value)
-            console.log(value.toNumber())
-            console.log(value.toString(10))
-            kudosContractInstance.cloneAndTransfer(name, numClones, receiver, {from: account, value: value}, post_send_callback);
-
-            // Step 10
-            // call the post_send_callback() function which hits the /kudos/send/4 endpoint and updates
-            // the database with the txid once it is mined.
-            // token_contract.transfer(destinationAccount, amountInWei, {gasPrice: web3.toHex(get_gas_price())}, post_send_callback);
-          };
-          // This is what runs in the Kudos case
-          var send_kudos_money = function(kudosGasEstimateInWei, kudosPriceInWei) {
+          // Step 9
+          // Kudos Indirect Send (KIS)
+          // estimate gas for cloning the kudos
+          console.log('Using Kudos Indirect Send (KIS)')
+          let numClones = 1;
+          let account = web3.eth.coinbase;
+          // let kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice')); 
+          // var kudosPriceInWei = amountInEth * 1.0 * Math.pow(10, 18);
+          params = {
+            kudosName: kudosName,
+            numClones: numClones,
+            from: account,
+            value: kudosPriceInWei.toString()
+          }
+          console.log(params)
+          kudos_contract.clone.estimateGas(kudosName, numClones, {from: account, value: kudosPriceInWei}, function(error, kudosGasEstimate){
+            console.log('kudosGasEstimate: '+ kudosGasEstimate)
+            // Multiply gas * gas_price_gwei to get gas cost in wei.
+            kudosGasEstimateInWei = kudosGasEstimate * get_gas_price();
             _alert({ message: gettext('You will now be asked to confirm a transaction to cover the cost of the Kudos and the gas money.') }, 'info');
             money = {
               gas_money: gas_money,
               kudosGasEstimateInWei: kudosGasEstimateInWei,
-              kudosPriceInWei: kudosPriceInWei
+              kudosPriceInWei: kudosPriceInWei.toNumber()
             }
             console.log(money)
             web3.eth.sendTransaction({
               to: destinationAccount,
               // Add gas_money + gas cost for kudos contract transaction + cost of kudos token (Gitcoin keeps this amount?)
-              value: gas_money + kudosGasEstimateInWei + kudosPriceInWei,
+              value: gas_money + kudosGasEstimateInWei + kudosPriceInWei.toNumber() ,
               gasPrice: web3.toHex(get_gas_price())
             }, post_send_callback);
-          };
-
-
-          if (is_direct_to_recipient) {
-            // Step 9
-            // Kudos Direct Send (KDS)
-            console.log('Using Kudos Direct Send (KDS)');
-            console.log('destinationAccount:' + destinationAccount);
-            send_kudos(kudosName, 1, destinationAccount);
-
-          } else {
-            // Step 9
-            // Kudos Indirect Send (KIS)
-            // estimate gas for cloning the kudos
-            console.log('Using Kudos Indirect Send (KIS)')
-            var numClones = 1;
-            let account = web3.eth.coinbase;
-            let amountInEth = parseFloat($('#kudosPrice').attr('data-ethprice')); 
-            let weiConvert = Math.pow(10, 18);
-            // kudosCost is the price of the kudos in the send page.
-            // var kudosPriceInWei = new web3.BigNumber(amountInEth * 1.0 * weiConvert);
-            var kudosPriceInWei = amountInEth * 1.0 * weiConvert;
-            // let value = new web3.BigNumber(1000000)
-            params = {
-              kudosName: kudosName,
-              numClones: numClones,
-              account: account,
-              amountInEth: amountInEth,
-              kudosPriceInWei: kudosPriceInWei
-            }
-            console.log(params)
-            kudosContractInstance.clone.estimateGas(kudosName, numClones, {from: account, value: kudosPriceInWei}, function(error, kudosGasEstimate){
-              console.log('kudosGasEstimate: '+ kudosGasEstimate)
-              // Multiply gas * gas_price_gwei to get gas cost in wei.
-              kudosGasEstimateInWei = kudosGasEstimate * get_gas_price();
-              send_kudos_money(kudosGasEstimateInWei, kudosPriceInWei);
-            });
-          }
+          });
         }
       }
     });
@@ -548,7 +509,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
       // pay out via secret sharing algo
       // Step 6
       // wait_for_metadata(got_metadata_callback);
-      wait_for_metadata(got_metadata_callback);
+      wait_for_metadata_test(got_metadata_callback);
       // let metadata = {}
       // got_metadata_callback(metadata);
     }
