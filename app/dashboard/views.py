@@ -1151,9 +1151,8 @@ def get_quickstart_video(request):
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def extend_issue_deadline(request):
-    """Show quickstart video."""
+    """Extend Issue Deadline."""
     bounty = Bounty.objects.get(pk=request.GET.get("pk"))
-    print(bounty)
     context = {
         'active': 'extend_issue_deadline',
         'title': _('Extend Expiration'),
@@ -1163,6 +1162,25 @@ def extend_issue_deadline(request):
     }
     return TemplateResponse(request, 'extend_issue_deadline.html', context)
 
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def notify_funder(request):
+    """Notify funder to improve issue"""
+    categories = [
+        { 'id': 'underfunded', 'text': _('This issue is underfunded.') },
+        { 'id': 'underscoped', 'text': _('This issue is underscoped.') },
+        { 'id': 'taken', 'text': _('This bounty was taken from me.') },
+        { 'id': 'abandoned', 'text': _('This bounty seems abandoned.') },
+        { 'id': 'spam', 'text': _('This issue is considered spam or unethical') }
+    ]
+    context = {
+        'active': 'notify_funder',
+        'title': _('Report'),
+        'user_logged_in': request.user.is_authenticated,
+        'categories': categories,
+        'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
+    }
+    return TemplateResponse(request, 'notify_funder.html', context)
 
 @require_POST
 @csrf_exempt

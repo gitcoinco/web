@@ -1,0 +1,57 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<div id="{{active}}" class="white-light-bg">
+  <div class="row">
+    <div class="col-12 closebtn">
+      <a rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">
+        <span aria-hidden="true">&times;</span>
+      </a>
+    </div>
+    <div class="col-12">
+      <h5 class="text-center font-title">{% trans "Report To Funder" %}</h5>
+    </div>
+    {% if user_logged_in %}
+      <div class="col-12 offset-md-1 col-md-10">
+        <h5 class="text-center font-body mb-4">{% trans "Notify funder on how to make the bounty more attractive." %}</h5>
+        <form>
+          <div class="row">
+            {% for category in categories %}
+              <div class="form__checkbox col-12 col-md-6">
+                <input name="{{category.id}}" id="{{category.id}}" value="{{category.id}}" type="checkbox" />
+                <label class="form__label" for="{{category.id}}">{{category.text}}</label>
+              </div>
+            {% endfor %}
+          </div>
+          <button class="row button button--primary btn-extend" type="submit">{% trans "Submit" %}</button>
+          <button class="row button button--primary-o btn-cancel" type="button">{% trans "Cancel" %}</button>
+        </form>
+      </div>
+    {% else %}
+      <div class="col-12 text-center">
+        <div class="login my-4">
+          <div class="login__text mb-4">
+            {% trans "Please login to give feedback to the funder on how to improve this bounty." %}
+          </div>
+          <a class="button button--primary login__button" href={{login_link}} onclick="dataLayer.push({'event': 'login'});">
+            <i class="fab fa-github"></i> <span>{% trans "Login With Github" %}</span>
+          </a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>

@@ -821,7 +821,8 @@ a.btn {
     right: 11rem;
   }
 
-  #extend_deadline {
+  #extend_deadline,
+  #notify_funder {
     min-width: 40rem;
     max-width: 0;
   }

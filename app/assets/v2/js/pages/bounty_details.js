@@ -531,12 +531,14 @@ var wait_for_tx_to_mine_and_then_ping_server = function() {
 };
 
 var attach_work_actions = function() {
-  $('body').delegate('a[href="/interested"], a[href="/uninterested"], a[href="/extend-deadlines"]', 'click', function(e) {
+  $('body').delegate('a[href="/interested"], a[href="/uninterested"], a[href="/extend-deadlines"], a[href="/notify-funder"]', 'click', function(e) {
     e.preventDefault();
     if ($(this).attr('href') == '/interested') {
       show_interest_modal.call(this);
     } else if ($(this).attr('href') === '/extend-deadlines') {
       show_extend_deadline_modal.call(this);
+    } else if ($(this).attr('href') === '/notify-funder') {
+      show_notify_funder.call(this);
     } else if (confirm(gettext('Are you sure you want to stop work?'))) {
       $(this).attr('href', '/interested');
       $(this).find('span').text(gettext('Start Work'));
@@ -622,7 +624,6 @@ var set_extended_time_html = function(extendedDuration, currentExpires) {
   $('input[name=updatedExpires]').val(currentExpires.getTime());
   var date = getFormattedDate(currentExpires);
   var days = timeDifference(now, currentExpires).split(' ');
-  var time = getTimeFromDate(currentExpires);
 
   days.shift();
   days = days.join(' ');
@@ -632,7 +633,6 @@ var set_extended_time_html = function(extendedDuration, currentExpires) {
 };
 
 var show_extend_deadline_modal = function() {
-  var self = this;
 
   setTimeout(function() {
     var url = '/modal/extend_issue_deadline?pk=' + document.result['pk'];
@@ -686,6 +686,45 @@ var show_extend_deadline_modal = function() {
     });
   });
 };
+
+const show_notify_funder = function() {
+  setTimeout(function() {
+    var url = '/modal/notify_funder?pk=' + document.result['pk'];
+
+    $.get(url, function(newHTML) {
+      var modal = $(newHTML).appendTo('body').modal({
+        modalClass: 'modal add-interest-modal'
+      });
+
+      $('.js-select2').each(function() {
+        $(this).select2();
+      });
+      $('.submit_bounty select').each(function(evt) {
+        $('.select2-selection__rendered').removeAttr('title');
+      });
+      $('.select2-container').click(function() {
+        $('.select2-container .select2-search__field').remove();
+      });
+
+      $('.btn-cancel').on('click', function() {
+        $.modal.close();
+        return;
+      });
+
+      modal.on('submit', function(event) {
+        event.preventDefault();
+        let reasons = [];
+        $("#notify_funder input:checkbox:checked").each(() =>{
+          reasons.push($(this).val());
+        });
+        // TODO: Trigger Mail
+        _alert({ message: gettext('The funder has been notified about your feedback') }, 'success');
+        $.modal.close();
+      });
+    });
+  });
+};
+
 
 var build_detail_page = function(result) {
 
@@ -831,9 +870,8 @@ var do_actions = function(result) {
   const actions = [];
 
   if (show_submit_work) {
-    const enabled = submit_work_enabled;
     const _entry = {
-      enabled: enabled,
+      enabled: submit_work_enabled,
       href: result['action_urls']['fulfill'],
       text: gettext('Submit Work'),
       parent: 'right_actions',
@@ -846,9 +884,8 @@ var do_actions = function(result) {
   }
 
   if (show_start_stop_work) {
-    const enabled = true;
     const interest_entry = {
-      enabled: enabled,
+      enabled: true,
       href: is_interested ? '/uninterested' : '/interested',
       text: is_interested ? gettext('Stop Work') : gettext('Start Work'),
       parent: 'right_actions',
@@ -861,9 +898,8 @@ var do_actions = function(result) {
   }
 
   if (show_kill_bounty) {
-    const enabled = isBountyOwner(result);
     const _entry = {
-      enabled: enabled,
+      enabled: isBountyOwner(result),
       href: result['action_urls']['cancel'],
       text: gettext('Cancel Bounty'),
       parent: 'right_actions',
@@ -875,9 +911,8 @@ var do_actions = function(result) {
   }
 
   if (show_payout) {
-    const enabled = isBountyOwner(result);
     const _entry = {
-      enabled: enabled,
+      enabled: isBountyOwner(result),
       href: result['action_urls']['payout'],
       text: gettext('Payout Bounty'),
       title: gettext('Payout the bounty to one or more submitters.'),
@@ -889,9 +924,8 @@ var do_actions = function(result) {
 
 
   if (show_increase_bounty) {
-    const enabled = true;
     const _entry = {
-      enabled: enabled,
+      enabled: true,
       href: result['action_urls']['contribute'],
       text: gettext('Contribute'),
       parent: 'right_actions',
@@ -902,9 +936,8 @@ var do_actions = function(result) {
   }
 
   if (show_extend_deadline) {
-    const enabled = true;
     const _entry = {
-      enabled: enabled,
+      enabled: true,
       href: '/extend-deadlines',
       text: gettext('Extend Expiration'),
       parent: 'right_actions',
@@ -933,6 +966,18 @@ var do_actions = function(result) {
       text: gettext('Edit Issue Details'),
       parent: 'right_actions',
       title: gettext('Update your Bounty Settings to get the right Crowd')
+    };
+
+    actions.push(_entry);
+  }
+
+  if (!isBountyOwner(result)) {
+    const _entry = {
+      enabled: true,
+      href: '/notify-funder',
+      text: gettext('Notify'),
+      parent: 'right_actions',
+      title: gettext('Let the Funder know that how this Bounty can be Improved')
     };
 
     actions.push(_entry);
