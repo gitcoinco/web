@@ -7,6 +7,7 @@
     <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
     <link rel="stylesheet" href={% static "v2/css/profile.css" %}>
     <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
   </head>
   <body class="interior {{ active }}">
     {% include 'shared/tag_manager_2.html' %}
@@ -264,77 +265,66 @@
                 <div class="col-12">
                   <span class="font-caption profile-bounties__sort_label">{{ group.title }}</span>
                 </div>
-                {% if group.all %}
-                  <div class="container">
-                    <div class="row mb-3 p-2">
-                      <div class="col-12">
-                        <div class="profile-bounties__group-title profile-bounties__group-title--completed">
-                          <i class="far fa-check-circle"></i>
-                          <span class="pl-1">
-                            {% trans "All" %} {{ group.all|length }}
-                            Bount{{ group.all|pluralize:"y,ies" }}
-                          </span>
-                        </div>
-                        {% for bounty in group.all %}
-                          {% include "shared/profile_activities_bounty.html" %}
-                        {% endfor %}
-                      </div>
-                    </div>
-                  </div>
-                {% endif %}
 
-                {% if group.completed %}
-                  <div class="container">
-                    <div class="row mb-3 p-2">
-                      <div class="col-12">
-                        <div class="profile-bounties__group-title profile-bounties__group-title--completed">
-                          <i class="far fa-check-circle"></i>
-                          <span class="pl-1">
-                            {% trans "Completed" %} {{ group.completed|length }}
-                            Bount{{ group.completed|pluralize:"y,ies" }}
-                          </span>
+                {% if group.activity_bounties %}
+                <div id="activity-tabs" class="tab-container">
+                  <button type="button" id="all" class="section-tab">All Activity ({{ group.activity_bounties|length }})</button>
+                  <button type="button" id="funded" class="section-tab">Bounties Funded ({{ funded_bounties_count }})</button>
+                  <button type="button" id="completed" class="section-tab">Bounties Completed</button>
+                  <button type="button" id="tips" class="section-tab">Tips Received</button>
+                </div>
+                <div id="activity-tabs-sections" class="tab-sections section">
+                  <div id="section-all" class="tab-section active">
+                    <div class="container">
+                      <div class="row mb-3 p-2">
+                        <div class="col-12">
+                          {% for activity in group.activity_bounties %}
+                            {% include "shared/profile_activities_bounty.html" %}
+                          {% endfor %}
                         </div>
-                        {% for bounty in group.completed %}
-                          {% include "shared/profile_activities_bounty.html" %}
-                        {% endfor %}
                       </div>
                     </div>
                   </div>
-                {% endif %}
-
-                {% if group.submitted %}
-                  <div class="container">
-                    <div class="row mb-3 p-2">
-                      <div class="col-12">
-                        <div class="profile-bounties__group-title">
-                          <i class="fas fa-code-branch"></i>
-                          <span class="pl-1">
-                            {% trans "Submitted" %} {{ group.submitted|length }}
-                            Bount{{ group.submitted|pluralize:"y,ies" }}
-                          </span>
+                  <div id="section-funded" class="tab-section">
+                    <div class="container">
+                      <div class="row mb-3 p-2">
+                        <div class="col-12">
+                          {% for activity in group.activity_bounties %}
+                            {% if activity.activity_type == 'new_bounty' %}
+                              {% include "shared/profile_activities_bounty.html" %}
+                            {% endif %}
+                          {% endfor %}
                         </div>
-                        {% for bounty in group.submitted %}
-                          {% include "shared/profile_activities_bounty.html" %}
-                        {% endfor %}
                       </div>
                     </div>
                   </div>
-                {% endif %}
-
-                {% if group.started %}
-                  <div class="container">
-                    <div class="row mb-3 p-2">
-                      <div class="col-12">
-                        <div class="profile-bounties__group-title">
-                          {% trans "Started" %} {{ group.started|length }}
-                          Bount{{ group.started|pluralize:"y,ies" }}
+                  <div id="section-completed" class="tab-section">
+                    <div class="container">
+                      <div class="row mb-3 p-2">
+                        <div class="col-12">
+                          {% for activity in group.activity_bounties %}
+                            {% if activity.activity_type == 'work_done' %}
+                              {% include "shared/profile_activities_bounty.html" %}
+                            {% endif %}
+                          {% endfor %}
                         </div>
-                        {% for bounty in group.started %}
-                          {% include "shared/profile_activities_bounty.html" %}
-                        {% endfor %}
                       </div>
                     </div>
                   </div>
+                  <div id="section-tips" class="tab-section">
+                    <div class="container">
+                      <div class="row mb-3 p-2">
+                        <div class="col-12">
+                          {% for activity in group.activity_bounties %}
+                            {% if activity.activity_type == 'work_submitted' %}
+                              {% include "shared/profile_activities_bounty.html" %}
+                            {% endif %}
+                          {% endfor %}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
                 {% endif %}
               </div>
             {% endfor %}
@@ -358,6 +348,7 @@
     <script src="{% static "v2/js/tokens.js" %}"></script>
     <script src="{% static "v2/js/pages/profile_details.js" %}"></script>
     <script src="{% static "v2/js/shared.js" %}"></script>
+    <script src="{% static "v2/js/pages/tabs.js" %}"></script>
 
     <script type="text/javascript">
       $(document).ready(function() {
@@ -369,6 +360,7 @@
             $('.profile-bounties--tips .bounty_row').removeClass('bounty_row--hidden');
           });
         }
+        setupTabs('#activity-tabs'); 
 
         {% if profile.is_org %}
             // Fetch bounties user is fulfiller
