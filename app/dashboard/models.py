@@ -2200,7 +2200,7 @@ class Profile(SuperModel):
         if activities:
             all_activities = self.activities.filter(
                 bounty__network=network
-            ).select_related('bounty').all().order_by('-created')
+            ).select_related('bounty', 'tip').all().order_by('-created')
 
             if all_activities:
                 params['activities'] = [{
