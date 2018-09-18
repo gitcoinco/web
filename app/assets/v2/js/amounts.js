@@ -37,6 +37,7 @@ var get_rates_estimate = function(usd_amount) {
   var rate = usd_amount / hours;
   var round_rate = rate.toFixed(2);
   var round_decimals = hours < 1 ? 2 : 1;
+
   hours = Math.round(hours, round_decimals);
   success_prob = ((0.002 * rate) + 0.65) * 100;
   rates_addon.push('' + hours + ' hrs at $' + rate + '/hr <i class="fa fa-arrow-right"></i> ' + success_prob + '% success rate<br>');
