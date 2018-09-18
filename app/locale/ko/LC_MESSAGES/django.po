@@ -4997,7 +4997,7 @@ msgid_plural ""
 "\t\t    "
 msgstr[0] ""
 "\n"
-"현상금 당 평균 %(total_earned_eth)s ETH (%(total_earned_usd)s USD)에 대해 완료된 현상금 % (fulfilled_bounties_count | intcomma)에서 %(avg_eth_earned_per_bounty)s ETH (%(avg_usd_earned_per_bounty)s USD)를 받았습니다!"
+"현상금 당 평균 %(total_earned_eth)s ETH (%(total_earned_usd)s USD)에 대해 완료된 현상금 %(fulfilled_bounties_count|intcomma)s 에서 %(avg_eth_earned_per_bounty)s ETH (%(avg_usd_earned_per_bounty)s USD)를 받았습니다!"
 
 #: retail/templates/emails/quarterly_stats.html:224
 #, python-format
@@ -5007,7 +5007,8 @@ msgid ""
 "\t\t\t"
 msgstr ""
 "\n"
-"__bounty_completion_percentage __ %%"
+"\t\t\t%(bounty_completion_percentage)s%%\n"
+"\t\t\t"
 
 #: retail/templates/emails/quarterly_stats.html:230
 #, python-format
@@ -5021,7 +5022,8 @@ msgid_plural ""
 "\t\t\t"
 msgstr[0] ""
 "\n"
-"귀하가 시작한 % (num_completed_bounties | intcomma)의 현상금 중 __bounty_completion_percentage __ %%를 완료했습니다. 부지런함을 보여 주셔서 감사합니다."
+"\t\t\t귀하가 시작한 %(num_completed_bounties|intcomma)s 의 현상금 중 %(bounty_completion_percentage)s%%를 완료했습니다. 부지런함을 보여 주셔서 감사합니다.\n"
+"\t\t\t"
 
 #: retail/templates/emails/quarterly_stats.html:249
 #, python-format
@@ -5033,7 +5035,10 @@ msgid_plural ""
 "\n"
 "\t\t\t  You've boosted your skills in %(no_of_languages)s different area:\n"
 "\t\t       "
-msgstr[0] " %(no_of_languages)s 다른 영역에서 기술을 향상 시켰습니다."
+msgstr[0] ""
+"\n"
+"\t\t\t  %(no_of_languages)s 다른 영역에서 기술을 향상 시켰습니다."
+"\t\t       "
 
 #: retail/templates/emails/quarterly_stats.html:255
 msgid ", "
@@ -5077,7 +5082,8 @@ msgid_plural ""
 "\t\t\t"
 msgstr[0] ""
 "\n"
-"현상금에 대한 기금을 지원 한 %(funded_bounties_count)s 문제 중에서 % (num_funded_fulfilled_bounties | intcomma)가 충족되었습니다. 이는 __funded_fulfilled_percentage __ %%의 성공률입니다!"
+"현상금에 대한 기금을 지원 한 %(funded_bounties_count)s 문제 중에서 %(num_funded_fulfilled_bounties|intcomma)s 가 충족되었습니다. 이는 %(funded_fulfilled_percentage)s %%의 성공률입니다!\n"
+"\t\t\t"
 
 #: retail/templates/emails/quarterly_stats.html:288
 #, python-format
@@ -5123,7 +5129,8 @@ msgid_plural ""
 "\t\t\t"
 msgstr[0] ""
 "\n"
-"__ total_funded_hours__ 시간"
+"\t\t\t    %(total_funded_hours)s 시간\n"
+"\t\t\t"
 
 #: retail/templates/emails/quarterly_stats.html:320
 #, python-format
@@ -5143,7 +5150,8 @@ msgid ""
 "\t\t    "
 msgstr ""
 "\n"
-"개발자는 프로젝트에서 %(avg_hours_per_funded_bounty)s 시간 동안 평균 한 번 썼습니다 (사용자가 시간을 입력 한 현상금에만 적용됨). $ __ avg_hourly_rate_per_funded_bounty__ USD / hour의 평균 요율로 총 $ __ total_funded_usd__ USD의 자금을 지원했습니다."
+"\t\t    개발자는 프로젝트에서 %(avg_hours_per_funded_bounty)s 시간 동안 평균 한 번 썼습니다 (사용자가 시간을 입력 한 현상금에만 적용됨). $%(avg_hourly_rate_per_funded_bounty)s USD / hour의 평균 요율로 총 $%(total_funded_usd)s USD의 자금을 지원했습니다.\n"
+"\t\t    "
 
 #: retail/templates/emails/quarterly_stats.html:341
 msgid "You could have been BUIDLing"

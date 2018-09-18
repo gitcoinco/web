@@ -6479,8 +6479,10 @@ msgid ""
 "                  expiration date is considered expired.\n"
 "                "
 msgstr ""
-"Prace, które nie zostały zakończone i minęły\n"
-"              data wygaśnięcia jest uważana za wygasłą."
+"\n"
+"                  Prace, które nie zostały zakończone i minęły\n"
+"                  data wygaśnięcia jest uważana za wygasłą.\n"
+"                "
 
 #: retail/templates/how_it_works/index.html:98
 #, fuzzy
@@ -6499,8 +6501,10 @@ msgid ""
 "will then be reclaimed by the bounty owner.\n"
 "                "
 msgstr ""
+"\n"
 "Projekt może zostać anulowany przez fundatora bounty.\n"
-"              Środki zostaną następnie odzyskane przez właściciela nagrody."
+"              Środki zostaną następnie odzyskane przez właściciela nagrody.\n"
+"                "
 
 #: retail/templates/how_it_works/index.html:123
 msgid ""

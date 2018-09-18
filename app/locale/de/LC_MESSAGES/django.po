@@ -5260,10 +5260,12 @@ msgid_plural ""
 "\t\t    "
 msgstr[0] ""
 "\n"
-"Sie haben %(total_earned_eth)s ETH (%(total_earned_usd)s USD) von% (fully_bounties_count | intcomma) s vollendetem Kopfgeld erhalten, für einen Durchschnitt von %(avg_eth_earned_per_bounty)s ETH (%(avg_usd_earned_per_bounty)s USD) pro Kopfgeld!"
+"\t\t    Sie haben %(total_earned_eth)s ETH (%(total_earned_usd)s USD) von %(fulfilled_bounties_count|intcomma)s vollendetem Kopfgeld erhalten, für einen Durchschnitt von %(avg_eth_earned_per_bounty)s ETH (%(avg_usd_earned_per_bounty)s USD) pro Kopfgeld!"
+"\t\t    "
 msgstr[1] ""
 "\n"
-"Du hast %(total_earned_eth)s ETH (%(total_earned_usd)s USD) von% (fully_bounties_count | intcomma) s vollendeten Kopfgeldern verdient, für einen Durchschnitt von %(avg_eth_earned_per_bounty)s ETH (%(avg_usd_earned_per_bounty)s USD) pro Kopfgeld!"
+"\t\t    Du hast %(total_earned_eth)s ETH (%(total_earned_usd)s USD) von %(fulfilled_bounties_count|intcomma)s vollendeten Kopfgeldern verdient, für einen Durchschnitt von %(avg_eth_earned_per_bounty)s ETH (%(avg_usd_earned_per_bounty)s USD) pro Kopfgeld!"
+"\t\t    "
 
 #: retail/templates/emails/quarterly_stats.html:224
 #, python-format
@@ -5287,10 +5289,12 @@ msgid_plural ""
 "\t\t\t"
 msgstr[0] ""
 "\n"
-"Sie haben __bounty_completion_percentage __ %% der von Ihnen gestarteten Kopfgelder in% (num_completed_bounties | intcomma) abgeschlossen - vielen Dank, dass Sie diese Sorgfalt gezeigt haben."
+"\t\t\tSie haben %(bounty_completion_percentage)s%% der von Ihnen gestarteten Kopfgelder in %(num_completed_bounties|intcomma)s abgeschlossen - vielen Dank, dass Sie diese Sorgfalt gezeigt haben.\n"
+"\t\t\t"
 msgstr[1] ""
 "\n"
-"Sie haben __bounty_completion_percentage __ %% der von Ihnen angefangenen Prämie (% num_completed_bounties | intcomma) abgeschlossen - Danke, dass Sie diese Sorgfalt gezeigt haben."
+"\t\t\tSie haben %(bounty_completion_percentage)s%% der von Ihnen angefangenen Prämie %(num_completed_bounties|intcomma)s abgeschlossen - Danke, dass Sie diese Sorgfalt gezeigt haben.\n"
+"\t\t\t"
 
 #: retail/templates/emails/quarterly_stats.html:249
 #, python-format
@@ -5353,10 +5357,12 @@ msgid_plural ""
 "\t\t\t"
 msgstr[0] ""
 "\n"
-"Von dem %(funded_bounties_count)s -Problem, für das Sie ein Kopfgeld gezahlt haben, wurden% (num_funded_fullfilled_boundies | intcomma) erfüllt - das ist eine __funded_fulfilled_percentage __ %% Erfolgsrate!"
+"\t\t\tVon dem %(funded_bounties_count)s -Problem, für das Sie ein Kopfgeld gezahlt haben, wurden %(num_funded_fulfilled_bounties|intcomma)s erfüllt - das ist eine %(funded_fulfilled_percentage)s%% Erfolgsrate!"
+"\t\t\t"
 msgstr[1] ""
 "\n"
-"Von den %(funded_bounties_count)s -Problemen, für die Sie ein Kopfgeld gezahlt haben, wurden% (num_funded_fullfilled_boundies | intcomma) erfüllt - das ist eine __funded_fulfilled_percentage __ %% Erfolgsrate!"
+"Von den %(funded_bounties_count)s -Problemen, für die Sie ein Kopfgeld gezahlt haben, wurden %(num_funded_fulfilled_bounties|intcomma)s erfüllt - das ist eine %(funded_fulfilled_percentage)s%% Erfolgsrate!"
+"\t\t\t"
 
 #: retail/templates/emails/quarterly_stats.html:288
 #, python-format
@@ -5431,7 +5437,8 @@ msgid ""
 "\t\t    "
 msgstr ""
 "\n"
-"Die Entwickler haben durchschnittlich einen Betrag von %(avg_hours_per_funded_bounty)s Stunden pro Ausgabe für Ihre Projekte geleistet (gilt nur für Kopfgelder, bei denen Benutzer ihre Stunden eingegeben haben). Sie haben insgesamt $ __ total_funded_usd__ USD an Arbeit zu einem durchschnittlichen Satz von $ __ avg_hourly_rate_per_funded_bounty__ USD / hour finanziert."
+"\t\t    Die Entwickler haben durchschnittlich einen Betrag von %(avg_hours_per_funded_bounty)s Stunden pro Ausgabe für Ihre Projekte geleistet (gilt nur für Kopfgelder, bei denen Benutzer ihre Stunden eingegeben haben). Sie haben insgesamt $%(total_funded_usd)s USD an Arbeit zu einem durchschnittlichen Satz von $%(avg_hourly_rate_per_funded_bounty)s USD / hour finanziert.\n"
+"\t\t    "
 
 #: retail/templates/emails/quarterly_stats.html:341
 msgid "You could have been BUIDLing"
@@ -6405,10 +6412,11 @@ msgid ""
 "              "
 msgstr ""
 "\n"
-"<span class = \"center-block\"> Abhängig vom Projekt </ span>\n"
-"                <span class = \"center-block\"> type, Zahlung kann </ span> sein\n"
-"                <span class = \"center-block\"> für einen Beitragenden </ span>\n"
-"                <span> oder zu mehreren Mitwirkenden gleichzeitig. </ span>"
+"                <span class=\"center-block\">Abhängig vom Projekt</span>\n"
+"                <span class=\"center-block\">type, Zahlung kann</span>\n"
+"                <span class=\"center-block\"> für einen Beitragenden</span>\n"
+"                <span>oder zu mehreren Mitwirkenden gleichzeitig.</span>\n"
+"              "
 
 #: retail/templates/how_it_works/funder.html:185
 #, fuzzy

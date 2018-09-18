@@ -5146,11 +5146,7 @@ msgid_plural ""
 "\t\t    You earned %(total_earned_eth)s ETH (%(total_earned_usd)s USD) from %(fulfilled_bounties_count|intcomma)s completed bounties, for an average of %(avg_eth_earned_per_bounty)s ETH (%(avg_usd_earned_per_bounty)s USD) per bounty!\n"
 "\t\t    "
 msgstr[0] ""
-"\n"
-"इनाम प्रति %(total_earned_eth)s ETH (%(total_earned_usd)s अमरीकी डालर) के एक औसत के लिए, | (intcomma fulfilled_bounties_count) इनाम पूरा रहा है आप% से %(avg_eth_earned_per_bounty)s ETH (%(avg_usd_earned_per_bounty)s अमरीकी डालर) अर्जित किया है!"
 msgstr[1] ""
-"\n"
-"आप% से %(total_earned_eth)s ETH (%(total_earned_usd)s अमरीकी डालर) की कमाई की (fulfilled_bounties_count | intcomma) पूरा रहा है इनाम, %(avg_eth_earned_per_bounty)s ETH (%(avg_usd_earned_per_bounty)s अमरीकी डालर) इनाम प्रति औसत के लिए!"
 
 #: retail/templates/emails/quarterly_stats.html:224
 #, python-format
@@ -5160,7 +5156,8 @@ msgid ""
 "\t\t\t"
 msgstr ""
 "\n"
-"__bounty_completion_percentage __ %%"
+"\t\t\t%(bounty_completion_percentage)s%%\n"
+"\t\t\t"
 
 #: retail/templates/emails/quarterly_stats.html:230
 #, python-format
@@ -5174,10 +5171,11 @@ msgid_plural ""
 "\t\t\t"
 msgstr[0] ""
 "\n"
-"आपने __bounty_completion_percentage __ %%% (num_completed_bounties | intcomma) s bounties को पूरा किया है - आपने इस तरह की परिश्रम दिखाने के लिए धन्यवाद।"
+"\t\t\tआपने %(bounty_completion_percentage)s %% %(num_completed_bounties|intcomma)s bounties को पूरा किया है - आपने इस तरह की परिश्रम दिखाने के लिए धन्यवाद।"
+"\t\t\t"
 msgstr[1] ""
 "\n"
-"आपने __bounty_completion_percentage __ %%% (num_completed_bounties | intcomma) की बाउंटी को पूरा किया है - आपने इस तरह की परिश्रम दिखाने के लिए धन्यवाद।"
+"आपने %(bounty_completion_percentage)s %% %(num_completed_bounties|intcomma)s की बाउंटी को पूरा किया है - आपने इस तरह की परिश्रम दिखाने के लिए धन्यवाद।"
 
 #: retail/templates/emails/quarterly_stats.html:249
 #, python-format
@@ -5237,13 +5235,13 @@ msgid_plural ""
 "\t\t\tOf the %(funded_bounties_count)s issues that you funded a bounty for, %(num_funded_fulfilled_bounties|intcomma)s were fulfilled -- that's a %(funded_fulfilled_percentage)s%% success rate!\n"
 "\t\t\t"
 msgstr[0] ""
-" %(funded_bounties_count)s समस्या के लिए आपने एक बक्षीस को वित्त पोषित किया "
-"है,% (num_funded_fulfilled_bounties | intcomma) को पूरा किया गया था - यह एक "
-"__funded_fulfilled_percentage __ %% सफलता दर है!"
+"\n"
+"\t\t\t%(funded_bounties_count)s समस्या के लिए आपने एक बक्षीस को वित्त पोषित किया %(num_funded_fulfilled_bounties|intcomma)s को पूरा किया गया था - यह एक %(funded_fulfilled_percentage)s%% सफलता दर है!\n"
+"\t\t\t"
 msgstr[1] ""
-" %(funded_bounties_count)s समस्याओं के लिए जिन्हें आपने एक बक्षीस दिया है,% "
-"(num_funded_fulfilled_bounties | intcomma) को पूरा कर लिया गया था - यह एक "
-"__funded_fulfilled_percentage __ %% सफलता दर है!"
+"\n"
+"\t\t\t%(funded_bounties_count)s समस्याओं के लिए जिन्हें आपने एक बक्षीस दिया है, %(num_funded_fulfilled_bounties|intcomma)s को पूरा कर लिया गया था - यह एक %(funded_fulfilled_percentage)s%% सफलता दर है!\n"
+"\t\t\t"
 
 #: retail/templates/emails/quarterly_stats.html:288
 #, python-format
@@ -5318,7 +5316,7 @@ msgid ""
 "\t\t    "
 msgstr ""
 "\n"
-"डेवलपर्स ने आपकी परियोजनाओं पर औसतन %(avg_hours_per_funded_bounty)s घंटे प्रति समस्या का काम किया (केवल उन बाउंटी पर लागू होता है जहां उपयोगकर्ता अपने घंटों में प्रवेश करते हैं)। आपने __ avg_hourly_rate_per_funded_bounty__ USD / घंटा की औसत दर पर कुल $ __ कुल_फंडेड_यूएसडी__ अमरीकी डालर का काम किया है।"
+"डेवलपर्स ने आपकी परियोजनाओं पर औसतन %(avg_hours_per_funded_bounty)s घंटे प्रति समस्या का काम किया (केवल उन बाउंटी पर लागू होता है जहां उपयोगकर्ता अपने घंटों में प्रवेश करते हैं)। आपने $%(total_funded_usd)s USD / घंटा की औसत दर पर कुल $%(avg_hourly_rate_per_funded_bounty)s अमरीकी डालर का काम किया है।"
 
 #: retail/templates/emails/quarterly_stats.html:341
 msgid "You could have been BUIDLing"

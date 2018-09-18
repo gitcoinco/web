@@ -5210,10 +5210,12 @@ msgid_plural ""
 "\t\t    "
 msgstr[0] ""
 "\n"
-"Usted ganó %(total_earned_eth)s ETH (%(total_earned_usd)s USD) desde% (fulfilled_bounties_count | intcomma) s de recompensas completó, para un promedio de %(avg_eth_earned_per_bounty)s ETH (%(avg_usd_earned_per_bounty)s USD) por la generosidad!"
+"\t\t    Usted ganó %(total_earned_eth)s ETH (%(total_earned_usd)s USD) desde %(fulfilled_bounties_count|intcomma)s de recompensas completó, para un promedio de %(avg_eth_earned_per_bounty)s ETH (%(avg_usd_earned_per_bounty)s USD) por la generosidad!\n"
+"\t\t    "
 msgstr[1] ""
 "\n"
-"Obtuvo %(total_earned_eth)s ETH (%(total_earned_usd)s USD) de% (fulfilled_bounties_count | intcomma) s completas recompensas, para un promedio de %(avg_eth_earned_per_bounty)s ETH (%(avg_usd_earned_per_bounty)s USD) por recompensa!"
+"\t\t    Obtuvo %(total_earned_eth)s ETH (%(total_earned_usd)s USD) de %(fulfilled_bounties_count|intcomma)s completas recompensas, para un promedio de %(avg_eth_earned_per_bounty)s ETH (%(avg_usd_earned_per_bounty)s USD) por recompensa!\n"
+"\t\t    "
 
 #: retail/templates/emails/quarterly_stats.html:224
 #, python-format
@@ -5223,7 +5225,8 @@ msgid ""
 "\t\t\t"
 msgstr ""
 "\n"
-"__bounty_completion_percentage __ %%"
+"\t\t\t%(bounty_completion_percentage)s%%\n"
+"\t\t\t"
 
 #: retail/templates/emails/quarterly_stats.html:230
 #, python-format
@@ -5237,10 +5240,12 @@ msgid_plural ""
 "\t\t\t"
 msgstr[0] ""
 "\n"
-"Has completado __bounty_completion_percentage __ %% de las bondades% (num_completed_bounties | intcomma) que has iniciado, gracias por mostrar tanta diligencia."
+"Has completado %(bounty_completion_percentage)s%% de las bondades %(num_completed_bounties|intcomma)s que has iniciado, gracias por mostrar tanta diligencia.\n"
+"\t\t\t"
 msgstr[1] ""
 "\n"
-"Completaste __bounty_completion_percentage __ %% del% (num_completed_bounties | intcomma) s generosidad que comenzaste, gracias por mostrar tanta diligencia."
+"Completaste %(bounty_completion_percentage)s%% del %(num_completed_bounties|intcomma)s generosidad que comenzaste, gracias por mostrar tanta diligencia.\n"
+"\t\t\t"
 
 #: retail/templates/emails/quarterly_stats.html:249
 #, python-format
@@ -5303,10 +5308,12 @@ msgid_plural ""
 "\t\t\t"
 msgstr[0] ""
 "\n"
-"De la cuestión %(funded_bounties_count)s que financió una recompensa por,% (num_funded_fulfilled_bounties | intcomma) se cumplieron s - que es un __funded_fulfilled_percentage __ %% tasa de éxito!"
+"\t\t\tDe la cuestión %(funded_bounties_count)s que financió una recompensa por, %(num_funded_fulfilled_bounties|intcomma)s e cumplieron s - que es un %(funded_fulfilled_percentage)s%% tasa de éxito!"
+"\t\t\t"
 msgstr[1] ""
 "\n"
-"De los temas %(funded_bounties_count)s que financió una recompensa por,% (num_funded_fulfilled_bounties | intcomma) se cumplieron s - que es un __funded_fulfilled_percentage __ %% tasa de éxito!"
+"\t\t\tDe los temas %(funded_bounties_count)s que financió una recompensa por, %(num_funded_fulfilled_bounties|intcomma)s e cumplieron s - que es un %(funded_fulfilled_percentage)s%% tasa de éxito!"
+"\t\t\t"
 
 #: retail/templates/emails/quarterly_stats.html:288
 #, python-format
@@ -5381,7 +5388,8 @@ msgid ""
 "\t\t    "
 msgstr ""
 "\n"
-"Los desarrolladores trabajaron un promedio de %(avg_hours_per_funded_bounty)s horas por tema en sus proyectos (solo se aplica a las recompensas donde los usuarios ingresaron sus horas). Usted financió un total de $ __ total_funded_usd__ USD de trabajo a una tasa promedio de $ __ avg_hourly_rate_per_funded_bounty__ USD / hour."
+"\t\t    Los desarrolladores trabajaron un promedio de %(avg_hours_per_funded_bounty)s horas por tema en sus proyectos (solo se aplica a las recompensas donde los usuarios ingresaron sus horas). Usted financió un total de $%(total_funded_usd)s USD de trabajo a una tasa promedio de $%(avg_hourly_rate_per_funded_bounty)s USD / hour.\n"
+"\t\t    "
 
 #: retail/templates/emails/quarterly_stats.html:341
 msgid "You could have been BUIDLing"

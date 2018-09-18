@@ -4687,7 +4687,8 @@ msgid ""
 "\t\t\t"
 msgstr ""
 "\n"
-"__bounty_completion_percentage __ %%"
+"\t\t\t%(bounty_completion_percentage)s%%\n"
+"\t\t\t"
 
 #: retail/templates/emails/quarterly_stats.html:230
 #, python-format
@@ -4843,7 +4844,8 @@ msgid ""
 "\t\t    "
 msgstr ""
 "\n"
-"开发人员在您的项目上平均每个问题工作 %(avg_hours_per_funded_bounty)s 小时（仅适用于用户输入工作时间的奖励）。您以$ __ avg_hourly_rate_per_funded_bounty__美元/小时的平均汇率资助了$ __ total_funded_usd__美元的工作总额。"
+"\t\t    开发人员在您的项目上平均每个问题工作 %(avg_hours_per_funded_bounty)s 小时（仅适用于用户输入工作时间的奖励）。您以 $%(avg_hourly_rate_per_funded_bounty)s 美元/小时的平均汇率资助了 $%(total_funded_usd)s 美元的工作总额。"
+"\t\t    "
 
 #: retail/templates/emails/quarterly_stats.html:341
 msgid "You could have been BUIDLing"

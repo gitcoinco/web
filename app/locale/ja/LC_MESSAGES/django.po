@@ -399,7 +399,7 @@ msgid ""
 "href=\"%(new_fundingurl)s\">here</a>."
 msgstr ""
 "いくつかの仕事に資金を提供していますか？ <a "
-"href=\"__new_fundingurl\"\">ここ</a>で新たに資金提供された問題を提出することができます。"
+"href=\"%(new_fundingurl)s\">ここ</a>で新たに資金提供された問題を提出することができます。"
 
 #: dashboard/templates/bounty/details.html:64
 msgid "Time left"
@@ -3233,7 +3233,7 @@ msgid ""
 "Page %(bounties_paginator.number)s of "
 "%(bounties_paginator.paginator.num_pages)s."
 msgstr ""
-"％（bounties_paginator.paginator.num_pages）のページ％（bounties_paginator.number）s。"
+"%(bounties_paginator.paginator.num_pages)s のページ %(bounties_paginator.number)s。"
 
 #: external_bounties/templates/external_bounties.html:144
 msgid "next"
@@ -3374,7 +3374,7 @@ msgid ""
 "    %(obj.github_username)s with a wallet address of %(obj.address)s"
 msgstr ""
 "この蛇口のリクエストに資金を提供することで、 %(faucet_amount)s ETHを\n"
-"    ウォレット・アドレスが％（obj.address）の％（obj.github_username）s"
+"    ウォレット・アドレスが %(obj.address)s %(obj.github_username)s"
 
 #: faucet/templates/process_faucet_request.html:70
 msgid ""
@@ -4574,7 +4574,8 @@ msgid ""
 "\t\t\t"
 msgstr ""
 "\n"
-"__bounty_completion_percentage __ %%"
+"\t\t\t%(bounty_completion_percentage)s%%\n"
+"\t\t\t"
 
 #: retail/templates/emails/quarterly_stats.html:230
 #, python-format
@@ -4603,10 +4604,14 @@ msgid_plural ""
 "\n"
 "\t\t\t  You've boosted your skills in %(no_of_languages)s different area:\n"
 "\t\t       "
-msgstr[0] " %(no_of_languages)s であなたのスキルを向上させました："
+msgstr[0] ""
+"\n"
+"\t\t          %(no_of_languages)s であなたのスキルを向上させました：\n"
+"\t\t\t  "
 msgstr[1] ""
 "\n"
-"あなたは %(no_of_languages)s の異なる分野であなたのスキルを高めました："
+"\t\t\t  あなたは %(no_of_languages)s の異なる分野であなたのスキルを高めました：\n"
+"\t\t       "
 
 #: retail/templates/emails/quarterly_stats.html:255
 msgid ", "
@@ -4728,7 +4733,8 @@ msgid ""
 "\t\t    "
 msgstr ""
 "\n"
-"デベロッパーはプロジェクトで1か月あたり平均 %(avg_hours_per_funded_bounty)s 時間働いていました（ユーザーが時間を入力した賞金にのみ適用されます）。 $ __ avg_hourly_rate_per_funded_bounty__ USD /時間の平均レートで合計$ __ total_funded_usd__ USDの資金を調達しました。"
+"\t\t    デベロッパーはプロジェクトで1か月あたり平均 %(avg_hours_per_funded_bounty)s 時間働いていました（ユーザーが時間を入力した賞金にのみ適用されます）。 $%(avg_hourly_rate_per_funded_bounty)s USD /時間の平均レートで合計 $%(total_funded_usd)s USDの資金を調達しました。"
+"\t\t    "
 
 #: retail/templates/emails/quarterly_stats.html:341
 msgid "You could have been BUIDLing"
@@ -4950,7 +4956,7 @@ msgstr "あなたが探しているページが見つかりません。"
 #: retail/templates/error.html:26
 #, python-format
 msgid "Error %(code)s."
-msgstr "エラーコード__。"
+msgstr "エラーコード %(code)s。"
 
 #: retail/templates/error.html:27
 msgid ""
@@ -7829,7 +7835,7 @@ msgstr "Gitcoinは、集中している個人の分散したグループです�
 msgid ""
 "on being <i>relentlessly mission driven</i>. <a href=\"%(missionurl)s\"> "
 "(more on this here) </a>"
-msgstr "<i>絶え間なく使命主義</ i>を遂行しています。 <a href=\"#missionurl__\">（詳細はこちら）</a>"
+msgstr "<i>絶え間なく使命主義</ i>を遂行しています。 <a href=\"%(missionurl)s\">（詳細はこちら）</a>"
 
 #: retail/templates/whitepaper_new.html:45
 msgid ""

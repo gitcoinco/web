@@ -5208,10 +5208,12 @@ msgid_plural ""
 "\t\t    "
 msgstr[0] ""
 "\n"
-"Hai guadagnato %(total_earned_eth)s ETH (%(total_earned_usd)s USD) da% (fulfilled_bounties_count | intcomma) s completato bounty, per una media di %(avg_eth_earned_per_bounty)s ETH (%(avg_usd_earned_per_bounty)s USD) per taglia!"
+"\t\t    Hai guadagnato %(total_earned_eth)s ETH (%(total_earned_usd)s USD) da %(fulfilled_bounties_count|intcomma)s completato bounty, per una media di %(avg_eth_earned_per_bounty)s ETH (%(avg_usd_earned_per_bounty)s USD) per taglia!"
+"\t\t    "
 msgstr[1] ""
 "\n"
-"Hai guadagnato %(total_earned_eth)s ETH (%(total_earned_usd)s USD) da% (fulfilled_bounties_count | intcomma) s completate di bounties, per una media di %(avg_eth_earned_per_bounty)s ETH (%(avg_usd_earned_per_bounty)s USD) per taglia!"
+"\t\t    Hai guadagnato %(total_earned_eth)s ETH (%(total_earned_usd)s USD) da %(fulfilled_bounties_count|intcomma)s completate di bounties, per una media di %(avg_eth_earned_per_bounty)s ETH (%(avg_usd_earned_per_bounty)s USD) per taglia!"
+"\t\t    "
 
 #: retail/templates/emails/quarterly_stats.html:224
 #, python-format
@@ -5221,7 +5223,8 @@ msgid ""
 "\t\t\t"
 msgstr ""
 "\n"
-"__bounty_completion_percentage __ %%"
+"\t\t\t%(bounty_completion_percentage)s%%\n"
+"\t\t\t"
 
 #: retail/templates/emails/quarterly_stats.html:230
 #, python-format
@@ -5235,10 +5238,12 @@ msgid_plural ""
 "\t\t\t"
 msgstr[0] ""
 "\n"
-"Hai completato __bounty_completion_percentage __ %% del numero di taglie% (num_completed_bounties | intcomma) che hai iniziato - grazie per aver mostrato una tale diligenza."
+"\t\t\tHai completato %(bounty_completion_percentage)s%% del numero di taglie %(num_completed_bounties|intcomma)s che hai iniziato - grazie per aver mostrato una tale diligenza.\n"
+"\t\t\t"
 msgstr[1] ""
 "\n"
-"Hai completato __bounty_completion_percentage __ %% del valore di% (num_completed_bounties | intcomma) che hai iniziato - grazie per aver mostrato una tale diligenza."
+"\t\t\tHai completato %(bounty_completion_percentage)s%% del valore di %(num_completed_bounties|intcomma)s che hai iniziato - grazie per aver mostrato una tale diligenza.\n"
+"\t\t\t"
 
 #: retail/templates/emails/quarterly_stats.html:249
 #, python-format
@@ -5300,10 +5305,12 @@ msgid_plural ""
 "\t\t\t"
 msgstr[0] ""
 "\n"
-"Del problema %(funded_bounties_count)s che hai finanziato una taglia per,% (num_funded_fulfilled_bounties | intcomma) s sono stati soddisfatti - questa è una percentuale di successo __funded_fulfilled_percentage __ %%!"
+"\t\t\tDel problema %(funded_bounties_count)s che hai finanziato una taglia per, %(num_funded_fulfilled_bounties|intcomma)s sono stati soddisfatti - questa è una percentuale di successo %(funded_fulfilled_percentage)s%%!\n"
+"\t\t\t"
 msgstr[1] ""
 "\n"
-"Dei problemi %(funded_bounties_count)s che hai finanziato una taglia per,% (num_funded_fulfilled_bounties | intcomma) s sono stati soddisfatti - questa è una percentuale di successo __funded_fulfilled_percentage __ %%!"
+"\t\t\tDei problemi %(funded_bounties_count)s che hai finanziato una taglia per, %(num_funded_fulfilled_bounties|intcomma)s sono stati soddisfatti - questa è una percentuale di successo %(funded_fulfilled_percentage)s%%!\n"
+"\t\t\t"
 
 #: retail/templates/emails/quarterly_stats.html:288
 #, python-format
@@ -5378,7 +5385,8 @@ msgid ""
 "\t\t    "
 msgstr ""
 "\n"
-"Gli sviluppatori hanno lavorato in media %(avg_hours_per_funded_bounty)s hours per numero sui tuoi progetti (si applica solo a ricompense in cui gli utenti hanno inserito le loro ore). Hai finanziato un totale di $ __ total_funded_usd__ USD di lavoro a un tasso medio di $ __ avg_hourly_rate_per_funded_bounty__ USD / ora."
+"\t\t    Gli sviluppatori hanno lavorato in media %(avg_hours_per_funded_bounty)s hours per numero sui tuoi progetti (si applica solo a ricompense in cui gli utenti hanno inserito le loro ore). Hai finanziato un totale di $%(total_funded_usd)s USD di lavoro a un tasso medio di $%(avg_hourly_rate_per_funded_bounty)s USD / ora.\n"
+"\t\t    "
 
 #: retail/templates/emails/quarterly_stats.html:341
 msgid "You could have been BUIDLing"
