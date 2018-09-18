@@ -1,5 +1,8 @@
 /* eslint-disable no-console */
 window.onload = function() {
+
+console.log(request);
+
   $('#js-drop').on('dragover', function(event) {
     event.preventDefault();
     event.stopPropagation();
@@ -30,9 +33,11 @@ window.onload = function() {
       });
 
       console.log(data);
-      // $(form).submit();
+      $(form).submit();
     }
   });
+
+
 
   $('#new-milestone').on('click', function(event) {
     event.preventDefault();

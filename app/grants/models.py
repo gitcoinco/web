@@ -6,17 +6,21 @@ from economy.models import SuperModel
 class Grant(SuperModel):
     """Define the structure of a Grant."""
 
-    title = models.CharField(max_length=255)
-    pitch = models.CharField(max_length=255, default='')
+    status = models.BooleanField(default=True)
+    title = models.CharField(default='', max_length=255)
     description = models.TextField(default='', blank=True)
     reference_url = models.URLField(db_index=True)
-    current_funding = models.DecimalField(default=0, decimal_places=4, max_digits=50)
-    goal_funding = models.DecimalField(default=0, decimal_places=4, max_digits=50)
+    image_url = models.URLField(default='')
+    adminAddress = models.CharField(max_length=255, default='0x0')
+    frequency = models.DecimalField(default=30, decimal_places=0, max_digits=50)
+    amountGoal = models.DecimalField(default=1, decimal_places=4, max_digits=50)
+    amountReceived = models.DecimalField(default=0, decimal_places=4, max_digits=50)
 
-    profile = models.ForeignKey('dashboard.Profile', related_name='grants', on_delete=models.CASCADE, null=True)
+    adminProfile = models.ForeignKey('dashboard.Profile', related_name='grant_admin', on_delete=models.CASCADE, null=True)
+    teamMemberProfiles = models.ManyToManyField('dashboard.Profile', related_name='grant_team_members')
 
     def percentage_done(self):
-        return self.current_funding / self.goal_funding * 100
+        return self.amountReceived / self.amountGoal * 100
 
 
 class Stakeholder(models.Model):

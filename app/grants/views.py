@@ -28,12 +28,15 @@ def new_grant(request):
     if request.method == "POST":
         grant = Grant()
 
-        grant.title = request.POST.get('title')
-        grant.pitch = request.POST.get('pitch')
+        grant.title = request.POST.get('input-name')
         grant.description = request.POST.get('description')
         grant.reference_url = request.POST.get('reference_url')
-        grant.goal_funding = request.POST.get('goal_funding')
-        grant.profile = profile
+        grant.image_url = request.POST.get('input-image')
+        # grant.adminAddress = request.POST.get('admin_address')
+        # grant.freguency = request.POST.get('frequency')
+        grant.amountGoal = request.POST.get('amount_goal')
+        grant.adminProfile = profile
+        # grant.teamMemberProfiles = Need to do a profile search based on enetered emails
 
         grant.save()
     else:
