@@ -26,7 +26,7 @@ from django.core.management.base import BaseCommand
 
 from dashboard.helpers import UnsupportedSchemaException
 from django.core.management import call_command
-from kudos.utils import mint_kudos_on_web3_and_db, KudosContract
+from kudos.utils import KudosContract
 
 from web3.exceptions import BadFunctionCallOutput
 
