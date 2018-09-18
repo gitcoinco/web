@@ -49,7 +49,7 @@
     <div class="my-4">
       <img src="{% static kudos_email.kudos_token.image %}" width="160" alt="" class="mb-2">
       <span id="kudosName" data-kudosname="{{ kudos_email.kudos_token.name }}" class="d-block">{{ kudos_email.kudos_token.humanized_name }} </span>
-      <span class="d-block" data-kudosprice="{{ kudos_email.kudos_token.price_in_eth }}">{{ kudos_email.kudos_token.price_in_eth }} ETH<small></small></span>
+      <span id="kudosPrice" class="d-block" data-ethprice="{{ kudos_email.kudos_token.price_in_eth }}">{{ kudos_email.kudos_token.price_in_eth }} ETH<small></small></span>
     </div>
     
   </header>
