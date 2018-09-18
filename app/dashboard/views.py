@@ -25,6 +25,7 @@ import time
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.core.serializers.json import DjangoJSONEncoder
 from django.http import Http404, HttpResponse, JsonResponse
@@ -1151,11 +1152,12 @@ def get_quickstart_video(request):
     return TemplateResponse(request, 'quickstart_video.html', context)
 
 
+@staff_member_required
 @vary_on_cookie
 @cache_page(60 * 60 * 24)
 def funder_dashboard(request):
     """Render the funder dashboard."""
-    if not hasattr(request.user, 'profile'):
+    if not request.user.is_authenticated or not hasattr(request.user, 'profile'):
         return redirect('/')
 
     funder_bounties = request.user.profile.get_funded_bounties()
@@ -1172,17 +1174,14 @@ def funder_dashboard(request):
     d_payout_history_weekly = payout_history['weekly']
     d_payout_history_monthly = payout_history['monthly']
     d_payout_history_yearly = payout_history['yearly']
-    # End module: Payout history.
 
     # Module: Csv export.
     d_csv_all_time_paid_bounties = payout_history['csv_all_time_paid_bounties']
-    # Module: Csv export (end).
 
     # Module: Header.
     utc_now = datetime.datetime.now(timezone.utc)
     expiring_bounties = active_bounties.filter(expires_date__gte=utc_now,
                                                expires_date__lte=utc_now + timezone.timedelta(days=7))
-    # Module: Header (end).
 
     # Modules: Statistics & tax reporting.
     d_submitted_bounties_count = current_funder_bounties.count()
@@ -1247,18 +1246,15 @@ def funder_dashboard(request):
         issue_worth_in_usdt = expired_issue.get_value_in_usdt
         if issue_worth_in_usdt is not None:
             d_expired_issues_worth_dollars = float(d_expired_issues_worth_dollars) + float(issue_worth_in_usdt)
-    # Module: Latest on your bounties (end).
 
     # Module: Outgoing funds.
     funder_tips = Tip.objects.filter(from_email=request.user.profile.email)
     d_outgoing_funds = get_funder_outgoing_funds(done_bounties, funder_tips)
-    # Module: Outgoing funds (end).
 
     # Module: All bounties.
     d_all_bounties = []
     for bounty in funder_bounties:
         d_all_bounties.append(to_funder_dashboard_bounty(bounty))
-    # Module: All bounties (end).
 
     context = {
         # Module: Header.
