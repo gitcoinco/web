@@ -44,10 +44,10 @@ class Token(SuperModel):
     num_clones_in_wild = models.IntegerField(null=True, blank=True)
     tags = models.CharField(max_length=255, null=True)
     cloned_from_id = models.IntegerField()
-    sent_from_address = models.CharField(max_length=255)
 
     # Extra fields added to database (not on blockchain)
     owner_address = models.CharField(max_length=255)
+    sent_from_address = models.CharField(max_length=255)
 
     def save(self, *args, **kwargs):
         self.owner_address = to_checksum_address(self.owner_address)
@@ -99,20 +99,19 @@ class KudosTransfer(SendCryptoAsset):
         'dashboard.Profile', related_name='sent_kudos', on_delete=models.SET_NULL, null=True, blank=True
     )
 
+    # @property
+    # def receive_url(self):
+    #     if self.web3_type == 'yge':
+    #         return self.url
+    #     elif self.web3_type == 'v3':
+    #         return self.receive_url_for_recipient
+    #     elif self.web3_type != 'v2':
+    #         raise Exception
 
-    @property
-    def receive_url(self):
-        if self.web3_type == 'yge':
-            return self.url
-        elif self.web3_type == 'v3':
-            return self.receive_url_for_recipient
-        elif self.web3_type != 'v2':
-            raise Exception
-
-        pk = self.metadata.get('priv_key')
-        txid = self.txid
-        network = self.network
-        return f"{settings.BASE_URL}kudos/receive/v2/{pk}/{txid}/{network}"
+    #     pk = self.metadata.get('priv_key')
+    #     txid = self.txid
+    #     network = self.network
+    #     return f"{settings.BASE_URL}kudos/receive/v2/{pk}/{txid}/{network}"
 
     @property
     def receive_url_for_recipient(self):
