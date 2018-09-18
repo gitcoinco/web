@@ -16,7 +16,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n humanize %}
+{% load i18n humanize static kudos_extras  %}
 
 {% block content %}
 
@@ -41,11 +41,10 @@
 
 <div>
     {% if is_new %}
-    <h1>⚡️ {% trans "New Kudos Alert" %} ⚡️</h1>
+    <h1>{% trans "You've Received a Kudos" %}</h1>
     {% else %}
     <h1>🕑 {% trans "Reminder: Kudos Expires Soon" %} 🕝</h1>
     {% endif %}
-
     <h3>
         {% if kudos_transfer.from_name %}
             {{kudos_transfer.from_name}} {% blocktrans %} sent you a {{ kudos_token.name|humanize_name }} kudos.{% endblocktrans %}
@@ -53,6 +52,23 @@
             {% blocktrans %}Someone sent you a {{ kudos_token.name }} kudos.{% endblocktrans %}
         {% endif %}{% if not is_new %} {{kudos_transfer.created_on | naturaltime}}{%endif%}.
     </h3>
+    <div>
+      <img src="{% static token_elem.image %}" alt="{{token_elem.name|humanize_name  }}" width="200" style="margin:auto;">
+    </div>
+
+    <br>
+    {{link}} dsf
+    <br>
+    {{kudos_transfer}}
+    <br>
+    <!-- token name: -->
+    {{token_elem.name|humanize_name  }}
+
+    <!-- {{ request.build_absolute_uri }}{{ object.get_host }} -->
+    <!-- //{{ request.get_protocol }}{{ request.get_host }} -->
+    <!-- {{ request.build_absolute_uri|urlencode }} -->
+
+    {% url 'new_kudos' %}
 </div>
 
 <div class="centered-contents kudos-box">

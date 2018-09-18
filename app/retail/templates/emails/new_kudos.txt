@@ -1,5 +1,5 @@
 {% load humanize i18n %}
-⚡️ New Kudos Alert ⚡️
+⚡️ You've Received a Kudos ⚡️
 
 {% if kudos_transfer.from_name %}{{kudos_transfer.from_name}}{% else %}Someone{% endif %} has sent you kudos worth {{amount}} {{warning}} {{tokenName}}.
 
