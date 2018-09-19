@@ -73,7 +73,6 @@ $bg-cellarius: #4D5858;
   &:active,
   &:focus,
   &:focus-within {
-    cursor: pointer;
     .content-hover {
       display: flex;
     }

@@ -155,10 +155,8 @@
   border-radius: .25rem;
   height: 100%;
   overflow: hidden; }
-  .kd-extended:hover, .kd-extended:active, .kd-extended:focus, .kd-extended:focus-within {
-    cursor: pointer; }
-    .kd-extended:hover .content-hover, .kd-extended:active .content-hover, .kd-extended:focus .content-hover, .kd-extended:focus-within .content-hover {
-      display: flex; }
+  .kd-extended:hover .content-hover, .kd-extended:active .content-hover, .kd-extended:focus .content-hover, .kd-extended:focus-within .content-hover {
+    display: flex; }
   .kd-extended .img-thumbnail {
     padding: 2.25rem; }
   .kd-extended .kd-title {
