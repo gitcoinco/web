@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 
-window.onload = function() {
+$(document).ready(function() {
 
   $('#js-drop').on('dragover', function(event) {
     event.preventDefault();
@@ -36,10 +36,9 @@ window.onload = function() {
       });
 
       console.log(data);
+
+      $(form).submit();
     }
-
-    $(form).submit();
-
   });
 
 
@@ -74,4 +73,4 @@ window.onload = function() {
     $('#js-token').select2();
   });
 
-};
+});
