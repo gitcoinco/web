@@ -32,7 +32,7 @@
 
     <div class="tab-pane fade show active" id="mykudos" role="tabpanel" aria-labelledby="home-tab">
       <div class="row justify-content-center">
-        {% include 'shared/kudos_card_profile.html' %}
+        {% include 'shared/kudos_card_profile.html' with kudos_data='kudos' %}
       </div>
       <div class="row justify-content-center">
         {% if kudos.count > 8 %}
@@ -43,7 +43,7 @@
 
     <div class="tab-pane fade" id="sentkudos" role="tabpanel" aria-labelledby="sentkudos-tab">
       <div class="row justify-content-center">
-        {% include 'shared/kudos_card_profile.html' %}
+        {% include 'shared/kudos_card_profile.html' with kudos_data='sent_kudos' %}
       </div>
       <div class="row justify-content-center">
         {% if sent_kudos.count > 8 %}

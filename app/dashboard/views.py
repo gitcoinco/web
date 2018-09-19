@@ -1221,22 +1221,24 @@ def profile(request, handle):
 
 def lazy_load_kudos(request):
     page = request.POST.get('page')
+    context= {}
     # with this attr from the button clicked we know if we request kudos or sent kudos
     datarequest = request.POST.get('request')
     # Need the current preferred address to make the query
     profile = getattr(request.user, 'profile', None)
     address = profile.preferred_payout_address
     order_by = request.GET.get('order_by', '-modified_on')
-
-    if datarequest == 'mykudos':
-        context = Token.objects.filter(owner_address=to_checksum_address(address)).order_by(order_by)
-    else :
-        context = Token.objects.filter(sent_from_address=to_checksum_address(address)).order_by(order_by)
-
     # use Django’s pagination
     # https://docs.djangoproject.com/en/dev/topics/pagination/
     results_per_page = 8
-    paginator = Paginator(context, results_per_page)
+
+    if datarequest == 'mykudos':
+        context['kudos'] = Token.objects.filter(owner_address=to_checksum_address(address)).order_by(order_by)
+        paginator = Paginator(context['kudos'], results_per_page)
+    else :
+        context['sent_kudos'] = Token.objects.filter(sent_from_address=to_checksum_address(address)).order_by(order_by)
+        paginator = Paginator(context['sent_kudos'], results_per_page)
+
     try:
         kudos = paginator.page(page)
     except PageNotAnInteger:
