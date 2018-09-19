@@ -700,12 +700,14 @@ input[type=text].loading {
   margin-right: 10px;
 }
 
-.alert a {
+.alert a,
+.g-toasts a {
   color: white;
   text-decoration: underline;
 }
 
-.alert.error {
+.alert.error,
+.g-toasts.error {
   background-color: #C70018;
 }
 
@@ -714,7 +716,8 @@ input[type=text].loading {
   height: 30px;
 }
 
-.alert.success {
+.alert.success,
+.g-toasts.success {
   background-color: #00A652;
 }
 
@@ -723,7 +726,8 @@ input[type=text].loading {
   height: 30px;
 }
 
-.alert.info {
+.alert.info,
+.g-toasts.info {
   background-color: #008EFF;
 }
 
@@ -732,7 +736,8 @@ input[type=text].loading {
   height: 30px;
 }
 
-.alert.warning {
+.alert.warning,
+.g-toasts.warning {
   background-color: #F2A700
 }
 

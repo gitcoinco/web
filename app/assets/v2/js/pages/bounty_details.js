@@ -714,11 +714,12 @@ const show_notify_funder = function() {
       modal.on('submit', function(event) {
         event.preventDefault();
         let reasons = [];
-        $("#notify_funder input:checkbox:checked").each(() =>{
+
+        $('#notify_funder input:checkbox:checked').each(() =>{
           reasons.push($(this).val());
         });
         // TODO: Trigger Mail
-        _alert({ message: gettext('The funder has been notified about your feedback') }, 'success');
+        _toast(gettext('The funder has been notified about your feedback'), 'success');
         $.modal.close();
       });
     });
