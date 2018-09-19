@@ -33,7 +33,7 @@ var kudos_address = function() {
     case 'mainnet':
       return '';
     case 'ropsten':
-      return '0x4cB49D1ed051A55F692253e8036Ad835fD735a20';
+      return '0x6892dd985526c66130d9a2d00396647582997f28';
     case 'kovan':
       throw 'this network is not supported for kudos';
     case 'rinkeby':
