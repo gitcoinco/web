@@ -44,7 +44,7 @@ from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_master, get_github_primary_email
 from retail.helpers import get_ip
 from web3 import Web3
-from eth_utils import to_checksum_address, to_normalized_address
+from eth_utils import to_checksum_address, to_normalized_address, is_address
 from .helpers import reconcile_kudos_preferred_wallet
 
 from .utils import KudosContract
@@ -131,14 +131,17 @@ def details(request):
     # Find other Kudos rows that are the same kudos.name, but of a different owner
     related_kudos = Token.objects.exclude(
         owner_address='0xD386793F1DB5F21609571C0164841E5eA2D33aD8').filter(name=kudos.name)
-    logger.info(f'Related Kudos Tokens: {related_kudos}')
+    logger.debug(f'Related Kudos Tokens: {related_kudos}')
     # Find the Wallet rows that match the Kudos.owner_addresses
     # related_wallets = Wallet.objects.filter(address__in=[rk.owner_address for rk in related_kudos]).distinct()[:20]
 
     # Find the related Profiles assuming the preferred_payout_address is the kudos owner address.
     # Note that preferred_payout_address is most likely in normalized form.
     # https://eth-utils.readthedocs.io/en/latest/utilities.html#to-normalized-address-value-text
-    related_profiles = Profile.objects.filter(preferred_payout_address__in=[to_normalized_address(rk.owner_address) for rk in related_kudos]).distinct()[:20]
+    owner_addresses = [to_normalized_address(rk.owner_address) if is_address(rk.owner_address) is not False else None for rk in related_kudos]
+    logger.debug(f'owner_addresses: {owner_addresses}')
+    related_profiles = Profile.objects.filter(
+        preferred_payout_address__in=owner_addresses).distinct()[:20]
     # profile_ids = [rw.profile_id for rw in related_wallets]
     logger.info(f'Related Profiles:  {related_profiles}')
 

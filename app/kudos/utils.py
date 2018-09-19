@@ -210,7 +210,7 @@ class KudosContract:
         # Find the object which matches the kudos that was just cloned
         kudos_transfer = KudosTransfer.objects.filter(
             metadata__contains={'address': to_normalized_address(kudos_token.sent_from_address)}).first()
-        logger.info(f'kudos_transfer object: {kudos_transfer}')
+        # logger.info(f'kudos_transfer object: {kudos_transfer}')
         if kudos_transfer:
             # Store the foreign key reference
             kudos_transfer.kudos_token = kudos_token
