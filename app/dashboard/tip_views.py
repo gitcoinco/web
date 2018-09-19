@@ -303,7 +303,7 @@ def send_tip_3(request):
         ip=get_ip(request),
         expires_date=expires_date,
         github_url=params['github_url'],
-        from_name=params['from_name'],
+        from_name=params['from_name'] if params['from_name'] != 'False' else '',
         from_email=params['from_email'],
         from_username=from_username,
         username=params['username'],
