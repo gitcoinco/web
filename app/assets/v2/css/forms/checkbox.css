@@ -6,6 +6,8 @@
 .form__checkbox input {
   position: absolute;
   opacity: 0;
+  height: 100%;
+  width: 100%;
 }
 
 .form__checkbox .form__label {

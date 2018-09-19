@@ -23,8 +23,8 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
 from .models import (
-    Activity, Bounty, BountyFulfillment, BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Interest, Profile,
-    Subscription, Tip, TokenApproval, Tool, ToolVote, UserAction,
+    Activity, Bounty, BountyFulfillment, BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Interest,
+    NotifyFunder, Profile, Subscription, Tip, TokenApproval, Tool, ToolVote, UserAction,
 )
 
 
@@ -104,6 +104,17 @@ class TipAdmin(admin.ModelAdmin):
         return html
 
 
+class NotifyFunderAdmin(admin.ModelAdmin):
+    raw_id_fields = ['reporter_profile', 'bounty']
+    search_fields = ['funder_ack', 'funder_notified']
+    ordering = ['-id']
+    readonly_fields = ['notify_reasons', 'reporter_comment']
+
+    def bounty(self, instance):
+        copy = 'link'
+        url = instance.url
+        return mark_safe(f"<a href={url}>{copy}</a>")
+
 # Register your models here.
 class BountyAdmin(admin.ModelAdmin):
     raw_id_fields = ['interested', 'bounty_owner_profile']
@@ -157,3 +168,4 @@ admin.site.register(CoinRedemption, GeneralAdmin)
 admin.site.register(CoinRedemptionRequest, GeneralAdmin)
 admin.site.register(Tool, GeneralAdmin)
 admin.site.register(ToolVote, ToolVoteAdmin)
+admin.site.register(NotifyFunder, NotifyFunderAdmin)

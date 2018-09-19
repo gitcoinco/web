@@ -20,9 +20,107 @@
 
 {% block content %}
   <style>
-  
+    .notify-box {
+      margin-bottom: 1em;
+      padding-top: 1.5em;
+      padding-bottom: 1em;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    p {
+      font-size: 14px;
+    }
+
+    .report {
+      color: #C70018;
+    }
+
+    .bounty-avatar {
+      text-align: right;
+      margin: 1.5em;
+    }
+
+    .bounty-avatar img {
+      max-height: 50px;
+      max-width: 100%;
+      padding: 3px;
+    }
+
+    .bounty-contents {
+      text-align: left;
+      width: 100%;
+    }
+
+    .bounty {
+      display: flex;
+      padding: 0.5em;
+    }
+
+    .bounty_table, .bounty_table tr {
+      width: 100%;
+    }
+
+    .odd {
+      background-color: #fafafa;
+    }
   </style>
   <div>
-    <h1>{% trans "Your Bounty Needs Attention" %}</h1>
+    <h3>Reports from interested users</h3>
+    {% for notif in notifications %}
+      <div class="centered-contents notify-box {% if forloop.counter|divisibleby:2 %}even{%else%}odd{%endif%}">
+        <div class="bounty">
+          <div class="bounty-avatar">
+            <img style="border-radius: 100%;border: 2px solid #1AB56D;" src="{{notif.bounty.avatar_url}}">
+            {% if notif.bounty.org_name %}
+              <p style="font-size: 10px;">
+              @{{notif.bounty.org_name}}
+              </p>
+            {% endif %}
+          </div>
+          <div class="bounty-contents">
+            <table class="bounty_table">
+              <tr>
+                <td>
+                  <p class="report">
+                    {% if notif.reasons.underfunded %}
+                      Bounty Underfunded - Reported by ({{notif.reasons.underfunded}}) users <br>
+                    {% endif %}
+                    {% if notif.reasons.underscoped %}
+                      Bounty Underscoped - Reported by ({{notif.reasons.underscoped}}) users <br>
+                    {% endif %}
+                    {% if notif.reasons.taken %}
+                      Bounty Taken - Reported by ({{notif.reasons.taken}}) users <br>
+                    {% endif %}
+                    {% if notif.reasons.abandoned %}
+                      Bounty Abandoned  - Reported by ({{notif.reasons.abandoned}}) users <br>
+                    {% endif %}
+                    {% if notif.reasons.spam %}
+                      Bounty Spam  - Reported by ({{notif.reasons.spam}}) users <br>
+                    {% endif %}
+                  </p>
+                  <p>
+                    <b>{{notif.bounty.org_name}}</b>: {{notif.bounty.title_or_desc}}
+                    <br>
+                    <b>Amount:</b> {{notif.bounty.value_true}} {{notif.bounty.token_name}}
+                    {% if notif.bounty.value_in_usdt_now %}
+                      (${{notif.bounty.value_in_usdt_now}})
+                    {% endif %}
+                    <br>
+                    <b>Posted:</b> {{notif.bounty.web3_created | naturaltime}}
+                    {% if notif.bounty.keywords %}
+                      <br>
+                      <b>Keywords:</b> {{notif.bounty.keywords}}
+                    {% endif %}
+                  </p>
+                </td>
+                <td style="min-width: 100px; text-align: right;">
+                  {% include 'emails/shared_bounty_actions.html' with action='custom' action_copy='Edit Bounty' action_url=notif.bounty.absolute_url %}
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
   </div>
 {% endblock %}

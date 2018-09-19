@@ -689,10 +689,10 @@ var show_extend_deadline_modal = function() {
 
 const show_notify_funder = function() {
   setTimeout(function() {
-    var url = '/modal/notify_funder?pk=' + document.result['pk'];
+    const url = '/actions/bounty/' + document.result['pk'] + '/notify/';
 
     $.get(url, function(newHTML) {
-      var modal = $(newHTML).appendTo('body').modal({
+      let modal = $(newHTML).appendTo('body').modal({
         modalClass: 'modal add-interest-modal'
       });
 
@@ -713,16 +713,38 @@ const show_notify_funder = function() {
 
       modal.on('submit', function(event) {
         event.preventDefault();
-        let reasons = [];
 
-        $('#notify_funder input:checkbox:checked').each(() =>{
-          reasons.push($(this).val());
+        if (!document.result['pk']) {
+          _toast(gettext('Unable to find bounty. Try again later.'), 'warning');
+          $.modal.close();
+        }
+
+        let reasons = [];
+        let comment = '';
+
+        $('#notify_funder input:checkbox:checked').each((index, element) => {
+          reasons.push(element.value);
         });
 
-        // TODO: Save to DB
-        _toast(gettext('Thanks for reporting it on Gitcoin. We shall notify the funder.'), 'success');
+        const data = {
+          'reasons': reasons,
+          'comment': comment, // TODO: Add text field in UI
+          'notifier': document.contxt['github_handle']
+        };
+
+        const url = '/actions/bounty/' + document.result['pk'] + '/notify/';
+
+        $.post(url, data).then(() => {
+          _toast(gettext('Thanks for reporting it on Gitcoin. We shall notify the funder.'), 'success');
+        }).fail(() => {
+          _toast(gettext('Something went wrong. Try again later.'), 'error');
+        });
+
         $.modal.close();
+        return;
       });
+    }).fail(() => {
+      _toast(gettext('Something went wrong. Try again later.'), 'error');
     });
   });
 };

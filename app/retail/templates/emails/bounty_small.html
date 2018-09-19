@@ -27,12 +27,13 @@
 
   .bounty-avatar {
     text-align: right;
-    margin: 1em;
+    margin: 1.5em;
   }
 
   .bounty-avatar img {
     max-height: 50px;
     max-width: 100%;
+    padding: 3px;
   }
 
   .bounty-contents {
@@ -44,10 +45,12 @@
     display: flex;
     padding: 0.5em;
   }
-  .bounty_table, .bounty_table tr{
+
+  .bounty_table, .bounty_table tr {
     width: 100%;
   }
-  .odd{
+
+  .odd {
     background-color: #fafafa;
   }
 </style>
@@ -84,9 +87,7 @@
                   <br>
                   <b>Keywords:</b> {{bounty.keywords}}
               {% endif %}
-
             </p>
-
           </td>
           <td style="min-width: 100px; text-align: right;">
             {% include 'emails/shared_bounty_actions.html' with action='custom' action_copy='View' action_url=bounty.absolute_url %}

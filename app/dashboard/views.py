@@ -50,8 +50,8 @@ from web3 import HTTPProvider, Web3
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
-    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tool,
-    ToolVote, UserAction,
+    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, NotifyFunder, Profile, ProfileSerializer,
+    Subscription, Tool, ToolVote, UserAction,
 )
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
@@ -1165,23 +1165,52 @@ def extend_issue_deadline(request):
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def notify_funder(request):
+def notify_funder(request, bounty_id):
     """Notify funder to improve issue"""
-    reasons = [
-        {'id': 'underfunded', 'text': _('This issue is underfunded.')},
-        {'id': 'underscoped', 'text': _('This issue is underscoped.')},
-        {'id': 'taken', 'text': _('This bounty was taken from me.')},
-        {'id': 'abandoned', 'text': _('This bounty seems abandoned.')},
-        {'id': 'spam', 'text': _('This issue is considered spam or unethical')}
-    ]
-    context = {
-        'active': 'notify_funder',
-        'title': _('Report'),
-        'user_logged_in': request.user.is_authenticated,
-        'reasons': reasons,
-        'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
-    }
-    return TemplateResponse(request, 'notify_funder.html', context)
+
+    if not bounty_id:
+        return HttpResponse(content='argument: missing bounty_id', status=400)
+
+    bounty = None
+    try:
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except:
+        HttpResponse(content='bounty does not exist', status=404)
+
+    if request.POST:
+        reasons = request.POST.getlist('reasons[]')
+        notifier = request.POST.get('notifier')
+        comment = request.POST.get('comment')
+        profile = None
+
+        try:
+            profile = Profile.objects.get(handle=notifier)
+        except:
+            HttpResponse(content='user does not exist', status=404)
+
+        NotifyFunder.objects.create(
+            reporter_profile=profile,
+            bounty=bounty,
+            notify_reasons=reasons,
+            reporter_comment=comment
+        )
+        return HttpResponse(status=200)
+    else:
+        reasons = [
+            {'id': 'underfunded', 'text': _('This issue is underfunded.')},
+            {'id': 'underscoped', 'text': _('This issue is underscoped.')},
+            {'id': 'taken', 'text': _('This bounty was taken from me.')},
+            {'id': 'abandoned', 'text': _('This bounty seems abandoned.')},
+            {'id': 'spam', 'text': _('This issue is considered spam or unethical')}
+        ]
+        context = {
+            'active': 'notify_funder',
+            'title': _('Report'),
+            'user_logged_in': request.user.is_authenticated,
+            'reasons': reasons,
+            'login_link': '/login/github?next=' + request.GET.get('redirect', '/')
+        }
+        return TemplateResponse(request, 'notify_funder.html', context)
 
 @require_POST
 @csrf_exempt

@@ -521,12 +521,28 @@ def render_start_work_applicant_expired(interest, bounty):
     return response_html, response_txt, subject
 
 
-def render_notify_funder(bounty, reasons):
-    to_email = bounty.bounty_owner_email
+def render_notify_funder(profile):
+    from dashboard.models import Bounty, NotifyFunder
+    from django.db.models import F, Func
+    from collections import Counter
+    to_email = profile.email
+
+    bounties = Bounty.objects.filter(bounty_owner_github_username=profile.handle)
+    notifications =[]
+    for bounty in bounties:
+        notifs_list = NotifyFunder.objects.filter(bounty=bounty.pk, funder_notified=False)
+        notifs = notifs_list.annotate(arr_els=Func(F('notify_reasons'), function='unnest')).values_list('arr_els', flat=True)
+        if notifs:
+            notification = {}
+            notification['reasons'] = Counter(notifs)
+            notification['bounty'] = bounty
+            notifications.append(notification)
+        notifs_list.update(funder_notified=True)
+
     params = {
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
-        'bounty': bounty,
-        'reasons': reasons
+        'notifications': notifications,
+        'profile': profile,
     }
 
     subject = "Your bounty needs Attention"
@@ -867,8 +883,9 @@ def start_work_applicant_expired(request):
 
 @staff_member_required
 def notify_funder(request):
-    from dashboard.models import Bounty
-    reasons = request.GET.get('reasons')
-    bounty = Bounty.objects.last()
-    response_html, _, _ = render_notify_funder(bounty, reasons)
+    from dashboard.models import Profile
+
+    handle = request.GET.get('handle')
+    profile = Profile.objects.get(handle=handle)
+    response_html, _, _ = render_notify_funder(profile)
     return HttpResponse(response_html)

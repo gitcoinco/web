@@ -1007,6 +1007,34 @@ class BountySyncRequest(SuperModel):
     processed = models.BooleanField()
 
 
+class NotifyFunder(SuperModel):
+    """Define the structure for Funder Escalations.
+
+    Attributes:
+        REPORT_REASONS (list of tuples): The list of reasons why funder was notified.
+    """
+
+    REPORT_REASONS = (
+        ('underfunded', 'underfunded'),
+        ('underscoped', 'underscoped'),
+        ('taken', 'taken'),
+        ('abandoned', 'abandoned'),
+        ('spam', 'spam')
+    )
+
+    reporter_profile = models.ForeignKey(
+        'dashboard.Profile', related_name='notifier', on_delete=models.SET_NULL, null=True
+    )
+    reporter_comment = models.CharField(max_length=255, blank=True)
+    bounty = models.ForeignKey(Bounty, related_name='notify', on_delete=models.CASCADE)
+    notify_reasons = ArrayField(models.CharField(choices=REPORT_REASONS, max_length=20), blank=True, default=list)
+    funder_notified = models.BooleanField(default=False)
+    funder_ack = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.reporter_profile} reported {self.notify_reasons} for {self.bounty}"
+
+
 class Subscription(SuperModel):
 
     email = models.EmailField(max_length=255)
