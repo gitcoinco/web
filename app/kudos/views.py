@@ -503,6 +503,13 @@ def receive(request, key, txid, network):
             record_user_action(kudos_transfer.from_username, 'receive_kudos', kudos_transfer)
             record_kudos_email_activity(kudos_transfer, kudos_transfer.username, 'receive_kudos')
             messages.success(request, 'This kudos has been received')
+            # Update kudos.models.Token to reflect the newly cloned Kudos
+            if kudos_transfer.network == 'custom network':
+                network = 'localhost'
+            else:
+                network = kudos_transfer.network
+            kudos_contract = KudosContract(network)
+            kudos_contract.sync_db()
         except Exception as e:
             messages.error(request, str(e))
             logger.exception(e)
