@@ -130,7 +130,7 @@ def details(request):
     kudos = Token.objects.get(pk=kudos_id)
     # Find other Kudos rows that are the same kudos.name, but of a different owner
     related_kudos = Token.objects.exclude(
-        owner_address='0xD386793F1DB5F21609571C0164841E5eA2D33aD8').filter(name=kudos.name)
+        owner_address='0xD386793F1DB5F21609571C0164841E5eA2D33aD8').filter(name=kudos.id)
     logger.info(f'Related Kudos Tokens: {related_kudos}')
     # Find the Wallet rows that match the Kudos.owner_addresses
     # related_wallets = Wallet.objects.filter(address__in=[rk.owner_address for rk in related_kudos]).distinct()[:20]
