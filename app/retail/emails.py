@@ -521,6 +521,20 @@ def render_start_work_applicant_expired(interest, bounty):
     return response_html, response_txt, subject
 
 
+def render_notify_funder(bounty, reasons):
+    to_email = bounty.bounty_owner_email
+    params = {
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'bounty': bounty,
+        'reasons': reasons
+    }
+
+    subject = "Your bounty needs Attention"
+    response_html = premailer_transform(render_to_string("emails/notify_funder.html", params))
+    response_txt = render_to_string("emails/notify_funder.txt", params)
+
+    return response_html, response_txt, subject
+
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
@@ -848,4 +862,13 @@ def start_work_applicant_expired(request):
     interest = Interest.objects.last()
     bounty = Bounty.objects.last()
     response_html, _, _ = render_start_work_applicant_expired(interest, bounty)
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def notify_funder(request):
+    from dashboard.models import Bounty
+    reasons = request.GET.get('reasons')
+    bounty = Bounty.objects.last()
+    response_html, _, _ = render_notify_funder(bounty, reasons)
     return HttpResponse(response_html)

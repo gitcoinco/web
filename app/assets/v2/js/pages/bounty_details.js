@@ -718,14 +718,14 @@ const show_notify_funder = function() {
         $('#notify_funder input:checkbox:checked').each(() =>{
           reasons.push($(this).val());
         });
-        // TODO: Trigger Mail
-        _toast(gettext('The funder has been notified about your feedback'), 'success');
+
+        // TODO: Save to DB
+        _toast(gettext('Thanks for reporting it on Gitcoin. We shall notify the funder.'), 'success');
         $.modal.close();
       });
     });
   });
 };
-
 
 var build_detail_page = function(result) {
 

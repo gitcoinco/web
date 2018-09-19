@@ -30,10 +30,10 @@
         <h5 class="text-center font-body mb-4">{% trans "Notify funder on how to make the bounty more attractive." %}</h5>
         <form>
           <div class="row">
-            {% for category in categories %}
+            {% for reason in reasons %}
               <div class="form__checkbox col-12 col-md-6">
-                <input name="{{category.id}}" id="{{category.id}}" value="{{category.id}}" type="checkbox" />
-                <label class="form__label" for="{{category.id}}">{{category.text}}</label>
+                <input name="escalate_reason" id="{{reason.id}}" value="{{reason.id}}" type="checkbox" />
+                <label class="form__label" for="{{reason.id}}">{{reason.text}}</label>
               </div>
             {% endfor %}
           </div>

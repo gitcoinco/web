@@ -314,6 +314,11 @@ urlpatterns = [
         retail.emails.start_work_applicant_expired,
         name='start_work_applicant_expired'
     ),
+    re_path(
+        r'^_administration/email/notify_funder$',
+        retail.emails.notify_funder,
+        name='notify_funder'
+    ),
 
     # settings
     re_path(r'^settings/email/(.*)', marketing.views.email_settings, name='email_settings'),
