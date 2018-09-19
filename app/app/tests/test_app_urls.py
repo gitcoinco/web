@@ -157,11 +157,11 @@ class AppUrlsTestCase(TestCase):
     def test_vote_down_resolve(self):
         """Test the vote down url and check the resolution."""
         self.assertEqual(resolve('/actions/tool/1/voteDown').view_name, 'vote_tool_down')
-    
+
     def test_funder_dashboard_reverse(self):
         """Test the funder dashboard url and check the reverse."""
         self.assertEqual(reverse('funder_dashboard'), '/funder_dashboard')
-    
+
     def test_funder_dashboard_resolve(self):
         """Test the funder dashboard url and check the resolution."""
         self.assertEqual(resolve('/funder_dashboard').view_name, 'funder_dashboard')

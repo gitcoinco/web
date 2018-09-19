@@ -21,6 +21,7 @@ import csv
 import datetime
 import io
 import logging
+import math
 import pprint
 from decimal import Decimal
 from enum import Enum
