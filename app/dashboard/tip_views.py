@@ -128,7 +128,7 @@ def receive_tip_v3(request, key, txid, network):
     elif tip.receive_txid:
         messages.info(request, 'This tip has been received')
     elif not is_authed:
-        messages.error(request, f'This tip is for {tip.username} but you are logged in as {request.user.username}.  Please logout and log back in as {tip.username}.')
+        messages.error(request, f'This tip is for @{tip.username} but you are logged in as @{request.user.username}.  Please logout and log back in as {tip.username}.')
     elif not_mined_yet:
         messages.info(request, f'This tx {tip.txid}, is still mining.  Please wait a moment before submitting the receive form.')
     elif request.GET.get('receive_txid') and not tip.receive_txid:
