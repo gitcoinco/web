@@ -31,7 +31,7 @@
         <div class="col-5">
           <div class="grant__specs">
             <h1 class="grant__title">{{ grant.title }}</h1>
-            <p class="grant__pitch">{{ grant.pitch }}</p>
+            <p class="grant__pitch">{{ grant.description }}</p>
             <div class="grant__stakeholders">
               <small>6 Stakeholders</small>
               <div class="grant__stakeholders-list">
@@ -45,7 +45,7 @@
             <div class="grant__footer">
               <div class="current-funding-text">
                 <span>
-                  <!-- {{ grant.current_funding|floatformat:2|intcomma }} ETH -->
+                  {{ grant.amountReceived|floatformat:2|intcomma }} ETH
                 </span>
                 <small>funded by 731 backers</small>
               </div>

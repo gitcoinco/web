@@ -18,71 +18,74 @@
   Help
   <span class="fund__header--highlight">John Doe</span>
   get funding for
-  <span class="fund__header--highlight">Name of the grant</span>
+  <span class="fund__header--highlight">{{grant.title}}</span>
 </h2>
 
 <div class="container">
   <div class="fund__title">Fund Grant</div>
 
-  <div class="row bottom-buffer">
-    <div class="col-4">
-      <div class="form__group-horizontal">
-        <label class="form__label" for="input-amount">Select amount:</label>
-        <input class="form__input" type="text" id="input-amount" name="amount" required />
-      </div>
-      <button class="button button--primary button--full">Contribute</button>
-    </div>
-
-    <div class="col-4">
-      <div class="form__group-horizontal">
-        <label class="form__label">Select period:</label>
-        <div class="form__select2 fund__period">
-          <select name='period' id='period'>
-            <option value="month">month</option>
-            <option value="year">year</option>
-          </select>
+  <form action="/grants/fund" method="POST" id="js-fundGrant">
+    {% csrf_token %}
+    <div class="row bottom-buffer">
+      <div class="col-4">
+        <div class="form__group-horizontal">
+          <label class="form__label" for="input-amount">Select amount:</label>
+          <input class="form__input" type="text" id="input-amount" name="amount" required />
         </div>
+        <button class="button button--primary button--full">Contribute</button>
       </div>
-    </div>
 
-    <div class="col-4">
-      <div class="grant__progress">
-        <div class="progress">
-          <div class="progress-bar" style="width:50%"></div>
-          <div class="progress-bar progress-bar--fund" role="progressbar" style="width:10%">
-            <div class="contribution">
-              <span>10 ETH</span>
-              <p>Your contribution</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="progress-text top-buffer bottom-buffer">
-          <div class="row">
-            <div class="col-6">
-              <span>344.ETH</span>
-              <p>Current</p>
-            </div>
-            <div class="col-6 text-right">
-              <span>500.ETH</span>
-              <p>Goal</p>
-            </div>
+      <div class="col-4">
+        <div class="form__group-horizontal">
+          <label class="form__label">Select period:</label>
+          <div class="form__select2 fund__period">
+            <select name='period' id='period'>
+              <option value="month">month</option>
+              <option value="year">year</option>
+            </select>
           </div>
         </div>
       </div>
 
-      <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-        Mauris sodales magna sit amet mattis feugiat.
-        Etiam dapibus semper dapibus.
-        Sed sit amet vestibulum ligula, sit amet imperdiet risus.
+      <div class="col-4">
+        <div class="grant__progress">
+          <div class="progress">
+            <div class="progress-bar" style="width:50%"></div>
+            <div class="progress-bar progress-bar--fund" role="progressbar" style="width:10%">
+              <div class="contribution">
+                <span>10 ETH</span>
+                <p>Your contribution</p>
+              </div>
+            </div>
+          </div>
 
-        Etiam efficitur sem vel arcu porta finibus.
-        Nullam sit amet dapibus nisi. Praesent elementum orci felis, id aliquet purus commodo ut.
-        Donec ut consequat purus, ornare malesuada dolor. Donec ligula lacus, facilisis ut sollicitudin vel, aliquam quis tellus.
-      </p>
+          <div class="progress-text top-buffer bottom-buffer">
+            <div class="row">
+              <div class="col-6">
+                <span>344.ETH</span>
+                <p>Current</p>
+              </div>
+              <div class="col-6 text-right">
+                <span>500.ETH</span>
+                <p>Goal</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Mauris sodales magna sit amet mattis feugiat.
+          Etiam dapibus semper dapibus.
+          Sed sit amet vestibulum ligula, sit amet imperdiet risus.
+
+          Etiam efficitur sem vel arcu porta finibus.
+          Nullam sit amet dapibus nisi. Praesent elementum orci felis, id aliquet purus commodo ut.
+          Donec ut consequat purus, ornare malesuada dolor. Donec ligula lacus, facilisis ut sollicitudin vel, aliquam quis tellus.
+        </p>
+      </div>
     </div>
-  </div>
+  </form>
 </div>
 
 {% include 'shared/bottom_notification.html' %}

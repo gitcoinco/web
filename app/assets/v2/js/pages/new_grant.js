@@ -37,7 +37,7 @@ $(document).ready(function() {
 
       console.log(data);
 
-      $(form).submit();
+      form.submit();
     }
   });
 
@@ -57,20 +57,20 @@ $(document).ready(function() {
       '</div>');
   });
 
-  waitforWeb3(function() {
-    tokens(document.web3network).forEach(function(ele) {
-      var option = document.createElement('option');
-
-      option.text = ele.name;
-      option.value = ele.addr;
-
-      $('#js-token').append($('<option>', {
-        value: ele.addr,
-        text: ele.name
-      }));
-    });
-
-    $('#js-token').select2();
-  });
+  // waitforWeb3(function() {
+  //   tokens(document.web3network).forEach(function(ele) {
+  //     var option = document.createElement('option');
+  //
+  //     option.text = ele.name;
+  //     option.value = ele.addr;
+  //
+  //     $('#js-token').append($('<option>', {
+  //       value: ele.addr,
+  //       text: ele.name
+  //     }));
+  //   });
+  //
+  //   $('#js-token').select2();
+  // });
 
 });
