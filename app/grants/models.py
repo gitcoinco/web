@@ -1,5 +1,5 @@
 from django.db import models
-
+from django.contrib.humanize.templatetags.humanize import naturalday, naturaltime
 from economy.models import SuperModel
 
 
@@ -15,12 +15,20 @@ class Grant(SuperModel):
     frequency = models.DecimalField(default=30, decimal_places=0, max_digits=50)
     amountGoal = models.DecimalField(default=1, decimal_places=4, max_digits=50)
     amountReceived = models.DecimalField(default=0, decimal_places=4, max_digits=50)
+    tokenAddress = models.CharField(max_length=255, default='0x0')
 
     adminProfile = models.ForeignKey('dashboard.Profile', related_name='grant_admin', on_delete=models.CASCADE, null=True)
     teamMemberProfiles = models.ManyToManyField('dashboard.Profile', related_name='grant_team_members')
 
     def percentage_done(self):
-        return self.amountReceived / self.amountGoal * 100
+        # import ipdb; ipdb.set_trace()
+        return ((self.amountReceived / self.amountGoal) * 100)
+
+
+    def __str__(self):
+        """Return the string representation of a Grant."""
+        return f"{self.pk}: {self.title}, {self.description}, " \
+               f"{self.adminAddress} @ {naturaltime(self.created_on)}"
 
 
 class Stakeholder(models.Model):

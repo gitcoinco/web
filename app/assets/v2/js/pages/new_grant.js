@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
-window.onload = function() {
 
-console.log(request);
+window.onload = function() {
 
   $('#js-drop').on('dragover', function(event) {
     event.preventDefault();
@@ -23,6 +22,10 @@ console.log(request);
     }
   });
 
+  $('.js-select2').each(function() {
+    $(this).select2();
+  });
+
   $('#js-newGrant').validate({
     submitHandler: function(form) {
       var action = $(form).attr('action');
@@ -33,8 +36,10 @@ console.log(request);
       });
 
       console.log(data);
-      $(form).submit();
     }
+
+    $(form).submit();
+
   });
 
 

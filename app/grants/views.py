@@ -32,8 +32,9 @@ def new_grant(request):
         grant.description = request.POST.get('description')
         grant.reference_url = request.POST.get('reference_url')
         grant.image_url = request.POST.get('input-image')
-        # grant.adminAddress = request.POST.get('admin_address')
-        # grant.freguency = request.POST.get('frequency')
+        grant.adminAddress = request.POST.get('adminAddress')
+        grant.frequency = request.POST.get('frequency')
+        # grant.tokenAddress = request.POST.get('denomination')
         grant.amountGoal = request.POST.get('amount_goal')
         grant.adminProfile = profile
         # grant.teamMemberProfiles = Need to do a profile search based on enetered emails
