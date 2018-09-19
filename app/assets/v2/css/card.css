@@ -3,7 +3,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: Muli, sans-serif;
   font-weight: 600;
 }
 
@@ -118,7 +117,6 @@
 }
 
 .card .content .title {
-  font-family: 'OpenSans', sans-serif;
   margin-bottom: 10px;
 }
 
