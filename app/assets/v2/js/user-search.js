@@ -29,6 +29,12 @@ $(function() {
     templateResult: formatUser,
     templateSelection: formatUserSelection
   });
+  //fix for wrong position on select open
+  var select2Instance = $('.username-search').data('select2');
+  select2Instance.on('results:message', function(params){
+    this.dropdown._resizeDropdown();
+    this.dropdown._positionDropdown();
+  });
 
   function formatUser(user) {
 
@@ -41,14 +47,14 @@ $(function() {
                     </div>
                     <div class="">${user.text}</div>
                   </div>`;
-                  
+
     return markup;
   }
 
   function formatUserSelection(user) {
 
     let selected;
-    
+
     if (user.id) {
       selected = `<img class="rounded-circle" src="${user.avatar_url || static_url + 'v2/images/user-placeholder.png'}" width="20" height="20"/> ${user.text}`;
     } else {
