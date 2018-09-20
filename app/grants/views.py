@@ -6,10 +6,12 @@ logger = logging.getLogger(__name__)
 from django.template.response import TemplateResponse
 
 from marketing.models import Keyword
+from django.conf import settings
+from web3 import HTTPProvider, Web3
+from .models import Grant, Subscription
 
-from .models import Grant
-
-# Create your views here.
+# web3.py instance
+w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 def grants(request):
     """Handle grants explorer."""
@@ -69,16 +71,17 @@ def new_grant(request):
     return TemplateResponse(request, 'grants/new.html', params)
 
 
-def fund_grant(request):
+def fund_grant(request, grant_id):
     """Handle grant funding."""
     # import ipdb; ipdb.set_trace()
-    # grant = Grant.objects.get(pk=grant_id)
+    grant = Grant.objects.get(pk=grant_id)
 
     profile_id = request.session.get('profile_id')
     profile = request.user.profile if request.user.is_authenticated else None
 
-    print("this is a log 1", profile_id)
-    # print("this is a log 1", grant)
+    print("this is the username:", profile)
+    print("this is the grant instance", grant)
+    print("this is the web3 instance", w3.eth.account)
 
 
 
@@ -91,19 +94,14 @@ def fund_grant(request):
         # subscription.contributorSignature = request.POST.get('description')
         # Address will come from web3 instance
         # subscription.contributorAddress = request.POST.get('reference_url')
-        subscription.amountPerPeriod = request.POST.get('input-amount')
-        subscription.tokenAddress = request.POST.get('denomination')
+        subscription.amountPerPeriod = request.POST.get('amount_per_period')
+        # subscription.tokenAddress = request.POST.get('denomination')
         subscription.gasPrice = request.POST.get('gas_price')
         # network will come from web3 instance
         # subscription.network = request.POST.get('amount_goal')
         subscription.contributorProfile = profile
-        # subscription.grantPk = grant
+        subscription.grantPk = grant
 
-        print("this is a log 2", profile)
-        # print("this is a log 3", grant)
-        # logging.info("this is a log", grant)
-
-        # subscription.teamMemberProfiles = Need to do a profile search based on enetered emails
 
         subscription.save()
     else:
@@ -114,13 +112,10 @@ def fund_grant(request):
         'active': 'dashboard',
         'title': 'Fund Grant',
         'subscription': subscription,
-        # 'grant': grant,
+        'grant': grant,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
 
-    print("this is a log 4", profile)
-    # print("this is a log 5", grant)
-    # logging.info("this is a log", grant)
 
     return TemplateResponse(request, 'grants/fund.html', params)
 

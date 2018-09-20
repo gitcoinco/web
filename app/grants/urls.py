@@ -19,6 +19,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 
 from django.urls import path, re_path
+from django.conf.urls import url
+
 
 from .views import cancel_grant, fund_grant, grant_show, grants, new_grant
 
@@ -27,6 +29,6 @@ urlpatterns = [
     path('', grants, name='grants'),
     path('<int:grant_id>', grant_show, name='grant'),
     re_path(r'^new', new_grant, name='new_grant'),
-    re_path(r'^fund', fund_grant, name='fund_grant'),
+    path('fund/<int:grant_id>', fund_grant, name='fund_grant'),
     re_path(r'^cancel', cancel_grant, name='cancel_grant')
 ]

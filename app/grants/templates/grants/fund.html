@@ -17,7 +17,7 @@
 
 <h2 class="fund__header">
   Help
-  <span class="fund__header--highlight">John Doe</span>
+  <span class="fund__header--highlight">{{grant.adminProfile}}</span>
   get funding for
   <span class="fund__header--highlight">{{grant.title}}</span>
 </h2>
@@ -25,7 +25,7 @@
 <div class="container">
   <div class="fund__title">Fund Grant</div>
 
-  <form action="/grants/fund" method="POST" id="js-fundGrant">
+  <form action='/grants/fund/9' method="POST" id="js-fundGrant">
     {% csrf_token %}
     <div class="row bottom-buffer">
 
@@ -58,21 +58,20 @@
 
       <div class="col-4">
         <div class="form__group-horizontal">
-          <label class="form__label" for="input-amount">Select amount:</label>
-          <input class="form__input" type="text" id="input-amount" name="amount" required />
+
+          <button class="button button--primary button--full">Contribute</button>
         </div>
-        <button class="button button--primary button--full">Contribute</button>
       </div>
 
       <div class="col-4">
         <div class="form__group-horizontal">
-          <label class="form__label">Select period:</label>
+          <!-- <label class="form__label">Select period:</label>
           <div class="form__select2 fund__period">
             <select name='period' id='period'>
               <option value="month">month</option>
               <option value="year">year</option>
-            </select>
-          </div>
+            </select> -->
+          <!-- </div> -->
         </div>
       </div>
 
@@ -82,6 +81,7 @@
             <div class="progress-bar" style="width:50%"></div>
             <div class="progress-bar progress-bar--fund" role="progressbar" style="width:10%">
               <div class="contribution">
+                <!-- Can Django support reactive text? This number/diagram should reflect what they are typing.  -->
                 <span>10 ETH</span>
                 <p>Your contribution</p>
               </div>
@@ -91,11 +91,11 @@
           <div class="progress-text top-buffer bottom-buffer">
             <div class="row">
               <div class="col-6">
-                <span>344.ETH</span>
+                <span>{{grant.amountReceived}} ETH</span>
                 <p>Current</p>
               </div>
               <div class="col-6 text-right">
-                <span>500.ETH</span>
+                <span>{{grant.amountGoal}} ETH</span>
                 <p>Goal</p>
               </div>
             </div>
@@ -103,6 +103,7 @@
         </div>
 
         <p>
+          {{grant.description}}
           Lorem ipsum dolor sit amet, consectetur adipiscing elit.
           Mauris sodales magna sit amet mattis feugiat.
           Etiam dapibus semper dapibus.
