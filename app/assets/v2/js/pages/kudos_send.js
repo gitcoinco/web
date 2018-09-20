@@ -51,7 +51,8 @@ var wait_for_metadata = function(callback) {
         'pub_key': account['public'],
         'address': account['address'],
         'reference_hash_for_receipient': document.hash1,
-        'gitcoin_secret': account['shares'][0]
+        'gitcoin_secret': account['shares'][0],
+        'is_direct': false
       });
     } else {
       console.log('still waiting...')
@@ -65,6 +66,7 @@ var wait_for_metadata = function(callback) {
 
 
 var wait_for_metadata_test = function(callback) {
+  // only for local testing purposes
   console.log('document.hash1 = ' + document.hash1)
   var account = generate_or_get_private_key();
 
@@ -117,6 +119,9 @@ var etherscanDomain = function() {
   } else if (document.web3network == 'rinkeby') {
     // rinkeby
     etherscanDomain = 'rinkeby.etherscan.io';
+  } else if (document.web3network == 'ropsten') {
+    // ropsten
+    etherscanDomain = 'ropsten.etherscan.io';
   } else {
     // mainnet
   }
@@ -508,10 +513,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
       console.log('waiting for metadata')
       // pay out via secret sharing algo
       // Step 6
-      // wait_for_metadata(got_metadata_callback);
-      wait_for_metadata_test(got_metadata_callback);
-      // let metadata = {}
-      // got_metadata_callback(metadata);
+      wait_for_metadata(got_metadata_callback);
     }
   });
 }
