@@ -466,6 +466,10 @@
 
       (function($) {
         $(document).on('click','.load-more' ,function() {
+          var address =  $('#preferred-address').prop('title')
+          if (!address) {
+            return
+          }
           var link = $(this);
           var page = link.data('page');
           var request = link.data('request')
@@ -475,6 +479,7 @@
             data: {
               'page': page,
               'request': request,
+              'address': address,
               'csrfmiddlewaretoken': '{{csrf_token}}' // from index.html
             },
             success: function(data) {

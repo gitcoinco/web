@@ -1232,12 +1232,10 @@ def profile(request, handle):
 
 def lazy_load_kudos(request):
     page = request.POST.get('page')
+    address = request.POST.get('address')
     context= {}
     # with this attr from the button clicked we know if we request kudos or sent kudos
     datarequest = request.POST.get('request')
-    # Need the current preferred address to make the query
-    profile = getattr(request.user, 'profile', None)
-    address = profile.preferred_payout_address
     order_by = request.GET.get('order_by', '-modified_on')
     # use Django’s pagination
     # https://docs.djangoproject.com/en/dev/topics/pagination/
