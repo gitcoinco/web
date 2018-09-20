@@ -28,7 +28,6 @@ from django.core.validators import URLValidator
 from django.db import transaction
 from django.http import Http404, JsonResponse
 from django.utils import timezone
-from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
 from dashboard.models import Activity, Bounty, BountyFulfillment, BountySyncRequest, UserAction
@@ -40,7 +39,7 @@ from dashboard.tokens import addr_to_token
 from economy.utils import convert_amount
 from git.utils import get_gh_issue_details, get_url_dict, issue_number, org_name, repo_name
 from jsondiff import diff
-from marketing.mails import send_mail
+from marketing.mails import new_reserved_issue
 from pytz import UTC
 from ratelimit.decorators import ratelimit
 
@@ -477,14 +476,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
 
         # notify a user that a bounty has been reserved for them once the bounty has been created
         if reserved_for_user and new_bounty is not None:
-            from_email = _('founders@gitcoin.co')
-            email_subject = _('Reserved Issue')
-            body = _(f'<p>Hi {reserved_for_user.handle},<br><br>An issue has been assigned to you on gitcoin. '
-                     f'The link to the issue is {new_bounty.url}. '
-                     f'Please start working on the issue, in the next 72 hours,'
-                     f' before it is opened up for other bounty'
-                     f' hunters to try as well.<br><br>Regards</p>')
-            send_mail(from_email, reserved_for_user.email, email_subject, body, html=True)
+            new_reserved_issue('founders@gitcoin.co', reserved_for_user, new_bounty)
 
         if fulfillments:
             handle_bounty_fulfillments(fulfillments, new_bounty, latest_old_bounty)

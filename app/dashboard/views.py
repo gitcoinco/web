@@ -1492,8 +1492,8 @@ def change_bounty(request, bounty_id):
         else:
             raise Http404
 
-    keys = ['experience_level', 'project_length', 'bounty_type', 'permission_type', 'project_type',
-            'bounty_reserved_for_user']
+    keys = ['experience_level', 'project_length', 'bounty_type',
+            'permission_type', 'project_type', 'bounty_reserved_for_user']
 
     if request.body:
         can_change = (bounty.status in Bounty.OPEN_STATUSES) or \
@@ -1520,18 +1520,12 @@ def change_bounty(request, bounty_id):
             value = params.get(key, '')
             old_value = getattr(bounty, key)
 
-            if key == 'bounty_reserved_for_user' and value is not None:
+            if key == 'bounty_reserved_for_user' and value != '':
                 if old_value is not None:
                     old_value = old_value.id
-                else:
-                    old_value = None
-
-            if key == 'bounty_reserved_for_user' and value is None:
-                value = None
-                old_value = 'old_val'
 
             if value != old_value:
-                if key == 'bounty_reserved_for_user' and value is not None:
+                if key == 'bounty_reserved_for_user' and value != '':
                     value = Profile.objects.get(id=value)
 
                 setattr(bounty, key, value)
