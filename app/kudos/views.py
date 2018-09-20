@@ -165,6 +165,10 @@ def details(request):
         context['card_desc'] = kudos.description
         context['avatar_url'] = kudos.image
 
+        # The real num_cloned_in_wild is only stored in the Gen0 Kudos token
+        kudos.num_clones_in_wild = Token.objects.get(pk=kudos.cloned_from_id).num_clones_in_wild
+        context['kudos'] = kudos
+
     return TemplateResponse(request, 'kudos_details.html', context)
 
 
