@@ -71,32 +71,36 @@ def new_grant(request):
 
 def fund_grant(request):
     """Handle grant funding."""
+    # import ipdb; ipdb.set_trace()
     # grant = Grant.objects.get(pk=grant_id)
 
     profile_id = request.session.get('profile_id')
     profile = request.user.profile if request.user.is_authenticated else None
 
-    print("this is a log", profile)
-    # print("this is a log", grant)
-    # logging.info("this is a log", grant)
+    print("this is a log 1", profile_id)
+    # print("this is a log 1", grant)
 
 
 
     if request.method == "POST":
         subscription = Subscription()
 
+
+        # subscriptionHash and ContributorSignature will be given from smartcontracts and web3
         # subscription.subscriptionHash = request.POST.get('input-name')
         # subscription.contributorSignature = request.POST.get('description')
+        # Address will come from web3 instance
         # subscription.contributorAddress = request.POST.get('reference_url')
         subscription.amountPerPeriod = request.POST.get('input-amount')
-        # subscription.tokenAddress = request.POST.get('frequency')
-        # subscription.gasPrice = request.POST.get('denomination')
+        subscription.tokenAddress = request.POST.get('denomination')
+        subscription.gasPrice = request.POST.get('gas_price')
+        # network will come from web3 instance
         # subscription.network = request.POST.get('amount_goal')
         subscription.contributorProfile = profile
         # subscription.grantPk = grant
 
-        print("this is a log", profile)
-        # print("this is a log", grant)
+        print("this is a log 2", profile)
+        # print("this is a log 3", grant)
         # logging.info("this is a log", grant)
 
         # subscription.teamMemberProfiles = Need to do a profile search based on enetered emails
@@ -104,8 +108,6 @@ def fund_grant(request):
         subscription.save()
     else:
         subscription = {}
-
-    print(profile)
 
 
     params = {
@@ -116,8 +118,8 @@ def fund_grant(request):
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
 
-    print("this is a log", profile)
-    # print("this is a log", grant)
+    print("this is a log 4", profile)
+    # print("this is a log 5", grant)
     # logging.info("this is a log", grant)
 
     return TemplateResponse(request, 'grants/fund.html', params)
