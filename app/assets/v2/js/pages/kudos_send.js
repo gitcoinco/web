@@ -73,7 +73,8 @@ var wait_for_metadata_test = function(callback) {
     'pub_key': account['public'],
     'address': account['address'],
     'reference_hash_for_receipient': document.hash1,
-    'gitcoin_secret': account['shares'][0]
+    'gitcoin_secret': account['shares'][0],
+    'is_direct': false,
   });
 };
 
@@ -394,7 +395,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
         // Step 8
         // A json object with SUCCESS is received from the back-end
         var is_direct_to_recipient = metadata['is_direct'];
-        var destinationAccount = is_direct_to_recipient ? metadata['direct_address'] : metadata['address'];
+        var destinationAccount = metadata['address'];
 
         var post_send_callback = function(errors, txid) {
           if (errors) {
@@ -499,7 +500,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
       // pay out directly
       got_metadata_callback({
         'is_direct': true,
-        'direct_address': json.addresses[0],
+        'address': json.addresses[0],
         'creation_time': creation_time,
         'salt': salt
       });

@@ -95,7 +95,7 @@ class KudosTransfer(SendCryptoAsset):
     # kudos_token_cloned_from is a reference to the original Kudos Token that is being cloned.
     kudos_token_cloned_from = models.ForeignKey(Token, related_name='kudos_token_cloned_from', on_delete=models.SET_NULL, null=True)
     # kudos_token is a reference to the new Kudos Token that is soon to be minted
-    kudos_token = models.OneToOneField(Token, related_name='kudos_token', on_delete=models.SET_NULL, null=True)
+    kudos_token = models.OneToOneField(Token, related_name='kudos_transfer', on_delete=models.SET_NULL, null=True)
 
     recipient_profile = models.ForeignKey(
         'dashboard.Profile', related_name='received_kudos', on_delete=models.SET_NULL, null=True, blank=True

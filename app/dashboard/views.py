@@ -1151,6 +1151,17 @@ def profile(request, handle):
 
     # logging.info(context['preferred_payout_address'])
     # logging.info(owned_kudos)
+    if owned_kudos:
+        owned_kudos_comments_public = []
+        for kudos_token in owned_kudos:
+            try:
+                owned_kudos_comments_public.append(kudos_token.kudos_transfer.comments_public)
+            except Exception as e:
+                logger.error(e)
+        logging.info(f'kudos comments_public: {owned_kudos_comments_public}')
+    else:
+        owned_kudos_comments_public = None
+    context['kudos_comments_public'] = owned_kudos_comments_public
     context['kudos'] = owned_kudos
     context['sent_kudos'] = sent_kudos
 

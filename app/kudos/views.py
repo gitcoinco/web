@@ -26,6 +26,7 @@ from django.utils import timezone
 from django.contrib.postgres.search import SearchVector
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import redirect
+from django.forms.models import model_to_dict
 
 from .models import Token, Wallet, KudosTransfer
 from dashboard.models import Profile, Activity
@@ -282,7 +283,9 @@ def send_2(request):
 
     kudos_name = request.GET.get('name')
     kudos = Token.objects.filter(name=kudos_name, num_clones_allowed__gt=0).first()
-    profiles = Profile.objects.all()
+    # logger.info(f'kudos name: {kudos.name}')
+    # logger.debug(f'kudos detail: {model_to_dict(kudos)}')
+    # profiles = Profile.objects.all()
 
     params = {
         'issueURL': request.GET.get('source'),
@@ -293,7 +296,7 @@ def send_2(request):
         'title': 'Send Kudos | Gitcoin',
         'card_desc': 'Send a Kudos to any github user at the click of a button.',
         'kudos': kudos,
-        'profiles': profiles
+        # 'profiles': profiles
     }
 
     return TemplateResponse(request, 'transaction/send.html', params)
@@ -326,6 +329,8 @@ def send_3(request):
 
     # Validate that the token exists on the back-end
     kudos_token_cloned_from = Token.objects.filter(name=params['kudosName'], num_clones_allowed__gt=0).first()
+    # logger.info(f'kudos_token_cloned_from name: {kudos_token_cloned_from.name}')
+    # logger.debug(f'kudos_token_cloned_from detail: {model_to_dict(kudos_token_cloned_from.name)}')
     # db mutations
     kudos_transfer = KudosTransfer.objects.create(
         emails=to_emails,
@@ -373,17 +378,23 @@ def send_4(request):
     txid = params['txid']
     destinationAccount = params['destinationAccount']
     is_direct_to_recipient = params.get('is_direct_to_recipient', False)
-    if is_direct_to_recipient:
-        kudos_transfer = KudosTransfer.objects.get(
-            metadata__direct_address=destinationAccount,
-            metadata__creation_time=params['creation_time'],
-            metadata__salt=params['salt'],
-        )
-    else:
-        kudos_transfer = KudosTransfer.objects.get(
-            metadata__address=destinationAccount,
-            metadata__salt=params['salt'],
-        )
+    # if is_direct_to_recipient:
+    #     kudos_transfer = KudosTransfer.objects.get(
+    #         metadata__direct_address=destinationAccount,
+    #         metadata__creation_time=params['creation_time'],
+    #         metadata__salt=params['salt'],
+    #     )
+    # else:
+    #     kudos_transfer = KudosTransfer.objects.get(
+    #         metadata__address=destinationAccount,
+    #         metadata__salt=params['salt'],
+    #     )
+    kudos_transfer = KudosTransfer.objects.get(
+        metadata__address=destinationAccount,
+        metadata__creation_time=params['creation_time'],
+        metadata__salt=params['salt'],
+    )
+    logger.info(f'kudos_transfer id: {kudos_transfer.id}')
 
     # Return Permission Denied if not authenticated
     is_authenticated_for_this_via_login = (kudos_transfer.from_username and kudos_transfer.from_username == from_username)
@@ -401,15 +412,11 @@ def send_4(request):
     kudos_transfer.txid = txid
     if is_direct_to_recipient:
         kudos_transfer.receive_txid = txid
-    kudos_transfer.save()
-
-    # Update kudos.models.Token to reflect the newly cloned Kudos
-    if kudos_transfer.network == 'custom network':
-        network = 'localhost'
-    else:
-        network = kudos_transfer.network
-    kudos_contract = KudosContract(network)
-    kudos_contract.sync_db()
+        kudos_transfer.save()
+        # Update kudos.models.Token to reflect the newly cloned Kudos
+        network = 'localhost' if kudos_transfer.network == 'custom network' else kudos_transfer.network
+        kudos_contract = KudosContract(network)
+        kudos_contract.sync_db(txid=txid)
 
     # notifications
     # maybe_market_tip_to_github(kudos_transfer)
@@ -507,12 +514,9 @@ def receive(request, key, txid, network):
             record_kudos_email_activity(kudos_transfer, kudos_transfer.username, 'receive_kudos')
             messages.success(request, 'This kudos has been received')
             # Update kudos.models.Token to reflect the newly cloned Kudos
-            if kudos_transfer.network == 'custom network':
-                network = 'localhost'
-            else:
-                network = kudos_transfer.network
+            network = 'localhost' if kudos_transfer.network == 'custom network' else kudos_transfer.network
             kudos_contract = KudosContract(network)
-            kudos_contract.sync_db()
+            kudos_contract.sync_db(txid=params['receive_txid'])
         except Exception as e:
             messages.error(request, str(e))
             logger.exception(e)

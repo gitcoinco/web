@@ -85,7 +85,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='kudostransfer',
             name='kudos_token',
-            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='kudos_token', to='kudos.Token'),
+            field=models.OneToOneField(null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='kudos_transfer', to='kudos.Token'),
         ),
         migrations.AddField(
             model_name='kudostransfer',
