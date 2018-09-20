@@ -9,8 +9,8 @@ repo_url: 'https://github.com/gitcoinco/web'
 generate:
   - app/middleware.md:
     - app.middleware++
-  - app/pipeline.md:
-    - app.pipeline++
+  - app/auth_pipeline.md:
+    - app.auth_pipeline++
   - app/sitemaps.md:
     - app.sitemaps++
   - app/static_storage.md:
