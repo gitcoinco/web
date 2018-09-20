@@ -33,7 +33,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from app.utils import get_default_network
 from cacheops import cached_as, cached_view, cached_view_as
-from dashboard.models import Activity
+from dashboard.models import Activity, Profile
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
 from marketing.mails import new_token_request
@@ -252,9 +252,12 @@ def how_it_works(request, work_type):
     return TemplateResponse(request, 'how_it_works/index.html', context)
 
 
+@cached_view_as(Profile.objects.hidden())
 def robotstxt(request):
+    hidden_profiles = Profile.objects.hidden()
     context = {
         'settings': settings,
+        'hidden_profiles': hidden_profiles,
     }
     return TemplateResponse(request, 'robots.txt', context, content_type='text')
 

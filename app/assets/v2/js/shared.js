@@ -215,7 +215,7 @@ var _alert = function(msg, _class) {
 
   var html = function() {
     return (
-      `<div class="alert ${_class}" style="top: ${top}px">
+      `<div class="alert ${_class} g-font-muli" style="top: ${top}px">
         <div class="message">
           <div class="content">
             ${alertMessage(msg)}

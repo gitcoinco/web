@@ -19,15 +19,12 @@
 <html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="x-apple-disable-message-reformatting" />
+<head>
+  <link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}">
+</head>
 
 <style>
-  @font-face {
-    font-family: 'Muli', sans-serif;
-    src: url("{% static "v2/fonts/Muli/Muli.ttf" %}") /* TTF file for CSS3 browsers */
-  }
-
   body {
-    font-family: 'Muli', sans-serif !important;
     margin: 0px;
     padding: 0px;
   }
@@ -171,7 +168,7 @@
   }
 </style>
 
-<body>
+<body class="g-font-muli">
   {% if not hide_header %}
   <div id="header">
     <a href="https://gitcoin.co">

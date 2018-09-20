@@ -213,6 +213,7 @@ pages:
     - Rest API: mk_rest_api.md << docs/API.md
     - Changelog: mk_changelog.md << CHANGELOG.md
     - Contributors Guide: mk_contributors.md << docs/CONTRIBUTING.md
+    - StyleGuide: mk_styleguide.md << docs/STYLEGUIDE.md
   - Code:
     - App:
       - Middleware: app/middleware.md

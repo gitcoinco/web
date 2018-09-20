@@ -44,8 +44,8 @@ class AvatarAdmin(GeneralAdmin):
 
     ordering = ['-id']
     fields = [
-        'config', 'use_github_avatar', 'svg_asset', 'custom_png_asset', 'github_svg_asset',
-        'png_asset', 'created_on', 'modified_on'
+        'config', 'use_github_avatar', 'svg_asset', 'custom_png_asset', 'github_svg_asset', 'png_asset', 'created_on',
+        'modified_on'
     ]
     readonly_fields = ['svg_asset', 'custom_png_asset', 'github_svg_asset', 'png_asset', 'created_on', 'modified_on']
     inlines = [ProfileInline, ]

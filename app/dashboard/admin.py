@@ -71,7 +71,7 @@ class ProfileAdmin(admin.ModelAdmin):
     raw_id_fields = ['user', 'avatar']
     ordering = ['-id']
     search_fields = ['email', 'data']
-    list_display = ['handle', 'created_on', 'github_created_on']
+    list_display = ['handle', 'created_on']
 
 
 class TipAdmin(admin.ModelAdmin):

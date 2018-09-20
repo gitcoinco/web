@@ -7,6 +7,7 @@ DJ_PIPELINE = {
         'ens': {
             'source_filenames': (
                 'v2/css/bootstrap.min.css',
+                'v2/css/lib/typography.css',
                 'v2/css/gitcoin.css',
                 'onepager/css/main.css',
                 'v2/css/box_redeem.css',
@@ -22,6 +23,7 @@ DJ_PIPELINE = {
             'source_filenames': (
                 'v2/css/fontawesome-all.min.css',
                 'v2/css/bootstrap.min.css',
+                'v2/css/lib/typography.css',
                 'v2/css/gitcoin.css',
                 'v2/css/base.css',
                 'v2/css/jquery-ui.css',
