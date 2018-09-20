@@ -393,6 +393,35 @@ var reset_offset = function() {
   document.offset = 0;
 };
 
+// function that resurfaces an issue to the top when expiration has been extended
+var resurfaceExtendedExpirationIssue = function(issues){
+  let resurfacedExtendedExpirationIssues = [];
+  let normalIssues = [];
+
+  for (let i = 0; i < issues.length; i++) {
+    const issueActivities = issues[i].activities;
+    let issue = issues[i];
+    let resurfaceIssue = false;
+
+    issueActivities.filter((issueActivity, issueActivityIndex) => {
+      if (issueActivity.activity_type === 'extend_expiration' && (new Date(issue.expires_date) > new Date())) {
+        resurfaceIssue = true;
+      } 
+    });
+
+    if (resurfaceIssue) {
+      issue.resurfaced = resurfaceIssue;
+      resurfacedExtendedExpirationIssues.push(issue);
+    } else {
+      normalIssues.push(issue);
+    }
+
+  }
+  // merge the 2 arrays
+  issues = [] = resurfacedExtendedExpirationIssues.concat(normalIssues);
+  return issues;
+};
+
 var refreshBounties = function(event, offset, append) {
 
   // Allow search for freeform text
@@ -429,7 +458,8 @@ var refreshBounties = function(event, offset, append) {
   }
 
   explorer.bounties_request = $.get(uri, function(results, x) {
-    results = sanitizeAPIResults(results);
+    results = resurfaceExtendedExpirationIssue(sanitizeAPIResults(results));
+    
 
     if (results.length === 0 && !append) {
       if (localStorage['referrer'] === 'onboard') {
@@ -439,6 +469,8 @@ var refreshBounties = function(event, offset, append) {
         $('.nonefound').css('display', 'block');
       }
     }
+
+    
 
     document.last_bounty_rendered = 0;
 
@@ -512,6 +544,9 @@ var refreshBounties = function(event, offset, append) {
     }
 
     document.done_loading_results = results.length < results_limit;
+
+    // remove the blue background for resurfaced issues after 10 seconds
+    setTimeout(function(){ $('.bounty_row.resurfaced-issue ').animate({backgroundColor: 'transparent'}, 'slow');}, 10000);
 
     $('div.bounty_row.result').each(function() {
       var href = $(this).attr('href');
