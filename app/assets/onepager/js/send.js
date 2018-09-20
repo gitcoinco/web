@@ -85,6 +85,7 @@ $(document).ready(function() {
     var tokenName = 'ETH';
 
     if (!isSendingETH) {
+      check_balance_and_alert_user_if_not_enough(tokenAddress, amountInEth);
       tokenName = tokenDetails.name;
     }
 
@@ -291,12 +292,13 @@ function sendTip(email, github_url, from_name, username, amountInEth, comments_p
             }, send_erc20);
           };
 
+          check_balance_and_alert_user_if_not_enough(tokenAddress, amountInWei);
           if (is_direct_to_recipient) {
             send_erc20();
           } else {
             send_gas_money_and_erc20();
           }
-          
+
         }
       }
     });
@@ -349,4 +351,26 @@ var etherscanDomain = function() {
     // mainnet
   }
   return etherscanDomain;
+};
+
+var check_balance_and_alert_user_if_not_enough = function(tokenAddress, amount) {
+  var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+  var from = web3.eth.coinbase;
+  var token_details = tokenAddressToDetails(tokenAddress);
+  var token_decimals = token_details['decimals'];
+  var token_name = token_details['name'];
+
+  token_contract.balanceOf.call(from, function(error, result) {
+    
+    if (error) return;
+    var balance = result.toNumber() / Math.pow(10, 18);
+    var balance_rounded = Math.round(balance * 10) / 10;
+
+    if (parseFloat(amount) > balance) {
+      var msg = gettext('You do not have enough tokens to fund this bounty. You have ') + balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + amount + ' ' + token_name;
+
+      _alert(msg, 'warning');
+    }
+  });
+
 };
