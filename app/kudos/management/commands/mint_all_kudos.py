@@ -18,14 +18,11 @@
 
 import datetime
 import logging
-import sys
 import warnings
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from dashboard.helpers import UnsupportedSchemaException
-from django.core.management import call_command
 from kudos.utils import KudosContract
 
 from web3.exceptions import BadFunctionCallOutput
@@ -58,7 +55,8 @@ class Command(BaseCommand):
         network = options['network']
         account = options['account']
         private_key = options['private_key']
-        # logger.info(options)
+
+        kudos_contract = KudosContract(network=network)
         hour = datetime.datetime.now().hour
         day = datetime.datetime.now().day
         month = datetime.datetime.now().month
@@ -72,10 +70,6 @@ class Command(BaseCommand):
             image_name = kudos.get('image')
             if image_name:
                 image_path = 'v2/images/kudos/' + image_name
-                # image_path = yaml_file.replace('kudos.yaml', 'images/') + image_name
-                # api = getIPFS()
-                # image_ipfs = api.add(image_path)
-                # image_hash = image_ipfs['Hash']
             else:
                 image_path = ''
 
@@ -83,18 +77,9 @@ class Command(BaseCommand):
                     kudos['numClonesAllowed'], kudos['tags'], image_path,
                     )
 
-            # logger.info(args)
-
-            # try:
-            #     mint_kudos_on_web3_and_db(network, private_key, *args)
-            # except ValueError as e:
-            #     logger.warning(e)
-
             # If the mint fails, retry it 3 times.  Because Infura.
             for i in range(1, 4):
                 try:
-                    # TODO:  Move the kudos_contract instantiation outside of the for loop
-                    kudos_contract = KudosContract(network=network)
                     kudos_contract.mint(*args, account=account, private_key=private_key)
                 except IndexError as e:
                     logger.warning(e)
