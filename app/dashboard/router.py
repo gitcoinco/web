@@ -20,6 +20,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from datetime import datetime
 
+from django.utils import timezone
+
 import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
 
@@ -71,6 +73,20 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
     activities = ActivitySerializer(many=True)
     bounty_owner_email = serializers.SerializerMethodField('override_bounty_owner_email')
     bounty_owner_name = serializers.SerializerMethodField('override_bounty_owner_name')
+    resurfaced = serializers.SerializerMethodField('set_resurfaced_issue')
+
+    # check for extended issues and resurface them
+    def set_resurfaced_issue(self, issue):
+        issue_activities = issue.activities.all()
+        issue_extended = False
+
+        for activity in issue_activities:
+            if (activity.activity_type == 'extend_expiration'
+                and issue.idx_status == 'open'
+                    and issue.expires_date > timezone.now()):
+                issue_extended = True
+
+        return issue_extended
 
     def override_bounty_owner_email(self, obj):
         can_make_visible_via_api = bool(int(obj.privacy_preferences.get('show_email_publicly', 0)))
@@ -97,7 +113,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'github_org_name', 'github_repo_name', 'idx_status', 'token_value_time_peg', 'fulfillment_accepted_on',
             'fulfillment_submitted_on', 'fulfillment_started_on', 'canceled_on', 'action_urls', 'project_type',
             'permission_type', 'attached_job_description', 'needs_review', 'github_issue_state', 'is_issue_closed',
-            'additional_funding_summary', 'paid',
+            'additional_funding_summary', 'paid', 'resurfaced'
         )
 
     def create(self, validated_data):
@@ -248,7 +264,10 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         # order
         order_by = self.request.query_params.get('order_by')
-        if order_by and order_by != 'null':
+        order_by_date = self.request.query_params.get('order_by_date')
+        if order_by and order_by != 'null' and order_by_date and order_by_date != 'null':
+            queryset = queryset.order_by(order_by_date, order_by)
+        elif order_by and order_by != 'null':
             queryset = queryset.order_by(order_by)
 
         queryset = queryset.distinct()
