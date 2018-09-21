@@ -1,0 +1,210 @@
+<svg width="795px" height="316px"  version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <desc>Empty kudos</desc>
+    <style>
+        .animate-colors {
+            -webkit-animation: colors 3s linear infinite;
+                    animation: colors 3s linear infinite;
+            -webkit-animation-direction: alternate;
+                    animation-direction: alternate;
+        }
+        @-webkit-keyframes colors {
+            0% {
+                stroke:#0cc67f;
+                fill:rgba(#0cc67f,0.6);
+            }
+            15% {
+                stroke:#1e6ee2;
+                fill:rgba(#1e6ee2,0.6);
+            }
+            30% {
+                stroke:#662d91;
+                fill:rgba(#662d91,0.6);
+            }
+            50% {
+                stroke:#018cb2;
+                fill:rgba(#018cb2,0.6);
+            }
+            65% {
+                stroke:#e57418;
+                fill:rgba(#e57418,0.6);
+            }
+            85% {
+                stroke:#4d4d4d;
+                fill:rgba(#4d4d4d,0.6);
+            }
+            100% {
+                stroke:#0044e0;
+                fill:rgba(#0044e0,0.6);
+            }
+
+        }
+        @keyframes colors {
+            0% {
+                stroke:#0cc67f;
+                fill:rgba(#0cc67f,0.6);
+            }
+            15% {
+                stroke:#1e6ee2;
+                fill:rgba(#1e6ee2,0.6);
+            }
+            30% {
+                stroke:#662d91;
+                fill:rgba(#662d91,0.6);
+            }
+            50% {
+                stroke:#018cb2;
+                fill:rgba(#018cb2,0.6);
+            }
+            65% {
+                stroke:#e57418;
+                fill:rgba(#e57418,0.6);
+            }
+            85% {
+                stroke:#4d4d4d;
+                fill:rgba(#4d4d4d,0.6);
+            }
+            100% {
+                stroke:#0044e0;
+                fill:rgba(#0044e0,0.6);
+            }
+
+        }
+        .animate-opacity {
+            -webkit-animation: opacity 2s linear infinite;
+            animation: opacity 2s linear infinite;
+            -webkit-animation-direction: alternate;
+            animation-direction: alternate;
+        }
+        .animate-opacity:nth-of-type(1) {
+        -webkit-animation-delay: 1s;
+          animation-delay: 1s;
+        }
+
+        @-webkit-keyframes opacity {
+            0% {
+                opacity: 0.1;
+            }
+
+            100% {
+                opacity: 0.4;
+            }
+        }
+        @keyframes opacity {
+            0% {
+                opacity: 0.1;
+            }
+
+            100% {
+                opacity: 0.4;
+            }
+        }
+
+    </style>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Headers-Copy-8" transform="translate(-314.000000, -577.000000)">
+            <g id="empty-kudos" transform="translate(285.000000, 562.000000)">
+                <g id="desktop">
+                    <g id="hex-1">
+                        <text id="Unique-collectible-a" font-family="Muli-SemiBold, Muli" font-size="16" font-weight="500" fill="#43484D">
+                            <tspan x="73.464" y="82">Unique</tspan>
+                            <tspan x="62.92" y="102">collectible</tspan>
+                            <tspan x="70.304" y="122">artwork</tspan>
+                        </text>
+                        <polygon class="animate-colors" id="Stroke-2" stroke="#3E00FF" stroke-width="6.88" opacity="0.117745536" transform="translate(100.433956, 96.956715) rotate(-30.000000) translate(-100.433956, -96.956715) " points="138.932866 29.4567148 61.9328665 29.4567148 23.4339561 96.9578177 61.9328665 164.456715 138.932866 164.456715 177.433956 96.9578177"></polygon>
+                    </g>
+                    <g id="hex-4" transform="translate(486.000000, 0.000000)">
+                        <text id="Showcase-special-ski" font-family="Muli-SemiBold, Muli" font-size="16" font-weight="500" fill="#43484D">
+                            <tspan x="61.32" y="79">Showcase</tspan>
+                            <tspan x="73.944" y="99">special</tspan>
+                            <tspan x="46.376" y="119">skills &amp; talents</tspan>
+                        </text>
+                        <polygon class="animate-colors" id="Stroke-2-Copy-7" stroke="#3E00FF" stroke-width="6.88" opacity="0.117745536" transform="translate(100.433956, 96.956715) rotate(-30.000000) translate(-100.433956, -96.956715) " points="138.932866 29.4567148 61.9328665 29.4567148 23.4339561 96.9578177 61.9328665 164.456715 138.932866 164.456715 177.433956 96.9578177"></polygon>
+                    </g>
+                    <g id="hex-5" transform="translate(653.000000, 0.000000)">
+                        <text id="Bought-&amp;-sold-on-the" font-family="Muli-SemiBold, Muli" font-size="16" font-weight="500" fill="#43484D">
+                            <tspan x="48.448" y="79">Bought &amp; sold</tspan>
+                            <tspan x="51.944" y="99">on the Kudos</tspan>
+                            <tspan x="54.72" y="119">Marketplace</tspan>
+                        </text>
+                        <polygon class="animate-colors" id="Stroke-2-Copy-8" stroke="#3E00FF" stroke-width="6.88" opacity="0.117745536" transform="translate(100.433956, 96.956715) rotate(-30.000000) translate(-100.433956, -96.956715) " points="138.932866 29.4567148 61.9328665 29.4567148 23.4339561 96.9578177 61.9328665 164.456715 138.932866 164.456715 177.433956 96.9578177"></polygon>
+                    </g>
+                    <g id="hex-2" transform="translate(163.000000, 0.000000)">
+                        <text id="Show-appreciation/-c" font-family="Muli-SemiBold, Muli" font-size="16" font-weight="500" fill="#43484D">
+                            <tspan x="74.536" y="79">Show</tspan>
+                            <tspan x="46.488" y="99">appreciation/</tspan>
+                            <tspan x="46.84" y="119">collaboration</tspan>
+                        </text>
+                        <polygon class="animate-colors" id="Stroke-2-Copy-3" stroke="#3E00FF" stroke-width="6.88" opacity="0.117745536" transform="translate(100.433956, 96.956715) rotate(-30.000000) translate(-100.433956, -96.956715) " points="138.932866 29.4567148 61.9328665 29.4567148 23.4339561 96.9578177 61.9328665 164.456715 138.932866 164.456715 177.433956 96.9578177"></polygon>
+                    </g>
+                    <g id="hex-3" transform="translate(323.000000, 0.000000)">
+                        <g id="share" opacity="0.857756696" transform="translate(52.500000, 61.000000)" stroke-linecap="round" stroke-width="3.7152">
+                            <path class="animate-colors" d="M49.3283588,35.9294845 L53.8340963,31.6082474 C53.8774088,31.5649485 53.8774088,31.4931959 53.8340963,31.451134 L49.3283588,27.1286598" id="Stroke-1" stroke="#505050"></path>
+                            <path class="animate-colors" d="M53.8578563,31.529567 L37.9906313,31.529567" id="Stroke-3" stroke="#405366"></path>
+                            <path class="animate-colors" d="M42.5281725,15.7804948 L38.0236725,20.1029691 C37.9791225,20.1450309 37.9791225,20.2167835 38.0236725,20.2600825 L42.5281725,24.5813196" id="Stroke-5" stroke="#505050"></path>
+                            <path class="animate-colors" d="M37.9987987,20.1816495 L53.8660237,20.1816495" id="Stroke-7" stroke="#405366"></path>
+                            <path d="M65.5778475,48.4057732 L65.5778475,59.7463918" id="Stroke-9" stroke="#505050"></path>
+                            <path d="M81.7813013,36.6809072 L80.2245263,37.7621443 C77.9351513,39.3518351 74.8970888,39.3518351 72.6064763,37.7621443 L71.0509388,36.6821443" id="Stroke-11" stroke="#505050"></path>
+                            <path d="M87.2534025,48.4057732 L87.2534025,59.7463918" id="Stroke-13" stroke="#505050"></path>
+                            <path d="M87.0915375,16.302433 C87.0915375,22.8517113 82.3123125,31.5795464 76.415625,31.5795464 C70.5189375,31.5795464 65.7397125,22.8517113 65.7397125,16.302433" id="Stroke-15" stroke="#405366"></path>
+                            <path d="M64.0720575,15.9181856 C70.5986325,15.9181856 74.67867,9.80808247 74.67867,9.80808247 C74.67867,9.80808247 80.3922075,15.9181856 89.3665575,15.9181856" id="Stroke-17" stroke="#405366" stroke-linejoin="round"></path>
+                            <path d="M76.415625,1.5742268 C69.040125,-3.8443299 54.744525,4.61752577 61.961625,28.6657732 C64.67175,37.6979381 53.83125,41.3103093 53.83125,41.3103093 C53.83125,41.3103093 70.995375,46.728866 72.802125,30.4731959" id="Stroke-19" stroke="#505050" stroke-linejoin="round"></path>
+                            <path d="M76.415625,1.5742268 C83.791125,-3.8443299 98.086725,4.61752577 90.869625,28.6657732 C88.1595,37.6979381 99,41.3103093 99,41.3103093 C99,41.3103093 81.835875,46.728866 80.029125,30.4731959" id="Stroke-21" stroke="#405366" stroke-linejoin="round"></path>
+                            <path d="M59.1147562,42.1585979 C58.4984812,42.9466392 57.9812062,43.8089072 57.5604562,44.7540619 C56.5964437,46.9190103 56.1373312,49.5144742 56.1373312,52.6084948 L56.1373312,56.4150928 C56.1373312,58.2559175 57.6297562,59.7466392 59.4686812,59.7466392 L93.3625687,59.7466392 C95.2014937,59.7466392 96.6939187,58.2559175 96.6939187,56.4150928 L96.6939187,52.6084948 C96.6939187,49.5144742 96.2348062,46.9190103 95.2707937,44.7540619 C94.8500437,43.8089072 94.3327687,42.9466392 93.7164937,42.1585979" id="Stroke-23" stroke="#505050"></path>
+                            <path d="M30.9024788,20.3448247 C29.3815913,25.8524536 25.0713788,31.3600825 19.9914413,31.3600825 C14.8904663,31.3600825 10.5641663,25.8091546 9.06184125,20.2780206" id="Stroke-25" stroke="#405366"></path>
+                            <path d="M9.30661875,48.5664742 L9.30661875,59.746268" id="Stroke-27" stroke="#505050"></path>
+                            <path d="M36.6971963,59.7463918 C38.5113713,59.7463918 39.9815213,58.276701 39.9815213,56.4630928 L39.9815213,52.7109278 C39.9815213,43.3558763 35.7245213,38.628866 25.9198088,36.5641237 L19.9909463,40.6812371 L14.0620838,36.5641237 C4.25613375,38.628866 0.00037125,43.3558763 0.00037125,52.7109278 L0.00037125,56.4630928 C0.00037125,58.276701 1.47052125,59.7463918 3.28469625,59.7463918 L36.6971963,59.7463918 Z" id="Stroke-29" stroke="#505050"></path>
+                            <path d="M30.6752738,48.5664742 L30.6752738,59.746268" id="Stroke-31" stroke="#505050"></path>
+                            <path d="M14.0608462,36.5637526 C15.5371837,35.3402474 15.5371837,29.9971546 15.5371837,29.9971546" id="Stroke-33" stroke="#505050"></path>
+                            <path d="M25.9198087,36.5637526 C24.4447087,35.3402474 24.4447087,29.9971546 24.4447087,29.9971546" id="Stroke-35" stroke="#505050"></path>
+                            <path d="M19.6477875,-1.42108547e-14 C30.5118,-1.42108547e-14 35.132625,4.05030928 31.6701,19.8804124 C31.5327375,20.508866 30.6405,20.5348454 30.469725,19.9138144 C29.8324125,17.5892784 28.9513125,12.8758763 28.9513125,12.8758763 C28.92285,12.2931959 28.420425,11.9084536 27.836325,11.902268 C24.02235,11.8614433 19.8012375,9.44907216 19.8012375,9.44907216 C19.2555,9.33773196 18.7642125,9.7756701 18.87435,10.2791753 L20.4595875,14.531134 L13.3984125,10.7987629 C12.72645,10.4474227 11.87505,10.5934021 11.387475,11.1463918 L9.5126625,19.8395876 C9.3493125,20.4668041 8.447175,20.4494845 8.3098125,19.8185567 C4.8670875,4.04041237 9.4210875,-1.42108547e-14 20.27025,-1.42108547e-14" id="Stroke-37" stroke="#405366" stroke-linejoin="round"></path>
+                        </g>
+                        <polygon class="animate-colors" id="Stroke-2-Copy-6" stroke="#3E00FF" stroke-width="6.88" opacity="0.117745536" transform="translate(100.433956, 96.956715) rotate(-30.000000) translate(-100.433956, -96.956715) " points="138.932866 29.4567148 61.9328665 29.4567148 23.4339561 96.9578177 61.9328665 164.456715 138.932866 164.456715 177.433956 96.9578177"></polygon>
+                    </g>
+                    <g id="hex-7" transform="translate(243.000000, 151.000000)">
+                        <text id="Gifted-by-another-Gi" font-family="Muli-SemiBold, Muli" font-size="16" font-weight="500" fill="#43484D">
+                            <tspan x="76.184" y="71">Gifted</tspan>
+                            <tspan x="58.416" y="91">by another</tspan>
+                            <tspan x="72.864" y="111">Gitcoin</tspan>
+                            <tspan x="68.176" y="131">member</tspan>
+                        </text>
+                        <polygon class="animate-colors" id="Stroke-2-Copy-2" stroke="#3E00FF" stroke-width="6.88" opacity="0.117745536" transform="translate(100.433956, 97.500000) rotate(-30.000000) translate(-100.433956, -97.500000) " points="138.932866 30 61.9328665 30 23.4339561 97.501103 61.9328665 165 138.932866 165 177.433956 97.501103"></polygon>
+                    </g>
+                    <g id="hex-9" transform="translate(566.000000, 151.000000)">
+                        <text id="minted-on-the-blockc" font-family="Muli-SemiBold, Muli" font-size="16" font-weight="500" fill="#43484D">
+                            <tspan x="72.524" y="79">minted</tspan>
+                            <tspan x="74.956" y="99">on the</tspan>
+                            <tspan x="58.42" y="119">blockchain</tspan>
+                        </text>
+                        <polygon class="animate-colors" id="Stroke-2-Copy-5" stroke="#3E00FF" stroke-width="6.88" opacity="0.117745536" transform="translate(100.433956, 97.500000) rotate(-30.000000) translate(-100.433956, -97.500000) " points="138.932866 30 61.9328665 30 23.4339561 97.501103 61.9328665 165 138.932866 165 177.433956 97.501103"></polygon>
+                    </g>
+                    <g id="hex-6" transform="translate(82.000000, 152.000000)">
+                        <polygon class="animate-colors" id="Stroke-2-Copy" stroke="#3E00FF" stroke-width="6.88" opacity="0.117745536" transform="translate(100.433956, 96.956715) rotate(-30.000000) translate(-100.433956, -96.956715) " points="138.932866 29.4567148 61.9328665 29.4567148 23.4339561 96.9578177 61.9328665 164.456715 138.932866 164.456715 177.433956 96.9578177"></polygon>
+                        <g id="bag" opacity="0.82421875" transform="translate(73.000000, 54.000000)" stroke="#405366">
+                            <polygon id="Stroke-1" stroke-width="4.128" points="0 68.9519231 38.9620253 68.9519231 38.9620253 19.7980769 0 19.7980769"></polygon>
+                            <polyline id="Stroke-3" stroke-width="4.128" points="38.9620253 68.5618132 38.9620253 19.7980769 54 19.7980769 54 71"></polyline>
+                            <polyline id="Stroke-4" stroke-width="4.128" points="38.9620253 68.2692308 41.4683544 68.2692308 46.4810127 63.4903846 51.4936709 68.2692308 54 68.2692308"></polyline>
+                            <path d="M19.8227848,0 C13.0286278,0 7.51898734,5.53851202 7.51898734,12.3737981 L7.51898734,19.7980769 L32.1265823,19.7980769 L32.1265823,12.3737981 C32.1265823,5.53851202 26.6169418,0 19.8227848,0 Z" id="Stroke-5" stroke-width="4.128"></path>
+                            <path d="M34.1772152,0 C27.3830582,0 21.8734177,5.53851202 21.8734177,12.3737981 L21.8734177,19.7980769 L46.4810127,19.7980769 L46.4810127,12.3737981 C46.4810127,5.53851202 40.9713722,0 34.1772152,0 Z" id="Stroke-6" stroke-width="4.128"></path>
+                            <polygon class="animate-colors" id="Stroke-2-Copy-9" stroke-width="4" transform="translate(20.000000, 44.500000) rotate(-30.000000) translate(-20.000000, -44.500000) " points="25.4998443 35 14.4998443 35 9 44.5001552 14.4998443 54 25.4998443 54 31 44.5001552"></polygon>
+                        </g>
+                    </g>
+                    <g id="hex-8" transform="translate(405.000000, 151.000000)">
+                        <text id="ERC-721" opacity="0.873604911" font-family="Muli-Bold, Muli" font-size="26" font-weight="bold" fill="#405366">
+                            <tspan x="45" y="117">ERC-721</tspan>
+                        </text>
+                        <polygon class="animate-colors" id="Stroke-2-Copy-4" stroke="#3E00FF" stroke-width="6.88" opacity="0.117745536" transform="translate(100.433956, 97.500000) rotate(-30.000000) translate(-100.433956, -97.500000) " points="138.932866 30 61.9328665 30 23.4339561 97.501103 61.9328665 165 138.932866 165 177.433956 97.501103"></polygon>
+                        <g id="eth" opacity="0.873604911" transform="translate(89.000000, 51.000000)" stroke="#405366" stroke-linejoin="round" stroke-width="2.63424">
+                            <polygon class="animate-colors" id="Stroke-3" points="11.1034483 39 0 23.0816327 11.1034483 29.8060707"></polygon>
+                            <polygon class="animate-colors" id="Stroke-5" points="11.8965517 39 23 23.0816327 11.8965517 29.8060707"></polygon>
+                            <polygon class="animate-colors" id="Stroke-7" points="11.1034483 13.9082831 0 19.1020408 11.1034483 0 11.1034483 13.9082831 11.1034483 0"></polygon>
+                            <polygon class="animate-colors" id="Stroke-9" points="11.8965517 13.9082831 23 19.1020408 11.8965517 0 11.8965517 13.9082831 11.8965517 0"></polygon>
+                            <polygon class="animate-colors" id="Stroke-11" points="11.8965517 25.4693878 23 18.714335 11.8965517 13.5306122"></polygon>
+                            <polygon class="animate-colors" id="Stroke-13" points="11.1034483 25.4693878 0 18.714335 11.1034483 13.5306122"></polygon>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

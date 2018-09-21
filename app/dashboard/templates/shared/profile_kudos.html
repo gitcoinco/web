@@ -39,6 +39,16 @@
         <button id="" data-request="mykudos" data-page="2" class="btn btn-gc-blue mb-5 load-more">See More Kudos</button>
         {% endif %}
       </div>
+      {% if kudos.count < 1 %}
+      <div class="text-center">
+        <h2 class="mb-4">What is Kudos?</h2>
+        <div class="mb-5">
+          <img class="img-fluid hidden-desktop" src="{% static "v2/images/kudos/assets/empty-kudos.svg" %}" alt="{% trans "ERC 721" %}" width="854" height="346">
+          <img class="img-fluid hidden-mobile" src="{% static "v2/images/kudos/assets/empty-kudos-desktop.svg" %}" alt="{% trans "ERC 721" %}" width="854" height="346">
+        </div>
+        <a href="{% url 'kudos_about' %}" class="btn btn-gc-blue mb-5">More About Kudos</a>
+      </div>
+      {% endif %}
     </div>
 
     <div class="tab-pane fade" id="sentkudos" role="tabpanel" aria-labelledby="sentkudos-tab">
