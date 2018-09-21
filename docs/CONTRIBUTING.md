@@ -329,7 +329,7 @@ You can do this by:
     "type": "python",
     "request": "attach",
     "localRoot": "${workspaceRoot}",
-    "remoteRoot": "/code/app",
+    "remoteRoot": "/code",
     "port": 3030,
     "host": "localhost"
 }
