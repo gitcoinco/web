@@ -60,7 +60,8 @@ ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS
 
 def premailer_transform(html):
     cssutils.log.setLevel(logging.CRITICAL)
-    return premailer.transform(html)
+    p = premailer.Premailer(html, base_url=settings.BASE_URL)
+    return p.transform()
 
 
 def render_tip_email(to_email, tip, is_new):
