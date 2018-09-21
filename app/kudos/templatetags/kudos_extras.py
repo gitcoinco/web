@@ -54,7 +54,7 @@ def humanize_address(address):
         str: The new address.
 
     """
-    return address[:6] + '...' + address[38:]
+    return address[:6] + '...' + address[-4:]
 
 
 @register.filter
