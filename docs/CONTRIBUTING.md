@@ -302,7 +302,7 @@ One benefit of using VSCode is the built-in debugger and you can use the vscode 
 
 You must complete all prerequisite steps, add the `launch.json` configuration snippet, and ensure the Gitcoin `web` docker container is running.
 
-If this is your first time using the debugger, it's advised that you stop your existing docker-compose services: `docker-compose down` and rebuild the `web` image via: `docker-compose build web` or `docker-compose up -d --build` to additionally start the services following the build.
+If this is your first time using the debugger, it's advised that you stop your existing docker-compose services: `docker-compose down`, add the necessary environment variable to `.env`, and rebuild the `web` image via: `docker-compose build web` or `docker-compose up -d --build` to additionally start the services following the build.
 
 Once you have completed all of the below outlined steps, you should be able to start debugging!
 
@@ -310,7 +310,9 @@ Once you have completed all of the below outlined steps, you should be able to s
 
 * [VSCode Python support extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python) is installed.
 * [Gitcoin Docker Setup](https://docs.gitcoin.co/mk_setup/) has been completed.
-* Add `VSCODE_DEBUGGER_ENABLED=on` to your `.env` file.
+* Add `VSCODE_DEBUGGER_ENABLED=on` to your `.env` file. (This envvar *must* be added before downing/starting the compose services in order for the necessary `ptvsd` req to be installed)
+
+*Please note: Completely restart the docker-compose services (`docker-compose down; docker-compose up -d`) following successful completion of all steps.*
 
 #### Add Launch Configuration
 
