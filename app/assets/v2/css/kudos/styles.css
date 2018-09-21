@@ -345,6 +345,7 @@ a:hover #shape-hexagon {
       position: absolute;
       width: 100%;
       height: 100%;
+      -webkit-backface-visibility: hidden;
       backface-visibility: hidden; }
     .hexagon-group .paging-animation .back {
       display: block;
