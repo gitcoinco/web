@@ -147,7 +147,7 @@ $(document).ready(function() {
 
           // send ERC20
           var data = token_contract.transfer.getData(forwarding_address, amount_in_wei.toString());
-          
+
           rawTx = {
             nonce: web3.toHex(nonce),
             to: token_address,
