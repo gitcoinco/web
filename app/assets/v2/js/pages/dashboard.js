@@ -70,7 +70,7 @@ var buildURI = function() {
   let uri = '';
   let _filters = filters.slice();
 
-  _filters.push('keywords', 'order_by');
+  _filters.push('keywords', 'order_by', 'order_by_date');
   _filters.forEach((filter) => {
     if (localStorage[filter] &&
       localStorage[filter] != 'any') {
@@ -86,6 +86,7 @@ var buildURI = function() {
  */
 var save_sidebar_latest = function() {
   localStorage['order_by'] = $('#sort_option').val();
+  localStorage['order_by_date'] = '-expires_date';
 
   filters.forEach((filter) => {
     localStorage[filter] = '';
@@ -289,9 +290,13 @@ var get_search_URI = function(offset) {
   }
 
   var order_by = localStorage['order_by'];
+  var order_by_date = localStorage['order_by_date'];
 
   if (order_by) {
     uri += '&order_by=' + order_by;
+  }
+  if (order_by_date) {
+    uri += '&order_by_date=' + order_by_date;
   }
   uri += '&offset=' + offset;
   uri += '&limit=' + results_limit;
@@ -430,6 +435,7 @@ var refreshBounties = function(event, offset, append) {
 
   explorer.bounties_request = $.get(uri, function(results, x) {
     results = sanitizeAPIResults(results);
+    
 
     if (results.length === 0 && !append) {
       if (localStorage['referrer'] === 'onboard') {
@@ -512,6 +518,11 @@ var refreshBounties = function(event, offset, append) {
     }
 
     document.done_loading_results = results.length < results_limit;
+
+    // remove the blue background for resurfaced issues after 7 seconds
+    setTimeout(function() {
+      $('.bounty_row.resurfaced-issue').animate({backgroundColor: 'transparent'}, 'slow');
+    }, 7000);
 
     $('div.bounty_row.result').each(function() {
       var href = $(this).attr('href');
