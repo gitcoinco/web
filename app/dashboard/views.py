@@ -1029,7 +1029,7 @@ def profile_helper(handle, suppress_profile_hidden_exception=False, current_user
 
     """
     current_profile = getattr(current_user, 'profile', None)
-    if current_profile.handle == handle:
+    if current_profile and current_profile.handle == handle:
         return current_profile
 
     try:
