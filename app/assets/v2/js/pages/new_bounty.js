@@ -10,6 +10,8 @@ var new_bounty = {
   last_sync: new Date()
 };
 
+var bounty_reserved_for_user = null;
+
 try {
   localStorage = window.localStorage;
 } catch (e) {
@@ -104,6 +106,22 @@ $(document).ready(function() {
   setTimeout(setUsdAmount, 1000);
   waitforWeb3(function() {
     promptForAuth();
+  });
+
+  // listen to reserved for changes
+  $('#reservedFor').on('select2:select', function(e) {
+    bounty_reserved_for_user = e.params.data.id;
+  });
+
+  // show/hide the reserved for selector based on the project type
+  $('.js-select2[name=project_type]').change(function(e) {
+    if (String(e.target.value).toLowerCase() === 'traditional') {
+      $('#reservedForDiv').show();
+    } else {
+      bounty_reserved_for_user = null;
+      $('#reservedFor').val(bounty_reserved_for_user).trigger('change');
+      $('#reservedForDiv').hide();
+    }
   });
 
   // revision action buttons
@@ -222,6 +240,7 @@ $(document).ready(function() {
         experienceLevel: data.experience_level,
         projectLength: data.project_length,
         bountyType: data.bounty_type,
+        reservedFor: bounty_reserved_for_user,
         tokenName
       };
 

@@ -30,8 +30,9 @@ from retail.emails import (
     render_bounty_startwork_expire_warning, render_bounty_unintersted, render_faucet_rejected, render_faucet_request,
     render_funder_stale, render_gdpr_reconsent, render_gdpr_update, render_match_email, render_new_bounty,
     render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission,
-    render_quarterly_stats, render_start_work_applicant_about_to_expire, render_start_work_applicant_expired,
-    render_start_work_approved, render_start_work_new_applicant, render_start_work_rejected, render_tip_email,
+    render_quarterly_stats, render_reserved_issue, render_start_work_applicant_about_to_expire,
+    render_start_work_applicant_expired, render_start_work_approved, render_start_work_new_applicant,
+    render_start_work_rejected, render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -295,6 +296,19 @@ def gdpr_reconsent(email):
         from_name="Kevin Owocki (Gitcoin.co)",
         categories=['marketing', func_name()],
     )
+
+
+def new_reserved_issue(from_email, user, bounty):
+    to_email = user.email
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_reserved_issue(to_email, user, bounty)
+
+        if not should_suppress_notification_email(to_email, 'bounty'):
+            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
 
 
 def new_external_bounty():
