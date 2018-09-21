@@ -2628,14 +2628,15 @@ def example3(self):
 <h3 id="vscode-remote-debugger">VSCode Remote Debugger</h3>
 <p>One benefit of using VSCode is the built-in debugger and you can use the vscode debugger with Gitcoin!</p>
 <p>You must complete all prerequisite steps, add the <code>launch.json</code> configuration snippet, and ensure the Gitcoin <code>web</code> docker container is running.</p>
-<p>If this is your first time using the debugger, it's advised that you stop your existing docker-compose services: <code>docker-compose down</code> and rebuild the <code>web</code> image via: <code>docker-compose build web</code> or <code>docker-compose up -d --build</code> to additionally start the services following the build.</p>
+<p>If this is your first time using the debugger, it's advised that you stop your existing docker-compose services: <code>docker-compose down</code>, add the necessary environment variable to <code>.env</code>, and rebuild the <code>web</code> image via: <code>docker-compose build web</code> or <code>docker-compose up -d --build</code> to additionally start the services following the build.</p>
 <p>Once you have completed all of the below outlined steps, you should be able to start debugging!</p>
 <h4 id="vscode-prerequisites">VSCode Prerequisites</h4>
 <ul>
 <li><a href="https://marketplace.visualstudio.com/items?itemName=ms-python.python">VSCode Python support extension</a> is installed.</li>
 <li><a href="https://docs.gitcoin.co/mk_setup/">Gitcoin Docker Setup</a> has been completed.</li>
-<li>Add <code>VSCODE_DEBUGGER_ENABLED=on</code> to your <code>.env</code> file.</li>
+<li>Add <code>VSCODE_DEBUGGER_ENABLED=on</code> to your <code>.env</code> file. (This envvar <em>must</em> be added before downing/starting the compose services in order for the necessary <code>ptvsd</code> req to be installed)</li>
 </ul>
+<p><em>Please note: Completely restart the docker-compose services (<code>docker-compose down; docker-compose up -d</code>) following successful completion of all steps.</em></p>
 <h4 id="add-launch-configuration">Add Launch Configuration</h4>
 <p>In order to use the vscode remote debugger for the Gitcoin Django app, you must add the below snippet to your Python debugger <code>launch.json</code> configuration.
 You can do this by:</p>
