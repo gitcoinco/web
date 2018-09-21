@@ -25,20 +25,19 @@
       </a>
       <div class="kd-content">
         <div class="kd-title">{{ kudo.name|humanize_name }}</div>
-        {{ kudo.description|truncatechars:100 }}
+        {{ kudo.description|truncatechars:60 }}
       </div>
       <div class="content-hover">
         <a class="kd-title" href="/kudos/{{ kudo.id }}">{{ kudo.name|humanize_name }}</a>
-        <a href="https://etherscan.io/address/{{ kudo.owner_address }}" target="_blank" class="d-block mb-1">{{ kudo.owner_address|humanize_address }}</a>
-        <!-- <div>Sent from <a href="">{{ kudo.sent_from_address|humanize_address }}</a></div> -->
-        <p>
-          {{ kudo.description }}
-        </p>
-        <p>
-          {% for tag in kudo.tags.split %}
-          <span class="badge badge-kudos">{{tag | replace_commas }}</span>
-          {% endfor %}
-        </p>
+        {% if kudo.kudos_transfer %}
+          <p>Send from <a href="{% url 'profile' kudo.kudos_transfer.from_username %}">{{kudo.kudos_transfer.from_name}}</a></p>
+          <p>
+            <a href="{% if not kudo.kudos_transfer == 'mainnet' %}https://{{ kudo.kudos_transfer.network }}.etherscan.io/tx/{{ kudo.kudos_transfer.txid }}{% else %}https://etherscan.io/tx/{{ kudo.kudos_transfer.txid }}{% endif %}" target="_blank" class="d-block mb-1">{{ kudo.kudos_transfer.txid|humanize_address }} <i class="fas fa-search-plus"></i></a>
+          </p>
+          <!-- <div>Sent from <a href="">{{ kudo.sent_from_address|humanize_address }}</a></div> -->
+          Comment:
+          <p>{{kudo.kudos_transfer.comments_public}}</p>
+        {% endif %}
       </div>
     </div>
   </div>
@@ -52,20 +51,17 @@
       </a>
       <div class="kd-content">
         <div class="kd-title">{{ kudo.name|humanize_name }}</div>
-        {{ kudo.description|truncatechars:100 }}
+        {{ kudo.description|truncatechars:60 }}
       </div>
       <div class="content-hover">
         <a class="kd-title" href="/kudos/{{ kudo.id }}">{{ kudo.name|humanize_name }}</a>
-        <a href="https://etherscan.io/address/{{ kudo.owner_address }}" target="_blank" class="d-block mb-1">{{ kudo.owner_address|humanize_address }}</a>
-        <!-- <div>Sent from <a href="">{{ kudo.sent_from_address|humanize_address }}</a></div> -->
-        <p>
-          {{ kudo.description }}
-        </p>
-        <p>
-          {% for tag in kudo.tags.split %}
-          <span class="badge badge-kudos">{{tag | replace_commas }}</span>
-          {% endfor %}
-        </p>
+        {% if kudo.kudos_transfer %}
+          <p>Send from <a href="{% url 'profile' kudo.kudos_transfer.from_username %}">{{kudo.kudos_transfer.from_name}}</a></p>
+          <i class="fas fa-search-plus"></i>  <a href="{% if not kudo.kudos_transfer == 'mainnet' %}https://{{ kudo.kudos_transfer.network }}.etherscan.io/tx/{{ kudo.kudos_transfer.txid }}{% else %}https://etherscan.io/tx/{{ kudo.kudos_transfer.txid }}{% endif %}" target="_blank" class="d-block mb-1" data-truncatehash>{{ kudo.kudos_transfer.txid }}</a>
+          <!-- <div>Sent from <a href="">{{ kudo.sent_from_address|humanize_address }}</a></div> -->
+          Comment:
+          <p>{{kudo.kudos_transfer.comments_public}}</p>
+        {% endif %}
       </div>
     </div>
   </div>

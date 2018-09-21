@@ -79,7 +79,7 @@ $bg-cellarius: #4D5858;
   }
 
   .img-thumbnail {
-    padding: 2.25rem;
+    padding: 1.25rem 3.05rem;
   }
 
   .kd-title {
@@ -101,13 +101,15 @@ $bg-cellarius: #4D5858;
   position: absolute;
   top: 0;
   bottom: 0;
+  left: 0;
+  right: 0;
   background: rgba($gc-blue,.8);
   color: white;
   padding: 1rem;
   display: none;
   overflow-y:auto;
   flex-direction: column;
-  justify-content: space-between;
+  // justify-content: space-between;
 
   a {
     color: white;
