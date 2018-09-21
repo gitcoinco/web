@@ -524,7 +524,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Gitcoin's Hacktoberfest | Paying Rent In Crypto"
+    subject = "Gitcoin's Hacktoberfest | Paying Rent w. Crypto"
 
     intro = '''
 
@@ -532,7 +532,7 @@ def render_new_bounty_roundup(to_email):
 Hi there,
 </p>
 <p>
-Gitcoin's Hacktoberfest plans <a href="https://gitcoin.co/slack">are live</a>! We're aiming to fund 100 <a href="https://gitcoin.co/slack">Gitcoin Requests</a>
+Gitcoin's Hacktoberfest plans <a href="https://gitcoin.co/slack">are live</a>! We're aiming to fund 100 <a href="https://gitcoin.co/requests">Gitcoin Requests</a>
 on issues which need help in the open source ecosystem. Know of a project who could use more developers to help the maintainer(s) along? Let us know!
 </p>
 <p>
