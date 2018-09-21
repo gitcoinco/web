@@ -35,8 +35,10 @@
             <a href="{% if not kudo.kudos_transfer == 'mainnet' %}https://{{ kudo.kudos_transfer.network }}.etherscan.io/tx/{{ kudo.kudos_transfer.txid }}{% else %}https://etherscan.io/tx/{{ kudo.kudos_transfer.txid }}{% endif %}" target="_blank" class="d-block mb-1">{{ kudo.kudos_transfer.txid|humanize_address }} <i class="fas fa-search-plus"></i></a>
           </p>
           <!-- <div>Sent from <a href="">{{ kudo.sent_from_address|humanize_address }}</a></div> -->
-          Comment:
-          <p>{{kudo.kudos_transfer.comments_public}}</p>
+          {% if kudo.kudos_transfer.comments_public %}
+            Comment:
+            <p>{{kudo.kudos_transfer.comments_public}}</p>
+          {% endif %}
         {% endif %}
       </div>
     </div>
@@ -57,10 +59,14 @@
         <a class="kd-title" href="/kudos/{{ kudo.id }}">{{ kudo.name|humanize_name }}</a>
         {% if kudo.kudos_transfer %}
           <p>Sent from <a href="{% url 'profile' kudo.kudos_transfer.from_username %}">{{kudo.kudos_transfer.from_name}}</a></p>
-          <i class="fas fa-search-plus"></i>  <a href="{% if not kudo.kudos_transfer == 'mainnet' %}https://{{ kudo.kudos_transfer.network }}.etherscan.io/tx/{{ kudo.kudos_transfer.txid }}{% else %}https://etherscan.io/tx/{{ kudo.kudos_transfer.txid }}{% endif %}" target="_blank" class="d-block mb-1" data-truncatehash>{{ kudo.kudos_transfer.txid }}</a>
+          <p>
+            <a href="{% if not kudo.kudos_transfer == 'mainnet' %}https://{{ kudo.kudos_transfer.network }}.etherscan.io/tx/{{ kudo.kudos_transfer.txid }}{% else %}https://etherscan.io/tx/{{ kudo.kudos_transfer.txid }}{% endif %}" target="_blank" class="d-block mb-1">{{ kudo.kudos_transfer.txid|humanize_address }} <i class="fas fa-search-plus"></i></a>
+          </p>
           <!-- <div>Sent from <a href="">{{ kudo.sent_from_address|humanize_address }}</a></div> -->
-          Comment:
-          <p>{{kudo.kudos_transfer.comments_public}}</p>
+          {% if kudo.kudos_transfer.comments_public %}
+            Comment:
+            <p>{{kudo.kudos_transfer.comments_public}}</p>
+          {% endif %}
         {% endif %}
       </div>
     </div>
