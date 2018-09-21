@@ -341,14 +341,32 @@ $(document).ready(function() {
         txid: null
       });
 
-      web3.eth.sendTransaction({
+      const gitcoinTipTransactionObject = {
         to: GITCOIN_TIP_ADDRESS,
-        value: gitcoinTipAmount * decimalDivisor,
-        gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
-        gas: web3.toHex(318730),
-        gasLimit: web3.toHex(318730)
-      }, (transactionHash) => {
-        console.log(transactionHash);
+        value: gitcoinTipAmount * decimalDivisor
+      };
+
+      web3.eth.estimateGas(gitcoinTipTransactionObject, (error, gas) => {
+        if (error) {
+          mixpanel.track('New Bounty Error', {
+            step: 'post_gitcoin_tip',
+            error
+          });
+          console.error(error);
+          _alert({
+            message: gettext('There was an error.  Please try again or contact support.')
+          }, 'error');
+          unloading_button($('.js-submit'));
+          return;
+        }
+
+        web3.eth.sendTransaction(Object.assign(gitcoinTipTransactionObject, {
+          gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9)),
+          gas,
+          gasLimit: gas
+        }), (transactionHash) => {
+          console.log(transactionHash);
+        });
       });
 
       function syncDb() {
