@@ -124,6 +124,16 @@ The below environment variables are useful for overwriting [Django Silk](https:/
 | --- | --- | --- | --- |
 | WEB3_HTTP_PROVIDER | The Web3 HTTP provider URI to be used. | `str` | https://rinkeby.infura.io |
 
+## VSCode Remote Debugging
+
+If you opt to modify the port or listener interface, you must update your `launch.json` configuration accordingly.
+
+| Variable | Description | Type | Default |
+| --- | --- | --- | --- |
+| VSCODE_DEBUGGER_ENABLED | Whether or not to enable the `ptvsd` remote debugging service. | `bool` | False |
+| VSCODE_DEBUGGER_PORT | The `ptvsd` port to be used for debugging. | `str` | 3030 |
+| VSCODE_DEBUGGER_INTERFACE | The `ptvsd` network interface to be used for debugging. | `str` | 0.0.0.0 |
+
 
 ## Miscellaneous
 
