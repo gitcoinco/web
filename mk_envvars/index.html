@@ -507,6 +507,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#vscode-remote-debugging" title="VSCode Remote Debugging" class="md-nav__link">
+    VSCode Remote Debugging
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#miscellaneous" title="Miscellaneous" class="md-nav__link">
     Miscellaneous
   </a>
@@ -2141,6 +2148,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#vscode-remote-debugging" title="VSCode Remote Debugging" class="md-nav__link">
+    VSCode Remote Debugging
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#miscellaneous" title="Miscellaneous" class="md-nav__link">
     Miscellaneous
   </a>
@@ -2638,6 +2652,38 @@ All of the environment variables used by this application conform to the <a href
 <td>The Web3 HTTP provider URI to be used.</td>
 <td><code>str</code></td>
 <td>https://rinkeby.infura.io</td>
+</tr>
+</tbody>
+</table>
+<h2 id="vscode-remote-debugging">VSCode Remote Debugging</h2>
+<p>If you opt to modify the port or listener interface, you must update your <code>launch.json</code> configuration accordingly.</p>
+<table>
+<thead>
+<tr>
+<th>Variable</th>
+<th>Description</th>
+<th>Type</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>VSCODE_DEBUGGER_ENABLED</td>
+<td>Whether or not to enable the <code>ptvsd</code> remote debugging service.</td>
+<td><code>bool</code></td>
+<td>False</td>
+</tr>
+<tr>
+<td>VSCODE_DEBUGGER_PORT</td>
+<td>The <code>ptvsd</code> port to be used for debugging.</td>
+<td><code>str</code></td>
+<td>3030</td>
+</tr>
+<tr>
+<td>VSCODE_DEBUGGER_INTERFACE</td>
+<td>The <code>ptvsd</code> network interface to be used for debugging.</td>
+<td><code>str</code></td>
+<td>0.0.0.0</td>
 </tr>
 </tbody>
 </table>

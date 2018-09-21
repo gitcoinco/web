@@ -584,6 +584,40 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#vscode-remote-debugger" title="VSCode Remote Debugger" class="md-nav__link">
+    VSCode Remote Debugger
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#vscode-prerequisites" title="VSCode Prerequisites" class="md-nav__link">
+    VSCode Prerequisites
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add-launch-configuration" title="Add Launch Configuration" class="md-nav__link">
+    Add Launch Configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#additional-vscode-resources" title="Additional VSCode Resources" class="md-nav__link">
+    Additional VSCode Resources
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#additional-resources" title="Additional Resources" class="md-nav__link">
     Additional Resources
   </a>
@@ -2248,6 +2282,40 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#vscode-remote-debugger" title="VSCode Remote Debugger" class="md-nav__link">
+    VSCode Remote Debugger
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#vscode-prerequisites" title="VSCode Prerequisites" class="md-nav__link">
+    VSCode Prerequisites
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#add-launch-configuration" title="Add Launch Configuration" class="md-nav__link">
+    Add Launch Configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#additional-vscode-resources" title="Additional VSCode Resources" class="md-nav__link">
+    Additional VSCode Resources
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#additional-resources" title="Additional Resources" class="md-nav__link">
     Additional Resources
   </a>
@@ -2324,18 +2392,24 @@ valued.</p>
 <li><a href="#example">Example</a></li>
 </ul>
 </li>
+<li><a href="#vscode-remote-debugger">VSCode Remote Debugger</a><ul>
+<li><a href="#vscode-prerequisites">VSCode Prerequisites</a></li>
+<li><a href="#add-launch-configuration">Add Launch Configuration</a></li>
+<li><a href="#additional-vscode-resources">VSCode Additional Resources</a></li>
+</ul>
+</li>
 <li><a href="#additional-resources">Additional Resources</a></li>
 <li><a href="#faq">FAQ</a></li>
 <li><a href="#contributing-static-assets">Contributing Static Assets</a></li>
 </ul>
 <h2 id="monetization-policy">Monetization Policy</h2>
 <p>This repo uses <a href="https://gitcoin.co">Gitcoin</a> to incentivize contributions from contributors all around the world.</p>
-<p>We believe that properly incentivizing Open Source Software means providing funding to support contributors, but we also recognize the dangerous precedent that is set when contributors who have been contributing for intrinsic reasons begin to expect extrinsic rewards for their contributions.  </p>
+<p>We believe that properly incentivizing Open Source Software means providing funding to support contributors, but we also recognize the dangerous precedent that is set when contributors who have been contributing for intrinsic reasons begin to expect extrinsic rewards for their contributions.</p>
 <p>Gitcoin has written about this, in the abstract, <a href="https://medium.com/gitcoin/building-a-platform-that-maximizes-freedom-1149968a7b05">here</a>. Tangibly, our <em>monetary policy</em> is:</p>
 <ol>
 <li>Our mission is to "Grow Open Source".  <a href="https://gitcoin.co/mission">Read More about our Mission here</a>.</li>
-<li>We believe that contributors should contribute for intrinsic reasons first (see mission statement above), and we hereby provide notice that we will not be able to fund all contributions.  Appreciate it if and when a Tip comes! </li>
-<li>Scope that is explicitly funded upfront will be posted to the Github Issue by <a href="https://github.com/gitcoinbot">@gitcoinbot</a>, and will also be posted to the <a href="https://gitcoin.co/explorer">Gitcoin Issue Explorer</a>. </li>
+<li>We believe that contributors should contribute for intrinsic reasons first (see mission statement above), and we hereby provide notice that we will not be able to fund all contributions.  Appreciate it if and when a Tip comes!</li>
+<li>Scope that is explicitly funded upfront will be posted to the Github Issue by <a href="https://github.com/gitcoinbot">@gitcoinbot</a>, and will also be posted to the <a href="https://gitcoin.co/explorer">Gitcoin Issue Explorer</a>.</li>
 </ol>
 <h2 id="code-of-conduct">Code of Conduct</h2>
 <p>Contributions to Gitcoin are governed by the <a href="https://www.contributor-covenant.org/version/1/4/code-of-conduct.html">Contributor Covenant version 1.4</a>.
@@ -2551,6 +2625,41 @@ def example3(self):
     return var
 </code></pre>
 
+<h3 id="vscode-remote-debugger">VSCode Remote Debugger</h3>
+<p>One benefit of using VSCode is the built-in debugger and you can use the vscode debugger with Gitcoin!</p>
+<p>You must complete all prerequisite steps, add the <code>launch.json</code> configuration snippet, and ensure the Gitcoin <code>web</code> docker container is running.</p>
+<p>If this is your first time using the debugger, it's advised that you stop your existing docker-compose services: <code>docker-compose down</code> and rebuild the <code>web</code> image via: <code>docker-compose build web</code> or <code>docker-compose up -d --build</code> to additionally start the services following the build.</p>
+<p>Once you have completed all of the below outlined steps, you should be able to start debugging!</p>
+<h4 id="vscode-prerequisites">VSCode Prerequisites</h4>
+<ul>
+<li><a href="https://marketplace.visualstudio.com/items?itemName=ms-python.python">VSCode Python support extension</a> is installed.</li>
+<li><a href="https://docs.gitcoin.co/mk_setup/">Gitcoin Docker Setup</a> has been completed.</li>
+<li>Add <code>VSCODE_DEBUGGER_ENABLED=on</code> to your <code>.env</code> file.</li>
+</ul>
+<h4 id="add-launch-configuration">Add Launch Configuration</h4>
+<p>In order to use the vscode remote debugger for the Gitcoin Django app, you must add the below snippet to your Python debugger <code>launch.json</code> configuration.
+You can do this by:</p>
+<ul>
+<li>Switch to the Debugging tab (<code>⇧⌘D</code>)</li>
+<li>Select <code>Add Configuration...</code> from the dropdown menu</li>
+<li>Add the following json snippet to the <code>configurations</code> array and save the file:</li>
+</ul>
+<pre><code class="json">{
+    &quot;name&quot;: &quot;Gitcoin Remote Debugger&quot;,
+    &quot;type&quot;: &quot;python&quot;,
+    &quot;request&quot;: &quot;attach&quot;,
+    &quot;localRoot&quot;: &quot;${workspaceRoot}&quot;,
+    &quot;remoteRoot&quot;: &quot;/code/app&quot;,
+    &quot;port&quot;: 3030,
+    &quot;host&quot;: &quot;localhost&quot;
+}
+</code></pre>
+
+<h4 id="additional-vscode-resources">Additional VSCode Resources</h4>
+<ul>
+<li><a href="https://code.visualstudio.com/docs/editor/debugging">VSCode Debugging Overview</a></li>
+<li><a href="https://code.visualstudio.com/docs/introvideos/debugging">VSCode Debugging Intro Video</a></li>
+</ul>
 <h3 id="additional-resources">Additional Resources</h3>
 <p>We either strongly employ or encourage the review and implementation of the following resources:</p>
 <ul>
