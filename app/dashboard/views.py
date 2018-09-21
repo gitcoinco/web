@@ -1012,7 +1012,7 @@ class ProfileHiddenException(Exception):
     pass
 
 
-def profile_helper(handle, suppress_profile_hidden_exception=False):
+def profile_helper(handle, suppress_profile_hidden_exception=False, current_user=None):
     """Define the profile helper.
 
     Args:
@@ -1028,6 +1028,10 @@ def profile_helper(handle, suppress_profile_hidden_exception=False):
         dashboard.models.Profile: The Profile associated with the provided handle.
 
     """
+    current_profile = getattr(current_user, 'profile', None)
+    if current_profile and current_profile.handle == handle:
+        return current_profile
+
     try:
         profile = Profile.objects.get(handle__iexact=handle)
     except Profile.DoesNotExist:
@@ -1111,7 +1115,7 @@ def profile(request, handle):
         else:
             if handle.endswith('/'):
                 handle = handle[:-1]
-            profile = profile_helper(handle)
+            profile = profile_helper(handle, current_user=request.user)
 
         context = profile.to_dict()
     except (Http404, ProfileHiddenException):

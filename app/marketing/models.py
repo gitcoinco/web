@@ -300,6 +300,15 @@ class EmailEvent(SuperModel):
         return f"{self.email} - {self.event} - {self.created_on}"
 
 
+class AccountDeletionRequest(SuperModel):
+
+    handle = models.CharField(max_length=255, db_index=True)
+    profile = JSONField(default=dict, blank=True)
+
+    def __str__(self):
+        return f"{self.handle} - {self.created_on}"
+
+
 class EmailSupressionList(SuperModel):
 
     email = models.EmailField(max_length=255)

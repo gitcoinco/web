@@ -2020,7 +2020,7 @@ class Profile(SuperModel):
     def get_orgs_bounties(self, network=None):
         network = network or self.get_network()
         url = f"https://github.com/{self.handle}"
-        bounties = Bounty.objects.current().filter(network=network, github_url__contains=url)
+        bounties = Bounty.objects.current().filter(network=network, github_url__icontains=url)
         return bounties
 
     def get_leaderboard_index(self, key='quarterly_earners'):

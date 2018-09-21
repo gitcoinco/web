@@ -118,7 +118,7 @@ $(document).ready(function() {
             nonce: web3.toHex(nonce),
             to: forwarding_address,
             from: holding_address,
-            value: amount_in_wei
+            value: amount_in_wei.toString(),
           };
           web3.eth.estimateGas(rawTx, function(err, gasLimit) {
             var buffer = new BigNumber(0);
@@ -146,8 +146,7 @@ $(document).ready(function() {
         } else {
 
           // send ERC20
-          var data = token_contract.transfer.getData(forwarding_address, amount_in_wei);
-
+          var data = token_contract.transfer.getData(forwarding_address, amount_in_wei.toString());
           rawTx = {
             nonce: web3.toHex(nonce),
             to: token_address,
