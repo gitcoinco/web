@@ -361,8 +361,9 @@ var check_balance_and_alert_user_if_not_enough = function(tokenAddress, amount) 
   var token_name = token_details['name'];
 
   token_contract.balanceOf.call(from, function(error, result) {
-    
-    if (error) return;
+    if (error) {
+      return;
+    }
     var balance = result.toNumber() / Math.pow(10, 18);
     var balance_rounded = Math.round(balance * 10) / 10;
 
