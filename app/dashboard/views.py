@@ -521,9 +521,12 @@ def onboard(request, flow):
 
 def dashboard(request):
     """Handle displaying the dashboard."""
+
+    keyword = request.GET.get('keywords', False)
+    title = keyword.title() + str(_(" Bounties ")) if keyword else str(_('Issue Explorer'))
     params = {
         'active': 'dashboard',
-        'title': _('Issue Explorer'),
+        'title': title,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'dashboard/index.html', params)
