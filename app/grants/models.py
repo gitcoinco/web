@@ -46,8 +46,8 @@ class Subscription(SuperModel):
     contributorProfile = models.ForeignKey('dashboard.Profile', related_name='grant_contributor', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        """Return the string representation of a Grant."""
-        return f" id: {self.pk}, status: {self.status}, subscriptionHash: {self.subscriptionHash}, contributorSignature: {self.contributorSignature}, contributorAddress: {self.contributorAddress}, contributorProfile: {self.contributorProfile}, amountPerPeriod: {self.amountPerPeriod}, tokenAddress: {self.tokenAddress}, gasPrice: {self.gasPrice}, network: {self.network}, @ {naturaltime(self.created_on), grant: {self.grantPk}}"
+        """Return the string representation of a Subscription."""
+        return f" id: {self.pk}, status: {self.status}, subscriptionHash: {self.subscriptionHash}, contributorSignature: {self.contributorSignature}, contributorAddress: {self.contributorAddress}, contributorProfile: {self.contributorProfile}, amountPerPeriod: {self.amountPerPeriod}, tokenAddress: {self.tokenAddress}, gasPrice: {self.gasPrice}, network: {self.network}, @ {naturaltime(self.created_on)}, grant: {self.grantPk}"
 
 class Contribution(SuperModel):
     """Define the structure of a subscription agreement"""

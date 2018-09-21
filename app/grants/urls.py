@@ -22,7 +22,7 @@ from django.urls import path, re_path
 from django.conf.urls import url
 
 
-from .views import cancel_grant, fund_grant, grant_show, grants, new_grant
+from .views import cancel_subscription, fund_grant, grant_show, grants, new_grant
 
 app_name = 'grants'
 urlpatterns = [
@@ -30,5 +30,5 @@ urlpatterns = [
     path('<int:grant_id>', grant_show, name='grant'),
     re_path(r'^new', new_grant, name='new_grant'),
     path('fund/<int:grant_id>', fund_grant, name='fund_grant'),
-    re_path(r'^cancel', cancel_grant, name='cancel_grant')
+    path('cancel/<int:subscription_id>', cancel_subscription, name='cancel_subscription')
 ]

@@ -83,7 +83,7 @@ def fund_grant(request, grant_id):
     print("this is the grant instance", grant)
     print("this is the web3 instance", w3.eth.account)
 
-
+    # make sure a user can only create one subscription per grant
 
     if request.method == "POST":
         subscription = Subscription()
@@ -119,9 +119,31 @@ def fund_grant(request, grant_id):
 
     return TemplateResponse(request, 'grants/fund.html', params)
 
-def cancel_grant(request):
+def cancel_subscription(request, subscription_id):
+    """Handle Cancelation of grant funding"""
+    profile_id = request.session.get('profile_id')
+    profile = request.user.profile if request.user.is_authenticated else None
+
+    subscription = Subscription.objects.get(pk=subscription_id)
+    grant = subscription.grantPk
+
+    print("this is the subscription:", subscription)
+    print("this is the grant:", grant)
+
+    if request.method == "POST":
+
+        subscription.status = False
+
+        subscription.save()
+    else:
+        subscription = {}
+
+
     params = {
-        'title': 'Fund Grant'
+        'title': 'Fund Grant',
+        'subscription': subscription,
+        'grant': grant,
+        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
 
     return TemplateResponse(request, 'grants/cancel.html', params)
