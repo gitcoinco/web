@@ -127,7 +127,7 @@ def cancel_subscription(request, subscription_id):
     subscription = Subscription.objects.get(pk=subscription_id)
     grant = subscription.grantPk
 
-    print("this is the subscription:", subscription)
+    print("this is the subscription:", subscription.pk)
     print("this is the grant:", grant)
 
     if request.method == "POST":
@@ -135,8 +135,8 @@ def cancel_subscription(request, subscription_id):
         subscription.status = False
 
         subscription.save()
-    else:
-        subscription = {}
+    # else:
+        # subscription = {}
 
 
     params = {

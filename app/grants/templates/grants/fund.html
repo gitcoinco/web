@@ -25,7 +25,7 @@
 <div class="container">
   <div class="fund__title">Fund Grant</div>
 
-  <form action='/grants/fund/9' method="POST" id="js-fundGrant">
+  <form action='{{grant.pk}}' method="POST" id="js-fundGrant">
     {% csrf_token %}
     <div class="row bottom-buffer">
 
