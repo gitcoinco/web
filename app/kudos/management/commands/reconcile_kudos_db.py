@@ -25,7 +25,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 
 from dashboard.helpers import UnsupportedSchemaException
-from kudos.utils import get_kudos_from_web3, web3_process_kudos, kudos_has_changed, update_kudos_db
+from kudos.utils import KudosContract
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -33,7 +33,7 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 logging.getLogger("web3").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
-default_start_id = 0 if not settings.DEBUG else 402
+default_start_id = 1
 
 
 class Command(BaseCommand):
@@ -42,8 +42,8 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('--network', default='localhost', type=str)
-        parser.add_argument('start_id', default=default_start_id, type=int)
-        parser.add_argument('end_id', default=99999999999, type=int)
+        parser.add_argument('--start_id', default=default_start_id, type=int)
+        # parser.add_argument('end_id', default=99999999999, type=int)
 
     def handle(self, *args, **options):
         # config
@@ -53,18 +53,20 @@ class Command(BaseCommand):
         month = datetime.datetime.now().month
 
         # iterate through all the kudos
-        kudos_enum = int(options['start_id'])
-        more_kudos = True
-        while more_kudos:
-            # pull and process each kudos
-            # self.stdout.write(f"[{month}/{day} {hour}:00] Getting kudos {kudos_enum}")
-            # kudos = get_kudos(kudos_enum, network)
-            # self.stdout.write(f"[{month}/{day} {hour}:00] Processing kudos {kudos_enum}")
-            # web3_process_kudos(kudos)
-            if kudos_has_changed(kudos_enum, network):
-                update_kudos_db(kudos_enum, network)
+        start_id = int(options['start_id'])
+        kudos_contract = KudosContract(network)
+        kudos_contract.reconcile_kudos_db(start_id=start_id)
+        # more_kudos = True
+        # while more_kudos:
+        #     # pull and process each kudos
+        #     # self.stdout.write(f"[{month}/{day} {hour}:00] Getting kudos {kudos_enum}")
+        #     # kudos = get_kudos(kudos_enum, network)
+        #     # self.stdout.write(f"[{month}/{day} {hour}:00] Processing kudos {kudos_enum}")
+        #     # web3_process_kudos(kudos)
+        #     if kudos_has_changed(kudos_enum, network):
+        #         update_kudos_db(kudos_enum, network)
 
-            kudos_enum += 1
+        #     kudos_enum += 1
 
-            if kudos_enum > int(options['end_id']):
-                more_kudos = False
+        #     if kudos_enum > int(options['end_id']):
+        #         more_kudos = False
