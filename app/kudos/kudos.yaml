@@ -335,7 +335,7 @@
   priceFinney: 2
   numClonesAllowed: 500
   tags: css, frontend, html
-  image: css_gentleman.svg
+  image: css_gentle(wo)man.svg
 - name: night_owl
   description: Owners of this badge always seem to be up at night, SHIPling product
     to customers.
@@ -564,7 +564,7 @@
   tags: devcon, ethereum, shills
   image: devcon_4.svg
 - name: django_pony
-  description: For the django ponies out there that just love Django
+  description: Flying Ponies take risks, inspire other ponies to think big to achieve big ideas. We turn lofty ideas into something tangible. We are fearless about the outcome, sometimes to our own detriment.
   rarity: 20
   priceFinney: 1
   numClonesAllowed: 100
@@ -605,13 +605,6 @@
   numClonesAllowed: 100
   tags: gitcoin, mission, grow open source
   image: gitcoin_sustainer.svg
-- name: grow_open_source
-  description: We are the source to Open Source. We know the origins and stories behind the trees around us – where they came from and where they are going.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 100
-  tags: gitcoin, mission, grow open source
-  image: growopen_source.svg
 - name: craftsman
   description: Know a crafts-woman or crafts-man?  A craftsperson kudos is a great way to celebrate the tools we use and the people that use them!
   rarity: 20

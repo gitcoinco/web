@@ -402,7 +402,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
         var is_direct_to_recipient = metadata['is_direct'];
         var destinationAccount = metadata['address'];
 
-        var post_send_callback = function(errors, txid) {
+        var post_send_callback = function(errors, txid, kudos_id) {
           if (errors) {
             _alert({ message: gettext('There was an error.') }, 'warning');
             failure_callback();
@@ -415,6 +415,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
               body: JSON.stringify({
                 destinationAccount: destinationAccount,
                 txid: txid,
+                kudos_id: kudos_id,
                 is_direct_to_recipient: is_direct_to_recipient,
                 creation_time: creation_time,
                 salt: salt
@@ -452,7 +453,12 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           // send_kudos_direct(kudosName, 1, destinationAccount);
           let receiver = destinationAccount;
 
-          kudos_contract.cloneAndTransfer(kudosName, numClones, receiver, {from: account, value: kudosPriceInWei}, post_send_callback);
+          kudos_contract.cloneAndTransfer(kudosName, numClones, receiver, {from: account, value: kudosPriceInWei}, function(cloneError, cloneTxid) {
+            // totalSupply yield the kudos_id
+            kudos_contract.totalSupply(function(supplyError, kudos_id) {
+              post_send_callback(cloneError, cloneTxid, kudos_id);
+            })
+          });
 
           // Send Indirectly
         } else {
