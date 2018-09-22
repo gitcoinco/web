@@ -34,9 +34,10 @@ logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 logging.getLogger("web3").setLevel(logging.WARNING)
 
-logger = logging.getLogger(__name__)
 default_start_id = 0 if not settings.DEBUG else 402
 
+logger = logging.getLogger(__name__)
+formatter = '%(levelname)s:%(name)s.%(funcName)s:%(message)s'
 logging.basicConfig(level=logging.INFO)
 
 
@@ -80,10 +81,12 @@ class Command(BaseCommand):
             # If the mint fails, retry it 3 times.  Because Infura.
             for i in range(1, 4):
                 try:
-                    kudos_contract.mint(*args, account=account, private_key=private_key)
-                except IndexError as e:
-                    logger.warning(e)
+                    kudos_id = kudos_contract.mint(*args, account=account, private_key=private_key)
+                # except IndexError as e:
+                #     logger.warning(e)
                 except BadFunctionCallOutput as e:
-                    logger.warning(e)
+                    logger.warning('An error occurred when trying to mint the Kudos.  Retrying...')
                     continue
                 break
+
+        kudos_contract.reconcile_db(start_id=kudos_id)
