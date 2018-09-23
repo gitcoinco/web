@@ -30,6 +30,7 @@ from kudos.models import Token, KudosTransfer
 from eth_utils import to_checksum_address, to_normalized_address, to_text
 from web3.middleware import geth_poa_middleware
 from django.forms.models import model_to_dict
+from web3.exceptions import BadFunctionCallOutput
 
 from functools import wraps
 
@@ -140,6 +141,21 @@ class KudosContract:
                 return f(self, *args, **kwargs)
         return wrapper
 
+    def retry(f):
+        @wraps(f)
+        def wrapper(self, *args, **kwargs):
+            for i in range(1, 4):
+                try:
+                    r = f(self, *args, **kwargs)
+                except BadFunctionCallOutput as e:
+                    logger.warning('A network error occurred when trying to mint the {kudos["name"]} Kudos.')
+                    logger.warning('Retrying...')
+                    continue
+                break
+            return r
+        return wrapper
+
+    @retry
     def reconcile_db(self, start_id=1):
         """Sync up existing kudos from the blockchain to the database.
 
@@ -248,6 +264,7 @@ class KudosContract:
             except IndexError:
                 raise RuntimeError('Please specify an account to use for transacting with the Kudos Contract.')
 
+    @retry
     @may_require_key
     def mint(self, *args, account=None, private_key=None):
         """Contract transaction method.

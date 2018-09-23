@@ -79,15 +79,5 @@ class Command(BaseCommand):
                     )
 
             # If the mint fails, retry it 3 times.  Because Infura.
-            for i in range(1, 4):
-                try:
-                    kudos_id = kudos_contract.mint(*args, account=account, private_key=private_key)
-                # except IndexError as e:
-                #     logger.warning(e)
-                except BadFunctionCallOutput as e:
-                    logger.warning('A network error occurred when trying to mint the {kudos["name"]} Kudos.')
-                    logger.warning('Retrying...')
-                    continue
-                break
-
-        kudos_contract.reconcile_db(start_id=kudos_id)
+            kudos_id = kudos_contract.mint(*args, account=account, private_key=private_key)
+            kudos_contract.reconcile_db(start_id=kudos_id)
