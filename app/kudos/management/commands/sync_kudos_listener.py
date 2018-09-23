@@ -89,7 +89,8 @@ class Command(BaseCommand):
 
                 # Check if its a Clone or cloneAndTransfer function call
                 if method_id == '0xdaa6eb1d' or method_id == '0x8a94e433':
-                    kudos_contract.sync_db()
+                    kudos_id = kudos_contract._contract.functions.totalSupply().call()
+                    kudos_contract.sync_cloned_kudos_db(kudos_id=kudos_id, tx_hash=tx)
                     # # Get the kudos_id of the newly cloned Kudos
                     # kudos_id = kudos_contract.functions.totalSupply().call()
                     # # Update the database with the newly cloned Kudos

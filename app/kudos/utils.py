@@ -182,7 +182,7 @@ class KudosContract:
         logger.info(f'Synced id #{kudos_token.id}, "{kudos_token.name}" kudos to the database.')
         return kudos_token
 
-    def sync_transferred_kudos_db(self, kudos_id, tx_hash):
+    def sync_cloned_kudos_db(self, kudos_id, tx_hash):
         # Handle the dummy Kudos
         if kudos_id == 0:
             return False
@@ -213,9 +213,6 @@ class KudosContract:
         # Sync up the Gen0 Kudos
         self.sync_kudos_db(kudos_id)
         return True
-
-    def update_kudos_db(self, kudos_id, tx_hash):
-        pass
 
     def _get_contract_address(self):
         """Get the Kudos contract address, depending on the network.

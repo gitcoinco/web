@@ -415,13 +415,13 @@ def send_4(request):
     # it means that the user never went through with the transaction.
     kudos_transfer.txid = txid
     if is_direct_to_recipient:
-        kudos_id = int(params.get('kudos_id'))
+        # kudos_id = int(params.get('kudos_id'))
         kudos_transfer.receive_txid = txid
         kudos_transfer.save()
         # Update kudos.models.Token to reflect the newly cloned Kudos
-        network = 'localhost' if kudos_transfer.network == 'custom network' else kudos_transfer.network
-        kudos_contract = KudosContract(network)
-        kudos_contract.sync_transferred_kudos_db(kudos_id=kudos_id, tx_hash=txid)
+        # network = 'localhost' if kudos_transfer.network == 'custom network' else kudos_transfer.network
+        # kudos_contract = KudosContract(network)
+        # kudos_contract.sync_transferred_kudos_db(kudos_id=kudos_id, tx_hash=txid)
     else:
         # Save txid for Indirect transfer
         kudos_transfer.save()
@@ -524,10 +524,10 @@ def receive(request, key, txid, network):
             # Update kudos.models.Token to reflect the newly cloned Kudos 
             # kudos_id = params['kudos_id']
             # TODO:  We should be passing the kudos_id from the front end to make sure we sync the right one.
-            network = 'localhost' if kudos_transfer.network == 'custom network' else kudos_transfer.network
-            kudos_contract = KudosContract(network)
-            kudos_id = kudos_contract._contract.functions.totalSupply().call()
-            kudos_contract.sync_transferred_kudos_db(kudos_id=kudos_id, tx_hash=params['receive_txid'])
+            # network = 'localhost' if kudos_transfer.network == 'custom network' else kudos_transfer.network
+            # kudos_contract = KudosContract(network)
+            # kudos_id = kudos_contract._contract.functions.totalSupply().call()
+            # kudos_contract.sync_transferred_kudos_db(kudos_id=kudos_id, tx_hash=params['receive_txid'])
         except Exception as e:
             messages.error(request, str(e))
             logger.exception(e)

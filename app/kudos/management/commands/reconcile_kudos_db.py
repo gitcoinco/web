@@ -55,7 +55,7 @@ class Command(BaseCommand):
         # iterate through all the kudos
         start_id = int(options['start_id'])
         kudos_contract = KudosContract(network)
-        kudos_contract.reconcile_kudos_db(start_id=start_id)
+        kudos_contract.reconcile_db(start_id=start_id)
         # more_kudos = True
         # while more_kudos:
         #     # pull and process each kudos
