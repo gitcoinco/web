@@ -298,7 +298,7 @@ class KudosContract:
             logger.debug('Private key found, creating raw transaction for Kudos mint...')
             nonce = self._w3.eth.getTransactionCount(account)
             gas_estimate = self._contract.functions.mint(*args).estimateGas({'nonce': nonce, 'from': account})
-            logger.info(f'Gas estimate : {gas_estimate}')
+            logger.info(f'Gas estimate to mint {name} : {gas_estimate}')
             txn = self._contract.functions.mint(*args).buildTransaction({'gas': gas_estimate, 'nonce': nonce, 'from': account})
             signed_txn = self._w3.eth.account.signTransaction(txn, private_key=private_key)
             tx_hash = self._w3.eth.sendRawTransaction(signed_txn.rawTransaction)
