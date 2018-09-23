@@ -34,17 +34,45 @@
       {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
     </div>
-    {% include 'dashboard/ftux.html' %}
-    <div id="dashboard-content" class="row no-gutter">
-      <div class="col-12 col-lg-3 col-xl-2 invisible" id="sidebar_container" style="background: #F2F6F9;">
-        {% include 'dashboard/sidebar_search.html' %}
+    {% if hackathon %}
+      <div class="row pt-5 pb-5 text-center" style="background: rgb(25, 0, 63);">
+        <div class="col g-font-muli">
+          <span class="col-2 font-title-xl text-white font-weight-300">{{ hackathon.name }}</span>
+          {% if hackathon.logo_svg %}
+            <img class="col-2" max-width="364" src="{{ hackathon.logo_svg.url }}"/>
+          {% elif hackathon.logo %}
+            <img class="col-2" max-width="364" src="{{ hackathon.logo.url }}"/>
+          {% endif %}
+          <span class="col-2 font-title-xl text-white font-weight-300" style="white-space: nowrap;">
+            {{ hackathon.start_date|date:"M j, Y" }} - {{ hackathon.end_date|date:"M j, Y" }}
+          </span>
+        </div>
       </div>
-
-      <div class="col-12 col-lg-9 col-xl-10 body">
+    {% else %}
+      {% include 'dashboard/ftux.html' %}
+    {% endif %}
+    <div id="dashboard-content" class="row no-gutter">
+      {% if not hackathon %}
+        <div class="col-12 col-lg-3 col-xl-2 invisible" id="sidebar_container" style="background: #F2F6F9;">
+          {% include 'dashboard/sidebar_search.html' %}
+        </div>
+        <div class="col-12 col-lg-9 col-xl-10 body">
         <div class="container-fluid p-2" id="bounties">
+      {% else %}
+        <div class="col-12 col-lg-12 col-xl-12 body">
+        <div class="container p-2" id="bounties">
+      {% endif %}
           <div id="dashboard-title" class="hidden">
-            {% include 'shared/search_bar.html' %}
+            {% if not hackathon %}
+              {% include 'shared/search_bar.html' %}
+            {% endif %}
           </div>
+          {% if hackathon %}
+            <div class="col-12 col-lg-12 pl-2 pb-1 title-row">
+              <span class="font-title ml-1 text-highlight-gc-blue">{% trans 'Bounties' %}</span>
+            </div>
+            <div style="clear: right;"></div>
+          {% endif %}
           <div class="row loading justify-content-center align-items-center loading_img">
             <img src="{% static "v2/images/loading_v2.gif" %}">
           </div>
@@ -76,6 +104,9 @@
     <script src="{% static "v2/js/pages/dashboard.js" %}"></script>
     <script>
       document.keywords = {{keywords | safe}};
+      {% if hackathon %}
+        document.hackathon = "{{ hackathon.slug | safe }}";
+      {% endif %}
     </script>
   </body>
 </html>

@@ -22,8 +22,7 @@ from datetime import datetime
 import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
 from retail.helpers import get_ip
-
-from .models import Activity, Bounty, BountyFulfillment, Interest, ProfileSerializer, SearchHistory
+from .models import Activity, Bounty, BountyFulfillment, HackathonEvent, Interest, ProfileSerializer, SearchHistory
 
 
 class BountyFulfillmentSerializer(serializers.ModelSerializer):
@@ -140,6 +139,16 @@ class BountyViewSet(viewsets.ModelViewSet):
         queryset = queryset.order_by('-web3_created')
 
         # filtering
+        event_tag = self.request.query_params.get('event_tag', '')
+        if event_tag:
+            try:
+                evt = HackathonEvent.objects.filter(slug__iexact=event_tag).latest('id')
+                queryset = queryset.filter(event__pk=evt.pk)
+            except:
+                return Bounty.objects.none()
+        else:
+            queryset = queryset.filter(event=None)
+
         for key in ['raw_data', 'experience_level', 'project_length', 'bounty_type', 'bounty_owner_address',
                     'idx_status', 'network', 'bounty_owner_github_username', 'standard_bounties_id',
                     'permission_type', 'project_type']:

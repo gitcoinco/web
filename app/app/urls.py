@@ -116,6 +116,9 @@ urlpatterns = [
     url(r'^explorer/?', dashboard.views.dashboard, name='explorer'),
     path('revenue/attestations/new', revenue.views.new_attestation, name='revenue_new_attestation'),
 
+    # Hackathons / special events
+    re_path(r'^hackathon/?(?P<hackathon>.*)?', dashboard.views.hackathon, name='hackathon'),
+
     # action URLs
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),

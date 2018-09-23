@@ -156,25 +156,29 @@ $(document).ready(function() {
   if ($('input[name=amount]').val().trim().length > 0) {
     setUsdAmount();
   }
-  var open_hiring_panel = function(do_focus) {
-    setTimeout(function() {
-      var hiringRightNow = $('#hiringRightNow').is(':checked');
 
-      if (hiringRightNow) {
-        $('#jobDescription').removeClass('hidden');
+  var open_panel = function(checkboxSelector, targetSelector, do_focus) {
+    setTimeout(function() {
+      var isChecked = $(checkboxSelector).is(':checked');
+
+      if (isChecked) {
+        $(targetSelector).removeClass('hidden');
         if (do_focus) {
-          $('#jobDescription').focus();
+          $(targetSelector).focus();
         }
       } else {
-        $('#jobDescription').addClass('hidden');
+        $(targetSelector).addClass('hidden');
       }
     }, 10);
   };
 
   $('#hiringRightNow').click(function() {
-    open_hiring_panel(true);
+    open_panel('#hiringRightNow', '#jobDescription', true);
   });
 
+  $('#specialEvent').click(function() {
+    open_panel('#specialEvent', '#eventTag', true);
+  });
 
   $('#advancedLink a').click(function(e) {
     e.preventDefault();
@@ -234,6 +238,7 @@ $(document).ready(function() {
         projectLength: data.project_length,
         bountyType: data.bounty_type,
         fundingOrganisation: data.fundingOrganisation,
+        eventTag: data.specialEvent ? (data.eventTag || '') : '',
         tokenName
       };
 
@@ -266,7 +271,7 @@ $(document).ready(function() {
             auto_approve_workers: !!data.auto_approve_workers
           },
           hiring: {
-            hiringRightNow: data.hiringRightNow,
+            hiringRightNow: !!data.hiringRightNow,
             jobDescription: data.jobDescription
           },
           funding_organisation: metadata.fundingOrganisation,
