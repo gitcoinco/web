@@ -85,7 +85,8 @@ class Command(BaseCommand):
                 # except IndexError as e:
                 #     logger.warning(e)
                 except BadFunctionCallOutput as e:
-                    logger.warning('An error occurred when trying to mint the Kudos.  Retrying...')
+                    logger.warning('A network error occurred when trying to mint the {kudos["name"]} Kudos.')
+                    logger.warning('Retrying...')
                     continue
                 break
 
