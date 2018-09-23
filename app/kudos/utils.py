@@ -163,7 +163,7 @@ class KudosContract:
         """
 
         latest_id = self._contract.functions.totalSupply().call()
-        for kudos_id in range(start_id, latest_id):
+        for kudos_id in range(start_id, latest_id + 1):
             self.sync_kudos_db(kudos_id=kudos_id)
 
         # Remove orphaned Kudos in the database
