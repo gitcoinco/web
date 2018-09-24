@@ -444,13 +444,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ethos" title="EthOS" class="md-nav__link">
-    EthOS
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#django" title="Django" class="md-nav__link">
     Django
   </a>
@@ -2085,13 +2078,6 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#ethos" title="EthOS" class="md-nav__link">
-    EthOS
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#django" title="Django" class="md-nav__link">
     Django
   </a>
@@ -2308,61 +2294,6 @@ All of the environment variables used by this application conform to the <a href
 </tr>
 </tbody>
 </table>
-<h2 id="ethos">EthOS</h2>
-<table>
-<thead>
-<tr>
-<th>Variable</th>
-<th>Description</th>
-<th>Type</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>ETHOS_CONTRACT_ADDRESS</td>
-<td>The coin contract address.</td>
-<td><code>str</code></td>
-<td>''</td>
-</tr>
-<tr>
-<td>ETHOS_ACCOUNT_ADDRESS</td>
-<td>The coin distribution address.</td>
-<td><code>str</code></td>
-<td>''</td>
-</tr>
-<tr>
-<td>ETHOS_ACCOUNT_PRIVATE_KEY</td>
-<td>The coin distribution private key.</td>
-<td><code>str</code></td>
-<td>''</td>
-</tr>
-<tr>
-<td>ETHOS_TWITTER_CONSUMER_KEY</td>
-<td>EthOSEthereal Twitter account consumer key.</td>
-<td><code>str</code></td>
-<td>''</td>
-</tr>
-<tr>
-<td>ETHOS_TWITTER_CONSUMER_SECRET</td>
-<td>EthOSEthereal Twitter account consumer secret.</td>
-<td><code>str</code></td>
-<td>''</td>
-</tr>
-<tr>
-<td>ETHOS_TWITTER_ACCESS_TOKEN</td>
-<td>EthOSEthereal Twitter account access token.</td>
-<td><code>str</code></td>
-<td>''</td>
-</tr>
-<tr>
-<td>ETHOS_TWITTER_ACCESS_SECRET</td>
-<td>TEthOSEthereal Twitter account access secret.</td>
-<td><code>str</code></td>
-<td>''</td>
-</tr>
-</tbody>
-</table>
 <h2 id="django">Django</h2>
 <table>
 <thead>
@@ -2540,6 +2471,12 @@ All of the environment variables used by this application conform to the <a href
 <td>The SendGrid event hook URL.</td>
 <td><code>str</code></td>
 <td>sg_event_process</td>
+</tr>
+<tr>
+<td>SENDGRID_API_KEY</td>
+<td>The SendGrid API Key, required for sending emails.</td>
+<td><code>str</code></td>
+<td>None</td>
 </tr>
 </tbody>
 </table>

@@ -394,6 +394,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#setup-sendgrid-to-send-emails-recommended" title="Setup SendGrid to Send Emails (Recommended)" class="md-nav__link">
+    Setup SendGrid to Send Emails (Recommended)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#gitcoinbot-installation-instructions" title="Gitcoinbot Installation Instructions" class="md-nav__link">
     Gitcoinbot Installation Instructions
   </a>
@@ -2020,6 +2027,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#setup-sendgrid-to-send-emails-recommended" title="Setup SendGrid to Send Emails (Recommended)" class="md-nav__link">
+    Setup SendGrid to Send Emails (Recommended)
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#gitcoinbot-installation-instructions" title="Gitcoinbot Installation Instructions" class="md-nav__link">
     Gitcoinbot Installation Instructions
   </a>
@@ -2106,6 +2120,15 @@ GITHUB_API_USER=xxx
 <p>Make sure you disable gitcoinbot notifications on your local, unless you are specifically testing that feature
 By default, we disable outbound GitHub notifications to any repository that isn't under the <code>GITHUB_API_USER</code> repositories.</p>
 <p>For example, if <code>settings.GITHUB_API_USER == gitcoinco</code> only <code>github.com/gitcoinco/&lt;repos&gt;</code> bounties and associated tips will post Github comments.</p>
+<h2 id="setup-sendgrid-to-send-emails-recommended">Setup SendGrid to Send Emails (Recommended)</h2>
+<ol>
+<li>Create a new SendGrid Account at https://sendgrid.com</li>
+<li>Go to <a href="https://app.sendgrid.com/settings/api_keys">https://app.sendgrid.com/settings/api_keys</a> and create a new Sendgrid API key:</li>
+</ol>
+<p>Update the <code>web/app/app/.env</code> file to include the values provided by Github:</p>
+<pre><code class="shell">SENDGRID_API_KEY=xxx
+</code></pre>
+
 <pre><code># Be VERY CAREFUL when changing this setting.  You don't want to accidently
 # send a bunch of github notifications :)
 ENABLE_NOTIFICATIONS_ON_NETWORK=None
