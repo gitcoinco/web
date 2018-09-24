@@ -228,7 +228,7 @@ var callbacks = {
       return [ key, val ];
     }
 
-    const decimals = 2;
+    const decimals = 3;
     const bountyTokenName = result['token_name'];
     const bountyTokenAmount = token_value_to_display(result['value_in_token'], decimals);
     const dateNow = new Date();
