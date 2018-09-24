@@ -484,7 +484,7 @@ def receive(request, key, txid, network):
     kudos_emails = these_kudos_emails.filter(metadata__reference_hash_for_receipient=key) | these_kudos_emails.filter(
         metadata__reference_hash_for_funder=key)
     kudos_transfer = kudos_emails.first()
-    is_authed = request.user.username == kudos_transfer.username or request.user.username == kudos_transfer.from_username
+    is_authed = request.user.username.replace('@','') == kudos_transfer.username.replace('@','') or request.user.username.replace('@','') == kudos_transfer.from_username.replace('@','')
     not_mined_yet = get_web3(kudos_transfer.network).eth.getBalance(
         Web3.toChecksumAddress(kudos_transfer.metadata['address'])) == 0
 
