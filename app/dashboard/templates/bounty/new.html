@@ -106,6 +106,10 @@
                 </div>
                 {% include 'shared/pricing.html' %}
                 <div class="w-100 mt-2">
+                  <label class="form__label" for="fundingOrganisation">{% trans "Funding organisation" %}</label>
+                  <input name='fundingOrganisation' id="fundingOrganisation" class="form__input" type="text" placeholder="Ethereum Community Foundation"/>
+                  <hr class="mt-4">
+
                   <label class="form__label" for="hiringRightNow">{% trans "Hiring right now?" %}</label>
                   <div class="hiring_container">
                     <div class="form__checkbox">

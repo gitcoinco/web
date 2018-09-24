@@ -222,6 +222,7 @@ $(document).ready(function() {
         experienceLevel: data.experience_level,
         projectLength: data.project_length,
         bountyType: data.bounty_type,
+        fundingOrganisation: data.fundingOrganisation,
         tokenName
       };
 
@@ -256,6 +257,7 @@ $(document).ready(function() {
             hiringRightNow: data.hiringRightNow,
             jobDescription: data.jobDescription
           },
+          funding_organisation: metadata.fundingOrganisation,
           privacy_preferences: privacy_preferences,
           funders: [],
           categories: metadata.issueKeywords.split(','),
