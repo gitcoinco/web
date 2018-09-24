@@ -1655,12 +1655,11 @@ div.busyOverlay {
   margin: 0;
   padding: 0;
   vertical-align: baseline;
-  transform: rotateZ(180deg);
   transition: 0.3s ease;
 }
 
 #expanded > .arrow {
-  transform: rotateZ(0);
+  transform: rotateZ(180deg);
 }
 
 .uppercase {
