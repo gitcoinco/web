@@ -28,7 +28,7 @@
         border-color: #e0e0e0;
     }
     .kudos-contents {
-        text-align: left;
+        text-align: center;
     }
     .kudos {
         display: flex;
@@ -52,7 +52,7 @@
             {% blocktrans %}Someone sent you a {{ kudos_token.name }} kudos.{% endblocktrans %}
         {% endif %}{% if not is_new %} {{kudos_transfer.created_on | naturaltime}}{%endif%}.
       {% if kudos_email.from_name %}
-      {{kudos_email.from_name}} {% blocktrans %} sent you a {% endblocktrans %}<b>{{ token_elem.name|humanize_name }}</b> kudos.
+      {{kudos_email.from_name}} {% blocktrans %} sent you a {% endblocktrans %}<b>{{ token_elem.name|humanize_name }}</b> kudos!
       {% else %}
       Someone sent you a <b>{{ token_elem.name|humanize_name }}</b> kudos.
       {% endif %}{% if not is_new %} {{kudos_email.created_on | naturaltime}}{%endif%}
@@ -62,9 +62,8 @@
     </div>
 
     <br>
-    {{link}} dsf
-    <br>
-    {{kudos_transfer}}
+
+
     <br>
     <!-- token name: -->
     {{token_elem.name|humanize_name  }}
@@ -103,7 +102,7 @@
 
             {% if comments_public %}
                 <p>
-                {% trans "They had the following public comments:" %}
+                {% trans "Comment:" %}
             <pre>
                 {{comments_public}}
             </pre>
@@ -126,7 +125,7 @@
     </div>
     {% if not already_redeemed %}
       <div style="margin-bottom: 1.5em;">
-          <a class="button" href="{{link}}">{% trans "Redeem Kudos" %}</a>
+          <a class="button" href="{{link}}">{% trans "Accept Kudos" %}</a>
       </div>
     {% endif %}
 </div>
