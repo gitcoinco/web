@@ -2231,11 +2231,16 @@ class Profile(SuperModel):
         from app.utils import get_location_from_ip
         locations = []
         try:
-            ip_addresses = list(set(self.actions.filter(action='Login').values_list('ip_address', flat=True)))
-            for ip_address in ip_addresses:
-                loc = get_location_from_ip(ip_address)
-                if loc:
-                    locations.append(loc)
+            for login in self.actions.filter(action='Login'):
+                if login.location_data:
+                    locations.append(login.location_data)
+                else:
+                    location_data = get_location_from_ip(login.ip_address)
+                    login.location_data = location_data
+                    login.save()
+                    # Update all actions with same ip_address ??
+                    # UserAction.objects.filter(action='Login',ip_address=login.ip_address).update(location_data=location_data)
+                    locations.append(location_data)
         except Exception:
             pass
         return locations
