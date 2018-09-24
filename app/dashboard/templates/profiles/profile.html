@@ -142,7 +142,7 @@
                       <div class="row mb-3 p-2">
                         <div class="col-12">
                           {% for activity in group.activity_bounties %}
-                            {% include "shared/profile_activities_bounty.html" with bounty=activity.bounty %}
+                            {% include "shared/profile_activities_bounty.html" %}
                           {% endfor %}
                         </div>
                       </div>
@@ -154,7 +154,7 @@
                         <div class="col-12">
                           {% for activity in group.activity_bounties %}
                             {% if activity.activity_type == 'new_bounty' %}
-                              {% include "shared/profile_activities_bounty.html" with bounty=activity.bounty %}
+                              {% include "shared/profile_activities_bounty.html" %}
                             {% endif %}
                           {% endfor %}
                         </div>
@@ -167,7 +167,7 @@
                         <div class="col-12">
                           {% for activity in group.activity_bounties %}
                             {% if activity.activity_type == 'work_done' %}
-                              {% include "shared/profile_activities_bounty.html" with bounty=activity.bounty %}
+                              {% include "shared/profile_activities_bounty.html" %}
                             {% endif %}
                           {% endfor %}
                         </div>
@@ -198,6 +198,7 @@
                                       {% else %}
                                         {% trans "an anonymous user" %}
                                       {% endif %}
+                                      &bull; {{ tip.received_on | naturaltime }}
                                     </div>
                                   </div>
                                 </div>
