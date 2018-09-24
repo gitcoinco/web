@@ -916,9 +916,9 @@ class Bounty(SuperModel):
         ret = {}
         for tip in self.tips.filter(is_for_bounty_fulfiller=True).exclude(txid=''):
             token = tip.tokenName
-            obj = ret.get(token, None)
+            obj = ret.get(token, {})
+
             if not obj:
-                obj = {}
                 obj['amount'] = 0.0
 
                 conversion_rate = ConversionRate.objects.filter(
@@ -943,7 +943,7 @@ class Bounty(SuperModel):
         afs = self.additional_funding_summary
         tokens = afs.keys()
 
-        if len(tokens) == 0:
+        if not tokens:
             return ''
 
         items = []
