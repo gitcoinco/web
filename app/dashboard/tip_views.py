@@ -21,6 +21,7 @@ from __future__ import print_function, unicode_literals
 import json
 import logging
 
+from django.conf import settings
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import redirect
@@ -329,12 +330,21 @@ def send_tip_3(request):
                 if this_tip.value_in_usdt_now:
                     tips_last_week_value += this_tip.value_in_usdt_now
             is_over_tip_weekly_limit = tips_last_week_value > request.user.profile.max_tip_amount_usdt_per_week
+
+    increase_funding_form_title = _('Request a Funding Limit Increasement')
+    increase_funding_form = f'<a target="_blank" href="{settings.BASE_URL}'\
+                            f'requestincrease">{increase_funding_form_title}</a>'
+
     if is_over_tip_tx_limit:
         response['status'] = 'error'
-        response['message'] = _('This tip is over the per-transaction limit of $') + str(max_per_tip) + ('.  Please try again later or contact support.')
+        response['message'] = _('This tip is over the per-transaction limit of $') +\
+            str(max_per_tip) + '. ' + increase_funding_form
     elif is_over_tip_weekly_limit:
         response['status'] = 'error'
-        response['message'] = _('You are over the weekly tip send limit of $') + str(request.user.profile.max_tip_amount_usdt_per_week) + ('.  Please try again later or contact support.')
+        response['message'] = _('You are over the weekly tip send limit of $') +\
+            str(request.user.profile.max_tip_amount_usdt_per_week) +\
+            '. ' + increase_funding_form
+
     return JsonResponse(response)
 
 
