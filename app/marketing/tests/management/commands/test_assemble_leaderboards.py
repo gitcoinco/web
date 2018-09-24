@@ -36,9 +36,9 @@ class TestAssembleLeaderboards(TestCase):
         """Perform setup for the testcase."""
         assemble_leaderboards.ranks = default_ranks()
 
-        self.bounty_value=3
-        self.bounty_payer_handle='flintstone' 
-        self.bounty_earner_handle='freddy' 
+        self.bounty_value = 3
+        self.bounty_payer_handle = 'flintstone'
+        self.bounty_earner_handle = 'freddy'
         
         self.bounty_profile = Profile.objects.create(
             data={},
@@ -91,9 +91,9 @@ class TestAssembleLeaderboards(TestCase):
             profile=self.fulfiller_profile,
         )
 
-        self.tip_value=7
-        self.tip_payer_handle='johnny'
-        self.tip_earner_handle='john'
+        self.tip_value = 7
+        self.tip_payer_handle = 'johnny'
+        self.tip_earner_handle = 'john'
 
         self.tip_username_profile = Profile.objects.create(
             data={},
@@ -210,7 +210,7 @@ class TestAssembleLeaderboards(TestCase):
         sum_tips(self.tip, [self.tip_payer_handle])
 
         rank_types_exists = [
-            'all_all', 'all_fulfilled', 'all_payers', 'all_earners', 
+            'all_all', 'all_fulfilled', 'all_payers', 'all_earners',
             'yearly_all', 'yearly_fulfilled', 'yearly_payers',
             'monthly_all', 'monthly_fulfilled', 'monthly_payers',
             'weekly_all', 'weekly_fulfilled', 'weekly_payers',
