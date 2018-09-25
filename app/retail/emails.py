@@ -132,7 +132,6 @@ def render_kudos_email(to_email, kudos, is_new):
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'is_sender': to_email not in kudos_transfer.emails,
         'is_receiver': to_email in kudos_transfer.emails,
-        'kudos_email': kudos_transfer,
     }
 
     response_html = premailer_transform(render_to_string("emails/new_kudos.html", params))
