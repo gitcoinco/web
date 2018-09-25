@@ -163,56 +163,48 @@ class KudosContract:
         """
 
         latest_id = self._contract.functions.totalSupply().call()
+        if start_id == latest_id:
+            return False
         for kudos_id in range(start_id, latest_id + 1):
-            self.sync_kudos_db(kudos_id=kudos_id)
+            # Try to link up any kudos_token and kudos_transfer objects
+            # kudos_transfer = KudosTransfer.objects.get(pk=kudos_id)
+            self.sync_db(kudos_id=kudos_id)
 
         # Remove orphaned Kudos in the database
         Token.objects.filter(pk__gt=latest_id).delete()
 
-    def sync_kudos_db(self, kudos_id):
-        kudos = self.getKudosById(kudos_id, to_dict=True)
-
-        kudos['owner_address'] = self._contract.functions.ownerOf(kudos_id).call()
-        kudos_token = Token(pk=kudos_id, **kudos)
-        if not Token.objects.filter(pk=kudos_id).exists():
-            kudos_token.save()
-        else:
-            # Make sure to not overwrite the sent_from_adderss field.
-            kudos_token.save(update_fields=list(kudos.keys()))
-        logger.info(f'Synced id #{kudos_token.id}, "{kudos_token.name}" kudos to the database.')
-        return kudos_token
-
-    def sync_cloned_kudos_db(self, kudos_id, tx_hash):
+    def sync_db(self, kudos_id, txid=None, gen0=False):
         # Handle the dummy Kudos
         if kudos_id == 0:
             return False
+
+        # Grab the Kudos from the blockchain, augment with owner_address
         kudos = self.getKudosById(kudos_id, to_dict=True)
         kudos['owner_address'] = self._contract.functions.ownerOf(kudos_id).call()
-        kudos_token = Token(pk=kudos_id, **kudos)
-        kudos_token.save()
 
-        # For the case of the Kudos Indirect Send, we need to update the `sent_from_address` field 
-        # with the value from the kudos_transfer model.  We want to make sure its the address of the
-        # originating sender, not the temporary holding account.
-
-        # Find the object which matches the kudos that was just cloned
-        # Now works for both Direct and Indirect Send
-        kudos_transfer = KudosTransfer.objects.get(txid__iexact=tx_hash)
-        # Store the foreign key reference
-        kudos_transfer.kudos_token = kudos_token
-        # Set the proper sent_from_address in the kudos_token (overwrite the temporary address)
-        kudos_token.sent_from_address = kudos_transfer.from_address
-        # Also need to set the owner_address
-        kudos_token.owner_address = self._contract.functions.ownerOf(kudos_id).call()
-
-        kudos_transfer.save()
-        kudos_token.save()
+        # Update an existing Kudos in the database
+        if Token.objects.filter(pk=kudos_id).exists():
+            kudos_token = Token(pk=kudos_id, **kudos)
+            kudos_token.save(update_fields=list(kudos.keys()))
+        # Add a new Kudos to the database.  Require txid so we can link to kudos_transfer table.
+        else:
+            if not txid:
+                raise ValueError('Must provide a txid when syncing a new Kudos.')
+            kudos['txid'] = txid
+            kudos_token = Token(pk=kudos_id, **kudos)
+            kudos_token.save()
+            # Find the object which matches the kudos that was just cloned
+            try:
+                kudos_transfer = KudosTransfer.objects.get(receive_txid=txid)
+            except KudosTransfer.DoesNotExist:
+                if not gen0:
+                    logger.warning(f'No KudosTransfer object found for Kudos ID {kudos_id}')
+            else:
+                # Store the foreign key reference
+                kudos_transfer.kudos_token = kudos_token
+                kudos_transfer.save()
 
         logger.info(f'Synced id #{kudos_token.id}, "{kudos_token.name}" kudos to the database.')
-
-        # Sync up the Gen0 Kudos
-        self.sync_kudos_db(kudos_id)
-        return True
 
     def _get_contract_address(self):
         """Get the Kudos contract address, depending on the network.
@@ -326,7 +318,7 @@ class KudosContract:
         kudos_id = self.getGen0TokenId(name)
         logger.info(f'Minted id #{kudos_id}, "{name}" kudos on the blockchain.')
 
-        self.sync_kudos_db(kudos_id=kudos_id)
+        self.sync_db(kudos_id=kudos_id, txid=tx_hash.hex(), gen0=True)
 
         return kudos_id
 
@@ -356,7 +348,7 @@ class KudosContract:
         tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
 
         kudos_id = self._contract.functions.totalSupply().call()
-        self.sync_transferred_kudos_db(kudosid=kudos_id, tx_hash=tx_hash)
+        self.sync_db(kudosid=kudos_id, txid=tx_hash.hex())
 
         return tx_receipt
 
@@ -386,7 +378,7 @@ class KudosContract:
         tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
 
         kudos_id = self._contract.functions.totalSupply().call()
-        self.sync_transferred_kudos_db(kudosid=kudos_id, tx_hash=tx_hash)
+        self.sync_db(kudosid=kudos_id, txid=tx_hash.hex())
 
         return tx_receipt
 

@@ -62,8 +62,8 @@ class Migration(migrations.Migration):
                 ('num_clones_in_wild', models.IntegerField(blank=True, null=True)),
                 ('tags', models.CharField(max_length=255, null=True)),
                 ('cloned_from_id', models.IntegerField()),
-                ('sent_from_address', models.CharField(max_length=255)),
                 ('owner_address', models.CharField(max_length=255)),
+                ('txid', models.CharField(max_length=255))
             ],
             options={
                 'abstract': False,

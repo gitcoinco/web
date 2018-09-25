@@ -47,13 +47,11 @@ class Token(SuperModel):
 
     # Extra fields added to database (not on blockchain)
     owner_address = models.CharField(max_length=255)
-    sent_from_address = models.CharField(max_length=255)
+    txid = models.CharField(max_length=255)
 
     def save(self, *args, **kwargs):
         if self.owner_address:
             self.owner_address = to_checksum_address(self.owner_address)
-        if self.sent_from_address:
-            self.sent_from_address = to_checksum_address(self.sent_from_address)
 
         super().save(*args, **kwargs)
 
@@ -103,6 +101,14 @@ class KudosTransfer(SendCryptoAsset):
     sender_profile = models.ForeignKey(
         'dashboard.Profile', related_name='sent_kudos', on_delete=models.SET_NULL, null=True, blank=True
     )
+
+    def save(self, *args, **kwargs):
+        if self.from_address:
+            self.from_address = to_checksum_address(self.from_address)
+        if self.receive_address:
+            self.receive_address = to_checksum_address(self.receive_address)
+
+        super().save(*args, **kwargs)
 
     @property
     def receive_url(self):

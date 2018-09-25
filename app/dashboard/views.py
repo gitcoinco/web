@@ -43,7 +43,7 @@ from avatar.utils import get_avatar_context
 from economy.utils import convert_amount
 from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid
-from kudos.models import Token
+from kudos.models import Token, KudosTransfer
 from marketing.mails import (
     admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
@@ -71,7 +71,7 @@ from .utils import (
     get_bounty, get_bounty_id, get_context, has_tx_mined, record_user_action_on_interest, web3_process_bounty, get_web3
 )
 
-from eth_utils import to_checksum_address
+from eth_utils import to_checksum_address, to_normalized_address
 
 logger = logging.getLogger(__name__)
 
@@ -1144,7 +1144,7 @@ def profile(request, handle):
     order_by = request.GET.get('order_by', '-modified_on')
     if context['preferred_payout_address']:
         owned_kudos = Token.objects.filter(owner_address=to_checksum_address(context['preferred_payout_address'])).order_by(order_by)
-        sent_kudos = Token.objects.filter(sent_from_address=to_checksum_address(context['preferred_payout_address'])).order_by(order_by)
+        sent_kudos = Token.objects.filter(kudos_transfer__from_address=to_checksum_address(context['preferred_payout_address'])).order_by(order_by)
     else:
         owned_kudos = None
         sent_kudos = None
@@ -1169,7 +1169,7 @@ def profile(request, handle):
         # Send kudos data when new preferred address
         address = request.POST.get('address')
         context['kudos'] = Token.objects.filter(owner_address=to_checksum_address(address)).order_by(order_by)
-        context['sent_kudos'] = Token.objects.filter(sent_from_address=to_checksum_address(address)).order_by(order_by)
+        context['sent_kudos'] = Token.objects.filter(kudos_transfer__from_address=to_checksum_address(address)).order_by(order_by)
         profile.preferred_payout_address = address
 
         kudos_html = loader.render_to_string(

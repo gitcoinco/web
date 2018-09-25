@@ -80,4 +80,4 @@ class Command(BaseCommand):
 
             # If the mint fails, retry it 3 times.  Because Infura.
             kudos_id = kudos_contract.mint(*args, account=account, private_key=private_key)
-            kudos_contract.reconcile_db(start_id=kudos_id)
+        kudos_contract.reconcile_db(start_id=kudos_id)
