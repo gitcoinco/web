@@ -64,8 +64,8 @@
             </div>
             <div class="content col-12 col-lg-8">
               <p class="org-name">{{ org.name }}</p>
-              <p class="font-body mb-1">{{ org.about }}</p>
-              <a class="font-body" href="/profile/{{ org.profile }} ">View Bounties ({{ org.bounty_count|default_if_none:'0' }})</a>
+              <p class="font-body mb-1">{{ org.description }}</p>
+              <a class="font-body" href="/profile/{{ org.github_username }} ">View Bounties ({{ org.bounty_count|default_if_none:'0' }})</a>
             </div>
           </div>
         {% endfor %}

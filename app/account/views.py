@@ -58,19 +58,6 @@ def explorer_organzations(request, org_name):
 def organizations(request):
     """Handle displaying the organizations."""
     orgs = Organization.objects.select_related('avatar', 'profile').filter(is_visible=True)
-    # orgs = [{
-    #     'name': 'Metamask',
-    #     'about': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sollicitudin sapien vitae sapien porttitor euismod. Pellentesque fermentum ligula in risus vulputate, in auctor leo tristique. Fusce sollicitudin enim aliquam nunc',
-    #     'logo': '/v2/images/project_logos/metamask.png',
-    #     'profile': 'metamask',
-    #     'bounty_count': 2,
-    # }, {
-    #     'name': 'Angur',
-    #     'about': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sollicitudin sapien vitae sapien porttitor euismod. Pellentesque fermentum ligula in risus vulputate, in auctor leo tristique. Fusce sollicitudin enim aliquam nunc',
-    #     'logo': '/v2/images/project_logos/augur.png',
-    #     'profile': 'augur',
-    #     'bounty_count': 4,
-    # }]
 
     params = {
         'active': 'organizations',

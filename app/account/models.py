@@ -124,13 +124,14 @@ class Organization(Group):
     objects = OrganizationQuerySet.as_manager()
 
     def update_basic_fields(self, org, save=False):
-        self.email = org.email if org.email else ''
-        self.name = org.name if org.name else ''
-        self.github_username = org.login if org.login else ''
-        self.website_url = org.blog if org.blog else ''
-        self.gh_data = org.raw_data if org.raw_data else {}
-        self.location = org.location if hasattr(org, 'location') else ''
-        self.description = self.gh_data.get('description', '')
+        self.email = org.email if org.email is not None else ''
+        self.name = org.name if org.name is not None else ''
+        self.github_username = org.login if org.login is not None else ''
+        self.website_url = org.blog if org.blog is not None else ''
+        self.gh_data = org.raw_data if org.raw_data is not None else {}
+        self.location = org.location if org.location is not None else ''
+        description = self.gh_data.get('description', '')
+        self.description = description if description is not None else ''
         if save:
             self.save()
 
