@@ -215,7 +215,7 @@ class KudosContract:
         if self.network == 'mainnet':
             return to_checksum_address('')
         elif self.network == 'ropsten':
-            return to_checksum_address('0xb5e880859dbe23793d5b6be2c5547001c4b97af8')
+            return to_checksum_address('0x179e53b5172c0da9721d8e614bd32c34b90aff5d')
         elif self.network == 'rinkeby':
             return to_checksum_address('0x0b9bFF2c5c7c85eE94B48D54F2C6eFa1E399380D')
         else:
