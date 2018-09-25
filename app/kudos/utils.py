@@ -297,7 +297,7 @@ class KudosContract:
         if self.gen0_exists_web3(name):
             logger.warning(f'The "{name}" Gen0 Kudos already exists on the blockchain.  Updating db...')
             kudos_id = self.getGen0TokenId(name)
-            self.sync_kudos_db(kudos_id=kudos_id)
+            self.sync_db(kudos_id=kudos_id)
             return False
 
         if private_key:
