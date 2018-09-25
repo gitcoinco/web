@@ -36,17 +36,7 @@ All of the environment variables used by this application conform to the [`djang
 | COLO_ACCOUNT_ADDRESS | The coin distribution address. | `str` | '' |
 | COLO_ACCOUNT_PRIVATE_KEY | The coin distribution private key. | `str` | '' |
 
-## EthOS
 
-| Variable | Description | Type | Default |
-| --- | --- | --- | --- |
-| ETHOS_CONTRACT_ADDRESS | The coin contract address. | `str` | '' |
-| ETHOS_ACCOUNT_ADDRESS | The coin distribution address. | `str` | '' |
-| ETHOS_ACCOUNT_PRIVATE_KEY | The coin distribution private key. | `str` | '' |
-| ETHOS_TWITTER_CONSUMER_KEY | EthOSEthereal Twitter account consumer key. | `str` | '' |
-| ETHOS_TWITTER_CONSUMER_SECRET | EthOSEthereal Twitter account consumer secret. | `str` | '' |
-| ETHOS_TWITTER_ACCESS_TOKEN | EthOSEthereal Twitter account access token. | `str` | '' |
-| ETHOS_TWITTER_ACCESS_SECRET | TEthOSEthereal Twitter account access secret. | `str` | '' |
 
 ## Django
 
@@ -94,6 +84,9 @@ For further information, please check out the [Gitcoin Bot Documentation](https:
 | Variable | Description | Type | Default |
 | --- | --- | --- | --- |
 | SENDGRID_EVENT_HOOK_URL | The SendGrid event hook URL. | `str` | sg_event_process |
+| SENDGRID_API_KEY | The SendGrid API Key, required for sending emails. | `str` | None |
+
+
 
 ## Slack
 

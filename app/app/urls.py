@@ -232,6 +232,11 @@ urlpatterns = [
     re_path(r'^youtube/?', retail.views.youtube, name='youtube'),
     re_path(r'^web3/?', retail.views.web3, name='web3'),
 
+    # increase funding limit
+    re_path(r'^requestincrease/?',
+            retail.views.increase_funding_limit_request,
+            name='increase_funding_limit_request'),
+
     # link shortener
     url(r'^l/(.*)$/?', linkshortener.views.linkredirect, name='redirect'),
     url(r'^credit/(.*)$/?', credits.views.credits, name='credit'),
