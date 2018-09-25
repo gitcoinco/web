@@ -507,9 +507,9 @@ def account_settings(request):
 
     if request.POST:
 
-        if 'preferred_payout_address' in request.POST.keys():
-            profile.preferred_payout_address = request.POST.get('preferred_payout_address', '')
-            profile.save()
+        payout_address = request.POST.get('preferred_payout_address', '')
+        if payout_address:
+            profile.add_wallet(payout_address, is_default=True)
             msg = _('Updated your Address')
         elif request.POST.get('disconnect', False):
             profile.github_access_token = ''

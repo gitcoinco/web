@@ -139,8 +139,7 @@ def receive_tip_v3(request, key, txid, network):
             if params['save_addr']:
                 profile = get_profile(tip.username)
                 if profile:
-                    profile.preferred_payout_address = params['forwarding_address']
-                    profile.save()
+                    profile.add_wallet(params['forwarding_address'])
             tip.receive_txid = params['receive_txid']
             tip.receive_address = params['forwarding_address']
             tip.received_on = timezone.now()
@@ -247,8 +246,10 @@ def tipee_address(request, handle):
         'addresses': []
     }
     profile = get_profile(str(handle).replace('@', ''))
-    if profile and profile.preferred_payout_address:
-        response['addresses'].append(profile.preferred_payout_address)
+    if profile:
+        wallet = profile.wallets.default()
+        if wallet:
+            response['addresses'].append(wallet.last().address)
     return JsonResponse(response)
 
 

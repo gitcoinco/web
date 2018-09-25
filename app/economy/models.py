@@ -118,6 +118,30 @@ def reverse_conversion_rate(sender, instance, **kwargs):
         )
 
 
+class WalletQuerySet(models.QuerySet):
+    """Define the Wallet QuerySet to be used as objects."""
+
+    def default(self):
+        return self.filter(is_default=True)
+
+
+class Wallet(SuperModel):
+    """Define the Wallet model.
+
+    Attributes:
+        address (str): The web3 wallet address.
+        is_default (bool): Whether or not this Wallet is the preferred payout address.
+        profile (dashboard.Profile): The owner of this wallet.
+        wallet_users (dashboard.Profiles): All Profiles that have used this wallet.
+
+    """
+
+    address = models.CharField(max_length=255, db_index=True, unique=True)
+    is_default = models.BooleanField(default=False)
+    profile = models.ForeignKey('dashboard.Profile', on_delete=models.CASCADE, related_name='wallets')
+    wallet_users = models.ManyToManyField('dashboard.Profile', blank=True)
+
+
 class Token(SuperModel):
     """Define the Token model."""
 

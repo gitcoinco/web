@@ -506,6 +506,7 @@ def onboard(request, flow):
     if request.GET.get('eth_address') and request.user.is_authenticated and getattr(request.user, 'profile', None):
         profile = request.user.profile
         eth_address = request.GET.get('eth_address')
+        profile.add_wallet(eth_address)
         profile.preferred_payout_address = eth_address
         profile.save()
         return JsonResponse({'OK': True})
@@ -1568,15 +1569,15 @@ def get_users(request):
         q = request.GET.get('term')
         profiles = Profile.objects.filter(handle__icontains=q)
         results = []
-        for user in profiles:
+        for profile in profiles:
             profile_json = {}
-            profile_json['id'] = user.id
-            profile_json['text'] = user.handle
-            profile_json['email'] = user.email
-            profile_json['avatar_id'] = user.avatar_id
-            if user.avatar_id:
-                profile_json['avatar_url'] = user.avatar_url
-            profile_json['preferred_payout_address'] = user.preferred_payout_address
+            profile_json['id'] = profile.id
+            profile_json['text'] = profile.handle
+            profile_json['email'] = profile.email
+            profile_json['avatar_id'] = profile.avatar_id
+            if profile.avatar_id:
+                profile_json['avatar_url'] = profile.avatar_url
+            profile_json['preferred_payout_address'] = profile.get_default_wallet().address
             results.append(profile_json)
         data = json.dumps(results)
     else:

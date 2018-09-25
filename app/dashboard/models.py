@@ -1475,6 +1475,13 @@ class ProfileQuerySet(models.QuerySet):
         return self.filter(hide_profile=True)
 
 
+class ProfileManager(models.Manager.from_queryset(ProfileQuerySet)):
+    def get_queryset(self):
+        return super(ProfileManager, self).get_queryset() \
+            .select_related('avatar', 'user') \
+            .prefetch_related('wallets')
+
+
 class Profile(SuperModel):
     """Define the structure of the user profile.
 
@@ -1515,7 +1522,7 @@ class Profile(SuperModel):
     max_tip_amount_usdt_per_tx = models.DecimalField(default=500, decimal_places=2, max_digits=50)
     max_tip_amount_usdt_per_week = models.DecimalField(default=1500, decimal_places=2, max_digits=50)
 
-    objects = ProfileQuerySet.as_manager()
+    objects = ProfileManager()
 
     @property
     def is_org(self):
@@ -1541,6 +1548,62 @@ class Profile(SuperModel):
         on_repo = Tip.objects.filter(github_url__startswith=self.github_url).order_by('-id')
         tipped_for = Tip.objects.filter(username__iexact=self.handle).order_by('-id')
         return on_repo | tipped_for
+
+    # @property
+    # def preferred_payout_address(self):
+    #     """Return the preferred payout address for this Profile."""
+    #     try:
+    #         return self.objects.wallets.get(is_default=True).address
+    #     except Wallet.DoesNotExist:
+    #         return ''
+
+    def get_wallet_by_address(self, address):
+        """Get a QuerySet for a Wallet with the provided address.
+
+        Returns:
+            QuerySet: The QuerySet of Wallets associated with the provided address.
+
+        """
+        return self.objects.wallets.get(address=address)
+
+    def wallet_exists(self, address):
+        """Check the provided address against existing associated wallets.
+
+        Returns:
+            bool: Whether or not the address is already an associated wallet.
+
+        """
+        return self.get_wallet_by_address(address).exists()
+
+    def get_default_wallet(self):
+        from economy.models import Wallet
+        try:
+            return self.objects.wallets.get(is_default=True)
+        except Wallet.DoesNotExist:
+            return None
+
+    def add_wallet(self, address, is_default=False):
+        """Create a Wallet for the Profile based on the provided address.
+
+        Returns:
+            str: The Wallet address.
+
+        """
+        from economy.models import Wallet
+        wallet = self.get_wallets_by_address(address)
+
+        try:
+            if wallet:
+                wallet.wallet_users.add(self)
+            else:
+                if not self.objects.wallets.filter(is_default=True):
+                    is_default = True
+                Wallet.objects.create(profile=self, address=address, is_default=is_default)
+        except Exception as e:
+            print(e)
+            # logger.error(e)
+
+        return address
 
     def no_times_slashed_by_staff(self):
         user_actions = UserAction.objects.filter(
