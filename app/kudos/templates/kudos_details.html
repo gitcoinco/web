@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
   </head>
   <body class="{{ active }} bg-light">
+    <title>{{ kudos.humanized_name }}</title>
     <header class="container-fluid header">
       {% include 'shared/nav.html' %}
       {% include 'shared/kudos_banner.html' %}

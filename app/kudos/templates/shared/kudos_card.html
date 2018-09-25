@@ -17,7 +17,7 @@
 {% load i18n staticfiles %}
 {% load kudos_extras %}
 <div class="kd-card">
-  <a href="/kudos/{{ listing.id }}" class="">
+  <a href="/kudos/{{ listing.id }}/{{ listing.name }}" class="">
     <img id="kudosImage" src="{% static listing.image %}" alt="{{ listing.name }}" class="img-thumbnail kd-shadow border-transparent" width="250">
   </a>
   <span class="kd-price">{{ listing.price_in_eth }} ETH</span>

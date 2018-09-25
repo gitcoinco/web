@@ -119,9 +119,10 @@ def search(request):
     return TemplateResponse(request, 'kudos_marketplace.html', context)
 
 
-def details(request):
+def details(request, id, name):
     """Render the detail kudos response."""
-    kudos_id = request.path.split('/')[-1]
+    kudos_id = id
+    kudos_name = name
     logger.info(f'kudos id: {kudos_id}')
 
     if not re.match(r'\d+', kudos_id):
