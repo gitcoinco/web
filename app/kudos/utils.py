@@ -188,7 +188,9 @@ class KudosContract:
             kudos_token.save(update_fields=list(kudos.keys()))
         # Add a new Kudos to the database.  Require txid so we can link to kudos_transfer table.
         else:
-            if not txid:
+            if not txid and gen0:
+                logger.warning('No txid provided for Gen0 Kudos.')
+            elif not txid and not gen0:
                 raise ValueError('Must provide a txid when syncing a new Kudos.')
             kudos['txid'] = txid
             kudos_token = Token(pk=kudos_id, **kudos)
