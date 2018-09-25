@@ -39,7 +39,7 @@ class TestAssembleLeaderboards(TestCase):
         self.bounty_value = 3
         self.bounty_payer_handle = 'flintstone'
         self.bounty_earner_handle = 'freddy'
-        
+
         self.bounty_profile = Profile.objects.create(
             data={},
             handle=self.bounty_payer_handle,
@@ -210,7 +210,7 @@ class TestAssembleLeaderboards(TestCase):
         sum_tips(self.tip, [self.tip_payer_handle])
 
         rank_types_exists = [
-            'all_all', 'all_fulfilled', 'all_payers', 'all_earners',
+            'all_all', 'all_fulfilled', 'all_payers', 
             'yearly_all', 'yearly_fulfilled', 'yearly_payers',
             'monthly_all', 'monthly_fulfilled', 'monthly_payers',
             'weekly_all', 'weekly_fulfilled', 'weekly_payers',
@@ -219,7 +219,7 @@ class TestAssembleLeaderboards(TestCase):
             assert assemble_leaderboards.ranks[rank_type][self.tip_payer_handle] == self.tip_value
 
         rank_types_not_exists = [
-            'all_orgs', 'all_tokens', 'all_countries', 'all_cities', 'all_continents',
+            'all_earners', 'all_orgs', 'all_tokens', 'all_countries', 'all_cities', 'all_continents',
             'yearly_earners', 'yearly_orgs', 'yearly_tokens', 'yearly_countries', 'yearly_cities', 'yearly_continents',
             'monthly_earners', 'monthly_orgs', 'monthly_tokens', 'monthly_countries', 'monthly_cities', 'monthly_continents',
             'weekly_earners', 'weekly_orgs', 'weekly_tokens', 'weekly_countries', 'weekly_cities', 'weekly_continents',
@@ -255,10 +255,10 @@ class TestAssembleLeaderboards(TestCase):
         """Test command assemble leaderboards."""
         Command().handle()
 
-        assert LeaderboardRank.objects.all().count() == 219
+        assert LeaderboardRank.objects.all().count() == 210
         assert LeaderboardRank.objects.filter(leaderboard="all_all").count() == 14
         assert LeaderboardRank.objects.filter(leaderboard="all_fulfilled").count() == 14
-        assert LeaderboardRank.objects.filter(leaderboard="all_earners").count() == 11
+        assert LeaderboardRank.objects.filter(leaderboard="all_earners").count() == 2
         assert LeaderboardRank.objects.filter(leaderboard="all_payers").count() == 2
         assert LeaderboardRank.objects.filter(leaderboard="all_tokens").count() == 1
         assert LeaderboardRank.objects.filter(leaderboard="all_countries").count() == 2

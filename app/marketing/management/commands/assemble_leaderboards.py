@@ -212,8 +212,7 @@ def sum_bounties(b, index_terms):
 def sum_tip_helper(t, time, index_term, val_usd):
     add_element(f'{time}_{ALL}', index_term, val_usd)
     add_element(f'{time}_{FULFILLED}', index_term, val_usd)
-    # Why "time == ALL" ??
-    if t.username == index_term or time == ALL:
+    if t.username == index_term:
         add_element(f'{time}_{EARNERS}', index_term, val_usd)
     if t.from_username == index_term:
         add_element(f'{time}_{PAYERS}', index_term, val_usd)
