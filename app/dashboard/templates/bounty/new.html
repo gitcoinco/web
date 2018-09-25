@@ -63,7 +63,7 @@
                   </div>
                   <div id="issue-details" class="mt-4">
                     <label class="form__label mb-0 mt-3" for="title">{% trans "Issue Title" %}</label>
-                    <input name='title' id="title"  class="form__input pb-3 pt-0 hidden" type="text" value="{{ issue_title }}" readonly/>
+                    <input name='title' id="title"  class="form__input pb-3 pt-0 hidden" type="text" value="{{ issue_title }}" readonly required/>
                     <p id="title--text"></p>
                     <label class="form__label" for="description">{% trans "Description" %}</label>
                     <textarea name="description" class="form__input" id="description" readonly></textarea>
