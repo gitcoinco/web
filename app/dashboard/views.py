@@ -1534,7 +1534,7 @@ def change_bounty(request, bounty_id):
             if value != old_value:
                 if key == 'bounty_reserved_for_user' and value != '':
                     value = Profile.objects.get(id=value)
-                    
+
                 setattr(bounty, key, value)
                 bounty_changed = True
 

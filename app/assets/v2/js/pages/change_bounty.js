@@ -49,7 +49,7 @@ $(document).ready(function() {
     bounty_reserved_for_user = e.params.data.id;
   });
 
-   // show/hide the reserved for selector based on the project type
+  // show/hide the reserved for selector based on the project type
   $('.js-select2[name=project_type]').change(function(e) {
     if (String(e.target.value).toLowerCase() === 'traditional') {
       $('#reservedForDiv').show();
