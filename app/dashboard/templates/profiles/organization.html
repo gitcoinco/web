@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n email_obfuscator humanize static add_url_schema %}
+{% load i18n email_obfuscator humanize static add_url_schema is_in_list %}
 <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
 <link rel="stylesheet" href="{% static "v2/css/switch.css" %}">
 
@@ -46,21 +46,20 @@
             {% endif %}
           </p>
         </div>
-        <!-- TODO : If condition to check if hiring / not -->
         <div class="mt-2">
+          {% if profile.org and profile.org.is_hiring %}
           <div class="tag org-hiring">
             <p>{% trans "Hiring" %}</p>
           </div>
-          <!-- END TODO -->
-          <!-- TODO: Show if user is org member-->
+          {% endif %}
+          {% if user.username|is_in_list:profile.org.gh_members %}
           <span class="ml-2 mr-1 font-weight-300">{% trans "Hiring" %}</span>
           <label class="switch mt-2">
             <input type="checkbox">
             <span class="slider round"></span>
           </label>
-          <!-- END TODO -->
+          {% endif %}
         </div>
-        <!-- TODO : If condition to check if members are there & populate with them -->
         <div class="members my-4">
           <h3 class="font-body">{% trans "Members" %}</h3>
           {% for profile, num_times in works_with_org.items %}
@@ -69,7 +68,6 @@
             </a>
           {% endfor %}
         </div>
-        <!-- END TODO -->
         <div class="img-placeholder"></div>
         <img class="profile-header__avatar" src="{% if profile.avatar and profile.avatar.avatar_url %}{{ profile.avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}">
       </div>

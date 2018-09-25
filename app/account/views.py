@@ -30,26 +30,10 @@ logger = logging.getLogger(__name__)
 
 def explorer_organzations(request, org_name):
     """Handle displaying the organizations on the explorer."""
-    orgs = Organization.objects.select_related('avatar', 'profile').filter(is_visible=True)
-    # orgs = [{
-    #     'avatar_url': '/v2/images/project_logos/metamask.png',
-    #     'profile': 'metamask',
-    #     'is_hiring': True,
-    # }, {
-    #     'avatar_url': '/v2/images/project_logos/augur.png',
-    #     'profile': 'augur',
-    # }, {
-    #     'avatar_url': '/v2/images/project_logos/augur.png',
-    #     'profile': 'augur',
-    # }, {
-    #     'avatar_url': '/v2/images/project_logos/augur.png',
-    #     'profile': 'augur',
-    # }]
-
     try:
+        all_organizations = Organization.objects.select_related('avatar', 'profile').filter(is_visible=True)
         org = Organization.objects.prefetch_related('user_set').get(github_username__iexact=org_name)
         org_members = org.user_set.all()
-        print('ORG MEMBERS: ', org_members)
     except Organization.DoesNotExist:
         return JsonResponse({'status': 404, 'message': 'Not found.'}, status=404)
 
@@ -61,10 +45,11 @@ def explorer_organzations(request, org_name):
     params = {
         'active': 'organizations',
         'title': _('Organizations Explorer'),
-        'orgs': orgs,
+        'orgs': all_organizations,
         'view_org': org,
         'org_members': org_members,
         'keywords': keywords,
+        'follows_org': follows_org,
     }
 
     return TemplateResponse(request, '_dashboard/organizations.html', params)
