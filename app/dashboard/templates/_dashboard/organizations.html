@@ -116,6 +116,10 @@
         max-width: 40px;
         border-radius: 50%;
       }
+
+      .works_with_list {
+        list-style-type: none;
+      }
     </style>
   </head>
 
@@ -175,7 +179,7 @@
                     </div>
                   {% endif %}
                   <div id="follow" class="button--primary-o tag">
-                    <p>Follow</p>
+                    <p>{% if not follows_org %}Follow{% else %}Unfollow{% endif %}</p>
                   </div>
                 </div>
                 <p class="profile-header__links clearfix mt-1">
@@ -197,13 +201,15 @@
               <div class="col-12 col-md-5 org-members">
                 <p class="font-body boldify mt-4">Members</p>
                   {% if org_members %}
-                    {% for member_user in org_members %}
-                      <li class="works_with_list">
+                    <li class="works_with_list">
+                      {% for member_user in org_members %}
+                      <ul class="pl-0">
                         <a href="{% url 'profile' member_user.username %}">
                           <img src='/dynamic/avatar/{{ member_user.username }}' title="<div class='tooltip-info tooltip-xs'>{{ member_user.username }}</div>">
                         </a>
-                      </li>
+                      </ul>
                     {% endfor %}
+                    </li>
                   {% else %}
                     This organization has no members on Gitcoin.
                   {% endif %}
