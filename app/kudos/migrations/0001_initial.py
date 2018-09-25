@@ -63,7 +63,7 @@ class Migration(migrations.Migration):
                 ('tags', models.CharField(max_length=255, null=True)),
                 ('cloned_from_id', models.IntegerField()),
                 ('owner_address', models.CharField(max_length=255)),
-                ('txid', models.CharField(max_length=255))
+                ('txid', models.CharField(max_length=255, null=True, blank=True))
             ],
             options={
                 'abstract': False,
