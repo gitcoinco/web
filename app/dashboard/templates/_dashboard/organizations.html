@@ -130,7 +130,7 @@
         <h2 class="font-subheader mb-4">{{ orgs|length }} Projects</h2>
         <div class="mx-4 text-left">
           {% for org in orgs %}
-            <a href="{% url "account:explorer_organzations" org.github_username %}" class="org-list mx-1 my-2"></a>
+            <a href="{% url "account:explorer_organzations" org.github_username %}" class="org-list mx-1 my-2">
               <img src="{{ org.avatar_url }}">
               {% if org.is_hiring %}
                 <div class="tag org-hiring">
