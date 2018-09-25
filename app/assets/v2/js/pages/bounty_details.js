@@ -232,7 +232,8 @@ var callbacks = {
     const bountyTokenName = result['token_name'];
     const bountyTokenAmount = token_value_to_display(result['value_in_token'], decimals);
     const dateNow = new Date();
-    const timePeg = timeDifference(dateNow, new Date(result['token_value_time_peg']), false, 60 * 60);
+    const dateTokenValue = new Date(result['token_value_time_peg']);
+    const timePeg = timeDifference(dateNow, dateTokenValue > dateNow ? dateNow : dateTokenValue, false, 60 * 60);
     const usdTagElement = document.querySelector('#value_in_usdt_wrapper');
     const container = document.querySelector('.tags');
 
@@ -255,7 +256,8 @@ var callbacks = {
       const usd = amount * ratio;
       const funding = normalizeAmount(amount, decimals);
       const tokenValue = normalizeAmount(1.0 * ratio, decimals);
-      const timePeg = timeDifference(dateNow, new Date(obj['timestamp']), false, 60 * 60);
+      const timestamp = new Date(obj['timestamp']);
+      const timePeg = timeDifference(dateNow, timestamp > dateNow ? dateNow : timestamp, false, 60 * 60);
       const tooltip = '$' + normalizeAmount(usd, decimals) + ' ' + tokenName + ' in crowdfunding';
 
       leftHtml += '<p class="m-0">+ ' + funding + ' ' + tokenName + '</p>';

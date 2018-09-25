@@ -178,6 +178,10 @@ body {
   display: flex;
 }
 
+.tags-min-width > .tag {
+  min-width: 6rem;
+}
+
 #onboard-footer {
   text-align: center;
   background: #F2F6F9;
