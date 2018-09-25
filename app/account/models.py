@@ -21,7 +21,7 @@ from __future__ import unicode_literals
 
 import logging
 
-from django.contrib.auth.models import Group, Permission, User
+from django.contrib.auth.models import Group, User
 from django.contrib.postgres.fields import ArrayField, JSONField
 from django.db import models
 from django.db.models.signals import post_save
@@ -38,6 +38,42 @@ from taggit.managers import TaggableManager
 logger = logging.getLogger(__name__)
 
 
+class OrganizationQuerySet(models.QuerySet):
+    """Define the Organization queryset and manager behavior."""
+
+    def active(self):
+        """Filter results to Organization objects that are active.
+
+        Returns:
+            models.QuerySet: The active Organization filtered QS.
+
+        """
+        return self.select_related('bounty', 'profile').filter(needs_review=True)
+
+    def is_hiring(self):
+        """Filter results to Organization objects that are hiring.
+
+        Returns:
+            models.QuerySet: The hiring Organization filtered QS.
+
+        """
+        return self.select_related('bounty', 'profile').filter(is_visible=True)
+
+
+    def is_visible(self):
+        """Define the Organization queryset and manager behavior."""
+        pass
+
+    def active(self):
+        """Filter results to Organization objects that are active.
+
+        Returns:
+            models.QuerySet: The active Organization filtered QS.
+
+        """
+        return self.select_related('bounty', 'profile').filter(is_visible=True)
+
+
 class Organization(Group):
     """Define the structure of an Organization."""
 
@@ -50,19 +86,19 @@ class Organization(Group):
     followers = models.ManyToManyField(
         'dashboard.Profile', related_name='organizations_following', verbose_name=_('Followers')
     )
-    gh_repos_data = JSONField(blank=True, default={}, verbose_name=_('Repository Data'))
-    gh_data = JSONField(blank=True, default={}, verbose_name=_('Github Data'))
+    gh_repos_data = JSONField(blank=True, default=dict, verbose_name=_('Repository Data'))
+    gh_data = JSONField(blank=True, default=dict, verbose_name=_('Github Data'))
     gh_members = ArrayField(
         models.CharField(max_length=200),
         blank=True,
-        default=[],
+        default=list,
         help_text=_('comma delimited'),
         verbose_name=_('Github Members')
     )
     gh_admins = ArrayField(
         models.CharField(max_length=200),
         blank=True,
-        default=[],
+        default=list,
         help_text=_('comma delimited'),
         verbose_name=_('Github Administrators')
     )
@@ -75,8 +111,17 @@ class Organization(Group):
     tags = TaggableManager(blank=True, related_name='organization_tags', verbose_name=_('Tags'))
     website_url = models.URLField(blank=True, verbose_name=_('Website'))
     admins = models.ManyToManyField(User, related_name='organizations_owned', verbose_name=_('Administrators'))
-    location = models.CharField(blank=True, max_length=255)
-    profile = models.OneToOneField('dashboard.Profile', blank=True, null=True, on_delete=models.SET_NULL, related_name='org')
+    location = models.CharField(blank=True, max_length=255, verbose_name=_('Location'))
+    profile = models.OneToOneField(
+        'dashboard.Profile',
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name='org',
+        verbose_name=_('Profile'),
+    )
+
+    objects = OrganizationQuerySet.as_manager()
 
     def update_basic_fields(self, org, save=False):
         self.email = org.email if org.email else ''
@@ -156,9 +201,10 @@ class Organization(Group):
         return self.select_related('admins').admins.filter(username__iexact=active_user).exists()
 
     def bounties(self, queryset=None):
+        from dashboard.models import Bounty
         if queryset is None:
             queryset = Bounty.objects.current().network()
-
+        return queryset
 
     @property
     def avatar_url(self):

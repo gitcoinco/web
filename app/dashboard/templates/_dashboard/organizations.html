@@ -130,8 +130,8 @@
         <h2 class="font-subheader mb-4">{{ orgs|length }} Projects</h2>
         <div class="mx-4 text-left">
           {% for org in orgs %}
-            <a href="{% url "account:explorer_organzations" org.profile %}" class="org-list mx-1 my-2"></a>
-              <img src="{% static org.logo %}">
+            <a href="{% url "account:explorer_organzations" org.github_username %}" class="org-list mx-1 my-2"></a>
+              <img src="{{ org.avatar_url }}">
               {% if org.is_hiring %}
                 <div class="tag org-hiring">
                   <p>Hiring</p>
@@ -199,7 +199,7 @@
                   <li class="works_with_list">
                     {% for member_user in org_members %}
                       <a href="{% url 'profile' member_user.username %}">
-                        <img src='/static/avatar/{{ member_user.username }}' title="<div class='tooltip-info tooltip-xs'>{{ member_user.username }}</div>">
+                        <img src='/dynamic/avatar/{{ member_user.username }}' title="<div class='tooltip-info tooltip-xs'>{{ member_user.username }}</div>">
                       </a>
                     {% endfor %}
                   </li>
@@ -243,19 +243,19 @@
     {% include 'shared/footer.html' %}
     {% include 'shared/messages.html' %}
 
-    <script src="/static/v2/js/tokens_dynamic.js"></script>
+    <script src="/dynamic/js/tokens_dynamic.js"></script>
     <script src="{% static "v2/js/tokens.js" %}"></script>
     <script>
-      document.keywords = {{keywords | safe}};
+      document.keywords = {{ keywords|safe }};
     </script>
     <script>
       var open_issues_uri, in_progress_issues_uri;
       if(document.location.href.startsWith('https://gitcoin.co')) {
-        open_issues_uri = 'network=mainnet&idx_status=open&keyword={{ profile }}';
-        in_progress_issues_uri = 'network=mainnet&idx_status=started&keyword={{ profile }}';
+        open_issues_uri = 'network=mainnet&idx_status=open&org={{ profile }}';
+        in_progress_issues_uri = 'network=mainnet&idx_status=started&org={{ profile }}';
       } else {
-        open_issues_uri = 'idx_status=open&keyword={{ profile }}';
-        in_progress_issues_uri = 'idx_status=started&keyword={{ profile }}';
+        open_issues_uri = 'idx_status=open&org={{ profile }}';
+        in_progress_issues_uri = 'idx_status=started&org={{ profile }}';
       }
       fetchBountiesAndAddToList(open_issues_uri, '.featured-bounties');
       fetchBountiesAndAddToList(in_progress_issues_uri, '.profile-bounties--in--progress');

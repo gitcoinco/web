@@ -33,4 +33,6 @@ urlpatterns = (
     path('api/v1/', include(router.urls)),
     re_path(r'^orgs/view/(?P<org_name>\w+)/$', views.explorer_organzations, name='explorer_organzations'),
     path('orgs', views.organizations, name='organizations'),
+    path('orgs/<int:org_handle>/follow', views.follow_organization, name='follow_org'),
+    path('orgs/<int:org_handle>/unfollow', views.unfollow_organization, name='unfollow_org'),
 )

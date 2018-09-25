@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('dashboard', '0105_profile_tags'),
+        ('dashboard', '0110_profile_tags'),
         ('account', '0001_initial'),
     ]
 

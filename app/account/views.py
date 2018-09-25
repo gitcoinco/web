@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
 
-from django.contrib.admin.views.decorators import staff_member_required
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
@@ -29,36 +28,43 @@ from .models import Organization
 logger = logging.getLogger(__name__)
 
 
-@staff_member_required
 def explorer_organzations(request, org_name):
     """Handle displaying the organizations on the explorer."""
-    orgs = [{
-        'logo': '/v2/images/project_logos/metamask.png',
-        'profile': 'metamask',
-        'is_hiring': True,
-    }, {
-        'logo': '/v2/images/project_logos/augur.png',
-        'profile': 'augur',
-    }, {
-        'logo': '/v2/images/project_logos/augur.png',
-        'profile': 'augur',
-    }, {
-        'logo': '/v2/images/project_logos/augur.png',
-        'profile': 'augur',
-    }]
+    orgs = Organization.objects.select_related('avatar', 'profile').filter(is_visible=True)
+    # orgs = [{
+    #     'avatar_url': '/v2/images/project_logos/metamask.png',
+    #     'profile': 'metamask',
+    #     'is_hiring': True,
+    # }, {
+    #     'avatar_url': '/v2/images/project_logos/augur.png',
+    #     'profile': 'augur',
+    # }, {
+    #     'avatar_url': '/v2/images/project_logos/augur.png',
+    #     'profile': 'augur',
+    # }, {
+    #     'avatar_url': '/v2/images/project_logos/augur.png',
+    #     'profile': 'augur',
+    # }]
 
     try:
-        org = Organization.objects.prefetch_related('user_set').get(github_username=org_name)
+        org = Organization.objects.prefetch_related('user_set').get(github_username__iexact=org_name)
         org_members = org.user_set.all()
+        print('ORG MEMBERS: ', org_members)
     except Organization.DoesNotExist:
         return JsonResponse({'status': 404, 'message': 'Not found.'}, status=404)
 
+    profile = getattr(request.user, 'profile', None)
+    if request.user.is_authenticated and profile:
+        follows_org = profile.organizations_following.filter(github_username__iexact=org_name)
+
+    keywords = [keyword.name for keyword in org.tags.all().distinct()]
     params = {
         'active': 'organizations',
         'title': _('Organizations Explorer'),
         'orgs': orgs,
         'view_org': org,
         'org_members': org_members,
+        'keywords': keywords,
     }
 
     return TemplateResponse(request, '_dashboard/organizations.html', params)
@@ -66,19 +72,20 @@ def explorer_organzations(request, org_name):
 
 def organizations(request):
     """Handle displaying the organizations."""
-    orgs = [{
-        'name': 'Metamask',
-        'about': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sollicitudin sapien vitae sapien porttitor euismod. Pellentesque fermentum ligula in risus vulputate, in auctor leo tristique. Fusce sollicitudin enim aliquam nunc',
-        'logo': '/v2/images/project_logos/metamask.png',
-        'profile': 'metamask',
-        'bounty_count': 2,
-    }, {
-        'name': 'Angur',
-        'about': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sollicitudin sapien vitae sapien porttitor euismod. Pellentesque fermentum ligula in risus vulputate, in auctor leo tristique. Fusce sollicitudin enim aliquam nunc',
-        'logo': '/v2/images/project_logos/augur.png',
-        'profile': 'augur',
-        'bounty_count': 4,
-    }]
+    orgs = Organization.objects.select_related('avatar', 'profile').filter(is_visible=True)
+    # orgs = [{
+    #     'name': 'Metamask',
+    #     'about': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sollicitudin sapien vitae sapien porttitor euismod. Pellentesque fermentum ligula in risus vulputate, in auctor leo tristique. Fusce sollicitudin enim aliquam nunc',
+    #     'logo': '/v2/images/project_logos/metamask.png',
+    #     'profile': 'metamask',
+    #     'bounty_count': 2,
+    # }, {
+    #     'name': 'Angur',
+    #     'about': 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean sollicitudin sapien vitae sapien porttitor euismod. Pellentesque fermentum ligula in risus vulputate, in auctor leo tristique. Fusce sollicitudin enim aliquam nunc',
+    #     'logo': '/v2/images/project_logos/augur.png',
+    #     'profile': 'augur',
+    #     'bounty_count': 4,
+    # }]
 
     params = {
         'active': 'organizations',
@@ -88,3 +95,42 @@ def organizations(request):
     }
     return TemplateResponse(request, 'organizations.html', params)
 
+
+def follow_organization(request, org_handle='', org_id=None):
+    """Follow an Organization."""
+    org_kwargs = {}
+
+    if not request.user.is_authenticated or not getattr(request.user, 'profile', None):
+        return JsonResponse({'status': 404, 'message': _('You must be authenticated to follow an organization!')}, status=404)
+    try:
+        if org_handle:
+            org_kwargs['github_username'] = org_handle
+        if org_id:
+            org_kwargs['id'] = org_id
+        org = Organization.objects.filter(**org_kwargs)
+    except Organization.DoesNotExist:
+        return JsonResponse({'status': 404, 'message': _('Organization not found.')}, status=404)
+
+    org.followers.add(request.user.profile)
+
+    return JsonResponse({'status': 404, 'message': _('An exception occurred.  Please try again.')}, status=404)
+
+
+def unfollow_organization(request, org_handle='', org_id=None):
+    """Unfollow an Organization."""
+    org_kwargs = {}
+
+    if not request.user.is_authenticated or not getattr(request.user, 'profile', None):
+        return JsonResponse({'status': 404, 'message': _('You must be authenticated to follow an organization!')}, status=404)
+    try:
+        if org_handle:
+            org_kwargs['github_username'] = org_handle
+        if org_id:
+            org_kwargs['id'] = org_id
+        org = Organization.objects.filter(**org_kwargs)
+    except Organization.DoesNotExist:
+        return JsonResponse({'status': 404, 'message': _('Organization not found.')}, status=404)
+
+    org.followers.remove(request.user.profile)
+
+    return JsonResponse({'status': 404, 'message': _('An exception occurred.  Please try again.')}, status=404)

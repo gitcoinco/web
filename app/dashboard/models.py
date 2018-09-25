@@ -281,6 +281,7 @@ class Bounty(SuperModel):
         default=False, help_text=_('Admin override to mark as remarketing ready')
     )
     attached_job_description = models.URLField(blank=True, null=True)
+    tags = TaggableManager(blank=True, related_name='bounty_tags')
 
     # Bounty QuerySet Manager
     objects = BountyQuerySet.as_manager()

@@ -16,11 +16,11 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('avatar', '0002_auto_20180627_0512'),
+        ('avatar', '0003_auto_20180903_2005'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
         ('auth', '0009_alter_user_last_name_max_length'),
         ('taggit', '0002_auto_20150616_2121'),
-        ('dashboard', '0099_auto_20180723_1539'),
+        ('dashboard', '0110_profile_tags'),
     ]
 
     operations = [

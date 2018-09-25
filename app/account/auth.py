@@ -49,7 +49,7 @@ class GithubOAuth2(SocialGithubOAuth2):
 
         social_auth = user.social_auth.filter(provider=self.name).first()
         additional_scope = self._check_additional_scope(social_auth)
-        if additional_scope.get(READ_ORG_SCOPE):
+        if additional_scope.get(self.READ_ORG_SCOPE):
             pass
 
         if self._has_additional_scope(social_auth):
