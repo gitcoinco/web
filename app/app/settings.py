@@ -597,7 +597,7 @@ IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='https')
 
 STABLE_COINS = ['DAI', 'USDT', 'TUSD']
 
-BLOCKED_USERS = env('BLOCKED_USERS', default=[]) 
+BLOCKED_USERS = env('BLOCKED_USERS', default=[])
 
 
 # Silk Profiling and Performance Monitoring

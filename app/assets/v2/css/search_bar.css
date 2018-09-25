@@ -11,13 +11,13 @@
   bottom: 2px;
 }
 
-.save_search,
 .order_by {
   color: #000;
-  font-family: 'Muli', sans-serif;
   font-weight: 600;
   position: relative;
   bottom: 2px;
+  margin-top: 26px;
+  text-align: right;
 }
 
 .search-area,
@@ -29,11 +29,6 @@
 .search-area {
   position: relative;
   margin-top: 15px;
-}
-
-.order_by {
-  margin-top: 26px;
-  text-align: right;
 }
 
 .order_by .heading {

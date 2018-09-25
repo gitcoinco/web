@@ -246,6 +246,7 @@ class Bounty(SuperModel):
     idx_project_length = models.IntegerField(default=0, db_index=True)
     idx_status = models.CharField(max_length=9, choices=STATUS_CHOICES, default='open', db_index=True)
     issue_description = models.TextField(default='', blank=True)
+    funding_organisation = models.CharField(max_length=255, default='', blank=True)
     standard_bounties_id = models.IntegerField(default=0)
     num_fulfillments = models.IntegerField(default=0)
     balance = models.DecimalField(default=0, decimal_places=2, max_digits=50)
@@ -2022,7 +2023,7 @@ class Profile(SuperModel):
     def get_orgs_bounties(self, network=None):
         network = network or self.get_network()
         url = f"https://github.com/{self.handle}"
-        bounties = Bounty.objects.current().filter(network=network, github_url__contains=url)
+        bounties = Bounty.objects.current().filter(network=network, github_url__icontains=url)
         return bounties
 
     def get_leaderboard_index(self, key='quarterly_earners'):

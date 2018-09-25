@@ -1,6 +1,5 @@
 
 #main {
-  font-family: 'Muli', sans-serif;
   max-width: 100%;
   min-width: 27em;
   padding: 4.5em 3em 3em 3em;
@@ -27,12 +26,10 @@
 }
 
 #main #ens_subdomain h1 {
-  font-family: 'Muli', sans-serif;
   letter-spacing: 0;
 }
 
 #main #ens_subdomain h2 {
-  font-family: 'Muli', sans-serif;
   text-transform: none;
 }
 

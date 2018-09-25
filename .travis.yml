@@ -19,17 +19,6 @@ cache:
     - $HOME/.cache/pip
     - node_modules
 
-deploy:
-  provider: pages
-  skip-cleanup: true
-  github-token: $GITHUB_TOKEN
-  keep-history: true
-  local-dir: _build/site
-  fqdn: docs.gitcoin.co
-  target-branch: gh-pages
-  on:
-    branch: master
-
 jobs:
   include:
     # Lint and test the repository.
@@ -54,6 +43,16 @@ jobs:
       env:
         - PYTHONPATH="${TRAVIS_BUILD_DIR}/app/"
         - DJANGO_SETTINGS_MODULE="app.settings"
+      deploy:
+        provider: pages
+        skip-cleanup: true
+        github-token: $GITHUB_TOKEN
+        keep-history: true
+        local-dir: _build/site
+        fqdn: docs.gitcoin.co
+        target-branch: gh-pages
+        on:
+          branch: master
     # Deploy to Docker Hub and initiate a rolling update for web.
     - stage: deploy-stage
       if: branch = master AND NOT type = pull_request

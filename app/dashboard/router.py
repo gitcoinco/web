@@ -89,22 +89,17 @@ class BountySerializer(TaggitSerializer, serializers.HyperlinkedModelSerializer)
 
         model = Bounty
         fields = (
-            'url', 'created_on', 'modified_on', 'title', 'web3_created',
-            'value_in_token', 'token_name', 'token_address',
-            'bounty_type', 'project_length', 'experience_level',
-            'github_url', 'github_comments', 'bounty_owner_address',
-            'bounty_owner_email', 'bounty_owner_github_username', 'bounty_owner_name',
-            'fulfillments', 'interested', 'is_open', 'expires_date', 'activities',
-            'keywords', 'current_bounty', 'value_in_eth',
-            'token_value_in_usdt', 'value_in_usdt_now', 'value_in_usdt', 'status', 'now',
-            'avatar_url', 'value_true', 'issue_description', 'network',
-            'org_name', 'pk', 'issue_description_text',
-            'standard_bounties_id', 'web3_type', 'can_submit_after_expiration_date',
-            'github_issue_number', 'github_org_name', 'github_repo_name',
-            'idx_status', 'token_value_time_peg', 'fulfillment_accepted_on', 'fulfillment_submitted_on',
-            'fulfillment_started_on', 'canceled_on', 'action_urls',
-            'project_type', 'permission_type', 'attached_job_description', 'needs_review', 'github_issue_state',
-            'is_issue_closed', 'additional_funding_summary', 'tags', 'paid',
+            'url', 'created_on', 'modified_on', 'title', 'web3_created', 'value_in_token', 'token_name',
+            'token_address', 'bounty_type', 'project_length', 'experience_level', 'github_url', 'github_comments',
+            'bounty_owner_address', 'bounty_owner_email', 'bounty_owner_github_username', 'bounty_owner_name',
+            'fulfillments', 'interested', 'is_open', 'expires_date', 'activities', 'keywords', 'current_bounty',
+            'value_in_eth', 'token_value_in_usdt', 'value_in_usdt_now', 'value_in_usdt', 'status', 'now', 'avatar_url',
+            'value_true', 'issue_description', 'network', 'org_name', 'pk', 'issue_description_text',
+            'standard_bounties_id', 'web3_type', 'can_submit_after_expiration_date', 'github_issue_number',
+            'github_org_name', 'github_repo_name', 'idx_status', 'token_value_time_peg', 'fulfillment_accepted_on',
+            'fulfillment_submitted_on', 'fulfillment_started_on', 'canceled_on', 'action_urls', 'project_type',
+            'permission_type', 'attached_job_description', 'needs_review', 'github_issue_state', 'is_issue_closed',
+            'additional_funding_summary', 'funding_organisation', 'tags', 'paid',
         )
 
     def create(self, validated_data):
@@ -209,7 +204,7 @@ class BountyViewSet(viewsets.ModelViewSet):
         if 'org' in param_keys:
             org = self.request.query_params.get('org')
             url = f"https://github.com/{org}"
-            queryset = queryset.filter(github_url__contains=url)
+            queryset = queryset.filter(github_url__icontains=url)
 
         # Retrieve all fullfilled bounties by fulfiller_username
         if 'fulfiller_github_username' in param_keys:
