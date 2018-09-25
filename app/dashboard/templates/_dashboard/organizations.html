@@ -196,13 +196,17 @@
               </div>
               <div class="col-12 col-md-5 org-members">
                 <p class="font-body boldify mt-4">Members</p>
-                  <li class="works_with_list">
+                  {% if org_members %}
                     {% for member_user in org_members %}
-                      <a href="{% url 'profile' member_user.username %}">
-                        <img src='/dynamic/avatar/{{ member_user.username }}' title="<div class='tooltip-info tooltip-xs'>{{ member_user.username }}</div>">
-                      </a>
+                      <li class="works_with_list">
+                        <a href="{% url 'profile' member_user.username %}">
+                          <img src='/dynamic/avatar/{{ member_user.username }}' title="<div class='tooltip-info tooltip-xs'>{{ member_user.username }}</div>">
+                        </a>
+                      </li>
                     {% endfor %}
-                  </li>
+                  {% else %}
+                    This organization has no members on Gitcoin.
+                  {% endif %}
               </div>
             </div>
           </div>

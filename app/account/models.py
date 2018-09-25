@@ -206,7 +206,7 @@ class Organization(Group):
     def bounties(self, queryset=None):
         from dashboard.models import Bounty
         if queryset is None:
-            queryset = Bounty.objects.current().network()
+            queryset = Bounty.objects.current().filter(github_url__icontains=self.github_username)
         return queryset
 
     @property
@@ -219,6 +219,14 @@ class Organization(Group):
             self.avatar.pull_github_avatar(handle=self.github_username, is_org=True)
             self.avatar.save()
         return self.avatar.avatar_url
+
+    @property
+    def current_bounties(self):
+        return self.bounties()
+
+    @property
+    def bounty_count(self):
+        return self.bounties().count()
 
     def to_dict(self, active_user=None):
         """Provide a dictionary representation of the Organization.
@@ -239,6 +247,7 @@ class Organization(Group):
             'website_url': self.website_url,
             'location': self.location,
             'email': self.email,
+            'bounty_count': self.bounty_count,
         }
         if active_user:
             org_dict['is_member'] = self.is_member(active_user)
