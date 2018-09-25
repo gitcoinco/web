@@ -2173,10 +2173,14 @@ class Profile(SuperModel):
         works_with_org = []
         count_bounties_on_repo = 0
         sum_eth_on_repos = 0
+        gh_members = []
+        gh_admins = []
         if self.is_org:
             works_with_org = self.get_who_works_with(work_type='org', **query_kwargs)
             count_bounties_on_repo = self.get_orgs_bounties(network=network).count()
             sum_eth_on_repos = self.get_eth_sum(sum_type='org', **query_kwargs)
+            gh_members = self.org.gh_members
+            gh_admins = self.org.gh_admins
 
         no_times_been_removed = self.no_times_been_removed_by_funder() + self.no_times_been_removed_by_staff() + self.no_times_slashed_by_staff()
         params = {
@@ -2199,6 +2203,9 @@ class Profile(SuperModel):
             'sum_eth_on_repos': sum_eth_on_repos,
             'works_with_org': works_with_org,
             'count_bounties_on_repo': count_bounties_on_repo,
+            'gh_admins': gh_admins,
+            'gh_members': gh_members,
+            'org': self.org if hasattr(self, 'org') else None
         }
 
         if activities:

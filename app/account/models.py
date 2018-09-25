@@ -128,22 +128,24 @@ class Organization(Group):
         self.name = org.name if org.name else ''
         self.github_username = org.login if org.login else ''
         self.website_url = org.blog if org.blog else ''
-        self.gh_data = org.raw_data if org.raw_data else ''
-        self.location = org.location if org.location else ''
+        self.gh_data = org.raw_data if org.raw_data else {}
+        self.location = org.location if hasattr(org, 'location') else ''
+        self.description = self.gh_data.get('description', '')
         if save:
             self.save()
 
     def check_profile(self):
         """Check whether or not a Profile exists matching the Organization name."""
-        try:
-            profile = Profile.objects.get(handle=self.github_username)
-            self.profile = profile
-            self.save()
-            return profile
-        except Profile.DoesNotExist:
-            return None
-        except Exception as e:
-            logger.error(e)
+        if not hasattr(self, 'profile'):
+            try:
+                profile = Profile.objects.get(handle=self.github_username)
+                self.profile = profile
+                self.save()
+                return profile
+            except Profile.DoesNotExist:
+                return None
+            except Exception as e:
+                logger.error(e)
 
     def sync_github(self, token=None, created=False):
         gh_client = github_connect(token)
@@ -169,6 +171,7 @@ class Organization(Group):
                 pass
             self.gh_members.append(member.name)
         self.update_basic_fields(org, save=True)
+        self.check_profile()
         return org
 
     def get_issues(self, state='open', issue_filter=None, labels=None, token=None):

@@ -52,7 +52,7 @@
             <p>{% trans "Hiring" %}</p>
           </div>
           {% endif %}
-          {% if user.username|is_in_list:profile.org.gh_members %}
+          {% if user.username in profile.gh_members %}
           <span class="ml-2 mr-1 font-weight-300">{% trans "Hiring" %}</span>
           <label class="switch mt-2">
             <input type="checkbox">
@@ -116,12 +116,11 @@
     <div class="col col-lg-11 my-5 about">
       <h3 class="font-subheader">
         The Project
-        <!-- TODO : Check if org owner is logged in -->
+        {% if user in profile.org.admins.all %}
         <i class="fas fa-edit ml-2"></i>
-        <!-- END TODO-->
+        {% endif %}
       </h3>
-      <p class="font-body">{{ org.description }}</p>
-      <!-- TODO : Add button to save updated text --> <!-- END TODO-->
+      <p class="font-body">{{ profile.org.description }}</p>
     </div>
   </div>
 </div>

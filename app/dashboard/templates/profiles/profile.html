@@ -254,7 +254,7 @@
         }
         {% if profile.is_org %}
           // Fetch bounties user is fulfiller
-          fetchBountiesAndAddToList('network=mainnet&org={{ profile.handle }}', '.profile-bounties--all');
+          fetchBountiesAndAddToList('network=mainnet&org={{ profile.org.github_username }}', '.profile-bounties--all');
           $('.profile-bounties--in-progress').parents('.container').remove();
           $('.profile-bounties--funded').parents('.container').remove();
           $('.profile-bounties--completed').parents('.container').remove();

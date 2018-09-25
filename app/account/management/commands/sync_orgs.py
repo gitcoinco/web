@@ -34,4 +34,4 @@ class Command(BaseCommand):
 
         for org in organizations:
             print('Syncing Organization: ', org.github_username.title())
-            org.sync_github()
+            org.sync_github(created=True)
