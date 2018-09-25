@@ -1146,7 +1146,7 @@ function hideBusyOverlay() {
   }
 }
 
-function toggleExpandableBounty(evt) {
+function toggleExpandableBounty(evt, selector) {
   evt.preventDefault();
 
   if (evt.target.id === 'expanded') {
@@ -1155,7 +1155,7 @@ function toggleExpandableBounty(evt) {
     evt.target.id = 'expanded';
   }
 
-  var container = evt.target.parentElement.parentElement.parentElement.querySelector('.expandable');
+  var container = document.body.querySelector(selector).querySelector('.expandable');
 
   if (container) {
     if (container.id === 'expanded') {

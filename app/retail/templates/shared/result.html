@@ -1,7 +1,7 @@
 {% load static i18n %}
 <!-- JSRender stuff -->
 <script id="result" type="text/x-jsrender">
-<div class="row result bounty_row [[if hidden]]bounty_row--hidden[[/if]] [[:network]]" href="[[:action]]">
+<div class="row result bounty_row [[if hidden]]bounty_row--hidden[[/if]] [[:network]] i[[:standard_bounties_id]]" href="[[:action]]">
   [[if avatar_url]]
     <div class="avatar-container col-1 justify-content-center hide_min_viewport">
       <img src='[[:avatar_url]]' class='avatar'>
@@ -29,8 +29,8 @@
       </div>
     </div>
   </div>
-  <div class="col-12 col-md-3 font-caption align-items-center">
-    <div class="tags row mr-1 tags-min-width">
+  <div class="col-12 col-md-3 font-caption">
+    <div class="tags fixed">
       [[if network != 'mainnet']]
         <div class="tag network_warning">
           <p>
@@ -55,6 +55,9 @@
             <img class="m-0" style="position: relative; top: -2px;" src="{% static 'v2/images/coin.svg' %}">
           [[/if]]
         </p>
+        [[if tokens]]
+          <a href="" onclick="toggleExpandableBounty(event, '.[[:network]].i[[:standard_bounties_id]]')">{% trans 'See All' %}   <i class="fa fa-angle-down arrow"></i></a>
+        [[/if]]
       </div>
       [[if value_in_usdt]]
         <div class="tag usd">
@@ -65,14 +68,9 @@
         </div>
       [[/if]]
       </div>
-      [[if tokens]]
-        <div class="row">
-          <a class="ml-4" href="" onclick="toggleExpandableBounty(event)">{% trans 'See All' %}   <i class="fa fa-angle-down arrow"></i></a>
-        </div>
-      [[/if]]
     </div>
     [[if tokens]]
-      <div class="row col-12 tags expandable funding">
+      <div class="col-md-12 tags expandable funding">
         <div class="placeholder">
           <span class="text-highlight-gc-purple m-0 uppercase middle">{% trans 'Funding' %}</span>
         </div>

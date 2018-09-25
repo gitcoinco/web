@@ -178,8 +178,9 @@ body {
   display: flex;
 }
 
-.tags-min-width > .tag {
-  min-width: 6rem;
+.tags.fixed {
+  float: right;
+  padding-bottom: 1rem;
 }
 
 #onboard-footer {
