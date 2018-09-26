@@ -24,6 +24,9 @@ var bounty_address = function() {
   }
 };
 
+
+
+
 var etherscan_tx_url = function(txid) {
   switch (document.web3network) {
     case 'mainnet':
