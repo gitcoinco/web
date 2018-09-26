@@ -410,6 +410,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'contract_address': bounty_details.get('token'),
                 'network': bounty_details.get('network'),
                 'bounty_type': metadata.get('bountyType', ''),
+                'funding_organisation': metadata.get('fundingOrganisation', ''),
                 'project_length': metadata.get('projectLength', ''),
                 'experience_level': metadata.get('experienceLevel', ''),
                 'project_type': bounty_payload.get('schemes', {}).get('project_type', 'traditional'),
@@ -428,7 +429,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     'project_length', 'experience_level', 'project_type', 'permission_type', 'attached_job_description',
                     'bounty_owner_github_username', 'bounty_owner_address', 'bounty_owner_email', 'bounty_owner_name',
                     'github_comments', 'override_status', 'last_comment_date', 'snooze_warnings_for_days',
-                    'admin_override_and_hide', 'admin_override_suspend_auto_approval', 'admin_mark_as_remarket_ready'
+                    'admin_override_and_hide', 'admin_override_suspend_auto_approval', 'admin_mark_as_remarket_ready',
+                    'funding_organisation'
                 ],
             )
             bounty_kwargs.update(latest_old_bounty_dict)
