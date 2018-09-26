@@ -324,18 +324,30 @@ def send_3(request):
         'message': _('Kudos Created'),
     }
 
+    is_user_authenticated = request.user.is_authenticated
+    from_username = request.user.username if is_user_authenticated else ''
+    primary_from_email = request.user.email if is_user_authenticated else ''
+    access_token = request.user.profile.get_access_token() if is_user_authenticated else ''
+    to_emails = []
+
     params = json.loads(request.body)
 
-    from_username = request.user.username
-    from_email = get_primary_from_email(params, request)
-
     to_username = params['username'].lstrip('@')
-    to_emails = get_to_emails(params)
+    to_emails = get_emails_master(to_username)
+
+    if params.get('email'):
+        to_emails.append(params['email'])
+
+    # If no primary email in session, try the POST data. If none, fetch from GH.
+    if params.get('fromEmail'):
+        primary_from_email = params['fromEmail']
+    elif access_token and not primary_from_email:
+        primary_from_email = get_github_primary_email(access_token)
+
+    to_emails = list(set(to_emails))
 
     # Validate that the token exists on the back-end
     kudos_token_cloned_from = Token.objects.filter(name=params['kudosName'], num_clones_allowed__gt=0).first()
-    # logger.info(f'kudos_token_cloned_from name: {kudos_token_cloned_from.name}')
-    # logger.debug(f'kudos_token_cloned_from detail: {model_to_dict(kudos_token_cloned_from.name)}')
     # db mutations
     kudos_transfer = KudosTransfer.objects.create(
         emails=to_emails,
@@ -346,7 +358,7 @@ def send_3(request):
         ip=get_ip(request),
         github_url=params['github_url'],
         from_name=params['from_name'],
-        from_email=from_email,
+        from_email=params['from_email'],
         from_username=from_username,
         username=params['username'],
         network=params['network'],
