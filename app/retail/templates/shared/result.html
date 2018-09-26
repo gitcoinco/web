@@ -13,6 +13,9 @@
   [[/if]]
   <div class="col-12 col-md-8 d-flex flex-column">
     <div class="bounty-detail">
+      [[if attached_job_description != null && attached_job_description != '']]
+        <div class="hiring"></div>
+      [[/if]]
       <div class="title font-subheader">
         [[:title]]
       </div>
@@ -37,14 +40,6 @@
             <span>[[:network]]</span>
           </p>
         </div>
-      [[else]]
-        [[if attached_job_description != null && attached_job_description != '']]
-        <div class="tag hiring">
-          <p>
-            <span>Hiring</span>
-          </p>
-        </div>
-        [[/if]]
       [[/if]]
       <div class="tag token">
         <p>
