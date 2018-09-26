@@ -39,7 +39,7 @@
       <button id="" data-request="mykudos" data-page="2" class="btn btn-gc-blue mb-5 load-more">See More Kudos</button>
       {% endif %}
     </div>
-    {% if kudos.count < 1 %}
+    {% if not kudos %}
     <div class="text-center">
       <h2 class="mb-4">What is Kudos?</h2>
       <div class="mb-5">
@@ -60,7 +60,7 @@
       <button id="" data-request="sentkudos" data-page="2" class="btn btn-gc-blue mb-5 load-more">See More s Kudos</button>
       {% endif %}
     </div>
-    {% if sent_kudos.count < 1 %}
+    {% if not sent_kudos %}
     <div class="text-center">
       <h2 class="mb-4">What is Kudos?</h2>
       <div class="mb-5">
