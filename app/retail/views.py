@@ -761,6 +761,11 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
                      'title': _('How to Price Work on Gitcoin'),
                  },
                  {
+                     'img': 'https://raw.githubusercontent.com/Anish-Agnihotri/Gitcoin-Exemplars/master/helpImage.png',
+                     'url': 'https://github.com/Anish-Agnihotri/gitcoin-exemplars',
+                     'title': _('Exemplars for Writing A Good Bounty Description'),
+                 },
+                 {
                      'img': static('v2/images/help/tools.png'),
                      'url': 'https://medium.com/gitcoin/tutorial-post-a-bounty-in-90-seconds-a7d1a8353f75',
                      'title': _('Post a Bounty in 90 Seconds'),
