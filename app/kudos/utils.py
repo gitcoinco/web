@@ -176,6 +176,7 @@ class KudosContract:
             logger.info('Removing Kudos orphan with ID: {orphan.id}')
         orphans.delete()
 
+    @retry
     def sync_db(self, kudos_id, txid):
         # Handle the dummy Kudos
         if kudos_id == 0:
@@ -221,7 +222,7 @@ class KudosContract:
         if self.network == 'mainnet':
             return to_checksum_address('')
         elif self.network == 'ropsten':
-            return to_checksum_address('0x179e53b5172c0da9721d8e614bd32c34b90aff5d')
+            return to_checksum_address('0xcd520707fc68d153283d518b29ada466f9091ea8')
         elif self.network == 'rinkeby':
             return to_checksum_address('0x0b9bFF2c5c7c85eE94B48D54F2C6eFa1E399380D')
         else:
