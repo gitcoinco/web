@@ -58,9 +58,6 @@ class Command(BaseCommand):
         private_key = options['private_key']
 
         kudos_contract = KudosContract(network=network)
-        hour = datetime.datetime.now().hour
-        day = datetime.datetime.now().day
-        month = datetime.datetime.now().month
 
         yaml_file = options['yaml_file']
 
@@ -78,6 +75,4 @@ class Command(BaseCommand):
                     kudos['numClonesAllowed'], kudos['tags'], image_path,
                     )
 
-            # If the mint fails, retry it 3 times.  Because Infura.
-            kudos_id = kudos_contract.mint(*args, account=account, private_key=private_key)
-        kudos_contract.reconcile_db(start_id=kudos_id)
+            kudos_contract.mint(*args, account=account, private_key=private_key)

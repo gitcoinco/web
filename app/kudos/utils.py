@@ -156,24 +156,27 @@ class KudosContract:
         return wrapper
 
     @retry
-    def reconcile_db(self, start_id=1):
+    def remove_kudos_orphans_db(self):
         """Sync up existing kudos from the blockchain to the database.
 
         Then remove all "orphaned Kudos" from the database.
         """
 
         latest_id = self._contract.functions.totalSupply().call()
-        if start_id == latest_id:
-            return False
-        for kudos_id in range(start_id, latest_id + 1):
-            # Try to link up any kudos_token and kudos_transfer objects
-            # kudos_transfer = KudosTransfer.objects.get(pk=kudos_id)
-            self.sync_db(kudos_id=kudos_id)
+        # if start_id == latest_id:
+        #     return False
+        # for kudos_id in range(start_id, latest_id + 1):
+        #     # Try to link up any kudos_token and kudos_transfer objects
+        #     # kudos_transfer = KudosTransfer.objects.get(pk=kudos_id)
+        #     self.sync_db(kudos_id=kudos_id)
 
         # Remove orphaned Kudos in the database
-        Token.objects.filter(pk__gt=latest_id).delete()
+        orphans = Token.objects.filter(pk__gt=latest_id)
+        for orphan in orphans:
+            logger.info('Removing Kudos orphan with ID: {orphan.id}')
+        orphans.delete()
 
-    def sync_db(self, kudos_id, txid=None, gen0=False):
+    def sync_db(self, kudos_id, txid):
         # Handle the dummy Kudos
         if kudos_id == 0:
             return False
@@ -182,29 +185,30 @@ class KudosContract:
         kudos = self.getKudosById(kudos_id, to_dict=True)
         kudos['owner_address'] = self._contract.functions.ownerOf(kudos_id).call()
 
-        # Update an existing Kudos in the database
-        if Token.objects.filter(pk=kudos_id).exists():
-            kudos_token = Token(pk=kudos_id, **kudos)
-            kudos_token.save(update_fields=list(kudos.keys()))
-        # Add a new Kudos to the database.  Require txid so we can link to kudos_transfer table.
+        # # Update an existing Kudos in the database
+        # if Token.objects.filter(pk=kudos_id).exists():
+        #     if txid:
+        #         kudos['txid'] = txid
+        #     kudos_token = Token(pk=kudos_id, **kudos)
+        #     kudos_token.save(update_fields=list(kudos.keys()))
+        # # Add a new Kudos to the database.  Require txid so we can link to kudos_transfer table.
+        # else:
+        #     if not txid:
+        #         raise ValueError('Must provide a txid when syncing a new Kudos.')
+        kudos['txid'] = txid
+        kudos_token = Token(pk=kudos_id, **kudos)
+        kudos_token.save()
+        # Find the object which matches the kudos that was just cloned
+        try:
+            kudos_transfer = KudosTransfer.objects.get(receive_txid=txid)
+        except KudosTransfer.DoesNotExist:
+            # Only warn for a Kudos that is cloned/transfered, not a Gen0 Kudos.
+            if kudos_token.num_clones_allowed == 0:
+                logger.warning(f'No KudosTransfer object found for Kudos ID {kudos_id}')
         else:
-            if not txid:
-                logger.warning('No txid provided for Kudos.')
-            # elif not txid and not gen0:
-            #     raise ValueError('Must provide a txid when syncing a new Kudos.')
-            kudos['txid'] = txid
-            kudos_token = Token(pk=kudos_id, **kudos)
-            kudos_token.save()
-            # Find the object which matches the kudos that was just cloned
-            try:
-                kudos_transfer = KudosTransfer.objects.get(receive_txid=txid)
-            except KudosTransfer.DoesNotExist:
-                if not gen0:
-                    logger.warning(f'No KudosTransfer object found for Kudos ID {kudos_id}')
-            else:
-                # Store the foreign key reference
-                kudos_transfer.kudos_token = kudos_token
-                kudos_transfer.save()
+            # Store the foreign key reference
+            kudos_transfer.kudos_token = kudos_token
+            kudos_transfer.save()
 
         logger.info(f'Synced id #{kudos_token.id}, "{kudos_token.name}" kudos to the database.')
 
@@ -297,10 +301,10 @@ class KudosContract:
 
         name = args[0]
         if self.gen0_exists_web3(name):
-            logger.warning(f'The "{name}" Gen0 Kudos already exists on the blockchain.  Updating db...')
-            kudos_id = self.getGen0TokenId(name)
-            self.sync_db(kudos_id=kudos_id, gen0=True)
-            return kudos_id
+            logger.warning(f'The "{name}" Gen0 Kudos already exists on the blockchain.  Not minting.')
+            # kudos_id = self.getGen0TokenId(name)
+            # self.sync_db(kudos_id=kudos_id)
+            return False
 
         if private_key:
             logger.debug('Private key found, creating raw transaction for Kudos mint...')
@@ -320,7 +324,7 @@ class KudosContract:
         kudos_id = self.getGen0TokenId(name)
         logger.info(f'Minted id #{kudos_id}, "{name}" kudos on the blockchain.')
 
-        self.sync_db(kudos_id=kudos_id, txid=tx_hash.hex(), gen0=True)
+        self.sync_db(kudos_id=kudos_id, txid=tx_hash.hex())
 
         return kudos_id
 

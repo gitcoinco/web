@@ -18,6 +18,7 @@
 
 import logging
 import time
+import json
 
 from django.core.management.base import BaseCommand
 
@@ -29,6 +30,7 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 logging.getLogger("web3").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
+
 
 class Command(BaseCommand):
     help = 'listens for kudos changes '
@@ -55,50 +57,67 @@ class Command(BaseCommand):
         # kudos_contract = getKudosContract(network)
         last_block_hash = None
 
+        # logger.info(dir(kudos_contract))
+
+        event_filter = kudos_contract._contract.events.Transfer.createFilter(fromBlock='latest')
         while True:
-            # wait for a new block
-            # logger.info(f'block: {block}')
-            block = w3.eth.getBlock('latest')
-            block_hash = block['hash']
-            block_number = block['number']
+            for event in event_filter.get_new_entries():
+                msg = dict(blockNumber=event.blockNumber,
+                           _tokenId=event.args._tokenId,
+                           transactionHash=event.transactionHash.hex()
+                           )
+                logger.info(f'Transfer event:  {msg}')
+                if logger.isEnabledFor(logging.DEBUG):
+                    logger.debug(f'Raw Transfer event: {event}')
+                kudos_contract._w3.eth.waitForTransactionReceipt(msg['transactionHash'])
+                logger.debug(f"Tx hash: {msg['transactionHash']}")
+                kudos_contract.sync_db(kudos_id=msg['_tokenId'], txid=msg['transactionHash'])
+            time.sleep(1)
 
-            # logger.info(f'last_block_hash: {last_block_hash}')
-            # logger.info(f'block_hash: {block_hash}')
-            if last_block_hash == block_hash:
-                time.sleep(1)
-                continue
+        # while True:
+        #     # wait for a new block
+        #     # logger.info(f'block: {block}')
+        #     block = w3.eth.getBlock('latest')
+        #     block_hash = block['hash']
+        #     block_number = block['number']
 
-            logger.info('got new block %s' % w3.toHex(block_hash))
-            logger.info(f'block id: {block_number}')
+        #     # logger.info(f'last_block_hash: {last_block_hash}')
+        #     # logger.info(f'block_hash: {block_hash}')
+        #     if last_block_hash == block_hash:
+        #         time.sleep(1)
+        #         continue
 
-            # get txs
-            transactions = block['transactions']
-            for tx in transactions:
-                tx = w3.eth.getTransaction(tx)
-                if not tx or tx['to'] != kudos_contract.address:
-                    continue
+        #     logger.info('got new block %s' % w3.toHex(block_hash))
+        #     logger.info(f'block id: {block_number}')
 
-                logger.info('found a kudos tx')
-                # logger.info(dir(tx))
-                # logger.info(tx.keys())
-                data = tx['input']
-                method_id = data[:10]
-                logger.info(f'method_id:  {method_id}')
+        #     # get txs
+        #     transactions = block['transactions']
+        #     for tx in transactions:
+        #         tx = w3.eth.getTransaction(tx)
+        #         if not tx or tx['to'] != kudos_contract.address:
+        #             continue
 
-                # Check if its a Clone or cloneAndTransfer function call
-                if method_id == '0xdaa6eb1d' or method_id == '0x8a94e433':
-                    kudos_id = kudos_contract._contract.functions.totalSupply().call()
-                    kudos_contract.sync_db(kudos_id=kudos_id, txid=tx['hash'].hex())
-                    # # Get the kudos_id of the newly cloned Kudos
-                    # kudos_id = kudos_contract.functions.totalSupply().call()
-                    # # Update the database with the newly cloned Kudos
-                    # update_kudos_db(kudos_id, network)
-                    # # Find the name of the Kudos that was cloned
-                    # kudos = get_kudos_from_web3(kudos_id, network)
-                    # kudos_map = get_kudos_map(kudos)
-                    # # Find the ID of the Gen0 Kudos that was cloned
-                    # gen0_id = get_gen0_id_from_web3(kudos_map['name'], network)
-                    # # Update the Gen0 Kudos in the database
-                    # update_kudos_db(gen0_id, network)
+        #         logger.info('found a kudos tx')
+        #         # logger.info(dir(tx))
+        #         # logger.info(tx.keys())
+        #         data = tx['input']
+        #         method_id = data[:10]
+        #         logger.info(f'method_id:  {method_id}')
 
-            last_block_hash = block_hash
+        #         # Check if its a Clone or cloneAndTransfer function call
+        #         if method_id == '0xdaa6eb1d' or method_id == '0x8a94e433':
+        #             kudos_id = kudos_contract._contract.functions.totalSupply().call()
+        #             kudos_contract.sync_db(kudos_id=kudos_id, txid=tx['hash'].hex())
+        #             # # Get the kudos_id of the newly cloned Kudos
+        #             # kudos_id = kudos_contract.functions.totalSupply().call()
+        #             # # Update the database with the newly cloned Kudos
+        #             # update_kudos_db(kudos_id, network)
+        #             # # Find the name of the Kudos that was cloned
+        #             # kudos = get_kudos_from_web3(kudos_id, network)
+        #             # kudos_map = get_kudos_map(kudos)
+        #             # # Find the ID of the Gen0 Kudos that was cloned
+        #             # gen0_id = get_gen0_id_from_web3(kudos_map['name'], network)
+        #             # # Update the Gen0 Kudos in the database
+        #             # update_kudos_db(gen0_id, network)
+
+        #     last_block_hash = block_hash
