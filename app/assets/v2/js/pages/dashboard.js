@@ -482,7 +482,7 @@ var refreshBounties = function(event, offset, append, do_save_search) {
 
     document.done_loading_results = results.length < results_limit;
 
-     // remove the blue background for resurfaced issues after 7 seconds
+    // remove the blue background for resurfaced issues after 7 seconds
     setTimeout(function() {
       $('.bounty_row.resurfaced-issue').animate({backgroundColor: 'transparent'}, 'slow');
     }, 7000);

@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from datetime import datetime
+
 from django.utils import timezone
 
 import django_filters.rest_framework
@@ -74,7 +75,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
     bounty_owner_name = serializers.SerializerMethodField('override_bounty_owner_name')
     resurfaced = serializers.SerializerMethodField('set_resurfaced_issue')
 
-     # check for extended issues and resurface them
+    # check for extended issues and resurface them
     def set_resurfaced_issue(self, issue):
         issue_activities = issue.activities.all()
         issue_extended = False
@@ -269,7 +270,10 @@ class BountyViewSet(viewsets.ModelViewSet):
 
         # order
         order_by = self.request.query_params.get('order_by')
-        if order_by and order_by != 'null':
+        order_by_date = self.request.query_params.get('order_by_date')
+        if order_by and order_by != 'null' and order_by_date and order_by_date != 'null':
+            queryset = queryset.order_by(order_by_date, order_by)
+        elif order_by and order_by != 'null':
             queryset = queryset.order_by(order_by)
 
         queryset = queryset.distinct()
