@@ -160,7 +160,7 @@ def details(request):
         'related_profiles': related_profiles,
     }
     if kudos:
-        context['title'] = kudos.name
+        context['title'] = kudos.humanized_name
         context['card_title'] = kudos.name
         context['card_desc'] = kudos.description
         context['avatar_url'] = kudos.image
