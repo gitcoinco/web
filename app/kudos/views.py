@@ -499,7 +499,7 @@ def receive(request, key, txid, network):
     elif not is_authed:
         messages.error(
             request, f'This kudos is for {kudos_transfer.username} but you are logged in as {request.user.username}.  Please logout and log back in as {kudos_transfer.username}.')
-    elif not_mined_yet:
+    elif not_mined_yet and not request.GET.get('receive_txid'):
         messages.info(
             request, f'This tx {kudos_transfer.txid}, is still mining.  Please wait a moment before submitting the receive form.')
     elif request.GET.get('receive_txid') and not kudos_transfer.receive_txid:
