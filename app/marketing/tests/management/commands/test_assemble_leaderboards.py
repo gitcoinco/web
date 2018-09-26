@@ -76,7 +76,7 @@ class TestAssembleLeaderboards(TestCase):
             idx_status='submitted',
             current_bounty=True,
             network='mainnet',
-            metadata={ "issueKeywords": "Python, Shell" },
+            metadata={"issueKeywords": "Python, Shell"},
         )
         self.fulfiller_profile = Profile.objects.create(
             data={},
@@ -128,36 +128,32 @@ class TestAssembleLeaderboards(TestCase):
             txid='123',
         )
 
-
     def test_default_ranks(self):
         """Test default ranks dictionary."""
         ranks = default_ranks()
 
         assert len(ranks) == len(TIMES) * len(BREAKDOWNS)
 
-
     def test_bounty_index_terms(self):
         """Test bounty index terms list."""
-
         index_terms = bounty_index_terms(self.bounty)
 
         assert len(index_terms) == 12
         assert 'USDT' in index_terms
         assert set([self.bounty_payer_handle, self.bounty_earner_handle, 'gitcoinco']).issubset(set(index_terms))
-        assert set(['London', 'Cuyahoga Falls', 'Europe', 'North America', 'United Kingdom', 'United States']).issubset(set(index_terms))
+        assert set(['Cuyahoga Falls', 'United States', 'North America']).issubset(set(index_terms))
+        assert set(['London', 'United Kingdom', 'Europe']).issubset(set(index_terms))
         assert set(['python', 'shell']).issubset(set(index_terms))
-
 
     def test_tip_index_terms(self):
         """Test tip index terms list."""
-
         index_terms = tip_index_terms(self.tip)
 
         assert len(index_terms) == 10
         assert 'USDT' in index_terms
         assert set([self.tip_payer_handle, self.tip_earner_handle, 'gitcoinco']).issubset(set(index_terms))
-        assert set(['London', 'Cuyahoga Falls', 'Europe', 'North America', 'United Kingdom', 'United States']).issubset(set(index_terms))
-
+        assert set(['Cuyahoga Falls', 'United States', 'North America']).issubset(set(index_terms))
+        assert set(['London', 'United Kingdom', 'Europe']).issubset(set(index_terms))
 
     def test_sum_bounties_payer(self):
         """Test sum bounties leaderboards."""
@@ -173,14 +169,17 @@ class TestAssembleLeaderboards(TestCase):
             assert assemble_leaderboards.ranks[rank_type][self.bounty_payer_handle] == self.bounty_value
 
         rank_types_not_exists = [
-            'all_earners', 'all_orgs', 'all_keywords', 'all_tokens', 'all_countries', 'all_cities', 'all_continents',
-            'yearly_earners', 'yearly_orgs', 'yearly_keywords', 'yearly_tokens', 'yearly_countries', 'yearly_cities', 'yearly_continents',
-            'monthly_earners', 'monthly_orgs', 'monthly_keywords', 'monthly_tokens', 'monthly_countries', 'monthly_cities', 'monthly_continents',
-            'weekly_earners', 'weekly_orgs', 'weekly_keywords', 'weekly_tokens', 'weekly_countries', 'weekly_cities', 'weekly_continents',
+            'all_earners', 'all_orgs', 'all_keywords', 'all_tokens',
+            'all_countries', 'all_cities', 'all_continents',
+            'yearly_earners', 'yearly_orgs', 'yearly_keywords', 'yearly_tokens',
+            'yearly_countries', 'yearly_cities', 'yearly_continents',
+            'monthly_earners', 'monthly_orgs', 'monthly_keywords', 'monthly_tokens',
+            'monthly_countries', 'monthly_cities', 'monthly_continents',
+            'weekly_earners', 'weekly_orgs', 'weekly_keywords', 'weekly_tokens',
+            'weekly_countries', 'weekly_cities', 'weekly_continents',
         ]
         for rank_type in rank_types_not_exists:
             assert not dict(assemble_leaderboards.ranks[rank_type])
-
 
     def test_sum_bounties_earner(self):
         """Test sum bounties leaderboards."""
@@ -196,21 +195,24 @@ class TestAssembleLeaderboards(TestCase):
             assert assemble_leaderboards.ranks[rank_type][self.bounty_earner_handle] == self.bounty_value
 
         rank_types_not_exists = [
-            'all_payers', 'all_orgs', 'all_keywords', 'all_tokens', 'all_countries', 'all_cities', 'all_continents',
-            'yearly_payers', 'yearly_orgs', 'yearly_keywords', 'yearly_tokens', 'yearly_countries', 'yearly_cities', 'yearly_continents',
-            'monthly_payers', 'monthly_orgs', 'monthly_keywords', 'monthly_tokens', 'monthly_countries', 'monthly_cities', 'monthly_continents',
-            'weekly_payers', 'weekly_orgs', 'weekly_keywords', 'weekly_tokens', 'weekly_countries', 'weekly_cities', 'weekly_continents',
+            'all_payers', 'all_orgs', 'all_keywords', 'all_tokens',
+            'all_countries', 'all_cities', 'all_continents',
+            'yearly_payers', 'yearly_orgs', 'yearly_keywords', 'yearly_tokens',
+            'yearly_countries', 'yearly_cities', 'yearly_continents',
+            'monthly_payers', 'monthly_orgs', 'monthly_keywords', 'monthly_tokens',
+            'monthly_countries', 'monthly_cities', 'monthly_continents',
+            'weekly_payers', 'weekly_orgs', 'weekly_keywords', 'weekly_tokens',
+            'weekly_countries', 'weekly_cities', 'weekly_continents',
         ]
         for rank_type in rank_types_not_exists:
             assert not dict(assemble_leaderboards.ranks[rank_type])
-
 
     def test_sum_tips_payer(self):
         """Test sum tips leaderboards."""
         sum_tips(self.tip, [self.tip_payer_handle])
 
         rank_types_exists = [
-            'all_all', 'all_fulfilled', 'all_payers', 
+            'all_all', 'all_fulfilled', 'all_payers',
             'yearly_all', 'yearly_fulfilled', 'yearly_payers',
             'monthly_all', 'monthly_fulfilled', 'monthly_payers',
             'weekly_all', 'weekly_fulfilled', 'weekly_payers',
@@ -219,14 +221,17 @@ class TestAssembleLeaderboards(TestCase):
             assert assemble_leaderboards.ranks[rank_type][self.tip_payer_handle] == self.tip_value
 
         rank_types_not_exists = [
-            'all_earners', 'all_orgs', 'all_tokens', 'all_countries', 'all_cities', 'all_continents',
-            'yearly_earners', 'yearly_orgs', 'yearly_tokens', 'yearly_countries', 'yearly_cities', 'yearly_continents',
-            'monthly_earners', 'monthly_orgs', 'monthly_tokens', 'monthly_countries', 'monthly_cities', 'monthly_continents',
-            'weekly_earners', 'weekly_orgs', 'weekly_tokens', 'weekly_countries', 'weekly_cities', 'weekly_continents',
+            'all_earners', 'all_orgs', 'all_tokens',
+            'all_countries', 'all_cities', 'all_continents',
+            'yearly_earners', 'yearly_orgs', 'yearly_tokens',
+            'yearly_countries', 'yearly_cities', 'yearly_continents',
+            'monthly_earners', 'monthly_orgs', 'monthly_tokens',
+            'monthly_countries', 'monthly_cities', 'monthly_continents',
+            'weekly_earners', 'weekly_orgs', 'weekly_tokens',
+            'weekly_countries', 'weekly_cities', 'weekly_continents',
         ]
         for rank_type in rank_types_not_exists:
             assert not dict(assemble_leaderboards.ranks[rank_type])
-
 
     def test_sum_tips_earner(self):
         """Test sum tips leaderboards."""
@@ -242,14 +247,17 @@ class TestAssembleLeaderboards(TestCase):
             assert assemble_leaderboards.ranks[rank_type][self.tip_earner_handle] == self.tip_value
 
         rank_types_not_exists = [
-            'all_payers', 'all_orgs', 'all_tokens', 'all_countries', 'all_cities', 'all_continents',
-            'yearly_payers', 'yearly_orgs', 'yearly_tokens', 'yearly_countries', 'yearly_cities', 'yearly_continents',
-            'monthly_payers', 'monthly_orgs', 'monthly_tokens', 'monthly_countries', 'monthly_cities', 'monthly_continents',
-            'weekly_payers', 'weekly_orgs', 'weekly_tokens', 'weekly_countries', 'weekly_cities', 'weekly_continents',
+            'all_payers', 'all_orgs', 'all_tokens',
+            'all_countries', 'all_cities', 'all_continents',
+            'yearly_payers', 'yearly_orgs', 'yearly_tokens',
+            'yearly_countries', 'yearly_cities', 'yearly_continents',
+            'monthly_payers', 'monthly_orgs', 'monthly_tokens',
+            'monthly_countries', 'monthly_cities', 'monthly_continents',
+            'weekly_payers', 'weekly_orgs', 'weekly_tokens',
+            'weekly_countries', 'weekly_cities', 'weekly_continents',
         ]
         for rank_type in rank_types_not_exists:
             assert not dict(assemble_leaderboards.ranks[rank_type])
-
 
     def test_command_handle(self):
         """Test command assemble leaderboards."""
