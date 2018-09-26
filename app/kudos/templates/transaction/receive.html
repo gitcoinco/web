@@ -16,6 +16,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
+{% load kudos_extras %}
 {% block 'scripts' %}
 <script src="{% static "v2/js/abi.js" %}"></script>
 <script src="{% static "v2/js/secrets.min.js" %}"></script>
@@ -79,7 +80,7 @@
   </div>
   <div id="receove_eth_done" {% if not kudos_transfer.receive_txid %} style="display:none;" {%endif%}>
     <h1>{% trans "Congrats!" %}</h1>
-    <p>You've received {{kudos_transfer.amount}} {{kudos_transfer.tokenName}} via transaction <span id="trans_id">{{kudos_transfer.receive_txid}}</span>.</p>
+    <p>You've received a "{{ kudos_transfer.kudos_token.name|humanize_name }}" Kudos via transaction <span id="trans_id">{{kudos_transfer.receive_txid}}</span>.</p>
   </div>
   {% if not kudos_transfer.receive_txid and is_authed %}
     <script>
