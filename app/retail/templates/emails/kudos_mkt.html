@@ -35,31 +35,26 @@
         padding-left: 1em;
         padding-right: 1em;
     }
-    .cols {
-      display: flex;
-      align-content: center;
-      justify-content: center;
-      width: 65%;
-      align-items: center;
-      margin: 3em auto;
-      /* flex-direction: column; */
-    }
-    .col-img {
-      margin: 0 2em;
-    }
-    .col-txt {
-      text-align: left;
+
+    .main-parag {
+      font-size:18px;
+      margin: 2em auto;
       line-height: 2;
     }
-
-    hr {
-      width: 80%;
+    .green {
+      color: #05B66A;
     }
     @media screen and (max-width: 48em) {
-      .cols {
-        flex-direction: column;
+      .main-parag {
+        width: 90%;
       }
     }
+    @media screen and (min-width: 48em) {
+      .main-parag {
+        width: 50%;
+      }
+    }
+
 
 
 </style>
@@ -68,9 +63,8 @@
   <h1>{% trans "Show Appreciation with Kudos!" %}</h1>
   <div>
 
-    <img src="{% static 'v2/images/emails/kudos-logo.png' %}" alt="" width="244" class="" style="margin:auto;">
-    <br>
-    <img src="{% static 'v2/images/emails/kudos-group.png' %}" alt="" width="528" class="col-img">
+    <img src="{% static 'v2/images/emails/kudos-logo.png' %}" alt="" width="244" class="" style="margin:3em auto 2em; display: block;">
+    <img src="{% static 'v2/images/emails/kudos-group.png' %}" alt="" width="528" class="col-img" style="margin:0 auto 3em; display: block;">
   </div>
 </div>
 <h2>
@@ -78,12 +72,12 @@
 </h2>
 <img src="{% static 'v2/images/emails/kudos-transfer.jpg' %}" alt="" width="375" class="">
 
-<p>{% trans "Kudos is a way of showing your appreciation for another Gitcoin member. It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star. Kudos tokens can also be bought and sold on the Kudos Marketplace." %}</p>
+<p class="main-parag">{% blocktrans %} Kudos is a way of <span class="green">showing your appreciation</span> for another Gitcoin member. It's also a way to <span class="green">showcase special skills</span> that a member might have, such as Pythonista, or Design Star. Kudos tokens can also be <span class="green">bought</span> and <span class="green">sold</span> on the Kudos Marketplace.{% endblocktrans %}</p>
 <div style="margin: 3em;">
   <a class="button" href="{% url 'kudos_marketplace' %}">{% trans "Send Kudos" %}</a>
 </div>
 Kudos can be used to
-<p style="line-height: 2;">
+<p  style="line-height: 2;">
   Recognize Gitcoiners you’ve worked with <br>
   Understand other Gitcoiner skillsets<br>
   See who Gitcoiners have worked iwth<br>
