@@ -148,7 +148,7 @@ class KudosContract:
                 try:
                     r = f(self, *args, **kwargs)
                 except BadFunctionCallOutput as e:
-                    logger.warning('A network error occurred when trying to mint the {kudos["name"]} Kudos.')
+                    logger.warning(f'A network error occurred when trying to mint the {kudos["name"]} Kudos.')
                     logger.warning('Retrying...')
                     continue
                 break
