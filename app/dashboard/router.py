@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from datetime import datetime
+from django.utils import timezone
 
 import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
@@ -71,6 +72,21 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
     activities = ActivitySerializer(many=True)
     bounty_owner_email = serializers.SerializerMethodField('override_bounty_owner_email')
     bounty_owner_name = serializers.SerializerMethodField('override_bounty_owner_name')
+    resurfaced = serializers.SerializerMethodField('set_resurfaced_issue')
+
+     # check for extended issues and resurface them
+    def set_resurfaced_issue(self, issue):
+        issue_activities = issue.activities.all()
+        issue_extended = False
+
+        for activity in issue_activities:
+            if (activity.activity_type == 'extend_expiration'
+                and issue.idx_status == 'open'
+                    and issue.expires_date > timezone.now()):
+
+                issue_extended = True
+
+        return issue_extended
 
     def override_bounty_owner_email(self, obj):
         can_make_visible_via_api = bool(int(obj.privacy_preferences.get('show_email_publicly', 0)))
@@ -98,7 +114,7 @@ class BountySerializer(serializers.HyperlinkedModelSerializer):
             'fulfillment_submitted_on', 'fulfillment_started_on', 'canceled_on', 'canceled_bounty_reason',
             'action_urls', 'project_type', 'permission_type', 'attached_job_description', 'needs_review',
             'github_issue_state', 'is_issue_closed', 'additional_funding_summary', 'funding_organisation', 'paid',
-            'admin_override_suspend_auto_approval', 'reserved_for_user_handle',
+            'admin_override_suspend_auto_approval', 'reserved_for_user_handle', 'resurfaced'
         )
 
     def create(self, validated_data):
