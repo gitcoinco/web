@@ -73,22 +73,23 @@
 <img src="{% static 'v2/images/emails/kudos-transfer.jpg' %}" alt="" width="375" class="">
 
 <p class="main-parag">{% blocktrans %} Kudos is a way of <span class="green">showing your appreciation</span> for another Gitcoin member. It's also a way to <span class="green">showcase special skills</span> that a member might have, such as Pythonista, or Design Star. Kudos tokens can also be <span class="green">bought</span> and <span class="green">sold</span> on the Kudos Marketplace.{% endblocktrans %}</p>
-<div style="margin: 3em;">
+<div style="margin: 3em 0 5em;">
   <a class="button" href="{% url 'kudos_marketplace' %}">{% trans "Send Kudos" %}</a>
 </div>
-Kudos can be used to
-<p  style="line-height: 2;">
+<h2>{% trans "Kudos can be used to" %}</h2>
+<p  style="line-height: 2; font-size:18px;">
+  {% blocktrans %}
   Recognize Gitcoiners you’ve worked with <br>
   Understand other Gitcoiner skillsets<br>
   See who Gitcoiners have worked iwth<br>
   Send as a tip<br>
   Send with a tip<br>
   Grow Open Source!<br>
-
-  <small>
-    {% trans "Kudos is a Non-Fungible Token and collectible similar to crypto kitties." %}
-  </small>
+  {% endblocktrans %}
 </p>
+<small style="margin-top: 3em;display: block;">
+  {% trans "Kudos is a Non-Fungible Token and collectible similar to crypto kitties." %}
+</small>
 
 <div style="margin: 3em 0 5em;">
   <a class="button" href="{% url 'kudos_about' %}">{% trans "Learn More" %}</a>
