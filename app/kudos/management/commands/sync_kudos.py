@@ -18,13 +18,10 @@
 
 import datetime
 import logging
-import sys
 import warnings
 
-from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from dashboard.helpers import UnsupportedSchemaException
 from kudos.utils import KudosContract
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -33,7 +30,7 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 logging.getLogger("web3").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
-default_start_id = 1
+logging.basicConfig(level=logging.INFO)
 
 
 class Command(BaseCommand):
@@ -41,21 +38,41 @@ class Command(BaseCommand):
     help = 'syncs database with kudos on the blockchain'
 
     def add_arguments(self, parser):
-        parser.add_argument('--network', default='localhost', type=str)
-        parser.add_argument('--start_id', default=default_start_id, type=int)
-        # parser.add_argument('end_id', default=99999999999, type=int)
+        parser.add_argument('--network', default='localhost', type=str,
+                            help='Network such as "localhost", "ropsten", "mainnet"')
+        parser.add_argument('--fromBlock', default='earliest', type=str,
+                            help='This can be a block number (int), "earliest", or "latest"')
 
     def handle(self, *args, **options):
         # config
         network = options['network']
-        hour = datetime.datetime.now().hour
-        day = datetime.datetime.now().day
-        month = datetime.datetime.now().month
+        fromBlock = options['fromBlock']
+        try:
+            fromBlock = int(fromBlock)
+        except ValueError:
+            acceptable = ['latest', 'earliest']
+            if fromBlock not in acceptable:
+                raise ValueError('--fromBlock must be block number (int), "earliest", or "latest"')
+        logger.info(fromBlock)
+
+        kudos_contract = KudosContract(network)
+        event_filter = kudos_contract._contract.events.Transfer.createFilter(fromBlock=fromBlock)
+        logger.info('test')
+        logger.info(event_filter)
+        for event in event_filter.get_all_entries():
+            msg = dict(blockNumber=event.blockNumber,
+                       _tokenId=event.args._tokenId,
+                       transactionHash=event.transactionHash.hex()
+                       )
+            logger.info(f'Transfer event:  {msg}')
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug(f'Raw Transfer event: {event}')
+            kudos_contract.sync_db(kudos_id=event.args._tokenId, txid=event.transactionHash.hex())
 
         # iterate through all the kudos
-        start_id = int(options['start_id'])
-        kudos_contract = KudosContract(network)
-        kudos_contract.reconcile_db(start_id=start_id)
+        # start_id = int(options['start_id'])
+        # kudos_contract = KudosContract(network)
+        # kudos_contract.reconcile_db(start_id=start_id)
         # more_kudos = True
         # while more_kudos:
         #     # pull and process each kudos
