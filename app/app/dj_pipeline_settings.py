@@ -2,7 +2,8 @@ DJ_PIPELINE = {
     'COMPILERS': ('app.compilers.ES6Compiler', ),
     'CSS_COMPRESSOR': 'pipeline.compressors.yuglify.YuglifyCompressor',
     'JS_COMPRESSOR': 'pipeline.compressors.uglifyjs.UglifyJSCompressor',
-    'BABEL_BINARY': 'npx babel',
+    'DISABLE_WRAPPER': True,
+    'BABEL_BINARY': 'npx babel-cli',
     'STYLESHEETS': {
         'ens': {
             'source_filenames': (
