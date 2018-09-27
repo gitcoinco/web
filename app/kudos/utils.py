@@ -42,8 +42,18 @@ class KudosError(Exception):
     pass
 
 
-class Gen0ExistsWeb3(KudosError):
-    pass
+class KudosTransferNotFound(KudosError):
+    """ Exception is raised when web3 and the database are out of sync.
+
+
+        Attributes:
+        kudos_id -- the kudos id that has mismatched data
+        message -- explanation of the error
+
+    """
+    def __init__(self, kudos_id, message):
+        self.kudos_id = kudos_id
+        self.message = message
 
 
 class Gen0ExistsDb(KudosError):
@@ -99,6 +109,7 @@ class KudosContract:
             network (str, optional): The blockchain network (localhost, rinkeby, ropsten, mainnet)
 
         """
+        network = 'localhost' if network == 'custom network' else network
         self.network = network
 
         self._w3 = get_web3(self.network)
@@ -148,8 +159,13 @@ class KudosContract:
                 try:
                     r = f(self, *args, **kwargs)
                 except BadFunctionCallOutput as e:
-                    logger.warning(f'A network error occurred when trying to mint the {kudos["name"]} Kudos.')
+                    logger.warning(f'A network error occurred when trying to mint the Kudos.')
                     logger.warning('Retrying...')
+                    time.sleep(1)
+                    continue
+                except KudosTransfer.DoesNotExist as e:
+                    logger.warning('Retrying...')
+                    time.sleep(1)
                     continue
                 break
             return r
@@ -206,6 +222,8 @@ class KudosContract:
             # Only warn for a Kudos that is cloned/transfered, not a Gen0 Kudos.
             if kudos_token.num_clones_allowed == 0:
                 logger.warning(f'No KudosTransfer object found for Kudos ID {kudos_id}')
+                # raise KudosTransferNotFound(kudos_id, 'No KudosTransfer object found')
+                raise
         else:
             # Store the foreign key reference
             kudos_transfer.kudos_token = kudos_token
