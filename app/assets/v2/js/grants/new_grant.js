@@ -7,7 +7,7 @@ $(document).ready(function() {
   //   console.log("network", result);
   // })
 
-  console.log('hello world', typeof(web3.version.network));
+  console.log('say something else');
 
 
   $('#js-drop').on('dragover', function(event) {

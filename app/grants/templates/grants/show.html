@@ -45,7 +45,7 @@
             <div class="grant__footer">
               <div class="current-funding-text">
                 <span>
-                  {{ grant.amountReceived|floatformat:2|intcomma }} ETH
+                  {{ grant.amount_received|floatformat:2|intcomma }} ETH
                 </span>
                 <small>funded by 731 backers</small>
               </div>
@@ -55,7 +55,7 @@
               <div class="progress-text">
                 <small>
                   <span>{{ grant.percentage_done|floatformat:0 }}%</span>
-                  of {{ grant.amountGoal|floatformat:2|intcomma }} ETH
+                  of {{ grant.amount_goal|floatformat:2|intcomma }} ETH
               </div>
               <button class="button button--primary button--full">Fund this Project</button>
             </div>

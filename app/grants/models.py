@@ -19,12 +19,12 @@ class Grant(SuperModel):
     contract_address = models.CharField(max_length=255, default='0x0')
     network = models.CharField(max_length=255, default='0x0')
 
-    adminProfile = models.ForeignKey('dashboard.Profile', related_name='grant_admin', on_delete=models.CASCADE, null=True)
-    teamMemberProfiles = models.ManyToManyField('dashboard.Profile', related_name='grant_team_members')
+    admin_profile = models.ForeignKey('dashboard.Profile', related_name='grant_admin', on_delete=models.CASCADE, null=True)
+    team_member_profiles = models.ManyToManyField('dashboard.Profile', related_name='grant_team_members')
 
     def percentage_done(self):
         # import ipdb; ipdb.set_trace()
-        return ((self.amountReceived / self.amountGoal) * 100)
+        return ((self.amount_received / self.amount_goal) * 100)
 
 
     def __str__(self):
