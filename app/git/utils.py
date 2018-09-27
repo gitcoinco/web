@@ -525,6 +525,14 @@ def get_notifications():
     return response.json()
 
 
+def get_gh_notifications():
+    """Get the Github notifications for Gitcoin Bot."""
+    gh_client = github_connect()
+    repo_user = gh_client.get_user(login=settings.GITHUB_API_USER)
+    notifications = repo_user.get_notifications(all=True)
+    return notifications
+
+
 def post_issue_comment(owner, repo, issue_num, comment):
     """Post a comment on an issue."""
     url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue_num}/comments'
