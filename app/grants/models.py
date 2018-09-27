@@ -18,6 +18,7 @@ class Grant(SuperModel):
     token_address = models.CharField(max_length=255, default='0x0')
     contract_address = models.CharField(max_length=255, default='0x0')
     network = models.CharField(max_length=255, default='0x0')
+    required_gas_price = models.DecimalField(default='0', decimal_places=0, max_digits=50)
 
     admin_profile = models.ForeignKey('dashboard.Profile', related_name='grant_admin', on_delete=models.CASCADE, null=True)
     team_member_profiles = models.ManyToManyField('dashboard.Profile', related_name='grant_team_members')
@@ -29,31 +30,31 @@ class Grant(SuperModel):
 
     def __str__(self):
         """Return the string representation of a Grant."""
-        return f" id: {self.pk}, status: {self.status}, title: {self.title}, description: {self.description}, reference_url: {self.reference_url}, image_url: {self.image_url}, adminAddress: {self.adminAddress}, frequency: {self.frequency}, amountGoal: {self.amountGoal}, amountReceived: {self.amountReceived}, tokenAdress: {self.tokenAddress}, adminProfile: {self.adminProfile}, teamMemberProfiles: {self.teamMemberProfiles} @ {naturaltime(self.created_on)}"
+        return f" id: {self.pk}, status: {self.status}, title: {self.title}, description: {self.description}, reference_url: {self.reference_url}, image_url: {self.image_url}, admin_address: {self.admin_address}, frequency: {self.frequency}, amount_goal: {self.amount_goal}, amount_received: {self.amount_received}, token_adress: {self.token_address}, admin_profile: {self.admin_profile}, team_member_profiles: {self.team_member_profiles} @ {naturaltime(self.created_on)}"
 
 class Subscription(SuperModel):
     """Define the structure of a subscription agreement"""
 
     status = models.BooleanField(default=True)
-    subscriptionHash = models.CharField(default='', max_length=255)
-    contributorSignature = models.CharField(default='', max_length=255)
-    contributorAddress = models.CharField(default='', max_length=255)
-    amountPerPeriod = models.DecimalField(default=1, decimal_places=4, max_digits=50)
-    tokenAddress = models.CharField(max_length=255, default='0x0')
-    gasPrice = models.DecimalField(default=1, decimal_places=4, max_digits=50)
+    subscription_hash = models.CharField(default='', max_length=255)
+    contributor_signature = models.CharField(default='', max_length=255)
+    contributor_address = models.CharField(default='', max_length=255)
+    amount_per_period = models.DecimalField(default=1, decimal_places=4, max_digits=50)
+    token_address = models.CharField(max_length=255, default='0x0')
+    gas_price = models.DecimalField(default=1, decimal_places=4, max_digits=50)
     network = models.CharField(max_length=255, default='0x0')
 
 
-    grantPk = models.ForeignKey('Grant', related_name='grant_subscription', on_delete=models.CASCADE, null=True)
-    contributorProfile = models.ForeignKey('dashboard.Profile', related_name='grant_contributor', on_delete=models.CASCADE, null=True)
+    grant_pk = models.ForeignKey('Grant', related_name='grant_subscription', on_delete=models.CASCADE, null=True)
+    contributor_profile = models.ForeignKey('dashboard.Profile', related_name='grant_contributor', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
         """Return the string representation of a Subscription."""
-        return f" id: {self.pk}, status: {self.status}, subscriptionHash: {self.subscriptionHash}, contributorSignature: {self.contributorSignature}, contributorAddress: {self.contributorAddress}, contributorProfile: {self.contributorProfile}, amountPerPeriod: {self.amountPerPeriod}, tokenAddress: {self.tokenAddress}, gasPrice: {self.gasPrice}, network: {self.network}, @ {naturaltime(self.created_on)}, grant: {self.grantPk}"
+        return f" id: {self.pk}, status: {self.status}, subscription_hash: {self.subscription_hash}, contributor_signature: {self.contributor_signature}, contributor_address: {self.contributor_address}, contributor_profile: {self.contributor_profile}, amount_per_period: {self.amount_per_period}, token_address: {self.token_address}, gas_price: {self.gas_price}, network: {self.network}, @ {naturaltime(self.created_on)}, grant: {self.grant_pk}"
 
 class Contribution(SuperModel):
     """Define the structure of a subscription agreement"""
 
-    txId = models.CharField(max_length=255, default='0x0')
+    tx_id = models.CharField(max_length=255, default='0x0')
 
-    subscriptionPk = models.ForeignKey('Subscription', related_name='subscription_contribution', on_delete=models.CASCADE, null=True)
+    subscription_pk = models.ForeignKey('Subscription', related_name='subscription_contribution', on_delete=models.CASCADE, null=True)

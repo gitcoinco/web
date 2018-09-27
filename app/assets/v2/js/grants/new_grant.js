@@ -55,16 +55,17 @@ $(document).ready(function() {
         data[this.name] = this.value;
       });
 
-      // disabled.attr('disabled', 'disabled');
-      // mixpanel.track('Submit New Grant Clicked', {});
-
-      // setup
-      // loading_button($('.js-submit'));
-      // var githubUsername = data.githubUsername;
-      // var issueURL = data.issueURL.replace(/#.*$/, '');
-      // var notificationEmail = data.notificationEmail;
-      // var amount = data.amount;
-      // var tokenAddress = data.denomination;
+    //   disabled.attr('disabled', 'disabled');
+    //   // mixpanel.track('Submit New Grant Clicked', {});
+    //
+    //   // setup
+    //   // loading_button($('.js-submit'));
+    //   // var githubUsername = data.githubUsername;
+    //   // var issueURL = data.issueURL.replace(/#.*$/, '');
+    //   // var notificationEmail = data.notificationEmail;
+    //   // var amount = data.amount;
+    //   var tokenAddress = data.denomination;
+    //   console.log(tokenAddress);
       // var token = tokenAddressToDetails(tokenAddress);
       // var decimals = token['decimals'];
       // var tokenName = token['name'];
@@ -101,9 +102,9 @@ $(document).ready(function() {
       // localStorage['tokenAddress'] = tokenAddress;
       // localStorage.removeItem('bountyId');
       //
-      // // setup web3
-      // // TODO: web3 is using the web3.js file.  In the future we will move
-      // // to the node.js package.  github.com/ethereum/web3.js
+      // setup web3
+      // TODO: web3 is using the web3.js file.  In the future we will move
+      // to the node.js package.  github.com/ethereum/web3.js
       // var isETH = tokenAddress == '0x0000000000000000000000000000000000000000';
       // var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
       // var account = web3.eth.coinbase;
@@ -118,7 +119,7 @@ $(document).ready(function() {
       // // bounty_abi is a giant object containing the different network options
       // // bounty_address() is a function that looks up the name of the network and returns the hash code
       // var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-      // // StandardBounties integration begins here
+      // StandardBounties integration begins here
       // Set up Interplanetary file storage
       // IpfsApi is defined in the ipfs-api.js.
       // Is it better to use this JS file than the node package?  github.com/ipfs/
@@ -158,10 +159,44 @@ $(document).ready(function() {
       //
       // do_bounty();
 
-      form.submit();
+      // var instance = grants_abi.new( data.admin_address, data.token_address, data.amount_goal, data.frequency, data.gas_price, { from: web3.eth.coinbase gas: 4000000 });
+      //
+      // console.log(instance);
+
+      //   const web3ContractInstance =
+      //       web3.eth.contract(instance.abi).at(instance.address);
+      //
+      //   Subscription = new SubscriptionContract(
+      //       web3ContractInstance, { from: OWNER, gas: 40000000 });
+      //
+      //
+      // let newInstance = new web3.eth.Contract(grants_abi)
+
+      // form.submit();
 
     }
   });
+
+// Will need this for a subscription
+
+  var check_balance_and_alert_user_if_not_enough = function(tokenAddress, amount) {
+    var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
+    var from = web3.eth.coinbase;
+    var token_details = tokenAddressToDetails(tokenAddress);
+    var token_decimals = token_details['decimals'];
+    var token_name = token_details['name'];
+
+    token_contract.balanceOf.call(from, function(error, result) {
+      if (error) return;
+      var balance = result.toNumber() / Math.pow(10, 18);
+      var balance_rounded = Math.round(balance * 10) / 10;
+
+      if (parseFloat(amount) > balance) {
+        var msg = gettext('You do not have enough tokens to fund this bounty. You have ') + balance_rounded + ' ' + token_name + ' ' + gettext(' but you need ') + amount + ' ' + token_name;
+
+        _alert(msg, 'warning');
+      }
+    });
 
 
 

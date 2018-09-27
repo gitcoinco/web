@@ -42,6 +42,7 @@ def new_grant(request):
     profile_id = request.session.get('profile_id')
     profile = request.user.profile if request.user.is_authenticated else None
 
+    print(request.session)
 
     if request.method == "POST":
         grant = Grant()
@@ -54,6 +55,7 @@ def new_grant(request):
         grant.frequency = request.POST.get('frequency')
         grant.token_address = request.POST.get('denomination')
         grant.amount_goal = request.POST.get('amount_goal')
+        # grant.network =
         grant.admin_profile = profile
         # grant.teamMemberProfiles = Need to do a profile search based on enetered emails
 
@@ -94,13 +96,13 @@ def fund_grant(request, grant_id):
         # subscription.contributorSignature = request.POST.get('description')
         # Address will come from web3 instance
         # subscription.contributorAddress = request.POST.get('reference_url')
-        subscription.amountPerPeriod = request.POST.get('amount_per_period')
+        subscription.amount_per_period = request.POST.get('amount_per_period')
         # subscription.tokenAddress = request.POST.get('denomination')
-        subscription.gasPrice = request.POST.get('gas_price')
+        subscription.gas_price = request.POST.get('gas_price')
         # network will come from web3 instance
         # subscription.network = request.POST.get('amount_goal')
-        subscription.contributorProfile = profile
-        subscription.grantPk = grant
+        subscription.contributor_profile = profile
+        subscription.grant_pk = grant
 
 
         subscription.save()
@@ -125,7 +127,7 @@ def cancel_subscription(request, subscription_id):
     profile = request.user.profile if request.user.is_authenticated else None
 
     subscription = Subscription.objects.get(pk=subscription_id)
-    grant = subscription.grantPk
+    grant = subscription.grant_pk
 
     print("this is the subscription:", subscription.pk)
     print("this is the grant:", grant)
