@@ -134,8 +134,9 @@ def render_kudos_email(to_email, kudos, is_new):
         'is_receiver': to_email in kudos_transfer.emails,
     }
 
-    # response_html = premailer_transform(render_to_string("emails/new_kudos.html", params))
-    response_html = premailer_transform(render_to_string("emails/kudos_mkt.html", params))
+    response_html = premailer_transform(render_to_string("emails/new_kudos.html", params))
+    # response_html = premailer_transform(render_to_string("emails/kudos_mint.html", params))
+    # response_html = premailer_transform(render_to_string("emails/kudos_mkt.html", params))
     response_txt = render_to_string("emails/new_kudos.txt", params)
 
     return response_html, response_txt
