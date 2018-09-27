@@ -1,7 +1,12 @@
 {% load humanize i18n %}
-⚡️ You've Received a Kudos ⚡️
+{% trans "You've Received a Kudos" %}
+{% if kudos_transfer.from_name %}
+{{kudos_transfer.from_name}} {% blocktrans %} sent you a {% endblocktrans %}<b>{{ token_elem.name|humanize_name }}</b> kudos!
+{% else %}
+Someone sent you a <b>{{ token_elem.name|humanize_name }}</b> kudos.
+{% endif %}{% if not is_new %} {{kudos_transfer.created_on | naturaltime}}{%endif%}
 
-{% if kudos_transfer.from_name %}{{kudos_transfer.from_name}}{% else %}Someone{% endif %} has sent you kudos worth {{amount}} {{warning}} {{tokenName}}.
+
 
 {% if kudos_transfer.url %}
 {% if kudos_transfer.from_name %}{{kudos_transfer.from_name}}{% else %}The sender{% endif %} said it was for your work on {{kudos_transfer.github_url}}:
