@@ -1,0 +1,272 @@
+body {
+  font-family: Muli, sans-serif;
+}
+
+.text-fd-green {
+  color: #00a55e;
+}
+
+.text-fd-blue--light {
+  color: #519bdc;
+}
+
+.text-fd-blue--dark {
+  color: #3e00ff;
+}
+
+.text-fd-orange {
+  color: #dc9937;
+}
+
+.text-fd-red {
+  color: #d82a3f;
+}
+
+.text-fd-purple {
+  color: #8e2abe;
+}
+
+.text-fd-no-spacing {
+  letter-spacing: 0.100rem;
+}
+
+.t-oflowhide {
+  overflow:hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.funder-dashboard__header {
+  background-color: #3e00ff;
+}
+
+.funder-dashboard__header__hero {
+  letter-spacing: 0.100rem;
+  font-size: 2.7rem;
+}
+
+.funder-dashboard__dashboard__wrapper {
+  background-color: #eff3f6;
+}
+
+.funder-dashboard__dashboard {
+  position: relative;
+  top: -50px;
+}
+
+.funder-dashboard__whats-next__rocket {
+  height: 70px;
+  width: 70px;
+  background-image: url("/static/v2/images/rocket.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  border: 3px solid #0ecf7c;
+  border-radius: 50%;
+
+}
+
+.funder-dashboard__whats-next__rocket-text {
+  color: #3e00ff;
+}
+
+.funder-dashboard__whats-next__expiring-bounties {
+  font-size: 1.2rem;
+}
+
+.funder-dashboard__whats-next__new-comments {
+  font-size: 1.2rem;
+}
+
+.funder-dashboard__payout-history__chart {
+  width: 100%;
+  height: 15rem;
+}
+
+@media (max-width: 576px) {
+  .funder-dashboard__payout-history__chart {
+    height: 25rem;
+  }
+}
+
+.funder-dashboard__payout-history__control {
+  cursor: pointer;
+}
+
+.funder-dashboard__payout-history__control--selected {
+  background-color: #4a4a4a;
+  color: white;
+}
+
+.funder-dashboard__latest-on-bounties__top-contributors__contributor {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+}
+
+.funder-dashboard__tax-reporting__bounties__print {
+  border-right: 1px solid #6c757d;
+}
+
+.funder-dashboard__tax-reporting__bounties__download-report {
+  background-color: #8e2abe;
+}
+
+.funder-dashboard__outgoing-funds__funds__fund.funder-dashboard__outgoing-funds__funds__fund--pending
+.funder-dashboard__outgoing-funds__funds__fund__status {
+  font-style: italic;
+  color: #3e00ff;
+}
+
+.funder-dashboard__outgoing-funds__funds__fund__status::first-letter {
+  text-transform: uppercase;
+}
+
+.funder-dashboard__outgoing-funds__funds__fund__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.funder-dashboard__outgoing-funds__funds__fund--template {
+  display: none;
+}
+
+.funder-dashboard__all-bounties__bounties__bounty--template {
+  display: none;
+}
+
+.funder-dashboard__all-bounties__bounties__bounty__title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.funder-dashboard__all-bounties__bounties__bounty__status {
+  align-items: center;
+}
+
+.funder-dashboard__all-bounties__bounties__bounty__status::first-letter {
+  text-transform: uppercase;
+}
+
+.funder-dashboard__left-column-wrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.funder-dashboard__all-bounties__bounties__bounty__status__circle {
+  width: 0.7rem;
+  height: 0.7rem;
+  display: inline-block;
+  margin-right: 0.4rem;
+  background-color: white;
+  border-radius: 50%;
+}
+
+.funder-dashboard__all-bounties__bounties__bounty
+.funder-dashboard__all-bounties__bounties__bounty__status__circle {
+  border: 2px solid dimgray;
+}
+
+.funder-dashboard__all-bounties__bounties__bounty.funder-dashboard__all-bounties__bounties__bounty--started
+.funder-dashboard__all-bounties__bounties__bounty__status__circle {
+  border: 2px solid #1a91eb;
+}
+
+.funder-dashboard__all-bounties__bounties__bount.funder-dashboard__all-bounties__bounties__bounty--stoppedy
+.funder-dashboard__all-bounties__bounties__bounty__status__circle {
+  border: 2px solid #f86b67;
+}
+
+.funder-dashboard__all-bounties__bounties__bounty.funder-dashboard__all-bounties__bounties__bounty--submitted
+.funder-dashboard__all-bounties__bounties__bounty__status__circle {
+  border: 2px solid #84b800;
+}
+
+.funder-dashboard__all-bounties__bounties__bounty.funder-dashboard__all-bounties__bounties__bounty--open
+.funder-dashboard__all-bounties__bounties__bounty__status__circle {
+  border: 2px solid lightgreen;
+}
+
+.bgc-ethereum {
+  background-color: #ebe5ff;
+  padding-right: 0.2rem;
+  padding-left: 0.2rem;
+}
+
+.bgc-dollars {
+  background-color: #e7faf1;
+  padding-right: 0.2rem;
+  padding-left: 0.2rem;
+}
+
+.table-header--inline {
+  font-size: 1.2rem;
+  margin-right: 1rem;
+  display: none;
+}
+
+td {
+  overflow: hidden;
+  -ms-text-overflow: ellipsis;
+  text-overflow: ellipsis;
+}
+
+/*
+This query will take effect for any screen smaller than 760px
+and also iPads specifically.
+*/
+@media
+  only screen and (max-width: 760px),
+  (min-device-width: 768px) and (max-device-width: 1024px)  {
+
+  /* Force table to not be like tables anymore */
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  tr {
+    border: 1px solid #ccc;
+    margin-bottom: 0.5rem;
+  }
+
+  /* Hide table headers (but not display: none;, for accessibility) */
+  thead tr {
+    position: absolute;
+    top: -9999px;
+    left: -9999px;
+  }
+
+  td {
+    /* Behave  like a "row" */
+    border: none;
+    border-bottom: 1px solid #eee;
+    position: relative;
+    padding-left: 50%;
+  }
+
+  .table-header--inline {
+    display: unset;
+  }
+}
+
+.control {
+  cursor: pointer;
+}
+
+.control.control--selected {
+  background-color: #4a4a4a;
+  color: white;
+}
+
+.funder-dashboard__stats__stat--total-budget__budget-input {
+  max-width: 80%;
+}
+
+.funder-dashboard__stats__stat .card-title {
+  min-height: 2.82rem;
+}
+
+.funder-dashboard__stats__stat--total-budget__budget-input__submit {
+  cursor: pointer;
+}
