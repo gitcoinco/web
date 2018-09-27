@@ -157,7 +157,7 @@ class KudosContract:
         def wrapper(self, *args, **kwargs):
             for i in range(1, 4):
                 try:
-                    r = f(self, *args, **kwargs)
+                    f(self, *args, **kwargs)
                 except BadFunctionCallOutput as e:
                     logger.warning(f'A network error occurred when trying to mint the Kudos.')
                     logger.warning('Retrying...')
@@ -168,7 +168,7 @@ class KudosContract:
                     time.sleep(1)
                     continue
                 break
-            return r
+            return f(self, *args, **kwargs)
         return wrapper
 
     @retry
@@ -192,8 +192,42 @@ class KudosContract:
             logger.info('Removing Kudos orphan with ID: {orphan.id}')
         orphans.delete()
 
+    def sync_db_without_txid(self, kudos_id):
+        """The regular sync_db method should be preferred over this.
+
+        This method is only to be used if you are syncing kudos directly from the blockchain
+        and don't know the txid.
+
+        The problem with not having a txid that is there is no good way to related it back
+        to the kudos_transfer object.  Which means we don't know who the original sender is.
+
+        Args:
+            kudos_id (int): Kudos id.
+        """
+        kudos = self.getKudosById(kudos_id, to_dict=True)
+        kudos['owner_address'] = self._contract.functions.ownerOf(kudos_id).call()
+        if Token.objects.filter(pk=kudos_id).exists():
+            kudos_token = Token.objects.get(pk=kudos_id)
+            kudos['txid'] = kudos_token.txid
+            updated_kudos_token = Token(pk=kudos_id, **kudos)
+            updated_kudos_token.save()
+        else:
+            kudos_token = Token(pk=kudos_id, **kudos)
+            kudos_token.save()
+        logger.info(f'Synced id #{kudos_token.id}, "{kudos_token.name}" kudos to the database.')
+
     @retry
     def sync_db(self, kudos_id, txid):
+        """Sync up the Kudos contract on the blockchain with the database.
+
+        Args:
+            kudos_id (int): Kudos Id
+            txid (str): The transaction hash.
+
+        Returns:
+            TYPE: Description
+        """
+
         # Handle the dummy Kudos
         if kudos_id == 0:
             return False

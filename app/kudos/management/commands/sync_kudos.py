@@ -23,6 +23,7 @@ import warnings
 from django.core.management.base import BaseCommand
 
 from kudos.utils import KudosContract
+from kudos.models import KudosTransfer
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -40,13 +41,13 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--network', default='localhost', type=str,
                             help='Network such as "localhost", "ropsten", "mainnet"')
+        parser.add_argument('--syncmethod', default='id', type=str, choices=['filter', 'id'])
         parser.add_argument('--fromBlock', default='earliest', type=str,
                             help='This can be a block number (int), "earliest", or "latest"')
+        parser.add_argument('--start_id', default=1, type=int,
+                            help='Kudos ID to start syncing at.  Lowest kudos_id is 1.')
 
-    def handle(self, *args, **options):
-        # config
-        network = options['network']
-        fromBlock = options['fromBlock']
+    def filter_sync(self, kudos_contract, fromBlock):
         try:
             fromBlock = int(fromBlock)
         except ValueError:
@@ -55,10 +56,7 @@ class Command(BaseCommand):
                 raise ValueError('--fromBlock must be block number (int), "earliest", or "latest"')
         logger.info(fromBlock)
 
-        kudos_contract = KudosContract(network)
         event_filter = kudos_contract._contract.events.Transfer.createFilter(fromBlock=fromBlock)
-        logger.info('test')
-        logger.info(event_filter)
         for event in event_filter.get_all_entries():
             msg = dict(blockNumber=event.blockNumber,
                        _tokenId=event.args._tokenId,
@@ -69,21 +67,37 @@ class Command(BaseCommand):
                 logger.debug(f'Raw Transfer event: {event}')
             kudos_contract.sync_db(kudos_id=event.args._tokenId, txid=event.transactionHash.hex())
 
+    def id_sync(self, kudos_contract, start_id):
         # iterate through all the kudos
-        # start_id = int(options['start_id'])
-        # kudos_contract = KudosContract(network)
         # kudos_contract.reconcile_db(start_id=start_id)
-        # more_kudos = True
-        # while more_kudos:
-        #     # pull and process each kudos
-        #     # self.stdout.write(f"[{month}/{day} {hour}:00] Getting kudos {kudos_enum}")
-        #     # kudos = get_kudos(kudos_enum, network)
-        #     # self.stdout.write(f"[{month}/{day} {hour}:00] Processing kudos {kudos_enum}")
-        #     # web3_process_kudos(kudos)
-        #     if kudos_has_changed(kudos_enum, network):
-        #         update_kudos_db(kudos_enum, network)
+        end_id = kudos_contract._contract.functions.totalSupply().call()
+        kudos_enum = start_id
+        more_kudos = True
 
-        #     kudos_enum += 1
+        while more_kudos:
+            # pull and process each kudos
+            # self.stdout.write(f"[{month}/{day} {hour}:00] Getting kudos {kudos_enum}")
+            # kudos = get_kudos(kudos_enum, network)
+            # self.stdout.write(f"[{month}/{day} {hour}:00] Processing kudos {kudos_enum}")
+            # web3_process_kudos(kudos)
+            # if kudos_has_changed(kudos_enum, network):
+            #     update_kudos_db(kudos_enum, network)
+            kudos_contract.sync_db_without_txid(kudos_id=kudos_enum)
+            kudos_enum += 1
 
-        #     if kudos_enum > int(options['end_id']):
-        #         more_kudos = False
+            if kudos_enum > end_id:
+                more_kudos = False
+
+    def handle(self, *args, **options):
+        # config
+        network = options['network']
+        syncmethod = options['syncmethod']
+        fromBlock = options['fromBlock']
+        start_id = options['start_id']
+
+        kudos_contract = KudosContract(network)
+
+        if syncmethod == 'filter':
+            self.filter_sync(kudos_contract, fromBlock)
+        elif syncmethod == 'id':
+            self.id_sync(kudos_contract, start_id)
