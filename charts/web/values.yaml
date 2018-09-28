@@ -10,16 +10,16 @@ service:
   name: web
   type: ClusterIP
   externalPort: 80
-  internalPort: 8080
+  internalPort: 8000
   annotations:
     fabric8.io/expose: "true"
     fabric8.io/ingress.annotations: "kubernetes.io/ingress.class: nginx"
 resources:
   limits:
-    cpu: 100m
-    memory: 128Mi
+    cpu: 1000m
+    memory: 1024Mi
   requests:
     cpu: 100m
-    memory: 128Mi
+    memory: 512Mi
 ingress:
-  enabled: false
+  enabled: true
