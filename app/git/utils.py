@@ -525,10 +525,13 @@ def get_notifications():
     return response.json()
 
 
-def get_gh_notifications():
+def get_gh_notifications(login=None):
     """Get the Github notifications for Gitcoin Bot."""
     gh_client = github_connect()
-    repo_user = gh_client.get_user(login=settings.GITHUB_API_USER)
+    if login:
+        repo_user = gh_client.get_user(login=login)
+    else:
+        repo_user = gh_client.get_user()
     notifications = repo_user.get_notifications(all=True)
     return notifications
 
