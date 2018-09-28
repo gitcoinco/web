@@ -2,12 +2,17 @@
 
 $(document).ready(function() {
 
-  // web3.version.getNetwork()
-  // .then(function(result){
-  //   console.log("network", result);
-  // })
+console.log('1', web3.eth.coinbase);
+console.log('2', web3.eth.accounts[0]);
 
-  console.log('say something else');
+console.log(web3.version.network);
+
+
+
+
+
+
+
 
 
   $('#js-drop').on('dragover', function(event) {
@@ -38,12 +43,14 @@ $(document).ready(function() {
 
   $('#js-newGrant').validate({
     submitHandler: function(form) {
-      try {
-        web3.version.network == "1" || "4"
-      } catch (exception) {
-        _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
-        return;
-      }
+//
+// Don't need this try/catch. Can deploy to any network
+      // try {
+      //   web3.version.network == "1" || "4"
+      // } catch (exception) {
+      //   _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
+      //   return;
+      // }
 
 
       var data = {};
@@ -55,122 +62,38 @@ $(document).ready(function() {
         data[this.name] = this.value;
       });
 
-    //   disabled.attr('disabled', 'disabled');
-    //   // mixpanel.track('Submit New Grant Clicked', {});
-    //
-    //   // setup
-    //   // loading_button($('.js-submit'));
-    //   // var githubUsername = data.githubUsername;
-    //   // var issueURL = data.issueURL.replace(/#.*$/, '');
-    //   // var notificationEmail = data.notificationEmail;
-    //   // var amount = data.amount;
-    //   var tokenAddress = data.denomination;
-    //   console.log(tokenAddress);
-      // var token = tokenAddressToDetails(tokenAddress);
-      // var decimals = token['decimals'];
-      // var tokenName = token['name'];
-      // var decimalDivisor = Math.pow(10, decimals);
-      // var expirationTimeDelta = data.expirationTimeDelta;
+      // Begin New Deploy Subscription Contract
 
-      // var metadata = {
-      //   issueTitle: data.title,
-      //   issueDescription: data.description,
-      //   issueKeywords: data.keywords,
-      //   githubUsername: data.githubUsername,
-      //   notificationEmail: data.notificationEmail,
-      //   fullName: data.fullName,
-      //   experienceLevel: data.experience_level,
-      //   projectLength: data.project_length,
-      //   bountyType: data.bounty_type,
-      //   tokenName
-      // };
+      let bytecode = compiledContract.bytecode;
+      // web3.eth.estimateGas({data: bytecode}, function(err, gasEstimate){
+      // if (err) {
+      //   console.log(err);
+      // } else {
 
-      // var privacy_preferences = {
-      //   show_email_publicly: data.show_email_publicly,
-      //   show_name_publicly: data.show_name_publicly
-      // };
 
-      // validation
-      // var isError = false;
-      //
-      // $(this).attr('disabled', 'disabled');
-      //
-      // // save off local state for later
-      // localStorage['issueURL'] = issueURL;
-      // localStorage['notificationEmail'] = notificationEmail;
-      // localStorage['githubUsername'] = githubUsername;
-      // localStorage['tokenAddress'] = tokenAddress;
-      // localStorage.removeItem('bountyId');
-      //
-      // setup web3
-      // TODO: web3 is using the web3.js file.  In the future we will move
-      // to the node.js package.  github.com/ethereum/web3.js
-      // var isETH = tokenAddress == '0x0000000000000000000000000000000000000000';
-      // var token_contract = web3.eth.contract(token_abi).at(tokenAddress);
-      // var account = web3.eth.coinbase;
-      //
-      // if (!isETH) {
-      //   check_balance_and_alert_user_if_not_enough(tokenAddress, amount);
-      // }
-      //
-      // amount = amount * decimalDivisor;
-      // // Create the bounty object.
-      // // This function instantiates a contract from the existing deployed Standard Bounties Contract.
-      // // bounty_abi is a giant object containing the different network options
-      // // bounty_address() is a function that looks up the name of the network and returns the hash code
-      // var bounty = web3.eth.contract(bounty_abi).at(bounty_address());
-      // StandardBounties integration begins here
-      // Set up Interplanetary file storage
-      // IpfsApi is defined in the ipfs-api.js.
-      // Is it better to use this JS file than the node package?  github.com/ipfs/
+          let MyContract = web3.eth.contract(compiledContract.abi);
+          var myContractReturned = MyContract.new(data.admin_address, data.token_address, data.amount_goal, data.frequency, data.gas_price, {
+            from:web3.eth.accounts[0],
+            data:bytecode,
+            gas:2500000}, function(err, myContract){
+              if(!err) {
+                // NOTE: The callback will fire twice!
+                // Once the contract has the transactionHash property set and once its deployed on an address.
+                // e.g. check tx hash on the first call (transaction send)
+                if(!myContract.address) {
+                  console.log(myContract.transactionHash) // The hash of the transaction, which deploys the contract
 
-      // setup inter page state
-      // localStorage[issueURL] = JSON.stringify({
-      //   timestamp: null,
-      //   dataHash: null,
-      //   issuer: account,
-      //   txid: null
+                  // check address on the second call (contract deployed)
+                } else {
+                  console.log(myContract.address) // the contract address
+                }
+                // Note that the returned "myContractReturned" === "myContract",
+                // so the returned "myContractReturned" object will also get the address set.
+              }
+            });
+      //   }
       // });
-      //
-      // function syncDb() {
-      //   // Need to pass the bountydetails as well, since I can't grab it from the
-      //   // Standard Bounties contract.
-      //   dataLayer.push({ event: 'fundissue' });
-      //
-      //   // update localStorage issuePackage
-      //   var issuePackage = JSON.parse(localStorage[issueURL]);
-      //
-      //   issuePackage['timestamp'] = timestamp();
-      //   localStorage[issueURL] = JSON.stringify(issuePackage);
-      //
-      //   _alert({ message: gettext('Submission sent to web3.') }, 'info');
-      //   setTimeout(function() {
-      //     delete localStorage['issueURL'];
-      //     mixpanel.track('Submit New Bounty Success', {});
-      //     document.location.href = '/funding/details/?url=' + issueURL;
-      //   }, 1000);
-      // }
-      //
-      // var do_bounty = function(callback) {
-      // // Add data to IPFS and kick off all the callbacks.
-      //   ipfsBounty.payload.issuer.address = account;
-      //   ipfs.addJson(ipfsBounty, newIpfsCallback);
-      // };
-      //
-      // do_bounty();
 
-      // var instance = grants_abi.new( data.admin_address, data.token_address, data.amount_goal, data.frequency, data.gas_price, { from: web3.eth.coinbase gas: 4000000 });
-      //
-      // console.log(instance);
-
-      //   const web3ContractInstance =
-      //       web3.eth.contract(instance.abi).at(instance.address);
-      //
-      //   Subscription = new SubscriptionContract(
-      //       web3ContractInstance, { from: OWNER, gas: 40000000 });
-      //
-      //
-      // let newInstance = new web3.eth.Contract(grants_abi)
 
       // form.submit();
 

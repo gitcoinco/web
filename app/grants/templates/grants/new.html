@@ -36,10 +36,10 @@
               <input type="url" class="form__input" id="input-url" name="reference_url" required/>
             </div>
 
-            <div class="form__group-horizontal">
+            <!-- <div class="form__group-horizontal">
               <label class="form__label" for="input-team_members">Team members</label>
               <input type="text" class="form__input" id="input-team_members" placeholder="List emails by comma" name="team_members" />
-            </div>
+            </div> -->
 
             <div class="form__group-horizontal">
               <label class="form__label">Total amount sought for grant</label>
@@ -56,7 +56,7 @@
             </div>
 
             <div class="form__group-horizontal">
-              <label class="form__label" for="input-adminAddress">Admin Address</label>
+              <label class="form__label" for="input-admin_address">Admin Address</label>
               <input type="text" class="form__input" id="input-adminAddress" placeholder="Enter the address you would live funds sent to" name="adminAddress" />
             </div>
 
@@ -73,7 +73,7 @@
             </div>
 
 
-            <div class="form__group-horizontal milestones">
+            <!-- <div class="form__group-horizontal milestones">
               <label class="form__label">Milestones and projected timeline</label>
               <div class="milestone-form">
                 <div class="row" id="milestone0">
@@ -86,7 +86,7 @@
               </div>
 
               <span id="new-milestone">+ Add new milestone</span>
-            </div>
+            </div> -->
 
             <div class="form__group-horizontal">
               <label class="form__label">Project image</label>
@@ -118,6 +118,7 @@
   <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/grants/compiledSubscriptionContract.js" %}"></script>
   <script src="{% static "v2/js/grants/new_grant.js" %}"></script>
 
 </html>

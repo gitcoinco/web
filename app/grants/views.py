@@ -42,7 +42,7 @@ def new_grant(request):
     profile_id = request.session.get('profile_id')
     profile = request.user.profile if request.user.is_authenticated else None
 
-    print(request.session)
+    print('request', request)
 
     if request.method == "POST":
         grant = Grant()
@@ -51,11 +51,13 @@ def new_grant(request):
         grant.description = request.POST.get('description')
         grant.reference_url = request.POST.get('reference_url')
         grant.image_url = request.POST.get('input-image')
-        grant.admin_address = request.POST.get('adminAddress')
+        grant.admin_address = request.POST.get('admin_address')
         grant.frequency = request.POST.get('frequency')
         grant.token_address = request.POST.get('denomination')
         grant.amount_goal = request.POST.get('amount_goal')
         # grant.network =
+        # grant.transactionHash =
+        # grant.address =
         grant.admin_profile = profile
         # grant.teamMemberProfiles = Need to do a profile search based on enetered emails
 
