@@ -31,6 +31,7 @@ from eth_utils import to_checksum_address, to_normalized_address, to_text
 from web3.middleware import geth_poa_middleware
 from django.forms.models import model_to_dict
 from web3.exceptions import BadFunctionCallOutput
+from web3.middleware import geth_poa_middleware
 
 from ipfsapi.exceptions import CommunicationError
 import ipfsapi
@@ -116,6 +117,8 @@ class KudosContract:
         self.network = network
 
         self._w3 = get_web3(self.network)
+        if self.network == 'rinkeby':
+            self._w3.middleware_stack.inject(geth_poa_middleware, layer=0)
         self._ipfs = ipfsapi.connect(settings.IPFS_HOST)
         self._contract = self._get_contract()
 
@@ -284,7 +287,7 @@ class KudosContract:
         elif self.network == 'ropsten':
             return to_checksum_address('0xcd520707fc68d153283d518b29ada466f9091ea8')
         elif self.network == 'rinkeby':
-            return to_checksum_address('0x0b9bFF2c5c7c85eE94B48D54F2C6eFa1E399380D')
+            return to_checksum_address('0x67ba5da1fd437642c99fb2de267b1152f365cea4')
         else:
             # local testrpc
             return to_checksum_address('0xe7bed272ee374e8116049d0a49737bdda86325b6')
