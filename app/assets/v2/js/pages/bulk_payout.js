@@ -205,11 +205,7 @@ $(document).ready(function($) {
       </tr>`;
 
     $('#payout_table').append(html);
-    console.log('aded')
-    userSearch()
-    // $('.custom-select:last').each(function() {
-    //   $(this).select2();
-    // });
+    userSearch();
     $(this).focus();
   };
 
