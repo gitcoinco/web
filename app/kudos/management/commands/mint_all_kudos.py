@@ -28,6 +28,7 @@ from kudos.utils import KudosContract
 from web3.exceptions import BadFunctionCallOutput
 
 import oyaml as yaml
+import ipfsapi
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -60,6 +61,7 @@ class Command(BaseCommand):
         kudos_contract = KudosContract(network=network)
 
         yaml_file = options['yaml_file']
+        # ipfs = ipfsapi.connect(settings.IPFS_HOST)
 
         with open(yaml_file) as f:
             all_kudos = yaml.load(f)
@@ -71,8 +73,20 @@ class Command(BaseCommand):
             else:
                 image_path = ''
 
-            args = (kudos['name'], kudos['description'], kudos['rarity'], kudos['priceFinney'],
-                    kudos['numClonesAllowed'], kudos['tags'], image_path,
-                    )
+            metadata = {
+                'name': kudos['name'],
+                'image': image_path,
+                'description': kudos['description'],
+                'external_url': 'https://gitcoin.co/kudos',  # Might want to link to the exact address
+                'background_color': '00FFFF',
+                'attributes': {
+                    'tags': kudos['tags'],
+                    'rarity': kudos['rarity'],
+                }
+            }
+
+            tokenURI_url = kudos_contract.create_tokenURI_url(**metadata)
+
+            args = (kudos['priceFinney'], kudos['numClonesAllowed'], tokenURI_url)
 
             kudos_contract.mint(*args, account=account, private_key=private_key)
