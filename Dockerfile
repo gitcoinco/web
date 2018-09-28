@@ -30,6 +30,7 @@ RUN mkdir -p /usr/share/GeoIP/ && \
 
 WORKDIR /code
 COPY requirements/ /code/
+COPY app/ /code/app/
 
 RUN pip install -r test.txt
 COPY bin/docker-command.bash /bin/docker-command.bash
