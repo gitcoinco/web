@@ -102,7 +102,7 @@ def fund_grant(request, grant_id):
         # network will come from web3 instance
         # subscription.network = request.POST.get('amount_goal')
         subscription.contributor_profile = profile
-        subscription.grant_pk = grant
+        subscription.grant = grant
 
 
         subscription.save()
@@ -127,7 +127,7 @@ def cancel_subscription(request, subscription_id):
     profile = request.user.profile if request.user.is_authenticated else None
 
     subscription = Subscription.objects.get(pk=subscription_id)
-    grant = subscription.grant_pk
+    grant = subscription.grant
 
     print("this is the subscription:", subscription.pk)
     print("this is the grant:", grant)

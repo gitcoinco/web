@@ -45,7 +45,7 @@ class Subscription(SuperModel):
     network = models.CharField(max_length=255, default='0x0')
 
 
-    grant_pk = models.ForeignKey('Grant', related_name='grant_subscription', on_delete=models.CASCADE, null=True)
+    grant = models.ForeignKey('Grant', related_name='subscriptions', on_delete=models.CASCADE, null=True)
     contributor_profile = models.ForeignKey('dashboard.Profile', related_name='grant_contributor', on_delete=models.CASCADE, null=True)
 
     def __str__(self):
