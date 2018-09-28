@@ -39,7 +39,7 @@
             <p class="font-weight-bold" data-ethprice="{{ kudos.price_in_eth }}">{{ kudos.price_in_eth }} ETH <small></small></p>
             <p>
               {% for tag in kudos.tags.split %}
-              <span class="badge badge-kudos">{{tag | replace_commas }}</span>
+              <a class="badge badge-kudos" href="{% url 'kudos_marketplace' %}?q={{tag|replace_commas}}">{{tag | replace_commas }}</a>
               {% endfor %}
             </p>
           </div>
