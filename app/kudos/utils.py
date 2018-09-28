@@ -325,7 +325,7 @@ class KudosContract:
 
     # @retry
     @may_require_key
-    def mint(self, *args, account=None, private_key=None):
+    def mint(self, *args, account=None, private_key=None, skip_sync=False):
         """Contract transaction method.
 
         Mint a new Gen0 Kudos on the blockchain.  Not to be confused with clone.
@@ -366,7 +366,8 @@ class KudosContract:
         logger.info(f'Minted id #{kudos_id} on the blockchain.')
         logger.info(f'Gas usage for id #{kudos_id}: {tx_receipt["gasUsed"]}')
 
-        self.sync_db(kudos_id=kudos_id, txid=tx_hash.hex())
+        if not skip_sync:
+            self.sync_db(kudos_id=kudos_id, txid=tx_hash.hex())
 
         return kudos_id
 

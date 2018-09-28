@@ -89,4 +89,4 @@ class Command(BaseCommand):
 
             args = (kudos['priceFinney'], kudos['numClonesAllowed'], tokenURI_url)
 
-            kudos_contract.mint(*args, account=account, private_key=private_key)
+            kudos_contract.mint(*args, account=account, private_key=private_key, skip_sync=True)
