@@ -23,7 +23,6 @@ from decimal import Decimal
 from enum import Enum
 
 from django.conf import settings
-from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db import transaction
@@ -38,7 +37,7 @@ from dashboard.notifications import (
 )
 from dashboard.tokens import addr_to_token
 from economy.utils import convert_amount
-from git.utils import get_gh_issue_details, get_url_dict, issue_number, org_name, repo_name
+from git.utils import get_gh_issue_details, get_url_dict
 from jsondiff import diff
 from pytz import UTC
 from ratelimit.decorators import ratelimit
@@ -131,7 +130,6 @@ def amount(request):
         raise Http404
 
 
-@login_required
 @ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
 def issue_details(request):
     """Determine the Github issue keywords of the specified Github issue or PR URL.
@@ -146,10 +144,10 @@ def issue_details(request):
     """
     from dashboard.utils import clean_bounty_url
     response = {}
-    token = request.user.profile.access_token or None
-
+    token = request.GET.get('token', None)
     url = request.GET.get('url')
     url_val = URLValidator()
+
     try:
         url_val(url)
     except ValidationError:

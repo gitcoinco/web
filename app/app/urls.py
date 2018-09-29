@@ -176,7 +176,7 @@ urlpatterns = [
     # sync methods
     url(r'^sync/web3/?', dashboard.views.sync_web3, name='sync_web3'),
     url(r'^sync/get_amount/?', dashboard.helpers.amount, name='helpers_amount'),
-    url(r'^sync/get_issue_details/?', dashboard.helpers.issue_details, name='helpers_issue_details'),
+    re_path(r'^sync/get_issue_details/?', dashboard.helpers.issue_details, name='helpers_issue_details'),
 
     # modals
     re_path(r'^modal/get_quickstart_video/?', dashboard.views.get_quickstart_video, name='get_quickstart_video'),
