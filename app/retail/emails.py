@@ -528,10 +528,11 @@ def render_notify_funder(profile):
     to_email = profile.email
 
     bounties = Bounty.objects.filter(bounty_owner_github_username=profile.handle)
-    notifications =[]
+    notifications = []
     for bounty in bounties:
         notifs_list = NotifyFunder.objects.filter(bounty=bounty.pk, funder_notified=False)
-        notifs = notifs_list.annotate(arr_els=Func(F('notify_reasons'), function='unnest')).values_list('arr_els', flat=True)
+        notifs = notifs_list.annotate(arr_els=Func(F('notify_reasons'), function='unnest')).\
+                            values_list('arr_els', flat=True)
         if notifs:
             notification = {}
             notification['reasons'] = Counter(notifs)
