@@ -1,0 +1,258 @@
+@import '../variables';
+
+.g-button {
+  border: none;
+  border-radius: 2px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  color: $gc_white;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 300;
+  padding: 10px 20px;
+  -webkit-appearance: none;
+  
+  &:hover {
+    color: $gc_white;
+    text-decoration: none;
+  }
+  
+  &:disabled,
+  &:disabled:hover,
+  &.disabled,
+  &.disabled:hover {
+    background-color: $gc_dark_grey;
+    box-shadow: none;
+    color: rgba(0, 0, 0, 0.26);
+    border-color: rgba(0,0,0, 0.3);
+  }
+
+  &.g-button__cookielaw {
+    max-height: 2.5rem;
+  }
+
+  //----------------//
+  // Filled Buttons //
+  //----------------//
+
+  // Primary (Purple) Button
+  &--primary {
+    background-color: $gc_purple;
+  
+    &:hover {
+      background-color: $gc_purple_dark;
+    }
+
+    &:active {
+      background-color: $gc_purple_darker;
+    }
+
+    // Onboarding flows
+    .started-status-column &,
+    #right_actions &,
+    #btn-white {
+      padding: 6px 15px;
+      box-shadow: none;
+      font-size: 12px;
+    }
+  
+    #right_actions & {
+      margin-right: 5px;
+      position: relative;
+      top: 1px;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
+  }
+
+  // Warning (Red) Button
+  &--warning {
+    background-color: $gc_red;
+  
+    &:hover {
+      background-color: $gc_red_lighter;
+    }
+  }
+
+  // Blue Button
+  &--blue {
+    background-color: $gc_blue;
+
+    &:hover {
+      background-color: $gc_blue_lighter;
+    }
+  }
+
+  // Green Button
+  &--green {
+    background-color: $gc_green;
+
+    &:hover {
+      background-color: $gc_green_lighter;
+    }
+  }
+
+  // Onboarding buttons
+  &--controls {
+    display: inline-block;
+    margin: 5px 0 5px 5px;
+    text-transform: capitalize;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+    box-shadow: none;
+  }
+
+  // Toolbox buttons
+  &--votes {
+    border: none;
+    cursor: pointer;
+
+    &:hover {
+      color: $gc_light_grey;
+    }
+
+    &.active:hover {
+      color: $gc_white
+    }
+  }
+
+  //------------------//
+  // Outlined Buttons //
+  //------------------//
+
+  &--primary-o,
+  &--warning-o,
+  &--blue-o,
+  &--green-o {
+    background-color: $gc_white;
+    padding: 9px 18px;
+  }
+
+  // Primary (Purple) Button
+  &--primary-o {
+    border: 1px solid $gc_purple;
+    color: $gc_purple;
+
+    &:hover {
+      background-color: $gc_purple;
+    }
+  }
+
+  // Warning (Red) Button
+  &--warning-o {
+    border: 1px solid $gc_red;
+    color: $gc_red;
+
+    &:hover {
+      background-color: $gc_red;
+    }
+  }
+
+  // Blue Button
+  &--blue-o {
+    border: 1px solid $gc_blue;
+    color: $gc_blue;
+
+    &:hover {
+      background-color: $gc_blue;
+    }
+  }
+
+  // Green Button
+  &--green-o {
+    border: 1px solid $gc_green;
+    color: $gc_green;
+
+    &:hover {
+      background-color: $gc_green;
+    }
+  }
+
+  // White Button
+  &--white-o {
+    border: 1px solid $gc_green;
+    color: $gc_green;
+    padding: 9px 18px;
+
+    &:hover {
+      background-color: $gc_green;
+    }
+  }
+
+  .step & {
+    margin-top: 5px;
+    padding-left: 25px;
+    padding-right: 25px;
+    font-size: 12px;
+    box-shadow: none;
+  }
+
+  // Icons in buttons
+  svg:first-child {
+    margin-right: 0.5rem;
+  }
+}
+
+#later-button {
+  margin:0;
+  position:absolute;
+  right:0;
+}
+
+button.avatar-option {
+  border: none;
+  width: 80px;
+  height: 80px;
+  background-color: #D8E7FF;
+  margin: 0 0 8px 8px;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.uninterest-button {
+  margin: 5px;
+}
+
+.form__footer button {
+  margin-bottom: .5rem;
+}
+
+div.button-pink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #f9006c;
+  font-size: 0.95rem;
+  font-weight: bold;
+  line-height: 42px;
+  text-transform: uppercase;
+  background: none;
+  width: 130px;
+  height: 39px;
+  border-radius: 19px;
+  border: 3px solid #f9006c;
+  letter-spacing: 0.1em;
+}
+
+.lil-white-button {
+  height: 1rem;
+  width: 1rem;
+  cursor: pointer;
+}
+
+@media (max-width: 767.98px) {
+  .g-button.g-button__cookielaw {
+    float: right;
+    font-size: 0.775rem;
+  }
+
+  .button--fund {
+    padding-left: 1rem;
+    text-align: left;
+  }
+}
