@@ -446,4 +446,7 @@ a:hover #shape-hexagon {
   color: #6184AC;
   border-radius: 2px; }
 
+#world {
+  z-index: -1; }
+
 /*# sourceMappingURL=styles.css.map */
