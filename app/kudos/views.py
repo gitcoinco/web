@@ -85,20 +85,21 @@ def marketplace(request):
     """Render the marketplace kudos response."""
     q = request.GET.get('q')
     logger.info(q)
+    title = q.title() + str(_(" Kudos ")) if q else str(_('Marketplace'))
 
     results = Token.objects.annotate(
         search=SearchVector('name', 'description', 'tags')
-    ).filter(num_clones_allowed__gt=0, search=q)
+    ).filter(search=q)
     logger.info(results)
 
-    if results:
+    if q:
         listings = results
     else:
-        listings = Token.objects.filter(num_clones_allowed__gt=0)
+        listings = Token.objects.all()
     context = {
         'is_outside': True,
         'active': 'marketplace',
-        'title': 'Marketplace',
+        'title': title,
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
@@ -534,7 +535,7 @@ def receive(request, key, txid, network):
             record_user_action(kudos_transfer.from_username, 'receive_kudos', kudos_transfer)
             record_kudos_email_activity(kudos_transfer, kudos_transfer.username, 'receive_kudos')
             messages.success(request, 'This kudos has been received')
-            # Update kudos.models.Token to reflect the newly cloned Kudos 
+            # Update kudos.models.Token to reflect the newly cloned Kudos
             # kudos_id = params['kudos_id']
             # TODO:  We should be passing the kudos_id from the front end to make sure we sync the right one.
             # network = 'localhost' if kudos_transfer.network == 'custom network' else kudos_transfer.network

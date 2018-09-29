@@ -14,14 +14,19 @@
         {% include 'shared/kudos_searchbar.html' %}
       </div>
     </header>
-    
+
     <section class="container mt-5 pb-5">
       <div class="row justify-content-between p-3">
         <div class="">{{listings.count}} Kudos</div>
-        {% blocktrans %} 
-          <div>Sort by: Price <a href="">Low</a> - <a href="">High</a></div>
+        {% blocktrans %}
+          <div>Sort by: Price <a href="?order_by=-modified_on">Low</a> - <a href="">High</a></div>
         {% endblocktrans %}
       </div>
+      {% if not listings %}
+      <div class="h3 text-center m-5">
+        No {{ title }} found
+      </div>
+      {% endif %}
       <div class="row justify-content-center">
         {% for listing in listings %}
           <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
@@ -32,15 +37,29 @@
       <div class="row justify-content-center">
         {% endif %}
       {% endfor %}
-        <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
-            <a href="{% url 'kudos_mint' %}" class="cta-square kd-shadow">
-              <div>
-                <span>{% trans "Don’t See One You Like?" %}</span>
-                <small>{% trans "Mint Your Own!" %}</small>
-              </div>
-            </a>
+      {% if not listings %}
+      {% endif %}
+
+      {% if not listings %}
+      <div class="col-xs-12 col-sm-6 col-lg-4 m-3">
+          <a href="https://github.com/gitcoinco/kudos/badges/issues/new" target="_blank" class="cta-square kd-shadow">
+            <div>
+              <span>{% trans "Feeling creative?" %}</span>
+              <small>{% trans "Mint Your Own!" %}</small>
+            </div>
+          </a>
         </div>
+      {% else %}
+      <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+        <a href="https://github.com/gitcoinco/kudos/badges/issues/new" target="_blank" class="cta-square kd-shadow">
+          <div>
+            <span>{% trans "Don’t See One You Like?" %}</span>
+            <small>{% trans "Mint Your Own!" %}</small>
+          </div>
+        </a>
       </div>
+      {% endif %}
+    </div>
     </section>
 
     {% include 'shared/footer.html' %}
