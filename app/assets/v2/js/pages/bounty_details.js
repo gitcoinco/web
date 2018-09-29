@@ -248,7 +248,7 @@ var callbacks = {
       tooltip_info.push('<p class="m-0" style="margin-top: 3px;">Crowdfunding worth $' + usd_value + '</p>');
       $('#value_in_usdt').html(parseFloat(result['value_in_usdt']) + usd_value);
     }
-  
+
     for (var token in tokens) {
       if (token) {
         const val = tokens[token];
@@ -814,9 +814,9 @@ var do_actions = function(result) {
   let show_payout = !is_status_expired && !is_status_done && isBountyOwner(result);
   let show_extend_deadline = isBountyOwner(result) && !is_status_expired && !is_status_done;
   let show_invoice = isBountyOwner(result);
-  const show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
-  const show_admin_methods = document.isStaff;
-  const show_moderator_methods = document.isModerator;
+  const show_suspend_auto_approval = currentProfile.isStaff && result['permission_type'] == 'approval';
+  const show_admin_methods = currentProfile.isStaff;
+  const show_moderator_methods = currentProfile.isModerator;
   const show_change_bounty = is_still_on_happy_path && (isBountyOwner(result) || show_admin_methods);
 
   if (is_legacy) {
@@ -1209,9 +1209,9 @@ const process_activities = function(result, bounty_activities) {
       interest.profile.handle === _activity.profile.handle && interest.pending);
     const has_interest = !!result.interested.find(interest =>
       interest.profile.handle === _activity.profile.handle);
-    const slash_possible = document.isStaff;
-    const is_logged_in = document.contxt['github_handle'];
-    const uninterest_possible = is_logged_in && ((isBountyOwnerPerLogin(result) || document.isStaff) && is_open && has_interest);
+    const slash_possible = currentProfile.isStaff;
+    const is_logged_in = currentProfile.username;
+    const uninterest_possible = is_logged_in && ((isBountyOwnerPerLogin(result) || currentProfile.isStaff) && is_open && has_interest);
 
     return {
       profileId: _activity.profile.id,
