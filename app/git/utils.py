@@ -52,7 +52,8 @@ def github_connect(token=None):
             Defaults to: None.
 
     """
-    if token is None:
+    github_client = None
+    if not token:
         token = settings.GITHUB_API_TOKEN
 
     try:
@@ -62,15 +63,14 @@ def github_connect(token=None):
             client_secret=settings.GITHUB_CLIENT_SECRET,
         )
     except BadCredentialsException as e:
-        github_client = None
         logger.exception(e)
     return github_client
 
 
-def get_gh_issue_details(org, repo, issue_num):
+def get_gh_issue_details(org, repo, issue_num, token=None):
     details = {'keywords': []}
     try:
-        gh_client = github_connect()
+        gh_client = github_connect(token)
         org_user = gh_client.get_user(login=org)
         repo_obj = org_user.get_repo(repo)
         issue_details = repo_obj.get_issue(issue_num)

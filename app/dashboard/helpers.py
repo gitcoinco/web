@@ -23,6 +23,7 @@ from decimal import Decimal
 from enum import Enum
 
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.core.validators import URLValidator
 from django.db import transaction
@@ -130,6 +131,7 @@ def amount(request):
         raise Http404
 
 
+@login_required
 @ratelimit(key='ip', rate='50/m', method=ratelimit.UNSAFE, block=True)
 def issue_details(request):
     """Determine the Github issue keywords of the specified Github issue or PR URL.
@@ -142,8 +144,9 @@ def issue_details(request):
         JsonResponse: A JSON response containing the Github issue or PR keywords.
 
     """
-    from .utils import clean_bounty_url
+    from dashboard.utils import clean_bounty_url
     response = {}
+    token = request.user.profile.access_token or None
 
     url = request.GET.get('url')
     url_val = URLValidator()
@@ -160,7 +163,7 @@ def issue_details(request):
     try:
         url_dict = get_url_dict(clean_bounty_url(url))
         if url_dict:
-            response = get_gh_issue_details(**url_dict)
+            response = get_gh_issue_details(token=token, **url_dict)
         else:
             response['message'] = 'could not parse Github url'
     except Exception as e:
@@ -322,7 +325,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                 accepted_on=accepted_on,
                 **kwargs)
         except Exception as e:
-            logging.error(f'{e} during new fulfillment creation for {new_bounty}')
+            logger.error(f'{e} during new fulfillment creation for {new_bounty}')
             continue
     return new_bounty.fulfillments.all()
 
@@ -464,7 +467,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
 
         except Exception as e:
             print(e, 'encountered during new bounty creation for:', url)
-            logging.error(f'{e} encountered during new bounty creation for: {url}')
+            logger.error(f'{e} encountered during new bounty creation for: {url}')
             new_bounty = None
 
         if fulfillments:
@@ -604,7 +607,7 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
                 if not user_profile:
                     user_profile = sync_profile(fulfillment.fulfiller_github_username)
     except Exception as e:
-        logging.error(f'{e} during record_bounty_activity for {new_bounty}')
+        logger.error(f'{e} during record_bounty_activity for {new_bounty}')
 
     if user_profile:
         return Activity.objects.create(
@@ -638,7 +641,7 @@ def record_user_action(event_name, old_bounty, new_bounty):
         fulfillment = new_bounty.fulfillments.order_by('pk').first()
 
     except Exception as e:
-        logging.error(f'{e} during record_user_action for {new_bounty}')
+        logger.error(f'{e} during record_user_action for {new_bounty}')
         # TODO: create a profile if one does not exist already?
 
     if user_profile:
@@ -691,7 +694,7 @@ def process_bounty_changes(old_bounty, new_bounty):
         event_name = 'increased_bounty'
     else:
         event_name = 'unknown_event'
-        logging.info(f'got an unknown event from bounty {old_bounty.pk} => {new_bounty.pk}: {json_diff}')
+        logger.info(f'got an unknown event from bounty {old_bounty.pk} => {new_bounty.pk}: {json_diff}')
 
     print(f"- {event_name} event; diff => {json_diff}")
 
