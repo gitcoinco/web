@@ -360,7 +360,7 @@ class KudosContract:
             tx_hash = self._contract.functions.mint(*args).transact({"from": account})
 
         tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
-        logger.debug(f'Tx hash: {tx_hash}')
+        logger.debug(f'Tx hash: {tx_hash.hex()}')
 
         kudos_id = self._contract.functions.totalSupply().call()
         logger.info(f'Minted id #{kudos_id} on the blockchain.')
