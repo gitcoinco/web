@@ -1510,7 +1510,6 @@ class Profile(SuperModel):
         help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
     )
     form_submission_records = JSONField(default=list, blank=True)
-    # Sample data: https://gist.github.com/mbeacom/ee91c8b0d7083fa40d9fa065125a8d48
     max_num_issues_start_work = models.IntegerField(default=3)
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
     max_tip_amount_usdt_per_tx = models.DecimalField(default=500, decimal_places=2, max_digits=50)
@@ -1522,7 +1521,7 @@ class Profile(SuperModel):
     def is_org(self):
         try:
             return self.data['type'] == 'Organization'
-        except:
+        except KeyError:
             return False
 
     @property
@@ -1943,6 +1942,16 @@ class Profile(SuperModel):
             return ''
         return access_token
 
+    @property
+    def access_token(self):
+        """The Github access token associated with this Profile.
+
+        Returns:
+            str: The associated Github access token.
+
+        """
+        return self.github_access_token or self.get_access_token(save=False)
+
     def get_profile_preferred_language(self):
         return settings.LANGUAGE_CODE if not self.pref_lang_code else self.pref_lang_code
 
@@ -2245,6 +2254,9 @@ class Profile(SuperModel):
 def post_login(sender, request, user, **kwargs):
     """Handle actions to take on user login."""
     from dashboard.utils import create_user_action
+    profile = getattr(user, 'profile', None)
+    if profile and not profile.github_access_token:
+        profile.github_access_token = profile.get_access_token()
     create_user_action(user, 'Login', request)
 
 
