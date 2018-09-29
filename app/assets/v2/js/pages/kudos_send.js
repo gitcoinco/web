@@ -214,8 +214,8 @@ $(document).ready(function() {
     var accept_tos = $('#tos').is(':checked');
     var tokenAddress = $('#token').val();
     var expires = parseInt($('#expires').val());
-    // kudosName is the name of the kudos token that is being cloned
-    var kudosName = window.location.href.split('\=')[1];
+    // kudosId is the kudos token that is being cloned
+    var kudosId = $('#kudosId').attr('data-kudosId');
 
     // get kudosPrice from the HTML
     kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
@@ -235,7 +235,7 @@ $(document).ready(function() {
       accept_tos: accept_tos,
       tokenAddress: tokenAddress,
       expires: expires,
-      kudosName: kudosName
+      kudosId: kudosId
     }
 
     // derived info
@@ -269,14 +269,13 @@ $(document).ready(function() {
       unloading_button($('#send'));
     };
 
-    // var kudosName = $('#kudosImage').attr('alt');
-    var kudosName = window.location.href.split('\=')[1];
-    // cloneAndTransferKudos(kudosName, 1, receiverAddress);
-    // cloneKudos(kudosName, 1);
+    var kudosId = $('#kudosId').attr('data-kudosId');
+    // cloneAndTransferKudos(kudosId, 1, receiverAddress);
+    // cloneKudos(kudosId, 1);
     console.log(formData);
     // Step 3
     // Run sendKudos function
-    return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, kudosName, success_callback, failure_callback, false);
+    return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, kudosId, success_callback, failure_callback, false);
 
   });
 
@@ -294,7 +293,7 @@ $(document).ready(function() {
 });
 
 // Step 3
-function sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, kudosName, success_callback, failure_callback, is_for_bounty_fulfiller) {
+function sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, kudosId, success_callback, failure_callback, is_for_bounty_fulfiller) {
   mixpanel.track('Tip Step 2 Click', {});
   if (typeof web3 == 'undefined') {
     _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
@@ -380,7 +379,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
         from_email: from_email,
         from_name: from_name,
         tokenAddress: tokenAddress,
-        kudosName: kudosName,
+        kudosId: kudosId,
         network: document.web3network,
         from_address: web3.eth.coinbase,
         is_for_bounty_fulfiller: is_for_bounty_fulfiller,
@@ -450,10 +449,10 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           // Kudos Direct Send (KDS)
           console.log('Using Kudos Direct Send (KDS)');
           console.log('destinationAccount:' + destinationAccount);
-          // send_kudos_direct(kudosName, 1, destinationAccount);
+          // send_kudos_direct(kudosId, 1, destinationAccount);
           let receiver = destinationAccount;
 
-          kudos_contract.cloneAndTransfer(kudosName, numClones, receiver, {from: account, value: kudosPriceInWei}, function(cloneError, cloneTxid) {
+          kudos_contract.cloneAndTransfer(kudosId, numClones, receiver, {from: account, value: kudosPriceInWei}, function(cloneError, cloneTxid) {
             // totalSupply yield the kudos_id
             kudos_contract.totalSupply(function(supplyError, kudos_id) {
               post_send_callback(cloneError, cloneTxid, kudos_id);
@@ -469,13 +468,13 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           // let kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice')); 
           // var kudosPriceInWei = amountInEth * 1.0 * Math.pow(10, 18);
           params = {
-            kudosName: kudosName,
+            kudosId: kudosId,
             numClones: numClones,
             from: account,
             value: kudosPriceInWei.toString()
           }
           console.log(params)
-          kudos_contract.clone.estimateGas(kudosName, numClones, {from: account, value: kudosPriceInWei}, function(error, kudosGasEstimate){
+          kudos_contract.clone.estimateGas(kudosId, numClones, {from: account, value: kudosPriceInWei}, function(error, kudosGasEstimate){
             console.log('kudosGasEstimate: '+ kudosGasEstimate)
             // Multiply gas * gas_price_gwei to get gas cost in wei.
             kudosGasEstimateInWei = kudosGasEstimate * get_gas_price();

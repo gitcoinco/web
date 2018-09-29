@@ -347,7 +347,7 @@ def send_3(request):
     to_emails = list(set(to_emails))
 
     # Validate that the token exists on the back-end
-    kudos_token_cloned_from = Token.objects.filter(name=params['kudosName'], num_clones_allowed__gt=0).first()
+    kudos_token_cloned_from = Token.objects.filter(pk=params['kudosId'], num_clones_allowed__gt=0).first()
     # db mutations
     kudos_transfer = KudosTransfer.objects.create(
         emails=to_emails,

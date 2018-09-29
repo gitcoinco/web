@@ -119,7 +119,7 @@ class Command(BaseCommand):
                 logger.info(f'method_id:  {method_id}')
 
                 # Check if its a Clone or cloneAndTransfer function call
-                if method_id == '0xdaa6eb1d' or method_id == '0x8a94e433':
+                if method_id == '0xdaa6eb1d' or method_id == '0xd319784f':
                     kudos_contract._w3.eth.waitForTransactionReceipt(tx['hash'])
                     kudos_id = kudos_contract._contract.functions.totalSupply().call()
                     kudos_contract.sync_db(kudos_id=kudos_id, txid=tx['hash'].hex())
