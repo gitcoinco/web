@@ -585,12 +585,22 @@ a.btn {
   margin-top: 10px;
 }
 
+.notify-funder-modal {
+  height: auto;
+  width: 100%;
+}
+
 .add-interest-modal {
   height: auto;
   width: 100%;
 }
 
 #add_interest form {
+  padding: 1em;
+  width: 100%;
+}
+
+#notify_funder form {
   padding: 1em;
   width: 100%;
 }

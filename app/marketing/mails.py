@@ -32,6 +32,7 @@ from retail.emails import (
     render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission,
     render_quarterly_stats, render_start_work_applicant_about_to_expire, render_start_work_applicant_expired,
     render_start_work_approved, render_start_work_new_applicant, render_start_work_rejected, render_tip_email,
+    render_funder_payout_reminder
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -295,6 +296,26 @@ def gdpr_reconsent(email):
         from_name="Kevin Owocki (Gitcoin.co)",
         categories=['marketing', func_name()],
     )
+
+
+def funder_payout_reminder(to_email, bounty, github_username):
+    from_email = settings.PERSONAL_CONTACT_EMAIL
+    subject = "Payout reminder"
+    html, text = render_funder_payout_reminder(to_email=to_email, bounty=bounty, github_username=github_username)
+    print("-----" * 100)
+    print(html)
+    print("-----" * 100)
+    '''
+    send__mail(
+            from_email,
+            to_email,
+            subject,
+            text,
+            html,
+            from_name="Kevin Owocki (Gitcoin.co)",
+            categories=['marketing', func_name()],
+    )
+    '''
 
 
 def new_external_bounty():

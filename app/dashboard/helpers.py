@@ -113,6 +113,9 @@ def amount(request):
     try:
         amount = request.GET.get('amount')
         denomination = request.GET.get('denomination', 'ETH')
+        if not denomination:
+            denomination = 'ETH'
+
         if denomination in settings.STABLE_COINS:
             denomination = 'USDT'
         if denomination == 'ETH':
@@ -126,7 +129,7 @@ def amount(request):
         }
         return JsonResponse(response)
     except Exception as e:
-        print(e)
+        logger.error(e)
         raise Http404
 
 

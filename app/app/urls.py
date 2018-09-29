@@ -233,9 +233,7 @@ urlpatterns = [
     re_path(r'^web3/?', retail.views.web3, name='web3'),
 
     # increase funding limit
-    re_path(r'^requestincrease/?',
-            retail.views.increase_funding_limit_request,
-            name='increase_funding_limit_request'),
+    re_path(r'^requestincrease/?', retail.views.increase_funding_limit_request, name='increase_funding_limit_request'),
 
     # link shortener
     url(r'^l/(.*)$/?', linkshortener.views.linkredirect, name='redirect'),
@@ -349,6 +347,11 @@ urlpatterns = [
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+
+    # Notify Funder Modal
+    path('notifyfunder/modal', dashboard.views.get_notify_funder_modal, name='get_notify_funder_modal'),
+    path('actions/bounty/<int:bounty_id>/notify_funder/', dashboard.views.funder_payout_reminder, name='notify-funder'),
+
     # Interests
     path('interest/modal', dashboard.views.get_interest_modal, name='get_interest_modal'),
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),

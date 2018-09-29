@@ -579,6 +579,29 @@ var attach_override_status = function() {
   });
 };
 
+var show_notify_funder_modal = function() {
+  var self = this;
+
+  setTimeout(function() {
+    var url = '/notifyfunder/modal?redirect=' + window.location.pathname + '&pk=' + document.result['pk'];
+
+    $.get(url, function(newHTML) {
+      var modal = $(newHTML).appendTo('body').modal({
+        modalClass: 'modal notify-funder-modal'
+      });
+
+      modal.on('submit', function(event) {
+        event.preventDefault();
+
+        notify_funder(document.result['pk'], {
+          url: window.location.pathname + '&pk=' + document.result['pk']
+        });
+        $('#notifyFunder .button').addClass('disabled');
+        $.modal.close();
+      });
+    });
+  });
+};
 
 var show_interest_modal = function() {
   var self = this;
@@ -784,6 +807,13 @@ const is_current_user_approved = function(result) {
   return false;
 };
 
+const isFunderNotifiable = function(result) {
+  if (result['funder_last_messaged_on']) {
+    return false;
+  }
+  return true;
+};
+
 var do_actions = function(result) {
   var is_legacy = result['web3_type'] == 'legacy_gitcoin';
   var is_status_expired = result['status'] == 'expired';
@@ -807,10 +837,12 @@ var do_actions = function(result) {
   let show_start_stop_work = is_still_on_happy_path && !should_block_from_starting_work && is_open;
   let show_github_link = result['github_url'].substring(0, 4) == 'http';
   let show_submit_work = is_open && !has_fulfilled;
+  let show_notify_funder = is_open && has_fulfilled;
   let show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled && isBountyOwner(result);
   let show_job_description = result['attached_job_description'] && result['attached_job_description'].startsWith('http');
   const show_increase_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
   const submit_work_enabled = !isBountyOwner(result) && current_user_is_approved;
+  const notify_funder_enabled = isFunderNotifiable(result);
   let show_payout = !is_status_expired && !is_status_done && isBountyOwner(result);
   let show_extend_deadline = isBountyOwner(result) && !is_status_expired && !is_status_done;
   let show_invoice = isBountyOwner(result);
@@ -829,6 +861,22 @@ var do_actions = function(result) {
 
   // actions
   const actions = [];
+
+  if (show_notify_funder) {
+    const enabled = notify_funder_enabled;
+    const _entry = {
+      enabled: enabled,
+      href: 'javascript:show_notify_funder_modal()',
+      // text: gettext('Notify FUnder'),
+      text: gettext('Send Payment Reminder'),
+      parent: 'right_actions',
+      title: gettext('Send Payment Reminder'),
+      // title: gettext('Notify funder that work is ready to be paid by email'),
+      id: 'notifyFunder'
+    };
+
+    actions.push(_entry);
+  }
 
   if (show_submit_work) {
     const enabled = submit_work_enabled;
@@ -1165,7 +1213,6 @@ var pull_bounty_from_api = function() {
       $('.nonefound').css('display', 'block');
     }
   }).fail(function(result) {
-    console.log(result);
     _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
     $('#primary_view').css('display', 'none');
   }).always(function() {

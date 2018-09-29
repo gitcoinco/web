@@ -40,8 +40,9 @@ from avatar.utils import get_avatar_context
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid
 from marketing.mails import (
-    admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
+    admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected
 )
+from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
 from marketing.models import Keyword
 from pytz import UTC
 from ratelimit.decorators import ratelimit
@@ -173,6 +174,18 @@ def create_new_interest_helper(bounty, user, issue_message):
 def gh_login(request):
     """Attempt to redirect the user to Github for authentication."""
     return redirect('social:begin', backend='github')
+
+
+def get_notify_funder_modal(request):
+
+    bounty = Bounty.objects.get(pk=request.GET.get("pk"))
+
+    context = {
+        'bounty': bounty,
+        'active': 'get_notify_funder_modal',
+        'title': _('Send Payout Reminder')
+    }
+    return TemplateResponse(request, 'notifyfunder.html', context)
 
 
 def get_interest_modal(request):
@@ -801,6 +814,22 @@ def helper_handle_admin_override_and_hide(request, bounty):
             messages.success(request, _('Bounty is now hidden'))
         else:
             messages.warning(request, _('Only moderators may do this.'))
+
+
+@csrf_exempt
+def funder_payout_reminder(request, bounty_id):
+    try:
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except Bounty.DoesNotExist:
+        raise Http404
+
+    user = request.user if request.user.is_authenticated else None
+    funder_payout_reminder_mail(to_email=bounty.bounty_owner_email, bounty=bounty, github_username=user)
+    bounty.funder_last_messaged_on = timezone.now()
+    bounty.save()
+    return JsonResponse({
+        'success': True},
+        status=200)
 
 
 def helper_handle_admin_contact_funder(request, bounty):
