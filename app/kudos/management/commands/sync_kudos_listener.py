@@ -18,6 +18,7 @@
 
 import logging
 import time
+import requests
 
 from django.core.management.base import BaseCommand
 
@@ -35,10 +36,39 @@ class Command(BaseCommand):
     help = 'listens for kudos token changes '
 
     def add_arguments(self, parser):
-        parser.add_argument('--network', default='localhost', type=str)
-        parser.add_argument('--usefilter', default=False, type=bool)
+        parser.add_argument('-n', '--network', default='localhost', type=str)
+        parser.add_argument('-m', '--syncmethod', default='block', type=str, choices=['filter', 'block', 'opensea'])
+        parser.add_argument('-i', '--interval', default=1, type=int)
 
-    def filter_listener(self, kudos_contract):
+    def opensea_listener(self, kudos_contract, interval):
+        if kudos_contract.network == 'rinkeby':
+            url = 'https://rinkeby-api.opensea.io/api/v1/events'
+        elif kudos_contract.network == 'mainnet':
+            url = 'https://api.opensea.io/api/v1/events'
+        else:
+            raise RuntimeError('The Open Sea API is only supported for contracts on rinkeby and mainnet.')
+
+        # Event API
+        payload = dict(
+            asset_contract_address=kudos_contract.address,
+            event_type='transfer',
+            )
+        asset_token_id = 0
+        transaction_hash = 0
+        while True:
+            cache = (asset_token_id, transaction_hash)
+            r = requests.get(url, params=payload)
+            r.raise_for_status()
+
+            asset_token_id = r.json()['asset_events'][0]['asset']['token_id']
+            transaction_hash = r.json()['asset_events'][0]['transaction']['transaction_hash']
+            # If the result is the same as last time, don't re-sync the database
+            if cache == (asset_token_id, transaction_hash):
+                continue
+            logger.info(f'token_id: {asset_token_id}, txid: {transaction_hash}')
+            time.sleep(interval)
+
+    def filter_listener(self, kudos_contract, interval):
 
         event_filter = kudos_contract._contract.events.Transfer.createFilter(fromBlock='latest')
         while True:
@@ -53,9 +83,9 @@ class Command(BaseCommand):
                 kudos_contract._w3.eth.waitForTransactionReceipt(msg['transactionHash'])
                 logger.debug(f"Tx hash: {msg['transactionHash']}")
                 kudos_contract.sync_db(kudos_id=msg['_tokenId'], txid=msg['transactionHash'])
-            time.sleep(1)
+            time.sleep(interval)
 
-    def block_listener(self, kudos_contract):
+    def block_listener(self, kudos_contract, interval):
         block = 'latest'
         last_block_hash = None
         while True:
@@ -68,7 +98,7 @@ class Command(BaseCommand):
             # logger.info(f'last_block_hash: {last_block_hash}')
             # logger.info(f'block_hash: {block_hash}')
             if last_block_hash == block_hash:
-                time.sleep(1)
+                time.sleep(interval)
                 continue
 
             logger.info('got new block %s' % kudos_contract._w3.toHex(block_hash))
@@ -108,20 +138,15 @@ class Command(BaseCommand):
             last_block_hash = block_hash
 
     def handle(self, *args, **options):
-        # setup
         network = options['network']
-        usefilter = options['usefilter']
+        syncmethod = options['syncmethod']
+        interval = options['interval']
 
-        kudos_contract = KudosContract(network=network)
-        # w3 = get_web3(network)
-        # contract_address = getKudosContractAddress(network)
-        # logger.info(f'Contract address: {contract_address}')
+        kudos_contract = KudosContract(network)
 
-        # kudos_contract = getKudosContract(network)
-
-        # logger.info(dir(kudos_contract))
-
-        if usefilter:
-            self.filter_listener(kudos_contract)
-        else:
-            self.block_listener(kudos_contract)
+        if syncmethod == 'filter':
+            self.filter_listener(kudos_contract, interval)
+        elif syncmethod == 'block':
+            self.block_listener(kudos_contract, interval)
+        elif syncmethod == 'opensea':
+            self.opensea_listener(kudos_contract, interval)
