@@ -1,0 +1,22 @@
+{
+  "symbol": "KMB",
+  "address": "0x7a7b224d100c9034567ef95b8f095f4839abbcc2",
+  "overview":{
+        "en": "KMB基于區塊鏈的數字化資產生態鏈，正試圖在不同支付模式和支付應用程序中使用區塊鏈。",
+        "zh": "KMB is trying to use block chains in different payment modes and payment applications based on the digital asset eco-chain of block chains."
+  },
+  "email": "kmb@kmbchain.com",
+  "website": "https://www.kmbchain.com/",
+  "whitepaper": "https://www.kmbchain.com/static/KMB_v1.0.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-09-26",
+  "initial_price":{
+        "ETH":"0.001 ETH"
+  },
+  "links": {
+    "blog": "https://weibo.com/u/6710001918",
+    "twitter": "https://twitter.com/kmb_chain",
+    "github": "https://github.com/kmbchain/kmb",
+    "facebook": "https://www.facebook.com/kmb.chain"
+  }
+}
