@@ -539,6 +539,9 @@ def render_notify_funder(profile):
             notifications.append(notification)
         notifs_list.update(funder_notified=True)
 
+    if not notifications:
+        return None, None, None
+
     params = {
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
         'notifications': notifications,
