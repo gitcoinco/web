@@ -527,7 +527,7 @@ class KudosContract:
         """
         tokenURI = kwargs
         ipfs_hash = self._ipfs.add_json(tokenURI)
-        ipfs_url = f'http://{settings.IPFS_HOST}:{settings.IPFS_API_PORT}/api/v0/cat/{ipfs_hash}'
+        ipfs_url = f'{settings.IPFS_HOST}:{settings.IPFS_API_PORT}/api/v0/cat/{ipfs_hash}'
         name = kwargs['name']
         logger.info(f'Posted metadata for "{name}" to IPFS.')
         logger.debug(f'ipfs_url for {kwargs["name"]}: {ipfs_url}')
