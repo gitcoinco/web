@@ -1,0 +1,25 @@
+{
+  "symbol": "MSX",
+  "address": "0x0248a296aD4a2C21b793efe777024760677331a3",
+  "overview":{
+        "en": "Token Description.",
+        "zh": ""
+  },
+  "email": "zf@iMeshX.io",
+  "website": "https://www.iMeshX.io/",
+  "whitepaper": "https://www.iMeshX.io/MeshX-V1_4.pdf",
+  "state": "LOCKED | NORMAL",
+  "published_on": "2018-01-01",
+  "initial_price":{
+        "ETH":"0.00166666 ETH",
+        "USD":"0.7 USD",
+        "BTC":"0.00004137 BTC"
+  },
+  "links": {
+    "blog": "https://weibo.com/MeshXOfficial",
+    "twitter": "https://twitter.com/MeshXOfficial",
+    "telegram": "https://t.me/MeshXOfficial",
+    "github": "https://github.com/iMeshX",
+    "facebook": "https://www.facebook.com/MeshXOfficial"
+  }
+}
