@@ -29,6 +29,7 @@ from web3.exceptions import BadFunctionCallOutput
 
 import oyaml as yaml
 import ipfsapi
+import os
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -39,7 +40,7 @@ default_start_id = 0 if not settings.DEBUG else 402
 
 logger = logging.getLogger(__name__)
 formatter = '%(levelname)s:%(name)s.%(funcName)s:%(message)s'
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 
 class Command(BaseCommand):
@@ -61,7 +62,7 @@ class Command(BaseCommand):
         kudos_contract = KudosContract(network=network)
 
         yaml_file = options['yaml_file']
-        # ipfs = ipfsapi.connect(settings.IPFS_HOST)
+        ipfs = ipfsapi.connect(host=settings.IPFS_HOST, port=settings.IPFS_API_PORT)
 
         with open(yaml_file) as f:
             all_kudos = yaml.load(f)
@@ -72,6 +73,10 @@ class Command(BaseCommand):
                 image_path = 'v2/images/kudos/' + image_name
             else:
                 image_path = ''
+
+            if kudos['name'] == 'hadoop_admiral':
+                ipfs_hash = ipfs.add('assets/v2/images/kudos/hadoop_admiral.png')['Hash']
+                image_path = f'{settings.IPFS_HOST}:{settings.IPFS_API_PORT}/api/v0/cat/{ipfs_hash}'
 
             metadata = {
                 'name': kudos['name'],
