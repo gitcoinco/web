@@ -134,6 +134,17 @@ def create_user_action(user, action_type, request=None, metadata=None):
         return False
 
 def _get_utm_from_cookie(request):
+    """Extract utm* params from Cookie.
+
+    Args:
+        request (Request): The request object.
+        
+    Returns:
+        utm_source: if it's not in cookie should be None.
+        utm_medium: if it's not in cookie should be None.
+        utm_campaign: if it's not in cookie should be None.
+
+    """
     utm_source = request.COOKIES.get('utm_source')
     utm_medium = request.COOKIES.get('utm_medium')
     utm_campaign = request.COOKIES.get('utm_campaign')
