@@ -1,5 +1,4 @@
-{% load static %}
-{% load humanize %}
+{% load humanize static i18n %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -21,22 +20,28 @@
             </div>
           </div>
           <div class="grants-hero__text col-12 col-md-6">
-            <h1 class="grants-hero__title">Dev Grants</h1>
-            <p class="grants-hero__copy">Support Open Source Projects via Gitcoin's new Dev Grants feature; By leveraging <a href="staketree.com">Staketree</a>, Gitcoin is helping facilitate blockchain-based support for some of the best OSS projects in the space. </p>
-            <a class="button button--primary" href="{% url 'grants:new_grant' %}">Create a Grant</a>
+            <h1 class="grants-hero__title">{% trans 'Dev Grants' %}</h1>
+            <p class="grants-hero__copy">{% blocktrans %}Support Open Source Projects via Gitcoin's new Dev Grants feature; By leveraging <a href="staketree.com">Staketree</a>, Gitcoin is helping facilitate blockchain-based support for some of the best OSS projects in the space. {% endblocktrans %}</p>
+            <a class="button button--primary" href="{% url 'grants:new_grant' %}">{% trans 'Create a Grant' %}</a>
           </div>
         </div>
       </div>
     </div>
-    <div class="container-fluid">
+    <div class="container-fluid py-5 my-5">
 
       <div class="container">
-        <form action="">
-          <input type="search" name="" id="">
-          <button>SEARCH</button>
-          <select name="" id="">
-            <option value="">Sort by date</option>
-          </select>
+        <form action="" class="">
+          <div class="row">
+            <div class="col-12 col-md-10 form__flex-group">
+              <input type="search" name="" id="" class="form__input">
+              <button class="btn">{% trans 'SEARCH' %}</button>
+            </div>
+            <div class="col-12 col-md-2">
+              <select name="" id="">
+                <option value="">{% trans 'Sort by date' %}</option>
+              </select>
+            </div>
+          </div>
         </form>
       </div>
     </div>
@@ -54,7 +59,7 @@
                     <div class="grant-item__owner-image">
                       <img src="{{grant.profile.local_avatar_url}}">
                     </div>
-                    <div class="grant-item__owner-handle">by <span>{{ grant.profile.handle }}</span></div>
+                    <div class="grant-item__owner-handle">{% trans 'by' %} <span>{{ grant.profile.handle }}</span></div>
                   </div>
                   <div class="progress-bar">
                     <div class="progress" style="width: {{ grant.percentage_done }}%"></div>
@@ -62,11 +67,11 @@
                   <div class="grant-item__funding">
                     <div class="grant-item__funding-item">
                       <div class="grant-item__funding-number">{{ grant.current_funding|floatformat:2|intcomma }} ETH</div>
-                      <div class="grant-item__funding-label">Current</div>
+                      <div class="grant-item__funding-label">{% trans 'Current' %}</div>
                     </div>
                     <div class="grant-item__funding-item">
                       <div class="grant-item__funding-number">{{ grant.goal_funding|floatformat:2|intcomma }} ETH</div>
-                      <div class="grant-item__funding-label">Goal</div>
+                      <div class="grant-item__funding-label">{% trans 'Goal' %}</div>
                     </div>
                   </div>
                 </div>
