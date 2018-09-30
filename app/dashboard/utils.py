@@ -113,6 +113,15 @@ def create_user_action(user, action_type, request=None, metadata=None):
             kwargs['location_data'] = geolocation_data
         if ip_address:
             kwargs['ip_address'] = ip_address
+        
+        utm_source, utm_medium, utm_campaign = _get_utm_from_cookie(request)
+
+        if utm_source:
+            kwargs['utm_source'] = utm_source
+        if utm_medium:
+            kwargs['utm_medium'] = utm_medium
+        if utm_campaign:
+            kwargs['utm_campaign'] = utm_campaign
 
     if user and hasattr(user, 'profile'):
         kwargs['profile'] = user.profile if user and user.profile else None
@@ -124,6 +133,11 @@ def create_user_action(user, action_type, request=None, metadata=None):
         logger.error(f'Failure in UserAction.create_action - ({e})')
         return False
 
+def _get_utm_from_cookie(request):
+    utm_source = request.COOKIES.get('utm_source')
+    utm_medium = request.COOKIES.get('utm_medium')
+    utm_campaign = request.COOKIES.get('utm_campaign')
+    return utm_source, utm_medium, utm_campaign
 
 def get_ipfs(host=None, port=settings.IPFS_API_PORT):
     """Establish a connection to IPFS.

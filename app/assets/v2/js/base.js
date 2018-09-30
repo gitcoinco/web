@@ -16,6 +16,21 @@ $(document).ready(function() {
 
   force_no_www();
 
+  var record_campaign_to_cookie = function() {
+    var paramsStr = decodeURIComponent(window.location.search.substring(1));
+    paramsStr.split('&')
+    .map((paramStr) => {
+      var [key, value] = paramStr.split('=');
+      return {key, value};
+    })
+    .filter((param) => ['utm_medium', 'utm_source', 'utm_campaign'].indexOf(param.key)!==-1)
+    .forEach((campaign) => {
+      Cookies.set(campaign.key, campaign.value);
+    });
+  }
+
+  record_campaign_to_cookie();
+
   if (!$('.header > .minihero').length && $('.header > .navbar').length) {
     $('.header').css('overflow', 'visible');
   }
