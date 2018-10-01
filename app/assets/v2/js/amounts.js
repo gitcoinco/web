@@ -35,7 +35,7 @@ var get_rates_estimate = function(usd_amount) {
   var hours = $('input[name=hours').val();
   var rates_addon = [];
   var rate = usd_amount / hours;
-  var round_rate = rate.toFixed(2);
+  var round_rate = rate.toFixed(0);
   var round_decimals = hours < 1 ? 2 : 1;
   hours = Math.round(hours, round_decimals);
   success_prob = ((0.002 * rate) + 0.65);
