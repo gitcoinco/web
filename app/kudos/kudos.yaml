@@ -135,7 +135,7 @@
   rarity: 25
   priceFinney: 2
   numClonesAllowed: 500
-  tags: shipping, soft skills,
+  tags: shipping, soft skills
   image: code_shipper.svg
 - name: drupal_brainiac
   description: Want to ship content on the modern web?  Drupal is where it's at.  The
