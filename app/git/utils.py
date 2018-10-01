@@ -384,8 +384,12 @@ def search(query):
     """
     params = (('q', query), ('sort', 'updated'), )
 
-    response = requests.get('https://api.github.com/search/users', auth=_AUTH, headers=V3HEADERS, params=params)
-    return response.json()
+    try:
+        response = requests.get('https://api.github.com/search/users', auth=_AUTH, headers=V3HEADERS, params=params)
+        return response.json()
+    except Exception as e:
+        logger.error("could not search GH - Reason: %s - query: %s", e, query)
+    return {}
 
 
 def get_issue_comments(owner, repo, issue=None, comment_id=None):
@@ -413,9 +417,15 @@ def get_issue_comments(owner, repo, issue=None, comment_id=None):
     else:
         url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments'
 
-    response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
-
-    return response.json()
+    try:
+        response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
+        return response.json()
+    except Exception as e:
+        logger.error(
+            "could not get issue comments - Reason: %s - owner: %s repo: %s issue: %s comment_id: %s status code: %s",
+            e, owner, repo, issue, comment_id, response.status_code
+        )
+    return {}
 
 
 def get_issues(owner, repo, page=1, state='open'):
@@ -423,9 +433,15 @@ def get_issues(owner, repo, page=1, state='open'):
     params = {'state': state, 'sort': 'created', 'direction': 'desc', 'page': page, 'per_page': 100, }
     url = f'https://api.github.com/repos/{owner}/{repo}/issues'
 
-    response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
-
-    return response.json()
+    try:
+        response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
+        return response.json()
+    except Exception as e:
+        logger.error(
+            "could not get issues - Reason: %s - owner: %s repo: %s page: %s state: %s status code: %s",
+            e, owner, repo, page, state, response.status_code
+        )
+    return {}
 
 
 def get_issue_timeline_events(owner, repo, issue, page=1):
@@ -539,16 +555,27 @@ def get_gh_notifications(login=None):
 def post_issue_comment(owner, repo, issue_num, comment):
     """Post a comment on an issue."""
     url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue_num}/comments'
-    response = requests.post(url, data=json.dumps({'body': comment}), auth=_AUTH)
-    return response.json()
+    try:
+        response = requests.post(url, data=json.dumps({'body': comment}), auth=_AUTH)
+        return response.json()
+    except Exception as e:
+        logger.error(
+            "could not post issue comment - Reason: %s - %s %s %s %s", e, comment, owner, repo, response.status_code
+        )
+    return {}
 
 
 def patch_issue_comment(comment_id, owner, repo, comment):
     """Update a comment on an issue via patch."""
     url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}'
-    response = requests.patch(url, data=json.dumps({'body': comment}), auth=_AUTH)
-    if response.status_code == 200:
-        return response.json()
+    try:
+        response = requests.patch(url, data=json.dumps({'body': comment}), auth=_AUTH)
+        if response.status_code == 200:
+            return response.json()
+    except Exception as e:
+        logger.error(
+            "could not patch issue comment - Reason: %s - %s %s %s %s", e, comment_id, owner, repo, response.status_code
+        )
     return {}
 
 
@@ -560,17 +587,29 @@ def delete_issue_comment(comment_id, owner, repo):
         return response.json()
     except ValueError:
         logger.error(
-            f"could not delete issue comment because JSON response could not be decoded: {comment_id}, {owner}, {repo}.  {response.status_code}, {response.text} "
+            "could not delete issue comment because JSON response could not be decoded: %s %s %s %s %s",
+            comment_id, owner, repo, response.status_code, response.text
         )
-    except Exception:
-        return {}
+    except Exception as e:
+        logger.error(
+            "could not delete issue comment - Reason: %s: %s %s %s %s %s",
+            e, comment_id, owner, repo, response.status_code, response.text
+        )
+    return {}
 
 
 def post_issue_comment_reaction(owner, repo, comment_id, content):
     """React to an issue comment."""
     url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions'
-    response = requests.post(url, data=json.dumps({'content': content}), auth=_AUTH, headers=HEADERS)
-    return response.json()
+    try:
+        response = requests.post(url, data=json.dumps({'content': content}), auth=_AUTH, headers=HEADERS)
+        return response.json()
+    except Exception as e:
+        logger.error(
+            "could not post issue reaction - Reason: %s - %s %s %s %s",
+            e, comment_id, owner, repo, response.status_code
+        )
+    return {}
 
 
 def get_url_dict(issue_url):
@@ -593,7 +632,7 @@ def get_url_dict(issue_url):
             'issue_num': int(issue_url.split('/')[6]),
         }
     except IndexError as e:
-        logger.warn(e)
+        logger.warning(e)
         return {'org': org_name(issue_url), 'repo': repo_name(issue_url), 'issue_num': int(issue_number(issue_url))}
 
 
