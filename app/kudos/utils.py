@@ -32,6 +32,7 @@ from web3.middleware import geth_poa_middleware
 from django.forms.models import model_to_dict
 from web3.exceptions import BadFunctionCallOutput
 from web3.middleware import geth_poa_middleware
+from web3 import WebsocketProvider, Web3
 
 from ipfsapi.exceptions import CommunicationError
 import ipfsapi
@@ -39,6 +40,14 @@ import ipfsapi
 from functools import wraps
 
 logger = logging.getLogger(__name__)
+
+
+def humanize_name(name):
+    return ' '.join([x.capitalize() for x in name.split('_')])
+
+
+def computerize_name(name):
+    return name.lower().replace(' ', '_')
 
 
 class KudosError(Exception):
@@ -106,7 +115,7 @@ class KudosContract:
         address (str): The addess of the Kudos.sol contract on the blockchain.
     """
 
-    def __init__(self, network='localhost'):
+    def __init__(self, network='localhost', sockets=False):
         """Initialize the KudosContract.
 
         Args:
@@ -116,7 +125,8 @@ class KudosContract:
         network = 'localhost' if network == 'custom network' else network
         self.network = network
 
-        self._w3 = get_web3(self.network)
+        self._w3 = get_web3(self.network, sockets=sockets)
+
         if self.network == 'rinkeby':
             self._w3.middleware_stack.inject(geth_poa_middleware, layer=0)
         host = f'{settings.IPFS_API_SCHEME}://{settings.IPFS_HOST}'
@@ -147,11 +157,21 @@ class KudosContract:
                        )
 
         attributes = metadata.pop('attributes')
-        mapping['tags'] = attributes['tags']
-        mapping['rarity'] = attributes['rarity']
+        tags = []
+        for attrib in attributes:
+            if attrib['trait_type'] == 'rarity':
+                mapping['rarity'] = attrib['value']
+            elif attrib['trait_type'] == 'tag':
+                tags.append(attrib['value'])
+
+        mapping['tags'] = ', '.join(tags)
 
         # Add the rest of the fields
         kudos_map = {**mapping, **metadata}
+
+        kudos_map['name'] = computerize_name(kudos_map['name'])
+        image_arr = kudos_map["image"].split('/')[-4:]
+        kudos_map['image'] = '/'.join(image_arr)
 
         return kudos_map
 
@@ -269,7 +289,7 @@ class KudosContract:
             if kudos_token.num_clones_allowed == 0:
                 logger.warning(f'No KudosTransfer object found for Kudos ID {kudos_id}')
                 # raise KudosTransferNotFound(kudos_id, 'No KudosTransfer object found')
-                raise
+                # raise
         else:
             # Store the foreign key reference if the kudos_transfer object exists
             kudos_transfer.kudos_token = kudos_token
@@ -531,7 +551,7 @@ class KudosContract:
         """
         tokenURI = kwargs
         ipfs_hash = self._ipfs.add_json(tokenURI)
-        ipfs_url = f'{settings.IPFS_HOST}:{settings.IPFS_API_PORT}/api/v0/cat/{ipfs_hash}'
+        ipfs_url = f'{settings.IPFS_API_SCHEME}://{settings.IPFS_HOST}:{settings.IPFS_API_PORT}/api/v0/cat/{ipfs_hash}'
         name = kwargs['name']
         logger.info(f'Posted metadata for "{name}" to IPFS.')
         logger.debug(f'ipfs_url for {kwargs["name"]}: {ipfs_url}')

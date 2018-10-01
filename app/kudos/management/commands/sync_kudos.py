@@ -24,9 +24,10 @@ import json
 
 from django.core.management.base import BaseCommand
 from django.conf import settings
+from django.db.models import Avg, Max, Min
 
 from kudos.utils import KudosContract
-from kudos.models import KudosTransfer
+from kudos.models import KudosTransfer, Token
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -50,8 +51,10 @@ class Command(BaseCommand):
         parser.add_argument('-s', '--start', type=str,
                             help='kudos_id to or kudos block to start syncing at.  Lowest kudos_id is 1.\
                             Options for block are: block number (int), "earliest", or "latest"')
-        parser.add_argument('-r', '--rewind', default=10, type=int,
+        parser.add_argument('-r', '--rewind', type=int,
                             help='Sync the lastest <rewind> Kudos Ids or block transactions.')
+        parser.add_argument('--catchup', action='store_true',
+                            help='Attempt to sync up the newest kudos to the database')
 
     def opensea_sync(self, kudos_contract, start_id):
         if kudos_contract.network == 'rinkeby':
@@ -77,6 +80,7 @@ class Command(BaseCommand):
             asset_token_id = r.json()['asset_events'][0]['asset']['token_id']
             transaction_hash = r.json()['asset_events'][0]['transaction']['transaction_hash']
             logger.info(f'token_id: {asset_token_id}, txid: {transaction_hash}')
+            kudos_contract.sync_db(kudos_id=int(asset_token_id), txid=transaction_hash)
 
     def filter_sync(self, kudos_contract, fromBlock):
         if kudos_contract.network != 'localhost':
@@ -121,17 +125,24 @@ class Command(BaseCommand):
         # fromBlock = options['fromBlock']
         start = options['start']
         rewind = options['rewind']
+        catchup = options['catchup']
 
         kudos_contract = KudosContract(network)
 
         if start:
             start_id = start
             fromBlock = start
-        else:
+        elif rewind:
             start_id = kudos_contract._contract.functions.totalSupply().call() - rewind
             fromBlock = kudos_contract._w3.eth.getBlock('latest')['number'] - rewind
+        elif catchup:
+            # latest_blockchain_id = kudos_contract.getLatestKudosId()
+            start_id = Token.objects.aggregate(Max('id'))['id__max']
+        else:
+            raise RuntimeError("Need to pass a valid action, such as start, rewind, or catchup ")
 
         if syncmethod == 'filter':
+            kudos_contract = KudosContract(network, sockets=True)
             self.filter_sync(kudos_contract, fromBlock)
         elif syncmethod == 'id':
             self.id_sync(kudos_contract, int(start_id))

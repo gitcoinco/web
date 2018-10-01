@@ -19,11 +19,12 @@
 import datetime
 import logging
 import warnings
+import time
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from kudos.utils import KudosContract
+from kudos.utils import KudosContract, humanize_name, computerize_name
 
 from web3.exceptions import BadFunctionCallOutput
 
@@ -39,7 +40,7 @@ default_start_id = 0 if not settings.DEBUG else 402
 
 logger = logging.getLogger(__name__)
 formatter = '%(levelname)s:%(name)s.%(funcName)s:%(message)s'
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 
 class Command(BaseCommand):
@@ -66,27 +67,60 @@ class Command(BaseCommand):
         with open(yaml_file) as f:
             all_kudos = yaml.load(f)
 
-        for kudos in all_kudos:
+        for idx, kudos in enumerate(all_kudos):
+            # Only mint new gen0 Kudos
+            if idx + 1 <= kudos_contract.getLatestKudosId():
+                logger.warning(f'{kudos["name"]} already exists on the blockchain.  Not minting...')
+                continue
             image_name = kudos.get('image')
             if image_name:
-                image_path = 'v2/images/kudos/' + image_name
+                # Support Open Sea
+                if kudos_contract.network == 'rinkeby':
+                    image_path = 'http://kudosdemo.gitcoin.co/static/v2/images/kudos/' + image_name
+                else:
+                    image_path = 'v2/images/kudos/' + image_name
             else:
                 image_path = ''
 
+            attributes = []
+            # "trait_type": "investor_experience",
+            # "value": 20,
+            # "display_type": "boost_number",
+            # "max_value": 100
+            rarity = {
+                "trait_type": "rarity",
+                "value": kudos['rarity'],
+                "max_value": 100
+            }
+            attributes.append(rarity)
+            tags = {tag.strip() for tag in kudos['tags'].split(',')}
+            for tag in tags:
+                if tag:
+                    tag = {
+                        "trait_type": "tag",
+                        "value": tag
+                    }
+                    attributes.append(tag)
+
             metadata = {
-                'name': kudos['name'],
+                'name': humanize_name(kudos['name']),
                 'image': image_path,
                 'description': kudos['description'],
-                'external_url': 'https://gitcoin.co/kudos',  # Might want to link to the exact address
-                'background_color': '00FFFF',
-                'attributes': {
-                    'tags': kudos['tags'],
-                    'rarity': kudos['rarity'],
-                }
+                'external_url': f'http://kudosdemo.gitcoin.co/kudos/{idx + 1}/{kudos["name"]}',
+                'background_color': '#fbfbfb',
+                'attributes': attributes
             }
 
             tokenURI_url = kudos_contract.create_tokenURI_url(**metadata)
 
             args = (kudos['priceFinney'], kudos['numClonesAllowed'], tokenURI_url)
-
-            kudos_contract.mint(*args, account=account, private_key=private_key)
+            for x in range(1, 4):
+                try:
+                    kudos_contract.mint(*args, account=account, private_key=private_key, skip_sync=True)
+                except ValueError as e:
+                    logger.warning(e)
+                    logger.info("Trying the mint again...")
+                    time.sleep(2)
+                    continue
+                else:
+                    break

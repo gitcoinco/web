@@ -19,18 +19,25 @@
 import logging
 import time
 import requests
+import json
 
 from django.core.management.base import BaseCommand
 from django.conf import settings
 
 from dashboard.utils import get_web3
 from kudos.utils import KudosContract
+import web3
+import warnings
+warnings.simplefilter("ignore", category=DeprecationWarning)
+warnings.simplefilter("ignore", category=UserWarning)
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 logging.getLogger("web3").setLevel(logging.WARNING)
+logging.getLogger("websockets").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 
 class Command(BaseCommand):
@@ -68,11 +75,20 @@ class Command(BaseCommand):
             if cache == (asset_token_id, transaction_hash):
                 continue
             logger.info(f'token_id: {asset_token_id}, txid: {transaction_hash}')
+            kudos_contract.sync_db(kudos_id=int(asset_token_id), txid=transaction_hash)
             time.sleep(interval)
 
     def filter_listener(self, kudos_contract, interval):
 
         event_filter = kudos_contract._contract.events.Transfer.createFilter(fromBlock='latest')
+        # params = dict(
+        #     fromBlock='latest',
+        #     toBlock='latest',
+        #     address=kudos_contract.address,
+        #     topics=['034ac9c3d6ddb432341e5fdbaba91bb6a01a6aab04b202888634e16a7c6656b2']
+        #     )
+        # event_filter = kudos_contract._w3sockets.eth.filter({"address": kudos_contract.address})
+
         while True:
             for event in event_filter.get_new_entries():
                 msg = dict(blockNumber=event.blockNumber,
@@ -150,6 +166,7 @@ class Command(BaseCommand):
         kudos_contract = KudosContract(network)
 
         if syncmethod == 'filter':
+            kudos_contract = KudosContract(network, sockets=True)
             self.filter_listener(kudos_contract, interval)
         elif syncmethod == 'block':
             self.block_listener(kudos_contract, interval)

@@ -31,7 +31,7 @@ from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
 from ipfsapi.exceptions import CommunicationError
-from web3 import HTTPProvider, Web3
+from web3 import HTTPProvider, Web3, WebsocketProvider
 from web3.exceptions import BadFunctionCallOutput
 
 logger = logging.getLogger(__name__)
@@ -188,7 +188,7 @@ def ipfs_cat_requests(key):
         return None, 500
 
 
-def get_web3(network):
+def get_web3(network, sockets=False):
     """Get a Web3 session for the provided network.
 
     Attributes:
@@ -203,7 +203,11 @@ def get_web3(network):
 
     """
     if network in ['mainnet', 'rinkeby', 'ropsten']:
-        return Web3(HTTPProvider(f'https://{network}.infura.io'))
+        if sockets:
+            provider = WebsocketProvider(f'wss://{network}.infura.io/ws')
+        else:
+            provider = HTTPProvider(f'https://{network}.infura.io')
+        return Web3(provider)
     elif network == 'localhost' or 'custom network':
         return Web3(Web3.HTTPProvider("http://testrpc:8545", request_kwargs={'timeout': 60}))
 
