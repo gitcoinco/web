@@ -446,6 +446,7 @@ def get_issues(owner, repo, page=1, state='open'):
 
 def get_issue_timeline_events(owner, repo, issue, page=1):
     """Get the timeline events for a given issue.
+
     PLEASE NOTE CURRENT LIMITATION OF 100 EVENTS.
     PLEASE NOTE GITHUB API FOR THIS IS SUBJECT TO CHANGE.
     (See https://developer.github.com/changes/2016-05-23-timeline-preview-api/ for more info.)
@@ -460,10 +461,15 @@ def get_issue_timeline_events(owner, repo, issue, page=1):
     """
     params = {'sort': 'created', 'direction': 'desc', 'per_page': 100, 'page': page, }
     url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue}/timeline'
-    # Set special header to access timeline preview api
-    response = requests.get(url, auth=_AUTH, headers=TIMELINE_HEADERS, params=params)
-
-    return response.json()
+    try:
+        # Set special header to access timeline preview api
+        response = requests.get(url, auth=_AUTH, headers=TIMELINE_HEADERS, params=params)
+        return response.json()
+    except Exception as e:
+        logger.error(
+            "could not get timeline events - Reason: %s - %s %s %s %s", e, owner, repo, issue, response.status_code
+        )
+    return {}
 
 
 def get_interested_actions(github_url, username, email=''):
@@ -536,9 +542,12 @@ def get_user(user, sub_path=''):
 def get_notifications():
     """Get the github notifications."""
     url = f'https://api.github.com/notifications?all=1'
-    response = requests.get(url, auth=_AUTH, headers=HEADERS)
-
-    return response.json()
+    try:
+        response = requests.get(url, auth=_AUTH, headers=HEADERS)
+        return response.json()
+    except Exception as e:
+        logger.error("could not get notifications - Reason: %s", e)
+    return {}
 
 
 def get_gh_notifications(login=None):
