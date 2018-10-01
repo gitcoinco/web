@@ -1,0 +1,21 @@
+{% load i18n humanize %}
+
+{%trans "Thank you for supporting"%} {{grant_org_name}}
+
+{%trans "The world of open source is a better place because of you." %}
+
+{{github_username}}
+
+{{project_image}}
+
+{{project_description}}
+
+{%trans "You have agreed to give" %}
+
+{{variable_amount_contribution}}
+
+{%trans "You can see the transaction on etherscan" %} {{etherscan_link}} {%trans "here." %}
+
+{{grant_id}} {%trans "View Updates" %}
+
+{%trans "If you ever need to you can cancel your support" %} {{link_to_cancel}} {%trans "here." %}
