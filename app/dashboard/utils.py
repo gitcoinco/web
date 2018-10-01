@@ -113,6 +113,15 @@ def create_user_action(user, action_type, request=None, metadata=None):
             kwargs['location_data'] = geolocation_data
         if ip_address:
             kwargs['ip_address'] = ip_address
+        
+        utm_source, utm_medium, utm_campaign = _get_utm_from_cookie(request)
+
+        if utm_source:
+            kwargs['utm_source'] = utm_source
+        if utm_medium:
+            kwargs['utm_medium'] = utm_medium
+        if utm_campaign:
+            kwargs['utm_campaign'] = utm_campaign
 
         utm_source, utm_medium, utm_campaign = _get_utm_from_cookie(request)
 
@@ -148,23 +157,6 @@ def _get_utm_from_cookie(request):
     Args:
         request (Request): The request object.
 
-    Returns:
-        utm_source: if it's not in cookie should be None.
-        utm_medium: if it's not in cookie should be None.
-        utm_campaign: if it's not in cookie should be None.
-
-    """
-    utm_source = request.COOKIES.get('utm_source')
-    utm_medium = request.COOKIES.get('utm_medium')
-    utm_campaign = request.COOKIES.get('utm_campaign')
-    return utm_source, utm_medium, utm_campaign
-
-def _get_utm_from_cookie(request):
-    """Extract utm* params from Cookie.
-
-    Args:
-        request (Request): The request object.
-        
     Returns:
         utm_source: if it's not in cookie should be None.
         utm_medium: if it's not in cookie should be None.
