@@ -460,6 +460,9 @@ class KudosContract:
         else:
             return kudos
 
+    def getLatestKudosId(self):
+        return self._contract.functions.totalSupply().call()
+
     def getGen0TokenId(self, *args):
         """Contract call method.
 
