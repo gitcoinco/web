@@ -1069,10 +1069,6 @@ def ui(request):
     return TemplateResponse(request, 'ui_inventory.html', context)
 
 
-def lbcheck(request):
-    return HttpResponse(status=200)
-
-
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def increase_funding_limit_request(request):
