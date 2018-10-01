@@ -128,8 +128,9 @@
     {% include 'shared/messages.html' %}
 
     <script>
+      var host = ("{{ ipfs_config.host }}" == "ipfs" ? "localhost" : "{{ ipfs_config.host }}");
       var ipfsConfig = {
-        host: "{{ ipfs_config.host }}",
+        host: host,
         port: {{ ipfs_config.port }},
         protocol: "{{ ipfs_config.protocol }}",
         root: "{{ ipfs_config.root }}"
