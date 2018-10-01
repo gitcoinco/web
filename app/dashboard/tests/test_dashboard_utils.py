@@ -77,13 +77,7 @@ class DashboardUtilsTest(TestCase):
         request.COOKIES['utm_medium'] = 'test medium'
         request.COOKIES['utm_campaign'] = 'test campaign'
         create_user_action(None, 'Login', request)
-        mockUserAction.create.assert_called_once_with(
-            action = 'Login',
-            metadata = {},
-            user = None,
-            utm_campaign = 'test campaign',
-            utm_medium = 'test medium',
-            utm_source = 'test source')
+        mockUserAction.create.assert_called_once_with( action = 'Login', metadata = {}, user = None, utm_campaign = 'test campaign', utm_medium = 'test medium', utm_source = 'test source' )
 
     @staticmethod
     @patch('dashboard.utils.UserAction.objects')
@@ -91,7 +85,4 @@ class DashboardUtilsTest(TestCase):
         """Test the giving utm* in cookie should store in DB."""
         request = RequestFactory().get('/login')
         create_user_action(None, 'Login', request)
-        mockUserAction.create.assert_called_once_with(
-            action = 'Login',
-            metadata = {},
-            user = None)
+        mockUserAction.create.assert_called_once_with( action = 'Login', metadata = {}, user = None )
