@@ -21,6 +21,7 @@ import time
 import requests
 
 from django.core.management.base import BaseCommand
+from django.conf import settings
 
 from dashboard.utils import get_web3
 from kudos.utils import KudosContract
@@ -53,11 +54,12 @@ class Command(BaseCommand):
             asset_contract_address=kudos_contract.address,
             event_type='transfer',
             )
+        headers = {'X-API-KEY': settings.OPENSEA_API_KEY}
         asset_token_id = 0
         transaction_hash = 0
         while True:
             cache = (asset_token_id, transaction_hash)
-            r = requests.get(url, params=payload)
+            r = requests.get(url, params=payload, headers=headers)
             r.raise_for_status()
 
             asset_token_id = r.json()['asset_events'][0]['asset']['token_id']

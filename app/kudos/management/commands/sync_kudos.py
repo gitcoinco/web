@@ -23,6 +23,7 @@ import requests
 import json
 
 from django.core.management.base import BaseCommand
+from django.conf import settings
 
 from kudos.utils import KudosContract
 from kudos.models import KudosTransfer
@@ -63,13 +64,15 @@ class Command(BaseCommand):
         end_id = kudos_contract._contract.functions.totalSupply().call()
         token_ids = range(start_id, end_id + 1)
 
+        headers = {'X-API-KEY': settings.OPENSEA_API_KEY}
+
         # Event API
         for token_id in token_ids:
             payload = dict(
                 asset_contract_address=kudos_contract.address,
                 token_id=token_id,
                 )
-            r = requests.get(url, params=payload)
+            r = requests.get(url, params=payload, headers=headers)
             r.raise_for_status()
             asset_token_id = r.json()['asset_events'][0]['asset']['token_id']
             transaction_hash = r.json()['asset_events'][0]['transaction']['transaction_hash']
