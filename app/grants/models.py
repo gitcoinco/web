@@ -17,6 +17,7 @@ class Grant(SuperModel):
     amount_received = models.DecimalField(default=0, decimal_places=4, max_digits=50)
     token_address = models.CharField(max_length=255, default='0x0')
     contract_address = models.CharField(max_length=255, default='0x0')
+    transaction_hash = models.CharField(max_length=255, default='0x0')
     network = models.CharField(max_length=255, default='0x0')
     required_gas_price = models.DecimalField(default='0', decimal_places=0, max_digits=50)
 
@@ -30,7 +31,7 @@ class Grant(SuperModel):
 
     def __str__(self):
         """Return the string representation of a Grant."""
-        return f" id: {self.pk}, status: {self.status}, title: {self.title}, description: {self.description}, reference_url: {self.reference_url}, image_url: {self.image_url}, admin_address: {self.admin_address}, frequency: {self.frequency}, amount_goal: {self.amount_goal}, amount_received: {self.amount_received}, token_adress: {self.token_address}, admin_profile: {self.admin_profile}, team_member_profiles: {self.team_member_profiles} @ {naturaltime(self.created_on)}"
+        return f" id: {self.pk}, status: {self.status}, title: {self.title}, description: {self.description}, reference_url: {self.reference_url}, image_url: {self.image_url}, admin_address: {self.admin_address}, frequency: {self.frequency}, amount_goal: {self.amount_goal}, amount_received: {self.amount_received}, token_address: {self.token_address}, contract_address: {self.contract_address}, transaction_hash: {self.transaction_hash}, network: {self.network}, admin_profile: {self.admin_profile}, team_member_profiles: {self.team_member_profiles} @ {naturaltime(self.created_on)}"
 
 class Subscription(SuperModel):
     """Define the structure of a subscription agreement"""

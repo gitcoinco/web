@@ -86,6 +86,12 @@ console.log(web3.version.network);
                   // check address on the second call (contract deployed)
                 } else {
                   console.log(myContract.address) // the contract address
+                  //
+                  // data.transaction_hash = myContract.transactionHash
+                  // data.contract_address = myContract.address
+
+                  form.submit();
+
                 }
                 // Note that the returned "myContractReturned" === "myContract",
                 // so the returned "myContractReturned" object will also get the address set.
@@ -95,7 +101,6 @@ console.log(web3.version.network);
       // });
 
 
-      // form.submit();
 
     }
   });
