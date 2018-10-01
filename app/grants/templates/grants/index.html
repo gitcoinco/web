@@ -11,7 +11,7 @@
       {% include 'shared/nav.html' %}
     </div>
 
-    <div class="container">
+    <div class="container pt-5">
       <div class="grants-hero">
         <div class="row">
           <div class="col-12 col-md-6 order-md-last">
@@ -27,16 +27,18 @@
         </div>
       </div>
     </div>
-    <div class="container-fluid py-5 my-5">
+    <div class="container-fluid py-5 my-5 grants-search">
 
       <div class="container">
         <form action="" class="">
           <div class="row">
-            <div class="col-12 col-md-10 form__flex-group">
+            <div class="col-9 col-md-7 form__flex-group">
               <input type="search" name="" id="" class="form__input">
-              <button class="btn">{% trans 'SEARCH' %}</button>
             </div>
-            <div class="col-12 col-md-2">
+            <div class="col-3 col-md-2">
+              <button class="button button--primary button--full">{% trans 'SEARCH' %}</button>
+            </div>
+            <div class="col-12 col-md-3 d-flex justify-content-end">
               <select name="" id="">
                 <option value="">{% trans 'Sort by date' %}</option>
               </select>
