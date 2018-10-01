@@ -288,7 +288,7 @@ class KudosContract:
         elif self.network == 'ropsten':
             return to_checksum_address('0xcd520707fc68d153283d518b29ada466f9091ea8')
         elif self.network == 'rinkeby':
-            return to_checksum_address('0x67ba5da1fd437642c99fb2de267b1152f365cea4')
+            return to_checksum_address('0x71cb4e23e0d4fe8921c4750361aeef709c4c2c28')
         else:
             # local testrpc
             return to_checksum_address('0xe7bed272ee374e8116049d0a49737bdda86325b6')
