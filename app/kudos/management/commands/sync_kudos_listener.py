@@ -122,6 +122,9 @@ class Command(BaseCommand):
                 if method_id == '0xdaa6eb1d' or method_id == '0xd319784f':
                     kudos_contract._w3.eth.waitForTransactionReceipt(tx['hash'])
                     kudos_id = kudos_contract._contract.functions.totalSupply().call()
+                    if kudos_contract.network == 'localhost':
+                        # On localhost, the tx syncs faster than the website loads
+                        time.sleep(3)
                     kudos_contract.sync_db(kudos_id=kudos_id, txid=tx['hash'].hex())
                     # # Get the kudos_id of the newly cloned Kudos
                     # kudos_id = kudos_contract.functions.totalSupply().call()
