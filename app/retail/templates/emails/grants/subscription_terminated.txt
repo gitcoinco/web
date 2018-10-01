@@ -1,0 +1,22 @@
+{% load i18n humanize %}
+
+{% trans "Grant" %} {{grant_name}} {% trans "has been cancelled" %}
+{%trans "Your subscription for the project has been cancelled and you will no longer be charged." %}
+
+{{github_username}}
+
+{{funding_status}}
+
+{{progress_completed}}
+
+{{goal_funding}}
+
+{%trans "Goal" %}
+
+{%trans "You can see the subscription cancelation transaction" %} 
+
+{{etherscan_link}} 
+
+{%trans "here." %}
+
+{%trans "View Transaction" %}
