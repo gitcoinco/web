@@ -39,7 +39,7 @@ var get_rates_estimate = function(usd_amount) {
   var round_decimals = hours < 1 ? 2 : 1;
   hours = Math.round(hours, round_decimals);
   success_prob = Math.round(((0.002 * rate) + 0.65) * 100);
-  rates_addon.push('' + hours + ' hrs at $' + rate + '/hr <i class="fa fa-arrow-right"></i> ' + success_prob + '% success rate<br>');
+  rates_addon.push('' + hours + ' hrs at $' + round_rate + '/hr <i class="fa fa-arrow-right"></i> ' + success_prob + '% success rate<br>');
   rates_addon = rates_addon.join(', ');
 
   var help_addon = ' <a href="https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e" target="_blank" rel="noopener noreferrer">[Read our pricing guide]</a>';
