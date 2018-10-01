@@ -43,14 +43,7 @@ console.log(web3.version.network);
 
   $('#js-newGrant').validate({
     submitHandler: function(form) {
-//
-// Don't need this try/catch. Can deploy to any network
-      // try {
-      //   web3.version.network == "1" || "4"
-      // } catch (exception) {
-      //   _alert(gettext('You are on an unsupported network.  Please change your network to a supported network.'));
-      //   return;
-      // }
+
 
 
       var data = {};
@@ -58,52 +51,57 @@ console.log(web3.version.network);
         .find(':input:disabled')
         .removeAttr('disabled');
 
-      $.each($(form).serializeArray(), function() {
-        data[this.name] = this.value;
-      });
+        $.each($(form).serializeArray(), function() {
+          data[this.name] = this.value;
+        });
 
-      // Begin New Deploy Subscription Contract
+        deploySubscriptionContract(
+          data.admin_address,
+          data.token_address,
+          data.amount_goal,
+          data.frequency,
+          data.gas_price
+        );
 
-      let bytecode = compiledContract.bytecode;
-      // web3.eth.estimateGas({data: bytecode}, function(err, gasEstimate){
-      // if (err) {
-      //   console.log(err);
-      // } else {
-
-
-          let MyContract = web3.eth.contract(compiledContract.abi);
-          var myContractReturned = MyContract.new(data.admin_address, data.token_address, data.amount_goal, data.frequency, data.gas_price, {
-            from:web3.eth.accounts[0],
-            data:bytecode,
-            gas:2500000}, function(err, myContract){
-              if(!err) {
-                // NOTE: The callback will fire twice!
-                // Once the contract has the transactionHash property set and once its deployed on an address.
-                // e.g. check tx hash on the first call (transaction send)
-                if(!myContract.address) {
-                  console.log(myContract.transactionHash) // The hash of the transaction, which deploys the contract
-
-                  // check address on the second call (contract deployed)
-                } else {
-                  console.log(myContract.address) // the contract address
-                  //
-                  // data.transaction_hash = myContract.transactionHash
-                  // data.contract_address = myContract.address
-
-                  form.submit();
-
-                }
-                // Note that the returned "myContractReturned" === "myContract",
-                // so the returned "myContractReturned" object will also get the address set.
-              }
-            });
-      //   }
-      // });
-
+        form.submit();
 
 
     }
   });
+
+  function deploySubscriptionContract(admin_address, token_address, amount_goal, frequency, gas_price ){
+
+    let bytecode = compiledContract.bytecode;
+
+    let MyContract = web3.eth.contract(compiledContract.abi);
+
+    MyContract.new(
+      admin_address,
+      token_address,
+      amount_goal,
+      frequency,
+      gas_price, {
+          from:web3.eth.accounts[0],
+          data:bytecode,
+          gas:2500000}, function(err, myContract){
+            if(!err) {
+              // NOTE: The callback will fire twice!
+              // Once the contract has the transactionHash property set and once its deployed on an address.
+              // e.g. check tx hash on the first call (transaction send)
+              if(!myContract.address) {
+                console.log(myContract.transactionHash) // The hash of the transaction, which deploys the contract
+
+                // check address on the second call (contract deployed)
+              } else {
+                console.log(myContract.address) // the contract address
+                //
+              }
+
+            }
+          });
+
+  }
+
 
 // Will need this for a subscription
 
