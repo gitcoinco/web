@@ -32,6 +32,8 @@ class DashboardConfig(AppConfig):
 
     def ready(self):
         """Handle signals on ready."""
-        from .healthchecks import IPFSBackend
-        import .signals # noqa
-        plugin_dir.register(IPFSBackend)
+        from dashboard.healthchecks import DefaultIPFSBackend, GithubRateLimiting, InfuraIPFSBackend
+        import dashboard.signals # noqa
+        plugin_dir.register(InfuraIPFSBackend)
+        plugin_dir.register(DefaultIPFSBackend)
+        plugin_dir.register(GithubRateLimiting)

@@ -707,3 +707,9 @@ def issue_number(issue_url):
         return issue_url.split('/')[6]
     except IndexError:
         return ''
+
+
+def get_current_ratelimit(token=None):
+    """Get the current Github API ratelimit for the provided token."""
+    gh_client = github_connect(token)
+    return gh_client.get_rate_limit()
