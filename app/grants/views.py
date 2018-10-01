@@ -47,7 +47,7 @@ def new_grant(request):
     if request.method == "POST":
         grant = Grant()
 
-        # print('dis da grant', grant)
+        print('request', request.POST)
 
         grant.title = request.POST.get('input-name')
         grant.description = request.POST.get('description')
@@ -57,9 +57,9 @@ def new_grant(request):
         grant.frequency = request.POST.get('frequency')
         grant.token_address = request.POST.get('denomination')
         grant.amount_goal = request.POST.get('amount_goal')
-        # grant.network =
-        # grant.transaction_hash =
-        # grant.contract_address =
+        # grant.network = request.POST.get('network')
+        # grant.transaction_hash = request.POST.get('transaction_hash')
+        # grant.contract_address = request.POST.get('contract_address')
         grant.admin_profile = profile
         # grant.teamMemberProfiles = Need to do a profile search based on enetered emails
 
