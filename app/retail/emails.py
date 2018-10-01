@@ -27,13 +27,14 @@ from django.template.loader import render_to_string
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext as _
+from django.db.models import F, Func
 
 import cssutils
 import premailer
+from collections import Counter
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
-
 # RENDERERS
 
 # key, name, frequency
@@ -523,16 +524,15 @@ def render_start_work_applicant_expired(interest, bounty):
 
 def render_notify_funder(profile):
     from dashboard.models import Bounty, NotifyFunder
-    from django.db.models import F, Func
-    from collections import Counter
+
     to_email = profile.email
 
     bounties = Bounty.objects.filter(bounty_owner_github_username=profile.handle)
     notifications = []
     for bounty in bounties:
         notifs_list = NotifyFunder.objects.filter(bounty=bounty.pk, funder_notified=False)
-        notifs = notifs_list.annotate(arr_els=Func(F('notify_reasons'), function='unnest')).\
-                            values_list('arr_els', flat=True)
+        notifs = notifs_list.annotate(arr_els=Func(F('notify_reasons'), function='unnest')) \
+            .values_list('arr_els', flat=True)
         if notifs:
             notification = {}
             notification['reasons'] = Counter(notifs)
