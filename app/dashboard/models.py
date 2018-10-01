@@ -2238,8 +2238,6 @@ class Profile(SuperModel):
                     location_data = get_location_from_ip(login.ip_address)
                     login.location_data = location_data
                     login.save()
-                    # Update all actions with same ip_address ??
-                    # UserAction.objects.filter(action='Login',ip_address=login.ip_address).update(location_data=location_data)
                     locations.append(location_data)
         except Exception:
             pass

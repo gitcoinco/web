@@ -87,7 +87,7 @@ def bounty_to_location(bounty):
         bounty.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True)
     )
     for username in fulfiller_usernames:
-        locations = locations + locations
+        locations = locations + profile_to_location(username)
     return locations
 
 

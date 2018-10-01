@@ -40,20 +40,30 @@ class TestAssembleLeaderboards(TestCase):
         self.bounty_payer_handle = 'flintstone'
         self.bounty_earner_handle = 'freddy'
 
-        self.bounty_profile = Profile.objects.create(
+        self.bounty_payer_profile = Profile.objects.create(
             data={},
             handle=self.bounty_payer_handle,
             hide_profile=False,
         )
         UserAction.objects.create(
-            profile=self.bounty_profile,
+            profile=self.bounty_payer_profile,
             action='Login',
             ip_address='24.210.224.38',
         )
         UserAction.objects.create(
-            profile=self.bounty_profile,
+            profile=self.bounty_payer_profile,
             action='Login',
             ip_address='185.86.151.11',
+        )
+        self.bounty_earner_profile = Profile.objects.create(
+            data={},
+            handle=self.bounty_earner_handle,
+            hide_profile=False,
+        )
+        UserAction.objects.create(
+            profile=self.bounty_earner_profile,
+            action='Login',
+            ip_address='110.174.165.78',
         )
         self.bounty = Bounty.objects.create(
             title='foo',
@@ -64,7 +74,7 @@ class TestAssembleLeaderboards(TestCase):
             token_address='0x0',
             issue_description='hello world',
             bounty_owner_github_username=self.bounty_payer_handle,
-            bounty_owner_profile=self.bounty_profile,
+            bounty_owner_profile=self.bounty_payer_profile,
             is_open=False,
             accepted=True,
             expires_date=datetime.now(UTC) + timedelta(days=1),
@@ -106,7 +116,7 @@ class TestAssembleLeaderboards(TestCase):
             hide_profile=False,
         )
         UserAction.objects.create(
-            profile=self.tip_from_username_profile,
+            profile=self.tip_username_profile,
             action='Login',
             ip_address='24.210.224.38',
         )
@@ -138,11 +148,12 @@ class TestAssembleLeaderboards(TestCase):
         """Test bounty index terms list."""
         index_terms = bounty_index_terms(self.bounty)
 
-        assert len(index_terms) == 12
+        assert len(index_terms) == 15
         assert 'USDT' in index_terms
         assert set([self.bounty_payer_handle, self.bounty_earner_handle, 'gitcoinco']).issubset(set(index_terms))
         assert set(['Cuyahoga Falls', 'United States', 'North America']).issubset(set(index_terms))
         assert set(['London', 'United Kingdom', 'Europe']).issubset(set(index_terms))
+        assert set(['Camperdown', 'Australia', 'Oceania']).issubset(set(index_terms))
         assert set(['python', 'shell']).issubset(set(index_terms))
 
     def test_tip_index_terms(self):
@@ -263,11 +274,11 @@ class TestAssembleLeaderboards(TestCase):
         """Test command assemble leaderboards."""
         Command().handle()
 
-        assert LeaderboardRank.objects.all().count() == 210
-        assert LeaderboardRank.objects.filter(leaderboard="all_all").count() == 14
-        assert LeaderboardRank.objects.filter(leaderboard="all_fulfilled").count() == 14
+        assert LeaderboardRank.objects.all().count() == 255
+        assert LeaderboardRank.objects.filter(leaderboard="all_all").count() == 17
+        assert LeaderboardRank.objects.filter(leaderboard="all_fulfilled").count() == 17
         assert LeaderboardRank.objects.filter(leaderboard="all_earners").count() == 2
         assert LeaderboardRank.objects.filter(leaderboard="all_payers").count() == 2
         assert LeaderboardRank.objects.filter(leaderboard="all_tokens").count() == 1
-        assert LeaderboardRank.objects.filter(leaderboard="all_countries").count() == 2
+        assert LeaderboardRank.objects.filter(leaderboard="all_countries").count() == 3
         assert LeaderboardRank.objects.filter(leaderboard="all_keywords").count() == 2
