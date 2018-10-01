@@ -37,7 +37,7 @@ var kudos_address = function() {
     case 'kovan':
       throw 'this network is not supported for kudos';
     case 'rinkeby':
-      return '0x63aa4e5f76e7f5dcc762743880b3048412b37215';
+      return '0x3c147acf80b01d08dcb05038a7d9537adc12b39d';
     case 'custom network':
       // This only works if you deploy the Standard Bounties contract locally
       // Set the testrpc address to the address below in in the truffle.js file.
