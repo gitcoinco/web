@@ -123,6 +123,15 @@ def create_user_action(user, action_type, request=None, metadata=None):
         if utm_campaign:
             kwargs['utm_campaign'] = utm_campaign
 
+        utm_source, utm_medium, utm_campaign = _get_utm_from_cookie(request)
+
+        if utm_source:
+            kwargs['utm_source'] = utm_source
+        if utm_medium:
+            kwargs['utm_medium'] = utm_medium
+        if utm_campaign:
+            kwargs['utm_campaign'] = utm_campaign
+
     if user and hasattr(user, 'profile'):
         kwargs['profile'] = user.profile if user and user.profile else None
 
@@ -133,6 +142,22 @@ def create_user_action(user, action_type, request=None, metadata=None):
         logger.error(f'Failure in UserAction.create_action - ({e})')
         return False
 
+def _get_utm_from_cookie(request):
+    """Extract utm* params from Cookie.
+
+    Args:
+        request (Request): The request object.
+
+    Returns:
+        utm_source: if it's not in cookie should be None.
+        utm_medium: if it's not in cookie should be None.
+        utm_campaign: if it's not in cookie should be None.
+
+    """
+    utm_source = request.COOKIES.get('utm_source')
+    utm_medium = request.COOKIES.get('utm_medium')
+    utm_campaign = request.COOKIES.get('utm_campaign')
+    return utm_source, utm_medium, utm_campaign
 
 def _get_utm_from_cookie(request):
     """Extract utm* params from Cookie.
