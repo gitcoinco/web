@@ -42,7 +42,7 @@ var set_metadata = function(callback) {
 // Step 6
 var wait_for_metadata = function(callback) {
   setTimeout(function() {
-    if (typeof document.hash1 != 'undefined') {
+    if ((typeof document.hash1 != 'undefined') && (document.hash1 != null)) {
       console.log('document.hash1 = ' + document.hash1)
       var account = generate_or_get_private_key();
 
@@ -474,7 +474,9 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
             value: kudosPriceInWei.toString()
           }
           console.log(params)
-          kudos_contract.clone.estimateGas(kudosId, numClones, {from: account, value: kudosPriceInWei}, function(error, kudosGasEstimate){
+          kudos_contract.clone.estimateGas(kudosId, numClones, {from: account, value: kudosPriceInWei}, function(err, kudosGasEstimate){
+            if (err)
+              throw(err);
             console.log('kudosGasEstimate: '+ kudosGasEstimate)
             // Multiply gas * gas_price_gwei to get gas cost in wei.
             kudosGasEstimateInWei = kudosGasEstimate * get_gas_price();
