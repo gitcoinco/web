@@ -228,9 +228,10 @@ var callbacks = {
       return [ key, val ];
     }
 
-    const decimals = 3;
+    const tokenDecimals = 3;
+    const dollarDecimals = 2;
     const bountyTokenName = result['token_name'];
-    const bountyTokenAmount = token_value_to_display(result['value_in_token'], decimals);
+    const bountyTokenAmount = token_value_to_display(result['value_in_token'], tokenDecimals);
     const dateNow = new Date();
     const dateTokenValue = new Date(result['token_value_time_peg']);
     const timePeg = timeDifference(dateNow, dateTokenValue > dateNow ? dateNow : dateTokenValue, false, 60 * 60);
@@ -254,11 +255,11 @@ var callbacks = {
       const ratio = obj['ratio'];
       const amount = obj['amount'];
       const usd = amount * ratio;
-      const funding = normalizeAmount(amount, decimals);
-      const tokenValue = normalizeAmount(1.0 * ratio, decimals);
+      const funding = normalizeAmount(amount, tokenDecimals);
+      const tokenValue = normalizeAmount(1.0 * ratio, dollarDecimals);
       const timestamp = new Date(obj['timestamp']);
       const timePeg = timeDifference(dateNow, timestamp > dateNow ? dateNow : timestamp, false, 60 * 60);
-      const tooltip = '$' + normalizeAmount(usd, decimals) + ' ' + tokenName + ' in crowdfunding';
+      const tooltip = '$' + normalizeAmount(usd, dollarDecimals) + ' ' + tokenName + ' in crowdfunding';
 
       leftHtml += '<p class="m-0">+ ' + funding + ' ' + tokenName + '</p>';
       rightHtml += '<p class="m-0">@ $' + tokenValue + ' ' + tokenName + ' as of ' + timePeg + '</p>';
@@ -271,7 +272,7 @@ var callbacks = {
       );
     }
 
-    $('#value_in_usdt').html(normalizeAmount(totalUSDValue, decimals));
+    $('#value_in_usdt').html(normalizeAmount(totalUSDValue, dollarDecimals));
 
     $('#value_in_usdt_wrapper').attr('title',
       '<div class="tooltip-info tooltip-sm">' +

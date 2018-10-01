@@ -979,6 +979,8 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     const crowdfunding = result['additional_funding_summary'];
 
     if (crowdfunding) {
+      const tokenDecimals = 3;
+      const dollarDecimals = 2;
       const tokens = Object.keys(crowdfunding);
       let usdValue = 0.0;
 
@@ -992,7 +994,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
           const ratio = tokenObj['ratio'];
 
           obj[tokenName] =
-            normalizeAmount(amount, 3);
+            normalizeAmount(amount, tokenDecimals);
           usdValue += amount * ratio;
         }
         result['tokens'] = obj;
@@ -1002,7 +1004,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
         result['value_in_usdt'] =
           normalizeAmount(
             parseFloat(result['value_in_usdt']) + usdValue,
-            2
+            dollarDecimals
           );
       }
     }
