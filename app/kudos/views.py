@@ -23,7 +23,7 @@ from django.contrib import messages
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from django.contrib.postgres.search import SearchVector
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.forms.models import model_to_dict
@@ -84,18 +84,17 @@ def about(request):
 def marketplace(request):
     """Render the marketplace kudos response."""
     q = request.GET.get('q')
+    order_by = request.GET.get('order_by', '-modified_on')
+    logger.info(order_by)
     logger.info(q)
     title = q.title() + str(_(" Kudos ")) if q else str(_('Marketplace'))
 
-    results = Token.objects.annotate(
-        search=SearchVector('name', 'description', 'tags')
-    ).filter(search=q)
-    logger.info(results)
-
     if q:
-        listings = results
+        listings = Token.objects.annotate(
+        search=SearchVector('name', 'description', 'tags')
+    ).filter(search=q).order_by(order_by)
     else:
-        listings = Token.objects.all()
+        listings = Token.objects.all().order_by(order_by)
     context = {
         'is_outside': True,
         'active': 'marketplace',
