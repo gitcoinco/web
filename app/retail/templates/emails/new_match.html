@@ -1,20 +1,19 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n humanize %}
 
@@ -23,54 +22,53 @@
 
 <style>
 a{
-    word-wrap: break-word;
+  word-wrap: break-word;
 }
-
 p, pre{
-    margin-top: 25px;
-    text-align: left;
+  margin-top: 25px;
+  text-align: left;
 }
 .match div{
-    display: inline-block;;
-    vertical-align: middle;;
+  display: inline-block;
+  vertical-align: middle;
 }
 </style>
 
 <h1>⚡️ {% trans "New Match Alert" %} ⚡️</h1>
 
 <h3>
-    @{{github_username}},{% trans "meet" %} {{bounty.org_name}}.  {{bounty.org_name}}, {% trans "meet" %} @{{github_username}}.
+  @{{ github_username }},{% trans "meet" %} {{ bounty.org_name }}.  {{ bounty.org_name }}, {% trans "meet" %} @{{ github_username }}.
 </h3>
 
 <div class="match">
-    <div>
-        <a href="https://github.com/{{github_username}}"><img src="https://gitcoin.co/dynamic/avatar/{{github_username}}" width="100" height="100" /></a>
-        <br>
-        <a href="https://github.com/{{github_username}}">
-            @{{github_username}}
-        </a>
-    </div>
-    <div>
-        &lt;&gt;
-    </div>
-    <div>
-        <a href="https://github.com/{{bounty.org_name}}"><img src="{{bounty.avatar_url}}" width="100" height="100"></a>
-        <br>
-        <a href="https://github.com/{{bounty.org_name}}">
-            {{bounty.org_name}}
-        </a>
-    </div>
+  <div>
+    <a href="https://github.com/{{ github_username }}"><img src="{% url 'org_avatar' github_username %}" width="100" height="100" /></a>
+    <br>
+    <a href="https://github.com/{{ github_username }}">
+      @{{ github_username }}
+    </a>
+  </div>
+  <div>
+      &lt;&gt;
+  </div>
+  <div>
+    <a href="https://github.com/{{ bounty.org_name }}"><img src="{{ bounty.avatar_url }}" width="100" height="100"></a>
+    <br>
+    <a href="https://github.com/{{ bounty.org_name }}">
+      {{ bounty.org_name }}
+    </a>
+  </div>
 </div>
 
 
 <p>
-    @{{github_username}} expressed interest in <a href="{{bounty.absolute_url}}">{{bounty.title_or_desc}}</a>
+  @{{ github_username }} expressed interest in <a href="{{ bounty.absolute_url }}">{{ bounty.title_or_desc }}</a>
 </p>
 <h4>Matched Issue</h4>
 {% include 'emails/bounty.html' with bounty=bounty %}
 
 <p>
-    {% trans "You are both CCed on this email.  Feel free to reply all and say hey." %}
+  {% trans "You are both CCed on this email.  Feel free to reply all and say hey." %}
 </p>
 
 {% endblock %}
