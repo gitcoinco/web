@@ -1,1 +1,44 @@
 {% load i18n %}
+
+Reports from interested users
+
+{% for notif in notifications %}
+  {% if notif.bounty.org_name %}
+    @{{notif.bounty.org_name}}
+  {% endif %}
+
+  {% if notif.reasons.underfunded %}
+    Bounty Underfunded - Reported by ({{notif.reasons.underfunded}}) users
+  {% endif %}
+
+  {% if notif.reasons.underscoped %}
+    Bounty Underscoped - Reported by ({{notif.reasons.underscoped}}) users
+  {% endif %}
+
+  {% if notif.reasons.taken %}
+    Bounty Taken - Reported by ({{notif.reasons.taken}}) users
+  {% endif %}
+
+  {% if notif.reasons.abandoned %}
+    Bounty Abandoned  - Reported by ({{notif.reasons.abandoned}}) users
+  {% endif %}
+
+  {% if notif.reasons.spam %}
+    Bounty Spam  - Reported by ({{notif.reasons.spam}}) users
+  {% endif %}
+
+  {{notif.bounty.org_name}}: {{notif.bounty.title_or_desc}}
+  Amount: {{notif.bounty.value_true}} {{notif.bounty.token_name}}
+
+  {% if notif.bounty.value_in_usdt_now %}
+    (${{notif.bounty.value_in_usdt_now}})
+  {% endif %}
+
+  Posted: {{notif.bounty.web3_created | naturaltime}}
+
+  {% if notif.bounty.keywords %}
+    Keywords: {{notif.bounty.keywords}}
+  {% endif %}
+
+  Edit Bounty - {{notif.bounty.absolute_url}}
+{% endfor %}
