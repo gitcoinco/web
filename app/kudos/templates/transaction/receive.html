@@ -49,7 +49,7 @@
 
     <div class="my-4">
       <img src="{% static kudos_transfer.kudos_token_cloned_from.image %}" width="160" alt="" class="mb-2">
-      <p hidden id="kudosId" data-kudosId="{{ kudos_transfer.kudos_token_cloned_from_id }}">{{ kudos_transfer.kudos_token_cloned_from_id }}</p>
+      <p hidden id="kudosid" data-kudosid="{{ kudos_transfer.kudos_token_cloned_from_id }}">{{ kudos_transfer.kudos_token_cloned_from_id }}</p>
       <span id="kudosName" data-kudosname="{{ kudos_transfer.kudos_token_cloned_from.name }}" class="d-block">{{ kudos_transfer.kudos_token_cloned_from.humanized_name }} </span>
       <span id="kudosPrice" class="d-block" data-ethprice="{{ kudos_transfer.kudos_token_cloned_from.price_in_eth }}">{{ kudos_transfer.kudos_token_cloned_from.price_in_eth }} ETH<small></small></span>
     </div>

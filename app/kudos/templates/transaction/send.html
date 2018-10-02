@@ -50,7 +50,7 @@
       {% if kudos.name %}
       <a href="/kudos/{{ kudos.id }}"><img src="{% static kudos.image %}" alt="{{ kudos.name }}" width="160" alt="" class="mb-2"></a>
       <span class="d-block">{{ kudos.name|humanize_name }}</span>
-      <p hidden id="kudosId" data-kudosId="{{ kudos.id }}">{{ kudos.id }}</p>
+      <p class="hidden" id="kudosid" data-kudosid="{{ kudos.id }}">{{ kudos.id }}</p>
       <span id="kudosPrice" class="d-block" data-ethprice="{{ kudos.price_in_eth }}">{{ kudos.price_in_eth }} ETH <small>USD</small></span>
       {% else %}
       <a href="{% url 'kudos_marketplace' %}" class="">

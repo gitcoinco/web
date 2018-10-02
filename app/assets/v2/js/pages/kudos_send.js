@@ -215,7 +215,7 @@ $(document).ready(function() {
     var tokenAddress = $('#token').val();
     var expires = parseInt($('#expires').val());
     // kudosId is the kudos token that is being cloned
-    var kudosId = $('#kudosId').attr('data-kudosId');
+    var kudosId = $('#kudosid').data('kudosid');
 
     // get kudosPrice from the HTML
     kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
@@ -269,7 +269,7 @@ $(document).ready(function() {
       unloading_button($('#send'));
     };
 
-    var kudosId = $('#kudosId').attr('data-kudosId');
+    var kudosId = $('#kudosid').data('kudosid');
     // cloneAndTransferKudos(kudosId, 1, receiverAddress);
     // cloneKudos(kudosId, 1);
     console.log(formData);

@@ -122,7 +122,7 @@ $(document).ready(function() {
         var rawTx;
 
         // Build the raw transaction data for the kudos clone & transfer
-        var kudosId = $('#kudosId').attr('data-kudosId');
+        var kudosId = $('#kudosid').data('kudosid');
         var numClones = 1;
         var receiver = forwarding_address;
         var data = kudos_contract.cloneAndTransfer.getData(kudosId, numClones, forwarding_address);
