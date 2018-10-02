@@ -21,7 +21,7 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
   </head>
-  <body class="interior {{ active }}">
+  <body class="interior {{ active }} g-font-muli">
     <div class="container-fluid header dash">
       {% include 'shared/nav.html' %}
     </div>
@@ -70,7 +70,7 @@
                 </div>
                 <div class="faucet-input-group">
                   <label for="comment" class="form__label float-left"> {% trans "Comment" %} (<span id="charcount">500</span> {% trans "char left" %}):</label>
-                  <textarea id="comment" class="form__input" rows="4" cols="50" placeholder="Why do you need ETH?"></textarea>
+                  <textarea id="comment" class="form__input" rows="4" cols="50" placeholder="Why do you need ETH?  Why should Gitcoin fund your gas costs?  Your request will not be funded without an explanation."></textarea>
                 </div>
                 <div class="faucet-input-group">
                   <label for="ethAddress" class="form__label float-left">{% trans "ETH Address" %}:</label>

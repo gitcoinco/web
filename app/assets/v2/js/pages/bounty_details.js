@@ -150,7 +150,9 @@ var callbacks = {
     return [ 'status', ui_status ];
   },
   'issue_description': function(key, val, result) {
-    var converter = new showdown.Converter();
+    var converter = new showdown.Converter({
+      simplifiedAutoLink: true
+    });
 
     ui_body = sanitize(converter.makeHtml(val));
     return [ 'issue_description', ui_body ];
@@ -163,6 +165,9 @@ var callbacks = {
   'bounty_owner_github_username': gitcoin_ize,
   'bounty_owner_name': function(key, val, result) {
     return [ 'bounty_owner_name', result.bounty_owner_name ];
+  },
+  'funding_organisation': function(key, val, result) {
+    return [ 'funding_organisation', result.funding_organisation ];
   },
   'permission_type': function(key, val, result) {
     if (val == 'approval') {
@@ -241,9 +246,9 @@ var callbacks = {
 
     if (usd_value) {
       tooltip_info.push('<p class="m-0" style="margin-top: 3px;">Crowdfunding worth $' + usd_value + '</p>');
-      $('#value_in_usdt').html(result['value_in_usdt'] + usd_value);
+      $('#value_in_usdt').html(parseFloat(result['value_in_usdt']) + usd_value);
     }
-  
+
     for (var token in tokens) {
       if (token) {
         const val = tokens[token];
@@ -762,6 +767,23 @@ const is_current_user_interested = function(result) {
   return !!(result.interested || []).find(interest => interest.profile.handle == document.contxt.github_handle);
 };
 
+const is_current_user_approved = function(result) {
+  const needs_approval = result['permission_type'] === 'approval';
+  const interested = result.interested || [];
+  let len = interested.length;
+
+  while (len--) {
+    const interest = interested[len];
+    const handle = interest.profile ? interest.profile.handle : '';
+
+    if (handle && handle === document.contxt.github_handle) {
+      return needs_approval ? interest.pending === false : true;
+    }
+  }
+
+  return false;
+};
+
 var do_actions = function(result) {
   var is_legacy = result['web3_type'] == 'legacy_gitcoin';
   var is_status_expired = result['status'] == 'expired';
@@ -779,21 +801,22 @@ var do_actions = function(result) {
 
   document.interested = is_interested;
 
+  const current_user_is_approved = is_current_user_approved(result);
   // which actions should we show?
   const should_block_from_starting_work = !is_interested && result['project_type'] == 'traditional' && (result['status'] == 'started' || result['status'] == 'submitted');
-  let show_start_stop_work = is_still_on_happy_path && !should_block_from_starting_work && is_open;
+  let show_start_stop_work = is_still_on_happy_path && !should_block_from_starting_work && is_open && !isBountyOwner(result);
   let show_github_link = result['github_url'].substring(0, 4) == 'http';
   let show_submit_work = is_open && !has_fulfilled;
   let show_kill_bounty = !is_status_done && !is_status_expired && !is_status_cancelled && isBountyOwner(result);
   let show_job_description = result['attached_job_description'] && result['attached_job_description'].startsWith('http');
   const show_increase_bounty = !is_status_done && !is_status_expired && !is_status_cancelled;
-  const submit_work_enabled = !isBountyOwner(result);
+  const submit_work_enabled = !isBountyOwner(result) && current_user_is_approved;
   let show_payout = !is_status_expired && !is_status_done && isBountyOwner(result);
   let show_extend_deadline = isBountyOwner(result) && !is_status_expired && !is_status_done;
   let show_invoice = isBountyOwner(result);
-  const show_suspend_auto_approval = document.isStaff && result['permission_type'] == 'approval';
-  const show_admin_methods = document.isStaff;
-  const show_moderator_methods = document.isModerator;
+  const show_suspend_auto_approval = currentProfile.isStaff && result['permission_type'] == 'approval';
+  const show_admin_methods = currentProfile.isStaff;
+  const show_moderator_methods = currentProfile.isModerator;
   const show_change_bounty = is_still_on_happy_path && (isBountyOwner(result) || show_admin_methods);
 
   if (is_legacy) {
@@ -844,7 +867,8 @@ var do_actions = function(result) {
       href: result['action_urls']['cancel'],
       text: gettext('Cancel Bounty'),
       parent: 'right_actions',
-      title: gettext('Cancel bounty and reclaim funds for this issue')
+      title: gettext('Cancel bounty and reclaim funds for this issue'),
+      buttonclass: 'button--warning'
     };
 
     actions.push(_entry);
@@ -960,7 +984,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('Suspend Auto Approval'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('Suspend *Auto Approval* of Bounty Hunters Who Have Applied for This Bounty'),
       color: 'white',
       buttonclass: 'admin-only'
@@ -977,7 +1001,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('Hide Bounty'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('Hides Bounty from Active Bounties'),
       color: 'white',
       buttonclass: 'admin-only'
@@ -994,7 +1018,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('Toggle Remarket Ready'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('Sets Remarket Ready if not already remarket ready.  Unsets it if already remarket ready.'),
       color: 'white',
       buttonclass: 'admin-only'
@@ -1011,7 +1035,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('Mark as Reviewed'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('Marks the bounty activity as reviewed.'),
       color: 'white',
       buttonclass: 'admin-only'
@@ -1027,7 +1051,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('Contact Funder'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('Contact Funder via Email'),
       color: 'white',
       buttonclass: 'admin-only contact_bounty_hunter'
@@ -1043,7 +1067,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('Snooze Gitcoinbot'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('Snooze Gitcoinbot reminders'),
       color: 'white',
       buttonclass: 'admin-only snooze_gitcoin_bot'
@@ -1059,7 +1083,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('Override Status'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('Override Status with a status of your choosing'),
       color: 'white',
       buttonclass: 'admin-only admin_override_satatus'
@@ -1075,7 +1099,7 @@ var do_actions = function(result) {
       enabled: true,
       href: url,
       text: gettext('View in Admin'),
-      parent: 'right_actions',
+      parent: 'moderator-admin-actions',
       title: gettext('View in Admin'),
       color: 'white',
       buttonclass: 'admin-only'
@@ -1185,9 +1209,9 @@ const process_activities = function(result, bounty_activities) {
       interest.profile.handle === _activity.profile.handle && interest.pending);
     const has_interest = !!result.interested.find(interest =>
       interest.profile.handle === _activity.profile.handle);
-    const slash_possible = document.isStaff;
-    const is_logged_in = document.contxt['github_handle'];
-    const uninterest_possible = is_logged_in && ((isBountyOwnerPerLogin(result) || document.isStaff) && is_open && has_interest);
+    const slash_possible = currentProfile.isStaff;
+    const is_logged_in = currentProfile.username;
+    const uninterest_possible = is_logged_in && ((isBountyOwnerPerLogin(result) || currentProfile.isStaff) && is_open && has_interest);
 
     return {
       profileId: _activity.profile.id,
@@ -1237,7 +1261,7 @@ const only_one_approve = function(activities) {
     if (activity.uninterest_possible) {
       if (!iseen[activity.name]) {
         iseen[activity.name] = true;
-      } else {
+      } else if (activity.activity_type != 'start_work') {
         activity.uninterest_possible = false;
         activity.slash_possible = false;
       }
@@ -1291,6 +1315,17 @@ const is_bounty_expired = function(bounty) {
 };
 
 var main = function() {
+  const moderatorAndAdminActions = $('#moderator-admin-actions');
+  const scrollHeight = 150;
+
+  $(window).scroll(RAFThrottle(() => {
+    if (window.scrollY > scrollHeight) {
+      moderatorAndAdminActions.addClass('sticky');
+    } else {
+      moderatorAndAdminActions.removeClass('sticky');
+    }
+  }));
+
   setTimeout(function() {
     // setup
     attach_work_actions();

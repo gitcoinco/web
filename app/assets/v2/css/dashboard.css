@@ -1,5 +1,4 @@
 body {
-  font-family: 'Muli', sans-serif;
   background: #FFFFFF;
 }
 
@@ -90,13 +89,11 @@ body {
 
 #stats {
   padding-left: 5px;
-  font-family: 'Muli', sans-serif;
   font-weight: 300;
   color: #7A7A7A;
 }
 
 #matches {
-  font-family: 'Muli', sans-serif;
   font-weight: 300;
   padding-left: 10px;
 }
@@ -164,7 +161,6 @@ body {
 }
 
 .bounty-detail .info {
-  font-family: 'Muli', sans-serif;
   font-weight: 300;
   color: #666666;
 }

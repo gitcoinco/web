@@ -65,7 +65,8 @@ ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS
 
 def premailer_transform(html):
     cssutils.log.setLevel(logging.CRITICAL)
-    return premailer.transform(html)
+    p = premailer.Premailer(html, base_url=settings.BASE_URL)
+    return p.transform()
 
 
 def render_tip_email(to_email, tip, is_new):
@@ -98,7 +99,7 @@ def render_tip_email(to_email, tip, is_new):
     return response_html, response_txt
 
 
-def render_kudos_email(to_email, kudos_transfer, is_new):
+def render_kudos_email(to_email, kudos, is_new):
     """Summary
 
     Args:
@@ -109,6 +110,8 @@ def render_kudos_email(to_email, kudos_transfer, is_new):
     Returns:
         tup: response_html, response_txt
     """
+    kudos_transfer = kudos['kudosTransfer']
+    kudos_token = kudos['kudosToken']
     warning = kudos_transfer.network if kudos_transfer.network != 'mainnet' else ""
     already_redeemed = bool(kudos_transfer.receive_txid)
     link = kudos_transfer.url
@@ -119,8 +122,8 @@ def render_kudos_email(to_email, kudos_transfer, is_new):
     params = {
         'link': link,
         'amount': round(kudos_transfer.amount, 5),
-        'tokenName': kudos_transfer.tokenName,
-        'kudos_token:': kudos_transfer.kudos_token_cloned_from,
+        'token_elem': kudos_token,
+        'kudos_token:': kudos_transfer.kudos_token,
         'comments_public': kudos_transfer.comments_public,
         'kudos_transfer': kudos_transfer,
         'already_redeemed': already_redeemed,
@@ -132,6 +135,8 @@ def render_kudos_email(to_email, kudos_transfer, is_new):
     }
 
     response_html = premailer_transform(render_to_string("emails/new_kudos.html", params))
+    # response_html = premailer_transform(render_to_string("emails/kudos_mint.html", params))
+    # response_html = premailer_transform(render_to_string("emails/kudos_mkt.html", params))
     response_txt = render_to_string("emails/new_kudos.txt", params)
 
     return response_html, response_txt
@@ -564,12 +569,11 @@ def render_start_work_applicant_expired(interest, bounty):
     return response_html, response_txt, subject
 
 
-
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Embarking Into Web 3 | Gitcoin Requests"
+    subject = "A Maintainers Guide To Hacktoberfest | ETH Travels"
 
     intro = '''
 
@@ -577,29 +581,23 @@ def render_new_bounty_roundup(to_email):
 Hi there,
 </p>
 <p>
-We're excited to unveil <a href="https://medium.com/gitcoin/embarking-into-web-3-f46408b23f59">a partnership with Status</a> for 60 bounties on their Embark framework - all in the month of September!
-If you're a developer interested in getting involved in Web 3, this is an opportunity to contribute towards a leading framework which aims to shape Web 3 into the future.
-More on Embark <a href="https://embark.status.im/">here</a>.
+<a href="https://medium.com/gitcoin/gitcoins-hacktoberfest-98825f199af2">Gitcoin's Hacktoberfest</a> starts on Monday! Post your favorite 3 open source projects on twitter & tag us (<a href="https://twitter.com/GetGitcoin">@GetGitcoin</a>), then make a <a href="https://gitcoin.co/requests">Gitcoin Request</a> to give those projects a boost!
 </p>
 <p>
-We funded $1,000 in Gitcoin Requests the first week! Do you have a Github issue you want solved? Make <a href="https://gitcoin.co/requests">a Gitcoin Request</a> and we'll review in 24 hours.
-If you're a developer and you see a 'Good First Issue' you'd work on for a bounty, <a href="https://gitcoin.co/requests">let us know</a>! Gitcoin Requests
-is a way for developers and maintainers to make their voice heard and let us know where they'd pay to have meaningful help on their projects. We're excited to see what you'd like to work.
+If you're an OSS maintainer, we wrote a <a href="https://medium.com/gitcoin/a-maintainers-guide-to-hacktoberfest-21405c8ff09f">Guide to Hacktoberfest for maintainers!</a> It's
+a great look at how to manage an open source project generally, let us know what you think.
 </p>
-
+<p>
+Lastly, October marks a month of travel for the Gitcoin team. If you'll be at ETH SF (Oct 5-7), Github Universe (Oct 16-17), Web 3 Summit (Oct 22 - 24), or Devcon 4, give us a shout!
+</p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-We're still working with the Ethereum Foundation to find the best and brightest developers to get involved directly on Ethereum's
-codebase and would love to hear from you. If you have experience building out test cases and are familiar with consensus systems,
-join #focus-dev-testing <a href="https://gitcoin.co/slack">on Gitcoin Slack</a>
+        <a href="https://consensys.net/academy/2018developer/?utm_source=ConsenSys+Academy%3A+General+Mailing+List&utm_campaign=88c5836e4a-EMAIL_CAMPAIGN_2018_09_10_02_13_COPY_01&utm_medium=email&utm_term=0_30e33caef0-88c5836e4a">ConsenSys Academy's Developer Program</a> is a 11-week program that equips developers with all the knowledge, skills, and
+         hands on mentorship essential to become industry-leading Ethereum developers. You can register now <a href="https://form.jotform.com/DeveloperProgram/Bootcamp?utm_source=ConsenSys+Academy%3A+General+Mailing+List&utm_campaign=88c5836e4a-EMAIL_CAMPAIGN_2018_09_10_02_13_COPY_01&utm_medium=email&utm_term=0_30e33caef0-88c5836e4a-">here!</a>
         </li>
         <li>
-        Did you know <a href="https://codefund.io">CodeFund</a> is part of Gitcoin? <a href="https://codefund.io">CodeFund</a> is an open source advertising platform that is built to help developers generate revenue. We are currently looking for bloggers and websites that focus on blockchain development and have at least 1,000 visitors per month. If you or someone you know fits this, register to be a publisher at <a href="https://codefund.io/register/publisher">here!</a>
-        </li>
-        <li>
-We published our recent Gitcoin Livestream with Austin Griffith's work on meta-transactions <a href="https://youtu.be/EkZHTzGJMcY">on Gitcoin's YouTube</a>.
-We'll be talking Embark and EIP-1337 on this week's <a href="https://gitcoin.co/livestream">this week's livestream</a> today at 5PM ET. We'd love to have you!
+        Gitcoin Livestream today includes ConsenSys Academy and FOAM Protocol at 5PM ET. We're excited and hope to see you - <a href="https://gitcoin.co/livestream">add to your calendar here!</a>.
         </li>
     </ul>
 </p>
@@ -607,44 +605,36 @@ We'll be talking Embark and EIP-1337 on this week's <a href="https://gitcoin.co/
 Back to BUIDLing,
 </p>
 '''
-    highlights = [
-        {
-            'who': 'hardlydifficult',
-            'who_link': True,
-            'what': 'Worked with Unlock Protocol on their smart contract.',
-            'link': 'https://gitcoin.co/issue/unlock-protocol/unlock/172/991',
-            'link_copy': 'View more',
-        },
-        {
-            'who': 'KevinLiLu',
-            'who_link': True,
-            'what': 'Worked with CyberCongress on their Ethereum uncle rewards!',
-            'link': 'https://gitcoin.co/issue/cybercongress/cyber-search/185/1043',
-            'link_copy': 'View more',
-        },
-        {
-            'who': 'StevenJNPearce',
-            'who_link': True,
-            'what': 'Helped MARKET add a method to find a deployed contract address.',
-            'link': 'https://gitcoin.co/issue/MARKETProtocol/MARKET.js/145/989',
-            'link_copy': 'View more',
-        },
-    ]
+    highlights = [{
+        'who': 'dryajov',
+        'who_link': True,
+        'what': 'Completed one of the largest bounties of all time on MetaMask!',
+        'link': 'https://gitcoin.co/issue/MetaMask/mustekala/21/1279',
+        'link_copy': 'View more',
+    }, {
+        'who': 'mul1sh',
+        'who_link': True,
+        'what': 'Completed his first bounty! Congrats.',
+        'link': 'https://gitcoin.co/issue/diadata-org/coindata/1/1259',
+        'link_copy': 'View more',
+    }, {
+        'who': 'zachzundel',
+        'who_link': True,
+        'what': 'Moving Sharding forward with Prysmatic Labs!',
+        'link': 'https://gitcoin.co/issue/prysmaticlabs/prysm/497/1212',
+        'link_copy': 'View more',
+    }, ]
 
-    bounties_spec = [
-        {
-            'url': 'https://github.com/ethereum/ethereum-org/issues/898',
-            'primer': 'Have Design chops? The Ethereum Foundation is looking to design a grants website. Apply this weekend!',
-        },
-        {
-            'url': 'https://github.com/novnc/noVNC/issues/944',
-            'primer': 'Help specify this issue in better detail for 240 DAI.',
-        },
-        {
-            'url': 'https://github.com/zeppelinos/zos/issues/37',
-            'primer': 'Great bounty for the ecosystem from the Zeppelin team.',
-        },
-    ]
+    bounties_spec = [{
+        'url': 'https://github.com/ethereum/EIPs/issues/1442',
+        'primer': 'Document JSON-RPC interface in an EIP.',
+    }, {
+        'url': 'https://github.com/NethermindEth/nethermind/issues/86',
+        'primer': 'Implement discovery v5 on Nethermind.',
+    }, {
+        'url': 'https://github.com/ethereum/solidity/issues/4648',
+        'primer': 'Solidity: Display Large Values In A Nicer Format',
+    }, ]
 
     num_leadboard_items = 5
     #### don't need to edit anything below this line
@@ -662,9 +652,9 @@ Back to BUIDLing,
             'items': [],
         },
     }
-    for key, val in leaderboard.items():
-        leaderboard[key]['items'] = LeaderboardRank.objects.filter(active=True, leaderboard=key).order_by('rank')[0:num_leadboard_items]
-
+    for key, __ in leaderboard.items():
+        leaderboard[key]['items'] = LeaderboardRank.objects.active() \
+            .filter(leaderboard=key).order_by('rank')[0:num_leadboard_items]
 
     bounties = []
     for nb in bounties_spec:
@@ -676,7 +666,7 @@ Back to BUIDLing,
                 bounties.append({
                     'obj': bounty,
                     'primer': nb['primer']
-                    })
+                })
         except Exception as e:
             print(e)
 
@@ -713,10 +703,10 @@ def new_tip(request):
 
 @staff_member_required
 def new_kudos(request):
-    
-    from kudos.models import Token
-    kudos = Token.objects.last()
-    print(Token.objects)
+    from kudos.models import KudosTransfer, Token
+    kudos = {}
+    kudos['kudosTransfer'] = KudosTransfer.objects.last()
+    kudos['kudosToken'] = Token.objects.last()
     response_html, _ = render_kudos_email(settings.CONTACT_EMAIL, kudos, True)
 
     return HttpResponse(response_html)
@@ -791,7 +781,7 @@ def new_bounty_acceptance(request):
 @staff_member_required
 def bounty_feedback(request):
     from dashboard.models import Bounty
-    response_html, _ = render_bounty_feedback(Bounty.objects.filter(idx_status='done', current_bounty=True).last(), 'foo')
+    response_html, _ = render_bounty_feedback(Bounty.objects.current().filter(idx_status='done').last(), 'foo')
     return HttpResponse(response_html)
 
 

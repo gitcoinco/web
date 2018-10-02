@@ -215,7 +215,7 @@ var _alert = function(msg, _class) {
 
   var html = function() {
     return (
-      `<div class="alert ${_class}" style="top: ${top}px">
+      `<div class="alert ${_class} g-font-muli" style="top: ${top}px">
         <div class="message">
           <div class="content">
             ${alertMessage(msg)}
@@ -572,7 +572,7 @@ var retrieveIssueDetails = function() {
   if (issue_url.length < 5 || issue_url.indexOf('github') == -1) {
     return;
   }
-  var request_url = '/sync/get_issue_details?url=' + encodeURIComponent(issue_url);
+  var request_url = '/sync/get_issue_details?url=' + encodeURIComponent(issue_url) + '&token=' + currentProfile.githubToken;
 
   $.each(target_eles, function(i, ele) {
     ele.addClass('loading');

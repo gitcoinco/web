@@ -219,7 +219,7 @@ def build_message_for_integration(bounty, event_name):
 
     title = bounty.title if bounty.title else bounty.github_url
     msg = f"*{humanize_event_name(event_name)}*" \
-          f"\n*Title*: {title}" \
+          f"\n*Issue*: {title}" \
           f"\n*Bounty value*: {round(bounty.get_natural_value(), 4)} {bounty.token_name} {usdt_details}" \
           f"\n{bounty.get_absolute_url()}"
     return msg
@@ -495,11 +495,12 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
     learn_more_msg = f"* Learn more [on the Gitcoin Issue Details page]({absolute_url})"
     crowdfund_amount = f"(plus a crowdfund of {bounty.additional_funding_summary_sentence})" if bounty.additional_funding_summary_sentence else ""
     crowdfund_thx = ", ".join(f"@{tip.from_username}" for tip in bounty.tips.filter(is_for_bounty_fulfiller=True) if tip.from_username)
+    funding_org = f"__ as part of the {bounty.funding_organisation} fund__" if bounty.funding_organisation else ""
     if crowdfund_thx:
         crowdfund_thx = f"Thanks to {crowdfund_thx} for their crowdfunded contributions to this bounty.\n\n"
     if event_name == 'new_bounty':
         msg = f"{status_header}__This issue now has a funding of {natural_value} {bounty.token_name} {usdt_value} " \
-              f"{crowdfund_amount} attached to it.__\n\n * If you would " \
+              f"{crowdfund_amount} attached to it{funding_org}.__\n\n * If you would " \
               f"like to work on this issue you can 'start work' [on the Gitcoin Issue Details page]({absolute_url})." \
               f"\n{crowdfund_msg}\n{help_msg}\n{openwork_msg}\n"
     if event_name == 'increased_bounty':
@@ -539,14 +540,11 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
             if not interest.pending and approval_required:
                 action = 'been approved to start work'
 
-            show_dibs = interested.count() > 1 and bounty.project_type == 'traditional'
-            dibs = f" ({get_ordinal_repr(i)} dibs)" if show_dibs else ""
-
-            msg += f"\n{i}. {profile_link} has {action}{dibs}. "
+            msg += f"\n**{i}) {profile_link} has {action}.**"
 
             issue_message = interest.issue_message.strip()
             if issue_message:
-                msg += f"\n    \n    {issue_message}"
+                msg += f"\n\n{issue_message}"
             msg += f"\n\nLearn more [on the Gitcoin Issue Details page]({absolute_url}).\n\n"
 
     elif event_name == 'work_submitted':
@@ -672,7 +670,7 @@ def open_bounties():
 
     """
     from dashboard.models import Bounty
-    return Bounty.objects.filter(network='mainnet', current_bounty=True, idx_status__in=['open', 'submitted'])
+    return Bounty.objects.current().filter(network='mainnet', idx_status__in=['open', 'submitted']).cache()
 
 
 def maybe_market_tip_to_github(tip):

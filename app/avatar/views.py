@@ -20,11 +20,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import logging
 from tempfile import NamedTemporaryFile
 
+from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from dashboard.utils import create_user_action
 from git.utils import org_name
+from marketing.utils import is_deleted_account
 from PIL import Image, ImageOps
 
 from .models import Avatar
@@ -119,14 +121,16 @@ def handle_avatar(request, _org_name='', add_gitcoincologo=False):
     from dashboard.models import Profile
     icon_size = (215, 215)
 
+    if _org_name in settings.BLOCKED_USERS or is_deleted_account(_org_name):
+        return get_err_response(request, blank_img=(_org_name == 'Self'))
+
     if _org_name:
         try:
             profile = Profile.objects.select_related('avatar').get(handle__iexact=_org_name)
             if profile.avatar:
-                if profile.avatar.use_github_avatar and profile.avatar.png:
-                    return HttpResponse(profile.avatar.png.file, content_type='image/png')
-                elif profile.avatar.svg and not profile.avatar.use_github_avatar:
-                    return HttpResponse(profile.avatar.svg.file, content_type='image/svg+xml')
+                avatar_file, content_type = profile.avatar.determine_response(request.GET.get('email', False))
+                if avatar_file:
+                    return HttpResponse(avatar_file, content_type=content_type)
         except Exception as e:
             logger.error(e)
 

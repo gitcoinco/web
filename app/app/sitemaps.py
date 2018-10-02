@@ -27,7 +27,7 @@ class IssueSitemap(Sitemap):
     priority = 0.9
 
     def items(self):
-        return Bounty.objects.current()
+        return Bounty.objects.current().cache()
 
     def lastmod(self, obj):
         return obj.modified_on
@@ -41,7 +41,7 @@ class ProfileSitemap(Sitemap):
     priority = 0.8
 
     def items(self):
-        return Profile.objects.filter(hide_profile=False).all()
+        return Profile.objects.filter(hide_profile=False).cache()
 
     def lastmod(self, obj):
         return obj.modified_on
@@ -71,7 +71,7 @@ class ExternalBountySitemap(Sitemap):
     priority = 0.8
 
     def items(self):
-        return ExternalBounty.objects.filter(active=True)
+        return ExternalBounty.objects.filter(active=True).cache()
 
     def lastmod(self, obj):
         return obj.modified_on
