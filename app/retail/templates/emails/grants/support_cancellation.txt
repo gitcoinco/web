@@ -1,0 +1,30 @@
+{% load i18n humanize %}
+
+{% trans "Your support for" %} {{grant_name}} {% trans "has been cancelled" %}
+{%trans "Thank you for everything you have contributed!" %}
+
+{{github_username}}
+
+{{completed_amount}}
+
+{{your_contribution_amount}}
+
+{%trans "Your Contribution" %}
+
+{{removed_amount}}
+
+{{current_funding_amount}}
+
+{%trans "Current" %}
+
+{{current_goal_amount}}
+
+{%trans "Goal" %}
+
+{%trans "You can see your cancellation transaction on etherscan" %}
+
+{{etherscan_link}}
+
+{%trans "here." %}
+
+{%trans "View Transaction" %}

@@ -1,0 +1,94 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n humanize %}
+{% load i18n static %}
+
+{% block content %}
+
+<style>
+hr {
+    width: 80%;
+    height: 2px;
+    border-radius: 25px;
+    border: none;
+    background-color: #D2D2D2;
+}
+.supporter {
+    padding-top: 30px;
+    padding-bottom: 1%;
+}
+.supporter a img {
+    border-radius: 25px;
+    margin-bottom: 10px;
+}
+.supporterName {
+    font-size: 18px;
+    color: #0D0764;
+}
+.supporter h5 {
+    font-size: 14px;
+    margin-top: 15px;
+}
+.supporter h3 {
+    margin-top: -20px;
+}
+
+p > a {
+    color: #4A90E2;
+}
+.withdrawButton {
+    padding-left: 30px;
+    padding-right: 30px;
+    text-decoration: none;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background-color: #0D0764;
+    color: white;
+    border-radius: 2.7px;
+    font-size: 17px;
+}
+#grow-oss {
+    margin-top: 65px;
+    margin-bottom: 30px;
+}
+</style>
+<img id="newSupporter" src="{% static "v2/images/newsupporter.png" %}" alt="New Supporter" title="New Supporter">
+<h1 style="text-transform: none;">{% trans "You have a new supporter!" %}</h1>
+
+<hr>
+
+<div class="supporter"> <!-- Set {{github_username}} as variable for new supporter information -->
+    <a href="https://github.com/{{github_username}}"><img src="https://gitcoin.co/dynamic/avatar/{{github_username}}" width="50" height="50" /></a>
+    <br>
+    <a class="supporterName" href="https://github.com/{{github_username}}">{{github_username}}</a>
+    <h5 style="text-transform: none;">{%trans "User' has begun contributing" %}</h5> 
+    <h3 style="text-transform: none;">{{variable_amount_contribution}}</h3> <!-- Input variable amount here -->
+</div>
+
+<hr>
+
+<br>
+<p>{%trans "You can see a transaction history and withdraw funds" %} <a href="https://gitcoin.co/{{transaction_history}}">{%trans "here." %}</a></p> <!-- Input link to transaction history here -->
+
+<br>
+<a class="withdrawButton" href="https://gitcoin.co/{{withdraw_link}}">{%trans "Withdraw" %}</a> <!-- Input link to withdraw button here --> 
+
+<br>
+
+{% endblock %}
