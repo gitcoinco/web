@@ -7,6 +7,9 @@ from django.template.response import TemplateResponse
 
 from marketing.models import Keyword
 from django.conf import settings
+from django.http import JsonResponse
+from django.shortcuts import redirect
+from django.views.decorators.csrf import csrf_exempt
 from web3 import HTTPProvider, Web3
 from .models import Grant, Subscription
 
@@ -57,24 +60,64 @@ def new_grant(request):
         grant.frequency = request.POST.get('frequency')
         grant.token_address = request.POST.get('denomination')
         grant.amount_goal = request.POST.get('amount_goal')
-        # grant.network = request.POST.get('network')
-        # grant.transaction_hash = request.POST.get('transaction_hash')
-        # grant.contract_address = request.POST.get('contract_address')
         grant.admin_profile = profile
         # grant.teamMemberProfiles = Need to do a profile search based on enetered emails
 
         grant.save()
+
+        return redirect('/grants/show/9')
+
     else:
         grant = {}
 
     params = {
-        'active': 'dashboard',
+        'active': 'grants',
         'title': 'New Grant',
         'grant': grant,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
 
     return TemplateResponse(request, 'grants/new.html', params)
+
+@csrf_exempt
+def grant_data(request, grant_title):
+    """Handle additional grant data."""
+    grant = Grant.objects.get(title=grant_title)
+
+    response = {
+        'status': 'OK',
+        'message': ('Data Added')
+    }
+
+    if request.method == "POST":
+
+        print('request', request.body)
+
+        print('grant', grant)
+
+        work = json.loads(request.body)
+
+        print('work', work)
+
+        grant.network = work['network']
+        grant.transaction_hash = work['transaction_hash']
+        grant.contract_address = work['contract_address']
+
+        grant.save()
+
+        return redirect('/grants')
+
+    else:
+        grant = {}
+
+    params = {
+        'active': 'grants',
+        'title': 'Grant Data',
+        'grant': grant,
+        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+    }
+
+    return JsonResponse(response)
 
 
 def fund_grant(request, grant_id):

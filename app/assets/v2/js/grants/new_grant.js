@@ -3,16 +3,6 @@
 $(document).ready(function() {
 
 console.log('1', web3.eth.coinbase);
-console.log('2', web3.eth.accounts[0]);
-
-console.log(web3.version.network);
-
-
-
-
-
-
-
 
 
   $('#js-drop').on('dragover', function(event) {
@@ -36,15 +26,12 @@ console.log(web3.version.network);
   });
 
   $('.js-select2').each(function() {
-    console.log(web3);
 
     $(this).select2();
   });
 
   $('#js-newGrant').validate({
     submitHandler: function(form) {
-
-
 
       var data = {};
       var disabled = $(form)
@@ -55,53 +42,67 @@ console.log(web3.version.network);
           data[this.name] = this.value;
         });
 
-        deploySubscriptionContract(
-          data.admin_address,
-          data.token_address,
-          data.amount_goal,
-          data.frequency,
-          data.gas_price
-        );
+        // form.submit();
 
-        form.submit();
 
+      // Begin New Deploy Subscription Contract
+
+      let bytecode = compiledContract.bytecode;
+
+
+          let MyContract = web3.eth.contract(compiledContract.abi);
+          var myContractReturned = MyContract.new(data.admin_address, data.token_address, data.amount_goal, data.frequency, data.gas_price, {
+            from:web3.eth.accounts[0],
+            data:bytecode,
+            gas:2500000}, function(err, myContract){
+              if(!err) {
+
+                // NOTE: The callback will fire twice!
+                // Once the contract has the transactionHash property set and once its deployed on an address.
+                // e.g. check tx hash on the first call (transaction send)
+
+                if(!myContract.address) {
+                  console.log(myContract.transactionHash)
+
+
+                } else {
+                  console.log(myContract.address)
+
+                  // form.submit();
+
+                  addChainData(myContract.transactionHash, myContract.address, web3.version.network, data.title);
+
+                }
+              }
+            });
 
     }
   });
 
-  function deploySubscriptionContract(admin_address, token_address, amount_goal, frequency, gas_price ){
+  function addChainData(transaction_hash, contract_address, network, title){
 
-    let bytecode = compiledContract.bytecode;
+    console.log('in the function');
 
-    let MyContract = web3.eth.contract(compiledContract.abi);
+    // const url = '/grants/data/' + title;
 
-    MyContract.new(
-      admin_address,
-      token_address,
-      amount_goal,
-      frequency,
-      gas_price, {
-          from:web3.eth.accounts[0],
-          data:bytecode,
-          gas:2500000}, function(err, myContract){
-            if(!err) {
-              // NOTE: The callback will fire twice!
-              // Once the contract has the transactionHash property set and once its deployed on an address.
-              // e.g. check tx hash on the first call (transaction send)
-              if(!myContract.address) {
-                console.log(myContract.transactionHash) // The hash of the transaction, which deploys the contract
+    const url = '/grants/data/ad';
 
-                // check address on the second call (contract deployed)
-              } else {
-                console.log(myContract.address) // the contract address
-                //
-              }
 
-            }
-          });
+    fetch(url, {
+      method: 'POST',
+      credentials: 'include',
+      body: JSON.stringify({
+        transaction_hash: transaction_hash,
+        contract_address: contract_address,
+        network: network
+      })
+    })
+    // .then(function(response) {
+    //   console.log('something here', response.json());
+    //   return response.json();
+    // })
 
   }
-
 
 // Will need this for a subscription
 
