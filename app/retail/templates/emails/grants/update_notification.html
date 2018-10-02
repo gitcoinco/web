@@ -1,0 +1,145 @@
+
+{% extends '../emails/template.html' %}
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n humanize %}
+{% load i18n static %}
+
+{% block content %}
+
+<style>
+hr {
+    width: 80%;
+    height: 2px;
+    border-radius: 25px;
+    border: none;
+    background-color: #D2D2D2;
+}
+.grantInfo {
+    padding-bottom: 1%;
+}
+.grantInfo a img {
+    border-radius: 25px;
+    margin-bottom: 10px;
+}
+.grantInfoName {
+    font-size: 20px;
+    color: #0D0764;
+}
+.grantInfo h5 {
+    font-size: 14px;
+    margin-top: 15px;
+    margin-top: 30px;
+}
+.grantInfo h3 {
+    margin-top: -20px;
+}
+.updatesButton {
+    padding-left: 30px;
+    padding-right: 30px;
+    text-decoration: none;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background-color: #0D0764;
+    color: white;
+    border-radius: 2.7px;
+    font-size: 17px;
+}
+#grow-oss {
+    margin-top: 70px;
+    margin-bottom: 40px;
+}
+.grantUpdate {
+    width: 100%;
+    /*padding-left: 10%;
+    padding-bottom: 200px;*/
+    margin-top: 30px;
+    padding-bottom: 10px;
+}
+
+/*
+.grantUpdateContent > p:last-child {
+    padding-right: 25%;
+    color: #43484D;
+}
+.grantUpdateContent > h3 {
+    color: #43484D;
+}
+*/
+.upDate {
+    color: #BBBDBF;
+    transform: translateY(-100%);
+}
+@media screen and (min-width: 900px) {
+    .grantUpdateIcon {
+        width: 5%;
+        float: left;
+        margin-top: 20px;
+    }
+    .grantUpdate {
+        width: 100%;
+        padding-left: 10%;
+        padding-bottom: 200px;
+        transform: translateY(-150%);
+    }
+    .grantUpdateContent {
+        width: 93%;
+        float: left;
+        text-align: left;
+        margin-left: 2%;
+    }
+    .grantUpdateContent > p:last-child {
+        padding-right: 25%;
+        color: #43484D;
+    }
+    .grantUpdateContent > h3 {
+        color: #43484D;
+    }
+}
+</style>
+<img id="newSupporter" src="{% static "v2/images/update-notification.png" %}" alt="Update!" title="There's a new update!">
+<h1 style="text-transform: none;">{% trans "An update has been posted for:" %}</h1> <!-- Name of grant -->
+<div class="grantInfo">
+    <a href="https://github.com/{{github_username}}"><img src="{{project_image}}" /></a> <!-- width="50" height="50"Input project image here -->
+    <br>
+    <a class="grantInfoName" href="https://github.com/{{github_username}}">{{github_username}}</a> <!-- Input project name here -->
+    <p>{{project_description}}</p> <!-- Input project description here -->
+</div>
+
+<br>
+
+<hr>
+<div class="grantUpdate">
+    <div class="grantUpdateIcon">
+        <img src="{% static "v2/images/file-text.png" %}" alt="New Grant Update." title="New Grant Update">
+    </div>
+    <div class="grantUpdateContent">
+        <h3>{{updateContent_title}}</h3>
+        <p class="upDate">{{updateContent_date}}</p>
+        <p>{{updateContent_text}}</p>
+    </div>
+</div>
+<hr>
+
+<br>
+<br>
+<a class="updatesButton" href="https://gitcoin.co/grants/{{grant_link}}">{%trans "View Grant" %}</a> <!-- Input link to view transaction button here --> 
+<br>
+
+
+{% endblock %}
