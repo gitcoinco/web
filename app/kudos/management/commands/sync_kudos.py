@@ -83,8 +83,6 @@ class Command(BaseCommand):
             kudos_contract.sync_db(kudos_id=int(asset_token_id), txid=transaction_hash)
 
     def filter_sync(self, kudos_contract, fromBlock):
-        if kudos_contract.network != 'localhost':
-            logger.warning('Filtering does not work on the Infura network.')
         try:
             fromBlock = int(fromBlock)
         except ValueError:

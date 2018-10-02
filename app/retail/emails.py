@@ -99,7 +99,7 @@ def render_tip_email(to_email, tip, is_new):
     return response_html, response_txt
 
 
-def render_kudos_email(to_email, kudos, is_new):
+def render_kudos_email(to_email, kudos_transfer, is_new):
     """Summary
 
     Args:
@@ -110,8 +110,6 @@ def render_kudos_email(to_email, kudos, is_new):
     Returns:
         tup: response_html, response_txt
     """
-    kudos_transfer = kudos['kudosTransfer']
-    kudos_token = kudos['kudosToken']
     warning = kudos_transfer.network if kudos_transfer.network != 'mainnet' else ""
     already_redeemed = bool(kudos_transfer.receive_txid)
     link = kudos_transfer.url
@@ -122,7 +120,7 @@ def render_kudos_email(to_email, kudos, is_new):
     params = {
         'link': link,
         'amount': round(kudos_transfer.amount, 5),
-        'token_elem': kudos_token,
+        'token_elem': kudos_transfer.kudos_token,
         'kudos_token:': kudos_transfer.kudos_token,
         'comments_public': kudos_transfer.comments_public,
         'kudos_transfer': kudos_transfer,
