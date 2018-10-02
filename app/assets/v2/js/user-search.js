@@ -1,4 +1,4 @@
-function userSearch(elem) {
+function userSearch(elem, showAddress) {
   var selectItem = elem || '.username-search';
 
   $(selectItem).each(function() {
@@ -33,7 +33,7 @@ function userSearch(elem) {
         return markup;
       },
       templateResult: formatUser,
-      templateSelection: formatUserSelection
+      templateSelection: showAddress ? formatUserSelectionWithAddress : formatUserSelection
     });
 
     // fix for wrong position on select open
@@ -53,18 +53,36 @@ function userSearch(elem) {
                       <div class="mr-2">
                         <img class="rounded-circle" src="${user.avatar_url || static_url + 'v2/images/user-placeholder.png'}" width="40" height="40"/>
                       </div>
-                      <div class="">${user.text}</div>
+                      <div>${user.text}</div>
                     </div>`;
 
       return markup;
     }
 
     function formatUserSelection(user) {
-
       let selected;
 
       if (user.id) {
-        selected = `<img class="rounded-circle" src="${user.avatar_url || static_url + 'v2/images/user-placeholder.png'}" width="20" height="20"/> ${user.text}`;
+        selected = `
+          <img class="rounded-circle" src="${user.avatar_url || static_url + 'v2/images/user-placeholder.png'}" width="20" height="20"/>
+          ${user.text}`;
+      } else {
+        selected = user.text;
+      }
+      return selected;
+    }
+
+    function formatUserSelectionWithAddress(user) {
+      let selected;
+
+      if (user.id) {
+        selected = `
+          <img class="rounded-circle" src="${user.avatar_url || static_url + 'v2/images/user-placeholder.png'}" width="20" height="20"/>
+          ${user.text} <i style="font-size: 5px; position:relative; top: -2px;" class="px-1 fas fa-circle"></i> `;
+        if (user.preferred_payout_address)
+          selected += truncate(user.preferred_payout_address, 4);
+        else
+          selected += '<span style="color: grey">( Unknown Address )</span>';
       } else {
         selected = user.text;
       }

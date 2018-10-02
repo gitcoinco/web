@@ -194,18 +194,18 @@ $(document).ready(function($) {
     var html = `
       <tr>
         <td>
-          <div>
+          <div class="pl-0">
             <select id="username" class="username-search custom-select" style="width: 100%; margin-left: auto; margin-right: auto;"></select>
           </div>
         </td>
         <td><div class="percent" contenteditable="true">` + percent + `</div></td>
-        <td><div><span class=amount>` + amount + '</span> <span class=denomination>' + denomination + `</span></div></td>
+        <td><div class="amount"><span class=amount>` + amount + '</span> <span class=denomination>' + denomination + `</span></div></td>
         <td><a class=remove href=#><i class="fas fa-times mt-2"></i></a>
         </td>
       </tr>`;
 
     $('#payout_table').append(html);
-    userSearch();
+    userSearch('.username-search:last', true);
     $(this).focus();
   };
 
