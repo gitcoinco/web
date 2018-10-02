@@ -39,35 +39,36 @@ console.log('network', web3.version.network);
         .find(':input:disabled')
         .removeAttr('disabled');
 
-      
+
 
 
       // Begin New Deploy Subscription Contract
 
-      let bytecode = compiledContract.bytecode;
+      let bytecode = compiledSubscription.bytecode;
 
 
-          let MyContract = web3.eth.contract(compiledContract.abi);
-          var myContractReturned = MyContract.new(data.admin_address, data.token_address, data.amount_goal, data.frequency, data.gas_price, {
+      let SubscriptionContract = web3.eth.contract(compiledSubscription.abi);
+
+      SubscriptionContract.new(data.admin_address, data.token_address, data.amount_goal, data.frequency, data.gas_price, {
             from:web3.eth.accounts[0],
             data:bytecode,
-            gas:2500000}, function(err, myContract){
+            gas:2500000}, function(err, subscriptionContract){
               if(!err) {
 
                 // NOTE: The callback will fire twice!
                 // Once the contract has the transactionHash property set and once its deployed on an address.
                 // e.g. check tx hash on the first call (transaction send)
 
-                if(!myContract.address) {
-                  console.log(myContract.transactionHash)
+                if(!subscriptionContract.address) {
+                  console.log(subscriptionContract.transactionHash)
 
 
 
                 } else {
-                  console.log(myContract.address)
+                  console.log(subscriptionContract.address)
 
-                  $('#transaction_hash').val(myContract.transactionHash)
-                  $('#contract_address').val(myContract.contract_address)
+                  $('#transaction_hash').val(subscriptionContract.transactionHash)
+                  $('#contract_address').val(subscriptionContract.contract_address)
                   $('#network').val(web3.version.network)
 
                   $.each($(form).serializeArray(), function() {

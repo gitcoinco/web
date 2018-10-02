@@ -57,7 +57,9 @@
                   <span>{{ grant.percentage_done|floatformat:0 }}%</span>
                   of {{ grant.amount_goal|floatformat:2|intcomma }} ETH
               </div>
-              <button class="button button--primary button--full">Fund this Project</button>
+                <a href="{% url 'grants:fund_grant' grant.id %}">
+                  <button class="button button--primary button--full">Fund this Project</button>
+                </a>
             </div>
           </div>
         </div>

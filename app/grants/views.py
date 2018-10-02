@@ -83,42 +83,7 @@ def new_grant(request):
 
     return TemplateResponse(request, 'grants/new.html', params)
 
-@csrf_exempt
-def grant_data(request, grant_title):
-    """Handle additional grant data."""
-    grant = Grant.objects.get(title=grant_title)
 
-
-
-    if request.method == "POST":
-
-        print('request', request.body)
-
-        print('grant', grant)
-
-        work = json.loads(request.body)
-
-        print('work', work)
-
-        grant.network = work['network']
-        grant.transaction_hash = work['transaction_hash']
-        grant.contract_address = work['contract_address']
-
-        grant.save()
-
-        return redirect(f'/grants/show/{grant.pk}')
-
-    else:
-        grant = {}
-
-    params = {
-        'active': 'grants',
-        'title': 'Grant Data',
-        'grant': grant,
-        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
-    }
-
-    return redirect('/grants/')
 
 
 def fund_grant(request, grant_id):
