@@ -157,7 +157,7 @@ $(document).ready(function() {
           };
 
           web3.eth.estimateGas(rawTx, function(err, gasLimit) {
-            rawTx['gasPrice'] = gas_price_wei;
+            rawTx['gasPrice'] = gas_price_wei.toNumber();
             rawTx['gas'] = gasLimit;
             rawTx['gasLimit'] = gasLimit;
             var will_fail_at_this_gas_price = (gas_price_wei * gasLimit) > balance;

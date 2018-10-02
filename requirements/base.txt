@@ -62,13 +62,13 @@ pg_activity
 PyYAML==4.2b4
 ecdsa
 pysha3
-pygithub==1.40
+pygithub==1.43.2
 raven==6.9.0
 django-cacheops==4.0.7
 django-redis==4.9.0
 collectfast==0.6.2
 django-health-check==3.7.0
-elastic-apm==3.0.0
+elastic-apm==3.0.1
 Wand==0.4.4
 mkdocs==1.0.4
 pymdown-extensions==5.0

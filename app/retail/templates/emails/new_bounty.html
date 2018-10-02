@@ -1,46 +1,45 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-    Copyright (C) 2017 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n humanize %}
 
 {% block content %}
 
-<h1>{{bounties | length}} {% trans "New Funded Issue" %}{% if bounties|length != 1 %}s{%endif%}</h1>
-<h3>Matching your profile</h3>
+<h1>{{ bounties|length }} {% trans "New Funded Issue" %}{% if bounties|length != 1 %}s{% endif %}</h1>
+<h3>{% trans "Matching your profile" %}</h3>
 
 {% for bounty in bounties %}
-    {% include 'emails/bounty_small.html' with bounty=bounty count=forloop.counter  %}
+  {% include 'emails/bounty_small.html' with bounty=bounty count=forloop.counter  %}
 {% endfor %}
 
 {% if old_bounties %}
 
-<h1>{{old_bounties | length}} {% trans "Other Open Funded Issue" %}{% if old_bounties|length != 1 %}s{%endif%}</h1>
-<h3>Matching your profile</h3>
-    {% for bounty in old_bounties %}
-      {% include 'emails/bounty_small.html' with bounty=bounty count=forloop.counter  %}
-    {% endfor %}
+<h1>{{ old_bounties|length }} {% trans "Other Open Funded Issue" %}{% if old_bounties|length != 1 %}s{% endif %}</h1>
+<h3>{% trans "Matching your profile" %}</h3>
+  {% for bounty in old_bounties %}
+    {% include 'emails/bounty_small.html' with bounty=bounty count=forloop.counter  %}
+  {% endfor %}
 
 {% endif %}
 
 <p>
-    {% if keywords %}
-    {% trans "You are receiving this email because your email preferences matched with these keywords:" %} {{keywords}}.  <a href="https://gitcoin.co/settings/email/{{subscriber.priv}}">{% trans "Manage Email Settings" %}</a>.
-    {% endif %}
+  {% if keywords %}
+  {% trans "You are receiving this email because your email preferences matched with these keywords:" %} {{ keywords }}.  <a href="{% url 'email_settings' subscriber.priv %}">{% trans "Manage Email Settings" %}</a>.
+  {% endif %}
 </p>
 
 {% endblock %}
