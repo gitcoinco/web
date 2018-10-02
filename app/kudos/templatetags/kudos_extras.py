@@ -60,8 +60,3 @@ def humanize_address(address):
 @register.filter
 def replace_commas(string):
     return ' '.join([x.capitalize() for x in string.split(',')])
-
-
-@register.filter
-def unique_value(string):
-    return ' '.join([x.capitalize() for x in string.split(',')])
