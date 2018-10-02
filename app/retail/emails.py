@@ -99,7 +99,7 @@ def render_tip_email(to_email, tip, is_new):
     return response_html, response_txt
 
 
-def render_kudos_email(to_email, kudos_transfer, is_new):
+def render_kudos_email(to_email, kudos, is_new):
     """Summary
 
     Args:
@@ -110,6 +110,8 @@ def render_kudos_email(to_email, kudos_transfer, is_new):
     Returns:
         tup: response_html, response_txt
     """
+    kudos_transfer = kudos['kudosTransfer']
+    kudos_token = kudos['kudosToken']
     warning = kudos_transfer.network if kudos_transfer.network != 'mainnet' else ""
     already_redeemed = bool(kudos_transfer.receive_txid)
     link = kudos_transfer.url
@@ -120,8 +122,8 @@ def render_kudos_email(to_email, kudos_transfer, is_new):
     params = {
         'link': link,
         'amount': round(kudos_transfer.amount, 5),
-        'tokenName': kudos_transfer.tokenName,
-        'kudos_token:': kudos_transfer.kudos_token_cloned_from,
+        'token_elem': kudos_token,
+        'kudos_token:': kudos_transfer.kudos_token,
         'comments_public': kudos_transfer.comments_public,
         'kudos_transfer': kudos_transfer,
         'already_redeemed': already_redeemed,
@@ -133,6 +135,8 @@ def render_kudos_email(to_email, kudos_transfer, is_new):
     }
 
     response_html = premailer_transform(render_to_string("emails/new_kudos.html", params))
+    # response_html = premailer_transform(render_to_string("emails/kudos_mint.html", params))
+    # response_html = premailer_transform(render_to_string("emails/kudos_mkt.html", params))
     response_txt = render_to_string("emails/new_kudos.txt", params)
 
     return response_html, response_txt
@@ -699,10 +703,10 @@ def new_tip(request):
 
 @staff_member_required
 def new_kudos(request):
-    
-    from kudos.models import Token
-    kudos = Token.objects.last()
-    print(Token.objects)
+    from kudos.models import KudosTransfer, Token
+    kudos = {}
+    kudos['kudosTransfer'] = KudosTransfer.objects.last()
+    kudos['kudosToken'] = Token.objects.last()
     response_html, _ = render_kudos_email(settings.CONTACT_EMAIL, kudos, True)
 
     return HttpResponse(response_html)

@@ -14,11 +14,11 @@
         {% include 'shared/kudos_searchbar.html' %}
       </div>
     </header>
-    
+
     <section class="container mt-5 pb-5">
       <div class="row justify-content-between p-3">
         <div class="">{{listings.count}} Kudos</div>
-        {% blocktrans %} 
+        {% blocktrans %}
           <div>Sort by: Price <a href="">Low</a> - <a href="">High</a></div>
         {% endblocktrans %}
       </div>
@@ -52,7 +52,7 @@
       var bootstrapTooltip = $.fn.tooltip.noConflict()
     </script>
     <script src="{% static "v2/js/pages/kudos-search.js" %}"></script>
-    {% include 'shared/messages.html' %
+    {% include 'shared/messages.html' %}
   <!-- <script src="js/web3.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
     <script src="js/truffle-contract.js"></script>

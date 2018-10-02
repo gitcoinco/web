@@ -16,98 +16,124 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
-{% load i18n humanize %}
+{% load i18n humanize static kudos_extras  %}
 
 {% block content %}
 
 <style>
     .kudos-box {
         margin-bottom: 2em;
-        border-style: solid;
-        border-width: 1px;
-        border-color: #e0e0e0;
     }
     .kudos-contents {
-        text-align: left;
+        text-align: center;
     }
     .kudos {
         display: flex;
+        justify-content: center;
         padding-top: 0.5em;
         padding-bottom: 0.5em;
         padding-left: 1em;
         padding-right: 1em;
     }
+    .cols {
+      display: flex;
+      align-content: center;
+      justify-content: center;
+      width: 65%;
+      align-items: center;
+      margin: 3em auto;
+      /* flex-direction: column; */
+    }
+    .col-img {
+      margin: 0 2em;
+    }
+    .col-txt {
+      text-align: left;
+      line-height: 2;
+    }
+
+    hr {
+      width: 80%;
+    }
+    @media screen and (max-width: 48em) {
+      .cols {
+        flex-direction: column;
+      }
+    }
+
+
 </style>
 
 <div>
-    {% if is_new %}
-    <h1>⚡️ {% trans "New Kudos Alert" %} ⚡️</h1>
+  {% if is_new %}
+  <h1>{% trans "You've Received a Kudos" %}</h1>
+  {% else %}
+  <h1>🕑 {% trans "Reminder: Kudos Expires Soon" %} 🕝</h1>
+  {% endif %}
+  <h3>
+    {% if kudos_transfer.from_name %}
+      {{kudos_transfer.from_name}} {% blocktrans %} sent you a {% endblocktrans %}<b>{{ token_elem.name|humanize_name }}</b> kudos!
     {% else %}
-    <h1>🕑 {% trans "Reminder: Kudos Expires Soon" %} 🕝</h1>
-    {% endif %}
-
-    <h3>
-        {% if kudos_transfer.from_name %}
-            {{kudos_transfer.from_name}} {% blocktrans %} sent you a {{ kudos_token.name|humanize_name }} kudos.{% endblocktrans %}
-        {% else %}
-            {% blocktrans %}Someone sent you a {{ kudos_token.name }} kudos.{% endblocktrans %}
-        {% endif %}{% if not is_new %} {{kudos_transfer.created_on | naturaltime}}{%endif%}.
-    </h3>
+      Someone sent you a <b>{{ token_elem.name|humanize_name }}</b> kudos.
+    {% endif %}{% if not is_new %} {{kudos_transfer.created_on | naturaltime}}{%endif%}
+  </h3>
+  <div>
+    <img src="{% static token_elem.image %}" alt="{{token_elem.name|humanize_name  }}" width="200" style="margin:auto;">
+  </div>
 </div>
 
 <div class="centered-contents kudos-box">
-    <div class="kudos">
-        <div class="kudos-contents">
-            {% if kudos_transfer.github_url %}
-                <p>
-                {% if kudos_transfer.from_name %}{{kudos_transfer.from_name}}{% else %}The sender{% endif %} said it was for your work on <a href="{{kudos_transfer.github_url}}">{{kudos_transfer.github_url}}</a>.
-                    {% if comments %}
-                        {% trans "They had the following comments:" %}
-                    <pre>
-                        {{comments}}
-                    </pre>
-                    {% endif %}
+  <div class="kudos">
+    <div class="kudos-contents">
+      {% if kudos_transfer.github_url %}
+        <p>
+        {% if kudos_transfer.from_name %}{{kudos_transfer.from_name}}{% else %}The sender{% endif %} said it was for your work on <a href="{{kudos_transfer.github_url}}">{{kudos_transfer.github_url}}</a>.
+        {% if comments %}
+          {% trans "They had the following comments:" %}
+          <pre>{{comments}}</pre>
+        {% endif %}
+        </p>
+      {% endif %}
 
-                </p>
-            {% endif %}
+      {% if comments_priv %}
+        <p>
+          {% trans "They had the following private comments:" %}
+          <pre>{{comments_priv}}</pre>
+        </p>
+      {% endif %}
 
-            {% if comments_priv %}
-                <p>
-                {% trans "They had the following private comments:" %}
-            <pre>
-                {{comments_priv}}
-            </pre>
-                </p>
-            {% endif %}
-
-            {% if comments_public %}
-                <p>
-                {% trans "They had the following public comments:" %}
-            <pre>
-                {{comments_public}}
-            </pre>
-                </p>
-            {% endif %}
-            {% if already_redeemed %}
-                <p>
-                 {% trans "This kudos has been remitted automatically to the Ethereum address on file for your account via txid " %}{{kudos_transfer.txid}}
-                </p>
-            {% elif show_expires %}
-                <p>
-                {% trans "The kudos expires on" %} <strong>{{kudos_transfer.expires_date}}, {% trans "in just" %} {{kudos_transfer.expires_date | naturaltime}}</strong>. {% trans "No pressure, but if you wanted to redeem your kudos sooner rather than later that'd be 👌:" %}
-                </p>
-            {% else %}
-                <p>
-                 {% trans "No pressure, but if you wanted to redeem your kudos sooner rather than later that'd be 👌" %}
-                </p>
-            {% endif %}
-        </div>
+      {% if comments_public %}
+        <p>
+          {% trans "Comment:" %}
+          <pre>{{comments_public}}</pre>
+        </p>
+      {% endif %}
+      {% if already_redeemed %}
+        <p>
+          {% trans "This kudos has been remitted automatically to the Ethereum address on file for your account via txid " %}{{kudos_transfer.txid}}
+        </p>
+      {% elif show_expires %}
+        <p>
+          {% trans "The kudos expires on" %} <strong>{{kudos_transfer.expires_date}}, {% trans "in just" %} {{kudos_transfer.expires_date | naturaltime}}</strong>. {% trans "No pressure, but if you wanted to redeem your kudos sooner rather than later that'd be 👌:" %}
+        </p>
+      {% endif %}
     </div>
-    {% if not already_redeemed %}
-      <div style="margin-bottom: 1.5em;">
-          <a class="button" href="{{link}}">{% trans "Redeem Kudos" %}</a>
-      </div>
-    {% endif %}
+  </div>
+  {% if not already_redeemed %}
+    <div style="margin: 3em;">
+      <a class="button" href="{{link}}">{% trans "Accept Kudos" %}</a>
+    </div>
+  {% endif %}
+</div>
+
+<hr>
+
+<div class="cols">
+  <img src="{% static 'v2/images/emails/email-kudos.png' %}" alt="{{token_elem.name|humanize_name  }}" width="134" class="col-img">
+  <p class="col-txt">Kudos is a way of showing your appreciation for another Gitcoin member. It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star. Kudos are non-fungible tokens that can also be bought and sold on the <b>Kudos Marketplace</b>.</p>
+</div>
+<div style="margin: 3em 0 5em;">
+  <a class="button" href="{% url 'kudos_about' %}">{% trans "Learn More" %}</a>
 </div>
 
 {% endblock %}
