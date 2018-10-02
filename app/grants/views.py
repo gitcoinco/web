@@ -84,10 +84,7 @@ def grant_data(request, grant_title):
     """Handle additional grant data."""
     grant = Grant.objects.get(title=grant_title)
 
-    response = {
-        'status': 'OK',
-        'message': ('Data Added')
-    }
+
 
     if request.method == "POST":
 
@@ -105,7 +102,7 @@ def grant_data(request, grant_title):
 
         grant.save()
 
-        return redirect('/grants')
+        return redirect('/grants/')
 
     else:
         grant = {}
@@ -117,7 +114,7 @@ def grant_data(request, grant_title):
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
 
-    return JsonResponse(response)
+    return redirect('/grants/')
 
 
 def fund_grant(request, grant_id):
