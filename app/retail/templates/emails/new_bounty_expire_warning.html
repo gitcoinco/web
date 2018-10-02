@@ -20,10 +20,10 @@
 
 {% block content %}
 
-<h1>😕 {% trans "Funded Issue Expiring ..." %} 😕</h1>
+<h1>{% trans "Your Funded Bounty is Expiring" %}</h1>
 
 
-<p>
+<p style="color: #4A4A4A;">
     {% if is_owner %}
         {% blocktrans %}Heads up! The funded issue that you posted (below) is expiring in {{num}} {{unit}}.{% endblocktrans %}
     {% else %}
@@ -32,20 +32,25 @@
 
     <br>
     <br>
+    <img src="{% static "v2/images/expiring_clock.png"%}" style="padding: 20px 0;">
+    <br>
+    <br>
     {% if is_owner %}
+    <a class="button button--primary" href="{{bounty.absolute_url}}">{% trans "Extend Expiration Date" %}</a>
     {% if bounty.status == 'submitted' %}
+        <br>
+        <br>
         {% trans "There is a currently pending claim agains this funded issue. Please make sure you process them!" %}
     {% endif %}
 
     <br>
     <br>
-    {% blocktrans %}After the funded issue has expired, you can still submit and accept work.  You may also 'Cancel' the bounty and get the funds back.{% endblocktrans %}
+    {% trans "After a funded issue has expired, a contributor is still able to submit work and you will still be able to accept work." %}
     <br>
     <br>
-    <h5>{% trans "Look for this button" %}</h5>
-    <br>
-    <img src="{% static "v2/images/cancel.png" %}" / >
+    {% trans "You can also cancel the bounty on the issue details page if needed." %}
 
+    <br>
     <br>
     <br>
     {% blocktrans %}If you have any questions, feel free to reach out <a href="https://gitcoin.co/slack">on slack</a>.{% endblocktrans %}

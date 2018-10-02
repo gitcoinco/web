@@ -21,8 +21,6 @@ from __future__ import unicode_literals
 
 from django.apps import AppConfig
 
-from health_check.plugins import plugin_dir
-
 
 class DashboardConfig(AppConfig):
     """Define the Dashboard application configuration."""
@@ -32,6 +30,4 @@ class DashboardConfig(AppConfig):
 
     def ready(self):
         """Handle signals on ready."""
-        from .healthchecks import IPFSBackend
         import .signals # noqa
-        plugin_dir.register(IPFSBackend)

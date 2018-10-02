@@ -24,9 +24,7 @@ import time
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
-from django.core.cache import cache
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -40,8 +38,7 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 
 from app.utils import clean_str, ellipses, sync_profile
 from avatar.utils import get_avatar_context
-from economy.utils import convert_amount
-from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
+from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid
 from kudos.models import Token, KudosTransfer
 from marketing.mails import (
@@ -58,8 +55,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
-    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tip,
-    Tool, ToolVote, UserAction,
+    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tool,
+    ToolVote, UserAction,
 )
 from kudos.models import Wallet
 from .notifications import (
@@ -365,9 +362,9 @@ def remove_interest(request, bounty_id):
 @csrf_exempt
 @require_POST
 def extend_expiration(request, bounty_id):
-    """Unclaim work from the Bounty.
+    """Extend expiration of the Bounty.
 
-    Can only be called by someone who has started work
+    Can only be called by funder or staff of the bounty.
 
     :request method: POST
 
@@ -531,9 +528,12 @@ def onboard(request, flow):
 
 def dashboard(request):
     """Handle displaying the dashboard."""
+
+    keyword = request.GET.get('keywords', False)
+    title = keyword.title() + str(_(" Bounties ")) if keyword else str(_('Issue Explorer'))
     params = {
         'active': 'dashboard',
-        'title': _('Issue Explorer'),
+        'title': title,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'dashboard/index.html', params)
@@ -854,7 +854,7 @@ def helper_handle_suspend_auto_approval(request, bounty):
 
 def helper_handle_override_status(request, bounty):
     admin_override_satatus = request.GET.get('admin_override_satatus', False)
-    if admin_override_satatus != False:
+    if admin_override_satatus:
         is_staff = request.user.is_staff
         if is_staff:
             valid_statuses = [ele[0] for ele in Bounty.STATUS_CHOICES]
@@ -1022,7 +1022,7 @@ class ProfileHiddenException(Exception):
     pass
 
 
-def profile_helper(handle, suppress_profile_hidden_exception=False):
+def profile_helper(handle, suppress_profile_hidden_exception=False, current_user=None):
     """Define the profile helper.
 
     Args:
@@ -1038,6 +1038,10 @@ def profile_helper(handle, suppress_profile_hidden_exception=False):
         dashboard.models.Profile: The Profile associated with the provided handle.
 
     """
+    current_profile = getattr(current_user, 'profile', None)
+    if current_profile and current_profile.handle == handle:
+        return current_profile
+
     try:
         profile = Profile.objects.get(handle__iexact=handle)
     except Profile.DoesNotExist:
@@ -1121,7 +1125,7 @@ def profile(request, handle):
         else:
             if handle.endswith('/'):
                 handle = handle[:-1]
-            profile = profile_helper(handle)
+            profile = profile_helper(handle, current_user=request.user)
 
         context = profile.to_dict()
     except (Http404, ProfileHiddenException):

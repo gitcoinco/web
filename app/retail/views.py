@@ -16,6 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+from json import loads as json_parse
 from os import walk as walkdir
 
 from django.conf import settings
@@ -31,17 +32,24 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from dashboard.models import Activity
+from app.utils import get_default_network
+from cacheops import cached_as, cached_view, cached_view_as
+from dashboard.models import Activity, Profile
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
-from marketing.mails import new_token_request
+from marketing.mails import new_funding_limit_increase_request, new_token_request
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
+from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 
+from .forms import FundingLimitIncreaseRequestForm
 from .utils import build_stat_results, programming_languages
 
 
+@cached_as(
+    Activity.objects.select_related('bounty').filter(bounty__network='mainnet').order_by('-created'),
+    timeout=120)
 def get_activities(tech_stack=None, num_activities=15):
     # get activity feed
 
@@ -102,6 +110,7 @@ def index(request):
     return TemplateResponse(request, 'landing/funder.html', context)
 
 
+@cached_view(timeout=60 * 10)
 def contributor_landing(request, tech_stack):
 
     slides = [
@@ -246,13 +255,17 @@ def how_it_works(request, work_type):
     return TemplateResponse(request, 'how_it_works/index.html', context)
 
 
+@cached_view_as(Profile.objects.hidden())
 def robotstxt(request):
+    hidden_profiles = Profile.objects.hidden()
     context = {
         'settings': settings,
+        'hidden_profiles': hidden_profiles,
     }
     return TemplateResponse(request, 'robots.txt', context, content_type='text')
 
 
+@cached_view(timeout=60 * 10)
 def about(request):
     core_team = [
         (
@@ -338,14 +351,14 @@ def about(request):
     exclude_community = ['kziemiane', 'owocki', 'mbeacom']
     community_members = [
     ]
-    leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount')[0: 15]
+    leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard='quarterly_earners').exclude(github_username__in=exclude_community).order_by('-amount').cache()[0: 15]
     for lr in leadeboardranks:
         package = (lr.avatar_url, lr.github_username, lr.github_username, '')
         community_members.append(package)
 
     alumnis = [
     ]
-    for alumni in Alumni.objects.select_related('profile').filter(public=True).exclude(organization='gitcoinco'):
+    for alumni in Alumni.objects.select_related('profile').filter(public=True).exclude(organization='gitcoinco').cache():
         package = (alumni.profile.avatar_url, alumni.profile.username, alumni.profile.username, alumni.organization)
         alumnis.append(package)
 
@@ -400,6 +413,7 @@ def not_a_token(request):
     return TemplateResponse(request, 'not_a_token.html', context)
 
 
+@cached_view(timeout=60 * 10)
 def results(request, keyword=None):
     """Render the Results response."""
     if keyword and keyword not in programming_languages:
@@ -409,6 +423,7 @@ def results(request, keyword=None):
     return TemplateResponse(request, 'results.html', context)
 
 
+@cached_view_as(Activity.objects.all().order_by('-created'))
 def activity(request):
     """Render the Activity response."""
 
@@ -793,7 +808,7 @@ def presskit(request):
             "#FFFFFF",
             "23, 244, 238"
         ),
-        ]
+    ]
 
     context = {
         'brand_colors': brand_colors,
@@ -953,7 +968,6 @@ def newtoken(request):
                 context['msg'] = str(_('You must provide the following fields: ')) + key
                 validtion_passed = False
         if validtion_passed:
-            ip = get_ip(request)
             obj = Token.objects.create(
                 address=request.POST['address'],
                 symbol=request.POST['symbol'],
@@ -1016,6 +1030,7 @@ def web3(request):
     return redirect('https://www.youtube.com/watch?v=cZZMDOrIo2k')
 
 
+@cached_view_as(Token.objects.filter(network=get_default_network, approved=True))
 def tokens(request):
     context = {}
     networks = ['mainnet', 'ropsten', 'rinkeby', 'unknown', 'custom']
@@ -1054,5 +1069,50 @@ def ui(request):
     return TemplateResponse(request, 'ui_inventory.html', context)
 
 
-def lbcheck(request):
-    return HttpResponse(status=200)
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def increase_funding_limit_request(request):
+    user = request.user if request.user.is_authenticated else None
+    profile = request.user.profile if user and hasattr(request.user, 'profile') else None
+    usdt_per_tx = request.GET.get('usdt_per_tx', None)
+    usdt_per_week = request.GET.get('usdt_per_week', None)
+    is_staff = user.is_staff if user else False
+
+    if is_staff and usdt_per_tx and usdt_per_week:
+        try:
+            profile_pk = request.GET.get('profile_pk', None)
+            target_profile = Profile.objects.get(pk=profile_pk)
+            target_profile.max_tip_amount_usdt_per_tx = usdt_per_tx
+            target_profile.max_tip_amount_usdt_per_week = usdt_per_week
+            target_profile.save()
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+
+        return JsonResponse({'msg': _('Success')}, status=200)
+
+    if request.body:
+        if not user or not profile or not profile.handle:
+            return JsonResponse(
+                {'error': _('You must be Authenticated via Github to use this feature!')},
+                status=401)
+
+        try:
+            result = FundingLimitIncreaseRequestForm(json_parse(request.body))
+            if not result.is_valid():
+                raise
+        except Exception as e:
+            return JsonResponse({'error': _('Invalid JSON.')}, status=400)
+
+        new_funding_limit_increase_request(profile, result.cleaned_data)
+
+        return JsonResponse({'msg': _('Request received.')}, status=200)
+
+    form = FundingLimitIncreaseRequestForm()
+    params = {
+        'form': form,
+        'title': _('Request a Funding Limit Increase'),
+        'card_title': _('Gitcoin - Request a Funding Limit Increase'),
+        'card_desc': _('Do you hit the Funding Limit? Request a increasement!')
+    }
+
+    return TemplateResponse(request, 'increase_funding_limit_request_form.html', params)

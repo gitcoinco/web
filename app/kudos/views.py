@@ -162,7 +162,7 @@ def details(request, id, name):
     }
     if kudos:
         context['title'] = kudos.humanized_name
-        context['card_title'] = kudos.name
+        context['card_title'] = kudos.humanized_name
         context['card_desc'] = kudos.description
         context['avatar_url'] = kudos.image
 

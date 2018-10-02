@@ -1,5 +1,4 @@
 body {
-  font-family: 'Muli', sans-serif;
   background-color: #FFF;
 }
 
@@ -89,7 +88,6 @@ body {
   text-align: center;
   font-size: 16px;
   color: #7A7A7A;
-  font-family: 'Muli', sans-serif;
   font-weight: 600;
 }
 
@@ -109,7 +107,6 @@ body {
 }
 
 .bounty-heading {
-  font-family: 'Muli', sans-serif;
   font-weight: 600;
   margin-bottom: 1em;
   margin-top: 2em;
@@ -156,7 +153,6 @@ body {
 .bounty-info div {
   display: inline;
   margin-right: 15px;
-  font-family: 'Muli', sans-serif;
   font-weight: 300;
 }
 
@@ -225,7 +221,6 @@ body {
 }
 
 .transaction-status {
-  font-family: 'Muli', sans-serif;
   display: block;
   position: relative;
   width: 80%;
@@ -236,10 +231,10 @@ body {
   padding: 3vh 5vw;
   text-align: center;
 }
+
 .transaction-status a{
   color: white;
 }
-
 
 .red_warning, 
 #network {
@@ -296,7 +291,6 @@ body {
   color: #333333;
   letter-spacing: 0;
   text-transform: capitalize;
-  font-family: 'Muli', sans-serif;
   font-weight: 600;
 }
 
@@ -315,7 +309,6 @@ body {
   color: #0D0764;
   margin-bottom: 5px;
   text-transform: capitalize;
-  font-family: 'Muli', sans-serif;
   font-weight: 600;
 }
 
@@ -342,6 +335,17 @@ a.btn {
   top: 1px;
   display: inline-block;
   margin-bottom: 10px;
+}
+
+#moderator-admin-actions:not(:empty).sticky {
+  text-align: center;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  z-index: 1010;
+  text-align: center;
 }
 
 #btn-white {
@@ -522,6 +526,18 @@ a.btn {
   padding-left: 5px;
 }
 
+#moderator-admin-actions:not(:empty) {
+  background: #F2F6F9;
+  padding: 16px 0 10px;
+  text-align: left;
+  left: 0;
+}
+
+#moderator-admin-actions:not(:empty) a {
+  border: none !important;
+  margin: 0 3px 5px;
+}
+
 @media (max-width: 767px) {
 
   #title {
@@ -649,7 +665,6 @@ a.btn {
 }
 
 .transaction-header {
-  font-family: 'Muli', sans-serif;
   display: block;
   position: relative;
   width: 80%;

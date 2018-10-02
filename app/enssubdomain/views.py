@@ -79,22 +79,22 @@ def handle_subdomain_exists(request, github_handle):
             'ens_domain': settings.ENS_TLD,
         }
         return TemplateResponse(request, 'ens/ens_pending.html', params)
-    elif request_reset_time > last_request.created_on:
+    if request_reset_time > last_request.created_on:
         params = {
             'owner': last_request.subdomain_wallet_address,
             'github_handle': github_handle,
             'ens_domain': settings.ENS_TLD,
         }
         return TemplateResponse(request, 'ens/ens_edit.html', params)
-    else:
-        params = {
-            'owner': last_request.subdomain_wallet_address,
-            'github_handle': github_handle,
-            'limit_reset_days': settings.ENS_LIMIT_RESET_DAYS,
-            'try_after': last_request.created_on + datetime.timedelta(days=settings.ENS_LIMIT_RESET_DAYS),
-            'ens_domain': settings.ENS_TLD,
-        }
-        return TemplateResponse(request, 'ens/ens_rate_limit.html', params)
+
+    params = {
+        'owner': last_request.subdomain_wallet_address,
+        'github_handle': github_handle,
+        'limit_reset_days': settings.ENS_LIMIT_RESET_DAYS,
+        'try_after': last_request.created_on + datetime.timedelta(days=settings.ENS_LIMIT_RESET_DAYS),
+        'ens_domain': settings.ENS_TLD,
+    }
+    return TemplateResponse(request, 'ens/ens_rate_limit.html', params)
 
 
 def set_resolver(signer, github_handle, nonce, gas_multiplier=1.101):
@@ -162,7 +162,7 @@ def set_address_at_resolver(signer, github_handle, nonce, gas_multiplier=1.101):
     ns = ENS.fromWeb3(w3)
     resolver_addr = ns.address('resolver.eth')
     signer = Web3.toChecksumAddress(signer)
-    txn_hash = None
+    txn_hash = ''
     gas_price = get_gas_price(gas_multiplier)
     subdomain = f"{github_handle}.{settings.ENS_TLD}"
 
@@ -180,7 +180,7 @@ def set_address_at_resolver(signer, github_handle, nonce, gas_multiplier=1.101):
     try:
         txn_hash = convert_txn(w3.eth.sendRawTransaction(signed_txn.rawTransaction))
     except ValueError as e:
-        logger.warning(f'{e} - set_address_at_resolver')
+        logger.error(e)
 
     return txn_hash
 
@@ -224,12 +224,12 @@ def helper_process_registration(signer, github_handle, signedMsg, gas_multiplier
 
 def handle_subdomain_post_request(request, github_handle):
     # setup
-    signedMsg = request.POST.get('signedMsg', '')
+    signed_msg = request.POST.get('signedMsg', '')
     signer = request.POST.get('signer', '').lower()
-    if signedMsg and signer:
+    if signed_msg and signer:
         # validation
         message_hash = defunct_hash_message(text=f'Github Username : {github_handle}')
-        recovered_signer = w3.eth.account.recoverHash(message_hash, signature=signedMsg).lower()
+        recovered_signer = w3.eth.account.recoverHash(message_hash, signature=signed_msg).lower()
         if recovered_signer != signer:
             return JsonResponse({'success': False, 'msg': _('Sign Mismatch Error')})
         if not request.user.profile.trust_profile and request.user.profile.github_created_on > (
@@ -256,6 +256,8 @@ def handle_subdomain_post_request(request, github_handle):
         gas_price = get_gas_price()
         gas_cost_eth = (RESOLVER_GAS_COST + OWNER_GAS_COST + SET_ADDRESS_GAS_COST) * gas_price / 10**18
         profile = Profile.objects.filter(handle=github_handle).first()
+        if not txn_hash_1 or not txn_hash_2 or not txn_hash_3:
+            return JsonResponse({'success': False, 'msg': _('Your ENS request has failed. Please try again.')})
         ENSSubdomainRegistration.objects.create(
             profile=profile,
             subdomain_wallet_address=signer,
@@ -263,7 +265,7 @@ def handle_subdomain_post_request(request, github_handle):
             txn_hash_2=txn_hash_2,
             txn_hash_3=txn_hash_3,
             pending=True,
-            signed_msg=signedMsg,
+            signed_msg=signed_msg,
             start_nonce=start_nonce,
             end_nonce=nonce,
             gas_cost_eth=gas_cost_eth,

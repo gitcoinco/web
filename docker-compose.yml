@@ -45,6 +45,7 @@ services:
       - .:/code
     ports:
       - "8000:8000"
+      - "3030:3030"
     depends_on:
       - db
     stdin_open: true
@@ -57,7 +58,18 @@ services:
     # command: "-a 1 --seed 2"
     command: "--host 0.0.0.0 --mnemonic 'lobster chair view oyster relax keep sell grab daring ankle lunar about'"
 
+  redis:
+    restart: unless-stopped
+    image: redis:4.0-alpine
+    env_file:
+      - app/app/.env
+    volumes:
+      - redis:/data
+    ports:
+      - "6379:6379"
+
 volumes:
   pgdata:
   ipfsdata:
   ipfsexport:
+  redis:

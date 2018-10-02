@@ -12,6 +12,7 @@ os:
 services:
   - docker
   - postgresql
+  - redis-server
 
 cache:
   directories:
@@ -37,9 +38,21 @@ jobs:
         - pytest -p no:ethereum
         # Publish CodeCov coverage results.
         - codecov
+        # Generate Markdown documentation and static docs page.
+        - pydocmd build
       env:
         - PYTHONPATH="${TRAVIS_BUILD_DIR}/app/"
         - DJANGO_SETTINGS_MODULE="app.settings"
+      deploy:
+        provider: pages
+        skip-cleanup: true
+        github-token: $GITHUB_TOKEN
+        keep-history: true
+        local-dir: _build/site
+        fqdn: docs.gitcoin.co
+        target-branch: gh-pages
+        on:
+          branch: master
     # Deploy to Docker Hub and initiate a rolling update for web.
     - stage: deploy-stage
       if: branch = master AND NOT type = pull_request
