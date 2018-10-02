@@ -18,18 +18,18 @@
     <section class="container mt-5 pb-5">
       <div class="row justify-content-between p-3">
         <div class="">{{listings.count}} Kudos</div>
-        {% blocktrans %}
           <div>
-            <label for="">Sort by:</label>
+            <label for="">{% trans 'Sort by:' %}</label>
             <select name="" id="sort_order">
-              <option value="name">Name</option>
-              <option value="price_finney">Low price</option>
-              <option value="-price_finney">High price</option>
-              <option value="num_clones_in_wild">Popularity</option>
+              <option value="-modified_on">{% trans 'Newest' %}</option>
+              <option value="modified_on">{% trans 'Oldest' %}</option>
+              <option value="num_clones_in_wild">{% trans 'Popularity' %}</option>
+              <option value="price_finney">{% trans 'Low price' %}</option>
+              <option value="-price_finney">{% trans 'High price' %}</option>
+              <option value="name">{% trans 'Name' %}</option>
             </select>
           </div>
           <!-- <div>Sort by: Price <a href="?order_by=-modified_on">Low</a> - <a href="">High</a></div> -->
-        {% endblocktrans %}
       </div>
       {% if not listings %}
       <div class="h3 text-center m-5">
