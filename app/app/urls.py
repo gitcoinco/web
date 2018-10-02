@@ -39,6 +39,7 @@ import enssubdomain.views
 import external_bounties.views
 import faucet.views
 import gitcoinbot.views
+import healthcheck.views
 import linkshortener.views
 import marketing.views
 import marketing.webhookviews
@@ -64,7 +65,7 @@ urlpatterns = [
 
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
-    re_path(r'^lbcheck/?', retail.views.lbcheck, name='lbcheck'),
+    re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),
 
     # dashboard views
 

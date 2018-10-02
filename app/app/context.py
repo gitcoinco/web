@@ -62,9 +62,9 @@ def insert_settings(request):
             'protocol': settings.IPFS_API_SCHEME,
             'root': settings.IPFS_API_ROOT,
         },
-        'access_token': request.user.profile.access_token if user_is_authenticated else '',
-        'is_staff': request.user.is_staff,
-        'is_moderator': request.user.profile.is_moderator if hasattr(request.user, 'profile') else False,
+        'access_token': profile.access_token if profile else '',
+        'is_staff': request.user.is_staff if user_is_authenticated else False,
+        'is_moderator': profile.is_moderator if profile else False,
     }
     context['json_context'] = json.dumps(context)
 
