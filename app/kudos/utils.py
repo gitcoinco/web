@@ -25,16 +25,29 @@ import time
 from django.conf import settings
 
 from dashboard.utils import UnsupportedNetworkException
-from dashboard.utils import get_web3
+from dashboard.utils import get_web3, get_ipfs
 from kudos.models import Token, KudosTransfer
 from eth_utils import to_checksum_address, to_normalized_address, to_text
 from web3.middleware import geth_poa_middleware
 from django.forms.models import model_to_dict
 from web3.exceptions import BadFunctionCallOutput
+from web3.middleware import geth_poa_middleware
+from web3 import WebsocketProvider, Web3
+
+from ipfsapi.exceptions import CommunicationError
+import ipfsapi
 
 from functools import wraps
 
 logger = logging.getLogger(__name__)
+
+
+def humanize_name(name):
+    return ' '.join([x.capitalize() for x in name.split('_')])
+
+
+def computerize_name(name):
+    return name.lower().replace(' ', '_')
 
 
 class KudosError(Exception):
@@ -102,7 +115,7 @@ class KudosContract:
         address (str): The addess of the Kudos.sol contract on the blockchain.
     """
 
-    def __init__(self, network='localhost'):
+    def __init__(self, network='localhost', sockets=False):
         """Initialize the KudosContract.
 
         Args:
@@ -112,13 +125,18 @@ class KudosContract:
         network = 'localhost' if network == 'custom network' else network
         self.network = network
 
-        self._w3 = get_web3(self.network)
+        self._w3 = get_web3(self.network, sockets=sockets)
+
+        if self.network == 'rinkeby':
+            self._w3.middleware_stack.inject(geth_poa_middleware, layer=0)
+        host = f'{settings.IPFS_API_SCHEME}://{settings.IPFS_HOST}'
+        self._ipfs = ipfsapi.connect(host=host, port=settings.IPFS_API_PORT)
         self._contract = self._get_contract()
 
         self.address = self._get_contract_address()
 
     @staticmethod
-    def get_kudos_map(kudos):
+    def get_kudos_map(kudos, metadata):
         """Pass in a kudos array that is returned from web3, convert to dictionary.
 
         Use this to operate on the database.
@@ -126,22 +144,36 @@ class KudosContract:
         Args:
             kudos (list): A kudos object returned from the Kudos.sol contract.  Soldidity returns
                           the Kudos strcut as an array.
+            metadata (dict):  The metadata return from the tokenURI.
 
         Returns:
             dict: Kudos dictionary with key/values to be used to interact with the database.
 
         """
-        return dict(name=kudos[0],
-                    description=kudos[1],
-                    rarity=kudos[2],
-                    price_finney=kudos[3],
-                    num_clones_allowed=kudos[4],
-                    num_clones_in_wild=kudos[5],
-                    tags=kudos[6],
-                    image=kudos[7],
-                    cloned_from_id=kudos[8],
-                    # sent_from_address=kudos[9]
-                    )
+        mapping = dict(price_finney=kudos[0],
+                       num_clones_allowed=kudos[1],
+                       num_clones_in_wild=kudos[2],
+                       cloned_from_id=kudos[3],
+                       )
+
+        attributes = metadata.pop('attributes')
+        tags = []
+        for attrib in attributes:
+            if attrib['trait_type'] == 'rarity':
+                mapping['rarity'] = attrib['value']
+            elif attrib['trait_type'] == 'tag':
+                tags.append(attrib['value'])
+
+        mapping['tags'] = ', '.join(tags)
+
+        # Add the rest of the fields
+        kudos_map = {**mapping, **metadata}
+
+        kudos_map['name'] = computerize_name(kudos_map['name'])
+        image_arr = kudos_map["image"].split('/')[-4:]
+        kudos_map['image'] = '/'.join(image_arr)
+
+        return kudos_map
 
     def may_require_key(f):
         @wraps(f)
@@ -216,7 +248,7 @@ class KudosContract:
             kudos_token.save()
         logger.info(f'Synced id #{kudos_token.id}, "{kudos_token.name}" kudos to the database.')
 
-    @retry
+    # @retry
     def sync_db(self, kudos_id, txid):
         """Sync up the Kudos contract on the blockchain with the database.
 
@@ -257,9 +289,9 @@ class KudosContract:
             if kudos_token.num_clones_allowed == 0:
                 logger.warning(f'No KudosTransfer object found for Kudos ID {kudos_id}')
                 # raise KudosTransferNotFound(kudos_id, 'No KudosTransfer object found')
-                raise
+                # raise
         else:
-            # Store the foreign key reference
+            # Store the foreign key reference if the kudos_transfer object exists
             kudos_transfer.kudos_token = kudos_token
             kudos_transfer.save()
 
@@ -276,7 +308,7 @@ class KudosContract:
         elif self.network == 'ropsten':
             return to_checksum_address('0xcd520707fc68d153283d518b29ada466f9091ea8')
         elif self.network == 'rinkeby':
-            return to_checksum_address('0x0b9bFF2c5c7c85eE94B48D54F2C6eFa1E399380D')
+            return to_checksum_address('0x3c147acf80b01d08dcb05038a7d9537adc12b39d')
         else:
             # local testrpc
             return to_checksum_address('0xe7bed272ee374e8116049d0a49737bdda86325b6')
@@ -312,9 +344,9 @@ class KudosContract:
             except IndexError:
                 raise RuntimeError('Please specify an account to use for transacting with the Kudos Contract.')
 
-    @retry
+    # @retry
     @may_require_key
-    def mint(self, *args, account=None, private_key=None):
+    def mint(self, *args, account=None, private_key=None, skip_sync=False):
         """Contract transaction method.
 
         Mint a new Gen0 Kudos on the blockchain.  Not to be confused with clone.
@@ -322,48 +354,25 @@ class KudosContract:
 
         From Kudos.sol:
 
-        mint(
-            string name,
-            string description,
-            uint256 rarity,
-            uint256 priceFinney,
-            uint256 numClonesAllowed,
-            string tags,
-            string image,
-            )
-
         Args:
             *args: From Kudos.sol:
             mint(
-                string name,
-                string description,
-                uint256 rarity,
-                uint256 priceFinney,
-                uint256 numClonesAllowed,
-                string tags,
-                string image,
+                uint256 _priceFinney,
+                uint256 _numClonesAllowed,
+                string _tokenURI,
                 )
             account (str, optional): Public account address.  Not needed for localhost testing.
             private_key (str, optional): Private key for account.  Not needed for localhost testing.
 
         Returns:
-            TYPE: If a sync did occur, returns the tx_receive as a str.
-                  If no sync occured, return False.
+            TYPE: If a sync did occur, returns the kudos_id
         """
         account = self._resolve_account(account)
-
-        name = args[0]
-        if self.gen0_exists_web3(name):
-            logger.warning(f'The "{name}" Gen0 Kudos already exists on the blockchain.  Not minting.')
-            # kudos_id = self.getGen0TokenId(name)
-            # self.sync_db(kudos_id=kudos_id)
-            return False
 
         if private_key:
             logger.debug('Private key found, creating raw transaction for Kudos mint...')
             nonce = self._w3.eth.getTransactionCount(account)
             gas_estimate = self._contract.functions.mint(*args).estimateGas({'nonce': nonce, 'from': account})
-            logger.info(f'Gas estimate to mint {name} : {gas_estimate}')
             txn = self._contract.functions.mint(*args).buildTransaction({'gas': gas_estimate, 'nonce': nonce, 'from': account})
             signed_txn = self._w3.eth.account.signTransaction(txn, private_key=private_key)
             tx_hash = self._w3.eth.sendRawTransaction(signed_txn.rawTransaction)
@@ -372,12 +381,14 @@ class KudosContract:
             tx_hash = self._contract.functions.mint(*args).transact({"from": account})
 
         tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
-        logger.debug(f'Tx hash: {tx_hash}')
+        logger.debug(f'Tx hash: {tx_hash.hex()}')
 
-        kudos_id = self.getGen0TokenId(name)
-        logger.info(f'Minted id #{kudos_id}, "{name}" kudos on the blockchain.')
+        kudos_id = self._contract.functions.totalSupply().call()
+        logger.info(f'Minted id #{kudos_id} on the blockchain.')
+        logger.info(f'Gas usage for id #{kudos_id}: {tx_receipt["gasUsed"]}')
 
-        self.sync_db(kudos_id=kudos_id, txid=tx_hash.hex())
+        if not skip_sync:
+            self.sync_db(kudos_id=kudos_id, txid=tx_hash.hex())
 
         return kudos_id
 
@@ -454,17 +465,23 @@ class KudosContract:
 
         Returns:
             list: From Kudos.sol:
-            returns (string name, string description, uint256 rarity,
-                     uint256 priceFinney, uint256 numClonesAllowed,
-                     uint256 numClonesInWild, string tags, string image,
-                     uint256 clonedFromId
+            returns (uint256 priceFinney, uint256 numClonesAllowed,
+                     uint256 numClonesInWild, uint256 clonedFromId
                      )
         """
         kudos = self._contract.functions.getKudosById(args[0]).call()
+        tokenURI = self._contract.functions.tokenURI(args[0]).call()
+        ipfs_hash = tokenURI.split('/')[-1]
+
+        metadata = self._ipfs.get_json(ipfs_hash)
+
         if to_dict:
-            return self.get_kudos_map(kudos)
+            return self.get_kudos_map(kudos, metadata)
         else:
             return kudos
+
+    def getLatestKudosId(self):
+        return self._contract.functions.totalSupply().call()
 
     def getGen0TokenId(self, *args):
         """Contract call method.
@@ -512,3 +529,31 @@ class KudosContract:
 
     def sync_status(self):
         pass
+
+    # @retry_ipfs
+    def create_tokenURI_url(self, **kwargs):
+        """Create a tokenURI object, upload it to IPFS, and return the URL.
+
+        Args:
+            **kwargs:
+                name (str):  Name of the kudos.
+                image (str):  Image location of the kudos.  Should be a link to an image on the web.
+                description (str):  Word description of the kudos.
+                attributes (dict):  Dictionary containing attirbutes of the kudos.
+                    tags (str): comma delimited tags.
+                    number_of_clones_allowed (int): self explanatory.
+                    rarity (int): integer from 0 to 100 (0 is most common).
+                external_url (str):  External link to where the Kudos lives on the Gitcoin site.
+                background_color (str):  Hex code.
+
+        Returns:
+            str: URL location on IPFS where the URI data is stored.
+        """
+        tokenURI = kwargs
+        ipfs_hash = self._ipfs.add_json(tokenURI)
+        ipfs_url = f'{settings.IPFS_API_SCHEME}://{settings.IPFS_HOST}:{settings.IPFS_API_PORT}/api/v0/cat/{ipfs_hash}'
+        name = kwargs['name']
+        logger.info(f'Posted metadata for "{name}" to IPFS.')
+        logger.debug(f'ipfs_url for {kwargs["name"]}: {ipfs_url}')
+
+        return ipfs_url

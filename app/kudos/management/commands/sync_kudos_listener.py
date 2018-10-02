@@ -18,29 +18,77 @@
 
 import logging
 import time
+import requests
+import json
 
 from django.core.management.base import BaseCommand
+from django.conf import settings
 
 from dashboard.utils import get_web3
 from kudos.utils import KudosContract
+import web3
+import warnings
+warnings.simplefilter("ignore", category=DeprecationWarning)
+warnings.simplefilter("ignore", category=UserWarning)
 
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 logging.getLogger("web3").setLevel(logging.WARNING)
+logging.getLogger("websockets").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 
 class Command(BaseCommand):
     help = 'listens for kudos token changes '
 
     def add_arguments(self, parser):
-        parser.add_argument('--network', default='localhost', type=str)
-        parser.add_argument('--usefilter', default=False, type=bool)
+        parser.add_argument('-n', '--network', default='localhost', type=str)
+        parser.add_argument('-m', '--syncmethod', default='block', type=str, choices=['filter', 'block', 'opensea'])
+        parser.add_argument('-i', '--interval', default=1, type=int)
 
-    def filter_listener(self, kudos_contract):
+    def opensea_listener(self, kudos_contract, interval):
+        if kudos_contract.network == 'rinkeby':
+            url = 'https://rinkeby-api.opensea.io/api/v1/events'
+        elif kudos_contract.network == 'mainnet':
+            url = 'https://api.opensea.io/api/v1/events'
+        else:
+            raise RuntimeError('The Open Sea API is only supported for contracts on rinkeby and mainnet.')
+
+        # Event API
+        payload = dict(
+            asset_contract_address=kudos_contract.address,
+            event_type='transfer',
+            )
+        headers = {'X-API-KEY': settings.OPENSEA_API_KEY}
+        asset_token_id = 0
+        transaction_hash = 0
+        while True:
+            cache = (asset_token_id, transaction_hash)
+            r = requests.get(url, params=payload, headers=headers)
+            r.raise_for_status()
+
+            asset_token_id = r.json()['asset_events'][0]['asset']['token_id']
+            transaction_hash = r.json()['asset_events'][0]['transaction']['transaction_hash']
+            # If the result is the same as last time, don't re-sync the database
+            if cache == (asset_token_id, transaction_hash):
+                continue
+            logger.info(f'token_id: {asset_token_id}, txid: {transaction_hash}')
+            kudos_contract.sync_db(kudos_id=int(asset_token_id), txid=transaction_hash)
+            time.sleep(interval)
+
+    def filter_listener(self, kudos_contract, interval):
 
         event_filter = kudos_contract._contract.events.Transfer.createFilter(fromBlock='latest')
+        # params = dict(
+        #     fromBlock='latest',
+        #     toBlock='latest',
+        #     address=kudos_contract.address,
+        #     topics=['034ac9c3d6ddb432341e5fdbaba91bb6a01a6aab04b202888634e16a7c6656b2']
+        #     )
+        # event_filter = kudos_contract._w3sockets.eth.filter({"address": kudos_contract.address})
+
         while True:
             for event in event_filter.get_new_entries():
                 msg = dict(blockNumber=event.blockNumber,
@@ -53,9 +101,9 @@ class Command(BaseCommand):
                 kudos_contract._w3.eth.waitForTransactionReceipt(msg['transactionHash'])
                 logger.debug(f"Tx hash: {msg['transactionHash']}")
                 kudos_contract.sync_db(kudos_id=msg['_tokenId'], txid=msg['transactionHash'])
-            time.sleep(1)
+            time.sleep(interval)
 
-    def block_listener(self, kudos_contract):
+    def block_listener(self, kudos_contract, interval):
         block = 'latest'
         last_block_hash = None
         while True:
@@ -68,7 +116,7 @@ class Command(BaseCommand):
             # logger.info(f'last_block_hash: {last_block_hash}')
             # logger.info(f'block_hash: {block_hash}')
             if last_block_hash == block_hash:
-                time.sleep(1)
+                time.sleep(interval)
                 continue
 
             logger.info('got new block %s' % kudos_contract._w3.toHex(block_hash))
@@ -89,9 +137,12 @@ class Command(BaseCommand):
                 logger.info(f'method_id:  {method_id}')
 
                 # Check if its a Clone or cloneAndTransfer function call
-                if method_id == '0xdaa6eb1d' or method_id == '0x8a94e433':
+                if method_id == '0xdaa6eb1d' or method_id == '0xd319784f':
                     kudos_contract._w3.eth.waitForTransactionReceipt(tx['hash'])
                     kudos_id = kudos_contract._contract.functions.totalSupply().call()
+                    if kudos_contract.network == 'localhost':
+                        # On localhost, the tx syncs faster than the website loads
+                        time.sleep(3)
                     kudos_contract.sync_db(kudos_id=kudos_id, txid=tx['hash'].hex())
                     # # Get the kudos_id of the newly cloned Kudos
                     # kudos_id = kudos_contract.functions.totalSupply().call()
@@ -108,20 +159,16 @@ class Command(BaseCommand):
             last_block_hash = block_hash
 
     def handle(self, *args, **options):
-        # setup
         network = options['network']
-        usefilter = options['usefilter']
+        syncmethod = options['syncmethod']
+        interval = options['interval']
 
-        kudos_contract = KudosContract(network=network)
-        # w3 = get_web3(network)
-        # contract_address = getKudosContractAddress(network)
-        # logger.info(f'Contract address: {contract_address}')
+        kudos_contract = KudosContract(network)
 
-        # kudos_contract = getKudosContract(network)
-
-        # logger.info(dir(kudos_contract))
-
-        if usefilter:
-            self.filter_listener(kudos_contract)
-        else:
-            self.block_listener(kudos_contract)
+        if syncmethod == 'filter':
+            kudos_contract = KudosContract(network, sockets=True)
+            self.filter_listener(kudos_contract, interval)
+        elif syncmethod == 'block':
+            self.block_listener(kudos_contract, interval)
+        elif syncmethod == 'opensea':
+            self.opensea_listener(kudos_contract, interval)

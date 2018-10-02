@@ -34,16 +34,23 @@ logger = logging.getLogger(__name__)
 
 
 class Token(SuperModel):
-    # Kudos specific fields -- lines up with Kudos contractpass
+    # Kudos specific fields -- lines up with Kudos contract
+
+    # Kudos Struct
+    price_finney = models.IntegerField()
+    num_clones_allowed = models.IntegerField(null=True, blank=True)
+    num_clones_in_wild = models.IntegerField(null=True, blank=True)
+    cloned_from_id = models.IntegerField()
+
+    # Kudos metadata from tokenURI
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=510)
     image = models.CharField(max_length=255, null=True)
     rarity = models.IntegerField()
-    price_finney = models.IntegerField()
-    num_clones_allowed = models.IntegerField(null=True, blank=True)
-    num_clones_in_wild = models.IntegerField(null=True, blank=True)
     tags = models.CharField(max_length=255, null=True)
-    cloned_from_id = models.IntegerField()
+
+    external_url = models.CharField(max_length=255, null=True)
+    background_color = models.CharField(max_length=255, null=True)
 
     # Extra fields added to database (not on blockchain)
     owner_address = models.CharField(max_length=255)

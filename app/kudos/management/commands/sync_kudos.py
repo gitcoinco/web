@@ -19,11 +19,15 @@
 import datetime
 import logging
 import warnings
+import requests
+import json
 
 from django.core.management.base import BaseCommand
+from django.conf import settings
+from django.db.models import Avg, Max, Min
 
 from kudos.utils import KudosContract
-from kudos.models import KudosTransfer
+from kudos.models import KudosTransfer, Token
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -39,15 +43,48 @@ class Command(BaseCommand):
     help = 'syncs database with kudos on the blockchain'
 
     def add_arguments(self, parser):
-        parser.add_argument('--network', default='localhost', type=str,
+        parser.add_argument('-n', '--network', default='localhost', type=str,
                             help='Network such as "localhost", "ropsten", "mainnet"')
-        parser.add_argument('--syncmethod', default='id', type=str, choices=['filter', 'id'])
-        parser.add_argument('--fromBlock', default='earliest', type=str,
-                            help='This can be a block number (int), "earliest", or "latest"')
-        parser.add_argument('--start_id', default=1, type=int,
-                            help='Kudos ID to start syncing at.  Lowest kudos_id is 1.')
+        parser.add_argument('-m', '--syncmethod', default='id', type=str, choices=['filter', 'id', 'opensea'])
+        # parser.add_argument('-b', '--fromBlock', type=str,
+        #                     help='This can be a block number (int), "earliest", or "latest"')
+        parser.add_argument('-s', '--start', type=str,
+                            help='kudos_id to or kudos block to start syncing at.  Lowest kudos_id is 1.\
+                            Options for block are: block number (int), "earliest", or "latest"')
+        parser.add_argument('-r', '--rewind', type=int,
+                            help='Sync the lastest <rewind> Kudos Ids or block transactions.')
+        parser.add_argument('--catchup', action='store_true',
+                            help='Attempt to sync up the newest kudos to the database')
+
+    def opensea_sync(self, kudos_contract, start_id):
+        if kudos_contract.network == 'rinkeby':
+            url = 'https://rinkeby-api.opensea.io/api/v1/events'
+        elif kudos_contract.network == 'mainnet':
+            url = 'https://api.opensea.io/api/v1/events'
+        else:
+            raise RuntimeError('The Open Sea API is only supported for contracts on rinkeby and mainnet.')
+
+        end_id = kudos_contract._contract.functions.totalSupply().call()
+        token_ids = range(start_id, end_id + 1)
+
+        headers = {'X-API-KEY': settings.OPENSEA_API_KEY}
+
+        # Event API
+        for token_id in token_ids:
+            payload = dict(
+                asset_contract_address=kudos_contract.address,
+                token_id=token_id,
+                )
+            r = requests.get(url, params=payload, headers=headers)
+            r.raise_for_status()
+            asset_token_id = r.json()['asset_events'][0]['asset']['token_id']
+            transaction_hash = r.json()['asset_events'][0]['transaction']['transaction_hash']
+            logger.info(f'token_id: {asset_token_id}, txid: {transaction_hash}')
+            kudos_contract.sync_db(kudos_id=int(asset_token_id), txid=transaction_hash)
 
     def filter_sync(self, kudos_contract, fromBlock):
+        if kudos_contract.network != 'localhost':
+            logger.warning('Filtering does not work on the Infura network.')
         try:
             fromBlock = int(fromBlock)
         except ValueError:
@@ -75,13 +112,6 @@ class Command(BaseCommand):
         more_kudos = True
 
         while more_kudos:
-            # pull and process each kudos
-            # self.stdout.write(f"[{month}/{day} {hour}:00] Getting kudos {kudos_enum}")
-            # kudos = get_kudos(kudos_enum, network)
-            # self.stdout.write(f"[{month}/{day} {hour}:00] Processing kudos {kudos_enum}")
-            # web3_process_kudos(kudos)
-            # if kudos_has_changed(kudos_enum, network):
-            #     update_kudos_db(kudos_enum, network)
             kudos_contract.sync_db_without_txid(kudos_id=kudos_enum)
             kudos_enum += 1
 
@@ -92,12 +122,29 @@ class Command(BaseCommand):
         # config
         network = options['network']
         syncmethod = options['syncmethod']
-        fromBlock = options['fromBlock']
-        start_id = options['start_id']
+        # fromBlock = options['fromBlock']
+        start = options['start']
+        rewind = options['rewind']
+        catchup = options['catchup']
 
         kudos_contract = KudosContract(network)
 
+        if start:
+            start_id = start
+            fromBlock = start
+        elif rewind:
+            start_id = kudos_contract._contract.functions.totalSupply().call() - rewind
+            fromBlock = kudos_contract._w3.eth.getBlock('latest')['number'] - rewind
+        elif catchup:
+            # latest_blockchain_id = kudos_contract.getLatestKudosId()
+            start_id = Token.objects.aggregate(Max('id'))['id__max']
+        else:
+            raise RuntimeError("Need to pass a valid action, such as start, rewind, or catchup ")
+
         if syncmethod == 'filter':
+            kudos_contract = KudosContract(network, sockets=True)
             self.filter_sync(kudos_contract, fromBlock)
         elif syncmethod == 'id':
-            self.id_sync(kudos_contract, start_id)
+            self.id_sync(kudos_contract, int(start_id))
+        elif syncmethod == 'opensea':
+            self.opensea_sync(kudos_contract, int(start_id))

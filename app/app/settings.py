@@ -491,6 +491,9 @@ TWITTER_USERNAME = env('TWITTER_USERNAME', default='')  # TODO
 SLACK_TOKEN = env('SLACK_TOKEN', default='')  # TODO
 SLACK_WELCOMEBOT_TOKEN = env('SLACK_WELCOMEBOT_TOKEN', default='')  # TODO
 
+# OpenSea API
+OPENSEA_API_KEY = env('OPENSEA_API_KEY', default='')
+
 # Reporting Integrations
 MIXPANEL_TOKEN = env('MIXPANEL_TOKEN', default='')
 

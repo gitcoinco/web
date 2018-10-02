@@ -29,7 +29,7 @@
           <h3 id="kudosName" class="display-4">{{ kudos.name|humanize_name }}</h3>
           <div class="mt-4 font-bigger-1 font-weight-300">
             <p id="kudosDescription" class="">{{ kudos.description }}</p>
-            <!-- <p><span>ID: </span><span id="kudosID">{{ kudos.id }}</span></p> -->
+            <p class="hidden"><span>ID: </span><span id="kudosID" data-kudosId="{{ kudos.id }}">{{ kudos.id }}</span></p>
             <p><span>Rarity: </span><span id="kudosRarity">{{ kudos.rarity }}</span></p>
             <p><span>Clones In Wild: </span><span id="kudosNumClonesInWild">{{ kudos.num_clones_in_wild }}</span></p>
             {% if kudos.num_clones_available != 0 %}
