@@ -82,10 +82,13 @@ function getIdFromPath(path, option) {
 function getColorFromPath(path, option) {
   let color = '';
 
+  // filename without path and extension
+  const basename = path.split('.').slice(-2)[0].split('/').slice(-1)[0];
+
   if (option === 'FacialHair' || option === 'Accessories') {
-    color = path.split('.')[0].split('/').slice(-1)[0].split('-')[2];
+    color = basename.split('-')[2];
   } else {
-    color = path.split('.')[0].split('/').slice(-1)[0].split('-')[1];
+    color = basename.split('-')[1];
   }
 
   return color;
