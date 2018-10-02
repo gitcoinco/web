@@ -33,8 +33,13 @@
           <!-- <div>Sort by: Price <a href="?order_by=-modified_on">Low</a> - <a href="">High</a></div> -->
       </div>
       {% if not listings %}
-      <div class="h3 text-center m-5">
-        No {{ title }} found
+      <div class="text-center m-5 bg-white p-5">
+        <h1>UH-OH!</h1>
+        The kudos you were looking for isn't here, but here's a surprecie!
+        <img id="logo" src="{% static 'v2/images/kudos/assets/no-kudos.gif' %}"  width="500" class="mw-100" />
+        <div class="m-3">
+          {% trans "Feeling creative?" %} <a href="https://github.com/gitcoinco/kudos/badges/issues/new" target="_blank" class="">{% trans "Mint Your Own!" %}</a>
+        </div>
       </div>
       {% endif %}
       <div class="row justify-content-center">
@@ -47,19 +52,8 @@
       <div class="row justify-content-center">
         {% endif %}
       {% endfor %}
-      {% if not listings %}
-      {% endif %}
 
-      {% if not listings %}
-      <div class="col-xs-12 col-sm-6 col-lg-4 m-3">
-          <a href="https://github.com/gitcoinco/kudos/badges/issues/new" target="_blank" class="cta-square kd-shadow">
-            <div>
-              <span>{% trans "Feeling creative?" %}</span>
-              <small>{% trans "Mint Your Own!" %}</small>
-            </div>
-          </a>
-        </div>
-      {% else %}
+      {% if listings %}
       <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
         <a href="https://github.com/gitcoinco/kudos/badges/issues/new" target="_blank" class="cta-square kd-shadow">
           <div>

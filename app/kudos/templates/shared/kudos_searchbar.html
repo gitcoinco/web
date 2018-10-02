@@ -14,22 +14,49 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n %}
+{% load i18n kudos_extras %}
 <form action="/kudos/marketplace/" method="get">
   <div class="form-row align-items-center justify-content-center">
     <div class="col-12 col-sm-6 my-4 ">
       <div class="input-group">
-        
-        <input type="text" class="form-control form-control-lg" name="q" id="kudos-search" placeholder="{% trans "Search for Kudos" %}">
+
+        <input type="text" list="kudos-suggestions"  class="form-control form-control-lg" name="q" id="kudos-search" placeholder="{% trans "Search for Kudos" %}">
+        <datalist id="kudos-suggestions">
+          <!-- {% for listing in listings %}
+            {% for tag in listing.tags.split %}
+              <option>{{tag }}</option>
+            {% endfor %}
+          {% endfor %} -->
+          <option>rare</option>
+          <option>common</option>
+          <option>ninja</option>
+          <option>soft skills</option>
+          <option>programming</option>
+          <option>open source</option>
+          <option>project management</option>
+          <option>design</option>
+          <option>technical</option>
+          <option>graphs</option>
+          <option>ideas</option>
+          <option>clean code</option>
+        </datalist>
         <div class="input-group-append">
-          
+
           <a href="/kudos/marketplace" class="btn btn-danger btn-lg clear-search hidden"><i class="fas fa-times"></i></a>
           <button type="submit" class="btn btn-gc-blue">{% trans "Search" %}</button>
         </div>
       </div>
+      <div class="mt-3 white">
+        <span class="white">Search suggestions:</span>
+        <a href="?q=rare">rare</a> -
+        <a href="?q=common">common</a> -
+        <a href="?q=ninja">ninja</a> -
+        <a href="?q=soft skills">soft skills</a> -
+        <a href="?q=programming">programming</a>
+      </div>
     </div>
     <div class="my-4">
-      
+
     </div>
   </div>
 </form>
