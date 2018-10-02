@@ -1717,3 +1717,23 @@ def get_users(request):
         raise Http404
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
+
+
+def get_kudos(request):
+    if request.is_ajax():
+        q = request.GET.get('term')
+        kudos = Token.objects.filter(name__icontains=q)
+        results = []
+        for token in kudos:
+            kudos_json = {}
+            kudos_json['id'] = token.id
+            kudos_json['name'] = token.name
+            kudos_json['description'] = token.description
+            kudos_json['image'] = token.image
+            kudos_json['price_finney'] = token.price_finney
+            results.append(kudos_json)
+        data = json.dumps(results)
+    else:
+        raise Http404
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
