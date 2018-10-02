@@ -123,6 +123,10 @@
 .select2-container--bootstrap4 .select2-dropdown {
   border-color: #ced4da; }
 
+.select2-container--bootstrap4 .select2-results__option--highlighted[aria-selected] {
+  background-color: #5897fb;
+  color: white; }
+
 .kd-card {
   position: relative; }
   .kd-card .img-thumbnail {
@@ -441,5 +445,8 @@ a:hover #shape-hexagon {
   background-color: #F2F6F9;
   color: #6184AC;
   border-radius: 2px; }
+
+#world {
+  z-index: -1; }
 
 /*# sourceMappingURL=styles.css.map */

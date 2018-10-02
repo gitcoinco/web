@@ -18,10 +18,30 @@
     <section class="container mt-5 pb-5">
       <div class="row justify-content-between p-3">
         <div class="">{{listings.count}} Kudos</div>
-        {% blocktrans %}
-          <div>Sort by: Price <a href="">Low</a> - <a href="">High</a></div>
-        {% endblocktrans %}
+          <div>
+            <label for="">{% trans 'Sort by:' %}</label>
+            <select name="" id="sort_order">
+              <option value="-modified_on">{% trans 'Newest' %}</option>
+              <option value="modified_on">{% trans 'Oldest' %}</option>
+              <option value="num_clones_in_wild">{% trans 'Popularity' %}</option>
+              <option value="price_finney">{% trans 'Low price' %}</option>
+              <option value="-price_finney">{% trans 'High price' %}</option>
+              <option value="name">{% trans 'Name' %}</option>
+              <option value="-rarity">{% trans 'Rarity' %}</option>
+            </select>
+          </div>
+          <!-- <div>Sort by: Price <a href="?order_by=-modified_on">Low</a> - <a href="">High</a></div> -->
       </div>
+      {% if not listings %}
+      <div class="text-center m-5 bg-white p-5">
+        <h1>UH-OH!</h1>
+        The kudos you were looking for isn't here, but here's a surprecie!
+        <img id="logo" src="{% static 'v2/images/kudos/assets/no-kudos.gif' %}"  width="500" class="mw-100" />
+        <div class="m-3">
+          {% trans "Feeling creative?" %} <a href="https://github.com/gitcoinco/kudos/badges/issues/new" target="_blank" class="">{% trans "Mint Your Own!" %}</a>
+        </div>
+      </div>
+      {% endif %}
       <div class="row justify-content-center">
         {% for listing in listings %}
           <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
@@ -32,15 +52,18 @@
       <div class="row justify-content-center">
         {% endif %}
       {% endfor %}
-        <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
-            <a href="{% url 'kudos_mint' %}" class="cta-square kd-shadow">
-              <div>
-                <span>{% trans "Don’t See One You Like?" %}</span>
-                <small>{% trans "Mint Your Own!" %}</small>
-              </div>
-            </a>
-        </div>
+
+      {% if listings %}
+      <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
+        <a href="https://github.com/gitcoinco/kudos/badges/issues/new" target="_blank" class="cta-square kd-shadow">
+          <div>
+            <span>{% trans "Don’t See One You Like?" %}</span>
+            <small>{% trans "Mint Your Own!" %}</small>
+          </div>
+        </a>
       </div>
+      {% endif %}
+    </div>
     </section>
 
     {% include 'shared/footer.html' %}

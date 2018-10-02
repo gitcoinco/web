@@ -59,7 +59,13 @@ $border-grey: #ced4da;
     top: 1px;
     left: -1px;
  }
-  
+
  .select2-container--bootstrap4 .select2-dropdown {
      border-color: $border-grey;
- } 
+ }
+
+
+ .select2-container--bootstrap4 .select2-results__option--highlighted[aria-selected] {
+  background-color: #5897fb;
+  color: white;
+}

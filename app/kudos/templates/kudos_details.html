@@ -39,7 +39,7 @@
             <p class="font-weight-bold" data-ethprice="{{ kudos.price_in_eth }}">{{ kudos.price_in_eth }} ETH <small></small></p>
             <p>
               {% for tag in kudos.tags.split %}
-              <span class="badge badge-kudos">{{tag | replace_commas }}</span>
+              <a class="badge badge-kudos" href="{% url 'kudos_marketplace' %}?q={{tag|replace_commas}}">{{tag | replace_commas }}</a>
               {% endfor %}
             </p>
           </div>
@@ -49,6 +49,7 @@
               <a href="/kudos/send?name={{ kudos.name}}" class="btn btn-gc-blue">{% trans "Send Kudos" %}</a>
               {% elif kudos.num_clones_allowed != 0 and kudos.num_clones_available == 0 %}
               <button type="button" id="getKudosDisabled" class="btn btn-gc-blue" disabled>{% trans "Not Available" %}</button>
+              <small class="d-block mt-2">There are no clones available due to popularity but you can still look at this awesome badge!</small>
               {% endif %}
             </div>
           </div>

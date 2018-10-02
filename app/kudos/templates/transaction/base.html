@@ -18,7 +18,7 @@
 <!DOCTYPE HTML>
 <html>
   <head>
-    
+
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
@@ -31,7 +31,7 @@
     {% include 'shared/tag_manager_2.html' %}
     {% include 'shared/analytics.html' with suppress_sumo=1 %}
     {% block 'world' %} {% endblock %}
-    
+
     <!-- Wrapper -->
     <main id="wrapper">
       {% include 'transaction/kudos_auth.html' with source='authed' %}
@@ -42,16 +42,16 @@
       <footer id="footer" class="copyright d-flex font-smaller-1 justify-content-center mt-5 p-4">
           <a href="/" class="mr-4">&copy; Gitcoin.co</a>
         {% if not hide_send_tip %}
-          <a href="{% url "tip" %}">{% trans "Send Tip" %}</a>
+          <a href="{% url 'kudos_marketplace' %}">{% trans "Kudos Marketplace" %}</a>
         {% endif %}
       </footer>
     </main>
     {% include 'shared/rain.html' with class="color" %}
     <!-- Scripts -->
-    
+
     {% include 'shared/footer_scripts.html' with slim=1 %}
     {% block 'scripts' %}{% endblock %}
-    
+
     <script>
       if ('addEventListener' in window) {
         window.addEventListener('load', function () {

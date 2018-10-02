@@ -18,7 +18,7 @@
 {% load is_in_list %}
 
 <div class="navbar navbar-expand-md w-100 p-0 m-0 mb-2">
-  <a class="navbar-brand p-1" href="/">
+  <a class="navbar-brand p-1" href="{% url 'kudos_marketplace' %}">
     <img id="logo" src="{% static "v2/images/helmet_icon.png" %}"  height="50" class="w-auto" />
     {% if request.path|is_in_list:"/gas,/gas/history,/gas/intro,/gas/calculator,/gas/faq,/gas/faucets" %}
     <img id="addon" src="{% static "v2/images/gas_white.gif" %}"/>
@@ -30,11 +30,11 @@
     <i class="fas fa-circle pr-1"></i>
     <span id="current-network"></span>
   </div>
-  
+
   {% if user.is_authenticated %}
   <a class="nav-link login" href="{% url 'profile' %}">
     <img class="nav_avatar" width=25 height=25
-      src="{% if user.profile.avatar %}{{ user.profile.avatar.svg.url }}{% else %}/static/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
+      src="{% if user.profile.avatar %}{{ user.profile.avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}">
     {{ user }}
   </a>
   {% else %}
