@@ -117,7 +117,7 @@ class Command(BaseCommand):
             for x in range(1, 4):
                 try:
                     kudos_contract.mint(*args, account=account, private_key=private_key, skip_sync=True)
-                except ValueError as e:
+                except Exception as e:
                     logger.warning(e)
                     logger.info("Trying the mint again...")
                     time.sleep(2)
