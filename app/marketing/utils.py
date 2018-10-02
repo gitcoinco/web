@@ -17,6 +17,7 @@
 
 '''
 import logging
+import sys
 from datetime import datetime, timedelta
 
 from django.conf import settings
@@ -25,10 +26,15 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
 import requests
+from marketing.models import AccountDeletionRequest
 from slackclient import SlackClient
 from slackclient.exceptions import SlackClientError
 
 logger = logging.getLogger(__name__)
+
+
+def is_deleted_account(handle):
+    return AccountDeletionRequest.objects.filter(handle__iexact=handle).exists()
 
 
 def get_stat(key):
@@ -221,8 +227,8 @@ def get_platform_wide_stats(since_last_n_days=90):
     completed_bounties_fund = round(completed_bounties_fund)
     bounties_completion_percent = round(bounties_completion_percent)
 
-    largest_bounty = Bounty.objects.filter(
-        current_bounty=True, created_on__gte=last_n_days).order_by('-_val_usd_db').first()
+    largest_bounty = Bounty.objects.current().filter(
+        created_on__gte=last_n_days).order_by('-_val_usd_db').first()
     largest_bounty_value = largest_bounty.value_in_usdt
 
     bounty_fulfillments = BountyFulfillment.objects.filter(
@@ -251,3 +257,17 @@ def get_platform_wide_stats(since_last_n_days=90):
         "total_transaction_in_usd": total_transaction_in_usd,
         "total_transaction_in_eth": total_transaction_in_eth,
     }
+
+
+def func_name():
+    """Determine the calling function's name.
+
+    Returns:
+        str: The parent method's name.
+
+    """
+    try:
+        return sys._getframe(1).f_code.co_name
+    except Exception as e:
+        logger.error(e)
+        return 'NA'

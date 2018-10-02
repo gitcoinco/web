@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Define custom healthchecks.
+"""Define the Avatar template tags.
 
 Copyright (C) 2018 Gitcoin Core
 
@@ -17,22 +17,18 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from dashboard.utils import get_ipfs
-from health_check.backends import BaseHealthCheckBackend
-from health_check.exceptions import HealthCheckException
+from django import template
+from django.conf import settings
+
+from dashboard.models import Profile
+
+register = template.Library()
 
 
-class IPFSBackend(BaseHealthCheckBackend):
-    """Define the IPFS healthcheck backend."""
-
-    critical_service = True
-
-    def check_status(self):
-        """Define the functionality of the health check."""
-        ipfs_connection = get_ipfs()
-        if not ipfs_connection:
-            raise HealthCheckException('IPFS Unreachable')
-
-    def identifier(self):
-        """Define the displayed name of the healthcheck."""
-        return self.__class__.__name__
+@register.simple_tag
+def avatar_url(profile, use_svg=True):
+    if isinstance(profile, Profile) and profile.avatar:
+        return profile.avatar.get_avatar_url(use_svg)
+    if isinstance(profile, str):
+        return f'{settings.BASE_URL}dynamic/avatar/{profile}'
+    return f'{settings.BASE_URL}dynamic/avatar/Self'

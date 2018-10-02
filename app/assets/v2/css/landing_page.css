@@ -172,7 +172,8 @@ body {
   color: #fff;
 }
 
-.benefits_container {
+.benefits_container,
+.landing__newsletter {
   background-color: #F9F9F9;
   justify-items: center;
 }
@@ -206,12 +207,6 @@ body {
   padding-top: 2rem;
   padding-bottom: 1rem;
   height: 6rem;
-}
-
-.activity.box {
-  border-left: none;
-  border-top: none;
-  border-right: none;
 }
 
 .activity-info {

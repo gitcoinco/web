@@ -23,7 +23,7 @@
     </div>
   </div>
   <div class="col-12 col-md-10 activity-info">
-    <div class="activity-status">
+    <div class="activity-status mb-2">
       <a href="https://gitcoin.co/profile/{{ row.profile.handle }}" target="_blank">
         @{{ row.profile.handle }}
       </a>
@@ -67,7 +67,9 @@
             <span>{{ row.value_in_usdt_now }} USD</span>
           </p>
         </div>
-        {{ row.created | naturaltime }}
+        <span class="mx-2">
+          {{ row.created | naturaltime }}
+        </span>
       </div>
     </div>
   </div>

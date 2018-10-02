@@ -5,7 +5,6 @@
   color: #fff;
   cursor: pointer;
   font-size: 14px;
-  font-family: 'Muli', sans-serif;
   font-weight: 300;
   padding: 10px 20px;
   -webkit-appearance: none;
@@ -51,4 +50,8 @@
 
 .button--warning {
   background-color: #ca001a;
+}
+
+.button--warning:hover {
+  background-color: #d43247;
 }

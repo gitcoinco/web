@@ -36,6 +36,14 @@ $(function() {
     this.dropdown._positionDropdown();
   });
 
+  // fix for wrong position on select open
+  var select2Instance = $('.username-search').data('select2');
+
+  select2Instance.on('results:message', function(params) {
+    this.dropdown._resizeDropdown();
+    this.dropdown._positionDropdown();
+  });
+
   function formatUser(user) {
 
     if (user.loading) {

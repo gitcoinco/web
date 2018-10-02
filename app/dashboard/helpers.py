@@ -37,7 +37,7 @@ from dashboard.notifications import (
 )
 from dashboard.tokens import addr_to_token
 from economy.utils import convert_amount
-from git.utils import get_gh_issue_details, get_url_dict, issue_number, org_name, repo_name
+from git.utils import get_gh_issue_details, get_url_dict
 from jsondiff import diff
 from pytz import UTC
 from ratelimit.decorators import ratelimit
@@ -113,6 +113,9 @@ def amount(request):
     try:
         amount = request.GET.get('amount')
         denomination = request.GET.get('denomination', 'ETH')
+        if not denomination:
+            denomination = 'ETH'
+
         if denomination in settings.STABLE_COINS:
             denomination = 'USDT'
         if denomination == 'ETH':
@@ -126,7 +129,7 @@ def amount(request):
         }
         return JsonResponse(response)
     except Exception as e:
-        print(e)
+        logger.error(e)
         raise Http404
 
 
@@ -142,11 +145,12 @@ def issue_details(request):
         JsonResponse: A JSON response containing the Github issue or PR keywords.
 
     """
-    from .utils import clean_bounty_url
+    from dashboard.utils import clean_bounty_url
     response = {}
-
+    token = request.GET.get('token', None)
     url = request.GET.get('url')
     url_val = URLValidator()
+
     try:
         url_val(url)
     except ValidationError:
@@ -160,7 +164,7 @@ def issue_details(request):
     try:
         url_dict = get_url_dict(clean_bounty_url(url))
         if url_dict:
-            response = get_gh_issue_details(**url_dict)
+            response = get_gh_issue_details(token=token, **url_dict)
         else:
             response['message'] = 'could not parse Github url'
     except Exception as e:
@@ -243,7 +247,9 @@ def bounty_did_change(bounty_id, new_bounty_details):
         # make sure it is updated in dashboard.helpers/bounty_did_change
         # AND
         # refresh_bounties/handle
-        old_bounties = Bounty.objects.filter(standard_bounties_id=bounty_id, network=network).order_by('-created_on')
+        old_bounties = Bounty.objects.filter(
+            standard_bounties_id=bounty_id, network=network
+        ).nocache().order_by('-created_on')
 
         if old_bounties.exists():
             did_change = (new_bounty_details != old_bounties.first().raw_data)
@@ -251,7 +257,8 @@ def bounty_did_change(bounty_id, new_bounty_details):
             did_change = True
     except Exception as e:
         did_change = True
-        print(f"asserting did change because got the following exception: {e}. args; bounty_id: {bounty_id}, network: {network}")
+        print(f"asserting did change because got the following exception: {e}. args;"
+              f"bounty_id: {bounty_id}, network: {network}")
 
     print('* Bounty did_change:', did_change)
     return did_change, old_bounties
@@ -289,7 +296,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
             created_on = timezone.now()
             modified_on = timezone.now()
             if old_bounty:
-                old_fulfillments = old_bounty.fulfillments.filter(fulfillment_id=fulfillment.get('id'))
+                old_fulfillments = old_bounty.fulfillments.filter(fulfillment_id=fulfillment.get('id')).nocache()
                 if old_fulfillments.exists():
                     old_fulfillment = old_fulfillments.first()
                     created_on = old_fulfillment.created_on
@@ -319,7 +326,7 @@ def handle_bounty_fulfillments(fulfillments, new_bounty, old_bounty):
                 accepted_on=accepted_on,
                 **kwargs)
         except Exception as e:
-            logging.error(f'{e} during new fulfillment creation for {new_bounty}')
+            logger.error(f'{e} during new fulfillment creation for {new_bounty}')
             continue
     return new_bounty.fulfillments.all()
 
@@ -407,6 +414,7 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                 'contract_address': bounty_details.get('token'),
                 'network': bounty_details.get('network'),
                 'bounty_type': metadata.get('bountyType', ''),
+                'funding_organisation': metadata.get('fundingOrganisation', ''),
                 'project_length': metadata.get('projectLength', ''),
                 'experience_level': metadata.get('experienceLevel', ''),
                 'project_type': bounty_payload.get('schemes', {}).get('project_type', 'traditional'),
@@ -425,7 +433,8 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
                     'project_length', 'experience_level', 'project_type', 'permission_type', 'attached_job_description',
                     'bounty_owner_github_username', 'bounty_owner_address', 'bounty_owner_email', 'bounty_owner_name',
                     'github_comments', 'override_status', 'last_comment_date', 'snooze_warnings_for_days',
-                    'admin_override_and_hide', 'admin_override_suspend_auto_approval', 'admin_mark_as_remarket_ready'
+                    'admin_override_and_hide', 'admin_override_suspend_auto_approval', 'admin_mark_as_remarket_ready',
+                    'funding_organisation'
                 ],
             )
             bounty_kwargs.update(latest_old_bounty_dict)
@@ -442,11 +451,11 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
             # migrate data objects from old bounty
             if latest_old_bounty:
                 # Pull the interested parties off the last old_bounty
-                for interest in latest_old_bounty.interested.all():
+                for interest in latest_old_bounty.interested.all().nocache():
                     new_bounty.interested.add(interest)
 
                 # pull the activities off the last old bounty
-                for activity in latest_old_bounty.activities.all():
+                for activity in latest_old_bounty.activities.all().nocache():
                     new_bounty.activities.add(activity)
 
             # set cancel date of this bounty
@@ -459,13 +468,15 @@ def create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id):
 
         except Exception as e:
             print(e, 'encountered during new bounty creation for:', url)
-            logging.error(f'{e} encountered during new bounty creation for: {url}')
+            logger.error(f'{e} encountered during new bounty creation for: {url}')
             new_bounty = None
 
         if fulfillments:
             handle_bounty_fulfillments(fulfillments, new_bounty, latest_old_bounty)
-            for inactive in Bounty.objects.filter(current_bounty=False, github_url=url).order_by('-created_on'):
-                BountyFulfillment.objects.filter(bounty_id=inactive.id).delete()
+            for inactive in Bounty.objects.filter(
+                current_bounty=False, github_url=url
+            ).nocache().order_by('-created_on'):
+                BountyFulfillment.objects.filter(bounty_id=inactive.id).nocache().delete()
     return new_bounty
 
 
@@ -501,7 +512,7 @@ def process_bounty_details(bounty_details):
 
     # Create new bounty (but only if things have changed)
     did_change, old_bounties = bounty_did_change(bounty_id, bounty_details)
-    latest_old_bounty = old_bounties.order_by('-pk').first()
+    latest_old_bounty = old_bounties.nocache().order_by('-pk').first()
 
     if not did_change:
         return (did_change, latest_old_bounty, latest_old_bounty)
@@ -597,7 +608,7 @@ def record_bounty_activity(event_name, old_bounty, new_bounty, _fulfillment=None
                 if not user_profile:
                     user_profile = sync_profile(fulfillment.fulfiller_github_username)
     except Exception as e:
-        logging.error(f'{e} during record_bounty_activity for {new_bounty}')
+        logger.error(f'{e} during record_bounty_activity for {new_bounty}')
 
     if user_profile:
         return Activity.objects.create(
@@ -631,7 +642,7 @@ def record_user_action(event_name, old_bounty, new_bounty):
         fulfillment = new_bounty.fulfillments.order_by('pk').first()
 
     except Exception as e:
-        logging.error(f'{e} during record_user_action for {new_bounty}')
+        logger.error(f'{e} during record_user_action for {new_bounty}')
         # TODO: create a profile if one does not exist already?
 
     if user_profile:
@@ -657,7 +668,7 @@ def process_bounty_changes(old_bounty, new_bounty):
     profile_pairs = None
     # process bounty sync requests
     did_bsr = False
-    for bsr in BountySyncRequest.objects.filter(processed=False, github_url=new_bounty.github_url):
+    for bsr in BountySyncRequest.objects.filter(processed=False, github_url=new_bounty.github_url).nocache():
         did_bsr = True
         bsr.processed = True
         bsr.save()
@@ -684,7 +695,7 @@ def process_bounty_changes(old_bounty, new_bounty):
         event_name = 'increased_bounty'
     else:
         event_name = 'unknown_event'
-        logging.error(f'got an unknown event from bounty {old_bounty.pk} => {new_bounty.pk}: {json_diff}')
+        logger.info(f'got an unknown event from bounty {old_bounty.pk} => {new_bounty.pk}: {json_diff}')
 
     print(f"- {event_name} event; diff => {json_diff}")
 

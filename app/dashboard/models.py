@@ -245,6 +245,7 @@ class Bounty(SuperModel):
     idx_project_length = models.IntegerField(default=0, db_index=True)
     idx_status = models.CharField(max_length=9, choices=STATUS_CHOICES, default='open', db_index=True)
     issue_description = models.TextField(default='', blank=True)
+    funding_organisation = models.CharField(max_length=255, default='', blank=True)
     standard_bounties_id = models.IntegerField(default=0)
     num_fulfillments = models.IntegerField(default=0)
     balance = models.DecimalField(default=0, decimal_places=2, max_digits=50)
@@ -916,7 +917,7 @@ class Bounty(SuperModel):
             'tokens': {},
             'usd_value': 0,
         }
-        for tip in self.tips.filter(is_for_bounty_fulfiller=True):
+        for tip in self.tips.filter(is_for_bounty_fulfiller=True).exclude(txid=''):
             key = tip.tokenName
             if key not in return_dict['tokens'].keys():
                 return_dict['tokens'][key] = 0
@@ -1470,6 +1471,18 @@ class Activity(models.Model):
         return model_to_dict(self, **kwargs)
 
 
+class ProfileQuerySet(models.QuerySet):
+    """Define the Profile QuerySet to be used as the objects manager."""
+
+    def visible(self):
+        """Filter results to only visible profiles."""
+        return self.filter(hide_profile=False)
+
+    def hidden(self):
+        """Filter results to only hidden profiles."""
+        return self.filter(hide_profile=True)
+
+
 class Profile(SuperModel):
     """Define the structure of the user profile.
 
@@ -1504,18 +1517,19 @@ class Profile(SuperModel):
         help_text='If this option is chosen, the user is able to submit a faucet/ens domain registration even if they are new to github',
     )
     form_submission_records = JSONField(default=list, blank=True)
-    # Sample data: https://gist.github.com/mbeacom/ee91c8b0d7083fa40d9fa065125a8d48
     max_num_issues_start_work = models.IntegerField(default=3)
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
     preferred_kudos_wallet = models.OneToOneField('kudos.Wallet', related_name='preferred_kudos_wallet', on_delete=models.SET_NULL, null=True, blank=True)
     max_tip_amount_usdt_per_tx = models.DecimalField(default=500, decimal_places=2, max_digits=50)
     max_tip_amount_usdt_per_week = models.DecimalField(default=1500, decimal_places=2, max_digits=50)
 
+    objects = ProfileQuerySet.as_manager()
+
     @property
     def is_org(self):
         try:
             return self.data['type'] == 'Organization'
-        except:
+        except KeyError:
             return False
 
     @property
@@ -1568,8 +1582,12 @@ class Profile(SuperModel):
 
     @property
     def github_created_on(self):
-        from datetime import datetime
-        created_on = datetime.strptime(self.data['created_at'], '%Y-%m-%dT%H:%M:%SZ')
+        created_at = self.data.get('created_at', '')
+
+        if not created_at:
+            return ''
+
+        created_on = datetime.strptime(created_at, '%Y-%m-%dT%H:%M:%SZ')
         return created_on.replace(tzinfo=pytz.UTC)
 
     @property
@@ -1850,11 +1868,13 @@ class Profile(SuperModel):
 
     @property
     def avatar_url(self):
+        if self.avatar:
+            return self.avatar.avatar_url
         return f"{settings.BASE_URL}dynamic/avatar/{self.handle}"
 
     @property
     def avatar_url_with_gitcoin_logo(self):
-        return f"{self.avatar_url}/1"
+        return f"{settings.BASE_URL}dynamic/avatar/{self.handle}/1"
 
     @property
     def absolute_url(self):
@@ -1929,6 +1949,16 @@ class Profile(SuperModel):
         except Exception:
             return ''
         return access_token
+
+    @property
+    def access_token(self):
+        """The Github access token associated with this Profile.
+
+        Returns:
+            str: The associated Github access token.
+
+        """
+        return self.github_access_token or self.get_access_token(save=False)
 
     def get_profile_preferred_language(self):
         return settings.LANGUAGE_CODE if not self.pref_lang_code else self.pref_lang_code
@@ -2008,16 +2038,12 @@ class Profile(SuperModel):
     def get_orgs_bounties(self, network=None):
         network = network or self.get_network()
         url = f"https://github.com/{self.handle}"
-        bounties = Bounty.objects.current().filter(network=network, github_url__contains=url)
+        bounties = Bounty.objects.current().filter(network=network, github_url__icontains=url)
         return bounties
 
     def get_leaderboard_index(self, key='quarterly_earners'):
         try:
-            rank = LeaderboardRank.objects.filter(
-                leaderboard=key,
-                active=True,
-                github_username=self.handle,
-            ).latest('id')
+            rank = self.leaderboard_ranks.active().filter(leaderboard=key).latest('id')
             return rank.rank
         except LeaderboardRank.DoesNotExist:
             score = 0
@@ -2236,6 +2262,9 @@ class Profile(SuperModel):
 def post_login(sender, request, user, **kwargs):
     """Handle actions to take on user login."""
     from dashboard.utils import create_user_action
+    profile = getattr(user, 'profile', None)
+    if profile and not profile.github_access_token:
+        profile.github_access_token = profile.get_access_token()
     create_user_action(user, 'Login', request)
 
 
@@ -2295,6 +2324,7 @@ class UserAction(SuperModel):
         ('added_slack_integration', 'Added Slack Integration'),
         ('removed_slack_integration', 'Removed Slack Integration'),
         ('updated_avatar', 'Updated Avatar'),
+        ('account_disconnected', 'Account Disconnected'),
     ]
     action = models.CharField(max_length=50, choices=ACTION_TYPES)
     user = models.ForeignKey(User, related_name='actions', on_delete=models.SET_NULL, null=True)
