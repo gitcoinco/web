@@ -28,7 +28,7 @@
   We hope that our content is useful to you. If you'd like to continue hearing from us, please update your subscription settings.
 </p>
 <p>
-  <a class="button" href="https://gitcoin.co/settings/email/{{ subscriber.priv }}">
+  <a class="button" href="{% url 'email_settings' subscriber.priv %}">
     Click here to update your subscription settings.
   </a>
 </p>

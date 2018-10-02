@@ -171,7 +171,7 @@
 <body class="g-font-muli">
   {% if not hide_header %}
   <div id="header">
-    <a href="https://gitcoin.co">
+    <a href="{% url 'index' %}">
       <span style="display: inline-block;height: 100%;vertical-align: middle;"></span><img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin" title="Gitcoin Logo">
     </a>
   </div>
@@ -193,7 +193,7 @@
 
       <a href="https://reddit.com/r/gitcoincommunity"><img class="social-img" src="{% static "v2/images/social/reddit_new.png" %}"></a>
 
-      <a href="https://gitcoin.co/slack"><img class="social-img" src="{% static "v2/images/social/slack_new.png" %}"></a>
+      <a href="{% url 'slack' %}"><img class="social-img" src="{% static "v2/images/social/slack_new.png" %}"></a>
     </div>
     <div>
       <div id="copyright">
