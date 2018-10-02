@@ -12,34 +12,37 @@
   GNU Affero General Public License for more details.
 
   You should have received a copy of the GNU Affero General Public License
-  along with this program. If not, see <http://www.gnu.org/licenses/>.
+  along with this program. If not, see 
+<http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n %}
-<div id="pricing-section" class="pt-2">
-  <h5 class="font-subheader">{% trans "Pricing" %}</h5>
-  <div class="form__flex-group">
-    <div class="form__amount-wrapper">
-      <label class="form__label" for="amount">{% trans "Denomination" %}</label>
-      <div class="form__select2">
-        <select name='denomination' id='token'></select>
-      </div>
-    </div>
-    <div class="form__amount-wrapper">
-      <label class="form__label" for="amount">{% trans "Amount" %}</label>
-      <input name='amount' id='amount'  class="form__input" type="number" value="{{amount|default:'0.001'}}" step="0.001" min="0.001"/>
-    </div>
-      </div>
-      <div class="form__flex-group">
 
-    <div class="form__amount-wrapper" id="usd-amount-wrapper">
-      <label class="form__label" for="usd_amount">{% trans "USD" %}</label>
-      <input disabled name='usd_amount' id='usd_amount'  class="form__input" type="text" min="0.00"/>
-    </div>
-    <div class="form__amount-wrapper">
-      <label class="form__label" for="amount">{% trans "Hours" %}</label>
-      <input name='hours' id='hours'  class="form__input" type="number" value="{{amount|default:'1'}}" step="1" min="1"/>
-    </div>  </div>
-    <div class="jumbotron text-center mt-4">
-  <small class="form__input-help form__input-help--dynamic" id="usd_amount_text"></small></div>
-  <hr class="mt-4">
+<div id="pricing-section" class="pt-2">
+	<h5 class="font-subheader">{% trans "Pricing" %}</h5>
+	<div class="form__flex-group">
+		<div class="form__amount-wrapper">
+			<label class="form__label" for="amount">{% trans "Denomination" %}</label>
+			<div class="form__select2">
+				<select name='denomination' id='token'></select>
+			</div>
+		</div>
+		<div class="form__amount-wrapper">
+			<label class="form__label" for="amount">{% trans "Amount" %}</label>
+			<input name='amount' id='amount'  class="form__input" type="number" value="{{amount|default:'0.001'}}" step="0.001" min="0.001"/>
+		</div>
+	</div>
+	<div class="form__flex-group">
+		<div class="form__amount-wrapper" id="usd-amount-wrapper">
+			<label class="form__label" for="usd_amount">{% trans "USD" %}</label>
+			<input disabled name='usd_amount' id='usd_amount'  class="form__input" type="text" min="0.00"/>
+		</div>
+		<div class="form__amount-wrapper">
+			<label class="form__label" for="amount">{% trans "Hours" %}</label>
+			<input name='hours' id='hours'  class="form__input" type="number" value="{{amount|default:'1'}}" step="1" min="1"/>
+		</div>
+	</div>
+	<div class="jumbotron text-center mt-4">
+		<small class="form__input-help form__input-help--dynamic" id="usd_amount_text"></small>
+	</div>
+	<hr class="mt-4">
 </div>
