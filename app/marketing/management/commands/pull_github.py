@@ -92,4 +92,3 @@ class Command(BaseCommand):
         print("===========================")
         print(f"es_without_keywords_count; before: {es_without_keywords_count}, after: {es_without_keywords.count()}")
         print(f"es_without_github_count; before: {es_without_github_count}, after: {es_without_github.count()}")
-
