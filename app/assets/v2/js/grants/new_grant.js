@@ -3,6 +3,7 @@
 $(document).ready(function() {
 
 console.log('1', web3.eth.coinbase);
+console.log('network', web3.version.network);
 
 
   $('#js-drop').on('dragover', function(event) {
@@ -38,11 +39,7 @@ console.log('1', web3.eth.coinbase);
         .find(':input:disabled')
         .removeAttr('disabled');
 
-        $.each($(form).serializeArray(), function() {
-          data[this.name] = this.value;
-        });
-
-        // form.submit();
+      
 
 
       // Begin New Deploy Subscription Contract
@@ -65,12 +62,20 @@ console.log('1', web3.eth.coinbase);
                   console.log(myContract.transactionHash)
 
 
+
                 } else {
                   console.log(myContract.address)
 
-                  // form.submit();
+                  $('#transaction_hash').val(myContract.transactionHash)
+                  $('#contract_address').val(myContract.contract_address)
+                  $('#network').val(web3.version.network)
 
-                  addChainData(myContract.transactionHash, myContract.address, web3.version.network, data.title);
+                  $.each($(form).serializeArray(), function() {
+                    data[this.name] = this.value;
+                  });
+
+                  form.submit();
+
 
                 }
               }

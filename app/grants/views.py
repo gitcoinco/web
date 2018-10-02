@@ -60,12 +60,16 @@ def new_grant(request):
         grant.frequency = request.POST.get('frequency')
         grant.token_address = request.POST.get('denomination')
         grant.amount_goal = request.POST.get('amount_goal')
+        grant.transaction_hash = request.POST.get('transaction_hash')
+        grant.contract_address = request.POST.get('contract_address')
+        grant.network = request.POST.get('network')
+
         grant.admin_profile = profile
         # grant.teamMemberProfiles = Need to do a profile search based on enetered emails
 
         grant.save()
 
-        return redirect('/grants/show/9')
+        return redirect(f'/grants/{grant.pk}')
 
     else:
         grant = {}
@@ -102,7 +106,7 @@ def grant_data(request, grant_title):
 
         grant.save()
 
-        return redirect('/grants/')
+        return redirect(f'/grants/show/{grant.pk}')
 
     else:
         grant = {}
