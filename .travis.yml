@@ -31,7 +31,7 @@ jobs:
         - pip install pip setuptools --upgrade
         - pip install codecov
         # Fetch and Install GeoIP database files.
-        - apt-get update && apt-get install -y libmaxminddb-dev
+        - sudo apt-get update && sudo apt-get install -y libmaxminddb-dev
         - wget http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz
         - wget http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz
         - gunzip GeoLite2-City.mmdb.gz && gunzip GeoLite2-Country.mmdb.gz
