@@ -38,7 +38,7 @@ from django.views.decorators.http import require_GET, require_POST
 from app.utils import clean_str, ellipses, sync_profile
 from avatar.utils import get_avatar_context
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from git.utils import get_auth_url, get_github_user_data, is_github_token_valid
+from git.utils import get_auth_url, get_github_user_data, is_github_token_valid, search
 from marketing.mails import (
     admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
@@ -1580,9 +1580,8 @@ def get_users(request):
             profile_json['preferred_payout_address'] = user.preferred_payout_address
             results.append(profile_json)
         # try github
-        # TODO: rate limit?
-        if len(profiles) == 0:
-            from git.utils import search
+        # TODO: rate limit? and/or use the logged in users github key instead of ours?
+        if not profiles:
             search_results = search(q)
             for result in search_results.get('items', []):            
                 profile_json = {}
@@ -1594,7 +1593,7 @@ def get_users(request):
                 profile_json['preferred_payout_address'] = None
                 results.append(profile_json)
         # just take users word for it
-        if len(profiles) == 0:
+        if not profiles:
             profile_json = {}
             profile_json['id'] = -1
             profile_json['text'] = q
