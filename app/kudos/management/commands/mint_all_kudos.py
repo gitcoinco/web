@@ -40,7 +40,7 @@ default_start_id = 0 if not settings.DEBUG else 402
 
 logger = logging.getLogger(__name__)
 formatter = '%(levelname)s:%(name)s.%(funcName)s:%(message)s'
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 
 class Command(BaseCommand):
