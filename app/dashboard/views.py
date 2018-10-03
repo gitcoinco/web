@@ -1564,6 +1564,8 @@ def change_bounty(request, bounty_id):
 
 
 def get_users(request):
+    token = request.GET.get('token', None)
+
     if request.is_ajax():
         q = request.GET.get('term')
         profiles = Profile.objects.filter(handle__icontains=q)
@@ -1581,7 +1583,7 @@ def get_users(request):
             results.append(profile_json)
         # try github
         if not profiles:
-            search_results = search_users(q)
+            search_results = search_users(q, token=token)
             for result in search_results:
                 profile_json = {}
                 profile_json['id'] = -1
