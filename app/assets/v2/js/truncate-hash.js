@@ -1,3 +1,5 @@
+/* eslint-disable no-new */
+
 /**
  * Simple plugin for truncate the hash at the center
  *
@@ -8,16 +10,16 @@
 */
 
 (function() {
-  this.truncate = function(elem, number) {
-    var number = !number ? number = 4 : number;
+  this.truncate = function(elem, _number) {
+    var number = !_number ? _number = 4 : _number;
 
     if (elem.textContent === undefined) {
-      var content = elem.trim();
+      let content = elem.trim();
 
       content = content.substr(0, number + 2) + '\u2026' + content.substr(-number);
-      return this.elem = content;
+      return (this.elem = content);
     }
-    var content = elem.textContent.trim();
+    let content = elem.textContent.trim();
 
     content = content.substr(0, number + 2) + '\u2026' + content.substr(-number);
     elem.textContent = content;
@@ -42,8 +44,8 @@ new truncateHash();
  * <div data-metamask-address>1234567891233456789asd</div>
 */
 (function() {
-  this.getaddress = function(elem, address) {
-    var address = !address ? address = web3.eth.coinbase : address;
+  this.getaddress = function(elem, _address) {
+    var address = !_address ? _address = web3.eth.coinbase : _address;
 
     if (elem.nodeName == 'INPUT') {
       elem.value = address;

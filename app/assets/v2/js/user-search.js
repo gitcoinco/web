@@ -82,7 +82,7 @@ function userSearch(elem, showAddress) {
         if (user.preferred_payout_address)
           selected += truncate(user.preferred_payout_address, 4);
         else
-          selected += '<span style="color: grey">( Unknown Address )</span>';
+          selected += '<span style="color: grey">( Secure Proxy Address )</span>';
       } else {
         selected = user.text;
       }
