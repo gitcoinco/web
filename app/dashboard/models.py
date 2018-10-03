@@ -2255,6 +2255,20 @@ class Profile(SuperModel):
         return params
 
     @property
+    def locations(self):
+        from app.utils import get_location_from_ip
+        locations = []
+        for login in self.actions.filter(action='Login'):
+            if login.location_data:
+                locations.append(login.location_data)
+            else:
+                location_data = get_location_from_ip(login.ip_address)
+                login.location_data = location_data
+                login.save()
+                locations.append(location_data)
+        return locations
+
+    @property
     def is_eu(self):
         from app.utils import get_country_from_ip
         try:
