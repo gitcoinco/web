@@ -2,10 +2,6 @@
 /* eslint no-redeclare: "warn" */
 /* eslint no-loop-func: "warn" */
 
-const normalizeAmount = function(amount, decimals) {
-  return Math.round(amount * 10 ** decimals) / 10 ** decimals;
-};
-
 const _truthy = function(val) {
   if (!val || val == '0x0000000000000000000000000000000000000000') {
     return false;
@@ -225,60 +221,70 @@ var callbacks = {
     return [ 'network', warning ];
   },
   'additional_funding_summary': function(key, val, result) {
-    if (typeof val == 'undefined' || Object.keys(val['tokens']).length == 0) {
-      $('.additional_funding_summary').addClass('hidden');
-      return [ 'additional_funding_summary', '' ];
-    }
-    const usd_value = val['usd_value'];
-    const tokens = val['tokens'];
-    const decimals = 3;
 
-    let crowdfunded_tokens = [];
-    let tooltip_info = [];
+    const tokens = Object.keys(val);
 
-    crowdfunded_tokens.push({
-      amount: token_value_to_display(result['value_in_token'], decimals),
-      token: result['token_name']
-    });
-
-    tooltip_info.push('<p class="font-weight-bold m-0 pb-1" style="color:#775EC7;">Intial : ' +
-      $('#value_in_token').html() + '</p>');
-
-    if (usd_value) {
-      tooltip_info.push('<p class="m-0" style="margin-top: 3px;">Crowdfunding worth $' + usd_value + '</p>');
-      $('#value_in_usdt').html(parseFloat(result['value_in_usdt']) + usd_value);
+    if (tokens.length === 0) {
+      return [ key, val ];
     }
 
-    for (var token in tokens) {
-      if (token) {
-        const val = tokens[token];
-        const funding = normalizeAmount(val, decimals);
+    const tokenDecimals = 3;
+    const dollarDecimals = 2;
+    const bountyTokenName = result['token_name'];
+    const bountyTokenAmount = token_value_to_display(result['value_in_token'], tokenDecimals);
+    const dateNow = new Date();
+    const dateTokenValue = new Date(result['token_value_time_peg']);
+    const timePeg = timeDifference(dateNow, dateTokenValue > dateNow ? dateNow : dateTokenValue, false, 60 * 60);
+    const usdTagElement = document.querySelector('#value_in_usdt_wrapper');
+    const container = document.querySelector('.tags');
 
-        if (crowdfunded_tokens.filter(fund => fund.token === token).length > 0) {
-          crowdfunded_tokens.map((fund, index) => {
-            if (fund.token === token) {
-              crowdfunded_tokens[index].amount += funding;
-            }
-          });
-        } else {
-          crowdfunded_tokens.push({
-            amount: funding,
-            token: token
-          });
-        }
-        const template = '<p class="m-0" style="color:#fb9470">+' + funding + ' ' + token + ' in crowdfunding</p>';
+    let leftHtml = '';
+    let rightHtml = '';
 
-        tooltip_info.push(template);
-      }
+    leftHtml += '<p class="m-0">&nbsp;&nbsp;&nbsp;' +
+      bountyTokenAmount + ' ' + bountyTokenName + '</p>';
+
+    rightHtml += '<p class="m-0">@ $' +
+      result['token_value_in_usdt'] + ' ' + bountyTokenName + ' as of ' + timePeg + '</p>';
+
+    let totalUSDValue = parseFloat(result['value_in_usdt']) || 0.0;
+
+    while (tokens.length) {
+      const tokenName = tokens.shift();
+      const obj = val[tokenName];
+      const ratio = obj['ratio'];
+      const amount = obj['amount'];
+      const usd = amount * ratio;
+      const funding = normalizeAmount(amount, tokenDecimals);
+      const tokenValue = normalizeAmount(1.0 * ratio, dollarDecimals);
+      const timestamp = new Date(obj['timestamp']);
+      const timePeg = timeDifference(dateNow, timestamp > dateNow ? dateNow : timestamp, false, 60 * 60);
+      const tooltip = '$' + normalizeAmount(usd, dollarDecimals) + ' ' + tokenName + ' in crowdfunding';
+
+      leftHtml += '<p class="m-0">+ ' + funding + ' ' + tokenName + '</p>';
+      rightHtml += '<p class="m-0">@ $' + tokenValue + ' ' + tokenName + ' as of ' + timePeg + '</p>';
+
+      totalUSDValue += usd;
+
+      container.insertBefore(
+        newTokenTag(funding, tokenName, tooltip, true),
+        usdTagElement
+      );
     }
 
-    const token_tag = crowdfunded_tokens.map(fund => fund.amount + ' ' + fund.token);
+    $('#value_in_usdt').html(normalizeAmount(totalUSDValue, dollarDecimals));
 
-    $('#value_in_token').html('<i class="fas fa-users mr-2"></i>' +
-      token_tag.join(' <i class="fas fa-plus mx-1" style="font-size: 0.5rem; position: relative; top: -1px;"></i> '));
-    $('#value_in_token').attr('title', '<div class="tooltip-info tooltip-sm">' + tooltip_info.join('') + '</div>');
+    $('#value_in_usdt_wrapper').attr('title',
+      '<div class="tooltip-info tooltip-sm">' +
+      '<p class="text-highlight-gc-purple">How did we calculate this?</p>' +
+      '<div style="float:left; text-align:left;">' +
+      leftHtml +
+      '</div><div style="margin-left: .5rem; float:right; text-align:left;">' +
+      rightHtml +
+      '</div></div>'
+    );
 
-    return [ 'additional_funding_summary', val ];
+    return [ key, val ];
   },
   'token_value_time_peg': function(key, val, result) {
     if (val === null || typeof val == 'undefined') {
