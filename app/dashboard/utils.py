@@ -150,10 +150,12 @@ def _get_utm_from_cookie(request):
     utm_source = request.COOKIES.get('utm_source')
     utm_medium = request.COOKIES.get('utm_medium')
     utm_campaign = request.COOKIES.get('utm_campaign')
+
     try:
         utm_campaign = json.loads(urllib.parse.unquote(utm_campaign))
     except Exception:
         utm_campaign = None
+        
     return utm_source, utm_medium, utm_campaign
 
 
