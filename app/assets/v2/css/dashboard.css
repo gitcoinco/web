@@ -74,7 +74,9 @@ body {
 .title-row {
   display: flex;
   margin-top: 2em;
+  margin-right: 8px;
   padding-bottom: 5px;
+  float: right;
   border-bottom: 2px solid #3E24FB;
 }
 
@@ -178,6 +180,11 @@ body {
   display: flex;
 }
 
+.tags.fixed {
+  float: right;
+  padding-bottom: 1rem;
+}
+
 #onboard-footer {
   text-align: center;
   background: #F2F6F9;
@@ -205,13 +212,6 @@ body {
 
   #onboard-dashboard .robot {
     display: none;
-  }
-}
-
-@media (min-width: 768px) {
-
-  .tag.shift_left {
-    margin-left: -100px;
   }
 }
 
@@ -254,4 +254,8 @@ body {
   .bounty-detail {
     margin-right: 4rem;
   }
+}
+
+.hiring {
+  content: url('/static/v2/images/hiring.svg');
 }
