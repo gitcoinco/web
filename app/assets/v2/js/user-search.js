@@ -1,7 +1,7 @@
 $(function() {
   $('.username-search').select2({
     ajax: {
-      url: '/api/v0.1/users_search/?token=' + currentProfile.access_token,
+      url: '/api/v0.1/users_search/?token=' + currentProfile.githubToken,
       dataType: 'json',
       delay: 250,
       data: function(params) {

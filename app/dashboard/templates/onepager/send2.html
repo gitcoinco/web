@@ -17,6 +17,7 @@
 {% endcomment %}
 {% load i18n static %}
 {% block 'scripts' %}
+  {% include 'shared/current_profile.html' %}
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
@@ -29,7 +30,6 @@
   <script src="{% static "onepager/js/send.js" %}"></script>
   <script src="{% static "onepager/js/confetti.js" %}"></script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
-  
 {% endblock %}
 <!-- Main -->
 {% block 'main' %}
