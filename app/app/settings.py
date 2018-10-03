@@ -577,6 +577,7 @@ COLO_ACCOUNT_ADDRESS = env('COLO_ACCOUNT_ADDRESS', default='')  # TODO
 COLO_ACCOUNT_PRIVATE_KEY = env('COLO_ACCOUNT_PRIVATE_KEY', default='')  # TODO
 
 IPFS_HOST = env('IPFS_HOST', default='ipfs.infura.io')
+JS_IPFS_HOST = IPFS_HOST if IPFS_HOST != 'ipfs' else 'localhost'
 IPFS_SWARM_PORT = env.int('IPFS_SWARM_PORT', default=4001)
 IPFS_UTP_PORT = env.int('IPFS_UTP_PORT', default=4002)
 IPFS_API_PORT = env.int('IPFS_API_PORT', default=5001)

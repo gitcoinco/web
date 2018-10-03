@@ -57,7 +57,7 @@ def insert_settings(request):
         'profile_id': profile.id if profile else '',
         'hotjar': settings.HOTJAR_CONFIG,
         'ipfs_config': {
-            'host': settings.IPFS_HOST,
+            'host': settings.JS_IPFS_HOST,
             'port': settings.IPFS_API_PORT,
             'protocol': settings.IPFS_API_SCHEME,
             'root': settings.IPFS_API_ROOT,
