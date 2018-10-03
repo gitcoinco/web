@@ -50,6 +50,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('network', default='localhost', type=str)
         parser.add_argument('yaml_file', help='absolute path to kudos.yaml file', type=str)
+        parser.add_argument('--skip_sync', action='store_true')
         parser.add_argument('--account', help='public account address to use for transaction', type=str)
         parser.add_argument('--private_key', help='private key for signing transactions', type=str)
 
@@ -58,6 +59,7 @@ class Command(BaseCommand):
         network = options['network']
         account = options['account']
         private_key = options['private_key']
+        skip_sync = options['skip_sync']
 
         kudos_contract = KudosContract(network=network)
 
@@ -116,7 +118,7 @@ class Command(BaseCommand):
             args = (kudos['priceFinney'], kudos['numClonesAllowed'], tokenURI_url)
             for x in range(1, 4):
                 try:
-                    kudos_contract.mint(*args, account=account, private_key=private_key, skip_sync=True)
+                    kudos_contract.mint(*args, account=account, private_key=private_key, skip_sync=skip_sync)
                 except Exception as e:
                     logger.warning(e)
                     logger.info("Trying the mint again...")

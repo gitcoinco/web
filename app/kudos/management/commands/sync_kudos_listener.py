@@ -100,6 +100,8 @@ class Command(BaseCommand):
                     logger.debug(f'Raw Transfer event: {event}')
                 kudos_contract._w3.eth.waitForTransactionReceipt(msg['transactionHash'])
                 logger.debug(f"Tx hash: {msg['transactionHash']}")
+                if kudos_contract.network == 'localhost':
+                    time.sleep(5)
                 kudos_contract.sync_db(kudos_id=msg['_tokenId'], txid=msg['transactionHash'])
             time.sleep(interval)
 
