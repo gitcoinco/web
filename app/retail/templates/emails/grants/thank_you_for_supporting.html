@@ -1,69 +1,78 @@
-{% extends '../emails/template.html' %}
-{% comment %}
-    Copyright (C) 2017 Gitcoin Core
+{% extends '../emails/template.html' %} 
+{% comment %} 
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-{% endcomment %}
-{% load i18n humanize %}
-{% load i18n static %}
+{% endcomment %} 
+{% load i18n humanize static %} 
 
 {% block content %}
 
 <style>
-hr {
+  hr {
     width: 80%;
     height: 2px;
     border-radius: 25px;
     border: none;
     background-color: #D2D2D2;
-}
-.grantHeader {
+  }
+
+  .grantHeader {
     width: 100%;
     text-align: center;
-}
-.leftGrantHeader {
+  }
+
+  .leftGrantHeader {
     display: inline-block;
-}
-.rightGrantHeader {
+  }
+
+  .rightGrantHeader {
     display: inline-block;
-}
-.rightGrantHeader > h2 {
+  }
+
+  .rightGrantHeader>h2 {
     font-size: 20px;
     line-height: 1.5em;
-}
-.grantInfo {
+  }
+
+  .grantInfo {
     padding-top: 30px;
     padding-bottom: 1%;
-}
-.grantInfo a img {
+  }
+
+  .grantInfo a img {
     border-radius: 25px;
     margin-bottom: 10px;
-}
-.grantInfoName {
+  }
+
+  .grantInfoName {
     font-size: 20px;
     color: #0D0764;
-}
-.grantInfo h5 {
+  }
+
+  .grantInfo h5 {
     font-size: 14px;
     margin-top: 15px;
     margin-top: 30px;
-}
-.grantInfo h3 {
+  }
+
+  .grantInfo h3 {
     margin-top: -20px;
-}
-.updatesButton {
+  }
+
+  .updatesButton {
     padding-left: 30px;
     padding-right: 30px;
     text-decoration: none;
@@ -73,49 +82,68 @@ hr {
     color: white;
     border-radius: 2.7px;
     font-size: 17px;
-}
-#grow-oss {
+  }
+
+  #grow-oss {
     margin-top: 50px;
     margin-bottom: 50px;
-}
-@media screen and (min-width: 598px) {
+  }
+
+  @media screen and (min-width: 598px) {
     .rightGrantHeader {
-        padding-left: 40px;
-        transform: translateY(-12.5%);
-        text-align: left;
+      padding-left: 40px;
+      transform: translateY(-12.5%);
+      text-align: left;
     }
-    .leftGrantHeader > img {
-        transform: translateY(13.5%);
+    .leftGrantHeader>img {
+      transform: translateY(13.5%);
     }
-}
+  }
+
 </style>
 <div class="grantHeader">
-    <div class="leftGrantHeader"> 
-        <img src="{% static "v2/images/heart-robot.png" %}" alt="Heart Robot" title="Gitcoin Heart Robot"> <!-- Heart robot image was exported from Adobe XD and imported here -->
-    </div>
-    <div class="rightGrantHeader">
-        <h1 style="text-transform: none;">{%trans "Thank you for supporting"%} <br>'{{grant_org_name}}'!</h1> <!-- Input grant name here -->
-        <h2 style="text-transform: none;">{%trans "The world of open source is a better place because of you." %}</h2>
-    </div>
+  <div class="leftGrantHeader">
+    <img src="{% static " v2/images/heart-robot.png " %}" alt="Heart Robot" title="Gitcoin Heart Robot">
+    <!-- Heart robot image was exported from Adobe XD and imported here -->
+  </div>
+  <div class="rightGrantHeader">
+    <h1 style="text-transform: none;">{%trans "Thank you for supporting"%}
+      <br>'{{ grant_org_name }}'!</h1>
+    <!-- Input grant name here -->
+    <h2 style="text-transform: none;">{%trans "The world of open source is a better place because of you." %}</h2>
+  </div>
 </div>
 
 <hr>
 <div class="grantInfo">
-        <a href="https://github.com/{{github_username}}"><img src="{{project_image}}" width="50" height="50"/></a> <!-- Input project image here -->
-        <br>
-        <a class="grantInfoName" href="https://github.com/{{github_username}}">{{github_username}}</a> <!-- Input project name here -->
-        <p>{{project_description}}</p> <!-- Input project description here -->
-        <h5 style="text-transform: none;">{%trans "You have agreed to give" %}</h5> 
-        <h3 style="text-transform: none;">{{variable_amount_contribution}}</h3> <!-- Input variable amount here -->
-        <p>{%trans "You can see the transaction on etherscan" %} <a href="https://etherscan.com/{{etherscan_link}}">{%trans "here." %}</a></p> <!-- Input etherscan link here -->
+  <a href="https://github.com/{{ github_username }}">
+    <img src="{{ project_image }}" width="50" height="50" />
+  </a>
+  <!-- Input project image here -->
+  <br>
+  <a class="grantInfoName" href="https://github.com/{{ github_username }}">{{ github_username }}</a>
+  <!-- Input project name here -->
+  <p>{{ project_description }}</p>
+  <!-- Input project description here -->
+  <h5 style="text-transform: none;">{%trans "You have agreed to give" %}</h5>
+  <h3 style="text-transform: none;">{{ variable_amount_contribution }}</h3>
+  <!-- Input variable amount here -->
+  <p>{%trans "You can see the transaction on etherscan" %}
+    <a href="https://etherscan.com/{{ etherscan_link }}">{%trans "here." %}</a>
+  </p>
+  <!-- Input etherscan link here -->
 </div>
 <hr>
 
 <br>
 <br>
-<a class="updatesButton" href="https://gitcoin.co/grants/{{grant_id}}">{%trans "View Updates" %}</a> <!-- Input link to view updates button here --> 
+<a class="updatesButton" href="https://gitcoin.co/grants/{{ grant_id }}">{%trans "View Updates" %}</a>
+<!-- Input link to view updates button here -->
 <br>
 <br>
-<p>{%trans "If you ever need to you can cancel your support" %} <a href="https://gitcoin.co/grants/{{link_to_cancel}}">{%trans "here." %}</a></p> <!-- Input support cancelation link here -->
+<p>{%trans "If you ever need to you can cancel your support" %}
+  <a href="https://gitcoin.co/grants/{{ link_to_cancel }}">{%trans "here." %}</a>
+</p>
+<!-- Input support cancelation link here -->
 
 {% endblock %}
