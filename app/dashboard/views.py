@@ -1568,6 +1568,7 @@ def get_users(request):
         q = request.GET.get('term')
         profiles = Profile.objects.filter(handle__icontains=q)
         results = []
+        # try gitcoin
         for user in profiles:
             profile_json = {}
             profile_json['id'] = user.id
@@ -1578,6 +1579,21 @@ def get_users(request):
                 profile_json['avatar_url'] = user.avatar_url
             profile_json['preferred_payout_address'] = user.preferred_payout_address
             results.append(profile_json)
+        # try github
+        # TODO: rate limit?
+        if len(profiles) == 0:
+            from git.utils import search
+            search_results = search(q)
+            for result in search_results.get('items', []):            
+                profile_json = {}
+                profile_json['id'] = -1
+                profile_json['text'] = result['login']
+                profile_json['email'] = None
+                profile_json['avatar_id'] = None
+                profile_json['avatar_url'] = result['avatar_url']
+                profile_json['preferred_payout_address'] = None
+                results.append(profile_json)
+        # just take users word for it
         if len(profiles) == 0:
             profile_json = {}
             profile_json['id'] = -1
@@ -1586,7 +1602,6 @@ def get_users(request):
             profile_json['avatar_id'] = None
             profile_json['preferred_payout_address'] = None
             results.append(profile_json)
-
         data = json.dumps(results)
     else:
         raise Http404
