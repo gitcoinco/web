@@ -47,11 +47,13 @@
           </p>
         </div>
         <div class="mt-2">
+          {% comment %}
           {% if profile.org and profile.org.is_hiring %}
           <div class="tag org-hiring">
             <p>{% trans "Hiring" %}</p>
           </div>
           {% endif %}
+          {% endcomment %}
           {% if user.username in profile.gh_members %}
           <span class="ml-2 mr-1 font-weight-300">{% trans "Hiring" %}</span>
           <label class="switch mt-2">

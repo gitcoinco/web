@@ -172,6 +172,7 @@
               </div>
               <div class="col-12 col-md-5 org-info">
                 <h1 class="font-subheader mt-2">{{ view_org.github_username|title }}</h1>
+                {% comment %}
                 <div class="org-user-info font-caption boldify my-3">
                   {% if view_org.is_hiring %}
                     <div class="tag org-hiring mr-2">
@@ -182,6 +183,7 @@
                     <p>{% if not follows_org %}Follow{% else %}Unfollow{% endif %}</p>
                   </div>
                 </div>
+                {% endcomment %}
                 <p class="profile-header__links clearfix mt-1">
                   <a href="https://github.com/{{ view_org.github_username }}?tab=repositories" target="_blank" rel="noopener noreferrer" >
                     <i class="fab fa-github"></i>

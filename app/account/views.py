@@ -23,7 +23,7 @@ from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 
-from .models import Organization
+from account.models import Organization
 
 logger = logging.getLogger(__name__)
 
@@ -73,7 +73,10 @@ def follow_organization(request, org_handle='', org_id=None):
     org_kwargs = {}
 
     if not request.user.is_authenticated or not getattr(request.user, 'profile', None):
-        return JsonResponse({'status': 404, 'message': _('You must be authenticated to follow an organization!')}, status=404)
+        return JsonResponse({
+            'status': 404,
+            'message': _('You must be authenticated to follow an organization!')
+        }, status=404)
     try:
         if org_handle:
             org_kwargs['github_username'] = org_handle
@@ -93,7 +96,10 @@ def unfollow_organization(request, org_handle='', org_id=None):
     org_kwargs = {}
 
     if not request.user.is_authenticated or not getattr(request.user, 'profile', None):
-        return JsonResponse({'status': 404, 'message': _('You must be authenticated to follow an organization!')}, status=404)
+        return JsonResponse({
+            'status': 404,
+            'message': _('You must be authenticated to follow an organization!')
+        }, status=404)
     try:
         if org_handle:
             org_kwargs['github_username'] = org_handle
