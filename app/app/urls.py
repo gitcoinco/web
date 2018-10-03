@@ -39,6 +39,7 @@ import enssubdomain.views
 import external_bounties.views
 import faucet.views
 import gitcoinbot.views
+import healthcheck.views
 import linkshortener.views
 import marketing.views
 import marketing.webhookviews
@@ -64,7 +65,7 @@ urlpatterns = [
 
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
-    re_path(r'^lbcheck/?', retail.views.lbcheck, name='lbcheck'),
+    re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),
 
     # dashboard views
 
@@ -88,7 +89,7 @@ urlpatterns = [
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
     path('issue/fulfill', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
     path('issue/accept', dashboard.views.accept_bounty, name='process_funding'),
-    path('issue/advanced_payout', dashboard.views.bulk_payout_bounty, name='bulk_payout_bounty'),
+    # path('issue/advanced_payout', dashboard.views.bulk_payout_bounty, name='bulk_payout_bounty'),
     path('issue/invoice', dashboard.views.invoice, name='invoice'),
     path('issue/payout', dashboard.views.payout_bounty, name='payout_bounty'),
     path('issue/increase', dashboard.views.increase_bounty, name='increase_bounty'),
@@ -176,7 +177,7 @@ urlpatterns = [
     # sync methods
     url(r'^sync/web3/?', dashboard.views.sync_web3, name='sync_web3'),
     url(r'^sync/get_amount/?', dashboard.helpers.amount, name='helpers_amount'),
-    url(r'^sync/get_issue_details/?', dashboard.helpers.issue_details, name='helpers_issue_details'),
+    re_path(r'^sync/get_issue_details/?', dashboard.helpers.issue_details, name='helpers_issue_details'),
 
     # modals
     re_path(r'^modal/get_quickstart_video/?', dashboard.views.get_quickstart_video, name='get_quickstart_video'),
@@ -231,6 +232,9 @@ urlpatterns = [
     re_path(r'^github/?', retail.views.github, name='github'),
     re_path(r'^youtube/?', retail.views.youtube, name='youtube'),
     re_path(r'^web3/?', retail.views.web3, name='web3'),
+
+    # increase funding limit
+    re_path(r'^requestincrease/?', retail.views.increase_funding_limit_request, name='increase_funding_limit_request'),
 
     # link shortener
     url(r'^l/(.*)$/?', linkshortener.views.linkredirect, name='redirect'),

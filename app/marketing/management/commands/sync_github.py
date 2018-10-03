@@ -51,8 +51,11 @@ class Command(BaseCommand):
 
     def do_we_care(self, event):
         repos_we_care_about = self.all_bountied_repos()
-        repo_name = event.get('repo', {}).get('name', '').lower()
-        return repo_name in repos_we_care_about
+        try:
+            repo_name = event.get('repo', {}).get('name', '').lower()
+            return repo_name in repos_we_care_about
+        except:
+            return False
 
     def sync_profile_actions(self):
         # figure out what github profiles we care about
