@@ -2233,21 +2233,14 @@ class Profile(SuperModel):
         }
 
         if activities:
-            fulfilled = self.fulfilled.filter(
+            all_activities = self.activities.filter(
                 bounty__network=network
-            ).select_related('bounty').all().order_by('-created_on')
-            completed = list(set([fulfillment.bounty for fulfillment in fulfilled.exclude(accepted=False)]))
-            submitted = list(set([fulfillment.bounty for fulfillment in fulfilled.exclude(accepted=True)]))
-            started = self.interested.prefetch_related('bounty_set') \
-                .filter(bounty__network=network).all().order_by('-created')
-            started_bounties = list(set([interest.bounty_set.last() for interest in started]))
+            ).select_related('bounty', 'tip').all().order_by('-created')
 
-            if completed or submitted or started:
+            if all_activities:
                 params['activities'] = [{
                     'title': _('By Created Date'),
-                    'completed': completed,
-                    'submitted': submitted,
-                    'started': started_bounties,
+                    'activity_bounties': all_activities,
                 }]
 
         if tips:
