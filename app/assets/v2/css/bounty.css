@@ -194,11 +194,6 @@ body {
   top: 2px;
 }
 
-#bounty_details .tags {
-  float: right;
-  text-align: center;
-}
-
 #bounty_details .activity-tags {
   float: left;
   text-align: center;
@@ -210,10 +205,6 @@ body {
 
 #bounty_details .tag {
   display: inline-block;
-}
-
-#bounty_details .tag p {
-  padding: 5px;
 }
 
 .issue-url > a {

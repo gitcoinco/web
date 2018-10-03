@@ -525,7 +525,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Gitcoin's Hacktoberfest | Paying Rent w. Crypto"
+    subject = "A Maintainers Guide To Hacktoberfest | ETH Travels"
 
     intro = '''
 
@@ -533,23 +533,23 @@ def render_new_bounty_roundup(to_email):
 Hi there,
 </p>
 <p>
-Gitcoin's Hacktoberfest plans <a href="https://gitcoin.co/slack">are live</a>! We're aiming to fund 100 <a href="https://gitcoin.co/requests">Gitcoin Requests</a>
-on issues which need help in the open source ecosystem. Know of a project who could use more developers to help the maintainer(s) along? Let us know!
+<a href="https://medium.com/gitcoin/gitcoins-hacktoberfest-98825f199af2">Gitcoin's Hacktoberfest</a> starts on Monday! Post your favorite 3 open source projects on twitter & tag us (<a href="https://twitter.com/GetGitcoin">@GetGitcoin</a>), then make a <a href="https://gitcoin.co/requests">Gitcoin Request</a> to give those projects a boost!
 </p>
 <p>
-We welcomed a guest blog from Joseph Schiarizzi this week on <a href="https://medium.com/gitcoin/how-i-paid-my-rent-with-crypto-3cfa76fe943">how he paid his rent in crypto</a>
-in August! Gitcoin is glad to be a place which makes this possible and looks forward to a future where developers can sustain themselves on open source contributions!
+If you're an OSS maintainer, we wrote a <a href="https://medium.com/gitcoin/a-maintainers-guide-to-hacktoberfest-21405c8ff09f">Guide to Hacktoberfest for maintainers!</a> It's
+a great look at how to manage an open source project generally, let us know what you think.
 </p>
-
+<p>
+Lastly, October marks a month of travel for the Gitcoin team. If you'll be at ETH SF (Oct 5-7), Github Universe (Oct 16-17), Web 3 Summit (Oct 22 - 24), or Devcon 4, give us a shout!
+</p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-        There have now been 30 Gitcoin Requests! Do you have a Github issue you want solved? Make <a href="https://gitcoin.co/requests">a Gitcoin Request</a> and we'll review in 24 hours.
-        If you're a developer and you see a 'Good First Issue' you'd work on for a bounty, <a href="https://gitcoin.co/requests">let us know</a>! Gitcoin Requests
-        is a way for developers and maintainers to make their voice heard.
+        <a href="https://consensys.net/academy/2018developer/?utm_source=ConsenSys+Academy%3A+General+Mailing+List&utm_campaign=88c5836e4a-EMAIL_CAMPAIGN_2018_09_10_02_13_COPY_01&utm_medium=email&utm_term=0_30e33caef0-88c5836e4a">ConsenSys Academy's Developer Program</a> is a 11-week program that equips developers with all the knowledge, skills, and
+         hands on mentorship essential to become industry-leading Ethereum developers. You can register now <a href="https://form.jotform.com/DeveloperProgram/Bootcamp?utm_source=ConsenSys+Academy%3A+General+Mailing+List&utm_campaign=88c5836e4a-EMAIL_CAMPAIGN_2018_09_10_02_13_COPY_01&utm_medium=email&utm_term=0_30e33caef0-88c5836e4a-">here!</a>
         </li>
         <li>
-        Gitcoin Livestream today includes Bounties Network and EIP-1337 at 5PM ET. We're excited to be back - <a href="https://gitcoin.co/livestream">add to your calendar here!</a>.
+        Gitcoin Livestream today includes ConsenSys Academy and FOAM Protocol at 5PM ET. We're excited and hope to see you - <a href="https://gitcoin.co/livestream">add to your calendar here!</a>.
         </li>
     </ul>
 </p>
@@ -558,34 +558,34 @@ Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'StevenJNPearce',
+        'who': 'dryajov',
         'who_link': True,
-        'what': 'Added browser reload on file change to Embark!',
-        'link': 'https://gitcoin.co/issue/embark-framework/embark/832/1214',
+        'what': 'Completed one of the largest bounties of all time on MetaMask!',
+        'link': 'https://gitcoin.co/issue/MetaMask/mustekala/21/1279',
         'link_copy': 'View more',
     }, {
-        'who': 'iamonuwa',
+        'who': 'mul1sh',
         'who_link': True,
-        'what': 'Alerted users of the Ethereum network they are using for Electric Feel.',
-        'link': 'https://gitcoin.co/issue/electricfeelco/travay/11/1219',
+        'what': 'Completed his first bounty! Congrats.',
+        'link': 'https://gitcoin.co/issue/diadata-org/coindata/1/1259',
         'link_copy': 'View more',
     }, {
-        'who': 'lastmjs',
+        'who': 'zachzundel',
         'who_link': True,
-        'what': 'Helped grow the Ethereum Alarm Clock!',
-        'link': 'https://gitcoin.co/issue/ethereum-alarm-clock/timenode-core/194/979',
+        'what': 'Moving Sharding forward with Prysmatic Labs!',
+        'link': 'https://gitcoin.co/issue/prysmaticlabs/prysm/497/1212',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/tkstanczak/nethermind/issues/86',
-        'primer': 'Implement Discovery on Nethermind.',
+        'url': 'https://github.com/ethereum/EIPs/issues/1442',
+        'primer': 'Document JSON-RPC interface in an EIP.',
     }, {
-        'url': 'https://github.com/PolymathNetwork/polymath-core/issues/272',
-        'primer': 'Work on Automated blacklisting from Polymath.',
+        'url': 'https://github.com/NethermindEth/nethermind/issues/86',
+        'primer': 'Implement discovery v5 on Nethermind.',
     }, {
-        'url': 'https://github.com/embark-framework/embark/issues/816',
-        'primer': 'Pick up the only open Status bounty!',
+        'url': 'https://github.com/ethereum/solidity/issues/4648',
+        'primer': 'Solidity: Display Large Values In A Nicer Format',
     }, ]
 
     num_leadboard_items = 5

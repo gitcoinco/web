@@ -85,7 +85,7 @@
   background: #fff;
   border-radius: 6px;
   display: inline-block;
-  height: 320px;
+  height: 340px;
   margin: 1em 2em 1em 0;
   position: relative;
   width: 240px;
@@ -112,7 +112,7 @@
 
 .card .content {
   margin: 15px 20px;
-  min-height: 140px;
+  min-height: 160px;
   position: relative;
 }
 
