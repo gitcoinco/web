@@ -376,7 +376,7 @@ def search(query):
     """Search for a user on github.
 
     Args:
-        q (str): The query text to match.
+        query (str): The query text to match.
 
     Returns:
         request.Response: The github search response.
@@ -390,6 +390,54 @@ def search(query):
     except Exception as e:
         logger.error("could not search GH - Reason: %s - query: %s", e, query)
     return {}
+
+
+def search_user(query, token=None):
+    """Search for a user on github.
+
+    Args:
+        query (str): The query text to match.
+        token (str): The user's Github token to be used to perform the search.
+
+    Returns:
+        dict: The first matching github user dictionary.
+
+    """
+    paginated_list = search_users(query, token)
+    try:
+        user_obj = paginated_list[0]
+        return {
+            'avatar_url': user_obj.avatar_url,
+            'login': user_obj.login,
+            'text': user_obj.login,
+            'email': user_obj.email,
+        }
+    except IndexError:
+        pass
+    except Exception as e:
+        logger.error(e)
+    return {}
+
+
+def search_users(query, token=None):
+    """Search for a user on github.
+
+    Args:
+        query (str): The query text to match.
+        token (str): The user's Github token to be used to perform the search.
+
+    Returns:
+        dict: The first matching github user dictionary.
+        github.PaginatedList: The pygithub paginator object of all results if many True.
+
+    """
+    gh_client = github_connect(token)
+    try:
+        paginated_list = gh_client.search_users(query)
+        return paginated_list
+    except Exception as e:
+        logger.error(e)
+        return []
 
 
 def get_issue_comments(owner, repo, issue=None, comment_id=None):
