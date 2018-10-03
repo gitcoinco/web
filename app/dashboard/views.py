@@ -1578,6 +1578,15 @@ def get_users(request):
                 profile_json['avatar_url'] = user.avatar_url
             profile_json['preferred_payout_address'] = user.preferred_payout_address
             results.append(profile_json)
+        if len(profiles) == 0:
+            profile_json = {}
+            profile_json['id'] = -1
+            profile_json['text'] = q
+            profile_json['email'] = None
+            profile_json['avatar_id'] = None
+            profile_json['preferred_payout_address'] = None
+            results.append(profile_json)
+
         data = json.dumps(results)
     else:
         raise Http404
