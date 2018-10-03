@@ -2055,9 +2055,31 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
 
 <p>Search for a user on github.</p>
 <p>Args:
-    q (str): The query text to match.</p>
+    query (str): The query text to match.</p>
 <p>Returns:
     request.Response: The github search response.</p>
+<h2 id="git.utils.search_user">search_user</h2>
+
+<pre><code class="python">search_user(query, token=None)
+</code></pre>
+
+<p>Search for a user on github.</p>
+<p>Args:
+    query (str): The query text to match.
+    token (str): The user's Github token to be used to perform the search.</p>
+<p>Returns:
+    dict: The first matching github user dictionary.</p>
+<h2 id="git.utils.search_users">search_users</h2>
+
+<pre><code class="python">search_users(query, token=None)
+</code></pre>
+
+<p>Search for a user on github.</p>
+<p>Args:
+    query (str): The query text to match.
+    token (str): The user's Github token to be used to perform the search.</p>
+<p>Returns:
+    github.PaginatedList: The pygithub paginator object of all results if many True.</p>
 <h2 id="git.utils.get_issue_comments">get_issue_comments</h2>
 
 <pre><code class="python">get_issue_comments(owner, repo, issue=None, comment_id=None)
