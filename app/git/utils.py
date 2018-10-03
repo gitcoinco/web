@@ -427,7 +427,6 @@ def search_users(query, token=None):
         token (str): The user's Github token to be used to perform the search.
 
     Returns:
-        dict: The first matching github user dictionary.
         github.PaginatedList: The pygithub paginator object of all results if many True.
 
     """
