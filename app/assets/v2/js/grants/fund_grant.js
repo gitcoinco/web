@@ -18,31 +18,80 @@ window.onload = function() {
         data[this.name] = this.value;
       });
 
-      console.log('data', data);
+      let grant = {
+        id: data.grant_id,
+        admin_address: data.admin_address,
+        token_address: data.token_address,
+        contract_address: data.contract_address
+      }
 
-      // sendSubscription()
+      console.log(grant);
 
-      // form.submit();
+
+      // sendSubscription(grant, data, function(result){
+      //   console.log(result);
+      // });
+
+      let value = 0
+      let txData = "0x02" //something like this to say, hardcoded VERSION 2, we're sending approved tokens
+      let gasLimit = 120000
+
+      //hardcode period seconds to monthly
+      let periodSeconds=2592000
+      if(!data.gas_price) data.gas_price = 0
+
+      let SubscriptionContract = web3.eth.contract(compiledSubscription.abi);
+
+      console.log("SubscriptionContract", SubscriptionContract);
+
+      let deployedSubscription = SubscriptionContract.at(data.contract_address);
+
+      console.log("deployedSubscription", deployedSubscription);
+
+      // This token is only for testing
+      let TokenContract = web3.eth.contract(compiledToken.abi);
+      console.log(TokenContract);
+
+      let deployedToken = TokenContract.at('0x8E66e7eC5d9Fd04410d77142e51fd5c49a2B1263');
+
+      console.log(deployedToken);
+
+      deployedToken.decimals.call(function(err, decimals){
+
+      // console.log(bignumber);
+      console.log(BigNumber(decimals));
+      //
+      //     let realTokenAmount = data.amount_per_period*10**decimals
+      //     let realGasPrice = data.gas_price*10**decimals
+      //
+      //     deployedSubscription.call().extraNonce(web3.eth.accounts[0], function(nonce){
+      //        // console.log('nonce', parseInt(nonce)+1);
+      //        console.log('nonce', nonce);
+      //
+      // //
+      //        const parts = [
+      //          web3.eth.accounts[0],
+      //          data.admin_address,
+      //          data.token_address,
+      //          realTokenAmount,
+      //          periodSeconds,
+      //          realGasPrice,
+      //          nonce
+      //        ]
+      //
+      //        subscriptionContract.getSubscriptionHash(...parts).call(function(sunscriptionHash){
+      //            console.log("subscriptionHash", subscriptionHash)
+      //
+      //          })
+      //      })
+        })
+
     }
   });
 
 
 
-  function sendSubscription(grant){
-
-  let SubscriptionContract = web3.eth.contract(compiledSubscription.abi);
-  let deployedSubscription = SubscriptionContract.at(grant.contract_address);
-
-  // This token is only for testing
-  let TokenContract = web3.eth.contract(compiledToken.abi);
-  let deployedToken = TokenContract.at('0xae5F721ee35Ef0dc32B498aC779C2360E6f6C341');
-  tokenContract.decimals().call()
-    .then(function(decimals){
-      console.log("decimals", parseInt(decimals))
-
-    })
-
-let decimals = 2;
+  function sendSubscription(grant, formData){
 
   let value = 0
   let txData = "0x02" //something like this to say, hardcoded VERSION 2, we're sending approved tokens
@@ -50,31 +99,61 @@ let decimals = 2;
 
   //hardcode period seconds to monthly
   let periodSeconds=2592000
-  if(!gasPrice) gasPrice = 0
+  if(!formData.gas_price) formData.gas_price = 0
 
- subscriptionContract.extraNonce(account).call()
-  .then(function(){
-    console.log('nonce', parseInt(nonce)+1);
-  })
+  let SubscriptionContract = web3.eth.contract(compiledSubscription.abi);
+  let deployedSubscription = SubscriptionContract.at(grant.contract_address);
 
-  let realTokenAmount = data.amount_per_period*10**decimals
-  let realGasPrice = data.gas_price*10**decimals
+  // This token is only for testing
+  let TokenContract = web3.eth.contract(compiledToken.abi);
+  let deployedToken = TokenContract.at('0x8E66e7eC5d9Fd04410d77142e51fd5c49a2B1263');
+  deployedToken.decimals().call(function(decimals){
+      console.log("decimals", parseInt(decimals))
 
-  const parts = [
-    web3.eth.accounts[0],
-    grant.admin_address,
-    grant.token_address,
-    realTokenAmount,
-    periodSeconds,
-    realGasPrice,
-    nonce
-  ]
+      let realTokenAmount = formData.amount_per_period*10**decimals
+      let realGasPrice = formData.gas_price*10**decimals
 
-  subscriptionContract.getSubscriptionHash(...parts).call()
-    .then(function(){
-      console.log("subscriptionHash",subscriptionHash)
+      subscriptionContract.extraNonce(account).call(function(nonce){
+         console.log('nonce', parseInt(nonce)+1);
 
+         const parts = [
+           web3.eth.accounts[0],
+           grant.admin_address,
+           grant.token_address,
+           realTokenAmount,
+           periodSeconds,
+           realGasPrice,
+           nonce
+         ]
+
+         subscriptionContract.getSubscriptionHash(...parts).call(function(sunscriptionHash){
+             console.log("subscriptionHash", subscriptionHash)
+
+           })
+       })
     })
+
+
+
+
+
+
+
+  // const parts = [
+  //   web3.eth.accounts[0],
+  //   grant.admin_address,
+  //   grant.token_address,
+  //   realTokenAmount,
+  //   periodSeconds,
+  //   realGasPrice,
+  //   nonce
+  // ]
+  //
+  // subscriptionContract.getSubscriptionHash(...parts).call()
+  //   .then(function(){
+  //     console.log("subscriptionHash",subscriptionHash)
+  //
+  //   })
 
 // instantiate contract
 // get data from grant and inputs
@@ -90,7 +169,7 @@ let decimals = 2;
   // sendSubscription(){
   //   let {toAddress,timeType,tokenAmount,tokenAddress,gasPrice,account,web3} = this.state
   //
-  //   let tokenContract = this.state.customContractLoader("WasteCoin",tokenAddress)
+  //   let deployedToken = this.state.customContractLoader("WasteCoin",tokenAddress)
   //   let subscriptionContract = this.state.customContractLoader("Subscription",this.state.deployedAddress)
   //
   //   let value = 0
@@ -101,8 +180,8 @@ let decimals = 2;
   //   let periodSeconds=2592000
   //   if(!gasPrice) gasPrice = 0
   //
-  //   console.log("TOKEN CONTRACT ",tokenContract)
-  //   let decimals = parseInt(await tokenContract.decimals().call())
+  //   console.log("TOKEN CONTRACT ",deployedToken)
+  //   let decimals = parseInt(await deployedToken.decimals().call())
   //   console.log("decimals",decimals)
   //
   //   let nonce = parseInt(await subscriptionContract.extraNonce(account).call())+1

@@ -1,4 +1,6 @@
 import json
+from django.core.serializers.json import DjangoJSONEncoder
+
 import logging
 
 logger = logging.getLogger(__name__)
@@ -103,6 +105,7 @@ def fund_grant(request, grant_id):
     if request.method == "POST":
         subscription = Subscription()
 
+        print("it fired")
 
         # subscriptionHash and ContributorSignature will be given from smartcontracts and web3
         # subscription.subscriptionHash = request.POST.get('input-name')

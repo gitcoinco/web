@@ -68,12 +68,14 @@ console.log('network', web3.version.network);
                   console.log(subscriptionContract.address)
 
                   $('#transaction_hash').val(subscriptionContract.transactionHash)
-                  $('#contract_address').val(subscriptionContract.contract_address)
+                  $('#contract_address').val(subscriptionContract.address)
                   $('#network').val(web3.version.network)
 
                   $.each($(form).serializeArray(), function() {
                     data[this.name] = this.value;
                   });
+
+                  console.log(data);
 
                   form.submit();
 
@@ -85,30 +87,7 @@ console.log('network', web3.version.network);
     }
   });
 
-  function addChainData(transaction_hash, contract_address, network, title){
 
-    console.log('in the function');
-
-    // const url = '/grants/data/' + title;
-
-    const url = '/grants/data/ad';
-
-
-    fetch(url, {
-      method: 'POST',
-      credentials: 'include',
-      body: JSON.stringify({
-        transaction_hash: transaction_hash,
-        contract_address: contract_address,
-        network: network
-      })
-    })
-    // .then(function(response) {
-    //   console.log('something here', response.json());
-    //   return response.json();
-    // })
-
-  }
 
 // Will need this for a subscription
 
