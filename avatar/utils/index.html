@@ -1964,13 +1964,16 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
     bool: Whether or not the Github avatar was updated.</p>
 <h2 id="avatar.utils.convert_img">convert_img</h2>
 
-<pre><code class="python">convert_img(svg_obj, input_fmt='svg', output_fmt='png')
+<pre><code class="python">convert_img(obj, input_fmt='svg', output_fmt='png')
 </code></pre>
 
-<p>Convert an SVG to another format.</p>
+<p>Convert the provided buffer to another format.</p>
 <p>Args:
-    svg_obj (File): The SVG File/ContentFile.
-    fmt (str): The output format. Defaults to: png.</p>
+    obj (File): The File/ContentFile object.
+    input_fmt (str): The input format. Defaults to: svg.
+    output_fmt (str): The output format. Defaults to: png.</p>
+<p>Exceptions:
+    Exception: Cowardly catch blanket exceptions here, log it, and return None.</p>
 <p>Returns:
     BytesIO: The BytesIO stream containing the converted File data.
     None: If there is an exception, the method returns None.</p>
