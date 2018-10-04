@@ -17,6 +17,25 @@
 {% endcomment %}
 {% load i18n %}
 
+<style>
+  #payout_table tr td {
+    border-top: none;
+  }
+
+  #payout_table tr td .percent {
+    border-radius: 2px;
+    border: 1px solid;
+
+  }
+
+  #payout_table tr td .percent,
+  #payout_table tr td .amount {
+    padding-top: 9px;
+    padding-bottom: 9px;
+    top: 5px;
+  }
+</style>
+
 <div>
   <div>
     <div class="tbl_user_data">
@@ -33,7 +52,7 @@
         </tbody>
       </table>
     </div>
-    <input type="submit" class="button button--primary add_another" value="Add (+)" />
+    <input type="submit" class="button button--primary button__small add_another" value="Add (+)" />
   </div>
 </div>
 

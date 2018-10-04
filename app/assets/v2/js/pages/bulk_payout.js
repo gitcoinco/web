@@ -193,14 +193,14 @@ $(document).ready(function($) {
     var amount = get_amount(percent);
     var html = `
       <tr>
-        <td>
+        <td class="pl-0 pb-0">
           <div class="pl-0">
             <select id="username" class="username-search custom-select" style="width: 100%; margin-left: auto; margin-right: auto;"></select>
           </div>
         </td>
-        <td><div class="percent" contenteditable="true">` + percent + `</div></td>
-        <td><div class="amount"><span class=amount>` + amount + '</span> <span class=denomination>' + denomination + `</span></div></td>
-        <td><a class=remove href=#><i class="fas fa-times mt-2"></i></a>
+        <td class="pb-0"><div class="percent" contenteditable="true">` + percent + `</div></td>
+        <td class="pb-0"><div class="amount"><span class=amount>` + amount + '</span> <span class=denomination>' + denomination + `</span></div></td>
+        <td class="pb-0"><a class=remove href=#><i class="fas fa-times mt-2"></i></a>
         </td>
       </tr>`;
 
