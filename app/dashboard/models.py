@@ -2233,10 +2233,14 @@ class Profile(SuperModel):
         }
 
         if activities:
-            all_activities = self.activities.filter(
+            if not self.is_org:
+                all_activities = self.activities
+            else:
+                url = self.github_url
+                all_activities = Activity.objects.filter(bounty__github_url__startswith=url)
+            all_activities = all_activities.filter(
                 bounty__network=network
             ).select_related('bounty', 'tip').all().order_by('-created')
-
             if all_activities:
                 params['activities'] = [{
                     'title': _('By Created Date'),
