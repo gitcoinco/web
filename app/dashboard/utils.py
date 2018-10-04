@@ -114,6 +114,11 @@ def create_user_action(user, action_type, request=None, metadata=None):
         if ip_address:
             kwargs['ip_address'] = ip_address
 
+        utmJson = _get_utm_from_cookie(request)
+
+        if utmJson:
+            kwargs['utm'] = utmJson
+
     if user and hasattr(user, 'profile'):
         kwargs['profile'] = user.profile if user and user.profile else None
 
@@ -123,6 +128,36 @@ def create_user_action(user, action_type, request=None, metadata=None):
     except Exception as e:
         logger.error(f'Failure in UserAction.create_action - ({e})')
         return False
+
+
+def _get_utm_from_cookie(request):
+    """Extract utm* params from Cookie.
+
+    Args:
+        request (Request): The request object.
+
+    Returns:
+        utm_source: if it's not in cookie should be None.
+        utm_medium: if it's not in cookie should be None.
+        utm_campaign: if it's not in cookie should be None.
+
+    """
+    utmDict = {}
+    utm_source = request.COOKIES.get('utm_source')
+    utm_medium = request.COOKIES.get('utm_medium')
+    utm_campaign = request.COOKIES.get('utm_campaign')
+
+    if utm_source:
+        utmDict['utm_source'] = utm_source
+    if utm_medium:
+        utmDict['utm_medium'] = utm_medium
+    if utm_campaign:
+        utmDict['utm_campaign'] = utm_campaign
+
+    if bool(utmDict):
+        return utmDict
+    else:
+        return None
 
 
 def get_ipfs(host=None, port=settings.IPFS_API_PORT):
