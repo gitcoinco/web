@@ -546,6 +546,7 @@ var attach_work_actions = function() {
     } else if (confirm(gettext('Are you sure you want to stop work?'))) {
       $(this).attr('href', '/interested');
       $(this).find('span').text(gettext('Start Work'));
+      $(this).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you would like to take on this project') + '</div>');
       remove_interest(document.result['pk']);
     }
   });
@@ -614,6 +615,7 @@ var show_interest_modal = function() {
 
         $(self).attr('href', '/uninterested');
         $(self).find('span').text(gettext('Stop Work'));
+        $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
         add_interest(document.result['pk'], {
           issue_message: msg
         });
