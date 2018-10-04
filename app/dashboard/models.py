@@ -2360,6 +2360,9 @@ class UserAction(SuperModel):
     ip_address = models.GenericIPAddressField(null=True)
     location_data = JSONField(default=dict)
     metadata = JSONField(default=dict)
+    utm_campaign = JSONField(default=dict, null=True)
+    utm_medium = models.CharField(max_length=100, null=True)
+    utm_source = models.CharField(max_length=100, null=True)
 
     def __str__(self):
         return f"{self.action} by {self.profile} at {self.created_on}"
