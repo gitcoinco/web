@@ -1,4 +1,4 @@
-function userSearch(elem) {
+function kudosSearch(elem) {
   var selectItem = elem || '.kudos-search';
 
   $(selectItem).each(function() {
@@ -26,7 +26,9 @@ function userSearch(elem) {
         },
         cache: true
       },
+      theme: 'kudos',
       placeholder: 'Search kudos',
+      allowClear: true,
       minimumInputLength: 3,
       escapeMarkup: function(markup) {
 
@@ -44,35 +46,76 @@ function userSearch(elem) {
       this.dropdown._positionDropdown();
     });
 
-    function formatUser(user) {
+    function formatUser(kudos) {
 
-      if (user.loading) {
-        return user.text;
+      if (kudos.loading) {
+        return kudos.text;
       }
-      let markup = `<div class="d-flex align-items-baseline">
+      let markup = `<div class="d-flex">
                       <div class="mr-2">
-                        <img class="rounded-circle" src="${user.avatar_url || static_url + 'v2/images/user-placeholder.png'}" width="40" height="40"/>
+                        <img class="" src="${static_url + kudos.image || static_url + 'v2/images/user-placeholder.png'}" width="40" height="50"/>
                       </div>
-                      <div class="">${user.text}</div>
+                      <div style="min-width: 0;width: 100%;">
+                        <div class="d-flex justify-content-between">
+                          <div class="">${kudos.name_human}</div>
+                          <div>${kudos.price_finney} ETH</div>
+                        </div>
+                        <div class="text-truncate">${kudos.description}</div>
+                      <div>
                     </div>`;
 
       return markup;
     }
 
-    function formatUserSelection(user) {
+    function formatUserSelection(kudos) {
 
       let selected;
-
-      if (user.id) {
-        selected = `<img class="rounded-circle" src="${user.avatar_url || static_url + 'v2/images/user-placeholder.png'}" width="20" height="20"/> ${user.text}`;
+      if (kudos.id === '') { // adjust for custom placeholder values
+        // $('.kudos-comment').hide()
+        kudosIsSelected()
+        return kudos.text;
+      } else if (kudos.id) {
+        // $('.kudos-comment').show()
+        kudosIsSelected(true)
+        selected = `<div class="d-flex m-2">
+                      <div class="mr-2">
+                        <img class="" src="${static_url + kudos.image || static_url + 'v2/images/user-placeholder.png'}" width="40" height="50"/>
+                      </div>
+                      <div style="min-width: 0;width: 100%;">
+                        <div class="d-flex justify-content-between">
+                          <div class="">${kudos.name_human} ${kudos.price_finney} ETH</div>
+                        </div>
+                        <div class="text-truncate">${kudos.description}</div>
+                      <div>
+                    </div>`;
       } else {
-        selected = user.text;
+        selected = kudos.name_human;
       }
       return selected;
     }
+
+    function kudosIsSelected(state){
+      let comments = $('.kudos-comment')
+      let alert = $('.msg-alert')
+
+      if (state) {
+        comments.show()
+        alert.show()
+      } else {
+        comments.hide()
+        alert.hide()
+      }
+
+    }
+
+    $(selectItem).on("select2:unselecting", function (e) {
+      $(this).val(null).trigger('change');
+      e.preventDefault();
+    });
+
   });
 }
 
 $('document').ready(function() {
-  userSearch();
+  kudosSearch();
 });

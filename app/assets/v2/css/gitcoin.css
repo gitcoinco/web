@@ -399,6 +399,14 @@ div.button-pink {
   cursor: pointer;
 }
 
+.gc-round-text-input {
+  height: 32px;
+  border: 1px solid #eee;
+  outline: none;
+  padding-left: 10px;
+  font-weight: 300;
+}
+
 .gc-border-black {
   border: 1px solid black !important;
 }
@@ -407,16 +415,12 @@ div.button-pink {
   border: 1px solid #37ea9c !important;
 }
 
-.gc-selected {
-  border: 1px solid #4ef6ad !important;
+.gc-border-blue {
+  border-color: #0D0764;
 }
 
-.gc-round-text-input {
-  height: 32px;
-  border: 1px solid #eee;
-  outline: none;
-  padding-left: 10px;
-  font-weight: 300;
+.gc-selected {
+  border: 1px solid #4ef6ad !important;
 }
 
 .gc-round-text-form {
@@ -555,7 +559,7 @@ div.button-pink {
 }
 
 .nav-line {
-  
+
 }
 .nav-tabs .nav-line {
   color: #4A4A4A;

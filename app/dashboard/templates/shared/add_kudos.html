@@ -1,0 +1,36 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<div class="kudos-module">
+  <h6 class="mb-4">Kudos</h6>
+  <div class="msg-alert" style="display: none;">
+    <i class="fas fa-exclamation-triangle font-bigger-1 mr-3"></i>
+    <div class="pr-5">{% trans "A bounty payment, tip, and Kudos will send as separate transactions. You will need to confirm payment of each item separately after clicking accept." %}</div>
+  </div>
+
+  <div class="my-2">
+    <label for="kudos-search">Add Kudos</label> <a href="{% url 'kudos_about' %}" target="_blank">what is kudos?</a>
+    <select name="kudos-search" class="kudos-search custom-select gc-border-blue" id="kudos-search">
+      <option></option>
+    </select>
+  </div>
+  <div class="my-2 kudos-comment" style="display: none;">
+    <label for="">(Optional) Public Comments</label>
+    <textarea class="form-control gc-border-blue" name="" id="" cols="10" rows="1"></textarea>
+  </div>
+
+</div>

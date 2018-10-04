@@ -21,6 +21,17 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/select2-kudos.css" %}" />
+
+    <style>
+    .msg-alert {
+        color: white;
+        background-color: #E66700;
+        border-radius: 4px;
+        padding: 1rem;
+        display: flex;
+      }
+    </style>
   </head>
 
   <body class="interior {{active}} g-font-muli">
@@ -53,23 +64,19 @@
                 {% include 'shared/network_status.html' %}
                 <div class="w-100 mb-2">
                   <label for=issueURL>{% trans "Issue URL:" %}</label>
-                  <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input" type="text" placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" />
+                  <input name='issueURL' id="issueURL" class="w-100 gc-round-text-input gc-border-blue" type="text" placeholder="https://github.com/user/repo/issues/n" value="{% if bounty %}{{bounty.github_url}}{%endif%}" />
                 </div>
                 <div class="w-100 my-2">
                   <label for=bountyFulfillment>{% trans "Bounty Submission:" %}</label>
-                  <select class="w-100 btn btn-sm" name=bountyFulfillment id=bountyFulfillment>
+                  <select class="w-100 btn btn-sm gc-border-blue" name=bountyFulfillment id=bountyFulfillment>
                     <option value="">-- {% trans "Submission" %} -- </option>
                   </select>
                 </div>
                 <div class="w-100 my-2">
                   <label for=tipPercent>{% trans "(Optional) Add a tip of:" %}</label>
-                  <input name='tipPercent' id="tipPercent" class="gc-round-text-input" style="width: 50px;" type="number" placeholder="" value="0" min="0" /> % worth <span id="tipEstimate">0</span> {{bounty.token_name}}
+                  <input name='tipPercent' id="tipPercent" class="gc-round-text-input gc-border-blue" style="width: 50px;" type="number" placeholder="" value="0" min="0" /> % worth <span id="tipEstimate">0</span> {{bounty.token_name}}
                 </div>
-                <div>
-                  <label for="kudos-search">Add Kudos</label>
-                  <select name="kudos-search" class="kudos-search custom-select" id="kudos-search"></select>
-
-                </div>
+                {% include 'shared/add_kudos.html' %}
                 <div id="gas-section">
                   {% include 'shared/bounty_actions_hidden_vars.html' %}
                   {% include 'shared/wallet_estimate.html' %}

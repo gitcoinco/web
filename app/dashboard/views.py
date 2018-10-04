@@ -51,6 +51,7 @@ from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 from django.template import loader
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from kudos.utils import humanize_name
 
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
@@ -1728,9 +1729,10 @@ def get_kudos(request):
             kudos_json = {}
             kudos_json['id'] = token.id
             kudos_json['name'] = token.name
+            kudos_json['name_human'] = humanize_name(token.name)
             kudos_json['description'] = token.description
             kudos_json['image'] = token.image
-            kudos_json['price_finney'] = token.price_finney
+            kudos_json['price_finney'] = token.price_finney / 1000
             results.append(kudos_json)
         data = json.dumps(results)
     else:
