@@ -96,27 +96,27 @@ def tip_to_location(tip):
 
 
 def tip_to_country(tip):
-    return list(set([ele['country_name'] for ele in tip_to_location(tip) if ele and ele['country_name']]))
+    return list(set(ele['country_name'] for ele in tip_to_location(tip) if ele and ele.get('country_name')))
 
 
 def bounty_to_country(bounty):
-    return list(set([ele['country_name'] for ele in bounty_to_location(bounty) if ele and ele['country_name']]))
+    return list(set(ele['country_name'] for ele in bounty_to_location(bounty) if ele and ele.get('country_name')))
 
 
 def tip_to_continent(tip):
-    return list(set([ele['continent_name'] for ele in tip_to_location(tip) if ele and ele['continent_name']]))
+    return list(set(ele['continent_name'] for ele in tip_to_location(tip) if ele and ele.get('continent_name')))
 
 
 def bounty_to_continent(bounty):
-    return list(set([ele['continent_name'] for ele in bounty_to_location(bounty) if ele and ele['continent_name']]))
+    return list(set(ele['continent_name'] for ele in bounty_to_location(bounty) if ele and ele.get('continent_name')))
 
 
 def tip_to_city(tip):
-    return list(set([ele['city'] for ele in tip_to_location(tip) if ele and ele['city']]))
+    return list(set(ele['city'] for ele in tip_to_location(tip) if ele and ele.get('city')))
 
 
 def bounty_to_city(bounty):
-    return list(set([ele['city'] for ele in bounty_to_location(bounty) if ele and ele['city']]))
+    return list(set(ele['city'] for ele in bounty_to_location(bounty) if ele and ele.get('city')))
 
 
 def bounty_index_terms(bounty):
