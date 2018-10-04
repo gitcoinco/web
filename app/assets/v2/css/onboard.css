@@ -58,8 +58,7 @@ h3 {
 .suggested-tag .text,
 .step .filter-tag,
 .step a span,
-.step .label,
-.button--controls {
+.step .label {
   font-size: 12px;
 }
 
@@ -76,14 +75,6 @@ h3 {
 
 .step a i {
   font-size: 16px;
-}
-
-.step .button {
-  margin-top: 5px;
-  padding-left: 25px;
-  padding-right: 25px;
-  font-size: 12px;
-  box-shadow: none;
 }
 
 .step a span {
@@ -113,15 +104,6 @@ h3 {
 #navbarSupportedContent .nav-link,
 #navbarSupportedContent img {
   visibility: hidden;
-}
-
-.button--controls {
-  display: inline-block;
-  margin: 5px 0 5px 5px;
-  text-transform: capitalize;
-  border-radius: 3px;
-  cursor: pointer;
-  box-shadow: none;
 }
 
 #next-btn {

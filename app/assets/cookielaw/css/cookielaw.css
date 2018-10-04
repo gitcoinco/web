@@ -18,10 +18,6 @@
   margin-bottom: 1rem;
 }
 
-#CookielawBanner .container .button {
-  max-height: 2.5rem;
-}
-
 #CookielawBanner .container .d-flex {
   justify-content: space-between;
 }
@@ -82,11 +78,6 @@
 
   #CookielawBanner .container .cookie-info.cookie-body-font {
     font-size: 0.675rem;
-  }
-
-  #CookielawBanner .container a.button{
-    float: right;
-    font-size: 0.775rem;
   }
   
 }

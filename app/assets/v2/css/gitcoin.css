@@ -131,24 +131,6 @@ h4,
   letter-spacing: 0.15em;
 }
 
-div.button-pink {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  color: #f9006c;
-  font-size: 0.95rem;
-  font-weight: bold;
-  line-height: 42px;
-  text-transform: uppercase;
-  background: none;
-  width: 130px;
-  height: 39px;
-  border-radius: 19px;
-  border: 3px solid #f9006c;
-  letter-spacing: 0.1em;
-}
-
 .git-pill {
   background-color: #0d023b;
   border-radius: 1.2rem;
@@ -393,12 +375,6 @@ div.button-pink {
   text-decoration: underline;
 }
 
-.lil-white-button {
-  height: 1rem;
-  width: 1rem;
-  cursor: pointer;
-}
-
 .gc-border-black {
   border: 1px solid black !important;
 }
@@ -595,11 +571,6 @@ div.button-pink {
 }
 
 @media (max-width: 767.98px) {
-
-  .navbar-nav .button--fund {
-    padding-left: 1rem;
-    text-align: left;
-  }
 
   #ios-banner .row .right,
   #ios-banner .row .left {
