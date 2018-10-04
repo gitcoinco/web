@@ -398,7 +398,11 @@ def convert_img(obj, input_fmt='svg', output_fmt='png'):
 
     Args:
         obj (File): The File/ContentFile object.
-        fmt (str): The output format. Defaults to: png.
+        input_fmt (str): The input format. Defaults to: svg.
+        output_fmt (str): The output format. Defaults to: png.
+
+    Exceptions:
+        Exception: Cowardly catch blanket exceptions here, log it, and return None.
 
     Returns:
         BytesIO: The BytesIO stream containing the converted File data.
