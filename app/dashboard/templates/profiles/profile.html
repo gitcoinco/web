@@ -198,7 +198,9 @@
                                       {% else %}
                                         {% trans "an anonymous user" %}
                                       {% endif %}
-                                      &bull; {{ tip.received_on | naturaltime }}
+                                      {% if tip.received_on %}
+                                        &bull; {{ tip.received_on | naturaltime }}
+                                      {% endif %}
                                     </div>
                                   </div>
                                 </div>
