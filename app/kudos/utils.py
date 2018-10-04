@@ -550,10 +550,11 @@ class KudosContract:
             str: URL location on IPFS where the URI data is stored.
         """
         tokenURI = kwargs
+        logger.debug(f'tokenURI: {tokenURI}')
         ipfs_hash = self._ipfs.add_json(tokenURI)
         ipfs_url = f'{settings.IPFS_API_SCHEME}://{settings.IPFS_HOST}:{settings.IPFS_API_PORT}/api/v0/cat/{ipfs_hash}'
         name = kwargs['name']
         logger.info(f'Posted metadata for "{name}" to IPFS.')
-        logger.debug(f'ipfs_url for {kwargs["name"]}: {ipfs_url}')
+        logger.debug(f'ipfs_url for {kwargs["name"]}: {ipfs_url.replace("ipfs", "localhost")}')
 
         return ipfs_url

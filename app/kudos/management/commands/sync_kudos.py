@@ -21,6 +21,7 @@ import logging
 import warnings
 import requests
 import json
+import web3
 
 from django.core.management.base import BaseCommand
 from django.conf import settings
@@ -43,18 +44,18 @@ class Command(BaseCommand):
     help = 'syncs database with kudos on the blockchain'
 
     def add_arguments(self, parser):
-        parser.add_argument('-n', '--network', default='localhost', type=str,
-                            help='Network such as "localhost", "ropsten", "mainnet"')
-        parser.add_argument('-m', '--syncmethod', default='id', type=str, choices=['filter', 'id', 'opensea'])
-        # parser.add_argument('-b', '--fromBlock', type=str,
-        #                     help='This can be a block number (int), "earliest", or "latest"')
-        parser.add_argument('-s', '--start', type=str,
-                            help='kudos_id to or kudos block to start syncing at.  Lowest kudos_id is 1.\
-                            Options for block are: block number (int), "earliest", or "latest"')
-        parser.add_argument('-r', '--rewind', type=int,
-                            help='Sync the lastest <rewind> Kudos Ids or block transactions.')
-        parser.add_argument('--catchup', action='store_true',
-                            help='Attempt to sync up the newest kudos to the database')
+        parser.add_argument('network', type=str, choices=['localhost', 'rinkeby', 'mainnet'],
+                            help='ethereum network to use')
+        parser.add_argument('syncmethod', type=str, choices=['filter', 'id', 'opensea'],
+                            help='sync method to use')
+        group = parser.add_mutually_exclusive_group(required=True)
+        group.add_argument('-s', '--start', type=str,
+                           help='kudos_id to or kudos block to start syncing at.  Lowest kudos_id is 1.\
+                           Options for block are: block number (int), "earliest", or "latest"')
+        group.add_argument('-r', '--rewind', type=int,
+                           help='Sync the lastest <rewind> Kudos Ids or block transactions.')
+        group.add_argument('--catchup', action='store_true',
+                           help='Attempt to sync up the newest kudos to the database')
 
     def opensea_sync(self, kudos_contract, start_id):
         if kudos_contract.network == 'rinkeby':
@@ -83,14 +84,6 @@ class Command(BaseCommand):
             kudos_contract.sync_db(kudos_id=int(asset_token_id), txid=transaction_hash)
 
     def filter_sync(self, kudos_contract, fromBlock):
-        try:
-            fromBlock = int(fromBlock)
-        except ValueError:
-            acceptable = ['latest', 'earliest']
-            if fromBlock not in acceptable:
-                raise ValueError('--fromBlock must be block number (int), "earliest", or "latest"')
-        logger.info(fromBlock)
-
         event_filter = kudos_contract._contract.events.Transfer.createFilter(fromBlock=fromBlock)
         for event in event_filter.get_all_entries():
             msg = dict(blockNumber=event.blockNumber,
@@ -120,29 +113,43 @@ class Command(BaseCommand):
         # config
         network = options['network']
         syncmethod = options['syncmethod']
-        # fromBlock = options['fromBlock']
+
         start = options['start']
         rewind = options['rewind']
         catchup = options['catchup']
 
-        kudos_contract = KudosContract(network)
+        kudos_contract = KudosContract(network, sockets=True)
 
+        # Handle the filter sync
+        if syncmethod == 'filter':
+            if start:
+                if start.isdigit():
+                    raise RuntimeError('This option is unstable if not on web3py 4.7.2.  May crash testrpc.')
+                if start in ['earliest', 'latest']:
+                    fromBlock = start
+                else:
+                    raise ValueError('--fromBlock must be "earliest", or "latest"')
+            elif rewind:
+                if web3.__version__ != '4.7.2':
+                    raise RuntimeError('This option is unstable if not on web3py 4.7.2.  May crash testrpc.')
+                fromBlock = kudos_contract._w3.eth.getBlock('latest')['number'] - rewind
+            elif catchup:
+                raise ValueError('--catchup option is not valid for filter syncing')
+
+            logger.info(fromBlock)
+            self.filter_sync(kudos_contract, fromBlock)
+            return
+
+        # Handle the other sync methods
         if start:
             start_id = start
-            fromBlock = start
         elif rewind:
             start_id = kudos_contract._contract.functions.totalSupply().call() - rewind
-            fromBlock = kudos_contract._w3.eth.getBlock('latest')['number'] - rewind
         elif catchup:
-            # latest_blockchain_id = kudos_contract.getLatestKudosId()
             start_id = Token.objects.aggregate(Max('id'))['id__max']
-        else:
-            raise RuntimeError("Need to pass a valid action, such as start, rewind, or catchup ")
 
-        if syncmethod == 'filter':
-            kudos_contract = KudosContract(network, sockets=True)
-            self.filter_sync(kudos_contract, fromBlock)
-        elif syncmethod == 'id':
+        if syncmethod == 'id':
             self.id_sync(kudos_contract, int(start_id))
         elif syncmethod == 'opensea':
             self.opensea_sync(kudos_contract, int(start_id))
+        # return

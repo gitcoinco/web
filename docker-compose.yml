@@ -25,6 +25,7 @@ services:
     image: ipfs/go-ipfs:release
     restart: unless-stopped
     volumes:
+      - './ipfsconfig.json:/data/ipfs/config'
       - 'ipfsexport:/export'
       - 'ipfsdata:/data/ipfs'
     ports:
