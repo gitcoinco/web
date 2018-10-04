@@ -393,20 +393,6 @@ def get_github_avatar(handle):
     return temp_avatar
 
 
-def convert_svg_to_png(svg_buffer):
-    """Convert the provided SVG buffer to a PNG buffer."""
-    svg_image = pyvips.Image.svgload_buffer(svg_buffer)
-    png_buffer = svg_image.pngsave_buffer()
-    return png_buffer
-
-
-def convert_png_to_svg(png_buffer):
-    """Convert the provided SVG buffer to a PNG buffer."""
-    png_image = pyvips.Image.pngsave_buffer(png_buffer)
-    svg_buffer = png_image.pngsave_buffer()
-    return svg_buffer
-
-
 def convert_img(obj, input_fmt='svg', output_fmt='png'):
     """Convert the provided buffer to another format.
 
