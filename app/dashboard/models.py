@@ -1487,6 +1487,11 @@ class Profile(SuperModel):
 
     """
 
+    TOTAL_BUDGET_TYPES = [
+        ('monthly', 'monthly'),
+        ('quarterly', 'quarterly')
+    ]
+
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = JSONField()
     handle = models.CharField(max_length=255, db_index=True)
@@ -1629,6 +1634,40 @@ class Profile(SuperModel):
 
         """
         return self.stats[0][0] == 'funder'
+
+    def update_funder_total_budget(self, budget_usdt, budget_type):
+        """Update the total budget for a user, persisting it to the database. This is done without checking for
+        self.is_funder first.
+
+        Args:
+            budget_usdt(float): The funder's total budget amount, for the given budget_type.
+            budget_type(str): The budget type, this value must be in Profile.TOTAL_BUDGET_TYPES.
+
+        Raises:
+            ValueError: The exception is raised if:
+                - budget_type is not in Profile.TOTAL_BUDGET_TYPES,
+                - budget_usdt is invalid.
+
+        Returns:
+            The updated Profile object.
+
+        """
+
+        if (([True for budget_type_option in Profile.TOTAL_BUDGET_TYPES if budget_type == budget_type_option[0]]
+             != [True])):
+            raise ValueError(f"Budget type {budget_type} is not a valid option.")
+
+        if budget_usdt is None or budget_usdt < 0:
+            raise ValueError(f"Budget amount needs to be a positive decimal. The set value was invalid: {budget_usdt}")
+
+        self.funder_total_budget_usdt = budget_usdt
+        self.funder_total_budget_type = budget_type
+        self.funder_total_budget_updated_on = datetime.now(timezone.utc)
+
+        self.save()
+
+        return self
+
 
     @property
     def stats(self):

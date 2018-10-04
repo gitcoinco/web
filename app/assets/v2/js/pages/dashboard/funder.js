@@ -47,11 +47,37 @@ $(function() {
   };
 
   function activatePayoutHistory() {
+    registerPluginForNoData();
     var chart = updateChart(null);
 
     var $currentChartFilter = null;
 
     handleChartChange();
+
+    function registerPluginForNoData() {
+      // Display some default text if no data was found.
+      Chart.plugins.register({
+        afterDraw: function(chart) {
+          var datasets = chart.data.datasets;
+
+          if (datasets.length === 0 || datasets[0].data.length === 0) {
+            // No data is present
+            var ctx = chart.chart.ctx;
+            var width = chart.chart.width;
+            var height = chart.chart.height;
+
+            chart.clear();
+            ctx.save();
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = '#000000';
+            ctx.font = '22px normal Muli sans-serif';
+            ctx.fillText('No data to display.', width / 2, height / 2);
+            ctx.restore();
+          }
+        }
+      });
+    }
 
     function handleChartChange() {
       $('.funder-dashboard__payout-history__control').click(function() {
@@ -87,6 +113,23 @@ $(function() {
       var monthlyData = window.funderDashboardPayoutChartData.monthlyData;
       var weeklyData = window.funderDashboardPayoutChartData.weeklyData;
       var yearlyData = window.funderDashboardPayoutChartData.yearlyData;
+
+      // When there is only 1 datapoint for a graph we'll pad the datapoint and label with null values
+      // so the datapoint is nicely displayed in the middle of the chart.
+      if (monthlyData.data.length === 1) {
+        monthlyData.data = [ null, monthlyData.data[0], null ];
+        monthlyData.labels = [ '', monthlyData.labels[0], '' ];
+      }
+
+      if (weeklyData.data.length === 1) {
+        weeklyData.data = [ null, weeklyData.data[0], null ];
+        weeklyData.labels = [ '', weeklyData.labels[0], '' ];
+      }
+
+      if (yearlyData.data.length === 1) {
+        yearlyData.data = [ null, yearlyData.data[0], null ];
+        yearlyData.labels = [ '', yearlyData.labels[0], '' ];
+      }
 
       var filterBaseSel = 'funder-dashboard__payout-history__control';
 
@@ -134,10 +177,11 @@ $(function() {
         },
         legend: {
           display: false
-        }
+        },
+        maintainAspectRatio: false
       };
 
-      var context2d = document.getElementById('funder-dashhboard__payout-history__chart').getContext('2d');
+      var context2d = document.getElementById('funder-dashboard__payout-history__chart').getContext('2d');
 
       return {
         data: data,
@@ -212,11 +256,11 @@ $(function() {
     switch (sortFilterVal) {
       case 'Recent':
         return function(fund1, fund2) {
-          return dateComparison(fund1.created_on, fund2.created_on);
+          return dateComparison(fund1.createdOn, fund2.createdOn);
         };
       case 'Oldest':
         return function(fund1, fund2) {
-          return -dateComparison(fund1.created_on, fund2.created_on);
+          return -dateComparison(fund1.createdOn, fund2.createdOn);
         };
       case 'Highest Value':
         return function(fund1, fund2) {
@@ -233,7 +277,6 @@ $(function() {
     }
   }
 
-  // TODO: date1 and date2 are datetime objects coming from the api. Need a way to compare them
   function dateComparison(date1, date2) {
     if (date1 < date2) {
       return -1;
@@ -247,6 +290,11 @@ $(function() {
   }
 
   function activateOutgoingFunds(outgoingFunds) {
+    if (outgoingFunds.length === 0) {
+      // hiding this module server-side in the html.
+      return;
+    }
+
     var $container = $('.funder-dashboard__outgoing-funds__funds');
     var $fundTemplate = $('.funder-dashboard__outgoing-funds__funds__fund--template');
 
@@ -255,26 +303,44 @@ $(function() {
 
     var getFunds = getOutgoingFunds.bind(this, outgoingFunds, cbRenderFunds);
 
-    getFunds();
+    changePageRelative(outgoingFunds, 0);
     $('.funder-dashboard__outgoing-funds__filter').change(function() {
       changePageAbsolute(1);
-      clearFunds();
-      getFunds();
     });
 
-    $('.funder-dashboard__outgoing-funds__pagination__prev').click(function() {
-      changePageRelative(outgoingFunds, -1);
-    });
+    activateOrRemovePaginationControls();
 
-    $('.funder-dashboard__outgoing-funds__pagination__next').click(function() {
-      changePageRelative(outgoingFunds, 1);
-    });
+    function activateOrRemovePaginationControls() {
+      if (outgoingFunds.length > 5) {
+        $('.funder-dashboard__outgoing-funds__pagination__prev').click(function() {
+          changePageRelative(outgoingFunds, -1);
+        });
+
+        $('.funder-dashboard__outgoing-funds__pagination__next').click(function() {
+          changePageRelative(outgoingFunds, 1);
+        });
+      } else {
+        $('.funder-dashboard__outgoing-funds__pagination').remove();
+      }
+    }
 
     function clearFunds() {
       $container.find(classSel(fundBaseSel + ':not(' + classSel(fundBaseSel) + '--template)')).remove();
     }
 
     function renderOutgoingFunds($container, $fundTemplate, fundBaseSel, funds) {
+      var $nothingWasFoundText = $('.funder-dashboard__outgoing-funds__nothing-was-found');
+      var $fundsTable = $('.funder-dashboard__outgoing-funds__funds-wrapper');
+
+      if (funds.length === 0) {
+        $nothingWasFoundText.removeClass('d-none');
+        $fundsTable.addClass('d-none');
+        return;
+      }
+
+      $nothingWasFoundText.addClass('d-none');
+      $fundsTable.removeClass('d-none');
+
       for (var i = 0; i < funds.length; ++i) {
         var fund = funds[i];
 
@@ -345,24 +411,41 @@ $(function() {
     }
 
     function changePageRelative(allFunds, increment) {
+      function adjustPaginationControlsDisplayed(currPage, maxPage, minPage) {
+        var $prev = $('.funder-dashboard__outgoing-funds__pagination__prev');
+        var $next = $('.funder-dashboard__outgoing-funds__pagination__next');
+
+        if (currPage === minPage) {
+          $prev.addClass('invisible');
+        } else {
+          $prev.removeClass('invisible');
+        }
+
+        if (currPage === maxPage) {
+          $next.addClass('invisible');
+        } else {
+          $next.removeClass('invisible');
+        }
+      }
       var PAGE_SIZE = 5;
       var outgoingFundsCount = allFunds.length;
-      var max_page = Math.floor(outgoingFundsCount / PAGE_SIZE) + 1;
-      var min_page = 1;
+      var maxPage = Math.floor(outgoingFundsCount / PAGE_SIZE) + 1;
+      var minPage = 1;
 
       var $page = $('.funder-dashboard__outgoing-funds__pagination__page');
       var oldPage = Number($page.html());
       var newPage = oldPage + increment;
 
-      if (newPage > max_page) {
-        newPage = min_page;
+      if (newPage > maxPage) {
+        newPage = minPage;
       }
 
-      if (newPage < min_page) {
-        newPage = max_page;
+      if (newPage < minPage) {
+        newPage = maxPage;
       }
 
       $page.html(newPage);
+      adjustPaginationControlsDisplayed(newPage, maxPage, minPage);
 
       clearFunds();
       getFunds();
@@ -389,22 +472,45 @@ $(function() {
     var cbRenderBounties = renderBounties.bind(this, $container, $bountyTemplate, bountyBaseSel);
     var boundGetBounties = getBounties.bind(this, bounties, cbRenderBounties);
 
-    boundGetBounties();
+    changePageRelative(bounties, 0);
     $('.funder-dashboard__all-bounties__filter').change(function() {
       changePageAbsolute(1);
-      clearBounties();
-      boundGetBounties();
     });
 
-    $('.funder-dashboard__all-bounties__pagination__prev').click(function() {
-      changePageRelative(bounties, -1);
-    });
+    activateOrRemovePaginationControls();
 
-    $('.funder-dashboard__all-bounties__pagination__next').click(function() {
-      changePageRelative(bounties, 1);
-    });
+    function activateOrRemovePaginationControls() {
+      if (bounties.length > 5) {
+        $('.funder-dashboard__all-bounties__pagination__prev').click(function() {
+          changePageRelative(bounties, -1);
+        });
+
+        $('.funder-dashboard__all-bounties__pagination__next').click(function() {
+          changePageRelative(bounties, 1);
+        });
+      } else {
+        $('.funder-dashboard__all-bounties__pagination').remove();
+      }
+    }
 
     function changePageRelative(allBounties, increment) {
+      function adjustPaginationControlsDisplayed(currPage, maxPage, minPage) {
+        var $prev = $('.funder-dashboard__all-bounties__pagination__prev');
+        var $next = $('.funder-dashboard__all-bounties__pagination__next');
+
+        if (currPage === minPage) {
+          $prev.addClass('invisible');
+        } else {
+          $prev.removeClass('invisible');
+        }
+
+        if (currPage === maxPage) {
+          $next.addClass('invisible');
+        } else {
+          $next.removeClass('invisible');
+        }
+      }
+
       var PAGE_SIZE = 5;
       var bountiesCount = bounties.length;
       var max_page = Math.floor(bountiesCount / PAGE_SIZE) + 1;
@@ -423,6 +529,7 @@ $(function() {
       }
 
       $page.html(newPage);
+      adjustPaginationControlsDisplayed(newPage, max_page, min_page);
 
       clearBounties();
       boundGetBounties();
@@ -441,6 +548,18 @@ $(function() {
     }
 
     function renderBounties($container, $bountyTemplate, bountyBaseSel, bounties) {
+      var $nothingWasFoundText = $('.funder-dashboard__all-bounties__nothing-was-found');
+      var $bountiesTable = $('.funder-dashboard__all-bounties__bounties-wrapper');
+
+      if (bounties.length === 0) {
+        $nothingWasFoundText.removeClass('d-none');
+        $bountiesTable.addClass('d-none');
+        return;
+      }
+
+      $nothingWasFoundText.addClass('d-none');
+      $bountiesTable.removeClass('d-none');
+
       for (var i = 0; i < bounties.length; ++i) {
         var $clone = $bountyTemplate.clone();
         var bounty = bounties[i];
@@ -517,26 +636,22 @@ $(function() {
       var $this = $(this);
       var urlExplorer = $this.attr('href');
 
-      if ($this.hasClass(baseClassName + '--bounties--expiring')) {
-        urlExplorer = addQueryString('bounty_owner_github_username', document.contxt.github_handle, urlExplorer);
-        urlExplorer = addQueryString('idx_status', 'open', urlExplorer);
-        urlExplorer = addQueryString('order_by', 'web3_created', urlExplorer);
-      } else if ($this.hasClass(baseClassName + '--bounties--active')) {
-        urlExplorer = addQueryString('bounty_owner_github_username', document.contxt.github_handle, urlExplorer);
+      if ($this.hasClass(baseClassName + '--bounties--active')) {
+        urlExplorer = createdByMe(urlExplorer);
         urlExplorer = addQueryString('idx_status', 'open', urlExplorer);
       } else if ($this.hasClass(baseClassName + '--bounties--completed')) {
-        urlExplorer = addQueryString('bounty_owner_github_username', document.contxt.github_handle, urlExplorer);
+        urlExplorer = createdByMe(urlExplorer);
         urlExplorer = addQueryString('idx_status', 'done', urlExplorer);
       } else if ($this.hasClass(baseClassName + '--bounties--expired')) {
-        urlExplorer = addQueryString('bounty_owner_github_username', document.contxt.github_handle, urlExplorer);
+        urlExplorer = createdByMe(urlExplorer);
         urlExplorer = addQueryString('idx_status', 'expired', urlExplorer);
       } else if ($this.hasClass(baseClassName + '--contributors-comments')) {
-        urlExplorer = addQueryString('bounty_owner_github_username', document.contxt.github_handle, urlExplorer);
+        urlExplorer = createdByMe(urlExplorer);
         urlExplorer = addQueryString('idx_status', 'open', urlExplorer);
       } else if ($this.hasClass(baseClassName + '--payments--all')) {
-        urlExplorer = addQueryString('bounty_owner_github_username', document.contxt.github_handle, urlExplorer);
+        urlExplorer = createdByMe(urlExplorer);
       } else if ($this.hasClass(baseClassName + '--bounties--all')) {
-        urlExplorer = addQueryString('bounty_owner_github_username', document.contxt.github_handle, urlExplorer);
+        urlExplorer = createdByMe(urlExplorer);
       }
 
       function addQueryString(key, value, url) {
@@ -549,7 +664,11 @@ $(function() {
         return url;
       }
 
-      window.location.href = urlExplorer;
+      function createdByMe(url) {
+        return addQueryString('bounty_filter', 'createdByMe', url);
+      }
+
+      window.open(urlExplorer, '_blank').opener = null;
     });
   }
 

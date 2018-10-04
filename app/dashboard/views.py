@@ -55,9 +55,9 @@ from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 
 from .helpers import (
-    eth_format, get_all_bounties_filters, get_bounty_data_for_activity, get_expiring_days_count,
-    get_funder_outgoing_funds, get_funder_total_budget, get_outgoing_funds_filters, get_payout_history,
-    get_top_contributors, handle_bounty_views, is_funder_allowed_to_input_total_budget, to_funder_dashboard_bounty,
+    eth_format, get_all_bounties_filters, get_bounty_data_for_activity, get_funder_outgoing_funds,
+    get_funder_total_budget, get_outgoing_funds_filters, get_payout_history, get_top_contributors, handle_bounty_views,
+    is_funder_allowed_to_input_total_budget, to_funder_dashboard_bounty, to_funder_expiring_bounty_notifications,
     usd_format,
 )
 from .models import (
@@ -1258,8 +1258,7 @@ def funder_dashboard(request):
 
     context = {
         # Module: Header.
-        "expiring_bounties_count": expiring_bounties.count(),
-        "expiring_days_count": get_expiring_days_count(expiring_bounties),
+        "expiring_bounty_notifications": to_funder_expiring_bounty_notifications(expiring_bounties),
         # Module: Statistics.
         "submitted_bounties_count": d_submitted_bounties_count,
         "total_contributors_count": d_total_contributors_count,
@@ -1291,6 +1290,7 @@ def funder_dashboard(request):
         "top_contributors": get_top_contributors(done_bounties_desc_created, 12),
         # Module: Outgoing funds.
         "outgoing_funds_filters": get_outgoing_funds_filters(),
+        "has_outgoing_funds": len(d_outgoing_funds) > 0,
         "outgoing_funds": json.dumps(d_outgoing_funds, ensure_ascii=False, cls=DjangoJSONEncoder),
         # Module: All bounties.
         "all_bounties_filters": get_all_bounties_filters(),
@@ -1326,15 +1326,13 @@ def update_funder_total_budget(request):
         return None
 
     data = json.loads(request.body)
-    budget_usd = data.get('budget', None)
+    budget_usdt = data.get('budget', None)
     budget_type = get_budget_type(data)
 
-    if budget_type is not None or budget_usd is None or float(budget_usd) < 0:
-        return JsonResponse({'status': '400'}, status='400')
-
-    request.user.profile.update(funder_total_budget_usdt=budget_usd,
-                                funder_total_budget_type=budget_type,
-                                funder_total_budget_updated_on=datetime.datetime.now(timezone.utc))
+    try:
+        request.user.profile.update_funder_total_budget(float(budget_usdt), budget_type)
+    except ValueError as e:
+        return JsonResponse({'status': '400', 'error': str(e)}, status='400')
 
     return JsonResponse({'status': '200'}, status='200')
 

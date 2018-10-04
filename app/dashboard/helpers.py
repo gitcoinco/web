@@ -23,6 +23,7 @@ import io
 import logging
 import math
 import pprint
+import time
 from decimal import Decimal
 from enum import Enum
 from math import ceil
@@ -44,7 +45,7 @@ from dashboard.notifications import (
 )
 from dashboard.tokens import addr_to_token
 from economy.utils import convert_amount, eth_from_wei, etherscan_link
-from git.utils import get_gh_issue_details, get_url_dict, issue_number, org_name, repo_name
+from git.utils import get_gh_issue_details, get_url_dict
 from jsondiff import diff
 from pytz import UTC
 from ratelimit.decorators import ratelimit
@@ -795,10 +796,14 @@ def get_payout_history(done_bounties):
 
         # csv export - all done bounties
         csv_row = []
-        for key, value in to_funder_dashboard_bounty(bounty).items():
-            if key == 'status' or key == 'statusPendingOrClaimed':
-                continue
-            csv_row.append(value)
+        fd_bounty = to_funder_dashboard_bounty(bounty)
+
+        csv_row.append(fd_bounty['id'])
+        csv_row.append(fd_bounty['title'])
+        csv_row.append(fd_bounty['type'])
+        csv_row.append(fd_bounty['githubLink'])
+        csv_row.append(fd_bounty['worthDollars'])
+        csv_row.append(fd_bounty['worthEth'])
 
         wr.writerow(csv_row)
 
@@ -851,25 +856,33 @@ def get_payout_history(done_bounties):
     }
 
 
-def get_expiring_days_count(expiring_bounties):
-    """Find the bounty that expires last given a set of bounties and get in how many days that bounty expires in.
+def to_funder_expiring_bounty_notifications(expiring_bounties):
+    """Maps expiring bounties into a list of dictionary objects to be displayed as notifications for these expiring
+    bounties in the funder dashboard.
 
     Args:
         expiring_bounties: (BountyQuerySet) The expiring bounties to search in.
 
     Returns:
-        int: In how many days the found bounty is expiring in.
+        list of dict: A list of dictionaries of the form {
+            title: bounty id and title formatted for display,
+            expiring_days: the number of days in which the bounty is expiring, can be 0,
+            url: the Gitcoin url to the bounty
+        }
 
     """
-    last_expiring_days_from_now = 0
+
     utc_now = datetime.datetime.now(timezone.utc)
+    expiring_bounty_notifications = []
 
     for bounty in expiring_bounties:
-        delta_days = (bounty.expires_date - utc_now).days
-        if last_expiring_days_from_now is None or delta_days > last_expiring_days_from_now:
-            last_expiring_days_from_now = delta_days
+        expiring_bounty_notifications.append({
+            "title": f"#{bounty.id}: {bounty.title}",
+            "expiring_days": (bounty.expires_date - utc_now).days,
+            "url": bounty.url
+        })
 
-    return last_expiring_days_from_now
+    return expiring_bounty_notifications
 
 
 def get_top_contributors(done_bounties, contributors_to_take):
@@ -1009,28 +1022,30 @@ def get_funder_outgoing_funds(done_bounties, funder_tips):
         dashboard.
         Each dictionary object in the list is of the form: {
             id,
+            createdOn (timestamp),
+            etherscanLink,
             title,
             type ("Tip" / "Payment"),
             status ("Pending" / "Claimed"),
-            etherscanLink,
-            worthDollars,
-            worthEth
+            worthEth,
+            worthDollars
         }
 
     """
-    def to_outgoing_fund(id, title, type, status, link_to_etherscan, worth_dollars, worth_eth):
+    def to_outgoing_fund(id, created_on, title, type, status, link_to_etherscan, worth_eth, worth_dollars):
         return {
             'id': id,
+            'createdOn': time.mktime(created_on.timetuple()),
+            'etherscanLink': link_to_etherscan,
             'title': escape(title),
             'type': type,
             'status': status,
-            'etherscanLink': link_to_etherscan,
-            'worthDollars': usd_format(worth_dollars),
-            'worthEth': eth_format(eth_from_wei(worth_eth))
+            'worthEth': eth_format(eth_from_wei(worth_eth)),
+            'worthDollars': usd_format(worth_dollars)
         }
 
     outgoing_funds = []
-    for bounty in done_bounties.filter(fulfillment_started_on__isnull=False):
+    for bounty in done_bounties:
         # TODO: Use the txid to generate the etherscan link.
         # link_to_etherscan = etherscan_link('#')
 
@@ -1039,15 +1054,14 @@ def get_funder_outgoing_funds(done_bounties, funder_tips):
         else:
             fund_status = 'Pending'
 
-        outgoing_funds.append(to_outgoing_fund(
-            bounty.github_issue_number,
-            bounty.title,
-            'Payment',
-            fund_status,
-            bounty.action_urls()['invoice'],
-            bounty.get_value_in_usdt,
-            bounty.get_value_in_eth,
-        ))
+        outgoing_funds.append(to_outgoing_fund(bounty.github_issue_number,
+                                               bounty.created_on,
+                                               bounty.title,
+                                               'Payment',
+                                               fund_status,
+                                               bounty.url,
+                                               bounty.get_value_in_eth,
+                                               bounty.get_value_in_usdt))
 
     for tip in funder_tips:
         if tip.status == "RECEIVED":
@@ -1056,15 +1070,15 @@ def get_funder_outgoing_funds(done_bounties, funder_tips):
             tip_status = "Pending"
 
         if tip.bounty:
-            outgoing_funds.append(to_outgoing_fund(
-                tip.bounty.github_issue_number,
-                tip.bounty.title,
-                'Tip',
-                tip_status,
-                etherscan_link(tip.txid),
-                tip.value_in_usdt,
-                tip.value_in_eth,
-            ))
+            outgoing_funds.append(
+                to_outgoing_fund(tip.bounty.github_issue_number,
+                                 tip.bounty.created_on,
+                                 tip.bounty.title,
+                                 'Tip',
+                                 tip_status,
+                                 etherscan_link(tip.txid),
+                                 tip.value_in_eth,
+                                 tip.value_in_usdt))
 
     return outgoing_funds
 
@@ -1156,26 +1170,28 @@ def to_funder_dashboard_bounty(bounty):
         dict: The mapped bounty, to be JSON stringified for use in the front-end of the funder dashboard.
               The mapped bounty is of the form: {
                   id,
+                  createdOn (timestamp),
+                  githubLink,
                   title,
                   type,
                   status ("active", "done", "expired" etc. - uses bounty.status),
                   statusPendingOrClaimed ("Pending" / "Claimed"),
-                  githubLink,
                   worthDollars,
                   worthEth
               }
 
     """
-    bounty_dict = bounty.to_standard_dict(fields=['title', 'bounty_type', 'github_url'])
+    bounty_dict = bounty.to_standard_dict(fields=['title', 'bounty_type'])
     bounty_dict.update({
         'id': bounty.github_issue_number,
+        'createdOn': time.mktime(bounty.created_on.timetuple()),
+        'githubLink': bounty.url,
         'title': escape(bounty_dict['title']),
         'type': bounty_dict.pop('bounty_type'),
         'status': bounty.status,
         'statusPendingOrClaimed': 'None',
-        'githubLink': bounty_dict.pop('github_url'),
-        'worthDollars': usd_format(bounty.get_value_in_usdt),
-        'worthEth': eth_format(eth_from_wei(bounty.get_value_in_eth))
+        'worthEth': eth_format(eth_from_wei(bounty.get_value_in_eth)),
+        'worthDollars': usd_format(bounty.get_value_in_usdt)
     })
 
     if bounty.interested.exists() and bounty.status in Bounty.FUNDED_STATUSES:

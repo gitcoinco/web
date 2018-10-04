@@ -14,6 +14,14 @@
   color: #dc9937;
 }
 
+.fsr09 {
+  font-size: 0.9rem;
+}
+
+.fsr12 {
+  font-size: 1.2rem;
+}
+
 .text-fd-red {
   color: #d82a3f;
 }
@@ -30,10 +38,6 @@
   overflow:hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-}
-
-.funder-dashboard__header {
-  background-color: #3e00ff;
 }
 
 .funder-dashboard__header__hero {
@@ -71,11 +75,6 @@
 
 .funder-dashboard__whats-next__new-comments {
   font-size: 1.2rem;
-}
-
-.funder-dashboard__payout-history__chart {
-  width: 100%;
-  height: 15rem;
 }
 
 .funder-dashboard__payout-history__control {
@@ -119,6 +118,14 @@
 
 .funder-dashboard__outgoing-funds__funds__fund--template {
   display: none;
+}
+
+.funder-dashboard__outgoing-funds__filter {
+  min-width: 8rem;
+}
+
+.funder-dashboard__all-bounties__filter {
+  min-width: 8rem;
 }
 
 .funder-dashboard__all-bounties__bounties__bounty--template {
@@ -191,8 +198,8 @@
 }
 
 .table-header--inline {
-  font-size: 1.2rem;
-  margin-right: 1rem;
+  font-size: 1.1rem;
+  margin-right: .25rem;
   display: none;
 }
 
@@ -202,9 +209,18 @@ td {
   text-overflow: ellipsis;
 }
 
+tr {
+  color: black;
+}
+
+.funder-dashboard__payout-history__chart-wrapper {
+  height: 20rem;
+  width: 100%;
+}
+
 @media (max-width: 576px) {
-  .funder-dashboard__payout-history__chart {
-    height: 25rem;
+  .funder-dashboard__payout-history__chart-wrapper {
+    height:  15rem;
   }
 }
 
@@ -215,8 +231,8 @@ td {
   }
 
   tr {
-    border: 1px solid #ccc;
-    margin-bottom: 0.5rem;
+    border: 1px solid #aaa;
+    margin-bottom: 1.5rem;
   }
 
   thead tr {
@@ -229,7 +245,8 @@ td {
     border: none;
     border-bottom: 1px solid #eee;
     position: relative;
-    padding-left: 50%;
+    padding-top: .4rem !important;
+    padding-bottom: .4rem !important;
   }
 
   .table-header--inline {
@@ -246,14 +263,10 @@ td {
   color: white;
 }
 
-.funder-dashboard__stats__stat--total-budget__budget-input {
-  max-width: 80%;
-}
-
 .funder-dashboard__stats__stat .card-title {
   min-height: 2.82rem;
 }
 
 .funder-dashboard__stats__stat--total-budget__budget-input__submit {
-  cursor: pointer;
+  min-width: 250px;
 }
