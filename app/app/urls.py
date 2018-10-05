@@ -405,6 +405,10 @@ urlpatterns = [
     re_path(r'^_administration/viz/draggable/(.*)?$', dataviz.d3_views.viz_draggable, name='viz_draggable'),
     re_path(r'^_administration/viz/scatterplot/(.*)?$', dataviz.d3_views.viz_scatterplot, name='viz_scatterplot'),
 
+    # Notify Funder Modal
+    path('notifyfunder/modal', dashboard.views.get_notify_funder_modal, name='get_notify_funder_modal'),
+    path('actions/bounty/<int:bounty_id>/notify_funder/', dashboard.views.funder_payout_reminder, name='notify-funder'),
+
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
