@@ -123,8 +123,11 @@ def render_quarterly_stats(to_email, platform_wide_stats):
 Params:
     to_email
     bounty
+    github_username on BountyFulfillment
 '''
-def render_funder_payout_reminder(**kwargs) :
+
+
+def render_funder_payout_reminder(**kwargs):
     kwargs['bounty_fulfillment'] = kwargs['bounty'].fulfillments.filter(fulfiller_github_username=kwargs['github_username']).last()
     response_html = premailer_transform(render_to_string("emails/funder_payout_reminder.html", kwargs))
     response_txt = ''
