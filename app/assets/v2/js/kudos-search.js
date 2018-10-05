@@ -88,6 +88,11 @@ function kudosSearch(elem) {
                         <div class="text-truncate kudos-description">${kudos.description}</div>
                       <div>
                     </div>`;
+         document.selected_kudos = {
+          name : kudos.name,
+          id : kudos.id,
+          price_finney : kudos.price_finney,
+         };
       } else {
         selected = kudos.name_human;
       }
@@ -110,6 +115,7 @@ function kudosSearch(elem) {
 
     $(selectItem).on("select2:unselecting", function (e) {
       $(this).val(null).trigger('change');
+      document.selected_kudos = null;
       e.preventDefault();
     });
 

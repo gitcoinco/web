@@ -466,7 +466,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           // estimate gas for cloning the kudos
           console.log('Using Kudos Indirect Send (KIS)')
           // let kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice')); 
-          // var kudosPriceInWei = amountInEth * 1.0 * Math.pow(10, 18);
+          var kudosPriceInWei = amountInEth * 1.0 * Math.pow(10, 18);
           params = {
             kudosId: kudosId,
             numClones: numClones,
