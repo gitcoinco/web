@@ -1015,7 +1015,6 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
 
     return TemplateResponse(request, 'bounty/details.html', params)
 
-@csrf_exempt
 def get_notify_funder_modal(request):
 
     bounty = Bounty.objects.get(pk=request.GET.get("pk"))
@@ -1026,6 +1025,22 @@ def get_notify_funder_modal(request):
         'title': _('Send Payout Reminder')
     }
     return TemplateResponse(request, 'notifyfunder.html', context)
+
+
+@csrf_exempt
+def funder_payout_reminder(request, bounty_id):
+    try:
+        bounty = Bounty.objects.get(pk=bounty_id)
+    except Bounty.DoesNotExist:
+        raise Http404
+
+    user = request.user if request.user.is_authenticated else None
+    funder_payout_reminder_mail(to_email=bounty.bounty_owner_email, bounty=bounty, github_username=user)
+    bounty.funder_last_messaged_on = timezone.now()
+    bounty.save()
+    return JsonResponse({
+        'success': True},
+        status=200)
 
 
 def quickstart(request):
