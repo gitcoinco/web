@@ -582,13 +582,13 @@ a.btn {
 }
 
 .notify-funder-modal {
-    height: auto;
-    width: 100%;
+  height: auto;
+  width: 100%;
 }
 
 #notify_funder form {
-    padding: 1em;
-    width: 100%;
+  padding: 1em;
+  width: 100%;
 }
 
 #issue_message {
