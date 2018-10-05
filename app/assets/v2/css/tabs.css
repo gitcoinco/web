@@ -1,0 +1,64 @@
+
+.tab-container {
+  position: relative;
+  display: block;
+  text-align: left;
+  border-bottom: 1px #dfdfdf solid;
+  width: 100%;
+}
+
+.tab-container > button {
+  margin: 0 1rem;
+  transition: none;
+}
+
+.tab-container > button:first-child {
+  margin-left: 0;
+}
+
+.section-tab {
+  background: transparent;
+  outline: none;
+  border: none;
+  cursor: pointer;
+  color: var(--gc-purple);
+  padding: 0;
+}
+
+.section-tab:hover,
+.section-tab:active,
+.section-tab:focus {
+  color: var(--gc-blue) !important;
+}
+
+.section-tab.active {
+  color: var(--gc-blue);
+  border-bottom: 2px var(--gc-blue) solid;
+}
+
+.tab-sections {
+  width: 100%;
+  position: relative;
+  transition: transform .3s;
+}
+
+.tab-section {
+  width: 100%;
+  display: none;
+}
+
+.tab-section.active {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  #activity-tabs {
+    text-align: center;
+  }
+
+  .tab-container > button,
+  .tab-container > button:first-child {
+    text-align: center;
+    margin: 0.25rem 1rem;
+  }
+}

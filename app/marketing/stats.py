@@ -141,7 +141,7 @@ def user_actions():
 
 
 def github_stars():
-    from github.utils import get_user
+    from git.utils import get_user
     reops = get_user('gitcoinco', '/repos')
     forks_count = sum([repo['forks_count'] for repo in reops])
 
@@ -160,8 +160,8 @@ def github_stars():
 
 def github_issues():
     if settings.DEBUG:
-        return 
-    from github.utils import get_issues, get_user
+        return
+    from git.utils import get_issues, get_user
     repos = []
 
     for org in ['bitcoin', 'gitcoinco', 'ethereum']:
@@ -271,7 +271,7 @@ def bounties():
 
     Stat.objects.create(
         key='bounties',
-        val=(Bounty.objects.filter(current_bounty=True, network='mainnet').count()),
+        val=(Bounty.objects.current().filter(network='mainnet').count()),
         )
 
 
@@ -312,7 +312,7 @@ def bounties_by_status_and_keyword(created_before=timezone.now()):
     created_after = created_before - timezone.timedelta(days=days_back)
     for status in statuses:
         for keyword in keywords:
-            eligible_bounties = Bounty.objects.filter(current_bounty=True, network='mainnet', web3_created__gt=created_after, web3_created__lt=created_before)
+            eligible_bounties = Bounty.objects.current().filter(network='mainnet', web3_created__gt=created_after, web3_created__lt=created_before)
             if keyword:
                 eligible_bounties = eligible_bounties.filter(raw_data__icontains=keyword)
             numerator_bounties = eligible_bounties.filter(idx_status=status)
@@ -356,7 +356,7 @@ def joe_dominance_index(created_before=timezone.now()):
     for days in [7, 30, 90, 360]:
         created_after = created_before - timezone.timedelta(days=days)
         for keyword in keywords:
-            all_bounties = Bounty.objects.filter(current_bounty=True, network='mainnet', web3_created__gt=created_after, web3_created__lt=created_before)
+            all_bounties = Bounty.objects.current().filter(network='mainnet', web3_created__gt=created_after, web3_created__lt=created_before)
             if keyword:
                 all_bounties = all_bounties.filter(raw_data__icontains=keyword)
             joe_bounties = all_bounties.filter(bounty_owner_address__in=joe_addresses)
@@ -386,8 +386,7 @@ def avg_time_bounty_turnaround():
     from dashboard.models import Bounty
 
     for days in [7, 30, 90, 360]:
-        all_bounties = Bounty.objects.filter(
-            current_bounty=True,
+        all_bounties = Bounty.objects.current().filter(
             network='mainnet',
             idx_status='done',
             web3_created__gt=(timezone.now() - timezone.timedelta(days=days))
@@ -425,7 +424,7 @@ def bounties_open():
 
     Stat.objects.create(
         key='bounties_open',
-        val=(Bounty.objects.filter(current_bounty=True, network='mainnet', idx_status='open').count()),
+        val=(Bounty.objects.current().filter(network='mainnet', idx_status='open').count()),
         )
 
 
@@ -434,7 +433,7 @@ def bounties_fulfilled():
 
     Stat.objects.create(
         key='bounties_fulfilled',
-        val=(Bounty.objects.filter(current_bounty=True, network='mainnet', idx_status='done').count()),
+        val=(Bounty.objects.current().filter(network='mainnet', idx_status='done').count()),
         )
 
 
@@ -449,7 +448,7 @@ def ens():
 
 def tips():
     from dashboard.models import Tip
-    tips = Tip.objects.filter(network='mainnet')
+    tips = Tip.objects.filter(network='mainnet').exclude(txid='')
     val = sum(tip.value_in_usdt for tip in tips if tip.value_in_usdt)
 
     stats_to_create = [
@@ -470,7 +469,7 @@ def tips_received():
 
     Stat.objects.create(
         key='tips_received',
-        val=(Tip.objects.filter(network='mainnet').exclude(receive_txid='').count()),
+        val=(Tip.objects.filter(network='mainnet').exclude(txid='').exclude(receive_txid='').count()),
         )
 
 
@@ -485,20 +484,26 @@ def subs():
 
 def subs_active():
     from marketing.models import EmailSubscriber
-
+    all_subs = EmailSubscriber.objects.filter(active=True).count()
     Stat.objects.create(
         key='email_subscribers_active',
-        val=(EmailSubscriber.objects.filter(active=True).count()),
+        val=all_subs,
         )
+    from retail.emails import ALL_EMAILS
+    email_keys = [ele[0] for ele in ALL_EMAILS]
 
+    for key in email_keys:
+        kwargs = {
+            f"preferences__suppression_preferences__{key}":True
+        }
+        unsubs = EmailSubscriber.objects.filter(**kwargs).count()
+        val = all_subs - unsubs
+        Stat.objects.create(
+            key=f'email_subscribers_active_{key}',
+            val=val,
+            )
+        print(key, val, unsubs)
 
-def subs_newsletter():
-    from marketing.models import EmailSubscriber
-
-    Stat.objects.create(
-        key='email_subscribers_newsletter',
-        val=(EmailSubscriber.objects.filter(newsletter=True).count()),
-        )
 
 
 def whitepaper_access():
@@ -539,7 +544,7 @@ def get_skills_keyword_counts():
 def get_bounty_keyword_counts():
     from dashboard.models import Bounty
     keywords = {}
-    for bounty in Bounty.objects.filter(current_bounty=True).all():
+    for bounty in Bounty.objects.current().all():
         for keyword in str(bounty.keywords).split(","):
             keyword = keyword.strip().lower().replace(" ", "_")
             if keyword not in keywords.keys():

@@ -3,6 +3,16 @@
 // helper functions
 
 /**
+ * Validates if input is a valid URL
+ * @param {string} input - Input String
+ */
+var validURL = function(input) {
+  var regex = /(([\w]+:)?\/\/)?(([\d\w]|%[a-fA-f\d]{2,2})+(:([\d\w]|%[a-fA-f\d]{2,2})+)?@)?([\d\w][-\d\w]{0,253}[\d\w]\.)+[\w]{2,63}(:[\d]+)?(\/([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)*(\?(&?([-+_~.\d\w]|%[a-fA-f\d]{2,2})=?)*)?(#([-+_~.\d\w]|%[a-fA-f\d]{2,2})*)?/;
+
+  return regex.test(input);
+};
+
+/**
  * Looks for a transaction receipt.  If it doesn't find one, it keeps running until it does.
  * @callback
  * @param {string} txhash - The transaction hash.
@@ -19,6 +29,7 @@ var callFunctionWhenTransactionMined = function(txHash, f) {
     }
   });
 };
+
 
 /**
  * Looks for web3.  Won't call the fucntion until its there
@@ -38,7 +49,7 @@ var callFunctionWhenweb3Available = function(f) {
 var loading_button = function(button) {
   button.prop('disabled', true);
   button.addClass('disabled');
-  button.prepend('<img src=/static/v2/images/loading_white.gif style="max-width:20px; max-height: 20px">').addClass('disabled');
+  button.prepend('<img src=' + static_url + 'v2/images/loading_white.gif style="max-width:20px; max-height: 20px">').addClass('disabled');
 };
 
 var attach_close_button = function() {
@@ -65,9 +76,13 @@ var update_metamask_conf_time_and_cost_estimate = function() {
   var gasPrice = parseFloat($('#gasPrice').val());
 
   if (gasPrice) {
-    ethAmount = Math.round(1000 * gasLimit * gasPrice / Math.pow(10, 9)) / 1000;
-    usdAmount = Math.round(10 * ethAmount * document.eth_usd_conv_rate) / 10;
+    var eth_amount_unrounded = gasLimit * gasPrice / Math.pow(10, 9);
+
+    ethAmount = Math.round(1000000 * eth_amount_unrounded) / 1000000;
+    usdAmount = Math.round(1000 * eth_amount_unrounded * document.eth_usd_conv_rate) / 1000;
   }
+
+  if (typeof document.conf_time_spread == 'undefined') return;
 
   for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
     var this_ele = (document.conf_time_spread[i]);
@@ -84,7 +99,7 @@ var update_metamask_conf_time_and_cost_estimate = function() {
 };
 
 var get_updated_metamask_conf_time_and_cost = function(gasPrice) {
-  
+
   var confTime = 'unknown';
   var ethAmount = 'unknown';
   var usdAmount = 'unknown';
@@ -92,8 +107,10 @@ var get_updated_metamask_conf_time_and_cost = function(gasPrice) {
   var gasLimit = parseInt($('#gasLimit').val());
 
   if (gasPrice) {
-    ethAmount = Math.round(1000000 * gasLimit * gasPrice / Math.pow(10, 9)) / 1000000;
-    usdAmount = Math.round(10 * ethAmount * document.eth_usd_conv_rate) / 10;
+    var eth_amount_unrounded = gasLimit * gasPrice / Math.pow(10, 9);
+
+    ethAmount = Math.round(1000000 * eth_amount_unrounded) / 1000000;
+    usdAmount = Math.round(100 * eth_amount_unrounded * document.eth_usd_conv_rate) / 100;
   }
 
   for (var i = 0; i < document.conf_time_spread.length - 1; i++) {
@@ -114,7 +131,7 @@ var unloading_button = function(button) {
   button.find('img').remove();
 };
 
-var sanitizeDict = function(d) {
+var sanitizeDict = function(d, keyToIgnore) {
   if (typeof d != 'object') {
     return d;
   }
@@ -122,14 +139,18 @@ var sanitizeDict = function(d) {
   for (var i = 0; i < keys.length; i++) {
     var key = keys[i];
 
+    if (key === keyToIgnore) {
+      continue;
+    }
+
     d[key] = sanitize(d[key]);
   }
   return d;
 };
 
-var sanitizeAPIResults = function(results) {
+var sanitizeAPIResults = function(results, keyToIgnore) {
   for (var i = 0; i < results.length; i++) {
-    results[i] = sanitizeDict(results[i]);
+    results[i] = sanitizeDict(results[i], keyToIgnore);
   }
   return results;
 };
@@ -146,6 +167,25 @@ var sanitize = function(str) {
   }
   result = DOMPurify.sanitize(str);
   return result;
+};
+
+var getFormattedDate = function(date) {
+  var monthNames = [
+    'January', 'February', 'March',
+    'April', 'May', 'June', 'July',
+    'August', 'September', 'October',
+    'November', 'December'
+  ];
+
+  var day = date.getDate();
+  var monthIndex = date.getMonth();
+  var year = date.getFullYear();
+
+  return monthNames[monthIndex] + ' ' + day + ', ' + year;
+};
+
+var getTimeFromDate = function(date) {
+  return date.getHours() + ':' + date.getMinutes();
 };
 
 var waitforWeb3 = function(callback) {
@@ -175,7 +215,7 @@ var _alert = function(msg, _class) {
 
   var html = function() {
     return (
-      `<div class="alert ${_class}" style="top: ${top}px">
+      `<div class="alert ${_class} g-font-muli" style="top: ${top}px">
         <div class="message">
           <div class="content">
             ${alertMessage(msg)}
@@ -235,23 +275,12 @@ var remove_interest = function(bounty_pk, slash = false) {
 var mutate_interest = function(bounty_pk, direction, data) {
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + direction + '/';
 
-  $('#submit').toggleClass('none');
-  $('#interest a').toggleClass('btn')
-    .toggleClass('btn-small')
-    .toggleClass('button')
-    .toggleClass('button--primary');
-
-  if (direction === 'new') {
-    _alert({ message: gettext("Thanks for letting us know that you're ready to start work.") }, 'success');
-    $('#interest a').attr('id', 'btn-white');
-  } else if (direction === 'remove') {
-    _alert({ message: gettext("You've stopped working on this, thanks for letting us know.") }, 'success');
-    $('#interest a').attr('id', '');
-  }
-  
-
+  showBusyOverlay();
   $.post(request_url, data).then(function(result) {
+    hideBusyOverlay();
+
     result = sanitizeAPIResults(result);
+
     if (result.success) {
       if (direction === 'new') {
         _alert({ message: result.msg }, 'success');
@@ -266,7 +295,16 @@ var mutate_interest = function(bounty_pk, direction, data) {
     }
     return false;
   }).fail(function(result) {
-    alert(result.responseJSON.error);
+    hideBusyOverlay();
+
+    var alertMsg = result && result.responseJSON ? result.responseJSON.error : null;
+
+    if (alertMsg === null) {
+      alertMsg = gettext('Network error. Please reload the page and try again.');
+    }
+
+    _alert({ message: alertMsg }, 'error');
+
   });
 };
 
@@ -282,7 +320,10 @@ var uninterested = function(bounty_pk, profileId, slash) {
 
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + profileId + '/uninterested/';
 
+  showBusyOverlay();
   $.post(request_url, data, function(result) {
+    hideBusyOverlay();
+
     result = sanitizeAPIResults(result);
     if (result.success) {
       _alert({ message: gettext(success_message) }, 'success');
@@ -291,6 +332,27 @@ var uninterested = function(bounty_pk, profileId, slash) {
     }
     return false;
   }).fail(function(result) {
+    hideBusyOverlay();
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+  });
+};
+
+var extend_expiration = function(bounty_pk, data) {
+  var request_url = '/actions/bounty/' + bounty_pk + '/extend_expiration/';
+
+  showBusyOverlay();
+  $.post(request_url, data, function(result) {
+    hideBusyOverlay();
+
+    result = sanitizeAPIResults(result);
+    if (result.success) {
+      _alert({ message: result.msg }, 'success');
+      pull_interest_list(bounty_pk);
+      return true;
+    }
+    return false;
+  }).fail(function(result) {
+    hideBusyOverlay();
     _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
   });
 };
@@ -447,11 +509,11 @@ var retrieveAmount = function() {
   var target_ele = $('#usd_amount');
 
   if (target_ele.html() == '') {
-    target_ele.html('<img style="width: 50px; height: 50px;" src=/static/v2/images/loading_v2.gif>');
+    target_ele.html('<img style="width: 50px; height: 50px;" src=' + static_url + 'v2/images/loading_v2.gif>');
   }
 
   var amount = $('input[name=amount]').val();
-  var address = $('select[name=deonomination]').val();
+  var address = $('select[name=denomination]').val();
   var denomination = tokenAddressToDetails(address)['name'];
   var request_url = '/sync/get_amount?amount=' + amount + '&denomination=' + denomination;
 
@@ -510,7 +572,7 @@ var retrieveIssueDetails = function() {
   if (issue_url.length < 5 || issue_url.indexOf('github') == -1) {
     return;
   }
-  var request_url = '/sync/get_issue_details?url=' + encodeURIComponent(issue_url);
+  var request_url = '/sync/get_issue_details?url=' + encodeURIComponent(issue_url) + '&token=' + currentProfile.githubToken;
 
   $.each(target_eles, function(i, ele) {
     ele.addClass('loading');
@@ -522,12 +584,10 @@ var retrieveIssueDetails = function() {
 
       target_eles['keywords'].val(keywords.join(', '));
     }
-    if (result['description']) {
-      target_eles['description'].val(result['description']);
-    }
-    if (result['title']) {
-      target_eles['title'].val(result['title']);
-    }
+    target_eles['description'].val(result['description']);
+    target_eles['title'].val(result['title']);
+
+    $('#title--text').html(result['title']); // TODO: Refactor
     $.each(target_eles, function(i, ele) {
       ele.removeClass('loading');
     });
@@ -793,13 +853,24 @@ var listen_for_web3_changes = function() {
 var actions_page_warn_if_not_on_same_network = function() {
   var user_network = document.web3network;
 
+  if (user_network === 'locked') {
+    // handled by the unlock MetaMask banner
+    return;
+  }
+
   if (typeof user_network == 'undefined') {
     user_network = 'no network';
   }
   var bounty_network = $('input[name=network]').val();
 
   if (bounty_network != user_network) {
-    var msg = 'Warning: You are on ' + user_network + ' and this bounty is on the ' + bounty_network + ' network.  Please change your network to the ' + bounty_network + ' network.';
+    var msg = 'Warning: You are on ' +
+              user_network +
+              ' and this bounty is on the ' +
+              bounty_network +
+              ' network.  Please change your network to the ' +
+              bounty_network +
+              ' network.';
 
     _alert({ message: gettext(msg) }, 'error');
   }
@@ -816,6 +887,10 @@ var promptForAuth = function(event) {
   var denomination = $('#token option:selected').text();
   var tokenAddress = $('#token option:selected').val();
 
+  if (!denomination) {
+    return;
+  }
+
   if (denomination == 'ETH') {
     $('input, textarea, select').prop('disabled', '');
   } else {
@@ -825,9 +900,20 @@ var promptForAuth = function(event) {
 
     token_contract.allowance.call(from, to, function(error, result) {
       if (error || result.toNumber() == 0) {
-        _alert("You have not yet enabled this token.  To enable this token, go to the <a style='padding-left:5px;' href='/settings/tokens'> Token Settings page and enable it</a>. (this is only needed one time per token)");
+        if (!document.alert_enable_token_shown) {
+          _alert(
+            gettext('To enable this token, go to the ') +
+            '<a style="padding-left:5px;" href="/settings/tokens">' +
+            gettext('Token Settings page and enable it.') +
+            '</a> ' +
+            gettext('This is only needed once per token.'),
+            'warning'
+          );
+        }
+        document.alert_enable_token_shown = true;
+
         $('input, textarea, select').prop('disabled', 'disabled');
-        $('select[name=deonomination]').prop('disabled', '');
+        $('select[name=denomination]').prop('disabled', '');
       } else {
         $('input, textarea, select').prop('disabled', '');
       }
@@ -868,3 +954,244 @@ var usdToAmount = function(event) {
     }
   });
 };
+
+function renderBountyRowsFromResults(results, renderForExplorer) {
+  let html = '';
+  const tmpl = $.templates('#result');
+
+  if (results.length === 0) {
+    return html;
+  }
+
+  for (var i = 0; i < results.length; i++) {
+    const result = results[i];
+    const relatedTokenDetails = tokenAddressToDetailsByNetwork(result['token_address'], result['network']);
+    let decimals = 18;
+
+    if (relatedTokenDetails && relatedTokenDetails.decimals) {
+      decimals = relatedTokenDetails.decimals;
+    }
+
+    const divisor = Math.pow(10, decimals);
+
+    result['rounded_amount'] = normalizeAmount(result['value_in_token'] / divisor, decimals);
+
+    const crowdfunding = result['additional_funding_summary'];
+
+    if (crowdfunding) {
+      const tokenDecimals = 3;
+      const dollarDecimals = 2;
+      const tokens = Object.keys(crowdfunding);
+      let usdValue = 0.0;
+
+      if (tokens.length) {
+        const obj = {};
+
+        while (tokens.length) {
+          const tokenName = tokens.shift();
+          const tokenObj = crowdfunding[tokenName];
+          const amount = tokenObj['amount'];
+          const ratio = tokenObj['ratio'];
+
+          obj[tokenName] =
+            normalizeAmount(amount, tokenDecimals);
+          usdValue += amount * ratio;
+        }
+        result['tokens'] = obj;
+      }
+
+      if (usdValue && result['value_in_usdt']) {
+        result['value_in_usdt'] =
+          normalizeAmount(
+            parseFloat(result['value_in_usdt']) + usdValue,
+            dollarDecimals
+          );
+      }
+    }
+
+    const dateNow = new Date();
+    const dateExpires = new Date(result['expires_date']);
+    const isExpired = dateExpires < dateNow && !result['is_open'];
+    const projectType = ucwords(result['project_type']) + ' &bull; ';
+
+    result['action'] = result['url'];
+    result['title'] = result['title'] ? result['title'] : result['github_url'];
+    result['p'] = projectType + (result['experience_level'] ? (result['experience_level'] + ' &bull; ') : '');
+
+    if (result['status'] === 'done') {
+      result['p'] += 'Done';
+      if (result['fulfillment_accepted_on']) {
+        result['p'] += ' ' + timeDifference(dateNow, new Date(result['fulfillment_accepted_on']), false, 60 * 60);
+      }
+    } else if (result['status'] === 'started') {
+      result['p'] += 'Started';
+      if (result['fulfillment_started_on']) {
+        result['p'] += ' ' + timeDifference(dateNow, new Date(result['fulfillment_started_on']), false, 60 * 60);
+      }
+    } else if (result['status'] === 'submitted') {
+      result['p'] += 'Submitted';
+      if (result['fulfillment_submitted_on']) {
+        result['p'] += ' ' + timeDifference(dateNow, new Date(result['fulfillment_submitted_on']), false, 60 * 60);
+      }
+    } else if (result['status'] == 'cancelled') {
+      result['p'] += 'Cancelled';
+      if (result['canceled_on']) {
+        result['p'] += ' ' + timeDifference(dateNow, new Date(result['canceled_on']), false, 60 * 60);
+      }
+    } else if (isExpired) {
+      const timeAgo = timeDifference(dateNow, dateExpires, true);
+
+      result['p'] += ('Expired ' + timeAgo + ' ago');
+    } else {
+      const openedWhen = timeDifference(dateNow, new Date(result['web3_created']), true);
+      const timeLeft = timeDifference(dateNow, dateExpires);
+      const expiredExpires = dateNow < dateExpires ? 'Expires' : 'Expired';
+
+      result['p'] += ('Opened ' + openedWhen + ' ago, ' + expiredExpires + ' ' + timeLeft);
+    }
+
+    if (renderForExplorer) {
+      if (typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
+        result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
+      } else if (result['fulfiller_address'] !== '0x0000000000000000000000000000000000000000') {
+        result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">' + result['status'] + '</span></a>';
+      }
+
+      result['watch'] = 'Watch';
+    } else {
+      result['hidden'] = (i > 4);
+    }
+
+    html += tmpl.render(result);
+  }
+  return html;
+}
+
+/**
+ * Fetches results from the API and paints them onto the target element
+ *
+ * params - query params for bounty API
+ * target - element
+ * limit  - number of results
+ *
+ * TODO: refactor explorer to reuse this
+ */
+function fetchBountiesAndAddToList(params, target, limit, additional_callback) {
+  $.get('/api/v0.1/bounties/?' + params, function(results) {
+    results = sanitizeAPIResults(results);
+
+    var html = renderBountyRowsFromResults(results);
+
+    if (html) {
+      $(target).prepend(html);
+      $(target).removeClass('profile-bounties--loading');
+
+      if (limit) {
+        results = results.slice(0, limit);
+      } else if (results.length > 5) {
+        var $button = $(target + ' .profile-bounties__btn-show-all');
+
+        $button.removeClass('hidden');
+        $button.on('click', function(event) {
+          $(this).remove();
+          $(target + ' .bounty_row').removeClass('bounty_row--hidden');
+        });
+      }
+
+      $('div.bounty_row.result').each(function() {
+        var href = $(this).attr('href');
+
+        if (typeof $(this).changeElementType !== 'undefined') {
+          $(this).changeElementType('a');
+        }
+        $(this).attr('href', href);
+      });
+    } else {
+      console.log($(target).parent().closest('.container').addClass('hidden'));
+    }
+    if (typeof additional_callback != 'undefined') {
+      additional_callback(results);
+    }
+  });
+}
+
+function showBusyOverlay() {
+  let overlay = document.querySelector('.busyOverlay');
+
+  if (overlay) {
+    overlay.style['display'] = 'block';
+    overlay.style['animation-name'] = 'fadeIn';
+    return;
+  }
+
+  overlay = document.createElement('div');
+  overlay.className = 'busyOverlay';
+  overlay.addEventListener(
+    'animationend',
+    function() {
+      if (overlay.style['animation-name'] === 'fadeOut') {
+        overlay.style['display'] = 'none';
+      }
+    },
+    false
+  );
+  document.body.appendChild(overlay);
+}
+
+function hideBusyOverlay() {
+  let overlay = document.querySelector('.busyOverlay');
+
+  if (overlay) {
+    setTimeout(function() {
+      overlay.style['animation-name'] = 'fadeOut';
+    }, 300);
+  }
+}
+
+function toggleExpandableBounty(evt, selector) {
+  evt.preventDefault();
+
+  if (evt.target.id === 'expanded') {
+    evt.target.id = '';
+  } else {
+    evt.target.id = 'expanded';
+  }
+
+  var container = document.body.querySelector(selector).querySelector('.expandable');
+
+  if (container) {
+    if (container.id === 'expanded') {
+      container.id = '';
+      evt.target.id = '';
+      return;
+    }
+    container.id = 'expanded';
+    evt.target.id = 'expanded';
+  }
+}
+
+function normalizeAmount(amount, decimals) {
+  return Math.round(amount * 10 ** decimals) / 10 ** decimals;
+}
+
+function newTokenTag(amount, tokenName, tooltipInfo, isCrowdfunded) {
+  const ele = document.createElement('div');
+  const p = document.createElement('p');
+  const span = document.createElement('span');
+
+  ele.className = 'tag token';
+  span.innerHTML = amount + ' ' + tokenName +
+    (isCrowdfunded ? '<i class="fas fa-users ml-1"></i>' : '');
+
+  p.appendChild(span);
+  ele.appendChild(p);
+
+  if (tooltipInfo) {
+    ele.title =
+      '<div class="tooltip-info tooltip-sm">' +
+      tooltipInfo +
+      '</div>';
+  }
+
+  return ele;
+}

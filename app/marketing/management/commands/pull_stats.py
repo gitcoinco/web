@@ -26,13 +26,14 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
 
+
 class Command(BaseCommand):
 
     help = 'pulls all stats'
 
     def handle(self, *args, **options):
 
-        fs =[
+        fs = [
             stats.get_bounty_keyword_counts,
             stats.get_skills_keyword_counts,
             stats.github_issues,
@@ -56,7 +57,6 @@ class Command(BaseCommand):
             stats.bounties_open,
             stats.bounties_by_status_and_keyword,
             stats.subs_active,
-            stats.subs_newsletter,
             stats.joe_dominance_index,
             stats.avg_time_bounty_turnaround,
             stats.user_actions,

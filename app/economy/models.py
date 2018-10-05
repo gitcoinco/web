@@ -21,10 +21,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from __future__ import unicode_literals
 
 from django.contrib.humanize.templatetags.humanize import naturaltime
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.forms.models import model_to_dict
+from django.urls import reverse
 from django.utils import timezone
+from django.utils.html import escape
 from django.utils.timezone import localtime
 
 
@@ -48,6 +52,33 @@ class SuperModel(models.Model):
         """Override the SuperModel save to handle modified_on logic."""
         self.modified_on = get_time()
         return super(SuperModel, self).save(*args, **kwargs)
+
+    def to_standard_dict(self, fields=None, exclude=None):
+        """Define the standard to dict representation of the object.
+
+        Args:
+            fields (list): The list of fields to include. If not provided,
+                include all fields. If not provided, all fields are included.
+                Defaults to: None.
+            exclude (list): The list of fields to exclude. If not provided,
+                no fields are excluded. Default to: None.
+
+        Returns:
+            dict: The dictionary representation of the object.
+
+        """
+        kwargs = {}
+        if fields:
+            kwargs['fields'] = fields
+        if exclude:
+            kwargs['exclude'] = exclude
+        return model_to_dict(self, **kwargs)
+
+
+    @property
+    def admin_url(self):
+        url = reverse('admin:{0}_{1}_change'.format(self._meta.app_label, self._meta.model_name), args=[self.id])
+        return '{0}'.format(url, escape(str(self)))
 
 
 class ConversionRate(SuperModel):
@@ -85,3 +116,33 @@ def reverse_conversion_rate(sender, instance, **kwargs):
             from_currency=instance.to_currency,
             to_currency=instance.from_currency
         )
+
+
+class Token(SuperModel):
+    """Define the Token model."""
+
+    address = models.CharField(max_length=255, db_index=True)
+    symbol = models.CharField(max_length=10, db_index=True)
+    network = models.CharField(max_length=25, db_index=True)
+    decimals = models.IntegerField(default=18)
+    priority = models.IntegerField(default=1)
+    metadata = JSONField(null=True, default=dict, blank=True)
+    approved = models.BooleanField(default=True)
+
+    def __str__(self):
+        """Define the string representation of a conversion rate."""
+        return f"{self.symbol} on {self.network}"
+
+    @property
+    def to_dict(self):
+        return {'addr': self.address, 'name': self.symbol, 'decimals': self.decimals, 'priority': self.priority}
+
+    @property
+    def to_json(self):
+        import json
+        return json.dumps(self.to_dict)
+
+
+    @property
+    def email(self):
+        return self.metadata.get('email', None)

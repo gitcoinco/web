@@ -1,0 +1,78 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<div id="extend_deadline" class="white-light-bg">
+  <div class="row">
+    <div class="col-12 closebtn">
+      <a rel="modal:close" href="javascript:void" class="close" aria-label="Close dialog">
+        <span aria-hidden="true">&times;</span>
+      </a>
+    </div>
+    <div class="col-12">
+      <h5 class="text-center font-title">{% trans "Extend Issue Deadline" %}</h5>
+    </div>
+    {% if user_logged_in %}
+      <div class="col-12 offset-md-1 col-md-10">
+        <h5 class="text-center font-body">{% trans "Alpha Seed Implementation (New Feature)" %}</h5>
+        <form class="font-body">
+          <div>
+            <input type="hidden" name="currentExpire" value="{{ bounty.expires_date }}" />
+            <div id="deadline-section" class="pt-2">
+              <p class="my-2">{% trans "Current Expiration" %}: {{ bounty.expires_date }} </p>
+              <label class="form__label font-weight-bold" for="expirationTimeDelta">{% trans "Extend by:" %}</label>
+              <div class="form__select2">
+                <select class="js-select2" name="expirationTimeDelta">
+                  <option value="86400">{% trans "1 day" %}</option>
+                  <option value="259200">{% trans "3 days" %}</option>
+                  <option value="604800">{% trans "1 week" %}</option>
+                  <option value="1209600">{% trans "2 weeks" %}</option>
+                  <option value="2592000">{% trans "1 month" %}</option>
+                  <option value="7776000">{% trans "3 months" %}</option>
+                  <option value="15552000">{% trans "6 months" %}</option>
+                  <option value="31536000" selected="">{% trans "1 year" %}</option>
+                  <option value="9999999999">{% trans "Never" %}</option>
+                </select>
+              </div>
+            </div>
+            <input type="hidden" name="updatedExpires" />
+            <div id="updated-expiration-section" class="pt-2">
+              <label class="form__label font-weight-bold">{% trans "New Expiration:" %}</label>
+              <div id="extended-expiration-date" class="mb-4">
+                <i class="font-title-lg fas fa-stopwatch float-right"></i>
+                <p id="extended-days" class="pb-2 mb-2"></p>
+                <p id="extended-date"></p>
+              </div>
+            </div>
+          </div>
+          <button class="row button button--primary btn-extend" type="submit">{% trans "Submit" %}</button>
+          <button class="row button button--primary-o btn-cancel" type="button">{% trans "Cancel" %}</button>
+        </form>
+      </div>
+    {% else %}
+      <div class="col-12 text-center">
+        <div class="login">
+          <div class="login__text">
+            {% trans "Please login with Github to get started." %}
+          </div>
+          <a class="button button--primary login__button" href={{login_link}} onclick="dataLayer.push({'event': 'login'});">
+            <i class="fab fa-github"></i> <span>{% trans "Login With Github" %}</span>
+          </a>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+</div>

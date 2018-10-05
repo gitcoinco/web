@@ -82,10 +82,13 @@ function getIdFromPath(path, option) {
 function getColorFromPath(path, option) {
   let color = '';
 
+  // filename without path and extension
+  const basename = path.split('.').slice(-2)[0].split('/').slice(-1)[0];
+
   if (option === 'FacialHair' || option === 'Accessories') {
-    color = path.split('.')[0].split('/').slice(-1)[0].split('-')[2];
+    color = basename.split('-')[2];
   } else {
-    color = path.split('.')[0].split('/').slice(-1)[0].split('-')[1];
+    color = basename.split('-')[1];
   }
 
   return color;
@@ -156,7 +159,7 @@ function changeImage(option, path) {
     const elem = $('#preview-' + option);
 
     if (path) {
-      elem.css('background-image', `url(/static/${path})`);
+      elem.css('background-image', `url(${path})`);
       options[option] = path;
       localStorage[option] = path;
     } else {
@@ -167,7 +170,7 @@ function changeImage(option, path) {
   } else if (path) { // option was previously blank
     const newEl = $.parseHTML(`<div id="preview-${option}"
     alt="${option} Preview"
-    style="z-index: ${layers.indexOf(option)}; background-image: url(/static/${path})"
+    style="z-index: ${layers.indexOf(option)}; background-image: url(${path})"
     class="preview-section ${
   (sectionPalettes.hasOwnProperty(option) &&
     [ 'Eyes', 'Mouth', 'Nose' ].indexOf(option) < 0) ?

@@ -121,9 +121,6 @@ button:focus {
 .btn-gc-blue {
   background-color: var(--gc-blue);
 }
-.navbar-nav .btn-gc-blue {
-  margin-right: 30px;
-}
 
 .btn-gc-blue:hover {
   background-color: var(--gc-blue-hover);

@@ -16,7 +16,7 @@
 {% endcomment %}
 {% load i18n static %}
 <link rel="stylesheet" href="{% static "v2/css/newsletter.css" %}">
-<div class="row newsletter text-center" >
+<div class="row newsletter text-center">
   <form action="//gitcoin.us16.list-manage.com/subscribe/post?u=f9f93e162a8732673b942cbda&amp;id=791d905ad8"
     method="post" id="mc-embedded-subscribe-form" class="col-12 validate"
     name="mc-embedded-subscribe-form" target="_blank" novalidate>
@@ -31,7 +31,7 @@
     {% if not hide_newsletter_caption %}
       <label for="newsletter-input">({% trans "Emails once a week max, & we never sell your data" %})</label>
     {% endif %}
-    <div class="col-12">
+    <div class="col-12 pt-3">
       <input name="EMAIL" id="newsletter-input" placeholder="Enter your email" required>
       <button id="newsletter-subscribe" type="submit" class="button button--primary subscribe">Subscribe</button>
     </div>

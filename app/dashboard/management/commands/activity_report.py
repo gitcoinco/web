@@ -113,7 +113,7 @@ class Command(BaseCommand):
             'type': 'tip',
             'created_on': tip.created_on,
             'last_activity': tip.modified_on,
-            'amount': tip.get_natural_value() * 10**18,
+            'amount': tip.amount_in_whole_units,
             'denomination': tip.tokenName,
             'amount_eth': tip.value_in_eth,
             'amount_usdt': tip.value_in_usdt,
@@ -185,9 +185,8 @@ class Command(BaseCommand):
         return key.generate_url(expires_in=REPORT_URL_EXPIRATION_TIME)
 
     def handle(self, *args, **options):
-        bounties = Bounty.objects.prefetch_related('fulfillments').filter(
+        bounties = Bounty.objects.prefetch_related('fulfillments').current().filter(
             network='mainnet',
-            current_bounty=True,
             web3_created__gte=options['start_date'],
             web3_created__lte=options['end_date']
         ).order_by('web3_created', 'id')
@@ -204,6 +203,8 @@ class Command(BaseCommand):
             network='mainnet',
             created_on__gte=options['start_date'],
             created_on__lte=options['end_date']
+        ).exclude(
+            txid='',
         ).order_by('created_on', 'id')
         formatted_tips = imap(self.format_tip, tips)
 
@@ -243,8 +244,17 @@ class Command(BaseCommand):
             body = '<a href="%s">%s</a>' % (url, url)
             print(url)
 
-            send_mail(settings.CONTACT_EMAIL, settings.CONTACT_EMAIL, subject, body='', html=body)
+            send_mail(
+                settings.CONTACT_EMAIL,
+                settings.CONTACT_EMAIL,
+                subject,
+                body='',
+                html=body,
+                categories=['admin', 'activity_report'],
+            )
 
-            self.stdout.write(self.style.SUCCESS('Sent activity report from %s to %s to %s' % (start, end, settings.CONTACT_EMAIL)))
+            self.stdout.write(
+                self.style.SUCCESS('Sent activity report from %s to %s to %s' % (start, end, settings.CONTACT_EMAIL))
+            )
         else:
             self.stdout.write(self.style.WARNING('No activity from %s to %s to report' % (start, end)))

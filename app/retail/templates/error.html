@@ -19,10 +19,27 @@
 {% load i18n static %}
 {% block body %}
 
-<h1>{% blocktrans %}Error {{code}}.{% endblocktrans %}</h1>
-<p>{% blocktrans %}_Even the bots_ aren't sure what happened, but we'll look into it. <a href="mailto:founders@gitcoin.co">Contact us</a> if you think this is something that shouldn't have happened.{% endblocktrans %}</p>
-<p>
-
-<img src="{% static "v2/images/shrug_bot.png" %}">
-
+  {% if code == 404 %}
+    <p>{% blocktrans %}We can't find the page you are looking for.{% endblocktrans %}</p>
+    <img src="{% static "v2/images/404.png" %}">
+  {% else %}
+    <h1>{% blocktrans %}Error {{code}}.{% endblocktrans %}</h1>
+    <p>{% blocktrans %}Even the bots aren't sure what happened, but we'll look into it.<br>
+      <a href="mailto:founders@gitcoin.co">Contact us</a>
+      if you think this is something that shouldn't have happened.
+      {% endblocktrans %}</p>
+    <img style="max-width: 33rem;" src="{% static "v2/images/shrug_bot.png" %}">
+  {% endif %}
+  {% comment %}
+  {% if code == 500 and sentry_address and request.sentry.id %}
+    {% load raven %}
+    <script src="https://cdn.ravenjs.com/{{ raven_js_version }}/raven.min.js"></script>
+    <script>
+      Raven.showReportDialog({
+        eventId: '{{ request.sentry.id }}',
+        dsn: '{% sentry_public_dsn "https" %}'
+      });
+    </script>
+  {% endif %}
+  {% endcomment %}
 {% endblock %}

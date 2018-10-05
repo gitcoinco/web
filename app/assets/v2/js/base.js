@@ -16,7 +16,11 @@ $(document).ready(function() {
 
   force_no_www();
 
-  $('.nav-link.dropdown-toggle, .nav_avatar').click(function(e) {
+  if (!$('.header > .minihero').length && $('.header > .navbar').length) {
+    $('.header').css('overflow', 'visible');
+  }
+
+  $('.nav-link.dropdown-toggle').click(function(e) {
     e.preventDefault();
     var parent = $(this).parents('.nav-item');
 
@@ -116,7 +120,6 @@ $(document).ready(function() {
     'get',
     'watch',
     'unwatch',
-    'save_search',
     'help/repo',
     'help/dev',
     'help/portal',
@@ -173,7 +176,7 @@ $(document).ready(function() {
 });
 
 $(window).scroll(function() {
-  var scrollPos = $(document).scrollTop();
+  var scrollPos = jQuery(document).scrollTop();
 });
 
 /* TODO : Remove after GDPR */

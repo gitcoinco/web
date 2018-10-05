@@ -41,6 +41,9 @@ class Command(BaseCommand):
         parser.add_argument('network', default='rinkeby', type=str)
 
     def handle(self, *args, **options):
+        # config
+        block = 'latest'
+
         # setup
         network = options['network']
         web3 = get_web3(network)

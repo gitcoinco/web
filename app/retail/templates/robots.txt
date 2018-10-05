@@ -1,6 +1,12 @@
+User-agent: *{% for profile in hidden_profiles %}
+Disallow: profile/{{ profile.handle }}*
+{% endfor %}
 
 User-agent: Twitterbot
 Disallow:
 
 User-agent: Yandex
 Disallow: /
+
+
+Sitemap: {{ settings.BASE_URL }}sitemap.xml

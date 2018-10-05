@@ -5,7 +5,6 @@
   color: #fff;
   cursor: pointer;
   font-size: 14px;
-  font-family: 'Muli', sans-serif;
   font-weight: 300;
   padding: 10px 20px;
   -webkit-appearance: none;
@@ -17,7 +16,9 @@
 }
 
 .button:disabled,
-.button:disabled:hover {
+.button:disabled:hover,
+.button--primary.button.disabled,
+.button--primary.button.disabled:hover {
   background-color: rgba(79, 79, 79, 0.26);
   box-shadow: none;
   color: rgba(0, 0, 0, 0.26);
@@ -49,4 +50,8 @@
 
 .button--warning {
   background-color: #ca001a;
+}
+
+.button--warning:hover {
+  background-color: #d43247;
 }

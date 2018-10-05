@@ -30,6 +30,7 @@ from django.utils.translation import gettext as _
 
 import cssutils
 import premailer
+from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
 
@@ -60,19 +61,27 @@ ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS
 
 def premailer_transform(html):
     cssutils.log.setLevel(logging.CRITICAL)
-    return premailer.transform(html)
+    p = premailer.Premailer(html, base_url=settings.BASE_URL)
+    return p.transform()
 
 
 def render_tip_email(to_email, tip, is_new):
     warning = tip.network if tip.network != 'mainnet' else ""
+    already_redeemed = bool(tip.receive_txid)
+    link = tip.url
+    if tip.web3_type != 'v2':
+        link = tip.receive_url
+    elif tip.web3_type != 'v3':
+        link = tip.receive_url_for_recipient
     params = {
-        'link': tip.url,
+        'link': link,
         'amount': round(tip.amount, 5),
         'tokenName': tip.tokenName,
         'comments_priv': tip.comments_priv,
         'comments_public': tip.comments_public,
         'tip': tip,
-        'show_expires': tip.expires_date < (timezone.now() + timezone.timedelta(days=365)) and tip.expires_date,
+        'already_redeemed': already_redeemed,
+        'show_expires': not already_redeemed and tip.expires_date < (timezone.now() + timezone.timedelta(days=365)) and tip.expires_date,
         'is_new': is_new,
         'warning': warning,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
@@ -214,6 +223,39 @@ def render_admin_contact_funder(bounty, text, from_user):
     return response_html, response_txt
 
 
+def render_funder_stale(github_username, days=30, time_as_str='about a month'):
+    """Render the stale funder email template.
+
+    Args:
+        github_username (str): The Github username to be referenced in the email.
+        days (int): The number of days back to reference.
+        time_as_str (str): The human readable length of time to reference.
+
+    Returns:
+        str: The rendered response as a string.
+
+    """
+    github_username = f"@{github_username}" if github_username else "there"
+    response_txt = f"""
+hi {github_username},
+
+kevin from Gitcoin here (CC scott and vivek too) — i see you haven't funded an issue in {time_as_str}. in the spirit of making Gitcoin better + checking in:
+
+- has anything been slipping on your issue board which might be bounty worthy?
+- do you have any feedback for Gitcoin Core on how we might improve the product to fit your needs?
+
+our idea is that gitcoin should be a place you come when priorities stretch long, and you need an extra set of capable hands. curious if this fits what you're looking for these days.
+
+appreciate you being a part of the community and let me know if you'd like some Gitcoin schwag — just send over a mailing address and a t-shirt size and it'll come your way.
+
+~ kevin
+
+"""
+
+    params = {'txt': response_txt}
+    response_html = premailer_transform(render_to_string("emails/txt.html", params))
+    return response_html, response_txt
+
 
 def render_new_bounty(to_email, bounties, old_bounties):
     sub = get_or_save_email_subscriber(to_email, 'internal')
@@ -274,6 +316,18 @@ def render_new_bounty_rejection(to_email, bounty):
 
     response_html = premailer_transform(render_to_string("emails/new_bounty_rejection.html", params))
     response_txt = render_to_string("emails/new_bounty_rejection.txt", params)
+
+    return response_html, response_txt
+
+
+def render_bounty_changed(to_email, bounty):
+    params = {
+        'bounty': bounty,
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+    }
+
+    response_html = premailer_transform(render_to_string("emails/bounty_changed.html", params))
+    response_txt = render_to_string("emails/bounty_changed.txt", params)
 
     return response_html, response_txt
 
@@ -364,7 +418,7 @@ def render_bounty_startwork_expired(to_email, bounty, interest, time_delta_days)
         'bounty': bounty,
         'interest': interest,
         'time_delta_days': time_delta_days,
-        'subscriber': get_or_save_email_subscriber(fr.email, 'internal'),
+        'subscriber': get_or_save_email_subscriber(interest.profile.email, 'internal'),
     }
 
     response_html = premailer_transform(render_to_string("emails/render_bounty_startwork_expired.html", params))
@@ -493,103 +547,102 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Gitcoin Q2 Update | Augur Testimonial"
+    subject = "A Maintainers Guide To Hacktoberfest | ETH Travels"
 
     intro = '''
 
 <p>
-    Hi there
+Hi there,
 </p>
 <p>
-This week, we shipped <a href="https://medium.com/gitcoin/gitcoin-q2-update-c31e751889c8">Q2 updates.</a>
-In this update, we discuss our OKR’s for Q2, how we performed, and our goals moving forward into Q3.
+<a href="https://medium.com/gitcoin/gitcoins-hacktoberfest-98825f199af2">Gitcoin's Hacktoberfest</a> starts on Monday! Post your favorite 3 open source projects on twitter & tag us (<a href="https://twitter.com/GetGitcoin">@GetGitcoin</a>), then make a <a href="https://gitcoin.co/requests">Gitcoin Request</a> to give those projects a boost!
 </p>
-
 <p>
-In addition to that, we highlighted <a href="https://medium.com/gitcoin/gitcoin-testimonials-augur-9bfe97368a30">
-Augur's work on the Gitcoin platform.</a>
-In this post, we briefly discuss what the goal of the Augur project is, how the team has used Gitcoin
-to build it, and some specifics about the important bounties they’ve had completed by the Gitcoin community.
-Special shout out to Tom Kysar and @cryptomental for their input on this one!
+If you're an OSS maintainer, we wrote a <a href="https://medium.com/gitcoin/a-maintainers-guide-to-hacktoberfest-21405c8ff09f">Guide to Hacktoberfest for maintainers!</a> It's
+a great look at how to manage an open source project generally, let us know what you think.
 </p>
-
 <p>
-Finally, we pushed our
-<a href="https://medium.com/p/804c18dc91da">second installment of Gitcoiner profiles.</a>
-This weeks profile features UX ninja Will Goi. Will has worked closely with the Gitcoin team over the past
-few months to help us build out design features such as the new user profile page and the funds requested interface.
+Lastly, October marks a month of travel for the Gitcoin team. If you'll be at ETH SF (Oct 5-7), Github Universe (Oct 16-17), Web 3 Summit (Oct 22 - 24), or Devcon 4, give us a shout!
 </p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-Our livestream recording featuring Andy Tudhope of Status has been added to the Gitcoin Youtube channel.
-<a href="https://www.youtube.com/watch?v=JiL0aPao50I&t=13s">Check it out!</a>
+        <a href="https://consensys.net/academy/2018developer/?utm_source=ConsenSys+Academy%3A+General+Mailing+List&utm_campaign=88c5836e4a-EMAIL_CAMPAIGN_2018_09_10_02_13_COPY_01&utm_medium=email&utm_term=0_30e33caef0-88c5836e4a">ConsenSys Academy's Developer Program</a> is a 11-week program that equips developers with all the knowledge, skills, and
+         hands on mentorship essential to become industry-leading Ethereum developers. You can register now <a href="https://form.jotform.com/DeveloperProgram/Bootcamp?utm_source=ConsenSys+Academy%3A+General+Mailing+List&utm_campaign=88c5836e4a-EMAIL_CAMPAIGN_2018_09_10_02_13_COPY_01&utm_medium=email&utm_term=0_30e33caef0-88c5836e4a-">here!</a>
         </li>
         <li>
-<a href="https://gitcoin.co/livestream">The Gitcoin Livestream</a> is on as regularly scheduled today at 5PM ET.
-This week features John Paller of Opolis!
+        Gitcoin Livestream today includes ConsenSys Academy and FOAM Protocol at 5PM ET. We're excited and hope to see you - <a href="https://gitcoin.co/livestream">add to your calendar here!</a>.
         </li>
-
     </ul>
 </p>
 <p>
-Back to building,
+Back to BUIDLing,
 </p>
 '''
-    highlights = [
-        {
-            'who': 'subramanianv',
-            'who_link': True,
-            'what': 'Created a full test suite for Market Protocol’s Collateral.Ts',
-            'link': 'https://gitcoin.co/issue/MARKETProtocol/MARKET.js/53/708',
-            'link_copy': 'View more',
-        },
-        {
-            'who': 'HPrivakos',
-            'who_link': True,
-            'what': 'Helped Decentraland create a tutorial for creating a static scene in their VR world.',
-            'link': 'https://gitcoin.co/issue/decentraland/MANA-community-fund-learning-content/8/707',
-            'link_copy': 'View more',
-        },
-        {
-            'who': 'subramanianv',
-            'who_link': True,
-            'what': 'Also improved the Livepeer UX by alerting users when their funds are too low to broadcast.',
-            'link': 'https://gitcoin.co/issue/livepeer/livepeerjs/125/703',
-            'link_copy': 'View more',
-        },
-    ]
+    highlights = [{
+        'who': 'dryajov',
+        'who_link': True,
+        'what': 'Completed one of the largest bounties of all time on MetaMask!',
+        'link': 'https://gitcoin.co/issue/MetaMask/mustekala/21/1279',
+        'link_copy': 'View more',
+    }, {
+        'who': 'mul1sh',
+        'who_link': True,
+        'what': 'Completed his first bounty! Congrats.',
+        'link': 'https://gitcoin.co/issue/diadata-org/coindata/1/1259',
+        'link_copy': 'View more',
+    }, {
+        'who': 'zachzundel',
+        'who_link': True,
+        'what': 'Moving Sharding forward with Prysmatic Labs!',
+        'link': 'https://gitcoin.co/issue/prysmaticlabs/prysm/497/1212',
+        'link_copy': 'View more',
+    }, ]
 
-    bounties_spec = [
-        {
-            'url': 'https://github.com/MARKETProtocol/MARKET.js/issues/60',
-            'primer': 'Help the Market Protocol team validate deposits and withdrawals before a transaction is created.',
-        },
-        {
-            'url': 'https://github.com/MetaMask/metamask-extension/issues/4161',
-            'primer': 'Contribute to MetaMask by building a feature for account and network changes when using a Web 3.0 plugin.',
-        },
-        {
-            'url': 'https://github.com/rotkehlchenio/rotkehlchen/issues/28',
-            'primer': 'Build out Windows support for the Rotkehlchen asset management platform.',
-        },
-    ]
+    bounties_spec = [{
+        'url': 'https://github.com/ethereum/EIPs/issues/1442',
+        'primer': 'Document JSON-RPC interface in an EIP.',
+    }, {
+        'url': 'https://github.com/NethermindEth/nethermind/issues/86',
+        'primer': 'Implement discovery v5 on Nethermind.',
+    }, {
+        'url': 'https://github.com/ethereum/solidity/issues/4648',
+        'primer': 'Solidity: Display Large Values In A Nicer Format',
+    }, ]
 
+    num_leadboard_items = 5
     #### don't need to edit anything below this line
+    leaderboard = {
+        'quarterly_payers': {
+            'title': _('Top Payers'),
+            'items': [],
+        },
+        'quarterly_earners': {
+            'title': _('Top Earners'),
+            'items': [],
+        },
+        'quarterly_orgs': {
+            'title': _('Top Orgs'),
+            'items': [],
+        },
+    }
+    for key, __ in leaderboard.items():
+        leaderboard[key]['items'] = LeaderboardRank.objects.active() \
+            .filter(leaderboard=key).order_by('rank')[0:num_leadboard_items]
 
     bounties = []
     for nb in bounties_spec:
         try:
-            bounty = Bounty.objects.get(
-                current_bounty=True,
+            bounty = Bounty.objects.current().filter(
                 github_url__iexact=nb['url'],
-            )
-            bounties.append({
-                'obj': bounty,
-                'primer': nb['primer']
+            ).order_by('-web3_created').first()
+            if bounty:
+                bounties.append({
+                    'obj': bounty,
+                    'primer': nb['primer']
                 })
-        except:
-            pass
+        except Exception as e:
+            print(e)
 
     ecosystem_bounties = ExternalBounty.objects.filter(created_on__gt=timezone.now() - timezone.timedelta(weeks=1)).order_by('?')[0:5]
 
@@ -597,6 +650,7 @@ Back to building,
         'intro': intro,
         'intro_txt': strip_double_chars(strip_double_chars(strip_double_chars(strip_html(intro), ' '), "\n"), "\n "),
         'bounties': bounties,
+        'leaderboard': leaderboard,
         'ecosystem_bounties': ecosystem_bounties,
         'invert_footer': False,
         'hide_header': False,
@@ -661,8 +715,8 @@ def resend_new_tip(request):
 @staff_member_required
 def new_bounty(request):
     from dashboard.models import Bounty
-    bounties = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3]
-    old_bounties = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3]
+    bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
+    old_bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
     response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties)
     return HttpResponse(response_html)
 
@@ -670,7 +724,7 @@ def new_bounty(request):
 @staff_member_required
 def new_work_submission(request):
     from dashboard.models import Bounty
-    bounty = Bounty.objects.filter(idx_status='submitted', current_bounty=True).last()
+    bounty = Bounty.objects.current().filter(idx_status='submitted').last()
     response_html, _ = render_new_work_submission(settings.CONTACT_EMAIL, bounty)
     return HttpResponse(response_html)
 
@@ -692,7 +746,27 @@ def new_bounty_acceptance(request):
 @staff_member_required
 def bounty_feedback(request):
     from dashboard.models import Bounty
-    response_html, _ = render_bounty_feedback(Bounty.objects.filter(idx_status='done', current_bounty=True).last(), 'foo')
+    response_html, _ = render_bounty_feedback(Bounty.objects.current().filter(idx_status='done').last(), 'foo')
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def funder_stale(request):
+    """Display the stale funder email template.
+
+    Params:
+        limit (int): The number of days to limit the scope of the email to.
+        duration_copy (str): The copy to use for associated duration text.
+        username (str): The Github username to reference in the email.
+
+    Returns:
+        HttpResponse: The HTML version of the templated HTTP response.
+
+    """
+    limit = int(request.GET.get('limit', 30))
+    duration_copy = request.GET.get('duration_copy', 'about a month')
+    username = request.GET.get('username', '@foo')
+    response_html, _ = render_funder_stale(username, limit, duration_copy)
     return HttpResponse(response_html)
 
 
@@ -743,7 +817,8 @@ def roundup(request):
 def quarterly_roundup(request):
     from marketing.utils import get_platform_wide_stats
     platform_wide_stats = get_platform_wide_stats()
-    response_html, _ = render_quarterly_stats(settings.CONTACT_EMAIL, platform_wide_stats)
+    email = settings.CONTACT_EMAIL
+    response_html, _ = render_quarterly_stats(email, platform_wide_stats)
     return HttpResponse(response_html)
 
 

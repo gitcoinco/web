@@ -21,13 +21,16 @@ import json
 import logging
 import os
 from io import BytesIO
+from secrets import token_hex
 from tempfile import NamedTemporaryFile
 
+from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 
+import pyvips
 import requests
-from github.utils import get_user
+from git.utils import get_user
 from PIL import Image, ImageOps
 from svgutils.compose import SVG, Figure, Line
 
@@ -44,64 +47,69 @@ def get_avatar_context():
         'defaultClothingColor': 'CCCCCC',
         'defaultBackground': '25E899',
         'optionalSections': ['HairStyle', 'FacialHair', 'Accessories'],
-        'sections': [{
-            'name': 'Head',
-            'title': 'Pick head shape',
-            'options': ('0', '1', '2', '3', '4')
-        }, {
-            'name': 'Eyes',
-            'title': 'Pick eyes shape',
-            'options': ('0', '1', '2', '3', '4')
-        }, {
-            'name': 'Nose',
-            'title': 'Pick nose shape',
-            'options': ('0', '1', '2', '3', '4')
-        }, {
-            'name': 'Mouth',
-            'title': 'Pick mouth shape',
-            'options': ('0', '1', '2', '3', '4')
-        }, {
-            'name': 'Ears',
-            'title': 'Pick ears shape',
-            'options': ('0', '1', '2', '3')
-        }, {
-            'name': 'Clothing',
-            'title': 'Pick your clothing',
-            'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt')
-        }, {
-            'name': 'Hair Style',
-            'title': 'Pick a hairstyle',
-            'options': (['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'], ['5', 'None'],
-                        ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'])
-        }, {
-            'name': 'Facial Hair',
-            'title': 'Pick a facial hair style',
-            'options': (
-                'Mustache-0', 'Mustache-1', 'Mustache-2', 'Mustache-3', 'Beard-0', 'Beard-1', 'Beard-2', 'Beard-3'
-            )
-        }, {
-            'name': 'Accessories',
-            'title': 'Pick your accessories',
-            'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
-                'HatShort-backwardscap'
-            ], ['HatShort-ballcap'], ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'],
-                        ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'])
-        }, {
-            'name': 'Background',
-            'title': 'Pick a background color',
-            'options': (
-                '25E899', '9AB730', '00A55E', '3FCDFF', '3E00FF', '8E2ABE', 'D0021B', 'F9006C', 'FFCE08', 'F8E71C',
-                '15003E', 'FFFFFF'
-            )
-        }],
+        'sections': [
+            {
+                'name': 'Head',
+                'title': 'Pick head shape',
+                'options': ('0', '1', '2', '3', '4')
+            }, {
+                'name': 'Eyes',
+                'title': 'Pick eyes shape',
+                'options': ('0', '1', '2', '3', '4', '5', '6')
+            }, {
+                'name': 'Nose',
+                'title': 'Pick nose shape',
+                'options': ('0', '1', '2', '3', '4')
+            }, {
+                'name': 'Mouth',
+                'title': 'Pick mouth shape',
+                'options': ('0', '1', '2', '3', '4')
+            }, {
+                'name': 'Ears',
+                'title': 'Pick ears shape',
+                'options': ('0', '1', '2', '3')
+            },
+            {
+                'name': 'Clothing',
+                'title': 'Pick your clothing',
+                'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet')
+            },
+            {
+                'name': 'Hair Style',
+                'title': 'Pick a hairstyle',
+                'options': (['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'], ['5', 'None'],
+                            ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'])
+            },
+            {
+                'name': 'Facial Hair',
+                'title': 'Pick a facial hair style',
+                'options': (
+                    'Mustache-0', 'Mustache-1', 'Mustache-2', 'Mustache-3', 'Beard-0', 'Beard-1', 'Beard-2', 'Beard-3'
+                )
+            },
+            {
+                'name': 'Accessories',
+                'title': 'Pick your accessories',
+                'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
+                    'HatShort-backwardscap'
+                ], ['HatShort-ballcap'], ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'],
+                            ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'])
+            },
+            {
+                'name': 'Background',
+                'title': 'Pick a background color',
+                'options': (
+                    '25E899', '9AB730', '00A55E', '3FCDFF', '3E00FF', '8E2ABE', 'D0021B', 'F9006C', 'FFCE08', 'F8E71C',
+                    '15003E', 'FFFFFF'
+                )
+            }
+        ],
     }
 
 
 def get_upload_filename(instance, filename):
-    from secrets import token_hex
-    from os.path import basename
     salt = token_hex(16)
-    file_path = basename(filename)
+    file_path = os.path.basename(filename)
     return f"avatars/{getattr(instance, '_path', '')}/{salt}/{file_path}"
 
 
@@ -217,8 +225,7 @@ def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None
 
     # Build the list of avatar components
     components = [
-        icon_width,
-        icon_height,
+        icon_width, icon_height,
         Line([(0, icon_height / 2), (icon_width, icon_height / 2)],
              width=f'{icon_height}px',
              color=payload.get('background_color')),
@@ -269,11 +276,8 @@ def handle_avatar_payload(request):
     body = json.loads(request.body)
     for k, v in body.items():
         if v and k in valid_component_keys:
-            component_type, svg_asset = v.lstrip('v2/images/avatar/').split('/')
-            avatar_dict[k] = {
-                'component_type': component_type,
-                'svg_asset': svg_asset,
-            }
+            component_type, svg_asset = v.lstrip(f'{settings.STATIC_URL}v2/images/avatar/').split('/')
+            avatar_dict[k] = {'component_type': component_type, 'svg_asset': svg_asset, }
         elif v and k in valid_color_keys:
             avatar_dict[k] = v
     return avatar_dict
@@ -287,7 +291,7 @@ def get_avatar(_org_name):
         filepath = AVATAR_BASE + '../../v2/images/helmet.png'
     try:
         avatar = Image.open(filepath, 'r').convert("RGBA")
-    except IOError:
+    except (IOError, FileNotFoundError):
         remote_user = get_user(_org_name)
         if not remote_user.get('avatar_url', False):
             return JsonResponse({'msg': 'invalid user'}, status=422)
@@ -386,3 +390,28 @@ def get_github_avatar(handle):
         return False
 
     return temp_avatar
+
+
+def convert_img(obj, input_fmt='svg', output_fmt='png'):
+    """Convert the provided buffer to another format.
+
+    Args:
+        obj (File): The File/ContentFile object.
+        input_fmt (str): The input format. Defaults to: svg.
+        output_fmt (str): The output format. Defaults to: png.
+
+    Exceptions:
+        Exception: Cowardly catch blanket exceptions here, log it, and return None.
+
+    Returns:
+        BytesIO: The BytesIO stream containing the converted File data.
+        None: If there is an exception, the method returns None.
+
+    """
+    try:
+        obj_data = obj.read()
+        image = pyvips.Image.new_from_buffer(obj_data, f'.{input_fmt}')
+        return BytesIO(image.write_to_buffer(f'.{output_fmt}'))
+    except Exception as e:
+        logger.error(e)
+    return None

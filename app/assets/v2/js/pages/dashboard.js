@@ -1,26 +1,23 @@
 /* eslint-disable no-loop-func */
-// helper functions
-var technologies = [
-  '.NET', 'ASP .NET', 'Angular', 'Backbone', 'Bootstrap', 'C', 'C#', 'C++', 'CSS', 'CSS3',
-  'CoffeeScript', 'Dart', 'Django', 'Drupal', 'DynamoDB', 'ElasticSearch', 'Ember', 'Erlang', 'Express', 'Go', 'Groovy',
-  'Grunt', 'HTML', 'Hadoop', 'Jasmine', 'Java', 'JavaScript', 'Jekyll', 'Knockout', 'LaTeX', 'Mocha', 'MongoDB',
-  'MySQL', 'NoSQL', 'Node.js', 'Objective-C', 'Oracle', 'PHP', 'Perl', 'Polymer', 'Postgres', 'Python', 'R', 'Rails',
-  'React', 'Redis', 'Redux', 'Ruby', 'SASS', 'Scala', 'Sqlite', 'Swift', 'TypeScript', 'Websockets', 'WordPress', 'jQuery'
-];
 
-var sidebar_keys = [
+var filters = [
   'experience_level',
   'project_length',
   'bounty_type',
   'bounty_filter',
+  'moderation_filter',
   'network',
   'idx_status',
-  'tech_stack',
   'project_type',
-  'permission_type'
+  'permission_type',
+  'misc'
 ];
 
+results_limit = 50;
+
 var localStorage;
+
+var explorer = { };
 
 try {
   localStorage = window.localStorage;
@@ -48,22 +45,57 @@ function debounce(func, wait, immediate) {
   };
 }
 
-// sets search information default
+/**
+ * Fetches all filters options from the URI
+ */
+var getActiveFilters = function() {
+
+  if (window.location.search) {
+    resetFilters();
+  }
+  let _filters = filters.slice();
+
+  _filters.push('keywords', 'order_by');
+  _filters.forEach(filter => {
+    if (getParam(filter)) {
+      localStorage[filter] = getParam(filter).replace(/^,|,\s*$/g, '');
+    }
+  });
+};
+
+/**
+ * Build URI based on selected filter
+ */
+var buildURI = function() {
+  let uri = '';
+  let _filters = filters.slice();
+
+  _filters.push('keywords', 'order_by');
+  _filters.forEach((filter) => {
+    if (localStorage[filter] &&
+      localStorage[filter] != 'any') {
+      uri += (filter + '=' + localStorage[filter] + '&');
+    }
+  });
+
+  return uri.slice(0, -1);
+};
+
+/**
+ * Updates localStorage with selected filters
+ */
 var save_sidebar_latest = function() {
   localStorage['order_by'] = $('#sort_option').val();
 
-  for (var i = 0; i < sidebar_keys.length; i++) {
-    var key = sidebar_keys[i];
+  filters.forEach((filter) => {
+    localStorage[filter] = '';
 
-    localStorage[key] = '';
-
-    $('input[name="' + key + '"]:checked').each(function() {
-      localStorage[key] += $(this).val() + ',';
+    $('input[name="' + filter + '"]:checked').each(function() {
+      localStorage[filter] += $(this).val() + ',';
     });
 
-    // Removing the start and last comma to avoid empty element when splitting with comma
-    localStorage[key] = localStorage[key].replace(/^,|,\s*$/g, '');
-  }
+    localStorage[filter] = localStorage[filter].replace(/^,|,\s*$/g, '');
+  });
 };
 
 // saves search information default
@@ -84,27 +116,25 @@ var set_sidebar_defaults = function() {
     } else {
       localStorage['keywords'] = keywords;
     }
-
-    window.history.replaceState(history.state, 'Issue Explorer | Gitcoin', '/explorer');
   }
+
+  getActiveFilters();
 
   if (localStorage['order_by']) {
     $('#sort_option').val(localStorage['order_by']);
     $('#sort_option').selectmenu().selectmenu('refresh');
   }
 
-  for (var i = 0; i < sidebar_keys.length; i++) {
-    var key = sidebar_keys[i];
-
-    if (localStorage[key]) {
-      localStorage[key].split(',').forEach(function(v, k) {
-        $('input[name="' + key + '"][value="' + v + '"]').prop('checked', true);
+  filters.forEach((filter) => {
+    if (localStorage[filter]) {
+      localStorage[filter].split(',').forEach(function(val) {
+        $('input[name="' + filter + '"][value="' + val + '"]').prop('checked', true);
       });
 
-      if ($('input[name="' + key + '"][value!=any]:checked').length > 0)
-        $('input[name="' + key + '"][value=any]').prop('checked', false);
+      if ($('input[name="' + filter + '"][value!=any]:checked').length > 0)
+        $('input[name="' + filter + '"][value=any]').prop('checked', false);
     }
-  }
+  });
 };
 
 var set_filter_header = function() {
@@ -135,44 +165,36 @@ var toggleAny = function(event) {
 };
 
 var addTechStackKeywordFilters = function(value) {
-  var isTechStack = false;
+  if (localStorage['keywords']) {
+    const keywords = localStorage['keywords'];
+    const new_value = ',' + value;
 
-  technologies.forEach(function(v, k) {
-    if (v.toLowerCase() === value) {
-      isTechStack = true;
+    if (keywords === value ||
+        keywords.indexOf(new_value) !== -1 ||
+        keywords.indexOf(value + ',') !== -1) {
 
-      $('.filter-tags').append('<a class="filter-tag tech_stack"><span>' + value + '</span>' +
-        '<i class="fas fa-times" onclick="removeFilter(\'tech_stack\', \'' + value + '\')"></i></a>');
-
-      $('input[name="tech_stack"][value="' + value + '"]').prop('checked', true);
+      return;
     }
-  });
-
-  if (!isTechStack) {
-    if (localStorage['keywords']) {
-      localStorage['keywords'] += ',' + value;
-    } else {
-      localStorage['keywords'] += value;
-    }
-
-    $('.filter-tags').append('<a class="filter-tag keywords"><span>' + value + '</span>' +
-      '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + value + '\')"></i></a>');
+    localStorage['keywords'] = keywords + new_value;
+  } else {
+    localStorage['keywords'] = value;
   }
+
+  $('.filter-tags').append('<a class="filter-tag keywords"><span>' + value + '</span>' +
+    '<i class="fas fa-times" onclick="removeFilter(\'keywords\', \'' + value + '\')"></i></a>');
 };
 
 var getFilters = function() {
   var _filters = [];
 
-  for (var i = 0; i < sidebar_keys.length; i++) {
-    var key = sidebar_keys[i];
-
-    $.each($('input[name="' + key + '"]:checked'), function() {
+  filters.forEach((filter) => {
+    $.each($('input[name="' + filter + '"]:checked'), function() {
       if ($(this).attr('val-ui')) {
-        _filters.push('<a class="filter-tag ' + key + '"><span>' + $(this).attr('val-ui') + '</span>' +
-          '<i class="fas fa-times" onclick="removeFilter(\'' + key + '\', \'' + $(this).attr('value') + '\')"></i></a>');
+        _filters.push('<a class="filter-tag ' + filter + '"><span>' + $(this).attr('val-ui') + '</span>' +
+          '<i class="fas fa-times" onclick="removeFilter(\'' + filter + '\', \'' + $(this).attr('value') + '\')"></i></a>');
       }
     });
-  }
+  });
 
   if (localStorage['keywords']) {
     localStorage['keywords'].split(',').forEach(function(v, k) {
@@ -194,28 +216,26 @@ var removeFilter = function(key, value) {
     localStorage['keywords'] = localStorage['keywords'].replace(/^,|,\s*$/g, '');
   }
 
-  refreshBounties();
+  reset_offset();
+  refreshBounties(null, 0, false);
 };
 
-var get_search_URI = function() {
+var get_search_URI = function(offset) {
   var uri = '/api/v0.1/bounties/?';
   var keywords = '';
 
-  for (var i = 0; i < sidebar_keys.length; i++) {
-    var key = sidebar_keys[i];
-    var filters = [];
+  filters.forEach((filter) => {
+    var active_filters = [];
 
-    $.each ($('input[name="' + key + '"]:checked'), function() {
-      if (key === 'tech_stack' && $(this).val()) {
-        keywords += $(this).val() + ',';
-      } else if ($(this).val()) {
-        filters.push($(this).val());
+    $.each ($('input[name="' + filter + '"]:checked'), function() {
+      if ($(this).val()) {
+        active_filters.push($(this).val());
       }
     });
 
-    var val = filters.toString();
+    var val = active_filters.toString();
 
-    if ((key === 'bounty_filter') && val) {
+    if ((filter === 'bounty_filter') && val) {
       var values = val.split(',');
 
       values.forEach(function(_value) {
@@ -232,23 +252,28 @@ var get_search_URI = function() {
           _value = document.contxt.github_handle;
         }
 
-        if (_value !== 'any')
-          uri += _key + '=' + _value + '&';
+        if (_value !== 'any') {
+          if (!uri.endsWith('?'))
+            uri += '&';
+          uri += _key + '=' + _value;
+        }
       });
 
       // TODO: Check if value myself is needed for coinbase
       if (val === 'fulfilledByMe') {
-        key = 'bounty_owner_address';
+        filter = 'bounty_owner_address';
         val = 'myself';
       }
     }
 
-    if (val !== 'any' &&
-        key !== 'bounty_filter' &&
-        key !== 'bounty_owner_address') {
-      uri += key + '=' + val + '&';
+    if (val && val !== 'any' &&
+      filter !== 'bounty_filter' &&
+      filter !== 'bounty_owner_address') {
+      if (!uri.endsWith('?'))
+        uri += '&';
+      uri += filter + '=' + val;
     }
-  }
+  });
 
   if (localStorage['keywords']) {
     localStorage['keywords'].split(',').forEach(function(v, pos, arr) {
@@ -263,17 +288,13 @@ var get_search_URI = function() {
     uri += '&raw_data=' + keywords;
   }
 
-  if (typeof web3 != 'undefined' && web3.eth.coinbase) {
-    uri += '&coinbase=' + web3.eth.coinbase;
-  } else {
-    uri += '&coinbase=unknown';
-  }
-
   var order_by = localStorage['order_by'];
 
   if (order_by) {
     uri += '&order_by=' + order_by;
   }
+  uri += '&offset=' + offset;
+  uri += '&limit=' + results_limit;
   return uri;
 };
 
@@ -305,68 +326,39 @@ var process_stats = function(results) {
     }
   }
 
-  worth_usdt = worth_usdt.toFixed(2);
-  worth_eth = (worth_eth / Math.pow(10, 18)).toFixed(2);
-  var stats = worth_usdt + ' USD, ' + worth_eth + ' ETH';
+  show_stats = false; // TODO: xfr over to new stats API call
+  if (show_stats) {
+    worth_usdt = worth_usdt.toFixed(2);
+    worth_eth = (worth_eth / Math.pow(10, 18)).toFixed(2);
 
-  for (var t in currencies_to_value) {
-    if (Object.prototype.hasOwnProperty.call(currencies_to_value, t)) {
-      stats += ', ' + currencies_to_value[t].toFixed(2) + ' ' + t;
-    }
-  }
+    var stats = worth_usdt + ' USD, ' + worth_eth + ' ETH';
 
-  var matchesEl = $('#matches');
-  var fundingInfoEl = $('#funding-info');
-
-  switch (num) {
-    case 0:
-      matchesEl.html(gettext('No Results'));
-      fundingInfoEl.html('');
-      break;
-    case 1:
-      matchesEl.html(num + gettext(' Matching Result'));
-      fundingInfoEl.html('<span id="modifiers">Funded Issue</span><span id="stats" class="font-caption">(' + stats + ')</span>');
-      break;
-    default:
-      matchesEl.html(num + gettext(' Matching Results'));
-      fundingInfoEl.html('<span id="modifiers">Funded Issues</span><span id="stats" class="font-caption">(' + stats + ')</span>');
-  }
-};
-
-var paint_bounties_in_viewport = function(start, max) {
-  document.is_painting_now = true;
-  var num_bounties = document.bounties_html.length;
-
-  for (var i = start; i < num_bounties && i < max; i++) {
-    var html = document.bounties_html[i];
-
-    document.last_bounty_rendered = i;
-    $('#bounties').append(html);
-  }
-
-  $('div.bounty_row.result').each(function() {
-    var href = $(this).attr('href');
-
-    if (typeof $(this).changeElementType !== 'undefined') {
-      $(this).changeElementType('a'); // hack so that users can right click on the element
+    for (var t in currencies_to_value) {
+      if (Object.prototype.hasOwnProperty.call(currencies_to_value, t)) {
+        stats += ', ' + currencies_to_value[t].toFixed(2) + ' ' + t;
+      }
     }
 
-    $(this).attr('href', href);
-  });
-  document.is_painting_now = false;
+    var matchesEl = $('#matches');
+    var fundingInfoEl = $('#funding-info');
 
-  if (localStorage['referrer'] === 'onboard') {
-    $('.bounty_row').each(function(index) {
-      if (index > 2)
-        $(this).addClass('hidden');
-    });
+    switch (num) {
+      case 0:
+        matchesEl.html(gettext('No Results'));
+        fundingInfoEl.html('');
+        break;
+      case 1:
+        matchesEl.html(num + gettext(' Matching Result'));
+        fundingInfoEl.html('<span id="modifiers">Funded Issue</span><span id="stats" class="font-caption">(' + stats + ')</span>');
+        break;
+      default:
+        matchesEl.html(num + gettext(' Matching Results'));
+        fundingInfoEl.html('<span id="modifiers">Funded Issues</span><span id="stats" class="font-caption">(' + stats + ')</span>');
+    }
   }
 };
 
 var trigger_scroll = debounce(function() {
-  if (typeof document.bounties_html == 'undefined' || document.bounties_html.length == 0) {
-    return;
-  }
   var scrollPos = $(document).scrollTop();
   var last_active_bounty = $('.bounty_row.result:last-child');
 
@@ -375,19 +367,33 @@ var trigger_scroll = debounce(function() {
   }
 
   var window_height = $(window).height();
-  var have_painted_all_bounties = document.bounties_html.length <= document.last_bounty_rendered;
+  var have_painted_all_bounties = false;// TODO
   var buffer = 500;
-  var does_need_to_paint_more = !document.is_painting_now && !have_painted_all_bounties && ((last_active_bounty.offset().top) < (scrollPos + buffer + window_height));
+  var get_more = !have_painted_all_bounties && ((last_active_bounty.offset().top) < (scrollPos + buffer + window_height));
 
-  if (does_need_to_paint_more) {
-    paint_bounties_in_viewport(document.last_bounty_rendered + 1, document.last_bounty_rendered + 6);
+  if (get_more && !document.done_loading_results) {
+
+    // move loading indicator
+    var loading_html = $('.loading_img').clone().wrap('<p>').parent().html();
+
+    $('.loading_img').remove();
+    $('#bounties').append(loading_html);
+    $('.loading_img').css('display', 'block');
+
+    document.offset = parseInt(document.offset) + parseInt(results_limit);
+    refreshBounties(null, document.offset, true);
   }
 }, 200);
 
 $(window).scroll(trigger_scroll);
 $('body').bind('touchmove', trigger_scroll);
 
-var refreshBounties = function(event) {
+var reset_offset = function() {
+  document.done_loading_results = false;
+  document.offset = 0;
+};
+
+var refreshBounties = function(event, offset, append) {
 
   // Allow search for freeform text
   var searchInput = $('#keywords')[0];
@@ -404,23 +410,28 @@ var refreshBounties = function(event) {
   toggleAny(event);
   getFilters();
 
-  $('.nonefound').css('display', 'none');
-  $('.loading').css('display', 'block');
-  $('.bounty_row').remove();
+  window.history.pushState('', '', '/explorer?' + buildURI());
 
+  if (!append) {
+    $('.nonefound').css('display', 'none');
+    $('.loading').css('display', 'block');
+    $('.bounty_row').remove();
+  }
   // filter
-  var uri = get_search_URI();
+  var uri = get_search_URI(offset);
 
   // analytics
-  var params = { uri: uri };
+  mixpanel.track('Refresh Bounties', { uri: uri });
 
-  mixpanel.track('Refresh Bounties', params);
+  // Abort pending request if any subsequent request
+  if (explorer.bounties_request && explorer.bounties_request.readyState !== 4) {
+    explorer.bounties_request.abort();
+  }
 
-  // order
-  $.get(uri, function(results) {
+  explorer.bounties_request = $.get(uri, function(results, x) {
     results = sanitizeAPIResults(results);
 
-    if (results.length === 0) {
+    if (results.length === 0 && !append) {
       if (localStorage['referrer'] === 'onboard') {
         $('.no-results').removeClass('hidden');
         $('#dashboard-content').addClass('hidden');
@@ -429,84 +440,37 @@ var refreshBounties = function(event) {
       }
     }
 
-    document.is_painting_now = false;
     document.last_bounty_rendered = 0;
-    document.bounties_html = [];
 
-    for (var i = 0; i < results.length; i++) {
-      // setup
-      var result = results[i];
-      var related_token_details = tokenAddressToDetailsByNetwork(result['token_address'], result['network']);
-      var decimals = 18;
+    var html = renderBountyRowsFromResults(results, true);
 
-      if (related_token_details && related_token_details.decimals) {
-        decimals = related_token_details.decimals;
-      }
-
-      var divisor = Math.pow(10, decimals);
-
-      result['rounded_amount'] = Math.round(result['value_in_token'] / divisor * 100) / 100;
-      var is_expired = new Date(result['expires_date']) < new Date() && !result['is_open'];
-
-      // setup args to go into template
-      if (typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
-        result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
-      } else if (result['fulfiller_address'] !== '0x0000000000000000000000000000000000000000') {
-        result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">' + result['status'] + '</span></a>';
-      }
-
-      result.action = result['url'];
-      result['title'] = result['title'] ? result['title'] : result['github_url'];
-
-      var project_type = ucwords(result['project_type']) + ' &bull; ';
-
-      result['p'] = project_type + (result['experience_level'] ? result['experience_level'] + ' &bull; ' : '');
-      
-      if (result['status'] === 'done')
-        result['p'] += 'Done';
-      if (result['fulfillment_accepted_on']) {
-        result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_accepted_on']), false, 60 * 60);
-      } else if (result['status'] === 'started') {
-        result['p'] += 'Started';
-        result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_started_on']), false, 60 * 60);
-      } else if (result['status'] === 'submitted') {
-        result['p'] += 'Submitted';
-        if (result['fulfillment_submitted_on']) {
-          result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_submitted_on']), false, 60 * 60);
-        }
-      } else if (result['status'] == 'cancelled') {
-        result['p'] += 'Cancelled';
-        if (result['canceled_on']) {
-          result['p'] += ' ' + timeDifference(new Date(), new Date(result['canceled_on']), false, 60 * 60);
-        }
-      } else if (is_expired) {
-        var time_ago = timeDifference(new Date(), new Date(result['expires_date']), true);
-
-        result['p'] += (' Expired ' + time_ago + ' ago');
-      } else {
-        var opened_when = timeDifference(new Date(), new Date(result['web3_created']), true);
-
-        var timeLeft = timeDifference(new Date(), new Date(result['expires_date']));
-        var expiredExpires = new Date() < new Date(result['expires_date']) ? 'Expires' : 'Expired';
-        var softOrNot = result['can_submit_after_expiration_date'] ? 'Soft ' : '';
-
-        result['p'] += ('Opened ' + opened_when + ' ago, ' + softOrNot + expiredExpires + ' ' + timeLeft);
-      }
-
-      result['watch'] = 'Watch';
-
-      // render the template
-      var tmpl = $.templates('#result');
-      var html = tmpl.render(result);
-
-      document.bounties_html[i] = html;
+    if (html) {
+      $('#bounties').append(html);
     }
 
-    paint_bounties_in_viewport(0, 10);
+    document.done_loading_results = results.length < results_limit;
+
+    $('div.bounty_row.result').each(function() {
+      var href = $(this).attr('href');
+
+      if (typeof $(this).changeElementType !== 'undefined') {
+        $(this).changeElementType('a'); // hack so that users can right click on the element
+      }
+
+      $(this).attr('href', href);
+    });
+
+    if (localStorage['referrer'] === 'onboard') {
+      $('.bounty_row').each(function(index) {
+        if (index > 2)
+          $(this).addClass('hidden');
+      });
+    }
 
     process_stats(results);
   }).fail(function() {
-    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+    if (explorer.bounties_request.readyState !== 0)
+      _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
   }).always(function() {
     $('.loading').css('display', 'none');
   });
@@ -514,15 +478,9 @@ var refreshBounties = function(event) {
 
 window.addEventListener('load', function() {
   set_sidebar_defaults();
-  refreshBounties();
+  reset_offset();
+  refreshBounties(null, 0, false);
 });
-
-var getNextDayOfWeek = function(date, dayOfWeek) {
-  var resultDate = new Date(date.getTime());
-
-  resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay() - 1) % 7 + 1);
-  return resultDate;
-};
 
 function getURLParams(k) {
   var p = {};
@@ -533,20 +491,23 @@ function getURLParams(k) {
   return k ? p[k] : p;
 }
 
-var resetFilters = function() {
-  for (var i = 0; i < sidebar_keys.length; i++) {
-    var key = sidebar_keys[i];
-    var tag = ($('input[name="' + key + '"][value]'));
+/**
+ * removed all filters from the sidebar search
+ * resetKeyword : boolean
+ */
+var resetFilters = function(resetKeyword) {
+  filters.forEach((filter) => {
+    var tag = ($('input[name="' + filter + '"][value]'));
 
     for (var j = 0; j < tag.length; j++) {
       if (tag[j].value == 'any')
-        $('input[name="' + key + '"][value="any"]').prop('checked', true);
+        $('input[name="' + filter + '"][value="any"]').prop('checked', true);
       else
-        $('input[name="' + key + '"][value="' + tag[j].value + '"]').prop('checked', false);
+        $('input[name="' + filter + '"][value="' + tag[j].value + '"]').prop('checked', false);
     }
-  }
+  });
 
-  if (localStorage['keywords']) {
+  if (resetKeyword && localStorage['keywords']) {
     localStorage['keywords'].split(',').forEach(function(v, k) {
       removeFilter('keywords', v);
     });
@@ -559,7 +520,7 @@ var resetFilters = function() {
     $('#dashboard-title').addClass('hidden');
     $('#onboard-dashboard').removeClass('hidden');
     $('#onboard-footer').removeClass('hidden');
-    resetFilters();
+    resetFilters(true);
     $('input[name=idx_status][value=open]').prop('checked', true);
     $('.search-area input[type=text]').text(getURLParams('q'));
 
@@ -595,7 +556,8 @@ $(document).ready(function() {
   // Sort select menu
   $('#sort_option').selectmenu({
     select: function(event, ui) {
-      refreshBounties();
+      reset_offset();
+      refreshBounties(null, 0, false);
       event.preventDefault();
     }
   });
@@ -608,18 +570,6 @@ $(document).ready(function() {
   function extractLast(term) {
     return split(term).pop();
   }
-
-  technologies.forEach(function(v, k) {
-    $('#tech-stack-options').append(
-      '<div class="checkbox_container">' +
-        '<input name="tech_stack" id="' + v.toLowerCase() + '" type="checkbox" value="' + v.toLowerCase() + '" val-ui="' + v + '"/>' +
-        '<span class="checkbox"></span>' +
-        '<div class="filter-label">' +
-          '<label for="' + v.toLowerCase() + '">' + v + '</label>' +
-        '</div>' +
-      '</div>'
-    );
-  });
 
   // Handle search input clear
   $('.close-icon')
@@ -678,84 +628,37 @@ $(document).ready(function() {
   // sidebar clear
   $('.dashboard #clear').click(function(e) {
     e.preventDefault();
-    resetFilters();
-    refreshBounties();
+    resetFilters(true);
+    reset_offset();
+    refreshBounties(null, 0, false);
   });
 
   // search bar
   $('#bounties').delegate('#new_search', 'click', function(e) {
-    refreshBounties();
+    reset_offset();
+    refreshBounties(null, 0, false);
     e.preventDefault();
   });
 
   $('.search-area input[type=text]').keypress(function(e) {
     if (e.which == 13) {
-      refreshBounties();
+      reset_offset();
+      refreshBounties(null, 0, false);
       e.preventDefault();
     }
   });
 
   // sidebar filters
   $('.sidebar_search input[type=radio], .sidebar_search label').change(function(e) {
-    refreshBounties();
+    reset_offset();
+    refreshBounties(null, 0, false);
     e.preventDefault();
   });
 
   // sidebar filters
   $('.sidebar_search input[type=checkbox], .sidebar_search label').change(function(e) {
-    refreshBounties(e);
-    e.preventDefault();
-  });
-
-  // email subscribe functionality
-  $('.save_search').click(function(e) {
-    e.preventDefault();
-    $('#save').remove();
-    var url = '/sync/search_save';
-
-    setTimeout(function() {
-      $.get(url, function(newHTML) {
-        $(newHTML).appendTo('body').modal();
-        $('#save').append("<input type='hidden' name='raw_data' value='" + get_search_URI() + "'>");
-        $('#save_email').focus();
-      });
-    }, 300);
-  });
-
-  var emailSubscribe = function() {
-    var email = $('#save input[type=email]').val();
-    var raw_data = $('#save input[type=hidden]').val();
-    var is_validated = validateEmail(email);
-
-    if (!is_validated) {
-      _alert({ message: gettext('Please enter a valid email address.') }, 'warning');
-    } else {
-      var url = '/sync/search_save';
-
-      $.post(url, {
-        email: email,
-        raw_data: raw_data
-      }, function(response) {
-        var status = response['status'];
-
-        if (status == 200) {
-          _alert({ message: gettext("You're in! Keep an eye on your inbox for the next funding listing.") }, 'success');
-          $.modal.close();
-        } else {
-          _alert({ message: response['msg'] }, 'error');
-        }
-      });
-    }
-  };
-
-  $('body').delegate('#save input[type=email]', 'keypress', function(e) {
-    if (e.which == 13) {
-      emailSubscribe();
-      e.preventDefault();
-    }
-  });
-  $('body').delegate('#save a', 'click', function(e) {
-    emailSubscribe();
+    reset_offset();
+    refreshBounties(e, 0, false);
     e.preventDefault();
   });
 });

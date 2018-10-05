@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """Define the Dashboard application configuration.
 
 Copyright (C) 2018 Gitcoin Core
@@ -16,7 +17,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 from django.apps import AppConfig

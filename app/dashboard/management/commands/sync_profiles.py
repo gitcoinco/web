@@ -23,6 +23,7 @@ from django.utils import timezone
 
 from app.utils import sync_profile
 from dashboard.models import Bounty, Profile
+from marketing.utils import is_deleted_account
 
 
 def does_need_refresh(handle):
@@ -52,9 +53,12 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # setup
-        handles = set([b.org_name for b in Bounty.objects.filter(current_bounty=True)])
+        handles = set([b.org_name for b in Bounty.objects.current()])
         for handle in handles:
             print(handle)
+            if handle in settings.BLOCKED_USERS or is_deleted_account(handle):
+                print('not syncing, handle is blocked')
+                continue
 
             # does this handle need a refresh
             needs_refresh = does_need_refresh(handle) or options['force_refresh']

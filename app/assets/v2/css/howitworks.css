@@ -2,10 +2,40 @@
   display: flex;
 }
 
+h1,
+h2 {
+  color: #0D0764;
+  line-height: 0;
+}
+
+h2 {
+  font-weight: bold;
+}
+
 .how-it-works__step {
   display: flex;
   flex-wrap: wrap;
   margin-bottom: 2em;
+}
+
+
+.howworks-container ul {
+  text-align: left;
+}
+
+.howworks-container li {
+  list-style-type: none;
+  margin-right: 1rem;
+  display: inline;
+}
+
+.howworks-container li a {
+  text-decoration: none;
+  color: #3E00FF;
+}
+
+.howworks-container li a:hover {
+  border-bottom: 2px solid #3E00FF;
 }
 
 .how-it-works__step:nth-child(even) {
@@ -19,10 +49,6 @@
   align-items: center;
 }
 
-.how-it-works__hor-line {
-  height: 5px;
-}
-
 .how-it-works__vert-line {
   position: absolute;
   background-color:rgba(0, 0, 0, 0.05);
@@ -33,47 +59,40 @@
   bottom: -4em;
 }
 
-.how-it-works__fake_but {
-  border: none;
-  border-radius: 2px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  color: #fff;
-  font-size: 14px;
-  font-family: 'Muli', sans-serif;
-  font-weight: 300;
-  padding: 8px 16px;
-  -webkit-appearance: none;
-  background-color: #0D0764;
-  margin-bottom: 1em;
-  position: absolute;
-  right: 0px;
-  bottom: 0px;
-}
-
-.how-it-works__step-number {
-  position: relative;
-  z-index: 1;
+.how-it-works__step-number,
+.how-it-works__step-exclamation,
+.how-it-works__step-wait {
   margin-top: 1em;
+  z-index: 1;
   width: 30px;
   height: 30px;
   line-height: 26px;
   border-radius: 100%;
+  position: relative;
+  left: -1px;
+}
+
+.how-it-works__step-number {
   background: #05B66A;
   color: #333333;
 }
 
+.how-it-works__text-grey {
+  color: #86939E;
+}
+
 .how-it-works__step-exclamation {
-  margin-top: 1em;
-  width: 30px;
-  height: 30px;
-  line-height: 26px;
-  border-radius: 100%;
   background: #F9006C;
   color: #FFFFFF;
 }
 
+.how-it-works__step-wait {
+  background-color: #EBC629;
+}
+
 .how-it-works__step-title {
   font-weight: bold;
+  min-width: 10px;
 }
 
 .how-it-works__step-title,
@@ -110,7 +129,44 @@
 }
 
 .how-it-works__step-icon img {
-  width: 50px;
+  max-width: 5rem;
+}
+
+.in-some-cases-container img {
+  height: 7rem;
+}
+
+#permissions h2 img {
+  position: relative;
+  top: -3px;
+  height: 1.6rem;
+}
+
+.grey-border {
+  border-bottom: 1px solid #979797;
+  padding-bottom: 1.5rem;
+}
+
+@media (max-width: 767.98px) {
+
+  .in-some-cases-container img {
+    margin-top: 2.2rem;
+  }
+
+  #payment img {
+    width: 100%;
+  }
+
+  #project-types img {
+    width: 20rem;
+    margin-right: 1rem;
+    margin-left: 1rem;
+  }
+
+  .howworks-container ul {
+    margin-left: 1rem;
+    margin-right: 1rem;
+  }
 }
 
 @media (min-width: 992px) {

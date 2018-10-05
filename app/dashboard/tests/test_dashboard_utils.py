@@ -17,7 +17,9 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from dashboard.utils import clean_bounty_url, get_ordinal_repr, get_web3
+from dashboard.utils import (
+    clean_bounty_url, get_bounty, get_ordinal_repr, get_web3, getBountyContract, humanize_event_name,
+)
 from test_plus.test import TestCase
 from web3.main import Web3
 from web3.providers.rpc import HTTPProvider
@@ -36,6 +38,14 @@ class DashboardUtilsTest(TestCase):
             assert len(web3_provider.providers) == 1
             assert isinstance(web3_provider.providers[0], HTTPProvider)
             assert web3_provider.providers[0].endpoint_uri == f'https://{network}.infura.io'
+
+    @staticmethod
+    def test_get_bounty_contract():
+        assert getBountyContract('mainnet').address == "0x2af47a65da8CD66729b4209C22017d6A5C2d2400"
+
+    @staticmethod
+    def test_get_bounty():
+        assert get_bounty(100, 'rinkeby')['contract_deadline'] == 1515699751
 
     @staticmethod
     def test_get_ordinal_repr():
@@ -57,3 +67,9 @@ class DashboardUtilsTest(TestCase):
         assert clean_bounty_url(
             'https://github.com/gitcoinco/web/issues/9999#issuecomment-999999999'
         ) == 'https://github.com/gitcoinco/web/issues/9999'
+
+    @staticmethod
+    def test_humanize_event_name():
+        """Test the humanized representation of an event name."""
+        assert humanize_event_name('start_work') == 'WORK STARTED'
+        assert humanize_event_name('remarket_funded_issue') == 'REMARKET_FUNDED_ISSUE'

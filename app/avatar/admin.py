@@ -43,16 +43,31 @@ class AvatarAdmin(GeneralAdmin):
     """Define the Avatar administration layout."""
 
     ordering = ['-id']
-    fields = ['config', 'use_github_avatar', 'svg_asset', 'png_asset', 'created_on', 'modified_on']
-    readonly_fields = ['svg_asset', 'png_asset', 'created_on', 'modified_on']
-    inlines = [
-        ProfileInline,
+    fields = [
+        'config', 'use_github_avatar', 'svg_asset', 'custom_png_asset', 'github_svg_asset', 'png_asset', 'created_on',
+        'modified_on'
     ]
+    readonly_fields = ['svg_asset', 'custom_png_asset', 'github_svg_asset', 'png_asset', 'created_on', 'modified_on']
+    inlines = [ProfileInline, ]
 
+    # Custom Avatars
     def svg_asset(self, instance):
         """Define the avatar SVG tag to be displayed in the admin."""
         if instance.svg and instance.svg.url:
             return mark_safe(f'<img src="{instance.svg.url}" width="150" height="150" />')
+        return mark_safe('N/A')
+
+    def custom_png_asset(self, instance):
+        """Define the custom avatar PNG tag to be displayed in the admin."""
+        if instance.custom_avatar_png and instance.custom_avatar_png.url:
+            return mark_safe(f'<img src="{instance.custom_avatar_png.url}" width="150" height="150" />')
+        return mark_safe('N/A')
+
+    # Github Avatars
+    def github_svg_asset(self, instance):
+        """Define the Github avatar PNG tag to be displayed in the admin."""
+        if instance.github_svg and instance.github_svg.url:
+            return mark_safe(f'<img src="{instance.github_svg.url}" width="150" height="150" />')
         return mark_safe('N/A')
 
     def png_asset(self, instance):
@@ -61,8 +76,10 @@ class AvatarAdmin(GeneralAdmin):
             return mark_safe(f'<img src="{instance.png.url}" width="150" height="150" />')
         return mark_safe('N/A')
 
-    svg_asset.short_description = 'SVG Asset'
-    png_asset.short_description = 'PNG Asset'
+    svg_asset.short_description = 'Custom SVG Asset'
+    custom_png_asset.short_description = 'Custom PNG Asset'
+    github_svg_asset.short_description = 'Github SVG Asset'
+    png_asset.short_description = 'Github PNG Asset'
 
 
 admin.site.register(Avatar, AvatarAdmin)

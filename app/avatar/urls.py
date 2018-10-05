@@ -23,7 +23,4 @@ from django.urls import re_path
 from .views import avatar, save_avatar
 
 app_name = 'avatar'
-urlpatterns = [
-    re_path(r'^view', avatar, name='view_avatar'),
-    re_path(r'^save', save_avatar, name='save_avatar'),
-]
+urlpatterns = [re_path(r'^view', avatar, name='view_avatar'), re_path(r'^save', save_avatar, name='save_avatar'), ]

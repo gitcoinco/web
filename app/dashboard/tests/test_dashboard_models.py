@@ -20,10 +20,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from datetime import date, datetime, timedelta
 
 from django.conf import settings
+from django.contrib.humanize.templatetags.humanize import naturaltime
 
 import pytz
 from dashboard.models import Bounty, BountyFulfillment, Interest, Profile, Tip, Tool, ToolVote
-from economy.models import ConversionRate
+from economy.models import ConversionRate, Token
 from test_plus.test import TestCase
 
 
@@ -32,6 +33,7 @@ class DashboardModelsTest(TestCase):
 
     def setUp(self):
         """Perform setup for the testcase."""
+        Token.objects.create(priority=999, symbol='ETH', address='0x0000000000000000000000000000000000000000')
         ConversionRate.objects.create(
             from_amount=1,
             to_amount=2,
@@ -74,7 +76,7 @@ class DashboardModelsTest(TestCase):
             bounty=bounty,
             profile=fulfiller_profile,
         )
-        assert str(bounty) == 'foo 3 ETH 2008-10-31 00:00:00+00:00'
+        assert str(bounty) == f'5: foo, 0 ETH @ {naturaltime(bounty.web3_created)}'
         assert bounty.url == f'{settings.BASE_URL}issue/gitcoinco/web/11/{bounty.standard_bounties_id}'
         assert bounty.title_or_desc == 'foo'
         assert bounty.issue_description_text == 'hello world'
@@ -84,7 +86,7 @@ class DashboardModelsTest(TestCase):
         assert bounty.is_funder('fred') is False
         assert bounty.is_funder('flintstone') is True
         assert bounty.status == 'done'
-        assert bounty.value_true == 3e-18
+        assert bounty.value_true == 0
         assert bounty.value_in_eth == 3
         assert bounty.value_in_usdt_now == 0
         assert 'ago 5 Feature Intermediate' in bounty.desc
@@ -92,6 +94,225 @@ class DashboardModelsTest(TestCase):
         assert bounty.get_github_api_url() == 'https://api.github.com/repos/gitcoinco/web/issues/11'
         assert bounty_fulfillment.profile.handle == 'fred'
         assert bounty_fulfillment.bounty.title == 'foo'
+
+    @staticmethod
+    def test_exclude_bounty_by_status():
+        Bounty.objects.create(
+            title='First',
+            idx_status=0,
+            is_open=False,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            raw_data={}
+        )
+        Bounty.objects.create(
+            title='Second',
+            idx_status=1,
+            is_open=False,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            raw_data={}
+        )
+        Bounty.objects.create(
+            title='Third',
+            idx_status=2,
+            is_open=False,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2222, 11, 30, tzinfo=pytz.UTC),
+            raw_data={},
+        )
+        Bounty.objects.create(
+            title='Fourth',
+            idx_status=3,
+            is_open=True,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2222, 11, 30, tzinfo=pytz.UTC),
+            raw_data={}
+        )
+        bounty_stats = Bounty.objects.exclude_by_status()
+        assert len(bounty_stats) == 4
+        bounty_stats = Bounty.objects.exclude_by_status(['open'])
+        assert len(bounty_stats) == 3
+        bounty_stats = Bounty.objects.exclude_by_status(['cancelled', 'done'])
+        assert len(bounty_stats) == 3
+        bounty_stats = Bounty.objects.exclude_by_status(['open', 'expired', 'cancelled'])
+        assert not bounty_stats
+
+    @staticmethod
+    def test_relative_bounty_url_with_malformed_issue_number():
+        bounty = Bounty.objects.create(
+            title='First',
+            idx_status=0,
+            is_open=False,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/0xDEADBEEF',
+            raw_data={}
+        )
+        expected_url = '/funding/details?url=https://github.com/gitcoinco/web/issues/0xDEADBEEF'
+        assert bounty.get_relative_url() == expected_url
+
+    @staticmethod
+    def test_get_natural_value_if_bad_token_address_provided():
+        bounty = Bounty.objects.create(
+            title='BadTokenBounty',
+            idx_status=0,
+            is_open=False,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            token_address='0xDEADDEADDEADDEAD',
+            raw_data={}
+        )
+        assert bounty.get_natural_value() == 0
+
+    @staticmethod
+    def test_can_submit_legacy_bounty_after_expiration_date():
+        bounty = Bounty.objects.create(
+            title='ExpiredBounty',
+            web3_type='legacy_gitcoin',
+            idx_status=0,
+            is_open=False,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            raw_data={}
+        )
+        assert bounty.is_legacy is True
+        assert bounty.can_submit_after_expiration_date is True
+
+    @staticmethod
+    def test_cannot_submit_standard_bounty_after_expiration_date():
+        bounty = Bounty.objects.create(
+            title='ExpiredBounty',
+            idx_status=0,
+            is_open=False,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            raw_data={}
+        )
+        assert bounty.can_submit_after_expiration_date is False
+
+    @staticmethod
+    def test_can_submit_standard_bounty_after_expiration_date_if_deadline_extended():
+        bounty = Bounty.objects.create(
+            title='ExpiredBounty',
+            idx_status=0,
+            is_open=False,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            raw_data={'contract_deadline': 1001, 'ipfs_deadline': 1000}
+        )
+        assert bounty.can_submit_after_expiration_date is True
+
+    @staticmethod
+    def test_title_or_desc():
+        bounty = Bounty.objects.create(
+            title='TitleTest',
+            idx_status=0,
+            is_open=False,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/0xDEADBEEF',
+            raw_data={}
+        )
+        assert bounty.title_or_desc == "TitleTest"
+        bounty.title = None
+        assert bounty.title_or_desc == "https://github.com/gitcoinco/web/issues/0xDEADBEEF"
+
+    @staticmethod
+    def test_github_issue_number():
+        bounty = Bounty.objects.create(
+            title='TitleTest',
+            idx_status=0,
+            is_open=False,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            raw_data={}
+        )
+        assert bounty.github_issue_number == 12345678
+        bounty.github_url = 'https://github.com/gitcoinco/web/issues/THIS_SHALL_RETURN_NONE'
+        assert not bounty.github_issue_number
+
+    @staticmethod
+    def test_github_org_name():
+        bounty = Bounty.objects.create(
+            title='TitleTest',
+            idx_status=0,
+            is_open=False,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            raw_data={}
+        )
+        assert bounty.github_org_name == "gitcoinco"
+        bounty.github_url = None
+        assert not bounty.github_org_name
+
+    @staticmethod
+    def test_github_repo_name():
+        bounty = Bounty.objects.create(
+            title='TitleTest',
+            idx_status=0,
+            is_open=False,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            raw_data={}
+        )
+        assert bounty.github_repo_name == "web"
+        bounty.github_url = None
+        assert not bounty.github_repo_name
+
+    @staticmethod
+    def test_bounty_status():
+        bounty = Bounty.objects.create(
+            title='TitleTest',
+            idx_status=0,
+            is_open=True,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            raw_data={}
+        )
+        assert bounty.status == "open"
+        bounty.web3_type = "legacy_gitcoin"
+        assert bounty.is_legacy
+        bounty.pk = 12345
+        assert bounty.status == "open"
+        bounty.web3_type = None
+        bounty.is_open = False
+        bounty.accepted = False
+        assert bounty.status == "expired"
+        bounty.accepted = True
+        assert bounty.status == "done"
+        bounty.expires_date = datetime(2222, 11, 11, tzinfo=pytz.UTC)
+        assert bounty.status == "done"
+        bounty.accepted = False
+        assert bounty.status == "cancelled"
+        bounty.is_open = True
+        bounty.num_fulfillments = 1
+        assert bounty.status == "submitted"
+        bounty.is_open = False
+        bounty.num_fulfillments = 0
+        bounty.expires_date = None
+        assert bounty.status == "unknown"
+        bounty.override_status = "overridden"
+        assert bounty.status == "overridden"
+
+    @staticmethod
+    def test_fetch_issue_comments():
+        bounty = Bounty.objects.create(
+            title='TitleTest',
+            idx_status=0,
+            is_open=False,
+            web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
+            expires_date=datetime(2008, 11, 30, tzinfo=pytz.UTC),
+            github_url='https://github.com/gitcoinco/web/issues/12345678',
+            raw_data={}
+        )
+        assert bounty.github_repo_name == "web"
+        bounty.github_url = None
+        assert not bounty.github_repo_name
 
     @staticmethod
     def test_bounty_expired():
@@ -128,6 +349,7 @@ class DashboardModelsTest(TestCase):
             expires_date=date.today() + timedelta(days=1),
             created_on=date.today(),
             tokenAddress='0x0000000000000000000000000000000000000000',
+            web3_type='yge',
         )
         assert str(tip) == '(net) - PENDING 7 ETH to fred from NA, created: today, expires: tomorrow'
         assert tip.get_natural_value() == 7e-18
@@ -144,13 +366,13 @@ class DashboardModelsTest(TestCase):
         interest = Interest(
             profile=profile,
         )
-        assert str(interest) == 'foo / pending: False'
+        assert str(interest) == 'foo / pending: False / status: okay'
 
     @staticmethod
     def test_profile():
         """Test the dashboard Profile model."""
         bounty = Bounty.objects.create(
-            github_url='https://github.com/gitcoinco/web',
+            github_url='https://github.com/gitcoinco/web/issues/305',
             web3_created=datetime.now(tz=pytz.UTC),
             expires_date=datetime.now(tz=pytz.UTC) + timedelta(days=1),
             is_open=True,
@@ -160,7 +382,7 @@ class DashboardModelsTest(TestCase):
         )
         tip = Tip.objects.create(
             emails=['foo@bar.com'],
-            github_url='https://github.com/gitcoinco/web',
+            github_url='https://github.com/gitcoinco/web/issues/305',
             expires_date=datetime.now(tz=pytz.UTC) + timedelta(days=1),
         )
         profile = Profile(
@@ -233,7 +455,7 @@ class DashboardModelsTest(TestCase):
             value_in_token=3,
             token_name='ETH',
             web3_created=datetime(2008, 10, 31, tzinfo=pytz.UTC),
-            github_url='https://github.com/gitcoinco/web/issues/9999#issuecomment-999999999',
+            github_url='https://github.com/gitcoinco/web/issues/305#issuecomment-999999999',
             token_address='0x0',
             issue_description='hello world',
             bounty_owner_github_username='flintstone',
@@ -246,5 +468,5 @@ class DashboardModelsTest(TestCase):
             experience_level='Intermediate',
             raw_data={},
         )
-        assert bounty.github_url == 'https://github.com/gitcoinco/web/issues/9999'
+        assert bounty.github_url == 'https://github.com/gitcoinco/web/issues/305'
         bounty.delete()

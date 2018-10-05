@@ -1,0 +1,43 @@
+{% extends 'onepager/base.html' %}
+{% load i18n static %}
+{% block 'scripts' %}
+
+{% endblock %}
+<!-- Main -->
+
+
+
+{% block 'main' %}
+
+<section id=main>
+{% include 'shared/gas_nav.html' %}
+
+<h1>{% trans "Mainnet" %}</h1>
+<ul>
+  <li>
+    <a href="{% url 'faucet' %}" target="_blank" rel="noopener noreferrer">{% trans "Gitcoin Mainnet Faucet" %}</a>
+  </li>
+</ul>
+
+<h1>{% trans "Rinkeby Testnet" %}</h1>
+<ul>
+  <li>
+    <a href="https://faucet.rinkeby.io/" target="_blank" rel="noopener noreferrer">https://faucet.rinkeby.io/</a>
+  </li>
+  <li>
+    <a href="http://rinkeby-faucet.com//" target="_blank" rel="noopener noreferrer">http://rinkeby-faucet.com/</a>
+  </li>
+</ul>
+
+
+<h1>{% trans "Ropsten Testnet" %}</h1>
+<ul>
+  <li>
+    <a href="https://faucet.metamask.io/" target="_blank" rel="noopener noreferrer">https://faucet.metamask.io/</a>
+  </li>
+</ul>
+
+</section>
+
+
+{% endblock %}
