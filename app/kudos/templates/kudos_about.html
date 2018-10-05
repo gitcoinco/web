@@ -106,21 +106,26 @@
           </div>
         </div>
         <div class="row">
+          <div class="col-12 col-md-3">
+            <img class="img-fluid mb-3" src="{% static "v2/images/kudos/kudos_cellarius1.gif" %}" alt="Cellarius">
+          </div>
           <div class="col">
-            <p class="mb-5">{% trans "Gitcoin has partnered with CELLARIUS UNIVERSE (CX) to create original collectible badges that feature  Cellarius Art style. We’ll likely work with the Cellarius team to come up with the language that displays here." %}</p>
+            <p class="mb-5">{% trans "Gitcoin has partnered with Cellarius Universe to create original collectible badges that feature Cellarius Art style. " %}</p>
+            <p>{% trans "Cellarius is an original transmedia cyberpunk franchise that leverages blockchain technology and user-generated assets to createa  a collaborative, fan-curated story." %}</p>
           </div>
         </div>
         <div class="row">
-          <div class="col-12 col-md-3">
-            <img class="img-fluid mb-3" src="http://placehold.it/248x240" alt="Generic placeholder image">
-          </div>
           <div class="col-12 col-md-9">
-            <p>{% trans "Gitcoin has partnered with CELLARIUS UNIVERSE (CX) to create original collectible badges that feature  Cellarius Art style. We’ll likely work with the Cellarius team to come up with the language that displays here." %}</p>
-            {% trans "Visit the Cellarius Network" %}
+            <p>{% trans "In essence, the Cellarius Universe is a future-oriented mythology. It is also a collective storytelling project whose content and contours will be shaped by its community." %}</p>
+            <p>{% trans "Cellarius straddles the familiar cyberpunk themes of a dystopian and troubled future while maintaining a more optimistic outlook on humanity’s destiny and place in the cosmos." %}</p>
+          </div>
+          <div class="col-12 col-md-3">
+            <img class="img-fluid mb-3" src="{% static "v2/images/kudos/kudos_cellarius.gif" %}" alt="Cellarius">
           </div>
         </div>
         <div class="row justify-content-center">
-            <a class="btn btn-orange m-5" href="{% url 'kudos_marketplace' %}">{% trans "See Featured Kudos" %}</a>
+            <a class="btn btn-orange m-5" href="{% url 'kudos_marketplace' %}?q=cellarius">{% trans "See Cellarius Kudos" %}</a>
+            <a class="btn m-5" style="color: #cd7e66; border: 1px solid #cd7e66; padding: 0.8rem;" href="https://cellarius.network">{% trans "Visit the Cellarius Network" %}</a>
         </div>
       </div>
     </section>
