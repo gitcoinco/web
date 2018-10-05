@@ -30,6 +30,15 @@ jobs:
         - cp app/app/travis.env app/app/.env
         - pip install pip setuptools --upgrade
         - pip install codecov
+        # Fetch and Install GeoIP database files.
+        - sudo apt-get update && sudo apt-get install -y libmaxminddb-dev
+        - wget http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz
+        - wget http://geolite.maxmind.com/download/geoip/database/GeoLite2-Country.mmdb.gz
+        - gunzip GeoLite2-City.mmdb.gz && gunzip GeoLite2-Country.mmdb.gz
+        - sudo mkdir -p /opt/GeoIP/
+        - sudo mv *.mmdb /opt/GeoIP/
+        # Install libvips dependencies.
+        - sudo apt-get install -y libvips libvips-dev
         # Install Node and Python dependencies.
         - npm install
         - pip install -r requirements/test.txt

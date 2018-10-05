@@ -2243,10 +2243,14 @@ class Profile(SuperModel):
         }
 
         if activities:
-            all_activities = self.activities.filter(
+            if not self.is_org:
+                all_activities = self.activities
+            else:
+                url = self.github_url
+                all_activities = Activity.objects.filter(bounty__github_url__startswith=url)
+            all_activities = all_activities.filter(
                 bounty__network=network
             ).select_related('bounty', 'tip').all().order_by('-created')
-
             if all_activities:
                 params['activities'] = [{
                     'title': _('By Created Date'),
@@ -2263,6 +2267,20 @@ class Profile(SuperModel):
                 params['scoreboard_position_org'] = self.get_org_leaderboard_index()
 
         return params
+
+    @property
+    def locations(self):
+        from app.utils import get_location_from_ip
+        locations = []
+        for login in self.actions.filter(action='Login'):
+            if login.location_data:
+                locations.append(login.location_data)
+            else:
+                location_data = get_location_from_ip(login.ip_address)
+                login.location_data = location_data
+                login.save()
+                locations.append(location_data)
+        return locations
 
     @property
     def is_eu(self):

@@ -205,7 +205,8 @@ class LeaderboardRank(SuperModel):
 
     @property
     def is_user_based(self):
-        return '_tokens' not in self.leaderboard and '_keywords' not in self.leaderboard
+        profile_keys = ['_tokens', '_keywords', '_cities', '_countries', '_continents']
+        return any(sub in self.leaderboard for sub in profile_keys)
 
     @property
     def at_ify_username(self):
