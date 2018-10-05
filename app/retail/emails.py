@@ -525,7 +525,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "A Maintainers Guide To Hacktoberfest | ETH Travels"
+    subject = "CodeFund Grows | Hacktober Begins"
 
     intro = '''
 
@@ -533,23 +533,24 @@ def render_new_bounty_roundup(to_email):
 Hi there,
 </p>
 <p>
-<a href="https://medium.com/gitcoin/gitcoins-hacktoberfest-98825f199af2">Gitcoin's Hacktoberfest</a> starts on Monday! Post your favorite 3 open source projects on twitter & tag us (<a href="https://twitter.com/GetGitcoin">@GetGitcoin</a>), then make a <a href="https://gitcoin.co/requests">Gitcoin Request</a> to give those projects a boost!
+<a href="https://codefund.io/">CodeFund</a> wants to support open source projects everywhere!
+By placing ethical ads in beautiful places, <a href="https://twitter.com/codeberry">Eric Berry</a> and team have been providing Discourse, CodeSandbox, and Material-UI
+and countless others with sources of revenue to support their projects. The CodeFund team just added a superstar, <a href="https://codefund.io/team">Nate Hopkins</a>,
+to the team as CTO, and we're excited about the future of the product. If you want to advertise to developers, there's no better way!
+<br>
+<a href="https://codefund.io">Checkout CodeFund's new website to learn more</a>
 </p>
 <p>
-If you're an OSS maintainer, we wrote a <a href="https://medium.com/gitcoin/a-maintainers-guide-to-hacktoberfest-21405c8ff09f">Guide to Hacktoberfest for maintainers!</a> It's
-a great look at how to manage an open source project generally, let us know what you think.
+Hacktoberfest is in full swing! Take a look here for issues tagged <a href="https://gitcoin.co/explorer?network=mainnet&keywords=hacktoberfest&order_by=-web3_created">'Hacktoberfest'</a>
+ which have been funded with Gitcoin bounties, across projects like Ruby For Good, Peepeth, Giveth and more.
 </p>
 <p>
-Lastly, October marks a month of travel for the Gitcoin team. If you'll be at ETH SF (Oct 5-7), Github Universe (Oct 16-17), Web 3 Summit (Oct 22 - 24), or Devcon 4, give us a shout!
+The Gitcoin Core team is on the move! If you'll be at ETH SF (Oct 5-7), Github Universe (Oct 16-17), Web 3 Summit (Oct 22 - 24), SustainOSS (Oct 25), or Devcon 4, give us a shout!
 </p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-        <a href="https://consensys.net/academy/2018developer/?utm_source=ConsenSys+Academy%3A+General+Mailing+List&utm_campaign=88c5836e4a-EMAIL_CAMPAIGN_2018_09_10_02_13_COPY_01&utm_medium=email&utm_term=0_30e33caef0-88c5836e4a">ConsenSys Academy's Developer Program</a> is a 11-week program that equips developers with all the knowledge, skills, and
-         hands on mentorship essential to become industry-leading Ethereum developers. You can register now <a href="https://form.jotform.com/DeveloperProgram/Bootcamp?utm_source=ConsenSys+Academy%3A+General+Mailing+List&utm_campaign=88c5836e4a-EMAIL_CAMPAIGN_2018_09_10_02_13_COPY_01&utm_medium=email&utm_term=0_30e33caef0-88c5836e4a-">here!</a>
-        </li>
-        <li>
-        Gitcoin Livestream today includes ConsenSys Academy and FOAM Protocol at 5PM ET. We're excited and hope to see you - <a href="https://gitcoin.co/livestream">add to your calendar here!</a>.
+        With travel, Gitcoin Livestream is cancelled this week. We'll be back next week as regularly scheduled.
         </li>
     </ul>
 </p>
@@ -558,34 +559,34 @@ Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'dryajov',
+        'who': 'cryptomental',
         'who_link': True,
-        'what': 'Completed one of the largest bounties of all time on MetaMask!',
-        'link': 'https://gitcoin.co/issue/MetaMask/mustekala/21/1279',
+        'what': 'Back to help out on Status Embark!',
+        'link': 'https://gitcoin.co/issue/embark-framework/embark/946/1306',
         'link_copy': 'View more',
     }, {
-        'who': 'mul1sh',
+        'who': 'evgeniuz',
         'who_link': True,
-        'what': 'Completed his first bounty! Congrats.',
+        'what': 'Fixed an Avatar Bug this week!',
         'link': 'https://gitcoin.co/issue/diadata-org/coindata/1/1259',
         'link_copy': 'View more',
     }, {
-        'who': 'zachzundel',
+        'who': 'sameer2800',
         'who_link': True,
-        'what': 'Moving Sharding forward with Prysmatic Labs!',
-        'link': 'https://gitcoin.co/issue/prysmaticlabs/prysm/497/1212',
+        'what': 'Completed a UI makeover funded in \'RHOC\' token!',
+        'link': 'https://gitcoin.co/issue/JoshOrndorff/BitStory/1/1298',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/ethereum/EIPs/issues/1442',
-        'primer': 'Document JSON-RPC interface in an EIP.',
+        'url': 'https://github.com/matterinc/PeepethClient/issues/14',
+        'primer': 'Hacktoberfest alert! A Peepeth client.',
     }, {
-        'url': 'https://github.com/NethermindEth/nethermind/issues/86',
-        'primer': 'Implement discovery v5 on Nethermind.',
+        'url': 'https://github.com/EthWorks/UniversalLoginSDK/issues/88',
+        'primer': 'Work on an EthWorks bounty funded by the ECF.',
     }, {
-        'url': 'https://github.com/ethereum/solidity/issues/4648',
-        'primer': 'Solidity: Display Large Values In A Nicer Format',
+        'url': 'https://github.com/walleth/kethereum/issues/44',
+        'primer': 'Work on SpongyCastle with Walleth',
     }, ]
 
     num_leadboard_items = 5

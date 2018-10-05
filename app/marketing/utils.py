@@ -179,6 +179,9 @@ def get_or_save_email_subscriber(email, source, send_slack_invite=True, profile=
         EmailSubscriber.objects.filter(pk__in=list(email_subscriber_ids)).delete()
         es = EmailSubscriber.objects.get(email__iexact=email)
         created = False
+    except EmailSubscriber.DoesNotExist:
+        es = EmailSubscriber.objects.create(**defaults)
+        created = True
     except Exception as e:
         print(f'Failed to update or create email subscriber: ({email}) - {e}')
         return ''

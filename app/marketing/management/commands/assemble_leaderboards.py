@@ -74,6 +74,10 @@ counts = default_ranks()
 
 
 def profile_to_location(handle):
+    # TODO (mbeacom): Debug, fix, and re-enable leaderboards by location on live.
+    if settings.ENV == 'prod':
+        return []
+
     profiles = Profile.objects.filter(handle__iexact=handle)
     if handle and profiles.exists():
         profile = profiles.first()
