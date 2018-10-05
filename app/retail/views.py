@@ -735,6 +735,10 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
         'url': 'https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e',
         'title': _('How to Price Work on Gitcoin'),
     }, {
+         'img': 'https://raw.github.com/gitcoinco/Gitcoin-Exemplars/master/helpImage.png',
+         'url': 'https://github.com/gitcoinco/Gitcoin-Exemplars',
+         'title': _('Exemplars for Writing A Good Bounty Description'),
+    }, {
         'img': static('v2/images/help/tools.png'),
         'url': 'https://medium.com/gitcoin/tutorial-post-a-bounty-in-90-seconds-a7d1a8353f75',
         'title': _('Post a Bounty in 90 Seconds'),
