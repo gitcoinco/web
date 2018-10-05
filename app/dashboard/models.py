@@ -42,7 +42,7 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 import requests
 from dashboard.tokens import addr_to_token
-from economy.models import ConversionRate, SuperModel
+from economy.models import SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import (
@@ -255,6 +255,7 @@ class Bounty(SuperModel):
     submissions_comment = models.IntegerField(null=True, blank=True)
     override_status = models.CharField(max_length=255, blank=True)
     last_comment_date = models.DateTimeField(null=True, blank=True)
+    funder_last_messaged_on = models.DateTimeField(null=True, blank=True)
     fulfillment_accepted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_submitted_on = models.DateTimeField(null=True, blank=True)
     fulfillment_started_on = models.DateTimeField(null=True, blank=True)
@@ -913,54 +914,29 @@ class Bounty(SuperModel):
     @property
     def additional_funding_summary(self):
         """Return a dict describing the additional funding from crowdfunding that this object has"""
-        ret = {}
+        return_dict = {
+            'tokens': {},
+            'usd_value': 0,
+        }
         for tip in self.tips.filter(is_for_bounty_fulfiller=True).exclude(txid=''):
-            token = tip.tokenName
-            obj = ret.get(token, {})
-
-            if not obj:
-                obj['amount'] = 0.0
-
-                conversion_rate = ConversionRate.objects.filter(
-                    from_currency=token,
-                    to_currency='USDT',
-                ).order_by('-timestamp').first()
-
-                if conversion_rate:
-                    obj['ratio'] = (float(conversion_rate.to_amount) / float(conversion_rate.from_amount))
-                    obj['timestamp'] = conversion_rate.timestamp
-                else:
-                    obj['ratio'] = 0.0
-                    obj['timestamp'] = datetime.now()
-
-                ret[token] = obj
-
-            obj['amount'] += tip.amount_in_whole_units
-        return ret
+            key = tip.tokenName
+            if key not in return_dict['tokens'].keys():
+                return_dict['tokens'][key] = 0
+            return_dict['tokens'][key] += tip.amount_in_whole_units
+            return_dict['usd_value'] += tip.value_in_usdt if tip.value_in_usdt else 0
+        return return_dict
 
     @property
     def additional_funding_summary_sentence(self):
         afs = self.additional_funding_summary
-        tokens = afs.keys()
-
-        if not tokens:
-            return ''
-
+        if len(afs['tokens'].keys()) == 0:
+            return ""
         items = []
-        usd_value = 0.0
-
-        for token_name in tokens:
-            obj = afs[token_name]
-            ratio = obj['ratio']
-            amount = obj['amount']
-            usd_value += amount * ratio
-            items.append(f"{amount} {token_name}")
-
+        for token, value in afs['tokens'].items():
+            items.append(f"{value} {token}")
         sentence = ", ".join(items)
-
-        if usd_value:
-            sentence += f" worth {usd_value} USD"
-
+        if(afs['usd_value']):
+            sentence += f" worth ${afs['usd_value']}"
         return sentence
 
 
@@ -987,6 +963,7 @@ class BountyFulfillment(SuperModel):
     fulfillment_id = models.IntegerField(null=True, blank=True)
     fulfiller_hours_worked = models.DecimalField(null=True, blank=True, decimal_places=2, max_digits=50)
     fulfiller_github_url = models.CharField(max_length=255, blank=True, null=True)
+    funder_last_notified_on = models.DateTimeField(null=True, blank=True)
     accepted = models.BooleanField(default=False)
     accepted_on = models.DateTimeField(null=True, blank=True)
 
@@ -2233,18 +2210,21 @@ class Profile(SuperModel):
         }
 
         if activities:
-            if not self.is_org:
-                all_activities = self.activities
-            else:
-                url = self.github_url
-                all_activities = Activity.objects.filter(bounty__github_url__startswith=url)
-            all_activities = all_activities.filter(
+            fulfilled = self.fulfilled.filter(
                 bounty__network=network
-            ).select_related('bounty', 'tip').all().order_by('-created')
-            if all_activities:
+            ).select_related('bounty').all().order_by('-created_on')
+            completed = list(set([fulfillment.bounty for fulfillment in fulfilled.exclude(accepted=False)]))
+            submitted = list(set([fulfillment.bounty for fulfillment in fulfilled.exclude(accepted=True)]))
+            started = self.interested.prefetch_related('bounty_set') \
+                .filter(bounty__network=network).all().order_by('-created')
+            started_bounties = list(set([interest.bounty_set.last() for interest in started]))
+
+            if completed or submitted or started:
                 params['activities'] = [{
                     'title': _('By Created Date'),
-                    'activity_bounties': all_activities,
+                    'completed': completed,
+                    'submitted': submitted,
+                    'started': started_bounties,
                 }]
 
         if tips:
@@ -2257,20 +2237,6 @@ class Profile(SuperModel):
                 params['scoreboard_position_org'] = self.get_org_leaderboard_index()
 
         return params
-
-    @property
-    def locations(self):
-        from app.utils import get_location_from_ip
-        locations = []
-        for login in self.actions.filter(action='Login'):
-            if login.location_data:
-                locations.append(login.location_data)
-            else:
-                location_data = get_location_from_ip(login.ip_address)
-                login.location_data = location_data
-                login.save()
-                locations.append(location_data)
-        return locations
 
     @property
     def is_eu(self):
