@@ -434,6 +434,31 @@ def gdpr_reconsent(email):
     )
 
 
+def funder_payout_reminder(to_email, bounty, github_username, live):
+    print('in funder_payout_reminder')
+    from_email = settings.PERSONAL_CONTACT_EMAIL
+    subject = "Payout reminder"
+    html, text = render_funder_payout_reminder(to_email=to_email, bounty=bounty, github_username=github_username)
+    print("-----" * 100)
+    print(html)
+    print("-----" * 100)
+    if (live):
+        try:
+            send_mail(
+                    from_email,
+                    to_email,
+                    subject,
+                    text,
+                    html,
+                    from_name="Kevin Owocki (Gitcoin.co)",
+                    categories=['marketing', func_name()],
+            )
+        except Exception as e:
+            print(e)
+            return False
+        return True
+
+
 def new_external_bounty():
     """Send a new external bounty email notification."""
     to_email = settings.PERSONAL_CONTACT_EMAIL
