@@ -101,7 +101,9 @@ INSTALLED_APPS = [
     'external_bounties',
     'dataviz',
     'impersonate',
+    'grants',
     'bounty_requests'
+
 ]
 
 MIDDLEWARE = [

@@ -1,0 +1,150 @@
+{% load static %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {% include 'shared/head.html' %}
+  {% include 'shared/cards.html' %}
+
+</head>
+<body class="interior {{active}} grant">
+{% include 'shared/tag_manager_2.html' %}
+<div class="container-fluid header dash">
+  {% include 'shared/nav.html' %}
+</div>
+
+<img src="{% static "v2/images/bitmap.png" %}" width="100%" />
+
+<h2 class="fund__header">
+  Help
+  <span class="fund__header--highlight">{{grant.adminProfile}}</span>
+  get funding for
+  <span class="fund__header--highlight">{{grant.title}}</span>
+</h2>
+
+<div class="container">
+  <div class="fund__title">Fund Grant</div>
+
+  <form action='{{grant.pk}}' method="POST" id="js-fundGrant">
+    {% csrf_token %}
+    <div class="row bottom-buffer">
+
+
+
+      <div class="form__group-horizontal">
+        <label class="form__label">Contribution per Period</label>
+        <div class="row">
+          <div class="col-4">
+            <input type="number" name="amount_per_period" class="form__input" required />
+          </div>
+            <div class="col-4">
+              <div class="form__select2">
+                <select class='js-select2' name='denomination' id='js-token'> </select>
+              </div>
+            </div>
+
+        </div>
+      </div>
+
+      <div class="form__group-horizontal">
+        <label class="form__label">MetaTx Gas Price</label>
+        <div class="row">
+          <div class="col-8">
+            <input type="number" name="gas_price" class="form__input" required />
+          </div>
+
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="form__group-horizontal">
+
+          <button class="button button--primary button--full">Contribute</button>
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="form__group-horizontal">
+          <!-- <label class="form__label">Select period:</label>
+          <div class="form__select2 fund__period">
+            <select name='period' id='period'>
+              <option value="month">month</option>
+              <option value="year">year</option>
+            </select> -->
+          <!-- </div> -->
+        </div>
+      </div>
+
+      <div class="col-4">
+        <div class="grant__progress">
+          <div class="progress">
+            <div class="progress-bar" style="width:50%"></div>
+            <div class="progress-bar progress-bar--fund" role="progressbar" style="width:10%">
+              <div class="contribution">
+                <!-- Can Django support reactive text? This number/diagram should reflect what they are typing.  -->
+                <span>10 ETH</span>
+                <p>Your contribution</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="progress-text top-buffer bottom-buffer">
+            <div class="row">
+              <div class="col-6">
+                <span>{{grant.amountReceived}} ETH</span>
+                <p>Current</p>
+              </div>
+              <div class="col-6 text-right">
+                <span>{{grant.amountGoal}} ETH</span>
+                <p>Goal</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <p>
+          {{grant.description}}
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+          Mauris sodales magna sit amet mattis feugiat.
+          Etiam dapibus semper dapibus.
+          Sed sit amet vestibulum ligula, sit amet imperdiet risus.
+
+          Etiam efficitur sem vel arcu porta finibus.
+          Nullam sit amet dapibus nisi. Praesent elementum orci felis, id aliquet purus commodo ut.
+          Donec ut consequat purus, ornare malesuada dolor. Donec ligula lacus, facilisis ut sollicitudin vel, aliquam quis tellus.
+        </p>
+      </div>
+    </div>
+
+      <div>
+        <input type="hidden" id="grant_id" name="grant_id" value="{{grant.id}}">
+        <input type="hidden" id="admin_address" name="admin_address" value="{{grant.admin_address}}">
+        <input type="hidden" id="token_address" name="token_address" value="{{grant.token_address}}">
+        <input type="hidden" id="contract_address" name="contract_address" value="{{grant.contract_address}}">
+      </div>
+
+  </form>
+</div>
+
+{% include 'shared/bottom_notification.html' %}
+{% include 'shared/analytics.html' %}
+{% include 'shared/footer_scripts.html' %}
+{% include 'shared/footer.html' %}
+</body>
+<!-- jQuery -->
+<script src="{% static "v2/js/grants/compiledSubscriptionContract.js" %}"></script>
+<script src="{% static "v2/js/grants/compiledTokenContract.js" %}"></script>
+
+<script src="/dynamic/js/tokens_dynamic.js"></script>
+<script src="{% static "v2/js/tokens.js" %}"></script>
+<script src="{% static "v2/js/jquery.select2.min.js" %}"></script>
+<script src="{% static "v2/js/abi.js" %}"></script>
+<script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+<script src="{% static "v2/js/grants/fund_grant.js" %}"></script>
+<script src="{% static "v2/js/shared.js" %}"></script>
+<script src="{% static "v2/js/ipfs-api.js" %}"></script>
+<script src="{% static "v2/js/ipfs.js" %}"></script>
+
+
+
+</html>

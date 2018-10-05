@@ -1,0 +1,185 @@
+
+{% extends '../emails/template.html' %}
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n humanize %}
+{% load i18n static %}
+
+{% block content %}
+
+<style>
+hr {
+    width: 80%;
+    height: 2px;
+    border-radius: 25px;
+    border: none;
+    background-color: #D2D2D2;
+}
+.grantInfo {
+    padding-top: 30px;
+    padding-bottom: 1%;
+}
+.grantInfo a img {
+    border-radius: 25px;
+    margin-bottom: 10px;
+}
+.grantInfoName {
+    font-size: 20px;
+    color: #0D0764;
+}
+.grantInfo h5 {
+    font-size: 14px;
+    margin-top: 15px;
+    margin-top: 30px;
+}
+.grantInfo h3 {
+    margin-top: -20px;
+}
+.updatesButton {
+    padding-left: 30px;
+    padding-right: 30px;
+    text-decoration: none;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background-color: #0D0764;
+    color: white;
+    border-radius: 2.7px;
+    font-size: 17px;
+}
+#grow-oss {
+    margin-top: 70px;
+    margin-bottom: 40px;
+}
+.progress {
+    width: 60%;
+    margin-left: 20%;
+    margin-top: 50px;
+    padding-bottom: 75px;
+}
+.progressBar {
+    height: 15px;
+    background-color: #D8D8D8;
+    border-radius: 2.7px;
+}
+.progressCompleted {
+    height: 100%;
+    background-color: #0FCE7C;
+    border-radius: 2.7px;
+    float: left;
+}
+.progressRemoved {
+    height: 100%;
+    background-color: #CF0E0E;
+    border-top-right-radius: 2.7px;
+    border-bottom-right-radius: 2.7px;
+    float: left;
+}
+.funding {
+    float: left;
+    text-align: left;
+}
+.funding > h4 {
+    line-height: 0px;
+    text-align: left;
+    color: #0D0764;
+    padding-top: -20px;
+}
+.progressBarLine {
+    width: 1px;
+    height: 45px;
+    background-color: #979797;
+    float: left;
+    transform: translateY(-20%);
+    margin-right: 20px;
+}
+.progressBarPositionMargin {
+    padding-left: 20%;
+    padding-right: 20%;
+}
+.progressBarPosition {
+    transform: translateY(160%);
+}
+.progressBarPosition > p {
+    line-height: 0px;
+    color: #BBBDBF;
+    text-align: left;
+}
+.progressBarPosition > h4 {
+    line-height: 0px;
+    text-align: left;
+    color: #0D0764;
+    padding-top: -20px;
+}
+.funding > p {
+    line-height: 0px;
+    color: #BBBDBF;
+}
+#currentFunding {
+    width: 57.5%;
+}
+#goalFunding {
+    width: 42.5%;
+}
+</style>
+<img id="newSupporter" src="{% static "v2/images/subscription-terminated.png" %}" alt="We're sad to see you go." title="Subscription Terminated">
+<h1 style="text-transform: none;">{% trans "Your support for" %} '{{grant_name}}' {% trans "has been cancelled" %}.</h1> <!-- Name of grant -->
+<p>{%trans "Thank you for everything you have contributed!" %}</p>
+<br>
+
+<hr>
+<div class="grantInfo">
+        <a href="https://github.com/{{github_username}}"><img src="{{github_username}}" /></a> <!-- width="50" height="50"Input project image here -->
+        <br>
+        <a class="grantInfoName" href="https://github.com/{{github_username}}">{{grant_name}}</a> <!-- Input project name here -->
+        <p>{{grant_description}}</p> <!-- Input project description here -->
+        <div class="progressBarPositionMargin">
+            <div class="progressBarPosition" style="margin-left: {{completed_amount}}%;"> <!-- Dynamically change the position of your current contribution text -->
+                    <div class="progressBarLine"></div>
+                    <h4><strong>{{your_contribution_amount}}</strong></h4> <!-- Input individual contribution amount -->
+                    <p>{%trans "Your Contribution" %}</p>
+            </div>
+        </div>
+        <div class="progress">
+            <div class="progressBar">
+                <div class="progressCompleted" style="width: {{completed_amount}}%;"> <!-- Dynamically change the width of your progressCompletion, ie 50% -->
+
+                </div>
+                <div class="progressRemoved" style="width: {{removed_amount}}%;"> <!-- Dynamically change the width of your progressRemoved, ie 5% -->
+
+                </div>
+            </div>
+            <div class="funding" id="currentFunding">
+                <h4><strong>{{current_funding_amount}}</strong></h4> <!-- Input current funding value -->
+                <p>{%trans "Current" %}</p>
+            </div>
+            <div class="funding" id="goalFunding">
+                <h4><strong>{{current_goal_amount}}</strong></h4> <!-- Input goal funding value -->
+                <p>{%trans "Goal" %}</p>
+            </div>
+        </div>
+</div>
+<hr>
+
+<br>
+<p>{%trans "You can see your cancellation transaction on etherscan" %} <a href="https://etherscan.com/{{etherscan_link}}">{%trans "here." %}</a></p> <!-- Input cancelation link here -->
+<br>
+<a class="updatesButton" href="https://etherscan.com/{{etherscan_link}}">{%trans "View Transaction" %}</a> <!-- Input link to view transaction button here --> 
+<br>
+
+
+{% endblock %}
