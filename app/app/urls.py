@@ -39,7 +39,6 @@ import enssubdomain.views
 import external_bounties.views
 import faucet.views
 import gitcoinbot.views
-import healthcheck.views
 import linkshortener.views
 import marketing.views
 import marketing.webhookviews
@@ -65,7 +64,7 @@ urlpatterns = [
 
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
-    re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),
+    re_path(r'^lbcheck/?', retail.views.lbcheck, name='lbcheck'),
 
     # dashboard views
 
@@ -348,6 +347,11 @@ urlpatterns = [
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
+
+    # Notify Funder Modal
+    path('notifyfunder/modal', dashboard.views.get_notify_funder_modal, name='get_notify_funder_modal'),
+    path('actions/bounty/<int:bounty_id>/notify_funder/', dashboard.views.funder_payout_reminder, name='notify-funder'),
+
     # Interests
     path('interest/modal', dashboard.views.get_interest_modal, name='get_interest_modal'),
     path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),

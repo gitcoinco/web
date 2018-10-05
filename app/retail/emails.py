@@ -48,6 +48,7 @@ TRANSACTIONAL_EMAILS = [
     ('faucet', _('Faucet Notification Emails'), _('Only when you are sent a faucet distribution')),
     ('bounty', _('Bounty Notification Emails'), _('Only when you\'re active on a bounty')),
     ('bounty_match', _('Bounty Match Emails'), _('Only when you\'ve posted a open bounty and you have a new match')),
+    ('bounty_payout_reminder', _('Bounty Funder Payout Reminder Emails'), _('Only after a bounty you funded has had a submitted status for 24h.')),
     ('bounty_feedback', _('Bounty Feedback Emails'), _('Only after a bounty you participated in is finished.')),
     (
         'bounty_expiration', _('Bounty Expiration Warning Emails'),
@@ -115,6 +116,21 @@ def render_quarterly_stats(to_email, platform_wide_stats):
     response_html = premailer_transform(render_to_string("emails/quarterly_stats.html", params))
     response_txt = render_to_string("emails/quarterly_stats.txt", params)
 
+    return response_html, response_txt
+
+
+'''
+Params:
+    to_email
+    bounty
+    github_username on BountyFulfillment
+'''
+
+
+def render_funder_payout_reminder(**kwargs):
+    kwargs['bounty_fulfillment'] = kwargs['bounty'].fulfillments.filter(fulfiller_github_username=kwargs['github_username']).last()
+    response_html = premailer_transform(render_to_string("emails/funder_payout_reminder.html", kwargs))
+    response_txt = ''
     return response_html, response_txt
 
 
