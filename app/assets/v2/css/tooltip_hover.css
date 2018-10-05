@@ -6,13 +6,10 @@
 #tooltip--hover {
   border: 1px solid #dbdbdb;
   background-color: #f8f8f8;
-  max-height: 270px;
   width: 75%;
   min-height: 25%;
   float: right;
-  padding-top: 10px;
-  padding-left: 10px;
-  padding-bottom: 10px;
+  padding: 1.5rem;
   position: absolute;
   top: 23rem;
   left: 535px;
