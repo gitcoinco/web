@@ -13,6 +13,7 @@ var filters = [
   'misc'
 ];
 var local_storage_keys = JSON.parse(JSON.stringify(filters));
+
 local_storage_keys.push('keywords');
 
 results_limit = 50;
@@ -731,7 +732,7 @@ $(document).ready(function() {
   $('.search-area input[type=text]').keypress(function(e) {
     if (e.which == 13) {
       reset_offset();
-    refreshBounties(null, 0, false, true);
+      refreshBounties(null, 0, false, true);
       e.preventDefault();
     }
   });
@@ -750,9 +751,6 @@ $(document).ready(function() {
     e.preventDefault();
   });
 });
-
-
-
 
 
 var get_this_search_name = function() {
