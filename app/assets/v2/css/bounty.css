@@ -581,6 +581,16 @@ a.btn {
   width: 100%;
 }
 
+.notify-funder-modal {
+    height: auto;
+    width: 100%;
+}
+
+#notify_funder form {
+    padding: 1em;
+    width: 100%;
+}
+
 #issue_message {
   min-height: 12em;
 }
