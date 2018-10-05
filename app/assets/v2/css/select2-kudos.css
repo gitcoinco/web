@@ -111,3 +111,12 @@
   border-color: var(--border-blue);
 }
 
+
+.kudos-name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.kudos-description {
+  color: #9B9B9B;
+}

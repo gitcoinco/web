@@ -51,16 +51,16 @@ function kudosSearch(elem) {
       if (kudos.loading) {
         return kudos.text;
       }
-      let markup = `<div class="d-flex">
-                      <div class="mr-2">
+      let markup = `<div class="d-flex m-2 align-items-center">
+                      <div class="mr-3">
                         <img class="" src="${static_url + kudos.image || static_url + 'v2/images/user-placeholder.png'}" width="40" height="50"/>
                       </div>
                       <div style="min-width: 0;width: 100%;">
                         <div class="d-flex justify-content-between">
-                          <div class="">${kudos.name_human}</div>
-                          <div>${kudos.price_finney} ETH</div>
+                          <div class="kudos-name">${kudos.name_human}</div>
+                          <div class="kudos-price">${kudos.price_finney} ETH</div>
                         </div>
-                        <div class="text-truncate">${kudos.description}</div>
+                        <div class="text-truncate kudos-description">${kudos.description}</div>
                       <div>
                     </div>`;
 
@@ -77,15 +77,15 @@ function kudosSearch(elem) {
       } else if (kudos.id) {
         // $('.kudos-comment').show()
         kudosIsSelected(true)
-        selected = `<div class="d-flex m-2">
-                      <div class="mr-2">
+        selected = `<div class="d-flex m-2 align-items-center">
+                      <div class="mr-3">
                         <img class="" src="${static_url + kudos.image || static_url + 'v2/images/user-placeholder.png'}" width="40" height="50"/>
                       </div>
                       <div style="min-width: 0;width: 100%;">
                         <div class="d-flex justify-content-between">
-                          <div class="">${kudos.name_human} ${kudos.price_finney} ETH</div>
+                          <div class="kudos-name"><a target="_blank" href="/kudos/${kudos.id}/${kudos.name}"> <i class="fas fa-external-link-alt"></i></a> ${kudos.name_human} ${kudos.price_finney} ETH</div>
                         </div>
-                        <div class="text-truncate">${kudos.description}</div>
+                        <div class="text-truncate kudos-description">${kudos.description}</div>
                       <div>
                     </div>`;
       } else {
