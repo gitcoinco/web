@@ -1723,7 +1723,10 @@ def get_users(request):
 def get_kudos(request):
     if request.is_ajax():
         q = request.GET.get('term')
-        kudos = Token.objects.filter(name__icontains=q)
+        kudos_by_name = Token.objects.filter(name__icontains=q)
+        kudos_by_desc = Token.objects.filter(description__icontains=q)
+        kudos_by_tags = Token.objects.filter(tags__icontains=q)
+        kudos = (kudos_by_desc | kudos_by_name | kudos_by_tags).distinct('pk')
         results = []
         for token in kudos:
             kudos_json = {}
