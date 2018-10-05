@@ -31,7 +31,7 @@
     <link rel="stylesheet" href="{% static "v2/css/landing_page.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/howitworks.css" %}" />
   </head>
-  <body class="index d-flex flex-column">
+  <body class="index d-flex flex-column g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     {% cookielaw_banner %}
     {% include 'shared/nav.html' %}
@@ -66,7 +66,7 @@
       </div>
 
       <div class="container-fluid p-5 howworks-container howworks-container-contributors">
-        {% include "how_it_works_contributor.html" %}
+        {% include "how_it_works/contributor.html" %}
       </div>
 
       <div class="container-fluid p-5 pilot-container projects-container">

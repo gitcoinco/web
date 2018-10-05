@@ -25,6 +25,7 @@
     <meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
     <meta name="theme-color" content="#ffffff">
     <!--[if lte IE 8]><script src="{% static "onepager/js/html5shiv.js" %}"></script><![endif]-->
+    <link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/gitcoin.css" %}">
     <link rel="stylesheet" href="{% static "onepager/css/main.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/box_redeem.css" %}">
@@ -32,6 +33,38 @@
     <link rel="stylesheet" href="{% static "v2/css/jquery.select2.min.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/forms/button.css" %}">
     <link rel="stylesheet" href="{% static "cookielaw/css/cookielaw.css" %}">
+
+    <style>
+      .d-flex {
+        display: flex;
+      }
+
+      .align-items-baseline {
+        align-items: center;
+      }
+
+      .mr-2 {
+        margin-right: 1rem;
+      }
+
+      .rounded-circle {
+        border-radius: 50%;
+        vertical-align: middle;
+      }
+
+      .select2-container .select2-selection--single {
+        height: 34px;
+        text-align: left;
+      }
+
+      .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 32px;
+      }
+
+      .select2-container--default .select2-selection--single .select2-selection__arrow {
+        height: 32px;
+      }
+    </style>
 
     <script type="text/javascript">
       var static_url = "{{ STATIC_URL }}";
@@ -46,7 +79,7 @@
     </noscript>
     {% include 'shared/favicon.html' %}
   </head>
-  <body id="yge" class="{{ class }}">
+  <body id="yge" class="{{ class }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     {% include 'shared/analytics.html' with suppress_sumo=1 %}
     {% block 'world' %} {% endblock %}
@@ -57,7 +90,6 @@
       {% cookielaw_banner %}
       <!-- Main -->
       {% block 'main' %} {% endblock %}
-      <!-- Footer -->
       <footer id="footer">
         <ul class="copyright">
           <li>

@@ -1012,7 +1012,6 @@ body .ui-tooltip {
 ----------------------------------*/
 
 .ui-widget {
-  font-family: Arial, Helvetica, sans-serif;
   font-size: 1em;
 }
 
@@ -1024,7 +1023,6 @@ body .ui-tooltip {
 .ui-widget select,
 .ui-widget textarea,
 .ui-widget button {
-  font-family: Arial, Helvetica, sans-serif;
   font-size: 1em;
 }
 

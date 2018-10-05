@@ -1,35 +1,32 @@
 # -*- coding: utf-8 -*-
-'''
-    Copyright (C) 2017 Gitcoin Core
+"""Define the marketing views.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Copyright (C) 2018 Gitcoin Core
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-'''
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
 from __future__ import unicode_literals
 
 import json
 import logging
-import math
-import random
 
 from django.conf import settings
 from django.contrib import messages
-from django.contrib.admin.views.decorators import staff_member_required
-from django.contrib.auth.decorators import login_required
 from django.core.validators import validate_email
 from django.db.models import Max
-from django.http import Http404, HttpResponse, JsonResponse
+from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
@@ -38,16 +35,13 @@ from django.utils.translation import LANGUAGE_SESSION_KEY
 from django.utils.translation import gettext_lazy as _
 
 from app.utils import sync_profile
-from chartit import Chart, DataPool
 from dashboard.models import Profile, TokenApproval
 from dashboard.utils import create_user_action
 from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from mailchimp3 import MailChimp
 from marketing.mails import new_feedback
-from marketing.models import (
-    EmailEvent, EmailSubscriber, GithubEvent, Keyword, LeaderboardRank, SlackPresence, SlackUser, Stat,
-)
+from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, validate_discord_integration, validate_slack_integration
 from retail.emails import ALL_EMAILS
 from retail.helpers import get_ip
@@ -55,11 +49,7 @@ from retail.helpers import get_ip
 logger = logging.getLogger(__name__)
 
 
-logger = logging.getLogger(__name__)
-
-
 def get_settings_navs(request):
-    subdomain = f"{request.user.username}." if request.user.is_authenticated else False
     return [{
         'body': _('Email'),
         'href': reverse('email_settings', args=('', ))
@@ -137,8 +127,7 @@ def settings_helper_get_auth(request, key=None):
 
 def privacy_settings(request):
     # setup
-    profile, es, user, is_logged_in = settings_helper_get_auth(request)
-    suppress_leaderboard = profile.suppress_leaderboard if profile else False
+    profile, __, __, is_logged_in = settings_helper_get_auth(request)
     if not profile:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
@@ -190,7 +179,7 @@ def matching_settings(request):
 
     """
     # setup
-    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+    __, es, __, is_logged_in = settings_helper_get_auth(request)
     if not es:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
@@ -224,7 +213,7 @@ def matching_settings(request):
 
 def feedback_settings(request):
     # setup
-    profile, es, user, is_logged_in = settings_helper_get_auth(request)
+    __, es, __, __ = settings_helper_get_auth(request)
     if not es:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
@@ -232,7 +221,7 @@ def feedback_settings(request):
     msg = ''
     if request.POST and request.POST.get('submit'):
         comments = request.POST.get('comments', '')[:255]
-        has_comment_changed = comments != es.metadata.get('comments','')
+        has_comment_changed = comments != es.metadata.get('comments', '')
         if has_comment_changed:
             new_feedback(es.email, comments)
         es.metadata['comments'] = comments
@@ -264,8 +253,10 @@ def email_settings(request, key):
         TemplateResponse: The email settings view populated with ES data.
 
     """
-    profile, es, user, is_logged_in = settings_helper_get_auth(request, key)
-    if not request.user.is_authenticated and (not es and key) or (request.user.is_authenticated and not hasattr(request.user, 'profile')):
+    profile, es, __, __ = settings_helper_get_auth(request, key)
+    if not request.user.is_authenticated and (not es and key) or (
+        request.user.is_authenticated and not hasattr(request.user, 'profile')
+    ):
         return redirect('/login/github?next=' + request.get_full_path())
 
     # handle 'noinput' case
@@ -330,7 +321,7 @@ def email_settings(request, key):
 
 
 def slack_settings(request):
-    """Displays and saves user's slack settings.
+    """Display and save user's slack settings.
 
     Returns:
         TemplateResponse: The user's slack settings template response.
@@ -376,7 +367,7 @@ def slack_settings(request):
 
 
 def discord_settings(request):
-    """Displays and saves user's Discord settings.
+    """Display and save user's Discord settings.
 
     Returns:
         TemplateResponse: The user's Discord settings template response.
@@ -421,9 +412,11 @@ def discord_settings(request):
 
 
 def token_settings(request):
-    """Displays and saves user's token settings.
+    """Display and save user's token settings.
+
     Returns:
         TemplateResponse: The user's token settings template response.
+
     """
     msg = ""
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
@@ -468,7 +461,7 @@ def token_settings(request):
 
 
 def ens_settings(request):
-    """Displays and saves user's ENS settings.
+    """Display and save user's ENS settings.
 
     Returns:
         TemplateResponse: The user's ENS settings template response.
@@ -497,8 +490,9 @@ def ens_settings(request):
     }
     return TemplateResponse(request, 'settings/ens.html', context)
 
+
 def account_settings(request):
-    """Displays and saves user's Account settings.
+    """Display and save user's Account settings.
 
     Returns:
         TemplateResponse: The user's Account settings template response.
@@ -507,7 +501,7 @@ def account_settings(request):
     msg = ''
     profile, es, user, is_logged_in = settings_helper_get_auth(request)
 
-    if not user or not is_logged_in:
+    if not user or not profile or not is_logged_in:
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
 
@@ -522,10 +516,12 @@ def account_settings(request):
             profile = record_form_submission(request, profile, 'account-disconnect')
             profile.email = ''
             profile.save()
+            create_user_action(profile.user, 'account_disconnected', request)
             messages.success(request, _('Your account has been disconnected from Github'))
             logout_redirect = redirect(reverse('logout') + '?next=/')
             return logout_redirect
         elif request.POST.get('delete', False):
+
             # remove profile
             profile.hide_profile = True
             profile = record_form_submission(request, profile, 'account-delete')
@@ -540,13 +536,20 @@ def account_settings(request):
                 client.lists.members.delete(
                     list_id=settings.MAILCHIMP_LIST_ID,
                     subscriber_hash=subscriber_hash,
-                    )
+                )
             except Exception as e:
                 logger.exception(e)
             if es:
                 es.delete()
             request.user.delete()
-            messages.success(request, _('Your account has been deleted'))
+            AccountDeletionRequest.objects.create(
+                handle=profile.handle,
+                profile={
+                        'ip': get_ip(request),
+                    }
+                )
+            profile.delete()
+            messages.success(request, _('Your account has been deleted.'))
             logout_redirect = redirect(reverse('logout') + '?next=/')
             return logout_redirect
         else:
@@ -566,6 +569,12 @@ def account_settings(request):
 
 
 def _leaderboard(request):
+    """Display the leaderboard for top earning or paying profiles.
+
+    Returns:
+        TemplateResponse: The leaderboard template response.
+
+    """
     return leaderboard(request, '')
 
 
@@ -588,6 +597,9 @@ def leaderboard(request, key=''):
         'quarterly_orgs': _('Top Orgs'),
         'quarterly_tokens': _('Top Tokens'),
         'quarterly_keywords': _('Top Keywords'),
+        'quarterly_cities': _('Top Cities'),
+        'quarterly_countries': _('Top Countries'),
+        'quarterly_continents': _('Top Continents'),
         #        'weekly_fulfilled': 'Weekly Leaderboard: Fulfilled Funded Issues',
         #        'weekly_all': 'Weekly Leaderboard: All Funded Issues',
         #        'monthly_fulfilled': 'Monthly Leaderboard',
@@ -602,7 +614,7 @@ def leaderboard(request, key=''):
         raise Http404
 
     title = titles[key]
-    leadeboardranks = LeaderboardRank.objects.filter(active=True, leaderboard=key)
+    leadeboardranks = LeaderboardRank.objects.active().filter(leaderboard=key)
     amount = leadeboardranks.values_list('amount').annotate(Max('amount')).order_by('-amount')
     items = leadeboardranks.order_by('-amount')
     top_earners = ''
@@ -615,7 +627,8 @@ def leaderboard(request, key=''):
     else:
         amount_max = 0
 
-    is_linked_to_profile = '_tokens' in key or '_keywords' in key
+    profile_keys = ['_tokens', '_keywords', '_cities', '_countries', '_continents']
+    is_linked_to_profile = any(sub in key for sub in profile_keys)
     context = {
         'items': items,
         'titles': titles,

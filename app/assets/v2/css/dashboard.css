@@ -1,5 +1,4 @@
 body {
-  font-family: 'Muli', sans-serif;
   background: #FFFFFF;
 }
 
@@ -75,7 +74,9 @@ body {
 .title-row {
   display: flex;
   margin-top: 2em;
+  margin-right: 8px;
   padding-bottom: 5px;
+  float: right;
   border-bottom: 2px solid #3E24FB;
 }
 
@@ -90,13 +91,11 @@ body {
 
 #stats {
   padding-left: 5px;
-  font-family: 'Muli', sans-serif;
   font-weight: 300;
   color: #7A7A7A;
 }
 
 #matches {
-  font-family: 'Muli', sans-serif;
   font-weight: 300;
   padding-left: 10px;
 }
@@ -164,7 +163,6 @@ body {
 }
 
 .bounty-detail .info {
-  font-family: 'Muli', sans-serif;
   font-weight: 300;
   color: #666666;
 }
@@ -180,6 +178,11 @@ body {
 
 .tags {
   display: flex;
+}
+
+.tags.fixed {
+  float: right;
+  padding-bottom: 1rem;
 }
 
 #onboard-footer {
@@ -209,13 +212,6 @@ body {
 
   #onboard-dashboard .robot {
     display: none;
-  }
-}
-
-@media (min-width: 768px) {
-
-  .tag.shift_left {
-    margin-left: -100px;
   }
 }
 
@@ -258,4 +254,8 @@ body {
   .bounty-detail {
     margin-right: 4rem;
   }
+}
+
+.hiring {
+  content: url('/static/v2/images/hiring.svg');
 }

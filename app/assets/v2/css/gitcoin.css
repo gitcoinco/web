@@ -1,134 +1,7 @@
-/* Futura */
-
-@font-face {
-  font-family: 'futura-pt';
-  src: url('/static/v2/fonts/futura/font4.ttf')/* TTF file for CSS3 browsers */
-}
-
-/* OpenSans Light */
-
-@font-face {
-  font-family: 'OpenSans';
-  src: url('/static/v2/fonts/OpenSans/Light.ttf');
-  font-weight: 300;
-}
-
-/* OpenSans Regular */
-
-@font-face {
-  font-family: 'OpenSans';
-  src: url('/static/v2/fonts/OpenSans/Regular.ttf');
-  font-weight: 400;
-}
-
-/* OpenSans Semibold */
-
-@font-face {
-  font-family: 'OpenSans';
-  src: url('/static/v2/fonts/OpenSans/SemiBold.ttf');
-  font-weight: 600;
-}
-
-/* OpenSans Bold */
-
-@font-face {
-  font-family: 'OpenSans';
-  src: url('/static/v2/fonts/OpenSans/Bold.ttf');
-  font-weight: 700;
-}
-
-/* Muli Extra Light */
-
-/* @font-face {
-  font-family: 'Muli';
-  src: url('/static/v2/fonts/Muli/ExtraLight.ttf');
-  font-weight: 200;
-} */
-
-/* Muli Extra Light Italic */
-
-/* @font-face {
-  font-family: 'Muli';
-  src: url('/static/v2/fonts/Muli/ExtraLightItalic.ttf');
-  font-weight: 200;
-  font-style: italic
-} */
-
-/* Muli Light */
-
-@font-face {
-  font-family: 'Muli';
-  src: url('/static/v2/fonts/Muli/Light.ttf');
-  font-weight: 300;
-}
-
-/* Muli Light Italic */
-
-/* @font-face {
-  font-family: 'Muli';
-  src: url('/static/v2/fonts/Muli/LightItalic.ttf');
-  font-weight: 300;
-  font-style: italic;
-} */
-
-/* Muli Regular */
-
-@font-face {
-  font-family: 'Muli';
-  src: url('/static/v2/fonts/Muli/Regular.ttf');
-  font-weight: 400;
-}
-
-/* Muli Regular Italic */
-
-/* @font-face {
-  font-family: 'Muli';
-  src: url('/static/v2/fonts/Muli/RegularItalic.ttf');
-  font-weight: 400;
-  font-style: italic;
-} */
-
-/* Muli SemiBold */
-
-@font-face {
-  font-family: 'Muli';
-  src: url('/static/v2/fonts/Muli/SemiBold.ttf');
-  font-weight: 600;
-}
-
-/* Muli SemiBold Italic */
-
-/* @font-face {
-  font-family: 'Muli';
-  src: url('/static/v2/fonts/Muli/SemiBoldItalic.ttf');
-  font-weight: 600;
-  font-style: italic;
-} */
-
-/* Muli Bold */
-
-/* @font-face {
-  font-family: 'Muli';
-  src: url('/static/v2/fonts/Muli/Bold.ttf');
-  font-weight: 700;
-} */
-
-/* Muli Bold Italic */
-
-/* @font-face {
-  font-family: 'Muli';
-  src: url('/static/v2/fonts/Muli/BoldItalic.ttf');
-  font-weight: 700;
-  font-style: italic;
-} */
-
 body {
-  font-family: Muli, sans-serif;
   overflow-x: hidden;
   width: 100%;
   background-color: #fff;
-
-  /* better font render */
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -202,15 +75,6 @@ h4,
   overflow-x: hidden;
 }
 
-.nav-link {
-  color: #eff4ee;
-  text-transform: uppercase;
-  text-decoration: none;
-  padding-right: 1rem !important;
-  padding-left: 1rem !important;
-  font-size: 0.9rem !important;
-}
-
 .text-white {
   color: #ffffff;
 }
@@ -221,6 +85,10 @@ h4,
 
 .light {
   font-weight: 200;
+}
+
+.font-title-xl {
+  font-size: 1.8rem;
 }
 
 .font-title-lg {
@@ -245,10 +113,6 @@ h4,
 
 .font-caption {
   font-size: 0.75rem;
-}
-
-.nav-link:visited {
-  color: #eff4ee;
 }
 
 .footer-link {
@@ -301,7 +165,6 @@ div.button-pink {
 
 .header-line {
   color: #12c971;
-  font-family: Muli, sans-serif;
   font-size: 2em;
   font-weight: 500;
   font-style: italic;
@@ -315,7 +178,6 @@ div.button-pink {
 
 .subheader-line {
   color: #70efbe;
-  font-family: Muli, sans-serif;
   font-size: 1.5em;
   font-weight: 500;
   font-style: italic;
@@ -392,6 +254,12 @@ div.button-pink {
   font-size: 0.55rem;
 }
 
+.center-block {
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
+}
+
 .how-it-works-video {
   width: 100%;
   height: 600px;
@@ -442,26 +310,42 @@ div.button-pink {
   margin: 0 auto;
   min-height: 300px;
 }
+
 .footer__top {
   max-width: 1000px;
   margin: 0 auto;
 }
-.footer__social {
-  /* flex-grow: 1; */
-}
+
 .footer__social .nav-link {
   margin-bottom: 1rem;
 }
+
 .footer .navbar-brand {
   flex-grow: 1;
 }
+
 .footer {
   background-color: #0d023b;
 }
+
 .footer .nav-link {
   font-size: 0.8rem !important;
   margin-right: 0.5rem;
 }
+
+.nav-link:visited {
+  color: #eff4ee;
+}
+
+.navbar-expand-md .navbar-nav .nav-link {
+  color: #eff4ee;
+  text-transform: uppercase;
+  text-decoration: none;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  font-size: 0.9rem !important;
+}
+
 .footer .nav-link:hover {
   border-radius: 2px;
   background-color: rgba(255, 255, 255, 0.2);
@@ -472,6 +356,7 @@ div.button-pink {
   height: 25px;
   filter: invert(100%);
 }
+
 .footer__consensys {
   border-top: 1px solid var(--gc-green);
   background: black;
@@ -594,7 +479,6 @@ div.button-pink {
 
 .dropdown-menu {
   background-color: #FAFAFA;
-  font-family: 'Muli', sans-serif;
   border-radius: 0px;
   padding: 0;
   right: 0;
@@ -630,6 +514,19 @@ div.button-pink {
   .footer__main {
     padding-left: 1em !important;
     padding-right: 1em !important;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+
+  .navbar-brand #logo {
+    width: 6.5rem;
+    height: auto;
+  }
+
+  .navbar-expand-md .navbar-nav .nav-link {
+    padding-left: 0.7rem;
+    padding-right: 0.7rem;
   }
 }
 
@@ -680,7 +577,6 @@ div.button-pink {
   text-align: left;
   margin-top: auto;
   margin-bottom: auto;
-  font-family:'Muli', sans-serif;
   letter-spacing: 0;
 }
 
@@ -695,7 +591,6 @@ div.button-pink {
 }
 
 #ios-banner .row .left a {
-  font-family: 'Muli', sans-serif;
   font-size: 14px;
 }
 

@@ -38,7 +38,7 @@ push: ## Push the Docker image to the Docker Hub repository.
 	@docker push "${REPO_NAME}"
 
 collect-static: ## Collect newly added static resources from the assets directory.
-	@docker-compose exec web python3 app/manage.py collectstatic -i other
+	@docker-compose exec -i web bash -c "cd /code/app && python3 manage.py collectstatic -i other"
 
 compress-images: ## Compress and optimize images throughout the repository. Requires optipng, svgo, and jpeg-recompress.
 	@./scripts/compress_images.bash
@@ -107,6 +107,14 @@ pgactivity: ## Run pg_activivty against the local postgresql instance.
 
 pgtop: ## Run pg_top against the local postgresql instance.
 	@docker-compose exec web scripts/pg_top.bash
+
+update_fork: ## Update the current fork master branch with upstream master.
+	@echo "Updating the current fork with the Gitcoin upstream master branch..."
+	@git checkout master
+	@git fetch upstream
+	@git merge upstream/master
+	@git push origin master
+	@echo "Updated!"
 
 help:
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | sort | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

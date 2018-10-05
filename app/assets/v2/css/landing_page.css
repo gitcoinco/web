@@ -141,6 +141,19 @@ body {
   margin-bottom: 1rem;
 }
 
+.howworks-step i {
+  font-size: 2rem;
+  padding: 0.5rem 0;
+}
+
+.funder-container .howworks-step i {
+  color: #FFCE08;
+}
+
+.contributor-container .howworks-step i {
+  color: #25E899;
+}
+
 .howworks-step__label {
   border-radius: 50%;
   height: 2rem;
@@ -159,7 +172,8 @@ body {
   color: #fff;
 }
 
-.benefits_container {
+.benefits_container,
+.landing__newsletter {
   background-color: #F9F9F9;
   justify-items: center;
 }
@@ -193,12 +207,6 @@ body {
   padding-top: 2rem;
   padding-bottom: 1rem;
   height: 6rem;
-}
-
-.activity.box {
-  border-left: none;
-  border-top: none;
-  border-right: none;
 }
 
 .activity-info {
@@ -385,6 +393,13 @@ body {
 .in-some-cases-container {
   background-color: #FAFCFD;
 }
+
+.in-some-cases-container .flex-row div {
+  max-width: 12rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .how-it-works-footer {
   background-color: #0D0764;
 }

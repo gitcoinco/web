@@ -15,9 +15,9 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, .15);
     font-size: 16px;
     line-height: 24px;
-    font-family: 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
     color: #555;
   }
+
   a {
     color: #555;
     text-decoration: underline;
@@ -91,8 +91,7 @@
   
   /** RTL **/
   .rtl {
-    direction: rtl;
-    font-family: Tahoma, 'Helvetica Neue', 'Helvetica', Helvetica, Arial, sans-serif;
+    direction: rtl
   }
   
   .rtl table {
@@ -105,11 +104,11 @@
   </style>
 </head>
 
-<body>
+<body class="g-font-muli">
   <div class="invoice-box">
     {% if bounty.network != 'mainnet' %}
       <div style="color:red; border: 1px red solid; padding: 5px;">
-        {% trans "Note: This is not a mainnet bounty, it is a {{bounty.network}} bounty, and this invoice is only for demonstration purposes." %}
+        {% trans "Note: This is not a mainnet bounty, it is a " %} {{bounty.network}} {% trans "bounty, and this invoice is only for demonstration purposes." %}
       </div>
     {% endif %}
     <table cellpadding="0" cellspacing="0">

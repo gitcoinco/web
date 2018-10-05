@@ -2,11 +2,18 @@
 .tab-container {
   position: relative;
   display: block;
-  text-align: center;
+  text-align: left;
+  border-bottom: 1px #dfdfdf solid;
+  width: 100%;
 }
 
 .tab-container > button {
-  margin: 0 5px;
+  margin: 0 1rem;
+  transition: none;
+}
+
+.tab-container > button:first-child {
+  margin-left: 0;
 }
 
 .section-tab {
@@ -18,14 +25,6 @@
   padding: 0;
 }
 
-.tab-indicator {
-  display: block;
-  height: 5px;
-  width: 20px;
-  background: var(--gc-blue);
-  transition: transform .3s, left .3s;
-}
-
 .section-tab:hover,
 .section-tab:active,
 .section-tab:focus {
@@ -34,6 +33,7 @@
 
 .section-tab.active {
   color: var(--gc-blue);
+  border-bottom: 2px var(--gc-blue) solid;
 }
 
 .tab-sections {
@@ -44,7 +44,21 @@
 
 .tab-section {
   width: 100%;
-  padding: 0 2rem;
-  margin: 0 1rem;
-  flex-shrink: 0;
+  display: none;
+}
+
+.tab-section.active {
+  display: block;
+}
+
+@media (max-width: 768px) {
+  #activity-tabs {
+    text-align: center;
+  }
+
+  .tab-container > button,
+  .tab-container > button:first-child {
+    text-align: center;
+    margin: 0.25rem 1rem;
+  }
 }

@@ -90,7 +90,7 @@ window.onload = function() {
                 txid: result
               });
 
-              _alert({ message: gettext('Kill bounty submitted to web3.') }, 'info');
+              _alert({ message: gettext('Cancel bounty submitted to web3.') }, 'info');
               setTimeout(function() {
                 mixpanel.track('Kill Bounty Success', {});
                 document.location.href = '/funding/details?url=' + issueURL;

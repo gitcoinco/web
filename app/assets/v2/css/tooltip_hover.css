@@ -1,0 +1,44 @@
+#tooltip {
+  color: #4A90E2;
+  float: right;
+}
+
+#tooltip--hover {
+  border: 1px solid #dbdbdb;
+  background-color: #f8f8f8;
+  width: 75%;
+  min-height: 25%;
+  float: right;
+  padding: 1.5rem;
+  position: absolute;
+  top: 23rem;
+  left: 535px;
+  z-index: 10;
+  display: none;
+}
+
+@media only screen and (max-width: 1400px) {
+  #tooltip--hover {
+    top: 24.5rem;
+    left: 110px;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  #tooltip--hover {
+    left: 70px;
+  }
+}
+
+#heading {
+  font-size: 20px;
+}
+
+#subheading {
+  font-size: 18px;
+  color: #00A55E;
+}
+
+#hovertext {
+  font-size: 14px;
+}

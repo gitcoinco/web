@@ -29,7 +29,7 @@ $(document).ready(function($) {
       self.html(self.html().replace(/(<([^>]+)>)/ig, ''));
     }, 10);
   });
-  
+
 
   $(document).on('click', '#close_bounty', function(event) {
     update_registry();
@@ -157,7 +157,7 @@ $(document).ready(function($) {
 
   $('#acceptBounty').click(function(e) {
     e.preventDefault();
-    
+
     if (!$('#terms').is(':checked')) {
       _alert('Please accept the TOS.', 'error');
       return;
@@ -166,7 +166,16 @@ $(document).ready(function($) {
       _alert('You do not have any transactions to payout.  Please add payees to the form.', 'error');
       return;
     }
+    var usernames = $('.username');
+    
+    for (var i = 0; i < usernames.length; i++) {
+      var username = usernames[i].textContent.trim();
 
+      if (username === null || username === '' || username === '@') {
+        _alert('Please provide a valid recipient Github username', 'error');
+        return;
+      }
+    }
     sendTransaction(0);
   });
 

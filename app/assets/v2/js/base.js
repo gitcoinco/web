@@ -16,6 +16,10 @@ $(document).ready(function() {
 
   force_no_www();
 
+  if (!$('.header > .minihero').length && $('.header > .navbar').length) {
+    $('.header').css('overflow', 'visible');
+  }
+
   $('.nav-link.dropdown-toggle').click(function(e) {
     e.preventDefault();
     var parent = $(this).parents('.nav-item');

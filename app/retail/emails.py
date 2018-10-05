@@ -60,7 +60,8 @@ ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS
 
 def premailer_transform(html):
     cssutils.log.setLevel(logging.CRITICAL)
-    return premailer.transform(html)
+    p = premailer.Premailer(html, base_url=settings.BASE_URL)
+    return p.transform()
 
 
 def render_tip_email(to_email, tip, is_new):
@@ -318,6 +319,18 @@ def render_new_bounty_rejection(to_email, bounty):
     return response_html, response_txt
 
 
+def render_bounty_changed(to_email, bounty):
+    params = {
+        'bounty': bounty,
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+    }
+
+    response_html = premailer_transform(render_to_string("emails/bounty_changed.html", params))
+    response_txt = render_to_string("emails/bounty_changed.txt", params)
+
+    return response_html, response_txt
+
+
 def render_bounty_expire_warning(to_email, bounty):
     from django.db.models.functions import Lower
 
@@ -508,12 +521,11 @@ def render_start_work_applicant_expired(interest, bounty):
     return response_html, response_txt, subject
 
 
-
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Gitcoin Requests | $60K ECF Grant"
+    subject = "A Maintainers Guide To Hacktoberfest | ETH Travels"
 
     intro = '''
 
@@ -521,30 +533,23 @@ def render_new_bounty_roundup(to_email):
 Hi there,
 </p>
 <p>
-This week, we launched <a href="https://gitcoin.co/requests/">Gitcoin Requests</a>. Gitcoin Requests allows funders and developers to request bounties on
-specific Github issues. We hope that maintainers and developers alike use this feature to let us know what else they'd
-like to have funded so we can continue building at break-neck speed! <a href="https://gitcoin.co/requests/">Checkout Gitcoin Requests here</a>.
+<a href="https://medium.com/gitcoin/gitcoins-hacktoberfest-98825f199af2">Gitcoin's Hacktoberfest</a> starts on Monday! Post your favorite 3 open source projects on twitter & tag us (<a href="https://twitter.com/GetGitcoin">@GetGitcoin</a>), then make a <a href="https://gitcoin.co/requests">Gitcoin Request</a> to give those projects a boost!
 </p>
 <p>
-To this end, we have recently received $60K grant from the Ethereum Community Fund to post bounties across a variety of Web 3
-repo's who are building interesting infrastructure tools in the Ethereum space. Where might you go to request funding on your repo?
-You know the answer :)
-<p>
+If you're an OSS maintainer, we wrote a <a href="https://medium.com/gitcoin/a-maintainers-guide-to-hacktoberfest-21405c8ff09f">Guide to Hacktoberfest for maintainers!</a> It's
+a great look at how to manage an open source project generally, let us know what you think.
 </p>
-
+<p>
+Lastly, October marks a month of travel for the Gitcoin team. If you'll be at ETH SF (Oct 5-7), Github Universe (Oct 16-17), Web 3 Summit (Oct 22 - 24), or Devcon 4, give us a shout!
+</p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-We're still working with the Ethereum Foundation to find the best and brightest developers to get involved directly on Ethereum's
-codebase and would love to hear from you. If you have experience building out test cases and are familiar with consensus systems,
-join #focus-dev-testing <a href="https://gitcoin.co/slack">on Gitcoin Slack</a>
+        <a href="https://consensys.net/academy/2018developer/?utm_source=ConsenSys+Academy%3A+General+Mailing+List&utm_campaign=88c5836e4a-EMAIL_CAMPAIGN_2018_09_10_02_13_COPY_01&utm_medium=email&utm_term=0_30e33caef0-88c5836e4a">ConsenSys Academy's Developer Program</a> is a 11-week program that equips developers with all the knowledge, skills, and
+         hands on mentorship essential to become industry-leading Ethereum developers. You can register now <a href="https://form.jotform.com/DeveloperProgram/Bootcamp?utm_source=ConsenSys+Academy%3A+General+Mailing+List&utm_campaign=88c5836e4a-EMAIL_CAMPAIGN_2018_09_10_02_13_COPY_01&utm_medium=email&utm_term=0_30e33caef0-88c5836e4a-">here!</a>
         </li>
         <li>
-        Did you know <a href="https://codefund.io">CodeFund</a> is part of Gitcoin? <a href="https://codefund.io">CodeFund</a> is an open source advertising platform that is built to help developers generate revenue. We are currently looking for bloggers and websites that focus on blockchain development and have at least 1,000 visitors per month. If you or someone you know fits this, register to be a publisher at <a href="https://codefund.io/register/publisher">https://codefund.io/register/publisher</a>
-        </li>
-        <li>
-We published our recent Gitcoin Livestream with Decentraland on Gitcoin's Youtube. It was a great conversation on NFT's and their virtual world.
-Check out Chainshot and Portis on this week's <a href="https://gitcoin.co/livestream">this week's livestream</a> today at 5PM ET. We'd love to have you!
+        Gitcoin Livestream today includes ConsenSys Academy and FOAM Protocol at 5PM ET. We're excited and hope to see you - <a href="https://gitcoin.co/livestream">add to your calendar here!</a>.
         </li>
     </ul>
 </p>
@@ -552,44 +557,36 @@ Check out Chainshot and Portis on this week's <a href="https://gitcoin.co/livest
 Back to BUIDLing,
 </p>
 '''
-    highlights = [
-        {
-            'who': 'tcrowe',
-            'who_link': True,
-            'what': 'Build a feedback form on the Plasma Learning page.',
-            'link': 'https://gitcoin.co/issue/ethsociety/learn-plasma/17/970',
-            'link_copy': 'View more',
-        },
-        {
-            'who': 'pinkiebell',
-            'who_link': True,
-            'what': 'Built out the Gitcoin Requests highlighted above!',
-            'link': 'https://gitcoin.co/issue/gitcoinco/web/2036/982',
-            'link_copy': 'View more',
-        },
-        {
-            'who': 'evgeniuz',
-            'who_link': True,
-            'what': 'Helped MetaMask to remember recent RPC URL\'s.',
-            'link': 'https://gitcoin.co/issue/Bounties-Network/bounties.network/7/927',
-            'link_copy': 'View more',
-        },
-    ]
+    highlights = [{
+        'who': 'dryajov',
+        'who_link': True,
+        'what': 'Completed one of the largest bounties of all time on MetaMask!',
+        'link': 'https://gitcoin.co/issue/MetaMask/mustekala/21/1279',
+        'link_copy': 'View more',
+    }, {
+        'who': 'mul1sh',
+        'who_link': True,
+        'what': 'Completed his first bounty! Congrats.',
+        'link': 'https://gitcoin.co/issue/diadata-org/coindata/1/1259',
+        'link_copy': 'View more',
+    }, {
+        'who': 'zachzundel',
+        'who_link': True,
+        'what': 'Moving Sharding forward with Prysmatic Labs!',
+        'link': 'https://gitcoin.co/issue/prysmaticlabs/prysm/497/1212',
+        'link_copy': 'View more',
+    }, ]
 
-    bounties_spec = [
-        {
-            'url': 'https://github.com/diadata-org/api-golang/issues/22',
-            'primer': 'Have Go chops? Diadata is building out an API and could use your help.',
-        },
-        {
-            'url': 'https://github.com/raiden-network/raiden/issues/1426',
-            'primer': 'A longtime open issue to help Raiden with state channels work.',
-        },
-        {
-            'url': 'https://github.com/livepeer/livepeerjs/issues/44',
-            'primer': 'Help Livepeer fix a funny bug in fullscreen mode.',
-        },
-    ]
+    bounties_spec = [{
+        'url': 'https://github.com/ethereum/EIPs/issues/1442',
+        'primer': 'Document JSON-RPC interface in an EIP.',
+    }, {
+        'url': 'https://github.com/NethermindEth/nethermind/issues/86',
+        'primer': 'Implement discovery v5 on Nethermind.',
+    }, {
+        'url': 'https://github.com/ethereum/solidity/issues/4648',
+        'primer': 'Solidity: Display Large Values In A Nicer Format',
+    }, ]
 
     num_leadboard_items = 5
     #### don't need to edit anything below this line
@@ -607,9 +604,9 @@ Back to BUIDLing,
             'items': [],
         },
     }
-    for key, val in leaderboard.items():
-        leaderboard[key]['items'] = LeaderboardRank.objects.filter(active=True, leaderboard=key).order_by('rank')[0:num_leadboard_items]
-
+    for key, __ in leaderboard.items():
+        leaderboard[key]['items'] = LeaderboardRank.objects.active() \
+            .filter(leaderboard=key).order_by('rank')[0:num_leadboard_items]
 
     bounties = []
     for nb in bounties_spec:
@@ -621,7 +618,7 @@ Back to BUIDLing,
                 bounties.append({
                     'obj': bounty,
                     'primer': nb['primer']
-                    })
+                })
         except Exception as e:
             print(e)
 
@@ -696,8 +693,8 @@ def resend_new_tip(request):
 @staff_member_required
 def new_bounty(request):
     from dashboard.models import Bounty
-    bounties = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3]
-    old_bounties = Bounty.objects.filter(current_bounty=True).order_by('-web3_created')[0:3]
+    bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
+    old_bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
     response_html, _ = render_new_bounty(settings.CONTACT_EMAIL, bounties, old_bounties)
     return HttpResponse(response_html)
 
@@ -705,7 +702,7 @@ def new_bounty(request):
 @staff_member_required
 def new_work_submission(request):
     from dashboard.models import Bounty
-    bounty = Bounty.objects.filter(idx_status='submitted', current_bounty=True).last()
+    bounty = Bounty.objects.current().filter(idx_status='submitted').last()
     response_html, _ = render_new_work_submission(settings.CONTACT_EMAIL, bounty)
     return HttpResponse(response_html)
 
@@ -727,7 +724,7 @@ def new_bounty_acceptance(request):
 @staff_member_required
 def bounty_feedback(request):
     from dashboard.models import Bounty
-    response_html, _ = render_bounty_feedback(Bounty.objects.filter(idx_status='done', current_bounty=True).last(), 'foo')
+    response_html, _ = render_bounty_feedback(Bounty.objects.current().filter(idx_status='done').last(), 'foo')
     return HttpResponse(response_html)
 
 
