@@ -534,16 +534,18 @@ Hi there,
 </p>
 <p>
 <a href="https://codefund.io/">CodeFund</a> wants to support open source projects everywhere!
-By placing ethical ads in beautiful places, Eric Berry and team have been providing Discourse, CodeSandbox, and Material-UI
+By placing ethical ads in beautiful places, <a href="https://twitter.com/codeberry">Eric Berry</a> and team have been providing Discourse, CodeSandbox, and Material-UI
 and countless others with sources of revenue to support their projects. The CodeFund team just added a superstar, <a href="https://codefund.io/team">Nate Hopkins</a>,
 to the team as CTO, and we're excited about the future of the product. If you want to advertise to developers, there's no better way!
+<br>
+<a href="https://codefund.io">Checkout CodeFund's new website to learn more</a>
 </p>
 <p>
 Hacktoberfest is in full swing! Take a look here for issues tagged <a href="https://gitcoin.co/explorer?network=mainnet&keywords=hacktoberfest&order_by=-web3_created">'Hacktoberfest'</a>
  which have been funded with Gitcoin bounties, across projects like Ruby For Good, Peepeth, Giveth and more.
 </p>
 <p>
-We're now on the move! If you'll be at ETH SF (Oct 5-7), Github Universe (Oct 16-17), Web 3 Summit (Oct 22 - 24), or Devcon 4, give us a shout!
+The Gitcoin Core team is on the move! If you'll be at ETH SF (Oct 5-7), Github Universe (Oct 16-17), Web 3 Summit (Oct 22 - 24), SustainOSS (Oct 25), or Devcon 4, give us a shout!
 </p>
 <h3>What else is new?</h3>
     <ul>
