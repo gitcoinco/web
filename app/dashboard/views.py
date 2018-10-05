@@ -1015,6 +1015,18 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
 
     return TemplateResponse(request, 'bounty/details.html', params)
 
+@csrf_exempt
+def get_notify_funder_modal(request):
+
+    bounty = Bounty.objects.get(pk=request.GET.get("pk"))
+
+    context = {
+        'bounty': bounty,
+        'active': 'get_notify_funder_modal',
+        'title': _('Send Payout Reminder')
+    }
+    return TemplateResponse(request, 'notifyfunder.html', context)
+
 
 def quickstart(request):
     """Display quickstart guide."""
