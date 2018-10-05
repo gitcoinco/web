@@ -607,6 +607,30 @@ var randomElement = function(array) {
   return array[randomIndex];
 };
 
+var loginPortis = function() {
+  web3 = new Web3(new Provider({ network: 'mainnet' }));
+  web3.eth.getAccounts(_ => _);
+  return false;
+};
+
+var unlockPortis = function() {
+  web3.eth.getAccounts(_ => _);
+  return false;
+};
+
+var usePortis = function() {
+  if (typeof Web3 === 'undefined') {
+    var web3script = document.createElement('script');
+
+    web3script.setAttribute('src', 'https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js');
+    web3script.onload = loginPortis;
+    document.body.appendChild(web3script);
+  } else {
+    loginPortis();
+  }
+  return false;
+};
+
 var mixpanel_track_once = function(event, params) {
   if (document.listen_for_web3_iterations == 1 && mixpanel) {
     mixpanel.track(event, params);
