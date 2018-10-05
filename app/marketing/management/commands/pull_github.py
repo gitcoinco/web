@@ -26,11 +26,15 @@ from git.utils import search
 from marketing.models import EmailSubscriber
 
 
+class NoUsersException(Exception):
+    pass
+
+
 def get_github_user_from_github(email):
     result = search(email)
     if not result.get('total_count', 0):
         # print(result)
-        raise Exception("no users found")
+        raise NoUsersException("no users found")
 
     return result['items'][0]
 
@@ -51,18 +55,25 @@ class Command(BaseCommand):
     help = 'pulls all github metadata info'
 
     def handle(self, *args, **options):
-        emailsubscribers = EmailSubscriber.objects.filter(github='')
+        es_without_github = EmailSubscriber.objects.filter(github='')
+        es_without_keywords = EmailSubscriber.objects.filter(keywords=[])
+        emailsubscribers = (es_without_github | es_without_keywords).distinct('pk').order_by('-pk')
+        es_without_keywords_count = es_without_keywords.count()
+        es_without_github_count = es_without_github.count()
         success = 0
         exceptions = 0
         for es in emailsubscribers:
             # print(es.email)
             try:
-                es.github = get_github_user_from_DB(es.email)
+                if not es.github:
+                    es.github = get_github_user_from_DB(es.email)
                 if not es.github:
                     ghuser = get_github_user_from_github(es.email)
                     es.github = ghuser['login']
                 if not es.keywords:
                     es.keywords = profile_keywords_helper(es.github)
+                    if es.keywords:
+                        print(f"got keywords: {es.keywords}")
                 es.save()
                 # print(es.email, es.github, es.keywords)
                 success += 1
@@ -77,3 +88,7 @@ class Command(BaseCommand):
         print("exceptions: {}".format(exceptions))
         print("total: {}".format(emailsubscribers.count()))
         print("pct: {}".format(round(exceptions / emailsubscribers.count(), 2)))
+
+        print("===========================")
+        print(f"es_without_keywords_count; before: {es_without_keywords_count}, after: {es_without_keywords.count()}")
+        print(f"es_without_github_count; before: {es_without_github_count}, after: {es_without_github.count()}")

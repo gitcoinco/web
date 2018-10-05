@@ -759,3 +759,31 @@ def new_bounty_request(model):
         )
     finally:
         translation.activate(cur_language)
+
+
+def new_funding_limit_increase_request(profile, cleaned_data):
+    to_email = 'founders@gitcoin.co'
+    from_email = profile.email or settings.SERVER_EMAIL
+    cur_language = translation.get_language()
+    usdt_per_tx = cleaned_data.get('usdt_per_tx', 0)
+    usdt_per_week = cleaned_data.get('usdt_per_week', 0)
+    comment = cleaned_data.get('comment', '')
+    accept_link = f'{settings.BASE_URL}requestincrease?'\
+                  f'profile_pk={profile.pk}&'\
+                  f'usdt_per_tx={usdt_per_tx}&'\
+                  f'usdt_per_week={usdt_per_week}'
+
+    try:
+        setup_lang(to_email)
+        subject = _('New Funding Limit Increase Request')
+        body = f'New Funding Limit Request from {profile} ({profile.absolute_url}).\n\n'\
+               f'New Limit in USD per Transaction: {usdt_per_tx}\n'\
+               f'New Limit in USD per Week: {usdt_per_week}\n\n'\
+               f'To accept the Funding Limit, visit: {accept_link}\n'\
+               f'Administration Link: ({settings.BASE_URL}_administrationdashboard/profile/'\
+               f'{profile.pk}/change/#id_max_tip_amount_usdt_per_tx)\n\n'\
+               f'Comment:\n{comment}'
+
+        send_mail(from_email, to_email, subject, body, from_name=_("No Reply from Gitcoin.co"))
+    finally:
+        translation.activate(cur_language)

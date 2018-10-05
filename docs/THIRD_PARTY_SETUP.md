@@ -38,6 +38,17 @@ By default, we disable outbound GitHub notifications to any repository that isn'
 
 For example, if `settings.GITHUB_API_USER == gitcoinco` only `github.com/gitcoinco/<repos>` bounties and associated tips will post Github comments.
 
+## Setup SendGrid to Send Emails (Recommended)
+
+1. Create a new SendGrid Account at https://sendgrid.com
+2. Go to [https://app.sendgrid.com/settings/api_keys](https://app.sendgrid.com/settings/api_keys) and create a new Sendgrid API key:
+
+Update the `web/app/app/.env` file to include the values provided by Github:
+
+```shell
+SENDGRID_API_KEY=xxx
+```
+
 ```
 # Be VERY CAREFUL when changing this setting.  You don't want to accidently
 # send a bunch of github notifications :)

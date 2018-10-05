@@ -59,23 +59,6 @@ h2 {
   bottom: -4em;
 }
 
-.how-it-works__fake_but {
-  border: none;
-  border-radius: 2px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  color: #fff;
-  font-size: 14px;
-  font-family: 'Muli', sans-serif;
-  font-weight: 300;
-  padding: 8px 16px;
-  -webkit-appearance: none;
-  background-color: #0D0764;
-  margin-bottom: 1em;
-  position: absolute;
-  right: 0px;
-  bottom: 0px;
-}
-
 .how-it-works__step-number,
 .how-it-works__step-exclamation,
 .how-it-works__step-wait {

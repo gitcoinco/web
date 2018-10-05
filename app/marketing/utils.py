@@ -26,10 +26,15 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
 import requests
+from marketing.models import AccountDeletionRequest
 from slackclient import SlackClient
 from slackclient.exceptions import SlackClientError
 
 logger = logging.getLogger(__name__)
+
+
+def is_deleted_account(handle):
+    return AccountDeletionRequest.objects.filter(handle__iexact=handle).exists()
 
 
 def get_stat(key):

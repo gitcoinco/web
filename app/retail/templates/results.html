@@ -21,7 +21,7 @@
   {% include 'shared/head.html' %}
   {% include 'shared/cards_pic.html' %}
 
-  <body class="{{ active }}">
+  <body class="{{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header">
       {% include 'shared/nav.html' %}
@@ -100,7 +100,7 @@
           <div class="col-6 col-md-4 text-center py-4">
             <img class="icon" src="{% static "v2/images/results/abandoned_bounties.svg" %}" />
             <h3 class="text-highlight-purple mt-3">{{ bounty_abandonment_rate | floatformat:1 }}%</h3>
-            <p>{% trans "Bounty Abandonment Rate" %}</p>
+            <p>{% trans "Bounty Cancel Rate" %}</p>
             <span class="mt-0">(after Start Work)</span>
           </div>
 

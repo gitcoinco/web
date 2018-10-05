@@ -60,7 +60,8 @@ ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS
 
 def premailer_transform(html):
     cssutils.log.setLevel(logging.CRITICAL)
-    return premailer.transform(html)
+    p = premailer.Premailer(html, base_url=settings.BASE_URL)
+    return p.transform()
 
 
 def render_tip_email(to_email, tip, is_new):
@@ -520,12 +521,11 @@ def render_start_work_applicant_expired(interest, bounty):
     return response_html, response_txt, subject
 
 
-
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "$60K In Funding For Web 3 Infrastructure Projects"
+    subject = "A Maintainers Guide To Hacktoberfest | ETH Travels"
 
     intro = '''
 
@@ -533,29 +533,23 @@ def render_new_bounty_roundup(to_email):
 Hi there,
 </p>
 <p>
-We're excited to formally announce an expansion of our ECF Partnership, bringing $60K in funding to the <a href="https://medium.com/@mitchkosowski/cbe1d2d1c071">Ethereum Infrastructure layer</a>!
-As stated in the article, if you know of any open source projects / specific Github issues which could use some funding, <a href="https://gitcoin.co/requests">make a Gitcoin Request</a> and comment 'ECF'.
-We're very excited to make it easy to contribute to the ecosystem, while getting paid.
+<a href="https://medium.com/gitcoin/gitcoins-hacktoberfest-98825f199af2">Gitcoin's Hacktoberfest</a> starts on Monday! Post your favorite 3 open source projects on twitter & tag us (<a href="https://twitter.com/GetGitcoin">@GetGitcoin</a>), then make a <a href="https://gitcoin.co/requests">Gitcoin Request</a> to give those projects a boost!
 </p>
 <p>
-We're still working with the Ethereum Foundation to find the best and brightest developers to get involved directly on Ethereum's
-codebase. We'd love to hear from you. If you have experience building out test cases and are familiar with consensus systems,
-join #focus-dev-testing <a href="https://gitcoin.co/slack">on Gitcoin Slack</a>.
+If you're an OSS maintainer, we wrote a <a href="https://medium.com/gitcoin/a-maintainers-guide-to-hacktoberfest-21405c8ff09f">Guide to Hacktoberfest for maintainers!</a> It's
+a great look at how to manage an open source project generally, let us know what you think.
 </p>
-
+<p>
+Lastly, October marks a month of travel for the Gitcoin team. If you'll be at ETH SF (Oct 5-7), Github Universe (Oct 16-17), Web 3 Summit (Oct 22 - 24), or Devcon 4, give us a shout!
+</p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-        <a href="https://medium.com/gitcoin/embarking-into-web-3-f46408b23f59">Our Status partnership</a> is off to a hot start, with all 14 of the initial bounties picked up in 6 hours.
-        Be on the lookout for the seconds batch sometime next week!
+        <a href="https://consensys.net/academy/2018developer/?utm_source=ConsenSys+Academy%3A+General+Mailing+List&utm_campaign=88c5836e4a-EMAIL_CAMPAIGN_2018_09_10_02_13_COPY_01&utm_medium=email&utm_term=0_30e33caef0-88c5836e4a">ConsenSys Academy's Developer Program</a> is a 11-week program that equips developers with all the knowledge, skills, and
+         hands on mentorship essential to become industry-leading Ethereum developers. You can register now <a href="https://form.jotform.com/DeveloperProgram/Bootcamp?utm_source=ConsenSys+Academy%3A+General+Mailing+List&utm_campaign=88c5836e4a-EMAIL_CAMPAIGN_2018_09_10_02_13_COPY_01&utm_medium=email&utm_term=0_30e33caef0-88c5836e4a-">here!</a>
         </li>
         <li>
-        There have now been 20 Gitcoin Requests for over $5,000! Do you have a Github issue you want solved? Make <a href="https://gitcoin.co/requests">a Gitcoin Request</a> and we'll review in 24 hours.
-        If you're a developer and you see a 'Good First Issue' you'd work on for a bounty, <a href="https://gitcoin.co/requests">let us know</a>! Gitcoin Requests
-        is a way for developers and maintainers to make their voice heard.
-        </li>
-        <li>
-        No Gitcoin Livestream this week, but we're excited <a href="https://gitcoin.co/livestream">to be back next week</a> at 5PM ET. Have a great weekend!
+        Gitcoin Livestream today includes ConsenSys Academy and FOAM Protocol at 5PM ET. We're excited and hope to see you - <a href="https://gitcoin.co/livestream">add to your calendar here!</a>.
         </li>
     </ul>
 </p>
@@ -563,44 +557,36 @@ join #focus-dev-testing <a href="https://gitcoin.co/slack">on Gitcoin Slack</a>.
 Back to BUIDLing,
 </p>
 '''
-    highlights = [
-        {
-            'who': 'eiselems',
-            'who_link': True,
-            'what': 'Completed the first Status Embark bounty in 48 hours!',
-            'link': 'https://gitcoin.co/issue/embark-framework/embark/765/1089',
-            'link_copy': 'View more',
-        },
-        {
-            'who': 'lastmjs',
-            'who_link': True,
-            'what': 'Worked with Piper and Carver at the Ethereum Foundation on web3py.',
-            'link': 'https://gitcoin.co/issue/ethereum/web3.py/962/1036',
-            'link_copy': 'View more',
-        },
-        {
-            'who': 'bakaoh',
-            'who_link': True,
-            'what': 'Back at it, this time on the OmiseGO Plasma MVP repo.',
-            'link': 'https://gitcoin.co/issue/omisego/plasma-mvp/170/967',
-            'link_copy': 'View more',
-        },
-    ]
+    highlights = [{
+        'who': 'dryajov',
+        'who_link': True,
+        'what': 'Completed one of the largest bounties of all time on MetaMask!',
+        'link': 'https://gitcoin.co/issue/MetaMask/mustekala/21/1279',
+        'link_copy': 'View more',
+    }, {
+        'who': 'mul1sh',
+        'who_link': True,
+        'what': 'Completed his first bounty! Congrats.',
+        'link': 'https://gitcoin.co/issue/diadata-org/coindata/1/1259',
+        'link_copy': 'View more',
+    }, {
+        'who': 'zachzundel',
+        'who_link': True,
+        'what': 'Moving Sharding forward with Prysmatic Labs!',
+        'link': 'https://gitcoin.co/issue/prysmaticlabs/prysm/497/1212',
+        'link_copy': 'View more',
+    }, ]
 
-    bounties_spec = [
-        {
-            'url': 'https://github.com/ethereum-alarm-clock/timenode-core/issues/194',
-            'primer': 'Work on Ethereum Alarm Clock, a project for transactions into the future!',
-        },
-        {
-            'url': 'https://github.com/prysmaticlabs/prysm/issues/437',
-            'primer': 'Work on Sharding with the Prysmatic Labs folks!',
-        },
-        {
-            'url': 'https://github.com/zeppelinos/zos/issues/37',
-            'primer': 'Great bounty for the ecosystem from the Zeppelin team.',
-        },
-    ]
+    bounties_spec = [{
+        'url': 'https://github.com/ethereum/EIPs/issues/1442',
+        'primer': 'Document JSON-RPC interface in an EIP.',
+    }, {
+        'url': 'https://github.com/NethermindEth/nethermind/issues/86',
+        'primer': 'Implement discovery v5 on Nethermind.',
+    }, {
+        'url': 'https://github.com/ethereum/solidity/issues/4648',
+        'primer': 'Solidity: Display Large Values In A Nicer Format',
+    }, ]
 
     num_leadboard_items = 5
     #### don't need to edit anything below this line

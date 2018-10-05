@@ -9,6 +9,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 ## GITCOIN WEB3 STUFF
 ##TODO: Re-enable this when Gitcoin GETH URL is synced.
 1 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_geth mainnet -200 0  >> /var/log/gitcoin/sync_geth.log  2>&1
+15 1 * * */2 cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_geth mainnet 400 0  >> /var/log/gitcoin/sync_geth_weekly.log  2>&1
 #*/3 * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_geth mainnet -10 0  >> /var/log/gitcoin/sync_geth_latest.log  2>&1
 * * * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_listener mainnet  >> /var/log/gitcoin/sync_listener.log  2>&1
 12 */2 * * * cd gitcoin/coin; bash scripts/run_management_command_if_not_already_running.bash sync_geth rinkeby -200 0  >> /var/log/gitcoin/sync_geth_rinkeby.log  2>&1
@@ -57,4 +58,4 @@ PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/us
 10 4 * * * cd gitcoin/coin; bash scripts/run_management_command.bash process_email_events  >> /var/log/gitcoin/process_email_events.log  2>&1
 10 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash post_to_craigslist 1  >> /var/log/gitcoin/post_to_craigslist.log  2>&1
 10 1 * * * cd gitcoin/coin; bash scripts/run_management_command.bash output_gas_viz  >> /var/log/gitcoin/output_gas_viz.log  2>&1
-
+*/15 * * * * cd gitcoin/coin; bash scripts/run_management_command.bash check_gh_ratelimit  >> /var/log/gitcoin/gh_ratelimit.log  2>&1

@@ -442,72 +442,9 @@ var refreshBounties = function(event, offset, append) {
 
     document.last_bounty_rendered = 0;
 
-    for (var i = 0; i < results.length; i++) {
-      // setup
-      var result = results[i];
-      var related_token_details = tokenAddressToDetailsByNetwork(result['token_address'], result['network']);
-      var decimals = 18;
+    var html = renderBountyRowsFromResults(results, true);
 
-      if (related_token_details && related_token_details.decimals) {
-        decimals = related_token_details.decimals;
-      }
-
-      var divisor = Math.pow(10, decimals);
-
-      result['rounded_amount'] = Math.round(result['value_in_token'] / divisor * 100) / 100;
-      var is_expired = new Date(result['expires_date']) < new Date() && !result['is_open'];
-
-      // setup args to go into template
-      if (typeof web3 != 'undefined' && web3.eth.coinbase == result['bounty_owner_address']) {
-        result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">mine</span></a>';
-      } else if (result['fulfiller_address'] !== '0x0000000000000000000000000000000000000000') {
-        result['my_bounty'] = '<a class="btn font-smaller-2 btn-sm btn-outline-dark" role="button" href="#">' + result['status'] + '</span></a>';
-      }
-
-      result.action = result['url'];
-      result['title'] = result['title'] ? result['title'] : result['github_url'];
-
-      var project_type = ucwords(result['project_type']) + ' &bull; ';
-
-      result['p'] = project_type + (result['experience_level'] ? result['experience_level'] + ' &bull; ' : '');
-
-      if (result['status'] === 'done')
-        result['p'] += 'Done';
-      if (result['fulfillment_accepted_on']) {
-        result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_accepted_on']), false, 60 * 60);
-      } else if (result['status'] === 'started') {
-        result['p'] += 'Started';
-        result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_started_on']), false, 60 * 60);
-      } else if (result['status'] === 'submitted') {
-        result['p'] += 'Submitted';
-        if (result['fulfillment_submitted_on']) {
-          result['p'] += ' ' + timeDifference(new Date(), new Date(result['fulfillment_submitted_on']), false, 60 * 60);
-        }
-      } else if (result['status'] == 'cancelled') {
-        result['p'] += 'Cancelled';
-        if (result['canceled_on']) {
-          result['p'] += ' ' + timeDifference(new Date(), new Date(result['canceled_on']), false, 60 * 60);
-        }
-      } else if (is_expired) {
-        var time_ago = timeDifference(new Date(), new Date(result['expires_date']), true);
-
-        result['p'] += (' Expired ' + time_ago + ' ago');
-      } else {
-        var opened_when = timeDifference(new Date(), new Date(result['web3_created']), true);
-
-        var timeLeft = timeDifference(new Date(), new Date(result['expires_date']));
-        var expiredExpires = new Date() < new Date(result['expires_date']) ? 'Expires' : 'Expired';
-
-        result['p'] += ('Opened ' + opened_when + ' ago, ' + expiredExpires + ' ' + timeLeft);
-      }
-
-
-      result['watch'] = 'Watch';
-
-      // render the template
-      var tmpl = $.templates('#result');
-      var html = tmpl.render(result);
-
+    if (html) {
       $('#bounties').append(html);
     }
 

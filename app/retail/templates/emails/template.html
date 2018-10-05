@@ -19,15 +19,12 @@
 <html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="x-apple-disable-message-reformatting" />
+<head>
+  <link rel="stylesheet" href="{% static "v2/css/lib/typography.css" %}">
+</head>
 
 <style>
-  @font-face {
-    font-family: 'Muli', sans-serif;
-    src: url("{% static "v2/fonts/Muli/Muli.ttf" %}") /* TTF file for CSS3 browsers */
-  }
-
   body {
-    font-family: 'Muli', sans-serif !important;
     margin: 0px;
     padding: 0px;
   }
@@ -171,10 +168,10 @@
   }
 </style>
 
-<body>
+<body class="g-font-muli">
   {% if not hide_header %}
   <div id="header">
-    <a href="https://gitcoin.co">
+    <a href="{% url 'index' %}">
       <span style="display: inline-block;height: 100%;vertical-align: middle;"></span><img id="logo" src="{% static "v2/images/logo_large.png" %}" alt="Gitcoin" title="Gitcoin Logo">
     </a>
   </div>
@@ -196,7 +193,7 @@
 
       <a href="https://reddit.com/r/gitcoincommunity"><img class="social-img" src="{% static "v2/images/social/reddit_new.png" %}"></a>
 
-      <a href="https://gitcoin.co/slack"><img class="social-img" src="{% static "v2/images/social/slack_new.png" %}"></a>
+      <a href="{% url 'slack' %}"><img class="social-img" src="{% static "v2/images/social/slack_new.png" %}"></a>
     </div>
     <div>
       <div id="copyright">

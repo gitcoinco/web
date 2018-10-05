@@ -28,16 +28,17 @@ from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 
+import pyvips
 import requests
 from git.utils import get_user
 from PIL import Image, ImageOps
 from svgutils.compose import SVG, Figure, Line
-from wand.image import Image as WandImage
 
 AVATAR_BASE = 'assets/other/avatars/'
 COMPONENT_BASE = 'assets/v2/images/avatar/'
 
 logger = logging.getLogger(__name__)
+
 
 def get_avatar_context():
     return {
@@ -46,56 +47,63 @@ def get_avatar_context():
         'defaultClothingColor': 'CCCCCC',
         'defaultBackground': '25E899',
         'optionalSections': ['HairStyle', 'FacialHair', 'Accessories'],
-        'sections': [{
-            'name': 'Head',
-            'title': 'Pick head shape',
-            'options': ('0', '1', '2', '3', '4')
-        }, {
-            'name': 'Eyes',
-            'title': 'Pick eyes shape',
-            'options': ('0', '1', '2', '3', '4', '5', '6')
-        }, {
-            'name': 'Nose',
-            'title': 'Pick nose shape',
-            'options': ('0', '1', '2', '3', '4')
-        }, {
-            'name': 'Mouth',
-            'title': 'Pick mouth shape',
-            'options': ('0', '1', '2', '3', '4')
-        }, {
-            'name': 'Ears',
-            'title': 'Pick ears shape',
-            'options': ('0', '1', '2', '3')
-        }, {
-            'name': 'Clothing',
-            'title': 'Pick your clothing',
-            'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater')
-        }, {
-            'name': 'Hair Style',
-            'title': 'Pick a hairstyle',
-            'options': (['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'], ['5', 'None'],
-                        ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'])
-        }, {
-            'name': 'Facial Hair',
-            'title': 'Pick a facial hair style',
-            'options': (
-                'Mustache-0', 'Mustache-1', 'Mustache-2', 'Mustache-3', 'Beard-0', 'Beard-1', 'Beard-2', 'Beard-3'
-            )
-        }, {
-            'name': 'Accessories',
-            'title': 'Pick your accessories',
-            'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
-                'HatShort-backwardscap'
-            ], ['HatShort-ballcap'], ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'],
-                        ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'])
-        }, {
-            'name': 'Background',
-            'title': 'Pick a background color',
-            'options': (
-                '25E899', '9AB730', '00A55E', '3FCDFF', '3E00FF', '8E2ABE', 'D0021B', 'F9006C', 'FFCE08', 'F8E71C',
-                '15003E', 'FFFFFF'
-            )
-        }],
+        'sections': [
+            {
+                'name': 'Head',
+                'title': 'Pick head shape',
+                'options': ('0', '1', '2', '3', '4')
+            }, {
+                'name': 'Eyes',
+                'title': 'Pick eyes shape',
+                'options': ('0', '1', '2', '3', '4', '5', '6')
+            }, {
+                'name': 'Nose',
+                'title': 'Pick nose shape',
+                'options': ('0', '1', '2', '3', '4')
+            }, {
+                'name': 'Mouth',
+                'title': 'Pick mouth shape',
+                'options': ('0', '1', '2', '3', '4')
+            }, {
+                'name': 'Ears',
+                'title': 'Pick ears shape',
+                'options': ('0', '1', '2', '3')
+            },
+            {
+                'name': 'Clothing',
+                'title': 'Pick your clothing',
+                'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet')
+            },
+            {
+                'name': 'Hair Style',
+                'title': 'Pick a hairstyle',
+                'options': (['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'], ['5', 'None'],
+                            ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'])
+            },
+            {
+                'name': 'Facial Hair',
+                'title': 'Pick a facial hair style',
+                'options': (
+                    'Mustache-0', 'Mustache-1', 'Mustache-2', 'Mustache-3', 'Beard-0', 'Beard-1', 'Beard-2', 'Beard-3'
+                )
+            },
+            {
+                'name': 'Accessories',
+                'title': 'Pick your accessories',
+                'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
+                    'HatShort-backwardscap'
+                ], ['HatShort-ballcap'], ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'],
+                            ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'])
+            },
+            {
+                'name': 'Background',
+                'title': 'Pick a background color',
+                'options': (
+                    '25E899', '9AB730', '00A55E', '3FCDFF', '3E00FF', '8E2ABE', 'D0021B', 'F9006C', 'FFCE08', 'F8E71C',
+                    '15003E', 'FFFFFF'
+                )
+            }
+        ],
     }
 
 
@@ -384,12 +392,16 @@ def get_github_avatar(handle):
     return temp_avatar
 
 
-def convert_img(svg_obj, input_fmt='svg', output_fmt='png'):
-    """Convert an SVG to another format.
+def convert_img(obj, input_fmt='svg', output_fmt='png'):
+    """Convert the provided buffer to another format.
 
     Args:
-        svg_obj (File): The SVG File/ContentFile.
-        fmt (str): The output format. Defaults to: png.
+        obj (File): The File/ContentFile object.
+        input_fmt (str): The input format. Defaults to: svg.
+        output_fmt (str): The output format. Defaults to: png.
+
+    Exceptions:
+        Exception: Cowardly catch blanket exceptions here, log it, and return None.
 
     Returns:
         BytesIO: The BytesIO stream containing the converted File data.
@@ -397,12 +409,9 @@ def convert_img(svg_obj, input_fmt='svg', output_fmt='png'):
 
     """
     try:
-        svg_data = svg_obj.read()
-        with WandImage(blob=svg_data, format=input_fmt) as svg_img:
-            svg_img.format = output_fmt
-            tmpfile_io = BytesIO()
-            svg_img.save(file=tmpfile_io)
-            return tmpfile_io
+        obj_data = obj.read()
+        image = pyvips.Image.new_from_buffer(obj_data, f'.{input_fmt}')
+        return BytesIO(image.write_to_buffer(f'.{output_fmt}'))
     except Exception as e:
         logger.error(e)
     return None

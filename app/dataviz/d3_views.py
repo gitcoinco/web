@@ -143,9 +143,7 @@ def viz_chord(request, key='bounties_paid'):
     if request.GET.get('data'):
         rows = [['creditor', 'debtor', 'amount', 'risk']]
         network = 'mainnet'
-        for bounty in Bounty.objects.current().filter(
-            network=network, web3_type='bounties_network', idx_status='done'
-        ):
+        for bounty in Bounty.objects.current().filter(network=network, web3_type='bounties_network', idx_status='done'):
             weight = bounty.value_in_usdt_then
             if weight:
                 for fulfillment in bounty.fulfillments.filter(accepted=True):

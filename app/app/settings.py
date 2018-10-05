@@ -91,6 +91,7 @@ INSTALLED_APPS = [
     'tdi',
     'gas',
     'git',
+    'healthcheck.apps.HealthcheckConfig',
     'legacy',
     'chartit',
     'email_obfuscator',
@@ -585,6 +586,9 @@ IPFS_API_ROOT = env('IPFS_API_ROOT', default='/api/v0')
 IPFS_API_SCHEME = env('IPFS_API_SCHEME', default='https')
 
 STABLE_COINS = ['DAI', 'USDT', 'TUSD']
+
+BLOCKED_USERS = env('BLOCKED_USERS', default=[])
+
 
 # Silk Profiling and Performance Monitoring
 ENABLE_SILK = env.bool('ENABLE_SILK', default=False)
