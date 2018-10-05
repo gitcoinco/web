@@ -51,6 +51,7 @@ from kudos.utils import humanize_name
 from marketing.mails import (
     admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
+from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
 from marketing.models import Keyword
 from pytz import UTC
 from ratelimit.decorators import ratelimit
@@ -1035,7 +1036,7 @@ def funder_payout_reminder(request, bounty_id):
         raise Http404
 
     user = request.user if request.user.is_authenticated else None
-    funder_payout_reminder_mail(to_email=bounty.bounty_owner_email, bounty=bounty, github_username=user)
+    funder_payout_reminder_mail(to_email=bounty.bounty_owner_email, bounty=bounty, github_username=user, live=True)
     bounty.funder_last_messaged_on = timezone.now()
     bounty.save()
     return JsonResponse({

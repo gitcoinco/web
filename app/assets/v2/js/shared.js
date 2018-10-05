@@ -262,6 +262,23 @@ var waitingStateActive = function() {
   waitingRoomEntertainment();
 };
 
+var notify_funder = function(bounty_pk, data) {
+  var request_url = '/actions/bounty/' + bounty_pk + '/notify_funder/';
+
+  console.log(request_url);
+  showBusyOverlay();
+  $.post(request_url, data).then(function(result) {
+    hideBusyOverlay();
+
+    _alert({message: gettext('Sent payout reminder')}, 'success');
+    return true;
+  }).fail(function(result) {
+    hideBusyOverlay();
+
+    _alert({ message: gettext('got an error. please try again, or contact support@gitcoin.co') }, 'error');
+  });
+};
+
 /** Add the current profile to the interested profiles list. */
 var add_interest = function(bounty_pk, data) {
   if (document.interested) {
