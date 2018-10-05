@@ -18,8 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from dashboard.utils import (
-    clean_bounty_url, get_bounty, get_bounty_id_from_db, get_bounty_id_from_web3, get_ordinal_repr, get_web3,
-    getBountyContract, humanize_event_name,
+    clean_bounty_url, get_bounty, get_ordinal_repr, get_web3, getBountyContract, humanize_event_name,
 )
 from test_plus.test import TestCase
 from web3.main import Web3

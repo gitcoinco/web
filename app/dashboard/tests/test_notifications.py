@@ -20,9 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from datetime import datetime
 
 from dashboard.models import Bounty
-from dashboard.notifications import (
-    amount_usdt_open_work, append_snooze_copy, build_github_notification, maybe_post_on_craigslist,
-)
+from dashboard.notifications import amount_usdt_open_work, append_snooze_copy, build_github_notification
 from pytz import UTC
 from test_plus.test import TestCase
 
@@ -76,11 +74,6 @@ class DashboardNotificationsTest(TestCase):
         assert self.usdt_value in message
         assert f'The funding of this issue was increased' in message
         assert f'${self.amount_open_work}' in message
-
-    def test_maybe_post_on_craigslist(self):
-        message = maybe_post_on_craigslist(self.bounty)
-        # returns on 'returning at 2nd return'
-        assert not message
 
     def test_append_snooze_copy(self):
         """Test the dashboard notification utility append_snooze_copy."""
