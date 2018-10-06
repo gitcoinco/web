@@ -28,6 +28,10 @@
   <script src="{% static "v2/js/jquery-ui.js" %}"></script>
   <script src="{% static "v2/js/tooltip.js" %}"></script>
 {% endif %}
+<script src="{% static "v2/js/web3.js" %}"></script>
+<script>
+  var web3 = new Web3(Web3.givenProvider || "ws://localhost:8546");
+</script>
 <script src="{% static "v2/js/jquery.modal.min.js" %}"></script>
 <script src="{% static "v2/js/jquery.select2.min.js" %}"></script>
 <script src="{% static "v2/js/jquery.validate.min.js" %}"></script>
