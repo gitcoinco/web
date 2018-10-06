@@ -2,9 +2,13 @@
 
 $(document).ready(function() {
 
-console.log('1', web3.eth.coinbase);
-console.log('network', web3.version.network);
-console.log('web3', Web3);
+web3.eth.getAccounts(function(err, accounts){
+  console.log(accounts[0]);
+})
+web3.eth.net.getId(function(err, network){
+  console.log('network',network);
+})
+console.log('web3', web3);
 
 
   $('#js-drop').on('dragover', function(event) {
@@ -40,7 +44,9 @@ console.log('web3', Web3);
         .find(':input:disabled')
         .removeAttr('disabled');
 
-
+        $.each($(form).serializeArray(), function() {
+          data[this.name] = this.value;
+        });
 
 
       // Begin New Deploy Subscription Contract
@@ -48,41 +54,75 @@ console.log('web3', Web3);
       let bytecode = compiledSubscription.bytecode;
 
 
-      let SubscriptionContract = web3.eth.contract(compiledSubscription.abi);
+      let SubscriptionContract = new web3.eth.Contract(compiledSubscription.abi);
 
-      SubscriptionContract.new(data.admin_address, data.token_address, data.amount_goal, data.frequency, data.gas_price, {
-            from:web3.eth.accounts[0],
-            data:bytecode,
-            gas:2500000}, function(err, subscriptionContract){
-              if(!err) {
+      console.log('SubscriptionContract', SubscriptionContract);
 
-                // NOTE: The callback will fire twice!
-                // Once the contract has the transactionHash property set and once its deployed on an address.
-                // e.g. check tx hash on the first call (transaction send)
+      let args = [data.admin_address, data.denomination, data.amount_goal, data.frequency, 0]
 
-                if(!subscriptionContract.address) {
-                  console.log(subscriptionContract.transactionHash)
+      console.log('args', args);
+
+      web3.eth.getAccounts(function(err, accounts){
+
+        console.log(accounts[0]);
+
+        let account = accounts[0]
+
+      SubscriptionContract.deploy({
+        data: compiledSubscription.bytecode,
+        arguments: [data.admin_address, data.denomination, data.amount_goal, data.frequency, 0]
+      })
+      .send({
+        from: accounts[0],
+        gas: 2500000
+      })
+      .on('error', function(error){
+        console.log('1', error);
+       })
+      .on('transactionHash', function(transactionHash){
+        console.log('2', transactionHash);
+       })
+      .on('receipt', function(receipt){
+         console.log('3', receipt.contractAddress)
+         console.log('4', receipt) // contains the new contract address
+      })
 
 
-                } else {
-                  console.log(subscriptionContract.address)
+    })
 
-                  $('#transaction_hash').val(subscriptionContract.transactionHash)
-                  $('#contract_address').val(subscriptionContract.address)
-                  $('#network').val(web3.version.network)
-
-                  $.each($(form).serializeArray(), function() {
-                    data[this.name] = this.value;
-                  });
-
-                  console.log(data);
-
-                  form.submit();
-
-
-                }
-              }
-            });
+      // SubscriptionContract.new(data.admin_address, data.token_address, data.amount_goal, data.frequency, data.gas_price, {
+      //       from:web3.eth.accounts[0],
+      //       data:bytecode,
+      //       gas:2500000}, function(err, subscriptionContract){
+      //         if(!err) {
+      //
+      //           // NOTE: The callback will fire twice!
+      //           // Once the contract has the transactionHash property set and once its deployed on an address.
+      //           // e.g. check tx hash on the first call (transaction send)
+      //
+      //           if(!subscriptionContract.address) {
+      //             console.log(subscriptionContract.transactionHash)
+      //
+      //
+      //           } else {
+      //             console.log(subscriptionContract.address)
+      //
+      //             // $('#transaction_hash').val(subscriptionContract.transactionHash)
+      //             // $('#contract_address').val(subscriptionContract.address)
+      //             // $('#network').val(web3.version.network)
+      //             //
+      //             // $.each($(form).serializeArray(), function() {
+      //             //   data[this.name] = this.value;
+      //             // });
+      //             //
+      //             // console.log(data);
+      //             //
+      //             // form.submit();
+      //
+      //
+      //           }
+      //         }
+      //       });
 
     }
   });
