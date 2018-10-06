@@ -35,6 +35,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.clickjacking import xframe_options_exempt
+from economy.utils import convert_token_to_usdt
 
 from app.utils import clean_str, ellipses, sync_profile
 from avatar.utils import get_avatar_context
@@ -1727,6 +1728,7 @@ def get_kudos(request):
     }
     if request.is_ajax():
         q = request.GET.get('term')
+        eth_to_usd = convert_token_to_usdt('ETH')
         kudos_by_name = Token.objects.filter(name__icontains=q)
         kudos_by_desc = Token.objects.filter(description__icontains=q)
         kudos_by_tags = Token.objects.filter(tags__icontains=q)
@@ -1740,7 +1742,11 @@ def get_kudos(request):
             kudos_json['name_human'] = humanize_name(token.name)
             kudos_json['description'] = token.description
             kudos_json['image'] = token.image
+
             kudos_json['price_finney'] = token.price_finney / 1000
+            kudos_json['price_usd'] = eth_to_usd * kudos_json['price_finney']
+            kudos_json['price_usd_humanized'] = f"${round(kudos_json['price_usd'], 2)}"
+
             results.append(kudos_json)
         if not results:
             results = [autocomplete_kudos]

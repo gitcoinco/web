@@ -71,15 +71,16 @@ function kudosSearch(elem) {
                         <div>
                       </div>`;
       } else {
-        markup = `<div class="d-flex m-2 align-items-center">
-                        <div class="mr-3">
-                          <img class="" src="${static_url + kudos.image || static_url + 'v2/images/user-placeholder.png'}" width="40" height="50"/>
+        markup = `<div class="d-flex m-2 align-items-center kudos-search-result">
+                        <div class="mr-2">
+                          <img class="" src="${static_url + kudos.image || static_url + 'v2/images/user-placeholder.png'}" />
                         </div>
                         <div style="min-width: 0;width: 100%;">
                           <div class="d-flex justify-content-between">
                             <div class="kudos-name">${kudos.name_human}</div>
-                            <div class="kudos-price">${kudos.price_finney} ETH</div>
+                            <div class="kudos-price">${kudos.price_finney} ETH (${kudos.price_usd_humanized})</div>
                           </div>
+                          <a class=more href=#>expand &gt;</a>
                           <div class="text-truncate kudos-description">${kudos.description}</div>
                         <div>
                       </div>`;
@@ -150,6 +151,19 @@ $('document').ready(function() {
     var search_term = $(this).text();
     $(".select2-search__field").val(search_term);
     $(".select2-search__field").trigger('keyup');
+      e.preventDefault();
+  });
+  $("body").on('mouseover', 'a.more', function(e) {
+      $(this).parents('.kudos-search-result').addClass('kudos-search-result-large');
+      $(this).parents('.kudos-search-result').find('.text-truncate').removeClass('text-truncate');
+      $(this).addClass('hidden');
+      e.preventDefault();
+  });
+
+  $("body").on('mouseleave', '.kudos-search-result', function(e) {
+      $(this).removeClass('kudos-search-result-large');
+      $(this).find('.kudos-description').addClass('text-truncate');
+      $(this).find('.more').removeClass('hidden');
       e.preventDefault();
   });
 
