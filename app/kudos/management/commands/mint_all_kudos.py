@@ -104,6 +104,31 @@ class Command(BaseCommand):
                     }
                     attributes.append(tag)
 
+            # append tags
+            if kudos['rarity'] > 98:
+                tags.append('unique')
+            if kudos['rarity'] > 80:
+                tags.append('extremely rare')
+            elif kudos['rarity'] > 70:
+                tags.append('very rare')
+            elif kudos['rarity'] > 60:
+                tags.append('rare')
+            elif kudos['rarity'] > 40:
+                tags.append('common')
+            elif kudos['rarity'] > 20:
+                tags.append('very common')
+            elif kudos['rarity'] < 20:
+                tags.append('extremely common')
+
+            if kudos['priceFinney'] < 2:
+                tags.append('budget')
+            if kudos['priceFinney'] < 5:
+                tags.append('affordable')
+            if kudos['priceFinney'] > 20:
+                tags.append('premium')
+            if kudos['priceFinney'] > 200:
+                tags.append('expensive')
+
             metadata = {
                 'name': humanize_name(kudos['name']),
                 'image': image_path,
