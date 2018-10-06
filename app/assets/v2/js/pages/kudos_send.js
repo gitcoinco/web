@@ -256,10 +256,11 @@ $(document).ready(function() {
       startConfetti();
       var url = 'https://' + etherscanDomain() + '/tx/' + txid;
 
-      $('#loading_trans').html('This transaction has been sent 👌');
+      // $('#loading_trans').html('This transaction has been sent 👌');
+      $('#loading_trans').hide();
       $('#send_eth').css('display', 'none');
       $('#send_eth_done').css('display', 'block');
-      $('#tokenName').html(tokenName);
+      // $('#tokenName').html(tokenName);
       $('#new_username').html(username);
       $('#trans_link').attr('href', url);
       $('#trans_link2').attr('href', url);
@@ -466,9 +467,8 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           // Kudos Indirect Send (KIS)
           // estimate gas for cloning the kudos
           console.log('Using Kudos Indirect Send (KIS)')
-          var kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
-          var kudosPriceInWei = new web3.BigNumber(kudosPriceInEth * 1.0 * Math.pow(10, 18));
-          // console.log(destinationAccount, kudosId, numClones, account, kudosPriceInWei)
+          // let kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
+          // var kudosPriceInWei = amountInEth * 1.0 * Math.pow(10, 18);
           params = {
             kudosId: kudosId,
             numClones: numClones,
