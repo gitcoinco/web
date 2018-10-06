@@ -1721,6 +1721,10 @@ def get_users(request):
 
 
 def get_kudos(request):
+    autocomplete_kudos = {
+        'copy': "No results found.  Try these categories: ",
+        'autocomplete': ['rare','common','ninja','soft skills','programming']
+    }
     if request.is_ajax():
         q = request.GET.get('term')
         kudos_by_name = Token.objects.filter(name__icontains=q)
@@ -1738,6 +1742,8 @@ def get_kudos(request):
             kudos_json['image'] = token.image
             kudos_json['price_finney'] = token.price_finney / 1000
             results.append(kudos_json)
+        if not results:
+            results = [autocomplete_kudos]
         data = json.dumps(results)
     else:
         raise Http404

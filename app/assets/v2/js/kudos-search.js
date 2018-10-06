@@ -5,6 +5,12 @@ function kudosSearch(elem) {
     if (!$(this).length) {
       return;
     }
+    var auto_terms = ['rare','common','ninja','soft skills','programming'];
+    var autocomplete_html = "";
+    for (var i = 0; i < auto_terms.length; i++) { 
+      var delimiter = i == auto_terms.length - 1 ? '' : '|'
+      autocomplete_html += " <a class=kudos_autocomplete href='#'>" + auto_terms[i] + "</a> " + delimiter;
+    }
 
     $(this).select2({
       ajax: {
@@ -27,15 +33,15 @@ function kudosSearch(elem) {
         cache: true
       },
       theme: 'kudos',
-      placeholder: 'Search kudos',
+      placeholder: 'Search kudos (or try: '+autocomplete_html+' )',
       allowClear: true,
       minimumInputLength: 3,
       escapeMarkup: function(markup) {
 
         return markup;
       },
-      templateResult: formatUser,
-      templateSelection: formatUserSelection
+      templateResult: formatKudos,
+      templateSelection: formatKudosSelection
     });
 
     // fix for wrong position on select open
@@ -46,28 +52,43 @@ function kudosSearch(elem) {
       this.dropdown._positionDropdown();
     });
 
-    function formatUser(kudos) {
+    function formatKudos(kudos) {
 
       if (kudos.loading) {
         return kudos.text;
       }
-      let markup = `<div class="d-flex m-2 align-items-center">
-                      <div class="mr-3">
-                        <img class="" src="${static_url + kudos.image || static_url + 'v2/images/user-placeholder.png'}" width="40" height="50"/>
-                      </div>
-                      <div style="min-width: 0;width: 100%;">
-                        <div class="d-flex justify-content-between">
-                          <div class="kudos-name">${kudos.name_human}</div>
-                          <div class="kudos-price">${kudos.price_finney} ETH</div>
+      var markup;
+      if(kudos.copy){
+      var autocomplete_html = "<ul id=kudos_autocomplete>";
+      for (var i = 0; i < kudos.autocomplete.length; i++) { 
+          autocomplete_html += "<li><a href='#'>" + kudos.autocomplete[i] + "</a></li>";
+      }
+      autocomplete_html += "</ul>";
+
+        markup = `<div class="d-flex m-2 align-items-center">
+                        <div style="min-width: 0;width: 100%;">
+                        ${kudos.copy} ${autocomplete_html}
+                        <div>
+                      </div>`;
+      } else {
+        markup = `<div class="d-flex m-2 align-items-center">
+                        <div class="mr-3">
+                          <img class="" src="${static_url + kudos.image || static_url + 'v2/images/user-placeholder.png'}" width="40" height="50"/>
                         </div>
-                        <div class="text-truncate kudos-description">${kudos.description}</div>
-                      <div>
-                    </div>`;
+                        <div style="min-width: 0;width: 100%;">
+                          <div class="d-flex justify-content-between">
+                            <div class="kudos-name">${kudos.name_human}</div>
+                            <div class="kudos-price">${kudos.price_finney} ETH</div>
+                          </div>
+                          <div class="text-truncate kudos-description">${kudos.description}</div>
+                        <div>
+                      </div>`;
+      }
 
       return markup;
     }
 
-    function formatUserSelection(kudos) {
+    function formatKudosSelection(kudos) {
 
       let selected;
       if (kudos.id === '') { // adjust for custom placeholder values
@@ -124,4 +145,12 @@ function kudosSearch(elem) {
 
 $('document').ready(function() {
   kudosSearch();
+
+  $("body").on('click', '#kudos_autocomplete li, .kudos_autocomplete', function(e) {
+    var search_term = $(this).text();
+    $(".select2-search__field").val(search_term);
+    $(".select2-search__field").trigger('keyup');
+      e.preventDefault();
+  });
+
 });
