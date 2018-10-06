@@ -4,6 +4,7 @@ $(document).ready(function() {
 
 console.log('1', web3.eth.coinbase);
 console.log('network', web3.version.network);
+console.log('web3', Web3);
 
 
   $('#js-drop').on('dragover', function(event) {

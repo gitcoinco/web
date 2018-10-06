@@ -1,6 +1,11 @@
 /* eslint-disable no-console */
 window.onload = function() {
 
+  // console.log('web3', web3);
+  // console.log('web3', Web3);
+  var web3 = new Web3(Web3.givenProvider || "ws://localhost:8546");
+ console.log('new web3', web3);
+
   let token = '0x0000000000000000000000000000000000000000'
 
   $('#period').select2();
@@ -69,12 +74,12 @@ window.onload = function() {
 
              deployedSubscription.getSubscriptionHash.call(...parts, function(err, subscriptionHash){
 
-               console.log("subscriptionHash", typeof(subscriptionHash));
 
                web3.eth.sign(web3.eth.accounts[0], ""+subscriptionHash, function(err, signature){
 
                  console.log("signature",signature)
 
+                console.log('test for utils', util.bufferToHex(nonce));
 
                  let postData = {
                    subscriptionContract: data.contract_address,
