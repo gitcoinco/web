@@ -63,31 +63,49 @@ console.log('web3', web3);
       console.log('args', args);
 
       web3.eth.getAccounts(function(err, accounts){
+        web3.eth.net.getId(function(err, network){
 
-        console.log(accounts[0]);
+          $('#network').val(network)
 
-        let account = accounts[0]
+        SubscriptionContract.deploy({
+          data: compiledSubscription.bytecode,
+          arguments: [data.admin_address, data.denomination, data.amount_goal, data.frequency, 0]
+        })
+        .send({
+          from: accounts[0],
+          gas: 2500000
+        })
+        .on('error', function(error){
+          console.log('1', error);
+         })
+        .on('transactionHash', function(transactionHash){
+          console.log('2', transactionHash);
+          $('#transaction_hash').val(transactionHash)
 
-      SubscriptionContract.deploy({
-        data: compiledSubscription.bytecode,
-        arguments: [data.admin_address, data.denomination, data.amount_goal, data.frequency, 0]
+         })
+        .on('receipt', function(receipt){
+           console.log('3', receipt.contractAddress)
+           console.log('4', receipt) // contains the new contract address
+
+           $('#contract_address').val(receipt.contractAddress)
+
+             console.log('5', receipt.transactionHash);
+             console.log('6', receipt.contractAddress);
+             console.log('7', network);
+
+
+
+             $.each($(form).serializeArray(), function() {
+               data[this.name] = this.value;
+              });
+
+             console.log(data);
+
+             form.submit();
+
+
+           })
       })
-      .send({
-        from: accounts[0],
-        gas: 2500000
-      })
-      .on('error', function(error){
-        console.log('1', error);
-       })
-      .on('transactionHash', function(transactionHash){
-        console.log('2', transactionHash);
-       })
-      .on('receipt', function(receipt){
-         console.log('3', receipt.contractAddress)
-         console.log('4', receipt) // contains the new contract address
-      })
-
-
     })
 
       // SubscriptionContract.new(data.admin_address, data.token_address, data.amount_goal, data.frequency, data.gas_price, {
