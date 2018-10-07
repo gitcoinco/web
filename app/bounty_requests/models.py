@@ -80,8 +80,8 @@ class BountyRequest(SuperModel):
             value_true=float(self.amount),
             network=network,
             web3_created=datetime.now(tz=pytz.UTC),
-            expires_date=datetime.now(tz=pytz.UTC) + timedelta(days=90), # Request expire in 3 months. 
-            is_open=False, # By default mark this as False as this will require fund. 
+            expires_date=datetime.now(tz=pytz.UTC) + timedelta(days=90),
+            is_open=False,
             raw_data={},
-            current_bounty=True # By default it would be marked as the current bounty. 
+            current_bounty=True
         )
