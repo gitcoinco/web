@@ -36,6 +36,7 @@ from .models import BountyRequest
 def bounty_request(request):
     user = request.user if request.user.is_authenticated else None
     profile = request.user.profile if user and hasattr(request.user, 'profile') else None
+    network = request.GET.get('network', 'rinkeby')
 
     if request.body:
         if not user or not profile or not profile.handle:
@@ -53,6 +54,8 @@ def bounty_request(request):
         model = result.save(commit=False)
         model.requested_by = profile
         model.save()
+
+        model.to_bounty(network=network)
         new_bounty_request(model)
         return JsonResponse({'msg': _('Bounty Request received.')}, status=200)
 

@@ -22,7 +22,13 @@ from __future__ import unicode_literals
 from django.core.validators import MinValueValidator
 from django.db import models
 
+from datetime import date, datetime, timedelta
+import pytz
+
 from economy.models import SuperModel
+
+from dashboard.models import Bounty
+from dashboard.utils import clean_bounty_url
 
 
 class BountyQuerySet(models.QuerySet):
@@ -64,3 +70,21 @@ class BountyRequest(SuperModel):
     def __str__(self):
         """Return the string representation of BountyRequest."""
         return f"{self.requested_by.username} / {self.created_on}"
+
+    def to_bounty(self, network=None):
+        """Creates a bounty with project status as requested. """
+        print ('self value is {} - {} - Type {}'.format(self.github_url, self.amount, type(self.amount)))
+        new_bounty = Bounty.objects.create(
+            github_url=clean_bounty_url(self.github_url),
+            idx_status='requested',
+            token_name='USDT',
+            value_true=float(self.amount),
+            network=network,
+            web3_created=datetime.now(tz=pytz.UTC),
+            expires_date=datetime.now(tz=pytz.UTC) + timedelta(days=90), # Request expire in 3 months. 
+            is_open=False, # By default mark this as False as this will require fund. 
+            raw_data={},
+            current_bounty=True # By default it would be marked as the current bounty. 
+        )
+
+        print ('Bounty is created. ')

@@ -200,6 +200,7 @@ class Bounty(SuperModel):
     ]
 
     STATUS_CHOICES = (
+        ('requested', 'requested'),
         ('cancelled', 'cancelled'),
         ('done', 'done'),
         ('expired', 'expired'),
@@ -209,7 +210,7 @@ class Bounty(SuperModel):
         ('unknown', 'unknown'),
     )
     FUNDED_STATUSES = ['open', 'started', 'submitted', 'done']
-    OPEN_STATUSES = ['open', 'started', 'submitted']
+    OPEN_STATUSES = ['requested', 'open', 'started', 'submitted']
     CLOSED_STATUSES = ['expired', 'unknown', 'cancelled', 'done']
     TERMINAL_STATUSES = ['done', 'expired', 'cancelled']
 
@@ -544,6 +545,8 @@ class Bounty(SuperModel):
             if not self.is_open:
                 if self.accepted:
                     return 'done'
+                elif self.idx_status=='requested':
+                    return 'requested'
                 elif self.past_hard_expiration_date:
                     return 'expired'
                 has_tips = self.tips.filter(is_for_bounty_fulfiller=False).exclude(txid='').exists()

@@ -24,6 +24,12 @@
       </div>
       <div class="col-12 options">
         <div class="form__radio option">
+          <input name="idx_status" id="status_requested" type="radio" value="requested" val-ui='Bounty Requests' />
+          <label class="filter-label" for=status_requested>{% trans "Bounty Requests" %}</label>
+        </div>
+        <hr/>
+        
+        <div class="form__radio option">
           <input name="idx_status" id="status_open" type="radio" value="open" val-ui='Open' checked />
           <label class="filter-label" for=status_open>1 {% trans "Open" %}</label>
         </div>
