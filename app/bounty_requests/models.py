@@ -19,16 +19,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from __future__ import unicode_literals
 
+from datetime import datetime, timedelta
+
 from django.core.validators import MinValueValidator
 from django.db import models
 
-from datetime import datetime, timedelta
 import pytz
-
-from economy.models import SuperModel
-
 from dashboard.models import Bounty
 from dashboard.utils import clean_bounty_url
+from economy.models import SuperModel
 
 
 class BountyQuerySet(models.QuerySet):
