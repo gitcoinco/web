@@ -22,7 +22,7 @@ from __future__ import unicode_literals
 from django.core.validators import MinValueValidator
 from django.db import models
 
-from datetime import date, datetime, timedelta
+from datetime import datetime, timedelta
 import pytz
 
 from economy.models import SuperModel
@@ -73,8 +73,7 @@ class BountyRequest(SuperModel):
 
     def to_bounty(self, network=None):
         """Creates a bounty with project status as requested. """
-        print ('self value is {} - {} - Type {}'.format(self.github_url, self.amount, type(self.amount)))
-        new_bounty = Bounty.objects.create(
+        Bounty.objects.create(
             github_url=clean_bounty_url(self.github_url),
             idx_status='requested',
             token_name='USDT',
@@ -86,5 +85,3 @@ class BountyRequest(SuperModel):
             raw_data={},
             current_bounty=True # By default it would be marked as the current bounty. 
         )
-
-        print ('Bounty is created. ')

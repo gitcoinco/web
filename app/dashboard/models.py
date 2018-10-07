@@ -545,7 +545,7 @@ class Bounty(SuperModel):
             if not self.is_open:
                 if self.accepted:
                     return 'done'
-                elif self.idx_status=='requested':
+                elif self.idx_status == 'requested':
                     return 'requested'
                 elif self.past_hard_expiration_date:
                     return 'expired'
