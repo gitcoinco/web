@@ -99,11 +99,7 @@
                   <input type="hidden" id="original_amount" value="{{ bounty.value_true }}">
                   <span id="token_name">{{ bounty.token_name }}</span>
                 </div>
-                  <div class="w-100 mt-2 terms_container">
-                    <input name='close_bounty' id='close_bounty' type="checkbox" value=1 checked="checked" />
-                    <label for=close_bounty>{% blocktrans %}Return the bounty stake to me, thereby closing the bounty.{% endblocktrans %}</label>
-                  </div>
-                <div class="w-100 mt-2">
+                <div class="w-100 my-3">
                   <label for=bountyFulfillment>{% trans "Payout" %}</label>
                   <label id="tooltip">{% trans "Where is my Eth going? " %}<i class='fa fa-info-circle'></i></label>
                   <div>

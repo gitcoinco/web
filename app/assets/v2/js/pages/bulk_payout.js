@@ -16,10 +16,6 @@ $(document).ready(function($) {
     update_registry();
   });
 
-  $(document).on('click', '#close_bounty', function(event) {
-    update_registry();
-  });
-
   $(document).on('input', '.percent', function(event) {
     event.preventDefault();
     var percent = $(this).text();
@@ -213,28 +209,13 @@ var update_registry = function() {
   var denomination = $('#token_name').text();
   var original_amount = $('#original_amount').val();
   var net = round(original_amount - tc, 2);
-  var close_bounty = $('#close_bounty').is(':checked');
 
   $('#total_cost').html(tc + ' ' + denomination);
   $('#total_net').html(net + ' ' + denomination);
 
-  var transactions = [];
+  let transactions = [];
 
-  first_transaction = {
-    'id': 1,
-    'type': 'cancel',
-    'reason': 'Bounty Stake',
-    'amount': '+' + original_amount + ' ' + denomination
-  };
-
-  var i = 0;
-
-  if (close_bounty) {
-    transactions.push(first_transaction);
-    i += 1;
-  }
-
-  for (let j = i; j <= num_rows; j += 1) {
+  for (let j = 1; j <= num_rows; j++) {
 
     var $row = $('#payout_table tbody').find('tr:nth-child(' + j + ')');
     var amount = parseFloat($row.find('.amount').text());
@@ -244,7 +225,7 @@ var update_registry = function() {
       return;
 
     transaction = {
-      'id': j + 1,
+      'id': j,
       'type': 'tip',
       'reason': 'Payment to ' + normalizeUsername(username),
       'amount': '-' + amount + ' ' + denomination,
