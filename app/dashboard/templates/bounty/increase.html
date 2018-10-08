@@ -1,3 +1,5 @@
+{% extends "./baseof.html" %}
+
 {% comment %}
 Copyright (C) 2017 Gitcoin Core
 
@@ -16,19 +18,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 {% endcomment %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
 
-  <head>
-    {% include 'shared/head.html' %}
-    {% include 'shared/cards.html' %}
-  </head>
+{% block head %}
+  {% include 'shared/cards.html' %}
+{% endblock head %}
 
-  <body class="interior {{active}} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
-      {% include 'shared/nav.html' %}
-    </div>
+{% block body_class %}
+  {{active}}
+{% endblock body_class %}
+
+{% block content %}
     <div class="container-fluid">
       <div class="row no-gutters metamask-banner">
         <div class="col-12">
@@ -101,14 +100,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         </div>
       </div>
     </div>
-    {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/footer.html' %}
-    {% include 'shared/messages.html' %}
+{% endblock content %}
 
-  </body>
+{% block additional_content %}
+  {% include 'shared/messages.html' %}
+{% endblock additional_content %}
 
+{% block scripts %}
 
   <script>
     document.is_funder_github_user_same = {{ is_funder }};
@@ -130,5 +128,5 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <script src="{% static "v2/js/pages/increase_bounty.js" %}"></script>
   <script src="{% static "onepager/js/send.js" %}"></script>
 
+{% endblock scripts %}
 
-</html>
