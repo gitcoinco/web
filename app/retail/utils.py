@@ -364,6 +364,12 @@ def build_stat_results_helper(keyword=None):
         network='mainnet', idx_status__in=['started', 'submitted']
     ).count()
     context['count_done'] = base_bounties.filter(network='mainnet', idx_status__in=['done']).count()
+
+    total_count = context['count_started'] + context['count_open'] + context['count_done']
+    context['pct_done'] = round(100 * context['count_done'] / total_count)
+    context['pct_started'] = round(100 * context['count_started'] / total_count)
+    context['pct_open'] = round(100 * context['count_open'] / total_count)
+
     pp.profile_time('count_*')
 
     # Leaderboard

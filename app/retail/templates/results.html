@@ -141,18 +141,18 @@
             <div id="repo_chart"></div>
           </div>
           <script type="text/javascript">
-          document.platform_stats = [  [ 'Repo', 'Bounties' ], [ 'Open Bounties', {{ count_open }}],  [ 'Bounties w. started work', {{ count_started }}],  [ 'Completed bounties', {{ count_done }} ] ];
+          document.platform_stats = [  [ 'Repo', 'Bounties' ], [ 'Open Bounties', {{ pct_open }}],  [ 'Bounties w. started work', {{ pct_started }}],  [ 'Completed bounties', {{ pct_done }} ] ];
         </script>
 
           <div class="col-md-6 py-5 bounty_status">
             {% blocktrans %}
-            <p><span class="blue_box"></span> {{ count_open }} open bounties </p>
+            <p><span class="blue_box"></span> {{ pct_open }}% open bounties </p>
             {% endblocktrans %}
             {% blocktrans %}
-            <p><span class="green_box"></span> {{ count_started }} bounties with started work</p>
+            <p><span class="green_box"></span> {{ pct_started }}% bounties with started work</p>
             {% endblocktrans %}
             {% blocktrans %}
-            <p><span class="yellow_box"></span> {{ count_done }} completed bounties </p>
+            <p><span class="yellow_box"></span> {{ pct_done }}% completed bounties </p>
             {% endblocktrans %}
           </div>
         </div>
@@ -277,7 +277,7 @@
         </div>
         <div class="row py-1 animatedParent">
           <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
-            <p style="text-align: center; font-size: 0.9rem;">Gitcoin is a double sided market of funders and developers.  In order to jump start the marketplace and dogfood our own product, we've funded some work on the platform ourselves.  The Joe Dominance Index (a portmeanteau of the <a href="https://coinmarketcap.com/charts/#dominance-percentage">Bitcoin Dominance Index</a> and Gitcoin's largest investor, Consensys's CEO <a href="https://twitter.com/ethereumjoseph">Joe Lubin</a>) is a measure of the percentage of work on the platform that is funded by us.   </p>
+            <p style="text-align: center; font-size: 0.9rem;">Gitcoin is a double sided market of funders and developers.  In order to jump start the marketplace and dogfood our own product, we've funded some work on the platform ourselves.  The Joe Dominance Index (a portmeanteau of the <a href="https://coinmarketcap.com/charts/#dominance-percentage">Bitcoin Dominance Index</a> and the name of Gitcoin's largest investor, Consensys's CEO <a href="https://twitter.com/ethereumjoseph">Joe Lubin</a>) is a measure of the percentage of work on the platform that is funded by us.   </p>
           </div>
           <script>
             document.jdi_ticks = [0, 20, 40, 60, 80, 100];
