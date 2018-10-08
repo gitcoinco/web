@@ -90,7 +90,3 @@ function userSearch(elem, showAddress) {
     }
   });
 }
-
-$('document').ready(function() {
-  userSearch();
-});
