@@ -29,26 +29,7 @@
     background-color: #D2D2D2;
   }
 
-  .grantHeader {
-    width: 100%;
-    text-align: center;
-  }
-
-  .leftGrantHeader {
-    display: inline-block;
-  }
-
-  .rightGrantHeader {
-    display: inline-block;
-  }
-
-  .rightGrantHeader>h2 {
-    font-size: 20px;
-    line-height: 1.5em;
-  }
-
   .grantInfo {
-    padding-top: 30px;
     padding-bottom: 1%;
   }
 
@@ -85,65 +66,83 @@
   }
 
   #grow-oss {
-    margin-top: 50px;
-    margin-bottom: 50px;
+    margin-top: 70px;
+    margin-bottom: 40px;
   }
 
-  @media screen and (min-width: 598px) {
-    .rightGrantHeader {
-      padding-left: 40px;
-      transform: translateY(-12.5%);
-      text-align: left;
+  .grantUpdate {
+    width: 100%;
+    margin-top: 30px;
+    padding-bottom: 10px;
+  }
+
+  .upDate {
+    color: #BBBDBF;
+    transform: translateY(-100%);
+  }
+
+  @media screen and (min-width: 900px) {
+    .grantUpdateIcon {
+      width: 5%;
+      float: left;
+      margin-top: 20px;
     }
-    .leftGrantHeader>img {
-      transform: translateY(13.5%);
+    .grantUpdate {
+      width: 100%;
+      padding-left: 10%;
+      padding-bottom: 200px;
+      transform: translateY(-150%);
+    }
+    .grantUpdateContent {
+      width: 93%;
+      float: left;
+      text-align: left;
+      margin-left: 2%;
+    }
+    .grantUpdateContent>p:last-child {
+      padding-right: 25%;
+      color: #43484D;
+    }
+    .grantUpdateContent>h3 {
+      color: #43484D;
     }
   }
 
 </style>
-<div class="grantHeader">
-  <div class="leftGrantHeader">
-    <img src="{% static " v2/images/heart-robot.png " %}" alt="Heart Robot" title="Gitcoin Heart Robot">
-    <!-- Heart robot image was exported from Adobe XD and imported here -->
-  </div>
-  <div class="rightGrantHeader">
-    <h1 style="text-transform: none;">{%trans "Thank you for supporting"%}
-      <br>'{{ grant_org_name }}'!</h1>
-    <!-- Input grant name here -->
-    <h2 style="text-transform: none;">{%trans "The world of open source is a better place because of you." %}</h2>
-  </div>
-</div>
-
-<hr>
+<img id="newSupporter" src="{% static " v2/images/update-notification.png " %}" alt="Update!" title="There's a new update!">
+<h1 style="text-transform: none;">{% trans "An update has been posted for:" %}</h1>
+<!-- Name of grant -->
 <div class="grantInfo">
   <a href="https://github.com/{{ github_username }}">
-    <img src="{{ project_image }}" width="50" height="50" />
+    <img src="{{ project_image }}" />
   </a>
-  <!-- Input project image here -->
+  <!-- width="50" height="50"Input project image here -->
   <br>
   <a class="grantInfoName" href="https://github.com/{{ github_username }}">{{ github_username }}</a>
   <!-- Input project name here -->
   <p>{{ project_description }}</p>
   <!-- Input project description here -->
-  <h5 style="text-transform: none;">{%trans "You have agreed to give" %}</h5>
-  <h3 style="text-transform: none;">{{ variable_amount_contribution }}</h3>
-  <!-- Input variable amount here -->
-  <p>{%trans "You can see the transaction on etherscan" %}
-    <a href="https://etherscan.com/{{ etherscan_link }}">{%trans "here." %}</a>
-  </p>
-  <!-- Input etherscan link here -->
+</div>
+
+<br>
+
+<hr>
+<div class="grantUpdate">
+  <div class="grantUpdateIcon">
+    <img src="{% static " v2/images/file-text.png " %}" alt="New Grant Update." title="New Grant Update">
+  </div>
+  <div class="grantUpdateContent">
+    <h3>{{ updateContent_title }}</h3>
+    <p class="upDate">{{ updateContent_date }}</p>
+    <p>{{ updateContent_text }}</p>
+  </div>
 </div>
 <hr>
 
 <br>
 <br>
-<a class="updatesButton" href="https://gitcoin.co/grants/{{ grant_id }}">{%trans "View Updates" %}</a>
-<!-- Input link to view updates button here -->
-<br>
-<br>
-<p>{%trans "If you ever need to you can cancel your support" %}
-  <a href="https://gitcoin.co/grants/{{ link_to_cancel }}">{%trans "here." %}</a>
-</p>
-<!-- Input support cancelation link here -->
+<a class="updatesButton" href="https://gitcoin.co/grants/{{ grant_link }}">{%trans "View Grant" %}</a>
+<!-- Input link to view transaction button here -->
+<br> 
 
 {% endblock %}
