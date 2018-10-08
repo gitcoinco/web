@@ -44,9 +44,12 @@ class Command(BaseCommand):
     help = 'listens for kudos token changes '
 
     def add_arguments(self, parser):
-        parser.add_argument('-n', '--network', default='localhost', type=str)
-        parser.add_argument('-m', '--syncmethod', default='block', type=str, choices=['filter', 'block', 'opensea'])
-        parser.add_argument('-i', '--interval', default=1, type=int)
+        parser.add_argument('network', type=str, choices=['localhost', 'rinkeby', 'mainnet'],
+                            help='ethereum network to use')
+        parser.add_argument('syncmethod', type=str, choices=['filter', 'block', 'opensea'],
+                            help='sync method to use')
+        parser.add_argument('-i', '--interval', default=1, type=int,
+                            help='how often to poll for updates')
 
     def opensea_listener(self, kudos_contract, interval):
         if kudos_contract.network == 'rinkeby':
@@ -146,17 +149,6 @@ class Command(BaseCommand):
                         # On localhost, the tx syncs faster than the website loads
                         time.sleep(3)
                     kudos_contract.sync_db(kudos_id=kudos_id, txid=tx['hash'].hex())
-                    # # Get the kudos_id of the newly cloned Kudos
-                    # kudos_id = kudos_contract.functions.totalSupply().call()
-                    # # Update the database with the newly cloned Kudos
-                    # update_kudos_db(kudos_id, network)
-                    # # Find the name of the Kudos that was cloned
-                    # kudos = get_kudos_from_web3(kudos_id, network)
-                    # kudos_map = get_kudos_map(kudos)
-                    # # Find the ID of the Gen0 Kudos that was cloned
-                    # gen0_id = get_gen0_id_from_web3(kudos_map['name'], network)
-                    # # Update the Gen0 Kudos in the database
-                    # update_kudos_db(gen0_id, network)
 
             last_block_hash = block_hash
 
