@@ -240,7 +240,8 @@ var update_registry = function() {
     var amount = parseFloat($row.find('.amount').text());
     var username = $row.find('.username-search').text();
 
-    if(username == '') return;
+    if (username == '')
+      return;
 
     transaction = {
       'id': j + 1,
