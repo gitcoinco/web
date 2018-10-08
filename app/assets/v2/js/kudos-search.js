@@ -153,12 +153,14 @@ $('document').ready(function() {
     $(".select2-search__field").trigger('keyup');
       e.preventDefault();
   });
-  $("body").on('mouseover', 'a.more', function(e) {
+  var expandFunc = function(e) {
       $(this).parents('.kudos-search-result').addClass('kudos-search-result-large');
       $(this).parents('.kudos-search-result').find('.text-truncate').removeClass('text-truncate');
       $(this).addClass('hidden');
       e.preventDefault();
-  });
+  };
+  $("body").on('mouseover', 'a.more', expandFunc);
+  $("body").on('click', 'a.more', expandFunc);
 
   $("body").on('mouseleave', '.kudos-search-result', function(e) {
       $(this).removeClass('kudos-search-result-large');
