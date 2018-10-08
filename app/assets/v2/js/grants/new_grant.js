@@ -51,9 +51,6 @@ console.log('web3', web3);
 
       // Begin New Deploy Subscription Contract
 
-      let bytecode = compiledSubscription.bytecode;
-
-
       let SubscriptionContract = new web3.eth.Contract(compiledSubscription.abi);
 
       console.log('SubscriptionContract', SubscriptionContract);
@@ -102,7 +99,6 @@ console.log('web3', web3);
              console.log(data);
 
              form.submit();
-
 
            })
       })

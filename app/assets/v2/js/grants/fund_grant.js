@@ -4,7 +4,9 @@ window.onload = function() {
   // console.log('web3', web3);
   // console.log('web3', Web3);
   var web3 = new Web3(Web3.givenProvider || "ws://localhost:8546");
- console.log('new web3', web3);
+ console.log(' not new web3', web3);
+ console.log('this is a change');
+
 
   let token = '0x0000000000000000000000000000000000000000'
 
@@ -30,7 +32,7 @@ window.onload = function() {
         contract_address: data.contract_address
       }
 
-      console.log(grant);
+      console.log('this is the grants', grant);
 
 
       let value = 0
@@ -41,57 +43,74 @@ window.onload = function() {
       let periodSeconds=2592000
       if(!data.gas_price) data.gas_price = 0
 
-      let SubscriptionContract = web3.eth.contract(compiledSubscription.abi);
+    let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, grant.contract_address)
 
-      let deployedSubscription = SubscriptionContract.at(data.contract_address);
 
-      // This token is only for testing
-      let TokenContract = web3.eth.contract(compiledToken.abi);
+      console.log('delpoyedSubscription', deployedSubscription);
 
-      let deployedToken = TokenContract.at('0x8E66e7eC5d9Fd04410d77142e51fd5c49a2B1263');
-
-      deployedToken.decimals.call(function(err, decimals){
-
-      // console.log(bignumber);
-      let decimalsNumber = decimals.toNumber()
+      // // This token is only for testing
+      // let TokenContract = web3.eth.contract(compiledToken.abi);
       //
-          let realTokenAmount = data.amount_per_period*10**decimalsNumber
-          let realGasPrice = data.gas_price*10**decimalsNumber
+      // let deployedToken = TokenContract.at('0x8E66e7eC5d9Fd04410d77142e51fd5c49a2B1263');
+      // //
+      let deployedToken = new web3.eth.Contract(compiledToken.abi, '0xa00d98FeaEbD194F94af90fDDa163A34DF5dea89')
+
+      console.log('methods', deployedToken.methods)
+
+      deployedToken.methods.decimals().call(function(err, decimals){
+
+        console.log('decimals', decimals);
       //
-          deployedSubscription.extraNonce.call(web3.eth.accounts[0], function(err, nonce){
+      // // console.log(bignumber);
+      // let decimalsNumber = decimals.toNumber()
+
+      // //
+          let realTokenAmount = data.amount_per_period*10**decimals
+          let realGasPrice = data.gas_price*10**decimals
+
+          console.log(realTokenAmount);
+          console.log(realGasPrice);
+
+          web3.eth.getAccounts(function(err, accounts){
+
+            console.log(accounts[0]);
+
+          deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce){
 
              nonce = parseInt(nonce)+1
 
+             console.log("nonce", nonce);
+
              const parts = [
-               web3.eth.accounts[0],
-               data.admin_address,
-               data.token_address,
-               realTokenAmount,
-               periodSeconds,
-               realGasPrice,
-               nonce
+               accounts[0],
+               grant.admin_address,
+               grant.token_address,
+               web3.utils.toTwosComplement(realTokenAmount),
+               web3.utils.toTwosComplement(periodSeconds),
+               web3.utils.toTwosComplement(realGasPrice),
+               web3.utils.toTwosComplement(nonce)
              ]
 
-             deployedSubscription.getSubscriptionHash.call(...parts, function(err, subscriptionHash){
+             deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash){
 
+               console.log('subscriptionHash', subscriptionHash);
 
-               web3.eth.sign(web3.eth.accounts[0], ""+subscriptionHash, function(err, signature){
+                  web3.eth.personal.sign(""+subscriptionHash, accounts[0], function(err, signature){
 
-                 console.log("signature",signature)
-
-                console.log('test for utils', util.bufferToHex(nonce));
-
+                    console.log("signature",signature)
+      //
+      //
                  let postData = {
-                   subscriptionContract: data.contract_address,
+                   subscriptionContract: grant.contract_address,
                    parts:parts,
                    subscriptionHash: subscriptionHash,
                    signature:signature,
                  }
-
-                 console.log("postData",JSON.stringify({
-                   postData
-                 }))
-
+      //
+      //            console.log("postData",JSON.stringify({
+      //              postData
+      //            }))
+      //
                  fetch('http://localhost:10003/saveSubscription', {
                    method: 'POST',
                    headers: {
@@ -106,13 +125,13 @@ window.onload = function() {
                  .catch((error)=>{
                    console.log(error);
                  });
+    
                })
-
-           })
+             })
+          })
         })
-
       })
-    }
+
 
 // instantiate contract
 // get data from grant and inputs
@@ -121,6 +140,6 @@ window.onload = function() {
 // submit Signature
 // save data and signature
 
-
+    }
   })
 };
