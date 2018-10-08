@@ -91,10 +91,10 @@ def marketplace(request):
 
     if q:
         listings = Token.objects.annotate(
-        search=SearchVector('name', 'description', 'tags')
-    ).filter(search=q).order_by(order_by)
+            search=SearchVector('name', 'description', 'tags')
+            ).filter(num_clones_allowed__gt=0, search=q).order_by(order_by)
     else:
-        listings = Token.objects.all().order_by(order_by)
+        listings = Token.objects.filter(num_clones_allowed__gt=0).order_by(order_by)
     context = {
         'is_outside': True,
         'active': 'marketplace',

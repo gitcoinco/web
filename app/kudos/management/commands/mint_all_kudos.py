@@ -95,15 +95,7 @@ class Command(BaseCommand):
                 "max_value": 100
             }
             attributes.append(rarity)
-            tags = {tag.strip() for tag in kudos['tags'].split(',')}
-            for tag in tags:
-                if tag:
-                    tag = {
-                        "trait_type": "tag",
-                        "value": tag
-                    }
-                    attributes.append(tag)
-
+            tags = list({tag.strip() for tag in kudos['tags'].split(',')})
             # append tags
             if kudos['rarity'] > 98:
                 tags.append('unique')
@@ -128,6 +120,14 @@ class Command(BaseCommand):
                 tags.append('premium')
             if kudos['priceFinney'] > 200:
                 tags.append('expensive')
+
+            for tag in tags:
+                if tag:
+                    tag = {
+                        "trait_type": "tag",
+                        "value": tag
+                    }
+                    attributes.append(tag)
 
             metadata = {
                 'name': humanize_name(kudos['name']),

@@ -22,6 +22,7 @@ import warnings
 import requests
 import json
 import web3
+import time
 
 from django.core.management.base import BaseCommand
 from django.conf import settings
@@ -46,7 +47,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('network', type=str, choices=['localhost', 'rinkeby', 'mainnet'],
                             help='ethereum network to use')
-        parser.add_argument('syncmethod', type=str, choices=['filter', 'id', 'opensea'],
+        parser.add_argument('syncmethod', type=str, choices=['filter', 'id', 'block', 'opensea'],
                             help='sync method to use')
         group = parser.add_mutually_exclusive_group(required=True)
         group.add_argument('-s', '--start', type=str,
@@ -109,6 +110,46 @@ class Command(BaseCommand):
             if kudos_enum > end_id:
                 more_kudos = False
 
+    def block_sync(self, kudos_contract, fromBlock):
+        block = fromBlock
+        last_block_number = kudos_contract._w3.eth.getBlock('latest')['number']
+        # for block_num in range(block, last_block_number + 1)
+        while True:
+            # wait for a new block
+            block = kudos_contract._w3.eth.getBlock(block)
+            if not block:
+                break
+            block_hash = block['hash']
+            block_number = block['number']
+
+            logger.info('got new block %s' % kudos_contract._w3.toHex(block_hash))
+            logger.info(f'block id: {block_number}')
+
+            # get txs
+            transactions = block['transactions']
+            for tx in transactions:
+                tx = kudos_contract._w3.eth.getTransaction(tx)
+                if not tx or tx['to'] != kudos_contract.address:
+                    continue
+
+                logger.info('found a kudos tx')
+                data = tx['input']
+                method_id = data[:10]
+                logger.info(f'method_id:  {method_id}')
+
+                # Check if its a Clone or cloneAndTransfer function call
+                if method_id == '0xdaa6eb1d' or method_id == '0xd319784f':
+                    kudos_contract._w3.eth.waitForTransactionReceipt(tx['hash'])
+                    kudos_id = kudos_contract._contract.functions.totalSupply().call()
+                    if kudos_contract.network == 'localhost':
+                        # On localhost, the tx syncs faster than the website loads
+                        time.sleep(3)
+                    kudos_contract.sync_db(kudos_id=kudos_id, txid=tx['hash'].hex())
+
+            block = block_number + 1
+            if block == last_block_number:
+                break
+
     def handle(self, *args, **options):
         # config
         network = options['network']
@@ -140,6 +181,24 @@ class Command(BaseCommand):
             self.filter_sync(kudos_contract, fromBlock)
             return
 
+        # Handle the block sync
+        if syncmethod == 'block':
+            if start:
+                if start.isdigit():
+                    fromBlock = start
+                elif start in ['earliest', 'latest']:
+                    fromBlock = start
+                else:
+                    raise ValueError('--fromBlock must be "earliest", or "latest"')
+            elif rewind:
+                fromBlock = kudos_contract._w3.eth.getBlock('latest')['number'] - rewind
+            elif catchup:
+                raise ValueError('--catchup option is not valid for block syncing')
+
+            logger.info(fromBlock)
+            self.block_sync(kudos_contract, fromBlock)
+            return
+
         # Handle the other sync methods
         if start:
             start_id = start
@@ -152,4 +211,4 @@ class Command(BaseCommand):
             self.id_sync(kudos_contract, int(start_id))
         elif syncmethod == 'opensea':
             self.opensea_sync(kudos_contract, int(start_id))
-        # return
+        return
