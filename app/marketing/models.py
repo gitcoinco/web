@@ -210,7 +210,7 @@ class LeaderboardRank(SuperModel):
 
     @property
     def at_ify_username(self):
-        if self.is_user_based:
+        if not self.is_user_based:
             return f"@{self.github_username}"
         return self.github_username
 

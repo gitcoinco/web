@@ -373,8 +373,12 @@ def build_stat_results_helper(keyword=None):
     pp.profile_time('count_*')
 
     # Leaderboard
+    num_to_show = 50
     context['top_orgs'] = base_leaderboard.filter(active=True, leaderboard='quarterly_orgs') \
-        .order_by('rank').values_list('github_username', flat=True)
+        .order_by('rank').values_list('github_username', flat=True)[0:num_to_show]
+    pp.profile_time('orgs')
+    context['top_coders'] = base_leaderboard.filter(active=True, leaderboard='quarterly_earners') \
+        .order_by('rank').values_list('github_username', flat=True)[0:num_to_show]
     pp.profile_time('orgs')
 
     # community size
@@ -395,8 +399,8 @@ def build_stat_results_helper(keyword=None):
     pp.profile_time('Stats2')
 
     # bounties history
-    get_bounty_history(keyword)
-    context['bounty_history'] = json.dumps(get_bounty_history(keyword))
+    cumulative = False
+    context['bounty_history'] = json.dumps(get_bounty_history(keyword, cumulative))
     pp.profile_time('bounty_history')
 
     # Bounties
@@ -405,6 +409,7 @@ def build_stat_results_helper(keyword=None):
     context['funders'] = funder_receiver_stats['funders']
     context['transactions'] = funder_receiver_stats['transactions']
     context['recipients'] = funder_receiver_stats['recipients']
+    context['audience'] = json.loads(context['members_history'])[-1][1]
     pp.profile_time('completion_rate')
     bounty_abandonment_rate = round(100 - completion_rate, 1)
     total_bounties_usd = sum(base_bounties.exclude(idx_status__in=['expired', 'cancelled', 'canceled', 'unknown']).values_list('_val_usd_db', flat=True))
