@@ -74,9 +74,6 @@ body {
 .title-row {
   display: flex;
   margin-top: 2em;
-  margin-right: 8px;
-  padding-left: 8px !important;
-  padding-bottom: 5px;
   float: right;
   border-bottom: 2px solid #3E24FB;
 }
@@ -246,8 +243,4 @@ body {
 
 .hiring {
   content: url('/static/v2/images/hiring.svg');
-}
-
-#bounties {
-  padding: 0 0.5rem;
 }
