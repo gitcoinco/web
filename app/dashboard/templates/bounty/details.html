@@ -1,21 +1,39 @@
+{% extends "./baseof.html" %}
+
+{% comment %}
+Copyright (C) 2018 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+
 {% load i18n static %}
-<!DOCTYPE html>
-<html lang="en">
 
-  <head>
-    {% include 'shared/head.html' %}
-    {% include 'shared/cards_pic.html' %}
-    <meta name="title" content="{{ card_title }}">
-    <meta name="description" content="{{ card_desc }}">
-    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
-    <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
-  </head>
+{% block head %}
+  {% include 'shared/cards_pic.html' %}
+  <meta name="title" content="{{ card_title }}">
+  <meta name="description" content="{{ card_desc }}">
 
-  <body class="interior {{active}} g-font-muli">
-    {% include 'shared/tag_manager_2.html' %}
-    <div class="container-fluid header dash">
-      {% include 'shared/nav.html' %}
-    </div>
+  <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
+  <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
+{% endblock head %}
+
+{% block body_class %}
+  {{active}}
+{% endblock body_class %}
+
+{% block content %}
+
     <div class="row no-gutter">
       <div class="col-12 col-lg-2 left-rails text-center" style="background: #F2F6F9;">
         <div class="explorer font-body">
@@ -382,12 +400,9 @@
         </div>
       [[/if]]
     </script>
+    {% endblock content %}
 
-    {% include 'shared/bottom_notification.html' %}
-    {% include 'shared/analytics.html' %}
-    {% include 'shared/footer_scripts.html' %}
-    {% include 'shared/footer.html' %}
-  </body>
+{% block scripts %}
 
   {% include 'shared/current_profile.html' %}
 
@@ -407,4 +422,4 @@
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
-</html>
+{% endblock scripts %}
