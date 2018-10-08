@@ -1683,3 +1683,11 @@ div.busyOverlay {
     margin-left: 3px;
   }
 }
+
+.g-bold {
+  font-weight: bold;
+}
+
+.g-text-left {
+  text-align: left;
+}
