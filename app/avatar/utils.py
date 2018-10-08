@@ -120,7 +120,8 @@ def get_svg_templates():
         'accessories': {
             'earring': [],
             'glasses': [],
-            'hat': []
+            'hat': [],
+            'masks': []
         },
         'clothing': [],
         'ears': [],
@@ -270,7 +271,7 @@ def handle_avatar_payload(request):
     """Handle the Avatar payload."""
     avatar_dict = {}
     valid_component_keys = [
-        'Beard', 'Clothing', 'Earring', 'EarringBack', 'Ears', 'Eyes', 'Glasses', 'HairLong', 'HairShort', 'HatLong',
+        'Beard', 'Clothing', 'Earring', 'EarringBack', 'Ears', 'Eyes', 'Glasses', 'Masks', 'HairLong', 'HairShort', 'HatLong',
         'HatShort', 'Head', 'Mouth', 'Mustache', 'Nose'
     ]
     valid_color_keys = ['Background', 'ClothingColor', 'HairColor', 'SkinTone']
