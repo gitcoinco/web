@@ -72,8 +72,8 @@ def gas(request):
         _cts = conf_time_spread(recommended_gas_price)
 
     context = {
-        'title': _('Live Gas Usage => Predicted Conf Times'),
-        'card_desc': _('See the Live Network Conditions for the Ethereum Network'),
+        'title': _('Live Ethereum (ETH) Gas Usage & Confirmation Times'),
+        'card_desc': _('Real-time graph of Ethereum (ETH) Live Predicted Confirmation Times (x axis) vs Gas Usage'),
         'eth_to_usd': round(convert_amount(1, 'ETH', 'USDT'), 0),
         'start_gas_cost': recommended_gas_price,
         'gas_advisories': gas_advisories(),
@@ -87,18 +87,19 @@ def gas(request):
 def gas_intro(request):
 
     context = {
-        'title': _('Gas Intro'),
-        'card_desc': _('Intro to Web3 / Gas'),
+        'title': _('What is Ethereum (ETH) Gas & Web3'),
+        'card_desc': _('About Ethereum (ETH) Gas and how it works. '
+                       'Gas is the payment that is sent to the ethereum node operators (also called miners), '
+                       'in exchange for execution of a smart contract.'),
         'hide_send_tip': True,
     }
     return TemplateResponse(request, 'gas_intro.html', context)
 
 
 def gas_faq(request):
-
     context = {
-        'title': _('Gas FAQ'),
-        'card_desc': _('FAQ about Gas'),
+        'title': _('Live Ethereum (ETH) Gas FAQ'),
+        'card_desc': _('Frequently asked questions and answers about Ethereum (ETH) Gas'),
         'hide_send_tip': True,
     }
     return TemplateResponse(request, 'gas_faq.html', context)
@@ -107,8 +108,8 @@ def gas_faq(request):
 def gas_faucet_list(request):
 
     context = {
-        'title': _('Gas Faucet List'),
-        'card_desc': _('List of Gas Faucets'),
+        'title': _('Live Ethereum (ETH) Gas Faucet List'),
+        'card_desc': _('Ethereum (ETH) Gas Faucet List including the Mainnet, Rinkeby Testnet and Ropsten Testnet'),
         'hide_send_tip': True,
     }
     return TemplateResponse(request, 'gas_faucet_list.html', context)
@@ -156,7 +157,7 @@ def gas_calculator(request):
     }
     ]
     context = {
-        'title': _('Gas Estimator'),
+        'title': _('Live Ethereum (ETH) Gas Calculator'),
         'card_desc': _('See what popular Gitcoin methods cost at different Gas Prices'),
         'actions': actions,
         'conf_time_spread': _cts,
@@ -228,8 +229,8 @@ def gas_history_view(request):
             max_y = max(gh[0], max_y)
     breakdown_ui = breakdown.replace('ly', '') if breakdown != 'daily' else 'day'
     context = {
-        'title': _('Gas History'),
-        'card_desc': _('View the history of ethereum network gas prices'),
+        'title': _('Live Ethereum (ETH) Gas History'),
+        'card_desc': _('See and comment on the Ethereum (ETH) Gas - Hourly History Graph'),
         'max': max_y,
         'lines': lines,
         'gas_histories': gas_histories,

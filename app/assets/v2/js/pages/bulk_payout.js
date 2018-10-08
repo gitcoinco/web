@@ -191,9 +191,21 @@ $(document).ready(function($) {
     var percent = num_rows <= 1 ? 100 : '';
     var denomination = $('#token_name').text();
     var amount = get_amount(percent);
-    var html = '<tr><td><div class=username contenteditable="true">@</div></td><td><div class="percent" contenteditable="true">' + percent + '</div></td><td><div><span class=amount>' + amount + '</span> <span class=denomination>' + denomination + '</span></div></td><td><a class=remove href=#>X</a></td></tr>';
+    var html = `
+      <tr>
+        <td class="pl-0 pb-0">
+          <div class="pl-0">
+            <select id="username" class="username-search custom-select" style="width: 100%; margin-left: auto; margin-right: auto;"></select>
+          </div>
+        </td>
+        <td class="pb-0"><div class="percent" contenteditable="true">` + percent + `</div></td>
+        <td class="pb-0"><div class="amount"><span class=amount>` + amount + '</span> <span class=denomination>' + denomination + `</span></div></td>
+        <td class="pb-0"><a class=remove href=#><i class="fas fa-times mt-2"></i></a>
+        </td>
+      </tr>`;
 
     $('#payout_table').append(html);
+    userSearch('.username-search:last', true);
     $(this).focus();
   };
 

@@ -248,9 +248,16 @@ def how_it_works(request, work_type):
     """Show How it Works / Funder page."""
     if work_type not in ['funder', 'contributor']:
         raise Http404
-
+    if work_type == 'contributor':
+        title = _('How to Find & Complete Open Bounties | Gitcoin')
+        desc = _('Learn how to get paid for open bug bounties and get paid in crypto (ETH or any ERC-20 token)')
+    elif work_type == 'funder':
+        title = _('How to Create & Fund Issues/Bounties | Gitcoin')
+        desc = _('Learn how to create open bug bounties and get freelance developers to complete your job/task.')
     context = {
         'active': f'how_it_works_{work_type}',
+        'title': title,
+        'desc': desc
     }
     return TemplateResponse(request, 'how_it_works/index.html', context)
 

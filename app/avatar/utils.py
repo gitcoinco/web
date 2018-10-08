@@ -78,7 +78,8 @@ def get_avatar_context():
                 'name': 'Hair Style',
                 'title': 'Pick a hairstyle',
                 'options': (['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'], ['5', 'None'],
-                            ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'])
+                            ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'],
+                            ['9-back', '9-front'])
             },
             {
                 'name': 'Facial Hair',
@@ -90,10 +91,12 @@ def get_avatar_context():
             {
                 'name': 'Accessories',
                 'title': 'Pick your accessories',
-                'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
-                    'HatShort-backwardscap'
-                ], ['HatShort-ballcap'], ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'],
-                            ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'])
+                'options': (
+                    ['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'],
+                    ['HatShort-backwardscap'], ['HatShort-ballcap'], ['HatShort-headphones'],
+                    ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], ['Earring-0'], ['Earring-1'],
+                    ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern']
+                )
             },
             {
                 'name': 'Background',
@@ -119,7 +122,8 @@ def get_svg_templates():
         'accessories': {
             'earring': [],
             'glasses': [],
-            'hat': []
+            'hat': [],
+            'masks': []
         },
         'clothing': [],
         'ears': [],
@@ -269,8 +273,8 @@ def handle_avatar_payload(request):
     """Handle the Avatar payload."""
     avatar_dict = {}
     valid_component_keys = [
-        'Beard', 'Clothing', 'Earring', 'EarringBack', 'Ears', 'Eyes', 'Glasses', 'HairLong', 'HairShort', 'HatLong',
-        'HatShort', 'Head', 'Mouth', 'Mustache', 'Nose'
+        'Beard', 'Clothing', 'Earring', 'EarringBack', 'Ears', 'Eyes', 'Glasses', 'Masks',
+        'HairLong', 'HairShort', 'HatLong', 'HatShort', 'Head', 'Mouth', 'Mustache', 'Nose'
     ]
     valid_color_keys = ['Background', 'ClothingColor', 'HairColor', 'SkinTone']
     body = json.loads(request.body)

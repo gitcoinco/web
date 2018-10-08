@@ -746,7 +746,7 @@ def new_bounty_request(model):
     try:
         setup_lang(to_email)
         subject = _("New Bounty Request")
-        body_str = _(f"New Bounty Request from")
+        body_str = _("New Bounty Request from")
         body = f"{body_str} {model.requested_by}: "\
             f"{settings.BASE_URL}_administrationbounty_requests/bountyrequest/{model.pk}/change"
         send_mail(
