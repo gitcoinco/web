@@ -1,3 +1,5 @@
+{% extends "./baseof.html" %}
+
 {% comment %}
   Copyright (C) 2018 Gitcoin Core
 
@@ -15,18 +17,17 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  {% include 'shared/head.html' %}
+
+{% block head %}
   {% include 'shared/cards.html' %}
   <link rel="stylesheet" href={% static "v2/css/submit_bounty.css" %}>
-</head>
-<body class="interior submit_bounty g-font-muli">
-  {% include 'shared/tag_manager_2.html' %}
-  <div class="container-fluid header dash">
-    {% include 'shared/nav.html' %}
-  </div>
+{% endblock head %}
+
+{% block body_class %}
+  submit_bounty
+{% endblock body_class %}
+
+{% block content %}
   <div class="container-fluid submit_bounty_content">
     <div class="row">
       <div class="col-sm-12 col-lg-12">
@@ -48,16 +49,17 @@
       </div>
     </div>
   </div>
-  {% include 'shared/bottom_notification.html' %}
-  {% include 'shared/analytics.html' %}
-  {% include 'shared/footer_scripts.html' %}
-  {% include 'shared/footer.html' %}
+{% endblock content %}
+
+{% block additional_content %}
   {% include 'shared/messages.html' %}
-</body>
-<script type="text/javascript">
-  document.pk = {{ pk }};
-  document.result = {{ result|safe }};
-</script>
-<script src="{% static "v2/js/shared.js" %}"></script>
-<script src="{% static "v2/js/pages/change_bounty.js" %}"></script>
-</html>
+{% endblock additional_content %}
+
+{% block scripts %}
+  <script type="text/javascript">
+    document.pk = {{ pk }};
+    document.result = {{ result|safe }};
+  </script>
+  <script src="{% static "v2/js/shared.js" %}"></script>
+  <script src="{% static "v2/js/pages/change_bounty.js" %}"></script>
+{% endblock scripts %}
