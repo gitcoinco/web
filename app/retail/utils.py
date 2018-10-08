@@ -160,6 +160,32 @@ def get_completion_rate(keyword):
         return 0
 
 
+def get_funder_receiver_stats(keyword):
+    from dashboard.models import Bounty, BountyFulfillment, Tip
+    base_bounties = Bounty.objects.current().filter(network='mainnet')
+    if keyword:
+        base_bounties = base_bounties.filter(raw_data__icontains=keyword)
+
+    eligible_bounties = base_bounties
+    eligible_bounty_fulfillments = BountyFulfillment.objects.filter(bounty__in=base_bounties)
+    eligible_tips = Tip.objects.filter(network='mainnet')
+
+    bounty_funders = list(eligible_bounties.values_list('bounty_owner_address', flat=True))
+    tip_funders = list(eligible_tips.values_list('from_address', flat=True))
+    tip_recipients = list(eligible_tips.values_list('receive_address', flat=True))
+    bounty_recipients = list(eligible_bounty_fulfillments.values_list('fulfiller_address', flat=True))
+
+    num_funders = len(set(bounty_funders + tip_funders))
+    num_recipients = len(set(bounty_recipients + tip_recipients))
+    num_transactions = eligible_tips.count() + eligible_bounties.count()
+
+    return {
+        'funders': num_funders,
+        'recipients': num_recipients,
+        'transactions': num_transactions,
+    }
+
+
 def get_base_done_bounties(keyword):
     from dashboard.models import Bounty
     base_bounties = Bounty.objects.current().filter(network='mainnet', idx_status__in=['done', 'expired', 'cancelled'])
@@ -369,6 +395,10 @@ def build_stat_results_helper(keyword=None):
 
     # Bounties
     completion_rate = get_completion_rate(keyword)
+    funder_receiver_stats = get_funder_receiver_stats(keyword)
+    context['funders'] = funder_receiver_stats['funders']
+    context['transactions'] = funder_receiver_stats['transactions']
+    context['recipients'] = funder_receiver_stats['recipients']
     pp.profile_time('completion_rate')
     bounty_abandonment_rate = round(100 - completion_rate, 1)
     total_bounties_usd = sum(base_bounties.exclude(idx_status__in=['expired', 'cancelled', 'canceled', 'unknown']).values_list('_val_usd_db', flat=True))
