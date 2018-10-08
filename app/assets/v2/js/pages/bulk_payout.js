@@ -68,8 +68,12 @@ $(document).ready(function($) {
 
   $(document).on('click', '.remove', function(event) {
     event.preventDefault();
+    var position = ($(this).parents('tr').index() + 2).toString();
+    
+    $('#transaction_registry tr:nth-child(' + position + ')').remove();
     $(this).parents('tr').remove();
     $(this).focus();
+    update_registry();
   });
 
   var sendTransaction = function(i) {
@@ -233,10 +237,24 @@ $(document).ready(function($) {
     var denomination = $('#token_name').text();
     var original_amount = $('#original_amount').val();
     var net = round(original_amount - tc, 2);
+    var over = round((original_amount - get_total_cost()) * -1, 4);
     var close_bounty = $('#close_bounty').is(':checked');
+    var addr = web3.eth.coinbase.substring(38);
 
+    $('#total_overage').html(over + ' ' + denomination);
+    $('#address_ending').html(addr + ' ');
+    $('#preview_ending').html(addr + ' ');
+    $('#preview_overage').html(over + ' ' + denomination);
     $('#total_cost').html(tc + ' ' + denomination);
     $('#total_net').html(net + ' ' + denomination);
+
+    if (over > 0) {
+      $('.overageAlert').css('display', 'inline-block');
+      $('.overagePreview').css('display', 'inline-block');
+    } else {
+      $('.overageAlert').css('display', 'none');
+      $('.overagePreview').css('display', 'none');
+    }
 
     var transactions = [];
 
