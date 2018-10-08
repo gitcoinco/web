@@ -35,12 +35,15 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 
 def post_to_slack(channel, msg):
     try:
-        sc = SlackClient(settings.SLACK_TOKEN)
+        token = settings.SLACK_TOKEN
+        sc = SlackClient(token)
         sc.api_call(
             "chat.postMessage",
             channel=channel,
             text=msg,
             icon_url=settings.GITCOIN_SLACK_ICON_URL,
+            mrkdwn=True,
+            username="gitcoinbot"
         )
         return True
     except Exception as e:
@@ -54,24 +57,37 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         #config
-        num_items = 5
-        channel = 'community-general'
+        num_items = 7
+        channel = 'community-general' if not settings.DEBUG else 'testkevin'
+
+        num_to_emoji = {
+            1: 'first_place_medal',
+            2: 'second_place_medal',
+            3: 'third_place_medal',
+        }
 
         titles = {
-            'weekly_earners': _('Top Earners'),
-            'weekly_payers': _('Top Payers'),
-            'weekly_orgs': _('Top Orgs'),
-            'weekly_tokens': _('Top Tokens'),
+            'weekly_earners': _('Top Earners :money_with_wings: '),
+            'weekly_payers': _('Top Payers :moneybag: '),
+            'weekly_orgs': _('Top Orgs :office: '),
+            'weekly_tokens': _('Top Tokens :bank: '),
         }
-        msg = "**Gitcoin Leaderboard for the Past Week**\n"
+        msg = "_Gitcoin Leaderboard for the Past Week_\n"
         for key, title in titles.items():
-            msg += f"\n{title}\n"
+            msg += f"\n*{title}*\n"
             leadeboardranks = LeaderboardRank.objects.active().filter(leaderboard=key).order_by('-amount')[0:num_items]
             counter = 1
             for lr in leadeboardranks:
-                msg += f"{counter}. {lr.github_username}: ${round(lr.amount,2)}\n"
+                emoji = num_to_emoji.get(counter, '')
+                emoji = f":{emoji}:" if emoji else "      "
+                url = f"https://gitocoin.co/{lr.github_username}"
+                user_link = f"[{lr.github_username}]({url})"
+                user_link = f"{lr.at_ify_username}"
+                amount = '{:8}'.format(f"_{round(lr.amount)}_")
+                msg += f"{counter}.   {emoji}   ${amount}   {user_link}\n"
                 counter += 1
-        msg += "\n View Leaderboard: https://gitcoin.co/leaderboard "
+        msg += "\n :chart_with_upwards_trend:  View Leaderboard: https://gitcoin.co/leaderboard "
+        msg += "\n=========================================\n\n :four_leaf_clover: Good luck and see you next week! \n\n:love_gitcoin: ~gitcoinbot "
         print(msg)
         success = post_to_slack(channel, msg)
         print(success)
