@@ -78,7 +78,8 @@ def get_avatar_context():
                 'name': 'Hair Style',
                 'title': 'Pick a hairstyle',
                 'options': (['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'], ['5', 'None'],
-                            ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'])
+                            ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'],
+                            ['9-back', '9-front'])
             },
             {
                 'name': 'Facial Hair',
