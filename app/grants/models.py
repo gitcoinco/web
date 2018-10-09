@@ -39,7 +39,9 @@ class Grant(SuperModel):
     transaction_hash = models.CharField(max_length=255, default='0x0')
     network = models.CharField(max_length=255, default='0x0')
     required_gas_price = models.DecimalField(default='0', decimal_places=0, max_digits=50)
-    admin_profile = models.ForeignKey('dashboard.Profile', related_name='grant_admin', on_delete=models.CASCADE, null=True)
+    admin_profile = models.ForeignKey(
+        'dashboard.Profile', related_name='grant_admin', on_delete=models.CASCADE, null=True
+    )
     team_member_profiles = models.ManyToManyField('dashboard.Profile', related_name='grant_team_members')
 
     def percentage_done(self):
