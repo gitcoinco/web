@@ -357,6 +357,7 @@ class KudosContract:
         Args:
             *args: From Kudos.sol:
             mint(
+                address _to,
                 uint256 _priceFinney,
                 uint256 _numClonesAllowed,
                 string _tokenURI,
@@ -398,7 +399,11 @@ class KudosContract:
 
         Args:
             *args: From Kudos.sol
-            clone(string name, uint256 numClonesRequested)
+            clone(
+                 address _to,
+                 uint256 _tokenId,
+                 uint256 numClonesRequested
+                 )
             account (str, optional): Public account address.  Not needed for localhost testing.
             private_key (str, optional): Private key for account.  Not needed for localhost testing.
 
@@ -414,36 +419,6 @@ class KudosContract:
             tx_hash = self._w3.eth.sendRawTransaction(signed_txn.rawTransaction)
         else:
             tx_hash = self._contract.functions.clone(*args).transact({"from": account})
-
-        tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
-
-        kudos_id = self._contract.functions.totalSupply().call()
-        self.sync_db(kudosid=kudos_id, txid=tx_hash.hex())
-
-        return tx_receipt
-
-    @may_require_key
-    def cloneAndTransfer(self, *args, account=None,  private_key=None):
-        """Contract transaction method.
-
-        Args:
-            *args: From Kudos.sol:
-            cloneAndTransfer(string name, uint256 numClonesRequested, address receiver)
-            account (str, optional): Public account address.  Not needed for localhost testing.
-            private_key (str, optional): Private key for account.  Not needed for localhost testing.
-
-        Returns:
-            str: The tx_receipt.
-        """
-        account = self._resolve_account(account)
-
-        if private_key:
-            nonce = self._w3.eth.getTransactionCount(account)
-            txn = self._contract.functions.cloneAndTransfer(*args).buildTransaction({'gas': 700000, 'nonce': nonce, 'from': account})
-            signed_txn = self._w3.eth.account.signTransaction(txn, private_key=private_key)
-            tx_hash = self._w3.eth.sendRawTransaction(signed_txn.rawTransaction)
-        else:
-            tx_hash = self._contract.functions.cloneAndTransfer(*args).transact({"from": account})
 
         tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
 

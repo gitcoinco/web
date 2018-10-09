@@ -139,8 +139,9 @@ class Command(BaseCommand):
             }
 
             tokenURI_url = kudos_contract.create_tokenURI_url(**metadata)
+            mint_to = kudos_contract._w3.eth.coinbase
 
-            args = (kudos['priceFinney'], kudos['numClonesAllowed'], tokenURI_url)
+            args = (mint_to, kudos['priceFinney'], kudos['numClonesAllowed'], tokenURI_url)
             for x in range(1, 4):
                 try:
                     kudos_contract.mint(*args, account=account, private_key=private_key, skip_sync=skip_sync)
