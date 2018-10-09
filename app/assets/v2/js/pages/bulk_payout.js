@@ -209,9 +209,23 @@ var update_registry = function() {
   var denomination = $('#token_name').text();
   var original_amount = $('#original_amount').val();
   var net = round(original_amount - tc, 2);
+  var over = round((original_amount - get_total_cost()) * -1, 4);
+  var addr = web3.eth.coinbase.substring(38);
 
   $('#total_cost').html(tc + ' ' + denomination);
   $('#total_net').html(net + ' ' + denomination);
+  $('#total_overage').html(over + ' ' + denomination);
+  $('#address_ending').html(addr + ' ');
+  $('#preview_ending').html(addr + ' ');
+  $('#preview_overage').html(over + ' ' + denomination);
+
+  if (over > 0) {
+    $('.overageAlert').css('display', 'inline-block');
+    $('.overagePreview').css('display', 'inline-block');
+  } else {
+    $('.overageAlert').css('display', 'none');
+    $('.overagePreview').css('display', 'none');
+  }
 
   let transactions = [];
 

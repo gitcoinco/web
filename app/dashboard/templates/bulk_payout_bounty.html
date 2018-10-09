@@ -99,6 +99,14 @@
                   <input type="hidden" id="original_amount" value="{{ bounty.value_true }}">
                   <span id="token_name">{{ bounty.token_name }}</span>
                 </div>
+                <div class="w-100 overageAlert">
+                  <div>
+                    <img src="{% static "v2/images/warning.svg" %}">
+                  </div>
+                  <div>
+                    <p>{% trans "You have exceeded the bounty's funded amount. The difference of " %}<span id="total_overage"></span> {% trans "will be paid from your metamask wallet ending in ..." %}<span id="address_ending"></span></p>
+                  </div>
+                </div>
                 <div class="w-100 my-3">
                   <label for=bountyFulfillment>{% trans "Payout" %}</label>
                   <label id="tooltip">{% trans "Where is my Eth going? " %}<i class='fa fa-info-circle'></i></label>
@@ -108,7 +116,7 @@
                     </div>
                     <div class="mt-2" id="trans_preview">
                       <h5>{% trans 'Payout Preview' %}</h5>
-                      <p class="mb-0">{% trans 'Refunded' %}: <span id="total_returned">{{ bounty.value_true }} {{ bounty.token_name }}</span></p>
+                      <p class="mb-0 overagePreview"><strong><span id="preview_overage"></span>{% trans ' to be paid from wallet ending in ...' %}<span id="preview_ending"></span></strong></p>
                       <p class="mb-0">{% trans 'Paid' %}: -<span id="total_cost"></span></p>
                       <p class="mb-0">{% trans 'Net' %}: <span id="total_net"></span></p>
                       <p class="mt-1 mb-0">{% trans 'Transactions:' %}</p>
@@ -215,7 +223,36 @@
       .entry.active{
         background-color: #bbb;
       }
-
+      .overageAlert {
+        background-color: #E66700;
+        color: #FFF;
+        border-radius: 5px;
+        margin-top: 15px;
+        margin-bottom: 5px;
+        display: none;
+        padding-left: 15px;
+      }
+      .overageAlert > div:first-child {
+        width: 25px;
+        float: left;
+        padding-right: 10px;
+      }
+      .overageAlert > div:last-child {
+        width: calc(100% - 40px);
+        float: left;
+        margin-left: 15px;
+        padding-right: 15px;
+        padding-top: 6.5px;
+      }
+      .overageAlert > div:first-child > img {
+        width: 17px;
+        margin-top: 10px;
+      }
+      .overagePreview {
+        color: #E66700;
+        padding-bottom: 5px;
+        display: none;
+      }
     </style>
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
