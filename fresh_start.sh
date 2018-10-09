@@ -15,10 +15,14 @@ PRIVATE_KEY=$3
 # echo $PRIVATE_KEY
 
 docker-compose down
-docker volume rm kudos_pgdata
+docker volume rm kudos_pgdata kudos_ipfsdata kudos_ipfsexport
 docker-compose up -d
 echo "sleeping for 10 seconds..."
 sleep 10
+# Enable CORS for local IPFS testing
+docker-compose exec ipfs sh -c 'ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '\''["*"]'\'''
+docker-compose exec ipfs sh -c 'ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '\''["PUT", "GET", "POST"]'\'''
+docker-compose restart ipfs
 cd ../gitcoin-erc721
 truffle migrate --reset
 cd ../kudos
