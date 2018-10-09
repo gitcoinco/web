@@ -71,9 +71,9 @@ class Command(BaseCommand):
 
         for idx, kudos in enumerate(all_kudos):
             # Only mint new gen0 Kudos
-            if idx + 1 <= kudos_contract.getLatestKudosId():
-                logger.warning(f'{kudos["name"]} already exists on the blockchain.  Not minting...')
-                continue
+            # if idx + 1 <= kudos_contract.getLatestKudosId():
+            #     logger.warning(f'{kudos["name"]} already exists on the blockchain.  Not minting...')
+            #     continue
             image_name = kudos.get('image')
             if image_name:
                 # Support Open Sea
