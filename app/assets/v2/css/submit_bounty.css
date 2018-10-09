@@ -133,3 +133,7 @@ textarea:read-only {
   display: inline;
   margin-right: .5rem;
 }
+
+.quickfund .hide_if_quickfund{
+  display: none;
+}

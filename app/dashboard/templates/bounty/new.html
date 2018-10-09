@@ -47,8 +47,9 @@
             <div id="robot_error" class="hidden">
               <img src="{% static "v2/images/prime.png" %}">
             </div>
-            <div id="primary_form" class="col-lg-7 col-sm-12">
-              <h1 class="text-center title">{% trans "Fund Issue" %}</h1>
+            <div id="primary_form" class="col-lg-7 col-sm-12 quickfund">
+              <h1 class="text-center title">{% trans "QuickFund Issue" %}</h1>
+              <p style="text-align:center;"><a href="#" id="switch_quickfund">{% trans "Switch to Advanced Fund" %}</p>
               <form id="submitBounty" class="submit_bounty_form px-5 pt-5">
                 <div id="about-section" class="pt-2">
                   <h5 class="font-subheader">{% trans "About" %}</h5>
@@ -60,17 +61,17 @@
                       {% trans "Sync with Github" %} <i class="fas fa-sync ml-1"></i>
                     </button>
                   </div>
-                  <div id="no-issue-banner" class="my-4">
+                  <div id="no-issue-banner" class="my-4 hide_if_quickfund">
                     <img src="{% static "v2/images/bounty/no_issue.svg" %}">
                   </div>
-                  <div id="issue-details" class="mt-4">
+                  <div id="issue-details" class="mt-4 hide_if_quickfund">
                     <label class="form__label mb-0 mt-3" for="title">{% trans "Issue Title" %}</label>
                     <input name='title' id="title"  class="form__input pb-3 pt-0 hidden" type="text" value="{{ issue_title }}" readonly required/>
                     <p id="title--text"></p>
                     <label class="form__label" for="description">{% trans "Description" %}</label>
                     <textarea name="description" class="form__input" id="description" readonly></textarea>
                   </div>
-                  <div id="issue-details-edit" class="mt-2">
+                  <div id="issue-details-edit" class="mt-2 hide_if_quickfund">
                     <div class="text-right">
                       <a id="edit-issue" class="button button--primary" href="#" target="_blank" rel="noopener noreferrer">
                         {% trans "Edit on Github" %} <i class="fab fa-github ml-1"></i>
@@ -81,7 +82,7 @@
                   </div>
                   <hr class="mt-4">
                 </div>
-                <div id="details-section" class="pt-2">
+                <div id="details-section" class="pt-2 hide_if_quickfund">
                   {% include 'shared/issue_details.html' %}
                   {% comment %}
                   <!-- TODO: Re-enable this once we get clarification on what a Revision should entail -->
@@ -94,11 +95,11 @@
                   <hr class="mt-4"/>
                   {% endcomment %}
                 </div>
-                <div id="deadline-section" class="pt-2">
+                <div id="deadline-section" class="pt-2 hide_if_quickfund">
                   {% include 'shared/issue_deadline.html' %}
                   <hr class="mt-4">
                 </div>
-                <div id="contact-section" class="pt-2">
+                <div id="contact-section" class="pt-2 hide_if_quickfund">
                   <h5 class="font-subheader">{% trans "Contact" %}</h5>
                   {% include 'shared/github_username.html' %}
                   {% include 'shared/notification_email.html' with show_information_publicly_checkbox=1 %}
@@ -107,7 +108,7 @@
                   <hr class="mt-4">
                 </div>
                 {% include 'shared/pricing.html' %}
-                <div class="w-100 mt-2">
+                <div class="w-100 mt-2 hide_if_quickfund">
                   <label class="form__label" for="fundingOrganisation">{% trans "Funding organisation" %}</label>
                   <input name='fundingOrganisation' id="fundingOrganisation" class="form__input" type="text" placeholder="Ethereum Community Foundation"/>
                   <hr class="mt-4">
@@ -123,7 +124,7 @@
                   </div>
                   <input name='jobDescription' id='jobDescription' type="url" class="form__input hidden" type="text" placeholder="https://link.to/job/description" value="" />
                 </div>
-                <div id="gas-section" class="pt-2">
+                <div id="gas-section" class="pt-2 hide_if_quickfund">
                   <h5 class="font-subheader pb-2">{% trans "Gas Settings" %}</h4>
                   <div>
                     {% include 'shared/bounty_actions_hidden_vars.html' %}

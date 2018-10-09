@@ -51,6 +51,8 @@ $('#sync-issue').on('click', function(event) {
   }
 });
 
+
+
 $('#issueURL').focusout(function() {
   setInterval(function() {
     $('#last-synced span').html(timeDifference(new Date(), new_bounty.last_sync));
@@ -58,7 +60,9 @@ $('#issueURL').focusout(function() {
 
   if ($('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val())) {
     $('#issue-details, #issue-details-edit').hide();
-    $('#no-issue-banner').show();
+    if(!$("#primary_form").hasClass('quickfund')){
+      $('#no-issue-banner').show();
+    }
 
     $('#title').val('');
     $('#description').val('');
@@ -68,7 +72,9 @@ $('#issueURL').focusout(function() {
   } else {
     $('#no-issue-banner').hide();
     $('#edit-issue').attr('href', $('input[name=issueURL]').val());
-    $('#issue-details, #issue-details-edit').show();
+    if(!$("#primary_form").hasClass('quickfund')){
+      $('#issue-details, #issue-details-edit').show();
+    }
 
     $('#sync-issue').removeClass('disabled');
     $('.js-submit').removeClass('disabled');
@@ -84,6 +90,21 @@ $('#last-synced').hide();
 
 // Wait until page is loaded, then run the function
 $(document).ready(function() {
+
+
+  $('#switch_quickfund').click(function(event) {
+    if($("#primary_form").hasClass('quickfund')){
+      $("#primary_form").removeClass('quickfund');
+      $(".text-center.title").text(gettext("Fund Issue"));
+      $(this).text(gettext("Switch to QuickFund"));
+    } else {
+      $("#primary_form").addClass('quickfund');
+      $(".text-center.title").text(gettext("QuickFund Issue"));
+      $(this).text(gettext("Switch to Advanced Fund"));
+    }
+    event.preventDefault();
+  });
+
   // Load sidebar radio buttons from localStorage
   if (getParam('source')) {
     $('input[name=issueURL]').val(getParam('source'));
