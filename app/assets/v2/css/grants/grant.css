@@ -1,7 +1,3 @@
-body.grant {
-  background-color: #ffffff;
-}
-
 .top-buffer {
   margin-top: 30px;
 }
@@ -12,12 +8,12 @@ body.grant {
 
 .grant-item {
   background-color: #ffffff;
-  border: 1px solid #D8D8D8;
+  border: 1px solid #B7BBC0;
+  border-radius: 5px;
   display: flex;
   flex-direction: column;
   height: 100%;
   text-decoration: none;
-  padding: 24px;
 }
 
 .grant-item:hover {
@@ -25,13 +21,26 @@ body.grant {
   border: 1px solid #0D0764;
 }
 
+.grant-item__hero img {
+  object-fit: cover;
+  width: 100%;
+  height: 180px;
+}
+
+.grant-item__content {
+  padding: 1.1rem 1.3rem 1.5rem;
+}
+
 .grant-item__title {
   color: #000000;
-  font-size: 16px;
+  font-size: 1.3rem;
   letter-spacing: 0;
   text-align: left;
   text-transform: none;
   padding: 0;
+}
+.grant-item__title a {
+  color: #454545;
 }
 
 .grant-item__pitch {
@@ -88,13 +97,14 @@ body.grant {
 
 .progress {
   background-color: #D8D8D8;
-  border-radius: 2px;
-  height: 15px;
-  overflow: initial;
+  /* border-radius: 2px; */
+  /* height: 15px; */
+  /* overflow: initial; */
 }
 
 .progress-bar {
   background-color: #0FCE7C;
+  border-radius: 2px;
 }
 
 .progress-bar.progress-bar--cancel {
@@ -105,6 +115,10 @@ body.grant {
 .progress-bar.progress-bar--fund {
   background-color: #0D0764;
   position: relative;
+}
+
+.progress--small {
+  height: 6px;
 }
 
 /* Grant Show */
@@ -223,11 +237,6 @@ body.grant {
 }
 
 /* Grants hero */
-.grants-container {
-  margin-top: -100px;
-  margin-bottom: 100px;
-}
-
 .grants-hero {
   /* background-image: url('/static/v2/images/light-bg.png');
   background-color: #F2F6F9;
@@ -240,13 +249,8 @@ body.grant {
 }
 
 .grants-hero__title {
-  font-style: italic;
   letter-spacing: 0;
   text-transform: none;
-}
-
-.grants-hero__copy {
-  margin-bottom: 40px;
 }
 
 /* Grants Contribution */
@@ -274,7 +278,6 @@ body.grant {
 }
 
 .contribution p {
-  font-family: Helvetica;
   font-size: 14px;
   color: #BBBDBF;
 }

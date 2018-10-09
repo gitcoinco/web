@@ -1,11 +1,27 @@
-{% load static %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static i18n %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
   </head>
-  <body class="interior {{active}} grant">
+  <body class="interior {{ active }} grant">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
       {% include 'shared/nav.html' %}
@@ -13,68 +29,62 @@
 
     <div class="container new-grant">
       <div class="row justify-content-md-center">
-        <div class="col-sm-12 col-md-12 col-lg-8">
-          <div class="form__intro">
-            <h1>Create a Grant</h1>
-            <p>We're excited to learn about your project. Complete the form below to get funding for your project.</p>
+        <div class="col-sm-12 col-md-10 col-lg-6">
+          <div class="form__intro text-center">
+            <h1>{% trans "Create a Grant" %}</h1>
+            <p>{% trans "We're excited to learn about your project. Complete the form below to get funding for your project." %}</p>
           </div>
-          <form action="/grants/new" method="POST" id="js-newGrant">
+          <form action="{% url 'grants:new_grant' %}" method="POST" id="js-newGrant">
             {% csrf_token %}
 
             <div class="form__group-horizontal">
-              <label class="form__label" for="input-name">Name of Project</label>
+              <label class="form__label" for="input-name">{% trans "Name of Project" %}</label>
               <input class="form__input" type="text" id="input-name" name="input-name" required />
             </div>
 
             <div class="form__group-horizontal">
-              <label class="form__label" for="input-description">Description of Project</label>
+              <label class="form__label" for="input-description">{% trans "Description of Project" %}</label>
               <textarea class="form__input" type="text" id="input-description" name="description" required></textarea>
             </div>
 
             <div class="form__group-horizontal">
-              <label class="form__label" for="input-url">Project URL</label>
+              <label class="form__label" for="input-url">{% trans "Project URL" %}</label>
               <input type="url" class="form__input" id="input-url" name="reference_url" required/>
             </div>
 
             <!-- <div class="form__group-horizontal">
-              <label class="form__label" for="input-team_members">Team members</label>
+              <label class="form__label" for="input-team_members">{% trans "Team members" %}</label>
               <input type="text" class="form__input" id="input-team_members" placeholder="List emails by comma" name="team_members" />
             </div> -->
 
             <div class="form__group-horizontal">
-              <label class="form__label">Total amount sought for grant</label>
+              <label class="form__label">{% trans "Total amount sought for grant" %}</label>
               <div class="row">
                 <div class="col-8">
                   <input type="number" name="amount_goal" class="form__input" required />
                 </div>
                 <div class="col-4">
                   <div class="form__select2">
-                    <select class='js-select2' name='denomination' id='js-token'> </select>
+                    <select class='js-select2' name='denomination' id='js-token'></select>
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="form__group-horizontal">
-              <label class="form__label" for="input-admin_address">Admin Address</label>
-              <input type="text" class="form__input" id="input-adminAddress" placeholder="Enter the address you would live funds sent to" name="admin_address" />
+              <label class="form__label" for="input-admin_address">{% trans "Admin Address" %}</label>
+              <input type="text" class="form__input" id="input-adminAddress" placeholder="{% trans 'Enter the address you would live funds sent to' %}" name="admin_address" />
             </div>
 
             <div class="form__group-horizontal">
-              <label class="form__label">Frequency of payments</label>
-              <div class="row">
-                <div class="col-2">
-                  <input type="number" name="frequency" class="form__input" value='30' required />
-                </div>
-                <div class="col-2">
-                  <label class="form__label">Days</label>
-                </div>
-              </div>
+              <label class="form__label">{% trans "Frequency of payments" %}</label>
+              <input type="number" name="frequency" class="form__input" value='30' required />
+              <label class="form__label">{% trans "Days" %}</label>
             </div>
 
 
             <!-- <div class="form__group-horizontal milestones">
-              <label class="form__label">Milestones and projected timeline</label>
+              <label class="form__label">{% trans "Milestones and projected timeline" %}</label>
               <div class="milestone-form">
                 <div class="row" id="milestone0">
                   <div class="col-12">
@@ -85,19 +95,20 @@
                 </div>
               </div>
 
-              <span id="new-milestone">+ Add new milestone</span>
+              <span id="new-milestone">+ {% trans "Add new milestone" %}</span>
             </div> -->
 
             <div class="form__group-horizontal">
-              <label class="form__label">Project image</label>
+              <label class="form__label">{% trans "Project image" %}</label>
               <div class="form__drop" id="js-drop">
-                <input type="file" name="input-image" accept="image/*">
-                <span>Drag & Drop or Browse</span>
+                <input id="img-project" type="file" name="input-image" accept="image/*">
+                <span>{% trans "Drag & Drop or Browse" %}</span>
+                <img id="preview"/>
               </div>
             </div>
 
-            <div class="form__footer">
-              <button class="button button--primary">Create Grant</button>
+            <div class="form__footer text-center">
+              <button class="button button--primary">{% trans "Create Grant" %}</button>
             </div>
 
             <div>
@@ -120,11 +131,10 @@
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
-   <!-- <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script> -->
+  <!-- <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script> -->
   <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSubscriptionContract.js" %}"></script>
-  <script src="{% static "v2/js/grants/new_grant.js" %}"></script>
-
+  <script src="{% static "v2/js/grants/new.js" %}"></script>
 </html>

@@ -1,12 +1,27 @@
-{% load static %}
-{% load humanize %}
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static humanize i18n %}
 <!DOCTYPE html>
 <html lang="en">
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
   </head>
-  <body class="interior {{active}} grant">
+  <body class="interior {{ active }} grant">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
       {% include 'shared/nav.html' %}
@@ -18,7 +33,7 @@
           <div class="col-7">
             <div class="grant__image">
               <img src="http://via.placeholder.com/1136x666" />
-              <a class="grant__reference" href="{{grant.reference_url}}" target="_blank">
+              <a class="grant__reference" href="{{ grant.reference_url }}" target="_blank">
                 <div class="grant__reference-icon">
                   {% include 'svgs/compass.svg' %}
                 </div>
@@ -33,7 +48,8 @@
             <h1 class="grant__title">{{ grant.title }}</h1>
             <p class="grant__pitch">{{ grant.description }}</p>
             <div class="grant__stakeholders">
-              <small>6 Stakeholders</small>
+              {% comment %} Needs BE {% endcomment %}
+              <small>6 {% trans "Stakeholders" %}</small>
               <div class="grant__stakeholders-list">
                 {% for i in 'xxxxxxxxxx' %}
                   <a class="grant__stakeholders-item" href="#">
@@ -47,10 +63,11 @@
                 <span>
                   {{ grant.amount_received|floatformat:2|intcomma }} ETH
                 </span>
+                {% comment %} Needs BE {% endcomment %}
                 <small>funded by 731 backers</small>
               </div>
-              <div class="progress-bar progress-bar--large">
-                <div class="progress" style="width: {{ grant.percentage_done }}%"></div>
+              <div class="progress progress-bar--large">
+                <div class="progress-bar" style="width: {{ grant.percentage_done }}%"></div>
               </div>
               <div class="progress-text">
                 <small>
@@ -58,7 +75,7 @@
                   of {{ grant.amount_goal|floatformat:2|intcomma }} ETH
               </div>
                 <a href="{% url 'grants:fund_grant' grant.id %}">
-                  <button class="button button--primary button--full">Fund this Project</button>
+                  <button class="button button--primary button--full">{% trans "Fund this Project" %}</button>
                 </a>
             </div>
           </div>
@@ -71,7 +88,7 @@
       <div class="row top-buffer">
         <div class="col-12">
           <div class="grant__description">
-            <h4 class="grant__description-title">What we need.</h4>
+            <h4 class="grant__description-title">{% trans "What we need." %}</h4>
             {{ grant.description }}
           </div>
         </div>
@@ -88,9 +105,7 @@
   <script src="{% static "v2/js/tokens_dynamic.js" %}"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
   <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
-  <!-- <script src="{% static "v2/js/grants/new_grant.js" %}"></script> -->
   <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
-
 </html>
