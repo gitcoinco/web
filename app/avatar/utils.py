@@ -72,7 +72,7 @@ def get_avatar_context():
             {
                 'name': 'Clothing',
                 'title': 'Pick your clothing',
-                'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet')
+                'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet', 'ethlogo')
             },
             {
                 'name': 'Hair Style',
