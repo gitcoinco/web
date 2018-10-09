@@ -555,9 +555,6 @@ def quarterly_stats(to_emails=None, platform_wide_stats=None):
             date = f"Q{quarter} {year}"
             subject = f"Your Quarterly Gitcoin Stats ({date})"
             html, text = render_quarterly_stats(to_email, platform_wide_stats)
-            print("-----" * 100)
-            print(html)
-            print("-----" * 100)
             from_email = settings.PERSONAL_CONTACT_EMAIL
 
             if not should_suppress_notification_email(to_email, 'roundup'):
