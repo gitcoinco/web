@@ -1,18 +1,25 @@
 .top-nav {
   background: black;
-  padding: 1.4rem;
+  color: #9E9E9E;
+  padding: 0.6rem;
   display: flex;
   align-items: center;
-  justify-content: space-around;
+  justify-content: center;
+  flex-basis: 100%;
 }
 
+.top-nav a {
+  padding: 0 1rem;
+}
 
 .top-nav a img {
   filter: grayscale(1);
   opacity: 0.6;
+  transition: all 0.2s linear;
 }
 
-.top-nav a:hover img {
+.top-nav a:hover img,
+.top-nav a.selected img {
   filter: grayscale(0);
   opacity: 1;
 }

@@ -18,13 +18,13 @@
 {% load i18n static matches %}
 <div class="top-nav">
   Grow Open Source
-  <a href="/">
+  <a class="{% if request.path == '/' %}selected{% endif %}" href="/">
     <img src="{% static "v2/images/top-bar/gitcoin-logo.svg" %}" height="22" alt="">
   </a>
-  <a class="{% if request.path == '/kudos/' %} selected{% endif %}" href="{% url "kudos_main" %}">
-    <img src="{% static "v2/images/top-bar/codefund-logo.svg" %}" height="22" alt="">
+  <a class="" href="{% url 'kudos_main' %}">
+    <img src="{% static "v2/images/top-bar/codefund-logo.svg" %}" height="20" alt="">
   </a>
-  <a href="/">
+  <a class="{% if request.path|matches:'^\/((kudos.*))$' %}selected{% endif %}" href="{% url 'kudos_main' %}">
     <img src="{% static "v2/images/top-bar/kudos-logo.svg" %}" height="22" alt="">
   </a>
   <a href="/">
