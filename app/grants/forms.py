@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Handle grant URLs.
+"""Define the Grant forms.
 
 Copyright (C) 2018 Gitcoin Core
 
@@ -17,15 +17,19 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from django.urls import path, re_path
+from django import forms
 
-from grants.views import grant_details, grant_fund, grant_new, grants, subscription_cancel
+from grants.models import Grant
 
-app_name = 'grants'
-urlpatterns = [
-    path('', grants, name='grants'),
-    path('<int:grant_id>', grant_details, name='details'),
-    re_path(r'^new', grant_new, name='new'),
-    path('fund/<int:grant_id>', grant_fund, name='fund'),
-    path('subscriptions/<int:subscription_id>/cancel', subscription_cancel, name='subscription_cancel')
-]
+
+class GrantForm(forms.ModelForm):
+    """Define the Grant form logic."""
+
+    class Meta:
+        """Define the metadata for the Grant model form."""
+
+        model = Grant
+        fields = (
+            'title', 'description', 'reference_url', 'admin_address', 'frequency', 'token_address', 'amount_goal',
+            'transaction_hash', 'contract_address', 'network', 'admin_profile', 'logo',
+        )
