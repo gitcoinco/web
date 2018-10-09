@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Handle avatar URLs.
+"""Handle grant URLs.
 
 Copyright (C) 2018 Gitcoin Core
 
@@ -17,12 +17,9 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-
 from django.urls import path, re_path
-from django.conf.urls import url
 
-
-from .views import cancel_subscription, fund_grant, grant_show, grants, new_grant
+from grants.views import cancel_subscription, fund_grant, grant_show, grants, new_grant
 
 app_name = 'grants'
 urlpatterns = [
