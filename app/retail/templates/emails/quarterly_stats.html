@@ -43,7 +43,8 @@
   }
 
   .total-transaction {
-    background-color: #D6FBEB;
+    border-right: 5px solid #D6FBEB;
+    padding-right: 5px;
     color: #00A55E;
     display: flex;
     justify-content: center;
@@ -62,12 +63,11 @@
   .stat-img {
     text-align: center;
     border-width: 1px;
-    border-radius: 50%;
     width: 7em;
     vertical-align: middle;
   }
 
-  .stat-img .content {
+  .stat-img > .content {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -139,10 +139,7 @@
   }
 
   .full-bordered-circle {
-    border-radius: 100%;
-    border-style: solid;
-    border-width: 5px;
-    border-color: #3E00FF;
+    border-bottom: 5px solid #3E00FF;
   }
 
   .user-skill-1, .user-skill-5, .user-skill-9 {
