@@ -396,15 +396,18 @@ var callbacks = {
 
 var isBountyOwner = function(result) {
   var bountyAddress = result['bounty_owner_address'];
-
   if (typeof web3 == 'undefined') {
     return false;
   }
-  if (typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
+  if (typeof web3.currentProvider.isMetaMask == 'undefined') {
     return false;
   }
-
-  return (web3.eth.coinbase.toLowerCase() == bountyAddress.toLowerCase());
+  web3.eth.getCoinbase(function(error, coinbase) {
+    if (coinbase === null) {
+      return false;
+    }
+    return coinbase.toLowerCase() == bountyAddress.toLowerCase();
+  });
 };
 
 var isBountyOwnerPerLogin = function(result) {
@@ -470,10 +473,17 @@ waitforWeb3(function() {
       return;
     }
     if (typeof document.lastCoinbase == 'undefined') {
-      document.lastCoinbase = web3.eth.coinbase;
+      web3.eth.getCoinbase(function(error, coinbase) {
+        document.lastCoinbase = coinbase;
+      });
       return;
     }
-    var hasChanged = (document.lastCoinbase != web3.eth.coinbase) || (document.lastWeb3Network != document.web3network);
+    var present_coinbase;
+    
+    web3.eth.getCoinbase(function(error, coinbase) {
+      present_coinbase = coinbase;
+    });
+    var hasChanged = (document.lastCoinbase != present_coinbase) || (document.lastWeb3Network != document.web3network);
 
     if (hasChanged) {
       _alert(gettext('Detected a web3 change.  Refreshing the page. '), 'info');

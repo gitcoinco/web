@@ -97,7 +97,7 @@ $(document).ready(function() {
 
   // mixpanel integration
   setTimeout(function() {
-    var web3v = (typeof web3 == 'undefined' || typeof web3.version == 'undefined') ? 'none' : web3.version.api;
+    var web3v = (typeof web3 == 'undefined' || typeof web3.version == 'undefined') ? 'none' : web3.version;
     var params = {
       page: document.location.pathname,
       web3: web3v

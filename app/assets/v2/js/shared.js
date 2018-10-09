@@ -701,41 +701,47 @@ var trigger_primary_form_web3_hooks = function() {
   if ($('#primary_form').length) {
     var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1;
 
-    if (typeof web3 == 'undefined') {
-      $('#no_metamask_error').css('display', 'block');
-      $('#zero_balance_error').css('display', 'none');
-      $('#robot_error').removeClass('hidden');
-      $('#primary_form').addClass('hidden');
-      $('.submit_bounty .newsletter').addClass('hidden');
-      $('#unlock_metamask_error').css('display', 'none');
-      $('#no_issue_error').css('display', 'none');
-      mixpanel_track_once('No Metamask Error', params);
-    } else if (!web3.eth.coinbase) {
-      $('#unlock_metamask_error').css('display', 'block');
-      $('#zero_balance_error').css('display', 'none');
-      $('#no_metamask_error').css('display', 'none');
-      $('#robot_error').removeClass('hidden');
-      $('#primary_form').addClass('hidden');
-      $('.submit_bounty .newsletter').addClass('hidden');
-      $('#no_issue_error').css('display', 'none');
-      mixpanel_track_once('Unlock Metamask Error', params);
-    } else if (is_zero_balance_not_okay && document.balance == 0) {
-      $('#zero_balance_error').css('display', 'block');
-      $('#robot_error').removeClass('hidden');
-      $('#primary_form').addClass('hidden');
-      $('.submit_bounty .newsletter').addClass('hidden');
-      $('#unlock_metamask_error').css('display', 'none');
-      $('#no_metamask_error').css('display', 'none');
-      $('#no_issue_error').css('display', 'none');
-      mixpanel_track_once('Zero Balance Metamask Error', params);
-    } else {
-      $('#zero_balance_error').css('display', 'none');
-      $('#unlock_metamask_error').css('display', 'none');
-      $('#no_metamask_error').css('display', 'none');
-      $('#no_issue_error').css('display', 'block');
-      $('#robot_error').addClass('hidden');
-      $('#primary_form').removeClass('hidden');
-      $('.submit_bounty .newsletter').removeClass('hidden');
+    if (typeof web3 != 'undefined') {
+      if (typeof web3.currentProvider.isMetaMask == 'undefined') {
+        $('#no_metamask_error').css('display', 'block');
+        $('#zero_balance_error').css('display', 'none');
+        $('#robot_error').removeClass('hidden');
+        $('#primary_form').addClass('hidden');
+        $('.submit_bounty .newsletter').addClass('hidden');
+        $('#unlock_metamask_error').css('display', 'none');
+        $('#no_issue_error').css('display', 'none');
+        mixpanel_track_once('No Metamask Error', params);
+      } else {
+        web3.eth.getCoinbase(function(error, coinbase) {
+          if (coinbase === null) {
+            $('#unlock_metamask_error').css('display', 'block');
+            $('#zero_balance_error').css('display', 'none');
+            $('#no_metamask_error').css('display', 'none');
+            $('#robot_error').removeClass('hidden');
+            $('#primary_form').addClass('hidden');
+            $('.submit_bounty .newsletter').addClass('hidden');
+            $('#no_issue_error').css('display', 'none');
+            mixpanel_track_once('Unlock Metamask Error', params);
+          } else if (is_zero_balance_not_okay && document.balance == 0) {
+            $('#zero_balance_error').css('display', 'block');
+            $('#robot_error').removeClass('hidden');
+            $('#primary_form').addClass('hidden');
+            $('.submit_bounty .newsletter').addClass('hidden');
+            $('#unlock_metamask_error').css('display', 'none');
+            $('#no_metamask_error').css('display', 'none');
+            $('#no_issue_error').css('display', 'none');
+            mixpanel_track_once('Zero Balance Metamask Error', params);
+          } else {
+            $('#zero_balance_error').css('display', 'none');
+            $('#unlock_metamask_error').css('display', 'none');
+            $('#no_metamask_error').css('display', 'none');
+            $('#no_issue_error').css('display', 'block');
+            $('#robot_error').addClass('hidden');
+            $('#primary_form').removeClass('hidden');
+            $('.submit_bounty .newsletter').removeClass('hidden');
+          }
+        });
+      }
     }
   }
 };
@@ -746,54 +752,66 @@ var trigger_faucet_form_web3_hooks = function() {
 
   if ($('#faucet_form').length) {
     var balance = document.balance;
-
-    $('#ethAddress').val(web3.eth.accounts[0]);
+    
     var faucet_amount = parseInt($('#currentFaucet').val() * (Math.pow(10, 18)));
 
-    if (typeof web3 == 'undefined') {
-      $('#no_metamask_error').css('display', 'block');
-      $('#faucet_form').addClass('hidden');
-      mixpanel_track_once('No Metamask Error', params);
-      return;
-    } else if (!web3.eth.coinbase) {
-      $('#no_metamask_error').css('display', 'none');
-      $('#unlock_metamask_error').css('display', 'block');
-      $('#faucet_form').addClass('hidden');
-      return;
-    } else if (balance >= faucet_amount) {
-      $('#no_metamask_error').css('display', 'none');
-      $('#unlock_metamask_error').css('display', 'none');
-      $('#over_balance_error').css('display', 'block');
-      $('#faucet_form').addClass('hidden');
-      mixpanel_track_once('Faucet Available Funds Metamask Error', params);
-    } else {
-      $('#over_balance_error').css('display', 'none');
-      $('#no_metamask_error').css('display', 'none');
-      $('#unlock_metamask_error').css('display', 'none');
-      $('#faucet_form').removeClass('hidden');
+    if (typeof web3 !== 'undefined') {
+      if (typeof web3.currentProvider.isMetaMask == 'undefined') {
+        $('#no_metamask_error').css('display', 'block');
+        $('#faucet_form').addClass('hidden');
+        mixpanel_track_once('No Metamask Error', params);
+        return;
+      }
+      web3.eth.getAccounts(function(error, accounts) {
+        $('#ethAddress').val(accounts[0]);
+      });
+      web3.eth.getCoinbase(function(error, coinbase) {
+        if (coinbase === null) {
+          $('#no_metamask_error').css('display', 'none');
+          $('#unlock_metamask_error').css('display', 'block');
+          $('#faucet_form').addClass('hidden');
+          return;
+        }
+        if (balance >= faucet_amount) {
+          $('#no_metamask_error').css('display', 'none');
+          $('#unlock_metamask_error').css('display', 'none');
+          $('#over_balance_error').css('display', 'block');
+          $('#faucet_form').addClass('hidden');
+          mixpanel_track_once('Faucet Available Funds Metamask Error', params);
+        } else {
+          $('#over_balance_error').css('display', 'none');
+          $('#no_metamask_error').css('display', 'none');
+          $('#unlock_metamask_error').css('display', 'none');
+          $('#faucet_form').removeClass('hidden');
+        }
+      });
     }
   }
+
   if ($('#admin_faucet_form').length) {
-    if (typeof web3 == 'undefined') {
+    if (typeof web3.currentProvider.isMetaMask == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
       $('#faucet_form').addClass('hidden');
       mixpanel_track_once('No Metamask Error', params);
       return;
     }
-    if (!web3.eth.coinbase) {
-      $('#unlock_metamask_error').css('display', 'block');
-      $('#faucet_form').addClass('hidden');
-      mixpanel_track_once('Unlock Metamask Error', params);
-      return;
-    }
-    web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
-      var balance = result.toNumber();
-
-      if (balance == 0) {
-        $('#zero_balance_error').css('display', 'block');
-        $('#admin_faucet_form').remove();
-        mixpanel_track_once('Zero Balance Metamask Error', params);
+      
+    web3.eth.getCoinbase(function(error, coinbase) {
+      if (coinbase === null) {
+        $('#unlock_metamask_error').css('display', 'block');
+        $('#faucet_form').addClass('hidden');
+        mixpanel_track_once('Unlock Metamask Error', params);
+        return;
       }
+      web3.eth.getBalance(coinbase, function(errors, result) {
+        var balance = result.toNumber();
+
+        if (balance == 0) {
+          $('#zero_balance_error').css('display', 'block');
+          $('#admin_faucet_form').remove();
+          mixpanel_track_once('Zero Balance Metamask Error', params);
+        }
+      });
     });
   }
 };
@@ -824,29 +842,37 @@ var listen_for_web3_changes = function() {
     document.listen_for_web3_iterations += 1;
   }
 
-  if (typeof web3 == 'undefined') {
-    currentNetwork();
-    trigger_form_hooks();
-  } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
-    currentNetwork('locked');
-    trigger_form_hooks();
-  } else {
-    web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
-      if (typeof result != 'undefined') {
-        document.balance = result.toNumber();
-      }
-    });
-
-    web3.version.getNetwork(function(error, netId) {
-      if (error) {
-        currentNetwork();
-      } else {
-        var network = getNetwork(netId);
-
-        currentNetwork(network);
-        trigger_form_hooks();
-      }
-    });
+  if (typeof web3 !== 'undefined') {
+    if (typeof web3.currentProvider.isMetaMask == 'undefined') {
+      currentNetwork();
+      trigger_form_hooks();
+    } else {
+      web3.eth.getAccounts(function(error, accounts) {
+        if (accounts.length == 0) {
+          currentNetwork('locked');
+          trigger_form_hooks();
+        } else {
+          web3.eth.getCoinbase(function(error, coinbase) {
+            web3.eth.getBalance(coinbase, function(error, result) {
+              if (typeof result != 'undefined') {
+                document.balance = result;
+              }
+            });
+          });
+          web3.eth.net.getNetworkType().then(function(callback, error) {
+            if (error) {
+              currentNetwork();
+            } else if (callback != 'private') {
+              currentNetwork(callback);
+              trigger_form_hooks();
+            } else {
+              currentNetwork('custom network');
+              trigger_form_hooks();
+            }
+          });
+        }
+      });
+    }
   }
 };
 
