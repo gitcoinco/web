@@ -24,7 +24,7 @@ import time
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from kudos.utils import KudosContract, humanize_name, computerize_name
+from kudos.utils import KudosContract, humanize_name, computerize_name, get_rarity_score
 
 from web3.exceptions import BadFunctionCallOutput
 
@@ -91,27 +91,12 @@ class Command(BaseCommand):
             # "max_value": 100
             rarity = {
                 "trait_type": "rarity",
-                "value": kudos['rarity'],
-                "max_value": 100
+                "value": get_rarity_score(kudos['numClonesAllowed']),
             }
             attributes.append(rarity)
-            tags = list({tag.strip() for tag in kudos['tags'].split(',')})
-            # append tags
-            if kudos['rarity'] > 98:
-                tags.append('unique')
-            if kudos['rarity'] > 80:
-                tags.append('extremely rare')
-            elif kudos['rarity'] > 70:
-                tags.append('very rare')
-            elif kudos['rarity'] > 60:
-                tags.append('rare')
-            elif kudos['rarity'] > 40:
-                tags.append('common')
-            elif kudos['rarity'] > 20:
-                tags.append('very common')
-            elif kudos['rarity'] < 20:
-                tags.append('extremely common')
 
+            tags = kudos['tags']
+            # append tags
             if kudos['priceFinney'] < 2:
                 tags.append('budget')
             if kudos['priceFinney'] < 5:
@@ -139,14 +124,14 @@ class Command(BaseCommand):
             }
 
             tokenURI_url = kudos_contract.create_tokenURI_url(**metadata)
-            mint_to = kudos_contract._w3.eth.coinbase
+            mint_to = kudos_contract._w3.toChecksumAddress('0xd386793f1db5f21609571c0164841e5ea2d33ad8')
 
             args = (mint_to, kudos['priceFinney'], kudos['numClonesAllowed'], tokenURI_url)
             for x in range(1, 4):
                 try:
                     kudos_contract.mint(*args, account=account, private_key=private_key, skip_sync=skip_sync)
                 except Exception as e:
-                    logger.warning(e)
+                    logger.error(e)
                     logger.info("Trying the mint again...")
                     time.sleep(2)
                     continue

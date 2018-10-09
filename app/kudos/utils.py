@@ -21,6 +21,7 @@ import json
 import logging
 import subprocess
 import time
+import re
 
 from django.conf import settings
 
@@ -48,6 +49,28 @@ def humanize_name(name):
 
 def computerize_name(name):
     return name.lower().replace(' ', '_')
+
+
+def get_rarity_score(numClonesAllowed: int) -> str:
+    if not isinstance(numClonesAllowed, int):
+        raise ValueError('numClonesAllowed must be an integer')
+
+    if numClonesAllowed == 1:
+        return 'Unique'
+    elif 2 <= numClonesAllowed <= 5:
+        return 'Legendary Rare'
+    elif 6 <= numClonesAllowed <= 15:
+        return 'Ultra Rare'
+    elif 16 <= numClonesAllowed <= 35:
+        return 'Very Rare'
+    elif 36 <= numClonesAllowed <= 100:
+        return 'Common'
+    elif 101 <= numClonesAllowed <= 200:
+        return 'Super Common'
+    elif numClonesAllowed >= 201:
+        return 'Extremely Common'
+    else:
+        raise ValueError('numClonesAllowed must be greater than 1')
 
 
 class KudosError(Exception):
@@ -170,8 +193,7 @@ class KudosContract:
         kudos_map = {**mapping, **metadata}
 
         kudos_map['name'] = computerize_name(kudos_map['name'])
-        image_arr = kudos_map["image"].split('/')[-4:]
-        kudos_map['image'] = '/'.join(image_arr)
+        kudos_map['image'] = re.sub(r'http.*?static\/', '', kudos_map['image'])
 
         return kudos_map
 
@@ -308,7 +330,7 @@ class KudosContract:
         elif self.network == 'ropsten':
             return to_checksum_address('0xcd520707fc68d153283d518b29ada466f9091ea8')
         elif self.network == 'rinkeby':
-            return to_checksum_address('0x3c147acf80b01d08dcb05038a7d9537adc12b39d')
+            return to_checksum_address('0x5aabd1423ac6d4740b8f1271bf3bf42e09306712')
         else:
             # local testrpc
             return to_checksum_address('0xe7bed272ee374e8116049d0a49737bdda86325b6')
