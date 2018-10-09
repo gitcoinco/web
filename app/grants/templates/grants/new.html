@@ -34,12 +34,11 @@
             <h1>{% trans "Create a Grant" %}</h1>
             <p>{% trans "We're excited to learn about your project. Complete the form below to get funding for your project." %}</p>
           </div>
-          <form action="{% url 'grants:new_grant' %}" method="POST" id="js-newGrant">
+          <form action="{% url 'grants:new' %}" method="POST" id="js-newGrant" enctype="multipart/form-data">
             {% csrf_token %}
-
             <div class="form__group-horizontal">
-              <label class="form__label" for="input-name">{% trans "Name of Project" %}</label>
-              <input class="form__input" type="text" id="input-name" name="input-name" required />
+              <label class="form__label" for="input_name">{% trans "Name of Project" %}</label>
+              <input class="form__input" type="text" id="input_name" name="input_name" required />
             </div>
 
             <div class="form__group-horizontal">
@@ -99,9 +98,9 @@
             </div> -->
 
             <div class="form__group-horizontal">
-              <label class="form__label">{% trans "Project image" %}</label>
+              <label class="form__label">{% trans "Project Logo" %}</label>
               <div class="form__drop" id="js-drop">
-                <input id="img-project" type="file" name="input-image" accept="image/*">
+                <input id="img-project" type="file" name="input_image" accept="image/*">
                 <span>{% trans "Drag & Drop or Browse" %}</span>
                 <img id="preview"/>
               </div>

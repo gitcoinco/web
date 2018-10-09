@@ -21,8 +21,11 @@ import json
 import logging
 
 from django.conf import settings
+from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
+from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 from grants.models import Grant, Subscription
 from marketing.models import Keyword
@@ -32,78 +35,87 @@ logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 
+def get_keywords():
+    """Get all Keywords."""
+    return json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)])
+
+
 def grants(request):
     """Handle grants explorer."""
     grants = Grant.objects.all()
 
     params = {
         'active': 'dashboard',
-        'title': 'Grants Explorer',
+        'title': _('Grants Explorer'),
         'grants': grants,
-        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+        'keywords': get_keywords(),
     }
     return TemplateResponse(request, 'grants/index.html', params)
 
 
-def grant_show(request, grant_id):
-    """Display a grant."""
-    grant = Grant.objects.get(pk=grant_id)
+def grant_details(request, grant_id):
+    """Display the Grant details page."""
+    try:
+        grant = Grant.objects.get(pk=grant_id)
+    except Grant.DoesNotExist:
+        raise Http404
 
     params = {
         'active': 'dashboard',
-        'title': 'Grant Show',
+        'title': _('Grant Details'),
         'grant': grant,
-        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+        'keywords': get_keywords(),
     }
     return TemplateResponse(request, 'grants/show.html', params)
 
 
-def new_grant(request):
+def grant_new(request):
     """Handle new grant."""
     profile = request.user.profile if request.user.is_authenticated else None
 
-    if request.method == "POST":
-        grant = Grant()
-        grant.title = request.POST.get('input-name')
-        grant.description = request.POST.get('description')
-        grant.reference_url = request.POST.get('reference_url')
-        grant.image_url = request.POST.get('input-image')
-        grant.admin_address = request.POST.get('admin_address')
-        grant.frequency = request.POST.get('frequency')
-        grant.token_address = request.POST.get('denomination')
-        grant.amount_goal = request.POST.get('amount_goal')
-        grant.transaction_hash = request.POST.get('transaction_hash')
-        grant.contract_address = request.POST.get('contract_address')
-        grant.network = request.POST.get('network')
-        grant.admin_profile = profile
-        grant.save()
-        return redirect(f'/grants/{grant.pk}')
+    if request.method == 'POST':
+        logo = request.FILES.get('input_image', None)
+        grant_kwargs = {
+            'title': request.POST.get('input_name', ''),
+            'description': request.POST.get('description', ''),
+            'reference_url': request.POST.get('reference_url'),
+            'admin_address': request.POST.get('admin_address', ''),
+            'frequency': request.POST.get('frequency', 30),
+            'token_address': request.POST.get('denomination', ''),
+            'amount_goal': request.POST.get('amount_goal', 0),
+            'transaction_hash': request.POST.get('transaction_hash', ''),
+            'contract_address': request.POST.get('contract_address', ''),
+            'network': request.POST.get('network', 'mainnet'),
+            'admin_profile': profile,
+            'logo': logo,
+        }
+        grant = Grant.objects.create(**grant_kwargs)
+        return redirect(reverse('grants:details', args=(grant.pk, )))
 
     grant = {}
     params = {
         'active': 'grants',
-        'title': 'New Grant',
+        'title': _('New Grant'),
         'grant': grant,
-        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+        'keywords': get_keywords(),
     }
 
     return TemplateResponse(request, 'grants/new.html', params)
 
 
-def fund_grant(request, grant_id):
+def grant_fund(request, grant_id):
     """Handle grant funding."""
-    grant = Grant.objects.get(pk=grant_id)
+    try:
+        grant = Grant.objects.get(pk=grant_id)
+    except Grant.DoesNotExist:
+        raise Http404
+
     profile = request.user.profile if request.user.is_authenticated else None
-
-    print("this is the username:", profile)
-    print("this is the grant instance", grant)
-    print("this is the web3 instance", w3.eth.account)
-
     # make sure a user can only create one subscription per grant
-    if request.method == "POST":
+    if request.method == 'POST':
         subscription = Subscription()
         # subscriptionHash and ContributorSignature will be given from smartcontracts and web3
-        # subscription.subscriptionHash = request.POST.get('input-name')
+        # subscription.subscriptionHash = request.POST.get('input_name')
         # subscription.contributorSignature = request.POST.get('description')
         # Address will come from web3 instance
         # subscription.contributorAddress = request.POST.get('reference_url')
@@ -120,31 +132,28 @@ def fund_grant(request, grant_id):
 
     params = {
         'active': 'dashboard',
-        'title': 'Fund Grant',
+        'title': _('Fund Grant'),
         'subscription': subscription,
         'grant': grant,
-        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+        'keywords': get_keywords(),
     }
     return TemplateResponse(request, 'grants/fund.html', params)
 
 
-def cancel_subscription(request, subscription_id):
-    """Handle Cancelation of grant funding."""
-    subscription = Subscription.objects.get(pk=subscription_id)
-    grant = subscription.grant
+def subscription_cancel(request, subscription_id):
+    """Handle the cancellation of a grant subscription."""
+    subscription = Subscription.objects.select_related('grant').get(pk=subscription_id)
+    grant = getattr(subscription, 'grant', None)
 
-    print("this is the subscription:", subscription.pk)
-    print("this is the grant:", grant)
-
-    if request.method == "POST":
+    if request.method == 'POST':
         subscription.status = False
         subscription.save()
 
     params = {
-        'title': 'Fund Grant',
+        'title': _('Cancel Grant Subscription'),
         'subscription': subscription,
         'grant': grant,
-        'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
+        'keywords': get_keywords(),
     }
 
     return TemplateResponse(request, 'grants/cancel.html', params)

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Handle grant URLs.
+"""Define the Grant utilities.
 
 Copyright (C) 2018 Gitcoin Core
 
@@ -17,15 +17,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from django.urls import path, re_path
+import os
+from secrets import token_hex
 
-from grants.views import subscription_cancel, grant_fund, grant_details, grants, grant_new
 
-app_name = 'grants'
-urlpatterns = [
-    path('', grants, name='grants'),
-    path('<int:grant_id>', grant_details, name='details'),
-    re_path(r'^new', grant_new, name='new'),
-    path('fund/<int:grant_id>', grant_fund, name='fund'),
-    path('subscriptions/<int:subscription_id>/cancel', subscription_cancel, name='subscription_cancel')
-]
+def get_upload_filename(instance, filename):
+    salt = token_hex(16)
+    file_path = os.path.basename(filename)
+    return f"grants/{getattr(instance, '_path', '')}/{salt}/{file_path}"
