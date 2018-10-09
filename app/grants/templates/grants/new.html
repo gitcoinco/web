@@ -29,8 +29,8 @@
 
     <div class="container new-grant">
       <div class="row justify-content-md-center">
-        <div class="col-sm-12 col-md-10 col-lg-6">
-          <div class="form__intro text-center">
+        <div class="col-sm-12 col-md-12 col-lg-8">
+          <div class="form__intro">
             <h1>{% trans "Create a Grant" %}</h1>
             <p>{% trans "We're excited to learn about your project. Complete the form below to get funding for your project." %}</p>
           </div>
@@ -65,7 +65,7 @@
                 </div>
                 <div class="col-4">
                   <div class="form__select2">
-                    <select class='js-select2' name='denomination' id='js-token'></select>
+                    <select class='js-select2' name='denomination' id='js-token'> </select>
                   </div>
                 </div>
               </div>
@@ -78,8 +78,14 @@
 
             <div class="form__group-horizontal">
               <label class="form__label">{% trans "Frequency of payments" %}</label>
-              <input type="number" name="frequency" class="form__input" value='30' required />
-              <label class="form__label">{% trans "Days" %}</label>
+              <div class="row">
+                <div class="col-2">
+                  <input type="number" name="frequency" class="form__input" value='30' required />
+                </div>
+                <div class="col-2">
+                  <label class="form__label">{% trans "Days" %}</label>
+                </div>
+              </div>
             </div>
 
 
@@ -106,7 +112,7 @@
               </div>
             </div>
 
-            <div class="form__footer text-center">
+            <div class="form__footer">
               <button class="button button--primary">{% trans "Create Grant" %}</button>
             </div>
 
@@ -135,5 +141,5 @@
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSubscriptionContract.js" %}"></script>
-  <script src="{% static "v2/js/grants/new.js" %}"></script>
+  <script src="{% static "v2/js/grants/new_grant.js" %}"></script>
 </html>

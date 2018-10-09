@@ -2,6 +2,10 @@
 
 $(document).ready(function() {
 
+  console.log('1', web3.eth.coinbase);
+  console.log('network', web3.version.network);
+
+
   $('#js-drop').on('dragover', function(event) {
     event.preventDefault();
     event.stopPropagation();
@@ -23,6 +27,7 @@ $(document).ready(function() {
   });
 
   $('.js-select2').each(function() {
+
     $(this).select2();
   });
 
@@ -110,4 +115,6 @@ $(document).ready(function() {
 
     $('#js-token').select2();
   });
+
+
 });

@@ -26,6 +26,12 @@
   margin-top: 15px;
 }
 
+.new-grant .button--primary {
+  border-radius: 6px;
+  padding: 10px 50px;
+  text-transform: uppercase;
+}
+
 .new-grant .form__select2 {
   height: 33px;
   display: inline;
@@ -33,8 +39,4 @@
 
 .new-grant .form__select2 .select2-container--default .select2-selection--single {
   min-height: 33px;
-}
-
-.form__select2 .select2-container {
-  top: -2px;
 }
