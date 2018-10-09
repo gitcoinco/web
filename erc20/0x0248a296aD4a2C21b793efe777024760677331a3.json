@@ -1,0 +1,25 @@
+{
+  "symbol": "MSX",
+  "address": "0x0248a296aD4a2C21b793efe777024760677331a3",
+  "overview":{
+        "en": "Token Description.",
+        "zh": "MeshX将建立一个扁平去中心化的自组网运营网络系统，让所有人和所有信息节点之间实现点对点的直接通信数据传输和交换，并实现用户数据价值的流通交换，达成MeshX Chain数字网络运营生态。"
+  },
+  "email": "zf@iMeshX.io",
+  "website": "https://www.iMeshX.io/",
+  "whitepaper": "https://github.com/iMeshX/MeshX/blob/master/MeshX-V1_4.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-01-01",
+  "initial_price":{
+        "ETH":"0.00166666 ETH",
+        "USD":"0.7 USD",
+        "BTC":"0.00004137 BTC"
+  },
+  "links": {
+    "blog": "https://weibo.com/MeshXOfficial",
+    "twitter": "https://twitter.com/MeshXOfficial",
+    "telegram": "https://t.me/MeshXOfficial",
+    "github": "https://github.com/iMeshX",
+    "facebook": "https://www.facebook.com/MeshXOfficial"
+  }
+}
