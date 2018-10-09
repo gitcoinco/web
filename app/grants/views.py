@@ -29,7 +29,8 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from grants.models import Grant, Subscription
+from grants.models import Grant, Milestone, Subscription
+from grants.forms import MilestoneForm
 from marketing.models import Keyword
 from web3 import HTTPProvider, Web3
 
@@ -68,6 +69,7 @@ def grant_details(request, grant_id):
 
     try:
         grant = Grant.objects.prefetch_related('subscriptions').get(pk=grant_id)
+        milestones = Milestone.objects.filter(grant_id=grant_id).order_by('due_date')
     except Grant.DoesNotExist:
         raise Http404
 
@@ -131,10 +133,12 @@ def grant_details(request, grant_id):
         'active': 'dashboard',
         'title': _('Grant Details'),
         'grant': grant,
-        'keywords': get_keywords(),
         'is_admin': (grant.admin_profile.id == profile.id) if profile else False,
         'activity': activity_data,
         'gh_activity': gh_data,
+        'milestones': milestones,
+        'can_edit_milestones': profile == grant.admin_profile,
+        'keywords': get_keywords(),
     }
     return TemplateResponse(request, 'grants/detail.html', params)
 
@@ -172,6 +176,49 @@ def grant_new(request):
     }
 
     return TemplateResponse(request, 'grants/new.html', params)
+
+
+def milestones(request, grant_id):
+    profile = request.user.profile if request.user.is_authenticated else None
+    grant = Grant.objects.get(pk=grant_id)
+
+    if profile != grant.admin_profile:
+        return redirect(reverse('grants:details', args=(grant.pk, )))
+
+    if request.method == "POST":
+        method = request.POST.get('method')
+
+        if method == "POST":
+            form = MilestoneForm(request.POST)
+            milestone = form.save(commit=False)
+            milestone.grant = grant
+            milestone.save()
+
+        if method == "PUT":
+            milestone_id = request.POST.get('milestone_id')
+            milestone = Milestone.objects.get(pk=milestone_id)
+            milestone.completion_date = request.POST.get('completion_date')
+            milestone.save()
+
+        if method == "DELETE":
+            milestone_id = request.POST.get('milestone_id')
+            milestone = Milestone.objects.get(pk=milestone_id)
+            milestone.delete()
+
+        return redirect(reverse('grants:milestones', args=(grant.pk, )))
+
+    form = MilestoneForm()
+    milestones = Milestone.objects.filter(grant_id=grant_id).order_by('due_date')
+
+    params = {
+        'active': 'grants',
+        'title': _('Grant Milestones'),
+        'grant': grant,
+        'milestones': milestones,
+        'form': form,
+        'keywords': get_keywords(),
+    }
+    return TemplateResponse(request, 'grants/milestones.html', params)
 
 
 def grant_fund(request, grant_id):

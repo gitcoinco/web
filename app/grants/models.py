@@ -72,6 +72,24 @@ class SubscriptionQuerySet(models.QuerySet):
     pass
 
 
+class Milestone(SuperModel):
+    """Define the structure of a Grant Milestone"""
+
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    due_date = models.DateField()
+    completion_date = models.DateField(default=None, blank=True, null=True)
+
+    grant = models.ForeignKey('Grant', related_name='milestones', on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        """Return the string representation of a Milestone."""
+        return (
+            f" id: {self.pk}, title: {self.title}, description: {self.description}, "
+            f"due_date: {self.due_date}, completion_date: {self.completion_date}, grant: {self.grant_id}"
+        )
+
+
 class Subscription(SuperModel):
     """Define the structure of a subscription agreement."""
 
