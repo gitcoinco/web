@@ -39,7 +39,7 @@
     "stylelint-config-recommended": "^2.1.0",
     "stylelint-webpack-plugin": "^0.9.0",
     "webpack": "^3.12.0",
-    "webpack-bundle-tracker": "^0.2.1",
+    "webpack-bundle-tracker": "^0.3.0",
     "webpack-dev-server": "^2.11.2"
   }
 }
