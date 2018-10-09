@@ -22,7 +22,7 @@
   </a>
   <div class="grant-item__content">
     <h2 class="grant-item__title"><a href="{% url 'grants:details' grant.id %}">{{ grant.title|truncatechars:60 }}</a></h2>
-    <p class="grant-item__pitch">{{ grant.pitch|truncatechars:135 }}</p>
+    <p class="grant-item__pitch">{{ grant.description|truncatechars:135 }}</p>
     <div class="grant-item__footer">
       <div class="grant-item__owner">
         <div class="grant-item__owner-image">
