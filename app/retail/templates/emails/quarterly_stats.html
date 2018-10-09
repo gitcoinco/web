@@ -259,12 +259,12 @@
         </div>
 
         <div class="button-action">
-            <a class="button" href="{% url 'dashboard' %}">{% trans "Share my stats" %}</a>
+            <a class="button" href="{{profile.url}}">{% trans "View Your Profile" %}</a>
         </div>
         {% endif %}
 
     	{% if user_funded_bounties_count %}
-	<h2>{% trans "You've Been Making Money Moves" %}</h2>
+	<h2>{% trans "You've Been Funding Open Source" %}</h2>
 	<h4>{% trans "An overview of your OSS project's stats from the last 3 months." %}</h4>
 
         {% if user_funded_fulfilled_percentage > 60 %}

@@ -456,6 +456,18 @@ class Bounty(SuperModel):
         """
         return any(profile.fulfiller_github_username == handle for profile in self.fulfillments.all())
 
+    def is_fulfiller(self, handle):
+        """Determine whether or not the profile is the bounty is_fulfiller.
+
+        Args:
+            handle (str): The profile handle to be compared.
+
+        Returns:
+            bool: Whether or not the user is the bounty is_fulfiller.
+
+        """
+        return any(profile.fulfiller_github_username == handle for profile in self.fulfillments.filter(accepted=True).all())
+
     def is_funder(self, handle):
         """Determine whether or not the profile is the bounty funder.
 
@@ -1726,9 +1738,9 @@ class Profile(SuperModel):
         user_fulfilled_bounties = False
         user_funded_bounties = False
         last_quarter = datetime.now() - timedelta(days=90)
-        bounties = self.bounties.filter(modified_on__gte=last_quarter)
+        bounties = self.bounties.filter(created_on__gte=last_quarter, network='mainnet')
         fulfilled_bounties = [
-            bounty for bounty in bounties if bounty.is_hunter(self.handle) and bounty.status == 'done'
+            bounty for bounty in bounties if bounty.is_fulfiller(self.handle) and bounty.status == 'done'
         ]
         fulfilled_bounties_count = len(fulfilled_bounties)
         funded_bounties = self.get_funded_bounties()
