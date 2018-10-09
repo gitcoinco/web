@@ -2,8 +2,8 @@
 
 $(document).ready(function() {
 
-console.log('1', web3.eth.coinbase);
-console.log('network', web3.version.network);
+  console.log('1', web3.eth.coinbase);
+  console.log('network', web3.version.network);
 
 
   $('#js-drop').on('dragover', function(event) {
@@ -40,8 +40,6 @@ console.log('network', web3.version.network);
         .removeAttr('disabled');
 
 
-
-
       // Begin New Deploy Subscription Contract
 
       let bytecode = compiledSubscription.bytecode;
@@ -50,43 +48,41 @@ console.log('network', web3.version.network);
       let SubscriptionContract = web3.eth.contract(compiledSubscription.abi);
 
       SubscriptionContract.new(data.admin_address, data.token_address, data.amount_goal, data.frequency, data.gas_price, {
-            from:web3.eth.accounts[0],
-            data:bytecode,
-            gas:2500000}, function(err, subscriptionContract){
-              if(!err) {
+        from: web3.eth.accounts[0],
+        data: bytecode,
+        gas: 2500000}, function(err, subscriptionContract) {
+        if (!err) {
 
-                // NOTE: The callback will fire twice!
-                // Once the contract has the transactionHash property set and once its deployed on an address.
-                // e.g. check tx hash on the first call (transaction send)
+          // NOTE: The callback will fire twice!
+          // Once the contract has the transactionHash property set and once its deployed on an address.
+          // e.g. check tx hash on the first call (transaction send)
 
-                if(!subscriptionContract.address) {
-                  console.log(subscriptionContract.transactionHash)
-
-
-                } else {
-                  console.log(subscriptionContract.address)
-
-                  $('#transaction_hash').val(subscriptionContract.transactionHash)
-                  $('#contract_address').val(subscriptionContract.address)
-                  $('#network').val(web3.version.network)
-
-                  $.each($(form).serializeArray(), function() {
-                    data[this.name] = this.value;
-                  });
-
-                  console.log(data);
-
-                  form.submit();
+          if (!subscriptionContract.address) {
+            console.log(subscriptionContract.transactionHash);
 
 
-                }
-              }
+          } else {
+            console.log(subscriptionContract.address);
+
+            $('#transaction_hash').val(subscriptionContract.transactionHash);
+            $('#contract_address').val(subscriptionContract.address);
+            $('#network').val(web3.version.network);
+
+            $.each($(form).serializeArray(), function() {
+              data[this.name] = this.value;
             });
+
+            console.log(data);
+
+            form.submit();
+
+
+          }
+        }
+      });
 
     }
   });
-
-
 
 
   $('#new-milestone').on('click', function(event) {

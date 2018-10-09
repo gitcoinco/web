@@ -3,11 +3,10 @@ window.onload = function() {
   $('#period').select2();
 
 
-
-  $('#js-cancelSubscription').click(function(form){
+  $('#js-cancelSubscription').click(function(form) {
 
     form.submit();
 
-  })
+  });
 
 };
