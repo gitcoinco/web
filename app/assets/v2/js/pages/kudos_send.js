@@ -443,16 +443,15 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
 
         var numClones = 1;
         var account = web3.eth.coinbase;
+        console.log('destinationAccount:' + destinationAccount);
 
         if (is_direct_to_recipient) {
           // Step 9
           // Kudos Direct Send (KDS)
           console.log('Using Kudos Direct Send (KDS)');
-          console.log('destinationAccount:' + destinationAccount);
           // send_kudos_direct(kudosId, 1, destinationAccount);
-          let receiver = destinationAccount;
 
-          kudos_contract.cloneAndTransfer(kudosId, numClones, receiver, {from: account, value: kudosPriceInWei}, function(cloneError, cloneTxid) {
+          kudos_contract.clone(destinationAccount, kudosId, numClones, {from: account, value: kudosPriceInWei}, function(cloneError, cloneTxid) {
             // totalSupply yield the kudos_id
             kudos_contract.totalSupply(function(supplyError, kudos_id) {
               post_send_callback(cloneError, cloneTxid, kudos_id);
@@ -474,7 +473,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
             value: kudosPriceInWei.toString()
           }
           console.log(params)
-          kudos_contract.clone.estimateGas(kudosId, numClones, {from: account, value: kudosPriceInWei}, function(err, kudosGasEstimate){
+          kudos_contract.clone.estimateGas(destinationAccount, kudosId, numClones, {from: account, value: kudosPriceInWei}, function(err, kudosGasEstimate){
             if (err)
               throw(err);
             console.log('kudosGasEstimate: '+ kudosGasEstimate)

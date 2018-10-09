@@ -111,6 +111,7 @@ class Command(BaseCommand):
                 more_kudos = False
 
     def block_sync(self, kudos_contract, fromBlock):
+        raise NotImplementedError('block_sync does not work properly')
         block = fromBlock
         last_block_number = kudos_contract._w3.eth.getBlock('latest')['number']
         # for block_num in range(block, last_block_number + 1)
@@ -138,7 +139,8 @@ class Command(BaseCommand):
                 logger.info(f'method_id:  {method_id}')
 
                 # Check if its a Clone or cloneAndTransfer function call
-                if method_id == '0xdaa6eb1d' or method_id == '0xd319784f':
+                valid_method_ids = ['0xed74de9d']
+                if method_id in valid_method_ids:
                     kudos_contract._w3.eth.waitForTransactionReceipt(tx['hash'])
                     kudos_id = kudos_contract._contract.functions.totalSupply().call()
                     if kudos_contract.network == 'localhost':

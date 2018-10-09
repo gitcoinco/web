@@ -124,8 +124,7 @@ $(document).ready(function() {
         // Build the raw transaction data for the kudos clone & transfer
         var kudosId = $('#kudosid').data('kudosid');
         var numClones = 1;
-        var receiver = forwarding_address;
-        var data = kudos_contract.cloneAndTransfer.getData(kudosId, numClones, forwarding_address);
+        var data = kudos_contract.clone.getData(forwarding_address, kudosId, numClones);
 
         // console.log(kudos_address())
         // kudos_contract.totalSupply(function (err, result) {
@@ -148,7 +147,7 @@ $(document).ready(function() {
         console.log(kudosPriceInWei.toNumber())
         console.log(kudosPriceInWei.toString(10))
  
-        kudos_contract.cloneAndTransfer.estimateGas(kudosId, numClones, receiver, {from: holding_address, value: kudosPriceInWei}, function(error, gasLimit) {
+        kudos_contract.clone.estimateGas(forwarding_address, kudosId, numClones, {from: holding_address, value: kudosPriceInWei}, function(error, gasLimit) {
           console.log(gasLimit)
           var buffer = new web3.BigNumber(0);
 
@@ -171,7 +170,6 @@ $(document).ready(function() {
             console.log(rawTx);
           }
           sign_and_send(rawTx, success_callback, document.priv_key);
-          // kudos_contract.cloneAndTransfer(name, numClones, forwarding_address, {from: holding_address, value: new web3.BigNumber(1000000000000000)}, function(error, txid) {
           //   console.log('txid:' + txid)
           // })
         });
