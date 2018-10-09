@@ -549,8 +549,9 @@ def quarterly_stats(to_emails=None, platform_wide_stats=None):
         cur_language = translation.get_language()
         try:
             setup_lang(to_email)
-            quarter = int(timezone.now().month / 3) + 1
-            year = timezone.now().year
+            then = (timezone.now() - timezone.timedelta(days=45))
+            quarter = int(then.month / 3) + 1
+            year = then.year
             date = f"Q{quarter} {year}"
             subject = f"Your Quarterly Gitcoin Stats ({date})"
             html, text = render_quarterly_stats(to_email, platform_wide_stats)
