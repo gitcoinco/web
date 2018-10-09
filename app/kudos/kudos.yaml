@@ -236,7 +236,7 @@
   tags: soft skills, programmer, technical, handyman
   image: handyman.svg
 - name: handy_woman
-  description: Its great to have a handy woman around your house when your sink, plumbing,
+  description: Its great to have a someone handy around your house when your sink, plumbing,
     electricity, breaks.  Owners of this badge are digital handymen and handywomen.  They
     fix stuff, and do it with a smile on their face!
   rarity: 30
@@ -591,8 +591,8 @@
   numClonesAllowed: 100
   tags: soft skills, path, finder
   image: path_finder.svg
-- name: climb_to_sky
-  description: A ladder climber propels upward into dreams and helps to paint a sharable vision. We can do it all from start to finish - to build new experiences for the open source community around us. 
+- name: to_the_moon
+  description: This kudos is for users who are taking the ecosystem to the moon!
   rarity: 20
   priceFinney: 1
   numClonesAllowed: 100
@@ -738,21 +738,341 @@
     with our words and stories. The world is our experiment lab, and we are players in it.
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 100
+  numClonesAllowed: 2
   tags: genius, albert einstein, smart
   image: a_genius.svg
 - name: vitalik_genesis
-  description: A kudos that celebrates Vitalik's leadership in the Ethereum world.
+  description: A kudos that celebrates Vitalik's leadership in the Ethereum world.  One day, Gitcoin founder @owocki hopes to work up the courage to give this Kudos to Vitalik.
   rarity: 90
   priceFinney: 1
   numClonesAllowed: 100
   tags: vitalik, just for fun
   image: vitalik_genesis.svg
-- name: eth_hacker
-  description: You spin up DAPPS on the weekend, just for fun.
+- name: sunburst
+  description: This person bring Gitcoin sunshine to OSS projects. We energize the project with what we do. 
   rarity: 20
   priceFinney: 1
-  numClonesAllowed: 100
-  tags: ethereum, hacker, hackathon, eth
+  numClonesAllowed: 10
+  tags: sunshine, oss, energy
+  image: sunburst.svg
+- name: ethereum_constellation
+  description: This badge is for anyone who creates simplicity from complexity.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: ethereum, simple
+  image: ethereum_constellation.svg
+- name: tools
+  description: Tools to help grow OSS.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: tools, oss
+  image: tools.svg
+- name: path
+  description: This person takes the path less traveled to achieve great things.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: path, achiever
+  image: path.svg
+- name: hard_worker
+  description: Hard workers are diligent and vigilent at doing the best they can.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: hard worker, achievement, buidl
+  image: hard_worker.svg
+- name: g1
+  description: lorum
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: g1.svg
+- name: powertools
+  description: A true powertool for an Open Source project!
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: power, oss, development
+  image: powertools.svg
+- name: link_legend_of_zelda
+  description: A leader of all things united.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: leader, future, unite
+  image: link_legend_of_zelda.svg
+- name: blockchain_star
+  description: A shining star that provides the light of blockchain.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: star, rise
+  image: blockchain_star.svg
+- name: climb_the_ladder
+  description: A ladder climbber takes open source to new heights.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: success, ladder, achievement
+  image: climb_the_ladder.svg
+- name: west
+  description: You are a pioneer of Gitcoin open source!
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: lorem ipsum
+  image: west.svg
+- name: praying
+  description: Need ideas for this one!
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: pray
+  image: praying.svg
+- name: coding_ducky
+  description: A ducky that helps solve your problems!
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: duck, coding, problem solver
+  image: coding_ducky.svg
+- name: django_cowboy
+  description: Faster than fast on django.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: django, fast, developer
+  image: django_cowboy.svg
+- name: frontend_alchemist
+  description: A frontend alchemist mixes things up to create a surprise.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: frontend,creative
+  image: frontend_alchemist.svg
+- name: dont_just_hodl_buidl
+  description: A builder to create change.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: builder, change, buidl
+  image: dont_just_hodl_buidl.svg
+- name: backend_star
+  description: A shining star of all things hidden.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: star, backend
+  image: backend_star.svg
+- name: bug_squasher_new
+  description: A bug squasher makes bugs dissapear like magic.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: bugs, clean code, magic
+  image: bug_squasher_new.svg
+- name: growoss_crystalball
+  description: A crystal ball is just a way to predict the future, but hidden inside is a compelling story. Grow Oss Crystal Ball holders are visionaries that transform what’s happening into an understandable future. 
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: oss, prediction, future, wise
+  image: growoss_crystalball.svg
+- name: birds
+  description: Open source birds are free to work on what they want, when they want. Making impact where they feel necessary.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: birds, freedom, impact, oss
+  image: birds.svg
+- name: robot_medium
+  description: A robot that is very direct in understanding the needs of the problem.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: robot, problem solver, machine
+  image: robot_medium.svg
+- name: robot_small
+  description: A small robots is sometimes just what you need to solve big problems.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: robot, problem solver, machine
+  image: robot_small.svg
+- name: out_of_this_world_programmer
+  description: A programmer that moves the ecosystem forward and out of this world.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: programmer, development
+  image: out_of_this_world_programmer.svg
+- name: good_communicator
+  description: Holders of this badge are great communicators that help to clarify any situation.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: communication, clear
+  image: good_communicator.svg
+- name: a_genius
+  description: A Genius bring ideas to life. We activate creative thinking and push problem solving with our words and stories. The world is our experiment lab, and we are players in it.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: genius, ideas, creative
+  image: a_genius.svg
+- name: gitcoin_tree
+  description: A tree that sustains open source.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: oss, grow open source
+  image: gitcoin_tree.svg
+- name: status_hackathon_2018_games_track_first_prize
+  description: For the winner of the Status Hackathon Games Track
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: status hackathon
+  image: games_first.svg
+- name: status_hackathon_2018_marketplace_track_second_prize
+  description: For the runner up of the Status Hackathon Marketplace Track
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: status hackathon
+  image: marketplaces_runner_up.svg
+- name: travel_runner_up
+  description: lorum
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: status hackathon
+  image: travel_runner_up.svg
+- name: blockchain_world
+  description: lorum
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: status hackathon
+  image: blockchain_world.svg
+- name: status_hackathon_2018_travel_track_first_prize
+  description: For the winner of the Status Hackathon Travel Track
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: status hackathon
+  image: travel_first.svg
+- name: status_hackathon_2018_marketplace_games_second_prize
+  description: For the runner up of the Status Hackathon Game Track
+  description: lorum
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: status hackathon
+  image: games_runner_up.svg
+- name: philosophers_stone
+  description: For whomever makes the greatest contribution to the Status Hackathon Philospher Circle
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: status hackathon
+  image: philosophers.svg
+- name: status_hackathon_2018_travel_social_first_prize
+  description: For the winner of the Status Hackathon Social Track
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: status hackathon
+  image: social_first.svg
+- name: status_hackathon_2018_travel_marketplace_first_prize
+  description: For the winner of the Marketplace Hackathon Social Track
+  description: lorum
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: status hackathon
+  image: market_first.svg
+- name: status_hackathon_2018_marketplace_social_second_prize
+  description: For the runner up of the Status Hackathon Social Track
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: status hackathon
+  image: social_runner_up.svg
+- name: gitcoin_love
+  description: This kudos is for showing appreciation for someone who did some work that you love
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: gitcoin, results
+  image: gitcoin_rasta.svg
+- name: status_hackathon_2018_wildcard
+  description: Winner of the wildcard prize at the Status Hackahton 2018
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: status hackathon
+  image: wildcard.svg
+- name: fast_response
+  description: lorum
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: ipsum
+  image: fast_response.svg
+- name: eth_hacker
+  description: lorum
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: ipsum
   image: eth_hacker2.svg
+- name: backend_architect
+  description: A backend architect is not only the keeper of the ins and outs but also the holder of information and the intricacies of a system.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: architect, plan, backend
+  image: cellarius/backend_architect.svg
+- name: bug_eliminator
+  description: A bug eliminator skill is core to an efficient system or service. They effortlessly remove and resolve any bug with speed.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: bug, squasher, eliminator, problem solver
+  image: cellarius/bug_eliminator.svg
+- name: bug_finder
+  description: These holders are insightful, and easily spot and solve the very hidden problems unseen to the naked eye.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: bug, problem solver, troubleshoot
+  image: cellarius/bug_finder.svg
+- name: lightning_fast
+  description: The holder of this badge needs no introduction. Work is completed quickly as is a flash of lightning. 
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: fast, quick, turnaround, speed
+  image: cellarius/lightning_fast.svg
+- name: oddjobs
+  description: Holders of these badges are highly skilled at many things. Their talents are unlimited and sometimes at odds on the spectrum of skills.
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: skilled, multi-task, well-rounded
+  image: cellarius/oddjobs.svg
+- name: trusted_contributor
+  description: A trusted contributor checks all the boxes of being not only an expert in their domain but reliable and dependable. They thrive on being called upon and fulfilling any tasked mission. 
+  rarity: 20
+  priceFinney: 1
+  numClonesAllowed: 10
+  tags: trusted, developer, contributor, reliable
+  image: cellarius/trusted_contributor.svg
+
+
+
 
