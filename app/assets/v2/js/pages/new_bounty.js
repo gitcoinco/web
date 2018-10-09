@@ -52,7 +52,6 @@ $('#sync-issue').on('click', function(event) {
 });
 
 
-
 $('#issueURL').focusout(function() {
   setInterval(function() {
     $('#last-synced span').html(timeDifference(new Date(), new_bounty.last_sync));
@@ -89,14 +88,14 @@ $(document).ready(function() {
 
 
   $('#switch_quickfund').click(function(event) {
-    if($("#primary_form").hasClass('quickfund')){
-      $("#primary_form").removeClass('quickfund');
-      $(".text-center.title").text(gettext("Fund Issue"));
-      $(this).text(gettext("Switch to QuickFund"));
+    if ($('#primary_form').hasClass('quickfund')) {
+      $('#primary_form').removeClass('quickfund');
+      $('.text-center.title').text(gettext('Fund Issue'));
+      $(this).text(gettext('Switch to QuickFund'));
     } else {
-      $("#primary_form").addClass('quickfund');
-      $(".text-center.title").text(gettext("QuickFund Issue"));
-      $(this).text(gettext("Switch to Advanced Fund"));
+      $('#primary_form').addClass('quickfund');
+      $('.text-center.title').text(gettext('QuickFund Issue'));
+      $(this).text(gettext('Switch to Advanced Fund'));
     }
     event.preventDefault();
   });
