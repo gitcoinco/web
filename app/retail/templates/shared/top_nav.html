@@ -1,0 +1,33 @@
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n static matches %}
+<div class="top-nav">
+  Grow Open Source
+  <a href="/">
+    <img src="{% static "v2/images/top-bar/gitcoin-logo.svg" %}" height="22" alt="">
+  </a>
+  <a class="{% if request.path == '/kudos/' %} selected{% endif %}" href="{% url "kudos_main" %}">
+    <img src="{% static "v2/images/top-bar/codefund-logo.svg" %}" height="22" alt="">
+  </a>
+  <a href="/">
+    <img src="{% static "v2/images/top-bar/kudos-logo.svg" %}" height="22" alt="">
+  </a>
+  <a href="/">
+    <img src="{% static "v2/images/top-bar/grants-logo.svg" %}" height="22" alt="">
+  </a>
+</div>
