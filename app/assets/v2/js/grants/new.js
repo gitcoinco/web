@@ -3,7 +3,6 @@
 $(document).ready(function() {
 
 
-
   $('#js-drop').on('dragover', function(event) {
     event.preventDefault();
     event.stopPropagation();
@@ -16,16 +15,17 @@ $(document).ready(function() {
     $(this).removeClass('is-dragging');
   });
 
-  $("#img-project").on('change', function() {
+  $('#img-project').on('change', function() {
     if (this.files && this.files[0]) {
       var reader = new FileReader();
+
       reader.onload = function(e) {
         $('#preview').attr('src', e.target.result);
         $('#preview').css('width', '100%');
         $('#js-drop span').hide();
         $('#js-drop input').css('visible', 'invisible');
         $('#js-drop').css('padding', 0);
-      }  
+      };
       reader.readAsDataURL(this.files[0]);
     }
   });
@@ -46,6 +46,7 @@ $(document).ready(function() {
     submitHandler: function(form) {
 
       var data = {};
+
       $(form).find(':input:disabled').removeAttr('disabled');
 
       // Begin New Deploy Subscription Contract
@@ -104,6 +105,7 @@ $(document).ready(function() {
   waitforWeb3(function() {
     tokens(document.web3network).forEach(function(ele) {
       let option = document.createElement('option');
+
       option.text = ele.name;
       option.value = ele.addr;
 
