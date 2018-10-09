@@ -20,8 +20,9 @@ import warnings
 
 from django.core.management.base import BaseCommand
 
+from dashboard.models import Profile
 from marketing.mails import quarterly_stats
-from marketing.models import EmailSubscriber
+from marketing.models import EmailSubscriber, LeaderboardRank
 from marketing.utils import get_platform_wide_stats
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -39,40 +40,23 @@ class Command(BaseCommand):
             default=False,
             help='Actually Send the emails'
         )
-        parser.add_argument(
-            '--exclude_startswith',
-            dest='exclude_startswith',
-            type=str,
-            default=None,
-            help="exclude_startswith (optional)",
-        )
-        parser.add_argument(
-            '--filter_startswith',
-            dest='filter_startswith',
-            type=str,
-            default=None,
-            help="filter_startswith (optional)",
-        )
+
 
     def handle(self, *args, **options):
-        exclude_startswith = options['exclude_startswith']
-        filter_startswith = options['filter_startswith']
 
-        queryset = EmailSubscriber.objects.filter(newsletter=True)
-        if exclude_startswith:
-            queryset = queryset.exclude(email__startswith=exclude_startswith)
-        if filter_startswith:
-            queryset = queryset.filter(email__startswith=filter_startswith)
-        queryset = queryset.order_by('email')
-        email_list = set(queryset.values_list('email', flat=True))
+        keys = ['quarterly_earners', 'quarterly_payers']
+        lrs = LeaderboardRank.objects.active().filter(leaderboard__in=keys).order_by('-amount')
+        handles = lrs.values_list("github_username", flat=True)
+        profiles = Profile.objects.filter(handle__in=handles)
+        email_list = profiles.values_list('email', flat=True)
+        email_list = list(set(email_list))
 
-        print('got {len(email_list)} emails')
-
+        print(len(email_list))
         platform_wide_stats = get_platform_wide_stats()
 
         for counter, to_email in enumerate(email_list):
-            print("-sending {counter+1} / {to_email}")
-            if options['live']:
+            print(f"-sending {counter+1} / {to_email}")
+            if options['live'] and to_email:
                 try:
                     quarterly_stats([to_email], platform_wide_stats)
                     time.sleep(1)

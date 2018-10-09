@@ -110,6 +110,7 @@ def render_quarterly_stats(to_email, platform_wide_stats):
     profile = Profile.objects.filter(email=to_email).first()
     quarterly_stats = profile.get_quarterly_stats
     params = {**quarterly_stats, **platform_wide_stats}
+    params['profile'] = profile
     params['subscriber'] = get_or_save_email_subscriber(to_email, 'internal'),
     print(params)
     response_html = premailer_transform(render_to_string("emails/quarterly_stats.html", params))
@@ -795,8 +796,13 @@ def roundup(request):
 @staff_member_required
 def quarterly_roundup(request):
     from marketing.utils import get_platform_wide_stats
+    from dashboard.models import Profile
     platform_wide_stats = get_platform_wide_stats()
     email = settings.CONTACT_EMAIL
+    handle = request.GET.get('handle')
+    if handle:
+        profile = Profile.objects.filter(handle=handle).first()
+        email = profile.email
     response_html, _ = render_quarterly_stats(email, platform_wide_stats)
     return HttpResponse(response_html)
 
