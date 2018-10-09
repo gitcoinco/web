@@ -5,7 +5,7 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
   </head>
-  <body class="interior {{active}} grant">
+  <body class="interior {{active}} grant g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
       {% include 'shared/nav.html' %}
@@ -14,33 +14,46 @@
     <div class="container pt-5">
       <div class="grants-hero">
         <div class="row">
-          <div class="col-12 col-md-6 order-md-last">
+          <div class="col-12 col-md-6 order-md-last mb-5 mb-md-0">
             <div class="embed-responsive embed-responsive-16by9">
               <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/Hx1iJ_K3D8k?rel=0&showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
           </div>
-          <div class="grants-hero__text col-12 col-md-6">
-            <h1 class="grants-hero__title">{% trans 'Dev Grants' %}</h1>
-            <p class="grants-hero__copy">{% blocktrans %}Support Open Source Projects via Gitcoin's new Dev Grants feature; By leveraging <a href="staketree.com">Staketree</a>, Gitcoin is helping facilitate blockchain-based support for some of the best OSS projects in the space. {% endblocktrans %}</p>
-            <a class="button button--primary" href="{% url 'grants:new_grant' %}">{% trans 'Create a Grant' %}</a>
+          <div class="grants-hero__text col-12 col-md-6 offset-lg-1 col-lg-5">
+            <h1 class="grants-hero__title mb-2">{% trans 'Dev Grants' %}</h1>
+            <p class="my-5">
+              {% blocktrans %}
+                Support Open Source Projects via Gitcoin's new Dev Grants feature; By leveraging
+                <a target="_blank" rel="noopener noreferrer" href="staketree.com">
+                  Staketree
+                </a>
+                , Gitcoin is helping facilitate blockchain-based
+                support for some of the best OSS projects in the space.
+              {% endblocktrans %}
+            </p>
+            <a class="button button--primary font-weight-bold" href="{% url 'grants:new_grant' %}">
+              {% trans 'Create a Grant' %}
+            </a>
           </div>
         </div>
       </div>
     </div>
     <div class="container-fluid py-5 my-5 grants-search">
-
       <div class="container">
-        <form action="" class="">
+        <form>
           <div class="row">
             <div class="col-9 col-md-7 form__flex-group">
-              <input type="search" name="" id="" class="form__input">
+              <input type="search" class="form__input">
             </div>
             <div class="col-3 col-md-2">
-              <button class="button button--primary button--full">{% trans 'SEARCH' %}</button>
+              <button class="button button--primary button--full font-weight-bold">
+                {% trans 'SEARCH' %}
+                <i class="fas fa-search ml-2"></i>
+              </button>
             </div>
             <div class="col-12 col-md-3 d-flex justify-content-end">
-              <select name="" id="">
-                <option value="">{% trans 'Sort by date' %}</option>
+              <select>
+                <option>{% trans 'Sort by date' %}</option>
               </select>
             </div>
           </div>

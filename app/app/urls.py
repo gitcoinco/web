@@ -69,10 +69,6 @@ urlpatterns = [
     # grant views
     path('grants/', include('grants.urls', namespace='grants')),
 
-    # path('grant/<int:grant_id>/', dashboard.views.grant_show, name='grant'),
-    # re_path(r'^grants/new/?', dashboard.views.new_grant, name='new_grant'),
-    # re_path(r'^grants/?', dashboard.views.grants, name='grants'),
-
     # dashboard views
 
     # Dummy offchain index
