@@ -1,12 +1,10 @@
 /* eslint-disable no-console */
 window.onload = function() {
 
-<<<<<<< HEAD
+  alert("Just so you know, you will perform two actions in MetaMask on this page!")
+
   // this variable acts as a placeholder for testing
   let token = '0x0000000000000000000000000000000000000000'
-=======
-  let token = '0x0000000000000000000000000000000000000000';
->>>>>>> grants
 
   $('#period').select2();
 
@@ -22,6 +20,7 @@ window.onload = function() {
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;
       });
+
 
       console.log(data);
 
@@ -51,72 +50,88 @@ window.onload = function() {
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address)
 
       // This token is only for testing
-      let deployedToken = new web3.eth.Contract(compiledToken.abi, '0xa00d98FeaEbD194F94af90fDDa163A34DF5dea89')
+      let deployedToken = new web3.eth.Contract(compiledToken.abi, '0xDE8F59cCf00103b4c94492D0cFBc8102941F178e')
 
 
-<<<<<<< HEAD
       deployedToken.methods.decimals().call(function(err, decimals){
 
-          let realTokenAmount = data.amount_per_period*10**decimals
-          let realGasPrice = data.gas_price*10**decimals
+        console.log('decimals', typeof decimals);
 
-          web3.eth.getAccounts(function(err, accounts){
+      let realTokenAmount = Number(data.amount_per_period*10**decimals)
+      let realGasPrice = Number(data.gas_price*10**decimals)
 
-            $('#contributor_address').val(accounts[0])
+        web3.eth.getAccounts(function(err, accounts){
 
-          deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce){
+          console.log('accounts', accounts);
 
-             nonce = parseInt(nonce)+1
+          $('#contributor_address').val(accounts[0])
 
-             const parts = [
-               accounts[0],
-               data.admin_address,
-               data.token_address,
-               web3.utils.toTwosComplement(realTokenAmount),
-               web3.utils.toTwosComplement(periodSeconds),
-               web3.utils.toTwosComplement(realGasPrice),
-               web3.utils.toTwosComplement(nonce)
-             ]
+          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(realTokenAmount)).send({from: accounts[0]}, function(err, result){
 
-             deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash){
+            // Should add approval transactions to transaction history
+            console.log('result', result);
 
-               $('#subscription_hash').val(subscriptionHash)
+              deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce){
+
+                console.log('nonce1', nonce);
+
+                nonce = parseInt(nonce)+1
+
+                console.log('nonce', nonce);
+
+                const parts = [
+                  accounts[0],
+                  data.admin_address,
+                  '0xDE8F59cCf00103b4c94492D0cFBc8102941F178e',
+                  web3.utils.toTwosComplement(realTokenAmount),
+                  web3.utils.toTwosComplement(periodSeconds),
+                  web3.utils.toTwosComplement(realGasPrice),
+                  web3.utils.toTwosComplement(nonce)
+                ]
+
+                deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash){
+
+                  $('#subscription_hash').val(subscriptionHash)
 
                   web3.eth.personal.sign(""+subscriptionHash, accounts[0], function(err, signature){
 
                     $('#signature').val(signature)
 
-                 let postData = {
-                   subscriptionContract: data.contract_address,
-                   parts:parts,
-                   subscriptionHash: subscriptionHash,
-                   signature:signature,
-                 }
+                    let postData = {
+                      subscriptionContract: data.contract_address,
+                      parts:parts,
+                      subscriptionHash: subscriptionHash,
+                      signature:signature,
+                    }
 
-                 fetch('http://localhost:10003/saveSubscription', {
-                   method: 'POST',
-                   headers: {
-                     'Content-Type': 'application/json',
-                   },
-                   body: JSON.stringify({
-                     postData
-                   })
-                 }).then((response)=>{
-                   console.log("TX RESULT",response)
+                    fetch('http://localhost:10003/saveSubscription', {
+                      method: 'POST',
+                      headers: {
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify({
+                        postData
+                      })
+                    }).then((response)=>{
+                      console.log("TX RESULT",response)
 
-                   $.each($(form).serializeArray(), function() {
-                     data[this.name] = this.value;
-                   });
+                      $.each($(form).serializeArray(), function() {
+                        data[this.name] = this.value;
+                      });
 
-                   $(form).submit();
-                 })
-                 .catch((error)=>{
-                   console.log(error);
-                 });
+                      $(form).submit();
+                    })
+                    .catch((error)=>{
+                      console.log(error);
+                    });
 
-               })
-             })
+                  })
+                })
+              })
+
           })
+
+
         })
       })
 
@@ -130,80 +145,5 @@ window.onload = function() {
 
     }
   })
-=======
-      deployedToken.decimals.call(function(err, decimals) {
 
-      // console.log(bignumber);
-        let decimalsNumber = decimals.toNumber();
-        //
-        let realTokenAmount = data.amount_per_period * 10 ** decimalsNumber;
-        let realGasPrice = data.gas_price * 10 ** decimalsNumber;
-        //
-
-        deployedSubscription.extraNonce.call(web3.eth.accounts[0], function(err, nonce) {
-
-          nonce = parseInt(nonce) + 1;
-
-          const parts = [
-            web3.eth.accounts[0],
-            data.admin_address,
-            data.token_address,
-            realTokenAmount,
-            periodSeconds,
-            realGasPrice,
-            nonce
-          ];
-
-          deployedSubscription.getSubscriptionHash.call(...parts, function(err, subscriptionHash) {
-
-            console.log('subscriptionHash', typeof (subscriptionHash));
-
-            web3.eth.sign(web3.eth.accounts[0], '' + subscriptionHash, function(err, signature) {
-
-              console.log('signature', signature);
-
-
-              let postData = {
-                subscriptionContract: data.contract_address,
-                parts: parts,
-                subscriptionHash: subscriptionHash,
-                signature: signature
-              };
-
-              console.log('postData', JSON.stringify({
-                postData
-              }));
-
-              fetch('http://localhost:10003/saveSubscription', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                  postData
-                })
-              }).then((response)=>{
-                console.log('TX RESULT', response);
-              })
-                .catch((error)=>{
-                  console.log(error);
-                });
-            });
-
-          });
-        });
-
-      });
-    }
-
-    // instantiate contract
-    // get data from grant and inputs
-    // getSubscriptionHash from contract_address
-    // create Signature
-    // submit Signature
-    // save data and signature
-
-
-  });
->>>>>>> grants
 };

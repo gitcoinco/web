@@ -41,15 +41,7 @@
         {% csrf_token %}
         <div class="row bottom-buffer">
           <div class="form__group-horizontal">
-            <label class="form__label">{% trans "Token Approval Limit" %}</label>
-            <div class="row">
-              <div class="col-8">
-                <input type="number" name="approve" class="form__input" required />
-              </div>
-            </div>
-          </div>
-          <div class="form__group-horizontal">
-            <label class="form__label">{% trans "Contribution Per Period" %}</label>
+            <label class="form__label">{% trans "Contribution per Period" %}</label>
             <div class="row">
               <div class="col-4">
                 <input type="number" name="amount_per_period" class="form__input" required />
@@ -75,6 +67,7 @@
               <button class="button button--primary button--full">{% trans "Contribute" %}</button>
             </div>
           </div>
+
           <div class="col-4">
             <div class="form__group-horizontal">
               <!-- <label class="form__label">{% trans "Select period:" %}</label>
@@ -131,14 +124,16 @@
           <input type="hidden" id="admin_address" name="admin_address" value="{{ grant.admin_address }}">
           <input type="hidden" id="token_address" name="token_address" value="{{ grant.token_address }}">
           <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
-          <input type="hidden" id="network" name="network" value="{{grant.network}}">
-          <input type="hidden" id="subscription_hash" name="subscription_hash" value="">
-          <input type="hidden" id="signature" name="signature" value="">
-          <input type="hidden" id="contributor_address" name="contributor_address" value="">
-          <input type="hidden" id="gas_price" name="gas_price" value="">
         </div>
       </form>
     </div>
+
+      <div>
+        <input type="hidden" id="grant_id" name="grant_id" value="{{grant.id}}">
+      </div>
+
+  </form>
+</div>
 
 {% include 'shared/bottom_notification.html' %}
 {% include 'shared/analytics.html' %}
