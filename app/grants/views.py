@@ -107,16 +107,14 @@ def fund_grant(request, grant_id):
 
         print("it fired")
 
-        # subscriptionHash and ContributorSignature will be given from smartcontracts and web3
-        # subscription.subscriptionHash = request.POST.get('input-name')
-        # subscription.contributorSignature = request.POST.get('description')
-        # Address will come from web3 instance
-        # subscription.contributorAddress = request.POST.get('reference_url')
+
+        subscription.subscriptionHash = request.POST.get('subscription_hash')
+        subscription.contributorSignature = request.POST.get('signature')
+        subscription.contributorAddress = request.POST.get('contributor_address')
         subscription.amount_per_period = request.POST.get('amount_per_period')
-        # subscription.tokenAddress = request.POST.get('denomination')
+        subscription.tokenAddress = request.POST.get('token_address')
         subscription.gas_price = request.POST.get('gas_price')
-        # network will come from web3 instance
-        # subscription.network = request.POST.get('amount_goal')
+        subscription.network = request.POST.get('network')
         subscription.contributor_profile = profile
         subscription.grant = grant
 
