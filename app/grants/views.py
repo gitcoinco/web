@@ -1,22 +1,36 @@
-import json
-from django.core.serializers.json import DjangoJSONEncoder
+# -*- coding: utf-8 -*-
+"""Define the Grant views.
 
+Copyright (C) 2018 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
+import json
 import logging
 
-logger = logging.getLogger(__name__)
-
+from django.conf import settings
+from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 
+from grants.models import Grant, Subscription
 from marketing.models import Keyword
-from django.conf import settings
-from django.http import JsonResponse
-from django.shortcuts import redirect
-from django.views.decorators.csrf import csrf_exempt
 from web3 import HTTPProvider, Web3
-from .models import Grant, Subscription
 
-# web3.py instance
+logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
+
 
 def grants(request):
     """Handle grants explorer."""
@@ -32,6 +46,7 @@ def grants(request):
 
 
 def grant_show(request, grant_id):
+    """Display a grant."""
     grant = Grant.objects.get(pk=grant_id)
 
     params = {
@@ -42,18 +57,13 @@ def grant_show(request, grant_id):
     }
     return TemplateResponse(request, 'grants/show.html', params)
 
+
 def new_grant(request):
     """Handle new grant."""
-    profile_id = request.session.get('profile_id')
     profile = request.user.profile if request.user.is_authenticated else None
-
-    print('request', request.POST)
 
     if request.method == "POST":
         grant = Grant()
-
-        print('request', request.POST)
-
         grant.title = request.POST.get('input-name')
         grant.description = request.POST.get('description')
         grant.reference_url = request.POST.get('reference_url')
@@ -65,17 +75,11 @@ def new_grant(request):
         grant.transaction_hash = request.POST.get('transaction_hash')
         grant.contract_address = request.POST.get('contract_address')
         grant.network = request.POST.get('network')
-
         grant.admin_profile = profile
-        # grant.teamMemberProfiles = Need to do a profile search based on enetered emails
-
         grant.save()
-
         return redirect(f'/grants/{grant.pk}')
 
-    else:
-        grant = {}
-
+    grant = {}
     params = {
         'active': 'grants',
         'title': 'New Grant',
@@ -86,14 +90,9 @@ def new_grant(request):
     return TemplateResponse(request, 'grants/new.html', params)
 
 
-
-
 def fund_grant(request, grant_id):
     """Handle grant funding."""
-    # import ipdb; ipdb.set_trace()
     grant = Grant.objects.get(pk=grant_id)
-
-    profile_id = request.session.get('profile_id')
     profile = request.user.profile if request.user.is_authenticated else None
 
     print("this is the username:", profile)
@@ -101,12 +100,8 @@ def fund_grant(request, grant_id):
     print("this is the web3 instance", w3.eth.account)
 
     # make sure a user can only create one subscription per grant
-
     if request.method == "POST":
         subscription = Subscription()
-
-        print("it fired")
-
         # subscriptionHash and ContributorSignature will be given from smartcontracts and web3
         # subscription.subscriptionHash = request.POST.get('input-name')
         # subscription.contributorSignature = request.POST.get('description')
@@ -119,12 +114,9 @@ def fund_grant(request, grant_id):
         # subscription.network = request.POST.get('amount_goal')
         subscription.contributor_profile = profile
         subscription.grant = grant
-
-
         subscription.save()
     else:
         subscription = {}
-
 
     params = {
         'active': 'dashboard',
@@ -133,15 +125,11 @@ def fund_grant(request, grant_id):
         'grant': grant,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
-
-
     return TemplateResponse(request, 'grants/fund.html', params)
 
-def cancel_subscription(request, subscription_id):
-    """Handle Cancelation of grant funding"""
-    profile_id = request.session.get('profile_id')
-    profile = request.user.profile if request.user.is_authenticated else None
 
+def cancel_subscription(request, subscription_id):
+    """Handle Cancelation of grant funding."""
     subscription = Subscription.objects.get(pk=subscription_id)
     grant = subscription.grant
 
@@ -149,13 +137,8 @@ def cancel_subscription(request, subscription_id):
     print("this is the grant:", grant)
 
     if request.method == "POST":
-
         subscription.status = False
-
         subscription.save()
-    # else:
-        # subscription = {}
-
 
     params = {
         'title': 'Fund Grant',
