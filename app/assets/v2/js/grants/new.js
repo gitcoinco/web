@@ -2,8 +2,6 @@
 
 $(document).ready(function() {
 
-  console.log('1', web3.eth.coinbase);
-  console.log('network', web3.version.network);
 
 
   $('#js-drop').on('dragover', function(event) {
@@ -18,6 +16,20 @@ $(document).ready(function() {
     $(this).removeClass('is-dragging');
   });
 
+  $("#img-project").on('change', function() {
+    if (this.files && this.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        $('#preview').attr('src', e.target.result);
+        $('#preview').css('width', '100%');
+        $('#js-drop span').hide();
+        $('#js-drop input').css('visible', 'invisible');
+        $('#js-drop').css('padding', 0);
+      }  
+      reader.readAsDataURL(this.files[0]);
+    }
+  });
+
   $('#js-drop').on('drop', function(event) {
     if (event.originalEvent.dataTransfer.files.length) {
       event.preventDefault();
@@ -27,7 +39,6 @@ $(document).ready(function() {
   });
 
   $('.js-select2').each(function() {
-
     $(this).select2();
   });
 
@@ -35,16 +46,11 @@ $(document).ready(function() {
     submitHandler: function(form) {
 
       var data = {};
-      var disabled = $(form)
-        .find(':input:disabled')
-        .removeAttr('disabled');
-
+      $(form).find(':input:disabled').removeAttr('disabled');
 
       // Begin New Deploy Subscription Contract
 
       let bytecode = compiledSubscription.bytecode;
-
-
       let SubscriptionContract = web3.eth.contract(compiledSubscription.abi);
 
       SubscriptionContract.new(data.admin_address, data.token_address, data.amount_goal, data.frequency, data.gas_price, {
@@ -59,8 +65,6 @@ $(document).ready(function() {
 
           if (!subscriptionContract.address) {
             console.log(subscriptionContract.transactionHash);
-
-
           } else {
             console.log(subscriptionContract.address);
 
@@ -73,14 +77,10 @@ $(document).ready(function() {
             });
 
             console.log(data);
-
             form.submit();
-
-
           }
         }
       });
-
     }
   });
 
@@ -90,20 +90,20 @@ $(document).ready(function() {
     var milestones = $('.milestone-form .row');
     var milestoneId = milestones.length || 1;
 
-    $('.milestone-form').append('<div class="row" id="milestone' + milestoneId + '">' +
-      '<div class="col-12">\n' +
-      '<input type="text" class="form__input" placeholder="Title" name="milestone-title[' + milestoneId + ']" required/>' +
-      '<input type="date" class="form__input" placeholder="Date" name="milestone-date[' + milestoneId + ']" required/>' +
-      '<textarea class="form__input" type="text" placeholder="Description" name="milestone-description[' + milestoneId + ']" required></textarea>' +
-      '</div>' +
-      '</div>');
+    $('.milestone-form').append(
+      '<div class="row" id="milestone' + milestoneId + '">' +
+        '<div class="col-12">\n' +
+          '<input type="text" class="form__input" placeholder="Title" name="milestone-title[' + milestoneId + ']" required/>' +
+          '<input type="date" class="form__input" placeholder="Date" name="milestone-date[' + milestoneId + ']" required/>' +
+          '<textarea class="form__input" type="text" placeholder="Description" name="milestone-description[' + milestoneId + ']" required></textarea>' +
+        '</div>' +
+      '</div>'
+    );
   });
 
   waitforWeb3(function() {
-
     tokens(document.web3network).forEach(function(ele) {
-      var option = document.createElement('option');
-
+      let option = document.createElement('option');
       option.text = ele.name;
       option.value = ele.addr;
 
@@ -115,6 +115,4 @@ $(document).ready(function() {
 
     $('#js-token').select2();
   });
-
-
 });
