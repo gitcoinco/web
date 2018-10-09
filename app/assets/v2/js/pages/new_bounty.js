@@ -60,9 +60,7 @@ $('#issueURL').focusout(function() {
 
   if ($('input[name=issueURL]').val() == '' || !validURL($('input[name=issueURL]').val())) {
     $('#issue-details, #issue-details-edit').hide();
-    if(!$("#primary_form").hasClass('quickfund')){
-      $('#no-issue-banner').show();
-    }
+    $('#no-issue-banner').show();
 
     $('#title').val('');
     $('#description').val('');
@@ -72,9 +70,7 @@ $('#issueURL').focusout(function() {
   } else {
     $('#no-issue-banner').hide();
     $('#edit-issue').attr('href', $('input[name=issueURL]').val());
-    if(!$("#primary_form").hasClass('quickfund')){
-      $('#issue-details, #issue-details-edit').show();
-    }
+    $('#issue-details, #issue-details-edit').show();
 
     $('#sync-issue').removeClass('disabled');
     $('.js-submit').removeClass('disabled');

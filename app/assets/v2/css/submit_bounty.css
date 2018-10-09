@@ -135,5 +135,5 @@ textarea:read-only {
 }
 
 .quickfund .hide_if_quickfund{
-  display: none;
+  display: none !important;
 }
