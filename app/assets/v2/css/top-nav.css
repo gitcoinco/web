@@ -6,6 +6,7 @@
   align-items: center;
   justify-content: center;
   flex-basis: 100%;
+  max-height: 43px;
 }
 
 .top-nav a {
