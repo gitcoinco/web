@@ -21,6 +21,10 @@
 
 .top-nav a:hover img,
 .top-nav a.selected img {
+  opacity: 1;
+}
+
+.top-nav a:hover img {
   filter: grayscale(0);
   opacity: 1;
 }

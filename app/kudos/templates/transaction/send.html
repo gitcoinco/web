@@ -43,8 +43,8 @@
       <a href="{% url "tip" %}">
       </a>
     </span> -->
-    <img src="{% static "v2/images/helmet.png" %}" class="bg-white mh-100 mw-100 mx-auto p-2" width="70"/>
-    <h1 class="h2">{% trans "Send Kudos" %}</h1>
+    <!-- <img src="{% static "v2/images/helmet.png" %}" class="bg-white mh-100 mw-100 mx-auto p-2" width="70"/> -->
+    <h1 class="h2 mt-5">{% trans "Send Kudos" %}</h1>
 
     <div class="my-4">
       {% if kudos.name %}
@@ -63,7 +63,6 @@
         </svg>
       </a>
       <span class="d-block">Pick a Kudos</span>
-      <span class="d-block">0 ETH <small></small></span>
       {% endif %}
     </div>
 
