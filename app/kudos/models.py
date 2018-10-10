@@ -46,7 +46,7 @@ class Token(SuperModel):
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=510)
     image = models.CharField(max_length=255, null=True)
-    rarity = models.IntegerField()
+    rarity = models.CharField(max_length=255, null=True)
     tags = models.CharField(max_length=255, null=True)
 
     external_url = models.CharField(max_length=255, null=True)

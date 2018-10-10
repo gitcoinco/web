@@ -2,37 +2,47 @@
   description: You are a Master of MapReduce, a sultan of reliable, distributed, and
     scalable computing.  Owners of this badge are infamous for their command of distributing
     processing of large data sets!
-  rarity: 25
   priceFinney: 2
   numClonesAllowed: 500
-  tags: hadoop, distributed, scalable, data
+  tags:
+  - hadoop
+  - distributed
+  - scalable
+  - data
   image: hadoop_admiral.svg
 - name: linux_wizard
   description: All hail the Linux Penguin!  Linux is a force in open source, powering
     millions of websites and businesses.  Owners of this badge are known for their
     mastery of the Linux family of Operating Systems!
-  rarity: 25
   priceFinney: 3
   numClonesAllowed: 500
-  tags: linux, open source, penguin, OS
+  tags:
+  - linux
+  - open source
+  - penguin
+  - OS
   image: linux_wizard.svg
 - name: gitcoin_genesis
   description: The Gitcoin Genesis Badge is the rarest of the Gitcoin team badges.  Owners
     of this badge contributed to Gitcoin in a meaningful way in the way-back-when.
-  rarity: 100
   priceFinney: 2000
   numClonesAllowed: 450
-  tags: gitcoin, genesis, rare
+  tags:
+  - gitcoin
+  - genesis
+  - rare
   image: gitcoin_genesis.svg
 - name: javascript_master_scriber
   description: Remember the web in the days before javascript?  No?  Neither can we!  Javascript
     powers the modern web, top to bottom and we <3 the usage of javascript here at
     Gitcoin.  Owners of this badge are masters of the asyncronous, event driven, programming
     language and specifically, of client side scripting!
-  rarity: 15
   priceFinney: 3
   numClonesAllowed: 500
-  tags: javascript, node, web
+  tags:
+  - javascript
+  - node
+  - web
   image: javascript_master_scriber.svg
 - name: infrastructure_ninja
   description: Just like every building needs a solid foundation, every website needs
@@ -40,251 +50,309 @@
     are omnipresent -- Quickly tackling the gnarly infrastructure issues that crop
     up in the modern web, and ensuring stability, peace, performance, and prosperity
     for inhabinants the modern web.
-  rarity: 23
   priceFinney: 2
   numClonesAllowed: 300
-  tags: OS, infrastructure, linux
+  tags:
+  - OS
+  - infrastructure
+  - linux
   image: infrastructure_ninja.svg
 - name: java_doctor
   description: Is there anything better than a cup 'o' Joe in the morning? Java can
     be written once and run everywhere; so what better tool to BUIDL on in the modern,
     blockchain-enabled, web?  Owners of the Java Doctor badge are famous for their
     mastery of the Java programming language!
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: java, web, sun
+  tags:
+  - java
+  - web
+  - sun
   image: java_doctor.svg
 - name: do_more_faster
   description: Is there anything better than working with someone who can rapidly
     iterate?  The modern web is built by Agile, and favors experimentation and iteration.  Owners
     of the Do More Faster badge, well, they DO MORE FASTER!
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: do more faster, iteration, hypothesis testing, soft skills
+  tags:
+  - do more faster
+  - iteration
+  - hypothesis testing
+  - soft skills
   image: do_more_faster.svg
 - name: jquery_fixer
   description: jQuery is a force in the modern web.  By solving compatibilty issues
     across browsers, and providing a friendly interface for developing AJAX websites,
     jQuery won our <3s.  To owners of this badge, thank you for using jQuery to provide
     Fixes to all!
-  rarity: 25
   priceFinney: 2
   numClonesAllowed: 800
-  tags: jquery, javascript, web, MVC
+  tags:
+  - jquery
+  - javascript
+  - web
+  - MVC
   image: jquery_fixer.svg
 - name: elixer_mixer
   description: Elixer Mixers are known for their alchemy.  Just as a chemist combines
     fundamental chemical primitives to create potions that are near-magic, an Elixer
     Mixer combines functional programming with the Erlang VM to to produce low-latency,
     fault tolerant, systems!
-  rarity: 45
   priceFinney: 2
   numClonesAllowed: 250
-  tags: elixer, erlang, functional
+  tags:
+  - elixer
+  - erlang
+  - functional
   image: elixer_mixer.svg
 - name: collaboration_machine
   description: Is there anything better than working with a collaboration machine?  Known
     for their communication skills, rapid value delivery, and great attitudes, Collaboration
     Machines are a huge asset to the modern programming ecosystem!
-  rarity: 15
-  priceFinney: 1
+  priceFinney: 2
   numClonesAllowed: 300
-  tags: collaboration, soft skills
+  tags:
+  - collaboration
+  - soft skills
   image: collaboration_machine.svg
 - name: unix_philosophy
   description: Owners of this badge 'Write programs that do one thing and do it well';
     just like the UNIX OS!
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: unix, build once, OS
+  tags:
+  - unix
+  - build once
+  - OS
   image: unix_philosophy.svg
 - name: ruby_gem
   description: Is there anyone who knows more about 'gem's than someone who's good
     enough at Ruby, to be a 'Gem' themselves? Owners of this badge are known for their
     mastery of the Ruby programming language.
-  rarity: 10
   priceFinney: 5
   numClonesAllowed: 550
-  tags: rails, ruby, web, MVC, DRY
+  tags:
+  - rails
+  - ruby
+  - web
+  - MVC
+  - DRY
   image: ruby_gem.svg
 - name: angular_royalty
   description: AngularJS is a great extension of javsacript, and we love how it lets
-    use declare dynamic views for our dApps!  Owners of this badge are royalty of
+    us declare dynamic views for our dApps!  Owners of this badge are royalty of
     the AngularJS programming framework!
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: angular, javascript, mvc, web
+  tags:
+  - angular
+  - javascript
+  - mvc
+  - web
   image: angular_royalty.svg
 - name: qa_ninja
   description: Rarely heard or seen, the modern QA Ninja is a hyper-efficient finder
     and reporter of bugs.  Got a number input on an HTML form?  They'll find a way
     to type 'LIZARD' into it?  Buffer overflow somewhere in your dApp?  They'll find
     it.  QA Ninjas make the web bug free, and we salute them!
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 700
-  tags: qa, ninja, bugs, bug squasher
+  tags:
+  - qa
+  - ninja
+  - bugs
+  - bug squasher
   image: qa_ninja.svg
 - name: code_shipper
   description: Know who we LOVE working with?  Programmers who are always shipping
     code!  Always. Be. Shipping.
-  rarity: 25
   priceFinney: 2
   numClonesAllowed: 500
-  tags: shipping, soft skills
+  tags:
+  - shipping
+  - soft skills
   image: code_shipper.svg
 - name: drupal_brainiac
   description: Want to ship content on the modern web?  Drupal is where it's at.  The
     leading Open Source CMS has provided tons of value to the modern web, and adding
     a Drupal Brainiac to your project is a sure fire way to make your CMS fly!
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: drupal, CMS, web
+  tags:
+  - drupal
+  - CMS
+  - web
   image: drupal_brainiac.svg
 - name: ruby_on_rails_master
   description: Can anyone spin up websites faster than a Ruby on Rails Master? Owners
     of this badge are legitimately famous for their mastery of MVC website development,
     DRY, and use of Active Record.
-  rarity: 20
   priceFinney: 4
   numClonesAllowed: 200
-  tags: rails, ruby, web, MVC, DRY
+  tags:
+  - rails
+  - ruby
+  - web
+  - MVC
+  - DRY
   image: ruby_on_rails_master.svg
 - name: open_source_freedom_fighter
   description: Hey, look -- In the sky, it's a bird.  No it's a plane.  No it's an
     Open Source Freedom Fighter!  OSS Freedom Fighters fight for liberty, justice,
     and open source code for all!
-  rarity: 50
   priceFinney: 2
   numClonesAllowed: 500
-  tags: oss, soft skills
+  tags:
+  - oss
+  - soft skills
   image: open_source_freedom_fighter.svg
 - name: mega_open_collaborator
   description: '"Be open to the point of promiscuity" is one of our favorite points
     from the famous essay from Eric Raymond entitled "The Cathedral and the Bazaar".  Owners
     of this badge embody the principle of Openness from the Cathedral and the Bazaar.'
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: soft skills, open
+  tags:
+  - soft skills
+  - open
   image: mega_open_collaborator.svg
 - name: problem_solver
   description: Is there anything better than working with someone who can rapidly
     solve problems?  The modern web is built by Agile, and favors experimentation
     and iteration.  Owners of this badge, well, they SOLVE PROBLEMS!
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: soft skills
+  tags:
+  - soft skills
   image: problem_solver.svg
 - name: sustainer
   description: Open Source Software is fraught with problems with sustainability.  Owners
     of this badge are fighting to change to tide and to make Open Source Software
     sustainable for generations to come!
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: soft skills, sustainer, open source
+  tags:
+  - soft skills
+  - sustainer
+  - open source
   image: sustainer.svg
 - name: super_juggler
   description: Jugglers are known for their joyous attitude and their ability to manage
     multiple balls in the air at once.  Owners of this badge can contribute meaningfully
     to several projects at once and not let a single one drop!
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: soft skills, project management
+  tags:
+  - soft skills
+  - project management
   image: super_juggler.svg
 - name: above_and_beyond
   description: Owners of this badge are always under-promising and over-delivering.  They
     go 'above and beyond' for their clients!
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: soft skills, project management
+  tags:
+  - soft skills
+  - project management
   image: above_and_beyond.svg
 - name: new_dawn
   description: Owners of this badge have completely changed the course of a project
     their on, with their skills, organization, tenacity and sheer ability to deliver.
-  rarity: 70
   priceFinney: 2
   numClonesAllowed: 50
-  tags: soft skills, momentum
+  tags:
+  - soft skills
+  - momentum
   image: new_dawn.svg
 - name: design_star
   description: Know that feeling early in a project when you're just putting pencil
     to paper, figuring out what things are going to look like?  Owners of this badge
     at Design Stars, delivering tons of value on aesthetics, UX, and otherwise shaping
     the very projects they work on!
-  rarity: 40
   priceFinney: 2
   numClonesAllowed: 350
-  tags: design, star, aesthetics, ux
+  tags:
+  - design
+  - star
+  - aesthetics
+  - ux
   image: design_star.svg
 - name: handyman
   description: Its great to have a handy man around your house when your sink, plumbing,
     electricity, breaks.  Owners of this badge are digital handymen and handywomen.  They
     fix stuff, and do it with a smile on their face!
-  rarity: 30
   priceFinney: 2
   numClonesAllowed: 210
-  tags: soft skills, programmer, technical, handyman
+  tags:
+  - soft skills
+  - programmer
+  - technical
+  - handyman
   image: handyman.svg
 - name: handy_woman
-  description: Its great to have a someone handy around your house when your sink, plumbing,
-    electricity, breaks.  Owners of this badge are digital handymen and handywomen.  They
-    fix stuff, and do it with a smile on their face!
-  rarity: 30
+  description: Its great to have a someone handy around your house when your sink,
+    plumbing, electricity, breaks.  Owners of this badge are digital handymen and
+    handywomen.  They fix stuff, and do it with a smile on their face!
   priceFinney: 2
   numClonesAllowed: 210
-  tags: soft skills, programmer, technical, handywoman
+  tags:
+  - soft skills
+  - programmer
+  - technical
+  - handywoman
   image: handy_woman.svg
 - name: data_savvy
   description: Being Data-Driven is an asset in today's world.  Owners of this badge
     have mastered the abiltiy to gather, cultivate, clean, gain insight, and deliver
     value from a dataset
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: data, graphs, charts
+  tags:
+  - data
+  - graphs
+  - charts
   image: data_savvy.svg
 - name: idea_person
   description: Idea people create value and warmth with the sheer radiance of their
     ideas.  They think outside the box, they combine left-brain and right brain.  They
     deliver value by thinking about things in a new way.
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: soft skills, ideas, project manager, product manager
+  tags:
+  - soft skills
+  - ideas
+  - project manager
+  - product manager
   image: idea_person.svg
 - name: always_shipping
   description: Know who we LOVE working with?  Programmers who are always shipping
     code!  Always. Be. Shipping.
-  rarity: 20
   priceFinney: 5
   numClonesAllowed: 500
-  tags: shipping, SHIPL, soft skils
+  tags:
+  - shipping
+  - SHIPL
+  - soft skils
   image: always_shipping.svg
 - name: c_sharp_programmer
   description: Need someone who uses strong typing, declarative, functional, code?  Look
     no further than the owners of the C# Blacksmith Kudos!
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: c#, programmer
+  tags:
+  - c#
+  - programmer
   image: c_sharp_programmer.svg
 - name: cleanest_code
   description: Want to work with someone who is famous for having squeaky clean code?  Look
     no further than owners of the 'Cleanest Code' Kudos.
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: clean code, programmer, soft skills
+  tags:
+  - clean code
+  - programmer
+  - soft skills
   image: cleanest_code.svg
 - name: relase_early_and_often
   description: Want to work with someone who RERO (Relase Early and Often)? RERO is
@@ -292,787 +360,942 @@
     frequent releases.  This creates a tight feedback looop between devs and testers.  Want
     someone who releases frequently?  Owners of this badge are who you'll want to
     talk to!
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 300
-  tags: iteration, release early, RERO, soft skills
+  tags:
+  - iteration
+  - release early
+  - RERO
+  - soft skills
   image: release_early_and_often.svg
 - name: grow_open_source
   description: Owners of this Kudos embody Gitcoin's mission of 'Grow Open Source'
-  rarity: 60
   priceFinney: 2
   numClonesAllowed: 200
-  tags: mission, open source, sustainer
+  tags:
+  - mission
+  - open source
+  - sustainer
   image: grow_open_source.svg
 - name: mongo_db_programmer
   description: Want someone who can work efficiently with MongoDB?  Look no further
     than owners of this badge.
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: mongodb, db
+  tags:
+  - mongodb
+  - db
   image: mongo_db_programmer.svg
 - name: navigator
   description: Want to work with someone who can navigate through complexity and deliver
     on-time, on-scope, and on-budget?  Look no further than owneres of this kudos!
-  rarity: 30
   priceFinney: 4
   numClonesAllowed: 300
-  tags: navigator, project management, soft skills
+  tags:
+  - navigator
+  - project management
+  - soft skills
   image: direct.svg
 - name: fast_turn_around
   description: Want someone who ships deliverables quick?  Owners of this 'fast turnaround'
     kudos are the first place to look!
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: soft skills, fast, quick
+  tags:
+  - soft skills
+  - fast
+  - quick
   image: fast_turn_around.svg
 - name: css_gentle(wo)man
   description: CSS is one of the foundations of the modern web.  Owners of this badge
     are masters of building beautiful, mobile-friendly, products.
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: css, frontend, html
+  tags:
+  - css
+  - frontend
+  - html
   image: css_gentle(wo)man.svg
 - name: night_owl
   description: Owners of this badge always seem to be up at night, SHIPling product
     to customers.
-  rarity: 50
   priceFinney: 2
   numClonesAllowed: 200
-  tags: night owl, quirks
+  tags:
+  - night owl
+  - quirks
   image: night_owl.svg
 - name: php_superstar
   description: PHP -- The og web developers programming language!  Know whats cool
     about PHP?  It's a recursive acronym, "PHP Hypertext Processor".  Want a PHP programmer
     for your project? Look no further than to owners of this badge!
-  rarity: 15
   priceFinney: 2
   numClonesAllowed: 200
-  tags: php, programmer, php6, php7
+  tags:
+  - php
+  - programmer
+  - php6
+  - php7
   image: php_superstar.svg
 - name: builder_of_a_better_world
   description: Owners of this badge are obsessed with BUIDLing a better world than
     what came before them.  We salute them for their dedication to making things better.
-  rarity: 60
   priceFinney: 10
   numClonesAllowed: 500
-  tags: soft skills, inspiration
+  tags:
+  - soft skills
+  - inspiration
   image: builder_of_a_better_world.svg
 - name: c_debugger
   description: Need a programmer for your performant, object oriented, project that
     can manage their own memory and manage on-scope and on-budget!? Look no further;
     Owners of this badge are renown for their work in the C programming language.
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 300
-  tags: c, memory management, programming
+  tags:
+  - c
+  - memory management
+  - programming
   image: c_debugger.svg
 - name: redux_programmer
   description: Need someone who can deliver value in Redux?  Owners of this badge
     are renown for their ability to work effciently in Redux.
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 200
-  tags: redux, react
+  tags:
+  - redux
+  - react
   image: redux_programmer.svg
 - name: ruby_on_rails_machine
   description: Can anyone spin up websites faster than a Ruby on Rails hacker? Owners
     of this badge are famous for their mastery of MVC website development, DRY, and
     use of Active Record.
-  rarity: 10
   priceFinney: 5
   numClonesAllowed: 550
-  tags: rails, ruby, web, MVC, DRY
+  tags:
+  - rails
+  - ruby
+  - web
+  - MVC
+  - DRY
   image: ruby_on_rails_machine.svg
 - name: helping_hand
   description: Need a helping hand for your project.  Start with an owner of this
     'Helping Hand' badge!
-  rarity: 90
   priceFinney: 2
   numClonesAllowed: 50
-  tags: helping hand, soft skills, helpful
+  tags:
+  - helping hand
+  - soft skills
+  - helpful
   image: helping_hand.svg
 - name: node_js_wizard
   description: Remember the bad old days in the web before javascript?  Javascript
     powers the modern web, top to bottom and we <3 the usage of javascript here at
     Gitcoin.  Owners of this badge are masters of the asyncronous, event driven, programming
     language and specifically, of server side scripting!
-  rarity: 30
   priceFinney: 4
   numClonesAllowed: 300
-  tags: javascript, nodeJS, node, asyncronous
+  tags:
+  - javascript
+  - nodeJS
+  - node
+  - asyncronous
   image: node_js_wizard.svg
 - name: c++_scientist
   description: Need a programmer for your performant, object oriented, project that
     can manage their own memory and manage on-scope and on-budget!? Look no further;
     Owners of this badge are renown for their work in the C++ programming language.
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 300
-  tags: c++, c, memory management, programming
+  tags:
+  - c++
+  - c
+  - memory management
+  - programming
   image: c++_scientist.svg
 - name: pythonista
   description: Pythonistas are loyal users of the Python programming language.
-  rarity: 40
   priceFinney: 2
   numClonesAllowed: 300
-  tags: python, pythonista
+  tags:
+  - python
+  - pythonista
   image: pythonista.svg
 - name: level_up
   description: Owners of this badge are known for their ability to Level Up the teams
     and projects they work on
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: soft skills, programmer
+  tags:
+  - soft skills
+  - programmer
   image: level_up.svg
 - name: delegation_machine
   description: Owners of this badge are known for their ability to clearly articulate
     requirements, to work with collaborators of all types, and to product value in
     a team atmosphere!
-  rarity: 70
   priceFinney: 5
   numClonesAllowed: 300
-  tags: delegate, team, soft skills
+  tags:
+  - delegate
+  - team
+  - soft skills
   image: delegation_machine.svg
 - name: arts_and_farts
   description: Need someone who is going to create beautiful designs of any kind?  Check
     out the owners of the 'Arts and Farts' Kudos.
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 100
-  tags: arts, design, frontend, aesthetics
+  tags:
+  - arts
+  - design
+  - frontend
+  - aesthetics
   image: arts_and_farts.svg
 - name: react_reactor
   description: React is a force in the modern web, and so are those who can yield
     it.   Owners of this badge have demonstrated proficiency in React on a past project.
-  rarity: 40
   priceFinney: 3
   numClonesAllowed: 400
-  tags: react, javascript, programming
+  tags:
+  - react
+  - javascript
+  - programming
   image: react_reactor.svg
 - name: html_celebrity
   description: Looking for someone who writes clean, standards-compliant, HTML?  Look
     no further than this HTML Celebrity kudos.
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: html, frontend, standards-compliant
+  tags:
+  - html
+  - frontend
+  - standards-compliant
   image: html_celebrity.svg
 - name: eye_for_detail
   description: Looking for someone who has a great eye for detail?  Look no further
     than this eye for detail kudos badge.
-  rarity: 90
   priceFinney: 2
   numClonesAllowed: 50
-  tags: design, details, soft skills
+  tags:
+  - design
+  - details
+  - soft skills
   image: eye_for_detail.svg
 - name: ember_master
   description: Ember is a great extension of javsacript, and we love how it lets use
     declare dynamic views for our dApps!  Owners of this badge are masters of the
     Ember programming framework!
-  rarity: 30
   priceFinney: 6
   numClonesAllowed: 300
-  tags: ember, javascript
+  tags:
+  - ember
+  - javascript
   image: ember_master.svg
 - name: flying_pony
-  description: Flying Ponies take risks, inspire other ponies to think big to achieve big ideas.
-    We turn lofty ideas into something tangible. We are fearless about the outcome, sometimes to our own detriment.
-  rarity: 33
+  description: Flying Ponies take risks, inspire other ponies to think big to achieve
+    big ideas. We turn lofty ideas into something tangible. We are fearless about
+    the outcome, sometimes to our own detriment.
   priceFinney: 3
   numClonesAllowed: 342
-  tags: pony, risks, ideas, dreamer
+  tags:
+  - pony
+  - risks
+  - ideas
+  - dreamer
   image: flying_pony.svg
 - name: bee_of_all_trades
   description: Are you a cross-pollinator?  Do you deliver value in a lot of places
     at once?  This 'Bee of all trades' badge is for you!
-  rarity: 25
   priceFinney: 2
   numClonesAllowed: 200
-  tags: soft skills, cross-pollinator
+  tags:
+  - soft skills
+  - cross-pollinator
   image: bee_of_all_trades.svg
 - name: mysql_hero
   description: MySQL is a great asset to modern web developers.  Looking for someone
     who knows MySQL?  This badge is for you.
-  rarity: 30
   priceFinney: 2
   numClonesAllowed: 100
-  tags: mysql, database, db
+  tags:
+  - mysql
+  - database
+  - db
   image: mysql_hero.svg
 - name: app_dev_all_star
   description: Looking for an all star app developer?  This badge is for you.
-  rarity: 10
-  priceFinney: 1
+  priceFinney: 2
   numClonesAllowed: 340
-  tags: app, web, programmer
+  tags:
+  - app
+  - web
+  - programmer
   image: app_dev_all_star.svg
 - name: go_developer
   description: Looking for someone who can Go Go Go and BUIDL in Go?  This kudos is
     for you.
-  rarity: 30
   priceFinney: 2
   numClonesAllowed: 200
-  tags: go, programmer
+  tags:
+  - go
+  - programmer
   image: go_developer.svg
 - name: product_wizard
   description: Looking for someone to put on their product wizard's cap and deliver
     massive value to your project?  This kudos is for you!
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: product, soft skills
+  tags:
+  - product
+  - soft skills
   image: product_wizard.svg
 - name: business_minded
   description: Looking for someone who can deliver the goods from a business side
     of things?  Look no further than owners of this 'business minded' kudos.
-  rarity: 30
   priceFinney: 3
   numClonesAllowed: 340
-  tags: business, soft skills
+  tags:
+  - business
+  - soft skills
   image: business_minded.svg
 - name: bug_squasher
   description: Splat goes the bug!  Owners of this badge are proficient at squashing
     bugs.
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: bugs, soft skills
+  tags:
+  - bugs
+  - soft skills
   image: bug_squasher.svg
 - name: shill_ethereum
   description: For your friends & family who just love to shill Ethereum
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: ethereum, shills
+  tags:
+  - ethereum
+  - shills
   image: shill_ethereum.svg
 - name: shill_colorado
   description: For your friends & family who just love to shill Colorado
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: colorado, shills
+  tags:
+  - colorado
+  - shills
   image: shill_colorado.svg
 - name: devcon_4
   description: For your friends & family who came to Devcon 4 with you.
-  rarity: 20
   priceFinney: 2
   numClonesAllowed: 500
-  tags: devcon, ethereum, shills
+  tags:
+  - devcon
+  - ethereum
+  - shills
   image: devcon_4.svg
 - name: django_pony
-  description: Flying Ponies take risks, inspire other ponies to think big to achieve big ideas. We turn lofty ideas into something tangible. We are fearless about the outcome, sometimes to our own detriment.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 100
-  tags: django, programmer
+  description: Flying Ponies take risks, inspire other ponies to think big to achieve
+    big ideas. We turn lofty ideas into something tangible. We are fearless about
+    the outcome, sometimes to our own detriment.
+  priceFinney: 2
+  numClonesAllowed: 77
+  tags:
+  - django
+  - programmer
   image: django_pony.svg
 - name: blockchain_utopia
-  description: Got a Utopian vision for a blockchain-ized world?  This badge is for you.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 100
-  tags: soft skills, vision, inspiration
+  description: Got a Utopian vision for a blockchain-ized world?  This badge is for
+    you.
+  priceFinney: 5
+  numClonesAllowed: 55
+  tags:
+  - soft skills
+  - vision
+  - inspiration
   image: blockchain_utopia.svg
 - name: collaboration_robot
-  description: Collab Robots push the envelope. They make connections and find ways to build new ideas. With our powers, we can develop collabs with the smallest or largest machines.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 100
-  tags: collboration, soft skills
+  description: Collab Robots push the envelope. They make connections and find ways
+    to build new ideas. With our powers, we can develop collabs with the smallest
+    or largest machines.
+  priceFinney: 2
+  numClonesAllowed: 400
+  tags:
+  - collboration
+  - soft skills
   image: collaboration_robot.svg
 - name: path_finder
-  description: Pathfinders are masters of navigation, able to pave ways forward without hesitation. The amount of trees or woods are no concern - we won’t rest until the right path has been uncovered.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 100
-  tags: soft skills, path, finder
+  description: "Pathfinders are masters of navigation, able to pave ways forward without\
+    \ hesitation. The amount of trees or woods are no concern - we won\u2019t rest\
+    \ until the right path has been uncovered."
+  priceFinney: 2
+  numClonesAllowed: 60
+  tags:
+  - soft skills
+  - path
+  - finder
   image: path_finder.svg
 - name: to_the_moon
   description: This kudos is for users who are taking the ecosystem to the moon!
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 100
-  tags: soft skills
+  priceFinney: 2
+  numClonesAllowed: 400
+  tags:
+  - soft skills
   image: climb_the_ladder.svg
 - name: gitcoin_sustainer
-  description: A very special, limited edition, Kudos, only for sustainers of Gitcoin.
-  rarity: 20
-  priceFinney: 5
-  numClonesAllowed: 100
-  tags: gitcoin, mission, grow open source
+  description: A very special, limited edition, Kudos, for sustainers of Gitcoin.
+  priceFinney: 10
+  numClonesAllowed: 50
+  tags:
+  - gitcoin
+  - mission
+  - grow open source
   image: gitcoin_sustainer.svg
 - name: craftsman
-  description: Know a crafts-woman or crafts-man?  A craftsperson kudos is a great way to celebrate the tools we use and the people that use them!
-  rarity: 20
-  priceFinney: 1
+  description: Know a crafts-man?  A craftsperson kudos is a great way to celebrate
+    the tools we use and the people that use them!
+  priceFinney: 2
   numClonesAllowed: 100
-  tags: soft skills, programmer
+  tags:
+  - soft skills
+  - programmer
   image: craftsman.svg
 - name: struck_oil
-  description: Know someone who just unlocks value all the time?  Send them the 'struck oil' Kudos
-  rarity: 20
-  priceFinney: 1
+  description: Know someone who just unlocks value all the time?  Send them the 'struck
+    oil' Kudos!
+  priceFinney: 2
   numClonesAllowed: 100
-  tags: soft skills, oil, value
+  tags:
+  - soft skills
+  - oil
+  - value
   image: struck_oil.svg
 - name: freedom
-  description: Is there someone out there who is creating a better world? A more free world?  Send them the 'freedom' kudos!
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 100
-  tags: freedom, soft skills, inspiration
+  description: Is there someone out there who is creating a better world? A more free
+    world?  Send them the 'freedom' kudos!
+  priceFinney: 3
+  numClonesAllowed: 70
+  tags:
+  - freedom
+  - soft skills
+  - inspiration
   image: freedom.svg
 - name: focus
   description: Know someone who has extremely good focus?  Send them a 'kudos' kudos.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 100
-  tags: focus, soft skills
+  priceFinney: 2
+  numClonesAllowed: 20
+  tags:
+  - focus
+  - soft skills
   image: focus.svg
 - name: powertool_user
-  description: Know someone who's great at setting up and using power tools!?  Send them a powertool user kudos.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 100
-  tags: powertools, tools
+  description: Know someone who's great at setting up and using power tools!?  Send
+    them a powertool user kudos.
+  priceFinney: 2
+  numClonesAllowed: 20
+  tags:
+  - powertools
+  - tools
   image: powertool_user.svg
 - name: party_robot
-  description: Is one of your teammates just a lot of fun to be around?  Send them a Party Robot Kudos.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 100
-  tags: party, fun, soft skills
+  description: Is one of your teammates just a lot of fun to be around?  Send them
+    a Party Robot Kudos.
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags:
+  - party
+  - fun
+  - soft skills
   image: party_robot.svg
 - name: release_early_and_often
-  description: With the goal of releasing in mind, we help sustain the ecosystem by shipping quickly to learn quickly. 
-  rarity: 20
-  priceFinney: 1
+  description: With the goal of releasing in mind, we help sustain the ecosystem by
+    shipping quickly to learn quickly.
+  priceFinney: 2
   numClonesAllowed: 100
-  tags: soft skills, agile
+  tags:
+  - soft skills
+  - agile
   image: release_early_and_often.svg
 - name: direct
   description: Holders of this badge seek the most straightforward ways to solve problem.
     Our great challenge is finding the shortest path to the truth
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 100
-  tags: direct, path, navigator
+  priceFinney: 2
+  numClonesAllowed: 55
+  tags:
+  - direct
+  - path
+  - navigator
   image: direct.svg
 - name: crystal_ball
-  description: A crystal ball is just a way to predict the future, but hidden inside is a compelling story.
-    Grow Oss Crystal Ball holders are visionaries that transform what’s happening into an understandable future.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 100
-  tags: soft skills, vision, inspiration
+  description: "A crystal ball is just a way to predict the future, but hidden inside\
+    \ is a compelling story. Crystal Ball holders are visionaries that transform what\u2019\
+    s happening into an understandable future."
+  priceFinney: 15
+  numClonesAllowed: 70
+  tags:
+  - soft skills
+  - vision
+  - inspiration
   image: growoss_crystalball.svg
 - name: gitter_of_coins
-  description: For the contributors on the platform that, well, GIT coins.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 100
-  tags: git, coins, money
+  description: For the contributors on the platform that, well... , GIT coins.
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags:
+  - git
+  - coins
+  - money
   image: gitter_of_coins.svg
 - name: mana_from_heavens
-  description: Open Source Software is mana from the heavens.  Celebrate someone who's provided value to your lift with this Kudos badge.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 100
-  tags: mana, fun
+  description: Open Source Software is mana from the heavens.  Celebrate someone who's
+    provided value to your lift with this Kudos badge.
+  priceFinney: 2
+  numClonesAllowed: 200
+  tags:
+  - mana
+  - fun
   image: mana_from_heavens.svg
-- name: medium_robot
-  description: Just for fun, this Gitcoin Robot is a way of celebrating the contributors in your life.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 100
-  tags: robot, gitcoin, just for fun
+- name: gitcoin_bot
+  description: Just for fun, this Gitcoin Robot is a way of celebrating the contributors
+    in your life.
+  priceFinney: 2
+  numClonesAllowed: 400
+  tags:
+  - robot
+  - gitcoin
+  - just for fun
   image: robot_medium.svg
 - name: heros_honour
-  description: Know someone who's a hero?  Send them this video-game-inspired, badge. 
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 100
-  tags: hero, honour, honor, soft skills
+  description: Know someone who's a hero?  Send them this video-game-inspired, badge.
+  priceFinney: 4
+  numClonesAllowed: 77
+  tags:
+  - hero
+  - honour
+  - honor
+  - soft skills
   image: heros_honour.svg
 - name: blockchain_the_world
   description: Know someone who's blockchain-izing the world?  Send them this badge.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 100
-  tags: blockchain, soft skills
+  priceFinney: 2
+  numClonesAllowed: 500
+  tags:
+  - blockchain
+  - soft skills
   image: blockchain_the_world.svg
-- name: small_robot
-  description: Just for fun, this Gitcoin Robot is a way of celebrating the contributors in your life.
-  rarity: 20
-  priceFinney: 1
+- name: gitcoin_minibot
+  description: Just for fun, this Gitcoin Robot is a way of celebrating the contributors
+    in your life.
+  priceFinney: 2
   numClonesAllowed: 100
-  tags: robot, just for fun
+  tags:
+  - robot
+  - just for fun
   image: robot_small.svg
 - name: firefighter
-  description: Know someone who's great at putting out fires?  This firefighter badge is for them!
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 100
-  tags: firefigheter, bugs
+  description: Know someone who's great at putting out fires?  This firefighter badge
+    is for them!
+  priceFinney: 2
+  numClonesAllowed: 200
+  tags:
+  - firefigheter
+  - bugs
   image: firefighter.svg
 - name: gitcoin_sun
   description: A very special, limited edition, Kudos, only for sustainers of Gitcoin.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 100
-  tags: sustainers, gitcoin, just for fun
+  priceFinney: 2
+  numClonesAllowed: 300
+  tags:
+  - sustainers
+  - gitcoin
+  - just for fun
   image: gitcoin_rasta.svg
-- name: robot_large
-  description: Just for fun, this Gitcoin Robot is a way of celebrating the contributors in your life.
-  rarity: 20
-  priceFinney: 1
+- name: big_bot
+  description: Just for fun, this Gitcoin Robot is a way of celebrating the contributors
+    in your life.
+  priceFinney: 2
   numClonesAllowed: 100
-  tags: robot, just for fun, gitcoin
+  tags:
+  - robot
+  - just for fun
+  - gitcoin
   image: robot_large.svg
 - name: genius
-  description: A Genius bring ideas to life. We activate creative thinking and push problem solving
-    with our words and stories. The world is our experiment lab, and we are players in it.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 2
-  tags: genius, albert einstein, smart
+  description: A Genius bring ideas to life. We activate creative thinking and push
+    problem solving with our words and stories. The world is our experiment lab, and
+    we are players in it.
+  priceFinney: 25
+  numClonesAllowed: 100
+  tags:
+  - genius
+  - albert einstein
+  - smart
   image: a_genius.svg
 - name: vitalik_genesis
-  description: A kudos that celebrates Vitalik's leadership in the Ethereum world.  One day, Gitcoin founder @owocki hopes to work up the courage to give this Kudos to Vitalik.
-  rarity: 90
-  priceFinney: 1
-  numClonesAllowed: 100
-  tags: vitalik, just for fun
+  description: A kudos that celebrates Vitalik's leadership in the Ethereum world.  One
+    day, Gitcoin founder @owocki hopes to work up the courage to give this Kudos to
+    Vitalik.  Perhaps Vitalik will tweet about Gitcoin one day, and @owocki will send
+    it to him then....
+  priceFinney: 100
+  numClonesAllowed: 55
+  tags:
+  - vitalik
+  - just for fun
   image: vitalik_genesis.svg
 - name: sunburst
-  description: This person bring Gitcoin sunshine to OSS projects. We energize the project with what we do. 
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: sunshine, oss, energy
+  description: This person bring Gitcoin sunshine to OSS projects. We energize the
+    project with what we do.
+  priceFinney: 3
+  numClonesAllowed: 55
+  tags:
+  - sunshine
+  - oss
+  - energy
   image: sunburst.svg
-- name: ethereum_constellation
+- name: simplifier
   description: This badge is for anyone who creates simplicity from complexity.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: ethereum, simple
+  priceFinney: 5
+  numClonesAllowed: 45
+  tags:
+  - ethereum
+  - simple
   image: ethereum_constellation.svg
 - name: tools
-  description: Tools to help grow OSS.
-  rarity: 20
+  description: This kudos is for the person creates the best tools!
   priceFinney: 1
-  numClonesAllowed: 10
-  tags: tools, oss
+  numClonesAllowed: 1000
+  tags:
+  - tools
+  - oss
   image: tools.svg
-- name: path
-  description: This person takes the path less traveled to achieve great things.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: path, achiever
-  image: path.svg
 - name: hard_worker
-  description: Hard workers are diligent and vigilent at doing the best they can.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: hard worker, achievement, buidl
+  description: Hard workers are diligent and vigilent at doing the best they can on
+    everything they do.
+  priceFinney: 5
+  numClonesAllowed: 100
+  tags:
+  - hard worker
+  - achievement
+  - buidl
   image: hard_worker.svg
-- name: g1
-  description: lorum
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
-  image: g1.svg
-- name: powertools
-  description: A true powertool for an Open Source project!
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: power, oss, development
-  image: powertools.svg
-- name: link_legend_of_zelda
-  description: A leader of all things united.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: leader, future, unite
-  image: link_legend_of_zelda.svg
-- name: blockchain_star
-  description: A shining star that provides the light of blockchain.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: star, rise
+- name: blockchain_engineer
+  description: This kudos is for contributors to your project that make the blockchain
+    work!
+  priceFinney: 5
+  numClonesAllowed: 25
+  tags:
+  - star
+  - rise
   image: blockchain_star.svg
-- name: climb_the_ladder
-  description: A ladder climbber takes open source to new heights.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: success, ladder, achievement
-  image: climb_the_ladder.svg
-- name: west
-  description: You are a pioneer of Gitcoin open source!
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: lorem ipsum
+- name: gitcoin_og
+  description: You are an OG.  You are a pioneer of Gitcoin open source!
+  priceFinney: 10
+  numClonesAllowed: 100
+  tags:
+  - og
+  - gitcoin
+  - early
   image: west.svg
-- name: praying
-  description: Need ideas for this one!
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: pray
-  image: praying.svg
-- name: coding_ducky
-  description: A ducky that helps solve your problems!
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: duck, coding, problem solver
+- name: rubber_ducky
+  description: A ducky that helps solve your problems!  Always ask your ducky first
+    when you can't figure something out :)
+  priceFinney: 5
+  numClonesAllowed: 110
+  tags:
+  - duck
+  - coding
+  - problem solver
   image: coding_ducky.svg
 - name: django_cowboy
-  description: Faster than fast on django.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: django, fast, developer
+  description: Faster than fast on django.  Better than the best.  HODLers of this
+    badge are great at creating beautiful apps in django!
+  priceFinney: 2
+  numClonesAllowed: 100
+  tags:
+  - django
+  - fast
+  - developer
   image: django_cowboy.svg
-- name: frontend_alchemist
-  description: A frontend alchemist mixes things up to create a surprise.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: frontend,creative
+- name: fontend_wizard
+  description: A frontend wizard mixes things up to create a beautiful UX.
+  priceFinney: 3
+  numClonesAllowed: 100
+  tags:
+  - frontend
+  - creative
   image: frontend_alchemist.svg
-- name: dont_just_hodl_buidl
-  description: A builder to create change.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: builder, change, buidl
-  image: dont_just_hodl_buidl.svg
 - name: backend_star
-  description: A shining star of all things hidden.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: star, backend
+  description: A shining star of all things hidden in the backend of applications.
+  priceFinney: 3
+  numClonesAllowed: 110
+  tags:
+  - star
+  - backend
   image: backend_star.svg
-- name: bug_squasher_new
+- name: squahser_of_bugs
   description: A bug squasher makes bugs dissapear like magic.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: bugs, clean code, magic
+  priceFinney: 4
+  numClonesAllowed: 80
+  tags:
+  - bugs
+  - clean code
+  - magic
   image: bug_squasher_new.svg
-- name: growoss_crystalball
-  description: A crystal ball is just a way to predict the future, but hidden inside is a compelling story. Grow Oss Crystal Ball holders are visionaries that transform what’s happening into an understandable future. 
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: oss, prediction, future, wise
-  image: growoss_crystalball.svg
-- name: birds
-  description: Open source birds are free to work on what they want, when they want. Making impact where they feel necessary.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: birds, freedom, impact, oss
+- name: freedom
+  description: This bird is free to work on what it wants, when it wants. Making impact
+    where they feel necessary, and always having leverage over your life?  Then this
+    kudos is for you!
+  priceFinney: 2
+  numClonesAllowed: 55
+  tags:
+  - birds
+  - freedom
+  - impact
+  - oss
   image: birds.svg
-- name: robot_medium
-  description: A robot that is very direct in understanding the needs of the problem.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: robot, problem solver, machine
-  image: robot_medium.svg
-- name: robot_small
-  description: A small robots is sometimes just what you need to solve big problems.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: robot, problem solver, machine
-  image: robot_small.svg
 - name: out_of_this_world_programmer
   description: A programmer that moves the ecosystem forward and out of this world.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: programmer, development
+  priceFinney: 2
+  numClonesAllowed: 55
+  tags:
+  - programmer
+  - development
   image: out_of_this_world_programmer.svg
 - name: good_communicator
-  description: Holders of this badge are great communicators that help to clarify any situation.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: communication, clear
+  description: Holders of this badge are great communicators that help to clarify
+    any situation.
+  priceFinney: 2
+  numClonesAllowed: 55
+  tags:
+  - communication
+  - clear
   image: good_communicator.svg
-- name: a_genius
-  description: A Genius bring ideas to life. We activate creative thinking and push problem solving with our words and stories. The world is our experiment lab, and we are players in it.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: genius, ideas, creative
-  image: a_genius.svg
 - name: gitcoin_tree
-  description: A tree that sustains open source.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: oss, grow open source
+  description: A tree that sustains open source.  Just for fun
+  priceFinney: 2
+  numClonesAllowed: 55
+  tags:
+  - oss
+  - grow open source
+  - fun
   image: gitcoin_tree.svg
 - name: status_hackathon_2018_games_track_first_prize
   description: For the winner of the Status Hackathon Games Track
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: status hackathon
+  priceFinney: 2
+  numClonesAllowed: 1
+  tags:
+  - status hackathon
   image: games_first.svg
 - name: status_hackathon_2018_marketplace_track_second_prize
   description: For the runner up of the Status Hackathon Marketplace Track
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: status hackathon
+  priceFinney: 2
+  numClonesAllowed: 1
+  tags:
+  - status hackathon
   image: marketplaces_runner_up.svg
-- name: travel_runner_up
+- name: status_hackathon_2018_traveltrack_second_prize
   description: lorum
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: status hackathon
+  priceFinney: 2
+  numClonesAllowed: 1
+  tags:
+  - status hackathon
   image: travel_runner_up.svg
-- name: blockchain_world
-  description: lorum
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: status hackathon
-  image: blockchain_world.svg
 - name: status_hackathon_2018_travel_track_first_prize
   description: For the winner of the Status Hackathon Travel Track
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: status hackathon
+  priceFinney: 2
+  numClonesAllowed: 1
+  tags:
+  - status hackathon
   image: travel_first.svg
-- name: status_hackathon_2018_marketplace_games_second_prize
-  description: For the runner up of the Status Hackathon Game Track
+- name: status_hackathon_2018__games_second_prize
   description: lorum
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: status hackathon
+  priceFinney: 2
+  numClonesAllowed: 1
+  tags:
+  - status hackathon
   image: games_runner_up.svg
 - name: philosophers_stone
-  description: For whomever makes the greatest contribution to the Status Hackathon Philospher Circle
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: status hackathon
+  description: For whomever makes the greatest contribution to the Status Hackathon
+    Philospher Circle at the Status Hackathon 2018
+  priceFinney: 2
+  numClonesAllowed: 1
+  tags:
+  - status hackathon
   image: philosophers.svg
 - name: status_hackathon_2018_travel_social_first_prize
   description: For the winner of the Status Hackathon Social Track
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: status hackathon
+  priceFinney: 2
+  numClonesAllowed: 1
+  tags:
+  - status hackathon
   image: social_first.svg
-- name: status_hackathon_2018_travel_marketplace_first_prize
-  description: For the winner of the Marketplace Hackathon Social Track
+- name: status_hackathon_2018_social_first_prize
   description: lorum
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: status hackathon
+  priceFinney: 2
+  numClonesAllowed: 1
+  tags:
+  - status hackathon
   image: market_first.svg
-- name: status_hackathon_2018_marketplace_social_second_prize
+- name: status_hackathon_2018_social_second_prize
   description: For the runner up of the Status Hackathon Social Track
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: status hackathon
+  priceFinney: 2
+  numClonesAllowed: 1
+  tags:
+  - status hackathon
   image: social_runner_up.svg
 - name: gitcoin_love
-  description: This kudos is for showing appreciation for someone who did some work that you love
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: gitcoin, results
+  description: This kudos is for showing appreciation for someone who did some work
+    that you love
+  priceFinney: 2
+  numClonesAllowed: 55
+  tags:
+  - gitcoin
+  - results
   image: gitcoin_rasta.svg
 - name: status_hackathon_2018_wildcard
   description: Winner of the wildcard prize at the Status Hackahton 2018
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: status hackathon
+  priceFinney: 2
+  numClonesAllowed: 1
+  tags:
+  - status hackathon
   image: wildcard.svg
 - name: fast_response
-  description: lorum
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  description: For those communicators who are reliable and always quickly responding
+  priceFinney: 2
+  numClonesAllowed: 55
+  tags:
+  - soft skills
+  - fast response
   image: fast_response.svg
 - name: eth_hacker
-  description: lorum
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: ipsum
+  description: You create value out of bits as an ETH Hacker!
+  priceFinney: 5
+  numClonesAllowed: 23
+  tags:
+  - eth
+  - blockchain
+  - hacker
   image: eth_hacker2.svg
 - name: backend_architect
-  description: A backend architect is not only the keeper of the ins and outs but also the holder of information and the intricacies of a system.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: architect, plan, backend
+  description: Limited Edition Cellarius Kudos! A backend architect is not only the
+    keeper of the ins and outs but also the holder of information and the intricacies
+    of a system.
+  priceFinney: 10
+  numClonesAllowed: 25
+  tags:
+  - architect
+  - plan
+  - backend
   image: cellarius/backend_architect.svg
 - name: bug_eliminator
-  description: A bug eliminator skill is core to an efficient system or service. They effortlessly remove and resolve any bug with speed.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: bug, squasher, eliminator, problem solver
+  description: Limited Edition Cellarius Kudos! A bug eliminator skill is core to
+    an efficient system or service. They effortlessly remove and resolve any bug with
+    speed.
+  priceFinney: 10
+  numClonesAllowed: 25
+  tags:
+  - bug
+  - squasher
+  - eliminator
+  - problem solver
   image: cellarius/bug_eliminator.svg
 - name: bug_finder
-  description: These holders are insightful, and easily spot and solve the very hidden problems unseen to the naked eye.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: bug, problem solver, troubleshoot
+  description: Limited Edition Cellarius Kudos! These holders are insightful, and
+    easily spot and solve the very hidden problems unseen to the naked eye.
+  priceFinney: 10
+  numClonesAllowed: 25
+  tags:
+  - bug
+  - problem solver
+  - troubleshoot
   image: cellarius/bug_finder.svg
 - name: lightning_fast
-  description: The holder of this badge needs no introduction. Work is completed quickly as is a flash of lightning. 
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: fast, quick, turnaround, speed
+  description: Limited Edition Cellarius Kudos! The holder of this badge needs no
+    introduction. Work is completed quickly as is a flash of lightning.
+  priceFinney: 10
+  numClonesAllowed: 25
+  tags:
+  - fast
+  - quick
+  - turnaround
+  - speed
   image: cellarius/lightning_fast.svg
 - name: oddjobs
-  description: Holders of these badges are highly skilled at many things. Their talents are unlimited and sometimes at odds on the spectrum of skills.
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: skilled, multi-task, well-rounded
+  description: Limited Edition Cellarius Kudos! Holders of these badges are highly
+    skilled at many things. Their talents are unlimited and sometimes at odds on the
+    spectrum of skills.
+  priceFinney: 10
+  numClonesAllowed: 25
+  tags:
+  - skilled
+  - multi-task
+  - well-rounded
   image: cellarius/oddjobs.svg
 - name: trusted_contributor
-  description: A trusted contributor checks all the boxes of being not only an expert in their domain but reliable and dependable. They thrive on being called upon and fulfilling any tasked mission. 
-  rarity: 20
-  priceFinney: 1
-  numClonesAllowed: 10
-  tags: trusted, developer, contributor, reliable
+  description: Limited Edition Cellarius Kudos!A trusted contributor checks all the
+    boxes of being not only an expert in their domain but reliable and dependable.
+    They thrive on being called upon and fulfilling any tasked mission.
+  priceFinney: 10
+  numClonesAllowed: 35
+  tags:
+  - trusted
+  - developer
+  - contributor
+  - reliable
   image: cellarius/trusted_contributor.svg
-
-
-
-
+- name: burst_of_energy
+  description: Limited Edition Cellarius Kudos!  This kudos is for the contributors
+    to your repo that are a burst of energy!
+  priceFinney: 10
+  numClonesAllowed: 35
+  tags:
+  - cellarius
+  image: cellarius/Burst.svg
+- name: impossible_object
+  description: Limited Edition Cellarius Kudos!  This kudos is just for fun.  If anyone
+    in your repo is impossibly great contributor, send them this kudos!
+  priceFinney: 10
+  numClonesAllowed: 35
+  tags:
+  - cellarius
+  image: cellarius/Circle.svg
+- name: diamond
+  description: Limited Edition Cellarius Kudos!  This kudos is for any contributor
+    who is a diamond!
+  priceFinney: 10
+  numClonesAllowed: 35
+  tags:
+  - cellarius
+  image: cellarius/Diamond.svg
+- name: heart
+  description: Limited Edition Cellarius Kudos!  This one is for contributors who
+    show a lot of heart!
+  priceFinney: 10
+  numClonesAllowed: 35
+  tags:
+  - cellarius
+  image: cellarius/heart.svg
+- name: infinite_energy
+  description: Limited Edition Cellarius Kudos!  This kudos is for contributors who
+    are infinite sources of energy to your project!
+  priceFinney: 10
+  numClonesAllowed: 35
+  tags:
+  - cellarius
+  image: cellarius/Infinite.svg
+- name: creative
+  description: Limited Edition Cellarius Kudos!  This kudos is for the squiggles,
+    not the lines.  If your contributor is very creative, send them this kudos!
+  priceFinney: 10
+  numClonesAllowed: 35
+  tags:
+  - cellarius
+  image: cellarius/Spaghetti.svg
+- name: foundation
+  description: Limited Edition Cellarius Kudos!  This kudos is for those who lay a
+    solid foundation.
+  priceFinney: 10
+  numClonesAllowed: 35
+  tags:
+  - cellarius
+  image: cellarius/Triangle.svg

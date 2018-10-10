@@ -56,7 +56,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=255)),
                 ('description', models.CharField(max_length=510)),
                 ('image', models.CharField(max_length=255, null=True)),
-                ('rarity', models.IntegerField()),
+                ('rarity', models.CharField(max_length=255, null=True)),
                 ('price_finney', models.IntegerField()),
                 ('num_clones_allowed', models.IntegerField(blank=True, null=True)),
                 ('num_clones_in_wild', models.IntegerField(blank=True, null=True)),
