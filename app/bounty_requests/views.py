@@ -21,13 +21,13 @@ import json
 
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
-from django.utils.html import escape, strip_tags
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
 from marketing.mails import new_bounty_request
 from ratelimit.decorators import ratelimit
 
+from .forms import BountyRequestForm
 from .models import BountyRequest
 
 
@@ -44,37 +44,21 @@ def bounty_request(request):
                 status=401)
 
         try:
-            params = json.loads(request.body)
-        except Exception:
+            result = BountyRequestForm(json.loads(request.body))
+            if not result.is_valid():
+                raise
+        except:
             return JsonResponse({'error': 'Invalid JSON.'}, status=400)
 
-        requested_by = profile
-        github_url = params.get('github_url', '')
-        eth_address = params.get('eth_address', '')
-        comment = escape(strip_tags(params.get('comment', '')))
-        amount = params.get('amount', '')
-
-        try:
-            amount = int(amount)
-        except Exception as e:
-            return JsonResponse({'error': str(e)}, status=400)
-
-        if not requested_by or not github_url or not comment or not amount:
-            return JsonResponse({'error': _('Missing required attributes.')}, status=400)
-
-        result = BountyRequest.objects.create(
-            requested_by=requested_by,
-            github_url=github_url,
-            eth_address=eth_address,
-            comment=comment,
-            amount=amount
-        )
-
-        new_bounty_request(result)
-
+        model = result.save(commit=False)
+        model.requested_by = profile
+        model.save()
+        new_bounty_request(model)
         return JsonResponse({'msg': _('Bounty Request received.')}, status=200)
 
+    form = BountyRequestForm()
     params = {
+        'form': form,
         'title': _('Request a Bounty'),
         'card_title': _('Gitcoin Requests'),
         'card_desc': _('Have an open-source issue that you think would benefit the community? '

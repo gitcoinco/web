@@ -2,22 +2,11 @@
 
 $(document).ready(function() {
 
-
-  $('#js-drop').on('dragover', function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    $(this).addClass('is-dragging');
-  });
-
-  $('#js-drop').on('dragleave', function(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    $(this).removeClass('is-dragging');
-  });
+  userSearch('.team_members');
 
   $('#img-project').on('change', function() {
     if (this.files && this.files[0]) {
-      var reader = new FileReader();
+      let reader = new FileReader();
 
       reader.onload = function(e) {
         $('#preview').attr('src', e.target.result);

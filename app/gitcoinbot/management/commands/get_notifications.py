@@ -23,34 +23,31 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from git.utils import (
-    get_issue_comments, get_notifications, issue_number, org_name, post_issue_comment_reaction, repo_name,
+    get_gh_notifications, get_issue_comments, issue_number, org_name, post_issue_comment_reaction, repo_name,
 )
 
 
 class Command(BaseCommand):
 
-    # https://github.com/gitcoinco/web/issues/596
     help = 'gets gitcoinbot notifications and responds if the user needs to install the app to get them to work'
 
     def handle(self, *args, **options):
-
-        notifications = get_notifications()
-        print(len(notifications))
+        notifications = get_gh_notifications()
+        print('Notifications Count: ', notifications.totalCount)
         for notification in notifications:
-            process_me = notification['reason'] == 'mention'
-            if process_me:
+            if notification.reason == 'mention':
                 try:
-                    url = notification['subject']['url']
+                    url = notification.subject.url
                     url = url.replace('/repos', '')
                     url = url.replace('//api.github', '//github')
-                    latest_comment_url = notification['subject']['latest_comment_url']
+                    latest_comment_url = notification.subject.latest_comment_url
                     _org_name = org_name(url)
                     _repo_name = repo_name(url)
                     _issue_number = issue_number(url)
                     _comment_id = latest_comment_url.split('/')[-1]
                     comment = get_issue_comments(_org_name, _repo_name, _issue_number, _comment_id)
-                    does_mention_gitcoinbot = settings.GITHUB_API_USER in comment.get('body','')
-                    if comment.get('message','') == "Not Found":
+                    does_mention_gitcoinbot = settings.GITHUB_API_USER in comment.get('body', '')
+                    if comment.get('message', '') == "Not Found":
                         print("comment was not found")
                     elif not does_mention_gitcoinbot:
                         print("does not mention gitcoinbot")

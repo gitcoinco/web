@@ -205,11 +205,12 @@ class LeaderboardRank(SuperModel):
 
     @property
     def is_user_based(self):
-        return '_tokens' not in self.leaderboard and '_keywords' not in self.leaderboard
+        profile_keys = ['_tokens', '_keywords', '_cities', '_countries', '_continents']
+        return any(sub in self.leaderboard for sub in profile_keys)
 
     @property
     def at_ify_username(self):
-        if self.is_user_based:
+        if not self.is_user_based:
             return f"@{self.github_username}"
         return self.github_username
 
@@ -298,6 +299,15 @@ class EmailEvent(SuperModel):
 
     def __str__(self):
         return f"{self.email} - {self.event} - {self.created_on}"
+
+
+class AccountDeletionRequest(SuperModel):
+
+    handle = models.CharField(max_length=255, db_index=True)
+    profile = JSONField(default=dict, blank=True)
+
+    def __str__(self):
+        return f"{self.handle} - {self.created_on}"
 
 
 class EmailSupressionList(SuperModel):

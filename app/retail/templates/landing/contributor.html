@@ -19,6 +19,8 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta name="title" content="Open Source Opportunities for Freelance Developers | Gitcoin">
+    <meta name="description" content="Join the Gitcoin Developer Community to find and complete freelance jobs or bug bounties and get paid in crypto (ETH or any ERC-20 token).">
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
     <style>.async-hide { opacity: 0 !important} </style>
@@ -31,7 +33,7 @@
     <link rel="stylesheet" href="{% static "v2/css/landing_page.css" %}" />
     <link rel="stylesheet" href="{% static "v2/css/howitworks.css" %}" />
   </head>
-  <body class="index d-flex flex-column">
+  <body class="index d-flex flex-column g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     {% cookielaw_banner %}
     {% include 'shared/nav.html' %}
@@ -51,15 +53,15 @@
         </div>
       {% endif %}
 
+      <div class="container-fluid pb-5 landing__newsletter">
+        {% include 'shared/newsletter.html' %}
+      </div>
+
       {% if activities|length %}
         <div class="container-fluid p-5 activity">
           {% include 'landing/contributor/activity.html' %}
         </div>
       {% endif %}
-
-      <div class="container-fluid pb-5 landing__newsletter">
-        {% include 'shared/newsletter.html' %}
-      </div>
 
       <div class="container-fluid p-5 whatisit_container">
         {% include 'shared/what_is_gitcoin.html' with video='DJartWzDn0E' %}

@@ -549,14 +549,12 @@ def quarterly_stats(to_emails=None, platform_wide_stats=None):
         cur_language = translation.get_language()
         try:
             setup_lang(to_email)
-            quarter = int(timezone.now().month / 3) + 1
-            year = timezone.now().year
+            then = (timezone.now() - timezone.timedelta(days=45))
+            quarter = int(then.month / 3) + 1
+            year = then.year
             date = f"Q{quarter} {year}"
             subject = f"Your Quarterly Gitcoin Stats ({date})"
             html, text = render_quarterly_stats(to_email, platform_wide_stats)
-            print("-----" * 100)
-            print(html)
-            print("-----" * 100)
             from_email = settings.PERSONAL_CONTACT_EMAIL
 
             if not should_suppress_notification_email(to_email, 'roundup'):
@@ -746,7 +744,7 @@ def new_bounty_request(model):
     try:
         setup_lang(to_email)
         subject = _("New Bounty Request")
-        body_str = _(f"New Bounty Request from")
+        body_str = _("New Bounty Request from")
         body = f"{body_str} {model.requested_by}: "\
             f"{settings.BASE_URL}_administrationbounty_requests/bountyrequest/{model.pk}/change"
         send_mail(
@@ -757,5 +755,33 @@ def new_bounty_request(model):
             from_name=_("No Reply from Gitcoin.co"),
             categories=['admin', 'new_bounty_request'],
         )
+    finally:
+        translation.activate(cur_language)
+
+
+def new_funding_limit_increase_request(profile, cleaned_data):
+    to_email = 'founders@gitcoin.co'
+    from_email = profile.email or settings.SERVER_EMAIL
+    cur_language = translation.get_language()
+    usdt_per_tx = cleaned_data.get('usdt_per_tx', 0)
+    usdt_per_week = cleaned_data.get('usdt_per_week', 0)
+    comment = cleaned_data.get('comment', '')
+    accept_link = f'{settings.BASE_URL}requestincrease?'\
+                  f'profile_pk={profile.pk}&'\
+                  f'usdt_per_tx={usdt_per_tx}&'\
+                  f'usdt_per_week={usdt_per_week}'
+
+    try:
+        setup_lang(to_email)
+        subject = _('New Funding Limit Increase Request')
+        body = f'New Funding Limit Request from {profile} ({profile.absolute_url}).\n\n'\
+               f'New Limit in USD per Transaction: {usdt_per_tx}\n'\
+               f'New Limit in USD per Week: {usdt_per_week}\n\n'\
+               f'To accept the Funding Limit, visit: {accept_link}\n'\
+               f'Administration Link: ({settings.BASE_URL}_administrationdashboard/profile/'\
+               f'{profile.pk}/change/#id_max_tip_amount_usdt_per_tx)\n\n'\
+               f'Comment:\n{comment}'
+
+        send_mail(from_email, to_email, subject, body, from_name=_("No Reply from Gitcoin.co"))
     finally:
         translation.activate(cur_language)
