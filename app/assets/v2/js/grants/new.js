@@ -55,12 +55,19 @@ $(document).ready(function() {
        let SubscriptionContract = new web3.eth.Contract(compiledSubscription.abi);
        console.log('SubscriptionContract', SubscriptionContract);
 
+       let realTokenAmount = Number(data.amount_goal*10**18)
+
+       console.log(realTokenAmount);
+
+
+       let args = [data.admin_address, '0xfC3FeB6064fe0CBcd675Ec4DD4b5c07C84f3CfC0', web3.utils.toTwosComplement(realTokenAmount), web3.utils.toTwosComplement(2592000), 0]
+
        web3.eth.getAccounts(function(err, accounts){
         web3.eth.net.getId(function(err, network){
            $('#network').val(network)
          SubscriptionContract.deploy({
           data: compiledSubscription.bytecode,
-          arguments: [data.admin_address, '0xDE8F59cCf00103b4c94492D0cFBc8102941F178e', data.amount_goal, data.frequency, 0]
+          arguments: args
         })
         .send({
           from: accounts[0],

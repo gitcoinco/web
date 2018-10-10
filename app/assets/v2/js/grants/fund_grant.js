@@ -50,7 +50,7 @@ window.onload = function() {
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address)
 
       // This token is only for testing
-      let deployedToken = new web3.eth.Contract(compiledToken.abi, '0xDE8F59cCf00103b4c94492D0cFBc8102941F178e')
+      let deployedToken = new web3.eth.Contract(compiledToken.abi, '0xfC3FeB6064fe0CBcd675Ec4DD4b5c07C84f3CfC0')
 
 
       deployedToken.methods.decimals().call(function(err, decimals){
@@ -58,6 +58,8 @@ window.onload = function() {
         console.log('decimals', typeof decimals);
 
       let realTokenAmount = Number(data.amount_per_period*10**decimals)
+      console.log('realTokenAmount', realTokenAmount);
+
       let realGasPrice = Number(data.gas_price*10**decimals)
 
         web3.eth.getAccounts(function(err, accounts){
@@ -82,12 +84,14 @@ window.onload = function() {
                 const parts = [
                   accounts[0],
                   data.admin_address,
-                  '0xDE8F59cCf00103b4c94492D0cFBc8102941F178e',
+                  '0xfC3FeB6064fe0CBcd675Ec4DD4b5c07C84f3CfC0',
                   web3.utils.toTwosComplement(realTokenAmount),
                   web3.utils.toTwosComplement(periodSeconds),
                   web3.utils.toTwosComplement(realGasPrice),
                   web3.utils.toTwosComplement(nonce)
                 ]
+
+                console.log('parts', parts);
 
                 deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash){
 
