@@ -68,10 +68,11 @@ $(document).ready(function() {
   $('#logo').mouseleave(function(e) {
     $(this).attr('src', $(this).attr('old-src'));
   });
-
-  $('.navbar-toggler').click(function() {
-    $('.navbar-collapse').toggleClass('show');
-  });
+  if (!$.fn.collapse) {
+    $('.navbar-toggler').click(function() {
+      $('.navbar-collapse').toggleClass('show');
+    });
+  }
 
   // get started modal
   $('body').delegate('.iama', 'click', function() {

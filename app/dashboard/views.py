@@ -35,6 +35,7 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 from django.views.decorators.clickjacking import xframe_options_exempt
+from economy.utils import convert_token_to_usdt
 
 from app.utils import clean_str, ellipses, sync_profile
 from avatar.utils import get_avatar_context
@@ -51,6 +52,7 @@ from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
 from django.template import loader
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from kudos.utils import humanize_name
 
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
@@ -1712,6 +1714,42 @@ def get_users(request):
                 profile_json['avatar_url'] = user.avatar_url
             profile_json['preferred_payout_address'] = user.preferred_payout_address
             results.append(profile_json)
+        data = json.dumps(results)
+    else:
+        raise Http404
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
+
+def get_kudos(request):
+    autocomplete_kudos = {
+        'copy': "No results found.  Try these categories: ",
+        'autocomplete': ['rare','common','ninja','soft skills','programming']
+    }
+    if request.is_ajax():
+        q = request.GET.get('term')
+        eth_to_usd = convert_token_to_usdt('ETH')
+        kudos_by_name = Token.objects.filter(name__icontains=q)
+        kudos_by_desc = Token.objects.filter(description__icontains=q)
+        kudos_by_tags = Token.objects.filter(tags__icontains=q)
+        kudos_pks = (kudos_by_desc | kudos_by_name | kudos_by_tags).values_list('pk', flat=True)
+        kudos = Token.objects.filter(pk__in=kudos_pks).order_by('name')
+        results = []
+        for token in kudos:
+            kudos_json = {}
+            kudos_json['id'] = token.id
+            kudos_json['name'] = token.name
+            kudos_json['name_human'] = humanize_name(token.name)
+            kudos_json['description'] = token.description
+            kudos_json['image'] = token.image
+
+            kudos_json['price_finney'] = token.price_finney / 1000
+            kudos_json['price_usd'] = eth_to_usd * kudos_json['price_finney']
+            kudos_json['price_usd_humanized'] = f"${round(kudos_json['price_usd'], 2)}"
+
+            results.append(kudos_json)
+        if not results:
+            results = [autocomplete_kudos]
         data = json.dumps(results)
     else:
         raise Http404
