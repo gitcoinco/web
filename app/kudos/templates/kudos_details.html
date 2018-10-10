@@ -7,6 +7,7 @@
     {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
     <script src="{% static 'v2/js/tweenlite.js' %}"></script>
+    <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
 
 
   </head>
@@ -26,6 +27,13 @@
   	<section class="container my-5 pb-5">
       <div class="row justify-content-around">
         <div class="col-md-6 col-lg-5 mb-5">
+
+        <div class="kudos_msg" style="">
+            <strong></strong>
+            <p>
+              
+            </p>
+        </div>
 
           {% include 'shared/kudos_levitate.html' %}
 

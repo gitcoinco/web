@@ -424,8 +424,7 @@ a:hover #shape-hexagon {
     .star-pulse {
       right: -10px;
       margin-top: 0;
-      width: 5rem; } 
-    }
+      width: 5rem; } }
 
 @keyframes pulse-shadow {
   0% {
@@ -450,4 +449,60 @@ a:hover #shape-hexagon {
 #world {
   z-index: -1; }
 
+#kudos-image, .kudos_levitate_container{
+  cursor: pointer;
+}
+
+#kudos-image.shake{
+  animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+.kudos_msg{
+  margin-top: -90px;
+  display: none;
+  position: relative;
+  background-color: #3e00ff;
+  border-radius: 10px;
+  color: white;
+  padding: 3px 10px;
+  margin-bottom: 20px
+
+}
+
+.kudos_msg:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+  border-top-color: #3e00ff;
+  border-bottom: 0;
+  border-left: 0;
+  margin-left: -10px;
+  margin-bottom: -20px;
+}
+/*# sourceMappingURL=styles.css.map */
 

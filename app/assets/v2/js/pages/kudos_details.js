@@ -20,8 +20,7 @@ var getKudosById = function(kudosId) {
 
 
 $(document).ready(function() {
-  kudos_levitate();
-  console.log('here');
+  stop_kudos_levitate();
   let kudosId = window.location.pathname.split('/')[2];
   // let kudosId = $('#kudosId').text()
   // let kudosName = $('#kudosName').text()
@@ -33,6 +32,55 @@ $(document).ready(function() {
     $('#getKudos').attr('class', 'btn btn-gc-blue disabled').attr('aria-disabled', 'true');
     return;
   }
+
+  $("#kudos-image").hover(function(){
+    start_kudos_levitate();
+  }, function(){
+  });
+  $(".kudos_levitate_container").hover(function(){
+  }, function(){
+    stop_kudos_levitate();
+  });
+
+  var rotate_kudos_msg = function(){
+    var messages = [
+      ['Buy Me!', 'I\'m looking for a good home.'],
+      ['Please.. Choose me!', "All I want is a good home."],
+      ['Please.. Choose me!', "You don't know what it's like to live in the blockchain..."],
+      ["It's ...", "... so lonely in here.."],
+      ["Am I the one?", ""],
+      ["Am I the one?", "(sad puppy dog eyes)"],
+      ["Who are you sending a kudos to?", "I bet I'll make them really happy!"],
+      ["Who are you sending a kudos to?", "I'm the one to make them happy!"],
+      ["I play nice with others.", ""],
+      ["I'd look really good on a profile!", ""],
+      ["Who are you sending a kudos to?", "I'd look good on their profile.."],
+    ]
+    var item = messages[Math.floor(Math.random()*messages.length)];
+    var h1 = item[0];
+    var p = item[1];
+
+    $(".kudos_msg strong").text(h1);
+    $(".kudos_msg p").text(p);
+  }
+
+
+  $(".kudos_levitate_container, #kudos-image").click(function(){
+
+    if(Math.random() < 0.4){
+      rotate_kudos_msg();
+      $(".kudos_msg").css('display', 'block');
+      setTimeout(function(){
+        $(".kudos_msg").css('display', 'none');
+      }, 1000);
+    } else {
+      $("#kudos-image").addClass('shake');
+      setTimeout(function(){
+         $("#kudos-image").removeClass('shake');
+      }, 1000);
+    }
+
+  });
 
   $('#getKudos').click(function() {
     if (numClones > kudosNumClonesAvailable) {
@@ -49,7 +97,8 @@ $(document).ready(function() {
 })
 
 
-var kudos_levitate = function(){
+var start_kudos_levitate = function(){
+  $(".kudos_levitate_container").css('display', 'block');
   var sapphire = document.getElementById('kudos-image');
   var shadow = document.getElementById('shadow');
   var sparkle1 = document.getElementById('sparkle1');
@@ -84,6 +133,12 @@ var kudos_levitate = function(){
            .to(twinkle4, 1, { scale: 1, transformOrigin: 'center center', ease: Elastic.easeOut }, 'sparkleshow+=0.9')
 
   sparkleTl.timeScale(2);
+}
+
+var stop_kudos_levitate = function(){
+  $(".kudos_levitate_container").css('display', 'none');
+  TweenMax.killAll(false,true,false);
+
 }
 
 // $('#getKudos').click(function() {
