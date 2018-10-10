@@ -604,6 +604,12 @@ input[type=text].loading {
   font-size: 0.875rem;
 }
 
+.select2-results,
+.select2-results{
+  max-height: 400px;
+  overflow-y: scroll;
+}
+
 .select2-results__option:empty {
   padding: 1px;
   border-bottom: solid 1px darkgray;

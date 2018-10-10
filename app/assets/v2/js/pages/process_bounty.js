@@ -109,6 +109,40 @@ window.onload = function() {
 
     };
 
+    var attach_and_send_kudos = function(kudos_name, callback) {
+      // get form data
+
+      var email = '';
+      var github_url = $('#issueURL').val();
+      var from_name = document.contxt['github_handle'];
+      var username = $('#bountyFulfillment option:selected').data('username');
+      var amountInEth = document.selected_kudos.price_finney / 1000.0;
+      var kudosId = document.selected_kudos.id;
+      var comments_priv = '';
+      var comments_public = $(".kudos-comment textarea").val();
+      var from_email = '';
+      var accept_tos = true;
+      var tokenAddress = document.token_address;
+      var expires = 9999999999;
+      var is_for_bounty_fulfiller = true;
+      var success_callback = function(txid) {
+        var url = 'https://' + etherscanDomain() + '/tx/' + txid;
+        var msg = 'The Kudos has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
+
+        // send msg to frontend
+        _alert(msg, 'info');
+        callback();
+
+      };
+      var failure_callback = function() {
+        // do nothing
+        $.noop();
+      };
+
+      return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, kudosId, success_callback, failure_callback, is_for_bounty_fulfiller);
+
+    };
+
 
     $('#acceptBounty').click(function(e) {
       try {
@@ -214,16 +248,25 @@ window.onload = function() {
             next();
           }
         };
-        var send = function() {
+        // just sent payout
+        var send_payout = function() {
           bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))}, final_callback);
         };
 
-        if ($('#tipPercent').val() > 0) {
-          attach_and_send_tip(send);
-        } else {
-          send();
+        // send both tip and payout
+        var send_tip_and_payout_callback = function(){
+          if ($('#tipPercent').val() > 0) {
+            attach_and_send_tip(send_payout);
+          } else {
+            send_payout();
+          }
         }
-        
+        if(document.selected_kudos){
+          attach_and_send_kudos(document.selected_kudos, send_tip_and_payout_callback)
+        } else {
+          send_tip_and_payout_callback();
+        }
+
 
       };
       // Get bountyId from the database
