@@ -424,7 +424,8 @@ a:hover #shape-hexagon {
     .star-pulse {
       right: -10px;
       margin-top: 0;
-      width: 5rem; } }
+      width: 5rem; } 
+    }
 
 @keyframes pulse-shadow {
   0% {
