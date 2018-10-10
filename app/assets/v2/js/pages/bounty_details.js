@@ -891,11 +891,9 @@ var do_actions = function(result) {
     const _entry = {
       enabled: enabled,
       href: 'javascript:show_notify_funder_modal()',
-      // text: gettext('Notify FUnder'),
       text: gettext('Send Payment Reminder'),
       parent: 'right_actions',
       title: gettext('Send Payment Reminder'),
-      // title: gettext('Notify funder that work is ready to be paid by email'),
       id: 'notifyFunder'
     };
 

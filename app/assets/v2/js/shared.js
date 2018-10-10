@@ -265,7 +265,6 @@ var waitingStateActive = function() {
 var notify_funder = function(bounty_pk, data) {
   var request_url = '/actions/bounty/' + bounty_pk + '/notify_funder/';
 
-  console.log(request_url);
   showBusyOverlay();
   $.post(request_url, data).then(function(result) {
     hideBusyOverlay();
