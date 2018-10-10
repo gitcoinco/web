@@ -23,6 +23,12 @@
   padding: 0.6rem 1rem;
 }
 
+.top-nav .link {
+  text-decoration: none;
+  color: #9E9E9E;
+}
+
+
 .top-nav a img {
   filter: grayscale(1);
   opacity: 0.6;

@@ -17,11 +17,11 @@
 {% endcomment %}
 {% load i18n static matches %}
 <div class="top-nav g-font-muli {{class}}">
-  Grow Open Source
+  <a class="link" href="{% url 'mission' %}">Grow Open Source</a>
   <a class="{% if request.path == '/' %}selected{% endif %}" href="/">
     <img src="{% static "v2/images/top-bar/gitcoin-logo.svg" %}" height="22" alt="">
   </a>
-  <a class="{% if request.path|matches:'^\/((codefund.*))$' %}selected{% endif %}" href="https://codesponsor.io/">
+  <a class="{% if request.path|matches:'^\/((codefund.*))$' %}selected{% endif %}" href="https://codefund.io/">
     <img src="{% static "v2/images/top-bar/codefund-logo.svg" %}" height="20" alt="">
   </a>
   <a class="{% if request.path|matches:'^\/((kudos.*))$' %}selected{% endif %}" href="{% url 'kudos_main' %}">
