@@ -55,6 +55,8 @@ def grants(request):
 
 def grant_details(request, grant_id):
     """Display the Grant details page."""
+    profile = request.user.profile if request.user.is_authenticated else None
+
     try:
         grant = Grant.objects.get(pk=grant_id)
     except Grant.DoesNotExist:
@@ -65,8 +67,9 @@ def grant_details(request, grant_id):
         'title': _('Grant Details'),
         'grant': grant,
         'keywords': get_keywords(),
+        'is_admin': grant.admin_profile == profile,
     }
-    return TemplateResponse(request, 'grants/show.html', params)
+    return TemplateResponse(request, 'grants/detail.html', params)
 
 
 def grant_new(request):

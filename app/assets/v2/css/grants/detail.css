@@ -1,0 +1,73 @@
+@media (min-width: 1200px) {
+  .grant-detail .container {
+    max-width: 85vw
+  }
+}
+
+/* Milestones */
+.milestones-container {
+  border: 1px solid #CECECE;
+  border-radius: 3px;
+  padding: 30px;
+}
+
+ul.milestones {
+  padding-left: 15px;
+  margin-top: -1px;
+}
+
+ul.milestones li {
+  padding-left: 33px;
+  list-style: none;
+  position: relative;
+  margin-bottom: 0;
+  padding-bottom: 2.5em;
+}
+
+ul.milestones li:last-child {
+  padding-bottom: 0;
+}
+
+.article-title, .milestone-title {
+  font-size: 20px;
+  color: #43484D;
+}
+
+.article-date, .milestone-date {
+  font-size: 14px;
+  color: #CCCCCC;
+}
+
+.article-description, .milestone-description {
+  font-size: 14px;
+  color: #43484D;
+}
+
+ul.milestones li:after {
+  content: url('/static/v2/images/list-icon.svg');
+  position: absolute;
+  left: -25px;
+  top: 10px;
+}
+
+ul.milestones li:before {
+  content: "";
+  position: absolute;
+  left: -16px;
+  border-left: 1px solid #979797;
+  height: 100%;
+  width: 1px;
+}
+
+ul.milestones li:first-child:before {
+  top: 15px;
+}
+
+ul.milestones li:last-child:before {
+  height: 15px;
+}
+
+#addUpdate {
+  background: #F9F9F9;
+  padding: 20px;
+}
