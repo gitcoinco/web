@@ -87,6 +87,7 @@ class Command(BaseCommand):
                 msg += f"{counter}.   {emoji}   ${amount}   {user_link}\n"
                 counter += 1
         msg += "\n :chart_with_upwards_trend:  View Leaderboard: https://gitcoin.co/leaderboard "
+        msg += "\n=========================================\n If you are in the top 3 in any category, DM @owocki for some Gitcoin schwag !! "
         msg += "\n=========================================\n\n :four_leaf_clover: Good luck and see you next week! \n\n:love_gitcoin: ~gitcoinbot "
         print(msg)
         success = post_to_slack(channel, msg)
