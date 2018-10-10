@@ -49,6 +49,9 @@ def grant_show(request, grant_id):
     """Display a grant."""
     grant = Grant.objects.get(pk=grant_id)
 
+    print("this is the web3 instance", w3)
+
+
     params = {
         'active': 'dashboard',
         'title': 'Grant Show',
@@ -104,18 +107,21 @@ def fund_grant(request, grant_id):
         subscription = Subscription()
 
         print("it fired")
+        print(request.POST)
 
 
-        subscription.subscriptionHash = request.POST.get('subscription_hash')
-        subscription.contributorSignature = request.POST.get('signature')
-        subscription.contributorAddress = request.POST.get('contributor_address')
+        subscription.subscription_hash = request.POST.get('subscription_hash')
+        subscription.contributor_signature = request.POST.get('signature')
+        subscription.contributor_address = request.POST.get('contributor_address')
         subscription.amount_per_period = request.POST.get('amount_per_period')
-        subscription.tokenAddress = request.POST.get('token_address')
+        subscription.token_address = request.POST.get('token_address')
         subscription.gas_price = request.POST.get('gas_price')
         subscription.network = request.POST.get('network')
         subscription.contributor_profile = profile
         subscription.grant = grant
         subscription.save()
+        return redirect(f'/grants/{grant.pk}')
+
     else:
         subscription = {}
 

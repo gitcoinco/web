@@ -60,7 +60,13 @@ $(document).ready(function() {
        console.log(realTokenAmount);
 
 
-       let args = [data.admin_address, '0xfC3FeB6064fe0CBcd675Ec4DD4b5c07C84f3CfC0', web3.utils.toTwosComplement(realTokenAmount), web3.utils.toTwosComplement(2592000), 0]
+       let args = [
+         data.admin_address,
+         // testing token
+         '0xfC3FeB6064fe0CBcd675Ec4DD4b5c07C84f3CfC0',
+         web3.utils.toTwosComplement(realTokenAmount),
+         web3.utils.toTwosComplement(2592000),
+         web3.utils.toTwosComplement(0)]
 
        web3.eth.getAccounts(function(err, accounts){
         web3.eth.net.getId(function(err, network){

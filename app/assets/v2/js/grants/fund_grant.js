@@ -1,10 +1,5 @@
 /* eslint-disable no-console */
-window.onload = function() {
-
-  alert("Just so you know, you will perform two actions in MetaMask on this page!")
-
-  // this variable acts as a placeholder for testing
-  let token = '0x0000000000000000000000000000000000000000'
+$(document).ready(function() {
 
   $('#period').select2();
 
@@ -12,29 +7,17 @@ window.onload = function() {
     $(this).select2();
   });
 
+  // alert("Just so you know, you will perform two actions in MetaMask on this page!")
+
   $('#js-fundGrant').validate({
     submitHandler: function(form) {
-      var action = $(form).attr('action');
       var data = {};
 
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;
       });
 
-
       console.log(data);
-
-      // web3.eth.net.getId(function(err, network){
-      //
-      //   console.log(network);
-      //
-      //   if (network != data.network) {
-      //     // break
-      //   } else {
-      //     // continue
-      //   }
-      //
-      // })
 
       let value = 0;
       let txData = '0x02'; // something like this to say, hardcoded VERSION 2, we're sending approved tokens
@@ -62,6 +45,7 @@ window.onload = function() {
 
       let realGasPrice = Number(data.gas_price*10**decimals)
 
+
         web3.eth.getAccounts(function(err, accounts){
 
           console.log('accounts', accounts);
@@ -72,6 +56,8 @@ window.onload = function() {
 
             // Should add approval transactions to transaction history
             console.log('result', result);
+
+
 
               deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce){
 
@@ -84,6 +70,7 @@ window.onload = function() {
                 const parts = [
                   accounts[0],
                   data.admin_address,
+                  // testing token
                   '0xfC3FeB6064fe0CBcd675Ec4DD4b5c07C84f3CfC0',
                   web3.utils.toTwosComplement(realTokenAmount),
                   web3.utils.toTwosComplement(periodSeconds),
@@ -93,9 +80,12 @@ window.onload = function() {
 
                 console.log('parts', parts);
 
+
                 deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash){
 
                   $('#subscription_hash').val(subscriptionHash)
+
+
 
                   web3.eth.personal.sign(""+subscriptionHash, accounts[0], function(err, signature){
 
@@ -107,6 +97,8 @@ window.onload = function() {
                       subscriptionHash: subscriptionHash,
                       signature:signature,
                     }
+
+                    console.log(postData);
 
                     fetch('http://localhost:10003/saveSubscription', {
                       method: 'POST',
@@ -123,11 +115,16 @@ window.onload = function() {
                         data[this.name] = this.value;
                       });
 
-                      $(form).submit();
+                      console.log('data', data);
+
+                      form.submit();
+
                     })
                     .catch((error)=>{
                       console.log(error);
                     });
+
+
 
                   })
                 })
@@ -139,15 +136,10 @@ window.onload = function() {
         })
       })
 
-
-// instantiate contract
-// get data from data and inputs
-// getSubscriptionHash from contract_address
-// create Signature
-// submit Signature
-// save data and signature
-
     }
   })
 
-};
+});
+
+// will want to check if account already has a subscription. If a second is produced the timestamp will not function properly
+// will need to check network to make sure users aren't submiting transactions to non-existant contracts
