@@ -91,6 +91,7 @@ INSTALLED_APPS = [
     'tdi',
     'gas',
     'git',
+    'healthcheck.apps.HealthcheckConfig',
     'legacy',
     'chartit',
     'email_obfuscator',

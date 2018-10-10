@@ -41,7 +41,7 @@ from enssubdomain.models import ENSSubdomainRegistration
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from mailchimp3 import MailChimp
 from marketing.mails import new_feedback
-from marketing.models import EmailSubscriber, Keyword, LeaderboardRank
+from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, validate_discord_integration, validate_slack_integration
 from retail.emails import ALL_EMAILS
 from retail.helpers import get_ip
@@ -521,6 +521,7 @@ def account_settings(request):
             logout_redirect = redirect(reverse('logout') + '?next=/')
             return logout_redirect
         elif request.POST.get('delete', False):
+
             # remove profile
             profile.hide_profile = True
             profile = record_form_submission(request, profile, 'account-delete')
@@ -541,7 +542,14 @@ def account_settings(request):
             if es:
                 es.delete()
             request.user.delete()
-            messages.success(request, _('Your account has been deleted'))
+            AccountDeletionRequest.objects.create(
+                handle=profile.handle,
+                profile={
+                        'ip': get_ip(request),
+                    }
+                )
+            profile.delete()
+            messages.success(request, _('Your account has been deleted.'))
             logout_redirect = redirect(reverse('logout') + '?next=/')
             return logout_redirect
         else:
@@ -589,6 +597,9 @@ def leaderboard(request, key=''):
         'quarterly_orgs': _('Top Orgs'),
         'quarterly_tokens': _('Top Tokens'),
         'quarterly_keywords': _('Top Keywords'),
+        # 'quarterly_cities': _('Top Cities'),
+        # 'quarterly_countries': _('Top Countries'),
+        # 'quarterly_continents': _('Top Continents'),
         #        'weekly_fulfilled': 'Weekly Leaderboard: Fulfilled Funded Issues',
         #        'weekly_all': 'Weekly Leaderboard: All Funded Issues',
         #        'monthly_fulfilled': 'Monthly Leaderboard',
@@ -599,6 +610,13 @@ def leaderboard(request, key=''):
         #        'all_all': 'All-Time Leaderboard: All Funded Issues',
         # TODO - also include options for weekly, yearly, and all cadences of earning
     }
+
+    if settings.ENV != 'prod':
+        # TODO (mbeacom): Re-enable this on live following a fix for leaderboards by location.
+        titles['quarterly_cities'] = _('Top Cities')
+        titles['quarterly_countries'] = _('Top Countries')
+        titles['quarterly_continents'] = _('Top Continents')
+
     if key not in titles.keys():
         raise Http404
 
@@ -616,7 +634,8 @@ def leaderboard(request, key=''):
     else:
         amount_max = 0
 
-    is_linked_to_profile = '_tokens' in key or '_keywords' in key
+    profile_keys = ['_tokens', '_keywords', '_cities', '_countries', '_continents']
+    is_linked_to_profile = any(sub in key for sub in profile_keys)
     context = {
         'items': items,
         'titles': titles,
