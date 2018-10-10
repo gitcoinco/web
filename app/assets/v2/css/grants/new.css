@@ -37,3 +37,12 @@
 .form__select2 .select2-container {
   top: -2px;
 }
+
+.select2-container--default .select2-selection--multiple {
+  border-color: #000;
+  font-size: 0.8rem;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+  padding: 2px 5px;
+}

@@ -51,10 +51,11 @@
               <input type="url" class="form__input" id="input-url" name="reference_url" required/>
             </div>
 
-            <!-- <div class="form__group-horizontal">
+            <div class="form__group-horizontal">
               <label class="form__label" for="input-team_members">{% trans "Team members" %}</label>
-              <input type="text" class="form__input" id="input-team_members" placeholder="List emails by comma" name="team_members" />
-            </div> -->
+              <select id="input-team_members" class="form__input team_members" name="team_members[]" multiple="multiple">
+              </select>
+            </div>
 
             <div class="form__group-horizontal">
               <label class="form__label">{% trans "Total amount sought for grant" %}</label>
@@ -120,6 +121,7 @@
       </div>
     </div>
 
+    {% include 'shared/current_profile.html' %}
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
@@ -135,5 +137,6 @@
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledSubscriptionContract.js" %}"></script>
+  <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="{% static "v2/js/grants/new.js" %}"></script>
 </html>
