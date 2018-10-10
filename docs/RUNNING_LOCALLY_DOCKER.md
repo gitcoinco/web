@@ -59,6 +59,18 @@ For example:
 docker-compose exec web python3 app/manage.py createsuperuser
 ```
 
+## Add a Custom ERC20 Token To your Local Gitcoin
+
+1. [Create a django admin](https://github.com/gitcoinco/web/blob/master/docs/RUNNING_LOCALLY_DOCKER.md#create-django-admin)
+2. Go to [http://localhost:8000/_administrationeconomy/token/](http://localhost:8000/_administrationeconomy/token/) and click `Add New Token`.
+3. Open another tab and go to [http://tokenfactory.surge.sh](http://tokenfactory.surge.sh)
+4. Mint a new token on the network of ur choice.
+5. Go back to your Gitcoin local tab, and enter the token.
+6. Click Save
+7. Congratulations, your local environment now supports your custom token!
+8. You may continue administering your token over at [http://tokenfactory.surge.sh](http://tokenfactory.surge.sh).  Hint:  Maybe you should mint some? 🤔
+
+
 ## Optional: Import bounty data from web3 to your database
 
 This can be useful if you'd like data to test with:
