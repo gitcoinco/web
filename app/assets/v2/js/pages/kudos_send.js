@@ -449,8 +449,10 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           // Step 9
           // Kudos Direct Send (KDS)
           console.log('Using Kudos Direct Send (KDS)');
-          // send_kudos_direct(kudosId, 1, destinationAccount);
-
+          // get kudosPrice from the HTML
+          var kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
+          var kudosPriceInWei = new web3.BigNumber(kudosPriceInEth * 1.0 * Math.pow(10, 18));
+          // console.log(destinationAccount, kudosId, numClones, account, kudosPriceInWei)
           kudos_contract.clone(destinationAccount, kudosId, numClones, {from: account, value: kudosPriceInWei}, function(cloneError, cloneTxid) {
             // totalSupply yield the kudos_id
             kudos_contract.totalSupply(function(supplyError, kudos_id) {
@@ -464,8 +466,9 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           // Kudos Indirect Send (KIS)
           // estimate gas for cloning the kudos
           console.log('Using Kudos Indirect Send (KIS)')
-          // let kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice')); 
-          var kudosPriceInWei = amountInEth * 1.0 * Math.pow(10, 18);
+          var kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
+          var kudosPriceInWei = new web3.BigNumber(kudosPriceInEth * 1.0 * Math.pow(10, 18));
+          // console.log(destinationAccount, kudosId, numClones, account, kudosPriceInWei)
           params = {
             kudosId: kudosId,
             numClones: numClones,
