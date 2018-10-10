@@ -24,7 +24,7 @@ $(document).ready(function() {
       let gasLimit = 120000;
 
       // hardcode period seconds to monthly
-      let periodSeconds = 2592000;
+      let periodSeconds = 60;
 
       if (!data.gas_price)
         data.gas_price = 0;
@@ -33,7 +33,7 @@ $(document).ready(function() {
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address)
 
       // This token is only for testing
-      let deployedToken = new web3.eth.Contract(compiledToken.abi, '0xfC3FeB6064fe0CBcd675Ec4DD4b5c07C84f3CfC0')
+      let deployedToken = new web3.eth.Contract(compiledToken.abi, '0x6760Deb39EcFc70c8261E0CC3550B1099A14f584')
 
 
       deployedToken.methods.decimals().call(function(err, decimals){
@@ -69,12 +69,12 @@ $(document).ready(function() {
 
                 const parts = [
                   accounts[0],
-                  data.admin_address,
+                  '0xe87529a6123a74320e13a6dabf3606630683c029',
                   // testing token
-                  '0xfC3FeB6064fe0CBcd675Ec4DD4b5c07C84f3CfC0',
-                  web3.utils.toTwosComplement(realTokenAmount),
-                  web3.utils.toTwosComplement(periodSeconds),
-                  web3.utils.toTwosComplement(realGasPrice),
+                  '0x6760Deb39EcFc70c8261E0CC3550B1099A14f584',
+                  web3.utils.toTwosComplement(1),
+                  web3.utils.toTwosComplement(60),
+                  web3.utils.toTwosComplement(0),
                   web3.utils.toTwosComplement(nonce)
                 ]
 
@@ -98,7 +98,7 @@ $(document).ready(function() {
                       signature:signature,
                     }
 
-                    console.log(postData);
+                    console.log('postData', postData);
 
                     fetch('http://localhost:10003/saveSubscription', {
                       method: 'POST',

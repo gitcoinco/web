@@ -51,12 +51,14 @@ $(document).ready(function() {
 
 
        let args = [
-         data.admin_address,
+         '0xe87529a6123a74320e13a6dabf3606630683c029',
          // testing token
-         '0xfC3FeB6064fe0CBcd675Ec4DD4b5c07C84f3CfC0',
-         web3.utils.toTwosComplement(realTokenAmount),
-         web3.utils.toTwosComplement(2592000),
+         '0x6760Deb39EcFc70c8261E0CC3550B1099A14f584',
+         web3.utils.toTwosComplement(1),
+         web3.utils.toTwosComplement(60),
          web3.utils.toTwosComplement(0)]
+
+         console.log('args', args);
 
        web3.eth.getAccounts(function(err, accounts){
         web3.eth.net.getId(function(err, network){

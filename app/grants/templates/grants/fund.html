@@ -70,11 +70,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </div>
           </div>
           <div class="col-4">
-            <div class="form__select2">
-              <select class='js-select2' name='denomination' id='js-token'> </select>
-            </div>
-          </div>
-          <div class="col-4">
             <div class="form__group-horizontal">
               <!-- <label class="form__label">{% trans "Select period:" %}</label>
               <div class="form__select2 fund__period">
@@ -85,6 +80,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <!-- </div> -->
             </div>
           </div>
+          <div class="form__group-horizontal">
+            <div class="row">
+              <div class="col-8">
+                <button class="button button--primary" id='js-fundGrant'>{% trans "Create Grant" %}</button>
+              </div>
+            </div>
 
           <div class="progress-text top-buffer bottom-buffer">
             <div class="row">
@@ -102,7 +103,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <p>
           {{ grant.description }}
         </p>
-
+      </div>
 
         <div>
           <input type="hidden" id="grant_id" name="grant_id" value="{{ grant.id }}">
