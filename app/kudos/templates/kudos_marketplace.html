@@ -35,12 +35,26 @@
       {% if not listings %}
       <div class="text-center m-5 bg-white p-5">
         <h1>UH-OH!</h1>
-        The kudos you were looking for isn't here, but here's a surprecie!
+        The kudos you were looking for isn't here, but here's a surprise!
         <img id="logo" src="{% static 'v2/images/kudos/assets/no-kudos.gif' %}"  width="500" class="mw-100" />
         <div class="m-3">
           {% trans "Feeling creative?" %} <a href="https://github.com/gitcoinco/kudosbadges/issues/new" target="_blank" class="">{% trans "Mint Your Own!" %}</a>
         </div>
       </div>
+      <script>
+        if (window.location.search === "?q=konami+code") {
+          let cursor = 0;
+          const KONAMI_CODE = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+          document.addEventListener('keydown', (e) => {
+            cursor = (e.keyCode == KONAMI_CODE[cursor]) ? cursor + 1 : 0;
+            if (cursor == KONAMI_CODE.length) activate();
+          });
+
+          function activate () {
+            window.open('mailto:founders@gitcoin.co?subject=Kudos%20Konami%20Code&body=I+have+discovered+this+in+Kudos+marketplace.%0D%0AMy+wallet+is%3A+');
+          }
+        }
+      </script>
       {% endif %}
       <div class="row justify-content-center">
         {% for listing in listings %}
