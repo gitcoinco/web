@@ -117,6 +117,7 @@
         {% include 'shared/nav_auth.html' with source='authed' %}
       {% endif %}
     </nav>
+    {% include 'shared/top_nav.html' with class='d-md-none' %}
   </div>
 </nav>
 {% if request.path|matches:"^\/((explorer)|(issue.*)|(.*new.*))$" %}

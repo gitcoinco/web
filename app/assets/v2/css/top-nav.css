@@ -1,16 +1,26 @@
 .top-nav {
-  background: black;
   color: #9E9E9E;
-  padding: 0.6rem;
+  /* padding: 0.6rem; */
   display: flex;
-  align-items: center;
-  justify-content: center;
   flex-basis: 100%;
-  max-height: 43px;
+  /* max-height: 43px; */
+  flex-wrap: wrap;
+  flex-shrink: 0;
+  flex-direction: column;
+  flex: 1 0 45px;
+}
+
+@media (min-width: 768px) {
+  .top-nav {
+    background: black;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 .top-nav a {
-  padding: 0 1rem;
+  padding: 0.6rem 1rem;
 }
 
 .top-nav a img {
@@ -21,7 +31,7 @@
 
 .top-nav a:hover img,
 .top-nav a.selected img {
-  opacity: 1;
+  /* opacity: 1; */
 }
 
 .top-nav a:hover img {

@@ -24,6 +24,7 @@
   <body class="{{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header">
+      {% include 'shared/top_nav.html' with class='d-none d-md-flex' %}
       {% include 'shared/nav.html' %}
       {% include 'shared/minihero.html' with h1=title position_h1_below_logo=1 %}
     </div>
@@ -190,7 +191,7 @@
           {% for the_title, hrd in hourly_rate_distribution_by_range.items %}
             {% if hrd %}
               <div class="col-2 {% cycle 'odd' 'even' %}" style="margin: 10px auto; border: 1px solid #6c757d; padding: 5px 10px; max-width: 150px; height: 110px;">
-                  <strong>{{the_title | title}}</strong> 
+                  <strong>{{the_title | title}}</strong>
                   <br>
                   {% trans "Bounties Pay" %}
                   <br>
@@ -209,7 +210,7 @@
           {% for the_title, hrd in skill_rate_distribution_by_range.items %}
             {% if hrd %}
               <div class="col-2 {% cycle 'odd' 'even' %}" style="margin: 10px auto; border: 1px solid #6c757d; padding: 5px 10px; max-width: 150px; height: 110px;">
-                  <strong>{{the_title | title}}</strong> 
+                  <strong>{{the_title | title}}</strong>
                   <br>
                   {% trans "Bounties Pay" %}
                   <br>
