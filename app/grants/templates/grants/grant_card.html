@@ -17,18 +17,18 @@
 {% load i18n static humanize i18n %}
 
 <div class="grant-item">
-  <a class="grant-item__hero" href="{% url 'grants:grant' grant.id %}">
-    <img src="{% if grant.image %}{% static grant.image %}{% else %} http://placehold.it/300 {% endif %}" alt="{{ grant.title|truncatechars:60 }}">
+  <a class="grant-item__hero" href="{% url 'grants:details' grant.id %}">
+    <img src="{{ grant.logo.url|default_if_none:'http://placehold.it/300' }}" alt="{{ grant.title|truncatechars:60 }}">
   </a>
   <div class="grant-item__content">
-    <h2 class="grant-item__title"><a href="{% url 'grants:grant' grant.id %}">{{ grant.title|truncatechars:60 }}</a></h2>
-    <p class="grant-item__pitch">{{ grant.pitch|truncatechars:135 }}</p>
+    <h2 class="grant-item__title"><a href="{% url 'grants:details' grant.id %}">{{ grant.title|truncatechars:60 }}</a></h2>
+    <p class="grant-item__pitch">{{ grant.description|truncatechars:135 }}</p>
     <div class="grant-item__footer">
       <div class="grant-item__owner">
         <div class="grant-item__owner-image">
-          <img src="{% if grant.profile.local_avatar_url %}{% static grant.profile.local_avatar_url %}{% else %} http://placehold.it/300 {% endif %}">
+          <img src="{% if grant.admin_profile.avatar_url %}{{ grant.admin_profile.avatar_url }}{% else %}http://placehold.it/300{% endif %}">
         </div>
-        <div class="grant-item__owner-handle">{% trans 'by' %} <span>{{ grant.profile.handle }}</span></div>
+        <div class="grant-item__owner-handle">{% trans 'by' %} <span>{{ grant.admin_profile.handle|default:'Anonymous' }}</span></div>
       </div>
       <div class="progress progress--small">
           <div class="progress-bar" role="progressbar" style="width: {{ grant.percentage_done }}%" aria-valuenow="{{ grant.percentage_done }}%" aria-valuemin="0" aria-valuemax="100"></div>
@@ -38,11 +38,11 @@
       </div> -->
       <div class="grant-item__funding">
         <div class="grant-item__funding-item">
-          <div class="grant-item__funding-number">{{ grant.current_funding|floatformat:2|intcomma }} ETH</div>
+          <div class="grant-item__funding-number">{{ grant.amount_received|floatformat:2|intcomma }} ETH</div>
           <div class="grant-item__funding-label">{% trans 'Current' %}</div>
         </div>
         <div class="grant-item__funding-item">
-          <div class="grant-item__funding-number">{{ grant.goal_funding|floatformat:2|intcomma }} ETH</div>
+          <div class="grant-item__funding-number">{{ grant.amount_goal|floatformat:2|intcomma }} ETH</div>
           <div class="grant-item__funding-label">{% trans 'Goal' %}</div>
         </div>
       </div>

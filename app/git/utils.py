@@ -52,7 +52,8 @@ def github_connect(token=None):
             Defaults to: None.
 
     """
-    if token is None:
+    github_client = None
+    if not token:
         token = settings.GITHUB_API_TOKEN
 
     try:
@@ -62,15 +63,14 @@ def github_connect(token=None):
             client_secret=settings.GITHUB_CLIENT_SECRET,
         )
     except BadCredentialsException as e:
-        github_client = None
         logger.exception(e)
     return github_client
 
 
-def get_gh_issue_details(org, repo, issue_num):
+def get_gh_issue_details(org, repo, issue_num, token=None):
     details = {'keywords': []}
     try:
-        gh_client = github_connect()
+        gh_client = github_connect(token)
         org_user = gh_client.get_user(login=org)
         repo_obj = org_user.get_repo(repo)
         issue_details = repo_obj.get_issue(issue_num)
@@ -376,7 +376,7 @@ def search(query):
     """Search for a user on github.
 
     Args:
-        q (str): The query text to match.
+        query (str): The query text to match.
 
     Returns:
         request.Response: The github search response.
@@ -384,8 +384,59 @@ def search(query):
     """
     params = (('q', query), ('sort', 'updated'), )
 
-    response = requests.get('https://api.github.com/search/users', auth=_AUTH, headers=V3HEADERS, params=params)
-    return response.json()
+    try:
+        response = requests.get('https://api.github.com/search/users', auth=_AUTH, headers=V3HEADERS, params=params)
+        return response.json()
+    except Exception as e:
+        logger.error("could not search GH - Reason: %s - query: %s", e, query)
+    return {}
+
+
+def search_user(query, token=None):
+    """Search for a user on github.
+
+    Args:
+        query (str): The query text to match.
+        token (str): The user's Github token to be used to perform the search.
+
+    Returns:
+        dict: The first matching github user dictionary.
+
+    """
+    paginated_list = search_users(query, token)
+    try:
+        user_obj = paginated_list[0]
+        return {
+            'avatar_url': user_obj.avatar_url,
+            'login': user_obj.login,
+            'text': user_obj.login,
+            'email': user_obj.email,
+        }
+    except IndexError:
+        pass
+    except Exception as e:
+        logger.error(e)
+    return {}
+
+
+def search_users(query, token=None):
+    """Search for a user on github.
+
+    Args:
+        query (str): The query text to match.
+        token (str): The user's Github token to be used to perform the search.
+
+    Returns:
+        github.PaginatedList: The pygithub paginator object of all results if many True.
+
+    """
+    gh_client = github_connect(token)
+    try:
+        paginated_list = gh_client.search_users(query)
+        return paginated_list
+    except Exception as e:
+        logger.error(e)
+        return []
 
 
 def get_issue_comments(owner, repo, issue=None, comment_id=None):
@@ -413,9 +464,15 @@ def get_issue_comments(owner, repo, issue=None, comment_id=None):
     else:
         url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments'
 
-    response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
-
-    return response.json()
+    try:
+        response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
+        return response.json()
+    except Exception as e:
+        logger.error(
+            "could not get issue comments - Reason: %s - owner: %s repo: %s issue: %s comment_id: %s status code: %s",
+            e, owner, repo, issue, comment_id, response.status_code
+        )
+    return {}
 
 
 def get_issues(owner, repo, page=1, state='open'):
@@ -423,13 +480,20 @@ def get_issues(owner, repo, page=1, state='open'):
     params = {'state': state, 'sort': 'created', 'direction': 'desc', 'page': page, 'per_page': 100, }
     url = f'https://api.github.com/repos/{owner}/{repo}/issues'
 
-    response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
-
-    return response.json()
+    try:
+        response = requests.get(url, auth=_AUTH, headers=HEADERS, params=params)
+        return response.json()
+    except Exception as e:
+        logger.error(
+            "could not get issues - Reason: %s - owner: %s repo: %s page: %s state: %s status code: %s",
+            e, owner, repo, page, state, response.status_code
+        )
+    return {}
 
 
 def get_issue_timeline_events(owner, repo, issue, page=1):
     """Get the timeline events for a given issue.
+
     PLEASE NOTE CURRENT LIMITATION OF 100 EVENTS.
     PLEASE NOTE GITHUB API FOR THIS IS SUBJECT TO CHANGE.
     (See https://developer.github.com/changes/2016-05-23-timeline-preview-api/ for more info.)
@@ -444,10 +508,15 @@ def get_issue_timeline_events(owner, repo, issue, page=1):
     """
     params = {'sort': 'created', 'direction': 'desc', 'per_page': 100, 'page': page, }
     url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue}/timeline'
-    # Set special header to access timeline preview api
-    response = requests.get(url, auth=_AUTH, headers=TIMELINE_HEADERS, params=params)
-
-    return response.json()
+    try:
+        # Set special header to access timeline preview api
+        response = requests.get(url, auth=_AUTH, headers=TIMELINE_HEADERS, params=params)
+        return response.json()
+    except Exception as e:
+        logger.error(
+            "could not get timeline events - Reason: %s - %s %s %s %s", e, owner, repo, issue, response.status_code
+        )
+    return {}
 
 
 def get_interested_actions(github_url, username, email=''):
@@ -520,24 +589,49 @@ def get_user(user, sub_path=''):
 def get_notifications():
     """Get the github notifications."""
     url = f'https://api.github.com/notifications?all=1'
-    response = requests.get(url, auth=_AUTH, headers=HEADERS)
+    try:
+        response = requests.get(url, auth=_AUTH, headers=HEADERS)
+        return response.json()
+    except Exception as e:
+        logger.error("could not get notifications - Reason: %s", e)
+    return {}
 
-    return response.json()
+
+def get_gh_notifications(login=None):
+    """Get the Github notifications for Gitcoin Bot."""
+    gh_client = github_connect()
+    if login:
+        repo_user = gh_client.get_user(login=login)
+    else:
+        repo_user = gh_client.get_user()
+    notifications = repo_user.get_notifications(all=True)
+    return notifications
 
 
 def post_issue_comment(owner, repo, issue_num, comment):
     """Post a comment on an issue."""
     url = f'https://api.github.com/repos/{owner}/{repo}/issues/{issue_num}/comments'
-    response = requests.post(url, data=json.dumps({'body': comment}), auth=_AUTH)
-    return response.json()
+    try:
+        response = requests.post(url, data=json.dumps({'body': comment}), auth=_AUTH)
+        return response.json()
+    except Exception as e:
+        logger.error(
+            "could not post issue comment - Reason: %s - %s %s %s %s", e, comment, owner, repo, response.status_code
+        )
+    return {}
 
 
 def patch_issue_comment(comment_id, owner, repo, comment):
     """Update a comment on an issue via patch."""
     url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}'
-    response = requests.patch(url, data=json.dumps({'body': comment}), auth=_AUTH)
-    if response.status_code == 200:
-        return response.json()
+    try:
+        response = requests.patch(url, data=json.dumps({'body': comment}), auth=_AUTH)
+        if response.status_code == 200:
+            return response.json()
+    except Exception as e:
+        logger.error(
+            "could not patch issue comment - Reason: %s - %s %s %s %s", e, comment_id, owner, repo, response.status_code
+        )
     return {}
 
 
@@ -549,17 +643,29 @@ def delete_issue_comment(comment_id, owner, repo):
         return response.json()
     except ValueError:
         logger.error(
-            f"could not delete issue comment because JSON response could not be decoded: {comment_id}, {owner}, {repo}.  {response.status_code}, {response.text} "
+            "could not delete issue comment because JSON response could not be decoded: %s %s %s %s %s",
+            comment_id, owner, repo, response.status_code, response.text
         )
-    except Exception:
-        return {}
+    except Exception as e:
+        logger.error(
+            "could not delete issue comment - Reason: %s: %s %s %s %s %s",
+            e, comment_id, owner, repo, response.status_code, response.text
+        )
+    return {}
 
 
 def post_issue_comment_reaction(owner, repo, comment_id, content):
     """React to an issue comment."""
     url = f'https://api.github.com/repos/{owner}/{repo}/issues/comments/{comment_id}/reactions'
-    response = requests.post(url, data=json.dumps({'content': content}), auth=_AUTH, headers=HEADERS)
-    return response.json()
+    try:
+        response = requests.post(url, data=json.dumps({'content': content}), auth=_AUTH, headers=HEADERS)
+        return response.json()
+    except Exception as e:
+        logger.error(
+            "could not post issue reaction - Reason: %s - %s %s %s %s",
+            e, comment_id, owner, repo, response.status_code
+        )
+    return {}
 
 
 def get_url_dict(issue_url):
@@ -582,7 +688,7 @@ def get_url_dict(issue_url):
             'issue_num': int(issue_url.split('/')[6]),
         }
     except IndexError as e:
-        logger.warn(e)
+        logger.warning(e)
         return {'org': org_name(issue_url), 'repo': repo_name(issue_url), 'issue_num': int(issue_number(issue_url))}
 
 
@@ -648,3 +754,9 @@ def issue_number(issue_url):
         return issue_url.split('/')[6]
     except IndexError:
         return ''
+
+
+def get_current_ratelimit(token=None):
+    """Get the current Github API ratelimit for the provided token."""
+    gh_client = github_connect(token)
+    return gh_client.get_rate_limit()

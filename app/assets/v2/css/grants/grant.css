@@ -165,22 +165,21 @@
 }
 
 .grant__specs {
-  background-color: #ffffff;
-  border: 1px solid #0D0764;
   display: flex;
   flex-direction: column;
   height: 100%;
-  padding: 24px;
 }
 
 .grant__title {
-  font-size: 24px;
+  color: #43484D;
+  font-size: 52px;
   letter-spacing: 0;
-  text-transform: none;
 }
 
-.grant__pitch {
-  color: rgba(0, 0, 0, 0.54);
+.grant__description {
+  font-size: 16px;
+  color: #43484D;
+  letter-spacing: 0;
 }
 
 .grant__stakeholders {
@@ -199,11 +198,6 @@
 .grant__stakeholders-item {
   margin-bottom: 6px;
   margin-right: 6px;
-}
-
-.grant__description {
-  font-size: 16px;
-  margin-bottom: 100px;
 }
 
 .grant__description-title {
@@ -283,5 +277,41 @@
 }
 
 .grants-search {
-  background-color: #EBEBEB;
+  background-color: #F2F6F9;
+}
+
+/* Tabs */
+.ui-widget.ui-widget-content.ui-tabs {
+  background: transparent !important;
+  box-shadow: none;
+}
+
+.ui-tabs-nav {
+  background: transparent;
+  border: none;
+}
+
+.ui-tabs .ui-tabs-nav li {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #BBBDBF;
+  margin: 0;
+  width: 25%;
+}
+
+.ui-tabs .ui-tabs-nav li .ui-tabs-anchor {
+  color: #BBBDBF;
+  padding: 0.75em 2.5em;
+  width: 100%;
+  text-align: center;
+}
+
+.ui-tabs .ui-tabs-nav li.ui-tabs-active .ui-tabs-anchor {
+  border-bottom: 3px solid #0D0764;
+  color: #0D0764;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active {
+  border: none !important;
+  background: transparent !important;
 }

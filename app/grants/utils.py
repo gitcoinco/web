@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Define custom healthchecks.
+"""Define the Grant utilities.
 
 Copyright (C) 2018 Gitcoin Core
 
@@ -17,22 +17,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-from dashboard.utils import get_ipfs
-from health_check.backends import BaseHealthCheckBackend
-from health_check.exceptions import HealthCheckException
+import os
+from secrets import token_hex
 
 
-class IPFSBackend(BaseHealthCheckBackend):
-    """Define the IPFS healthcheck backend."""
-
-    critical_service = True
-
-    def check_status(self):
-        """Define the functionality of the health check."""
-        ipfs_connection = get_ipfs()
-        if not ipfs_connection:
-            raise HealthCheckException('IPFS Unreachable')
-
-    def identifier(self):
-        """Define the displayed name of the healthcheck."""
-        return self.__class__.__name__
+def get_upload_filename(instance, filename):
+    salt = token_hex(16)
+    file_path = os.path.basename(filename)
+    return f"grants/{getattr(instance, '_path', '')}/{salt}/{file_path}"

@@ -32,7 +32,7 @@
         <div class="row">
           <div class="col-7">
             <div class="grant__image">
-              <img src="http://via.placeholder.com/1136x666" />
+              <img src="{{ grant.logo.url|default_if_none:'http://via.placeholder.com/1136x666' }}"/>
               <a class="grant__reference" href="{{ grant.reference_url }}" target="_blank">
                 <div class="grant__reference-icon">
                   {% include 'svgs/compass.svg' %}
@@ -74,7 +74,7 @@
                   <span>{{ grant.percentage_done|floatformat:0 }}%</span>
                   of {{ grant.amount_goal|floatformat:2|intcomma }} ETH
               </div>
-                <a href="{% url 'grants:fund_grant' grant.id %}">
+                <a href="{% url 'grants:fund' grant.id %}">
                   <button class="button button--primary button--full">{% trans "Fund this Project" %}</button>
                 </a>
             </div>
