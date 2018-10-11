@@ -36,10 +36,21 @@ fi
 # Provision the Django test environment.
 if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
     echo "First run - Provisioning the local development environment..."
-    python manage.py createcachetable
-    python manage.py collectstatic --noinput -i other &
-    python manage.py migrate
-    python manage.py loaddata initial
+    if [ "$DISABLE_INITIAL_CACHETABLE" != "on" ]; then
+        python manage.py createcachetable
+    fi
+
+    if [ "$DISABLE_INITIAL_COLLECTSTATIC" != "on" ]; then
+        python manage.py collectstatic --noinput -i other &
+    fi
+
+    if [ "$DISABLE_INITIAL_MIGRATE" != "on" ]; then
+        python manage.py migrate
+    fi
+
+    if [ "$DISABLE_INITIAL_LOADDATA" != "on" ]; then
+        python manage.py loaddata initial
+    fi
     date >> /provisioned
     echo "Provisioning completed!"
 fi
