@@ -25,3 +25,12 @@ spec:
         - containerPort: {{ .Values.service.internalPort }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
+        volumeMounts:
+        - name: config-volume
+          mountPath: /code/app/app/.env
+          subPath: .env
+      volumes:
+      - name: config-volume
+        configMap:
+          name: web-config
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}

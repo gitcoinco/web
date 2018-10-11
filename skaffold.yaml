@@ -5,7 +5,7 @@ build:
     envTemplate:
       template: "{{.DOCKER_REGISTRY}}/gitcoinco/web:{{.VERSION}}"
   artifacts:
-  - imageName: changeme
+  - imageName: gitcoin-web
     workspace: .
     docker: {}
   local: {}

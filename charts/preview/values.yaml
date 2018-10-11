@@ -20,3 +20,13 @@ preview:
     repository:
     tag:
     pullPolicy: IfNotPresent
+
+terminationGracePeriodSeconds: 30
+redis:
+  cluster.enabled: false
+  usePassword: false
+db:
+  postgresUser: postgres
+  postgresPassword: gitcoin
+  postgresDatabase: postgres
+  imageTag: "9.6"
