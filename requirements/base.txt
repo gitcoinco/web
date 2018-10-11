@@ -79,4 +79,4 @@ pyvips==2.1.4
 redis-semaphore
 watchtower==0.5.4
 Wand==0.4.4
-https://github.com/pinkiebell/wagtail/archive/master.tar.gz
+wagtail==2.3rc1
