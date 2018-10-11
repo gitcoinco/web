@@ -8,7 +8,7 @@ fi
 
 # Settings
 # Web
-WEB_WORKER=${WEB_WORKER_TYPE:-runserver_plus}
+GC_WEB_WORKER=${GC_WEB_WORKER_TYPE:-runserver_plus}
 
 # General / Overrides
 FORCE_PROVISION=${FORCE_PROVISION:-'off'}
@@ -27,16 +27,16 @@ if  [ ! -z "${INSTALL_REQS}" ]; then
     echo "Python package installation completed!"
 fi
 
-WEB_OPTS="${WEB_WORKER} ${WEB_INTERFACE:-0.0.0.0}:${WEB_PORT:-8000}"
+GC_WEB_OPTS="${GC_WEB_WORKER} ${GC_WEB_INTERFACE:-0.0.0.0}:${GC_WEB_PORT:-8000}"
 
 if [ "$VSCODE_DEBUGGER_ENABLED" = "on" ]; then
     pip install ptvsd
-    WEB_OPTS="${WEB_OPTS} --nothreading"
+    GC_WEB_OPTS="${GC_WEB_OPTS} --nothreading"
     echo "VSCode remote debugger enabled! This has disabled threading!"
 fi
 
-if [ "$WEB_WORKER" = "runserver_plus" ]; then
-    WEB_OPTS="${WEB_OPTS} --extra-file /code/app/app/.env --nopin"
+if [ "$GC_WEB_WORKER" = "runserver_plus" ]; then
+    GC_WEB_OPTS="${GC_WEB_OPTS} --extra-file /code/app/app/.env --nopin"
 fi
 
 # Provision the Django test environment.
@@ -65,4 +65,4 @@ if [ "$FORCE_GET_PRICES" = "on" ]; then
     python manage.py get_prices
 fi
 
-exec python manage.py $WEB_OPTS
+exec python manage.py $GC_WEB_OPTS
