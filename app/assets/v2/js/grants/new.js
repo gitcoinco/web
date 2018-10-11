@@ -20,19 +20,11 @@ $(document).ready(function() {
     }
   });
 
-  $('#js-drop').on('drop', function(event) {
-    if (event.originalEvent.dataTransfer.files.length) {
-      event.preventDefault();
-      event.stopPropagation();
-      $(this).removeClass('is-dragging');
-    }
-  });
-
   $('.js-select2').each(function() {
     $(this).select2();
   });
 
-  $('#js-newGrant').validate({
+  $('#create-grant').validate({
     submitHandler: function(form) {
       var data = {};
       var disabled = $(form)
