@@ -32,6 +32,7 @@ import pyvips
 import requests
 from git.utils import get_user
 from PIL import Image, ImageOps
+from pyvips.error import Error as VipsError
 from svgutils.compose import SVG, Figure, Line
 
 AVATAR_BASE = 'assets/other/avatars/'
@@ -411,8 +412,11 @@ def convert_img(obj, input_fmt='svg', output_fmt='png'):
     """
     try:
         obj_data = obj.read()
-        image = pyvips.Image.new_from_buffer(obj_data, f'.{input_fmt}')
-        return BytesIO(image.write_to_buffer(f'.{output_fmt}'))
+        if obj_data:
+            image = pyvips.Image.new_from_buffer(obj_data, f'.{input_fmt}')
+            return BytesIO(image.write_to_buffer(f'.{output_fmt}'))
+    except VipsError:
+        pass
     except Exception as e:
         logger.error(e)
     return None
