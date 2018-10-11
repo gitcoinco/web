@@ -62,9 +62,6 @@ def grant_details(request, grant_id):
     except Grant.DoesNotExist:
         raise Http404
 
-    print("this is the web3 instance", w3)
-
-
     params = {
         'active': 'dashboard',
         'title': _('Grant Details'),
@@ -122,10 +119,6 @@ def grant_fund(request, grant_id):
     if request.method == 'POST':
         subscription = Subscription()
 
-        print("it fired")
-        print(request.POST)
-
-
         subscription.subscription_hash = request.POST.get('subscription_hash')
         subscription.contributor_signature = request.POST.get('signature')
         subscription.contributor_address = request.POST.get('contributor_address')
@@ -136,7 +129,7 @@ def grant_fund(request, grant_id):
         subscription.contributor_profile = profile
         subscription.grant = grant
         subscription.save()
-        return redirect(f'/grants/{grant.pk}')
+        return redirect(reverse('grants:details', args=(grant.pk, )))
 
     else:
         subscription = {}
@@ -156,14 +149,10 @@ def subscription_cancel(request, subscription_id):
     subscription = Subscription.objects.select_related('grant').get(pk=subscription_id)
     grant = getattr(subscription, 'grant', None)
 
-    print(subscription)
-    print(grant)
-
     if request.method == 'POST':
         subscription.status = False
         subscription.save()
-        return redirect(f'/grants/{grant.pk}')
-
+        return redirect(reverse('grants:details', args=(grant.pk, )))
 
     params = {
         'title': _('Cancel Grant Subscription'),

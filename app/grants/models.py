@@ -45,7 +45,7 @@ class Grant(SuperModel):
     token_address = models.CharField(max_length=255, default='0x0')
     contract_address = models.CharField(max_length=255, default='0x0')
     transaction_hash = models.CharField(max_length=255, default='0x0')
-    network = models.CharField(max_length=16, default='mainnet')
+    network = models.CharField(max_length=13, default='mainnet')
     required_gas_price = models.DecimalField(default='0', decimal_places=0, max_digits=50)
     admin_profile = models.ForeignKey(
         'dashboard.Profile', related_name='grant_admin', on_delete=models.CASCADE, null=True
@@ -69,7 +69,7 @@ class Subscription(SuperModel):
     amount_per_period = models.DecimalField(default=1, decimal_places=4, max_digits=50)
     token_address = models.CharField(max_length=255, default='0x0')
     gas_price = models.DecimalField(default=1, decimal_places=4, max_digits=50)
-    network = models.CharField(max_length=16, default='mainnet')
+    network = models.CharField(max_length=13, default='mainnet')
     grant = models.ForeignKey('grants.Grant', related_name='subscriptions', on_delete=models.CASCADE, null=True)
     contributor_profile = models.ForeignKey(
         'dashboard.Profile', related_name='grant_contributor', on_delete=models.CASCADE, null=True
