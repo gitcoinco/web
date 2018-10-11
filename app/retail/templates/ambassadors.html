@@ -1,0 +1,107 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta name="title" content="Ambassador Program | Gitcoin">
+    <meta name="description" content="Community is our priority. Join our Ambassador Program and help grow open source!">
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+  </head>
+  <body class="interior {{ active }} g-font-muli">
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+    </div>
+    <div class="container">
+      <div class="row">
+        <img class="animated fadeIn src="{% static "v2/images/ambassadors.png"%}">
+      </div>
+      <div class="row">
+        <div class="col">
+          <h1>Become a Gitcoin Ambassador</h1>
+        </div>
+        <div class="row">
+          <div class="col">
+            <h2>Excited about open source? Want to help build the future of work? </h2>
+            <p>The Gitcoin Ambassador team is a special group of community members that works on internal projects from Gitcoin Core. With a focus on community building, engagement, and growth, Gitcoin Ambassadors help shape the future of Gitcoin and work hand in hand with internal team members.</p>
+            <p>Why?</p>
+            <ul>
+              <li>Grow Open Source Software</li>
+              <li>Work alongside our world-class team</li>
+              <li>Help organize Gitcoin events like <i>Hacktoberfest</i> and more</li>
+              <li>Stay up to date with the latest in blockchain and open source</li>
+              <li>Learn what it takes to build a community</li>
+            </ul>
+            <p>Benefits</p>
+            <ul>
+              <li>Copious amounts of Gitcoin Swag</li>
+              <li>Sponsorship for hosting local meetups</li>
+              <li>Access to mentorship from Gitcoin Core team members</li>
+              <li>A community ambassador badge on Gitcoin</li>
+              <li>(if it goes well) A grant to support you long term.</li>
+            </ul>
+            <p>Responsibilites</p>
+            <ul>
+              <li>Engaging in Gitcoin community channels (Slack, Twitter)</li>
+              <li>Helping with Issue Explorer Check In’s</li>
+              <li>Hosting local, in person meetups</li>
+            </ul>
+            <p>Requirements</p>
+            <ul>
+              <li>Passion for blockchain and open source</li>
+              <li>Knowledge of the Gitcoin Platform</li>
+              <li>Commitment to helping others</li>
+              <li>Esteemed English / written communication ability</li>
+              <li>2-5 hours a week</li>
+            </ul>
+          </div>
+          <div class="col">
+            <a href="https://rshea.typeform.com/to/omAKYw"><button type="button">Apply</button></a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row no-gutter">
+      <div class="col body">
+        <div class="container-fluid no-gutter">
+          <div class="form-container" id="form_container">
+          <div class="col-12 offset-md-1 col-md-10">
+            {% include 'shared/newsletter.html' %}
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/ga.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+    {% include 'shared/messages.html' %}
+
+  {% csrf_token %}
+  <script type="text/javascript">
+  // using jQuery
+  var csrftoken = jQuery("[name=csrfmiddlewaretoken]").val();
+  </script>
+  </body>
+  <script src="{% static "v2/js/amounts.js" %}"></script>
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/shared.js" %}"></script>
+  <script src="{% static "v2/js/pages/faucet_form.js" %}"></script>
+</html>
