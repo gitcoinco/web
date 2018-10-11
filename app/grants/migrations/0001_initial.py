@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ('dashboard', '0108_auto_20180917_2137'),
+        ('dashboard', '0108_auto_20180917_1911'),
     ]
 
     operations = [
