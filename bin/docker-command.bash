@@ -1,5 +1,11 @@
 #!/usr/local/bin/dumb-init /bin/bash
 
+# Load the .env file into the environment.
+if [ "$ENV" == 'staging' ]; then
+    # shellcheck disable=SC2046
+    export $(grep -v '^#' app/app/.env | xargs)
+fi
+
 # Settings
 # Web
 WEB_WORKER=${WEB_WORKER_TYPE:-runserver_plus}
