@@ -517,3 +517,15 @@ a:hover {
 #world {
   z-index: -1;
 }
+
+a.cellarius-partner:before {
+  content: '';
+  position: absolute;
+  right: 1rem;
+  bottom: 3rem;
+  width: 16%;
+  height: 16%;
+  background-size: cover;
+  background: url('/static/v2/images/kudos/assets/cellarius-logo.svg');
+  background-repeat: no-repeat;
+}

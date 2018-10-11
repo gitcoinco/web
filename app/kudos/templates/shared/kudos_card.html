@@ -15,9 +15,9 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n staticfiles %}
-{% load kudos_extras %}
+{% load kudos_extras matches %}
 <div class="kd-card">
-  <a href="/kudos/{{ listing.id }}/{{ listing.name }}" class="">
+  <a href="/kudos/{{ listing.id }}/{{ listing.name }}" class="{% if 'gitcoin' in listing.tags %}cellarius-partner{% endif %}">
     <img id="kudosImage" src="{% static listing.image %}" alt="{{ listing.name }}" class="img-thumbnail kd-shadow border-transparent" width="250">
   </a>
   <span class="kd-price">{{ listing.price_in_eth }} ETH</span>
