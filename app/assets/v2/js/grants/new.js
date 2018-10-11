@@ -51,18 +51,20 @@ $(document).ready(function() {
 
       console.log(realTokenAmount);
 
-
+      // These args are baseline requirements for the contract set by the sender. Will set most to zero to abstract complexity from user.
       let args = [
         // admin_address
-        '0xe87529a6123a74320e13a6dabf3606630683c029',
-        // testing token
-        '0x6760Deb39EcFc70c8261E0CC3550B1099A14f584',
-        // data.amount_goal
-        web3.utils.toTwosComplement(1),
+        data.admin_address,
+        // required token, if any. Will need to make dynamic
+        // data.token_address,
+        '0x0000000000000000000000000000000000000000',
+        // required tokenAmount - setting to zero
+        web3.utils.toTwosComplement(0),
         // data.frequency
-        web3.utils.toTwosComplement(60),
+        web3.utils.toTwosComplement(0),
         // data.gas_price
-        web3.utils.toTwosComplement(0) ];
+        web3.utils.toTwosComplement(0)
+      ];
 
       console.log('args', args);
 

@@ -33,7 +33,7 @@ $(document).ready(function() {
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
 
       // This token is only for testing
-      let deployedToken = new web3.eth.Contract(compiledToken.abi, '0x6760Deb39EcFc70c8261E0CC3550B1099A14f584');
+      let deployedToken = new web3.eth.Contract(compiledToken.abi, '0xFD9C55bf4B75Ef115749cF76E9083c4241D7a7eB');
 
 
       deployedToken.methods.decimals().call(function(err, decimals) {
@@ -53,6 +53,8 @@ $(document).ready(function() {
 
           $('#contributor_address').val(accounts[0]);
 
+          // need to figure out why there does not seem to be a limit to this amount. Probably setting way higher than thought
+
           deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(realTokenAmount)).send({from: accounts[0]}, function(err, result) {
 
             // Should add approval transactions to transaction history
@@ -71,15 +73,15 @@ $(document).ready(function() {
                 // subscriber address
                 accounts[0],
                 // admin_address
-                '0xe87529a6123a74320e13a6dabf3606630683c029',
+                data.admin_address,
                 // testing token
-                '0x6760Deb39EcFc70c8261E0CC3550B1099A14f584',
+                '0xFD9C55bf4B75Ef115749cF76E9083c4241D7a7eB',
                 // data.amount_per_period
-                web3.utils.toTwosComplement(1),
+                web3.utils.toTwosComplement(data.amount_per_period),
                 // data.period_seconds
                 web3.utils.toTwosComplement(60),
                 // data.gas_price
-                web3.utils.toTwosComplement(0),
+                web3.utils.toTwosComplement(data.gas_price),
                 // nonce
                 web3.utils.toTwosComplement(nonce)
               ];

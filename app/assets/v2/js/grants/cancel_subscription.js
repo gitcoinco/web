@@ -11,14 +11,15 @@ window.onload = function() {
         data[this.name] = this.value;
       });
 
+      // currently practically cancelled, but need to delete subscription from miner so it isn't checked every 15 seconds.
 
     let deployedToken = new web3.eth.Contract(compiledToken.abi,
       // data.token_address
-       '0x6760Deb39EcFc70c8261E0CC3550B1099A14f584');
+       '0xFD9C55bf4B75Ef115749cF76E9083c4241D7a7eB');
 
        web3.eth.getAccounts(function(err, accounts) {
 
-         deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(0)).send({from: accounts[0]}, function(err, result) {
+         deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(0)).send({from: accounts[0], gas: 50000}, function(err, result) {
 
            form.submit();
 
