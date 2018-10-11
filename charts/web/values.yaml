@@ -3,8 +3,8 @@
 # Declare variables to be passed into your templates.
 replicaCount: 1
 image:
-  repository: draft
-  tag: dev
+  repository: 733163676742.dkr.ecr.us-west-2.amazonaws.com/gitcoinco/web
+  tag: 20180416.0.1
   pullPolicy: IfNotPresent
 service:
   name: web

@@ -1,4 +1,4 @@
 apiVersion: v1
 description: A Helm chart for Kubernetes
 name: web
-version: v0.1.0
+version: 20180416.0.1
