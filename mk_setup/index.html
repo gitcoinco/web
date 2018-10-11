@@ -411,6 +411,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#add-a-custom-erc20-token-to-your-local-gitcoin" title="Add a Custom ERC20 Token To your Local Gitcoin" class="md-nav__link">
+    Add a Custom ERC20 Token To your Local Gitcoin
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#optional-import-bounty-data-from-web3-to-your-database" title="Optional: Import bounty data from web3 to your database" class="md-nav__link">
     Optional: Import bounty data from web3 to your database
   </a>
@@ -2165,6 +2172,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#add-a-custom-erc20-token-to-your-local-gitcoin" title="Add a Custom ERC20 Token To your Local Gitcoin" class="md-nav__link">
+    Add a Custom ERC20 Token To your Local Gitcoin
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#optional-import-bounty-data-from-web3-to-your-database" title="Optional: Import bounty data from web3 to your database" class="md-nav__link">
     Optional: Import bounty data from web3 to your database
   </a>
@@ -2324,6 +2338,17 @@ Check out the <a href="https://docs.docker.com/compose/reference/">Docker Compos
 <pre><code class="shell">docker-compose exec web python3 app/manage.py createsuperuser
 </code></pre>
 
+<h2 id="add-a-custom-erc20-token-to-your-local-gitcoin">Add a Custom ERC20 Token To your Local Gitcoin</h2>
+<ol>
+<li><a href="https://github.com/gitcoinco/web/blob/master/docs/RUNNING_LOCALLY_DOCKER.md#create-django-admin">Create a django admin</a></li>
+<li>Go to <a href="http://localhost:8000/_administrationeconomy/token/">http://localhost:8000/_administrationeconomy/token/</a> and click <code>Add New Token</code>.</li>
+<li>Open another tab and go to <a href="http://tokenfactory.surge.sh">http://tokenfactory.surge.sh</a></li>
+<li>Mint a new token on the network of ur choice.</li>
+<li>Go back to your Gitcoin local tab, and enter the token.</li>
+<li>Click Save</li>
+<li>Congratulations, your local environment now supports your custom token!</li>
+<li>You may continue administering your token over at <a href="http://tokenfactory.surge.sh">http://tokenfactory.surge.sh</a>.  Hint:  Maybe you should mint some? 🤔</li>
+</ol>
 <h2 id="optional-import-bounty-data-from-web3-to-your-database">Optional: Import bounty data from web3 to your database</h2>
 <p>This can be useful if you'd like data to test with:</p>
 <pre><code class="shell">docker-compose exec web python3 app/manage.py sync_geth
