@@ -276,8 +276,10 @@ urlpatterns = [
 
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),
-    path('_administration/email/new_bounty', retail.emails.new_bounty, name='admin_new_bounty'),
     path('_administration/email/new_kudos', retail.emails.new_kudos, name='new_kudos'),
+    path('_administration/email/kudos_mint', retail.emails.kudos_mint, name='kudos_mint'),
+    path('_administration/email/kudos_mkt', retail.emails.kudos_mkt, name='kudos_mkt'),
+    path('_administration/email/new_bounty', retail.emails.new_bounty, name='admin_new_bounty'),
     path('_administration/email/roundup', retail.emails.roundup, name='roundup'),
     path('_administration/email/faucet_rejected', retail.emails.faucet_rejected, name='email_faucet_rejected'),
     path('_administration/email/faucet', retail.emails.faucet, name='email_faucet'),

@@ -485,7 +485,7 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
 def receive(request, key, txid, network):
     """Handle the receiving of a kudos (the POST)
 
-    Returns:
+    Returns:    
         TemplateResponse: the UI with the kudos confirmed
 
     """
