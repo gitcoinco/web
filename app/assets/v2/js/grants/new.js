@@ -5,7 +5,7 @@ $(document).ready(function() {
 
   userSearch('.team_members');
 
-  $("#img-project").on('change', function() {
+  $('#img-project').on('change', function() {
     if (this.files && this.files[0]) {
       let reader = new FileReader();
 
@@ -34,71 +34,73 @@ $(document).ready(function() {
 
   $('#js-newGrant').validate({
     submitHandler: function(form) {
-       var data = {};
+      var data = {};
       var disabled = $(form)
         .find(':input:disabled')
         .removeAttr('disabled');
-         $.each($(form).serializeArray(), function() {
-          data[this.name] = this.value;
-        });
-       // Begin New Deploy Subscription Contract
-       let SubscriptionContract = new web3.eth.Contract(compiledSubscription.abi);
-       console.log('SubscriptionContract', SubscriptionContract);
 
-       let realTokenAmount = Number(data.amount_goal*10**18)
+      $.each($(form).serializeArray(), function() {
+        data[this.name] = this.value;
+      });
+      // Begin New Deploy Subscription Contract
+      let SubscriptionContract = new web3.eth.Contract(compiledSubscription.abi);
 
-       console.log(realTokenAmount);
+      console.log('SubscriptionContract', SubscriptionContract);
+
+      let realTokenAmount = Number(data.amount_goal * 10 ** 18);
+
+      console.log(realTokenAmount);
 
 
-       let args = [
-         // admin_address
-         '0xe87529a6123a74320e13a6dabf3606630683c029',
-         // testing token
-         '0x6760Deb39EcFc70c8261E0CC3550B1099A14f584',
-         // data.amount_goal
-         web3.utils.toTwosComplement(1),
-         // data.frequency
-         web3.utils.toTwosComplement(60),
-         // data.gas_price
-         web3.utils.toTwosComplement(0)]
+      let args = [
+        // admin_address
+        '0xe87529a6123a74320e13a6dabf3606630683c029',
+        // testing token
+        '0x6760Deb39EcFc70c8261E0CC3550B1099A14f584',
+        // data.amount_goal
+        web3.utils.toTwosComplement(1),
+        // data.frequency
+        web3.utils.toTwosComplement(60),
+        // data.gas_price
+        web3.utils.toTwosComplement(0) ];
 
-         console.log('args', args);
+      console.log('args', args);
 
-       web3.eth.getAccounts(function(err, accounts){
-        web3.eth.net.getId(function(err, network){
-           $('#network').val(network)
-         SubscriptionContract.deploy({
-          data: compiledSubscription.bytecode,
-          arguments: args
-        })
-        .send({
-          from: accounts[0],
-          gas: 2500000
-        })
-        .on('error', function(error){
-          console.log('1', error);
-         })
-        .on('transactionHash', function(transactionHash){
-          console.log('2', transactionHash);
-          $('#transaction_hash').val(transactionHash)
+      web3.eth.getAccounts(function(err, accounts) {
+        web3.eth.net.getId(function(err, network) {
+          $('#network').val(network);
+          SubscriptionContract.deploy({
+            data: compiledSubscription.bytecode,
+            arguments: args
           })
-        .on('receipt', function(receipt){
+            .send({
+              from: accounts[0],
+              gas: 2500000
+            })
+            .on('error', function(error) {
+              console.log('1', error);
+            })
+            .on('transactionHash', function(transactionHash) {
+              console.log('2', transactionHash);
+              $('#transaction_hash').val(transactionHash);
+            })
+            .on('receipt', function(receipt) {
 
-            $('#contract_address').val(receipt.contractAddress)
+              $('#contract_address').val(receipt.contractAddress);
 
-          })
-          .then(function(contractInstance){
+            })
+            .then(function(contractInstance) {
 
-            console.log(contractInstance);
+              console.log(contractInstance);
 
-            $.each($(form).serializeArray(), function() {
-              data[this.name] = this.value;
+              $.each($(form).serializeArray(), function() {
+                data[this.name] = this.value;
+              });
+              console.log(data);
+              form.submit();
             });
-            console.log(data);
-            form.submit();
-          })
-        })
-      })
+        });
+      });
     }
   });
 

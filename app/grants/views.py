@@ -155,9 +155,14 @@ def subscription_cancel(request, subscription_id):
     subscription = Subscription.objects.select_related('grant').get(pk=subscription_id)
     grant = getattr(subscription, 'grant', None)
 
+    print(subscription)
+    print(grant)
+
     if request.method == 'POST':
         subscription.status = False
         subscription.save()
+        return redirect(f'/grants/{grant.pk}')
+
 
     params = {
         'title': _('Cancel Grant Subscription'),
