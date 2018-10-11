@@ -78,6 +78,7 @@ def grant_new(request):
 
     if request.method == 'POST':
         logo = request.FILES.get('input_image', None)
+        # TODO: Include milestones and team_members
         grant_kwargs = {
             'title': request.POST.get('input_name', ''),
             'description': request.POST.get('description', ''),
