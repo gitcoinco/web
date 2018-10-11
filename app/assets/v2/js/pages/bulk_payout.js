@@ -214,14 +214,14 @@ var update_registry = function() {
 
   $('#total_cost').html(tc + ' ' + denomination);
   $('#total_net').html(net + ' ' + denomination);
-  $('#total_overage').html(over + ' ' + denomination);
-  $('#address_ending').html(addr + ' ');
-  $('#preview_ending').html(addr + ' ');
-  $('#preview_overage').html(over + ' ' + denomination);
 
   if (over > 0) {
     $('.overageAlert').css('display', 'inline-block');
     $('.overagePreview').css('display', 'inline-block');
+    $('#total_overage').html(over + ' ' + denomination);
+    $('#address_ending').html(addr + ' ');
+    $('#preview_ending').html(addr + ' ');
+    $('#preview_overage').html(over + ' ' + denomination);
   } else {
     $('.overageAlert').css('display', 'none');
     $('.overagePreview').css('display', 'none');
