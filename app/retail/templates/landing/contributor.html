@@ -46,16 +46,15 @@
         {% include 'landing/contributor/benefits.html' %}
       </div>
 
+      <div class="container-fluid pb-5 landing__newsletter">
+        {% include 'shared/newsletter.html' %}
+      </div>
 
       {% if tech_stack %}
         <div class="container-fluid p-5 open-bounties">
           {% include 'landing/contributor/explorer.html' %}
         </div>
       {% endif %}
-
-      <div class="container-fluid pb-5 landing__newsletter">
-        {% include 'shared/newsletter.html' %}
-      </div>
 
       {% if activities|length %}
         <div class="container-fluid p-5 activity">
