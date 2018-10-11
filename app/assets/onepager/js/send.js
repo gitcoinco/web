@@ -54,7 +54,7 @@ var wait_for_metadata = function(callback) {
 };
 
 $(document).ready(function() {
-  if (typeof userSearch != 'undefined'){
+  if (typeof userSearch != 'undefined') {
     userSearch('.username-search', true);
   }
   set_metadata();
