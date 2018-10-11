@@ -51,11 +51,15 @@ $(document).ready(function() {
 
 
        let args = [
+         // admin_address
          '0xe87529a6123a74320e13a6dabf3606630683c029',
          // testing token
          '0x6760Deb39EcFc70c8261E0CC3550B1099A14f584',
+         // data.amount_goal
          web3.utils.toTwosComplement(1),
+         // data.frequency
          web3.utils.toTwosComplement(60),
+         // data.gas_price
          web3.utils.toTwosComplement(0)]
 
          console.log('args', args);

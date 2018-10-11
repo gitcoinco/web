@@ -30,114 +30,118 @@ $(document).ready(function() {
         data.gas_price = 0;
 
 
-      let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address)
+      let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
 
       // This token is only for testing
-      let deployedToken = new web3.eth.Contract(compiledToken.abi, '0x6760Deb39EcFc70c8261E0CC3550B1099A14f584')
+      let deployedToken = new web3.eth.Contract(compiledToken.abi, '0x6760Deb39EcFc70c8261E0CC3550B1099A14f584');
 
 
-      deployedToken.methods.decimals().call(function(err, decimals){
+      deployedToken.methods.decimals().call(function(err, decimals) {
 
         console.log('decimals', typeof decimals);
 
-      let realTokenAmount = Number(data.amount_per_period*10**decimals)
-      console.log('realTokenAmount', realTokenAmount);
+        let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
 
-      let realGasPrice = Number(data.gas_price*10**decimals)
+        console.log('realTokenAmount', realTokenAmount);
+
+        let realGasPrice = Number(data.gas_price * 10 ** decimals);
 
 
-        web3.eth.getAccounts(function(err, accounts){
+        web3.eth.getAccounts(function(err, accounts) {
 
           console.log('accounts', accounts);
 
-          $('#contributor_address').val(accounts[0])
+          $('#contributor_address').val(accounts[0]);
 
-          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(realTokenAmount)).send({from: accounts[0]}, function(err, result){
+          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(realTokenAmount)).send({from: accounts[0]}, function(err, result) {
 
             // Should add approval transactions to transaction history
             console.log('result', result);
 
 
+            deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
 
-              deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce){
+              console.log('nonce1', nonce);
 
-                console.log('nonce1', nonce);
+              nonce = parseInt(nonce) + 1;
 
-                nonce = parseInt(nonce)+1
+              console.log('nonce', nonce);
 
-                console.log('nonce', nonce);
+              const parts = [
+                // subscriber address
+                accounts[0],
+                // admin_address
+                '0xe87529a6123a74320e13a6dabf3606630683c029',
+                // testing token
+                '0x6760Deb39EcFc70c8261E0CC3550B1099A14f584',
+                // data.amount_per_period
+                web3.utils.toTwosComplement(1),
+                // data.period_seconds
+                web3.utils.toTwosComplement(60),
+                // data.gas_price
+                web3.utils.toTwosComplement(0),
+                // nonce
+                web3.utils.toTwosComplement(nonce)
+              ];
 
-                const parts = [
-                  accounts[0],
-                  '0xe87529a6123a74320e13a6dabf3606630683c029',
-                  // testing token
-                  '0x6760Deb39EcFc70c8261E0CC3550B1099A14f584',
-                  web3.utils.toTwosComplement(1),
-                  web3.utils.toTwosComplement(60),
-                  web3.utils.toTwosComplement(0),
-                  web3.utils.toTwosComplement(nonce)
-                ]
-
-                console.log('parts', parts);
-
-
-                deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash){
-
-                  $('#subscription_hash').val(subscriptionHash)
-
+              console.log('parts', parts);
 
 
-                  web3.eth.personal.sign(""+subscriptionHash, accounts[0], function(err, signature){
+              deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
 
-                    $('#signature').val(signature)
+                $('#subscription_hash').val(subscriptionHash);
 
-                    let postData = {
-                      subscriptionContract: data.contract_address,
-                      parts:parts,
-                      subscriptionHash: subscriptionHash,
-                      signature:signature,
-                    }
 
-                    console.log('postData', postData);
+                web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
 
-                    fetch('http://localhost:10003/saveSubscription', {
-                      method: 'POST',
-                      headers: {
-                        'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify({
-                        postData
-                      })
-                    }).then((response)=>{
-                      console.log("TX RESULT",response)
+                  $('#signature').val(signature);
 
-                      $.each($(form).serializeArray(), function() {
-                        data[this.name] = this.value;
-                      });
+                  let postData = {
+                    subscriptionContract: data.contract_address,
+                    parts: parts,
+                    subscriptionHash: subscriptionHash,
+                    signature: signature
+                  };
 
-                      console.log('data', data);
+                  console.log('postData', postData);
 
-                      form.submit();
-
+                  fetch('http://localhost:10003/saveSubscription', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                      postData
                     })
+                  }).then((response)=>{
+                    console.log('TX RESULT', response);
+
+                    $.each($(form).serializeArray(), function() {
+                      data[this.name] = this.value;
+                    });
+
+                    console.log('data', data);
+
+                    form.submit();
+
+                  })
                     .catch((error)=>{
                       console.log(error);
                     });
 
 
+                });
+              });
+            });
 
-                  })
-                })
-              })
-
-          })
+          });
 
 
-        })
-      })
+        });
+      });
 
     }
-  })
+  });
 
 });
 
