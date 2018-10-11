@@ -34,7 +34,7 @@
             <h1>{% trans "Create a Grant" %}</h1>
             <p>{% trans "We're excited to learn about your project. Complete the form below to get funding for your project." %}</p>
           </div>
-          <form action="{% url 'grants:new' %}" method="POST" id="js-newGrant" enctype="multipart/form-data">
+          <form action="{% url 'grants:new' %}" method="POST" id="create-grant" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="form__group-horizontal">
               <label class="form__label" for="input_name">{% trans "Name of Project" %}</label>

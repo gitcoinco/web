@@ -19,27 +19,18 @@ $(document).ready(function() {
     }
   });
 
-  $('#js-drop').on('drop', function(event) {
-    if (event.originalEvent.dataTransfer.files.length) {
-      event.preventDefault();
-      event.stopPropagation();
-      $(this).removeClass('is-dragging');
-    }
-  });
-
   $('.js-select2').each(function() {
     $(this).select2();
   });
 
-  $('#js-newGrant').validate({
+  $('#create-grant').validate({
     submitHandler: function(form) {
 
-      var data = {};
+      let data = {};
 
       $(form).find(':input:disabled').removeAttr('disabled');
 
       // Begin New Deploy Subscription Contract
-
       let bytecode = compiledSubscription.bytecode;
       let SubscriptionContract = web3.eth.contract(compiledSubscription.abi);
 
@@ -63,10 +54,13 @@ $(document).ready(function() {
             $('#network').val(web3.version.network);
 
             $.each($(form).serializeArray(), function() {
-              data[this.name] = this.value;
+              if (this.name == 'team_members[]')
+                data.team_members = $('#input-team_members').select2('data').map(
+                  member => member['text']
+                );
+              else
+                data[this.name] = this.value;
             });
-
-            console.log(data);
             form.submit();
           }
         }
