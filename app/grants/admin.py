@@ -20,7 +20,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from dashboard.models import Profile
 from grants.models import Contribution, Grant, Subscription
 
 
