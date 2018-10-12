@@ -37,6 +37,7 @@ iframe {
 #toc {
   position: sticky;
   top: 1em;
+  float: right;
 }
 
 #toc a {

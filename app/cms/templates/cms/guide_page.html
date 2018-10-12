@@ -37,7 +37,7 @@
     </div>
     <div class="row body">
       <div class="col-4">
-        <div id="toc" style="background: inherit;">
+        <div id="toc">
           <h2 class="text-dark">{% trans 'Table of Contents' %}</h2>
           {% for section in page.sections %}
             <a href="#{{ forloop.counter }}">{{ section.value.heading }}</a>
