@@ -25,21 +25,11 @@
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
       {% include 'shared/nav.html' %}
-      <div class="row no-gutters metamask-banner">
-        <div class="col-12">
-          {% include 'shared/no_metamask_error.html' %}
-          {% include 'shared/zero_balance_error.html' %}
-          {% include 'shared/unlock_metamask.html' %}
-        </div>
-      </div>
     </div>
 
     <div class="container new-grant">
       <div class="row justify-content-md-center">
-        <div id="robot_error" class="hidden">
-          <img src="{% static "v2/images/prime.png" %}">
-        </div>
-        <div class="col-sm-12 col-md-10 col-lg-6" id="primary_form">
+        <div class="col-sm-12 col-md-10 col-lg-6">
           <div class="form__intro text-center">
             <h1>{% trans "Create a Grant" %}</h1>
             <p>{% trans "We're excited to learn about your project. Complete the form below to get funding for your project." %}</p>
