@@ -526,7 +526,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "CodeFund Grows | Hacktober Begins"
+    subject = "Gitcoin's Summer Results & Holiday Plans"
 
     intro = '''
 
@@ -534,24 +534,24 @@ def render_new_bounty_roundup(to_email):
 Hi there,
 </p>
 <p>
-<a href="https://codefund.io/">CodeFund</a> wants to support open source projects everywhere!
-By placing ethical ads in beautiful places, <a href="https://twitter.com/codeberry">Eric Berry</a> and team have been providing Discourse, CodeSandbox, and Material-UI
-and countless others with sources of revenue to support their projects. The CodeFund team just added a superstar, <a href="https://codefund.io/team">Nate Hopkins</a>,
-to the team as CTO, and we're excited about the future of the product. If you want to advertise to developers, there's no better way!
-<br>
-<a href="https://codefund.io">Checkout CodeFund's new website to learn more</a>
+This week, we wrote more about our Q3 Results and Q4 Goals in <a href="https://medium.com/gitcoin/gitcoins-sprint-to-the-holidays-6d4103ad9ea4">Gitcoin's Sprint To The Holiday's</a>. We're excited about
+the $350K in work already on the Gitcoin platform, and even more excited about a few things to come this winter. More to come!
 </p>
 <p>
-Hacktoberfest is in full swing! Take a look here for issues tagged <a href="https://gitcoin.co/explorer?network=mainnet&keywords=hacktoberfest&order_by=-web3_created">'Hacktoberfest'</a>
- which have been funded with Gitcoin bounties, across projects like Ruby For Good, Peepeth, Giveth and more.
+Perhaps more importantly, we're in swag giveaway mode! If you ever wanted a funky Gitcoin shirt, now's the time to act.
+Make a <a href="https://gitcoin.co/requests/">Gitcoin Request</a> on any open source Github issue and you'll be eligible.
 </p>
 <p>
-The Gitcoin Core team is on the move! If you'll be at ETH SF (Oct 5-7), Github Universe (Oct 16-17), Web 3 Summit (Oct 22 - 24), SustainOSS (Oct 25), or Devcon 4, give us a shout!
+We're on the move! If you'll be at Github Universe (Oct 16-17), Web 3 Summit (Oct 22 - 24), Sustain OSS (Oct 25) or Devcon 4, give us a shout!
 </p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-        With travel, Gitcoin Livestream is cancelled this week. We'll be back next week as regularly scheduled.
+        We clarified <a href="https://medium.com/gitcoin/setting-your-oss-repos-monetary-policy-9c493118cd34">Gitcoin's Monetary policy</a> this week - explaining when we provide tips / bounties to contributors.
+        We hope this serves as an example for other open source projects who pay fairly for help!
+        </li>
+        <li>
+        The Gitcoin Livestream is back as regularly scheduled this week. <a href="https://gitcoin.co/livestream">Join us at 5PM ET</a>!
         </li>
     </ul>
 </p>
@@ -560,34 +560,34 @@ Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'cryptomental',
+        'who': 'Dan-Nolan',
         'who_link': True,
-        'what': 'Back to help out on Status Embark!',
-        'link': 'https://gitcoin.co/issue/embark-framework/embark/946/1306',
+        'what': 'Received an ETHPrize Bounty via Gitcoin!',
+        'link': 'https://gitcoin.co/issue/ChainshotDapps/content/1/1347',
         'link_copy': 'View more',
     }, {
-        'who': 'evgeniuz',
+        'who': 'adamskrodzki',
         'who_link': True,
-        'what': 'Fixed an Avatar Bug this week!',
-        'link': 'https://gitcoin.co/issue/diadata-org/coindata/1/1259',
+        'what': 'Added tests for Winding Tree vesting contract!',
+        'link': 'https://gitcoin.co/issue/windingtree/vesting-contract/1/1375',
         'link_copy': 'View more',
     }, {
-        'who': 'sameer2800',
+        'who': 'barrasso',
         'who_link': True,
-        'what': 'Completed a UI makeover funded in \'RHOC\' token!',
-        'link': 'https://gitcoin.co/issue/JoshOrndorff/BitStory/1/1298',
+        'what': 'Won an ETH SF Bounty from Bloqboard!',
+        'link': 'https://gitcoin.co/issue/ethglobal/ethsanfrancisco-bounties/9/1373',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/matterinc/PeepethClient/issues/14',
-        'primer': 'Hacktoberfest alert! A Peepeth client.',
+        'url': 'https://github.com/prysmaticlabs/prysm/issues/569',
+        'primer': 'Work with Prysmatic Labs on Sharding.',
     }, {
-        'url': 'https://github.com/EthWorks/UniversalLoginSDK/issues/88',
-        'primer': 'Work on an EthWorks bounty funded by the ECF.',
+        'url': 'https://github.com/trailofbits/echidna/issues/15',
+        'primer': 'Trail Of Bits bounty via Ethereum Community Fund.',
     }, {
-        'url': 'https://github.com/walleth/kethereum/issues/44',
-        'primer': 'Work on SpongyCastle with Walleth',
+        'url': 'https://github.com/Bounties-Network/Explorer/issues/237',
+        'primer': 'Know anything about encryption? Bounties Network wants to know.'
     }, ]
 
     num_leadboard_items = 5
