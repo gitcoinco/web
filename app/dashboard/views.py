@@ -52,6 +52,7 @@ from marketing.mails import (
     admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
 from marketing.mails import funder_payout_reminder as funder_payout_reminder_mail
+from marketing.mails import start_work_approved, start_work_new_applicant, start_work_rejected
 from marketing.models import Keyword
 from pytz import UTC
 from ratelimit.decorators import ratelimit

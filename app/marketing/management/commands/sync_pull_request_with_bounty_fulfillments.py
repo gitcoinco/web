@@ -22,9 +22,9 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.models import BountyFulfillment
+from dashboard.utils import record_funder_inaction_on_fulfillment
 from git.utils import get_gh_issue_state, get_interested_actions, post_issue_comment
 from marketing.mails import funder_payout_reminder
-from dashboard.utils import record_funder_inaction_on_fulfillment
 
 
 class Command(BaseCommand):
