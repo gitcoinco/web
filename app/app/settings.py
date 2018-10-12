@@ -213,7 +213,7 @@ if ENABLE_APM:
     if DEBUG and ENV == 'stage':
         ELASTIC_APM['DEBUG'] = True
 
-if ENV not in ['local', 'test']:
+if ENV not in ['local', 'test', 'staging', 'preview']:
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': True,
