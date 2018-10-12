@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="{% static 'v2/css/toolbox.css' %}">
   <link rel="stylesheet" href="{% static 'v2/css/guide.css' %}">
 </head>
-<body class="interior {{ active }}">
+<body class="interior g-font-muli {{ active }}">
   {% include 'shared/tag_manager_2.html' %}
   <div class="header dash">
     {% include 'shared/nav.html' %}
@@ -37,7 +37,7 @@
     </div>
     <div class="row body">
       <div class="col-4">
-        <div id="toc">
+        <div id="toc" style="background: inherit;">
           <h2 class="text-dark">{% trans 'Table of Contents' %}</h2>
           {% for section in page.sections %}
             <a href="#{{ forloop.counter }}">{{ section.value.heading }}</a>
@@ -45,7 +45,7 @@
         </div>
       </div>
       <div class="col-8">
-        <div class="cards">
+        <div>
           {% for section in page.sections %}
             <div id="{{ forloop.counter }}" class='text-left text-dark pb-5'>
               <h2 class="pb-2">{{ section.value.heading }}</h2>
