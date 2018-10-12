@@ -59,19 +59,21 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <div class="container">
     <form>
       <div class="row">
-        <div class="col-9 col-md-7 form__flex-group">
+        <div class="col-md-7 mt-2 form__flex-group">
           <input type="search" class="form__input">
         </div>
-        <div class="col-3 col-md-2">
+        <div class="col-md-2 mt-2">
           <button class="button button--primary button--full font-weight-bold">
             {% trans 'SEARCH' %}
             <i class="fas fa-search ml-2"></i>
           </button>
         </div>
-        <div class="col-12 col-md-3 d-flex justify-content-end">
-          <select>
-            <option>{% trans 'Sort by date' %}</option>
-          </select>
+        <div class="col-md-3 d-flex mt-2 justify-content-end">
+          <div class="form__select2">
+            <select class='js-select2'>
+              <option>{% trans 'Sort by date' %}</option>
+            </select>
+          </div>
         </div>
       </div>
     </form>
@@ -103,4 +105,13 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 <script src="{% static "v2/js/shared.js" %}"></script>
 <script src="{% static "v2/js/ipfs-api.js" %}"></script>
 <script src="{% static "v2/js/ipfs.js" %}"></script>
+<script>
+  $('.js-select2').each(function() {
+    $(this).select2();
+  });
+  $('.select2-selection__rendered').removeAttr('title');
+  $('.select2-container').click(function() {
+    $('.select2-container .select2-search__field').remove();
+  });
+</script>
 </html>

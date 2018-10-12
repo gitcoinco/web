@@ -18,7 +18,11 @@
 
 <div class="grant-item">
   <a class="grant-item__hero" href="{% url 'grants:details' grant.id %}">
-    <img src="{{ grant.logo.url|default_if_none:'http://placehold.it/300' }}" alt="{{ grant.title|truncatechars:60 }}">
+    <img src="{% if grant.logo %}
+      {{ grant.logo.url }}
+    {% else %}
+      http://placehold.it/300
+    {% endif %}" alt="{{ grant.title|truncatechars:60 }}">
   </a>
   <div class="grant-item__content">
     <h2 class="grant-item__title"><a href="{% url 'grants:details' grant.id %}">{{ grant.title|truncatechars:60 }}</a></h2>
