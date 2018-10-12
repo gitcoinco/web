@@ -48,3 +48,7 @@
   background-color: #fff;
   border-radius: 2px;
 }
+
+.select2-container .select2-search--inline .select2-search__field {
+  margin-top: 8px;
+}
