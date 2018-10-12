@@ -587,7 +587,7 @@ var show_notify_funder_modal = function() {
   var self = this;
 
   setTimeout(function() {
-    var url = '/notifyfunder/modal?redirect=' + window.location.pathname + '&pk=' + document.result['pk'];
+    var url = '/' + document.result['standard_bounties_id'] + '/modal/notify-funder';
 
     $.get(url, function(newHTML) {
       var modal = $(newHTML).appendTo('body').modal({

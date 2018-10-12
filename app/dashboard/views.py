@@ -1016,9 +1016,10 @@ def bounty_details(request, ghuser='', ghrepo='', ghissue=0, stdbounties_id=None
 
     return TemplateResponse(request, 'bounty/details.html', params)
 
-def get_notify_funder_modal(request):
 
-    bounty = Bounty.objects.get(pk=request.GET.get("pk"))
+def get_notify_funder_modal(request, stdbounties_id):
+    stdbounties_id = clean_str(stdbounties_id)
+    bounty = Bounty.objects.filter(standard_bounties_id=stdbounties_id).first()
 
     context = {
         'bounty': bounty,

@@ -15,7 +15,6 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-import datetime
 import time
 
 from django.conf import settings
@@ -62,7 +61,7 @@ class Command(BaseCommand):
         for bounty_fulfillment in bounty_fulfillments:
             # Debug
             # May not be necessary if these are arleady synced
-            # bounty_gh_details = get_gh_issue_details() 
+            # bounty_gh_details = get_gh_issue_details()
             print(bounty_fulfillment.bounty)
             bounty = bounty_fulfillment.bounty
             closed_issue = get_gh_issue_state(bounty.github_org_name, bounty.github_repo_name, bounty.github_issue_number)
@@ -88,8 +87,9 @@ class Command(BaseCommand):
                         try:
                             notified = self.notify_funder(bounty.bounty_owner_email, bounty, bounty_fulfillment.fulfiller_github_username, options['live'])
                             if bounty_fulfillment.created_on < deadline:
+                                print('Posting github comment')
                                 post_issue_comment(
-                                    bounty.github_org_name, bounty.gihtub_repo_name, bounty.github_issue_number, 
+                                    bounty.github_org_name, bounty.gihtub_repo_name, bounty.github_issue_number,
                                     '@'+bounty.bounty_owner_github_username+', please remember to close out the bounty!'
                                 )
                                 if bounty_fulfillment.created_on < escalated_deadline:
@@ -109,10 +109,8 @@ class Command(BaseCommand):
                     bounty_fulfillment.funder_last_notified_on = timezone.now()
                     bounty_fulfillment.save()
 
-
     def notify_funder(self, to_email, bounty, github_username, live):
         return funder_payout_reminder(to_email=to_email, bounty=bounty, github_username=github_username, live=live)
 
     def handle(self, *args, **options):
         self.sync_pull_requests_with_bounty_fulfillments(options)
-

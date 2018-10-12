@@ -25,7 +25,7 @@
 
 <p style="color: #4A4A4A;">
     {% if bounty_fulfillment.fulfiller_github_url %}
-    {% blocktrans %}Heads up! The funded issue that you posted (below) has work submitted by {{ bounty_fulfillment.fulfiller_name }}.{% endblocktrans %}
+    {% blocktrans %}Heads up! The funded issue that you posted (below) has work submitted by <a href="https://github.com/{{ github_username }}">@{{ github_username }}.</a>{% endblocktrans %}
     <br>
     <br>
     <img src="{% static "v2/images/expiring_clock.png"%}" style="padding: 20px 0;">
