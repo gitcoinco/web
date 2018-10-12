@@ -58,12 +58,27 @@
             </div>
 
             <div class="form__group-horizontal">
-              <label class="form__label">{% trans "Total amount sought for grant" %}</label>
+              <label class="form__label">{% trans "Total amount sought for grant in ETH" %}</label>
               <div class="row">
-                <div class="col-8">
+                <div class="col-12">
                   <input type="number" name="amount_goal" class="form__input" required />
                 </div>
-                <div class="col-4">
+              </div>
+            </div>
+
+            <div class="form__group-horizontal">
+              <label class="form__label">{% trans "Monthly amount sought in ETH" %}</label>
+              <div class="row">
+                <div class="col-12">
+                  <input type="number" name="monthly_goal" class="form__input" required />
+                </div>
+              </div>
+            </div>
+
+            <div class="form__group-horizontal">
+              <label class="form__label">{% trans "Required Token For Subscription" %}</label>
+              <div class="row">
+                <div class="col-12">
                   <div class="form__select2">
                     <select class='js-select2' name='denomination' id='js-token'></select>
                   </div>
@@ -72,7 +87,7 @@
             </div>
 
             <div class="form__group-horizontal">
-              <label class="form__label" for="input-admin_address">{% trans "Admin Address" %}</label>
+              <label class="form__label" for="input-admin_address">{% trans "Admin Wallet Address" %}</label>
               <input type="text" class="form__input" id="input-adminAddress" placeholder="{% trans 'Enter the address you would live funds sent to' %}" name="admin_address" />
             </div>
 
