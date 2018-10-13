@@ -15,7 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static humanize i18n %}
-
+<link rel="stylesheet" href="{% static "v2/css/grants/card.css" %}">
 <div class="grant-item">
   <a class="grant-item__hero" href="{% url 'grants:details' grant.id %}">
     <img src="{% if grant.logo %}

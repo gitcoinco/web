@@ -1,0 +1,49 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/grants/profile.css" %}">
+  </head>
+  <body class="interior {{ active }} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+      {% include 'shared/minihero.html' with h1='My Grants' suppress_logo=1 position_h1_below_logo=True %}
+    </div>
+
+    <div class="container pt-5">
+      <div>
+        {% if grants %}
+          <div class="container grants-container">
+            {% for grant in grants %}
+            {% if forloop.counter0|divisibleby:3 %} <div class="row"> {% endif %}
+            <div class="col-12 col-md-4 mb-4">
+              {% include 'grants/card.html' %}
+            </div>
+            {%  if forloop.counter|divisibleby:3 or forloop.last %} </div> {% endif %}
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </body>
+<html>
+
