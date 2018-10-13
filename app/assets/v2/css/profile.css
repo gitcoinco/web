@@ -232,6 +232,7 @@
   border: 0.1rem solid #FFCE08;
 }
 
+/*
 .arrow {
   background-image: url('/static/v2/images/arrow-down.png');
   min-width: 2em;
@@ -263,3 +264,4 @@
 .expandable#expanded {
   max-height: 12em;
 }
+*/

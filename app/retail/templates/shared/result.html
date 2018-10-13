@@ -50,8 +50,10 @@
             <img class="m-0" style="position: relative; top: -2px;" src="{% static 'v2/images/coin.svg' %}">
           [[/if]]
         </p>
-        [[if tokens]]
-          <a href="" onclick="toggleExpandableBounty(event, '.[[:network]].i[[:standard_bounties_id]]')">{% trans 'See All' %}   <i class="fa fa-angle-down arrow"></i></a>
+        [[if tokens || tx_hashes ]]
+          <a href="" onclick="toggleExpandableBounty(event, '.[[:network]].i[[:standard_bounties_id]]')">
+            {% trans 'See All' %}   <i class="fa fa-angle-down arrow"></i>
+          </a>
         [[/if]]
       </div>
       [[if value_in_usdt]]
@@ -63,42 +65,39 @@
         </div>
       [[/if]]
       </div>
-      [[if is_profile_page && tx_hashes]]
-        <div class="arrow" onclick="toggleExpandableBounty(event)">
-        </div>
-      [[/if]]
     </div>
-    [[if tokens]]
-      <div class="col-md-12 tags expandable funding">
-        <div class="placeholder">
-          <span class="text-highlight-gc-purple m-0 uppercase middle">{% trans 'Funding' %}</span>
-        </div>
-        <div class="tag token font-caption">
-          <p><span>[[:rounded_amount]] [[:token_name]]</span></p>
-        </div>
-        [[props tokens]]
-          [[for prop ~tokenName=key]]
-            <div class="tag token font-caption">
-              <p><span>[[:#data]] [[:~tokenName]]<i class="fas fa-users ml-1"></i></span></p>
-            </div>
-          [[/for]]
-        [[/props]]
-      </div>
-    [[/if]]
-    [[if is_profile_page && tx_hashes]]
-      <div class="expandable row">
-        <div class="col-1"></div>
-        <div class="col-12 col-md-10 d-flex flex-column bounty-detail">
-          <p class="title font-caption">Etherscan</p>
-          [[props tx_hashes ~network=network]]
-            [[for prop ~event=key]]
-              <p class="title font-caption">[[:~event]]:
-                <a target="_blank" href="https://[[if ~network != 'mainnet']][[:~network]].[[/if]]etherscan.io/tx/[[:#data]]">
-                  [[:#data]]
-                </a>
-              </p>
+    [[if tokens || tx_hashes ]]
+      <div class="col-md-12 expandable funding">
+        <div class="tags">
+          <div class="avatar-container col-1 hide_min_viewport"></div>
+          <div class="placeholder">
+            <span class="text-highlight-gc-purple m-0 uppercase middle">{% trans 'Funding' %}</span>
+          </div>
+          <div class="tag token font-caption">
+            <p><span>[[:rounded_amount]] [[:token_name]]</span></p>
+          </div>
+          [[props tokens]]
+            [[for prop ~tokenName=key]]
+              <div class="tag token font-caption">
+                <p><span>[[:#data]] [[:~tokenName]]<i class="fas fa-users ml-1"></i></span></p>
+              </div>
             [[/for]]
           [[/props]]
+        </div>
+        <div class="d-flex">
+          <div class="avatar-container col-1 hide_min_viewport"></div>
+          <div class="col">
+            <p class="text-highlight-gc-purple m-0 middle">{% trans 'Etherscan' %}:</p>
+            [[props tx_hashes ~network=network]]
+              [[for prop ~event=key]]
+                <p class="title font-caption">[[:~event]]:
+                  <a target="_blank" href="https://[[if ~network != 'mainnet']][[:~network]].[[/if]]etherscan.io/tx/[[:#data]]">
+                    [[:#data]]
+                  </a>
+                </p>
+              [[/for]]
+            [[/props]]
+          </div>
         </div>
       </div>
     [[/if]]
