@@ -24,19 +24,19 @@
       http://placehold.it/300
     {% endif %}" alt="{{ grant.title|truncatechars:60 }}">
   </a>
-  <div class="grant-item__content">
-    <h2 class="grant-item__title"><a href="{% url 'grants:details' grant.id %}">{{ grant.title|truncatechars:60 }}</a></h2>
-    <p class="grant-item__pitch">{{ grant.description|truncatechars:135 }}</p>
+  <div class="grant-item__content py-4 px-3">
+    <h2 class="grant-item__title font-title"><a href="{% url 'grants:details' grant.id %}">{{ grant.title|truncatechars:60 }}</a></h2>
+    <p class="grant-item__pitch font-body">{{ grant.description|truncatechars:135 }}</p>
     <div class="grant-item__footer">
-      <div class="grant-item__owner">
+      <div class="grant-item__owner mt-3 mb-4">
         <div class="grant-item__owner-image">
           <img src="{% if grant.admin_profile.avatar_url %}{{ grant.admin_profile.avatar_url }}{% else %}http://placehold.it/300{% endif %}">
         </div>
-        <div class="grant-item__owner-handle">{% trans 'by' %} <span>{{ grant.admin_profile.handle|default:'Anonymous' }}</span></div>
+        <div class="grant-item__owner-handle font-body">{% trans 'by' %} <span>{{ grant.admin_profile.handle|default:'Anonymous' }}</span></div>
       </div>
       <div class="progress progress--small">
-          <div class="progress-bar" role="progressbar" style="width: {{ grant.percentage_done }}%" aria-valuenow="{{ grant.percentage_done }}%" aria-valuemin="0" aria-valuemax="100"></div>
-        </div>
+        <div class="progress-bar" role="progressbar" style="width: {{ grant.percentage_done }}%" aria-valuenow="{{ grant.percentage_done }}%" aria-valuemin="0" aria-valuemax="100"></div>
+      </div>
       <!-- <div class="progress-bar">
         <div class="progress" style="width: {{ grant.percentage_done }}%"></div>
       </div> -->
