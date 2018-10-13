@@ -509,9 +509,10 @@ a:hover {
 }
 
 .badge-kudos {
-  background-color: #F2F6F9;
-  color: #6184AC;
+  background-color: #D8EAFF;
+  color: #4A4A4A;
   border-radius: 2px;
+  text-decoration: none;
 }
 
 #world {
@@ -528,4 +529,79 @@ a.cellarius-partner:before {
   background-size: cover;
   background: url('/static/v2/images/kudos/assets/cellarius-logo.svg');
   background-repeat: no-repeat;
+}
+
+.cellarius-badge {
+  right: 1rem;
+  bottom: 3rem;
+  width: 16%;
+  height: 16%;
+  background-size: cover;
+  background: url('/static/v2/images/kudos/assets/cellarius-logo.svg');
+  background-repeat: no-repeat;
+  background-color: #fff;
+  border-radius:50px;
+}
+
+// Kudos details
+.kudos-details__title {
+  font-weight: 200;
+  font-size: 3.2rem;
+  margin-bottom: 0;
+}
+
+.kudos-details__subtitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0D0764;
+  border-bottom: 1px solid #C8C8C8;
+  padding-bottom: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.kudos-details__price {
+  font-size: 1.5rem;
+  font-weight: 700;
+
+  small {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #4A4A4A;
+  }
+}
+
+.kudos-details__address {
+  color: #3E00FF;
+}
+
+.text-color_blue {
+  color: #0D0764;
+}
+
+.text-weight_semibold {
+  font-weight: 600;
+}
+
+.tooltip-kudos {
+  .title-tooltip {
+    text-align: left;
+    display: block;
+    font-size: 14px;
+    color: #0ECF7C;
+    font-weight: 600;
+    line-height: 1.5;
+
+  }
+  .tooltip-inner {
+    width: 300px;
+    background-color: #0D0764;
+    font-size: 12px;
+    padding: 1rem;
+    max-width: 240px;
+
+    table {
+      width: 100%;
+    }
+
+  }
 }

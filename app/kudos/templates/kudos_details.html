@@ -6,8 +6,10 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
+    <link href="https://fonts.googleapis.com/css?family=Muli:200,400,600,700" rel="stylesheet">
+
   </head>
-  <body class="{{ active }} bg-light">
+  <body class="{{ active }} bg-light g-font-muli">
     <header class="container-fluid header">
       {% include 'shared/nav.html' %}
       {% include 'shared/kudos_banner.html' %}
@@ -25,35 +27,51 @@
         <div class="col-md-6 col-lg-5 mb-5">
           <img id="kudos-image" src="{% static kudos.image %}" alt="{{ kudos.name }}" class="sticky-top w-100">
         </div>
-        <div class="col-md-6 col-lg-5">
-          <h3 id="kudosName" class="display-4">{{ kudos.name|humanize_name }}</h3>
-          <div class="mt-4 font-bigger-1 font-weight-300">
-            <p id="kudosDescription" class="">{{ kudos.description }}</p>
-            <p class="hidden"><span>ID: </span><span id="kudosID" data-kudosId="{{ kudos.id }}">{{ kudos.id }}</span></p>
-            <p><span>Rarity: </span><span id="kudosRarity">{{ kudos.rarity }}</span></p>
-            <p><span>Clones In Wild: </span><span id="kudosNumClonesInWild">{{ kudos.num_clones_in_wild }}</span></p>
-            {% if kudos.num_clones_available != 0 %}
-            <p><span>Clones Available: </span><span id="kudosNumClonesAvailable">{{ kudos.num_clones_available }}</span></p>
-            {% endif %}
-            <p><span>Owner Address: </span><a id="kudosOwnerAddress" target="_blank" href="https://etherscan.io/address/{{ kudos.owner_address }}" class="btn-link" title="{{ kudos.owner_address }}">{{ kudos.owner_address|humanize_address }}</a></p>
-            <p class="font-weight-bold" data-ethprice="{{ kudos.price_in_eth }}">{{ kudos.price_in_eth }} ETH <small></small></p>
-            <p>
-              {% for tag in kudos.tags.split %}
-              <a class="badge badge-kudos" href="{% url 'kudos_marketplace' %}?q={{tag|replace_commas}}">{{tag | replace_commas }}</a>
-              {% endfor %}
-            </p>
+        <div class="col-md-6 col-lg-5 kudos-details">
+          {% if 'cellarius' in kudos.tags %}
+            <img src="{% static 'v2/images/kudos/assets/cellarius_logo_horizontal.svg' %}" alt="Cellarius" height="40">
+          {% endif %}
+          <h3 id="kudosName" class="kudos-details__title">{{ kudos.name|humanize_name }}</h3>
+          <div>Owner Address: <a target="_blank" href="https://etherscan.io/address/{{ kudos.owner_address }}" class="kudos-details__address" title="{{ kudos.owner_address }}">{{ kudos.owner_address|humanize_address }}</a></div>
+          <div class="my-4 font-bigger-1 font-weight-300">
+            <p>{{ kudos.description }}</p>
           </div>
+          <div class="kudos-details__subtitle">
+            <img src="{% static 'v2/images/kudos/assets/kudos-diamond.svg' %}" alt=""> MARKETPLACE STATS
+          </div>
+
+          <p><span class="text-color_blue text-weight_semibold">{{ kudos.rarity }}</span> ({{ kudos.num_clones_in_wild }} out of {{ kudos.num_clones_available|add:kudos.num_clones_in_wild }}) <i data-toggle="tooltip" title="" data-html="true" data-original-title="<span class='title-tooltip'>Kudos Rarity</span>
+            <table class='text-left'>
+              <tr><td>One of a Kind:</td><td>1 clone</td></tr>
+              <tr><td>Legendary:</td><td>2 - 5 clones</td></tr>
+              <tr><td>Ultra:</td><td>5 - 15 clones</td></tr>
+              <tr><td>Very Rare:</td><td>15 - 35 clones</td></tr>
+              <tr><td>Rare:</td><td>35 - 100 clones</td></tr>
+              <tr><td>Special:</td><td>100 - 200 clones</td></tr>
+              <tr><td>Common:</td><td>200+</td></tr>
+            </table>" data-template='<div class="tooltip-kudos" role="tooltip"><div class="tooltip-inner"></div></div>' class="fas fa-question-circle text-color_blue"></i></p>
+
+          <div class="mb-4">
+            <span class="text-color_blue text-weight_semibold">{{ kudos.num_clones_available }}</span> Total Available
+            <span class="text-color_blue text-weight_semibold ml-5">{{ kudos.num_clones_in_wild }}</span> Total minted
+          </div>
+          <p class="mb-4 kudos-details__price" data-ethprice="{{ kudos.price_in_eth }}">{{ kudos.price_in_eth }} ETH <small></small></p>
           <div class="row justify-content-start pb-4">
             <div class="col-12">
               {% if kudos.num_clones_allowed != 0 and kudos.num_clones_available != 0 %}
               <a href="/kudos/send?name={{ kudos.name}}" class="btn btn-gc-blue">{% trans "Send Kudos" %}</a>
               {% elif kudos.num_clones_allowed != 0 and kudos.num_clones_available == 0 %}
-              <button type="button" id="getKudosDisabled" class="btn btn-gc-blue" disabled>{% trans "Not Available" %}</button>
+              <button type="button" class="btn btn-gc-blue" disabled>{% trans "Not Available" %}</button>
               <small class="d-block mt-2">There are no clones available due to popularity but you can still look at this awesome badge!</small>
               {% endif %}
             </div>
           </div>
           <hr>
+          <p>
+            {% for tag in kudos.tags.split %}
+            <a class="badge badge-kudos" href="{% url 'kudos_marketplace' %}?q={{tag|replace_commas}}">{{tag | replace_commas }}</a>
+            {% endfor %}
+          </p>
           {% if related_profiles %}
           <div class="row pt-3">
             <div class="col-12">
@@ -81,12 +99,16 @@
     {% include 'shared/footer_scripts.html' with slim=1 %}
     <script src="{% static "v2/js/popper.min.js" %}"></script>
     <script src="{% static "v2/js/bootstrap.min.js" %}"></script>
-    <script src="{% static "v2/js/pages/kudos_details.js" %}"></script>
+    <!-- <script src="{% static "v2/js/pages/kudos_details.js" %}"></script> -->
     <script src="{% static "v2/js/abi.js" %}"></script>
     <script src="{% static "v2/js/amounts.js" %}"></script>
     <script src="{% static "v2/js/eth-price.js" %}"></script>
     <script>
       var bootstrapTooltip = $.fn.tooltip.noConflict()
+      $.fn.runTooltip = bootstrapTooltip
+      $('[data-toggle="tooltip"]').runTooltip()
+
+
     </script>
     <script src="{% static "v2/js/pages/kudos-search.js" %}"></script>
     {% include 'shared/messages.html' %}
