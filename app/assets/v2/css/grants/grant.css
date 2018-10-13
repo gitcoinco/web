@@ -113,7 +113,14 @@
   height: 6px;
 }
 
-/* Grant Show */
+/* Grant Details */
+
+.grant__avatar {
+  border-radius: 20px;
+  border-color: #43484D;
+  width: 50px;
+  height: 50px;
+}
 
 .grant__header {
   background-color: #F2F6F9;
@@ -169,6 +176,12 @@
 }
 
 .grant__description {
+  font-size: 16px;
+  color: #43484D;
+  letter-spacing: 0;
+}
+
+.grant__profile-details {
   font-size: 16px;
   color: #43484D;
   letter-spacing: 0;
