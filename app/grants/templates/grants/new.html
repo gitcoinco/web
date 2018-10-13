@@ -94,12 +94,23 @@
               <input type="text" class="form__input" id="input-adminAddress" placeholder="{% trans 'Enter the address you would like funds sent to' %}" name="admin_address" />
             </div>
 
-            <div class="form__group-horizontal">
+            <div class="form__group-horizontal frequency">
               <label class="form__label">{% trans "Frequency of payments" %}</label>
-              <input type="number" name="frequency" class="form__input" value='30' required />
-              <label class="form__label">{% trans "Days" %}</label>
+              <div class="row">
+                <div class="col-8">
+                  <input type="number" id="frequency_count" name="frequency" class="form__input" value='30' required />
+                </div>
+                <div class="col-4 font-body">
+                  <select onchange="validate()" name="frequency_unit" id="frequency_unit" style="width: 100%">
+                    <option value="minutes">{% trans "minutes" %}</option>
+                    <option value="hours">{% trans "hours" %}</option>
+                    <option value="days" selected="selected">{% trans "days" %}</option>
+                    <option value="months">{% trans "months" %}</option>
+                    <option value="any">{% trans "any" %}</option>
+                  </select>
+                </div>
+              </div>
             </div>
-
 
             <!-- <div class="form__group-horizontal milestones">
               <label class="form__label">{% trans "Milestones and projected timeline" %}</label>

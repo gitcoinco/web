@@ -325,7 +325,7 @@
   margin-top: 0;
 }
 
-.select2-container {
+.order_by .select2-container {
   width: auto !important;
   font-weight: normal;
   text-align: left;
