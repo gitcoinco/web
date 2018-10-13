@@ -1,5 +1,10 @@
 /* eslint-disable no-console */
 
+const validate = () => {
+  if ($('#frequency_unit').select2('data')[0].text === 'any')
+    $('#frequency_count').val('0');
+};
+
 $(document).ready(function() {
 
   userSearch('.team_members');
@@ -19,7 +24,7 @@ $(document).ready(function() {
     }
   });
 
-  $('.js-select2').each(function() {
+  $('.js-select2, #frequency_unit').each(function() {
     $(this).select2();
   });
 
@@ -75,7 +80,6 @@ $(document).ready(function() {
       });
     }
   });
-
 
   $('#new-milestone').on('click', function(event) {
     event.preventDefault();
