@@ -185,20 +185,20 @@ $(document).ready(function($) {
 });
 
 var get_total_cost = function() {
-  var num_rows = $('#payout_table tbody').find('tr').length + 1;
   var total = 0;
 
-  for (let i = 1; i < num_rows; i += 1) {
-    var $row = $('#payout_table tbody').find('tr:nth-child(' + i + ')');
-    var amount = parseFloat($row.find('.amount').text());
-    var username = $row.find('.username-search').text();
+  $('#payout_table tbody tr').each(function() {
+    var amount = parseFloat($(this).find('.amount').text());
+    var username = $(this).find('.username-search').text();
     var is_error = !$.isNumeric(amount) || amount <= 0 || username == '' || username == '@';
 
     if (!is_error) {
       total += amount;
     }
-  }
+  });
+
   return total;
+
 };
 
 var update_registry = function() {
