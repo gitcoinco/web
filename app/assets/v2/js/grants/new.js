@@ -34,6 +34,14 @@ $(document).ready(function() {
       let bytecode = compiledSubscription.bytecode;
       let SubscriptionContract = web3.eth.contract(compiledSubscription.abi);
 
+      // Waiting State screen
+      $('#new-grant').hide();
+      $('.interior .body').addClass('open');
+      $('.interior .body').addClass('loading');
+      $('.grant_waiting').show();
+      document.issueURL = $('#input-url').val();
+      waitingStateActive();
+
       SubscriptionContract.new(data.admin_address, data.token_address, data.amount_goal, data.frequency, data.gas_price, {
         from: web3.eth.accounts[0],
         data: bytecode,

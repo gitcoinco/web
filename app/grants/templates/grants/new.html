@@ -20,6 +20,7 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
   </head>
   <body class="interior {{ active }} grant">
     {% include 'shared/tag_manager_2.html' %}
@@ -27,7 +28,22 @@
       {% include 'shared/nav.html' %}
     </div>
 
-    <div class="container new-grant">
+    <div class="row no-gutter grant_waiting" style="display: none;">
+      <div class="col-12 offset-md-1 col-md-10 offset-lg-1 col-lg-8 body ">
+        {% include 'shared/bounty_waiting_state.html' %}
+        <div class="row ml-2 mr-2 pl-4 pr-4 waiting_room_entertainment" style="display: none; text-align: center">
+          {% include 'shared/rain.html' with class="color" %}
+          <div class="quote-container">
+            <img src="{% static "v2/images/quotes.png" %}" style="float: left; max-width: 22px;" />
+            <div class="quote_text"></div>body
+            <div class="quote_author"></div>
+            <input id="quoteRefresh" class="button button--primary" name="refresh" type='submit' onclick='javascript:waitingRoomEntertainment()' value="Refresh Quote" >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container new-grant" id="new-grant">
       <div class="row justify-content-md-center">
         <div class="col-sm-12 col-md-10 col-lg-6">
           <div class="form__intro text-center">
@@ -53,8 +69,10 @@
 
             <div class="form__group-horizontal">
               <label class="form__label" for="input-team_members">{% trans "Team members" %}</label>
-              <select id="input-team_members" class="form__input team_members" name="team_members[]" multiple="multiple">
-              </select>
+              <div class="form__select2">
+                <select id="input-team_members" class="form__input team_members" name="team_members[]" multiple="multiple">
+                </select>
+              </div>
             </div>
 
             <div class="form__group-horizontal">
@@ -139,4 +157,5 @@
   <script src="{% static "v2/js/grants/compiledSubscriptionContract.js" %}"></script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="{% static "v2/js/grants/new.js" %}"></script>
+  <script src="{% static "v2/js/waiting_room_entertainment.js" %}"></script>
 </html>

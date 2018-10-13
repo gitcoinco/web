@@ -254,6 +254,18 @@ var showLoading = function() {
   setTimeout(showLoading, 10);
 };
 
+var waitingStateActive = function() {
+  $('.bg-container').show();
+  $('.loading_img').addClass('waiting-state ');
+  $('.waiting_room_entertainment').show();
+  $('.issue-url').html('<a href="' + document.issueURL + '">' + document.issueURL + '</a>');
+
+  var secondsBetweenQuoteChanges = 30;
+
+  waitingRoomEntertainment();
+  var interval = setInterval(waitingRoomEntertainment, secondsBetweenQuoteChanges * 1000);
+};
+
 /** Add the current profile to the interested profiles list. */
 var add_interest = function(bounty_pk, data) {
   if (document.interested) {
