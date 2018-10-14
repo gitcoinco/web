@@ -33,6 +33,7 @@ import premailer
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
+from functools import partial
 
 logger = logging.getLogger(__name__)
 
@@ -96,7 +97,7 @@ def render_tip_email(to_email, tip, is_new):
     return response_html, response_txt
 
 
-def render_kudos_email(to_email, kudos_transfer, is_new, email_template):
+def render_kudos_email(to_email, kudos_transfer, is_new, html_template, text_template=None):
     """Summary
 
     Args:
@@ -125,12 +126,17 @@ def render_kudos_email(to_email, kudos_transfer, is_new, email_template):
         'is_receiver': to_email in kudos_transfer.emails,
     }
 
-    response_html = premailer_transform(render_to_string(email_template, params))
-    # response_html = premailer_transform(render_to_string("emails/kudos_mint.html", params))
-    # response_html = premailer_transform(render_to_string("emails/kudos_mkt.html", params))
-    response_txt = render_to_string(email_template, params)
+    response_html = premailer_transform(render_to_string(html_template, params))
+    response_txt = render_to_string(text_template, params) if text_template else None
 
     return response_html, response_txt
+
+
+render_new_kudos_email = partial(render_kudos_email, html_template='emails/new_kudos.html', text_template='emails/new_kudos.txt')
+render_sent_kudos_email = partial(render_kudos_email, html_template='emails/new_kudos.html', text_template='emails/new_kudos.txt')
+render_kudos_accepted_email = partial(render_kudos_email, html_template='emails/new_kudos.html', text_template='emails/new_kudos.txt')
+render_kudos_mint_email = partial(render_kudos_email, html_template='emails/kudos_mint.html', text_template=None)
+render_kudos_mkt_email = partial(render_kudos_email, html_template='emails/kudos_mkt.html', text_template=None)
 
 
 def render_match_email(bounty, github_username):
@@ -697,7 +703,7 @@ def new_tip(request):
 def new_kudos(request):
     from kudos.models import KudosTransfer
     kudos_transfer = KudosTransfer.objects.last()
-    response_html, _ = render_kudos_email(settings.CONTACT_EMAIL, kudos_transfer, True, 'emails/new_kudos.html')
+    response_html, _ = render_new_kudos_email(settings.CONTACT_EMAIL, kudos_transfer, True)
 
     return HttpResponse(response_html)
 
@@ -706,7 +712,7 @@ def new_kudos(request):
 def kudos_mint(request):
     from kudos.models import KudosTransfer
     kudos_transfer = KudosTransfer.objects.last()
-    response_html, _ = render_kudos_email(settings.CONTACT_EMAIL, kudos_transfer, True, 'emails/kudos_mint.html')
+    response_html, _ = render_kudos_mint_email(settings.CONTACT_EMAIL, kudos_transfer, True)
 
     return HttpResponse(response_html)
 
@@ -715,7 +721,7 @@ def kudos_mint(request):
 def kudos_mkt(request):
     from kudos.models import KudosTransfer
     kudos_transfer = KudosTransfer.objects.last()
-    response_html, _ = render_kudos_email(settings.CONTACT_EMAIL, kudos_transfer, True, 'emails/kudos_mkt.html')
+    response_html, _ = render_kudos_mkt_email(settings.CONTACT_EMAIL, kudos_transfer, True)
 
     return HttpResponse(response_html)
 

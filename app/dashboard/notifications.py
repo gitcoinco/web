@@ -35,7 +35,7 @@ from git.utils import delete_issue_comment, org_name, patch_issue_comment, post_
 from marketing.mails import tip_email, setup_lang, send_mail
 from marketing.models import GithubOrgToTwitterHandleMapping
 from marketing.utils import should_suppress_notification_email
-from retail.emails import render_kudos_email
+from retail.emails import render_new_kudos_email
 from pyshorteners import Shortener
 from slackclient import SlackClient
 
@@ -411,7 +411,7 @@ def maybe_market_kudos_to_email(kudos_transfer):
             # TODO:  Does the from_email field in the database mean nothing?  We just override it here.
             from_email = settings.CONTACT_EMAIL
             # 3. Render email
-            html, text = render_kudos_email(to_email, kudos_transfer, is_new)
+            html, text = render_new_kudos_email(to_email, kudos_transfer, is_new)
 
             # 4. Send email unless the email address has notifications disabled
             if not should_suppress_notification_email(to_email, 'kudos'):
