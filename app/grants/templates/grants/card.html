@@ -17,38 +17,41 @@
 {% load i18n static humanize i18n %}
 <link rel="stylesheet" href="{% static "v2/css/grants/card.css" %}">
 <div class="grant-item">
-  <a class="grant-item__hero" href="{% url 'grants:details' grant.id %}">
-    <img src="{% if grant.logo %}
-      {{ grant.logo.url }}
-    {% else %}
-      http://placehold.it/300
-    {% endif %}" alt="{{ grant.title|truncatechars:60 }}">
-  </a>
   <div class="grant-item__content py-4 px-3">
-    <h2 class="grant-item__title font-title"><a href="{% url 'grants:details' grant.id %}">{{ grant.title|truncatechars:60 }}</a></h2>
-    <p class="grant-item__pitch font-body">{{ grant.description|truncatechars:135 }}</p>
+    <h2 class="grant-item__title font-subheader"><a href="{% url 'grants:details' grant.id %}">{{ grant.title|truncatechars:60 }}</a></h2>
+    <p class="grant-item__pitch font-caption">{{ grant.description|truncatechars:190 }}</p>
     <div class="grant-item__footer">
       <div class="grant-item__owner mt-3 mb-4">
-        <div class="grant-item__owner-image">
-          <img src="{% if grant.admin_profile.avatar_url %}{{ grant.admin_profile.avatar_url }}{% else %}http://placehold.it/300{% endif %}">
+        <div class="grant-item__owner-image mr-2">
+          <img src="{% if grant.admin_profile.avatar_url %}{{ grant.admin_profile.avatar_url }}{% else %}https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg{% endif %}">
         </div>
-        <div class="grant-item__owner-handle font-body">{% trans 'by' %} <span>{{ grant.admin_profile.handle|default:'Anonymous' }}</span></div>
+        <div class="grant-item__owner-handle font-body">{% trans 'by' %} <span>{{ grant.admin_profile.handle|default:'anonymous' }}</span></div>
       </div>
       <div class="progress progress--small">
         <div class="progress-bar" role="progressbar" style="width: {{ grant.percentage_done }}%" aria-valuenow="{{ grant.percentage_done }}%" aria-valuemin="0" aria-valuemax="100"></div>
       </div>
-      <!-- <div class="progress-bar">
-        <div class="progress" style="width: {{ grant.percentage_done }}%"></div>
-      </div> -->
-      <div class="grant-item__funding">
+      <div class="grant-item__funding mt-2">
         <div class="grant-item__funding-item">
-          <div class="grant-item__funding-number">{{ grant.amount_received|floatformat:2|intcomma }} ETH</div>
-          <div class="grant-item__funding-label">{% trans 'Current' %}</div>
+          <div class="grant-item__funding-number font-body">{{ grant.amount_received|floatformat:2|intcomma }} ETH</div>
+          <div class="grant-item__funding-label font-caption">{% trans 'Current' %}</div>
         </div>
         <div class="grant-item__funding-item">
-          <div class="grant-item__funding-number">{{ grant.amount_goal|floatformat:2|intcomma }} ETH</div>
-          <div class="grant-item__funding-label">{% trans 'Goal' %}</div>
+          <div class="grant-item__funding-number font-body">{{ grant.amount_goal|floatformat:2|intcomma }} ETH</div>
+          <div class="grant-item__funding-label font-caption">{% trans 'Goal' %}</div>
         </div>
+      </div>
+      <div class="grant-item__state mt-3">
+        {% if grant %} <!-- TODO: wire up grant state -->
+          <div class="grant-item__state-active">
+            <div class="inner"></div>
+          </div>
+          <span class="grant-item__state-label font-caption">Active</span>
+        {% else %}
+          <div class="grant-item__state-completed">
+            <div class="inner"></div>
+          </div>
+          <span class="grant-item__state-label font-caption">Completed</span>
+        {% endif %}
       </div>
     </div>
   </div>

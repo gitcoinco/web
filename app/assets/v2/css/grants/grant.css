@@ -8,14 +8,10 @@
 
 .progress {
   background-color: #D8D8D8;
-  /* border-radius: 2px; */
-  /* height: 15px; */
-  /* overflow: initial; */
 }
 
 .progress-bar {
   background-color: #0FCE7C;
-  border-radius: 2px;
 }
 
 .progress-bar.progress-bar--cancel {
@@ -29,7 +25,8 @@
 }
 
 .progress--small {
-  height: 6px;
+  height: 7px;
+  border-radius: 2px;
 }
 
 /* Grant Details */

@@ -224,7 +224,7 @@ def subscription_cancel(request, subscription_id):
 def profile(request):
     """Show grants profile of logged in user."""
     # profile = request.user.profile if request.user.is_authenticated else None
-    grants = Grant.objects.all()  #TODO: show only logged in users grants
+    grants = Grant.objects.all()  # TODO: show only logged in users grants
     params = {
         'active': 'profile',
         'title': _('My Grants'),
