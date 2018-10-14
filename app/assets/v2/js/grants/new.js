@@ -109,7 +109,8 @@ $(document).ready(function() {
         text: ele.name
       }));
     });
-
     $('#js-token').select2();
   });
+
+  $('.select2-selection__rendered').removeAttr('title');
 });

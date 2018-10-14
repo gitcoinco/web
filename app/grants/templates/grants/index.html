@@ -88,7 +88,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       {% for grant in grants %}
       {% if forloop.counter0|divisibleby:3 %} <div class="row"> {% endif %}
       <div class="col-12 col-md-4 mb-4">
-        {% include 'grants/grant_card.html' %}
+        {% include 'grants/card.html' %}
       </div>
       {%  if forloop.counter|divisibleby:3 or forloop.last %} </div> {% endif %}
       {% endfor %}
