@@ -20,7 +20,10 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
     <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+    <!-- <link rel="stylesheet" href="{% static "v2/css/profile.css" %}"> -->
     <link rel="stylesheet" href="{% static "v2/css/grants/profile.css" %}">
   </head>
   <body class="interior {{ active }} g-font-muli">
@@ -41,7 +44,7 @@
           <div class="container px-0">
             <div class="row mb-3 py-2 px-0">
               <div class="col-12 px-0">
-                {% include 'grants/profile_body.html' with grants=grants %}
+                {% include 'grants/profile_body.html' with grants=grants history=history %}
               </div>
             </div>
           </div>
@@ -50,7 +53,7 @@
           <div class="container px-0">
             <div class="row mb-3 py-2 px-0">
               <div class="col-12 px-0">
-                {% include 'grants/profile_body.html' with grants=grants %}
+                {% include 'grants/profile_body.html' with grants=grants history=history %}
               </div>
             </div>
           </div>
