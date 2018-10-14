@@ -35,4 +35,6 @@
     </div>
   {% endif %}
 </div>
-{% include 'shared/rain.html' with class="grey" %}
+{% if not hide_rain %}
+  {% include 'shared/rain.html' with class="grey" %}
+{% endif %}
