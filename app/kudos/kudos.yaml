@@ -3,6 +3,8 @@
     scalable computing.  Owners of this badge are infamous for their command of distributing
     processing of large data sets!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - hadoop
@@ -15,6 +17,8 @@
     millions of websites and businesses.  Owners of this badge are known for their
     mastery of the Linux family of Operating Systems!
   priceFinney: 3
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - linux
@@ -25,8 +29,10 @@
 - name: gitcoin_genesis
   description: The Gitcoin Genesis Badge is the rarest of the Gitcoin team badges.  Owners
     of this badge contributed to Gitcoin in a meaningful way in the way-back-when.
-  priceFinney: 2000
-  numClonesAllowed: 450
+  priceFinney: 1000
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 4
   tags:
   - gitcoin
   - genesis
@@ -38,6 +44,8 @@
     Gitcoin.  Owners of this badge are masters of the asyncronous, event driven, programming
     language and specifically, of client side scripting!
   priceFinney: 3
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - javascript
@@ -51,6 +59,8 @@
     up in the modern web, and ensuring stability, peace, performance, and prosperity
     for inhabinants the modern web.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 300
   tags:
   - OS
@@ -63,6 +73,8 @@
     blockchain-enabled, web?  Owners of the Java Doctor badge are famous for their
     mastery of the Java programming language!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - java
@@ -74,6 +86,8 @@
     iterate?  The modern web is built by Agile, and favors experimentation and iteration.  Owners
     of the Do More Faster badge, well, they DO MORE FASTER!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - do more faster
@@ -87,6 +101,8 @@
     jQuery won our <3s.  To owners of this badge, thank you for using jQuery to provide
     Fixes to all!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 800
   tags:
   - jquery
@@ -100,6 +116,8 @@
     Mixer combines functional programming with the Erlang VM to to produce low-latency,
     fault tolerant, systems!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 250
   tags:
   - elixer
@@ -111,6 +129,8 @@
     for their communication skills, rapid value delivery, and great attitudes, Collaboration
     Machines are a huge asset to the modern programming ecosystem!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 300
   tags:
   - collaboration
@@ -120,6 +140,8 @@
   description: Owners of this badge 'Write programs that do one thing and do it well';
     just like the UNIX OS!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - unix
@@ -131,6 +153,8 @@
     enough at Ruby, to be a 'Gem' themselves? Owners of this badge are known for their
     mastery of the Ruby programming language.
   priceFinney: 5
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 550
   tags:
   - rails
@@ -144,6 +168,8 @@
     us declare dynamic views for our dApps!  Owners of this badge are royalty of
     the AngularJS programming framework!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - angular
@@ -157,6 +183,8 @@
     to type 'LIZARD' into it?  Buffer overflow somewhere in your dApp?  They'll find
     it.  QA Ninjas make the web bug free, and we salute them!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 700
   tags:
   - qa
@@ -168,6 +196,8 @@
   description: Know who we LOVE working with?  Programmers who are always shipping
     code!  Always. Be. Shipping.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - shipping
@@ -178,6 +208,8 @@
     leading Open Source CMS has provided tons of value to the modern web, and adding
     a Drupal Brainiac to your project is a sure fire way to make your CMS fly!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - drupal
@@ -189,6 +221,8 @@
     of this badge are legitimately famous for their mastery of MVC website development,
     DRY, and use of Active Record.
   priceFinney: 4
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 200
   tags:
   - rails
@@ -202,6 +236,8 @@
     Open Source Freedom Fighter!  OSS Freedom Fighters fight for liberty, justice,
     and open source code for all!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - oss
@@ -212,6 +248,8 @@
     from the famous essay from Eric Raymond entitled "The Cathedral and the Bazaar".  Owners
     of this badge embody the principle of Openness from the Cathedral and the Bazaar.'
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - soft skills
@@ -222,6 +260,8 @@
     solve problems?  The modern web is built by Agile, and favors experimentation
     and iteration.  Owners of this badge, well, they SOLVE PROBLEMS!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - soft skills
@@ -231,6 +271,8 @@
     of this badge are fighting to change to tide and to make Open Source Software
     sustainable for generations to come!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - soft skills
@@ -242,6 +284,8 @@
     multiple balls in the air at once.  Owners of this badge can contribute meaningfully
     to several projects at once and not let a single one drop!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - soft skills
@@ -251,6 +295,8 @@
   description: Owners of this badge are always under-promising and over-delivering.  They
     go 'above and beyond' for their clients!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - soft skills
@@ -260,6 +306,8 @@
   description: Owners of this badge have completely changed the course of a project
     their on, with their skills, organization, tenacity and sheer ability to deliver.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 50
   tags:
   - soft skills
@@ -271,6 +319,8 @@
     at Design Stars, delivering tons of value on aesthetics, UX, and otherwise shaping
     the very projects they work on!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 350
   tags:
   - design
@@ -283,6 +333,8 @@
     electricity, breaks.  Owners of this badge are digital handymen and handywomen.  They
     fix stuff, and do it with a smile on their face!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 210
   tags:
   - soft skills
@@ -295,6 +347,8 @@
     plumbing, electricity, breaks.  Owners of this badge are digital handymen and
     handywomen.  They fix stuff, and do it with a smile on their face!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 210
   tags:
   - soft skills
@@ -307,6 +361,8 @@
     have mastered the abiltiy to gather, cultivate, clean, gain insight, and deliver
     value from a dataset
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - data
@@ -318,6 +374,8 @@
     ideas.  They think outside the box, they combine left-brain and right brain.  They
     deliver value by thinking about things in a new way.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - soft skills
@@ -329,6 +387,8 @@
   description: Know who we LOVE working with?  Programmers who are always shipping
     code!  Always. Be. Shipping.
   priceFinney: 5
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - shipping
@@ -339,6 +399,8 @@
   description: Need someone who uses strong typing, declarative, functional, code?  Look
     no further than the owners of the C# Blacksmith Kudos!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - c#
@@ -348,6 +410,8 @@
   description: Want to work with someone who is famous for having squeaky clean code?  Look
     no further than owners of the 'Cleanest Code' Kudos.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - clean code
@@ -361,6 +425,8 @@
     someone who releases frequently?  Owners of this badge are who you'll want to
     talk to!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 300
   tags:
   - iteration
@@ -371,6 +437,8 @@
 - name: grow_open_source
   description: Owners of this Kudos embody Gitcoin's mission of 'Grow Open Source'
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 200
   tags:
   - mission
@@ -381,6 +449,8 @@
   description: Want someone who can work efficiently with MongoDB?  Look no further
     than owners of this badge.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - mongodb
@@ -390,6 +460,8 @@
   description: Want to work with someone who can navigate through complexity and deliver
     on-time, on-scope, and on-budget?  Look no further than owneres of this kudos!
   priceFinney: 4
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 300
   tags:
   - navigator
@@ -400,6 +472,8 @@
   description: Want someone who ships deliverables quick?  Owners of this 'fast turnaround'
     kudos are the first place to look!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - soft skills
@@ -410,6 +484,8 @@
   description: CSS is one of the foundations of the modern web.  Owners of this badge
     are masters of building beautiful, mobile-friendly, products.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - css
@@ -420,6 +496,8 @@
   description: Owners of this badge always seem to be up at night, SHIPling product
     to customers.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 200
   tags:
   - night owl
@@ -430,6 +508,8 @@
     about PHP?  It's a recursive acronym, "PHP Hypertext Processor".  Want a PHP programmer
     for your project? Look no further than to owners of this badge!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 200
   tags:
   - php
@@ -441,6 +521,8 @@
   description: Owners of this badge are obsessed with BUIDLing a better world than
     what came before them.  We salute them for their dedication to making things better.
   priceFinney: 10
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - soft skills
@@ -451,6 +533,8 @@
     can manage their own memory and manage on-scope and on-budget!? Look no further;
     Owners of this badge are renown for their work in the C programming language.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 300
   tags:
   - c
@@ -461,6 +545,8 @@
   description: Need someone who can deliver value in Redux?  Owners of this badge
     are renown for their ability to work effciently in Redux.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 200
   tags:
   - redux
@@ -471,6 +557,8 @@
     of this badge are famous for their mastery of MVC website development, DRY, and
     use of Active Record.
   priceFinney: 5
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 550
   tags:
   - rails
@@ -483,6 +571,8 @@
   description: Need a helping hand for your project.  Start with an owner of this
     'Helping Hand' badge!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 50
   tags:
   - helping hand
@@ -495,6 +585,8 @@
     Gitcoin.  Owners of this badge are masters of the asyncronous, event driven, programming
     language and specifically, of server side scripting!
   priceFinney: 4
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 300
   tags:
   - javascript
@@ -507,6 +599,8 @@
     can manage their own memory and manage on-scope and on-budget!? Look no further;
     Owners of this badge are renown for their work in the C++ programming language.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 300
   tags:
   - c++
@@ -517,6 +611,8 @@
 - name: pythonista
   description: Pythonistas are loyal users of the Python programming language.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 300
   tags:
   - python
@@ -526,6 +622,8 @@
   description: Owners of this badge are known for their ability to Level Up the teams
     and projects they work on
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - soft skills
@@ -536,6 +634,8 @@
     requirements, to work with collaborators of all types, and to product value in
     a team atmosphere!
   priceFinney: 5
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 300
   tags:
   - delegate
@@ -546,6 +646,8 @@
   description: Need someone who is going to create beautiful designs of any kind?  Check
     out the owners of the 'Arts and Farts' Kudos.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 100
   tags:
   - arts
@@ -557,6 +659,8 @@
   description: React is a force in the modern web, and so are those who can yield
     it.   Owners of this badge have demonstrated proficiency in React on a past project.
   priceFinney: 3
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 400
   tags:
   - react
@@ -567,6 +671,8 @@
   description: Looking for someone who writes clean, standards-compliant, HTML?  Look
     no further than this HTML Celebrity kudos.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - html
@@ -577,6 +683,8 @@
   description: Looking for someone who has a great eye for detail?  Look no further
     than this eye for detail kudos badge.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 50
   tags:
   - design
@@ -588,6 +696,8 @@
     declare dynamic views for our dApps!  Owners of this badge are masters of the
     Ember programming framework!
   priceFinney: 6
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 300
   tags:
   - ember
@@ -598,6 +708,8 @@
     big ideas. We turn lofty ideas into something tangible. We are fearless about
     the outcome, sometimes to our own detriment.
   priceFinney: 3
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 342
   tags:
   - pony
@@ -609,6 +721,8 @@
   description: Are you a cross-pollinator?  Do you deliver value in a lot of places
     at once?  This 'Bee of all trades' badge is for you!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 200
   tags:
   - soft skills
@@ -618,6 +732,8 @@
   description: MySQL is a great asset to modern web developers.  Looking for someone
     who knows MySQL?  This badge is for you.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 100
   tags:
   - mysql
@@ -627,6 +743,8 @@
 - name: app_dev_all_star
   description: Looking for an all star app developer?  This badge is for you.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 340
   tags:
   - app
@@ -637,6 +755,8 @@
   description: Looking for someone who can Go Go Go and BUIDL in Go?  This kudos is
     for you.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 200
   tags:
   - go
@@ -646,6 +766,8 @@
   description: Looking for someone to put on their product wizard's cap and deliver
     massive value to your project?  This kudos is for you!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - product
@@ -655,6 +777,8 @@
   description: Looking for someone who can deliver the goods from a business side
     of things?  Look no further than owners of this 'business minded' kudos.
   priceFinney: 3
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 340
   tags:
   - business
@@ -664,6 +788,8 @@
   description: Splat goes the bug!  Owners of this badge are proficient at squashing
     bugs.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - bugs
@@ -672,6 +798,8 @@
 - name: shill_ethereum
   description: For your friends & family who just love to shill Ethereum
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - ethereum
@@ -680,6 +808,8 @@
 - name: shill_colorado
   description: For your friends & family who just love to shill Colorado
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - colorado
@@ -688,6 +818,8 @@
 - name: devcon_4
   description: For your friends & family who came to Devcon 4 with you.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - devcon
@@ -699,6 +831,8 @@
     big ideas. We turn lofty ideas into something tangible. We are fearless about
     the outcome, sometimes to our own detriment.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 77
   tags:
   - django
@@ -708,6 +842,8 @@
   description: Got a Utopian vision for a blockchain-ized world?  This badge is for
     you.
   priceFinney: 5
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 55
   tags:
   - soft skills
@@ -719,6 +855,8 @@
     to build new ideas. With our powers, we can develop collabs with the smallest
     or largest machines.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 400
   tags:
   - collboration
@@ -729,6 +867,8 @@
     \ hesitation. The amount of trees or woods are no concern - we won\u2019t rest\
     \ until the right path has been uncovered."
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 60
   tags:
   - soft skills
@@ -738,6 +878,8 @@
 - name: to_the_moon
   description: This kudos is for users who are taking the ecosystem to the moon!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 400
   tags:
   - soft skills
@@ -745,6 +887,8 @@
 - name: gitcoin_sustainer
   description: A very special, limited edition, Kudos, for sustainers of Gitcoin.
   priceFinney: 10
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 50
   tags:
   - gitcoin
@@ -755,6 +899,8 @@
   description: Know a crafts-man?  A craftsperson kudos is a great way to celebrate
     the tools we use and the people that use them!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 100
   tags:
   - soft skills
@@ -764,6 +910,8 @@
   description: Know someone who just unlocks value all the time?  Send them the 'struck
     oil' Kudos!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 100
   tags:
   - soft skills
@@ -774,6 +922,8 @@
   description: Is there someone out there who is creating a better world? A more free
     world?  Send them the 'freedom' kudos!
   priceFinney: 3
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 70
   tags:
   - freedom
@@ -783,6 +933,8 @@
 - name: focus
   description: Know someone who has extremely good focus?  Send them a 'kudos' kudos.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 20
   tags:
   - focus
@@ -792,15 +944,20 @@
   description: Know someone who's great at setting up and using power tools!?  Send
     them a powertool user kudos.
   priceFinney: 2
-  numClonesAllowed: 20
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 400
   tags:
   - powertools
   - tools
+  - first_mint
   image: powertool_user.svg
 - name: party_robot
   description: Is one of your teammates just a lot of fun to be around?  Send them
     a Party Robot Kudos.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - party
@@ -811,6 +968,8 @@
   description: With the goal of releasing in mind, we help sustain the ecosystem by
     shipping quickly to learn quickly.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 100
   tags:
   - soft skills
@@ -820,6 +979,8 @@
   description: Holders of this badge seek the most straightforward ways to solve problem.
     Our great challenge is finding the shortest path to the truth
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 55
   tags:
   - direct
@@ -831,6 +992,8 @@
     \ is a compelling story. Crystal Ball holders are visionaries that transform what\u2019\
     s happening into an understandable future."
   priceFinney: 15
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 70
   tags:
   - soft skills
@@ -840,6 +1003,8 @@
 - name: gitter_of_coins
   description: For the contributors on the platform that, well... , GIT coins.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - git
@@ -850,6 +1015,8 @@
   description: Open Source Software is mana from the heavens.  Celebrate someone who's
     provided value to your lift with this Kudos badge.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 200
   tags:
   - mana
@@ -859,6 +1026,8 @@
   description: Just for fun, this Gitcoin Robot is a way of celebrating the contributors
     in your life.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 400
   tags:
   - robot
@@ -868,6 +1037,8 @@
 - name: heros_honour
   description: Know someone who's a hero?  Send them this video-game-inspired, badge.
   priceFinney: 4
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 77
   tags:
   - hero
@@ -878,6 +1049,8 @@
 - name: blockchain_the_world
   description: Know someone who's blockchain-izing the world?  Send them this badge.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 500
   tags:
   - blockchain
@@ -887,6 +1060,8 @@
   description: Just for fun, this Gitcoin Robot is a way of celebrating the contributors
     in your life.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 100
   tags:
   - robot
@@ -896,6 +1071,8 @@
   description: Know someone who's great at putting out fires?  This firefighter badge
     is for them!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 200
   tags:
   - firefigheter
@@ -904,6 +1081,8 @@
 - name: gitcoin_sun
   description: A very special, limited edition, Kudos, only for sustainers of Gitcoin.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 300
   tags:
   - sustainers
@@ -914,6 +1093,8 @@
   description: Just for fun, this Gitcoin Robot is a way of celebrating the contributors
     in your life.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 100
   tags:
   - robot
@@ -925,6 +1106,8 @@
     problem solving with our words and stories. The world is our experiment lab, and
     we are players in it.
   priceFinney: 25
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 100
   tags:
   - genius
@@ -937,6 +1120,8 @@
     Vitalik.  Perhaps Vitalik will tweet about Gitcoin one day, and @owocki will send
     it to him then....
   priceFinney: 100
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 55
   tags:
   - vitalik
@@ -946,6 +1131,8 @@
   description: This person bring Gitcoin sunshine to OSS projects. We energize the
     project with what we do.
   priceFinney: 3
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 55
   tags:
   - sunshine
@@ -955,6 +1142,8 @@
 - name: simplifier
   description: This badge is for anyone who creates simplicity from complexity.
   priceFinney: 5
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 45
   tags:
   - ethereum
@@ -963,6 +1152,8 @@
 - name: tools
   description: This kudos is for the person creates the best tools!
   priceFinney: 1
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 1000
   tags:
   - tools
@@ -972,6 +1163,8 @@
   description: Hard workers are diligent and vigilent at doing the best they can on
     everything they do.
   priceFinney: 5
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 100
   tags:
   - hard worker
@@ -982,6 +1175,8 @@
   description: This kudos is for contributors to your project that make the blockchain
     work!
   priceFinney: 5
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 25
   tags:
   - star
@@ -990,6 +1185,8 @@
 - name: gitcoin_og
   description: You are an OG.  You are a pioneer of Gitcoin open source!
   priceFinney: 10
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 100
   tags:
   - og
@@ -1000,6 +1197,8 @@
   description: A ducky that helps solve your problems!  Always ask your ducky first
     when you can't figure something out :)
   priceFinney: 5
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 110
   tags:
   - duck
@@ -1010,6 +1209,8 @@
   description: Faster than fast on django.  Better than the best.  HODLers of this
     badge are great at creating beautiful apps in django!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 100
   tags:
   - django
@@ -1019,6 +1220,8 @@
 - name: fontend_wizard
   description: A frontend wizard mixes things up to create a beautiful UX.
   priceFinney: 3
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 100
   tags:
   - frontend
@@ -1027,6 +1230,8 @@
 - name: backend_star
   description: A shining star of all things hidden in the backend of applications.
   priceFinney: 3
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 110
   tags:
   - star
@@ -1035,6 +1240,8 @@
 - name: squahser_of_bugs
   description: A bug squasher makes bugs dissapear like magic.
   priceFinney: 4
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 80
   tags:
   - bugs
@@ -1046,6 +1253,8 @@
     where they feel necessary, and always having leverage over your life?  Then this
     kudos is for you!
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 55
   tags:
   - birds
@@ -1056,6 +1265,8 @@
 - name: out_of_this_world_programmer
   description: A programmer that moves the ecosystem forward and out of this world.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 55
   tags:
   - programmer
@@ -1065,6 +1276,8 @@
   description: Holders of this badge are great communicators that help to clarify
     any situation.
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 55
   tags:
   - communication
@@ -1073,6 +1286,8 @@
 - name: gitcoin_tree
   description: A tree that sustains open source.  Just for fun
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 55
   tags:
   - oss
@@ -1082,6 +1297,8 @@
 - name: status_hackathon_2018_games_track_first_prize
   description: For the winner of the Status Hackathon Games Track
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 1
   tags:
   - status hackathon
@@ -1089,6 +1306,8 @@
 - name: status_hackathon_2018_marketplace_track_second_prize
   description: For the runner up of the Status Hackathon Marketplace Track
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 1
   tags:
   - status hackathon
@@ -1096,6 +1315,8 @@
 - name: status_hackathon_2018_traveltrack_second_prize
   description: lorum
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 1
   tags:
   - status hackathon
@@ -1103,6 +1324,8 @@
 - name: status_hackathon_2018_travel_track_first_prize
   description: For the winner of the Status Hackathon Travel Track
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 1
   tags:
   - status hackathon
@@ -1110,6 +1333,8 @@
 - name: status_hackathon_2018__games_second_prize
   description: lorum
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 1
   tags:
   - status hackathon
@@ -1118,6 +1343,8 @@
   description: For whomever makes the greatest contribution to the Status Hackathon
     Philospher Circle at the Status Hackathon 2018
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 1
   tags:
   - status hackathon
@@ -1125,6 +1352,8 @@
 - name: status_hackathon_2018_travel_social_first_prize
   description: For the winner of the Status Hackathon Social Track
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 1
   tags:
   - status hackathon
@@ -1132,6 +1361,8 @@
 - name: status_hackathon_2018_social_first_prize
   description: lorum
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 1
   tags:
   - status hackathon
@@ -1139,6 +1370,8 @@
 - name: status_hackathon_2018_social_second_prize
   description: For the runner up of the Status Hackathon Social Track
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 1
   tags:
   - status hackathon
@@ -1147,6 +1380,8 @@
   description: This kudos is for showing appreciation for someone who did some work
     that you love
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 55
   tags:
   - gitcoin
@@ -1155,6 +1390,8 @@
 - name: status_hackathon_2018_wildcard
   description: Winner of the wildcard prize at the Status Hackahton 2018
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 1
   tags:
   - status hackathon
@@ -1162,6 +1399,8 @@
 - name: fast_response
   description: For those communicators who are reliable and always quickly responding
   priceFinney: 2
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 55
   tags:
   - soft skills
@@ -1170,6 +1409,8 @@
 - name: eth_hacker
   description: You create value out of bits as an ETH Hacker!
   priceFinney: 5
+  artist: mladen
+  platform: gitcoin
   numClonesAllowed: 23
   tags:
   - eth
@@ -1180,7 +1421,9 @@
   description: Limited Edition Cellarius Kudos! A backend architect is not only the
     keeper of the ins and outs but also the holder of information and the intricacies
     of a system.
-  priceFinney: 10
+  priceFinney: 100
+  artist: Octavian
+  platform: gitcoin
   numClonesAllowed: 25
   tags:
   - architect
@@ -1191,42 +1434,54 @@
   description: Limited Edition Cellarius Kudos! A bug eliminator skill is core to
     an efficient system or service. They effortlessly remove and resolve any bug with
     speed.
-  priceFinney: 10
+  priceFinney: 150
+  artist: Octavian
+  platform: gitcoin
   numClonesAllowed: 25
   tags:
   - bug
   - squasher
   - eliminator
   - problem solver
+  - cellarius
   image: cellarius/bug_eliminator.svg
 - name: bug_finder
   description: Limited Edition Cellarius Kudos! These holders are insightful, and
     easily spot and solve the very hidden problems unseen to the naked eye.
-  priceFinney: 10
+  priceFinney: 150
+  artist: Octavian
+  platform: gitcoin
   numClonesAllowed: 25
   tags:
   - bug
   - problem solver
+  - cellarius
   - troubleshoot
   image: cellarius/bug_finder.svg
 - name: lightning_fast
   description: Limited Edition Cellarius Kudos! The holder of this badge needs no
     introduction. Work is completed quickly as is a flash of lightning.
-  priceFinney: 10
+  priceFinney: 100
+  artist: Octavian
+  platform: gitcoin
   numClonesAllowed: 25
   tags:
   - fast
   - quick
   - turnaround
   - speed
+  - cellarius
   image: cellarius/lightning_fast.svg
 - name: oddjobs
   description: Limited Edition Cellarius Kudos! Holders of these badges are highly
     skilled at many things. Their talents are unlimited and sometimes at odds on the
     spectrum of skills.
-  priceFinney: 10
+  priceFinney: 100
+  artist: Octavian
+  platform: gitcoin
   numClonesAllowed: 25
   tags:
+  - cellarius
   - skilled
   - multi-task
   - well-rounded
@@ -1235,18 +1490,23 @@
   description: Limited Edition Cellarius Kudos!A trusted contributor checks all the
     boxes of being not only an expert in their domain but reliable and dependable.
     They thrive on being called upon and fulfilling any tasked mission.
-  priceFinney: 10
+  priceFinney: 100
+  artist: Octavian
+  platform: gitcoin
   numClonesAllowed: 35
   tags:
   - trusted
   - developer
   - contributor
   - reliable
+  - cellarius
   image: cellarius/trusted_contributor.svg
 - name: burst_of_energy
   description: Limited Edition Cellarius Kudos!  This kudos is for the contributors
     to your repo that are a burst of energy!
-  priceFinney: 10
+  priceFinney: 150
+  artist: Octavian
+  platform: gitcoin
   numClonesAllowed: 35
   tags:
   - cellarius
@@ -1254,7 +1514,9 @@
 - name: impossible_object
   description: Limited Edition Cellarius Kudos!  This kudos is just for fun.  If anyone
     in your repo is impossibly great contributor, send them this kudos!
-  priceFinney: 10
+  priceFinney: 100
+  artist: Octavian
+  platform: gitcoin
   numClonesAllowed: 35
   tags:
   - cellarius
@@ -1262,7 +1524,9 @@
 - name: diamond
   description: Limited Edition Cellarius Kudos!  This kudos is for any contributor
     who is a diamond!
-  priceFinney: 10
+  priceFinney: 200
+  artist: Octavian
+  platform: gitcoin
   numClonesAllowed: 35
   tags:
   - cellarius
@@ -1270,7 +1534,9 @@
 - name: heart
   description: Limited Edition Cellarius Kudos!  This one is for contributors who
     show a lot of heart!
-  priceFinney: 10
+  priceFinney: 200
+  artist: Octavian
+  platform: gitcoin
   numClonesAllowed: 35
   tags:
   - cellarius
@@ -1278,7 +1544,9 @@
 - name: infinite_energy
   description: Limited Edition Cellarius Kudos!  This kudos is for contributors who
     are infinite sources of energy to your project!
-  priceFinney: 10
+  priceFinney: 150
+  artist: Octavian
+  platform: gitcoin
   numClonesAllowed: 35
   tags:
   - cellarius
@@ -1286,7 +1554,9 @@
 - name: creative
   description: Limited Edition Cellarius Kudos!  This kudos is for the squiggles,
     not the lines.  If your contributor is very creative, send them this kudos!
-  priceFinney: 10
+  priceFinney: 150
+  artist: Octavian
+  platform: gitcoin
   numClonesAllowed: 35
   tags:
   - cellarius
@@ -1294,8 +1564,88 @@
 - name: foundation
   description: Limited Edition Cellarius Kudos!  This kudos is for those who lay a
     solid foundation.
-  priceFinney: 10
+  priceFinney: 100
+  artist: Octavian
+  platform: gitcoin
   numClonesAllowed: 35
   tags:
   - cellarius
   image: cellarius/Triangle.svg
+- name: Best use of Fission -- ETHMagicians Prague 2018
+  description: This kudos is for the Best use of Fission -- ETHMagicians Prague 2018
+  rarity: 20
+  priceFinney: 1
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - ethmagicians
+  - prague
+  image: fission_color.svg
+- name: Best use of Universal Logins -- ETHMagicians Prague 2018
+  description: This kudos is for the Best use of Universal Logins -- ETHMagicians Prague 2018
+  rarity: 20
+  priceFinney: 1
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - ethmagicians
+  - prague
+  image: logins_color.svg
+- name: Awesome Participant -- ETHMagicians Prague 2018
+  description: This kudos is for the Awesome Participant -- ETHMagicians Prague 2018
+  rarity: 20
+  priceFinney: 1
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - ethmagicians
+  - prague
+  image: participant_color.svg
+- name: Scribe -- ETHMagicians Prague 2018
+  description: This kudos is for the Scribe kudos award -- ETHMagicians Prague 2018
+  rarity: 20
+  priceFinney: 1
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - ethmagicians
+  - prague
+  image: scirbe_color.svg
+- name: Best use of 1337 Subscriptions -- ETHMagicians Prague 2018
+  description: This kudos is for the Best use of 1337 Subscriptions -- ETHMagicians Prague 2018
+  rarity: 20
+  priceFinney: 1
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - ethmagicians
+  - prague
+  image: subscription_color.svg
+- name: Volunteer Organizer Award -- ETHMagicians Prague 2018
+  description: This kudos is for the Volunteer Organizer Award -- ETHMagicians Prague 2018
+  rarity: 20
+  priceFinney: 1
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - ethmagicians
+  - prague
+  image: volunteer_color.svg
+- name: Best Use Of Wallet Standards -- ETHMagicians Prague 2018
+  description: This kudos is for the Best Use Of Wallet Standards -- ETHMagicians Prague 2018
+  rarity: 20
+  priceFinney: 1
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - ethmagicians
+  - prague
+  image: wallet_color.svg
+
