@@ -65,7 +65,9 @@ class Migration(migrations.Migration):
                 ('owner_address', models.CharField(max_length=255)),
                 ('txid', models.CharField(max_length=255, null=True, blank=True)),
                 ('external_url', models.CharField(max_length=255, null=True, blank=True)),
-                ('background_color', models.CharField(max_length=255, null=True, blank=True))
+                ('background_color', models.CharField(max_length=255, null=True, blank=True)),
+                ('artist', models.CharField(max_length=255, null=True, blank=True)),
+                ('platform', models.CharField(max_length=255, null=True, blank=True))
             ],
             options={
                 'abstract': False,

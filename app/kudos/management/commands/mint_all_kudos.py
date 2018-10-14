@@ -51,6 +51,7 @@ class Command(BaseCommand):
         parser.add_argument('network', default='localhost', type=str)
         parser.add_argument('yaml_file', help='absolute path to kudos.yaml file', type=str)
         parser.add_argument('--skip_sync', action='store_true')
+        parser.add_argument('--gitcoin_account', action='store_true', help='use account stored in .env file')
         parser.add_argument('--account', help='public account address to use for transaction', type=str)
         parser.add_argument('--private_key', help='private key for signing transactions', type=str)
 
@@ -58,6 +59,7 @@ class Command(BaseCommand):
         # config
         network = options['network']
         account = options['account']
+        gitcoin_account = options['gitcoin_account']
         private_key = options['private_key']
         skip_sync = options['skip_sync']
 
@@ -95,6 +97,18 @@ class Command(BaseCommand):
             }
             attributes.append(rarity)
 
+            artist = {
+                "trait_type": "artist",
+                "value": kudos.get('artist')
+            }
+            attributes.append(artist)
+
+            platform = {
+                "trait_type": "platform",
+                "value": kudos.get('platform')
+            }
+            attributes.append(platform)
+
             tags = kudos['tags']
             # append tags
             if kudos['priceFinney'] < 2:
@@ -123,12 +137,11 @@ class Command(BaseCommand):
                 'attributes': attributes
             }
 
-            tokenURI_url = kudos_contract.create_tokenURI_url(**metadata)
             mint_to = kudos_contract._w3.toChecksumAddress('0xd386793f1db5f21609571c0164841e5ea2d33ad8')
-
-            args = (mint_to, kudos['priceFinney'], kudos['numClonesAllowed'], tokenURI_url)
             for x in range(1, 4):
                 try:
+                    tokenURI_url = kudos_contract.create_tokenURI_url(**metadata)
+                    args = (mint_to, kudos['priceFinney'], kudos['numClonesAllowed'], tokenURI_url)
                     kudos_contract.mint(*args, account=account, private_key=private_key, skip_sync=skip_sync)
                 except Exception as e:
                     logger.error(e)

@@ -186,6 +186,10 @@ class KudosContract:
                 mapping['rarity'] = attrib['value']
             elif attrib['trait_type'] == 'tag':
                 tags.append(attrib['value'])
+            elif attrib['trait_type'] == 'artist':
+                mapping['artist'] = attrib['value']
+            elif attrib['trait_type'] == 'platform':
+                mapping['platform'] = attrib['value']
 
         mapping['tags'] = ', '.join(tags)
 
