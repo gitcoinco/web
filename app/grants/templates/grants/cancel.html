@@ -1,0 +1,117 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static humanize i18n %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+  </head>
+  <body class="interior {{ active }} grant">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+    </div>
+    <img src="{% static "v2/images/bitmap.png" %}" width="100%" />
+    <h2 class="fund__header">
+      {% trans "Cancel contribution for" %}
+      <span class="fund__header--highlight">{{ grant.title }}</span>
+    </h2>
+
+    <div class="container">
+      <div class="row bottom-buffer">
+        <div class="col-6">
+          <div class="grant__progress cancel">
+            <div class="progress">
+              <div class="progress-bar" style="width:50%"></div>
+              <div class="progress-bar progress-bar--cancel" role="progressbar" style="width:10%">
+                <div class="contribution">
+                  <span>10 ETH</span>
+                  <p>{% trans "Your contribution" %}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="progress-text top-buffer bottom-buffer">
+              <div class="row">
+                <div class="col-6">
+                  <span>344.ETH</span>
+                  <p>{% trans "Current" %}</p>
+                </div>
+                <div class="col-6 text-right">
+                  <span>500.ETH</span>
+                  <p>{% trans "Goal" %}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row dates">
+            <div class="col-6">
+              {% trans "Start date:" %}05/05/2018
+            </div>
+            <div class="col-6 text-right">
+              {% trans "Effective date of cancel:" %} 05/12/2018
+            </div>
+          </div>
+
+          <div class="row top-buffer">
+            <div class="col-6">
+              <button class="button button--cancel button--full">{% trans "Cancel" %}</button>
+            </div>
+            <div class="col-6">
+              <form action="{{ subscription.pk }}" method="POST" id="js-cancelSubscription">
+                {% csrf_token %}
+                <button class="button button--primary button--full">{% trans "Cancel Contribution" %}</button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-6">
+          <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            Mauris sodales magna sit amet mattis feugiat.
+            Etiam dapibus semper dapibus.
+            Sed sit amet vestibulum ligula, sit amet imperdiet risus.
+
+            Etiam efficitur sem vel arcu porta finibus.
+            Nullam sit amet dapibus nisi. Praesent elementum orci felis, id aliquet purus commodo ut.
+            Donec ut consequat purus, ornare malesuada dolor. Donec ligula lacus, facilisis ut sollicitudin vel, aliquam quis tellus.
+
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            Mauris sodales magna sit amet mattis feugiat.
+            Etiam dapibus semper dapibus.
+            Sed sit amet vestibulum ligula, sit amet imperdiet risus.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+  </body>
+  <!-- jQuery -->
+  <script src="{% static "v2/js/grants/cancel_subscription.js" %}"></script>
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+  <script src="{% static "v2/js/shared.js" %}"></script>
+  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+</html>

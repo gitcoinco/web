@@ -1,0 +1,87 @@
+{% extends 'emails/template.html' %}
+{% comment %}
+    Copyright (C) 2017 Gitcoin Core
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU Affero General Public License as published
+    by the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU Affero General Public License for more details.
+
+    You should have received a copy of the GNU Affero General Public License
+    along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+{% endcomment %}
+{% load i18n humanize %}
+{% load static %}
+
+{% block content %}
+<style>
+  h1 {
+    font-size: 2.125rem;
+  }
+
+  p {
+    font-size: 1.25rem;
+  }
+
+  .grant-email-subtitle {
+    font-size: 1rem;
+  }
+
+  div {
+    margin: 2em 0;
+  }
+
+  hr {
+    width: 80%;
+  }
+
+  .grant-email-name {
+    color: #0D0764;
+  }
+
+  .grant-email-amount {
+    font-size: 1.5em;
+    font-weight: 600;
+    color: #3E00FF;
+    margin: 0;
+  }
+
+  a.grant-email-button {
+    background: #0D0764;
+    padding: .5em 3em;
+  }
+</style>
+
+<img src="{% static 'v2/images/new_grant.png' %}" alt="success icon" width="100px" height="100px" >
+
+<h1>{% trans "New Grant Created" %}</h1>
+
+<p>{% trans "You've created a new grant!" %}</p>
+<p>{% trans "Get ready to buidl and push forward open source!" %}</p>
+
+<hr>
+
+<img src="{% static grant.icon %}" alt="grant icon" width="50px" height="50px" >
+
+<p class="grant-email-name">{{grant.name}}</p>
+<p class="grant-email-subtitle">{{grant.desc}}</p>
+
+<div>
+  <p class="grant-email-amount">{{grant.amount}}</p>
+</div>
+
+<p class="grant-email-subtitle">{% blocktrans %}The details of your grant can be seen <a href="{{grant.url}">here.</a>{% endblocktrans %}</p>
+
+<hr>
+
+<div>
+  <a class="button grant-email-button" href="{{grant.url}">{% trans "View Grant" %}</a>
+</div>
+
+{% endblock %}

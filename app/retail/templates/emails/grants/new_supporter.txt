@@ -7,3 +7,4 @@
 {{ variable_amount_contribution }}
 
 {%trans "You can see transaction history" %} {{ transaction_history }} {%trans "here." %}
+

@@ -37,24 +37,20 @@
 {% block 'main' %}
 <link rel="stylesheet" type="text/css" href="{% static "v2/css/tooltip_hover.css" %}">
 <style>
-  #tooltip {
-    padding-right: 50px;
-  }
-
   #tooltip--hover {
     top: 19.5rem;
-    left: 31rem;
+    left: 25rem;
     max-width: 80%;
     z-index: 10000;
   }
 
-  @media only screen and (max-width: 1305px) {
+  @media only screen and (max-width: 1050px) {
     #tooltip--hover {
       top: 21rem;
       left: 3.5rem;
     }
   }
-  
+
   .send2 .navbar-network {
     padding: 3px;
   }
@@ -145,7 +141,6 @@
       <label for="tos">{% blocktrans %}I understand &amp; agree to the <a href="https://gitcoin.co/terms">terms of service</a>.{% endblocktrans %}</label>
     </div>
     <a href="#" id="send" class="button button--primary">{% trans "Send" %} <span class="emoji">⚡️</span></a>
-    <a style="display: block; margin-top: 20px;" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">Your transaction is secured by the Ethereum blockchain.  Learn more here.</a>
   </div>
   <div id="send_eth_done" style="display:none;">
     <h1>{% trans "Woo hoo!" %}</h1>

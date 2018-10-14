@@ -1,0 +1,63 @@
+.milestones .row {
+  border-left: 4px solid #3E24FB;
+  margin-left: 0;
+}
+
+.milestones .row + .row {
+  margin-top: 20px;
+}
+
+.milestones input[type=date] {
+  margin-top: 20px;
+}
+
+.milestones textarea {
+  margin-top: 20px;
+}
+
+.milestones #new-milestone {
+  font-family: Helvetica;
+  font-size: 14px;
+  color: #0D0764;
+  cursor: pointer;
+}
+
+.new-grant .form__drop {
+  margin-top: 15px;
+}
+
+.new-grant .form__select2 {
+  height: 33px;
+}
+
+.new-grant .form__select2 .select2-container--default .select2-selection--single {
+  max-height: 100%;
+}
+
+.frequency .select2-container .select2-selection--single {
+  height: 2.05rem !important;
+}
+
+.frequency .select2-container--default .select2-selection--single .select2-selection__rendered {
+  position: relative;
+}
+
+.frequency .select2-container--default .select2-selection--single .select2-selection__rendered,
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+  top: -3px;
+}
+
+.select2-container--default .select2-selection--multiple {
+  border-color: #000;
+  font-size: 0.8rem;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+  padding: 2px 5px;
+  background-color: #fff;
+  border-radius: 2px;
+}
+
+.select2-container .select2-search--inline .select2-search__field {
+  margin-top: 8px;
+}

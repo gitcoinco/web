@@ -1,0 +1,95 @@
+
+.grant-item {
+  border: 1px solid #D3D3D3;
+  border-radius: 5px;
+  display: flex;
+  margin: 1rem;
+  transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+  flex-direction: column;
+}
+
+.grant-item:hover {
+  box-shadow: 0 1px 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+}
+
+.grant-item__title {
+  line-height: 24px;
+}
+
+.grant-item__title a {
+  color: #454545;
+}
+
+.grant-item__pitch {
+  color: #9B9B9B;
+  line-height: 18px;
+  height: 6rem;
+}
+
+.grant-item__owner {
+  align-items: center;
+  display: flex;
+}
+
+.grant-item__owner-image {
+  height: 35px;
+  width: 35px;
+}
+
+.grant-item__owner-image img {
+  width: 100%;
+}
+
+.grant-item__owner-handle {
+  color: #9B9B9B;
+  line-height: 18px;
+}
+
+.grant-item__owner-handle span {
+  color: #0D0764;
+}
+
+.grant-item__footer {
+  margin-top: auto;
+}
+
+.grant-item__funding {
+  display: flex;
+  justify-content: space-between;
+}
+
+.grant-item__funding-number {
+  color: #0D0764;
+}
+
+.grant-item__funding-label {
+  color: #BBBDBF;
+}
+
+.grant-item__state-active,
+.grant-item__state-completed {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  position: relative;
+  top: 1px;
+}
+
+.grant-item__state-active {
+  background-color: #0FCE7C;
+}
+
+.grant-item__state-completed {
+  background-color: #1A91EB;
+}
+
+.inner {
+  margin-top: 2px;
+  margin-left: 2px;
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background-color: white;
+  border-radius: 50%
+}
