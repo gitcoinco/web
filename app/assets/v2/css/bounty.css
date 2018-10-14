@@ -669,20 +669,23 @@ a.btn {
   text-align: center;
 }
 
-.bounty_details .quote-container {
+.bounty_details .quote-container,
+.grant_waiting .quote-container {
   width: 55%;
   margin: 4rem auto;
   font-weight: 700;
   z-index: 2;
 }
 
-.bounty_details .quote_text {
+.bounty_details .quote_text,
+.grant_waiting .quote_text {
   margin-top: 50px;
   font-size: 1.1rem;
   color: #4A4A4A;
 }
 
-.bounty_details .quote_author {
+.bounty_details .quote_author,
+.grant_waiting .quote_author {
   color: #4A4A4A;
   margin: 1rem auto;
   font-size: 1rem;

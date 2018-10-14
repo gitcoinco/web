@@ -9,6 +9,10 @@
   cursor: pointer;
 }
 
+.tag-lg {
+  padding: 6px 16px;
+}
+
 .tag p {
   margin-bottom: 1px;
 }

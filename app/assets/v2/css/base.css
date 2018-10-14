@@ -534,6 +534,14 @@ p a {
   max-width: 100px;
 }
 
+.grant .loading_img {
+  display: none;
+}
+
+.grant .loading_img.waiting-state {
+  display: flex;
+}
+
 .dashboard .body .experienence.unknown {
   background: #eee;
 }

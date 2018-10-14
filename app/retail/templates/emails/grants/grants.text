@@ -1,0 +1,13 @@
+{% load i18n  %}
+
+{% trans "New Grant Created" %}
+
+{% trans "You've created a new grant!" %}
+{% trans "Get ready to buidl and push forward open source!" %}
+
+{{grant.name}}
+{{grant.desc}}
+
+{{grant.amount}}
+
+{% trans "The details of your grant can be seen here:" %} {{grant.url}}

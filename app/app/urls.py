@@ -67,6 +67,9 @@ urlpatterns = [
     re_path(r'^health/', include('health_check.urls')),
     re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),
 
+    # grant views
+    path('grants/', include('grants.urls', namespace='grants')),
+
     # dashboard views
 
     # Dummy offchain index

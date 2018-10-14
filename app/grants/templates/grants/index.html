@@ -1,0 +1,112 @@
+{% comment %}
+Copyright (C) 2018 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load humanize static i18n %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="{% static "v2/css/search_bar.css" %}">
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+  </head>
+  <body class="interior {{ active }} grant g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+    </div>
+
+    <div class="container pt-5">
+      <div class="grants-hero">
+        <div class="row">
+          <div class="col-12 col-md-6 order-md-last mb-5 mb-md-0">
+            <div class="embed-responsive embed-responsive-16by9">
+              <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/Hx1iJ_K3D8k?rel=0&showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+          </div>
+          <div class="grants-hero__text col-12 col-md-6 offset-lg-1 col-lg-5">
+            <h1 class="grants-hero__title mb-2">{% trans 'Dev Grants' %}</h1>
+            <p class="my-5">
+              {% blocktrans %}
+              Support Open Source Projects via Gitcoin's new Dev Grants feature; By leveraging
+              <a target="_blank" rel="noopener noreferrer" href="staketree.com">
+                Staketree
+              </a>
+              , Gitcoin is helping facilitate blockchain-based
+              support for some of the best OSS projects in the space.
+              {% endblocktrans %}
+            </p>
+            <a class="button button--primary" href="{% url 'grants:new' %}">
+              {% trans 'Create a Grant' %}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid py-5 my-5 grants-search">
+      <div class="container">
+        <form>
+          <div class="row">
+            <div class="col-9 col-md-7 offset-lg-1 col-lg-6 form__flex-group">
+              <input type="search" class="form__input">
+            </div>
+            <div class="col-3 col-md-1">
+              <button class="button button--primary">
+                <span class="d-none d-sm-inline">{% trans 'Search' %}</span>
+                <i class="d-sm-none fas fa-search"></i>
+              </button>
+            </div>
+            <div class="col-12 col-md-3 font-caption order_by">
+              <div class="heading">{% trans "SORT" %}</div>
+              <select name="sort_option" id="sort_option">
+                <option value="-web3_created">{% trans "Created: Recent" %}</option>
+                <option value="web3_created">{% trans "Created: Oldest" %}</option>
+                <option value="-_val_usd_db">{% trans "Value: Highest" %}</option>
+                <option value="_val_usd_db">{% trans "Value: Lowest" %}</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    {% if grants %}
+    <div class="container grants-container">
+      {% for grant in grants %}
+      {% if forloop.counter0|divisibleby:3 %} <div class="row"> {% endif %}
+      <div class="col-12 col-md-4 mb-4">
+        {% include 'grants/card.html' %}
+      </div>
+      {%  if forloop.counter|divisibleby:3 or forloop.last %} </div> {% endif %}
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+  </body>
+
+  <!-- jQuery -->
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
+  <script src="{% static "v2/js/shared.js" %}"></script>
+  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/grants/index.js" %}"></script>
+</html>

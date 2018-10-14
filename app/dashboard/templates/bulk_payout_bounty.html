@@ -99,11 +99,7 @@
                   <input type="hidden" id="original_amount" value="{{ bounty.value_true }}">
                   <span id="token_name">{{ bounty.token_name }}</span>
                 </div>
-                  <div class="w-100 mt-2 terms_container">
-                    <input name='close_bounty' id='close_bounty' type="checkbox" value=1 checked="checked" />
-                    <label for=close_bounty>{% blocktrans %}Return the bounty stake to me, thereby closing the bounty.{% endblocktrans %}</label>
-                  </div>
-                <div class="w-100 mt-2">
+                <div class="w-100 my-3">
                   <label for=bountyFulfillment>{% trans "Payout" %}</label>
                   <label id="tooltip">{% trans "Where is my Eth going? " %}<i class='fa fa-info-circle'></i></label>
                   <div>
@@ -142,10 +138,6 @@
                   <div class="w-100 mt-2 text-center">
                     <a id="acceptBounty" class="button button--primary btn-block js-submit mt-3 mb-2 pulseClick submitBounty" name="submit" style="width: 100%; text-transform: uppercase; text-align: center; color: white;">
                       {% trans "Payout Bounty" %}
-                    </a>
-                    <a class="font-caption" style="display: block; margin-top: 20px;" target="_blank" rel="noopener noreferrer" href="https://github.com/gitcoinco/web#high-level-flows">
-                      Your transaction is secured by the Ethereum blockchain.</br>
-                      Learn more here.
                     </a>
                   </div>
                 </div>
