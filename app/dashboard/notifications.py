@@ -432,7 +432,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
     learn_more_msg = f"* Learn more [on the Gitcoin Issue Details page]({absolute_url})"
     crowdfund_amount = f"(plus a crowdfund of {bounty.additional_funding_summary_sentence})" if bounty.additional_funding_summary_sentence else ""
     crowdfund_thx = ", ".join(f"@{tip.from_username}" for tip in bounty.tips.filter(is_for_bounty_fulfiller=True) if tip.from_username)
-    funding_org = f"__ as part of the {bounty.funding_organisation} fund__" if bounty.funding_organisation else ""
+    funding_org = f" as part of the {bounty.funding_organisation} fund" if bounty.funding_organisation else ""
     if crowdfund_thx:
         crowdfund_thx = f"Thanks to {crowdfund_thx} for their crowdfunded contributions to this bounty.\n\n"
     if event_name == 'new_bounty':

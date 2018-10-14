@@ -182,27 +182,30 @@ class Avatar(SuperModel):
             use_svg (bool): Whether or not to use SVG format.
 
         """
-        if not use_svg:
-            if self.use_github_avatar and self.png:
-                return self.png.url
-            if self.use_github_avatar and not self.png:
-                return self.pull_github_avatar()
-            if not self.use_github_avatar and self.custom_avatar_png:
-                return self.custom_avatar_png.url
-            if not self.use_github_avatar and not self.custom_avatar_png:
-                self.convert_custom_svg(force_save=True)
-                return self.custom_avatar_png.url
-        if self.use_github_avatar and self.github_svg:
-            return self.github_svg.url
-        if self.use_github_avatar and not self.github_svg:
-            if self.png:
-                self.convert_github_png(force_save=True)
+        try:
+            if not use_svg:
+                if self.use_github_avatar and self.png:
+                    return self.png.url
+                if self.use_github_avatar and not self.png:
+                    return self.pull_github_avatar()
+                if not self.use_github_avatar and self.custom_avatar_png:
+                    return self.custom_avatar_png.url
+                if not self.use_github_avatar and not self.custom_avatar_png:
+                    self.convert_custom_svg(force_save=True)
+                    return self.custom_avatar_png.url
+            if self.use_github_avatar and self.github_svg:
                 return self.github_svg.url
-        if not self.use_github_avatar and self.svg:
-            return self.svg.url
-        if not self.use_github_avatar and not self.svg:
-            self.create_from_config()
-            return self.svg.url
+            if self.use_github_avatar and not self.github_svg:
+                if self.png:
+                    self.convert_github_png(force_save=True)
+                    return self.github_svg.url
+            if not self.use_github_avatar and self.svg:
+                return self.svg.url
+            if not self.use_github_avatar and not self.svg:
+                self.create_from_config()
+                return self.svg.url
+        except ValueError:
+            pass
 
         try:
             handle = self.profile_set.last().handle

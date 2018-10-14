@@ -427,6 +427,7 @@ def results(request, keyword=None):
         raise Http404
     context = build_stat_results(keyword)
     context['is_outside'] = True
+    context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
 
 

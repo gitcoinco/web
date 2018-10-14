@@ -37,18 +37,14 @@
 {% block 'main' %}
 <link rel="stylesheet" type="text/css" href="{% static "v2/css/tooltip_hover.css" %}">
 <style>
-  #tooltip {
-    padding-right: 50px;
-  }
-
   #tooltip--hover {
     top: 19.5rem;
-    left: 31rem;
+    left: 25rem;
     max-width: 80%;
     z-index: 10000;
   }
 
-  @media only screen and (max-width: 1305px) {
+  @media only screen and (max-width: 1050px) {
     #tooltip--hover {
       top: 21rem;
       left: 3.5rem;

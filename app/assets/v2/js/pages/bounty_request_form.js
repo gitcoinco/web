@@ -14,6 +14,10 @@ var trigger_form_hooks = function() {
 };
 
 $(document).ready(function() {
+  if (document.comments_prefill) {
+    $('[name=comment]').val(document.comments_prefill);
+  }
+
   $('[for=id_comment]').append(
     ' (<span id="charcount">500</span> ' + gettext('characters left') + ')'
   );
@@ -25,6 +29,7 @@ $(document).ready(function() {
     }
 
     $('#charcount').html(500 - this.value.length);
+
   });
 
   const form = $('#bounty_request_form');

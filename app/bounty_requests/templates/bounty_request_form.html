@@ -78,6 +78,11 @@
         </div>
       </div>
     </div>
+    {% if comments_prefill %}
+      <script>
+        document.comments_prefill = '{{comments_prefill}}';
+      </script>
+    {% endif %}
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}

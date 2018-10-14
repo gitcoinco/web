@@ -160,6 +160,17 @@ var callbacks = {
   'bounty_type': unknown_if_empty,
   'bounty_owner_github_username': gitcoin_ize,
   'bounty_owner_name': function(key, val, result) {
+    if (result.bounty_owner_name == 'Anonymous') {
+      $('#bounty_owner_github_username').hide();
+      $('#bounty_owner_email').hide();
+      $('#bounty_owner_email_label').hide();
+      $('#bounty_owner_github_username_label').hide();
+    } else {
+      $('#bounty_owner_github_username').show();
+      $('#bounty_owner_email').show();
+      $('#bounty_owner_email_label').show();
+      $('#bounty_owner_github_username_label').show();
+    }
     return [ 'bounty_owner_name', result.bounty_owner_name ];
   },
   'funding_organisation': function(key, val, result) {
@@ -961,8 +972,7 @@ var do_actions = function(result) {
       parent: 'right_actions',
       title: gettext('View issue details and comments on Github'),
       comments: result['github_comments'],
-      color: 'white',
-      is_last_non_admin_action: true
+      color: 'white'
     };
 
     actions.push(_entry);

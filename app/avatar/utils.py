@@ -32,6 +32,7 @@ import pyvips
 import requests
 from git.utils import get_user
 from PIL import Image, ImageOps
+from pyvips.error import Error as VipsError
 from svgutils.compose import SVG, Figure, Line
 
 AVATAR_BASE = 'assets/other/avatars/'
@@ -72,17 +73,14 @@ def get_avatar_context():
             {
                 'name': 'Clothing',
                 'title': 'Pick your clothing',
-                'options': (
-                    'cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet',
-                    'ethlogo', 'cloak', 'robe'
-                )
+                'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet', 'suit', 'ethlogo', 'cloak', 'robe')
             },
             {
                 'name': 'Hair Style',
                 'title': 'Pick a hairstyle',
                 'options': (
                     ['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'], ['5', 'None'],
-                    ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'], ['9-back', '9-front']
+                    ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'], ['9-back', '9-front'], ['None', '10']
                 )
             },
             {
@@ -95,13 +93,12 @@ def get_avatar_context():
             {
                 'name': 'Accessories',
                 'title': 'Pick your accessories',
-                'options': (
-                    ['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'],
-                    ['HatShort-backwardscap'], ['HatShort-ballcap'], ['HatShort-headphones'],
-                    ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], ['Earring-0'], ['Earring-1'],
-                    ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'],
-                    ['Masks-jack-o-lantern-lighted'], ['Extras-Parrot'], ['Masks-gitcoinbot'],
-                )
+                'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'],
+                            ['HatShort-backwardscap'], ['HatShort-ballcap'], ['HatShort-cowboy'],
+                            ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'],
+                            ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'],
+                            ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'],
+                            ['Masks-jack-o-lantern-lighted'], ['Extras-Parrot'], ['Masks-gitcoinbot'])
             },
             {
                 'name': 'Background',
@@ -420,8 +417,11 @@ def convert_img(obj, input_fmt='svg', output_fmt='png'):
     """
     try:
         obj_data = obj.read()
-        image = pyvips.Image.new_from_buffer(obj_data, f'.{input_fmt}')
-        return BytesIO(image.write_to_buffer(f'.{output_fmt}'))
+        if obj_data:
+            image = pyvips.Image.new_from_buffer(obj_data, f'.{input_fmt}')
+            return BytesIO(image.write_to_buffer(f'.{output_fmt}'))
+    except VipsError:
+        pass
     except Exception as e:
         logger.error(e)
     return None
