@@ -1,0 +1,17 @@
+{% load i18n humanize %}
+
+{% trans "An update has been posted for:" %}
+
+{{ github_username }}
+
+{{ project_image }}
+
+{{ project_description }}
+
+{{ updateContent_title }}
+
+{{ updateContent_date }}
+
+{{ updateContent_text }}
+
+{{ grant_link }} {%trans "View Grant" %}
