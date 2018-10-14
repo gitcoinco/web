@@ -67,7 +67,9 @@ $(document).ready(function() {
 
   $(".kudos_levitate_container, #kudos-image").click(function(){
 
-    if(Math.random() < 0.4){
+    pct_msg_should_be_shown = 0 //Disabled, *for now*.  I will convince people that 
+    // the Kudos should say something at some point :) - KO
+    if(Math.random() < pct_msg_should_be_shown){
       rotate_kudos_msg();
       $(".kudos_msg").css('display', 'block');
       setTimeout(function(){
