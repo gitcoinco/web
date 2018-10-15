@@ -8,25 +8,26 @@
  *
 */
 
-(function (){
-  this.ethprice = function () {
-    var elems = document.querySelectorAll('[data-ethprice]')
-    elems.forEach( function(elem){
+(function() {
+  this.ethprice = function() {
+    var elems = document.querySelectorAll('[data-ethprice]');
+
+    elems.forEach(function(elem) {
       new Promise(function(resolve, reject) {
-        getUSDEstimate(elem.dataset.ethprice, 'ETH', function(usdAmount){
-          resolve( usdAmount)
-        })
-      }).then(function(result){
-        addValue(elem, result)
-      }, function(reject){
-        console.log(reject)
-      })
-    })
+        getUSDEstimate(elem.dataset.ethprice, 'ETH', function(usdAmount) {
+          resolve(usdAmount);
+        });
+      }).then(function(result) {
+        addValue(elem, result);
+      }, function(reject) {
+        console.log(reject);
+      });
+    });
 
     function addValue(elem, result) {
-      elem.children[0].textContent = `(${result.value} USD)`
+      elem.children[0].textContent = `(${result.value} USD)`;
     }
-  }
-}())
+  };
+}());
 
-new ethprice()
+new ethprice();

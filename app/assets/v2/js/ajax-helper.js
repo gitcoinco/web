@@ -21,4 +21,4 @@ var fetchData = function(urlRequest, methodType, data) {
     dataType: 'json',
     data: data
   });
-}
+};
