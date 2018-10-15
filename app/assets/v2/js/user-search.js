@@ -27,10 +27,19 @@ function userSearch(elem, showAddress, theme) {
         },
         cache: true
       },
+<<<<<<< HEAD
       theme: themeChoice,
       placeholder: 'Search by username',
       minimumInputLength: 3,
       escapeMarkup: function(markup) {
+=======
+      cache: true
+    },
+    theme: 'bootstrap4',
+    placeholder: 'Search by Github/Gitcoin username',
+    minimumInputLength: 3,
+    escapeMarkup: function(markup) {
+>>>>>>> 09f7086c0... adds the ability to do kudos direct send to an eth address
 
         return markup;
       },

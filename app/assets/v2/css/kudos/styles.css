@@ -73,7 +73,9 @@
     margin-bottom: 50px; }
 
 .select2 {
-  width: 100%; }
+  width: 100%; 
+  max-width: 100%;
+}
 
 .select2-container--bootstrap4 {
   border: 1px solid #ced4da;
