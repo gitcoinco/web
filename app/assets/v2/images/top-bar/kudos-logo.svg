@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="79px" height="21px" viewBox="0 0 79 21" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
+    <title>kudos-logo</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group-6-Copy" transform="translate(-127.000000, -4.000000)">
+            <g id="kudos-logo" transform="translate(128.000000, 5.000000)">
+                <text id="KUDOS" font-family="Futura-Medium, Futura" font-size="14" font-weight="400" letter-spacing="1.26999998">
+                    <tspan x="23.09" y="15.3" fill="#FFFFFF">K</tspan>
+                    <tspan x="33.6363672" y="15.3" fill="#0ECF7C">U</tspan>
+                    <tspan x="45.2491406" y="15.3" fill="#FFFFFF">DO</tspan>
+                    <tspan x="70.4639452" y="15.3" fill="#FFFFFF">S</tspan>
+                </text>
+                <path d="M3.62,1.61 L-1,9.53013895 L3.62,17.45 L12.8601404,17.45 L17.48,9.53013895 L12.8601404,1.61 L3.62,1.61 Z M-0.837852867,9.53013895 L3.70114376,1.74894737 L12.7789966,1.74894737 L17.3179933,9.53013895 L12.7789966,17.3110526 L3.70114376,17.3110526 L-0.837852867,9.53013895 Z" id="Fill-1" stroke="#0ECF7C" stroke-width="2" transform="translate(8.240000, 9.530000) rotate(-270.000000) translate(-8.240000, -9.530000) "></path>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -260,10 +260,11 @@ $(document).ready(function() {
       startConfetti();
       var url = 'https://' + etherscanDomain() + '/tx/' + txid;
 
-      $('#loading_trans').html('This transaction has been sent 👌');
+      // $('#loading_trans').html('This transaction has been sent 👌');
+      $('#loading_trans').hide();
       $('#send_eth').css('display', 'none');
       $('#send_eth_done').css('display', 'block');
-      $('#tokenName').html(tokenName);
+      // $('#tokenName').html(tokenName);
       $('#new_username').html(username);
       $('#trans_link').attr('href', url);
       $('#trans_link2').attr('href', url);

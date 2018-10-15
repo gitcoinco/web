@@ -43,8 +43,8 @@
       <a href="{% url "tip" %}">
       </a>
     </span> -->
-    <img src="{% static "v2/images/helmet.png" %}" class="bg-white mh-100 mw-100 mx-auto p-2" width="70"/>
-    <h1 class="h2">{% trans "Send Kudos" %}</h1>
+    <!-- <img src="{% static "v2/images/helmet.png" %}" class="bg-white mh-100 mw-100 mx-auto p-2" width="70"/> -->
+    <h1 class="h2 mt-5">{% trans "Send Kudos" %}</h1>
 
     <div class="my-4">
       {% if kudos.name %}
@@ -63,7 +63,6 @@
         </svg>
       </a>
       <span class="d-block">Pick a Kudos</span>
-      <span class="d-block">0 ETH <small></small></span>
       {% endif %}
     </div>
 
@@ -146,7 +145,7 @@
 
   <div id="send_eth_done" style="display:none;" class="text-center">
     <h3>{% trans "Woo hoo!" %}</h3>
-    <p>{% blocktrans %}Your <span id="tokenName">ETH</span> has been sent <a href="" target="_blank" rel="noopener noreferrer" id="trans_link">to the blockchain</a>.{% endblocktrans %}</p>
+    <p>{% blocktrans %}Your <span id="tokenName">Kudos</span> has been sent <a href="" target="_blank" rel="noopener noreferrer" id="trans_link">to the blockchain</a>.{% endblocktrans %}</p>
     <div id="loading_trans">
       <p class="font-smaller-1">
         <a href="" target="_blank" rel="noopener noreferrer" id="trans_link2" >{% trans "The transaction is still pending." %}</a><br>{% trans "This page will auto-update when the transaction is confirmed" %} <br>({% trans "but you can close the browser window if you want" %}).

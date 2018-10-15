@@ -293,6 +293,7 @@ def send_2(request):
     # profiles = Profile.objects.all()
 
     params = {
+        'active': 'send',
         'issueURL': request.GET.get('source'),
         'class': 'send2',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
