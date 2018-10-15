@@ -85,8 +85,12 @@ class Command(BaseCommand):
                 # Support Open Sea
                 if kudos_contract.network == 'rinkeby':
                     image_path = 'http://kudosdemo.gitcoin.co/static/v2/images/kudos/' + image_name
-                else:
+                elif kudos_contract.network == 'mainnet':
+                    image_path = 'http://kudosdemo.gitcoin.co/static/v2/images/kudos/' + image_name
+                elif kudos_contract.network == 'localhost':
                     image_path = 'v2/images/kudos/' + image_name
+                else:
+                    raise RuntimeError('Need to set the image path for that network')
             else:
                 image_path = ''
 
