@@ -24,6 +24,7 @@ import time
 
 from django.conf import settings
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
@@ -1458,6 +1459,7 @@ def redeem_coin(request, shortcode):
         raise Http404
 
 
+@login_required
 def new_bounty(request):
     """Create a new bounty."""
     from .utils import clean_bounty_url
