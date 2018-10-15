@@ -330,7 +330,7 @@ class KudosContract:
             str: Kudos contract address.
         """
         if self.network == 'mainnet':
-            return to_checksum_address('')
+            return to_checksum_address('0x56c72cda0b04fc39a25d0b6a64fa258fad46d664')
         elif self.network == 'ropsten':
             return to_checksum_address('0xcd520707fc68d153283d518b29ada466f9091ea8')
         elif self.network == 'rinkeby':
