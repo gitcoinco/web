@@ -39,15 +39,8 @@ $(document).ready(function() {
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;
       });
-      
-      // Waiting State screen
-      $('#new-grant').hide();
-      $('.interior .body').addClass('open');
-      $('.interior .body').addClass('loading');
-      $('.grant_waiting').show();
-      document.issueURL = $('#input-url').val();
-      waitingStateActive();
-      
+
+
       // Begin New Deploy Subscription Contract
       let SubscriptionContract = new web3.eth.Contract(compiledSubscription.abi);
 
@@ -91,9 +84,19 @@ $(document).ready(function() {
             .on('transactionHash', function(transactionHash) {
               console.log('2', transactionHash);
               $('#transaction_hash').val(transactionHash);
+
+              // Waiting State screen
+              $('#new-grant').hide();
+              $('.interior .body').addClass('open');
+              $('.interior .body').addClass('loading');
+              $('.grant_waiting').show();
+              document.issueURL = $('#input-url').val();
+              waitingStateActive();
+
             })
             .on('receipt', function(receipt) {
 
+              $('#block_number').val(receipt.blockNumber);
               $('#contract_address').val(receipt.contractAddress);
 
             })
@@ -104,8 +107,8 @@ $(document).ready(function() {
               $.each($(form).serializeArray(), function() {
                 data[this.name] = this.value;
               });
-              console.log(data);
-              form.submit();
+              // console.log(data);
+              // form.submit();
             });
         });
       });

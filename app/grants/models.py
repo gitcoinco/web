@@ -71,6 +71,7 @@ class Subscription(SuperModel):
     period_seconds = models.DecimalField(default=2592000, decimal_places=0, max_digits=50)
     token_address = models.CharField(max_length=255, default='0x0')
     gas_price = models.DecimalField(default=1, decimal_places=4, max_digits=50)
+    block_number = models.CharField(max_length=9, default=0)
     network = models.CharField(max_length=8, default='mainnet')
     grant = models.ForeignKey('grants.Grant', related_name='subscriptions', on_delete=models.CASCADE, null=True)
     contributor_profile = models.ForeignKey(
