@@ -119,7 +119,7 @@ window.onload = function() {
       var amountInEth = document.selected_kudos.price_finney / 1000.0;
       var kudosId = document.selected_kudos.id;
       var comments_priv = '';
-      var comments_public = $(".kudos-comment textarea").val();
+      var comments_public = $('.kudos-comment textarea').val();
       var from_email = '';
       var accept_tos = true;
       var tokenAddress = document.token_address;
@@ -254,15 +254,16 @@ window.onload = function() {
         };
 
         // send both tip and payout
-        var send_tip_and_payout_callback = function(){
+        var send_tip_and_payout_callback = function() {
           if ($('#tipPercent').val() > 0) {
             attach_and_send_tip(send_payout);
           } else {
             send_payout();
           }
-        }
-        if(document.selected_kudos){
-          attach_and_send_kudos(document.selected_kudos, send_tip_and_payout_callback)
+        };
+
+        if (document.selected_kudos) {
+          attach_and_send_kudos(document.selected_kudos, send_tip_and_payout_callback);
         } else {
           send_tip_and_payout_callback();
         }
