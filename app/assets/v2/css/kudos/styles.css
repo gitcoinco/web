@@ -333,6 +333,8 @@ a:hover #shape-hexagon {
   .hexagon-group svg {
     height: 16.8em;
     width: 14.4em; }
+    .hexagon-group svg text {
+      font-size: 1.1em; }
   .hexagon-group .paging-animation {
     font-size: 14px;
     margin: 0.8em;
@@ -379,6 +381,8 @@ a:hover #shape-hexagon {
       color: #43D0B0;
       grid-column: 1/4; }
   @media (min-width: 400px) {
+    .hexagon-group svg text {
+      font-size: 1.3em; }
     .hexagon-group .paging-animation {
       height: 260px;
       font-size: 16px; }
@@ -442,43 +446,105 @@ a:hover #shape-hexagon {
   font-size: 36px; }
 
 .badge-kudos {
-  background-color: #F2F6F9;
-  color: #6184AC;
-  border-radius: 2px; }
+  background-color: #D8EAFF;
+  color: #4A4A4A;
+  border-radius: 2px;
+  text-decoration: none; }
 
 #world {
   z-index: -1; }
 
-#kudos-image, .kudos_levitate_container{
-  cursor: pointer;
-}
+a.cellarius-partner:before {
+  content: '';
+  position: absolute;
+  right: 1rem;
+  bottom: 3rem;
+  width: 16%;
+  height: 16%;
+  background-size: cover;
+  background: url("/static/v2/images/kudos/assets/cellarius-logo.svg");
+  background-repeat: no-repeat; }
 
-#kudos-image.shake{
-  animation: shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+.cellarius-badge {
+  right: 1rem;
+  bottom: 3rem;
+  width: 16%;
+  height: 16%;
+  background-size: cover;
+  background: url("/static/v2/images/kudos/assets/cellarius-logo.svg");
+  background-repeat: no-repeat;
+  background-color: #fff;
+  border-radius: 50px; }
+
+.kudos-details__title {
+  font-weight: 200;
+  font-size: 3.2rem;
+  margin-bottom: 0; }
+
+.kudos-details__subtitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #0D0764;
+  border-bottom: 1px solid #C8C8C8;
+  padding-bottom: 0.8rem;
+  margin-bottom: 1rem; }
+
+.kudos-details__price {
+  font-size: 1.5rem;
+  font-weight: 700; }
+  .kudos-details__price small {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #4A4A4A; }
+
+.kudos-details__address {
+  color: #3E00FF; }
+
+.text-color_blue {
+  color: #0D0764; }
+
+.text-weight_semibold {
+  font-weight: 600; }
+
+.tooltip-kudos .title-tooltip {
+  text-align: left;
+  display: block;
+  font-size: 14px;
+  color: #0ECF7C;
+  font-weight: 600;
+  line-height: 1.5; }
+.tooltip-kudos .tooltip-inner {
+  width: 300px;
+  background-color: #0D0764;
+  font-size: 12px;
+  padding: 1rem;
+  max-width: 240px; }
+  .tooltip-kudos .tooltip-inner table {
+    width: 100%; }
+
+.author-shape {
+  -webkit-clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); }
+
+#kudos-image, .kudos_levitate_container {
+  cursor: pointer; }
+
+#kudos-image.shake {
+  animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
   transform: translate3d(0, 0, 0);
   backface-visibility: hidden;
-  perspective: 1000px;
-}
+  perspective: 1000px; }
 
 @keyframes shake {
   10%, 90% {
-    transform: translate3d(-1px, 0, 0);
-  }
-  
+    transform: translate3d(-1px, 0, 0); }
   20%, 80% {
-    transform: translate3d(2px, 0, 0);
-  }
-
+    transform: translate3d(2px, 0, 0); }
   30%, 50%, 70% {
-    transform: translate3d(-4px, 0, 0);
-  }
-
+    transform: translate3d(-4px, 0, 0); }
   40%, 60% {
-    transform: translate3d(4px, 0, 0);
-  }
-}
-
-.kudos_msg{
+    transform: translate3d(4px, 0, 0); } }
+.kudos_msg {
   margin-top: -90px;
   display: none;
   position: relative;
@@ -486,9 +552,7 @@ a:hover #shape-hexagon {
   border-radius: 10px;
   color: white;
   padding: 3px 10px;
-  margin-bottom: 20px
-
-}
+  margin-bottom: 20px; }
 
 .kudos_msg:after {
   content: '';
@@ -502,7 +566,6 @@ a:hover #shape-hexagon {
   border-bottom: 0;
   border-left: 0;
   margin-left: -10px;
-  margin-bottom: -20px;
-}
-/*# sourceMappingURL=styles.css.map */
+  margin-bottom: -20px; }
 
+/*# sourceMappingURL=styles.css.map */

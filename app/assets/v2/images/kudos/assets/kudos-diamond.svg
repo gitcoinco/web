@@ -1,0 +1,16 @@
+<svg width="20px" height="23px" viewBox="0 0 20 23" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+  <desc>Kudos diamond</desc>
+  <defs></defs>
+  <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+      <g id="Headers-Copy-5" transform="translate(-795.000000, -636.000000)">
+          <g id="Group" transform="translate(0.000000, 306.000000)">
+              <g id="Group-7" transform="translate(795.000000, 330.000000)">
+                  <polygon id="hexagon" fill="#0D0764" transform="translate(10.000000, 11.500000) rotate(-270.000000) translate(-10.000000, -11.500000) " points="15.4998443 2 4.49984434 2 -1 11.5001552 4.49984434 21 15.4998443 21 21 11.5001552"></polygon>
+                  <g id="Group-6" transform="translate(4.000000, 7.000000)" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round" stroke-width="0.8">
+                      <path d="M12,2.61904762 L8.72727273,0 L3.27272727,0 L0,2.61904762 L6,11 L11.2212115,3.70687918 L12,2.61904762 Z M0,2.53846154 L12,2.53846154 M5.42857143,0 L4.28571429,2.61904762 L6,11 M6.57142857,0 L7.71428571,2.61904762 L6,11" id="gem"></path>
+                  </g>
+              </g>
+          </g>
+      </g>
+  </g>
+</svg>
