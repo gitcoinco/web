@@ -58,9 +58,13 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # config
         network = options['network']
-        account = options['account']
         gitcoin_account = options['gitcoin_account']
-        private_key = options['private_key']
+        if gitcoin_account:
+            account = settings.KUDOS_OWNER_ACCOUNT
+            private_key = settings.KUDOS_PRIVATE_KEY
+        else:
+            account = options['account']
+            private_key = options['private_key']
         skip_sync = options['skip_sync']
 
         kudos_contract = KudosContract(network=network)
