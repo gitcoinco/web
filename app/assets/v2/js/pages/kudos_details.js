@@ -24,14 +24,9 @@ $(document).ready(function() {
   let kudosId = window.location.pathname.split('/')[2];
   // let kudosId = $('#kudosId').text()
   // let kudosName = $('#kudosName').text()
-  let kudosNumClonesAvailable = $('#kudosNumClonesAvailable').text()
-  let kudosNumClonesAllowed = $('#kudosNumClonesAllowed').text()
-  let numClones = 1;
-
-  if (kudosNumClonesAvailable == 0) {
-    $('#getKudos').attr('class', 'btn btn-gc-blue disabled').attr('aria-disabled', 'true');
-    return;
-  }
+  let kudosNumClonesAvailable = parseInt($('#kudosNumClonesAvailable').text());
+  let kudosNumClonesAllowed = parseInt($('#kudosNumClonesAllowed').text());
+  let numClones = kudosNumClonesAvailable - kudosNumClonesAllowed ;
 
   $("#kudos-image").hover(function(){
     start_kudos_levitate();
@@ -41,29 +36,6 @@ $(document).ready(function() {
   }, function(){
     stop_kudos_levitate();
   });
-
-  var rotate_kudos_msg = function(){
-    var messages = [
-      ['Buy Me!', 'I\'m looking for a good home.'],
-      ['Please.. Choose me!', "All I want is a good home."],
-      ['Please.. Choose me!', "You don't know what it's like to live in the blockchain..."],
-      ["It's ...", "... so lonely in here.."],
-      ["Am I the one?", ""],
-      ["Am I the one?", "(sad puppy dog eyes)"],
-      ["Who are you sending a kudos to?", "I bet I'll make them really happy!"],
-      ["Who are you sending a kudos to?", "I'm the one to make them happy!"],
-      ["I play nice with others.", ""],
-      ["I'd look really good on a profile!", ""],
-      ["Who are you sending a kudos to?", "I'd look good on their profile.."],
-    ]
-    var item = messages[Math.floor(Math.random()*messages.length)];
-    var h1 = item[0];
-    var p = item[1];
-
-    $(".kudos_msg strong").text(h1);
-    $(".kudos_msg p").text(p);
-  }
-
 
   $(".kudos_levitate_container, #kudos-image").click(function(){
 
@@ -84,6 +56,11 @@ $(document).ready(function() {
 
   });
 
+  if (kudosNumClonesAvailable == 0) {
+    $('#getKudos').attr('class', 'btn btn-gc-blue disabled').attr('aria-disabled', 'true');
+    return;
+  }
+
   $('#getKudos').click(function() {
     if (numClones > kudosNumClonesAvailable) {
       alert('Cannot make ' + numClones + ' clone(s).  ' + kudosNumClonesAvailable + ' clones available!');
@@ -97,6 +74,29 @@ $(document).ready(function() {
   })
 
 })
+
+var rotate_kudos_msg = function(){
+  var messages = [
+    ['Buy Me!', 'I\'m looking for a good home.'],
+    ['Please.. Choose me!', "All I want is a good home."],
+    ['Please.. Choose me!', "You don't know what it's like to live in the blockchain..."],
+    ["It's ...", "... so lonely in here.."],
+    ["Am I the one?", ""],
+    ["Am I the one?", "(sad puppy dog eyes)"],
+    ["Who are you sending a kudos to?", "I bet I'll make them really happy!"],
+    ["Who are you sending a kudos to?", "I'm the one to make them happy!"],
+    ["I play nice with others.", ""],
+    ["I'd look really good on a profile!", ""],
+    ["Who are you sending a kudos to?", "I'd look good on their profile.."],
+  ]
+  var item = messages[Math.floor(Math.random()*messages.length)];
+  var h1 = item[0];
+  var p = item[1];
+
+  $(".kudos_msg strong").text(h1);
+  $(".kudos_msg p").text(p);
+}
+
 
 
 var start_kudos_levitate = function(){
