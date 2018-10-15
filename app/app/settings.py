@@ -494,6 +494,10 @@ SLACK_WELCOMEBOT_TOKEN = env('SLACK_WELCOMEBOT_TOKEN', default='')  # TODO
 # OpenSea API
 OPENSEA_API_KEY = env('OPENSEA_API_KEY', default='')
 
+# Kudos
+KUDOS_OWNER_ACCOUNT = env('KUDOS_OWNER_ACCOUNT', default='')
+KUDOS_PRIVATE_KEY = env('KUDOS_PRIVATE_KEY', default='')
+
 # Reporting Integrations
 MIXPANEL_TOKEN = env('MIXPANEL_TOKEN', default='')
 
