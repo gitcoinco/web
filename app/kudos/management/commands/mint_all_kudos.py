@@ -85,10 +85,13 @@ class Command(BaseCommand):
                 # Support Open Sea
                 if kudos_contract.network == 'rinkeby':
                     image_path = 'http://kudosdemo.gitcoin.co/static/v2/images/kudos/' + image_name
+                    external_url = f'http://kudosdemo.gitcoin.co/kudos/{idx + 1}/{kudos["name"]}'
                 elif kudos_contract.network == 'mainnet':
                     image_path = 'http://kudosdemo.gitcoin.co/static/v2/images/kudos/' + image_name
+                    external_url = f'http://kudosdemo.gitcoin.co/kudos'
                 elif kudos_contract.network == 'localhost':
                     image_path = 'v2/images/kudos/' + image_name
+                    external_url = f'http://kudosdemo.gitcoin.co/kudos'
                 else:
                     raise RuntimeError('Need to set the image path for that network')
             else:
@@ -140,7 +143,7 @@ class Command(BaseCommand):
                 'name': humanize_name(kudos['name']),
                 'image': image_path,
                 'description': kudos['description'],
-                'external_url': f'http://kudosdemo.gitcoin.co/kudos/{idx + 1}/{kudos["name"]}',
+                'external_url': external_url,
                 'background_color': '#fbfbfb',
                 'attributes': attributes
             }
