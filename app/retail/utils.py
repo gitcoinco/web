@@ -399,6 +399,10 @@ def build_stat_results_helper(keyword=None):
     context['bounty_median_pickup_time'] = round(
         get_bounty_median_turnaround_time('turnaround_time_started', keyword), 1)
     pp.profile_time('bounty_median_pickup_time')
+    from kudos.models import Token as KudosToken
+
+    context['kudos_tokens'] = KudosToken.objects.filter(num_clones_in_wild__gt=0).order_by('-num_clones_in_wild')[0:25]
+    pp.profile_time('kudos_tokens')
     pp.profile_time('final')
     context['keyword'] = keyword
     context['title'] = f"{keyword.capitalize() if keyword else ''} Results"
