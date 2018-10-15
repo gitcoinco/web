@@ -2,7 +2,7 @@ let openSection;
 const layers = [
   'HatLong', 'HairLong', 'EarringBack', 'Clothing',
   'Ears', 'Head', 'HairShort', 'Earring', 'Beard', 'HatShort',
-  'Mustache', 'Mouth', 'Nose', 'Eyes', 'Glasses', 'Masks'
+  'Mustache', 'Mouth', 'Nose', 'Eyes', 'Glasses', 'Masks', 'Extras'
 ];
 const requiredLayers = [ 'Clothing', 'Ears', 'Head', 'Mouth', 'Nose', 'Eyes', 'Background' ];
 const colorOptions = {
@@ -29,7 +29,7 @@ const sectionPalettes = {
 const parentLayers = {
   HairShort: 'HairStyle', HairLong: 'HairStyle', Beard: 'FacialHair', Mustache: 'FacialHair',
   EarringBack: 'Accessories', Earring: 'Accessories', HatLong: 'Accessories', HatShort: 'Accessories',
-  Glasses: 'Accessories', Masks: 'Accessories'
+  Glasses: 'Accessories', Masks: 'Accessories', Extras: 'Accessories'
 };
 
 var localStorage;
