@@ -55,7 +55,7 @@ class Grant(SuperModel):
     admin_profile = models.ForeignKey(
         'dashboard.Profile', related_name='grant_admin', on_delete=models.CASCADE, null=True
     )
-    team_members = models.ManyToManyField('dashboard.Profile', related_name='grant_team_members')
+    team_members = models.ManyToManyField('dashboard.Profile', related_name='grant_teams')
 
     def __str__(self):
         """Return the string representation of a Grant."""
