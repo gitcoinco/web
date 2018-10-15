@@ -21,6 +21,8 @@ import json
 import logging
 
 from django.conf import settings
+from django.core.paginator import Paginator
+from django.db.models import Q
 from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -42,7 +44,14 @@ def get_keywords():
 
 def grants(request):
     """Handle grants explorer."""
-    grants = Grant.objects.all()
+    limit = request.GET.get('limit', 25)
+    page = request.GET.get('page', 1)
+    sort = request.GET.get('sort', '-created_on')
+
+    _grants = Grant.objects.all().order_by(sort)
+
+    paginator = Paginator(_grants, limit)
+    grants = paginator.get_page(page)
 
     params = {
         'active': 'dashboard',
@@ -123,7 +132,7 @@ def grant_details(request, grant_id):
         'title': _('Grant Details'),
         'grant': grant,
         'keywords': get_keywords(),
-        'is_admin': grant.admin_profile.id == profile.id,
+        'is_admin': (grant.admin_profile.id == profile.id) if profile else False,
         'activity': activity_data,
         'gh_activity': gh_data,
     }
@@ -208,7 +217,7 @@ def subscription_cancel(request, subscription_id):
     grant = getattr(subscription, 'grant', None)
 
     if request.method == 'POST':
-        subscription.status = False
+        subscription.active = False
         subscription.save()
 
     params = {
@@ -223,8 +232,16 @@ def subscription_cancel(request, subscription_id):
 
 def profile(request):
     """Show grants profile of logged in user."""
-    # profile = request.user.profile if request.user.is_authenticated else None
-    grants = Grant.objects.all()  # TODO: show only logged in users grants
+    limit = request.GET.get('limit', 25)
+    page = request.GET.get('page', 1)
+    sort = request.GET.get('sort', '-created_on')
+
+    profile = request.user.profile if request.user.is_authenticated else None
+    _grants = Grant.objects.prefetch_related('team_members', 'subscriptions').filter(
+        Q(admin_profile=profile) | Q(team_members__in=profile)).order_by(sort)
+
+    paginator = Paginator(_grants, limit)
+    grants = paginator.get_page(page)
 
     history = [
         {

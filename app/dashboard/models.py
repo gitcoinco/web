@@ -1419,6 +1419,14 @@ class Activity(models.Model):
         ('bounty_removed_by_staff', 'Removed from Bounty by Staff'),
         ('bounty_removed_by_funder', 'Removed from Bounty by Funder'),
         ('new_crowdfund', 'New Crowdfund Contribution'),
+        # Grants
+        ('new_grant', 'New Grant'),
+        ('update_grant', 'Updated Grant'),
+        ('killed_grant', 'Cancelled Grant'),
+        ('new_grant_contribution', 'Contributed to Grant'),
+        ('killed_grant_contribution', 'Cancelled Grant Contribution'),
+        ('new_milestone', 'New Milestone'),
+        ('update_milestone', 'Updated Milestone'),
     ]
 
     profile = models.ForeignKey('dashboard.Profile', related_name='activities', on_delete=models.CASCADE)
