@@ -31,10 +31,11 @@ from eth_utils import to_checksum_address
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
 logging.getLogger("urllib3").setLevel(logging.WARNING)
-# logging.getLogger("web3").setLevel(logging.WARNING)
+logging.getLogger("web3").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
-default_start_id = 0 if not settings.DEBUG else 402
+formatter = '%(levelname)s:%(name)s.%(funcName)s:%(message)s'
+logging.basicConfig(level=logging.INFO)
 
 
 class Command(BaseCommand):
@@ -43,8 +44,8 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('network', default='localhost', type=str)
+        parser.add_argument('clone_to', type=str, help='The ETH address to clone to.')
         parser.add_argument('token_id', type=int, help='The Kudos ID to clone.')
-        parser.add_argument('to', type=str, help='The ETH address to clone to.')
         parser.add_argument('--numClonesRequested', default=1, type=str)
         parser.add_argument('--skip_sync', action='store_true')
         parser.add_argument('--gitcoin_account', action='store_true', help='use account stored in .env file')
@@ -55,7 +56,7 @@ class Command(BaseCommand):
         # config
         network = options['network']
         token_id = options['token_id']
-        to = options['to']
+        # to = options['to']
         numClonesRequested = options['numClonesRequested']
         skip_sync = options['skip_sync']
         gitcoin_account = options['gitcoin_account']
@@ -67,6 +68,7 @@ class Command(BaseCommand):
             private_key = options['private_key']
 
         kudos_contract = KudosContract(network=network)
+        clone_to = kudos_contract._w3.toChecksumAddress(options['clone_to'])
 
-        args = ()
+        args = (clone_to, token_id, numClonesRequested)
         kudos_contract.clone(*args, account=account, private_key=private_key, skip_sync=skip_sync)

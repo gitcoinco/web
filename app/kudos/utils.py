@@ -437,17 +437,19 @@ class KudosContract:
             str: The tx_receipt.
         """
         account = self._resolve_account(account)
+        price_finney = self.getKudosById(args[1], to_dict=True)['price_finney']
+        price_wei = self._w3.toWei(price_finney, 'finney')
 
         if private_key:
             logger.debug('Private key found, creating raw transaction for Kudos mint...')
             nonce = self._w3.eth.getTransactionCount(account)
             gas_estimate = self._contract.functions.clone(*args).estimateGas({'nonce': nonce, 'from': account})
-            txn = self._contract.functions.clone(*args).buildTransaction({'gas': gas_estimate, 'nonce': nonce, 'from': account})
+            txn = self._contract.functions.clone(*args).buildTransaction({'gas': gas_estimate, 'nonce': nonce, 'from': account, 'value': price_wei})
             signed_txn = self._w3.eth.account.signTransaction(txn, private_key=private_key)
             tx_hash = self._w3.eth.sendRawTransaction(signed_txn.rawTransaction)
         else:
             logger.debug('No private key provided, using local signing...')
-            tx_hash = self._contract.functions.clone(*args).transact({"from": account})
+            tx_hash = self._contract.functions.clone(*args).transact({"from": account, "value": price_wei})
 
         tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
         logger.debug(f'Tx hash: {tx_hash.hex()}')
