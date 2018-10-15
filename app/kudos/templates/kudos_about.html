@@ -124,14 +124,14 @@
           </div>
         </div>
         <div class="row">
-            <div class="col-12 col-md-9">
-              <p>{% trans "In essence, the Cellarius Universe is a future-oriented mythology. It is also a collective storytelling project whose content and contours will be shaped by its community." %}</p>
-              <p>{% trans "Cellarius straddles the familiar cyberpunk themes of a dystopian and troubled future while maintaining a more optimistic outlook on humanity’s destiny and place in the cosmos." %}</p>
-            </div>
-            <div class="col-12 col-md-3">
-              <img class="img-fluid mb-3 author-shape" src="{% static 'v2/images/kudos/assets/octavian.jpg' %}" alt="Cellarius">
-            </div>
+          <div class="col-12 col-md-3">
+            <img class="img-fluid mb-3 author-shape" src="{% static 'v2/images/kudos/assets/octavian.jpg' %}" alt="Cellarius">
           </div>
+          <div class="col-12 col-md-9">
+            <p>{% trans "Octavian Todiruț" %}</p>
+            <p>{% blocktrans %} I am a long time graphic designer, art director and product designer. A fancy way of saying "I am moving the mouse or pencil around, playing with shapes and colors." I like getting lost in everything art, photography, design and architecture and their history. When I don't do any of the above, I walk, travel or sometimes play a game.{% endblocktrans %}</p>
+          </div>
+        </div>
         <div class="row justify-content-center">
             <a class="btn btn-orange m-5" href="{% url 'kudos_marketplace' %}?q=cellarius">{% trans "See Cellarius Kudos" %}</a>
             <a class="btn m-5" style="color: #cd7e66; border: 1px solid #cd7e66; padding: 0.8rem;" href="https://cellarius.network">{% trans "Visit the Cellarius Network" %}</a>
@@ -189,10 +189,10 @@
           <div class="faces">
             <svg role="img" title="hexagon" width="130" class="front face">
               <use xlink:href="#hexagon"/>
-              <text font-size="1.3em" x="50%" y="40%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "See Who" %}</text>
-              <text font-size="1.3em" x="50%" y="50%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "Gitcoiners have" %}</text>
-              <text font-size="1.3em" x="50%" y="60%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "Collaborated" %}</text>
-              <text font-size="1.3em" x="50%" y="70%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "With" %}</text>
+              <text font-size="1.3em" x="50%" y="35%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "See Who" %}</text>
+              <text font-size="1.3em" x="50%" y="45%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "Gitcoiners have" %}</text>
+              <text font-size="1.3em" x="50%" y="55%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "Collaborated" %}</text>
+              <text font-size="1.3em" x="50%" y="65%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "With" %}</text>
             </svg>
             <img src="{% static 'v2/images/kudos/gitcoin_sustainer.svg' %}" width="100%" height="100%" class="face back kudos-hidden">
           </div>
@@ -201,8 +201,10 @@
           <div class="faces">
             <svg role="img" title="hexagon" width="130" class="front face">
               <use xlink:href="#hexagon"/>
+              <text font-size="1.3em" x="50%" y="35%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "Combine" %}</text>
               <text font-size="1.3em" x="50%" y="45%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "Send Kudos" %}</text>
-              <text font-size="1.3em" x="50%" y="55%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "With a Tip" %}</text>
+              <text font-size="1.3em" x="50%" y="55%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "as a Tip and" %}</text>
+              <text font-size="1.3em" x="50%" y="65%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "With a Tip" %}</text>
             </svg>
             <img src="{% static 'v2/images/kudos/collab_robot.svg' %}" width="100%" height="100%" class="face back kudos-hidden">
           </div>
