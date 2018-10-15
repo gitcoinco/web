@@ -82,14 +82,21 @@ def get_avatar_context():
                          'title': 'Pick a hairstyle',
                          'options': (['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'],
                                      ['5', 'None'], ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'],
-                                     ['9-back', '9-front'], ['None', '10'])
+                                     ['9-back', '9-front'], ['None', '10'],
+                                     ['damos_hair-back'. 'damos_hair-front'],
+                                     ['long_swoosh-back'. 'long_swoosh-front'],
+                                     ['None'. 'mohawk'],
+                                     ['None'. 'mohawk_inverted'],
+                                     ['None'. 'spikey'],
+                                     )
                      },
                      {
                          'name': 'Facial Hair',
                          'title': 'Pick a facial hair style',
                          'options': (
                              'Mustache-0', 'Mustache-1', 'Mustache-2', 'Mustache-3', 'Beard-0', 'Beard-1', 'Beard-2',
-                             'Beard-3'
+                             'Beard-3',
+                             'damos_beard'
                          )
                      },
                      {
