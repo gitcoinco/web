@@ -1,0 +1,224 @@
+{% extends '../emails/template.html' %} 
+{% comment %}   
+  Copyright (C) 2018 Gitcoin Core
+
+ This program is free software: you can redistribute it and/or modify
+ it under the terms of the GNU Affero General Public License as published
+ by the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ GNU Affero General Public License for more details.
+
+ You should have received a copy of the GNU Affero General Public License
+ along with this program. If not, see <http://www.gnu.org/licenses/>. 
+{% endcomment %}
+{% load i18n humanize static %} 
+
+{% block content %}
+
+<style>
+  hr {
+    width: 80%;
+    height: 2px;
+    border-radius: 25px;
+    border: none;
+    background-color: #D2D2D2;
+  }
+
+  .grantInfo {
+    padding-top: 30px;
+    padding-bottom: 1%;
+  }
+
+  .grantInfo a img {
+    border-radius: 25px;
+    margin-bottom: 10px;
+  }
+
+  .grantInfoName {
+    font-size: 20px;
+    color: #0D0764;
+  }
+
+  .grantInfo h5 {
+    font-size: 14px;
+    margin-top: 15px;
+    margin-top: 30px;
+  }
+
+  .grantInfo h3 {
+    margin-top: -20px;
+  }
+
+  .updatesButton {
+    padding-left: 30px;
+    padding-right: 30px;
+    text-decoration: none;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    background-color: #0D0764;
+    color: white;
+    border-radius: 2.7px;
+    font-size: 17px;
+  }
+
+  #grow-oss {
+    margin-top: 70px;
+    margin-bottom: 40px;
+  }
+
+  .progress {
+    width: 60%;
+    margin-left: 20%;
+    margin-top: 50px;
+    padding-bottom: 75px;
+  }
+
+  #tablePadding {
+    padding-bottom: 25px;
+  }
+
+  .progressBar {
+    height: 15px;
+    background-color: #D8D8D8;
+    border-radius: 2.7px;
+  }
+
+  .progressCompleted {
+    height: 100%;
+    background-color: #0FCE7C;
+    border-radius: 2.7px;
+    float: left;
+  }
+
+  .progressRemoved {
+    height: 100%;
+    background-color: #CF0E0E;
+    border-top-right-radius: 2.7px;
+    border-bottom-right-radius: 2.7px;
+    float: left;
+  }
+
+  .funding {
+    width: 100%;
+  }
+
+  .leftFunding {
+    width: 50%;
+    float: left;
+    text-align: left;
+  }
+  
+  .rightFunding {
+    width: 50%;
+    float: left;
+    text-align: right;
+  }
+
+  .funding>div>h4 {
+    line-height: 0px;
+    color: #0D0764;
+    padding-top: -50px;
+  }
+
+  .leftFunding>h4 {
+    text-align: left;
+  }
+
+  .rightFunding>h4 {
+    text-align: right;
+  }
+
+  .progressBarLine {
+    width: 1px;
+    height: 45px;
+    background-color: #979797;
+    float: left;
+    transform: translateY(-20%);
+    margin-right: 20px;
+  }
+
+  .funding>div>p {
+    line-height: 0px;
+    color: #BBBDBF;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  td:nth-child(1)>img {
+    border-radius: 25px;
+  }
+
+</style>
+<img id="newSupporter" src="{% static "v2/images/transaction-summary.png" %}" alt="Transaction Summary" title="Transaction Summary">
+<h1 style="text-transform: none;">{% trans "Grant" %} '{{ grant_name }}' {% trans "has received more funding" %}!</h1>
+<br>
+
+<hr>
+<div class="grantInfo">
+  <a href="https://github.com/{{ github_username }}">
+    <img src="{{ github_username }}" />
+  </a>
+  <!-- width="50" height="50"Input project image here -->
+  <br>
+  <a class="grantInfoName" href="https://github.com/{{ github_username }}">{{ github_username }}</a>
+  <!-- Input project name here -->
+  <p>{{ grant_description }}</p>
+  <!-- Input project description here -->
+</div>
+<hr>
+<div class="progress" id="tablePadding">
+  <h3 style="text-transform: none;"><strong>{% trans "Funding Recieved in the Last 24 Hours" %}</strong></h3>
+  <!-- Content in table should be pre-generated with JS. -->
+  <table>
+    <tr>
+      <td><img src="{{ funder_i_username }}" /></td>
+      <td><p>{{ funder_i_username }}</p></td>
+      <td><p><strong>{{ funder_i_amount }}</strong></p></td>
+      <td><p>{{ funder_i_timestamp }}</p></td>
+      <td><a href="{{ funder_i_link }}" style="color: #4C33AB;"><strong>View Transaction</strong></a></td>
+    </tr>
+  </table>
+</div>
+<hr>
+<div class="progress">
+  <h3><strong>{% trans "Total Funds" %}</strong></h3>
+  <h3 style="text-transform: none;">{{ funding_status }}</h3>
+  <div class="progressBar">
+    <div class="progressCompleted" style="width: {{ progress_completed }}%;">
+      <!-- Dynamically change the width of your progressCompletion, ie 50% -->
+
+    </div>
+  </div>
+  <div class="funding">
+    <div class="leftFunding">
+      <h4>
+        <strong>{{ current_value }}</strong>
+      </h4>
+      <!-- Input current funding value -->
+      <p>{%trans "Current" %}</p>
+    </div>
+    <div class="rightFunding">
+      <h4>
+        <strong>{{ goal_value }}</strong>
+      </h4>
+      <!-- Input goal funding value -->
+      <p>{%trans "Goal" %}</p>
+    </div>
+
+  </div>
+</div>
+<hr>
+
+<br>
+<br>
+<a class="updatesButton" href="https://gitcoin.co/grants/{{ grant_link }}">{%trans "View Grant" %}</a>
+<!-- Input link to view transaction grant here -->
+<br> 
+
+{% endblock %}

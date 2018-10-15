@@ -1,0 +1,33 @@
+{% load i18n  %}
+
+{% trans "Grant" %} {{ grant_name }} {% trans "has received more funding" %}
+
+{{ github_username }}
+
+{{ grant_description }}
+
+{% trans "Funding Recieved in the Last 24 Hours" %}
+
+{{ funder_i_username }}
+
+{{ funder_i_amount }}
+
+{{ funder_i_timestamp }}
+
+{{ funder_i_link }}
+
+{% trans "Total Funds" %}
+
+{{ funding_status }}
+
+{{ progress_completed }}
+
+{{ current_value }}
+
+{%trans "Current" %}
+
+{{ goal_value }}
+
+{%trans "Goal" %}
+
+{{ grant_link }} {%trans "View Grant" %}
