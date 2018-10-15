@@ -123,6 +123,15 @@
             <img class="img-fluid mb-3" src="{% static "v2/images/kudos/kudos_cellarius.gif" %}" alt="Cellarius">
           </div>
         </div>
+        <div class="row">
+            <div class="col-12 col-md-9">
+              <p>{% trans "In essence, the Cellarius Universe is a future-oriented mythology. It is also a collective storytelling project whose content and contours will be shaped by its community." %}</p>
+              <p>{% trans "Cellarius straddles the familiar cyberpunk themes of a dystopian and troubled future while maintaining a more optimistic outlook on humanity’s destiny and place in the cosmos." %}</p>
+            </div>
+            <div class="col-12 col-md-3">
+              <img class="img-fluid mb-3 author-shape" src="{% static 'v2/images/kudos/assets/octavian.jpg' %}" alt="Cellarius">
+            </div>
+          </div>
         <div class="row justify-content-center">
             <a class="btn btn-orange m-5" href="{% url 'kudos_marketplace' %}?q=cellarius">{% trans "See Cellarius Kudos" %}</a>
             <a class="btn m-5" style="color: #cd7e66; border: 1px solid #cd7e66; padding: 0.8rem;" href="https://cellarius.network">{% trans "Visit the Cellarius Network" %}</a>
@@ -245,8 +254,11 @@
           </div>
           <div class="col-12 col-md-6 d-flex flex-column justify-content-center">
             <h3 class="h1 mb-3">{% trans "ERC-721" %}</h3>
-            <p class="font-bigger-1 lh-3">{% trans "ERC-721 is a standard developed by the Ethereum Foundation that can be used to create Non-Fungible Tokens (NFT's). The most well known example of this is Cryptokitties, but there are many other examples. Here at Gitcoin we believe in the potential of NFT's, so we created our own - Kudos." %}</p>
+            <p class="font-bigger-1 lh-3">{% trans "ERC-721 is a standard developed by the Ethereum Foundation that can be used to create Non-Fungible Tokens (NFT's). The most well known example of this is Cryptokitties, but there are many other examples. Here at Gitcoin we believe in the potential of NFT's, so we created our own - Kudos. Want to integrate this ERC 721 into your Dapp?" %} <a href="https://github.com/OpenKudos/OpenKudos/issues/1" target="_blank">{% trans "click here" %}</a></p>
           </div>
+        </div>
+        <div class="row justify-content-center pt-4">
+            <a class="btn btn-gc-blue m-5" href="{% url 'kudos_marketplace' %}">{% trans "Send Kudos Now" %}</a>
         </div>
       </div>
 
