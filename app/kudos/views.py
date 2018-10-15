@@ -259,7 +259,8 @@ def kudos_preferred_wallet(request, handle):
         # reconcile_kudos_preferred_wallet(profile)
         if profile.preferred_payout_address:
             response['addresses'].append(profile.preferred_payout_address)
-
+    if request.GET.get('to_eth_address', False):
+        response['addresses'].append(request.GET.get('to_eth_address', False))
     return JsonResponse(response)
 
 
@@ -363,7 +364,7 @@ def send_3(request):
         from_username=from_username,
         username=params['username'],
         network=params['network'],
-        tokenAddress=params['tokenAddress'],
+        tokenAddress=params.get('tokenAddress',''),
         from_address=params['from_address'],
         is_for_bounty_fulfiller=params['is_for_bounty_fulfiller'],
         metadata=params['metadata'],

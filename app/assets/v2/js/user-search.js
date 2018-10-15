@@ -20,7 +20,7 @@ $(function() {
       cache: true
     },
     theme: 'bootstrap4',
-    placeholder: 'Search by username',
+    placeholder: 'Search by Github/Gitcoin username',
     minimumInputLength: 3,
     escapeMarkup: function(markup) {
 
