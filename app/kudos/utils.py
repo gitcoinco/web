@@ -420,7 +420,7 @@ class KudosContract:
         return kudos_id
 
     @may_require_key
-    def clone(self, *args, account=None, private_key=None):
+    def clone(self, *args, account=None, private_key=None, skip_sync=False):
         """Contract transaction method.
 
         Args:
@@ -439,19 +439,27 @@ class KudosContract:
         account = self._resolve_account(account)
 
         if private_key:
+            logger.debug('Private key found, creating raw transaction for Kudos mint...')
             nonce = self._w3.eth.getTransactionCount(account)
-            txn = self._contract.functions.clone(*args).buildTransaction({'gas': 700000, 'nonce': nonce, 'from': account})
+            gas_estimate = self._contract.functions.clone(*args).estimateGas({'nonce': nonce, 'from': account})
+            txn = self._contract.functions.clone(*args).buildTransaction({'gas': gas_estimate, 'nonce': nonce, 'from': account})
             signed_txn = self._w3.eth.account.signTransaction(txn, private_key=private_key)
             tx_hash = self._w3.eth.sendRawTransaction(signed_txn.rawTransaction)
         else:
+            logger.debug('No private key provided, using local signing...')
             tx_hash = self._contract.functions.clone(*args).transact({"from": account})
 
         tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
+        logger.debug(f'Tx hash: {tx_hash.hex()}')
 
         kudos_id = self._contract.functions.totalSupply().call()
-        self.sync_db(kudosid=kudos_id, txid=tx_hash.hex())
+        logger.info(f'Cloned a new Kudos. id #{kudos_id} on the blockchain.')
+        logger.info(f'Gas usage for id #{kudos_id}: {tx_receipt["gasUsed"]}')
 
-        return tx_receipt
+        if not skip_sync:
+            self.sync_db(kudos_id=kudos_id, txid=tx_hash.hex())
+
+        return kudos_id
 
     def burn(self, *args):
         """ Contract method. """
