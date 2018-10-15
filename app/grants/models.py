@@ -59,6 +59,7 @@ class Grant(SuperModel):
         """Return the string representation of a Grant."""
         return f"id: {self.pk}, status: {self.status}, title: {self.title}, description: {self.description}"
 
+
 class Subscription(SuperModel):
     """Define the structure of a subscription agreement."""
 

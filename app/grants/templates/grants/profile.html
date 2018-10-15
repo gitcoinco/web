@@ -1,0 +1,73 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load static i18n %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+    <link rel="stylesheet" href="{% static "v2/css/grants/profile.css" %}">
+  </head>
+  <body class="interior {{ active }} g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+      {% include 'shared/minihero.html' with h1='My Grants' suppress_logo=1 position_h1_below_logo=True hide_rain=True %}
+    </div>
+
+    <div class="container pt-5">
+      <div id="grant-profile-tabs" class="tab-container font-body mb-3">
+        <button type="button" id="supported" class="section-tab">{% trans "Supported by Me" %} ({{ grants|length }})</button>
+        <button type="button" id="created" class="section-tab">{% trans "Created by Me" %} ({{ grants|length }})</button>
+      </div>
+
+      <div id="grant-profile-tabs-sections" class="tab-sections section">
+        <div id="section-supported" class="tab-section active">
+          <div class="container px-0">
+            <div class="row mb-3 py-2 px-0">
+              <div class="col-12 px-0">
+                {% include 'grants/profile_body.html' with grants=grants history=history %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="section-created" class="tab-section">
+          <div class="container px-0">
+            <div class="row mb-3 py-2 px-0">
+              <div class="col-12 px-0">
+                {% include 'grants/profile_body.html' with grants=grants history=history %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  {% include 'shared/analytics.html' %}
+  {% include 'shared/footer_scripts.html' %}
+  {% include 'shared/footer.html' %}
+  <script src="{% static "v2/js/pages/tabs.js" %}"></script>
+  <script>
+    $(document).ready(function() {
+      setupTabs('#grant-profile-tabs');
+    });
+  </script>
+<html>
+

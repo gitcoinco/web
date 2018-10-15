@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from django.urls import path, re_path
 
-from grants.views import grant_details, grant_fund, grant_new, grants, subscription_cancel
+from grants.views import grant_details, grant_fund, grant_new, grants, profile, subscription_cancel
 
 app_name = 'grants'
 urlpatterns = [
@@ -27,5 +27,6 @@ urlpatterns = [
     path('<int:grant_id>', grant_details, name='details'),
     re_path(r'^new', grant_new, name='new'),
     path('fund/<int:grant_id>', grant_fund, name='fund'),
-    path('subscription_cancel/<int:subscription_id>', subscription_cancel, name='subscription_cancel')
+    path('subscription_cancel/<int:subscription_id>', subscription_cancel, name='subscription_cancel'),
+    re_path(r'^profile', profile, name='profile')
 ]

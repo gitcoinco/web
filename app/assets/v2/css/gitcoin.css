@@ -168,7 +168,6 @@ div.button-pink {
   font-size: 2em;
   font-weight: 500;
   font-style: italic;
-  letter-spacing: 0.1em;
 }
 
 .header-line-contributors {
@@ -565,7 +564,7 @@ div.button-pink {
 }
 
 .select2-container--default .select2-selection--single {
-  border-radius: 2px !important;
+  border-radius: 3px !important;
   border-color: black !important;
 }
 

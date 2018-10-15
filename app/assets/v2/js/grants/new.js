@@ -1,5 +1,10 @@
 /* eslint-disable no-console */
 
+const validate = () => {
+  if ($('#frequency_unit').select2('data')[0].text === 'any')
+    $('#frequency_count').val('0');
+};
+
 $(document).ready(function() {
 
 
@@ -20,7 +25,7 @@ $(document).ready(function() {
     }
   });
 
-  $('.js-select2').each(function() {
+  $('.js-select2, #frequency_unit').each(function() {
     $(this).select2();
   });
 
@@ -34,6 +39,15 @@ $(document).ready(function() {
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;
       });
+      
+      // Waiting State screen
+      $('#new-grant').hide();
+      $('.interior .body').addClass('open');
+      $('.interior .body').addClass('loading');
+      $('.grant_waiting').show();
+      document.issueURL = $('#input-url').val();
+      waitingStateActive();
+      
       // Begin New Deploy Subscription Contract
       let SubscriptionContract = new web3.eth.Contract(compiledSubscription.abi);
 
@@ -98,7 +112,6 @@ $(document).ready(function() {
     }
   });
 
-
   $('#new-milestone').on('click', function(event) {
     event.preventDefault();
     var milestones = $('.milestone-form .row');
@@ -127,7 +140,8 @@ $(document).ready(function() {
         text: ele.name
       }));
     });
-
     $('#js-token').select2();
   });
+
+  $('.select2-selection__rendered').removeAttr('title');
 });
