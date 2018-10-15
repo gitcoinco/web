@@ -521,4 +521,46 @@ a.cellarius-partner:before {
 .author-shape {
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg'%3E%3Cg stroke='none' stroke-width='1' fill='none' fill-rule='evenodd' opacity='0.187946429'%3E%3Cg transform='translate(-227.000000, -1170.000000)' stroke='%233E00FF' stroke-width='10'%3E%3Cg id='Group-5-Copy-7' transform='translate(294.737804, 1248.626588) rotate(-330.000000) translate(-294.737804, -1248.626588) translate(223.737804, 1186.126588)'%3E%3Cpolygon opacity='0.334877232' points='105.943991 0 35.3139974 0 9.09494702e-13 62.3980694 35.3139974 124.7941 105.943991 124.7941 141.259988 62.3980694'%3E%3C/polygon%3E%3C/g%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); }
 
+#kudos-image, .kudos_levitate_container {
+  cursor: pointer; }
+
+#kudos-image.shake {
+  animation: shake 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px; }
+
+@keyframes shake {
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0); }
+  20%, 80% {
+    transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0); }
+  40%, 60% {
+    transform: translate3d(4px, 0, 0); } }
+.kudos_msg {
+  margin-top: -90px;
+  display: none;
+  position: relative;
+  background-color: #3e00ff;
+  border-radius: 10px;
+  color: white;
+  padding: 3px 10px;
+  margin-bottom: 20px; }
+
+.kudos_msg:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border: 20px solid transparent;
+  border-top-color: #3e00ff;
+  border-bottom: 0;
+  border-left: 0;
+  margin-left: -10px;
+  margin-bottom: -20px; }
+
 /*# sourceMappingURL=styles.css.map */

@@ -6,7 +6,9 @@
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
-    <link href="https://fonts.googleapis.com/css?family=Muli:200,400,600,700" rel="stylesheet">
+    <script src="{% static 'v2/js/tweenlite.js' %}"></script>
+    <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
+
 
   </head>
   <body class="{{ active }} bg-light g-font-muli">
@@ -25,6 +27,16 @@
   	<section class="container my-5 pb-5">
       <div class="row justify-content-around">
         <div class="col-md-6 col-lg-5 mb-5">
+
+        <div class="kudos_msg" style="">
+            <strong></strong>
+            <p>
+
+            </p>
+        </div>
+
+          {% include 'shared/kudos_levitate.html' %}
+
           <img id="kudos-image" src="{% static kudos.image %}" alt="{{ kudos.name }}" class="sticky-top w-100">
         </div>
         <div class="col-md-6 col-lg-5 kudos-details">
@@ -93,6 +105,8 @@
         </div>
       </div>
   	</section>
+
+
 
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
