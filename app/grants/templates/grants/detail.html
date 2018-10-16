@@ -146,7 +146,7 @@
         <div class="col-4">
           <p>
             {% trans "Milestones" %}
-            {% if can_edit_milestones %}<a href="{% url 'grants:milestones' grant.id %}" class="milestones-edit">{% trans "Edit Milestones" %}</a>{% endif %}
+            {% if is_admin %}<a href="{% url 'grants:milestones' grant.id %}" class="milestones-edit">{% trans "Edit Milestones" %}</a>{% endif %}
           </p>
           <div class="milestones-container">
               {% if milestones %}
@@ -155,7 +155,7 @@
                   <li>
                     <div class="milestone-title">{{ milestone.title }}</div>
                     <div class="milestone-date">
-                      {{ milestone.due_date }} - 
+                      {{ milestone.due_date }} -
                       {% if milestone.completion_date %}
                         {{ milestone.completion_date }}
                       {% else %}
