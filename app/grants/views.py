@@ -68,8 +68,8 @@ def grant_details(request, grant_id):
     profile = request.user.profile if request.user.is_authenticated else None
 
     try:
-        grant = Grant.objects.prefetch_related('subscriptions').get(pk=grant_id)
-        milestones = Milestone.objects.filter(grant_id=grant_id).order_by('due_date')
+        grant = Grant.objects.prefetch_related('subscriptions', 'milestones').get(pk=grant_id)
+        milestones = grant.milestones.order_by('due_date')
     except Grant.DoesNotExist:
         raise Http404
 
@@ -137,7 +137,6 @@ def grant_details(request, grant_id):
         'activity': activity_data,
         'gh_activity': gh_data,
         'milestones': milestones,
-        'can_edit_milestones': profile == grant.admin_profile,
         'keywords': get_keywords(),
     }
     return TemplateResponse(request, 'grants/detail.html', params)
