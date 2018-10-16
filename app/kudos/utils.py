@@ -434,17 +434,14 @@ class KudosContract:
             private_key (str, optional): Private key for account.  Not needed for localhost testing.
 
         Returns:
-            str: The tx_receipt.
+            int: The kudos_id
         """
         account = self._resolve_account(account)
-        logger.info(account)
         price_finney = self.getKudosById(args[1], to_dict=True)['price_finney']
-        logger.info(price_finney)
         price_wei = self._w3.toWei(price_finney, 'finney')
-        logger.info(price_wei)
 
         if private_key:
-            logger.debug('Private key found, creating raw transaction for Kudos mint...')
+            logger.debug('Private key found, creating raw transaction...')
             nonce = self._w3.eth.getTransactionCount(account)
             gas_estimate = self._contract.functions.clone(*args).estimateGas({'nonce': nonce, 'from': account, 'value': price_wei})
             txn = self._contract.functions.clone(*args).buildTransaction({'gas': gas_estimate, 'nonce': nonce, 'from': account, 'value': price_wei})
@@ -466,9 +463,46 @@ class KudosContract:
 
         return kudos_id
 
-    def burn(self, *args):
-        """ Contract method. """
-        pass
+    @may_require_key
+    def burn(self, *args, account=None, private_key=None, skip_sync=False):
+        """Contract transaction method.
+
+        Args:
+            *args: From Kudos.sol
+            burn(
+                 address _owner,
+                 uint256 _tokenId,
+                 )
+            account (str, optional): Public account address.  Not needed for localhost testing.
+            private_key (str, optional): Private key for account.  Not needed for localhost testing.
+
+        Returns:
+            int: The kudos_id
+        """
+        account = self._resolve_account(account)
+        kudos_id = args[1]
+
+        if private_key:
+            logger.debug('Private key found, creating raw transaction...')
+            nonce = self._w3.eth.getTransactionCount(account)
+            gas_estimate = self._contract.functions.burn(*args).estimateGas({'nonce': nonce, 'from': account})
+            txn = self._contract.functions.burn(*args).buildTransaction({'gas': gas_estimate, 'nonce': nonce, 'from': account})
+            signed_txn = self._w3.eth.account.signTransaction(txn, private_key=private_key)
+            tx_hash = self._w3.eth.sendRawTransaction(signed_txn.rawTransaction)
+        else:
+            logger.debug('No private key provided, using local signing...')
+            tx_hash = self._contract.functions.burn(*args).transact({"from": account})
+
+        tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
+        logger.debug(f'Tx hash: {tx_hash.hex()}')
+
+        logger.info(f'Burned Kudos with id #{kudos_id} on the blockchain.')
+        logger.info(f'Gas usage to burn id #{kudos_id}: {tx_receipt["gasUsed"]}')
+
+        if not skip_sync:
+            self.sync_db(kudos_id=kudos_id, txid=tx_hash.hex())
+
+        return kudos_id
 
     def getKudosById(self, *args, to_dict=False):
         """Contract call method.
