@@ -107,8 +107,8 @@ $(document).ready(function() {
               $.each($(form).serializeArray(), function() {
                 data[this.name] = this.value;
               });
-              // console.log(data);
-              // form.submit();
+              console.log(data);
+              form.submit();
             });
         });
       });

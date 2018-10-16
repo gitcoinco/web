@@ -148,7 +148,6 @@ def grant_new(request):
             'transaction_hash': request.POST.get('transaction_hash', ''),
             'contract_address': request.POST.get('contract_address', ''),
             'block_number': request.POST.get('block_number', ''),
-
             'network': request.POST.get('network', 'mainnet'),
             'admin_profile': profile,
             'logo': logo,
