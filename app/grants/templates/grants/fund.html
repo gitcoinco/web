@@ -39,7 +39,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <div class="fund__title">{% trans "Fund Grant" %}</div>
   <form action='{{ grant.pk }}' method="POST" id="js-fundGrant">
     {% csrf_token %}
-    <div class="row bottom-buffer">
+    <div class="row mb-4">
       <div class="form__group-horizontal">
         <label class="form__label">{% trans "Contribution per Period" %}</label>
         <div class="row">
@@ -92,7 +92,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </div>
           </div>
 
-          <div class="progress-text top-buffer bottom-buffer">
+          <div class="progress-text my-4">
             <div class="row">
               <div class="col-6">
                 <span>{{ grant.amountReceived }} ETH</span>

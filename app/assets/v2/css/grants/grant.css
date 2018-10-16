@@ -1,13 +1,6 @@
-.top-buffer {
-  margin-top: 30px;
-}
-
-.bottom-buffer {
-  margin-bottom: 30px;
-}
-
 .progress {
   background-color: #D8D8D8;
+  border-radius: 2px;
 }
 
 .progress-bar {
@@ -26,120 +19,15 @@
 
 .progress--small {
   height: 7px;
-  border-radius: 2px;
 }
 
-/* Grant Details */
-
-.grant__avatar {
-  border-radius: 20px;
-  border-color: #43484D;
-  width: 50px;
-  height: 50px;
+.grant-item__owner-handle {
+  color: #9B9B9B;
+  line-height: 18px;
 }
 
-.grant__header {
-  background-color: #F2F6F9;
-  padding-top: 46px;
-  padding-bottom: 46px;
-  position: relative;
-}
-
-.grant__header::before {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.14);
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-}
-
-.grant__image {
-  max-width: 100%;
-}
-
-.grant__reference {
-  align-items: center;
-  display: flex;
-  margin-top: 16px;
-}
-
-.grant__reference-url {
-  color: #000000;
-  font-size: 14px;
-}
-
-.grant__reference-icon {
-  display: flex;
-  margin-right: 12px;
-}
-
-.grant__image img {
-  width: 100%;
-}
-
-.grant__specs {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-.grant__title {
-  color: #43484D;
-  font-size: 52px;
-  letter-spacing: 0;
-}
-
-.grant__description {
-  font-size: 16px;
-  color: #43484D;
-  letter-spacing: 0;
-}
-
-.grant__profile-details {
-  font-size: 16px;
-  color: #43484D;
-  letter-spacing: 0;
-}
-
-.grant__stakeholders {
-  margin-bottom: 20px;
-}
-
-.grant__stakeholders small {
-  color: rgba(0, 0, 0, 0.54);
-}
-
-.grant__stakeholders-list {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.grant__stakeholders-item {
-  margin-bottom: 6px;
-  margin-right: 6px;
-}
-
-.grant__description-title {
-  letter-spacing: 0;
-  text-transform: none;
-  text-align: left;
-  padding: 0;
-}
-
-.current-funding-text {
-  align-items: baseline;
-  color: rgba(0, 0, 0, 0.54);
-  display: flex;
-  margin-bottom: 3px;
-}
-
-.current-funding-text span {
+.grant-item__owner-handle span {
   color: #0D0764;
-  font-size: 18px;
-  font-weight: bold;
-  margin-right: 5px;
 }
 
 .progress-text span {
