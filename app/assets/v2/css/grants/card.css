@@ -40,15 +40,6 @@
   width: 100%;
 }
 
-.grant-item__owner-handle {
-  color: #9B9B9B;
-  line-height: 18px;
-}
-
-.grant-item__owner-handle span {
-  color: #0D0764;
-}
-
 .grant-item__footer {
   margin-top: auto;
 }
