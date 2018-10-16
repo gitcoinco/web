@@ -19,7 +19,7 @@ $(function() {
       },
       cache: true
     },
-    theme: "bootstrap4",
+    theme: 'bootstrap4',
     placeholder: 'Search by username',
     minimumInputLength: 3,
     escapeMarkup: function(markup) {
@@ -29,9 +29,10 @@ $(function() {
     templateResult: formatUser,
     templateSelection: formatUserSelection
   });
-  //fix for wrong position on select open
+  // fix for wrong position on select open
   var select2Instance = $('.username-search').data('select2');
-  select2Instance.on('results:message', function(params){
+
+  select2Instance.on('results:message', function(params) {
     this.dropdown._resizeDropdown();
     this.dropdown._positionDropdown();
   });

@@ -11,11 +11,12 @@ var sign_and_send = function(rawTx, success_callback, private_key) {
   console.log('private_key: ' + private_key);
   var tx = new EthJS.Tx(rawTx);
 
-  var private_key_buffer = new EthJS.Buffer.Buffer.from(private_key, 'hex')
+  var private_key_buffer = new EthJS.Buffer.Buffer.from(private_key, 'hex');
   // console.log(private_key_buffer)
   
   tx.sign(private_key_buffer);
   var serializedTx = tx.serialize();
+
   console.log('0x' + serializedTx.toString('hex'));
 
   // send raw transaction
@@ -25,8 +26,8 @@ var sign_and_send = function(rawTx, success_callback, private_key) {
 
 window.onload = function() {
   waitforWeb3(function() {
-    console.log(document.kudos_transfer)
-    console.log(document.ipfs_key_to_secret)
+    console.log(document.kudos_transfer);
+    console.log(document.ipfs_key_to_secret);
     ipfs.ipfsApi = IpfsApi(ipfsConfig);
     ipfs.setProvider(ipfsConfig);
     if (typeof document.ipfs_key_to_secret == 'undefined') {
@@ -136,24 +137,27 @@ $(document).ready(function() {
           nonce: web3.toHex(nonce),
           to: kudos_address(),
           from: holding_address,
-          data: data,
+          data: data
         };
         // console.log(rawTx)
 
-        var kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'))
-        console.log(kudosPriceInEth)
+        var kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
+
+        console.log(kudosPriceInEth);
         var kudosPriceInWei = new web3.BigNumber(kudosPriceInEth * 1.0 * Math.pow(10, 18));
-        console.log(kudosPriceInWei)
-        console.log(kudosPriceInWei.toNumber())
-        console.log(kudosPriceInWei.toString(10))
+
+        console.log(kudosPriceInWei);
+        console.log(kudosPriceInWei.toNumber());
+        console.log(kudosPriceInWei.toString(10));
  
         kudos_contract.clone.estimateGas(forwarding_address, kudosId, numClones, {from: holding_address, value: kudosPriceInWei}, function(error, gasLimit) {
-          console.log(gasLimit)
+          console.log(gasLimit);
           var buffer = new web3.BigNumber(0);
 
           gasLimit = new web3.BigNumber(gasLimit);
           var send_amount = balance.minus(gasLimit.times(gas_price_wei)).minus(buffer);
           // rawTx['value'] = web3.toHex(send_amount.toString()); // deduct gas costs from amount to send
+
           rawTx['value'] = send_amount.toNumber();
           rawTx['gasPrice'] = web3.toHex(gas_price_wei.toString());
           // rawTx['gas'] = web3.toHex(gasLimit.toString());
