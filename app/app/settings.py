@@ -27,6 +27,9 @@ import environ
 import raven
 from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
 
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning, module='psycopg2')
+
 root = environ.Path(__file__) - 2  # Set the base directory to two levels.
 env = environ.Env(DEBUG=(bool, False), )  # set default values and casting
 env.read_env(str(root.path('app/.env')))  # reading .env file
@@ -493,6 +496,10 @@ SLACK_WELCOMEBOT_TOKEN = env('SLACK_WELCOMEBOT_TOKEN', default='')  # TODO
 
 # OpenSea API
 OPENSEA_API_KEY = env('OPENSEA_API_KEY', default='')
+
+# Kudos
+KUDOS_OWNER_ACCOUNT = env('KUDOS_OWNER_ACCOUNT', default='')
+KUDOS_PRIVATE_KEY = env('KUDOS_PRIVATE_KEY', default='')
 
 # Reporting Integrations
 MIXPANEL_TOKEN = env('MIXPANEL_TOKEN', default='')
