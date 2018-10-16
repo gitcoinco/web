@@ -33,7 +33,7 @@ docker-compose exec ipfs sh -c 'ipfs config --json API.HTTPHeaders.Access-Contro
 docker-compose restart ipfs
 cd ../gitcoin-erc721
 truffle migrate --reset
-cd ../web
+cd -
 
 if [ -n "$ACCOUNT" ] && [ -n $"PRIVATE_KEY" ];
 then
