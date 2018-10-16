@@ -27,14 +27,14 @@
     {% endfor %}
     <h2 class="font-title my-3 pb-3 title">{% trans "Transaction History" %}</h2>
     {% for transaction in history %}
-      <div class="py-3 row transaction-history">
-        <div class="col-1 font-subheader text-center my-auto">
+      <div class="py-3 mx-sm-0 row transaction-history">
+        <div class="col-3 col-md-1 font-subheader text-center my-auto">
           {{ transaction.date }}
         </div>
-        <div class="col-1 justify-content-center special_tag hide_min_viewport">
+        <div class="col-2 col-md-1 justify-content-center special_tag">
           <img class="avatar" src="{{ transaction.avatar_url }}">
         </div>
-        <div class="col-5 my-auto">
+        <div class="col-7 col-md-5 my-auto">
           <div class="title font-body">
             {{ transaction.title }}
           </div>
@@ -42,12 +42,12 @@
             {{ transaction.value_true }} {{ transaction.token_name }} / {{ transaction.frequency }}
           </div>
         </div>
-        <div class="col-2 font-body my-auto txn-link">
+        <div class="col-5 col-md-2 font-body my-auto txn-link">
           <a href="{{ transaction.link }}" target="_blank" rel="noopener noreferrer">
             View Etherscan
           </a>
         </div>
-        <div class="offset-lg-1 col-2 my-auto tags font-caption text-right">
+        <div class="offset-lg-1 col-7 col-md-2 my-auto tags font-caption">
           <div class="tag tag-lg token">
             <p>
               {{ transaction.value_true }}

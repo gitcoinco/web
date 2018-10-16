@@ -26,3 +26,23 @@ h2.title {
   color: #7F8FA4;
   text-decoration: none;
 }
+
+.tags {
+  text-align: right;
+}
+
+@media (max-width: 767.98px) {
+  .txn-link,
+  .special_tag {
+    text-align: center;
+  }
+
+  .tags {
+    justify-content: center;
+  }
+
+  .title {
+    padding-left: 10px;
+  }
+
+}
