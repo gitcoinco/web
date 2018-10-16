@@ -29,8 +29,8 @@ from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from grants.models import Grant, Milestone, Subscription
 from grants.forms import MilestoneForm
+from grants.models import Grant, Milestone, Subscription
 from marketing.models import Keyword
 from web3 import HTTPProvider, Web3
 
