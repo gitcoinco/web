@@ -24,6 +24,12 @@ $bg-cellarius: #4D5858;
 .kd-card {
   position: relative;
 
+  &.ghost {
+    -webkit-filter: grayscale(1);
+    filter: grayscale(1);
+    opacity: 0.4;
+  }
+
   .img-thumbnail {
     width: 100%;
     padding: 1.25rem 2.14rem;

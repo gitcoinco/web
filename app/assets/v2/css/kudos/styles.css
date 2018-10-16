@@ -129,6 +129,10 @@
 
 .kd-card {
   position: relative; }
+  .kd-card.ghost {
+    -webkit-filter: grayscale(1);
+    filter: grayscale(1);
+    opacity: 0.4; }
   .kd-card .img-thumbnail {
     width: 100%;
     padding: 1.25rem 2.14rem;
