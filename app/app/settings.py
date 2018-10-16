@@ -27,6 +27,9 @@ import environ
 import raven
 from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
 
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning, module='psycopg2')
+
 root = environ.Path(__file__) - 2  # Set the base directory to two levels.
 env = environ.Env(DEBUG=(bool, False), )  # set default values and casting
 env.read_env(str(root.path('app/.env')))  # reading .env file
