@@ -1,27 +1,3 @@
-.milestones .row {
-  border-left: 4px solid #3E24FB;
-  margin-left: 0;
-}
-
-.milestones .row + .row {
-  margin-top: 20px;
-}
-
-.milestones input[type=date] {
-  margin-top: 20px;
-}
-
-.milestones textarea {
-  margin-top: 20px;
-}
-
-.milestones #new-milestone {
-  font-family: Helvetica;
-  font-size: 14px;
-  color: #0D0764;
-  cursor: pointer;
-}
-
 .new-grant .form__drop {
   margin-top: 15px;
 }
