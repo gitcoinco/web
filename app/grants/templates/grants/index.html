@@ -36,14 +36,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/Hx1iJ_K3D8k?rel=0&showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
             </div>
           </div>
-          <div class="grants-hero__text col-12 col-md-6 offset-lg-1 col-lg-5">
-            <h1 class="grants-hero__title mb-2">{% trans 'Dev Grants' %}</h1>
-            <p class="my-5">
+          <div class="m-auto col-12 col-md-6 offset-lg-1 col-lg-5">
+            <h1 class="font-title-xl">{% trans 'Dev Grants' %}</h1>
+            <p class="mt-4 pt-1 mb-5 font-subheader">
               {% blocktrans %}
-              Support Open Source Projects via Gitcoin's new Dev Grants feature; By leveraging
-              <a target="_blank" rel="noopener noreferrer" href="staketree.com">
-                Staketree
-              </a>
+              Support Open Source Projects via Gitcoin's new Dev Grants feature. By leveraging
+              <a target="_blank" rel="noopener noreferrer" href="staketree.com">Staketree</a>
               , Gitcoin is helping facilitate blockchain-based
               support for some of the best OSS projects in the space.
               {% endblocktrans %}
@@ -60,16 +58,16 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <div class="container">
         <form>
           <div class="row">
-            <div class="col-9 col-md-7 offset-lg-1 col-lg-6 form__flex-group">
-              <input type="search" class="form__input">
+            <div class="search col-9 col-md-5 offset-md-1 col-lg-6 form__flex-group">
+              <input type="search" class="form__input" placeholder="Search Grants">
             </div>
-            <div class="col-3 col-md-1">
+            <div class="col-2 col-lg-1 px-0">
               <button class="button button--primary">
                 <span class="d-none d-sm-inline">{% trans 'Search' %}</span>
                 <i class="d-sm-none fas fa-search"></i>
               </button>
             </div>
-            <div class="col-12 col-md-3 font-caption order_by">
+            <div class="col-12 col-md-4 col-lg-3 pt-1 font-caption order_by d-none d-md-inline">
               <div class="heading">{% trans "SORT" %}</div>
               <select name="sort_option" id="sort_option">
                 <option value="-web3_created">{% trans "Created: Recent" %}</option>
@@ -87,7 +85,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <div class="container grants-container">
       {% for grant in grants %}
       {% if forloop.counter0|divisibleby:3 %} <div class="row"> {% endif %}
-      <div class="col-12 col-md-4 mb-4">
+      <div class="col-12 col-md-6 col-lg-4 mb-4">
         {% include 'grants/card.html' %}
       </div>
       {%  if forloop.counter|divisibleby:3 or forloop.last %} </div> {% endif %}

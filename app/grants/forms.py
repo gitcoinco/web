@@ -19,7 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from django import forms
 
-from grants.models import Grant
+from grants.models import Grant, Milestone
 
 
 class GrantForm(forms.ModelForm):
@@ -33,3 +33,20 @@ class GrantForm(forms.ModelForm):
             'title', 'description', 'reference_url', 'admin_address', 'frequency', 'token_address', 'amount_goal',
             'transaction_hash', 'contract_address', 'network', 'admin_profile', 'logo',
         )
+
+
+class MilestoneForm(forms.ModelForm):
+    """Define the Milestone form logic."""
+
+    class Meta:
+        """Define the metadata for the Milestone model form."""
+
+        model = Milestone
+        fields = (
+            'title', 'description', 'due_date',
+        )
+        widgets = {
+            'title': forms.TextInput(attrs={'class': 'form__input', 'placeholder': 'Title'}),
+            'description': forms.Textarea(attrs={'class': 'form__input', 'placeholder': 'Description'}),
+            'due_date': forms.DateInput(attrs={'type': 'date', 'class': 'form__input', 'placeholder': 'Date'})
+        }

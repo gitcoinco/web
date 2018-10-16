@@ -24,14 +24,19 @@ from economy.models import SuperModel
 from grants.utils import get_upload_filename
 
 
+class GrantQuerySet(models.QuerySet):
+    """Define the Grant default queryset and manager."""
+
+    pass
+
+
 class Grant(SuperModel):
     """Define the structure of a Grant."""
 
-    status = models.BooleanField(default=True)
+    active = models.BooleanField(default=True)
     title = models.CharField(default='', max_length=255)
     description = models.TextField(default='', blank=True)
     reference_url = models.URLField(db_index=True)
-    image_url = models.URLField(default='')
     logo = models.ImageField(
         upload_to=get_upload_filename, null=True, blank=True, help_text=_('The Grant logo image.'),
     )
@@ -51,20 +56,45 @@ class Grant(SuperModel):
     admin_profile = models.ForeignKey(
         'dashboard.Profile', related_name='grant_admin', on_delete=models.CASCADE, null=True
     )
-    team_member_profiles = models.ManyToManyField('dashboard.Profile', related_name='grant_team_members')
-
-    def percentage_done(self):
-        return ((self.amount_received / self.amount_goal) * 100)
+    team_members = models.ManyToManyField('dashboard.Profile', related_name='grant_teams')
 
     def __str__(self):
         """Return the string representation of a Grant."""
-        return f"id: {self.pk}, status: {self.status}, title: {self.title}, description: {self.description}"
+        return f"id: {self.pk}, active: {self.active}, title: {self.title}, description: {self.description}"
+
+    def percentage_done(self):
+        """Return the percentage of token received based on the token goal."""
+        return ((self.amount_received / self.amount_goal) * 100)
+
+
+class SubscriptionQuerySet(models.QuerySet):
+    """Define the Subscription default queryset and manager."""
+
+    pass
+
+
+class Milestone(SuperModel):
+    """Define the structure of a Grant Milestone"""
+
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    due_date = models.DateField()
+    completion_date = models.DateField(default=None, blank=True, null=True)
+
+    grant = models.ForeignKey('Grant', related_name='milestones', on_delete=models.CASCADE, null=True)
+
+    def __str__(self):
+        """Return the string representation of a Milestone."""
+        return (
+            f" id: {self.pk}, title: {self.title}, description: {self.description}, "
+            f"due_date: {self.due_date}, completion_date: {self.completion_date}, grant: {self.grant_id}"
+        )
 
 
 class Subscription(SuperModel):
     """Define the structure of a subscription agreement."""
 
-    status = models.BooleanField(default=True)
+    active = models.BooleanField(default=True)
     subscription_hash = models.CharField(default='', max_length=255)
     contributor_signature = models.CharField(default='', max_length=255)
     contributor_address = models.CharField(default='', max_length=255)
@@ -80,7 +110,13 @@ class Subscription(SuperModel):
 
     def __str__(self):
         """Return the string representation of a Subscription."""
-        return f"id: {self.pk}, status: {self.status}, subscription_hash: {self.subscription_hash}"
+        return f"id: {self.pk}, active: {self.active}, subscription_hash: {self.subscription_hash}"
+
+
+class ContributionQuerySet(models.QuerySet):
+    """Define the Contribution default queryset and manager."""
+
+    pass
 
 
 class Contribution(SuperModel):

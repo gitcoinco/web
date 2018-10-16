@@ -21,6 +21,7 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/grants/milestones.css" %}">
   </head>
   <body class="interior {{ active }} grant grant-detail">
     {% include 'shared/tag_manager_2.html' %}
@@ -146,25 +147,31 @@
         </div>
 
         <div class="col-4">
-          <p>{% trans "Milestones" %}</p>
+          <p>
+            {% trans "Milestones" %}
+            {% if is_admin %}<a href="{% url 'grants:milestones' grant.id %}" class="milestones-edit">{% trans "Edit Milestones" %}</a>{% endif %}
+          </p>
           <div class="milestones-container">
-            <ul class="milestones">
-              <li>
-                <div class="milestone-title">New York Times</div>
-                <div class="milestone-date">2012 - Present</div>
-                <p class="milestone-description">Jelly-o pie chocolate cake...</p>
-              </li>
-              <li>
-                <div class="milestone-title">New York Times</div>
-                <div class="milestone-date">2012 - Present</div>
-                <p class="description">Jelly-o pie chocolate cake...</p>
-              </li>
-              <li>
-                <div class="milestone-title">New York Times</div>
-                <div class="milestone-date">2012 - Present</div>
-                <p class="description">Jelly-o pie chocolate cake...</p>
-              </li>
-            </ul>
+              {% if milestones %}
+              <ul class="milestones-list">
+                {% for milestone in milestones %}
+                  <li>
+                    <div class="milestone-title">{{ milestone.title }}</div>
+                    <div class="milestone-date">
+                      {{ milestone.due_date }} -
+                      {% if milestone.completion_date %}
+                        {{ milestone.completion_date }}
+                      {% else %}
+                        {% trans "Present" %}
+                      {% endif %}
+                    </div>
+                    <p class="milestone-description">{{ milestone.description }}</p>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p>{% trans "No milestones currently set for this grant." %}</p>
+            {% endif %}
           </div>
         </div>
       </div>

@@ -1,0 +1,92 @@
+{% load static %}
+{% load i18n %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+    <link rel="stylesheet" href="{% static "v2/css/grants/milestones.css" %}">
+  </head>
+  <body class="interior {{ active }} grant">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+    </div>
+
+    <div class="container">
+      <div class="row justify-content-md-center">
+        <div class="col-sm-12 col-md-12 col-lg-8">
+          <div class="form__intro">
+            <h1>{% trans "Create Milestones for " %}{{ grant.title }}</h1>
+            <p>{{ grant.description }}</p>
+          </div>
+          <div class="milestones-container">
+              {% if milestones %}
+              <ul class="milestones-list">
+                {% for milestone in milestones %}
+                  <li>
+                    <div class="milestone-title">{{ milestone.title }}</div>
+                    <div class="milestone-date">
+                      {{ milestone.due_date }} - 
+                      {% if milestone.completion_date %}
+                        {{ milestone.completion_date }}
+                      {% else %}
+                        <form method="POST" action="{% url 'grants:milestones' grant.id %}">
+                          {% csrf_token %}
+                          <input type="hidden" name="method" value="">
+                          <input type="hidden" name="milestone_id" value="{{milestone.id}}">
+                          <input type="date" placeholder="Date" name="completion_date" required />
+                          <a data-form-method="DELETE" class="button button__small">{% trans "Delete" %}</a>
+                          <a data-form-method="PUT" class="button button__small">{% trans "Complete" %}</a>
+                        </form>
+                      {% endif %}
+                    </div>
+                    <p class="milestone-description">{{ milestone.description }}</p>
+                  </li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <p>{% trans "No milestones currently set for this grant." %}</p>
+            {% endif %}
+          </div>
+          <div class="milestones-input">
+            <form action="{% url 'grants:milestones' grant.id %}" method="POST">
+              {% csrf_token %}
+              <input type="hidden" name="method" value="POST">
+              <div class="form__group-horizontal">
+                <div class="row">
+                  <div class="col-12">
+                    {{ form.title }}
+                    {{ form.title.errors }}
+                    {{ form.due_date }}
+                    {{ form.due_date.errors }}
+                    {{ form.description }}
+                    {{ form.description.errors }}
+                  </div>
+                </div>
+              </div>
+              <div class="form__footer">
+                <button class="button button--primary">{% trans "Create Milestone" %}</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+  </body>
+
+  <!-- jQuery -->
+  <script src="{% static "v2/js/abi.js" %}"></script>
+  <script src="/dynamic/js/tokens_dynamic.js"></script>
+  <script src="{% static "v2/js/tokens.js" %}"></script>
+  <script src="{% static "v2/js/shared.js" %}"></script>
+  <script src="{% static "v2/js/ipfs-api.js" %}"></script>
+  <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/grants/milestones.js" %}"></script>
+
+</html>

@@ -1,0 +1,90 @@
+.milestones-edit {
+  float: right;
+  font-size: 0.75rem;
+}
+
+.milestones-container {
+  border: 1px solid #CECECE;
+  border-radius: 3px;
+  padding: 30px;
+}
+
+ul.milestones-list {
+  padding-left: 15px;
+  margin-top: -1px;
+}
+
+ul.milestones-list li {
+  padding-left: 33px;
+  list-style: none;
+  position: relative;
+  margin-bottom: 0;
+  padding-bottom: 2.5em;
+}
+
+ul.milestones-list li:last-child {
+  padding-bottom: 0;
+}
+
+ul.milestones-list li:after {
+  content: url('/static/v2/images/list-icon.svg');
+  position: absolute;
+  left: -25px;
+  top: 10px;
+}
+
+ul.milestones-list li:before {
+  content: "";
+  position: absolute;
+  left: -16px;
+  border-left: 1px solid #979797;
+  height: 100%;
+  width: 1px;
+}
+
+ul.milestones-list li:first-child:before {
+  top: 15px;
+}
+
+ul.milestones-list li:last-child:before {
+  height: 15px;
+}
+
+ul.milestones-list .milestone-title {
+  font-size: 20px;
+  color: #43484D;
+}
+
+ul.milestones-list .milestone-date {
+  margin-bottom: 0.3rem;
+  font-size: 14px;
+  color: #CCCCCC;
+}
+
+ul.milestones-list .milestone-date form {
+  display: inline;
+}
+
+ul.milestones-list .milestone-date input {
+  border: 0;
+  font-size: 14px;
+  color: #CCCCCC;
+}
+ul.milestones-list .milestone-date .error {
+  color: #D50000;
+  font-size: 0.75rem;
+}
+ul.milestones-list .milestone-date a {
+  float: right;
+  margin-right: 0.3rem;
+}
+
+ul.milestones-list .milestone-description {
+  font-size: 14px;
+  color: #43484D;
+}
+
+.milestones-input input,
+.milestones-input textarea {
+  margin-top: 20px;
+}

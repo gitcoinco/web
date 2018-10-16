@@ -58,6 +58,19 @@ class Migration(migrations.Migration):
             },
         ),
         migrations.CreateModel(
+            name='Milestone',
+            fields=[
+                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
+                ('created_on', models.DateTimeField(db_index=True, default=economy.models.get_time)),
+                ('modified_on', models.DateTimeField(default=economy.models.get_time)),
+                ('title', models.CharField(max_length=255)),
+                ('description', models.TextField()),
+                ('due_date', models.DateField()),
+                ('completion_date', models.DateField(default=None, blank=True, null=True)),
+                ('grant', models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='grant_milestone', to='grants.Grant')),
+            ],
+        ),
+        migrations.CreateModel(
             name='Subscription',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
