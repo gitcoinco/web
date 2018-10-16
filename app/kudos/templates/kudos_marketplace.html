@@ -6,10 +6,11 @@
     {% include 'shared/cards_pic.html' %}
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
   </head>
-  <body class="{{ active }} bg-light">
+  <body class="{{ active }} bg-light g-font-muli">
+      {% include 'shared/top_nav.html' with class='d-none d-md-flex' %}
     <header class="container-fluid header">
-      {% include 'shared/nav.html' %}
-      {% include 'shared/kudos_banner.html' %}
+      {% include 'shared/kudos_nav.html' %}
+      <!-- {% include 'shared/kudos_banner.html' %} -->
       <div class="container pb-5">
         {% include 'shared/kudos_searchbar.html' %}
       </div>

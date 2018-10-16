@@ -1142,7 +1142,7 @@ def profile(request, handle):
                 },
             },
         }
-        return TemplateResponse(request, 'profiles/profile.html')
+        return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
     # context['wallet_addresses'] = [w.address for w in profile.kudos_wallets.all()]
     context['preferred_payout_address'] = profile.preferred_payout_address

@@ -15,6 +15,7 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
+{% load kudos_extras %}
 <input id="is-authenticated" type="hidden" value={{ user.is_authenticated }}>
 {% if user.is_authenticated %}
   <div class="nav-item dropdown interior">
@@ -29,7 +30,7 @@
           {% trans "Send Tip" %}
         </a>
         <a class="dropdown-item" href="{% url "kudos_marketplace" %}">
-          <i class="far fa-magic"></i>
+          <i class="fas fa-magic"></i>
           {% trans "Send Kudos" %}
         </a>
         <a class="dropdown-item" href="{% url "new_funding" %}">
@@ -66,10 +67,10 @@
       {% endif %}
       {% if unclaimed_kudos %}
         <div class="dropdown-divider"></div>
-        {% for email in unclaimed_kudos %}
-          <a class="dropdown-item" href="{{ email.receive_url }}">
-            <i class="fas fa-gift"></i> 
-            {% trans "Claim Kudos" %}
+        {% for kudos in unclaimed_kudos %}
+          <a class="dropdown-item" href="{{ kudos.receive_url }}">
+            <i class="fas fa-gift"></i>
+            {% trans "Claim" %} "{{kudos.kudos_token.name|humanize_name}}" {% trans "Kudos" %}
           </a>
         {% endfor %}
       {% endif %}

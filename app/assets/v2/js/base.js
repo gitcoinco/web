@@ -70,7 +70,16 @@ $(document).ready(function() {
   });
   if (!$.fn.collapse) {
     $('.navbar-toggler').click(function() {
+      var toggle = $(this).attr('aria-expanded');
+
+      console.log(toggle);
       $('.navbar-collapse').toggleClass('show');
+      if (toggle === 'false') {
+        $(this).attr('aria-expanded', 'true');
+      } else {
+        $(this).attr('aria-expanded', 'false');
+      }
+
     });
   }
 

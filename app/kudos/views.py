@@ -293,6 +293,7 @@ def send_2(request):
     # profiles = Profile.objects.all()
 
     params = {
+        'active': 'send',
         'issueURL': request.GET.get('source'),
         'class': 'send2',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
@@ -485,7 +486,7 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
 def receive(request, key, txid, network):
     """Handle the receiving of a kudos (the POST)
 
-    Returns:
+    Returns:    
         TemplateResponse: the UI with the kudos confirmed
 
     """

@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# comment me out if youve got a better memory than kevin owocki :)
+echo "have you updated the gitcoin-erc721 smart contracts? (y/n)"
+read input
+
+echo "have you installed openzeppelin>? (y/n)"
+read input
+
+
 # If no network is specified, use localhost
 if [ -z $1 ]
 then
@@ -25,7 +33,7 @@ docker-compose exec ipfs sh -c 'ipfs config --json API.HTTPHeaders.Access-Contro
 docker-compose restart ipfs
 cd ../gitcoin-erc721
 truffle migrate --reset
-cd ../kudos
+cd ../web
 
 if [ -n "$ACCOUNT" ] && [ -n $"PRIVATE_KEY" ];
 then

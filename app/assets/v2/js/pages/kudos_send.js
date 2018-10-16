@@ -43,7 +43,7 @@ var set_metadata = function(callback) {
 var wait_for_metadata = function(callback) {
   setTimeout(function() {
     if ((typeof document.hash1 != 'undefined') && (document.hash1 != null)) {
-      console.log('document.hash1 = ' + document.hash1)
+      console.log('document.hash1 = ' + document.hash1);
       var account = generate_or_get_private_key();
 
       // This is the metadata that gets passed into got_metadata_callback()
@@ -55,7 +55,7 @@ var wait_for_metadata = function(callback) {
         'is_direct': false
       });
     } else {
-      console.log('still waiting...')
+      console.log('still waiting...');
       // Step 7
       // Once the new account and key are generated, move onto got_metadata_callback()
       wait_for_metadata(callback);
@@ -67,7 +67,7 @@ var wait_for_metadata = function(callback) {
 
 var wait_for_metadata_test = function(callback) {
   // only for local testing purposes
-  console.log('document.hash1 = ' + document.hash1)
+  console.log('document.hash1 = ' + document.hash1);
   var account = generate_or_get_private_key();
 
   // This is the metadata that gets passed into got_metadata_callback()
@@ -76,7 +76,7 @@ var wait_for_metadata_test = function(callback) {
     'address': account['address'],
     'reference_hash_for_receipient': document.hash1,
     'gitcoin_secret': account['shares'][0],
-    'is_direct': false,
+    'is_direct': false
   });
 };
 
@@ -128,10 +128,11 @@ var etherscanDomain = function() {
   return etherscanDomain;
 };
 
-var renderWallets = function (profileId) {
+var renderWallets = function(profileId) {
   // $('.form-check').remove()
   console.log('profileId: ' + profileId);
   let url = '/api/v0.1/wallet?profile_id=' + profileId;
+
   $.get(url, function(results, status) {
     console.log(status);
     results.forEach(function(r) {
@@ -139,20 +140,23 @@ var renderWallets = function (profileId) {
       let walletAddress = r.address;
 
       let walletItem = document.createElement('div');
-      $(walletItem).attr('class', 'form-check')
+
+      $(walletItem).attr('class', 'form-check');
 
       let walletInput = document.createElement('input');
+
       $(walletInput).attr('class', 'form-check-input').attr('type', 'radio').
-      attr('name', 'address').attr('value', walletAddress).attr('checked', 'true');
+        attr('name', 'address').attr('value', walletAddress).attr('checked', 'true');
 
       let walletLabel = document.createElement('label');
+
       $(walletLabel).attr('class', 'form-check-label').attr('for', 'address').text(walletAddress);
 
       $(walletItem).append(walletInput, walletLabel);
       $('#username-fg').after(walletItem);
-    })
-  })
-}
+    });
+  });
+};
 
 // START HERE
 // Step 0
@@ -177,17 +181,17 @@ $(document).ready(function() {
   // Kudos send button is clicked
   $('#send').click(function(e) {
     e.preventDefault();
-    $('#send_eth')[0].checkValidity()
+    $('#send_eth')[0].checkValidity();
 
-    if (!$('#username')[0].checkValidity() ) {
-      $('#username')[0].reportValidity()
+    if (!$('#username')[0].checkValidity()) {
+      $('#username')[0].reportValidity();
     }
-    var inputsValidate = document.querySelectorAll('input')
+    var inputsValidate = document.querySelectorAll('input');
 
-    inputsValidate.forEach( function(elem){
-      elem.reportValidity()
-    })
-    if ($(this).hasClass('disabled') || !$('#send_eth')[0].checkValidity() )
+    inputsValidate.forEach(function(elem) {
+      elem.reportValidity();
+    });
+    if ($(this).hasClass('disabled') || !$('#send_eth')[0].checkValidity())
       return;
 
 
@@ -196,7 +200,7 @@ $(document).ready(function() {
     if ($('#username').select2('data')[0] && $('#username').select2('data')[0].text) {
       var username = $('#username').select2('data')[0].text;
     } else {
-      var username = undefined
+      var username = undefined;
     }
 
     // Step 2
@@ -236,7 +240,7 @@ $(document).ready(function() {
       tokenAddress: tokenAddress,
       expires: expires,
       kudosId: kudosId
-    }
+    };
 
     // derived info
     // var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
@@ -257,6 +261,7 @@ $(document).ready(function() {
       var url = 'https://' + etherscanDomain() + '/tx/' + txid;
 
       $('#loading_trans').html('This transaction has been sent 👌');
+      $('#loading_trans').hide();
       $('#send_eth').css('display', 'none');
       $('#send_eth_done').css('display', 'block');
       $('#tokenName').html(tokenName);
@@ -272,6 +277,7 @@ $(document).ready(function() {
     var kudosId = $('#kudosid').data('kudosid');
     // cloneAndTransferKudos(kudosId, 1, receiverAddress);
     // cloneKudos(kudosId, 1);
+
     console.log(formData);
     // Step 3
     // Run sendKudos function
@@ -339,7 +345,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
     failure_callback();
     return;
   }
-  if (username == '' || username === undefined ) {
+  if (username == '' || username === undefined) {
     _alert({ message: gettext('You must enter a username.') }, 'warning');
     failure_callback();
     return;
@@ -443,6 +449,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
 
         var numClones = 1;
         var account = web3.eth.coinbase;
+
         console.log('destinationAccount:' + destinationAccount);
 
         if (is_direct_to_recipient) {
@@ -453,11 +460,12 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           var kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
           var kudosPriceInWei = new web3.BigNumber(kudosPriceInEth * 1.0 * Math.pow(10, 18));
           // console.log(destinationAccount, kudosId, numClones, account, kudosPriceInWei)
+
           kudos_contract.clone(destinationAccount, kudosId, numClones, {from: account, value: kudosPriceInWei}, function(cloneError, cloneTxid) {
             // totalSupply yield the kudos_id
             kudos_contract.totalSupply(function(supplyError, kudos_id) {
               post_send_callback(cloneError, cloneTxid, kudos_id);
-            })
+            });
           });
 
           // Send Indirectly
@@ -465,21 +473,22 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           // Step 9
           // Kudos Indirect Send (KIS)
           // estimate gas for cloning the kudos
-          console.log('Using Kudos Indirect Send (KIS)')
+          console.log('Using Kudos Indirect Send (KIS)');
           var kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
           var kudosPriceInWei = new web3.BigNumber(kudosPriceInEth * 1.0 * Math.pow(10, 18));
           // console.log(destinationAccount, kudosId, numClones, account, kudosPriceInWei)
+
           params = {
             kudosId: kudosId,
             numClones: numClones,
             from: account,
             value: kudosPriceInWei.toString()
-          }
-          console.log(params)
-          kudos_contract.clone.estimateGas(destinationAccount, kudosId, numClones, {from: account, value: kudosPriceInWei}, function(err, kudosGasEstimate){
+          };
+          console.log(params);
+          kudos_contract.clone.estimateGas(destinationAccount, kudosId, numClones, {from: account, value: kudosPriceInWei}, function(err, kudosGasEstimate) {
             if (err)
-              throw(err);
-            console.log('kudosGasEstimate: '+ kudosGasEstimate)
+              throw (err);
+            console.log('kudosGasEstimate: ' + kudosGasEstimate);
             // Multiply gas * gas_price_gwei to get gas cost in wei.
             kudosGasEstimateInWei = kudosGasEstimate * get_gas_price();
             _alert({ message: gettext('You will now be asked to confirm a transaction to cover the cost of the Kudos and the gas money.') }, 'info');
@@ -487,12 +496,12 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
               gas_money: gas_money,
               kudosGasEstimateInWei: kudosGasEstimateInWei,
               kudosPriceInWei: kudosPriceInWei.toNumber()
-            }
-            console.log(money)
+            };
+            console.log(money);
             web3.eth.sendTransaction({
               to: destinationAccount,
               // Add gas_money + gas cost for kudos contract transaction + cost of kudos token (Gitcoin keeps this amount?)
-              value: gas_money + kudosGasEstimateInWei + kudosPriceInWei.toNumber() ,
+              value: gas_money + kudosGasEstimateInWei + kudosPriceInWei.toNumber(),
               gasPrice: web3.toHex(get_gas_price())
             }, post_send_callback);
           });
@@ -519,7 +528,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
         'salt': salt
       });
     } else {
-      console.log('waiting for metadata')
+      console.log('waiting for metadata');
       // pay out via secret sharing algo
       // Step 6
       wait_for_metadata(got_metadata_callback);
