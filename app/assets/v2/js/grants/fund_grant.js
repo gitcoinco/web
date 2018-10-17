@@ -1,7 +1,5 @@
 /* eslint-disable no-console */
-window.onload = function() {
-
-  let token = '0x0000000000000000000000000000000000000000';
+$(document).ready(function() {
 
   $('#period').select2();
 
@@ -9,116 +7,145 @@ window.onload = function() {
     $(this).select2();
   });
 
+  // alert("Just so you know, you will perform two actions in MetaMask on this page!")
+
   $('#js-fundGrant').validate({
     submitHandler: function(form) {
-      var action = $(form).attr('action');
       var data = {};
 
       $.each($(form).serializeArray(), function() {
         data[this.name] = this.value;
       });
 
-      let grant = {
-        id: data.grant_id,
-        admin_address: data.admin_address,
-        token_address: data.token_address,
-        contract_address: data.contract_address
-      };
-
-      console.log(grant);
-
+      console.log(data);
 
       let value = 0;
       let txData = '0x02'; // something like this to say, hardcoded VERSION 2, we're sending approved tokens
       let gasLimit = 120000;
 
       // hardcode period seconds to monthly
-      let periodSeconds = 2592000;
+      let periodSeconds = 60;
 
       if (!data.gas_price)
         data.gas_price = 0;
 
-      let SubscriptionContract = web3.eth.contract(compiledSubscription.abi);
 
-      let deployedSubscription = SubscriptionContract.at(data.contract_address);
+      let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
 
       // This token is only for testing
-      let TokenContract = web3.eth.contract(compiledToken.abi);
-
-      let deployedToken = TokenContract.at('0x8E66e7eC5d9Fd04410d77142e51fd5c49a2B1263');
-
-      deployedToken.decimals.call(function(err, decimals) {
-
-      // console.log(bignumber);
-        let decimalsNumber = decimals.toNumber();
-        //
-        let realTokenAmount = data.amount_per_period * 10 ** decimalsNumber;
-        let realGasPrice = data.gas_price * 10 ** decimalsNumber;
-        //
-
-        deployedSubscription.extraNonce.call(web3.eth.accounts[0], function(err, nonce) {
-
-          nonce = parseInt(nonce) + 1;
-
-          const parts = [
-            web3.eth.accounts[0],
-            data.admin_address,
-            data.token_address,
-            realTokenAmount,
-            periodSeconds,
-            realGasPrice,
-            nonce
-          ];
-
-          deployedSubscription.getSubscriptionHash.call(...parts, function(err, subscriptionHash) {
-
-            console.log('subscriptionHash', typeof (subscriptionHash));
-
-            web3.eth.sign(web3.eth.accounts[0], '' + subscriptionHash, function(err, signature) {
-
-              console.log('signature', signature);
+      let deployedToken = new web3.eth.Contract(compiledToken.abi, '0xFD9C55bf4B75Ef115749cF76E9083c4241D7a7eB');
 
 
-              let postData = {
-                subscriptionContract: data.contract_address,
-                parts: parts,
-                subscriptionHash: subscriptionHash,
-                signature: signature
-              };
+      deployedToken.methods.decimals().call(function(err, decimals) {
 
-              console.log('postData', JSON.stringify({
-                postData
-              }));
+        console.log('decimals', typeof decimals);
 
-              fetch('http://localhost:10003/saveSubscription', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                  postData
-                })
-              }).then((response)=>{
-                console.log('TX RESULT', response);
-              })
-                .catch((error)=>{
-                  console.log(error);
+        let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
+
+        console.log('realTokenAmount', realTokenAmount);
+
+        let realGasPrice = Number(data.gas_price * 10 ** decimals);
+
+
+        web3.eth.getAccounts(function(err, accounts) {
+
+          console.log('accounts', accounts);
+
+          $('#contributor_address').val(accounts[0]);
+
+          // need to figure out why there does not seem to be a limit to this amount. Probably setting way higher than thought
+
+          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(realTokenAmount)).send({from: accounts[0]}, function(err, result) {
+
+            // Should add approval transactions to transaction history
+            console.log('result', result);
+
+
+            deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
+
+              console.log('nonce1', nonce);
+
+              nonce = parseInt(nonce) + 1;
+
+              console.log('nonce', nonce);
+
+              const parts = [
+                // subscriber address
+                accounts[0],
+                // admin_address
+                data.admin_address,
+                // testing token
+                '0xFD9C55bf4B75Ef115749cF76E9083c4241D7a7eB',
+                // data.amount_per_period
+                web3.utils.toTwosComplement(data.amount_per_period),
+                // data.period_seconds
+                web3.utils.toTwosComplement(60),
+                // data.gas_price
+                web3.utils.toTwosComplement(data.gas_price),
+                // nonce
+                web3.utils.toTwosComplement(nonce)
+              ];
+
+              console.log('parts', parts);
+
+
+              deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
+
+                $('#subscription_hash').val(subscriptionHash);
+
+
+                web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
+
+                  $('#signature').val(signature);
+
+                  let postData = {
+                    subscriptionContract: data.contract_address,
+                    parts: parts,
+                    subscriptionHash: subscriptionHash,
+                    signature: signature
+                  };
+
+                  console.log('postData', postData);
+
+                  fetch('http://localhost:10003/saveSubscription', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                      postData
+                    })
+                  }).then((response)=>{
+                    console.log('TX RESULT', response);
+
+                    $.each($(form).serializeArray(), function() {
+                      data[this.name] = this.value;
+                    });
+
+                    console.log('data', data);
+
+                    form.submit();
+
+                  })
+                    .catch((error)=>{
+                      console.log(error);
+                    });
+
+
                 });
+              });
             });
 
           });
+
+
         });
-
       });
+
     }
-
-    // instantiate contract
-    // get data from grant and inputs
-    // getSubscriptionHash from contract_address
-    // create Signature
-    // submit Signature
-    // save data and signature
-
-
   });
-};
+
+});
+
+// will want to check if account already has a subscription. If a second is produced the timestamp will not function properly
+// will need to check network to make sure users aren't submiting transactions to non-existant contracts

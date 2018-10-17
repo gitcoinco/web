@@ -7,6 +7,7 @@ const validate = () => {
 
 $(document).ready(function() {
 
+
   userSearch('.team_members');
 
   $('#img-project').on('change', function() {
@@ -30,53 +31,86 @@ $(document).ready(function() {
 
   $('#create-grant').validate({
     submitHandler: function(form) {
+      var data = {};
+      var disabled = $(form)
+        .find(':input:disabled')
+        .removeAttr('disabled');
 
-      let data = {};
+      $.each($(form).serializeArray(), function() {
+        data[this.name] = this.value;
+      });
 
-      $(form).find(':input:disabled').removeAttr('disabled');
 
       // Begin New Deploy Subscription Contract
-      let bytecode = compiledSubscription.bytecode;
-      let SubscriptionContract = web3.eth.contract(compiledSubscription.abi);
+      let SubscriptionContract = new web3.eth.Contract(compiledSubscription.abi);
 
-      // Waiting State screen
-      $('#new-grant').hide();
-      $('.interior .body').addClass('open');
-      $('.interior .body').addClass('loading');
-      $('.grant_waiting').show();
-      document.issueURL = $('#input-url').val();
-      waitingStateActive();
+      console.log('SubscriptionContract', SubscriptionContract);
 
-      SubscriptionContract.new(data.admin_address, data.token_address, data.amount_goal, data.frequency, data.gas_price, {
-        from: web3.eth.accounts[0],
-        data: bytecode,
-        gas: 2500000}, function(err, subscriptionContract) {
-        if (!err) {
+      let realTokenAmount = Number(data.amount_goal * 10 ** 18);
 
-          // NOTE: The callback will fire twice!
-          // Once the contract has the transactionHash property set and once its deployed on an address.
-          // e.g. check tx hash on the first call (transaction send)
+      console.log(realTokenAmount);
 
-          if (!subscriptionContract.address) {
-            console.log(subscriptionContract.transactionHash);
-          } else {
-            console.log(subscriptionContract.address);
+      // These args are baseline requirements for the contract set by the sender. Will set most to zero to abstract complexity from user.
+      let args = [
+        // admin_address
+        data.admin_address,
+        // required token, if any. Will need to make dynamic
+        // data.token_address,
+        '0x0000000000000000000000000000000000000000',
+        // required tokenAmount - setting to zero
+        web3.utils.toTwosComplement(0),
+        // data.frequency
+        web3.utils.toTwosComplement(0),
+        // data.gas_price
+        web3.utils.toTwosComplement(0)
+      ];
 
-            $('#transaction_hash').val(subscriptionContract.transactionHash);
-            $('#contract_address').val(subscriptionContract.address);
-            $('#network').val(web3.version.network);
+      console.log('args', args);
 
-            $.each($(form).serializeArray(), function() {
-              if (this.name == 'team_members[]')
-                data.team_members = $('#input-team_members').select2('data').map(
-                  member => member['text']
-                );
-              else
+      web3.eth.getAccounts(function(err, accounts) {
+        web3.eth.net.getId(function(err, network) {
+          $('#network').val(network);
+          SubscriptionContract.deploy({
+            data: compiledSubscription.bytecode,
+            arguments: args
+          })
+            .send({
+              from: accounts[0],
+              gas: 2500000
+            })
+            .on('error', function(error) {
+              console.log('1', error);
+            })
+            .on('transactionHash', function(transactionHash) {
+              console.log('2', transactionHash);
+              $('#transaction_hash').val(transactionHash);
+
+              // Waiting State screen
+              $('#new-grant').hide();
+              $('.interior .body').addClass('open');
+              $('.interior .body').addClass('loading');
+              $('.grant_waiting').show();
+              document.issueURL = $('#input-url').val();
+              waitingStateActive();
+
+            })
+            .on('receipt', function(receipt) {
+
+              $('#block_number').val(receipt.blockNumber);
+              $('#contract_address').val(receipt.contractAddress);
+
+            })
+            .then(function(contractInstance) {
+
+              console.log(contractInstance);
+
+              $.each($(form).serializeArray(), function() {
                 data[this.name] = this.value;
+              });
+              console.log(data);
+              form.submit();
             });
-            form.submit();
-          }
-        }
+        });
       });
     }
   });

@@ -28,6 +28,6 @@ urlpatterns = [
     re_path(r'^new', grant_new, name='new'),
     path('<int:grant_id>/milestones', milestones, name='milestones'),
     path('fund/<int:grant_id>', grant_fund, name='fund'),
-    path('subscriptions/<int:subscription_id>/cancel', subscription_cancel, name='subscription_cancel'),
+    path('subscription_cancel/<int:subscription_id>', subscription_cancel, name='subscription_cancel'),
     re_path(r'^profile', profile, name='profile')
 ]
