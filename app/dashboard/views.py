@@ -176,7 +176,7 @@ def gh_login(request):
     _next = request.GET.get('next')
     if _next:
         return redirect(reverse('social:begin', args=('github', )) + f'?next={_next}')
-    return redirect('social:begin', backend='github', next=next)
+    return redirect('social:begin', backend='github')
 
 
 def get_interest_modal(request):
