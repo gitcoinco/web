@@ -35,59 +35,71 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <span class="fund__header--highlight">{{ grant.title }}</span>
 </h2>
 
-    <div class="container">
-      <div class="fund__title">{% trans "Fund Grant" %}</div>
-      <form action='{{ grant.pk }}' method="POST" id="js-fundGrant">
-        {% csrf_token %}
-        <div class="row bottom-buffer">
-          <div class="form__group-horizontal">
-            <label class="form__label">{% trans "Token Approval Limit" %}</label>
-            <div class="row">
-              <div class="col-8">
-                <input type="number" name="approve" class="form__input" required />
-              </div>
-            </div>
+<div class="container">
+  <div class="fund__title">{% trans "Fund Grant" %}</div>
+  <form action='{{ grant.pk }}' method="POST" id="js-fundGrant">
+    {% csrf_token %}
+    <div class="row mb-4">
+      <div class="form__group-horizontal">
+        <label class="form__label">{% trans "Token Approval Limit" %}</label>
+        <div class="row">
+          <div class="col-8">
+            <input type="number" name="approve" class="form__input" required />
           </div>
-          <div class="form__group-horizontal">
-            <label class="form__label">{% trans "Contribution Per Period" %}</label>
-            <div class="row">
-              <div class="col-4">
-                <input type="number" name="amount_per_period" class="form__input" required />
-              </div>
-              <div class="col-4">
-                <div class="form__select2">
-                  <select class='js-select2' name='denomination' id='js-token'> </select>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="form__group-horizontal">
-            <label class="form__label">{% trans "MetaTx Gas Price" %}</label>
-            <div class="row">
-              <div class="col-8">
-                <input type="number" name="gas_price" class="form__input" required />
-              </div>
-            </div>
+        </div>
+      </div>
+      <div class="form__group-horizontal">
+        <label class="form__label">{% trans "Contribution per Period" %}</label>
+        <div class="row">
+          <div class="col-4">
+            <input type="number" name="amount_per_period" class="form__input" required />
           </div>
           <div class="col-4">
-            <div class="form__group-horizontal">
-              <!-- <label class="form__label">{% trans "Select period:" %}</label>
-              <div class="form__select2 fund__period">
-                <select name='period' id='period'>
-                  <option value="month">{% trans "month" %}</option>
-                  <option value="year">{% trans "year" %}</option>
-                </select> -->
-              <!-- </div> -->
+            <div class="form__select2">
+              <select class='js-select2' name='denomination' id='js-token'> </select>
             </div>
           </div>
-          <div class="form__group-horizontal">
-            <div class="row">
-              <div class="col-8">
-                <button class="button button--primary" id='js-fundGrant'>{% trans "Create Grant" %}</button>
+        </div>
+        <div class="form__group-horizontal">
+          <label class="form__label">{% trans "Contribution Per Period" %}</label>
+          <div class="row">
+            <div class="col-4">
+              <input type="number" name="amount_per_period" class="form__input" required />
+            </div>
+            <div class="col-4">
+              <div class="form__select2">
+                <select class='js-select2' name='denomination' id='js-token'> </select>
               </div>
             </div>
+          </div>
+        </div>
+        <div class="form__group-horizontal">
+          <label class="form__label">{% trans "MetaTx Gas Price" %}</label>
+          <div class="row">
+            <div class="col-8">
+              <input type="number" name="gas_price" class="form__input" required />
+            </div>
+          </div>
+        </div>
+        <div class="col-4">
+          <div class="form__group-horizontal">
+            <!-- <label class="form__label">{% trans "Select period:" %}</label>
+            <div class="form__select2 fund__period">
+              <select name='period' id='period'>
+                <option value="month">{% trans "month" %}</option>
+                <option value="year">{% trans "year" %}</option>
+              </select> -->
+            <!-- </div> -->
+          </div>
+        </div>
+        <div class="form__group-horizontal">
+          <div class="row">
+            <div class="col-8">
+              <button class="button button--primary" id='js-fundGrant'>{% trans "Create Grant" %}</button>
+            </div>
+          </div>
 
-          <div class="progress-text top-buffer bottom-buffer">
+          <div class="progress-text my-4">
             <div class="row">
               <div class="col-6">
                 <span>{{ grant.amountReceived }} ETH</span>
