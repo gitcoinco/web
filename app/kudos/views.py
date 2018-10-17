@@ -445,7 +445,7 @@ def send_4(request):
     # maybe_market_tip_to_slack(kudos_transfer, 'new_tip')
     maybe_market_kudos_to_email(kudos_transfer)
     # record_user_action(kudos_transfer.from_username, 'send_kudos', kudos_transfer)
-    # record_tip_activity(kudos_transfer, kudos_transfer.from_username, 'new_kudos' if kudos_transfer.username else 'new_crowdfund')
+    record_kudos_activity(kudos_transfer, kudos_transfer.from_username, 'new_kudos' if kudos_transfer.username else 'new_crowdfund')
 
     return JsonResponse(response)
 
@@ -483,10 +483,43 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
         logging.error(f"error in record_kudos_email_activity: {e} - {event_name} - {kudos_transfer} - {github_handle}")
 
 
+def record_kudos_activity(kudos, github_handle, event_name):
+    kwargs = {
+        'activity_type': event_name,
+        'kudos': kudos,
+        'metadata': {
+            'amount': str(kudos.amount),
+            'token_name': kudos.tokenName,
+            'value_in_eth': str(kudos.value_in_eth),
+            'value_in_usdt_now': str(kudos.value_in_usdt_now),
+            'github_url': kudos.github_url,
+            'to_username': kudos.username,
+            'from_name': kudos.from_name,
+            'received_on': str(kudos.received_on) if kudos.received_on else None
+        }
+    }
+    try:
+        kwargs['profile'] = Profile.objects.get(handle=github_handle)
+    except Profile.MultipleObjectsReturned:
+        kwargs['profile'] = Profile.objects.filter(handle__iexact=github_handle).first()
+    except Profile.DoesNotExist:
+        logging.error(f"error in record_tip_activity: profile with github name {github_handle} not found")
+        return
+    try:
+        kwargs['bounty'] = tip.bounty
+    except:
+        pass
+
+    try:
+        Activity.objects.create(**kwargs)
+    except Exception as e:
+        logging.error(f"error in record_tip_activity: {e} - {event_name} - {tip} - {github_handle}")
+
+
 def receive(request, key, txid, network):
     """Handle the receiving of a kudos (the POST)
 
-    Returns:    
+    Returns:
         TemplateResponse: the UI with the kudos confirmed
 
     """
