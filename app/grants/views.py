@@ -21,6 +21,7 @@ import json
 import logging
 
 from django.conf import settings
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.http import Http404
@@ -133,7 +134,7 @@ def grant_details(request, grant_id):
         'active': 'dashboard',
         'title': _('Grant Details'),
         'grant': grant,
-        'is_admin': (grant.admin_profile.id == profile.id) if profile else False,
+        'is_admin': (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False,
         'activity': activity_data,
         'gh_activity': gh_data,
         'milestones': milestones,
@@ -142,6 +143,7 @@ def grant_details(request, grant_id):
     return TemplateResponse(request, 'grants/detail.html', params)
 
 
+@login_required
 def grant_new(request):
     """Handle new grant."""
     profile = request.user.profile if request.user.is_authenticated else None
@@ -178,6 +180,7 @@ def grant_new(request):
     return TemplateResponse(request, 'grants/new.html', params)
 
 
+@login_required
 def milestones(request, grant_id):
     profile = request.user.profile if request.user.is_authenticated else None
     grant = Grant.objects.get(pk=grant_id)
@@ -221,6 +224,7 @@ def milestones(request, grant_id):
     return TemplateResponse(request, 'grants/milestones.html', params)
 
 
+@login_required
 def grant_fund(request, grant_id):
     """Handle grant funding."""
     try:
@@ -245,19 +249,17 @@ def grant_fund(request, grant_id):
         subscription.save()
         return redirect(reverse('grants:details', args=(grant.pk, )))
 
-    else:
-        subscription = {}
-
     params = {
         'active': 'dashboard',
         'title': _('Fund Grant'),
-        'subscription': subscription,
+        'subscription': {},
         'grant': grant,
         'keywords': get_keywords(),
     }
     return TemplateResponse(request, 'grants/fund.html', params)
 
 
+@login_required
 def subscription_cancel(request, subscription_id):
     """Handle the cancellation of a grant subscription."""
     subscription = Subscription.objects.select_related('grant').get(pk=subscription_id)
@@ -278,6 +280,7 @@ def subscription_cancel(request, subscription_id):
     return TemplateResponse(request, 'grants/cancel.html', params)
 
 
+@login_required
 def profile(request):
     """Show grants profile of logged in user."""
     limit = request.GET.get('limit', 25)
