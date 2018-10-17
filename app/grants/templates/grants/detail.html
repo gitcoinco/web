@@ -38,22 +38,64 @@
           <div class="col-12 col-md-6 col-lg-5">
             <div class="grant__specs">
               <h1 class="grant__title font-title-xl mb-4">
+                {% if is_admin %}
+                  <div>
+                    <div class="font-caption">
+                      <span class="font-weight-bold">Edit URL</span>
+                      <i id="edit--reference-url" class="ml-2 far fa-edit"></i>
+                    </div>
+                    <input type="text" id="form--input__reference-url" class="p-0 mt-2 inline-edit font-body" value="{{ grant.reference_url }}" readonly>
+                  </div>
+                {% else %}
                   <a href="{{ grant.reference_url }}" target="_blank">
                     <i class="fab fa-github font-title"></i>
                   </a>
-                <span>{{ grant.title }}</span>
+                {% endif %}
+                <span>
+                  {% if is_admin %}
+                    <div class="font-caption mt-4">
+                      <span class="font-weight-bold">Edit Title</span>
+                      <i id="edit--title" class="far fa-edit ml-2"></i>
+                    </div>
+                  {% endif %}
+                  <input type="text" id="form--input__title" class="p-0 inline-edit" value="{{ grant.title }}" readonly>
+                </span>
               </h1>
               <div class="grant-item__owner mb-4">
-                <div class="grant-item__owner-image mr-2">
-                  <img src="{{ grant.admin_profile.avatar_url }}">
-                </div>
-                <div class="grant-item__owner-handle font-body">{% trans 'by' %}
-                  <a class="grant-item__owner-handle" href="{% url 'profile' grant.admin_profile.handle %}">
-                    <span>{{ grant.admin_profile.handle|default:'anonymous' }}</span>
-                  </a>
-                </div>
+                {% if is_admin %}
+                  <div class="font-caption">
+                    <div>
+                      <span class="font-weight-bold">Edit Owner</span>
+                      <i id="edit--owner" class="far fa-edit ml-2"></i>
+                    </div>
+                    <div class="form__select2">
+                      <select id="grant-admin" class="form__input" name="grant-admin" disabled>
+                        <option selected="selected">{{ grant.admin_profile.handle|default:'anonymous' }}</option>
+                      </select>
+                    </div>
+                  </div>
+                {% else %}
+                  <div class="grant-item__owner-image mr-2">
+                    <img src="{{ grant.admin_profile.avatar_url }}">
+                  </div>
+                  <div class="grant-item__owner-handle font-body">{% trans 'by' %}
+                    <a class="grant-item__owner-handle" href="{% url 'profile' grant.admin_profile.handle %}">
+                      <span id="grant-profile">{{ grant.admin_profile.handle|default:'anonymous' }}</span>
+                    </a>
+                  </div>
+                {% endif %}
               </div>
-              <p class="grant__description font-subheader">{{ grant.description }}</p>
+              <p class="grant__description font-subheader">
+                {% if is_admin %}
+                  <div class="font-caption">
+                    <span class="font-weight-bold">
+                      Edit description
+                    </span>
+                    <i id="edit--description" class="ml-2 far fa-edit"></i>
+                  </div>
+                {% endif %}
+                <textarea id="form--input__description" class="p-0 mt-2 inline-edit" disabled>{{ grant.description }}</textarea>
+              </p>
             </div>
           </div>
         <div class="col-12 col-md-6 offset-lg-2 col-lg-5">
@@ -190,6 +232,7 @@
       </div>
     </div>
 
+    {% include 'shared/current_profile.html' %}
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
@@ -200,5 +243,6 @@
   <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
+  <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="{% static "v2/js/grants/detail.js" %}"></script>
 </html>
