@@ -39,67 +39,78 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   <div class="fund__title">{% trans "Fund Grant" %}</div>
   <form action='{{ grant.pk }}' method="POST" id="js-fundGrant">
     {% csrf_token %}
-    <div class="row mb-4">
+    <div class="row">
+
+      <div class="col-sm-12 col-md-10 col-lg-6">
+
       <div class="form__group-horizontal">
-        <label class="form__label">{% trans "Token Approval Limit" %}</label>
+        <label class="form__label">{% trans "Payment Token" %}</label>
         <div class="row">
-          <div class="col-8">
-            <input type="number" name="approve" class="form__input" required />
-          </div>
-        </div>
-      </div>
-      <div class="form__group-horizontal">
-        <label class="form__label">{% trans "Contribution per Period" %}</label>
-        <div class="row">
-          <div class="col-4">
-            <input type="number" name="amount_per_period" class="form__input" required />
-          </div>
-          <div class="col-4">
+          <div class="col-12">
             <div class="form__select2">
               <select class='js-select2' name='denomination' id='js-token'> </select>
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="form__group-horizontal">
+        <label class="form__label">{% trans "Token Approval Limit" %}</label>
+        <div class="row">
+          <div class="col-12">
+            <input type="number" name="approve" class="form__input" required />
+          </div>
+        </div>
+      </div>
+
         <div class="form__group-horizontal">
           <label class="form__label">{% trans "Contribution Per Period" %}</label>
           <div class="row">
-            <div class="col-4">
+            <div class="col-12">
               <input type="number" name="amount_per_period" class="form__input" required />
-            </div>
-            <div class="col-4">
-              <div class="form__select2">
-                <select class='js-select2' name='denomination' id='js-token'> </select>
-              </div>
             </div>
           </div>
         </div>
+
+        <div class="form__group-horizontal frequency">
+          <label class="form__label">{% trans "Frequency of payments" %}</label>
+          <div class="row">
+            <div class="col-6">
+              <input type="number" id="frequency_count" name="frequency" class="form__input" value='30' required />
+            </div>
+            <div class="col-6 font-body">
+              <select name="frequency_unit" id="frequency_unit" class="js-select2" style="width: 100%">
+                <option value="minutes">{% trans "minutes" %}</option>
+                <option value="hours">{% trans "hours" %}</option>
+                <option value="days" selected="selected">{% trans "days" %}</option>
+                <option value="months">{% trans "months" %}</option>
+                <option value="any">{% trans "any" %}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
         <div class="form__group-horizontal">
           <label class="form__label">{% trans "MetaTx Gas Price" %}</label>
           <div class="row">
-            <div class="col-8">
+            <div class="col-12">
               <input type="number" name="gas_price" class="form__input" required />
             </div>
           </div>
         </div>
-        <div class="col-4">
-          <div class="form__group-horizontal">
-            <!-- <label class="form__label">{% trans "Select period:" %}</label>
-            <div class="form__select2 fund__period">
-              <select name='period' id='period'>
-                <option value="month">{% trans "month" %}</option>
-                <option value="year">{% trans "year" %}</option>
-              </select> -->
-            <!-- </div> -->
-          </div>
-        </div>
+
         <div class="form__group-horizontal">
           <div class="row">
-            <div class="col-8">
+            <div class="col-12 justify-center">
               <button class="button button--primary" id='js-fundGrant'>{% trans "Create Grant" %}</button>
             </div>
           </div>
 
-          <div class="progress-text my-4">
+        </div>
+      </div>
+
+        <div class="col-sm-12 col-md-10 col-lg-6">
+          <!-- <div class="progress-text my-4">
             <div class="row">
               <div class="col-6">
                 <span>{{ grant.amountReceived }} ETH</span>
@@ -114,12 +125,33 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             <div class="progress-bar progress-bar--fund" role="progressbar" style="width:10%">
               <div class="contribution">
                 <span>10 ETH</span>
+              </div>
+            </div> -->
+
+            <div class="grant__progress mt-4">
+              <div class="progress">
+                <div class="progress-bar" style="width:{{ grant.percent_completed }}%"></div>
+              </div>
+
+              <div class="progress-text mt-2">
+                <div class="row">
+                  <div class="col-6">
+                    <span>{{ grant.amount_received }} ETH</span>
+                    <p>Current</p>
+                  </div>
+                  <div class="col-6 text-right">
+                    <span>{{ grant.amount_goal }} ETH</span>
+                    <p>Goal</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p>
+              {{ grant.description }}
+            </p>
           </div>
         </div>
-        <p>
-          {{ grant.description }}
-        </p>
-      </div>
 
         <div>
           <input type="hidden" id="grant_id" name="grant_id" value="{{ grant.id }}">
@@ -134,6 +166,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         </div>
       </form>
     </div>
+  </div>
+
 
 {% include 'shared/bottom_notification.html' %}
 {% include 'shared/analytics.html' %}
