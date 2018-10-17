@@ -25,6 +25,10 @@
   display: none;
 }
 
+.transaction .rain {
+  position: fixed;
+}
+
 @media (min-width: 768px) {
   .rain {
     display: block;
