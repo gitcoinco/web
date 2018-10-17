@@ -159,6 +159,7 @@ class Command(BaseCommand):
 
         kudos_contract = KudosContract(network)
 
+        logger.info('Listening for new Kudos events...')
         if syncmethod == 'filter':
             kudos_contract = KudosContract(network, sockets=True)
             self.filter_listener(kudos_contract, interval)
