@@ -33,30 +33,58 @@ class GrantQuerySet(models.QuerySet):
 class Grant(SuperModel):
     """Define the structure of a Grant."""
 
-    active = models.BooleanField(default=True)
-    title = models.CharField(default='', max_length=255)
-    description = models.TextField(default='', blank=True)
-    reference_url = models.URLField(db_index=True)
+    active = models.BooleanField(default=True, help_text=_('Whether or not the Grant is active.'))
+    title = models.CharField(default='', max_length=255, help_text=_('The title of the Grant.'))
+    description = models.TextField(default='', blank=True, help_text=_('The description of the Grant.'))
+    reference_url = models.URLField(blank=True, help_text=_('The associated reference URL of the Grant.'))
     logo = models.ImageField(
         upload_to=get_upload_filename, null=True, blank=True, help_text=_('The Grant logo image.'),
     )
     logo_svg = models.FileField(
-        upload_to=get_upload_filename, null=True, blank=True, help_text=_('The Grant logo SVG.')
+        upload_to=get_upload_filename, null=True, blank=True, help_text=_('The Grant logo SVG.'),
     )
-    admin_address = models.CharField(max_length=255, default='0x0')
-    frequency = models.DecimalField(default=30, decimal_places=0, max_digits=50)
-    amount_goal = models.DecimalField(default=1, decimal_places=4, max_digits=50)
-    amount_received = models.DecimalField(default=0, decimal_places=4, max_digits=50)
-    token_address = models.CharField(max_length=255, default='0x0')
-    contract_address = models.CharField(max_length=255, default='0x0')
-    transaction_hash = models.CharField(max_length=255, default='0x0')
-    block_number = models.CharField(max_length=9, default=0)
-    network = models.CharField(max_length=8, default='mainnet')
-    required_gas_price = models.DecimalField(default='0', decimal_places=0, max_digits=50)
+    admin_address = models.CharField(
+        max_length=255, default='0x0', help_text=_('The wallet address for the administrator of this Grant.'),
+    )
+    frequency = models.DecimalField(
+        default=30, decimal_places=0, max_digits=50, help_text=_('The payout frequency of the Grant.'),
+    )
+    amount_goal = models.DecimalField(
+        default=1, decimal_places=4, max_digits=50, help_text=_('The contribution goal amount for the Grant.'),
+    )
+    amount_received = models.DecimalField(
+        default=0, decimal_places=4, max_digits=50, help_text=_('The total amount received for the Grant.'),
+    )
+    token_address = models.CharField(
+        max_length=255, default='0x0', help_text=_('The token address to be used with the Grant.'),
+    )
+    contract_address = models.CharField(
+        max_length=255, default='0x0', help_text=_('The contract address of the Grant.'),
+    )
+    transaction_hash = models.CharField(
+        max_length=255, default='0x0', help_text=_('The transaction hash of the Grant.'),
+    )
+    block_number = models.CharField(
+        max_length=9, default=0, help_text=_('The Ethereum block number during creation of the Grant.'),
+    )
+    network = models.CharField(
+        max_length=8, default='mainnet', help_text=_('The network in which the Grant contract resides.'),
+    )
+    required_gas_price = models.DecimalField(
+        default='0', decimal_places=0, max_digits=50, help_text=_('The required gas price for the Grant.'),
+    )
     admin_profile = models.ForeignKey(
-        'dashboard.Profile', related_name='grant_admin', on_delete=models.CASCADE, null=True
+        'dashboard.Profile',
+        related_name='grant_admin',
+        on_delete=models.CASCADE,
+        help_text=_('The Grant administrator\'s profile.'),
+        null=True,
     )
-    team_members = models.ManyToManyField('dashboard.Profile', related_name='grant_teams')
+    team_members = models.ManyToManyField(
+        'dashboard.Profile',
+        related_name='grant_teams',
+        help_text=_('The team members contributing to this Grant.'),
+    )
 
     def __str__(self):
         """Return the string representation of a Grant."""
@@ -76,12 +104,15 @@ class SubscriptionQuerySet(models.QuerySet):
 class Milestone(SuperModel):
     """Define the structure of a Grant Milestone"""
 
-    title = models.CharField(max_length=255)
-    description = models.TextField()
-    due_date = models.DateField()
-    completion_date = models.DateField(default=None, blank=True, null=True)
-
-    grant = models.ForeignKey('Grant', related_name='milestones', on_delete=models.CASCADE, null=True)
+    title = models.CharField(max_length=255, help_text=_('The Milestone title.'))
+    description = models.TextField(help_text=_('The Milestone description.'))
+    due_date = models.DateField(help_text=_('The requested Milestone completion date.'))
+    completion_date = models.DateField(
+        default=None, blank=True, null=True, help_text=_('The Milestone completion date.'),
+    )
+    grant = models.ForeignKey(
+        'Grant', related_name='milestones', on_delete=models.CASCADE, null=True, help_text=_('The associated Grant.'),
+    )
 
     def __str__(self):
         """Return the string representation of a Milestone."""
@@ -94,18 +125,42 @@ class Milestone(SuperModel):
 class Subscription(SuperModel):
     """Define the structure of a subscription agreement."""
 
-    active = models.BooleanField(default=True)
-    subscription_hash = models.CharField(default='', max_length=255)
-    contributor_signature = models.CharField(default='', max_length=255)
-    contributor_address = models.CharField(default='', max_length=255)
-    amount_per_period = models.DecimalField(default=1, decimal_places=4, max_digits=50)
-    period_seconds = models.DecimalField(default=2592000, decimal_places=0, max_digits=50)
-    token_address = models.CharField(max_length=255, default='0x0')
-    gas_price = models.DecimalField(default=1, decimal_places=4, max_digits=50)
-    network = models.CharField(max_length=8, default='mainnet')
-    grant = models.ForeignKey('grants.Grant', related_name='subscriptions', on_delete=models.CASCADE, null=True)
+    active = models.BooleanField(default=True, help_text=_('Whether or not the Subscription is active.'))
+    subscription_hash = models.CharField(
+        default='', max_length=255, help_text=_('The contributor\'s Subscription hash.'),
+    )
+    contributor_signature = models.CharField(default='', max_length=255, help_text=_('The contributor\'s signature.'))
+    contributor_address = models.CharField(
+        default='', max_length=255, help_text=_('The contributor\'s wallet address of the Subscription.'),
+    )
+    amount_per_period = models.DecimalField(
+        default=1, decimal_places=4, max_digits=50, help_text=_('The promised contribution amount per period.'),
+    )
+    period_seconds = models.DecimalField(
+        default=2592000, decimal_places=0, max_digits=50, help_text=_('The subscription period length.'),
+    )
+    token_address = models.CharField(
+        max_length=255, default='0x0', help_text=_('The token address to be used with the Subscription.'),
+    )
+    gas_price = models.DecimalField(
+        default=1, decimal_places=4, max_digits=50, help_text=_('The required gas price for the Subscription.'),
+    )
+    network = models.CharField(
+        max_length=8, default='mainnet', help_text=_('The network in which the Subscription resides.'),
+    )
+    grant = models.ForeignKey(
+        'grants.Grant',
+        related_name='subscriptions',
+        on_delete=models.CASCADE,
+        null=True,
+        help_text=_('The associated Grant.'),
+    )
     contributor_profile = models.ForeignKey(
-        'dashboard.Profile', related_name='grant_contributor', on_delete=models.CASCADE, null=True
+        'dashboard.Profile',
+        related_name='grant_contributor',
+        on_delete=models.CASCADE,
+        null=True,
+        help_text=_('The Subscription contributor\'s Profile.'),
     )
 
     def __str__(self):
@@ -122,7 +177,11 @@ class ContributionQuerySet(models.QuerySet):
 class Contribution(SuperModel):
     """Define the structure of a subscription agreement."""
 
-    tx_id = models.CharField(max_length=255, default='0x0')
+    tx_id = models.CharField(max_length=255, default='0x0', help_text=_('The transaction ID of the Contribution.'))
     subscription = models.ForeignKey(
-        'grants.Subscription', related_name='subscription_contribution', on_delete=models.CASCADE, null=True
+        'grants.Subscription',
+        related_name='subscription_contribution',
+        on_delete=models.CASCADE,
+        null=True,
+        help_text=_('The associated Subscription.'),
     )

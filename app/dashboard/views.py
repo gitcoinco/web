@@ -29,6 +29,7 @@ from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
@@ -172,6 +173,9 @@ def create_new_interest_helper(bounty, user, issue_message):
 @csrf_exempt
 def gh_login(request):
     """Attempt to redirect the user to Github for authentication."""
+    _next = request.GET.get('next')
+    if _next:
+        return redirect(reverse('social:begin', args=('github', )) + f'?next={_next}')
     return redirect('social:begin', backend='github')
 
 
