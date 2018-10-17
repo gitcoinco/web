@@ -528,3 +528,20 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
     }
   });
 }
+
+// web3.currentProvider.publicConfigStore.on('update', function(e) {
+  var error
+  window.ethereum.publicConfigStore.on('update', checkNetwork)
+  function checkNetwork(e){
+    if (error) { return; }
+
+    var network = e ? e.networkVersion : web3.version.network
+    if (network === '4' || network ===  '1' || network ===  '1539724825728') {
+      console.log('dentr')
+    } else {
+      error = true
+      console.log('fora')
+      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
+    }
+  };
+  checkNetwork()
