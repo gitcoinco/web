@@ -19,6 +19,10 @@ All of the environment variables used by this application conform to the [`djang
 | --- | --- | --- | --- |
 | FORCE_PROVISION | Whether or not to force provisioning even if the container has been previously provisioned | `bool` | False |
 | FORCE_GET_PRICES | Whether or not to force pulling fresh conversion rate data from etherdelta and poloniex | `bool` | False |
+| DISABLE_INITIAL_CACHETABLE | Whether or not to disable the initial createcachetable | `bool` | False |
+| DISABLE_INITIAL_COLLECTSTATIC | Whether or not to disable the initial collectstatic | `bool` | False |
+| DISABLE_INITIAL_MIGRATE | Whether or not to disable the initial data migration | `bool` | False |
+| DISABLE_INITIAL_LOADDATA | Whether or not to disable the initial loaddata fixture import | `bool` | False |
 
 ## Amazon Web Services
 

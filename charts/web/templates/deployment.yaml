@@ -23,6 +23,9 @@ spec:
         imagePullPolicy: {{ .Values.image.pullPolicy }}
         ports:
         - containerPort: {{ .Values.service.internalPort }}
+        env:
+        - name: ENV
+          value: {{ default "staging" .Values.service.env | quote }}
         resources:
 {{ toYaml .Values.resources | indent 12 }}
         volumeMounts:

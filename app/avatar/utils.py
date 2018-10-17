@@ -32,6 +32,7 @@ import pyvips
 import requests
 from git.utils import get_user
 from PIL import Image, ImageOps
+from pyvips.error import Error as VipsError
 from svgutils.compose import SVG, Figure, Line
 
 AVATAR_BASE = 'assets/other/avatars/'
@@ -47,63 +48,69 @@ def get_avatar_context():
         'defaultClothingColor': 'CCCCCC',
         'defaultBackground': '25E899',
         'optionalSections': ['HairStyle', 'FacialHair', 'Accessories'],
-        'sections': [
-            {
-                'name': 'Head',
-                'title': 'Pick head shape',
-                'options': ('0', '1', '2', '3', '4')
-            }, {
-                'name': 'Eyes',
-                'title': 'Pick eyes shape',
-                'options': ('0', '1', '2', '3', '4', '5', '6')
-            }, {
-                'name': 'Nose',
-                'title': 'Pick nose shape',
-                'options': ('0', '1', '2', '3', '4')
-            }, {
-                'name': 'Mouth',
-                'title': 'Pick mouth shape',
-                'options': ('0', '1', '2', '3', '4')
-            }, {
-                'name': 'Ears',
-                'title': 'Pick ears shape',
-                'options': ('0', '1', '2', '3')
-            },
-            {
-                'name': 'Clothing',
-                'title': 'Pick your clothing',
-                'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet')
-            },
-            {
-                'name': 'Hair Style',
-                'title': 'Pick a hairstyle',
-                'options': (['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'], ['5', 'None'],
-                            ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'], ['9-back', '9-front'])
-            },
-            {
-                'name': 'Facial Hair',
-                'title': 'Pick a facial hair style',
-                'options': (
-                    'Mustache-0', 'Mustache-1', 'Mustache-2', 'Mustache-3', 'Beard-0', 'Beard-1', 'Beard-2', 'Beard-3'
-                )
-            },
-            {
-                'name': 'Accessories',
-                'title': 'Pick your accessories',
-                'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'],
-                            ['HatShort-backwardscap'], ['HatShort-ballcap'], ['HatShort-headphones'],
-                            ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], ['Earring-0'], ['Earring-1'],
-                            ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'])
-            },
-            {
-                'name': 'Background',
-                'title': 'Pick a background color',
-                'options': (
-                    '25E899', '9AB730', '00A55E', '3FCDFF', '3E00FF', '8E2ABE', 'D0021B', 'F9006C', 'FFCE08', 'F8E71C',
-                    '15003E', 'FFFFFF'
-                )
-            }
-        ],
+        'sections': [{
+            'name': 'Head',
+            'title': 'Pick head shape',
+            'options': ('0', '1', '2', '3', '4')
+        }, {
+            'name': 'Eyes',
+            'title': 'Pick eyes shape',
+            'options': ('0', '1', '2', '3', '4', '5', '6')
+        }, {
+            'name': 'Nose',
+            'title': 'Pick nose shape',
+            'options': ('0', '1', '2', '3', '4')
+        }, {
+            'name': 'Mouth',
+            'title': 'Pick mouth shape',
+            'options': ('0', '1', '2', '3', '4')
+        }, {
+            'name': 'Ears',
+            'title': 'Pick ears shape',
+            'options': ('0', '1', '2', '3')
+        },
+                     {
+                         'name': 'Clothing',
+                         'title': 'Pick your clothing',
+                         'options': (
+                             'cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet',
+                             'suit', 'ethlogo', 'cloak', 'robe'
+                         )
+                     },
+                     {
+                         'name': 'Hair Style',
+                         'title': 'Pick a hairstyle',
+                         'options': (['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'],
+                                     ['5', 'None'], ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'],
+                                     ['9-back', '9-front'], ['None', '10'])
+                     },
+                     {
+                         'name': 'Facial Hair',
+                         'title': 'Pick a facial hair style',
+                         'options': (
+                             'Mustache-0', 'Mustache-1', 'Mustache-2', 'Mustache-3', 'Beard-0', 'Beard-1', 'Beard-2',
+                             'Beard-3'
+                         )
+                     },
+                     {
+                         'name': 'Accessories',
+                         'title': 'Pick your accessories',
+                         'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
+                             'HatShort-backwardscap'
+                         ], ['HatShort-ballcap'], ['HatShort-cowboy'], ['HatShort-headphones'],
+                                     ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], ['Earring-0'], ['Earring-1'], [
+                                         'EarringBack-2', 'Earring-2'
+                                     ], ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'],
+                                     ['Masks-jack-o-lantern-lighted'], ['Extras-Parrot'], ['Masks-gitcoinbot'])
+                     },
+                     {
+                         'name': 'Background',
+                         'title': 'Pick a background color',
+                         'options': (
+                             '25E899', '9AB730', '00A55E', '3FCDFF', '3E00FF', '8E2ABE', 'D0021B', 'F9006C', 'FFCE08',
+                             'F8E71C', '15003E', 'FFFFFF'
+                         )
+                     }],
     }
 
 
@@ -120,7 +127,8 @@ def get_svg_templates():
             'earring': [],
             'glasses': [],
             'hat': [],
-            'masks': []
+            'masks': [],
+            'extras': [],
         },
         'clothing': [],
         'ears': [],
@@ -271,7 +279,7 @@ def handle_avatar_payload(request):
     avatar_dict = {}
     valid_component_keys = [
         'Beard', 'Clothing', 'Earring', 'EarringBack', 'Ears', 'Eyes', 'Glasses', 'Masks', 'HairLong', 'HairShort',
-        'HatLong', 'HatShort', 'Head', 'Mouth', 'Mustache', 'Nose'
+        'HatLong', 'HatShort', 'Head', 'Mouth', 'Mustache', 'Nose', 'Extras'
     ]
     valid_color_keys = ['Background', 'ClothingColor', 'HairColor', 'SkinTone']
     body = json.loads(request.body)
@@ -411,8 +419,11 @@ def convert_img(obj, input_fmt='svg', output_fmt='png'):
     """
     try:
         obj_data = obj.read()
-        image = pyvips.Image.new_from_buffer(obj_data, f'.{input_fmt}')
-        return BytesIO(image.write_to_buffer(f'.{output_fmt}'))
+        if obj_data:
+            image = pyvips.Image.new_from_buffer(obj_data, f'.{input_fmt}')
+            return BytesIO(image.write_to_buffer(f'.{output_fmt}'))
+    except VipsError:
+        pass
     except Exception as e:
         logger.error(e)
     return None
