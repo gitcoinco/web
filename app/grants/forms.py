@@ -17,8 +17,6 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
-import json
-
 from django import forms
 from django.utils.translation import gettext_lazy as _
 
