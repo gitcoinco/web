@@ -150,30 +150,35 @@ def grant_new(request):
 
     if request.method == 'POST':
         logo = request.FILES.get('input_image', None)
-        # TODO: Include milestones, frequency_unit, and team_members
+        receipt = json.loads(request.POST.get('receipt', '{}'))
+        team_members = request.POST.getlist('team_members[]')
+
         grant_kwargs = {
             'title': request.POST.get('input_name', ''),
             'description': request.POST.get('description', ''),
-            'reference_url': request.POST.get('reference_url'),
+            'reference_url': request.POST.get('reference_url', ''),
             'admin_address': request.POST.get('admin_address', ''),
             'frequency': request.POST.get('frequency', 30),
             'token_address': request.POST.get('denomination', ''),
             'amount_goal': request.POST.get('amount_goal', 0),
             'transaction_hash': request.POST.get('transaction_hash', ''),
             'contract_address': request.POST.get('contract_address', ''),
-            'block_number': request.POST.get('block_number', ''),
             'network': request.POST.get('network', 'mainnet'),
+            'metadata': receipt,
             'admin_profile': profile,
             'logo': logo,
         }
         grant = Grant.objects.create(**grant_kwargs)
+
+        if team_members:
+            grant.team_members.add(*list(map(int, team_members)))
+
         return redirect(reverse('grants:details', args=(grant.pk, )))
 
-    grant = {}
     params = {
         'active': 'grants',
         'title': _('New Grant'),
-        'grant': grant,
+        'grant': {},
         'keywords': get_keywords(),
     }
 

@@ -95,10 +95,8 @@ $(document).ready(function() {
 
             })
             .on('receipt', function(receipt) {
-
-              $('#block_number').val(receipt.blockNumber);
+              $('#receipt').val(JSON.stringify(receipt));
               $('#contract_address').val(receipt.contractAddress);
-
             })
             .then(function(contractInstance) {
 

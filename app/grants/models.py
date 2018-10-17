@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+from django.contrib.postgres.fields import JSONField
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -64,8 +65,8 @@ class Grant(SuperModel):
     transaction_hash = models.CharField(
         max_length=255, default='0x0', help_text=_('The transaction hash of the Grant.'),
     )
-    block_number = models.CharField(
-        max_length=9, default=0, help_text=_('The Ethereum block number during creation of the Grant.'),
+    metadata = JSONField(
+        default=dict, blank=True, help_text=_('The Grant metadata. Includes creation and last synced block numbers.'),
     )
     network = models.CharField(
         max_length=8, default='mainnet', help_text=_('The network in which the Grant contract resides.'),

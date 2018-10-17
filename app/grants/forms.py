@@ -18,6 +18,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from grants.models import Grant, Milestone
 
@@ -30,8 +31,9 @@ class GrantForm(forms.ModelForm):
 
         model = Grant
         fields = (
-            'title', 'description', 'reference_url', 'admin_address', 'frequency', 'token_address', 'amount_goal',
-            'transaction_hash', 'contract_address', 'network', 'admin_profile', 'logo',
+            'title', 'description', 'reference_url', 'logo', 'logo_svg', 'admin_address', 'frequency',
+            'amount_goal', 'amount_received', 'token_address', 'contract_address', 'transaction_hash', 'metadata',
+            'network', 'required_gas_price', 'admin_profile', 'team_members'
         )
 
 
@@ -46,7 +48,7 @@ class MilestoneForm(forms.ModelForm):
             'title', 'description', 'due_date',
         )
         widgets = {
-            'title': forms.TextInput(attrs={'class': 'form__input', 'placeholder': 'Title'}),
-            'description': forms.Textarea(attrs={'class': 'form__input', 'placeholder': 'Description'}),
-            'due_date': forms.DateInput(attrs={'type': 'date', 'class': 'form__input', 'placeholder': 'Date'})
+            'title': forms.TextInput(attrs={'class': 'form__input', 'placeholder': _('Title')}),
+            'description': forms.Textarea(attrs={'class': 'form__input', 'placeholder': _('Description')}),
+            'due_date': forms.DateInput(attrs={'type': 'date', 'class': 'form__input', 'placeholder': _('Date')})
         }
