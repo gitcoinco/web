@@ -33,6 +33,7 @@
         display: flex;
       }
     </style>
+    <link rel="stylesheet" type="text/css" href="{% static "v2/css/tooltip_hover.css" %}">
   </head>
 
   <body class="interior {{active}} g-font-muli">
@@ -70,7 +71,8 @@
                 </div>
                 <div class="w-100 my-2">
                   <label for=bountyFulfillment>{% trans "Bounty Submission:" %}</label>
-                  <select class="w-100 btn btn-sm gc-border-blue" name=bountyFulfillment id=bountyFulfillment>
+                  <label id="tooltip">{% trans "Where is my Eth going? " %}<i class='fa fa-info-circle'></i></label>
+                  <select class="w-100 btn btn-sm" name=bountyFulfillment id=bountyFulfillment>
                     <option value="">-- {% trans "Submission" %} -- </option>
                   </select>
                 </div>
@@ -98,6 +100,11 @@
                     Learn more here.
                   </a>
                 </div>
+              </div>
+              <div id="tooltip--hover">
+                <span id="heading">{% trans "Where is my Eth Going?" %}</span><br>
+                <span id="subheading">{% trans "Your funds are safe!" %}</span><br><br>
+                <span id="hovertext"><br><strong>{% trans "Standard Bounties" %}</strong><br>{% trans "When you pay via Standard Bounties, your tokens will be securely taken from the escrow StandardBounties.sol contract on the Ethereum mainnet, and transferred to the payee's wallet" %}</span>
               </div>
             </div>
           </div>
@@ -131,4 +138,5 @@
   <script src="{% static "v2/js/pages/process_bounty.js" %}"></script>
   <script src="{% static "v2/js/kudos-search.js" %}"></script>
   <script src="{% static "v2/js/pages/kudos_send.js" %}"></script>
+  <script src="{% static "v2/js/tooltip_hover.js" %}"></script>
 </html>

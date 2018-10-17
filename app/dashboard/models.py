@@ -42,7 +42,7 @@ from django.utils.translation import gettext_lazy as _
 import pytz
 import requests
 from dashboard.tokens import addr_to_token
-from economy.models import SuperModel
+from economy.models import ConversionRate, SuperModel
 from economy.utils import ConversionRateNotFoundError, convert_amount, convert_token_to_usdt
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import (
@@ -455,6 +455,18 @@ class Bounty(SuperModel):
 
         """
         return any(profile.fulfiller_github_username == handle for profile in self.fulfillments.all())
+
+    def is_fulfiller(self, handle):
+        """Determine whether or not the profile is the bounty is_fulfiller.
+
+        Args:
+            handle (str): The profile handle to be compared.
+
+        Returns:
+            bool: Whether or not the user is the bounty is_fulfiller.
+
+        """
+        return any(profile.fulfiller_github_username == handle for profile in self.fulfillments.filter(accepted=True).all())
 
     def is_funder(self, handle):
         """Determine whether or not the profile is the bounty funder.
@@ -913,29 +925,54 @@ class Bounty(SuperModel):
     @property
     def additional_funding_summary(self):
         """Return a dict describing the additional funding from crowdfunding that this object has"""
-        return_dict = {
-            'tokens': {},
-            'usd_value': 0,
-        }
+        ret = {}
         for tip in self.tips.filter(is_for_bounty_fulfiller=True).exclude(txid=''):
-            key = tip.tokenName
-            if key not in return_dict['tokens'].keys():
-                return_dict['tokens'][key] = 0
-            return_dict['tokens'][key] += tip.amount_in_whole_units
-            return_dict['usd_value'] += tip.value_in_usdt if tip.value_in_usdt else 0
-        return return_dict
+            token = tip.tokenName
+            obj = ret.get(token, {})
+
+            if not obj:
+                obj['amount'] = 0.0
+
+                conversion_rate = ConversionRate.objects.filter(
+                    from_currency=token,
+                    to_currency='USDT',
+                ).order_by('-timestamp').first()
+
+                if conversion_rate:
+                    obj['ratio'] = (float(conversion_rate.to_amount) / float(conversion_rate.from_amount))
+                    obj['timestamp'] = conversion_rate.timestamp
+                else:
+                    obj['ratio'] = 0.0
+                    obj['timestamp'] = datetime.now()
+
+                ret[token] = obj
+
+            obj['amount'] += tip.amount_in_whole_units
+        return ret
 
     @property
     def additional_funding_summary_sentence(self):
         afs = self.additional_funding_summary
-        if len(afs['tokens'].keys()) == 0:
-            return ""
+        tokens = afs.keys()
+
+        if not tokens:
+            return ''
+
         items = []
-        for token, value in afs['tokens'].items():
-            items.append(f"{value} {token}")
+        usd_value = 0.0
+
+        for token_name in tokens:
+            obj = afs[token_name]
+            ratio = obj['ratio']
+            amount = obj['amount']
+            usd_value += amount * ratio
+            items.append(f"{amount} {token_name}")
+
         sentence = ", ".join(items)
-        if(afs['usd_value']):
-            sentence += f" worth ${afs['usd_value']}"
+
+        if usd_value:
+            sentence += f" worth {usd_value} USD"
+
         return sentence
 
 
@@ -1709,9 +1746,9 @@ class Profile(SuperModel):
         user_fulfilled_bounties = False
         user_funded_bounties = False
         last_quarter = datetime.now() - timedelta(days=90)
-        bounties = self.bounties.filter(modified_on__gte=last_quarter)
+        bounties = self.bounties.filter(created_on__gte=last_quarter, network='mainnet')
         fulfilled_bounties = [
-            bounty for bounty in bounties if bounty.is_hunter(self.handle) and bounty.status == 'done'
+            bounty for bounty in bounties if bounty.is_fulfiller(self.handle) and bounty.status == 'done'
         ]
         fulfilled_bounties_count = len(fulfilled_bounties)
         funded_bounties = self.get_funded_bounties()
@@ -2216,21 +2253,18 @@ class Profile(SuperModel):
         }
 
         if activities:
-            fulfilled = self.fulfilled.filter(
+            if not self.is_org:
+                all_activities = self.activities
+            else:
+                url = self.github_url
+                all_activities = Activity.objects.filter(bounty__github_url__startswith=url)
+            all_activities = all_activities.filter(
                 bounty__network=network
-            ).select_related('bounty').all().order_by('-created_on')
-            completed = list(set([fulfillment.bounty for fulfillment in fulfilled.exclude(accepted=False)]))
-            submitted = list(set([fulfillment.bounty for fulfillment in fulfilled.exclude(accepted=True)]))
-            started = self.interested.prefetch_related('bounty_set') \
-                .filter(bounty__network=network).all().order_by('-created')
-            started_bounties = list(set([interest.bounty_set.last() for interest in started]))
-
-            if completed or submitted or started:
+            ).select_related('bounty', 'tip').all().order_by('-created')
+            if all_activities:
                 params['activities'] = [{
                     'title': _('By Created Date'),
-                    'completed': completed,
-                    'submitted': submitted,
-                    'started': started_bounties,
+                    'activity_bounties': all_activities,
                 }]
 
         if tips:
@@ -2243,6 +2277,20 @@ class Profile(SuperModel):
                 params['scoreboard_position_org'] = self.get_org_leaderboard_index()
 
         return params
+
+    @property
+    def locations(self):
+        from app.utils import get_location_from_ip
+        locations = []
+        for login in self.actions.filter(action='Login'):
+            if login.location_data:
+                locations.append(login.location_data)
+            else:
+                location_data = get_location_from_ip(login.ip_address)
+                login.location_data = location_data
+                login.save()
+                locations.append(location_data)
+        return locations
 
     @property
     def is_eu(self):

@@ -155,6 +155,7 @@ def render_quarterly_stats(to_email, platform_wide_stats):
     profile = Profile.objects.filter(email=to_email).first()
     quarterly_stats = profile.get_quarterly_stats
     params = {**quarterly_stats, **platform_wide_stats}
+    params['profile'] = profile
     params['subscriber'] = get_or_save_email_subscriber(to_email, 'internal'),
     print(params)
     response_html = premailer_transform(render_to_string("emails/quarterly_stats.html", params))
@@ -570,7 +571,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "A Maintainers Guide To Hacktoberfest | ETH Travels"
+    subject = "Gitcoin's Summer Results & Holiday Plans"
 
     intro = '''
 
@@ -578,23 +579,24 @@ def render_new_bounty_roundup(to_email):
 Hi there,
 </p>
 <p>
-<a href="https://medium.com/gitcoin/gitcoins-hacktoberfest-98825f199af2">Gitcoin's Hacktoberfest</a> starts on Monday! Post your favorite 3 open source projects on twitter & tag us (<a href="https://twitter.com/GetGitcoin">@GetGitcoin</a>), then make a <a href="https://gitcoin.co/requests">Gitcoin Request</a> to give those projects a boost!
+This week, we wrote more about our Q3 Results and Q4 Goals in <a href="https://medium.com/gitcoin/gitcoins-sprint-to-the-holidays-6d4103ad9ea4">Gitcoin's Sprint To The Holiday's</a>. We're excited about
+the $350K in work already on the Gitcoin platform, and even more excited about a few things to come this winter. More to come!
 </p>
 <p>
-If you're an OSS maintainer, we wrote a <a href="https://medium.com/gitcoin/a-maintainers-guide-to-hacktoberfest-21405c8ff09f">Guide to Hacktoberfest for maintainers!</a> It's
-a great look at how to manage an open source project generally, let us know what you think.
+Perhaps more importantly, we're in swag giveaway mode! If you ever wanted a funky Gitcoin shirt, now's the time to act.
+Make a <a href="https://gitcoin.co/requests/">Gitcoin Request</a> on any open source Github issue and you'll be eligible.
 </p>
 <p>
-Lastly, October marks a month of travel for the Gitcoin team. If you'll be at ETH SF (Oct 5-7), Github Universe (Oct 16-17), Web 3 Summit (Oct 22 - 24), or Devcon 4, give us a shout!
+We're on the move! If you'll be at Github Universe (Oct 16-17), Web 3 Summit (Oct 22 - 24), Sustain OSS (Oct 25) or Devcon 4, give us a shout!
 </p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-        <a href="https://consensys.net/academy/2018developer/?utm_source=ConsenSys+Academy%3A+General+Mailing+List&utm_campaign=88c5836e4a-EMAIL_CAMPAIGN_2018_09_10_02_13_COPY_01&utm_medium=email&utm_term=0_30e33caef0-88c5836e4a">ConsenSys Academy's Developer Program</a> is a 11-week program that equips developers with all the knowledge, skills, and
-         hands on mentorship essential to become industry-leading Ethereum developers. You can register now <a href="https://form.jotform.com/DeveloperProgram/Bootcamp?utm_source=ConsenSys+Academy%3A+General+Mailing+List&utm_campaign=88c5836e4a-EMAIL_CAMPAIGN_2018_09_10_02_13_COPY_01&utm_medium=email&utm_term=0_30e33caef0-88c5836e4a-">here!</a>
+        We clarified <a href="https://medium.com/gitcoin/setting-your-oss-repos-monetary-policy-9c493118cd34">Gitcoin's Monetary policy</a> this week - explaining when we provide tips / bounties to contributors.
+        We hope this serves as an example for other open source projects who pay fairly for help!
         </li>
         <li>
-        Gitcoin Livestream today includes ConsenSys Academy and FOAM Protocol at 5PM ET. We're excited and hope to see you - <a href="https://gitcoin.co/livestream">add to your calendar here!</a>.
+        The Gitcoin Livestream is back as regularly scheduled this week. <a href="https://gitcoin.co/livestream">Join us at 5PM ET</a>!
         </li>
     </ul>
 </p>
@@ -603,34 +605,34 @@ Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'dryajov',
+        'who': 'Dan-Nolan',
         'who_link': True,
-        'what': 'Completed one of the largest bounties of all time on MetaMask!',
-        'link': 'https://gitcoin.co/issue/MetaMask/mustekala/21/1279',
+        'what': 'Received an ETHPrize Bounty via Gitcoin!',
+        'link': 'https://gitcoin.co/issue/ChainshotDapps/content/1/1347',
         'link_copy': 'View more',
     }, {
-        'who': 'mul1sh',
+        'who': 'adamskrodzki',
         'who_link': True,
-        'what': 'Completed his first bounty! Congrats.',
-        'link': 'https://gitcoin.co/issue/diadata-org/coindata/1/1259',
+        'what': 'Added tests for Winding Tree vesting contract!',
+        'link': 'https://gitcoin.co/issue/windingtree/vesting-contract/1/1375',
         'link_copy': 'View more',
     }, {
-        'who': 'zachzundel',
+        'who': 'barrasso',
         'who_link': True,
-        'what': 'Moving Sharding forward with Prysmatic Labs!',
-        'link': 'https://gitcoin.co/issue/prysmaticlabs/prysm/497/1212',
+        'what': 'Won an ETH SF Bounty from Bloqboard!',
+        'link': 'https://gitcoin.co/issue/ethglobal/ethsanfrancisco-bounties/9/1373',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/ethereum/EIPs/issues/1442',
-        'primer': 'Document JSON-RPC interface in an EIP.',
+        'url': 'https://github.com/prysmaticlabs/prysm/issues/569',
+        'primer': 'Work with Prysmatic Labs on Sharding.',
     }, {
-        'url': 'https://github.com/NethermindEth/nethermind/issues/86',
-        'primer': 'Implement discovery v5 on Nethermind.',
+        'url': 'https://github.com/trailofbits/echidna/issues/15',
+        'primer': 'Trail Of Bits bounty via Ethereum Community Fund.',
     }, {
-        'url': 'https://github.com/ethereum/solidity/issues/4648',
-        'primer': 'Solidity: Display Large Values In A Nicer Format',
+        'url': 'https://github.com/Bounties-Network/Explorer/issues/237',
+        'primer': 'Know anything about encryption? Bounties Network wants to know.'
     }, ]
 
     num_leadboard_items = 5
@@ -866,8 +868,13 @@ def roundup(request):
 @staff_member_required
 def quarterly_roundup(request):
     from marketing.utils import get_platform_wide_stats
+    from dashboard.models import Profile
     platform_wide_stats = get_platform_wide_stats()
     email = settings.CONTACT_EMAIL
+    handle = request.GET.get('handle')
+    if handle:
+        profile = Profile.objects.filter(handle=handle).first()
+        email = profile.email
     response_html, _ = render_quarterly_stats(email, platform_wide_stats)
     return HttpResponse(response_html)
 

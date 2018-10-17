@@ -30,13 +30,14 @@ RUN mkdir -p /usr/share/GeoIP/ && \
 
 WORKDIR /code
 COPY requirements/ /code/
+COPY app/ /code/app/
 
 RUN pip install -r test.txt
 COPY bin/docker-command.bash /bin/docker-command.bash
 RUN dos2unix /bin/docker-command.bash && \
     apt-get purge -y --auto-remove dos2unix wget gcc libc6-dev libc-dev libssl-dev make automake libtool autoconf pkg-config libffi-dev apt-utils
 
-RUN apt-get update && apt-get install -y libmagickwand-dev
+RUN apt-get update && apt-get install -y libvips libvips-dev
 
 ENTRYPOINT ["/usr/local/bin/dumb-init", "--"]
 CMD ["bash", "/bin/docker-command.bash"]

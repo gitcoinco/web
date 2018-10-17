@@ -19,6 +19,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from __future__ import unicode_literals
 
+from django.core.validators import MinValueValidator
 from django.db import models
 
 from economy.models import SuperModel
@@ -56,7 +57,7 @@ class BountyRequest(SuperModel):
     eth_address = models.CharField(max_length=50, blank=True)
     comment = models.TextField(max_length=500, default='')
     comment_admin = models.TextField(max_length=500, blank=True)
-    amount = models.FloatField(default=0.0)
+    amount = models.FloatField(blank=False, validators=[MinValueValidator(1.0)])
 
     objects = BountyQuerySet.as_manager()
 

@@ -55,3 +55,8 @@
 .button--warning:hover {
   background-color: #d43247;
 }
+
+.button__small {
+  padding: 5px 10px;
+  font-size: 12px;
+}

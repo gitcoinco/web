@@ -24,16 +24,34 @@ from django.utils import timezone
 from dashboard.models import Bounty, Profile, Tip
 from marketing.models import LeaderboardRank
 
+# Constants
 IGNORE_PAYERS = []
 IGNORE_EARNERS = ['owocki']  # sometimes owocki pays to himself. what a jerk!
 
-days_back = 7
-if settings.DEBUG:
-    days_back = 30
-weekly_cutoff = timezone.now() - timezone.timedelta(days=days_back)
-monthly_cutoff = timezone.now() - timezone.timedelta(days=30)
-quarterly_cutoff = timezone.now() - timezone.timedelta(days=90)
-yearly_cutoff = timezone.now() - timezone.timedelta(days=365)
+ALL = 'all'
+
+WEEKLY = 'weekly'
+QUARTERLY = 'quarterly'
+YEARLY = 'yearly'
+MONTHLY = 'monthly'
+
+FULFILLED = 'fulfilled'
+PAYERS = 'payers'
+EARNERS = 'earners'
+ORGS = 'orgs'
+KEYWORDS = 'keywords'
+TOKENS = 'tokens'
+COUNTRIES = 'countries'
+CITIES = 'cities'
+CONTINENTS = 'continents'
+
+TIMES = [ALL, WEEKLY, QUARTERLY, YEARLY, MONTHLY]
+BREAKDOWNS = [FULFILLED, ALL, PAYERS, EARNERS, ORGS, KEYWORDS, TOKENS, COUNTRIES, CITIES, CONTINENTS]
+
+WEEKLY_CUTOFF = timezone.now() - timezone.timedelta(days=(30 if settings.DEBUG else 7))
+MONTHLY_CUTOFF = timezone.now() - timezone.timedelta(days=30)
+QUARTERLY_CUTOFF = timezone.now() - timezone.timedelta(days=90)
+YEARLY_CUTOFF = timezone.now() - timezone.timedelta(days=365)
 
 
 def default_ranks():
@@ -43,18 +61,106 @@ def default_ranks():
         dict: A nested dictionary mapping of all default ranks with empty dicts.
 
     """
-    times = ['all', 'weekly', 'quarterly', 'yearly', 'monthly']
-    breakdowns = ['fulfilled', 'all', 'payers', 'earners', 'orgs', 'keywords', 'tokens']
     return_dict = {}
-    for time in times:
-        for bd in breakdowns:
-            key = f'{time}_{bd}'
+    for time in TIMES:
+        for breakdown in BREAKDOWNS:
+            key = f'{time}_{breakdown}'
             return_dict[key] = {}
-
     return return_dict
+
 
 ranks = default_ranks()
 counts = default_ranks()
+
+
+def profile_to_location(handle):
+    # TODO (mbeacom): Debug, fix, and re-enable leaderboards by location on live.
+    if settings.ENV == 'prod':
+        return []
+
+    profiles = Profile.objects.filter(handle__iexact=handle)
+    if handle and profiles.exists():
+        profile = profiles.first()
+        return profile.locations
+    return []
+
+
+def bounty_to_location(bounty):
+    locations = profile_to_location(bounty.bounty_owner_github_username)
+    fulfiller_usernames = list(
+        bounty.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True)
+    )
+    for username in fulfiller_usernames:
+        locations = locations + profile_to_location(username)
+    return locations
+
+
+def tip_to_location(tip):
+    return profile_to_location(tip.username) + profile_to_location(tip.from_username)
+
+
+def tip_to_country(tip):
+    return list(set(ele['country_name'] for ele in tip_to_location(tip) if ele and ele.get('country_name')))
+
+
+def bounty_to_country(bounty):
+    return list(set(ele['country_name'] for ele in bounty_to_location(bounty) if ele and ele.get('country_name')))
+
+
+def tip_to_continent(tip):
+    return list(set(ele['continent_name'] for ele in tip_to_location(tip) if ele and ele.get('continent_name')))
+
+
+def bounty_to_continent(bounty):
+    return list(set(ele['continent_name'] for ele in bounty_to_location(bounty) if ele and ele.get('continent_name')))
+
+
+def tip_to_city(tip):
+    return list(set(ele['city'] for ele in tip_to_location(tip) if ele and ele.get('city')))
+
+
+def bounty_to_city(bounty):
+    return list(set(ele['city'] for ele in bounty_to_location(bounty) if ele and ele.get('city')))
+
+
+def bounty_index_terms(bounty):
+    index_terms = []
+    if not should_suppress_leaderboard(bounty.bounty_owner_github_username):
+        index_terms.append(bounty.bounty_owner_github_username)
+    if bounty.org_name:
+        index_terms.append(bounty.org_name)
+    for fulfiller in bounty.fulfillments.filter(accepted=True):
+        if not should_suppress_leaderboard(fulfiller.fulfiller_github_username):
+            index_terms.append(fulfiller.fulfiller_github_username)
+    index_terms.append(bounty.token_name)
+    for keyword in bounty_to_city(bounty):
+        index_terms.append(keyword)
+    for keyword in bounty_to_continent(bounty):
+        index_terms.append(keyword)
+    for keyword in bounty_to_country(bounty):
+        index_terms.append(keyword)
+    for keyword in bounty.keywords_list:
+        index_terms.append(keyword.lower())
+    return index_terms
+
+
+def tip_index_terms(tip):
+    index_terms = []
+    if not should_suppress_leaderboard(tip.username):
+        index_terms.append(tip.username)
+    if not should_suppress_leaderboard(tip.from_username):
+        index_terms.append(tip.from_username)
+    if not should_suppress_leaderboard(tip.org_name):
+        index_terms.append(tip.org_name)
+    if not should_suppress_leaderboard(tip.tokenName):
+        index_terms.append(tip.tokenName)
+    for keyword in tip_to_country(tip):
+        index_terms.append(keyword)
+    for keyword in tip_to_city(tip):
+        index_terms.append(keyword)
+    for keyword in tip_to_continent(tip):
+        index_terms.append(keyword)
+    return index_terms
 
 
 def add_element(key, index_term, amount):
@@ -69,86 +175,77 @@ def add_element(key, index_term, amount):
     counts[key][index_term] += 1
 
 
-def sum_bounty_helper(b, breakdown, index_term, val_usd):
+def sum_bounty_helper(b, time, index_term, val_usd):
     fulfiller_index_terms = list(b.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True))
-    add_element(f'{breakdown}_fulfilled', index_term, val_usd)
+    add_element(f'{time}_{ALL}', index_term, val_usd)
+    add_element(f'{time}_{FULFILLED}', index_term, val_usd)
     if index_term == b.bounty_owner_github_username and index_term not in IGNORE_PAYERS:
-        add_element(f'{breakdown}_payers', index_term, val_usd)
+        add_element(f'{time}_{PAYERS}', index_term, val_usd)
     if index_term == b.org_name and index_term not in IGNORE_PAYERS:
-        add_element(f'{breakdown}_orgs', index_term, val_usd)
+        add_element(f'{time}_{ORGS}', index_term, val_usd)
     if index_term in fulfiller_index_terms and index_term not in IGNORE_EARNERS:
-        add_element(f'{breakdown}_earners', index_term, val_usd)
-    if b.token_name == index_term:
-        add_element(f'{breakdown}_tokens', index_term, val_usd)
-    if index_term in b.keywords_list:
-        index_term = index_term.lower()
+        add_element(f'{time}_{EARNERS}', index_term, val_usd)
+    if index_term == b.token_name:
+        add_element(f'{time}_{TOKENS}', index_term, val_usd)
+    if index_term in bounty_to_country(b):
+        add_element(f'{time}_{COUNTRIES}', index_term, val_usd)
+    if index_term in bounty_to_city(b):
+        add_element(f'{time}_{CITIES}', index_term, val_usd)
+    if index_term in bounty_to_continent(b):
+        add_element(f'{time}_{CONTINENTS}', index_term, val_usd)
+    if index_term.lower() in (k.lower() for k in b.keywords_list):
         is_github_org_name = Bounty.objects.filter(github_url__icontains=f'https://github.com/{index_term}').exists()
         is_github_repo_name = Bounty.objects.filter(github_url__icontains=f'/{index_term}/').exists()
-        index_keyword = not is_github_repo_name and not is_github_org_name
-        if index_keyword:
-            add_element(f'{breakdown}_keywords', index_term, val_usd)
+        if not is_github_repo_name and not is_github_org_name:
+            add_element(f'{time}_{KEYWORDS}', index_term.lower(), val_usd)
 
 
 def sum_bounties(b, index_terms):
     val_usd = b._val_usd_db
     for index_term in index_terms:
         if b.idx_status == 'done':
-            breakdown = 'all'
-            sum_bounty_helper(b, breakdown, index_term, val_usd)
-            ###############################
-            if b.created_on > weekly_cutoff:
-                breakdown = 'weekly'
-                sum_bounty_helper(b, breakdown, index_term, val_usd)
-            if b.created_on > monthly_cutoff:
-                breakdown = 'monthly'
-                sum_bounty_helper(b, breakdown, index_term, val_usd)
-            if b.created_on > quarterly_cutoff:
-                breakdown = 'quarterly'
-                sum_bounty_helper(b, breakdown, index_term, val_usd)
-            if b.created_on > yearly_cutoff:
-                breakdown = 'yearly'
-                sum_bounty_helper(b, breakdown, index_term, val_usd)
-
-        add_element('all_all', index_term, b._val_usd_db)
-        if b.created_on > weekly_cutoff:
-            add_element('weekly_all', index_term, b._val_usd_db)
-        if b.created_on > monthly_cutoff:
-            add_element('monthly_all', index_term, b._val_usd_db)
-        if b.created_on > yearly_cutoff:
-            add_element('yearly_all', index_term, b._val_usd_db)
+            sum_bounty_helper(b, ALL, index_term, val_usd)
+            if b.created_on > WEEKLY_CUTOFF:
+                sum_bounty_helper(b, WEEKLY, index_term, val_usd)
+            if b.created_on > MONTHLY_CUTOFF:
+                sum_bounty_helper(b, MONTHLY, index_term, val_usd)
+            if b.created_on > QUARTERLY_CUTOFF:
+                sum_bounty_helper(b, QUARTERLY, index_term, val_usd)
+            if b.created_on > YEARLY_CUTOFF:
+                sum_bounty_helper(b, YEARLY, index_term, val_usd)
 
 
-def sum_tip_helper(t, breakdown, index_term, val_usd):
-    add_element(f'{breakdown}_all', index_term, val_usd)
-    add_element(f'{breakdown}_fulfilled', index_term, val_usd)
-    if t.username == index_term or breakdown == 'all':
-        add_element(f'{breakdown}_earners', index_term, val_usd)
+def sum_tip_helper(t, time, index_term, val_usd):
+    add_element(f'{time}_{ALL}', index_term, val_usd)
+    add_element(f'{time}_{FULFILLED}', index_term, val_usd)
+    if t.username == index_term:
+        add_element(f'{time}_{EARNERS}', index_term, val_usd)
     if t.from_username == index_term:
-        add_element(f'{breakdown}_payers', index_term, val_usd)
+        add_element(f'{time}_{PAYERS}', index_term, val_usd)
     if t.org_name == index_term:
-        add_element(f'{breakdown}_orgs', index_term, val_usd)
+        add_element(f'{time}_{ORGS}', index_term, val_usd)
     if t.tokenName == index_term:
-        add_element(f'{breakdown}_tokens', index_term, val_usd)
+        add_element(f'{time}_{TOKENS}', index_term, val_usd)
+    if index_term in tip_to_country(t):
+        add_element(f'{time}_{COUNTRIES}', index_term, val_usd)
+    if index_term in tip_to_city(t):
+        add_element(f'{time}_{CITIES}', index_term, val_usd)
+    if index_term in tip_to_continent(t):
+        add_element(f'{time}_{CONTINENTS}', index_term, val_usd)
 
 
 def sum_tips(t, index_terms):
     val_usd = t.value_in_usdt_now
     for index_term in index_terms:
-        breakdown = 'all'
-        sum_tip_helper(t, breakdown, index_term, val_usd)
-        #####################################
-        if t.created_on > weekly_cutoff:
-            breakdown = 'weekly'
-            sum_tip_helper(t, breakdown, index_term, val_usd)
-        if t.created_on > monthly_cutoff:
-            breakdown = 'monthly'
-            sum_tip_helper(t, breakdown, index_term, val_usd)
-        if t.created_on > quarterly_cutoff:
-            breakdown = 'quarterly'
-            sum_tip_helper(t, breakdown, index_term, val_usd)
-        if t.created_on > yearly_cutoff:
-            breakdown = 'yearly'
-            sum_tip_helper(t, breakdown, index_term, val_usd)
+        sum_tip_helper(t, ALL, index_term, val_usd)
+        if t.created_on > WEEKLY_CUTOFF:
+            sum_tip_helper(t, WEEKLY, index_term, val_usd)
+        if t.created_on > MONTHLY_CUTOFF:
+            sum_tip_helper(t, MONTHLY, index_term, val_usd)
+        if t.created_on > QUARTERLY_CUTOFF:
+            sum_tip_helper(t, QUARTERLY, index_term, val_usd)
+        if t.created_on > YEARLY_CUTOFF:
+            sum_tip_helper(t, YEARLY, index_term, val_usd)
 
 
 def should_suppress_leaderboard(handle):
@@ -175,38 +272,17 @@ class Command(BaseCommand):
             if not b._val_usd_db:
                 continue
 
-            index_terms = []
-            if not should_suppress_leaderboard(b.bounty_owner_github_username):
-                index_terms.append(b.bounty_owner_github_username)
-                if b.org_name:
-                    index_terms.append(b.org_name)
-            for fulfiller in b.fulfillments.filter(accepted=True):
-                if not should_suppress_leaderboard(fulfiller.fulfiller_github_username):
-                    index_terms.append(fulfiller.fulfiller_github_username)
-            for keyword in b.keywords_list:
-                keyword = keyword.lower()
-                index_terms.append(keyword)
-
-            index_terms.append(b.token_name)
-
+            index_terms = bounty_index_terms(b)
             sum_bounties(b, index_terms)
 
-        # tips
+        # get tips
         tips = Tip.objects.exclude(txid='').filter(network='mainnet')
 
+        # iterate
         for t in tips:
             if not t.value_in_usdt_now:
                 continue
-            index_terms = []
-            if not should_suppress_leaderboard(t.username):
-                index_terms.append(t.username)
-            if not should_suppress_leaderboard(t.from_username):
-                index_terms.append(t.from_username)
-            if not should_suppress_leaderboard(t.org_name):
-                index_terms.append(t.org_name)
-            if not should_suppress_leaderboard(t.tokenName):
-                index_terms.append(t.tokenName)
-
+            index_terms = tip_index_terms(t)
             sum_tips(t, index_terms)
 
         # set old LR as inactive

@@ -248,9 +248,16 @@ def how_it_works(request, work_type):
     """Show How it Works / Funder page."""
     if work_type not in ['funder', 'contributor']:
         raise Http404
-
+    if work_type == 'contributor':
+        title = _('How to Find & Complete Open Bounties | Gitcoin')
+        desc = _('Learn how to get paid for open bug bounties and get paid in crypto (ETH or any ERC-20 token)')
+    elif work_type == 'funder':
+        title = _('How to Create & Fund Issues/Bounties | Gitcoin')
+        desc = _('Learn how to create open bug bounties and get freelance developers to complete your job/task.')
     context = {
         'active': f'how_it_works_{work_type}',
+        'title': title,
+        'desc': desc
     }
     return TemplateResponse(request, 'how_it_works/index.html', context)
 
@@ -420,6 +427,7 @@ def results(request, keyword=None):
         raise Http404
     context = build_stat_results(keyword)
     context['is_outside'] = True
+    context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
 
 
@@ -734,6 +742,10 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
         'img': static('v2/images/tools/api.jpg'),
         'url': 'https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e',
         'title': _('How to Price Work on Gitcoin'),
+    }, {
+        'img': 'https://raw.github.com/gitcoinco/Gitcoin-Exemplars/master/helpImage.png',
+        'url': 'https://github.com/gitcoinco/Gitcoin-Exemplars',
+        'title': _('Exemplars for Writing A Good Bounty Description'),
     }, {
         'img': static('v2/images/help/tools.png'),
         'url': 'https://medium.com/gitcoin/tutorial-post-a-bounty-in-90-seconds-a7d1a8353f75',

@@ -1,55 +1,58 @@
-{% load static %}
+{% load static i18n %}
 <!-- JSRender stuff -->
 <script id="result" type="text/x-jsrender">
-<div class="row result bounty_row [[if hidden]]bounty_row--hidden[[/if]] [[:network]]" href="[[:action]]">
-      [[if avatar_url]]
-        <div class="avatar-container col-1 justify-content-center hide_min_viewport">
-          <img src='[[:avatar_url]]' class='avatar'>
-        </div>
-      [[else]]
-        <div class="avatar-container col-1 justify-content-center">
-          <div class="experience [[:experience_level]]">&nbsp;</div>
-        </div>
+<div class="row result bounty_row [[if hidden]]bounty_row--hidden[[/if]] [[:network]] i[[:standard_bounties_id]]" href="[[:action]]">
+  [[if avatar_url]]
+    <div class="avatar-container col-1 justify-content-center hide_min_viewport">
+      <img src='[[:avatar_url]]' class='avatar'>
+    </div>
+  [[else]]
+    <div class="avatar-container col-1 justify-content-center">
+      <div class="experience [[:experience_level]]">&nbsp;</div>
+    </div>
+  [[/if]]
+  <div class="col-12 col-md-8 d-flex flex-column">
+    <div class="bounty-detail">
+      [[if attached_job_description != null && attached_job_description != '']]
+        <div class="hiring"></div>
       [[/if]]
-    <div class="col-12 col-md-8 d-flex flex-column">
-      <div class="bounty-detail">
-        <div class="title font-subheader">
-          [[:title]]
-        </div>
-        <div class="bounty-summary col-12">
-          [[if github_comments]]
-            <div class="col-xs-1">
-              <img src={% static "v2/images/comment.svg" %}>
-              <span class="github-comment font-caption">[[:github_comments]]</span>
-            </div>
-          [[/if]]
-          <div class="info font-caption">
-            [[:p]]
+      <div class="title font-subheader">
+        [[:title]]
+      </div>
+      <div class="bounty-summary col-12">
+        [[if github_comments]]
+          <div class="col-xs-1">
+            <img src={% static 'v2/images/comment.svg' %}>
+            <span class="github-comment font-caption">[[:github_comments]]</span>
           </div>
+        [[/if]]
+        <div class="info font-caption">
+          [[:p]]
         </div>
       </div>
     </div>
-    <div class="col-12 col-md-3 tags font-caption align-items-center">
+  </div>
+  <div class="col-12 col-md-3 font-caption">
+    <div class="tags fixed">
       [[if network != 'mainnet']]
-        <div class="tag network_warning shift_left">
+        <div class="tag network_warning">
           <p>
             <span>[[:network]]</span>
           </p>
         </div>
-      [[else]]
-        [[if attached_job_description != null && attached_job_description != '']]
-        <div class="tag hiring shift_left">
-          <p>
-            <span>Hiring</span>
-          </p>
-        </div>
-        [[/if]]
       [[/if]]
       <div class="tag token">
         <p>
           [[:rounded_amount]]
           <span>[[:token_name]]</span>
+          [[if tokens]]
+            <i class="fas fa-plus mx-1" style="font-size: 0.5rem; position: relative; top: -1px;"></i>
+            <img class="m-0" style="position: relative; top: -2px;" src="{% static 'v2/images/coin.svg' %}">
+          [[/if]]
         </p>
+        [[if tokens]]
+          <a href="" onclick="toggleExpandableBounty(event, '.[[:network]].i[[:standard_bounties_id]]')">{% trans 'See All' %}   <i class="fa fa-angle-down arrow"></i></a>
+        [[/if]]
       </div>
       [[if value_in_usdt]]
         <div class="tag usd">
@@ -59,6 +62,24 @@
           </p>
         </div>
       [[/if]]
+      </div>
     </div>
+    [[if tokens]]
+      <div class="col-md-12 tags expandable funding">
+        <div class="placeholder">
+          <span class="text-highlight-gc-purple m-0 uppercase middle">{% trans 'Funding' %}</span>
+        </div>
+        <div class="tag token font-caption">
+          <p><span>[[:rounded_amount]] [[:token_name]]</span></p>
+        </div>
+        [[props tokens]]
+          [[for prop ~tokenName=key]]
+            <div class="tag token font-caption">
+              <p><span>[[:#data]] [[:~tokenName]]<i class="fas fa-users ml-1"></i></span></p>
+            </div>
+          [[/for]]
+        [[/props]]
+      </div>
+    [[/if]]
   </div>
 </script>
