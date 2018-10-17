@@ -12,7 +12,7 @@
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header profile-header dash">
-      {% include 'shared/top_nav.html' with class='d-none d-md-flex' %}
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
       <div class="container">
         <div class="row">
@@ -122,7 +122,7 @@
         </div>
       </div>
     </div>
-
+    {% if not hidden %}
     <div class="container-fluid bg-light py-5">
       <div class="container">
         {% if user.is_authenticated and request.path == '/profile/' %}
@@ -159,11 +159,13 @@
             </div>
           </div>
         {% endif %}
+
         <div id="kudos-section">
           {% include "shared/profile_kudos.html" %}
         </div>
       </div>
     </div>
+    {% endif %}
     <div class="container">
     {% if hidden %}
       {% include 'profiles/hidden.html' %}

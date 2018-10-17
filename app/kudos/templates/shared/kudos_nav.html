@@ -39,7 +39,6 @@
   </button>
 
   <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    {% include 'shared/top_nav.html' with class='d-md-none' %}
     <nav class="navbar-nav ml-auto mr-3">
       <a class="nav-link{% if active == 'about' %} selected{% endif %} interior" href="{% url 'kudos_main' %}">{% trans "What is Kudos?" %}</a>
       <a class="nav-link{% if active == 'marketplace' %} selected{% endif %} interior" href="{% url 'kudos_marketplace' %}">{% trans "Marketplace" %}</a>
