@@ -712,6 +712,7 @@ var trigger_primary_form_web3_hooks = function() {
 
   if ($('#primary_form').length) {
     var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1;
+    var unlock_metamask_error = web3.eth.coinbase ? web3.eth.coinbase : web3.eth.getCoinbase();
 
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
@@ -722,7 +723,7 @@ var trigger_primary_form_web3_hooks = function() {
       $('#unlock_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('No Metamask Error', params);
-    } else if (!web3.eth.coinbase) {
+    } else if (!unlock_metamask_error) {
       $('#unlock_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
