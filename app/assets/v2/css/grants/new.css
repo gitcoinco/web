@@ -2,6 +2,10 @@
   margin-top: 15px;
 }
 
+.new-grant #primary_form img {
+  max-width: none;
+}
+
 .new-grant .form__select2 {
   height: 33px;
 }
