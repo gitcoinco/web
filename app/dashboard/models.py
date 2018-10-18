@@ -1432,7 +1432,7 @@ class Activity(models.Model):
     profile = models.ForeignKey('dashboard.Profile', related_name='activities', on_delete=models.CASCADE)
     bounty = models.ForeignKey('dashboard.Bounty', related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
     tip = models.ForeignKey('dashboard.Tip', related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
-    kudos = models.ForeignKey('kudos.KudosTransfer', related_name='activities', on_delete=models.CASCADE)
+    kudos = models.ForeignKey('kudos.KudosTransfer', related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True)
     metadata = JSONField(default=dict)
