@@ -16,6 +16,7 @@ spec:
           servicePort: {{ .Values.service.externalPort }}
 {{- end -}}
 {{- if .Values.secondaryIngress.enabled -}}
+---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
