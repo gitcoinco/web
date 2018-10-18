@@ -19,23 +19,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import json
 import logging
-import subprocess
 import time
 import re
 
 from django.conf import settings
 
-from dashboard.utils import UnsupportedNetworkException
-from dashboard.utils import get_web3, get_ipfs
+from dashboard.utils import get_web3
 from kudos.models import Token, KudosTransfer
-from eth_utils import to_checksum_address, to_normalized_address, to_text
+from eth_utils import to_checksum_address
 from web3.middleware import geth_poa_middleware
-from django.forms.models import model_to_dict
 from web3.exceptions import BadFunctionCallOutput
-from web3.middleware import geth_poa_middleware
-from web3 import WebsocketProvider, Web3
 
-from ipfsapi.exceptions import CommunicationError
 import ipfsapi
 
 from functools import wraps

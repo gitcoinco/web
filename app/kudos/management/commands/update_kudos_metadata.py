@@ -16,20 +16,13 @@
 
 '''
 
-import datetime
 import logging
 import warnings
-import requests
-import json
-import web3
 import time
 
 from django.core.management.base import BaseCommand
-from django.conf import settings
-from django.db.models import Avg, Max, Min
 
 from kudos.utils import KudosContract, get_rarity_score, humanize_name
-from kudos.models import KudosTransfer, Token
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)

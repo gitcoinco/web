@@ -50,7 +50,6 @@ import tdi.views
 from dashboard.router import router as dbrouter
 from kudos.router import router as kdrouter
 from external_bounties.router import router as ebrouter
-from django.views.decorators.csrf import csrf_exempt
 
 from .sitemaps import sitemaps
 

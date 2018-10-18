@@ -18,10 +18,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 
-from datetime import datetime
-
 import django_filters.rest_framework
-from rest_framework import routers, serializers, viewsets, generics
+from rest_framework import routers, serializers, viewsets
 
 from .models import Token, Wallet
 

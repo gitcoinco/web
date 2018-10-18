@@ -16,17 +16,13 @@
 
 '''
 
-import datetime
 import logging
-import sys
 import warnings
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from dashboard.helpers import UnsupportedSchemaException
 from kudos.utils import KudosContract
-from eth_utils import to_checksum_address
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)

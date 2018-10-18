@@ -23,16 +23,14 @@ from django.contrib import messages
 from django.template.response import TemplateResponse
 from django.utils.translation import gettext_lazy as _
 from django.utils import timezone
-from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
-from django.http import HttpResponseRedirect, HttpResponse, JsonResponse
+from django.contrib.postgres.search import SearchVector
+from django.http import JsonResponse
 from django.shortcuts import redirect
-from django.forms.models import model_to_dict
 
-from .models import Token, Wallet, KudosTransfer
+from .models import Token, KudosTransfer
 from dashboard.models import Profile, Activity
 from dashboard.utils import get_web3
 from dashboard.views import record_user_action
-from avatar.models import Avatar
 from .forms import KudosSearchForm
 import re
 
@@ -40,15 +38,12 @@ from dashboard.notifications import maybe_market_kudos_to_email
 
 import json
 from ratelimit.decorators import ratelimit
-from django.views.decorators.csrf import csrf_exempt, ensure_csrf_cookie
+from django.views.decorators.csrf import csrf_exempt
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_master, get_github_primary_email
 from retail.helpers import get_ip
 from web3 import Web3
-from eth_utils import to_checksum_address, to_normalized_address, is_address
-from .helpers import reconcile_kudos_preferred_wallet
-
-from .utils import KudosContract
+from eth_utils import to_normalized_address, is_address
 
 import logging
 

@@ -19,15 +19,13 @@
 import logging
 import time
 import requests
-import json
 
 from django.core.management.base import BaseCommand
 from django.conf import settings
 
-from dashboard.utils import get_web3
 from kudos.utils import KudosContract
-import web3
 import warnings
+
 warnings.simplefilter("ignore", category=DeprecationWarning)
 warnings.simplefilter("ignore", category=UserWarning)
 

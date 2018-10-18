@@ -20,11 +20,9 @@ from __future__ import unicode_literals
 
 
 from django.conf import settings
-from django.contrib.humanize.templatetags.humanize import naturalday
 from django.db import models
 
 from economy.models import SuperModel
-from dashboard.models import Profile
 from dashboard.models import SendCryptoAsset
 from eth_utils import to_checksum_address
 

@@ -16,7 +16,6 @@
 
 '''
 
-import datetime
 import logging
 import warnings
 import time
@@ -24,12 +23,9 @@ import time
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from kudos.utils import KudosContract, humanize_name, computerize_name, get_rarity_score
-
-from web3.exceptions import BadFunctionCallOutput
+from kudos.utils import KudosContract, humanize_name, get_rarity_score
 
 import oyaml as yaml
-import ipfsapi
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)

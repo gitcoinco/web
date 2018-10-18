@@ -18,13 +18,11 @@
 
 import datetime
 import logging
-import sys
 import warnings
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from dashboard.helpers import UnsupportedSchemaException
 from kudos.utils import mint_kudos_on_web3_and_db
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
