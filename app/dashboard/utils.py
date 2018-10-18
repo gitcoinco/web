@@ -33,6 +33,7 @@ from hexbytes import HexBytes
 from ipfsapi.exceptions import CommunicationError
 from web3 import HTTPProvider, Web3, WebsocketProvider
 from web3.exceptions import BadFunctionCallOutput
+from web3.middleware import geth_poa_middleware
 
 logger = logging.getLogger(__name__)
 
@@ -207,7 +208,10 @@ def get_web3(network, sockets=False):
             provider = WebsocketProvider(f'wss://{network}.infura.io/ws')
         else:
             provider = HTTPProvider(f'https://{network}.infura.io')
-        return Web3(provider)
+        w3 = Web3(provider)
+        if network == 'rinkeby':
+            w3.middleware_stack.inject(geth_poa_middleware, layer=0)
+        return w3
     elif network == 'localhost' or 'custom network':
         return Web3(Web3.HTTPProvider("http://testrpc:8545", request_kwargs={'timeout': 60}))
 
