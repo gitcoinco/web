@@ -56,7 +56,7 @@ services:
     ports:
       - "8545:8545"
     # command: "-a 1 --seed 2"
-    command: "--host 0.0.0.0 --mnemonic ${TEST_MNEMONIC}"
+    command: '--host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}"'
 
   redis:
     restart: unless-stopped
