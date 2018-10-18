@@ -21,6 +21,11 @@
   height: 7px;
 }
 
+.grant-banner {
+  max-height: 20rem;
+  overflow: hidden;
+}
+
 .grant-item__owner-handle {
   color: #9B9B9B;
   line-height: 18px;
