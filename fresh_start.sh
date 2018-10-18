@@ -23,7 +23,7 @@ PRIVATE_KEY=$3
 # echo $PRIVATE_KEY
 
 docker-compose down
-docker volume rm kudos_pgdata kudos_ipfsdata kudos_ipfsexport
+docker volume rm web_pgdata web_ipfsdata web_ipfsexport
 docker-compose up -d
 echo "sleeping for 10 seconds..."
 sleep 10
