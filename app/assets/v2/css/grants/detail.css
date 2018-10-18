@@ -9,13 +9,14 @@
   display: inline;
 }
 
-.grant-item__owner-image img {
+.grant__header .grant-item__owner-image img {
   width: 50px;
   height: 50px;
 }
 
 .grant-banner {
   max-height: 20rem;
+  overflow: hidden;
 }
 
 .grant-item__owner .select2-selection,

@@ -99,10 +99,16 @@
             </div>
           </div>
         <div class="col-12 col-md-6 offset-lg-2 col-lg-5">
-          <a href="{% url 'grants:fund' grant.id %}">
-            <button class="button button--primary button--full">{% trans "Fund this Project" %}</button>
-          </a>
 
+          {% if is_admin %}
+            <a href="{% url 'grants:subscription_cancel' grant.id %}">
+              <button class="button button--primary button--full">{% trans "Cancel this Grant" %}</button>
+            </a>
+          {% else %}
+            <a href="{% url 'grants:fund' grant.id %}">
+              <button class="button button--primary button--full">{% trans "Fund this Grant" %}</button>
+            </a>
+          {% endif %}
           <div class="grant__progress mt-4">
             <div class="progress">
               <div class="progress-bar" style="width:{{ grant.percent_completed }}%"></div>
