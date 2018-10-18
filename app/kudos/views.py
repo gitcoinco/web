@@ -435,17 +435,19 @@ def send_4(request):
         # Update kudos.models.Token to reflect the newly cloned Kudos
         # network = 'localhost' if kudos_transfer.network == 'custom network' else kudos_transfer.network
         # kudos_contract = KudosContract(network)
+        record_kudos_activity(kudos_transfer, kudos_transfer.from_username, 'new_kudos' if kudos_transfer.username else 'new_crowdfund')
         # kudos_contract.sync_transferred_kudos_db(kudos_id=kudos_id, tx_hash=txid)
     else:
         # Save txid for Indirect transfer
         kudos_transfer.save()
+        record_kudos_activity(kudos_transfer, kudos_transfer.from_username, 'new_kudos' if kudos_transfer.username else 'new_crowdfund')
 
     # notifications
     # maybe_market_tip_to_github(kudos_transfer)
     # maybe_market_tip_to_slack(kudos_transfer, 'new_tip')
     maybe_market_kudos_to_email(kudos_transfer)
     # record_user_action(kudos_transfer.from_username, 'send_kudos', kudos_transfer)
-    record_kudos_activity(kudos_transfer, kudos_transfer.from_username, 'new_kudos' if kudos_transfer.username else 'new_crowdfund')
+    # record_kudos_activity(kudos_transfer, kudos_transfer.from_username, 'new_kudos' if kudos_transfer.username else 'new_crowdfund')
 
     return JsonResponse(response)
 
@@ -483,19 +485,20 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
         logging.error(f"error in record_kudos_email_activity: {e} - {event_name} - {kudos_transfer} - {github_handle}")
 
 
-def record_kudos_activity(kudos, github_handle, event_name):
+def record_kudos_activity(kudos_transfer, github_handle, event_name):
+    logger.debug(kudos_transfer)
     kwargs = {
         'activity_type': event_name,
-        'kudos': kudos,
+        'kudos': kudos_transfer,
         'metadata': {
-            'amount': str(kudos.amount),
-            'token_name': kudos.tokenName,
-            'value_in_eth': str(kudos.value_in_eth),
-            'value_in_usdt_now': str(kudos.value_in_usdt_now),
-            'github_url': kudos.github_url,
-            'to_username': kudos.username,
-            'from_name': kudos.from_name,
-            'received_on': str(kudos.received_on) if kudos.received_on else None
+            'amount': str(kudos_transfer.amount),
+            'token_name': kudos_transfer.tokenName,
+            'value_in_eth': str(kudos_transfer.value_in_eth),
+            'value_in_usdt_now': str(kudos_transfer.value_in_usdt_now),
+            'github_url': kudos_transfer.github_url,
+            'to_username': kudos_transfer.username,
+            'from_name': kudos_transfer.from_name,
+            'received_on': str(kudos_transfer.received_on) if kudos_transfer.received_on else None
         }
     }
     try:
@@ -503,17 +506,17 @@ def record_kudos_activity(kudos, github_handle, event_name):
     except Profile.MultipleObjectsReturned:
         kwargs['profile'] = Profile.objects.filter(handle__iexact=github_handle).first()
     except Profile.DoesNotExist:
-        logging.error(f"error in record_tip_activity: profile with github name {github_handle} not found")
+        logging.error(f"error in record_kudos_activity: profile with github name {github_handle} not found")
         return
     try:
-        kwargs['bounty'] = tip.bounty
+        kwargs['bounty'] = kudos_transfer.bounty
     except:
         pass
 
     try:
         Activity.objects.create(**kwargs)
     except Exception as e:
-        logging.error(f"error in record_tip_activity: {e} - {event_name} - {tip} - {github_handle}")
+        logging.error(f"error in record_kudos_activity: {e} - {event_name} - {kudos_transfer} - {github_handle}")
 
 
 def receive(request, key, txid, network):
@@ -567,6 +570,7 @@ def receive(request, key, txid, network):
             kudos_transfer.save()
             record_user_action(kudos_transfer.from_username, 'receive_kudos', kudos_transfer)
             record_kudos_email_activity(kudos_transfer, kudos_transfer.username, 'receive_kudos')
+            record_kudos_activity(kudos_transfer, kudos_transfer.from_username, 'new_kudos' if kudos_transfer.username else 'new_crowdfund')
             messages.success(request, 'This kudos has been received')
             # Update kudos.models.Token to reflect the newly cloned Kudos
             # kudos_id = params['kudos_id']
