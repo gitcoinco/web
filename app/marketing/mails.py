@@ -17,6 +17,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import logging
+
 from django.conf import settings
 from django.utils import timezone, translation
 from django.utils.translation import gettext
@@ -28,16 +30,14 @@ from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
     render_admin_contact_funder, render_bounty_changed, render_bounty_expire_warning, render_bounty_feedback,
     render_bounty_startwork_expire_warning, render_bounty_unintersted, render_faucet_rejected, render_faucet_request,
-    render_funder_stale, render_gdpr_reconsent, render_gdpr_update, render_match_email, render_new_bounty,
-    render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission,
-    render_quarterly_stats, render_start_work_applicant_about_to_expire, render_start_work_applicant_expired,
-    render_start_work_approved, render_start_work_new_applicant, render_start_work_rejected, render_tip_email,
-    render_kudos_email
+    render_funder_stale, render_gdpr_reconsent, render_gdpr_update, render_kudos_email, render_match_email,
+    render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
+    render_new_work_submission, render_quarterly_stats, render_start_work_applicant_about_to_expire,
+    render_start_work_applicant_expired, render_start_work_approved, render_start_work_new_applicant,
+    render_start_work_rejected, render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
-
-import logging
 
 logger = logging.getLogger(__name__)
 

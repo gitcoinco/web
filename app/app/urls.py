@@ -39,8 +39,8 @@ import enssubdomain.views
 import external_bounties.views
 import faucet.views
 import gitcoinbot.views
-import kudos.views
 import healthcheck.views
+import kudos.views
 import linkshortener.views
 import marketing.views
 import marketing.webhookviews
@@ -48,8 +48,8 @@ import retail.emails
 import retail.views
 import tdi.views
 from dashboard.router import router as dbrouter
-from kudos.router import router as kdrouter
 from external_bounties.router import router as ebrouter
+from kudos.router import router as kdrouter
 
 from .sitemaps import sitemaps
 
