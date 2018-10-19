@@ -30,8 +30,10 @@ $(document).ready(function() {
   $('#kudos-image').hover(function() {
     start_kudos_levitate();
   }, function() {
+    // do nothing
   });
   $('.kudos_levitate_container').hover(function() {
+    // do nothing
   }, function() {
     stop_kudos_levitate();
   });
