@@ -1,0 +1,22 @@
+{
+  "symbol": "LEB",
+  "address": "0x157074c3edb43ec1025c318f21d0e4051199b5f5",
+  "overview":{
+        "en": "In response to the booming entertainment market in Southeast Asia and the growing tourist demographic dividend in recent years, the LeToken blockchain project will be based in Thailand, mapping the entire Southeast Asia region, applying blockchain technology to fundamentally address identity management, asset security, cross-border payments and information fraud. The core issues that plague the development of the tourism industry. The LeToken project will eventually be built around the rapid development of several major industries such as tourism, interactive entertainment, leasing and home ownership. ",
+        "zh": "针对近年来东南亚火爆的娱乐市场以及逐步增长的旅游人口红利，LeToken区块链项目将立足泰国，映射整个东南亚地区，应用区块链技术根本上解决身份管理、资产安全、跨境支付以及信息诈骗等困扰旅游产业发展的核心问题。LeToken项目最终将围绕旅游、互动娱乐、租赁、置业等几大产业的快速落地。 "
+  },
+  "email": "luzhaojin@gmail.com",
+  "website": "http://www.letoken.org/",
+  "whitepaper": "http://47.104.25.179:10901/resource/LEBWhitePaper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-08-24",
+  "initial_price":{
+        "ETH":"0.001 ETH",
+        "USD":"0.3 USD",
+        "BTC":"0.000045 BTC"
+  },
+  "links": {
+    "telegram": "https://t.me/letoken",
+    "github": "https://github.com/feifeiyazi/LEB"
+  }
+}

@@ -1,0 +1,22 @@
+{
+    "website": "https://www.presearch.io/",
+    "published_on": "2017-09-09",
+    "links": {
+        "telegram": "https://t.me/presearch",
+        "twitter": "https://twitter.com/decentralsearch",
+        "github": "https://github.com/presearchofficial",
+        "facebook": "https://www.facebook.com/presearch.io/"
+    },
+    "overview": {
+        "en": "Presearch is a decentralized search engine, powered by the community.",
+        "zh": "社区驱动的去中心化搜索引擎。"
+    },
+    "symbol": "PRE",
+    "initial_price": {
+        "ETH": "0.001228 ETH",
+        "USD": "0.25 USD"
+    },
+    "whitepaper": "https://www.presearch.io/uploads/WhitePaper.pdf",
+    "address": "0x88A3E4F35D64aAD41A6d4030ac9AFE4356cB84fA",
+    "email": "info@presearch.io"
+}

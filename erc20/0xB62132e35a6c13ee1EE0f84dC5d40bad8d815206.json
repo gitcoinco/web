@@ -1,0 +1,21 @@
+{
+    "website": "https://nexo.io/",
+    "published_on": "2018-03-06",
+    "links": {
+        "telegram": "https://t.me/nexofinance",
+        "twitter": "https://twitter.com/NexoFinance",
+        "github": "https://github.com/nexofinance/NEXO-Token/",
+        "facebook": "https://www.facebook.com/NexoFinance"
+    },
+    "overview": {
+        "en": "Instant Crypto-backed Loans.",
+        "zh": "实时的加密资产借贷服务。"
+    },
+    "symbol": "NEXO",
+    "initial_price": {
+        "USD": "0.10 USD"
+    },
+    "whitepaper": "https://nexo.io/assets/downloads/Nexo-Whitepaper.pdf?=a",
+    "address": "0xB62132e35a6c13ee1EE0f84dC5d40bad8d815206",
+    "email": "info@nexo.io"
+}

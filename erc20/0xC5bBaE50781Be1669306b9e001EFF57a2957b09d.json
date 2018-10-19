@@ -1,0 +1,23 @@
+{
+    "website": "https://gifto.io/",
+    "published_on": "2017-12-14",
+    "links": {
+        "telegram": "https://t.me/GIFTOOfficial",
+        "reddit": "https://www.reddit.com/user/GIFTO-io/",
+        "github": "https://github.com/GIFTO-io",
+        "facebook": "https://www.facebook.com/gifto.io/",
+        "twitter": "https://twitter.com/GIFTO_io"
+    },
+    "overview": {
+        "en": "Decentralized Universal Gifting Protocol.",
+        "zh": "去中心化全球礼物赠送协议。"
+    },
+    "symbol": "GTO",
+    "initial_price": {
+        "ETH": "0.00014 ETH",
+        "USD": "0.1 USD"
+    },
+    "whitepaper": "https://gifto.io/GIFTO_Whitepaper_V2.0_20171204.pdf",
+    "address": "0xC5bBaE50781Be1669306b9e001EFF57a2957b09d",
+    "email": "info@gifto.io"
+}

@@ -1,0 +1,24 @@
+{
+    "website": "https://enjincoin.io/",
+    "published_on": "2017-10-03",
+    "links": {
+        "reddit": "https://www.reddit.com/r/EnjinCoin/",
+        "github": "https://github.com/enjin/contracts",
+        "slack": "https://enjincoin.slack.com/",
+        "telegram": "https://t.me/enjin_coin",
+        "twitter": "https://twitter.com/enjincs",
+        "facebook": "https://www.facebook.com/enjinsocial"
+    },
+    "overview": {
+        "en": "Customizable cryptocurrency and virtual goods platform for gaming.",
+        "zh": "恩金(ENJ)是一种智能游戏数字代币，它赋予的一种游戏开发生态能够让开发者们创建开创性的，基于区块链技术的游戏，同时也赋予玩家们一种全新的概念 - 真正的物品所有权。"
+    },
+    "symbol": "ENJ",
+    "initial_price": {
+        "ETH": "0.0001 ETH",
+        "USD": "0.03 USD"
+    },
+    "whitepaper": "https://enjincoin.io/enjincoin_whitepaper.pdf",
+    "address": "0xF629cBd94d3791C9250152BD8dfBDF380E2a3B9c",
+    "email": "presale@enjincoin.io"
+}

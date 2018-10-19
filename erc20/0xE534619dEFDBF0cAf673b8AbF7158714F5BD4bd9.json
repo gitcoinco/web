@@ -1,0 +1,18 @@
+{
+  "symbol": "TFT",
+  "address": "0xE534619dEFDBF0cAf673b8AbF7158714F5BD4bd9",
+  "overview": {
+    "en": "TFT(TokenFans Token) is the membership badge for TokenFans Club, a user-based community managed by ConsenLabs. TFT serves as an invitation for imToken 2.0 beta test. It is non-divisible, not tradeable and issued only through official channels."
+  },
+  "email": "support@consenlabs.com",
+  "website": "https://token.im/",
+  "whitepaper": "https://token.im/",
+  "state": "LOCKED",
+  "published_on": "2018-03-20",
+  "links": {
+    "blog": "https://medium.com/consenlabs",
+    "twitter": "https://twitter.com/ConsenLabs",
+    "telegram": "https://t.me/imTokenGroup",
+    "reddit": "https://www.reddit.com/r/imToken/"
+  }
+}

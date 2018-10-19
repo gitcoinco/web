@@ -1,0 +1,19 @@
+{
+    "website": "https://link.smartcontract.com/",
+    "published_on": "2017-09-19",
+    "links": {
+        "twitter": "https://twitter.com/smart_contract"
+    },
+    "overview": {
+        "en": "The LINK Network provides smart contracts with data, bank payments and access to APIs.",
+        "zh": "Link 网络提供关于数据、银行支付和 API 访问的智能合约。"
+    },
+    "symbol": "LINK",
+    "initial_price": {
+        "ETH": "0.0003846 ETH",
+        "USD": "0.11 USD"
+    },
+    "whitepaper": "https://link.smartcontract.com/whitepaper",
+    "address": "0x514910771AF9Ca656af840dff83E8264EcF986CA",
+    "email": "chainlink@smartcontract.com"
+}

@@ -1,0 +1,22 @@
+{
+    "website": "https://dragonchain.com/",
+    "published_on": "2017-10-02",
+    "links": {
+        "telegram": "https://t.me/dragontalk",
+        "twitter": "https://twitter.com/dragonchaingang",
+        "github": "https://github.com/dragonchain/dragonchain",
+        "slack": "https://dragonchain.slack.com/"
+    },
+    "overview": {
+        "en": "Dragonchain simplifies the integration of real business applications onto a blockchain.",
+        "zh": "Dragonchain 降低现实中的商业应用接入区块链的门槛。"
+    },
+    "symbol": "DRGN",
+    "initial_price": {
+        "ETH": "0.00018642 ETH",
+        "USD": "0.0663 USD"
+    },
+    "whitepaper": "https://dragonchain.com/assets/Dragonchain_Business_Summary.pdf",
+    "address": "0x419c4dB4B9e25d6Db2AD9691ccb832C8D9fDA05E",
+    "email": "tokensale@dragonchain.com"
+}

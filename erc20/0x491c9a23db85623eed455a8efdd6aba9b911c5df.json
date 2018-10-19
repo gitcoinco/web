@@ -1,0 +1,25 @@
+{
+    "symbol": "HER",
+    "address": "0x491c9a23db85623eed455a8efdd6aba9b911c5df",
+    "overview":{
+          "en": "Hero Node utilises the Hero protocol to integrate different public blockchains and build a cross-blockchain, cross-platform development solution for DApps. Hero Node will also build a fully decentralized node network which contains multiple kinds of public chain and IPFS storage to support fully decentralized applications.It will break the life cycle of existing applications, and become an eternal application.",
+          "zh": "Hero Node利用Hero协议，将各个公链进行整合，致力于构建一个跨公链、跨平台的DApp开发平台与解决方案。Hero Node还需要建立一个包含多种公链和IPFS存储的完全去中心化的节点网络，来支撑完全去中心化的应用。Hero Node应用将打破现有应用开发的生命周期成为永恒应用。"
+    },
+    "email": "market@heronode.io",
+    "website": "https://heronode.io",
+    "whitepaper": "https://heronode.io/public/whitepapers/whitepaper_en.pdf",
+    "state": "NORMAL",
+    "published_on": "2018-05-17",
+    "initial_price":{
+          "ETH":"0.000047619 ETH",
+          "USD":"0.032 USD",
+          "BTC":"0.000000346 BTC"
+    },
+    "links": {
+      "twitter": "https://twitter.com/hero_node",
+      "telegram": "https://t.me/HeroNode2",
+      "github": "https://github.com/hero-node",
+      "reddit": "https://www.reddit.com/r/HeroNodeOfficial/",
+      "medium": "https://medium.com/@hero_node"
+    }
+}

@@ -1,0 +1,21 @@
+{
+    "website": "https://crypterium.io/",
+    "published_on": "2017-10-31",
+    "links": {
+        "telegram": "https://t.me/crypterium",
+        "twitter": "https://twitter.com/@crypterium",
+        "facebook": "https://www.facebook.com/crypterium.org/"
+    },
+    "overview": {
+        "en": "Cryptobank for Cryptopeople.",
+        "zh": "Crypterium 的目标不只是创建另一个加密货币钱包或加密货币银行。团队关注未来技术和基础设施，使用非接触式支付技术，创建成熟的银行解决方案。"
+    },
+    "symbol": "CRPT",
+    "initial_price": {
+        "ETH": "0.002124 ETH",
+        "USD": "0.65 USD"
+    },
+    "whitepaper": "https://crypterium.io/wp/index.html",
+    "address": "0x80A7E048F37A50500351C204Cb407766fA3baE7f",
+    "email": "support@crypterium.io"
+}

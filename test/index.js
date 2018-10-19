@@ -38,7 +38,8 @@ const notice = (msg) => {
 
 const jsonFileNames = fs.readdirSync('./erc20')
 const imageFileNames = fs.readdirSync('./images')
-const imageAddrs = imageFileNames.map(n => n.toLowerCase().slice(0, 42)).filter(n => n.startsWith('0x'))
+const imageAddrs = imageFileNames.map(n => n.slice(0, 42)).filter(n => n.startsWith('0x'))
+const lowerCaseImageAddrs =imageAddrs.map(x => x.toLowerCase())
 
 jsonFileNames
   .filter(jsonFileName => {
@@ -68,8 +69,13 @@ jsonFileNames
       exitWithMsg(`ERROR! json file name ${jsonFileName} parse error, please check first (maybe has some unnecessary space or comma symbol like ",")`)
     }
 
-    if (!imageAddrs.includes(addr.toLowerCase())) {
-      notice(`Warning! dose not have ${addr + '.png'} in images dir, please check first`) 
+    if (!lowerCaseImageAddrs.includes(addr.toLowerCase())) {
+      notice(`Warning! dose not have ${addr + '.png'} in images dir, please check first`)
+    } else if (!imageAddrs.includes(obj.address)) {
+      const imgAddr = imageAddrs.find(imgad => {
+        return imgad.toLowerCase() === addr.toLowerCase()
+      })
+      exitWithMsg(`Warning! ${imgAddr + '.png'} in images dir, that capital and small letter isn't quite the same with ${addr}`)
     }
 
     if (!obj.symbol) {
@@ -86,6 +92,8 @@ jsonFileNames
 
     if (obj.address.toLowerCase() !== addr.toLowerCase()) {
       exitWithMsg(`ERROR! json file ${jsonFileName} should be the same with address field ${obj.address}`)
+    } else if (obj.address !== addr) {
+      // exitWithMsg(`Warning! json file ${jsonFileName}, that capital and small letter isn't quite the same with object.address ${obj.address}`)
     }
 
     if (obj.published_on !== undefined) {

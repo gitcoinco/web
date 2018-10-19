@@ -1,0 +1,22 @@
+{
+    "website": "https://www.funfair.io",
+    "published_on": "2017-06-22",
+    "links": {
+        "telegram": "https://t.me/FunFairTech/",
+        "reddit": "https://www.reddit.com/r/FunfairTech/",
+        "facebook": "https://www.facebook.com/groups/148397155706069/",
+        "slack": "https://funfair.slack.com/",
+        "twitter": "https://twitter.com/FunFairTech"
+    },
+    "overview": {
+        "en": "FunFair is a decentralised gaming platform powered by Ethereum smart contracts.",
+        "zh": "FunFair 是由以太坊智能合约驱动的去中心化游戏平台。"
+    },
+    "symbol": "FUN",
+    "initial_price": {
+        "USD": "0.007 USD"
+    },
+    "whitepaper": "https://funfair.io/wp-content/uploads/2017/06/FunFair-Commercial-White-Paper.pdf",
+    "address": "0x419D0d8BdD9aF5e606Ae2232ed285Aff190E711b",
+    "email": "info@funfair.io"
+}

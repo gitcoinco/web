@@ -1,0 +1,22 @@
+{
+    "website": "https://unikoingold.com/",
+    "published_on": "2017-09-22",
+    "links": {
+        "reddit": "https://www.facebook.com/UnikoinGold/",
+        "github": "https://github.com/unikoingold/",
+        "facebook": "https://www.facebook.com/UnikoinGold/",
+        "slack": "https://community.unikrn.com/"
+    },
+    "overview": {
+        "en": "UnikoinGold is an ethereum-based, decentralized crypto token designed for high-volume, high security, inexpensive gaming and esports related transactions on the Unikrn platform.",
+        "zh": "更简单和高效地获得电子竞技产品和服务区块链平台。"
+    },
+    "symbol": "UKG",
+    "initial_price": {
+        "ETH": "0.001154 ETH",
+        "USD": "0.3 USD"
+    },
+    "whitepaper": "https://unikoingold.com/whitepaper",
+    "address": "0x24692791Bc444c5Cd0b81e3CBCaba4b04Acd1F3B",
+    "email": "support@unikoingold.com"
+}

@@ -1,0 +1,22 @@
+{
+    "website": "https://quantstamp.com/",
+    "published_on": "2017-11-17",
+    "links": {
+        "telegram": "https://t.me/quantstamp",
+        "reddit": "https://www.reddit.com/r/Quantstamp/",
+        "github": "https://github.com/quantstamp",
+        "facebook": "https://www.facebook.com/quantstamp/",
+        "twitter": "https://twitter.com/Quantstamp"
+    },
+    "overview": {
+        "en": "Quantstamp – the Protocol for Securing Smart Contracts. We believe in the future of smart contracts and are building a foundational technology to protect users and investors – with scalable proofs-of-audit.",
+        "zh": "Quantstamp 是以太坊智能合约的安全检验协议。该安全协议包括自动化、信任、管理以及拥有利用分布式网络来处理疑难问题的能力。"
+    },
+    "symbol": "QSP",
+    "initial_price": {
+        "ETH": "0.0002 ETH",
+        "USD": "0.072 USD"
+    },
+    "whitepaper": "https://docsend.com/view/shcsmhe",
+    "address": "0x99ea4dB9EE77ACD40B119BD1dC4E33e1C070b80d"
+}

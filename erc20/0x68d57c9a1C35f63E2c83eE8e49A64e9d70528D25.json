@@ -1,0 +1,23 @@
+{
+    "website": "https://sirinlabs.com/",
+    "published_on": "2017-12-12",
+    "links": {
+        "telegram": "https://t.me/sirinlabs",
+        "reddit": "https://www.reddit.com/r/SirinLabs/",
+        "github": "https://github.com/sirin-labs",
+        "facebook": "https://www.facebook.com/SirinLabs/?fref=ts",
+        "twitter": "https://t.me/sirinlabs"
+    },
+    "overview": {
+        "en": "SIRIN LABS’ aims to become the world’s leader in secure open source consumer electronics, bridging the gap between the mass market and the blockchain econom.",
+        "zh": "SIRIN LABS 旨在通过创建一个简单易用，不费力，超安全的标准来解决大众市场和区块链经济之间的差距。"
+    },
+    "symbol": "SRN",
+    "initial_price": {
+        "ETH": "0.002 ETH",
+        "USD": "1.31 USD"
+    },
+    "whitepaper": "https://sirinlabs.com/media/SIRINLABS_-_White_Paper.pdf",
+    "address": "0x68d57c9a1C35f63E2c83eE8e49A64e9d70528D25",
+    "email": "amitk@sirinlabs.com"
+}

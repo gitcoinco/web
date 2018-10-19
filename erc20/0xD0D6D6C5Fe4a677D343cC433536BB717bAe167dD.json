@@ -1,0 +1,18 @@
+{
+    "website": "https://adtoken.com",
+    "published_on": "2017-06-26",
+    "links": {
+        "reddit": "https://www.reddit.com/r/adChain/",
+        "slack": "http://slack.adchain.com/",
+        "twitter": "https://twitter.com/ad_chain"
+    },
+    "overview": {
+        "en": "adChain is a browser agnostic Ethereum based solution for digital advertising that seamlessly integrates with pre-existing RTB and programmatic industry standards.",
+        "zh": "基于以太坊的数字广告解决方案。"
+    },
+    "symbol": "ADT",
+    "initial_price": {
+        "USD": "0.0154 USD"
+    },
+    "address": "0xD0D6D6C5Fe4a677D343cC433536BB717bAe167dD"
+}

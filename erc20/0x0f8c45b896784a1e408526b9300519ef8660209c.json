@@ -1,0 +1,24 @@
+{
+  "symbol": "XMX",
+  "address": "0x0f8c45b896784a1e408526b9300519ef8660209c",
+  "overview":{
+        "en": "XMAX is a blockchain ecosystem and a set of developer tools built to support the next-generation of blockchain entertainment. The XMAX team is bringing decentralized applications (DApps) to the world by empowering developers with the tools to simplify blockchain development using a JavaScript-based smart contract language (WebX.js) and a full 3D game engine designed for building blockchain applications without complex programming. XMAX will enable scalable decentralized applications and uses a main-chain plus a choose your own consensus mechanism side-chain architecture.",
+        "zh": "XMAX是一条泛娱乐公链，以“一条公链+多条功能性侧链”并行的形式来运行，并提供强大的SDK为泛娱乐DAPP开发商提供方便快捷的开发工具。XMAX除了提供多种底层多媒体库外，还整合了强大的游戏引擎，让游戏和泛娱乐数字资产上链更容易。主链基于VRF的共识体系+侧链多层共识机制，造就多链高并发TPS，最大限度简化区块链场景落地。"
+  },
+  "email": "cy@xmx.com",
+  "website": "http://xmx.com/",
+  "whitepaper": "http://xmx.com/white-papers/XMax_White_Paper.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-06-06",
+  "initial_price":{
+        "ETH":"0.00000500 ETH"
+  },
+  "links": {  
+    "twitter": "https://twitter.com/XMAX_io",
+    "telegram": "https://t.me/XMXblock_org",
+    "github": "https://github.com/XMaxPlatform",
+    "facebook": "https://www.facebook.com/XMAXBlockchain/",
+    "reddit": "https://www.reddit.com/r/XMax_Blockchain/",
+    "medium": "https://medium.com/XMAX-galaxy-network/"
+  }
+}

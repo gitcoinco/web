@@ -1,0 +1,20 @@
+{
+    "website": "https://santiment.net/",
+    "published_on": "2017-06-30",
+    "links": {
+        "twitter": "https://twitter.com/santimentfeed",
+        "github": "https://github.com/santiment",
+        "slack": "https://santiment-slack.herokuapp.com/"
+    },
+    "overview": {
+        "en": "A Better Way to Trade Crypto-Markets - Market Datafeeds, Newswires, and Crowd Sentiment Insights for the Blockchain World.",
+        "zh": "Santiment 是一个区块链和加密行业的数据交流平台。"
+    },
+    "symbol": "SAN",
+    "initial_price": {
+        "ETH": "0.001 ETH",
+        "USD": "0.29 USD"
+    },
+    "whitepaper": "https://docs.google.com/document/d/1hHmJQWrPrObSgCA8kTbk-4LgqGbYzukQAjtg5b8jwc0/view",
+    "address": "0x7C5A0CE9267ED19B22F8cae653F198e3E8daf098"
+}

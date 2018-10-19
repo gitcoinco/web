@@ -1,0 +1,25 @@
+{
+    "website": "https://bloom.co/",
+    "published_on": "2017-11-30",
+    "links": {
+        "reddit": "https://www.reddit.com/r/BloomToken/",
+        "github": "https://github.com/hellobloom",
+        "slack": "https://slack.hellobloom.io/",
+        "telegram": "https://t.me/joinchat/FFWDdQ1hxqIg3jLe7zBVFQ",
+        "twitter": "https://twitter.com/Bloom",
+        "facebook": "https://www.facebook.com/bloomtoken/"
+    },
+    "overview": {
+        "en": "Decentralized credit scoring powered by Ethereum and IPFS.",
+        "zh": "基于以太坊和 IPFS 的去中心化信用评分系统。"
+    },
+    "symbol": "BLT",
+    "initial_price": {
+        "ETH": "0.00125 ETH",
+        "USD": "0.87 USD",
+        "BTC": "0.0000689 BTC"
+    },
+    "whitepaper": "https://bloom.co/whitepaper.pdf",
+    "address": "0x107c4504cd79C5d2696Ea0030a8dD4e92601B82e",
+    "email": "team@bloom.co"
+}

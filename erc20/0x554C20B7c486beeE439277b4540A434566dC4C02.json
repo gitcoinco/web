@@ -1,0 +1,22 @@
+{
+    "website": "https://horizonstate.com/",
+    "published_on": "2017-10-16",
+    "links": {
+        "telegram": "https://t.me/horizonstate",
+        "reddit": "https://www.reddit.com/r/HorizonState/",
+        "github": "https://github.com/HorizonState/token-sale",
+        "facebook": "https://www.facebook.com/HorizonState/",
+        "twitter": "https://twitter.com/horizonstate"
+    },
+    "overview": {
+        "en": "Horizon State has built a token-based blockchain voting and decision-making platform that delivers unprecedented trust through the integrity and post-unforgeable attributes of blockchain technology.",
+        "zh": "Horizo​​n State 是一个基于代币的投票和决策平台。"
+    },
+    "symbol": "HST",
+    "initial_price": {
+        "USD": "0.05 USD"
+    },
+    "whitepaper": "https://horizonstate.com/horizon_state_white_paper.pdf",
+    "address": "0x554C20B7c486beeE439277b4540A434566dC4C02",
+    "email": "inbox@horizonstate.com"
+}

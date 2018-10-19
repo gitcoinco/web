@@ -1,0 +1,23 @@
+{
+    "website": "https://www.universa.io/",
+    "published_on": "2017-10-28",
+    "links": {
+        "telegram": "https://t.me/Uplatform",
+        "reddit": "https://www.reddit.com/user/Universa_Blockchain/",
+        "github": "https://github.com/UniversaBlockchain/universa",
+        "facebook": "https://www.facebook.com/Universablockchain/",
+        "twitter": "https://twitter.com/Universa_News"
+    },
+    "overview": {
+        "en": "The Universa blockchain is a cooperative ledger of state changes, performed by licensed and trusted nodes.",
+        "zh": "适用于商业和应用的简单，快速和可靠的区块链协议。"
+    },
+    "symbol": "UTNP",
+    "initial_price": {
+        "ETH": "0.00003374 ETH",
+        "USD": "0.01 USD"
+    },
+    "whitepaper": "https://www.universa.io/files/whitepaper.pdf",
+    "address": "0x9e3319636e2126e3c0bc9e3134AEC5e1508A46c7",
+    "email": "ab@universa.io"
+}

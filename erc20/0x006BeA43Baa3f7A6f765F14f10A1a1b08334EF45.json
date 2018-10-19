@@ -1,0 +1,21 @@
+{
+    "website": "https://www.stox.com/",
+    "published_on": "2017-08-02",
+    "links": {
+        "telegram": "https://t.me/joinchat/DByWw0Pnq9BAy4FqPv_Lyg",
+        "reddit": "https://www.reddit.com/r/STOX/",
+        "github": "https://github.com/stx-technologies/stox-token",
+        "twitter": "https://twitter.com/stx_coin"
+    },
+    "overview": {
+        "en": "Blockchain Prediction Markets Platform.",
+        "zh": "区块链预测市场平台。"
+    },
+    "symbol": "STX",
+    "initial_price": {
+        "USD": "1.10 USD",
+        "ETH": "0.05 ETH"
+    },
+    "whitepaper": "https://www.stox.com/assets/stox-whitepaper.pdf",
+    "address": "0x006BeA43Baa3f7A6f765F14f10A1a1b08334EF45"
+}

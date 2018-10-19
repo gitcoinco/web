@@ -1,0 +1,18 @@
+{
+    "website": "https://pillarproject.io/",
+    "published_on": "2017-07-15",
+    "links": {
+        "reddit": "https://www.reddit.com/r/PillarProject/",
+        "twitter": "https://twitter.com/PillarWallet"
+    },
+    "overview": {
+        "en": "Building the a cryptocurrency and token wallet that aims to become the dashboard for your digital life.",
+        "zh": "Pillar 旨在创建一个开源多链钱包，这个钱包能驱动所有设备。"
+    },
+    "symbol": "PLR",
+    "initial_price": {
+        "ETH": "0.0005 ETH"
+    },
+    "address": "0xe3818504c1B32bF1557b16C238B2E01Fd3149C17",
+    "email": "info@pillarproject.io"
+}

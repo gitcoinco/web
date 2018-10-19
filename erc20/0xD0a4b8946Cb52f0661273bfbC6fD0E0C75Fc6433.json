@@ -1,0 +1,23 @@
+{
+    "website": "https://stormtoken.com/",
+    "published_on": "2017-11-07",
+    "links": {
+        "telegram": "https://t.me/joinchat/GHTZGQwsy9mZk0KFEEjGtg",
+        "reddit": "https://www.reddit.com/r/stormtoken/",
+        "github": "https://github.com/StormX-Inc/crowdsale",
+        "facebook": "https://www.facebook.com/stormtoken",
+        "twitter": "https://twitter.com/Storm_Token"
+    },
+    "overview": {
+        "en": "Built on the back of blockchain technology, Storm’s gamified microtask platform creates opportunities for people around the world to earn cryptocurrency rewards.",
+        "zh": "Storm 的游戏化微任务平台为人们获得加密数字货币奖励提供机会。"
+    },
+    "symbol": "STORM",
+    "initial_price": {
+        "ETH": "0.00003711 ETH",
+        "USD": "0.0113 USD"
+    },
+    "whitepaper": "https://s3.amazonaws.com/cakecodes/pdf/storm_web/STORM_Token_White_Paper_Market_Research_Network_Development_vFINAL_.pdf",
+    "address": "0xD0a4b8946Cb52f0661273bfbC6fD0E0C75Fc6433",
+    "email": "info@stormtoken.com"
+}

@@ -1,0 +1,23 @@
+{
+    "website": "https://kinecosystem.org/",
+    "published_on": "2017-09-12",
+    "links": {
+        "telegram": "https://t.me/kinfoundation",
+        "reddit": "https://www.reddit.com/r/KinFoundation",
+        "github": "https://github.com/kikinteractive/kin-token",
+        "slack": "http://kinfoundation.slack.com/",
+        "twitter": "https://twitter.com/@kin_foundation"
+    },
+    "overview": {
+        "en": "The vision for Kin is rooted in the belief that a broad group of participants can come together to create an open ecosystem of tools for digital communication and commerce that prioritizes consumer experience, bringing a fair and user-oriented model for digital services to the market.",
+        "zh": "KIN 是加拿大即时通讯社交平台 Kik 推出的数字货币，致力于为数字服务市场带来公平和以用户为导向的模式。"
+    },
+    "symbol": "KIN",
+    "initial_price": {
+        "ETH": "0.00000034 ETH",
+        "USD": "0.0001 USD"
+    },
+    "whitepaper": "https://kinecosystem.org/static/files/Kin_Whitepaper_V1_English.pdf",
+    "address": "0x818Fc6C2Ec5986bc6E2CBf00939d90556aB12ce5",
+    "email": "partnerships@kinecosystem.org"
+}

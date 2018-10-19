@@ -1,0 +1,22 @@
+{
+    "website": "https://credits.com/",
+    "published_on": "2018-02-17",
+    "links": {
+        "telegram": "https://t.me/creditscom",
+        "reddit": "https://www.reddit.com/r/CreditsOfficial/",
+        "facebook": "https://www.facebook.com/creditscom/",
+        "twitter": "https://twitter.com/creditscom"
+    },
+    "overview": {
+        "en": "CREDITS is an open blockchain platform with autonomous smart contracts and the internal cryptocurrency. The platform is designed to create services for blockchain systems using self-executing smart contracts and a public data registry.",
+        "zh": "CREDITS 是一个拥有自主智能合约和内部加密货币的开放式区块链平台。该平台旨在使用自行执行的智能合约和公共数据注册表为区块链系统创建服务。"
+    },
+    "symbol": "CS",
+    "initial_price": {
+        "ETH": "0.0002 ETH",
+        "USD": "0.18 USD"
+    },
+    "whitepaper": "https://credits.com/Content/Docs/TechnicalWhitePaperCREDITSEng.pdf",
+    "address": "0x46b9Ad944d1059450Da1163511069C718F699D31",
+    "email": "info@credits.com"
+}

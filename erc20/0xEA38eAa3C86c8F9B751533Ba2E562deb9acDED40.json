@@ -1,0 +1,23 @@
+{
+    "website": "https://etherparty.io/",
+    "published_on": "2017-10-01",
+    "links": {
+        "telegram": "https://t.me/etherparty",
+        "reddit": "https://www.reddit.com/r/etherparty/",
+        "github": "https://github.com/etherparty",
+        "facebook": "https://www.facebook.com/etherparty",
+        "twitter": "https://twitter.com/etherparty_io"
+    },
+    "overview": {
+        "en": "Etherparty™ is a contract wizard that removes the complexity of creating, managing and executing smart contracts on any compatible blockchain.",
+        "zh": "Etherparty 本质上是一个智能合约的向导程序，它消除了在任何区块链上创建和执行智能合约的复杂性。"
+    },
+    "symbol": "FUEL",
+    "initial_price": {
+        "ETH": "0.00033 ETH",
+        "USD": "0.15 USD"
+    },
+    "whitepaper": "https://etherparty.io/Etherparty_White_Paper_EN.pdf",
+    "address": "0xEA38eAa3C86c8F9B751533Ba2E562deb9acDED40",
+    "email": "hello@etherparty.io"
+}

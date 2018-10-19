@@ -1,0 +1,25 @@
+{
+  "symbol": "DAC",
+  "address": "0xaad54c9f27b876d2538455dda69207279ff673a5",
+  "overview":{
+        "en": "The Davinci Project began with the aim of promoting the private interchange between South Korea and China through South Korea’s block chain skill as an IT powerhouse.",
+        "zh": "达芬奇DAVINCI COIN (简称DAC) 是基于区块链技术的应用，以中韩为起点，颠覆传统经济，贸易，解决版权问题的实践。 实现脱中央化,打造透明、安全的生态环境。总发行量为88亿个,流通的货币数量为 26.4亿个，其中10%即8.8亿在锁仓。投资机构及顾问包含现代，SM娱乐，李金龙，等。"            
+  },
+  "email": "official@davinci.vision",
+  "website": "https://davinci.vision",
+  "whitepaper": "http://davinci.holdings/davinci/whitepaper/Davinci_whitepaper_ENG.pdf",
+  "state": "NORMAL",
+  "published_on": "2018-03-20",
+  "initial_price":{
+        "ETH":"0.00005384 ETH",
+        "USD":"0.03 USD",
+        "BTC":"0.000004117 BTC"
+  },
+  "links": {
+    "twitter": "https://twitter.com/DavinciFoundat1",
+    "telegram": "https://t.me/davincifoundation",
+    "github": "https://github.com/davinciproject/davinci_coin",
+    "facebook": "https://www.facebook.com/1688348254582102",
+    "medium": "https://medium.com/@davinci"
+  }
+}

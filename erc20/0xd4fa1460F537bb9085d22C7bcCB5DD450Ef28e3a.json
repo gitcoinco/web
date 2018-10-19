@@ -1,0 +1,22 @@
+{
+    "website": "http://populous.co",
+    "published_on": "2017-06-24",
+    "links": {
+        "telegram": "https://telegram.me/Populous",
+        "twitter": "https://twitter.com/bitpopulous",
+        "github": "https://github.com/Bitpopulous",
+        "slack": "https://bitpopulous.herokuapp.com/"
+    },
+    "overview": {
+        "en": "Aims to rebuild invoice financing block by block, for invoice buyers and sellers.",
+        "zh": "Populous 致力于通过区块链重构票据金融市场。"
+    },
+    "symbol": "PPT",
+    "initial_price": {
+        "ETH": "0.0011 ETH",
+        "USD": "0.17 USD"
+    },
+    "whitepaper": "http://populous.co/populous_whitepaper.pdf",
+    "address": "0xd4fa1460F537bb9085d22C7bcCB5DD450Ef28e3a",
+    "email": "info@populous.co"
+}

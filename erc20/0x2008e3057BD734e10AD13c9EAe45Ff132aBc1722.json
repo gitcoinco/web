@@ -1,0 +1,23 @@
+{
+    "website": "https://www.zebi.io/",
+    "published_on": "2018-03-05",
+    "links": {
+        "reddit": "https://www.reddit.com/user/ZebiData/",
+        "github": "https://github.com/zebidata/zebicrowdsale",
+        "slack": "https://zebicoin.slack.com/",
+        "telegram": "https://t.me/ZebiData",
+        "twitter": "https://twitter.com/ZebidataIndia",
+        "facebook": "https://www.facebook.com/ZebidataIndia/"
+    },
+    "overview": {
+        "en": "Blockchaining India’s Big Data.",
+        "zh": "Zebi 旨在为政府和企业提供基于区块链的解决方案，以充分利用和保护其高价值和敏感的数据。"
+    },
+    "symbol": "ZCO",
+    "initial_price": {
+        "USD": "0.0000333 USD"
+    },
+    "whitepaper": "https://www.zebi.io/assets/wp.pdf",
+    "address": "0x2008e3057BD734e10AD13c9EAe45Ff132aBc1722",
+    "email": "info@zebi.co"
+}

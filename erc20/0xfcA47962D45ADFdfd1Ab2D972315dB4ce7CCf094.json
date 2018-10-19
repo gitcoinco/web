@@ -1,0 +1,21 @@
+{
+    "website": "https://www.ixledger.com/",
+    "published_on": "2017-07-11",
+    "links": {
+        "telegram": "https://t.me/iXledger",
+        "twitter": "https://twitter.com/iXledger",
+        "facebook": "https://www.facebook.com/iXledger/",
+        "slack": "https://ixledger.slack.com/"
+    },
+    "overview": {
+        "en": "Empowering the future of insurance through blockchain technology.",
+        "zh": "iXledger 是一个开创性的保险替代市场。"
+    },
+    "symbol": "IXT",
+    "initial_price": {
+        "ETH": "0.00089 ETH"
+    },
+    "whitepaper": "https://www.ixledger.com/wp-content/uploads/2017/05/ixledger_whitepaper_v1.1.pdf",
+    "address": "0xfcA47962D45ADFdfd1Ab2D972315dB4ce7CCf094",
+    "email": "info@ixledger.com"
+}

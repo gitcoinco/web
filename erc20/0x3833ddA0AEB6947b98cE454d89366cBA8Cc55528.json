@@ -1,0 +1,22 @@
+{
+    "website": "https://www.sophiatx.com/",
+    "published_on": "2017-12-07",
+    "links": {
+        "telegram": "https://t.me/sophia_TX_com",
+        "reddit": "https://www.reddit.com/r/SophiaTXproject/",
+        "facebook": "https://www.facebook.com/SophiaTXC/",
+        "twitter": "https://twitter.com/Sophia_TX_"
+    },
+    "overview": {
+        "en": "Integrating Blockchain with Enterprise Applications.",
+        "zh": "SophiaTX 是首个专注于将区块链整合到 SAP 和其他主要 ERP、CRM 和 SCM 系统上的平台，旨在借助区块链技术提供的信任与安全，扩展企业应用的可行范围。"
+    },
+    "symbol": "SPHTX",
+    "initial_price": {
+        "ETH": "0.00062789 ETH",
+        "USD": "0.29 USD"
+    },
+    "whitepaper": "https://www.sophiatx.com/_data/_custom/SophiaTX_Whitepaper.pdf",
+    "address": "0x3833ddA0AEB6947b98cE454d89366cBA8Cc55528",
+    "email": "info@sophiatx.com"
+}

@@ -2,8 +2,8 @@
     "symbol": "HLC",
     "address": "0x58c69ed6cd6887c0225d1fccecc055127843c69b",
     "overview":{
-        "en": "HalalChain.",
-        "zh": "HalalChain"
+        "en": "HalalChain is the first public blockchain company that focuses on serving Muslim countries and regions. By implementing blockchain technology into the Halal supply chain and Islamic financial industry they will help to increase transparency and traceability in Islamic financial products and services, traceability of halal and healthy products, Zakat donations, heritage and property registration, cultural communication etc.HalalChain is built on the new distributed ledger Directed Acyclic Graph (DAG). This underlying technology, guarantees security and decentralization by achieving “High Throughput”. By combining the advance DAG technology with unique application scenarios we are able to build across the multi-layer payment system within the Islamic economy ecosystem.",
+        "zh": "HalalChain - 全球第一条专注服务穆斯林国家及地区的公有链，应用于伊斯兰金融产品及服务、清真产品溯源、天课捐赠、产权与遗产登记、文化教育等领域。基于新型分布式账本DAG（有向无环）为底层技术，在保证安全性和去中心化的前提下实现高频并发交易，先进技术与独特应用场景相结合，以此构建一个跨穆斯林国家的多层支付系统。"
     },
     "email": "Support@hlc.com",
     "website": "https://hlc.com/",
