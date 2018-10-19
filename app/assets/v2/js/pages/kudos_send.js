@@ -463,8 +463,8 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           console.log('Using Kudos Direct Send (KDS)');
 
           kudos_contract.clone(destinationAccount, kudosId, numClones, {from: account, value: kudosPriceInWei}, function(cloneError, cloneTxid) {
-            // totalSupply yield the kudos_id
-            kudos_contract.totalSupply(function(supplyError, kudos_id) {
+            // getLatestId yields the last kudos_id
+            kudos_contract.getLatestId(function(error, kudos_id) {
               post_send_callback(cloneError, cloneTxid, kudos_id);
             });
           });

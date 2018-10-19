@@ -55,7 +55,7 @@ class Command(BaseCommand):
         if options['end_id']:
             end_id = options['end_id']
         else:
-            end_id = kudos_contract._w3.functions.totalSupply().call()
+            end_id = kudos_contract._w3.functions.getLatestId().call()
 
         for kudos_id in range(start_id, end_id + 1):
             kudos = kudos_contract.getKudosById(kudos_id, to_dict=True)
