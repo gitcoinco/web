@@ -33,12 +33,16 @@ $(document).ready(function() {
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
 
       // This token is only for testing
-      let deployedToken = new web3.eth.Contract(compiledToken.abi, '0xFD9C55bf4B75Ef115749cF76E9083c4241D7a7eB');
-
+      // will need to make dynamic with data.token_address
+      let deployedToken = new web3.eth.Contract(compiledToken.abi, '0x00e8baC402e187608C6585c435C9D35947770f5B');
 
       deployedToken.methods.decimals().call(function(err, decimals) {
 
-        console.log('decimals', typeof decimals);
+        console.log('decimals', decimals);
+
+        let realApproval = Number(data.approve * 10 ** decimals);
+
+        console.log("realApproval", realApproval);
 
         let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
 
@@ -46,6 +50,7 @@ $(document).ready(function() {
 
         let realGasPrice = Number(data.gas_price * 10 ** decimals);
 
+        console.log('realGasPrice', realGasPrice);
 
         web3.eth.getAccounts(function(err, accounts) {
 
@@ -55,7 +60,7 @@ $(document).ready(function() {
 
           // need to figure out why there does not seem to be a limit to this amount. Probably setting way higher than thought
 
-          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(realTokenAmount)).send({from: accounts[0]}, function(err, result) {
+          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(realApproval)).send({from: accounts[0]}, function(err, result) {
 
             // Should add approval transactions to transaction history
             console.log('result', result);
@@ -75,7 +80,7 @@ $(document).ready(function() {
                 // admin_address
                 data.admin_address,
                 // testing token
-                '0xFD9C55bf4B75Ef115749cF76E9083c4241D7a7eB',
+                '0x00e8baC402e187608C6585c435C9D35947770f5B',
                 // data.amount_per_period
                 web3.utils.toTwosComplement(data.amount_per_period),
                 // data.period_seconds
@@ -118,14 +123,14 @@ $(document).ready(function() {
                   }).then((response)=>{
                     console.log('TX RESULT', response);
 
-                    $.each($(form).serializeArray(), function() {
-                      data[this.name] = this.value;
-                    });
-
-                    console.log('data', data);
-
-                    form.submit();
-
+                    // $.each($(form).serializeArray(), function() {
+                    //   data[this.name] = this.value;
+                    // });
+                    //
+                    // console.log('data', data);
+                    //
+                    // form.submit();
+                    //
                   })
                     .catch((error)=>{
                       console.log(error);
