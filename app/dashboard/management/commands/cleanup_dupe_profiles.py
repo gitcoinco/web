@@ -26,9 +26,7 @@ def combine_profiles(p1, p2):
     # p2 is the delete profile, p1 is the save profile
     # switch if p2 has the user
     if p2.user:
-        tmp = p2
-        p2 = p1
-        p1 = tmp
+        p1, p2 = p2, p1
 
     p1.github_access_token = p2.github_access_token if p2.github_access_token else p1.github_access_token
     p1.slack_token = p2.slack_token if p2.slack_token else p1.slack_token
@@ -45,17 +43,17 @@ def combine_profiles(p1, p2):
     p1.save()
     p2.delete()
 
+
 class Command(BaseCommand):
 
     help = 'cleans up users who have duplicate profiles'
 
     def handle(self, *args, **options):
 
-        handles = Profile.objects.values('handle').annotate(num_profiles=Count('handle'))
+        dupes = Profile.objects.values('handle').annotate(Count('handle')).filter(handle__count__gt=1)
 
-        for handle in handles:
-            if handle['num_profiles'] > 1:
-                handle = handle['handle']
-                profiles = Profile.objects.filter(handle=handle)
-                print(f"combining {profiles[0].pk} and {profiles[1].pk})")
-                combine_profiles(profiles[0], profiles[1])
+        for dupe in dupes:
+            handle = dupe.handle
+            profiles = Profile.objects.filter(handle=handle)
+            print(f"combining {profiles[0].pk} and {profiles[1].pk})")
+            combine_profiles(profiles[0], profiles[1])
