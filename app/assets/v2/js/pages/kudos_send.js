@@ -197,10 +197,12 @@ $(document).ready(function() {
 
     loading_button($(this));
 
+    var username;
+
     if ($('#username').select2('data')[0] && $('#username').select2('data')[0].text) {
-      var username = $('#username').select2('data')[0].text;
+      username = $('#username').select2('data')[0].text;
     } else {
-      var username = undefined;
+      username = undefined;
     }
 
     // Step 2
@@ -274,7 +276,7 @@ $(document).ready(function() {
       unloading_button($('#send'));
     };
 
-    var kudosId = $('#kudosid').data('kudosid');
+    kudosId = $('#kudosid').data('kudosid');
     // cloneAndTransferKudos(kudosId, 1, receiverAddress);
     // cloneKudos(kudosId, 1);
 
@@ -452,14 +454,13 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
 
         console.log('destinationAccount:' + destinationAccount);
 
+        var kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
+        var kudosPriceInWei = new web3.BigNumber(kudosPriceInEth * 1.0 * Math.pow(10, 18));
+
         if (is_direct_to_recipient) {
           // Step 9
           // Kudos Direct Send (KDS)
           console.log('Using Kudos Direct Send (KDS)');
-          // get kudosPrice from the HTML
-          var kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
-          var kudosPriceInWei = new web3.BigNumber(kudosPriceInEth * 1.0 * Math.pow(10, 18));
-          // console.log(destinationAccount, kudosId, numClones, account, kudosPriceInWei)
 
           kudos_contract.clone(destinationAccount, kudosId, numClones, {from: account, value: kudosPriceInWei}, function(cloneError, cloneTxid) {
             // totalSupply yield the kudos_id
@@ -474,9 +475,6 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           // Kudos Indirect Send (KIS)
           // estimate gas for cloning the kudos
           console.log('Using Kudos Indirect Send (KIS)');
-          var kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
-          var kudosPriceInWei = new web3.BigNumber(kudosPriceInEth * 1.0 * Math.pow(10, 18));
-          // console.log(destinationAccount, kudosId, numClones, account, kudosPriceInWei)
 
           params = {
             kudosId: kudosId,
