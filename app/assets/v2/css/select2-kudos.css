@@ -19,6 +19,21 @@
   opacity: 1;
 }
 
+.select2-container--kudos .select2-selection--single .select2-selection__arrow b {
+  border-color: var(--arrow-color) transparent transparent transparent;
+  border-style: solid;
+  border-width: 0.45rem 0.45rem 0 0.45rem;
+  height: 0;
+  left: 0;
+  /* margin-top: -0.125rem; */
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-radius: 4px;
+  margin: auto;
+}
+
 .select2-container--kudos.select2-container--open .select2-selection .select2-selection__arrow b {
   border-color: transparent transparent var(--arrow-color) transparent;
   border-width: 0 0.45rem 0.45rem 0.45rem;
@@ -41,22 +56,6 @@
   top: 0;
   width: 0.85rem;
 }
-
-.select2-container--kudos .select2-selection--single .select2-selection__arrow b {
-  border-color: var(--arrow-color) transparent transparent transparent;
-  border-style: solid;
-  border-width: 0.45rem 0.45rem 0 0.45rem;
-  height: 0;
-  left: 0;
-  /* margin-top: -0.125rem; */
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 0;
-  border-radius: 4px;
-  margin: auto;
-}
-
 
 .select2-container--kudos .select2-search--dropdown .select2-search__field {
   border-radius: 4px;

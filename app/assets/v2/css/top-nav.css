@@ -1,18 +1,12 @@
 .top-nav {
   color: #9E9E9E;
-  /* padding: 0.6rem; */
   display: flex;
-  flex-basis: 100%;
-  /* max-height: 43px; */
   flex-wrap: wrap;
   flex-shrink: 0;
-  /* flex-direction: column; */
-  flex: 1 0 96px;
   background: #0D023B;
   justify-content: space-around;
   border-bottom: 1px solid rgba(255,255,255,0.3);
   padding: 0.5rem 0;
-
 }
 
 
