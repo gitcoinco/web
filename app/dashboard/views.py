@@ -25,23 +25,27 @@ import time
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
+from django.template import loader
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
-from django.views.decorators.clickjacking import xframe_options_exempt
-from economy.utils import convert_token_to_usdt
 
 from app.utils import clean_str, ellipses, sync_profile
 from avatar.utils import get_avatar_context
+from economy.utils import convert_token_to_usdt
+from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid, search_users
-from kudos.models import Token, KudosTransfer
+from kudos.models import KudosTransfer, Token, Wallet
+from kudos.utils import humanize_name
 from marketing.mails import (
     admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
@@ -50,27 +54,20 @@ from pytz import UTC
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
-from django.template import loader
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from kudos.utils import humanize_name
-
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
     Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tool,
     ToolVote, UserAction,
 )
-from kudos.models import Wallet
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
     maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_discord,
     maybe_market_to_user_slack,
 )
 from .utils import (
-    get_bounty, get_bounty_id, get_context, has_tx_mined, record_user_action_on_interest, web3_process_bounty, get_web3
+    get_bounty, get_bounty_id, get_context, get_web3, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
 )
-
-from eth_utils import to_checksum_address, to_normalized_address
 
 logger = logging.getLogger(__name__)
 
