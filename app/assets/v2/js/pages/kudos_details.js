@@ -19,8 +19,8 @@ var getKudosById = function(kudosId) {
 
 
 $(document).ready(function() {
-  stop_kudos_levitate();
-  let kudosId = window.location.pathname.split('/')[2];
+  // stop_kudos_levitate();
+  // let kudosId = window.location.pathname.split('/')[2];
   // let kudosId = $('#kudosId').text()
   // let kudosName = $('#kudosName').text()
   let kudosNumClonesAvailable = parseInt($('#kudosNumClonesAvailable').text());
@@ -30,11 +30,9 @@ $(document).ready(function() {
   $('#kudos-image').hover(function() {
     start_kudos_levitate();
   }, function() {
-  });
-  $('.kudos_levitate_container').hover(function() {
-  }, function() {
     stop_kudos_levitate();
   });
+
 
   $('.kudos_levitate_container, #kudos-image').click(function() {
 

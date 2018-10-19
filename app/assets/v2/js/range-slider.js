@@ -16,9 +16,9 @@
     slider.oninput = function() {
       output.innerHTML = this.value;
     };
-      
+
   };
-    
+
   this.rangeslider = function() {
     var elem = document.querySelectorAll('[data-rangeslider]');
 
@@ -29,5 +29,5 @@
     }
   };
 }());
-  
-new rangeslider();
+
+var rangeslider = new rangeslider();

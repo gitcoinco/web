@@ -21,8 +21,8 @@ function checkSearch() {
 
 function getParameterByName(name) {
   name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
-  var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
-      results = regex.exec(location.search);
+  var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+  var results = regex.exec(location.search);
 
   return results == null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
 }
@@ -31,18 +31,18 @@ function getParameterByName(name) {
 function getQueryParams(qs) {
   qs = qs.split('+').join(' ');
 
-  var params = {},
-      tokens,
-      re = /[?&]?([^=]+)=([^&]*)/g;
+  var params = {};
+  var re = /[?&]?([^=]+)=([^&]*)/g;
+  var tokens = re.exec(qs);
 
-  while (tokens = re.exec(qs)) {
+  while (tokens) {
     params[decodeURIComponent(tokens[1])] = decodeURIComponent(tokens[2]);
   }
 
   return params;
 }
-$(document).ready(function() {
 
+$(document).ready(function() {
 
   var query = getQueryParams(document.location.search);
 

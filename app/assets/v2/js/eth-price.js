@@ -30,4 +30,4 @@
   };
 }());
 
-new ethprice();
+var ethprice = new ethprice();
