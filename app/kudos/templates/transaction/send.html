@@ -18,6 +18,7 @@
 {% load i18n static %}
 {% load kudos_extras %}
 {% block 'scripts' %}
+  {% include 'shared/current_profile.html' %}
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
@@ -30,6 +31,13 @@
   <script src="{% static "onepager/js/confetti.js" %}"></script>
   <script src="{% static "v2/js/user-search.js" %}"></script>
   <script src="{% static "v2/js/eth-price.js" %}"></script>
+  <script>
+  $(document).ready(function() {
+    if (typeof userSearch != 'undefined') {
+      userSearch('.username-search', true);
+    }
+  })
+  </script>
 
 {% endblock %}
 <!-- Main -->
