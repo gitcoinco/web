@@ -17,8 +17,9 @@
 '''
 
 from django.core.management.base import BaseCommand
-from dashboard.models import Profile
 from django.db.models import Count
+
+from dashboard.models import Profile
 
 
 def combine_profiles(p1, p2):

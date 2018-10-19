@@ -1,8 +1,9 @@
 
 function setupTabs(name) {
   let sections = document.querySelector(name + '-sections.tab-sections');
-  if(!sections){
-    return
+
+  if (!sections) {
+    return;
   }
   let buttons = document.querySelector(name).lastChild;
   let firstButton = null;
