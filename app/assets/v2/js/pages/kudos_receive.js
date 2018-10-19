@@ -127,11 +127,6 @@ $(document).ready(function() {
         var numClones = 1;
         var data = kudos_contract.clone.getData(forwarding_address, kudosId, numClones);
 
-        // console.log(kudos_address())
-        // kudos_contract.totalSupply(function (err, result) {
-        //   if (err) console.log(err)
-        //   console.log(parseInt(result, 10))
-        // });
         // create the raw transaction
         rawTx = {
           nonce: web3.toHex(nonce),

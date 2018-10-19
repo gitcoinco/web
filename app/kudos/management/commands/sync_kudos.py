@@ -64,7 +64,7 @@ class Command(BaseCommand):
         else:
             raise RuntimeError('The Open Sea API is only supported for contracts on rinkeby and mainnet.')
 
-        end_id = kudos_contract._contract.functions.totalSupply().call()
+        end_id = kudos_contract._contract.functions.getLatestId().call()
         token_ids = range(start_id, end_id + 1)
 
         headers = {'X-API-KEY': settings.OPENSEA_API_KEY}
@@ -97,7 +97,7 @@ class Command(BaseCommand):
     def id_sync(self, kudos_contract, start_id):
         # iterate through all the kudos
         # kudos_contract.reconcile_db(start_id=start_id)
-        end_id = kudos_contract._contract.functions.totalSupply().call()
+        end_id = kudos_contract._contract.functions.getLatestId().call()
         kudos_enum = start_id
         more_kudos = True
 
@@ -140,7 +140,7 @@ class Command(BaseCommand):
                 valid_method_ids = ['0xed74de9d']
                 if method_id in valid_method_ids:
                     kudos_contract._w3.eth.waitForTransactionReceipt(tx['hash'])
-                    kudos_id = kudos_contract._contract.functions.totalSupply().call()
+                    kudos_id = kudos_contract._contract.functions.getLatestId().call()
                     if kudos_contract.network == 'localhost':
                         # On localhost, the tx syncs faster than the website loads
                         time.sleep(3)
@@ -203,7 +203,7 @@ class Command(BaseCommand):
         if start:
             start_id = start
         elif rewind:
-            start_id = kudos_contract._contract.functions.totalSupply().call() - rewind
+            start_id = kudos_contract._contract.functions.getLatestId().call() - rewind
         elif catchup:
             start_id = Token.objects.aggregate(Max('id'))['id__max']
 

@@ -228,7 +228,7 @@ class KudosContract:
         Then remove all "orphaned Kudos" from the database.
         """
 
-        latest_id = self._contract.functions.totalSupply().call()
+        latest_id = self._contract.functions.getLatestId().call()
         # if start_id == latest_id:
         #     return False
         # for kudos_id in range(start_id, latest_id + 1):
@@ -402,7 +402,7 @@ class KudosContract:
         tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
         logger.debug(f'Tx hash: {tx_hash.hex()}')
 
-        kudos_id = self._contract.functions.totalSupply().call()
+        kudos_id = self._contract.functions.getLatestId().call()
         logger.info(f'Minted id #{kudos_id} on the blockchain.')
         logger.info(f'Gas usage for id #{kudos_id}: {tx_receipt["gasUsed"]}')
 
@@ -446,7 +446,7 @@ class KudosContract:
         tx_receipt = self._w3.eth.waitForTransactionReceipt(tx_hash)
         logger.debug(f'Tx hash: {tx_hash.hex()}')
 
-        kudos_id = self._contract.functions.totalSupply().call()
+        kudos_id = self._contract.functions.getLatestId().call()
         logger.info(f'Cloned a new Kudos. id #{kudos_id} on the blockchain.')
         logger.info(f'Gas usage for id #{kudos_id}: {tx_receipt["gasUsed"]}')
 
@@ -521,7 +521,7 @@ class KudosContract:
             return kudos
 
     def getLatestKudosId(self):
-        return self._contract.functions.totalSupply().call()
+        return self._contract.functions.getLatestId().call()
 
     def getGen0TokenId(self, *args):
         """Contract call method.

@@ -534,7 +534,7 @@ def receive(request, key, txid, network):
             # TODO:  We should be passing the kudos_id from the front end to make sure we sync the right one.
             # network = 'localhost' if kudos_transfer.network == 'custom network' else kudos_transfer.network
             # kudos_contract = KudosContract(network)
-            # kudos_id = kudos_contract._contract.functions.totalSupply().call()
+            # kudos_id = kudos_contract._contract.functions.getLatestId().call()
             # kudos_contract.sync_transferred_kudos_db(kudos_id=kudos_id, tx_hash=params['receive_txid'])
         except Exception as e:
             messages.error(request, str(e))
