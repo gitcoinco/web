@@ -16,8 +16,9 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
-from .models import Wallet
 import logging
+
+from .models import Wallet
 
 logger = logging.getLogger(__name__)
 

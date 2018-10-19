@@ -17,8 +17,8 @@
 '''
 
 import logging
-import warnings
 import time
+import warnings
 
 from django.core.management.base import BaseCommand
 

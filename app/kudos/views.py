@@ -18,34 +18,33 @@
 '''
 from __future__ import print_function, unicode_literals
 
-from django.contrib.staticfiles.templatetags.staticfiles import static
-from django.contrib import messages
-from django.template.response import TemplateResponse
-from django.utils.translation import gettext_lazy as _
-from django.utils import timezone
-from django.contrib.postgres.search import SearchVector
-from django.http import JsonResponse
-from django.shortcuts import redirect
-
-from .models import Token, KudosTransfer
-from dashboard.models import Profile, Activity
-from dashboard.utils import get_web3
-from dashboard.views import record_user_action
-from .forms import KudosSearchForm
+import json
+import logging
 import re
 
-from dashboard.notifications import maybe_market_kudos_to_email
-
-import json
-from ratelimit.decorators import ratelimit
+from django.contrib import messages
+from django.contrib.postgres.search import SearchVector
+from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.http import JsonResponse
+from django.shortcuts import redirect
+from django.template.response import TemplateResponse
+from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
+
+from dashboard.models import Activity, Profile
+from dashboard.notifications import maybe_market_kudos_to_email
+from dashboard.utils import get_web3
+from dashboard.views import record_user_action
+from eth_utils import is_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_master, get_github_primary_email
+from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import Web3
-from eth_utils import to_normalized_address, is_address
 
-import logging
+from .forms import KudosSearchForm
+from .models import KudosTransfer, Token
 
 logger = logging.getLogger(__name__)
 

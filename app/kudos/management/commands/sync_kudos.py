@@ -17,17 +17,17 @@
 '''
 
 import logging
-import warnings
-import requests
-import web3
 import time
+import warnings
 
-from django.core.management.base import BaseCommand
 from django.conf import settings
+from django.core.management.base import BaseCommand
 from django.db.models import Max
 
-from kudos.utils import KudosContract
+import requests
+import web3
 from kudos.models import Token
+from kudos.utils import KudosContract
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)

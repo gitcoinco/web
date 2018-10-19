@@ -22,7 +22,7 @@ from django.contrib import admin
 from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 
-from .models import Token, KudosTransfer, Wallet
+from .models import KudosTransfer, Token, Wallet
 
 
 class GeneralAdmin(admin.ModelAdmin):

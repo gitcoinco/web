@@ -18,13 +18,13 @@
 
 import logging
 import time
-import requests
-
-from django.core.management.base import BaseCommand
-from django.conf import settings
-
-from kudos.utils import KudosContract
 import warnings
+
+from django.conf import settings
+from django.core.management.base import BaseCommand
+
+import requests
+from kudos.utils import KudosContract
 
 warnings.simplefilter("ignore", category=DeprecationWarning)
 warnings.simplefilter("ignore", category=UserWarning)

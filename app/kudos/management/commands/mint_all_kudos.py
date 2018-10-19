@@ -17,15 +17,14 @@
 '''
 
 import logging
-import warnings
 import time
+import warnings
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
-from kudos.utils import KudosContract, humanize_name, get_rarity_score
-
 import oyaml as yaml
+from kudos.utils import KudosContract, get_rarity_score, humanize_name
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)

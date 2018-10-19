@@ -18,15 +18,14 @@
 '''
 from __future__ import unicode_literals
 
+import logging
 
 from django.conf import settings
 from django.db import models
 
-from economy.models import SuperModel
 from dashboard.models import SendCryptoAsset
+from economy.models import SuperModel
 from eth_utils import to_checksum_address
-
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -160,4 +159,3 @@ class Wallet(SuperModel):
     def __str__(self):
         """Return the string representation of a model."""
         return f"Wallet: {self.address} Profile: {self.profile}"
-
