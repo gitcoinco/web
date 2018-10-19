@@ -574,17 +574,16 @@ class KudosContract:
     def create_tokenURI_url(self, **kwargs):
         """Create a tokenURI object, upload it to IPFS, and return the URL.
 
-        Args:
-            **kwargs:
-                name (str):  Name of the kudos.
-                image (str):  Image location of the kudos.  Should be a link to an image on the web.
-                description (str):  Word description of the kudos.
-                attributes (dict):  Dictionary containing attirbutes of the kudos.
-                    tags (str): comma delimited tags.
-                    number_of_clones_allowed (int): self explanatory.
-                    rarity (int): integer from 0 to 100 (0 is most common).
-                external_url (str):  External link to where the Kudos lives on the Gitcoin site.
-                background_color (str):  Hex code.
+        Keyword Args:
+            name (str):  Name of the kudos.
+            image (str):  Image location of the kudos.  Should be a link to an image on the web.
+            description (str):  Word description of the kudos.
+            attributes (dict):  Dictionary containing attirbutes of the kudos.
+                tags (str): comma delimited tags.
+                number_of_clones_allowed (int): self explanatory.
+                rarity (int): integer from 0 to 100 (0 is most common).
+            external_url (str):  External link to where the Kudos lives on the Gitcoin site.
+            background_color (str):  Hex code.
 
         Returns:
             str: URL location on IPFS where the URI data is stored.
