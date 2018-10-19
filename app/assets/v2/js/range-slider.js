@@ -24,7 +24,7 @@
 
     for (var i = 0; i < elem.length; ++i) {
       if (elem[i].dataset.rangeslider) {
-        new createRanger (elem[i], elem[i].dataset.rangeslider);
+        createRanger (elem[i], elem[i].dataset.rangeslider);
       }
     }
   };
