@@ -45,7 +45,7 @@ def insert_settings(request):
         'mixpanel_token': settings.MIXPANEL_TOKEN,
         'STATIC_URL': settings.STATIC_URL,
         'MEDIA_URL': settings.MEDIA_URL,
-        'num_slack': num_slack, 
+        'num_slack': num_slack,
         'github_handle': request.user.username if user_is_authenticated else False,
         'email': request.user.email if user_is_authenticated else False,
         'name': request.user.get_full_name() if user_is_authenticated else False,
