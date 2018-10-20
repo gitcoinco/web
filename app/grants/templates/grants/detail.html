@@ -168,7 +168,7 @@
             <p class="font-weight-bold">{% trans "Supported by" %}</p>
             <div class="grant__stakeholders-list">
               {% for subscriber in grant.subscriptions.all %}
-                <a class="grant__stakeholders-item" href="{% url 'profile' subscriber.contributor_profile.handle %}">
+                <a class="grant__stakeholders-item mr-2" href="{% url 'profile' subscriber.contributor_profile.handle %}">
                   <img src="{{ subscriber.contributor_profile.avatar_url }}" />
                 </a>
               {% empty %}

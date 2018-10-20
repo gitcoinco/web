@@ -114,6 +114,12 @@ textarea.editable {
   flex-wrap: wrap;
 }
 
+.grant__stakeholders-list img {
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+}
+
 .grant__header .fa-save {
   animation: rotation 0.1s linear;
 }
