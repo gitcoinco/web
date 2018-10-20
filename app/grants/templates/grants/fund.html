@@ -93,7 +93,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               </div>
             </div>
             <div class="form__group-horizontal">
-              <label class="form__label">{% trans "Contribution Per Period" %}</label>
+              <label class="form__label">{% trans "Contribution Per Payment Period" %}</label>
               <div class="row">
                 <div class="col-12">
                   <input type="number" name="amount_per_period" class="form__input" required />
@@ -102,7 +102,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </div>
 
             <div class="form__group-horizontal frequency">
-              <label class="form__label">{% trans "Frequency of payments" %}</label>
+              <label class="form__label">{% trans "Payment Period" %}</label>
               <div class="row">
                 <div class="col-6">
                   <input type="number" id="frequency_count" name="frequency" class="form__input" value='30' required />
@@ -120,7 +120,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </div>
 
             <div class="form__group-horizontal">
-              <label class="form__label">{% trans "MetaTx Gas Price" %}</label>
+              <label class="form__label">{% trans "MetaTx Gas Price in Payment Token" %}</label>
               <div class="row">
                 <div class="col-12">
                   <input type="number" name="gas_price" class="form__input" required />
