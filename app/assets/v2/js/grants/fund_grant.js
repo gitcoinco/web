@@ -82,11 +82,11 @@ $(document).ready(function() {
                 // testing token
                 '0x00e8baC402e187608C6585c435C9D35947770f5B',
                 // data.amount_per_period
-                web3.utils.toTwosComplement(data.amount_per_period),
+                web3.utils.toTwosComplement(realTokenAmount),
                 // data.period_seconds
                 web3.utils.toTwosComplement(60),
                 // data.gas_price
-                web3.utils.toTwosComplement(data.gas_price),
+                web3.utils.toTwosComplement(realGasPrice),
                 // nonce
                 web3.utils.toTwosComplement(nonce)
               ];
@@ -123,13 +123,13 @@ $(document).ready(function() {
                   }).then((response)=>{
                     console.log('TX RESULT', response);
 
-                    // $.each($(form).serializeArray(), function() {
-                    //   data[this.name] = this.value;
-                    // });
-                    //
-                    // console.log('data', data);
-                    //
-                    // form.submit();
+                    $.each($(form).serializeArray(), function() {
+                      data[this.name] = this.value;
+                    });
+
+                    console.log('data', data);
+
+                    form.submit();
                     //
                   })
                     .catch((error)=>{

@@ -16,12 +16,12 @@ window.onload = function() {
       let deployedToken = new web3.eth.Contract(
         compiledToken.abi,
         // data.token_address
-        '0xFD9C55bf4B75Ef115749cF76E9083c4241D7a7eB'
+        '0x00e8baC402e187608C6585c435C9D35947770f5B'
       );
 
       web3.eth.getAccounts(function(err, accounts) {
 
-        deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(0)).send({from: accounts[0], gas: 50000}, function(err, result) {
+        deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(0)).send({from: accounts[0], gas: 10 0000}, function(err, result) {
 
           form.submit();
 
