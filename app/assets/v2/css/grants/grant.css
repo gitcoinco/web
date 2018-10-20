@@ -31,7 +31,8 @@
   line-height: 18px;
 }
 
-.grant-item__owner-handle span {
+.grant-item__owner-handle span,
+.grant-item__member-handle span {
   color: #0D0764;
 }
 
