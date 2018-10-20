@@ -86,7 +86,7 @@
                   </div>
                 {% endif %}
               </div>
-              <p class="grant__description font-subheader">
+              <p class="grant__description font-body">
                 {% if is_admin %}
                   <div class="font-caption">
                     <span class="font-weight-bold">
@@ -97,6 +97,41 @@
                 {% endif %}
                 <textarea id="form--input__description" class="p-0 mt-2 inline-edit" disabled>{{ grant.description }}</textarea>
               </p>
+              <div class="grant-item__member">
+                {% if is_admin %}
+                  <div class="font-caption">
+                    <div class="mb-2">
+                      <span class="font-weight-bold">Edit Members</span>
+                      <i id="edit--members" class="far fa-edit ml-2"></i>
+                    </div>
+                    <div class="form__select2">
+                      <select id="grant-members" class="form__input" name="grant-members" name="members" multiple="multiple" disabled>
+                        {% for team_member in grant.team_members.all %}
+                          <option selected="selected">{{ team_member }}</option>
+                        {% endfor %}
+                      </select>
+                    </div>
+                  </div>
+                {% else %}
+                  {% if grant.team_members %}
+                    <p class="font-caption font-weight-bold">Team Members</p>
+                    <div class="grant-item__members">
+                      {% for team_member in grant.team_members.all %}
+                        <div class="font-caption grant-item__member mr-4">
+                          <div class="grant-item__member-image mr-2">
+                            <img src="{{ team_member.avatar_url }}">
+                          </div>
+                          <div class="grant-item__member-handle mt-1">
+                            <a class="grant-item__member-handle" href="{% url 'profile' team_member %}">
+                              <span id="grant-profile">{{ team_member }}</span>
+                            </a>
+                          </div>
+                        </div>
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                {% endif %}
+              </div>
             </div>
           </div>
         <div class="col-12 col-md-6 offset-lg-2 col-lg-5">
@@ -133,7 +168,7 @@
             <p class="font-weight-bold">{% trans "Supported by" %}</p>
             <div class="grant__stakeholders-list">
               {% for subscriber in grant.subscriptions.all %}
-                <a class="grant__stakeholders-item" href="{% url 'profile' subscriber.contributor_profile.handle %}">
+                <a class="grant__stakeholders-item mr-2" href="{% url 'profile' subscriber.contributor_profile.handle %}">
                   <img src="{{ subscriber.contributor_profile.avatar_url }}" />
                 </a>
               {% empty %}
