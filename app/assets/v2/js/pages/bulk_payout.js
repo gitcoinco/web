@@ -162,7 +162,7 @@ $(document).ready(function($) {
       <tr>
         <td class="pl-0 pb-0">
           <div class="pl-0">
-            <select onchange="update_registry()" class="username-search custom-select" style="width: 100%; margin-left: auto; margin-right: auto;"></select>
+            <select onchange="update_registry()" class="username-search custom-select w-100 ml-auto mr-auto"></select>
           </div>
         </td>
         <td class="pb-0"><div class="percent" contenteditable="true">` + percent + `</div></td>
