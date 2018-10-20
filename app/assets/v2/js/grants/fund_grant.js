@@ -17,18 +17,26 @@ $(document).ready(function() {
         data[this.name] = this.value;
       });
 
-      console.log(data);
-
-      let value = 0;
-      let txData = '0x02'; // something like this to say, hardcoded VERSION 2, we're sending approved tokens
-      let gasLimit = 120000;
-
-      // hardcode period seconds to monthly
-      let periodSeconds = 60;
+      let realPeriodSeconds = 0;
+      if(data.frequency){
+        //translate timeAmount&timeType to requiredPeriodSeconds
+        let periodSeconds = data.frequency;
+        if(data.frequency_unit=="minutes"){
+          periodSeconds*=60
+        }else if(data.frequency_unit=="hours"){
+          periodSeconds*=3600
+        }else if(data.frequency_unit=="days"){
+          periodSeconds*=86400
+        }else if(data.frequency_unit=="months"){
+          periodSeconds*=2592000
+        }
+        if(periodSeconds){
+          realPeriodSeconds=periodSeconds
+        }
+      }
 
       if (!data.gas_price)
         data.gas_price = 0;
-
 
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
 
@@ -65,7 +73,6 @@ $(document).ready(function() {
             // Should add approval transactions to transaction history
             console.log('result', result);
 
-
             deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
 
               console.log('nonce1', nonce);
@@ -84,7 +91,7 @@ $(document).ready(function() {
                 // data.amount_per_period
                 web3.utils.toTwosComplement(realTokenAmount),
                 // data.period_seconds
-                web3.utils.toTwosComplement(60),
+                web3.utils.toTwosComplement(realPeriodSeconds),
                 // data.gas_price
                 web3.utils.toTwosComplement(realGasPrice),
                 // nonce
@@ -130,7 +137,7 @@ $(document).ready(function() {
                     console.log('data', data);
 
                     form.submit();
-                    
+
                   })
                     .catch((error)=>{
                       console.log(error);
@@ -144,6 +151,3 @@ $(document).ready(function() {
     }
   });
 });
-
-// will want to check if account already has a subscription. If a second is produced the timestamp will not function properly
-// will need to check network to make sure users aren't submiting transactions to non-existant contracts
