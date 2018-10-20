@@ -266,7 +266,6 @@ class KudosContract:
             kudos_token.save()
         logger.info(f'Synced id #{kudos_token.id}, "{kudos_token.name}" kudos to the database.')
 
-    # @retry
     def sync_db(self, kudos_id, txid):
         """Sync up the Kudos contract on the blockchain with the database.
 
@@ -322,15 +321,14 @@ class KudosContract:
             str: Kudos contract address.
         """
         if self.network == 'mainnet':
-            return to_checksum_address('0x56c72cda0b04fc39a25d0b6a64fa258fad46d664')
+            return to_checksum_address(settings.KUDOS_CONTRACT_MAINNET)
         elif self.network == 'ropsten':
-            return to_checksum_address('0xcd520707fc68d153283d518b29ada466f9091ea8')
+            return to_checksum_address(settings.KUDOS_CONTRACT_ROPSTEN)
         elif self.network == 'rinkeby':
-            return to_checksum_address('0x93bb0afbd0627bbd3a6c72bc318341d3a22e254a')
+            return to_checksum_address(settings.KUDOS_CONTRACT_RINKEBY)
         else:
             # local testrpc
-            return to_checksum_address('0xe7bed272ee374e8116049d0a49737bdda86325b6')
-        # raise UnsupportedNetworkException(self.network)
+            return to_checksum_address(settings.KUDOS_CONTRACT_TESTRPC)
 
     def _get_contract(self):
         """Load up the Kudos ABI from a .json file.
@@ -362,7 +360,6 @@ class KudosContract:
             except IndexError:
                 raise RuntimeError('Please specify an account to use for transacting with the Kudos Contract.')
 
-    # @retry
     @may_require_key
     def mint(self, *args, account=None, private_key=None, skip_sync=False):
         """Contract transaction method.

@@ -43,8 +43,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('network', default='localhost', type=str)
         parser.add_argument('yaml_file', help='absolute path to kudos.yaml file', type=str)
-        parser.add_argument('--mint_to', default='0xd386793f1db5f21609571c0164841e5ea2d33ad8',
-                            help='address to mint the kudos to', type=str)
+        parser.add_argument('--mint_to', help='address to mint the kudos to', type=str)
         parser.add_argument('--skip_sync', action='store_true')
         parser.add_argument('--gitcoin_account', action='store_true', help='use account stored in .env file')
         parser.add_argument('--account', help='public account address to use for transaction', type=str)
@@ -138,7 +137,11 @@ class Command(BaseCommand):
                 'attributes': attributes
             }
 
-            mint_to = kudos_contract._w3.toChecksumAddress(options['mint_to'])
+            if not options['mint_to']:
+                mint_to = kudos_contract._w3.toChecksumAddress(settings.KUDOS_OWNER_ACCOUNT)
+            else:
+                mint_to = kudos_contract._w3.toChecksumAddress(options['mint_to'])
+
             for x in range(1, 4):
                 try:
                     tokenURI_url = kudos_contract.create_tokenURI_url(**metadata)
