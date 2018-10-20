@@ -69,7 +69,6 @@ $(document).ready(function() {
 
       web3.eth.getAccounts(function(err, accounts) {
         web3.eth.net.getId(function(err, network) {
-          network = 'testrpc';
           $('#network').val(network);
           SubscriptionContract.deploy({
             data: compiledSubscription.bytecode,

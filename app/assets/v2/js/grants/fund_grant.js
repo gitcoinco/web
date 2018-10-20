@@ -130,26 +130,19 @@ $(document).ready(function() {
                     console.log('data', data);
 
                     form.submit();
-                    //
+                    
                   })
                     .catch((error)=>{
                       console.log(error);
                     });
-
-
                 });
               });
             });
-
           });
-
-
         });
       });
-
     }
   });
-
 });
 
 // will want to check if account already has a subscription. If a second is produced the timestamp will not function properly
