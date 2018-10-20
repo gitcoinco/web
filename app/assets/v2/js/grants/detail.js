@@ -1,7 +1,11 @@
 $(document).ready(function() {
   $('#tabs').tabs();
 
+  $('#form--input__description').height($('#form--input__description').prop('scrollHeight'));
+
   userSearch('#grant-admin');
+  userSearch('#grant-members');
+
   $('.select2-selection__rendered').removeAttr('title');
 
   $('#edit--title').on('click', () => {
@@ -14,10 +18,15 @@ $(document).ready(function() {
 
   $('#edit--description').on('click', () => {
     inlineEdit('#form--input__description', '#edit--description');
+    $('#form--input__description').height($('#form--input__description').prop('scrollHeight'));
   });
 
   $('#edit--reference-url').on('click', () => {
     inlineEdit('#form--input__reference-url', '#edit--reference-url');
+  });
+
+  $('#edit--members').on('click', () => {
+    inlineEdit('#grant-members', '#edit--members');
   });
 });
 
