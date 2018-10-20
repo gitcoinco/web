@@ -1055,7 +1055,8 @@ class Subscription(SuperModel):
 
 
 class SendCryptoAsset(SuperModel):
-    """ Abstract Base Class to handle the model for both Tips and Kudos. """
+    """Abstract Base Class to handle the model for both Tips and Kudos."""
+
     web3_type = models.CharField(max_length=50, default='v3')
     emails = JSONField(blank=True)
     url = models.CharField(max_length=255, default='', blank=True)

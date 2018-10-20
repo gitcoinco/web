@@ -43,26 +43,26 @@ def computerize_name(name):
     return name.lower().replace(' ', '_')
 
 
-def get_rarity_score(numClonesAllowed: int) -> str:
-    if not isinstance(numClonesAllowed, int):
-        raise ValueError('numClonesAllowed must be an integer')
+def get_rarity_score(num_clones_allowed: int) -> str:
+    if not isinstance(num_clones_allowed, int):
+        raise ValueError('num_clones_allowed must be an integer')
 
-    if numClonesAllowed == 1:
+    if num_clones_allowed == 1:
         return 'Unique'
-    elif 2 <= numClonesAllowed <= 5:
+    elif 2 <= num_clones_allowed <= 5:
         return 'Legendary Rare'
-    elif 6 <= numClonesAllowed <= 15:
+    elif 6 <= num_clones_allowed <= 15:
         return 'Ultra Rare'
-    elif 16 <= numClonesAllowed <= 35:
+    elif 16 <= num_clones_allowed <= 35:
         return 'Very Rare'
-    elif 36 <= numClonesAllowed <= 100:
+    elif 36 <= num_clones_allowed <= 100:
         return 'Common'
-    elif 101 <= numClonesAllowed <= 200:
+    elif 101 <= num_clones_allowed <= 200:
         return 'Super Common'
-    elif numClonesAllowed >= 201:
+    elif num_clones_allowed >= 201:
         return 'Extremely Common'
     else:
-        raise ValueError('numClonesAllowed must be greater than 1')
+        raise ValueError('num_clones_allowed must be greater than 1')
 
 
 class KudosError(Exception):
@@ -91,9 +91,6 @@ class Gen0ExistsDb(KudosError):
 class KudosMismatch(KudosError):
     """ Exception is raised when web3 and the database are out of sync.
 
-
-
-
         Attributes:
         kudos_id -- the kudos id that has mismatched data
         kudos_web3 -- kudos attributes on web3
@@ -109,7 +106,6 @@ class KudosMismatch(KudosError):
 
 
 class KudosContract:
-
     """A class represending the Kudos.sol contract.
 
     Note: There are two types of interactions that can be done on the Solidity contract,
@@ -165,11 +161,12 @@ class KudosContract:
             dict: Kudos dictionary with key/values to be used to interact with the database.
 
         """
-        mapping = dict(price_finney=kudos[0],
-                       num_clones_allowed=kudos[1],
-                       num_clones_in_wild=kudos[2],
-                       cloned_from_id=kudos[3],
-                       )
+        mapping = dict(
+            price_finney=kudos[0],
+            num_clones_allowed=kudos[1],
+            num_clones_in_wild=kudos[2],
+            cloned_from_id=kudos[3],
+        )
 
         attributes = metadata.pop('attributes')
         tags = []
@@ -229,12 +226,6 @@ class KudosContract:
         """
 
         latest_id = self._contract.functions.getLatestId().call()
-        # if start_id == latest_id:
-        #     return False
-        # for kudos_id in range(start_id, latest_id + 1):
-        #     # Try to link up any kudos_token and kudos_transfer objects
-        #     # kudos_transfer = KudosTransfer.objects.get(pk=kudos_id)
-        #     self.sync_db(kudos_id=kudos_id)
 
         # Remove orphaned Kudos in the database
         orphans = Token.objects.filter(pk__gt=latest_id)
@@ -285,16 +276,7 @@ class KudosContract:
         kudos = self.getKudosById(kudos_id, to_dict=True)
         kudos['owner_address'] = self._contract.functions.ownerOf(kudos_id).call()
 
-        # # Update an existing Kudos in the database
-        # if Token.objects.filter(pk=kudos_id).exists():
-        #     if txid:
-        #         kudos['txid'] = txid
-        #     kudos_token = Token(pk=kudos_id, **kudos)
-        #     kudos_token.save(update_fields=list(kudos.keys()))
-        # # Add a new Kudos to the database.  Require txid so we can link to kudos_transfer table.
-        # else:
-        #     if not txid:
-        #         raise ValueError('Must provide a txid when syncing a new Kudos.')
+        # Update an existing Kudos in the database
         kudos['txid'] = txid
         kudos_token = Token(pk=kudos_id, **kudos)
         kudos_token.save()

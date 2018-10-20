@@ -61,7 +61,7 @@ class Command(BaseCommand):
         payload = dict(
             asset_contract_address=kudos_contract.address,
             event_type='transfer',
-            )
+        )
         headers = {'X-API-KEY': settings.OPENSEA_API_KEY}
         asset_token_id = 0
         transaction_hash = 0
@@ -85,10 +85,11 @@ class Command(BaseCommand):
 
         while True:
             for event in event_filter.get_new_entries():
-                msg = dict(blockNumber=event.blockNumber,
-                           _tokenId=event.args._tokenId,
-                           transactionHash=event.transactionHash.hex()
-                           )
+                msg = dict(
+                    blockNumber=event.blockNumber,
+                    _tokenId=event.args._tokenId,
+                    transactionHash=event.transactionHash.hex()
+                )
                 logger.info(f'Transfer event:  {msg}')
                 if logger.isEnabledFor(logging.DEBUG):
                     logger.debug(f'Raw Transfer event: {event}')

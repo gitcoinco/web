@@ -74,7 +74,7 @@ class Command(BaseCommand):
             payload = dict(
                 asset_contract_address=kudos_contract.address,
                 token_id=token_id,
-                )
+            )
             r = requests.get(url, params=payload, headers=headers)
             r.raise_for_status()
             asset_token_id = r.json()['asset_events'][0]['asset']['token_id']
@@ -85,10 +85,11 @@ class Command(BaseCommand):
     def filter_sync(self, kudos_contract, fromBlock):
         event_filter = kudos_contract._contract.events.Transfer.createFilter(fromBlock=fromBlock)
         for event in event_filter.get_all_entries():
-            msg = dict(blockNumber=event.blockNumber,
-                       _tokenId=event.args._tokenId,
-                       transactionHash=event.transactionHash.hex()
-                       )
+            msg = dict(
+                blockNumber=event.blockNumber,
+                _tokenId=event.args._tokenId,
+                transactionHash=event.transactionHash.hex()
+            )
             logger.info(f'Transfer event:  {msg}')
             if logger.isEnabledFor(logging.DEBUG):
                 logger.debug(f'Raw Transfer event: {event}')
