@@ -31,55 +31,55 @@ window.onload = function() {
 
         console.log('realGasPrice', realGasPrice);
 
-      web3.eth.getAccounts(function(err, accounts) {
+        web3.eth.getAccounts(function(err, accounts) {
 
-        deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(0)).send({from: accounts[0]})
-        .on('transactionHash', function(hash){
-            console.log('hash', hash);
+          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(0)).send({from: accounts[0]})
+            .on('transactionHash', function(hash) {
+              console.log('hash', hash);
 
-            deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
+              deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
 
-              nonce = parseInt(nonce) + 1;
+                nonce = parseInt(nonce) + 1;
 
-              const parts = [
+                const parts = [
                 // subscriber address
-                accounts[0],
-                // admin_address
-                data.admin_address,
-                // testing token
-                '0x00e8baC402e187608C6585c435C9D35947770f5B',
-                // data.amount_per_period
-                web3.utils.toTwosComplement(realTokenAmount),
-                // data.period_seconds
-                web3.utils.toTwosComplement(60),
-                // data.gas_price
-                web3.utils.toTwosComplement(realGasPrice),
-                // nonce
-                web3.utils.toTwosComplement(1),
-                // contributor_signature
-                data.signature
-              ];
+                  accounts[0],
+                  // admin_address
+                  data.admin_address,
+                  // testing token
+                  '0x00e8baC402e187608C6585c435C9D35947770f5B',
+                  // data.amount_per_period
+                  web3.utils.toTwosComplement(realTokenAmount),
+                  // data.period_seconds
+                  web3.utils.toTwosComplement(60),
+                  // data.gas_price
+                  web3.utils.toTwosComplement(realGasPrice),
+                  // nonce
+                  web3.utils.toTwosComplement(1),
+                  // contributor_signature
+                  data.signature
+                ];
 
-              console.log('parts', parts);
+                console.log('parts', parts);
 
-              deployedSubscription.methods.cancelSubscription(
-                ...parts
-              ).send({from: accounts[0]})
-              .on('confirmation', function(confirmationNumber, receipt){
-                  console.log("receipt", receipt);
+                deployedSubscription.methods.cancelSubscription(
+                  ...parts
+                ).send({from: accounts[0]})
+                  .on('confirmation', function(confirmationNumber, receipt) {
+                    console.log('receipt', receipt);
 
-                  form.submit();
-              })
+                    form.submit();
+                  });
+              });
             })
-        })
-        .on('confirmation', function(confirmationNumber, receipt){
-            console.log("receipt", receipt);
-        })
-        .on('error', function(err){
-          console.log("err", err);
+            .on('confirmation', function(confirmationNumber, receipt) {
+              console.log('receipt', receipt);
+            })
+            .on('error', function(err) {
+              console.log('err', err);
+            });
         });
       });
-    });
     }
   });
 
