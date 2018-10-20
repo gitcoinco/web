@@ -50,8 +50,10 @@
             <img class="m-0" style="position: relative; top: -2px;" src="{% static 'v2/images/coin.svg' %}">
           [[/if]]
         </p>
-        [[if tokens]]
-          <a href="" onclick="toggleExpandableBounty(event, '.[[:network]].i[[:standard_bounties_id]]')">{% trans 'See All' %}   <i class="fa fa-angle-down arrow"></i></a>
+        [[if tokens ]]
+          <a href="" onclick="toggleExpandableBounty(event, '.[[:network]].i[[:standard_bounties_id]]')">
+            {% trans 'See All' %}   <i class="fa fa-angle-down arrow"></i>
+          </a>
         [[/if]]
       </div>
       [[if value_in_usdt]]
@@ -64,21 +66,26 @@
       [[/if]]
       </div>
     </div>
-    [[if tokens]]
-      <div class="col-md-12 tags expandable funding">
-        <div class="placeholder">
-          <span class="text-highlight-gc-purple m-0 uppercase middle">{% trans 'Funding' %}</span>
-        </div>
-        <div class="tag token font-caption">
-          <p><span>[[:rounded_amount]] [[:token_name]]</span></p>
-        </div>
-        [[props tokens]]
-          [[for prop ~tokenName=key]]
+    [[if tokens ]]
+      <div class="col-md-12 expandable">
+        <div class="d-flex flex-wrap">
+          <div class="avatar-container col-1 hide_min_viewport"></div>
+          <div>
+            <span class="text-highlight-gc-purple m-0 uppercase middle">{% trans 'Funding' %}</span>
+          </div>
+          <div class="tags flex-wrap col-9">
             <div class="tag token font-caption">
-              <p><span>[[:#data]] [[:~tokenName]]<i class="fas fa-users ml-1"></i></span></p>
+              <p><span>[[:rounded_amount]] [[:token_name]]</span></p>
             </div>
-          [[/for]]
-        [[/props]]
+            [[props tokens]]
+              [[for prop ~tokenName=key]]
+                <div class="tag token font-caption">
+                  <p><span>[[:#data]] [[:~tokenName]]<i class="fas fa-users ml-1"></i></span></p>
+                </div>
+              [[/for]]
+            [[/props]]
+          </div>
+        </div>
       </div>
     [[/if]]
   </div>
