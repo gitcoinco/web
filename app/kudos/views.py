@@ -116,7 +116,6 @@ def search(request):
 def details(request, id, name):
     """Render the detail kudos response."""
     kudos_id = id
-    kudos_name = name
     logger.info(f'kudos id: {kudos_id}')
 
     if not re.match(r'\d+', kudos_id):
@@ -125,8 +124,7 @@ def details(request, id, name):
     # Find other profiles that have the same kudos name
     kudos = Token.objects.get(pk=kudos_id)
     # Find other Kudos rows that are the same kudos.name, but of a different owner
-    related_kudos = Token.objects.exclude(
-        owner_address='0xD386793F1DB5F21609571C0164841E5eA2D33aD8').filter(name=kudos.name)
+    related_kudos = Token.objects.filter(name=kudos.name, num_clones_allowed=0)
     logger.debug(f'Related Kudos Tokens: {related_kudos}')
     # Find the Wallet rows that match the Kudos.owner_addresses
     # related_wallets = Wallet.objects.filter(address__in=[rk.owner_address for rk in related_kudos]).distinct()[:20]
