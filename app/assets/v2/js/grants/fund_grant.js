@@ -42,7 +42,7 @@ $(document).ready(function() {
 
         let realApproval = Number(data.approve * 10 ** decimals);
 
-        console.log("realApproval", realApproval);
+        console.log('realApproval', realApproval);
 
         let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
 
