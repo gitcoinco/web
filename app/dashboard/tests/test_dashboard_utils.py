@@ -96,15 +96,15 @@ class DashboardUtilsTest(TestCase):
     @staticmethod
     @patch('dashboard.utils.UserAction.objects')
     def test_create_user_action_without_cookie(mockUserAction):
-        """Test the giving utm* in cookie should store in DB."""
+        """Test the giving utm* in cookie should store in DB as empty dict."""
         request = RequestFactory().get('/login')
         create_user_action(None, 'Login', request)
         mockUserAction.create.assert_called_once_with(action='Login', metadata={}, user=None)
 
     @staticmethod
     @patch('dashboard.utils.UserAction.objects')
-    def test_create_user_action_campaign_not_json(mockUserAction):
-        """Test the giving utm* in cookie should store in DB."""
+    def test_create_user_action_with_partial_cookie(mockUserAction):
+        """Test the giving utm* in cookie should store partial utm in DB."""
         request = RequestFactory().get('/login')
         request.COOKIES['utm_campaign'] = 'test campaign'
         create_user_action(None, 'Login', request)
