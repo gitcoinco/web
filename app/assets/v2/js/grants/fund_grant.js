@@ -18,20 +18,22 @@ $(document).ready(function() {
       });
 
       let realPeriodSeconds = 0;
-      if(data.frequency){
-        //translate timeAmount&timeType to requiredPeriodSeconds
+
+      if (data.frequency) {
+        // translate timeAmount&timeType to requiredPeriodSeconds
         let periodSeconds = data.frequency;
-        if(data.frequency_unit=="minutes"){
-          periodSeconds*=60
-        }else if(data.frequency_unit=="hours"){
-          periodSeconds*=3600
-        }else if(data.frequency_unit=="days"){
-          periodSeconds*=86400
-        }else if(data.frequency_unit=="months"){
-          periodSeconds*=2592000
+
+        if (data.frequency_unit == 'minutes') {
+          periodSeconds *= 60;
+        } else if (data.frequency_unit == 'hours') {
+          periodSeconds *= 3600;
+        } else if (data.frequency_unit == 'days') {
+          periodSeconds *= 86400;
+        } else if (data.frequency_unit == 'months') {
+          periodSeconds *= 2592000;
         }
-        if(periodSeconds){
-          realPeriodSeconds=periodSeconds
+        if (periodSeconds) {
+          realPeriodSeconds = periodSeconds;
         }
       }
 

@@ -41,20 +41,22 @@ $(document).ready(function() {
       });
 
       let requiredPeriodSeconds = 0;
-      if(data.frequency){
-        //translate timeAmount&timeType to requiredPeriodSeconds
+
+      if (data.frequency) {
+        // translate timeAmount&timeType to requiredPeriodSeconds
         let periodSeconds = data.frequency;
-        if(data.frequency_unit=="minutes"){
-          periodSeconds*=60
-        }else if(data.frequency_unit=="hours"){
-          periodSeconds*=3600
-        }else if(data.frequency_unit=="days"){
-          periodSeconds*=86400
-        }else if(data.frequency_unit=="months"){
-          periodSeconds*=2592000
+
+        if (data.frequency_unit == 'minutes') {
+          periodSeconds *= 60;
+        } else if (data.frequency_unit == 'hours') {
+          periodSeconds *= 3600;
+        } else if (data.frequency_unit == 'days') {
+          periodSeconds *= 86400;
+        } else if (data.frequency_unit == 'months') {
+          periodSeconds *= 2592000;
         }
-        if(periodSeconds){
-          requiredPeriodSeconds=periodSeconds
+        if (periodSeconds) {
+          requiredPeriodSeconds = periodSeconds;
         }
       }
 
@@ -73,7 +75,7 @@ $(document).ready(function() {
         data.admin_address,
         // required token, if any. Will need to make dynamic
         // data.token_address,
-        "0x0000000000000000000000000000000000000000",
+        '0x0000000000000000000000000000000000000000',
         // required tokenAmount - setting to zero
         web3.utils.toTwosComplement(data.required_amount),
         // data.frequency
