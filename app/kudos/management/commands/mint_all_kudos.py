@@ -65,16 +65,11 @@ class Command(BaseCommand):
         kudos_contract = KudosContract(network=network)
 
         yaml_file = options['yaml_file']
-        # ipfs = ipfsapi.connect(settings.IPFS_HOST)
 
         with open(yaml_file) as f:
             all_kudos = yaml.load(f)
 
         for idx, kudos in enumerate(all_kudos):
-            # Only mint new gen0 Kudos
-            # if idx + 1 <= kudos_contract.getLatestKudosId():
-            #     logger.warning(f'{kudos["name"]} already exists on the blockchain.  Not minting...')
-            #     continue
             image_name = kudos.get('image')
             if image_name:
                 # Support Open Sea

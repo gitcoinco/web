@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Define Dashboard related utilities and miscellaneous logic.
+"""Define utility functions.
 
 Copyright (C) 2018 Gitcoin Core
 

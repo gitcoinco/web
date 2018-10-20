@@ -61,9 +61,7 @@ class Command(BaseCommand):
             account = options['account']
             private_key = options['private_key']
 
-        kudos_contract = KudosContract(network=network,
-                                       # sockets=True
-                                       )
+        kudos_contract = KudosContract(network=network)
         owner = kudos_contract._w3.toChecksumAddress(options['owner'])
 
         args = (owner, token_id)

@@ -30,7 +30,6 @@ logging.getLogger("urllib3").setLevel(logging.WARNING)
 logging.getLogger("web3").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
-formatter = '%(levelname)s:%(name)s.%(funcName)s:%(message)s'
 logging.basicConfig(level=logging.INFO)
 
 

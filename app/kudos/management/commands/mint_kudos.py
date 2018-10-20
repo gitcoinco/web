@@ -54,21 +54,14 @@ class Command(BaseCommand):
         network = options['network']
         private_key = options['private_key']
         logging.info(options)
-        hour = datetime.datetime.now().hour
-        day = datetime.datetime.now().day
-        month = datetime.datetime.now().month
 
         image = options.get('image')
         if image:
-            # api = getIPFS()
-            # image_ipfs = api.add(image)
-            # image_hash = image_ipfs['Hash']
             image_path = image
         else:
             image_path = ''
 
         args = (options['name'], options['description'], options['rarity'], options['price'],
-                options['numClonesAllowed'], options['tags'], image_path,
-                )
+                options['numClonesAllowed'], options['tags'], image_path)
 
         mint_kudos_on_web3_and_db(network, private_key, *args)

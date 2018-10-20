@@ -1,21 +1,22 @@
 # -*- coding: utf-8 -*-
-'''
-    Copyright (C) 2018 Gitcoin Core
+"""Define helper functions.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Copyright (C) 2018 Gitcoin Core
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-'''
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+
+"""
 import logging
 
 from .models import Wallet
@@ -24,16 +25,16 @@ logger = logging.getLogger(__name__)
 
 
 def reconcile_kudos_preferred_wallet(profile):
-    """ LEGACY CODE
+    """LEGACY CODE.
     Helper function to set the kudos_preferred_wallet if it doesn't already exist
 
     Args:
-        profile (dashboard.modles.Profile): Instead of the profile model.
+        profile (TYPE): Description
 
-    Returns:  Kudos preferred wallet if found, else None.
+    Returns:
+        str: Profile wallet address.
 
     """
-
     # If the preferred_kudos_wallet is not set, figure out how to set it.
     if not profile.preferred_kudos_wallet:
         # If the preferred_payout_address exists, use it for the preferred_kudos_Wallet

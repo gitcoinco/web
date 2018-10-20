@@ -82,13 +82,6 @@ class Command(BaseCommand):
     def filter_listener(self, kudos_contract, interval):
 
         event_filter = kudos_contract._contract.events.Transfer.createFilter(fromBlock='latest')
-        # params = dict(
-        #     fromBlock='latest',
-        #     toBlock='latest',
-        #     address=kudos_contract.address,
-        #     topics=['034ac9c3d6ddb432341e5fdbaba91bb6a01a6aab04b202888634e16a7c6656b2']
-        #     )
-        # event_filter = kudos_contract._w3sockets.eth.filter({"address": kudos_contract.address})
 
         while True:
             for event in event_filter.get_new_entries():
@@ -111,13 +104,10 @@ class Command(BaseCommand):
         last_block_hash = None
         while True:
             # wait for a new block
-            # logger.info(f'block: {block}')
             block = kudos_contract._w3.eth.getBlock('latest')
             block_hash = block['hash']
             block_number = block['number']
 
-            # logger.info(f'last_block_hash: {last_block_hash}')
-            # logger.info(f'block_hash: {block_hash}')
             if last_block_hash == block_hash:
                 time.sleep(interval)
                 continue
@@ -133,8 +123,6 @@ class Command(BaseCommand):
                     continue
 
                 logger.info('found a kudos tx')
-                # logger.info(dir(tx))
-                # logger.info(tx.keys())
                 data = tx['input']
                 method_id = data[:10]
                 logger.info(f'method_id:  {method_id}')

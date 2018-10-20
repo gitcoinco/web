@@ -72,10 +72,6 @@ class Command(BaseCommand):
                 image_path = ''
 
             attributes = []
-            # "trait_type": "investor_experience",
-            # "value": 20,
-            # "display_type": "boost_number",
-            # "max_value": 100
             rarity = {
                 "trait_type": "rarity",
                 "value": get_rarity_score(kudos['numClonesAllowed']),

@@ -171,11 +171,6 @@ $(document).ready(function() {
   $('#amount').on('keyup blur change', updateEstimate);
   $('#token').on('change', updateEstimate);
   $('#username').select2();
-  // $('#username').on('select2:select', function(e) {
-  //   let profileId = e.params.data.id;
-  //   console.log(e.params.data)
-  //   renderWallets(profileId);
-  // });
 
   // Step 1
   // Kudos send button is clicked

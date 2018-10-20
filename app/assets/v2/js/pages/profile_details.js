@@ -1,7 +1,5 @@
 var renderKudos = function(kudos) {
   // Input is a kudos object array obtained from the Django Kudos API.
-  // let numKudos = kudos.length;
-  // console.log(numKudos);
 
   let kudosContainer = document.createElement('div');
 
@@ -42,16 +40,3 @@ var renderKudos = function(kudos) {
   $(kudosContainer).append(kudosCard);
   $('#my-kudos').append(kudosContainer);
 };
-
-
-// $(document).ready(function() {
-//   let address = web3.eth.coinbase;
-//   console.log(address);
-//   $.get('/api/v0.1/kudos?lister=' + address, function(results, status) {
-//     console.log(status)
-//     console.log(results)
-//     let numKudos = results.length;
-//     results.forEach(renderKudos)
-//     // renderKudos(results)
-//   })
-// })

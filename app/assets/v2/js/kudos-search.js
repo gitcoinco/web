@@ -98,11 +98,9 @@ function kudosSearch(elem) {
       let selected;
 
       if (kudos.id === '') { // adjust for custom placeholder values
-        // $('.kudos-comment').hide()
         kudosIsSelected();
         return kudos.text;
       } else if (kudos.id) {
-        // $('.kudos-comment').show()
         kudosIsSelected(true);
         selected = `<div class="d-flex m-2 align-items-center">
                       <div class="mr-3">
