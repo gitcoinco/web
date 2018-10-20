@@ -97,7 +97,7 @@ function kudosSearch(elem) {
 
       let selected;
 
-      if (kudos.id === '') { // adjust for custom placeholder values
+      if (kudos.id === '') {
         kudosIsSelected();
         return kudos.text;
       } else if (kudos.id) {

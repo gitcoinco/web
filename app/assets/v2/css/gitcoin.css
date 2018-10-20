@@ -573,9 +573,6 @@ div.button-pink {
 }
 
 /* AutoComplete */
-.select2-container .select2-selection--single {
-  height: 2.5rem !important
-}
 
 .select2-results__option,
 .select2-search--dropdown .select2-search__field {
@@ -583,6 +580,7 @@ div.button-pink {
 }
 
 .select2-container--default .select2-selection--single {
+  height: 2.5rem !important;
   border-radius: 2px !important;
   border-color: black !important;
 }
@@ -674,3 +672,22 @@ div.button-pink {
   }
 }
 /* TODO: End */
+
+/* fallback for send tip navbar */
+.d-none {
+  display: none!important;
+}
+
+@media (min-width: 768px) {
+
+  .d-md-block {
+    display: block!important;
+  }
+  .d-md-flex {
+      display: -ms-flexbox!important;
+      display: flex!important;
+  }
+  .d-md-none {
+    display: none!important;
+  }
+}

@@ -1,4 +1,5 @@
-function userSearch(elem, showAddress) {
+function userSearch(elem, showAddress, theme) {
+  var themeChoice =  theme || undefined;
   var selectItem = elem || '.username-search';
 
   $(selectItem).each(function() {
@@ -26,7 +27,7 @@ function userSearch(elem, showAddress) {
         },
         cache: true
       },
-      theme: 'bootstrap4',
+      theme: themeChoice,
       placeholder: 'Search by username',
       minimumInputLength: 3,
       escapeMarkup: function(markup) {

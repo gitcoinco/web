@@ -7,6 +7,8 @@
   justify-content: space-around;
   border-bottom: 1px solid rgba(255,255,255,0.3);
   padding: 0.5rem 0;
+  font-size: 1rem;
+  line-height: 1.5;
 }
 
 
