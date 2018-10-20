@@ -1234,13 +1234,15 @@ class Tip(SendCryptoAsset):
     @property
     def receive_url_for_recipient(self):
         if self.web3_type != 'v3':
-            raise Exception
+            logger.error('Web3 type is not "v3"')
+            return ''
 
         try:
             key = self.metadata['reference_hash_for_receipient']
             return f"{settings.BASE_URL}tip/receive/v3/{key}/{self.txid}/{self.network}"
-        except:
-            return None
+        except Exception as e:
+            logger.warning('Receive url for Tip recipient not found')
+            return ''
 
 
 class TipPayoutException(Exception):
