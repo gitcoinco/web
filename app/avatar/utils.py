@@ -28,11 +28,12 @@ from django.conf import settings
 from django.http import HttpResponse, JsonResponse
 from django.template import loader
 
+import pyvips
 import requests
 from git.utils import get_user
 from PIL import Image, ImageOps
+from pyvips.error import Error as VipsError
 from svgutils.compose import SVG, Figure, Line
-from wand.image import Image as WandImage
 
 AVATAR_BASE = 'assets/other/avatars/'
 COMPONENT_BASE = 'assets/v2/images/avatar/'
@@ -71,13 +72,17 @@ def get_avatar_context():
                      {
                          'name': 'Clothing',
                          'title': 'Pick your clothing',
-                         'options': ('cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater')
+                         'options': (
+                             'cardigan', 'hoodie', 'knitsweater', 'plaid', 'shirt', 'shirtsweater', 'spacecadet',
+                             'suit', 'ethlogo', 'cloak', 'robe'
+                         )
                      },
                      {
                          'name': 'Hair Style',
                          'title': 'Pick a hairstyle',
                          'options': (['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'],
-                                     ['5', 'None'], ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'])
+                                     ['5', 'None'], ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'],
+                                     ['9-back', '9-front'], ['None', '10'])
                      },
                      {
                          'name': 'Facial Hair',
@@ -90,10 +95,13 @@ def get_avatar_context():
                      {
                          'name': 'Accessories',
                          'title': 'Pick your accessories',
-                         'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'],
-                                     ['HatShort-backwardscap'], ['HatShort-ballcap'], ['HatShort-headphones'],
-                                     ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], ['Earring-0'], ['Earring-1'],
-                                     ['EarringBack-2', 'Earring-2'], ['Earring-3'], ['Earring-4'])
+                         'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
+                             'HatShort-backwardscap'
+                         ], ['HatShort-ballcap'], ['HatShort-cowboy'], ['HatShort-headphones'],
+                                     ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], ['Earring-0'], ['Earring-1'], [
+                                         'EarringBack-2', 'Earring-2'
+                                     ], ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'],
+                                     ['Masks-jack-o-lantern-lighted'], ['Extras-Parrot'], ['Masks-gitcoinbot'])
                      },
                      {
                          'name': 'Background',
@@ -118,7 +126,9 @@ def get_svg_templates():
         'accessories': {
             'earring': [],
             'glasses': [],
-            'hat': []
+            'hat': [],
+            'masks': [],
+            'extras': [],
         },
         'clothing': [],
         'ears': [],
@@ -268,8 +278,8 @@ def handle_avatar_payload(request):
     """Handle the Avatar payload."""
     avatar_dict = {}
     valid_component_keys = [
-        'Beard', 'Clothing', 'Earring', 'EarringBack', 'Ears', 'Eyes', 'Glasses', 'HairLong', 'HairShort', 'HatLong',
-        'HatShort', 'Head', 'Mouth', 'Mustache', 'Nose'
+        'Beard', 'Clothing', 'Earring', 'EarringBack', 'Ears', 'Eyes', 'Glasses', 'Masks', 'HairLong', 'HairShort',
+        'HatLong', 'HatShort', 'Head', 'Mouth', 'Mustache', 'Nose', 'Extras'
     ]
     valid_color_keys = ['Background', 'ClothingColor', 'HairColor', 'SkinTone']
     body = json.loads(request.body)
@@ -391,12 +401,16 @@ def get_github_avatar(handle):
     return temp_avatar
 
 
-def convert_img(svg_obj, input_fmt='svg', output_fmt='png'):
-    """Convert an SVG to another format.
+def convert_img(obj, input_fmt='svg', output_fmt='png'):
+    """Convert the provided buffer to another format.
 
     Args:
-        svg_obj (File): The SVG File/ContentFile.
-        fmt (str): The output format. Defaults to: png.
+        obj (File): The File/ContentFile object.
+        input_fmt (str): The input format. Defaults to: svg.
+        output_fmt (str): The output format. Defaults to: png.
+
+    Exceptions:
+        Exception: Cowardly catch blanket exceptions here, log it, and return None.
 
     Returns:
         BytesIO: The BytesIO stream containing the converted File data.
@@ -404,12 +418,12 @@ def convert_img(svg_obj, input_fmt='svg', output_fmt='png'):
 
     """
     try:
-        svg_data = svg_obj.read()
-        with WandImage(blob=svg_data, format=input_fmt) as svg_img:
-            svg_img.format = output_fmt
-            tmpfile_io = BytesIO()
-            svg_img.save(file=tmpfile_io)
-            return tmpfile_io
+        obj_data = obj.read()
+        if obj_data:
+            image = pyvips.Image.new_from_buffer(obj_data, f'.{input_fmt}')
+            return BytesIO(image.write_to_buffer(f'.{output_fmt}'))
+    except VipsError:
+        pass
     except Exception as e:
         logger.error(e)
     return None

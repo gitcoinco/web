@@ -53,6 +53,8 @@ rect {
 
 <body id="body" style="zoom: 1;">
 
+  <h1 id="loading"> Loading Mesh Data ... (this may take a moment) </h1>
+
 <p>{{comments}}
 </p>
 
@@ -186,6 +188,8 @@ node.append("image")
       .remove();
 
   force.start();
+
+  setTimeout(function (){$("#loading").remove();}, 3000);
 }
 
 $(document).ready(function(){

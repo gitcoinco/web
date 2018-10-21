@@ -222,6 +222,7 @@ $(document).ready(function() {
         experienceLevel: data.experience_level,
         projectLength: data.project_length,
         bountyType: data.bounty_type,
+        fundingOrganisation: data.fundingOrganisation,
         tokenName
       };
 
@@ -256,6 +257,7 @@ $(document).ready(function() {
             hiringRightNow: data.hiringRightNow,
             jobDescription: data.jobDescription
           },
+          funding_organisation: metadata.fundingOrganisation,
           privacy_preferences: privacy_preferences,
           funders: [],
           categories: metadata.issueKeywords.split(','),
@@ -435,7 +437,7 @@ var check_balance_and_alert_user_if_not_enough = function(tokenAddress, amount) 
 
   token_contract.balanceOf.call(from, function(error, result) {
     if (error) return;
-    var balance = result.toNumber() / Math.pow(10, 18);
+    var balance = result.toNumber() / Math.pow(10, token_decimals);
     var balance_rounded = Math.round(balance * 10) / 10;
 
     if (parseFloat(amount) > balance) {

@@ -21,6 +21,8 @@
 <head>
   {% include 'shared/head.html' %}
   {% include 'shared/cards.html' %}
+  <meta name="title" content="Create Funded Issue / Bounty | Gitcoin">
+  <meta name="description" content="Instructions for creating an issue and posting a bounty to Gitcoin so developers across the world can discover your bounty and start working on your issue.">
   <link rel="stylesheet" href={% static "v2/css/submit_bounty.css" %}>
 </head>
 
@@ -63,7 +65,7 @@
                   </div>
                   <div id="issue-details" class="mt-4">
                     <label class="form__label mb-0 mt-3" for="title">{% trans "Issue Title" %}</label>
-                    <input name='title' id="title"  class="form__input pb-3 pt-0 hidden" type="text" value="{{ issue_title }}" readonly/>
+                    <input name='title' id="title"  class="form__input pb-3 pt-0 hidden" type="text" value="{{ issue_title }}" readonly required/>
                     <p id="title--text"></p>
                     <label class="form__label" for="description">{% trans "Description" %}</label>
                     <textarea name="description" class="form__input" id="description" readonly></textarea>
@@ -106,6 +108,10 @@
                 </div>
                 {% include 'shared/pricing.html' %}
                 <div class="w-100 mt-2">
+                  <label class="form__label" for="fundingOrganisation">{% trans "Funding organisation" %}</label>
+                  <input name='fundingOrganisation' id="fundingOrganisation" class="form__input" type="text" placeholder="Ethereum Community Foundation"/>
+                  <hr class="mt-4">
+
                   <label class="form__label" for="hiringRightNow">{% trans "Hiring right now?" %}</label>
                   <div class="hiring_container">
                     <div class="form__checkbox">
@@ -159,6 +165,8 @@
   {% include 'shared/footer.html' %}
   {% include 'shared/messages.html' %}
 </body>
+
+{% include 'shared/current_profile.html' %}
 
 <!-- jQuery -->
 <script src="{% static "v2/js/ipfs-api.js" %}"></script>

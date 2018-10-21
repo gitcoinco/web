@@ -38,46 +38,36 @@
                   Suggest it be given a bounty!
                   {% endblocktrans %}
                 </p>
-                <form id='bounty_request_form'>
-                  <div class="mb-3">
-                    <label for="requested_by" class="form__label">{% trans "Your Github Profile" %}
-                      {% if not user.is_authenticated %}
-                      (<a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans "Login" %}</a>)
-                      {% endif %}
-                    </label>
-                    <input name="requested_by" placeholder="{% trans "Please Login First" %}" id="requested_by" class="form__input" type="text" value="{% if github_handle %}{{ github_handle }}{% endif %}" required disabled />
-                  </div>
-                  <div class="mb-3">
-                    <label for="github_url" class="form__label">{% trans "The Github Issue Link" %}</label>
-                    <input name="github_url" placeholder="https://github.com/gitcoinco/web/issues/2036" id="github_url" class="form__input" type="text" required />
-                  </div>
-                  <div class="mb-3">
-                    <label for="eth_address" class="form__label">{% trans "Your ETH Address (Optional)" %}</label>
-                    <input name="eth_address" placeholder="0x0" id="eth_address" class="form__input" type="text" />
-                  </div>
-                  <div class="mb-3">
-                    <label for="amount" class="form__label">{% trans "Proposed Funding Amount (USD)" %}</label>
-                    <input name="amount" placeholder="1" id="amount" class="form__input" type="number" min="1" required />
-                  </div>
-                  <div class="mb-3">
-                    <label for="comment" class="form__label"> {% trans "Comment" %} (<span id="charcount">500</span> {% trans "characters left" %}):</label>
-                    <textarea name="comment" id="comment" class="form__input" rows="4" cols="50" required placeholder="{% trans "Anything you want to tell us." %}"></textarea>
-                  </div>
+                <div class="mb-3">
+                  <label for="requested_by" class="form__label">{% trans 'Your Github Profile' %}
+                    {% if not user.is_authenticated %}
+                    (<a href="{% url 'social:begin' 'github' %}?next={{ request.get_full_path }}">{% trans 'Login' %}</a>)
+                    {% endif %}
+                  </label>
+                  <input name="requested_by" placeholder="{% trans "Please Login First" %}" id="requested_by" class="form__input" type="text" value="{% if github_handle %}{{ github_handle }}{% endif %}" required disabled />
+                </div>
+                <form id="bounty_request_form">
+                  {% for field in form %}
+                    <div class="mb-3">
+                      <label for="id_{{ field.name }}" class="form__label">{{ field.label }}</label>
+                      {{ field }}
+                    </div>
+                  {% endfor %}
                   <div class="form__footer">
-                    <button class="button button--primary btn-block js-submit" type="submit">{% trans "Proceed" %}</button>
+                    <button class="button button--primary btn-block js-submit" type="submit">{% trans 'Proceed' %}</button>
                   </div>
                 </form>
               </div>
             </div>
             <div id="success_container" class="text-center" style="display: none;">
-              <h3>{% trans "Bounty Request Received" %}</h3>
+              <h3>{% trans 'Bounty Request Received' %}</h3>
               {% include 'svgs/success.svg' %}
               <div>
-                <p class="font-header">{% trans "Hooray!" %}</p>
+                <p class="font-header">{% trans 'Hooray!' %}</p>
                 <p>
-                  {% trans "Your request has been received." %}
+                  {% trans 'Your request has been received.' %}
                   <br>
-                  {% trans "Thank you for supporting open-source." %}
+                  {% trans 'Thank you for supporting open-source.' %}
                 </p>
               </div>
             </div>
@@ -88,6 +78,11 @@
         </div>
       </div>
     </div>
+    {% if comments_prefill %}
+      <script>
+        document.comments_prefill = '{{comments_prefill}}';
+      </script>
+    {% endif %}
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}

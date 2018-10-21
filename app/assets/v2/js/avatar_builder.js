@@ -2,7 +2,7 @@ let openSection;
 const layers = [
   'HatLong', 'HairLong', 'EarringBack', 'Clothing',
   'Ears', 'Head', 'HairShort', 'Earring', 'Beard', 'HatShort',
-  'Mustache', 'Mouth', 'Nose', 'Eyes', 'Glasses'
+  'Mustache', 'Mouth', 'Nose', 'Eyes', 'Glasses', 'Masks', 'Extras'
 ];
 const requiredLayers = [ 'Clothing', 'Ears', 'Head', 'Mouth', 'Nose', 'Eyes', 'Background' ];
 const colorOptions = {
@@ -29,7 +29,7 @@ const sectionPalettes = {
 const parentLayers = {
   HairShort: 'HairStyle', HairLong: 'HairStyle', Beard: 'FacialHair', Mustache: 'FacialHair',
   EarringBack: 'Accessories', Earring: 'Accessories', HatLong: 'Accessories', HatShort: 'Accessories',
-  Glasses: 'Accessories'
+  Glasses: 'Accessories', Masks: 'Accessories', Extras: 'Accessories'
 };
 
 var localStorage;
@@ -82,10 +82,13 @@ function getIdFromPath(path, option) {
 function getColorFromPath(path, option) {
   let color = '';
 
+  // filename without path and extension
+  const basename = path.split('.').slice(-2)[0].split('/').slice(-1)[0];
+
   if (option === 'FacialHair' || option === 'Accessories') {
-    color = path.split('.')[0].split('/').slice(-1)[0].split('-')[2];
+    color = basename.split('-')[2];
   } else {
-    color = path.split('.')[0].split('/').slice(-1)[0].split('-')[1];
+    color = basename.split('-')[1];
   }
 
   return color;

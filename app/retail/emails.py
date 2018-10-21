@@ -60,7 +60,8 @@ ALL_EMAILS = MARKETING_EMAILS + TRANSACTIONAL_EMAILS
 
 def premailer_transform(html):
     cssutils.log.setLevel(logging.CRITICAL)
-    return premailer.transform(html)
+    p = premailer.Premailer(html, base_url=settings.BASE_URL)
+    return p.transform()
 
 
 def render_tip_email(to_email, tip, is_new):
@@ -109,6 +110,7 @@ def render_quarterly_stats(to_email, platform_wide_stats):
     profile = Profile.objects.filter(email=to_email).first()
     quarterly_stats = profile.get_quarterly_stats
     params = {**quarterly_stats, **platform_wide_stats}
+    params['profile'] = profile
     params['subscriber'] = get_or_save_email_subscriber(to_email, 'internal'),
     print(params)
     response_html = premailer_transform(render_to_string("emails/quarterly_stats.html", params))
@@ -520,12 +522,11 @@ def render_start_work_applicant_expired(interest, bounty):
     return response_html, response_txt, subject
 
 
-
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Sneak Peek: Hacktoberfest | Everybody Ships"
+    subject = "Gitcoin's Summer Results & Holiday Plans"
 
     intro = '''
 
@@ -533,30 +534,24 @@ def render_new_bounty_roundup(to_email):
 Hi there,
 </p>
 <p>
-Hacktoberfest is a month long celebration of open source. As Gitcoiners, we support anything that grows open source. Next Monday, we're going to formally
-announce our plans for Hacktoberfest...but you can see them <a href="https://medium.com/@vivek.m.singh/98825f199af2">here today</a>.
-The short story: Make <a href="https://gitcoin.co/requests">Gitcoin Requests</a> for any 'good-first-issues' you see on Github during Hacktoberfest,
-and we'll bounty the best of them. We're very excited to play a small part in a huge movement!
+This week, we wrote more about our Q3 Results and Q4 Goals in <a href="https://medium.com/gitcoin/gitcoins-sprint-to-the-holidays-6d4103ad9ea4">Gitcoin's Sprint To The Holiday's</a>. We're excited about
+the $350K in work already on the Gitcoin platform, and even more excited about a few things to come this winter. More to come!
 </p>
 <p>
-Aside from this, I've been busy co-authoring a children's book, <a href="https://medium.com/gitcoin/everyone-ships-653f53343337">Everybody Ships</a>.
-It's a tongue-in-cheek book meant to celebrate the projects in the blockchain space who are focused on building. We hope you
-enjoy!
+Perhaps more importantly, we're in swag giveaway mode! If you ever wanted a funky Gitcoin shirt, now's the time to act.
+Make a <a href="https://gitcoin.co/requests/">Gitcoin Request</a> on any open source Github issue and you'll be eligible.
 </p>
-
+<p>
+We're on the move! If you'll be at Github Universe (Oct 16-17), Web 3 Summit (Oct 22 - 24), Sustain OSS (Oct 25) or Devcon 4, give us a shout!
+</p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-        <a href="https://medium.com/gitcoin/embarking-into-web-3-f46408b23f59">Our Status partnership</a> is off to a hot start, with all 14 of the initial bounties picked up in 6 hours.
-        Be on the lookout for the seconds batch sometime next week!
+        We clarified <a href="https://medium.com/gitcoin/setting-your-oss-repos-monetary-policy-9c493118cd34">Gitcoin's Monetary policy</a> this week - explaining when we provide tips / bounties to contributors.
+        We hope this serves as an example for other open source projects who pay fairly for help!
         </li>
         <li>
-        There have now been 25 Gitcoin Requests! Do you have a Github issue you want solved? Make <a href="https://gitcoin.co/requests">a Gitcoin Request</a> and we'll review in 24 hours.
-        If you're a developer and you see a 'Good First Issue' you'd work on for a bounty, <a href="https://gitcoin.co/requests">let us know</a>! Gitcoin Requests
-        is a way for developers and maintainers to make their voice heard.
-        </li>
-        <li>
-        Gitcoin Livestream today includes MakerDAO and Meridio at 5PM ET. We're excited to be back - <a href="https://gitcoin.co/livestream">add to your calendar here!</a>.
+        The Gitcoin Livestream is back as regularly scheduled this week. <a href="https://gitcoin.co/livestream">Join us at 5PM ET</a>!
         </li>
     </ul>
 </p>
@@ -565,34 +560,34 @@ Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'krzkaczor',
+        'who': 'Dan-Nolan',
         'who_link': True,
-        'what': 'Completed a bounty posted on his own repo via Gitcoin Requests!',
-        'link': 'https://gitcoin.co/issue/krzkaczor/TypeChain/25/1137',
+        'what': 'Received an ETHPrize Bounty via Gitcoin!',
+        'link': 'https://gitcoin.co/issue/ChainshotDapps/content/1/1347',
         'link_copy': 'View more',
     }, {
-        'who': 'frostiq',
+        'who': 'adamskrodzki',
         'who_link': True,
-        'what': 'Claimed the MakerDAO CDP Analytics bounty from ETHBerlin.',
-        'link': 'https://gitcoin.co/issue/ethberlin-hackathon/ETHBerlin-Bounties/14/1204',
+        'what': 'Added tests for Winding Tree vesting contract!',
+        'link': 'https://gitcoin.co/issue/windingtree/vesting-contract/1/1375',
         'link_copy': 'View more',
     }, {
-        'who': 'subramanianv',
+        'who': 'barrasso',
         'who_link': True,
-        'what': 'Another Status bounty down on the Embark repo!',
-        'link': 'https://gitcoin.co/issue/embark-framework/embark/767/1087',
+        'what': 'Won an ETH SF Bounty from Bloqboard!',
+        'link': 'https://gitcoin.co/issue/ethglobal/ethsanfrancisco-bounties/9/1373',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/ethberlin-hackathon/ETHBerlin-Bounties/issues/16',
-        'primer': 'Build an ETHPM plug-in for Remix; still open post ETH-Berlin!',
+        'url': 'https://github.com/prysmaticlabs/prysm/issues/569',
+        'primer': 'Work with Prysmatic Labs on Sharding.',
     }, {
-        'url': 'https://github.com/prysmaticlabs/prysm/issues/497',
-        'primer': 'Work on Sharding with the Prysmatic Labs folks!',
+        'url': 'https://github.com/trailofbits/echidna/issues/15',
+        'primer': 'Trail Of Bits bounty via Ethereum Community Fund.',
     }, {
-        'url': 'https://github.com/w3f/Web3-collaboration/issues/34',
-        'primer': 'Help build documentation for Polkadot!',
+        'url': 'https://github.com/Bounties-Network/Explorer/issues/237',
+        'primer': 'Know anything about encryption? Bounties Network wants to know.'
     }, ]
 
     num_leadboard_items = 5
@@ -801,8 +796,13 @@ def roundup(request):
 @staff_member_required
 def quarterly_roundup(request):
     from marketing.utils import get_platform_wide_stats
+    from dashboard.models import Profile
     platform_wide_stats = get_platform_wide_stats()
     email = settings.CONTACT_EMAIL
+    handle = request.GET.get('handle')
+    if handle:
+        profile = Profile.objects.filter(handle=handle).first()
+        email = profile.email
     response_html, _ = render_quarterly_stats(email, platform_wide_stats)
     return HttpResponse(response_html)
 

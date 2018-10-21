@@ -16,6 +16,7 @@
 
 '''
 import datetime
+import logging
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
@@ -24,6 +25,8 @@ from django.utils import timezone
 from dashboard.models import Bounty, BountyFulfillment, Interest, Profile, UserAction
 from git.utils import get_user, repo_name
 from marketing.models import GithubEvent
+
+logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
@@ -51,8 +54,12 @@ class Command(BaseCommand):
 
     def do_we_care(self, event):
         repos_we_care_about = self.all_bountied_repos()
-        repo_name = event.get('repo', {}).get('name', '').lower()
-        return repo_name in repos_we_care_about
+        try:
+            repo_name = event.get('repo', {}).get('name', '').lower()
+            return repo_name in repos_we_care_about
+        except AttributeError:
+            logger.error('Error in do_we_care during sync_github')
+            return False
 
     def sync_profile_actions(self):
         # figure out what github profiles we care about
@@ -81,9 +88,9 @@ class Command(BaseCommand):
                             what=event.get('type', ''),
                             repo=event.get('repo', {}).get('name', ''),
                             created_on=created_on,
-                            )
+                        )
             except Exception as e:
-                print(e)
+                logger.error('Error while syncing profile actions during sync_github', e)
 
     def sync_issue_comments(self):
         pass  # TODO: for each active github issue, it'd be great to pull down the comments / activity feed associatd with it

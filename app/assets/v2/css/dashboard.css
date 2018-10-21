@@ -74,7 +74,7 @@ body {
 .title-row {
   display: flex;
   margin-top: 2em;
-  padding-bottom: 5px;
+  float: right;
   border-bottom: 2px solid #3E24FB;
 }
 
@@ -178,6 +178,11 @@ body {
   display: flex;
 }
 
+.tags.fixed {
+  float: right;
+  padding-bottom: 1rem;
+}
+
 #onboard-footer {
   text-align: center;
   background: #F2F6F9;
@@ -193,25 +198,14 @@ body {
   }
 }
 
-@media (min-width: 992px) and (max-width: 1024px) {
+@media (max-width: 991.98px) {
 
   .bounty_row {
-    padding-left: 1rem;
-    padding-right: 2rem;
+    padding-left: 0;
   }
-}
-
-@media (max-width: 991.98px) {
 
   #onboard-dashboard .robot {
     display: none;
-  }
-}
-
-@media (min-width: 768px) {
-
-  .tag.shift_left {
-    margin-left: -100px;
   }
 }
 
@@ -220,15 +214,6 @@ body {
   #onboard-dashboard .col-12 {
     padding-left: 3em;
     padding-right: 3em;
-  }
-
-  #filter {
-    padding-left: 20px;
-  }
-
-  .bounty_row {
-    padding-left: 1em;
-    padding-right: 2em;
   }
 
   .bounty-info {
@@ -254,4 +239,8 @@ body {
   .bounty-detail {
     margin-right: 4rem;
   }
+}
+
+.hiring {
+  content: url('/static/v2/images/hiring.svg');
 }

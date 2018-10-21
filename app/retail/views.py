@@ -16,6 +16,7 @@
     along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 '''
+from json import loads as json_parse
 from os import walk as walkdir
 
 from django.conf import settings
@@ -36,11 +37,13 @@ from cacheops import cached_as, cached_view, cached_view_as
 from dashboard.models import Activity, Profile
 from dashboard.notifications import amount_usdt_open_work, open_bounties
 from economy.models import Token
-from marketing.mails import new_token_request
+from marketing.mails import new_funding_limit_increase_request, new_token_request
 from marketing.models import Alumni, LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber, invite_to_slack
+from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 
+from .forms import FundingLimitIncreaseRequestForm
 from .utils import build_stat_results, programming_languages
 
 
@@ -245,9 +248,16 @@ def how_it_works(request, work_type):
     """Show How it Works / Funder page."""
     if work_type not in ['funder', 'contributor']:
         raise Http404
-
+    if work_type == 'contributor':
+        title = _('How to Find & Complete Open Bounties | Gitcoin')
+        desc = _('Learn how to get paid for open bug bounties and get paid in crypto (ETH or any ERC-20 token)')
+    elif work_type == 'funder':
+        title = _('How to Create & Fund Issues/Bounties | Gitcoin')
+        desc = _('Learn how to create open bug bounties and get freelance developers to complete your job/task.')
     context = {
         'active': f'how_it_works_{work_type}',
+        'title': title,
+        'desc': desc
     }
     return TemplateResponse(request, 'how_it_works/index.html', context)
 
@@ -417,6 +427,7 @@ def results(request, keyword=None):
         raise Http404
     context = build_stat_results(keyword)
     context['is_outside'] = True
+    context['avatar_url'] = static('v2/images/results_preview.gif')
     return TemplateResponse(request, 'results.html', context)
 
 
@@ -731,6 +742,10 @@ We want to nerd out with you a little bit more.  <a href="/slack">Join the Gitco
         'img': static('v2/images/tools/api.jpg'),
         'url': 'https://medium.com/gitcoin/tutorial-how-to-price-work-on-gitcoin-49bafcdd201e',
         'title': _('How to Price Work on Gitcoin'),
+    }, {
+        'img': 'https://raw.github.com/gitcoinco/Gitcoin-Exemplars/master/helpImage.png',
+        'url': 'https://github.com/gitcoinco/Gitcoin-Exemplars',
+        'title': _('Exemplars for Writing A Good Bounty Description'),
     }, {
         'img': static('v2/images/help/tools.png'),
         'url': 'https://medium.com/gitcoin/tutorial-post-a-bounty-in-90-seconds-a7d1a8353f75',
@@ -1066,5 +1081,50 @@ def ui(request):
     return TemplateResponse(request, 'ui_inventory.html', context)
 
 
-def lbcheck(request):
-    return HttpResponse(status=200)
+@csrf_exempt
+@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
+def increase_funding_limit_request(request):
+    user = request.user if request.user.is_authenticated else None
+    profile = request.user.profile if user and hasattr(request.user, 'profile') else None
+    usdt_per_tx = request.GET.get('usdt_per_tx', None)
+    usdt_per_week = request.GET.get('usdt_per_week', None)
+    is_staff = user.is_staff if user else False
+
+    if is_staff and usdt_per_tx and usdt_per_week:
+        try:
+            profile_pk = request.GET.get('profile_pk', None)
+            target_profile = Profile.objects.get(pk=profile_pk)
+            target_profile.max_tip_amount_usdt_per_tx = usdt_per_tx
+            target_profile.max_tip_amount_usdt_per_week = usdt_per_week
+            target_profile.save()
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=400)
+
+        return JsonResponse({'msg': _('Success')}, status=200)
+
+    if request.body:
+        if not user or not profile or not profile.handle:
+            return JsonResponse(
+                {'error': _('You must be Authenticated via Github to use this feature!')},
+                status=401)
+
+        try:
+            result = FundingLimitIncreaseRequestForm(json_parse(request.body))
+            if not result.is_valid():
+                raise
+        except Exception as e:
+            return JsonResponse({'error': _('Invalid JSON.')}, status=400)
+
+        new_funding_limit_increase_request(profile, result.cleaned_data)
+
+        return JsonResponse({'msg': _('Request received.')}, status=200)
+
+    form = FundingLimitIncreaseRequestForm()
+    params = {
+        'form': form,
+        'title': _('Request a Funding Limit Increase'),
+        'card_title': _('Gitcoin - Request a Funding Limit Increase'),
+        'card_desc': _('Do you hit the Funding Limit? Request a increasement!')
+    }
+
+    return TemplateResponse(request, 'increase_funding_limit_request_form.html', params)

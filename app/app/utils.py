@@ -208,6 +208,11 @@ def sync_profile(handle, user=None, hide_profile=True):
     if email and profile:
         get_or_save_email_subscriber(email, 'sync_profile', profile=profile)
 
+    if profile and not profile.github_access_token:
+        token = profile.get_access_token(save=False)
+        profile.github_access_token = token
+        profile.save()
+
     return profile
 
 

@@ -3765,7 +3765,14 @@ msgstr ""
 "Skontaktuj się z pomocą techniczną, jeśli uważasz, że ta wiadomość jest "
 "błędna."
 
-#: enssubdomain/views.py:273
+#: enssubdomain/views.py:260
+#, fuzzy
+#| msgid ""
+#| "Your request has been submitted. Please wait for the transaction to mine!"
+msgid "Your ENS request has failed. Please try again."
+msgstr "Twoja prośba została wysłana. Proszę czekać na transakcję do kopalni!"
+
+#: enssubdomain/views.py:275
 msgid ""
 "Your request has been submitted. Please wait for the transaction to mine!"
 msgstr "Twoja prośba została wysłana. Proszę czekać na transakcję do kopalni!"

@@ -5,6 +5,8 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
+    <meta name="title" content="{{ card_title }}">
+    <meta name="description" content="{{ card_desc }}">
     <link rel="stylesheet" href="{% static "v2/css/bounty.css" %}">
     <link rel="stylesheet" href="{% static "v2/css/tag.css" %}">
   </head>
@@ -52,6 +54,21 @@
             <div class="col-12 col-lg-11 pl-lg-4">
               <div class="col-12">
                 <h4 id="title" class="font-title"></h4>
+                <div class="col-12">
+                  <div class="tags font-caption align-items-center">
+                    <div class="tag token">
+                      <p>
+                        <span id="value_in_token"></span>
+                      </p>
+                    </div>
+                    <div id="value_in_usdt_wrapper" title="" class="tag usd ml-3">
+                      <p>
+                        <span id="value_in_usdt"></span>
+                        <span>USD</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
                 <div class="notif-info mb-3 font-caption" id="funder_notif_info"></div>
                 <span id="network"></span>
               </div>
@@ -107,27 +124,8 @@
           </div>
           <div class="row">
             <div class="col-12 bounty-actions">
-                <div class="col-12 col-md-7">
+                <div class="col-12">
                   <div id="right_actions"></div>
-                </div>
-                <div class="col-12 col-md-5">
-                  <div class="tags font-caption align-items-center">
-                    <div class="tag token">
-                      <p>
-                        <span id="value_in_token"></span>
-                      </p>
-                    </div>
-                    <div id=value_in_usdt_wrapper title="" class="tag usd">
-                      <p>
-                        <span id="value_in_usdt"></span>
-                        <span>USD @ </span>
-                        <span id="token_value_in_usdt"></span>
-                        <span id="token_value_time_peg_wrapper">
-                            as of<span id="token_value_time_peg"></span>
-                        </span>
-                      </p>
-                    </div>
-                  </div>
                 </div>
             </div>
             <div class="col-12">
@@ -174,11 +172,11 @@
                     <span class="bounty-text" id="bounty_owner_address"></span>
                   </div>
                   <div>
-                    <span class="bounty-subheading">{% trans "Email" %} :</span>
+                    <span class="bounty-subheading" id="bounty_owner_email_label">{% trans "Email" %} :</span>
                     <span class="bounty-text" id="bounty_owner_email"></span>
                   </div>
                   <div>
-                    <span class="bounty-subheading">{% trans "Gitcoin Profile" %} :</span>
+                    <span class="bounty-subheading" id="bounty_owner_github_username_label">{% trans "Gitcoin Profile" %} :</span>
                     <span class="bounty-text" id="bounty_owner_github_username"></span>
                   </div>
                 </div>
@@ -218,9 +216,6 @@
           </a>
         [[/if]]
       </span>
-      [[if is_last_non_admin_action]]
-        <br>
-      [[/if]]
     </script>
 
     <script id="activity_template" type="text/x-jsrender">
@@ -391,12 +386,12 @@
     {% include 'shared/footer.html' %}
   </body>
 
+  {% include 'shared/current_profile.html' %}
+
   <script>
     document.issueURL = '{{ issueURL }}';
     document.issueNetwork = '{{ network }}';
     document.issue_stdbounties_id = '{{ stdbounties_id }}';
-    document.isStaff = '{{ is_staff }}' != 'False';
-    document.isModerator = '{{ is_moderator }}' != 'False';
   </script>
 
   <!-- jQuery -->

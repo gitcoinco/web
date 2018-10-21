@@ -22,6 +22,8 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
+    <meta name="description" content="The Gitcoin platform connects freelance developers with open bug bounties or online jobs, paid in crypto (ETH).
+    Leverage a global workforce to quickly complete software development and coding jobs.">
     <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
     <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
   </head>
@@ -39,20 +41,21 @@
       </div>
 
       <div class="col-12 col-lg-9 col-xl-10 body">
-        <div class="container-fluid" id="bounties">
+        <div class="container-fluid p-2" id="bounties">
           <div id="dashboard-title" class="hidden">
             {% include 'shared/search_bar.html' %}
             <div class="row mt-2 mb-2">
-              <div class="col-12 offset-lg-1 col-lg-10 title-row">
-                <div class="col-12 col-md-4">
-                  <span id="filter" class="font-title"></span>
-                  <span id="matches" class="font-body"></span>
-                </div>
-                <div class="col-12 col-md-8 bounty-info" id="funding-info">
-                </div>
-              </div>
             </div>
           </div>
+          <div class="col-12 col-lg-11 pl-2 mr-2 pb-1 title-row">
+            <div class="col-12 col-md-4">
+              <span id="filter" class="font-title"></span>
+              <span id="matches" class="font-body"></span>
+            </div>
+            <div class="col-12 col-md-8 bounty-info" id="funding-info">
+            </div>
+          </div>
+          <div style="clear: right;"></div>
           <div class="row loading justify-content-center align-items-center loading_img">
             <img src="{% static "v2/images/loading_v2.gif" %}">
           </div>

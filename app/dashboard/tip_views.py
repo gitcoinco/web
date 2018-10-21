@@ -21,6 +21,7 @@ from __future__ import print_function, unicode_literals
 import json
 import logging
 
+from django.conf import settings
 from django.contrib import messages
 from django.http import JsonResponse
 from django.shortcuts import redirect
@@ -117,7 +118,7 @@ def receive_tip_v3(request, key, txid, network):
     these_tips = Tip.objects.filter(web3_type='v3', txid=txid, network=network)
     tips = these_tips.filter(metadata__reference_hash_for_receipient=key) | these_tips.filter(metadata__reference_hash_for_funder=key)
     tip = tips.first()
-    is_authed = request.user.username == tip.username or request.user.username == tip.from_username
+    is_authed = request.user.username.lower() == tip.username.lower() or request.user.username.lower() == tip.from_username.lower()
     not_mined_yet = get_web3(tip.network).eth.getBalance(Web3.toChecksumAddress(tip.metadata['address'])) == 0
 
     if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
@@ -128,7 +129,7 @@ def receive_tip_v3(request, key, txid, network):
     elif tip.receive_txid:
         messages.info(request, 'This tip has been received')
     elif not is_authed:
-        messages.error(request, f'This tip is for {tip.username} but you are logged in as {request.user.username}.  Please logout and log back in as {tip.username}.')
+        messages.error(request, f'This tip is for @{tip.username} but you are logged in as @{request.user.username}.  Please logout and log back in as {tip.username}.')
     elif not_mined_yet:
         messages.info(request, f'This tx {tip.txid}, is still mining.  Please wait a moment before submitting the receive form.')
     elif request.GET.get('receive_txid') and not tip.receive_txid:
@@ -303,7 +304,7 @@ def send_tip_3(request):
         ip=get_ip(request),
         expires_date=expires_date,
         github_url=params['github_url'],
-        from_name=params['from_name'],
+        from_name=params['from_name'] if params['from_name'] != 'False' else '',
         from_email=params['from_email'],
         from_username=from_username,
         username=params['username'],
@@ -329,12 +330,21 @@ def send_tip_3(request):
                 if this_tip.value_in_usdt_now:
                     tips_last_week_value += this_tip.value_in_usdt_now
             is_over_tip_weekly_limit = tips_last_week_value > request.user.profile.max_tip_amount_usdt_per_week
+
+    increase_funding_form_title = _('Request a Funding Limit Increasement')
+    increase_funding_form = f'<a target="_blank" href="{settings.BASE_URL}'\
+                            f'requestincrease">{increase_funding_form_title}</a>'
+
     if is_over_tip_tx_limit:
         response['status'] = 'error'
-        response['message'] = _('This tip is over the per-transaction limit of $') + str(max_per_tip) + ('.  Please try again later or contact support.')
+        response['message'] = _('This tip is over the per-transaction limit of $') +\
+            str(max_per_tip) + '. ' + increase_funding_form
     elif is_over_tip_weekly_limit:
         response['status'] = 'error'
-        response['message'] = _('You are over the weekly tip send limit of $') + str(request.user.profile.max_tip_amount_usdt_per_week) + ('.  Please try again later or contact support.')
+        response['message'] = _('You are over the weekly tip send limit of $') +\
+            str(request.user.profile.max_tip_amount_usdt_per_week) +\
+            '. ' + increase_funding_form
+
     return JsonResponse(response)
 
 

@@ -1,27 +1,19 @@
 
 function setupTabs(name) {
-  var indicator = document.querySelector(name + '.tab-indicator');
-  var container = indicator.parentElement.parentElement;
-  var sections = container.querySelector(name + '.tab-sections');
-  var buttons = indicator.previousElementSibling;
-  var firstButton = null;
-  var last = null;
+  let sections = document.querySelector(name + '-sections.tab-sections');
+  let buttons = document.querySelector(name).lastChild;
+  let firstButton = null;
+  let last = null;
 
   function onClick(evt) {
-    var width = evt.target.offsetWidth;
-    var offset = evt.target.offsetLeft;
-    var section = sections.querySelector('#' + evt.target.id);
-
-    indicator.style.width = width + 'px';
-    indicator.style.transform = 'translateX(' + offset + 'px)';
+    const section = sections.querySelector('#section-' + evt.target.id);
 
     if (last) {
       last.className = last.className.replace(' active', '');
     }
-
+    $(sections).find('.tab-section').removeClass('active');
     evt.target.className += ' active';
-    offset = -section.offsetLeft;
-    sections.style.transform = 'translateX(' + offset + 'px)';
+    section.className += ' active';
     last = evt.target;
   }
 

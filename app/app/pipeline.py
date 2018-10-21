@@ -25,7 +25,6 @@ from app.utils import setup_lang, sync_profile
 
 def save_profile(backend, user, response, request, *args, **kwargs):
     """Associate a Profile with a User."""
-
     if backend.name == 'github':
         handle = user.username
         if handle in settings.BLOCKED_USERS:

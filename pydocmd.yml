@@ -43,8 +43,6 @@ generate:
     - dashboard.admin++
   - dashboard/embed.md:
     - dashboard.embed++
-  - dashboard/healthchecks.md:
-    - dashboard.healthchecks++
   - dashboard/helpers.md:
     - dashboard.helpers++
   - dashboard/ios.md:
@@ -130,6 +128,8 @@ generate:
     - gitcoinbot.models++
   - gitcoinbot/views.md:
     - gitcoinbot.views++
+  - healthcheck/healthchecks.md:
+    - healthcheck.healthchecks++
   - linkshortener/commands.md:
     - linkshortener.management.commands.create_shortlinks++
   - linkshortener/admin.md:

@@ -24,6 +24,10 @@ valued.
     * [Classes](#classes)
     * [Methods](#methods)
     * [Example](#example)
+  * [VSCode Remote Debugger](#vscode-remote-debugger)
+    * [VSCode Prerequisites](#vscode-prerequisites)
+    * [Add Launch Configuration](#add-launch-configuration)
+    * [VSCode Additional Resources](#additional-vscode-resources)
   * [Additional Resources](#additional-resources)
 * [FAQ](#faq)
   * [Contributing Static Assets](#contributing-static-assets)
@@ -32,13 +36,13 @@ valued.
 
 This repo uses [Gitcoin](https://gitcoin.co) to incentivize contributions from contributors all around the world.
 
-We believe that properly incentivizing Open Source Software means providing funding to support contributors, but we also recognize the dangerous precedent that is set when contributors who have been contributing for intrinsic reasons begin to expect extrinsic rewards for their contributions.  
+We believe that properly incentivizing Open Source Software means providing funding to support contributors, but we also recognize the dangerous precedent that is set when contributors who have been contributing for intrinsic reasons begin to expect extrinsic rewards for their contributions.
 
 Gitcoin has written about this, in the abstract, [here](https://medium.com/gitcoin/building-a-platform-that-maximizes-freedom-1149968a7b05). Tangibly, our *monetary policy* is:
 
 1. Our mission is to "Grow Open Source".  [Read More about our Mission here](https://gitcoin.co/mission).
-2. We believe that contributors should contribute for intrinsic reasons first (see mission statement above), and we hereby provide notice that we will not be able to fund all contributions.  Appreciate it if and when a Tip comes! 
-3. Scope that is explicitly funded upfront will be posted to the Github Issue by [@gitcoinbot](https://github.com/gitcoinbot), and will also be posted to the [Gitcoin Issue Explorer](https://gitcoin.co/explorer). 
+2. We believe that contributors should contribute for intrinsic reasons first (see mission statement above), and we hereby provide notice that we will not be able to fund all contributions.  Appreciate it if and when a Tip comes!
+3. Scope that is explicitly funded upfront will be posted to the Github Issue by [@gitcoinbot](https://github.com/gitcoinbot), and will also be posted to the [Gitcoin Issue Explorer](https://gitcoin.co/explorer).
 
 
 ## Code of Conduct
@@ -291,6 +295,50 @@ def example3(self):
     var = 'example3'
     return var
 ```
+
+### VSCode Remote Debugger
+
+One benefit of using VSCode is the built-in debugger and you can use the vscode debugger with Gitcoin!
+
+You must complete all prerequisite steps, add the `launch.json` configuration snippet, and ensure the Gitcoin `web` docker container is running.
+
+If this is your first time using the debugger, it's advised that you stop your existing docker-compose services: `docker-compose down`, add the necessary environment variable to `.env`, and rebuild the `web` image via: `docker-compose build web` or `docker-compose up -d --build` to additionally start the services following the build.
+
+Once you have completed all of the below outlined steps, you should be able to start debugging!
+
+#### VSCode Prerequisites
+
+* [VSCode Python support extension](https://marketplace.visualstudio.com/items?itemName=ms-python.python) is installed.
+* [Gitcoin Docker Setup](https://docs.gitcoin.co/mk_setup/) has been completed.
+* Add `VSCODE_DEBUGGER_ENABLED=on` to your `.env` file. (This envvar *must* be added before downing/starting the compose services in order for the necessary `ptvsd` req to be installed)
+
+*Please note: Completely restart the docker-compose services (`docker-compose down; docker-compose up -d`) following successful completion of all steps.*
+
+#### Add Launch Configuration
+
+In order to use the vscode remote debugger for the Gitcoin Django app, you must add the below snippet to your Python debugger `launch.json` configuration.
+You can do this by:
+
+* Switch to the Debugging tab (`⇧⌘D`)
+* Select `Add Configuration...` from the dropdown menu
+* Add the following json snippet to the `configurations` array and save the file:
+
+```json
+{
+    "name": "Gitcoin Remote Debugger",
+    "type": "python",
+    "request": "attach",
+    "localRoot": "${workspaceRoot}",
+    "remoteRoot": "/code",
+    "port": 3030,
+    "host": "localhost"
+}
+```
+
+#### Additional VSCode Resources
+
+* [VSCode Debugging Overview](https://code.visualstudio.com/docs/editor/debugging)
+* [VSCode Debugging Intro Video](https://code.visualstudio.com/docs/introvideos/debugging)
 
 ### Additional Resources
 

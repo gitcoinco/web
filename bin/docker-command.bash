@@ -1,15 +1,20 @@
 #!/usr/local/bin/dumb-init /bin/bash
 
+# Load the .env file into the environment.
+if [ "$ENV" == 'staging' ]; then
+    # shellcheck disable=SC2046
+    export $(grep -v '^#' app/app/.env | xargs)
+fi
+
 # Settings
 # Web
-WEB_WORKER=${WEB_WORKER_TYPE:-'runserver_plus'}
-WEB_INTERFACE=${WEB_INTERFACE:-'0.0.0.0'}
-WEB_PORT=${WEB_PORT:-'8000'}
+GC_WEB_WORKER=${GC_WEB_WORKER_TYPE:-runserver_plus}
+
 # General / Overrides
 FORCE_PROVISION=${FORCE_PROVISION:-'off'}
 FORCE_GET_PRICES=${FORCE_GET_PRICES:-'off'}
 
-cd app
+cd app || exit 1
 # Check whether or not the .env file exists. If not, create it.
 if [ ! -f app/.env ]; then
     cp app/local.env app/.env
@@ -22,13 +27,36 @@ if  [ ! -z "${INSTALL_REQS}" ]; then
     echo "Python package installation completed!"
 fi
 
+GC_WEB_OPTS="${GC_WEB_WORKER} ${GC_WEB_INTERFACE:-0.0.0.0}:${GC_WEB_PORT:-8000}"
+
+if [ "$VSCODE_DEBUGGER_ENABLED" = "on" ]; then
+    pip install ptvsd
+    GC_WEB_OPTS="${GC_WEB_OPTS} --nothreading"
+    echo "VSCode remote debugger enabled! This has disabled threading!"
+fi
+
+if [ "$GC_WEB_WORKER" = "runserver_plus" ]; then
+    GC_WEB_OPTS="${GC_WEB_OPTS} --extra-file /code/app/app/.env --nopin"
+fi
+
 # Provision the Django test environment.
 if [ ! -f /provisioned ] || [ "$FORCE_PROVISION" = "on" ]; then
     echo "First run - Provisioning the local development environment..."
-    python manage.py createcachetable
-    python manage.py collectstatic --noinput -i other &
-    python manage.py migrate
-    python manage.py loaddata initial
+    if [ "$DISABLE_INITIAL_CACHETABLE" != "on" ]; then
+        python manage.py createcachetable
+    fi
+
+    if [ "$DISABLE_INITIAL_COLLECTSTATIC" != "on" ]; then
+        python manage.py collectstatic --noinput -i other &
+    fi
+
+    if [ "$DISABLE_INITIAL_MIGRATE" != "on" ]; then
+        python manage.py migrate
+    fi
+
+    if [ "$DISABLE_INITIAL_LOADDATA" != "on" ]; then
+        python manage.py loaddata initial
+    fi
     date >> /provisioned
     echo "Provisioning completed!"
 fi
@@ -37,4 +65,4 @@ if [ "$FORCE_GET_PRICES" = "on" ]; then
     python manage.py get_prices
 fi
 
-python manage.py "$WEB_WORKER" "$WEB_INTERFACE":"$WEB_PORT" --extra-file /code/app/app/.env --nopin
+exec python manage.py $GC_WEB_OPTS

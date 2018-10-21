@@ -111,6 +111,32 @@ try posting a funded issue at [https://gitcoin.co/new](https://gitcoin.co/new).
 
 # Integrating Gitcoin
 
+Basics
+
+* [Getting Started With Gitcoin](https://medium.com/gitcoin/getting-started-with-gitcoin-fa7149f2461a)
+* [Fund an Issue on Gitcoin](https://medium.com/gitcoin/fund-an-issue-on-gitcoin-3d7245e9b3f3)
+
+Advanced
+
+* [Make a Contributor Friendly Repo](https://medium.com/gitcoin/how-to-build-a-contributor-friendly-project-927037f528d9)
+* [Set your OSS repos monetary policy](https://medium.com/gitcoin/setting-your-oss-repos-monetary-policy-9c493118cd34)
+* [Payout Several Contribs at Once](https://medium.com/gitcoin/payout-several-contributors-at-once-8742c13a8fdd)
+* [Crowdfund Bounties](https://medium.com/gitcoin/crowdfunding-bounties-fd821b04309d)
+* [Make a Gitcoin ENS Name](https://medium.com/gitcoin/personalize-your-own-gitcoin-ens-name-f8e5d7438e3e)
+
+Background
+
+* [Everything you need to know about Gitcoin](https://medium.com/gitcoin/everything-you-need-to-know-about-gitcoin-fe2e3e292a21)
+* [Our Vision: Open Source Money will BUIDL the OSS Ecosystem](https://medium.com/gitcoin/open-source-money-will-buidl-the-open-source-ecosystem-f4169def8748)
+
+Testimonials & Case Studies
+
+* [Augur](https://medium.com/gitcoin/gitcoin-testimonials-augur-9bfe97368a30)
+* [Balance](https://medium.com/gitcoin/gitcoin-testimonials-balance-6d027fe01b9f)
+* [uPort](https://medium.com/gitcoin/gitcoin-testimonials-uport-1510222f3744)
+* [Ethereum Foundation](https://medium.com/gitcoin/gitcoin-testimonials-ethereum-foundation-web3py-py-evm-561cd4da92a6)
+* [Market Protocol](https://medium.com/gitcoin/gitcoin-testimonials-market-protocol-722dbb263d19)
+
 ## Integrating the 'available work widget' on your repo.
 
 This widget will help you advertise that you support Gitcoin bounties, so that your community knows the best place to contribute.
@@ -121,7 +147,7 @@ This widget will help you advertise that you support Gitcoin bounties, so that y
 
 Gitcoinbot will allow you to add issues straight from github.
 
-[Check out the gitcoinbot readme to learn how](app/gitcoinbot/)
+[Check out the gitcoinbot readme to learn how](../app/gitcoinbot/README.md)
 
 ## Adding your token to Gitcoin
 

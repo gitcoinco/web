@@ -1,22 +1,25 @@
 .tag {
   text-align: center;
-  min-width: 90px;
   border-radius: 2px;
   margin: 4px;
-}
-
-.tag span {
-  margin-left: 2px;
+  padding: 3px 6px;
+  font-size: 11px;
+  font-weight: 400;
+  white-space: nowrap;
+  cursor: pointer;
 }
 
 .tag p {
-  padding: 5px 2px;
-  margin-bottom: 0;
+  margin-bottom: 1px;
 }
 
 .tag.usd {
   background-color: #d6fbeb;
   color: #00A55E;
+}
+
+.tag.usd:hover {
+  background-color: #c6ebdb;
 }
 
 .tag.network_warning {
@@ -26,10 +29,19 @@
 
 .tag.token {
   background-color: #e7f0fa;
-  color: #775EC7;
+  color: var(--gc-blue);
+}
+
+.tag.token:hover {
+  background-color: #d7e0ea;
 }
 
 .tag.hiring {
   background-color: #3a9ced;
   color: #fff;
+}
+
+.tag.token > a {
+  position: absolute;
+  margin-top: 0.3rem;
 }

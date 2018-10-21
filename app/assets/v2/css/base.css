@@ -1639,3 +1639,55 @@ div.busyOverlay {
   background-position: center;
   background-image: url('/static/v2/images/loading_v2.gif');
 }
+
+.expandable {
+  overflow: hidden;
+  max-height: 0;
+  transition: 0.3s ease-in-out;
+}
+
+.expandable#expanded {
+  max-height: 10rem;
+}
+
+.arrow {
+  display: inline-block;
+  margin: 0;
+  padding: 0;
+  vertical-align: baseline;
+  transition: 0.3s ease;
+}
+
+#expanded > .arrow {
+  transform: rotateZ(180deg);
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.middle {
+  vertical-align: middle;
+}
+
+.funding {
+  background-color: #f9f9f9;
+}
+
+.funding > div.placeholder {
+  margin-left: 8.3%;
+}
+
+@media (max-width: 768px) {
+  .funding > div.placeholder {
+    margin-left: 3px;
+  }
+}
+
+.g-bold {
+  font-weight: bold;
+}
+
+.g-text-left {
+  text-align: left;
+}

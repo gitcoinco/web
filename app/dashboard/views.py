@@ -44,7 +44,7 @@ from app.utils import clean_str, ellipses, sync_profile
 from avatar.utils import get_avatar_context
 from economy.utils import eth_from_wei
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from git.utils import get_auth_url, get_github_user_data, is_github_token_valid
+from git.utils import get_auth_url, get_github_user_data, is_github_token_valid, search_users
 from marketing.mails import (
     admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
@@ -532,9 +532,12 @@ def onboard(request, flow):
 
 def dashboard(request):
     """Handle displaying the dashboard."""
+
+    keyword = request.GET.get('keywords', False)
+    title = keyword.title() + str(_(" Bounties ")) if keyword else str(_('Issue Explorer'))
     params = {
         'active': 'dashboard',
-        'title': _('Issue Explorer'),
+        'title': title,
         'keywords': json.dumps([str(key) for key in Keyword.objects.all().values_list('keyword', flat=True)]),
     }
     return TemplateResponse(request, 'dashboard/index.html', params)
@@ -1023,7 +1026,7 @@ class ProfileHiddenException(Exception):
     pass
 
 
-def profile_helper(handle, suppress_profile_hidden_exception=False):
+def profile_helper(handle, suppress_profile_hidden_exception=False, current_user=None):
     """Define the profile helper.
 
     Args:
@@ -1039,6 +1042,10 @@ def profile_helper(handle, suppress_profile_hidden_exception=False):
         dashboard.models.Profile: The Profile associated with the provided handle.
 
     """
+    current_profile = getattr(current_user, 'profile', None)
+    if current_profile and current_profile.handle == handle:
+        return current_profile
+
     try:
         profile = Profile.objects.get(handle__iexact=handle)
     except Profile.DoesNotExist:
@@ -1122,7 +1129,7 @@ def profile(request, handle):
         else:
             if handle.endswith('/'):
                 handle = handle[:-1]
-            profile = profile_helper(handle)
+            profile = profile_helper(handle, current_user=request.user)
 
         context = profile.to_dict()
     except (Http404, ProfileHiddenException):
@@ -1753,10 +1760,13 @@ def change_bounty(request, bounty_id):
 
 
 def get_users(request):
+    token = request.GET.get('token', None)
+
     if request.is_ajax():
         q = request.GET.get('term')
         profiles = Profile.objects.filter(handle__icontains=q)
         results = []
+        # try gitcoin
         for user in profiles:
             profile_json = {}
             profile_json['id'] = user.id
@@ -1766,6 +1776,27 @@ def get_users(request):
             if user.avatar_id:
                 profile_json['avatar_url'] = user.avatar_url
             profile_json['preferred_payout_address'] = user.preferred_payout_address
+            results.append(profile_json)
+        # try github
+        if not profiles:
+            search_results = search_users(q, token=token)
+            for result in search_results:
+                profile_json = {}
+                profile_json['id'] = -1
+                profile_json['text'] = result.login
+                profile_json['email'] = None
+                profile_json['avatar_id'] = None
+                profile_json['avatar_url'] = result.avatar_url
+                profile_json['preferred_payout_address'] = None
+                results.append(profile_json)
+        # just take users word for it
+        if not profiles:
+            profile_json = {}
+            profile_json['id'] = -1
+            profile_json['text'] = q
+            profile_json['email'] = None
+            profile_json['avatar_id'] = None
+            profile_json['preferred_payout_address'] = None
             results.append(profile_json)
         data = json.dumps(results)
     else:

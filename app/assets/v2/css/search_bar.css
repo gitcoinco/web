@@ -90,6 +90,28 @@
   cursor: pointer;
 }
 
+#search_nav li {
+  background-color: #fff;
+  border: 1px solid #d3d6e2;
+  padding: 5px 10px;
+  margin: 5px;
+  cursor: pointer;
+  font-size: 12px;
+  border-radius:6px;
+}
+
+#search_nav .nav > i {
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-right: 0.75rem;
+}
+
+#search_nav li a {
+  color: #000;
+  float: right;
+  margin-left: 0.4rem;
+}
+
 /* Remove IE default X */
 #keywords::-ms-clear {
   display: none;

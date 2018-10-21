@@ -19,6 +19,8 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta name="title" content="Open Source Opportunities for Freelance Developers | Gitcoin">
+    <meta name="description" content="Join the Gitcoin Developer Community to find and complete freelance jobs or bug bounties and get paid in crypto (ETH or any ERC-20 token).">
     {% include 'shared/head.html' %}
     {% include 'shared/cards.html' %}
     <style>.async-hide { opacity: 0 !important} </style>
@@ -44,6 +46,9 @@
         {% include 'landing/contributor/benefits.html' %}
       </div>
 
+      <div class="container-fluid pb-5 landing__newsletter">
+        {% include 'shared/newsletter.html' %}
+      </div>
 
       {% if tech_stack %}
         <div class="container-fluid p-5 open-bounties">
@@ -56,10 +61,6 @@
           {% include 'landing/contributor/activity.html' %}
         </div>
       {% endif %}
-
-      <div class="container-fluid pb-5 landing__newsletter">
-        {% include 'shared/newsletter.html' %}
-      </div>
 
       <div class="container-fluid p-5 whatisit_container">
         {% include 'shared/what_is_gitcoin.html' with video='DJartWzDn0E' %}

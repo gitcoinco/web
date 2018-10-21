@@ -20,8 +20,12 @@
 <html lang="en">
   {% include 'shared/head.html' %}
   {% include 'shared/cards_pic.html' %}
-
+  <head>
+    <meta name="title" content="Gitcoin Platform Stats & Testimonials | Gitcoin">
+    <meta name="description" content="See the Cumulative Bounty History of Gitcoin in USD, Bounty Completion Rate, Median Bounty Turnaround Time, Testimonials and more.">
+  </head>
   <body class="{{ active }} g-font-muli">
+
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header">
       {% include 'shared/nav.html' %}
@@ -34,7 +38,7 @@
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
             <h2 class="text-center">
               ${{ universe_total_usd|floatformat:2|intcomma }} of {% blocktrans %}
-               Cumulative Bounty History
+               Total Platform Value
               {% endblocktrans %}
               {% if keyword %}({{keyword}}){%endif%}
             </h2>
@@ -45,21 +49,36 @@
 
           </script>
 
-          <div class="col-md-8">
+          <div class="col-md-8 align-items-center" style="text-align:center;">
+            <h5 style="margin-top: 70px; margin-bottom: -70px">{% trans "Broken Down by Month" %}</h5>
             <div id="bounty_universe_chart"></div>
           </div>
 
           <div class="col-md-4 py-5 bounty_status">
-            <h5>{% trans "Bounty Status" %}</h5>
+            <h5>{% trans "and by Type" %}</h5>
             <p><span class="lblue_box"></span> {% trans "Tips" %}</p>
-            <p><span class="yellow_box"></span> {% trans "Open / Available" %}</p>
-            <p><span class="green_box"></span> {% trans "Started / In Progress" %}</p>
-            <p><span class="blue_box"></span> {% trans "Completed" %}</p>
-            <p><span class="pink_box"></span> {% trans "Cancelled Bounties" %}</p>
+            <p><span class="yellow_box"></span> {% trans "Open Work" %}</p>
+            <p><span class="green_box"></span> {% trans "Started Work" %}</p>
+            <p><span class="blue_box"></span> {% trans "Completed Work" %}</p>
+            <p><span class="pink_box"></span> {% trans "Cancelled Work" %}</p>
           </div>
         </div>
       </div>
     </div>
+
+
+    <div style="background-color: #fafafa;">
+      <div class="container" id="">
+        <div class="row py-2 animatedParent">
+          <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center">
+            <p style='text-align: center;'>
+              Since it's <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6" target="_blank">launch</a> in <span style="margin: 3px 3px; font-weight: bold;">November 2017</span>, Gitcoin has helped <span style="margin: 3px 3px;font-weight: bold;">{{funders|intcomma}}</span> funders reach an audience of <span style="margin: 3px 3px;font-weight: bold;">{{audience|intcomma}}</span> developers.  Gitcoin has facilitated <span style="margin: 3px 3px;font-weight: bold;">{{transactions|intcomma}}</span> complete transactions to <span style="margin: 3px 3px;font-weight: bold;">{{recipients|intcomma}}</span> unique coders.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
 
 
     <div style="background: #F2F6F9;">
@@ -100,7 +119,7 @@
           <div class="col-6 col-md-4 text-center py-4">
             <img class="icon" src="{% static "v2/images/results/abandoned_bounties.svg" %}" />
             <h3 class="text-highlight-purple mt-3">{{ bounty_abandonment_rate | floatformat:1 }}%</h3>
-            <p>{% trans "Bounty Abandonment Rate" %}</p>
+            <p>{% trans "Bounty Cancel Rate" %}</p>
             <span class="mt-0">(after Start Work)</span>
           </div>
 
@@ -114,6 +133,7 @@
       </div>
     </div>
 
+
     <div style="background: white;">
       <div class="container" id="repo_transaction">
         <div class="row py-5 animatedParent">
@@ -125,34 +145,36 @@
             <div id="repo_chart"></div>
           </div>
           <script type="text/javascript">
-          document.platform_stats = [  [ 'Repo', 'Bounties' ], [ 'Open Bounties', {{ count_open }}],  [ 'Bounties w. started work', {{ count_started }}],  [ 'Completed bounties', {{ count_done }} ] ];
+          document.platform_stats = [  [ 'Repo', 'Bounties' ], [ 'Open Bounties', {{ pct_open }}],  [ 'Bounties w. started work', {{ pct_started }}],  [ 'Completed bounties', {{ pct_done }} ] ];
         </script>
 
           <div class="col-md-6 py-5 bounty_status">
             {% blocktrans %}
-            <p><span class="blue_box"></span> {{ count_open }} open bounties </p>
+            <p><span class="blue_box"></span> {{ pct_open }}% open bounties </p>
             {% endblocktrans %}
             {% blocktrans %}
-            <p><span class="green_box"></span> {{ count_started }} bounties with started work</p>
+            <p><span class="green_box"></span> {{ pct_started }}% bounties with started work</p>
             {% endblocktrans %}
             {% blocktrans %}
-            <p><span class="yellow_box"></span> {{ count_done }} completed bounties </p>
+            <p><span class="yellow_box"></span> {{ pct_done }}% completed bounties </p>
             {% endblocktrans %}
           </div>
         </div>
       </div>
     </div>
 
+
     <div style="background-color: #F2F6F9;">
       <div class="container" id="bounty_universe">
         <div class="row py-5 animatedParent">
+
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
             <h2 class="text-center pb-5">
-              {% trans "Top Funded Organizations" %} {% if keyword %}({{keyword}}){%endif%}
+              {% trans "Top Organizations" %} {% if keyword %}({{keyword}}){%endif%}
             </h2>
           </div>
 
-          <div class="col-md-12">
+          <div class="col-md-12 align-items-center">
             <div id="repo_repos">
                 {% for org in top_orgs %}
                     <a href="/profile/{{org}}" title="{{org}}">
@@ -160,9 +182,37 @@
                     </a>
                 {% endfor %}
             </div>
+
+          </div>
+
+        </div>
+        <div class="row py-5 animatedParent">
+
+          <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
+            <h2 class="text-center pb-5">
+              {% trans "Top Coders" %} {% if keyword %}({{keyword}}){%endif%}
+            </h2>
+          </div>
+
+          <div class="col-md-12 align-items-center">
+            <div id="repo_repos">
+                {% for org in top_coders %}
+                    <a href="/profile/{{org}}" title="{{org}}">
+                        <img src="/dynamic/avatar/{{org}}" alts="{{org}}" style="max-width: 100px; max-height: 100px; margin 5px; border-radius: 50px;">
+                    </a>
+                {% endfor %}
+            </div>
+
+          </div>
+
+        </div>
+        <div class="row mt-5 pb-5 animatedParent text-center align-items-center">
+          <div class="col animated pulse fast">
+            <a class="button button--primary" role="button" href="{% url "_leaderboard" %}"
+              target="_blank" rel="noopener noreferrer">{% trans "Checkout the Leaderboard" %}</a>
           </div>
         </div>
-      </div>
+
     </div>
 
 
@@ -190,7 +240,7 @@
           {% for the_title, hrd in hourly_rate_distribution_by_range.items %}
             {% if hrd %}
               <div class="col-2 {% cycle 'odd' 'even' %}" style="margin: 10px auto; border: 1px solid #6c757d; padding: 5px 10px; max-width: 150px; height: 110px;">
-                  <strong>{{the_title | title}}</strong> 
+                  <span>{{the_title | title}}</span> 
                   <br>
                   {% trans "Bounties Pay" %}
                   <br>
@@ -209,7 +259,7 @@
           {% for the_title, hrd in skill_rate_distribution_by_range.items %}
             {% if hrd %}
               <div class="col-2 {% cycle 'odd' 'even' %}" style="margin: 10px auto; border: 1px solid #6c757d; padding: 5px 10px; max-width: 150px; height: 110px;">
-                  <strong>{{the_title | title}}</strong> 
+                  <span>{{the_title | title}}</span> 
                   <br>
                   {% trans "Bounties Pay" %}
                   <br>
@@ -260,7 +310,7 @@
         </div>
         <div class="row py-1 animatedParent">
           <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center ">
-            <p style="text-align: center; font-size: 0.9rem;">Gitcoin is a double sided market of funders and developers.  In order to jump start the marketplace and dogfood our own product, we've funded some work on the platform ourselves.  The Joe Dominance Index (a portmeanteau of the <a href="https://coinmarketcap.com/charts/#dominance-percentage">Bitcoin Dominance Index</a> and Gitcoin's largest investor, Consensys's CEO <a href="https://twitter.com/ethereumjoseph">Joe Lubin</a>) is a measure of the percentage of work on the platform that is funded by us.   </p>
+            <p style="text-align: center; font-size: 0.9rem;">Gitcoin is a double sided market of funders and developers.  In order to jump start the marketplace and dogfood our own product, we've funded some work on the platform ourselves.  The Joe Dominance Index (a portmeanteau of the <a href="https://coinmarketcap.com/charts/#dominance-percentage">Bitcoin Dominance Index</a> and the name of Gitcoin's largest investor, Consensys's CEO <a href="https://twitter.com/ethereumjoseph">Joe Lubin</a>) is a measure of the percentage of work on the platform that is funded by us.   </p>
           </div>
           <script>
             document.jdi_ticks = [0, 20, 40, 60, 80, 100];
@@ -310,7 +360,9 @@
 
         <div class="row mt-2 pb-2 animatedParent text-center">
           <div class="col animated pulse fast" style="height: 600px;">
-            <div id="mesh_network_jobs_holder"></div>
+            <div id="mesh_network_jobs_holder">
+              <img src="{% static 'v2/images/results/mesh_network.gif' %}" id="mesh_preview" style="cursor: pointer; max-width: 100%;">
+            </div>
           </div>
         </div>
 
@@ -356,7 +408,10 @@
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="{% static "v2/js/pages/results.js" %}"></script>
   <script>
-    $("#mesh_network_jobs_holder").html('<iframe src="{% url 'viz_graph' %}?keyword={{keyword}}" style="width: 100%; height: 600px; border-left: 1px #dddddd solid; border-bottom: 1px #dddddd solid;  " frameBorder="0">');
+    $("#mesh_preview").click(function(e){
+      $("#mesh_network_jobs_holder").html('<iframe src="{% url 'viz_graph' %}?keyword={{keyword}}" style="width: 100%; height: 600px; border-left: 1px #dddddd solid; border-bottom: 1px #dddddd solid;  " frameBorder="0">');
+      e.preventDefault();
+    });
   </script>
 </html>
 
