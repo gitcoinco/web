@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2018 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -193,9 +193,27 @@ def gh_login(request):
     return redirect('social:begin', backend='github')
 
 
-def get_interest_modal(request):
+def get_interest_modal(request, network, bounty_id):
+    """Get the interest modal for the bounty.
 
-    bounty = Bounty.objects.get(pk=request.GET.get("pk"))
+    :request method: GET
+
+    Args:
+        request: The request object.
+        network (str): Bounty network.
+        bounty_id (int): ID of the Bounty.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The interest modal.
+
+    """
+    bounty = Bounty.objects.current().filter(network=network, standard_bounties_id=bounty_id).first()
+
+    if not bounty:
+        raise Http404
 
     context = {
         'bounty': bounty,
@@ -209,12 +227,14 @@ def get_interest_modal(request):
 
 @csrf_exempt
 @require_POST
-def new_interest(request, bounty_id):
+def new_interest(request, network, bounty_id):
     """Claim Work for a Bounty.
 
     :request method: POST
 
     Args:
+        request: The request object.
+        network (str): Bounty network.
         bounty_id (int): ID of the Bounty.
 
     Returns:
@@ -238,10 +258,13 @@ def new_interest(request, bounty_id):
             {'error': _('You must be authenticated via github to use this feature!')},
             status=401)
 
-    try:
-        bounty = Bounty.objects.get(pk=bounty_id)
-    except Bounty.DoesNotExist:
-        raise Http404
+    bounty = Bounty.objects.current().filter(network=network, standard_bounties_id=bounty_id).first()
+
+    if not bounty:
+        return JsonResponse({
+            'error': _(f'Bounty not found.'),
+            'success': False},
+            status=404)
 
     if bounty.is_project_type_fulfilled:
         return JsonResponse({
@@ -305,14 +328,16 @@ def new_interest(request, bounty_id):
 
 @csrf_exempt
 @require_POST
-def remove_interest(request, bounty_id):
+def remove_interest(request, network, bounty_id):
     """Unclaim work from the Bounty.
 
     Can only be called by someone who has started work
 
     :request method: POST
 
-    post_id (int): ID of the Bounty.
+    request: The request object.
+    network (str): The Bounty network.
+    bounty_id (int): ID of the Bounty.
 
     Returns:
         dict: The success key with a boolean value and accompanying error.
@@ -332,9 +357,9 @@ def remove_interest(request, bounty_id):
             {'error': _('You must be authenticated via github to use this feature!')},
             status=401)
 
-    try:
-        bounty = Bounty.objects.get(pk=bounty_id)
-    except Bounty.DoesNotExist:
+    bounty = Bounty.objects.current().filter(network=network, standard_bounties_id=bounty_id).first()
+
+    if not bounty:
         return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
                             status=401)
 
@@ -372,14 +397,16 @@ def remove_interest(request, bounty_id):
 
 @csrf_exempt
 @require_POST
-def extend_expiration(request, bounty_id):
+def extend_expiration(request, network, bounty_id):
     """Extend expiration of the Bounty.
 
     Can only be called by funder or staff of the bounty.
 
     :request method: POST
 
-    post_id (int): ID of the Bounty.
+    request: The request object.
+    network (str): The Bounty network.
+    bounty_id (int): ID of the Bounty.
 
     Returns:
         dict: The success key with a boolean value and accompanying error.
@@ -392,9 +419,9 @@ def extend_expiration(request, bounty_id):
             {'error': _('You must be authenticated via github to use this feature!')},
             status=401)
 
-    try:
-        bounty = Bounty.objects.get(pk=bounty_id)
-    except Bounty.DoesNotExist:
+    bounty = Bounty.objects.current().filter(network=network, standard_bounties_id=bounty_id).first()
+
+    if not bounty:
         return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
                             status=401)
 
@@ -420,7 +447,7 @@ def extend_expiration(request, bounty_id):
 
 @require_POST
 @csrf_exempt
-def uninterested(request, bounty_id, profile_id):
+def uninterested(request, network, bounty_id, profile_id):
     """Remove party from given bounty
 
     Can only be called by the bounty funder
@@ -428,6 +455,8 @@ def uninterested(request, bounty_id, profile_id):
     :request method: GET
 
     Args:
+        request: The request object.
+        network (str): The bounty network.
         bounty_id (int): ID of the Bounty
         profile_id (int): ID of the interested profile
 
@@ -437,11 +466,12 @@ def uninterested(request, bounty_id, profile_id):
     Returns:
         dict: The success key with a boolean value and accompanying error.
     """
-    try:
-        bounty = Bounty.objects.get(pk=bounty_id)
-    except Bounty.DoesNotExist:
+    bounty = Bounty.objects.current().filter(network=network, standard_bounties_id=bounty_id).first()
+
+    if not bounty:
         return JsonResponse({'errors': ['Bounty doesn\'t exist!']},
                             status=401)
+
     is_logged_in = request.user.is_authenticated
     is_funder = bounty.is_funder(request.user.username.lower())
     is_staff = request.user.is_staff
@@ -1242,10 +1272,26 @@ def get_quickstart_video(request):
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def extend_issue_deadline(request):
-    """Show quickstart video."""
-    bounty = Bounty.objects.get(pk=request.GET.get("pk"))
-    print(bounty)
+def extend_issue_deadline(request, network, bounty_id):
+    """Change the issue deadline of a bounty.
+
+    Args:
+        request: The request object.
+        network (str): Bounty network.
+        bounty_id (int): ID of the Bounty.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found.
+
+    Returns:
+        TemplateResponse: The extend_issue_deadline template.
+
+    """
+    bounty = Bounty.objects.current().filter(network=network, standard_bounties_id=bounty_id).first()
+
+    if not bounty:
+        raise Http404
+
     context = {
         'active': 'extend_issue_deadline',
         'title': _('Extend Expiration'),
@@ -1571,7 +1617,21 @@ def new_bounty(request):
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def change_bounty(request, bounty_id):
+def change_bounty(request, network, bounty_id):
+    """Change issue details of a bounty.
+
+    Args:
+        request: The request object.
+        network (str): Bounty network.
+        bounty_id (int): ID of the Bounty.
+
+    Raises:
+        Http404: The exception is raised if no associated Bounty is found and the request method is GET.
+
+    Returns:
+        TemplateResponse if the request method is GET, else a JsonResponse.
+
+    """
     user = request.user if request.user.is_authenticated else None
 
     if not user:
@@ -1582,10 +1642,9 @@ def change_bounty(request, bounty_id):
         else:
             return redirect('/login/github?next=' + request.get_full_path())
 
-    try:
-        bounty_id = int(bounty_id)
-        bounty = Bounty.objects.get(pk=bounty_id)
-    except:
+    bounty = Bounty.objects.current().filter(network=network, standard_bounties_id=bounty_id).first()
+
+    if not bounty:
         if request.body:
             return JsonResponse({'error': _('Bounty doesn\'t exist!')}, status=404)
         else:
@@ -1649,7 +1708,8 @@ def change_bounty(request, bounty_id):
 
     params = {
         'title': _('Change Bounty Details'),
-        'pk': bounty.pk,
+        'bounty_id': bounty.standard_bounties_id,
+        'network': bounty.network,
         'result': result
     }
     return TemplateResponse(request, 'bounty/change.html', params)

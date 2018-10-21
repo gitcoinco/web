@@ -1,5 +1,5 @@
 '''
-    Copyright (C) 2017 Gitcoin Core
+    Copyright (C) 2018 Gitcoin Core
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as published
@@ -110,7 +110,6 @@ urlpatterns = [
     # action URLs
     re_path(r'^bounty/quickstart/?', dashboard.views.quickstart, name='quickstart'),
     url(r'^bounty/new/?', dashboard.views.new_bounty, name='new_bounty'),
-    re_path(r'^bounty/change/(?P<bounty_id>.*)?', dashboard.views.change_bounty, name='change_bounty'),
     url(r'^funding/new/?', dashboard.views.new_bounty, name='new_funding'),
     url(r'^new/?', dashboard.views.new_bounty, name='new_funding_short'),
     path('issue/fulfill', dashboard.views.fulfill_bounty, name='fulfill_bounty'),
@@ -123,19 +122,32 @@ urlpatterns = [
     path('issue/contribute', dashboard.views.contribute, name='contribute'),
     path('issue/social_contribution', dashboard.views.social_contribution, name='social_contribution'),
     path(
-        'actions/bounty/<int:bounty_id>/extend_expiration/',
+        'actions/bounty/<str:network>/<int:bounty_id>/extend_expiration/',
         dashboard.views.extend_expiration,
         name='extend_expiration'
+    ),
+    path(
+        'actions/bounty/<str:network>/<int:bounty_id>/change/',
+        dashboard.views.change_bounty,
+        name='change_bounty'
     ),
 
     # Avatars
     path('avatar/', include('avatar.urls', namespace='avatar')),
 
     # Interests
-    path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
-    path('actions/bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
     path(
-        'actions/bounty/<int:bounty_id>/interest/<int:profile_id>/uninterested/',
+        'actions/bounty/<str:network>/<int:bounty_id>/interest/new/',
+        dashboard.views.new_interest,
+        name='express-interest'
+    ),
+    path(
+        'actions/bounty/<str:network>/<int:bounty_id>/interest/remove/',
+        dashboard.views.remove_interest,
+        name='remove-interest'
+    ),
+    path(
+        'actions/bounty/<str:network>/<int:bounty_id>/interest/<int:profile_id>/uninterested/',
         dashboard.views.uninterested,
         name='uninterested'
     ),
@@ -208,7 +220,16 @@ urlpatterns = [
 
     # modals
     re_path(r'^modal/get_quickstart_video/?', dashboard.views.get_quickstart_video, name='get_quickstart_video'),
-    re_path(r'^modal/extend_issue_deadline/?', dashboard.views.extend_issue_deadline, name='extend_issue_deadline'),
+    path(
+        'modal/extend_issue_deadline/<str:network>/<int:bounty_id>/',
+        dashboard.views.extend_issue_deadline,
+        name='extend_issue_deadline'
+    ),
+    path(
+        'modal/interest/<str:network>/<int:bounty_id>/',
+        dashboard.views.get_interest_modal,
+        name='get_interest_modal'
+    ),
 
     # brochureware views
     re_path(r'^about/?', retail.views.about, name='about'),
@@ -376,15 +397,6 @@ urlpatterns = [
     # for robots
     url(r'^robots.txt/?', retail.views.robotstxt, name='robotstxt'),
     url(r'^sitemap\.xml$', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
-    # Interests
-    path('interest/modal', dashboard.views.get_interest_modal, name='get_interest_modal'),
-    path('actions/bounty/<int:bounty_id>/interest/new/', dashboard.views.new_interest, name='express-interest'),
-    path('actions/bounty/<int:bounty_id>/interest/remove/', dashboard.views.remove_interest, name='remove-interest'),
-    path(
-        'actions/bounty/<int:bounty_id>/interest/<int:profile_id>/uninterested/',
-        dashboard.views.uninterested,
-        name='uninterested'
-    ),
 
     # Legacy Support
     path('legacy/', include('legacy.urls', namespace='legacy')),

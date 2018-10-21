@@ -255,25 +255,31 @@ var showLoading = function() {
 };
 
 /** Add the current profile to the interested profiles list. */
-var add_interest = function(bounty_pk, data) {
+var add_interest = function(network, bountyId, data) {
   if (document.interested) {
     return;
   }
-  mutate_interest(bounty_pk, 'new', data);
+  mutate_interest(network, bountyId, 'new', data);
 };
 
 /** Remove the current profile from the interested profiles list. */
-var remove_interest = function(bounty_pk, slash = false) {
+var remove_interest = function(network, bountyId, slash = false) {
   if (!document.interested) {
     return;
   }
 
-  mutate_interest(bounty_pk, 'remove', slash);
+  mutate_interest(network, bountyId, 'remove', slash);
 };
 
 /** Helper function -- mutates interests in either direction. */
-var mutate_interest = function(bounty_pk, direction, data) {
-  var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + direction + '/';
+var mutate_interest = function(network, bountyId, direction, data) {
+  var request_url =
+    '/actions/bounty/' +
+    network +
+    '/' +
+    bountyId +
+    '/interest/' +
+    direction + '/';
 
   showBusyOverlay();
   $.post(request_url, data).then(function(result) {
@@ -290,7 +296,7 @@ var mutate_interest = function(bounty_pk, direction, data) {
         $('#interest a').attr('id', '');
       }
 
-      pull_interest_list(bounty_pk);
+      pull_interest_list(network, bountyId);
       return true;
     }
     return false;
@@ -309,7 +315,7 @@ var mutate_interest = function(bounty_pk, direction, data) {
 };
 
 
-var uninterested = function(bounty_pk, profileId, slash) {
+var uninterested = function(network, bountyId, profileId, slash) {
   var data = {};
   var success_message = 'Contributor removed from bounty.';
 
@@ -318,7 +324,14 @@ var uninterested = function(bounty_pk, profileId, slash) {
     data.slashed = true;
   }
 
-  var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + profileId + '/uninterested/';
+  var request_url =
+    '/actions/bounty/' +
+    network +
+    '/' +
+    bountyId +
+    '/interest/' +
+    profileId +
+    '/uninterested/';
 
   showBusyOverlay();
   $.post(request_url, data, function(result) {
@@ -327,7 +340,7 @@ var uninterested = function(bounty_pk, profileId, slash) {
     result = sanitizeAPIResults(result);
     if (result.success) {
       _alert({ message: gettext(success_message) }, 'success');
-      pull_interest_list(bounty_pk);
+      pull_interest_list(network, bountyId);
       return true;
     }
     return false;
@@ -337,8 +350,13 @@ var uninterested = function(bounty_pk, profileId, slash) {
   });
 };
 
-var extend_expiration = function(bounty_pk, data) {
-  var request_url = '/actions/bounty/' + bounty_pk + '/extend_expiration/';
+var extend_expiration = function(network, bountyId, data) {
+  var request_url =
+    '/actions/bounty/' +
+    network +
+    '/' +
+    bountyId +
+    '/extend_expiration/';
 
   showBusyOverlay();
   $.post(request_url, data, function(result) {
@@ -347,7 +365,7 @@ var extend_expiration = function(bounty_pk, data) {
     result = sanitizeAPIResults(result);
     if (result.success) {
       _alert({ message: result.msg }, 'success');
-      pull_interest_list(bounty_pk);
+      pull_interest_list(network, bountyId);
       return true;
     }
     return false;
@@ -359,35 +377,16 @@ var extend_expiration = function(bounty_pk, data) {
 
 
 /** Pulls the list of interested profiles from the server. */
-var pull_interest_list = function(bounty_pk, callback) {
-  document.interested = false;
-  var uri = '/actions/api/v0.1/bounties/?github_url=' + document.issueURL + '&not_current=1';
-  var started = [];
+var pull_interest_list = function(network, bountyId) {
+  var uri =
+    '/actions/api/v0.1/bounties/?' +
+    'network=' + network +
+    '&standard_bounties_id=' + bountyId;
 
   $.get(uri, function(results) {
     results = sanitizeAPIResults(results);
-    const current = results.find(result => result.current_bounty);
 
-    render_activity(current, results);
-    if (current.interested) {
-      var interested = current.interested;
-
-      interested.forEach(function(_interested) {
-        started.push(
-          profileHtml(_interested.profile.handle)
-        );
-        if (_interested.profile.handle == document.contxt.github_handle) {
-          document.interested = true;
-        }
-      });
-    }
-    if (started.length == 0) {
-      started.push('<i class="fas fa-minus"></i>');
-    }
-    $('#started_owners_username').html(started);
-    if (typeof callback != 'undefined') {
-      callback(document.interested);
-    }
+    renderBountyDetails(results.pop());
   });
 };
 

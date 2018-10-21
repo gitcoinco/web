@@ -39,10 +39,15 @@ $(document).ready(function() {
 
       mixpanel.track('Change Bounty Details Clicked', {});
 
-      const bountyId = document.pk;
       const payload = JSON.stringify(formData);
+      const url =
+        '/actions/bounty/' +
+        document.network +
+        '/' +
+        document.bountyId +
+        '/change/';
 
-      $.post('/bounty/change/' + bountyId, payload).then(
+      $.post(url, payload).then(
         function(result) {
           inputElements.removeAttr('disabled');
           unloading_button($('.js-submit'));

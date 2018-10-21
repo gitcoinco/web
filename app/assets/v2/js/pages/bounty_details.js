@@ -561,7 +561,7 @@ var attach_work_actions = function() {
       $(this).attr('href', '/interested');
       $(this).find('span').text(gettext('Start Work'));
       $(this).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you would like to take on this project') + '</div>');
-      remove_interest(document.result['pk']);
+      remove_interest(document.result['network'], document.result['standard_bounties_id']);
     }
   });
 };
@@ -605,7 +605,12 @@ var show_interest_modal = function() {
   var self = this;
 
   setTimeout(function() {
-    var url = '/interest/modal?redirect=' + window.location.pathname + '&pk=' + document.result['pk'];
+    var url =
+      '/modal/interest/' +
+      document.result['network'] +
+      '/' +
+      document.result['standard_bounties_id'] +
+      '?redirect=' + window.location.pathname;
 
     $.get(url, function(newHTML) {
       var modal = $(newHTML).appendTo('body').modal({
@@ -630,9 +635,13 @@ var show_interest_modal = function() {
         $(self).attr('href', '/uninterested');
         $(self).find('span').text(gettext('Stop Work'));
         $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
-        add_interest(document.result['pk'], {
-          issue_message: msg
-        });
+        add_interest(
+          document.result['network'],
+          document.result['standard_bounties_id'],
+          {
+            issue_message: msg
+          }
+        );
         $.modal.close();
       });
     });
@@ -657,7 +666,11 @@ var show_extend_deadline_modal = function() {
   var self = this;
 
   setTimeout(function() {
-    var url = '/modal/extend_issue_deadline?pk=' + document.result['pk'];
+    var url =
+      '/modal/extend_issue_deadline/' +
+      document.result['network'] +
+      '/' +
+      document.result['standard_bounties_id'];
 
     $.get(url, function(newHTML) {
       var modal = $(newHTML).appendTo('body').modal({
@@ -697,13 +710,14 @@ var show_extend_deadline_modal = function() {
 
         var extended_time = $('input[name=updatedExpires]').val();
 
-        extend_expiration(document.result['pk'], {
-          deadline: extended_time
-        });
+        extend_expiration(
+          document.result['network'],
+          document.result['standard_bounties_id'],
+          {
+            deadline: extended_time
+          }
+        );
         $.modal.close();
-        setTimeout(function() {
-          window.location.reload();
-        }, 2000);
       });
     });
   });
@@ -956,9 +970,15 @@ var do_actions = function(result) {
   }
 
   if (show_change_bounty) {
+    const url =
+      '/actions/bounty/' +
+      result['network'] +
+      '/' +
+      result['standard_bounties_id'] +
+      '/change/';
     const _entry = {
       enabled: true,
-      href: '/bounty/change/' + result['pk'],
+      href: url,
       text: gettext('Edit Issue Details'),
       parent: 'right_actions',
       title: gettext('Update your Bounty Settings to get the right Crowd')
@@ -1140,12 +1160,19 @@ var do_actions = function(result) {
 };
 
 const render_actions = function(actions) {
+  const tmp = {};
+
   for (let l = 0; l < actions.length; l++) {
     const target = actions[l]['parent'];
+    const targetSelector = '#' + target;
     const tmpl = $.templates('#action');
     const html = tmpl.render(actions[l]);
 
-    $('#' + target).append(html);
+    if (!tmp[targetSelector]) {
+      $(targetSelector).html('');
+      tmp[targetSelector] = true;
+    }
+    $(targetSelector).append(html);
   }
 };
 
@@ -1177,13 +1204,7 @@ var pull_bounty_from_api = function() {
       if (normalizeURL(result['github_url']) == normalizeURL(document.issueURL)) {
         nonefound = false;
 
-        build_detail_page(result);
-
-        do_actions(result);
-
-        render_activity(result, results);
-
-        document.result = result;
+        renderBountyDetails(result, results);
         return;
       }
     }
@@ -1297,14 +1318,8 @@ const only_one_approve = function(activities) {
   }
 };
 
-const render_activity = function(result, all_results) {
-  let all_activities = [];
-
-  (all_results || []).forEach(result => {
-    all_activities = all_activities.concat(result.activities);
-  });
-
-  let activities = process_activities(result, all_activities);
+const render_activity = function(bounty) {
+  let activities = process_activities(bounty, bounty['activities']);
 
   activities = activities.slice().sort(function(a, b) {
     return a['created_on'] < b['created_on'] ? -1 : 1;
@@ -1324,11 +1339,11 @@ const render_activity = function(result, all_results) {
     return activity.uninterest_possible;
   }).forEach(function(activity) {
     $('#remove-' + activity.name).click(() => {
-      uninterested(result.pk, activity.profileId);
+      uninterested(bounty['network'], bounty['standard_bounties_id'], activity.profileId);
       return false;
     });
     $('#remove-slash-' + activity.name).click(() => {
-      uninterested(result.pk, activity.profileId, true);
+      uninterested(bounty['network'], bounty['standard_bounties_id'], activity.profileId, true);
       return false;
     });
   });
@@ -1340,6 +1355,13 @@ const is_bounty_expired = function(bounty) {
   let now = new Date(bounty['now']);
 
   return now.getTime() >= expires_date.getTime();
+};
+
+const renderBountyDetails = function(bounty) {
+  build_detail_page(bounty);
+  do_actions(bounty);
+  render_activity(bounty);
+  document.result = bounty;
 };
 
 var main = function() {

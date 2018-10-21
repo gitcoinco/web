@@ -56,7 +56,8 @@
   {% include 'shared/messages.html' %}
 </body>
 <script type="text/javascript">
-  document.pk = {{ pk }};
+  document.bountyId = {{ bounty_id }};
+  document.network = '{{ network|safe }}';
   document.result = {{ result|safe }};
 </script>
 <script src="{% static "v2/js/shared.js" %}"></script>

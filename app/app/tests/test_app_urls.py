@@ -136,11 +136,11 @@ class AppUrlsTestCase(TestCase):
 
     def test_uniterested_reverse(self):
         """Test the uninterested url and check the reverse"""
-        self.assertEqual(reverse('uninterested', args=[1, 2]), '/actions/bounty/1/interest/2/uninterested/')
+        self.assertEqual(reverse('uninterested', args=['mainnet', 1, 2]), '/actions/bounty/mainnet/1/interest/2/uninterested/')
 
     def test_uniterested_resolve(self):
         """Test the uninterested url and check the resolution"""
-        self.assertEqual(resolve('/actions/bounty/1/interest/2/uninterested/').view_name, 'uninterested')
+        self.assertEqual(resolve('/actions/bounty/mainnet/1/interest/2/uninterested/').view_name, 'uninterested')
 
     def test_vote_up_reverse(self):
         """Test the vote up url and check the reverse"""
