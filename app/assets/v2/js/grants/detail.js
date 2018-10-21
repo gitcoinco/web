@@ -1,6 +1,4 @@
 $(document).ready(function() {
-
-
   $('#tabs').tabs();
 
   $('#form--input__description').height($('#form--input__description').prop('scrollHeight'));

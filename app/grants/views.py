@@ -72,7 +72,6 @@ def grant_details(request, grant_id):
         grant = Grant.objects.prefetch_related('subscriptions', 'milestones').get(pk=grant_id)
         milestones = grant.milestones.order_by('due_date')
         subscription = grant.subscriptions.filter(contributor_profile=profile)[:1]
-
     except Grant.DoesNotExist:
         raise Http404
 
