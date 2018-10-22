@@ -46,15 +46,11 @@ class TransferAdmin(admin.ModelAdmin):
                 html = format_html('<a href="{}">claim</a>', instance.receive_url)
             if instance.web3_type == 'v3':
                 html = format_html(f'<a href="{instance.receive_url_for_recipient}">claim as recipient</a>')
-        except:
+        except Exception:
             html = 'n/a'
         return html
-
-# class WalletAdmin(admin.ModelAdmin):
-#     ordering = ['-id']
 
 
 admin.site.register(Token, GeneralAdmin)
 admin.site.register(KudosTransfer, TransferAdmin)
 admin.site.register(Wallet, GeneralAdmin)
-# admin.site.register(Wallet, WalletAdmin)

@@ -36,14 +36,35 @@ logger = logging.getLogger(__name__)
 
 
 def humanize_name(name):
+    """Turn snake_case into Snake Case.
+
+    Returns:
+        str: Humanzied name.
+    """
     return ' '.join([x.capitalize() for x in name.split('_')])
 
 
 def computerize_name(name):
+    """Turn Humanized Name into humanized_name.
+
+    Returns:
+        str: computerized_name
+    """
     return name.lower().replace(' ', '_')
 
 
 def get_rarity_score(num_clones_allowed: int) -> str:
+    """Calculate rarity metrics based on the num_clones_allowed.
+
+    Args:
+        num_clones_allowed (int): Number of kudos clones allowed.
+
+    Returns:
+        str: Rarity description.
+
+    Raises:
+        ValueError: Raises an error if the number of clones allowed in less than one.
+    """
     if not isinstance(num_clones_allowed, int):
         raise ValueError('num_clones_allowed must be an integer')
 
@@ -62,7 +83,7 @@ def get_rarity_score(num_clones_allowed: int) -> str:
     elif num_clones_allowed >= 201:
         return 'Extremely Common'
     else:
-        raise ValueError('num_clones_allowed must be greater than 1')
+        raise ValueError('num_clones_allowed must be greater than or equal to 1')
 
 
 class KudosError(Exception):
@@ -82,10 +103,6 @@ class KudosTransferNotFound(KudosError):
     def __init__(self, kudos_id, message):
         self.kudos_id = kudos_id
         self.message = message
-
-
-class Gen0ExistsDb(KudosError):
-    pass
 
 
 class KudosMismatch(KudosError):
@@ -122,8 +139,8 @@ class KudosContract:
         web3py to create the raw transaction.
 
     Attributes:
+        address (str): Eth address of the kudos contract
         network (str): The blockchain network (localhost, rinkeby, ropsten, mainnet)
-        address (str): The addess of the Kudos.sol contract on the blockchain.
     """
 
     def __init__(self, network='localhost', sockets=False):
@@ -131,6 +148,7 @@ class KudosContract:
 
         Args:
             network (str, optional): The blockchain network (localhost, rinkeby, ropsten, mainnet)
+            sockets (bool, optional): Use web socket provider if set to True, otherwise use Http provider.
 
         """
         network = 'localhost' if network == 'custom network' else network
@@ -155,7 +173,7 @@ class KudosContract:
         Args:
             kudos (list): A kudos object returned from the Kudos.sol contract.  Soldidity returns
                           the Kudos strcut as an array.
-            metadata (dict):  The metadata return from the tokenURI.
+            metadata (dict): The metadata return from the tokenURI.
 
         Returns:
             dict: Kudos dictionary with key/values to be used to interact with the database.
@@ -191,6 +209,7 @@ class KudosContract:
         return kudos_map
 
     def may_require_key(f):
+        """Decorator to check if the operation needs a private key."""
         @wraps(f)
         def wrapper(self, *args, **kwargs):
             if self.network != 'localhost' and (kwargs['account'] is None or kwargs['private_key'] is None):
@@ -200,6 +219,7 @@ class KudosContract:
         return wrapper
 
     def retry(f):
+        """Decorator to retry a function if it failed."""
         @wraps(f)
         def wrapper(self, *args, **kwargs):
             for i in range(1, 4):
@@ -263,9 +283,6 @@ class KudosContract:
         Args:
             kudos_id (int): Kudos Id
             txid (str): The transaction hash.
-
-        Returns:
-            TYPE: Description
         """
 
         # Handle the dummy Kudos
@@ -333,6 +350,14 @@ class KudosContract:
         Args:
             account (str): The ethereum public account address.
 
+        Returns:
+            str: The eth address of the account.
+
+            TODO:  Should be consistent if we are returning a check summed address or not.
+
+        Raises:
+            RuntimeError: Return an error if it can't resolve the account.
+
         """
         if account:
             return to_checksum_address(account)
@@ -361,9 +386,10 @@ class KudosContract:
                 )
             account (str, optional): Public account address.  Not needed for localhost testing.
             private_key (str, optional): Private key for account.  Not needed for localhost testing.
+            skip_sync (bool, optional):  If True, don't sync the database after the mint.
 
         Returns:
-            TYPE: If a sync did occur, returns the kudos_id
+            int: If a sync did occur, returns the kudos_id
         """
         account = self._resolve_account(account)
 
@@ -403,6 +429,7 @@ class KudosContract:
                  )
             account (str, optional): Public account address.  Not needed for localhost testing.
             private_key (str, optional): Private key for account.  Not needed for localhost testing.
+            skip_sync (bool, optional):  If True, don't sync the database after the mint.
 
         Returns:
             int: The kudos_id
@@ -446,6 +473,7 @@ class KudosContract:
                  )
             account (str, optional): Public account address.  Not needed for localhost testing.
             private_key (str, optional): Private key for account.  Not needed for localhost testing.
+            skip_sync (bool, optional):  If True, don't sync the database after the mint.
 
         Returns:
             int: The kudos_id
@@ -481,9 +509,10 @@ class KudosContract:
         Args:
             *args: From Kudos.sol:
             getKudosById(uint256 tokenId)
+            to_dict (bool, optional): Return a dictionary mapping instead of an array.
 
         Returns:
-            list: From Kudos.sol:
+            list or dict: From Kudos.sol:
             returns (uint256 priceFinney, uint256 numClonesAllowed,
                      uint256 numClonesInWild, uint256 clonedFromId
                      )
@@ -499,37 +528,16 @@ class KudosContract:
         else:
             return kudos
 
-    def getLatestKudosId(self):
-        return self._contract.functions.getLatestId().call()
-
-    def getGen0TokenId(self, *args):
+    def getLatestId(self):
         """Contract call method.
 
-        Args:
-            *args: From Kudos.sol
-            getGen0Tokenid(string name)
+        From Kudos.sol:
+        getLatestId() view public returns (uint256 tokenId)
 
         Returns:
-            int: From Kudos.sol:
-            returns (unint256)
+            int: The latest token id.
         """
-        return self._contract.functions.getGen0TokenId(args[0]).call()
-
-    def gen0_exists_web3(self, kudos_name):
-        """Helper method.
-
-        Args:
-            kudos_name (TYPE): Description
-
-        Returns:
-            TYPE: Description
-        """
-        kudos_id = self.getGen0TokenId(kudos_name)
-        # logger.info(f'kudos_id: {kudos_id}')
-        if kudos_id == 0:
-            return False
-        else:
-            return True
+        return self._contract.functions.getLatestId().call()
 
     def gen0_exists_db(self, kudos_name):
         """Helper method.
@@ -546,10 +554,6 @@ class KudosContract:
         else:
             return True
 
-    def sync_status(self):
-        pass
-
-    # @retry_ipfs
     def create_tokenURI_url(self, **kwargs):
         """Create a tokenURI object, upload it to IPFS, and return the URL.
 

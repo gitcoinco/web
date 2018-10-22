@@ -30,15 +30,34 @@ logger = logging.getLogger(__name__)
 
 
 class Token(SuperModel):
-    # Kudos specific fields -- lines up with Kudos contract
+    """Model representing a Kudos ERC721 token on the blockchain.  The model attempts to match
+    the actual blockchain data as much as possible, without being duplicative.
 
-    # Kudos Struct
+    Attributes:
+        artist (str): The artist that created the kudos image.
+        background_color (str): 6 digit hex code background color.  See Open Sea docs for details.
+        cloned_from_id (int): Orignal Kudos that this one was cloned from.
+        description (str): Description of the kudos.
+        external_url (str): External URL pointer to image asset.  See Open Sea docs for details.
+        image (str): Image file name.
+        name (str): Kudos name.
+        num_clones_allowed (int): How many clones are allowed to be made.
+        num_clones_available (int): How many clones the Kudos has left.
+        num_clones_in_wild (int): How many clones there are in the wild.
+        owner_address (str): ETH address of the owner.  Pulled from the `ownerOf` contract function.
+        platform (str): Where the Kudos originated from.
+        price_finney (int): Price to clone the Kudos in finney.
+        rarity (str): Rarity metric, defined in kudos.utils.py
+        tags (str): Comma delimited tags.  TODO:  change to array
+        txid (str): The ethereum transaction id that generated this kudos.
+    """
+    # Kudos Struct (also in contract)
     price_finney = models.IntegerField()
     num_clones_allowed = models.IntegerField(null=True, blank=True)
     num_clones_in_wild = models.IntegerField(null=True, blank=True)
     cloned_from_id = models.IntegerField()
 
-    # Kudos metadata from tokenURI
+    # Kudos metadata from tokenURI (also in contract)
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=510)
     image = models.CharField(max_length=255, null=True)
@@ -46,7 +65,6 @@ class Token(SuperModel):
     tags = models.CharField(max_length=255, null=True)
     artist = models.CharField(max_length=255, null=True, blank=True)
     platform = models.CharField(max_length=255, null=True, blank=True)
-
     external_url = models.CharField(max_length=255, null=True)
     background_color = models.CharField(max_length=255, null=True)
 
@@ -62,18 +80,38 @@ class Token(SuperModel):
 
     @property
     def price_in_eth(self):
+        """Convert price from finney to eth.
+
+        Returns:
+            float or int:  price in eth.
+        """
         return self.price_finney / 1000
 
     @property
     def shortened_address(self):
+        """Shorten ethereum address to only the first and last 4 digits.
+
+        Returns:
+            str: shortened address
+        """
         return self.owner_address[:6] + '...' + self.owner_address[38:]
 
     @property
     def capitalized_name(self):
+        """Capitalize name
+
+        Returns:
+            str: Capitalized name.
+        """
         return ' '.join([x.capitalize() for x in self.name.split('_')])
 
     @property
     def num_clones_available(self):
+        """Calculate the number of clones available for a kudos.
+
+        Returns:
+            int: Number of clones available.
+        """
         r = self.num_clones_allowed - self.num_clones_in_wild
         if r < 0:
             r = 0
@@ -81,6 +119,11 @@ class Token(SuperModel):
 
     @property
     def humanized_name(self):
+        """Turn snake_case into Snake Case.
+
+        Returns:
+            str: Humanzied name.
+        """
         return ' '.join([x.capitalize() for x in self.name.split('_')])
 
     def humanize(self):
@@ -95,6 +138,17 @@ class Token(SuperModel):
 
 
 class KudosTransfer(SendCryptoAsset):
+    """Model that represents a request to clone a Kudos.  Typically this gets created when
+    using the "kudos send" functionality.  The model is inheriented from the SendCryptoAsset model,
+    which is also used by Tips.
+
+    Attributes:
+        from_address (str): Eth address of the person that is sending the kudos.
+        kudos_token (FK): Foreign key to the kudos_token that was cloned.  This is filled in after the kudos has been cloned.
+        kudos_token_cloned_from (FK): Foreign key to the kudos_token that will be cloned and sent.
+        recipient_profile (FK): Foreign key to the profile of the person that is being sent the kudos.
+        sender_profile (FK): Foreign key to the profile of the person that is sending the kudos.
+    """
     # kudos_token_cloned_from is a reference to the original Kudos Token that is being cloned.
     kudos_token_cloned_from = models.ForeignKey(Token, related_name='kudos_token_cloned_from', on_delete=models.SET_NULL, null=True)
     # kudos_token is a reference to the new Kudos Token that is soon to be minted
@@ -117,29 +171,36 @@ class KudosTransfer(SendCryptoAsset):
 
     @property
     def receive_url(self):
+        """URL used for indirect send.  Deprecated in favor of receive_url_for_recipient
+
+        Returns:
+            str: URL for recipient.
+        """
         return self.receive_url_for_recipient
 
     @property
     def receive_url_for_recipient(self):
-        if self.web3_type != 'v3':
-            raise Exception
+        """URL used for indirect send.  Deprecated in favor of receive_url_for_recipient
+
+        Returns:
+            str: URL for recipient.
+        """
 
         try:
             key = self.metadata['reference_hash_for_receipient']
             return f"{settings.BASE_URL}kudos/receive/v3/{key}/{self.txid}/{self.network}"
-        except KeyError:
-            return None
+        except KeyError as e:
+            logger.error(e)
+            return ''
 
     def __str__(self):
-        status = 'funded' if self.txid else 'not funded'
-
         """Return the string representation of a model."""
+        status = 'funded' if self.txid else 'not funded'
         return f"({status}) transfer of {self.kudos_token_cloned_from} from {self.sender_profile} to {self.recipient_profile} on {self.network}"
 
 
 class Wallet(SuperModel):
-
-    """Kudos Address where the tokens are stored.
+    """DEPRECATED.  Kudos Address where the tokens are stored.
 
     Currently not used.  Instead we are using preferred_payout_address for now.
 
@@ -147,13 +208,8 @@ class Wallet(SuperModel):
         address (TYPE): Description
         profile (TYPE): Description
     """
-
     address = models.CharField(max_length=255, unique=True)
     profile = models.ForeignKey('dashboard.Profile', related_name='kudos_wallets', on_delete=models.SET_NULL, null=True)
-
-    # def save(self, *args, **kwargs):
-    #     self.address = to_checksum_address(self.address)
-    #     super().save(*args, **kwargs)
 
     def __str__(self):
         """Return the string representation of a model."""

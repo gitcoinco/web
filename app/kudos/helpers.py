@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 def reconcile_kudos_preferred_wallet(profile):
-    """LEGACY CODE.
+    """DEPRECATED.
     Helper function to set the kudos_preferred_wallet if it doesn't already exist
 
     Args:

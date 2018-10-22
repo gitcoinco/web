@@ -52,6 +52,15 @@ confirm_time_minutes_target = 4
 
 
 def get_profile(handle):
+    """Get the gitcoin profile.
+    TODO:  This might be depreacted in favor of the sync_profile function in the future.
+
+    Args:
+        handle (str): The github handle.
+
+    Returns:
+        obj: The profile model object.
+    """
     try:
         to_profile = Profile.objects.get(handle__iexact=handle)
     except Profile.MultipleObjectsReturned:
@@ -62,7 +71,7 @@ def get_profile(handle):
 
 
 def about(request):
-    """Render the about kudos response."""
+    """Render the Kudos 'about' page."""
     context = {
         'is_outside': True,
         'active': 'about',
@@ -76,7 +85,7 @@ def about(request):
 
 
 def marketplace(request):
-    """Render the marketplace kudos response."""
+    """Render the Kudos 'marketplace' page."""
     q = request.GET.get('q')
     order_by = request.GET.get('order_by', '-modified_on')
     logger.info(order_by)
@@ -103,8 +112,10 @@ def marketplace(request):
 
 
 def search(request):
+    """Render the search page.
+    TODO:  This might no longer be used.
+    """
     context = {}
-    logger.info(request.GET)
 
     if request.method == 'GET':
         form = KudosSearchForm(request.GET)
@@ -114,7 +125,7 @@ def search(request):
 
 
 def details(request, id, name):
-    """Render the detail kudos response."""
+    """Render the Kudos 'detail' page."""
     kudos_id = id
     logger.info(f'kudos id: {kudos_id}')
 
@@ -166,24 +177,19 @@ def details(request, id, name):
 
 
 def mint(request):
+    """Render the Kudos 'mint' page.  This is mostly a placeholder for future functionality."""
     context = dict()
-    # kt = KudosToken(name='pythonista', description='Zen', rarity=5, price=10, num_clones_allowed=3,
-    #                 num_clones_in_wild=0)
 
     return TemplateResponse(request, 'kudos_mint.html', context)
 
 
-def get_user_request_info(request):
-    """ Returns """
-    pass
-
-
 def get_primary_from_email(params, request):
     """Find the primary_from_email address.  This function finds the address using this priority:
-        1. If the email field is filed out in the Send POST request, use the `fromEmail` field.
-        2. If the user is logged in, they should have an email address associated with thier account.
-           Use this as the second option.  `request_user_email`.
-        3. If all else fails, attempt to pull the email from the user's github account.
+
+    1. If the email field is filed out in the Send POST request, use the `fromEmail` field.
+    2. If the user is logged in, they should have an email address associated with thier account.
+       Use this as the second option.  `request_user_email`.
+    3. If all else fails, attempt to pull the email from the user's github account.
 
     Args:
         params (dict): A dictionary parsed form the POST request.  Typically this is a POST
@@ -212,8 +218,8 @@ def get_primary_from_email(params, request):
 def get_to_emails(params):
     """Get a list of email address to send the alert to, in this priority:
 
-        1. get_emails_master() pulls email addresses from the user's public Github account.
-        2. If an email address is included in the Tips/Kudos form, append that to the email list.
+    1. get_emails_master() pulls email addresses from the user's public Github account.
+    2. If an email address is included in the Tips/Kudos form, append that to the email list.
 
 
     Args:
@@ -235,12 +241,7 @@ def get_to_emails(params):
 
 
 def kudos_preferred_wallet(request, handle):
-    """returns the address, if any, that someone would like to be send kudos directly to.
-
-    Returns:
-        list of addresse
-
-    """
+    """Returns the address, if any, that someone would like to be send kudos directly to."""
     response = {
         'addresses': []
     }
@@ -257,12 +258,7 @@ def kudos_preferred_wallet(request, handle):
 
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def tipee_address(request, handle):
-    """returns the address, if any, that someone would like to be tipped directly at
-
-    Returns:
-        list of addresse
-
-    """
+    """Returns the address, if any, that someone would like to be tipped directly at."""
     response = {
         'addresses': []
     }
@@ -274,15 +270,11 @@ def tipee_address(request, handle):
 
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def send_2(request):
-    """ Handle the first start of the Kudos email send.
+    """Handle the first start of the Kudos email send.
     This form is filled out before the 'send' button is clicked.
     """
-
     kudos_name = request.GET.get('name')
     kudos = Token.objects.filter(name=kudos_name, num_clones_allowed__gt=0).first()
-    # logger.info(f'kudos name: {kudos.name}')
-    # logger.debug(f'kudos detail: {model_to_dict(kudos)}')
-    # profiles = Profile.objects.all()
 
     params = {
         'active': 'send',
@@ -304,6 +296,7 @@ def send_2(request):
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def send_3(request):
     """ This function is derived from send_tip_3.
+
     Handle the third stage of sending a kudos (the POST).  The request to send the kudos is
     added to the database, but the transaction has not happened yet.  The txid is added
     in `send_kudos_4`.
@@ -342,7 +335,7 @@ def send_3(request):
     # Validate that the token exists on the back-end
     kudos_token_cloned_from = Token.objects.filter(pk=params['kudosId'], num_clones_allowed__gt=0).first()
     # db mutations
-    kudos_transfer = KudosTransfer.objects.create(
+    KudosTransfer.objects.create(
         emails=to_emails,
         # For kudos, `token` is a kudos.models.Token instance.
         kudos_token_cloned_from=kudos_token_cloned_from,
@@ -369,8 +362,8 @@ def send_3(request):
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def send_4(request):
-    """ Handle the fourth stage of sending a tip (the POST).  Once the metamask transaction is complete,
-        add it to the database.
+    """Handle the fourth stage of sending a tip (the POST).  Once the metamask transaction is complete,
+    add it to the database.
 
     Returns:
         JsonResponse: response with success state.
@@ -388,17 +381,6 @@ def send_4(request):
     txid = params['txid']
     destinationAccount = params['destinationAccount']
     is_direct_to_recipient = params.get('is_direct_to_recipient', False)
-    # if is_direct_to_recipient:
-    #     kudos_transfer = KudosTransfer.objects.get(
-    #         metadata__direct_address=destinationAccount,
-    #         metadata__creation_time=params['creation_time'],
-    #         metadata__salt=params['salt'],
-    #     )
-    # else:
-    #     kudos_transfer = KudosTransfer.objects.get(
-    #         metadata__address=destinationAccount,
-    #         metadata__salt=params['salt'],
-    #     )
     kudos_transfer = KudosTransfer.objects.get(
         metadata__address=destinationAccount,
         metadata__creation_time=params['creation_time'],
@@ -421,13 +403,8 @@ def send_4(request):
     # it means that the user never went through with the transaction.
     kudos_transfer.txid = txid
     if is_direct_to_recipient:
-        # kudos_id = int(params.get('kudos_id'))
         kudos_transfer.receive_txid = txid
         kudos_transfer.save()
-        # Update kudos.models.Token to reflect the newly cloned Kudos
-        # network = 'localhost' if kudos_transfer.network == 'custom network' else kudos_transfer.network
-        # kudos_contract = KudosContract(network)
-        # kudos_contract.sync_transferred_kudos_db(kudos_id=kudos_id, tx_hash=txid)
     else:
         # Save txid for Indirect transfer
         kudos_transfer.save()
@@ -466,8 +443,8 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
         return
     try:
         kwargs['bounty'] = kudos_transfer.bounty
-    except:
-        pass
+    except KudosTransfer.DoesNotExist:
+        logger.info('No bounty is associated with this kudos transfer.')
 
     try:
         Activity.objects.create(**kwargs)
@@ -476,9 +453,9 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
 
 
 def receive(request, key, txid, network):
-    """Handle the receiving of a kudos (the POST)
+    """Handle the receiving of a kudos (the POST).
 
-    Returns:    
+    Returns:
         TemplateResponse: the UI with the kudos confirmed
 
     """
@@ -527,13 +504,6 @@ def receive(request, key, txid, network):
             record_user_action(kudos_transfer.from_username, 'receive_kudos', kudos_transfer)
             record_kudos_email_activity(kudos_transfer, kudos_transfer.username, 'receive_kudos')
             messages.success(request, 'This kudos has been received')
-            # Update kudos.models.Token to reflect the newly cloned Kudos
-            # kudos_id = params['kudos_id']
-            # TODO:  We should be passing the kudos_id from the front end to make sure we sync the right one.
-            # network = 'localhost' if kudos_transfer.network == 'custom network' else kudos_transfer.network
-            # kudos_contract = KudosContract(network)
-            # kudos_id = kudos_contract._contract.functions.getLatestId().call()
-            # kudos_contract.sync_transferred_kudos_db(kudos_id=kudos_id, tx_hash=params['receive_txid'])
         except Exception as e:
             messages.error(request, str(e))
             logger.exception(e)

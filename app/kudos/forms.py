@@ -22,4 +22,9 @@ from django.utils.translation import gettext as _
 
 
 class KudosSearchForm(forms.Form):
+    """Form template for kudos search.
+
+    Attributes:
+        kudos_search (form): Use for kudos search GET request.
+    """
     kudos_search = forms.CharField(label=_('Kudos Search'), max_length=100)
