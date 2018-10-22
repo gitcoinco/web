@@ -712,7 +712,6 @@ var trigger_primary_form_web3_hooks = function() {
 
   if ($('#primary_form').length) {
     var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1;
-    var unlock_metamask_error = web3.eth.coinbase ? web3.eth.coinbase : web3.eth.getCoinbase();
 
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
@@ -723,7 +722,7 @@ var trigger_primary_form_web3_hooks = function() {
       $('#unlock_metamask_error').css('display', 'none');
       $('#no_issue_error').css('display', 'none');
       mixpanel_track_once('No Metamask Error', params);
-    } else if (!unlock_metamask_error) {
+    } else if (!web3.eth.coinbase) {
       $('#unlock_metamask_error').css('display', 'block');
       $('#zero_balance_error').css('display', 'none');
       $('#no_metamask_error').css('display', 'none');
@@ -831,35 +830,37 @@ function getNetwork(id) {
 // figure out what version of web3 this is, whether we're logged in, etc..
 var listen_for_web3_changes = function() {
 
-  if (!document.listen_for_web3_iterations) {
-    document.listen_for_web3_iterations = 1;
-  } else {
-    document.listen_for_web3_iterations += 1;
-  }
+  if (document.location.href.indexOf('grants') === -1) {
+    if (!document.listen_for_web3_iterations) {
+      document.listen_for_web3_iterations = 1;
+    } else {
+      document.listen_for_web3_iterations += 1;
+    }
 
-  if (typeof web3 == 'undefined') {
-    currentNetwork();
-    trigger_form_hooks();
-  } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
-    currentNetwork('locked');
-    trigger_form_hooks();
-  } else {
-    web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
-      if (typeof result != 'undefined') {
-        document.balance = result.toNumber();
-      }
-    });
+    if (typeof web3 == 'undefined') {
+      currentNetwork();
+      trigger_form_hooks();
+    } else if (typeof web3 == 'undefined' || typeof web3.eth == 'undefined' || typeof web3.eth.coinbase == 'undefined' || !web3.eth.coinbase) {
+      currentNetwork('locked');
+      trigger_form_hooks();
+    } else {
+      web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+        if (typeof result != 'undefined') {
+          document.balance = result.toNumber();
+        }
+      });
 
-    web3.version.getNetwork(function(error, netId) {
-      if (error) {
-        currentNetwork();
-      } else {
-        var network = getNetwork(netId);
+      web3.version.getNetwork(function(error, netId) {
+        if (error) {
+          currentNetwork();
+        } else {
+          var network = getNetwork(netId);
 
-        currentNetwork(network);
-        trigger_form_hooks();
-      }
-    });
+          currentNetwork(network);
+          trigger_form_hooks();
+        }
+      });
+    }
   }
 };
 
