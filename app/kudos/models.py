@@ -37,10 +37,12 @@ class Token(SuperModel):
         artist (str): The artist that created the kudos image.
         background_color (str): 6 digit hex code background color.  See Open Sea docs for details.
         cloned_from_id (int): Orignal Kudos that this one was cloned from.
+        contract_address (str): The eth address contract for this kudos.
         description (str): Description of the kudos.
         external_url (str): External URL pointer to image asset.  See Open Sea docs for details.
         image (str): Image file name.
         name (str): Kudos name.
+        network (TYPE): Network that the token is on.
         num_clones_allowed (int): How many clones are allowed to be made.
         num_clones_available (int): How many clones the Kudos has left.
         num_clones_in_wild (int): How many clones there are in the wild.
@@ -49,6 +51,7 @@ class Token(SuperModel):
         price_finney (int): Price to clone the Kudos in finney.
         rarity (str): Rarity metric, defined in kudos.utils.py
         tags (str): Comma delimited tags.  TODO:  change to array
+        token_id (TYPE): the token_id on the blockchain.
         txid (str): The ethereum transaction id that generated this kudos.
     """
     # Kudos Struct (also in contract)
@@ -71,6 +74,9 @@ class Token(SuperModel):
     # Extra fields added to database (not on blockchain)
     owner_address = models.CharField(max_length=255)
     txid = models.CharField(max_length=255, null=True, blank=True)
+    contract_address = models.CharField(max_length=255, null=True, blank=True)
+    token_id = models.IntegerField()
+    network = models.CharField(max_length=255, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if self.owner_address:

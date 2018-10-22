@@ -68,6 +68,9 @@ class Migration(migrations.Migration):
                 ('background_color', models.CharField(max_length=255, null=True)),
                 ('owner_address', models.CharField(max_length=255)),
                 ('txid', models.CharField(blank=True, max_length=255, null=True)),
+                ('contract_address', models.CharField(max_length=255, null=True, blank=True)),
+                ('token_id', models.IntegerField()),
+                ('network', models.CharField(max_length=255, null=True, blank=True)),
             ],
             options={
                 'abstract': False,

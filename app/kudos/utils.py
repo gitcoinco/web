@@ -240,7 +240,8 @@ class KudosContract:
 
     @retry
     def remove_kudos_orphans_db(self):
-        """Sync up existing kudos from the blockchain to the database.
+        """DEPRECATED.  This funciton must be updated to use.
+        Sync up existing kudos from the blockchain to the database.
 
         Then remove all "orphaned Kudos" from the database.
         """
@@ -248,7 +249,7 @@ class KudosContract:
         latest_id = self._contract.functions.getLatestId().call()
 
         # Remove orphaned Kudos in the database
-        orphans = Token.objects.filter(pk__gt=latest_id)
+        orphans = Token.objects.filter(token_id__gt=latest_id)
         for orphan in orphans:
             logger.info('Removing Kudos orphan with ID: {orphan.id}')
         orphans.delete()
@@ -267,15 +268,17 @@ class KudosContract:
         """
         kudos = self.getKudosById(kudos_id, to_dict=True)
         kudos['owner_address'] = self._contract.functions.ownerOf(kudos_id).call()
-        if Token.objects.filter(pk=kudos_id).exists():
-            kudos_token = Token.objects.get(pk=kudos_id)
+        kudos['contract_address'] = self._contract.address
+        kudos['network'] = self.network
+        if Token.objects.filter(token_id=kudos_id).exists():
+            kudos_token = Token.objects.get(token_id=kudos_id)
             kudos['txid'] = kudos_token.txid
-            updated_kudos_token = Token(pk=kudos_id, **kudos)
+            updated_kudos_token = Token(token_id=kudos_id, **kudos)
             updated_kudos_token.save()
         else:
-            kudos_token = Token(pk=kudos_id, **kudos)
+            kudos_token = Token(token_id=kudos_id, **kudos)
             kudos_token.save()
-        logger.info(f'Synced id #{kudos_token.id}, "{kudos_token.name}" kudos to the database.')
+        logger.info(f'Synced id #{kudos_token.token_id}, "{kudos_token.name}" kudos to the database.')
 
     def sync_db(self, kudos_id, txid):
         """Sync up the Kudos contract on the blockchain with the database.
@@ -292,10 +295,12 @@ class KudosContract:
         # Grab the Kudos from the blockchain, augment with owner_address
         kudos = self.getKudosById(kudos_id, to_dict=True)
         kudos['owner_address'] = self._contract.functions.ownerOf(kudos_id).call()
+        kudos['contract_address'] = self._contract.address
+        kudos['network'] = self.network
 
         # Update an existing Kudos in the database
         kudos['txid'] = txid
-        kudos_token = Token(pk=kudos_id, **kudos)
+        kudos_token = Token(token_id=kudos_id, **kudos)
         kudos_token.save()
         # Find the object which matches the kudos that was just cloned
         try:
@@ -325,9 +330,11 @@ class KudosContract:
             return to_checksum_address(settings.KUDOS_CONTRACT_ROPSTEN)
         elif self.network == 'rinkeby':
             return to_checksum_address(settings.KUDOS_CONTRACT_RINKEBY)
-        else:
+        elif self.network == 'localhost' or self.network == 'custom network':
             # local testrpc
             return to_checksum_address(settings.KUDOS_CONTRACT_TESTRPC)
+        else:
+            raise ValueError('Unsupported network')
 
     def _get_contract(self):
         """Load up the Kudos ABI from a .json file.
