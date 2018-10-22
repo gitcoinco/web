@@ -74,9 +74,9 @@ class Token(SuperModel):
     # Extra fields added to database (not on blockchain)
     owner_address = models.CharField(max_length=255)
     txid = models.CharField(max_length=255, null=True, blank=True)
-    contract_address = models.CharField(max_length=255, null=True, blank=True)
+    contract_address = models.CharField(max_length=255)
     token_id = models.IntegerField()
-    network = models.CharField(max_length=255, null=True, blank=True)
+    network = models.CharField(max_length=255)
 
     def save(self, *args, **kwargs):
         if self.owner_address:
