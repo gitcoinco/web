@@ -19,6 +19,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import json
 import logging
+import datetime
+now = datetime.datetime.now()
+
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -281,6 +284,7 @@ def subscription_cancel(request, grant_id, subscription_id):
         'title': _('Cancel Grant Subscription'),
         'subscription': subscription,
         'grant': grant,
+        'now': now,
         'keywords': get_keywords(),
     }
 
