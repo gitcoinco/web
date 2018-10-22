@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import datetime
 import json
 import logging
 
@@ -34,6 +35,11 @@ from grants.forms import MilestoneForm
 from grants.models import Grant, Milestone, Subscription
 from marketing.models import Keyword
 from web3 import HTTPProvider, Web3
+
+now = datetime.datetime.now()
+
+
+
 
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
@@ -71,6 +77,7 @@ def grant_details(request, grant_id):
     try:
         grant = Grant.objects.prefetch_related('subscriptions', 'milestones').get(pk=grant_id)
         milestones = grant.milestones.order_by('due_date')
+        subscription = grant.subscriptions.filter(contributor_profile=profile)[:1]
     except Grant.DoesNotExist:
         raise Http404
 
@@ -134,6 +141,7 @@ def grant_details(request, grant_id):
         'active': 'dashboard',
         'title': _('Grant Details'),
         'grant': grant,
+        'subscription': subscription,
         'is_admin': (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False,
         'activity': activity_data,
         'gh_activity': gh_data,
@@ -265,7 +273,7 @@ def grant_fund(request, grant_id):
 
 
 @login_required
-def subscription_cancel(request, subscription_id):
+def subscription_cancel(request, grant_id, subscription_id):
     """Handle the cancellation of a grant subscription."""
     subscription = Subscription.objects.select_related('grant').get(pk=subscription_id)
     grant = getattr(subscription, 'grant', None)
@@ -279,6 +287,7 @@ def subscription_cancel(request, subscription_id):
         'title': _('Cancel Grant Subscription'),
         'subscription': subscription,
         'grant': grant,
+        'now': now,
         'keywords': get_keywords(),
     }
 
