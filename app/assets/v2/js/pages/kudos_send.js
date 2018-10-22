@@ -536,7 +536,8 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
     if (error) { return; }
 
     var network = e ? e.networkVersion : web3.version.network
-    if (network === '4' || network ===  '1' || network ===  '1539724825728') {
+    console.log(web3.currentProvider)
+    if (network === '4' || network ===  '1') {
     } else {
       error = true
       _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
