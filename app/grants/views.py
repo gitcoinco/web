@@ -17,11 +17,9 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import datetime
 import json
 import logging
-import datetime
-now = datetime.datetime.now()
-
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -37,6 +35,11 @@ from grants.forms import MilestoneForm
 from grants.models import Grant, Milestone, Subscription
 from marketing.models import Keyword
 from web3 import HTTPProvider, Web3
+
+now = datetime.datetime.now()
+
+
+
 
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
