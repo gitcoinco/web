@@ -145,6 +145,21 @@ $(document).ready(function() {
     }
   });
 
+  waitforWeb3(function() {
+    tokens(document.web3network).forEach(function(ele) {
+      let option = document.createElement('option');
+
+      option.text = ele.name;
+      option.value = ele.addr;
+
+      $('#js-token').append($('<option>', {
+        value: ele.addr,
+        text: ele.name
+      }));
+    });
+    $('#js-token').select2();
+  });
+
 });
 
 // will want to check if account already has a subscription. If a second is produced the timestamp will not function properly
