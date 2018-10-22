@@ -471,10 +471,11 @@ div.button-pink {
   /* stylelint-disable-next-line */
   font-family: 'Font Awesome 5 Free';
   content: '\f107';
-  font-size: 16px;
+  font-size: 1.2em;
   margin-right: auto;
   margin-top: auto;
   float: right;
+  font-weight: 600;
 }
 
 .accordion.active:after {

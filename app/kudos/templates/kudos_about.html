@@ -272,6 +272,57 @@
 
     </section>
 
+    <section class="container-fluid my-5 pb-5">
+      <div class="container">
+          <h3 class="text-center my-5">FAQ</h3>
+
+        <div>
+          <div class="mb-3">
+            <h5 class="accordion">Kudos is a new usage of Non-Fungible tokens... Why did you make it?</h5>
+            <div class="panel">
+              <p>It's a common practice for on-site teams to be able to celebrate the work they've done together after shipping. We wanted to create a similar experience for distributed, open-source, teams to celebrate their wins and to celebrate each other.</p>
+              <p>Kudos is a way to celebrate the relationships that have been built. Kudos is meant to bootstrap reputation in web3.</p>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <h5 class="accordion">How are Kudos minted?</h5>
+            <div class="panel">
+              <p>Right now we</p>
+              <ol>
+                <li>Post an idea to <a target="_blank" href="https://github.com/gitcoinco/kudosbadges/issues/new">https://github.com/gitcoinco/kudosbadges/issues/new</a></li>
+                <li>Get it prioritized with Mladen, our designer</li>
+                <li>Run it through a management command on the gitcoin site.. which will create the ERC721</li>
+              </ol>
+              <p>in the future, we hope to just have a site where anyone can upload an svg can mint it</p>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <h5 class="accordion">Who earns money when a new Kudos is created?</h5>
+            <div class="panel">
+              <p>When a new Kudos is created, the ETH sent during that minting process is sent to the illustrator who created the artwork for the Kudos. In some cases, Gitcoin may also take a 10% percentage of the minting.</p>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <h5 class="accordion">How is Kudos' privacy managed?</h5>
+            <div class="panel">
+              <p>When you send a kudos, you are sending the non-fungible token (NFT) to a proxy address. The recipient can decide to accept it or reject it.</p>
+              <p>A recipient may elect to automatically accept Kudos in the future if they wish to forego the acceptance process.</p>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <h5 class="accordion">I want to add Kudos to my site. How can I do that?</h5>
+            <div class="panel">
+              <p>We plan to make Kudos into an open network that any dapp can leverage. For more information, checkout get in touch over at <a target="_blank" href="https://github.com/OpenKudos/">https://github.com/OpenKudos/</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
