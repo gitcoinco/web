@@ -68,7 +68,7 @@ class Command(BaseCommand):
 
         titles = {
             'weekly_earners': _('Top Earners :money_with_wings: '),
-            'weekly_payers': _('Top Payers :moneybag: '),
+            'weekly_payers': _('Top Funders :moneybag: '),
             'weekly_orgs': _('Top Orgs :office: '),
             'weekly_tokens': _('Top Tokens :bank: '),
         }

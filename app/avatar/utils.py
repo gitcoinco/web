@@ -95,15 +95,19 @@ def get_avatar_context():
                      {
                          'name': 'Accessories',
                          'title': 'Pick your accessories',
-                         'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
-                             'HatShort-backwardscap'
-                         ], ['HatShort-ballcap'], ['HatShort-cowboy'], ['HatShort-headphones'],
-                                     ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], ['HatShort-bunnyears'],
-                                     ['Earring-0'], ['Earring-1'],
+                         'options': (['Glasses-0'], ['Glasses-1'],
+                                     ['Glasses-2'], ['Glasses-3'],
+                                     ['Glasses-4'], ['HatShort-backwardscap'],
+                                     ['HatShort-redbow'], ['HatShort-yellowbow'],
+                                     ['HatShort-ballcap'], ['HatShort-cowboy'],
+                                     ['HatShort-headphones'], ['HatShort-shortbeanie'],
+                                     ['HatShort-tallbeanie'], ['HatShort-bunnyears'],
+                                     ['Earring-0'], ['Earring-1'], 
                                      ['EarringBack-2', 'Earring-2'],
                                      ['Earring-3'], ['Earring-4'],
                                      ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'],
-                                     ['Masks-jack-o-lantern-lighted'], ['Extras-Parrot'], ['Masks-gitcoinbot'])
+                                     ['Masks-jack-o-lantern-lighted'], ['Extras-Parrot'],
+                                     ['Masks-gitcoinbot'])
                      },
                      {
                          'name': 'Background',
