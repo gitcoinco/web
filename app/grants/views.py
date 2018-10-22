@@ -304,7 +304,7 @@ def profile(request):
     profile = request.user.profile if request.user.is_authenticated else None
     _grants = Grant.objects.prefetch_related('team_members').filter(
         Q(admin_profile=profile) | Q(team_members__in=[profile])).order_by(sort)
-    sub_grants = Grant.objects.filter(subscriptions__contributor_profile=profile)
+    sub_grants = Grant.objects.filter(subscriptions__contributor_profile=profile).order_by(sort)
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
