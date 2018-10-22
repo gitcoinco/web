@@ -316,7 +316,7 @@ class KudosContract:
             kudos_transfer.kudos_token = kudos_token
             kudos_transfer.save()
 
-        logger.info(f'Synced id #{kudos_token.id}, "{kudos_token.name}" kudos to the database.')
+        logger.info(f'Synced id #{kudos_token.token_id}, "{kudos_token.name}" kudos to the database.')
 
     def _get_contract_address(self):
         """Get the Kudos contract address, depending on the network.
