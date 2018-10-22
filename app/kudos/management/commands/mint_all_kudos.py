@@ -133,7 +133,7 @@ class Command(BaseCommand):
                 'image': image_path,
                 'description': kudos['description'],
                 'external_url': external_url,
-                'background_color': '#fbfbfb',
+                'background_color': 'fbfbfb',
                 'attributes': attributes
             }
 
