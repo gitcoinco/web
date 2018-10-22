@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import datetime
 import json
 import logging
 
@@ -34,6 +35,11 @@ from grants.forms import MilestoneForm
 from grants.models import Grant, Milestone, Subscription
 from marketing.models import Keyword
 from web3 import HTTPProvider, Web3
+
+now = datetime.datetime.now()
+
+
+
 
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
@@ -281,6 +287,7 @@ def subscription_cancel(request, grant_id, subscription_id):
         'title': _('Cancel Grant Subscription'),
         'subscription': subscription,
         'grant': grant,
+        'now': now,
         'keywords': get_keywords(),
     }
 
