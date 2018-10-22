@@ -5,3 +5,12 @@
 #frequency_count {
   height: 40px !important;
 }
+
+.alpha-warning {
+  background-color: #fbe0d6;
+  color: #fb9470;
+  padding: 5px 10px;
+  border-radius: 2px;
+  margin-bottom: 15px;
+  display: block;
+}
