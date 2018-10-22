@@ -36,11 +36,6 @@ from grants.models import Grant, Milestone, Subscription
 from marketing.models import Keyword
 from web3 import HTTPProvider, Web3
 
-now = datetime.datetime.now()
-
-
-
-
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
@@ -277,6 +272,7 @@ def subscription_cancel(request, grant_id, subscription_id):
     """Handle the cancellation of a grant subscription."""
     subscription = Subscription.objects.select_related('grant').get(pk=subscription_id)
     grant = getattr(subscription, 'grant', None)
+    now = datetime.datetime.now()
 
     if request.method == 'POST':
         subscription.active = False
