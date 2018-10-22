@@ -11,6 +11,7 @@
   - distributed
   - scalable
   - data
+  - common
   image: hadoop_admiral.svg
 - name: linux_wizard
   description: All hail the Linux Penguin!  Linux is a force in open source, powering
@@ -25,6 +26,7 @@
   - open source
   - penguin
   - OS
+  - common
   image: linux_wizard.svg
 - name: gitcoin_genesis
   description: The Gitcoin Genesis Badge is the rarest of the Gitcoin team badges.  Owners
@@ -51,6 +53,7 @@
   - javascript
   - node
   - web
+  - common
   image: javascript_master_scriber.svg
 - name: infrastructure_ninja
   description: Just like every building needs a solid foundation, every website needs
@@ -66,6 +69,7 @@
   - OS
   - infrastructure
   - linux
+  - common
   image: infrastructure_ninja.svg
 - name: java_doctor
   description: Is there anything better than a cup 'o' Joe in the morning? Java can
@@ -80,6 +84,7 @@
   - java
   - web
   - sun
+  - common
   image: java_doctor.svg
 - name: do_more_faster
   description: Is there anything better than working with someone who can rapidly
@@ -94,6 +99,7 @@
   - iteration
   - hypothesis testing
   - soft skills
+  - common
   image: do_more_faster.svg
 - name: jquery_fixer
   description: jQuery is a force in the modern web.  By solving compatibilty issues
@@ -109,6 +115,7 @@
   - javascript
   - web
   - MVC
+  - common
   image: jquery_fixer.svg
 - name: elixer_mixer
   description: Elixer Mixers are known for their alchemy.  Just as a chemist combines
@@ -123,6 +130,7 @@
   - elixer
   - erlang
   - functional
+  - common
   image: elixer_mixer.svg
 - name: collaboration_machine
   description: Is there anything better than working with a collaboration machine?  Known
@@ -146,6 +154,7 @@
   tags:
   - unix
   - build once
+  - common
   - OS
   image: unix_philosophy.svg
 - name: ruby_gem
@@ -159,6 +168,7 @@
   tags:
   - rails
   - ruby
+  - common
   - web
   - MVC
   - DRY
@@ -174,6 +184,7 @@
   tags:
   - angular
   - javascript
+  - common
   - mvc
   - web
   image: angular_royalty.svg
@@ -190,6 +201,7 @@
   - qa
   - ninja
   - bugs
+  - common
   - bug squasher
   image: qa_ninja.svg
 - name: code_shipper
@@ -202,6 +214,7 @@
   tags:
   - shipping
   - soft skills
+  - common
   image: code_shipper.svg
 - name: drupal_brainiac
   description: Want to ship content on the modern web?  Drupal is where it's at.  The
@@ -215,6 +228,7 @@
   - drupal
   - CMS
   - web
+  - common
   image: drupal_brainiac.svg
 - name: ruby_on_rails_master
   description: Can anyone spin up websites faster than a Ruby on Rails Master? Owners
@@ -229,6 +243,7 @@
   - ruby
   - web
   - MVC
+  - common
   - DRY
   image: ruby_on_rails_master.svg
 - name: open_source_freedom_fighter
@@ -241,6 +256,7 @@
   numClonesAllowed: 500
   tags:
   - oss
+  - common
   - soft skills
   image: open_source_freedom_fighter.svg
 - name: mega_open_collaborator
@@ -252,6 +268,7 @@
   platform: gitcoin
   numClonesAllowed: 500
   tags:
+  - common
   - soft skills
   - open
   image: mega_open_collaborator.svg
@@ -264,6 +281,7 @@
   platform: gitcoin
   numClonesAllowed: 500
   tags:
+  - common
   - soft skills
   image: problem_solver.svg
 - name: sustainer
@@ -276,6 +294,7 @@
   numClonesAllowed: 500
   tags:
   - soft skills
+  - common
   - sustainer
   - open source
   image: sustainer.svg
@@ -289,6 +308,7 @@
   numClonesAllowed: 500
   tags:
   - soft skills
+  - common
   - project management
   image: super_juggler.svg
 - name: above_and_beyond
@@ -300,6 +320,7 @@
   numClonesAllowed: 500
   tags:
   - soft skills
+  - common
   - project management
   image: above_and_beyond.svg
 - name: new_dawn
@@ -310,6 +331,7 @@
   platform: gitcoin
   numClonesAllowed: 50
   tags:
+  - common
   - soft skills
   - momentum
   image: new_dawn.svg
@@ -324,6 +346,7 @@
   numClonesAllowed: 350
   tags:
   - design
+  - common
   - star
   - aesthetics
   - ux
@@ -368,6 +391,7 @@
   - data
   - graphs
   - charts
+  - common
   image: data_savvy.svg
 - name: idea_person
   description: Idea people create value and warmth with the sheer radiance of their
@@ -382,6 +406,7 @@
   - ideas
   - project manager
   - product manager
+  - common
   image: idea_person.svg
 - name: always_shipping
   description: Know who we LOVE working with?  Programmers who are always shipping
@@ -394,6 +419,7 @@
   - shipping
   - SHIPL
   - soft skils
+  - common
   image: always_shipping.svg
 - name: c_sharp_programmer
   description: Need someone who uses strong typing, declarative, functional, code?  Look
@@ -405,6 +431,7 @@
   tags:
   - c#
   - programmer
+  - common
   image: c_sharp_programmer.svg
 - name: cleanest_code
   description: Want to work with someone who is famous for having squeaky clean code?  Look
@@ -417,6 +444,7 @@
   - clean code
   - programmer
   - soft skills
+  - common
   image: cleanest_code.svg
 - name: relase_early_and_often
   description: Want to work with someone who RERO (Relase Early and Often)? RERO is
@@ -433,6 +461,7 @@
   - release early
   - RERO
   - soft skills
+  - common
   image: release_early_and_often.svg
 - name: grow_open_source
   description: Owners of this Kudos embody Gitcoin's mission of 'Grow Open Source'
@@ -444,6 +473,7 @@
   - mission
   - open source
   - sustainer
+  - common
   image: grow_open_source.svg
 - name: mongo_db_programmer
   description: Want someone who can work efficiently with MongoDB?  Look no further
@@ -455,6 +485,7 @@
   tags:
   - mongodb
   - db
+  - common
   image: mongo_db_programmer.svg
 - name: navigator
   description: Want to work with someone who can navigate through complexity and deliver
@@ -466,6 +497,7 @@
   tags:
   - navigator
   - project management
+  - common
   - soft skills
   image: direct.svg
 - name: fast_turn_around
@@ -478,6 +510,7 @@
   tags:
   - soft skills
   - fast
+  - common
   - quick
   image: fast_turn_around.svg
 - name: css_gentle(wo)man
@@ -490,6 +523,7 @@
   tags:
   - css
   - frontend
+  - common
   - html
   image: css_gentle(wo)man.svg
 - name: night_owl
@@ -526,6 +560,7 @@
   numClonesAllowed: 500
   tags:
   - soft skills
+  - common
   - inspiration
   image: builder_of_a_better_world.svg
 - name: c_debugger
@@ -562,6 +597,7 @@
   numClonesAllowed: 550
   tags:
   - rails
+  - common
   - ruby
   - web
   - MVC
@@ -591,6 +627,7 @@
   tags:
   - javascript
   - nodeJS
+  - common
   - node
   - asyncronous
   image: node_js_wizard.svg
@@ -606,6 +643,7 @@
   - c++
   - c
   - memory management
+  - common
   - programming
   image: c++_scientist.svg
 - name: pythonista
@@ -627,6 +665,7 @@
   numClonesAllowed: 500
   tags:
   - soft skills
+  - common
   - programmer
   image: level_up.svg
 - name: delegation_machine
@@ -640,6 +679,7 @@
   tags:
   - delegate
   - team
+  - common
   - soft skills
   image: delegation_machine.svg
 - name: arts_and_farts
@@ -665,6 +705,7 @@
   tags:
   - react
   - javascript
+  - common
   - programming
   image: react_reactor.svg
 - name: html_celebrity
@@ -714,6 +755,7 @@
   tags:
   - pony
   - risks
+  - common
   - ideas
   - dreamer
   image: flying_pony.svg
@@ -748,6 +790,7 @@
   numClonesAllowed: 340
   tags:
   - app
+  - common
   - web
   - programmer
   image: app_dev_all_star.svg
@@ -771,6 +814,7 @@
   numClonesAllowed: 500
   tags:
   - product
+  - common
   - soft skills
   image: product_wizard.svg
 - name: business_minded
@@ -782,6 +826,7 @@
   numClonesAllowed: 340
   tags:
   - business
+  - common
   - soft skills
   image: business_minded.svg
 - name: bug_squasher
@@ -793,6 +838,7 @@
   numClonesAllowed: 500
   tags:
   - bugs
+  - common
   - soft skills
   image: bug_squasher.svg
 - name: shill_ethereum
@@ -813,6 +859,7 @@
   numClonesAllowed: 500
   tags:
   - colorado
+  - common
   - shills
   image: shill_colorado.svg
 - name: devcon_4
@@ -824,6 +871,7 @@
   tags:
   - devcon
   - ethereum
+  - common
   - shills
   image: devcon_4.svg
 - name: django_pony
@@ -860,6 +908,7 @@
   numClonesAllowed: 400
   tags:
   - collboration
+  - common
   - soft skills
   image: collaboration_robot.svg
 - name: path_finder
@@ -883,6 +932,7 @@
   numClonesAllowed: 400
   tags:
   - soft skills
+  - common
   image: climb_the_ladder.svg
 - name: gitcoin_sustainer
   description: A very special, limited edition, Kudos, for sustainers of Gitcoin.
@@ -961,6 +1011,7 @@
   numClonesAllowed: 500
   tags:
   - party
+  - common
   - fun
   - soft skills
   image: party_robot.svg
@@ -1008,6 +1059,7 @@
   numClonesAllowed: 500
   tags:
   - git
+  - common
   - coins
   - money
   image: gitter_of_coins.svg
@@ -1054,6 +1106,7 @@
   numClonesAllowed: 500
   tags:
   - blockchain
+  - common
   - soft skills
   image: blockchain_the_world.svg
 - name: gitcoin_minibot
@@ -1087,6 +1140,7 @@
   tags:
   - sustainers
   - gitcoin
+  - common
   - just for fun
   image: gitcoin_rasta.svg
 - name: big_bot
@@ -1157,6 +1211,7 @@
   numClonesAllowed: 1000
   tags:
   - tools
+  - common
   - oss
   image: tools.svg
 - name: hard_worker
@@ -1299,45 +1354,50 @@
   priceFinney: 2
   artist: mladen
   platform: gitcoin
-  numClonesAllowed: 1
+  numClonesAllowed: 2
   tags:
   - status hackathon
+  - special event
   image: games_first.svg
 - name: status_hackathon_2018_marketplace_track_second_prize
   description: For the runner up of the Status Hackathon Marketplace Track
   priceFinney: 2
   artist: mladen
   platform: gitcoin
-  numClonesAllowed: 1
+  numClonesAllowed: 2
   tags:
   - status hackathon
+  - special event
   image: marketplaces_runner_up.svg
 - name: status_hackathon_2018_traveltrack_second_prize
-  description: lorum
+  description: For the runner up of the Status Hackathon Travel Track
   priceFinney: 2
   artist: mladen
   platform: gitcoin
-  numClonesAllowed: 1
+  numClonesAllowed: 2
   tags:
   - status hackathon
+  - special event
   image: travel_runner_up.svg
 - name: status_hackathon_2018_travel_track_first_prize
   description: For the winner of the Status Hackathon Travel Track
   priceFinney: 2
   artist: mladen
   platform: gitcoin
-  numClonesAllowed: 1
+  numClonesAllowed: 2
   tags:
   - status hackathon
+  - special event
   image: travel_first.svg
 - name: status_hackathon_2018__games_second_prize
-  description: lorum
+  description: For the runner up of the Status Hackathon Games Track
   priceFinney: 2
   artist: mladen
   platform: gitcoin
-  numClonesAllowed: 1
+  numClonesAllowed: 2
   tags:
   - status hackathon
+  - special event
   image: games_runner_up.svg
 - name: philosophers_stone
   description: For whomever makes the greatest contribution to the Status Hackathon
@@ -1345,26 +1405,29 @@
   priceFinney: 2
   artist: mladen
   platform: gitcoin
-  numClonesAllowed: 1
+  numClonesAllowed: 2
   tags:
   - status hackathon
+  - special event
   image: philosophers.svg
 - name: status_hackathon_2018_travel_social_first_prize
   description: For the winner of the Status Hackathon Social Track
   priceFinney: 2
   artist: mladen
   platform: gitcoin
-  numClonesAllowed: 1
+  numClonesAllowed: 2
   tags:
   - status hackathon
+  - special event
   image: social_first.svg
-- name: status_hackathon_2018_social_first_prize
-  description: lorum
+- name: status_hackathon_2018_marketplace_first_prize
+  description: For the winner of the Status Hackathon Marketplace Track
   priceFinney: 2
   artist: mladen
   platform: gitcoin
-  numClonesAllowed: 1
+  numClonesAllowed: 2
   tags:
+  - special event
   - status hackathon
   image: market_first.svg
 - name: status_hackathon_2018_social_second_prize
@@ -1372,9 +1435,10 @@
   priceFinney: 2
   artist: mladen
   platform: gitcoin
-  numClonesAllowed: 1
+  numClonesAllowed: 2
   tags:
   - status hackathon
+  - special event
   image: social_runner_up.svg
 - name: gitcoin_love
   description: This kudos is for showing appreciation for someone who did some work
@@ -1392,7 +1456,7 @@
   priceFinney: 2
   artist: mladen
   platform: gitcoin
-  numClonesAllowed: 1
+  numClonesAllowed: 2
   tags:
   - status hackathon
   image: wildcard.svg
@@ -1426,6 +1490,7 @@
   platform: gitcoin
   numClonesAllowed: 25
   tags:
+  - rare
   - architect
   - plan
   - backend
@@ -1439,6 +1504,7 @@
   platform: gitcoin
   numClonesAllowed: 25
   tags:
+  - rare
   - bug
   - squasher
   - eliminator
@@ -1453,6 +1519,7 @@
   platform: gitcoin
   numClonesAllowed: 25
   tags:
+  - rare
   - bug
   - problem solver
   - cellarius
@@ -1466,6 +1533,7 @@
   platform: gitcoin
   numClonesAllowed: 25
   tags:
+  - rare
   - fast
   - quick
   - turnaround
@@ -1481,6 +1549,7 @@
   platform: gitcoin
   numClonesAllowed: 25
   tags:
+  - rare
   - cellarius
   - skilled
   - multi-task
@@ -1495,6 +1564,7 @@
   platform: gitcoin
   numClonesAllowed: 35
   tags:
+  - rare
   - trusted
   - developer
   - contributor
@@ -1509,7 +1579,9 @@
   platform: gitcoin
   numClonesAllowed: 35
   tags:
+  - rare
   - cellarius
+  - energy
   image: cellarius/Burst.svg
 - name: impossible_object
   description: Limited Edition Cellarius Kudos!  This kudos is just for fun.  If anyone
@@ -1519,7 +1591,9 @@
   platform: gitcoin
   numClonesAllowed: 35
   tags:
+  - rare
   - cellarius
+  - just for fun
   image: cellarius/Circle.svg
 - name: diamond
   description: Limited Edition Cellarius Kudos!  This kudos is for any contributor
@@ -1529,7 +1603,9 @@
   platform: gitcoin
   numClonesAllowed: 35
   tags:
+  - rare
   - cellarius
+  - diamond
   image: cellarius/Diamond.svg
 - name: heart
   description: Limited Edition Cellarius Kudos!  This one is for contributors who
@@ -1539,7 +1615,10 @@
   platform: gitcoin
   numClonesAllowed: 35
   tags:
+  - rare
   - cellarius
+  - heart
+  - soft skills
   image: cellarius/heart.svg
 - name: infinite_energy
   description: Limited Edition Cellarius Kudos!  This kudos is for contributors who
@@ -1550,6 +1629,9 @@
   numClonesAllowed: 35
   tags:
   - cellarius
+  - rare
+  - energy
+  - gumption
   image: cellarius/Infinite.svg
 - name: creative
   description: Limited Edition Cellarius Kudos!  This kudos is for the squiggles,
@@ -1560,6 +1642,9 @@
   numClonesAllowed: 35
   tags:
   - cellarius
+  - rare
+  - creative
+  - skills
   image: cellarius/Spaghetti.svg
 - name: foundation
   description: Limited Edition Cellarius Kudos!  This kudos is for those who lay a
@@ -1570,82 +1655,122 @@
   numClonesAllowed: 35
   tags:
   - cellarius
+  - rare
+  - foundation
   image: cellarius/Triangle.svg
 - name: Best use of Fission -- ETHMagicians Prague 2018
   description: This kudos is for the Best use of Fission -- ETHMagicians Prague 2018
-  rarity: 20
+  artist: mladen
   priceFinney: 1
   artist: mladen
   platform: gitcoin
-  numClonesAllowed: 1
+  numClonesAllowed: 2
   tags:
   - ethmagicians
   - prague
+  - special event
   image: fission_color.svg
 - name: Best use of Universal Logins -- ETHMagicians Prague 2018
   description: This kudos is for the Best use of Universal Logins -- ETHMagicians Prague 2018
-  rarity: 20
   priceFinney: 1
   artist: mladen
   platform: gitcoin
-  numClonesAllowed: 1
+  numClonesAllowed: 2
   tags:
   - ethmagicians
   - prague
+  - special event
   image: logins_color.svg
 - name: Awesome Participant -- ETHMagicians Prague 2018
   description: This kudos is for the Awesome Participant -- ETHMagicians Prague 2018
-  rarity: 20
   priceFinney: 1
   artist: mladen
   platform: gitcoin
-  numClonesAllowed: 1
+  numClonesAllowed: 2
   tags:
   - ethmagicians
   - prague
+  - special event
   image: participant_color.svg
 - name: Scribe -- ETHMagicians Prague 2018
   description: This kudos is for the Scribe kudos award -- ETHMagicians Prague 2018
-  rarity: 20
   priceFinney: 1
   artist: mladen
   platform: gitcoin
-  numClonesAllowed: 1
+  numClonesAllowed: 2
   tags:
   - ethmagicians
   - prague
+  - special event
   image: scirbe_color.svg
 - name: Best use of 1337 Subscriptions -- ETHMagicians Prague 2018
   description: This kudos is for the Best use of 1337 Subscriptions -- ETHMagicians Prague 2018
-  rarity: 20
   priceFinney: 1
   artist: mladen
   platform: gitcoin
-  numClonesAllowed: 1
+  numClonesAllowed: 2
   tags:
   - ethmagicians
   - prague
+  - special event
   image: subscription_color.svg
 - name: Volunteer Organizer Award -- ETHMagicians Prague 2018
   description: This kudos is for the Volunteer Organizer Award -- ETHMagicians Prague 2018
-  rarity: 20
   priceFinney: 1
   artist: mladen
   platform: gitcoin
-  numClonesAllowed: 1
+  numClonesAllowed: 2
   tags:
   - ethmagicians
   - prague
+  - special event
   image: volunteer_color.svg
 - name: Best Use Of Wallet Standards -- ETHMagicians Prague 2018
   description: This kudos is for the Best Use Of Wallet Standards -- ETHMagicians Prague 2018
-  rarity: 20
   priceFinney: 1
   artist: mladen
   platform: gitcoin
-  numClonesAllowed: 1
+  numClonesAllowed: 2
   tags:
   - ethmagicians
   - prague
+  - special event
   image: wallet_color.svg
+- name: magical_unicorn
+  description: Know someone who's contributions are magical? Send them this kudos to celebrate their contributions :)
+  priceFinney: 2
+  numClonesAllowed: 100
+  tags:
+  - unicorn
+  - magic
+  image: magic_unicorn.svg
+  platform: gitcoin
+- name: red_stapler
+  description: "Has anyone seen my stapler?"
+  priceFinney: 1
+  numClonesAllowed: 200
+  tags:
+  - stapler
+  - just for fun
+  image: red_stapler.svg
+  platform: gitcoin
+- name: shillin_like_a_villian
+  description: Know someone who so good at shillin' that they're shillin like a Villian?  This Kudos is for them!
+  priceFinney: 1
+  numClonesAllowed: 100
+  tags:
+  - shillin
+  - shill
+  - funny
+  image: shillin_like_a_villian.svg
+- name: shillville
+  description: Every Shill down in Shillville likes Open Source a lot. This Shillville badge is for the Shills in your life~!
+  priceFinney: 1
+  numClonesAllowed: 100
+  tags:
+  - shill
+  - shillville
+  - open source
+  platform: gitcoin
+  image: shillville.svg
 
