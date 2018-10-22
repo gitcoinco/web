@@ -77,7 +77,7 @@ def about(request):
     context = {
         'is_outside': True,
         'active': 'about',
-        'title': 'About',
+        'title': 'About Kudos',
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
@@ -92,7 +92,7 @@ def marketplace(request):
     order_by = request.GET.get('order_by', '-modified_on')
     logger.info(order_by)
     logger.info(q)
-    title = q.title() + str(_(" Kudos ")) if q else str(_('Marketplace'))
+    title = q.title() + str(_(" Kudos ")) if q else str(_('Kudos Marketplace'))
 
     kudos_contract = KudosContract(settings.KUDOS_USING_NETWORK)
     contract_address = kudos_contract.address
