@@ -34,7 +34,7 @@
 
     <div class="container pt-5">
       <div id="grant-profile-tabs" class="tab-container font-body mb-3">
-        <button type="button" id="supported" class="section-tab">{% trans "Supported by Me" %} ({{ grants|length }})</button>
+        <button type="button" id="supported" class="section-tab">{% trans "Supported by Me" %} ({{ sub_grants|length }})</button>
         <button type="button" id="created" class="section-tab">{% trans "Created by Me" %} ({{ grants|length }})</button>
       </div>
 
@@ -43,7 +43,7 @@
           <div class="container px-0">
             <div class="row mb-3 py-2 px-0 mx-sm-0">
               <div class="col-12 px-0">
-                {% include 'grants/profile_body.html' with grants=grants history=history %}
+                {% include 'grants/profile_body.html' with grants=sub_grants history=history %}
               </div>
             </div>
           </div>
@@ -70,4 +70,3 @@
     });
   </script>
 <html>
-
