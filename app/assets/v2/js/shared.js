@@ -712,8 +712,7 @@ var trigger_primary_form_web3_hooks = function() {
 
   if ($('#primary_form').length) {
     var is_zero_balance_not_okay = document.location.href.indexOf('/faucet') == -1;
-    // var unlock_metamask_error = web3.eth.coinbase ? web3.eth.coinbase : web3.eth.getCoinbase();
-    var unlock_metamask_error = '0x0000000000000000000000000000000000000000';
+    var unlock_metamask_error = web3.eth.coinbase ? web3.eth.coinbase : web3.eth.getCoinbase();
 
     if (typeof web3 == 'undefined') {
       $('#no_metamask_error').css('display', 'block');
