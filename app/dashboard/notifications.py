@@ -565,15 +565,27 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
               f"{profiles}{sub_msg}\n<hr>\n\n" \
               f"{learn_more_msg}\n{crowdfund_msg}\n{help_msg}\n{openwork_msg}"
     elif event_name == 'work_done':
+        msg_body = ''
+        msg_tips = ''
+
+        # no crowdfund tips
+        for tip in bounty.tips.filter(is_for_bounty_fulfiller=False):
+            msg_tips += f'* {tip.from_username} tipped {tip.amount} {tip.tokenName} ' \
+                        f'worth {tip.value_in_usdt_now} USD to {tip.username}.\n'
+
         try:
             accepted_fulfillment = bounty.fulfillments.filter(accepted=True).latest('fulfillment_id')
             accepted_fulfiller = f' to @{accepted_fulfillment.fulfiller_github_username}'
+            msg_body = f'__The funding of {natural_value} {bounty.token_name} {usdt_value} ' \
+                       f'{crowdfund_amount} attached to this ' \
+                       f'issue has been approved & issued{accepted_fulfiller}.__  \n\n{crowdfund_thx} '
         except BountyFulfillment.DoesNotExist:
-            accepted_fulfiller = ''
+            msg_body = f'__This Bounty has been completed.__'
 
-        msg = f"{status_header}__The funding of {natural_value} {bounty.token_name} {usdt_value} {crowdfund_amount} attached to this " \
-              f"issue has been approved & issued{accepted_fulfiller}.__  \n\n{crowdfund_thx} " \
-              f"{learn_more_msg}\n{help_msg}\n{openwork_msg}\n"
+        if msg_tips:
+            msg_body += f'\n\nAdditional Tips for this Bounty:\n{msg_tips}\n<hr>\n'
+
+        msg = f'{status_header}{msg_body}\n{learn_more_msg}\n{help_msg}\n{openwork_msg}\n'
     return msg
 
 
