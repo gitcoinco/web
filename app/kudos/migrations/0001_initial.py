@@ -70,7 +70,7 @@ class Migration(migrations.Migration):
                 ('txid', models.CharField(blank=True, max_length=255, null=True)),
                 ('contract_address', models.CharField(max_length=255)),
                 ('token_id', models.IntegerField()),
-                ('network', models.CharField(max_length=255),
+                ('network', models.CharField(max_length=255)),
             ],
             options={
                 'abstract': False,
