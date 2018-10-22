@@ -1,41 +1,43 @@
-{% load i18n  %}
+{% load i18n %}
 
 {% trans "Transaction Summary" %}
 
-{% trans "Grant" %} {{ grant_name }} {% trans "has received more funding" %}
+{% trans "Grant" %} {{ grant.title }} {% trans "has received more funding" %}
 
-{{ github_username }}
+{{ grant.reference_url }}
+
+{{ grant.logo.url }}
 
 {% trans "Grant" %}
 
-{{ grant_description }}
+{{ grant.description }}
 
 {% trans "Funding Recieved in the Last 24 Hours" %}
 
-{{ funder_i_username }}
+{{ subscription.contributor_profile_img }}
 
 {% trans "Grant Funder" %}
 
-{{ funder_i_amount }}
+{{ subscription.contributor_profile }}
 
-{{ funder_i_timestamp }}
+{{ subscription.amount_per_period }}
+
+{{ subscription.contributor_timestamp }}
+
+{{ subscription.contributor_url }}
 
 {% trans "View Transaction" %}
 
-{{ funder_i_link }}
-
 {% trans "Total Funds" %}
 
-{{ funding_status }}
+{{ grant.percentage_done|floatformat:0 }}
 
-{{ progress_completed }}
-
-{{ current_value }}
+{{ grant.amount_received }}
 
 {% trans "Current" %}
 
-{{ goal_value }}
+{{ grant.amount_goal }}
 
 {% trans "Goal" %}
 
-{{ grant_link }} {% trans "View Grant" %}
+{% trans "View Grant" %}
