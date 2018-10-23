@@ -27,7 +27,7 @@ from django.contrib import messages
 from django.contrib.postgres.search import SearchVector
 from django.contrib.staticfiles.templatetags.staticfiles import static
 from django.http import Http404, HttpResponse, JsonResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
@@ -161,9 +161,7 @@ def details(request, id, name):
         raise ValueError(f'Invalid Kudos ID found.  ID is not a number:  {kudos_id}')
 
     # Find other profiles that have the same kudos name
-    kudos = Token.objects.get(
-        pk=id,
-    )
+    kudos = get_object_or_404(Token, pk=id)
     # Find other Kudos rows that are the same kudos.name, but of a different owner
     related_kudos = Token.objects.filter(name=kudos.name, num_clones_allowed=0, contract__network=settings.KUDOS_NETWORK)
     logger.debug(f'Related Kudos Tokens: {related_kudos}')
