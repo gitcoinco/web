@@ -85,6 +85,6 @@ class Command(BaseCommand):
 
         for dupe in dupes:
             handle = dupe['handle']
-            profiles = Profile.objects.filter(handle=handle)
+            profiles = Profile.objects.filter(handle=handle).distinct("pk")
             print(f"combining {profiles[0].pk} and {profiles[1].pk}")
             combine_profiles(profiles[0], profiles[1])
