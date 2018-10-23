@@ -43,12 +43,11 @@ class Token(SuperModel):
         artist (str): The artist that created the kudos image.
         background_color (str): 6 digit hex code background color.  See Open Sea docs for details.
         cloned_from_id (int): Orignal Kudos that this one was cloned from.
-        contract_address (str): The eth address contract for this kudos.
+        contract (FK): Foreing key to the Contract model.
         description (str): Description of the kudos.
         external_url (str): External URL pointer to image asset.  See Open Sea docs for details.
         image (str): Image file name.
         name (str): Kudos name.
-        network (TYPE): Network that the token is on.
         num_clones_allowed (int): How many clones are allowed to be made.
         num_clones_available (int): How many clones the Kudos has left.
         num_clones_in_wild (int): How many clones there are in the wild.
@@ -57,7 +56,7 @@ class Token(SuperModel):
         price_finney (int): Price to clone the Kudos in finney.
         rarity (str): Rarity metric, defined in kudos.utils.py
         tags (str): Comma delimited tags.  TODO:  change to array
-        token_id (TYPE): the token_id on the blockchain.
+        token_id (int): the token_id on the blockchain.
         txid (str): The ethereum transaction id that generated this kudos.
     """
     # Kudos Struct (also in contract)
@@ -80,9 +79,10 @@ class Token(SuperModel):
     # Extra fields added to database (not on blockchain)
     owner_address = models.CharField(max_length=255)
     txid = models.CharField(max_length=255, null=True, blank=True)
-    contract_address = models.CharField(max_length=255)
     token_id = models.IntegerField()
-    network = models.CharField(max_length=255)
+    contract = models.ForeignKey(
+        'kudos.Contract', related_name='kudos_contract', on_delete=models.SET_NULL, null=True
+    )
 
     def save(self, *args, **kwargs):
         if self.owner_address:
@@ -251,6 +251,17 @@ class KudosTransfer(SendCryptoAsset):
         return f"({status}) transfer of {self.kudos_token_cloned_from} from {self.sender_profile} to {self.recipient_profile} on {self.network}"
 
 
+class Contract(SuperModel):
+    address = models.CharField(max_length=255, unique=True)
+    is_latest = models.BooleanField(default=False)
+    network = models.CharField(max_length=255)
+
+    def save(self, *args, **kwargs):
+        if self.address:
+            self.address = to_checksum_address(self.address)
+        super().save(*args, **kwargs)
+
+
 class Wallet(SuperModel):
     """DEPRECATED.  Kudos Address where the tokens are stored.
 
@@ -261,7 +272,9 @@ class Wallet(SuperModel):
         profile (TYPE): Description
     """
     address = models.CharField(max_length=255, unique=True)
-    profile = models.ForeignKey('dashboard.Profile', related_name='kudos_wallets', on_delete=models.SET_NULL, null=True)
+    profile = models.ForeignKey(
+        'dashboard.Profile', related_name='kudos_wallets', on_delete=models.SET_NULL, null=True
+    )
 
     def __str__(self):
         """Return the string representation of a model."""
