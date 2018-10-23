@@ -255,7 +255,8 @@ class KudosContract:
         orphans.delete()
 
     def sync_db_without_txid(self, kudos_id):
-        """The regular sync_db method should be preferred over this.
+        """DEPRECATED.
+        The regular sync_db method should be preferred over this.
 
         This method is only to be used if you are syncing kudos directly from the blockchain
         and don't know the txid.
@@ -300,8 +301,9 @@ class KudosContract:
 
         # Update an existing Kudos in the database
         kudos['txid'] = txid
-        kudos_token = Token(token_id=kudos_id, **kudos)
-        kudos_token.save()
+        kudos_token, created = Token.objects.update_or_create(token_id=kudos_id, defaults=kudos)
+        # kudos_token = Token(token_id=kudos_id, **kudos)
+        # kudos_token.save()
         # Find the object which matches the kudos that was just cloned
         try:
             kudos_transfer = KudosTransfer.objects.get(receive_txid=txid)
