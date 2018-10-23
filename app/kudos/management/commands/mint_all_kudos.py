@@ -73,14 +73,14 @@ class Command(BaseCommand):
             if image_name:
                 # Support Open Sea
                 if kudos_contract.network == 'rinkeby':
-                    image_path = 'http://kudosdemo.gitcoin.co/static/v2/images/kudos/' + image_name
-                    external_url = f'http://kudosdemo.gitcoin.co/kudos/{idx + 1}/{kudos["name"]}'
+                    image_path = 'https://stage.gitcoin.co/static/v2/images/kudos/' + image_name
+                    external_url = f'https://stage.gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
                 elif kudos_contract.network == 'mainnet':
-                    image_path = 'http://kudosdemo.gitcoin.co/static/v2/images/kudos/' + image_name
-                    external_url = f'http://kudosdemo.gitcoin.co/kudos'
+                    image_path = 'https://s.gitcoin.co/static/v2/images/kudos/' + image_name
+                    external_url = f'https://gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
                 elif kudos_contract.network == 'localhost':
                     image_path = 'v2/images/kudos/' + image_name
-                    external_url = f'http://kudosdemo.gitcoin.co/kudos'
+                    external_url = f'http://localhost:8000/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
                 else:
                     raise RuntimeError('Need to set the image path for that network')
             else:
