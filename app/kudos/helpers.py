@@ -42,26 +42,23 @@ def get_token(token_id, network, address):
 
 
     """
-    if address == 'latest':
-        contract = Contract.objects.get(
-            is_latest=True,
-            network=network
-        )
-    else:
-        if not is_address(address):
-            return None
+    try:
         contract = Contract.objects.get(
             address=address,
             network=network
         )
-
-    try:
-        token = Token.objects.get(
-            contract=contract,
-            token_id=token_id
+    except Exception as e:
+        logger.warning(e)
+        contract = Contract.objects.get(
+            is_latest=True,
+            network=network
         )
-    except Token.DoesNotExist:
-        return None
+
+    token = Token.objects.get(
+        contract=contract,
+        token_id=token_id
+    )
+
     return token
 
 
