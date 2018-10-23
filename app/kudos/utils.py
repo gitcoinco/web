@@ -28,7 +28,7 @@ from django.conf import settings
 import ipfsapi
 from dashboard.utils import get_web3
 from eth_utils import to_checksum_address
-from kudos.models import KudosTransfer, Token, Contract
+from kudos.models import Contract, KudosTransfer, Token
 from web3.exceptions import BadFunctionCallOutput
 from web3.middleware import geth_poa_middleware
 

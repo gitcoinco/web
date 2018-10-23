@@ -37,7 +37,7 @@ from dashboard.models import Activity, Profile
 from dashboard.notifications import maybe_market_kudos_to_email
 from dashboard.utils import get_web3
 from dashboard.views import record_user_action
-from eth_utils import is_address, to_normalized_address, to_checksum_address
+from eth_utils import is_address, to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_master, get_github_primary_email
 from ratelimit.decorators import ratelimit
@@ -45,9 +45,8 @@ from retail.helpers import get_ip
 from web3 import Web3
 
 from .forms import KudosSearchForm
-
-from .models import KudosTransfer, Token
 from .helpers import get_token
+from .models import KudosTransfer, Token
 
 logger = logging.getLogger(__name__)
 

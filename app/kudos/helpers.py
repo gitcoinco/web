@@ -19,9 +19,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
 
-from .models import Wallet, Contract, Token
 from django.conf import settings
+
 from eth_utils import is_address, to_checksum_address
+
+from .models import Contract, Token, Wallet
 
 logger = logging.getLogger(__name__)
 
