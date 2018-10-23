@@ -28,6 +28,7 @@ import requests
 import web3
 from kudos.models import Token
 from kudos.utils import KudosContract
+
 # from web3.middleware import local_filter_middleware
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)

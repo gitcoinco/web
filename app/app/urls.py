@@ -65,14 +65,11 @@ urlpatterns = [
     path('kudos/send/3/', kudos.views.send_3, name='kudos_send_3'),
     path('kudos/send/4/', kudos.views.send_4, name='kudos_send_4'),
     re_path(r'^lazy_load_kudos/$', dashboard.views.lazy_load_kudos, name='lazy_load_kudos'),
-    re_path(
-        r'^kudos/receive/v3/(?P<key>.*)/(?P<txid>.*)/(?P<network>.*)?',
-        kudos.views.receive,
-        name='kudos_receive'
-    ),
+    re_path(r'^kudos/receive/v3/(?P<key>.*)/(?P<txid>.*)/(?P<network>.*)?', kudos.views.receive, name='kudos_receive'),
     re_path(r'^kudos/search/$', kudos.views.search, name='kudos_search'),
     re_path(r'^kudos/(?P<id>\d+)/(?P<name>\w*)', kudos.views.details, name='kudos_details'),
     re_path(r'^kudos/address/(?P<handle>.*)', kudos.views.kudos_preferred_wallet, name='kudos_preferred_wallet'),
+    re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_details'),
 
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
@@ -82,8 +79,8 @@ urlpatterns = [
     url(r'^api/v0.1/', include(ebrouter.urls)),
     url(r'^api/v0.1/', include(kdrouter.urls)),
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cluodfront
-    url(r'^api/v0.1/users_search/',  dashboard.views.get_users, name='users_search'),
-    url(r'^api/v0.1/kudos_search/',  dashboard.views.get_kudos, name='kudos_search'),
+    url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
+    url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
     re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),

@@ -77,9 +77,7 @@ def insert_settings(request):
             web3_type='v3',
         ).exclude(txid='')
         context['unclaimed_kudos'] = KudosTransfer.objects.filter(
-            receive_txid='',
-            username__iexact="@" + context['github_handle'],
-            web3_type='v3',
+            receive_txid='', username__iexact="@" + context['github_handle'], web3_type='v3',
         ).exclude(txid='')
 
         if not settings.DEBUG:

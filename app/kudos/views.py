@@ -22,16 +22,16 @@ import json
 import logging
 import re
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.postgres.search import SearchVector
 from django.contrib.staticfiles.templatetags.staticfiles import static
-from django.http import JsonResponse
+from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
-from django.conf import settings
 
 from dashboard.models import Activity, Profile
 from dashboard.notifications import maybe_market_kudos_to_email
@@ -40,13 +40,13 @@ from dashboard.views import record_user_action
 from eth_utils import is_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_master, get_github_primary_email
-from .utils import KudosContract
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import Web3
 
 from .forms import KudosSearchForm
 from .models import KudosTransfer, Token
+from .utils import KudosContract
 
 logger = logging.getLogger(__name__)
 
@@ -129,6 +129,21 @@ def search(request):
     return TemplateResponse(request, 'kudos_marketplace.html', context)
 
 
+def image(request, kudos_id, name):
+
+    kudos_contract = KudosContract(settings.KUDOS_USING_NETWORK)
+    contract_address = kudos_contract.address
+
+    kudos = Token.objects.get(token_id=kudos_id, contract_address=contract_address)
+    img = kudos.as_img
+    if not img:
+        raise Http404
+
+    response = HttpResponse(img.getvalue(), content_type='image/png')
+    response['Content-Disposition'] = 'attachment; filename=kudos.png'
+    return response
+
+
 def details(request, id, name):
     """Render the Kudos 'detail' page."""
     kudos_id = id
@@ -175,7 +190,7 @@ def details(request, id, name):
         context['title'] = kudos.humanized_name
         context['card_title'] = kudos.humanized_name
         context['card_desc'] = kudos.description
-        context['avatar_url'] = kudos.image
+        context['avatar_url'] = kudos.img_url
 
         # The real num_cloned_in_wild is only stored in the Gen0 Kudos token
         kudos.num_clones_in_wild = Token.objects.get(token_id=kudos.cloned_from_id).num_clones_in_wild

@@ -685,8 +685,8 @@ div.button-pink {
     display: block!important;
   }
   .d-md-flex {
-      display: -ms-flexbox!important;
-      display: flex!important;
+    display: -ms-flexbox!important;
+    display: flex!important;
   }
   .d-md-none {
     display: none!important;

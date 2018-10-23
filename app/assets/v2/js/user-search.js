@@ -1,5 +1,5 @@
 function userSearch(elem, showAddress, theme) {
-  var themeChoice =  theme || undefined;
+  var themeChoice = theme || undefined;
   var selectItem = elem || '.username-search';
 
   $(selectItem).each(function() {

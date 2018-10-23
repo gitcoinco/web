@@ -18,13 +18,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
 import logging
+from io import BytesIO
 
 from django.conf import settings
+from django.core.files import File
 from django.db import models
+from django.utils.text import slugify
 
+import environ
+import pyvips
 from dashboard.models import SendCryptoAsset
 from economy.models import SuperModel
 from eth_utils import to_checksum_address
+from pyvips.error import Error as VipsError
 
 logger = logging.getLogger(__name__)
 
@@ -141,6 +147,46 @@ class Token(SuperModel):
     def __str__(self):
         """Return the string representation of a model."""
         return f"Kudos Token: {self.humanized_name}"
+
+    @property
+    def as_img(self):
+        """Convert the provided buffer to another format.
+
+        Args:
+            obj (File): The File/ContentFile object.
+            input_fmt (str): The input format. Defaults to: svg.
+            output_fmt (str): The output format. Defaults to: png.
+
+        Exceptions:
+            Exception: Cowardly catch blanket exceptions here, log it, and return None.
+
+        Returns:
+            BytesIO: The BytesIO stream containing the converted File data.
+            None: If there is an exception, the method returns None.
+
+        """
+        input_fmt = 'svg'
+        output_fmt = 'png'
+        root = environ.Path(__file__) - 2  # Set the base directory to two levels.
+        file_path = root('assets') + '/' + self.image
+        with open(file_path, 'rb') as f:
+            obj = File(f)
+
+            try:
+                obj_data = obj.read()
+                if obj_data:
+                    image = pyvips.Image.new_from_file(obj.name)
+                    return BytesIO(image.write_to_buffer(f'.{output_fmt}'))
+            except VipsError:
+                pass
+            except Exception as e:
+                logger.error(e)
+        return None
+
+    @property
+    def img_url(self):
+        return f"{settings.BASE_URL}dynamic/kudos/{self.pk}/{slugify(self.name)}"
+
 
 
 class KudosTransfer(SendCryptoAsset):
