@@ -130,8 +130,7 @@ def search(request):
 
 
 def image(request, kudos_id, name):
-
-    kudos_contract = KudosContract(settings.KUDOS_USING_NETWORK)
+    kudos_contract = KudosContract(settings.KUDOS_NETWORK)
     contract_address = kudos_contract.address
 
     kudos = Token.objects.get(token_id=kudos_id, contract_address=contract_address)
@@ -142,6 +141,11 @@ def image(request, kudos_id, name):
     response = HttpResponse(img.getvalue(), content_type='image/png')
     response['Content-Disposition'] = 'attachment; filename=kudos.png'
     return response
+
+
+def details_by_address_and_token_id(request, address, token_id, name):
+    kudos = get_token(token_id=token_id, network=settings.KUDOS_NETWORK, address=address)
+    return redirect(f'/kudos/{kudos.id}/{kudos.name}')
 
 
 def details(request, id, name):

@@ -67,6 +67,11 @@ urlpatterns = [
     re_path(r'^lazy_load_kudos/$', dashboard.views.lazy_load_kudos, name='lazy_load_kudos'),
     re_path(r'^kudos/receive/v3/(?P<key>.*)/(?P<txid>.*)/(?P<network>.*)?', kudos.views.receive, name='kudos_receive'),
     re_path(r'^kudos/search/$', kudos.views.search, name='kudos_search'),
+    re_path(
+        r'^kudos/(?P<address>\w*)/(?P<token_id>\d+)/(?P<name>\w*)',
+        kudos.views.details_by_address_and_token_id,
+        name='kudos_details_by_address_and_token_id'
+    ),
     re_path(r'^kudos/(?P<id>\d+)/(?P<name>\w*)', kudos.views.details, name='kudos_details'),
     re_path(r'^kudos/address/(?P<handle>.*)', kudos.views.kudos_preferred_wallet, name='kudos_preferred_wallet'),
     re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_details'),
