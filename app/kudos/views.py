@@ -37,7 +37,7 @@ from dashboard.models import Activity, Profile
 from dashboard.notifications import maybe_market_kudos_to_email
 from dashboard.utils import get_web3
 from dashboard.views import record_user_action
-from eth_utils import is_address, to_normalized_address
+from eth_utils import is_address, to_normalized_address, to_checksum_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_master, get_github_primary_email
 from ratelimit.decorators import ratelimit
@@ -45,8 +45,9 @@ from retail.helpers import get_ip
 from web3 import Web3
 
 from .forms import KudosSearchForm
+
 from .models import KudosTransfer, Token
-from .utils import KudosContract
+from .helpers import get_token
 
 logger = logging.getLogger(__name__)
 
@@ -94,15 +95,22 @@ def marketplace(request):
     logger.info(q)
     title = q.title() + str(_(" Kudos ")) if q else str(_('Kudos Marketplace'))
 
-    kudos_contract = KudosContract(settings.KUDOS_USING_NETWORK)
-    contract_address = kudos_contract.address
-
     if q:
         listings = Token.objects.annotate(
             search=SearchVector('name', 'description', 'tags')
-            ).filter(num_clones_allowed__gt=0, contract_address=contract_address, search=q).order_by(order_by)
+        ).filter(
+            # Only show the latest contract Kudos for the current network
+            num_clones_allowed__gt=0,
+            contract__is_latest=True,
+            contract__network=settings.KUDOS_NETWORK,
+            search=q
+        ).order_by(order_by)
     else:
-        listings = Token.objects.filter(num_clones_allowed__gt=0, contract_address=contract_address).order_by(order_by)
+        listings = Token.objects.filter(
+            num_clones_allowed__gt=0,
+            contract__is_latest=True,
+            contract__network=settings.KUDOS_NETWORK,
+        ).order_by(order_by)
     context = {
         'is_outside': True,
         'active': 'marketplace',
@@ -130,10 +138,8 @@ def search(request):
 
 
 def image(request, kudos_id, name):
-    kudos_contract = KudosContract(settings.KUDOS_NETWORK)
-    contract_address = kudos_contract.address
 
-    kudos = Token.objects.get(token_id=kudos_id, contract_address=contract_address)
+    kudos = Token.objects.get(pk=kudos_id)
     img = kudos.as_img
     if not img:
         raise Http404
@@ -151,18 +157,16 @@ def details_by_address_and_token_id(request, address, token_id, name):
 def details(request, id, name):
     """Render the Kudos 'detail' page."""
     kudos_id = id
-    logger.info(f'kudos id: {kudos_id}')
-
-    kudos_contract = KudosContract(settings.KUDOS_USING_NETWORK)
-    contract_address = kudos_contract.address
 
     if not re.match(r'\d+', kudos_id):
         raise ValueError(f'Invalid Kudos ID found.  ID is not a number:  {kudos_id}')
 
     # Find other profiles that have the same kudos name
-    kudos = Token.objects.get(token_id=kudos_id, contract_address=contract_address)
+    kudos = Token.objects.get(
+        pk=id,
+    )
     # Find other Kudos rows that are the same kudos.name, but of a different owner
-    related_kudos = Token.objects.filter(name=kudos.name, num_clones_allowed=0, contract_address=contract_address)
+    related_kudos = Token.objects.filter(name=kudos.name, num_clones_allowed=0, contract__network=settings.KUDOS_NETWORK)
     logger.debug(f'Related Kudos Tokens: {related_kudos}')
     # Find the Wallet rows that match the Kudos.owner_addresses
     # related_wallets = Wallet.objects.filter(address__in=[rk.owner_address for rk in related_kudos]).distinct()[:20]
@@ -300,10 +304,9 @@ def send_2(request):
     """Handle the first start of the Kudos email send.
     This form is filled out before the 'send' button is clicked.
     """
-    kudos_id = request.GET.get('id')
-    kudos_contract = KudosContract(settings.KUDOS_USING_NETWORK)
-    contract_address = kudos_contract.address
-    kudos = Token.objects.get(token_id=kudos_id, contract_address=contract_address)
+    id = request.GET.get('id')
+
+    kudos = Token.objects.get(pk=id)
 
     params = {
         'active': 'send',
@@ -334,8 +337,6 @@ def send_3(request):
         JsonResponse: response with success state.
 
     """
-    kudos_contract = KudosContract(settings.KUDOS_USING_NETWORK)
-    contract_address = kudos_contract.address
     response = {
         'status': 'OK',
         'message': _('Kudos Created'),
@@ -364,11 +365,13 @@ def send_3(request):
     to_emails = list(set(to_emails))
 
     # Validate that the token exists on the back-end
-    kudos_token_cloned_from = Token.objects.filter(
-        token_id=params['kudosId'],
-        num_clones_allowed__gt=0,
-        contract_address=contract_address
-    ).first()
+    kudos_token_cloned_from = Token.objects.get(pk=params['kudosId'])
+    # kudos_token_cloned_from = Token.objects.filter(
+    #     token_id=params['kudosId'],
+    #     num_clones_allowed__gt=0,
+    #     contract__network=settings.KUDOS_NETWORK,
+    #     contract__is_network=True
+    # ).first()
     # db mutations
     KudosTransfer.objects.create(
         emails=to_emails,

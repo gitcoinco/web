@@ -215,8 +215,10 @@ $(document).ready(function() {
     var accept_tos = $('#tos').is(':checked');
     var tokenAddress = $('#token').val();
     var expires = parseInt($('#expires').val());
-    // kudosId is the kudos token that is being cloned
+    // kudosId is the kudos database id that is being cloned
     var kudosId = $('#kudosid').data('kudosid');
+    // tokenId is the kudos blockchain id that is being cloned
+    var tokenId = $('#tokenid').data('tokenid');
 
     // get kudosPrice from the HTML
     kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
@@ -236,7 +238,8 @@ $(document).ready(function() {
       accept_tos: accept_tos,
       tokenAddress: tokenAddress,
       expires: expires,
-      kudosId: kudosId
+      kudosId: kudosId,
+      tokenId: tokenId
     };
 
     // derived info
@@ -272,13 +275,14 @@ $(document).ready(function() {
     };
 
     kudosId = $('#kudosid').data('kudosid');
+    tokenId = $('#tokenid').data('tokenid');
     // cloneAndTransferKudos(kudosId, 1, receiverAddress);
     // cloneKudos(kudosId, 1);
 
     console.log(formData);
     // Step 3
     // Run sendKudos function
-    return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, kudosId, success_callback, failure_callback, false);
+    return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, kudosId, tokenId, success_callback, failure_callback, false);
 
   });
 
@@ -296,7 +300,7 @@ $(document).ready(function() {
 });
 
 // Step 3
-function sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, kudosId, success_callback, failure_callback, is_for_bounty_fulfiller) {
+function sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, kudosId, tokenId, success_callback, failure_callback, is_for_bounty_fulfiller) {
   mixpanel.track('Tip Step 2 Click', {});
   if (typeof web3 == 'undefined') {
     _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
@@ -383,6 +387,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
         from_name: from_name,
         tokenAddress: tokenAddress,
         kudosId: kudosId,
+        tokenId: tokenId,
         network: document.web3network,
         from_address: web3.eth.coinbase,
         is_for_bounty_fulfiller: is_for_bounty_fulfiller,
@@ -457,7 +462,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           // Kudos Direct Send (KDS)
           console.log('Using Kudos Direct Send (KDS)');
 
-          kudos_contract.clone(destinationAccount, kudosId, numClones, {from: account, value: kudosPriceInWei}, function(cloneError, cloneTxid) {
+          kudos_contract.clone(destinationAccount, tokenId, numClones, {from: account, value: kudosPriceInWei}, function(cloneError, cloneTxid) {
             // getLatestId yields the last kudos_id
             kudos_contract.getLatestId(function(error, kudos_id) {
               post_send_callback(cloneError, cloneTxid, kudos_id);
@@ -472,13 +477,13 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           console.log('Using Kudos Indirect Send (KIS)');
 
           params = {
-            kudosId: kudosId,
+            tokenId: tokenId,
             numClones: numClones,
             from: account,
             value: kudosPriceInWei.toString()
           };
           console.log(params);
-          kudos_contract.clone.estimateGas(destinationAccount, kudosId, numClones, {from: account, value: kudosPriceInWei}, function(err, kudosGasEstimate) {
+          kudos_contract.clone.estimateGas(destinationAccount, tokenId, numClones, {from: account, value: kudosPriceInWei}, function(err, kudosGasEstimate) {
             if (err)
               throw (err);
             console.log('kudosGasEstimate: ' + kudosGasEstimate);

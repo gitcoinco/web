@@ -28,7 +28,7 @@ from django.conf import settings
 import ipfsapi
 from dashboard.utils import get_web3
 from eth_utils import to_checksum_address
-from kudos.models import KudosTransfer, Token
+from kudos.models import KudosTransfer, Token, Contract
 from web3.exceptions import BadFunctionCallOutput
 from web3.middleware import geth_poa_middleware
 
@@ -296,14 +296,16 @@ class KudosContract:
         # Grab the Kudos from the blockchain, augment with owner_address
         kudos = self.getKudosById(kudos_id, to_dict=True)
         kudos['owner_address'] = self._contract.functions.ownerOf(kudos_id).call()
-        kudos['contract_address'] = self._contract.address
-        kudos['network'] = self.network
+
+        contract, created = Contract.objects.get_or_create(
+            address=self._contract.address,
+            network=self.network,
+            defaults=dict(is_latest=True)
+        )
 
         # Update an existing Kudos in the database
         kudos['txid'] = txid
-        kudos_token, created = Token.objects.update_or_create(token_id=kudos_id, defaults=kudos)
-        # kudos_token = Token(token_id=kudos_id, **kudos)
-        # kudos_token.save()
+        kudos_token, created = Token.objects.update_or_create(token_id=kudos_id, contract=contract, defaults=kudos)
         # Find the object which matches the kudos that was just cloned
         try:
             kudos_transfer = KudosTransfer.objects.get(receive_txid=txid)
