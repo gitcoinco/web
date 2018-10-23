@@ -188,7 +188,6 @@ class Token(SuperModel):
         return f"{settings.BASE_URL}dynamic/kudos/{self.pk}/{slugify(self.name)}"
 
 
-
 class KudosTransfer(SendCryptoAsset):
     """Model that represents a request to clone a Kudos.  Typically this gets created when
     using the "kudos send" functionality.  The model is inheriented from the SendCryptoAsset model,
