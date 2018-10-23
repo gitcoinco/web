@@ -104,7 +104,7 @@ function kudosSearch(elem) {
         kudosIsSelected(true);
         selected = `<div class="d-flex m-2 align-items-center">
                       <div class="mr-3">
-                        <img class="" src="${static_url + kudos.image || static_url + 'v2/images/user-placeholder.png'}" width="40" height="50"/>
+                        <img class="" src="${static_url + kudos.image || static_url + 'v2/images/user-placeholder.png'}" width="40"/>
                       </div>
                       <div style="min-width: 0;width: 100%;">
                         <div class="d-flex justify-content-between">
