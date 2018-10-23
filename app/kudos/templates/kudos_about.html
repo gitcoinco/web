@@ -30,8 +30,8 @@
       {% include 'shared/kudos_nav.html' %}
       <!-- {% include 'shared/kudos_banner.html' %} -->
       <div class="container text-center mt-5">
-        <h1 class="font-weight-light white">
-          Send Kudos to Show Appreciation for Someone <br> You've Worked With!
+        <h1 class="white h2">
+          Kudos is a new way to show <br>appreciation and build relationships.
         </h1>
       </div>
       <div class="container pt-5">
@@ -65,7 +65,7 @@
           </div>
         </div> <!-- /carousel -->
 
-        <div class="row justify-content-center">
+        <div class="row justify-content-center pb-5">
           <a class="btn btn-gc-blue m-5" href="{% url 'kudos_marketplace' %}">{% trans "See More Kudos" %}</a>
         </div>
       </div>
@@ -74,11 +74,12 @@
     <section class="container mt-5 text-center">
       <div class="row">
         <div class="col my-5 text-featured">
-          <img class="img-fluid" src="{% static "v2/images/kudos/assets/send-kudos.png" %}" alt="kudos" width="648" height="271">
+          <img class="img-fluid" src="{% static "v2/images/kudos/assets/send-kudos.png" %}" alt="kudos" width="548" height="271">
           <img class="mw-100 position-absolute star-pulse" src="{% static "v2/images/kudos/assets/star.png" %}" alt="kudos" width="">
           {% url 'kudos_marketplace' as marketplace_url %}
           {% blocktrans %}
-            <p class="mt-5">Kudos is a way of <span class="text-highlight-green">showing your appreciation</span> for another Gitcoin member. It's also a way to <span class="text-highlight-green">showcase special skills</span> that a member might have, such as Pythonista, or Design Star. Kudos tokens can also be <span class="text-highlight-green">bought</span> and <span class="text-highlight-green">sold</span> on the <a class="text-highlight-gc-blue" href="{{ marketplace_url }}">Kudos Marketplace</a>.</p>
+            <p class="mt-5">Kudos is a way of <span class="text-highlight-green">showing your appreciation</span> for another Gitcoin member.
+            <br>It's also a way to <span class="text-highlight-green">showcase special skills</span> that a member might have, such as Pythonista, or Design Star. Kudos tokens can also be <span class="text-highlight-green">bought</span> and <span class="text-highlight-green">sold</span> on the <a class="text-highlight-gc-blue" href="{{ marketplace_url }}">Kudos Marketplace</a>.</p>
           {% endblocktrans %}
         </div>
       </div>
@@ -112,8 +113,8 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-12 col-md-3">
-            <img class="img-fluid mb-3" src="{% static "v2/images/kudos/kudos_cellarius1.gif" %}" alt="Cellarius">
+          <div class="col-12 col-md-2">
+            <img class="img-fluid mb-3" src="{% static "v2/images/kudos/cellarius/oddjobs.svg" %}" alt="Cellarius">
           </div>
           <div class="col">
             <p class="mb-5">{% trans "Gitcoin has partnered with Cellarius Universe to create original collectible badges that feature Cellarius Art style. " %}</p>
@@ -121,19 +122,19 @@
           </div>
         </div>
         <div class="row">
-          <div class="col-12 col-md-9">
+          <div class="col-12 col-md-10">
             <p>{% trans "In essence, the Cellarius Universe is a future-oriented mythology. It is also a collective storytelling project whose content and contours will be shaped by its community." %}</p>
             <p>{% trans "Cellarius straddles the familiar cyberpunk themes of a dystopian and troubled future while maintaining a more optimistic outlook on humanity’s destiny and place in the cosmos." %}</p>
           </div>
-          <div class="col-12 col-md-3">
-            <img class="img-fluid mb-3" src="{% static "v2/images/kudos/kudos_cellarius.gif" %}" alt="Cellarius">
+          <div class="col-12 col-md-2">
+            <img class="img-fluid mb-3" src="{% static "v2/images/kudos/cellarius/Circle.svg" %}" alt="Cellarius">
           </div>
         </div>
         <div class="row">
-          <div class="col-12 col-md-3">
+          <div class="col-12 col-md-2">
             <img class="img-fluid mb-3 author-shape" src="{% static 'v2/images/kudos/assets/octavian.jpg' %}" alt="Cellarius">
           </div>
-          <div class="col-12 col-md-9">
+          <div class="col-12 col-md-10">
             <p>{% trans "Octavian Todiruț" %}</p>
             <p>{% blocktrans %} I am a long time graphic designer, art director and product designer. A fancy way of saying "I am moving the mouse or pencil around, playing with shapes and colors." I like getting lost in everything art, photography, design and architecture and their history. When I don't do any of the above, I walk, travel or sometimes play a game.{% endblocktrans %}</p>
           </div>
@@ -146,6 +147,20 @@
     </section>
     <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
       <desc>kudos hexagon</desc>
+
+
+
+
+  <!-- <symbol id="hexagon" viewBox="0 0 108 124">
+
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+      <g id="Artboard" stroke="#9B9B9B" stroke-width="8">
+        <polygon id="Stroke-2" points="104 90.7704754 53.999183 119.695059 4 90.7704754 4 32.9229461 53.999183 4 104 32.9229461"></polygon>
+      </g>
+    </g>
+  </symbol> -->
+
+
       <symbol id="hexagon" viewBox="0 0 237 273">
         <g transform="translate(-46.000000, -3742.000000)" fill="currentColor">
           <g transform="translate(250.327895, 3805.378820) rotate(-330.000000) translate(-250.327895, -3805.378820) translate(76.327895, 3581.378820)">
@@ -217,9 +232,8 @@
           <div class="faces">
             <svg role="img" title="hexagon" width="130" class="front face">
               <use xlink:href="#hexagon"/>
-              <text font-size="1.3em" x="50%" y="40%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "Become vetted " %}</text>
-              <text font-size="1.3em" x="50%" y="50%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "in Web3 &" %}</text>
-              <text font-size="1.3em" x="50%" y="60%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "OSSSend Kudos" %}</text>
+              <text font-size="1.3em" x="50%" y="45%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "Become vetted " %}</text>
+              <text font-size="1.3em" x="50%" y="55%" text-anchor="middle" fill="currentColor" alignment-baseline="central">{% trans "in Web3 & OSS" %}</text>
             </svg>
             <img src="{% static 'v2/images/kudos/party_robot.svg' %}" width="100%" height="100%" class="face back kudos-hidden">
           </div>
