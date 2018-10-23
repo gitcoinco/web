@@ -124,11 +124,11 @@
   float: right;
 }
 .kudos-search-result img{
-  width: 50px;
+  /* width: 50px; */
   height: 50px;
 }
 .kudos-search-result.kudos-search-result-large img{
-  width: 100px;
+  /* width: 100px; */
   height: 100px;
 }
 
