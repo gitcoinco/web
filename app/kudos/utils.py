@@ -156,8 +156,6 @@ class KudosContract:
 
         self._w3 = get_web3(self.network, sockets=sockets)
 
-        if self.network == 'rinkeby':
-            self._w3.middleware_stack.inject(geth_poa_middleware, layer=0)
         host = f'{settings.IPFS_API_SCHEME}://{settings.IPFS_HOST}'
         self._ipfs = ipfsapi.connect(host=host, port=settings.IPFS_API_PORT)
         self._contract = self._get_contract()
