@@ -12,11 +12,11 @@ services:
   pgweb:
     image: sosedoff/pgweb
     environment:
-        - DATABASE_URL=postgres://postgres:postgres@db:5432?sslmode=disable
+      - DATABASE_URL=postgres://postgres:postgres@db:5432?sslmode=disable
     links:
-        - db
+      - db
     ports:
-        - "8081:8081"
+      - "8081:8081"
     depends_on:
       - db
     restart: "on-failure:10"

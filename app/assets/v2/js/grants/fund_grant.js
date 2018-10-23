@@ -17,18 +17,28 @@ $(document).ready(function() {
         data[this.name] = this.value;
       });
 
-      console.log(data);
+      let realPeriodSeconds = 0;
 
-      let value = 0;
-      let txData = '0x02'; // something like this to say, hardcoded VERSION 2, we're sending approved tokens
-      let gasLimit = 120000;
+      if (data.frequency) {
+        // translate timeAmount&timeType to requiredPeriodSeconds
+        let periodSeconds = data.frequency;
 
-      // hardcode period seconds to monthly
-      let periodSeconds = 60;
+        if (data.frequency_unit == 'minutes') {
+          periodSeconds *= 60;
+        } else if (data.frequency_unit == 'hours') {
+          periodSeconds *= 3600;
+        } else if (data.frequency_unit == 'days') {
+          periodSeconds *= 86400;
+        } else if (data.frequency_unit == 'months') {
+          periodSeconds *= 2592000;
+        }
+        if (periodSeconds) {
+          realPeriodSeconds = periodSeconds;
+        }
+      }
 
       if (!data.gas_price)
         data.gas_price = 0;
-
 
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
 
@@ -37,10 +47,11 @@ $(document).ready(function() {
 
       deployedToken.methods.decimals().call(function(err, decimals) {
 
+        let realApproval = Number(data.approve * 10 ** decimals);
+
         let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
 
         let realGasPrice = Number(data.gas_price * 10 ** decimals);
-
 
         web3.eth.getAccounts(function(err, accounts) {
 
@@ -62,11 +73,11 @@ $(document).ready(function() {
                 // testing token
                 data.token_address,
                 // data.amount_per_period
-                web3.utils.toTwosComplement(data.amount_per_period),
+                web3.utils.toTwosComplement(realTokenAmount),
                 // data.period_seconds
-                web3.utils.toTwosComplement(60),
+                web3.utils.toTwosComplement(realPeriodSeconds),
                 // data.gas_price
-                web3.utils.toTwosComplement(data.gas_price),
+                web3.utils.toTwosComplement(realGasPrice),
                 // nonce
                 web3.utils.toTwosComplement(nonce)
               ];
@@ -115,18 +126,12 @@ $(document).ready(function() {
                     .catch((error)=>{
                       console.log(error);
                     });
-
-
                 });
               });
             });
-
           });
-
-
         });
       });
-
     }
   });
 
@@ -144,8 +149,4 @@ $(document).ready(function() {
     });
     $('#js-token').select2();
   });
-
 });
-
-// will want to check if account already has a subscription. If a second is produced the timestamp will not function properly
-// will need to check network to make sure users aren't submiting transactions to non-existant contracts

@@ -40,6 +40,25 @@ $(document).ready(function() {
         data[this.name] = this.value;
       });
 
+      let requiredPeriodSeconds = 0;
+
+      if (data.frequency) {
+        // translate timeAmount&timeType to requiredPeriodSeconds
+        let periodSeconds = data.frequency;
+
+        if (data.frequency_unit == 'minutes') {
+          periodSeconds *= 60;
+        } else if (data.frequency_unit == 'hours') {
+          periodSeconds *= 3600;
+        } else if (data.frequency_unit == 'days') {
+          periodSeconds *= 86400;
+        } else if (data.frequency_unit == 'months') {
+          periodSeconds *= 2592000;
+        }
+        if (periodSeconds) {
+          requiredPeriodSeconds = periodSeconds;
+        }
+      }
 
       // Begin New Deploy Subscription Contract
       let SubscriptionContract = new web3.eth.Contract(compiledSubscription.abi);
@@ -57,9 +76,9 @@ $(document).ready(function() {
         // required token
         data.token_address,
         // required tokenAmount - setting to zero
-        web3.utils.toTwosComplement(0),
+        web3.utils.toTwosComplement(data.required_amount),
         // data.frequency
-        web3.utils.toTwosComplement(0),
+        web3.utils.toTwosComplement(requiredPeriodSeconds),
         // data.gas_price
         web3.utils.toTwosComplement(0)
       ];
