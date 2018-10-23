@@ -210,7 +210,8 @@ class Command(BaseCommand):
         elif rewind:
             start_id = kudos_contract._contract.functions.getLatestId().call() - rewind
         elif catchup:
-            start_id = Token.objects.aggregate(Max('id'))['id__max']
+            start_id = Token.objects.filter(contract__address=kudos_contract.address).aggregate(
+                Max('token_id'))['token_id__max']
 
         if syncmethod == 'id':
             self.id_sync(kudos_contract, int(start_id))
