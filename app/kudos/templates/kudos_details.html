@@ -95,7 +95,7 @@
           <div class="row">
             {% for profile in related_profiles %}
             <div class="col-12">
-              <a href="/profile/{{ profile.handle }}"><img src="/media/{{ profile.avatar.svg }}" width="70" class="rounded-circle border m-1"></a>
+              <a href="/profile/{{ profile.handle }}"><img src="{% if user.profile.avatar %}{{ user.profile.avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}" width="70" class="rounded-circle border m-1"></a>
             </div>
             {% if forloop.counter|divisibleby:5 %}
           </div>
