@@ -147,15 +147,12 @@ $(document).ready(function() {
 
   waitforWeb3(function() {
     tokens(document.web3network).forEach(function(ele) {
-      let option = document.createElement('option');
-
-      option.text = ele.name;
-      option.value = ele.addr;
-
-      $('#js-token').append($('<option>', {
-        value: ele.addr,
-        text: ele.name
-      }));
+      if (ele.name !== 'ETH') {
+        $('#js-token').append($('<option>', {
+          value: ele.addr,
+          text: ele.name
+        }));
+      }
     });
     $('#js-token').select2();
   });

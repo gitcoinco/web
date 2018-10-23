@@ -136,7 +136,7 @@ $(document).ready(function() {
     }));
 
     tokens(document.web3network).forEach(function(ele) {
-      if(ele.name !== 'ETH') {
+      if (ele.name !== 'ETH') {
         $('#js-token').append($('<option>', {
           value: ele.addr,
           text: ele.name
