@@ -130,16 +130,18 @@ $(document).ready(function() {
   });
 
   waitforWeb3(function() {
+    $('#js-token').append($('<option>', {
+      value: '0x0000000000000000000000000000000000000000',
+      text: 'Any'
+    }));
+
     tokens(document.web3network).forEach(function(ele) {
-      let option = document.createElement('option');
-
-      option.text = ele.name;
-      option.value = ele.addr;
-
-      $('#js-token').append($('<option>', {
-        value: ele.addr,
-        text: ele.name
-      }));
+      if(ele.name !== 'ETH') {
+        $('#js-token').append($('<option>', {
+          value: ele.addr,
+          text: ele.name
+        }));
+      }
     });
     $('#js-token').select2();
   });
