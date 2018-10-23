@@ -106,8 +106,12 @@
           {% endif %}
         </div>
       </div>
-  	</section>
+    </section>
+    <section class="container my-5 py-5">
 
+
+    {% include 'shared/disqus.html' with page_url=request.build_absolute_uri  %}
+  </section>
 
 
     {% include 'shared/footer.html' %}
