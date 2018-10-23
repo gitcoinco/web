@@ -78,7 +78,7 @@
     {% endif %}{% if not is_new %} {{kudos_transfer.created_on | naturaltime}}{%endif%}
   </h3>
   <div>
-    <img src="{% token_elem.img_url %}" alt="{{token_elem.name|humanize_name  }}" width="200" style="margin:auto;">
+    <img src="{{ token_elem.img_url }}" alt="{{token_elem.name|humanize_name  }}" width="200" style="margin:auto;">
   </div>
 </div>
 
