@@ -1639,11 +1639,13 @@ div.busyOverlay {
 .expandable {
   overflow: hidden;
   max-height: 0;
+  opacity: 0.0;
   transition: 0.3s ease-in-out;
 }
 
 .expandable#expanded {
-  max-height: 10rem;
+  max-height: 100rem;
+  opacity: 1.0;
 }
 
 .arrow {
@@ -1664,20 +1666,6 @@ div.busyOverlay {
 
 .middle {
   vertical-align: middle;
-}
-
-.funding {
-  background-color: #f9f9f9;
-}
-
-.funding > div.placeholder {
-  margin-left: 8.3%;
-}
-
-@media (max-width: 768px) {
-  .funding > div.placeholder {
-    margin-left: 3px;
-  }
 }
 
 .g-bold {
