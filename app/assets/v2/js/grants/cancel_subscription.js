@@ -15,8 +15,7 @@ window.onload = function() {
 
       let deployedToken = new web3.eth.Contract(
         compiledToken.abi,
-        // data.token_address
-        '0xFD9C55bf4B75Ef115749cF76E9083c4241D7a7eB'
+        data.token_address
       );
 
       web3.eth.getAccounts(function(err, accounts) {
