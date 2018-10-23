@@ -692,3 +692,13 @@ div.button-pink {
     display: none!important;
   }
 }
+
+.notification-dot {
+  background-color: #ef3427;
+  width: 0.5rem;
+  height: 0.5rem;
+  position: absolute;
+  top: 6px;
+  border-radius: 30px;
+  left: 6px;
+}
