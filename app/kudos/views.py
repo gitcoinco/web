@@ -306,7 +306,7 @@ def send_2(request):
     """
     id = request.GET.get('id')
 
-    kudos = Token.objects.get(pk=id)
+    kudos = Token.objects.filter(pk=id).first()
 
     params = {
         'active': 'send',
