@@ -50,8 +50,12 @@ def grants(request):
     limit = request.GET.get('limit', 25)
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort', '-created_on')
+    keyword = request.GET.get('q')
 
-    _grants = Grant.objects.all().order_by(sort)
+    if keyword:
+        _grants = Grant.objects.filter(title__icontains = keyword).order_by(sort)
+    else:
+        _grants = Grant.objects.all().order_by(sort)
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)

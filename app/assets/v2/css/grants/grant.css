@@ -78,6 +78,13 @@
   background-color: #F2F6F9;
 }
 
+.grants-search .search i {
+  position: absolute;
+  right: 1.4rem;
+  top: 0.86rem;
+  display: none;
+}
+
 /* Tabs */
 .ui-widget.ui-widget-content.ui-tabs {
   background: transparent !important;
