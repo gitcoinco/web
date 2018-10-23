@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Test the Kudos app.
+"""Test the Kudos utils.
 
 Copyright (C) 2018 Gitcoin Core
 
@@ -17,7 +17,11 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 import logging
-from django.test import TestCase
+from django.test import TestCase, Client
+import unittest
+
+import logging
+from django.test import TestCase, Client
 import unittest
 from .utils import KudosContract
 
@@ -27,7 +31,7 @@ logging.getLogger("web3").setLevel(logging.WARNING)
 
 
 @unittest.skip(reason='Not creating fresh database and blockchain instances')
-class MintTestCase(TestCase):
+class KudosContractTestCase(TestCase):
     def setUp(self):
         self.contract = KudosContract(network='localhost')
         self.metadata = {
@@ -49,28 +53,3 @@ class MintTestCase(TestCase):
         )
 
         self.contract.mint(*args)
-
-
-@unittest.skip(reason='Placeholder for future tests')
-class TestSync(TestCase):
-    pass
-
-
-@unittest.skip(reason='Placeholder for future tests')
-class TestDetailsView(TestCase):
-    pass
-
-
-@unittest.skip(reason='Placeholder for future tests')
-class TestDetailsAlternativeView(TestCase):
-    pass
-
-
-@unittest.skip(reason='Placeholder for future tests')
-class TestKudosDirectSend(TestCase):
-    pass
-
-
-@unittest.skip(reason='Placeholder for future tests')
-class TestKudosIndirectSend(TestCase):
-    pass
