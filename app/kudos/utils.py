@@ -216,6 +216,14 @@ class KudosContract:
                 return f(self, *args, **kwargs)
         return wrapper
 
+    def log_args(f):
+        """Decorator to log out the contract args."""
+        @wraps(f)
+        def wrapper(self, *args, **kwargs):
+            logger.debug(f'args: {args}')
+            return f(self, *args, **kwargs)
+        return wrapper
+
     def retry(f):
         """Decorator to retry a function if it failed."""
         @wraps(f)
@@ -376,6 +384,7 @@ class KudosContract:
             except IndexError:
                 raise RuntimeError('Please specify an account to use for transacting with the Kudos Contract.')
 
+    @log_args
     @may_require_key
     def mint(self, *args, account=None, private_key=None, skip_sync=False):
         """Contract transaction method.
