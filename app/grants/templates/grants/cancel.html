@@ -25,78 +25,93 @@
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
       {% include 'shared/nav.html' %}
+      <div class="row no-gutters metamask-banner">
+        <div class="col-12">
+          {% include 'shared/no_metamask_error.html' %}
+          {% include 'shared/zero_balance_error.html' %}
+          {% include 'shared/unlock_metamask.html' %}
+        </div>
+      </div>
     </div>
     <img src="{% static "v2/images/bitmap.png" %}" width="100%" />
 
-    <h2 class="my-5 text-center">
-      <div class="mb-2 font-title-lg">
-        {% trans "Cancel contribution for" %}
-        <a href="{{ grant.reference_url }}" target="_blank">
-          {{ grant.title }}
-        </a>
-        {% trans "Grant" %}
+    <div class="row">
+      <div id="robot_error" class="hidden">
+        <img src="{% static "v2/images/prime.png" %}">
       </div>
-    </h2>
+    </div>
+    
+    <div id="grants_form">
+      <h2 class="my-5 text-center">
+        <div class="mb-2 font-title-lg">
+          {% trans "Cancel contribution for" %}
+          <a href="{{ grant.reference_url }}" target="_blank">
+            {{ grant.title }}
+          </a>
+          {% trans "Grant" %}
+        </div>
+      </h2>
 
-    <div class="container">
-      <div class="row mb-4">
-        <div class="col-6">
-          <div class="grant__progress mt-4 cancel">
-            <div class="progress">
-              <div class="progress-bar" style="width:{{ grant.percent_completed }}%"></div>
+      <div class="container">
+        <div class="row mb-4">
+          <div class="col-6">
+            <div class="grant__progress mt-4 cancel">
+              <div class="progress">
+                <div class="progress-bar" style="width:{{ grant.percent_completed }}%"></div>
+              </div>
+
+              <div class="progress-text mt-2">
+                <div class="row">
+                  <div class="col-6">
+                    <span>{{ grant.amount_received }} ETH</span>
+                    <p>Current</p>
+                  </div>
+                  <div class="col-6 text-right">
+                    <span>{{ grant.amount_goal }} ETH</span>
+                    <p>Goal</p>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div class="progress-text mt-2">
-              <div class="row">
-                <div class="col-6">
-                  <span>{{ grant.amount_received }} ETH</span>
-                  <p>Current</p>
-                </div>
-                <div class="col-6 text-right">
-                  <span>{{ grant.amount_goal }} ETH</span>
-                  <p>Goal</p>
-                </div>
+            <div class="row dates">
+              <div class="col-6">
+                {% trans "Start date:" %} {{ subscription.created_on|date:"M d, Y" }}
+              </div>
+              <div class="col-6 text-right">
+                {% trans "Effective date of cancel:" %} {{ now|date:"M d, Y" }}
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col-6">
+                <a href="{% url 'grants:details' grant.id %}">
+                  <button class="button button--cancel button--full">{% trans "Cancel" %}
+                  </button>
+                </a>
+              </div>
+              <div class="col-6">
+                <form method="POST" id="js-cancelSubscription">
+                  {% csrf_token %}
+                  <button class="button button--primary button--full">{% trans "Cancel Contribution" %}
+                  </button>
+                  <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
+                  <input type="hidden" id="token_address" name="token_address" value="{{ grant.token_address }}">
+                  <input type="hidden" id="admin_address" name="admin_address" value="{{ grant.admin_address }}">
+                  <input type="hidden" id="amount_per_period" name="amount_per_period" value="{{ subscription.amount_per_period }}">
+                  <input type="hidden" id="period_seconds" name="period_seconds" value="{{ subscription.period_seconds }}">
+                  <input type="hidden" id="signature" name="signature" value="{{ subscription.contributor_signature }}">
+                  <input type="hidden" id="gas_price" name="gas_price" value="{{ subscription.gas_price }}">
+                </form>
               </div>
             </div>
           </div>
 
-          <div class="row dates">
-            <div class="col-6">
-              {% trans "Start date:" %} {{ subscription.created_on|date:"M d, Y" }}
-            </div>
-            <div class="col-6 text-right">
-              {% trans "Effective date of cancel:" %} {{ now|date:"M d, Y" }}
-            </div>
+          <div class="col-6">
+            <p>
+            {{ grant.description }}
+            </p>
           </div>
-
-          <div class="row mt-4">
-            <div class="col-6">
-              <a href="{% url 'grants:details' grant.id %}">
-                <button class="button button--cancel button--full">{% trans "Cancel" %}
-                </button>
-              </a>
-            </div>
-            <div class="col-6">
-              <form method="POST" id="js-cancelSubscription">
-                {% csrf_token %}
-                <button class="button button--primary button--full">{% trans "Cancel Contribution" %}
-                </button>
-                <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
-                <input type="hidden" id="token_address" name="token_address" value="{{ grant.token_address }}">
-                <input type="hidden" id="admin_address" name="admin_address" value="{{ grant.admin_address }}">
-                <input type="hidden" id="amount_per_period" name="amount_per_period" value="{{ subscription.amount_per_period }}">
-                <input type="hidden" id="period_seconds" name="period_seconds" value="{{ subscription.period_seconds }}">
-                <input type="hidden" id="signature" name="signature" value="{{ subscription.contributor_signature }}">
-                <input type="hidden" id="gas_price" name="gas_price" value="{{ subscription.gas_price }}">
-              </form>
-            </div>
-          </div>
-        </div>
-
-        <div class="col-6">
-          <p>
-           {{ grant.description }}
-          </p>
         </div>
       </div>
     </div>
@@ -110,6 +125,7 @@
   <script src="{% static "v2/js/grants/compiledSubscriptionContract.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledTokenContract.js" %}"></script>
   <script src="{% static "v2/js/grants/cancel_subscription.js" %}"></script>
+  <script src="{% static "v2/js/grants/shared.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script>
   <script src="{% static "v2/js/shared.js" %}"></script>

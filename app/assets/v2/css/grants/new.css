@@ -2,7 +2,7 @@
   margin-top: 15px;
 }
 
-.new-grant #primary_form img {
+.new-grant #grants_form img {
   max-width: none;
 }
 
@@ -40,13 +40,4 @@
 
 .select2-container .select2-search--inline .select2-search__field {
   margin-top: 8px;
-}
-
-.alpha-warning {
-  background-color: #fbe0d6;
-  color: #fb9470;
-  padding: 5px 10px;
-  border-radius: 2px;
-  margin-bottom: 15px;
-  display: block;
 }
