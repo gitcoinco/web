@@ -1,0 +1,5 @@
++ make tag
+sed -i -e "s/version:.*/version: 20180416.0.45/" Chart.yaml
+sed -i -e "s|repository: .*|repository: \/gitcoinco\/web|" values.yaml
+sed -i -e "s/tag: .*/tag: 20180416.0.45/" values.yaml
+git add --all
