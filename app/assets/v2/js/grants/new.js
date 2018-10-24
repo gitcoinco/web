@@ -73,9 +73,8 @@ $(document).ready(function() {
       let args = [
         // admin_address
         data.admin_address,
-        // required token, if any. Will need to make dynamic
-        // data.token_address,
-        '0x0000000000000000000000000000000000000000',
+        // required token
+        data.token_address,
         // required tokenAmount - setting to zero
         web3.utils.toTwosComplement(data.required_amount),
         // data.frequency

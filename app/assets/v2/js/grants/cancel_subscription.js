@@ -17,8 +17,7 @@ window.onload = function() {
 
       let deployedToken = new web3.eth.Contract(
         compiledToken.abi,
-        // data.token_address
-        '0x00e8baC402e187608C6585c435C9D35947770f5B'
+        data.token_address
       );
 
       deployedToken.methods.decimals().call(function(err, decimals) {
@@ -47,7 +46,7 @@ window.onload = function() {
                   // admin_address
                   data.admin_address,
                   // testing token
-                  '0x00e8baC402e187608C6585c435C9D35947770f5B',
+                  data.token_address,
                   // data.amount_per_period
                   web3.utils.toTwosComplement(realTokenAmount),
                   // data.period_seconds

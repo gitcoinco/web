@@ -42,46 +42,28 @@ $(document).ready(function() {
 
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
 
-      // This token is only for testing
-      // will need to make dynamic with data.token_address
-      let deployedToken = new web3.eth.Contract(compiledToken.abi, '0x00e8baC402e187608C6585c435C9D35947770f5B');
+      let deployedToken = new web3.eth.Contract(compiledToken.abi, data.token_address);
+
 
       deployedToken.methods.decimals().call(function(err, decimals) {
 
-        console.log('decimals', decimals);
-
         let realApproval = Number(data.approve * 10 ** decimals);
-
-        console.log('realApproval', realApproval);
 
         let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
 
-        console.log('realTokenAmount', realTokenAmount);
-
         let realGasPrice = Number(data.gas_price * 10 ** decimals);
-
-        console.log('realGasPrice', realGasPrice);
 
         web3.eth.getAccounts(function(err, accounts) {
 
-          console.log('accounts', accounts);
-
           $('#contributor_address').val(accounts[0]);
 
-          // need to figure out why there does not seem to be a limit to this amount. Probably setting way higher than thought
-
-          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(realApproval)).send({from: accounts[0]}, function(err, result) {
+          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(realTokenAmount)).send({from: accounts[0]}, function(err, result) {
 
             // Should add approval transactions to transaction history
-            console.log('result', result);
 
             deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
 
-              console.log('nonce1', nonce);
-
               nonce = parseInt(nonce) + 1;
-
-              console.log('nonce', nonce);
 
               const parts = [
                 // subscriber address
@@ -89,7 +71,7 @@ $(document).ready(function() {
                 // admin_address
                 data.admin_address,
                 // testing token
-                '0x00e8baC402e187608C6585c435C9D35947770f5B',
+                data.token_address,
                 // data.amount_per_period
                 web3.utils.toTwosComplement(realTokenAmount),
                 // data.period_seconds
