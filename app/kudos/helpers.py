@@ -20,6 +20,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 import logging
 
 from django.conf import settings
+from django.shortcuts import get_object_or_404
 
 from eth_utils import is_address, to_checksum_address
 
@@ -56,12 +57,7 @@ def get_token(token_id, network, address):
             network=network
         )
 
-    token = Token.objects.get(
-        contract=contract,
-        token_id=token_id
-    )
-
-    return token
+    return get_object_or_404(Token, contract=contract, token_id=token_id)
 
 
 def reconcile_kudos_preferred_wallet(profile):

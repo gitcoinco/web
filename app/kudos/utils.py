@@ -30,7 +30,6 @@ from dashboard.utils import get_web3
 from eth_utils import to_checksum_address
 from kudos.models import Contract, KudosTransfer, Token
 from web3.exceptions import BadFunctionCallOutput
-from web3.middleware import geth_poa_middleware
 
 logger = logging.getLogger(__name__)
 
@@ -308,6 +307,9 @@ class KudosContract:
             network=self.network,
             defaults=dict(is_latest=True)
         )
+        if created:
+            old_contracts = Contract.objects.filter(network=self.network).exclude(id=contract.id)
+            old_contracts.update(is_latest=False)
 
         # Update an existing Kudos in the database
         kudos['txid'] = txid

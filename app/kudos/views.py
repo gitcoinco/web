@@ -74,6 +74,11 @@ def get_profile(handle):
 
 def about(request):
     """Render the Kudos 'about' page."""
+    listings = Token.objects.filter(
+        num_clones_allowed__gt=0,
+        contract__is_latest=True,
+        contract__network=settings.KUDOS_NETWORK,
+    ).order_by('-created_on')
     context = {
         'is_outside': True,
         'active': 'about',
@@ -81,7 +86,7 @@ def about(request):
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
-        "listings": Token.objects.all(),
+        "listings": listings
     }
     return TemplateResponse(request, 'kudos_about.html', context)
 
@@ -89,7 +94,7 @@ def about(request):
 def marketplace(request):
     """Render the Kudos 'marketplace' page."""
     q = request.GET.get('q')
-    order_by = request.GET.get('order_by', '-modified_on')
+    order_by = request.GET.get('order_by', '-created_on')
     logger.info(order_by)
     logger.info(q)
     title = q.title() + str(_(" Kudos ")) if q else str(_('Kudos Marketplace'))
@@ -198,7 +203,7 @@ def details(request, id, name):
         context['avatar_url'] = kudos.img_url
 
         # The real num_cloned_in_wild is only stored in the Gen0 Kudos token
-        kudos.num_clones_in_wild = Token.objects.get(token_id=kudos.cloned_from_id).num_clones_in_wild
+        kudos.num_clones_in_wild = Token.objects.get(id=kudos.cloned_from_id).num_clones_in_wild
         context['kudos'] = kudos
 
     return TemplateResponse(request, 'kudos_details.html', context)
