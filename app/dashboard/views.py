@@ -1141,19 +1141,21 @@ def profile(request, handle):
         }
         return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
-    # context['wallet_addresses'] = [w.address for w in profile.kudos_wallets.all()]
     context['preferred_payout_address'] = profile.preferred_payout_address
-    # logger.info(to_checksum_address(context['preferred_payout_address']))
     order_by = request.GET.get('order_by', '-modified_on')
     if context['preferred_payout_address']:
-        owned_kudos = Token.objects.filter(owner_address=to_checksum_address(context['preferred_payout_address'])).order_by(order_by)
-        sent_kudos = Token.objects.filter(kudos_transfer__from_address=to_checksum_address(context['preferred_payout_address'])).order_by(order_by)
+        owned_kudos = Token.objects.filter(
+            owner_address=to_checksum_address(context['preferred_payout_address']),
+            contract__network=settings.KUDOS_NETWORK
+        ).order_by(order_by)
+        sent_kudos = Token.objects.filter(
+            kudos_transfer__from_address=to_checksum_address(context['preferred_payout_address']),
+            contract__network=settings.KUDOS_NETWORK
+        ).order_by(order_by)
     else:
         owned_kudos = None
         sent_kudos = None
 
-    # logging.info(context['preferred_payout_address'])
-    # logging.info(owned_kudos)
     if owned_kudos:
         owned_kudos_comments_public = []
         for kudos_token in owned_kudos:
@@ -1203,33 +1205,6 @@ def profile(request, handle):
             }
 
         return JsonResponse(msg)
-
-        # logging.info(request.path)
-        # logging.info(f'Address: {address}')
-        # logging.info(f'Handle: {handle}')
-        # new_wallet = Wallet(address=address, profile_id=profile.id)
-        # if new_wallet:
-        #     try:
-        #         new_wallet.save()
-        #         wallets = profile.kudos_wallets.all()
-        #         if not profile.preferred_kudos_wallet:
-        #             profile.preferred_kudos_wallet = wallets.first()
-        #             logger.info(f'No profile.preferred_kudos_wallet found.  Setting it to {wallets.first().id}')
-        #             profile.save()
-        #         wallet_addresses = [w.address for w in wallets]
-        #         msg = {
-        #             'status': 200,
-        #             'msg': 'Success!',
-        #             'wallets': wallet_addresses,
-        #         }
-        #     except Exception as e:
-        #         logger.error(e)
-        #         msg = {
-        #             'status': 500,
-        #             'msg': 'Internal server error',
-        #         }
-
-        #     return JsonResponse(msg)
 
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
