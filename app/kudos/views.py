@@ -122,7 +122,8 @@ def marketplace(request):
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
-        'listings': listings
+        'listings': listings,
+        'network': settings.KUDOS_NETWORK
     }
 
     return TemplateResponse(request, 'kudos_marketplace.html', context)
