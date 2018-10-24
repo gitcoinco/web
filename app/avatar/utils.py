@@ -67,7 +67,7 @@ def get_avatar_context():
         }, {
             'name': 'Ears',
             'title': 'Pick ears shape',
-            'options': ('0', '1', '2', '3')
+            'options': ('0', '1', '2', '3', 'Spock')
         },
                      {
                          'name': 'Clothing',
