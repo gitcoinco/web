@@ -51,6 +51,11 @@
       </div>
     </div>
 
+    <div class="alpha-warning">
+      <span>{% trans "WARNING: Gitcoin Grants is in aplha release. It has had inital audits done on it's smart contract and we are in the process of testing it holistically. Please, use caution and do not send high amounts of value." %}
+      </span>
+    </div>
+
     <div class="container new-grant" id="new-grant">
       <div class="row justify-content-md-center my-5">
         <div id="robot_error" class="hidden">
@@ -105,6 +110,15 @@
             </div>
 
             <div class="form__group-horizontal">
+              <label class="form__label">{% trans "Required subscription amount in ETH" %}</label>
+              <div class="row">
+                <div class="col-12">
+                  <input type="number" name="required_amount" class="form__input" value="0" required />
+                </div>
+              </div>
+            </div>
+
+            <div class="form__group-horizontal">
               <label class="form__label">{% trans "Required Token For Subscription" %}</label>
               <div class="row">
                 <div class="col-12">
@@ -124,15 +138,15 @@
               <label class="form__label">{% trans "Frequency of payments" %}</label>
               <div class="row">
                 <div class="col-8">
-                  <input type="number" id="frequency_count" name="frequency" class="form__input" value='30' required />
+                  <input type="number" id="frequency_count" name="frequency" class="form__input" placeholder="{% trans 'Your required frequency - 0 for any' %}" required />
                 </div>
                 <div class="col-4 font-body">
                   <select onchange="validate()" name="frequency_unit" id="frequency_unit" style="width: 100%">
                     <option value="minutes">{% trans "minutes" %}</option>
                     <option value="hours">{% trans "hours" %}</option>
-                    <option value="days" selected="selected">{% trans "days" %}</option>
+                    <option value="days">{% trans "days" %}</option>
                     <option value="months">{% trans "months" %}</option>
-                    <option value="any">{% trans "any" %}</option>
+                    <option value="any" selected="selected">{% trans "any" %}</option>
                   </select>
                 </div>
               </div>
@@ -173,7 +187,6 @@
   <script src="{% static "v2/js/abi.js" %}"></script>
   <script src="/dynamic/js/tokens_dynamic.js"></script>
   <script src="{% static "v2/js/tokens.js" %}"></script>
-  <!-- <script src="{% static "v2/js/pages/shared_bounty_mutation_estimate_gas.js" %}"></script> -->
   <script src="{% static "v2/js/shared.js" %}"></script>
   <script src="{% static "v2/js/ipfs-api.js" %}"></script>
   <script src="{% static "v2/js/ipfs.js" %}"></script>

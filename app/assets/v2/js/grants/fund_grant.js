@@ -17,28 +17,42 @@ $(document).ready(function() {
         data[this.name] = this.value;
       });
 
-      console.log(data);
+      let realPeriodSeconds = 0;
 
-      let value = 0;
-      let txData = '0x02'; // something like this to say, hardcoded VERSION 2, we're sending approved tokens
-      let gasLimit = 120000;
+      if (data.frequency) {
+        // translate timeAmount&timeType to requiredPeriodSeconds
+        let periodSeconds = data.frequency;
 
-      // hardcode period seconds to monthly
-      let periodSeconds = 60;
+        if (data.frequency_unit == 'minutes') {
+          periodSeconds *= 60;
+        } else if (data.frequency_unit == 'hours') {
+          periodSeconds *= 3600;
+        } else if (data.frequency_unit == 'days') {
+          periodSeconds *= 86400;
+        } else if (data.frequency_unit == 'months') {
+          periodSeconds *= 2592000;
+        }
+        if (periodSeconds) {
+          realPeriodSeconds = periodSeconds;
+        }
+      }
 
       if (!data.gas_price)
         data.gas_price = 0;
 
-
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
 
       // This token is only for testing
-      let deployedToken = new web3.eth.Contract(compiledToken.abi, '0xFD9C55bf4B75Ef115749cF76E9083c4241D7a7eB');
-
+      // will need to make dynamic with data.token_address
+      let deployedToken = new web3.eth.Contract(compiledToken.abi, '0x00e8baC402e187608C6585c435C9D35947770f5B');
 
       deployedToken.methods.decimals().call(function(err, decimals) {
 
-        console.log('decimals', typeof decimals);
+        console.log('decimals', decimals);
+
+        let realApproval = Number(data.approve * 10 ** decimals);
+
+        console.log('realApproval', realApproval);
 
         let realTokenAmount = Number(data.amount_per_period * 10 ** decimals);
 
@@ -46,6 +60,7 @@ $(document).ready(function() {
 
         let realGasPrice = Number(data.gas_price * 10 ** decimals);
 
+        console.log('realGasPrice', realGasPrice);
 
         web3.eth.getAccounts(function(err, accounts) {
 
@@ -55,11 +70,10 @@ $(document).ready(function() {
 
           // need to figure out why there does not seem to be a limit to this amount. Probably setting way higher than thought
 
-          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(realTokenAmount)).send({from: accounts[0]}, function(err, result) {
+          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(realApproval)).send({from: accounts[0]}, function(err, result) {
 
             // Should add approval transactions to transaction history
             console.log('result', result);
-
 
             deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
 
@@ -75,13 +89,13 @@ $(document).ready(function() {
                 // admin_address
                 data.admin_address,
                 // testing token
-                '0xFD9C55bf4B75Ef115749cF76E9083c4241D7a7eB',
+                '0x00e8baC402e187608C6585c435C9D35947770f5B',
                 // data.amount_per_period
-                web3.utils.toTwosComplement(data.amount_per_period),
+                web3.utils.toTwosComplement(realTokenAmount),
                 // data.period_seconds
-                web3.utils.toTwosComplement(60),
+                web3.utils.toTwosComplement(realPeriodSeconds),
                 // data.gas_price
-                web3.utils.toTwosComplement(data.gas_price),
+                web3.utils.toTwosComplement(realGasPrice),
                 // nonce
                 web3.utils.toTwosComplement(nonce)
               ];
@@ -130,22 +144,27 @@ $(document).ready(function() {
                     .catch((error)=>{
                       console.log(error);
                     });
-
-
                 });
               });
             });
-
           });
-
-
         });
       });
-
     }
   });
 
-});
+  waitforWeb3(function() {
+    tokens(document.web3network).forEach(function(ele) {
+      let option = document.createElement('option');
 
-// will want to check if account already has a subscription. If a second is produced the timestamp will not function properly
-// will need to check network to make sure users aren't submiting transactions to non-existant contracts
+      option.text = ele.name;
+      option.value = ele.addr;
+
+      $('#js-token').append($('<option>', {
+        value: ele.addr,
+        text: ele.name
+      }));
+    });
+    $('#js-token').select2();
+  });
+});

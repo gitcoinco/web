@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import datetime
 import json
 import logging
 
@@ -71,6 +72,7 @@ def grant_details(request, grant_id):
     try:
         grant = Grant.objects.prefetch_related('subscriptions', 'milestones').get(pk=grant_id)
         milestones = grant.milestones.order_by('due_date')
+        subscription = grant.subscriptions.filter(contributor_profile=profile)[:1]
     except Grant.DoesNotExist:
         raise Http404
 
@@ -134,6 +136,7 @@ def grant_details(request, grant_id):
         'active': 'dashboard',
         'title': _('Grant Details'),
         'grant': grant,
+        'subscription': subscription,
         'is_admin': (grant.admin_profile.id == profile.id) if profile and grant.admin_profile else False,
         'activity': activity_data,
         'gh_activity': gh_data,
@@ -265,10 +268,11 @@ def grant_fund(request, grant_id):
 
 
 @login_required
-def subscription_cancel(request, subscription_id):
+def subscription_cancel(request, grant_id, subscription_id):
     """Handle the cancellation of a grant subscription."""
     subscription = Subscription.objects.select_related('grant').get(pk=subscription_id)
     grant = getattr(subscription, 'grant', None)
+    now = datetime.datetime.now()
 
     if request.method == 'POST':
         subscription.active = False
@@ -279,6 +283,7 @@ def subscription_cancel(request, subscription_id):
         'title': _('Cancel Grant Subscription'),
         'subscription': subscription,
         'grant': grant,
+        'now': now,
         'keywords': get_keywords(),
     }
 
@@ -293,8 +298,9 @@ def profile(request):
     sort = request.GET.get('sort', '-created_on')
 
     profile = request.user.profile if request.user.is_authenticated else None
-    _grants = Grant.objects.prefetch_related('team_members', 'subscriptions').filter(
+    _grants = Grant.objects.prefetch_related('team_members').filter(
         Q(admin_profile=profile) | Q(team_members__in=[profile])).order_by(sort)
+    sub_grants = Grant.objects.filter(subscriptions__contributor_profile=profile).order_by(sort)
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
@@ -326,6 +332,7 @@ def profile(request):
         'active': 'profile',
         'title': _('My Grants'),
         'grants': grants,
+        'sub_grants': sub_grants,
         'history': history
     }
 

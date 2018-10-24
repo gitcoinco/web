@@ -27,8 +27,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <div class="container-fluid header dash">
       {% include 'shared/nav.html' %}
     </div>
+
     <div class="grant-banner">
       <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% static 'v2/images/bitmap.png' %}{% endif %}" width="100%" />
+    </div>
+
+    <div class="alpha-warning">
+      <span>{% trans "WARNING: Gitcoin Grants is in aplha release. It has had inital audits done on it's smart contract and we are in the process of testing it holistically. Please, use caution and do not send high amounts of value." %}
+      </span>
     </div>
 
     <h2 class="my-5 text-center">
@@ -39,6 +45,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         {% trans "Grant" %}
       </div>
       <div class="font-subheader admin_profile">
+        {% trans "by" %}
         <a href="{% url 'profile' grant.admin_profile.handle %}">
           {{ grant.admin_profile }}
         </a>
@@ -84,7 +91,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
             </div>
-
             <div class="form__group-horizontal">
               <label class="form__label">{% trans "Token Approval Limit" %}</label>
               <div class="row">
@@ -93,9 +99,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 </div>
               </div>
             </div>
-
             <div class="form__group-horizontal">
-              <label class="form__label">{% trans "Contribution Per Period" %}</label>
+              <label class="form__label">{% trans "Contribution Per Payment Period" %}</label>
               <div class="row">
                 <div class="col-12">
                   <input type="number" name="amount_per_period" class="form__input" required />
@@ -104,7 +109,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </div>
 
             <div class="form__group-horizontal frequency">
-              <label class="form__label">{% trans "Frequency of payments" %}</label>
+              <label class="form__label">{% trans "Payment Period" %}</label>
               <div class="row">
                 <div class="col-6">
                   <input type="number" id="frequency_count" name="frequency" class="form__input" value='30' required />
@@ -122,7 +127,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
             </div>
 
             <div class="form__group-horizontal">
-              <label class="form__label">{% trans "MetaTx Gas Price" %}</label>
+              <label class="form__label">{% trans "MetaTx Gas Price in Payment Token" %}</label>
               <div class="row">
                 <div class="col-12">
                   <input type="number" name="gas_price" class="form__input" required />

@@ -27,34 +27,34 @@
       {% include 'shared/nav.html' %}
     </div>
     <img src="{% static "v2/images/bitmap.png" %}" width="100%" />
-    <h2 class="fund__header">
-      {% trans "Cancel contribution for" %}
-      <span class="fund__header--highlight">{{ grant.title }}</span>
+
+    <h2 class="my-5 text-center">
+      <div class="mb-2 font-title-lg">
+        {% trans "Cancel contribution for" %}
+        <a href="{{ grant.reference_url }}" target="_blank">
+          {{ grant.title }}
+        </a>
+        {% trans "Grant" %}
+      </div>
     </h2>
 
     <div class="container">
       <div class="row mb-4">
         <div class="col-6">
-          <div class="grant__progress cancel">
+          <div class="grant__progress mt-4 cancel">
             <div class="progress">
-              <div class="progress-bar" style="width:50%"></div>
-              <div class="progress-bar progress-bar--cancel" role="progressbar" style="width:10%">
-                <div class="contribution">
-                  <span>10 ETH</span>
-                  <p>{% trans "Your contribution" %}</p>
-                </div>
-              </div>
+              <div class="progress-bar" style="width:{{ grant.percent_completed }}%"></div>
             </div>
 
-            <div class="progress-text my-4">
+            <div class="progress-text mt-2">
               <div class="row">
                 <div class="col-6">
-                  <span>344.ETH</span>
-                  <p>{% trans "Current" %}</p>
+                  <span>{{ grant.amount_received }} ETH</span>
+                  <p>Current</p>
                 </div>
                 <div class="col-6 text-right">
-                  <span>500.ETH</span>
-                  <p>{% trans "Goal" %}</p>
+                  <span>{{ grant.amount_goal }} ETH</span>
+                  <p>Goal</p>
                 </div>
               </div>
             </div>
@@ -62,23 +62,32 @@
 
           <div class="row dates">
             <div class="col-6">
-              {% trans "Start date:" %}05/05/2018
+              {% trans "Start date:" %} {{ subscription.created_on|date:"M d, Y" }}
             </div>
             <div class="col-6 text-right">
-              {% trans "Effective date of cancel:" %} 05/12/2018
+              {% trans "Effective date of cancel:" %} {{ now|date:"M d, Y" }}
             </div>
           </div>
 
           <div class="row mt-4">
             <div class="col-6">
-              <button class="button button--cancel button--full">{% trans "Cancel" %}</button>
+              <a href="{% url 'grants:details' grant.id %}">
+                <button class="button button--cancel button--full">{% trans "Cancel" %}
+                </button>
+              </a>
             </div>
             <div class="col-6">
               <form method="POST" id="js-cancelSubscription">
                 {% csrf_token %}
-                <button class="button button--primary button--full">{% trans "Cancel Contribution" %}</button>
+                <button class="button button--primary button--full">{% trans "Cancel Contribution" %}
+                </button>
                 <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
                 <input type="hidden" id="token_address" name="token_address" value="{{ grant.token_address }}">
+                <input type="hidden" id="admin_address" name="admin_address" value="{{ grant.admin_address }}">
+                <input type="hidden" id="amount_per_period" name="amount_per_period" value="{{ subscription.amount_per_period }}">
+                <input type="hidden" id="period_seconds" name="period_seconds" value="{{ subscription.period_seconds }}">
+                <input type="hidden" id="signature" name="signature" value="{{ subscription.contributor_signature }}">
+                <input type="hidden" id="gas_price" name="gas_price" value="{{ subscription.gas_price }}">
               </form>
             </div>
           </div>
@@ -86,19 +95,7 @@
 
         <div class="col-6">
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            Mauris sodales magna sit amet mattis feugiat.
-            Etiam dapibus semper dapibus.
-            Sed sit amet vestibulum ligula, sit amet imperdiet risus.
-
-            Etiam efficitur sem vel arcu porta finibus.
-            Nullam sit amet dapibus nisi. Praesent elementum orci felis, id aliquet purus commodo ut.
-            Donec ut consequat purus, ornare malesuada dolor. Donec ligula lacus, facilisis ut sollicitudin vel, aliquam quis tellus.
-
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            Mauris sodales magna sit amet mattis feugiat.
-            Etiam dapibus semper dapibus.
-            Sed sit amet vestibulum ligula, sit amet imperdiet risus.
+           {{ grant.description }}
           </p>
         </div>
       </div>
@@ -110,6 +107,7 @@
     {% include 'shared/footer.html' %}
   </body>
   <!-- jQuery -->
+  <script src="{% static "v2/js/grants/compiledSubscriptionContract.js" %}"></script>
   <script src="{% static "v2/js/grants/compiledTokenContract.js" %}"></script>
   <script src="{% static "v2/js/grants/cancel_subscription.js" %}"></script>
   <script src="{% static "v2/js/abi.js" %}"></script>
