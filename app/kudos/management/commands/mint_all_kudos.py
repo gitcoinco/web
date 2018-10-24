@@ -73,7 +73,7 @@ class Command(BaseCommand):
             if image_name:
                 # Support Open Sea
                 if kudos_contract.network == 'rinkeby':
-                    image_path = 'https://stage.gitcoin.co/static/v2/images/kudos/' + image_name
+                    image_path = 'https://ss.gitcoin.co/static/v2/images/kudos/' + image_name
                     external_url = f'https://stage.gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
                 elif kudos_contract.network == 'mainnet':
                     image_path = 'https://s.gitcoin.co/static/v2/images/kudos/' + image_name
