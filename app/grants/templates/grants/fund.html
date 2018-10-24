@@ -39,9 +39,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
       <img src="{% if grant.logo and grant.logo.url %}{{ grant.logo.url }}{% else %}{% static 'v2/images/bitmap.png' %}{% endif %}" width="100%" />
     </div>
 
-    <div class="alpha-warning">
-      <span>{% trans "WARNING: Gitcoin Grants is in aplha release. It has had inital audits done on it's smart contract and we are in the process of testing it holistically. Please, use caution and do not send high amounts of value." %}
-      </span>
+    <div class="alpha-warning font-caption">
+      <div>
+        {% trans "WARNING: Gitcoin Grants is in" %}
+        <span class="font-weight-bold">ALPHA</span>
+        {% trans "release." %}
+      </div>
+      <div>
+          {% trans "It has had inital audits done on it's smart contract and we are in the process of testing it holistically. Please, use caution and do not send high amounts of value." %}
+      </div>
     </div>
 
     <div class="row">
