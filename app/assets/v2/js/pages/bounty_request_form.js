@@ -3,12 +3,12 @@
 var trigger_form_hooks = function() {
   callFunctionWhenweb3Available(
     function() {
-      const addr = web3.eth.coinbase;
-      const input = $('#eth_address');
-
-      if (addr && !input.val()) {
-        input.val(addr);
-      }
+      web3.eth.getCoinbase(function(error, coinbase) {
+        const input = $('#eth_address');
+        if (coinbase && !input.val()) {
+          input.val(coinbase);
+        }
+      });
     }
   );
 };

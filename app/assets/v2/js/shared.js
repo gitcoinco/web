@@ -805,7 +805,7 @@ var trigger_faucet_form_web3_hooks = function() {
       }
       web3.eth.getBalance(coinbase, function(errors, result) {
         var balance = result.toNumber();
-
+        console.log(coinbase, balance)
         if (balance == 0) {
           $('#zero_balance_error').css('display', 'block');
           $('#admin_faucet_form').remove();
