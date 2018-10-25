@@ -42,6 +42,9 @@ class KudosViewsTestCase(TestCase):
         r = self.client.get('/kudos/marketplace/')
         self.assertEqual(r.status_code, 200)
 
+        r = self.client.get('/kudos/marketplace/?q=python')
+        self.assertEqual(r.status_code, 200)
+
     # @skip(reason='stub for future testing')
     # def test_image(self):
     #     self.client.get('/kudos/1')
