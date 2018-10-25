@@ -2,7 +2,7 @@
   Thank you for your pull request. Please provide a description above and review
   the requirements below.
 
-  Contributors guide: https://github.com/gitcoinco/web/blob/contributing/CONTRIBUTING.md
+  Contributors guide: https://github.com/gitcoinco/web/blob/master/docs/CONTRIBUTING.md
 -->
 
 ##### Description
