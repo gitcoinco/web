@@ -178,7 +178,7 @@ class ContributionQuerySet(models.QuerySet):
 class Contribution(SuperModel):
     """Define the structure of a subscription agreement."""
 
-    tx_id = models.CharField(max_length=255, default='0x0', help_text=_('The transaction ID of the Contribution.')),
+    tx_id = models.CharField(max_length=255, default='0x0', help_text=_('The transaction ID of the Contribution.'))
     from_address = models.CharField(
         max_length=255, default='0x0', help_text=_('The wallet address tokens are sent from.'),
     )
@@ -195,7 +195,7 @@ class Contribution(SuperModel):
         default=0, decimal_places=0, max_digits=50, help_text=_('The number of seconds thats constitues a period.'),
     )
     gas_price = models.DecimalField(
-        default=0, decimal_places=4, max_digits=50, help_text=_('The amount of the token at token_address used to incentivize the subminers.'),
+        default=0, decimal_places=4, max_digits=50, help_text=_('The amount of token used to incentivize subminers.'),
     )
     nonce = models.DecimalField(
         default=0, decimal_places=0, max_digits=50, help_text=_('The of the subscription metaTx.'),
