@@ -93,11 +93,13 @@
             </div>
           </div>
           <div class="row">
-            {% for profile in related_profiles %}
             <div class="col-12">
-              <a href="/profile/{{ profile.handle }}"><img src="{% if user.profile.avatar %}{{ user.profile.avatar.avatar_url }}{% else %}/dynamic/avatar/{% if user and user.username %}{{ user.username }}{% else %}Self{% endif %}{% endif %}" width="70" class="rounded-circle border m-1"></a>
+            {% for profile in related_profiles %}
+              <a href="/profile/{{ profile.handle }}">
+              <img src="{% if profile.avatar %}{{profile.avatar_url}}{% else %}/dynamic/avatar/{{profile.username}}{% endif %}" alt="{{profile.username}}" width="70" class="rounded-circle border m-1">
+              </a>
+              {% if forloop.counter|divisibleby:5 %}
             </div>
-            {% if forloop.counter|divisibleby:5 %}
           </div>
           <div class="row">
             {% endif %}
