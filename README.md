@@ -67,7 +67,7 @@ In imToken 1.0, if duplicated token names are found, imToken team will add a num
  
 If there are update requests due to contract amendment, projects are required to make an official announcement for respective community for the change of Symbol, and inform users about the need to search and add the token again in imToken. At the same time, please submit a new Pull Request, add on _OLD to the old contract Symbol (e.g. TFT_OLD), and resubmit new token contract and logo, as shown in the picture below. Please be reminded to share your announcement link under the comment section in the PR, imToken team will evaluate the situation.
 
-![old](tutorial/old.png)
+![old](tutorial/old_en.png)
 
 ### Unable to Search with Token Contract Address
 Please check and ensure that there are successful transaction made prior, and please verify your contract information on [Etherscan](https://etherscan.io/) before leaving a comment on your PR, we will troubleshoot manually after.
