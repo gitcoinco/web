@@ -82,8 +82,8 @@
           </div>
           <hr>
           <p>
-            {% for tag in kudos.tags.split %}
-            <a class="badge badge-kudos" href="{% url 'kudos_marketplace' %}?q={{tag|replace_commas}}">{{tag | replace_commas }}</a>
+            {% for tag in kudos.tags_as_array %}
+            <a class="badge badge-kudos" href="{% url 'kudos_marketplace' %}?q={{ tag }}">{{ tag }}</a>
             {% endfor %}
           </p>
           {% if related_profiles %}

@@ -138,6 +138,10 @@ class Token(SuperModel):
         """
         return ' '.join([x.capitalize() for x in self.name.split('_')])
 
+    @property
+    def tags_as_array(self):
+        return [tag.strip() for tag in self.tags.split(',')]
+
     def humanize(self):
         self.owner_address = self.shortened_address
         self.name = self.capitalized_name
