@@ -109,22 +109,22 @@ window.onload = function() {
 
     };
 
-    var attach_and_send_kudos = function(kudos_name, callback) {
+    var attach_and_send_kudos = function(selected_kudos, callback) {
       // get form data
 
       var email = '';
       var github_url = $('#issueURL').val();
       var from_name = document.contxt['github_handle'];
       var username = $('#bountyFulfillment option:selected').data('username');
-      var amountInEth = document.selected_kudos.price_finney / 1000.0;
-      var kudosId = kudos_name.id;
-      var comments_priv = '';
+      var amountInEth = selected_kudos.price_finney / 1000.0;
       var comments_public = $('.kudos-comment textarea').val();
+      var comments_priv = '';
       var from_email = '';
       var accept_tos = true;
       var tokenAddress = document.token_address;
       var expires = 9999999999;
-      var tokenId = $('#tokenid').data('tokenid');
+      var kudosId = selected_kudos.id;
+      var tokenId = selected_kudos.token_id;
       var success_callback = function(txid) {
         var url = 'https://' + etherscanDomain() + '/tx/' + txid;
         var msg = 'The Kudos has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
@@ -262,8 +262,8 @@ window.onload = function() {
           }
         };
 
-        if (document.selected_kudos) {
-          attach_and_send_kudos(document.selected_kudos, send_tip_and_payout_callback);
+        if ($('.kudos-search').select2('data')[0]) {
+          attach_and_send_kudos($('.kudos-search').select2('data')[0], send_tip_and_payout_callback);
         } else {
           send_tip_and_payout_callback();
         }

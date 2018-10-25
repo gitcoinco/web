@@ -76,10 +76,16 @@
   /* border-color: var(--border-grey); */
 }
 
+.select2-container--kudos .select2-results__options {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
 .select2-container--kudos .select2-results__option {
   font-size: 12px;
   padding: 9px 6px;
 }
+
 .select2-container--kudos .select2-results__option--highlighted[aria-selected] {
   background-color: #F2F6F9;
 }

@@ -448,19 +448,21 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
 
         // Pull up Kudos contract instance
         var kudos_contract = web3.eth.contract(kudos_abi).at(kudos_address());
+        console.log(kudos_contract)
 
         var numClones = 1;
         var account = web3.eth.coinbase;
 
         console.log('destinationAccount:' + destinationAccount);
 
-        var kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice'));
+        var kudosPriceInEth = parseFloat($('#kudosPrice').attr('data-ethprice')) || $('.kudos-search').select2('data')[0].price_finney;
         var kudosPriceInWei = new web3.BigNumber(kudosPriceInEth * 1.0 * Math.pow(10, 18));
 
         if (is_direct_to_recipient) {
           // Step 9
           // Kudos Direct Send (KDS)
           console.log('Using Kudos Direct Send (KDS)');
+
 
           kudos_contract.clone(destinationAccount, tokenId, numClones, {from: account, value: kudosPriceInWei}, function(cloneError, cloneTxid) {
             // getLatestId yields the last kudos_id
@@ -482,7 +484,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
             from: account,
             value: kudosPriceInWei.toString()
           };
-          console.log(params);
+
           kudos_contract.clone.estimateGas(destinationAccount, tokenId, numClones, {from: account, value: kudosPriceInWei}, function(err, kudosGasEstimate) {
             if (err)
               throw (err);

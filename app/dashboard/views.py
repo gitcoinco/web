@@ -1734,6 +1734,7 @@ def get_kudos(request):
         for token in kudos:
             kudos_json = {}
             kudos_json['id'] = token.id
+            kudos_json['token_id'] = token.token_id
             kudos_json['name'] = token.name
             kudos_json['name_human'] = humanize_name(token.name)
             kudos_json['description'] = token.description

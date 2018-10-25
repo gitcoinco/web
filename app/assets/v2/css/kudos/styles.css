@@ -133,9 +133,6 @@
     -webkit-filter: grayscale(1);
     filter: grayscale(1);
     opacity: 0.4; }
-  .kd-card.gold .img-thumbnail {
-    border-image: linear-gradient(to bottom, rgba(255, 193, 7, 0.5), rgba(169, 116, 21, 0.5));
-    border-image-slice: 1; }
   .kd-card .img-thumbnail {
     width: 100%;
     padding: 1.25rem 2.14rem;

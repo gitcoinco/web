@@ -113,11 +113,13 @@ function kudosSearch(elem) {
                         <div class="text-truncate kudos-description">${kudos.description}</div>
                       <div>
                     </div>`;
-        document.selected_kudos = {
-          name: kudos.name,
-          id: kudos.id,
-          price_finney: kudos.price_finney
-        };
+
+        document.selected_kudos = $('.kudos-search').select2('data')[0];
+        // document.selected_kudos = {
+        //   name: kudos.name,
+        //   id: kudos.id,
+        //   price_finney: kudos.price_finney
+        // };
       } else {
         selected = kudos.name_human;
       }
