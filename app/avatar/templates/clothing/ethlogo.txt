@@ -14,7 +14,7 @@
         </radialGradient>
     </defs>
     <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <rect id="Rectangle-path" stroke="#979797" fill-rule="nonzero" x="-1" y="2" width="899" height="1416"></rect>
+        <rect id="Rectangle-path"  fill-rule="nonzero" x="-1" y="2" width="899" height="1416"></rect>
         <g id="ethlogo" transform="translate(54.000000, 1069.000000)">
             <path d="M302.962,1.63 C302.379,2.086 301.79,2.529 301.199,2.971 C301.807,3.907 302.398,4.7 302.962,5.263 C306.519,8.82 307.332,-1.788 302.962,1.63 Z" id="Shape" fill="#54361F" fill-rule="nonzero"></path>
             <g id="ethlogo-4242F4" transform="translate(0.000000, 20.000000)">

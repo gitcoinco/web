@@ -5,7 +5,7 @@
     <desc>Created with Sketch.</desc>
     <defs></defs>
     <g id="Artboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <rect id="Rectangle-path" stroke="#979797" fill-rule="nonzero" x="-1" y="2" width="899" height="1416"></rect>
+        <rect id="Rectangle-path"  fill-rule="nonzero" x="-1" y="2" width="899" height="1416"></rect>
         <g id="cloak" transform="translate(28.000000, 205.000000)">
             <path d="M341.962,725.63 C341.379,726.086 340.79,726.529 340.199,726.971 C340.807,727.907 341.398,728.7 341.962,729.263 C345.519,732.82 346.332,722.212 341.962,725.63 Z" id="Shape" fill="#54361F" fill-rule="nonzero"></path>
             <g>
