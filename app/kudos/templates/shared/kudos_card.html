@@ -16,7 +16,7 @@
 {% endcomment %}
 {% load i18n staticfiles %}
 {% load kudos_extras matches %}
-<div class="kd-card">
+<div class="kd-card {% if listing.num_clones_available == 0 %}ghost{% endif %}">
   <a href="/kudos/{{ listing.id }}/{{ listing.name }}" class="{% if 'cellarius' in listing.tags %}cellarius-partner{% endif %}">
     <img id="kudosImage" src="{% static listing.image %}" alt="{{ listing.name }}" class="img-thumbnail kd-shadow border-transparent" width="250">
   </a>

@@ -30,10 +30,16 @@ $bg-cellarius: #4D5858;
     opacity: 0.4;
   }
 
+  &.gold .img-thumbnail {
+    border-image: linear-gradient(to bottom, rgba(255, 193, 7, 0.5) , rgba(169, 116, 21, .5));
+    border-image-slice: 1;
+  }
+
   .img-thumbnail {
     width: 100%;
     padding: 1.25rem 2.14rem;
     transition: all linear .15s;
+
   }
 
   a:hover {
