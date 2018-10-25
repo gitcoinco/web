@@ -18,6 +18,7 @@
 
 import logging
 import time
+import urllib
 import warnings
 
 from django.conf import settings
@@ -33,7 +34,7 @@ logging.getLogger("web3").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 formatter = '%(levelname)s:%(name)s.%(funcName)s:%(message)s'
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 
 
 class Command(BaseCommand):
@@ -69,7 +70,7 @@ class Command(BaseCommand):
             all_kudos = yaml.load(f)
 
         for idx, kudos in enumerate(all_kudos):
-            image_name = kudos.get('image')
+            image_name = urllib.parse.quote(kudos.get('image'))
             if image_name:
                 # Support Open Sea
                 if kudos_contract.network == 'rinkeby':
