@@ -117,14 +117,14 @@ window.onload = function() {
       var from_name = document.contxt['github_handle'];
       var username = $('#bountyFulfillment option:selected').data('username');
       var amountInEth = document.selected_kudos.price_finney / 1000.0;
-      var kudosId = document.selected_kudos.id;
+      var kudosId = kudos_name.id;
       var comments_priv = '';
       var comments_public = $('.kudos-comment textarea').val();
       var from_email = '';
       var accept_tos = true;
       var tokenAddress = document.token_address;
       var expires = 9999999999;
-      var is_for_bounty_fulfiller = true;
+      var tokenId = $('#tokenid').data('tokenid');
       var success_callback = function(txid) {
         var url = 'https://' + etherscanDomain() + '/tx/' + txid;
         var msg = 'The Kudos has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
@@ -139,7 +139,7 @@ window.onload = function() {
         $.noop();
       };
 
-      return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, kudosId, success_callback, failure_callback, is_for_bounty_fulfiller);
+      return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, kudosId, tokenId, success_callback, failure_callback, true);
 
     };
 
