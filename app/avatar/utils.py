@@ -95,8 +95,7 @@ def get_avatar_context():
                          'title': 'Pick a facial hair style',
                          'options': (
                              'Mustache-0', 'Mustache-1', 'Mustache-2', 'Mustache-3', 'Beard-0', 'Beard-1', 'Beard-2',
-                             'Beard-3',
-                             'damos_beard'
+                             'Beard-3'
                          )
                      },
                      {
