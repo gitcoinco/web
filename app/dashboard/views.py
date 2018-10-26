@@ -1173,8 +1173,14 @@ def profile(request, handle):
     if request.method == 'POST' and request.is_ajax():
         # Send kudos data when new preferred address
         address = request.POST.get('address')
-        context['kudos'] = Token.objects.filter(owner_address=to_checksum_address(address)).order_by(order_by)
-        context['sent_kudos'] = Token.objects.filter(kudos_transfer__from_address=to_checksum_address(address)).order_by(order_by)
+        context['kudos'] = Token.objects.filter(
+            owner_address=to_checksum_address(address),
+            contract__network=settings.KUDOS_NETWORK
+        ).order_by(order_by)
+        context['sent_kudos'] = Token.objects.filter(
+            kudos_transfer__from_address=to_checksum_address(address),
+            contract__network=settings.KUDOS_NETWORK
+        ).order_by(order_by)
         profile.preferred_payout_address = address
 
         kudos_html = loader.render_to_string(
@@ -1217,18 +1223,19 @@ def lazy_load_kudos(request):
     results_per_page = 8
 
     if datarequest == 'mykudos':
-        context['kudos'] = Token.objects.filter(owner_address=to_checksum_address(address)).order_by(order_by)
+        context['kudos'] = Token.objects.filter(
+            owner_address=to_checksum_address(address),
+            contract__network=settings.KUDOS_NETWORK
+        ).order_by(order_by)
         paginator = Paginator(context['kudos'], results_per_page)
     else :
-        context['sent_kudos'] = Token.objects.filter(sent_from_address=to_checksum_address(address)).order_by(order_by)
+        context['sent_kudos'] = Token.objects.filter(
+            sent_from_address=to_checksum_address(address),
+            contract__network=settings.KUDOS_NETWORK
+        ).order_by(order_by)
         paginator = Paginator(context['sent_kudos'], results_per_page)
 
-    try:
-        kudos = paginator.page(page)
-    except PageNotAnInteger:
-        kudos = paginator.page(2)
-    except EmptyPage:
-        kudos = paginator.page(paginator.num_pages)
+    kudos = paginator.get_page(page)
 
     kudos_html = loader.render_to_string(
         'shared/kudos_card_profile.html',
