@@ -311,9 +311,12 @@ class KudosContract:
             old_contracts = Contract.objects.filter(network=self.network).exclude(id=contract.id)
             old_contracts.update(is_latest=False)
 
-        # Update an existing Kudos in the database
+        # Update an existing Kudos in the database or create a new one
         kudos['txid'] = txid
         kudos_token, created = Token.objects.update_or_create(token_id=kudos_id, contract=contract, defaults=kudos)
+        # Update the cloned_from_id kudos.  Namely the num_clones_in_wild field should be updated.
+        if created:
+            self.sync_db(kudos_id=kudos_token.cloned_from_id, txid=txid)
         # Find the object which matches the kudos that was just cloned
         try:
             kudos_transfer = KudosTransfer.objects.get(receive_txid=txid)
