@@ -1773,4 +1773,29 @@
   - open source
   platform: gitcoin
   image: shillville.svg
+- name: Kauri Pioneer
+  description: Cheers to you, one of the first Kauri contributors!
+  priceFinney: 3
+  numClonesAllowed: 100
+  tags: 
+    - web3
+    - kauri
+    - ethereum
+    - documentation
+    - knowledge
+  image: kauri_1.svg
+  to_address: 0xF8aE578d5d4e570De6c31F26D42eF369C320aE0b
+- name: Web3 Advocate 
+  description: Out with the old and in with the new! Kudos to knowledge sharers, crossing the void from web2 to web3.
+  priceFinney: 3
+  numClonesAllowed: 100
+  tags: 
+    - web3
+    - kauri
+    - ethereum
+    - documentation
+    - knowledge
+  image: kauri_2.svg
+  to_address: 0xF8aE578d5d4e570De6c31F26D42eF369C320aE0b
+
 
