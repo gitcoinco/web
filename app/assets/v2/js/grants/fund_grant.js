@@ -42,8 +42,7 @@ $(document).ready(function() {
 
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
 
-      let deployedToken = new web3.eth.Contract(compiledToken.abi, data.token_address);
-
+      let deployedToken = new web3.eth.Contract(compiledToken.abi, data.denomination);
 
       deployedToken.methods.decimals().call(function(err, decimals) {
 
@@ -57,77 +56,79 @@ $(document).ready(function() {
 
           $('#contributor_address').val(accounts[0]);
 
-          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(realTokenAmount)).send({from: accounts[0]}, function(err, result) {
+          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(realApproval)).send({from: accounts[0]}, function(err, result) {
 
             // Should add approval transactions to transaction history
 
             deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
 
-              nonce = parseInt(nonce) + 1;
-
-              const parts = [
-                // subscriber address
-                accounts[0],
-                // admin_address
-                data.admin_address,
-                // testing token
-                data.token_address,
-                // data.amount_per_period
-                web3.utils.toTwosComplement(realTokenAmount),
-                // data.period_seconds
-                web3.utils.toTwosComplement(realPeriodSeconds),
-                // data.gas_price
-                web3.utils.toTwosComplement(realGasPrice),
-                // nonce
-                web3.utils.toTwosComplement(nonce)
-              ];
-
-              console.log('parts', parts);
-
-
-              deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
-
-                $('#subscription_hash').val(subscriptionHash);
-
-
-                web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
-
-                  $('#signature').val(signature);
-
-                  let postData = {
-                    subscriptionContract: data.contract_address,
-                    parts: parts,
-                    subscriptionHash: subscriptionHash,
-                    signature: signature
-                  };
-
-                  console.log('postData', postData);
-
-                  fetch('http://localhost:10003/saveSubscription', {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                      postData
-                    })
-                  }).then((response)=>{
-                    console.log('TX RESULT', response);
-
-                    $.each($(form).serializeArray(), function() {
-                      data[this.name] = this.value;
-                    });
-
-                    console.log('data', data);
-
-                    form.submit();
-
-                  })
-                    .catch((error)=>{
-                      console.log(error);
-                    });
-                });
-              });
+              console.log('deployedSubscription', deployedSubscription);
+            //
+            //   nonce = parseInt(nonce) + 1;
+            //
+            //   const parts = [
+            //     // subscriber address
+            //     accounts[0],
+            //     // admin_address
+            //     data.admin_address,
+            //     // testing token
+            //     data.token_address,
+            //     // data.amount_per_period
+            //     web3.utils.toTwosComplement(realTokenAmount),
+            //     // data.period_seconds
+            //     web3.utils.toTwosComplement(realPeriodSeconds),
+            //     // data.gas_price
+            //     web3.utils.toTwosComplement(realGasPrice),
+            //     // nonce
+            //     web3.utils.toTwosComplement(nonce)
+            //   ];
+            //
+            //   console.log('parts', parts);
+            //
+            //
+            //   deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
+            //
+            //     $('#subscription_hash').val(subscriptionHash);
+            //
+            //
+            //     web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
+            //
+            //       $('#signature').val(signature);
+            //
+            //       let postData = {
+            //         subscriptionContract: data.contract_address,
+            //         parts: parts,
+            //         subscriptionHash: subscriptionHash,
+            //         signature: signature
+            //       };
+            //
+            //       console.log('postData', postData);
+            //
+            //       fetch('http://localhost:10003/saveSubscription', {
+            //         method: 'POST',
+            //         headers: {
+            //           'Content-Type': 'application/json'
+            //         },
+            //         body: JSON.stringify({
+            //           postData
+            //         })
+            //       }).then((response)=>{
+            //         console.log('TX RESULT', response);
+            //
+            //         $.each($(form).serializeArray(), function() {
+            //           data[this.name] = this.value;
+            //         });
+            //
+            //         console.log('data', data);
+            //
+            //         form.submit();
+            //
+            //       })
+            //         .catch((error)=>{
+            //           console.log(error);
+            //         });
+            //     });
+            //   });
             });
           });
         });
