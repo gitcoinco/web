@@ -448,7 +448,6 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
 
         // Pull up Kudos contract instance
         var kudos_contract = web3.eth.contract(kudos_abi).at(kudos_address());
-        console.log(kudos_contract)
 
         var numClones = 1;
         var account = web3.eth.coinbase;
