@@ -45,7 +45,7 @@
           {% if 'cellarius' in kudos.tags %}
             <img src="{% static 'v2/images/kudos/assets/cellarius_logo_horizontal.svg' %}" alt="Cellarius" height="40">
           {% endif %}
-          <h3 id="kudosName" class="kudos-details__title">{{ kudos.name|humanize_name }}</h3>
+          <h3 id="kudosName" class="kudos-details__title">{{ kudos.name|humanize_name }} {% if kudos.generation %}<small class="lead">Gen {{ kudos.generation }}</small>{% endif %}</h3>
           <div>Owner Address: <a target="_blank" href="https://etherscan.io/address/{{ kudos.owner_address }}" class="kudos-details__address" title="{{ kudos.owner_address }}">{{ kudos.owner_address|humanize_address }}</a></div>
           <div class="my-4 font-bigger-1 font-weight-300">
             <p>{{ kudos.description }}</p>
