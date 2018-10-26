@@ -68,19 +68,19 @@ def get_rarity_score(num_clones_allowed: int) -> str:
         raise ValueError('num_clones_allowed must be an integer')
 
     if num_clones_allowed == 1:
-        return 'Unique'
+        return 'One of a Kind'
     elif 2 <= num_clones_allowed <= 5:
-        return 'Legendary Rare'
+        return 'Legendary'
     elif 6 <= num_clones_allowed <= 15:
-        return 'Ultra Rare'
+        return 'Ultra'
     elif 16 <= num_clones_allowed <= 35:
         return 'Very Rare'
     elif 36 <= num_clones_allowed <= 100:
-        return 'Common'
+        return 'Rare'
     elif 101 <= num_clones_allowed <= 200:
-        return 'Super Common'
+        return 'Special'
     elif num_clones_allowed >= 201:
-        return 'Extremely Common'
+        return 'Common'
     else:
         raise ValueError('num_clones_allowed must be greater than or equal to 1')
 
