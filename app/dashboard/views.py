@@ -1228,7 +1228,7 @@ def lazy_load_kudos(request):
             contract__network=settings.KUDOS_NETWORK
         ).order_by(order_by)
         paginator = Paginator(context['kudos'], results_per_page)
-    else :
+    else:
         context['sent_kudos'] = Token.objects.filter(
             sent_from_address=to_checksum_address(address),
             contract__network=settings.KUDOS_NETWORK
@@ -1308,7 +1308,7 @@ def sync_web3(request):
                 'status': '400',
                 'msg': 'tx has not mined yet'
             }
-        else:
+        els:
 
             # get bounty id
             print('* getting bounty id')
