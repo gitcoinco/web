@@ -63,72 +63,72 @@ $(document).ready(function() {
             deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
 
               console.log('deployedSubscription', deployedSubscription);
-            //
-            //   nonce = parseInt(nonce) + 1;
-            //
-            //   const parts = [
-            //     // subscriber address
-            //     accounts[0],
-            //     // admin_address
-            //     data.admin_address,
-            //     // testing token
-            //     data.token_address,
-            //     // data.amount_per_period
-            //     web3.utils.toTwosComplement(realTokenAmount),
-            //     // data.period_seconds
-            //     web3.utils.toTwosComplement(realPeriodSeconds),
-            //     // data.gas_price
-            //     web3.utils.toTwosComplement(realGasPrice),
-            //     // nonce
-            //     web3.utils.toTwosComplement(nonce)
-            //   ];
-            //
-            //   console.log('parts', parts);
-            //
-            //
-            //   deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
-            //
-            //     $('#subscription_hash').val(subscriptionHash);
-            //
-            //
-            //     web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
-            //
-            //       $('#signature').val(signature);
-            //
-            //       let postData = {
-            //         subscriptionContract: data.contract_address,
-            //         parts: parts,
-            //         subscriptionHash: subscriptionHash,
-            //         signature: signature
-            //       };
-            //
-            //       console.log('postData', postData);
-            //
-            //       fetch('http://localhost:10003/saveSubscription', {
-            //         method: 'POST',
-            //         headers: {
-            //           'Content-Type': 'application/json'
-            //         },
-            //         body: JSON.stringify({
-            //           postData
-            //         })
-            //       }).then((response)=>{
-            //         console.log('TX RESULT', response);
-            //
-            //         $.each($(form).serializeArray(), function() {
-            //           data[this.name] = this.value;
-            //         });
-            //
-            //         console.log('data', data);
-            //
-            //         form.submit();
-            //
-            //       })
-            //         .catch((error)=>{
-            //           console.log(error);
-            //         });
-            //     });
-            //   });
+
+              nonce = parseInt(nonce) + 1;
+
+              const parts = [
+                // subscriber address
+                accounts[0],
+                // admin_address
+                data.admin_address,
+                // token denomination / address
+                data.denomination,
+                // data.amount_per_period
+                web3.utils.toTwosComplement(realTokenAmount),
+                // data.period_seconds
+                web3.utils.toTwosComplement(realPeriodSeconds),
+                // data.gas_price
+                web3.utils.toTwosComplement(realGasPrice),
+                // nonce
+                web3.utils.toTwosComplement(nonce)
+              ];
+
+              console.log('parts', parts);
+
+
+              deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
+
+                $('#subscription_hash').val(subscriptionHash);
+
+
+                web3.eth.personal.sign('' + subscriptionHash, accounts[0], function(err, signature) {
+
+                  $('#signature').val(signature);
+
+                  let postData = {
+                    subscriptionContract: data.contract_address,
+                    parts: parts,
+                    subscriptionHash: subscriptionHash,
+                    signature: signature
+                  };
+
+                  console.log('postData', postData);
+
+                  fetch('http://localhost:10003/saveSubscription', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                      postData
+                    })
+                  }).then((response)=>{
+                    console.log('TX RESULT', response);
+
+                    $.each($(form).serializeArray(), function() {
+                      data[this.name] = this.value;
+                    });
+
+                    console.log('data', data);
+
+                    form.submit();
+
+                  })
+                    .catch((error)=>{
+                      console.log(error);
+                    });
+                });
+              });
             });
           });
         });

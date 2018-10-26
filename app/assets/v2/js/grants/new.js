@@ -73,7 +73,7 @@ $(document).ready(function() {
         data.admin_address,
         // required token
         data.denomination,
-        // required tokenAmount - setting to zero
+        // required tokenAmount
         web3.utils.toTwosComplement(realTokenAmount),
         // data.frequency
         web3.utils.toTwosComplement(requiredPeriodSeconds),
