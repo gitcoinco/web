@@ -239,28 +239,28 @@
               </div>
             {% endfor %}
 		{% else %}
-		<BR>
-		<div class="row" style="justify-content: center"><img width="240px" height="225px" src="http://kuhnchris.eu:8000/static/v2/images/tree.png" /></div><BR>
-		<div style="text-align: center; color: #666666; font-size: 16px">Oops! Looks like this user has not participated in any bounty yet.<BR>In the meantime, here are some things you can do:</div><BR>
-		<div class="row" style="justify-content: center">
-			<div style="width: 25%;justify-content: center;margin-right: 1em; padding: 1em; margin-top: 1em;"  class="card col-6 col-lg-3">
+		<br>
+		<div class="row justify-content-center"><img width="240px" height="225px" src="{% static "v2/images/tree.png" %}"/></div><br>
+		<div class="text-center" style="color: #666666; font-size: 16px">{% trans 'Oops! Looks like this user has not participated in any bounty yet.<br>In the meantime, here are some things you can do:' %}</div><br>
+		<div class="justify-content-center row">
+			<div style="width: 25%"  class="card col-6 col-lg-3 mt-1 mr-1 p-1 justify-content-center">
 
-					<img style="margin: 1em;" src="{% static "v2/images/IssueExplorer.svg" %}"/>
-        			<div class="description" style="color: #666666; text-align: center">Start working on exciting bounties with the Issue Explorer</div>
-       				<a class="btn btn-xs btn-success pulseClick" href="{% url "explorer" %}" style="background-color: #3E00FF; color: #FFFFFF; margin: 1em 0em 1em 0em; font-size: 1em	">Go to Issue Explorer</a>
+					<img class="m-1" src="{% static "v2/images/IssueExplorer.svg" %}"/>
+        			<div class="description text-center" style="color: #666666">{% trans 'Start working on exciting bounties with the Issue Explorer' %}</div>
+       				<a class="btn btn-xs btn-success pulseClick mt-3 mb-1" href="{% url "explorer" %}" style="background-color: #3E00FF; color: #FFFFFF; font-size: 1em	">{% trans 'Go to Issue Explorer' %}</a>
     		</div>
-			<div style="width: 25%;justify-content: center;margin-right: 1em; padding: 1em; margin-top: 1em;"  class="card col-6 col-lg-3">
-					<img style="margin: 1em;" src="{% static "v2/images/Leaderboard.svg" %}"/>
-        			<div class="description" style="color: #666666; text-align: center">Looking for awesome contributors to work on your project?</div>
-       				<a class="btn btn-xs btn-success pulseClick" href="{% url "_leaderboard" %}	" style="background-color: #3E00FF; color: #FFFFFF; margin: 1em 0em 1em 0em; font-size: 1em	">Go to Leaderboard</a>
+			<div style="width: 25%" class="card col-6 col-lg-3 mt-1 mr-1 p-1 justify-content-center">
+					<img class="m-1" src="{% static "v2/images/Leaderboard.svg" %}"/>
+        			<div class="description text-center" style="color: #666666">{% trans 'Looking for awesome contributors to work on your project?' %}</div>
+       				<a class="btn btn-xs btn-success pulseClick mt-3 mb-1" href="{% url "_leaderboard" %}" style="background-color: #3E00FF; color: #FFFFFF; font-size: 1em	">{% trans 'Go to Leaderboard' %}</a>
     		</div>
-			<div style="width: 25%;justify-content: center;margin-right: 1em; padding: 1em; margin-top: 1em;"  class="card col-6 col-lg-3">
-					<img style="margin: 1em;" src="{% static "v2/images/Slack.svg" %}"/>
-        			<div class="description" style="color: #666666; text-align: center">Have any questions or suggestions? Join our Slack channel!</div>
-       				<a class="btn btn-xs btn-success pulseClick" href="{% url "slack" %}" style="background-color: #3E00FF; color: #FFFFFF; margin: 1em 0em 1em 0em; font-size: 1em	">Join our Slack</a>
+			<div style="width: 25%"  class="card col-6 col-lg-3 mt-1 mr-1 p-1 justify-content-center">
+					<img class="m-1" src="{% static "v2/images/Slack.svg" %}"/>
+        			<div class="description text-center" style="color: #666666">{% trans 'Have any questions or suggestions? Join our Slack channel!' %}</div>
+       				<a class="btn btn-xs btn-success pulseClick mt-3 mb-1" href="{% url "slack" %}" style="background-color: #3E00FF; color: #FFFFFF; font-size: 1em	">{% trans 'Join our Slack' %}</a>
     		</div>
     	</div>
-               <BR>
+               <br>
           </div>
         </div>
       {% endif %}
