@@ -128,8 +128,10 @@ class Command(BaseCommand):
                 method_id = data[:10]
                 logger.info(f'method_id:  {method_id}')
 
-                # Check if its a Clone or cloneAndTransfer function call
-                if method_id == '0xdaa6eb1d' or method_id == '0xd319784f':
+                # Check if its a Clone or a Mint method.
+                # NOTE:  These method_id's will change if a new contract is deployed.
+                #        You will have to watch the logs to figure out the new method_id's.
+                if method_id == '0xed74de9d' or method_id == '0xbb7fde71':
                     kudos_contract._w3.eth.waitForTransactionReceipt(tx['hash'])
                     kudos_id = kudos_contract._contract.functions.getLatestId().call()
                     if kudos_contract.network == 'localhost':
