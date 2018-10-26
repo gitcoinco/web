@@ -124,8 +124,9 @@ $(document).ready(function() {
 
         // Build the raw transaction data for the kudos clone & transfer
         var kudosId = $('#kudosid').data('kudosid');
+        var tokenId = $('#tokenid').data('tokenid');
         var numClones = 1;
-        var data = kudos_contract.clone.getData(forwarding_address, kudosId, numClones);
+        var data = kudos_contract.clone.getData(forwarding_address, tokenId, numClones);
 
         // create the raw transaction
         rawTx = {
@@ -141,11 +142,17 @@ $(document).ready(function() {
         console.log(kudosPriceInEth);
         var kudosPriceInWei = new web3.BigNumber(kudosPriceInEth * 1.0 * Math.pow(10, 18));
 
-        console.log(kudosPriceInWei);
-        console.log(kudosPriceInWei.toNumber());
-        console.log(kudosPriceInWei.toString(10));
+        var params = {
+          forwarding_address: forwarding_address,
+          tokenid: tokenId,
+          numClones: numClones,
+          holding_address: holding_address,
+          kudosPriceInWei: kudosPriceInWei.toString(10)
+        }
+        console.log('params for kudos clone:');
+        console.log(params);
  
-        kudos_contract.clone.estimateGas(forwarding_address, kudosId, numClones, {from: holding_address, value: kudosPriceInWei}, function(error, gasLimit) {
+        kudos_contract.clone.estimateGas(forwarding_address, tokenId, numClones, {from: holding_address, value: kudosPriceInWei}, function(error, gasLimit) {
           console.log(gasLimit);
           var buffer = new web3.BigNumber(0);
 
