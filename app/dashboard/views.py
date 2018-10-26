@@ -1308,7 +1308,7 @@ def sync_web3(request):
                 'status': '400',
                 'msg': 'tx has not mined yet'
             }
-        els:
+        else:
 
             # get bounty id
             print('* getting bounty id')
