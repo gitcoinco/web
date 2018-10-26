@@ -35,7 +35,6 @@ $border-grey: #ced4da;
     border-width: 0.45rem 0.45rem 0 0.45rem;
     height: 0;
     left: 0;
-    // margin-top: -0.125rem;
     position: absolute;
     top: 0;
     bottom: 0;
@@ -43,7 +42,6 @@ $border-grey: #ced4da;
     border-radius: 4px;
     margin: auto;
   }
-
 
   .select2-container--bootstrap4 .select2-search--dropdown .select2-search__field {
     border-radius: 4px;
@@ -63,7 +61,6 @@ $border-grey: #ced4da;
  .select2-container--bootstrap4 .select2-dropdown {
      border-color: $border-grey;
  }
-
 
  .select2-container--bootstrap4 .select2-results__option--highlighted[aria-selected] {
   background-color: #5897fb;

@@ -1212,11 +1212,8 @@ def lazy_load_kudos(request):
     page = request.POST.get('page')
     address = request.POST.get('address')
     context= {}
-    # with this attr from the button clicked we know if we request kudos or sent kudos
     datarequest = request.POST.get('request')
     order_by = request.GET.get('order_by', '-modified_on')
-    # use Django’s pagination
-    # https://docs.djangoproject.com/en/dev/topics/pagination/
     results_per_page = 8
 
     if datarequest == 'mykudos':
@@ -1232,12 +1229,12 @@ def lazy_load_kudos(request):
         kudos = paginator.page(2)
     except EmptyPage:
         kudos = paginator.page(paginator.num_pages)
-    # build a html kudos list with the paginated kudos
+
     kudos_html = loader.render_to_string(
         'shared/kudos_card_profile.html',
         {'kudos':kudos}
     )
-    # package output data and return it as a JSON object
+
     output_data = {
         'kudos_html': kudos_html,
         'has_next': kudos.has_next()
