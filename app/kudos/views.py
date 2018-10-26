@@ -204,7 +204,17 @@ def details(request, id, name):
         context['avatar_url'] = kudos.img_url
 
         # The real num_cloned_in_wild is only stored in the Gen0 Kudos token
-        kudos.num_clones_in_wild = Token.objects.get(id=kudos.cloned_from_id).num_clones_in_wild
+        kudos.num_clones_in_wild = Token.objects.get(
+            token_id=kudos.cloned_from_id,
+            contract__address=kudos.contract.address
+        ).num_clones_in_wild
+
+        # Create a new attribute to reference number of gen0 clones allowed
+        kudos.num_gen0_clones_allowed = Token.objects.get(
+            token_id=kudos.cloned_from_id,
+            contract__address=kudos.contract.address
+        ).num_clones_allowed
+
         context['kudos'] = kudos
 
     return TemplateResponse(request, 'kudos_details.html', context)
