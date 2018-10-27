@@ -1,5 +1,5 @@
-{% extends '../emails/template.html' %} 
-{% comment %}   
+{% extends '../emails/template.html' %}
+{% comment %}
   Copyright (C) 2018 Gitcoin Core
 
  This program is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  along with this program. If not, see <http://www.gnu.org/licenses/>. 
  
 {% endcomment %}
-{% load i18n humanize static %} 
+{% load i18n static %}
 
 {% block content %}
 
@@ -78,7 +78,7 @@
     padding-bottom: 75px;
   }
 
-  .progress>h3 {
+  .progress > h3 {
     font-size: 26px;
     color: #5B3AF0;
   }
@@ -109,7 +109,7 @@
     text-align: right;
   }
 
-  .funding>h4 {
+  .funding > h4 {
     line-height: 0px;
     text-align: right;
     color: #0D0764;
@@ -125,56 +125,47 @@
     margin-right: 20px;
   }
 
-  .funding>p {
+  .funding > p {
     line-height: 0px;
     color: #BBBDBF;
   }
 
 </style>
-<img id="newSupporter" src="{% static "v2/images/subscription-terminated.png" %}" alt="Subscription Terminated." title="Subscription Terminated">
-<h1 style="text-transform: none;">{% trans "Grant" %} '{{ grant_name }}' {% trans "has been cancelled" %}.</h1>
-<!-- Name of grant -->
-<p>{%trans "Your subscription for the project has been cancelled and you will no longer be charged." %}</p>
+<img id="newSupporter" src="{% static "v2/images/subscription-terminated.png" %}" alt="{% trans "Subscription Terminated." %}" title="{% trans "Subscription Terminated." %}">
+<h1 style="text-transform: none;">{% trans "Grant" %} '{{ grant.title }}' {% trans "has been cancelled." %}.</h1>
+<p>{% trans "Your subscription for the project has been cancelled and you will no longer be charged." %}</p>
 <br>
 
 <hr>
 <div class="grantInfo">
-  <a href="https://github.com/{{ github_username }}">
-    <img src="{{ github_username }}" />
+  <a href="{% url 'grant:details' grant.id %}">
+    <img src="{{ grant.logo.url }}" style="width:50px; height: 50px;"/>
   </a>
-  <!-- width="50" height="50"Input project image here -->
   <br>
-  <a class="grantInfoName" href="https://github.com/{{ github_username }}">{{ github_username }}</a>
-  <!-- Input project name here -->
-  <p>{{ grant_description }}</p>
-  <!-- Input project description here -->
+  <a class="grantInfoName" href="{% url 'grant:details' grant.id %}">{{ grant.title }}</a>
+  <p>{{ grant.description }}</p>
   <div class="progress">
-    <h3 style="text-transform: none;">{{ funding_status }}</h3>
+    <h3 style="text-transform: none;">{{ grant.status }}</h3>
     <div class="progressBar">
-      <div class="progressCompleted" style="width: {{ progress_completed }}%;">
-        <!-- Dynamically change the width of your progressCompletion, ie 50% -->
-
+      <div class="progressCompleted" style="width: {{ grant.percentage_done|floatformat:0 }}%;">
       </div>
     </div>
     <div class="funding">
       <h4>
-        <strong>{{ goal_funding }}</strong>
+        <strong>{{ grant.amount_goal }}</strong>
       </h4>
-      <!-- Input goal funding value -->
-      <p>{%trans "Goal" %}</p>
+      <p>{% trans "Goal" %}</p>
     </div>
   </div>
 </div>
 <hr>
 
 <br>
-<p>{%trans "You can see the subscription cancelation transaction" %}
-  <a href="https://etherscan.com/{{ etherscan_link }}">{%trans "here." %}</a>
+<p>{% trans "You can see the subscription cancelation transaction" %}
+  <a href="{{ transaction.link }}">{% trans "here." %}</a>
 </p>
-<!-- Input cancelation link here -->
 <br>
-<a class="updatesButton" href="https://etherscan.com/{{ etherscan_link }}">{%trans "View Transaction" %}</a>
-<!-- Input link to view transaction button here -->
+<a class="updatesButton" href="{{ transaction.link }}">{% trans "View Transaction" %}</a>
 <br> 
 
 {% endblock %}

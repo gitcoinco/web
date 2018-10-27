@@ -1,22 +1,25 @@
-{% load i18n humanize %}
+{% load i18n %}
 
-{% trans "Grant" %} {{ grant_name }} {% trans "has been cancelled" %}
-{%trans "Your subscription for the project has been cancelled and you will no longer be charged." %}
+{% trans "Grant" %} {{ grant.title }} {% trans "has been cancelled." %}
 
-{{ github_username }}
+{% trans "Your subscription for the project has been cancelled and you will no longer be charged." %}
 
-{{ funding_status }}
+{{ grant.logo.url }}
 
-{{ progress_completed }}
+{{ grant.description }}
 
-{{ goal_funding }}
+{{ grant.status }}
 
-{%trans "Goal" %}
+{{ grant.percentage_done }}
 
-{%trans "You can see the subscription cancelation transaction" %} 
+{{ grant.amount_goal }}
 
-{{ etherscan_link }} 
+{% trans "Goal" %}
 
-{%trans "here." %}
+{% trans "You can see the subscription cancelation transaction" %} 
 
-{%trans "View Transaction" %}
+{{ transaction.link }} 
+
+{% trans "here." %}
+
+{% trans "View Transaction" %}
