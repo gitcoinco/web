@@ -72,7 +72,7 @@ urlpatterns = [
         kudos.views.details_by_address_and_token_id,
         name='kudos_details_by_address_and_token_id'
     ),
-    re_path(r'^kudos/(?P<id>\d+)/(?P<name>\w*)', kudos.views.details, name='kudos_details'),
+    re_path(r'^kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.details, name='kudos_details'),
     re_path(r'^kudos/address/(?P<handle>.*)', kudos.views.kudos_preferred_wallet, name='kudos_preferred_wallet'),
     re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_details'),
 
