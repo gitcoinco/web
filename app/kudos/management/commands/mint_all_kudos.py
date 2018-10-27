@@ -34,7 +34,6 @@ logging.getLogger("web3").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 formatter = '%(levelname)s:%(name)s.%(funcName)s:%(message)s'
-logging.basicConfig(level=logging.INFO)
 
 
 class Command(BaseCommand):
@@ -45,14 +44,19 @@ class Command(BaseCommand):
         parser.add_argument('network', default='localhost', type=str)
         parser.add_argument('yaml_file', help='absolute path to kudos.yaml file', type=str)
         parser.add_argument('--mint_to', help='address to mint the kudos to', type=str)
-        parser.add_argument('--gas_price_gwei', default=4, help='the gas price for mining', type=int)
+        parser.add_argument('--gas_price_gwei', help='the gas price for mining', type=int)
         parser.add_argument('--skip_sync', action='store_true')
         parser.add_argument('--gitcoin_account', action='store_true', help='use account stored in .env file')
         parser.add_argument('--account', help='public account address to use for transaction', type=str)
         parser.add_argument('--private_key', help='private key for signing transactions', type=str)
+        parser.add_argument('--debug', help='turn on debug statements', action='store_true')
 
     def handle(self, *args, **options):
         # config
+        if options['debug']:
+            logging.basicConfig(level=logging.DEBUG)
+        else:
+            logging.basicConfig(level=logging.INFO)
         network = options['network']
         gitcoin_account = options['gitcoin_account']
         gas_price_gwei = options['gas_price_gwei']
