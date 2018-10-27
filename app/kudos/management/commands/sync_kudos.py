@@ -213,7 +213,7 @@ class Command(BaseCommand):
             start_id = Token.objects.filter(contract__address=kudos_contract.address).aggregate(
                 Max('token_id'))['token_id__max']
 
-        if start_id is None or start_id < 0:
+        if start_id is None or (start_id.isdigit() and start_id < 0):
             start_id = 1
 
         if syncmethod == 'id':
