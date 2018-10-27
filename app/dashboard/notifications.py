@@ -382,7 +382,6 @@ def maybe_market_kudos_to_email(kudos_transfer):
         bool: Whether or not the email notification was sent successfully.
 
     """
-    is_new = True
 
     # 1. Decide if we are sending it
     if kudos_transfer.network != settings.ENABLE_NOTIFICATIONS_ON_NETWORK:
@@ -396,11 +395,9 @@ def maybe_market_kudos_to_email(kudos_transfer):
         return False
 
     # 2. Generate subject
+    from_name = 'Someone' if not kudos_transfer.from_username else f'{kudos_transfer.from_username}'
     on_network = '' if kudos_transfer.network == 'mainnet' else f'({kudos_transfer.network})'
-    if is_new:
-        subject = gettext(f"⚡️ New {kudos_transfer.kudos_token_cloned_from.humanized_name} Kudos Available {on_network}")
-    else:
-        subject = gettext(f"🕐 Your {kudos_transfer.kudos_token_cloned_from.humanized_name}  Kudos Is Expiring Soon {on_network}")
+    subject = gettext(f"⚡️ {from_username} Sent You a {kudos_transfer.kudos_token_cloned_from.humanized_name} Kudos {on_network}")
 
     logger.info(f'Emails to send to: {kudos_transfer.emails}')
 
@@ -411,7 +408,7 @@ def maybe_market_kudos_to_email(kudos_transfer):
             # TODO:  Does the from_email field in the database mean nothing?  We just override it here.
             from_email = settings.CONTACT_EMAIL
             # 3. Render email
-            html, text = render_new_kudos_email(to_email, kudos_transfer, is_new)
+            html, text = render_new_kudos_email(to_email, kudos_transfer, True)
 
             # 4. Send email unless the email address has notifications disabled
             if not should_suppress_notification_email(to_email, 'kudos'):
