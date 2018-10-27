@@ -20,12 +20,14 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 from django import template
 
+from kudos.utils import humanize_name as humanize_method
+
 register = template.Library()
 
 
 @register.filter
 def humanize_name(name):
-    """Conver the lowercase and underscores to uppercase and spaces.
+    """Convert the lowercase and underscores to uppercase and spaces.
 
     Args:
         name (str): The name to convert.
@@ -37,7 +39,7 @@ def humanize_name(name):
         str: The new name.
 
     """
-    return ' '.join([x.capitalize() for x in name.split('_')])
+    return humanize_method(name)
 
 
 @register.filter

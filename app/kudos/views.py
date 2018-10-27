@@ -159,30 +159,31 @@ def details_by_address_and_token_id(request, address, token_id, name):
     return redirect(f'/kudos/{kudos.id}/{kudos.name}')
 
 
-def details(request, id, name):
+def details(request, kudos_id, name):
     """Render the Kudos 'detail' page."""
-    kudos_id = id
-
     if not re.match(r'\d+', kudos_id):
         raise ValueError(f'Invalid Kudos ID found.  ID is not a number:  {kudos_id}')
 
     # Find other profiles that have the same kudos name
-    kudos = get_object_or_404(Token, pk=id)
+    kudos = get_object_or_404(Token, pk=kudos_id)
     # Find other Kudos rows that are the same kudos.name, but of a different owner
-    related_kudos = Token.objects.filter(name=kudos.name, num_clones_allowed=0, contract__network=settings.KUDOS_NETWORK)
-    logger.debug(f'Related Kudos Tokens: {related_kudos}')
+    related_kudos = Token.objects.select_related('contract').filter(
+        name=kudos.name,
+        num_clones_allowed=0,
+        contract__network=settings.KUDOS_NETWORK,
+    )
     # Find the Wallet rows that match the Kudos.owner_addresses
     # related_wallets = Wallet.objects.filter(address__in=[rk.owner_address for rk in related_kudos]).distinct()[:20]
 
     # Find the related Profiles assuming the preferred_payout_address is the kudos owner address.
     # Note that preferred_payout_address is most likely in normalized form.
     # https://eth-utils.readthedocs.io/en/latest/utilities.html#to-normalized-address-value-text
-    owner_addresses = [to_normalized_address(rk.owner_address) if is_address(rk.owner_address) is not False else None for rk in related_kudos]
-    logger.debug(f'owner_addresses: {owner_addresses}')
-    related_profiles = Profile.objects.filter(
-        preferred_payout_address__in=owner_addresses).distinct()[:20]
+    owner_addresses = [
+        to_normalized_address(rk.owner_address) if is_address(rk.owner_address) is not False else None
+        for rk in related_kudos
+    ]
+    related_profiles = Profile.objects.filter(preferred_payout_address__in=owner_addresses).distinct()[:20]
     # profile_ids = [rw.profile_id for rw in related_wallets]
-    logger.info(f'Related Profiles:  {related_profiles}')
 
     # Avatar can be accessed via Profile.avatar
     # related_profiles = Profile.objects.filter(pk__in=profile_ids).distinct()
@@ -198,23 +199,19 @@ def details(request, id, name):
         'related_profiles': related_profiles,
     }
     if kudos:
+        token = Token.objects.select_related('contract').get(
+            token_id=kudos.cloned_from_id,
+            contract__address=kudos.contract.address,
+        )
+        # The real num_cloned_in_wild is only stored in the Gen0 Kudos token
+        kudos.num_clones_in_wild = token.num_clones_in_wild
+        # Create a new attribute to reference number of gen0 clones allowed
+        kudos.num_gen0_clones_allowed = token.num_clones_allowed
+
         context['title'] = kudos.humanized_name
         context['card_title'] = kudos.humanized_name
         context['card_desc'] = kudos.description
         context['avatar_url'] = kudos.img_url
-
-        # The real num_cloned_in_wild is only stored in the Gen0 Kudos token
-        kudos.num_clones_in_wild = Token.objects.get(
-            token_id=kudos.cloned_from_id,
-            contract__address=kudos.contract.address
-        ).num_clones_in_wild
-
-        # Create a new attribute to reference number of gen0 clones allowed
-        kudos.num_gen0_clones_allowed = Token.objects.get(
-            token_id=kudos.cloned_from_id,
-            contract__address=kudos.contract.address
-        ).num_clones_allowed
-
         context['kudos'] = kudos
 
     return TemplateResponse(request, 'kudos_details.html', context)
@@ -222,22 +219,20 @@ def details(request, id, name):
 
 def mint(request):
     """Render the Kudos 'mint' page.  This is mostly a placeholder for future functionality."""
-    context = dict()
-
-    return TemplateResponse(request, 'kudos_mint.html', context)
+    return TemplateResponse(request, 'kudos_mint.html', {})
 
 
 def get_primary_from_email(params, request):
     """Find the primary_from_email address.  This function finds the address using this priority:
 
     1. If the email field is filed out in the Send POST request, use the `fromEmail` field.
-    2. If the user is logged in, they should have an email address associated with thier account.
+    2. If the user is logged in, they should have an email address associated with their account.
        Use this as the second option.  `request_user_email`.
     3. If all else fails, attempt to pull the email from the user's github account.
 
     Args:
         params (dict): A dictionary parsed form the POST request.  Typically this is a POST
-                       request coming in from a Tips/Kudos send.
+            request coming in from a Tips/Kudos send.
 
     Returns:
         str: The primary_from_email string.
@@ -259,31 +254,6 @@ def get_primary_from_email(params, request):
     return primary_from_email
 
 
-def get_to_emails(params):
-    """Get a list of email address to send the alert to, in this priority:
-
-    1. get_emails_master() pulls email addresses from the user's public Github account.
-    2. If an email address is included in the Tips/Kudos form, append that to the email list.
-
-
-    Args:
-        params (dict): A dictionary parsed form the POST request.  Typically this is a POST
-                       request coming in from a Tips/Kudos send.
-
-    Returns:
-        list: An array of email addresses to send the email to.
-    """
-    to_emails = []
-
-    to_username = params['username'].lstrip('@')
-    to_emails = get_emails_master(to_username)
-
-    if params.get('email'):
-        to_emails.append(params['email'])
-
-    return list(set(to_emails))
-
-
 def kudos_preferred_wallet(request, handle):
     """Returns the address, if any, that someone would like to be send kudos directly to."""
     response = {
@@ -301,26 +271,14 @@ def kudos_preferred_wallet(request, handle):
 
 
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def tipee_address(request, handle):
-    """Returns the address, if any, that someone would like to be tipped directly at."""
-    response = {
-        'addresses': []
-    }
-    profile = get_profile(str(handle).replace('@', ''))
-    if profile and profile.preferred_payout_address:
-        response['addresses'].append(profile.preferred_payout_address)
-    return JsonResponse(response)
-
-
-@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def send_2(request):
     """Handle the first start of the Kudos email send.
+
     This form is filled out before the 'send' button is clicked.
+
     """
     id = request.GET.get('id')
-
     kudos = Token.objects.filter(pk=id).first()
-
     params = {
         'active': 'send',
         'issueURL': request.GET.get('source'),
@@ -328,26 +286,24 @@ def send_2(request):
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'from_email': getattr(request.user, 'email', ''),
         'from_handle': request.user.username,
-        'title': 'Send Kudos | Gitcoin',
-        'card_desc': 'Send a Kudos to any github user at the click of a button.',
+        'title': _('Send Kudos | Gitcoin'),
+        'card_desc': _('Send a Kudos to any github user at the click of a button.'),
         'kudos': kudos,
-        # 'profiles': profiles
     }
-
     return TemplateResponse(request, 'transaction/send.html', params)
 
 
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def send_3(request):
-    """ This function is derived from send_tip_3.
+    """Handle the third stage of sending a kudos (the POST).
 
-    Handle the third stage of sending a kudos (the POST).  The request to send the kudos is
-    added to the database, but the transaction has not happened yet.  The txid is added
-    in `send_kudos_4`.
+    This function is derived from send_tip_3.
+    The request to send the kudos is added to the database, but the transaction
+    has not happened yet.  The txid is added in `send_kudos_4`.
 
     Returns:
-        JsonResponse: response with success state.
+        JsonResponse: The response with success state.
 
     """
     response = {
@@ -363,28 +319,31 @@ def send_3(request):
 
     params = json.loads(request.body)
 
-    to_username = params['username'].lstrip('@')
+    to_username = params.get('username', '').lstrip('@')
     to_emails = get_emails_master(to_username)
 
-    if params.get('email'):
-        to_emails.append(params['email'])
+    email = params.get('email')
+    if email:
+        to_emails.append(email)
 
     # If no primary email in session, try the POST data. If none, fetch from GH.
-    if params.get('fromEmail'):
-        primary_from_email = params['fromEmail']
-    elif access_token and not primary_from_email:
+    primary_from_email = params.get('fromEmail')
+
+    if access_token and not primary_from_email:
         primary_from_email = get_github_primary_email(access_token)
 
     to_emails = list(set(to_emails))
 
     # Validate that the token exists on the back-end
-    kudos_token_cloned_from = Token.objects.get(pk=params['kudosId'])
-    # kudos_token_cloned_from = Token.objects.filter(
-    #     token_id=params['kudosId'],
-    #     num_clones_allowed__gt=0,
-    #     contract__network=settings.KUDOS_NETWORK,
-    #     contract__is_network=True
-    # ).first()
+    kudos_id = params.get('kudosId')
+    if not kudos_id:
+        raise Http404
+
+    try:
+        kudos_token_cloned_from = Token.objects.get(pk=kudos_id)
+    except Token.DoesNotExist:
+        raise Http404
+
     # db mutations
     KudosTransfer.objects.create(
         emails=to_emails,
@@ -424,49 +383,36 @@ def send_4(request):
         'status': 'OK',
         'message': _('Kudos Sent'),
     }
-
     params = json.loads(request.body)
-
     from_username = request.user.username
-
     txid = params['txid']
-    destinationAccount = params['destinationAccount']
+    destination_account = params['destinationAccount']
     is_direct_to_recipient = params.get('is_direct_to_recipient', False)
     kudos_transfer = KudosTransfer.objects.get(
-        metadata__address=destinationAccount,
+        metadata__address=destination_account,
         metadata__creation_time=params['creation_time'],
         metadata__salt=params['salt'],
     )
-    logger.info(f'kudos_transfer id: {kudos_transfer.id}')
 
     # Return Permission Denied if not authenticated
-    is_authenticated_for_this_via_login = (kudos_transfer.from_username and kudos_transfer.from_username == from_username)
+    is_authenticated_via_login = (kudos_transfer.from_username and kudos_transfer.from_username == from_username)
     is_authenticated_for_this_via_ip = kudos_transfer.ip == get_ip(request)
-    is_authed = is_authenticated_for_this_via_ip or is_authenticated_for_this_via_login
+    is_authed = is_authenticated_for_this_via_ip or is_authenticated_via_login
+
     if not is_authed:
-        response = {
-            'status': 'error',
-            'message': _('Permission Denied'),
-        }
-        return JsonResponse(response)
+        return JsonResponse({'status': 'error', 'message': _('Permission Denied')}, status=401)
 
     # Save the txid to the database once it has been confirmed in MetaMask.  If there is no txid,
     # it means that the user never went through with the transaction.
     kudos_transfer.txid = txid
     if is_direct_to_recipient:
         kudos_transfer.receive_txid = txid
-        kudos_transfer.save()
-    else:
-        # Save txid for Indirect transfer
-        kudos_transfer.save()
+    kudos_transfer.save()
 
     # notifications
-    # maybe_market_tip_to_github(kudos_transfer)
-    # maybe_market_tip_to_slack(kudos_transfer, 'new_tip')
     maybe_market_kudos_to_email(kudos_transfer)
     # record_user_action(kudos_transfer.from_username, 'send_kudos', kudos_transfer)
-    # record_tip_activity(kudos_transfer, kudos_transfer.from_username, 'new_kudos' if kudos_transfer.username else 'new_crowdfund')
-
+    # record_kudos_activity(kudos_transfer, kudos_transfer.from_username, 'new_kudos' if kudos_transfer.username else 'new_crowdfund')
     return JsonResponse(response)
 
 
@@ -518,7 +464,10 @@ def receive(request, key, txid, network):
     kudos_emails = these_kudos_emails.filter(metadata__reference_hash_for_receipient=key) | these_kudos_emails.filter(
         metadata__reference_hash_for_funder=key)
     kudos_transfer = kudos_emails.first()
-    is_authed = request.user.username.replace('@','') == kudos_transfer.username.replace('@','') or request.user.username.replace('@','') == kudos_transfer.from_username.replace('@','')
+    is_authed = request.user.username.replace('@', '') in [
+        kudos_transfer.username.replace('@', ''),
+        kudos_transfer.from_username.replace('@', '')
+    ]
     not_mined_yet = get_web3(kudos_transfer.network).eth.getBalance(
         Web3.toChecksumAddress(kudos_transfer.metadata['address'])) == 0
 
@@ -527,8 +476,9 @@ def receive(request, key, txid, network):
     ):
         login_redirect = redirect('/login/github?next=' + request.get_full_path())
         return login_redirect
-    elif kudos_transfer.receive_txid:
-        messages.info(request, 'This kudos has been received')
+
+    if kudos_transfer.receive_txid:
+        messages.info(request, _('This kudos has been received'))
     elif not is_authed:
         messages.error(
             request, f'This kudos is for {kudos_transfer.username} but you are logged in as {request.user.username}.  Please logout and log back in as {kudos_transfer.username}.')
@@ -554,12 +504,10 @@ def receive(request, key, txid, network):
             kudos_transfer.save()
             record_user_action(kudos_transfer.from_username, 'receive_kudos', kudos_transfer)
             record_kudos_email_activity(kudos_transfer, kudos_transfer.username, 'receive_kudos')
-            messages.success(request, 'This kudos has been received')
+            messages.success(request, _('This kudos has been received'))
         except Exception as e:
             messages.error(request, str(e))
             logger.exception(e)
-
-    logger.info(kudos_transfer.kudos_token_cloned_from.name)
 
     params = {
         'issueURL': request.GET.get('source'),

@@ -1111,6 +1111,10 @@ def profile(request, handle):
 
     """
     status = 200
+    order_by = request.GET.get('order_by', '-modified_on')
+    owned_kudos = None
+    sent_kudos = None
+    owned_kudos_comments_public = None
 
     try:
         if not handle and not request.user.is_authenticated:
@@ -1142,19 +1146,16 @@ def profile(request, handle):
         return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
     context['preferred_payout_address'] = profile.preferred_payout_address
-    order_by = request.GET.get('order_by', '-modified_on')
+
     if context['preferred_payout_address']:
-        owned_kudos = Token.objects.filter(
-            owner_address=to_checksum_address(context['preferred_payout_address']),
+        owned_kudos = Token.objects.select_related('contract').filter(
+            owner_address__iexact=context['preferred_payout_address'],
             contract__network=settings.KUDOS_NETWORK
         ).order_by(order_by)
-        sent_kudos = Token.objects.filter(
-            kudos_transfer__from_address=to_checksum_address(context['preferred_payout_address']),
-            contract__network=settings.KUDOS_NETWORK
+        sent_kudos = Token.objects.select_related('kudos_transfer', 'contract').filter(
+            kudos_transfer__from_address__iexact=context['preferred_payout_address'],
+            contract__network=settings.KUDOS_NETWORK,
         ).order_by(order_by)
-    else:
-        owned_kudos = None
-        sent_kudos = None
 
     if owned_kudos:
         owned_kudos_comments_public = []
@@ -1163,9 +1164,7 @@ def profile(request, handle):
                 owned_kudos_comments_public.append(kudos_token.kudos_transfer.comments_public)
             except Exception as e:
                 logger.error(e)
-        logging.info(f'kudos comments_public: {owned_kudos_comments_public}')
-    else:
-        owned_kudos_comments_public = None
+
     context['kudos_comments_public'] = owned_kudos_comments_public
     context['kudos'] = owned_kudos
     context['sent_kudos'] = sent_kudos
@@ -1173,24 +1172,16 @@ def profile(request, handle):
     if request.method == 'POST' and request.is_ajax():
         # Send kudos data when new preferred address
         address = request.POST.get('address')
-        context['kudos'] = Token.objects.filter(
+        context['kudos'] = Token.objects.select_related('contract').filter(
             owner_address=to_checksum_address(address),
             contract__network=settings.KUDOS_NETWORK
         ).order_by(order_by)
-        context['sent_kudos'] = Token.objects.filter(
+        context['sent_kudos'] = Token.objects.select_related('contract', 'kudos_transfer').filter(
             kudos_transfer__from_address=to_checksum_address(address),
             contract__network=settings.KUDOS_NETWORK
         ).order_by(order_by)
         profile.preferred_payout_address = address
-
-        kudos_html = loader.render_to_string(
-            'shared/profile_kudos.html',
-            context
-        )
-        # package output data and return it as a JSON object
-        output_data = {
-            'kudos_html': kudos_html,
-        }
+        kudos_html = loader.render_to_string('shared/profile_kudos.html', context)
 
         try:
             profile.save()
@@ -1198,55 +1189,42 @@ def profile(request, handle):
             logger.error(e)
             msg = {
                 'status': 500,
-                'msg': 'Internal server error',
+                'msg': _('Internal server error'),
             }
         else:
-            wallet_addresses = []
-            wallet_addresses.append(profile.preferred_payout_address)
             msg = {
                 'status': 200,
-                'msg': 'Success!',
-                'wallets': wallet_addresses,
+                'msg': _('Success!'),
+                'wallets': [profile.preferred_payout_address, ],
                 'kudos_html': kudos_html,
             }
 
-        return JsonResponse(msg)
-
+        return JsonResponse(msg, status=msg.get('status', 200))
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
+
 def lazy_load_kudos(request):
-    page = request.POST.get('page')
+    page = request.POST.get('page', 1)
     address = request.POST.get('address')
-    context= {}
+    context = {}
     datarequest = request.POST.get('request')
     order_by = request.GET.get('order_by', '-modified_on')
-    results_per_page = 8
+    limit = int(request.GET.get('limit', 8))
+    query_kwargs = {'contract__network': settings.KUDOS_NETWORK}
 
     if datarequest == 'mykudos':
-        context['kudos'] = Token.objects.filter(
-            owner_address=to_checksum_address(address),
-            contract__network=settings.KUDOS_NETWORK
-        ).order_by(order_by)
-        paginator = Paginator(context['kudos'], results_per_page)
+        key = 'kudos'
+        query_kwargs['owner_address__iexact'] = address
     else:
-        context['sent_kudos'] = Token.objects.filter(
-            sent_from_address=to_checksum_address(address),
-            contract__network=settings.KUDOS_NETWORK
-        ).order_by(order_by)
-        paginator = Paginator(context['sent_kudos'], results_per_page)
+        key = 'sent_kudos'
+        query_kwargs['sent_from_address__iexact'] = address
+
+    context[key] = Token.objects.filter(owner_address__iexact=address, **query_kwargs).order_by(order_by)
+    paginator = Paginator(context[key], limit)
 
     kudos = paginator.get_page(page)
-
-    kudos_html = loader.render_to_string(
-        'shared/kudos_card_profile.html',
-        {'kudos':kudos}
-    )
-
-    output_data = {
-        'kudos_html': kudos_html,
-        'has_next': kudos.has_next()
-    }
-    return JsonResponse(output_data)
+    kudos_html = loader.render_to_string('shared/kudos_card_profile.html', {'kudos': kudos})
+    return JsonResponse({'kudos_html': kudos_html, 'has_next': kudos.has_next()})
 
 
 @csrf_exempt

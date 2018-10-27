@@ -36,8 +36,9 @@ logger = logging.getLogger(__name__)
 
 
 class Token(SuperModel):
-    """Model representing a Kudos ERC721 token on the blockchain.  The model attempts to match
-    the actual blockchain data as much as possible, without being duplicative.
+    """Model representing a Kudos ERC721 token on the blockchain.
+
+    The model attempts to match the actual blockchain data as much as possible, without being duplicative.
 
     Attributes:
         artist (str): The artist that created the kudos image.
@@ -58,7 +59,9 @@ class Token(SuperModel):
         tags (str): Comma delimited tags.  TODO:  change to array
         token_id (int): the token_id on the blockchain.
         txid (str): The ethereum transaction id that generated this kudos.
+
     """
+
     # Kudos Struct (also in contract)
     price_finney = models.IntegerField()
     num_clones_allowed = models.IntegerField(null=True, blank=True)
@@ -96,6 +99,7 @@ class Token(SuperModel):
 
         Returns:
             float or int:  price in eth.
+
         """
         return self.price_finney / 1000
 
@@ -104,7 +108,8 @@ class Token(SuperModel):
         """Shorten ethereum address to only the first and last 4 digits.
 
         Returns:
-            str: shortened address
+            str: shortened address.
+
         """
         return self.owner_address[:6] + '...' + self.owner_address[38:]
 
@@ -114,6 +119,7 @@ class Token(SuperModel):
 
         Returns:
             str: Capitalized name.
+
         """
         return ' '.join([x.capitalize() for x in self.name.split('_')])
 
@@ -123,6 +129,7 @@ class Token(SuperModel):
 
         Returns:
             int: Number of clones available.
+
         """
         r = self.num_clones_allowed - self.num_clones_in_wild
         if r < 0:
@@ -134,7 +141,8 @@ class Token(SuperModel):
         """Turn snake_case into Snake Case.
 
         Returns:
-            str: Humanzied name.
+            str: The humanized name.
+
         """
         return ' '.join([x.capitalize() for x in self.name.split('_')])
 
@@ -158,8 +166,6 @@ class Token(SuperModel):
 
         Args:
             obj (File): The File/ContentFile object.
-            input_fmt (str): The input format. Defaults to: svg.
-            output_fmt (str): The output format. Defaults to: png.
 
         Exceptions:
             Exception: Cowardly catch blanket exceptions here, log it, and return None.
@@ -169,18 +175,15 @@ class Token(SuperModel):
             None: If there is an exception, the method returns None.
 
         """
-        input_fmt = 'svg'
-        output_fmt = 'png'
         root = environ.Path(__file__) - 2  # Set the base directory to two levels.
         file_path = root('assets') + '/' + self.image
         with open(file_path, 'rb') as f:
             obj = File(f)
-
             try:
                 obj_data = obj.read()
                 if obj_data:
                     image = pyvips.Image.new_from_file(obj.name)
-                    return BytesIO(image.write_to_buffer(f'.{output_fmt}'))
+                    return BytesIO(image.write_to_buffer(f'.png'))
             except VipsError:
                 pass
             except Exception as e:
@@ -189,7 +192,7 @@ class Token(SuperModel):
 
     @property
     def img_url(self):
-        return f"{settings.BASE_URL}dynamic/kudos/{self.pk}/{slugify(self.name)}"
+        return f'{settings.BASE_URL}dynamic/kudos/{self.pk}/{slugify(self.name)}'
 
 
 class KudosTransfer(SendCryptoAsset):
@@ -203,11 +206,13 @@ class KudosTransfer(SendCryptoAsset):
         kudos_token_cloned_from (FK): Foreign key to the kudos_token that will be cloned and sent.
         recipient_profile (FK): Foreign key to the profile of the person that is being sent the kudos.
         sender_profile (FK): Foreign key to the profile of the person that is sending the kudos.
+
     """
+
     # kudos_token_cloned_from is a reference to the original Kudos Token that is being cloned.
-    kudos_token_cloned_from = models.ForeignKey(Token, related_name='kudos_token_cloned_from', on_delete=models.SET_NULL, null=True)
+    kudos_token_cloned_from = models.ForeignKey('kudos.Token', related_name='kudos_token_cloned_from', on_delete=models.SET_NULL, null=True)
     # kudos_token is a reference to the new Kudos Token that is soon to be minted
-    kudos_token = models.OneToOneField(Token, related_name='kudos_transfer', on_delete=models.SET_NULL, null=True)
+    kudos_token = models.OneToOneField('kudos.Token', related_name='kudos_transfer', on_delete=models.SET_NULL, null=True)
 
     recipient_profile = models.ForeignKey(
         'dashboard.Profile', related_name='received_kudos', on_delete=models.SET_NULL, null=True, blank=True
@@ -230,6 +235,7 @@ class KudosTransfer(SendCryptoAsset):
 
         Returns:
             str: URL for recipient.
+
         """
         return self.receive_url_for_recipient
 
@@ -239,8 +245,8 @@ class KudosTransfer(SendCryptoAsset):
 
         Returns:
             str: URL for recipient.
-        """
 
+        """
         try:
             key = self.metadata['reference_hash_for_receipient']
             return f"{settings.BASE_URL}kudos/receive/v3/{key}/{self.txid}/{self.network}"
@@ -255,6 +261,7 @@ class KudosTransfer(SendCryptoAsset):
 
 
 class Contract(SuperModel):
+
     address = models.CharField(max_length=255, unique=True)
     is_latest = models.BooleanField(default=False)
     network = models.CharField(max_length=255)
@@ -273,7 +280,9 @@ class Wallet(SuperModel):
     Attributes:
         address (TYPE): Description
         profile (TYPE): Description
+
     """
+
     address = models.CharField(max_length=255, unique=True)
     profile = models.ForeignKey(
         'dashboard.Profile', related_name='kudos_wallets', on_delete=models.SET_NULL, null=True

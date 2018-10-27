@@ -43,7 +43,6 @@ def get_token(token_id, network, address):
     Returns:
         obj or None: Return Django object if found, else None.
 
-
     """
     try:
         contract = Contract.objects.get(

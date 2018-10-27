@@ -1,21 +1,21 @@
-'''
-    Copyright (C) 2017 Gitcoin Core
+"""Define the mint all kudos management command.
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Copyright (C) 2018 Gitcoin Core
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU Affero General Public License for more details.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
 
-'''
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
 
+"""
 import logging
 import time
 import urllib
@@ -76,7 +76,7 @@ class Command(BaseCommand):
         with open(yaml_file) as f:
             all_kudos = yaml.load(f)
 
-        for idx, kudos in enumerate(all_kudos):
+        for __, kudos in enumerate(all_kudos):
             image_name = urllib.parse.quote(kudos.get('image'))
             if image_name:
                 # Support Open Sea
@@ -118,14 +118,16 @@ class Command(BaseCommand):
             attributes.append(platform)
 
             tags = kudos['tags']
+            price_finney = kudos['priceFinney']
+
             # append tags
-            if kudos['priceFinney'] < 2:
+            if price_finney < 2:
                 tags.append('budget')
-            if kudos['priceFinney'] < 5:
+            if price_finney < 5:
                 tags.append('affordable')
-            if kudos['priceFinney'] > 20:
+            if price_finney > 20:
                 tags.append('premium')
-            if kudos['priceFinney'] > 200:
+            if price_finney > 200:
                 tags.append('expensive')
 
             for tag in tags:
@@ -155,12 +157,14 @@ class Command(BaseCommand):
                     tokenURI_url = kudos_contract.create_tokenURI_url(**metadata)
                     args = (mint_to, kudos['priceFinney'], kudos['numClonesAllowed'], tokenURI_url)
                     kudos_contract.mint(
-                        *args, account=account, private_key=private_key, skip_sync=skip_sync,
-                        gas_price_gwei=gas_price_gwei
+                        *args,
+                        account=account,
+                        private_key=private_key,
+                        skip_sync=skip_sync,
+                        gas_price_gwei=gas_price_gwei,
                     )
                 except Exception as e:
-                    logger.error(e)
-                    logger.info("Trying the mint again...")
+                    logger.error('Error: %s - Trying to mint again' % e)
                     time.sleep(2)
                     continue
                 else:

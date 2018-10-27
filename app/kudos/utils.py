@@ -38,7 +38,8 @@ def humanize_name(name):
     """Turn snake_case into Snake Case.
 
     Returns:
-        str: Humanzied name.
+        str: The humanized name.
+
     """
     return ' '.join([x.capitalize() for x in name.split('_')])
 
@@ -52,7 +53,7 @@ def computerize_name(name):
     return name.lower().replace(' ', '_')
 
 
-def get_rarity_score(num_clones_allowed: int) -> str:
+def get_rarity_score(num_clones_allowed):
     """Calculate rarity metrics based on the num_clones_allowed.
 
     Args:
@@ -612,3 +613,28 @@ class KudosContract:
         logger.debug(f'ipfs_url for {kwargs["name"]}: {ipfs_url.replace("ipfs:", "localhost:")}')
 
         return ipfs_url
+
+
+def get_to_emails(params):
+    """Get a list of email address to send the alert to, in this priority:
+
+    1. get_emails_master() pulls email addresses from the user's public Github account.
+    2. If an email address is included in the Tips/Kudos form, append that to the email list.
+
+
+    Args:
+        params (dict): A dictionary parsed form the POST request.  Typically this is a POST
+                       request coming in from a Tips/Kudos send.
+
+    Returns:
+        list: An array of email addresses to send the email to.
+    """
+    to_emails = []
+
+    to_username = params['username'].lstrip('@')
+    to_emails = get_emails_master(to_username)
+
+    if params.get('email'):
+        to_emails.append(params['email'])
+
+    return list(set(to_emails))
