@@ -1,5 +1,5 @@
-{% extends 'emails/template.html' %} 
-{% comment %}   
+{% extends 'emails/template.html' %}
+{% comment %}
   Copyright (C) 2018 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
@@ -15,8 +15,8 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
   
-{% endcomment %} 
-{% load i18n humanize static %} 
+{% endcomment %}
+{% load i18n static %}
 
 {% block content %}
 
@@ -53,7 +53,7 @@
     margin-top: -20px;
   }
 
-  p>a {
+  p > a {
     color: #4A90E2;
   }
 
@@ -62,29 +62,26 @@
     margin-bottom: 30px;
   }
 </style>
-<img id="newSupporter" src="{% static "v2/images/newsupporter.png" %}" alt="New Supporter" title="New Supporter">
+<img id="newSupporter" src="{% static "v2/images/newsupporter.png" %}" alt="{% trans "New Supporter." %}" title="{% trans "New Supporter." %}">
 <h1 style="text-transform: none;">{% trans "You have a new supporter!" %}</h1>
 
 <hr>
 
 <div class="supporter">
-  <!-- Set {{ github_username }} as variable for new supporter information -->
-  <a href="https://github.com/{{ github_username }}">
-    <img src="https://gitcoin.co/dynamic/avatar/{{ github_username }}" width="50" height="50" />
+  <a href="{% url 'profile' subscriber.contributor_profile.handle %}">
+    <img src="{{ subscriber.contributor_profile.avatar_url }}" width="50" height="50" />
   </a>
   <br>
-  <a class="supporterName" href="https://github.com/{{ github_username }}">{{ github_username }}</a>
-  <h5 style="text-transform: none;">{%trans "User' has begun contributing" %}</h5>
-  <h3 style="text-transform: none;">{{ variable_amount_contribution }}</h3>
-  <!-- Input variable amount here -->
+  <a class="supporterName" href="{% url 'profile' subscriber.contributor_profile.handle %}">{{ subscriber.contributor_profile }}</a>
+  <h5 style="text-transform: none;">{% trans "User' has begun contributing" %}</h5>
+  <h3 style="text-transform: none;">{{ transaction.value_true }} {{ transaction.token_name }} {% trans "per" %} {{ transaction.frequency }}</h3>
 </div>
 
 <hr>
 
 <br>
-<!-- Input link to transaction history here -->
-<p>{%trans "You can see transaction history" %}
-  <a href="https://gitcoin.co/{{ transaction_history }}">{%trans "here." %}</a>
+<p>{% trans "You can see the transaction" %}
+  <a href="{{ transaction.link }}">{% trans "here." %}</a>
 </p>
 
 {% endblock %}

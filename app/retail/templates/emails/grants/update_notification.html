@@ -112,11 +112,11 @@
 <img id="newSupporter" src="{% static "v2/images/update-notification.png" %}" alt="{% trans "Update!" %}" title="{% trans "Update!" %}">
 <h1 style="text-transform: none;">{% trans "An update has been posted for:" %}</h1>
 <div class="grantInfo">
-  <a href="{{ grant.reference_url }}">
+  <a href="{% url 'grant:details' grant.id %}">
     <img src="{{ grant.logo.url }}" style="width: 50px; height: 50px;"/>
   </a>
   <br>
-  <a class="grantInfoName" href="{{ grant.reference_url }}">{{ grant.title }}</a>
+  <a class="grantInfoName" href="{% url 'grant:details' grant.id %}">{{ grant.title }}</a>
   <p>{{ grant.description }}</p>
 </div>
 
