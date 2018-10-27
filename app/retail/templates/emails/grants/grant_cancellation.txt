@@ -1,5 +1,7 @@
 {% load i18n %}
 
+{% trans "Grant Ended" %}
+
 {% trans "Grant" %} {{ grant.title }} {% trans "has been cancelled" %}
 
 {% trans "Thank you for using Gitcoin, we hope you'll come back to build more open source software!" %}
