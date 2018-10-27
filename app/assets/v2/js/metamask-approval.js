@@ -1,4 +1,4 @@
-disabled = ['/', '/how/funder', '/how/contributor', '/tools'];
+disabled = [ '/', '/how/funder', '/how/contributor', '/tools' ];
 
 async function metamaskApproval() {
   if (window.ethereum) {
@@ -8,7 +8,7 @@ async function metamaskApproval() {
         await ethereum.enable();
       }
     } catch (error) {
-      console.log('user denied access');
+
     }
   }
 }
