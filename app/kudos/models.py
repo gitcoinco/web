@@ -196,23 +196,29 @@ class Token(SuperModel):
 
 
 class KudosTransfer(SendCryptoAsset):
-    """Model that represents a request to clone a Kudos.  Typically this gets created when
-    using the "kudos send" functionality.  The model is inheriented from the SendCryptoAsset model,
-    which is also used by Tips.
+    """Model that represents a request to clone a Kudos.
+
+    Typically this gets created when using the "kudos send" functionality.
+    The model is inherited from the SendCryptoAsset model, which is also used by Tips.
 
     Attributes:
         from_address (str): Eth address of the person that is sending the kudos.
-        kudos_token (FK): Foreign key to the kudos_token that was cloned.  This is filled in after the kudos has been cloned.
-        kudos_token_cloned_from (FK): Foreign key to the kudos_token that will be cloned and sent.
-        recipient_profile (FK): Foreign key to the profile of the person that is being sent the kudos.
-        sender_profile (FK): Foreign key to the profile of the person that is sending the kudos.
+        kudos_token (kudos.Token): Foreign key to the kudos_token that was cloned.
+            This is filled in after the kudos has been cloned.
+        kudos_token_cloned_from (kudos.Token): Foreign key to the kudos_token that will be cloned and sent.
+        recipient_profile (dashboard.Profile): Foreign key to the profile of the person that is being sent the kudos.
+        sender_profile (dashboard.Profile): Foreign key to the profile of the person that is sending the kudos.
 
     """
 
     # kudos_token_cloned_from is a reference to the original Kudos Token that is being cloned.
-    kudos_token_cloned_from = models.ForeignKey('kudos.Token', related_name='kudos_token_cloned_from', on_delete=models.SET_NULL, null=True)
+    kudos_token_cloned_from = models.ForeignKey(
+        'kudos.Token', related_name='kudos_token_cloned_from', on_delete=models.SET_NULL, null=True
+    )
     # kudos_token is a reference to the new Kudos Token that is soon to be minted
-    kudos_token = models.OneToOneField('kudos.Token', related_name='kudos_transfer', on_delete=models.SET_NULL, null=True)
+    kudos_token = models.OneToOneField(
+        'kudos.Token', related_name='kudos_transfer', on_delete=models.SET_NULL, null=True
+    )
 
     recipient_profile = models.ForeignKey(
         'dashboard.Profile', related_name='received_kudos', on_delete=models.SET_NULL, null=True, blank=True
