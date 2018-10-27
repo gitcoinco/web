@@ -118,17 +118,17 @@
     text-align: right;
   }
 
-  .funding>div>h4 {
+  .funding > div > h4 {
     line-height: 0px;
     color: #0D0764;
     padding-top: -50px;
   }
 
-  .leftFunding>h4 {
+  .leftFunding > h4 {
     text-align: left;
   }
 
-  .rightFunding>h4 {
+  .rightFunding > h4 {
     text-align: right;
   }
 
@@ -141,7 +141,7 @@
     margin-right: 20px;
   }
 
-  .funding>div>p {
+  .funding > div > p {
     line-height: 0px;
     color: #BBBDBF;
   }
@@ -150,28 +150,25 @@
     width: 100%;
   }
 
-  td:nth-child(1)>img {
+  td:nth-child(1) > img {
     border-radius: 50%;
     height: 40px;
   }
 
 </style>
-<img id="newSupporter" src="{% static " v2/images/transaction-summary.png " %}" alt="{% trans " Transaction Summary " %}"
-  title="{% trans " Transaction Summary " %}">
+<img id="newSupporter" src="{% static "v2/images/transaction-summary.png" %}" alt="{% trans "Transaction Summary" %}"
+  title="{% trans "Transaction Summary" %}">
 <h1 style="text-transform: none;">{% trans "Grant" %} '{{ grant.title }}' {% trans "has received more funding" %}!</h1>
 <br>
 
 <hr>
 <div class="grantInfo">
-  <a href="{{ grant.reference_url }}">
-    <img src="{{ grant.logo.url }}" alt="{% trans " Grant " %}" title="{% trans " Grant " %}"/>
+  <a href="{% url 'grant:details' grant.id %}">
+    <img src="{{ grant.logo.url }}" style="width: 50px; height: 50px;"/>
   </a>
-  <!-- width="50" height="50"Input project image here -->
   <br>
-  <a class="grantInfoName" href="{{ grant.reference_url }}">{{ grant.title }}</a>
-  <!-- Input project name here -->
+  <a class="grantInfoName" href="{% url 'grant:details' grant.id %}">{{ grant.title }}</a>
   <p>{{ grant.description }}</p>
-  <!-- Input project description here -->
 </div>
 <hr>
 <div class="progress" id="tablePadding">
@@ -212,22 +209,19 @@
   </h3>
   <div class="progressBar">
     <div class="progressCompleted" style="width: {{ grant.percentage_done|floatformat:0 }}%;">
-      <!-- Dynamically change the width of your progressCompletion, ie 50% -->
     </div>
   </div>
   <div class="funding">
     <div class="leftFunding">
       <h4>
-        <strong>{{ grant.amount_received }}</strong>
+        <strong>{{ grant.amount_received }} {% trans "ETH" %}</strong>
       </h4>
-      <!-- Input current funding value -->
       <p>{% trans "Current" %}</p>
     </div>
     <div class="rightFunding">
       <h4>
-        <strong>{{ grant.amount_goal }}</strong>
+        <strong>{{ grant.amount_goal }} {% trans "ETH" %}</strong>
       </h4>
-      <!-- Input goal funding value -->
       <p>{% trans "Goal" %}</p>
     </div>
   </div>
@@ -235,7 +229,6 @@
 <hr>
 <br>
 <br>
-<a class="updatesButton" href="{{ grant.reference_url }}">{% trans "View Grant" %}</a>
-<!-- Input link to view transaction grant here -->
+<a class="updatesButton" href="{% url 'grant:details' grant.id %}">{% trans "View Grant" %}</a>
 <br>
 {% endblock %}
