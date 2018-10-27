@@ -9,8 +9,7 @@ read input
 
 
 # If no network is specified, use localhost
-if [ -z $1 ]
-then
+if [ -z $1 ]; then
 	NETWORK=localhost
 else
 	NETWORK=$1
@@ -18,9 +17,6 @@ fi
 
 ACCOUNT=$2
 PRIVATE_KEY=$3
-
-# echo $ACCOUNT
-# echo $PRIVATE_KEY
 
 docker-compose down
 docker volume rm web_pgdata web_ipfsdata web_ipfsexport
@@ -31,12 +27,11 @@ sleep 10
 docker-compose exec ipfs sh -c 'ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '\''["*"]'\'''
 docker-compose exec ipfs sh -c 'ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '\''["PUT", "GET", "POST"]'\'''
 docker-compose restart ipfs
-cd ../gitcoin-erc721
+cd ../gitcoin-erc721 || exit 1
 truffle migrate --reset
-cd -
+cd - || exit 1
 
-if [ -n "$ACCOUNT" ] && [ -n $"PRIVATE_KEY" ];
-then
+if [ -n "$ACCOUNT" ] && [ -n "$PRIVATE_KEY" ]; then
 	docker-compose exec web bash -c "cd app && python manage.py mint_all_kudos ${NETWORK} /code/app/kudos/kudos.yaml --account ${ACCOUNT} --private_key ${PRIVATE_KEY}"
 else
 	docker-compose exec web bash -c "cd app && python manage.py mint_all_kudos ${NETWORK} /code/app/kudos/kudos.yaml"
