@@ -150,7 +150,6 @@ def image(request, kudos_id, name):
         raise Http404
 
     response = HttpResponse(img.getvalue(), content_type='image/png')
-    response['Content-Disposition'] = 'attachment; filename=kudos.png'
     return response
 
 
