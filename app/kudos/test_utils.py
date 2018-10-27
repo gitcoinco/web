@@ -42,12 +42,12 @@ class KudosContractTestCase(TestCase):
         }
 
     def test_mint(self):
-        tokenURI_url = self.contract.create_tokenURI_url(**self.metadata)
+        token_uri_url = self.contract.create_token_uri_url(**self.metadata)
         args = (
             '0xD386793F1DB5F21609571C0164841E5eA2D33aD8',
             5,
             1,
-            tokenURI_url
+            token_uri_url
         )
 
         self.contract.mint(*args)

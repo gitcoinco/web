@@ -120,7 +120,7 @@ class Command(BaseCommand):
 
             for x in range(1, 4):
                 try:
-                    tokenURI_url = kudos_contract.create_tokenURI_url(**metadata)
+                    token_uri_url = kudos_contract.create_token_uri_url(**metadata)
                     args = ()
                 except Exception as e:
                     logger.error(e)

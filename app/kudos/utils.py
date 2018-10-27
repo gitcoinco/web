@@ -28,6 +28,7 @@ from django.conf import settings
 import ipfsapi
 from dashboard.utils import get_web3
 from eth_utils import to_checksum_address
+from git.utils import get_emails_master
 from kudos.models import Contract, KudosTransfer, Token
 from web3.exceptions import BadFunctionCallOutput
 
@@ -384,11 +385,11 @@ class KudosContract:
         """
         if account:
             return to_checksum_address(account)
-        else:
-            try:
-                return self._w3.eth.accounts[0]
-            except IndexError:
-                raise RuntimeError('Please specify an account to use for transacting with the Kudos Contract.')
+
+        try:
+            return self._w3.eth.accounts[0]
+        except IndexError:
+            raise RuntimeError('Please specify an account to use for transacting with the Kudos Contract.')
 
     @log_args
     @may_require_key
@@ -540,26 +541,21 @@ class KudosContract:
         """Contract call method.
 
         Args:
-            *args: From Kudos.sol:
-            getKudosById(uint256 tokenId)
+            *args: From Kudos.sol: getKudosById(uint256 tokenId)
             to_dict (bool, optional): Return a dictionary mapping instead of an array.
 
         Returns:
-            list or dict: From Kudos.sol:
-            returns (uint256 priceFinney, uint256 numClonesAllowed,
-                     uint256 numClonesInWild, uint256 clonedFromId
-                     )
+            list or dict: From Kudos.sol returns (uint256 priceFinney, uint256 numClonesAllowed,
+                uint256 numClonesInWild, uint256 clonedFromId)
         """
         kudos = self._contract.functions.getKudosById(args[0]).call()
         tokenURI = self._contract.functions.tokenURI(args[0]).call()
         ipfs_hash = tokenURI.split('/')[-1]
-
         metadata = self._ipfs.get_json(ipfs_hash)
 
         if to_dict:
             return self.get_kudos_map(kudos, metadata)
-        else:
-            return kudos
+        return kudos
 
     def getLatestId(self):
         """Contract call method.
@@ -569,6 +565,7 @@ class KudosContract:
 
         Returns:
             int: The latest token id.
+
         """
         return self._contract.functions.getLatestId().call()
 
@@ -579,22 +576,19 @@ class KudosContract:
             kudos_name (TYPE): Description
 
         Returns:
-            TYPE: Description
-        """
-        kudos_name = Token.objects.filter(name__iexact=kudos_name).first()
-        if not kudos_name:
-            return False
-        else:
-            return True
+            bool: Whether or not the token name exists.
 
-    def create_tokenURI_url(self, **kwargs):
+        """
+        return Token.objects.filter(name__iexact=kudos_name).exists()
+
+    def create_token_uri_url(self, **kwargs):
         """Create a tokenURI object, upload it to IPFS, and return the URL.
 
         Keyword Args:
             name (str):  Name of the kudos.
             image (str):  Image location of the kudos.  Should be a link to an image on the web.
             description (str):  Word description of the kudos.
-            attributes (dict):  Dictionary containing attirbutes of the kudos.
+            attributes (dict):  Dictionary containing attributes of the kudos.
                 tags (str): comma delimited tags.
                 number_of_clones_allowed (int): self explanatory.
                 rarity (int): integer from 0 to 100 (0 is most common).
@@ -603,16 +597,10 @@ class KudosContract:
 
         Returns:
             str: URL location on IPFS where the URI data is stored.
-        """
-        tokenURI = kwargs
-        logger.debug(f'tokenURI: {tokenURI}')
-        ipfs_hash = self._ipfs.add_json(tokenURI)
-        ipfs_url = f'{settings.IPFS_API_SCHEME}://{settings.IPFS_HOST}:{settings.IPFS_API_PORT}/api/v0/cat/{ipfs_hash}'
-        name = kwargs['name']
-        logger.info(f'Posted metadata for "{name}" to IPFS.')
-        logger.debug(f'ipfs_url for {kwargs["name"]}: {ipfs_url.replace("ipfs:", "localhost:")}')
 
-        return ipfs_url
+        """
+        ipfs_hash = self._ipfs.add_json(kwargs)
+        return f'{settings.IPFS_API_SCHEME}://{settings.IPFS_HOST}:{settings.IPFS_API_PORT}/api/v0/cat/{ipfs_hash}'
 
 
 def get_to_emails(params):
@@ -624,10 +612,11 @@ def get_to_emails(params):
 
     Args:
         params (dict): A dictionary parsed form the POST request.  Typically this is a POST
-                       request coming in from a Tips/Kudos send.
+            request coming in from a Tips/Kudos send.
 
     Returns:
         list: An array of email addresses to send the email to.
+
     """
     to_emails = []
 

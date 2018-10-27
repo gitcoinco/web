@@ -81,13 +81,13 @@ class Command(BaseCommand):
             if image_name:
                 # Support Open Sea
                 if kudos_contract.network == 'rinkeby':
-                    image_path = 'https://ss.gitcoin.co/static/v2/images/kudos/' + image_name
+                    image_path = f'https://ss.gitcoin.co/static/v2/images/kudos/{image_name}'
                     external_url = f'https://stage.gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
                 elif kudos_contract.network == 'mainnet':
-                    image_path = 'https://s.gitcoin.co/static/v2/images/kudos/' + image_name
+                    image_path = f'https://s.gitcoin.co/static/v2/images/kudos/{image_name}'
                     external_url = f'https://gitcoin.co/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
                 elif kudos_contract.network == 'localhost':
-                    image_path = 'v2/images/kudos/' + image_name
+                    image_path = f'v2/images/kudos/{image_name}'
                     external_url = f'http://localhost:8000/kudos/{kudos_contract.address}/{kudos_contract.getLatestId() + 1}'
                 else:
                     raise RuntimeError('Need to set the image path for that network')
@@ -131,12 +131,7 @@ class Command(BaseCommand):
                 tags.append('expensive')
 
             for tag in tags:
-                if tag:
-                    tag = {
-                        "trait_type": "tag",
-                        "value": tag
-                    }
-                    attributes.append(tag)
+                attributes.append({"trait_type": "tag", "value": tag})
 
             metadata = {
                 'name': humanize_name(kudos['name']),
@@ -152,10 +147,10 @@ class Command(BaseCommand):
             else:
                 mint_to = kudos_contract._w3.toChecksumAddress(options['mint_to'])
 
-            for x in range(1, 4):
+            for __ in range(1, 4):
                 try:
-                    tokenURI_url = kudos_contract.create_tokenURI_url(**metadata)
-                    args = (mint_to, kudos['priceFinney'], kudos['numClonesAllowed'], tokenURI_url)
+                    token_uri_url = kudos_contract.create_token_uri_url(**metadata)
+                    args = (mint_to, kudos['priceFinney'], kudos['numClonesAllowed'], token_uri_url)
                     kudos_contract.mint(
                         *args,
                         account=account,
