@@ -1,5 +1,7 @@
 {% load i18n %}
 
+{% trans "Subscription Terminated." %}
+
 {% trans "Grant" %} {{ grant.title }} {% trans "has been cancelled." %}
 
 {% trans "Your subscription for the project has been cancelled and you will no longer be charged." %}

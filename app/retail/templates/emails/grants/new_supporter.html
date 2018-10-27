@@ -74,6 +74,7 @@
   <br>
   <a class="supporterName" href="{% url 'profile' subscriber.contributor_profile.handle %}">{{ subscriber.contributor_profile }}</a>
   <h5 style="text-transform: none;">{% trans "User' has begun contributing" %}</h5>
+  <!-- #TODO - Revisit transaction retrieving objects. -->
   <h3 style="text-transform: none;">{{ transaction.value_true }} {{ transaction.token_name }} {% trans "per" %} {{ transaction.frequency }}</h3>
 </div>
 

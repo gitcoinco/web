@@ -145,6 +145,7 @@
   <a class="grantInfoName" href="{% url 'grant:details' grant.id %}">{{ grant.title }}</a>
   <p>{{ grant.description }}</p>
   <div class="progress">
+    <!-- #TODO - Revisit which object to use to pull grant status. -->
     <h3 style="text-transform: none;">{{ grant.status }}</h3>
     <div class="progressBar">
       <div class="progressCompleted" style="width: {{ grant.percentage_done|floatformat:0 }}%;">
