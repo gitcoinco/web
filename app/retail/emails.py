@@ -17,6 +17,7 @@
 
 '''
 import logging
+from functools import partial
 
 from django.conf import settings
 from django.contrib import messages
@@ -33,6 +34,8 @@ import premailer
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
+
+logger = logging.getLogger(__name__)
 
 # RENDERERS
 
@@ -92,6 +95,48 @@ def render_tip_email(to_email, tip, is_new):
     response_txt = render_to_string("emails/new_tip.txt", params)
 
     return response_html, response_txt
+
+
+def render_kudos_email(to_email, kudos_transfer, is_new, html_template, text_template=None):
+    """Summary
+
+    Args:
+        to_emails (list): An array of email addresses to send the email to.
+        kudos_transfer (model): An instance of the `kudos.model.KudosTransfer` object.  This contains the information about the kudos that will be cloned.
+        is_new (TYPE): Description
+
+    Returns:
+        tup: response_html, response_txt
+    """
+    warning = kudos_transfer.network if kudos_transfer.network != 'mainnet' else ""
+    already_redeemed = bool(kudos_transfer.receive_txid)
+    link = kudos_transfer.receive_url_for_recipient
+    params = {
+        'link': link,
+        'amount': round(kudos_transfer.amount, 5),
+        'token_elem': kudos_transfer.kudos_token,
+        'kudos_token:': kudos_transfer.kudos_token,
+        'comments_public': kudos_transfer.comments_public,
+        'kudos_transfer': kudos_transfer,
+        'already_redeemed': already_redeemed,
+        'is_new': is_new,
+        'warning': warning,
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'is_sender': to_email not in kudos_transfer.emails,
+        'is_receiver': to_email in kudos_transfer.emails,
+    }
+
+    response_html = premailer_transform(render_to_string(html_template, params))
+    response_txt = render_to_string(text_template, params) if text_template else None
+
+    return response_html, response_txt
+
+
+render_new_kudos_email = partial(render_kudos_email, html_template='emails/new_kudos.html', text_template='emails/new_kudos.txt')
+render_sent_kudos_email = partial(render_kudos_email, html_template='emails/new_kudos.html', text_template='emails/new_kudos.txt')
+render_kudos_accepted_email = partial(render_kudos_email, html_template='emails/new_kudos.html', text_template='emails/new_kudos.txt')
+render_kudos_mint_email = partial(render_kudos_email, html_template='emails/kudos_mint.html', text_template=None)
+render_kudos_mkt_email = partial(render_kudos_email, html_template='emails/kudos_mkt.html', text_template=None)
 
 
 def render_match_email(bounty, github_username):
@@ -651,6 +696,33 @@ def new_tip(request):
     from dashboard.models import Tip
     tip = Tip.objects.last()
     response_html, _ = render_tip_email(settings.CONTACT_EMAIL, tip, True)
+
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def new_kudos(request):
+    from kudos.models import KudosTransfer
+    kudos_transfer = KudosTransfer.objects.last()
+    response_html, _ = render_new_kudos_email(settings.CONTACT_EMAIL, kudos_transfer, True)
+
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def kudos_mint(request):
+    from kudos.models import KudosTransfer
+    kudos_transfer = KudosTransfer.objects.last()
+    response_html, _ = render_kudos_mint_email(settings.CONTACT_EMAIL, kudos_transfer, True)
+
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def kudos_mkt(request):
+    from kudos.models import KudosTransfer
+    kudos_transfer = KudosTransfer.objects.last()
+    response_html, _ = render_kudos_mkt_email(settings.CONTACT_EMAIL, kudos_transfer, True)
 
     return HttpResponse(response_html)
 

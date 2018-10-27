@@ -453,10 +453,6 @@ p a {
   color: #25e899;
 }
 
-.btn:focus {
-  box-shadow: none;
-}
-
 .cta-green {
   background-color: var(--gc-green);
   text-align: center;

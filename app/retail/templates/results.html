@@ -16,6 +16,7 @@
   <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load humanize i18n static %}
+{% load kudos_extras %}
 <!DOCTYPE html>
 <html lang="en">
   {% include 'shared/head.html' %}
@@ -28,6 +29,7 @@
 
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
       {% include 'shared/minihero.html' with h1=title position_h1_below_logo=1 %}
     </div>
@@ -240,7 +242,7 @@
           {% for the_title, hrd in hourly_rate_distribution_by_range.items %}
             {% if hrd %}
               <div class="col-2 {% cycle 'odd' 'even' %}" style="margin: 10px auto; border: 1px solid #6c757d; padding: 5px 10px; max-width: 150px; height: 110px;">
-                  <span>{{the_title | title}}</span> 
+                  <span>{{the_title | title}}</span>
                   <br>
                   {% trans "Bounties Pay" %}
                   <br>
@@ -259,7 +261,7 @@
           {% for the_title, hrd in skill_rate_distribution_by_range.items %}
             {% if hrd %}
               <div class="col-2 {% cycle 'odd' 'even' %}" style="margin: 10px auto; border: 1px solid #6c757d; padding: 5px 10px; max-width: 150px; height: 110px;">
-                  <span>{{the_title | title}}</span> 
+                  <span>{{the_title | title}}</span>
                   <br>
                   {% trans "Bounties Pay" %}
                   <br>
@@ -279,6 +281,36 @@
       </div>
     </div>
     {% endif %}
+
+    {% if not keyword and kudos_tokens %}
+    <div style="background-color: #F2F6F9;">
+      <div class="container" id="bounty_universe">
+        <div class="row py-2 animatedParent">
+          <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
+            <h2 class="text-center pb-1">
+              {% trans "Top Kudos" %}
+            </h2>
+          </div>
+        </div>
+
+        <div class="row animatedParent">
+          <div class="col-12 offset-md-0 d-flex justify-content-center align-items-center p-3 ">
+            <p style="text-align: center; font-size: 0.9rem;">Kudos is a way of showing your appreciation for another Gitcoin member. It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star. Kudos tokens can also be bought and sold on the <a href="/kudos/marketplace">Kudos Marketplace</a>.</p>
+          </div>
+          <div class="col-md-12 p-3">
+            <div id="repo_repos">
+                {% for kudos in kudos_tokens %}
+                    <a href="/kudos/{{ kudos.id }}/{{ kudos.name }}"" title="{{kudos.name|humanize_name}}">
+                        <img src="{% static kudos.image %}" alts="{{kudos.name|humanize_name}}" style="max-width: 100px; max-height: 100px; margin 5px; border-radius: 50px;">
+                    </a>
+                {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
 
 
     <div style="background-color: #F2F6F9; padding-bottom: 40px;">

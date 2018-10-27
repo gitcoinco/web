@@ -65,4 +65,9 @@ if [ "$FORCE_GET_PRICES" = "on" ]; then
     python manage.py get_prices
 fi
 
+if [ "$KUDOS_LOCAL_SYNC" = "on" ]; then
+    bash /code/scripts/sync_kudos_listener_local.bash &
+    bash /code/scripts/sync_kudos_local.bash &
+fi
+
 exec python manage.py $GC_WEB_OPTS
