@@ -131,7 +131,9 @@ def marketplace(request):
 
 def search(request):
     """Render the search page.
+
     TODO:  This might no longer be used.
+
     """
     context = {}
 
@@ -143,7 +145,6 @@ def search(request):
 
 
 def image(request, kudos_id, name):
-
     kudos = Token.objects.get(pk=kudos_id)
     img = kudos.as_img
     if not img:
@@ -226,7 +227,7 @@ def get_primary_from_email(params, request):
 
     1. If the email field is filed out in the Send POST request, use the `fromEmail` field.
     2. If the user is logged in, they should have an email address associated with their account.
-       Use this as the second option.  `request_user_email`.
+        Use this as the second option.  `request_user_email`.
     3. If all else fails, attempt to pull the email from the user's github account.
 
     Args:
@@ -235,6 +236,7 @@ def get_primary_from_email(params, request):
 
     Returns:
         str: The primary_from_email string.
+
     """
 
     request_user_email = request.user.email if request.user.is_authenticated else ''
@@ -255,15 +257,10 @@ def get_primary_from_email(params, request):
 
 def kudos_preferred_wallet(request, handle):
     """Returns the address, if any, that someone would like to be send kudos directly to."""
-    response = {
-        'addresses': []
-    }
-
+    response = {'addresses': []}
     profile = get_profile(str(handle).replace('@', ''))
 
-    if profile:
-        # reconcile_kudos_preferred_wallet(profile)
-        if profile.preferred_payout_address:
+    if profile and profile.preferred_payout_address:
             response['addresses'].append(profile.preferred_payout_address)
 
     return JsonResponse(response)
@@ -371,8 +368,9 @@ def send_3(request):
 @csrf_exempt
 @ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
 def send_4(request):
-    """Handle the fourth stage of sending a tip (the POST).  Once the metamask transaction is complete,
-    add it to the database.
+    """Handle the fourth stage of sending a tip (the POST).
+
+    Once the metamask transaction is complete, add it to the database.
 
     Returns:
         JsonResponse: response with success state.
@@ -455,7 +453,7 @@ def receive(request, key, txid, network):
         TemplateResponse: the UI with the kudos confirmed
 
     """
-    these_kudos_emails = KudosTransfer.objectrs.filter(web3_type='v3', txid=txid, network=network)
+    these_kudos_emails = KudosTransfer.objects.filter(web3_type='v3', txid=txid, network=network)
     kudos_emails = these_kudos_emails.filter(metadata__reference_hash_for_receipient=key) | these_kudos_emails.filter(
         metadata__reference_hash_for_funder=key)
     kudos_transfer = kudos_emails.first()
