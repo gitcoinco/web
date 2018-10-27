@@ -391,7 +391,7 @@ class KudosContract:
 
     @log_args
     @may_require_key
-    def mint(self, *args, account=None, private_key=None, skip_sync=False):
+    def mint(self, *args, account=None, private_key=None, skip_sync=False, gas_price_gwei=4):
         """Contract transaction method.
 
         Mint a new Gen0 Kudos on the blockchain.  Not to be confused with clone.
@@ -414,6 +414,7 @@ class KudosContract:
         Returns:
             int: If a sync did occur, returns the kudos_id
         """
+        gasPrice = self._w3.toWei(gas_price_gwei, 'gwei')
         account = self._resolve_account(account)
 
         if private_key:
@@ -421,7 +422,9 @@ class KudosContract:
             nonce = self._w3.eth.getTransactionCount(account)
             gas_estimate = self._contract.functions.mint(*args).estimateGas({'nonce': nonce, 'from': account})
             logger.debug(f'Gas estimate for raw tx: {gas_estimate}')
-            txn = self._contract.functions.mint(*args).buildTransaction({'gas': gas_estimate, 'nonce': nonce, 'from': account})
+            txn = self._contract.functions.mint(*args).buildTransaction(
+                {'gasPrice': gasPrice, 'gas': gas_estimate, 'nonce': nonce, 'from': account}
+            )
             signed_txn = self._w3.eth.account.signTransaction(txn, private_key=private_key)
             tx_hash = self._w3.eth.sendRawTransaction(signed_txn.rawTransaction)
         else:

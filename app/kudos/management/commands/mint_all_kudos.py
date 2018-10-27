@@ -45,6 +45,7 @@ class Command(BaseCommand):
         parser.add_argument('network', default='localhost', type=str)
         parser.add_argument('yaml_file', help='absolute path to kudos.yaml file', type=str)
         parser.add_argument('--mint_to', help='address to mint the kudos to', type=str)
+        parser.add_argument('--gas_price_gwei', default=4, help='the gas price for mining', type=int)
         parser.add_argument('--skip_sync', action='store_true')
         parser.add_argument('--gitcoin_account', action='store_true', help='use account stored in .env file')
         parser.add_argument('--account', help='public account address to use for transaction', type=str)
@@ -54,6 +55,8 @@ class Command(BaseCommand):
         # config
         network = options['network']
         gitcoin_account = options['gitcoin_account']
+        gas_price_gwei = options['gas_price_gwei']
+
         if gitcoin_account:
             account = settings.KUDOS_OWNER_ACCOUNT
             private_key = settings.KUDOS_PRIVATE_KEY
@@ -147,7 +150,10 @@ class Command(BaseCommand):
                 try:
                     tokenURI_url = kudos_contract.create_tokenURI_url(**metadata)
                     args = (mint_to, kudos['priceFinney'], kudos['numClonesAllowed'], tokenURI_url)
-                    kudos_contract.mint(*args, account=account, private_key=private_key, skip_sync=skip_sync)
+                    kudos_contract.mint(
+                        *args, account=account, private_key=private_key, skip_sync=skip_sync,
+                        gas_price_gwei=gas_price_gwei
+                    )
                 except Exception as e:
                     logger.error(e)
                     logger.info("Trying the mint again...")
