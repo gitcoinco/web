@@ -31,7 +31,7 @@ var kudos_address = function() {
   }
   switch (document.web3network) {
     case 'mainnet':
-      return '0x56c72cda0b04fc39a25d0b6a64fa258fad46d664';
+      return '0x2aea4add166ebf38b63d09a75de1a7b94aa24163';
     case 'ropsten':
       return '0xcd520707fc68d153283d518b29ada466f9091ea8';
     case 'kovan':
