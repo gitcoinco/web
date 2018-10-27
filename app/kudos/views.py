@@ -276,8 +276,8 @@ def send_2(request):
     This form is filled out before the 'send' button is clicked.
 
     """
-    id = request.GET.get('id')
-    kudos = Token.objects.filter(pk=id).first()
+    _id = request.GET.get('id')
+    kudos = Token.objects.filter(pk=_id).first()
     params = {
         'active': 'send',
         'issueURL': request.GET.get('source'),
@@ -455,11 +455,7 @@ def receive(request, key, txid, network):
         TemplateResponse: the UI with the kudos confirmed
 
     """
-
-    if request.method == 'POST':
-        logger.info('method is post')
-
-    these_kudos_emails = KudosTransfer.objects.filter(web3_type='v3', txid=txid, network=network)
+    these_kudos_emails = KudosTransfer.objectrs.filter(web3_type='v3', txid=txid, network=network)
     kudos_emails = these_kudos_emails.filter(metadata__reference_hash_for_receipient=key) | these_kudos_emails.filter(
         metadata__reference_hash_for_funder=key)
     kudos_transfer = kudos_emails.first()

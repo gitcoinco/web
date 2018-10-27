@@ -1,67 +1,62 @@
 {% extends 'emails/template.html' %}
 {% comment %}
-    Copyright (C) 2018 Gitcoin Core
+  Copyright (C) 2018 Gitcoin Core
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Affero General Public License as published
-    by the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Affero General Public License for more details.
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU Affero General Public License for more details.
 
-    You should have received a copy of the GNU Affero General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
+  You should have received a copy of the GNU Affero General Public License
+  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n humanize static kudos_extras  %}
-
+{% load i18n humanize static kudos_extras %}
 {% block content %}
-
 <style>
-    .kudos-box {
-        margin-bottom: 2em;
-    }
-    .kudos-contents {
-        text-align: center;
-    }
-    .kudos {
-        display: flex;
-        justify-content: center;
-        padding-top: 0.5em;
-        padding-bottom: 0.5em;
-        padding-left: 1em;
-        padding-right: 1em;
-    }
-    .cols {
+  .kudos-box {
+      margin-bottom: 2em;
+  }
+  .kudos-contents {
+      text-align: center;
+  }
+  .kudos {
       display: flex;
-      align-content: center;
       justify-content: center;
-      width: 65%;
-      align-items: center;
-      margin: 3em auto;
-      /* flex-direction: column; */
-    }
-    .col-img {
-      margin: 0 2em;
-    }
-    .col-txt {
-      text-align: left;
-      line-height: 2;
-    }
+      padding-top: 0.5em;
+      padding-bottom: 0.5em;
+      padding-left: 1em;
+      padding-right: 1em;
+  }
+  .cols {
+    display: flex;
+    align-content: center;
+    justify-content: center;
+    width: 65%;
+    align-items: center;
+    margin: 3em auto;
+    /* flex-direction: column; */
+  }
+  .col-img {
+    margin: 0 2em;
+  }
+  .col-txt {
+    text-align: left;
+    line-height: 2;
+  }
 
-    hr {
-      width: 80%;
+  hr {
+    width: 80%;
+  }
+  @media screen and (max-width: 48em) {
+    .cols {
+      flex-direction: column;
     }
-    @media screen and (max-width: 48em) {
-      .cols {
-        flex-direction: column;
-      }
-    }
-
-
+  }
 </style>
 
 <div>
@@ -72,13 +67,13 @@
   {% endif %}
   <h3>
     {% if kudos_transfer.from_name %}
-      {{kudos_transfer.from_name}} {% blocktrans %} sent you a {% endblocktrans %}<b>{{ token_elem.name|humanize_name }}</b> kudos!
+      {{ kudos_transfer.from_name }} {% blocktrans %} sent you a {% endblocktrans %}<b>{{ token_elem.name|humanize_name }}</b> kudos!
     {% else %}
-      Someone sent you a <b>{{ token_elem.name|humanize_name }}</b> kudos.
-    {% endif %}{% if not is_new %} {{kudos_transfer.created_on | naturaltime}}{%endif%}
+      {% trans "Someone sent you a" %} <b>{{ token_elem.name|humanize_name }}</b> kudos.
+    {% endif %}{% if not is_new %} {{ kudos_transfer.created_on|naturaltime }}{% endif %}
   </h3>
   <div>
-    <img src="{{ token_elem.img_url }}" alt="{{token_elem.name|humanize_name  }}" width="200" style="margin:auto;">
+    <img src="{{ token_elem.img_url }}" alt="{{ token_elem.name|humanize_name }}" width="200" style="margin:auto;">
   </div>
 </div>
 
@@ -87,10 +82,10 @@
     <div class="kudos-contents">
       {% if kudos_transfer.github_url %}
         <p>
-        {% if kudos_transfer.from_name %}{{kudos_transfer.from_name}}{% else %}The sender{% endif %} said it was for your work on <a href="{{kudos_transfer.github_url}}">{{kudos_transfer.github_url}}</a>.
+        {% if kudos_transfer.from_name %}{{ kudos_transfer.from_name }}{% else %}The sender{% endif %} said it was for your work on <a href="{{ kudos_transfer.github_url }}">{{ kudos_transfer.github_url }}</a>.
         {% if comments %}
           {% trans "They had the following comments:" %}
-          <pre>{{comments}}</pre>
+          <pre>{{ comments }}</pre>
         {% endif %}
         </p>
       {% endif %}
@@ -98,14 +93,14 @@
       {% if comments_priv %}
         <p>
           {% trans "They had the following private comments:" %}
-          <pre>{{comments_priv}}</pre>
+          <pre>{{ comments_priv }}</pre>
         </p>
       {% endif %}
 
       {% if comments_public %}
         <p>
           {% trans "Comment:" %}
-          <pre>{{comments_public}}</pre>
+          <pre>{{ comments_public }}</pre>
         </p>
       {% endif %}
       {% if already_redeemed %}
@@ -114,14 +109,14 @@
         </p>
       {% elif show_expires %}
         <p>
-          {% trans "The kudos expires on" %} <strong>{{kudos_transfer.expires_date}}, {% trans "in just" %} {{kudos_transfer.expires_date | naturaltime}}</strong>. {% trans "No pressure, but if you wanted to redeem your kudos sooner rather than later that'd be 👌:" %}
+          {% trans "The kudos expires on" %} <strong>{{ kudos_transfer.expires_date }}, {% trans "in just" %} {{ kudos_transfer.expires_date|naturaltime }}</strong>. {% trans "No pressure, but if you wanted to redeem your kudos sooner rather than later that'd be 👌:" %}
         </p>
       {% endif %}
     </div>
   </div>
   {% if not already_redeemed %}
     <div style="margin: 3em;">
-      <a class="button" href="{{link}}">{% trans "Accept Kudos" %}</a>
+      <a class="button" href="{{ link }}">{% trans "Accept Kudos" %}</a>
     </div>
   {% endif %}
 </div>
@@ -129,7 +124,7 @@
 <hr>
 
 <div class="cols">
-  <img src="{% static 'v2/images/emails/email-kudos.png' %}" alt="{{token_elem.name|humanize_name  }}" width="134" class="col-img">
+  <img src="{% static 'v2/images/emails/email-kudos.png' %}" alt="{{ token_elem.name|humanize_name }}" width="134" class="col-img">
   <p class="col-txt">Kudos is a way of showing your appreciation for another Gitcoin member. It's also a way to showcase special skills that a member might have, such as Pythonista, or Design Star. Kudos are non-fungible tokens that can also be bought and sold on the <b>Kudos Marketplace</b>.</p>
 </div>
 <div style="margin: 3em 0 5em;">
