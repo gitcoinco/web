@@ -1,5 +1,5 @@
-{% extends '../emails/template.html' %} 
-{% comment %} 
+{% extends '../emails/template.html' %}
+{% comment %}
   Copyright (C) 2018 Gitcoin Core
 
   This program is free software: you can redistribute it and/or modify
@@ -15,8 +15,8 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 
-{% endcomment %} 
-{% load i18n humanize static %} 
+{% endcomment %}
+{% load i18n static %}
 
 {% block content %}
 
@@ -99,29 +99,25 @@
       text-align: left;
       margin-left: 2%;
     }
-    .grantUpdateContent>p:last-child {
+    .grantUpdateContent > p:last-child {
       padding-right: 25%;
       color: #43484D;
     }
-    .grantUpdateContent>h3 {
+    .grantUpdateContent > h3 {
       color: #43484D;
     }
   }
 
 </style>
-<img id="newSupporter" src="{% static "v2/images/update-notification.png" %}" alt="Update!" title="There's a new update!">
+<img id="newSupporter" src="{% static "v2/images/update-notification.png" %}" alt="{% trans "Update!" %}" title="{% trans "Update!" %}">
 <h1 style="text-transform: none;">{% trans "An update has been posted for:" %}</h1>
-<!-- Name of grant -->
 <div class="grantInfo">
-  <a href="https://github.com/{{ github_username }}">
-    <img src="{{ project_image }}" />
+  <a href="{{ grant.reference_url }}">
+    <img src="{{ grant.logo.url }}" style="width: 50px; height: 50px;"/>
   </a>
-  <!-- width="50" height="50"Input project image here -->
   <br>
-  <a class="grantInfoName" href="https://github.com/{{ github_username }}">{{ github_username }}</a>
-  <!-- Input project name here -->
-  <p>{{ project_description }}</p>
-  <!-- Input project description here -->
+  <a class="grantInfoName" href="{{ grant.reference_url }}">{{ grant.title }}</a>
+  <p>{{ grant.description }}</p>
 </div>
 
 <br>
@@ -129,20 +125,19 @@
 <hr>
 <div class="grantUpdate">
   <div class="grantUpdateIcon">
-    <img src="{% static " v2/images/file-text.png " %}" alt="New Grant Update." title="New Grant Update">
+    <img src="{% static "v2/images/file-text.png" %}" alt="{% trans "New Grant Update." %}" title="{% trans "New Grant Update" %}">
   </div>
   <div class="grantUpdateContent">
-    <h3>{{ updateContent_title }}</h3>
-    <p class="upDate">{{ updateContent_date }}</p>
-    <p>{{ updateContent_text }}</p>
+    <h3>{{ activity.title }}</h3>
+    <p class="upDate">{{ activity.date }}</p>
+    <p>{{ activity.description }}</p>
   </div>
 </div>
 <hr>
 
 <br>
 <br>
-<a class="updatesButton" href="https://gitcoin.co/grants/{{ grant_link }}">{%trans "View Grant" %}</a>
-<!-- Input link to view transaction button here -->
+<a class="updatesButton" href="{% url 'grant:details' grant.id %}">{% trans "View Grant" %}</a>
 <br> 
 
 {% endblock %}
