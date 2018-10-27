@@ -14,7 +14,7 @@
 
 {{ grant.percentage_done }}
 
-{{ grant.amount_goal }}
+{{ grant.amount_goal }} {% trans "ETH" %}
 
 {% trans "Goal" %}
 
