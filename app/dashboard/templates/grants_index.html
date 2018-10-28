@@ -1,0 +1,311 @@
+{% comment %}
+Copyright (C) 2018 Gitcoin Core
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published
+by the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load humanize static i18n %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <style>
+
+      .grant-item {
+        border: 1px solid #D3D3D3;
+        border-radius: 5px;
+        display: flex;
+        margin: 1rem;
+        transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+        flex-direction: column;
+      }
+
+      .grant-item:hover {
+        box-shadow: 0 1px 2px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      }
+
+      .grant-item__title {
+        line-height: 24px;
+      }
+
+      .grant-item__title a {
+        color: #454545;
+      }
+
+      .grant-item__pitch {
+        color: #9B9B9B;
+        line-height: 18px;
+        height: 6rem;
+      }
+
+      .grant-item__owner {
+        align-items: center;
+        display: flex;
+      }
+
+      .grant-item__owner-image {
+        height: 35px;
+        width: 35px;
+      }
+
+      .grant-item__owner-image img {
+        width: 100%;
+      }
+
+      .grant-item__footer {
+        margin-top: auto;
+      }
+
+      .grant-item__funding {
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .grant-item__funding-number {
+        color: #0D0764;
+      }
+
+      .grant-item__funding-label {
+        color: #BBBDBF;
+      }
+
+      .grant-item__state-active,
+      .grant-item__state-completed {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        display: inline-block;
+        position: relative;
+        top: 1px;
+      }
+
+      .grant-item__state-active {
+        background-color: #0FCE7C;
+      }
+
+      .grant-item__state-completed {
+        background-color: #1A91EB;
+      }
+
+      .inner {
+        margin-top: 2px;
+        margin-left: 2px;
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        background-color: white;
+        border-radius: 50%
+      }
+
+    </style>
+    {% include 'shared/head.html' %}
+    {% include 'shared/cards.html' %}
+  </head>
+  <body class="interior {{ active }} grant g-font-muli">
+    {% include 'shared/tag_manager_2.html' %}
+    <div class="container-fluid header dash">
+      {% include 'shared/nav.html' %}
+    </div>
+
+    <div class="container pt-5">
+      <div class="grants-hero">
+        <div class="row">
+          <div class="col-12 col-md-6 order-md-last mb-5 mb-md-0">
+            <div class="embed-responsive embed-responsive-16by9">
+              <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/Hx1iJ_K3D8k?rel=0&showinfo=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+          </div>
+          <div class="m-auto col-12 col-md-6 offset-lg-1 col-lg-5">
+            <h1 class="font-title-xl">{% trans 'Dev Grants' %}</h1>
+            <p class="mt-4 pt-1 mb-5 font-subheader">
+              {% blocktrans %}
+              Want to provide sustainable funding for Open Source? Creating a Gitcoin Dev Grant is a great way to do it! Dev Grants, powered by the
+              <a target="_blank" rel="noopener noreferrer" href="http://1337alliance.com/">EIP 1337 standard</a>
+              , are a fast, easy, & secure way to provide recurring token contributions to your favorite OSS maintainers. Show your appreciation for maintainers in your dependancy tree with a Gitcoin Dev Grant today.
+              {% endblocktrans %}
+            </p>
+            <a class="button button--primary" href="{% url 'grants:new' %}">
+              {% trans 'Create a Grant' %}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid py-5 my-5 grants-search">
+      <div class="container">
+        <form>
+          <div class="row">
+            <div class="search col-9 col-md-5 offset-md-1 col-lg-6 form__flex-group">
+              <input type="search" class="form__input" placeholder="Search Grants">
+            </div>
+            <div class="col-2 col-lg-1 px-0">
+              <button class="button button--primary">
+                <span class="d-none d-sm-inline">{% trans 'Search' %}</span>
+                <i class="d-sm-none fas fa-search"></i>
+              </button>
+            </div>
+            <div class="col-12 col-md-4 col-lg-3 pt-1 font-caption order_by d-none d-md-inline">
+              <div class="heading">{% trans "SORT" %}</div>
+              <select name="sort_option" id="sort_option">
+                <option value="-web3_created">{% trans "Created: Recent" %}</option>
+                <option value="web3_created">{% trans "Created: Oldest" %}</option>
+                <option value="-_val_usd_db">{% trans "Value: Highest" %}</option>
+                <option value="_val_usd_db">{% trans "Value: Lowest" %}</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="container grants-container">
+     <div class="row">
+        <div class="col-12 col-md-6 col-lg-4 mb-4">
+          <div class="grant-item">
+            <div class="grant-item__content py-4 px-3">
+              <h2 class="grant-item__title font-subheader">Title for the First Grant</h2>
+              <p class="grant-item__pitch font-caption">Build all the things</p>
+              <div class="grant-item__footer">
+                <div class="grant-item__owner mt-3 mb-4">
+                  <div class="grant-item__owner-image mr-2">
+                    <img src="https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg">
+                  </div>
+                  <div class="grant-item__owner-handle font-body">{% trans 'by' %} <span>captnseagraves</span></div>
+                </div>
+                <div class="progress progress--small">
+                  <div class="progress-bar" role="progressbar" style="width: 43%" aria-valuenow="43%" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="grant-item__funding mt-2">
+                  <div class="grant-item__funding-item">
+                    <div class="grant-item__funding-number font-body">43 ETH</div>
+                    <div class="grant-item__funding-label font-caption">{% trans 'Current' %}</div>
+                  </div>
+                  <div class="grant-item__funding-item">
+                    <div class="grant-item__funding-number font-body">100 ETH</div>
+                    <div class="grant-item__funding-label font-caption">{% trans 'Goal' %}</div>
+                  </div>
+                </div>
+                <div class="grant-item__state mt-3">
+                  {% if grant %} <!-- TODO: wire up grant state -->
+                    <div class="grant-item__state-active">
+                      <div class="inner"></div>
+                    </div>
+                    <span class="grant-item__state-label font-caption">Active</span>
+                  {% else %}
+                    <div class="grant-item__state-completed">
+                      <div class="inner"></div>
+                    </div>
+                    <span class="grant-item__state-label font-caption">Completed</span>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- <div class="col-12 col-md-6 col-lg-4 mb-4">
+          <div class="grant-item">
+            <div class="grant-item__content py-4 px-3">
+              <h2 class="grant-item__title font-subheader"><a href="{% url 'grants:details' grant.id %}">{{ grant.title|truncatechars:60 }}</a></h2>
+              <p class="grant-item__pitch font-caption">{{ grant.description|truncatechars:190 }}</p>
+              <div class="grant-item__footer">
+                <div class="grant-item__owner mt-3 mb-4">
+                  <div class="grant-item__owner-image mr-2">
+                    <img src="{% if grant.admin_profile.avatar_url %}{{ grant.admin_profile.avatar_url }}{% else %}https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg{% endif %}">
+                  </div>
+                  <div class="grant-item__owner-handle font-body">{% trans 'by' %} <span>{{ grant.admin_profile.handle|default:'anonymous' }}</span></div>
+                </div>
+                <div class="progress progress--small">
+                  <div class="progress-bar" role="progressbar" style="width: {{ grant.percentage_done }}%" aria-valuenow="{{ grant.percentage_done }}%" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="grant-item__funding mt-2">
+                  <div class="grant-item__funding-item">
+                    <div class="grant-item__funding-number font-body">{{ grant.amount_received|floatformat:2|intcomma }} ETH</div>
+                    <div class="grant-item__funding-label font-caption">{% trans 'Current' %}</div>
+                  </div>
+                  <div class="grant-item__funding-item">
+                    <div class="grant-item__funding-number font-body">{{ grant.amount_goal|floatformat:2|intcomma }} ETH</div>
+                    <div class="grant-item__funding-label font-caption">{% trans 'Goal' %}</div>
+                  </div>
+                </div>
+                <div class="grant-item__state mt-3">
+                  {% if grant %}
+                    <div class="grant-item__state-active">
+                      <div class="inner"></div>
+                    </div>
+                    <span class="grant-item__state-label font-caption">Active</span>
+                  {% else %}
+                    <div class="grant-item__state-completed">
+                      <div class="inner"></div>
+                    </div>
+                    <span class="grant-item__state-label font-caption">Completed</span>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 col-md-6 col-lg-4 mb-4">
+          <div class="grant-item">
+            <div class="grant-item__content py-4 px-3">
+              <h2 class="grant-item__title font-subheader"><a href="{% url 'grants:details' grant.id %}">{{ grant.title|truncatechars:60 }}</a></h2>
+              <p class="grant-item__pitch font-caption">{{ grant.description|truncatechars:190 }}</p>
+              <div class="grant-item__footer">
+                <div class="grant-item__owner mt-3 mb-4">
+                  <div class="grant-item__owner-image mr-2">
+                    <img src="{% if grant.admin_profile.avatar_url %}{{ grant.admin_profile.avatar_url }}{% else %}https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg{% endif %}">
+                  </div>
+                  <div class="grant-item__owner-handle font-body">{% trans 'by' %} <span>{{ grant.admin_profile.handle|default:'anonymous' }}</span></div>
+                </div>
+                <div class="progress progress--small">
+                  <div class="progress-bar" role="progressbar" style="width: {{ grant.percentage_done }}%" aria-valuenow="{{ grant.percentage_done }}%" aria-valuemin="0" aria-valuemax="100"></div>
+                </div>
+                <div class="grant-item__funding mt-2">
+                  <div class="grant-item__funding-item">
+                    <div class="grant-item__funding-number font-body">{{ grant.amount_received|floatformat:2|intcomma }} ETH</div>
+                    <div class="grant-item__funding-label font-caption">{% trans 'Current' %}</div>
+                  </div>
+                  <div class="grant-item__funding-item">
+                    <div class="grant-item__funding-number font-body">{{ grant.amount_goal|floatformat:2|intcomma }} ETH</div>
+                    <div class="grant-item__funding-label font-caption">{% trans 'Goal' %}</div>
+                  </div>
+                </div>
+                <div class="grant-item__state mt-3">
+                  {% if grant %}
+                    <div class="grant-item__state-active">
+                      <div class="inner"></div>
+                    </div>
+                    <span class="grant-item__state-label font-caption">Active</span>
+                  {% else %}
+                    <div class="grant-item__state-completed">
+                      <div class="inner"></div>
+                    </div>
+                    <span class="grant-item__state-label font-caption">Completed</span>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> -->
+      </div>
+    </div>
+
+    {% include 'shared/bottom_notification.html' %}
+    {% include 'shared/analytics.html' %}
+    {% include 'shared/footer_scripts.html' %}
+    {% include 'shared/footer.html' %}
+  </body>
+
+  <!-- jQuery -->
+  <script src="{% static "v2/js/shared.js" %}"></script>
+  <script src="{% static "v2/js/grants_index.js" %}"></script>
+</html>
