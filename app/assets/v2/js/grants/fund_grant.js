@@ -104,29 +104,37 @@ $(document).ready(function() {
 
                   console.log('postData', postData);
 
-                  fetch('http://localhost:10003/saveSubscription', {
-                    method: 'POST',
-                    headers: {
-                      'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                      postData
-                    })
-                  }).then((response)=>{
-                    console.log('TX RESULT', response);
+                  $.each($(form).serializeArray(), function() {
+                    data[this.name] = this.value;
+                  });
 
-                    $.each($(form).serializeArray(), function() {
-                      data[this.name] = this.value;
-                    });
+                  console.log('data', data);
 
-                    console.log('data', data);
+                  form.submit();
 
-                    form.submit();
-
-                  })
-                    .catch((error)=>{
-                      console.log(error);
-                    });
+                  // fetch('http://localhost:10003/saveSubscription', {
+                  //   method: 'POST',
+                  //   headers: {
+                  //     'Content-Type': 'application/json'
+                  //   },
+                  //   body: JSON.stringify({
+                  //     postData
+                  //   })
+                  // }).then((response)=>{
+                  //   console.log('TX RESULT', response);
+                  //
+                  //   $.each($(form).serializeArray(), function() {
+                  //     data[this.name] = this.value;
+                  //   });
+                  //
+                  //   console.log('data', data);
+                  //
+                  //   form.submit();
+                  //
+                  // })
+                  //   .catch((error)=>{
+                  //     console.log(error);
+                  //   });
                 });
               });
             });
