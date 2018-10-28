@@ -1222,7 +1222,7 @@ def lazy_load_kudos(request):
         query_kwargs['owner_address__iexact'] = address
     else:
         key = 'sent_kudos'
-        query_kwargs['sent_from_address__iexact'] = address
+        query_kwargs['kudos_transfer__from_address__iexact'] = address
 
     context[key] = Token.objects.filter(owner_address__iexact=address, **query_kwargs).order_by(order_by)
     paginator = Paginator(context[key], limit)

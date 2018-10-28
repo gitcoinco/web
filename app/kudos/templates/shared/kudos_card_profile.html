@@ -34,7 +34,6 @@
           <p>
             <a href="{% if not kudo.kudos_transfer == 'mainnet' %}https://{{ kudo.kudos_transfer.network }}.etherscan.io/tx/{{ kudo.kudos_transfer.txid }}{% else %}https://etherscan.io/tx/{{ kudo.kudos_transfer.txid }}{% endif %}" target="_blank" class="d-block mb-1">{{ kudo.kudos_transfer.txid|humanize_address }}</a>
           </p>
-          <!-- <div>Sent from <a href="">{{ kudo.sent_from_address|humanize_address }}</a></div> -->
           {% if kudo.kudos_transfer.comments_public %}
             Comment:
             <p>{{kudo.kudos_transfer.comments_public}}</p>
@@ -62,7 +61,6 @@
           <p>
             <a href="{% if not kudo.kudos_transfer == 'mainnet' %}https://{{ kudo.kudos_transfer.network }}.etherscan.io/tx/{{ kudo.kudos_transfer.txid }}{% else %}https://etherscan.io/tx/{{ kudo.kudos_transfer.txid }}{% endif %}" target="_blank" class="d-block mb-1">{{ kudo.kudos_transfer.txid|humanize_address }}</a>
           </p>
-          <!-- <div>Sent from <a href="">{{ kudo.sent_from_address|humanize_address }}</a></div> -->
           {% if kudo.kudos_transfer.comments_public %}
             Comment:
             <p>{{kudo.kudos_transfer.comments_public}}</p>
