@@ -58,6 +58,7 @@
   height: 70px;
   width: 70px;
   background-image: url("/static/v2/images/rocket.png");
+  background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
   border: 3px solid #0ecf7c;
@@ -90,6 +91,26 @@
   width: 3.5rem;
   height: 3.5rem;
   border-radius: 50%;
+}
+
+@media (max-width: 576px) {
+  .funder-dashboard__latest-on-bounties__top-contributors__contributor {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .lead {
+    font-size: 1.1rem;
+  }
+
+  .funder-dashboard__tax-reporting__bounties__download-report {
+    padding: 0.5rem 0.75rem;
+  }
+
+  .funder-dashboard__whats-next__rocket {
+    width: 50px;
+    height: 50px;
+  }
 }
 
 .funder-dashboard__tax-reporting__bounties__print {
@@ -126,6 +147,16 @@
 
 .funder-dashboard__all-bounties__filter {
   min-width: 8rem;
+}
+
+@media (min-width: 576px) {
+  .funder-dashboard__outgoing-funds__filter--type-or-status {
+    margin-right: 0.25rem;
+  }
+
+  .funder-dashboard__all-bounties__filter--type-or-status {
+    margin-right: 0.25rem;
+  }
 }
 
 .funder-dashboard__all-bounties__bounties__bounty--template {

@@ -796,9 +796,7 @@ def get_payout_history(done_bounties):
             continue
 
         bounty_val = bounty.get_value_in_usdt
-
-        if bounty_val is None:
-            bounty_val = 0.0
+        bounty_val = Decimal(0 if bounty_val is None else bounty_val)
 
         # csv export - all done bounties
         csv_row = []

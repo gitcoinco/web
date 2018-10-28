@@ -43,6 +43,68 @@ $(function() {
       } else {
         location.href = 'data:application/octet-stream,' + encodeURIComponent(content);
       }
+    },
+
+    adjustPaginationControlsDisplayed: function(currPage, minPage, maxPage, $page, $prev, $next) {
+      if (minPage === 0) {
+        hide($prev);
+        hide($next);
+        hide($page);
+        return;
+      }
+
+      show($page);
+
+      if (currPage === minPage) {
+        hide($prev);
+        show($next);
+      } else if (currPage === maxPage) {
+        hide($next);
+        show($prev);
+      } else {
+        show($next);
+        show($prev);
+      }
+
+      function show($el) {
+        $el.removeClass('d-none');
+        $el.addClass('d-inline-block');
+      }
+
+      function hide($el) {
+        $el.addClass('d-none');
+        $el.removeClass('d-inline-block');
+      }
+    },
+
+    changePageRelative: function(items, increment, $page, $prev, $next, cbClearItems, cbRenderItems) {
+      var PAGE_SIZE = 5;
+      var itemsCount = items.length;
+      var maxPage = Math.floor(itemsCount / PAGE_SIZE);
+
+      if (itemsCount % PAGE_SIZE !== 0) {
+        maxPage += 1;
+      }
+
+      var minPage = itemsCount !== 0 ? 1 : 0;
+
+      var oldPage = Number($page.html());
+      var newPage = oldPage + increment;
+
+      if (newPage > maxPage) {
+        newPage = minPage;
+      }
+
+      if (newPage < minPage) {
+        newPage = maxPage;
+      }
+
+      utils.adjustPaginationControlsDisplayed(newPage, minPage, maxPage, $page, $prev, $next);
+      var itemsOnPage = items.slice((newPage - 1) * PAGE_SIZE, newPage * PAGE_SIZE);
+
+      $page.html(newPage);
+      cbClearItems();
+      cbRenderItems(itemsOnPage);
     }
   };
 
@@ -193,15 +255,18 @@ $(function() {
 
   function activateTotalBudget() {
     var $totalBudget = $('.funder-dashboard__stats__stat--total-budget__budget-input');
+    var submittedTotalBudget = false;
 
     $totalBudget.keypress(function(e) {
-      if (e.key == 'Enter') {
-        submitTotalBudget();
+      if (e.key === 'Enter' && !submittedTotalBudget) {
+        submittedTotalBudget = submitTotalBudget();
       }
     });
 
     $('.funder-dashboard__stats__stat--total-budget__budget-input__submit').click(function() {
-      submitTotalBudget();
+      if (!submittedTotalBudget) {
+        submittedTotalBudget = submitTotalBudget();
+      }
     });
 
     function submitTotalBudget() {
@@ -216,7 +281,7 @@ $(function() {
 
       if (updateData.budget === '') {
         alert('Budget cannot be empty');
-        return;
+        return false;
       }
 
       $.ajax({
@@ -228,6 +293,8 @@ $(function() {
         setUpdatedTotalCookie('fd_total_last_updated', 1);
         location.reload();
       });
+
+      return true;
     }
 
     // Monthly / Quarterly
@@ -301,9 +368,9 @@ $(function() {
     var fundBaseSel = 'funder-dashboard__outgoing-funds__funds__fund';
     var cbRenderFunds = renderOutgoingFunds.bind(this, $container, $fundTemplate, fundBaseSel);
 
-    var getFunds = getOutgoingFunds.bind(this, outgoingFunds, cbRenderFunds);
+    var getFunds = getOutgoingFunds.bind(this, outgoingFunds);
 
-    changePageRelative(outgoingFunds, 0);
+    changePageRelative(0);
     $('.funder-dashboard__outgoing-funds__filter').change(function() {
       changePageAbsolute(1);
     });
@@ -313,11 +380,11 @@ $(function() {
     function activateOrRemovePaginationControls() {
       if (outgoingFunds.length > 5) {
         $('.funder-dashboard__outgoing-funds__pagination__prev').click(function() {
-          changePageRelative(outgoingFunds, -1);
+          changePageRelative(-1);
         });
 
         $('.funder-dashboard__outgoing-funds__pagination__next').click(function() {
-          changePageRelative(outgoingFunds, 1);
+          changePageRelative(1);
         });
       } else {
         $('.funder-dashboard__outgoing-funds__pagination').remove();
@@ -370,7 +437,7 @@ $(function() {
       }
     }
 
-    function getOutgoingFunds(funds, cbRenderFunds) {
+    function getOutgoingFunds(funds) {
       var filterBaseSel = 'funder-dashboard__outgoing-funds__filter';
 
       var $typeStatusFilter = getTypeOrStatusFilter(filterBaseSel);
@@ -394,12 +461,7 @@ $(function() {
         return sortFn(fund1, fund2);
       });
 
-      var page = Number($('.funder-dashboard__outgoing-funds__pagination__page').html());
-      var PAGE_SIZE = 5;
-
-      filteredFunds = filteredFunds.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-      cbRenderFunds(filteredFunds);
+      return filteredFunds;
 
       function getTypeOrStatusFilter(filterBaseSel) {
         return $(classSel(filterBaseSel) + '--type-or-status').find(':selected');
@@ -410,53 +472,18 @@ $(function() {
       }
     }
 
-    function changePageRelative(allFunds, increment) {
-      function adjustPaginationControlsDisplayed(currPage, maxPage, minPage) {
-        var $prev = $('.funder-dashboard__outgoing-funds__pagination__prev');
-        var $next = $('.funder-dashboard__outgoing-funds__pagination__next');
-
-        if (currPage === minPage) {
-          $prev.addClass('invisible');
-        } else {
-          $prev.removeClass('invisible');
-        }
-
-        if (currPage === maxPage) {
-          $next.addClass('invisible');
-        } else {
-          $next.removeClass('invisible');
-        }
-      }
-      var PAGE_SIZE = 5;
-      var outgoingFundsCount = allFunds.length;
-      var maxPage = Math.floor(outgoingFundsCount / PAGE_SIZE) + 1;
-      var minPage = 1;
-
+    function changePageRelative(increment) {
+      var funds = getFunds();
       var $page = $('.funder-dashboard__outgoing-funds__pagination__page');
-      var oldPage = Number($page.html());
-      var newPage = oldPage + increment;
+      var $prev = $('.funder-dashboard__outgoing-funds__pagination__prev');
+      var $next = $('.funder-dashboard__outgoing-funds__pagination__next');
 
-      if (newPage > maxPage) {
-        newPage = minPage;
-      }
-
-      if (newPage < minPage) {
-        newPage = maxPage;
-      }
-
-      $page.html(newPage);
-      adjustPaginationControlsDisplayed(newPage, maxPage, minPage);
-
-      clearFunds();
-      getFunds();
+      utils.changePageRelative(funds, increment, $page, $prev, $next, clearFunds, cbRenderFunds);
     }
 
     function changePageAbsolute(newPage) {
-      var $page = $('.funder-dashboard__outgoing-funds__pagination__page');
-
-      $page.html(newPage);
-      clearFunds();
-      getFunds();
+      $('.funder-dashboard__outgoing-funds__pagination__page').html(newPage);
+      changePageRelative(0);
     }
   }
 
@@ -470,9 +497,9 @@ $(function() {
 
     var bountyBaseSel = 'funder-dashboard__all-bounties__bounties__bounty';
     var cbRenderBounties = renderBounties.bind(this, $container, $bountyTemplate, bountyBaseSel);
-    var boundGetBounties = getBounties.bind(this, bounties, cbRenderBounties);
+    var boundGetBounties = getBounties.bind(this, bounties);
 
-    changePageRelative(bounties, 0);
+    changePageRelative(0);
     $('.funder-dashboard__all-bounties__filter').change(function() {
       changePageAbsolute(1);
     });
@@ -482,65 +509,29 @@ $(function() {
     function activateOrRemovePaginationControls() {
       if (bounties.length > 5) {
         $('.funder-dashboard__all-bounties__pagination__prev').click(function() {
-          changePageRelative(bounties, -1);
+          changePageRelative(-1);
         });
 
         $('.funder-dashboard__all-bounties__pagination__next').click(function() {
-          changePageRelative(bounties, 1);
+          changePageRelative(1);
         });
       } else {
         $('.funder-dashboard__all-bounties__pagination').remove();
       }
     }
 
-    function changePageRelative(allBounties, increment) {
-      function adjustPaginationControlsDisplayed(currPage, maxPage, minPage) {
-        var $prev = $('.funder-dashboard__all-bounties__pagination__prev');
-        var $next = $('.funder-dashboard__all-bounties__pagination__next');
-
-        if (currPage === minPage) {
-          $prev.addClass('invisible');
-        } else {
-          $prev.removeClass('invisible');
-        }
-
-        if (currPage === maxPage) {
-          $next.addClass('invisible');
-        } else {
-          $next.removeClass('invisible');
-        }
-      }
-
-      var PAGE_SIZE = 5;
-      var bountiesCount = bounties.length;
-      var max_page = Math.floor(bountiesCount / PAGE_SIZE) + 1;
-      var min_page = 1;
-
+    function changePageRelative(increment) {
+      var bounties = boundGetBounties();
       var $page = $('.funder-dashboard__all-bounties__pagination__page');
-      var oldPage = Number($page.html());
-      var newPage = oldPage + increment;
+      var $prev = $('.funder-dashboard__all-bounties__pagination__prev');
+      var $next = $('.funder-dashboard__all-bounties__pagination__next');
 
-      if (newPage > max_page) {
-        newPage = min_page;
-      }
-
-      if (newPage < min_page) {
-        newPage = max_page;
-      }
-
-      $page.html(newPage);
-      adjustPaginationControlsDisplayed(newPage, max_page, min_page);
-
-      clearBounties();
-      boundGetBounties();
+      utils.changePageRelative(bounties, increment, $page, $prev, $next, clearBounties, cbRenderBounties);
     }
 
     function changePageAbsolute(newPage) {
-      var $page = $('.funder-dashboard__all-bounties__pagination__page');
-
-      $page.html(newPage);
-      clearBounties();
-      boundGetBounties();
+      $('.funder-dashboard__all-bounties__pagination__page').html(newPage);
+      changePageRelative(0);
     }
 
     function clearBounties() {
@@ -587,7 +578,7 @@ $(function() {
       }
     }
 
-    function getBounties(bounties, cbRenderBounties) {
+    function getBounties(bounties) {
       var filterBaseSel = 'funder-dashboard__all-bounties__filter';
 
       var $typeStatusFilter = getTypeOrStatusFilter(filterBaseSel);
@@ -610,12 +601,7 @@ $(function() {
         return sortFn(fund1, fund2);
       });
 
-      var page = Number($('.funder-dashboard__all-bounties__pagination__page').html());
-      var PAGE_SIZE = 5;
-
-      filteredBounties = filteredBounties.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
-
-      cbRenderBounties(filteredBounties);
+      return filteredBounties;
 
       function getTypeOrStatusFilter(filterBaseSel) {
         return $(classSel(filterBaseSel) + '--type-or-status').find(':selected');
@@ -650,8 +636,10 @@ $(function() {
         urlExplorer = addQueryString('idx_status', 'open', urlExplorer);
       } else if ($this.hasClass(baseClassName + '--payments--all')) {
         urlExplorer = createdByMe(urlExplorer);
+        urlExplorer = addQueryString('idx_status', 'any', urlExplorer);
       } else if ($this.hasClass(baseClassName + '--bounties--all')) {
         urlExplorer = createdByMe(urlExplorer);
+        urlExplorer = addQueryString('idx_status', 'any', urlExplorer);
       }
 
       function addQueryString(key, value, url) {
