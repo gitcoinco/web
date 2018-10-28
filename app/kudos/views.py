@@ -32,17 +32,18 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
+from eth_utils import is_address, to_checksum_address, to_normalized_address
+from web3 import Web3
 
+from cacheops import cached_view_as
 from dashboard.models import Activity, Profile
 from dashboard.notifications import maybe_market_kudos_to_email
 from dashboard.utils import get_web3
 from dashboard.views import record_user_action
-from eth_utils import is_address, to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_master, get_github_primary_email
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
-from web3 import Web3
 
 from .forms import KudosSearchForm
 from .helpers import get_token
@@ -72,12 +73,18 @@ def get_profile(handle):
     return to_profile
 
 
+@cached_view_as(
+    Token.objects.select_related('contract').filter(
+        num_clones_allowed__gt=0, contract__is_latest=True, contract__network=settings.KUDOS_NETWORK, hidden=False,
+    )
+)
 def about(request):
     """Render the Kudos 'about' page."""
-    listings = Token.objects.filter(
+    listings = Token.objects.select_related('contract').filter(
         num_clones_allowed__gt=0,
         contract__is_latest=True,
         contract__network=settings.KUDOS_NETWORK,
+        hidden=False,
     ).order_by('-created_on')
     context = {
         'is_outside': True,
@@ -102,7 +109,7 @@ def marketplace(request):
     if q:
         listings = Token.objects.annotate(
             search=SearchVector('name', 'description', 'tags')
-        ).filter(
+        ).select_related('contract').filter(
             # Only show the latest contract Kudos for the current network
             num_clones_allowed__gt=0,
             contract__is_latest=True,
@@ -111,10 +118,11 @@ def marketplace(request):
             search=q
         ).order_by(order_by)
     else:
-        listings = Token.objects.filter(
+        listings = Token.objects.select_related('contract').filter(
             num_clones_allowed__gt=0,
             contract__is_latest=True,
             contract__network=settings.KUDOS_NETWORK,
+            hidden=False,
         ).order_by(order_by)
     context = {
         'is_outside': True,
@@ -262,7 +270,7 @@ def kudos_preferred_wallet(request, handle):
     profile = get_profile(str(handle).replace('@', ''))
 
     if profile and profile.preferred_payout_address:
-            response['addresses'].append(profile.preferred_payout_address)
+        response['addresses'].append(profile.preferred_payout_address)
 
     return JsonResponse(response)
 
