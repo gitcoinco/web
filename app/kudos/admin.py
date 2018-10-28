@@ -28,6 +28,11 @@ class GeneralAdmin(admin.ModelAdmin):
     ordering = ['-id']
 
 
+class TokenAdmin(admin.ModelAdmin):
+    ordering = ['-id']
+    search_fields = ['name', 'description']
+
+
 class TransferAdmin(admin.ModelAdmin):
     raw_id_fields = ['recipient_profile', 'sender_profile', 'kudos_token']
     ordering = ['-id']
@@ -51,6 +56,6 @@ class TransferAdmin(admin.ModelAdmin):
         return html
 
 
-admin.site.register(Token, GeneralAdmin)
+admin.site.register(Token, TokenAdmin)
 admin.site.register(KudosTransfer, TransferAdmin)
 admin.site.register(Wallet, GeneralAdmin)
