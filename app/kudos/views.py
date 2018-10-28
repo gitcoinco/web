@@ -78,6 +78,7 @@ def about(request):
         num_clones_allowed__gt=0,
         contract__is_latest=True,
         contract__network=settings.KUDOS_NETWORK,
+        hidden=False,
     ).order_by('-created_on')
     context = {
         'is_outside': True,
@@ -115,6 +116,7 @@ def marketplace(request):
             num_clones_allowed__gt=0,
             contract__is_latest=True,
             contract__network=settings.KUDOS_NETWORK,
+            hidden=False,
         ).order_by(order_by)
     context = {
         'is_outside': True,
@@ -262,7 +264,7 @@ def kudos_preferred_wallet(request, handle):
     profile = get_profile(str(handle).replace('@', ''))
 
     if profile and profile.preferred_payout_address:
-            response['addresses'].append(profile.preferred_payout_address)
+        response['addresses'].append(profile.preferred_payout_address)
 
     return JsonResponse(response)
 
