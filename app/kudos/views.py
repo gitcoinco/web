@@ -458,7 +458,7 @@ def receive(request, key, txid, network):
     kudos_emails = these_kudos_emails.filter(metadata__reference_hash_for_receipient=key) | these_kudos_emails.filter(
         metadata__reference_hash_for_funder=key)
     kudos_transfer = kudos_emails.first()
-    is_authed = not kudos_transfer.trust_url and request.user.username.replace('@', '') in [
+    is_authed = kudos_transfer.trust_url or request.user.username.replace('@', '') in [
         kudos_transfer.username.replace('@', ''),
         kudos_transfer.from_username.replace('@', '')
     ]
