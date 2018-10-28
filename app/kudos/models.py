@@ -218,7 +218,7 @@ class KudosTransfer(SendCryptoAsset):
     )
     # kudos_token is a reference to the new Kudos Token that is soon to be minted
     kudos_token = models.OneToOneField(
-        'kudos.Token', related_name='kudos_transfer', on_delete=models.SET_NULL, null=True
+        'kudos.Token', related_name='kudos_transfer', on_delete=models.SET_NULL, null=True, blank=True
     )
 
     recipient_profile = models.ForeignKey(
