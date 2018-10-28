@@ -51,6 +51,7 @@ class Command(BaseCommand):
         parser.add_argument('--private_key', help='private key for signing transactions', type=str)
         parser.add_argument('--debug', help='turn on debug statements', action='store_true')
         parser.add_argument('--live', help='whether or not to deploy the proposed changes live', action='store_true')
+        parser.add_argument('--filter', default='', type=str, dest='kudos_filter')
 
     def handle(self, *args, **options):
         # config
@@ -61,6 +62,7 @@ class Command(BaseCommand):
         network = options['network']
         gitcoin_account = options['gitcoin_account']
         gas_price_gwei = options['gas_price_gwei']
+        kudos_filter = options['kudos_filter']
 
         if gitcoin_account:
             account = settings.KUDOS_OWNER_ACCOUNT
@@ -78,6 +80,8 @@ class Command(BaseCommand):
             all_kudos = yaml.load(f)
 
         for __, kudos in enumerate(all_kudos):
+            if kudos_filter not in kudos['name']:
+                continue
             image_name = urllib.parse.quote(kudos.get('image'))
             if image_name:
                 # Support Open Sea
@@ -134,8 +138,9 @@ class Command(BaseCommand):
             for tag in tags:
                 attributes.append({"trait_type": "tag", "value": tag})
 
+            readable_name = humanize_name(kudos['name'])
             metadata = {
-                'name': humanize_name(kudos['name']),
+                'name': readable_name,
                 'image': image_path,
                 'description': kudos['description'],
                 'external_url': external_url,
@@ -168,4 +173,4 @@ class Command(BaseCommand):
                     else:
                         break
             else:
-                print('Dry run - Account: ', account, 'Skip')
+                print('Dry run - Name: ', readable_name, ' - Account: ', account, 'Skipping!')
