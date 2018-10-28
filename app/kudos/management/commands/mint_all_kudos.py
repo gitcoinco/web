@@ -50,6 +50,7 @@ class Command(BaseCommand):
         parser.add_argument('--account', help='public account address to use for transaction', type=str)
         parser.add_argument('--private_key', help='private key for signing transactions', type=str)
         parser.add_argument('--debug', help='turn on debug statements', action='store_true')
+        parser.add_argument('--live', help='whether or not to deploy the proposed changes live', action='store_true')
 
     def handle(self, *args, **options):
         # config
@@ -147,20 +148,24 @@ class Command(BaseCommand):
             else:
                 mint_to = kudos_contract._w3.toChecksumAddress(options['mint_to'])
 
-            for __ in range(1, 4):
-                try:
-                    token_uri_url = kudos_contract.create_token_uri_url(**metadata)
-                    args = (mint_to, kudos['priceFinney'], kudos['numClonesAllowed'], token_uri_url)
-                    kudos_contract.mint(
-                        *args,
-                        account=account,
-                        private_key=private_key,
-                        skip_sync=skip_sync,
-                        gas_price_gwei=gas_price_gwei,
-                    )
-                except Exception as e:
-                    logger.error('Error: %s - Trying to mint again' % e)
-                    time.sleep(2)
-                    continue
-                else:
-                    break
+            is_live = options['live']
+            if is_live:
+                for __ in range(1, 4):
+                    try:
+                        token_uri_url = kudos_contract.create_token_uri_url(**metadata)
+                        args = (mint_to, kudos['priceFinney'], kudos['numClonesAllowed'], token_uri_url)
+                        kudos_contract.mint(
+                            *args,
+                            account=account,
+                            private_key=private_key,
+                            skip_sync=skip_sync,
+                            gas_price_gwei=gas_price_gwei,
+                        )
+                    except Exception as e:
+                        logger.error('Error: %s - Trying to mint again' % e)
+                        time.sleep(2)
+                        continue
+                    else:
+                        break
+            else:
+                print('Dry run - Account: ', account, 'Skip')

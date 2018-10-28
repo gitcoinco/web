@@ -16,14 +16,11 @@
 
 '''
 
-import datetime
 import logging
 import warnings
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
-
-from kudos.utils import mint_kudos_on_web3_and_db
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 logging.getLogger("requests").setLevel(logging.WARNING)
@@ -64,4 +61,3 @@ class Command(BaseCommand):
         args = (options['name'], options['description'], options['rarity'], options['price'],
                 options['numClonesAllowed'], options['tags'], image_path)
 
-        mint_kudos_on_web3_and_db(network, private_key, *args)
