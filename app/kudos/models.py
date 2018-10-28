@@ -237,8 +237,6 @@ class KudosTransfer(SendCryptoAsset):
 
         super().save(*args, **kwargs)
 
-
-
     @property
     def receive_url(self):
         """URL used for indirect send.  Deprecated in favor of receive_url_for_recipient

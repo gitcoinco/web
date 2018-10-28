@@ -397,7 +397,7 @@ def maybe_market_kudos_to_email(kudos_transfer):
     # 2. Generate subject
     from_name = 'Someone' if not kudos_transfer.from_username else f'{kudos_transfer.from_username}'
     on_network = '' if kudos_transfer.network == 'mainnet' else f'({kudos_transfer.network})'
-    subject = gettext(f"⚡️ {from_username} Sent You a {kudos_transfer.kudos_token_cloned_from.humanized_name} Kudos {on_network}")
+    subject = gettext(f"⚡️ {from_name} Sent You a {kudos_transfer.kudos_token_cloned_from.humanized_name} Kudos {on_network}")
 
     logger.info(f'Emails to send to: {kudos_transfer.emails}')
 
