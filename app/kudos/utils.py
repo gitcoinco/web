@@ -28,6 +28,7 @@ from django.conf import settings
 import ipfsapi
 from dashboard.utils import get_web3
 from eth_utils import to_checksum_address
+from git.utils import get_emails_master
 from kudos.models import Contract, KudosTransfer, Token
 from web3.exceptions import BadFunctionCallOutput
 
@@ -64,57 +65,59 @@ def get_rarity_score(num_clones_allowed):
 
     Raises:
         ValueError: Raises an error if the number of clones allowed in less than one.
+
     """
     if not isinstance(num_clones_allowed, int):
         raise ValueError('num_clones_allowed must be an integer')
 
     if num_clones_allowed == 1:
         return 'One of a Kind'
-    elif 2 <= num_clones_allowed <= 5:
+    if 2 <= num_clones_allowed <= 5:
         return 'Legendary'
-    elif 6 <= num_clones_allowed <= 15:
+    if 6 <= num_clones_allowed <= 15:
         return 'Ultra'
-    elif 16 <= num_clones_allowed <= 35:
+    if 16 <= num_clones_allowed <= 35:
         return 'Very Rare'
-    elif 36 <= num_clones_allowed <= 100:
+    if 36 <= num_clones_allowed <= 100:
         return 'Rare'
-    elif 101 <= num_clones_allowed <= 200:
+    if 101 <= num_clones_allowed <= 200:
         return 'Special'
-    elif num_clones_allowed >= 201:
+    if num_clones_allowed >= 201:
         return 'Common'
-    else:
-        raise ValueError('num_clones_allowed must be greater than or equal to 1')
+    raise ValueError('num_clones_allowed must be greater than or equal to 1')
 
 
 class KudosError(Exception):
     """Base class for exceptions in this module."""
+
     pass
 
 
 class KudosTransferNotFound(KudosError):
-    """ Exception is raised when web3 and the database are out of sync.
+    """Exception is raised when web3 and the database are out of sync.
 
-
-        Attributes:
-        kudos_id -- the kudos id that has mismatched data
-        message -- explanation of the error
+    Attributes:
+    kudos_id -- the kudos id that has mismatched data
+    message -- explanation of the error
 
     """
+
     def __init__(self, kudos_id, message):
         self.kudos_id = kudos_id
         self.message = message
 
 
 class KudosMismatch(KudosError):
-    """ Exception is raised when web3 and the database are out of sync.
+    """Exception is raised when web3 and the database are out of sync.
 
-        Attributes:
-        kudos_id -- the kudos id that has mismatched data
-        kudos_web3 -- kudos attributes on web3
-        kudos_db -- kudos attritubes in the database
-        message -- explanation of the error
+    Attributes:
+        kudos_id: The kudos id that has mismatched data.
+        kudos_web3: Kudos attributes on web3.
+        kudos_db: Kudos attritubes in the database.
+        message: Explanation of the error.
 
     """
+
     def __init__(self, kudos_id, kudos_web3, kudos_db, message):
         self.kudos_id = kudos_id
         self.kudos_web3 = kudos_web3
@@ -132,15 +135,16 @@ class KudosContract:
     A call() is just a getter, and does not require gas, or an account to transact with.
     A transact() or transaction requires gas and typically changes state on the contract.
 
-        A transaction requires an account, because it needs somewhere to pull the gas from.
-        When working in Javascript and web3js, Metamask is used to handle this interaction.
-        When working in Python and web3py, there is no interaction with MetaMask so this
-        needs to be handled behind the scenes, by providing the account and private_key to
-        web3py to create the raw transaction.
+    A transaction requires an account, because it needs somewhere to pull the gas from.
+    When working in Javascript and web3js, Metamask is used to handle this interaction.
+    When working in Python and web3py, there is no interaction with MetaMask so this
+    needs to be handled behind the scenes, by providing the account and private_key to
+    web3py to create the raw transaction.
 
     Attributes:
         address (str): Eth address of the kudos contract
         network (str): The blockchain network (localhost, rinkeby, ropsten, mainnet)
+
     """
 
     def __init__(self, network='localhost', sockets=False):
@@ -170,7 +174,7 @@ class KudosContract:
 
         Args:
             kudos (list): A kudos object returned from the Kudos.sol contract.  Soldidity returns
-                          the Kudos strcut as an array.
+                the Kudos strcut as an array.
             metadata (dict): The metadata return from the tokenURI.
 
         Returns:
@@ -231,12 +235,12 @@ class KudosContract:
             for i in range(1, 4):
                 try:
                     f(self, *args, **kwargs)
-                except BadFunctionCallOutput as e:
+                except BadFunctionCallOutput:
                     logger.warning(f'A network error occurred when trying to mint the Kudos.')
                     logger.warning('Retrying...')
                     time.sleep(1)
                     continue
-                except KudosTransfer.DoesNotExist as e:
+                except KudosTransfer.DoesNotExist:
                     logger.warning('Retrying...')
                     time.sleep(1)
                     continue
@@ -277,15 +281,14 @@ class KudosContract:
         kudos['owner_address'] = self._contract.functions.ownerOf(kudos_id).call()
         kudos['contract_address'] = self._contract.address
         kudos['network'] = self.network
-        if Token.objects.filter(token_id=kudos_id).exists():
+        try:
             kudos_token = Token.objects.get(token_id=kudos_id)
             kudos['txid'] = kudos_token.txid
-            updated_kudos_token = Token(token_id=kudos_id, **kudos)
-            updated_kudos_token.save()
-        else:
+            Token.objects.create(token_id=kudos_id, **kudos)
+        except Token.DoesNotExist:
             kudos_token = Token(token_id=kudos_id, **kudos)
             kudos_token.save()
-        logger.info(f'Synced id #{kudos_token.token_id}, "{kudos_token.name}" kudos to the database.')
+            logger.info(f'Synced id #{kudos_token.token_id}, "{kudos_token.name}" kudos to the database.')
 
     def sync_db(self, kudos_id, txid):
         """Sync up the Kudos contract on the blockchain with the database.
@@ -293,8 +296,8 @@ class KudosContract:
         Args:
             kudos_id (int): Kudos Id
             txid (str): The transaction hash.
-        """
 
+        """
         # Handle the dummy Kudos
         if kudos_id == 0:
             return False
@@ -342,21 +345,21 @@ class KudosContract:
         """
         if self.network == 'mainnet':
             return to_checksum_address(settings.KUDOS_CONTRACT_MAINNET)
-        elif self.network == 'ropsten':
+        if self.network == 'ropsten':
             return to_checksum_address(settings.KUDOS_CONTRACT_ROPSTEN)
-        elif self.network == 'rinkeby':
+        if self.network == 'rinkeby':
             return to_checksum_address(settings.KUDOS_CONTRACT_RINKEBY)
-        elif self.network == 'localhost' or self.network == 'custom network':
+        if self.network == 'localhost' or self.network == 'custom network':
             # local testrpc
             return to_checksum_address(settings.KUDOS_CONTRACT_TESTRPC)
-        else:
-            raise ValueError('Unsupported network')
+        raise ValueError('Unsupported network')
 
     def _get_contract(self):
         """Load up the Kudos ABI from a .json file.
 
         Returns:
             obj: Web3py contract object.
+
         """
         with open('kudos/Kudos.json') as f:
             abi = json.load(f)
@@ -364,8 +367,7 @@ class KudosContract:
         return self._w3.eth.contract(address=address, abi=abi)
 
     def _resolve_account(self, account):
-        """
-        This method will return one of the following:
+        """This method will return one of the following:
             - the checksummed account address if the account is given
             - the local account if it can find it
             - raise an error if it can't resolve the account
@@ -384,11 +386,11 @@ class KudosContract:
         """
         if account:
             return to_checksum_address(account)
-        else:
-            try:
-                return self._w3.eth.accounts[0]
-            except IndexError:
-                raise RuntimeError('Please specify an account to use for transacting with the Kudos Contract.')
+
+        try:
+            return self._w3.eth.accounts[0]
+        except IndexError:
+            raise RuntimeError('Please specify an account to use for transacting with the Kudos Contract.')
 
     @log_args
     @may_require_key
@@ -414,6 +416,7 @@ class KudosContract:
 
         Returns:
             int: If a sync did occur, returns the kudos_id
+
         """
         account = self._resolve_account(account)
 
@@ -465,7 +468,8 @@ class KudosContract:
             skip_sync (bool, optional):  If True, don't sync the database after the mint.
 
         Returns:
-            int: The kudos_id
+            int: The kudos_id.
+
         """
         account = self._resolve_account(account)
         price_finney = self.getKudosById(args[1], to_dict=True)['price_finney']
@@ -509,7 +513,8 @@ class KudosContract:
             skip_sync (bool, optional):  If True, don't sync the database after the mint.
 
         Returns:
-            int: The kudos_id
+            int: The kudos_id.
+
         """
         account = self._resolve_account(account)
         kudos_id = args[1]
@@ -540,26 +545,22 @@ class KudosContract:
         """Contract call method.
 
         Args:
-            *args: From Kudos.sol:
-            getKudosById(uint256 tokenId)
+            *args: From Kudos.sol: getKudosById(uint256 tokenId)
             to_dict (bool, optional): Return a dictionary mapping instead of an array.
 
         Returns:
-            list or dict: From Kudos.sol:
-            returns (uint256 priceFinney, uint256 numClonesAllowed,
-                     uint256 numClonesInWild, uint256 clonedFromId
-                     )
+            list or dict: From Kudos.sol returns (uint256 priceFinney, uint256 numClonesAllowed,
+                uint256 numClonesInWild, uint256 clonedFromId)
+
         """
         kudos = self._contract.functions.getKudosById(args[0]).call()
         tokenURI = self._contract.functions.tokenURI(args[0]).call()
         ipfs_hash = tokenURI.split('/')[-1]
-
         metadata = self._ipfs.get_json(ipfs_hash)
 
         if to_dict:
             return self.get_kudos_map(kudos, metadata)
-        else:
-            return kudos
+        return kudos
 
     def getLatestId(self):
         """Contract call method.
@@ -569,6 +570,7 @@ class KudosContract:
 
         Returns:
             int: The latest token id.
+
         """
         return self._contract.functions.getLatestId().call()
 
@@ -579,22 +581,19 @@ class KudosContract:
             kudos_name (TYPE): Description
 
         Returns:
-            TYPE: Description
-        """
-        kudos_name = Token.objects.filter(name__iexact=kudos_name).first()
-        if not kudos_name:
-            return False
-        else:
-            return True
+            bool: Whether or not the token name exists.
 
-    def create_tokenURI_url(self, **kwargs):
+        """
+        return Token.objects.filter(name__iexact=kudos_name).exists()
+
+    def create_token_uri_url(self, **kwargs):
         """Create a tokenURI object, upload it to IPFS, and return the URL.
 
         Keyword Args:
             name (str):  Name of the kudos.
             image (str):  Image location of the kudos.  Should be a link to an image on the web.
             description (str):  Word description of the kudos.
-            attributes (dict):  Dictionary containing attirbutes of the kudos.
+            attributes (dict):  Dictionary containing attributes of the kudos.
                 tags (str): comma delimited tags.
                 number_of_clones_allowed (int): self explanatory.
                 rarity (int): integer from 0 to 100 (0 is most common).
@@ -603,16 +602,10 @@ class KudosContract:
 
         Returns:
             str: URL location on IPFS where the URI data is stored.
-        """
-        tokenURI = kwargs
-        logger.debug(f'tokenURI: {tokenURI}')
-        ipfs_hash = self._ipfs.add_json(tokenURI)
-        ipfs_url = f'{settings.IPFS_API_SCHEME}://{settings.IPFS_HOST}:{settings.IPFS_API_PORT}/api/v0/cat/{ipfs_hash}'
-        name = kwargs['name']
-        logger.info(f'Posted metadata for "{name}" to IPFS.')
-        logger.debug(f'ipfs_url for {kwargs["name"]}: {ipfs_url.replace("ipfs:", "localhost:")}')
 
-        return ipfs_url
+        """
+        ipfs_hash = self._ipfs.add_json(kwargs)
+        return f'{settings.IPFS_API_SCHEME}://{settings.IPFS_HOST}:{settings.IPFS_API_PORT}/api/v0/cat/{ipfs_hash}'
 
 
 def get_to_emails(params):
@@ -624,10 +617,11 @@ def get_to_emails(params):
 
     Args:
         params (dict): A dictionary parsed form the POST request.  Typically this is a POST
-                       request coming in from a Tips/Kudos send.
+            request coming in from a Tips/Kudos send.
 
     Returns:
         list: An array of email addresses to send the email to.
+
     """
     to_emails = []
 

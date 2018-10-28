@@ -74,7 +74,7 @@ urlpatterns = [
     ),
     re_path(r'^kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.details, name='kudos_details'),
     re_path(r'^kudos/address/(?P<handle>.*)', kudos.views.kudos_preferred_wallet, name='kudos_preferred_wallet'),
-    re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_details'),
+    re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_dynamic_img'),
 
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),

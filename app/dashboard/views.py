@@ -38,39 +38,37 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
-from eth_utils import to_checksum_address, to_normalized_address
-from pytz import UTC
-from web3 import HTTPProvider, Web3
 
 from app.utils import clean_str, ellipses, sync_profile
 from avatar.utils import get_avatar_context
 from economy.utils import convert_token_to_usdt
+from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
-from git.utils import (get_auth_url, get_github_user_data,
-                       is_github_token_valid, search_users)
+from git.utils import get_auth_url, get_github_user_data, is_github_token_valid, search_users
 from kudos.models import KudosTransfer, Token, Wallet
 from kudos.utils import humanize_name
-from marketing.mails import (admin_contact_funder, bounty_uninterested,
-                             start_work_approved, start_work_new_applicant,
-                             start_work_rejected)
+from marketing.mails import (
+    admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
+)
 from marketing.models import Keyword
+from pytz import UTC
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
+from web3 import HTTPProvider, Web3
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
-from .models import (Activity, Bounty, CoinRedemption, CoinRedemptionRequest,
-                     Interest, Profile, ProfileSerializer, Subscription, Tool,
-                     ToolVote, UserAction)
-from .notifications import (maybe_market_tip_to_email,
-                            maybe_market_tip_to_github,
-                            maybe_market_tip_to_slack, maybe_market_to_email,
-                            maybe_market_to_github, maybe_market_to_slack,
-                            maybe_market_to_twitter,
-                            maybe_market_to_user_discord,
-                            maybe_market_to_user_slack)
-from .utils import (get_bounty, get_bounty_id, get_context, get_web3,
-                    has_tx_mined, record_user_action_on_interest,
-                    web3_process_bounty)
+from .models import (
+    Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tool,
+    ToolVote, UserAction,
+)
+from .notifications import (
+    maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
+    maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_discord,
+    maybe_market_to_user_slack,
+)
+from .utils import (
+    get_bounty, get_bounty_id, get_context, get_web3, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
+)
 
 logger = logging.getLogger(__name__)
 
