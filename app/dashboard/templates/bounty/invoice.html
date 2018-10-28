@@ -116,6 +116,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
   .rtl table tr td:nth-child(2) {
     text-align: left;
   }
+
   </style>
 {% endblock head %}
 
@@ -124,7 +125,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 <body class="g-font-muli">
   <div class="invoice-box">
     {% if bounty.network != 'mainnet' %}
-    <div style="color:red; border: 1px red solid; padding: 5px;">
+      <div style="color:red; border: 1px red solid; padding: 5px;">
         {% trans "Note: This is not a mainnet bounty, it is a " %} {{bounty.network}} {% trans "bounty, and this invoice is only for demonstration purposes." %}
       </div>
     {% endif %}
@@ -136,7 +137,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               <td class="title">
                 <img src="{% static "v2/images/presskit/GitCoinLogoText.svg" %}" style="width:100%; max-width:300px;">
               </td>
-
               <td>
                 {% trans "Invoice" %} #: {{bounty.pk}}<br>
                 {% trans "Created" %}: {{bounty.web3_created}}<br>
@@ -148,7 +148,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           </table>
         </td>
       </tr>
-
       <tr class="information">
         <td colspan="2">
           <table>
@@ -160,7 +159,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                 49 Bogart Street Suite 22 <br>
                 Brooklyn, NY 11206 <br>
               </td>
-
               <td>
                 {% trans "Prepared for Funder" %}: <br>
                 {{bounty.bounty_owner_address}}<br>
@@ -171,61 +169,50 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
           </table>
         </td>
       </tr>
-
       <tr class="heading">
         <td>
           {% trans "Payment Method" %}
         </td>
-
         <td>
           {% trans "Account" %} #
         </td>
       </tr>
-
       <tr class="details">
         <td>
           {% trans "Directly to counterparties via Ethereum Blockchain" %}
         </td>
-
         <td>
           0x2af47a65da8cd66729b4209c22017d6a5c2d2400
         </td>
       </tr>
-
       <tr class="heading">
         <td>
           Item
         </td>
-
         <td>
           Price
         </td>
       </tr>
-
       {% for fullfillment in accepted_fulfillments %}
         <tr class="item">
           <td>
             {% trans "Direct Payment to " %}{{fullfillment.fulfiller_github_username}} {{fullfillment.fulfiller_address}}
           </td>
-
           <td>
             {{bounty.value_true}} {{bounty.token_name}} (${{bounty.get_value_in_usdt|floatformat:2}})
           </td>
         </tr>
       {% endfor %}
-
       {% for tip in tips %}
         <tr class="item">
           <td>
             Direct Payment to {{tip.username}} {{tip.receive_address}}
           </td>
-
           <td>
             {{tip.value_true}} {{tip.tokenName}} (${{tip.value_in_usdt|floatformat:2}})
           </td>
         </tr>
       {% endfor %}
-
       {% if not tips and not accepted_fulfillments %}
         <tr class="item">
           <td colspan="2">
@@ -237,14 +224,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               {{bounty.token_name}} )
             {% trans " is present. )" %}
           </td>
-
         </tr>
       {% endif %}
 
-
       <tr class="total">
         <td></td>
-
         <td>
           {% if total %}
              {% trans "Total:" %} ${{total|floatformat:2}}
