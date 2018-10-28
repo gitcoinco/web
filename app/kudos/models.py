@@ -86,6 +86,7 @@ class Token(SuperModel):
     contract = models.ForeignKey(
         'kudos.Contract', related_name='kudos_contract', on_delete=models.SET_NULL, null=True
     )
+    hidden = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if self.owner_address:
@@ -226,6 +227,7 @@ class KudosTransfer(SendCryptoAsset):
     sender_profile = models.ForeignKey(
         'dashboard.Profile', related_name='sent_kudos', on_delete=models.SET_NULL, null=True, blank=True
     )
+    trust_url = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if self.from_address:

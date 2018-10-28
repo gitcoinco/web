@@ -107,6 +107,7 @@ def marketplace(request):
             num_clones_allowed__gt=0,
             contract__is_latest=True,
             contract__network=settings.KUDOS_NETWORK,
+            hidden=False,
             search=q
         ).order_by(order_by)
     else:
@@ -457,7 +458,7 @@ def receive(request, key, txid, network):
     kudos_emails = these_kudos_emails.filter(metadata__reference_hash_for_receipient=key) | these_kudos_emails.filter(
         metadata__reference_hash_for_funder=key)
     kudos_transfer = kudos_emails.first()
-    is_authed = request.user.username.replace('@', '') in [
+    is_authed = not kudos_transfer.trust_url and request.user.username.replace('@', '') in [
         kudos_transfer.username.replace('@', ''),
         kudos_transfer.from_username.replace('@', '')
     ]
