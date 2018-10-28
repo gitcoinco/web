@@ -281,7 +281,7 @@ class Contract(SuperModel):
 
     def __str__(self):
         """Return the string representation of a model."""
-        return f"{self.address} / {self.address} / {self.is_latest}"
+        return f"{self.address} / {self.network} / {self.is_latest}"
 
 
 
