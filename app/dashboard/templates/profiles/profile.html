@@ -238,61 +238,62 @@
               </div>
             {% endfor %}
 		{% else %}
-		<br>
-		<div class="row justify-content-center">
-			<img width="240px" height="225px" src="{% static "v2/images/tree.png" %}"/>
-		</div><br>
-		<div class="text-center" style="color: #666666; font-size: 16px">
-			{% trans 'Oops! Looks like this user has not participated in any bounty yet.' %}<br>
-			{% trans 'In the meantime, here are some things you can do:' %}
-		</div><br>
-		<div class="justify-content-center row">
-			<div style="width: 25%"  class="card col-6 col-lg-3 mt-1 mr-1 p-1 justify-content-center">
-				<div class="row justify-content-center">
-					<img class="m-1" src="{% static "v2/images/IssueExplorer.svg" %}" />
-				</div>
-    			<div class="row m-1 text-center" style="color: #666666">
-					{% trans 'Start working on exciting bounties with the Issue Explorer' %}
-				</div>
-				<div class="row justify-content-center mt-auto">
-   					<a class="btn btn-xs btn-success pulseClick mt-3 mb-1" href="{% url "explorer" %}" style="background-color: #3E00FF; color: #FFFFFF; font-size: 1em">
-						{% trans 'Go to Issue Explorer' %}
-					</a>
-				</div>
+			<div class="row justify-content-center mt-2">
+				<img width="240px" height="225px" src="{% static "v2/images/tree.png" %}"/>
 			</div>
-			<div style="width: 25%" class="card col-6 col-lg-3 mt-1 mr-1 p-1 justify-content-center">
-				<div class="row justify-content-center">
-					<img class="m-1" src="{% static "v2/images/Leaderboard.svg" %}" />
-				</div>
-    			<div class="row text-center m-1" style="color: #666666">
-					{% trans 'Looking for awesome contributors to work on your project?' %}
-				</div>
-				<div class="row justify-content-center mt-auto">
-   					<a class="btn btn-xs btn-success pulseClick mt-3 mb-1" href="{% url "_leaderboard" %}" style="background-color: #3E00FF; color: #FFFFFF; font-size: 1em">
-						{% trans 'Go to Leaderboard' %}
-					</a>
-				</div>
+			<div class="mt-2 text-center" style="color: #666666; font-size: 16px">
+				{% trans 'Oops! Looks like this user has not participated in any bounty yet.' %}<br>
+				{% trans 'In the meantime, here are some things you can do:' %}
 			</div>
-			<div style="width: 25%"  class="card col-6 col-lg-3 mt-1 mr-1 p-1 justify-content-center">
-				<div class="row justify-content-center">
-					<img class="m-1" src="{% static "v2/images/Slack.svg" %} " />
+			<div class="justify-content-center row mt-2 mb-2">
+				<div class="col-6 col-lg-1"></div>
+				<div class="card col-6 col-lg-3 mt-1 mr-1 p-1 justify-content-center">
+					<div class="row justify-content-center">
+						<img class="m-1" src="{% static "v2/images/IssueExplorer.svg" %}" />
+					</div>
+	    			<div class="row m-1 text-center" style="color: #666666">
+						{% trans 'Start working on exciting bounties with the Issue Explorer' %}
+					</div>
+					<div class="row justify-content-center mt-auto">
+	   					<a class="btn btn-xs btn-success pulseClick mt-3 mb-1" href="{% url "explorer" %}" style="background-color: #3E00FF; color: #FFFFFF; font-size: 1em">
+							{% trans 'Go to Issue Explorer' %}
+						</a>
+					</div>
 				</div>
-    			<div class="row m-1 text-center" style="color: #666666">
-					{% trans 'Have any questions or suggestions? Join our Slack channel!' %}
+				<div class="card col-6 col-lg-3 mt-1 mr-1 p-1 justify-content-center">
+					<div class="row justify-content-center">
+						<img class="m-1" src="{% static "v2/images/Leaderboard.svg" %}" />
+					</div>
+	    			<div class="row text-center m-1" style="color: #666666">
+						{% trans 'Looking for awesome contributors to work on your project?' %}
+					</div>
+					<div class="row justify-content-center mt-auto">
+	   					<a class="btn btn-xs btn-success pulseClick mt-3 mb-1" href="{% url "_leaderboard" %}" style="background-color: #3E00FF; color: #FFFFFF; font-size: 1em">
+							{% trans 'Go to Leaderboard' %}
+						</a>
+					</div>
 				</div>
-				<div class="row justify-content-center mt-auto">
-   					<a class="btn btn-xs btn-success pulseClick mt-3 mb-1" href="{% url "slack" %}" style="background-color: #3E00FF; color: #FFFFFF; font-size: 1em">
-						{% trans 'Join our Slack' %}
-					</a>
+				<div class="card col-6 col-lg-3 mt-1 mr-1 p-1 justify-content-center">
+					<div class="row justify-content-center">
+						<img class="m-1" src="{% static "v2/images/Slack.svg" %} " />
+					</div>
+	    			<div class="row m-1 text-center" style="color: #666666">
+						{% trans 'Have any questions or suggestions? Join our Slack channel!' %}
+					</div>
+					<div class="row justify-content-center mt-auto">
+	   					<a class="btn btn-xs btn-success pulseClick mt-3 mb-1" href="{% url "slack" %}" style="background-color: #3E00FF; color: #FFFFFF; font-size: 1em">
+							{% trans 'Join our Slack' %}
+						</a>
+					</div>
 				</div>
+				<div class="col-6 col-lg-1"></div>
 			</div>
-		</div><br>
-      {% endif %}
-    {% endif %}
-  </div>
-      </div>
-      </div>
-      </div>
+	    {% endif %}
+	{% endif %}
+	      </div>
+	    </div>
+	  </div>
+	</div>
 
     {% include 'shared/result.html' %}
 
