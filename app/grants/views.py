@@ -249,7 +249,7 @@ def grant_fund(request, grant_id):
         subscription.contributor_signature = request.POST.get('signature', '')
         subscription.contributor_address = request.POST.get('contributor_address', '')
         subscription.amount_per_period = request.POST.get('amount_per_period', 0)
-        subscription.token_address = request.POST.get('token_address', '')
+        subscription.token_address = request.POST.get('denomination', '')
         subscription.gas_price = request.POST.get('gas_price', 0)
         subscription.network = request.POST.get('network', '')
         subscription.contributor_profile = profile
