@@ -237,6 +237,8 @@ class KudosTransfer(SendCryptoAsset):
 
         super().save(*args, **kwargs)
 
+
+
     @property
     def receive_url(self):
         """URL used for indirect send.  Deprecated in favor of receive_url_for_recipient
@@ -278,6 +280,11 @@ class Contract(SuperModel):
         if self.address:
             self.address = to_checksum_address(self.address)
         super().save(*args, **kwargs)
+
+    def __str__(self):
+        """Return the string representation of a model."""
+        return f"{self.address} / {self.address} / {self.is_latest}"
+
 
 
 class Wallet(SuperModel):
