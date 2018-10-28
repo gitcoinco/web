@@ -26,7 +26,7 @@ from django.utils.translation import gettext
 from django.utils.translation import gettext_lazy as _
 
 import requests
-from marketing.models import AccountDeletionRequest
+from marketing.models import AccountDeletionRequest, LeaderboardRank
 from slackclient import SlackClient
 from slackclient.exceptions import SlackClientError
 
@@ -153,6 +153,7 @@ def validate_discord_integration(webhook_url, message=None, icon_url=''):
         result['output'] = _('An error has occurred.')
     return result
 
+
 def should_suppress_notification_email(email, email_type):
     from marketing.models import EmailSubscriber
     queryset = EmailSubscriber.objects.filter(email__iexact=email)
@@ -209,7 +210,8 @@ def get_platform_wide_stats(since_last_n_days=90):
     from dashboard.models import Bounty, BountyFulfillment
 
     last_n_days = datetime.now() - timedelta(days=since_last_n_days)
-    bounties = Bounty.objects.stats_eligible().current().filter(created_on__gte=last_n_days)
+    bounties = Bounty.objects.current().filter(network='mainnet', created_on__gte=last_n_days)
+    bounties = bounties.exclude(interested__isnull=True)
     total_bounties = bounties.count()
     completed_bounties = bounties.filter(idx_status__in=['done'])
     terminal_state_bounties = bounties.filter(idx_status__in=['done', 'expired', 'cancelled'])
@@ -235,8 +237,8 @@ def get_platform_wide_stats(since_last_n_days=90):
 
     bounty_fulfillments = BountyFulfillment.objects.filter(
         accepted_on__gte=last_n_days).order_by('-bounty__value_in_token')[:5]
-    profiles = bounty_fulfillments.values_list('fulfiller_github_username')
-    hunters = [username[0] for username in profiles]
+    num_items = 10
+    hunters = LeaderboardRank.objects.active().filter(leaderboard='quarterly_earners').order_by('-amount')[0:num_items].values_list('github_username', flat=True)
 
     # Overall transactions across the network are hard-coded for now
     total_transaction_in_usd = round(sum(

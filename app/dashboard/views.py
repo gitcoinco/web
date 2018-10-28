@@ -25,20 +25,28 @@ import time
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
+from django.template import loader
 from django.template.response import TemplateResponse
 from django.templatetags.static import static
 from django.utils import timezone
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
 from app.utils import clean_str, ellipses, sync_profile
 from avatar.utils import get_avatar_context
+from economy.utils import convert_token_to_usdt
+from eth_utils import to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_auth_url, get_github_user_data, is_github_token_valid, search_users
+from kudos.models import KudosTransfer, Token, Wallet
+from kudos.utils import humanize_name
 from marketing.mails import (
     admin_contact_funder, bounty_uninterested, start_work_approved, start_work_new_applicant, start_work_rejected,
 )
@@ -59,7 +67,7 @@ from .notifications import (
     maybe_market_to_user_slack,
 )
 from .utils import (
-    get_bounty, get_bounty_id, get_context, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
+    get_bounty, get_bounty_id, get_context, get_web3, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
 )
 
 logger = logging.getLogger(__name__)
@@ -137,7 +145,6 @@ def record_bounty_activity(bounty, user, event_name, interest=None):
         return Activity.objects.create(**kwargs)
     except Exception as e:
         logger.error(f"error in record_bounty_activity: {e} - {event_name} - {bounty} - {user}")
-
 
 
 def helper_handle_access_token(request, access_token):
@@ -1105,6 +1112,10 @@ def profile(request, handle):
 
     """
     status = 200
+    order_by = request.GET.get('order_by', '-modified_on')
+    owned_kudos = None
+    sent_kudos = None
+    owned_kudos_comments_public = None
 
     try:
         if not handle and not request.user.is_authenticated:
@@ -1133,8 +1144,92 @@ def profile(request, handle):
                 },
             },
         }
+        return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
+    context['preferred_payout_address'] = profile.preferred_payout_address
+
+    if context['preferred_payout_address']:
+        owned_kudos = Token.objects.select_related('kudos_transfer', 'contract').filter(
+            Q(owner_address__iexact=context['preferred_payout_address']) |
+            Q(kudos_transfer__recipient_profile=profile),
+            contract__network=settings.KUDOS_NETWORK
+        ).distinct('id').order_by('id', order_by)
+        sent_kudos = Token.objects.select_related('kudos_transfer', 'contract').filter(
+            Q(kudos_transfer__from_address__iexact=context['preferred_payout_address']) |
+            Q(kudos_transfer__sender_profile=profile),
+            contract__network=settings.KUDOS_NETWORK,
+        ).distinct('id').order_by('id', order_by)
+
+    if owned_kudos:
+        owned_kudos_comments_public = []
+        for kudos_token in owned_kudos:
+            try:
+                owned_kudos_comments_public.append(kudos_token.kudos_transfer.comments_public)
+            except Exception as e:
+                logger.error(e)
+
+    context['kudos_comments_public'] = owned_kudos_comments_public
+    context['kudos'] = owned_kudos
+    context['sent_kudos'] = sent_kudos
+
+    if request.method == 'POST' and request.is_ajax():
+        # Send kudos data when new preferred address
+        address = request.POST.get('address')
+        context['kudos'] = Token.objects.select_related('kudos_transfer', 'contract').filter(
+            Q(owner_address__iexact=address) |
+            Q(kudos_transfer__recipient_profile=profile),
+            contract__network=settings.KUDOS_NETWORK,
+        ).distinct('id').order_by('id', order_by)
+        context['sent_kudos'] = Token.objects.select_related('contract', 'kudos_transfer').filter(
+            Q(kudos_transfer__from_address__iexact=address) |
+            Q(kudos_transfer__sender_profile=profile),
+            contract__network=settings.KUDOS_NETWORK,
+        ).distinct('id').order_by('id', order_by)
+        profile.preferred_payout_address = address
+        kudos_html = loader.render_to_string('shared/profile_kudos.html', context)
+
+        try:
+            profile.save()
+        except Exception as e:
+            logger.error(e)
+            msg = {
+                'status': 500,
+                'msg': _('Internal server error'),
+            }
+        else:
+            msg = {
+                'status': 200,
+                'msg': _('Success!'),
+                'wallets': [profile.preferred_payout_address, ],
+                'kudos_html': kudos_html,
+            }
+
+        return JsonResponse(msg, status=msg.get('status', 200))
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
+
+
+def lazy_load_kudos(request):
+    page = request.POST.get('page', 1)
+    address = request.POST.get('address')
+    context = {}
+    datarequest = request.POST.get('request')
+    order_by = request.GET.get('order_by', '-modified_on')
+    limit = int(request.GET.get('limit', 8))
+    query_kwargs = {'contract__network': settings.KUDOS_NETWORK}
+
+    if datarequest == 'mykudos':
+        key = 'kudos'
+        query_kwargs['owner_address__iexact'] = address
+    else:
+        key = 'sent_kudos'
+        query_kwargs['sent_from_address__iexact'] = address
+
+    context[key] = Token.objects.filter(owner_address__iexact=address, **query_kwargs).order_by(order_by)
+    paginator = Paginator(context[key], limit)
+
+    kudos = paginator.get_page(page)
+    kudos_html = loader.render_to_string('shared/kudos_card_profile.html', {'kudos': kudos})
+    return JsonResponse({'kudos_html': kudos_html, 'has_next': kudos.has_next()})
 
 
 @csrf_exempt
@@ -1235,7 +1330,7 @@ def sync_web3(request):
 
 
 # LEGAL
-
+@xframe_options_exempt
 def terms(request):
     context = {
         'title': _('Terms of Use'),
@@ -1602,6 +1697,43 @@ def get_users(request):
             profile_json['avatar_id'] = None
             profile_json['preferred_payout_address'] = None
             results.append(profile_json)
+        data = json.dumps(results)
+    else:
+        raise Http404
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
+
+def get_kudos(request):
+    autocomplete_kudos = {
+        'copy': "No results found.  Try these categories: ",
+        'autocomplete': ['rare','common','ninja','soft skills','programming']
+    }
+    if request.is_ajax():
+        q = request.GET.get('term')
+        eth_to_usd = convert_token_to_usdt('ETH')
+        kudos_by_name = Token.objects.filter(name__icontains=q)
+        kudos_by_desc = Token.objects.filter(description__icontains=q)
+        kudos_by_tags = Token.objects.filter(tags__icontains=q)
+        kudos_pks = (kudos_by_desc | kudos_by_name | kudos_by_tags).values_list('pk', flat=True)
+        kudos = Token.objects.filter(pk__in=kudos_pks).order_by('name')
+        results = []
+        for token in kudos:
+            kudos_json = {}
+            kudos_json['id'] = token.id
+            kudos_json['token_id'] = token.token_id
+            kudos_json['name'] = token.name
+            kudos_json['name_human'] = humanize_name(token.name)
+            kudos_json['description'] = token.description
+            kudos_json['image'] = token.image
+
+            kudos_json['price_finney'] = token.price_finney / 1000
+            kudos_json['price_usd'] = eth_to_usd * kudos_json['price_finney']
+            kudos_json['price_usd_humanized'] = f"${round(kudos_json['price_usd'], 2)}"
+
+            results.append(kudos_json)
+        if not results:
+            results = [autocomplete_kudos]
         data = json.dumps(results)
     else:
         raise Http404

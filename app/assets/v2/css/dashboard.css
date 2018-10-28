@@ -74,8 +74,6 @@ body {
 .title-row {
   display: flex;
   margin-top: 2em;
-  margin-right: 8px;
-  padding-bottom: 5px;
   float: right;
   border-bottom: 2px solid #3E24FB;
 }
@@ -200,15 +198,11 @@ body {
   }
 }
 
-@media (min-width: 992px) and (max-width: 1024px) {
+@media (max-width: 991.98px) {
 
   .bounty_row {
-    padding-left: 1rem;
-    padding-right: 2rem;
+    padding-left: 0;
   }
-}
-
-@media (max-width: 991.98px) {
 
   #onboard-dashboard .robot {
     display: none;
@@ -220,15 +214,6 @@ body {
   #onboard-dashboard .col-12 {
     padding-left: 3em;
     padding-right: 3em;
-  }
-
-  #filter {
-    padding-left: 20px;
-  }
-
-  .bounty_row {
-    padding-left: 1em;
-    padding-right: 2em;
   }
 
   .bounty-info {

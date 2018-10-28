@@ -36,6 +36,7 @@
   <body class="index d-flex flex-column g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     {% cookielaw_banner %}
+    {% include 'shared/top_nav.html' with class='d-md-flex' %}
     {% include 'shared/nav.html' %}
     <div id="landing_page_wrapper">
       <div class="container-fluid header header-contributor">
@@ -46,6 +47,9 @@
         {% include 'landing/contributor/benefits.html' %}
       </div>
 
+      <div class="container-fluid pb-5 landing__newsletter">
+        {% include 'shared/newsletter.html' %}
+      </div>
 
       {% if tech_stack %}
         <div class="container-fluid p-5 open-bounties">
@@ -58,10 +62,6 @@
           {% include 'landing/contributor/activity.html' %}
         </div>
       {% endif %}
-
-      <div class="container-fluid pb-5 landing__newsletter">
-        {% include 'shared/newsletter.html' %}
-      </div>
 
       <div class="container-fluid p-5 whatisit_container">
         {% include 'shared/what_is_gitcoin.html' with video='DJartWzDn0E' %}

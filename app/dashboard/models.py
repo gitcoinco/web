@@ -456,6 +456,18 @@ class Bounty(SuperModel):
         """
         return any(profile.fulfiller_github_username == handle for profile in self.fulfillments.all())
 
+    def is_fulfiller(self, handle):
+        """Determine whether or not the profile is the bounty is_fulfiller.
+
+        Args:
+            handle (str): The profile handle to be compared.
+
+        Returns:
+            bool: Whether or not the user is the bounty is_fulfiller.
+
+        """
+        return any(profile.fulfiller_github_username == handle for profile in self.fulfillments.filter(accepted=True).all())
+
     def is_funder(self, handle):
         """Determine whether or not the profile is the bounty funder.
 
@@ -1042,22 +1054,17 @@ class Subscription(SuperModel):
         return f"{self.email} {self.created_on}"
 
 
-class TipPayoutException(Exception):
-    pass
-
-
-class Tip(SuperModel):
+class SendCryptoAsset(SuperModel):
+    """Abstract Base Class to handle the model for both Tips and Kudos."""
 
     web3_type = models.CharField(max_length=50, default='v3')
     emails = JSONField(blank=True)
     url = models.CharField(max_length=255, default='', blank=True)
-    tokenName = models.CharField(max_length=255)
+    tokenName = models.CharField(max_length=255, default='ETH')
     tokenAddress = models.CharField(max_length=255)
     amount = models.DecimalField(default=1, decimal_places=4, max_digits=50)
-    comments_priv = models.TextField(default='', blank=True)
     comments_public = models.TextField(default='', blank=True)
     ip = models.CharField(max_length=50)
-    expires_date = models.DateTimeField()
     github_url = models.URLField(null=True, blank=True)
     from_name = models.CharField(max_length=255, default='', blank=True)
     from_email = models.CharField(max_length=255, default='', blank=True)
@@ -1069,18 +1076,15 @@ class Tip(SuperModel):
     received_on = models.DateTimeField(null=True, blank=True)
     from_address = models.CharField(max_length=255, default='', blank=True)
     receive_address = models.CharField(max_length=255, default='', blank=True)
-    recipient_profile = models.ForeignKey(
-        'dashboard.Profile', related_name='received_tips', on_delete=models.SET_NULL, null=True, blank=True
-    )
-    sender_profile = models.ForeignKey(
-        'dashboard.Profile', related_name='sent_tips', on_delete=models.SET_NULL, null=True, blank=True
-    )
     metadata = JSONField(default=dict, blank=True)
     is_for_bounty_fulfiller = models.BooleanField(
         default=False,
         help_text='If this option is chosen, this tip will be automatically paid to the bounty'
                   ' fulfiller, not self.usernameusername.',
     )
+
+    class Meta:
+        abstract = True
 
     def __str__(self):
         """Return the string representation for a tip."""
@@ -1117,28 +1121,6 @@ class Tip(SuperModel):
         try:
             return org_name(self.github_url)
         except Exception:
-            return None
-
-    @property
-    def receive_url(self):
-        if self.web3_type == 'yge':
-            return self.url
-        elif self.web3_type == 'v3':
-            return self.receive_url_for_recipient
-        elif self.web3_type != 'v2':
-            raise Exception
-
-        return self.receive_url_for_recipient
-
-    @property
-    def receive_url_for_recipient(self):
-        if self.web3_type != 'v3':
-            raise Exception
-
-        try:
-            key = self.metadata['reference_hash_for_receipient']
-            return f"{settings.BASE_URL}tip/receive/v3/{key}/{self.txid}/{self.network}"
-        except:
             return None
 
     # TODO: DRY
@@ -1226,6 +1208,46 @@ class Tip(SuperModel):
                 network=self.network).order_by('-web3_created').first()
         except Bounty.DoesNotExist:
             return None
+
+
+class Tip(SendCryptoAsset):
+    """ Inherit from SendCryptoAsset base class, and extra fields that are needed for Tips. """
+    expires_date = models.DateTimeField(null=True, blank=True)
+    comments_priv = models.TextField(default='', blank=True)
+    recipient_profile = models.ForeignKey(
+        'dashboard.Profile', related_name='received_tips', on_delete=models.SET_NULL, null=True, blank=True
+    )
+    sender_profile = models.ForeignKey(
+        'dashboard.Profile', related_name='sent_tips', on_delete=models.SET_NULL, null=True, blank=True
+    )
+
+    @property
+    def receive_url(self):
+        if self.web3_type == 'yge':
+            return self.url
+        elif self.web3_type == 'v3':
+            return self.receive_url_for_recipient
+        elif self.web3_type != 'v2':
+            raise Exception
+
+        return self.receive_url_for_recipient
+
+    @property
+    def receive_url_for_recipient(self):
+        if self.web3_type != 'v3':
+            logger.error('Web3 type is not "v3"')
+            return ''
+
+        try:
+            key = self.metadata['reference_hash_for_receipient']
+            return f"{settings.BASE_URL}tip/receive/v3/{key}/{self.txid}/{self.network}"
+        except Exception as e:
+            logger.warning('Receive url for Tip recipient not found')
+            return ''
+
+
+class TipPayoutException(Exception):
+    pass
 
 
 @receiver(pre_save, sender=Tip, dispatch_uid="psave_tip")
@@ -1537,6 +1559,7 @@ class Profile(SuperModel):
     form_submission_records = JSONField(default=list, blank=True)
     max_num_issues_start_work = models.IntegerField(default=3)
     preferred_payout_address = models.CharField(max_length=255, default='', blank=True)
+    preferred_kudos_wallet = models.OneToOneField('kudos.Wallet', related_name='preferred_kudos_wallet', on_delete=models.SET_NULL, null=True, blank=True)
     max_tip_amount_usdt_per_tx = models.DecimalField(default=500, decimal_places=2, max_digits=50)
     max_tip_amount_usdt_per_week = models.DecimalField(default=1500, decimal_places=2, max_digits=50)
 
@@ -1726,9 +1749,9 @@ class Profile(SuperModel):
         user_fulfilled_bounties = False
         user_funded_bounties = False
         last_quarter = datetime.now() - timedelta(days=90)
-        bounties = self.bounties.filter(modified_on__gte=last_quarter)
+        bounties = self.bounties.filter(created_on__gte=last_quarter, network='mainnet')
         fulfilled_bounties = [
-            bounty for bounty in bounties if bounty.is_hunter(self.handle) and bounty.status == 'done'
+            bounty for bounty in bounties if bounty.is_fulfiller(self.handle) and bounty.status == 'done'
         ]
         fulfilled_bounties_count = len(fulfilled_bounties)
         funded_bounties = self.get_funded_bounties()

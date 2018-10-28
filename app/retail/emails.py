@@ -17,6 +17,7 @@
 
 '''
 import logging
+from functools import partial
 
 from django.conf import settings
 from django.contrib import messages
@@ -33,6 +34,8 @@ import premailer
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
+
+logger = logging.getLogger(__name__)
 
 # RENDERERS
 
@@ -94,6 +97,48 @@ def render_tip_email(to_email, tip, is_new):
     return response_html, response_txt
 
 
+def render_kudos_email(to_email, kudos_transfer, is_new, html_template, text_template=None):
+    """Summary
+
+    Args:
+        to_emails (list): An array of email addresses to send the email to.
+        kudos_transfer (model): An instance of the `kudos.model.KudosTransfer` object.  This contains the information about the kudos that will be cloned.
+        is_new (TYPE): Description
+
+    Returns:
+        tup: response_html, response_txt
+    """
+    warning = kudos_transfer.network if kudos_transfer.network != 'mainnet' else ""
+    already_redeemed = bool(kudos_transfer.receive_txid)
+    link = kudos_transfer.receive_url_for_recipient
+    params = {
+        'link': link,
+        'amount': round(kudos_transfer.amount, 5),
+        'token_elem': kudos_transfer.kudos_token or kudos_transfer.kudos_token_cloned_from,
+        'kudos_token:': kudos_transfer.kudos_token,
+        'comments_public': kudos_transfer.comments_public,
+        'kudos_transfer': kudos_transfer,
+        'already_redeemed': already_redeemed,
+        'is_new': is_new,
+        'warning': warning,
+        'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'is_sender': to_email not in kudos_transfer.emails,
+        'is_receiver': to_email in kudos_transfer.emails,
+    }
+
+    response_html = premailer_transform(render_to_string(html_template, params))
+    response_txt = render_to_string(text_template, params) if text_template else None
+
+    return response_html, response_txt
+
+
+render_new_kudos_email = partial(render_kudos_email, html_template='emails/new_kudos.html', text_template='emails/new_kudos.txt')
+render_sent_kudos_email = partial(render_kudos_email, html_template='emails/new_kudos.html', text_template='emails/new_kudos.txt')
+render_kudos_accepted_email = partial(render_kudos_email, html_template='emails/new_kudos.html', text_template='emails/new_kudos.txt')
+render_kudos_mint_email = partial(render_kudos_email, html_template='emails/kudos_mint.html', text_template=None)
+render_kudos_mkt_email = partial(render_kudos_email, html_template='emails/kudos_mkt.html', text_template=None)
+
+
 def render_match_email(bounty, github_username):
     params = {
         'bounty': bounty,
@@ -110,6 +155,7 @@ def render_quarterly_stats(to_email, platform_wide_stats):
     profile = Profile.objects.filter(email=to_email).first()
     quarterly_stats = profile.get_quarterly_stats
     params = {**quarterly_stats, **platform_wide_stats}
+    params['profile'] = profile
     params['subscriber'] = get_or_save_email_subscriber(to_email, 'internal'),
     print(params)
     response_html = premailer_transform(render_to_string("emails/quarterly_stats.html", params))
@@ -521,11 +567,12 @@ def render_start_work_applicant_expired(interest, bounty):
     return response_html, response_txt, subject
 
 
+
 # ROUNDUP_EMAIL
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "CodeFund Grows | Hacktober Begins"
+    subject = "Gitcoin on Epicenter | Marketing Your Bounties"
 
     intro = '''
 
@@ -533,24 +580,21 @@ def render_new_bounty_roundup(to_email):
 Hi there,
 </p>
 <p>
-<a href="https://codefund.io/">CodeFund</a> wants to support open source projects everywhere!
-By placing ethical ads in beautiful places, <a href="https://twitter.com/codeberry">Eric Berry</a> and team have been providing Discourse, CodeSandbox, and Material-UI
-and countless others with sources of revenue to support their projects. The CodeFund team just added a superstar, <a href="https://codefund.io/team">Nate Hopkins</a>,
-to the team as CTO, and we're excited about the future of the product. If you want to advertise to developers, there's no better way!
-<br>
-<a href="https://codefund.io">Checkout CodeFund's new website to learn more</a>
+This week, we were on <a href="https://epicenter.tv/episode/257/">Epicenter</a>, a leading blockchain podcast. I talked about Gitcoin's platform and progress, our interest in
+growing open source, and the future of Gitcoin. There are a few sneak peeks in there for those interested in our Q4 plans :)
 </p>
 <p>
-Hacktoberfest is in full swing! Take a look here for issues tagged <a href="https://gitcoin.co/explorer?network=mainnet&keywords=hacktoberfest&order_by=-web3_created">'Hacktoberfest'</a>
- which have been funded with Gitcoin bounties, across projects like Ruby For Good, Peepeth, Giveth and more.
+We also released a post about <a href="https://medium.com/gitcoin/increasing-action-on-your-gitcoin-bounty-61bb278f6f54">increasing action on Gitcoin bounties</a>. This is an important post for funders looking to grow their
+open source project with top notch Gitcoiners. Give it a look and let us know if you have any feedback!
 </p>
 <p>
-The Gitcoin Core team is on the move! If you'll be at ETH SF (Oct 5-7), Github Universe (Oct 16-17), Web 3 Summit (Oct 22 - 24), SustainOSS (Oct 25), or Devcon 4, give us a shout!
+We had a great time at Github Universe (Oct 16-17) this past week representing Gitcoin and CodeFund.
+If you'll be at Web 3 Summit (Oct 22 - 24), Sustain OSS (Oct 25) or Devcon 4, give us a shout!
 </p>
 <h3>What else is new?</h3>
     <ul>
         <li>
-        With travel, Gitcoin Livestream is cancelled this week. We'll be back next week as regularly scheduled.
+        The Gitcoin Livestream is back as regularly scheduled this week. <a href="https://gitcoin.co/livestream">Join us at 5PM ET</a>!
         </li>
     </ul>
 </p>
@@ -559,34 +603,34 @@ Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'cryptomental',
+        'who': 'g-r-a-n-t',
         'who_link': True,
-        'what': 'Back to help out on Status Embark!',
-        'link': 'https://gitcoin.co/issue/embark-framework/embark/946/1306',
+        'what': 'Congrats to g-r-a-n-t on his first bounty!',
+        'link': 'https://gitcoin.co/issue/ethereum/eth-bloom/22/1534',
         'link_copy': 'View more',
     }, {
-        'who': 'evgeniuz',
+        'who': 'svenski123',
         'who_link': True,
-        'what': 'Fixed an Avatar Bug this week!',
-        'link': 'https://gitcoin.co/issue/diadata-org/coindata/1/1259',
+        'what': 'A new Gitcoiner contributing to a new Gitcoin Project, Node Stratum!',
+        'link': 'https://gitcoin.co/issue/foxer666/node-stratum-pool/32/1493',
         'link_copy': 'View more',
     }, {
-        'who': 'sameer2800',
+        'who': 'satyamakgec',
         'who_link': True,
-        'what': 'Completed a UI makeover funded in \'RHOC\' token!',
-        'link': 'https://gitcoin.co/issue/JoshOrndorff/BitStory/1/1298',
+        'what': 'Helped build a sample app for Pulse Blockchain!',
+        'link': 'https://gitcoin.co/issue/PulseBlockchain/oz-sample-app/10/1479',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/matterinc/PeepethClient/issues/14',
-        'primer': 'Hacktoberfest alert! A Peepeth client.',
+        'url': 'https://github.com/karalabe/hive/issues/133',
+        'primer': 'Help move forward Ethereum testing.',
     }, {
-        'url': 'https://github.com/EthWorks/UniversalLoginSDK/issues/88',
-        'primer': 'Work on an EthWorks bounty funded by the ECF.',
+        'url': 'https://github.com/dckc/RSign/issues/1',
+        'primer': 'Get paid in RHOC for helping with FireFox support.',
     }, {
-        'url': 'https://github.com/walleth/kethereum/issues/44',
-        'primer': 'Work on SpongyCastle with Walleth',
+        'url': 'https://github.com/poanetwork/blockscout/issues/942',
+        'primer': 'Work on POA Network, a leading blockchain project.'
     }, ]
 
     num_leadboard_items = 5
@@ -643,6 +687,7 @@ Back to BUIDLing,
     return response_html, response_txt, subject
 
 
+
 # DJANGO REQUESTS
 
 
@@ -651,6 +696,33 @@ def new_tip(request):
     from dashboard.models import Tip
     tip = Tip.objects.last()
     response_html, _ = render_tip_email(settings.CONTACT_EMAIL, tip, True)
+
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def new_kudos(request):
+    from kudos.models import KudosTransfer
+    kudos_transfer = KudosTransfer.objects.last()
+    response_html, _ = render_new_kudos_email(settings.CONTACT_EMAIL, kudos_transfer, True)
+
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def kudos_mint(request):
+    from kudos.models import KudosTransfer
+    kudos_transfer = KudosTransfer.objects.last()
+    response_html, _ = render_kudos_mint_email(settings.CONTACT_EMAIL, kudos_transfer, True)
+
+    return HttpResponse(response_html)
+
+
+@staff_member_required
+def kudos_mkt(request):
+    from kudos.models import KudosTransfer
+    kudos_transfer = KudosTransfer.objects.last()
+    response_html, _ = render_kudos_mkt_email(settings.CONTACT_EMAIL, kudos_transfer, True)
 
     return HttpResponse(response_html)
 
@@ -795,8 +867,13 @@ def roundup(request):
 @staff_member_required
 def quarterly_roundup(request):
     from marketing.utils import get_platform_wide_stats
+    from dashboard.models import Profile
     platform_wide_stats = get_platform_wide_stats()
     email = settings.CONTACT_EMAIL
+    handle = request.GET.get('handle')
+    if handle:
+        profile = Profile.objects.filter(handle=handle).first()
+        email = profile.email
     response_html, _ = render_quarterly_stats(email, platform_wide_stats)
     return HttpResponse(response_html)
 

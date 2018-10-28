@@ -40,6 +40,7 @@ import external_bounties.views
 import faucet.views
 import gitcoinbot.views
 import healthcheck.views
+import kudos.views
 import linkshortener.views
 import marketing.views
 import marketing.webhookviews
@@ -48,11 +49,32 @@ import retail.views
 import tdi.views
 from dashboard.router import router as dbrouter
 from external_bounties.router import router as ebrouter
+from kudos.router import router as kdrouter
 
 from .sitemaps import sitemaps
 
 urlpatterns = [
     path('jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
+
+    # kudos
+    path('kudos/', kudos.views.about, name='kudos_main'),
+    path('kudos/about/', kudos.views.about, name='kudos_about'),
+    path('kudos/marketplace/', kudos.views.marketplace, name='kudos_marketplace'),
+    path('kudos/mint/', kudos.views.mint, name='kudos_mint'),
+    path('kudos/send/', kudos.views.send_2, name='kudos_send'),
+    path('kudos/send/3/', kudos.views.send_3, name='kudos_send_3'),
+    path('kudos/send/4/', kudos.views.send_4, name='kudos_send_4'),
+    re_path(r'^lazy_load_kudos/$', dashboard.views.lazy_load_kudos, name='lazy_load_kudos'),
+    re_path(r'^kudos/receive/v3/(?P<key>.*)/(?P<txid>.*)/(?P<network>.*)?', kudos.views.receive, name='kudos_receive'),
+    re_path(r'^kudos/search/$', kudos.views.search, name='kudos_search'),
+    re_path(
+        r'^kudos/(?P<address>\w*)/(?P<token_id>\d+)/(?P<name>\w*)',
+        kudos.views.details_by_address_and_token_id,
+        name='kudos_details_by_address_and_token_id'
+    ),
+    re_path(r'^kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.details, name='kudos_details'),
+    re_path(r'^kudos/address/(?P<handle>.*)', kudos.views.kudos_preferred_wallet, name='kudos_preferred_wallet'),
+    re_path(r'^dynamic/kudos/(?P<kudos_id>\d+)/(?P<name>\w*)', kudos.views.image, name='kudos_dynamic_img'),
 
     # api views
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
@@ -60,9 +82,10 @@ urlpatterns = [
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
     url(r'^api/v0.1/', include(dbrouter.urls)),
     url(r'^api/v0.1/', include(ebrouter.urls)),
-    url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cloudfront
+    url(r'^api/v0.1/', include(kdrouter.urls)),
+    url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cluodfront
     url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
-
+    url(r'^api/v0.1/kudos_search/', dashboard.views.get_kudos, name='kudos_search'),
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),
     re_path(r'^lbcheck/?', healthcheck.views.lbcheck, name='lbcheck'),
@@ -252,6 +275,9 @@ urlpatterns = [
 
     # admin views
     re_path(r'^_administration/?', admin.site.urls, name='admin'),
+    path('_administration/email/new_kudos', retail.emails.new_kudos, name='new_kudos'),
+    path('_administration/email/kudos_mint', retail.emails.kudos_mint, name='kudos_mint'),
+    path('_administration/email/kudos_mkt', retail.emails.kudos_mkt, name='kudos_mkt'),
     path('_administration/email/new_bounty', retail.emails.new_bounty, name='admin_new_bounty'),
     path('_administration/email/roundup', retail.emails.roundup, name='roundup'),
     path('_administration/email/faucet_rejected', retail.emails.faucet_rejected, name='email_faucet_rejected'),
