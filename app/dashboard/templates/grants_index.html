@@ -41,6 +41,12 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         color: #454545;
       }
 
+      .grant-item__cover {
+        max-height: 200px;
+        object-fit: cover;
+        border-radius: 4px 4px 0 0;
+      }
+
       .grant-item__pitch {
         color: #9B9B9B;
         line-height: 18px;
@@ -110,9 +116,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         padding-bottom: 3em;
       }
 
-      a {text-decoration: none;}
+      #nohover a, a:hover, a:focus {
+        background-color: transparent !important;
+        color: none !important;
+        text-decoration: none !important;
+       }
 
-      img { object-fit: cover;}
+      img {
+        object-fit: cover;
+      }
 
     </style>
     {% include 'shared/head.html' %}
@@ -142,7 +154,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
               , are a fast, easy, & secure way to provide recurring token contributions to your favorite OSS maintainers. Show your appreciation for maintainers in your dependancy tree with a Gitcoin Grant today.
               {% endblocktrans %}
             </p>
-            <a href="https://consensys1mac.typeform.com/to/HFcZKe" >
+            <a href="https://consensys1mac.typeform.com/to/HFcZKe">
               <span class="button button--primary">
                 {% trans 'Create a Grant' %}
               </span>
@@ -155,10 +167,10 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
     <div class="container grants-container">
      <div class="row">
         <div class="col-12 col-md-6 col-lg-4 mb-4">
-          <a href="https://consensys1mac.typeform.com/to/HFcZKe" >
+          <a href="https://consensys1mac.typeform.com/to/HFcZKe" id='nohover'>
             <div class="grant-item">
+              <img src="http://bits.owocki.com/99883def4d56/Screen%20Shot%202018-10-29%20at%208.39.44%20PM.png" class="grant-item__cover w-100" height="200">
               <div class="grant-item__content py-4 px-3">
-                <img src="http://bits.owocki.com/99883def4d56/Screen%20Shot%202018-10-29%20at%208.39.44%20PM.png" class="col-12">
                 <h2 class="grant-item__title font-subheader">Support the ETHMagicians</h2>
                 <p class="grant-item__pitch font-caption">There are over 300 ETHMagicians, but the ETHMagicians only have one mission: to make Ethereum as technically great as it can be.  Support their quest to make Ethereum great with a Gitcoin Grant today!</p>
                 <div class="grant-item__footer">
@@ -166,7 +178,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <div class="grant-item__owner-image mr-2">
                       <img src="https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg">
                     </div>
-                    <div class="grant-item__owner-handle font-body">{% trans 'by' %} <span>captnseagraves</span></div>
+                    <div class="grant-item__owner-handle font-body">{% trans 'by' %} <span>thelostone-mc</span></div>
                   </div>
                   <div class="progress progress--small">
                     <div class="progress-bar" role="progressbar" style="width: 43%" aria-valuenow="43%" aria-valuemin="0" aria-valuemax="100"></div>
@@ -195,8 +207,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <div class="col-12 col-md-6 col-lg-4 mb-4">
           <a href="https://consensys1mac.typeform.com/to/HFcZKe" >
             <div class="grant-item">
+              <img src="https://images.unsplash.com/photo-1523764282555-892d818c83c6?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=9fa81ab1d634589145008984eeef515b&auto=format&fit=crop&w=1050&q=80" class="grant-item__cover w-100" height="200">
               <div class="grant-item__content py-4 px-3">
-                <img src="https://images.unsplash.com/photo-1523764282555-892d818c83c6?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=9fa81ab1d634589145008984eeef515b&auto=format&fit=crop&w=1050&q=80" class="col-12" >
                 <h2 class="grant-item__title font-subheader">Support Austin Griffith & the MetaCartel</h2>
                 <p class="grant-item__pitch font-caption">Austin has been BUIDLing at the intersection of usability, universal logins, metaTx, for 3 months.    Support his work to make Ethereum as usability as possible</p>
                 <div class="grant-item__footer">
@@ -204,7 +216,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
                     <div class="grant-item__owner-image mr-2">
                       <img src="https://c.gitcoin.co/avatars/39fe9ba776f063a7f5b4ee068ef64c64/mbeacom.svg">
                     </div>
-                    <div class="grant-item__owner-handle font-body">{% trans 'by' %} <span>thelostone-mc</span></div>
+                    <div class="grant-item__owner-handle font-body">{% trans 'by' %} <span>mbeacom</span></div>
                   </div>
                   <div class="progress progress--small">
                     <div class="progress-bar" role="progressbar" style="width: 80%" aria-valuenow="80%" aria-valuemin="0" aria-valuemax="100"></div>
@@ -233,8 +245,8 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <div class="col-12 col-md-6 col-lg-4 mb-4">
           <a href="https://consensys1mac.typeform.com/to/HFcZKe" >
             <div class="grant-item">
+              <img src="http://bits.owocki.com/42be97a5579a/World-01.jpg" class="grant-item__cover w-100" height="200">
               <div class="grant-item__content py-4 px-3">
-                <img src="http://bits.owocki.com/42be97a5579a/World-01.jpg" class="col-12">
                 <h2 class="grant-item__title font-subheader">The community Audit Fund</h2>
                 <p class="grant-item__pitch font-caption">The community security audit fund offers cost-free audits to projects that are contributing major value to the commons in the Ethereum space.</p>
                 <div class="grant-item__footer">
