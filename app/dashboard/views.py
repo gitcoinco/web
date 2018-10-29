@@ -82,9 +82,8 @@ def grants(request):
 
     params = {
         'active': 'dashboard',
-        'title': _('Grants Explorer'),
-        'keywords': get_keywords()
-    }
+        'title': _('Grants Explorer')
+        }
     return TemplateResponse(request, 'grants_index.html', params)
 
 def record_user_action(user, event_name, instance):
