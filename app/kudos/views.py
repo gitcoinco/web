@@ -527,3 +527,7 @@ def receive(request, key, txid, network):
     }
 
     return TemplateResponse(request, 'transaction/receive.html', params)
+
+def receive_bulk(request):
+    params = {}
+    return TemplateResponse(request, 'transaction/receive_bulk.html', params)
