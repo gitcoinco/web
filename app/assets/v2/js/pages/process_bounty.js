@@ -255,6 +255,7 @@ window.onload = function() {
 
         // send both tip and payout
         var send_tip_and_payout_callback = function() {
+          _alert({ message: gettext('You will now be asked to confirm another transaction (please check metamask, sometimes the second popup doesnt come up).') }, 'info');
           if ($('#tipPercent').val() > 0) {
             attach_and_send_tip(send_payout);
           } else {

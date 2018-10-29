@@ -320,7 +320,7 @@ def send_3(request):
     is_user_authenticated = request.user.is_authenticated
     from_username = request.user.username if is_user_authenticated else ''
     primary_from_email = request.user.email if is_user_authenticated else ''
-    access_token = request.user.profile.get_access_token() if is_user_authenticated else ''
+    access_token = request.user.profile.get_access_token() if is_user_authenticated and request.user.profile else ''
     to_emails = []
 
     params = json.loads(request.body)
