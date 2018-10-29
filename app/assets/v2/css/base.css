@@ -689,6 +689,7 @@ input[type=text].loading {
 
 .alert .message .content{
   display: inline;
+  word-break: break-all;
 }
 
 .alert .message::before {
