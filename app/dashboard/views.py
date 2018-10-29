@@ -564,19 +564,14 @@ def accept_bounty(request):
 
     """
     bounty = handle_bounty_views(request)
-    bounty_params = {
-        'fulfillment_id': request.GET.get('id'),
-        'fulfiller_address': request.GET.get('address'),
-    }
-
     params = get_context(
         ref_object=bounty,
         user=request.user if request.user.is_authenticated else None,
         confirm_time_minutes_target=confirm_time_minutes_target,
         active='accept_bounty',
         title=_('Process Issue'),
-        update=bounty_params,
     )
+    params['open_fulfillments'] = bounty.fulfillments.filter(accepted=False)
     return TemplateResponse(request, 'process_bounty.html', params)
 
 

@@ -254,6 +254,10 @@ div.button-pink {
   font-size: 0.55rem;
 }
 
+.font-smallest {
+  font-size: 0.1rem;
+}
+
 .center-block {
   margin-left: auto;
   margin-right: auto;
