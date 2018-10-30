@@ -1852,5 +1852,33 @@
     - just for fun
     - memes
   image: trollolo.svg
+- name: attaboy
+  description: Attaboy is the Kudos for those who give the most attaboy's.. The most prolific senders of Kudos deserve an attaboy Kudos!
+  priceFinney: 1
+  numClonesAllowed: 500
+  tags:
+    - common
+    - just for fun
+    - soft skills
+  image: attaboy.svg
+- name: i_was_told_there_would_be_lambos
+  description: I was told there would be lambos on the moon
+  priceFinney: 1
+  numClonesAllowed: 500
+  tags:
+    - common
+    - just for fun
+    - memes
+  image: i_was_told_there_would_be_lambos.svg
+- name: zk_snarks
+  description: For the users of the spooky math ZK Snarks
+  priceFinney: 1
+  numClonesAllowed: 500
+  tags:
+    - common
+    - programming
+    - cryptography
+    - math
+  image: zk_snarks.svg
 
 
