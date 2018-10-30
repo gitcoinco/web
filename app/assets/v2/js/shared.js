@@ -255,11 +255,11 @@ var showLoading = function() {
 };
 
 /** Add the current profile to the interested profiles list. */
-var add_interest = function(bounty_pk, data) {
+var add_interest = function(bounty_pk, data, callbackError = null) {
   if (document.interested) {
     return;
   }
-  mutate_interest(bounty_pk, 'new', data);
+  mutate_interest(bounty_pk, 'new', data, callbackError);
 };
 
 /** Remove the current profile from the interested profiles list. */
@@ -272,7 +272,7 @@ var remove_interest = function(bounty_pk, slash = false) {
 };
 
 /** Helper function -- mutates interests in either direction. */
-var mutate_interest = function(bounty_pk, direction, data) {
+var mutate_interest = function(bounty_pk, direction, data, callbackError = null) {
   var request_url = '/actions/bounty/' + bounty_pk + '/interest/' + direction + '/';
 
   showBusyOverlay();
@@ -304,6 +304,7 @@ var mutate_interest = function(bounty_pk, direction, data) {
     }
 
     _alert({ message: alertMsg }, 'error');
+    callbackError(alertMsg)
 
   });
 };

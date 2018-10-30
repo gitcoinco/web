@@ -629,6 +629,10 @@ var show_interest_modal = function() {
         $(self).parent().attr('title', '<div class="tooltip-info tooltip-sm">' + gettext('Notify the funder that you will not be working on this project') + '</div>');
         add_interest(document.result['pk'], {
           issue_message: msg
+        }, (alertMessage) => {
+          if (alertMessage.includes('You may only work on max of')) {
+            $(self).find('span').text(gettext('Start Work'));
+          }
         });
         $.modal.close();
       });
