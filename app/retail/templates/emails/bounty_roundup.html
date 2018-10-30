@@ -95,17 +95,17 @@
     <h3>{% trans "Kudos" %}</h3>
     <h5>{% trans "Recognition throughout the platform" %}</h5>
     <div style="text-align: center;">
-    {% for kudos in kudos_highlights %}
       <ul>
+        {% for kudos in kudos_highlights %}
         {% if kudos.recipient_profile and kudos.sender_profile %}
           <li style="list-style:none; margin-bottom: 5px;">
               <a style="font-weight: bold; text-decoration: none;" href="{% url "profile" kudos.recipient_profile.handle %}">{{ kudos.recipient_profile.handle }}</a> received {{ kudos.name|humanize_name }} <a style="font-weight: bold; text-decoration: none;" href="{% url 'profile' kudos.sender_profile.handle %}">{{ kudos.sender_profile.handle }}</a><br>
             {% endif %}
-            <a href="{% url 'kudos_details' kudos.kudos_token.token_id kudos.kudos_token.name  %}"><img src="{{ kudos.kudos_token.img_url }}"></a>
+            <a href="{% url 'kudos_details' kudos.kudos_token_cloned_from.token_id kudos.kudos_token_cloned_from.name  %}"><img src="{{ kudos.kudos_token_cloned_from.img_url }}"></a>
 
             {% if kudos.kudos_token %}
-              <a href="{% url 'kudos_details' kudos.kudos_token.token_id kudos.kudos_token.name %}">
-                <img src="{{ kudos.kudos_token.img_url }}">
+              <a href="{% url 'kudos_details' kudos.kudos_token_cloned_from.token_id kudos.kudos_token_cloned_from.name %}">
+                <img src="{{ kudos.kudos_token_cloned_from.img_url }}">
               </a>
               <br>
               {{ kudos.comments_public }}
