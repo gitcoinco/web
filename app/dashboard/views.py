@@ -1697,7 +1697,9 @@ def get_users(request):
                 profile_json['avatar_id'] = None
                 profile_json['avatar_url'] = result.avatar_url
                 profile_json['preferred_payout_address'] = None
-                results.append(profile_json)
+                # dont dupe github profiles and gitcoin profiles in user search
+                if profile_json['text'].lower() not in [p['text'].lower() for p in profiles]:
+                    results.append(profile_json)
         # just take users word for it
         if not profiles:
             profile_json = {}
