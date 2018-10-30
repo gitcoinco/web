@@ -46,6 +46,7 @@ import marketing.webhookviews
 import retail.emails
 import retail.views
 import tdi.views
+import grants.views
 from dashboard.router import router as dbrouter
 from external_bounties.router import router as ebrouter
 
@@ -62,6 +63,7 @@ urlpatterns = [
     url(r'^api/v0.1/', include(ebrouter.urls)),
     url(r'^actions/api/v0.1/', include(dbrouter.urls)),  # same as active, but not cached in cloudfront
     url(r'^api/v0.1/users_search/', dashboard.views.get_users, name='users_search'),
+    url(r'^api/v0.1/grants_search/', grants.views.get_grants, name='grants_search'),
 
     # Health check endpoint
     re_path(r'^health/', include('health_check.urls')),

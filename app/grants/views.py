@@ -30,11 +30,13 @@ from django.shortcuts import redirect
 from django.template.response import TemplateResponse
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
+from django.http import HttpResponse, JsonResponse
 
 from grants.forms import MilestoneForm
 from grants.models import Grant, Milestone, Subscription
 from marketing.models import Keyword
 from web3 import HTTPProvider, Web3
+
 
 logger = logging.getLogger(__name__)
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
@@ -53,6 +55,10 @@ def grants(request):
     keyword = request.GET.get('q')
 
     if keyword:
+        grants_by_title = Grant.objects.filter(title__icontains=keyword)
+        grants_by_desc = Grant.objects.filter(description__icontains=keyword)
+        grants_by_url = Grant.objects.filter(reference_url__icontains=keyword)
+        grants_pks = (grants_by_desc | grants_by_title | grants_by_url).values_list('pk', flat=True)
         _grants = Grant.objects.filter(title__icontains = keyword).order_by(sort)
     else:
         _grants = Grant.objects.all().order_by(sort)
@@ -67,6 +73,35 @@ def grants(request):
         'keywords': get_keywords(),
     }
     return TemplateResponse(request, 'grants/index.html', params)
+
+
+def get_grants(request):
+    """Search grants by name, description and url."""
+
+    if request.is_ajax():
+        q = request.GET.get('q')
+        grants_by_title = Grant.objects.filter(title__icontains=q)
+        grants_by_desc = Grant.objects.filter(description__icontains=q)
+        grants_by_url = Grant.objects.filter(reference_url__icontains=q)
+        grants_pks = (grants_by_desc | grants_by_title | grants_by_url).values_list('pk', flat=True)
+        grants = Grant.objects.filter(pk__in=grants_pks).order_by('name')
+        results = []
+
+        for grant in grants:
+            _grant = {}
+            _grant['id'] = grant.id
+            _grant['active'] = grant.active
+            _grant['title'] = grant.title
+            _grant['description'] = grant.description
+            _grant['reference_url'] = grant.reference_url
+            # _grant['logo'] = grant.logo
+            results.append(_grant)
+
+        data = json.dumps(results)
+    else:
+        raise Http404
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
 
 
 def grant_details(request, grant_id):

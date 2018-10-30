@@ -32,6 +32,7 @@ grants.search = () => {
 
     const url = '/grants?q=' + filter;
 
+    location.replace(url);
     grants.search_request = $.get(url, (results, status) => {
       // TODO : Repaint Grants
     });
