@@ -657,7 +657,7 @@ Back to BUIDLing,
         'primer': 'Work on a project with Mikey Microphone, a Gitcoin OG.'
     }, ]
 
-    highlight_kudos_ids = [64, 63, 62, 61, 59]  # Represent IDs/PKs of KudosTransfers
+    highlight_kudos_ids = []  # Represent IDs/PKs of KudosTransfers; Optional.  We will pull the latest ones if not.
 
     num_leadboard_items = 5
     #### don't need to edit anything below this line
