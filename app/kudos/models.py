@@ -157,9 +157,17 @@ class Token(SuperModel):
         self.num_clones_available = self.get_num_clones_available()
         return self
 
+    @property
+    def gen(self):
+        if self.pk == self.cloned_from_id:
+            return "x"
+        if not self.cloned_from_id:
+            return 0
+        return Token.objects.get(pk=self.cloned_from_id).gen + 1
+
     def __str__(self):
         """Return the string representation of a model."""
-        return f"{self.contract.network} Kudos Token: {self.humanized_name}"
+        return f"{self.contract.network} Gen {self.gen} Kudos Token: {self.humanized_name}"
 
     @property
     def as_img(self):
