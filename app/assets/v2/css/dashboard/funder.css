@@ -299,5 +299,15 @@ tr {
 }
 
 .funder-dashboard__stats__stat--total-budget__budget-input__submit {
-  min-width: 250px;
+  min-width: 260px;
+}
+
+.funder-dashboard__outgoing-funds__pagination {
+  position: relative;
+  right: -1rem;
+}
+
+.funder-dashboard__all-bounties__pagination {
+  position: relative;
+  right: -1rem;
 }
