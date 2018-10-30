@@ -1429,11 +1429,13 @@ class Activity(models.Model):
         ('bounty_removed_by_staff', 'Removed from Bounty by Staff'),
         ('bounty_removed_by_funder', 'Removed from Bounty by Funder'),
         ('new_crowdfund', 'New Crowdfund Contribution'),
+        ('new_kudos', 'New Kudos'),
     ]
 
     profile = models.ForeignKey('dashboard.Profile', related_name='activities', on_delete=models.CASCADE)
     bounty = models.ForeignKey('dashboard.Bounty', related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
     tip = models.ForeignKey('dashboard.Tip', related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
+    kudos = models.ForeignKey('kudos.KudosTransfer', related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True)
     metadata = JSONField(default=dict)
@@ -1458,6 +1460,7 @@ class Activity(models.Model):
             'start_work': 'fa-lightbulb',
             'new_bounty': 'fa-money-bill-alt',
             'work_done': 'fa-check-circle',
+            'new_kudos': 'fa-thumbs-up',
         }
 
         activity = self

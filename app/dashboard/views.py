@@ -38,6 +38,8 @@ from django.utils.translation import gettext_lazy as _
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
+from django.views.decorators.clickjacking import xframe_options_exempt
+from economy.utils import convert_token_to_usdt
 
 from app.utils import clean_str, ellipses, sync_profile
 from avatar.utils import get_avatar_context
@@ -55,12 +57,17 @@ from pytz import UTC
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
 from web3 import HTTPProvider, Web3
+from django.template import loader
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from kudos.utils import humanize_name
+
 
 from .helpers import get_bounty_data_for_activity, handle_bounty_views
 from .models import (
     Activity, Bounty, CoinRedemption, CoinRedemptionRequest, Interest, Profile, ProfileSerializer, Subscription, Tool,
     ToolVote, UserAction,
 )
+from kudos.models import Wallet
 from .notifications import (
     maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack, maybe_market_to_email,
     maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter, maybe_market_to_user_discord,
@@ -69,6 +76,8 @@ from .notifications import (
 from .utils import (
     get_bounty, get_bounty_id, get_context, get_web3, has_tx_mined, record_user_action_on_interest, web3_process_bounty,
 )
+
+from eth_utils import to_checksum_address, to_normalized_address
 
 logger = logging.getLogger(__name__)
 
@@ -1216,6 +1225,42 @@ def profile(request, handle):
 
         return JsonResponse(msg, status=msg.get('status', 200))
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
+
+def lazy_load_kudos(request):
+    page = request.POST.get('page')
+    address = request.POST.get('address')
+    context= {}
+    # with this attr from the button clicked we know if we request kudos or sent kudos
+    datarequest = request.POST.get('request')
+    order_by = request.GET.get('order_by', '-modified_on')
+    # use Django’s pagination
+    # https://docs.djangoproject.com/en/dev/topics/pagination/
+    results_per_page = 8
+
+    if datarequest == 'mykudos':
+        context['kudos'] = Token.objects.filter(owner_address=to_checksum_address(address)).order_by(order_by)
+        paginator = Paginator(context['kudos'], results_per_page)
+    else :
+        context['sent_kudos'] = Token.objects.filter(sent_from_address=to_checksum_address(address)).order_by(order_by)
+        paginator = Paginator(context['sent_kudos'], results_per_page)
+
+    try:
+        kudos = paginator.page(page)
+    except PageNotAnInteger:
+        kudos = paginator.page(2)
+    except EmptyPage:
+        kudos = paginator.page(paginator.num_pages)
+    # build a html kudos list with the paginated kudos
+    kudos_html = loader.render_to_string(
+        'shared/kudos_card_profile.html',
+        {'kudos':kudos}
+    )
+    # package output data and return it as a JSON object
+    output_data = {
+        'kudos_html': kudos_html,
+        'has_next': kudos.has_next()
+    }
+    return JsonResponse(output_data)
 
 
 def lazy_load_kudos(request):

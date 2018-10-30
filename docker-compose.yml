@@ -9,6 +9,18 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
 
+  pgweb:
+    image: sosedoff/pgweb
+    environment:
+        - DATABASE_URL=postgres://postgres:postgres@db:5432?sslmode=disable
+    links:
+        - db
+    ports:
+        - "8081:8081"
+    depends_on:
+      - db
+    restart: "on-failure:10"
+
   ipfs:
     image: ipfs/go-ipfs:release
     restart: unless-stopped
