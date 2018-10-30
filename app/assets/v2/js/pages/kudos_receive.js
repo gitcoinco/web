@@ -148,7 +148,8 @@ $(document).ready(function() {
           numClones: numClones,
           holding_address: holding_address,
           kudosPriceInWei: kudosPriceInWei.toString(10)
-        }
+        };
+
         console.log('params for kudos clone:');
         console.log(params);
  

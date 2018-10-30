@@ -33,18 +33,18 @@ from django.utils import timezone
 from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
-from eth_utils import is_address, to_checksum_address, to_normalized_address
-from web3 import Web3
 
 from cacheops import cached_view_as
 from dashboard.models import Activity, Profile
 from dashboard.notifications import maybe_market_kudos_to_email
 from dashboard.utils import get_web3
 from dashboard.views import record_user_action
+from eth_utils import is_address, to_checksum_address, to_normalized_address
 from gas.utils import recommend_min_gas_price_to_confirm_in_time
 from git.utils import get_emails_master, get_github_primary_email
 from ratelimit.decorators import ratelimit
 from retail.helpers import get_ip
+from web3 import Web3
 
 from .forms import KudosSearchForm
 from .helpers import get_token
