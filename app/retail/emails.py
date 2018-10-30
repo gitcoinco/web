@@ -577,20 +577,39 @@ def render_new_bounty_roundup(to_email):
     intro = '''
 
 <p>
-Hi there,
+Hi there from devcon4 in prague,
 </p>
 <p>
-After six months of work, we are excited to <a href="https://medium.com/gitcoin/introducing-kudos-10077a4f2def">introduce Kudos</a>!
-Kudos is the easiest way to show appreciation and build relationships in open source. This is done simply - through sincere, unique compliments.
-We're excited about creating space for all sorts of compliments to other Gitcoiners… via <a href="https://gitcoin.co/kudos/marketplace/">all sorts of Kudos</a>.
+BIG NEWS TODAY - We are excited to <a href="https://medium.com/gitcoin/introducing-kudos-10077a4f2def">introduce Kudos</a>!
+Kudos are a <a href="https://en.wikipedia.org/wiki/Non-fungible_token">non-fungible token</a> that can be sent to another gitcoin user to show appreciation or build a relationship. We're launching with <a href="https://gitcoin.co/kudos/marketplace/">over 100 Kudos today</a>, and hope to have more over time.
 </p>
 <p>
 Our relationships with our co-workers are one of the most important outcomes of our work. We are proud to introduce a feature
-which allows us to celebrate those relationships and want to start the right way today. Kudos to Jasan Haas,
-Octavio Amuchástegui, Mark Beacom, Alisa March, and Alexandru Solomon for their work on making the product a reality!
+which allows us to celebrate those relationships..  What better way to celebrate the launch of kudos, than to give Kudos to the launch team!
 </p>
 
-Todo: add a few kudos to represent their work.
+<ul>
+<li>
+    Kudos to <strong>Jasan Haas</strong> for <strong>being a great rubber ducky</strong>! 
+    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://s.gitcoin.co/static/v2/images/kudos/coding_ducky.20e6beb8c79d.svg'>
+</li>
+<li>
+    Kudos to <strong>Octavio Amuchástegui</strong> for <strong>his eye for detail</strong>! 
+    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://s.gitcoin.co/static/v2/images/kudos/eye_for_detail.d308cf0be0d7.svg'>
+</li>
+<li>
+    Kudos to <strong>Mark Beacom</strong> for <strong>being a firefighter</strong>! 
+    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://s.gitcoin.co/static/v2/images/kudos/firefighter.8d9db9ca9250.svg'>
+</li>
+<li>
+    Kudos to <strong>Alisa March</strong> for <strong>being a product wizard</strong>! 
+    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://s.gitcoin.co/static/v2/images/kudos/product_wizard.4b703b3ed539.svg'>
+</li>
+<li>
+    Kudos to <strong>Alexandru Solomon</strong> for <strong>his artwork</strong>! 
+    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://s.gitcoin.co/static/v2/images/kudos/arts_and_farts.9f210f4903e9.svg'>
+</li>
+</ul>
 
 <h3>What else is new?</h3>
     <ul>
