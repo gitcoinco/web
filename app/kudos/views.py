@@ -30,6 +30,7 @@ from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
@@ -485,8 +486,11 @@ def receive(request, key, txid, network):
         messages.error(
             request, f'This kudos is for {kudos_transfer.username} but you are logged in as {request.user.username}.  Please logout and log back in as {kudos_transfer.username}.')
     elif not_mined_yet and not request.GET.get('receive_txid'):
-        messages.info(
-            request, f'This tx {kudos_transfer.txid}, is still mining.  Please wait a moment before submitting the receive form.')
+        message = mark_safe(
+            f'The <a href="https://etherscan.io/tx/{txid}">transaction</a> is still mining.  '
+            'Please wait a moment before submitting the receive form.'
+        )
+        messages.info(request, message)
     elif request.GET.get('receive_txid') and not kudos_transfer.receive_txid:
         params = request.GET
 

@@ -263,16 +263,11 @@ window.onload = function() {
           }
         };
 
-        // KO 2018/10/28
-        // hack to workaround error with kudos inline send
-        // revert this when kudos live 4 realz
-
         if ($('.kudos-search').select2('data')[0]) {
           attach_and_send_kudos($('.kudos-search').select2('data')[0], send_tip_and_payout_callback);
         } else {
           send_tip_and_payout_callback();
         }
-
 
       };
       // Get bountyId from the database
