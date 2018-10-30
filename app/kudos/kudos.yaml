@@ -1834,7 +1834,7 @@
     - memes
   image: the_flirterer.svg
 - name: its_a_trap
-  description: "Its a trap" is a line from one of your favorite movies.  Send it to the contributors in your life who are good at avoiding traps.
+  description: '"Its a trap" is a line from one of your favorite movies.  Send it to the contributors in your life who are good at avoiding traps.'
   priceFinney: 1
   numClonesAllowed: 1000
   tags:
