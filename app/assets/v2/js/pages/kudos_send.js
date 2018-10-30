@@ -485,8 +485,12 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           };
 
           kudos_contract.clone.estimateGas(destinationAccount, tokenId, numClones, {from: account, value: kudosPriceInWei}, function(err, kudosGasEstimate) {
-            if (err)
+            if (err){
+              unloading_button($('#send'));
+              _alert("Got an error back from RPC node.  Please try again or contact support")
               throw (err);
+            }
+
             console.log('kudosGasEstimate: ' + kudosGasEstimate);
             // Multiply gas * gas_price_gwei to get gas cost in wei.
             kudosGasEstimateInWei = kudosGasEstimate * get_gas_price();
