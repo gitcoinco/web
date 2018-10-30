@@ -1797,5 +1797,60 @@
     - knowledge
   image: kauri_2.svg
   to_address: 0xF8aE578d5d4e570De6c31F26D42eF369C320aE0b
+- name: moksha
+  description: Moksha is a term in Hinduism, Buddhism, Jainism and Sikhism which refers to various forms of emancipation, enlightenment, liberation, and release.
+  priceFinney: 1
+  numClonesAllowed: 1000
+  tags:
+    - common
+    - just for fun
+    - enlightenment
+  image: Moksha.svg
+- name: common_pepe
+  description: The common pepe is the Ethereum community's answer to the Rare Pepe phenomenon.
+  priceFinney: 1
+  numClonesAllowed: 10000
+  tags:
+    - common
+    - just for fun
+    - memes
+  image: pepe.svg
+- name: popcorn
+  description: For the popcorn.gif moments in your life.
+  priceFinney: 1
+  numClonesAllowed: 1000
+  tags:
+    - common
+    - just for fun
+    - memes
+  image: popcorn.svg
+- name: the_flirterer
+  description: The fliterer can be seen at crypto conferences smoking weed, flirting, and/or talking about prices
+  priceFinney: 1
+  numClonesAllowed: 1000
+  tags:
+    - common
+    - just for fun
+    - memes
+  image: the_flirterer.svg
+- name: its_a_trap
+  description: "Its a trap" is a line from one of your favorite movies.  Send it to the contributors in your life who are good at avoiding traps.
+  priceFinney: 1
+  numClonesAllowed: 1000
+  tags:
+    - common
+    - just for fun
+    - memes
+    - soft skills
+  image: trap_avoider.svg
+- name: trollolo
+  description: trololololol lollollollollollollollollollol 
+  priceFinney: 1
+  numClonesAllowed: 1000
+  tags:
+    - common
+    - just for fun
+    - memes
+  image: trollolo.svg
 
 
