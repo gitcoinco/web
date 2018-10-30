@@ -18,8 +18,7 @@ fi
 ACCOUNT=$2
 PRIVATE_KEY=$3
 
-docker-compose down
-docker volume rm web_pgdata web_ipfsdata web_ipfsexport
+docker-compose down -v
 docker-compose up -d
 echo "sleeping for 10 seconds..."
 sleep 10
