@@ -175,7 +175,18 @@ $(document).ready(function() {
   // Step 1
   // Kudos send button is clicked
   $('#send').click(function(e) {
+
     e.preventDefault();
+
+    if (typeof web3 == 'undefined') {
+      _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
+      return;
+    }
+    if (!web3.eth.coinbase) {
+      _alert({ message: gettext('Please unlock metamask.') }, 'warning');
+      return;
+    }
+
     $('#send_eth')[0].checkValidity();
 
     if (!$('#username')[0].checkValidity()) {
