@@ -269,6 +269,8 @@ class KudosTransfer(SendCryptoAsset):
     def __str__(self):
         """Return the string representation of a model."""
         status = 'funded' if self.txid else 'not funded'
+        if self.receive_txid:
+            status = 'received'
         return f"({status}) transfer of {self.kudos_token_cloned_from} from {self.sender_profile} to {self.recipient_profile} on {self.network}"
 
 
