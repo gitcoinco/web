@@ -590,23 +590,23 @@ which allows us to celebrate those relationships..  What better way to celebrate
 
 <ul>
 <li>
-    Kudos to <strong>Jasan Haas</strong> for <strong>being a great rubber ducky</strong>! 
+    Kudos to <strong>Jasan Haas</strong> for <strong>being a great rubber ducky</strong>!
     <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/145/rubber_ducky'>
 </li>
 <li>
-    Kudos to <strong>Octavio Amuchástegui</strong> for <strong>his eye for detail</strong>! 
+    Kudos to <strong>Octavio Amuchástegui</strong> for <strong>his eye for detail</strong>!
     <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/102/eye_for_detail'>
 </li>
 <li>
-    Kudos to <strong>Mark Beacom</strong> for <strong>being a firefighter</strong>! 
+    Kudos to <strong>Mark Beacom</strong> for <strong>being a firefighter</strong>!
     <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/135/firefighter'>
 </li>
 <li>
-    Kudos to <strong>Alisa March</strong> for <strong>being a product wizard</strong>! 
+    Kudos to <strong>Alisa March</strong> for <strong>being a product wizard</strong>!
     <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/109/product_wizard'>
 </li>
 <li>
-    Kudos to <strong>Alexandru Solomon</strong> for <strong>his artwork</strong>! 
+    Kudos to <strong>Alexandru Solomon</strong> for <strong>his artwork</strong>!
     <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/99/arts_and_farts'>
 </li>
 </ul>
@@ -697,9 +697,9 @@ Back to BUIDLing,
 
     from kudos.models import KudosTransfer
     if highlight_kudos_ids:
-        highlight_kudos = KudosTransfer.objects.filter(id__in=highlight_kudos_ids)
+        kudos_highlights = KudosTransfer.objects.filter(id__in=highlight_kudos_ids)
     else:
-        highlight_kudos = KudosTransfer.objects.all().order_by('created_on')[:4]
+        kudos_highlights = KudosTransfer.objects.all().order_by('created_on')[:4]
 
     params = {
         'intro': intro,
@@ -711,7 +711,7 @@ Back to BUIDLing,
         'hide_header': False,
         'highlights': highlights,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
-        'highlight_kudos': highlight_kudos,
+        'kudos_highlights': kudos_highlights,
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))
