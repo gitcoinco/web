@@ -439,11 +439,12 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
         }
     }
     try:
+        github_handle = github_handle.lstrip('@')
         kwargs['profile'] = Profile.objects.get(handle=github_handle)
     except Profile.MultipleObjectsReturned:
         kwargs['profile'] = Profile.objects.filter(handle__iexact=github_handle).first()
     except Profile.DoesNotExist:
-        logging.error(f"error in record_kudos_email_activity: profile with github name {github_handle} not found")
+        logger.warning(f"error in record_kudos_email_activity: profile with github name {github_handle} not found")
         return
     try:
         kwargs['bounty'] = kudos_transfer.bounty
@@ -453,7 +454,7 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
     try:
         Activity.objects.create(**kwargs)
     except Exception as e:
-        logging.error(f"error in record_kudos_email_activity: {e} - {event_name} - {kudos_transfer} - {github_handle}")
+        logger.error(f"error in record_kudos_email_activity: {e} - {event_name} - {kudos_transfer} - {github_handle}")
 
 
 def receive(request, key, txid, network):
