@@ -1933,6 +1933,18 @@ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU Affero General Public License for more details.</p>
 <p>You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <a href="http://www.gnu.org/licenses/">http://www.gnu.org/licenses/</a>.</p>
+<h2 id="retail.emails.render_kudos_email">render_kudos_email</h2>
+
+<pre><code class="python">render_kudos_email(to_email, kudos_transfer, is_new, html_template, text_template=None)
+</code></pre>
+
+<p>Summary</p>
+<p>Args:
+    to_emails (list): An array of email addresses to send the email to.
+    kudos_transfer (model): An instance of the <code>kudos.model.KudosTransfer</code> object.  This contains the information about the kudos that will be cloned.
+    is_new (TYPE): Description</p>
+<p>Returns:
+    tup: response_html, response_txt</p>
 <h2 id="retail.emails.render_funder_stale">render_funder_stale</h2>
 
 <pre><code class="python">render_funder_stale(github_username, days=30, time_as_str='about a month')

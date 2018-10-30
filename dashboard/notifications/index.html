@@ -2021,6 +2021,43 @@ along with this program. If not, see <a href="http://www.gnu.org/licenses/">http
     event_name (str): The name of the event.</p>
 <p>Returns:
     bool: Whether or not the Slack notification was sent successfully.</p>
+<h2 id="dashboard.notifications.maybe_market_kudos_to_email">maybe_market_kudos_to_email</h2>
+
+<pre><code class="python">maybe_market_kudos_to_email(kudos_transfer)
+</code></pre>
+
+<p>Send an email for the specified Kudos.  The general flow of this function:</p>
+<ul>
+<li>
+<ol>
+<li>Decide if we are sending it</li>
+</ol>
+</li>
+<li>
+<ol>
+<li>Generate subject</li>
+</ol>
+</li>
+<li>
+<ol>
+<li>Render email</li>
+</ol>
+</li>
+<li>
+<ol>
+<li>Send email</li>
+</ol>
+</li>
+<li>
+<ol>
+<li>Do translation</li>
+</ol>
+</li>
+</ul>
+<p>Args:
+kudos_transfer (kudos.models.KudosTransfer): The Kudos Email object to be marketed.</p>
+<p>Returns:
+bool: Whether or not the email notification was sent successfully.</p>
 <h2 id="dashboard.notifications.build_github_notification">build_github_notification</h2>
 
 <pre><code class="python">build_github_notification(bounty, event_name, profile_pairs=None)
