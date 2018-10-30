@@ -166,7 +166,7 @@ class Command(BaseCommand):
                             skip_sync=skip_sync,
                             gas_price_gwei=gas_price_gwei,
                         )
-                    print('Live run - Name: ', readable_name, ' - Account: ', account, 'Skipping!')
+                        print('Live run - Name: ', readable_name, ' - Account: ', account, 'Skipping!')
                     except Exception as e:
                         logger.error('Error: %s - Trying to mint again' % e)
                         time.sleep(2)
