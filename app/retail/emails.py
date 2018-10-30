@@ -591,23 +591,23 @@ which allows us to celebrate those relationships..  What better way to celebrate
 <ul>
 <li>
     Kudos to <strong>Jasan Haas</strong> for <strong>being a great rubber ducky</strong>! 
-    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://s.gitcoin.co/static/v2/images/kudos/coding_ducky.20e6beb8c79d.svg'>
+    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/145/rubber_ducky'>
 </li>
 <li>
     Kudos to <strong>Octavio Amuchástegui</strong> for <strong>his eye for detail</strong>! 
-    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://s.gitcoin.co/static/v2/images/kudos/eye_for_detail.d308cf0be0d7.svg'>
+    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/102/eye_for_detail'>
 </li>
 <li>
     Kudos to <strong>Mark Beacom</strong> for <strong>being a firefighter</strong>! 
-    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://s.gitcoin.co/static/v2/images/kudos/firefighter.8d9db9ca9250.svg'>
+    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/135/firefighter'>
 </li>
 <li>
     Kudos to <strong>Alisa March</strong> for <strong>being a product wizard</strong>! 
-    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://s.gitcoin.co/static/v2/images/kudos/product_wizard.4b703b3ed539.svg'>
+    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/109/product_wizard'>
 </li>
 <li>
     Kudos to <strong>Alexandru Solomon</strong> for <strong>his artwork</strong>! 
-    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://s.gitcoin.co/static/v2/images/kudos/arts_and_farts.9f210f4903e9.svg'>
+    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/99/arts_and_farts'>
 </li>
 </ul>
 
