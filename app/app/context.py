@@ -84,12 +84,4 @@ def insert_settings(request):
             context['unclaimed_tips'] = context['unclaimed_tips'].filter(network='mainnet')
             context['unclaimed_kudos'] = context['unclaimed_kudos'].filter(network='mainnet')
 
-        context['unclaimed_kudos'] = KudosTransfer.objects.filter(
-            receive_txid='',
-            username__iexact="@" + context['github_handle'],
-            web3_type='v3',
-        ).exclude(txid='')
-        if not settings.DEBUG:
-            context['unclaimed_kudos'] = context['unclaimed_kudos'].filter(network='mainnet')
-
     return context

@@ -34,9 +34,6 @@ import premailer
 from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
-from functools import partial
-
-logger = logging.getLogger(__name__)
 
 logger = logging.getLogger(__name__)
 

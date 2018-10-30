@@ -22,8 +22,6 @@ import random
 import re
 from urllib.parse import urlparse as parse
 
-from django.utils import timezone, translation
-from django.utils.translation import gettext
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import naturaltime
 from django.templatetags.static import static

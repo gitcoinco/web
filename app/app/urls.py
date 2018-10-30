@@ -39,7 +39,6 @@ import enssubdomain.views
 import external_bounties.views
 import faucet.views
 import gitcoinbot.views
-import kudos.views
 import healthcheck.views
 import kudos.views
 import linkshortener.views
@@ -49,7 +48,6 @@ import retail.emails
 import retail.views
 import tdi.views
 from dashboard.router import router as dbrouter
-from kudos.router import router as kdrouter
 from external_bounties.router import router as ebrouter
 from kudos.router import router as kdrouter
 
@@ -82,8 +80,6 @@ urlpatterns = [
     path('grants/', dashboard.views.grants, name='grants'),
 
     # api views
-    # TODO:  url() will be deprecated soon.  Change to path() or re_path().
-    # https://docs.djangoproject.com/en/2.0/ref/urls/#url
     url(r'^api/v0.1/profile/(.*)?/keywords', dashboard.views.profile_keywords, name='profile_keywords'),
     url(r'^api/v0.1/funding/save/?', dashboard.ios.save, name='save'),
     url(r'^api/v0.1/faucet/save/?', faucet.views.save_faucet, name='save_faucet'),
