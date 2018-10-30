@@ -577,7 +577,7 @@ def render_new_bounty_roundup(to_email):
     intro = '''
 
 <p>
-Hi there from devcon4 in prague,
+Hi there from Devcon IV in Prague,
 </p>
 <p>
 BIG NEWS TODAY - We are excited to <a href="https://medium.com/gitcoin/introducing-kudos-10077a4f2def">introduce Kudos</a>!
