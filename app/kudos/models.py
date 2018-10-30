@@ -159,7 +159,7 @@ class Token(SuperModel):
 
     def __str__(self):
         """Return the string representation of a model."""
-        return f"Kudos Token: {self.humanized_name}"
+        return f"{self.contract.network} Kudos Token: {self.humanized_name}"
 
     @property
     def as_img(self):
