@@ -514,9 +514,11 @@ def receive(request, key, txid, network):
     params = {
         'issueURL': request.GET.get('source'),
         'class': 'receive',
-        'title': _('Receive Kudos'),
         'gas_price': round(recommend_min_gas_price_to_confirm_in_time(120), 1),
         'kudos_transfer': kudos_transfer,
+        'title': f"Receive {kudos_transfer.kudos_token_cloned_from.humanized_name} Kudos" if kudos_transfer and kudos_transfer.kudos_token_cloned_from else _('Receive Kudos'),
+        'avatar_url': kudos_transfer.kudos_token_cloned_from.img_url if kudos_transfer and kudos_transfer.kudos_token_cloned_from else None,
+        'card_desc': f"You've received a {kudos_transfer.kudos_token_cloned_from.humanized_name} kudos!" if kudos_transfer and kudos_transfer.kudos_token_cloned_from else _('You\'ve received a kudos'),
         'key': key,
         'is_authed': is_authed,
         'disable_inputs': kudos_transfer.receive_txid or not_mined_yet or not is_authed,

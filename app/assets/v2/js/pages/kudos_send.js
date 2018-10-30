@@ -485,9 +485,9 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           };
 
           kudos_contract.clone.estimateGas(destinationAccount, tokenId, numClones, {from: account, value: kudosPriceInWei}, function(err, kudosGasEstimate) {
-            if (err){
+            if (err) {
               unloading_button($('#send'));
-              _alert("Got an error back from RPC node.  Please try again or contact support")
+              _alert('Got an error back from RPC node.  Please try again or contact support');
               throw (err);
             }
 
