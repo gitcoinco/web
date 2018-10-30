@@ -514,7 +514,7 @@ def receive(request, key, txid, network):
     params = {
         'issueURL': request.GET.get('source'),
         'class': 'receive',
-        'gas_price': round(recommend_min_gas_price_to_confirm_in_time(120), 1),
+        'gas_price': round(recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target), 1),
         'kudos_transfer': kudos_transfer,
         'title': f"Receive {kudos_transfer.kudos_token_cloned_from.humanized_name} Kudos" if kudos_transfer and kudos_transfer.kudos_token_cloned_from else _('Receive Kudos'),
         'avatar_url': kudos_transfer.kudos_token_cloned_from.img_url if kudos_transfer and kudos_transfer.kudos_token_cloned_from else None,

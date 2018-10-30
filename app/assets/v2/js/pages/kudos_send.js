@@ -243,15 +243,10 @@ $(document).ready(function() {
     };
 
     // derived info
-    // var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
-    var tokenDetails = tokenAddressToDetails(tokenAddress);
     var tokenName = 'ETH';
 
     var weiConvert = Math.pow(10, 18);
 
-    // if (!isSendingETH) {
-    //   tokenName = tokenDetails.name;
-    // }
 
     // Step 11 (LAST STEP)
     // Show the congragulation screen
@@ -312,20 +307,17 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
   if (username.indexOf('@') == -1) {
     username = '@' + username;
   }
-  var _disableDeveloperTip = true;
-  var gas_money = parseInt(Math.pow(10, (9 + 5)) * ((defaultGasPrice * 1.001) / Math.pow(10, 9)));
-  // var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
-  var tokenDetails = tokenAddressToDetails(tokenAddress);
+
+  var gas_cost_of_kudos_receive = 100000; // TODO - confirm this is right
+  var safety_buffer = 1.05;
+  var gas_money = parseInt(get_gas_price() * gas_cost_of_kudos_receive * safety_buffer);
   var tokenName = 'ETH';
-  // var tokenName = window.location.href.split('\=')[1];
   var weiConvert = Math.pow(10, 18);
   var creation_time = Math.round((new Date()).getTime() / 1000);
   var salt = parseInt((Math.random() * 1000000));
 
   var amountInWei = amountInEth * 1.0 * weiConvert;
   // validation
-  // console.log(amountInEth)
-  // console.log(amountInWei)
   var hasEmail = email != '';
   var hasUsername = username != '';
 
