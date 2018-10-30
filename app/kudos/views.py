@@ -474,11 +474,12 @@ def receive(request, key, txid, network):
     not_mined_yet = get_web3(kudos_transfer.network).eth.getBalance(
         Web3.toChecksumAddress(kudos_transfer.metadata['address'])) == 0
 
-    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
-        request.user, 'profile', None
-    ):
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
-        return login_redirect
+    if not kudos_transfer.trust_url:
+        if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
+            request.user, 'profile', None
+        ):
+            login_redirect = redirect('/login/github?next=' + request.get_full_path())
+            return login_redirect
 
     if kudos_transfer.receive_txid:
         messages.info(request, _('This kudos has been received'))
