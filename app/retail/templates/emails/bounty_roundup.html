@@ -101,7 +101,7 @@
           <li style="list-style:none; margin-bottom: 5px;">
               <a style="font-weight: bold; text-decoration: none;" href="{% url "profile" kudos.recipient_profile.handle %}">{{ kudos.recipient_profile.handle }}</a> received {{ kudos.name|humanize_name }} <a style="font-weight: bold; text-decoration: none;" href="{% url 'profile' kudos.sender_profile.handle %}">{{ kudos.sender_profile.handle }}</a><br>
             {% endif %}
-            <a href="{% url 'kudos_details' kudos.token.token_id %}"><img src="{{ kudos.kudos_token.img_url }}"></a>
+            <a href="{% url 'kudos_details' kudos.kudos_token.token_id kudos.kudos_token.name  %}"><img src="{{ kudos.kudos_token.img_url }}"></a>
 
             {% if kudos.kudos_token %}
               <a href="{% url 'kudos_details' kudos.kudos_token.token_id kudos.kudos_token.name %}">
