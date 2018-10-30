@@ -304,7 +304,7 @@ var mutate_interest = function(bounty_pk, direction, data, callbackError = null)
     }
 
     _alert({ message: alertMsg }, 'error');
-    callbackError(alertMsg)
+    callbackError(alertMsg);
 
   });
 };
