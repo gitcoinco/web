@@ -160,7 +160,7 @@ class Token(SuperModel):
     @property
     def gen(self):
         if self.pk == self.cloned_from_id:
-            return "x"
+            return 0
         if not self.cloned_from_id:
             return 0
         return Token.objects.get(pk=self.cloned_from_id).gen + 1
