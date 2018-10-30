@@ -33,8 +33,8 @@ function getQueryParams(query) {
   var hashes = search.split('&');
 
   for (var i = 0; i < hashes.length; i++) {
-      hash = hashes[i].split('=');
-      myJson[hash[0]] = hash[1];
+    hash = hashes[i].split('=');
+    myJson[hash[0]] = hash[1];
   }
   return myJson;
 }
