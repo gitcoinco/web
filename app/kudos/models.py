@@ -195,6 +195,10 @@ class Token(SuperModel):
     def img_url(self):
         return f'{settings.BASE_URL}dynamic/kudos/{self.pk}/{slugify(self.name)}'
 
+    @property
+    def url(self):
+        return f'/kudos/{self.pk}/{slugify(self.name)}'
+
 
 class KudosTransfer(SendCryptoAsset):
     """Model that represents a request to clone a Kudos.

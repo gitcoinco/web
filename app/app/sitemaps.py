@@ -4,6 +4,7 @@ from django.urls import reverse
 
 from dashboard.models import Bounty, Profile
 from external_bounties.models import ExternalBounty
+from kudos.models import Token
 
 
 class StaticViewSitemap(sitemaps.Sitemap):
@@ -34,6 +35,20 @@ class IssueSitemap(Sitemap):
 
     def location(self, item):
         return item.get_relative_url()
+
+
+class KudosSitemap(Sitemap):
+    changefreq = "daily"
+    priority = 0.9
+
+    def items(self):
+        return Token.objects.filter(hidden=False)
+
+    def lastmod(self, obj):
+        return obj.modified_on
+
+    def location(self, item):
+        return item.url
 
 
 class ProfileSitemap(Sitemap):
@@ -86,4 +101,5 @@ sitemaps = {
     'issues': IssueSitemap,
     'universe': ExternalBountySitemap,
     'orgs': ProfileSitemap,
+    'kudos': KudosSitemap,
 }
