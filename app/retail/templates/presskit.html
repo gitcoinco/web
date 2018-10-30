@@ -23,6 +23,7 @@
   <body class="{{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %} {% include 'shared/minihero.html' with h1='Press Kit' %}
     </div>
     <div class="presskit">

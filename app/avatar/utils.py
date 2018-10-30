@@ -67,7 +67,7 @@ def get_avatar_context():
         }, {
             'name': 'Ears',
             'title': 'Pick ears shape',
-            'options': ('0', '1', '2', '3')
+            'options': ('0', '1', '2', '3', 'Spock')
         },
                      {
                          'name': 'Clothing',
@@ -97,10 +97,11 @@ def get_avatar_context():
                          'title': 'Pick your accessories',
                          'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
                              'HatShort-backwardscap'
-                         ], ['HatShort-ballcap'], ['HatShort-cowboy'], ['HatShort-headphones'],
-                                     ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], ['Earring-0'], ['Earring-1'], [
-                                         'EarringBack-2', 'Earring-2'
-                                     ], ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'],
+                         ], ['HatShort-redbow'], ['HatShort-yellowbow'], ['HatShort-ballcap'], ['HatShort-cowboy'],
+                                     ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], [
+                                         'HatShort-bunnyears'
+                                     ], ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'],
+                                     ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'],
                                      ['Masks-jack-o-lantern-lighted'], ['Extras-Parrot'], ['Masks-gitcoinbot'])
                      },
                      {
