@@ -15,7 +15,7 @@ class StaticViewSitemap(sitemaps.Sitemap):
         return [
             'dashboard', 'new_funding', 'tip', 'terms', 'privacy', 'cookie', 'prirp', 'apitos', 'about', 'index',
             'help', 'whitepaper', 'whitepaper_access', '_leaderboard', 'ios', 'faucet', 'mission', 'slack',
-            'universe_index', 'results', 'activity',
+            'universe_index', 'results', 'activity', 'kudos_main', 'kudos_marketplace'
         ]
 
     def location(self, item):
