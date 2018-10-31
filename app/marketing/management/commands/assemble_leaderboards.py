@@ -307,7 +307,7 @@ class Command(BaseCommand):
             sum_tips(t, index_terms)
         
         # kudos'
-        for kt in KudosTransfer.objects.exclude(txid=''):
+        for kt in KudosTransfer.objects.exclude(txid='').filter(network='mainnet'):
             sum_kudos(kt)
 
         # set old LR as inactive

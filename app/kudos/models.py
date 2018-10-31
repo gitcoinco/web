@@ -279,7 +279,7 @@ class KudosTransfer(SendCryptoAsset):
         status = 'funded' if self.txid else 'not funded'
         if self.receive_txid:
             status = 'received'
-        return f"({status}) transfer of {self.kudos_token_cloned_from} from {self.sender_profile} to {self.recipient_profile} on {self.network}"
+        return f"({status}) transfer of {self.kudos_token_cloned_from} from {self.sender_profile} to {self.username} on {self.network}"
 
 
 class Contract(SuperModel):

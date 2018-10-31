@@ -1158,17 +1158,18 @@ def profile(request, handle):
 
     context['preferred_payout_address'] = profile.preferred_payout_address
 
-    if context['preferred_payout_address']:
-        owned_kudos = Token.objects.select_related('kudos_transfer', 'contract').filter(
-            Q(owner_address__iexact=context['preferred_payout_address']) |
-            Q(kudos_transfer__recipient_profile=profile),
-            contract__network=settings.KUDOS_NETWORK
-        ).distinct('id').order_by('id', order_by)
-        sent_kudos = Token.objects.select_related('kudos_transfer', 'contract').filter(
-            Q(kudos_transfer__from_address__iexact=context['preferred_payout_address']) |
-            Q(kudos_transfer__sender_profile=profile),
-            contract__network=settings.KUDOS_NETWORK,
-        ).distinct('id').order_by('id', order_by)
+    owned_kudos = Token.objects.select_related('kudos_transfer', 'contract').filter(
+        Q(owner_address__iexact=context['preferred_payout_address']) |
+        Q(kudos_token_cloned_from__recipient_profile=profile) |
+        Q(kudos_transfer__recipient_profile=profile),
+        contract__network=settings.KUDOS_NETWORK
+    ).distinct('id').order_by('id', order_by)
+    sent_kudos = Token.objects.select_related('kudos_transfer', 'contract').filter(
+        Q(kudos_token_cloned_from__from_address__iexact=context['preferred_payout_address']) |
+        Q(kudos_token_cloned_from__sender_profile=profile) |
+        Q(kudos_transfer__sender_profile=profile),
+        contract__network=settings.KUDOS_NETWORK,
+    ).distinct('id').order_by('id', order_by)
 
     if owned_kudos:
         owned_kudos_comments_public = []

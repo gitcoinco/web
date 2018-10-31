@@ -53,7 +53,7 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['localhost'])
 
 # Notifications - Global on / off switch
-ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet')
+KUDOS_NETWORK = env('KUDOS_NETWORK', default='localhost')
 
 # Application definition
 INSTALLED_APPS = [
@@ -504,7 +504,7 @@ KUDOS_CONTRACT_MAINNET = env('KUDOS_CONTRACT_MAINNET', default='0x2aea4add166ebf
 KUDOS_CONTRACT_RINKEBY = env('KUDOS_CONTRACT_RINKEBY', default='0x4077ae95eec529d924571d00e81ecde104601ae8')
 KUDOS_CONTRACT_ROPSTEN = env('KUDOS_CONTRACT_ROPSTEN', default='0xcd520707fc68d153283d518b29ada466f9091ea8')
 KUDOS_CONTRACT_TESTRPC = env('KUDOS_CONTRACT_TESTRPC', default='0x38c48d14a5bbc38c17ced9cd5f0695894336f426')
-KUDOS_NETWORK = env('KUDOS_NETWORK', default='localhost')
+KUDOS_NETWORK = env('KUDOS_NETWORK', default='mainnet')
 
 # Reporting Integrations
 MIXPANEL_TOKEN = env('MIXPANEL_TOKEN', default='')
