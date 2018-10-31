@@ -378,6 +378,7 @@
           var link = $(this);
           var page = link.data('page');
           var request = link.data('request')
+          var handle = link.data('handle')
           $.ajax({
             type: 'POST',
             url: '/lazy_load_kudos/',
@@ -385,6 +386,7 @@
               'page': page,
               'request': request,
               'address': address,
+              'handle': handle,
               'csrfmiddlewaretoken': '{{csrf_token}}' // from index.html
             },
             success: function(data) {

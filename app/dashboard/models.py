@@ -1566,6 +1566,29 @@ class Profile(SuperModel):
     objects = ProfileQuerySet.as_manager()
 
     @property
+    def get_my_kudos(self):
+        from kudos.models import Token
+        profile = self
+        return Token.objects.select_related('kudos_transfer', 'contract').filter(
+            Q(owner_address__iexact=profile.preferred_payout_address) |
+            Q(kudos_token_cloned_from__recipient_profile=profile) |
+            Q(kudos_transfer__recipient_profile=profile),
+            contract__network=settings.KUDOS_NETWORK
+        ).distinct('id')
+
+    @property
+    def get_sent_kudos(self):
+        from kudos.models import Token
+        profile = self
+        return Token.objects.select_related('kudos_transfer', 'contract').filter(
+            Q(kudos_token_cloned_from__from_address__iexact=profile.preferred_payout_address) |
+            Q(kudos_token_cloned_from__sender_profile=profile) |
+            Q(kudos_transfer__sender_profile=profile),
+            contract__network=settings.KUDOS_NETWORK,
+        ).distinct('id')
+
+
+    @property
     def is_org(self):
         try:
             return self.data['type'] == 'Organization'

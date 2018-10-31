@@ -1125,7 +1125,6 @@ def profile(request, handle):
     order_by = request.GET.get('order_by', '-modified_on')
     owned_kudos = None
     sent_kudos = None
-    owned_kudos_comments_public = None
 
     try:
         if not handle and not request.user.is_authenticated:
@@ -1158,28 +1157,9 @@ def profile(request, handle):
 
     context['preferred_payout_address'] = profile.preferred_payout_address
 
-    owned_kudos = Token.objects.select_related('kudos_transfer', 'contract').filter(
-        Q(owner_address__iexact=context['preferred_payout_address']) |
-        Q(kudos_token_cloned_from__recipient_profile=profile) |
-        Q(kudos_transfer__recipient_profile=profile),
-        contract__network=settings.KUDOS_NETWORK
-    ).distinct('id').order_by('id', order_by)
-    sent_kudos = Token.objects.select_related('kudos_transfer', 'contract').filter(
-        Q(kudos_token_cloned_from__from_address__iexact=context['preferred_payout_address']) |
-        Q(kudos_token_cloned_from__sender_profile=profile) |
-        Q(kudos_transfer__sender_profile=profile),
-        contract__network=settings.KUDOS_NETWORK,
-    ).distinct('id').order_by('id', order_by)
+    owned_kudos = profile.get_my_kudos.order_by('id', order_by)
+    sent_kudos = profile.get_sent_kudos.order_by('id', order_by)
 
-    if owned_kudos:
-        owned_kudos_comments_public = []
-        for kudos_token in owned_kudos:
-            try:
-                owned_kudos_comments_public.append(kudos_token.kudos_transfer.comments_public)
-            except Exception as e:
-                logger.error(e)
-
-    context['kudos_comments_public'] = owned_kudos_comments_public
     context['kudos'] = owned_kudos
     context['sent_kudos'] = sent_kudos
 
@@ -1227,16 +1207,15 @@ def lazy_load_kudos(request):
     datarequest = request.POST.get('request')
     order_by = request.GET.get('order_by', '-modified_on')
     limit = int(request.GET.get('limit', 8))
-    query_kwargs = {'contract__network': settings.KUDOS_NETWORK}
-
+    handle = request.POST.get('handle')
+    profile = Profile.objects.get(handle=handle)
     if datarequest == 'mykudos':
         key = 'kudos'
-        query_kwargs['owner_address__iexact'] = address
+        context[key] = profile.get_my_kudos.order_by('id', order_by)
     else:
         key = 'sent_kudos'
-        query_kwargs['kudos_transfer__from_address__iexact'] = address
+        context[key] = profile.get_sent_kudos.order_by('id', order_by)
 
-    context[key] = Token.objects.filter(owner_address__iexact=address, **query_kwargs).order_by(order_by)
     paginator = Paginator(context[key], limit)
 
     kudos = paginator.get_page(page)
