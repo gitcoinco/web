@@ -30,7 +30,7 @@
       <div class="content-hover">
         <a class="kd-title" href="{% url 'kudos_details' kudo.id kudos.name %}">{{ kudo.name|humanize_name }}</a>
         {% if kudo.kudos_transfer %}
-          <p>Sent to <a href="{% url 'profile' kudo.kudos_transfer.username|slice:'1:' %}">{{kudo.kudos_transfer.username|slice:"1:"}}</a>{{kudo.kudos_transfer.created_on|naturaltime"}}</p>
+          <p>Sent to <a href="{% url 'profile' kudo.kudos_transfer.username|slice:'1:' %}">{{kudo.kudos_transfer.username|slice:"1:"}}</a>{{kudo.kudos_transfer.created_on|naturaltime}}</p>
           <p>
             <a href="{% if not kudo.kudos_transfer == 'mainnet' %}https://{{ kudo.kudos_transfer.network }}.etherscan.io/tx/{{ kudo.kudos_transfer.txid }}{% else %}https://etherscan.io/tx/{{ kudo.kudos_transfer.txid }}{% endif %}" target="_blank" class="d-block mb-1">{{ kudo.kudos_transfer.txid|humanize_address }}</a>
           </p>
