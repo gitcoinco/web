@@ -155,23 +155,18 @@ class Command(BaseCommand):
 
             is_live = options['live']
             if is_live:
-                for __ in range(1, 4):
-                    try:
-                        token_uri_url = kudos_contract.create_token_uri_url(**metadata)
-                        args = (mint_to, kudos['priceFinney'], kudos['numClonesAllowed'], token_uri_url)
-                        kudos_contract.mint(
-                            *args,
-                            account=account,
-                            private_key=private_key,
-                            skip_sync=skip_sync,
-                            gas_price_gwei=gas_price_gwei,
-                        )
-                        print('Live run - Name: ', readable_name, ' - Account: ', account, 'Minted!')
-                    except Exception as e:
-                        logger.error('Error: %s - Trying to mint again' % e)
-                        time.sleep(2)
-                        continue
-                    else:
-                        break
+                try:
+                    token_uri_url = kudos_contract.create_token_uri_url(**metadata)
+                    args = (mint_to, kudos['priceFinney'], kudos['numClonesAllowed'], token_uri_url)
+                    kudos_contract.mint(
+                        *args,
+                        account=account,
+                        private_key=private_key,
+                        skip_sync=skip_sync,
+                        gas_price_gwei=gas_price_gwei,
+                    )
+                    print('Live run - Name: ', readable_name, ' - Account: ', account, 'Minted!')
+                except Exception as e:
+                    print(f'Error minting: {readable_name} - {e}')
             else:
                 print('Dry run - Name: ', readable_name, ' - Account: ', account, 'Skipping!')
