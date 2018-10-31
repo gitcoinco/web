@@ -283,18 +283,20 @@ def send_2(request):
     This form is filled out before the 'send' button is clicked.
 
     """
+    handle = request.user.username if request.user and request.user.is_authenticated else ''
     _id = request.GET.get('id')
-    kudos = Token.objects.filter(pk=_id).first()
+    if (_id and not str(_id).isdigit()) or not handle:
+        raise Http404
+
     params = {
         'active': 'send',
         'issueURL': request.GET.get('source'),
         'class': 'send2',
         'recommend_gas_price': recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target),
         'from_email': getattr(request.user, 'email', ''),
-        'from_handle': request.user.username,
+        'from_handle': handle,
         'title': _('Send Kudos | Gitcoin'),
         'card_desc': _('Send a Kudos to any github user at the click of a button.'),
-        'kudos': kudos,
     }
     return TemplateResponse(request, 'transaction/send.html', params)
 
