@@ -1218,6 +1218,7 @@ def profile(request, handle):
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
 
+@csrf_exempt
 def lazy_load_kudos(request):
     page = request.POST.get('page', 1)
     address = request.POST.get('address')
