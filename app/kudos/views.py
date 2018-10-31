@@ -287,7 +287,8 @@ def send_2(request):
     _id = request.GET.get('id')
     if (_id and not str(_id).isdigit()) or not handle:
         raise Http404
-
+    kudos = Token.objects.filter(pk=_id).first()
+    
     params = {
         'active': 'send',
         'issueURL': request.GET.get('source'),
