@@ -324,7 +324,10 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
     username = '@' + username;
   }
   var _disableDeveloperTip = true;
-  var gas_money = parseInt(Math.pow(10, (9 + 5)) * ((defaultGasPrice * 1.001) / Math.pow(10, 9)));
+  var kudosGasLimit = 400000;
+  var buffer_pct = 1.01;
+  var wei_to_gwei = Math.pow(10, 9);
+  var gas_money = parseInt((wei_to_gwei * kudosGasLimit) * (buffer_pct * defaultGasPrice / wei_to_gwei));
   // var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
   var tokenDetails = tokenAddressToDetails(tokenAddress);
   var tokenName = 'ETH';
