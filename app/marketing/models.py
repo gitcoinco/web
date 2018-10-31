@@ -241,7 +241,7 @@ class LeaderboardRank(SuperModel):
             pk = self.github_username.split('/')[2]
             from kudos.models import Token
             return Token.objects.get(pk=pk).url
-        return reverse('profile', self.github_username)
+        return reverse('profile', args=[self.github_username])
 
 
 class Match(SuperModel):
