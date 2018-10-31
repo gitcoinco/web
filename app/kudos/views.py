@@ -297,6 +297,7 @@ def send_2(request):
         'from_handle': handle,
         'title': _('Send Kudos | Gitcoin'),
         'card_desc': _('Send a Kudos to any github user at the click of a button.'),
+        'kudos': kudos,
     }
     return TemplateResponse(request, 'transaction/send.html', params)
 
