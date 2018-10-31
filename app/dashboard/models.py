@@ -1587,7 +1587,6 @@ class Profile(SuperModel):
             contract__network=settings.KUDOS_NETWORK,
         ).distinct('id')
 
-
     @property
     def is_org(self):
         try:
