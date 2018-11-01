@@ -497,6 +497,8 @@ def receive(request, key, txid, network):
             kudos_transfer.receive_txid = params['receive_txid']
             kudos_transfer.receive_address = params['forwarding_address']
             kudos_transfer.received_on = timezone.now()
+            if request.user.is_authenticated:
+                kudos_transfer.recipient_profile = request.user.profile
             kudos_transfer.save()
             record_user_action(kudos_transfer.from_username, 'receive_kudos', kudos_transfer)
             record_kudos_email_activity(kudos_transfer, kudos_transfer.username, 'receive_kudos')
