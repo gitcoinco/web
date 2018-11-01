@@ -1567,25 +1567,28 @@ class Profile(SuperModel):
 
     @property
     def get_my_kudos(self):
-        from kudos.models import Token
-        profile = self
-        return Token.objects.select_related('kudos_transfer', 'contract').filter(
-            Q(owner_address__iexact=profile.preferred_payout_address) |
-            Q(kudos_token_cloned_from__recipient_profile=profile) |
-            Q(kudos_transfer__recipient_profile=profile),
-            contract__network=settings.KUDOS_NETWORK
-        ).distinct('id')
+        from kudos.models import KudosTransfer
+        kt_owner_address = KudosTransfer.objects.filter(kudos_token_cloned_from__owner_address__iexact=self.preferred_payout_address)
+        kt_profile = KudosTransfer.objects.filter(recipient_profile=self)
+
+        kudos_transfers = kt_profile | kt_owner_address
+        kudos_transfers = kudos_transfers.filter(kudos_token_cloned_from__contract__network=settings.KUDOS_NETWORK)
+        kudos_transfers = kudos_transfers.distinct('id') # remove this line IFF we ever move to showing multiple kudos transfers on a profile
+
+        return kudos_transfers
+
 
     @property
     def get_sent_kudos(self):
-        from kudos.models import Token
-        profile = self
-        return Token.objects.select_related('kudos_transfer', 'contract').filter(
-            Q(kudos_token_cloned_from__from_address__iexact=profile.preferred_payout_address) |
-            Q(kudos_token_cloned_from__sender_profile=profile) |
-            Q(kudos_transfer__sender_profile=profile),
-            contract__network=settings.KUDOS_NETWORK,
-        ).distinct('id')
+        from kudos.models import KudosTransfer
+        kt_address = KudosTransfer.objects.filter(from_address__iexact=self.preferred_payout_address)
+        kt_sender_profile = KudosTransfer.objects.filter(sender_profile=self)
+
+        kudos_transfers = kt_address | kt_sender_profile
+        kudos_transfers = kudos_transfers.filter(kudos_token_cloned_from__contract__network=settings.KUDOS_NETWORK)
+        kudos_transfers = kudos_transfers.distinct('id') # remove this line IFF we ever move to showing multiple kudos transfers on a profile
+
+        return kudos_transfers
 
     @property
     def is_org(self):

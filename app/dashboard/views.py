@@ -1222,7 +1222,10 @@ def lazy_load_kudos(request):
 
     paginator = Paginator(context[key], limit)
     kudos = paginator.get_page(page)
-    kudos_html = loader.render_to_string('shared/kudos_card_profile.html', {'kudos': kudos})
+    html_context = {}
+    html_context[key] = kudos
+    html_context['kudos_data'] = key
+    kudos_html = loader.render_to_string('shared/kudos_card_profile.html', html_context)
     return JsonResponse({'kudos_html': kudos_html, 'has_next': kudos.has_next()})
 
 

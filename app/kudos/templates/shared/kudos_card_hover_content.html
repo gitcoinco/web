@@ -16,26 +16,20 @@
 {% endcomment %}
 {% load i18n static kudos_extras  %}
 {% load humanize %}
-{% if kudo.kudos_token_cloned_from %}
-  {% for kt in kudo.kudos_token_cloned_from.all %}
-    {% if countercounterparty == 'from_username' and kt.from_username.strip == profile.handle.strip or countercounterparty == 'username' and kt.username.strip|slice:'1:' == profile.handle.strip %}
-      <p>Sent {{relation}} 
+<p>Sent {{relation}} 
 
-        {% if counterparty == 'username' %}
-          <a href="{% url 'profile' kt.username|slice:'1:' %}">{{kt.username|slice:"1:"}}</a>
-        {% else %}
-          <a href="{% url 'profile' kt.from_username %}">{{kt.from_username}}</a>
-        {% endif %}
+  {% if relation == 'from' %}
+    <a href="{% url 'profile' kt.username %}">{{kt.username}}</a>
+  {% else %}
+    <a href="{% url 'profile' kt.from_username %}">{{kt.from_username}}</a>
+  {% endif %}
 
-      {{kt.created_on|naturaltime}}</p>
-      <p>
-        <a href="{% if not kt == 'mainnet' %}https://{{ kt.network }}.etherscan.io/tx/{{ kt.txid }}{% else %}https://etherscan.io/tx/{{ kt.txid }}{% endif %}" target="_blank" class="d-block mb-1">{{ kt.txid|humanize_address }}</a>
-      </p>
-      {% if kt.comments_public %}
-        {% trans "Comment:" %}
-        <p>{{kt.comments_public}}</p>
-      {% endif %}
-    {% endif %}
-  {% endfor %}
-{% endif %}
+{{kt.created_on|naturaltime}}</p>
+<p>
+  <a href="{% if not kt.network == 'mainnet' %}https://{{ kt.network }}.etherscan.io/tx/{{ kt.txid }}{% else %}https://etherscan.io/tx/{{ kt.txid }}{% endif %}" target="_blank" class="d-block mb-1">{{ kt.txid|humanize_address }}</a>
+</p>
+{% if kt.comments_public %}
+  {% trans "Comment:" %}
+  <p>{{kt.comments_public}}</p>
+  {% endif %}
 
