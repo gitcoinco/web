@@ -123,7 +123,7 @@
         </div>
       </div>
     </div>
-    {% if not hidden %}
+    {% if not hidden and not profile.is_org %}
     <div class="container-fluid bg-light py-5">
       <div class="container" >
         {% if user.is_authenticated and request.path == '/profile/' %}
@@ -167,6 +167,8 @@
       </div>
     </div>
     {% endif %}
+
+
     <div class="container">
     {% if hidden %}
       {% include 'profiles/hidden.html' %}
