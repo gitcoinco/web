@@ -1209,6 +1209,7 @@ def lazy_load_kudos(request):
     limit = int(request.GET.get('limit', 8))
     handle = request.POST.get('handle')
     profile = Profile.objects.get(handle=handle)
+
     if datarequest == 'mykudos':
         key = 'kudos'
         context[key] = profile.get_my_kudos.order_by('id', order_by)
@@ -1219,7 +1220,10 @@ def lazy_load_kudos(request):
     paginator = Paginator(context[key], limit)
 
     kudos = paginator.get_page(page)
-    kudos_html = loader.render_to_string('shared/kudos_card_profile.html', {'kudos': kudos})
+    html_context = {}
+    html_context[key] = kudos
+    html_context['kudos_data'] = key
+    kudos_html = loader.render_to_string('shared/kudos_card_profile.html', html_context)
     return JsonResponse({'kudos_html': kudos_html, 'has_next': kudos.has_next()})
 
 
