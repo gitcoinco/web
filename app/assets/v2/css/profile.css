@@ -232,11 +232,12 @@
   border: 0.1rem solid #FFCE08;
 }
 
-.noprofile-button {
+.no-profile-button {
 	background-color: #3E00FF; 
 	color: #FFFFFF; 
-	font-size: 1em;
+	font-size: 0.875rem;
 }
-.noprofile-textcolor {
+
+.no-profile-textcolor {
 	color: #666666;
 }
