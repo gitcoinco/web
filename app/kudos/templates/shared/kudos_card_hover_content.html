@@ -18,7 +18,7 @@
 {% load humanize %}
 <p>Sent {{relation}} 
 
-  {% if relation == 'from' %}
+  {% if relation == 'to' %}
     <a href="{% url 'profile' kt.username %}">{{kt.username}}</a>
   {% else %}
     <a href="{% url 'profile' kt.from_username %}">{{kt.from_username}}</a>
