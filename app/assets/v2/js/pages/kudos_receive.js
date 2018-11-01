@@ -155,15 +155,19 @@ $(document).ready(function() {
  
         kudos_contract.clone.estimateGas(forwarding_address, tokenId, numClones, {from: holding_address, value: kudosPriceInWei}, function(error, gasLimit) {
           console.log(gasLimit);
-          var buffer = new web3.BigNumber(20000);
+
+          var buffer = new web3.BigNumber(10);
+
+          var observedKudosGasLimit = 505552;
+          if (gasLimit < observedKudosGasLimit){
+            gasLimit = observedKudosGasLimit;
+          }
 
           gasLimit = new web3.BigNumber(gasLimit);
           var send_amount = balance.minus(gasLimit.times(gas_price_wei)).minus(buffer);
-          // rawTx['value'] = web3.toHex(send_amount.toString()); // deduct gas costs from amount to send
 
           rawTx['value'] = send_amount.toNumber();
           rawTx['gasPrice'] = web3.toHex(gas_price_wei.toString());
-          // rawTx['gas'] = web3.toHex(gasLimit.toString());
           rawTx['gasLimit'] = web3.toHex(gasLimit.toString());
           show_console = true;
           if (show_console) {
