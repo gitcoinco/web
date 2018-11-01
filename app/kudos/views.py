@@ -177,25 +177,6 @@ def details(request, kudos_id, name):
     # Find other profiles that have the same kudos name
     kudos = get_object_or_404(Token, pk=kudos_id)
 
-    # Find other Kudos rows that are the same kudos.name, but of a different owner
-    related_kudos = Token.objects.select_related('contract').filter(
-        name=kudos.name,
-        contract__network=settings.KUDOS_NETWORK,
-    )
-    # Find the Wallet rows that match the Kudos.owner_addresses
-    # related_wallets = Wallet.objects.filter(address__in=[rk.owner_address for rk in related_kudos]).distinct()[:20]
-
-    # Find the related Profiles assuming the preferred_payout_address is the kudos owner address.
-    # Note that preferred_payout_address is most likely in normalized form.
-    # https://eth-utils.readthedocs.io/en/latest/utilities.html#to-normalized-address-value-text
-    related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from__in=related_kudos)
-    related_profiles_pks = related_kudos_transfers.values_list('recipient_profile_id', flat=True)
-    related_profiles = Profile.objects.filter(pk__in=related_profiles_pks).distinct()[:20]
-    # profile_ids = [rw.profile_id for rw in related_wallets]
-
-    # Avatar can be accessed via Profile.avatar
-    # related_profiles = Profile.objects.filter(pk__in=profile_ids).distinct()
-
     context = {
         'is_outside': True,
         'active': 'details',
@@ -204,7 +185,7 @@ def details(request, kudos_id, name):
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         'kudos': kudos,
-        'related_profiles': related_profiles,
+        'related_profiles': kudos.owners[:20],
     }
     if kudos:
         token = Token.objects.select_related('contract').get(
