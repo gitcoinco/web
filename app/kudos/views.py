@@ -176,6 +176,7 @@ def details(request, kudos_id, name):
 
     # Find other profiles that have the same kudos name
     kudos = get_object_or_404(Token, pk=kudos_id)
+
     # Find other Kudos rows that are the same kudos.name, but of a different owner
     related_kudos = Token.objects.select_related('contract').filter(
         name=kudos.name,
@@ -188,11 +189,9 @@ def details(request, kudos_id, name):
     # Find the related Profiles assuming the preferred_payout_address is the kudos owner address.
     # Note that preferred_payout_address is most likely in normalized form.
     # https://eth-utils.readthedocs.io/en/latest/utilities.html#to-normalized-address-value-text
-    owner_addresses = [
-        to_normalized_address(rk.owner_address) if is_address(rk.owner_address) is not False else None
-        for rk in related_kudos
-    ]
-    related_profiles = Profile.objects.filter(preferred_payout_address__in=owner_addresses).distinct()[:20]
+    related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from__in=related_kudos)
+    related_profiles_pks = related_kudos_transfers.values_list('recipient_profile_id', flat=True)
+    related_profiles = Profile.objects.filter(pk__in=related_profiles_pks).distinct()[:20]
     # profile_ids = [rw.profile_id for rw in related_wallets]
 
     # Avatar can be accessed via Profile.avatar
