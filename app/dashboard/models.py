@@ -1590,7 +1590,6 @@ class Profile(SuperModel):
 
         return kudos_transfers
 
-
     @property
     def is_org(self):
         try:

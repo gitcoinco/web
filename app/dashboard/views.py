@@ -1202,23 +1202,25 @@ def profile(request, handle):
 @csrf_exempt
 def lazy_load_kudos(request):
     page = request.POST.get('page', 1)
-    address = request.POST.get('address')
     context = {}
     datarequest = request.POST.get('request')
     order_by = request.GET.get('order_by', '-modified_on')
     limit = int(request.GET.get('limit', 8))
     handle = request.POST.get('handle')
-    profile = Profile.objects.get(handle=handle)
 
-    if datarequest == 'mykudos':
-        key = 'kudos'
-        context[key] = profile.get_my_kudos.order_by('id', order_by)
-    else:
-        key = 'sent_kudos'
-        context[key] = profile.get_sent_kudos.order_by('id', order_by)
+    if handle:
+        try:
+            profile = Profile.objects.get(handle=handle)
+            if datarequest == 'mykudos':
+                key = 'kudos'
+                context[key] = profile.get_my_kudos.order_by('id', order_by)
+            else:
+                key = 'sent_kudos'
+                context[key] = profile.get_sent_kudos.order_by('id', order_by)
+        except Profile.DoesNotExist:
+            pass
 
     paginator = Paginator(context[key], limit)
-
     kudos = paginator.get_page(page)
     html_context = {}
     html_context[key] = kudos
