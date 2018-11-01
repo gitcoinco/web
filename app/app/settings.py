@@ -27,6 +27,9 @@ import environ
 import raven
 from easy_thumbnails.conf import Settings as easy_thumbnails_defaults
 
+import warnings
+warnings.filterwarnings("ignore", category=UserWarning, module='psycopg2')
+
 root = environ.Path(__file__) - 2  # Set the base directory to two levels.
 env = environ.Env(DEBUG=(bool, False), )  # set default values and casting
 env.read_env(str(root.path('app/.env')))  # reading .env file
@@ -50,7 +53,7 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['localhost'])
 
 # Notifications - Global on / off switch
-ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet')
+ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet') 
 
 # Application definition
 INSTALLED_APPS = [
@@ -101,6 +104,8 @@ INSTALLED_APPS = [
     'external_bounties',
     'dataviz',
     'impersonate',
+    'kudos',
+    'django.contrib.postgres',
     'bounty_requests'
 ]
 
@@ -130,7 +135,7 @@ AUTHENTICATION_BACKENDS = (
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
-    'DIRS': ['retail/templates/', 'external_bounties/templates/', 'dataviz/templates', ],
+    'DIRS': ['retail/templates/', 'external_bounties/templates/', 'dataviz/templates', 'kudos/templates'],
     'APP_DIRS': True,
     'OPTIONS': {
         'context_processors': [
@@ -488,6 +493,18 @@ TWITTER_USERNAME = env('TWITTER_USERNAME', default='')  # TODO
 # optional: only needed if you slack things
 SLACK_TOKEN = env('SLACK_TOKEN', default='')  # TODO
 SLACK_WELCOMEBOT_TOKEN = env('SLACK_WELCOMEBOT_TOKEN', default='')  # TODO
+
+# OpenSea API
+OPENSEA_API_KEY = env('OPENSEA_API_KEY', default='')
+
+# Kudos
+KUDOS_OWNER_ACCOUNT = env('KUDOS_OWNER_ACCOUNT', default='0xD386793F1DB5F21609571C0164841E5eA2D33aD8')
+KUDOS_PRIVATE_KEY = env('KUDOS_PRIVATE_KEY', default='')
+KUDOS_CONTRACT_MAINNET = env('KUDOS_CONTRACT_MAINNET', default='0x2aea4add166ebf38b63d09a75de1a7b94aa24163')
+KUDOS_CONTRACT_RINKEBY = env('KUDOS_CONTRACT_RINKEBY', default='0x4077ae95eec529d924571d00e81ecde104601ae8')
+KUDOS_CONTRACT_ROPSTEN = env('KUDOS_CONTRACT_ROPSTEN', default='0xcd520707fc68d153283d518b29ada466f9091ea8')
+KUDOS_CONTRACT_TESTRPC = env('KUDOS_CONTRACT_TESTRPC', default='0x38c48d14a5bbc38c17ced9cd5f0695894336f426')
+KUDOS_NETWORK = env('KUDOS_NETWORK', default='mainnet')
 
 # Reporting Integrations
 MIXPANEL_TOKEN = env('MIXPANEL_TOKEN', default='')

@@ -22,6 +22,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.models import Bounty, Profile, Tip
+from kudos.models import KudosTransfer
 from marketing.models import LeaderboardRank
 
 # Constants
@@ -39,6 +40,7 @@ FULFILLED = 'fulfilled'
 PAYERS = 'payers'
 EARNERS = 'earners'
 ORGS = 'orgs'
+KUDOS = 'kudos'
 KEYWORDS = 'keywords'
 TOKENS = 'tokens'
 COUNTRIES = 'countries'
@@ -46,7 +48,7 @@ CITIES = 'cities'
 CONTINENTS = 'continents'
 
 TIMES = [ALL, WEEKLY, QUARTERLY, YEARLY, MONTHLY]
-BREAKDOWNS = [FULFILLED, ALL, PAYERS, EARNERS, ORGS, KEYWORDS, TOKENS, COUNTRIES, CITIES, CONTINENTS]
+BREAKDOWNS = [FULFILLED, ALL, PAYERS, EARNERS, ORGS, KEYWORDS, KUDOS, TOKENS, COUNTRIES, CITIES, CONTINENTS]
 
 WEEKLY_CUTOFF = timezone.now() - timezone.timedelta(days=(30 if settings.DEBUG else 7))
 MONTHLY_CUTOFF = timezone.now() - timezone.timedelta(days=30)
@@ -234,6 +236,25 @@ def sum_tip_helper(t, time, index_term, val_usd):
         add_element(f'{time}_{CONTINENTS}', index_term, val_usd)
 
 
+def sum_kudos(kt):
+    val_usd = kt.value_in_usdt_now
+    index_terms = [kt.kudos_token_cloned_from.url]
+    for index_term in index_terms:
+        sum_kudos_helper(kt, ALL, index_term, val_usd)
+        if kt.created_on > WEEKLY_CUTOFF:
+            sum_kudos_helper(kt, WEEKLY, index_term, val_usd)
+        if kt.created_on > MONTHLY_CUTOFF:
+            sum_kudos_helper(kt, MONTHLY, index_term, val_usd)
+        if kt.created_on > QUARTERLY_CUTOFF:
+            sum_kudos_helper(kt, QUARTERLY, index_term, val_usd)
+        if kt.created_on > YEARLY_CUTOFF:
+            sum_kudos_helper(kt, YEARLY, index_term, val_usd)
+
+
+def sum_kudos_helper(keyword, time, index_term, val_usd):
+    add_element(f'{time}_{KUDOS}', index_term, val_usd)
+
+
 def sum_tips(t, index_terms):
     val_usd = t.value_in_usdt_now
     for index_term in index_terms:
@@ -284,6 +305,10 @@ class Command(BaseCommand):
                 continue
             index_terms = tip_index_terms(t)
             sum_tips(t, index_terms)
+        
+        # kudos'
+        for kt in KudosTransfer.objects.exclude(txid='').filter(network='mainnet'):
+            sum_kudos(kt)
 
         # set old LR as inactive
         lrs = LeaderboardRank.objects.active()

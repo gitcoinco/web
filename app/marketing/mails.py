@@ -17,6 +17,8 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+import logging
+
 from django.conf import settings
 from django.utils import timezone, translation
 from django.utils.translation import gettext
@@ -28,21 +30,24 @@ from python_http_client.exceptions import HTTPError, UnauthorizedError
 from retail.emails import (
     render_admin_contact_funder, render_bounty_changed, render_bounty_expire_warning, render_bounty_feedback,
     render_bounty_startwork_expire_warning, render_bounty_unintersted, render_faucet_rejected, render_faucet_request,
-    render_funder_stale, render_gdpr_reconsent, render_gdpr_update, render_match_email, render_new_bounty,
-    render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup, render_new_work_submission,
-    render_quarterly_stats, render_start_work_applicant_about_to_expire, render_start_work_applicant_expired,
-    render_start_work_approved, render_start_work_new_applicant, render_start_work_rejected, render_tip_email,
+    render_funder_stale, render_gdpr_reconsent, render_gdpr_update, render_kudos_email, render_match_email,
+    render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
+    render_new_work_submission, render_quarterly_stats, render_start_work_applicant_about_to_expire,
+    render_start_work_applicant_expired, render_start_work_approved, render_start_work_new_applicant,
+    render_start_work_rejected, render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
 
+logger = logging.getLogger(__name__)
+
 
 def send_mail(from_email, _to_email, subject, body, html=False,
-              from_name="Gitcoin.co", cc_emails=None, categories=None):
+              from_name="Gitcoin.co", cc_emails=None, categories=None, debug_mode=False):
     """Send email via SendGrid."""
     # make sure this subscriber is saved
     if not settings.SENDGRID_API_KEY:
-        print('No SendGrid API Key set. Not attempting to send email.')
+        logger.warning('No SendGrid API Key set. Not attempting to send email.')
         return
 
     if categories is None:
@@ -61,9 +66,13 @@ def send_mail(from_email, _to_email, subject, body, html=False,
 
     # build content
     content = Content(contenttype, html) if html else Content(contenttype, body)
-    if settings.IS_DEBUG_ENV:
+
+    # TODO:  A bit of a hidden state change here.  Really confusing when doing development.
+    #        Maybe this should be a variable passed into the function the value is set upstream? 
+    if settings.IS_DEBUG_ENV or debug_mode:
         to_email = Email(settings.CONTACT_EMAIL)  # just to be double secret sure of what were doing in dev
         subject = _("[DEBUG] ") + subject
+
     mail = Mail(from_email, subject, to_email, content)
     response = None
 
@@ -84,15 +93,14 @@ def send_mail(from_email, _to_email, subject, body, html=False,
         mail.add_category(Category(category))
 
     # debug logs
-    print(f"-- Sending Mail '{subject}' to {_to_email}")
-
-    # send mails
+    logger.info(f"-- Sending Mail '{subject}' to {to_email}")
     try:
         response = sg.client.mail.send.post(request_body=mail.get())
-    except UnauthorizedError:
-        print(f'-- Sendgrid Mail failure - Unauthorized - Check sendgrid credentials')
+    except UnauthorizedError as e:
+        logger.error(f'-- Sendgrid Mail failure - Unauthorized - Check sendgrid credentials')
+        logger.error(e)
     except HTTPError as e:
-        print(f'-- Sendgrid Mail failure - {e}')
+        logger.error(f'-- Sendgrid Mail failure - {e}')
 
     return response
 

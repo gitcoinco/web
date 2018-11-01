@@ -1,0 +1,35 @@
+{% comment %}
+  Copyright (C) 2018 Gitcoin Core
+
+  This program is free software: you can redistribute it and/or modify
+  it under the terms of the GNU Affero General Public License as published
+  by the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+  GNU Affero General Public License for more details.
+
+  You should have received a copy of the GNU Affero General Public License
+  along with this program. If not, see <http://www.gnu.org/licenses/>.
+{% endcomment %}
+{% load i18n static kudos_extras  %}
+{% load humanize %}
+<p>Sent {{relation}} 
+
+  {% if relation == 'from' %}
+    <a href="{% url 'profile' kt.username %}">{{kt.username}}</a>
+  {% else %}
+    <a href="{% url 'profile' kt.from_username %}">{{kt.from_username}}</a>
+  {% endif %}
+
+{{kt.created_on|naturaltime}}</p>
+<p>
+  <a href="{% if not kt.network == 'mainnet' %}https://{{ kt.network }}.etherscan.io/tx/{{ kt.txid }}{% else %}https://etherscan.io/tx/{{ kt.txid }}{% endif %}" target="_blank" class="d-block mb-1">{{ kt.txid|humanize_address }}</a>
+</p>
+{% if kt.comments_public %}
+  {% trans "Comment:" %}
+  <p>{{kt.comments_public}}</p>
+  {% endif %}
+

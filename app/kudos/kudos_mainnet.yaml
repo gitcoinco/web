@@ -1,0 +1,180 @@
+- name: powertool_user
+  description: Know someone who's great at setting up and using power tools!?  Send
+    them a powertool user kudos.
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 400
+  tags:
+  - powertools
+  - tools
+  - first_mint
+  image: powertool_user.svg
+- name: status_hackathon_2018_games_track_first_prize
+  description: For the winner of the Status Hackathon Games Track
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - status hackathon
+  image: games_first.svg
+- name: status_hackathon_2018_marketplace_track_second_prize
+  description: For the runner up of the Status Hackathon Marketplace Track
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - status hackathon
+  image: marketplaces_runner_up.svg
+- name: status_hackathon_2018_traveltrack_second_prize
+  description: lorum
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - status hackathon
+  image: travel_runner_up.svg
+- name: status_hackathon_2018_travel_track_first_prize
+  description: For the winner of the Status Hackathon Travel Track
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - status hackathon
+  image: travel_first.svg
+- name: status_hackathon_2018__games_second_prize
+  description: lorum
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - status hackathon
+  image: games_runner_up.svg
+- name: philosophers_stone
+  description: For whomever makes the greatest contribution to the Status Hackathon
+    Philospher Circle at the Status Hackathon 2018
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - status hackathon
+  image: philosophers.svg
+- name: status_hackathon_2018_travel_social_first_prize
+  description: For the winner of the Status Hackathon Social Track
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - status hackathon
+  image: social_first.svg
+- name: status_hackathon_2018_social_first_prize
+  description: lorum
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - status hackathon
+  image: market_first.svg
+- name: status_hackathon_2018_social_second_prize
+  description: For the runner up of the Status Hackathon Social Track
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - status hackathon
+  image: social_runner_up.svg
+- name: status_hackathon_2018_wildcard
+  description: Winner of the wildcard prize at the Status Hackahton 2018
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - status hackathon
+  image: wildcard.svg
+- name: Best use of Fission -- ETHMagicians Prague 2018
+  description: This kudos is for the Best use of Fission -- ETHMagicians Prague 2018
+  rarity: 20
+  priceFinney: 1
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - ethmagicians
+  - prague
+  image: fission_color.svg
+- name: Best use of Universal Logins -- ETHMagicians Prague 2018
+  description: This kudos is for the Best use of Universal Logins -- ETHMagicians Prague 2018
+  rarity: 20
+  priceFinney: 1
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - ethmagicians
+  - prague
+  image: logins_color.svg
+- name: Awesome Participant -- ETHMagicians Prague 2018
+  description: This kudos is for the Awesome Participant -- ETHMagicians Prague 2018
+  rarity: 20
+  priceFinney: 1
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - ethmagicians
+  - prague
+  image: participant_color.svg
+- name: Scribe -- ETHMagicians Prague 2018
+  description: This kudos is for the Scribe kudos award -- ETHMagicians Prague 2018
+  rarity: 20
+  priceFinney: 1
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - ethmagicians
+  - prague
+  image: scirbe_color.svg
+- name: Best use of 1337 Subscriptions -- ETHMagicians Prague 2018
+  description: This kudos is for the Best use of 1337 Subscriptions -- ETHMagicians Prague 2018
+  rarity: 20
+  priceFinney: 1
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - ethmagicians
+  - prague
+  image: subscription_color.svg
+- name: Volunteer Organizer Award -- ETHMagicians Prague 2018
+  description: This kudos is for the Volunteer Organizer Award -- ETHMagicians Prague 2018
+  rarity: 20
+  priceFinney: 1
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - ethmagicians
+  - prague
+  image: volunteer_color.svg
+- name: Best Use Of Wallet Standards -- ETHMagicians Prague 2018
+  description: This kudos is for the Best Use Of Wallet Standards -- ETHMagicians Prague 2018
+  rarity: 20
+  priceFinney: 1
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 1
+  tags:
+  - ethmagicians
+  - prague
+  image: wallet_color.svg

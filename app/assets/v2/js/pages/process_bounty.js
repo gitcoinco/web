@@ -109,6 +109,40 @@ window.onload = function() {
 
     };
 
+    var attach_and_send_kudos = function(selected_kudos, callback) {
+      // get form data
+
+      var email = '';
+      var github_url = $('#issueURL').val();
+      var from_name = document.contxt['github_handle'];
+      var username = $('#bountyFulfillment option:selected').data('username');
+      var amountInEth = selected_kudos.price_finney / 1000.0;
+      var comments_public = $('.kudos-comment textarea').val();
+      var comments_priv = '';
+      var from_email = '';
+      var accept_tos = true;
+      var tokenAddress = document.token_address;
+      var expires = 9999999999;
+      var kudosId = selected_kudos.id;
+      var tokenId = selected_kudos.token_id;
+      var success_callback = function(txid) {
+        var url = 'https://' + etherscanDomain() + '/tx/' + txid;
+        var msg = 'The Kudos has been sent 👌 <a target=_blank href="' + url + '">[Etherscan Link]</a>';
+
+        // send msg to frontend
+        _alert(msg, 'info');
+        callback();
+
+      };
+      var failure_callback = function() {
+        // do nothing
+        $.noop();
+      };
+
+      return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, kudosId, tokenId, success_callback, failure_callback, true);
+
+    };
+
 
     $('#acceptBounty').click(function(e) {
       try {
@@ -214,16 +248,26 @@ window.onload = function() {
             next();
           }
         };
-        var send = function() {
+        // just sent payout
+        var send_payout = function() {
           bounty.acceptFulfillment(bountyId, fulfillmentId, {gasPrice: web3.toHex($('#gasPrice').val() * Math.pow(10, 9))}, final_callback);
         };
 
-        if ($('#tipPercent').val() > 0) {
-          attach_and_send_tip(send);
+        // send both tip and payout
+        var send_tip_and_payout_callback = function() {
+          _alert({ message: gettext('You will now be asked to confirm another transaction (please check metamask, sometimes the second popup doesnt come up).') }, 'info');
+          if ($('#tipPercent').val() > 0) {
+            attach_and_send_tip(send_payout);
+          } else {
+            send_payout();
+          }
+        };
+
+        if ($('.kudos-search').select2('data')[0]) {
+          attach_and_send_kudos($('.kudos-search').select2('data')[0], send_tip_and_payout_callback);
         } else {
-          send();
+          send_tip_and_payout_callback();
         }
-        
 
       };
       // Get bountyId from the database

@@ -42,15 +42,16 @@ def combine_profiles(p1, p2):
     p1.trust_profile = any([p1.trust_profile, p2.trust_profile])
     p1.hide_profile = any([p1.hide_profile, p2.hide_profile])
     p1.suppress_leaderboard = any([p1.suppress_leaderboard, p2.suppress_leaderboard])
+    p1.user = p2.user if p2.user else p1.user
     # tips, bounties, fulfillments, and interests , activities, actions
     for obj in p2.received_tips.all():
-        obj.profile = p1
+        obj.recipient_profile = p1
         obj.save()
     for obj in p2.sent_tips.all():
-        obj.profile = p1
+        obj.sender_profile = p1
         obj.save()
     for obj in p2.bounties_funded.all():
-        obj.profile = p1
+        obj.bounty_owner_profile = p1
         obj.save()
     for obj in p2.interested.all():
         obj.profile = p1
@@ -70,8 +71,8 @@ def combine_profiles(p1, p2):
     for obj in p2.votes.all():
         obj.profile = p1
         obj.save()
-    p1.save()
     p2.delete()
+    p1.save()
 
 
 class Command(BaseCommand):
@@ -84,6 +85,6 @@ class Command(BaseCommand):
 
         for dupe in dupes:
             handle = dupe['handle']
-            profiles = Profile.objects.filter(handle=handle)
-            print(f"combining {profiles[0].pk} and {profiles[1].pk}")
+            profiles = Profile.objects.filter(handle=handle).distinct("pk")
+            print(f"combining {handle}: {profiles[0].pk} and {profiles[1].pk}")
             combine_profiles(profiles[0], profiles[1])
