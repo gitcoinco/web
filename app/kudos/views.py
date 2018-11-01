@@ -449,10 +449,13 @@ def receive(request, key, txid, network):
         TemplateResponse: the UI with the kudos confirmed
 
     """
-    these_kudos_emails = KudosTransfer.objects.filter(web3_type='v3', txid=txid, network=network)
-    kudos_emails = these_kudos_emails.filter(metadata__reference_hash_for_receipient=key) | these_kudos_emails.filter(
+    these_kudos_transfers = KudosTransfer.objects.filter(web3_type='v3', txid=txid, network=network)
+    kudos_transfers = these_kudos_transfers.filter(metadata__reference_hash_for_receipient=key) | these_kudos_transfers.filter(
         metadata__reference_hash_for_funder=key)
-    kudos_transfer = kudos_emails.first()
+    kudos_transfer = kudos_transfers.first()
+    if not kudos_transfer:
+        raise Http404
+
     is_authed = kudos_transfer.trust_url or request.user.username.replace('@', '') in [
         kudos_transfer.username.replace('@', ''),
         kudos_transfer.from_username.replace('@', '')
