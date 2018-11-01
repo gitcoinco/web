@@ -1573,7 +1573,7 @@ class Profile(SuperModel):
 
         kudos_transfers = kt_profile | kt_owner_address
         kudos_transfers = kudos_transfers.filter(kudos_token_cloned_from__contract__network=settings.KUDOS_NETWORK)
-        #kudos_transfers = kudos_transfers.distinct('kudos_token_cloned_from_id') # remove this line IFF we ever move to showing multiple kudos transfers on a profile
+        kudos_transfers = kudos_transfers.distinct('id') # remove this line IFF we ever move to showing multiple kudos transfers on a profile
 
         return kudos_transfers
 
@@ -1586,7 +1586,7 @@ class Profile(SuperModel):
 
         kudos_transfers = kt_address | kt_sender_profile
         kudos_transfers = kudos_transfers.filter(kudos_token_cloned_from__contract__network=settings.KUDOS_NETWORK)
-        #kudos_transfers = kudos_transfers.distinct('kudos_token_cloned_from_id') # remove this line IFF we ever move to showing multiple kudos transfers on a profile
+        kudos_transfers = kudos_transfers.distinct('id') # remove this line IFF we ever move to showing multiple kudos transfers on a profile
 
         return kudos_transfers
 
