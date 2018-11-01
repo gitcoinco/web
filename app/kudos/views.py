@@ -180,7 +180,6 @@ def details(request, kudos_id, name):
     # Find other Kudos rows that are the same kudos.name, but of a different owner
     related_kudos = Token.objects.select_related('contract').filter(
         name=kudos.name,
-        num_clones_allowed=0,
         contract__network=settings.KUDOS_NETWORK,
     )
     # Find the Wallet rows that match the Kudos.owner_addresses
