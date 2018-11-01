@@ -159,7 +159,8 @@ $(document).ready(function() {
           var buffer = new web3.BigNumber(10);
 
           var observedKudosGasLimit = 505552;
-          if (gasLimit < observedKudosGasLimit){
+
+          if (gasLimit < observedKudosGasLimit) {
             gasLimit = observedKudosGasLimit;
           }
 

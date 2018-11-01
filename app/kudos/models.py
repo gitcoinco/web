@@ -23,6 +23,9 @@ from io import BytesIO
 from django.conf import settings
 from django.core.files import File
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.utils import timezone
 from django.utils.text import slugify
 
 import environ
@@ -67,6 +70,10 @@ class Token(SuperModel):
     num_clones_allowed = models.IntegerField(null=True, blank=True)
     num_clones_in_wild = models.IntegerField(null=True, blank=True)
     cloned_from_id = models.IntegerField()
+    popularity = models.IntegerField(default=0)
+    popularity_week = models.IntegerField(default=0)
+    popularity_month = models.IntegerField(default=0)
+    popularity_quarter = models.IntegerField(default=0)
 
     # Kudos metadata from tokenURI (also in contract)
     name = models.CharField(max_length=255)
@@ -303,6 +310,18 @@ class KudosTransfer(SendCryptoAsset):
         if self.receive_txid:
             status = 'received'
         return f"({status}) transfer of {self.kudos_token_cloned_from} from {self.sender_profile} to {self.username} on {self.network}"
+
+
+@receiver(post_save, sender=KudosTransfer, dispatch_uid="psave_kt")
+def psave_kt(sender, instance, **kwargs):
+    token = instance.kudos_token_cloned_from
+    if token:
+        all_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=token)
+        token.popularity = all_transfers.count()
+        token.popularity_week = all_transfers.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=7))).count()
+        token.popularity_month = all_transfers.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=30))).count()
+        token.popularity_quarter = all_transfers.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=90))).count()
+        token.save()
 
 
 class Contract(SuperModel):

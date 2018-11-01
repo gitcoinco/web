@@ -86,7 +86,7 @@ def about(request):
         contract__is_latest=True,
         contract__network=settings.KUDOS_NETWORK,
         hidden=False,
-    ).order_by('-created_on')
+    ).order_by('-popularity_week')
     context = {
         'is_outside': True,
         'active': 'about',
