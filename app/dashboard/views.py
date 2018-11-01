@@ -1125,6 +1125,7 @@ def profile(request, handle):
     order_by = request.GET.get('order_by', '-modified_on')
     owned_kudos = None
     sent_kudos = None
+    handle = handle.replace("@", "")
 
     try:
         if not handle and not request.user.is_authenticated:
