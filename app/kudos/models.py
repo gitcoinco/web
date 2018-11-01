@@ -158,7 +158,7 @@ class Token(SuperModel):
             name=self.name,
             contract__network=settings.KUDOS_NETWORK,
         )
-        related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from__in=related_kudos)
+        related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from__in=related_kudos).exclude(txid='')
         related_profiles_pks = related_kudos_transfers.values_list('recipient_profile_id', flat=True)
         related_profiles = Profile.objects.filter(pk__in=related_profiles_pks).distinct()
         return related_profiles
