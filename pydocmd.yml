@@ -130,6 +130,20 @@ generate:
     - gitcoinbot.views++
   - healthcheck/healthchecks.md:
     - healthcheck.healthchecks++
+  - kudos/admin.md:
+    - kudos.admin++
+  - kudos/forms.md:
+    - kudos.forms++
+  - kudos/helpers.md:
+    - kudos.helpers++
+  - kudos/router.md:
+    - kudos.router++
+  - kudos/models.md:
+    - kudos.models++
+  - kudos/utils.md:
+    - kudos.utils++
+  - kudos/views.md:
+    - kudos.views++
   - linkshortener/commands.md:
     - linkshortener.management.commands.create_shortlinks++
   - linkshortener/admin.md:
@@ -286,6 +300,15 @@ pages:
       - Admin: gitcoinbot/admin.md
       - Models: gitcoinbot/models.md
       - Views: gitcoinbot/views.md
+    - Kudos:
+      - Local Deployment: kudos_deploy >> docs/KUDOS.md
+      - Admin: kudos/admin.md
+      - Forms: kudos/forms.md
+      - Helpers: kudos/helpers.md
+      - Models: kudos/models.md
+      - Routers: kudos/router.md
+      - Utilities: kudos/utils.md
+      - Views: kudos/views.md
     - Link Shortener:
       - Commands: linkshortener/commands.md
       - Admin: linkshortener/admin.md
