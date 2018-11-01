@@ -370,6 +370,13 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
     failure_callback();
     return;
   }
+
+  // warnings
+  if (username == $('#fromName').val()) {
+    _alert({ message: gettext('Kudos are intended to be compliments. just like you *can* give yourself a compliment or *can* give yourself an award, you are also able to send yourself a Kudos. ') }, 'warning');
+  }
+
+
   // console.log('got to metadata_callback')
 
   // Step 7
