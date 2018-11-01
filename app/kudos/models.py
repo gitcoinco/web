@@ -316,7 +316,7 @@ class KudosTransfer(SendCryptoAsset):
 def psave_kt(sender, instance, **kwargs):
     token = instance.kudos_token_cloned_from
     if token:
-        all_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=token)
+        all_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=token).exclude(txid='')
         token.popularity = all_transfers.count()
         token.popularity_week = all_transfers.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=7))).count()
         token.popularity_month = all_transfers.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=30))).count()
