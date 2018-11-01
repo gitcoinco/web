@@ -29,6 +29,12 @@ function getQueryParams(query) {
   }
 
   var search = query.substring(1);
+  var myJson = {};
+  var hashes = search.split('&');
 
-  return JSON.parse('{"' + decodeURI(search).replace(/"/g, '\\"').replace(/&/g, '","').replace(/=/g, '":"') + '"}');
+  for (var i = 0; i < hashes.length; i++) {
+    hash = hashes[i].split('=');
+    myJson[hash[0]] = hash[1];
+  }
+  return myJson;
 }

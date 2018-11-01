@@ -155,7 +155,7 @@ $(document).ready(function() {
  
         kudos_contract.clone.estimateGas(forwarding_address, tokenId, numClones, {from: holding_address, value: kudosPriceInWei}, function(error, gasLimit) {
           console.log(gasLimit);
-          var buffer = new web3.BigNumber(0);
+          var buffer = new web3.BigNumber(20000);
 
           gasLimit = new web3.BigNumber(gasLimit);
           var send_amount = balance.minus(gasLimit.times(gas_price_wei)).minus(buffer);

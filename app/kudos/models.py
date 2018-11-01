@@ -151,15 +151,46 @@ class Token(SuperModel):
     def tags_as_array(self):
         return [tag.strip() for tag in self.tags.split(',')]
 
+    @property
+    def owners(self):
+        from dashboard.models import Profile
+        related_kudos = Token.objects.select_related('contract').filter(
+            name=self.name,
+            contract__network=settings.KUDOS_NETWORK,
+        )
+        related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from__in=related_kudos).exclude(txid='')
+        related_profiles_pks = related_kudos_transfers.values_list('recipient_profile_id', flat=True)
+        related_profiles = Profile.objects.filter(pk__in=related_profiles_pks).distinct()
+        return related_profiles
+
+    @property
+    def num_clones_available_counting_indirect_send(self):
+        return self.num_gen0_clones_allowed - self.num_clones_in_wild_counting_indirect_send
+
+    @property
+    def num_clones_in_wild_counting_indirect_send(self):
+        num_total_sends_we_know_about = len(self.owners)
+        if num_total_sends_we_know_about > self.num_clones_in_wild:
+            return num_total_sends_we_know_about
+        return self.num_clones_in_wild
+
     def humanize(self):
         self.owner_address = self.shortened_address
         self.name = self.capitalized_name
         self.num_clones_available = self.get_num_clones_available()
         return self
 
+    @property
+    def gen(self):
+        if self.pk == self.cloned_from_id:
+            return 0
+        if not self.cloned_from_id:
+            return 0
+        return Token.objects.get(pk=self.cloned_from_id).gen + 1
+
     def __str__(self):
         """Return the string representation of a model."""
-        return f"{self.contract.network} Kudos Token: {self.humanized_name}"
+        return f"{self.contract.network} Gen {self.gen} Kudos Token: {self.humanized_name}"
 
     @property
     def as_img(self):
@@ -269,7 +300,9 @@ class KudosTransfer(SendCryptoAsset):
     def __str__(self):
         """Return the string representation of a model."""
         status = 'funded' if self.txid else 'not funded'
-        return f"({status}) transfer of {self.kudos_token_cloned_from} from {self.sender_profile} to {self.recipient_profile} on {self.network}"
+        if self.receive_txid:
+            status = 'received'
+        return f"({status}) transfer of {self.kudos_token_cloned_from} from {self.sender_profile} to {self.username} on {self.network}"
 
 
 class Contract(SuperModel):

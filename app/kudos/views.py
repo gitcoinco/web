@@ -30,6 +30,7 @@ from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
@@ -175,27 +176,6 @@ def details(request, kudos_id, name):
 
     # Find other profiles that have the same kudos name
     kudos = get_object_or_404(Token, pk=kudos_id)
-    # Find other Kudos rows that are the same kudos.name, but of a different owner
-    related_kudos = Token.objects.select_related('contract').filter(
-        name=kudos.name,
-        num_clones_allowed=0,
-        contract__network=settings.KUDOS_NETWORK,
-    )
-    # Find the Wallet rows that match the Kudos.owner_addresses
-    # related_wallets = Wallet.objects.filter(address__in=[rk.owner_address for rk in related_kudos]).distinct()[:20]
-
-    # Find the related Profiles assuming the preferred_payout_address is the kudos owner address.
-    # Note that preferred_payout_address is most likely in normalized form.
-    # https://eth-utils.readthedocs.io/en/latest/utilities.html#to-normalized-address-value-text
-    owner_addresses = [
-        to_normalized_address(rk.owner_address) if is_address(rk.owner_address) is not False else None
-        for rk in related_kudos
-    ]
-    related_profiles = Profile.objects.filter(preferred_payout_address__in=owner_addresses).distinct()[:20]
-    # profile_ids = [rw.profile_id for rw in related_wallets]
-
-    # Avatar can be accessed via Profile.avatar
-    # related_profiles = Profile.objects.filter(pk__in=profile_ids).distinct()
 
     context = {
         'is_outside': True,
@@ -205,7 +185,7 @@ def details(request, kudos_id, name):
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         'kudos': kudos,
-        'related_profiles': related_profiles,
+        'related_profiles': kudos.owners[:20],
     }
     if kudos:
         token = Token.objects.select_related('contract').get(
@@ -282,7 +262,13 @@ def send_2(request):
     This form is filled out before the 'send' button is clicked.
 
     """
+    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile', None):
+        return redirect('/login/github?next=' + request.get_full_path())
+
     _id = request.GET.get('id')
+    if _id and not str(_id).isdigit():
+        raise Http404
+
     kudos = Token.objects.filter(pk=_id).first()
     params = {
         'active': 'send',
@@ -438,11 +424,12 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
         }
     }
     try:
+        github_handle = github_handle.lstrip('@')
         kwargs['profile'] = Profile.objects.get(handle=github_handle)
     except Profile.MultipleObjectsReturned:
         kwargs['profile'] = Profile.objects.filter(handle__iexact=github_handle).first()
     except Profile.DoesNotExist:
-        logging.error(f"error in record_kudos_email_activity: profile with github name {github_handle} not found")
+        logger.warning(f"error in record_kudos_email_activity: profile with github name {github_handle} not found")
         return
     try:
         kwargs['bounty'] = kudos_transfer.bounty
@@ -452,7 +439,7 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
     try:
         Activity.objects.create(**kwargs)
     except Exception as e:
-        logging.error(f"error in record_kudos_email_activity: {e} - {event_name} - {kudos_transfer} - {github_handle}")
+        logger.error(f"error in record_kudos_email_activity: {e} - {event_name} - {kudos_transfer} - {github_handle}")
 
 
 def receive(request, key, txid, network):
@@ -473,11 +460,12 @@ def receive(request, key, txid, network):
     not_mined_yet = get_web3(kudos_transfer.network).eth.getBalance(
         Web3.toChecksumAddress(kudos_transfer.metadata['address'])) == 0
 
-    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
-        request.user, 'profile', None
-    ):
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
-        return login_redirect
+    if not kudos_transfer.trust_url:
+        if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
+            request.user, 'profile', None
+        ):
+            login_redirect = redirect('/login/github?next=' + request.get_full_path())
+            return login_redirect
 
     if kudos_transfer.receive_txid:
         messages.info(request, _('This kudos has been received'))
@@ -485,8 +473,11 @@ def receive(request, key, txid, network):
         messages.error(
             request, f'This kudos is for {kudos_transfer.username} but you are logged in as {request.user.username}.  Please logout and log back in as {kudos_transfer.username}.')
     elif not_mined_yet and not request.GET.get('receive_txid'):
-        messages.info(
-            request, f'This tx {kudos_transfer.txid}, is still mining.  Please wait a moment before submitting the receive form.')
+        message = mark_safe(
+            f'The <a href="https://etherscan.io/tx/{txid}">transaction</a> is still mining.  '
+            'Please wait a moment before submitting the receive form.'
+        )
+        messages.info(request, message)
     elif request.GET.get('receive_txid') and not kudos_transfer.receive_txid:
         params = request.GET
 
@@ -514,9 +505,11 @@ def receive(request, key, txid, network):
     params = {
         'issueURL': request.GET.get('source'),
         'class': 'receive',
-        'title': _('Receive Kudos'),
         'gas_price': round(recommend_min_gas_price_to_confirm_in_time(120), 1),
         'kudos_transfer': kudos_transfer,
+        'title': f"Receive {kudos_transfer.kudos_token_cloned_from.humanized_name} Kudos" if kudos_transfer and kudos_transfer.kudos_token_cloned_from else _('Receive Kudos'),
+        'avatar_url': kudos_transfer.kudos_token_cloned_from.img_url if kudos_transfer and kudos_transfer.kudos_token_cloned_from else None,
+        'card_desc': f"You've received a {kudos_transfer.kudos_token_cloned_from.humanized_name} kudos!" if kudos_transfer and kudos_transfer.kudos_token_cloned_from else _('You\'ve received a kudos'),
         'key': key,
         'is_authed': is_authed,
         'disable_inputs': kudos_transfer.receive_txid or not_mined_yet or not is_authed,

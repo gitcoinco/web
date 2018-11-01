@@ -76,7 +76,7 @@ class KudosViewsTestCase(TestCase):
 
     def test_send_2(self):
         r = self.client.get('/kudos/send/')
-        self.assertEqual(r.status_code, 200)
+        self.assertEqual(r.status_code, 302)
         # r = self.client.get('/kudos/send/?id=1')
         # self.assertEqual(r.status_code, 200)
 

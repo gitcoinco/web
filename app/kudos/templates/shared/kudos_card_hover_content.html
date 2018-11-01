@@ -14,7 +14,22 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load static %}
-<div class="container text-center mb-5 mt-5">
-  <a href="{% url 'kudos_main' %}"><img class="mw-100" src="{% static "v2/images/kudos/logo.svg" %}" alt="kudos" width="258px"></a>
-</div>
+{% load i18n static kudos_extras  %}
+{% load humanize %}
+<p>Sent {{relation}} 
+
+  {% if relation == 'to' %}
+    <a href="{% url 'profile' kt.username %}">{{kt.username}}</a>
+  {% else %}
+    <a href="{% url 'profile' kt.from_username %}">{{kt.from_username}}</a>
+  {% endif %}
+
+{{kt.created_on|naturaltime}}</p>
+<p>
+  <a href="{% if not kt.network == 'mainnet' %}https://{{ kt.network }}.etherscan.io/tx/{{ kt.txid }}{% else %}https://etherscan.io/tx/{{ kt.txid }}{% endif %}" target="_blank" class="d-block mb-1">{{ kt.txid|humanize_address }}</a>
+</p>
+{% if kt.comments_public %}
+  {% trans "Comment:" %}
+  <p>{{kt.comments_public}}</p>
+  {% endif %}
+

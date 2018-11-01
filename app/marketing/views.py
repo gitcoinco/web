@@ -597,6 +597,7 @@ def leaderboard(request, key=''):
         'quarterly_orgs': _('Top Orgs'),
         'quarterly_tokens': _('Top Tokens'),
         'quarterly_keywords': _('Top Keywords'),
+        'quarterly_kudos': _('Top Kudos'),
         # 'quarterly_cities': _('Top Cities'),
         # 'quarterly_countries': _('Top Countries'),
         # 'quarterly_continents': _('Top Continents'),
