@@ -11,9 +11,9 @@
     "state": "NORMAL",
     "published_on": "2018-10-20",
     "initial_price":{
-          "ETH": 0.00025,
-          "USD": 0.05,
-          "BTC": 0.0000079
+          "ETH": "0.00025 ETH",
+          "USD": "0.05 USD",
+          "BTC": "0.0000079 BTC"
     },
     "links": {
       "twitter": "https://twitter.com/bmexofficial",
