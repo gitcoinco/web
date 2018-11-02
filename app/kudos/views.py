@@ -404,8 +404,11 @@ def send_4(request):
     # notifications
     maybe_market_kudos_to_email(kudos_transfer)
     # record_user_action(kudos_transfer.from_username, 'send_kudos', kudos_transfer)
-    # record_kudos_activity(kudos_transfer, kudos_transfer.from_username, 'new_kudos' if kudos_transfer.username else 'new_crowdfund')
-    record_kudos_activity(kudos_transfer, kudos_transfer.from_username, 'new_kudos' if kudos_transfer.username else 'new_crowdfund')
+    record_kudos_activity(
+        kudos_transfer,
+        kudos_transfer.from_username,
+        'new_kudos' if kudos_transfer.username else 'new_crowdfund'
+    )
     return JsonResponse(response)
 
 
@@ -536,7 +539,11 @@ def receive(request, key, txid, network):
             kudos_transfer.save()
             record_user_action(kudos_transfer.from_username, 'receive_kudos', kudos_transfer)
             record_kudos_email_activity(kudos_transfer, kudos_transfer.username, 'receive_kudos')
-            record_kudos_activity(kudos_transfer, kudos_transfer.from_username, 'new_kudos' if kudos_transfer.username else 'new_crowdfund')
+            record_kudos_activity(
+                kudos_transfer,
+                kudos_transfer.from_username,
+                'new_kudos' if kudos_transfer.username else 'new_crowdfund'
+            )
             messages.success(request, _('This kudos has been received'))
         except Exception as e:
             messages.error(request, str(e))
