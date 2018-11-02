@@ -78,6 +78,16 @@ confirm_time_minutes_target = 4
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
 
 
+def grants(request):
+    """Handle grants explorer."""
+
+    params = {
+        'active': 'dashboard',
+        'title': _('Grants Explorer')
+        }
+    return TemplateResponse(request, 'grants_index.html', params)
+
+
 def record_user_action(user, event_name, instance):
     instance_class = instance.__class__.__name__.lower()
     kwargs = {
@@ -1115,7 +1125,7 @@ def profile(request, handle):
     order_by = request.GET.get('order_by', '-modified_on')
     owned_kudos = None
     sent_kudos = None
-    owned_kudos_comments_public = None
+    handle = handle.replace("@", "")
 
     try:
         if not handle and not request.user.is_authenticated:
@@ -1148,27 +1158,9 @@ def profile(request, handle):
 
     context['preferred_payout_address'] = profile.preferred_payout_address
 
-    if context['preferred_payout_address']:
-        owned_kudos = Token.objects.select_related('kudos_transfer', 'contract').filter(
-            Q(owner_address__iexact=context['preferred_payout_address']) |
-            Q(kudos_transfer__recipient_profile=profile),
-            contract__network=settings.KUDOS_NETWORK
-        ).distinct('id').order_by('id', order_by)
-        sent_kudos = Token.objects.select_related('kudos_transfer', 'contract').filter(
-            Q(kudos_transfer__from_address__iexact=context['preferred_payout_address']) |
-            Q(kudos_transfer__sender_profile=profile),
-            contract__network=settings.KUDOS_NETWORK,
-        ).distinct('id').order_by('id', order_by)
+    owned_kudos = profile.get_my_kudos.order_by('id', order_by)
+    sent_kudos = profile.get_sent_kudos.order_by('id', order_by)
 
-    if owned_kudos:
-        owned_kudos_comments_public = []
-        for kudos_token in owned_kudos:
-            try:
-                owned_kudos_comments_public.append(kudos_token.kudos_transfer.comments_public)
-            except Exception as e:
-                logger.error(e)
-
-    context['kudos_comments_public'] = owned_kudos_comments_public
     context['kudos'] = owned_kudos
     context['sent_kudos'] = sent_kudos
 
@@ -1208,27 +1200,33 @@ def profile(request, handle):
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
 
+@csrf_exempt
 def lazy_load_kudos(request):
     page = request.POST.get('page', 1)
-    address = request.POST.get('address')
     context = {}
     datarequest = request.POST.get('request')
     order_by = request.GET.get('order_by', '-modified_on')
     limit = int(request.GET.get('limit', 8))
-    query_kwargs = {'contract__network': settings.KUDOS_NETWORK}
+    handle = request.POST.get('handle')
 
-    if datarequest == 'mykudos':
-        key = 'kudos'
-        query_kwargs['owner_address__iexact'] = address
-    else:
-        key = 'sent_kudos'
-        query_kwargs['kudos_transfer__from_address__iexact'] = address
+    if handle:
+        try:
+            profile = Profile.objects.get(handle=handle)
+            if datarequest == 'mykudos':
+                key = 'kudos'
+                context[key] = profile.get_my_kudos.order_by('id', order_by)
+            else:
+                key = 'sent_kudos'
+                context[key] = profile.get_sent_kudos.order_by('id', order_by)
+        except Profile.DoesNotExist:
+            pass
 
-    context[key] = Token.objects.filter(owner_address__iexact=address, **query_kwargs).order_by(order_by)
     paginator = Paginator(context[key], limit)
-
     kudos = paginator.get_page(page)
-    kudos_html = loader.render_to_string('shared/kudos_card_profile.html', {'kudos': kudos})
+    html_context = {}
+    html_context[key] = kudos
+    html_context['kudos_data'] = key
+    kudos_html = loader.render_to_string('shared/kudos_card_profile.html', html_context)
     return JsonResponse({'kudos_html': kudos_html, 'has_next': kudos.has_next()})
 
 
@@ -1687,7 +1685,9 @@ def get_users(request):
                 profile_json['avatar_id'] = None
                 profile_json['avatar_url'] = result.avatar_url
                 profile_json['preferred_payout_address'] = None
-                results.append(profile_json)
+                # dont dupe github profiles and gitcoin profiles in user search
+                if profile_json['text'].lower() not in [p['text'].lower() for p in profiles]:
+                    results.append(profile_json)
         # just take users word for it
         if not profiles:
             profile_json = {}
@@ -1716,7 +1716,7 @@ def get_kudos(request):
         kudos_by_desc = Token.objects.filter(description__icontains=q)
         kudos_by_tags = Token.objects.filter(tags__icontains=q)
         kudos_pks = (kudos_by_desc | kudos_by_name | kudos_by_tags).values_list('pk', flat=True)
-        kudos = Token.objects.filter(pk__in=kudos_pks).order_by('name')
+        kudos = Token.objects.filter(pk__in=kudos_pks, hidden=False).order_by('name')
         results = []
         for token in kudos:
             kudos_json = {}

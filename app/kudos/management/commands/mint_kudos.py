@@ -60,4 +60,3 @@ class Command(BaseCommand):
 
         args = (options['name'], options['description'], options['rarity'], options['price'],
                 options['numClonesAllowed'], options['tags'], image_path)
-

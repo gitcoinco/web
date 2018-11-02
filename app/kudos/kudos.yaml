@@ -645,7 +645,7 @@
   - memory management
   - common
   - programming
-  image: c++_scientist.svg
+  image: cpp_scientist.svg
 - name: pythonista
   description: Pythonistas are loyal users of the Python programming language.
   priceFinney: 2
@@ -1777,7 +1777,7 @@
   description: Cheers to you, one of the first Kauri contributors!
   priceFinney: 3
   numClonesAllowed: 100
-  tags: 
+  tags:
     - web3
     - kauri
     - ethereum
@@ -1785,11 +1785,11 @@
     - knowledge
   image: kauri_1.svg
   to_address: 0xF8aE578d5d4e570De6c31F26D42eF369C320aE0b
-- name: Web3 Advocate 
+- name: Web3 Advocate
   description: Out with the old and in with the new! Kudos to knowledge sharers, crossing the void from web2 to web3.
   priceFinney: 3
   numClonesAllowed: 100
-  tags: 
+  tags:
     - web3
     - kauri
     - ethereum
@@ -1797,5 +1797,88 @@
     - knowledge
   image: kauri_2.svg
   to_address: 0xF8aE578d5d4e570De6c31F26D42eF369C320aE0b
+- name: moksha
+  description: Moksha is a term in Hinduism, Buddhism, Jainism and Sikhism which refers to various forms of emancipation, enlightenment, liberation, and release.
+  priceFinney: 1
+  numClonesAllowed: 1000
+  tags:
+    - common
+    - just for fun
+    - enlightenment
+  image: Moksha.svg
+- name: common_pepe
+  description: The common pepe is the Ethereum community's answer to the Rare Pepe phenomenon.
+  priceFinney: 1
+  numClonesAllowed: 10000
+  tags:
+    - common
+    - just for fun
+    - memes
+  image: pepe.svg
+- name: popcorn
+  description: For the popcorn.gif moments in your life.
+  priceFinney: 1
+  numClonesAllowed: 1000
+  tags:
+    - common
+    - just for fun
+    - memes
+  image: popcorn.svg
+- name: the_flirterer
+  description: The fliterer can be seen at crypto conferences smoking weed, flirting, and/or talking about prices
+  priceFinney: 1
+  numClonesAllowed: 1000
+  tags:
+    - common
+    - just for fun
+    - memes
+  image: the_flirterer.svg
+- name: its_a_trap
+  description: '"Its a trap" is a line from one of your favorite movies.  Send it to the contributors in your life who are good at avoiding traps.'
+  priceFinney: 1
+  numClonesAllowed: 1000
+  tags:
+    - common
+    - just for fun
+    - memes
+    - soft skills
+  image: trap_avoider.svg
+- name: trollolo
+  description: trololololol lollollollollollollollollollol 
+  priceFinney: 1
+  numClonesAllowed: 1000
+  tags:
+    - common
+    - just for fun
+    - memes
+  image: trollolo.svg
+- name: attaboy
+  description: Attaboy is the Kudos for those who give the most attaboy's.. The most prolific senders of Kudos deserve an attaboy Kudos!
+  priceFinney: 1
+  numClonesAllowed: 500
+  tags:
+    - common
+    - just for fun
+    - soft skills
+  image: attaboy.svg
+- name: i_was_told_there_would_be_lambos
+  description: I was told there would be lambos on the moon
+  priceFinney: 1
+  numClonesAllowed: 500
+  tags:
+    - common
+    - just for fun
+    - memes
+  image: i_was_told_there_would_be_lambos.svg
+- name: zk_snarks
+  description: For the users of the spooky math ZK Snarks
+  priceFinney: 1
+  numClonesAllowed: 500
+  tags:
+    - common
+    - programming
+    - cryptography
+    - math
+  image: zk_snarks.svg
 
 
