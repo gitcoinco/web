@@ -305,7 +305,7 @@ class Command(BaseCommand):
                 continue
             index_terms = tip_index_terms(t)
             sum_tips(t, index_terms)
-        
+
         # kudos'
         for kt in KudosTransfer.objects.exclude(txid='').filter(network='mainnet'):
             sum_kudos(kt)
