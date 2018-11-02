@@ -1716,7 +1716,7 @@ def get_kudos(request):
         kudos_by_desc = Token.objects.filter(description__icontains=q)
         kudos_by_tags = Token.objects.filter(tags__icontains=q)
         kudos_pks = (kudos_by_desc | kudos_by_name | kudos_by_tags).values_list('pk', flat=True)
-        kudos = Token.objects.filter(pk__in=kudos_pks, hidden=False).order_by('name')
+        kudos = Token.objects.filter(pk__in=kudos_pks, hidden=False, num_clones_allowed__gt=0).order_by('name')
         results = []
         for token in kudos:
             kudos_json = {}
