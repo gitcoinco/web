@@ -374,13 +374,13 @@
       (function($) {
         $(document).on('click','.load-more' ,function() {
           var address =  $('#preferred-address').prop('title')
-          if (!address) {
-            return
-          }
           var link = $(this);
           var page = link.data('page');
           var request = link.data('request')
           var handle = link.data('handle')
+          if (!handle) {
+            return
+          }
           $.ajax({
             type: 'POST',
             url: '/lazy_load_kudos/',
