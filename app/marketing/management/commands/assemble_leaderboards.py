@@ -17,6 +17,7 @@ You should have received a copy of the GNU Affero General Public License
 along with this program. If not, see <http://www.gnu.org/licenses/>.
 
 """
+from cacheops import CacheMiss, cache
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
@@ -76,9 +77,22 @@ counts = default_ranks()
 
 
 def profile_to_location(handle):
-    # TODO (mbeacom): Debug, fix, and re-enable leaderboards by location on live.
-    if settings.ENV == 'prod':
-        return []
+    timeout = 60 * 20
+    key_salt = '1'
+    key = f'profile_to_location{handle}_{key_salt}'
+    try:
+        results = cache.get(key)
+    except CacheMiss:
+        results = None
+
+    if not results:
+        results = profile_to_location_helper(handle)
+    cache.set(key, results, timeout)
+
+    return results
+
+
+def profile_to_location_helper(handle):
 
     profiles = Profile.objects.filter(handle__iexact=handle)
     if handle and profiles.exists():
