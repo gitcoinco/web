@@ -1455,6 +1455,7 @@ class Activity(models.Model):
     @property
     def view_props(self):
         from dashboard.tokens import token_by_name
+        from kudos.models import Token
         icons = {
             'new_tip': 'fa-thumbs-up',
             'start_work': 'fa-lightbulb',
@@ -1465,6 +1466,8 @@ class Activity(models.Model):
 
         activity = self
         activity.icon = icons.get(activity.activity_type, 'fa-check-circle')
+        if activity.kudos:
+            activity.kudos_data = Token.objects.get(pk=activity.kudos.kudos_token_cloned_from_id)
         obj = activity.metadata
         if 'new_bounty' in activity.metadata:
             obj = activity.metadata['new_bounty']

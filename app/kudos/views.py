@@ -470,7 +470,7 @@ def record_kudos_activity(kudos_transfer, github_handle, event_name):
         kwargs['bounty'] = kudos_transfer.bounty
     except:
         pass
-     try:
+    try:
         Activity.objects.create(**kwargs)
     except Exception as e:
         logging.error(f"error in record_kudos_activity: {e} - {event_name} - {kudos_transfer} - {github_handle}")
