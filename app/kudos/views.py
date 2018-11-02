@@ -487,8 +487,8 @@ def receive(request, key, txid, network):
 
     """
     these_kudos_transfers = KudosTransfer.objects.filter(web3_type='v3', txid=txid, network=network)
-    kudos_transfers = these_kudos_transfers.filter(metadata__reference_hash_for_receipient=key) | these_kudos_transfers.filter(
-        metadata__reference_hash_for_funder=key)
+    kudos_transfers = these_kudos_transfers.filter(metadata__reference_hash_for_receipient=key) |
+        these_kudos_transfers.filter(metadata__reference_hash_for_funder=key)
     kudos_transfer = kudos_transfers.first()
     if not kudos_transfer:
         raise Http404

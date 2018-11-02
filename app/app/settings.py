@@ -53,7 +53,7 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['localhost'])
 
 # Notifications - Global on / off switch
-ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet') 
+ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet')
 
 # Application definition
 INSTALLED_APPS = [
