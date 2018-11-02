@@ -143,6 +143,7 @@ def receive_tip_v3(request, key, txid, network):
                     profile.preferred_payout_address = params['forwarding_address']
                     profile.save()
             tip.receive_txid = params['receive_txid']
+            tip.receive_tx_status = 'pending'
             tip.receive_address = params['forwarding_address']
             tip.received_on = timezone.now()
             tip.save()
@@ -211,8 +212,10 @@ def send_tip_4(request):
 
     # db mutations
     tip.txid = txid
+    tip.tx_status = 'pending'
     if is_direct_to_recipient:
         tip.receive_txid = txid
+        tip.receive_tx_status = 'pending'
         tip.receive_address = destinationAccount
     tip.save()
 

@@ -1057,6 +1057,15 @@ class Subscription(SuperModel):
 class SendCryptoAsset(SuperModel):
     """Abstract Base Class to handle the model for both Tips and Kudos."""
 
+    TX_STATUS_CHOICES = (
+        ('na', 'na'), # not applicable
+        ('pending', 'pending'),
+        ('success', 'success'),
+        ('error', 'error'),
+        ('unknown', 'unknown'),
+        ('dropped', 'dropped'),
+        )
+
     web3_type = models.CharField(max_length=50, default='v3')
     emails = JSONField(blank=True)
     url = models.CharField(max_length=255, default='', blank=True)
@@ -1082,6 +1091,9 @@ class SendCryptoAsset(SuperModel):
         help_text='If this option is chosen, this tip will be automatically paid to the bounty'
                   ' fulfiller, not self.usernameusername.',
     )
+
+    tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
+    receive_tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
 
     class Meta:
         abstract = True

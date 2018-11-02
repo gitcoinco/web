@@ -397,8 +397,10 @@ def send_4(request):
     # Save the txid to the database once it has been confirmed in MetaMask.  If there is no txid,
     # it means that the user never went through with the transaction.
     kudos_transfer.txid = txid
+    kudos_transfer.tx_status = 'pending'
     if is_direct_to_recipient:
         kudos_transfer.receive_txid = txid
+        kudos_transfer.receive_tx_status = 'pending'
     kudos_transfer.save()
 
     # notifications
