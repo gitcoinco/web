@@ -218,7 +218,7 @@ var update_registry = function() {
 
   first_transaction = {
     'id': 0,
-    'type': 'cancel', 
+    'type': 'cancel',
     'reason': 'Refund escrow and close bounty.',
     'amount': '+' + original_amount + ' ' + denomination
   };
