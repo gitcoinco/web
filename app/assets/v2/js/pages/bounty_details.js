@@ -345,13 +345,11 @@ var callbacks = {
       }
     } else if (result['status'] === 'done' || result['status'] === 'cancelled') {
       $('#timer').hide();
+    } else if (isInfinite) {
+      response = '&infin;';
     } else {
-      if (isInfinite) {
-        response = '&infin;';
-      } else {
-        response.shift();
-        response = response.join(' ');
-      }
+      response.shift();
+      response = response.join(' ');
     }
     return [ label, response ];
   },
