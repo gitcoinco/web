@@ -214,6 +214,15 @@ var update_registry = function() {
   $('#total_cost').html(tc + ' ' + denomination);
   $('#total_net').html(net + ' ' + denomination);
 
+  let transactions = [];
+
+  first_transaction = {
+    'id': 0,
+    'type': 'cancel', 
+    'reason': 'Refund escrow and close bounty.',
+    'amount': '+' + original_amount + ' ' + denomination
+  };
+
   if (over > 0) {
     $('.overageAlert').css('display', 'inline-block');
     $('.overagePreview').css('display', 'inline-block');
@@ -221,12 +230,11 @@ var update_registry = function() {
     $('#address_ending').html(addr + ' ');
     $('#preview_ending').html(addr + ' ');
     $('#preview_overage').html(over + ' ' + denomination);
+    transactions.push(first_transaction);
   } else {
     $('.overageAlert').css('display', 'none');
     $('.overagePreview').css('display', 'none');
   }
-
-  let transactions = [];
 
   for (let j = 1; j <= num_rows; j++) {
 
