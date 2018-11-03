@@ -332,6 +332,7 @@ var callbacks = {
 
     $('.progress').css('width', expiringInPercentage + '%');
     var response = timeDifference(now, expires_date).split(' ');
+    const isInfinite = expires_date - new Date().setFullYear(new Date().getFullYear() + 1) > 1;
 
     if (expires_date < new Date()) {
       label = 'expired';
@@ -345,8 +346,12 @@ var callbacks = {
     } else if (result['status'] === 'done' || result['status'] === 'cancelled') {
       $('#timer').hide();
     } else {
-      response.shift();
-      response = response.join(' ');
+      if (isInfinite) {
+        response = '&infin;';
+      } else {
+        response.shift();
+        response = response.join(' ');
+      }
     }
     return [ label, response ];
   },
