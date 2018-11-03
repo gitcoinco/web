@@ -8,8 +8,6 @@
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
     <script src="{% static 'v2/js/tweenlite.js' %}"></script>
     <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
-
-
   </head>
   <body class="{{ active }} bg-light g-font-muli">
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
@@ -28,14 +26,10 @@
   	<section class="container my-5 pb-5">
       <div class="row justify-content-around">
         <div class="col-md-6 col-lg-5 mb-5">
-
-        <div class="kudos_msg" style="">
+          <div class="kudos_msg">
             <strong></strong>
-            <p>
-
-            </p>
-        </div>
-
+            <p></p>
+          </div>
           <div id="kudos-image" class="sticky-top w-100">
             {% include 'shared/kudos_levitate.html' %}
             <img src="{% static kudos.image %}" alt="{{ kudos.name }}" class="w-100">
@@ -52,18 +46,26 @@
           </div>
           <div class="kudos-details__subtitle">
             <img src="{% static 'v2/images/kudos/assets/kudos-diamond.svg' %}" alt=""> MARKETPLACE STATS
+            <i id="share-button" class="fas fa-share-alt float-right"></i>
           </div>
 
-          <p><span class="text-color_blue text-weight_semibold">{{ kudos.rarity }}</span> ({{ kudos.num_clones_in_wild_counting_indirect_send }} out of {{ kudos.num_gen0_clones_allowed }}) <i data-toggle="tooltip" title="" data-html="true" data-original-title="<span class='title-tooltip'>Kudos Rarity</span>
-            <table class='text-left'>
-              <tr><td>One of a Kind:</td><td>1 clone</td></tr>
-              <tr><td>Legendary:</td><td>2 - 5 clones</td></tr>
-              <tr><td>Ultra:</td><td>6 - 15 clones</td></tr>
-              <tr><td>Very Rare:</td><td>16 - 35 clones</td></tr>
-              <tr><td>Rare:</td><td>36 - 100 clones</td></tr>
-              <tr><td>Special:</td><td>101 - 200 clones</td></tr>
-              <tr><td>Common:</td><td>201+</td></tr>
-            </table>" data-template='<div class="tooltip-kudos" role="tooltip"><div class="tooltip-inner"></div></div>' class="fas fa-question-circle text-color_blue"></i></p>
+          <p>
+            <span class="text-color_blue text-weight_semibold">
+              {{ kudos.rarity }}
+            </span>
+            ({{ kudos.num_clones_in_wild_counting_indirect_send }} out of {{ kudos.num_gen0_clones_allowed }})
+            <i data-toggle="tooltip" title="" data-html="true" data-original-title="<span class='title-tooltip'>Kudos Rarity</span>
+              <table class='text-left'>
+                <tr><td>One of a Kind:</td><td>1 clone</td></tr>
+                <tr><td>Legendary:</td><td>2 - 5 clones</td></tr>
+                <tr><td>Ultra:</td><td>6 - 15 clones</td></tr>
+                <tr><td>Very Rare:</td><td>16 - 35 clones</td></tr>
+                <tr><td>Rare:</td><td>36 - 100 clones</td></tr>
+                <tr><td>Special:</td><td>101 - 200 clones</td></tr>
+                <tr><td>Common:</td><td>201+</td></tr>
+              </table>" data-template='<div class="tooltip-kudos" role="tooltip"><div class="tooltip-inner"></div></div>' class="fas fa-question-circle text-color_blue">
+            </i>
+          </p>
 
           <div class="mb-4">
             <span id='kudosNumClonesAvailable' class="text-color_blue text-weight_semibold">{{ kudos.num_clones_available_counting_indirect_send }}</span> Total Available
@@ -110,12 +112,8 @@
       </div>
     </section>
     <section class="container my-5 py-5">
-
-
-    {% include 'shared/disqus.html' with page_url=request.build_absolute_uri  %}
-  </section>
-
-
+      {% include 'shared/disqus.html' with page_url=request.build_absolute_uri  %}
+    </section>
     {% include 'shared/footer.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' with slim=1 %}
