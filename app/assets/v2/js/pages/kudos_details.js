@@ -139,6 +139,20 @@ var stop_kudos_levitate = function() {
 
 };
 
+$('#share-button').on('click', () => {
+  $('#share-modal').css('display', 'block');
+});
+
+$('#share-modal .fa-times').on('click', () => {
+  $('#share-modal').css('display', 'none');
+});
+
+$('#copyLink').on('click', () => {
+  $('#shareLink').select();
+  document.execCommand('copy');
+  $('.tooltip-share .title-tooltip').html('Copied Link');
+});
+
 // $('#getKudos').click(function() {
 
 

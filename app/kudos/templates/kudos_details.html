@@ -8,6 +8,10 @@
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
     <script src="{% static 'v2/js/tweenlite.js' %}"></script>
     <link rel="stylesheet" href="{% static "v2/css/jquery-ui.css" %}" />
+    <meta property="twitter:image" content="{% static kudos.image %}" />
+    <meta property="og:image" content="{% static kudos.image %}" />
+    <meta property="og:description" content="{{ kudos.name|humanize_name }} Kudos" />
+
   </head>
   <body class="{{ active }} bg-light g-font-muli">
     {% include 'shared/top_nav.html' with class='d-md-flex' %}
@@ -48,7 +52,7 @@
             <img src="{% static 'v2/images/kudos/assets/kudos-diamond.svg' %}" alt=""> MARKETPLACE STATS
             <i id="share-button" class="fas fa-share-alt float-right"></i>
           </div>
-
+          {% include 'share.html' %}
           <p>
             <span class="text-color_blue text-weight_semibold">
               {{ kudos.rarity }}
