@@ -7,7 +7,7 @@
   },
   "email": "support@copyfun.one",
   "website": "https://copyfun.one/",
-  "whitepaper": "https://copyfun.one/whitepaper.pdf",
+  "whitepaper": "https://copyfun.one/n/copyfun_whitepaper.pdf",
   "state": "NORMAL",
   "published_on": "2018-11-5",
   "initial_price":{
@@ -16,7 +16,7 @@
         "BTC":"0.00000020 BTC"
   },
   "links": {
-    "twitter": "https://twitter.com/fun_copy",
+    "twitter": "https://twitter.com/copyfun2018",
     "telegram": "https://t.me/CopyFun",
     "github": "https://github.com/CopyFunOne"
   }
