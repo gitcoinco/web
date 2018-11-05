@@ -1,30 +1,35 @@
-{% load i18n humanize %}
+{% load i18n %}
 
-{% trans "Your support for" %} {{grant_name}} {% trans "has been cancelled" %}
-{%trans "Thank you for everything you have contributed!" %}
+{% trans "We are sad to see you go." %}
 
-{{github_username}}
+{% trans "Your support for" %} {{ grant.title }} {% trans "has been cancelled" %}
 
-{{completed_amount}}
+{% trans "Thank you for everything you have contributed!" %}
 
-{{your_contribution_amount}}
+{{ grant.logo.url }}
 
-{%trans "Your Contribution" %}
+{{ grant.description }}
 
-{{removed_amount}}
+{{ grant.percentage_done }}
 
-{{current_funding_amount}}
+{{ transaction.value_true }} {{ transaction.token_name }}
 
-{%trans "Current" %}
+{% trans "Your Contribution" %}
 
-{{current_goal_amount}}
+{{ grant.percentage_removed }}
 
-{%trans "Goal" %}
+{{ grant.amount_received }} {% trans "ETH" %}
 
-{%trans "You can see your cancellation transaction on etherscan" %}
+{% trans "Current" %}
 
-{{etherscan_link}}
+{{ grant.amount_goal }} {% trans "ETH" %}
 
-{%trans "here." %}
+{% trans "Goal" %}
 
-{%trans "View Transaction" %}
+{% trans "You can see your cancellation transaction on etherscan" %}
+
+{{ transaction.link }}
+
+{% trans "here." %}
+
+{% trans "View Transaction" %}
