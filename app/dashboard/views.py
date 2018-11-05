@@ -1667,7 +1667,7 @@ def get_users(request):
             profile_json['preferred_payout_address'] = user.preferred_payout_address
             results.append(profile_json)
         # try github
-        if not profiles:
+        if not len(results):
             search_results = search_users(q, token=token)
             for result in search_results:
                 profile_json = {}
@@ -1678,10 +1678,10 @@ def get_users(request):
                 profile_json['avatar_url'] = result.avatar_url
                 profile_json['preferred_payout_address'] = None
                 # dont dupe github profiles and gitcoin profiles in user search
-                if profile_json['text'].lower() not in [p['text'].lower() for p in profiles]:
+                if profile_json['text'].lower() not in [p['text'].lower() for p  in profiles]:
                     results.append(profile_json)
         # just take users word for it
-        if not profiles:
+        if not len(results):
             profile_json = {}
             profile_json['id'] = -1
             profile_json['text'] = q

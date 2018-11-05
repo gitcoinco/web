@@ -18,6 +18,7 @@
 
 from django.core.management.base import BaseCommand
 from django.db.models import Count
+from django.db.models.functions import Lower
 
 from dashboard.models import Profile
 
@@ -40,7 +41,7 @@ def combine_profiles(p1, p2):
     p1.max_tip_amount_usdt_per_week = max(p1.max_tip_amount_usdt_per_week, p2.max_tip_amount_usdt_per_week)
     p1.max_num_issues_start_work = max(p1.max_num_issues_start_work, p2.max_num_issues_start_work)
     p1.trust_profile = any([p1.trust_profile, p2.trust_profile])
-    p1.hide_profile = any([p1.hide_profile, p2.hide_profile])
+    #p1.hide_profile = any([p1.hide_profile, p2.hide_profile]) not valid, all p2s have hide profile because its default
     p1.suppress_leaderboard = any([p1.suppress_leaderboard, p2.suppress_leaderboard])
     p1.user = p2.user if p2.user else p1.user
     # tips, bounties, fulfillments, and interests , activities, actions
@@ -80,11 +81,23 @@ class Command(BaseCommand):
     help = 'cleans up users who have duplicate profiles'
 
     def handle(self, *args, **options):
+        whitespace_profiles = Profile.objects.filter(handle__endswith=' ')
+        print(f" - {whitespace_profiles.count()} whitespace profiles")
+        for profile in whitespace_profiles:
+            profile.handle = profile.handle.strip()
+            profile.save()
 
-        dupes = Profile.objects.values('handle').annotate(Count('handle')).filter(handle__count__gt=1)
+        at_profiles = Profile.objects.filter(handle__startswith='@')
+        print(f" - {at_profiles.count()} at_profiles")
+        for profile in at_profiles:
+            profile.handle = profile.handle.replace('@', '')
+            profile.save()
+
+        dupes = Profile.objects.exclude(handle=None).annotate(handle_lower=Lower("handle")).values('handle_lower').annotate(handle_lower_count=Count('handle_lower')).filter(handle_lower_count__gt=1)
+        print(f" - {dupes.count()} dupes")
 
         for dupe in dupes:
-            handle = dupe['handle']
-            profiles = Profile.objects.filter(handle=handle).distinct("pk")
+            handle = dupe['handle_lower']
+            profiles = Profile.objects.filter(handle__iexact=handle).distinct("pk")
             print(f"combining {handle}: {profiles[0].pk} and {profiles[1].pk}")
             combine_profiles(profiles[0], profiles[1])
