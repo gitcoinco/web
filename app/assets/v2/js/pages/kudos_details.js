@@ -139,6 +139,12 @@ var stop_kudos_levitate = function() {
 
 };
 
+window.onclick = (event) => {
+  if (event.target.id == 'share-modal') {
+    $('#share-modal').css('display', 'none');
+  }
+};
+
 $('#share-button').on('click', () => {
   $('#share-modal').css('display', 'block');
 });
