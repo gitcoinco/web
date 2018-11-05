@@ -1429,11 +1429,34 @@ class Activity(models.Model):
         ('bounty_removed_by_staff', 'Removed from Bounty by Staff'),
         ('bounty_removed_by_funder', 'Removed from Bounty by Funder'),
         ('new_crowdfund', 'New Crowdfund Contribution'),
+        ('new_kudos', 'New Kudos'),
     ]
 
-    profile = models.ForeignKey('dashboard.Profile', related_name='activities', on_delete=models.CASCADE)
-    bounty = models.ForeignKey('dashboard.Bounty', related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
-    tip = models.ForeignKey('dashboard.Tip', related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='activities',
+        on_delete=models.CASCADE
+    )
+    bounty = models.ForeignKey(
+        'dashboard.Bounty',
+        related_name='activities',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
+    tip = models.ForeignKey(
+        'dashboard.Tip',
+        related_name='activities',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
+    kudos = models.ForeignKey(
+        'kudos.KudosTransfer',
+        related_name='activities',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
     created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True)
     metadata = JSONField(default=dict)
@@ -1453,15 +1476,19 @@ class Activity(models.Model):
     @property
     def view_props(self):
         from dashboard.tokens import token_by_name
+        from kudos.models import Token
         icons = {
             'new_tip': 'fa-thumbs-up',
             'start_work': 'fa-lightbulb',
             'new_bounty': 'fa-money-bill-alt',
             'work_done': 'fa-check-circle',
+            'new_kudos': 'fa-thumbs-up',
         }
 
         activity = self
         activity.icon = icons.get(activity.activity_type, 'fa-check-circle')
+        if activity.kudos:
+            activity.kudos_data = Token.objects.get(pk=activity.kudos.kudos_token_cloned_from_id)
         obj = activity.metadata
         if 'new_bounty' in activity.metadata:
             obj = activity.metadata['new_bounty']
@@ -1568,27 +1595,38 @@ class Profile(SuperModel):
     @property
     def get_my_kudos(self):
         from kudos.models import KudosTransfer
-        kt_owner_address = KudosTransfer.objects.filter(kudos_token_cloned_from__owner_address__iexact=self.preferred_payout_address)
+        kt_owner_address = KudosTransfer.objects.filter(
+            kudos_token_cloned_from__owner_address__iexact=self.preferred_payout_address
+        )
         kt_profile = KudosTransfer.objects.filter(recipient_profile=self)
 
         kudos_transfers = kt_profile | kt_owner_address
-        kudos_transfers = kudos_transfers.filter(kudos_token_cloned_from__contract__network=settings.KUDOS_NETWORK)
+        kudos_transfers = kudos_transfers.filter(
+            kudos_token_cloned_from__contract__network=settings.KUDOS_NETWORK
+        )
         kudos_transfers = kudos_transfers.exclude(txid='')
-        kudos_transfers = kudos_transfers.distinct('id') # remove this line IFF we ever move to showing multiple kudos transfers on a profile
+
+        # remove this line IFF we ever move to showing multiple kudos transfers on a profile
+        kudos_transfers = kudos_transfers.distinct('id')
 
         return kudos_transfers
-
 
     @property
     def get_sent_kudos(self):
         from kudos.models import KudosTransfer
-        kt_address = KudosTransfer.objects.filter(from_address__iexact=self.preferred_payout_address)
+        kt_address = KudosTransfer.objects.filter(
+            from_address__iexact=self.preferred_payout_address
+        )
         kt_sender_profile = KudosTransfer.objects.filter(sender_profile=self)
 
         kudos_transfers = kt_address | kt_sender_profile
         kudos_transfers = kudos_transfers.exclude(txid='')
-        kudos_transfers = kudos_transfers.filter(kudos_token_cloned_from__contract__network=settings.KUDOS_NETWORK)
-        kudos_transfers = kudos_transfers.distinct('id') # remove this line IFF we ever move to showing multiple kudos transfers on a profile
+        kudos_transfers = kudos_transfers.filter(
+            kudos_token_cloned_from__contract__network=settings.KUDOS_NETWORK
+        )
+
+        # remove this line IFF we ever move to showing multiple kudos transfers on a profile
+        kudos_transfers = kudos_transfers.distinct('id')
 
         return kudos_transfers
 
