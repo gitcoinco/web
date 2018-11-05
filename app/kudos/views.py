@@ -487,7 +487,7 @@ def receive(request, key, txid, network):
         # db mutations
         try:
             if params['save_addr']:
-                profile = get_profile(kudos_transfer.username)
+                profile = get_profile(kudos_transfer.username.replace('@', ''))
                 if profile:
                     # TODO: Does this mean that the address the user enters in the receive form
                     # Will overwrite an already existing preferred_payout_address?  Should we
