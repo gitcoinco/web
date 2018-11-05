@@ -7,6 +7,7 @@ read input
 echo "have you installed openzeppelin>? (y/n)"
 read input
 
+KUDOS_CONTRACT_DIR=Kudos721Contract
 
 # If no network is specified, use localhost
 if [ -z $1 ]; then
@@ -26,7 +27,7 @@ sleep 10
 docker-compose exec ipfs sh -c 'ipfs config --json API.HTTPHeaders.Access-Control-Allow-Origin '\''["*"]'\'''
 docker-compose exec ipfs sh -c 'ipfs config --json API.HTTPHeaders.Access-Control-Allow-Methods '\''["PUT", "GET", "POST"]'\'''
 docker-compose restart ipfs
-cd ../gitcoin-erc721 || exit 1
+cd ../$KUDOS_CONTRACT_DIR || exit 1
 truffle migrate --reset
 cd - || exit 1
 
