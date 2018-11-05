@@ -4,11 +4,11 @@
   <head>
     {% include 'shared/head.html' %}
     {% include 'shared/cards_pic.html' %}
-    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/profile.css" %}>
-    <link rel="stylesheet" href={% static "v2/css/tag.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/dashboard.css" %} />
+    <link rel="stylesheet" href={% static "v2/css/profile.css" %} />
+    <link rel="stylesheet" href={% static "v2/css/tag.css" %} />
     <link rel="stylesheet" href="{% static "v2/css/kudos/styles.css" %}" />
-    <link rel="stylesheet" href={% static "v2/css/tabs.css" %}>
+    <link rel="stylesheet" href={% static "v2/css/tabs.css" %} />
   </head>
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
@@ -19,7 +19,7 @@
         <div class="row">
           <div class="col-12 col-lg-4 profile-header__main-infos">
             <div class="clearfix">
-              <img class="profile-header__avatar mb-1 mr-4" src="{% if profile.avatar and profile.avatar.avatar_url %}{{ profile.avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}">
+              <img class="profile-header__avatar mb-1 mr-4" src="{% if profile.avatar and profile.avatar.avatar_url %}{{ profile.avatar.avatar_url }}{% else %}{{ profile.avatar_url }}{% endif %}" />
               <p class="profile-header__handle font-title">
                 {% if profile.data.name %}
                   {{ profile.data.name }}
@@ -80,7 +80,7 @@
                             {% endif %}
                             {% for profile, num_times in works_with_collected.items %}
                                 <a href="{% url 'profile' profile %} ">
-                                  <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
+                                  <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>" />
                                 </a>
                             {% endfor %}
                         {% endif %}
@@ -109,7 +109,7 @@
                             {% endif %}
                             {% for profile, num_times in works_with_funded.items %}
                               <a href="{% url 'profile' profile %} ">
-                                <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>">
+                                <img src='{% avatar_url profile %}' title="<div class='tooltip-info tooltip-xs'>{{ profile }}: {{ num_times }} times</div>" />
                               </a>
                             {% endfor %}
                         {% endif %}
@@ -234,7 +234,7 @@
                             {% for tip in tips %}
                             <div class="row result bounty_row {% if forloop.counter > 5 %}bounty_row--hidden{% endif %} {{ tip.network }}" {% if tip.github_url %}href="{{ tip.github_url }}"{% endif %}>
                               <div class="avatar-container col-1 justify-content-center special_tag hide_min_viewport">
-                                <img src="{% url "avatar" %}?repo=https://github.com/{% if tip.from_username %}{{ tip.from_username }}{% else %}Self{%endif%}" class="avatar">
+                                <img src="{% url "avatar" %}?repo=https://github.com/{% if tip.from_username %}{{ tip.from_username }}{% else %}Self{%endif%}" class="avatar" />
                               </div>
                               <div class="col-12 col-md-8 d-flex flex-column">
                                 <div class="bounty-detail">
@@ -292,7 +292,9 @@
               </div>
             {% endfor %}
           </div>
-        </div>
+        </div>		
+	  {% else %}
+     	{% include 'profiles/none.html' %}
       {% endif %}
     {% endif %}
     </div>

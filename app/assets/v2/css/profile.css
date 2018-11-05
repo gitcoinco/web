@@ -231,3 +231,13 @@
 .profile-header__stats--funder .works_with_list img {
   border: 0.1rem solid #FFCE08;
 }
+
+.no-profile-button {
+	background-color: #3E00FF; 
+	color: #FFFFFF; 
+	font-size: 0.875rem;
+}
+
+.no-profile-textcolor {
+	color: #666666;
+}
