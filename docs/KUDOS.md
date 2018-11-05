@@ -20,3 +20,13 @@ The above commands clone the Kudos smart contract, installs the dependancies, de
 
 After the `scripts/mint_test_kudos.bash` script runs, you will have kudos on your local docker container, via the localhost RPC node
 
+
+## Where is Kudos deployed?
+
+Please checkout [the github repo for Kudos](https://github.com/gitcoinco/Kudos721Contract) to see this information.
+
+## Can I see the Kudos security audit?
+
+Please checkout [the github repo for Kudos](https://github.com/gitcoinco/Kudos721Contract) to see this information.
+
+
