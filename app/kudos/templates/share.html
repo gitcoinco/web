@@ -12,7 +12,7 @@
     background-color: rgb(0,0,0);
     background-color: rgba(0,0,0,0.4);
     max-width: 100%;
-    overflow: scroll;
+    overflow-y: auto;
   }
 
   .modal-content {
@@ -52,11 +52,6 @@
   .tooltip-share .tooltip-inner {
     padding: 5px;
     width: 150px;
-  }
-
-  .tooltip-share .kudos_msg {
-    padding-left: 2px;
-    padding-right: 2px;
   }
 
   .tooltip-inner .title-tooltip {
@@ -121,7 +116,7 @@
       </div>
     </div>
     <div class="col-12 my-4 text-center">
-      <input class="form__input"type="text" value="www.gitcoin.co{{request.get_full_path}}" id="shareLink" readonly>
+      <input class="form__input"type="text" value="{{ request.META.HTTP_HOST }}{% url 'kudos_details' kudos.id kudos.name %}" id="shareLink" readonly>
       <button class="btn btn-gc-blue button__small font-body" id="copyLink">
         <i data-toggle="tooltip" title="" data-html="true" 
           data-original-title="<span class='title-tooltip text-center'>Click To Copy</span>"
@@ -132,10 +127,10 @@
     </div>
     <div class="col-12 text-center">
       <a class="btn btn-gc-blue share-button font-body" target="_blank" rel="noopener noreferrer"
-        href="https://twitter.com/intent/tweet?text=Check%20out%20the%20{{kudos.name|humanize_name}}%20kudos%21%20www.gitcoin.co{{request.get_full_path}}"
+        href="https://twitter.com/intent/tweet?text=Check%20out%20the%20{{kudos.name|humanize_name}}%20kudos%21%20{{ request.META.HTTP_HOST }}{% url 'kudos_details' kudos.id kudos.name %}"
         data-size="large"><i class="fab fa-twitter mr-2"></i>Share on Twitter</a>
       <a class="btn btn-gc-blue share-button font-body" target="_blank" rel="noopener noreferrer"
-        href="https://www.facebook.com/sharer/sharer.php?u=www.gitcoin.co{{request.get_full_path}}"
+        href="https://www.facebook.com/sharer/sharer.php?u={{ request.META.HTTP_HOST }}{% url 'kudos_details' kudos.id kudos.name %}"
         data-size="large"><i class="fab fa-facebook mr-2"></i>Share on Facebook</a>
     </div>
   </div>
