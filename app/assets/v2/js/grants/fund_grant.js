@@ -20,6 +20,7 @@ $(document).ready(function() {
       let realPeriodSeconds = 0;
 
       if (data.frequency) {
+
         // translate timeAmount&timeType to requiredPeriodSeconds
         let periodSeconds = data.frequency;
 
@@ -34,6 +35,8 @@ $(document).ready(function() {
         }
         if (periodSeconds) {
           realPeriodSeconds = periodSeconds;
+
+          data.frequency = realPeriodSeconds;
         }
       }
 
@@ -62,8 +65,6 @@ $(document).ready(function() {
 
             deployedSubscription.methods.extraNonce(accounts[0]).call(function(err, nonce) {
 
-              console.log('deployedSubscription', deployedSubscription);
-
               nonce = parseInt(nonce) + 1;
 
               const parts = [
@@ -82,9 +83,6 @@ $(document).ready(function() {
                 // nonce
                 web3.utils.toTwosComplement(nonce)
               ];
-
-              console.log('parts', parts);
-
 
               deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
 
@@ -112,29 +110,29 @@ $(document).ready(function() {
 
                   form.submit();
 
-                  // fetch('http://localhost:10003/saveSubscription', {
-                  //   method: 'POST',
-                  //   headers: {
-                  //     'Content-Type': 'application/json'
-                  //   },
-                  //   body: JSON.stringify({
-                  //     postData
-                  //   })
-                  // }).then((response)=>{
-                  //   console.log('TX RESULT', response);
-                  //
-                  //   $.each($(form).serializeArray(), function() {
-                  //     data[this.name] = this.value;
-                  //   });
-                  //
-                  //   console.log('data', data);
-                  //
-                  //   form.submit();
-                  //
-                  // })
-                  //   .catch((error)=>{
-                  //     console.log(error);
-                  //   });
+                  fetch('http://localhost:10003/saveSubscription', {
+                    method: 'POST',
+                    headers: {
+                      'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                      postData
+                    })
+                  }).then((response)=>{
+                    console.log('TX RESULT', response);
+
+                    $.each($(form).serializeArray(), function() {
+                      data[this.name] = this.value;
+                    });
+
+                    console.log('data', data);
+
+                    form.submit();
+
+                  })
+                    .catch((error)=>{
+                      console.log(error);
+                    });
                 });
               });
             });

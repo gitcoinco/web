@@ -48,7 +48,7 @@ class Grant(SuperModel):
         max_length=255, default='0x0', help_text=_('The wallet address for the administrator of this Grant.'),
     )
     frequency = models.DecimalField(
-        default=30, decimal_places=0, max_digits=50, help_text=_('The payout frequency of the Grant.'),
+        default=2592000, decimal_places=0, max_digits=50, help_text=_('The payout frequency of the Grant.'),
     )
     amount_goal = models.DecimalField(
         default=1, decimal_places=4, max_digits=50, help_text=_('The contribution goal amount for the Grant.'),
