@@ -1891,6 +1891,7 @@
   description: This is fine.. Everything is fine.  Know someone who's cool under pressure?  Then this kudos is for them!
   priceFinney: 2
   numClonesAllowed: 100
+  tags: 
     - memes
   image: firedog.svg
 - name: Octo-kitteh
