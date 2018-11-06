@@ -53,7 +53,7 @@ ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=['*'])
 CSRF_TRUSTED_ORIGINS = env.list('CSRF_TRUSTED_ORIGINS', default=['localhost'])
 
 # Notifications - Global on / off switch
-ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet') 
+ENABLE_NOTIFICATIONS_ON_NETWORK = env('ENABLE_NOTIFICATIONS_ON_NETWORK', default='mainnet')
 
 # Application definition
 INSTALLED_APPS = [
@@ -386,6 +386,7 @@ DJANGO_REDIS_IGNORE_EXCEPTIONS = env.bool('REDIS_IGNORE_EXCEPTIONS', default=Tru
 DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = env.bool('REDIS_LOG_IGNORED_EXCEPTIONS', default=True)
 COLLECTFAST_CACHE = env('COLLECTFAST_CACHE', default='collectfast')
 COLLECTFAST_DEBUG = env.bool('COLLECTFAST_DEBUG', default=False)
+REDIS_URL = env('REDIS_URL', default='rediscache://redis:6379/0?client_class=django_redis.client.DefaultClient')
 
 CACHES = {
     'default': env.cache(

@@ -26,6 +26,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.postgres.search import SearchVector
 from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
@@ -404,7 +405,11 @@ def send_4(request):
     # notifications
     maybe_market_kudos_to_email(kudos_transfer)
     # record_user_action(kudos_transfer.from_username, 'send_kudos', kudos_transfer)
-    # record_kudos_activity(kudos_transfer, kudos_transfer.from_username, 'new_kudos' if kudos_transfer.username else 'new_crowdfund')
+    record_kudos_activity(
+        kudos_transfer,
+        kudos_transfer.from_username,
+        'new_kudos' if kudos_transfer.username else 'new_crowdfund'
+    )
     return JsonResponse(response)
 
 
@@ -442,6 +447,39 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
         logger.error(f"error in record_kudos_email_activity: {e} - {event_name} - {kudos_transfer} - {github_handle}")
 
 
+def record_kudos_activity(kudos_transfer, github_handle, event_name):
+    logger.debug(kudos_transfer)
+    kwargs = {
+        'activity_type': event_name,
+        'kudos': kudos_transfer,
+        'metadata': {
+            'amount': str(kudos_transfer.amount),
+            'token_name': kudos_transfer.tokenName,
+            'value_in_eth': str(kudos_transfer.value_in_eth),
+            'value_in_usdt_now': str(kudos_transfer.value_in_usdt_now),
+            'github_url': kudos_transfer.github_url,
+            'to_username': kudos_transfer.username,
+            'from_name': kudos_transfer.from_name,
+            'received_on': str(kudos_transfer.received_on) if kudos_transfer.received_on else None
+        }
+    }
+    try:
+        kwargs['profile'] = Profile.objects.get(handle=github_handle)
+    except Profile.MultipleObjectsReturned:
+        kwargs['profile'] = Profile.objects.filter(handle__iexact=github_handle).first()
+    except Profile.DoesNotExist:
+        logging.error(f"error in record_kudos_activity: profile with github name {github_handle} not found")
+        return
+    try:
+        kwargs['bounty'] = kudos_transfer.bounty
+    except:
+        pass
+    try:
+        Activity.objects.create(**kwargs)
+    except Exception as e:
+        logging.error(f"error in record_kudos_activity: {e} - {event_name} - {kudos_transfer} - {github_handle}")
+
+
 def receive(request, key, txid, network):
     """Handle the receiving of a kudos (the POST).
 
@@ -450,8 +488,10 @@ def receive(request, key, txid, network):
 
     """
     these_kudos_transfers = KudosTransfer.objects.filter(web3_type='v3', txid=txid, network=network)
-    kudos_transfers = these_kudos_transfers.filter(metadata__reference_hash_for_receipient=key) | these_kudos_transfers.filter(
-        metadata__reference_hash_for_funder=key)
+    kudos_transfers = these_kudos_transfers.filter(
+        Q(metadata__reference_hash_for_receipient=key) |
+        Q(metadata__reference_hash_for_funder=key)
+    )
     kudos_transfer = kudos_transfers.first()
     if not kudos_transfer:
         raise Http404
@@ -487,7 +527,7 @@ def receive(request, key, txid, network):
         # db mutations
         try:
             if params['save_addr']:
-                profile = get_profile(kudos_transfer.username)
+                profile = get_profile(kudos_transfer.username.replace('@', ''))
                 if profile:
                     # TODO: Does this mean that the address the user enters in the receive form
                     # Will overwrite an already existing preferred_payout_address?  Should we
@@ -502,6 +542,11 @@ def receive(request, key, txid, network):
             kudos_transfer.save()
             record_user_action(kudos_transfer.from_username, 'receive_kudos', kudos_transfer)
             record_kudos_email_activity(kudos_transfer, kudos_transfer.username, 'receive_kudos')
+            record_kudos_activity(
+                kudos_transfer,
+                kudos_transfer.from_username,
+                'new_kudos' if kudos_transfer.username else 'new_crowdfund'
+            )
             messages.success(request, _('This kudos has been received'))
         except Exception as e:
             messages.error(request, str(e))

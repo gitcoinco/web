@@ -1167,16 +1167,8 @@ def profile(request, handle):
     if request.method == 'POST' and request.is_ajax():
         # Send kudos data when new preferred address
         address = request.POST.get('address')
-        context['kudos'] = Token.objects.select_related('kudos_transfer', 'contract').filter(
-            Q(owner_address__iexact=address) |
-            Q(kudos_transfer__recipient_profile=profile),
-            contract__network=settings.KUDOS_NETWORK,
-        ).distinct('id').order_by('id', order_by)
-        context['sent_kudos'] = Token.objects.select_related('contract', 'kudos_transfer').filter(
-            Q(kudos_transfer__from_address__iexact=address) |
-            Q(kudos_transfer__sender_profile=profile),
-            contract__network=settings.KUDOS_NETWORK,
-        ).distinct('id').order_by('id', order_by)
+        context['kudos'] = profile.get_my_kudos.order_by('id', order_by)
+        context['sent_kudos'] = profile.get_sent_kudos.order_by('id', order_by)
         profile.preferred_payout_address = address
         kudos_html = loader.render_to_string('shared/profile_kudos.html', context)
 

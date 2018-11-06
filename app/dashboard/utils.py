@@ -25,6 +25,7 @@ from django.conf import settings
 
 import ipfsapi
 import requests
+from app.utils import get_semaphor
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
 from dashboard.models import Activity, Bounty, UserAction
 from eth_utils import to_checksum_address
@@ -319,14 +320,17 @@ def web3_process_bounty(bounty_data):
         print(f"--*--")
         return None
 
-    did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
+    semaphor_key = f"bounty_processor_{bounty_data['id']}"
+    semaphor = get_semaphor(semaphor_key)
+    with semaphor:
+        did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
 
-    if did_change and new_bounty:
-        _from = old_bounty.pk if old_bounty else None
-        print(f"- processing changes, {_from} => {new_bounty.pk}")
-        process_bounty_changes(old_bounty, new_bounty)
+        if did_change and new_bounty:
+            _from = old_bounty.pk if old_bounty else None
+            print(f"- processing changes, {_from} => {new_bounty.pk}")
+            process_bounty_changes(old_bounty, new_bounty)
 
-    return did_change, old_bounty, new_bounty
+        return did_change, old_bounty, new_bounty
 
 
 def has_tx_mined(txid, network):
