@@ -102,7 +102,7 @@ def get_avatar_context():
                          ], ['HatShort-redbow'], ['HatShort-yellowbow'], ['HatShort-ballcap'], ['HatShort-cowboy'],
                                      ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], [
                                          'HatShort-bunnyears'
-                                     ], ['HatShort-menorah'],
+                                     ], ['HatShort-menorah'], ['HatShort-santahat'],
                                      ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'],
                                      ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'],
                                      ['Masks-jack-o-lantern-lighted'], ['Extras-Parrot'], ['Masks-gitcoinbot'])
