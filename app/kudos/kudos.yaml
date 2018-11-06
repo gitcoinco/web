@@ -1880,5 +1880,108 @@
     - cryptography
     - math
   image: zk_snarks.svg
-
+- name: creative_cat
+  description: Are you a creative cat?  Are you always getting new, creative, ideas out to your team?  Then this kudos is for you.
+  priceFinney: 2
+  numClonesAllowed: 100
+  tags: 
+    - soft skills
+  image: creative_cat.svg
+- name: firedog
+  description: This is fine.. Everything is fine.  Know someone who's cool under pressure?  Then this kudos is for them!
+  priceFinney: 2
+  numClonesAllowed: 100
+    - memes
+  image: firedog.svg
+- name: Octo-kitteh
+  description: Know someone who's a pro at git?  Know someone who's such an efficient worker that they've probably got eight handes?  This kudos is for htem.
+  priceFinney: 2
+  numClonesAllowed: 100
+  tags: 
+    - Soft skills
+    - git
+    - Technical skills
+  image: git_octocat.svg
+- name: give_first
+  description: Know someone who's always giving without expectation of return?  This kudos is for them.
+  priceFinney: 2
+  numClonesAllowed: 100
+  tags: 
+    - Soft Skills
+    - Giving
+  image: give_first.svg
+- name: ipfs
+  description: Know someone who's good at IPFS?  This kudos is for them
+  priceFinney: 2
+  numClonesAllowed: 100
+  tags: 
+    - IPFS
+    - decentralization
+  image: ipfs.svg
+- name: master
+  description: Know someone who's so zen and so good they are probably an ancient master in a universe far, very far, away?  Then this kudos is for htem.
+  priceFinney: 2
+  numClonesAllowed: 100
+  tags: 
+    - Soft Skills
+    - Master
+    - zen
+  image: master.svg
+- name: mentor
+  description: Is there smoeone out there who is a great mentor?  Then this kudos is for them
+  priceFinney: 2
+  numClonesAllowed: 100
+  tags: 
+    - mentor
+    - soft skills
+    - appreciation
+  image: mentor.svg
+- name: party_parrot
+  description: Know someone who's a party to be around?  Then this party parrot is for them!
+  priceFinney: 2
+  numClonesAllowed: 100
+  tags: 
+    - fun
+    - memes
+    - party
+  image: party_parrot.svg
+- name: pioneer
+  description: Know someone who's always pioneering new frontiers.  This kudos is for such a person :)
+  priceFinney: 2
+  numClonesAllowed: 100
+  tags: 
+    - soft skills
+    - pioneer
+  image: pioneer.svg
+- name: pragmatic
+  description: Got someone in your life who is extremely pragmatic?  This kudos is for them.
+  priceFinney: 2
+  numClonesAllowed: 100
+  tags: 
+    - soft skills
+    - compliments
+  image: pragmatic.svg
+- name: scarlet_letter
+  description: Did someone you know do something awful, like send a Kudos to themselves? Then send them this Scarlet Letter Kudos
+  priceFinney: 2
+  numClonesAllowed: 1000
+  tags: 
+    - common
+    - scarlet letter
+  image: scarlet_letter.svg
+- name: steampunk
+  description: This one is just for fun and appreciation of steampunk artwork
+  priceFinney: 2
+  numClonesAllowed: 100
+  tags: 
+    - art
+    - beautiful
+  image: steampunk.svg
+- name: zoidberger
+  description: No one can say hello to another contributor like this alien Kudos
+  priceFinney: 2
+  numClonesAllowed: 100
+  tags: 
+    - memes
+  image: your_bounty_is_bad_and_you_should_fill_bad.svg
 
