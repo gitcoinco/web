@@ -1894,7 +1894,7 @@
   tags: 
     - memes
   image: firedog.svg
-- name: Octo-kitteh
+- name: octo_kitteh
   description: Know someone who's a pro at git?  Know someone who's such an efficient worker that they've probably got eight handes?  This kudos is for htem.
   priceFinney: 2
   numClonesAllowed: 100
