@@ -70,8 +70,8 @@ def render_new_grant_email(grant):
     params = {
         'grant': grant
     }
-    response_html = premailer_transform(render_to_string("emails/grants/grants.html", params))
-    response_txt = render_to_string("emails/grants/grants.txt", params)
+    response_html = premailer_transform(render_to_string("emails/grants/new_grant.html", params))
+    response_txt = render_to_string("emails/grants/new_grant.txt", params)
 
     return response_html, response_txt
 
