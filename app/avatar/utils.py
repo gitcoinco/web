@@ -67,7 +67,7 @@ def get_avatar_context():
         }, {
             'name': 'Ears',
             'title': 'Pick ears shape',
-            'options': ('0', '1', '2', '3')
+            'options': ('0', '1', '2', '3', 'Spock')
         },
                      {
                          'name': 'Clothing',
@@ -82,7 +82,9 @@ def get_avatar_context():
                          'title': 'Pick a hairstyle',
                          'options': (['None', '0'], ['None', '1'], ['None', '2'], ['None', '3'], ['None', '4'],
                                      ['5', 'None'], ['6-back', '6-front'], ['7-back', '7-front'], ['8-back', '8-front'],
-                                     ['9-back', '9-front'], ['None', '10'])
+                                     ['9-back', '9-front'], ['None', '10'], ['damos_hair-back', 'damos_hair-front'], [
+                                         'long_swoosh-back', 'long_swoosh-front'
+                                     ], ['None', 'mohawk'], ['None', 'mohawk_inverted'], ['None', 'spikey'])
                      },
                      {
                          'name': 'Facial Hair',
@@ -97,10 +99,12 @@ def get_avatar_context():
                          'title': 'Pick your accessories',
                          'options': (['Glasses-0'], ['Glasses-1'], ['Glasses-2'], ['Glasses-3'], ['Glasses-4'], [
                              'HatShort-backwardscap'
-                         ], ['HatShort-ballcap'], ['HatShort-cowboy'], ['HatShort-headphones'],
-                                     ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], ['Earring-0'], ['Earring-1'], [
-                                         'EarringBack-2', 'Earring-2'
-                                     ], ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'],
+                         ], ['HatShort-redbow'], ['HatShort-yellowbow'], ['HatShort-ballcap'], ['HatShort-cowboy'],
+                                     ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], [
+                                         'HatShort-bunnyears'
+                                     ], ['HatShort-santahat'],
+                                     ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'],
+                                     ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'],
                                      ['Masks-jack-o-lantern-lighted'], ['Extras-Parrot'], ['Masks-gitcoinbot'])
                      },
                      {

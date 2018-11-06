@@ -68,10 +68,20 @@ $(document).ready(function() {
   $('#logo').mouseleave(function(e) {
     $(this).attr('src', $(this).attr('old-src'));
   });
+  if (!$.fn.collapse) {
+    $('.navbar-toggler').click(function() {
+      var toggle = $(this).attr('aria-expanded');
 
-  $('.navbar-toggler').click(function() {
-    $('.navbar-collapse').toggleClass('show');
-  });
+      console.log(toggle);
+      $('.navbar-collapse').toggleClass('show');
+      if (toggle === 'false') {
+        $(this).attr('aria-expanded', 'true');
+      } else {
+        $(this).attr('aria-expanded', 'false');
+      }
+
+    });
+  }
 
   // get started modal
   $('body').delegate('.iama', 'click', function() {
@@ -173,10 +183,6 @@ $(document).ready(function() {
       panel.style.marginBottom = 10 + 'px';
     }
   });
-});
-
-$(window).scroll(function() {
-  var scrollPos = jQuery(document).scrollTop();
 });
 
 /* TODO : Remove after GDPR */

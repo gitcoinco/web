@@ -1,0 +1,30 @@
+{% load humanize i18n kudos_extras %}
+{% trans "You've Received a Kudos" %}
+{% if kudos_transfer.from_name %}
+{{kudos_transfer.from_name}} {% blocktrans %} sent you a {% endblocktrans %}<b>{{ token_elem.name|humanize_name }}</b> kudos!
+{% else %}
+Someone sent you a <b>{{ token_elem.name|humanize_name }}</b> kudos.
+{% endif %}{% if not is_new %} {{kudos_transfer.created_on | naturaltime}}{%endif%}
+
+
+
+{% if kudos_transfer.url %}
+{% if kudos_transfer.from_name %}{{kudos_transfer.from_name}}{% else %}The sender{% endif %} said it was for your work on {{kudos_transfer.github_url}}:
+{% endif %}
+
+{% if comments %}
+{% if kudos_transfer.from_name %}{{kudos_transfer.from_name}}{% else %}The sender{% endif %} had the following comments:
+{{comments}}
+{% endif %}
+
+{% if already_redeemed %}
+ {% trans "This kudos has been remitted automatically to the Ethereum address on file for your account via txid " %}{{kudos_transfer.txid}}
+{% elif show_expires %}
+The kudos expires on *{{kudos_transfer.expires_date}}, in just {{kudos_transfer.expires_date | naturaltime}}*.  No pressure, but if you wanted to redeem your kudos sooner rather than later that'd be 👌:
+{% else %}
+No pressure, but if you wanted to redeem your kudos sooner rather than later that'd be 👌:
+{% endif %}
+
+{% if not already_redeemed %}
+Click here to redeem it: {{link}}
+{% endif %}

@@ -25,14 +25,16 @@ from django.conf import settings
 
 import ipfsapi
 import requests
+from app.utils import get_semaphor
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
 from dashboard.models import Activity, Bounty, UserAction
 from eth_utils import to_checksum_address
 from gas.utils import conf_time_spread, eth_usd_conv_rate, gas_advisories, recommend_min_gas_price_to_confirm_in_time
 from hexbytes import HexBytes
 from ipfsapi.exceptions import CommunicationError
-from web3 import HTTPProvider, Web3
+from web3 import HTTPProvider, Web3, WebsocketProvider
 from web3.exceptions import BadFunctionCallOutput
+from web3.middleware import geth_poa_middleware
 
 logger = logging.getLogger(__name__)
 
@@ -188,7 +190,7 @@ def ipfs_cat_requests(key):
         return None, 500
 
 
-def get_web3(network):
+def get_web3(network, sockets=False):
     """Get a Web3 session for the provided network.
 
     Attributes:
@@ -203,7 +205,17 @@ def get_web3(network):
 
     """
     if network in ['mainnet', 'rinkeby', 'ropsten']:
-        return Web3(HTTPProvider(f'https://{network}.infura.io'))
+        if sockets:
+            provider = WebsocketProvider(f'wss://{network}.infura.io/ws')
+        else:
+            provider = HTTPProvider(f'https://{network}.infura.io')
+        w3 = Web3(provider)
+        if network == 'rinkeby':
+            w3.middleware_stack.inject(geth_poa_middleware, layer=0)
+        return w3
+    elif network == 'localhost' or 'custom network':
+        return Web3(Web3.HTTPProvider("http://testrpc:8545", request_kwargs={'timeout': 60}))
+
     raise UnsupportedNetworkException(network)
 
 
@@ -308,14 +320,17 @@ def web3_process_bounty(bounty_data):
         print(f"--*--")
         return None
 
-    did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
+    semaphor_key = f"bounty_processor_{bounty_data['id']}"
+    semaphor = get_semaphor(semaphor_key)
+    with semaphor:
+        did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
 
-    if did_change and new_bounty:
-        _from = old_bounty.pk if old_bounty else None
-        print(f"- processing changes, {_from} => {new_bounty.pk}")
-        process_bounty_changes(old_bounty, new_bounty)
+        if did_change and new_bounty:
+            _from = old_bounty.pk if old_bounty else None
+            print(f"- processing changes, {_from} => {new_bounty.pk}")
+            process_bounty_changes(old_bounty, new_bounty)
 
-    return did_change, old_bounty, new_bounty
+        return did_change, old_bounty, new_bounty
 
 
 def has_tx_mined(txid, network):
@@ -436,7 +451,6 @@ def get_ordinal_repr(num):
     else:
         suffix = ordinal_suffixes.get(num % 10, 'th')
     return f'{num}{suffix}'
-
 
 
 def record_user_action_on_interest(interest, event_name, last_heard_from_user_days):

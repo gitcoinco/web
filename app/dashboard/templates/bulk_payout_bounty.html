@@ -22,37 +22,13 @@
     {% include 'shared/cards.html' %}
     {% include 'shared/current_profile.html' %}
     <link rel="stylesheet" type="text/css" href="{% static "v2/css/tooltip_hover.css" %}">
-    <style type="text/css">
-      #tooltip--hover {
-        min-height: 37%;
-        top: 17rem;
-      }
-
-      @media only screen and (max-width: 1400px) {
-        #tooltip--hover {
-          top: 18.5rem;
-        }
-      }
-
-      @media only screen and (max-width: 750px) {
-        #tooltip--hover {
-          min-height: 30%;
-        }
-      }
-
-      @media only screen and (max-width: 400px) {
-        #tooltip--hover {
-          min-height: 33%;
-          left: 70px;
-          top: 20.5rem;
-        }
-      }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{% static "v2/css/bulk_payout_bounty.css" %}">
   </head>
 
   <body class="interior {{ active }} g-font-muli">
     {% include 'shared/tag_manager_2.html' %}
     <div class="container-fluid header dash">
+      {% include 'shared/top_nav.html' with class='d-md-flex' %}
       {% include 'shared/nav.html' %}
     </div>
     <div class="container-fluid">
@@ -99,6 +75,14 @@
                   <input type="hidden" id="original_amount" value="{{ bounty.value_true }}">
                   <span id="token_name">{{ bounty.token_name }}</span>
                 </div>
+                <div class="w-100 overageAlert">
+                  <div>
+                    <img src="{% static "v2/images/warning.svg" %}">
+                  </div>
+                  <div>
+                    <p>{% trans "You have exceeded the bounty's funded amount. The difference of " %}<span id="total_overage"></span> {% trans "will be paid from your metamask wallet ending in ..." %}<span id="address_ending"></span></p>
+                  </div>
+                </div>
                 <div class="w-100 my-3">
                   <label for=bountyFulfillment>{% trans "Payout" %}</label>
                   <label id="tooltip">{% trans "Where is my Eth going? " %}<i class='fa fa-info-circle'></i></label>
@@ -108,7 +92,7 @@
                     </div>
                     <div class="mt-2" id="trans_preview">
                       <h5>{% trans 'Payout Preview' %}</h5>
-                      <p class="mb-0">{% trans 'Refunded' %}: <span id="total_returned">{{ bounty.value_true }} {{ bounty.token_name }}</span></p>
+                      <p class="mb-0 overagePreview"><strong><span id="preview_overage"></span>{% trans ' to be paid from wallet ending in ...' %}<span id="preview_ending"></span></strong></p>
                       <p class="mb-0">{% trans 'Paid' %}: -<span id="total_cost"></span></p>
                       <p class="mb-0">{% trans 'Net' %}: <span id="total_net"></span></p>
                       <p class="mt-1 mb-0">{% trans 'Transactions:' %}</p>
@@ -140,8 +124,7 @@
                       {% trans "Payout Bounty" %}
                     </a>
                   </div>
-                </div>
-                
+                </div> 
               </div>
               <div id="tooltip--hover">
                 <span id="heading">{% trans "Where is my Eth Going?" %}</span><br>
@@ -156,63 +139,6 @@
         </div>
       </div>
     </div>
-    <style>
-      #transaction_registry {
-        width: 100%;
-      }
-      #transaction_registry tr td{
-        padding: 10px;
-        border: #333 solid 1px;
-      }
-      #trans_preview{
-        padding: 5px;
-        border-radius: 3px;
-        background-color: #fafafa;
-        position: absolute;
-        top: 5rem;
-        right: -20rem;
-      }
-      #trans_preview h5{
-        color: #08cf7b;
-      }
-      #primary_form{
-        margin: 0px 25%;
-      }
-      @media (max-width: 1100px) {
-        #primary_form{
-          margin: 0px 15%;
-        }
-      }
-      @media (max-width: 900px) {
-        #primary_form{
-          margin: 0px 5%;
-        }
-      }
-      @media (max-width: 750px) {
-        #trans_preview{
-          position: unset;
-          top: 200px;
-          left: 72%;
-          width: 100%;
-        }
-        #primary_form{
-          margin: 0px auto;
-        }
-      }
-
-
-      tr div{
-        border-radius: 3px;
-        padding: 5px;
-      }
-      .error{
-        border: 1px solid red !important;
-      }
-      .entry.active{
-        background-color: #bbb;
-      }
-
-    </style>
     {% include 'shared/bottom_notification.html' %}
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}

@@ -1,0 +1,120 @@
+- name: hadoop_admiral
+  description: You are a Master of MapReduce, a sultan of reliable, distributed, and
+    scalable computing.  Owners of this badge are infamous for their command of distributing
+    processing of large data sets!
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - hadoop
+  - distributed
+  - scalable
+  - data
+  - common
+  image: hadoop_admiral.svg
+- name: linux_wizard
+  description: All hail the Linux Penguin!  Linux is a force in open source, powering
+    millions of websites and businesses.  Owners of this badge are known for their
+    mastery of the Linux family of Operating Systems!
+  priceFinney: 3
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - linux
+  - open source
+  - penguin
+  - OS
+  - common
+  image: linux_wizard.svg
+- name: gitcoin_genesis
+  description: The Gitcoin Genesis Badge is the rarest of the Gitcoin team badges.  Owners
+    of this badge contributed to Gitcoin in a meaningful way in the way-back-when.
+  priceFinney: 1000
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 4
+  tags:
+  - gitcoin
+  - genesis
+  - rare
+  image: gitcoin_genesis.svg
+- name: javascript_master_scriber
+  description: Remember the web in the days before javascript?  No?  Neither can we!  Javascript
+    powers the modern web, top to bottom and we <3 the usage of javascript here at
+    Gitcoin.  Owners of this badge are masters of the asyncronous, event driven, programming
+    language and specifically, of client side scripting!
+  priceFinney: 3
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - javascript
+  - node
+  - web
+  - common
+  image: javascript_master_scriber.svg
+- name: infrastructure_ninja
+  description: Just like every building needs a solid foundation, every website needs
+    a great infrastructure.  Infrastructure Ninjas are rarely seen or heard, but they
+    are omnipresent -- Quickly tackling the gnarly infrastructure issues that crop
+    up in the modern web, and ensuring stability, peace, performance, and prosperity
+    for inhabinants the modern web.
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 300
+  tags:
+  - OS
+  - infrastructure
+  - linux
+  - common
+  image: infrastructure_ninja.svg
+- name: java_doctor
+  description: Is there anything better than a cup 'o' Joe in the morning? Java can
+    be written once and run everywhere; so what better tool to BUIDL on in the modern,
+    blockchain-enabled, web?  Owners of the Java Doctor badge are famous for their
+    mastery of the Java programming language!
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - java
+  - web
+  - sun
+  - common
+  image: java_doctor.svg
+- name: do_more_faster
+  description: Is there anything better than working with someone who can rapidly
+    iterate?  The modern web is built by Agile, and favors experimentation and iteration.  Owners
+    of the Do More Faster badge, well, they DO MORE FASTER!
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 500
+  tags:
+  - do more faster
+  - iteration
+  - hypothesis testing
+  - soft skills
+  - common
+  image: do_more_faster.svg
+- name: jquery_fixer
+  description: jQuery is a force in the modern web.  By solving compatibilty issues
+    across browsers, and providing a friendly interface for developing AJAX websites,
+    jQuery won our <3s.  To owners of this badge, thank you for using jQuery to provide
+    Fixes to all!
+  priceFinney: 2
+  artist: mladen
+  platform: gitcoin
+  numClonesAllowed: 800
+  tags:
+  - jquery
+  - javascript
+  - web
+  - MVC
+  - common
+  image: jquery_fixer.svg
+
