@@ -120,10 +120,10 @@ var getAmountEstimate = function(usd_amount, denomination, callback) {
     var _amount = Math.round(usd_amount / conv_rate, 3);
     var amount_estimate = usdToAmountEstimate(usd_amount, conv_rate);
 
-    rate_estimate = get_rates_estimate(_amount * conv_rate);
+    rate_estimate = get_rates_estimate(amount_estimate * conv_rate);
     var estimate_obj = {
       'rate_text': rate_estimate,
-      'value': _amount
+      'value': amount_estimate
     };
 
     return callback(estimate_obj);
