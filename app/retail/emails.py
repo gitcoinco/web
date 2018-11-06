@@ -75,6 +75,16 @@ def render_new_grant_email(grant):
 
     return response_html, response_txt
 
+
+@staff_member_required
+def new_grant(request):
+    from grants.models import Grant
+    grant = Grant.objects.all().order_by('-created_on')[0]
+
+    response_html, _ = render_new_grant_email(grant)
+    return HttpResponse(response_html)
+
+
 def render_tip_email(to_email, tip, is_new):
     warning = tip.network if tip.network != 'mainnet' else ""
     already_redeemed = bool(tip.receive_txid)
@@ -805,15 +815,6 @@ def resend_new_tip(request):
 
 
 @staff_member_required
-def new_grant(request):
-    from grants.models import Grant
-    grant = Grant.objects.all().order_by('-created_on')[1]
-
-    print(grant)
-
-    response_html, _ = render_new_grant_email(grant)
-    return HttpResponse(response_html)
-
 def new_bounty(request):
     from dashboard.models import Bounty
     bounties = Bounty.objects.current().order_by('-web3_created')[0:3]
