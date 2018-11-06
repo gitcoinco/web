@@ -40,6 +40,9 @@ $(document).ready(function() {
         data[this.name] = this.value;
       });
 
+
+      console.log(data.denomination);
+
       let requiredPeriodSeconds = 0;
 
       if (data.frequency) {
@@ -58,7 +61,7 @@ $(document).ready(function() {
         if (periodSeconds) {
           requiredPeriodSeconds = periodSeconds;
 
-          data.frequency = realPeriodSeconds;
+          data.frequency = requiredPeriodSeconds;
         }
       }
 

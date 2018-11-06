@@ -72,8 +72,9 @@ def render_new_grant_email(grant):
     }
     response_html = premailer_transform(render_to_string("emails/grants/new_grant.html", params))
     response_txt = render_to_string("emails/grants/new_grant.txt", params)
+    subject = "Your Gitcoin Grant"
 
-    return response_html, response_txt
+    return response_html, response_txt, subject
 
 
 @staff_member_required
