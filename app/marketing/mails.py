@@ -96,6 +96,19 @@ def send_mail(from_email, _to_email, subject, body, html=False,
 
     return response
 
+def new_grant(interest, grant):
+    from_email = settings.CONTACT_EMAIL
+    to_email = interest.profile.email
+    cur_language = translation.get_language()
+    try:
+        setup_lang(to_email)
+        html, text, subject = render_new_grant_email(interest, bounty)
+
+        if not should_suppress_notification_email(to_email, 'grant'):
+            send_mail(from_email, to_email, subject, text, html, categories=['transactional', func_name()])
+    finally:
+        translation.activate(cur_language)
+
 
 def admin_contact_funder(bounty, text, from_user):
     from_email = from_user.email

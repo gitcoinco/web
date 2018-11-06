@@ -5,9 +5,9 @@
 {% trans "You've created a new grant!" %}
 {% trans "Get ready to buidl and push forward open source!" %}
 
-{{grant.name}}
-{{grant.desc}}
+{{ grant.title }}
+{{ grant.description }}
 
-{{grant.amount}}
+{{ grant.amount_goal }}
 
-{% trans "The details of your grant can be seen here:" %} {{grant.url}}
+{% trans "The details of your grant can be seen here:" %} {{ grant.reference_url }}
