@@ -34,6 +34,8 @@ from django.utils.translation import gettext_lazy as _
 from grants.forms import MilestoneForm
 from grants.models import Grant, Milestone, Subscription
 from marketing.models import Keyword
+from marketing.mails import new_grant
+
 from web3 import HTTPProvider, Web3
 
 logger = logging.getLogger(__name__)
@@ -172,9 +174,11 @@ def grant_new(request):
             'logo': logo,
         }
         grant = Grant.objects.create(**grant_kwargs)
+        new_grant(grant, profile)
 
         if team_members:
             grant.team_members.add(*list(map(int, team_members)))
+
 
         return redirect(reverse('grants:details', args=(grant.pk, )))
 
