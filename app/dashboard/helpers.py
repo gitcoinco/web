@@ -36,7 +36,6 @@ from dashboard.notifications import (
     maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from dashboard.tokens import addr_to_token
-from dashboard.utils import get_bounty_semaphore_ns
 from economy.utils import convert_amount
 from git.utils import get_gh_issue_details, get_url_dict
 from jsondiff import diff
@@ -499,6 +498,7 @@ def process_bounty_details(bounty_details):
         tuple[2] (dashboard.models.Bounty): The new Bounty object.
 
     """
+    from dashboard.utils import get_bounty_semaphore_ns
     # See dashboard/utils.py:get_bounty from details on this data
     bounty_id = bounty_details.get('id', {})
     bounty_data = bounty_details.get('data') or {}
