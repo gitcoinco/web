@@ -1,5 +1,5 @@
-{% load i18n static %}
 {% load kudos_extras %}
+{% load i18n static %}
 <style>
   .modal {
     display: none;
@@ -100,7 +100,7 @@
     </div>
     <div class="col-12 row">
       <div class="col-12 text-center">
-        <h1 class="font-title-lg mb-4">Share Kudos!</h1>
+        <h1 class="font-title-lg mb-4">{% trans "Share" %} Kudos!</h1>
       </div>
       <div id="kudos-image" class="col-12 offset-lg-4 col-lg-4">
         <img src="{% static kudos.image %}" alt="{{ kudos.name }}" class="w-100">
@@ -109,9 +109,9 @@
         <p>
           <span class="text-color_blue text-weight_semibold">{{ kudos.name|humanize_name }}</span> <br>
           <span class="text-color_blue text-weight_semibold">{{ kudos.rarity }}</span>
-          ({{ kudos.num_clones_in_wild_counting_indirect_send }} out of {{ kudos.num_gen0_clones_allowed }}) <br>
-          <span id='kudosNumClonesAvailable' class="text-color_blue text-weight_semibold">{{ kudos.num_clones_available_counting_indirect_send }}</span> Total Available <br>
-          <span id='kudosNumClonesAllowed' class="text-color_blue text-weight_semibold">{{ kudos.num_clones_in_wild_counting_indirect_send }}</span> Total minted
+          ({{ kudos.num_clones_in_wild_counting_indirect_send }} {% trans "out of" %} {{ kudos.num_gen0_clones_allowed }}) <br>
+          <span id='kudosNumClonesAvailable' class="text-color_blue text-weight_semibold">{{ kudos.num_clones_available_counting_indirect_send }}</span> {% trans "Total Available" %} <br>
+          <span id='kudosNumClonesAllowed' class="text-color_blue text-weight_semibold">{{ kudos.num_clones_in_wild_counting_indirect_send }}</span> {% trans "Total minted" %}
         </p>
       </div>
     </div>
@@ -119,19 +119,19 @@
       <input class="form__input"type="text" value="{{ request.META.HTTP_HOST }}{% url 'kudos_details' kudos.id kudos.name %}" id="shareLink" readonly>
       <button class="btn btn-gc-blue button__small font-body" id="copyLink">
         <i data-toggle="tooltip" title="" data-html="true" 
-          data-original-title="<span class='title-tooltip text-center'>Click To Copy</span>"
+          data-original-title="<span class='title-tooltip text-center'>{% trans 'Click To Copy' %}</span>"
           data-template='<div class="tooltip-kudos tooltip-share" role="tooltip"><div class="tooltip-inner"></div></div>' class="text-color_blue">
-          Copy Link
+          {% trans "Copy Link" %}
         </i>
       </button>
     </div>
     <div class="col-12 text-center">
       <a class="btn btn-gc-blue share-button font-body" target="_blank" rel="noopener noreferrer"
         href="https://twitter.com/intent/tweet?text=Check%20out%20the%20{{kudos.name|humanize_name}}%20kudos%21%20{{ request.META.HTTP_HOST }}{% url 'kudos_details' kudos.id kudos.name %}"
-        data-size="large"><i class="fab fa-twitter mr-2"></i>Share on Twitter</a>
+        data-size="large"><i class="fab fa-twitter mr-2"></i>{% trans "Share on" %} Twitter</a>
       <a class="btn btn-gc-blue share-button font-body" target="_blank" rel="noopener noreferrer"
         href="https://www.facebook.com/sharer/sharer.php?u={{ request.META.HTTP_HOST }}{% url 'kudos_details' kudos.id kudos.name %}"
-        data-size="large"><i class="fab fa-facebook mr-2"></i>Share on Facebook</a>
+        data-size="large"><i class="fab fa-facebook mr-2"></i>{% trans "Share on" %} Facebook</a>
     </div>
   </div>
 </div>
