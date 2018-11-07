@@ -793,3 +793,34 @@ def new_funding_limit_increase_request(profile, cleaned_data):
         send_mail(from_email, to_email, subject, body, from_name=_("No Reply from Gitcoin.co"))
     finally:
         translation.activate(cur_language)
+
+
+def bounty_request_feedback(profile):
+    from_email = 'vivek.singh@consensys.net'
+    to_email = profile.email
+    cur_language = translation.get_language()
+
+    try:
+        setup_lang(to_email)
+        subject = _('Bounty Request Feedback')
+        body = f'Howdy @{profile.username},\n\n'\
+               'This is Vivek from Gitcoin. '\
+               'I noticed you made a funded Gitcoin Requests '\
+               'a few months ago and just wanted to check in. '\
+               'How\'d it go? Any feedback for us?\n\n'\
+               'Let us know if you have any bounties in your near future '\
+               '-- we\'ll pay attention to '\
+               '[Gitcoin Requests](https://gitcoin.co/requests/) '\
+               'from you as we know you\'ve suggested good things '\
+               'in the past 🙂\n\n'\
+               'Best,\nV'
+
+        send_mail(
+            from_email,
+            to_email,
+            subject,
+            body,
+            from_name=_('Vivek Singh (Gitcoin.co)'),
+        )
+    finally:
+        translation.activate(cur_language)
