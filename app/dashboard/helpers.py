@@ -29,18 +29,20 @@ from django.db import transaction
 from django.http import Http404, JsonResponse
 from django.utils import timezone
 
-from app.utils import sync_profile
+from app.utils import get_semaphore, sync_profile
 from dashboard.models import Activity, Bounty, BountyFulfillment, BountySyncRequest, UserAction
 from dashboard.notifications import (
     maybe_market_to_email, maybe_market_to_github, maybe_market_to_slack, maybe_market_to_twitter,
     maybe_market_to_user_discord, maybe_market_to_user_slack,
 )
 from dashboard.tokens import addr_to_token
+from dashboard.utils import get_bounty_semaphore_ns
 from economy.utils import convert_amount
 from git.utils import get_gh_issue_details, get_url_dict
 from jsondiff import diff
 from pytz import UTC
 from ratelimit.decorators import ratelimit
+from redis_semaphore import NotAvailable as SemaphoreExists
 
 from .models import Profile
 
@@ -517,11 +519,18 @@ def process_bounty_details(bounty_details):
     if not did_change:
         return (did_change, latest_old_bounty, latest_old_bounty)
 
-    new_bounty = create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id)
+    semaphore_key = get_bounty_semaphore_ns(bounty_data['id'])
+    semaphore = get_semaphore(semaphore_key)
 
-    if new_bounty:
-        return (did_change, latest_old_bounty, new_bounty)
-    return (did_change, latest_old_bounty, latest_old_bounty)
+    try:
+        with semaphore:
+            new_bounty = create_new_bounty(old_bounties, bounty_payload, bounty_details, bounty_id)
+
+            if new_bounty:
+                return (did_change, latest_old_bounty, new_bounty)
+            return (did_change, latest_old_bounty, latest_old_bounty)
+    except SemaphoreExists:
+        return (did_change, latest_old_bounty, latest_old_bounty)
 
 
 def get_bounty_data_for_activity(bounty):

@@ -25,7 +25,6 @@ from django.conf import settings
 
 import ipfsapi
 import requests
-from app.utils import get_semaphor
 from dashboard.helpers import UnsupportedSchemaException, normalize_url, process_bounty_changes, process_bounty_details
 from dashboard.models import Activity, Bounty, UserAction
 from eth_utils import to_checksum_address
@@ -37,6 +36,9 @@ from web3.exceptions import BadFunctionCallOutput
 from web3.middleware import geth_poa_middleware
 
 logger = logging.getLogger(__name__)
+
+SEMAPHORE_BOUNTY_SALT = '1'
+SEMAPHORE_BOUNTY_NS = 'bounty_processor'
 
 
 class BountyNotFoundException(Exception):
@@ -320,18 +322,14 @@ def web3_process_bounty(bounty_data):
         print(f"--*--")
         return None
 
-    #semaphor_key = f"bounty_processor_{bounty_data['id']}_1"
-    #semaphor = get_semaphor(semaphor_key)
-    #with semaphor:
-    if True: # KO 20181107 -- removing semaphor processing code for time being, due to downtime last night
-        did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
+    did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
 
-        if did_change and new_bounty:
-            _from = old_bounty.pk if old_bounty else None
-            print(f"- processing changes, {_from} => {new_bounty.pk}")
-            process_bounty_changes(old_bounty, new_bounty)
+    if did_change and new_bounty:
+        _from = old_bounty.pk if old_bounty else None
+        print(f"- processing changes, {_from} => {new_bounty.pk}")
+        process_bounty_changes(old_bounty, new_bounty)
 
-        return did_change, old_bounty, new_bounty
+    return did_change, old_bounty, new_bounty
 
 
 def has_tx_mined(txid, network):
@@ -561,3 +559,13 @@ def generate_pub_priv_keypair():
     # return priv key, pub key, address
 
     return priv.to_string().hex(), pub.hex(), checksum_encode(address)
+
+
+def get_bounty_semaphore_ns(standard_bounty_id):
+    return f'{SEMAPHORE_BOUNTY_NS}_{standard_bounty_id}_{SEMAPHORE_BOUNTY_SALT}'
+
+
+def release_bounty_lock(standard_bounty_id):
+    from app.utils import release_semaphore
+    ns = get_bounty_semaphore_ns(standard_bounty_id)
+    release_semaphore(ns)

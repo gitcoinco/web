@@ -356,11 +356,27 @@ def get_default_network():
     return 'mainnet'
 
 
-def get_semaphor(namespace, count=1):
+def get_semaphore(namespace, count=1, db=None, blocking=False):
     from redis import Redis
     from redis_semaphore import Semaphore
     from urllib.parse import urlparse
     redis = urlparse(settings.SEMAPHORE_REDIS_URL)
 
-    semaphore = Semaphore(Redis(host=redis.hostname, port=redis.port), count=count, namespace=namespace)
+    if db is None:
+        db = int(redis.path.lstrip('/'))
+
+    semaphore = Semaphore(
+        Redis(host=redis.hostname, port=redis.port, db=db),
+        count=count,
+        namespace=namespace,
+        blocking=blocking,
+    )
     return semaphore
+
+
+def release_semaphore(namespace, semaphore=None):
+    if not semaphore:
+        semaphore = get_semaphore(namespace)
+
+    token = semaphore.get_namespaced_key(namespace)
+    semaphore.signal(token)
