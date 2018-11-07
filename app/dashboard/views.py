@@ -1703,12 +1703,15 @@ def get_kudos(request):
     }
     if request.is_ajax():
         q = request.GET.get('term')
+        network = request.GET.get('network', None)
         eth_to_usd = convert_token_to_usdt('ETH')
         kudos_by_name = Token.objects.filter(name__icontains=q)
         kudos_by_desc = Token.objects.filter(description__icontains=q)
         kudos_by_tags = Token.objects.filter(tags__icontains=q)
         kudos_pks = (kudos_by_desc | kudos_by_name | kudos_by_tags).values_list('pk', flat=True)
         kudos = Token.objects.filter(pk__in=kudos_pks, hidden=False, num_clones_allowed__gt=0).order_by('name')
+        if network:
+            kudos = kudos.filter(contract__network=network)
         results = []
         for token in kudos:
             kudos_json = {}

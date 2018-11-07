@@ -22,7 +22,8 @@ function kudosSearch(elem) {
         data: function(params) {
 
           let query = {
-            term: params.term[0] === '@' ? params.term.slice(1) : params.term
+            term: params.term[0] === '@' ? params.term.slice(1) : params.term,
+            network: document.web3network,
           };
 
           return query;
