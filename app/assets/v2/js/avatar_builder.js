@@ -1,6 +1,6 @@
 let openSection;
 const layers = [
-	'Wallpaper',
+  'Wallpaper',
   'HatLong', 'HairLong', 'EarringBack', 'Clothing',
   'Ears', 'Head', 'HairShort', 'Earring', 'Beard', 'HatShort',
   'Mustache', 'Mouth', 'Nose', 'Eyes', 'Glasses', 'Masks', 'Extras'
@@ -205,7 +205,7 @@ function setOption(option, value, target) {
     case 'Nose':
     case 'Ears':
     case 'Mouth':
-	case 'Wallpaper':
+    case 'Wallpaper':
     case 'Clothing':
       localStorage[option + 'Id'] = $(target).attr('id');
       changeImage(option, deselectingFlag && $(target).children().data('path'));
