@@ -81,6 +81,25 @@ $bg-cellarius: #4D5858;
   height: 100%;
   overflow: hidden;
 
+  > a {
+    position: relative;
+    display: block;
+  }
+
+  .sender-avatar {
+    position: absolute;
+    width: 50px;
+    border-radius: 50%;
+    bottom: 1em;
+    left: 7%;
+    width: 18%;
+
+    &.right {
+      left: auto;
+      right: 5%;
+    }
+  }
+
   &:hover,
   &:active,
   &:focus,

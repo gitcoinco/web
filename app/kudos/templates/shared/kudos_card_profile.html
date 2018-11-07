@@ -22,6 +22,7 @@
     <div class="kd-card kd-extended" aria-haspopup="true" tabindex="0">
       <a href="{{kt.kudos_token_cloned_from.url}}" class="" title="{{ kt.kudos_token_cloned_from.name|humanize_name }}" tabindex="0">
         <img src="{% static kt.kudos_token_cloned_from.image %}" alt="{{ kt.kudos_token_cloned_from.name|humanize_name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
+        <img src="/dynamic/avatar/{{ kt.username }}" alt="" class="sender-avatar right">
       </a>
       <div class="kd-content">
         <div class="kd-title">{{ kt.kudos_token_cloned_from.name|humanize_name }}</div>
@@ -40,6 +41,7 @@
     <div class="kd-card kd-extended" aria-haspopup="true" tabindex="0">
       <a href="/kudos/{{ kt.kudos_token_cloned_from.id }}/{{ kt.kudos_token_cloned_from.name }}" class="" title="{{ kt.kudos_token_cloned_from.name|humanize_name }}" tabindex="0">
         <img src="{% static kt.kudos_token_cloned_from.image %}" alt="{{ kt.kudos_token_cloned_from.name|humanize_name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
+        <img src="/dynamic/avatar/{{ kt.from_username }}" alt="{{ kt.from_username }}" class="sender-avatar" >
       </a>
       <div class="kd-content">
         <div class="kd-title">{{ kt.kudos_token_cloned_from.name|humanize_name }}</div>

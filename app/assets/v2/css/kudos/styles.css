@@ -166,6 +166,19 @@
   border-radius: .25rem;
   height: 100%;
   overflow: hidden; }
+  .kd-extended > a {
+    position: relative;
+    display: block; }
+  .kd-extended .sender-avatar {
+    position: absolute;
+    width: 50px;
+    border-radius: 50%;
+    bottom: 1em;
+    left: 7%;
+    width: 18%; }
+    .kd-extended .sender-avatar.right {
+      left: auto;
+      right: 5%; }
   .kd-extended:hover .content-hover, .kd-extended:active .content-hover, .kd-extended:focus .content-hover, .kd-extended:focus-within .content-hover {
     display: flex; }
   .kd-extended .img-thumbnail {
