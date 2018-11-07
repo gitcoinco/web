@@ -914,23 +914,6 @@ def itunes(request):
     return redirect('https://itunes.apple.com/us/app/gitcoin/id1319426014')
 
 
-def ios(request):
-
-    context = {
-        'active': 'ios',
-        'title': 'iOS app',
-        'card_title': 'Gitcoin has an iOS app!',
-        'card_desc': 'Gitcoin aims to make it easier to grow open source from anywhere in the world,\
-            anytime.  We’re proud to announce our iOS app, which brings us a step closer to this north star!\
-            Browse open bounties on the go, express interest, and coordinate your work on the move.',
-    }
-    return TemplateResponse(request, 'ios.html', context)
-
-
-def iosfeedback(request):
-    return redirect('https://goo.gl/forms/UqegoAMh7HVibfuF3')
-
-
 def casestudy(request):
     return redirect('https://docs.google.com/document/d/1M8-5xCGoJ8u-k0C0ncx_dr9LtHwZ32Ccn3KMFtEnsBA/edit')
 
