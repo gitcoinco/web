@@ -642,7 +642,7 @@ var currentNetwork = function(network) {
           $('#navbar-network-banner').html(info);
         } else {
           info = gettext('Metamask not connected. ') +
-            '<button onclick="approve_metamask()">Click here to connect to metamask</button>';
+            '<button id="metamask_connect" onclick="approve_metamask()">Click here to connect to metamask</button>';
           $('#current-network').text(gettext('Metamask Not Connected'));
           $('#navbar-network-banner').html(info);
         }
@@ -683,7 +683,7 @@ var currentNetwork = function(network) {
           $('#navbar-network-banner').html(info);
         } else {
           info = gettext('Metamask not connected. ') +
-            '<button onclick="approve_metamask()">Click here to connect to metamask</button>';
+            '<button id="metamask_connect" onclick="approve_metamask()">Click here to connect to metamask</button>';
           $('#current-network').text(gettext('Metamask Not Connected'));
           $('#navbar-network-banner').html(info);
         }
