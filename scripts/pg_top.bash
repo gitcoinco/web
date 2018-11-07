@@ -21,9 +21,10 @@ export $(grep -v '^#' app/app/.env | xargs)
 
 
 # Settings
-PGUSER=${echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $1}'}
-PGHOST=${echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $2}'  | awk -F '@' '{print $2}'}
-PGPORT=${echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $3}'  | awk -F ':' '{print $1}' | awk -F '/' '{print $1}'}
+PGUSER=$(echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $1}')
+PGHOST=$(echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $2}'  | awk -F '@' '{print $2}')
+PGPORT=$(echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $3}'  | awk -F ':' '{print $1}' | awk -F '/' '{print $1}')
+PGPASS=$(echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $2}' | awk -F '@' '{print $1}')
 
 echo "version: $(pg_top --version)"
-exec pg_top -U "$PGUSER" -p "$PGPORT" -h "$PGHOST"
+exec pg_top -U "$PGUSER" -p "$PGPORT" -h "$PGHOST" -W "$PGPASS"
