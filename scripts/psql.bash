@@ -30,4 +30,4 @@ PGPORT=$(echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $3
 PGPASS=$(echo $DATABASE_URL | awk -F '://' '{print $2}'  | awk -F ':' '{print $2}' | awk -F '@' '{print $1}')
 
 
-psql postgres -p 5432 -h db -U postgres
+psql gitcoin -p $PGPORT -h $PGHOST -U $PGUSER
