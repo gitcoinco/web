@@ -635,10 +635,17 @@ var currentNetwork = function(network) {
         $('#current-network').text(gettext('Metamask Not Enabled'));
         $('#navbar-network-banner').html(info);
       } else if (network == 'locked') {
-        info = gettext('Web3 locked. Please unlock ') +
-          '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
-        $('#current-network').text(gettext('Metamask Locked'));
-        $('#navbar-network-banner').html(info);
+        if (is_metamask_approved) {
+          info = gettext('Web3 locked. Please unlock ') +
+            '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
+          $('#current-network').text(gettext('Metamask Locked'));
+          $('#navbar-network-banner').html(info);
+        } else {
+          info = gettext('Metamask not connected. ') +
+            '<button onclick="metamaskApproval()">Click here to connect to metamask</button>';
+          $('#current-network').text(gettext('Metamask Not Connected'));
+          $('#navbar-network-banner').html(info);
+        }
       } else {
         info = gettext('Connect to Mainnet via Metamask');
         $('#current-network').text(gettext('Unsupported Network'));
@@ -669,10 +676,17 @@ var currentNetwork = function(network) {
         $('#current-network').text(gettext('Metamask Not Enabled'));
         $('#navbar-network-banner').html(info);
       } else if (network == 'locked') {
-        info = gettext('Web3 locked. Please unlock ') +
-          '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
-        $('#current-network').text(gettext('Metamask Locked'));
-        $('#navbar-network-banner').html(info);
+        if (is_metamask_approved) {
+          info = gettext('Web3 locked. Please unlock ') +
+            '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
+          $('#current-network').text(gettext('Metamask Locked'));
+          $('#navbar-network-banner').html(info);
+        } else {
+          info = gettext('Metamask not connected. ') +
+            '<button onclick="metamaskApproval()">Click here to connect to metamask</button>';
+          $('#current-network').text(gettext('Metamask Not Connected'));
+          $('#navbar-network-banner').html(info);
+        }
       } else {
         info = gettext('Connect to Rinkeby / Custom RPC via Metamask');
         $('#current-network').text(gettext('Unsupported Network'));
