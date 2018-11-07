@@ -23,7 +23,7 @@ function kudosSearch(elem) {
 
           let query = {
             term: params.term[0] === '@' ? params.term.slice(1) : params.term,
-            network: document.web3network,
+            network: document.web3network
           };
 
           return query;

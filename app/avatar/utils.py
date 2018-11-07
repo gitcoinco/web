@@ -69,7 +69,6 @@ def get_avatar_context():
             'title': 'Pick ears shape',
             'options': ('0', '1', '2', '3', 'Spock')
         },
-
                      {
                          'name': 'Clothing',
                          'title': 'Pick your clothing',
@@ -103,9 +102,9 @@ def get_avatar_context():
                          ], ['HatShort-redbow'], ['HatShort-yellowbow'], ['HatShort-ballcap'], ['HatShort-cowboy'],
                                      ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], [
                                          'HatShort-bunnyears'
-                                     ], ['HatShort-menorah'], ['HatShort-santahat'],
-                                     ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'],
-                                     ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'],
+                                     ], ['HatShort-menorah'], ['HatShort-santahat'], ['Earring-0'], ['Earring-1'], [
+                                         'EarringBack-2', 'Earring-2'
+                                     ], ['Earring-3'], ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'],
                                      ['Masks-jack-o-lantern-lighted'], ['Extras-Parrot'], ['Masks-gitcoinbot'])
                      },
                      {
@@ -116,11 +115,10 @@ def get_avatar_context():
                              'F8E71C', '15003E', 'FFFFFF'
                          )
                      }, {
-             'name': 'Wallpaper',
-             'title': 'Pick some swag for your back',
-             'options': ('anchors','jigsaw')
-         }],
-
+                         'name': 'Wallpaper',
+                         'title': 'Pick some swag for your back',
+                         'options': ('anchors', 'jigsaw')
+                     }],
     }
 
 
