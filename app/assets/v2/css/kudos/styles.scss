@@ -706,3 +706,23 @@ clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
   margin-left: -10px;
   margin-bottom: -20px;
 }
+
+.grouping {
+  display: contents;
+
+  .card-holder ~ .card-holder {
+
+    .kd-extended {
+      transform: rotate(3deg) translateX(-252px);
+      z-index: 1;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3)
+
+    }
+  }
+  .card-holder:hover {
+    .kd-extended {
+
+      z-index: 2;
+    }
+  }
+}

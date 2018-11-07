@@ -36,24 +36,28 @@
   </div>
   {% endfor %}
 {% else %}
-  {% for kt in kudos|slice:":8" %}
-  <div class="col-xs-12 col-sm-6 col-lg-3 mb-3">
-    <div class="kd-card kd-extended" aria-haspopup="true" tabindex="0">
-      <a href="/kudos/{{ kt.kudos_token_cloned_from.id }}/{{ kt.kudos_token_cloned_from.name }}" class="" title="{{ kt.kudos_token_cloned_from.name|humanize_name }}" tabindex="0">
-        <img src="{% static kt.kudos_token_cloned_from.image %}" alt="{{ kt.kudos_token_cloned_from.name|humanize_name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
-        <img src="/dynamic/avatar/{{ kt.from_username }}" alt="{{ kt.from_username }}" class="sender-avatar" >
-      </a>
-      <div class="kd-content">
-        <div class="kd-title">{{ kt.kudos_token_cloned_from.name|humanize_name }}</div>
-        {{ kt.kudos_token_cloned_from.description|truncatechars:60 }}
-      </div>
-      <div class="content-hover">
-        <a class="kd-title" href="/kudos/{{ kt.kudos_token_cloned_from.id }}/{{ kt.kudos_token_cloned_from.name }}">{{ kt.kudos_token_cloned_from.name|humanize_name }}</a>
+{% regroup kudos by name as name_list %}
+  {% for name in name_list %}
+  <div class="grouping">
+    {% for kt in name.list %}
+      <div class="col-xs-12 col-sm-6 col-lg-3 mb-3 card-holder">
+        <div class="kd-card kd-extended" aria-haspopup="true" tabindex="0">
+          <a href="/kudos/{{ kt.kudos_token_cloned_from.id }}/{{ kt.kudos_token_cloned_from.name }}" class="" title="{{ kt.kudos_token_cloned_from.name|humanize_name }}" tabindex="0">
+            <img src="{% static kt.kudos_token_cloned_from.image %}" alt="{{ kt.kudos_token_cloned_from.name|humanize_name }}" class="img-thumbnail border-transparent kd-shadow" width="250">
+            <img src="/dynamic/avatar/{{ kt.from_username }}" alt="{{ kt.from_username }}" class="sender-avatar" >
+          </a>
+          <div class="kd-content">
+            <div class="kd-title">{{ kt.kudos_token_cloned_from.name|humanize_name }}</div>
+            {{ kt.kudos_token_cloned_from.description|truncatechars:60 }}
+          </div>
+          <div class="content-hover">
+            <a class="kd-title" href="/kudos/{{ kt.kudos_token_cloned_from.id }}/{{ kt.kudos_token_cloned_from.name }}">{{ kt.kudos_token_cloned_from.name|humanize_name }}</a>
 
-        {% include 'shared/kudos_card_hover_content.html' with relation='from' %}
+            {% include 'shared/kudos_card_hover_content.html' with relation='from' %}
+          </div>
+        </div>
       </div>
-    </div>
+    {% endfor %}
   </div>
   {% endfor %}
-
 {% endif %}
