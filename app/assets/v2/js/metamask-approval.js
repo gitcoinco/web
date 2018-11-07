@@ -9,7 +9,7 @@ async function metamaskApproval() {
         await ethereum.enable();
       }
     } catch (error) {
-      _alert("Looks like you've disabled metamask. Enable it to allow Gitcoin to interact with metamask ", "warning");
+      _alert('Looks like you\'ve disabled metamask. Enable it to allow Gitcoin to interact with metamask ', 'warning');
     }
   }
 }
