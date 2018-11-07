@@ -15,3 +15,11 @@ async function metamaskApproval() {
 }
 
 window.addEventListener('load', metamaskApproval);
+
+async function approve_metamask() {
+  try {
+    await ethereum.enable();
+  } catch (error) {
+
+  }
+}
