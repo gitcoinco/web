@@ -635,7 +635,7 @@ var currentNetwork = function(network) {
         $('#current-network').text(gettext('Metamask Not Enabled'));
         $('#navbar-network-banner').html(info);
       } else if (network == 'locked') {
-        if (is_metamask_approved) {
+        if (is_metamask_approved || !is_metamask_unlocked) {
           info = gettext('Web3 locked. Please unlock ') +
             '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
           $('#current-network').text(gettext('Metamask Locked'));
@@ -676,7 +676,7 @@ var currentNetwork = function(network) {
         $('#current-network').text(gettext('Metamask Not Enabled'));
         $('#navbar-network-banner').html(info);
       } else if (network == 'locked') {
-        if (is_metamask_approved) {
+        if (is_metamask_approved || !is_metamask_unlocked) {
           info = gettext('Web3 locked. Please unlock ') +
             '<a href="https://metamask.io/?utm_source=gitcoin.co&utm_medium=referral" target="_blank" rel="noopener noreferrer">Metamask</a>';
           $('#current-network').text(gettext('Metamask Locked'));
