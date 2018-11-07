@@ -69,6 +69,7 @@ def get_avatar_context():
             'title': 'Pick ears shape',
             'options': ('0', '1', '2', '3', 'Spock')
         },
+
                      {
                          'name': 'Clothing',
                          'title': 'Pick your clothing',
@@ -102,7 +103,7 @@ def get_avatar_context():
                          ], ['HatShort-redbow'], ['HatShort-yellowbow'], ['HatShort-ballcap'], ['HatShort-cowboy'],
                                      ['HatShort-headphones'], ['HatShort-shortbeanie'], ['HatShort-tallbeanie'], [
                                          'HatShort-bunnyears'
-                                     ], ['HatShort-pilgrim'], ['HatShort-santahat'],
+                                     ], ['HatShort-menorah'], ['HatShort-pilgrim'], ['HatShort-santahat'],
                                      ['Earring-0'], ['Earring-1'], ['EarringBack-2', 'Earring-2'], ['Earring-3'],
                                      ['Earring-4'], ['Masks-jack-o-lantern'], ['Masks-guy-fawkes'],
                                      ['Masks-jack-o-lantern-lighted'], ['Extras-Parrot'], ['Masks-gitcoinbot'])
@@ -114,7 +115,12 @@ def get_avatar_context():
                              '25E899', '9AB730', '00A55E', '3FCDFF', '3E00FF', '8E2ABE', 'D0021B', 'F9006C', 'FFCE08',
                              'F8E71C', '15003E', 'FFFFFF'
                          )
-                     }],
+                     }, {
+             'name': 'Wallpaper',
+             'title': 'Pick some swag for your back',
+             'options': ('anchors','jigsaw')
+         }],
+
     }
 
 
@@ -145,6 +151,7 @@ def get_svg_templates():
         'head': [],
         'mouth': [],
         'nose': [],
+        'wallpaper': []
     }
 
     for category in template_data:
@@ -234,6 +241,7 @@ def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None
             'mouth': '0',
             'nose': '0',
             'eyes': '0',
+            'wallpaper': None
         }
 
     # Build the list of avatar components
@@ -245,7 +253,7 @@ def build_avatar_svg(svg_path='avatar.svg', line_color='#781623', icon_size=None
     ]
 
     customizable_components = ['clothing', 'ears', 'head', 'hair']
-    flat_components = ['eyes', 'mouth', 'nose']
+    flat_components = ['eyes', 'mouth', 'nose', 'wallpaper']
     multi_components = ['accessories']
 
     for component in customizable_components:
@@ -283,7 +291,7 @@ def handle_avatar_payload(request):
     avatar_dict = {}
     valid_component_keys = [
         'Beard', 'Clothing', 'Earring', 'EarringBack', 'Ears', 'Eyes', 'Glasses', 'Masks', 'HairLong', 'HairShort',
-        'HatLong', 'HatShort', 'Head', 'Mouth', 'Mustache', 'Nose', 'Extras'
+        'HatLong', 'HatShort', 'Head', 'Mouth', 'Mustache', 'Nose', 'Extras', 'Wallpaper'
     ]
     valid_color_keys = ['Background', 'ClothingColor', 'HairColor', 'SkinTone']
     body = json.loads(request.body)

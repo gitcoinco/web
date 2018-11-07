@@ -360,7 +360,7 @@ def get_semaphor(namespace, count=1):
     from redis import Redis
     from redis_semaphore import Semaphore
     from urllib.parse import urlparse
-    redis = urlparse(settings.REDIS_URL)
+    redis = urlparse(settings.SEMAPHORE_REDIS_URL)
 
     semaphore = Semaphore(Redis(host=redis.hostname, port=redis.port), count=count, namespace=namespace)
     return semaphore

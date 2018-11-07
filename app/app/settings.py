@@ -387,6 +387,7 @@ DJANGO_REDIS_LOG_IGNORED_EXCEPTIONS = env.bool('REDIS_LOG_IGNORED_EXCEPTIONS', d
 COLLECTFAST_CACHE = env('COLLECTFAST_CACHE', default='collectfast')
 COLLECTFAST_DEBUG = env.bool('COLLECTFAST_DEBUG', default=False)
 REDIS_URL = env('REDIS_URL', default='rediscache://redis:6379/0?client_class=django_redis.client.DefaultClient')
+SEMAPHORE_REDIS_URL = env('SEMAPHORE_REDIS_URL', default=REDIS_URL)
 
 CACHES = {
     'default': env.cache(
