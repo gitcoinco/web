@@ -1560,7 +1560,7 @@ class Profile(SuperModel):
 
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = JSONField()
-    handle = models.CharField(max_length=255, db_index=True)
+    handle = models.CharField(max_length=255, db_index=True, unique=True)
     avatar = models.ForeignKey('avatar.Avatar', on_delete=models.SET_NULL, null=True, blank=True)
     last_sync_date = models.DateTimeField(null=True)
     email = models.CharField(max_length=255, blank=True, db_index=True)

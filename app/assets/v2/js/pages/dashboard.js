@@ -16,7 +16,7 @@ var local_storage_keys = JSON.parse(JSON.stringify(filters));
 
 local_storage_keys.push('keywords');
 
-results_limit = 50;
+results_limit = 25;
 
 var localStorage;
 

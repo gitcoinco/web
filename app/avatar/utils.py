@@ -69,7 +69,6 @@ def get_avatar_context():
             'title': 'Pick ears shape',
             'options': ('0', '1', '2', '3', 'Spock')
         },
-
                      {
                          'name': 'Clothing',
                          'title': 'Pick your clothing',
@@ -116,11 +115,10 @@ def get_avatar_context():
                              'F8E71C', '15003E', 'FFFFFF'
                          )
                      }, {
-             'name': 'Wallpaper',
-             'title': 'Pick some swag for your back',
-             'options': ('anchors','jigsaw')
-         }],
-
+                         'name': 'Wallpaper',
+                         'title': 'Pick some swag for your back',
+                         'options': ('anchors', 'jigsaw')
+                     }],
     }
 
 
