@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3'
 
 services:
   db:
@@ -10,7 +10,6 @@ services:
       - pgdata:/var/lib/postgresql/data
     deploy:
       replicas: 1
-      endpoint_mode: dnsrr
       resources:
         limits:
           memory: 1024M
@@ -30,7 +29,6 @@ services:
       - "8080:8080"
     deploy:
       replicas: 1
-      endpoint_mode: dnsrr
       resources:
         limits:
           memory: 1024M
@@ -57,7 +55,6 @@ services:
     tty: true
     deploy:
       replicas: 1
-      endpoint_mode: dnsrr
       resources:
         limits:
           memory: 1024M
@@ -71,7 +68,6 @@ services:
     command: '-a 1 --seed 2 --host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}"'
     deploy:
       replicas: 1
-      endpoint_mode: dnsrr
       resources:
         limits:
           memory: 1024M
@@ -89,7 +85,6 @@ services:
       - "6379:6379"
     deploy:
       replicas: 1
-      endpoint_mode: dnsrr
       resources:
         limits:
           memory: 1024M
