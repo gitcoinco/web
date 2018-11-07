@@ -320,7 +320,7 @@ def web3_process_bounty(bounty_data):
         print(f"--*--")
         return None
 
-    semaphor_key = f"bounty_processor_{bounty_data['id']}"
+    semaphor_key = f"bounty_processor_{bounty_data['id']}_1"
     semaphor = get_semaphor(semaphor_key)
     with semaphor:
         did_change, old_bounty, new_bounty = process_bounty_details(bounty_data)
