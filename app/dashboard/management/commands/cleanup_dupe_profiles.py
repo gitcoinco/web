@@ -72,6 +72,15 @@ def combine_profiles(p1, p2):
     for obj in p2.votes.all():
         obj.profile = p1
         obj.save()
+    for obj in p2.received_kudos.all():
+        obj.recipient_profile = p1
+        obj.save()
+    for obj in p2.sent_kudos.all():
+        obj.sender_profile = p1
+        obj.save()
+    for obj in p2.kudos_wallets.all():
+        obj.profile = p1
+        obj.save()
     p2.delete()
     p1.save()
 
