@@ -26,7 +26,7 @@ from marketing.models import EmailSubscriber
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
-check_already_sent = True
+check_already_sent = False
 
 
 def is_already_sent_this_week(email):
@@ -77,7 +77,7 @@ class Command(BaseCommand):
             queryset = queryset.filter(email__startswith=filter_startswith)
         queryset = queryset.order_by('email')
         email_list = list(set(queryset.values_list('email', flat=True)))
-        list.sort(email_list)
+        # list.sort(email_list)
 
         print("got {} emails".format(len(email_list)))
 
