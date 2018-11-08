@@ -117,7 +117,7 @@ def get_avatar_context():
                      }, {
                          'name': 'Wallpaper',
                          'title': 'Pick some swag for your back',
-                         'options': ('anchors', 'jigsaw', 'lines')
+                         'options': ('anchors', 'jigsaw', 'lines', 'polka_dots', 'polka_dots_black')
                      }],
     }
 
