@@ -47,8 +47,11 @@
 }
 
 .order_by div:first-child {
-  margin-right: 5px;
   display: inline;
+}
+
+.ui-selectmenu-button.ui-button {
+  width: 9rem;
 }
 
 .order_by .sort_option.selected {

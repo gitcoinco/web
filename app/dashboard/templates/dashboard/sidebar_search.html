@@ -16,11 +16,69 @@
 {% endcomment %}
 {% load i18n static %}
 <link rel="stylesheet" href={% static "v2/css/sidebar_search.css" %}>
-<div class="sidebar_search">
+<div class="sidebar_search font-body">
   <form>
+    <div class="col my-1">
+      <div class="col-12 subheading">{% trans "Experience Level" %}</div>
+      <div class="col-12 options">
+        <div class="checkbox_container">
+          <input name="experience_level" id="beginner" type="checkbox" value="beginner" val-ui='Beginner' />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=beginner>{% trans "Beginner" %}</label>
+          </div>
+        </div>
+        <div class="checkbox_container">
+          <input name="experience_level" id="intermediate" type="checkbox" value="intermediate" val-ui='Intermediate' />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=intermediate>{% trans "Intermediate" %}</label>
+          </div>
+        </div>
+        <div class="checkbox_container mb-2">
+          <input name="experience_level" id="advanced" type="checkbox" value="advanced" val-ui='Advanced' />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=advanced>{% trans "Advanced" %}</label>
+          </div>
+        </div>
+      </div>
+    </div>
+    
     <div class="col">
-      <div class="col-12 subheading font-body" title='{% include "shared/status_tooltip.html" %}'>
-        {% trans "PROJECT STATUS" %} <i class="fas fa-info-circle"></i>
+      <div class="col-12 subheading">
+        {% trans "Project Type" %}
+        <i class="fas fa-question-circle ml-2" title='{% include "shared/project_type_tooltip.html" %}'></i>
+      </div>
+      <div class="col-12 options">
+        <div class="checkbox_container">
+          <input name="project_type" id="traditional" type="checkbox" value="traditional" val-ui='Traditional' />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=traditional>{% trans "Traditional" %}</label>
+          </div>
+        </div>
+        <div class="checkbox_container">
+          <input name="project_type" id="contest" type="checkbox" value="contest" val-ui='Contest' />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=contest>{% trans "Contest" %}</label>
+          </div>
+        </div>
+        <div class="checkbox_container mb-2">
+          <input name="project_type" id="cooperative" type="checkbox" value="cooperative" val-ui='Cooperative' />
+          <span class="checkbox"></span>
+          <div class="filter-label">
+            <label for=cooperative>{% trans "Cooperative" %}</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <div class="col">
+      <div class="col-12 subheading">
+        {% trans "Status" %}
+        <i class="fas fa-question-circle ml-2" title='{% include "shared/status_tooltip.html" %}'></i>
       </div>
       <div class="col-12 options">
         <div class="form__radio option">
@@ -45,15 +103,15 @@
 
         <div class="form__radio option">
           <input name="idx_status" id="status_expired" type="radio" value="expired" val-ui='Expired' />
-          <label class="filter-label" for=status_expired>5 {% trans "Expired" %}</label>
+          <label class="filter-label" for=status_expired>{% trans "Expired" %}</label>
         </div>
 
         <div class="form__radio option">
           <input name="idx_status" id="status_canceled" type="radio" value="cancelled" val-ui='Cancelled' />
-          <label class="filter-label" for=status_canceled>6 {% trans "Cancelled" %}</label>
+          <label class="filter-label" for=status_canceled>{% trans "Cancelled" %}</label>
         </div>
 
-        <div class="form__radio option">
+        <div class="form__radio option mb-2">
           <input name="idx_status" id="any_status" type="radio" value="any" />
           <label class="filter-label" for=any_status>{% trans "Any" %}</label>
         </div>
@@ -62,7 +120,7 @@
 
     {% if github_handle %}
       <div class="col">
-        <div class="col-12 subheading font-body accordion">{% trans "MY PROJECTS" %}</div>
+        <div class="col-12 subheading accordion">{% trans "My Bounties" %}</div>
         <div class="col-12 options panel">
           <div class="form__radio option">
             <input name="bounty_filter" id="createdByMe" type="radio" value="createdByMe" val-ui='Created'/>
@@ -86,7 +144,7 @@
 
     {% if profile_id and user.profile.is_moderator or user.profile.is_staff %}
       <div class="col">
-        <div class="col-12 subheading font-body accordion">{% trans "MODERATION" %}</div>
+        <div class="col-12 subheading accordion">{% trans "Moderation" %}</div>
         <div class="col-12 options panel">
           <div class="form__radio option">
             <input name="moderation_filter" id="escalated" type="radio" value="escalated" val-ui="Escalated"/>
@@ -121,36 +179,11 @@
     {% endif %}
 
     <div class="col">
-      <div class="col-12 subheading font-body accordion">{% trans "Experience Level" %}</div>
-      <div class="col-12 panel options">
-        <div class="checkbox_container">
-          <input name="experience_level" id="beginner" type="checkbox" value="beginner" val-ui='Beginner' />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=beginner>{% trans "Beginner" %}</label>
-          </div>
-        </div>
-        <div class="checkbox_container">
-          <input name="experience_level" id="intermediate" type="checkbox" value="intermediate" val-ui='Intermediate' />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=intermediate>{% trans "Intermediate" %}</label>
-          </div>
-        </div>
-        <div class="checkbox_container">
-          <input name="experience_level" id="advanced" type="checkbox" value="advanced" val-ui='Advanced' />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=advanced>{% trans "Advanced" %}</label>
-          </div>
-        </div>
+      <div class="col-12 subheading accordion">
+        {% trans "Permissions" %}
+        <i class="fas fa-question-circle ml-2" title='{% include "shared/permissions_type_tooltip.html" %}'></i>
       </div>
-    </div>
-
-    <div class="col">
-      <div class="col-12 subheading font-body accordion" >{% trans "Permissions" %}</div>
       <div class="col-12 panel options">
-        <i title='{% include "shared/permissions_type_tooltip.html" %}' class="fas fa-info-circle"></i><span title='{% include "shared/permissions_type_tooltip.html" %}'> - What is this?</span> <br>
         <div class="checkbox_container">
           <input name="permission_type" id="permissionless" type="checkbox" value="permissionless" val-ui='Permissionless' />
           <span class="checkbox"></span>
@@ -169,35 +202,7 @@
     </div>
 
     <div class="col">
-      <div class="col-12 subheading font-body accordion">{% trans "Project Type" %}</div>
-      <div class="col-12 panel options">
-        <i title='{% include "shared/project_type_tooltip.html" %}' class="fas fa-info-circle"></i><span title='{% include "shared/project_type_tooltip.html" %}'> - What is this?</span> <br>
-        <div class="checkbox_container">
-          <input name="project_type" id="traditional" type="checkbox" value="traditional" val-ui='Traditional' />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=traditional>{% trans "Traditional" %}</label>
-          </div>
-        </div>
-        <div class="checkbox_container">
-          <input name="project_type" id="contest" type="checkbox" value="contest" val-ui='Contest' />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=contest>{% trans "Contest" %}</label>
-          </div>
-        </div>
-        <div class="checkbox_container">
-          <input name="project_type" id="cooperative" type="checkbox" value="cooperative" val-ui='Cooperative' />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=cooperative>{% trans "Cooperative" %}</label>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col">
-      <div class="col-12 subheading font-body accordion">{% trans "Time Commitment" %}</div>
+      <div class="col-12 subheading accordion">{% trans "Time Commitment" %}</div>
       <div class="col-12 options panel">
         <div class="checkbox_container">
           <input name="project_length" id="hours" type="checkbox" value="hours" val-ui='Hours-Long' />
@@ -231,7 +236,7 @@
     </div>
 
     <div class="col">
-      <div class="col-12 subheading font-body accordion">{% trans "Type" %}</div>
+      <div class="col-12 subheading accordion">{% trans "Type" %}</div>
       <div class="col-12 options panel">
         <div class="checkbox_container">
           <input name="bounty_type" id="bug" type="checkbox" value="bug" val-ui='Bug' />
@@ -258,7 +263,7 @@
     </div>
 
     <div class="col">
-      <div class="col-12 subheading font-body accordion">{% trans "Network" %}</div>
+      <div class="col-12 subheading accordion">{% trans "Network" %}</div>
       <div class="col-12 options panel">
         <div class="checkbox_container">
           <input name="network" id="local" type="checkbox" value="local" val-ui='Custom Network' />
@@ -291,9 +296,8 @@
       </div>
     </div>
 
-
     <div class="col">
-      <div class="col-12 subheading font-body accordion">{% trans "Misc" %}</div>
+      <div class="col-12 subheading accordion">{% trans "Misc" %}</div>
       <div class="col-12 options panel">
         <div class="checkbox_container">
           <input name="misc" id="misc" type="checkbox" value="hiring" val-ui='hiring' />
@@ -305,9 +309,8 @@
       </div>
     </div>
 
-
   </form>
-  <div class="align-self-end text-right font-body" id="clear">
-    <p>{% trans "Reset" %}</p>
+  <div>
+    <p id="clear">{% trans "Reset Filters" %}</p>
   </div>
 </div>

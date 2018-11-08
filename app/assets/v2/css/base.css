@@ -1005,10 +1005,18 @@ input.is-invalid {
 /* Dropdown styles */
 
 .ui-selectmenu-button.ui-button {
-  background: #FFF;
-  border-color: #0D0764;
   line-height: 16px;
   padding: .4em .75em;
+}
+
+.ui-selectmenu-button.ui-button,
+.ui-selectmenu-button.ui-button:hover,
+.ui-selectmenu-button.ui-button:focus {
+  border: none !important;
+  background: #FFF !important;
+  color: #3E00FF;
+  outline: none;
+  font-weight: 600;
 }
 
 .ui-selectmenu-icon.ui-icon {
@@ -1036,8 +1044,8 @@ input.is-invalid {
 .ui-state-active,
 .ui-widget-content .ui-state-active,
 .ui-button.ui-state-active:hover {
-  border: 1px solid #0D0764 !important;
-  background: #0D0764 !important;
+  border: 1px solid #3E00FF !important;
+  background: #3E00FF !important;
 }
 
 .ui-button:hover,
