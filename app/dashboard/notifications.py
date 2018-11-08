@@ -569,7 +569,7 @@ def build_github_notification(bounty, event_name, profile_pairs=None):
         msg_tips = ''
 
         # no crowdfund tips
-        for tip in bounty.tips.filter(is_for_bounty_fulfiller=False):
+        for tip in bounty.tips.filter(is_for_bounty_fulfiller=False).exclude(txid=''):
             msg_tips += f'* {tip.from_username} tipped {tip.amount} {tip.tokenName} ' \
                         f'worth {tip.value_in_usdt_now} USD to {tip.username}.\n'
 
