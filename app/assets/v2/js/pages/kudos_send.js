@@ -163,12 +163,12 @@ var renderWallets = function(profileId) {
 // DOM is ready
 $(document).ready(function() {
 
-  //upon keypress for the select2, gotta make sure it opens
-  setTimeout(function(){
-    $(".select2").keypress(function(){
-      $(this).siblings('select').select2('open');    
-    })
-  },100);
+  // upon keypress for the select2, gotta make sure it opens
+  setTimeout(function() {
+    $('.select2').keypress(function() {
+      $(this).siblings('select').select2('open');
+    });
+  }, 100);
 
   set_metadata();
   // jquery bindings
