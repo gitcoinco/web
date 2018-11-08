@@ -787,11 +787,13 @@ var trigger_faucet_form_web3_hooks = function() {
       $('#no_metamask_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'none');
       $('#connect_metamask_error').css('display', 'block');
+      $('#over_balance_error').css('display', 'none');
       $('#faucet_form').addClass('hidden');
     } else if (!web3.eth.coinbase) {
       $('#no_metamask_error').css('display', 'none');
       $('#unlock_metamask_error').css('display', 'block');
       $('#connect_metamask_error').css('display', 'none');
+      $('#over_balance_error').css('display', 'none');
       $('#faucet_form').addClass('hidden');
       return;
     } else if (balance >= faucet_amount) {
