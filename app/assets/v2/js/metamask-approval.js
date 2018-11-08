@@ -27,8 +27,10 @@ async function approve_metamask() {
 
 function ask_metamask_connection() {
   var page_url = $(location).attr('pathname');
+
   shown_on = ['/tip/send/2', '/kudos/send', '/ens'];
   var len = page_url.length - 1;
+  
   if (page_url.lastIndexOf('/') === len) {
     page_url = page_url.substring(0, len);
   }
