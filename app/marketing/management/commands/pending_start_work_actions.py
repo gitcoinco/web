@@ -53,6 +53,12 @@ def helper_execute(threshold, func_to_execute, action_str):
             if has_approved_worker_already:
                 print("skipped bc of has_approved_worker_already")
                 continue
+            is_bounty_in_terminal_state = bounty.status in Bounty.TERMINAL_STATUSES
+            is_bounty_already_submitted = bounty.status == 'submitted'
+            if is_bounty_in_terminal_state or is_bounty_already_submitted:
+                print("skipped bc of is_bounty_in_terminal_state | is_bounty_already_submitted")
+                continue
+
             print(f"- {interest.pk} {action_str}")
             func_to_execute(interest, bounty)
         else:
