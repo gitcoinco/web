@@ -859,7 +859,7 @@ function getNetwork(id) {
 }
 
 // figure out what version of web3 this is, whether we're logged in, etc..
-var listen_for_web3_changes = function() {
+var listen_for_web3_changes = async function() {
 
   if (!document.listen_for_web3_iterations) {
     document.listen_for_web3_iterations = 1;
@@ -874,6 +874,7 @@ var listen_for_web3_changes = function() {
     currentNetwork('locked');
     trigger_form_hooks();
   } else {
+    is_metamask_unlocked = true;
     web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
       if (typeof result != 'undefined') {
         document.balance = result.toNumber();
@@ -890,6 +891,13 @@ var listen_for_web3_changes = function() {
         trigger_form_hooks();
       }
     });
+  }
+  if (window.ethereum) {
+    is_metamask_approved = await window.ethereum._metamask.isApproved();
+    is_metamask_unlocked = await window.ethereum._metamask.isUnlocked();
+    if (is_metamask_approved && is_metamask_unlocked) {
+      await ethereum.enable();
+    }
   }
 };
 
