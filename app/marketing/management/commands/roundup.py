@@ -26,6 +26,18 @@ from marketing.models import EmailSubscriber
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
+check_already_sent = True
+
+
+def is_already_sent_this_week(email):
+    from marketing.models import EmailEvent
+    from django.utils import timezone
+    then = timezone.now() - timezone.timedelta(hours=12)
+    QS = EmailEvent.objects.filter(created_on__gt=then)
+    QS = QS.filter(category__contains='weekly_roundup', email__iexact=email, event='processed')
+    return QS.exists()
+
+
 class Command(BaseCommand):
 
     help = 'the weekly roundup emails'
@@ -75,8 +87,11 @@ class Command(BaseCommand):
             print("-sending {} / {}".format(counter, to_email))
             if options['live']:
                 try:
-                    weekly_roundup([to_email])
-                    time.sleep(1)
+                    if check_already_sent and is_already_sent_this_week(to_email):
+                        print(' -- already sent')
+                    else:
+                        weekly_roundup([to_email])
+                        time.sleep(1)
                 except Exception as e:
                     print(e)
                     time.sleep(5)
