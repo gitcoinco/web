@@ -9,7 +9,7 @@ async function metamaskApproval() {
         await ethereum.enable();
       }
     } catch (error) {
-      _alert('Looks like you\'ve disabled metamask. Enable it to allow Gitcoin to interact with metamask ', 'warning');
+      _alert('Permission to connect to metamask rejected. Allow gitcoin to connect to metamask.', 'warning');
     }
   }
 }
@@ -20,6 +20,6 @@ async function approve_metamask() {
   try {
     await ethereum.enable();
   } catch (error) {
-
+    _alert('Permission to connect to metamask rejected. Allow gitcoin to connect to metamask.', 'warning');
   }
 }
