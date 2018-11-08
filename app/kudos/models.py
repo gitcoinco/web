@@ -222,7 +222,7 @@ class Token(SuperModel):
                     image = pyvips.Image.new_from_file(obj.name)
                     return BytesIO(image.write_to_buffer(f'.png'))
             except VipsError as e:
-                print(e)
+                logger.error(e)
                 pass
             except Exception as e:
                 logger.error(e)
