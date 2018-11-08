@@ -56,6 +56,9 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     to_email = _to_email
     get_or_save_email_subscriber(to_email, 'internal')
 
+    print(to_email)
+    print(from_email)
+
     # setup
     from_name = str(from_name)
     subject = str(subject)
@@ -92,9 +95,11 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     for category in categories:
         mail.add_category(Category(category))
 
+
     # debug logs
     logger.info(f"-- Sending Mail '{subject}' to {to_email}")
     try:
+        print (mail.get())
         response = sg.client.mail.send.post(request_body=mail.get())
     except UnauthorizedError as e:
         logger.error(f'-- Sendgrid Mail failure - Unauthorized - Check sendgrid credentials')
@@ -108,6 +113,9 @@ def new_grant(grant, profile):
     from_email = settings.CONTACT_EMAIL
     to_email = profile.email
     cur_language = translation.get_language()
+
+    print(to_email)
+
     try:
         setup_lang(to_email)
         html, text, subject = render_new_grant_email(grant)
