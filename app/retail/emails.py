@@ -32,6 +32,7 @@ from django.utils.translation import gettext as _
 import cssutils
 import premailer
 from marketing.models import LeaderboardRank
+from grants.models import Grant, Subscription
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
 
@@ -76,10 +77,30 @@ def render_new_grant_email(grant):
 
     return response_html, response_txt, subject
 
+def render_new_supporter_email(grant, subscription):
+    params = {
+        'grant': grant,
+        'subscription': subscription
+    }
+    response_html = premailer_transform(render_to_string("emails/grants/new_supporter.html", params))
+    response_txt = render_to_string("emails/grants/new_supporter.txt", params)
+    subject = "You have a new Grant supporter!"
+
+    return response_html, response_txt, subject
+
+
+@staff_member_required
+def new_supporter(request):
+    # giving specific pk because I am sure this grant has at least one subscription
+    grant = Grant.objects.get(pk=8)
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+
+    response_html, response_txt, _ = render_new_supporter_email(grant, subscription)
+    return HttpResponse(response_html)
+
 
 @staff_member_required
 def new_grant(request):
-    from grants.models import Grant
     grant = Grant.objects.all().order_by('-created_on')[0]
 
     response_html, _ = render_new_grant_email(grant)
