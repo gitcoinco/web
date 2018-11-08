@@ -20,6 +20,7 @@ window.addEventListener('load', metamaskApproval);
 async function approve_metamask() {
   try {
     await ethereum.enable();
+    is_metamask_approved = true;
   } catch (error) {
     _alert('Permission to connect to metamask rejected. Allow gitcoin to connect to metamask.', 'warning');
   }
