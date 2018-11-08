@@ -1985,4 +1985,14 @@
   tags: 
     - memes
   image: your_bounty_is_bad_and_you_should_fill_bad.svg
+- name: mad_scientist
+  description: The mad scientist transforms the core primitives of logic, math, and physics into something greater (and madder) than the sum of it's parts. muhahahhaah!
+  priceFinney: 3
+  numClonesAllowed: 300
+  tags: 
+    - science
+    - mad scientist
+    - fun
+  image: mad_scientist.svg
+
 
