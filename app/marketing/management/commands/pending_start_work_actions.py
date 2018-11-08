@@ -21,6 +21,7 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from dashboard.models import Interest
+from dashboard.views import record_user_action
 from marketing.mails import start_work_applicant_about_to_expire, start_work_applicant_expired, start_work_approved
 
 THRESHOLD_HOURS_AUTO_APPROVE = 3 * 24
@@ -36,6 +37,7 @@ def start_work_applicant_expired_executer(interest, bounty):
     interest.pending = False
     interest.acceptance_date = timezone.now()
     interest.save()
+    record_user_action(interest.profile.user, 'worker_approved', bounty)
 
 
 def helper_execute(threshold, func_to_execute, action_str):
