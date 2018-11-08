@@ -1,4 +1,4 @@
-{% extends '../emails/template.html' %}
+{% extends 'emails/template.html' %}
 {% comment %}
   Copyright (C) 2018 Gitcoin Core
 
@@ -13,8 +13,8 @@
  GNU Affero General Public License for more details.
 
  You should have received a copy of the GNU Affero General Public License
- along with this program. If not, see <http://www.gnu.org/licenses/>. 
- 
+ along with this program. If not, see <http://www.gnu.org/licenses/>.
+
 {% endcomment %}
 {% load i18n static %}
 
@@ -138,11 +138,11 @@
 
 <hr>
 <div class="grantInfo">
-  <a href="{% url 'grant:details' grant.id %}">
+  <a href="{% url 'grants:details' grant.id %}">
     <img src="{{ grant.logo.url }}" style="width:50px; height: 50px;"/>
   </a>
   <br>
-  <a class="grantInfoName" href="{% url 'grant:details' grant.id %}">{{ grant.title }}</a>
+  <a class="grantInfoName" href="{% url 'grants:details' grant.id %}">{{ grant.title }}</a>
   <p>{{ grant.description }}</p>
   <div class="progress">
     <!-- #TODO - Revisit which object to use to pull grant status. -->
@@ -167,6 +167,6 @@
 </p>
 <br>
 <a class="updatesButton" href="{{ transaction.link }}">{% trans "View Transaction" %}</a>
-<br> 
+<br>
 
 {% endblock %}

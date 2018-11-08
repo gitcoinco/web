@@ -34,7 +34,7 @@ from django.utils.translation import gettext_lazy as _
 from grants.forms import MilestoneForm
 from grants.models import Grant, Milestone, Subscription
 from marketing.models import Keyword
-from marketing.mails import new_grant, new_supporter, thank_you_for_supporting
+from marketing.mails import new_grant, new_supporter, thank_you_for_supporting, support_cancellation
 
 from web3 import HTTPProvider, Web3
 
@@ -284,6 +284,7 @@ def subscription_cancel(request, grant_id, subscription_id):
     if request.method == 'POST':
         subscription.active = False
         subscription.save()
+        support_cancellation(grant, subscription, profile)
         return redirect(reverse('grants:details', args=(grant.pk, )))
 
     params = {
