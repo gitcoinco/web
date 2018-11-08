@@ -35,7 +35,6 @@ $(document).ready(function() {
         }
         if (periodSeconds) {
           realPeriodSeconds = periodSeconds;
-
           data.frequency = realPeriodSeconds;
         }
       }

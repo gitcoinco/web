@@ -81,7 +81,7 @@ stylelint: ## Run stylelint against the project directory. Requires node, npm, a
 tests: pytest eslint stylelint ## Run the full test suite.
 
 migrate: ## Migrate the database schema with the latest unapplied migrations.
-		@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py migrate
+	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py migrate
 
 migrations: ## Generate migration files for schema changes.
 	@docker-compose exec -e DJANGO_SETTINGS_MODULE="app.settings" web python3 app/manage.py makemigrations
