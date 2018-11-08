@@ -280,6 +280,7 @@ urlpatterns = [
     re_path(r'^_administration/?', admin.site.urls, name='admin'),
     path('_administration/email/new_grant', retail.emails.new_grant, name='admin_new_grant'),
     path('_administration/email/new_supporter', retail.emails.new_supporter, name='admin_new_supporter'),
+    path('_administration/email/thank_you_for_supporting', retail.emails.thank_you_for_supporting, name='admin_thank_you_for_supporting'),
     path('_administration/email/new_kudos', retail.emails.new_kudos, name='new_kudos'),
     path('_administration/email/kudos_mint', retail.emails.kudos_mint, name='kudos_mint'),
     path('_administration/email/kudos_mkt', retail.emails.kudos_mkt, name='kudos_mkt'),

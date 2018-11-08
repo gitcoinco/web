@@ -34,7 +34,7 @@ from django.utils.translation import gettext_lazy as _
 from grants.forms import MilestoneForm
 from grants.models import Grant, Milestone, Subscription
 from marketing.models import Keyword
-from marketing.mails import new_grant, new_supporter
+from marketing.mails import new_grant, new_supporter, thank_you_for_supporting
 
 from web3 import HTTPProvider, Web3
 
@@ -260,7 +260,8 @@ def grant_fund(request, grant_id):
         subscription.contributor_profile = profile
         subscription.grant = grant
         subscription.save()
-        new_supporter(grant, subscription, profile)
+        new_supporter(grant, subscription)
+        thank_you_for_supporting(grant, subscription, profile)
         return redirect(reverse('grants:details', args=(grant.pk, )))
 
     params = {

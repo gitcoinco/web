@@ -89,6 +89,28 @@ def render_new_supporter_email(grant, subscription):
     return response_html, response_txt, subject
 
 
+def render_thank_you_for_supporting_email(grant, subscription):
+    params = {
+        'grant': grant,
+        'subscription': subscription
+    }
+    response_html = premailer_transform(render_to_string("emails/grants/thank_you_for_supporting.html", params))
+    response_txt = render_to_string("emails/grants/thank_you_for_supporting.txt", params)
+    subject = "Thank you for supporting Grants on Gitcoin!"
+
+    return response_html, response_txt, subject
+
+
+@staff_member_required
+def thank_you_for_supporting(request):
+    # giving specific pk because I am sure this grant has at least one subscription
+    grant = Grant.objects.get(pk=8)
+    subscription = Subscription.objects.filter(grant__pk=grant.pk).first()
+
+    response_html, response_txt, _ = render_thank_you_for_supporting_email(grant, subscription)
+    return HttpResponse(response_html)
+
+
 @staff_member_required
 def new_supporter(request):
     # giving specific pk because I am sure this grant has at least one subscription
