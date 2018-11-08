@@ -57,6 +57,7 @@ $(document).ready(function() {
         }
         if (periodSeconds) {
           requiredPeriodSeconds = periodSeconds;
+          data.frequency = realPeriodSeconds;
         }
       }
 
@@ -65,18 +66,16 @@ $(document).ready(function() {
 
       console.log('SubscriptionContract', SubscriptionContract);
 
-      let realTokenAmount = Number(data.amount_goal * 10 ** 18);
-
-      console.log(realTokenAmount);
+      let realTokenAmount = Number(data.required_amount * 10 ** 18);
 
       // These args are baseline requirements for the contract set by the sender. Will set most to zero to abstract complexity from user.
       let args = [
         // admin_address
         data.admin_address,
         // required token
-        data.token_address,
-        // required tokenAmount - setting to zero
-        web3.utils.toTwosComplement(data.required_amount),
+        data.denomination,
+        // required tokenAmount
+        web3.utils.toTwosComplement(realTokenAmount),
         // data.frequency
         web3.utils.toTwosComplement(requiredPeriodSeconds),
         // data.gas_price
@@ -93,7 +92,8 @@ $(document).ready(function() {
           })
             .send({
               from: accounts[0],
-              gas: 2500000
+              gas: 2500000,
+              gasPrice: 4000000000
             })
             .on('error', function(error) {
               console.log('1', error);

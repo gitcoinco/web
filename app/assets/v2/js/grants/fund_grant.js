@@ -20,6 +20,7 @@ $(document).ready(function() {
       let realPeriodSeconds = 0;
 
       if (data.frequency) {
+
         // translate timeAmount&timeType to requiredPeriodSeconds
         let periodSeconds = data.frequency;
 
@@ -34,6 +35,7 @@ $(document).ready(function() {
         }
         if (periodSeconds) {
           realPeriodSeconds = periodSeconds;
+          data.frequency = realPeriodSeconds;
         }
       }
 
@@ -42,8 +44,7 @@ $(document).ready(function() {
 
       let deployedSubscription = new web3.eth.Contract(compiledSubscription.abi, data.contract_address);
 
-      let deployedToken = new web3.eth.Contract(compiledToken.abi, data.token_address);
-
+      let deployedToken = new web3.eth.Contract(compiledToken.abi, data.denomination);
 
       deployedToken.methods.decimals().call(function(err, decimals) {
 
@@ -57,7 +58,7 @@ $(document).ready(function() {
 
           $('#contributor_address').val(accounts[0]);
 
-          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(realTokenAmount)).send({from: accounts[0]}, function(err, result) {
+          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(realApproval)).send({from: accounts[0], gasPrice: 4000000000}, function(err, result) {
 
             // Should add approval transactions to transaction history
 
@@ -70,8 +71,8 @@ $(document).ready(function() {
                 accounts[0],
                 // admin_address
                 data.admin_address,
-                // testing token
-                data.token_address,
+                // token denomination / address
+                data.denomination,
                 // data.amount_per_period
                 web3.utils.toTwosComplement(realTokenAmount),
                 // data.period_seconds
@@ -81,9 +82,6 @@ $(document).ready(function() {
                 // nonce
                 web3.utils.toTwosComplement(nonce)
               ];
-
-              console.log('parts', parts);
-
 
               deployedSubscription.methods.getSubscriptionHash(...parts).call(function(err, subscriptionHash) {
 
@@ -102,6 +100,14 @@ $(document).ready(function() {
                   };
 
                   console.log('postData', postData);
+
+                  $.each($(form).serializeArray(), function() {
+                    data[this.name] = this.value;
+                  });
+
+                  console.log('data', data);
+
+                  form.submit();
 
                   fetch('http://localhost:10003/saveSubscription', {
                     method: 'POST',
