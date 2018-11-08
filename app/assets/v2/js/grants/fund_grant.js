@@ -35,7 +35,6 @@ $(document).ready(function() {
         }
         if (periodSeconds) {
           realPeriodSeconds = periodSeconds;
-
           data.frequency = realPeriodSeconds;
         }
       }
@@ -59,7 +58,7 @@ $(document).ready(function() {
 
           $('#contributor_address').val(accounts[0]);
 
-          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(realApproval)).send({from: accounts[0]}, function(err, result) {
+          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(realApproval)).send({from: accounts[0], gasPrice: 4000000000}, function(err, result) {
 
             // Should add approval transactions to transaction history
 

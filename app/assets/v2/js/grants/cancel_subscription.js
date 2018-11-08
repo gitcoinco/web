@@ -32,7 +32,7 @@ window.onload = function() {
 
         web3.eth.getAccounts(function(err, accounts) {
 
-          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(0)).send({from: accounts[0]})
+          deployedToken.methods.approve(data.contract_address, web3.utils.toTwosComplement(0)).send({from: accounts[0], gasPrice: 4000000000})
             .on('transactionHash', function(hash) {
               console.log('hash', hash);
 

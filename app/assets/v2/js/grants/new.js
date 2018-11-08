@@ -60,7 +60,6 @@ $(document).ready(function() {
         }
         if (periodSeconds) {
           requiredPeriodSeconds = periodSeconds;
-
           data.frequency = requiredPeriodSeconds;
         }
       }
