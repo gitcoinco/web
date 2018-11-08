@@ -114,12 +114,14 @@ def get_avatar_context():
                              '25E899', '9AB730', '00A55E', '3FCDFF', '3E00FF', '8E2ABE', 'D0021B', 'F9006C', 'FFCE08',
                              'F8E71C', '15003E', 'FFFFFF'
                          )
-                     }, {
+                     },
+                     {
                          'name': 'Wallpaper',
                          'title': 'Pick some swag for your back',
-                         'options': ('anchors', 'circuit', 'jigsaw', 'lines', 'gears', 'clouds', 'signal', 
-                            'polka_dots', 'polka_dots_black',  'squares', 'shapes', 'sunburst', 'sunburst_pastel',
-                            'rainbow')
+                         'options': (
+                             'anchors', 'circuit', 'jigsaw', 'lines', 'gears', 'clouds', 'signal', 'polka_dots',
+                             'polka_dots_black', 'squares', 'shapes', 'sunburst', 'sunburst_pastel', 'rainbow'
+                         )
                      }],
     }
 
