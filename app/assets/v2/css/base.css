@@ -1214,12 +1214,6 @@ input.is-invalid {
   }
 }
 
-@media (max-width: 991.98px) {
-  #sidebar_container {
-    display: none;
-  }
-}
-
 @media (max-width: 769px) {
   #gitcoinTestimonials {
     height: 202px;

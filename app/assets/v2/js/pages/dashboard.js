@@ -514,6 +514,9 @@ var resetFilters = function(resetKeyword) {
       else
         $('input[name="' + filter + '"][value="' + tag[j].value + '"]').prop('checked', false);
     }
+
+    // Defaults to mainnet on clear filters to make it less confusing
+    $('input[name="network"][value="mainnet"]').prop('checked', true);
   });
 
   if (resetKeyword && localStorage['keywords']) {
@@ -643,7 +646,7 @@ $(document).ready(function() {
   });
 
   // search bar
-  $('#bounties').delegate('#new_search', 'click', function(e) {
+  $('#sidebar_container').delegate('#new_search', 'click', function(e) {
     reset_offset();
     refreshBounties(null, 0, false, true);
     e.preventDefault();
@@ -765,7 +768,7 @@ var paint_search_tabs = function() {
   if (searches.length <= 1)
     return target.html('');
 
-  var html = "<ul class='nav'><i class='fas fa-history'></i>";
+  var html = "<ul class='nav'>";
 
   for (var i = 0; i < searches.length; i++) {
     var search_no = searches[i];

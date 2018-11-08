@@ -17,6 +17,18 @@
 {% load i18n static %}
 <link rel="stylesheet" href={% static "v2/css/sidebar_search.css" %}>
 <div class="sidebar_search font-body">
+  <div class="search font-caption mb-4">
+    <div class="search-area col-12">
+      <input class="form__input form__input_lg" id="keywords" type="text" />
+      <img class="close-icon" src="{% static "v2/images/close-grey.png" %}" alt="X" />
+      <a id="new_search" href="#">
+        <i class="fas fa-search"></i>
+      </a>
+    </div>
+    <div class="col-12">
+      <div class="filter-tags"></div> <!-- Populate the filters -->
+    </div>
+  </div>
   <form>
     <div class="col my-1">
       <div class="col-12 subheading">{% trans "Experience Level" %}</div>
@@ -118,197 +130,203 @@
       </div>
     </div>
 
-    {% if github_handle %}
-      <div class="col">
-        <div class="col-12 subheading accordion">{% trans "My Bounties" %}</div>
-        <div class="col-12 options panel">
-          <div class="form__radio option">
-            <input name="bounty_filter" id="createdByMe" type="radio" value="createdByMe" val-ui='Created'/>
-            <label class="filter-label" for=createdByMe>{% trans "Created By Me" %}</label>
-          </div>
-          <div class="form__radio option">
-            <input name="bounty_filter" id="startedByMe" type="radio" value="startedByMe" val-ui='Started'/>
-            <label class="filter-label" for=startedByMe>{% trans "Started By Me" %}</label>
-          </div>
-          <div class="form__radio option">
-            <input name="bounty_filter" id="FulfilledByMe" type="radio" value="fulfilledByMe" val-ui='Fulfilled'/>
-            <label class="filter-label" for=FulfilledByMe>{% trans "Fulfilled By Me" %}</label>
-          </div>
-          <div class="form__radio option">
-            <input name="bounty_filter" id="all_bounty" type="radio" value="any" checked/>
-            <label class="filter-label" for=all_bounty>{% trans "All" %}</label>
-          </div>
-        </div>
-      </div>
-    {% endif %}
-
-    {% if profile_id and user.profile.is_moderator or user.profile.is_staff %}
-      <div class="col">
-        <div class="col-12 subheading accordion">{% trans "Moderation" %}</div>
-        <div class="col-12 options panel">
-          <div class="form__radio option">
-            <input name="moderation_filter" id="escalated" type="radio" value="escalated" val-ui="Escalated"/>
-            <label class="filter-label" for=escalated>{% trans "Escalated" %}</label>
-          </div>
-          <div class="form__radio option">
-            <input name="moderation_filter" id="warned" type="radio" value="warned" val-ui="Warned"/>
-            <label class="filter-label" for=warned>{% trans "Warned" %}</label>
-          </div>
-          <div class="form__radio option">
-            <input name="moderation_filter" id="hidden" type="radio" value="hidden" val-ui="Hidden"/>
-            <label class="filter-label" for=hidden>{% trans "Hidden" %}</label>
-          </div>
-          <div class="form__radio option">
-            <input name="moderation_filter" id="not_started" type="radio" value="not_started" val-ui="Not Started"/>
-            <label class="filter-label" for=not_started>{% trans "Not Picked Up 3+ Days" %}</label>
-          </div>
-          <div class="form__radio option">
-            <input name="moderation_filter" id="closed_on_github" type="radio" value="closed_on_github" val-ui="Closed On Github"/>
-            <label class="filter-label" for=closed_on_github>{% trans "Closed On Github" %}</label>
-          </div>
-          <div class="form__radio option">
-            <input name="moderation_filter" id="needs_review" type="radio" value="needs_review" val-ui="Needs Review"/>
-            <label class="filter-label" for=needs_review>{% trans "Needs Review" %}</label>
-          </div>
-          <div class="form__radio option">
-            <input name="moderation_filter" id="no_moderation" type="radio" value="" checked/>
-            <label class="filter-label" for=no_moderation>{% trans "No Moderation" %}</label>
-          </div>
-        </div>
-      </div>
-    {% endif %}
-
     <div class="col">
       <div class="col-12 subheading accordion">
-        {% trans "Permissions" %}
-        <i class="fas fa-question-circle ml-2" title='{% include "shared/permissions_type_tooltip.html" %}'></i>
+        {% trans "Advanced Filters" %}
       </div>
-      <div class="col-12 panel options">
-        <div class="checkbox_container">
-          <input name="permission_type" id="permissionless" type="checkbox" value="permissionless" val-ui='Permissionless' />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=permissionless>{% trans "Permissionless" %}</label>
+      <div class="panel">
+        {% if github_handle %}
+          <div class="col">
+            <div class="col-12 subheading">{% trans "My Bounties" %}</div>
+            <div class="col-12 options">
+              <div class="form__radio option">
+                <input name="bounty_filter" id="createdByMe" type="radio" value="createdByMe" val-ui='Created'/>
+                <label class="filter-label" for=createdByMe>{% trans "Created By Me" %}</label>
+              </div>
+              <div class="form__radio option">
+                <input name="bounty_filter" id="startedByMe" type="radio" value="startedByMe" val-ui='Started'/>
+                <label class="filter-label" for=startedByMe>{% trans "Started By Me" %}</label>
+              </div>
+              <div class="form__radio option">
+                <input name="bounty_filter" id="FulfilledByMe" type="radio" value="fulfilledByMe" val-ui='Fulfilled'/>
+                <label class="filter-label" for=FulfilledByMe>{% trans "Fulfilled By Me" %}</label>
+              </div>
+              <div class="form__radio option">
+                <input name="bounty_filter" id="all_bounty" type="radio" value="any" checked/>
+                <label class="filter-label" for=all_bounty>{% trans "All" %}</label>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+        {% if profile_id and user.profile.is_moderator or user.profile.is_staff %}
+          <div class="col">
+            <div class="col-12 subheading">{% trans "Moderation" %}</div>
+            <div class="col-12 options">
+              <div class="form__radio option">
+                <input name="moderation_filter" id="escalated" type="radio" value="escalated" val-ui="Escalated"/>
+                <label class="filter-label" for=escalated>{% trans "Escalated" %}</label>
+              </div>
+              <div class="form__radio option">
+                <input name="moderation_filter" id="warned" type="radio" value="warned" val-ui="Warned"/>
+                <label class="filter-label" for=warned>{% trans "Warned" %}</label>
+              </div>
+              <div class="form__radio option">
+                <input name="moderation_filter" id="hidden" type="radio" value="hidden" val-ui="Hidden"/>
+                <label class="filter-label" for=hidden>{% trans "Hidden" %}</label>
+              </div>
+              <div class="form__radio option">
+                <input name="moderation_filter" id="not_started" type="radio" value="not_started" val-ui="Not Started"/>
+                <label class="filter-label" for=not_started>{% trans "Not Picked Up 3+ Days" %}</label>
+              </div>
+              <div class="form__radio option">
+                <input name="moderation_filter" id="closed_on_github" type="radio" value="closed_on_github" val-ui="Closed On Github"/>
+                <label class="filter-label" for=closed_on_github>{% trans "Closed On Github" %}</label>
+              </div>
+              <div class="form__radio option">
+                <input name="moderation_filter" id="needs_review" type="radio" value="needs_review" val-ui="Needs Review"/>
+                <label class="filter-label" for=needs_review>{% trans "Needs Review" %}</label>
+              </div>
+              <div class="form__radio option">
+                <input name="moderation_filter" id="no_moderation" type="radio" value="" checked/>
+                <label class="filter-label" for=no_moderation>{% trans "No Moderation" %}</label>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+
+        <div class="col">
+          <div class="col-12 subheading">
+            {% trans "Permissions" %}
+            <i class="fas fa-question-circle ml-2" title='{% include "shared/permissions_type_tooltip.html" %}'></i>
+          </div>
+          <div class="col-12 options">
+            <div class="checkbox_container">
+              <input name="permission_type" id="permissionless" type="checkbox" value="permissionless" val-ui='Permissionless' />
+              <span class="checkbox"></span>
+              <div class="filter-label">
+                <label for=permissionless>{% trans "Permissionless" %}</label>
+              </div>
+            </div>
+            <div class="checkbox_container">
+              <input name="permission_type" id="approval" type="checkbox" value="approval" val-ui='Approval Required' />
+              <span class="checkbox"></span>
+              <div class="filter-label">
+                <label for=approval>{% trans "Approval Required" %}</label>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="checkbox_container">
-          <input name="permission_type" id="approval" type="checkbox" value="approval" val-ui='Approval Required' />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=approval>{% trans "Approval Required" %}</label>
+
+        <div class="col">
+          <div class="col-12 subheading">{% trans "Time Commitment" %}</div>
+          <div class="col-12 options">
+            <div class="checkbox_container">
+              <input name="project_length" id="hours" type="checkbox" value="hours" val-ui='Hours-Long' />
+              <span class="checkbox"></span>
+              <div class="filter-label">
+                <label for=hours>{% trans "Hours" %}</label>
+              </div>
+            </div>
+            <div class="checkbox_container">
+              <input name="project_length" id="days" type="checkbox" value="days" val-ui='Days-Long' />
+              <span class="checkbox"></span>
+              <div class="filter-label">
+                <label for=days>{% trans "Days" %}</label>
+              </div>
+            </div>
+            <div class="checkbox_container">
+              <input name="project_length" id="weeks" type="checkbox"  value="weeks" val-ui='Weeks-Long' />
+              <span class="checkbox"></span>
+              <div class="filter-label">
+                <label for=weeks>{% trans "Weeks" %}</label>
+              </div>
+            </div>
+            <div class="checkbox_container">
+              <input name="project_length" id="months" type="checkbox"  value="months" val-ui='Months-Long' />
+              <span class="checkbox"></span>
+              <div class="filter-label">
+                <label for=months>{% trans "Months" %}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="col-12 subheading">{% trans "Type" %}</div>
+          <div class="col-12 options">
+            <div class="checkbox_container">
+              <input name="bounty_type" id="bug" type="checkbox" value="bug" val-ui='Bug' />
+              <span class="checkbox"></span>
+              <div class="filter-label">
+                <label for=bug>{% trans "Bug" %}</label>
+              </div>
+            </div>
+            <div class="checkbox_container">
+              <input name="bounty_type" id="feature" type="checkbox" value="feature" val-ui='Feature' />
+              <span class="checkbox"></span>
+              <div class="filter-label">
+                <label for=feature>{% trans "Feature" %}</label>
+              </div>
+            </div>
+            <div class="checkbox_container">
+              <input name="bounty_type" id="security" type="checkbox" value="security" val-ui='Security' />
+              <span class="checkbox"></span>
+              <div class="filter-label">
+                <label for=security>{% trans "Security" %}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="col-12 subheading">{% trans "Network" %}</div>
+          <div class="col-12 options">
+            <div class="checkbox_container">
+              <input name="network" id="local" type="checkbox" value="local" val-ui='Custom Network' />
+              <span class="checkbox"></span>
+              <div class="filter-label">
+                <label for=local>{% trans "Custom" %}</label>
+              </div>
+            </div>
+            <div class="checkbox_container">
+              <input name="network" id="ropsten" type="checkbox" value="ropsten" val-ui='Ropsten' />
+              <span class="checkbox"></span>
+              <div class="filter-label">
+                <label for=ropsten>{% trans "Ropsten" %}</label>
+              </div>
+            </div>
+            <div class="checkbox_container">
+              <input name="network" id="rinkeby" type="checkbox" value="rinkeby" val-ui='Rinkeby' />
+              <span class="checkbox"></span>
+              <div class="filter-label">
+                <label for=rinkeby>{% trans "Rinkeby" %}</label>
+              </div>
+            </div>
+            <div class="checkbox_container">
+              <input name="network" id="mainnet" type="checkbox" value="mainnet" val-ui='Mainnet' checked />
+              <span class="checkbox"></span>
+              <div class="filter-label">
+                <label for=mainnet>{% trans "Mainnet" %}</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col">
+          <div class="col-12 subheading">{% trans "Misc" %}</div>
+          <div class="col-12 options">
+            <div class="checkbox_container">
+              <input name="misc" id="misc" type="checkbox" value="hiring" val-ui='hiring' />
+              <span class="checkbox"></span>
+              <div class="filter-label">
+                <label for=misc>{% trans "Hiring" %}</label>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
-
-    <div class="col">
-      <div class="col-12 subheading accordion">{% trans "Time Commitment" %}</div>
-      <div class="col-12 options panel">
-        <div class="checkbox_container">
-          <input name="project_length" id="hours" type="checkbox" value="hours" val-ui='Hours-Long' />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=hours>{% trans "Hours" %}</label>
-          </div>
-        </div>
-        <div class="checkbox_container">
-          <input name="project_length" id="days" type="checkbox" value="days" val-ui='Days-Long' />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=days>{% trans "Days" %}</label>
-          </div>
-        </div>
-        <div class="checkbox_container">
-          <input name="project_length" id="weeks" type="checkbox"  value="weeks" val-ui='Weeks-Long' />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=weeks>{% trans "Weeks" %}</label>
-          </div>
-        </div>
-        <div class="checkbox_container">
-          <input name="project_length" id="months" type="checkbox"  value="months" val-ui='Months-Long' />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=months>{% trans "Months" %}</label>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col">
-      <div class="col-12 subheading accordion">{% trans "Type" %}</div>
-      <div class="col-12 options panel">
-        <div class="checkbox_container">
-          <input name="bounty_type" id="bug" type="checkbox" value="bug" val-ui='Bug' />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=bug>{% trans "Bug" %}</label>
-          </div>
-        </div>
-        <div class="checkbox_container">
-          <input name="bounty_type" id="feature" type="checkbox" value="feature" val-ui='Feature' />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=feature>{% trans "Feature" %}</label>
-          </div>
-        </div>
-        <div class="checkbox_container">
-          <input name="bounty_type" id="security" type="checkbox" value="security" val-ui='Security' />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=security>{% trans "Security" %}</label>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col">
-      <div class="col-12 subheading accordion">{% trans "Network" %}</div>
-      <div class="col-12 options panel">
-        <div class="checkbox_container">
-          <input name="network" id="local" type="checkbox" value="local" val-ui='Custom Network' />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=local>{% trans "Custom" %}</label>
-          </div>
-        </div>
-        <div class="checkbox_container">
-          <input name="network" id="ropsten" type="checkbox" value="ropsten" val-ui='Ropsten' />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=ropsten>{% trans "Ropsten" %}</label>
-          </div>
-        </div>
-        <div class="checkbox_container">
-          <input name="network" id="rinkeby" type="checkbox" value="rinkeby" val-ui='Rinkeby' />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=rinkeby>{% trans "Rinkeby" %}</label>
-          </div>
-        </div>
-        <div class="checkbox_container">
-          <input name="network" id="mainnet" type="checkbox" value="mainnet" val-ui='Mainnet' checked />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=mainnet>{% trans "Mainnet" %}</label>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="col">
-      <div class="col-12 subheading accordion">{% trans "Misc" %}</div>
-      <div class="col-12 options panel">
-        <div class="checkbox_container">
-          <input name="misc" id="misc" type="checkbox" value="hiring" val-ui='hiring' />
-          <span class="checkbox"></span>
-          <div class="filter-label">
-            <label for=misc>{% trans "Hiring" %}</label>
-          </div>
-        </div>
-      </div>
-    </div>
-
   </form>
   <div>
     <p id="clear">{% trans "Reset Filters" %}</p>

@@ -73,7 +73,6 @@ body {
 
 .title-row {
   display: flex;
-  margin-top: 2em;
   float: right;
   border-bottom: 2px solid #3E24FB;
 }
