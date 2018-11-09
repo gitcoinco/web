@@ -420,7 +420,6 @@ def not_a_token(request):
     return TemplateResponse(request, 'not_a_token.html', context)
 
 
-@cached_view(timeout=60 * 10)
 def results(request, keyword=None):
     """Render the Results response."""
     if keyword and keyword not in programming_languages:

@@ -48,7 +48,7 @@ class Grant(SuperModel):
         max_length=255, default='0x0', help_text=_('The wallet address for the administrator of this Grant.'),
     )
     frequency = models.DecimalField(
-        default=30, decimal_places=0, max_digits=50, help_text=_('The payout frequency of the Grant.'),
+        default=2592000, decimal_places=0, max_digits=50, help_text=_('The payout frequency of the Grant.'),
     )
     amount_goal = models.DecimalField(
         default=1, decimal_places=4, max_digits=50, help_text=_('The contribution goal amount for the Grant.'),
@@ -179,6 +179,27 @@ class Contribution(SuperModel):
     """Define the structure of a subscription agreement."""
 
     tx_id = models.CharField(max_length=255, default='0x0', help_text=_('The transaction ID of the Contribution.'))
+    from_address = models.CharField(
+        max_length=255, default='0x0', help_text=_('The wallet address tokens are sent from.'),
+    )
+    to_address = models.CharField(
+        max_length=255, default='0x0', help_text=_('The wallet address tokens are sent to.'),
+    )
+    token_address = models.CharField(
+        max_length=255, default='0x0', help_text=_('The token address to be used with the Subscription.'),
+    )
+    token_amount = models.DecimalField(
+        default=1, decimal_places=4, max_digits=50, help_text=_('The promised contribution amount per period.'),
+    )
+    period_seconds = models.DecimalField(
+        default=0, decimal_places=0, max_digits=50, help_text=_('The number of seconds thats constitues a period.'),
+    )
+    gas_price = models.DecimalField(
+        default=0, decimal_places=4, max_digits=50, help_text=_('The amount of token used to incentivize subminers.'),
+    )
+    nonce = models.DecimalField(
+        default=0, decimal_places=0, max_digits=50, help_text=_('The of the subscription metaTx.'),
+    )
     subscription = models.ForeignKey(
         'grants.Subscription',
         related_name='subscription_contribution',

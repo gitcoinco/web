@@ -1,0 +1,15 @@
+
+<svg width="34px" height="54px" viewBox="0 0 34 54" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51.2 (57519) - http://www.bohemiancoding.com/sketch -->
+    <desc>Kudos</desc>
+    <defs>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="symbol" transform="translate(-1.000000, 2.000000)">
+            <path d="M9.35153846,3 L1,17.1728802 L9.35153846,31.3452632 L26.0548692,31.3452632 L34.4061538,17.1728802 L26.0548692,3 L9.35153846,3 Z M1.29311213,17.1728802 L9.49822141,3.24864266 L25.9081862,3.24864266 L34.1132955,17.1728802 L25.9081862,31.0966205 L9.49822141,31.0966205 L1.29311213,17.1728802 Z" id="Fill-1" stroke="#0ECF7C" stroke-width="3.61999989" transform="translate(17.703077, 17.172632) rotate(-270.000000) translate(-17.703077, -17.172632) "></path>
+            <text id="Kudos" font-family="Muli-SemiBold, Muli, sans-serif" font-size="12" font-weight="500" fill="#FFFFFF">
+                <tspan x="0" y="51">Kudos</tspan>
+            </text>
+        </g>
+    </g>
+</svg>

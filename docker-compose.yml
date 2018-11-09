@@ -8,18 +8,13 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
-
-  pgweb:
-    image: sosedoff/pgweb
-    environment:
-      - DATABASE_URL=postgres://postgres:postgres@db:5432?sslmode=disable
-    links:
-      - db
-    ports:
-      - "8081:8081"
-    depends_on:
-      - db
-    restart: "on-failure:10"
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 1024M
+        reservations:
+          memory: 128M
 
   ipfs:
     image: ipfs/go-ipfs:release
@@ -32,6 +27,13 @@ services:
       - "4002:4002"
       - "5001:5001"
       - "8080:8080"
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 1024M
+        reservations:
+          memory: 128M
 
   web:
     restart: unless-stopped
@@ -41,6 +43,7 @@ services:
     env_file:
       - app/app/.env
     build: .
+    image: gitcoinco/web:latest
     volumes:
       - .:/code
     ports:
@@ -50,12 +53,26 @@ services:
       - db
     stdin_open: true
     tty: true
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 1024M
+        reservations:
+          memory: 512M
 
   testrpc:
     image: trufflesuite/ganache-cli
     ports:
       - "8545:8545"
-    command: "-a 1 --seed 2"
+    command: '-a 1 --seed 2 --host 0.0.0.0 --mnemonic "${TEST_MNEMONIC}"'
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 1024M
+        reservations:
+          memory: 128M
 
   redis:
     restart: unless-stopped
@@ -66,6 +83,13 @@ services:
       - redis:/data
     ports:
       - "6379:6379"
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          memory: 1024M
+        reservations:
+          memory: 128M
 
 volumes:
   pgdata:

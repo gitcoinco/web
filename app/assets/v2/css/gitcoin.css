@@ -398,6 +398,14 @@ div.button-pink {
   cursor: pointer;
 }
 
+.gc-round-text-input {
+  height: 32px;
+  border: 1px solid #eee;
+  outline: none;
+  padding-left: 10px;
+  font-weight: 300;
+}
+
 .gc-border-black {
   border: 1px solid black !important;
 }
@@ -406,16 +414,12 @@ div.button-pink {
   border: 1px solid #37ea9c !important;
 }
 
-.gc-selected {
-  border: 1px solid #4ef6ad !important;
+.gc-border-blue {
+  border-color: #0D0764;
 }
 
-.gc-round-text-input {
-  height: 32px;
-  border: 1px solid #eee;
-  outline: none;
-  padding-left: 10px;
-  font-weight: 300;
+.gc-selected {
+  border: 1px solid #4ef6ad !important;
 }
 
 .gc-round-text-form {
@@ -466,10 +470,11 @@ div.button-pink {
   /* stylelint-disable-next-line */
   font-family: 'Font Awesome 5 Free';
   content: '\f107';
-  font-size: 16px;
+  font-size: 1.2em;
   margin-right: auto;
   margin-top: auto;
   float: right;
+  font-weight: 600;
 }
 
 .accordion.active:after {
@@ -553,10 +558,21 @@ div.button-pink {
   }
 }
 
-/* AutoComplete */
-.select2-container .select2-selection--single {
-  height: 2.5rem !important
+.nav-tabs .nav-line {
+  color: #4A4A4A;
+  border-width: 0px 0px 3px 0;
 }
+.nav-tabs .nav-line.active {
+  color: #0D0764;
+  border-color: #0D0764;
+  background-color: transparent;
+}
+
+.border-transparent {
+  border-color: transparent;
+}
+
+/* AutoComplete */
 
 .select2-results__option,
 .select2-search--dropdown .select2-search__field {
@@ -564,7 +580,8 @@ div.button-pink {
 }
 
 .select2-container--default .select2-selection--single {
-  border-radius: 3px !important;
+  height: 2.5rem !important;
+  border-radius: 2px !important;
   border-color: black !important;
 }
 
@@ -655,3 +672,32 @@ div.button-pink {
   }
 }
 /* TODO: End */
+
+/* fallback for send tip navbar */
+.d-none {
+  display: none!important;
+}
+
+@media (min-width: 768px) {
+
+  .d-md-block {
+    display: block!important;
+  }
+  .d-md-flex {
+    display: -ms-flexbox!important;
+    display: flex!important;
+  }
+  .d-md-none {
+    display: none!important;
+  }
+}
+
+.notification-dot {
+  background-color: #ef3427;
+  width: 0.5rem;
+  height: 0.5rem;
+  position: absolute;
+  top: 6px;
+  border-radius: 30px;
+  left: 6px;
+}

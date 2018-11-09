@@ -1,11 +1,16 @@
-{% load i18n  %}
+{% load i18n %}
+
+{% trans "New Supporter." %}
 
 {% trans "You have a new supporter!" %}
 
-{{github_username}}
-{%trans "User' has begun contributing" %}
-{{variable_amount_contribution}}
+{{ subscriber.contributor_profile.avatar_url }}
 
-{%trans "You can see a transaction history and withdraw funds" %} {{transaction_history}} {%trans "here." %}
+{{ subscriber.contributor_profile }}
 
-{{withdraw_link}}
+{% trans "User' has begun contributing" %}
+
+{{ transaction.value_true }} {{ transaction.token_name }} {% trans "per" %} {{ transaction.frequency }}
+
+{% trans "You can see the transaction" %} {{ transaction.link }} {% trans "here." %}
+

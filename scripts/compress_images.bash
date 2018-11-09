@@ -28,7 +28,7 @@ echo "Optimizing PNG files..."
 find ./ -type f -name '*.png' -exec optipng -o7 {} \;
 
 echo "Squashing SVG files..."
-find ./ -type f -name '*.svg' -exec svgo {} \;
+find ./ -type f -name '*.svg' -exec svgo --disable=removeViewBox {} \;
 
 echo "Compressing JPG files..."
 find ./ -type f -name '*.jpg' -exec jpeg-recompress -n 30 -x 75 -l 128 -a -s -c {} {} \;
