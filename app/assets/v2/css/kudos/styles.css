@@ -597,8 +597,10 @@ a.cellarius-partner:before {
   background-color: transparent;
   display: flex; }
   .flip-card .flip-card_hold {
-    backface-visibility: hidden; }
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden; }
   .flip-card .flipper {
+    -webkit-transform-style: preserve-3d;
     transform-style: preserve-3d;
     transition: 0.6s;
     position: relative;
@@ -615,6 +617,7 @@ a.cellarius-partner:before {
   .flip-card.turn .flipper {
     transform: rotateY(-180deg); }
   .flip-card .flip-card_back {
+    -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
     transform: rotateY(-180deg);
     border-radius: .25rem; }
@@ -622,13 +625,17 @@ a.cellarius-partner:before {
 .bubble {
   background: rgba(0, 0, 0, 0.4);
   padding: 1em;
-  position: relative; }
+  position: relative;
+  border-radius: 3px;
+  margin-top: 0.5em; }
+  .bubble p {
+    margin-bottom: 0; }
   .bubble:after {
     content: '';
     border: 11px solid;
     position: absolute;
-    border-color: transparent transparent #3c2a99 transparent;
-    border-width: 0px 10px 10px 10px;
-    top: -10px; }
+    border-color: transparent transparent rgba(0, 0, 0, 0.4) transparent;
+    border-width: 0px 0.5em 0.5em 0.5em;
+    top: -0.5em; }
 
 /*# sourceMappingURL=styles.css.map */

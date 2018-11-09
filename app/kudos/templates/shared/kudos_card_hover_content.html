@@ -17,7 +17,7 @@
 {% load i18n static kudos_extras  %}
 {% load humanize %}
 
-
+{% for kt in kudos_group.list %}
   {% if relation == 'to' %}
   <a href="{% url 'profile' kt.username %}" >{{kt.username}}</a>
   {% else %}
@@ -41,3 +41,4 @@
   <a title="{% trans 'tx in etherscan' %}" href="{% if not kt.network == 'mainnet' %}https://{{ kt.network }}.etherscan.io/tx/{{ kt.txid }}{% else %}https://etherscan.io/tx/{{ kt.txid }}{% endif %}" target="_blank" class="mb-1">{{ kt.txid|humanize_address }}</a>
 </p>
 
+{% endfor %}
