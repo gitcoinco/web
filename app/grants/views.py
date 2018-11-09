@@ -56,8 +56,8 @@ def grants(request):
     if request.method == 'POST':
         keyword = request.POST.get('search_grants', '')
         _grants = Grant.objects.filter(
-            Q(description__icontains=keyword) | \
-            Q(title__icontains=keyword) | \
+            Q(description__icontains=keyword) |
+            Q(title__icontains=keyword) |
             Q(reference_url__icontains=keyword)
         ).order_by(sort)
 
