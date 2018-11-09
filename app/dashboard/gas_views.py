@@ -95,6 +95,18 @@ def gas_intro(request):
     }
     return TemplateResponse(request, 'gas_intro.html', context)
 
+def gas_heatmap(request):
+    gas_histories = {}
+    for i, __ in lines.items():
+        gas_histories[i] = get_history_cached("hourly", i)
+    context = {
+        'title': _('Live Ethereum (ETH) Gas Heatmap'),
+        'card_desc': _(''),
+        'hide_send_tip': True,
+        'gas_histories': gas_histories,
+    }
+    return TemplateResponse(request, 'gas_heatmap.html', context)
+
 
 def gas_faq(request):
     context = {

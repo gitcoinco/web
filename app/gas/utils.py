@@ -91,7 +91,7 @@ def gas_history(breakdown, mean_time_to_confirm_minutes):
     results_array = []
     i = 0
     for key, val in results.items():
-        results_array.append([val['gas_price'], i])
+        results_array.append([val['gas_price'], i, val["created_on"]])
         i += 1
     return results_array
 
