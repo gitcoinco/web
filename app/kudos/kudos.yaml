@@ -1994,5 +1994,15 @@
     - mad scientist
     - fun
   image: mad_scientist.svg
+- name: resilience
+  description: Neither fire, nor ice, nor any weapon of war, nor any of the elements of the earth can get through to the resilient.  Kudos to you and your resilience through adversity of any kind.
+  priceFinney: 4
+  numClonesAllowed: 200
+  tags: 
+    - resilience
+    - soft skills
+    - shield
+    - fun
+  image: resilient.svg
 
 
