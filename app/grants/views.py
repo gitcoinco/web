@@ -56,12 +56,7 @@ def grants(request):
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
 
-    params = {
-        'active': 'dashboard',
-        'title': _('Grants Explorer'),
-        'grants': grants,
-        'keywords': get_keywords(),
-    }
+    params = {'active': 'dashboard', 'title': _('Grants Explorer'), 'grants': grants, 'keywords': get_keywords(), }
     return TemplateResponse(request, 'grants/index.html', params)
 
 
@@ -77,60 +72,66 @@ def grant_details(request, grant_id):
         raise Http404
 
     # TODO: Determine how we want to chunk out articles and where we want to store this data.
-    activity_data = [{
-        'title': 'allow funder to turn off auto approvals during bounty creation',
-        'date': '08.02.2018',
-        'description':
-            'Vestibulum ante ipsum primis in faucibus orci luctus ultrices '
-            'posuere cubilia Curae; Proin vel ante.',
-    }, {
-        'title': 'Beyond The Naked Eye',
-        'date': '2012 - Present',
-        'description':
-            'What is the loop of Creation? How is there something from nothing? '
-            'In spite of the fact that it is impossible to prove that anything exists beyond '
-            'one’s perception since any such proof would involve one’s perception (I observed it, '
-            'I heard it, I thought about it, I calculated it, and etc.), science deals with a '
-            'so-called objective reality “out there,” beyond one’s perception professing to '
-            'describe Nature objectively (as if there was a Nature or reality external '
-            'to one’s perception). The shocking impact of Matrix was precisely the valid '
-            'possibility that what we believed to be reality was but our perception; however, '
-            'this was presented through showing a real reality wherein the perceived reality was a '
-            'computer simulation. Many who toy with the idea that perhaps, indeed, we are computer '
-            'simulations, deviate towards questions, such as, who could create such software and what '
-            'kind of hardware would be needed for such a feat. Although such questions assume that reality '
-            'is our perception, they also axiomatically presuppose the existence of an objective '
-            'deterministic world “out there” that nevertheless must be responsible for how we perceive '
-            'our reality. This is a major mistake emphasizing technology and algorithms instead of trying '
-            'to discover the nature of reality and the structure of creation. As will be shown in the following, '
-            'the required paradigm shift from “perception is our reality fixed within an objective world,” '
-            'to “perception is reality without the need of an objective world ‘out there,” '
-            'is provided by a dynamic logical structure. The Holophanic loop logic is responsible '
-            'for a consistent and complete worldview that not only describes, but also creates whatever '
-            'can be perceived or experienced.'
-    }, {
-        'title': 'Awesome Update',
-        'date': '08.02.2018',
-        'description': 'Some awesome update about this project.',
-    }, {
-        'title': 'Stellar Update',
-        'date': '08.02.2018',
-        'description': 'Another stellar update about this project.',
-    }]
+    activity_data = [
+        {
+            'title': 'allow funder to turn off auto approvals during bounty creation',
+            'date': '08.02.2018',
+            'description':
+                'Vestibulum ante ipsum primis in faucibus orci luctus ultrices '
+                'posuere cubilia Curae; Proin vel ante.',
+        },
+        {
+            'title': 'Beyond The Naked Eye',
+            'date': '2012 - Present',
+            'description':
+                'What is the loop of Creation? How is there something from nothing? '
+                'In spite of the fact that it is impossible to prove that anything exists beyond '
+                'one’s perception since any such proof would involve one’s perception (I observed it, '
+                'I heard it, I thought about it, I calculated it, and etc.), science deals with a '
+                'so-called objective reality “out there,” beyond one’s perception professing to '
+                'describe Nature objectively (as if there was a Nature or reality external '
+                'to one’s perception). The shocking impact of Matrix was precisely the valid '
+                'possibility that what we believed to be reality was but our perception; however, '
+                'this was presented through showing a real reality wherein the perceived reality was a '
+                'computer simulation. Many who toy with the idea that perhaps, indeed, we are computer '
+                'simulations, deviate towards questions, such as, who could create such software and what '
+                'kind of hardware would be needed for such a feat. Although such questions assume that reality '
+                'is our perception, they also axiomatically presuppose the existence of an objective '
+                'deterministic world “out there” that nevertheless must be responsible for how we perceive '
+                'our reality. This is a major mistake emphasizing technology and algorithms instead of trying '
+                'to discover the nature of reality and the structure of creation. As will be shown in the following, '
+                'the required paradigm shift from “perception is our reality fixed within an objective world,” '
+                'to “perception is reality without the need of an objective world ‘out there,” '
+                'is provided by a dynamic logical structure. The Holophanic loop logic is responsible '
+                'for a consistent and complete worldview that not only describes, but also creates whatever '
+                'can be perceived or experienced.'
+        }, {
+            'title': 'Awesome Update',
+            'date': '08.02.2018',
+            'description': 'Some awesome update about this project.',
+        },
+        {
+            'title': 'Stellar Update',
+            'date': '08.02.2018',
+            'description': 'Another stellar update about this project.',
+        }
+    ]
 
     gh_data = [{
         'title': 'Initial commit by flapjacks',
         'date': '08.02.2018',
         'description': 'Initial commit with some blah blah blah...',
-    }, {
-        'title': 'Fix the build by derp-nation',
-        'date': '08.02.2018',
-        'description': 'Initial commit with some blah blah blah...',
-    }, {
-        'title': 'A subpar commit by derp-diggity',
-        'date': '08.02.2018',
-        'description': 'Initial commit with some blah blah blah...',
-    }]
+    },
+               {
+                   'title': 'Fix the build by derp-nation',
+                   'date': '08.02.2018',
+                   'description': 'Initial commit with some blah blah blah...',
+               },
+               {
+                   'title': 'A subpar commit by derp-diggity',
+                   'date': '08.02.2018',
+                   'description': 'Initial commit with some blah blah blah...',
+               }]
 
     params = {
         'active': 'dashboard',
@@ -178,12 +179,7 @@ def grant_new(request):
 
         return redirect(reverse('grants:details', args=(grant.pk, )))
 
-    params = {
-        'active': 'grants',
-        'title': _('New Grant'),
-        'grant': {},
-        'keywords': get_keywords(),
-    }
+    params = {'active': 'grants', 'title': _('New Grant'), 'grant': {}, 'keywords': get_keywords(), }
 
     return TemplateResponse(request, 'grants/new.html', params)
 
@@ -299,35 +295,34 @@ def profile(request):
     sort = request.GET.get('sort', '-created_on')
 
     profile = request.user.profile if request.user.is_authenticated else None
-    _grants = Grant.objects.prefetch_related('team_members').filter(
-        Q(admin_profile=profile) | Q(team_members__in=[profile])).order_by(sort)
+    _grants = Grant.objects.prefetch_related('team_members'
+                                             ).filter(Q(admin_profile=profile)
+                                                      | Q(team_members__in=[profile])).order_by(sort)
     sub_grants = Grant.objects.filter(subscriptions__contributor_profile=profile).order_by(sort)
 
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
 
-    history = [
-        {
-            'date': '16 Mar',
-            'value_true': 1.0,
-            'token_name': 'ETH',
-            'frequency': 'days',
-            'value_in_usdt_now': 80,
-            'title': 'Lorem ipsum dolor sit amet',
-            'link': 'https://etherscan.io/txs?a=0xcf267ea3f1ebae3c29fea0a3253f94f3122c2199&f=3',
-            'avatar_url': 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'
-        },
-        {
-            'date': '24 April',
-            'value_true': 90,
-            'token_name': 'DAI',
-            'frequency': 'months',
-            'value_in_usdt_now': 90,
-            'title': 'Lorem ipsum dolor sit amet',
-            'link': 'https://etherscan.io/txs?a=0xcf267ea3f1ebae3c29fea0a3253f94f3122c2199&f=3',
-            'avatar_url': 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'
-        }
-    ]
+    history = [{
+        'date': '16 Mar',
+        'value_true': 1.0,
+        'token_name': 'ETH',
+        'frequency': 'days',
+        'value_in_usdt_now': 80,
+        'title': 'Lorem ipsum dolor sit amet',
+        'link': 'https://etherscan.io/txs?a=0xcf267ea3f1ebae3c29fea0a3253f94f3122c2199&f=3',
+        'avatar_url': 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'
+    },
+               {
+                   'date': '24 April',
+                   'value_true': 90,
+                   'token_name': 'DAI',
+                   'frequency': 'months',
+                   'value_in_usdt_now': 90,
+                   'title': 'Lorem ipsum dolor sit amet',
+                   'link': 'https://etherscan.io/txs?a=0xcf267ea3f1ebae3c29fea0a3253f94f3122c2199&f=3',
+                   'avatar_url': 'https://c.gitcoin.co/avatars/57e79c0ae763bb27095f6b265a1a8bf3/thelostone-mc.svg'
+               }]
 
     params = {
         'active': 'profile',
@@ -338,3 +333,8 @@ def profile(request):
     }
 
     return TemplateResponse(request, 'grants/profile.html', params)
+
+
+def quickstart(request):
+    """Display quickstart guide."""
+    return TemplateResponse(request, 'grants/quickstart.html', {})

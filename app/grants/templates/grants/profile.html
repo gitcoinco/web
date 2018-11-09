@@ -68,5 +68,10 @@
     $(document).ready(function() {
       setupTabs('#grant-profile-tabs');
     });
+
+    if (localStorage['grants_quickstart_disable'] !== 'true' &&
+        {{ sub_grants|length }} == 0 && {{ grants|length }} == 0) {
+      window.location = document.location.origin + '/grants/quickstart';
+    }
   </script>
 <html>
