@@ -58,10 +58,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
         <form>
           <div class="row">
             <div class="search col-9 col-md-5 offset-md-1 col-lg-6 form__flex-group">
-              <input type="search" class="form__input" placeholder="Search Grants">
+              <input id="grants__search--text" type="search" class="form__input" placeholder="Search Grants">
+              <i id="close-icon" class="far fa-times-circle"></i>
             </div>
             <div class="col-2 col-lg-1 px-0">
-              <button class="button button--primary">
+              <button id="search__grant" class="button button--primary">
                 <span class="d-none d-sm-inline">{% trans 'Search' %}</span>
                 <i class="d-sm-none fas fa-search"></i>
               </button>
