@@ -95,6 +95,7 @@ def gas_intro(request):
     }
     return TemplateResponse(request, 'gas_intro.html', context)
 
+
 def gas_heatmap(request):
     gas_histories = {}
     for i, __ in lines.items():
