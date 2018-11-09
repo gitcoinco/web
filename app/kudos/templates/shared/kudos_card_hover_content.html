@@ -16,20 +16,28 @@
 {% endcomment %}
 {% load i18n static kudos_extras  %}
 {% load humanize %}
-<p>Sent {{relation}} 
+
 
   {% if relation == 'to' %}
-    <a href="{% url 'profile' kt.username %}">{{kt.username}}</a>
+  <a href="{% url 'profile' kt.username %}" >{{kt.username}}</a>
   {% else %}
-    <a href="{% url 'profile' kt.from_username %}">{{kt.from_username}}</a>
+  <img src="/dynamic/avatar/{{ kt.from_username }}" alt="{{ kt.from_username }}" class="sender-avatars" width="30" >
+  <a href="{% url 'profile' kt.from_username %}" title="{% trans 'go to profile' %}">{{kt.from_username}}</a>
   {% endif %}
 
-{{kt.created_on|naturaltime}}</p>
-<p>
-  <a href="{% if not kt.network == 'mainnet' %}https://{{ kt.network }}.etherscan.io/tx/{{ kt.txid }}{% else %}https://etherscan.io/tx/{{ kt.txid }}{% endif %}" target="_blank" class="d-block mb-1">{{ kt.txid|humanize_address }}</a>
-</p>
+<time datetime="{{kt.created_on|date:'c'}}" title="{{kt.created_on}}">
+  {{kt.created_on|naturaltime}}
+</time>
 {% if kt.comments_public %}
-  {% trans "Comment:" %}
+<div class="bubble">
   <p>{{kt.comments_public}}</p>
-  {% endif %}
+</div>
+{% endif %}
+<p>
+{% if tk.github_url %}
+  <a href="{{tk.github_url}}">{% trans 'Issue url' %}</a>
+{% endif %}
+
+  <a title="{% trans 'tx in etherscan' %}" href="{% if not kt.network == 'mainnet' %}https://{{ kt.network }}.etherscan.io/tx/{{ kt.txid }}{% else %}https://etherscan.io/tx/{{ kt.txid }}{% endif %}" target="_blank" class="mb-1">{{ kt.txid|humanize_address }}</a>
+</p>
 

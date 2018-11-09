@@ -292,7 +292,7 @@
               </div>
             {% endfor %}
           </div>
-        </div>		
+        </div>
 	  {% else %}
      	{% include 'profiles/none.html' %}
       {% endif %}
@@ -412,6 +412,11 @@
           });
         });
       }(jQuery));
+
+      $('.flip-card').on('click', function(){
+        console.log(this)
+        $(this).toggleClass('turn')
+      } )
 
     </script>
 

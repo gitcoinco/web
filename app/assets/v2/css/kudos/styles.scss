@@ -79,7 +79,12 @@ $bg-cellarius: #4D5858;
   background: #fff;
   border-radius: .25rem;
   height: 100%;
-  overflow: hidden;
+  // overflow: hidden;
+  transition: all 0.5s ease-in-out;
+
+  &:hover {
+    z-index: 2;
+  }
 
   > a {
     position: relative;
@@ -105,7 +110,7 @@ $bg-cellarius: #4D5858;
   &:focus,
   &:focus-within {
     .content-hover {
-      display: flex;
+      // display: flex;
     }
   }
 
@@ -121,7 +126,7 @@ $bg-cellarius: #4D5858;
 
 .kd-content {
   font-size: 0.9rem;
-  padding: 1.3rem 2rem;
+  padding: 1.3rem 1.3rem;
 
   a {
     color: #3e00ff;
@@ -137,7 +142,7 @@ $bg-cellarius: #4D5858;
   background: rgba($gc-blue,.8);
   color: white;
   padding: 1rem;
-  display: none;
+  // display: none;
   overflow-y:auto;
   flex-direction: column;
   // justify-content: space-between;
@@ -707,22 +712,82 @@ clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
   margin-bottom: -20px;
 }
 
-.grouping {
-  display: contents;
+    // .kd-extended ~ .kd-extended {
 
-  .card-holder ~ .card-holder {
 
-    .kd-extended {
-      transform: rotate(3deg) translateX(-252px);
-      z-index: 1;
-      box-shadow: 0 0 5px rgba(0,0,0,0.3)
+    //     transform: rotate(3deg);
+    //     z-index: 1;
+    //     box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    //     position: absolute;
+    //     top:0;
 
-    }
+
+    // }
+
+    // .card-holder:hover {
+    //   .kd-extended ~ .kd-extended {
+    //     transform: rotate(3deg) translateX(70%);
+
+    //     // z-index: 2;
+    //   }
+    // }
+.flip-card {
+  -webkit-perspective: 1000;
+  -moz-perspective: 1000;
+  -o-perspective: 1000;
+  perspective: 1000px;
+  position: relative;
+  outline: none;
+  background-color: transparent;
+  display: flex;
+
+  .flip-card_hold {
+    // position: absolute;
+    backface-visibility: hidden;
   }
-  .card-holder:hover {
-    .kd-extended {
+  .flipper {
+    transform-style: preserve-3d;
+    transition: 0.6s;
+    position: relative;
+    display: flex;
+    cursor: pointer;
+  }
+  .front {
+    position: relative;
+    background: white;
+    border-radius: .25rem;
+    z-index: 2;
+  	transform: rotateY(0deg);
+  }
 
-      z-index: 2;
-    }
+
+  .flipper:hover {
+    transform: rotateY(-10deg);
+  }
+  &.turn .flipper {
+    transform: rotateY(-180deg);
+  }
+
+  .flip-card_back {
+    backface-visibility: hidden;
+    transform: rotateY(-180deg);
+    border-radius: .25rem;
+    // display: none;
+  }
+}
+
+
+.bubble {
+  background: rgba(0,0,0,0.4);
+  padding: 1em;
+  position: relative;
+
+  &:after {
+    content: '';
+    border: 11px solid;
+    position: absolute;
+    border-color: transparent transparent #3c2a99 transparent;
+    border-width: 0px 10px 10px 10px;
+    top: -10px;
   }
 }
