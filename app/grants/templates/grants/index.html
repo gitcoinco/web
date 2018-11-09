@@ -55,10 +55,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <div class="container-fluid py-5 my-5 grants-search">
       <div class="container">
-        <form>
+        <form method="POST" id="search_form">
+          {% csrf_token %}
           <div class="row">
             <div class="search col-9 col-md-5 offset-md-1 col-lg-6 form__flex-group">
-              <input type="search" class="form__input" placeholder="Search Grants">
+              <input type="search" class="form__input" id="search_grants" name="search_grants" placeholder="Search Grants">
             </div>
             <div class="col-2 col-lg-1 px-0">
               <button class="button button--primary">

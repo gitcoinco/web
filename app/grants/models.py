@@ -29,7 +29,7 @@ class GrantQuerySet(models.QuerySet):
     """Define the Grant default queryset and manager."""
 
     pass
-
+    
 
 class Grant(SuperModel):
     """Define the structure of a Grant."""
