@@ -13,5 +13,6 @@ $(document).ready(() => {
       });
 
       form.submit();
-  })
+    }
+  });
 });
