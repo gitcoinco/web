@@ -189,8 +189,9 @@
 
 .kd-content {
   font-size: 0.9rem;
-  padding: 1.3rem 1.3rem; }
-  .kd-content a {
+  padding: 1.3rem 1.3rem 0.7rem; }
+  .kd-content a,
+  .kd-content b {
     color: #3e00ff; }
 
 .content-hover {
@@ -206,7 +207,10 @@
   flex-direction: column; }
   .content-hover a {
     color: white;
-    font-weight: 700; }
+    font-weight: 700;
+    font-size: 0.9rem; }
+  .content-hover time {
+    font-size: 0.75rem; }
 
 .listing-kudo a {
   color: #43484d; }
@@ -605,7 +609,8 @@ a.cellarius-partner:before {
     transition: 0.6s;
     position: relative;
     display: flex;
-    cursor: pointer; }
+    cursor: pointer;
+    border-radius: 3px; }
   .flip-card .front {
     position: relative;
     background: white;
@@ -613,7 +618,8 @@ a.cellarius-partner:before {
     z-index: 2;
     transform: rotateY(0deg); }
   .flip-card .flipper:hover {
-    transform: rotateY(-10deg); }
+    transform: rotateY(-10deg);
+    box-shadow: 2px 0px 7px 1px rgba(0, 0, 0, 0.1); }
   .flip-card.turn .flipper {
     transform: rotateY(-180deg); }
   .flip-card .flip-card_back {
@@ -621,13 +627,28 @@ a.cellarius-partner:before {
     backface-visibility: hidden;
     transform: rotateY(-180deg);
     border-radius: .25rem; }
+  .flip-card .extra-data {
+    display: flex;
+    justify-content: space-between;
+    margin: .5rem 0 1.5rem; }
+    .flip-card .extra-data a {
+      font-size: 0.75rem; }
+  .flip-card .stack-img {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-end; }
+    .flip-card .stack-img img {
+      border: 1px solid #fff;
+      height: 30px;
+      margin-left: -18px; }
 
 .bubble {
   background: rgba(0, 0, 0, 0.4);
-  padding: 1em;
+  padding: 0.7em;
   position: relative;
   border-radius: 3px;
-  margin-top: 0.5em; }
+  margin-top: 1.3em;
+  line-height: 1.3em; }
   .bubble p {
     margin-bottom: 0; }
   .bubble:after {
@@ -636,6 +657,7 @@ a.cellarius-partner:before {
     position: absolute;
     border-color: transparent transparent rgba(0, 0, 0, 0.4) transparent;
     border-width: 0px 0.5em 0.5em 0.5em;
-    top: -0.5em; }
+    top: -0.5em;
+    left: 1em; }
 
 /*# sourceMappingURL=styles.css.map */

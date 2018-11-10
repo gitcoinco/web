@@ -18,27 +18,39 @@
 {% load humanize %}
 
 {% for kt in kudos_group.list %}
-  {% if relation == 'to' %}
-  <a href="{% url 'profile' kt.username %}" >{{kt.username}}</a>
-  {% else %}
-  <img src="/dynamic/avatar/{{ kt.from_username }}" alt="{{ kt.from_username }}" class="sender-avatars" width="30" >
-  <a href="{% url 'profile' kt.from_username %}" title="{% trans 'go to profile' %}">{{kt.from_username}}</a>
-  {% endif %}
+  <div class="d-flex flex-row">
 
-<time datetime="{{kt.created_on|date:'c'}}" title="{{kt.created_on}}">
-  {{kt.created_on|naturaltime}}
-</time>
+    {% if relation == 'to' %}
+    <img src="/dynamic/avatar/{{ kt.username }}" alt="{{ kt.username }}" class="sender-avatars rounded-circle mr-3" width="45" height="45">
+    <div class="d-flex flex-column">
+      <a href="{% url 'profile' kt.username %}" >{{kt.username}}</a>
+      <time datetime="{{kt.created_on|date:'c'}}" title="{{kt.created_on}}">
+        {{kt.created_on|naturaltime}}
+      </time>
+    </div>
+    {% else %}
+    <img src="/dynamic/avatar/{{ kt.from_username }}" alt="{{ kt.from_username }}" class="sender-avatars rounded-circle mr-3" width="45" height="45">
+    <div class="d-flex flex-column">
+      <a href="{% url 'profile' kt.from_username %}" title="{% trans 'go to profile' %}">{{kt.from_username}}</a>
+      <time datetime="{{kt.created_on|date:'c'}}" title="{{kt.created_on}}">
+        {{kt.created_on|naturaltime}}
+      </time>
+    </div>
+    {% endif %}
+
+  </div>
 {% if kt.comments_public %}
 <div class="bubble">
   <p>{{kt.comments_public}}</p>
 </div>
 {% endif %}
-<p>
-{% if tk.github_url %}
-  <a href="{{tk.github_url}}">{% trans 'Issue url' %}</a>
-{% endif %}
 
+<div class="extra-data">
+  {% if tk.github_url %}
+    <a href="{{tk.github_url}}" target="_blank">{% trans 'Issue url' %}</a>
+  {% endif %}
   <a title="{% trans 'tx in etherscan' %}" href="{% if not kt.network == 'mainnet' %}https://{{ kt.network }}.etherscan.io/tx/{{ kt.txid }}{% else %}https://etherscan.io/tx/{{ kt.txid }}{% endif %}" target="_blank" class="mb-1">{{ kt.txid|humanize_address }}</a>
-</p>
+</div>
+
 
 {% endfor %}

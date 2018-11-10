@@ -126,9 +126,10 @@ $bg-cellarius: #4D5858;
 
 .kd-content {
   font-size: 0.9rem;
-  padding: 1.3rem 1.3rem;
+  padding: 1.3rem 1.3rem 0.7rem;
 
-  a {
+  a,
+  b {
     color: #3e00ff;
   }
 }
@@ -142,14 +143,17 @@ $bg-cellarius: #4D5858;
   background: rgba($gc-blue,.8);
   color: white;
   padding: 1rem;
-  // display: none;
   overflow-y:auto;
   flex-direction: column;
-  // justify-content: space-between;
 
   a {
     color: white;
     font-weight: 700;
+    font-size: 0.9rem;
+  }
+
+  time {
+    font-size: 0.75rem;
   }
 }
 
@@ -712,25 +716,6 @@ clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
   margin-bottom: -20px;
 }
 
-    // .kd-extended ~ .kd-extended {
-
-
-    //     transform: rotate(3deg);
-    //     z-index: 1;
-    //     box-shadow: 0 0 5px rgba(0,0,0,0.3);
-    //     position: absolute;
-    //     top:0;
-
-
-    // }
-
-    // .card-holder:hover {
-    //   .kd-extended ~ .kd-extended {
-    //     transform: rotate(3deg) translateX(70%);
-
-    //     // z-index: 2;
-    //   }
-    // }
 .flip-card {
   -webkit-perspective: 1000;
   -moz-perspective: 1000;
@@ -753,6 +738,7 @@ clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     position: relative;
     display: flex;
     cursor: pointer;
+    border-radius: 3px;
   }
   .front {
     position: relative;
@@ -765,6 +751,7 @@ clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
 
   .flipper:hover {
     transform: rotateY(-10deg);
+    box-shadow: 2px 0px 7px 1px hsla(0, 0%, 0%, 0.1);
   }
   &.turn .flipper {
     transform: rotateY(-180deg);
@@ -777,15 +764,38 @@ clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     border-radius: .25rem;
     // display: none;
   }
-}
 
+  .extra-data {
+    display: flex;
+    justify-content: space-between;
+    margin: .5rem 0 1.5rem;
+
+    a {
+      font-size: 0.75rem;
+    }
+  }
+
+  .stack-img {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-end;
+
+    img {
+      border: 1px solid #fff;
+      height: 30px;
+      margin-left: -18px;
+    }
+  }
+
+}
 
 .bubble {
   background: rgba(0,0,0,0.4);
-  padding: 1em;
+  padding: 0.7em;
   position: relative;
   border-radius: 3px;
-  margin-top: 0.5em;
+  margin-top: 1.3em;
+  line-height: 1.3em;
 
   p {
     margin-bottom: 0;
@@ -798,5 +808,6 @@ clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     border-color: transparent transparent rgba(0, 0, 0, 0.4) transparent;
     border-width: 0px 0.5em 0.5em 0.5em;
     top: -0.5em;
+    left: 1em;
   }
 }

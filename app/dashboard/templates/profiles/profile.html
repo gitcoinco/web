@@ -413,8 +413,12 @@
         });
       }(jQuery));
 
-      $('.flip-card').on('click', function(){
-        console.log(this)
+      $('.flip-card').on('click', function(e){
+
+        if ($(e.target).is('a')) {
+          e.stopPropagation();
+          return
+        }
         $(this).toggleClass('turn')
       } )
 
