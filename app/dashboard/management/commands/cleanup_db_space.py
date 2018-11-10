@@ -35,7 +35,7 @@ class Command(BaseCommand):
 
         for model in [GasGuzzler, GasProfile]:
             result = model.objects.filter(
-                created_on__lt=self.get_then(14),
+                created_on__lt=self.get_then(24),
                 ).exclude(created_on__minute__lt=10).delete()
             print(f'{model}: {result}')
 
