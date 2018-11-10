@@ -160,18 +160,7 @@ var callbacks = {
   'bounty_type': unknown_if_empty,
   'bounty_owner_github_username': gitcoin_ize,
   'bounty_owner_name': function(key, val, result) {
-    if (result.bounty_owner_name == 'Anonymous') {
-      $('#bounty_owner_github_username').hide();
-      $('#bounty_owner_email').hide();
-      $('#bounty_owner_email_label').hide();
-      $('#bounty_owner_github_username_label').hide();
-    } else {
-      $('#bounty_owner_github_username').show();
-      $('#bounty_owner_email').show();
-      $('#bounty_owner_email_label').show();
-      $('#bounty_owner_github_username_label').show();
-    }
-    return [ 'bounty_owner_name', result.bounty_owner_name ];
+    return [ 'bounty_owner_name', result.bounty_owner_github_username ];
   },
   'funding_organisation': function(key, val, result) {
     return [ 'funding_organisation', result.funding_organisation ];
