@@ -98,8 +98,10 @@ def gas_intro(request):
 
 def gas_heatmap(request):
     gas_histories = {}
-    mins = request.GET.get('mins', 30)
+    mins = request.GET.get('mins', 60)
     min_options = [key for key, val in lines.items()]
+    if mins not in min_options:
+        mins = min_options[0]
     gas_histories[mins] = get_history_cached("hourly", mins)
     context = {
         'title': _('Live Ethereum (ETH) Gas Heatmap'),
