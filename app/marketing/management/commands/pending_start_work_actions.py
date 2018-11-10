@@ -20,7 +20,7 @@ import logging
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from dashboard.models import Interest, Bounty
+from dashboard.models import Bounty, Interest
 from dashboard.views import record_user_action
 from marketing.mails import start_work_applicant_about_to_expire, start_work_applicant_expired, start_work_approved
 

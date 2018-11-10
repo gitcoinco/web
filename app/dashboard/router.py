@@ -22,8 +22,9 @@ from datetime import datetime
 
 import django_filters.rest_framework
 from rest_framework import routers, serializers, viewsets
+from retail.helpers import get_ip
 
-from .models import Activity, Bounty, BountyFulfillment, Interest, ProfileSerializer
+from .models import Activity, Bounty, BountyFulfillment, Interest, ProfileSerializer, SearchHistory
 
 
 class BountyFulfillmentSerializer(serializers.ModelSerializer):
@@ -263,6 +264,14 @@ class BountyViewSet(viewsets.ModelViewSet):
             start = int(offset)
             end = start + int(limit)
             queryset = queryset[start:end]
+
+
+        # save search history 
+        SearchHistory.objects.create(
+            user=self.request.user if not self.request.user.is_anonymous else None,
+            data=dict(self.request.query_params),
+            ip_address=get_ip(self.request),
+            )
 
         return queryset
 
