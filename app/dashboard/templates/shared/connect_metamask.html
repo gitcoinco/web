@@ -15,27 +15,20 @@
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
 {% load i18n static %}
-<div id="over_balance_error" class="submit-notification metamask-error container-fluid" style="display: none;">
+<div id="connect_metamask_error" class="submit-notification metamask-error container-fluid" style="display: none;">
   <div class="row align-items-center px-4 py-2 text-center text-lg-left">
     <div class="col-lg-10 col-sm-12 py-2 px-5">
-      <h3>{% trans "You Appear to Have Ether!" %}</h3>
+      <h3>{% trans "Please Connect to Metamask to Continue" %}</h3>
       <p>
-        {% trans "Thank you for your interest in receiving a faucet distribution." %}
+        {% trans "In order to continue, you'll need to connect to metamask." %}
       </p>
       <p>
-        {% trans "You have more ether currently in your wallet than the distribution would provide. Please use that ether to pay the transaction cost." %}
+        {% trans "Please connect to Metamask and refresh the page." %}
+        <button id="metamask_connect" onclick="approve_metamask()">{% trans "Click here to connect to metamask" %}</button>
       </p>
-      <div class="col-lg-2 col-sm-12">
-        <img id="metamask_logo" src="{% static "v2/images/metamask.svg" %}" alt="Metamask Logo">
-      </div>
+    </div>
+    <div class="col-lg-2 col-sm-12">
+      <img src="{% static "v2/images/metamask.svg" %}" alt="Metamask Logo">
+    </div>
   </div>
 </div>
-<style type="text/css">
-  @media only screen and (min-width: 992px) {
-    #metamask_logo {
-      position: absolute;
-      left: 650%;
-      top: -100px;
-    }
-  }
-</style>
