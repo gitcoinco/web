@@ -3,7 +3,6 @@
   font-weight: 600;
   position: relative;
   bottom: 2px;
-  margin-top: 9px;
   text-align: right;
 }
 
@@ -101,18 +100,20 @@
   margin-left: 0.4rem;
 }
 
+
+#results-count {
+  color: #666666;
+}
+
+.search_bar .row:first-child {
+  border-bottom: 1px solid #D8D8D8;
+}
+
 /* Remove IE default X */
 #keywords::-ms-clear {
   display: none;
   width: 0;
   height: 0;
-}
-
-@media (min-width: 992px) and (max-width: 1024px) {
-
-  .order_by {
-    display: none;
-  }
 }
 
 @media (max-width: 767.98px) {

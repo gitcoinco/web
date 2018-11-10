@@ -766,10 +766,6 @@ input[type=text].loading {
 }
 
 .row.nonefound img {
-  filter: grayscale(100%);
-  -moz-filter: grayscale(100%);
-  -ms-filter: grayscale(100%);
-  -o-filter: grayscale(100%);
   max-width: 250px;
 }
 
