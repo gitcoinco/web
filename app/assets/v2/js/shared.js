@@ -897,6 +897,7 @@ var listen_for_web3_changes = async function() {
     is_metamask_unlocked = await window.ethereum._metamask.isUnlocked();
     if (is_metamask_approved && is_metamask_unlocked) {
       await ethereum.enable();
+      document.location.href = document.location.href;
     }
   }
 };

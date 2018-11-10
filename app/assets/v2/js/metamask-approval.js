@@ -7,6 +7,7 @@ async function metamaskApproval() {
     try {
       if (is_metamask_unlocked && is_metamask_approved) {
         await ethereum.enable();
+        document.location.href = document.location.href;
       }
     } catch (error) {
       _alert('Permission to connect to metamask rejected. Allow gitcoin to connect to metamask.', 'warning');
@@ -20,6 +21,7 @@ window.addEventListener('load', metamaskApproval);
 async function approve_metamask() {
   try {
     await ethereum.enable();
+    document.location.href = document.location.href;
     is_metamask_approved = true;
   } catch (error) {
     _alert('Permission to connect to metamask rejected. Allow gitcoin to connect to metamask.', 'warning');
