@@ -296,10 +296,9 @@ body {
   margin-left: 0;
 }
 
-#bounty_owner_name {
+#bounty_owner_github_username a {
   color: #0D0764;
   margin-bottom: 5px;
-  text-transform: capitalize;
   font-weight: 600;
 }
 
