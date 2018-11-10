@@ -24,7 +24,7 @@ from django.utils.safestring import mark_safe
 
 from .models import (
     Activity, Bounty, BountyFulfillment, BountySyncRequest, CoinRedemption, CoinRedemptionRequest, Interest, Profile,
-    Subscription, Tip, TokenApproval, Tool, ToolVote, UserAction,
+    SearchHistory, Subscription, Tip, TokenApproval, Tool, ToolVote, UserAction,
 )
 
 
@@ -72,6 +72,13 @@ class ProfileAdmin(admin.ModelAdmin):
     ordering = ['-id']
     search_fields = ['email', 'data']
     list_display = ['handle', 'created_on']
+
+
+class SearchHistoryAdmin(admin.ModelAdmin):
+    raw_id_fields = ['user']
+    ordering = ['-id']
+    search_fields = ['user', 'data']
+    list_display = ['user', 'data']
 
 
 class TipAdmin(admin.ModelAdmin):
@@ -143,6 +150,7 @@ class BountyAdmin(admin.ModelAdmin):
         return mark_safe(f"<a href={url}>{copy}</a>")
 
 
+admin.site.register(SearchHistory, SearchHistoryAdmin)
 admin.site.register(Activity, ActivityAdmin)
 admin.site.register(Subscription, GeneralAdmin)
 admin.site.register(UserAction, UserActionAdmin)
