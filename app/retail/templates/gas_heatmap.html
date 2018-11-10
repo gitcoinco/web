@@ -151,7 +151,7 @@
   rect.filter(function (d) { return d["gas_price"] > 0; })
     .append('title')
     .text(function (d) {
-      return timeFormat(d.date) + ' - Gas Price: ' + d["gas_price"];
+      return timeFormat(d.date) + ' - Gas Price: ' + d["gas_price"] + " gwei";
     });
 
   renderColor();
