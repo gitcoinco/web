@@ -332,7 +332,7 @@ def profile(request):
         'history': history
     }
 
-    return TemplateResponse(request, 'grants/profile.html', params)
+    return TemplateResponse(request, 'grants/profile/index.html', params)
 
 
 def quickstart(request):
