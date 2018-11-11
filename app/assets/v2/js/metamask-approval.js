@@ -6,8 +6,13 @@ async function metamaskApproval() {
 
     try {
       if (is_metamask_unlocked && is_metamask_approved) {
+        var start_time = ((new Date()).getTime() / 1000);
         await ethereum.enable();
-        document.location.href = document.location.href;
+        var now_time = ((new Date()).getTime() / 1000);
+        var did_request_and_user_respond = (now_time - start_time) > 1.0;
+        if(did_request_and_user_respond){
+          document.location.href = document.location.href;
+        }
       }
     } catch (error) {
       _alert('Permission to connect to metamask rejected. Allow gitcoin to connect to metamask.', 'warning');
@@ -20,8 +25,13 @@ window.addEventListener('load', metamaskApproval);
 
 async function approve_metamask() {
   try {
+    var start_time = ((new Date()).getTime() / 1000);
     await ethereum.enable();
-    document.location.href = document.location.href;
+    var now_time = ((new Date()).getTime() / 1000);
+    var did_request_and_user_respond = (now_time - start_time) > 1.0;
+    if(did_request_and_user_respond){
+      document.location.href = document.location.href;
+    }
     is_metamask_approved = true;
   } catch (error) {
     _alert('Permission to connect to metamask rejected. Allow gitcoin to connect to metamask.', 'warning');
