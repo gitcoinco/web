@@ -51,15 +51,15 @@ class EmailSubscriber(SuperModel):
     active = models.BooleanField(default=True)
     newsletter = models.BooleanField(default=True)
     preferences = JSONField(default=dict)
-    metadata = JSONField(default=dict)
+    metadata = JSONField(default=dict, blank=True)
     priv = models.CharField(max_length=30, default='')
-    github = models.CharField(max_length=255, default='')
+    github = models.CharField(max_length=255, default='', blank=True)
     keywords = ArrayField(models.CharField(max_length=200), blank=True, default=list)
     profile = models.ForeignKey(
         'dashboard.Profile',
         on_delete=models.CASCADE,
         related_name='email_subscriptions',
-        null=True)
+        null=True, blank=True)
     form_submission_records = JSONField(default=list, blank=True)
 
     def __str__(self):
