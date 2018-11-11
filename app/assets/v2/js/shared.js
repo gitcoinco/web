@@ -898,10 +898,12 @@ var listen_for_web3_changes = async function() {
     is_metamask_unlocked = await window.ethereum._metamask.isUnlocked();
     if (is_metamask_approved && is_metamask_unlocked) {
       var start_time = ((new Date()).getTime() / 1000);
+
       await ethereum.enable();
       var now_time = ((new Date()).getTime() / 1000);
       var did_request_and_user_respond = (now_time - start_time) > 1.0;
-      if(did_request_and_user_respond){
+
+      if (did_request_and_user_respond) {
         document.location.href = document.location.href;
       }
     }
