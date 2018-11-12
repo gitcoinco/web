@@ -92,7 +92,7 @@
             <a class="badge badge-kudos" href="{% url 'kudos_marketplace' %}?q={{ tag }}">{{ tag }}</a>
             {% endfor %}
           </p>
-          {% if related_profiles %}
+          {% if related_handles %}
           <div class="row pt-3">
             <div class="col-12">
               <p class="font-bigger-1">{% trans "These people own this Kudos" %}</p>
@@ -100,9 +100,9 @@
           </div>
           <div class="row">
             <div class="col-12">
-            {% for profile in related_profiles %}
-              <a href="/profile/{{ profile.handle }}" title="{{profile.username}}">
-              <img src="{% if profile.avatar %}{{profile.avatar_url}}{% else %}/dynamic/avatar/{{profile.username}}{% endif %}" alts="{{profile.username}}" width="70" class="rounded-circle border m-1">
+            {% for handle in related_handles %}
+              <a href="/profile/{{ handle }}" title="{{handle}}">
+              <img src="/dynamic/avatar/{{handle}}" alts="{{handle}}" width="70" class="rounded-circle border m-1">
               </a>
               {% if forloop.counter|divisibleby:5 %}
             </div>

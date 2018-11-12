@@ -159,16 +159,30 @@ class Token(SuperModel):
         return [tag.strip() for tag in self.tags.split(',')]
 
     @property
-    def owners(self):
+    def owners_profiles(self):
+        """.
+
+        Returns:
+            array: QuerySet of Profiles
+
+        """
         from dashboard.models import Profile
-        related_kudos = Token.objects.select_related('contract').filter(
-            name=self.name,
-            contract__network=settings.KUDOS_NETWORK,
-        )
-        related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from__in=related_kudos).exclude(txid='')
+        related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=self.pk).exclude(txid='')
         related_profiles_pks = related_kudos_transfers.values_list('recipient_profile_id', flat=True)
         related_profiles = Profile.objects.filter(pk__in=related_profiles_pks).distinct()
         return related_profiles
+
+    @property
+    def owners_handles(self):
+        """.
+            differs from `owners_profiles` in that not everyone who has received a kudos has a profile
+        Returns:
+            array: array of handles
+
+        """
+        from dashboard.models import Profile
+        related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=self.pk).exclude(txid='')
+        return related_kudos_transfers.values_list('username', flat=True)
 
     @property
     def num_clones_available_counting_indirect_send(self):
@@ -176,7 +190,7 @@ class Token(SuperModel):
 
     @property
     def num_clones_in_wild_counting_indirect_send(self):
-        num_total_sends_we_know_about = len(self.owners)
+        num_total_sends_we_know_about = len(self.owners_handles)
         if num_total_sends_we_know_about > self.num_clones_in_wild:
             return num_total_sends_we_know_about
         return self.num_clones_in_wild
