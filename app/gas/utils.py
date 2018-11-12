@@ -3,12 +3,10 @@ import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.utils import timezone
 
-from cacheops import cached_as
 from economy.utils import convert_amount
 from gas.models import GasAdvisory, GasProfile
 
 
-@cached_as(GasProfile, timeout=60*15)
 def recommend_min_gas_price_to_confirm_in_time(minutes, default=5):
     # if settings.DEBUG:
     #     return 10
@@ -22,7 +20,6 @@ def recommend_min_gas_price_to_confirm_in_time(minutes, default=5):
         return default
 
 
-@cached_as(GasProfile, timeout=60*15)
 def gas_price_to_confirm_time_minutes(gas_price):
     gp = GasProfile.objects.get(
         created_on__gt=(timezone.now()-timezone.timedelta(minutes=31)),
@@ -37,7 +34,6 @@ def eth_usd_conv_rate():
     return convert_amount(from_amount, from_currency, to_currency)
 
 
-@cached_as(GasProfile, timeout=60*15)
 def conf_time_spread(max_gas_price=9999):
     try:
         for minutes in [1, 11, 21, 31]:
@@ -52,7 +48,6 @@ def conf_time_spread(max_gas_price=9999):
     return json.dumps([])
 
 
-@cached_as(GasProfile, timeout=60*15)
 def gas_history(breakdown, mean_time_to_confirm_minutes):
     days = 30 * 8  # 8 months
     if breakdown == 'hourly':
@@ -104,7 +99,6 @@ def gas_history(breakdown, mean_time_to_confirm_minutes):
     return results_array
 
 
-@cached_as(GasAdvisory, timeout=60*15)
 def gas_advisories():
     gas_advisories = GasAdvisory.objects.filter(active=True, active_until__gt=timezone.now())
     return gas_advisories
