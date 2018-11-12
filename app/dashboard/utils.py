@@ -42,6 +42,7 @@ logger = logging.getLogger(__name__)
 class ProfileNotFoundException(Exception):
     pass
 
+
 class ProfileHiddenException(Exception):
     pass
 

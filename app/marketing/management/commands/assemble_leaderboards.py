@@ -19,7 +19,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 """
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from django.http.response import Http404
 from django.utils import timezone
 
 from cacheops import CacheMiss, cache
@@ -185,7 +184,6 @@ def add_element(key, index_term, amount):
     index_term = index_term.replace('@', '')
     if not index_term or index_term == "None":
         return
-<<<<<<< HEAD
     if index_term not in ranks[key].keys():
         ranks[key][index_term] = 0
     if index_term not in counts[key].keys():
@@ -220,32 +218,9 @@ def sum_bounty_helper(b, time, index_term, val_usd):
 
 
 def sum_bounties(b, index_terms):
-=======
-    if username not in ranks[key].keys():
-        ranks[key][username] = 0
-    if username not in counts[key].keys():
-        counts[key][username] = 0
-    ranks[key][username] += round(float(amount), 2)
-    counts[key][username] += 1
-
-
-def sum_bounty_helper(b, breakdown, username, val_usd):
-    fulfiller_usernames = list(b.fulfillments.filter(accepted=True).values_list('fulfiller_github_username', flat=True))
-    add_element(f'{breakdown}_fulfilled', username, val_usd)
-    if username == b.bounty_owner_github_username and username not in IGNORE_PAYERS:
-        add_element(f'{breakdown}_payers', username, val_usd)
-    if username == b.org_name and username not in IGNORE_PAYERS:
-        add_element(f'{breakdown}_orgs', username, val_usd)
-    if username in fulfiller_usernames and username not in IGNORE_EARNERS:
-        add_element(f'{breakdown}_earners', username, val_usd)
-
-
-def sum_bounties(b, usernames):
->>>>>>> Fix broken logic in assemble_leaderboard and catch missing LR impressions (#1851)
     val_usd = b._val_usd_db
     for index_term in index_terms:
         if b.idx_status == 'done':
-<<<<<<< HEAD
             sum_bounty_helper(b, ALL, index_term, val_usd)
             if b.created_on > WEEKLY_CUTOFF:
                 sum_bounty_helper(b, WEEKLY, index_term, val_usd)
@@ -296,45 +271,6 @@ def sum_kudos_helper(keyword, time, index_term, val_usd):
 
 
 def sum_tips(t, index_terms):
-=======
-            breakdown = 'all'
-            sum_bounty_helper(b, breakdown, username, val_usd)
-            ###############################
-            if b.created_on > weekly_cutoff:
-                breakdown = 'weekly'
-                sum_bounty_helper(b, breakdown, username, val_usd)
-            if b.created_on > monthly_cutoff:
-                breakdown = 'monthly'
-                sum_bounty_helper(b, breakdown, username, val_usd)
-            if b.created_on > quarterly_cutoff:
-                breakdown = 'quarterly'
-                sum_bounty_helper(b, breakdown, username, val_usd)
-            if b.created_on > yearly_cutoff:
-                breakdown = 'yearly'
-                sum_bounty_helper(b, breakdown, username, val_usd)
-
-        add_element('all_all', username, b._val_usd_db)
-        if b.created_on > weekly_cutoff:
-            add_element('weekly_all', username, b._val_usd_db)
-        if b.created_on > monthly_cutoff:
-            add_element('monthly_all', username, b._val_usd_db)
-        if b.created_on > yearly_cutoff:
-            add_element('yearly_all', username, b._val_usd_db)
-
-
-def sum_tip_helper(t, breakdown, username, val_usd):
-    add_element(f'{breakdown}_all', username, val_usd)
-    add_element(f'{breakdown}_fulfilled', username, val_usd)
-    if t.username == username or breakdown == 'all':
-        add_element(f'{breakdown}_earners', username, val_usd)
-    if t.from_username == username:
-        add_element(f'{breakdown}_payers', username, val_usd)
-    if t.org_name == username:
-        add_element(f'{breakdown}_orgs', username, val_usd)
-
-
-def sum_tips(t, usernames):
->>>>>>> Fix broken logic in assemble_leaderboard and catch missing LR impressions (#1851)
     val_usd = t.value_in_usdt_now
     for index_term in index_terms:
         sum_tip_helper(t, ALL, index_term, val_usd)
@@ -399,10 +335,6 @@ class Command(BaseCommand):
             for index_term, amount in sorted(rankings.items(), key=lambda x: x[1], reverse=True):
                 count = counts[key][index_term]
                 tech_keywords = Profile.objects.get(handle__iexact=username).keywords
-                try:
-                    tech_keywords = profile_keywords_helper(index_term)
-                except Http404:
-                    tech_keywords = []
                 lbr_kwargs = {
                     'count': count,
                     'active': True,
