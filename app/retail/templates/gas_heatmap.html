@@ -15,24 +15,16 @@
     data = []
 
     {% for key, gas_history in gas_histories.items %}
-    var source = {{ gas_history | safe }};
-  source.forEach(function (d) {
-    d['gas_price'] = parseFloat(d[0]);
-    d['created_on'] = d[2];
-    d.splice(0, 2);
-    data.push(d);
-  });
+      var source = {{ gas_history | safe }};
+    source.forEach(function (d) {
+      d['gas_price'] = parseFloat(d[0]);
+      d['created_on'] = d[2];
+      d.splice(0, 2);
+      data.push(d);
+    });
 
   {% endfor %}
 
-  var source = [];
-  for (var d = 0; d < 30; d++) {
-    for (var h = 0; h < 24; h++) {
-      for (var x = 0; x < 2; x++) {
-        source.push([Math.random(), x, "2018-11-" + d.pad(2) + "T" + h.pad(2) + ":00:00"])
-      }
-    }
-  }
 
 
   //UI configuration
