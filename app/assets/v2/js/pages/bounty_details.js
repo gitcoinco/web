@@ -26,8 +26,8 @@ var gitcoin_ize = function(key, val) {
 var email_ize = function(key, val) {
 
   if (val == 'Anonymous' || val == '') {
-    $('#bounty_owner_email').hide();
-    $('#bounty_owner_email_label').hide();
+    $('#bounty_owner_email').remove();
+    $('#bounty_owner_email_label').remove();
   }
 
   if (!_truthy(val)) {
