@@ -29,10 +29,10 @@ from django.core.management.base import BaseCommand
 import boto
 from boto.s3.key import Key
 from dashboard.models import Bounty, Profile, Tip
-from kudos.models import KudosTransfer
 from economy.utils import convert_amount
 from enssubdomain.models import ENSSubdomainRegistration
 from faucet.models import FaucetRequest
+from kudos.models import KudosTransfer
 from marketing.mails import send_mail
 
 DATE_FORMAT = '%Y/%m/%d'

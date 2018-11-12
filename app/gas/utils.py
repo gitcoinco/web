@@ -3,10 +3,12 @@ import json
 from django.core.serializers.json import DjangoJSONEncoder
 from django.utils import timezone
 
+from cacheops import cached_as
 from economy.utils import convert_amount
 from gas.models import GasAdvisory, GasProfile
 
 
+@cached_as(GasProfile, timeout=60*15)
 def recommend_min_gas_price_to_confirm_in_time(minutes, default=5):
     # if settings.DEBUG:
     #     return 10
@@ -20,6 +22,7 @@ def recommend_min_gas_price_to_confirm_in_time(minutes, default=5):
         return default
 
 
+@cached_as(GasProfile, timeout=60*15)
 def gas_price_to_confirm_time_minutes(gas_price):
     gp = GasProfile.objects.get(
         created_on__gt=(timezone.now()-timezone.timedelta(minutes=31)),
@@ -34,13 +37,14 @@ def eth_usd_conv_rate():
     return convert_amount(from_amount, from_currency, to_currency)
 
 
+@cached_as(GasProfile, timeout=60*15)
 def conf_time_spread(max_gas_price=9999):
     try:
         for minutes in [1, 11, 21, 31]:
             gp = GasProfile.objects.filter(
-                created_on__gt=(timezone.now()-timezone.timedelta(minutes=minutes)),
+                created_on__gt=(timezone.now() - timezone.timedelta(minutes=minutes)),
                 gas_price__lte=max_gas_price,
-                ).distinct('gas_price').order_by('gas_price').values_list('gas_price', 'mean_time_to_confirm_minutes')
+            ).distinct('gas_price').order_by('gas_price').values_list('gas_price', 'mean_time_to_confirm_minutes')
             if gp:
                 return json.dumps(list(gp), cls=DjangoJSONEncoder)
     except Exception:
@@ -48,9 +52,9 @@ def conf_time_spread(max_gas_price=9999):
     return json.dumps([])
 
 
+@cached_as(GasProfile, timeout=60*15)
 def gas_history(breakdown, mean_time_to_confirm_minutes):
-
-    days = 30 * 8 # 8 months
+    days = 30 * 8  # 8 months
     if breakdown == 'hourly':
         days = 10
     if breakdown == 'daily':
@@ -61,7 +65,7 @@ def gas_history(breakdown, mean_time_to_confirm_minutes):
     gas_profiles = GasProfile.objects.filter(
         created_on__gt=start_date,
         mean_time_to_confirm_minutes__lte=mean_time_to_confirm_minutes,
-        ).order_by('-created_on').cache()
+    ).order_by('-created_on')
 
     # collapse into best gas price per time period
     results = {}
@@ -73,7 +77,11 @@ def gas_history(breakdown, mean_time_to_confirm_minutes):
         if not gp.created_on.weekday() < 1 and breakdown in ['weekly']:
             continue
         key = gp.created_on.strftime("%Y-%m-%dT%H:00:00")
-        package = {'created_on': key, 'gas_price': float(gp.gas_price), 'mean_time_to_confirm_minutes': float(gp.mean_time_to_confirm_minutes)}
+        package = {
+            'created_on': key,
+            'gas_price': float(gp.gas_price),
+            'mean_time_to_confirm_minutes': float(gp.mean_time_to_confirm_minutes)
+        }
         if key not in results.keys():
             results[key] = package
         else:
@@ -96,6 +104,7 @@ def gas_history(breakdown, mean_time_to_confirm_minutes):
     return results_array
 
 
+@cached_as(GasAdvisory, timeout=60*15)
 def gas_advisories():
     gas_advisories = GasAdvisory.objects.filter(active=True, active_until__gt=timezone.now())
     return gas_advisories
