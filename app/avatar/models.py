@@ -132,7 +132,7 @@ class Avatar(SuperModel):
             self.png.save(f'{handle}.png', ContentFile(temp_avatar.getvalue()), save=True)
             return self.png.url
         except Exception as e:
-            logger.error(e)
+            logger.error('Error: (%s) - Avatar PK: (%s)', str(e), self.id)
         return ''
 
     @property
@@ -264,7 +264,7 @@ class Avatar(SuperModel):
                     self.save()
                 return True
         except Exception as e:
-            logger.error(e)
+            logger.error('Error: (%s) - Avatar PK: (%s)', str(e), self.id)
         return False
 
     def convert_custom_svg(self, force_save=False):
@@ -279,7 +279,7 @@ class Avatar(SuperModel):
             if not converted:
                 raise AvatarConversionError('Avatar conversion error while converting SVG!')
         except AvatarConversionError as e:
-            logger.error(e)
+            logger.error('Error: (%s) - Avatar PK: (%s)', str(e), self.id)
 
     def convert_github_png(self, force_save=False):
         """Handle converting the Github Avatar PNG to SVG."""
@@ -293,4 +293,4 @@ class Avatar(SuperModel):
             if not converted:
                 raise AvatarConversionError('Avatar conversion error while converting SVG!')
         except AvatarConversionError as e:
-            logger.error(e)
+            logger.error('Error: (%s) - Avatar PK: (%s)', str(e), self.id)

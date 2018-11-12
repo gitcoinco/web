@@ -113,7 +113,7 @@ def save_avatar(request):
     except Exception as e:
         response['status'] = 400
         response['message'] = 'Bad Request'
-        logger.error(e)
+        logger.error('Save Avatar - Error: (%s) - Handle: (%s)', e, profile.handle if profile else '')
     return JsonResponse(response, status=response['status'])
 
 
@@ -132,7 +132,7 @@ def handle_avatar(request, _org_name='', add_gitcoincologo=False):
                 if avatar_file:
                     return HttpResponse(avatar_file, content_type=content_type)
         except Exception as e:
-            logger.error(e)
+            logger.error('Handle Avatar - Exception: (%s) - Handle: (%s)', str(e), _org_name)
 
     # default response
     # params
@@ -164,5 +164,5 @@ def handle_avatar(request, _org_name='', add_gitcoincologo=False):
         img.save(response, 'PNG')
         return response
     except (AttributeError, IOError, SyntaxError) as e:
-        logger.error(e)
+        logger.error('Handle Avatar - Response error: (%s) - Handle: (%s)', str(e), _org_name)
         return get_err_response(request, blank_img=(_org_name == 'Self'))
