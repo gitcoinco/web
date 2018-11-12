@@ -235,20 +235,25 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': True,
+        'filters': {
+            'host_filter': {
+                '()': 'app.log_filters.HostFilter',
+            }
+        },
         'root': {
             'level': 'WARNING',
             'handlers': ['sentry', 'console', 'watchtower'],
         },
         'formatters': {
             'simple': {
-                'format': '%(asctime)s %(name)-12s [%(levelname)-8s] %(message)s',
+                'format': '%(hostname)s %(asctime)s %(name)-12s [%(levelname)-8s] %(message)s',
                 'datefmt': '%Y-%m-%d %H:%M:%S'
             },
             'cloudwatch': {
-                'format': '%(name)-12s [%(levelname)-8s] %(message)s',
+                'format': '%(hostname)s %(name)-12s [%(levelname)-8s] %(message)s',
             },
             'verbose': {
-                'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+                'format': '%(hostname)s %(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
             },
         },
         'handlers': {
@@ -259,7 +264,7 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
             'console': {
                 'level': 'DEBUG',
                 'class': 'logging.StreamHandler',
-                'formatter': 'verbose'
+                'formatter': 'verbose',
             },
             'watchtower': {
                 'level': AWS_LOG_LEVEL,
@@ -267,6 +272,7 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
                 'boto3_session': boto3_session,
                 'log_group': AWS_LOG_GROUP,
                 'stream_name': AWS_LOG_STREAM,
+                'filters': ['host_filter'],
                 'formatter': 'cloudwatch',
             },
         },
