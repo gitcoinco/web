@@ -32,7 +32,7 @@ from economy.models import SuperModel
 from svgutils.compose import Figure, Line
 
 from .exceptions import AvatarConversionError
-from .utils import build_avatar_component, convert_img, get_upload_filename
+from .utils import build_avatar_component, convert_img, convert_wand, get_upload_filename
 
 logger = logging.getLogger(__name__)
 
@@ -250,7 +250,10 @@ class Avatar(SuperModel):
         """Handle converting from the source field to the target based on format."""
         try:
             # Convert the provided source to the specified output and store in BytesIO.
-            tmpfile_io = convert_img(source, input_fmt=input_fmt, output_fmt=output_fmt)
+            if output_fmt == 'svg':
+                tmpfile_io = convert_wand(source, input_fmt=input_fmt, output_fmt=output_fmt)
+            else:
+                tmpfile_io = convert_img(source, input_fmt=input_fmt, output_fmt=output_fmt)
             if self.profile_set.exists():
                 png_name = self.profile_set.last().handle
             else:
