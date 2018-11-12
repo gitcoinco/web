@@ -726,12 +726,16 @@ clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
   background-color: transparent;
   display: flex;
 
-  .flip-card_hold {
+  &:focus {
+    box-shadow: 0 0 1px #2196F3, 0 0 5px 2px #2196F3;
+  }
+
+  &__hold {
     // position: absolute;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
   }
-  .flipper {
+  &__flipper {
     -webkit-transform-style: preserve-3d;
     transform-style: preserve-3d;
     transition: 0.6s;
@@ -740,32 +744,31 @@ clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     cursor: pointer;
     border-radius: 3px;
   }
-  .front {
+  &__front {
     position: relative;
     background: white;
     border-radius: .25rem;
     z-index: 2;
-  	transform: rotateY(0deg);
+  	transform: rotateY(0);
   }
 
 
-  .flipper:hover {
+  &__flipper:hover {
     transform: rotateY(-10deg);
     box-shadow: 2px 0px 7px 1px hsla(0, 0%, 0%, 0.1);
   }
-  &.turn .flipper {
-    transform: rotateY(-180deg);
+  &.turn .flip-card__flipper {
+    transform: rotateY(-0.5turn);
   }
 
-  .flip-card_back {
+  &__back {
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
-    transform: rotateY(-180deg);
+    transform: rotateY(-0.5turn);
     border-radius: .25rem;
-    // display: none;
   }
 
-  .extra-data {
+  &__extra-data {
     display: flex;
     justify-content: space-between;
     margin: .5rem 0 1.5rem;
@@ -775,7 +778,7 @@ clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
     }
   }
 
-  .stack-img {
+  &__stack-img {
     display: flex;
     flex-direction: row-reverse;
     align-items: flex-end;

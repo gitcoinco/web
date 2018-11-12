@@ -413,7 +413,7 @@
         });
       }(jQuery));
 
-      $('.flip-card').on('click', function(e){
+      $('.flip-card').on('click keypress', function(e){
 
         if ($(e.target).is('a')) {
           e.stopPropagation();
