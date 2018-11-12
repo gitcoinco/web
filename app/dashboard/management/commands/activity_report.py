@@ -29,6 +29,7 @@ from django.core.management.base import BaseCommand
 import boto
 from boto.s3.key import Key
 from dashboard.models import Bounty, Profile, Tip
+from kudos.models import KudosTransfer
 from economy.utils import convert_amount
 from enssubdomain.models import ENSSubdomainRegistration
 from faucet.models import FaucetRequest
@@ -106,23 +107,29 @@ class Command(BaseCommand):
         }
 
     def format_tip(self, tip):
+        return self.format_cryptoasset(tip, 'tip')
+        
+    def format_kudos(self, kudos):
+        return self.format_cryptoasset(kudos, 'kudos')
+        
+    def format_cryptoasset(self, ca, _type='tip'):
         location, bio = get_bio(tip.username)
 
         return {
-            'type': 'tip',
-            'created_on': tip.created_on,
-            'last_activity': tip.modified_on,
-            'amount': tip.amount_in_whole_units,
-            'denomination': tip.tokenName,
-            'amount_eth': tip.value_in_eth,
-            'amount_usdt': tip.value_in_usdt,
-            'from_address': tip.from_address,
-            'claimee_address': tip.receive_address,
-            'repo': self.extract_github_repo(tip.github_url) if tip.github_url else '',
-            'from_username': tip.from_name,
-            'fulfiller_github_username': tip.username,
-            'status': tip.status,
-            'comments': tip.github_url,
+            'type': _type,
+            'created_on': ca.created_on,
+            'last_activity': ca.modified_on,
+            'amount': ca.amount_in_whole_units,
+            'denomination': ca.tokenName,
+            'amount_eth': ca.value_in_eth,
+            'amount_usdt': ca.value_in_usdt,
+            'from_address': ca.from_address,
+            'claimee_address': ca.receive_address,
+            'repo': self.extract_github_repo(ca.github_url) if ca.github_url else '',
+            'from_username': ca.from_name,
+            'fulfiller_github_username': ca.username,
+            'status': ca.status,
+            'comments': ca.github_url,
             'payee_bio': bio,
             'payee_location': location,
         }
@@ -202,6 +209,15 @@ class Command(BaseCommand):
             txid='',
         ).order_by('created_on', 'id')
         formatted_tips = imap(self.format_tip, tips)
+
+        tips = KudosTransfer.objects.filter(
+            network='mainnet',
+            created_on__gte=options['start_date'],
+            created_on__lte=options['end_date']
+        ).exclude(
+            txid='',
+        ).order_by('created_on', 'id')
+        formatted_tips = imap(self.format_kudos, tips)
 
         enssubregistrations = ENSSubdomainRegistration.objects.filter(
             created_on__gte=options['start_date'],
