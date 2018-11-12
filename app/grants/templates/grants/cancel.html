@@ -40,7 +40,7 @@
         <img src="{% static "v2/images/prime.png" %}">
       </div>
     </div>
-    
+
     <div id="grants_form">
       <h2 class="my-5 text-center">
         <div class="mb-2 font-title-lg">
@@ -96,8 +96,8 @@
                   <button class="button button--primary button--full">{% trans "Cancel Contribution" %}
                   </button>
                   <input type="hidden" id="contract_address" name="contract_address" value="{{ grant.contract_address }}">
-                  <input type="hidden" id="token_address" name="token_address" value="{{ grant.token_address }}">
                   <input type="hidden" id="admin_address" name="admin_address" value="{{ grant.admin_address }}">
+                  <input type="hidden" id="token_address" name="token_address" value="{{ subscription.token_address }}">
                   <input type="hidden" id="amount_per_period" name="amount_per_period" value="{{ subscription.amount_per_period }}">
                   <input type="hidden" id="period_seconds" name="period_seconds" value="{{ subscription.period_seconds }}">
                   <input type="hidden" id="signature" name="signature" value="{{ subscription.contributor_signature }}">
