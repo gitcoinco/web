@@ -28,12 +28,24 @@
 
 
   //UI configuration
-  var itemSize = 18,
+  var itemSize = 70,
     cellSize = itemSize - 1,
     width = 800,
-    height = 800,
+    height = 1700,
     margin = { top: 20, right: 20, bottom: 20, left: 25 };
-
+  if(window.innerWidth < 400){
+    itemSize = 15;
+    height = 800;
+  } else if(window.innerWidth < 600){
+    itemSize = 25;
+    height = 1000;
+  } else if(window.innerWidth < 800){
+    itemSize = 40;
+    height = 1200;
+  } else if(window.innerWidth < 1000){
+    itemSize = 50;
+    height = 1400;
+  }
   //formats
   var hourFormat = d3.timeFormat('%H'),
     dayFormat = d3.timeFormat('%j'),
@@ -267,12 +279,4 @@
   </div>
   {% endif %}
 
-  <h2>{% trans "Useful Links" %}</h2>
-  {% blocktrans %}To see the data in table format, check out <a href="https://ethgasstation.info/predictionTable.php"
-    target="_blank" rel="noopener noreferrer">ETH Gas Station</a>{% endblocktrans %}
-
-  <br>
-  {% blocktrans %}To see this information persisted in-browser check out <a href=https://chrome.google.com/webstore/detail/ethereum-gas-price-extens/innfmlnnhfcebjcnfopadflecemoddnp
-    target="_blank" rel="noopener noreferrer">this chrome extension</a>{% endblocktrans %}
-</section>
 {% endblock %}
