@@ -126,7 +126,7 @@ def handle_avatar(request, _org_name='', add_gitcoincologo=False):
 
     if _org_name:
         try:
-            profile = Profile.objects.select_related('avatar').get(handle__iexact=_org_name)
+            profile = Profile.objects.select_related('avatar').filter(handle__iexact=_org_name).first()
             if profile.avatar:
                 avatar_file, content_type = profile.avatar.determine_response(request.GET.get('email', False))
                 if avatar_file:
