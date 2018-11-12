@@ -246,14 +246,14 @@ if ENV not in ['local', 'test', 'staging', 'preview']:
         },
         'formatters': {
             'simple': {
-                'format': '%(hostname)s %(asctime)s %(name)-12s [%(levelname)-8s] %(message)s',
+                'format': '%(asctime)s %(name)-12s [%(levelname)-8s] %(message)s',
                 'datefmt': '%Y-%m-%d %H:%M:%S'
             },
             'cloudwatch': {
                 'format': '%(hostname)s %(name)-12s [%(levelname)-8s] %(message)s',
             },
             'verbose': {
-                'format': '%(hostname)s %(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
+                'format': '%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s'
             },
         },
         'handlers': {
