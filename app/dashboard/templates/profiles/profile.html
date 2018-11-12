@@ -413,14 +413,13 @@
         });
       }(jQuery));
 
-      $('.flip-card').on('click keypress', function(e){
-
+      $('.flip-card').on('click keypress', e => {
         if ($(e.target).is('a')) {
           e.stopPropagation();
           return
         }
-        $(this).toggleClass('turn')
-      } )
+        $(e.currentTarget).toggleClass('turn')
+      })
 
     </script>
 

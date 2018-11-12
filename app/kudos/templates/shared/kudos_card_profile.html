@@ -14,7 +14,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static kudos_extras  %}
+{% load i18n static kudos_extras avatar_tags  %}
 {% load humanize %}
 {% if kudos_data == 'sent_kudos' %}
   {% regroup sent_kudos|dictsort:"kudos_token_cloned_from.name" by kudos_token_cloned_from.name as kudos_dupe %}
@@ -36,7 +36,7 @@
             <div class="flip-card__stack-img">
               {% if kudos_group.list|length > 5 %}<b>+{{kudos_group.list|length|add:"-5"}}</b>{% endif %}
               {% for kt in kudos_group.list|slice:":5" %}
-                <img src="/dynamic/avatar/{{ kudos_group.list.0.username }}" alt="{{ kudos_group.list.0.from_username }}" class="rounded-circle" width="30" height="30">
+                <img src="{% avatar_url kudos_group.list.0.username  %}" alt="{{ kudos_group.list.0.from_username }}" class="rounded-circle" width="30" height="30">
               {% endfor %}
             </div>
           </div>
@@ -69,7 +69,8 @@
             <div class="flip-card__stack-img">
               {% if kudos_group.list|length > 5 %}<b>+{{kudos_group.list|length|add:"-5"}}</b>{% endif %}
               {% for kt in kudos_group.list|slice:":5" %}
-                <img src="/dynamic/avatar/{{ kudos_group.list.0.from_username }}" alt="{{ kudos_group.list.0.from_username }}" class="rounded-circle" width="30" height="30">
+
+                <img src="{% avatar_url kudos_group.list.0.from_username  %}" alt="{{ kudos_group.list.0.from_username }}" class="rounded-circle" width="30" height="30">
               {% endfor %}
             </div>
           </div>
