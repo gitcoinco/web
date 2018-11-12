@@ -34,7 +34,6 @@ class ConversionRateNotFoundError(Exception):
     pass
 
 
-@cached_as(ConversionRate, timeout=60 * 60)
 def convert_amount(from_amount, from_currency, to_currency, timestamp=None):
     """Convert the provided amount to another current.
 
