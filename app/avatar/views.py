@@ -121,6 +121,9 @@ def handle_avatar(request, _org_name='', add_gitcoincologo=False):
     from dashboard.models import Profile
     icon_size = (215, 215)
 
+    if _org_name:
+        _org_name = _org_name.replace('@', '')
+
     if _org_name in settings.BLOCKED_USERS or is_deleted_account(_org_name):
         return get_err_response(request, blank_img=(_org_name == 'Self'))
 
