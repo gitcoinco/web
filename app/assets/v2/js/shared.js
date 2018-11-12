@@ -1072,6 +1072,7 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     const dateNow = new Date();
     const dateExpires = new Date(result['expires_date']);
     const isExpired = dateExpires < dateNow && !result['is_open'];
+    const isInfinite = dateExpires - new Date().setFullYear(new Date().getFullYear() + 1) > 1;
     const projectType = ucwords(result['project_type']) + ' &bull; ';
 
     result['action'] = result['url'];
@@ -1104,10 +1105,17 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
       result['p'] += ('Expired ' + timeAgo + ' ago');
     } else {
       const openedWhen = timeDifference(dateNow, new Date(result['web3_created']), true);
-      const timeLeft = timeDifference(dateNow, dateExpires);
-      const expiredExpires = dateNow < dateExpires ? 'Expires' : 'Expired';
 
-      result['p'] += ('Opened ' + openedWhen + ' ago, ' + expiredExpires + ' ' + timeLeft);
+      if (isInfinite) {
+        const expiredExpires = 'Never expires';
+
+        result['p'] += ('Opened ' + openedWhen + ' ago, ' + expiredExpires);
+      } else {
+        const timeLeft = timeDifference(dateNow, dateExpires);
+        const expiredExpires = dateNow < dateExpires ? 'Expires' : 'Expired';
+
+        result['p'] += ('Opened ' + openedWhen + ' ago, ' + expiredExpires + ' ' + timeLeft);
+      }
     }
 
     if (renderForExplorer) {
