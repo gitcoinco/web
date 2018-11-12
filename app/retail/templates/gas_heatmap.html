@@ -25,13 +25,6 @@
 
   {% endfor %}
 
-  // FOR DEBUGGING ONLY - GENERATE TEST DATA
-  Number.prototype.pad = function (size) {
-    var s = String(this);
-    while (s.length < (size || 2)) { s = "0" + s; }
-    return s;
-  }
-
   var source = [];
   for (var d = 0; d < 30; d++) {
     for (var h = 0; h < 24; h++) {
