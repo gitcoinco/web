@@ -943,7 +943,7 @@ def maybe_notify_user_escalated_github(bounty, username, last_heard_from_user_da
 
     msg = f"""{status_header}@{username} due to inactivity, we have escalated [this issue]({bounty.url}) to Gitcoin's moderation team. Let us know if you believe this has been done in error!
 
-* [x] warning ({num_days_back_to_warn} days)
+* [x] reminder ({num_days_back_to_warn} days)
 * [x] escalation to mods ({num_days_back_to_delete_interest} days)
 {append_snooze_copy(bounty)}"""
 
@@ -955,7 +955,7 @@ def maybe_warn_user_removed_github(bounty, username, last_heard_from_user_days):
         return False
 
     msg = f"""@{username} Hello from Gitcoin Core - are you still working on this issue? Please submit a WIP PR or comment back within the next 3 days or you will be removed from this ticket and it will be returned to an ‘Open’ status. Please let us know if you have questions!
-* [x] warning ({num_days_back_to_warn} days)
+* [x] reminder ({num_days_back_to_warn} days)
 * [ ] escalation to mods ({num_days_back_to_delete_interest} days)
 {append_snooze_copy(bounty)}"""
 

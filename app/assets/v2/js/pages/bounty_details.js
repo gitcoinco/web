@@ -20,10 +20,16 @@ var gitcoin_ize = function(key, val) {
   if (!_truthy(val)) {
     return [ null, null ];
   }
-  return [ key, '<a href="https://gitcoin.co/profile/' + val + '" target="_blank" rel="noopener noreferrer">@' + val.replace('@', '') + '</a>' ];
+  return [ key, '<a href="https://gitcoin.co/profile/' + val + '" target="_blank" rel="noopener noreferrer">' + val.replace('@', '') + '</a>' ];
 };
 
 var email_ize = function(key, val) {
+
+  if (val == 'Anonymous' || val == '') {
+    $('#bounty_owner_email').remove();
+    $('#bounty_owner_email_label').remove();
+  }
+
   if (!_truthy(val)) {
     return [ null, null ];
   }
@@ -84,7 +90,6 @@ var rows = [
   'experience_level',
   'bounty_type',
   'expires_date',
-  'bounty_owner_name',
   'issue_keywords',
   'started_owners_username',
   'submitted_owners_username',
@@ -111,7 +116,7 @@ var callbacks = {
     return [ 'avatar', '<a href="/profile/' + result['org_name'] + '"><img class=avatar src="' + val + '"></a>' ];
   },
   'issuer_avatar_url': function(key, val, result) {
-    var username = result['bounty_owner_github_username'] ? result['bounty_owner_github_username'] : 'Self';
+    const username = result['bounty_owner_github_username'] ? result['bounty_owner_github_username'] : 'Self';
 
     return [ 'issuer_avatar_url', '<a href="/profile/' + result['bounty_owner_github_username'] +
       '"><img class=avatar src="/dynamic/avatar/' + username + '"></a>' ];
@@ -160,20 +165,6 @@ var callbacks = {
   'project_length': unknown_if_empty,
   'bounty_type': unknown_if_empty,
   'bounty_owner_github_username': gitcoin_ize,
-  'bounty_owner_name': function(key, val, result) {
-    if (result.bounty_owner_name == 'Anonymous') {
-      $('#bounty_owner_github_username').hide();
-      $('#bounty_owner_email').hide();
-      $('#bounty_owner_email_label').hide();
-      $('#bounty_owner_github_username_label').hide();
-    } else {
-      $('#bounty_owner_github_username').show();
-      $('#bounty_owner_email').show();
-      $('#bounty_owner_email_label').show();
-      $('#bounty_owner_github_username_label').show();
-    }
-    return [ 'bounty_owner_name', result.bounty_owner_name ];
-  },
   'funding_organisation': function(key, val, result) {
     return [ 'funding_organisation', result.funding_organisation ];
   },
@@ -341,6 +332,7 @@ var callbacks = {
 
     $('.progress').css('width', expiringInPercentage + '%');
     var response = timeDifference(now, expires_date).split(' ');
+    const isInfinite = expires_date - new Date().setFullYear(new Date().getFullYear() + 1) > 1;
 
     if (expires_date < new Date()) {
       label = 'expired';
@@ -353,6 +345,8 @@ var callbacks = {
       }
     } else if (result['status'] === 'done' || result['status'] === 'cancelled') {
       $('#timer').hide();
+    } else if (isInfinite) {
+      response = '&infin;';
     } else {
       response.shift();
       response = response.join(' ');

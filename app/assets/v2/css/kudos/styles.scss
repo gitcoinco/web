@@ -577,6 +577,11 @@ a.cellarius-partner:before {
   border-bottom: 1px solid #C8C8C8;
   padding-bottom: 0.8rem;
   margin-bottom: 1rem;
+
+  img {
+    position: relative;
+    top: -2px;
+  }
 }
 
 .kudos-details__price {
