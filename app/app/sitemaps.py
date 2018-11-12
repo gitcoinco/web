@@ -3,7 +3,6 @@ from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
 from dashboard.models import Bounty, Profile
-from external_bounties.models import ExternalBounty
 from kudos.models import Token
 
 
@@ -81,25 +80,11 @@ class ResultsSitemap(Sitemap):
         return f'/results/{item}'
 
 
-class ExternalBountySitemap(Sitemap):
-    changefreq = "weekly"
-    priority = 0.8
-
-    def items(self):
-        return ExternalBounty.objects.filter(active=True).cache()
-
-    def lastmod(self, obj):
-        return obj.modified_on
-
-    def location(self, item):
-        return item.url
-
 
 sitemaps = {
     'results': ResultsSitemap,
     'static': StaticViewSitemap,
     'issues': IssueSitemap,
-    'universe': ExternalBountySitemap,
     'orgs': ProfileSitemap,
     'kudos': KudosSitemap,
 }
