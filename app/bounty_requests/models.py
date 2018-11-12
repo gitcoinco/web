@@ -63,4 +63,4 @@ class BountyRequest(SuperModel):
 
     def __str__(self):
         """Return the string representation of BountyRequest."""
-        return f"{self.requested_by.username} / {self.created_on}"
+        return f"{self.requested_by.username if self.requested_by else 'anonymous'} / {self.created_on}"

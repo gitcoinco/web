@@ -54,7 +54,7 @@
             <img src="{% static 'v2/images/kudos/assets/kudos-diamond.svg' %}" alt=""> MARKETPLACE STATS
           </div>
 
-          <p><span class="text-color_blue text-weight_semibold">{{ kudos.rarity }}</span> ({{ kudos.num_clones_in_wild }} out of {{ kudos.num_gen0_clones_allowed }}) <i data-toggle="tooltip" title="" data-html="true" data-original-title="<span class='title-tooltip'>Kudos Rarity</span>
+          <p><span class="text-color_blue text-weight_semibold">{{ kudos.rarity }}</span> ({{ kudos.num_clones_in_wild_counting_indirect_send }} out of {{ kudos.num_gen0_clones_allowed }}) <i data-toggle="tooltip" title="" data-html="true" data-original-title="<span class='title-tooltip'>Kudos Rarity</span>
             <table class='text-left'>
               <tr><td>One of a Kind:</td><td>1 clone</td></tr>
               <tr><td>Legendary:</td><td>2 - 5 clones</td></tr>
@@ -66,15 +66,15 @@
             </table>" data-template='<div class="tooltip-kudos" role="tooltip"><div class="tooltip-inner"></div></div>' class="fas fa-question-circle text-color_blue"></i></p>
 
           <div class="mb-4">
-            <span id='kudosNumClonesAvailable' class="text-color_blue text-weight_semibold">{{ kudos.num_clones_available }}</span> Total Available
-            <span id='kudosNumClonesAllowed' class="text-color_blue text-weight_semibold ml-5">{{ kudos.num_clones_in_wild }}</span> Total minted
+            <span id='kudosNumClonesAvailable' class="text-color_blue text-weight_semibold">{{ kudos.num_clones_available_counting_indirect_send }}</span> Total Available
+            <span id='kudosNumClonesAllowed' class="text-color_blue text-weight_semibold ml-5">{{ kudos.num_clones_in_wild_counting_indirect_send }}</span> Total minted
           </div>
           <p class="mb-4 kudos-details__price" data-ethprice="{{ kudos.price_in_eth }}">{{ kudos.price_in_eth }} ETH <small></small></p>
           <div class="row justify-content-start pb-4">
             <div class="col-12">
-              {% if kudos.num_clones_allowed != 0 and kudos.num_clones_available != 0 %}
+              {% if kudos.num_clones_allowed != 0 and kudos.num_clones_available_counting_indirect_send != 0 %}
               <a href="/kudos/send?id={{ kudos.id}}" class="btn btn-gc-blue">{% trans "Send Kudos" %}</a>
-              {% elif kudos.num_clones_allowed != 0 and kudos.num_clones_available == 0 %}
+              {% elif kudos.num_clones_allowed != 0 and kudos.num_clones_available_counting_indirect_send == 0 %}
               <button type="button" class="btn btn-gc-blue" disabled>{% trans "Not Available" %}</button>
               <small class="d-block mt-2">There are no clones available due to popularity but you can still look at this awesome badge!</small>
               {% endif %}
@@ -95,8 +95,8 @@
           <div class="row">
             <div class="col-12">
             {% for profile in related_profiles %}
-              <a href="/profile/{{ profile.handle }}">
-              <img src="{% if profile.avatar %}{{profile.avatar_url}}{% else %}/dynamic/avatar/{{profile.username}}{% endif %}" alt="{{profile.username}}" width="70" class="rounded-circle border m-1">
+              <a href="/profile/{{ profile.handle }}" title="{{profile.username}}">
+              <img src="{% if profile.avatar %}{{profile.avatar_url}}{% else %}/dynamic/avatar/{{profile.username}}{% endif %}" alts="{{profile.username}}" width="70" class="rounded-circle border m-1">
               </a>
               {% if forloop.counter|divisibleby:5 %}
             </div>

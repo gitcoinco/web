@@ -173,6 +173,7 @@ def setup_lang(request, user):
 
 
 def sync_profile(handle, user=None, hide_profile=True):
+    handle = handle.strip().replace('@', '')
     data = get_user(handle)
     email = ''
     is_error = 'name' not in data.keys()
@@ -354,3 +355,13 @@ def get_default_network():
     if settings.DEBUG:
         return 'rinkeby'
     return 'mainnet'
+
+
+def get_semaphor(namespace, count=1):
+    from redis import Redis
+    from redis_semaphore import Semaphore
+    from urllib.parse import urlparse
+    redis = urlparse(settings.SEMAPHORE_REDIS_URL)
+
+    semaphore = Semaphore(Redis(host=redis.hostname, port=redis.port), count=count, namespace=namespace)
+    return semaphore

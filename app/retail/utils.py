@@ -373,7 +373,10 @@ def build_stat_results_helper(keyword=None):
     pp.profile_time('count_*')
 
     # Leaderboard
-    num_to_show = 50
+    num_to_show = 30
+    context['top_funders'] = base_leaderboard.filter(active=True, leaderboard='quarterly_payers') \
+        .order_by('rank').values_list('github_username', flat=True)[0:num_to_show]
+    pp.profile_time('funders')
     context['top_orgs'] = base_leaderboard.filter(active=True, leaderboard='quarterly_orgs') \
         .order_by('rank').values_list('github_username', flat=True)[0:num_to_show]
     pp.profile_time('orgs')

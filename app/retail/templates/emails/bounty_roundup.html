@@ -15,8 +15,7 @@
   You should have received a copy of the GNU Affero General Public License
   along with this program. If not, see <http://www.gnu.org/licenses/>.
 {% endcomment %}
-{% load i18n static humanize avatar_tags %}
-
+{% load i18n static humanize avatar_tags kudos_extras %}
 {% block content %}
 <style>
   .roundup {
@@ -71,7 +70,7 @@
     <h3>{% trans "Last Week's Highlights" %}</h3>
     <h5>{% trans "Community Members growing open source" %}</h5>
 
-    <div style="text-align: left;">
+    <div style="text-align: center;">
       {% for highlight in highlights %}
         <li style="list-style:none; margin-bottom: 5px;">
           {% if highlight.who_link %}
@@ -91,6 +90,7 @@
     <br>
     <hr>
   {% endif %}
+
   <div>
     <h3>{% trans "Open Funded Issues" %}</h3>
     <h5>{% trans "Grow Open Source &amp; Make Some ETH" %}</h5>
@@ -136,6 +136,37 @@
     <hr>
   {% endif %}
   <hr>
+
+  {% if kudos_highlights %}
+    <h3>{% trans "Kudos" %}</h3>
+    <h5>{% trans "Recognition throughout the platform" %}</h5>
+    <div style="text-align: center;">
+      <ul>
+        {% for kudos in kudos_highlights %}
+        {% if kudos.recipient_profile and kudos.sender_profile %}
+          <li style="list-style:none; margin-bottom: 5px;">
+              <a style="font-weight: bold; text-decoration: none;" href="{% url "profile" kudos.recipient_profile.handle %}">{{ kudos.recipient_profile.handle }}</a> received <strong>{{ kudos.kudos_token_cloned_from.name|humanize_name }}</strong> from <a style="font-weight: bold; text-decoration: none;" href="{% url 'profile' kudos.sender_profile.handle %}">{{ kudos.sender_profile.handle }}</a><br>
+            <a href="{% url 'kudos_details' kudos.kudos_token_cloned_from.token_id kudos.kudos_token_cloned_from.name  %}">
+
+              <img style="max-width: 120px;" src="{{ kudos.kudos_token_cloned_from.img_url }}"></a>
+
+            {% if kudos.comments_public %}
+              <br>
+              Comment: {{ kudos.comments_public }}
+            {% endif %}
+          </li>
+          <hr>
+        {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
+    <br>
+    <br>
+    <hr>
+  {% endif %}
+
+  <hr>
+
   <div>
     <h3>{% trans "Bounties from around the ecosystem" %}</h3>
     <h5>{% trans "From other great projects in OSS" %}</h5>

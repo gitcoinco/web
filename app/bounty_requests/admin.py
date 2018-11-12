@@ -35,6 +35,7 @@ class BountyRequestAdmin(admin.ModelAdmin):
         'created_on', 'status', 'github_url', 'amount', 'requested_by__handle',
         'eth_address', 'comment', 'comment_admin'
     ]
+    raw_id_fields = ['requested_by']
 
 
 admin.site.register(BountyRequest, BountyRequestAdmin)

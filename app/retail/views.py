@@ -420,7 +420,6 @@ def not_a_token(request):
     return TemplateResponse(request, 'not_a_token.html', context)
 
 
-@cached_view(timeout=60 * 10)
 def results(request, keyword=None):
     """Render the Results response."""
     if keyword and keyword not in programming_languages:
@@ -913,23 +912,6 @@ def browser_extension_firefox(request):
 
 def itunes(request):
     return redirect('https://itunes.apple.com/us/app/gitcoin/id1319426014')
-
-
-def ios(request):
-
-    context = {
-        'active': 'ios',
-        'title': 'iOS app',
-        'card_title': 'Gitcoin has an iOS app!',
-        'card_desc': 'Gitcoin aims to make it easier to grow open source from anywhere in the world,\
-            anytime.  We’re proud to announce our iOS app, which brings us a step closer to this north star!\
-            Browse open bounties on the go, express interest, and coordinate your work on the move.',
-    }
-    return TemplateResponse(request, 'ios.html', context)
-
-
-def iosfeedback(request):
-    return redirect('https://goo.gl/forms/UqegoAMh7HVibfuF3')
 
 
 def casestudy(request):

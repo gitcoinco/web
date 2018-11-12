@@ -96,6 +96,24 @@ def gas_intro(request):
     return TemplateResponse(request, 'gas_intro.html', context)
 
 
+def gas_heatmap(request):
+    gas_histories = {}
+    mins = request.GET.get('mins', 60)
+    min_options = [key for key, val in lines.items()]
+    if mins not in min_options:
+        mins = min_options[0]
+    gas_histories[mins] = get_history_cached("hourly", mins)
+    context = {
+        'title': _('Live Ethereum (ETH) Gas Heatmap'),
+        'card_desc': _(''),
+        'hide_send_tip': True,
+        'gas_histories': gas_histories,
+        'mins': mins,
+        'min_options': min_options,
+    }
+    return TemplateResponse(request, 'gas_heatmap.html', context)
+
+
 def gas_faq(request):
     context = {
         'title': _('Live Ethereum (ETH) Gas FAQ'),

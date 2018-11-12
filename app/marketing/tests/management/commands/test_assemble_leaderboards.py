@@ -153,7 +153,7 @@ class TestAssembleLeaderboards(TestCase):
         assert set([self.bounty_payer_handle, self.bounty_earner_handle, 'gitcoinco']).issubset(set(index_terms))
         assert set(['Cuyahoga Falls', 'United States', 'North America']).issubset(set(index_terms))
         assert set(['London', 'United Kingdom', 'Europe']).issubset(set(index_terms))
-        assert set(['Camperdown', 'Australia', 'Oceania']).issubset(set(index_terms))
+        assert set(['Australia', 'Oceania']).issubset(set(index_terms))
         assert set(['python', 'shell']).issubset(set(index_terms))
 
     def test_tip_index_terms(self):
