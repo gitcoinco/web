@@ -80,14 +80,8 @@ class Avatar(SuperModel):
 
     def save(self, *args, force_insert=False, force_update=False, **kwargs):
         """Override the save to perform change comparison against PNG and SVG fields."""
-        if (self.svg != self.__previous_svg) or (self.svg and not self.custom_avatar_png):
-            # If the SVG has changed, perform PNG conversion.
-            self.__previous_svg = self.svg
-            self.convert_custom_svg()
-        if (self.png != self.__previous_png) or (self.png and not self.github_svg):
-            # If the PNG has changed, perform SVG conversion.
-            self.__previous_png = self.png
-            self.convert_github_png()
+        self.convert_custom_svg()
+        self.convert_github_png()
 
         super(Avatar, self).save(force_insert, force_update, *args, **kwargs)
 
