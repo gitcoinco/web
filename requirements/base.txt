@@ -78,3 +78,4 @@ oauth2client==4.1.3
 pyvips==2.1.4
 redis-semaphore
 watchtower==0.5.4
+Wand==0.4.4
