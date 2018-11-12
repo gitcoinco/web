@@ -2374,6 +2374,14 @@ class Profile(SuperModel):
         return False
 
 
+# enforce casing / formatting rules for profiles
+@receiver(pre_save, sender=Profile, dispatch_uid="psave_profile")
+def psave_profile(sender, instance, **kwargs):
+    instance.handle = instance.handle.replace(' ', '')
+    instance.handle = instance.handle.replace('@', '')
+    instance.handle = instance.handle.lower()
+
+
 @receiver(user_logged_in)
 def post_login(sender, request, user, **kwargs):
     """Handle actions to take on user login."""
