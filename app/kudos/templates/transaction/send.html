@@ -77,6 +77,7 @@
   <form id="send_eth">
     <!-- token and amount are not used for kudos -->
     <input type="hidden" id="token" value="0x408c49a91e46311ddc35737f8c1aaea6191f36e0">
+    <input type="hidden" id="kudosNetwork" value="{{ kudos.contract.network }}">
     <input type="hidden" id="amount" value="{{ kudos.price_in_eth }}">
     <label for="">{% trans "To Github Username" %}</label>
     <div class="form-group">
