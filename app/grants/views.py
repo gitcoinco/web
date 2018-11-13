@@ -62,7 +62,7 @@ def grants(request):
 
 def grant_details(request, grant_id):
     """Display the Grant details page."""
-    profile = request.user.profile if request.user.is_authenticated else None
+    profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
 
     try:
         grant = Grant.objects.prefetch_related('subscriptions', 'milestones').get(pk=grant_id)
@@ -121,17 +121,15 @@ def grant_details(request, grant_id):
         'title': 'Initial commit by flapjacks',
         'date': '08.02.2018',
         'description': 'Initial commit with some blah blah blah...',
-    },
-               {
-                   'title': 'Fix the build by derp-nation',
-                   'date': '08.02.2018',
-                   'description': 'Initial commit with some blah blah blah...',
-               },
-               {
-                   'title': 'A subpar commit by derp-diggity',
-                   'date': '08.02.2018',
-                   'description': 'Initial commit with some blah blah blah...',
-               }]
+    }, {
+        'title': 'Fix the build by derp-nation',
+        'date': '08.02.2018',
+        'description': 'Initial commit with some blah blah blah...',
+    }, {
+        'title': 'A subpar commit by derp-diggity',
+        'date': '08.02.2018',
+        'description': 'Initial commit with some blah blah blah...',
+    }]
 
     params = {
         'active': 'dashboard',
@@ -150,7 +148,7 @@ def grant_details(request, grant_id):
 @login_required
 def grant_new(request):
     """Handle new grant."""
-    profile = request.user.profile if request.user.is_authenticated else None
+    profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
 
     if request.method == 'POST':
         logo = request.FILES.get('input_image', None)
@@ -186,7 +184,7 @@ def grant_new(request):
 
 @login_required
 def milestones(request, grant_id):
-    profile = request.user.profile if request.user.is_authenticated else None
+    profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
     grant = Grant.objects.get(pk=grant_id)
 
     if profile != grant.admin_profile:
@@ -236,7 +234,7 @@ def grant_fund(request, grant_id):
     except Grant.DoesNotExist:
         raise Http404
 
-    profile = request.user.profile if request.user.is_authenticated else None
+    profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
     # make sure a user can only create one subscription per grant
     if request.method == 'POST':
         subscription = Subscription()
@@ -294,10 +292,9 @@ def profile(request):
     page = request.GET.get('page', 1)
     sort = request.GET.get('sort', '-created_on')
 
-    profile = request.user.profile if request.user.is_authenticated else None
-    _grants = Grant.objects.prefetch_related('team_members'
-                                             ).filter(Q(admin_profile=profile)
-                                                      | Q(team_members__in=[profile])).order_by(sort)
+    profile = request.user.profile if request.user.is_authenticated and request.user.profile else None
+    _grants = Grant.objects.prefetch_related('team_members') \
+        .filter(Q(admin_profile=profile) | Q(team_members__in=[profile])).order_by(sort)
     sub_grants = Grant.objects.filter(subscriptions__contributor_profile=profile).order_by(sort)
 
     paginator = Paginator(_grants, limit)
