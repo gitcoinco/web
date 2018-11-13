@@ -30,7 +30,7 @@ def save_profile(backend, user, response, request, *args, **kwargs):
         if handle in settings.BLOCKED_USERS:
             raise SuspiciousOperation('You cannot login')
 
-        if not user.active:
+        if not user.is_active:
             raise SuspiciousOperation('You cannot login')
 
         sync_profile(handle, user, hide_profile=False)
