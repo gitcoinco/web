@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('kudos', '0001_initial'),
-        ('dashboard', '0110_auto_20181021_1000'),
+        ('dashboard', '0109_bounty_funding_organisation'),
     ]
 
     operations = [
