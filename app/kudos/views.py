@@ -350,7 +350,7 @@ def send_3(request):
         from_username=from_username,
         username=params['username'],
         network=params['network'],
-        tokenAddress=params.get('tokenAddress',''),
+        tokenAddress=params.get('tokenAddress', ''),
         from_address=params['from_address'],
         is_for_bounty_fulfiller=params['is_for_bounty_fulfiller'],
         metadata=params['metadata'],
