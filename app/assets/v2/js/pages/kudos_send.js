@@ -280,7 +280,7 @@ $(document).ready(function() {
       accept_tos: accept_tos,
       expires: expires,
       kudosId: kudosId,
-      tokenId: tokenId
+      tokenId: tokenId,
       to_eth_address: to_eth_address,
     };
 
