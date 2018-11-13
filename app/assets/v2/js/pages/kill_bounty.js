@@ -64,7 +64,12 @@ window.onload = function() {
           var bountyId = result['standard_bounties_id'];
 
           var errormsg = undefined;
-
+          
+          if (initialized == true && open == false && bountyAmount != 0) {
+            errormsg =
+                gettext('This bounty is already started (or in work), canceling this issue is not possible anymore.');
+          }
+           
           if (bountyAmount == 0 || open == false || initialized == false) {
             errormsg =
                 gettext('No active funded issue found at this address.  Are you sure this is an active funded issue?');
