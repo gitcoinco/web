@@ -280,11 +280,8 @@ $(document).ready(function() {
       accept_tos: accept_tos,
       expires: expires,
       kudosId: kudosId,
-<<<<<<< HEAD
       tokenId: tokenId
-=======
       to_eth_address: to_eth_address,
->>>>>>> 09f7086c0... adds the ability to do kudos direct send to an eth address
     };
 
     // derived info
@@ -323,11 +320,7 @@ $(document).ready(function() {
     console.log(formData);
     // Step 3
     // Run sendKudos function
-<<<<<<< HEAD
-    return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, kudosId, tokenId, success_callback, failure_callback, false);
-=======
-    return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, to_eth_address, expires, kudosId, success_callback, failure_callback, false);
->>>>>>> 09f7086c0... adds the ability to do kudos direct send to an eth address
+    return sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, to_eth_address, expires, kudosId, tokenId, success_callback, failure_callback, false);
 
   });
 
@@ -345,11 +338,7 @@ $(document).ready(function() {
 });
 
 // Step 3
-<<<<<<< HEAD
-function sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, tokenAddress, expires, kudosId, tokenId, success_callback, failure_callback, is_for_bounty_fulfiller) {
-=======
-function sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, to_eth_address, expires, kudosId, success_callback, failure_callback, is_for_bounty_fulfiller) {
->>>>>>> 09f7086c0... adds the ability to do kudos direct send to an eth address
+function sendKudos(email, github_url, from_name, username, amountInEth, comments_public, comments_priv, from_email, accept_tos, to_eth_address, expires, kudosId, tokenId, success_callback, failure_callback, is_for_bounty_fulfiller) {
   mixpanel.track('Tip Step 2 Click', {});
   if (typeof web3 == 'undefined') {
     _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
@@ -362,16 +351,10 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
     username = '@' + username;
   }
   var _disableDeveloperTip = true;
-<<<<<<< HEAD
   var observedKudosGasLimit = 505552;
   var buffer_pct = 1.005;
   var wei_to_gwei = Math.pow(10, 9);
   var gas_money = parseInt((wei_to_gwei * observedKudosGasLimit) * (buffer_pct * defaultGasPrice / wei_to_gwei));
-  // var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
-  var tokenDetails = tokenAddressToDetails(tokenAddress);
-=======
-  var gas_money = parseInt(Math.pow(10, (9 + 5)) * ((defaultGasPrice * 1.001) / Math.pow(10, 9)));
->>>>>>> 09f7086c0... adds the ability to do kudos direct send to an eth address
   var tokenName = 'ETH';
   var weiConvert = Math.pow(10, 18);
   var creation_time = Math.round((new Date()).getTime() / 1000);
