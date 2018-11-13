@@ -250,27 +250,6 @@ def kudos_preferred_wallet(request, handle):
     response = {'addresses': []}
     profile = get_profile(str(handle).replace('@', ''))
 
-    if profile:
-        # reconcile_kudos_preferred_wallet(profile)
-        if profile.preferred_payout_address:
-            response['addresses'].append(profile.preferred_payout_address)
-    if request.GET.get('to_eth_address', False):
-        response['addresses'].append(request.GET.get('to_eth_address', False))
-    return JsonResponse(response)
-
-
-@ratelimit(key='ip', rate='5/m', method=ratelimit.UNSAFE, block=True)
-def tipee_address(request, handle):
-    """returns the address, if any, that someone would like to be tipped directly at
-
-    Returns:
-        list of addresse
-
-    """
-    response = {
-        'addresses': []
-    }
-    profile = get_profile(str(handle).replace('@', ''))
     if profile and profile.preferred_payout_address:
         response['addresses'].append(profile.preferred_payout_address)
 
