@@ -26,6 +26,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.core.validators import validate_email
 from django.db.models import Max
+from django.db.utils import IntegrityError
 from django.http import Http404
 from django.shortcuts import redirect
 from django.template.response import TemplateResponse
@@ -45,7 +46,6 @@ from marketing.models import AccountDeletionRequest, EmailSubscriber, Keyword, L
 from marketing.utils import get_or_save_email_subscriber, validate_discord_integration, validate_slack_integration
 from retail.emails import ALL_EMAILS
 from retail.helpers import get_ip
-
 logger = logging.getLogger(__name__)
 
 
@@ -253,58 +253,70 @@ def email_settings(request, key):
         TemplateResponse: The email settings view populated with ES data.
 
     """
-    profile, es, __, __ = settings_helper_get_auth(request, key)
-    if not request.user.is_authenticated and (not es and key) or (
-        request.user.is_authenticated and not hasattr(request.user, 'profile')
-    ):
-        return redirect('/login/github?next=' + request.get_full_path())
+    if not key:
+        eses = EmailSubscriber.objects.filter(email=request.user.email)
+        if eses.exists():
+            key = eses.first().priv
+            return redirect(reverse('email_settings',  args=(key, )))
+    try:
+        profile, es, __, __ = settings_helper_get_auth(request, key)
+        if not request.user.is_authenticated and (not es and key) or (
+            request.user.is_authenticated and not hasattr(request.user, 'profile')
+        ):
+            return redirect('/login/github?next=' + request.get_full_path())
 
-    # handle 'noinput' case
-    email = ''
-    level = ''
-    msg = ''
-    if request.POST and request.POST.get('submit'):
-        email = request.POST.get('email')
-        level = request.POST.get('level')
-        preferred_language = request.POST.get('preferred_language')
-        validation_passed = True
-        try:
-            validate_email(email)
-        except Exception as e:
-            print(e)
-            validation_passed = False
-            msg = _('Invalid Email')
-        if preferred_language:
-            if preferred_language not in [i[0] for i in settings.LANGUAGES]:
-                msg = _('Unknown language')
+        # handle 'noinput' case
+        email = ''
+        level = ''
+        msg = ''
+        if request.POST and request.POST.get('submit'):
+            email = request.POST.get('email')
+            level = request.POST.get('level')
+            preferred_language = request.POST.get('preferred_language')
+            validation_passed = True
+            try:
+                validate_email(email)
+            except Exception as e:
+                print(e)
                 validation_passed = False
-        if validation_passed:
-            if profile:
-                profile.pref_lang_code = preferred_language
-                profile.save()
-                request.session[LANGUAGE_SESSION_KEY] = preferred_language
-                translation.activate(preferred_language)
-            if es:
-                key = get_or_save_email_subscriber(email, 'settings')
-                es.preferences['level'] = level
-                es.email = email
-                form = dict(request.POST)
-                # form was not sending falses, so default them if not there
-                for email_tuple in ALL_EMAILS:
-                    key = email_tuple[0]
-                    if key not in form.keys():
-                        form[key] = False
-                es.build_email_preferences(form)
-                es = record_form_submission(request, es, 'email')
-                ip = get_ip(request)
-                es.active = level != 'nothing'
-                es.newsletter = level in ['regular', 'lite1']
-                if not es.metadata.get('ip', False):
-                    es.metadata['ip'] = [ip]
-                else:
-                    es.metadata['ip'].append(ip)
-                es.save()
-            msg = _('Updated your preferences.')
+                msg = _('Invalid Email')
+            if preferred_language:
+                if preferred_language not in [i[0] for i in settings.LANGUAGES]:
+                    msg = _('Unknown language')
+                    validation_passed = False
+            if validation_passed:
+                if profile:
+                    profile.pref_lang_code = preferred_language
+                    profile.save()
+                    request.session[LANGUAGE_SESSION_KEY] = preferred_language
+                    translation.activate(preferred_language)
+                if es:
+                    _key = get_or_save_email_subscriber(email, 'settings')
+                    es.preferences['level'] = level
+                    es.email = email
+                    form = dict(request.POST)
+                    # form was not sending falses, so default them if not there
+                    for email_tuple in ALL_EMAILS:
+                        _key = email_tuple[0]
+                        if _key not in form.keys():
+                            form[_key] = False
+                    es.build_email_preferences(form)
+                    es = record_form_submission(request, es, 'email')
+                    ip = get_ip(request)
+                    es.active = level != 'nothing'
+                    es.newsletter = level in ['regular', 'lite1']
+                    if not es.metadata.get('ip', False):
+                        es.metadata['ip'] = [ip]
+                    else:
+                        es.metadata['ip'].append(ip)
+                    es.save()
+                msg = _('Updated your preferences.')
+    except IntegrityError:
+        msg = _('That email is already taken.')
+        profile = None
+        print(key)
+        es = EmailSubscriber.objects.get(priv=key)
+
     pref_lang = 'en' if not profile else profile.get_profile_preferred_language()
     context = {
         'nav': 'internal',
