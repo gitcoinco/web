@@ -231,14 +231,6 @@ $(document).ready(function() {
 
     loading_button($(this));
 
-    var username;
-
-    if ($('#username').select2('data')[0] && $('#username').select2('data')[0].text) {
-      username = $('#username').select2('data')[0].text;
-    } else {
-      username = undefined;
-    }
-
     // Step 2
     // get form data
     var email = $('#email').val();
