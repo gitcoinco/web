@@ -116,7 +116,7 @@ $(document).ready(function() {
 
                   console.log('data', data);
 
-                  // form.submit();
+                  form.submit();
 
                   fetch('http://localhost:10003/saveSubscription', {
                     method: 'POST',
