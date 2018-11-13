@@ -33,7 +33,7 @@
 
 .section-tab.active {
   color: var(--gc-blue);
-  border-bottom: 2px var(--gc-blue) solid;
+  border-bottom: 3px var(--gc-blue) solid;
 }
 
 .tab-sections {

@@ -31,6 +31,20 @@ h2.title {
   text-align: right;
 }
 
+.no-profile-button {
+  background-color: #3E00FF;
+  color: #FFFFFF;
+  font-size: 0.875rem;
+}
+
+.no-profile-textcolor {
+  color: #666666;
+}
+
+.none-img {
+  height: 5rem;
+}
+
 @media (max-width: 767.98px) {
   .txn-link,
   .special_tag {
