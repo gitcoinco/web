@@ -151,7 +151,6 @@ body {
 }
 
 .bounty-detail .info {
-  font-weight: 300;
   color: #666666;
 }
 
@@ -235,4 +234,39 @@ body {
 
 .hiring {
   content: url('/static/v2/images/hiring.svg');
+}
+
+.hiring-alt {
+  font-size: 11px;
+  color: #4A90E2;
+  font-weight: 700;
+  letter-spacing: 1.7px;
+}
+
+.status-open {
+  color: #00A652;
+}
+
+.status-started {
+  color: #0D0764;
+}
+
+.status-submitted {
+  color: #008EFF;
+}
+
+.status-done {
+  color: #666666;
+}
+
+.status-cancelled,
+.status-expired {
+  color: #C70018;
+}
+
+.separator-bull {
+  margin: 0 0.6em;
+}
+.separator-bull:after {
+  content: '\2022'
 }

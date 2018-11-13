@@ -1,7 +1,7 @@
 {% load static i18n %}
 <!-- JSRender stuff -->
 <script id="result" type="text/x-jsrender">
-<div class="row result bounty_row [[if hidden]]bounty_row--hidden[[/if]] [[:network]] i[[:standard_bounties_id]]" href="[[:action]]">
+<a class="row result bounty_row [[if hidden]]bounty_row--hidden[[/if]] [[:network]] i[[:standard_bounties_id]]" href="[[:action]]">
   [[if avatar_url]]
     <div class="avatar-container col-1 justify-content-center hide_min_viewport">
       <img src='[[:avatar_url]]' class='avatar'>
@@ -14,20 +14,40 @@
   <div class="col-12 col-md-8 d-flex flex-column">
     <div class="bounty-detail">
       [[if attached_job_description != null && attached_job_description != '']]
-        <div class="hiring"></div>
+        <div class="hiring-alt">HIRING <i class="fa-flag far"></i></div>
       [[/if]]
       <div class="title font-subheader">
         [[:title]]
       </div>
       <div class="bounty-summary col-12">
         [[if github_comments]]
-          <div class="col-xs-1">
-            <img src={% static 'v2/images/comment.svg' %}>
-            <span class="github-comment font-caption">[[:github_comments]]</span>
-          </div>
+          <!-- <div class="col-xs-1"> -->
+            <!-- <img src={% static 'v2/images/comment.svg' %}> -->
+            <!-- <span class="github-comment font-caption">[[:github_comments]]</span> -->
+          <!-- </div> -->
         [[/if]]
         <div class="info font-caption">
+          <span class="status-[[:status]]">
+            <i class="fas fa-dot-circle"></i>
+            [[if status === "open"]]
+              Ready to work
+            [[else status === "started"]]
+              Work Started
+            [[else status === "submitted"]]
+              Work Submitted
+            [[else status === "done"]]
+              Work Done
+            [[else status === "cancelled"]]
+              Cancelled
+            [[else status === "expired"]]
+              Expired
+            [[/if]]
+          </span>
+            <span class="separator-bull"></span>
           [[:p]]
+          [[if github_comments]]
+            <span class="separator-bull"></span> <i class="fas fa-comment-alt"></i> [[:github_comments]] Comments
+          [[/if]]
         </div>
       </div>
     </div>
@@ -89,4 +109,15 @@
       </div>
     [[/if]]
   </div>
+  <div>
+  <div>
+    <input data-link="isFoo"/>
+
+
+
+
+
+    [^[textbox isFoo/]]
+  </div>
+</a>
 </script>

@@ -1079,11 +1079,11 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
     const dateExpires = new Date(result['expires_date']);
     const isExpired = dateExpires < dateNow && !result['is_open'];
     const isInfinite = dateExpires - new Date().setFullYear(new Date().getFullYear() + 1) > 1;
-    const projectType = ucwords(result['project_type']) + ' &bull; ';
-
+    const projectType = ucwords(result['project_type']) + ' <span class="separator-bull"></span> ';
+    result['isFoo'] = {isFoo: false};
     result['action'] = result['url'];
     result['title'] = result['title'] ? result['title'] : result['github_url'];
-    result['p'] = projectType + (result['experience_level'] ? (result['experience_level'] + ' &bull; ') : '');
+    result['p'] = projectType + (result['experience_level'] ? (result['experience_level'] + ' <span class="separator-bull"></span> ') : '');
 
     if (result['status'] === 'done') {
       result['p'] += 'Done';
@@ -1113,14 +1113,14 @@ function renderBountyRowsFromResults(results, renderForExplorer) {
       const openedWhen = timeDifference(dateNow, new Date(result['web3_created']), true);
 
       if (isInfinite) {
-        const expiredExpires = 'Never expires';
+        const expiredExpires = '<b>Never expires</b>';
 
         result['p'] += ('Opened ' + openedWhen + ' ago, ' + expiredExpires);
       } else {
         const timeLeft = timeDifference(dateNow, dateExpires);
         const expiredExpires = dateNow < dateExpires ? 'Expires' : 'Expired';
 
-        result['p'] += ('Opened ' + openedWhen + ' ago, ' + expiredExpires + ' ' + timeLeft);
+        result['p'] += ('Opened ' + openedWhen + ' ago, ' + expiredExpires + ' <b>' + timeLeft + '</b>');
       }
     }
 
