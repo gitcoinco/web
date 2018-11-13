@@ -1145,6 +1145,10 @@ def profile(request, handle):
             profile = profile_helper(handle, current_user=request.user)
 
         context = profile.to_dict()
+        for activity in context['activities']:
+            activity['started_bounties_count'] = activity['activity_bounties'].filter(
+                activity_type='start_work'
+            ).count()
     except (Http404, ProfileHiddenException):
         status = 404
         context = {

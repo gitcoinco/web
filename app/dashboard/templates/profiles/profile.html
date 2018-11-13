@@ -188,6 +188,7 @@
                 {% if group.activity_bounties %}
                 <div id="activity-tabs" class="tab-container mt-4 font-body">
                   <button type="button" id="all" class="section-tab">{% trans "All Activity" %} ({{ group.activity_bounties|length }})</button>
+                  <button type="button" id="progress" class="section-tab">{% trans "Bounties In Progress" %} ({{ group.started_bounties_count }})</button>
                   <button type="button" id="funded" class="section-tab">{% trans "Bounties Funded" %} ({{ funded_bounties_count }})</button>
                   <button type="button" id="completed" class="section-tab">{% trans "Bounties Completed" %}</button>
                   <button type="button" id="tips" class="section-tab">{% trans "Tips Received" %}</button>
@@ -199,6 +200,19 @@
                         <div class="col-12">
                           {% for activity in group.activity_bounties %}
                             {% include "shared/profile_activities_bounty.html" %}
+                          {% endfor %}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div id="section-progress" class="tab-section">
+                    <div class="container">
+                      <div class="row mb-3 p-2">
+                        <div class="col-12">
+                          {% for activity in group.activity_bounties %}
+                            {% if activity.activity_type == 'start_work' %}
+                              {% include "shared/profile_activities_bounty.html" %}
+                            {% endif %}
                           {% endfor %}
                         </div>
                       </div>
