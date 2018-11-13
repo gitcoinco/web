@@ -80,9 +80,10 @@ class Avatar(SuperModel):
 
     def save(self, *args, force_insert=False, force_update=False, **kwargs):
         """Override the save to perform change comparison against PNG and SVG fields."""
-        self.convert_custom_svg()
-        self.convert_github_png()
-
+        if self.svg and not self.custom_avatar_png:
+            self.convert_custom_svg()
+        if self.png and not self.github_svg:
+            self.convert_github_png()
         super(Avatar, self).save(force_insert, force_update, *args, **kwargs)
 
     def get_color(self, key='Background', with_hashbang=False):
@@ -208,7 +209,7 @@ class Avatar(SuperModel):
 
         return f'{settings.BASE_URL}dynamic/avatar/{handle}'
 
-    def create_from_config(self, svg_name='avatar'):
+    def create_from_config(self):
         """Create an avatar SVG from the configuration.
 
         TODO:
@@ -233,11 +234,14 @@ class Avatar(SuperModel):
                 )
 
         with NamedTemporaryFile(mode='w+', suffix='.svg') as tmp:
+            profile = None
             avatar = Figure(*components)
             avatar.save(tmp.name)
             with open(tmp.name) as file:
                 if self.profile_set.exists():
-                    svg_name = self.profile_set.last().handle
+                    profile = self.profile_set.last()
+
+                svg_name = profile.handle if profile and profile.handle else token_hex(8)
                 self.svg.save(f"{svg_name}.svg", File(file), save=True)
 
     def convert_field(self, source, target='custom_avatar_png', input_fmt='svg', output_fmt='png', force_save=False):

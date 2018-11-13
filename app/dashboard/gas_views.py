@@ -56,11 +56,9 @@ def get_history_cached(breakdown, i):
     except CacheMiss:
         results = None
 
-    if results:
-        return results
-
-    results = gas_history(breakdown, i)
-    cache.set(key, results, timeout)
+    if not results:
+        results = gas_history(breakdown, i)
+        cache.set(key, results, timeout)
 
     return results
 
@@ -187,7 +185,7 @@ def gas_calculator(request):
     return TemplateResponse(request, 'gas_calculator.html', context)
 
 
-@cached_view_as(GasGuzzler)
+@cached_view_as(GasGuzzler, timeout=60*3)
 def gas_guzzler_view(request):
     breakdown = request.GET.get('breakdown', 'hourly')
     breakdown_ui = breakdown.replace('ly', '') if breakdown != 'daily' else 'day'

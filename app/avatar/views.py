@@ -108,7 +108,7 @@ def save_avatar(request):
             profile.avatar.use_github_avatar = False
             profile.avatar.save()
         response['message'] = 'Avatar updated'
-        profile.avatar.create_from_config(svg_name=profile.handle)
+        profile.avatar.create_from_config()
         create_user_action(profile.user, 'updated_avatar', request)
     except Exception as e:
         response['status'] = 400
