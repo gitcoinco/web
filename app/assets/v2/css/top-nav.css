@@ -28,6 +28,10 @@
   transition: all 0.2s linear;
   height: 60px;
 }
+.top-nav a.labs img {
+  max-width: 70px;
+  margin-bottom: 5px;
+}
 
 @media (min-width: 768px) {
   .top-nav {
