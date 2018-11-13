@@ -410,7 +410,7 @@ var refreshBounties = function(event, offset, append, do_save_search) {
     }
 
     $('#results-count span.num').html(offset + results.length);
-    if(results.length == results_limit){
+    if (results.length == results_limit) {
       $('#results-count span.plus').html('+');
     } else {
       $('#results-count span.plus').html('');

@@ -40,9 +40,7 @@ from retail.helpers import get_ip
 from web3 import Web3
 
 from .models import Activity, Profile, Tip
-from .notifications import (
-    maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack,
-)
+from .notifications import maybe_market_tip_to_email, maybe_market_tip_to_github, maybe_market_tip_to_slack
 
 logging.basicConfig(level=logging.DEBUG)
 
