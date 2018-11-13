@@ -180,18 +180,18 @@ $(document).ready(function() {
 
   $('#send_to_toggle').click(function(e) {
     e.preventDefault();
-    if($(this).hasClass('github')){
+    if ($(this).hasClass('github')) {
       $(this).text(gettext('Send to ETH Address'));
-      $(this).removeClass('github')
-      $(this).addClass('eth')
-      $(".select2").removeClass('hidden');
-      $(".eth_address").addClass('hidden');
+      $(this).removeClass('github');
+      $(this).addClass('eth');
+      $('.select2').removeClass('hidden');
+      $('.eth_address').addClass('hidden');
     } else {
       $(this).text(gettext('Send to Github User'));
-      $(this).addClass('github')
-      $(this).removeClass('eth')
-      $(".select2").addClass('hidden');
-      $(".eth_address").removeClass('hidden');
+      $(this).addClass('github');
+      $(this).removeClass('eth');
+      $('.select2').addClass('hidden');
+      $('.eth_address').removeClass('hidden');
     }
   });
 
@@ -245,16 +245,17 @@ $(document).ready(function() {
     var github_url = $('#issueURL').val();
     var from_name = $('#fromName').val();
     // should username be to_username for clarity?
-    var username = "";
-    if($('#username').select2('data').length){
-     username = $('#username').select2('data')[0].text || $('#username').select2('data')[0];
+    var username = '';
+
+    if ($('#username').select2('data').length) {
+      username = $('#username').select2('data')[0].text || $('#username').select2('data')[0];
     }
     var receiverAddress = $('#receiverAddress').val();
     var amountInEth = parseFloat($('#amount').val());
     var comments_priv = $('#comments_priv').val();
     var comments_public = $('#comments_public').val();
     var from_email = $('#fromEmail').val();
-    var to_eth_address = $("#to_eth_address").val()
+    var to_eth_address = $('#to_eth_address').val();
     var accept_tos = $('#tos').is(':checked');
     var expires = parseInt($('#expires').val());
     // kudosId is the kudos database id that is being cloned
@@ -281,7 +282,7 @@ $(document).ready(function() {
       expires: expires,
       kudosId: kudosId,
       tokenId: tokenId,
-      to_eth_address: to_eth_address,
+      to_eth_address: to_eth_address
     };
 
     // derived info
@@ -299,7 +300,7 @@ $(document).ready(function() {
       $('#loading_trans').hide();
       $('#send_eth').css('display', 'none');
       $('#send_eth_done').css('display', 'block');
-      if(username){
+      if (username) {
         $('#new_username').html(username);
       } else {
         $('#new_username').html(to_eth_address);
@@ -369,7 +370,7 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
 
   // Step 4
   // validation
-  if(!username && !to_eth_address){
+  if (!username && !to_eth_address) {
     _alert({ message: gettext('You must specify a recipient.') }, 'warning');
     failure_callback();
     return;
