@@ -641,8 +641,8 @@ var currentNetwork = function(network) {
           $('#current-network').text(gettext('Metamask Locked'));
           $('#navbar-network-banner').html(info);
         } else {
-          info = gettext('Metamask not connected. ') +
-            '<button id="metamask_connect" onclick="approve_metamask()">Click here to connect to metamask</button>';
+          info = gettext('Metamask not connected/approved. ') +
+            '<button id="metamask_connect" onclick="approve_metamask()">Start authorizing by clicking here</button>';
           $('#current-network').text(gettext('Metamask Not Connected'));
           $('#navbar-network-banner').html(info);
         }
