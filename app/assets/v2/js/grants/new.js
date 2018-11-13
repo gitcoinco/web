@@ -7,6 +7,9 @@ const validate = () => {
 
 $(document).ready(function() {
 
+  if (localStorage['grants_quickstart_disable'] !== 'true') {
+    window.location = document.location.origin + '/grants/quickstart';
+  }
 
   userSearch('.team_members');
 
