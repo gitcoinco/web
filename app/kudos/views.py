@@ -35,7 +35,6 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from cacheops import cached_view_as
 from dashboard.models import Activity, Profile
 from dashboard.notifications import maybe_market_kudos_to_email
 from dashboard.utils import get_web3
@@ -75,11 +74,6 @@ def get_profile(handle):
     return to_profile
 
 
-@cached_view_as(
-    Token.objects.select_related('contract').filter(
-        num_clones_allowed__gt=0, contract__is_latest=True, contract__network=settings.KUDOS_NETWORK, hidden=False,
-    )
-)
 def about(request):
     """Render the Kudos 'about' page."""
     listings = Token.objects.select_related('contract').filter(
@@ -87,7 +81,7 @@ def about(request):
         contract__is_latest=True,
         contract__network=settings.KUDOS_NETWORK,
         hidden=False,
-    ).order_by('-popularity_week')
+    ).order_by('-popularity_week').cache()
     context = {
         'is_outside': True,
         'active': 'about',
