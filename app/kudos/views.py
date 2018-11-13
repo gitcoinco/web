@@ -82,10 +82,12 @@ def about(request):
         contract__network=settings.KUDOS_NETWORK,
         hidden=False,
     ).order_by('-popularity_week').cache()
+    activities = Activity.objects.select_related('bounty').filter(bounty__network='mainnet', activity_type='new_kudos').order_by('-created').cache()
     context = {
         'is_outside': True,
         'active': 'about',
-        'title': 'About Kudos',
+        'activities': [a.view_props for a in activities],
+        'title': 'Kudos',
         'card_title': _('Each Kudos is a unique work of art.'),
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),

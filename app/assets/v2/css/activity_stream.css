@@ -35,3 +35,7 @@
 #activity_stream .tag {
   display: inline-block;
 }
+#activity_stream .activity.new_kudos .token,
+#activity_stream .activity.new_kudos .usd{
+  display: none;
+}
