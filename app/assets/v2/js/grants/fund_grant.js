@@ -35,7 +35,7 @@ $(document).ready(function() {
         }
         if (periodSeconds) {
           realPeriodSeconds = periodSeconds;
-          data.frequency = realPeriodSeconds;
+          $('#frequency_count').val(realPeriodSeconds);
         }
       }
 
@@ -107,7 +107,7 @@ $(document).ready(function() {
 
                   console.log('data', data);
 
-                  form.submit();
+                  // form.submit();
 
                   fetch('http://localhost:10003/saveSubscription', {
                     method: 'POST',
