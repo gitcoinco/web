@@ -34,7 +34,7 @@ window.onload = function() {
   waitforWeb3(function() {
     if (document.web3network != document.network) {
       _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
-    } else {
+    } else if (!$('#forwarding_address').val()) {
       $('#forwarding_address').val(web3.eth.coinbase);
     }
     $('#network').val(document.web3network);
@@ -69,6 +69,11 @@ $(document).ready(function() {
 
     if (document.web3network != document.network) {
       _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
+      unloading_button($(this));
+      return;
+    }
+
+    if (!confirm(gettext('Please confirm that ' + forwarding_address + ' is the address for which you wish to redeem this tip.'))) {
       unloading_button($(this));
       return;
     }

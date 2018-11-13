@@ -572,7 +572,7 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Gitcoin on Epicenter | Marketing Your Bounties"
+    subject = "Announcing 1337 (Subscriptions) | More Kudos!"
 
     intro = '''
 
@@ -580,21 +580,58 @@ def render_new_bounty_roundup(to_email):
 Hi there,
 </p>
 <p>
-This week, we were on <a href="https://epicenter.tv/episode/257/">Epicenter</a>, a leading blockchain podcast. I talked about Gitcoin's platform and progress, our interest in
-growing open source, and the future of Gitcoin. There are a few sneak peeks in there for those interested in our Q4 plans :)
+Post Devcon, we're excited to share <a href="https://medium.com/gitcoin/eip-1337-subscriptions-launches-eacbb947e229/">we launched EIP 1337</a> (on-chain subscriptions) <a href="https://1337alliance.com/">alongside the 1337 Alliance</a>!
+The launch includes a) the EIP entering a pending state, b) <a href="https://github.com/austintgriffith/tokensubscription.com/tree/13ced407c2709e99fbe7838a84a9d53f855b40bc">an audited reference implementation</a>, and c) <a href="https://1337alliance.com/">the launch of 1337 Alliance</a>!
+If you're interested in learning more, <a href="https://gitcoin.co/slack">join the Gitcoin Slack</a> and the #proj-subscriptions channel or open an issue on our Github.
 </p>
 <p>
-We also released a post about <a href="https://medium.com/gitcoin/increasing-action-on-your-gitcoin-bounty-61bb278f6f54">increasing action on Gitcoin bounties</a>. This is an important post for funders looking to grow their
-open source project with top notch Gitcoiners. Give it a look and let us know if you have any feedback!
+We're still more than excited about the <a href="https://medium.com/gitcoin/introducing-kudos-10077a4f2def">Kudos launch!</a> This week, we'd like to recognize a few folks
+from the 1337 Alliance who have made our progress on subscriptions possible. If you'd like to use Kudos to compliment anyone from your network,
+<a href="https://gitcoin.co/kudos/marketplace/">check out the Kudos Marketplace</a> and give it a try!
 </p>
+
+<ul>
+<li>
+    Kudos to <strong>Andrew Redden</strong> for <strong>being a party parrot</strong> at Devcon!
+    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/395/'>
+</li>
+<li>
+    Kudos to <strong>Austin Griffith</strong> for <strong>being a creative cat</strong>!
+    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/385/'>
+</li>
+<li>
+    Kudos to <strong>Andy Thudhope</strong> for <strong>being a great mentor</strong> to the Gitcoin team!
+    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/394/'>
+</li>
+<li>
+    Kudos to <strong>Dean Eigenmann</strong> for <strong>the Kudos Smart Contract Audit</strong>!
+    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/324/'>
+</li>
+<li>
+    Kudos to <strong>Mark Beylin</strong> for <strong>being a magical unicorn</strong>.  Gitcoin would not be where it is today without Mark's help!
+    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/185/'>
+</li>
+</ul>
+
 <p>
-We had a great time at Github Universe (Oct 16-17) this past week representing Gitcoin and CodeFund.
-If you'll be at Web 3 Summit (Oct 22 - 24), Sustain OSS (Oct 25) or Devcon 4, give us a shout!
+Speaking of Kudos, check out all the new kudos launched this week:
 </p>
+
+<p>
+
+''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: 75px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in [396, 395, 394, 389, 388, 387, 386, 385]]) + '''
+
+
+</p>
+
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin Livestream is back as regularly scheduled this week. <a href="https://gitcoin.co/livestream">Join us at 5PM ET</a>!
+        The Gitcoin crew is back from a busy October between ETH SF, Github Universe, SustainOSS, and Devcon.
+        We have lots to share about what we learned along the way! Join the livestream and be on the lookout for more.
+        </li>
+        <li>
+        The Gitcoin Livestream will be on as regularly scheduled in two days. <a href="https://gitcoin.co/livestream">Join us Friday at 5PM ET</a>!
         </li>
     </ul>
 </p>
@@ -603,37 +640,40 @@ Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'g-r-a-n-t',
+        'who': 'lastperson',
         'who_link': True,
-        'what': 'Congrats to g-r-a-n-t on his first bounty!',
-        'link': 'https://gitcoin.co/issue/ethereum/eth-bloom/22/1534',
+        'what': 'Worked on a Mythril Bounty with the ConsenSys Diligence team!',
+        'link': 'https://gitcoin.co/issue/ConsenSys/mythril-ctf-public/3/1613',
         'link_copy': 'View more',
     }, {
-        'who': 'svenski123',
+        'who': 'kuhnchris',
         'who_link': True,
-        'what': 'A new Gitcoiner contributing to a new Gitcoin Project, Node Stratum!',
-        'link': 'https://gitcoin.co/issue/foxer666/node-stratum-pool/32/1493',
+        'what': 'Worked with MikeyMicrophone on Commissulator!',
+        'link': 'https://gitcoin.co/issue/mikeymicrophone/commissulator/8/1635',
         'link_copy': 'View more',
     }, {
-        'who': 'satyamakgec',
+        'who': 'SomniaStellarum',
         'who_link': True,
-        'what': 'Helped build a sample app for Pulse Blockchain!',
-        'link': 'https://gitcoin.co/issue/PulseBlockchain/oz-sample-app/10/1479',
+        'what': 'Worked with the EF on Hive, a testing framework.',
+        'link': 'https://gitcoin.co/issue/karalabe/hive/122/1136',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/karalabe/hive/issues/133',
-        'primer': 'Help move forward Ethereum testing.',
+        'url': 'https://github.com/ethereum/vyper/issues/983',
+        'primer': 'Work with the Vyper team on improving the language',
     }, {
-        'url': 'https://github.com/dckc/RSign/issues/1',
-        'primer': 'Get paid in RHOC for helping with FireFox support.',
+        'url': 'https://github.com/PwayGames/PWay.Contracts/issues/1',
+        'primer': 'Hunt for bugs with PWay Contracts.',
     }, {
-        'url': 'https://github.com/poanetwork/blockscout/issues/942',
-        'primer': 'Work on POA Network, a leading blockchain project.'
+        'url': 'https://github.com/gitcoinco/web/issues/2684',
+        'primer': 'Add to Gitcoin Avatars in November 2018!'
     }, ]
 
     num_leadboard_items = 5
+    highlight_kudos_ids = []
+
+
     #### don't need to edit anything below this line
     leaderboard = {
         'quarterly_payers': {
@@ -649,6 +689,13 @@ Back to BUIDLing,
             'items': [],
         },
     }
+
+    from kudos.models import KudosTransfer
+    if highlight_kudos_ids:
+        kudos_highlights = KudosTransfer.objects.filter(id__in=highlight_kudos_ids)
+    else:
+        kudos_highlights = KudosTransfer.objects.exclude(txid='').order_by('-created_on')[:4]
+
     for key, __ in leaderboard.items():
         leaderboard[key]['items'] = LeaderboardRank.objects.active() \
             .filter(leaderboard=key).order_by('rank')[0:num_leadboard_items]
@@ -679,6 +726,7 @@ Back to BUIDLing,
         'hide_header': False,
         'highlights': highlights,
         'subscriber': get_or_save_email_subscriber(to_email, 'internal'),
+        'kudos_highlights': kudos_highlights,
     }
 
     response_html = premailer_transform(render_to_string("emails/bounty_roundup.html", params))

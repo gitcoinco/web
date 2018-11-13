@@ -74,7 +74,7 @@
         <div class="row py-2 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex flex-sm-row flex-column justify-content-center align-items-center">
             <p style='text-align: center;'>
-              Since it's <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6" target="_blank">launch</a> in <span style="margin: 3px 3px; font-weight: bold;">November 2017</span>, Gitcoin has helped <span style="margin: 3px 3px;font-weight: bold;">{{funders|intcomma}}</span> funders reach an audience of <span style="margin: 3px 3px;font-weight: bold;">{{audience|intcomma}}</span> developers.  Gitcoin has facilitated <span style="margin: 3px 3px;font-weight: bold;">{{transactions|intcomma}}</span> complete transactions to <span style="margin: 3px 3px;font-weight: bold;">{{recipients|intcomma}}</span> unique coders.
+              Since its <a href="https://media.consensys.net/gitcoin-joins-consensys-announces-pilot-projects-f5a0955de9d6" target="_blank">launch</a> in <span style="margin: 3px 3px; font-weight: bold;">November 2017</span>, Gitcoin has helped <span style="margin: 3px 3px;font-weight: bold;">{{funders|intcomma}}</span> funders reach an audience of <span style="margin: 3px 3px;font-weight: bold;">{{audience|intcomma}}</span> developers.  Gitcoin has facilitated <span style="margin: 3px 3px;font-weight: bold;">{{transactions|intcomma}}</span> complete transactions to <span style="margin: 3px 3px;font-weight: bold;">{{recipients|intcomma}}</span> unique coders.
             </p>
           </div>
         </div>
@@ -98,7 +98,7 @@
           </div>
 
           <div class="col-6 col-md-4 text-center py-4">
-            <img class="icon" src="{% static "v2/images/results/MAUS.svg" %}" />
+            <img class="icon" src="{% static "v2/images/results/MAUs.svg" %}" />
             <h3 class="text-highlight-purple mt-3">27,494</h3>
             <p>{% trans "Monthly Active Users" %}</p>
             <span class="mt-0">(but only 1% of them create on-chain tx's)</span>
@@ -167,46 +167,89 @@
 
 
     <div style="background-color: #F2F6F9;">
-      <div class="container" id="bounty_universe">
+      <div class="container">
         <div class="row py-5 animatedParent">
-
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
             <h2 class="text-center pb-5">
               {% trans "Top Organizations" %} {% if keyword %}({{keyword}}){%endif%}
             </h2>
           </div>
-
           <div class="col-md-12 align-items-center">
             <div id="repo_repos">
                 {% for org in top_orgs %}
                     <a href="/profile/{{org}}" title="{{org}}">
-                        <img src="/dynamic/avatar/{{org}}" alts="{{org}}" style="max-width: 100px; max-height: 100px; margin 5px; border-radius: 50px;">
+                        <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" style="max-width: 100px; max-height: 100px; margin 5px; border-radius: 50px;">
                     </a>
                 {% endfor %}
             </div>
-
           </div>
-
         </div>
-        <div class="row py-5 animatedParent">
+      </div>
+    </div>
 
+    <div style="background-color: white;">
+      <div class="container">
+        <div class="row py-5 animatedParent">
+          <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
+            <h2 class="text-center pb-5">
+              {% trans "Top Funders" %} {% if keyword %}({{keyword}}){%endif%}
+            </h2>
+          </div>
+          <div class="col-md-12 align-items-center">
+            <div id="repo_repos">
+                {% for org in top_funders %}
+                    <a href="/profile/{{org}}" title="{{org}}">
+                        <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" style="max-width: 100px; max-height: 100px; margin 5px; border-radius: 50px;">
+                    </a>
+                {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div style="background-color: #F2F6F9;">
+      <div class="container">
+        <div class="row py-5 animatedParent">
+          <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
+            <h2 class="text-center pb-5">
+              {% trans "Top Mega-Funders" %} 
+            </h2>
+          </div>
+          <div class="col-md-12 align-items-center">
+            <div id="repo_repos" style="text-align: center;">
+                  <a href="https://ethereum.org" title="Ethereum Foundation">
+                      <img src="{% static 'v2/images/metafunders/ethereum-foundation.png' %}" alts="Ethereum Foundation" style="max-width: 200px; max-height: 200px; margin: 25px; border-radius: 100px;">
+                  </a>
+                  <a href="https://ecf.network" title="Ethereum Community Fund">
+                      <img src="{% static 'v2/images/metafunders/ecf_logo.svg' %}" alts="Ethereum Community Fund" style="max-width: 200px; max-height: 200px; margin: 25px; border-radius: 100px;">
+                  </a>
+                  <a href="http://consensys.net/" title="Consensys">
+                      <img src="{% static 'v2/images/metafunders/consensys_logo.png' %}" alts="Consensys" style="max-width: 200px; max-height: 200px; margin: 25px; border-radius: 100px;">
+                  </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div style="background-color: white;">
+      <div class="container">
+        <div class="row py-5 animatedParent">
           <div class="col-12 col-lg-10 offset-md-0 offset-lg-1 d-flex justify-content-center align-items-center">
             <h2 class="text-center pb-5">
               {% trans "Top Coders" %} {% if keyword %}({{keyword}}){%endif%}
             </h2>
           </div>
-
           <div class="col-md-12 align-items-center">
             <div id="repo_repos">
                 {% for org in top_coders %}
                     <a href="/profile/{{org}}" title="{{org}}">
-                        <img src="/dynamic/avatar/{{org}}" alts="{{org}}" style="max-width: 100px; max-height: 100px; margin 5px; border-radius: 50px;">
+                        <img data-src="/dynamic/avatar/{{org}}" alts="{{org}}" style="max-width: 100px; max-height: 100px; margin 5px; border-radius: 50px;">
                     </a>
                 {% endfor %}
             </div>
-
           </div>
-
         </div>
         <div class="row mt-5 pb-5 animatedParent text-center align-items-center">
           <div class="col animated pulse fast">
@@ -214,7 +257,6 @@
               target="_blank" rel="noopener noreferrer">{% trans "Checkout the Leaderboard" %}</a>
           </div>
         </div>
-
     </div>
 
 
@@ -301,7 +343,7 @@
             <div id="repo_repos">
                 {% for kudos in kudos_tokens %}
                     <a href="/kudos/{{ kudos.id }}/{{ kudos.name }}"" title="{{kudos.name|humanize_name}}">
-                        <img src="{% static kudos.image %}" alts="{{kudos.name|humanize_name}}" style="max-width: 100px; max-height: 100px; margin 5px; border-radius: 50px;">
+                        <img data-src="{% static kudos.image %}" alts="{{kudos.name|humanize_name}}" style="max-width: 100px; max-height: 100px; margin 5px; border-radius: 50px;">
                     </a>
                 {% endfor %}
             </div>
@@ -436,6 +478,9 @@
     {% include 'shared/analytics.html' %}
     {% include 'shared/footer_scripts.html' %}
     {% include 'shared/messages.html' %}
+
+    <script src="{% static "v2/js/jquery-unveil.js" %}"></script>
+
   </body>
   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
   <script src="{% static "v2/js/pages/results.js" %}"></script>
@@ -444,6 +489,9 @@
       $("#mesh_network_jobs_holder").html('<iframe src="{% url 'viz_graph' %}?keyword={{keyword}}" style="width: 100%; height: 600px; border-left: 1px #dddddd solid; border-bottom: 1px #dddddd solid;  " frameBorder="0">');
       e.preventDefault();
     });
+  $(document).ready(function() {
+    $("img").unveil(200);
+  });
   </script>
 </html>
 

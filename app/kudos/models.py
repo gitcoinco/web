@@ -23,6 +23,9 @@ from io import BytesIO
 from django.conf import settings
 from django.core.files import File
 from django.db import models
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from django.utils import timezone
 from django.utils.text import slugify
 
 import environ
@@ -67,6 +70,10 @@ class Token(SuperModel):
     num_clones_allowed = models.IntegerField(null=True, blank=True)
     num_clones_in_wild = models.IntegerField(null=True, blank=True)
     cloned_from_id = models.IntegerField()
+    popularity = models.IntegerField(default=0)
+    popularity_week = models.IntegerField(default=0)
+    popularity_month = models.IntegerField(default=0)
+    popularity_quarter = models.IntegerField(default=0)
 
     # Kudos metadata from tokenURI (also in contract)
     name = models.CharField(max_length=255)
@@ -151,6 +158,43 @@ class Token(SuperModel):
     def tags_as_array(self):
         return [tag.strip() for tag in self.tags.split(',')]
 
+    @property
+    def owners_profiles(self):
+        """.
+
+        Returns:
+            array: QuerySet of Profiles
+
+        """
+        from dashboard.models import Profile
+        related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=self.pk).exclude(txid='')
+        related_profiles_pks = related_kudos_transfers.values_list('recipient_profile_id', flat=True)
+        related_profiles = Profile.objects.filter(pk__in=related_profiles_pks).distinct()
+        return related_profiles
+
+    @property
+    def owners_handles(self):
+        """.
+            differs from `owners_profiles` in that not everyone who has received a kudos has a profile
+        Returns:
+            array: array of handles
+
+        """
+        from dashboard.models import Profile
+        related_kudos_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=self.pk).exclude(txid='')
+        return related_kudos_transfers.values_list('username', flat=True)
+
+    @property
+    def num_clones_available_counting_indirect_send(self):
+        return self.num_gen0_clones_allowed - self.num_clones_in_wild_counting_indirect_send
+
+    @property
+    def num_clones_in_wild_counting_indirect_send(self):
+        num_total_sends_we_know_about = len(self.owners_handles)
+        if num_total_sends_we_know_about > self.num_clones_in_wild:
+            return num_total_sends_we_know_about
+        return self.num_clones_in_wild
+
     def humanize(self):
         self.owner_address = self.shortened_address
         self.name = self.capitalized_name
@@ -159,11 +203,9 @@ class Token(SuperModel):
 
     @property
     def gen(self):
-        if self.pk == self.cloned_from_id:
-            return 0
-        if not self.cloned_from_id:
-            return 0
-        return Token.objects.get(pk=self.cloned_from_id).gen + 1
+        if self.num_clones_allowed > 0:
+            return 1
+        return 2
 
     def __str__(self):
         """Return the string representation of a model."""
@@ -193,7 +235,8 @@ class Token(SuperModel):
                 if obj_data:
                     image = pyvips.Image.new_from_file(obj.name)
                     return BytesIO(image.write_to_buffer(f'.png'))
-            except VipsError:
+            except VipsError as e:
+                logger.error(e)
                 pass
             except Exception as e:
                 logger.error(e)
@@ -279,7 +322,19 @@ class KudosTransfer(SendCryptoAsset):
         status = 'funded' if self.txid else 'not funded'
         if self.receive_txid:
             status = 'received'
-        return f"({status}) transfer of {self.kudos_token_cloned_from} from {self.sender_profile} to {self.recipient_profile} on {self.network}"
+        return f"({status}) transfer of {self.kudos_token_cloned_from} from {self.sender_profile} to {self.username} on {self.network}"
+
+
+@receiver(post_save, sender=KudosTransfer, dispatch_uid="psave_kt")
+def psave_kt(sender, instance, **kwargs):
+    token = instance.kudos_token_cloned_from
+    if token:
+        all_transfers = KudosTransfer.objects.filter(kudos_token_cloned_from=token).exclude(txid='')
+        token.popularity = all_transfers.count()
+        token.popularity_week = all_transfers.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=7))).count()
+        token.popularity_month = all_transfers.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=30))).count()
+        token.popularity_quarter = all_transfers.filter(created_on__gt=(timezone.now() - timezone.timedelta(days=90))).count()
+        token.save()
 
 
 class Contract(SuperModel):

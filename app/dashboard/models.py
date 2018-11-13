@@ -484,6 +484,18 @@ class Bounty(SuperModel):
         """
         return handle.lower().lstrip('@') == self.bounty_owner_github_username.lower().lstrip('@')
 
+    def has_started_work(self, handle, pending=False):
+        """Determine whether or not the profile has started work
+
+        Args:
+            handle (str): The profile handle to be compared.
+
+        Returns:
+            bool: Whether or not the user has started work.
+
+        """
+        return self.interested.filter(pending=pending, profile__handle=handle).exists()
+
     @property
     def absolute_url(self):
         return self.get_absolute_url()
@@ -1433,12 +1445,35 @@ class Activity(models.Model):
         ('bounty_removed_by_staff', 'Removed from Bounty by Staff'),
         ('bounty_removed_by_funder', 'Removed from Bounty by Funder'),
         ('new_crowdfund', 'New Crowdfund Contribution'),
+        ('new_kudos', 'New Kudos'),
     ]
 
-    profile = models.ForeignKey('dashboard.Profile', related_name='activities', on_delete=models.CASCADE)
-    bounty = models.ForeignKey('dashboard.Bounty', related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
-    tip = models.ForeignKey('dashboard.Tip', related_name='activities', on_delete=models.CASCADE, blank=True, null=True)
-    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    profile = models.ForeignKey(
+        'dashboard.Profile',
+        related_name='activities',
+        on_delete=models.CASCADE
+    )
+    bounty = models.ForeignKey(
+        'dashboard.Bounty',
+        related_name='activities',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
+    tip = models.ForeignKey(
+        'dashboard.Tip',
+        related_name='activities',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True
+    )
+    kudos = models.ForeignKey(
+        'kudos.KudosTransfer',
+        related_name='activities',
+        on_delete=models.CASCADE,
+        blank=True, null=True
+    )
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True, db_index=True)
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True)
     metadata = JSONField(default=dict)
     needs_review = models.BooleanField(default=False)
@@ -1457,15 +1492,19 @@ class Activity(models.Model):
     @property
     def view_props(self):
         from dashboard.tokens import token_by_name
+        from kudos.models import Token
         icons = {
             'new_tip': 'fa-thumbs-up',
             'start_work': 'fa-lightbulb',
             'new_bounty': 'fa-money-bill-alt',
             'work_done': 'fa-check-circle',
+            'new_kudos': 'fa-thumbs-up',
         }
 
         activity = self
         activity.icon = icons.get(activity.activity_type, 'fa-check-circle')
+        if activity.kudos:
+            activity.kudos_data = Token.objects.get(pk=activity.kudos.kudos_token_cloned_from_id)
         obj = activity.metadata
         if 'new_bounty' in activity.metadata:
             obj = activity.metadata['new_bounty']
@@ -1542,7 +1581,7 @@ class Profile(SuperModel):
 
     user = models.OneToOneField(User, on_delete=models.SET_NULL, null=True, blank=True)
     data = JSONField()
-    handle = models.CharField(max_length=255, db_index=True)
+    handle = models.CharField(max_length=255, db_index=True, unique=True)
     avatar = models.ForeignKey('avatar.Avatar', on_delete=models.SET_NULL, null=True, blank=True)
     last_sync_date = models.DateTimeField(null=True)
     email = models.CharField(max_length=255, blank=True, db_index=True)
@@ -1576,6 +1615,44 @@ class Profile(SuperModel):
     funder_total_budget_updated_on = models.DateTimeField(blank=True, null=True)
 
     objects = ProfileQuerySet.as_manager()
+
+    @property
+    def get_my_kudos(self):
+        from kudos.models import KudosTransfer
+        kt_owner_address = KudosTransfer.objects.filter(
+            kudos_token_cloned_from__owner_address__iexact=self.preferred_payout_address
+        )
+        kt_profile = KudosTransfer.objects.filter(recipient_profile=self)
+
+        kudos_transfers = kt_profile | kt_owner_address
+        kudos_transfers = kudos_transfers.filter(
+            kudos_token_cloned_from__contract__network=settings.KUDOS_NETWORK
+        )
+        kudos_transfers = kudos_transfers.exclude(txid='')
+
+        # remove this line IFF we ever move to showing multiple kudos transfers on a profile
+        kudos_transfers = kudos_transfers.distinct('id')
+
+        return kudos_transfers
+
+    @property
+    def get_sent_kudos(self):
+        from kudos.models import KudosTransfer
+        kt_address = KudosTransfer.objects.filter(
+            from_address__iexact=self.preferred_payout_address
+        )
+        kt_sender_profile = KudosTransfer.objects.filter(sender_profile=self)
+
+        kudos_transfers = kt_address | kt_sender_profile
+        kudos_transfers = kudos_transfers.exclude(txid='')
+        kudos_transfers = kudos_transfers.filter(
+            kudos_token_cloned_from__contract__network=settings.KUDOS_NETWORK
+        )
+
+        # remove this line IFF we ever move to showing multiple kudos transfers on a profile
+        kudos_transfers = kudos_transfers.distinct('id')
+
+        return kudos_transfers
 
     @property
     def is_org(self):
@@ -2304,7 +2381,7 @@ class Profile(SuperModel):
             'works_with_collected': works_with_collected,
             'works_with_funded': works_with_funded,
             'funded_bounties_count': funded_bounties.count(),
-            'activities': [{'title': _('No data available.')}],
+            'activities': [],
             'no_times_been_removed': no_times_been_removed,
             'sum_eth_on_repos': sum_eth_on_repos,
             'works_with_org': works_with_org,
@@ -2363,6 +2440,14 @@ class Profile(SuperModel):
         except Exception:
             pass
         return False
+
+
+# enforce casing / formatting rules for profiles
+@receiver(pre_save, sender=Profile, dispatch_uid="psave_profile")
+def psave_profile(sender, instance, **kwargs):
+    instance.handle = instance.handle.replace(' ', '')
+    instance.handle = instance.handle.replace('@', '')
+    instance.handle = instance.handle.lower()
 
 
 @receiver(user_logged_in)
@@ -2439,6 +2524,7 @@ class UserAction(SuperModel):
     ip_address = models.GenericIPAddressField(null=True)
     location_data = JSONField(default=dict)
     metadata = JSONField(default=dict)
+    utm = JSONField(default=dict, null=True)
 
     def __str__(self):
         return f"{self.action} by {self.profile} at {self.created_on}"

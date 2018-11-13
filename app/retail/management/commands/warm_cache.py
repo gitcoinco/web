@@ -56,6 +56,7 @@ class Command(BaseCommand):
             paths.append(path + "?breakdown=daily")
             paths.append(path + "?breakdown=weekly")
         paths.append(reverse('gas'))
+        paths.append(reverse('gas_heatmap'))
 
         # warm the paths
         print(f"starting at {timezone.now()}")

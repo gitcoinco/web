@@ -73,13 +73,8 @@ body {
 
 .title-row {
   display: flex;
-  margin-top: 2em;
   float: right;
   border-bottom: 2px solid #3E24FB;
-}
-
-#filter {
-  color: #3e24fb;
 }
 
 .bounty-info {
@@ -93,11 +88,6 @@ body {
   color: #7A7A7A;
 }
 
-#matches {
-  font-weight: 300;
-  padding-left: 10px;
-}
-
 .title {
   text-transform: capitalize;
 }
@@ -105,7 +95,7 @@ body {
 .bounty_row {
   color: #000000;
   text-decoration: none;
-  padding: 10px 20px 10px 4em;
+  padding: 10px 3rem 10px 1rem;
 }
 
 .bounty_row .avatar-container {
@@ -201,11 +191,20 @@ body {
 @media (max-width: 991.98px) {
 
   .bounty_row {
-    padding-left: 0;
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   #onboard-dashboard .robot {
     display: none;
+  }
+
+  .bounty_row .avatar-container {
+    display: none !important;
+  }
+
+  .tags.fixed {
+    float: left;
   }
 }
 
@@ -224,13 +223,6 @@ body {
 
   #stats {
     font-size: 10px;
-  }
-}
-
-@media (max-width: 767.98px) {
-
-  .bounty_row .avatar-container {
-    display: none !important;
   }
 }
 

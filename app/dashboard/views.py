@@ -28,6 +28,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.models import User
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.exceptions import PermissionDenied
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
@@ -86,6 +87,16 @@ confirm_time_minutes_target = 4
 
 # web3.py instance
 w3 = Web3(HTTPProvider(settings.WEB3_HTTP_PROVIDER))
+
+
+def grants(request):
+    """Handle grants explorer."""
+
+    params = {
+        'active': 'dashboard',
+        'title': _('Grants Explorer')
+        }
+    return TemplateResponse(request, 'grants_index.html', params)
 
 
 def record_user_action(user, event_name, instance):
@@ -743,6 +754,8 @@ def fulfill_bounty(request):
 
     """
     bounty = handle_bounty_views(request)
+    if not bounty.has_started_work(request.user.username):
+        raise PermissionDenied
     params = get_context(
         ref_object=bounty,
         github_username=request.GET.get('githubUsername'),
@@ -1125,7 +1138,7 @@ def profile(request, handle):
     order_by = request.GET.get('order_by', '-modified_on')
     owned_kudos = None
     sent_kudos = None
-    owned_kudos_comments_public = None
+    handle = handle.replace("@", "")
 
     try:
         if not handle and not request.user.is_authenticated:
@@ -1142,6 +1155,10 @@ def profile(request, handle):
             profile = profile_helper(handle, current_user=request.user)
 
         context = profile.to_dict()
+        for activity in context['activities']:
+            activity['started_bounties_count'] = activity['activity_bounties'].filter(
+                activity_type='start_work'
+            ).count()
     except (Http404, ProfileHiddenException):
         status = 404
         context = {
@@ -1158,43 +1175,17 @@ def profile(request, handle):
 
     context['preferred_payout_address'] = profile.preferred_payout_address
 
-    if context['preferred_payout_address']:
-        owned_kudos = Token.objects.select_related('kudos_transfer', 'contract').filter(
-            Q(owner_address__iexact=context['preferred_payout_address']) |
-            Q(kudos_transfer__recipient_profile=profile),
-            contract__network=settings.KUDOS_NETWORK
-        ).distinct('id').order_by('id', order_by)
-        sent_kudos = Token.objects.select_related('kudos_transfer', 'contract').filter(
-            Q(kudos_transfer__from_address__iexact=context['preferred_payout_address']) |
-            Q(kudos_transfer__sender_profile=profile),
-            contract__network=settings.KUDOS_NETWORK,
-        ).distinct('id').order_by('id', order_by)
+    owned_kudos = profile.get_my_kudos.order_by('id', order_by)
+    sent_kudos = profile.get_sent_kudos.order_by('id', order_by)
 
-    if owned_kudos:
-        owned_kudos_comments_public = []
-        for kudos_token in owned_kudos:
-            try:
-                owned_kudos_comments_public.append(kudos_token.kudos_transfer.comments_public)
-            except Exception as e:
-                logger.error(e)
-
-    context['kudos_comments_public'] = owned_kudos_comments_public
     context['kudos'] = owned_kudos
     context['sent_kudos'] = sent_kudos
 
     if request.method == 'POST' and request.is_ajax():
         # Send kudos data when new preferred address
         address = request.POST.get('address')
-        context['kudos'] = Token.objects.select_related('kudos_transfer', 'contract').filter(
-            Q(owner_address__iexact=address) |
-            Q(kudos_transfer__recipient_profile=profile),
-            contract__network=settings.KUDOS_NETWORK,
-        ).distinct('id').order_by('id', order_by)
-        context['sent_kudos'] = Token.objects.select_related('contract', 'kudos_transfer').filter(
-            Q(kudos_transfer__from_address__iexact=address) |
-            Q(kudos_transfer__sender_profile=profile),
-            contract__network=settings.KUDOS_NETWORK,
-        ).distinct('id').order_by('id', order_by)
+        context['kudos'] = profile.get_my_kudos.order_by('id', order_by)
+        context['sent_kudos'] = profile.get_sent_kudos.order_by('id', order_by)
         profile.preferred_payout_address = address
         kudos_html = loader.render_to_string('shared/profile_kudos.html', context)
 
@@ -1218,27 +1209,33 @@ def profile(request, handle):
     return TemplateResponse(request, 'profiles/profile.html', context, status=status)
 
 
+@csrf_exempt
 def lazy_load_kudos(request):
     page = request.POST.get('page', 1)
-    address = request.POST.get('address')
     context = {}
     datarequest = request.POST.get('request')
     order_by = request.GET.get('order_by', '-modified_on')
     limit = int(request.GET.get('limit', 8))
-    query_kwargs = {'contract__network': settings.KUDOS_NETWORK}
+    handle = request.POST.get('handle')
 
-    if datarequest == 'mykudos':
-        key = 'kudos'
-        query_kwargs['owner_address__iexact'] = address
-    else:
-        key = 'sent_kudos'
-        query_kwargs['kudos_transfer__from_address__iexact'] = address
+    if handle:
+        try:
+            profile = Profile.objects.get(handle=handle)
+            if datarequest == 'mykudos':
+                key = 'kudos'
+                context[key] = profile.get_my_kudos.order_by('id', order_by)
+            else:
+                key = 'sent_kudos'
+                context[key] = profile.get_sent_kudos.order_by('id', order_by)
+        except Profile.DoesNotExist:
+            pass
 
-    context[key] = Token.objects.filter(owner_address__iexact=address, **query_kwargs).order_by(order_by)
     paginator = Paginator(context[key], limit)
-
     kudos = paginator.get_page(page)
-    kudos_html = loader.render_to_string('shared/kudos_card_profile.html', {'kudos': kudos})
+    html_context = {}
+    html_context[key] = kudos
+    html_context['kudos_data'] = key
+    kudos_html = loader.render_to_string('shared/kudos_card_profile.html', html_context)
     return JsonResponse({'kudos_html': kudos_html, 'has_next': kudos.has_next()})
 
 
@@ -1872,7 +1869,7 @@ def get_users(request):
             profile_json['preferred_payout_address'] = user.preferred_payout_address
             results.append(profile_json)
         # try github
-        if not profiles:
+        if not len(results):
             search_results = search_users(q, token=token)
             for result in search_results:
                 profile_json = {}
@@ -1882,9 +1879,11 @@ def get_users(request):
                 profile_json['avatar_id'] = None
                 profile_json['avatar_url'] = result.avatar_url
                 profile_json['preferred_payout_address'] = None
-                results.append(profile_json)
+                # dont dupe github profiles and gitcoin profiles in user search
+                if profile_json['text'].lower() not in [p['text'].lower() for p in profiles]:
+                    results.append(profile_json)
         # just take users word for it
-        if not profiles:
+        if not len(results):
             profile_json = {}
             profile_json['id'] = -1
             profile_json['text'] = q
@@ -1906,12 +1905,15 @@ def get_kudos(request):
     }
     if request.is_ajax():
         q = request.GET.get('term')
+        network = request.GET.get('network', None)
         eth_to_usd = convert_token_to_usdt('ETH')
         kudos_by_name = Token.objects.filter(name__icontains=q)
         kudos_by_desc = Token.objects.filter(description__icontains=q)
         kudos_by_tags = Token.objects.filter(tags__icontains=q)
         kudos_pks = (kudos_by_desc | kudos_by_name | kudos_by_tags).values_list('pk', flat=True)
-        kudos = Token.objects.filter(pk__in=kudos_pks, hidden=False).order_by('name')
+        kudos = Token.objects.filter(pk__in=kudos_pks, hidden=False, num_clones_allowed__gt=0).order_by('name')
+        if network:
+            kudos = kudos.filter(contract__network=network)
         results = []
         for token in kudos:
             kudos_json = {}

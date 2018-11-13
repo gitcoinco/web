@@ -162,6 +162,14 @@ var renderWallets = function(profileId) {
 // Step 0
 // DOM is ready
 $(document).ready(function() {
+
+  // upon keypress for the select2, gotta make sure it opens
+  setTimeout(function() {
+    $('.select2').keypress(function() {
+      $(this).siblings('select').select2('open');
+    });
+  }, 100);
+
   set_metadata();
   // jquery bindings
   $('#advanced_toggle').click(function(e) {
@@ -175,7 +183,24 @@ $(document).ready(function() {
   // Step 1
   // Kudos send button is clicked
   $('#send').click(function(e) {
+
     e.preventDefault();
+
+    if (typeof web3 == 'undefined') {
+      _alert({ message: gettext('You must have a web3 enabled browser to do this.  Please download Metamask.') }, 'warning');
+      return;
+    }
+    if (!web3.eth.coinbase) {
+      _alert({ message: gettext('Please unlock metamask.') }, 'warning');
+      return;
+    }
+    var kudos_network = $('#kudosNetwork').val();
+
+    if (document.web3network != kudos_network) {
+      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ' + kudos_network) }, 'warning');
+      return;
+    }
+
     $('#send_eth')[0].checkValidity();
 
     if (!$('#username')[0].checkValidity()) {
@@ -313,7 +338,10 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
     username = '@' + username;
   }
   var _disableDeveloperTip = true;
-  var gas_money = parseInt(Math.pow(10, (9 + 5)) * ((defaultGasPrice * 1.001) / Math.pow(10, 9)));
+  var observedKudosGasLimit = 505552;
+  var buffer_pct = 1.005;
+  var wei_to_gwei = Math.pow(10, 9);
+  var gas_money = parseInt((wei_to_gwei * observedKudosGasLimit) * (buffer_pct * defaultGasPrice / wei_to_gwei));
   // var isSendingETH = (tokenAddress == '0x0' || tokenAddress == '0x0000000000000000000000000000000000000000');
   var tokenDetails = tokenAddressToDetails(tokenAddress);
   var tokenName = 'ETH';
@@ -356,6 +384,13 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
     failure_callback();
     return;
   }
+
+  // warnings
+  if (username == $('#fromName').val()) {
+    _alert({ message: gettext('Kudos are intended to be compliments. just like you *can* give yourself a compliment or *can* give yourself an award, you are also able to send yourself a Kudos. ') }, 'warning');
+  }
+
+
   // console.log('got to metadata_callback')
 
   // Step 7
@@ -485,9 +520,9 @@ function sendKudos(email, github_url, from_name, username, amountInEth, comments
           };
 
           kudos_contract.clone.estimateGas(destinationAccount, tokenId, numClones, {from: account, value: kudosPriceInWei}, function(err, kudosGasEstimate) {
-            if (err){
+            if (err) {
               unloading_button($('#send'));
-              _alert("Got an error back from RPC node.  Please try again or contact support")
+              _alert('Got an error back from RPC node.  Please try again or contact support');
               throw (err);
             }
 

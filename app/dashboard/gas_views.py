@@ -24,7 +24,7 @@ from django.template.response import TemplateResponse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from cacheops import CacheMiss, cache
+from cacheops import CacheMiss, cache, cached_view, cached_view_as
 from economy.utils import convert_amount
 from gas.models import GasGuzzler
 from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
@@ -56,15 +56,14 @@ def get_history_cached(breakdown, i):
     except CacheMiss:
         results = None
 
-    if results:
-        return results
-
-    results = gas_history(breakdown, i)
-    cache.set(key, results, timeout)
+    if not results:
+        results = gas_history(breakdown, i)
+        cache.set(key, results, timeout)
 
     return results
 
 
+@cached_view(timeout=60*16)
 def gas(request):
     _cts = conf_time_spread()
     recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target)
@@ -85,7 +84,6 @@ def gas(request):
 
 
 def gas_intro(request):
-
     context = {
         'title': _('What is Ethereum (ETH) Gas & Web3'),
         'card_desc': _('About Ethereum (ETH) Gas and how it works. '
@@ -94,6 +92,25 @@ def gas_intro(request):
         'hide_send_tip': True,
     }
     return TemplateResponse(request, 'gas_intro.html', context)
+
+
+@cached_view(timeout=60*16)
+def gas_heatmap(request):
+    gas_histories = {}
+    mins = request.GET.get('mins', 60)
+    min_options = [key for key, val in lines.items()]
+    if mins not in min_options:
+        mins = min_options[0]
+    gas_histories[mins] = get_history_cached("hourly", mins)
+    context = {
+        'title': _('Live Ethereum (ETH) Gas Heatmap'),
+        'card_desc': _(''),
+        'hide_send_tip': True,
+        'gas_histories': gas_histories,
+        'mins': mins,
+        'min_options': min_options,
+    }
+    return TemplateResponse(request, 'gas_heatmap.html', context)
 
 
 def gas_faq(request):
@@ -115,47 +132,47 @@ def gas_faucet_list(request):
     return TemplateResponse(request, 'gas_faucet_list.html', context)
 
 
+@cached_view(timeout=60*16)
 def gas_calculator(request):
     recommended_gas_price = recommend_min_gas_price_to_confirm_in_time(confirm_time_minutes_target)
     _cts = conf_time_spread()
 
     actions = [{
-        'name': 'New Bounty',
+        'name': _('New Bounty'),
         'target': '/new',
         'persona': 'funder',
         'product': 'bounties',
     }, {
-        'name': 'Fulfill Bounty',
+        'name': _('Fulfill Bounty'),
         'target': 'issue/fulfill',
         'persona': 'developer',
         'product': 'bounties',
     }, {
-        'name': 'Increase Funding',
+        'name': _('Increase Funding'),
         'target': 'issue/increase',
         'persona': 'funder',
         'product': 'bounties',
     }, {
-        'name': 'Accept Submission',
+        'name': _('Accept Submission'),
         'target': 'issue/accept',
         'persona': 'funder',
         'product': 'bounties',
     }, {
-        'name': 'Cancel Funding',
+        'name': _('Cancel Funding'),
         'target': 'issue/cancel',
         'persona': 'funder',
         'product': 'bounties',
     }, {
-        'name': 'Send tip',
+        'name': _('Send tip'),
         'target': 'tip/send/2/',
         'persona': 'funder',
         'product': 'tips',
     }, {
-        'name': 'Receive tip',
+        'name': _('Receive tip'),
         'target': 'tip/receive',
         'persona': 'developer',
         'product': 'tips',
-    }
-    ]
+    }]
     context = {
         'title': _('Live Ethereum (ETH) Gas Calculator'),
         'card_desc': _('See what popular Gitcoin methods cost at different Gas Prices'),
@@ -168,17 +185,16 @@ def gas_calculator(request):
     return TemplateResponse(request, 'gas_calculator.html', context)
 
 
+@cached_view_as(GasGuzzler, timeout=60*3)
 def gas_guzzler_view(request):
     breakdown = request.GET.get('breakdown', 'hourly')
     breakdown_ui = breakdown.replace('ly', '') if breakdown != 'daily' else 'day'
     num_guzzlers = 7
     gas_histories = {}
     _lines = {}
-    top_guzzlers = GasGuzzler.objects \
-        .filter(
-            created_on__gt=timezone.now() - timezone.timedelta(minutes=60)
-        ).order_by('-pct_total') \
-        .cache()[0:num_guzzlers]
+    top_guzzlers = GasGuzzler.objects.filter(
+        created_on__gt=timezone.now() - timezone.timedelta(minutes=60)
+    ).order_by('-pct_total')[0:num_guzzlers]
     counter = 0
     colors = [val for key, val in lines.items()]
     max_y = 0
@@ -189,7 +205,7 @@ def gas_guzzler_view(request):
         except Exception:
             _lines[address] = 'purple'
         gas_histories[address] = []
-        for og in GasGuzzler.objects.filter(address=address).order_by('-created_on').cache():
+        for og in GasGuzzler.objects.filter(address=address).order_by('-created_on'):
             if not og.created_on.hour < 1 and breakdown in ['daily', 'weekly']:
                 continue
             if not og.created_on.weekday() < 1 and breakdown in ['weekly']:
@@ -219,6 +235,7 @@ def gas_guzzler_view(request):
     return TemplateResponse(request, 'gas_guzzler.html', context)
 
 
+@cached_view(timeout=60*16)
 def gas_history_view(request):
     breakdown = request.GET.get('breakdown', 'hourly')
     gas_histories = {}

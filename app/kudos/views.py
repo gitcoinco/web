@@ -26,14 +26,15 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.postgres.search import SearchVector
 from django.contrib.staticfiles.templatetags.staticfiles import static
+from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect
 from django.template.response import TemplateResponse
 from django.utils import timezone
+from django.utils.safestring import mark_safe
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.csrf import csrf_exempt
 
-from cacheops import cached_view_as
 from dashboard.models import Activity, Profile
 from dashboard.notifications import maybe_market_kudos_to_email
 from dashboard.utils import get_web3
@@ -73,11 +74,6 @@ def get_profile(handle):
     return to_profile
 
 
-@cached_view_as(
-    Token.objects.select_related('contract').filter(
-        num_clones_allowed__gt=0, contract__is_latest=True, contract__network=settings.KUDOS_NETWORK, hidden=False,
-    )
-)
 def about(request):
     """Render the Kudos 'about' page."""
     listings = Token.objects.select_related('contract').filter(
@@ -85,7 +81,7 @@ def about(request):
         contract__is_latest=True,
         contract__network=settings.KUDOS_NETWORK,
         hidden=False,
-    ).order_by('-created_on')
+    ).order_by('-popularity_week').cache()
     context = {
         'is_outside': True,
         'active': 'about',
@@ -175,27 +171,6 @@ def details(request, kudos_id, name):
 
     # Find other profiles that have the same kudos name
     kudos = get_object_or_404(Token, pk=kudos_id)
-    # Find other Kudos rows that are the same kudos.name, but of a different owner
-    related_kudos = Token.objects.select_related('contract').filter(
-        name=kudos.name,
-        num_clones_allowed=0,
-        contract__network=settings.KUDOS_NETWORK,
-    )
-    # Find the Wallet rows that match the Kudos.owner_addresses
-    # related_wallets = Wallet.objects.filter(address__in=[rk.owner_address for rk in related_kudos]).distinct()[:20]
-
-    # Find the related Profiles assuming the preferred_payout_address is the kudos owner address.
-    # Note that preferred_payout_address is most likely in normalized form.
-    # https://eth-utils.readthedocs.io/en/latest/utilities.html#to-normalized-address-value-text
-    owner_addresses = [
-        to_normalized_address(rk.owner_address) if is_address(rk.owner_address) is not False else None
-        for rk in related_kudos
-    ]
-    related_profiles = Profile.objects.filter(preferred_payout_address__in=owner_addresses).distinct()[:20]
-    # profile_ids = [rw.profile_id for rw in related_wallets]
-
-    # Avatar can be accessed via Profile.avatar
-    # related_profiles = Profile.objects.filter(pk__in=profile_ids).distinct()
 
     context = {
         'is_outside': True,
@@ -205,7 +180,7 @@ def details(request, kudos_id, name):
         'card_desc': _('It can be sent to highlight, recognize, and show appreciation.'),
         'avatar_url': static('v2/images/kudos/assets/kudos-image.png'),
         'kudos': kudos,
-        'related_profiles': related_profiles,
+        'related_handles': kudos.owners_handles[:20],
     }
     if kudos:
         token = Token.objects.select_related('contract').get(
@@ -282,7 +257,13 @@ def send_2(request):
     This form is filled out before the 'send' button is clicked.
 
     """
+    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(request.user, 'profile', None):
+        return redirect('/login/github?next=' + request.get_full_path())
+
     _id = request.GET.get('id')
+    if _id and not str(_id).isdigit():
+        raise Http404
+
     kudos = Token.objects.filter(pk=_id).first()
     params = {
         'active': 'send',
@@ -418,7 +399,11 @@ def send_4(request):
     # notifications
     maybe_market_kudos_to_email(kudos_transfer)
     # record_user_action(kudos_transfer.from_username, 'send_kudos', kudos_transfer)
-    # record_kudos_activity(kudos_transfer, kudos_transfer.from_username, 'new_kudos' if kudos_transfer.username else 'new_crowdfund')
+    record_kudos_activity(
+        kudos_transfer,
+        kudos_transfer.from_username,
+        'new_kudos' if kudos_transfer.username else 'new_crowdfund'
+    )
     return JsonResponse(response)
 
 
@@ -438,11 +423,12 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
         }
     }
     try:
+        github_handle = github_handle.lstrip('@')
         kwargs['profile'] = Profile.objects.get(handle=github_handle)
     except Profile.MultipleObjectsReturned:
         kwargs['profile'] = Profile.objects.filter(handle__iexact=github_handle).first()
     except Profile.DoesNotExist:
-        logging.error(f"error in record_kudos_email_activity: profile with github name {github_handle} not found")
+        logger.warning(f"error in record_kudos_email_activity: profile with github name {github_handle} not found")
         return
     try:
         kwargs['bounty'] = kudos_transfer.bounty
@@ -452,7 +438,43 @@ def record_kudos_email_activity(kudos_transfer, github_handle, event_name):
     try:
         Activity.objects.create(**kwargs)
     except Exception as e:
-        logging.error(f"error in record_kudos_email_activity: {e} - {event_name} - {kudos_transfer} - {github_handle}")
+        logger.error(f"error in record_kudos_email_activity: {e} - {event_name} - {kudos_transfer} - {github_handle}")
+
+
+def record_kudos_activity(kudos_transfer, github_handle, event_name):
+    logger.debug(kudos_transfer)
+    kwargs = {
+        'activity_type': event_name,
+        'kudos': kudos_transfer,
+        'metadata': {
+            'amount': str(kudos_transfer.amount),
+            'token_name': kudos_transfer.tokenName,
+            'value_in_eth': str(kudos_transfer.value_in_eth),
+            'value_in_usdt_now': str(kudos_transfer.value_in_usdt_now),
+            'github_url': kudos_transfer.github_url,
+            'to_username': kudos_transfer.username,
+            'from_name': kudos_transfer.from_name,
+            'received_on': str(kudos_transfer.received_on) if kudos_transfer.received_on else None
+        }
+    }
+
+    try:
+        kwargs['profile'] = Profile.objects.get(handle__iexact=github_handle)
+    except Profile.MultipleObjectsReturned:
+        kwargs['profile'] = Profile.objects.filter(handle__iexact=github_handle).first()
+    except Profile.DoesNotExist:
+        logging.error(f"error in record_kudos_activity: profile with github name {github_handle} not found")
+        return
+
+    try:
+        kwargs['bounty'] = kudos_transfer.bounty
+    except Exception:
+        pass
+
+    try:
+        Activity.objects.create(**kwargs)
+    except Exception as e:
+        logging.error(f"error in record_kudos_activity: {e} - {event_name} - {kudos_transfer} - {github_handle}")
 
 
 def receive(request, key, txid, network):
@@ -462,10 +484,15 @@ def receive(request, key, txid, network):
         TemplateResponse: the UI with the kudos confirmed
 
     """
-    these_kudos_emails = KudosTransfer.objects.filter(web3_type='v3', txid=txid, network=network)
-    kudos_emails = these_kudos_emails.filter(metadata__reference_hash_for_receipient=key) | these_kudos_emails.filter(
-        metadata__reference_hash_for_funder=key)
-    kudos_transfer = kudos_emails.first()
+    these_kudos_transfers = KudosTransfer.objects.filter(web3_type='v3', txid=txid, network=network)
+    kudos_transfers = these_kudos_transfers.filter(
+        Q(metadata__reference_hash_for_receipient=key) |
+        Q(metadata__reference_hash_for_funder=key)
+    )
+    kudos_transfer = kudos_transfers.first()
+    if not kudos_transfer:
+        raise Http404
+
     is_authed = kudos_transfer.trust_url or request.user.username.replace('@', '') in [
         kudos_transfer.username.replace('@', ''),
         kudos_transfer.from_username.replace('@', '')
@@ -473,11 +500,12 @@ def receive(request, key, txid, network):
     not_mined_yet = get_web3(kudos_transfer.network).eth.getBalance(
         Web3.toChecksumAddress(kudos_transfer.metadata['address'])) == 0
 
-    if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
-        request.user, 'profile', None
-    ):
-        login_redirect = redirect('/login/github?next=' + request.get_full_path())
-        return login_redirect
+    if not kudos_transfer.trust_url:
+        if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
+            request.user, 'profile', None
+        ):
+            login_redirect = redirect('/login/github?next=' + request.get_full_path())
+            return login_redirect
 
     if kudos_transfer.receive_txid:
         messages.info(request, _('This kudos has been received'))
@@ -485,15 +513,18 @@ def receive(request, key, txid, network):
         messages.error(
             request, f'This kudos is for {kudos_transfer.username} but you are logged in as {request.user.username}.  Please logout and log back in as {kudos_transfer.username}.')
     elif not_mined_yet and not request.GET.get('receive_txid'):
-        messages.info(
-            request, f'This tx {kudos_transfer.txid}, is still mining.  Please wait a moment before submitting the receive form.')
+        message = mark_safe(
+            f'The <a href="https://etherscan.io/tx/{txid}">transaction</a> is still mining.  '
+            'Please wait a moment before submitting the receive form.'
+        )
+        messages.info(request, message)
     elif request.GET.get('receive_txid') and not kudos_transfer.receive_txid:
         params = request.GET
 
         # db mutations
         try:
             if params['save_addr']:
-                profile = get_profile(kudos_transfer.username)
+                profile = get_profile(kudos_transfer.username.replace('@', ''))
                 if profile:
                     # TODO: Does this mean that the address the user enters in the receive form
                     # Will overwrite an already existing preferred_payout_address?  Should we
@@ -503,9 +534,16 @@ def receive(request, key, txid, network):
             kudos_transfer.receive_txid = params['receive_txid']
             kudos_transfer.receive_address = params['forwarding_address']
             kudos_transfer.received_on = timezone.now()
+            if request.user.is_authenticated:
+                kudos_transfer.recipient_profile = request.user.profile
             kudos_transfer.save()
             record_user_action(kudos_transfer.from_username, 'receive_kudos', kudos_transfer)
             record_kudos_email_activity(kudos_transfer, kudos_transfer.username, 'receive_kudos')
+            record_kudos_activity(
+                kudos_transfer,
+                kudos_transfer.from_username,
+                'new_kudos' if kudos_transfer.username else 'new_crowdfund'
+            )
             messages.success(request, _('This kudos has been received'))
         except Exception as e:
             messages.error(request, str(e))
@@ -514,9 +552,11 @@ def receive(request, key, txid, network):
     params = {
         'issueURL': request.GET.get('source'),
         'class': 'receive',
-        'title': _('Receive Kudos'),
         'gas_price': round(recommend_min_gas_price_to_confirm_in_time(120), 1),
         'kudos_transfer': kudos_transfer,
+        'title': f"Receive {kudos_transfer.kudos_token_cloned_from.humanized_name} Kudos" if kudos_transfer and kudos_transfer.kudos_token_cloned_from else _('Receive Kudos'),
+        'avatar_url': kudos_transfer.kudos_token_cloned_from.img_url if kudos_transfer and kudos_transfer.kudos_token_cloned_from else None,
+        'card_desc': f"You've received a {kudos_transfer.kudos_token_cloned_from.humanized_name} kudos!" if kudos_transfer and kudos_transfer.kudos_token_cloned_from else _('You\'ve received a kudos'),
         'key': key,
         'is_authed': is_authed,
         'disable_inputs': kudos_transfer.receive_txid or not_mined_yet or not is_authed,
