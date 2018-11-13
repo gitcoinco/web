@@ -433,9 +433,9 @@ def results(request, keyword=None):
 @cached_view_as(Activity.objects.all().order_by('-created'))
 def activity(request):
     """Render the Activity response."""
-
+    page_size = 300
     activities = Activity.objects.all().order_by('-created')
-    p = Paginator(activities, 300)
+    p = Paginator(activities, page_size)
     page = request.GET.get('page', 1)
 
     context = {

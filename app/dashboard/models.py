@@ -1457,7 +1457,7 @@ class Activity(models.Model):
         on_delete=models.CASCADE,
         blank=True, null=True
     )
-    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True, db_index=True)
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True)
     metadata = JSONField(default=dict)
     needs_review = models.BooleanField(default=False)
