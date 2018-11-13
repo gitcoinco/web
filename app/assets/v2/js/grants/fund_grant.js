@@ -126,7 +126,7 @@ $(document).ready(function() {
 
                     console.log('data', data);
 
-                    form.submit();
+                    // form.submit();
 
                   })
                     .catch((error)=>{

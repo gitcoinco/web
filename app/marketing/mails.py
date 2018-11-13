@@ -99,8 +99,9 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     # debug logs
     logger.info(f"-- Sending Mail '{subject}' to {to_email}")
     try:
-        print (mail.get())
+        print(mail.get())
         response = sg.client.mail.send.post(request_body=mail.get())
+        print(response)
     except UnauthorizedError as e:
         logger.error(f'-- Sendgrid Mail failure - Unauthorized - Check sendgrid credentials')
         logger.error(e)

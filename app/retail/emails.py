@@ -147,7 +147,7 @@ def new_supporter(request):
 def new_grant(request):
     grant = Grant.objects.all().order_by('-created_on')[0]
 
-    response_html, _ = render_new_grant_email(grant)
+    response_html, response_txt, _ = render_new_grant_email(grant)
     return HttpResponse(response_html)
 
 

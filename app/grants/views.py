@@ -280,6 +280,8 @@ def subscription_cancel(request, grant_id, subscription_id):
     subscription = Subscription.objects.select_related('grant').get(pk=subscription_id)
     grant = getattr(subscription, 'grant', None)
     now = datetime.datetime.now()
+    profile = request.user.profile if request.user.is_authenticated else None
+
 
     if request.method == 'POST':
         subscription.active = False
