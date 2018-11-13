@@ -30,7 +30,6 @@ class GrantQuerySet(models.QuerySet):
 
     pass
 
-
 class Grant(SuperModel):
     """Define the structure of a Grant."""
 

@@ -55,6 +55,14 @@ def grants(request):
 
     _grants = Grant.objects.all().order_by(sort)
 
+    if request.method == 'POST':
+        keyword = request.POST.get('search_grants', '')
+        _grants = Grant.objects.filter(
+            Q(description__icontains=keyword) |
+            Q(title__icontains=keyword) |
+            Q(reference_url__icontains=keyword)
+        ).order_by(sort)
+
     paginator = Paginator(_grants, limit)
     grants = paginator.get_page(page)
 

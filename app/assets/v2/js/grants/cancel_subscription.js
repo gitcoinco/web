@@ -63,10 +63,7 @@ window.onload = function() {
 
                 deployedSubscription.methods.cancelSubscription(
                   ...parts
-                ).send({
-                  from: accounts[0],
-                   gasPrice: 4000000000
-                 })
+                ).send({from: accounts[0], gasPrice: 4000000000})
                   .on('confirmation', function(confirmationNumber, receipt) {
                     console.log('receipt', receipt);
 
