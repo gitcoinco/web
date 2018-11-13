@@ -480,6 +480,18 @@ class Bounty(SuperModel):
         """
         return handle.lower().lstrip('@') == self.bounty_owner_github_username.lower().lstrip('@')
 
+    def has_started_work(self, handle, pending=False):
+        """Determine whether or not the profile has started work
+
+        Args:
+            handle (str): The profile handle to be compared.
+
+        Returns:
+            bool: Whether or not the user has started work.
+
+        """
+        return self.interested.filter(pending=pending, profile__handle=handle).exists()
+
     @property
     def absolute_url(self):
         return self.get_absolute_url()

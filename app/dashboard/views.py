@@ -26,6 +26,7 @@ from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
+from django.core.exceptions import PermissionDenied
 from django.db.models import Q
 from django.http import Http404, HttpResponse, JsonResponse
 from django.shortcuts import redirect
@@ -743,6 +744,8 @@ def fulfill_bounty(request):
 
     """
     bounty = handle_bounty_views(request)
+    if not bounty.has_started_work(request.user.username):
+        raise PermissionDenied
     params = get_context(
         ref_object=bounty,
         github_username=request.GET.get('githubUsername'),
