@@ -50,11 +50,11 @@ window.onload = function() {
                   // data.amount_per_period
                   web3.utils.toTwosComplement(realTokenAmount),
                   // data.period_seconds
-                  web3.utils.toTwosComplement(60),
+                  web3.utils.toTwosComplement(data.period_seconds),
                   // data.gas_price
                   web3.utils.toTwosComplement(realGasPrice),
                   // nonce
-                  web3.utils.toTwosComplement(1),
+                  web3.utils.toTwosComplement(nonce),
                   // contributor_signature
                   data.signature
                 ];
@@ -63,7 +63,7 @@ window.onload = function() {
 
                 deployedSubscription.methods.cancelSubscription(
                   ...parts
-                ).send({from: accounts[0]})
+                ).send({from: accounts[0], gasPrice: 4000000000})
                   .on('confirmation', function(confirmationNumber, receipt) {
                     console.log('receipt', receipt);
 
