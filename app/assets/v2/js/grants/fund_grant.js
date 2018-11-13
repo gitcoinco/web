@@ -35,14 +35,6 @@ $(document).ready(function() {
         }
         if (periodSeconds) {
           realPeriodSeconds = periodSeconds;
-
-          console.log("periodSeconds", realPeriodSeconds);
-          console.log("data.frequency", data.frequency);
-          console.log("data.frequency_unit", data.frequency_unit);
-
-          data.frequency = realPeriodSeconds;
-
-          console.log("data.frequency 2", data.frequency);
         }
       }
 

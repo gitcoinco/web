@@ -32,9 +32,10 @@ from retail.emails import (
     render_bounty_startwork_expire_warning, render_bounty_unintersted, render_faucet_rejected, render_faucet_request,
     render_funder_stale, render_gdpr_reconsent, render_gdpr_update, render_kudos_email, render_match_email,
     render_new_bounty, render_new_bounty_acceptance, render_new_bounty_rejection, render_new_bounty_roundup,
-    render_new_work_submission, render_quarterly_stats, render_start_work_applicant_about_to_expire,
-    render_start_work_applicant_expired, render_start_work_approved, render_start_work_new_applicant,
-    render_start_work_rejected, render_tip_email, render_new_grant_email, render_new_supporter_email, render_thank_you_for_supporting_email, render_support_cancellation_email
+    render_new_grant_email, render_new_supporter_email, render_new_work_submission, render_quarterly_stats,
+    render_start_work_applicant_about_to_expire, render_start_work_applicant_expired, render_start_work_approved,
+    render_start_work_new_applicant, render_start_work_rejected, render_support_cancellation_email,
+    render_thank_you_for_supporting_email, render_tip_email,
 )
 from sendgrid.helpers.mail import Content, Email, Mail, Personalization
 from sendgrid.helpers.stats import Category
@@ -55,9 +56,6 @@ def send_mail(from_email, _to_email, subject, body, html=False,
 
     to_email = _to_email
     get_or_save_email_subscriber(to_email, 'internal')
-
-    print(to_email)
-    print(from_email)
 
     # setup
     from_name = str(from_name)
@@ -99,9 +97,7 @@ def send_mail(from_email, _to_email, subject, body, html=False,
     # debug logs
     logger.info(f"-- Sending Mail '{subject}' to {to_email}")
     try:
-        print(mail.get())
         response = sg.client.mail.send.post(request_body=mail.get())
-        print(response)
     except UnauthorizedError as e:
         logger.error(f'-- Sendgrid Mail failure - Unauthorized - Check sendgrid credentials')
         logger.error(e)

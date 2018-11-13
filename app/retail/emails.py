@@ -31,8 +31,8 @@ from django.utils.translation import gettext as _
 
 import cssutils
 import premailer
-from marketing.models import LeaderboardRank
 from grants.models import Grant, Subscription
+from marketing.models import LeaderboardRank
 from marketing.utils import get_or_save_email_subscriber
 from retail.utils import strip_double_chars, strip_html
 

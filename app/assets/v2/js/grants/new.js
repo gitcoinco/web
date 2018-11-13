@@ -43,9 +43,6 @@ $(document).ready(function() {
         data[this.name] = this.value;
       });
 
-
-      console.log(data.denomination);
-
       let requiredPeriodSeconds = 0;
 
       if (data.frequency) {
