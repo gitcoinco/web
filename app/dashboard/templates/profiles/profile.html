@@ -295,7 +295,7 @@
               </div>
             {% endfor %}
           </div>
-        </div>		
+        </div>
 	  {% else %}
      	{% include 'profiles/none.html' %}
       {% endif %}
@@ -415,6 +415,14 @@
           });
         });
       }(jQuery));
+
+      $('.flip-card').on('click keypress', e => {
+        if ($(e.target).is('a')) {
+          e.stopPropagation();
+          return
+        }
+        $(e.currentTarget).toggleClass('turn')
+      })
 
     </script>
 
