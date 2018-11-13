@@ -35,7 +35,14 @@ $(document).ready(function() {
         }
         if (periodSeconds) {
           realPeriodSeconds = periodSeconds;
-          $('#frequency_count').val(realPeriodSeconds);
+
+          console.log("periodSeconds", realPeriodSeconds);
+          console.log("data.frequency", data.frequency);
+          console.log("data.frequency_unit", data.frequency_unit);
+
+          data.frequency = realPeriodSeconds;
+
+          console.log("data.frequency 2", data.frequency);
         }
       }
 
@@ -105,6 +112,8 @@ $(document).ready(function() {
                     data[this.name] = this.value;
                   });
 
+                  data.frequency = realPeriodSeconds;
+
                   console.log('data', data);
 
                   // form.submit();
@@ -123,6 +132,8 @@ $(document).ready(function() {
                     $.each($(form).serializeArray(), function() {
                       data[this.name] = this.value;
                     });
+
+                    data.frequency = realPeriodSeconds;
 
                     console.log('data', data);
 
