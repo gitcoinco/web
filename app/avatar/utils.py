@@ -441,8 +441,8 @@ def convert_img(obj, input_fmt='svg', output_fmt='png'):
         pass
     except Exception as e:
         logger.error(
-            'Exception encountered in convert_img - Error: (%s) - input: (%s) - output: (%s)',
-            str(e), input_fmt, output_fmt
+            'Exception encountered in convert_img - Error: (%s) - input: (%s) - output: (%s)', str(e), input_fmt,
+            output_fmt
         )
     return None
 
@@ -470,7 +470,7 @@ def convert_wand(img_obj, input_fmt='png', output_fmt='svg'):
             return tmpfile_io
     except Exception as e:
         logger.error(
-            'Exception encountered in convert_wand - Error: (%s) - input: (%s) - output: (%s)',
-            str(e), input_fmt, output_fmt
+            'Exception encountered in convert_wand - Error: (%s) - input: (%s) - output: (%s)', str(e), input_fmt,
+            output_fmt
         )
     return None
