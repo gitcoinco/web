@@ -214,6 +214,12 @@ $(document).ready(function() {
       _alert({ message: gettext('Please unlock metamask.') }, 'warning');
       return;
     }
+    var kudos_network = $('#kudosNetwork').val();
+
+    if (document.web3network != kudos_network) {
+      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ' + kudos_network) }, 'warning');
+      return;
+    }
 
     $('#send_eth')[0].checkValidity();
 

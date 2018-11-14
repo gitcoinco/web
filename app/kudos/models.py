@@ -23,6 +23,7 @@ from io import BytesIO
 from django.conf import settings
 from django.core.files import File
 from django.db import models
+from django.db.models import Q
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.utils import timezone
@@ -36,6 +37,30 @@ from eth_utils import to_checksum_address
 from pyvips.error import Error as VipsError
 
 logger = logging.getLogger(__name__)
+
+
+class TokenQuerySet(models.QuerySet):
+    """Handle the manager queryset for Tokens."""
+
+    def visible(self):
+        """Filter results down to visible tokens only."""
+        return self.filter(hidden=False)
+
+    def keyword(self, keyword):
+        """Filter results to all Token objects containing the keywords.
+
+        Args:
+            keyword (str): The keyword to search title, issue description, and issue keywords by.
+
+        Returns:
+            kudos.models.TokenQuerySet: The QuerySet of tokens filtered by keyword.
+
+        """
+        return self.filter(
+            Q(name__icontains=keyword) |
+            Q(description__icontains=keyword) |
+            Q(tags__icontains=keyword)
+        )
 
 
 class Token(SuperModel):
@@ -65,6 +90,12 @@ class Token(SuperModel):
 
     """
 
+    class Meta:
+        """Define metadata associated with Kudos."""
+
+        verbose_name_plural = 'Kudos'
+        index_together = [['name', 'description', 'tags'], ]
+
     # Kudos Struct (also in contract)
     price_finney = models.IntegerField()
     num_clones_allowed = models.IntegerField(null=True, blank=True)
@@ -76,11 +107,11 @@ class Token(SuperModel):
     popularity_quarter = models.IntegerField(default=0)
 
     # Kudos metadata from tokenURI (also in contract)
-    name = models.CharField(max_length=255)
-    description = models.CharField(max_length=510)
+    name = models.CharField(max_length=255, db_index=True)
+    description = models.CharField(max_length=510, db_index=True)
     image = models.CharField(max_length=255, null=True)
     rarity = models.CharField(max_length=255, null=True)
-    tags = models.CharField(max_length=255, null=True)
+    tags = models.CharField(max_length=255, null=True, db_index=True)
     artist = models.CharField(max_length=255, null=True, blank=True)
     platform = models.CharField(max_length=255, null=True, blank=True)
     external_url = models.CharField(max_length=255, null=True)
@@ -94,6 +125,9 @@ class Token(SuperModel):
         'kudos.Contract', related_name='kudos_contract', on_delete=models.SET_NULL, null=True
     )
     hidden = models.BooleanField(default=False)
+
+    # Token QuerySet Manager
+    objects = TokenQuerySet.as_manager()
 
     def save(self, *args, **kwargs):
         if self.owner_address:
@@ -248,7 +282,7 @@ class Token(SuperModel):
 
     @property
     def url(self):
-        return f'/kudos/{self.pk}/{slugify(self.name)}'
+        return f'{settings.BASE_URL}kudos/{self.pk}/{slugify(self.name)}'
 
 
 class KudosTransfer(SendCryptoAsset):

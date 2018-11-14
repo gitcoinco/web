@@ -572,54 +572,48 @@ def render_start_work_applicant_expired(interest, bounty):
 def render_new_bounty_roundup(to_email):
     from dashboard.models import Bounty
     from external_bounties.models import ExternalBounty
-    subject = "Announcing 1337 (Subscriptions) | More Kudos!"
-
+    subject = "Nominate your Favorite OSS Dev | Kudos Trophies!"
+    new_kudos_pks = [429, 430]
+    new_kudos_size_px = 150
     intro = '''
 
 <p>
 Hi there,
 </p>
+<h3>Kudos Trophies</h3>
 <p>
-Post Devcon, we're excited to share <a href="https://medium.com/gitcoin/eip-1337-subscriptions-launches-eacbb947e229/">we launched EIP 1337</a> (on-chain subscriptions) <a href="https://1337alliance.com/">alongside the 1337 Alliance</a>!
-The launch includes a) the EIP entering a pending state, b) <a href="https://github.com/austintgriffith/tokensubscription.com/tree/13ced407c2709e99fbe7838a84a9d53f855b40bc">an audited reference implementation</a>, and c) <a href="https://1337alliance.com/">the launch of 1337 Alliance</a>!
-If you're interested in learning more, <a href="https://gitcoin.co/slack">join the Gitcoin Slack</a> and the #proj-subscriptions channel or open an issue on our Github.
-</p>
-<p>
-We're still more than excited about the <a href="https://medium.com/gitcoin/introducing-kudos-10077a4f2def">Kudos launch!</a> This week, we'd like to recognize a few folks
-from the 1337 Alliance who have made our progress on subscriptions possible. If you'd like to use Kudos to compliment anyone from your network,
-<a href="https://gitcoin.co/kudos/marketplace/">check out the Kudos Marketplace</a> and give it a try!
+I'm excited to show off a new product: limited edition, Kudos Trophies. Kudos trophies are physical trophies with Kudos on them.  We launched them as the Status Cryptolife Hackathon in Prague.  Here's what they look like:
+<BR>
+<BR>
+<img style='max-width: 300px;' src='https://cdn-images-1.medium.com/max/640/1*8CIBNn9yXZY5bj34ZInkPA.jpeg'>
+<BR>
+<BR>
+Each Kudos Trophy is a physical trophy, which has a QR code on the bottom of it that allows it to be redeemed on Gitcoin’s website.
+<BR>
+<BR>
+<img style='max-width: 300px;' src='https://cdn-images-1.medium.com/max/1280/1*zeXLPyw4qkP4fifHkZAgFA.jpeg'>
+<BR>
+<BR>
+It's quite possible that you'll see them again at EthDenver this year :)
+<BR>
+<BR>
+ <a href="https://medium.com/gitcoin/introducing-kudos-trophies-4e98c54e521">Learn more about Kudos Trophies here</a>.
+
 </p>
 
-<ul>
-<li>
-    Kudos to <strong>Andrew Redden</strong> for <strong>being a party parrot</strong> at Devcon!
-    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/395/'>
-</li>
-<li>
-    Kudos to <strong>Austin Griffith</strong> for <strong>being a creative cat</strong>!
-    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/385/'>
-</li>
-<li>
-    Kudos to <strong>Andy Thudhope</strong> for <strong>being a great mentor</strong> to the Gitcoin team!
-    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/394/'>
-</li>
-<li>
-    Kudos to <strong>Dean Eigenmann</strong> for <strong>the Kudos Smart Contract Audit</strong>!
-    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/324/'>
-</li>
-<li>
-    Kudos to <strong>Mark Beylin</strong> for <strong>being a magical unicorn</strong>.  Gitcoin would not be where it is today without Mark's help!
-    <img style='max-width: 45px; display: inline; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/185/'>
-</li>
-</ul>
-
+<h3>Gitcoin Nominations are now Live</h3>
 <p>
-Speaking of Kudos, check out all the new kudos launched this week:
+Who’s making the most impact on your OSS or Web3 project? Do you know someone that solved a problem in a creative way, built something interesting, or truly deserves a thanks? <a href='https://github.com/gitcoinco/web/issues/2816'>Nominate open source contributors to receive a limited edition and unique Kudos!</a>
+</p>
+
+<h3>New Kudos This Week</h3>
+<p>
+Check out a few of the new kudos launched this week:
 </p>
 
 <p>
 
-''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: 75px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in [396, 395, 394, 389, 388, 387, 386, 385]]) + '''
+''' + "".join([f"<a href='https://gitcoin.co/kudos/{pk}/'><img style='max-width: {new_kudos_size_px}px; display: inline; padding-right: 10px; vertical-align:middle ' src='https://gitcoin.co/dynamic/kudos/{pk}/'></a>" for pk in new_kudos_pks]) + '''
 
 
 </p>
@@ -627,11 +621,13 @@ Speaking of Kudos, check out all the new kudos launched this week:
 <h3>What else is new?</h3>
     <ul>
         <li>
-        The Gitcoin crew is back from a busy October between ETH SF, Github Universe, SustainOSS, and Devcon.
-        We have lots to share about what we learned along the way! Join the livestream and be on the lookout for more.
+            Gitcoin now supports EIP--1102 (Metamask Privacy Mode).  To use Gitcoin in privacy mode, <a href="https://medium.com/metamask/introducing-privacy-mode-42549d4870fa">checkout this post</a>.
         </li>
         <li>
-        The Gitcoin Livestream will be on as regularly scheduled in two days. <a href="https://gitcoin.co/livestream">Join us Friday at 5PM ET</a>!
+            We're announcing the launch of Gitcoin Labs next week.  <a href="https://medium.com/gitcoin/announcing-gitcoin-labs-ba400522d697">Here's a sneak peak</a>.
+        </li>
+        <li>
+            The Gitcoin Livestream will be on as regularly scheduled in two days. Aidan from Chainsafe will be there. They'll be talking about their ETH2.0 implementation and Gorli Testnet. We'll also have Ele from OSCoin presenting Radicle. <a href="https://gitcoin.co/livestream">Join us Friday at 5PM ET</a>!
         </li>
     </ul>
 </p>
@@ -640,39 +636,37 @@ Back to BUIDLing,
 </p>
 '''
     highlights = [{
-        'who': 'lastperson',
+        'who': 'cleanunicorn',
         'who_link': True,
-        'what': 'Worked on a Mythril Bounty with the ConsenSys Diligence team!',
-        'link': 'https://gitcoin.co/issue/ConsenSys/mythril-ctf-public/3/1613',
+        'what': 'Has been helping us with some security bounties',
+    }, {
+        'who': 'zachzundel',
+        'who_link': True,
+        'what': 'Worked with mbeacom on our testing suite!',
+        'link': 'https://github.com/gitcoinco/web/pull/2822',
         'link_copy': 'View more',
     }, {
-        'who': 'kuhnchris',
+        'who': 'iamonuwa',
         'who_link': True,
-        'what': 'Worked with MikeyMicrophone on Commissulator!',
-        'link': 'https://gitcoin.co/issue/mikeymicrophone/commissulator/8/1635',
-        'link_copy': 'View more',
-    }, {
-        'who': 'SomniaStellarum',
-        'who_link': True,
-        'what': 'Worked with the EF on Hive, a testing framework.',
-        'link': 'https://gitcoin.co/issue/karalabe/hive/122/1136',
+        'what': 'Worked with electricfeelco on some hello-metamask component refactoring.',
+        'link': 'https://gitcoin.co/issue/electricfeelco/travay/23/1355',
         'link_copy': 'View more',
     }, ]
 
     bounties_spec = [{
-        'url': 'https://github.com/ethereum/vyper/issues/983',
-        'primer': 'Work with the Vyper team on improving the language',
+        'url': 'https://github.com/f-o-a-m/chanterelle/issues/46',
+        'primer': 'Help foam improve their CI',
     }, {
-        'url': 'https://github.com/PwayGames/PWay.Contracts/issues/1',
-        'primer': 'Hunt for bugs with PWay Contracts.',
+        'url': 'https://github.com/novnc/noVNC/issues/944',
+        'primer': 'Help novnc add multi touch support.',
     }, {
         'url': 'https://github.com/gitcoinco/web/issues/2684',
-        'primer': 'Add to Gitcoin Avatars in November 2018!'
+        'primer': 'Add new assets to Gitcoin Avatars Builder - Holiday Avatars encouraged! 🎅',
     }, ]
 
     num_leadboard_items = 5
     highlight_kudos_ids = []
-
+    num_kudos_to_show = 10
 
     #### don't need to edit anything below this line
     leaderboard = {
@@ -694,7 +688,7 @@ Back to BUIDLing,
     if highlight_kudos_ids:
         kudos_highlights = KudosTransfer.objects.filter(id__in=highlight_kudos_ids)
     else:
-        kudos_highlights = KudosTransfer.objects.exclude(txid='').order_by('-created_on')[:4]
+        kudos_highlights = KudosTransfer.objects.exclude(txid='').order_by('-created_on')[:num_kudos_to_show]
 
     for key, __ in leaderboard.items():
         leaderboard[key]['items'] = LeaderboardRank.objects.active() \

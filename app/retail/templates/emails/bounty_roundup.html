@@ -141,24 +141,26 @@
     <h3>{% trans "Kudos" %}</h3>
     <h5>{% trans "Recognition throughout the platform" %}</h5>
     <div style="text-align: center;">
-      <ul>
+      <ul style="text-align: center;">
         {% for kudos in kudos_highlights %}
         {% if kudos.recipient_profile and kudos.sender_profile %}
-          <li style="list-style:none; margin-bottom: 5px;">
+          <li style="list-style:none; margin: 5px; padding: 15px 30px; width: 350px; height: 270px; display: inline-block; float:left; border: 1px solid #cccccc; border-radius: 5px;">
               <a style="font-weight: bold; text-decoration: none;" href="{% url "profile" kudos.recipient_profile.handle %}">{{ kudos.recipient_profile.handle }}</a> received <strong>{{ kudos.kudos_token_cloned_from.name|humanize_name }}</strong> from <a style="font-weight: bold; text-decoration: none;" href="{% url 'profile' kudos.sender_profile.handle %}">{{ kudos.sender_profile.handle }}</a><br>
-            <a href="{% url 'kudos_details' kudos.kudos_token_cloned_from.token_id kudos.kudos_token_cloned_from.name  %}">
+            <a href="{% url 'kudos_details' kudos.kudos_token_cloned_from.pk kudos.kudos_token_cloned_from.name  %}">
 
               <img style="max-width: 120px;" src="{{ kudos.kudos_token_cloned_from.img_url }}"></a>
 
             {% if kudos.comments_public %}
               <br>
-              Comment: {{ kudos.comments_public }}
+              <i>
+                Comment: {{ kudos.comments_public }}
+              </i>
             {% endif %}
           </li>
-          <hr>
         {% endif %}
         {% endfor %}
       </ul>
+      <br style="clear: both;">
     </div>
     <br>
     <br>

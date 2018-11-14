@@ -480,6 +480,18 @@ class Bounty(SuperModel):
         """
         return handle.lower().lstrip('@') == self.bounty_owner_github_username.lower().lstrip('@')
 
+    def has_started_work(self, handle, pending=False):
+        """Determine whether or not the profile has started work
+
+        Args:
+            handle (str): The profile handle to be compared.
+
+        Returns:
+            bool: Whether or not the user has started work.
+
+        """
+        return self.interested.filter(pending=pending, profile__handle__iexact=handle).exists()
+
     @property
     def absolute_url(self):
         return self.get_absolute_url()
@@ -1457,7 +1469,7 @@ class Activity(models.Model):
         on_delete=models.CASCADE,
         blank=True, null=True
     )
-    created = models.DateTimeField(auto_now_add=True, blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True, blank=True, null=True, db_index=True)
     activity_type = models.CharField(max_length=50, choices=ACTIVITY_TYPES, blank=True)
     metadata = JSONField(default=dict)
     needs_review = models.BooleanField(default=False)

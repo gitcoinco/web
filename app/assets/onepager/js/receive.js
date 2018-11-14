@@ -33,7 +33,13 @@ window.onload = function() {
   });
   waitforWeb3(function() {
     if (document.web3network != document.network) {
-      _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
+      if (document.web3network == 'locked') {
+        _alert({ message: gettext('Please authorize Metamask in order to continue.')}, 'info');
+        approve_metamask();
+      } else {
+        _alert({ message: gettext('You are not on the right web3 network.  Please switch to ') + document.network }, 'error');
+      }
+
     } else if (!$('#forwarding_address').val()) {
       $('#forwarding_address').val(web3.eth.coinbase);
     }
