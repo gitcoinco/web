@@ -137,16 +137,12 @@
         <div class="col-12 col-md-6 offset-lg-2 col-lg-5">
 
           {{ is_admin }}
-          {{ has_subscription }}
           {{ subscription }}
 
           <!-- the current route below should be for "Cancel Support of Grant", cancel this grant should render the contract inoperable to ensure users are not charged any more.  -->
-          {% if has_subscription %}
-            {% for sub in subscription %}
-              <a href="{% url 'grants:subscription_cancel' grant.id sub.id %}">
-                <button class="button button--primary button--full">{% trans "Cancel this Grant" %}</button>
-              </a>
-            {% endfor %}
+          {% if subscription %}
+              <a href="{% url 'grants:subscription_cancel' grant.id subscription.id %}">
+                <button class="button button--primary button--full">{% trans "Cancel Your Funding" %}</button>
           {% elif is_admin %}
                 <button class="button button--primary button--full">{% trans "Cancel this Grant" %}
                 </button>
