@@ -26,7 +26,7 @@ from django.utils.translation import gettext_lazy as _
 
 from cacheops import CacheMiss, cache, cached_view, cached_view_as
 from economy.utils import convert_amount
-from gas.models import GasGuzzler
+from gas.models import GasGuzzler, GasHistory
 from gas.utils import conf_time_spread, gas_advisories, gas_history, recommend_min_gas_price_to_confirm_in_time
 
 from .helpers import handle_bounty_views
@@ -44,23 +44,6 @@ lines = {
     120: '#dddddd',
     180: 'black',
 }
-
-
-def get_history_cached(breakdown, i):
-    timeout = 60 * 60 * 3
-    key_salt = '0'
-    key = f'get_history_cached_{breakdown}_{i}_{key_salt}'
-
-    try:
-        results = cache.get(key)
-    except CacheMiss:
-        results = None
-
-    if not results:
-        results = gas_history(breakdown, i)
-        cache.set(key, results, timeout)
-
-    return results
 
 
 @cached_view(timeout=60*16)
@@ -101,7 +84,9 @@ def gas_heatmap(request):
     min_options = [key for key, val in lines.items()]
     if mins not in min_options:
         mins = min_options[0]
-    gas_histories[mins] = get_history_cached("hourly", mins)
+    breakdown = 'hourly'
+    key = f"{breakdown}:{mins}"
+    gas_histories[mins] = GasHistory.objects.filter(view='gas_history', key=key).order_by('-created_on').first().data
     context = {
         'title': _('Live Ethereum (ETH) Gas Heatmap'),
         'card_desc': _(''),
@@ -235,13 +220,16 @@ def gas_guzzler_view(request):
     return TemplateResponse(request, 'gas_guzzler.html', context)
 
 
-@cached_view(timeout=60*16)
 def gas_history_view(request):
     breakdown = request.GET.get('breakdown', 'hourly')
+    granularity_options = ['hourly', 'daily', 'weekly']
+    if breakdown not in granularity_options:
+        breakdown = 'hourly'
     gas_histories = {}
     max_y = 0
     for i, __ in lines.items():
-        gas_histories[i] = get_history_cached(breakdown, i)
+        key = f"{breakdown}:{i}"
+        gas_histories[i] = GasHistory.objects.filter(view='gas_history', key=key).order_by('-created_on').first().data
         for gh in gas_histories[i]:
             max_y = max(gh[0], max_y)
     breakdown_ui = breakdown.replace('ly', '') if breakdown != 'daily' else 'day'
@@ -253,6 +241,6 @@ def gas_history_view(request):
         'gas_histories': gas_histories,
         'breakdown': breakdown,
         'breakdown_ui': breakdown_ui,
-        'granularity_options': ['hourly', 'daily', 'weekly'],
+        'granularity_options': granularity_options,
     }
     return TemplateResponse(request, 'gas_history.html', context)
