@@ -830,7 +830,7 @@ var trigger_faucet_form_web3_hooks = function() {
       return;
     }
     web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
-      if(errors){
+      if (errors) {
         return;
       }
       var balance = result.toNumber();
@@ -879,7 +879,7 @@ var listen_for_web3_changes = async function() {
   } else {
     is_metamask_unlocked = true;
     web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
-      if(errors){
+      if (errors) {
         return;
       }
       if (typeof result != 'undefined') {

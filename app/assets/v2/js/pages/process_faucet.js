@@ -20,7 +20,7 @@ $(document).ready(function() {
 
     decimals = 6;
     faucetAmount = Math.round(faucetAmount * 10 ** decimals) / 10 ** decimals;
-    console.log(fundingAccount, "from:to", destinationAccount);
+    console.log(fundingAccount, 'from:to', destinationAccount);
     web3.eth.sendTransaction({
       from: fundingAccount,
       to: destinationAccount,
