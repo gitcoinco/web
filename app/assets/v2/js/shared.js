@@ -830,6 +830,9 @@ var trigger_faucet_form_web3_hooks = function() {
       return;
     }
     web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+      if(errors){
+        return;
+      }
       var balance = result.toNumber();
 
       if (balance == 0) {
@@ -876,6 +879,9 @@ var listen_for_web3_changes = async function() {
   } else {
     is_metamask_unlocked = true;
     web3.eth.getBalance(web3.eth.coinbase, function(errors, result) {
+      if(errors){
+        return;
+      }
       if (typeof result != 'undefined') {
         document.balance = result.toNumber();
       }
@@ -939,7 +945,7 @@ var actions_page_warn_if_not_on_same_network = function() {
 attach_change_element_type();
 
 window.addEventListener('load', function() {
-  setInterval(listen_for_web3_changes, 300);
+  setInterval(listen_for_web3_changes, 1000);
   attach_close_button();
 });
 
