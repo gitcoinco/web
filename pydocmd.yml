@@ -301,7 +301,7 @@ pages:
       - Models: gitcoinbot/models.md
       - Views: gitcoinbot/views.md
     - Kudos:
-      - Local Deployment: kudos_deploy >> docs/KUDOS.md
+      - Local Deployment: kudos_deploy << docs/KUDOS.md
       - Admin: kudos/admin.md
       - Forms: kudos/forms.md
       - Helpers: kudos/helpers.md
