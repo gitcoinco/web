@@ -1130,6 +1130,8 @@ class SendCryptoAsset(SuperModel):
 
     tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
     receive_tx_status = models.CharField(max_length=9, choices=TX_STATUS_CHOICES, default='na', db_index=True)
+    tx_time = models.DateTimeField(null=True, blank=True)
+    receive_tx_time = models.DateTimeField(null=True, blank=True)
 
     # QuerySet Manager
     objects = SendCryptoAssetQuerySet.as_manager()
@@ -1250,6 +1252,22 @@ class SendCryptoAsset(SuperModel):
         if (settings.DEBUG or settings.ENV != 'prod') and settings.GITHUB_API_USER != self.github_org_name:
             return False
         return True
+
+    def update_tx_status(self):
+        """ Updates the tx status according to what infura says about the tx
+
+        """
+        from dashboard.utils import get_tx_status
+        self.tx_status, self.tx_time = get_tx_status(self.txid, self.network, self.created_on)
+        return bool(self.tx_status)
+
+    def update_receive_tx_status(self):
+        """ Updates the tx status according to what infura says about the tx
+
+        """
+        from dashboard.utils import get_tx_status
+        self.receive_tx_status, self.receive_tx_time = get_tx_status(self.receive_txid, self.network, self.created_on)
+        return bool(self.receive_tx_status)
 
     @property
     def bounty(self):

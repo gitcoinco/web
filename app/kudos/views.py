@@ -464,6 +464,10 @@ def receive(request, key, txid, network):
     ]
     not_mined_yet = get_web3(kudos_transfer.network).eth.getBalance(
         Web3.toChecksumAddress(kudos_transfer.metadata['address'])) == 0
+    did_fail = False
+    if not_mined_yet:
+        kudos_transfer.update_tx_status()
+        did_fail = kudos_transfer.tx_status in ['dropped', 'unknown', 'na', 'error']
 
     if not kudos_transfer.trust_url:
         if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
@@ -477,6 +481,8 @@ def receive(request, key, txid, network):
     elif not is_authed:
         messages.error(
             request, f'This kudos is for {kudos_transfer.username} but you are logged in as {request.user.username}.  Please logout and log back in as {kudos_transfer.username}.')
+    elif did_fail:
+        messages.info(request, f'This tx {tip.txid}, failed.  Please contact the sender and ask them to send the tx again.')
     elif not_mined_yet and not request.GET.get('receive_txid'):
         message = mark_safe(
             f'The <a href="https://etherscan.io/tx/{txid}">transaction</a> is still mining.  '

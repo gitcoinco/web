@@ -120,6 +120,10 @@ def receive_tip_v3(request, key, txid, network):
     tip = tips.first()
     is_authed = request.user.username.lower() == tip.username.lower() or request.user.username.lower() == tip.from_username.lower()
     not_mined_yet = get_web3(tip.network).eth.getBalance(Web3.toChecksumAddress(tip.metadata['address'])) == 0
+    did_fail = False
+    if not_mined_yet:
+        tip.update_tx_status()
+        did_fail = tip.tx_status in ['dropped', 'unknown', 'na', 'error']
 
     if not request.user.is_authenticated or request.user.is_authenticated and not getattr(
         request.user, 'profile', None
@@ -130,6 +134,8 @@ def receive_tip_v3(request, key, txid, network):
         messages.info(request, 'This tip has been received')
     elif not is_authed:
         messages.error(request, f'This tip is for @{tip.username} but you are logged in as @{request.user.username}.  Please logout and log back in as {tip.username}.')
+    elif did_fail:
+        messages.info(request, f'This tx {tip.txid}, failed.  Please contact the sender and ask them to send the tx again.')
     elif not_mined_yet:
         messages.info(request, f'This tx {tip.txid}, is still mining.  Please wait a moment before submitting the receive form.')
     elif request.GET.get('receive_txid') and not tip.receive_txid:
